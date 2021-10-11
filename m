@@ -2,104 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1A4428A85
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09336428A88
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbhJKKI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 06:08:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58378 "EHLO mail.kernel.org"
+        id S235773AbhJKKKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 06:10:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:42322 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235695AbhJKKIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 06:08:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF935604AC;
-        Mon, 11 Oct 2021 10:06:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633946815;
-        bh=nbhaoewUxBw2RcQpIynWHpC9tTbzCt3dvQP/UabnayA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hRszLcLPvKUueTWfHsgiwTH6cG3WH0G1X67ZtsFHbEErGyXXgL191R6PcjUDK5d1A
-         4otpggu8V3C+07aE89x1ZJ7jFyDmGQE+NIjorqPkDPjBhLiT/mgarpE6h6j2txfLGO
-         x+5eXs+LG4QodL/ogKP1KBcPdS6Sj+Vbu8F0/jXxwc9OAxzNuHSUfkImsBoq0Pi7L2
-         w4vBNatL7Y3jCG+MMXyBar+9mBNUKCFjeN+2yh12eAZpwh0XPLyalqjObPfirELFO0
-         S8cpHmaAsH9YCTuIis+50DzeT1k5/Zyzo1KsVlvcGdT5RiY+F1FFeloN401pzADlTA
-         rt/ZUwQgcJejQ==
-Date:   Mon, 11 Oct 2021 11:06:50 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Chen Lin <chen45464546@163.com>
-Cc:     catalin.marinas@arm.com, mark.rutland@arm.com, joey.gouly@arm.com,
-        maz@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, chen.lin5@zte.com.cn
-Subject: Re: Re: [PATCH] arm64: traps: add dump instr before BUG in kernel
-Message-ID: <20211011100649.GB3681@willie-the-truck>
-References: <20210930084247.GC23389@willie-the-truck>
- <1633012890-3118-1-git-send-email-chen45464546@163.com>
+        id S235695AbhJKKKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 06:10:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 750541FB;
+        Mon, 11 Oct 2021 03:08:03 -0700 (PDT)
+Received: from bogus (unknown [10.57.21.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 195683F66F;
+        Mon, 11 Oct 2021 03:08:00 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 11:07:15 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wolfram Sang <wsa@kernel.org>, linux-hwmon@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v2 07/14] mailbox: pcc: Use PCC mailbox channel pointer
+ instead of standard
+Message-ID: <20211011100715.yhi4pmre6h2nglfc@bogus>
+References: <20210917133357.1911092-1-sudeep.holla@arm.com>
+ <20210917133357.1911092-8-sudeep.holla@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1633012890-3118-1-git-send-email-chen45464546@163.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210917133357.1911092-8-sudeep.holla@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 10:41:30PM +0800, Chen Lin wrote:
-> At 2021-09-30 15:42:47, "Will Deacon" <will@kernel.org> wrote:
+Hi Guenter,
+
+On Fri, Sep 17, 2021 at 02:33:50PM +0100, Sudeep Holla wrote:
+> Now that we have all the shared memory region information populated in
+> the pcc_mbox_chan, let us propagate the pointer to the same as the
+> return value to pcc_mbox_request channel.
 > 
-> >On Wed, Sep 29, 2021 at 09:29:46PM +0800, Chen Lin wrote:
-> >> From: Chen Lin <chen.lin5@zte.com.cn>
-> >> 
-> >> we should dump the real instructions before BUG in kernel mode, and
-> >> compare this to the instructions from objdump.
-> >> 
-> >> Signed-off-by: Chen Lin <chen.lin5@zte.com.cn>
-> >> ---
-> >>  arch/arm64/kernel/traps.c |    7 ++++++-
-> >>  1 file changed, 6 insertions(+), 1 deletion(-)
-> >> 
-> >> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-> >> index b03e383..621a9dd 100644
-> >> --- a/arch/arm64/kernel/traps.c
-> >> +++ b/arch/arm64/kernel/traps.c
-> >> @@ -495,7 +495,12 @@ void do_undefinstr(struct pt_regs *regs)
-> >>  	if (call_undef_hook(regs) == 0)
-> >>  		return;
-> >>  
-> >> -	BUG_ON(!user_mode(regs));
-> >> +	if (!user_mode(regs)) {
-> >> +		pr_emerg("Undef instruction in kernel, dump instr:");
-> >> +		dump_kernel_instr(KERN_EMERG, regs);
-> >> +		BUG();
-> >> +	}
-> >
-> >Hmm, I'm not completely convinced about this as the instruction in the
-> >i-cache could be completely different. I think the PC value (for addr2line)
-> >is a lot more useful, and we should be printing that already.
-> >
-> >Maybe you can elaborate on a situation where this information was helpful?
-> >
-> >Thanks,
-> >
-> >Will
+> This eliminates the need for the individual users of PCC mailbox to
+> parse the PCCT subspace entries and fetch the shmem information. This
+> also eliminates the need for PCC mailbox controller to set con_priv to
+> PCCT subspace entries. This is required as con_priv is private to the
+> controller driver to attach private data associated with the channel and
+> not meant to be used by the mailbox client/users.
 > 
-> Undef instruction occurs in some cases
+> Let us convert all the users of pcc_mbox_{request,free}_channel to use
+> new interface.
 > 
-> 1. CPU do not have the permission to execute the instruction or the current CPU
->  version does not support the instruction. For example, execute 
->  'mrs x0, tcr_el3' under el1.
+> Cc: Jean Delvare <jdelvare@suse.com>
+> Cc: Guenter Roeck <linux@roeck-us.net>
 
-This really shouldn't happen, but if it did, the PC would surely be enough
-to debug the problem?
+Any objections ? If you are OK, can I have your ack so that the series
+can go in one go.
 
-> 2. The instruction is a normal instruction, but it is changed during board 
-> running in some abnormal situation. eg: DDR bit flip, the normal instruction 
-> will become an undefined one. By printing the instruction, we can see the 
-> accurate instruction code and compare it with the instruction code from objdump
-> to determine that it is a DDR issue.
-
-Is this really something we should be designing our exception handlers for?
-If we're getting DDR bit flips for kernel .text, then it sounds like we need
-ECC and/or RAS features to deal with them.
-
-So I'm not really sold on this change.
-
-Will
+-- 
+Regards,
+Sudeep
