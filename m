@@ -2,133 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A4B428AA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51ED7428AAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235446AbhJKKVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 06:21:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235843AbhJKKVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 06:21:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39F8A60F3A;
-        Mon, 11 Oct 2021 10:18:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633947542;
-        bh=/3CWonXKLKUO2i8NasauuWwAB2FQLx48kpn8CBarvWI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iXtwrwiZsFdRb6MYzqZfRCeufrslzG2BxxqlJ13YXu3UyPpA8SCinTz1v3/yVgnVy
-         wc4wjj6tPXKDV02H0eBHLxIKYZxAos49W7iuiueOM2Kih8bKwzw3dq0LjeV6kGsTQ7
-         SUP9NJRSQ3h/mVatcifhTMWopgIOjEae0cUFhMXmPq3mV0Ni0e45jyMKG8jK9zHYSw
-         kWt0daDZO84eanoFjDaOHAd3cGuudKO9QsBRlKRXFzYsqe38hYm1+k3Vijv6awg1ac
-         FjcEK0jq02QRkk6xnUEeAYSU/s7SVw74FLP3+j5iB5yp7roh4t5zMxa6xHkknW9hwD
-         aQqTSzMTwXOuw==
-Date:   Mon, 11 Oct 2021 11:18:52 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, leo.yan@linaro.org,
-        anshuman.khandual@arm.com, coresight@lists.linaro.org,
-        maz@kernel.org, james.morse@arm.com, mark.rutland@arm.com,
-        lcherian@marvell.com
-Subject: Re: [PATCH v3 15/16] arm64: errata: Advertise the workaround for TSB
- flush failures
-Message-ID: <20211011101851.GC3681@willie-the-truck>
-References: <20211008182906.1688009-1-suzuki.poulose@arm.com>
- <20211008182906.1688009-16-suzuki.poulose@arm.com>
+        id S235847AbhJKKVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 06:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235826AbhJKKVW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 06:21:22 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCACC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 03:19:23 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mZsOv-0000l7-F2; Mon, 11 Oct 2021 12:19:21 +0200
+Subject: Re: [PATCH v3] KEYS: trusted: Fix trusted key backends when building
+ as module
+To:     Andreas Rammhold <andreas@rammhold.de>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210730012822.3460913-1-andreas@rammhold.de>
+ <0d42a11a-0117-49a9-d2c9-bc6cc405235d@pengutronix.de>
+ <20210927085104.vq42feghtaqiv6ni@wrt>
+ <856359f263575f01d0ce2fcf8f042321f750b38c.camel@linux.ibm.com>
+ <20210927200835.wvazk73cek3t5tkf@wrt>
+ <2ad2c536367028ef6d9300745586a123cb13d9f1.camel@linux.ibm.com>
+ <20210927205521.7c4psu4vz5eoyfnf@wrt>
+ <81602197662f3e6d032103bd1ac3690342544b7e.camel@linux.ibm.com>
+ <20211002214725.fqmtbfjwtlom745c@wrt>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <db5ea3c2-42df-420b-6813-f6ef2c30df6f@pengutronix.de>
+Date:   Mon, 11 Oct 2021 12:19:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008182906.1688009-16-suzuki.poulose@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211002214725.fqmtbfjwtlom745c@wrt>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 07:29:05PM +0100, Suzuki K Poulose wrote:
-> Advertise the workaround for the TSB flush failures via
-> Kconfig entries.
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> Changes since previous:
->   - Split the Kconfig/erratum updates to keep the conflicts
->     minimal with the other Kconfig updates in TRBE errata
->     I have retained the tags
-> ---
->  Documentation/arm64/silicon-errata.rst |  4 ++++
->  arch/arm64/Kconfig                     | 31 ++++++++++++++++++++++++++
->  2 files changed, 35 insertions(+)
-> 
-> diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
-> index 2f99229d993c..569a92411dcd 100644
-> --- a/Documentation/arm64/silicon-errata.rst
-> +++ b/Documentation/arm64/silicon-errata.rst
-> @@ -94,6 +94,8 @@ stable kernels.
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Cortex-A710     | #2119858        | ARM64_ERRATUM_2119858       |
->  +----------------+-----------------+-----------------+-----------------------------+
-> +| ARM            | Cortex-A710     | #2054223        | ARM64_ERRATUM_2054223       |
-> ++----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N1     | #1188873,1418040| ARM64_ERRATUM_1418040       |
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N1     | #1349291        | N/A                         |
-> @@ -102,6 +104,8 @@ stable kernels.
->  +----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | Neoverse-N2     | #2139208        | ARM64_ERRATUM_2139208       |
->  +----------------+-----------------+-----------------+-----------------------------+
-> +| ARM            | Neoverse-N2     | #2067961        | ARM64_ERRATUM_2067961       |
-> ++----------------+-----------------+-----------------+-----------------------------+
->  | ARM            | MMU-500         | #841119,826419  | N/A                         |
->  +----------------+-----------------+-----------------+-----------------------------+
->  +----------------+-----------------+-----------------+-----------------------------+
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index eac4030322df..0764774e12bb 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -705,6 +705,37 @@ config ARM64_ERRATUM_2139208
->  
->  	  If unsure, say Y.
->  
-> +config ARM64_WORKAROUND_TSB_FLUSH_FAILURE
-> +	bool
-> +
-> +config ARM64_ERRATUM_2054223
-> +	bool "Cortex-A710: 2054223: workaround TSB instruction failing to flush trace"
-> +	default y
-> +	help
-> +	  Enable workaround for ARM Cortex-A710 erratum 2054223
-> +
-> +	  Affected cores may fail to flush the trace data on a TSB instruction, when
-> +	  the PE is in trace prohibited state. This will cause losing a few bytes
-> +	  of the trace cached.
-> +
-> +	  Workaround is to issue two TSB consecutively on affected cores.
-> +
-> +	  If unsure, say Y.
-> +
-> +config ARM64_ERRATUM_2067961
-> +	bool "Neoverse-N2: 2067961: workaround TSB instruction failing to flush trace"
-> +	default y
-> +	help
-> +	  Enable workaround for ARM Neoverse-N2 erratum 2067961
-> +
-> +	  Affected cores may fail to flush the trace data on a TSB instruction, when
-> +	  the PE is in trace prohibited state. This will cause losing a few bytes
-> +	  of the trace cached.
-> +
-> +	  Workaround is to issue two TSB consecutively on affected cores.
-> +
-> +	  If unsure, say Y.
+Hello Mimi, David, Jarkko and James,
 
-Shouldn't these two be selecting the workaround?
+On 02.10.21 23:47, Andreas Rammhold wrote:
+>> My mistake.  Trusted and encrypted key types have always been defined
+>> as tristate.  Only when EVM selects encrypted keys, and by extension
+>> trusted keys, are they builtin.
+> 
+> So how do we go about this patch? Building the TPM support as module has
+> broken actually using the trusted backend. This patch fixes that while
+> still allowing it to be a builtin. If there is some configuration there
+> a module isn't acceptable I am sure that is handled within Kconfig?
+Can anyone of you four pick this up? Andreas' regression fix has
+had Jarkko's Reviewed-by for close to two months and a half now.
 
-Will
+Thanks,
+Ahmad
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
