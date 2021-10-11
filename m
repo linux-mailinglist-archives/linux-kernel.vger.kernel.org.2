@@ -2,100 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF8C4296F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 942234296F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbhJKSbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:31:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234517AbhJKSb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:31:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4149560E90;
-        Mon, 11 Oct 2021 18:29:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633976965;
-        bh=diBqlvKGtEl8DB+wDdHMTYgQ2IHF2EbrhLa15A4CP2Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B/d+tF0DJkxtwnH29uUnvvLqm5k0JYUASoFRsNCx5L9lbsdvGqW+iRpGiQWHjVR3+
-         wXT9VsHVv0KdfZwZp4OIcA14WgAcjIYNsdl1hhwBohwU+IeaPd8drIjtwmIFAr5hQg
-         SMrunPn+Nc7clyp8hgM5dy6vVp6/LX7ERE0kgXHS4wo0i1R/32sOgvX/CSL9XKCfJK
-         IFpQU/E/TCKr7ixArsVbsljlgFWLbKJ7NWKk8lH3jeJby9oVe60rRGOkVEpM7Zjh9I
-         fPFAKWeMoe22+RY8AO2pVtSNxltMnaTLPYzAGsL+mWouxUwRFB6VMZQVX2g4Bo//+z
-         YZPhXp+TKi/wg==
-Date:   Mon, 11 Oct 2021 19:29:23 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Cc:     alsa-devel@alsa-project.org, Alexander.Deucher@amd.com,
-        Sunil-kumar.Dommati@amd.com, David.Rhodes@cirrus.com,
-        wtli@nuvoton.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] ASoc: amd: create platform device for VG machine
- driver
-Message-ID: <YWSCg2Nzi8lRDiIE@sirena.org.uk>
-References: <20211011184715.61573-1-Vijendar.Mukunda@amd.com>
- <YWR5QH1lYqiT1cX+@sirena.org.uk>
- <57f313fe-fb8e-8b4b-8839-d9d8653880d1@amd.com>
+        id S234438AbhJKShP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhJKShO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 14:37:14 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB79EC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:35:13 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id g8so71316399edt.7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fBcgVKoGRggT3Uy1yoJR3Sgr+q930ZEpVWr84lINymY=;
+        b=U2w5rme7IKP7knj8dJyakaJAh2JZn2YZ2n0fH16SWLN7eopx2blwSw0vPRU3ju4YFb
+         5RYfQkSEndKzGS2GrJoEt5sFMGE960e/itzKJFvE05uJg4RiznUVi4cYVS16c2wR/suD
+         ImjzKeSbDv1w9QelJ2920OHt5O0i7CAF/88oPbv0QMXAxgpPrxZEJEMnwQGf4cD4Ewiw
+         svLgDg0rnG87dpYjh/lujnuanQE5prQNgTXd5vIJt04dx48pCFOo2wf4EBjf48hxG9Cy
+         xhukoor/EZi2y00sov/JNxxhejoND+1Q9w9HpotN3k0vWdTv0s3NTgPoxhSrliJgUGqz
+         VU6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fBcgVKoGRggT3Uy1yoJR3Sgr+q930ZEpVWr84lINymY=;
+        b=7ZCObcrAyjWkXtZ3i2/ty/IfwPWTYVJaOgs80Mz7cNXWnZJGkp4nWwtmogFY1hT7XZ
+         zF0YBMLQf29Ik4fk+ZOenTku4rjqAmJ8oIPX9edIsXMQvt+LwWXf44CzGHCniIYYFzgV
+         2z1w6VTPtm9p2WhXgqIAgBfyfxVOdF33bbdPoWe7lQxF5EPNJRM4/xuIswqRGcmHoExa
+         6bgV1glMhCEh2D1Z+DorItDHbS6SNT/SPkgD9nVW20hLzAhtwHXOyN8fzlaObECTfEn4
+         pUh6mdqx7MZOphmXSPCgotCYQ26VxfhWq7cinptauqyihqKUm8vNpCPHQkbqVk6RHXN9
+         Jzgw==
+X-Gm-Message-State: AOAM531h1G5s4lSrxW4B6LM5UJzDLacwJck+0eKb1sKKZJTLZZtYfCIw
+        uKL1MVyL0yNQKxegOOIBfeAZXpI3W05lVSq+PF8M2A==
+X-Google-Smtp-Source: ABdhPJw7VmFf1Z/3+QbHozFM+RW3lJThpIu4lsHhi1z00/AWTWEYk/2ZJ/33dznHy7oECvbIsnZNx4RXVoQFg1e3zdg=
+X-Received: by 2002:a17:906:c7c1:: with SMTP id dc1mr28372064ejb.6.1633977311975;
+ Mon, 11 Oct 2021 11:35:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eCPTkh53x3R1J0l+"
-Content-Disposition: inline
-In-Reply-To: <57f313fe-fb8e-8b4b-8839-d9d8653880d1@amd.com>
-X-Cookie: May contain nuts.
+References: <20211011134517.833565002@linuxfoundation.org>
+In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 12 Oct 2021 00:05:00 +0530
+Message-ID: <CA+G9fYutz0ZgJ=rrg8=Fd7vh9c7G-SJfF2YoH5wZyGzUHu4Dqw@mail.gmail.com>
+Subject: Re: [PATCH 5.14 000/151] 5.14.12-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 11 Oct 2021 at 19:28, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.14.12 release.
+> There are 151 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 13 Oct 2021 13:44:51 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.14.12-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
---eCPTkh53x3R1J0l+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Mon, Oct 11, 2021 at 11:48:40AM +0530, Mukunda,Vijendar wrote:
-> On 10/11/21 11:19 PM, Mark Brown wrote:
+Results from Linaro=E2=80=99s test farm.
+Regression found on arm x15 device.
 
-> >> +		pdevinfo[3].name = "acp5x_nu8821_cs35l41_mach";
+metadata:
+  git branch: linux-5.14.y
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+  git commit: d98305d056b808dd938d2ae6bfd0e3ccac00a106
+  git describe: v5.14.11-152-gd98305d056b8
+  make_kernelversion: 5.14.12-rc1
+  kernel-config: https://builds.tuxbuild.com/1zMbwi83MvhJdKpC0LTvxvIh1Fb/co=
+nfig
 
-> > This appears to unconditionally assume that any machine with this
-> > hardware is going to have exactly the same CODEC/amp combination - that
-> > seems like it's going to go badly at some point.  Shouldn't there be
-> > some other check that we're instantiating the right machine driver?
+Crash log,
+[    0.000000] Linux version 5.14.12-rc1 (tuxmake@tuxmake)
+(arm-linux-gnueabihf-gcc (Debian 11.1.0-1) 11.1.0, GNU ld (GNU
+Binutils for Debian) 2.36.90.20210705) #1 SMP @1633961260
+[    0.000000] CPU: ARMv7 Processor [412fc0f2] revision 2 (ARMv7), cr=3D10c=
+5387d
+<trim>
+[    5.403076] Kernel panic - not syncing: stack-protector: Kernel
+stack is corrupted in: __lock_acquire+0x2520/0x326c
+[    5.413574] CPU: 0 PID: 6 Comm: kworker/0:0H Not tainted 5.14.12-rc1 #1
+[    5.420227] Hardware name: Generic DRA74X (Flattened Device Tree)
+[    5.426361] Backtrace:
+[    5.428863] [<c153b5e8>] (dump_backtrace) from [<c153b9a8>]
+(show_stack+0x20/0x24)
+[    5.436492]  r7:c2109acc r6:00000080 r5:c1c3c52c r4:60000193
+[    5.442169] [<c153b988>] (show_stack) from [<c1542cf8>]
+(dump_stack_lvl+0x60/0x78)
+[    5.449798] [<c1542c98>] (dump_stack_lvl) from [<c1542d28>]
+(dump_stack+0x18/0x1c)
+[    5.457427]  r7:c2109acc r6:c1c1d4ac r5:00000000 r4:c23a1aa8
+[    5.463104] [<c1542d10>] (dump_stack) from [<c153c800>] (panic+0x13c/0x3=
+70)
+[    5.470123] [<c153c6c4>] (panic) from [<c1555854>]
+(lockdep_hardirqs_on+0x0/0x1d0)
+[    5.477752]  r3:c28033d0 r2:a519091a r1:c03dc7ec r0:c1c1d4ac
+[    5.483428]  r7:c2109acc
+[    5.485992] [<c1555838>] (__stack_chk_fail) from [<c03dc7ec>]
+(__lock_acquire+0x2520/0x326c)
+[    5.494476] [<c03da2cc>] (__lock_acquire) from [<c03ddfe0>]
+(lock_acquire+0x140/0x414)
+[    5.502471]  r10:60000193 r9:00000080 r8:2ca87000 r7:c31c4128
+r6:c20935e0 r5:c20935e0
+[    5.510345]  r4:c31c4000
+[    5.512878] [<c03ddea0>] (lock_acquire) from [<c03a2e1c>]
+(account_system_index_time+0xf0/0x284)
+[    5.521728]  r10:c31c4000 r9:eeb1fa40 r8:eeb1a4f0 r7:00000002
+r6:c321db80 r5:00000000
 
-> we will make the platform device as generic one something like "acp5x_mach".
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> Currently we have only one target platform with above codec combinations
-> for this APU series.
+Full test log link,
+https://lkft.validation.linaro.org/scheduler/job/3719571#L2392
 
-> When we get new codecs combinations to support, we will address it in
-> machine driver by adding DMI checks for distinguishing codec combinations.
+zImage:
+https://builds.tuxbuild.com/1zMbwi83MvhJdKpC0LTvxvIh1Fb/zImage
 
-If that's the case then this machine driver that's being instantiated is
-poorly named, and I expect you're going to get issues with assuming a
-default here and trying to instantiate this machine on unsuitable
-hardware.  It'd be better to at least put a bit of the framework in now
-and positively indentify systems that can run this machine driver.
+Build link,
+https://builds.tuxbuild.com/1zMbwi83MvhJdKpC0LTvxvIh1Fb/
 
-It really would be good if ACPI system vendors were to adopt a more
-standards based approach to platform enumeration, this really isn't
-good.  Something more standards based like DT has would be much more
-scalable.
-
---eCPTkh53x3R1J0l+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFkgoIACgkQJNaLcl1U
-h9COMQf9GXDFZZME1KoLuEwkKs23hk5x6Yd5pCtMgh9arW9h8qHb5Kbfn9adyQW+
-GsGdxXCgHv9MTOFWBeKgprtt4WbMqkp3vJEu+sV0ma3kFKM+0HupofMliz+fJ33t
-aUYZTPWGvdPYUeQHL/g4dqMj0Vg6o8pZsEEbk46NL0pOddaP3o/tt7ficxzS8Jpd
-2bbcA7oIRFi7IZJPHf9QvcSU98M406lgjAzO8bapXs579BATkM9B2y8VupQuGzS2
-+Yfzqzg0Yz42FUVKpBlB9Iol0FSUt+DX9TfquoWIhmWNhHm06itGiXWi79R2FfQS
-yfMXsfdEh2KPPxx+0Nh3CAriZpHCAg==
-=15Z3
------END PGP SIGNATURE-----
-
---eCPTkh53x3R1J0l+--
+--=20
+Linaro LKFT
+https://lkft.linaro.org
