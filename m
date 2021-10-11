@@ -2,95 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142FB428977
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689B542899A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235439AbhJKJO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:14:58 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:24236 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235421AbhJKJO5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:14:57 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HSY2b1XngzQjBW;
-        Mon, 11 Oct 2021 17:11:51 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 17:12:53 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 17:12:53 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <ars@metafoo.de>, <jic23@kernel.org>,
-        <alexandru.ardelean@analog.com>, <andy.shevchenko@gmail.com>
-Subject: [PATCH v2] iio: core: fix double free in iio_device_unregister_sysfs()
-Date:   Mon, 11 Oct 2021 17:20:28 +0800
-Message-ID: <20211011092028.2310144-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S235486AbhJKJ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:26:14 -0400
+Received: from mout.gmx.net ([212.227.15.19]:51079 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235366AbhJKJZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 05:25:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1633944198;
+        bh=U/shT+7l0cuBfb2Az0GVIwtLNaXjsil9vuzWuDDckSw=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=K9M2dP3MxUpy0IuJATs8fpi7G9QGf6dQeRmBUNbHODjDk1RMp1wzwh8684aqyDF/R
+         aI0KML94b4Ufpm3eHZnNvRHiYi3J1xqb66v+fgtVJJga630bEZHf+NHYRSAAkDxaLt
+         /7yTTDxdgX+9RIRyKbBv1ml7DLAjQas07JJP+MPg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mv2xO-1mrfQT3jTU-00r1qI; Mon, 11
+ Oct 2021 11:23:18 +0200
+Date:   Mon, 11 Oct 2021 11:23:04 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/i915: Prefer struct_size over open coded arithmetic
+Message-ID: <20211011092304.GA5790@titan>
+References: <20211003104258.18550-1-len.baker@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211003104258.18550-1-len.baker@gmx.com>
+X-Provags-ID: V03:K1:qB41EdUOsFZuYV3ml4IEx+V8zljlxj5AcR10VQSG2G0KC4NSufx
+ EVfLMr72fxNHAetLb+CjeNmh06lR3j1ygkpmj1aTeYajVmigaqqfQltDT5BaFLKoBDMpBkF
+ JkVP6qrlxNpxqISrXWVUCRyOc2+2T3MydQsryZsJJHftgl/WMPyuxw7oUYeKOTPH07v1U3z
+ ppEUK8veKOEhshP0mNV3A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:n3aBajBwyFg=:fbkv52sPN3R+NBkzOIhfgr
+ wKEwFGA+6tvS1hf9vux674WdWdYDAUdl/1rHjB+Q3OfpROOE/BafCD+y0BETdU0D8iXICXU85
+ 8ZaO4LayBVas4vHXWp3YxXlTb0C4/PhdTY4NRO6ZCJFdmgHpx7yTgTUlFvHqxdiFWc3r4akDy
+ eUdV7BiRjFPDohB/Q4C1u4VKKr4tq9kPnv4w7E45aQcKA95SjI/PNjJWYAIKPpO9iTZ+K7BKd
+ as8hVxGJXU+ROIHr1qz/hI+zjojMolVdB27WEegacTpvlpwps+1nJswDPOGc35X339Gd58sKy
+ YJozSBdrfx+6EQB4xYsix4FHBZBfYmR0ceedUvF1Wr/pm2FN9yPGeRIxxrpHRRvJ8+G/tChvy
+ USDxwYAviP+3qJM5eYQRZSKPVNvNd6MQgnXA3Jy0QShI31w7DYxkV9zpjbUeQ4oyFCBkMagEJ
+ ZMdd0u4CZFJKhyCE2hpkC9ZUHQei6bk+i8QQ3NsRJMD/ky7EnTk8EOCHt+oWqkcjytC5DNxG7
+ qpNRxcZGA1/JIOXWiDXYklMRlDRuy02xEelNr6AK0S6x7sBm3q/iWiC1eQ2fbpfMge9Tl+18a
+ hwXzLn3QuIfnnvSaVFpOlVddExlSBmw6XPs2kLAzvGFcGB+V7BvJ4LBsn3A8+5B0WviTOtdzV
+ oy07G7iikBpdKa1FQNle1oGMafnx94W/ypputXs81QDfHekgewbqdFXr09t4UmXsCAGk4txYo
+ WTa8YJ3krCbYEhMxLxn0Eb7z0xva4AxZT3nqfDBbsHVsE0uFjmYZP/sQ3P4hUP3A1lXNYToLK
+ 0Ou7riL5Hlv4owvXK5x9wTy4mp7fLW18bwHZIunu2Sbl1K3YxpNEAEGjttc9YOjCe3f2FvVnl
+ BS4Car48IJSpKE0kFKxYTOKdfnt6pXDavJsPOHzTzF6k3RiiHCjbrjNb4xen2NGVbCUaySI2z
+ YCyynUtfm3vQrSW/l9CZ7GSkTi+yxrcmr+3SOPJcLTayvUCPS2T8+JBBpnH6i2CqJZsn+ZTnX
+ 0GIcOY64olYND3VFEmo4IgyLqvjFe6VDdL9UniVCw5/EqrAfM0IgMyRGAvwjXwaZq/Ki6uzY3
+ 3a5B7XNOU3vJWg=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got the double free report:
+Hi,
 
-BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
+On Sun, Oct 03, 2021 at 12:42:58PM +0200, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+>
+> In this case these are not actually dynamic sizes: all the operands
+> involved in the calculation are constant values. However it is better to
+> refactor them anyway, just to keep the open-coded math idiom out of
+> code.
+>
+> So, add at the end of the struct i915_syncmap a union with two flexible
+> array members (these arrays share the same memory layout). This is
+> possible using the new DECLARE_FLEX_ARRAY macro. And then, use the
+> struct_size() helper to do the arithmetic instead of the argument
+> "size + count * size" in the kmalloc and kzalloc() functions.
+>
+> Also, take the opportunity to refactor the __sync_seqno and __sync_child
+> making them more readable.
+>
+> This code was detected with the help of Coccinelle and audited and fixed
+> manually.
+>
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-=
+coded-arithmetic-in-allocator-arguments
+>
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+>  drivers/gpu/drm/i915/i915_syncmap.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
 
-CPU: 0 PID: 359 Comm: xrun Tainted: G        W         5.15.0-rc3-00109-g4dfd49fafc4d-dirty #474 523b7f3c65c42247635e2ac04a95f61f9f36678d
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-Call Trace:
- dump_stack_lvl+0xe2/0x152
- print_address_description.constprop.7+0x21/0x150
- kasan_report_invalid_free+0x6f/0xa0
- __kasan_slab_free+0x125/0x140
- slab_free_freelist_hook+0x10d/0x240
- kfree+0xce/0x390
- iio_device_unregister_sysfs+0x108/0x13b [industrialio]
- iio_dev_release+0x9e/0x10e [industrialio]
- device_release+0xa5/0x240
- kobject_put+0x1e5/0x540
- put_device+0x20/0x30
- devm_iio_device_release+0x21/0x30 [industrialio]
- release_nodes+0xc3/0x3b0
- devres_release_group+0x1da/0x2c0
- i2c_device_probe+0x628/0xbb0
- really_probe+0x285/0xc30
+I received a mail telling that this patch doesn't build:
 
-If __iio_device_register() fails, iio_dev_opaque->groups will be freed
-in error path in iio_device_unregister_sysfs(), then iio_dev_release()
-will call iio_device_unregister_sysfs() again, it causes double free.
-Set iio_dev_opaque->groups to NULL when it's freed to fix this double free.
+=3D=3D Series Details =3D=3D
 
-Fixes: 32f171724e5c ("iio: core: rework iio device group creation")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/iio/industrialio-core.c | 1 +
- 1 file changed, 1 insertion(+)
+Series: drm/i915: Prefer struct_size over open coded arithmetic
+URL   : https://patchwork.freedesktop.org/series/95408/
+State : failure
 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index 2dbb37e09b8c..2dc837db50f7 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -1600,6 +1600,7 @@ static void iio_device_unregister_sysfs(struct iio_dev *indio_dev)
- 	kfree(iio_dev_opaque->chan_attr_group.attrs);
- 	iio_dev_opaque->chan_attr_group.attrs = NULL;
- 	kfree(iio_dev_opaque->groups);
-+	iio_dev_opaque->groups = NULL;
- }
- 
- static void iio_dev_release(struct device *device)
--- 
-2.25.1
+But it builds without error against linux-next (tag next-20211001). Agains=
+t
+which tree and branch do I need to build?
 
+Regards,
+Len
