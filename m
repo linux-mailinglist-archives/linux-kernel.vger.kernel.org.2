@@ -2,164 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955A24292E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49404292D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234220AbhJKPRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:17:37 -0400
-Received: from mga04.intel.com ([192.55.52.120]:47654 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233488AbhJKPRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:17:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="225666052"
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="225666052"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 08:04:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="479886228"
-Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7])
-  by orsmga007.jf.intel.com with ESMTP; 11 Oct 2021 08:04:00 -0700
-Received: from irsmsx604.ger.corp.intel.com (163.33.146.137) by
- irsmsx601.ger.corp.intel.com (163.33.146.7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 11 Oct 2021 16:03:59 +0100
-Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137]) by
- IRSMSX604.ger.corp.intel.com ([163.33.146.137]) with mapi id 15.01.2242.012;
- Mon, 11 Oct 2021 16:03:59 +0100
-From:   "Hunter, Adrian" <adrian.hunter@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: RE: [PATCH 5.10 83/83] scsi: ufs: core: Fix task management
- completion
-Thread-Topic: [PATCH 5.10 83/83] scsi: ufs: core: Fix task management
- completion
-Thread-Index: AQHXvqegHY5BU+KliUCTrpRZqKMAK6vN4n7w
-Date:   Mon, 11 Oct 2021 15:03:59 +0000
-Message-ID: <8dc0e077af3f4fd5a0887784f65bd722@intel.com>
-References: <20211011134508.362906295@linuxfoundation.org>
- <20211011134511.235071707@linuxfoundation.org>
-In-Reply-To: <20211011134511.235071707@linuxfoundation.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S233607AbhJKPIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233481AbhJKPIQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 11:08:16 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD887C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:06:16 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id c29so15089551pfp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:06:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ES0x4KKi213NBYwRVGpLwmppAh4kTz9W8sOWXXeERdE=;
+        b=sgBTxJ6bOpXaNmhkrBXsEoQw4rIy/dIleE6rK90FOuieGJ2a4gVZmJWAfHjR0Yt0yF
+         LR6VJK7kjCueP5x820M7LMQr3/z6k3Fdsm6N3nBxxqa1eCRP8TsJ/EAGjJnbtaq2sujf
+         c0hrAGdTEBwaxDC4ehCOm6+uFYHrP0gQSCm8qmiX7IurFeRmHHQGhL73ualnsDPFAV5g
+         IdmFluPMqkXHU8D8oGC8rvfAq+JxhqEqtXaj9EKy5dR4BN+gHTLLucTvRBhKg2P2h/SW
+         IxdYu/Bq71ojz80eZy/OFf4+q4oxBJ1akW7jxBo0vMHZlRaEuodrJKq5dK2LFM70o6JA
+         73eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ES0x4KKi213NBYwRVGpLwmppAh4kTz9W8sOWXXeERdE=;
+        b=zoDHul71AL1tMw1YNJQLyf0xxvVyL35zwSJVKYyumLhcmR8JPj2sXYVgbHIRIUuJAY
+         S2Y2mmwPnDNCYtMLqZQ/6SjFPr06HwsPInAmrT0hrn25tYu0SqmE8Vbzcg9BGzTNPpHq
+         RRIAmE6vRN7SokAtJLQ5pnjl232jfH0PTcFdcQZkyWNVgkHDhdXqntQts700ghX2mnjk
+         fhi1NVS2ojnoDHRWBmqNevh3MnPTG47q9PYsjVSDG4foBHJXqFd04y5kHLMF+koBNneC
+         1cMlmlMVcrJgf3YLTzfRAI3VMY1QD24FDeKQvqXrTnvkJnxpGge/icza7+5qJbQ9SYwF
+         bRww==
+X-Gm-Message-State: AOAM530hkqrz3wVK0+/pOHpd0mgdFDbJNwKhHsTqMQnAvrn1n1x4UB7k
+        sMWqD6ekzlejHDQXjBjYzeDkoQ==
+X-Google-Smtp-Source: ABdhPJw/tmih7R7AVrpH1iw+PTL8CTfKZopkCwISVfpzKajPEvPbtOd83S2Fez7aBTajIdVv9UDSbw==
+X-Received: by 2002:a63:ac09:: with SMTP id v9mr18351405pge.355.1633964775941;
+        Mon, 11 Oct 2021 08:06:15 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id r14sm8567066pgf.49.2021.10.11.08.06.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 08:06:15 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 15:06:11 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 06/11] x86/traps: Add #VE support for TDX guest
+Message-ID: <YWRS41aZH9A6fekt@google.com>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-7-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAJhGHyAqapG2MHfANeHG+LFHYr3a8AcHtbxcL3xUR_rmEOTqiQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyAqapG2MHfANeHG+LFHYr3a8AcHtbxcL3xUR_rmEOTqiQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkNCg0KVGhpcyBkb2Vzbid0IHdvcmsuICBQbGVhc2UgZHJvcC4gIFNvcnJ5LCBubyBpZGVhIHdo
-eSBJIHNlbnQgaXQgYmVmb3JlIHRlc3RpbmcuDQoNClNwZWNpZmljYWxseSwgaW4gdjUuMTAsIHVm
-c2hjZF90bWNfaGFuZGxlcigpIGNhbiBiZSBjYWxsZWQgdW5kZXIgdGhlIHNhbWUgc3BpbmxvY2sN
-Cml0IGlzIHVzaW5nLCB3aGljaCBkZWFkbG9ja3MuDQoNClJlZ2FyZHMNCkFkcmlhbg0KDQo+IC0t
-LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEdyZWcgS3JvYWgtSGFydG1hbiA8Z3Jl
-Z2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+DQo+IFNlbnQ6IE1vbmRheSwgT2N0b2JlciAxMSwgMjAy
-MSA0OjQ3IFBNDQo+IFRvOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IENjOiBHcmVn
-IEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPjsNCj4gc3RhYmxlQHZn
-ZXIua2VybmVsLm9yZzsgQmFydCBWYW4gQXNzY2hlIDxidmFuYXNzY2hlQGFjbS5vcmc+OyBIdW50
-ZXIsDQo+IEFkcmlhbiA8YWRyaWFuLmh1bnRlckBpbnRlbC5jb20+OyBNYXJ0aW4gSy4gUGV0ZXJz
-ZW4NCj4gPG1hcnRpbi5wZXRlcnNlbkBvcmFjbGUuY29tPg0KPiBTdWJqZWN0OiBbUEFUQ0ggNS4x
-MCA4My84M10gc2NzaTogdWZzOiBjb3JlOiBGaXggdGFzayBtYW5hZ2VtZW50IGNvbXBsZXRpb24N
-Cj4gDQo+IEZyb206IEFkcmlhbiBIdW50ZXIgPGFkcmlhbi5odW50ZXJAaW50ZWwuY29tPg0KPiAN
-Cj4gY29tbWl0IGY1ZWYzMzZmZDJlNGMzNmRlZGFlNGU3Y2E2NmNmNTM0OWQ2ZmRhNjIgdXBzdHJl
-YW0uDQo+IA0KPiBUaGUgVUZTIGRyaXZlciB1c2VzIGJsa19tcV90YWdzZXRfYnVzeV9pdGVyKCkg
-d2hlbiBpZGVudGlmeWluZyB0YXNrDQo+IG1hbmFnZW1lbnQgcmVxdWVzdHMgdG8gY29tcGxldGUs
-IGhvd2V2ZXIgYmxrX21xX3RhZ3NldF9idXN5X2l0ZXIoKQ0KPiBkb2Vzbid0DQo+IHdvcmsuDQo+
-IA0KPiBibGtfbXFfdGFnc2V0X2J1c3lfaXRlcigpIG9ubHkgaXRlcmF0ZXMgcmVxdWVzdHMgZGlz
-cGF0Y2hlZCBieSB0aGUgYmxvY2sNCj4gbGF5ZXIuIFRoYXQgYXBwZWFycyBhcyBpZiBpdCBtaWdo
-dCBoYXZlIHN0YXJ0ZWQgc2luY2UgY29tbWl0IDM3ZjRhMjRjMjQ2OQ0KPiAoImJsay1tcTogY2Vu
-dHJhbGlzZSByZWxhdGVkIGhhbmRsaW5nIGludG8gYmxrX21xX2dldF9kcml2ZXJfdGFnIikgd2hp
-Y2gNCj4gcmVtb3ZlZCAnZGF0YS0+aGN0eC0+dGFncy0+cnFzW3JxLT50YWddID0gcnEnIGZyb20g
-YmxrX21xX3JxX2N0eF9pbml0KCkNCj4gd2hpY2ggZ2V0cyBjYWxsZWQ6DQo+IA0KPiAJYmxrX2dl
-dF9yZXF1ZXN0DQo+IAkJYmxrX21xX2FsbG9jX3JlcXVlc3QNCj4gCQkJX19ibGtfbXFfYWxsb2Nf
-cmVxdWVzdA0KPiAJCQkJYmxrX21xX3JxX2N0eF9pbml0DQo+IA0KPiBTaW5jZSBVRlMgdGFzayBt
-YW5hZ2VtZW50IHJlcXVlc3RzIGFyZSBub3QgZGlzcGF0Y2hlZCBieSB0aGUgYmxvY2sgbGF5ZXIs
-DQo+IGhjdHgtPnRhZ3MtPnJxc1tycS0+dGFnXSByZW1haW5zIE5VTEwsIGFuZCBzaW5jZQ0KPiBi
-bGtfbXFfdGFnc2V0X2J1c3lfaXRlcigpDQo+IHJlbGllcyBvbiBmaW5kaW5nIHJlcXVlc3RzIHVz
-aW5nIGhjdHgtPnRhZ3MtPnJxc1tycS0+dGFnXSwgVUZTIHRhc2sNCj4gbWFuYWdlbWVudCByZXF1
-ZXN0cyBhcmUgbmV2ZXIgZm91bmQgYnkgYmxrX21xX3RhZ3NldF9idXN5X2l0ZXIoKS4NCj4gDQo+
-IEJ5IHVzaW5nIGJsa19tcV90YWdzZXRfYnVzeV9pdGVyKCksIHRoZSBVRlMgZHJpdmVyIHdhcyBy
-ZWx5aW5nIG9uIGludGVybmFsDQo+IGRldGFpbHMgb2YgdGhlIGJsb2NrIGxheWVyLCB3aGljaCB3
-YXMgZnJhZ2lsZSBhbmQgc3Vic2VxdWVudGx5IGdvdA0KPiBicm9rZW4uIEZpeCBieSByZW1vdmlu
-ZyB0aGUgdXNlIG9mIGJsa19tcV90YWdzZXRfYnVzeV9pdGVyKCkgYW5kIGhhdmluZw0KPiB0aGUN
-Cj4gZHJpdmVyIGtlZXAgdHJhY2sgb2YgdGFzayBtYW5hZ2VtZW50IHJlcXVlc3RzLg0KPiANCj4g
-TGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDIxMDkyMjA5MTA1OS40MDQwLTEtDQo+
-IGFkcmlhbi5odW50ZXJAaW50ZWwuY29tDQo+IEZpeGVzOiAxMjM1ZmM1NjllMGIgKCJzY3NpOiB1
-ZnM6IGNvcmU6IEZpeCB0YXNrIG1hbmFnZW1lbnQgcmVxdWVzdA0KPiBjb21wbGV0aW9uIHRpbWVv
-dXQiKQ0KPiBGaXhlczogNjlhNmMyNjljMDk3ICgic2NzaTogdWZzOiBVc2UgYmxrX3tnZXQscHV0
-fV9yZXF1ZXN0KCkgdG8gYWxsb2NhdGUgYW5kDQo+IGZyZWUgVE1GcyIpDQo+IENjOiBzdGFibGVA
-dmdlci5rZXJuZWwub3JnDQo+IFRlc3RlZC1ieTogQmFydCBWYW4gQXNzY2hlIDxidmFuYXNzY2hl
-QGFjbS5vcmc+DQo+IFJldmlld2VkLWJ5OiBCYXJ0IFZhbiBBc3NjaGUgPGJ2YW5hc3NjaGVAYWNt
-Lm9yZz4NCj4gU2lnbmVkLW9mZi1ieTogQWRyaWFuIEh1bnRlciA8YWRyaWFuLmh1bnRlckBpbnRl
-bC5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IE1hcnRpbiBLLiBQZXRlcnNlbiA8bWFydGluLnBldGVy
-c2VuQG9yYWNsZS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IEdyZWcgS3JvYWgtSGFydG1hbiA8Z3Jl
-Z2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+DQo+IA0KPiAtLS0NCj4gIGRyaXZlcnMvc2NzaS91ZnMv
-dWZzaGNkLmMgfCAgIDU0ICsrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0NCj4gLS0tDQo+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5oIHwgICAgMQ0KPiAgMiBmaWxl
-cyBjaGFuZ2VkLCAyNiBpbnNlcnRpb25zKCspLCAyOSBkZWxldGlvbnMoLSkNCj4gDQo+IC0tLSBh
-L2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNo
-Y2QuYw0KPiBAQCAtNjEwNSwyNyArNjEwNSw2IEBAIHN0YXRpYyBpcnFyZXR1cm5fdCB1ZnNoY2Rf
-Y2hlY2tfZXJyb3JzKHMNCj4gIAlyZXR1cm4gcmV0dmFsOw0KPiAgfQ0KPiANCj4gLXN0cnVjdCBj
-dG1faW5mbyB7DQo+IC0Jc3RydWN0IHVmc19oYmEJKmhiYTsNCj4gLQl1bnNpZ25lZCBsb25nCXBl
-bmRpbmc7DQo+IC0JdW5zaWduZWQgaW50CW5jcGw7DQo+IC19Ow0KPiAtDQo+IC1zdGF0aWMgYm9v
-bCB1ZnNoY2RfY29tcGxfdG0oc3RydWN0IHJlcXVlc3QgKnJlcSwgdm9pZCAqcHJpdiwgYm9vbCBy
-ZXNlcnZlZCkNCj4gLXsNCj4gLQlzdHJ1Y3QgY3RtX2luZm8gKmNvbnN0IGNpID0gcHJpdjsNCj4g
-LQlzdHJ1Y3QgY29tcGxldGlvbiAqYzsNCj4gLQ0KPiAtCVdBUk5fT05fT05DRShyZXNlcnZlZCk7
-DQo+IC0JaWYgKHRlc3RfYml0KHJlcS0+dGFnLCAmY2ktPnBlbmRpbmcpKQ0KPiAtCQlyZXR1cm4g
-dHJ1ZTsNCj4gLQljaS0+bmNwbCsrOw0KPiAtCWMgPSByZXEtPmVuZF9pb19kYXRhOw0KPiAtCWlm
-IChjKQ0KPiAtCQljb21wbGV0ZShjKTsNCj4gLQlyZXR1cm4gdHJ1ZTsNCj4gLX0NCj4gLQ0KPiAg
-LyoqDQo+ICAgKiB1ZnNoY2RfdG1jX2hhbmRsZXIgLSBoYW5kbGUgdGFzayBtYW5hZ2VtZW50IGZ1
-bmN0aW9uIGNvbXBsZXRpb24NCj4gICAqIEBoYmE6IHBlciBhZGFwdGVyIGluc3RhbmNlDQo+IEBA
-IC02MTM2LDE0ICs2MTE1LDI0IEBAIHN0YXRpYyBib29sIHVmc2hjZF9jb21wbF90bShzdHJ1Y3Qg
-cmVxdWUNCj4gICAqLw0KPiAgc3RhdGljIGlycXJldHVybl90IHVmc2hjZF90bWNfaGFuZGxlcihz
-dHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KPiAgew0KPiAtCXN0cnVjdCByZXF1ZXN0X3F1ZXVlICpxID0g
-aGJhLT50bWZfcXVldWU7DQo+IC0Jc3RydWN0IGN0bV9pbmZvIGNpID0gew0KPiAtCQkuaGJhCSA9
-IGhiYSwNCj4gLQkJLnBlbmRpbmcgPSB1ZnNoY2RfcmVhZGwoaGJhLA0KPiBSRUdfVVRQX1RBU0tf
-UkVRX0RPT1JfQkVMTCksDQo+IC0JfTsNCj4gKwl1bnNpZ25lZCBsb25nIGZsYWdzLCBwZW5kaW5n
-LCBpc3N1ZWQ7DQo+ICsJaXJxcmV0dXJuX3QgcmV0ID0gSVJRX05PTkU7DQo+ICsJaW50IHRhZzsN
-Cj4gDQo+IC0JYmxrX21xX3RhZ3NldF9idXN5X2l0ZXIocS0+dGFnX3NldCwgdWZzaGNkX2NvbXBs
-X3RtLCAmY2kpOw0KPiAtCXJldHVybiBjaS5uY3BsID8gSVJRX0hBTkRMRUQgOiBJUlFfTk9ORTsN
-Cj4gKwlwZW5kaW5nID0gdWZzaGNkX3JlYWRsKGhiYSwgUkVHX1VUUF9UQVNLX1JFUV9ET09SX0JF
-TEwpOw0KPiArDQo+ICsJc3Bpbl9sb2NrX2lycXNhdmUoaGJhLT5ob3N0LT5ob3N0X2xvY2ssIGZs
-YWdzKTsNCj4gKwlpc3N1ZWQgPSBoYmEtPm91dHN0YW5kaW5nX3Rhc2tzICYgfnBlbmRpbmc7DQo+
-ICsJZm9yX2VhY2hfc2V0X2JpdCh0YWcsICZpc3N1ZWQsIGhiYS0+bnV0bXJzKSB7DQo+ICsJCXN0
-cnVjdCByZXF1ZXN0ICpyZXEgPSBoYmEtPnRtZl9ycXNbdGFnXTsNCj4gKwkJc3RydWN0IGNvbXBs
-ZXRpb24gKmMgPSByZXEtPmVuZF9pb19kYXRhOw0KPiArDQo+ICsJCWNvbXBsZXRlKGMpOw0KPiAr
-CQlyZXQgPSBJUlFfSEFORExFRDsNCj4gKwl9DQo+ICsJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSho
-YmEtPmhvc3QtPmhvc3RfbG9jaywgZmxhZ3MpOw0KPiArDQo+ICsJcmV0dXJuIHJldDsNCj4gIH0N
-Cj4gDQo+ICAvKioNCj4gQEAgLTYyNzMsOSArNjI2Miw5IEBAIHN0YXRpYyBpbnQgX191ZnNoY2Rf
-aXNzdWVfdG1fY21kKHN0cnVjdA0KPiAgCXVmc2hjZF9ob2xkKGhiYSwgZmFsc2UpOw0KPiANCj4g
-IAlzcGluX2xvY2tfaXJxc2F2ZShob3N0LT5ob3N0X2xvY2ssIGZsYWdzKTsNCj4gLQlibGtfbXFf
-c3RhcnRfcmVxdWVzdChyZXEpOw0KPiANCj4gIAl0YXNrX3RhZyA9IHJlcS0+dGFnOw0KPiArCWhi
-YS0+dG1mX3Jxc1tyZXEtPnRhZ10gPSByZXE7DQo+ICAJdHJlcS0+cmVxX2hlYWRlci5kd29yZF8w
-IHw9IGNwdV90b19iZTMyKHRhc2tfdGFnKTsNCj4gDQo+ICAJbWVtY3B5KGhiYS0+dXRtcmRsX2Jh
-c2VfYWRkciArIHRhc2tfdGFnLCB0cmVxLCBzaXplb2YoKnRyZXEpKTsNCj4gQEAgLTYzMTksNiAr
-NjMwOCw3IEBAIHN0YXRpYyBpbnQgX191ZnNoY2RfaXNzdWVfdG1fY21kKHN0cnVjdA0KPiAgCX0N
-Cj4gDQo+ICAJc3Bpbl9sb2NrX2lycXNhdmUoaGJhLT5ob3N0LT5ob3N0X2xvY2ssIGZsYWdzKTsN
-Cj4gKwloYmEtPnRtZl9ycXNbcmVxLT50YWddID0gTlVMTDsNCj4gIAlfX2NsZWFyX2JpdCh0YXNr
-X3RhZywgJmhiYS0+b3V0c3RhbmRpbmdfdGFza3MpOw0KPiAgCXNwaW5fdW5sb2NrX2lycXJlc3Rv
-cmUoaGJhLT5ob3N0LT5ob3N0X2xvY2ssIGZsYWdzKTsNCj4gDQo+IEBAIC05MjQ2LDYgKzkyMzYs
-MTIgQEAgaW50IHVmc2hjZF9pbml0KHN0cnVjdCB1ZnNfaGJhICpoYmEsIHZvaQ0KPiAgCQllcnIg
-PSBQVFJfRVJSKGhiYS0+dG1mX3F1ZXVlKTsNCj4gIAkJZ290byBmcmVlX3RtZl90YWdfc2V0Ow0K
-PiAgCX0NCj4gKwloYmEtPnRtZl9ycXMgPSBkZXZtX2tjYWxsb2MoaGJhLT5kZXYsIGhiYS0+bnV0
-bXJzLA0KPiArCQkJCSAgICBzaXplb2YoKmhiYS0+dG1mX3JxcyksIEdGUF9LRVJORUwpOw0KPiAr
-CWlmICghaGJhLT50bWZfcnFzKSB7DQo+ICsJCWVyciA9IC1FTk9NRU07DQo+ICsJCWdvdG8gZnJl
-ZV90bWZfcXVldWU7DQo+ICsJfQ0KPiANCj4gIAkvKiBSZXNldCB0aGUgYXR0YWNoZWQgZGV2aWNl
-ICovDQo+ICAJdWZzaGNkX3ZvcHNfZGV2aWNlX3Jlc2V0KGhiYSk7DQo+IC0tLSBhL2RyaXZlcnMv
-c2NzaS91ZnMvdWZzaGNkLmgNCj4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuaA0KPiBA
-QCAtNzMxLDYgKzczMSw3IEBAIHN0cnVjdCB1ZnNfaGJhIHsNCj4gDQo+ICAJc3RydWN0IGJsa19t
-cV90YWdfc2V0IHRtZl90YWdfc2V0Ow0KPiAgCXN0cnVjdCByZXF1ZXN0X3F1ZXVlICp0bWZfcXVl
-dWU7DQo+ICsJc3RydWN0IHJlcXVlc3QgKip0bWZfcnFzOw0KPiANCj4gIAlzdHJ1Y3QgdWljX2Nv
-bW1hbmQgKmFjdGl2ZV91aWNfY21kOw0KPiAgCXN0cnVjdCBtdXRleCB1aWNfY21kX211dGV4Ow0K
-PiANCg0K
+On Sat, Oct 09, 2021, Lai Jiangshan wrote:
+> On Tue, Oct 5, 2021 at 10:54 AM Kuppuswamy Sathyanarayanan
+> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+> 
+> >
+> > The entry paths do not access TD-shared memory, MMIO regions or use
+> > those specific MSRs, instructions, CPUID leaves that might generate #VE.
+> > In addition, all interrupts including NMIs are blocked by the hardware
+> > starting with #VE delivery until TDGETVEINFO is called.  This eliminates
+> > the chance of a #VE during the syscall gap or paranoid entry paths and
+> > simplifies #VE handling.
+
+Minor clarification: it eliminates the chance of a #VE during the syscall gap
+_if the VMM is benign_.  If the VMM is malicious, it can unmap and remap the
+syscall page to induce an EPT Violation #VE due to the page not being accepted.
+
+> Hello
+> 
+> If the reason is applied to #VE, I think it can be applied to SVM-ES's
+> #VC too.  (I wish the entry code for #VC to be simplified since I'm
+> moving some the asm entry code to C code)
+>
+> And I'm sorry I haven't read all the emails.
+> Has the question asked by Andy Lutomirski been answered in any emails?
+> 
+> https://lore.kernel.org/lkml/CALCETrU9XypKbj-TrXLB3CPW6=MZ__5ifLz0ckbB=c=Myegn9Q@mail.gmail.com/
+
+This question?
+
+  Can the hypervisor cause an already-accepted secure-EPT page to transition to
+  the unaccepted state?
+
+Yep.  I wrote the above before following the link, I should have guessed which
+question it was :-)
+
+IIRC, the proposed middle ground was to add a TDCALL and/or TDPARAMS setting that
+would allow the guest to opt-out of EPT Violation #VE due to page not accepted,
+and instead terminate the VM on such a condition.  The caveat is that that would
+require the kernel to never take an "page not accepted #VE" when doing lazy page
+acceptance, but that was deemed doable.
+
+That also raises the question of whether Andy's NAK applies to SEV-SNP without
+support for "Enhanced SYSCALL Behavior"[*], otherwise SEV-SNP has the same "#VC
+in syscall gap" attack.
+
+[*] https://www.amd.com/system/files/TechDocs/57115.pdf
