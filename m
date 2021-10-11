@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE7D4287A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC7A4287B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234436AbhJKHdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:33:49 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:48701 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231974AbhJKHdr (ORCPT
+        id S234516AbhJKHep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234502AbhJKHen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:33:47 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSVq65xhmz4xb7;
-        Mon, 11 Oct 2021 18:31:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633937507;
-        bh=SCPyOZEtiteoQfDJSQr511Ncjg8b28+HnVZHpvs35qo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dyx66GylUUJLC01nHRx9cBSDWiTWGJ6hz4B7Zni/vO5ciqebqrOoS60cOHB2X9+JM
-         htnj4F1FTOxwrwOAjaxQbQTIHQuBz/z5AfaBcIO2pFy2naSJT29SmXas95UQYjnXE1
-         85ZaRNEUiMngSPzoMM+vBJcTJQd9DdPW6xxwz1yHAoQSJc/R+Zt6PfV8r6WW2PA7aj
-         766lgERiYu2+8lNYaT7ABS59vNLNFFGZrER//sMu47XsMv+j9+q89JGluTsxsKfEhr
-         fPMvGzj/vttqEY8ZLxjF+U3nJlmRfreYLjwVEhJO30cBfOI7P9I7GpulwsKIxtXIVs
-         ZuwzDO1Gu7Bwg==
-Date:   Mon, 11 Oct 2021 18:31:45 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Daniel Micay <danielmicay@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the akpm-current tree
-Message-ID: <20211011183145.6ac3bef3@canb.auug.org.au>
+        Mon, 11 Oct 2021 03:34:43 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154EEC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:32:44 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id np13so12589311pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:32:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WmIH+gyLv1IEII2jV9ccpTyXH9cYgsrJ11N5wI46Cwk=;
+        b=XSShNGiojyLlUovr7IKaqfRGJpRi3a1nfwsAdlxge9m12kC+OTSVuy1GLR6B7pozzZ
+         2Rl6iMtuYWwkXbqErdqkCOJvgE8zZW/XFtcUZKKla8tOsX9oy/ysuNGtrIBm3LPm/3pj
+         ljSQ4C42U4hH0U4gjFtNtkTqGLjSJwRigBLVFxv/19xbaoD3RShtJVW0p7gSvxgnLDCH
+         8G1/J3WaWfZzg4blcTzvQSK09T4S0dE44kil/HQRxDmBVrYquEjoCJ5Zn9o63MRSDq+H
+         5Eg4UMBXurLYyREnHl+Gk3MdPR2OuJOUg6yEOzOwMX4+vKeO6Z4gkSCoUoJ9TwGaD9fX
+         dYWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WmIH+gyLv1IEII2jV9ccpTyXH9cYgsrJ11N5wI46Cwk=;
+        b=oAQ4YyrRWk+x6KSYVKJ4T0kF1RzZVPAzP75fW+tIlF9ip7ldnE68Lm7OE5/ETc7D73
+         3ztFG0QOFcxsLQBNbldeAUSZApwOLrRUxq3VnuoNCdqBi/6XWahtc6iaOjw7wYU80vrN
+         T6zmMuUjalgr5JIBCVMAFzP9MpmhAbLfFqJ+glXYW4hXOVT+d1j8Q3gT6HsEjbT6T9KU
+         J103+i+vgLz0oBhv0drAkW4VBjC4I4ZIPKzuBCUsUl/20CgjOXBH8QHUqPbdGkYgSu30
+         clfKZ69mHLmSY+wskXCucb9/vG/wR9QqhLw3guG7d/EQdaNXCLsfMRIEhN2x7R8wJOb4
+         No5A==
+X-Gm-Message-State: AOAM532XlaARQ3wLwxsr6C1g2W8IDiDiiY8GJu7IjNa/Cjonl90d0Wc5
+        SQSsqIl9k12grps4wQs0Jjk=
+X-Google-Smtp-Source: ABdhPJwVxRo9L4WpR4bARb+c1V+ea9O4L7NYFH2LqqvoQwP7QQE3Eju3POdetRvdkZn3Jow/cKvrJA==
+X-Received: by 2002:a17:90a:6b01:: with SMTP id v1mr29200238pjj.6.1633937563671;
+        Mon, 11 Oct 2021 00:32:43 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
+        by smtp.gmail.com with ESMTPSA id k13sm7207015pfc.197.2021.10.11.00.32.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 00:32:43 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 07:32:39 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Christoph Lameter <cl@gentwo.de>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm, slub: Use prefetchw instead of prefetch
+Message-ID: <20211011073239.GA63896@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20211008133602.4963-1-42.hyeyoo@gmail.com>
+ <alpine.DEB.2.22.394.2110110919050.130815@gentwo.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/b1XoT7P7Bmi/XTKG6E0Rx7Z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2110110919050.130815@gentwo.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/b1XoT7P7Bmi/XTKG6E0Rx7Z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 11, 2021 at 09:20:36AM +0200, Christoph Lameter wrote:
+> On Fri, 8 Oct 2021, Hyeonggon Yoo wrote:
+> 
+> > It's certain that an object will be not only read, but also
+> > written after allocation.
+> 
+> get_freepointer is used in multiple code path not only in allocation. It
+> is for example used when scanning through a freelist.
+> 
+> With this change all objects get needlessly dirtied and the cross cpu
+> cache contention is increased.
 
-Hi all,
+I didn't touch get_freepointer and there's
+only one caller of prefetch_freepointer.
 
-After merging the akpm-current tree, today's linux-next build (htmldocs)
-produced these warnings:
+My change was not adding additional prefetch on get_freepointer,
+but changing existing prefetch into prefetchw.
 
-include/linux/slab.h:577: warning: Function parameter or member '1' not des=
-cribed in '__alloc_size'
-include/linux/slab.h:577: warning: expecting prototype for kmalloc(). Proto=
-type was for __alloc_size() instead
-include/linux/slab.h:623: warning: Function parameter or member '1' not des=
-cribed in '__alloc_size'
-include/linux/slab.h:623: warning: Function parameter or member '2' not des=
-cribed in '__alloc_size'
-include/linux/slab.h:623: warning: expecting prototype for kmalloc_array().=
- Prototype was for __alloc_size() instead
-include/linux/slab.h:644: warning: Function parameter or member '2' not des=
-cribed in '__alloc_size'
-include/linux/slab.h:644: warning: Function parameter or member '3' not des=
-cribed in '__alloc_size'
-include/linux/slab.h:644: warning: expecting prototype for krealloc_array()=
-. Prototype was for __alloc_size() instead
-include/linux/slab.h:660: warning: Function parameter or member '1' not des=
-cribed in '__alloc_size'
-include/linux/slab.h:660: warning: Function parameter or member '2' not des=
-cribed in '__alloc_size'
-include/linux/slab.h:660: warning: expecting prototype for kcalloc(). Proto=
-type was for __alloc_size() instead
-include/linux/slab.h:723: warning: Function parameter or member '1' not des=
-cribed in '__alloc_size'
-include/linux/slab.h:723: warning: expecting prototype for kzalloc(). Proto=
-type was for __alloc_size() instead
-include/linux/slab.h:734: warning: Function parameter or member '1' not des=
-cribed in '__alloc_size'
-include/linux/slab.h:734: warning: expecting prototype for kzalloc_node(). =
-Prototype was for __alloc_size() instead
-include/linux/slab.h:1: warning: no structured comments found
+The prefetch was introcued by commit 0ad9500e16fe ("slub: prefetch next
+freelist pointer in slab_alloc()") that you ACKed in 2011.
 
-Introduced by commit
-
-  04ba82afbbf3 ("slab: add __alloc_size attributes for better bounds checki=
-ng")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/b1XoT7P7Bmi/XTKG6E0Rx7Z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFj6GEACgkQAVBC80lX
-0GxzYwgAnPMBM6zTtQPsn0fbvJVknX2DXmNZVGntJZpoC1VbRMB1R97BygYbDVze
-iqOqyqOzd5X0ekxMLMnX7qjriyHb6dWVcAXx+gwjBb4q0xB41GlG8NBqfatAbTG9
-NDYqak4sbPr+CzHKI9PmqnMMNb0upEnsdbBelWUeJ9eSi3AeXsuN9Ua8PnTAXEFK
-yNjGPX5V37hO8Q5eFUZd0Y43QbVy+PA7bDgqN0jgjiF3M9o6/Cdh8P0sp39obHh+
-KNmrGC0R8y3Xo/Q5vXPGgc/zPfvMotKv8KLj/CQIQeukVamkfTzEH665iV1pg4ac
-VOZZTJqZXWbAzFvjWW+7xLqNe5AsJg==
-=OPyt
------END PGP SIGNATURE-----
-
---Sig_/b1XoT7P7Bmi/XTKG6E0Rx7Z--
+Do you think removeing existing prefetch is better than changing it
+from prefetch to prefetchw?
