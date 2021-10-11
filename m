@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B9B428C0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6650F428C0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236394AbhJKLaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 07:30:09 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:22896 "EHLO
+        id S236410AbhJKLaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 07:30:11 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:16106 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236356AbhJKL36 (ORCPT
+        with ESMTP id S236363AbhJKLaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:29:58 -0400
+        Mon, 11 Oct 2021 07:30:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633951678; x=1665487678;
+  t=1633951680; x=1665487680;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=rUNzk6TIFLs7zjG6DIsoWGoRiw6L4nhGSRHkTEIf6IY=;
-  b=XQN2UtcQCZJKpNPt+dPt/WEmvPCo7a0D9r/uypUa4K4YTX1Eigqw0wER
-   dBn3BDy9ebbJLKqE0fX+Qz/0abddCy2u8ah3D3yz0vu/UibRMU+KpXLyt
-   Pk4uqNfCFus1pO4/UCyCiFZX9J6VX6++7Vx/N0A2ClIIWsoelRsv2+wr8
-   J9Lc//hL1Vyj9tGB8yKGcM0oF80LEukBKD9DqoKVTcPgHJthJKr0q3wZW
-   sXG1xyQMGuWILawSJcLcOqPTsWCprPiJK2ZOIRq7EAF2pWuHo9zELCZub
-   4oGAIZhqQhCLk34WKsqCq+AFxQOHg/2uxclWfcUJw1EC62wGB4YTlCY3A
-   A==;
-IronPort-SDR: oa1zIwt3XlOQ3l3m8Bu07v54+3n43bS4MuOdKFq8a7ogh0UYoBITjgF5cADQaVHKYSoE+vE+b1
- T1NI8mfjeyzdkp3MW0wPFoctDgrfetZN3DLE1PVicpYkhcpGOXSWFP+fQNtdY/U8NAzJ3FLGOx
- +pLtIc/+wojQSPq+t+kB633ZXqj3fbMBpKMvUQvrbLaVzN1kH3DhirRQ4Yrlvt3ytV82bVHbzE
- QDh6No8uDk49KLrCs5Y7xsbN5NTyjzq/tNEhjtc+NSxORbYzRKQ9mGpvGATEdfx9Bn3fWIU/yi
- W0LtVqKgwreSWILlHWmEQoey
+  bh=lSKdiOrxbun8N+a4R4QbmxvwI0kObncGgHB7kuDzTE0=;
+  b=rD2uwnlbK4z30qdfbzIvfCpxKYXrz5dTOXjFWu0oKCewImXwfK2ol9SC
+   Ky8ABgddVdis+EbIHkO1rZwSkJWvWeQdL47Rkbftw/EVcR2M0vcalmLUN
+   LfYAM8qDJOv6f5EeouopA4eDneJQp64/72dM1g22qQuoGfIh2zzU4rA4a
+   Kyd3gSMUBGFV8wfE93latkquBYdParFkCkRtqbXvg41xKogCofo0w+idt
+   ZEc2tY12BN7hnjxzIXCKnwEhLUpC/NnanU1f2O9CdUbpLNBXekcqLBILi
+   Ofg+P8fJTdc07DUMYW31MJsTVZX5dbv1F2gp93CcKjI7lA5aezOjQ4Rpu
+   Q==;
+IronPort-SDR: dqRHnkO/cAZUNVaN6bZg39WukJV+d0RyU0TZs3vmk5pSKKPJh5zfSgJ9pu/0b6UzHZFBAu5yz0
+ XBQE2Mh+dTOSIYs//+ubDjFIRpf6L8kO86PIiphnbZ8coBpTEHn5LO75y3UoyxQWM5/ssoDGLc
+ l6CP7KWv7l17RUEZwoKGEiKxBCsb5P1zyA0W+JE6F8iba2Y2eNNNPklvFsqZj9VzDl0UTEynhd
+ +iVyhFJP5p8nJOZEQ2sSMhJMGh/D0Be5oe7TgSiQV8rCTTGwLZ0PshzTJr3oCtzXa1XoWf6l7u
+ n1b8rngoB5GDGcmRym7RCI1G
 X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="147591054"
+   d="scan'208";a="132541728"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Oct 2021 04:27:57 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Oct 2021 04:27:59 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 11 Oct 2021 04:27:57 -0700
+ 15.1.2176.14; Mon, 11 Oct 2021 04:27:59 -0700
 Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 11 Oct 2021 04:27:55 -0700
+ 15.1.2176.14 via Frontend Transport; Mon, 11 Oct 2021 04:27:57 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -49,9 +49,9 @@ CC:     <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v5 11/15] clk: at91: clk-sam9x60-pll: add notifier for div part of PLL
-Date:   Mon, 11 Oct 2021 14:27:15 +0300
-Message-ID: <20211011112719.3951784-12-claudiu.beznea@microchip.com>
+Subject: [PATCH v5 12/15] clk: at91: clk-master: add notifier for divider
+Date:   Mon, 11 Oct 2021 14:27:16 +0300
+Message-ID: <20211011112719.3951784-13-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011112719.3951784-1-claudiu.beznea@microchip.com>
 References: <20211011112719.3951784-1-claudiu.beznea@microchip.com>
@@ -62,266 +62,524 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SAM9X60's PLL which is also part of SAMA7G5 is composed of 2 parts:
-one fractional part and one divider. On SAMA7G5 the CPU PLL could be
-changed at run-time to implement DVFS. The hardware clock tree on
-SAMA7G5 for CPU PLL is as follows:
+SAMA7G5 supports DVFS by changing cpuck. On SAMA7G5 mck0 shares the same
+parent with cpuck as seen in the following clock tree:
 
-                       +---- div1 ----------------> cpuck
+                       +----------> cpuck
                        |
-FRAC PLL ---> DIV PLL -+-> prescaler ---> div0 ---> mck0
+FRAC PLL ---> DIV PLL -+-> DIV ---> mck0
 
-The div1 block is not implemented in Linux; on prescaler block it has
-been discovered a bug on some scenarios and will be removed from Linux
-in next commits. Thus, the final clock tree that will be used in Linux
-will be as follows:
-
-                       +-----------> cpuck
-                       |
-FRAC PLL ---> DIV PLL -+-> div0 ---> mck0
-
-It has been proposed in [1] to not introduce a new CPUFreq driver but
-to overload the proper clock drivers with proper operation such that
-cpufreq-dt to be used. To accomplish this DIV PLL and div0 implement
-clock notifiers which applies safe dividers before FRAC PLL is changed.
-The current commit treats only the DIV PLL by adding a notifier that
-sets a safe divider on PRE_RATE_CHANGE events. The safe divider is
-provided by initialization clock code (sama7g5.c). The div0 is treated
-in next commits (to keep the changes as clean as possible).
-
-[1] https://lore.kernel.org/lkml/20210105104426.4tmgc2l3vyicwedd@vireshk-i7/
+mck0 could go b/w 32KHz and 200MHz on SAMA7G5. To avoid mck0 overclocking
+while changing FRAC PLL or DIV PLL the commit implements a notifier for
+mck0 which applies a safe divider to register (maximum value of the divider
+which is 5) on PRE_RATE_CHANGE events (such that changes on PLL to not
+overclock mck0) and sets the maximum allowed rate on POST_RATE_CHANGE
+events.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- drivers/clk/at91/clk-sam9x60-pll.c | 102 ++++++++++++++++++++++-------
- drivers/clk/at91/pmc.h             |   3 +-
- drivers/clk/at91/sam9x60.c         |   6 +-
- drivers/clk/at91/sama7g5.c         |  13 +++-
- 4 files changed, 95 insertions(+), 29 deletions(-)
+ drivers/clk/at91/at91rm9200.c  |   2 +-
+ drivers/clk/at91/at91sam9260.c |   2 +-
+ drivers/clk/at91/at91sam9g45.c |   2 +-
+ drivers/clk/at91/at91sam9n12.c |   2 +-
+ drivers/clk/at91/at91sam9rl.c  |   2 +-
+ drivers/clk/at91/at91sam9x5.c  |   2 +-
+ drivers/clk/at91/clk-master.c  | 244 +++++++++++++++++++++++----------
+ drivers/clk/at91/dt-compat.c   |   2 +-
+ drivers/clk/at91/pmc.h         |   2 +-
+ drivers/clk/at91/sama5d2.c     |   2 +-
+ drivers/clk/at91/sama5d3.c     |   2 +-
+ drivers/clk/at91/sama5d4.c     |   2 +-
+ drivers/clk/at91/sama7g5.c     |   2 +-
+ 13 files changed, 186 insertions(+), 82 deletions(-)
 
-diff --git a/drivers/clk/at91/clk-sam9x60-pll.c b/drivers/clk/at91/clk-sam9x60-pll.c
-index a73d7c96ce1d..d757003004cb 100644
---- a/drivers/clk/at91/clk-sam9x60-pll.c
-+++ b/drivers/clk/at91/clk-sam9x60-pll.c
-@@ -5,6 +5,7 @@
-  */
+diff --git a/drivers/clk/at91/at91rm9200.c b/drivers/clk/at91/at91rm9200.c
+index 428a6f4b9ebc..fff4fdda974f 100644
+--- a/drivers/clk/at91/at91rm9200.c
++++ b/drivers/clk/at91/at91rm9200.c
+@@ -152,7 +152,7 @@ static void __init at91rm9200_pmc_setup(struct device_node *np)
+ 					  "masterck_pres",
+ 					  &at91rm9200_master_layout,
+ 					  &rm9200_mck_characteristics,
+-					  &rm9200_mck_lock, CLK_SET_RATE_GATE);
++					  &rm9200_mck_lock, CLK_SET_RATE_GATE, 0);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
  
- #include <linux/bitfield.h>
-+#include <linux/clk.h>
+diff --git a/drivers/clk/at91/at91sam9260.c b/drivers/clk/at91/at91sam9260.c
+index b29843bea278..79802f864ee5 100644
+--- a/drivers/clk/at91/at91sam9260.c
++++ b/drivers/clk/at91/at91sam9260.c
+@@ -429,7 +429,7 @@ static void __init at91sam926x_pmc_setup(struct device_node *np,
+ 					  &at91rm9200_master_layout,
+ 					  data->mck_characteristics,
+ 					  &at91sam9260_mck_lock,
+-					  CLK_SET_RATE_GATE);
++					  CLK_SET_RATE_GATE, 0);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+diff --git a/drivers/clk/at91/at91sam9g45.c b/drivers/clk/at91/at91sam9g45.c
+index 15da0dfe3ef2..7ed984f8058c 100644
+--- a/drivers/clk/at91/at91sam9g45.c
++++ b/drivers/clk/at91/at91sam9g45.c
+@@ -164,7 +164,7 @@ static void __init at91sam9g45_pmc_setup(struct device_node *np)
+ 					  &at91rm9200_master_layout,
+ 					  &mck_characteristics,
+ 					  &at91sam9g45_mck_lock,
+-					  CLK_SET_RATE_GATE);
++					  CLK_SET_RATE_GATE, 0);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+diff --git a/drivers/clk/at91/at91sam9n12.c b/drivers/clk/at91/at91sam9n12.c
+index 7fe435f4b46b..63cc58944b00 100644
+--- a/drivers/clk/at91/at91sam9n12.c
++++ b/drivers/clk/at91/at91sam9n12.c
+@@ -191,7 +191,7 @@ static void __init at91sam9n12_pmc_setup(struct device_node *np)
+ 					  &at91sam9x5_master_layout,
+ 					  &mck_characteristics,
+ 					  &at91sam9n12_mck_lock,
+-					  CLK_SET_RATE_GATE);
++					  CLK_SET_RATE_GATE, 0);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+diff --git a/drivers/clk/at91/at91sam9rl.c b/drivers/clk/at91/at91sam9rl.c
+index ecbabf5162bd..4d4faf6c61d8 100644
+--- a/drivers/clk/at91/at91sam9rl.c
++++ b/drivers/clk/at91/at91sam9rl.c
+@@ -132,7 +132,7 @@ static void __init at91sam9rl_pmc_setup(struct device_node *np)
+ 					  "masterck_pres",
+ 					  &at91rm9200_master_layout,
+ 					  &sam9rl_mck_characteristics,
+-					  &sam9rl_mck_lock, CLK_SET_RATE_GATE);
++					  &sam9rl_mck_lock, CLK_SET_RATE_GATE, 0);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+diff --git a/drivers/clk/at91/at91sam9x5.c b/drivers/clk/at91/at91sam9x5.c
+index 5cce48c64ea2..bd8007b4f3e0 100644
+--- a/drivers/clk/at91/at91sam9x5.c
++++ b/drivers/clk/at91/at91sam9x5.c
+@@ -210,7 +210,7 @@ static void __init at91sam9x5_pmc_setup(struct device_node *np,
+ 					  "masterck_pres",
+ 					  &at91sam9x5_master_layout,
+ 					  &mck_characteristics, &mck_lock,
+-					  CLK_SET_RATE_GATE);
++					  CLK_SET_RATE_GATE, 0);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
+ 
+diff --git a/drivers/clk/at91/clk-master.c b/drivers/clk/at91/clk-master.c
+index e67bcd03a827..b2d0a7f4f7f9 100644
+--- a/drivers/clk/at91/clk-master.c
++++ b/drivers/clk/at91/clk-master.c
+@@ -5,6 +5,7 @@
+ 
  #include <linux/clk-provider.h>
  #include <linux/clkdev.h>
++#include <linux/clk.h>
  #include <linux/clk/at91_pmc.h>
-@@ -47,12 +48,15 @@ struct sam9x60_div {
- 	struct sam9x60_pll_core core;
- 	struct at91_clk_pms pms;
+ #include <linux/of.h>
+ #include <linux/mfd/syscon.h>
+@@ -36,8 +37,12 @@ struct clk_master {
+ 	u8 id;
+ 	u8 parent;
  	u8 div;
-+	u8 safe_div;
++	u32 safe_div;
  };
  
- #define to_sam9x60_pll_core(hw)	container_of(hw, struct sam9x60_pll_core, hw)
- #define to_sam9x60_frac(core)	container_of(core, struct sam9x60_frac, core)
- #define to_sam9x60_div(core)	container_of(core, struct sam9x60_div, core)
- 
-+static struct sam9x60_div *notifier_div;
++/* MCK div reference to be used by notifier. */
++static struct clk_master *master_div;
 +
- static inline bool sam9x60_pll_ready(struct regmap *regmap, int id)
+ static inline bool clk_master_ready(struct clk_master *master)
  {
- 	unsigned int status;
-@@ -329,6 +333,26 @@ static const struct clk_ops sam9x60_frac_pll_ops_chg = {
- 	.restore_context = sam9x60_frac_pll_restore_context,
+ 	unsigned int bit = master->id ? AT91_PMC_MCKXRDY : AT91_PMC_MCKRDY;
+@@ -153,107 +158,81 @@ static const struct clk_ops master_div_ops = {
+ 	.restore_context = clk_master_div_restore_context,
  };
  
-+/* This function should be called with spinlock acquired. */
-+static void sam9x60_div_pll_set_div(struct sam9x60_pll_core *core, u32 div,
-+				    bool enable)
-+{
-+	struct regmap *regmap = core->regmap;
-+	u32 ena_msk = enable ? core->layout->endiv_mask : 0;
-+	u32 ena_val = enable ? (1 << core->layout->endiv_shift) : 0;
-+
-+	regmap_update_bits(regmap, AT91_PMC_PLL_CTRL0,
-+			   core->layout->div_mask | ena_msk,
-+			   (div << core->layout->div_shift) | ena_val);
-+
-+	regmap_update_bits(regmap, AT91_PMC_PLL_UPDT,
-+			   AT91_PMC_PLL_UPDT_UPDATE | AT91_PMC_PLL_UPDT_ID_MSK,
-+			   AT91_PMC_PLL_UPDT_UPDATE | core->id);
-+
-+	while (!sam9x60_pll_ready(regmap, core->id))
-+		cpu_relax();
-+}
-+
- static int sam9x60_div_pll_set(struct sam9x60_pll_core *core)
+-static int clk_master_div_set_rate(struct clk_hw *hw, unsigned long rate,
+-				   unsigned long parent_rate)
++/* This function must be called with lock acquired. */
++static int clk_master_div_set(struct clk_master *master,
++			      unsigned long parent_rate, int div)
  {
- 	struct sam9x60_div *div = to_sam9x60_div(core);
-@@ -346,17 +370,7 @@ static int sam9x60_div_pll_set(struct sam9x60_pll_core *core)
- 	if (!!(val & core->layout->endiv_mask) && cdiv == div->div)
- 		goto unlock;
+-	struct clk_master *master = to_clk_master(hw);
+ 	const struct clk_master_characteristics *characteristics =
+ 						master->characteristics;
+-	unsigned long flags;
+-	unsigned int mckr, tmp;
+-	int div, i;
++	unsigned long rate = parent_rate;
++	unsigned int max_div = 0, div_index = 0, max_div_index = 0;
++	unsigned int i, mckr, tmp;
+ 	int ret;
  
--	regmap_update_bits(regmap, AT91_PMC_PLL_CTRL0,
--			   core->layout->div_mask | core->layout->endiv_mask,
--			   (div->div << core->layout->div_shift) |
--			   (1 << core->layout->endiv_shift));
+-	div = DIV_ROUND_CLOSEST(parent_rate, rate);
+-	if (div > ARRAY_SIZE(characteristics->divisors))
+-		return -EINVAL;
 -
--	regmap_update_bits(regmap, AT91_PMC_PLL_UPDT,
--			   AT91_PMC_PLL_UPDT_UPDATE | AT91_PMC_PLL_UPDT_ID_MSK,
--			   AT91_PMC_PLL_UPDT_UPDATE | core->id);
--
--	while (!sam9x60_pll_ready(regmap, core->id))
--		cpu_relax();
-+	sam9x60_div_pll_set_div(core, div->div, 1);
+ 	for (i = 0; i < ARRAY_SIZE(characteristics->divisors); i++) {
+ 		if (!characteristics->divisors[i])
+ 			break;
  
- unlock:
- 	spin_unlock_irqrestore(core->lock, flags);
-@@ -502,16 +516,7 @@ static int sam9x60_div_pll_set_rate_chg(struct clk_hw *hw, unsigned long rate,
- 	if (cdiv == div->div)
- 		goto unlock;
+-		if (div == characteristics->divisors[i]) {
+-			div = i;
+-			break;
++		if (div == characteristics->divisors[i])
++			div_index = i;
++
++		if (max_div < characteristics->divisors[i]) {
++			max_div = characteristics->divisors[i];
++			max_div_index = i;
+ 		}
+ 	}
  
--	regmap_update_bits(regmap, AT91_PMC_PLL_CTRL0,
--			   core->layout->div_mask,
--			   (div->div << core->layout->div_shift));
--
--	regmap_update_bits(regmap, AT91_PMC_PLL_UPDT,
--			   AT91_PMC_PLL_UPDT_UPDATE | AT91_PMC_PLL_UPDT_ID_MSK,
--			   AT91_PMC_PLL_UPDT_UPDATE | core->id);
--
--	while (!sam9x60_pll_ready(regmap, core->id))
--		cpu_relax();
-+	sam9x60_div_pll_set_div(core, div->div, 0);
+-	if (i == ARRAY_SIZE(characteristics->divisors))
+-		return -EINVAL;
++	if (div > max_div)
++		div_index = max_div_index;
  
- unlock:
- 	spin_unlock_irqrestore(core->lock, irqflags);
-@@ -538,6 +543,48 @@ static void sam9x60_div_pll_restore_context(struct clk_hw *hw)
- 		sam9x60_div_pll_set(core);
+-	spin_lock_irqsave(master->lock, flags);
+ 	ret = regmap_read(master->regmap, master->layout->offset, &mckr);
+ 	if (ret)
+-		goto unlock;
++		return ret;
+ 
+ 	mckr &= master->layout->mask;
+ 	tmp = (mckr >> MASTER_DIV_SHIFT) & MASTER_DIV_MASK;
+-	if (tmp == div)
+-		goto unlock;
++	if (tmp == div_index)
++		return 0;
++
++	rate /= characteristics->divisors[div_index];
++	if (rate < characteristics->output.min)
++		pr_warn("master clk div is underclocked");
++	else if (rate > characteristics->output.max)
++		pr_warn("master clk div is overclocked");
+ 
+ 	mckr &= ~(MASTER_DIV_MASK << MASTER_DIV_SHIFT);
+-	mckr |= (div << MASTER_DIV_SHIFT);
++	mckr |= (div_index << MASTER_DIV_SHIFT);
+ 	ret = regmap_write(master->regmap, master->layout->offset, mckr);
+ 	if (ret)
+-		goto unlock;
++		return ret;
+ 
+ 	while (!clk_master_ready(master))
+ 		cpu_relax();
+-unlock:
+-	spin_unlock_irqrestore(master->lock, flags);
++
++	master->div = characteristics->divisors[div_index];
+ 
+ 	return 0;
  }
  
-+static int sam9x60_div_pll_notifier_fn(struct notifier_block *notifier,
-+				       unsigned long code, void *data)
+-static int clk_master_div_determine_rate(struct clk_hw *hw,
+-					 struct clk_rate_request *req)
++static unsigned long clk_master_div_recalc_rate_chg(struct clk_hw *hw,
++						    unsigned long parent_rate)
+ {
+ 	struct clk_master *master = to_clk_master(hw);
+-	const struct clk_master_characteristics *characteristics =
+-						master->characteristics;
+-	struct clk_hw *parent;
+-	unsigned long parent_rate, tmp_rate, best_rate = 0;
+-	int i, best_diff = INT_MIN, tmp_diff;
+-
+-	parent = clk_hw_get_parent(hw);
+-	if (!parent)
+-		return -EINVAL;
+-
+-	parent_rate = clk_hw_get_rate(parent);
+-	if (!parent_rate)
+-		return -EINVAL;
+-
+-	for (i = 0; i < ARRAY_SIZE(characteristics->divisors); i++) {
+-		if (!characteristics->divisors[i])
+-			break;
+ 
+-		tmp_rate = DIV_ROUND_CLOSEST_ULL(parent_rate,
+-						 characteristics->divisors[i]);
+-		tmp_diff = abs(tmp_rate - req->rate);
+-
+-		if (!best_rate || best_diff > tmp_diff) {
+-			best_diff = tmp_diff;
+-			best_rate = tmp_rate;
+-		}
+-
+-		if (!best_diff)
+-			break;
+-	}
+-
+-	req->best_parent_rate = best_rate;
+-	req->best_parent_hw = parent;
+-	req->rate = best_rate;
+-
+-	return 0;
++	return DIV_ROUND_CLOSEST_ULL(parent_rate, master->div);
+ }
+ 
+ static void clk_master_div_restore_context_chg(struct clk_hw *hw)
+ {
+ 	struct clk_master *master = to_clk_master(hw);
++	unsigned long flags;
+ 	int ret;
+ 
+-	ret = clk_master_div_set_rate(hw, master->pms.rate,
+-				      master->pms.parent_rate);
++	spin_lock_irqsave(master->lock, flags);
++	ret = clk_master_div_set(master, master->pms.parent_rate,
++				 DIV_ROUND_CLOSEST(master->pms.parent_rate,
++						   master->pms.rate));
++	spin_unlock_irqrestore(master->lock, flags);
+ 	if (ret)
+ 		pr_warn("Failed to restore MCK DIV clock\n");
+ }
+@@ -261,13 +240,116 @@ static void clk_master_div_restore_context_chg(struct clk_hw *hw)
+ static const struct clk_ops master_div_ops_chg = {
+ 	.prepare = clk_master_prepare,
+ 	.is_prepared = clk_master_is_prepared,
+-	.recalc_rate = clk_master_div_recalc_rate,
+-	.determine_rate = clk_master_div_determine_rate,
+-	.set_rate = clk_master_div_set_rate,
++	.recalc_rate = clk_master_div_recalc_rate_chg,
+ 	.save_context = clk_master_div_save_context,
+ 	.restore_context = clk_master_div_restore_context_chg,
+ };
+ 
++static int clk_master_div_notifier_fn(struct notifier_block *notifier,
++				      unsigned long code, void *data)
 +{
-+	struct sam9x60_div *div = notifier_div;
-+	struct sam9x60_pll_core core = div->core;
-+	struct regmap *regmap = core.regmap;
-+	unsigned long irqflags;
-+	u32 val, cdiv;
-+	int ret = NOTIFY_DONE;
++	const struct clk_master_characteristics *characteristics =
++						master_div->characteristics;
++	struct clk_notifier_data *cnd = data;
++	unsigned long flags, new_parent_rate, new_rate;
++	unsigned int mckr, div, new_div = 0;
++	int ret, i;
++	long tmp_diff;
++	long best_diff = -1;
 +
-+	if (code != PRE_RATE_CHANGE)
-+		return ret;
++	spin_lock_irqsave(master_div->lock, flags);
++	switch (code) {
++	case PRE_RATE_CHANGE:
++		/*
++		 * We want to avoid any overclocking of MCK DIV domain. To do
++		 * this we set a safe divider (the underclocking is not of
++		 * interest as we can go as low as 32KHz). The relation
++		 * b/w this clock and its parents are as follows:
++		 *
++		 * FRAC PLL -> DIV PLL -> MCK DIV
++		 *
++		 * With the proper safe divider we should be good even with FRAC
++		 * PLL at its maximum value.
++		 */
++		ret = regmap_read(master_div->regmap, master_div->layout->offset,
++				  &mckr);
++		if (ret) {
++			ret = NOTIFY_STOP_MASK;
++			goto unlock;
++		}
 +
-+	/*
-+	 * We switch to safe divider to avoid overclocking of other domains
-+	 * feed by us while the frac PLL (our parent) is changed.
-+	 */
-+	div->div = div->safe_div;
++		mckr &= master_div->layout->mask;
++		div = (mckr >> MASTER_DIV_SHIFT) & MASTER_DIV_MASK;
 +
-+	spin_lock_irqsave(core.lock, irqflags);
-+	regmap_update_bits(regmap, AT91_PMC_PLL_UPDT, AT91_PMC_PLL_UPDT_ID_MSK,
-+			   core.id);
-+	regmap_read(regmap, AT91_PMC_PLL_CTRL0, &val);
-+	cdiv = (val & core.layout->div_mask) >> core.layout->div_shift;
++		/* Switch to safe divider. */
++		clk_master_div_set(master_div,
++				   cnd->old_rate * characteristics->divisors[div],
++				   master_div->safe_div);
++		break;
 +
-+	/* Stop if nothing changed. */
-+	if (cdiv == div->safe_div)
-+		goto unlock;
++	case POST_RATE_CHANGE:
++		/*
++		 * At this point we want to restore MCK DIV domain to its maximum
++		 * allowed rate.
++		 */
++		ret = regmap_read(master_div->regmap, master_div->layout->offset,
++				  &mckr);
++		if (ret) {
++			ret = NOTIFY_STOP_MASK;
++			goto unlock;
++		}
 +
-+	sam9x60_div_pll_set_div(&core, div->div, 0);
-+	ret = NOTIFY_OK;
++		mckr &= master_div->layout->mask;
++		div = (mckr >> MASTER_DIV_SHIFT) & MASTER_DIV_MASK;
++		new_parent_rate = cnd->new_rate * characteristics->divisors[div];
++
++		for (i = 0; i < ARRAY_SIZE(characteristics->divisors); i++) {
++			if (!characteristics->divisors[i])
++				break;
++
++			new_rate = DIV_ROUND_CLOSEST_ULL(new_parent_rate,
++							 characteristics->divisors[i]);
++
++			tmp_diff = characteristics->output.max - new_rate;
++			if (tmp_diff < 0)
++				continue;
++
++			if (best_diff < 0 || best_diff > tmp_diff) {
++				new_div = characteristics->divisors[i];
++				best_diff = tmp_diff;
++			}
++
++			if (!tmp_diff)
++				break;
++		}
++
++		if (!new_div) {
++			ret = NOTIFY_STOP_MASK;
++			goto unlock;
++		}
++
++		/* Update the div to preserve MCK DIV clock rate. */
++		clk_master_div_set(master_div, new_parent_rate,
++				   new_div);
++
++		ret = NOTIFY_OK;
++		break;
++
++	default:
++		ret = NOTIFY_DONE;
++		break;
++	}
 +
 +unlock:
-+	spin_unlock_irqrestore(core.lock, irqflags);
++	spin_unlock_irqrestore(master_div->lock, flags);
 +
 +	return ret;
 +}
 +
-+static struct notifier_block sam9x60_div_pll_notifier = {
-+	.notifier_call = sam9x60_div_pll_notifier_fn,
++static struct notifier_block clk_master_div_notifier = {
++	.notifier_call = clk_master_div_notifier_fn,
 +};
 +
- static const struct clk_ops sam9x60_div_pll_ops = {
- 	.prepare = sam9x60_div_pll_prepare,
- 	.unprepare = sam9x60_div_pll_unprepare,
-@@ -647,7 +694,8 @@ struct clk_hw * __init
- sam9x60_clk_register_div_pll(struct regmap *regmap, spinlock_t *lock,
- 			     const char *name, const char *parent_name, u8 id,
- 			     const struct clk_pll_characteristics *characteristics,
--			     const struct clk_pll_layout *layout, u32 flags)
-+			     const struct clk_pll_layout *layout, u32 flags,
-+			     u32 safe_div)
- {
- 	struct sam9x60_div *div;
+ static void clk_sama7g5_master_best_diff(struct clk_rate_request *req,
+ 					 struct clk_hw *parent,
+ 					 unsigned long parent_rate,
+@@ -496,6 +578,8 @@ at91_clk_register_master_internal(struct regmap *regmap,
+ 	struct clk_master *master;
+ 	struct clk_init_data init;
  	struct clk_hw *hw;
-@@ -656,9 +704,13 @@ sam9x60_clk_register_div_pll(struct regmap *regmap, spinlock_t *lock,
- 	unsigned int val;
++	unsigned int mckr;
++	unsigned long irqflags;
  	int ret;
  
--	if (id > PLL_MAX_ID || !lock)
-+	/* We only support one changeable PLL. */
-+	if (id > PLL_MAX_ID || !lock || (safe_div && notifier_div))
- 		return ERR_PTR(-EINVAL);
+ 	if (!name || !num_parents || !parent_names || !lock)
+@@ -518,6 +602,16 @@ at91_clk_register_master_internal(struct regmap *regmap,
+ 	master->chg_pid = chg_pid;
+ 	master->lock = lock;
  
-+	if (safe_div >= PLL_DIV_MAX)
-+		safe_div = PLL_DIV_MAX - 1;
++	if (ops == &master_div_ops_chg) {
++		spin_lock_irqsave(master->lock, irqflags);
++		regmap_read(master->regmap, master->layout->offset, &mckr);
++		spin_unlock_irqrestore(master->lock, irqflags);
 +
- 	div = kzalloc(sizeof(*div), GFP_KERNEL);
- 	if (!div)
- 		return ERR_PTR(-ENOMEM);
-@@ -678,6 +730,7 @@ sam9x60_clk_register_div_pll(struct regmap *regmap, spinlock_t *lock,
- 	div->core.layout = layout;
- 	div->core.regmap = regmap;
- 	div->core.lock = lock;
-+	div->safe_div = safe_div;
- 
- 	spin_lock_irqsave(div->core.lock, irqflags);
- 
-@@ -693,6 +746,9 @@ sam9x60_clk_register_div_pll(struct regmap *regmap, spinlock_t *lock,
++		mckr &= layout->mask;
++		mckr = (mckr >> MASTER_DIV_SHIFT) & MASTER_DIV_MASK;
++		master->div = characteristics->divisors[mckr];
++	}
++
+ 	hw = &master->hw;
+ 	ret = clk_hw_register(NULL, &master->hw);
  	if (ret) {
- 		kfree(div);
- 		hw = ERR_PTR(ret);
-+	} else if (div->safe_div) {
-+		notifier_div = div;
-+		clk_notifier_register(hw->clk, &sam9x60_div_pll_notifier);
- 	}
+@@ -554,19 +648,29 @@ at91_clk_register_master_div(struct regmap *regmap,
+ 		const char *name, const char *parent_name,
+ 		const struct clk_master_layout *layout,
+ 		const struct clk_master_characteristics *characteristics,
+-		spinlock_t *lock, u32 flags)
++		spinlock_t *lock, u32 flags, u32 safe_div)
+ {
+ 	const struct clk_ops *ops;
++	struct clk_hw *hw;
  
- 	return hw;
+ 	if (flags & CLK_SET_RATE_GATE)
+ 		ops = &master_div_ops;
+ 	else
+ 		ops = &master_div_ops_chg;
+ 
+-	return at91_clk_register_master_internal(regmap, name, 1,
+-						 &parent_name, layout,
+-						 characteristics, ops,
+-						 lock, flags, -EINVAL);
++	hw = at91_clk_register_master_internal(regmap, name, 1,
++					       &parent_name, layout,
++					       characteristics, ops,
++					       lock, flags, -EINVAL);
++
++	if (!IS_ERR(hw) && safe_div) {
++		master_div = to_clk_master(hw);
++		master_div->safe_div = safe_div;
++		clk_notifier_register(hw->clk,
++				      &clk_master_div_notifier);
++	}
++
++	return hw;
+ }
+ 
+ static unsigned long
+diff --git a/drivers/clk/at91/dt-compat.c b/drivers/clk/at91/dt-compat.c
+index a97b99c2dc12..ca2dbb65b9df 100644
+--- a/drivers/clk/at91/dt-compat.c
++++ b/drivers/clk/at91/dt-compat.c
+@@ -399,7 +399,7 @@ of_at91_clk_master_setup(struct device_node *np,
+ 
+ 	hw = at91_clk_register_master_div(regmap, name, "masterck_pres",
+ 					  layout, characteristics,
+-					  &mck_lock, CLK_SET_RATE_GATE);
++					  &mck_lock, CLK_SET_RATE_GATE, 0);
+ 	if (IS_ERR(hw))
+ 		goto out_free_characteristics;
+ 
 diff --git a/drivers/clk/at91/pmc.h b/drivers/clk/at91/pmc.h
-index 45df094498ce..207ecccef29f 100644
+index 207ecccef29f..3a1bf6194c28 100644
 --- a/drivers/clk/at91/pmc.h
 +++ b/drivers/clk/at91/pmc.h
-@@ -214,7 +214,8 @@ struct clk_hw * __init
- sam9x60_clk_register_div_pll(struct regmap *regmap, spinlock_t *lock,
- 			     const char *name, const char *parent_name, u8 id,
- 			     const struct clk_pll_characteristics *characteristics,
--			     const struct clk_pll_layout *layout, u32 flags);
-+			     const struct clk_pll_layout *layout, u32 flags,
-+			     u32 safe_div);
+@@ -182,7 +182,7 @@ at91_clk_register_master_div(struct regmap *regmap, const char *name,
+ 			     const char *parent_names,
+ 			     const struct clk_master_layout *layout,
+ 			     const struct clk_master_characteristics *characteristics,
+-			     spinlock_t *lock, u32 flags);
++			     spinlock_t *lock, u32 flags, u32 safe_div);
  
  struct clk_hw * __init
- sam9x60_clk_register_frac_pll(struct regmap *regmap, spinlock_t *lock,
-diff --git a/drivers/clk/at91/sam9x60.c b/drivers/clk/at91/sam9x60.c
-index 5f6fa89571b7..5c264185f261 100644
---- a/drivers/clk/at91/sam9x60.c
-+++ b/drivers/clk/at91/sam9x60.c
-@@ -242,7 +242,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
- 					    * This feeds CPU. It should not
- 					    * be disabled.
- 					    */
--					  CLK_IS_CRITICAL | CLK_SET_RATE_GATE);
-+					  CLK_IS_CRITICAL | CLK_SET_RATE_GATE, 0);
+ at91_clk_sama7g5_register_master(struct regmap *regmap,
+diff --git a/drivers/clk/at91/sama5d2.c b/drivers/clk/at91/sama5d2.c
+index 3d1f78176c3e..d027294a0089 100644
+--- a/drivers/clk/at91/sama5d2.c
++++ b/drivers/clk/at91/sama5d2.c
+@@ -249,7 +249,7 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
+ 					  "masterck_pres",
+ 					  &at91sam9x5_master_layout,
+ 					  &mck_characteristics, &mck_lock,
+-					  CLK_SET_RATE_GATE);
++					  CLK_SET_RATE_GATE, 0);
  	if (IS_ERR(hw))
  		goto err_free;
  
-@@ -260,7 +260,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
- 					  &pll_div_layout,
- 					  CLK_SET_RATE_GATE |
- 					  CLK_SET_PARENT_GATE |
--					  CLK_SET_RATE_PARENT);
-+					  CLK_SET_RATE_PARENT, 0);
+diff --git a/drivers/clk/at91/sama5d3.c b/drivers/clk/at91/sama5d3.c
+index d376257807d2..339d0f382ff0 100644
+--- a/drivers/clk/at91/sama5d3.c
++++ b/drivers/clk/at91/sama5d3.c
+@@ -184,7 +184,7 @@ static void __init sama5d3_pmc_setup(struct device_node *np)
+ 					  "masterck_pres",
+ 					  &at91sam9x5_master_layout,
+ 					  &mck_characteristics, &mck_lock,
+-					  CLK_SET_RATE_GATE);
++					  CLK_SET_RATE_GATE, 0);
  	if (IS_ERR(hw))
  		goto err_free;
  
-@@ -279,7 +279,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
- 	hw = at91_clk_register_master_div(regmap, "masterck_div",
- 					  "masterck_pres", &sam9x60_master_layout,
+diff --git a/drivers/clk/at91/sama5d4.c b/drivers/clk/at91/sama5d4.c
+index 5cbaac68da44..4af75b1e39e9 100644
+--- a/drivers/clk/at91/sama5d4.c
++++ b/drivers/clk/at91/sama5d4.c
+@@ -199,7 +199,7 @@ static void __init sama5d4_pmc_setup(struct device_node *np)
+ 					  "masterck_pres",
+ 					  &at91sam9x5_master_layout,
  					  &mck_characteristics, &mck_lock,
 -					  CLK_SET_RATE_GATE);
 +					  CLK_SET_RATE_GATE, 0);
@@ -329,50 +587,18 @@ index 5f6fa89571b7..5c264185f261 100644
  		goto err_free;
  
 diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
-index 970135e19a75..ae52c10af040 100644
+index ae52c10af040..c66bde6f7b47 100644
 --- a/drivers/clk/at91/sama7g5.c
 +++ b/drivers/clk/at91/sama7g5.c
-@@ -127,6 +127,8 @@ static const struct clk_pll_characteristics pll_characteristics = {
-  * @t:		clock type
-  * @f:		clock flags
-  * @eid:	export index in sama7g5->chws[] array
-+ * @safe_div:	intermediate divider need to be set on PRE_RATE_CHANGE
-+ *		notification
-  */
- static const struct {
- 	const char *n;
-@@ -136,6 +138,7 @@ static const struct {
- 	unsigned long f;
- 	u8 t;
- 	u8 eid;
-+	u8 safe_div;
- } sama7g5_plls[][PLL_ID_MAX] = {
- 	[PLL_ID_CPU] = {
- 		{ .n = "cpupll_fracck",
-@@ -156,7 +159,12 @@ static const struct {
- 		  .t = PLL_TYPE_DIV,
- 		   /* This feeds CPU. It should not be disabled. */
- 		  .f = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
--		  .eid = PMC_CPUPLL, },
-+		  .eid = PMC_CPUPLL,
-+		  /*
-+		   * Safe div=15 should be safe even for switching b/w 1GHz and
-+		   * 90MHz (frac pll might go up to 1.2GHz).
-+		   */
-+		  .safe_div = 15, },
- 	},
+@@ -1003,7 +1003,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
  
- 	[PLL_ID_SYS] = {
-@@ -967,7 +975,8 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
- 					sama7g5_plls[i][j].p, i,
- 					sama7g5_plls[i][j].c,
- 					sama7g5_plls[i][j].l,
--					sama7g5_plls[i][j].f);
-+					sama7g5_plls[i][j].f,
-+					sama7g5_plls[i][j].safe_div);
- 				break;
+ 	hw = at91_clk_register_master_div(regmap, "mck0", "cpuck",
+ 					  &mck0_layout, &mck0_characteristics,
+-					  &pmc_mck0_lock, 0);
++					  &pmc_mck0_lock, CLK_GET_RATE_NOCACHE, 5);
+ 	if (IS_ERR(hw))
+ 		goto err_free;
  
- 			default:
 -- 
 2.25.1
 
