@@ -2,128 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A206428C5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4F9428C56
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236164AbhJKLvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 07:51:45 -0400
-Received: from mga09.intel.com ([134.134.136.24]:53092 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234279AbhJKLvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:51:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="226755387"
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="226755387"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 04:49:44 -0700
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="479823875"
-Received: from acleivam-mobl1.amr.corp.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.249.40.144])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 04:49:42 -0700
-From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To:     apw@canonical.com, joe@perches.com
-Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] checkpatch: get default codespell dictionary path from package location
-Date:   Mon, 11 Oct 2021 14:49:52 +0300
-Message-Id: <20211011114952.26145-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S233144AbhJKLuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 07:50:22 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14324 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231659AbhJKLuS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 07:50:18 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HScPX2bwVz906G;
+        Mon, 11 Oct 2021 19:43:28 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 19:48:16 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.61) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 19:48:16 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <rostedt@goodmis.org>, <mingo@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH] tracing: save cmdline only when task does not exist in savecmd for optimization
+Date:   Mon, 11 Oct 2021 19:50:18 +0800
+Message-ID: <20211011115018.88948-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.30.GIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.61]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The standard location of dictionary.txt is under codespell's package, on
-my machine atm (codespell 2.1, Artix Linux):
-/usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
+commit 85f726a35e504418 use strncpy instead of memcpy when copying comm,
+on ARM64 machine, this commit causes performance degradation.
 
-Since we enable the codespell by default for SOF I have constant:
-No codespell typos will be found - \
-file '/usr/share/codespell/dictionary.txt': No such file or directory
+For the task that already exists in savecmd, it is unnecessary to call
+set_cmdline to execute strncpy once, run set_cmdline only if the task does
+not exist in savecmd.
 
-The patch proposes to try to fix up the path following the recommendation
-found here:
-https://github.com/codespell-project/codespell/issues/1540
+I have written an example (which is an extreme case) in which trace sched switch
+is invoked for 1000 times, as shown in the following:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+  for (int i = 0; i < 1000; i++) {
+          trace_sched_switch(true, current, current);
+ }
+
+On ARM64 machine, compare the data before and after the optimization:
++---------------------+------------------------------+------------------------+
+|                     | Total number of instructions | Total number of cycles |
++---------------------+------------------------------+------------------------+
+| Before optimization |           1107367            |          658491        |
++---------------------+------------------------------+------------------------+
+| After optimization  |            869367            |          520171        |
++---------------------+------------------------------+------------------------+
+As shown above, there is nearly 26% performance
+
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
-Hi,
+ kernel/trace/trace.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Changes since v3:
-- Do not try to override the use provided codespell file location
-
-Changes since v2:
-- Only try to check for dictionary path it is enabled or when the help is
-  displayed
- - Move the check after the GetOptions()
- - Set $help to 2 in case invalid option is passed in order to be able to use
-   correct exitcode and still display the correct path for dictionary.txt
-
-Changes sicne v1:
-- add missing ';' to the line updating the $codespellfile with $codespell_dict
-
-Regards,
-Peter
-
- scripts/checkpatch.pl | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index c27d2312cfc3..485be7d27596 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -63,6 +63,7 @@ my $min_conf_desc_length = 4;
- my $spelling_file = "$D/spelling.txt";
- my $codespell = 0;
- my $codespellfile = "/usr/share/codespell/dictionary.txt";
-+my $user_codespellfile = "";
- my $conststructsfile = "$D/const_structs.checkpatch";
- my $docsfile = "$D/../Documentation/dev-tools/checkpatch.rst";
- my $typedefsfile;
-@@ -130,7 +131,7 @@ Options:
-   --ignore-perl-version      override checking of perl version.  expect
-                              runtime errors.
-   --codespell                Use the codespell dictionary for spelling/typos
--                             (default:/usr/share/codespell/dictionary.txt)
-+                             (default:$codespellfile)
-   --codespellfile            Use this codespell dictionary
-   --typedefsfile             Read additional types from this file
-   --color[=WHEN]             Use colors 'always', 'never', or only when output
-@@ -317,7 +318,7 @@ GetOptions(
- 	'debug=s'	=> \%debug,
- 	'test-only=s'	=> \$tst_only,
- 	'codespell!'	=> \$codespell,
--	'codespellfile=s'	=> \$codespellfile,
-+	'codespellfile=s'	=> \$user_codespellfile,
- 	'typedefsfile=s'	=> \$typedefsfile,
- 	'color=s'	=> \$color,
- 	'no-color'	=> \$color,	#keep old behaviors of -nocolor
-@@ -325,9 +326,22 @@ GetOptions(
- 	'kconfig-prefix=s'	=> \${CONFIG_},
- 	'h|help'	=> \$help,
- 	'version'	=> \$help
--) or help(1);
-+) or $help = 2;
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 7896d30d90f7..a795610a3b37 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2427,8 +2427,11 @@ static int trace_save_cmdline(struct task_struct *tsk)
+ 		savedcmd->cmdline_idx = idx;
+ 	}
  
--help(0) if ($help);
-+if ($user_codespellfile) {
-+	# Use the user provided codespell file unconditionally
-+	$codespellfile = $user_codespellfile;
-+} else {
-+	# Try to find the codespell install location to use it as default path
-+	if (($codespell || $help) && which("codespell") ne "" && which("python") ne "") {
-+		my $codespell_dict = `python -c "import os.path as op; import codespell_lib; print(op.join(op.dirname(codespell_lib.__file__), 'data', 'dictionary.txt'), end='')" 2> /dev/null`;
-+		$codespellfile = $codespell_dict if (-e $codespell_dict);
+-	savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
+-	set_cmdline(idx, tsk->comm);
++	/* save cmdline only when task does not exist in savecmd */
++	if (savedcmd->map_cmdline_to_pid[idx] != tsk->pid) {
++		savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
++		set_cmdline(idx, tsk->comm);
 +	}
-+}
-+
-+# $help is 1 if either -h, --help or --version is passed as option - exitcode: 0
-+# $help is 2 if invalid option is passed - exitcode: 1
-+help($help - 1) if ($help);
  
- die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
- die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
+ 	arch_spin_unlock(&trace_cmdline_lock);
+ 
 -- 
-2.33.0
+2.30.GIT
 
