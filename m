@@ -2,150 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25BF4285A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857434285A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 06:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233620AbhJKD6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 23:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
+        id S230317AbhJKEHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 00:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhJKD6Y (ORCPT
+        with ESMTP id S229504AbhJKEHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 23:58:24 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11702C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:56:25 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id i7so288211vsm.4
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:56:24 -0700 (PDT)
+        Mon, 11 Oct 2021 00:07:52 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10489C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 21:05:53 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id k26so13724093pfi.5
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 21:05:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hm/WnPjACRBoXScfbY0rQ9zM9UXlZisRQsmhTz6cU6o=;
-        b=NoJf0g/i/EvNgprP5JthR3UA1KqGONFpUy/5x+DhivykLN5l0jCd5xucAoiKuGMtlj
-         1esRKukL5+qMFwAD3s8JLv4dyBintdVA1qWN/37qCJWo03eXayAUGRhAsOh4QKcJe3IY
-         O81MlB9w+DvTDWVe4y7ybit5SIb4vCTFD6BAIWVZswck6kRo7G1QkteU8cSFbiMoF04/
-         y2WLC9dqj6ka9lkxiQ68OIOV/ArRx/D+L8SJbsrA0WEJrE51vYOlGGHwC5Rv6wobQ6Jp
-         JjJkRvYhXs5sEsoSwA6nV+dPv+svBSAkBM50kfZqC0eTkz1OSN58aVJjAuOk2Rohkhoj
-         cQyQ==
+        d=amikom.ac.id; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rut3y2eMweGFPwTE1ytr50E2Idnt4OaDC1LdOeMauB0=;
+        b=WqYwd5u78KmaLfSv3wkNij1ipzJvTNvjwvN+oW99y1G8fgvTbUCkjWSSBhB9npzBDJ
+         mFUqNeinhy5BSBP29Tom7FF3pur8v2k812ZMKF6LXrofqFlFWpGIt6OkRm+d6iHPdzv4
+         T9PYcsywW8xSNmfLL48SOZ7L7ERl/gAxbfNwSd7d7GiHDjPXHtEUW2IThbVoz20lhjVj
+         2cea8iMb2j8HLDtXrntSJQ8btEZkPBi+tXnTH8e3YxTi96qyQ5Ku4WhlmjYdpH1vCumJ
+         I9NuZLQIpBX05DyYoEhVlLsvGz12tkaHft11GmhDAzEV/m56ieqf2Cx4dEmekfghOoGM
+         rAkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hm/WnPjACRBoXScfbY0rQ9zM9UXlZisRQsmhTz6cU6o=;
-        b=hrWARTj2A/QcSGGGNffs9ZZKmRbkl2kgjGQ9c+rWzE30H7wU/+Xd6lpsvgNUWgBrnI
-         ASP1gyllZUn+xKJdaV+LYiCsQIfER8t0ERUnmm7PJTku7ZOZ6FpAF/j6d6Uh6I65PzUe
-         ByecJHnWXtndVGdJX3hcAg/bAvHg7xhkfufewuBA8dSOjS+RGblLkWj7leCBWK1gQBkz
-         XGaaF86P7QfOsCr+L4Ew+kc+nyjq6WPgl9x1Sx9y0QAX+55XAjGeGVdaH7GQiqbkzpx3
-         XocOOJt5CxzXKPzyK+HJL2U+dGJyq8OttpGKzyl5KD0ccPLuImF0cQ+efenUTAuLAp6J
-         DN+w==
-X-Gm-Message-State: AOAM532jvd1C9BUQAmcB8BccL1jOH5l/MyciOFpOXQQII6vv5AYTMMnp
-        vVrOnPYzBRe+KbGHblYKNBHv6sjysf2nWdS7C8s=
-X-Google-Smtp-Source: ABdhPJwnwkAkJ1q/wmyPmrl6FYjETg+oftnturOvq1SlZkbfBqz+4zN1f0ODqYkUFzRtNZHipE0d3p+CxoXOFaRJkPo=
-X-Received: by 2002:a67:dc0c:: with SMTP id x12mr1008048vsj.17.1633924583922;
- Sun, 10 Oct 2021 20:56:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rut3y2eMweGFPwTE1ytr50E2Idnt4OaDC1LdOeMauB0=;
+        b=rIeobGykrPMaTSXv4OYhwwiy7jbol8CMh7CCvrwP87kNhaW+vonBWtIFXmEaVyA65z
+         UWQJGwYQhzmIXpQvYtHVaz5c8fTYIVTha/d/ABbUhYAjuBl2VINSl2kDnd8Tmt7C8uJq
+         eokeZKmZ8WUZuGXalaGYAGhIjaVKCbtyxYDgT7L/qpebJzEUCLwjd55DUe3FaizxXeCU
+         0Z/rHgn91MWISqBJTKuCX/ZT16wtzQgFzRtVjN5hm8AsXCej5HSI/rOPJxg9PJX3vwZ5
+         2k2ImlwGVPXqT/A4/Lyyuvc/lKyfebVPd4MhhIRE6P9riRhX8J5zo691XsIQ37kfAVVP
+         Ygeg==
+X-Gm-Message-State: AOAM533O9erJOsNDSZCAYmkBsmrzAadTn1/sU1dOLT4yiEHscZ2ipEgd
+        o+12tDfIpgujBeCIFKmcVtxmPw==
+X-Google-Smtp-Source: ABdhPJzRbqW0yoTzc2Hoc95zuOU193ae+rgLI7MjN1C9RghVpMtukIO+oAkZmHilfs+uLdT9wrqDDg==
+X-Received: by 2002:a65:64d7:: with SMTP id t23mr16279460pgv.237.1633925152389;
+        Sun, 10 Oct 2021 21:05:52 -0700 (PDT)
+Received: from integral.. ([182.2.41.40])
+        by smtp.gmail.com with ESMTPSA id f30sm1524498pfq.142.2021.10.10.21.05.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 21:05:51 -0700 (PDT)
+From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+To:     Willy Tarreau <w@1wt.eu>, Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the clobber list
+Date:   Mon, 11 Oct 2021 11:03:44 +0700
+Message-Id: <20211011040344.437264-1-ammar.faizi@students.amikom.ac.id>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CAPm50aLPxJCiVTqqwiz00oMNiqHggB84sXB3x=tv_HUAd5UktQ@mail.gmail.com>
- <20211008095123.73b4bubwrpdj6tuz@box.shutemov.name> <CAPm50a+E6mm_qA9h9MSvh4K+WA8Qf6mU=2yig5GyVw9GFJzr8g@mail.gmail.com>
- <aece8474-4881-4c9-362-a7cb211e5933@google.com>
-In-Reply-To: <aece8474-4881-4c9-362-a7cb211e5933@google.com>
-From:   Hao Peng <flyingpenghao@gmail.com>
-Date:   Mon, 11 Oct 2021 11:55:52 +0800
-Message-ID: <CAPm50aL6vD-nP9Nh8dTLubpTUkRKveXon4izjHG-_aE3L=AD1A@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/huge_memory.c: disable THP with large THP size on
- small present memory
-To:     David Rientjes <rientjes@google.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        David Hildenbrand <david@redhat.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 6:43 AM David Rientjes <rientjes@google.com> wrote:
->
-> On Sat, 9 Oct 2021, Hao Peng wrote:
->
-> > > > After setting the page size to 64k on ARM64, the supported huge page
-> > > > size is 512M and 1TB. Therefore, if the thp is enabled, the size
-> > > > of the thp is 512M. But if THP is enabled, min_free_kbytes will
-> > > > be recalculated. At this time, min_free_kbytes is calculated based
-> > > > on the size of THP.
-> > > >
-> > > > On an arm64 server with 64G memory, the page size is 64k, with thp
-> > > > enabled.
-> > > > cat /proc/sys/vm/min_free_kbytes
-> > > > 3335104
-> > > >
-> > > > Therefore, when judging whether to enable THP by default, consider
-> > > > the size of thp.
-> > > >
-> > > > V2: title suggested by David Hildenbrand
-> > > >
-> > > > Signed-off-by: Peng Hao <flyingpeng@tencent.com>
-> > > > ---
-> > > >  mm/huge_memory.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > > > index 5e9ef0fc261e..03c7f571b3ae 100644
-> > > > --- a/mm/huge_memory.c
-> > > > +++ b/mm/huge_memory.c
-> > > > @@ -437,7 +437,7 @@ static int __init hugepage_init(void)
-> > > >          * where the extra memory used could hurt more than TLB overhead
-> > > >          * is likely to save.  The admin can still enable it through /sys.
-> > > >          */
-> > > > -       if (totalram_pages() < (512 << (20 - PAGE_SHIFT))) {
-> > > > +       if (totalram_pages() < (512 << (HPAGE_PMD_SHIFT - PAGE_SHIFT))) {
-> > >
-> > > On x86-64 HPAGE_PMD_SHIFT is 21, so you double the amount of memory
-> > > required to enabled THP by default. It doesn't seem to be the intent of
-> > > the patch.
-> > >
-> > > What about something like
-> > >
-> > >         if (totalram_pages() < 256 * HPAGE_PMD_NR)
-> > >
-> > > ?
-> > >
-> > I think that setting the threshold to 512M here is also a rough
-> > estimate. If it is 512M
-> > of memory and 2M of THP is used, there are only 256 pages in total.
-> > This is actually
-> > too small.
->
-> So does this mean that the original intent of the patch is what you
-> proposed?  It's not discussed in the changelog so it's unclear.
->
-I have considered this point, but I think the initial threshold is only a
-rough estimate. And THP can be enabled at runtime, so this threshold
-does not need to be accurate.
-> The "extra memory used could hurt more..." statement in the comment
-> depends on other system-wide settings like max_ptes_none and whether you
-> default to faulting hugepages if eligible.  There are scenarios where
-> there is no extra memory used, so I think the intent is for sane default
-> behavior and, as you mention, it can always be enabled at runtime as well.
->
-> By using 64KB native page sizes on small memory capacity systems, you're
-> already opting into this memory bloat.
->
-If it is on an arm64 machine with a small memory system, such as a mobile phone,
-it generally uses 4KB native page size, so the page size of THP is 2MB.
-> If we are trying to avoid memory bloat then we likely shouldn't be
-> defaulting max_ptes_none to 511 either and that would be a bigger
-> consideration than a minimum memory capacity to enable thp.
->
-> Or maybe you are questioning the adjustment to min_free_kbytes and whether
-> that is rational or not for small machine sizes (but large page sizes).
->
-The main reason for my modification is that excessively large THP page
-size may make
-min_free_kbytes too large when enabled, especially on systems without
-swap that easily
-trigger OOM.
-> > In addition, THP is disabled by default, but you can also enable THP
-> > dynamically.
-> > Thanks.
->
+Linux x86-64 syscall only clobbers rax, rcx and r11 (and "memory").
+
+  - rax for the return value.
+  - rcx to save the return address.
+  - r11 to save the rflags.
+
+Other registers are preserved.
+
+Having r8, r9 and r10 in the syscall clobber list is harmless, but this
+results in a missed-optimization.
+
+As the syscall doesn't clobber r8-r10, GCC should be allowed to reuse
+their value after the syscall returns to userspace. But since they are
+in the clobber list, GCC will always miss this opportunity.
+
+Remove them from the x86-64 syscall clobber list to help GCC generate
+better code and fix the comment.
+
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Signed-off-by: Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+---
+ tools/include/nolibc/nolibc.h | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
+index 3430667b0d24..8c9f2202d6b6 100644
+--- a/tools/include/nolibc/nolibc.h
++++ b/tools/include/nolibc/nolibc.h
+@@ -265,7 +265,7 @@ struct stat {
+  *   - arguments are in rdi, rsi, rdx, r10, r8, r9 respectively
+  *   - the system call is performed by calling the syscall instruction
+  *   - syscall return comes in rax
+- *   - rcx and r8..r11 may be clobbered, others are preserved.
++ *   - rcx and r11 are clobbered, others are preserved.
+  *   - the arguments are cast to long and assigned into the target registers
+  *     which are then simply passed as registers to the asm code, so that we
+  *     don't have to experience issues with register constraints.
+@@ -280,9 +280,9 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret)                                                 \
++		: "=a"(_ret)                                                  \
+ 		: "0"(_num)                                                   \
+-		: "rcx", "r8", "r9", "r10", "r11", "memory", "cc"             \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -295,10 +295,10 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret)                                                 \
++		: "=a"(_ret)                                                  \
+ 		: "r"(_arg1),                                                 \
+ 		  "0"(_num)                                                   \
+-		: "rcx", "r8", "r9", "r10", "r11", "memory", "cc"             \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -312,10 +312,10 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret)                                                 \
++		: "=a"(_ret)                                                  \
+ 		: "r"(_arg1), "r"(_arg2),                                     \
+ 		  "0"(_num)                                                   \
+-		: "rcx", "r8", "r9", "r10", "r11", "memory", "cc"             \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -330,10 +330,10 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret)                                                 \
++		: "=a"(_ret)                                                  \
+ 		: "r"(_arg1), "r"(_arg2), "r"(_arg3),                         \
+ 		  "0"(_num)                                                   \
+-		: "rcx", "r8", "r9", "r10", "r11", "memory", "cc"             \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -349,10 +349,10 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret), "=r"(_arg4)                                    \
++		: "=a"(_ret)                                                  \
+ 		: "r"(_arg1), "r"(_arg2), "r"(_arg3), "r"(_arg4),             \
+ 		  "0"(_num)                                                   \
+-		: "rcx", "r8", "r9", "r11", "memory", "cc"                    \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -369,10 +369,10 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret), "=r"(_arg4), "=r"(_arg5)                       \
++		: "=a" (_ret)                                                 \
+ 		: "r"(_arg1), "r"(_arg2), "r"(_arg3), "r"(_arg4), "r"(_arg5), \
+ 		  "0"(_num)                                                   \
+-		: "rcx", "r9", "r11", "memory", "cc"                          \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -390,7 +390,7 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret), "=r"(_arg4), "=r"(_arg5)                       \
++		: "=a"(_ret)                                                  \
+ 		: "r"(_arg1), "r"(_arg2), "r"(_arg3), "r"(_arg4), "r"(_arg5), \
+ 		  "r"(_arg6), "0"(_num)                                       \
+ 		: "rcx", "r11", "memory", "cc"                                \
+-- 
+2.30.2
+
