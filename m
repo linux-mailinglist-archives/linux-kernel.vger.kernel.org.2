@@ -2,88 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04BA4288FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36004288B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235210AbhJKIll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:41:41 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:46245 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235191AbhJKIlj (ORCPT
+        id S234885AbhJKIZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:25:04 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:25118 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235058AbhJKIZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:41:39 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-105-W-MLlp8VPJeIvzCSQwUGgw-1; Mon, 11 Oct 2021 09:39:38 +0100
-X-MC-Unique: W-MLlp8VPJeIvzCSQwUGgw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Mon, 11 Oct 2021 09:39:35 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Mon, 11 Oct 2021 09:39:35 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Mathieu Desnoyers' <mathieu.desnoyers@efficios.com>,
-        rostedt <rostedt@goodmis.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul <paulmck@linux.vnet.ibm.com>,
-        "Josh Triplett" <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        "Florian Westphal" <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Hideaki YOSHIFUJI" <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        "Jakub Kicinski" <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        "coreteam@netfilter.org" <coreteam@netfilter.org>,
-        netdev <netdev@vger.kernel.org>
-Subject: RE: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
-Thread-Topic: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
-Thread-Index: Ade+e4X0oj4GW2UzTF+XE9nyZN8f2w==
-Date:   Mon, 11 Oct 2021 08:39:35 +0000
-Message-ID: <4dbff8032f874a6f921ba0555c94eeaf@AcuMS.aculab.com>
-References: <20211005094728.203ecef2@gandalf.local.home>
- <505004021.2637.1633446912223.JavaMail.zimbra@efficios.com>
-In-Reply-To: <505004021.2637.1633446912223.JavaMail.zimbra@efficios.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 11 Oct 2021 04:25:02 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HSWwQ6fQ1z1DHVw;
+        Mon, 11 Oct 2021 16:21:26 +0800 (CST)
+Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 16:23:01 +0800
+Received: from huawei.com (10.175.104.82) by kwepemm600001.china.huawei.com
+ (7.193.23.3) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
+ 2021 16:23:00 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <bhelgaas@google.com>, <maz@kernel.org>, <tglx@linutronix.de>,
+        <song.bao.hua@hisilicon.com>, <gregkh@linuxfoundation.org>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] PCI/MSI: fix page fault when msi_populate_sysfs() failed
+Date:   Mon, 11 Oct 2021 16:40:49 +0800
+Message-ID: <20211011084049.53643-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWF0aGlldSBEZXNub3llcnMNCj4gU2VudDogMDUgT2N0b2JlciAyMDIxIDE2OjE1DQo+
-IA0KPiAtLS0tLSBPbiBPY3QgNSwgMjAyMSwgYXQgOTo0NyBBTSwgcm9zdGVkdCByb3N0ZWR0QGdv
-b2RtaXMub3JnIHdyb3RlOg0KPiBbLi4uXQ0KPiA+ICNkZWZpbmUgcmN1X2RlcmVmZXJlbmNlX3Jh
-dyhwKSBcDQo+ID4gKHsgXA0KPiA+IAkvKiBEZXBlbmRlbmN5IG9yZGVyIHZzLiBwIGFib3ZlLiAq
-LyBcDQo+ID4gCXR5cGVvZihwKSBfX19fX19fX3AxID0gUkVBRF9PTkNFKHApOyBcDQo+ID4gLQko
-KHR5cGVvZigqcCkgX19mb3JjZSBfX2tlcm5lbCAqKShfX19fX19fX3AxKSk7IFwNCj4gPiArCSgo
-dHlwZW9mKHApIF9fZm9yY2UgX19rZXJuZWwpKF9fX19fX19fcDEpKTsgXA0KPiA+IH0pDQo+IA0K
-PiBBRkFJVSBkb2luZyBzbyByZW1vdmVzIHZhbGlkYXRpb24gdGhhdCBAcCBpcyBpbmRlZWQgYSBw
-b2ludGVyLCBzbyBhIHVzZXIgbWlnaHQgbWlzdGFrZW5seQ0KPiB0cnkgdG8gdXNlIHJjdV9kZXJl
-ZmVyZW5jZSgpIG9uIGFuIGludGVnZXIsIGFuZCBnZXQgYXdheSB3aXRoIGl0LiBJJ20gbm90IHN1
-cmUgd2Ugd2FudCB0bw0KPiBsb29zZW4gdGhpcyBjaGVjay4gSSB3b25kZXIgaWYgdGhlcmUgbWln
-aHQgYmUgYW5vdGhlciB3YXkgdG8gYWNoaWV2ZSB0aGUgc2FtZSBjaGVjayB3aXRob3V0DQo+IHJl
-cXVpcmluZyB0aGUgc3RydWN0dXJlIHRvIGJlIGRlY2xhcmVkLCBlLmcuIHdpdGggX19idWlsdGlu
-X3R5cGVzX2NvbXBhdGlibGVfcCA/DQoNCkNvdWxkIHlvdSBwYXNzIHRoZSBwb2ludGVyIHRvIHNv
-bWV0aGluZyBsaWtlOg0Kc3RhdGljIF9fYWx3YXlzX2lubGluZSB2b2lkIGZvbyh2b2lkICphcmcp
-IHt9Ow0KDQpUaGF0IHdvdWxkIGZhaWwgZm9yIGludGVnZXJzLg0KTm90IHN1cmUgd2hldGhlciBD
-RkkgYmxlYXRzIGFib3V0IGZ1bmN0aW9uIHBvaW50ZXJzIHRob3VnaC4NCg0KCURhdmlkDQoNCi0N
-ClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBN
-aWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxl
-cykNCg==
+I got a page fault report when doing fault injection test:
+
+BUG: unable to handle page fault for address: fffffffffffffff4
+...
+RIP: 0010:sysfs_remove_groups+0x25/0x60
+...
+Call Trace:
+ msi_destroy_sysfs+0x30/0xa0
+ free_msi_irqs+0x11d/0x1b0
+ __pci_enable_msix_range+0x67f/0x760
+ pci_alloc_irq_vectors_affinity+0xe7/0x170
+ vp_find_vqs_msix+0x129/0x560
+ vp_find_vqs+0x52/0x230
+ vp_modern_find_vqs+0x47/0xb0
+ p9_virtio_probe+0xa1/0x460 [9pnet_virtio]
+ virtio_dev_probe+0x1ed/0x2e0
+ really_probe+0x1c7/0x400
+ __driver_probe_device+0xa4/0x120
+ driver_probe_device+0x32/0xe0
+ __driver_attach+0xbf/0x130
+ bus_for_each_dev+0xbb/0x110
+ driver_attach+0x27/0x30
+ bus_add_driver+0x1d9/0x270
+ driver_register+0xa9/0x180
+ register_virtio_driver+0x31/0x50
+ p9_virtio_init+0x3c/0x1000 [9pnet_virtio]
+ do_one_initcall+0x7b/0x380
+ do_init_module+0x5f/0x21e
+ load_module+0x265c/0x2c60
+ __do_sys_finit_module+0xb0/0xf0
+ __x64_sys_finit_module+0x1a/0x20
+ do_syscall_64+0x34/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+When populating msi_irqs sysfs failed in msi_capability_init() or
+msix_capability_init(), dev->msi_irq_groups will point to ERR_PTR(...).
+This will cause a page fault when destroying the wrong
+dev->msi_irq_groups in free_msi_irqs().
+
+Fix this by setting dev->msi_irq_groups to NULL when msi_populate_sysfs()
+failed.
+
+Fixes: 2f170814bdd2 ("genirq/msi: Move MSI sysfs handling from PCI to MSI core")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ drivers/pci/msi.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 0099a00af361..6f75db9f3be7 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -561,6 +561,7 @@ static int msi_capability_init(struct pci_dev *dev, int nvec,
+ 	dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
+ 	if (IS_ERR(dev->msi_irq_groups)) {
+ 		ret = PTR_ERR(dev->msi_irq_groups);
++		dev->msi_irq_groups = NULL;
+ 		goto err;
+ 	}
+ 
+@@ -733,6 +734,7 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+ 	dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
+ 	if (IS_ERR(dev->msi_irq_groups)) {
+ 		ret = PTR_ERR(dev->msi_irq_groups);
++		dev->msi_irq_groups = NULL;
+ 		goto out_free;
+ 	}
+ 
+-- 
+2.17.1
 
