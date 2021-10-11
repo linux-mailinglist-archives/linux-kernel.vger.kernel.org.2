@@ -2,145 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9532C4294A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2AA4294AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbhJKQgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 12:36:05 -0400
-Received: from mga03.intel.com ([134.134.136.65]:29866 "EHLO mga03.intel.com"
+        id S232138AbhJKQk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 12:40:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:38126 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232468AbhJKQgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 12:36:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="226876377"
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="226876377"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 09:33:26 -0700
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="490543991"
-Received: from vg1-mobl2.amr.corp.intel.com (HELO [10.212.193.198]) ([10.212.193.198])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 09:33:25 -0700
-Subject: Re: [PATCH v10 00/11] Add TDX Guest Support (Initial support)
-To:     Borislav Petkov <bp@alien8.de>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        id S229894AbhJKQk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 12:40:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2AEC7ED1;
+        Mon, 11 Oct 2021 09:38:56 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.197.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 459C33F66F;
+        Mon, 11 Oct 2021 09:38:55 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 17:38:52 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YWFG7+QqVGZ5ZdG9@zn.tnic>
- <6584b4d5-b7a1-2dbb-1a27-10f9c7949be9@linux.intel.com>
- <YWQ2JqkLKoDMYO/W@zn.tnic>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <1a8898d2-9ac9-f053-23a6-63fb40e2c9dc@intel.com>
-Date:   Mon, 11 Oct 2021 09:33:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH rfc 0/6] Scheduler BPF
+Message-ID: <20211011163852.s4pq45rs2j3qhdwl@e107158-lin.cambridge.arm.com>
+References: <20210915213550.3696532-1-guro@fb.com>
+ <20210916162451.709260-1-guro@fb.com>
+ <20211006163949.zwze5du6szdabxos@e107158-lin.cambridge.arm.com>
+ <YV3v3RkxOB6g/O+8@carbon.lan>
 MIME-Version: 1.0
-In-Reply-To: <YWQ2JqkLKoDMYO/W@zn.tnic>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <YV3v3RkxOB6g/O+8@carbon.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/21 6:03 AM, Borislav Petkov wrote:
-> For that you need to write yourself a script which does:
+Hi Roman
+
+On 10/06/21 11:50, Roman Gushchin wrote:
+> On Wed, Oct 06, 2021 at 05:39:49PM +0100, Qais Yousef wrote:
+> > Hi Roman
+> > 
+> > On 09/16/21 09:24, Roman Gushchin wrote:
+> > > There is a long history of distro people, system administrators, and
+> > > application owners tuning the CFS settings in /proc/sys, which are now
+> > > in debugfs. Looking at what these settings actually did, it ended up
+> > > boiling down to changing the likelihood of task preemption, or
+> > > disabling it by setting the wakeup_granularity_ns to more than half of
+> > > the latency_ns. The other settings didn't really do much for
+> > > performance.
+> > > 
+> > > In other words, some our workloads benefit by having long running tasks
+> > > preempted by tasks handling short running requests, and some workloads
+> > > that run only short term requests which benefit from never being preempted.
+> > 
+> > We had discussion about introducing latency-nice hint; but that discussion
+> > didn't end up producing any new API. Your use case seem similar to Android's;
+> > we want some tasks to run ASAP. There's an out of tree patch that puts these
+> > tasks on an idle CPU (keep in mind energy aware scheduling in the context here)
+> > which seem okay for its purpose. Having a more generic solution in mainline
+> > would be nice.
+> > 
+> > https://lwn.net/Articles/820659/
 > 
-> ARCHES=('i386' 'x86_64')
+> Hello Qais!
 > 
-> 	...
+> Thank you for the link, I like it!
 > 
->         for a in "${ARCHES[@]}"
->         do
->                 for cfg in "allnoconfig" "defconfig" "allmodconfig" "allyesconfig"
->                 do
->                         build_kernel $a $cfg
->                 done
->         done
+> > 
+> > > 
+> > > This leads to a few observations and ideas:
+> > > - Different workloads want different policies. Being able to configure
+> > >   the policy per workload could be useful.
+> > > - A workload that benefits from not being preempted itself could still
+> > >   benefit from preempting (low priority) background system tasks.
+> > 
+> > You can put these tasks as SCHED_IDLE. There's a potential danger of starving
+> > these tasks; but assuming they're background and there's idle time in the
+> > system that should be fine.
+> > 
+> > https://lwn.net/Articles/805317/
+> > 
+> > That of course assuming you can classify these background tasks..
+> > 
+> > If you can do the classification, you can also use cpu.shares to reduce how
+> > much cpu time they get. Or CFS bandwidth controller
+> > 
+> > https://lwn.net/Articles/844976/
 > 
-> then find a big fat machine at Intel - I don't think that would post as
-> a particularly hard problem :-) - and run it in tmpfs, on your patchset.
+> The cfs cgroup controller is that it's getting quite expensive quickly with the
+> increasing depth of the cgroup tree. This is why we had to disable it for some
+> of our primary workloads.
+
+I can understand that..
+
 > 
-> Then you collect build logs and grep them for errors. And for additional
-> coverage, when you're done with the above configs, you do randconfigs.
-> That's what I do all the time with patchsets and it catches pretty much
-> every build error.
+> Still being able to control latencies on per-cgroup level is one of the goals
+> of this patchset.
+> 
+> > 
+> > I like Androd's model of classifying tasks. I think we need this classification
+> > done by other non-android systems too.
+> > 
+> > > - It would be useful to quickly (and safely) experiment with different
+> > >   policies in production, without having to shut down applications or reboot
+> > >   systems, to determine what the policies for different workloads should be.
+> > 
+> > Userspace should have the knobs that allows them to tune that without reboot.
+> > If you're doing kernel development; then it's part of the job spec I'd say :-)
+> 
+> The problem here occurs because there is no comprehensive way to test any
+> scheduler change rather than run it on many machines (sometimes 1000's) running
+> different production-alike workloads.
+> 
+> If I'm able to test an idea by loading a bpf program (and btw have some sort of
+> safety guarantees: maybe the performance will be hurt, but at least no panics),
+> it can speed up the development process significantly. The alternative is way
+> more complex from the infrastructure's point of view: releasing a custom kernel,
+> test it for safety, reboot certain machines to it, pin the kernel from being
+> automatically updated etc.
 
-FWIW, if you're in search of funky Kconfigs for compiling x86, I've got
-a big bundle of them.  In addition, I suggest grepping through any
-Kconfig options you add and then toggling *those* options specifically.
+This process is unavoidable IMO. Assuming you have these hooks in; as soon as
+you require a new hook you'll be forced to have a custom kernel with that new
+hook introduced. Which, in my view, no different than pushing a custom kernel
+that forces the function of interest to be noinline. Right?
 
-The three that come to mind that tend to find bugs the fastest are a
-defconfig, plus removing (one at a time):
+> 
+> > 
+> > I think one can still go with the workflow you suggest for development without
+> > the hooks. You'd need to un-inline the function you're interested in; then you
+> > can use kprobes to hook into it and force an early return. That should produce
+> > the same effect, no?
+> 
+> Basically it's exactly what I'm suggesting. My patchset just provides a
+> convenient way to define these hooks and some basic useful helper functions.
 
-	CONFIG_CPU_SUP_INTEL
-	CONFIG_SMP
-	CONFIG_NUMA
+Convenient will be only true assuming you have a full comprehensive list of
+hooks to never require adding a new one. As I highlighted above, this
+convenience is limited to hooks that you added now.
 
-In your case, I'd make sure you also flip SECURITY and X86_X2APIC, because:
+Do people always want more hooks? Rhetorical question ;-)
 
-> +	depends on X86_64 && CPU_SUP_INTEL && PARAVIRT
-> +	depends on SECURITY
-> +	depends on X86_X2APIC
+> 
+> > 
+> > > - Only a few workloads are large and sensitive enough to merit their own
+> > >   policy tweaks. CFS by itself should be good enough for everything else,
+> > >   and we probably do not want policy tweaks to be a replacement for anything
+> > >   CFS does.
+> > > 
+> > > This leads to BPF hooks, which have been successfully used in various
+> > > kernel subsystems to provide a way for external code to (safely)
+> > > change a few kernel decisions. BPF tooling makes this pretty easy to do,
+> > > and the people deploying BPF scripts are already quite used to updating them
+> > > for new kernel versions.
+> > 
+> > I am (very) wary of these hooks. Scheduler (in mobile at least) is an area that
+> > gets heavily modified by vendors and OEMs. We try very hard to understand the
+> > problems they face and get the right set of solutions in mainline. Which would
+> > ultimately help towards the goal of having a single Generic kernel Image [1]
+> > that gives you what you'd expect out of the platform without any need for
+> > additional cherries on top.
+> 
+> Wouldn't it make your life easier had they provide a set of bpf programs instead
+> of custom patches?
 
+Not really.
+
+Having consistent mainline behavior is important, and these customization
+contribute to fragmentation and can throw off userspace developers who find
+they have to do extra work on some platforms to get the desired outcome. They
+will be easy to misuse. We want to see the patches and find ways to improve
+mainline kernel instead.
+
+That said, I can see the use case of being able to micro-optimize part of the
+scheduler in a workload specific way. But then the way I see this support
+happening (DISCLAIMER, personal opinion :-))
+
+	1. The hooks have to be about replacing specific snippet, like Barry's
+	   example where it's an area that is hard to find a generic solution
+	   that doesn't have a drawback over a class of workloads.
+
+	2. The set of bpf programs that modify it live in the kernel tree for
+	   each hook added. Then we can reason about why the hook is there and
+	   allow others to reap the benefit. Beside being able to re-evaluate
+	   easily if the users still need that hook after a potential
+	   improvement that could render it unnecessary.
+
+	3. Out of tree bpf programs can only be loaded if special CONFIG option
+	   is set so that production kernel can only load known ones that the
+	   community knows and have reasoned about.
+
+	4. Out of tree bpf programs will taint the kernel. A regression
+	   reported with something funny loaded should be flagged as
+	   potentially bogus.
+
+IMHO this should tame the beast to something useful to address these situations
+where the change required to improve one workload will harm others and it's
+hard to come up with a good compromise. Then the hook as you suggest could help
+implement that policy specifically for that platform/workload.
+
+One can note that the behavior I suggest is similar to how modules work :)
+
+> 
+> > 
+> > So my worry is that this will open the gate for these hooks to get more than
+> > just micro-optimization done in a platform specific way. And that it will
+> > discourage having the right discussion to fix real problems in the scheduler
+> > because the easy path is to do whatever you want in userspace. I am not sure we
+> > can control how these hooks are used.
+> 
+> I totally understand your worry. I think we need to find a right balance between
+> allowing to implement custom policies and keeping the core functionality
+> working well enough for everybody without a need to tweak anything.
+> 
+> It seems like an alternative to this "let's allow cfs customization via bpf"
+> approach is to completely move the scheduler code into userspace/bpf, something
+> that Google's ghOSt is aiming to do.
+
+Why not ship a custom kernel instead then?
+
+> 
+> > 
+> > The question is: why can't we fix any issues in the scheduler/make it better
+> > and must have these hooks instead?
+> 
+> Of course, if it's possible to implement an idea in a form which is suitable
+> for everybody and upstream it, this is the best outcome. The problem is that
+> not every idea is like that. A bpf program can leverage a priori knowledge
+> of a workload and its needs, something the generic scheduler code lacks
+> by the definition.
+
+Yep I see your point for certain aspects of the scheduler that are hard to tune
+universally. We just need to be careful not to end up in a wild west or Anything
+Can Happen Thursday situation :-)
+
+Maybe the maintainers have a different opinion though.
+
+Cheers
+
+--
+Qais Yousef
