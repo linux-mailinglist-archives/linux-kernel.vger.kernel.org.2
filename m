@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB9F429196
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC70429158
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240240AbhJKOUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:20:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243292AbhJKORZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:17:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07AAC61078;
-        Mon, 11 Oct 2021 14:11:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633961503;
-        bh=zD+AKuupSTYCoj9CcPWhQv82n92KFccXo3yZu9KbnTk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NlKtPXc5y6RKZlCZzv1omZ6axzdFRkATGimdWqud/doU9kWYbzWK8c0frJfhyCfLI
-         25ejDlAh8OTc9yIpR7+XpyRQ/ozUm23Hghu+kZm18hSSqo8LFwfCdWdj1Q36P7RC1s
-         RGilW596VwN3Iu2z9xOnIPfCQexNBFvXud4Wc7LCmK+Okkl28DLAK6t1vFI2NrOtUv
-         Nv8c08ulC+pST0QI54DxJwrRA3d7rPFEOrCqCX+AVttHvG1YkuRyqqBiIW5fG03Vt0
-         YUEB5DJGFFXTLh+olfNiKhBXi7upaYffBalzaH+yPxgvBhCX3LbLixIKY8a2km/qHx
-         PRn4hNJ6S1Hfg==
-Received: by mail-ed1-f54.google.com with SMTP id g10so67631296edj.1;
-        Mon, 11 Oct 2021 07:11:42 -0700 (PDT)
-X-Gm-Message-State: AOAM531ftzA5BIuV5h3aBp5wQsVaUlXLMm7JxJ/jITQNhfz/0vt4XJt8
-        Yb3QcpGua/nOd9Rt0BTRQ/Kq9+t3ZDvKEs6WXQ==
-X-Google-Smtp-Source: ABdhPJw0f8TOUqPxU2srZU6oT+yPzQ8tPFsfVqJQ97sHOzWxNPvUan4j9Baaqte3d/Xw1feY7RVQSsfUXDUCp9emalk=
-X-Received: by 2002:a17:906:9399:: with SMTP id l25mr25557872ejx.363.1633961500932;
- Mon, 11 Oct 2021 07:11:40 -0700 (PDT)
+        id S240871AbhJKORc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:17:32 -0400
+Received: from www381.your-server.de ([78.46.137.84]:55546 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238262AbhJKOPA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:15:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=oXfj/LdcIWi8QBGVWoLeHpPANC5aeTpAQshDalhDSsU=; b=ABxJPME4LUvQro8a+7cOvSj2Xq
+        5u7fd18VGVpoabqCh5wyIG9c72ARX2XLGj16aYcTMxEjRTX5/R7OdMVwi4u+r2LkDhJw2dwiiUEjE
+        K40PyOLzNLDwNRn//96QNZFKeOCHnI1EgFz0a7WcITS4ij+Tja2Vs1+40EArHVS5nFIldUQG6fk+v
+        V4dBk+Gup5aOQnHMD6SqON4DN5EDLSamO2S873iBC5YPhczFN9qqLOx9yZqEsXuS5VOYwXEtlK6GU
+        e6lFPNm2NPjQ07o56AyGJEXwQAx/dcRSN1KxYP1+jsOlJtn127RwlEzt5uwR55LweVPMnASfTpgtp
+        9JKsNF7Q==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1mZw2y-0001XY-JN; Mon, 11 Oct 2021 16:12:56 +0200
+Received: from [82.135.83.71] (helo=[192.168.178.20])
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1mZw2y-000IkW-DK; Mon, 11 Oct 2021 16:12:56 +0200
+Subject: Re: [PATCH] iio: core: do not create debugfs when has no dev name
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Cc:     ars@metafoo.de, jic23@kernel.org, alexandru.ardelean@analog.com,
+        andy.shevchenko@gmail.com
+References: <20211011135654.282958-1-yangyingliang@huawei.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <2430dc94-ecf8-c246-beaf-52cc0905e3d4@metafoo.de>
+Date:   Mon, 11 Oct 2021 16:12:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210923064137.60722-1-zhang.lyra@gmail.com> <20210923064137.60722-3-zhang.lyra@gmail.com>
- <YV1XpL7ibF1y4LbV@google.com>
-In-Reply-To: <YV1XpL7ibF1y4LbV@google.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 11 Oct 2021 09:11:29 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
-Message-ID: <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512
- global registers
-To:     Lee Jones <lee.jones@linaro.org>, Stephen Boyd <sboyd@kernel.org>
-Cc:     Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211011135654.282958-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26319/Mon Oct 11 10:18:47 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 3:00 AM Lee Jones <lee.jones@linaro.org> wrote:
+On 10/11/21 3:56 PM, Yang Yingliang wrote:
+> I got a null-ptr-deref report when doing fault injection test:
 >
-> On Thu, 23 Sep 2021, Chunyan Zhang wrote:
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> PGD 0 P4D 0
+> Oops: 0000 [#1] SMP KASAN PTI
+> RIP: 0010:strlen+0x0/0x20
+> Call Trace:
+>   start_creating+0x199/0x2f0
+>   debugfs_create_dir+0x25/0x430
+>   __iio_device_register+0x4da/0x1b40 [industrialio]
+>   __devm_iio_device_register+0x22/0x80 [industrialio]
+>   max1027_probe+0x639/0x860 [max1027]
+>   spi_probe+0x183/0x210
+>   really_probe+0x285/0xc30
 >
-> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> >
-> > Add bindings for Unisoc system global register which provide register map
-> > for clocks.
-> >
-> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../bindings/mfd/sprd,ums512-glbreg.yaml      | 68 +++++++++++++++++++
-> >  1 file changed, 68 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.yaml
+> If dev_set_name() fails, the dev_name() is null, add check for
+> device name before creating debugfs.
+
+If dev_set_name() fails, shouldn't we better return an error in 
+iio_device_alloc()? Otherwise the device has no name and will show up as 
+<null> in sysfs.
+
 >
-> Unapplied v3 and applied this (v4) instead, thanks.
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: e553f182d55b ("staging: iio: core: Introduce debugfs support...")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>   drivers/iio/industrialio-core.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index 2dc837db50f7..8974490ad536 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -466,7 +466,7 @@ static void iio_device_register_debugfs(struct iio_dev *indio_dev)
+>   	if (indio_dev->info->debugfs_reg_access == NULL)
+>   		return;
+>   
+> -	if (!iio_debugfs_dentry)
+> +	if (!iio_debugfs_dentry || !dev_name(&indio_dev->dev))
+>   		return;
+>   
+>   	iio_dev_opaque = to_iio_dev_opaque(indio_dev);
 
-What about the clock binding this depends on:
 
-Unknown file referenced: [Errno 2] No such file or directory:
-'/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
-xargs: dt-doc-validate: exited with status 255; aborting
-make[1]: *** Deleting file
-'Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml'
-Unknown file referenced: [Errno 2] No such file or directory:
-'/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
-make[1]: *** [scripts/Makefile.lib:385:
-Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml]
-Error 255
-
-
-Once again, all the components of MFD bindings need to be applied together.
-
-Rob
