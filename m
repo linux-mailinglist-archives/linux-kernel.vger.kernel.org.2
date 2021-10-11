@@ -2,134 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A20F4295A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480594295A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhJKRdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
+        id S231431AbhJKReP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhJKRdb (ORCPT
+        with ESMTP id S229816AbhJKReO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:33:31 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687F3C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:31:31 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id t9so75258261lfd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:31:31 -0700 (PDT)
+        Mon, 11 Oct 2021 13:34:14 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5C9C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:32:13 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id q10-20020a17090a1b0a00b001a076a59640so366881pjq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:32:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OT203vnjB7/zUlFzlItVKI17MBCGdyaAlk+HzafniWc=;
-        b=Irz3Tcxj1xe1q8LLa/BtO916dIui2Sq+1sBTNiyk8aBXvZyEOJt03BLDAGjpvrBrZD
-         1UUz4TersnrZsmjO89yk4htL/czSDG5g9yiJMsHxYmCH7qnbqyK2E36v12Ab0NAuwvxY
-         UYwcu/4VzzK9WVS96I4YX4MliKGpFXCnT7qgbxTVFHH/UxZ6AKxbo09QhVLOOI5q/DC0
-         GJh+OWEd/TM+v/NbMcNlogrxda5KuUu43gt2/Ij5BVYW3E27d82umUin+p8eSDPWJu9r
-         YZ+BsTP0cQjBSA+7Cyiee//LpdupyUMR7NtzhHVaZP9qPYpLdCdd6ZiGyAtHv5qsmhlJ
-         u77Q==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=+KsewVMapVnqjNR+FmWVZGUP3TdIM7SDkQ2+XhYe4P0=;
+        b=UdH2GouGVsj4bLMhrkV4J4QokQTPkRsVIj19Ny4XVx5bodcgh8ZSUzu8c0KocL8s/z
+         tEZLlcRNQgJj2t3GIV3zPoylE+xwzCXv3CdCXFotgBZY95lglheHFq+LZjY7/Kp7Sd8Y
+         lR/oOSyxVNKCsPjZF5Wwh0q5B+lsGe7yargrOsx23cf1oEx2Zzzt6HYkIkwUOPTAzuJX
+         veyXzCdD4YiJYpTpihXFKv3a4y9ScuPzfWfbwT2VP0NOb+pt9SJqqPLdaqJmicqP7aoc
+         a7ytL28igF/w3rIaJ+WnXSGqZa8pXdQw4QtFDvjJyJ6Xgl9tnoGTz7tNUfBmYzWXcA8u
+         qi3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OT203vnjB7/zUlFzlItVKI17MBCGdyaAlk+HzafniWc=;
-        b=CHqvQN4GIImYK8sSrLzMQOwCK/d5ZlG4JukhF7JCguuSTsP9LxoJFWDaqCpjBq1Yz3
-         EefNDuzt4vVkEyej4hgjXaoOCjVgnRLFuPUsrGZx/OW+xgVVHaFb/RM9cpDAtDoKWL/+
-         KAk0RgoV+4fKA/MdSt/mECZvDt7JHSKzVGRfnQacEL8fwc1hvWTTGs96JowVHEUbhRVx
-         FdRkpVUGV2Ujcob/6bA5BQJVLNOI8nOSK14UOHm8zGtwCY9i/SGTPhefWjcvD/1cBJB1
-         A3leudvIwTh6ToFXWYfthlzR0X3kvuMSeazH8jVsE2sW//eHQCESczbAdO43vIZY9/WB
-         dTEg==
-X-Gm-Message-State: AOAM533wlwQzUbXf4d2EvaVlQ1br+c8VbZcRtRBpxVW038Nxdk/C/+Fb
-        MXOYjFSv7bKaTfS4szLIltnvrN9jXIpytoiX0YarGQ==
-X-Google-Smtp-Source: ABdhPJyzVgthy6KpGM2XZvlREfCX58/w84OF82adREJoZf1l+wVrm5xDU7/iQQLFAjCAgnWrfdkUyBj6bLAZXFjApdY=
-X-Received: by 2002:a2e:461a:: with SMTP id t26mr24899757lja.198.1633973489480;
- Mon, 11 Oct 2021 10:31:29 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=+KsewVMapVnqjNR+FmWVZGUP3TdIM7SDkQ2+XhYe4P0=;
+        b=7z6d1TwTyituE1z70Nuue1OkXyIhBadLfeeUhWsGAyprKcF6cZzl6WQsdZeYanJUtK
+         kPVDOtDqUQw8tnUV3RlF1+ts3etaymUm6WlypQQzENGbTMPuo7S+gX3hiqL5SiUS/AJM
+         1F43h7c0ZIHWU+efdvO/LDk4cOHtFutEF3zQ8Cufisnhnx3kAQltG7GNZCM13UPj5XcT
+         FwOTmuFK3wWebVlWJVnJRFtwGMFoJhKEDnpLxvbWfni/DoKpRHoL9cJtkBNRc0qHWCqN
+         3dyW9wc/UoZMsf7Ay/fiXWW4xZLcEKSPIS+SLEMaIXP/+ZDSbGvUUa90YTp+LtjOAwEa
+         +s9Q==
+X-Gm-Message-State: AOAM531TWFdoJzQhGuSxgbdQvt+FJSL5jXwfOIuAHf9rszFIx+Spsq4D
+        hJspfy0mWXHPTFrbSCCLHn17J1T33m4e8Q==
+X-Google-Smtp-Source: ABdhPJzMR1EoMqDfqoj1liajzybAJpHD3VNqw4qjhDRh4KQFXVfPn/a24QObYlSqmZyCZvdjl6/JSA==
+X-Received: by 2002:a17:902:760b:b0:13b:122:5ff0 with SMTP id k11-20020a170902760b00b0013b01225ff0mr25756599pll.22.1633973533266;
+        Mon, 11 Oct 2021 10:32:13 -0700 (PDT)
+Received: from [192.168.1.14] ([223.230.99.151])
+        by smtp.gmail.com with ESMTPSA id e12sm9153728pgv.82.2021.10.11.10.32.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 10:32:12 -0700 (PDT)
+Message-ID: <71f1c0bc-08d1-7b0f-8000-e23a9bd88ba9@gmail.com>
+Date:   Mon, 11 Oct 2021 23:02:08 +0530
 MIME-Version: 1.0
-References: <CA+G9fYuqwJD5bFO74vG6Mvbbt1G8rxzd_NDHg-gtOZ6rPjeu3A@mail.gmail.com>
- <YWQLUd+BQ1Cc88HG@osiris>
-In-Reply-To: <YWQLUd+BQ1Cc88HG@osiris>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 11 Oct 2021 10:31:17 -0700
-Message-ID: <CAKwvOdmrqqqMRLuJ3VLk5K+3Z=qaAbuYkMAo=u1UdfjX=7muAw@mail.gmail.com>
-Subject: Re: clang-13: s390/kernel/head64.S:24:17: error: invalid operand for instruction
-To:     Ulrich Weigand <Ulrich.Weigand@de.ibm.com>,
-        Jonas Paulsson <paulsson@linux.vnet.ibm.com>,
-        Andreas Krebbel <krebbel@linux.ibm.com>,
-        nemanja.i.ibm@gmail.com
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>, llvm@lists.linux.dev,
-        linux-s390@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH v2] staging: rtl8723bs: os_dep: simplify the return
+ statement.
+Content-Language: en-GB
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, marcocesati@gmail.com,
+        insafonov@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+References: <YWJ0vSrgsiKK7suE@user> <2482197.HNbSr4JpUv@localhost.localdomain>
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+In-Reply-To: <2482197.HNbSr4JpUv@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Nemanja
 
 
-On Mon, Oct 11, 2021 at 3:01 AM Heiko Carstens <hca@linux.ibm.com> wrote:
+On 11/10/21 2:24 pm, Fabio M. De Francesco wrote:
+> On Sunday, October 10, 2021 7:06:05 AM CEST Saurav Girepunje wrote:
+>> Remove the unneeded and redundant check of variable on goto out.
+>> Simplify the return using multiple goto label to avoid
+>> unneeded check.
+>>
+>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>> ---
+>>
+>> ChangeLog V2:
+>> 	-Add goto out after the memcpy for no error case return with
+>> 	 ret only. Free is not required on no error case.
+> 
+> Please write versions logs that reflect clearly and unequivocally what you 
+> changed between revisions and why. Subjects, Commit messages (Changelogs), 
+> and Versions logs are the "specifics" of your work. There must be no 
+> inconsistencies between these and the code or the history of the changes of 
+> the code.
+> 
+> You may think that I'm pedantic, but since I acked your patch, I don't want 
+> to be misunderstood to be a promoter of approximate or clearly incorrect 
+> messages> "Free is not required on no error case" conveys the message that you have 
+> changed something that is not required but that is still potentially allowed.
+> 
+> This is not the case because the problem that you fix with v2 is _not_ 
+> something that is merely not required and unnecessary. You have fixed a bug 
+> that is introduced in v1. Introducing bugs is not allowed. If you do 
+> something that is not allowed you cannot simply say that it is not required. 
+> 
+My intension was to mention changes done on V2 with respect to V1. 
+I will try to be more clear on changelog messages. 
+>>
+>> ChangeLog V1:
+>> 	-Remove the unneeded and redundant check of variable on
+>> 	 goto out.
+>> 	-Simplify the return using multiple goto label to avoid
+>> 	 unneeded check.
+>>
+>>  .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 22 +++++++++----------
+>>  1 file changed, 10 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/
+> staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+>> index 0868f56e2979..ae9579dc0848 100644
+>> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+>> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+>> @@ -2312,7 +2312,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter 
+> *padapter, char *name, str
+>>  	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
+>>  	if (!mon_wdev) {
+>>  		ret = -ENOMEM;
+>> -		goto out;
+>> +		goto err_zmalloc;
+>>  	}
+>>
+>>  	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
+>> @@ -2322,23 +2322,21 @@ static int rtw_cfg80211_add_monitor_if(struct 
+> adapter *padapter, char *name, str
+>>
+>>  	ret = cfg80211_register_netdevice(mon_ndev);
+>>  	if (ret) {
+>> -		goto out;
+>> +		goto err_register;
+>>  	}
+>>
+>>  	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
+>>  	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
+>> +	goto out;
+>>
+>> -out:
+>> -	if (ret && mon_wdev) {
+>> -		kfree(mon_wdev);
+>> -		mon_wdev = NULL;
+>> -	}
+>> -
+>> -	if (ret && mon_ndev) {
+>> -		free_netdev(mon_ndev);
+>> -		*ndev = mon_ndev = NULL;
+>> -	}
+>> +err_register:
+>> +	kfree(mon_wdev);
+>> +	mon_wdev = NULL;
+> 
+> Probably you have already read a message by Greg Kroah-Hartman that confirms 
+> what I wrote in another message: "There is no need to set a local variable 
+> like this to NULL.".
+> 
+Yes, Agree this is another improvement possible on this function.
+> So please submit a v3. With the two changes requested above, my "acked-by" 
+> tag is confirmed again.
+> 
+> Thanks,
+> 
+> Fabio
 >
-> On Mon, Oct 11, 2021 at 11:47:42AM +0530, Naresh Kamboju wrote:
-> > [Please ignore this email if it is already reported ]
-> >
-> > Following s390 builds failed due to warnings / errors.
-> >
-> > metadata:
-> >     git_describe: v5.15-rc5
-> >     git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >     git_short_log: 64570fbc14f8 (\"Linux 5.15-rc5\")
-> >     target_arch: s390
-> >     toolchain: clang-13
-> >
-> >
-> > Fail (2861 errors) s390 (tinyconfig) with clang-nightly
-> >   @ https://builds.tuxbuild.com/1zL35IUSGhDGeVuyIrAp7eyzEUi/
-> > Fail (2861 errors) s390 (tinyconfig) with clang-13
-> >   @ https://builds.tuxbuild.com/1zL35Hn7wjErKsLDM6zAgh27BYJ/
-> > Fail (4112 errors) s390 (allnoconfig) with clang-13
-> >   @ https://builds.tuxbuild.com/1zL35HR60hSFvBmAcYJvKHm8Lko/
-> > Fail (4112 errors) s390 (allnoconfig) with clang-nightly
-> >   @ https://builds.tuxbuild.com/1zL35DTlrX9qRGCtGqgtmmMDjnQ/
-> > Fail (23048 errors) s390 (defconfig) with clang-13
-> >   @ https://builds.tuxbuild.com/1zL35DE2KWQUPxbbXeTbwIJaWXS/
-> > Fail (23045 errors) s390 (defconfig) with clang-nightly
-> >   @ https://builds.tuxbuild.com/1zL35EgeQfWQDXDupp4itkUO5At/
-> >
-> >
-> > Build errors log:
-> > ----------------
-> > arch/s390/kernel/head64.S:24:17: error: invalid operand for instruction
-> >  lctlg %c0,%c15,.Lctl-.LPG1(%r13) # load control registers
-> >                 ^
-> > arch/s390/kernel/head64.S:40:8: error: invalid operand for instruction
-> >  lpswe .Ldw-.(%r13) # load disabled wait psw
->
-> You need to pass LLVM_IAS=0 on the make command line on s390 since
-> commit f12b034afeb3 ("scripts/Makefile.clang: default to LLVM_IAS=1").
->
-> LLVM's integrated assembler doesn't seem to work well when compiling
-> the kernel for s390 yet.
-
-Dunno if you folks have cycles to work on it, but if you do, we have
-just a handful of bugs left in Clang's assembler (or kernel source
-issues) preventing us from assembling the kernel with clang for
-SystemZ and PPC.
-
-s390:
-https://github.com/ClangBuiltLinux/linux/issues?q=is%3Aopen+is%3Aissue+label%3A%22%5BARCH%5D+s390%22+label%3A%22%5BTOOL%5D+integrated-as%22
-
-ppc:
-https://github.com/ClangBuiltLinux/linux/issues?q=is%3Aopen+is%3Aissue+label%3A%22%5BTOOL%5D+integrated-as%22+label%3A%22%5BARCH%5D+powerpc%22
-
-I'm happy to hop on a call to discuss these more.  We have all other
-architectures working here, in the sense that if we can build them
-with clang, we're using the integrated assembler by default.
--- 
-Thanks,
-~Nick Desaulniers
+I will submit a v3.
+>>
+>> +err_zmalloc:
+>> +	free_netdev(mon_ndev);
+>> +	*ndev = mon_ndev = NULL;
+>> +out:
+>>  	return ret;
+>>  }
+>>
+>> --
+>> 2.32.0
+>>
+>>
+>>
+> 
+> 
+> 
+> 
