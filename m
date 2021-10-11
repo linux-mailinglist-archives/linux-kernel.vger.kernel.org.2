@@ -2,145 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A400F4286E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB5B4286EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234214AbhJKGhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 02:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231425AbhJKGhX (ORCPT
+        id S234225AbhJKGmm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 02:42:42 -0400
+Received: from mx1.uni-regensburg.de ([194.94.157.146]:37114 "EHLO
+        mx1.uni-regensburg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229797AbhJKGml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:37:23 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75539C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 23:35:23 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mZou1-0002vp-0J; Mon, 11 Oct 2021 08:35:13 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mZotv-0005WI-NG; Mon, 11 Oct 2021 08:35:07 +0200
-Date:   Mon, 11 Oct 2021 08:35:07 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     Maxime Jayat <maxime.jayat@mobile-devices.fr>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-kernel@vger.kernel.org,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): cancel session
- if receive TP.DT with error length
-Message-ID: <20211011063507.GI29653@pengutronix.de>
-References: <1632972800-45091-1-git-send-email-zhangchangzhong@huawei.com>
- <20210930074206.GB7502@x1.vandijck-laurijssen.be>
- <1cab07f2-593a-1d1c-3a29-43ee9df4b29e@huawei.com>
- <20211008110007.GE29653@pengutronix.de>
- <556a04ed-c350-7b2b-5bbe-98c03846630b@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Mon, 11 Oct 2021 02:42:41 -0400
+X-Greylist: delayed 307 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 Oct 2021 02:42:40 EDT
+Received: from mx1.uni-regensburg.de (localhost [127.0.0.1])
+        by localhost (Postfix) with SMTP id 4D28A6000056;
+        Mon, 11 Oct 2021 08:35:29 +0200 (CEST)
+Received: from gwsmtp.uni-regensburg.de (gwsmtp1.uni-regensburg.de [132.199.5.51])
+        by mx1.uni-regensburg.de (Postfix) with ESMTP id 321076000052;
+        Mon, 11 Oct 2021 08:35:29 +0200 (CEST)
+Received: from uni-regensburg-smtp1-MTA by gwsmtp.uni-regensburg.de
+        with Novell_GroupWise; Mon, 11 Oct 2021 08:35:29 +0200
+Message-Id: <6163DB2E020000A1000445F1@gwsmtp.uni-regensburg.de>
+X-Mailer: Novell GroupWise Internet Agent 18.3.1 
+Date:   Mon, 11 Oct 2021 08:35:26 +0200
+From:   "Ulrich Windl" <Ulrich.Windl@rz.uni-regensburg.de>
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        "Chris Leech" <cleech@redhat.com>, <qtxuning1999@sjtu.edu.cn>,
+        "Lee Duncan" <lduncan@suse.com>
+Cc:     "open-iscsi" <open-iscsi@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>
+Subject: Antw: [EXT] Re: [PATCH] scsi scsi_transport_iscsi.c: fix
+ misuse of %llu in scsi_transport_iscsi.c
+References: <20211009030254.205714-1-qtxuning1999@sjtu.edu.cn>
+ <5daf69b365e23ceecee911c4d0f2f66a0b9ec95c.camel@perches.com>
+In-Reply-To: <5daf69b365e23ceecee911c4d0f2f66a0b9ec95c.camel@perches.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <556a04ed-c350-7b2b-5bbe-98c03846630b@huawei.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 08:19:30 up 235 days,  9:43, 116 users,  load average: 0.08, 0.12,
- 0.17
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 09, 2021 at 04:43:56PM +0800, Zhang Changzhong wrote:
-> On 2021/10/8 19:00, Oleksij Rempel wrote:
-> > On Fri, Oct 08, 2021 at 05:22:12PM +0800, Zhang Changzhong wrote:
-> >> Hi Kurt,
-> >> Sorry for the late reply.
-> >>
-> >> On 2021/9/30 15:42, Kurt Van Dijck wrote:
-> >>> On Thu, 30 Sep 2021 11:33:20 +0800, Zhang Changzhong wrote:
-> >>>> According to SAE-J1939-21, the data length of TP.DT must be 8 bytes, so
-> >>>> cancel session when receive unexpected TP.DT message.
-> >>>
-> >>> SAE-j1939-21 indeed says that all TP.DT must be 8 bytes.
-> >>> However, the last TP.DT may contain up to 6 stuff bytes, which have no meaning.
-> >>> If I remember well, they are even not 'reserved'.
-> >>
-> >> Agree, these bytes are meaningless for last TP.DT.
-> >>
-> >>>
-> >>>>
-> >>>> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> >>>> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> >>>> ---
-> >>>>  net/can/j1939/transport.c | 7 +++++--
-> >>>>  1 file changed, 5 insertions(+), 2 deletions(-)
-> >>>>
-> >>>> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> >>>> index bb5c4b8..eedaeaf 100644
-> >>>> --- a/net/can/j1939/transport.c
-> >>>> +++ b/net/can/j1939/transport.c
-> >>>> @@ -1789,6 +1789,7 @@ static void j1939_xtp_rx_dpo(struct j1939_priv *priv, struct sk_buff *skb,
-> >>>>  static void j1939_xtp_rx_dat_one(struct j1939_session *session,
-> >>>>  				 struct sk_buff *skb)
-> >>>>  {
-> >>>> +	enum j1939_xtp_abort abort = J1939_XTP_ABORT_FAULT;
-> >>>>  	struct j1939_priv *priv = session->priv;
-> >>>>  	struct j1939_sk_buff_cb *skcb, *se_skcb;
-> >>>>  	struct sk_buff *se_skb = NULL;
-> >>>> @@ -1803,9 +1804,11 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
-> >>>>  
-> >>>>  	skcb = j1939_skb_to_cb(skb);
-> >>>>  	dat = skb->data;
-> >>>> -	if (skb->len <= 1)
-> >>>> +	if (skb->len != 8) {
-> >>>>  		/* makes no sense */
-> >>>> +		abort = J1939_XTP_ABORT_UNEXPECTED_DATA;
-> >>>>  		goto out_session_cancel;
-> >>>
-> >>> I think this is a situation of
-> >>> "be strict on what you send, be tolerant on what you receive".
-> >>>
-> >>> Did you find a technical reason to abort a session because the last frame didn't
-> >>> bring overhead that you don't use?
-> >>
-> >> No technical reason. The only reason is that SAE-J1939-82 requires responder
-> >> to abort session if any TP.DT less than 8 bytes (section A.3.4, Row 7).
-> > 
-> > Do you mean: "BAM Transport: Ensure DUT discards BAM transport when
-> > TP.DT data packets are not correct size" ... "Verify DUT discards the
-> > BAM transport if any TP.DT data packet has less than 8 bytes"?
+>>> Joe Perches <joe@perches.com> schrieb am 09.10.2021 um 05:14 in Nachricht
+<5daf69b365e23ceecee911c4d0f2f66a0b9ec95c.camel@perches.com>:
+> On Sat, 2021-10-09 at 11:02 +0800, Guo Zhi wrote:
+>> Pointers should be printed with %p or %px rather than
+>> cast to (unsigned long long) and printed with %llu.
+>> Change %llu to %p to print the pointer into sysfs.
+> ][]
+>> diff --git a/drivers/scsi/scsi_transport_iscsi.c 
+> b/drivers/scsi/scsi_transport_iscsi.c
+> []
+>> @@ -129,8 +129,8 @@ show_transport_handle(struct device *dev, struct 
+> device_attribute *attr,
+>>  
+>> 
+>>  	if (!capable(CAP_SYS_ADMIN))
+>>  		return -EACCES;
+>> -	return sysfs_emit(buf, "%llu\n",
+>> -		  (unsigned long long)iscsi_handle(priv->iscsi_transport));
+>> +	return sysfs_emit(buf, "%p\n",
+>> +		iscsi_ptr(priv->iscsi_transport));
 > 
-> Yes.
+> iscsi_transport is a pointer isn't it?
+> 
+> so why not just
+> 
+> 	return sysfs_emit(buf, "%p\n", priv->iscsi_transport);
 
-OK, then I have some problems to understand this part:
-- 5.10.2.4 Connection Closure
-  The “connection abort” message is not allowed to be used by responders in the
-  case of a global destination (i.e. BAM).
+Isn't the difference that %p outputs hex, while %u outputs decimal?
 
-My assumption would be: In case of broadcast transfer, multiple MCU are
-receivers. If one of MCU was not able to get complete TP.DT, it should
-not abort BAM for all.
+> 
+> ?
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups 
+> "open-iscsi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an 
+> email to open-iscsi+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit 
+> https://groups.google.com/d/msgid/open-iscsi/5daf69b365e23ceecee911c4d0f2f66a 
+> 0b9ec95c.camel%40perches.com.
 
-So, "DUT discards the BAM transport" sounds for me as local action.
-Complete TP would be dropped locally.
 
-Regards
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+
