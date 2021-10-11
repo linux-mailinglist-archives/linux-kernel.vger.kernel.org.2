@@ -2,131 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939E7428A0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B249428A1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235608AbhJKJsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:48:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42910 "EHLO mail.kernel.org"
+        id S235603AbhJKJt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:49:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235624AbhJKJsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:48:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B61B61040;
-        Mon, 11 Oct 2021 09:46:16 +0000 (UTC)
+        id S235539AbhJKJt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 05:49:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B370260D07;
+        Mon, 11 Oct 2021 09:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633945576;
-        bh=qRyh8ehsFmtn9ig4J8UbiRrew6heVcGUFCDbxxmKZf8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZnZETaa9OuNwX0DpDQTge5IMXAkuyM+/s2ByE8NOqM9aqQ73JVSVHok5AdiMYnS24
-         k348ZHgZbG0Jtf0Z3zIO8hm2EgLo99RkSqFwFGzXgQdrhnvF4w9+NumaFHnvq0xYlJ
-         ITQVLs+S61g7iLyTJuFYrpfQfPQmphxELjDppzN+7RhD2vIc64DhliDeWVZjGEH85W
-         d0dDuE20L19zOnsqolYhp9UlZQcUQW/V6Kd2W1KMpchDpxyX/SoyHwBJJ9Ziw+GLEa
-         DSjC592BNq/jM1Ma8c7DI9NYmgESNSnc2khWntaZebtO96uLboiSmjXpNQOCNSDuZf
-         V0nu5NTx4/7CA==
-Received: by mail-lf1-f45.google.com with SMTP id x27so71174523lfa.9;
-        Mon, 11 Oct 2021 02:46:16 -0700 (PDT)
-X-Gm-Message-State: AOAM531sdBmYJ2AcftE++nQeY6tecHeu5jAqDZ6blQb96jF9RTWgFsov
-        6NVh72BgxZtX0jdN6fceYSRDH5u7LC0LS9lSY8Y=
-X-Google-Smtp-Source: ABdhPJyHs3mE6IoiFv5FE4vcliRHFQyxAEDWB/Wlg8v0WqzlUPkK8zWA+LhRJS54ay+HCTZiOLGsUmbAhjIFcqWae2k=
-X-Received: by 2002:adf:b1c4:: with SMTP id r4mr23576993wra.428.1633945563612;
- Mon, 11 Oct 2021 02:46:03 -0700 (PDT)
+        s=k20201202; t=1633945648;
+        bh=vB/8tYwO/Zfs45j4rAaUI7XHZeBWjc49gNuQjGutcoU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=coJ5KbQZlymBO0G8Sbc6a5iqQnWrSlhnuEkEUvudOmeny2EN0Y/KeRxdBULIqHoGz
+         C9WqO/tQo9K+krtq4wexsUJWZU3HIl76U5tEb/AfQwUEe0TMHIRb1ZvoRTUOWFOxov
+         8pkMQ/pwhG2cA9JBkyJDfIY7RKM/JcXepvIr9LIOLmZMpeAIBP7H2sU55k/D1rrXb8
+         vnjC7LOj1lV1im+UCNGARZJ0j68QfL2G5f0ElsNQKtzEEGFE1goTagsQdKJRI1oB5B
+         EI+15FZAiZBHbL90r69f400MVcuIuiba8icA+wpf8B4yb4kabo44hPpz0goAyjnL6z
+         zLiXbUxQTcHvA==
+Date:   Mon, 11 Oct 2021 11:47:24 +0200
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     Teng Qi <starmiku1207184332@gmail.com>,
+        lorenzo.bianconi83@gmail.com, jic23@kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        islituo@gmail.com, baijiaju1990@gmail.com,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: Re: [PATCH] iio: imu: st_lsm6dsx: Fix an array overflow in
+ st_lsm6dsx_set_odr()
+Message-ID: <YWQILPRHZw2BsAYu@lore-desk>
+References: <20211010091230.895549-1-starmiku1207184332@gmail.com>
+ <8efeaffd-ae9a-d0ef-0222-6c94c0e31e7e@metafoo.de>
 MIME-Version: 1.0
-References: <20210928075216.4193128-1-arnd@kernel.org> <9dedf9bb-5377-9f2c-cbb1-2a57b40493da@molgen.mpg.de>
- <CAMuHMdXspk27xd95YAsXa73ES8rfKxii3RUEtsBtxQTk9qLztA@mail.gmail.com>
-In-Reply-To: <CAMuHMdXspk27xd95YAsXa73ES8rfKxii3RUEtsBtxQTk9qLztA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 11 Oct 2021 11:45:47 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3s5tu8MfdtXpoCeA8rrAUD3sscCMqLaoUVdUY9G-9AvQ@mail.gmail.com>
-Message-ID: <CAK8P3a3s5tu8MfdtXpoCeA8rrAUD3sscCMqLaoUVdUY9G-9AvQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] firmware: include drivers/firmware/Kconfig unconditionally
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gLTk5hY2TkhJnKDu"
+Content-Disposition: inline
+In-Reply-To: <8efeaffd-ae9a-d0ef-0222-6c94c0e31e7e@metafoo.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 10:42 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Sat, Oct 9, 2021 at 11:24 AM Paul Menzel <pmenzel@molgen.mpg.de> wrote:
-> > Am 28.09.21 um 09:50 schrieb Arnd Bergmann:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > +#
-> > +# ARM System Control and Management Interface Protocol
-> > +#
-> > +# end of ARM System Control and Management Interface Protocol
+
+--gLTk5hY2TkhJnKDu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> On 10/10/21 11:12 AM, Teng Qi wrote:
+> > The length of hw->settings->odr_table is 2 and ref_sensor->id is an enum
+> > variable whose value is between 0 and 5.
+> > However, the value ST_LSM6DSX_ID_MAX (i.e. 5) is not catched properly in
+> >   switch (sensor->id) {
+> >=20
+> > If ref_sensor->id is ST_LSM6DSX_ID_MAX, an array overflow will ocurrs in
+> > function st_lsm6dsx_check_odr():
+> >    odr_table =3D &sensor->hw->settings->odr_table[sensor->id];
+> >=20
+> > and in function st_lsm6dsx_set_odr():
+> >    reg =3D &hw->settings->odr_table[ref_sensor->id].reg;
+> >=20
+> > To fix this possible array overflow, ref_sensor->id should be checked
+> > first. If it is greater than or equal to 2, the function
+> > st_lsm6dsx_set_odr() returns -EINVAL.
+> >=20
+> > Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> > Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
+>=20
+> Hi,
+>=20
+> Thanks for the patch, good catch. But there are a few things to improve
+> here, the goal should not be to silence the output of your checker, but to
+> write good code.
+>=20
+> Let's start with ST_LSM6DSX_ID_MAX. As the name suggests this is an entry=
+ at
+> the end of the enum that is used to get the size of the enum. But its val=
+ue
+> itself is never assigned to any variable of that type. This is a very com=
+mon
+> pattern. So strictly speaking there is no bug, since the out-of-range val=
+ue
+> of ST_LSM6DSX_ID_MAX is never used.
+>=20
+> The other thing is that we usually don't want to hardcode range checks for
+> array sizes with integer literals, but rather use ARRAY_SIZE() instead. T=
+his
+> makes sure that the code stays correct when the array size changes.
+>=20
+> If you really wanted to modify the code sot that your code checker does n=
+ot
+> detect a false positive I'd modify the switch statement to explicitly han=
+dle
+> ST_LSM6DSX_ID_GYRO and ST_LSM6DSX_ID_ACCEL and the return an error for the
+> default case with a comment that default case should never occur.
+
++1 :)
+
+Regards,
+Lorenzo
+
+>=20
+> - Lars
+>=20
+> > ---
+> >   drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 4 ++++
+> >   1 file changed, 4 insertions(+)
+> >=20
+> > diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio=
+/imu/st_lsm6dsx/st_lsm6dsx_core.c
+> > index db45f1fc0b81..edf5d33dd256 100644
+> > --- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+> > +++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+> > @@ -1308,6 +1308,10 @@ st_lsm6dsx_set_odr(struct st_lsm6dsx_sensor *sen=
+sor, u32 req_odr)
+> >   		break;
+> >   	}
+> > +	if (ref_sensor->id >=3D 2) {
+> > +		return -EINVAL;
+> > +	}
 > > +
-> > +# CONFIG_FIRMWARE_MEMMAP is not set
-> > +# CONFIG_GOOGLE_FIRMWARE is not set
-> > +
-> > +#
-> > +# Tegra firmware driver
-> > +#
-> > +# end of Tegra firmware driver
-> > +# end of Firmware Drivers
-> > +
-> >   # CONFIG_GNSS is not set
-> >   CONFIG_MTD=m
-> >   # CONFIG_MTD_TESTS is not set
-> > ```
-> >
-> > No idea if the entries could be hidden for platforms not supporting them.
-> >
-> >          ARM System Control and Management Interface Protocol  ----
-> >      [ ] Add firmware-provided memory map to sysfs
-> >      [ ] Google Firmware Drivers  ----
-> >          Tegra firmware driver  ----
->
-> GOOGLE_FIRMWARE should probably depend on something.
-> I highly doubt Google is running servers on e.g. h8300 and nds32.
+> >   	if (req_odr > 0) {
+> >   		err =3D st_lsm6dsx_check_odr(ref_sensor, req_odr, &val);
+> >   		if (err < 0)
+>=20
+>=20
 
-GOOGLE_FIRMWARE is only the 'menuconfig' option that contains
-the other options, but on architectures that have neither CONFIG_OF
-nor CONFIG_ACPI, this is empty.  Most architectures of course
-do support or require CONFIG_OF, so it's unclear whether we should
-show the options for coreboot. Since it's a software-only driver, I
-would tend to keep showing it, given that coreboot can be ported
-to every architecture. The DT binding [1] seems to be neither
-Google nor Arm specific.
+--gLTk5hY2TkhJnKDu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-CONFIG_FIRMWARE_MEMMAP in turn can be used for
-anything that has memory hotplug, and in theory additional
-drivers that register with this interface.
+-----BEGIN PGP SIGNATURE-----
 
-I'd lean towards "leave as is" for both, to avoid having to
-change the dependencies again whenever something else
-can use these.
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYWQILAAKCRA6cBh0uS2t
+rB6iAQCIGK44O0mznjUHIz1nfCz74dh/KY7G2nH0FupurFNatwD7BaTRDpzoNjdX
+oV4e2lPCW+wy7PU1cXyPRA7hWIz/3AQ=
+=Vtt3
+-----END PGP SIGNATURE-----
 
-        Arnd
-
-[1] Documentation/devicetree/bindings/firmware/coreboot.txt
+--gLTk5hY2TkhJnKDu--
