@@ -2,158 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A324292F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E6842930E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbhJKPSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231899AbhJKPSm (ORCPT
+        id S233864AbhJKPX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:23:56 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15496 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231951AbhJKPXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:18:42 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77952C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:16:42 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so22169135otb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=etYgg+h2O5V3SwL5gD13pIM27MsV6K0L3L1sqF1wYTE=;
-        b=el38wyOt6M4eOeshwmiPoV7jMG5ZX6uvIFaNnvNoSJYlaEEJhW2pZPAWYzAg454+LD
-         1E5js8LOfImu5A1wtJiHp6RfkDoqcMXVa7wnE66jUxr7VQNkJBG/hDq/rfVVcSj6oUGO
-         2uDquzaB0K4L2mod1iI7TG7b8zmA/0AMXCqQmdBYvGrF9Qvp71qj8/O2IKRhH6ijvE2l
-         vB+AoW3OuMTrolDnGAfnkKMHWAXmWmZHenMyNVlQXP7zuXY8OgTCulNHtvsYjOnGEex5
-         RNguP7gYMbN75QetPxH3xlevB6ew5ulzPIyVe6V311Fa09+4UsjP4cpUxUzJqRJyppIb
-         pNKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=etYgg+h2O5V3SwL5gD13pIM27MsV6K0L3L1sqF1wYTE=;
-        b=1FBWd2aXaFpTCIm/cPPNDGHj+18PdcWOcouhxxGrEHGTRy9t/uhd2bWJzgs/xxt1na
-         AqahorMMTtLtT2boIUM41lD5sF1Dfqxv4LraVIc9e2iD4180sy8Fa0f3XOn5n7pbpfXi
-         3YGYhUYgRP00chIjWzrTHMItvnbih/lbvh1kk+doI/OTaDNv7yRtWnbbr5VEusRac913
-         uRxJYUbB08uoA0fwWTB0uxRGaz+HKoRoGGv8Y/dubF2gIvl7P9VQClXSzAke+cmufQ6B
-         lj4d5bI2xrNm+I1GQR/03rvlVNAqGu8JoQjhADlqGXQqmSSTc+JRqPw4Z9WwhNL8y+LW
-         Hvag==
-X-Gm-Message-State: AOAM530XMYDwwjeDafxR5UIIdwEIGpGXwFnkBiUTUotzfxJLKFn3lRkN
-        OtW7hokpNA9Z3EhNEWx+uzMidEq1Tx5asM5smXeVowMjNA8l7Llt
-X-Google-Smtp-Source: ABdhPJy3IwrhJ7udHn/k4mW8pPjAGJ7Y5Fqmen34KA6kKWe57E+fesp4mtWBLidlT1RKOa4qSiZheM5CxtVOr2PEVAc=
-X-Received: by 2002:a05:6830:402c:: with SMTP id i12mr7503223ots.319.1633965401529;
- Mon, 11 Oct 2021 08:16:41 -0700 (PDT)
+        Mon, 11 Oct 2021 11:23:54 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19BFBdkL024351;
+        Mon, 11 Oct 2021 11:20:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=8JdIijDsyFcyUndtQJTDx7Jep7qM7XiDzn473KgSPI8=;
+ b=dQeuk1C9NhNv8wdNfiGSpOFgTfDHrohiXCDUCDP5IUolSe+r9oG4EBTCLrxBmE3g4ldl
+ K0rRXAreO9pp5ZBO95ygRl8HGWa8QJ4jmfSGC1zr4usjASC9uUwZdIDGsOUt0SSUCPyL
+ SLcYS3MmIP/MZCHyHUiir7prXeQocK77DS19YnvHDxN+x8st5D3ZD9ByDscPccaGzSVa
+ PNFwZKc7t7oPxHueo6quzngZyne8lIxNR4sFD5c64oLoDIAe8aDyb7c1idDA2Y2VlXNu
+ mdEuAkdA3MhFLyNDOL3zW2kidNmOVbd/ARK6guiuUrUU8D745sIAEEoqC0T6htGI4uoi tg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bmqpmg61b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 11:20:18 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19BFF3UR008574;
+        Mon, 11 Oct 2021 11:20:17 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bmqpmg602-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 11:20:16 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19BFDIbC014419;
+        Mon, 11 Oct 2021 15:20:14 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bk2q97292-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 15:20:14 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19BFKBKv19268016
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Oct 2021 15:20:11 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9643DAE061;
+        Mon, 11 Oct 2021 15:20:11 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7FCBEAE057;
+        Mon, 11 Oct 2021 15:20:03 +0000 (GMT)
+Received: from sig-9-65-79-79.ibm.com (unknown [9.65.79.79])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 11 Oct 2021 15:20:03 +0000 (GMT)
+Message-ID: <539086ce33ed6417dd1ada1c8f593fc0edeb8f73.camel@linux.ibm.com>
+Subject: Re: [PATCH v14 1/3] fs: Add trusted_for(2) syscall implementation
+ and related sysctl
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Florian Weimer <fw@deneb.enyo.de>,
+        =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Philippe =?ISO-8859-1?Q?Tr=E9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Date:   Mon, 11 Oct 2021 11:20:02 -0400
+In-Reply-To: <87tuhpynr4.fsf@mid.deneb.enyo.de>
+References: <20211008104840.1733385-1-mic@digikod.net>
+         <20211008104840.1733385-2-mic@digikod.net>
+         <87tuhpynr4.fsf@mid.deneb.enyo.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: izC9yhrEe1LpTrA6aSB26JuAwHzBGp1s
+X-Proofpoint-ORIG-GUID: PawvuLLX4xcPVEed7b1tj13LIXgFSuK2
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <CANpmjNOw--ZNyhmn-GjuqU+aH5T98HMmBoCM4z=JFvajC913Qg@mail.gmail.com>
- <YWPaZSX4WyOwilW+@arighi-desktop> <CANpmjNMFFFa=6toZJXqo_9hzv05zoD0aXA4D_K93rfw58cEw3w@mail.gmail.com>
- <YWPjZv7ClDOE66iI@arighi-desktop> <CACT4Y+b4Xmev7uLhASpHnELcteadhaXCBkkD5hO2YNP5M2451g@mail.gmail.com>
- <YWQCknwPcGlOBfUi@arighi-desktop> <YWQJe1ccZ72FZkLB@arighi-desktop>
- <CANpmjNNtCf+q21_5Dj49c4D__jznwFbBFrWE0LG5UnC__B+fKA@mail.gmail.com>
- <YWRNVTk9N8K0RMst@arighi-desktop> <CACT4Y+bZGK75S+cyeQda-oHmeDVeownwOj2imQbPYi0dRY18+A@mail.gmail.com>
- <YWRUBxS0hGGDkeU4@arighi-desktop>
-In-Reply-To: <YWRUBxS0hGGDkeU4@arighi-desktop>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 11 Oct 2021 17:16:30 +0200
-Message-ID: <CACT4Y+ZATYYpX6wJ_i1ig6ZhA3kwuH_8eC51spkd+0x3ZxX0ow@mail.gmail.com>
-Subject: Re: BUG: soft lockup in __kmalloc_node() with KFENCE enabled
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-11_05,2021-10-11_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ clxscore=1011 lowpriorityscore=0 adultscore=0 mlxscore=0
+ priorityscore=1501 bulkscore=0 malwarescore=0 impostorscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110110088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 at 17:11, Andrea Righi <andrea.righi@canonical.com> wrote:
->
-> On Mon, Oct 11, 2021 at 05:00:15PM +0200, Dmitry Vyukov wrote:
-> > On Mon, 11 Oct 2021 at 16:42, Andrea Righi <andrea.righi@canonical.com> wrote:
-> > >
-> > > On Mon, Oct 11, 2021 at 12:03:52PM +0200, Marco Elver wrote:
-> > > > On Mon, 11 Oct 2021 at 11:53, Andrea Righi <andrea.righi@canonical.com> wrote:
-> > > > > On Mon, Oct 11, 2021 at 11:23:32AM +0200, Andrea Righi wrote:
-> > > > > ...
-> > > > > > > You seem to use the default 20s stall timeout. FWIW syzbot uses 160
-> > > > > > > secs timeout for TCG emulation to avoid false positive warnings:
-> > > > > > > https://github.com/google/syzkaller/blob/838e7e2cd9228583ca33c49a39aea4d863d3e36d/dashboard/config/linux/upstream-arm64-kasan.config#L509
-> > > > > > > There are a number of other timeouts raised as well, some as high as
-> > > > > > > 420 seconds.
-> > > > > >
-> > > > > > I see, I'll try with these settings and see if I can still hit the soft
-> > > > > > lockup messages.
-> > > > >
-> > > > > Still getting soft lockup messages even with the new timeout settings:
-> > > > >
-> > > > > [  462.663766] watchdog: BUG: soft lockup - CPU#2 stuck for 430s! [systemd-udevd:168]
-> > > > > [  462.755758] watchdog: BUG: soft lockup - CPU#3 stuck for 430s! [systemd-udevd:171]
-> > > > > [  924.663765] watchdog: BUG: soft lockup - CPU#2 stuck for 861s! [systemd-udevd:168]
-> > > > > [  924.755767] watchdog: BUG: soft lockup - CPU#3 stuck for 861s! [systemd-udevd:171]
-> > > >
-> > > > The lockups are expected if you're hitting the TCG bug I linked. Try
-> > > > to pass '-enable-kvm' to the inner qemu instance (my bad if you
-> > > > already have), assuming that's somehow easy to do.
-> > >
-> > > If I add '-enable-kvm' I can triggering other random panics (almost
-> > > immediately), like this one for example:
-> > >
-> > > [21383.189976] BUG: kernel NULL pointer dereference, address: 0000000000000098
-> > > [21383.190633] #PF: supervisor read access in kernel mode
-> > > [21383.191072] #PF: error_code(0x0000) - not-present page
-> > > [21383.191529] PGD 0 P4D 0
-> > > [21383.191771] Oops: 0000 [#1] SMP NOPTI
-> > > [21383.192113] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.15-rc4
-> > > [21383.192757] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-> > > [21383.193414] RIP: 0010:wb_timer_fn+0x44/0x3c0
-> > > [21383.193855] Code: 41 8b 9c 24 98 00 00 00 41 8b 94 24 b8 00 00 00 41 8b 84 24 d8 00 00 00 4d 8b 74 24 28 01 d3 01 c3 49 8b 44 24 60 48 8b 40 78 <4c> 8b b8 98 00 00 00 4d 85 f6 0f 84 c4 00 00 00 49 83 7c 24 30 00
-> > > [21383.195366] RSP: 0018:ffffbcd140003e68 EFLAGS: 00010246
-> > > [21383.195842] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000004
-> > > [21383.196425] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff9a3521f4fd80
-> > > [21383.197010] RBP: ffffbcd140003e90 R08: 0000000000000000 R09: 0000000000000000
-> > > [21383.197594] R10: 0000000000000004 R11: 000000000000000f R12: ffff9a34c75c4900
-> > > [21383.198178] R13: ffff9a34c3906de0 R14: 0000000000000000 R15: ffff9a353dc18c00
-> > > [21383.198763] FS:  0000000000000000(0000) GS:ffff9a353dc00000(0000) knlGS:0000000000000000
-> > > [21383.199558] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [21383.200212] CR2: 0000000000000098 CR3: 0000000005f54000 CR4: 00000000000006f0
-> > > [21383.200930] Call Trace:
-> > > [21383.201210]  <IRQ>
-> > > [21383.201461]  ? blk_stat_free_callback_rcu+0x30/0x30
-> > > [21383.202692]  blk_stat_timer_fn+0x138/0x140
-> > > [21383.203180]  call_timer_fn+0x2b/0x100
-> > > [21383.203666]  __run_timers.part.0+0x1d1/0x240
-> > > [21383.204227]  ? kvm_clock_get_cycles+0x11/0x20
-> > > [21383.204815]  ? ktime_get+0x3e/0xa0
-> > > [21383.205309]  ? native_apic_msr_write+0x2c/0x30
-> > > [21383.205914]  ? lapic_next_event+0x20/0x30
-> > > [21383.206412]  ? clockevents_program_event+0x94/0xf0
-> > > [21383.206873]  run_timer_softirq+0x2a/0x50
-> > > [21383.207260]  __do_softirq+0xcb/0x26f
-> > > [21383.207647]  irq_exit_rcu+0x8c/0xb0
-> > > [21383.208010]  sysvec_apic_timer_interrupt+0x7c/0x90
-> > > [21383.208464]  </IRQ>
-> > > [21383.208713]  asm_sysvec_apic_timer_interrupt+0x12/0x20
-> > >
-> > > I think that systemd autotest used to use -enable-kvm, but then they
-> > > removed it, because it was introducing too many problems in the nested
-> > > KVM context. I'm not sure about the nature of those problems though, I
-> > > can investigate a bit and see if I can understand what they were
-> > > exactly.
-> >
-> > This looks like just a plain bug in wb_timer_fn, not something related
-> > to virtualization.
-> > Do you have this fix?
-> > https://syzkaller.appspot.com/bug?extid=aa0801b6b32dca9dda82
->
-> Yes, it looks like I have this:
->
->  d152c682f03c block: add an explicit ->disk backpointer to the request_queue
+Hi Florian,
 
-Then there is another bug in wb_timer_fn I guess...
+On Sun, 2021-10-10 at 16:10 +0200, Florian Weimer wrote:
+> * Mickaël Salaün:
+> 
+> > Being able to restrict execution also enables to protect the kernel by
+> > restricting arbitrary syscalls that an attacker could perform with a
+> > crafted binary or certain script languages.  It also improves multilevel
+> > isolation by reducing the ability of an attacker to use side channels
+> > with specific code.  These restrictions can natively be enforced for ELF
+> > binaries (with the noexec mount option) but require this kernel
+> > extension to properly handle scripts (e.g. Python, Perl).  To get a
+> > consistent execution policy, additional memory restrictions should also
+> > be enforced (e.g. thanks to SELinux).
+> 
+> One example I have come across recently is that code which can be
+> safely loaded as a Perl module is definitely not a no-op as a shell
+> script: it downloads code and executes it, apparently over an
+> untrusted network connection and without signature checking.
+> 
+> Maybe in the IMA world, the expectation is that such ambiguous code
+> would not be signed in the first place, but general-purpose
+> distributions are heading in a different direction with
+> across-the-board signing:
 
-Don't know if this is the same or something else:
-https://lore.kernel.org/lkml/CAHbLzkrdGva2dzO36r62LKv_ip5trbMK0BO3vCeSBk2_7OE-zA@mail.gmail.com/
+Automatically signing code is at least the first step in the right
+direction of only executing code with known provenance.  Perhaps future
+work would address the code signing granularity.
 
-There also were some data races in this function:
-https://groups.google.com/g/syzkaller-upstream-moderation/search?q=wb_timer_fn
+> 
+>   Signed RPM Contents
+>   <https://fedoraproject.org/wiki/Changes/Signed_RPM_Contents>
+> 
+> So I wonder if we need additional context information for a potential
+> LSM to identify the intended use case.
+
+My first thoughts were an enumeration UNSIGNED_DOWNLOADED_CODE or maybe
+even UNTRUSTED_DOWNLOADED_CODE, but that doesn't seem very
+helpful.  What type of context information were you thinking about?
+
+Mimi
+
