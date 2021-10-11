@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC57428F9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A383428F9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238056AbhJKN7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:59:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47086 "EHLO mail.kernel.org"
+        id S237585AbhJKN7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:59:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237099AbhJKN56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:57:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA39D60F11;
-        Mon, 11 Oct 2021 13:54:35 +0000 (UTC)
+        id S238050AbhJKN6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:58:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C99CE61105;
+        Mon, 11 Oct 2021 13:54:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960476;
-        bh=rc5GRsNpvm/GFbpZM6yosk8RwXPRH/YcaoCm5CZ/KdM=;
+        s=korg; t=1633960479;
+        bh=5j3Deu0c6EsoGoCN0WWehsfjrLouSlTkZlGLA1NTIJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xnomW9qvP3V95aqzDyb7kDljKl4wYmAzuf+Y6fxg6D6Q4OlW8XA0atbcYXbdKKIW8
-         RnC6txFwu224kbIl3VDtXDQCC56KN3o+SHfFY7VkIyEnIO8ap52Qiy2LZDMMyJ6++z
-         ZMu6VCcBy9bIfMlDUvVfEHp3lKZOzTTvzza0FmLQ=
+        b=RP2DN7nk2tsJWyj2OxOcH07pZQba9fu3PL++QITOwpaWPFxtTnlLvCISoXEdDlPjn
+         89q0lbWZqxQlDEwMKcoGPQFXA4b6q4TopvKFrLdQgVSNBTkkkRu9W1bLCuiNuWZ63F
+         OtrByDjlT0oesTankKSR99hraWz2QSmQx2zGxCJY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Raed Salem <raeds@nvidia.com>,
+        stable@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 38/83] net/mlx5e: IPSEC RX, enable checksum complete
-Date:   Mon, 11 Oct 2021 15:45:58 +0200
-Message-Id: <20211011134509.704779170@linuxfoundation.org>
+Subject: [PATCH 5.10 39/83] net/mlx5: E-Switch, Fix double allocation of acl flow counter
+Date:   Mon, 11 Oct 2021 15:45:59 +0200
+Message-Id: <20211011134509.741545505@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
 References: <20211011134508.362906295@linuxfoundation.org>
@@ -40,51 +41,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raed Salem <raeds@nvidia.com>
+From: Moshe Shemesh <moshe@nvidia.com>
 
-[ Upstream commit f9a10440f0b1f33faa792af26f4e9823a9b8b6a4 ]
+[ Upstream commit a586775f83bd729ad60b56352dbe067f4bb0beee ]
 
-Currently in Rx data path IPsec crypto offloaded packets uses
-csum_none flag, so checksum is handled by the stack, this naturally
-have some performance/cpu utilization impact on such flows. As Nvidia
-NIC starting from ConnectX6DX provides checksum complete value out of
-the box also for such flows there is no sense in taking csum_none path,
-furthermore the stack (xfrm) have the method to handle checksum complete
-corrections for such flows i.e. IPsec trailer removal and consequently
-checksum value adjustment.
+Flow counter is allocated in eswitch legacy acl setting functions
+without checking if already allocated by previous setting. Add a check
+to avoid such double allocation.
 
-Because of the above and in addition the ConnectX6DX is the first HW
-which supports IPsec crypto offload then it is safe to report csum
-complete for IPsec offloaded traffic.
-
-Fixes: b2ac7541e377 ("net/mlx5e: IPsec: Add Connect-X IPsec Rx data path offload")
-Signed-off-by: Raed Salem <raeds@nvidia.com>
+Fixes: 07bab9502641 ("net/mlx5: E-Switch, Refactor eswitch ingress acl codes")
+Fixes: ea651a86d468 ("net/mlx5: E-Switch, Refactor eswitch egress acl codes")
+Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ .../mellanox/mlx5/core/esw/acl/egress_lgcy.c         | 12 ++++++++----
+ .../mellanox/mlx5/core/esw/acl/ingress_lgcy.c        |  4 +++-
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index f327b78261ec..117a59341453 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -999,14 +999,9 @@ static inline void mlx5e_handle_csum(struct net_device *netdev,
- 		goto csum_unnecessary;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
+index 3e19b1721303..b00c7d47833f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
+@@ -79,12 +79,16 @@ int esw_acl_egress_lgcy_setup(struct mlx5_eswitch *esw,
+ 	int dest_num = 0;
+ 	int err = 0;
  
- 	if (likely(is_last_ethertype_ip(skb, &network_depth, &proto))) {
--		u8 ipproto = get_ip_proto(skb, network_depth, proto);
--
--		if (unlikely(ipproto == IPPROTO_SCTP))
-+		if (unlikely(get_ip_proto(skb, network_depth, proto) == IPPROTO_SCTP))
- 			goto csum_unnecessary;
+-	if (MLX5_CAP_ESW_EGRESS_ACL(esw->dev, flow_counter)) {
++	if (vport->egress.legacy.drop_counter) {
++		drop_counter = vport->egress.legacy.drop_counter;
++	} else if (MLX5_CAP_ESW_EGRESS_ACL(esw->dev, flow_counter)) {
+ 		drop_counter = mlx5_fc_create(esw->dev, false);
+-		if (IS_ERR(drop_counter))
++		if (IS_ERR(drop_counter)) {
+ 			esw_warn(esw->dev,
+ 				 "vport[%d] configure egress drop rule counter err(%ld)\n",
+ 				 vport->vport, PTR_ERR(drop_counter));
++			drop_counter = NULL;
++		}
+ 		vport->egress.legacy.drop_counter = drop_counter;
+ 	}
  
--		if (unlikely(mlx5_ipsec_is_rx_flow(cqe)))
--			goto csum_none;
--
- 		stats->csum_complete++;
- 		skb->ip_summed = CHECKSUM_COMPLETE;
- 		skb->csum = csum_unfold((__force __sum16)cqe->check_sum);
+@@ -123,7 +127,7 @@ int esw_acl_egress_lgcy_setup(struct mlx5_eswitch *esw,
+ 	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_DROP;
+ 
+ 	/* Attach egress drop flow counter */
+-	if (!IS_ERR_OR_NULL(drop_counter)) {
++	if (drop_counter) {
+ 		flow_act.action |= MLX5_FLOW_CONTEXT_ACTION_COUNT;
+ 		drop_ctr_dst.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
+ 		drop_ctr_dst.counter_id = mlx5_fc_id(drop_counter);
+@@ -162,7 +166,7 @@ void esw_acl_egress_lgcy_cleanup(struct mlx5_eswitch *esw,
+ 	esw_acl_egress_table_destroy(vport);
+ 
+ clean_drop_counter:
+-	if (!IS_ERR_OR_NULL(vport->egress.legacy.drop_counter)) {
++	if (vport->egress.legacy.drop_counter) {
+ 		mlx5_fc_destroy(esw->dev, vport->egress.legacy.drop_counter);
+ 		vport->egress.legacy.drop_counter = NULL;
+ 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
+index d64fad2823e7..45570d0a58d2 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
+@@ -160,7 +160,9 @@ int esw_acl_ingress_lgcy_setup(struct mlx5_eswitch *esw,
+ 
+ 	esw_acl_ingress_lgcy_rules_destroy(vport);
+ 
+-	if (MLX5_CAP_ESW_INGRESS_ACL(esw->dev, flow_counter)) {
++	if (vport->ingress.legacy.drop_counter) {
++		counter = vport->ingress.legacy.drop_counter;
++	} else if (MLX5_CAP_ESW_INGRESS_ACL(esw->dev, flow_counter)) {
+ 		counter = mlx5_fc_create(esw->dev, false);
+ 		if (IS_ERR(counter)) {
+ 			esw_warn(esw->dev,
 -- 
 2.33.0
 
