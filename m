@@ -2,253 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7E342951F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79ADA42950E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbhJKREb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:04:31 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53264 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233482AbhJKRE0 (ORCPT
+        id S233035AbhJKRDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:03:04 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3965 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232560AbhJKRDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:04:26 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0AFC022007;
-        Mon, 11 Oct 2021 17:02:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633971745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4jY518LLN0DEflKAEIOoiJENNbC5tBQaKEI9hO0rfaU=;
-        b=b7iLr7upIMD9tjkdJx4F37SiOf5heqj7i9GTBuURfq9hu1TXF6xZcTOBGFmPIvNgEWsz5V
-        yfgysUwkZU3oGy0GrEHczli9rjC/7s87TFYYK0m9dQbfNhwjM7Ca/vu+1SfHIBoUIkBI8z
-        jEvllkuXnHP0R9kXAghBR/dnA+RV/QQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633971745;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4jY518LLN0DEflKAEIOoiJENNbC5tBQaKEI9hO0rfaU=;
-        b=x61B30X9aAUcxuFVUI3noYurioH93T2CaNujNo5w18bg6oKqENvWOCrNZV38EhojRGy7qS
-        qtbUS2RtUQMSfVAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B16C513BCE;
-        Mon, 11 Oct 2021 17:02:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MAS1KSBuZGEcfwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 11 Oct 2021 17:02:24 +0000
-Message-ID: <2a62971d-467f-f354-caac-2b5ecf258e3c@suse.cz>
-Date:   Mon, 11 Oct 2021 19:02:24 +0200
+        Mon, 11 Oct 2021 13:03:00 -0400
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HSlMx1p68z67fKq;
+        Tue, 12 Oct 2021 00:57:33 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 19:00:58 +0200
+Received: from [10.47.95.202] (10.47.95.202) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Mon, 11 Oct
+ 2021 18:00:57 +0100
+Subject: perf tools jevents build flags (was Re: [PATCH] perf jevents: Fix
+ sys_event_tables to be freed like arch_std_events)
+From:   John Garry <john.garry@huawei.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     Like Xu <like.xu.linux@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210928102938.69681-1-likexu@tencent.com>
+ <YVMB5kt8XG+OdJ1M@kernel.org>
+ <c547bc2d-ab7c-1e89-5d12-bd5d875f7aa5@huawei.com>
+ <YVMVwDt3QHBPfT/T@kernel.org> <YVMXHM0F/y2ptX8C@kernel.org>
+ <3949dfa2-d684-47af-ffa7-71b07141f64d@huawei.com>
+ <YVNXTuq1PpLpMH/R@kernel.org>
+ <bd98c9f3-de67-7ca5-534c-f7fd6cc69915@huawei.com>
+Message-ID: <e5c0123b-31d2-5f07-52a4-724ae89747c1@huawei.com>
+Date:   Mon, 11 Oct 2021 18:03:19 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
+In-Reply-To: <bd98c9f3-de67-7ca5-534c-f7fd6cc69915@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, kasan-dev@googlegroups.com,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Oliver Glitta <glittao@gmail.com>,
-        Imran Khan <imran.f.khan@oracle.com>
-References: <20211007095815.3563-1-vbabka@suse.cz>
- <YV7TnygBLdHJjmRW@elver.google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] lib/stackdepot: allow optional init and stack_table
- allocation by kvmalloc()
-In-Reply-To: <YV7TnygBLdHJjmRW@elver.google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.95.202]
+X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/21 13:01, Marco Elver wrote:
-> On Thu, Oct 07, 2021 at 11:58AM +0200, Vlastimil Babka wrote:
-> [...] 
->> - Add a CONFIG_STACKDEPOT_ALWAYS_INIT flag to keep using the current
->>   well-defined point of allocation as part of mem_init(). Make CONFIG_KASAN
->>   select this flag.
->> - Other users have to call stack_depot_init() as part of their own init when
->>   it's determined that stack depot will actually be used. This may depend on
->>   both config and runtime conditions. Convert current users which are
->>   page_owner and several in the DRM subsystem. Same will be done for SLUB
->>   later.
->> - Because the init might now be called after the boot-time memblock allocation
->>   has given all memory to the buddy allocator, change stack_depot_init() to
->>   allocate stack_table with kvmalloc() when memblock is no longer available.
->>   Also handle allocation failure by disabling stackdepot (could have
->>   theoretically happened even with memblock allocation previously), and don't
->>   unnecessarily align the memblock allocation to its own size anymore.
-> ...
->> Hi, I'd appreciate review of the DRM parts - namely that I've got correctly
->> that stack_depot_init() is called from the proper init functions and iff
->> stack_depot_save() is going to be used later. Thanks!
+On 28/09/2021 21:30, John Garry wrote:
+>>>
+>>> OK, would you also consider reusing CFLAGS:
+>>>
+>>> --- a/tools/perf/pmu-events/Build
+>>> +++ b/tools/perf/pmu-events/Build
+>>> @@ -9,10 +9,12 @@ JSON          =  $(shell [ -d $(JDIR) ] &&
+>>> \
+>>> JDIR_TEST      =  pmu-events/arch/test
+>>> JSON_TEST      =  $(shell [ -d $(JDIR_TEST) ] &&                       \
+>>>                         find $(JDIR_TEST) -name '*.json')
+>>> -
+>>> +HOSTCFLAGS_jevents += $(CFLAGS)
+>> Humm, we have to check if CFLAGS doesn't come with cross-build options,
+>> i.e. IIRC we have to use HOSTCFLAGS instead. Unsure if there is some
+>> *CFLAGS variable that gets the common part, where these -Wall and
+>> -Wextra, -Werror could go.
 > 
-> For ease of review between stackdepot and DRM changes, I thought it'd be
-> nice to split into 2 patches, but not sure it'll work, because you're
-> changing the semantics of the normal STACKDEPOT.
-
-Yeah, that's why it's a single patch. As the DRM parts are clearly separated
-to their files, I think review should be fine.
-
-> One option would be to flip it around, and instead have
-> STACKDEPOT_LAZY_INIT, but that seems counter-intuitive if the majority
-> of STACKDEPOT users are LAZY_INIT users.
-
-Agree.
-
-> On the other hand, the lazy initialization mode you're introducing
-> requires an explicit stack_depot_init() call somewhere and isn't as
-> straightforward as before.
+> not sure. As I see, the bulk of flags we have in CFLAGS comes from 
+> EXTRA_WARNINGS in scripts/Makefile.include; but CFLAGS seems to also 
+> include EXTRA_CLAGS, which are for cross-builds (see perf/Makefile.config)
 > 
-> Not sure what is best. My intuition tells me STACKDEPOT_LAZY_INIT would
-> be safer as it's a deliberate opt-in to the lazy initialization
-> behaviour.
 
-I think it should be fine with ALWAYS_INIT. There are not many stackdepot
-users being added, and anyone developing a new one will very quickly find
-out if they forget to call stack_depot_init()?
+Hi Arnaldo,
 
-> Preferences?
-> 
-> [...]
->> --- a/drivers/gpu/drm/drm_mm.c
->> +++ b/drivers/gpu/drm/drm_mm.c
->> @@ -980,6 +980,10 @@ void drm_mm_init(struct drm_mm *mm, u64 start, u64 size)
->>  	add_hole(&mm->head_node);
->>  
->>  	mm->scan_active = 0;
->> +
->> +#ifdef CONFIG_DRM_DEBUG_MM
->> +	stack_depot_init();
->> +#endif
-> 
-> DRM_DEBUG_MM implies STACKDEPOT. Not sure what is more readable to drm
-> maintainers, but perhaps it'd be nicer to avoid the #ifdef here, and
-> instead just keep the no-op version of stack_depot_init() in
-> <linux/stackdepot.h>. I don't have a strong preference.
+I'm just looking at enabling warning cflags for jevents again.
 
-Hm, but in case STACKDEPOT is also selected by something else (e.g.
-CONFIG_PAGE_OWNER) which uses lazy init but isn't enabled on boot, then
-without #ifdef CONFIG_DRM_DEBUG_MM above, this code would call a
-stack_depot_init() (that's not a no-op) even in case it's not going to be
-using it, so not what we want to achieve.
-But it could be changed to use IS_ENABLED() if that's preferred by DRM folks.
+So how about this:
 
-BTW it's possible that there won't be any DRM review because this failed to
-apply:
-https://patchwork.freedesktop.org/series/95549/
-DRM folks, any hint how to indicate that the base was next-20211001?
+--->8----
 
->> @@ -30,13 +40,4 @@ int stack_depot_snprint(depot_stack_handle_t handle, char *buf, size_t size,
->>  
->>  void stack_depot_print(depot_stack_handle_t stack);
->>  
->> -#ifdef CONFIG_STACKDEPOT
->> -int stack_depot_init(void);
->> -#else
->> -static inline int stack_depot_init(void)
->> -{
->> -	return 0;
->> -}
->> -#endif	/* CONFIG_STACKDEPOT */
->> -
-> 
-> Could we avoid the IS_ENABLED() in init/main.c by adding a wrapper here:
-> 
-> +#ifdef CONFIG_STACKDEPOT_ALWAYS_INIT
-> +static inline int stack_depot_early_init(void)	{ return stack_depot_init(); }
-> +#else
-> +static inline int stack_depot_early_init(void)	{ return 0; }
-> +#endif	/* CONFIG_STACKDEPOT_ALWAYS_INIT */
 
-We could, but it's a wrapper made for only a single caller...
+Subject: [PATCH] perf pmu-events: Enable jevents warnings through HOSTCFLAGS
 
->>  #endif
->> diff --git a/init/main.c b/init/main.c
->> index ee4d3e1b3eb9..b6a5833d98f5 100644
->> --- a/init/main.c
->> +++ b/init/main.c
->> @@ -844,7 +844,8 @@ static void __init mm_init(void)
->>  	init_mem_debugging_and_hardening();
->>  	kfence_alloc_pool();
->>  	report_meminit();
->> -	stack_depot_init();
->> +	if (IS_ENABLED(CONFIG_STACKDEPOT_ALWAYS_INIT))
->> +		stack_depot_init();
-> 
-> I'd push the decision of when to call this into <linux/stackdepot.h> via
-> wrapper stack_depot_early_init().
 
-No strong preferrences, if you think it's worth it.
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 0ae2e3d8b832..65934984f032 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -17,6 +17,7 @@ detected     = $(shell echo "$(1)=y"       >> 
+$(OUTPUT).config-detected)
+  detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
 
->>  	mem_init();
->>  	mem_init_print_info();
->>  	/* page_owner must be initialized after buddy is ready */
->> diff --git a/lib/Kconfig b/lib/Kconfig
->> index 5e7165e6a346..df6bcf0a4cc3 100644
->> --- a/lib/Kconfig
->> +++ b/lib/Kconfig
->> @@ -671,6 +671,9 @@ config STACKDEPOT
->>  	bool
->>  	select STACKTRACE
->>  
->> +config STACKDEPOT_ALWAYS_INIT
->> +	bool
-> 
-> It looks like every users of STACKDEPOT_ALWAYS_INIT will also select
-> STACKDEPOT, so we could just make this:
-> 
-> +config STACKDEPOT_ALWAYS_INIT
-> +	bool
-> +	select STACKDEPOT
-> 
-> And remove the redundant 'select STACKDEPOT' in Kconfig.kasan.
+  CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
++HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
 
-Right, will do, if KConfig resolver doesn't bite me.
+  include $(srctree)/tools/scripts/Makefile.arch
 
->>  config STACK_HASH_ORDER
->>  	int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
->>  	range 12 20
->> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
->> index cdc842d090db..695deb603c66 100644
->> --- a/lib/Kconfig.kasan
->> +++ b/lib/Kconfig.kasan
->> @@ -39,6 +39,7 @@ menuconfig KASAN
->>  		   HAVE_ARCH_KASAN_HW_TAGS
->>  	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
->>  	select STACKDEPOT
->> +	select STACKDEPOT_ALWAYS_INIT
-> 
-> [...]
->>  
->> -int __init stack_depot_init(void)
->> +/*
->> + * __ref because of memblock_alloc(), which will not be actually called after
->> + * the __init code is gone
-> 
-> The reason is that after __init code is gone, slab_is_available() will
-> be true (might be worth adding to the comment).
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 7df13e74450c..118bcdc70bb4 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -226,7 +226,7 @@ else
+  endif
 
-OK
+  export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
+-export HOSTCC HOSTLD HOSTAR
++export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
 
-Thanks for the review!
+  include $(srctree)/tools/build/Makefile.include
+
+diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
+index a055dee6a46a..d5c287f069a2 100644
+--- a/tools/perf/pmu-events/Build
++++ b/tools/perf/pmu-events/Build
+@@ -1,7 +1,7 @@
+  hostprogs := jevents
+
+  jevents-y	+= json.o jsmn.o jevents.o
+-HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
++HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include $(HOSTCFLAGS)
+  pmu-events-y	+= pmu-events.o
+  JDIR		=  pmu-events/arch/$(SRCARCH)
+  JSON		=  $(shell [ -d $(JDIR) ] &&				\
+-- 
+2.26.2
+
+---8<---
+
+The newly generated warnings in jevents.c are pretty straightforward to 
+tidy up.
+
+Thanks,
+John
