@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841ED4290F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB9F429196
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239969AbhJKOOX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 10:14:23 -0400
-Received: from aposti.net ([89.234.176.197]:41516 "EHLO aposti.net"
+        id S240240AbhJKOUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:20:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239076AbhJKOLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:11:38 -0400
-Date:   Mon, 11 Oct 2021 16:09:29 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] dmaengine: jz4780: Set max number of SGs per burst
-To:     Artur Rojek <contact@artur-rojek.eu>
-Cc:     Vinod Koul <vkoul@kernel.org>, linux-mips@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <TNGT0R.X6IU8OUDO4HW2@crapouillou.net>
-In-Reply-To: <GLCNYQ.LL8K0PVSTZ1W1@crapouillou.net>
-References: <20210829195805.148964-1-contact@artur-rojek.eu>
-        <GLCNYQ.LL8K0PVSTZ1W1@crapouillou.net>
+        id S243292AbhJKORZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:17:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07AAC61078;
+        Mon, 11 Oct 2021 14:11:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633961503;
+        bh=zD+AKuupSTYCoj9CcPWhQv82n92KFccXo3yZu9KbnTk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NlKtPXc5y6RKZlCZzv1omZ6axzdFRkATGimdWqud/doU9kWYbzWK8c0frJfhyCfLI
+         25ejDlAh8OTc9yIpR7+XpyRQ/ozUm23Hghu+kZm18hSSqo8LFwfCdWdj1Q36P7RC1s
+         RGilW596VwN3Iu2z9xOnIPfCQexNBFvXud4Wc7LCmK+Okkl28DLAK6t1vFI2NrOtUv
+         Nv8c08ulC+pST0QI54DxJwrRA3d7rPFEOrCqCX+AVttHvG1YkuRyqqBiIW5fG03Vt0
+         YUEB5DJGFFXTLh+olfNiKhBXi7upaYffBalzaH+yPxgvBhCX3LbLixIKY8a2km/qHx
+         PRn4hNJ6S1Hfg==
+Received: by mail-ed1-f54.google.com with SMTP id g10so67631296edj.1;
+        Mon, 11 Oct 2021 07:11:42 -0700 (PDT)
+X-Gm-Message-State: AOAM531ftzA5BIuV5h3aBp5wQsVaUlXLMm7JxJ/jITQNhfz/0vt4XJt8
+        Yb3QcpGua/nOd9Rt0BTRQ/Kq9+t3ZDvKEs6WXQ==
+X-Google-Smtp-Source: ABdhPJw0f8TOUqPxU2srZU6oT+yPzQ8tPFsfVqJQ97sHOzWxNPvUan4j9Baaqte3d/Xw1feY7RVQSsfUXDUCp9emalk=
+X-Received: by 2002:a17:906:9399:: with SMTP id l25mr25557872ejx.363.1633961500932;
+ Mon, 11 Oct 2021 07:11:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20210923064137.60722-1-zhang.lyra@gmail.com> <20210923064137.60722-3-zhang.lyra@gmail.com>
+ <YV1XpL7ibF1y4LbV@google.com>
+In-Reply-To: <YV1XpL7ibF1y4LbV@google.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 11 Oct 2021 09:11:29 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
+Message-ID: <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512
+ global registers
+To:     Lee Jones <lee.jones@linaro.org>, Stephen Boyd <sboyd@kernel.org>
+Cc:     Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On Wed, Oct 6, 2021 at 3:00 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Thu, 23 Sep 2021, Chunyan Zhang wrote:
+>
+> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> >
+> > Add bindings for Unisoc system global register which provide register map
+> > for clocks.
+> >
+> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  .../bindings/mfd/sprd,ums512-glbreg.yaml      | 68 +++++++++++++++++++
+> >  1 file changed, 68 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.yaml
+>
+> Unapplied v3 and applied this (v4) instead, thanks.
 
-Le lun., août 30 2021 at 10:48:52 +0100, Paul Cercueil 
-<paul@crapouillou.net> a écrit :
-> Hi,
-> 
-> Le dim., août 29 2021 at 21:58:05 +0200, Artur Rojek 
-> <contact@artur-rojek.eu> a écrit :
->> Total amount of SG list entries executed in a single burst is 
->> limited by
->> the number of available DMA descriptors.
->> This information is useful for device drivers utilizing this DMA 
->> engine.
->> 
->> Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
-> 
-> Acked-by: Paul Cercueil <paul@crapouillou.net>
+What about the clock binding this depends on:
 
-Feedback on this?
-
-Cheers,
--Paul
-
->> ---
->>  drivers/dma/dma-jz4780.c | 1 +
->>  1 file changed, 1 insertion(+)
->> 
->> diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
->> index ebee94dbd630..96701dedcac8 100644
->> --- a/drivers/dma/dma-jz4780.c
->> +++ b/drivers/dma/dma-jz4780.c
->> @@ -915,6 +915,7 @@ static int jz4780_dma_probe(struct 
->> platform_device *pdev)
->>  	dd->dst_addr_widths = JZ_DMA_BUSWIDTHS;
->>  	dd->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
->>  	dd->residue_granularity = DMA_RESIDUE_GRANULARITY_BURST;
->> +	dd->max_sg_burst = JZ_DMA_MAX_DESC;
->> 
->>  	/*
->>  	 * Enable DMA controller, mark all channels as not programmable.
->> --
->> 2.33.0
->> 
-> 
+Unknown file referenced: [Errno 2] No such file or directory:
+'/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
+xargs: dt-doc-validate: exited with status 255; aborting
+make[1]: *** Deleting file
+'Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml'
+Unknown file referenced: [Errno 2] No such file or directory:
+'/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
+make[1]: *** [scripts/Makefile.lib:385:
+Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml]
+Error 255
 
 
+Once again, all the components of MFD bindings need to be applied together.
+
+Rob
