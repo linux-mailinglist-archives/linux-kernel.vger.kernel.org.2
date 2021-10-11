@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7219428BFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58C7428BFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236303AbhJKL3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 07:29:47 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:28419 "EHLO
+        id S236326AbhJKL3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 07:29:49 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:53289 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236295AbhJKL3n (ORCPT
+        with ESMTP id S236288AbhJKL3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:29:43 -0400
+        Mon, 11 Oct 2021 07:29:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633951664; x=1665487664;
+  t=1633951666; x=1665487666;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=b5FJhovyOTtqbY6WdesSmAErjuu4q8fe8jGDarYU7kM=;
-  b=HEl+H86SpqdwDL/vtQCunD58+4r9ZGON4S4t9QTo7c8cpvwTQwcJMKBX
-   JIn/ni/Y6ianiEjq5Da96QECTmA3mQN3I3hjobHRHZ4vDAb5HNgfIDhC/
-   66Yj9PdNvZ4yBBUDp6Zj0jn9/Uxjh3gLhc5lBIo6PgUg/btG9FuHH8hG9
-   r4gAG0Rp/NgONANsQ3LDHNWui7uixnykprCIl1r/M9oy8deJJeWHMHGF/
-   7IU7Asvd1X/H4GxhHY6dqen6HKazx6ehc5xJBG/Qu+QG6dYiPXNX3TFM4
-   7V4xUTO0kkDURP/P1x9BVFxiA8sEmbVtRu6O0j8wTTnVVuGMaYT0C7FVT
-   w==;
-IronPort-SDR: xIxejSzAnsmHP/8hcNtLwEMygawH3SGQQIyGkC7fZDmCkasDZU8Cu0I2hBNOpLgtHB03JAyA6W
- KlndLPGdx4aAFysFTbfu9ylpz5nG2uSK0j3b6yRBIh/+O3iW2MWhy27JL0UunhFpyAmOABd7Hq
- Om+tt/3N/bgczicK/Fo7CSJvg0eTFfyAGvkTszOiWVywL7u9ib2Qd32k/CcKUXhEnkscxJ79pM
- WyD8ym7zGmNv23RK2eyhIDCgBlSW/2OF5dVf5q8JE2UdFMVoMAchGmdHyh/miII40mP4gjZxqD
- YAyvbFmRuXXwu/dDlP7ijkQb
+  bh=7hWiJONj4Hkh2d5d5etUwZ8wYgaPJyptCsF6Gj96w40=;
+  b=RE5Qt8eB4lQKHmv7xC9Xuvw2eYFv9VOpWyCRb49lVGCjHlcOkGqMtB9A
+   MZjVFnTi7u6LnLvmmrxVwm5YNCm6mffJPpUZgQEvvSgUeECWSWa0CiC7z
+   liodILVyXBfvpLwEL3OUQQPVE+WQRsLAGvYXIa4IrrOGNnUTdETuYrG7a
+   fOlUP0yryQnStFS3DdoLxOigwVF2f9HPq8m48T1BlPawtXmV/nW8hhg9R
+   8HkI39Edgjy6/b0a0k6uov26uT1kgQIwgEU1emdQVUtFMVZMaIFvTAkn8
+   7BIFWE3Ci8xEIRxg3yyeQAp7lWIeM921bpvEaH7hLEZSFSgFBIoMy7pZz
+   Q==;
+IronPort-SDR: r4dh/SOb/uFDZ7Ovl+p9nDjwhZzWDNWRYUp76NRhfJGT3Rq1fwbN8Q/GuKTd/dPDHhj+Y5OIbM
+ +vJjQglYj7N0RHYe7ZZhAcQIf8Nx2HK5mQCIIXS0ELqX2zbOpN4n0n0L8UzLKdFzMw+U6odTnR
+ yoSiBvjj1D4eQNt9qVmJj/s4TnarJuiZcoVa05Gl0N64moPmWzJrpMffZwacsSWHGIXRBzlYGx
+ mu63/KMLLcT7phOlAVOax8pWoD+wLjYhtBx9UV9Bg8pSg9vVqjsjouMoasC4A4kY1XOLejomiE
+ Kiyt0irVjtUxEW+oeLQVZdhc
 X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="72491069"
+   d="scan'208";a="135067575"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Oct 2021 04:27:44 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Oct 2021 04:27:45 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 11 Oct 2021 04:27:42 -0700
+ 15.1.2176.14; Mon, 11 Oct 2021 04:27:45 -0700
 Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 11 Oct 2021 04:27:40 -0700
+ 15.1.2176.14 via Frontend Transport; Mon, 11 Oct 2021 04:27:43 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -49,9 +49,9 @@ CC:     <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v5 05/15] clk: at91: clk-master: improve readability by using local variables
-Date:   Mon, 11 Oct 2021 14:27:09 +0300
-Message-ID: <20211011112719.3951784-6-claudiu.beznea@microchip.com>
+Subject: [PATCH v5 06/15] clk: at91: pmc: add sama7g5 to the list of available pmcs
+Date:   Mon, 11 Oct 2021 14:27:10 +0300
+Message-ID: <20211011112719.3951784-7-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011112719.3951784-1-claudiu.beznea@microchip.com>
 References: <20211011112719.3951784-1-claudiu.beznea@microchip.com>
@@ -62,39 +62,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve readability in clk_sama7g5_master_set() by using local
-variables.
+Add SAMA7G5 to the list of available PMCs such that the suspend/resume
+code for clocks to be used on backup mode.
 
-Suggested-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- drivers/clk/at91/clk-master.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/clk/at91/pmc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/at91/clk-master.c b/drivers/clk/at91/clk-master.c
-index 88f7af1bfff6..9a2c8e64cacf 100644
---- a/drivers/clk/at91/clk-master.c
-+++ b/drivers/clk/at91/clk-master.c
-@@ -680,6 +680,8 @@ static void clk_sama7g5_master_set(struct clk_master *master,
- 	unsigned long flags;
- 	unsigned int val, cparent;
- 	unsigned int enable = status ? AT91_PMC_MCR_V2_EN : 0;
-+	unsigned int parent = master->parent << PMC_MCR_CSS_SHIFT;
-+	unsigned int div = master->div << MASTER_DIV_SHIFT;
+diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
+index 517973062719..5aa9c1f1c886 100644
+--- a/drivers/clk/at91/pmc.c
++++ b/drivers/clk/at91/pmc.c
+@@ -148,8 +148,9 @@ static struct syscore_ops pmc_syscore_ops = {
+ 	.resume = at91_pmc_resume,
+ };
  
- 	spin_lock_irqsave(master->lock, flags);
+-static const struct of_device_id sama5d2_pmc_dt_ids[] = {
++static const struct of_device_id pmc_dt_ids[] = {
+ 	{ .compatible = "atmel,sama5d2-pmc" },
++	{ .compatible = "microchip,sama7g5-pmc", },
+ 	{ /* sentinel */ }
+ };
  
-@@ -689,9 +691,7 @@ static void clk_sama7g5_master_set(struct clk_master *master,
- 	regmap_update_bits(master->regmap, AT91_PMC_MCR_V2,
- 			   enable | AT91_PMC_MCR_V2_CSS | AT91_PMC_MCR_V2_DIV |
- 			   AT91_PMC_MCR_V2_CMD | AT91_PMC_MCR_V2_ID_MSK,
--			   enable | (master->parent << PMC_MCR_CSS_SHIFT) |
--			   (master->div << MASTER_DIV_SHIFT) |
--			   AT91_PMC_MCR_V2_CMD |
-+			   enable | parent | div | AT91_PMC_MCR_V2_CMD |
- 			   AT91_PMC_MCR_V2_ID(master->id));
+@@ -157,7 +158,7 @@ static int __init pmc_register_ops(void)
+ {
+ 	struct device_node *np;
  
- 	cparent = (val & AT91_PMC_MCR_V2_CSS) >> PMC_MCR_CSS_SHIFT;
+-	np = of_find_matching_node(NULL, sama5d2_pmc_dt_ids);
++	np = of_find_matching_node(NULL, pmc_dt_ids);
+ 	if (!np)
+ 		return -ENODEV;
+ 
 -- 
 2.25.1
 
