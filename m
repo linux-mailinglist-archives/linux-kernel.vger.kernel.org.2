@@ -2,93 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D364C429891
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A512429895
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235128AbhJKVEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 17:04:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230299AbhJKVEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 17:04:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E28360F23;
-        Mon, 11 Oct 2021 21:02:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1633986158;
-        bh=Jm6whGm1SYWN5n0xAQTdIeZ9V6XW0chF912C9+QjTcM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Nh65/IBIADLhMY9W1ThQ+x/HbV6CHO2s22TKn9rPlXzpLKdrKZHUpuZmVEbFmB1Ws
-         7yfK4ne8BH9vrfsfviIBXtPVE7Z4/Md8m7I4tXLACBdAKbsd3Y2C7QMIhJWNDtKIic
-         SB2TZau4xVB2gZiPlaimrGkh72Ut4efN4vhaKofU=
-Date:   Mon, 11 Oct 2021 14:02:35 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     SeongJae Park <sj@kernel.org>
-Cc:     Jonathan.Cameron@Huawei.com, amit@kernel.org,
-        benh@kernel.crashing.org, corbet@lwn.net, david@redhat.com,
-        dwmw@amazon.com, elver@google.com, foersleo@amazon.de,
-        gthelen@google.com, markubo@amazon.de, rientjes@google.com,
-        shakeelb@google.com, shuah@kernel.org, linux-damon@amazon.com,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] mm/damon/dbgfs: Implement recording feature
-Message-Id: <20211011140235.f75b842f861b730c53e4b19c@linux-foundation.org>
-In-Reply-To: <20211011093057.30790-1-sj@kernel.org>
-References: <20211010150140.be96f07048079188d9d6b613@linux-foundation.org>
-        <20211011093057.30790-1-sj@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235149AbhJKVF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 17:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230299AbhJKVF0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 17:05:26 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E66DC061570;
+        Mon, 11 Oct 2021 14:03:26 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id p68so21339434iof.6;
+        Mon, 11 Oct 2021 14:03:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VpTOmMnYeBAsmZpKSwKJS+8kAPjTggYUu3T1PRR8puw=;
+        b=DWamGnG8bmG8X21EnR0ChHMFjln82VqGUosTW7gTqGfbJnbsKpRDtDk95XDFSVcyM6
+         3MMwWs5f8h4BIZOrA4mYmwDpHOL52JD8lMpNF/mwfN2yxWbpi9YGG3FMvrIkTJZ9sVOU
+         vcqeVv+TJDnsbX1FWpME4OHN0mJGbIFFkiZGlIwEXz5+ruScYFOHc56LLM53ktU7qcTc
+         x9U3FmMp/zv08wn60KJuxRPH8NZIIUyfbVydxa2JOkyQGk88qnbRC+iy3omLIyGwXJ01
+         pwIQrx0tBNNOze+uh8niuwZGvczhrxsA3qkDrMYDdQHmQ9BrJPGlmPpjEEhXJcrysxVy
+         k2lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VpTOmMnYeBAsmZpKSwKJS+8kAPjTggYUu3T1PRR8puw=;
+        b=3nAvL1HKU4YcJUPXeE2HeoZiS/aPg3OXT6Qjxhf8wrZxh2iuJi2VNGvqpx41I73E3z
+         SWe+6p/auhCxiVbzmiNNlRNEvQqqdxbS7NmkF9gSe7Ei7VNsSLVRNnJY5e0/A57+IS8h
+         T7Pwd+wCs01Il+mWUlJoQ/jlPj1XrFxIg0j2bfBRKSLYL4F6kw9o+7WjZjcii5O3UA0Z
+         WKGvWwgVBsVgXqVvMQf7btRIjQSIHnda6lB/dXTvXbWfHB4BvsIxK1RxAsynUo4oTL6W
+         knnKAMKq9Q09n0TmqSC1lp/uDcChtlDF2c3uVY5INpmChS6jG0Y8JV2nRC8OrpxPIYDM
+         IbZQ==
+X-Gm-Message-State: AOAM533L+Bts7fZvIru04xtlvZvlUVfAusU+mduiwGR/qCLoSIVYIHbK
+        gx8HXCbab99pr6FxklkNt1lsp2TXXatNc4LNIYQ=
+X-Google-Smtp-Source: ABdhPJzi9/gjwxSZ7bmJ0i3RpOAZy2AEW8HH88NtQ9J7F/6skXH3IiVp6v+0qkoiL8LEwek/nQh7AnpHXvVKyQmEBsI=
+X-Received: by 2002:a05:6638:37a7:: with SMTP id w39mr21016254jal.19.1633986205891;
+ Mon, 11 Oct 2021 14:03:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211011195503.23153-1-pauk.denis@gmail.com> <20211011195503.23153-2-pauk.denis@gmail.com>
+In-Reply-To: <20211011195503.23153-2-pauk.denis@gmail.com>
+From:   Eugene Shalygin <eugene.shalygin@gmail.com>
+Date:   Mon, 11 Oct 2021 23:03:14 +0200
+Message-ID: <CAB95QASjUq4P3HhFJrCpBwtJLzwc0ig0q5YQg6FGTDaxkS3SPg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] hwmon: (asus_wmi_ec_sensors) Support B550 Asus WMI.
+To:     Denis Pauk <pauk.denis@gmail.com>
+Cc:     andy.shevchenko@gmail.com, platform-driver-x86@vger.kernel.org,
+        Tor Vic <torvic9@mailbox.org>,
+        kernel test robot <lkp@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 09:30:57 +0000 SeongJae Park <sj@kernel.org> wrote:
+Hi, Denis,
 
-> Hello Andrew,
-> 
-> 
-> Thank you for great questions!
-> 
-> On Sun, 10 Oct 2021 15:01:40 -0700 Andrew Morton <akpm@linux-foundation.org> wrote:
-> 
-> > On Fri,  8 Oct 2021 09:45:06 +0000 SeongJae Park <sj@kernel.org> wrote:
-> > 
-> > > The user space can get the monitoring results via the 'damon_aggregated'
-> > > tracepoint event.  For simplicity and brevity, the tracepoint events
-> > > have some duplicated information such as 'target_id' and 'nr_regions',
-> > > though.  As a result, its size is greater than really needed.  Also,
-> > > dealing with the tracepoint could be complex for some simple use cases.
-> > > To provide a way for getting more efficient and simple monitoring
-> > > results to user space, this commit implements 'recording' feature in
-> > > 'damon-dbgfs'.
-> > > 
-> > > The feature is exported to the user space via a new debugfs file named
-> > > 'record', which is located in '<debugfs>/damon/' directory.  The file
-> > > allows users to record monitored access patterns in a regular binary
-> > > file in a simple format.
-> > 
-> > Binary files are troublesome.
-> > 
-> > Is the format of this file documented anywhere?
-> 
-> No.  I intended the Python script in the following patch[1] and the user space
-> tool[2] to be used as such documents.  I will write up one before the next
-> spin.
-> 
-> [1] https://lore.kernel.org/linux-mm/20211008094509.16179-3-sj@kernel.org/
-> [2] https://github.com/awslabs/damo/blob/v0.0.5/_damon_result.py#L38
-> 
-> > 
-> > I assume that the file's contents will have different representations
-> > depending on host endianness and word size and I further assume that
-> > the provided python script won't handle this very well?
-> 
-> You're right.  I will make the script properly handle the cases in the next
-> spin.
+> +       for (i_sensor = 0; i_sensor < ec->nr_sensors; i_sensor++) {
+> +               s = &ec->sensors[i_sensor];
+> +               si = &known_ec_sensors[s->info_index];
+> +
+> +               switch (si->addr.size) {
+> +               case 1:
+> +                       s->cached_value = ec->read_buffer[read_reg_ct];
+> +                       break;
+> +               case 2:
+> +                       s->cached_value = get_unaligned_be16(&ec->read_buffer[read_reg_ct]);
+> +                       break;
+> +               case 4:
+> +                       s->cached_value = get_unaligned_be32(&ec->read_buffer[read_reg_ct]);
+> +                       break;
+> +               default:
+> +                       s->cached_value =  0;
+> +               }
+> +               read_reg_ct += si->addr.size;
 
-Well, rather than messing with the different file formats, you could
-make the binary file machine-independent.  Decide on the endianness and
-word size, implement them and document them.  Things like cpu_to_le32
-are zero-cost on little-endian machines.
+There is at least one more sensor hiding in the EC address space: the
+south bridge voltage. And it seems its value is not an integer, so the
+conversion to mV will not be a simple get_unaligned_xx() call when we
+locate and add it. Thus, I would suggest extracting this switch in a
+separate function to make the future modification simpler. Something
+like the following:
 
+static inline u32 get_sensor_value(const struct ec_sensor_info *si, u8
+*data) // si for the data encoding scheme
+{
+    switch (si->addr.components.size) {
+    case 1:
+        return *data;
+    case 2:
+        return get_unaligned_be16(data);
+    case 4:
+        return get_unaligned_be32(data);
+    }
+}
+
+static void update_sensor_values(struct ec_sensors_data *ec, u8 *data)
+{
+    const struct ec_sensor_info *si;
+    struct ec_sensor *s;
+
+    for (s = ec->sensors; s != ec->sensors + ec->nr_sensors; s++) {
+        si = &known_ec_sensors[s->info_index];
+        s->cached_value = get_sensor_value(si, data);
+        data += si->addr.components.size;
+    }
+}
+
+Additionally, this would simplify update_ec_sensors() body:
+
+mutex_lock(&ec->lock);
+make_asus_wmi_block_read_query(ec);
+status = asus_ec_block_read(dev, METHODID_BLOCK_READ_EC, ec->read_arg,
+    buffer);
+
+if (!status) {
+    update_sensor_values(ec, buffer);
+}
+mutex_unlock(&ec->lock);
+
+
+Eugene
