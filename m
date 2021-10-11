@@ -2,367 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A121428487
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1634F428491
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbhJKBWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 21:22:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233181AbhJKBWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 21:22:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CF0D61056;
-        Mon, 11 Oct 2021 01:20:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1633915202;
-        bh=2jy1RnxdpVNY645SJ3HwbdHio4yAONqoCZVHN8JhQOg=;
-        h=Date:From:To:Subject:From;
-        b=hNHFTbl0nXt8ftcP50v9vL6HURf7K6mKkdq+jFjYu26krNBPEjNhDEON5hhZ8LHpa
-         egpsOR5xF/7/KZTseq04sRHHSLfSV/5urV4ntRuOCIu7CgyiGdGzaRU3Ej65GhRaZ+
-         WLvfRRiscvxI7AOhhgQddmf2MqI57W1BPeAGljek=
-Date:   Sun, 10 Oct 2021 18:20:01 -0700
-From:   akpm@linux-foundation.org
-To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
-Subject:  mmotm 2021-10-10-18-19 uploaded
-Message-ID: <20211011012001.mSbkDke0y%akpm@linux-foundation.org>
-User-Agent: s-nail v14.8.16
+        id S233077AbhJKBYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 21:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232849AbhJKBYS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 21:24:18 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B66AC061745
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 18:22:18 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id c14-20020a37e10e000000b0045f3f44539eso6341629qkm.14
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 18:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=pelpqGop9lNK0ivkhrG4qKsEmnDb1OiP8EZo1Fz2vqE=;
+        b=hp7SXw7jtocsPJY2qeNaqGCipXyVGn6axSHZaPOQaTyZ26+Xroo5tcvNvJ7ZipX/Yt
+         KPq611KjO+9iLfrdcLY6JcLHrUp6OvfmMM++nkzaq2SetrEWyL8r32lOj6YyfoSXeAbH
+         Fr/wOlK1kFMfP+nB54KD7G754v1lmkJIa4WbRj1jcOX+5Le/RCNazkJpvS77BNWUyuAp
+         byhfpwzYyKsuqgdhQs2OMnES6J0dn7WuOPOwBixVtdqwHf8P+aWu4c75nMC8xemVADCT
+         UafLuSCaCfwwYweoMppmYC52PdvcA02o/q4ywMEVWJeRJHG/Pm2Dh8/L9AR2Nr5wLA0Y
+         0hPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=pelpqGop9lNK0ivkhrG4qKsEmnDb1OiP8EZo1Fz2vqE=;
+        b=FAZKixpvPf2JoCq4akkjMBwVIchnijYLsQ7iQHtJ5RyysxoNMdhI2rjDj4PdtoSd8l
+         FQtz+C/ls1rvOHyP2HM6ZHGKQ44UZA77HriNX1NixFP5+KjbG0t+GSdfYvysqIEpoXEo
+         /EpqSutKuNPDFzDH/bK5OjbMmKW4eTSpNhOetOrwI8TeyosFBlu7Tt7N5cvJ4ihhFNzD
+         xK+uJv5EZh+NRaPzGTKVN/kbKmZScBX3ohb3PefGYMZ61dL/LoEr+1bGjGxiRwJn1Tgk
+         i/DORe1l0mVbwAMTpaL6aP9A5dF40e5kGnWKldmk5PKHyJNiC5H4qBdcKQrPbNYHPfAv
+         7Uvw==
+X-Gm-Message-State: AOAM53104FE9vZUupqiElnTh7KAoho/FHyYn46lfCPsG/NXQYFLmWlip
+        /QcvjQSCasC4oXMhSDNgzgGQ96U=
+X-Google-Smtp-Source: ABdhPJxakqS3R8xOFBlupR06TVZ/cUaN2aXRdEF/OW4Gfgmo0Ro10oYgMUoHGtdJNMM/YAHTF5V+zHg=
+X-Received: from osk.cam.corp.google.com ([2620:0:1004:1a:8461:b843:7404:1394])
+ (user=osk job=sendgmr) by 2002:ac8:7e86:: with SMTP id w6mr11757072qtj.277.1633915336530;
+ Sun, 10 Oct 2021 18:22:16 -0700 (PDT)
+Date:   Sun, 10 Oct 2021 21:22:11 -0400
+Message-Id: <20211011012212.91357-1-osk@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH v7 1/2] dt-bindings: hwmon: Add nct7802 bindings
+From:   Oskar Senft <osk@google.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Oskar Senft <osk@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mm-of-the-moment snapshot 2021-10-10-18-19 has been uploaded to
+This change documents the device tree bindings for the Nuvoton
+NCT7802Y driver.
 
-   https://www.ozlabs.org/~akpm/mmotm/
+Signed-off-by: Oskar Senft <osk@google.com>
+---
+Changes from PATCH v6:
+- Fixed formatting error reported by yamllint
 
-mmotm-readme.txt says
+Changes from PATCH v5:
+- Refactored to use patternProperties.
+- Added validation for sensor-type and temperature-mode.
+---
+ .../bindings/hwmon/nuvoton,nct7802.yaml       | 144 ++++++++++++++++++
+ 1 file changed, 144 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
 
-README for mm-of-the-moment:
+diff --git a/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+new file mode 100644
+index 000000000000..a0a245938528
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+@@ -0,0 +1,144 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++
++$id: http://devicetree.org/schemas/hwmon/nuvoton,nct7802.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Nuvoton NCT7802Y Hardware Monitoring IC
++
++maintainers:
++  - Guenter Roeck <linux@roeck-us.net>
++
++description: |
++  The NCT7802Y is a hardware monitor IC which supports one on-die and up to
++  5 remote temperature sensors with SMBus interface.
++
++  Datasheets:
++    https://www.nuvoton.com/export/resource-files/Nuvoton_NCT7802Y_Datasheet_V12.pdf
++
++properties:
++  compatible:
++    enum:
++      - nuvoton,nct7802
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++patternProperties:
++  "^channel@[0-3]$":
++    type: object
++    properties:
++      reg:
++        items:
++          - enum:
++              - 0    # Local Temperature Sensor ("LTD")
++              - 1    # Remote Temperature Sensor or Voltage Sensor 1 ("RTD1")
++              - 2    # Remote Temperature Sensor or Voltage Sensor 2 ("RTD2")
++              - 3    # Remote Temperature Sensor or Voltage Sensor 3 ("RTD3")
++      sensor-type:
++        items:
++          - enum:
++              - temperature
++              - voltage
++      temperature-mode:
++        items:
++          - enum:
++              - thermistor
++              - thermal-diode
++    required:
++      - reg
++    allOf:
++      # For channels RTD1, RTD2 and RTD3, require sensor-type to be set.
++      # Otherwise (for all other channels), do not allow temperature-mode to be
++      # set.
++      - if:
++          properties:
++            reg:
++              items:
++                - enum:
++                    - 1
++                    - 2
++                    - 3
++        then:
++          required:
++            - sensor-type
++        else:
++          not:
++            required:
++              - sensor-type
++
++      # For channels RTD1 and RTD2 and if sensor-type is "temperature", require
++      # temperature-mode to be set. Otherwise (for all other channels or
++      # sensor-type settings), do not allow temperature-mode to be set
++      - if:
++          properties:
++            reg:
++              items:
++                - enum:
++                    - 1
++                    - 2
++            sensor-type:
++              items:
++                - enum:
++                    - temperature
++        then:
++          required:
++            - temperature-mode
++        else:
++          not:
++            required:
++              - temperature-mode
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        nct7802@28 {
++            compatible = "nuvoton,nct7802";
++            reg = <0x28>;
++
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            channel@0 { /* LTD */
++              reg = <0>;
++              status = "okay";
++            };
++
++            channel@1 { /* RTD1 */
++              reg = <1>;
++              status = "okay";
++              sensor-type = "voltage";
++            };
++
++            channel@2 { /* RTD2 */
++              reg = <2>;
++              status = "okay";
++              sensor-type = "temperature";
++              temperature-mode = "thermal-diode";
++            };
++
++            channel@3 { /* RTD3 */
++              reg = <3>;
++              status = "okay";
++              sensor-type = "temperature";
++            };
++        };
++    };
+-- 
+2.33.0.882.g93a45727a2-goog
 
-https://www.ozlabs.org/~akpm/mmotm/
-
-This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-more than once a week.
-
-You will need quilt to apply these patches to the latest Linus release (5.x
-or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-https://ozlabs.org/~akpm/mmotm/series
-
-The file broken-out.tar.gz contains two datestamp files: .DATE and
-.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-followed by the base kernel version against which this patch series is to
-be applied.
-
-This tree is partially included in linux-next.  To see which patches are
-included in linux-next, consult the `series' file.  Only the patches
-within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
-linux-next.
-
-
-A full copy of the full kernel tree with the linux-next and mmotm patches
-already applied is available through git within an hour of the mmotm
-release.  Individual mmotm releases are tagged.  The master branch always
-points to the latest release, so it's constantly rebasing.
-
-	https://github.com/hnaz/linux-mm
-
-The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
-contains daily snapshots of the -mm tree.  It is updated more frequently
-than mmotm, and is untested.
-
-A git copy of this tree is also available at
-
-	https://github.com/hnaz/linux-mm
-
-
-
-This mmotm tree contains the following patches against 5.15-rc4:
-(patches marked "*" will be included in linux-next)
-
-  origin.patch
-* mm-userfaultfd-selftests-fix-memory-corruption-with-thp-enabled.patch
-* userfaultfd-fix-a-race-between-writeprotect-and-exit_mmap.patch
-* mm-migrate-optimize-hotplug-time-demotion-order-updates.patch
-* mm-migrate-add-cpu-hotplug-to-demotion-ifdef.patch
-* mm-migrate-fix-cpuhp-state-to-update-node-demotion-order.patch
-* mm-vmalloc-fix-numa-spreading-for-large-hash-tables.patch
-* ocfs2-fix-data-corruption-after-conversion-from-inline-format.patch
-* ocfs2-fix-data-corruption-after-conversion-from-inline-format-fix.patch
-* ocfs2-mount-fails-with-buffer-overflow-in-strlen.patch
-* memblock-check-memory-total_size.patch
-* mm-mempolicy-do-not-allow-illegal-mpol_f_numa_balancing-mpol_local-in-mbind.patch
-* mm-slub-fix-two-bugs-in-slab_debug_trace_open.patch
-* mm-slub-fix-mismatch-between-reconstructed-freelist-depth-and-cnt.patch
-* mm-slub-fix-potential-memoryleak-in-kmem_cache_open.patch
-* mm-slub-fix-potential-use-after-free-in-slab_debugfs_fops.patch
-* mm-slub-fix-incorrect-memcg-slab-count-for-bulk-free.patch
-* elfcore-correct-reference-to-config_uml.patch
-* elfcore-correct-reference-to-config_uml-fix.patch
-* vfs-check-fd-has-read-access-in-kernel_read_file_from_fd.patch
-* mm-fix-null-page-mapping-dereference-in-page_is_secretmem.patch
-* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
-* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
-* procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
-* scripts-spellingtxt-add-more-spellings-to-spellingtxt.patch
-* scripts-spellingtxt-fix-mistake-version-of-synchronization.patch
-* scripts-decodecode-fix-faulting-instruction-no-print-when-oppsfile-is-dos-format.patch
-* ocfs2-fix-handle-refcount-leak-in-two-exception-handling-paths.patch
-* ocfs2-cleanup-journal-init-and-shutdown.patch
-* ocfs2-dlm-remove-redundant-assignment-of-variable-ret.patch
-* ocfs2-reflink-deadlock-when-clone-file-to-the-same-directory-simultaneously.patch
-* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
-* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
-* posix-acl-avoid-wempty-body-warning.patch
-  mm.patch
-* mm-move-kvmalloc-related-functions-to-slabh.patch
-* mm-remove-useless-lines-in-enable_cpucache.patch
-* slub-add-back-check-for-free-nonslab-objects.patch
-* mm-slub-use-prefetchw-instead-of-prefetch.patch
-* mm-dont-include-linux-daxh-in-linux-mempolicyh.patch
-* mm-smaps-fix-shmem-pte-hole-swap-calculation.patch
-* mm-smaps-use-vma-vm_pgoff-directly-when-counting-partial-swap.patch
-* mm-smaps-simplify-shmem-handling-of-pte-holes.patch
-* mm-debug_vm_pgtable-dont-use-__p000-directly.patch
-* kasan-test-bypass-__alloc_size-checks.patch
-* rapidio-avoid-bogus-__alloc_size-warning.patch
-* compiler-attributes-add-__alloc_size-for-better-bounds-checking.patch
-* slab-clean-up-function-prototypes.patch
-* slab-add-__alloc_size-attributes-for-better-bounds-checking.patch
-* mm-kvmalloc-add-__alloc_size-attributes-for-better-bounds-checking.patch
-* mm-vmalloc-add-__alloc_size-attributes-for-better-bounds-checking.patch
-* mm-page_alloc-add-__alloc_size-attributes-for-better-bounds-checking.patch
-* percpu-add-__alloc_size-attributes-for-better-bounds-checking.patch
-* mm-fix-a-comment.patch
-* mm-remove-bogus-vm_bug_on.patch
-* vfs-keep-inodes-with-page-cache-off-the-inode-shrinker-lru.patch
-* mm-gup-further-simplify-__gup_device_huge.patch
-* mm-swapfile-remove-needless-request_queue-null-pointer-check.patch
-* mm-swapfile-fix-an-integer-overflow-in-swap_show.patch
-* mm-optimise-put_pages_list.patch
-* mm-memcg-drop-swp_entry_t-in-mc_handle_file_pte.patch
-* memcg-flush-stats-only-if-updated.patch
-* memcg-unify-memcg-stat-flushing.patch
-* mm-memcg-remove-obsolete-memcg_free_kmem.patch
-* memcg-prohibit-unconditional-exceeding-the-limit-of-dying-tasks.patch
-* mm-mmapc-fix-a-data-race-of-mm-total_vm.patch
-* mm-use-__pfn_to_section-instead-of-open-coding-it.patch
-* mm-memory-avoid-unnecessary-kernel-user-pointer-conversion.patch
-* mm-shmem-unconditionally-set-pte-dirty-in-mfill_atomic_install_pte.patch
-* mm-clear-vmf-pte-after-pte_unmap_same-returns.patch
-* mm-drop-first_index-last_index-in-zap_details.patch
-* mm-add-zap_skip_check_mapping-helper.patch
-* mm-introduce-pmd_install-helper.patch
-* mm-remove-redundant-smp_wmb.patch
-* documentation-update-pagemap-with-shmem-exceptions.patch
-* lazy-tlb-introduce-lazy-mm-refcount-helper-functions.patch
-* lazy-tlb-allow-lazy-tlb-mm-refcounting-to-be-configurable.patch
-* lazy-tlb-shoot-lazies-a-non-refcounting-lazy-tlb-option.patch
-* powerpc-64s-enable-mmu_lazy_tlb_shootdown.patch
-* memory-remove-unused-config_mem_block_size.patch
-* mm-mremap-dont-account-pages-in-vma_to_resize.patch
-* mm-mmap_lock-remove-redundant-newline-in-tp_printk.patch
-* mm-mmap_lock-use-declare_event_class-and-define_event_fn.patch
-* mm-vmalloc-repair-warn_allocs-in-__vmalloc_area_node.patch
-* mm-vmalloc-dont-allow-vm_no_guard-on-vmap.patch
-* mm-vmalloc-make-show_numa_info-aware-of-hugepage-mappings.patch
-* mm-vmalloc-make-sure-to-dump-unpurged-areas-in-proc-vmallocinfo.patch
-* mm-vmalloc-do-not-adjust-the-search-size-for-alignment-overhead.patch
-* mm-vmalloc-check-various-alignments-when-debugging.patch
-* vmalloc-back-off-when-the-current-task-is-oom-killed.patch
-* vmalloc-choose-a-better-start-address-in-vm_area_register_early.patch
-* arm64-support-page-mapping-percpu-first-chunk-allocator.patch
-* kasan-arm64-fix-pcpu_page_first_chunk-crash-with-kasan_vmalloc.patch
-* kasan-test-add-memcpy-test-that-avoids-out-of-bounds-write.patch
-* lib-stackdepot-include-gfph.patch
-* lib-stackdepot-remove-unused-function-argument.patch
-* lib-stackdepot-introduce-__stack_depot_save.patch
-* kasan-common-provide-can_alloc-in-kasan_save_stack.patch
-* kasan-generic-introduce-kasan_record_aux_stack_noalloc.patch
-* workqueue-kasan-avoid-alloc_pages-when-recording-stack.patch
-* kasan-fix-tag-for-large-allocations-when-using-config_slab.patch
-* mm-large-system-hash-avoid-possible-null-deref-in-alloc_large_system_hash.patch
-* mm-page_allocc-remove-meaningless-vm_bug_on-in-pindex_to_order.patch
-* mm-page_allocc-simplify-the-code-by-using-macro-k.patch
-* mm-page_allocc-fix-obsolete-comment-in-free_pcppages_bulk.patch
-* mm-page_allocc-use-helper-function-zone_spans_pfn.patch
-* mm-page_allocc-avoid-allocating-highmem-pages-via-alloc_pages_exact.patch
-* mm-page_alloc-print-node-fallback-order.patch
-* mm-page_alloc-use-accumulated-load-when-building-node-fallback-list.patch
-* mm-move-node_reclaim_distance-to-fix-numa-without-smp.patch
-* mm-move-fold_vm_numa_events-to-fix-numa-without-smp.patch
-* mm-do-not-acquire-zone-lock-in-is_free_buddy_page.patch
-* mm-page_alloc-detect-allocation-forbidden-by-cpuset-and-bail-out-early.patch
-* mm-show-watermark_boost-of-zone-in-zoneinfo.patch
-* mm-create-a-new-system-state-and-fix-core_kernel_text.patch
-* mm-make-generic-arch_is_kernel_initmem_freed-do-what-it-says.patch
-* powerpc-use-generic-version-of-arch_is_kernel_initmem_freed.patch
-* s390-use-generic-version-of-arch_is_kernel_initmem_freed.patch
-* mm-fix-data-race-in-pagepoisoned.patch
-* mm-hugetlb-drop-__unmap_hugepage_range-definition-from-hugetlbh.patch
-* hugetlb-add-demote-hugetlb-page-sysfs-interfaces.patch
-* mm-cma-add-cma_pages_valid-to-determine-if-pages-are-in-cma.patch
-* hugetlb-be-sure-to-free-demoted-cma-pages-to-cma.patch
-* hugetlb-add-demote-bool-to-gigantic-page-routines.patch
-* hugetlb-add-hugetlb-demote-page-support.patch
-* hugetlb-add-hugetlb-demote-page-support-v4.patch
-* mmhugetlb-remove-mlock-ulimit-for-shm_hugetlb.patch
-* userfaultfd-selftests-dont-rely-on-gnu-extensions-for-random-numbers.patch
-* userfaultfd-selftests-fix-feature-support-detection.patch
-* userfaultfd-selftests-fix-calculation-of-expected-ioctls.patch
-* mm-page_isolation-fix-potential-missing-call-to-unset_migratetype_isolate.patch
-* mm-page_isolation-guard-against-possible-putback-unisolated-page.patch
-* mm-vmscanc-fix-wunused-but-set-variable-warning.patch
-* tools-vm-page_owner_sortc-count-and-sort-by-mem.patch
-* tools-vm-page-typesc-make-walk_file-aware-of-address-range-option.patch
-* tools-vm-page-typesc-move-show_file-to-summary-output.patch
-* tools-vm-page-typesc-print-file-offset-in-hexadecimal.patch
-* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch
-* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt-fix.patch
-* arch_numa-simplify-numa_distance-allocation.patch
-* xen-x86-free_p2m_page-use-memblock_free_ptr-to-free-a-virtual-pointer.patch
-* memblock-drop-memblock_free_early_nid-and-memblock_free_early.patch
-* memblock-stop-aliasing-__memblock_free_late-with-memblock_free_late.patch
-* memblock-rename-memblock_free-to-memblock_phys_free.patch
-* memblock-use-memblock_free-for-freeing-virtual-pointers.patch
-* mm-mark-the-oom-reaper-thread-as-freezable.patch
-* oom_kill-oom_score_adj-broken-for-processes-with-small-memory-usage.patch
-* hugetlbfs-extend-the-definition-of-hugepages-parameter-to-support-node-allocation.patch
-* mm-migrate-de-duplicate-migrate_reason-strings.patch
-* mm-nommu-kill-arch_get_unmapped_area.patch
-* selftest-vm-fix-ksm-selftest-to-run-with-different-numa-topologies.patch
-* mm-vmstat-annotate-data-race-for-zone-free_areanr_free.patch
-* mm-vmstat-annotate-data-race-for-zone-free_areanr_free-fix.patch
-* mm-memory_hotplug-add-static-qualifier-for-online_policy_to_str.patch
-* memory-hotplugrst-fix-two-instances-of-movablecore-that-should-be-movable_node.patch
-* memory-hotplugrst-fix-wrong-sys-module-memory_hotplug-parameters-path.patch
-* memory-hotplugrst-document-the-auto-movable-online-policy.patch
-* mm-memory_hotplug-remove-config_x86_64_acpi_numa-dependency-from-config_memory_hotplug.patch
-* mm-memory_hotplug-remove-config_memory_hotplug_sparse.patch
-* mm-memory_hotplug-restrict-config_memory_hotplug-to-64-bit.patch
-* mm-memory_hotplug-remove-highmem-leftovers.patch
-* mm-memory_hotplug-remove-stale-function-declarations.patch
-* x86-remove-memory-hotplug-support-on-x86_32.patch
-* mm-memory_hotplug-handle-memblock_add_node-failures-in-add_memory_resource.patch
-* memblock-improve-memblock_hotplug-documentation.patch
-* memblock-allow-to-specify-flags-with-memblock_add_node.patch
-* memblock-add-memblock_driver_managed-to-mimic-ioresource_sysram_driver_managed.patch
-* mm-memory_hotplug-indicate-memblock_driver_managed-with-ioresource_sysram_driver_managed.patch
-* mm-memory_hotplug-make-hwpoisoned-dirty-swapcache-pages-unmovable.patch
-* mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch
-* mm-disable-zsmalloc-on-preempt_rt.patch
-* mm-zsmallocc-close-race-window-between-zs_pool_dec_isolated-and-zs_unregister_migration.patch
-* mm-zsmallocc-combine-two-atomic-ops-in-zs_pool_dec_isolated.patch
-* mm-highmem-remove-deprecated-kmap_atomic.patch
-* zram_drv-allow-reclaim-on-bio_alloc.patch
-* zram-off-by-one-in-read_block_state.patch
-* zram-introduce-an-aged-idle-interface.patch
-* zram-introduce-an-aged-idle-interface-v5.patch
-* zram-introduce-an-aged-idle-interface-v6.patch
-* mm-remove-hardened_usercopy_fallback.patch
-* include-linux-mmh-move-nr_free_buffer_pages-from-swaph-to-mmh.patch
-* stacktrace-move-filter_irq_stacks-to-kernel-stacktracec.patch
-* kfence-count-unexpectedly-skipped-allocations.patch
-* kfence-move-saving-stack-trace-of-allocations-into-__kfence_alloc.patch
-* kfence-limit-currently-covered-allocations-when-pool-nearly-full.patch
-* kfence-limit-currently-covered-allocations-when-pool-nearly-full-fix.patch
-* kfence-limit-currently-covered-allocations-when-pool-nearly-full-fix-fix.patch
-* kfence-add-note-to-documentation-about-skipping-covered-allocations.patch
-* kfence-test-use-kunit_skip-to-skip-tests.patch
-* kfence-shorten-critical-sections-of-alloc-free.patch
-* mm-damon-grammar-s-works-work.patch
-* documentation-vm-move-user-guides-to-admin-guide-mm.patch
-* maintainers-update-seongjaes-email-address.patch
-* docs-vm-damon-remove-broken-reference.patch
-* include-linux-damonh-fix-kernel-doc-comments-for-damon_callback.patch
-* mm-damon-core-print-kdamond-start-log-in-debug-mode-only.patch
-* mm-damon-remove-unnecessary-do_exit-from-kdamond.patch
-* mm-damon-neednt-hold-kdamond_lock-to-print-pid-of-kdamond.patch
-* mm-damon-core-nullify-pointer-ctx-kdamond-with-a-null.patch
-* mm-damon-core-account-age-of-target-regions.patch
-* mm-damon-core-implement-damon-based-operation-schemes-damos.patch
-* mm-damon-vaddr-support-damon-based-operation-schemes.patch
-* mm-damon-dbgfs-support-damon-based-operation-schemes.patch
-* mm-damon-schemes-implement-statistics-feature.patch
-* selftests-damon-add-schemes-debugfs-tests.patch
-* docs-admin-guide-mm-damon-document-damon-based-operation-schemes.patch
-* info-task-hung-in-generic_file_write_iter.patch
-* info-task-hung-in-generic_file_write-fix.patch
-* kernel-hung_taskc-monitor-killed-tasks.patch
-* procfs-do-not-list-tid-0-in-proc-pid-task.patch
-* procfs-do-not-list-tid-0-in-proc-pid-task-fix.patch
-* proc-test-that-proc-task-doesnt-contain-0.patch
-* x86-xen-update-xen_oldmem_pfn_is_ram-documentation.patch
-* x86-xen-simplify-xen_oldmem_pfn_is_ram.patch
-* x86-xen-print-a-warning-when-hvmop_get_mem_type-fails.patch
-* proc-vmcore-let-pfn_is_ram-return-a-bool.patch
-* proc-vmcore-convert-oldmem_pfn_is_ram-callback-to-more-generic-vmcore-callbacks.patch
-* virtio-mem-factor-out-hotplug-specifics-from-virtio_mem_init-into-virtio_mem_init_hotplug.patch
-* virtio-mem-factor-out-hotplug-specifics-from-virtio_mem_probe-into-virtio_mem_init_hotplug.patch
-* virtio-mem-factor-out-hotplug-specifics-from-virtio_mem_remove-into-virtio_mem_deinit_hotplug.patch
-* virtio-mem-kdump-mode-to-sanitize-proc-vmcore-access.patch
-* proc-allow-pid_revalidate-during-lookup_rcu.patch
-* proc-sysctl-make-protected_-world-readable.patch
-* maintainers-add-exec-binfmt-section-with-myself-and-eric.patch
-* lib-stackdepot-check-stackdepot-handle-before-accessing-slabs.patch
-* lib-stackdepot-add-helper-to-print-stack-entries.patch
-* lib-stackdepot-add-helper-to-print-stack-entries-into-buffer.patch
-* lib-stackdepot-add-helper-to-print-stack-entries-into-buffer-v2.patch
-* lib-stackdepot-add-helper-to-print-stack-entries-into-buffer-v3.patch
-* lib-string_helpers-add-linux-stringh-for-strlen.patch
-* lib-uninline-simple_strntoull-as-well.patch
-* const_structscheckpatch-add-a-few-sound-ops-structs.patch
-* checkpatch-improve-export_symbol-test-for-export_symbol_ns-uses.patch
-* binfmt_elf-reintroduce-using-map_fixed_noreplace.patch
-* elf-fix-overflow-in-total-mapping-size-calculation.patch
-* elf-simplify-stack_alloc-macro.patch
-* kallsyms-remove-arch-specific-text-and-data-check.patch
-* kallsyms-fix-address-checks-for-kernel-related-range.patch
-* sections-move-and-rename-core_kernel_data-to-is_kernel_core_data.patch
-* sections-move-is_kernel_inittext-into-sectionsh.patch
-* x86-mm-rename-__is_kernel_text-to-is_x86_32_kernel_text.patch
-* sections-provide-internal-__is_kernel-and-__is_kernel_text-helper.patch
-* mm-kasan-use-is_kernel-helper.patch
-* extable-use-is_kernel_text-helper.patch
-* powerpc-mm-use-core_kernel_text-helper.patch
-* microblaze-use-is_kernel_text-helper.patch
-* alpha-use-is_kernel_text-helper.patch
-* ramfs-fix-mount-source-show-for-ramfs.patch
-* init-mainc-silence-some-wunused-parameter-warnings.patch
-* coda-avoid-null-pointer-dereference-from-a-bad-inode.patch
-* coda-check-for-async-upcall-request-using-local-state.patch
-* coda-remove-err-which-no-one-care.patch
-* coda-avoid-flagging-null-inodes.patch
-* coda-avoid-hidden-code-duplication-in-rename.patch
-* coda-avoid-doing-bad-things-on-inode-type-changes-during-revalidation.patch
-* coda-convert-from-atomic_t-to-refcount_t-on-coda_vm_ops-refcnt.patch
-* coda-use-vmemdup_user-to-replace-the-open-code.patch
-* coda-bump-module-version-to-72.patch
-* hfs-hfsplus-use-warn_on-for-sanity-check.patch
-* hfsplus-fix-out-of-bounds-warnings-in-__hfsplus_setxattr.patch
-* seq_file-move-seq_escape-to-a-header.patch
-* unshare-use-swap-to-make-code-cleaner.patch
-* sysv-use-build_bug_on-instead-of-runtime-check.patch
-* documentation-kcov-include-typesh-in-the-example.patch
-* documentation-kcov-define-ip-in-the-example.patch
-* kcov-allocate-per-cpu-memory-on-the-relevant-node.patch
-* kcov-avoid-enabledisable-interrupts-if-in_task.patch
-* kcov-replace-local_irq_save-with-a-local_lock_t.patch
-* kernel-resource-clean-up-and-optimize-iomem_is_exclusive.patch
-* kernel-resource-disallow-access-to-exclusive-system-ram-regions.patch
-* virtio-mem-disallow-mapping-virtio-mem-memory-via-dev-mem.patch
-* ipc-check-checkpoint_restore_ns_capable-to-modify-c-r-proc-files.patch
-* ipc-check-checkpoint_restore_ns_capable-to-modify-c-r-proc-files-fix.patch
-* ipc-ipc_sysctlc-remove-fallback-for-config_proc_sysctl.patch
-  linux-next.patch
-  linux-next-rejects.patch
-  linux-next-git-rejects.patch
-* mm-migrate-simplify-the-file-backed-pages-validation-when-migrating-its-mapping.patch
-* mm-unexport-folio_memcg_unlock.patch
-* mm-unexport-unlock_page_memcg.patch
-  make-sure-nobodys-leaking-resources.patch
-  releasing-resources-with-children.patch
-  mutex-subsystem-synchro-test-module.patch
-  kernel-forkc-export-kernel_thread-to-modules.patch
-  workaround-for-a-pci-restoring-bug.patch
