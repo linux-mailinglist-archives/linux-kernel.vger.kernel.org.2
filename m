@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5943429471
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15E9429474
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbhJKQ1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 12:27:30 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:35042 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbhJKQ12 (ORCPT
+        id S231958AbhJKQ2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 12:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231985AbhJKQ2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 12:27:28 -0400
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7D5B120B8966;
-        Mon, 11 Oct 2021 09:25:28 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7D5B120B8966
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1633969528;
-        bh=knkFwK85QFrF0qOhjDycyvfu/WtNh39v6S3FyHmkg8c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VQNiS8TggI4OrE08gnOAgARjkR2s1dlomhH0YSO0f9c3jR/RabfHbMrBjnNvzxq+o
-         dysN1Zt8+ta57NJnRS8xENwdbOM0Lq6vduP30UPXmc6ukfyk4rqmrYSuopfm4UOoBg
-         H40jSD5kRDIdbYLJIx3z8c2zD7mRc6u9DqxMqSqo=
-Date:   Mon, 11 Oct 2021 09:25:23 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
+        Mon, 11 Oct 2021 12:28:11 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E9AC061570;
+        Mon, 11 Oct 2021 09:26:10 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id r201so11308259pgr.4;
+        Mon, 11 Oct 2021 09:26:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JO2ClopEYUQ6YbQwWtxthjon2iiiwlNRn4klOk10yRA=;
+        b=OtjM6jjtLdgsmjPM70lUL88uciW3U7N6YH2UWpbwX0pFO7SC3Mw/N5BRIvgPFX9W9M
+         qJJjshk2uk5ZDb60aGFKkyq9V93JkwpgbTNz/kkHSrHQwsepDB9loamP5BISUE1ecq8A
+         pYPtoa+m5T6WKqiMjdgxlJVqAaZELKLe1ToCQbnU7u+F0pcXeDrRV1SuctYqsJnHEacv
+         jNNM1hrpqj6jc25uxcZNaYGAl8wIJn6X5KdZvT1o7s2DbOuCQizdCdAC5MLPxKAQfBAR
+         W+v1M8GgTGKvz5eFXM2vuEaa/XgUDi0ZfTsr+NRdLz6gHFQLihqUNUZuYP7Xqe4ZF9Mc
+         ewPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JO2ClopEYUQ6YbQwWtxthjon2iiiwlNRn4klOk10yRA=;
+        b=mG51xjIB/4ZpRbrf/vEIKl082dGlPdeoTQ3w0JwbBQmrTEdSPk/Vvi4PoUfYQQCAqq
+         Y5r3J30d7Sn2IDel0gNpMs+bnxhzlaqw+4PKTuWwUzqUyCWvecUcszSb7OUFRghe66HG
+         XEElqBY7PC0romVOqp90AC9cJKhgP3KGdXehW++oCu3NAu9RJ4VYbAtruGgA4GhjWup2
+         A1u9AWoCcIGiLQevPl53Ava9r7SOTt4Bw6noWVuQiMHJWgkgotk56gfaxDU+2g6boAmS
+         jJqYkKm0ilwUwd84X/dARP0LTFyvM4W335QshSiJyrfJdnOUZSpw9TJo0iyaFepbTR5m
+         5rUw==
+X-Gm-Message-State: AOAM533Qt5jkZNPKe68cVaalg1Qs6Wt4hyGxLE/3JswSI0S+vmgVhmdW
+        cI7AnvOWxuYZgvFz8u18GSk4ojKwA/M=
+X-Google-Smtp-Source: ABdhPJze6jkWOr8I8AY+AzkidF644og126Sw1jAOCSLFPk/tBED3WkVoOV6QP5hRHVBBRhlGRKdNLQ==
+X-Received: by 2002:a05:6a00:1148:b0:44d:2798:b08a with SMTP id b8-20020a056a00114800b0044d2798b08amr3430681pfm.2.1633969570045;
+        Mon, 11 Oct 2021 09:26:10 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id d12sm8583531pgf.19.2021.10.11.09.25.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 09:26:09 -0700 (PDT)
+Subject: Re: [PATCH 5.14 000/151] 5.14.12-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] user_events: Enable user processes to create and write
- to trace events
-Message-ID: <20211011162523.GA1542@kbox>
-References: <20211005224428.2551-1-beaub@linux.microsoft.com>
- <20211007012827.99cd5795140cbb0c932e1b5a@kernel.org>
- <20211006175611.GA2995@kbox>
- <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
- <20211007162204.GA30947@kbox>
- <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
- <20211008000540.GA31220@kbox>
- <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211011134517.833565002@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1cf605f8-0e82-e06f-0297-0c8329bee015@gmail.com>
+Date:   Mon, 11 Oct 2021 09:25:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 06:22:58PM +0900, Masami Hiramatsu wrote:
-> > > I'm not sure this point, you mean 1 fd == 1 event model?
-> > > 
-> > Yeah, I like the idea of not having an fd per event.
+On 10/11/21 6:44 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.12 release.
+> There are 151 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Ah, OK. I misunderstood the idea.
-> per-FD model sounds like having events/user-events/*/marker file.
+> Responses should be made by Wed, 13 Oct 2021 13:44:51 +0000.
+> Anything received after that time might be too late.
 > 
-Thanks for the back and forth, I appreciate your time on this.
-
-Yes, in my mind there are two options to avoid kernel memory usage
-per-event.
-
-1.
-We have a an array per file struct that is independently ref-counted.
-This is required to ensure lifetime requirements and to ensure user code
-cannot access other user events that might have been free'd outside of
-the lifetime and cause a kernel crash.
-
-This approach also requires 2 int's to be returned, 1 for the status
-page the other a local index for the write into the above array per-file
-struct.
-
-This is likely the most complex method due to it's lifetime and RCU
-synchronization requirements. However, it represents the least memory to
-both kernel and user space.
-
-2.
-We have a anon_inode FD that gets installed into the user process and
-returned via the ioctl from user_events tracefs file. The file struct
-backing the FD is shared by all user mode processes for that event. Like
-having an inject/marker file per-event in the user_events subsystem.
-
-This approach requires an FD returned and either an int for the status
-page or the returend FD could expose the ID via another IOCTL being
-issued.
-
-This is the simplest method since the FD manages the lifetime, when FD
-is released so is the shared file struct. Kernel side memory is reduced
-to only unique events that are actively being used. There is no RCU or
-synchronization beyond the FD lifetime. The user mode processes does
-incur an FD per-event within their file description table. So they
-events charge against their FD per-process limit (not necessarily a bad
-thing).
-
-This also seems to follow the pre-existing patterns of tracefs
-(trace_marker, inject, format, etc all have a shared file available to
-user-processes that have been granted access). For our case, we want
-that, but we want it on a access boundary to who all have access to the
-user_events_* tracefs files. We don't want to open up all of tracefs
-widely.
-
-> > I want to make
-> > sure the complexity is worth it. Is the overhead of an FD per event in
-> > user space too much?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.12-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
 > 
-> It depends on the use case, how much events you wants to use with
-> the user-events. If there are hundreds of the evets, that will consume
-> kernel resources and /proc/*/fd/ will be filled with the event's fds.
-> But if there is a few events, I think no problem.
+> thanks,
 > 
-In our own use case this will be low due to the way we plan to use the
-events. However, I am not sure others will follow that :)
+> greg k-h
 
-Thanks,
--Beau
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
