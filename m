@@ -2,146 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AF74293F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 841D3429407
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239339AbhJKP7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:59:01 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:42157 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235938AbhJKP6t (ORCPT
+        id S237032AbhJKQAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 12:00:32 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:48502 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233973AbhJKQAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:58:49 -0400
-Received: from [77.244.183.192] (port=63592 helo=melee.dev.aim)
-        by hostingweb31.netsons.net with esmtpa (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1mZxfP-00DXft-Iw; Mon, 11 Oct 2021 17:56:43 +0200
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>
-Subject: [PATCH 5/8] dt-bindings: mfd: add Maxim MAX77714 PMIC
-Date:   Mon, 11 Oct 2021 17:56:12 +0200
-Message-Id: <20211011155615.257529-6-luca@lucaceresoli.net>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211011155615.257529-1-luca@lucaceresoli.net>
-References: <20211011155615.257529-1-luca@lucaceresoli.net>
+        Mon, 11 Oct 2021 12:00:25 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19B9sOND023189;
+        Mon, 11 Oct 2021 17:58:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=W/s3u3+Z9QbqBfrXJaxmOrhalio76CjYsV89ygdkHVg=;
+ b=jGFf6RCXrJDKS9RnjXArl3lt2YWafxnUJ5EUTviALU3rO9LXXkzCBywpwVRKr4TMEJI1
+ oi1hVS+QnhjGnOn/GJBJ1sqG+unmbFlunt4CyR4aDX5xyPa7nmVFGd/RMrA5EJe8nusP
+ DjVoWE3hWug0O+coFPOO6X0EvWHs4nxI793kPvveeGdeQSlCv31LaKD+xIl8fiXH02QN
+ OVMf0ZJbB+AnZ7byHC2qMOUBmStIFT/RqvQjUOC5j9tX3K95ALQ0rzADYe6s29N2t9OF
+ aEtsrEN/F04RGyN1c+aNT9R6Bh1XZG0OuSRXDonjbt4JAw1qVedDZpTYfJiykOvZtLkc Iw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bmdxrkung-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 17:58:00 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CE3D310002A;
+        Mon, 11 Oct 2021 17:57:59 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C3D43231DE0;
+        Mon, 11 Oct 2021 17:57:59 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 11 Oct 2021 17:57:59
+ +0200
+From:   Olivier Moysan <olivier.moysan@foss.st.com>
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        "Lars-Peter Clausen" <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: [PATCH v4 0/7] iio: adc: stm32-adc: add internal channels support
+Date:   Mon, 11 Oct 2021 17:57:10 +0200
+Message-ID: <20211011155717.1594-1-olivier.moysan@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-11_05,2021-10-11_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for the MAX77714 PMIC with GPIO, RTC and watchdog.
+This patchset adds support of ADC2 internal channels VDDCORE, VREFINT and VBAT
+on STM32MP15x SoCs. The generic IIO channel bindings is also introduced here
+to provide this feature. The legacy channel binding is kept for backward compatibility.
 
-Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
----
- .../bindings/mfd/maxim,max77714.yaml          | 58 +++++++++++++++++++
- MAINTAINERS                                   |  5 ++
- 2 files changed, 63 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
+Changes in v2:
+- Add 'deprecated' to channels legacy properties in ADC bindings
+- Add set/clr service for common registers, to make code more generic in
+  internal channels enable/disable services.
+- Expose vrefint channel as a processed channel to return
+  the actual value of vrefp.
+- Minor code improvements
 
-diff --git a/Documentation/devicetree/bindings/mfd/maxim,max77714.yaml b/Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
-new file mode 100644
-index 000000000000..2b0ce3b9bc92
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
-@@ -0,0 +1,58 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mfd/maxim,max77714.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MAX77714 PMIC with GPIO, RTC and watchdog from Maxim Integrated.
-+
-+maintainers:
-+  - Luca Ceresoli <luca@lucaceresoli.net>
-+
-+description: |
-+  MAX77714 is a Power Management IC with 4 buck regulators, 9
-+  low-dropout regulators, 8 GPIOs, RTC and watchdog.
-+
-+properties:
-+  compatible:
-+    const: maxim,max77714
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+  "#interrupt-cells":
-+    const: 2
-+    description:
-+      The first cell is the IRQ number, the second cell is the trigger type.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - interrupt-controller
-+  - "#interrupt-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        pmic@1c {
-+            compatible = "maxim,max77714";
-+            reg = <0x1c>;
-+            interrupt-parent = <&gpio2>;
-+            interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-+
-+            interrupt-controller;
-+            #interrupt-cells = <2>;
-+        };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a4a0c2baaf27..4d0134752537 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11385,6 +11385,11 @@ F:	drivers/power/supply/max77650-charger.c
- F:	drivers/regulator/max77650-regulator.c
- F:	include/linux/mfd/max77650.h
- 
-+MAXIM MAX77714 PMIC MFD DRIVER
-+M:	Luca Ceresoli <luca@lucaceresoli.net>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
-+
- MAXIM MAX77802 PMIC REGULATOR DEVICE DRIVER
- M:	Javier Martinez Canillas <javier@dowhile0.org>
- L:	linux-kernel@vger.kernel.org
+Changes in v3:
+- fix vrefint sampling time check.
+
+Changes in v4:
+- fix binding
+- add dedicated spin lock for common register
+- manage probe_defer on nvmem read
+
+Olivier Moysan (7):
+  dt-bindings: iio: stm32-adc: add generic channel binding
+  dt-bindings: iio: stm32-adc: add nvmem support for vrefint internal
+    channel
+  iio: adc: stm32-adc: split channel init into several routines
+  iio: adc: stm32-adc: add support of generic channels binding
+  iio: adc: stm32-adc: add support of internal channels
+  iio: adc: stm32-adc: add vrefint calibration support
+  iio: adc: stm32-adc: use generic binding for sample-time
+
+ .../bindings/iio/adc/st,stm32-adc.yaml        | 108 ++++-
+ drivers/iio/adc/stm32-adc-core.c              |   1 +
+ drivers/iio/adc/stm32-adc-core.h              |  10 +
+ drivers/iio/adc/stm32-adc.c                   | 422 ++++++++++++++++--
+ 4 files changed, 486 insertions(+), 55 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
