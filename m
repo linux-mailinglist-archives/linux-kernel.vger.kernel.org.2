@@ -2,403 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0560B429501
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 450F04294FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233362AbhJKRBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:01:21 -0400
-Received: from marcansoft.com ([212.63.210.85]:56868 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232940AbhJKRAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:00:45 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 0FAA9425E4;
-        Mon, 11 Oct 2021 16:58:14 +0000 (UTC)
-From:   Hector Martin <marcan@marcan.st>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Hector Martin <marcan@marcan.st>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 9/9] arm64: apple: Add CPU frequency scaling support for t8103
-Date:   Tue, 12 Oct 2021 01:57:07 +0900
-Message-Id: <20211011165707.138157-10-marcan@marcan.st>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011165707.138157-1-marcan@marcan.st>
-References: <20211011165707.138157-1-marcan@marcan.st>
+        id S233042AbhJKRBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233206AbhJKRAV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:00:21 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5B9C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 09:58:12 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id ns7-20020a17090b250700b001a0937b87b7so295900pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 09:58:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0oMDbqZanSN//u1YMMcYEHCKj6g0nLAVOuw5cGVcceo=;
+        b=m8gbXWoAVXa/JjiFComPc0rji8sI+d/NO/gBKBgbCH/+p4LnD5k4+IisJwJQ8FJVns
+         sJKWn1Bfe4E8Jp1bydvjv0T1X7wEhxnyZbCY2Jq6eGZ/AoOezzf2vbjy934dHeU/rnFO
+         k6e5YiNkaSiYpzRAMjIV4jfi6z0SbbVvv1GJVJNsFUnkWwQpKwoWkb84AGLLmYAEh/x2
+         whdoBBve2yaiYaUUR0f9t7fYs6tISIOjkZP4EMzui5cwHUzsYB3fovSP3XMkOcmEyGcD
+         U6EBytNSkPOJKObCtV7dyZswCsdWqLY56G5eAvtAaSVT7v0yriCpardtvWHrv1OdS7fK
+         GBFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0oMDbqZanSN//u1YMMcYEHCKj6g0nLAVOuw5cGVcceo=;
+        b=E1A9S/8+3L7mECUQR/O9dW5J0+9KXnoTM62cQp/+TDLEb/+cPSEVV7aVoMWEvywIrf
+         yAsOrH8d2YY21PRFBnYvbi7wKw8UKfz+f1ey446xVD5VcOuNwXT4SMl5Zxz6QYsKCpdR
+         gNo2d3M1uHWMcqcasJB389+Rgf/esqJG2PaL3kjysu8bqMEX1J2VCzsQWKQGlSM4alhs
+         dML+N7elXfMKa8diICxt7j8oAo34YFZ8ek2j3uQgumvGeDXeWKdNYnXAH5PYvcOp2tmh
+         wMCCvzUOdZLMLXOuz10Fd06IpVz71Udf+8nDv4V2cllDvxOO68WYMFZGYuIq+8DkVktB
+         L9BA==
+X-Gm-Message-State: AOAM532G3i3BzZi0K748aAGaFZw+pfzDOCP3x83KhkbIDdlD0cufoGpH
+        hlHU/gzzimJOdUps3UQUj12Ilw==
+X-Google-Smtp-Source: ABdhPJyduaDSKyDvGGfH6PY8n/ji7sbA6BOQJz0CESFtO9SMfqt4coGFjXkHS6luOeR3tVjaqXQDkg==
+X-Received: by 2002:a17:902:7c8d:b0:13a:768b:d6c0 with SMTP id y13-20020a1709027c8d00b0013a768bd6c0mr25735191pll.83.1633971491519;
+        Mon, 11 Oct 2021 09:58:11 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z71sm7046957pfc.19.2021.10.11.09.58.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 09:58:10 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 16:58:06 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] KVM: x86: Fix and cleanup for recent AVIC changes
+Message-ID: <YWRtHmAUaKcbWEzH@google.com>
+References: <20211009010135.4031460-1-seanjc@google.com>
+ <9e9e91149ab4fa114543b69eaf493f84d2f33ce2.camel@redhat.com>
+ <YWRJwZF1toUuyBdC@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWRJwZF1toUuyBdC@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Proper CPU topology
-- CPU capacities
-  * The 714 value is based on the CoreMark benchmark [1]. This is
-    roughly in line with other real-world test cases, like gzip. For
-    some reason, Dhrystone gives a wildly different value of 326, but
-    this doesn't seem representative of real-world workloads. This might
-    be adjusted in the future.
-- MCC instance to control memory controller performance
-- MCC OPP for t8103 using config values from hardware/ADT
-- E-Cluster and P-Cluster clock controllers for CPU frequency switching
-- Cluster OPP tables, including latency values determined
-  experimentally.
+On Mon, Oct 11, 2021, Sean Christopherson wrote:
+> On Sun, Oct 10, 2021, Maxim Levitsky wrote:
+> > On Fri, 2021-10-08 at 18:01 -0700, Sean Christopherson wrote:
+> > > Belated "code review" for Maxim's recent series to rework the AVIC inhibit
+> > > code.  Using the global APICv status in the page fault path is wrong as
+> > > the correct status is always the vCPU's, since that status is accurate
+> > > with respect to the time of the page fault.  In a similar vein, the code
+> > > to change the inhibit can be cleaned up since KVM can't rely on ordering
+> > > between the update and the request for anything except consumers of the
+> > > request.
+> > > 
+> > > Sean Christopherson (2):
+> > >   KVM: x86/mmu: Use vCPU's APICv status when handling APIC_ACCESS
+> > >     memslot
+> > >   KVM: x86: Simplify APICv update request logic
+> > > 
+> > >  arch/x86/kvm/mmu/mmu.c |  2 +-
+> > >  arch/x86/kvm/x86.c     | 16 +++++++---------
+> > >  2 files changed, 8 insertions(+), 10 deletions(-)
+> > > 
+> > 
+> > Are you sure about it? Let me explain how the algorithm works:
+> > 
+> > - kvm_request_apicv_update:
+> > 
+> > 	- take kvm->arch.apicv_update_lock
+> > 
+> > 	- if inhibition state doesn't really change (kvm->arch.apicv_inhibit_reasons still zero or non zero)
+> > 		- update kvm->arch.apicv_inhibit_reasons
+> > 		- release the lock
+> > 
+> > 	- raise KVM_REQ_APICV_UPDATE
+> > 		* since kvm->arch.apicv_update_lock is taken, all vCPUs will be
+> > 		kicked out of guest mode and will be either doing someing in
+> > 		the KVM (like page fault) or stuck on trying to process that
+> > 		request the important thing is that no vCPU will be able to get
+> > 		back to the guest mode.
+> > 
+> > 	- update the kvm->arch.apicv_inhibit_reasons
+> > 		* since we hold vm->arch.apicv_update_lock vcpus can't see the new value
+> 
+> This assertion is incorrect, kvm_apicv_activated() is not guarded by the lock.
+> 
+> > 	- update the SPTE that covers the APIC's mmio window:
+> 
+> This won't affect in-flight page faults.
+> 
+> 
+>    vCPU0                               vCPU1
+>    =====                               =====
+>    Disabled APICv
+>    #NPT                                Acquire apicv_update_lock
+>                                        Re-enable APICv
+>    kvm_apicv_activated() == false
 
-This relies on the generic cpufreq-dt driver to implement the cpufreq
-side. It also assumes the bootloader did any required init (iBoot does
-everything on firmware 12.0 and later; for 11.x we will have m1n1 do
-what's missing).
+Doh, that's supposed to be "true".
 
-[1] https://github.com/kdrag0n/linux-m1/commit/05c296604a42189cb61a0f7e8665566de192cbe9
+>    incorrectly handle as regular MMIO
+>                                        zap APIC pages
+>    MMIO cache has bad entry
 
-Signed-off-by: Hector Martin <marcan@marcan.st>
----
- arch/arm64/boot/dts/apple/t8103.dtsi | 255 ++++++++++++++++++++++++++-
- 1 file changed, 247 insertions(+), 8 deletions(-)
+Argh, I forgot the memslot is still there, so the access won't be treated as MMIO
+and thus won't end up in the MMIO cache.
 
-diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-index a1e22a2ea2e5..5eec86917d72 100644
---- a/arch/arm64/boot/dts/apple/t8103.dtsi
-+++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-@@ -20,68 +20,284 @@ cpus {
- 		#address-cells = <2>;
- 		#size-cells = <0>;
- 
--		cpu0: cpu@0 {
-+		cpu-map {
-+			cluster0 {
-+				core0 {
-+					cpu = <&cpu_e0>;
-+				};
-+				core1 {
-+					cpu = <&cpu_e1>;
-+				};
-+				core2 {
-+					cpu = <&cpu_e2>;
-+				};
-+				core3 {
-+					cpu = <&cpu_e3>;
-+				};
-+			};
-+
-+			cluster1 {
-+				core0 {
-+					cpu = <&cpu_p0>;
-+				};
-+				core1 {
-+					cpu = <&cpu_p1>;
-+				};
-+				core2 {
-+					cpu = <&cpu_p2>;
-+				};
-+				core3 {
-+					cpu = <&cpu_p3>;
-+				};
-+			};
-+		};
-+
-+		cpu_e0: cpu@0 {
- 			compatible = "apple,icestorm";
- 			device_type = "cpu";
- 			reg = <0x0 0x0>;
- 			enable-method = "spin-table";
- 			cpu-release-addr = <0 0>; /* To be filled by loader */
-+			clocks = <&clk_ecluster>;
-+			operating-points-v2 = <&ecluster_opp>;
-+			capacity-dmips-mhz = <714>;
- 		};
- 
--		cpu1: cpu@1 {
-+		cpu_e1: cpu@1 {
- 			compatible = "apple,icestorm";
- 			device_type = "cpu";
- 			reg = <0x0 0x1>;
- 			enable-method = "spin-table";
- 			cpu-release-addr = <0 0>; /* To be filled by loader */
-+			clocks = <&clk_ecluster>;
-+			operating-points-v2 = <&ecluster_opp>;
-+			capacity-dmips-mhz = <714>;
- 		};
- 
--		cpu2: cpu@2 {
-+		cpu_e2: cpu@2 {
- 			compatible = "apple,icestorm";
- 			device_type = "cpu";
- 			reg = <0x0 0x2>;
- 			enable-method = "spin-table";
- 			cpu-release-addr = <0 0>; /* To be filled by loader */
-+			clocks = <&clk_ecluster>;
-+			operating-points-v2 = <&ecluster_opp>;
-+			capacity-dmips-mhz = <714>;
- 		};
- 
--		cpu3: cpu@3 {
-+		cpu_e3: cpu@3 {
- 			compatible = "apple,icestorm";
- 			device_type = "cpu";
- 			reg = <0x0 0x3>;
- 			enable-method = "spin-table";
- 			cpu-release-addr = <0 0>; /* To be filled by loader */
-+			clocks = <&clk_ecluster>;
-+			operating-points-v2 = <&ecluster_opp>;
-+			capacity-dmips-mhz = <714>;
- 		};
- 
--		cpu4: cpu@10100 {
-+		cpu_p0: cpu@10100 {
- 			compatible = "apple,firestorm";
- 			device_type = "cpu";
- 			reg = <0x0 0x10100>;
- 			enable-method = "spin-table";
- 			cpu-release-addr = <0 0>; /* To be filled by loader */
-+			clocks = <&clk_pcluster>;
-+			operating-points-v2 = <&pcluster_opp>;
-+			capacity-dmips-mhz = <1024>;
- 		};
- 
--		cpu5: cpu@10101 {
-+		cpu_p1: cpu@10101 {
- 			compatible = "apple,firestorm";
- 			device_type = "cpu";
- 			reg = <0x0 0x10101>;
- 			enable-method = "spin-table";
- 			cpu-release-addr = <0 0>; /* To be filled by loader */
-+			clocks = <&clk_pcluster>;
-+			operating-points-v2 = <&pcluster_opp>;
-+			capacity-dmips-mhz = <1024>;
- 		};
- 
--		cpu6: cpu@10102 {
-+		cpu_p2: cpu@10102 {
- 			compatible = "apple,firestorm";
- 			device_type = "cpu";
- 			reg = <0x0 0x10102>;
- 			enable-method = "spin-table";
- 			cpu-release-addr = <0 0>; /* To be filled by loader */
-+			clocks = <&clk_pcluster>;
-+			operating-points-v2 = <&pcluster_opp>;
-+			capacity-dmips-mhz = <1024>;
- 		};
- 
--		cpu7: cpu@10103 {
-+		cpu_p3: cpu@10103 {
- 			compatible = "apple,firestorm";
- 			device_type = "cpu";
- 			reg = <0x0 0x10103>;
- 			enable-method = "spin-table";
- 			cpu-release-addr = <0 0>; /* To be filled by loader */
-+			clocks = <&clk_pcluster>;
-+			operating-points-v2 = <&pcluster_opp>;
-+			capacity-dmips-mhz = <1024>;
-+		};
-+	};
-+
-+	ecluster_opp: opp-table-0 {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		opp01 {
-+			opp-hz = /bits/ 64 <600000000>;
-+			opp-microvolt = <559000>;
-+			opp-level = <1>;
-+			clock-latency-ns = <7500>;
-+		};
-+		opp02 {
-+			opp-hz = /bits/ 64 <972000000>;
-+			opp-microvolt = <628000>;
-+			opp-level = <2>;
-+			clock-latency-ns = <22000>;
-+		};
-+		opp03 {
-+			opp-hz = /bits/ 64 <1332000000>;
-+			opp-microvolt = <684000>;
-+			opp-level = <3>;
-+			clock-latency-ns = <27000>;
-+		};
-+		opp04 {
-+			opp-hz = /bits/ 64 <1704000000>;
-+			opp-microvolt = <765000>;
-+			opp-level = <4>;
-+			clock-latency-ns = <33000>;
-+		};
-+		opp05 {
-+			opp-hz = /bits/ 64 <2064000000>;
-+			opp-microvolt = <868000>;
-+			opp-level = <5>;
-+			clock-latency-ns = <50000>;
-+		};
-+	};
-+
-+	pcluster_opp: opp-table-1 {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		opp01 {
-+			opp-hz = /bits/ 64 <600000000>;
-+			opp-microvolt = <781000>;
-+			opp-level = <1>;
-+			clock-latency-ns = <8000>;
-+			required-opps = <&mcc_lowperf>;
-+		};
-+		opp02 {
-+			opp-hz = /bits/ 64 <828000000>;
-+			opp-microvolt = <781000>;
-+			opp-level = <2>;
-+			clock-latency-ns = <19000>;
-+			required-opps = <&mcc_lowperf>;
-+		};
-+		opp03 {
-+			opp-hz = /bits/ 64 <1056000000>;
-+			opp-microvolt = <781000>;
-+			opp-level = <3>;
-+			clock-latency-ns = <21000>;
-+			required-opps = <&mcc_lowperf>;
-+		};
-+		opp04 {
-+			opp-hz = /bits/ 64 <1284000000>;
-+			opp-microvolt = <800000>;
-+			opp-level = <4>;
-+			clock-latency-ns = <23000>;
-+			required-opps = <&mcc_lowperf>;
-+		};
-+		opp05 {
-+			opp-hz = /bits/ 64 <1500000000>;
-+			opp-microvolt = <821000>;
-+			opp-level = <5>;
-+			clock-latency-ns = <24000>;
-+			required-opps = <&mcc_lowperf>;
-+		};
-+		opp06 {
-+			opp-hz = /bits/ 64 <1728000000>;
-+			opp-microvolt = <831000>;
-+			opp-level = <6>;
-+			clock-latency-ns = <29000>;
-+			required-opps = <&mcc_lowperf>;
-+		};
-+		opp07 {
-+			opp-hz = /bits/ 64 <1956000000>;
-+			opp-microvolt = <865000>;
-+			opp-level = <7>;
-+			clock-latency-ns = <31000>;
-+			required-opps = <&mcc_lowperf>;
-+		};
-+		opp08 {
-+			opp-hz = /bits/ 64 <2184000000>;
-+			opp-microvolt = <909000>;
-+			opp-level = <8>;
-+			clock-latency-ns = <34000>;
-+			required-opps = <&mcc_highperf>;
-+		};
-+		opp09 {
-+			opp-hz = /bits/ 64 <2388000000>;
-+			opp-microvolt = <953000>;
-+			opp-level = <9>;
-+			clock-latency-ns = <36000>;
-+			required-opps = <&mcc_highperf>;
-+		};
-+		opp10 {
-+			opp-hz = /bits/ 64 <2592000000>;
-+			opp-microvolt = <1003000>;
-+			opp-level = <10>;
-+			clock-latency-ns = <51000>;
-+			required-opps = <&mcc_highperf>;
-+		};
-+		opp11 {
-+			opp-hz = /bits/ 64 <2772000000>;
-+			opp-microvolt = <1053000>;
-+			opp-level = <11>;
-+			clock-latency-ns = <54000>;
-+			required-opps = <&mcc_highperf>;
-+		};
-+		opp12 {
-+			opp-hz = /bits/ 64 <2988000000>;
-+			opp-microvolt = <1081000>;
-+			opp-level = <12>;
-+			clock-latency-ns = <55000>;
-+			required-opps = <&mcc_highperf>;
-+		};
-+		opp13 {
-+			opp-hz = /bits/ 64 <3096000000>;
-+			opp-microvolt = <1081000>;
-+			opp-level = <13>;
-+			clock-latency-ns = <55000>;
-+			required-opps = <&mcc_highperf>;
-+		};
-+		opp14 {
-+			opp-hz = /bits/ 64 <3144000000>;
-+			opp-microvolt = <1081000>;
-+			opp-level = <14>;
-+			clock-latency-ns = <56000>;
-+			required-opps = <&mcc_highperf>;
-+		};
-+		opp15 {
-+			opp-hz = /bits/ 64 <3204000000>;
-+			opp-microvolt = <1081000>;
-+			opp-level = <15>;
-+			clock-latency-ns = <56000>;
-+			required-opps = <&mcc_highperf>;
-+		};
-+	};
-+
-+	mcc_opp: opp-table-2 {
-+		compatible = "apple,mcc-operating-points";
-+
-+		mcc_lowperf: opp0 {
-+			opp-level = <0>;
-+			apple,memory-perf-config = <0x813057f 0x1800180>;
-+		};
-+		mcc_highperf: opp1 {
-+			opp-level = <1>;
-+			apple,memory-perf-config = <0x133 0x55555340>;
- 		};
- 	};
- 
-@@ -110,6 +326,29 @@ soc {
- 		ranges;
- 		nonposted-mmio;
- 
-+		mcc: memory-controller@200200000 {
-+			compatible = "apple,t8103-mcc", "apple,mcc";
-+			#power-domain-cells = <0>;
-+			reg = <0x2 0x200000 0x0 0x200000>;
-+			operating-points-v2 = <&mcc_opp>;
-+			apple,num-channels = <8>;
-+		};
-+
-+		clk_ecluster: clock-controller@210e20000 {
-+			compatible = "apple,t8103-cluster-clk", "apple,cluster-clk";
-+			#clock-cells = <0>;
-+			reg = <0x2 0x10e20000 0x0 0x4000>;
-+			operating-points-v2 = <&ecluster_opp>;
-+		};
-+
-+		clk_pcluster: clock-controller@211e20000 {
-+			compatible = "apple,t8103-cluster-clk", "apple,cluster-clk";
-+			#clock-cells = <0>;
-+			reg = <0x2 0x11e20000 0x0 0x4000>;
-+			operating-points-v2 = <&pcluster_opp>;
-+			power-domains = <&mcc>;
-+		};
-+
- 		serial0: serial@235200000 {
- 			compatible = "apple,s5l-uart";
- 			reg = <0x2 0x35200000 0x0 0x1000>;
--- 
-2.33.0
+So I agree that the code is functionally ok, but I'd still prefer to switch to
+kvm_vcpu_apicv_active() so that this code is coherent with respect to the APICv
+status at the time the fault occurred.
 
+My objection to using kvm_apicv_activated() is that the result is completely
+non-deterministic with respect to the vCPU's APICv status at the time of the
+fault.  It works because all of the other mechanisms that are in place, e.g.
+elevating the MMU notifier count, but the fact that the result is non-deterministic
+means that using the per-vCPU status is also functionally ok.
+
+At a minimum, I'd like to add a blurb in the kvm_faultin_pfn() comment to call out
+the reliance on mmu_notifier_seq.
+
+E.g. if kvm_zap_gfn_range() wins the race to acquire mmu_lock() after APICv is
+inhibited/disabled by __kvm_request_apicv_update(), then direct_page_fault() will
+retry the fault due to the change in mmu_notifier_seq.  If direct_page_fault()
+wins the race, then kvm_zap_gfn_range() will zap the freshly-installed SPTEs.
+For the uninhibit/enable case, at worst KVM will emulate an access that could have
+been accelerated by retrying the instruction.
