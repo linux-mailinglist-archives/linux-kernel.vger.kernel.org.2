@@ -2,90 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BFA428A78
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECF2428A7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235759AbhJKKGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 06:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
+        id S235793AbhJKKG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 06:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235719AbhJKKGE (ORCPT
+        with ESMTP id S235719AbhJKKG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 06:06:04 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C4CC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 03:04:04 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so16507868ote.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 03:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BTfrofmPQUPweaAMFrrpDCsxkes27wM1OdN6B7aOuF4=;
-        b=gNogjTGQmS3kUoqTukTRrppUYNKgp7EnaKzm2pyIOK6rwS18CxqfhXq49S8yxdu6Z9
-         PwP+UXFvcIPwxiCfGUgXqGYDMfQz5Bffn/jpxVg1zKDJXeIG6LKmch6235qPHv6Tz82M
-         Idz81cY1JescUsKyXgGuvSeEBDZKfd1QI2gYwCTEviWZNFsMTRbJggihDcRSorMd9HA/
-         e3FsQDtV9bIHGk5rG0Bzv6xXkNa0xSFl/g1dw/MxbqRkqrPyjcnssg2NtHcVOA0nUUSm
-         ew7gKQ2R+htDc9Zm5poNxBV9pigZFxTW5yvF0tulCYduHglka31trewxx5WwMIxFJKGb
-         qhPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BTfrofmPQUPweaAMFrrpDCsxkes27wM1OdN6B7aOuF4=;
-        b=cWkjNpIlOEJWRtiHYbjMyIWN+OSO10TjF7THkDr504KVIYiLueL0/44ECQx2HKYAjy
-         r2AkrNxNk+xo0X5rn4OeN51rrfMNbsokfgplrbbVWClnZnxk1kKnTj01ncNGilaveCYN
-         6ALe8d8FMOY6BzRmcmprOF43jM/ws15pdZMYDIX+YYsMZlCTIaxa2mN+KYwdGD21O2i+
-         Zu+9DRtlFgr707SrY1IkMZBKsCRgkaoSLuOmFOmZ0416tKGDgcWRl9bYKcYzS5UAoSfi
-         eP3YB3j4CoJllxXnnu695GHk4gQ8V74q8nBdHTENwSe9IJsJ2ACLRT39lNwwgYxBAx/z
-         ebkg==
-X-Gm-Message-State: AOAM5305dun8GLoMrmC0KwU3JZrwDolqEpKkuiogTdDthSTSsEgUrPmt
-        7mNCBF18DbdBna7EQzjcMbae3nc/794zLdixEAvFDg==
-X-Google-Smtp-Source: ABdhPJzx25ngeDCE3URdwsjKxtgM4s+Jz/2JV2ZclIUGP2NWMTqMM7rlS0+gpqZV1W3QBnIfyoDuomWcyPpax9g/XU4=
-X-Received: by 2002:a9d:6f04:: with SMTP id n4mr20153119otq.157.1633946643977;
- Mon, 11 Oct 2021 03:04:03 -0700 (PDT)
+        Mon, 11 Oct 2021 06:06:27 -0400
+Received: from lb2-smtp-cloud7.xs4all.net (lb2-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D460C06161C;
+        Mon, 11 Oct 2021 03:04:27 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id ZsAPmxj3kk3b0ZsASmM0Dv; Mon, 11 Oct 2021 12:04:25 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1633946665; bh=rmKfzfF1sxGJ4PhfThUHFV7E1M9VYlASwIwSx2gzoXM=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=j8T0k8krqDMem+fjbyghmdfwoeEbPqVw9JYej1bwbMF/4Q7BV4pmG6r3ee8tscc/B
+         zAhglDO+ciOk12DU84ejzbA7i+/Y4zQQz+v8v2l/+igOgVqT/9AqJy8GL8WGrwyTRZ
+         sddWsIfWXvLDNSlYkQUTVhM2ncmHP5mVt0Xg1OnM98OVQdQZ70PHxqBp5UIucTWgzi
+         8YnkDuRQklL60jjTFr3TOKVHFlGKyLKvB+syGNOYRgNPdh/m3rckEdQk7WezyBGRc0
+         PhjS8Nty40ktFXOWKsmSnJYtwu79Q2EGCPKq8RqnSLxTkb282RHFGzth8mT3DFmfJ5
+         UrRzyU4wfO2AQ==
+Subject: Re: [PATCH v3 6/8] media: v4l2-ctrls: Add ARGB color effects control
+To:     Dillon Min <dillon.minfei@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        mchehab+huawei@kernel.org, ezequiel@collabora.com,
+        gnurou@gmail.com, Pi-Hsun Shih <pihsun@chromium.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, gabriel.fernandez@st.com,
+        gabriel.fernandez@foss.st.com,
+        Patrice CHOTARD <patrice.chotard@foss.st.com>,
+        hugues.fruchet@foss.st.com,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+References: <1633689012-14492-1-git-send-email-dillon.minfei@gmail.com>
+ <1633689012-14492-7-git-send-email-dillon.minfei@gmail.com>
+ <290d78b5-b6d4-a115-9556-f2f909f573da@xs4all.nl>
+ <CAL9mu0KxAmULQofQMgt2JxVLs=L-YT5HZa+mA7sSKebG88GbcA@mail.gmail.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <8331ab8a-39b7-588c-146d-77197d7637a8@xs4all.nl>
+Date:   Mon, 11 Oct 2021 12:04:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <YWLwUUNuRrO7AxtM@arighi-desktop> <CANpmjNOw--ZNyhmn-GjuqU+aH5T98HMmBoCM4z=JFvajC913Qg@mail.gmail.com>
- <YWPaZSX4WyOwilW+@arighi-desktop> <CANpmjNMFFFa=6toZJXqo_9hzv05zoD0aXA4D_K93rfw58cEw3w@mail.gmail.com>
- <YWPjZv7ClDOE66iI@arighi-desktop> <CACT4Y+b4Xmev7uLhASpHnELcteadhaXCBkkD5hO2YNP5M2451g@mail.gmail.com>
- <YWQCknwPcGlOBfUi@arighi-desktop> <YWQJe1ccZ72FZkLB@arighi-desktop>
-In-Reply-To: <YWQJe1ccZ72FZkLB@arighi-desktop>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 11 Oct 2021 12:03:52 +0200
-Message-ID: <CANpmjNNtCf+q21_5Dj49c4D__jznwFbBFrWE0LG5UnC__B+fKA@mail.gmail.com>
-Subject: Re: BUG: soft lockup in __kmalloc_node() with KFENCE enabled
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAL9mu0KxAmULQofQMgt2JxVLs=L-YT5HZa+mA7sSKebG88GbcA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfI6gIQYzNuZRRJ7atifRKhQb6OnM6G4qdQlLJpYTELraJNgcaUYZWWeK4YOeU0wIKPqpIoERADNR3JzdrhPpMUXJxysktZjRzn4l77Lx8PzOutjDvbPI
+ LWJS/iuWcf3xMboLPaGC2UIYzKEe1FfVtAPrPFFZBxHyl8j3Y6jYwO++mchOq48XWpY9Vy6hfAlBWtWr0qHW40e8s9g9nWmBfsqVnPDKRvhQCbKXNuE96Kx3
+ 0SppxcUbjkIRls5oUkMayziAWGBYFn6h6BDip5cCH0tOhZr2ok9XV8zBPQdB77+2xnulM658FFdGnjE+weRam7bgodUQRfA5Dqu78i6LvK2I2qqsYt3tCCDZ
+ WNUUCUWmxGsTfFUP+694fE+BEbnWrJcsCHR5avKMpijAjEqe0a3hP8H3gW0Qsc+vfixGn2qsW1H2gUYGGtfUKQCeFcZMrdprPMOARzwqA/cbbpVhux675Yj4
+ K0t+nhUZpT5fnsgtIU7W5mlkubaZowS7gBLifXifLe+Y4goSC4MEvz/M/P9S5q7Rs0H/D7LNEoijR4i6NeNEWO06jT7I0lGCAag6xqxE4kM/wDdQUYjhwyM5
+ dzZi9FqJuT7waa6CCk2o2CqLwBQ6WBjn/Va9l3Dq9uuv9FqmxAB5mkviJ+n4Jtv80Nh67GHiQQM5elcqd+ueWvf4/ZbQCq/wNnARcL0o1bSD5/pgoZGzE38O
+ NtzR/qHs1ExUaJlwrg8SSV70cnCYW7Rvp7FeYwZh1HGAOSlP6uO2oFWHMmkLvFE+0ou9qvYi8yQnRMdMDF/PTwwk4GvSCEfBkBPFBkG6l0kOFGN5Taf9h3Q3
+ BPLhWUbcDy0bvPK4ECMmi2c+noQ/eLPNJbT6PmsBSYQ4vf12t0EUOPw2qGVdVZlSvawVRq3Itez2+cFJIHjWrngKcJeQpq+SzKBHI4Lipc7xFdztajMT7oAB
+ 0McHghWZ438fSWUhFvXclgzqfoo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 at 11:53, Andrea Righi <andrea.righi@canonical.com> wrote:
-> On Mon, Oct 11, 2021 at 11:23:32AM +0200, Andrea Righi wrote:
-> ...
-> > > You seem to use the default 20s stall timeout. FWIW syzbot uses 160
-> > > secs timeout for TCG emulation to avoid false positive warnings:
-> > > https://github.com/google/syzkaller/blob/838e7e2cd9228583ca33c49a39aea4d863d3e36d/dashboard/config/linux/upstream-arm64-kasan.config#L509
-> > > There are a number of other timeouts raised as well, some as high as
-> > > 420 seconds.
-> >
-> > I see, I'll try with these settings and see if I can still hit the soft
-> > lockup messages.
->
-> Still getting soft lockup messages even with the new timeout settings:
->
-> [  462.663766] watchdog: BUG: soft lockup - CPU#2 stuck for 430s! [systemd-udevd:168]
-> [  462.755758] watchdog: BUG: soft lockup - CPU#3 stuck for 430s! [systemd-udevd:171]
-> [  924.663765] watchdog: BUG: soft lockup - CPU#2 stuck for 861s! [systemd-udevd:168]
-> [  924.755767] watchdog: BUG: soft lockup - CPU#3 stuck for 861s! [systemd-udevd:171]
+On 11/10/2021 12:00, Dillon Min wrote:
+> Hi Hans
+> 
+> Thanks for the quick reply.
+> 
+> On Mon, 11 Oct 2021 at 17:40, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+>>
+>> On 08/10/2021 12:30, dillon.minfei@gmail.com wrote:
+>>> From: Dillon Min <dillon.minfei@gmail.com>
+>>>
+>>> - add V4L2_COLORFX_SET_ARGB color effects control.
+>>> - add V4L2_CID_COLORFX_ARGB for ARGB color setting.
+>>>
+>>> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+>>> ---
+>>> v3: according to Hans's suggestion, thanks.
+>>> - remove old stm32 private R2M ioctl
+>>> - add V4L2_CID_COLORFX_ARGB
+>>> - add V4L2_COLORFX_SET_ARGB
+>>>
+>>>  Documentation/userspace-api/media/v4l/control.rst | 8 ++++++++
+>>>  drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 2 ++
+>>>  include/uapi/linux/v4l2-controls.h                | 4 +++-
+>>>  3 files changed, 13 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Documentation/userspace-api/media/v4l/control.rst
+>>> index f8d0b923da20..319606a6288f 100644
+>>> --- a/Documentation/userspace-api/media/v4l/control.rst
+>>> +++ b/Documentation/userspace-api/media/v4l/control.rst
+>>> @@ -242,8 +242,16 @@ Control IDs
+>>>      * - ``V4L2_COLORFX_SET_CBCR``
+>>>        - The Cb and Cr chroma components are replaced by fixed coefficients
+>>>       determined by ``V4L2_CID_COLORFX_CBCR`` control.
+>>> +    * - ``V4L2_COLORFX_SET_ARGB``
+>>> +      - ARGB colors.
+>>
+>> How about:
+>>
+>>         - The ARGB components are replaced by the fixed ARGB components
+>>         determined by ``V4L2_CID_COLORFX_ARGB`` control.
+> 
+> Sure, will be addressed by v4.
+> 
+>>
+>> I also wonder if it makes sense to include the alpha channel here.
+>>
+>> Looking at the driver code it appears to me (I might be wrong) that the alpha
+>> channel is never touched (DMA2D_ALPHA_MODE_NO_MODIF), and setting the alpha
+>> channel as part of a color effects control is rather odd as well.
+> 
+> Indeed, Alpha channel is not used in current code. I'll remove this item in v4.
+> how about change the code like below:
+> 
+>     * - ``V4L2_COLORFX_SET_RGB``
+>        - The RGB components are replaced by the fixed RGB components
+>          determined by ``V4L2_CID_COLORFX_RGB`` control.
+> 
+> ``V4L2_CID_COLORFX_RGB`` ``(integer)``
+>     Determines the Red, Green, and Blue coefficients for
+>     ``V4L2_COLORFX_SET_RGB`` color effect.
+>     Bits [7:0] of the supplied 32 bit value are interpreted as Blue component,
+>     bits [15:8] as Green component, bits [23:16] as Red component, and
+>     bits [31:24] must be zero.
 
-The lockups are expected if you're hitting the TCG bug I linked. Try
-to pass '-enable-kvm' to the inner qemu instance (my bad if you
-already have), assuming that's somehow easy to do.
+Yes, that looks OK to me.
 
-Thanks,
--- Marco
+Regards,
+
+	Hans
+
+> 
+> 
+>>
+>> Alpha channel manipulation really is separate from the color and - if needed - should
+>> be done with a separate control.
+> 
+> OK, Will use a separate control when adding blend features.
+> 
+> Best Regards,
+> Dillon
+> 
+>>
+>> Regards,
+>>
+>>         Hans
+>>
+>>>
+>>>
+>>> +``V4L2_CID_COLORFX_ARGB`` ``(integer)``
+>>> +    Determines the Alpha, Red, Green, and Blue coefficients for
+>>> +    ``V4L2_COLORFX_SET_ARGB`` color effect.
+>>> +    Bits [7:0] of the supplied 32 bit value are interpreted as Blue component,
+>>> +    bits [15:8] as Green component, bits [23:16] as Red component, and
+>>> +    bits [31:24] as Alpha component.
+>>>
+>>>  ``V4L2_CID_COLORFX_CBCR`` ``(integer)``
+>>>      Determines the Cb and Cr coefficients for ``V4L2_COLORFX_SET_CBCR``
+>>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>>> index 421300e13a41..53be6aadb289 100644
+>>> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+>>> @@ -785,6 +785,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>>>       case V4L2_CID_MIN_BUFFERS_FOR_OUTPUT:   return "Min Number of Output Buffers";
+>>>       case V4L2_CID_ALPHA_COMPONENT:          return "Alpha Component";
+>>>       case V4L2_CID_COLORFX_CBCR:             return "Color Effects, CbCr";
+>>> +     case V4L2_CID_COLORFX_ARGB:             return "Color Effects, ARGB";
+>>>
+>>>       /*
+>>>        * Codec controls
+>>> @@ -1392,6 +1393,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>>>               *min = *max = *step = *def = 0;
+>>>               break;
+>>>       case V4L2_CID_BG_COLOR:
+>>> +     case V4L2_CID_COLORFX_ARGB:
+>>>               *type = V4L2_CTRL_TYPE_INTEGER;
+>>>               *step = 1;
+>>>               *min = 0;
+>>> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+>>> index 5532b5f68493..2876c2282a68 100644
+>>> --- a/include/uapi/linux/v4l2-controls.h
+>>> +++ b/include/uapi/linux/v4l2-controls.h
+>>> @@ -128,6 +128,7 @@ enum v4l2_colorfx {
+>>>       V4L2_COLORFX_SOLARIZATION               = 13,
+>>>       V4L2_COLORFX_ANTIQUE                    = 14,
+>>>       V4L2_COLORFX_SET_CBCR                   = 15,
+>>> +     V4L2_COLORFX_SET_ARGB                   = 16,
+>>>  };
+>>>  #define V4L2_CID_AUTOBRIGHTNESS                      (V4L2_CID_BASE+32)
+>>>  #define V4L2_CID_BAND_STOP_FILTER            (V4L2_CID_BASE+33)
+>>> @@ -145,9 +146,10 @@ enum v4l2_colorfx {
+>>>
+>>>  #define V4L2_CID_ALPHA_COMPONENT             (V4L2_CID_BASE+41)
+>>>  #define V4L2_CID_COLORFX_CBCR                        (V4L2_CID_BASE+42)
+>>> +#define V4L2_CID_COLORFX_ARGB                        (V4L2_CID_BASE+43)
+>>>
+>>>  /* last CID + 1 */
+>>> -#define V4L2_CID_LASTP1                         (V4L2_CID_BASE+43)
+>>> +#define V4L2_CID_LASTP1                         (V4L2_CID_BASE+44)
+>>>
+>>>  /* USER-class private control IDs */
+>>>
+>>>
+>>
+
