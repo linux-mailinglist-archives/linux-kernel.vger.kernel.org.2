@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978B9429683
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F08429686
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234316AbhJKSKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:10:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229565AbhJKSKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:10:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F72C60EB4;
-        Mon, 11 Oct 2021 18:08:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633975733;
-        bh=znvt7lXTrjz8Q7uFKJ50VwboQPdEorWs9uuIA7tBazI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CzTduaqzuCsLQPm6VXtRH2KVlfxrgwAeezXN8LIoJto9GnO4HarUxbwIRF+OXLcgG
-         CwjE9u/52RytsnFKZXPva+CQiHJKAq/NFa2ZmAqb/yFosQ/JPVq21eChF9PyUjT+c+
-         JXeH2y/MI9mOL2FudCVWGv25ImJZ9uCWOIBxZTkYR0gb04FM/UPGgaPr1I9bbli7KU
-         QNwiHCeyh2xqZhtEF3dAb6yC1vqU3uVrehkvxsEL/KNcAfrkS5RKkiabqdcMlRVqI7
-         5k6FV2b6Czrb9x0v2JiS1x71z3B1jTS3qqvG6HzllevLVtGJEuQbPnQYLvVV7st0us
-         g4NT/kEUJrdGg==
-Received: by pali.im (Postfix)
-        id 0B6BB7C9; Mon, 11 Oct 2021 20:08:50 +0200 (CEST)
-Date:   Mon, 11 Oct 2021 20:08:50 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Naveen Naidu <naveennaidu479@gmail.com>
-Cc:     bhelgaas@google.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        "moderated list:PCI DRIVER FOR AARDVARK (Marvell Armada 3700)" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 09/22] PCI: aardvark: Use SET_PCI_ERROR_RESPONSE() when
- device not found
-Message-ID: <20211011180850.hgp4ctykvus37fx7@pali>
-References: <cover.1633972263.git.naveennaidu479@gmail.com>
- <f423dc9cc90e345680d289d5df7ff469e9b89c60.1633972263.git.naveennaidu479@gmail.com>
+        id S234319AbhJKSLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233422AbhJKSLA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 14:11:00 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2C1C061570;
+        Mon, 11 Oct 2021 11:08:59 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f08bb00e407f16cd758a723.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:bb00:e407:f16c:d758:a723])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E53851EC04D6;
+        Mon, 11 Oct 2021 20:08:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633975738;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=r0kZGPlvqD8Ym4KA5IHYNF5ItwydbZ8+Y5IjOGkLXcM=;
+        b=byMlsNWbB3Boi279ZBQfNz/XSHgRFaNtsJw51Rx11TcsXfMUGqH0RrWXJLmu6/it0QGd61
+        x5NBgJo3mMGScUN4Jsfoq8Ss8i2oIiskfs3dUgXRNG4j8OsilYOIyBr72MzQ/AjGLTdzbk
+        1RuT+2KkWf+otqB0QYeCKUojx08iR74=
+Date:   Mon, 11 Oct 2021 20:08:54 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Chatradhi, Naveen Krishna" <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mchehab@kernel.org,
+        Yazen.Ghannam@amd.com, Muralidhara M K <muralimk@amd.com>
+Subject: Re: [PATCH v3 1/3] x86/amd_nb: Add support for northbridges on
+ Aldebaran
+Message-ID: <YWR9tte90QR15BRH@zn.tnic>
+References: <20210806074350.114614-4-nchatrad@amd.com>
+ <20210823185437.94417-1-nchatrad@amd.com>
+ <20210823185437.94417-2-nchatrad@amd.com>
+ <YSYeo6S2OSZbBpb4@zn.tnic>
+ <dcc7c537-0370-d190-9ca7-ce60fa29d68c@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f423dc9cc90e345680d289d5df7ff469e9b89c60.1633972263.git.naveennaidu479@gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <dcc7c537-0370-d190-9ca7-ce60fa29d68c@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 11 October 2021 23:26:33 Naveen Naidu wrote:
-> An MMIO read from a PCI device that doesn't exist or doesn't respond
-> causes a PCI error.  There's no real data to return to satisfy the
-> CPU read, so most hardware fabricates ~0 data.
-> 
-> Use SET_PCI_ERROR_RESPONSE() to set the error response, when a faulty
-> read occurs.
-> 
-> This helps unify PCI error response checking and make error check
-> consistent and easier to find.
-> 
-> Compile tested only.
-> 
-> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> ---
->  drivers/pci/controller/pci-aardvark.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> index 596ebcfcc82d..dc2f820ef55f 100644
-> --- a/drivers/pci/controller/pci-aardvark.c
-> +++ b/drivers/pci/controller/pci-aardvark.c
-> @@ -894,7 +894,7 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
->  	int ret;
->  
->  	if (!advk_pcie_valid_device(pcie, bus, devfn)) {
-> -		*val = 0xffffffff;
-> +		SET_PCI_ERROR_RESPONSE(val);
+On Mon, Oct 11, 2021 at 07:56:34PM +0530, Chatradhi, Naveen Krishna wrote:
+> Aldebaran is an AMD GPU name, code submitted [PATCH 000/159] Aldebaran
+> support (lists.freedesktop.org)
+> <https://lists.freedesktop.org/archives/amd-gfx/2021-February/059694.html>
+> is a part of the DRM framework
 
-Hello! Now I'm looking at this macro, and should not it depends on
-"size" argument? If doing 8-bit or 16-bit read operation then should not
-it rather sets only low 8 bits or low 16 bits to ones?
+A short explanation in your patchset would be very helpful so that a
+reader can know what it is and search the net further, if more info is
+needed.
 
->  		return PCIBIOS_DEVICE_NOT_FOUND;
->  	}
->  
-> @@ -920,7 +920,7 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
->  			*val = CFG_RD_CRS_VAL;
->  			return PCIBIOS_SUCCESSFUL;
->  		}
-> -		*val = 0xffffffff;
-> +		SET_PCI_ERROR_RESPONSE(val);
->  		return PCIBIOS_SET_FAILED;
->  	}
->  
-> @@ -955,14 +955,14 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
->  			*val = CFG_RD_CRS_VAL;
->  			return PCIBIOS_SUCCESSFUL;
->  		}
-> -		*val = 0xffffffff;
-> +		SET_PCI_ERROR_RESPONSE(val);
->  		return PCIBIOS_SET_FAILED;
->  	}
->  
->  	/* Check PIO status and get the read result */
->  	ret = advk_pcie_check_pio_status(pcie, allow_crs, val);
->  	if (ret < 0) {
-> -		*val = 0xffffffff;
-> +		SET_PCI_ERROR_RESPONSE(val);
->  		return PCIBIOS_SET_FAILED;
->  	}
->  
-> -- 
-> 2.25.1
+> Aldebaran GPU might be a later variant of gfx9 and are connected to the CPU
+> sockets via custom xGMI links.
 > 
+> I could not find any family number associated with the GPUs. The DRM driver
+> code uses it as follows and
+> 
+> does not expose the value to other frameworks in Linux.
+> 
+> +#define CHIP_ALDEBARAN 25
+> 
+> in https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm
+
+Aha, so Aldebaran is the chip name. And how are those PCI IDs named in
+the documentation? Aldebaran data fabric PCI functions or so?
+
+> The roots_per_misc count is different for the CPU nodes and GPU nodes. We
+> tried to address
+> 
+> your comment without introducing pci_dev_id arrays for GPU roots, misc and
+> links. But, introducing
+> 
+> GPU ID arrays looks cleaner, let me submit the revised code and we can
+> revisit this point.
+
+Ok, but as I said above, what those devices are, means nothing to the
+amd_nb code because that simply enumerates PCI IDs when those things
+were simply northbridges.
+
+If the GPU PCI IDs do not fit easily into the scheme then maybe the
+scheme has become inadeqate... we'll see...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
