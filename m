@@ -2,128 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2434284FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC88428504
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233540AbhJKCHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 22:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231578AbhJKCHH (ORCPT
+        id S233541AbhJKCJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 22:09:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56156 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231578AbhJKCJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 22:07:07 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F73C061570;
-        Sun, 10 Oct 2021 19:05:08 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso9825108pjb.1;
-        Sun, 10 Oct 2021 19:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=63V6FE+fQW+SKi4KjZOqiA/PPlGq7C8uAp1sNW6G/lE=;
-        b=YK0ry9+6jUEWi3XytvEl7n3HWuSftzNe/vVUS5EyJIaSu+QXECvi5h+uUQalpBR5ky
-         sJjrt2tsg/C2zXy5LgU1S9tJn4Os8YZS8DaytV3PuJJfjYegehLt3/zVa0NTsF3e4pJW
-         GaT+cyiNi6T8cOry9xmSp/xt4vpPb69A2xs65cue6c2o33rdfv8YvfTdOFNfKCeaRRFt
-         p02tkZ86+AXqA4Zc/+iYN0q6PX4isfaEAauq4srjIo7vv+ebGvLpSzD6ZlVM0+879L+m
-         W4DgqnHqxskmuAHLPqhqxTAr930+Vs5hxf/6lmNK0sZ99LrX7SvmXixVdFX38AFU0psh
-         JSKQ==
+        Sun, 10 Oct 2021 22:09:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633918023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ENeVT4EJ4HhfdzKw1adhLhObafui60u3kBaV6BSYZzQ=;
+        b=C/2IW8LLS+sXyKCV+RSDxigaQqHO8wFvXb9Da9YNTXfXiO9khvDjcS9+aC1JNxS+pygMNJ
+        rLM2mbmbTV+gqopNKagvJ3fp+bnB4R9PIdxbUfoZUn58b4NCOuarTQAUrzNO1HQ+P5xCpz
+        Qg72mgUA6XfihXvetWBDoGBjgAt1lv0=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-an92fliPOymvOD3rOsfE4Q-1; Sun, 10 Oct 2021 22:07:01 -0400
+X-MC-Unique: an92fliPOymvOD3rOsfE4Q-1
+Received: by mail-lf1-f69.google.com with SMTP id i40-20020a0565123e2800b003f53da59009so11447106lfv.16
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 19:07:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=63V6FE+fQW+SKi4KjZOqiA/PPlGq7C8uAp1sNW6G/lE=;
-        b=G8/3w91mkcGli+/19zGanT/ltTzIOVtbGju2rjQwZwNQ9FhGJZtC3Q6csohksjj+qh
-         2PaCwhQQj6oytmB2Z/gcYLNSGnae7/2bSEgF73cJhvBGUk4fY7wxvP8e7tsgsno/3j7e
-         BQHgLZ4yLUm6RdbV5bhwSaL9qguMsTYacn2XJCOk3WrcBs+fik1EWf72vgFsrAMT+Rh0
-         nyo/yh7LWAFyR+PFqYG3zYBe084skmSaSoPlDYd/IAGVYGSTVV0KIst8ypoShUoznUnp
-         qbWOElx6Boh0if5mtl8pc6h2V9O77LrbX1D0f8bO497Spwj9ygp7xAMiz+ysqW5D+KBe
-         u+Pw==
-X-Gm-Message-State: AOAM533iQiGApjuzvJMTvSgLJ5CagADU+lsbdcFWIRkE1/6WjpdyA4Rk
-        HJ/PxHXR0PvD6pZyUOFRZ1E0EwO2GKE=
-X-Google-Smtp-Source: ABdhPJzX5fCZjS7AyWKdVTEXgbxHYj08Sl8KmKQcKkvtOxnuKpJD7hbLgsKviAILL8aFkCdQHW5O2A==
-X-Received: by 2002:a17:902:780f:b0:13a:3a88:f4cb with SMTP id p15-20020a170902780f00b0013a3a88f4cbmr22093431pll.68.1633917907564;
-        Sun, 10 Oct 2021 19:05:07 -0700 (PDT)
-Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id i1sm6205802pgc.94.2021.10.10.19.05.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 19:05:07 -0700 (PDT)
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Akira Yokosawa <akiyks@gmail.com>
-Subject: [PATCH] docs: pdfdocs: Adjust \headheight for fancyhdr
-Message-ID: <c5a5577e-5de8-9cd4-9253-956ccc748417@gmail.com>
-Date:   Mon, 11 Oct 2021 11:05:04 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ENeVT4EJ4HhfdzKw1adhLhObafui60u3kBaV6BSYZzQ=;
+        b=zpOlsAK66EGL4db6uJoNaBvpVCU7buQpN3RFg2nofp6toZIOJkHqUQTKkWH+Obme0h
+         Vnv96K62g2JvWLgXKBK+qcVDcN+t/tEtPtL+YlMKqiRfS6VrJX+WGE0PKogUGHXGwn7N
+         bwaAjegeU8NPZuYTYZE3rX+6lvT7ySYe2rR7zJQx8WlOReU2S5bXGmPTj//lnwcuE6s8
+         xQxyCAxe9YRT8Db/XeUT5hTbfKeVb7N0dc8jg8lQN5D4ecdObTMys44SsjHSGnPEP4c2
+         jLSKe5A0LQA5KNISq7uSWVGAtXKK8DqsPYXEuoMSs1XjJfHmtAvJ57arojY1gMm0XJka
+         IIXw==
+X-Gm-Message-State: AOAM533Laq9grTsPdOKujUVPGcWlHKj0iCkf5+tnAS+1SBjms/oO0Hp7
+        7FBiLqjnR+Zkd3EA91q2cunek5c3exbf3TKl0+J2+c/P0GaXtcoESfCK7mS6oN6hwiqOO9WdutI
+        EqK9UP8LF0w6g4BPdM9CsY8ompiKb1+3bek9EJ+k5
+X-Received: by 2002:a05:6512:3d29:: with SMTP id d41mr12508864lfv.481.1633918019931;
+        Sun, 10 Oct 2021 19:06:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz14BTo20ifNpNLBzaLU+yNKHq7V7P/zv03+clH5xHZcu/iFJWoObufgdo9Yiy21rVk+IBUQO3NHQ409rBQPsA=
+X-Received: by 2002:a05:6512:3d29:: with SMTP id d41mr12508845lfv.481.1633918019761;
+ Sun, 10 Oct 2021 19:06:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1632477717-5254-1-git-send-email-john.garry@huawei.com> <1632477717-5254-2-git-send-email-john.garry@huawei.com>
+In-Reply-To: <1632477717-5254-2-git-send-email-john.garry@huawei.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 11 Oct 2021 10:06:48 +0800
+Message-ID: <CACGkMEt8FcoJ4zMXFZzmrFjm=ynWfr5yLfvSHCckawpa3FvhkA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] iova: Move fast alloc size roundup into alloc_iova_fast()
+To:     John Garry <john.garry@huawei.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        mst <mst@redhat.com>, Robin Murphy <robin.murphy@arm.com>,
+        Yongji Xie <xieyongji@bytedance.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linuxarm@huawei.com, thunder.leizhen@huawei.com,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fancyhdr prior to v4.0 outputs a message per document as follows:
+On Fri, Sep 24, 2021 at 6:07 PM John Garry <john.garry@huawei.com> wrote:
+>
+> It really is a property of the IOVA rcache code that we need to alloc a
+> power-of-2 size, so relocate the functionality to resize into
+> alloc_iova_fast(), rather than the callsites.
+>
+> Signed-off-by: John Garry <john.garry@huawei.com>
 
-    Package Fancyhdr Warning: \headheight is too small (12.0pt):
-    Make it at least 13.59999pt.
-    We now make it that large for the rest of the document.
-    This may cause the page layout to be inconsistent, however.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-Fancyhdr v4.0 complains (once a page!) as follows:
-
-    Package fancyhdr Warning: \headheight is too small (12.0pt):
-    (fancyhdr)    Make it at least 13.59999pt, for example:
-    (fancyhdr)    \setlength{\headheight}{13.59999pt}.
-    (fancyhdr)    You might also make \topmargin smaller to compensate:
-
-    (fancyhdr)    \addtolength{\topmargin}{-1.59999pt}.
-
-Related item in fancyhdr v4.0 announcement on 2021-01-04 [1]:
-
-    Backward incompatible changes:
-      - Eliminate adjustments of \headheight or \footskip, when the
-        header or footer is too high.
-
-[1]: https://www.ctan.org/ctan-ann/id/mailman.2685.1609863692.2532.ctan-ann@ctan.org
-
-Silence the warnings by adding a couple of \addtolength commands in
-the preamble.
-
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
----
-Hi,
-
-This update doesn't have much visual effects in the final PDFs
-(adjustment of only 1.6pt), but getting rid of harmless warnings
-would help spot potential important ones.
-
-Tested against Sphinx versions 2.4.4 and 4.2.0, with Tex Live
-versions 2017/debian (Ubuntu 18.04), 2019/debian (Ubuntu 20.04),
-and vanilla 2021 (as of 2021-10-08).
-
-        Thanks, Akira
---
- Documentation/conf.py | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 948a97d6387d..17f7cee56987 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -353,6 +353,9 @@ latex_elements = {
-         \\setsansfont{DejaVu Sans}
-         \\setromanfont{DejaVu Serif}
-         \\setmonofont{DejaVu Sans Mono}
-+        % Adjust \\headheight for fancyhdr
-+        \\addtolength{\\headheight}{1.6pt}
-+        \\addtolength{\\topmargin}{-1.6pt}
-      ''',
- }
- 
-
-base-commit: 7275423c177e5dcf53e350ab9db38f99946b8ec5
--- 
-2.17.1
+> ---
+>  drivers/iommu/dma-iommu.c            | 8 --------
+>  drivers/iommu/iova.c                 | 9 +++++++++
+>  drivers/vdpa/vdpa_user/iova_domain.c | 8 --------
+>  3 files changed, 9 insertions(+), 16 deletions(-)
+>
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index 896bea04c347..a99b3445fef8 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -444,14 +444,6 @@ static dma_addr_t iommu_dma_alloc_iova(struct iommu_domain *domain,
+>
+>         shift = iova_shift(iovad);
+>         iova_len = size >> shift;
+> -       /*
+> -        * Freeing non-power-of-two-sized allocations back into the IOVA caches
+> -        * will come back to bite us badly, so we have to waste a bit of space
+> -        * rounding up anything cacheable to make sure that can't happen. The
+> -        * order of the unadjusted size will still match upon freeing.
+> -        */
+> -       if (iova_len < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
+> -               iova_len = roundup_pow_of_two(iova_len);
+>
+>         dma_limit = min_not_zero(dma_limit, dev->bus_dma_limit);
+>
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index 9e8bc802ac05..ff567cbc42f7 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -497,6 +497,15 @@ alloc_iova_fast(struct iova_domain *iovad, unsigned long size,
+>         unsigned long iova_pfn;
+>         struct iova *new_iova;
+>
+> +       /*
+> +        * Freeing non-power-of-two-sized allocations back into the IOVA caches
+> +        * will come back to bite us badly, so we have to waste a bit of space
+> +        * rounding up anything cacheable to make sure that can't happen. The
+> +        * order of the unadjusted size will still match upon freeing.
+> +        */
+> +       if (size < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
+> +               size = roundup_pow_of_two(size);
+> +
+>         iova_pfn = iova_rcache_get(iovad, size, limit_pfn + 1);
+>         if (iova_pfn)
+>                 return iova_pfn;
+> diff --git a/drivers/vdpa/vdpa_user/iova_domain.c b/drivers/vdpa/vdpa_user/iova_domain.c
+> index 1daae2608860..2b1143f11d8f 100644
+> --- a/drivers/vdpa/vdpa_user/iova_domain.c
+> +++ b/drivers/vdpa/vdpa_user/iova_domain.c
+> @@ -292,14 +292,6 @@ vduse_domain_alloc_iova(struct iova_domain *iovad,
+>         unsigned long iova_len = iova_align(iovad, size) >> shift;
+>         unsigned long iova_pfn;
+>
+> -       /*
+> -        * Freeing non-power-of-two-sized allocations back into the IOVA caches
+> -        * will come back to bite us badly, so we have to waste a bit of space
+> -        * rounding up anything cacheable to make sure that can't happen. The
+> -        * order of the unadjusted size will still match upon freeing.
+> -        */
+> -       if (iova_len < (1 << (IOVA_RANGE_CACHE_MAX_SIZE - 1)))
+> -               iova_len = roundup_pow_of_two(iova_len);
+>         iova_pfn = alloc_iova_fast(iovad, iova_len, limit >> shift, true);
+>
+>         return iova_pfn << shift;
+> --
+> 2.26.2
+>
 
