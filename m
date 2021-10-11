@@ -2,85 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DEE42855D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E4942855F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233755AbhJKC4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 22:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233612AbhJKC4K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 22:56:10 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D30CC061570;
-        Sun, 10 Oct 2021 19:54:11 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id w8so6005475qts.4;
-        Sun, 10 Oct 2021 19:54:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=rR3sNjmAm5aObe9//U8J0QR4+mtH+O6QjDXAkUaYWJs=;
-        b=TAn0VNJlQGkutzsDt4fVm8vDp/MHN7Fo6TahQE7co9AXxcf6OKRcCxO07A4UOaPaq2
-         jnzbb/2FnbeJku8QmMbdUo047tAlvZV3Ga0X9VA8qoP9niUxgs7Hk55lnS6j8zgh3GoN
-         yWBBVME+WYO4BKDqQrGWkYCZEpUK6TkiPKbblNotMpjutKq0mU+O1Ng1Cq2s62ehHGfN
-         hrPb7muTGAGEFKCd1eN4dVCfC/bKLjb9m9bCWS5mShICnp1NdAbF3UytiP8eEQtWm5AR
-         GHabX8ej1j0pkIs4z68oCALzzkYCeKloPnZXRRNjAEH1rMVAxOYFR6DwLYjnDLiM/TLA
-         Q6uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=rR3sNjmAm5aObe9//U8J0QR4+mtH+O6QjDXAkUaYWJs=;
-        b=HVdAGhtiofEGfjzi5TE4Al5nEyh8u1JPTyX19YJJ3KX0DQjYNeZMkLNnzOk+nUS4Py
-         kUMqoQA44atAvv9EV2/nnLykWAbxRfPhlz8/881dVGtpxoC2EPQPIB8/w8FJPlxfJSl4
-         a86tsoaimnoeMlIgEngrgX2AHunT28sfEu5fpbHF6aJmjRLaHhj4mMLNTaViRcesL9/K
-         TJRzvioGPhni+1KvUFTQQqbjzfeB7lpTBonX8qnwUfuCKPgl2JJlDLWL+N2DltbN/19F
-         K8EKH/aXF2xFevXUZfxW5YMOtY9lydmjngNOBkeG8SdwoiW5vFBlSrTJIw9BXnwSM86M
-         R5uw==
-X-Gm-Message-State: AOAM530p63VPchpx/J/XAe3DMSXiwTQBAi2PIqPYlUtHexxmLK97rJKQ
-        NtEeMGa57MZg4baUIV0Cu58pyJGRtog=
-X-Google-Smtp-Source: ABdhPJx4b9Um0/Ijl06r1T3X7ozi+aKA1b3mlOLqPkazLCNaiV5/vlUAJf4M96dkivuAT9DH0Wu2CA==
-X-Received: by 2002:a05:622a:1444:: with SMTP id v4mr12346193qtx.298.1633920850406;
-        Sun, 10 Oct 2021 19:54:10 -0700 (PDT)
-Received: from ?IPV6:2600:1700:dfe0:49f0:3cb6:937e:609b:a590? ([2600:1700:dfe0:49f0:3cb6:937e:609b:a590])
-        by smtp.gmail.com with ESMTPSA id b20sm3822406qtt.2.2021.10.10.19.54.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 19:54:09 -0700 (PDT)
-Message-ID: <4bfb80eb-2233-46f9-5f4c-15820d7576f6@gmail.com>
-Date:   Sun, 10 Oct 2021 19:54:08 -0700
+        id S233391AbhJKDBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 23:01:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230273AbhJKDBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 23:01:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93D666054F;
+        Mon, 11 Oct 2021 02:59:38 +0000 (UTC)
+Date:   Sun, 10 Oct 2021 22:59:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Gang Li <ligang.bdlg@bytedance.com>
+Cc:     mingo@redhat.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        axelrasmussen@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v3] mm: mmap_lock: remove "\n" in TP_printk and use
+ DECLARE_EVENT_CLASS
+Message-ID: <20211010225936.2f97d165@oasis.local.home>
+In-Reply-To: <20211011021124.86248-1-ligang.bdlg@bytedance.com>
+References: <20211011021124.86248-1-ligang.bdlg@bytedance.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 3/3] spi: bcm-qspi: add support for 3-wire mode for half
- duplex transfer
-Content-Language: en-US
-To:     Kamal Dasu <kdasu.kdev@gmail.com>, broonie@kernel.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        yendapally.reddy@broadcom.com, Kamal Dasu <kdasu@broadcom.com>
-References: <20211008203603.40915-1-kdasu.kdev@gmail.com>
- <20211008203603.40915-4-kdasu.kdev@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211008203603.40915-4-kdasu.kdev@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 11 Oct 2021 10:11:24 +0800
+Gang Li <ligang.bdlg@bytedance.com> wrote:
 
-
-On 10/8/2021 1:36 PM, Kamal Dasu wrote:
-> From: Kamal Dasu <kdasu@broadcom.com>
+> Ftrace core will add "\n" automatically on print. "\n" in TP_printk
+> will create blank line, so remove it.
 > 
-> This change configures the MSPI controller to use 3-wire interface when
-> a slave device devictree nodes indicates this via the optional property.
-> 
-> Signed-off-by: Kamal Dasu <kdasu@broadcom.com>
+> By using DECLARE_EVENT_CLASS and TRACE_EVENT_FN, we can save a lot
+> of space from duplicate code.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Why did you send this? It should be two patches, not one. The rule is,
+every commit does one thing. Now you made this patch do two.
+
+Andrew already pulled in the other two patches. I don't think this one
+is appropriate, and should be discarded.
+
+-- Steve
+
+
+> 
+> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
