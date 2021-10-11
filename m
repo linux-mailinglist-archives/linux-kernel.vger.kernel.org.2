@@ -2,89 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19224286CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CF04286C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234163AbhJKG06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 02:26:58 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:11979 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234121AbhJKG0z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:26:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633933491; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=h7IfVo+dSWcnAR0NKGiUy+LkFKcRh55dCDpcuLc57fY=;
- b=DQtr+LRngRbcdy/aPixwyYOc/WhJzF2Ot9t2mKeBLlglA5eqZN2hZrKdYgCctcRCOcXnYFle
- RIqu69g6ets10562Ds5SSJweiEhqXsP4Q4/M0zRlMgof1AMEdWnXyX0vz334jfMmBmY/EkOe
- 7i1zQPIHp4YTIW9DCiFFHH4eRjE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6163d889f3e5b80f1f0f56e9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Oct 2021 06:24:09
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4F401C43460; Mon, 11 Oct 2021 06:24:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5D369C4338F;
-        Mon, 11 Oct 2021 06:24:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5D369C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S234095AbhJKG0O convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 02:26:14 -0400
+Received: from ni.piap.pl ([195.187.100.5]:55596 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234022AbhJKG0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 02:26:13 -0400
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        "joe@perches.com" <joe@perches.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
+References: <m3fstfoexa.fsf@t19.piap.pl>
+        <YV3YkXAKxiLmPYwL@valkosipuli.retiisi.eu> <m3zgrlkxn6.fsf@t19.piap.pl>
+        <20211009090749.hujuwamgkjw2tfcx@uno.localdomain>
+        <a8bd12e5-cdb5-ee85-d0a9-03ede990f5d2@infradead.org>
+        <YWH83W8uVbU6RzVe@valkosipuli.retiisi.eu>
+Date:   Mon, 11 Oct 2021 08:24:12 +0200
+In-Reply-To: <YWH83W8uVbU6RzVe@valkosipuli.retiisi.eu> (Sakari Ailus's message
+        of "Sat, 9 Oct 2021 23:34:37 +0300")
+Message-ID: <m3r1cskrjn.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH][next] ath11k: Remove redundant assignment to variable
- fw_size
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211006105529.1011239-1-colin.king@canonical.com>
-References: <20211006105529.1011239-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Anilkumar Kolli <akolli@codeaurora.org>,
-        Jouni Malinen <jouni@codeaurora.org>,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163393344268.20318.10512441412282046693.kvalo@codeaurora.org>
-Date:   Mon, 11 Oct 2021 06:24:09 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Colin King <colin.king@canonical.com> wrote:
+Sakari Ailus <sakari.ailus@iki.fi> writes:
 
-> Variable fw_size is being assigned a value that is never read and
-> being re-assigned a new value in the next statement. The assignment
-> is redundant and can be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Fixes: 336e7b53c82f ("ath11k: clean up BDF download functions")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+>> http://lkml.iu.edu/hypermail/linux/kernel/1607.1/00627.html
+>
+> That's not really a statement for C++ (//) comments as it's against other
+> /* ... */ multi-line comment styles some of which are used by the
+> networking stack.
 
-Patch applied to ath-next branch of ath.git, thanks.
-
-4f50bdfb4e5f ath11k: Remove redundant assignment to variable fw_size
-
+It appears it's about both multi-line and single-line comments, though:
+(c)
+// This can be a single line. Or many. Your choice.
+                 ^^^^^^^^^^^
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211006105529.1011239-1-colin.king@canonical.com/
+Krzysztof "Chris" Hałasa
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Sieć Badawcza Łukasiewicz
+Przemysłowy Instytut Automatyki i Pomiarów PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
