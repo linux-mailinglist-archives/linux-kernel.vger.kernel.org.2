@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB359428EDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2847B428F5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236510AbhJKNwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39616 "EHLO mail.kernel.org"
+        id S236641AbhJKN5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237244AbhJKNvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:51:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9622A60F35;
-        Mon, 11 Oct 2021 13:49:16 +0000 (UTC)
+        id S238066AbhJKNzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:55:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25D7761108;
+        Mon, 11 Oct 2021 13:53:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960158;
-        bh=DIKbTr8e1RTc/i8t3FrYOmPO9hOCRDp49BJBEkBr198=;
+        s=korg; t=1633960393;
+        bh=Kyzx9gzkhlh9cQvf98cQU5z7YWyKKORuGEOaduWYYeA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jXr2HJgOBpygUlLbWfpSITF+uamAHtrBDsDQFx5S8BbsaFuVXHiQfDvD2eCKO1IbN
-         Bq30LjHfZjyMFa5kSIc2dtXl1ImmMwHsT0Dxk8HB5XruEsCX8AMovvv6HWm89Rk7Tg
-         hbtl2Y+ysKmE+HIW7RaxBNOSqC118Ay2YenuQ1c4=
+        b=Tt1p1x4gy+YQkzyNuGZdvouYp5tqoyW3zEkyK7c7+Nx9WEZKPiEY0xaIep8WE4ppU
+         H1AKhhAiEHJ3KleDfZ7RhaYkZio1q28oA64+TrNNlJahlLA7gjZHC+/LjboEwYp3ON
+         LvYFeK57hYKT9IV3ZqwzI8ezJoZ/MxTeCU37Ad7g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 38/52] video: fbdev: gbefb: Only instantiate device when built for IP32
-Date:   Mon, 11 Oct 2021 15:46:07 +0200
-Message-Id: <20211011134505.032226388@linuxfoundation.org>
+Subject: [PATCH 5.10 48/83] net: bridge: fix under estimation in br_get_linkxstats_size()
+Date:   Mon, 11 Oct 2021 15:46:08 +0200
+Message-Id: <20211011134510.050199985@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-References: <20211011134503.715740503@linuxfoundation.org>
+In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
+References: <20211011134508.362906295@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 11b8e2bb986d23157e82e267fb8cc6b281dfdee9 ]
+[ Upstream commit 0854a0513321cf70bea5fa483ebcaa983cc7c62e ]
 
-The gbefb driver not only registers a driver but also the device for that
-driver. This is all well and good when run on the IP32 machines that are
-supported by the driver but since the driver supports building with
-COMPILE_TEST we might also be building on other platforms which do not have
-this hardware and will crash instantiating the driver. Add an IS_ENABLED()
-check so we compile out the device registration if we don't have the Kconfig
-option for the machine enabled.
+Commit de1799667b00 ("net: bridge: add STP xstats")
+added an additional nla_reserve_64bit() in br_fill_linkxstats(),
+but forgot to update br_get_linkxstats_size() accordingly.
 
-Fixes: 552ccf6b259d290c0c ("video: fbdev: gbefb: add COMPILE_TEST support")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210921212102.30803-1-broonie@kernel.org
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+This can trigger the following in rtnl_stats_get()
+
+	WARN_ON(err == -EMSGSIZE);
+
+Fixes: de1799667b00 ("net: bridge: add STP xstats")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Vivien Didelot <vivien.didelot@gmail.com>
+Cc: Nikolay Aleksandrov <nikolay@nvidia.com>
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/gbefb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/bridge/br_netlink.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/video/fbdev/gbefb.c b/drivers/video/fbdev/gbefb.c
-index b9f6a82a0495..6fdc6ab3ceb8 100644
---- a/drivers/video/fbdev/gbefb.c
-+++ b/drivers/video/fbdev/gbefb.c
-@@ -1269,7 +1269,7 @@ static struct platform_device *gbefb_device;
- static int __init gbefb_init(void)
- {
- 	int ret = platform_driver_register(&gbefb_driver);
--	if (!ret) {
-+	if (IS_ENABLED(CONFIG_SGI_IP32) && !ret) {
- 		gbefb_device = platform_device_alloc("gbefb", 0);
- 		if (gbefb_device) {
- 			ret = platform_device_add(gbefb_device);
+diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
+index bfe6ab1914c8..31b00ba5dcc8 100644
+--- a/net/bridge/br_netlink.c
++++ b/net/bridge/br_netlink.c
+@@ -1591,6 +1591,7 @@ static size_t br_get_linkxstats_size(const struct net_device *dev, int attr)
+ 
+ 	return numvls * nla_total_size(sizeof(struct bridge_vlan_xstats)) +
+ 	       nla_total_size_64bit(sizeof(struct br_mcast_stats)) +
++	       (p ? nla_total_size_64bit(sizeof(p->stp_xstats)) : 0) +
+ 	       nla_total_size(0);
+ }
+ 
 -- 
 2.33.0
 
