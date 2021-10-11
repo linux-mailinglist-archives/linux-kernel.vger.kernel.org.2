@@ -2,99 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377874288DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1653C4288DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbhJKIgR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 04:36:17 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20437 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234885AbhJKIgL (ORCPT
+        id S234885AbhJKIgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:36:18 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36500 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235064AbhJKIgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:36:11 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-10-3xCUUb26MU6vXGQv3KSaTQ-1; Mon, 11 Oct 2021 09:34:09 +0100
-X-MC-Unique: 3xCUUb26MU6vXGQv3KSaTQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Mon, 11 Oct 2021 09:34:06 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Mon, 11 Oct 2021 09:34:06 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Steven Rostedt' <rostedt@goodmis.org>,
-        Jan Engelhardt <jengelh@inai.de>
-CC:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul <paulmck@linux.vnet.ibm.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Lai Jiangshan" <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        "Jozsef Kadlecsik" <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
+        Mon, 11 Oct 2021 04:36:13 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4C3E221D77;
+        Mon, 11 Oct 2021 08:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633941252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vjTMnaMIidSncADrmKdnZ9CHj/C5fBzKzF+5i0zBF2I=;
+        b=LNS2/fNBuU9QILyRScW4Eyh/vQhKN6X44seMw6vtodFuNnE4QRd6RQkcIZo/kz4KWMbDD1
+        t3FrAVRJ72pk5gC0s8O1NU9UzCUgpV1XuDofbJUwQgPXpFLr4mPuw337/lPN2+YfFwHABi
+        j1i3GobXlh7JFJASs5psL9L4RF4VpOo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633941252;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vjTMnaMIidSncADrmKdnZ9CHj/C5fBzKzF+5i0zBF2I=;
+        b=MqkmZl5fy0w3Ul5pEvmvpY4Sz3jeN8BIlad5cyNiwImS+PJEQkOuYL578yE4CVG5AHNU98
+        6Bzn95gRq6KkNcDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2B3513C41;
+        Mon, 11 Oct 2021 08:34:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bvt2OQP3Y2GaewAAMHmgww
+        (envelope-from <nstange@suse.de>); Mon, 11 Oct 2021 08:34:11 +0000
+From:   Nicolai Stange <nstange@suse.de>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Nicolai Stange <nstange@suse.de>,
         "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam <coreteam@netfilter.org>,
-        netdev <netdev@vger.kernel.org>
-Subject: RE: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
-Thread-Topic: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
-Thread-Index: AQHXui9pmtYafoLH60aZNYgeQxdcxKvNgGPQ
-Date:   Mon, 11 Oct 2021 08:34:06 +0000
-Message-ID: <c30feda1b1e0457d97beafe3e3ca7ce4@AcuMS.aculab.com>
-References: <20211005094728.203ecef2@gandalf.local.home>
-        <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
-        <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
-        <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr>
-        <20211005144002.34008ea0@gandalf.local.home>
-        <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr>
-        <20211005154029.46f9c596@gandalf.local.home>
-        <20211005163754.66552fb3@gandalf.local.home>
-        <pn2qp6r2-238q-rs8n-p8n0-9s37sr614123@vanv.qr>
- <20211005172435.190c62d9@gandalf.local.home>
-In-Reply-To: <20211005172435.190c62d9@gandalf.local.home>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephan =?utf-8?Q?M=C3=BCller?= <smueller@chronox.de>,
+        Torsten Duwe <duwe@suse.de>
+Subject: Re: [PATCH 8/8] crypto: api - make the algorithm lookup priorize non-larvals
+References: <20211003181413.12465-1-nstange@suse.de>
+        <20211003181413.12465-9-nstange@suse.de>
+        <20211008115432.GC26495@gondor.apana.org.au>
+Date:   Mon, 11 Oct 2021 10:34:11 +0200
+In-Reply-To: <20211008115432.GC26495@gondor.apana.org.au> (Herbert Xu's
+        message of "Fri, 8 Oct 2021 19:54:32 +0800")
+Message-ID: <87lf30rmd8.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.3 (gnu/linux)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt
-> Sent: 05 October 2021 22:25
-> 
-...
-> 
-> Basically (one alternative I was looking at) was simply passing around a
-> void pointer. Not sure how the RCU macros would handle that. But to
-> completely abstract it out, I was thinking of just returning void * and
-> accepting void *, but I didn't want to do that because now we just lost any
-> kind of type checking done by the compiler. The tricks I was playing was to
-> keep some kind of type checking.
+Herbert Xu <herbert@gondor.apana.org.au> writes:
 
-Yes, don't use 'void *'.
-Sun used it for all the pointers in their DDI/DKI - made it impossible
-to ensure you were passing in the right type of 'token'.
+> On Sun, Oct 03, 2021 at 08:14:13PM +0200, Nicolai Stange wrote:
+>> crypto_alg_mod_lookup() invokes the crypto_larval_lookup() helper
+>> to run the actual search for matching crypto_alg implementation and
+>> larval entries. The latter is currently considering only the individual
+>> entries' relative ->cra_priority for determining which one out of multip=
+le
+>> matches to return. This means that it would potentially dismiss a matchi=
+ng
+>> crypto_alg implementation in working state in favor of some pending
+>> testing larval of higher ->cra_priority. Now, if the testmgr instance
+>> invoked asynchronously on that testing larval came to the conclusion that
+>> it should mark the tests as failed, any pending crypto_alg_mod_lookup()
+>> waiting for it would be made to fail as well with -EAGAIN.
+>>=20
+>> In summary, crypto_alg_mod_lookup() can fail spuriously with -EAGAIN even
+>> though an implementation in working state would have been available, nam=
+ely
+>> if the testmgr asynchronously marked another, competing implementation of
+>> higher ->cra_priority as failed.
+>>=20
+>> This is normally not a problem at all with upstream, because the situati=
+on
+>> where one algorithm passed its tests, but another competing one failed to
+>> do so, would indicate a bug anyway.
+>>=20
+>> However, for downstream distributions seeking FIPS certification, simply
+>> amending the list in crypto/testmgr.c with ->fips_allowed =3D 0 entries
+>> matching on ->cra_driver_name would provide a convenient way of
+>> selectively blacklisting implementations from drivers/crypto in fips
+>> mode. Note that in this scenario failure of competing crypto_alg
+>> implementations would become more common, in particular during device
+>> enumeration. If the algorithm in question happened to be needed for e.g.
+>> module signature verification, module loading could spuriously fail duri=
+ng
+>> bootup, which is certainly not desired.
+>>=20
+>> For transparency: this has not actually been observed, I merely came to
+>> the conclusion that it would be possible by reading the code.
+>>=20
+>> Make crypto_alg_lookup() run an additional search for non-larval matches
+>> upfront in the common case that the request has been made for
+>> CRYPTO_ALG_TESTED instances.
+>>=20
+>> Signed-off-by: Nicolai Stange <nstange@suse.de>
+>> ---
+>>  crypto/api.c | 21 ++++++++++++++++++++-
+>>  1 file changed, 20 insertions(+), 1 deletion(-)
 
-	David
+Hi Herbert,
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> It's not clear that this new behaviour is desirable.  For example,
+> when we construct certain complex algorithms, they may depend on a
+> generic version of that same algorithm as a fallback.  We do not
+> want users to get the generic version while the better version is
+> being tested.
 
+Ah I see, you mean something like having 3+ providers of "algXY",
+ - algXY_driver0, ->cra_priority =3D 100
+ - algXY_driver1, ->cra_priority =3D 200
+ - algXY_driver1, ->cra_priority =3D 300
+where the latter needs a different "algXY" as a fallback?
+
+Hmm yes, I haven't thought of this and my patch here would indeed break
+it.
+
+
+> Can you please explain what your failure scenario and perhaps we
+> can come up with another way of resolving your problem?
+
+In order to keep a FIPS certification manageable in terms of scope,
+we're looking for a way to disable everything under drivers/crypto iff
+fips_enabled =3D=3D 1. The most convenient way to achieve this downstream
+would be to add dummy entries to testmgr.c like so:
+
+static int alg_test_nop(const struct alg_test_desc *desc, const char *drive=
+r,
+			u32 type, u32 mask)
+{
+	/* Succeed in non-FIPS mode. */
+	return 0;
+}
+
+static const struct alg_test_desc alg_test_descs[] =3D {
+	...,
+	{
+		.alg =3D "sha256-padlock-nano",
+		.test =3D alg_test_nop,
+		.fips_allowed =3D 0,
+	},
+        ...
+};
+
+The concern is about e.g the following sequence of events during boot:
+- "sha256-padlock-nano" gets registered, the test gets scheduled.
+- An unrelated modprobe is getting invoked. The signature verification
+  code, e.g pkcs7_digest(), requests "sha256", finds the pending
+  "sha256-padlock-nano" testing larval and puts itself in a wait for it.
+- The scheduled "sha256-padlock-nano" test gets to run and, as per
+  ->fips_allowed =3D=3D 0, is forced to fail with -EINVAL.
+- pkcs7_digest() wakes up and fails with -EAGAIN due to the "failed"
+  testing larval.
+- The unrelated modprobe fails even though sha256-generic would
+  have been available all the time.
+
+FWIW, I picked sha256-padlock-nano and modprobe at random for the sake
+of providing an example here -- I haven't checked in detail, but I guess
+that e.g. the combination of dm-crypt + a number of different FIPS
+approved algorithms could be similarly susceptible, too.
+
+So to recap, my initial approach for working around the above was to
+make crypto_alg_lookup() to skip over testing larvals in an additional,
+first search. As you said, this would break the "fallback" scenario
+though.
+
+As an alternative, how about not doing the additional search for
+non-larvals upfront, but only as a resort in case crypto_larval_wait()
+returned failure instead?
+
+But granted, the scenario above is not an issue at all for upstream with
+a pristine testmgr.c and it would be quite relatable if you wouldn't
+like to get bothered with any of this. I'm only bringing it up because
+others might perhaps come across this as well...
+
+
+Thanks!
+
+Nicolai
+
+--=20
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, G=
+ermany
+(HRB 36809, AG N=C3=BCrnberg), GF: Felix Imend=C3=B6rffer
