@@ -2,124 +2,628 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B7A428BAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1499C428BB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236034AbhJKLCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 07:02:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235971AbhJKLCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:02:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72D4360EB4;
-        Mon, 11 Oct 2021 11:00:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633950014;
-        bh=vQIFuyPINjrBi0fIpVIivAP7Ib5rZs4uIJ6rAcpaTwQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NDqTb4Z1xe9+3UDiejqPqrsL04x+glEXFzdE7lgx1II8LiLA6PyJAjVinBCee/tWF
-         Tb/0dn4/0yDEsO1vlnorgpxAJHaJOqWZDiHRbiaNZx3Lh3UsIHcCj51AfH9Yyg1vIf
-         dSNplmLI6C2ziwrQZHTWQHdipz6SjMe5G94+MHbRkHuW1L8g8LdIewkhFJahS5Jnoh
-         0Q6zvkWfJ/iLK1XOlEllbcwk2NKjpVTxOjuH8syvN3GMaYp5R6Yiv5h7C7YwRN3ye5
-         6MSaC4iJj683V0JFcQnWbId7JcrdTv8OFabmeORKE63JDBewPdPxdnzkYchw7oyU7W
-         gbSRyJiBfpNyg==
-Date:   Mon, 11 Oct 2021 12:00:09 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 17/17] arm64: Add HWCAP for self-synchronising virtual
- counter
-Message-ID: <20211011110008.GA4068@willie-the-truck>
-References: <20211010114306.2910453-1-maz@kernel.org>
- <20211010114306.2910453-18-maz@kernel.org>
+        id S236093AbhJKLDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 07:03:44 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:7768 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235971AbhJKLDl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 07:03:41 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19B3Z8sY015019;
+        Mon, 11 Oct 2021 07:01:40 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3bm7b1b6y6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 07:01:39 -0400
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 19BB1c6E003745
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Oct 2021 07:01:38 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Mon, 11 Oct 2021 07:01:37 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Mon, 11 Oct 2021 07:01:37 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
+ Transport; Mon, 11 Oct 2021 07:01:37 -0400
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.136])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 19BB1Y4t009888;
+        Mon, 11 Oct 2021 07:01:34 -0400
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     <jic23@kernel.org>
+CC:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <antoniu.miclaus@analog.com>
+Subject: [PATCH v7 1/2] iio: frequency: adrf6780: add support for ADRF6780
+Date:   Mon, 11 Oct 2021 14:00:10 +0300
+Message-ID: <20211011110011.104063-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211010114306.2910453-18-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: WiKtrvPIocatc4aDhMrU7aaf7CAxXG_M
+X-Proofpoint-ORIG-GUID: WiKtrvPIocatc4aDhMrU7aaf7CAxXG_M
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-11_03,2021-10-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ mlxlogscore=999 impostorscore=0 mlxscore=0 clxscore=1011
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 suspectscore=0
+ bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110110063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 12:43:06PM +0100, Marc Zyngier wrote:
-> Since userspace can make use of the CNTVSS_EL0 instruction, expose
-> it via a HWCAP.
-> 
-> Suggested-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  Documentation/arm64/elf_hwcaps.rst  | 4 ++++
->  arch/arm64/include/asm/hwcap.h      | 1 +
->  arch/arm64/include/uapi/asm/hwcap.h | 1 +
->  arch/arm64/kernel/cpufeature.c      | 3 ++-
->  arch/arm64/kernel/cpuinfo.c         | 1 +
->  5 files changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/arm64/elf_hwcaps.rst b/Documentation/arm64/elf_hwcaps.rst
-> index ec1a5a63c1d0..af106af8e1c0 100644
-> --- a/Documentation/arm64/elf_hwcaps.rst
-> +++ b/Documentation/arm64/elf_hwcaps.rst
-> @@ -247,6 +247,10 @@ HWCAP2_MTE
->      Functionality implied by ID_AA64PFR1_EL1.MTE == 0b0010, as described
->      by Documentation/arm64/memory-tagging-extension.rst.
->  
-> +HWCAP2_ECV
-> +
-> +    Functionality implied by ID_AA64MMFR0_EL1.ECV == 0b0001.
-> +
->  4. Unused AT_HWCAP bits
->  -----------------------
->  
-> diff --git a/arch/arm64/include/asm/hwcap.h b/arch/arm64/include/asm/hwcap.h
-> index 8c129db8232a..b100e0055eab 100644
-> --- a/arch/arm64/include/asm/hwcap.h
-> +++ b/arch/arm64/include/asm/hwcap.h
-> @@ -105,6 +105,7 @@
->  #define KERNEL_HWCAP_RNG		__khwcap2_feature(RNG)
->  #define KERNEL_HWCAP_BTI		__khwcap2_feature(BTI)
->  #define KERNEL_HWCAP_MTE		__khwcap2_feature(MTE)
-> +#define KERNEL_HWCAP_ECV		__khwcap2_feature(ECV)
->  
->  /*
->   * This yields a mask that user programs can use to figure out what
-> diff --git a/arch/arm64/include/uapi/asm/hwcap.h b/arch/arm64/include/uapi/asm/hwcap.h
-> index b8f41aa234ee..7b23b16f21ce 100644
-> --- a/arch/arm64/include/uapi/asm/hwcap.h
-> +++ b/arch/arm64/include/uapi/asm/hwcap.h
-> @@ -75,5 +75,6 @@
->  #define HWCAP2_RNG		(1 << 16)
->  #define HWCAP2_BTI		(1 << 17)
->  #define HWCAP2_MTE		(1 << 18)
-> +#define HWCAP2_ECV		(1 << 19)
->  
->  #endif /* _UAPI__ASM_HWCAP_H */
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 26b11ce8fff6..97ed37c6ce5e 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -279,7 +279,7 @@ static const struct arm64_ftr_bits ftr_id_aa64zfr0[] = {
->  };
->  
->  static const struct arm64_ftr_bits ftr_id_aa64mmfr0[] = {
-> -	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_ECV_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_ECV_SHIFT, 4, 0),
->  	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_FGT_SHIFT, 4, 0),
->  	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64MMFR0_EXS_SHIFT, 4, 0),
+The ADRF6780 is a silicon germanium (SiGe) design, wideband,
+microwave upconverter optimized for point to point microwave
+radio designs operating in the 5.9 GHz to 23.6 GHz frequency
+range.
 
-This needs an update to Documentation/arm64/cpu-feature-registers.rst.
+Datasheet:
+https://www.analog.com/media/en/technical-documentation/data-sheets/ADRF6780.pdf
 
-With that:
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+---
+changes in v7:
+ - add device remove path and disable all circuitry controlled via 
+   Enable Register.
+ - rename `adrf6780_dt_parse` -> `adrf6780_properties_parse`
 
-Acked-by: Will Deacon <will@kernel.org>
+ drivers/iio/frequency/Kconfig    |  12 +
+ drivers/iio/frequency/Makefile   |   1 +
+ drivers/iio/frequency/adrf6780.c | 503 +++++++++++++++++++++++++++++++
+ 3 files changed, 516 insertions(+)
+ create mode 100644 drivers/iio/frequency/adrf6780.c
 
-Will
+diff --git a/drivers/iio/frequency/Kconfig b/drivers/iio/frequency/Kconfig
+index 240b81502512..2c9e0559e8a4 100644
+--- a/drivers/iio/frequency/Kconfig
++++ b/drivers/iio/frequency/Kconfig
+@@ -49,5 +49,17 @@ config ADF4371
+ 
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called adf4371.
++
++config ADRF6780
++        tristate "Analog Devices ADRF6780 Microwave Upconverter"
++        depends on SPI
++        depends on COMMON_CLK
++        help
++          Say yes here to build support for Analog Devices ADRF6780
++          5.9 GHz to 23.6 GHz, Wideband, Microwave Upconverter.
++
++          To compile this driver as a module, choose M here: the
++          module will be called adrf6780.
++
+ endmenu
+ endmenu
+diff --git a/drivers/iio/frequency/Makefile b/drivers/iio/frequency/Makefile
+index 518b1e50caef..ae3136c79202 100644
+--- a/drivers/iio/frequency/Makefile
++++ b/drivers/iio/frequency/Makefile
+@@ -7,3 +7,4 @@
+ obj-$(CONFIG_AD9523) += ad9523.o
+ obj-$(CONFIG_ADF4350) += adf4350.o
+ obj-$(CONFIG_ADF4371) += adf4371.o
++obj-$(CONFIG_ADRF6780) += adrf6780.o
+diff --git a/drivers/iio/frequency/adrf6780.c b/drivers/iio/frequency/adrf6780.c
+new file mode 100644
+index 000000000000..2daa728d2ff4
+--- /dev/null
++++ b/drivers/iio/frequency/adrf6780.c
+@@ -0,0 +1,503 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * ADRF6780 driver
++ *
++ * Copyright 2021 Analog Devices Inc.
++ */
++
++#include <linux/bitfield.h>
++#include <linux/bits.h>
++#include <linux/clk.h>
++#include <linux/clkdev.h>
++#include <linux/clk-provider.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/iio/iio.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/spi/spi.h>
++
++#include <asm/unaligned.h>
++
++/* ADRF6780 Register Map */
++#define ADRF6780_REG_CONTROL			0x00
++#define ADRF6780_REG_ALARM_READBACK		0x01
++#define ADRF6780_REG_ALARM_MASKS		0x02
++#define ADRF6780_REG_ENABLE			0x03
++#define ADRF6780_REG_LINEARIZE			0x04
++#define ADRF6780_REG_LO_PATH			0x05
++#define ADRF6780_REG_ADC_CONTROL		0x06
++#define ADRF6780_REG_ADC_OUTPUT			0x0C
++
++/* ADRF6780_REG_CONTROL Map */
++#define ADRF6780_PARITY_EN_MSK			BIT(15)
++#define ADRF6780_SOFT_RESET_MSK			BIT(14)
++#define ADRF6780_CHIP_ID_MSK			GENMASK(11, 4)
++#define ADRF6780_CHIP_ID			0xA
++#define ADRF6780_CHIP_REVISION_MSK		GENMASK(3, 0)
++
++/* ADRF6780_REG_ALARM_READBACK Map */
++#define ADRF6780_PARITY_ERROR_MSK		BIT(15)
++#define ADRF6780_TOO_FEW_ERRORS_MSK		BIT(14)
++#define ADRF6780_TOO_MANY_ERRORS_MSK		BIT(13)
++#define ADRF6780_ADDRESS_RANGE_ERROR_MSK	BIT(12)
++
++/* ADRF6780_REG_ENABLE Map */
++#define ADRF6780_VGA_BUFFER_EN_MSK		BIT(8)
++#define ADRF6780_DETECTOR_EN_MSK		BIT(7)
++#define ADRF6780_LO_BUFFER_EN_MSK		BIT(6)
++#define ADRF6780_IF_MODE_EN_MSK			BIT(5)
++#define ADRF6780_IQ_MODE_EN_MSK			BIT(4)
++#define ADRF6780_LO_X2_EN_MSK			BIT(3)
++#define ADRF6780_LO_PPF_EN_MSK			BIT(2)
++#define ADRF6780_LO_EN_MSK			BIT(1)
++#define ADRF6780_UC_BIAS_EN_MSK			BIT(0)
++
++/* ADRF6780_REG_LINEARIZE Map */
++#define ADRF6780_RDAC_LINEARIZE_MSK		GENMASK(7, 0)
++
++/* ADRF6780_REG_LO_PATH Map */
++#define ADRF6780_LO_SIDEBAND_MSK		BIT(10)
++#define ADRF6780_Q_PATH_PHASE_ACCURACY_MSK	GENMASK(7, 4)
++#define ADRF6780_I_PATH_PHASE_ACCURACY_MSK	GENMASK(3, 0)
++
++/* ADRF6780_REG_ADC_CONTROL Map */
++#define ADRF6780_VDET_OUTPUT_SELECT_MSK		BIT(3)
++#define ADRF6780_ADC_START_MSK			BIT(2)
++#define ADRF6780_ADC_EN_MSK			BIT(1)
++#define ADRF6780_ADC_CLOCK_EN_MSK		BIT(0)
++
++/* ADRF6780_REG_ADC_OUTPUT Map */
++#define ADRF6780_ADC_STATUS_MSK			BIT(8)
++#define ADRF6780_ADC_VALUE_MSK			GENMASK(7, 0)
++
++struct adrf6780_dev {
++	struct spi_device	*spi;
++	struct clk		*clkin;
++	/* Protect against concurrent accesses to the device */
++	struct mutex		lock;
++	bool			vga_buff_en;
++	bool			lo_buff_en;
++	bool			if_mode_en;
++	bool			iq_mode_en;
++	bool			lo_x2_en;
++	bool			lo_ppf_en;
++	bool			lo_en;
++	bool			uc_bias_en;
++	bool			lo_sideband;
++	bool			vdet_out_en;
++	u8			data[3] ____cacheline_aligned;
++};
++
++static int adrf6780_spi_read(struct adrf6780_dev *dev, unsigned int reg,
++			      unsigned int *val)
++{
++	int ret;
++	struct spi_transfer t = {0};
++
++	dev->data[0] = 0x80 | (reg << 1);
++	dev->data[1] = 0x0;
++	dev->data[2] = 0x0;
++
++	t.rx_buf = &dev->data[0];
++	t.tx_buf = &dev->data[0];
++	t.len = 3;
++
++	ret = spi_sync_transfer(dev->spi, &t, 1);
++	if (ret)
++		return ret;
++
++	*val = (get_unaligned_be24(&dev->data[0]) >> 1) & GENMASK(15, 0);
++
++	return ret;
++}
++
++static int adrf6780_spi_write(struct adrf6780_dev *dev,
++				      unsigned int reg,
++				      unsigned int val)
++{
++	put_unaligned_be24((val << 1) | (reg << 17), &dev->data[0]);
++
++	return spi_write(dev->spi, &dev->data[0], 3);
++}
++
++static int adrf6780_spi_update_bits(struct adrf6780_dev *dev, unsigned int reg,
++			       unsigned int mask, unsigned int val)
++{
++	int ret;
++	unsigned int data, temp;
++
++	ret = adrf6780_spi_read(dev, reg, &data);
++	if (ret)
++		return ret;
++
++	temp = (data & ~mask) | (val & mask);
++
++	return adrf6780_spi_write(dev, reg, temp);
++}
++
++static int adrf6780_read_adc_raw(struct adrf6780_dev *dev, unsigned int *read_val)
++{
++	int ret;
++
++	mutex_lock(&dev->lock);
++
++	ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_ADC_CONTROL,
++					ADRF6780_ADC_EN_MSK |
++					ADRF6780_ADC_CLOCK_EN_MSK |
++					ADRF6780_ADC_START_MSK,
++					FIELD_PREP(ADRF6780_ADC_EN_MSK, 1) |
++					FIELD_PREP(ADRF6780_ADC_CLOCK_EN_MSK, 1) |
++					FIELD_PREP(ADRF6780_ADC_START_MSK, 1));
++	if (ret)
++		goto exit;
++
++	/* Recommended delay for the ADC to be ready*/
++	usleep_range(200, 250);
++
++	ret = adrf6780_spi_read(dev, ADRF6780_REG_ADC_OUTPUT, read_val);
++	if (ret)
++		goto exit;
++
++	if (!(*read_val & ADRF6780_ADC_STATUS_MSK)) {
++		ret = -EINVAL;
++		goto exit;
++	}
++
++	ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_ADC_CONTROL,
++					ADRF6780_ADC_START_MSK,
++					FIELD_PREP(ADRF6780_ADC_START_MSK, 0));
++	if (ret)
++		goto exit;
++
++	ret = adrf6780_spi_read(dev, ADRF6780_REG_ADC_OUTPUT, read_val);
++
++exit:
++	mutex_unlock(&dev->lock);
++	return ret;
++}
++
++static int adrf6780_read_raw(struct iio_dev *indio_dev,
++			    struct iio_chan_spec const *chan,
++			    int *val, int *val2, long info)
++{
++	struct adrf6780_dev *dev = iio_priv(indio_dev);
++	unsigned int data;
++	int ret;
++
++	switch (info) {
++	case IIO_CHAN_INFO_RAW:
++		ret = adrf6780_read_adc_raw(dev, &data);
++		if (ret)
++			return ret;
++
++		*val = data & ADRF6780_ADC_VALUE_MSK;
++
++		return IIO_VAL_INT;
++
++	case IIO_CHAN_INFO_SCALE:
++		ret = adrf6780_spi_read(dev, ADRF6780_REG_LINEARIZE, &data);
++		if (ret)
++			return ret;
++
++		*val = data & ADRF6780_RDAC_LINEARIZE_MSK;
++
++		return IIO_VAL_INT;
++	case IIO_CHAN_INFO_PHASE:
++		ret = adrf6780_spi_read(dev, ADRF6780_REG_LO_PATH, &data);
++		if (ret)
++			return ret;
++
++		switch (chan->channel2) {
++		case IIO_MOD_I:
++			*val = data & ADRF6780_I_PATH_PHASE_ACCURACY_MSK;
++
++			return IIO_VAL_INT;
++		case IIO_MOD_Q:
++			*val = FIELD_GET(ADRF6780_Q_PATH_PHASE_ACCURACY_MSK, data);
++
++			return IIO_VAL_INT;
++		default:
++			return -EINVAL;
++		}
++	default:
++		return -EINVAL;
++	}
++}
++
++static int adrf6780_write_raw(struct iio_dev *indio_dev,
++			     struct iio_chan_spec const *chan,
++			     int val, int val2, long info)
++{
++	struct adrf6780_dev *dev = iio_priv(indio_dev);
++	int ret;
++
++	switch (info) {
++	case IIO_CHAN_INFO_SCALE:
++		return adrf6780_spi_write(dev, ADRF6780_REG_LINEARIZE, val);
++	case IIO_CHAN_INFO_PHASE:
++		switch (chan->channel2) {
++		case IIO_MOD_I:
++			mutex_lock(&dev->lock);
++			ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_LO_PATH,
++							ADRF6780_I_PATH_PHASE_ACCURACY_MSK,
++							FIELD_PREP(ADRF6780_I_PATH_PHASE_ACCURACY_MSK, val));
++			mutex_unlock(&dev->lock);
++
++			return ret;
++		case IIO_MOD_Q:
++			mutex_lock(&dev->lock);
++			ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_LO_PATH,
++							ADRF6780_Q_PATH_PHASE_ACCURACY_MSK,
++							FIELD_PREP(ADRF6780_Q_PATH_PHASE_ACCURACY_MSK, val));
++			mutex_unlock(&dev->lock);
++
++			return ret;
++		default:
++			return -EINVAL;
++		}
++	default:
++		return -EINVAL;
++	}
++}
++
++static int adrf6780_reg_access(struct iio_dev *indio_dev,
++				unsigned int reg,
++				unsigned int write_val,
++				unsigned int *read_val)
++{
++	struct adrf6780_dev *dev = iio_priv(indio_dev);
++
++	if (read_val)
++		return adrf6780_spi_read(dev, reg, read_val);
++	else
++		return adrf6780_spi_write(dev, reg, write_val);
++}
++
++static const struct iio_info adrf6780_info = {
++	.read_raw = adrf6780_read_raw,
++	.write_raw = adrf6780_write_raw,
++	.debugfs_reg_access = &adrf6780_reg_access,
++};
++
++#define ADRF6780_CHAN_ADC(_channel) {			\
++	.type = IIO_ALTVOLTAGE,				\
++	.output = 1,					\
++	.indexed = 1,					\
++	.channel = _channel,				\
++	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW)	\
++}
++
++#define ADRF6780_CHAN_RDAC(_channel) {			\
++	.type = IIO_ALTVOLTAGE,				\
++	.output = 1,					\
++	.indexed = 1,					\
++	.channel = _channel,				\
++	.info_mask_separate = BIT(IIO_CHAN_INFO_SCALE)	\
++}
++
++#define ADRF6780_CHAN_IQ_PHASE(_channel, rf_comp) {		\
++	.type = IIO_ALTVOLTAGE,					\
++	.modified = 1,						\
++	.output = 1,						\
++	.indexed = 1,						\
++	.channel2 = IIO_MOD_##rf_comp,				\
++	.channel = _channel,					\
++	.info_mask_separate = BIT(IIO_CHAN_INFO_PHASE)		\
++}
++
++static const struct iio_chan_spec adrf6780_channels[] = {
++	ADRF6780_CHAN_ADC(0),
++	ADRF6780_CHAN_RDAC(0),
++	ADRF6780_CHAN_IQ_PHASE(0, I),
++	ADRF6780_CHAN_IQ_PHASE(0, Q),
++};
++
++static int adrf6780_reset(struct adrf6780_dev *dev)
++{
++	int ret;
++	struct spi_device *spi = dev->spi;
++
++	ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_CONTROL,
++				 ADRF6780_SOFT_RESET_MSK,
++				 FIELD_PREP(ADRF6780_SOFT_RESET_MSK, 1));
++	if (ret) {
++		dev_err(&spi->dev, "ADRF6780 SPI software reset failed.\n");
++		return ret;
++	}
++
++	ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_CONTROL,
++				 ADRF6780_SOFT_RESET_MSK,
++				 FIELD_PREP(ADRF6780_SOFT_RESET_MSK, 0));
++	if (ret) {
++		dev_err(&spi->dev, "ADRF6780 SPI software reset disable failed.\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static int adrf6780_init(struct adrf6780_dev *dev)
++{
++	int ret;
++	unsigned int chip_id, enable_reg, enable_reg_msk;
++	struct spi_device *spi = dev->spi;
++
++	/* Perform a software reset */
++	ret = adrf6780_reset(dev);
++	if (ret)
++		return ret;
++
++	ret = adrf6780_spi_read(dev, ADRF6780_REG_CONTROL, &chip_id);
++	if (ret)
++		return ret;
++
++	chip_id = FIELD_GET(ADRF6780_CHIP_ID_MSK, chip_id);
++	if (chip_id != ADRF6780_CHIP_ID) {
++		dev_err(&spi->dev, "ADRF6780 Invalid Chip ID.\n");
++		return -EINVAL;
++	}
++
++	enable_reg_msk = ADRF6780_VGA_BUFFER_EN_MSK |
++			ADRF6780_DETECTOR_EN_MSK |
++			ADRF6780_LO_BUFFER_EN_MSK |
++			ADRF6780_IF_MODE_EN_MSK |
++			ADRF6780_IQ_MODE_EN_MSK |
++			ADRF6780_LO_X2_EN_MSK |
++			ADRF6780_LO_PPF_EN_MSK |
++			ADRF6780_LO_EN_MSK |
++			ADRF6780_UC_BIAS_EN_MSK;
++
++	enable_reg = FIELD_PREP(ADRF6780_VGA_BUFFER_EN_MSK, dev->vga_buff_en) |
++			FIELD_PREP(ADRF6780_DETECTOR_EN_MSK, 1) |
++			FIELD_PREP(ADRF6780_LO_BUFFER_EN_MSK, dev->lo_buff_en) |
++			FIELD_PREP(ADRF6780_IF_MODE_EN_MSK, dev->if_mode_en) |
++			FIELD_PREP(ADRF6780_IQ_MODE_EN_MSK, dev->iq_mode_en) |
++			FIELD_PREP(ADRF6780_LO_X2_EN_MSK, dev->lo_x2_en) |
++			FIELD_PREP(ADRF6780_LO_PPF_EN_MSK, dev->lo_ppf_en) |
++			FIELD_PREP(ADRF6780_LO_EN_MSK, dev->lo_en) |
++			FIELD_PREP(ADRF6780_UC_BIAS_EN_MSK, dev->uc_bias_en);
++
++	ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_ENABLE, enable_reg_msk, enable_reg);
++	if (ret)
++		return ret;
++
++	ret = adrf6780_spi_update_bits(dev, ADRF6780_REG_LO_PATH,
++						ADRF6780_LO_SIDEBAND_MSK,
++						FIELD_PREP(ADRF6780_LO_SIDEBAND_MSK, dev->lo_sideband));
++	if (ret)
++		return ret;
++
++	return adrf6780_spi_update_bits(dev, ADRF6780_REG_ADC_CONTROL,
++						ADRF6780_VDET_OUTPUT_SELECT_MSK,
++						FIELD_PREP(ADRF6780_VDET_OUTPUT_SELECT_MSK, dev->vdet_out_en));
++}
++
++static void adrf6780_properties_parse(struct adrf6780_dev *dev)
++{
++	struct spi_device *spi = dev->spi;
++
++	dev->vga_buff_en = device_property_read_bool(&spi->dev, "adi,vga-buff-en");
++	dev->lo_buff_en = device_property_read_bool(&spi->dev, "adi,lo-buff-en");
++	dev->if_mode_en = device_property_read_bool(&spi->dev, "adi,if-mode-en");
++	dev->iq_mode_en = device_property_read_bool(&spi->dev, "adi,iq-mode-en");
++	dev->lo_x2_en = device_property_read_bool(&spi->dev, "adi,lo-x2-en");
++	dev->lo_ppf_en = device_property_read_bool(&spi->dev, "adi,lo-ppf-en");
++	dev->lo_en = device_property_read_bool(&spi->dev, "adi,lo-en");
++	dev->uc_bias_en = device_property_read_bool(&spi->dev, "adi,uc-bias-en");
++	dev->lo_sideband = device_property_read_bool(&spi->dev, "adi,lo-sideband");
++	dev->vdet_out_en = device_property_read_bool(&spi->dev, "adi,vdet-out-en");
++}
++
++static int adrf6780_probe(struct spi_device *spi)
++{
++	struct iio_dev *indio_dev;
++	struct adrf6780_dev *dev;
++	int ret;
++
++	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*dev));
++	if (!indio_dev)
++		return -ENOMEM;
++
++	dev = iio_priv(indio_dev);
++
++	indio_dev->info = &adrf6780_info;
++	indio_dev->name = "adrf6780";
++	indio_dev->channels = adrf6780_channels;
++	indio_dev->num_channels = ARRAY_SIZE(adrf6780_channels);
++
++	dev->spi = spi;
++
++	adrf6780_properties_parse(dev);
++
++	dev->clkin = devm_clk_get(&spi->dev, "lo_in");
++	if (IS_ERR(dev->clkin))
++		return PTR_ERR(dev->clkin);
++
++	ret = clk_prepare_enable(dev->clkin);
++	if (ret < 0)
++		goto error_disable_clk;
++
++	mutex_init(&dev->lock);
++
++	ret = adrf6780_init(dev);
++	if (ret)
++		goto error_disable_clk;;
++
++	ret = iio_device_register(indio_dev);
++	if (ret)
++		goto error_disable_clk;
++
++	return 0;
++
++error_disable_clk:
++	clk_disable_unprepare(dev->clkin);
++
++	return ret;
++}
++
++static int adrf6780_remove(struct spi_device *spi)
++{
++	int ret;
++	struct iio_dev *indio_dev = spi_get_drvdata(spi);
++	struct adrf6780_dev *dev = iio_priv(indio_dev);
++
++	/* Disable all components in the Enable Register */
++	ret = adrf6780_spi_write(dev, ADRF6780_REG_ENABLE, 0x0);
++	if(ret)
++		return ret;
++
++	iio_device_unregister(indio_dev);
++
++	clk_disable_unprepare(dev->clkin);
++
++	return 0;
++}
++
++
++static const struct spi_device_id adrf6780_id[] = {
++	{ "adrf6780", 0 },
++	{}
++};
++MODULE_DEVICE_TABLE(spi, adrf6780_id);
++
++static const struct of_device_id adrf6780_of_match[] = {
++	{ .compatible = "adi,adrf6780" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, adrf6780_of_match);
++
++static struct spi_driver adrf6780_driver = {
++	.driver = {
++		.name = "adrf6780",
++		.of_match_table = adrf6780_of_match,
++	},
++	.probe = adrf6780_probe,
++	.remove = adrf6780_remove,
++	.id_table = adrf6780_id,
++};
++module_spi_driver(adrf6780_driver);
++
++MODULE_AUTHOR("Antoniu Miclaus <antoniu.miclaus@analog.com");
++MODULE_DESCRIPTION("Analog Devices ADRF6780");
++MODULE_LICENSE("GPL v2");
+-- 
+2.33.0
+
