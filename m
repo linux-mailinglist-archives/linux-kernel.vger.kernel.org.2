@@ -2,254 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342B442A87F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE99542A89B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237546AbhJLPmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
+        id S237626AbhJLPmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237462AbhJLPmB (ORCPT
+        with ESMTP id S237515AbhJLPmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:42:01 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC989C061570;
-        Tue, 12 Oct 2021 08:39:59 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634053197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yq9pdM+pdjvFyxYq6vmMvIVLBnPdOuhx9oiz5uGo6UU=;
-        b=xitHgukXgKA2MBj8PCjURdDGoMTZH/BxUY7N7QC4gA7vKPdxi7JltDNhcp6mYCeafKOIJE
-        K4iRvrII0avJScGvUumRxPbtZPQt/6bXVggOfVop1/A332m71KVCBkOldJVWmRr9P2kVj3
-        1uUWpfHdkjfSpDrOpXcn+X4/c0xeE95wGbqZY9wuqJf6vZzk0L2+4dxJrx5zxOBM3EpcAP
-        9GOvR13XoCyTQtGUvVn+jCN9pejPewlu3GCEEIMwsOZcoz/enNJe4ZePT1lp8B2OzfpqVB
-        yo0FhQmqhwDVUdxfw+OgWebMATFqE8nc7PspPOH6xYORVjMee9rGXBtlR27Zpg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634053197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yq9pdM+pdjvFyxYq6vmMvIVLBnPdOuhx9oiz5uGo6UU=;
-        b=bCBuDgsB4Kz2NnLkDj2Oy10PeA5fq9vy2jLWrl8/AL4sSoo+OUTH5CyNQ9tozjT6WQEE/g
-        YWWgUNvrQHHAOCDw==
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: Re: [GIT PULL] arm64 fixes for 5.15-rc5
-In-Reply-To: <20211012140243.GA41546@C02TD0UTHF1T.local>
-References: <YWCPyK+xotTgUMy/@arm.com>
- <CAHk-=whWZ4OxfKQwKVrRc-E9=w-ygKdVFn_HcAMW-DW8SgranQ@mail.gmail.com>
- <20211011104729.GB1421@C02TD0UTHF1T.local>
- <CAHk-=wjTAJwMJZ-6PPxvdtDmkL0=pfRF77nJ5qWw2vbiTzT4nQ@mail.gmail.com>
- <87czoacrfr.ffs@tglx> <20211012140243.GA41546@C02TD0UTHF1T.local>
-Date:   Tue, 12 Oct 2021 17:39:56 +0200
-Message-ID: <87mtneb6b7.ffs@tglx>
+        Tue, 12 Oct 2021 11:42:40 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2037DC061749;
+        Tue, 12 Oct 2021 08:40:39 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id D17CC1F417F8
+Received: by earth.universe (Postfix, from userid 1000)
+        id 629A43C0CA8; Tue, 12 Oct 2021 17:40:36 +0200 (CEST)
+Date:   Tue, 12 Oct 2021 17:40:36 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Iskren Chernev <iskren.chernev@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matheus Castello <matheus@castello.eng.br>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@puri.sm
+Subject: Re: [PATCH 1/2] MAINTAINERS: power: supply: max17042: add entry with
+ reviewers
+Message-ID: <20211012154036.hyaabb6okzcgdlyw@earth.universe>
+References: <20210924115619.52927-1-krzysztof.kozlowski@canonical.com>
+ <4803957.ieAp1BVO2D@pliszka>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xhbccxcdgg4mxxpl"
+Content-Disposition: inline
+In-Reply-To: <4803957.ieAp1BVO2D@pliszka>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12 2021 at 15:02, Mark Rutland wrote:
-> On Tue, Oct 12, 2021 at 03:18:16PM +0200, Thomas Gleixner wrote:
->> On Mon, Oct 11 2021 at 12:54, Linus Torvalds wrote:
-> I'm happy with this in principle. The only reason we didn't go down that
-> route initially is because the callers are (typically) in the bowels of
-> arch asm or platform code, they all need to be fixed in one go to avoid
-> breaking anything, and it's a headache if we collide with any rework
-> (e.g. MIPS moving to generic entry).
 
-mips-next looks pretty empty vs. that.
+--xhbccxcdgg4mxxpl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> > It really looks like there is a very tight connection between "uses
->> > handle_domain_irq()" and "uses handle_arch_irq/set_handle_irq()". No?
->> 
->> Looks like. That might conflict with the MIPS rework though. I don't
->> know how far that came already. Cc'ed the MIPS people.
->
-> There's also a bunch of old platforms on arch/arm which have a
-> hard-coded handler (so not using handle_arch_irq/set_handle_irq()) which
-> calls handle_domain_irq() -- those can be fixed up.
+Hi,
 
-If that turns out to be ugly, then somehting like the below might be
-less horrible as a stop gap.
+On Sat, Sep 25, 2021 at 02:31:44PM +0200, Sebastian Krzyszkowiak wrote:
+> On pi=C4=85tek, 24 wrze=C5=9Bnia 2021 13:56:18 CEST Krzysztof Kozlowski w=
+rote:
+> > The Maxim max17042 fuel gauge driver supports several devices used on
+> > multiple different boards - both devicetree and ACPI based.  The driver
+> > is incomplete and has few known issues.  Fixing these might break other
+> > platforms so mention recent contributors who can provide feedback.  This
+> > way most of interested parties might help reviewing the patches.
+> >=20
+> > Cc: Hans de Goede <hdegoede@redhat.com>
+> > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> > Cc: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > ---
+> >  MAINTAINERS | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >=20
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 329d3a0a9fdb..da9d5383af04 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -11429,6 +11429,16 @@ S:	Maintained
+> >  F:	Documentation/devicetree/bindings/iio/proximity/
+> maxbotix,mb1232.yaml
+> >  F:	drivers/iio/proximity/mb1232.c
+> >=20
+> > +MAXIM MAX17042 FAMILY FUEL GAUGE DRIVERS
+> > +R:	Hans de Goede <hdegoede@redhat.com>
+> > +R:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > +R:	Marek Szyprowski <m.szyprowski@samsung.com>
+> > +R:	Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+>=20
+> I think it may be worth adding:
+>=20
+> +R:	Purism Kernel Team <kernel@puri.sm>
+>=20
+> In any case:
+>=20
+> Reviewed-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
 
-Thanks,
+Thanks, I queued both patches with the Purism Kernel Team added for
+MAX17042.
 
-        tglx
----
+-- Sebastian
 
---- a/arch/x86/xen/smp.c
-+++ b/arch/x86/xen/smp.c
-@@ -268,20 +268,16 @@ void xen_send_IPI_allbutself(int vector)
- 
- static irqreturn_t xen_call_function_interrupt(int irq, void *dev_id)
- {
--	irq_enter();
- 	generic_smp_call_function_interrupt();
- 	inc_irq_stat(irq_call_count);
--	irq_exit();
- 
- 	return IRQ_HANDLED;
- }
- 
- static irqreturn_t xen_call_function_single_interrupt(int irq, void *dev_id)
- {
--	irq_enter();
- 	generic_smp_call_function_single_interrupt();
- 	inc_irq_stat(irq_call_count);
--	irq_exit();
- 
- 	return IRQ_HANDLED;
- }
---- a/arch/x86/xen/smp_pv.c
-+++ b/arch/x86/xen/smp_pv.c
-@@ -458,10 +458,8 @@ static void xen_pv_stop_other_cpus(int w
- 
- static irqreturn_t xen_irq_work_interrupt(int irq, void *dev_id)
- {
--	irq_enter();
- 	irq_work_run();
- 	inc_irq_stat(apic_irq_work_irqs);
--	irq_exit();
- 
- 	return IRQ_HANDLED;
- }
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -33,6 +33,9 @@ config HOTPLUG_SMT
- config GENERIC_ENTRY
-        bool
- 
-+config ARCH_ENTRY_RCU_CLEAN
-+       bool
-+
- config KPROBES
- 	bool "Kprobes"
- 	depends on MODULES
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -66,6 +66,7 @@ config X86
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
- 	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if (PGTABLE_LEVELS > 2) && (X86_64 || X86_PAE)
- 	select ARCH_ENABLE_THP_MIGRATION if X86_64 && TRANSPARENT_HUGEPAGE
-+	select ARCH_ENTRY_RCU_CLEAN
- 	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
- 	select ARCH_HAS_CACHE_LINE_SIZE
- 	select ARCH_HAS_DEBUG_VIRTUAL
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -677,24 +677,13 @@ int generic_handle_domain_irq(struct irq
- EXPORT_SYMBOL_GPL(generic_handle_domain_irq);
- 
- #ifdef CONFIG_HANDLE_DOMAIN_IRQ
--/**
-- * handle_domain_irq - Invoke the handler for a HW irq belonging to a domain,
-- *                     usually for a root interrupt controller
-- * @domain:	The domain where to perform the lookup
-- * @hwirq:	The HW irq number to convert to a logical one
-- * @regs:	Register file coming from the low-level handling code
-- *
-- * Returns:	0 on success, or -EINVAL if conversion has failed
-- */
--int handle_domain_irq(struct irq_domain *domain,
--		      unsigned int hwirq, struct pt_regs *regs)
-+static int __handle_domain_irq(struct irq_domain *domain,
-+			       unsigned int hwirq, struct pt_regs *regs)
- {
- 	struct pt_regs *old_regs = set_irq_regs(regs);
- 	struct irq_desc *desc;
- 	int ret = 0;
- 
--	irq_enter();
--
- 	/* The irqdomain code provides boundary checks */
- 	desc = irq_resolve_mapping(domain, hwirq);
- 	if (likely(desc))
-@@ -702,12 +691,41 @@ int handle_domain_irq(struct irq_domain
- 	else
- 		ret = -EINVAL;
- 
--	irq_exit();
- 	set_irq_regs(old_regs);
- 	return ret;
- }
- 
- /**
-+ * handle_domain_irq - Invoke the handler for a HW irq belonging to a domain,
-+ *                     usually for a root interrupt controller
-+ * @domain:	The domain where to perform the lookup
-+ * @hwirq:	The HW irq number to convert to a logical one
-+ * @regs:	Register file coming from the low-level handling code
-+ *
-+ * Returns:	0 on success, or -EINVAL if conversion has failed
-+ */
-+#ifdef CONFIG_ARCH_ENTRY_RCU_CLEAN
-+int handle_domain_irq(struct irq_domain *domain,
-+		      unsigned int hwirq, struct pt_regs *regs)
-+{
-+	__handle_domain_irq(domain, hwirq, regs);
-+}
-+#else
-+int handle_domain_irq(struct irq_domain *domain,
-+		      unsigned int hwirq, struct pt_regs *regs)
-+{
-+	/*
-+	 * irq_enter()/exit() has to be done in low level
-+	 * architecture code. Bandaid for not yet fixed
-+	 * architectures.
-+	 */
-+	irq_enter();
-+	__handle_domain_irq(domain, hwirq, regs);
-+	irq_exit();
-+}
-+#endif
-+
-+/**
-  * handle_domain_nmi - Invoke the handler for a HW irq belonging to a domain
-  * @domain:	The domain where to perform the lookup
-  * @hwirq:	The HW irq number to convert to a logical one
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -601,6 +601,7 @@ void irq_enter_rcu(void)
- 	account_hardirq_enter(current);
- }
- 
-+#ifndef ARCH_ENTRY_RCU_CLEAN
- /**
-  * irq_enter - Enter an interrupt context including RCU update
-  */
-@@ -609,6 +610,7 @@ void irq_enter(void)
- 	rcu_irq_enter();
- 	irq_enter_rcu();
- }
-+#endif
- 
- static inline void tick_irq_exit(void)
- {
-@@ -650,6 +652,7 @@ void irq_exit_rcu(void)
- 	lockdep_hardirq_exit();
- }
- 
-+#ifndef ARCH_ENTRY_RCU_CLEAN
- /**
-  * irq_exit - Exit an interrupt context, update RCU and lockdep
-  *
-@@ -662,6 +665,7 @@ void irq_exit(void)
- 	 /* must be last! */
- 	lockdep_hardirq_exit();
- }
-+#endif
- 
- /*
-  * This function must run with irqs disabled!
+--xhbccxcdgg4mxxpl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFlrHQACgkQ2O7X88g7
++poRkw/+Mj5EPHQWa3zLPFmetZ9uwwHBoh9GjLW56m8qFf3n+PxtV5Mpso2w+rMx
+gndUO7jro2+TdKjflLhV8/zKHeuxI3ft1A+BfpaUmGOuI2N12CYBWBMzrlq7EWaK
+ckFXOjZ0pLC71qkU2Ewp1hhEbmOLiD/hzJNBSjcfESsH5Ikwq1djqD/o0LwigDkO
+jmLCqCVAsh8HNR14Eo1ahQRbrh/RkBeRt/prk0z7Duwkyf3bq2jFxVRm8VvSEFEO
+jnqpPz43QZb46kr2xZ9xqF6tRBBH3vl7KWNERPgat6MCtY/yRfdcLR94ORfUynjg
+D+TyoaiHMCecPG//8j7t1bUsXwJM86h21Eo37p1y4FLZDBWB6k5yaPKpyayOe6A6
+6nqM1MU/b4XAt16pT6WShQ4MtkScJhIfmfv9yksB6kvhbKaEiBhua0LCgy7tPuOb
+L85OJSPLMAGbYW1wl9M5BBKPdOJ0Mx359eUlVvyaWxWrmOron+VVlgS5iR+pQmBE
+rdxqcsTOEcmmZm10kr841mCfNShhTlMnXwZVFONTEANCYdHkCr+Qghr1l2xaP+/Y
+GxdRDnfpsItbHdUhfL+MEpnozYoVnCu1rgdOva5mHr8nmlCe+ylJc6/7+mnhhTmf
++6b0pmV/EcqwVQSQWHHHHG2DiViWoVZ3m7ZuelF89q4w2szns94=
+=nF7O
+-----END PGP SIGNATURE-----
+
+--xhbccxcdgg4mxxpl--
