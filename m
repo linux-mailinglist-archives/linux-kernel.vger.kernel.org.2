@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0071F42A685
+	by mail.lfdr.de (Postfix) with ESMTP id AAA6942A687
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237038AbhJLN6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:58:10 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:53414 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236783AbhJLN6J (ORCPT
+        id S237045AbhJLN6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:58:15 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56644 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237040AbhJLN6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:58:09 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 9480A1F439EA
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-Subject: [PATCH] docs: futex: Fix kernel-doc references
-Date:   Tue, 12 Oct 2021 10:55:49 -0300
-Message-Id: <20211012135549.14451-1-andrealmeid@collabora.com>
-X-Mailer: git-send-email 2.33.0
+        Tue, 12 Oct 2021 09:58:11 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7C3FF1C0B9D; Tue, 12 Oct 2021 15:56:08 +0200 (CEST)
+Date:   Tue, 12 Oct 2021 15:56:08 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/81] 5.10.73-rc3 review
+Message-ID: <20211012135608.GA23821@duo.ucw.cz>
+References: <20211012093348.134236881@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="LQksG6bCIzRHxTLp"
+Content-Disposition: inline
+In-Reply-To: <20211012093348.134236881@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the futex code was restructured, there's no futex.c file anymore
-and the implementation is split in various files. Point kernel-doc
-references to the new files.
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
----
- Documentation/kernel-hacking/locking.rst           | 14 +++++++++++++-
- .../translations/it_IT/kernel-hacking/locking.rst  | 14 +++++++++++++-
- 2 files changed, 26 insertions(+), 2 deletions(-)
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/kernel-hacking/locking.rst b/Documentation/kernel-hacking/locking.rst
-index 90bc3f51eda9..e6cd40663ea5 100644
---- a/Documentation/kernel-hacking/locking.rst
-+++ b/Documentation/kernel-hacking/locking.rst
-@@ -1352,7 +1352,19 @@ Mutex API reference
- Futex API reference
- ===================
- 
--.. kernel-doc:: kernel/futex.c
-+.. kernel-doc:: kernel/futex/core.c
-+   :internal:
-+
-+.. kernel-doc:: kernel/futex/futex.h
-+   :internal:
-+
-+.. kernel-doc:: kernel/futex/pi.c
-+   :internal:
-+
-+.. kernel-doc:: kernel/futex/requeue.c
-+   :internal:
-+
-+.. kernel-doc:: kernel/futex/waitwake.c
-    :internal:
- 
- Further reading
-diff --git a/Documentation/translations/it_IT/kernel-hacking/locking.rst b/Documentation/translations/it_IT/kernel-hacking/locking.rst
-index 1efb8293bf1f..163f1bd4e857 100644
---- a/Documentation/translations/it_IT/kernel-hacking/locking.rst
-+++ b/Documentation/translations/it_IT/kernel-hacking/locking.rst
-@@ -1396,7 +1396,19 @@ Riferimento per l'API dei Mutex
- Riferimento per l'API dei Futex
- ===============================
- 
--.. kernel-doc:: kernel/futex.c
-+.. kernel-doc:: kernel/futex/core.c
-+   :internal:
-+
-+.. kernel-doc:: kernel/futex/futex.h
-+   :internal:
-+
-+.. kernel-doc:: kernel/futex/pi.c
-+   :internal:
-+
-+.. kernel-doc:: kernel/futex/requeue.c
-+   :internal:
-+
-+.. kernel-doc:: kernel/futex/waitwake.c
-    :internal:
- 
- Approfondimenti
--- 
-2.33.0
+Hi!
 
+> This is the start of the stable review cycle for the 5.10.73 release.
+> There are 81 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--LQksG6bCIzRHxTLp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYWWT+AAKCRAw5/Bqldv6
+8lhWAKCzsEpW8m2BpUtt/n8wxJTcc8WdcgCgpIjiq6xZNcd0KUbJO5C//ub+7q4=
+=mBP7
+-----END PGP SIGNATURE-----
+
+--LQksG6bCIzRHxTLp--
