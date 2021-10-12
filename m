@@ -2,120 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1172142A388
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528C342A383
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236375AbhJLLnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:43:49 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:62447 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236338AbhJLLnn (ORCPT
+        id S236334AbhJLLn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 07:43:26 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:32188 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236273AbhJLLnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:43:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1634038903; x=1665574903;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=vhUkg9h0xV9ZvVTvkdqrzA9Qz3YC8T3rVvXz96y15vQ=;
-  b=RRTwmqyFWvTt0IT8903LhGpFaxOMUtz1yLKG5TvhKF+tDKa555qn1dfU
-   KXfgjTh0IGmv8aYexjw4SOpK2vOhVorBGpUBWJNnQiz5hSTXrs+zUhY49
-   Y8fD2KB8iY6IyBDUqc9kzGSMOyCv2Rz2xQkgHGHFY7ojUhdttmGc6JDVz
-   c=;
-X-IronPort-AV: E=Sophos;i="5.85,367,1624320000"; 
-   d="scan'208";a="148529692"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-686c2610.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 12 Oct 2021 11:41:34 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1a-686c2610.us-east-1.amazon.com (Postfix) with ESMTPS id 935D460EA7;
-        Tue, 12 Oct 2021 11:41:30 +0000 (UTC)
-Received: from [192.168.29.157] (10.43.160.241) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Tue, 12 Oct 2021 11:41:23 +0000
-Message-ID: <50bd7a39-b5ed-c15e-096f-2823d22cc5cc@amazon.com>
-Date:   Tue, 12 Oct 2021 14:41:17 +0300
+        Tue, 12 Oct 2021 07:43:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634038875; x=1665574875;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jjozcOuBaeFsR2Z2sJK/kBEF2nS01PkWYHdjzZusQYE=;
+  b=JlhtK7LOVOIFSFqKctZEfJ4PCQnE71dyWpf6jPDD88QJXnka6/EGJed1
+   E3HsyYQSRFIwR3ppfIkTsnNzpis4NYcqVT/URZvfai5kWiPb2MOOiwrQ5
+   MhgBEep2i8ieQ4WM64s1TSJCcszMqLGvljAVEUaz7LNt8IreAerQaK6xS
+   z6yFwjr4vQLcmYxxP+AnbjOCD2ATFxZQNaxw852vUFpr9UjPiGFXexWN/
+   FTn+XOsx9Dwvk0+G6h2PffbrvS5Y9SZ5PZlj4yA/ZK8p6GUJ0xXEY9znU
+   8H8aeDGFEiEAWnTIyhTOO1yb6Pe82oGUR2l3toGV+k9TzS8NEi8I2tFhP
+   Q==;
+IronPort-SDR: vA50VgQCaJsYLGNNEzj6Hla0KfALIC9NRdwhfjM1bQTa7cn50onslcDLu7w4cYMe+jXlQUcIXl
+ MIlZo4yM8rXxTKlykK0ySXzXDfuS4sQNEEGbGuMIuXn5t3yc7s1l3DkuabC77aw+7/evjTePTD
+ W4ssIsSasOZMjz2a4V7wQs5OGoEuJNcm5VfQTljyFngTEnpmuJtfgm6cw82/DkUaxXY/6TZmNN
+ 6w9412XGlbA9eHIbj4tqg/QkRnnPzRneRB3L7O9+qBHc8F/HGw5Mv2Vm2AeAw9WKFjvAuV8yBU
+ 8c63p3NQo6291TpA7FJFqXLg
+X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
+   d="scan'208";a="135221662"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Oct 2021 04:41:14 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 12 Oct 2021 04:41:14 -0700
+Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Tue, 12 Oct 2021 04:41:12 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <p.zabel@pengutronix.de>, <robh+dt@kernel.org>, <andrew@lunn.ch>,
+        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
+        <UNGLinuxDriver@microchip.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH v2 0/2] Extend Sparx5 switch reset driver for lan966x
+Date:   Tue, 12 Oct 2021 13:42:36 +0200
+Message-ID: <20211012114238.2060101-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.1.2
-Subject: Re: [RFC PATCH 2/2] RDMA/efa: Add support for dmabuf memory regions
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Firas Jahjah <firasj@amazon.com>
-References: <20211007104301.76693-1-galpress@amazon.com>
- <20211007104301.76693-3-galpress@amazon.com>
- <20211007114018.GD2688930@ziepe.ca>
- <77082c57-29f8-1eba-b260-7cb658ec34d1@amazon.com>
- <20211011232839.GF2688930@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-In-Reply-To: <20211011232839.GF2688930@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.241]
-X-ClientProxiedBy: EX13D47UWA001.ant.amazon.com (10.43.163.6) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2021 2:28, Jason Gunthorpe wrote:
-> On Sun, Oct 10, 2021 at 09:55:49AM +0300, Gal Pressman wrote:
->> On 07/10/2021 14:40, Jason Gunthorpe wrote:
->>> On Thu, Oct 07, 2021 at 01:43:00PM +0300, Gal Pressman wrote:
->>>
->>>> @@ -1491,26 +1493,29 @@ static int efa_create_pbl(struct efa_dev *dev,
->>>>    return 0;
->>>>  }
->>>>
->>>> -struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
->>>> -                   u64 virt_addr, int access_flags,
->>>> -                   struct ib_udata *udata)
->>>> +static void efa_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
->>>> +{
->>>> +  WARN_ON_ONCE(1,
->>>> +               "Invalidate callback should not be called when memory is pinned\n");
->>>> +}
->>>> +
->>>> +static struct dma_buf_attach_ops efa_dmabuf_attach_ops = {
->>>> +  .allow_peer2peer = true,
->>>> +  .move_notify = efa_dmabuf_invalidate_cb,
->>>> +};
->>>
->>> Shouldn't move_notify really just be left as NULL? I mean fixing
->>> whatever is preventing that?
->>
->> That's what I had in the previous RFC and I think Christian didn't really like it.
-> 
-> Well, having drivers define a dummy function that only fails looks
-> a lot worse to me. If not null then it should be a general
-> 'dmabuf_unsupported_move_notify' shared function
+This patch serie extends the Microchip Sparx5 reset driver to support
+lan966x
 
-Will do.
+v1->v2:
+  - add reviewed-by tag
+  - extend driver to be able to release the reset also for external PHYs
 
->>>> +  err = ib_umem_dmabuf_map_pages(umem_dmabuf);
->>>> +  if (err) {
->>>> +          ibdev_dbg(&dev->ibdev, "Failed to map dmabuf pages\n");
->>>> +          goto err_unpin;
->>>> +  }
->>>> +  dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
->>>
->>> If it is really this simple the core code should have this logic,
->>> 'ib_umem_dmabuf_get_pinned()' or something
->>
->> Should get_pinned do just get + dma_buf_pin, or should it do
->> ib_umem_dmabuf_map_pages as well?
-> 
-> Yes the map_pages too, a umem is supposed to be dma mapped after
-> creation.
+Horatiu Vultur (2):
+  dt-bindings: reset: Add lan966x support
+  reset: mchp: sparx5: Extend support for lan966x
 
-Will do, thanks Jason.
+ .../bindings/reset/microchip,rst.yaml         | 14 +++-
+ drivers/reset/Kconfig                         |  2 +-
+ drivers/reset/reset-microchip-sparx5.c        | 80 +++++++++++++++++--
+ 3 files changed, 86 insertions(+), 10 deletions(-)
+
+-- 
+2.33.0
+
