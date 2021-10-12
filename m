@@ -2,158 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FC3429C00
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73A7429C03
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbhJLDiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 23:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
+        id S232202AbhJLDjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 23:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhJLDiF (ORCPT
+        with ESMTP id S232145AbhJLDjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 23:38:05 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D739C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 20:36:04 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id v10so3257431qvb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 20:36:04 -0700 (PDT)
+        Mon, 11 Oct 2021 23:39:01 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0647EC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 20:37:00 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id o20so62135844wro.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 20:36:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PuQBYQiE0//qwdR0lx7ufC/zx2o6SBXy6e/jdiWZvrU=;
-        b=os/NuwEqCmcu0BrOeQfB4+n7QKmw1s47pBPDW8YOBVogWBAmvvbRsvbsJA46s5un4n
-         eIzjs6xSLG8TCx9TycSaw6F9URHG/10SY7z/h9OBcxjvvNVWs0F15ZI/fMSyHTaGiGY/
-         gjLYecaGaHCYDEEtMUERWa8As1PEiyzLLFvGQWUqhPHcMJ4RlG1LXh1MpyV7a8nJ/ubX
-         6rVk6jca+FTiUatOC3sYtLC3jRs4hxLAIT2mkIWF4khFzpcSUdeY1xsGIxbnPai9Ckwd
-         03jBu5odwiHeSOV9gnYJJTuDUSG6gnsbQVRAYkV3ADgfGRa0UaoyWB5ysNN0imlQWFsq
-         ipvQ==
+        bh=JuvToQE2pzz75Z6mV3+4rwEHXYU4rgHbvxUO/deSKSQ=;
+        b=b+8RCLaoAX3uyQUw+mzgTguFgb7Ep+UKcuwYzNI8xo8dqA2GhU8vE5SttpSsj6IX8i
+         /bTZJcGJ0UZM9BHIOWlGPiT+WnDL64Anc6uYsyyxQj752nUjGzM7WH1gPV1YUgubT+tI
+         4lLSvYHRtQolk+NvhowMujsS3SVRWr9xKITQzVZHDbGBqwyEskKN/+E0+HeaYdK2I09o
+         hd9Dj5h4d8+31vdF8HQ+vRS3vlDJZYtanEQS1UZnl63lvx6rBraba8m+NxbBhSz/R2ME
+         5rMBWwrkG7Tca0DozrKwvEb5pZ1080hMptINV8XrSqwqHR/UOK+3XT4XSXWP/9yfv7gS
+         qFcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PuQBYQiE0//qwdR0lx7ufC/zx2o6SBXy6e/jdiWZvrU=;
-        b=mRw/YG+12DHjKV2DN5hcklEcswoPjSN4DtFv4BKeZWEdbHSRhKdvvfr3WKT8rVMPqP
-         oEkQmm2+xuoW9qGsPM014pLZdZdQMOYhEil57si//dhkv7dgK/z73h1eHXvqGRohGW5B
-         eZ6doDi49kz78I2aKLX4oDdtqO5ZRESrfdJP9a61XKMuBR1wDiPolZrH26bZNQwbZlDy
-         50Yy2If80qoM1ugW1YLO6nFigpQcaj+mHGr1HjJkAr9z/v6Br7vP4ngP5YADs6PSuNkR
-         zaY1K2/lSWlyvKSfpyNkJnZrEAhLRDzptKuLByJwik4hDJSoXpOMLpeZDq4j4SCue5Nh
-         W3ow==
-X-Gm-Message-State: AOAM5318rMz3W2/0WdpVHVBp8oClN//vY54TDlFP0WTDeaPWB9p1cdG3
-        tRR4VB7Yik65L3u7x3AC6j4Fl7GX5mCzlik1yc9s5A==
-X-Google-Smtp-Source: ABdhPJxlbpmzun2i5ifUkeHpsWQA8qd+5ZG5Cd31eOgNJQa6VTEb8HUSywYsLuVpWrVbDUjc6Uz4EsHBYXxFEF/i6bg=
-X-Received: by 2002:a0c:fad0:: with SMTP id p16mr255245qvo.3.1634009763022;
- Mon, 11 Oct 2021 20:36:03 -0700 (PDT)
+        bh=JuvToQE2pzz75Z6mV3+4rwEHXYU4rgHbvxUO/deSKSQ=;
+        b=zPi7gLlnl2ezvCidyGm4sMcen9Y8aMLpAnqvr74L18NNqMdGvrmnOktjP33cyJIn9Y
+         FrWXstAbnRca/xFus8UJJ4p7ZlPKyAaQ90nAa67JK/xV8YkQGxhfvMCTKs9NThbh/6Rz
+         ve1uSKgUJk4v/X4yfc1hvqPksaoUx8+0iStpCy2fjJS+WQy2IUSeZ6pTZmKXdSnT3KMT
+         HoCCT8zooRrzTNSbw64LsL31X2ernKaFfHqaOPapoGevUJ2ScsnJlp79DOxNL/X+4ZtW
+         Xg08Z5QfpzIAvwO1I52tl6nSjKFTiC8KREk4CUH/ojqLchQMexftnoWdHwqu9VhoBcHL
+         WkUw==
+X-Gm-Message-State: AOAM5310fCxNerKlNxKbxwgxWvLzuiUNLe1+EaLzQUfr8pPgX1ubPrdf
+        FKcyYGwhW7XsWoYa7vGbIvSBgUQv31oamJfrTAoaeA==
+X-Google-Smtp-Source: ABdhPJwSrIvFQyniN97IqB3E7peZT1NXyIftXBjn0f/I+k3k5Lq/V4Idq/LVAQIgggzcQXzQbp/8X+XnlwytQ+Tg7gk=
+X-Received: by 2002:a5d:6dce:: with SMTP id d14mr29707283wrz.363.1634009818402;
+ Mon, 11 Oct 2021 20:36:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211010023350.978638-1-dmitry.baryshkov@linaro.org>
- <YWJpJnaQ2Nr4PUwr@yoga> <CAK8P3a3irqEVH2e9wCK4MSSBKRW-n8pFSzYBks9ri-hepewkUw@mail.gmail.com>
-In-Reply-To: <CAK8P3a3irqEVH2e9wCK4MSSBKRW-n8pFSzYBks9ri-hepewkUw@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 12 Oct 2021 06:35:51 +0300
-Message-ID: <CAA8EJpo7kg2h3dJEW+ZCrRhqZ4rvNrs_7WRiX+-adGXXAtu=BA@mail.gmail.com>
-Subject: Re: [PATCH] iommu: fix ARM_SMMU vs QCOM_SCM compilation
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
+References: <20211011132431.2792797-1-guoren@kernel.org> <CAAhSdy1xjRE0TJ_Nd9fdz4RAK2J5FskQYbWDVXO7jhfcZsFm_g@mail.gmail.com>
+ <CAJF2gTRUSyyaniW6mcLSuO5td8ih8O0YOFbbY2EwVqgmzX+0nQ@mail.gmail.com>
+In-Reply-To: <CAJF2gTRUSyyaniW6mcLSuO5td8ih8O0YOFbbY2EwVqgmzX+0nQ@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 12 Oct 2021 09:06:46 +0530
+Message-ID: <CAAhSdy1Gb8nTNxCYsSnp820wCVQGS=m7+11jnCgvfPx9dZ6=vQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] irqchip/sifive-plic: Fix duplicate mask/unmask for claim/complete
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Oct 2021 at 20:42, Arnd Bergmann <arnd@arndb.de> wrote:
+On Tue, Oct 12, 2021 at 6:52 AM Guo Ren <guoren@kernel.org> wrote:
 >
-> On Sun, Oct 10, 2021 at 6:17 AM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
+> On Mon, Oct 11, 2021 at 11:02 PM Anup Patel <anup@brainfault.org> wrote:
 > >
-> > On Sat 09 Oct 21:33 CDT 2021, Dmitry Baryshkov wrote:
-> >
-> > > After commit 424953cf3c66 ("qcom_scm: hide Kconfig symbol") arm-smmu got
-> > > qcom_smmu_impl_init() call guarded by IS_ENABLED(CONFIG_ARM_SMMU_QCOM).
-> > > However the CONFIG_ARM_SMMU_QCOM Kconfig entry does not exist, so the
-> > > qcom_smmu_impl_init() is never called.
+> > On Mon, Oct 11, 2021 at 6:54 PM <guoren@kernel.org> wrote:
 > > >
-> > > So, let's fix this by always calling qcom_smmu_impl_init(). It does not
-> > > touch the smmu passed unless the device is a non-Qualcomm one. Make
-> > > ARM_SMMU select QCOM_SCM for ARCH_QCOM.
->
-> Sorry about this bug. I was sure I had it working, but I lost part of the commit
-> during a rebase, and my randconfig builds still succeeded without it, so I
-> sent a wrong version.
->
-> > Arnd's intention was to not force QCOM_SCM to be built on non-Qualcomm
-> > devices. But as Daniel experienced, attempting to boot most Qualcomm
-> > boards without this results in a instant reboot.
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > >
+> > > PLIC only has enable-registers not mask/unmask registers. Mixing
+> > > mask/unmask with irq_eoi is wrong, because readl(claim) could mask
 > >
-> > I think it's okay if we tinker with CONFIG_ARM_SMMU_QCOM for v5.16, but
-> > we're getting late in v5.15 so I would prefer if we make sure this works
-> > out of the box.
->
-> Yes, makes sense. For reference, see below for how I would fix this properly,
-> this is what I had intended to have in the patch. Feel free to pick
-> either version
-> as the immediate bugfix. I'll give the below a little more randconfig testing
-> overnight though. The pasted version of the patch is probably
-> whitespace-damaged,
-> let me know if you would like me to send it as a proper patch.
->
->        Arnd
->
-> 8<-----
-> Subject: iommu: fix ARM_SMMU_QCOM compilation
->
-> My previous bugfix ended up making things worse for the QCOM IOMMU
-> driver when it forgot to add the Kconfig symbol that is getting used to
-> control the compilation of the SMMU implementation specific code
-> for Qualcomm.
->
-> Fixes: 424953cf3c66 ("qcom_scm: hide Kconfig symbol")
-> Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > This is an incorrect assumption about readl(claim). When SW does
+> > read(claim) the HW updates internal state that IRQ has been claimed.
+> > The HW can still get same (already claimed) IRQ again before
+> > writel(claim) which will be delivered after writel(claim).
+> Our hw would mask IRQ with readl(claim), so it's unnecessary for our
+> board. I agree some hardware won't mask IRQ after readl(claim), so I
+> put DT-bool to control it.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Clearly, the PLIC on C9xx does not comply with RISC-V PLIC because
+it is violating the "Interrupt Claim Process" and "Interrupt Completion
+Process" defined by the RISC-V PLIC specification.
+(Refer, https://github.com/riscv/riscv-plic-spec/blob/master/riscv-plic.adoc)
 
-Let's get either of them in.
+I would suggest you to have a separate compatible string
+"thead,c9xx-plic" for C9xx PLIC implementation.
 
-> ----
-> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> index c5c71b7ab7e8..2dfe744ddd97 100644
-> --- a/drivers/iommu/Kconfig
-> +++ b/drivers/iommu/Kconfig
-> @@ -311,6 +311,7 @@ config ARM_SMMU
->         select IOMMU_API
->         select IOMMU_IO_PGTABLE_LPAE
->         select ARM_DMA_USE_IOMMU if ARM
-> +       select QCOM_SCM if ARM_SMMU_QCOM
->         help
->           Support for implementations of the ARM System MMU architecture
->           versions 1 and 2.
-> @@ -355,6 +356,13 @@ config ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT
->           'arm-smmu.disable_bypass' will continue to override this
->           config.
 >
-> +config ARM_SMMU_QCOM
-> +       def_bool y
-> +       depends on ARM_SMMU && ARCH_QCOM
-> +       help
-> +         When running on a Qualcomm platform that has the custom variant
-> +         of the ARM SMMU, this needs to be built into the SMMU driver.
-> +
->  config ARM_SMMU_V3
->         tristate "ARM Ltd. System MMU Version 3 (SMMUv3) Support"
->         depends on ARM64
+> >
+> > > irq by hardware. We only need mask/unmask to fixup the hardware
+> > > which couldn't claim + mask correctly.
+> >
+> > The handle_fasteoi_irq() only calls unmask_irq() mostly when the
+> > underlying IRQ is threaded. Is there any other case ?
+> When in handle_fasteoi_irq ONESHOT path, it will call:
+>         if (desc->istate & IRQS_ONESHOT)
+>                 mask_irq(desc);
+>
+> mask_irq->plic_irq_mask->"write 0 to PRIORITY & ENABLE_BASE-bit"
+>
+> In this IRQ context, it wouldn't call unmask_irq with
+> cond_unmask_eoi_irq when in IRQCHIP_EOI_THREADED. Then the path would
+> writel(hwirq, claim) with irq disabled.
+> static void cond_unmask_eoi_irq(struct irq_desc *desc, struct irq_chip *chip)
+> {
+> ...
+>         } else if (!(chip->flags & IRQCHIP_EOI_THREADED)) {
+>                 chip->irq_eoi(&desc->irq_data);
+>         }
+>
+> When IRQ is disabled in c9xx, writel(hwirq, claim) would be invalid
+> and cause a blocking irq bug.
 
+Like mentioned above, this is not inline with RISC-V PLIC. You
+should call it C9xx PLIC.
 
+>
+> >
+> > Another fact is that all irqchip drivers using handle_fasteoi_irq()
+> > implement irq_mask/unmask().
+> C9xx needn't call mask&unmask after readl(claim), because:
+> 1. If hw supports readl(claim) with acquiring irq then the mask/unmask
+> is unnecessary and causes performance problems.
+> 2. When in IRQS_ONESHOT & IRQCHIP_EOI_THREADED path, unnecessary mask
+> operation would cause a blocking irq bug.
 
--- 
-With best wishes
-Dmitry
+I would suggest the following:
+
+1) Add a separate compatible string "thead,c9xx-plic" for your PLIC
+implementation.
+
+2) In plic_init() when DT node is compatible to "thead,c9xx-plic",
+you should set irq_mask/unmask of "plic_chip" to NULL and point
+irq_enable/disable of "plic_chip" to plic_irq_mask/unmask.
+
+3) Add a detailed comment block in plic_init() about the differences
+in Claim/Completion process of RISC-V PLIC and C9xx PLIC.
+
+Regards,
+Anup
+
+>
+> >
+> > Regards,
+> > Anup
+> >
+> > >
+> > > If hardware supports claim + mask, it would cause unnecessary
+> > > mask/umak operations.
+> > >
+> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > Cc: Marc Zyngier <maz@kernel.org>
+> > > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > > Cc: Anup Patel <anup@brainfault.org>
+> > > Cc: Atish Patra <atish.patra@wdc.com>
+> > > ---
+> > >  drivers/irqchip/irq-sifive-plic.c | 16 ++++++++++++----
+> > >  1 file changed, 12 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> > > index cf74cfa82045..0fa46912f452 100644
+> > > --- a/drivers/irqchip/irq-sifive-plic.c
+> > > +++ b/drivers/irqchip/irq-sifive-plic.c
+> > > @@ -64,6 +64,7 @@ struct plic_priv {
+> > >         struct cpumask lmask;
+> > >         struct irq_domain *irqdomain;
+> > >         void __iomem *regs;
+> > > +       bool claim_mask_support;
+> > >  };
+> > >
+> > >  struct plic_handler {
+> > > @@ -111,7 +112,7 @@ static inline void plic_irq_toggle(const struct cpumask *mask,
+> > >         }
+> > >  }
+> > >
+> > > -static void plic_irq_unmask(struct irq_data *d)
+> > > +static void plic_irq_enable(struct irq_data *d)
+> > >  {
+> > >         struct cpumask amask;
+> > >         unsigned int cpu;
+> > > @@ -125,7 +126,7 @@ static void plic_irq_unmask(struct irq_data *d)
+> > >         plic_irq_toggle(cpumask_of(cpu), d, 1);
+> > >  }
+> > >
+> > > -static void plic_irq_mask(struct irq_data *d)
+> > > +static void plic_irq_disable(struct irq_data *d)
+> > >  {
+> > >         struct plic_priv *priv = irq_data_get_irq_chip_data(d);
+> > >
+> > > @@ -168,8 +169,8 @@ static void plic_irq_eoi(struct irq_data *d)
+> > >
+> > >  static struct irq_chip plic_chip = {
+> > >         .name           = "SiFive PLIC",
+> > > -       .irq_mask       = plic_irq_mask,
+> > > -       .irq_unmask     = plic_irq_unmask,
+> > > +       .irq_enable     = plic_irq_enable,
+> > > +       .irq_disable    = plic_irq_disable,
+> > >         .irq_eoi        = plic_irq_eoi,
+> > >  #ifdef CONFIG_SMP
+> > >         .irq_set_affinity = plic_set_affinity,
+> > > @@ -181,6 +182,11 @@ static int plic_irqdomain_map(struct irq_domain *d, unsigned int irq,
+> > >  {
+> > >         struct plic_priv *priv = d->host_data;
+> > >
+> > > +       if (!priv->claim_mask_support) {
+> > > +               plic_chip.irq_mask      = plic_irq_disable;
+> > > +               plic_chip.irq_unmask    = plic_irq_enable;
+> > > +       }
+> > > +
+> > >         irq_domain_set_info(d, irq, hwirq, &plic_chip, d->host_data,
+> > >                             handle_fasteoi_irq, NULL, NULL);
+> > >         irq_set_noprobe(irq);
+> > > @@ -298,6 +304,8 @@ static int __init plic_init(struct device_node *node,
+> > >         if (WARN_ON(!nr_contexts))
+> > >                 goto out_iounmap;
+> > >
+> > > +       priv->claim_mask_support = of_property_read_bool(node, "claim-mask-support");
+> > > +
+> > >         error = -ENOMEM;
+> > >         priv->irqdomain = irq_domain_add_linear(node, nr_irqs + 1,
+> > >                         &plic_irqdomain_ops, priv);
+> > > --
+> > > 2.25.1
+> > >
+>
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
