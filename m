@@ -2,145 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EE6429B4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8026429B4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhJLCFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 22:05:40 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:38826 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhJLCFj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 22:05:39 -0400
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 19C23Asr022851;
-        Tue, 12 Oct 2021 11:03:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 19C23Asr022851
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1634004191;
-        bh=R9JRz7swgkXEBmHUNR4wFHuRpevBbW8mrsCesIA9m6U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=muNEQA8WeAYGvE6IlJvpyCH7KJ2cCfc/7fU3ORJWmQFTvRuOt3dosbM9Z4Sy7uoXe
-         yBgciD7pazv7xEGgscmqNvE74bB8BNcOizpWBKfZ7cvjA/l8lQj9Fq/bdDX7bNwp1O
-         cOlKrf+o0w53m/BweZLf3tsk7pV91hCdwEOooM0T/G8OTslfKlUrKEQig3tDataiZX
-         KEH/rI0idIdv4NhvrGD1WIBnxEO1wITNPNogcUeKybxX+VSqHnvX05PVqq/VrVr+UY
-         NxOx4lelRSf5Jq0P1pJkcYfot2cccv6OCi+4AE9sBEGrXRoIXTB9mlxfxz9M0BHMTN
-         dJ7gM4k8Y1Rcw==
-X-Nifty-SrcIP: [209.85.216.45]
-Received: by mail-pj1-f45.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so755118pjb.1;
-        Mon, 11 Oct 2021 19:03:10 -0700 (PDT)
-X-Gm-Message-State: AOAM530YvPpf4M9qUbFWXIY7v14Ur23mPMA4Bv77XerKZBcjQbDclKe4
-        TpQCWR3nm/G7VdLYutel26hoK69nBcDMN4I+zZU=
-X-Google-Smtp-Source: ABdhPJxuU0yUUCrzfHYFF8sGQP9SoCuZ5/jfaymL6RT40hWuLcJewfV2v54NzwlA7raVFXnVc4qcJ2uTKJC5wHgGxk0=
-X-Received: by 2002:a17:902:f703:b029:12c:982:c9ae with SMTP id
- h3-20020a170902f703b029012c0982c9aemr27831626plo.20.1634004190051; Mon, 11
- Oct 2021 19:03:10 -0700 (PDT)
+        id S231281AbhJLCMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 22:12:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229556AbhJLCMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 22:12:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1EAF60FD7;
+        Tue, 12 Oct 2021 02:10:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634004601;
+        bh=PFH6YMgh1NPjnBVcknJcRHHylsiinxs1uiD5pC8d1SE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HKcwpp0l2/B9vrHV+Phur4+YFVNsjD4593zfz0D40rHbQI8DT5gWVX9odVSswJl4R
+         Qlfg0JqJ/FwwnLxdxuGTbt40d6JoE/0xCo4d193JLwWJ4/1/CVKGJ+n7ptn7HbpqrY
+         dtfzoj2kH6Hvo1wiZ8kW3Rp7r2yftFnEZjcnosgB5NGtSmnl3JjBJSDCjBEnjtYsyU
+         7DX0vcasbp0mRk/dwq67z44iNSDBj8W6VE7qXXDxKDq0Jqatw6aZLAAq+x4ZyvhXHP
+         4R/qpalbPi6TGeA0QDmrR/vMyReZQQf36NDzEHDyayWnIHk8jYE/lCVhK5VhkepwCd
+         D7A96ODS/BbqQ==
+Date:   Mon, 11 Oct 2021 21:09:59 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "wanghai (M)" <wanghai38@huawei.com>
+Cc:     Barry Song <21cnbao@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] PCI/MSI: fix page fault when msi_populate_sysfs() failed
+Message-ID: <20211012020959.GA1708781@bhelgaas>
 MIME-Version: 1.0
-References: <20211007185900.2801788-1-nicolas@fjasle.eu>
-In-Reply-To: <20211007185900.2801788-1-nicolas@fjasle.eu>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 12 Oct 2021 11:02:33 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASDu7RK0vLtx1991abx880DtQHK+U2FK3qKbH5Kcz3ipw@mail.gmail.com>
-Message-ID: <CAK7LNASDu7RK0vLtx1991abx880DtQHK+U2FK3qKbH5Kcz3ipw@mail.gmail.com>
-Subject: Re: [PATCH] initramfs: Check timestamp to prevent broken cpio archive
-To:     Nicolas Schier <nicolas@fjasle.eu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        =?UTF-8?Q?Thomas_K=C3=BChnel?= <thomas.kuehnel@avm.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2fc860b4-ec4e-3415-a58b-9099f164b607@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 3:59 AM Nicolas Schier <nicolas@fjasle.eu> wrote:
->
-> Cpio format reserves 8 bytes for an ASCII representation of a time_t time=
-stamp.
-> While 2106-02-07 06:28:15 (time_t =3D 0xffffffff) is still some years in =
-the
-> future, a poorly chosen date string for KBUILD_BUILD_TIMESTAMP, converted=
- into
-> seconds since the epoch, might lead to exceeded cpio timestamp limits tha=
-t
-> results in a broken cpio archive.  Add timestamp checks to prevent overru=
-n of
-> the 8-byte cpio header field.
+On Tue, Oct 12, 2021 at 09:59:40AM +0800, wanghai (M) wrote:
+> 
+> 在 2021/10/12 1:11, Bjorn Helgaas 写道:
+> > For v2, please note "git log --oneline drivers/pci/msi.c" and make
+> > your patch follow the style, including capitalization.
+> > 
+> > On Mon, Oct 11, 2021 at 05:15:28PM +0800, wanghai (M) wrote:
+> > > 在 2021/10/11 16:52, Barry Song 写道:
+> > > > On Mon, Oct 11, 2021 at 9:24 PM Wang Hai <wanghai38@huawei.com> wrote:
+> > > > > I got a page fault report when doing fault injection test:
+> > When you send v2, can you include information about how you injected
+> > the fault?  If it's easy, others can reproduce the failure that way.
+> Sorry, the reproduction needs to be based on the fault injection framework
+> provided by Hulk Robot. I don't know how the framework is implemented.
+> 
+> The way to reproduce this is to do a fault injection to make
+> 'msi_attrs = kcalloc() in msi_populate_sysfs()' fail when insmod
+> 9pnet_virtio.ko.
+> 
+> I sent v2 yesterday, can you help review it?
+> https://lore.kernel.org/linux-pci/20211011130837.766323-1-wanghai38@huawei.com/
+> > > > > BUG: unable to handle page fault for address: fffffffffffffff4
+> > > > > ...
+> > > > > RIP: 0010:sysfs_remove_groups+0x25/0x60
+> > > > > ...
+> > > > > Call Trace:
+> > > > >    msi_destroy_sysfs+0x30/0xa0
+> > > > >    free_msi_irqs+0x11d/0x1b0
+> > > > >    __pci_enable_msix_range+0x67f/0x760
+> > > > >    pci_alloc_irq_vectors_affinity+0xe7/0x170
+> > > > >    vp_find_vqs_msix+0x129/0x560
+> > > > >    vp_find_vqs+0x52/0x230
+> > > > >    vp_modern_find_vqs+0x47/0xb0
+> > > > >    p9_virtio_probe+0xa1/0x460 [9pnet_virtio]
+> > > > >    virtio_dev_probe+0x1ed/0x2e0
+> > > > >    really_probe+0x1c7/0x400
+> > > > >    __driver_probe_device+0xa4/0x120
+> > > > >    driver_probe_device+0x32/0xe0
+> > > > >    __driver_attach+0xbf/0x130
+> > > > >    bus_for_each_dev+0xbb/0x110
+> > > > >    driver_attach+0x27/0x30
+> > > > >    bus_add_driver+0x1d9/0x270
+> > > > >    driver_register+0xa9/0x180
+> > > > >    register_virtio_driver+0x31/0x50
+> > > > >    p9_virtio_init+0x3c/0x1000 [9pnet_virtio]
+> > > > >    do_one_initcall+0x7b/0x380
+> > > > >    do_init_module+0x5f/0x21e
+> > > > >    load_module+0x265c/0x2c60
+> > > > >    __do_sys_finit_module+0xb0/0xf0
+> > > > >    __x64_sys_finit_module+0x1a/0x20
+> > > > >    do_syscall_64+0x34/0xb0
+> > > > >    entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > > > 
+> > > > > When populating msi_irqs sysfs failed in msi_capability_init() or
+> > > > > msix_capability_init(), dev->msi_irq_groups will point to ERR_PTR(...).
+> > > > > This will cause a page fault when destroying the wrong
+> > > > > dev->msi_irq_groups in free_msi_irqs().
+> > > > > 
+> > > > > Fix this by setting dev->msi_irq_groups to NULL when msi_populate_sysfs()
+> > > > > failed.
+> > > > > 
+> > > > > Fixes: 2f170814bdd2 ("genirq/msi: Move MSI sysfs handling from PCI to MSI core")
+> > > > > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > What exactly was reported by the Hulk Robot?  Did it really do the
+> > fault injection and report the page fault?
+> Yes, it reported the error and provided a way to reproduce it
 
-Out of curiosity, how did you figure out
-"2106-02-07 06:28:15" was the overflow point?
-Is it affected by leap seconds?
-
-
-I got ffff816f
-
-
-$ printf "%x"  $(date -d'2106-02-07 06:28:15'  +%s)
-ffff816f
-
-
-
-
-> My colleague Thomas K=C3=BChnel discovered the behaviour, when we acciden=
-tally fed
-> SOURCE_DATE_EPOCH to KBUILD_BUILD_TIMESTAMP as is: some timestamps (e.g.
-> 1607420928 =3D 2021-12-08 10:48:48) will be interpreted by `date` as a va=
-lid date
-> specification of science fictional times (here: year 160742).  Even thoug=
-h this
-> is bad input for KBUILD_BUILD_TIMESTAMP, it should not break the initramf=
-s
-> cpio format.
->
-> Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
-> Cc: Thomas K=C3=BChnel <thomas.kuehnel@avm.de>
-> ---
->  usr/gen_init_cpio.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->
-> diff --git a/usr/gen_init_cpio.c b/usr/gen_init_cpio.c
-> index 03b21189d58b..983dcdd35925 100644
-> --- a/usr/gen_init_cpio.c
-> +++ b/usr/gen_init_cpio.c
-> @@ -320,6 +320,12 @@ static int cpio_mkfile(const char *name, const char =
-*location,
->                 goto error;
->         }
->
-> +       if (buf.st_mtime > 0xffffffff) {
-> +               fprintf(stderr, "%s: Timestamp exceeds maximum cpio times=
-tamp, clipping.\n",
-> +                       location);
-> +               buf.st_mtime =3D 0xffffffff;
-> +       }
-> +
->         filebuf =3D malloc(buf.st_size);
->         if (!filebuf) {
->                 fprintf (stderr, "out of memory\n");
-> @@ -551,6 +557,17 @@ int main (int argc, char *argv[])
->                 }
->         }
->
-> +       /*
-> +        * Timestamps after 2106-02-07 06:28:15 have an ascii hex time_t
-> +        * representation that exceeds 8 chars and breaks the cpio header
-> +        * specification.
-> +        */
-> +       if (default_mtime > 0xffffffff) {
-> +               fprintf(stderr, "ERROR: Timestamp 0x%08x too large for cp=
-io format\n",
-> +                       default_mtime);
-> +               exit(1);
-> +       }
-> +
->         if (argc - optind !=3D 1) {
->                 usage(argv[0]);
->                 exit(1);
-> --
-> 2.30.1
->
-
-
---=20
-Best Regards
-Masahiro Yamada
+Great, can you include a link to that report then?
