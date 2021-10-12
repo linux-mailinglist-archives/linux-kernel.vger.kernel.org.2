@@ -2,147 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D78429E70
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97E7429E6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbhJLHSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:18:54 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13724 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233482AbhJLHSx (ORCPT
+        id S233952AbhJLHRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:17:50 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:47419 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233936AbhJLHRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:18:53 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HT6PZ1p46zWlQ9;
-        Tue, 12 Oct 2021 15:15:14 +0800 (CST)
-Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 12 Oct 2021 15:16:48 +0800
-Received: from huawei.com (10.175.104.82) by kwepemm600001.china.huawei.com
- (7.193.23.3) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 12 Oct
- 2021 15:16:47 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <bhelgaas@google.com>, <andy.shevchenko@gmail.com>,
-        <maz@kernel.org>, <tglx@linutronix.de>,
-        <song.bao.hua@hisilicon.com>, <21cnbao@gmail.com>,
-        <gregkh@linuxfoundation.org>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] PCI/MSI: fix page fault when msi_populate_sysfs() failed
-Date:   Tue, 12 Oct 2021 15:15:56 +0800
-Message-ID: <20211012071556.939137-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 12 Oct 2021 03:17:46 -0400
+Received: (Authenticated sender: jacopo@jmondi.org)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 4976824000B;
+        Tue, 12 Oct 2021 07:15:41 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 09:16:30 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Matteo Lisi <matteo.lisi@engicam.com>
+Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
+Message-ID: <YWU2TmTDjkETta3a@uno.localdomain>
+References: <m3fstfoexa.fsf@t19.piap.pl>
+ <20211009102446.jrvrdr7whtd2rv4z@uno.localdomain>
+ <m3mtnflpna.fsf@t19.piap.pl>
+ <20211011143420.vm6ncl5gdv44nsn3@uno.localdomain>
+ <6c89cdb5-4920-8d01-2051-b64b804db9f6@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600001.china.huawei.com (7.193.23.3)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6c89cdb5-4920-8d01-2051-b64b804db9f6@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a page fault report when doing fault injection test:
+Hi Daniel,
 
-BUG: unable to handle page fault for address: fffffffffffffff4
-...
-RIP: 0010:sysfs_remove_groups+0x25/0x60
-...
-Call Trace:
- msi_destroy_sysfs+0x30/0xa0
- free_msi_irqs+0x11d/0x1b0
- __pci_enable_msix_range+0x67f/0x760
- pci_alloc_irq_vectors_affinity+0xe7/0x170
- vp_find_vqs_msix+0x129/0x560
- vp_find_vqs+0x52/0x230
- vp_modern_find_vqs+0x47/0xb0
- p9_virtio_probe+0xa1/0x460 [9pnet_virtio]
-...
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+On Mon, Oct 11, 2021 at 11:22:10PM +0100, Daniel Scally wrote:
+> Hi Jacopo
+>
+> On 11/10/2021 15:34, Jacopo Mondi wrote:
+> >>>> +static int ar0521_remove(struct i2c_client *client)
+> >>>> +{
+> >>>> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> >>>> +	struct ar0521_dev *sensor = to_ar0521_dev(sd);
+> >>>> +
+> >>>> +	v4l2_async_unregister_subdev(&sensor->sd);
+> >>>> +	media_entity_cleanup(&sensor->sd.entity);
+> >>>> +	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
+> >>>> +	pm_runtime_disable(&client->dev);
+> >>>> +	pm_runtime_set_suspended(&client->dev);
+> >>> set_suspended() then disable maybe ?
+> >> Other drivers seem to do it the above way but I don't know the
+> >> difference.
+> > Maybe I'm wrong but calling set_suspend() after pm_runtime() had been
+> > disabled seems pointless. A minor anyway as it's in the driver's
+> > remove function.
+> >
+>
+> fwiw, the kernel doc [1] for pm_runtime_set_suspended() does say that
+> it's not valid to call it for devices where runtime PM is still enabled.
+>
 
-When populating msi_irqs sysfs failed (such as msi_attrs = kcalloc()
-in msi_populate_sysfs() failed) in msi_capability_init() or
-msix_capability_init(), dev->msi_irq_groups will point to ERR_PTR(...).
-This will cause a page fault when destroying the wrong
-dev->msi_irq_groups in free_msi_irqs().
+Ah, great! thanks for pointing it out, it was very well visible in the
+documentation :) Sorry for the noise!
 
-msix_capability_init()/msi_capability_init()
-	msi_populate_sysfs()
-		msi_attrs = kcalloc() // fault injection, let msi_attrs = NULL
-	free_msi_irqs()
-		msi_destroy_sysfs() // msi_irq_groups is ERR_PTR(...), page fault
+Cheers
+   j
 
-Define a temp variable and assign it to dev->msi_irq_groups if
-the temp variable is not PTR_ERR.
-
-Fixes: 2f170814bdd2 ("genirq/msi: Move MSI sysfs handling from PCI to MSI core")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Acked-by: Barry Song <song.bao.hua@hisilicon.com>
----
-v2->v3: refine the commit log
-v1->v2: introduce temporary variable 'groups'
- drivers/pci/msi.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-index 0099a00af361..4b4792940e86 100644
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -535,6 +535,7 @@ static int msi_verify_entries(struct pci_dev *dev)
- static int msi_capability_init(struct pci_dev *dev, int nvec,
- 			       struct irq_affinity *affd)
- {
-+	const struct attribute_group **groups;
- 	struct msi_desc *entry;
- 	int ret;
- 
-@@ -558,12 +559,14 @@ static int msi_capability_init(struct pci_dev *dev, int nvec,
- 	if (ret)
- 		goto err;
- 
--	dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
--	if (IS_ERR(dev->msi_irq_groups)) {
--		ret = PTR_ERR(dev->msi_irq_groups);
-+	groups = msi_populate_sysfs(&dev->dev);
-+	if (IS_ERR(groups)) {
-+		ret = PTR_ERR(groups);
- 		goto err;
- 	}
- 
-+	dev->msi_irq_groups = groups;
-+
- 	/* Set MSI enabled bits	*/
- 	pci_intx_for_msi(dev, 0);
- 	pci_msi_set_enable(dev, 1);
-@@ -691,6 +694,7 @@ static void msix_mask_all(void __iomem *base, int tsize)
- static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
- 				int nvec, struct irq_affinity *affd)
- {
-+	const struct attribute_group **groups;
- 	void __iomem *base;
- 	int ret, tsize;
- 	u16 control;
-@@ -730,12 +734,14 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
- 
- 	msix_update_entries(dev, entries);
- 
--	dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
--	if (IS_ERR(dev->msi_irq_groups)) {
--		ret = PTR_ERR(dev->msi_irq_groups);
-+	groups = msi_populate_sysfs(&dev->dev);
-+	if (IS_ERR(groups)) {
-+		ret = PTR_ERR(groups);
- 		goto out_free;
- 	}
- 
-+	dev->msi_irq_groups = groups;
-+
- 	/* Set MSI-X enabled bits and unmask the function */
- 	pci_intx_for_msi(dev, 0);
- 	dev->msix_enabled = 1;
--- 
-2.17.1
-
+>
+> [1]
+> https://elixir.bootlin.com/linux/latest/source/include/linux/pm_runtime.h#L510
+>
