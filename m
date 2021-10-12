@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADA742A465
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3298642A469
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236396AbhJLM3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236344AbhJLM3f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:29:35 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69733C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:27:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ffPHDJJEvo/WkeBn4dyBDe1/NGOwywL+tze3tYyLZNg=; b=YuNHCGiyEF91GQSGBJhptO//l5
-        aLOxnPn7YBu9ig9+Yo72doRaHS7QtYgqEaLeTqe5XJOEKEaeJfVqvBh1nx8L4vsIGXlZcFcnR7/S3
-        SjurpGumPVTfQWMZT/OrebfoZYKkcpcsv0JSSf9w1E5vtypi4+iNDvbtOb1QEusrJBQbfXlu8MEZ9
-        75st3h11eddDSutAjI+cveJ9hqLN3zI8J875n+C8Z6Ad3CgBCbMDBP4ME9s+/HIhc1DMMm+4eJb0n
-        2xgPzLvMewawP5XKsuYYUhO9XzobC0nueP3pFf/RSrA3FitGhdaEtYL1qRnUkrrzo+TIcn6oEjnTs
-        Hc4vkd2A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maGsA-009PZ0-BL; Tue, 12 Oct 2021 12:27:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 53CF1300079;
-        Tue, 12 Oct 2021 14:27:09 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0FC4A212D6A1E; Tue, 12 Oct 2021 14:27:09 +0200 (CEST)
-Date:   Tue, 12 Oct 2021 14:27:08 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineethrp@gmail.com>,
-        Hao Luo <haoluo@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sched/core: forced idle accounting
-Message-ID: <YWV/HNDJaIAOLdrt@hirez.programming.kicks-ass.net>
-References: <20211008000825.1364224-1-joshdon@google.com>
- <20211009155435.GW174703@worktop.programming.kicks-ass.net>
- <CABk29Nu6F4__ryF5p0En--Ze6CCev1Jy81W=LkTYaacf-YLkFg@mail.gmail.com>
+        id S236410AbhJLMb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 08:31:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236281AbhJLMbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 08:31:25 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8122460E74;
+        Tue, 12 Oct 2021 12:29:21 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 08:29:20 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH 1/2] ftrace: disable preemption on the testing of
+ recursion
+Message-ID: <20211012082920.1f8d6557@gandalf.local.home>
+In-Reply-To: <alpine.LSU.2.21.2110121421260.3394@pobox.suse.cz>
+References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com>
+        <a8756482-024c-c858-b3d1-1ffa9a5eb3f7@linux.alibaba.com>
+        <alpine.LSU.2.21.2110121421260.3394@pobox.suse.cz>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABk29Nu6F4__ryF5p0En--Ze6CCev1Jy81W=LkTYaacf-YLkFg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 05:12:43PM -0700, Josh Don wrote:
+On Tue, 12 Oct 2021 14:24:43 +0200 (CEST)
+Miroslav Benes <mbenes@suse.cz> wrote:
 
-> > > +             if (WARN_ON_ONCE(!nr_running)) {
-> > > +                     /* can't be forced idle without a running task */
-> > > +             } else {
-> > > +                     delta *= nr_forced_idle;
-> > > +                     delta /= nr_running;
-> > > +             }
-> >
-> > Now the comment sayeth:
-> >
-> > > +     /*
-> > > +      * For larger SMT configurations, we need to scale the charged
-> > > +      * forced idle amount since there can be more than one forced idle
-> > > +      * sibling and more than one running cookied task.
-> > > +      */
-> >
-> > But why?
+> > +++ b/kernel/livepatch/patch.c
+> > @@ -52,11 +52,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+> >  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+> >  	if (WARN_ON_ONCE(bit < 0))
+> >  		return;
+> > -	/*
+> > -	 * A variant of synchronize_rcu() is used to allow patching functions
+> > -	 * where RCU is not watching, see klp_synchronize_transition().
+> > -	 */
+> > -	preempt_disable_notrace();
+> > 
+> >  	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
+> >  				      stack_node);
+> > @@ -120,7 +115,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+> >  	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
+> > 
+> >  unlock:
+> > -	preempt_enable_notrace();
+> >  	ftrace_test_recursion_unlock(bit);
+> >  }  
 > 
-> We scale by the number of cpus actually forced idle, since we don't
-> want to falsely over or under charge forced idle time (defined
-> strictly as time where we have a runnable task but idle the cpu). The
-> more important scaling here though is the division over the number of
-> running entities. This is done so that the aggregate amount of forced
-> idle over some group of threads makes sense. Ie if we have a cpu with
-> SMT8, and a group of 7 threads sharing a cookie, we don't want to
-> accrue 7 units of forced idle time per unit time while the 8th SMT is
-> forced idle.
+> I don't like this change much. We have preempt_disable there not because 
+> of ftrace_test_recursion, but because of RCU. ftrace_test_recursion was 
+> added later. Yes, it would work with the change, but it would also hide 
+> things which should not be hidden in my opinion.
 
-So why not simply compute the strict per-cpu force-idle time and let
-userspace sort out the rest?
+Agreed, but I believe the change is fine, but requires a nice comment to
+explain what you said above.
 
+Thus, before the "ftrace_test_recursion_trylock()" we need:
+
+	/*
+	 * The ftrace_test_recursion_trylock() will disable preemption,
+	 * which is required for the variant of synchronize_rcu() that is
+	 * used to allow patching functions where RCU is not watching.
+	 * See klp_synchronize_transition() for more details.
+	 */
+
+-- Steve
