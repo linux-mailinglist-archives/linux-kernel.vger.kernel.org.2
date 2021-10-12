@@ -2,82 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1592B42A0AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA4642A00D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235668AbhJLJIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:08:21 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:45362 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235343AbhJLJIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:08:11 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 753431A1D1C;
-        Tue, 12 Oct 2021 11:06:05 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3B6C91A1D11;
-        Tue, 12 Oct 2021 11:06:05 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 9B2AE183AD14;
-        Tue, 12 Oct 2021 17:06:03 +0800 (+08)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, tharvey@gateworks.com, kishon@ti.com,
-        vkoul@kernel.org, robh@kernel.org, galak@kernel.crashing.org,
-        shawnguo@kernel.org
-Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-imx@nxp.com
-Subject: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie support
+        id S235109AbhJLIl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:41:26 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42782 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234870AbhJLIlZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 04:41:25 -0400
+X-UUID: 4cf412d9876e48d4b14de15c2228a019-20211012
+X-UUID: 4cf412d9876e48d4b14de15c2228a019-20211012
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1964211283; Tue, 12 Oct 2021 16:39:21 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Tue, 12 Oct 2021 16:39:20 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Tue, 12 Oct 2021 16:39:20 +0800
+From:   <guangming.cao@mediatek.com>
+To:     <christian.koenig@amd.com>
+CC:     <dri-devel@lists.freedesktop.org>, <guangming.cao@mediatek.com>,
+        <linaro-mm-sig@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
+        <rdunlap@infradead.org>, <sumit.semwal@linaro.org>,
+        <wsd_upstream@mediatek.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: Re: [PATCH v2] dma-buf: remove restriction of IOCTL:DMA_BUF_SET_NAME
 Date:   Tue, 12 Oct 2021 16:41:09 +0800
-Message-Id: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+Message-ID: <20211012084109.176542-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <eba79a76-413b-570c-aec0-899a5f918d38@amd.com>
+References: <eba79a76-413b-570c-aec0-899a5f918d38@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-refer to the discussion [1] when try to enable i.MX8MM PCIe support,
-one standalone PCIe PHY driver should be seperated from i.MX PCIe
-driver when enable i.MX8MM PCIe support.
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-This patch-set adds the standalone PCIe PHY driver suport[1-5], and i.MX8MM
-PCIe support[6-9] to have whole view to review this patch-set.
+> Am 09.10.21 um 07:55 schrieb guangming.cao@mediatek.com:
+> From: Guangming Cao <Guangming.Cao@mediatek.com>
+> >
+> > If dma-buf don't want userspace users to touch the dmabuf buffer,
+> > it seems we should add this restriction into dma_buf_ops.mmap,
+> > not in this IOCTL:DMA_BUF_SET_NAME.
+> >
+> > With this restriction, we can only know the kernel users of the dmabuf
+> > by attachments.
+> > However, for many userspace users, such as userpsace users of dma_heap,
+> > they also need to mark the usage of dma-buf, and they don't care about
+> > who attached to this dmabuf, and seems it's no meaning to be waiting for
+> > IOCTL:DMA_BUF_SET_NAME rather than mmap.
+> 
+> Sounds valid to me, but I have no idea why this restriction was added in 
+> the first place.
+> 
+> Can you double check the git history and maybe identify when that was 
+> added? Mentioning this change in the commit message then might make 
+> things a bit easier to understand.
+> 
+> Thanks,
+> Christian.
+It was add in this patch: https://patchwork.freedesktop.org/patch/310349/.
+However, there is no illustration about it.
+I guess it wants users to set_name when no attachments on the dmabuf,
+for case with attachments, we can find owner by device in attachments.
+But just I said in commit message, this is might not a good idea.
 
-The PCIe works on i.MX8MM EVK board based the the blkctrl power driver
-[2] and this PHY driver patch-set.
-
-[1] https://patchwork.ozlabs.org/project/linux-pci/patch/20210510141509.929120-3-l.stach@pengutronix.de/
-[2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210910202640.980366-1-l.stach@pengutronix.de/
-
-Main changes v2 --> v3:
-- Regarding Lucas' comments.
- - to have a whole view to review the patches, send out the i.MX8MM PCIe support too.
- - move the PHY related bits manipulations of the GPR/SRC to standalone PHY driver.
- - split the dts changes to SOC and board DT, and use the enum instead of raw value.
- - update the license of the dt-binding header file.
-
-Changes v1 --> v2:
-- Update the license of the dt-binding header file to make the license
-  compatible with dts files.
-- Fix the dt_binding_check errors.
-
-Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml    |   6 +++
-Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.yaml |  79 +++++++++++++++++++++++++++++
-arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi                |  53 ++++++++++++++++++++
-arch/arm64/boot/dts/freescale/imx8mm.dtsi                    |  46 ++++++++++++++++-
-drivers/pci/controller/dwc/pci-imx6.c                        |  63 ++++++++++++++++++++++-
-drivers/phy/freescale/Kconfig                                |   9 ++++
-drivers/phy/freescale/Makefile                               |   1 +
-drivers/phy/freescale/phy-fsl-imx8m-pcie.c                   | 218 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-include/dt-bindings/phy/phy-imx8-pcie.h                      |  14 ++++++
-9 files changed, 486 insertions(+), 3 deletions(-)
-
-[PATCH v3 1/9] dt-bindings: phy: phy-imx8-pcie: Add binding for the
-[PATCH v3 2/9] dt-bindings: phy: add imx8 pcie phy driver support
-[PATCH v3 3/9] arm64: dts: imx8mm: add the pcie phy support
-[PATCH v3 4/9] arm64: dts: imx8mm-evk: add the pcie phy support
-[PATCH v3 5/9] phy: freescale: pcie: initialize the imx8 pcie
-[PATCH v3 6/9] dt-bindings: imx6q-pcie: Add PHY phandles and name
-[PATCH v3 7/9] arm64: dts: imx8mm: add the pcie support
-[PATCH v3 8/9] arm64: dts: imx8mm-evk: add the pcie support on imx8mm
-[PATCH v3 9/9] PCI: imx: add the imx8mm pcie support
+Do you have any idea?
+> 
+> >
+> > Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+> > ---
+> >   drivers/dma-buf/dma-buf.c | 14 ++------------
+> >   1 file changed, 2 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> > index 511fe0d217a0..db2f4efdec32 100644
+> > --- a/drivers/dma-buf/dma-buf.c
+> > +++ b/drivers/dma-buf/dma-buf.c
+> > @@ -325,10 +325,8 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
+> >   
+> >   /**
+> >    * dma_buf_set_name - Set a name to a specific dma_buf to track the usage.
+> > - * The name of the dma-buf buffer can only be set when the dma-buf is not
+> > - * attached to any devices. It could theoritically support changing the
+> > - * name of the dma-buf if the same piece of memory is used for multiple
+> > - * purpose between different devices.
+> > + * It could theoretically support changing the name of the dma-buf if the same
+> > + * piece of memory is used for multiple purpose between different devices.
+> >    *
+> >    * @dmabuf: [in]     dmabuf buffer that will be renamed.
+> >    * @buf:    [in]     A piece of userspace memory that contains the name of
+> > @@ -346,19 +344,11 @@ static long dma_buf_set_name(struct dma_buf *dmabuf, const char __user *buf)
+> >   	if (IS_ERR(name))
+> >   		return PTR_ERR(name);
+> >   
+> > -	dma_resv_lock(dmabuf->resv, NULL);
+> > -	if (!list_empty(&dmabuf->attachments)) {
+> > -		ret = -EBUSY;
+> > -		kfree(name);
+> > -		goto out_unlock;
+> > -	}
+> >   	spin_lock(&dmabuf->name_lock);
+> >   	kfree(dmabuf->name);
+> >   	dmabuf->name = name;
+> >   	spin_unlock(&dmabuf->name_lock);
+> >   
+> > -out_unlock:
+> > -	dma_resv_unlock(dmabuf->resv);
+> >   	return ret;
+> >   }
+> >   
