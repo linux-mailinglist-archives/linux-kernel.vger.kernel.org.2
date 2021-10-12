@@ -2,175 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CA542AED0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35AC42AEDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235501AbhJLV0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 17:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234011AbhJLV0J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 17:26:09 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE2FC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 14:24:07 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id 3-20020a620603000000b0042aea40c2ddso317488pfg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 14:24:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Fk9Xc4yx4FRlEZPM/PxyifjRQnzIl7D2v+UAZuEFymU=;
-        b=ovnmzoXtj8x1i1N6aZPMYIJZELeMQteZJSdDAGmHK8ZPk4g7b05jLa5tBwSIx18WuZ
-         zglO/Dz81lWJ96COiEvtD5+NZn3fdrAsVU7TxKUemIgm3SwKEKUyorHGP9Hi5UMmWSXM
-         lBpT944rENO6kBF3LtXfLTZ+BZ/+eFKyeAfx62UJ1fYSCgl7VmSY5JQgbPGuA9FoGLqS
-         yaYRNl83UNtnVnp4j/V9TLfRTtee+gF+N6Mb+kX9Rz+nPJEUiGmXQ/YfIJM/vz9gCVi0
-         KabBrdesb9BolJmfBg7kG29UDQ4q9dVxPBRWU0oFHUVItlje5oWEyIgBa3h5CV3iSQAD
-         /8TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Fk9Xc4yx4FRlEZPM/PxyifjRQnzIl7D2v+UAZuEFymU=;
-        b=sHUNsVeN39hCNGa1B9phVoeSmjm91r8y8edPu8g4XxBmQmykLQlgRtUtRIFjUWxscm
-         qL+bwSIEWuOsGcnjm0QeXtL0RjrSETXtulxtCFAj+tJ/jFENpcQu7qaDWGzVGTDtyoBo
-         3Ta2IhslJX6jdkw3VpukyC+r+mqr2e3xeZQDozVMGLhvFmlePFal4vy5w2MAcHwbYQ9m
-         RL+6/xTXFc1G7GAi5B4riGe11qVLAmfAjXQ7M45APaJJqerUVHxBpjdOsY9+Zw6jDgZB
-         kKkoJscNkoAdnAFTQdCqeMj2zfnc6lIMZvwnjSmC0m/S7N+B9//3HhMt4RaqAOl9f9di
-         x4Rw==
-X-Gm-Message-State: AOAM533f//uhtYA2yJvOowSpXleAOfWHj1mrkTCimmtN8RLV37FRtF26
-        4FGPyTeO38YJRXHi0yOasJOvlSAtZHs=
-X-Google-Smtp-Source: ABdhPJzUNd6X3fnJWFIj5LQq1wrKz7v+Lf0DkrpQJ5NNth+0+4D6rrh+G2utbI850CfwvWb4yY4GMuqYDAk=
-X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:bab5:e2c:2623:d2f8])
- (user=pgonda job=sendgmr) by 2002:aa7:92d0:0:b0:44c:ab24:cce7 with SMTP id
- k16-20020aa792d0000000b0044cab24cce7mr33818605pfa.6.1634073846954; Tue, 12
- Oct 2021 14:24:06 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 14:24:03 -0700
-Message-Id: <20211012212403.3863482-1-pgonda@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH V3] KVM: SEV: Acquire vcpu mutex when updating VMSA
-From:   Peter Gonda <pgonda@google.com>
-To:     kvm@vger.kernel.org
-Cc:     Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
+        id S235562AbhJLV00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 17:26:26 -0400
+Received: from mga09.intel.com ([134.134.136.24]:27414 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234011AbhJLV0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 17:26:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="227172660"
+X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
+   d="scan'208";a="227172660"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 14:24:10 -0700
+X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
+   d="scan'208";a="562833280"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.115.208]) ([10.209.115.208])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 14:24:07 -0700
+Message-ID: <4aa51c58-63f5-c7de-f8e5-f4184fd1c822@linux.intel.com>
+Date:   Tue, 12 Oct 2021 14:24:07 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
+ pci_iomap_host_shared_range()
+Content-Language: en-US
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
         Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
         Sean Christopherson <seanjc@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053103-mutt-send-email-mst@kernel.org>
+ <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
+ <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
+ <CAPcyv4g0v0YHZ-okxf4wwVCYxHotxdKwsJpZGkoT+fhvvAJEFg@mail.gmail.com>
+ <9302f1c2-b3f8-2c9e-52c5-d5a4a2987409@linux.intel.com>
+ <CAPcyv4hG0HcbUO8Mb=ccDp5Bz3RJNkAJwKwNzRkQ1gCMpp_OMQ@mail.gmail.com>
+ <20211012171628-mutt-send-email-mst@kernel.org>
+From:   Andi Kleen <ak@linux.intel.com>
+In-Reply-To: <20211012171628-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds vcpu mutex guard to the VMSA updating code. Refactors out
-__sev_launch_update_vmsa() function to deal with per vCPU parts
-of sev_launch_update_vmsa().
 
-Fixes: ad73109ae7ec ("KVM: SVM: Provide support to launch and run an SEV-ES guest")
+On 10/12/2021 2:18 PM, Michael S. Tsirkin wrote:
+> On Tue, Oct 12, 2021 at 02:14:44PM -0700, Dan Williams wrote:
+>> Especially in this case where the virtio use case being
+>> opted-in is *already* in a path that has been authorized by the
+>> device-filter policy engine.
+> That's a good point. Andi, how about setting a per-device flag
+> if its ID has been allowed and then making pci_iomap create
+> a shared mapping transparently?
 
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: kvm@vger.kernel.org
-Cc: stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
-V3
- *  Fixes bug with missing 'guest_state_protected = true' after
-    refactor.
+Yes for pci_iomap we could do that.
 
-V2
- * Refactor per vcpu work to separate function.
- * Remove check to skip already initialized VMSAs.
- * Removed vmsa struct zeroing.
+If someone uses raw ioremap without a device it won't work, but I don't 
+think that's the case for virtio at least.
 
----
- arch/x86/kvm/svm/sev.c | 56 +++++++++++++++++++++++++-----------------
- 1 file changed, 34 insertions(+), 22 deletions(-)
+I suppose we could solve that problem if it actually happens.
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 75e0b21ad07c..f192a6897c68 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -595,43 +595,55 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
- 	return 0;
- }
- 
--static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
-+static int __sev_launch_update_vmsa(struct kvm *kvm, struct kvm_vcpu *vcpu,
-+				    int *error)
- {
--	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
- 	struct sev_data_launch_update_vmsa vmsa;
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+	int ret;
-+
-+	/* Perform some pre-encryption checks against the VMSA */
-+	ret = sev_es_sync_vmsa(svm);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * The LAUNCH_UPDATE_VMSA command will perform in-place encryption of
-+	 * the VMSA memory content (i.e it will write the same memory region
-+	 * with the guest's key), so invalidate it first.
-+	 */
-+	clflush_cache_range(svm->vmsa, PAGE_SIZE);
-+
-+	vmsa.reserved = 0;
-+	vmsa.handle = to_kvm_svm(kvm)->sev_info.handle;
-+	vmsa.address = __sme_pa(svm->vmsa);
-+	vmsa.len = PAGE_SIZE;
-+	ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, error);
-+	if (ret)
-+	  return ret;
-+
-+	vcpu->arch.guest_state_protected = true;
-+	return 0;
-+}
-+
-+static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
-+{
- 	struct kvm_vcpu *vcpu;
- 	int i, ret;
- 
- 	if (!sev_es_guest(kvm))
- 		return -ENOTTY;
- 
--	vmsa.reserved = 0;
--
- 	kvm_for_each_vcpu(i, vcpu, kvm) {
--		struct vcpu_svm *svm = to_svm(vcpu);
--
--		/* Perform some pre-encryption checks against the VMSA */
--		ret = sev_es_sync_vmsa(svm);
-+		ret = mutex_lock_killable(&vcpu->mutex);
- 		if (ret)
- 			return ret;
- 
--		/*
--		 * The LAUNCH_UPDATE_VMSA command will perform in-place
--		 * encryption of the VMSA memory content (i.e it will write
--		 * the same memory region with the guest's key), so invalidate
--		 * it first.
--		 */
--		clflush_cache_range(svm->vmsa, PAGE_SIZE);
-+		ret = __sev_launch_update_vmsa(kvm, vcpu, &argp->error);
- 
--		vmsa.handle = sev->handle;
--		vmsa.address = __sme_pa(svm->vmsa);
--		vmsa.len = PAGE_SIZE;
--		ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa,
--				    &argp->error);
-+		mutex_unlock(&vcpu->mutex);
- 		if (ret)
- 			return ret;
--
--		svm->vcpu.arch.guest_state_protected = true;
- 	}
- 
- 	return 0;
--- 
-2.33.0.882.g93a45727a2-goog
+-Andi
 
