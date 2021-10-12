@@ -2,83 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7A742A85E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468BB42A862
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237502AbhJLPiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:38:18 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44590 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237486AbhJLPiQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:38:16 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D4EC8221AB;
-        Tue, 12 Oct 2021 15:36:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634052973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z4t443UJiJ2rcoEB8L8cMpLE3EGEoriZGHhNtpCV59o=;
-        b=LCAWful78QuPBIVafj5uLFJo72ALVVdM8BR8Gp5+khkEphWBJoq8TBmZSTM0EVae88QNRP
-        As50/6u8kW+DCDHqOrREg4u2ReEWtBd2xfSfWu8Qfx6P9Df+h+++WUYuIDlZWa3YSQSWP3
-        uhiTrgTiXOhkCCm/pagqt/x87mWJrik=
-Received: from suse.cz (unknown [10.100.201.86])
+        id S237332AbhJLPjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:39:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237516AbhJLPio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 11:38:44 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 98B00A3B81;
-        Tue, 12 Oct 2021 15:36:13 +0000 (UTC)
-Date:   Tue, 12 Oct 2021 17:36:10 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH mm v3] memcg: enable memory accounting in
- __alloc_pages_bulk
-Message-ID: <YWWrai/ChIgycgCo@dhcp22.suse.cz>
-References: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
- <60df0efd-f458-a13c-7c89-749bdab21d1d@virtuozzo.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A61A60F3A;
+        Tue, 12 Oct 2021 15:36:40 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 11:36:39 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+Message-ID: <20211012113639.4c53805e@gandalf.local.home>
+In-Reply-To: <364516086.11428.1634048283470.JavaMail.zimbra@efficios.com>
+References: <20211005094728.203ecef2@gandalf.local.home>
+        <505004021.2637.1633446912223.JavaMail.zimbra@efficios.com>
+        <4dbff8032f874a6f921ba0555c94eeaf@AcuMS.aculab.com>
+        <364516086.11428.1634048283470.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60df0efd-f458-a13c-7c89-749bdab21d1d@virtuozzo.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12-10-21 17:58:21, Vasily Averin wrote:
-> Enable memory accounting for bulk page allocator.
+On Tue, 12 Oct 2021 10:18:03 -0400 (EDT)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-ENOCHANGELOG
- 
-And I have to say I am not very happy about the solution. It adds a very
-tricky code where it splits different charging steps apart.
+> As Linus pointed out, it might indeed be simpler to just keep declaring the structure in
+> public headers.
 
-Would it be just too inefficient to charge page-by-page once all pages
-are already taken away from the pcp lists? This bulk should be small so
-this shouldn't really cause massive problems. I mean something like
+I solved this by creating a separate header for the nasty structure, but
+it's still public for all references.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b37435c274cf..8bcd69195ef5 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5308,6 +5308,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 
- 	local_unlock_irqrestore(&pagesets.lock, flags);
- 
-+	if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT)) {
-+		/* charge pages here */
-+	}
-+
- 	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
- 	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
--- 
-Michal Hocko
-SUSE Labs
+-- Steve
