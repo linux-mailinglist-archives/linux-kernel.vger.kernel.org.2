@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1EF42A000
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA55C429FF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235021AbhJLIgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234745AbhJLIgM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:36:12 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67E7C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:34:10 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id r7so64465276wrc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:34:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DEKNWFqxFUX2mkg60fATcZxk9uI6yAWQjBdwjDnLhnQ=;
-        b=NsJs462uexyBDbU8Q4KAvcg0jiRb7CqhuB3C/ZZeC+cxldOsCvl4OG4doA6y2zEIGv
-         ghj7++7W4e4F8SPkosTQzv2KQGLoeCuwW5hqcPbp/7ERsCOis2Ehtb29wRxmeXhssJgx
-         3QI8n8NdevmclkIpIkSM7RyUXzfd2kcv1BESXapdgi3SqGefyqXi0d4GRJTsoF6qAjYf
-         dMX/D9Rm9OUqub4KJFJCnqKU0BMfFmPZPEpuBwPlKeeSagiu7y74q6LoJNhi3880UNkW
-         YCIjAMF4RQSI66FVB0XH8OaT4+x/dG8uq56QTR8655fXZt4NKCVOMd75F3pZVnWwEky3
-         bXbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DEKNWFqxFUX2mkg60fATcZxk9uI6yAWQjBdwjDnLhnQ=;
-        b=JNxa/aRfhtCirQmzAqYQvuTjAdV/9zbvpHdOP+rWvNmtpkQEvEY9j/50GNONt6wXHz
-         6lfn+U3qhwxgXnR2LuEpzFPLy4saWy/LKi9amYquHpKdCW34HVG/4rbAkiifuL0eszDQ
-         ZIkmCdYDHCf/wELcNqAixPa+uHrhUsdDQRM46GoxhRWHISYR/NIMVVWMfqnoJLG6tmkR
-         1+Vi6N1XWzhuLQfNtQ1IFeUANtQBi8xf58qkoj8XeBdHuar4MO74uhJAMZWc1AGU4mJV
-         tRQiz4uKn5FmHzsNmPGeRzkqsnVswEvL5QoZRzkhUZtqtJiJXNhoABrbHLGitz5+Bobh
-         JLqg==
-X-Gm-Message-State: AOAM53258P8X0cMK0KAgK7cMZ7et71M74fZU8wcC2F5N2apE2w2jEhTb
-        8hdJ0jIxlvp+I/H+4B62rQnq8A==
-X-Google-Smtp-Source: ABdhPJwrOO2oLsiRUfbBsfVIcAOqTLRnOc34nZbsYYyoplLvQ1io3jT1A9zMiWh7kcAmkGaqUUSC3w==
-X-Received: by 2002:adf:bd91:: with SMTP id l17mr30158885wrh.261.1634027649193;
-        Tue, 12 Oct 2021 01:34:09 -0700 (PDT)
-Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id d7sm10098871wrh.13.2021.10.12.01.34.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 01:34:08 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 09:33:46 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     David Gibson <david@gibson.dropbear.id.au>,
-        Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
-        hch@lst.de, jasowang@redhat.com, joro@8bytes.org,
-        kevin.tian@intel.com, parav@mellanox.com, lkml@metux.net,
-        pbonzini@redhat.com, lushenming@huawei.com, eric.auger@redhat.com,
-        corbet@lwn.net, ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        nicolinc@nvidia.com
-Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
-Message-ID: <YWVIagFiOtXTGMQ+@myrica>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-12-yi.l.liu@intel.com>
- <20210921174438.GW327412@nvidia.com>
- <YVanJqG2pt6g+ROL@yekko>
- <20211001122225.GK964074@nvidia.com>
- <YWPTWdHhoI4k0Ksc@yekko>
- <YWP6tblC2+/2RQtN@myrica>
- <20211011233817.GS2744544@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011233817.GS2744544@nvidia.com>
+        id S235034AbhJLIfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:35:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234788AbhJLIfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 04:35:52 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07ADB60EE5;
+        Tue, 12 Oct 2021 08:33:51 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1maDEL-00GCsN-6d; Tue, 12 Oct 2021 09:33:49 +0100
+Date:   Tue, 12 Oct 2021 09:33:48 +0100
+Message-ID: <87ily2prpv.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sven Peter <sven@svenpeter.dev>
+Subject: Re: linux-next: build failure after merge of the iommu tree
+In-Reply-To: <20211012144639.0af3457c@canb.auug.org.au>
+References: <20211012144639.0af3457c@canb.auug.org.au>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sfr@canb.auug.org.au, lorenzo.pieralisi@arm.com, joro@8bytes.org, robin.murphy@arm.com, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, sven@svenpeter.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 08:38:17PM -0300, Jason Gunthorpe wrote:
-> On Mon, Oct 11, 2021 at 09:49:57AM +0100, Jean-Philippe Brucker wrote:
-> 
-> > Seems like we don't need the negotiation part?  The host kernel
-> > communicates available IOVA ranges to userspace including holes (patch
-> > 17), and userspace can check that the ranges it needs are within the IOVA
-> > space boundaries. That part is necessary for DPDK as well since it needs
-> > to know about holes in the IOVA space where DMA wouldn't work as expected
-> > (MSI doorbells for example). 
-> 
-> I haven't looked super closely at DPDK, but the other simple VFIO app
-> I am aware of struggled to properly implement this semantic (Indeed it
-> wasn't even clear to the author this was even needed).
-> 
-> It requires interval tree logic inside the application which is not a
-> trivial algorithm to implement in C.
-> 
-> I do wonder if the "simple" interface should have an option more like
-> the DMA API where userspace just asks to DMA map some user memory and
-> gets back the dma_addr_t to use. Kernel manages the allocation
-> space/etc.
+[+ Sven]
 
-Agreed, it's tempting to use IOVA = VA but the two spaces aren't
-necessarily compatible. An extension that plugs into the IOVA allocator
-could be useful to userspace drivers.
+On Tue, 12 Oct 2021 04:46:39 +0100,
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> 
+> Hi all,
+> 
+> After merging the iommu tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> drivers/iommu/apple-dart.c: In function 'apple_dart_get_resv_regions':
+> drivers/iommu/apple-dart.c:758:2: error: implicit declaration of function 'iommu_dma_get_resv_regions'; did you mean 'iommu_get_resv_regions'? [-Werror=implicit-function-declaration]
+>   758 |  iommu_dma_get_resv_regions(dev, head);
+>       |  ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>       |  iommu_get_resv_regions
+> cc1: all warnings being treated as errors
+> 
+> Caused by commit
+> 
+>   b2b2781a9755 ("iommu/dart: Clean up IOVA cookie crumbs")
+> 
+> interactig with commit
+> 
+>   05dc551614a4 ("iommu/dart: Exclude MSI doorbell from PCIe device IOVA range")
+> 
+> from the pci tree.
+> 
+> I have applied the following merge fix patch.
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 12 Oct 2021 14:40:49 +1100
+> Subject: [PATCH] fix for "iommu/dart: Exclude MSI doorbell from PCIe device
+>  IOVA range"
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/iommu/apple-dart.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
+> index 912be9b7669c..280ff8df728d 100644
+> --- a/drivers/iommu/apple-dart.c
+> +++ b/drivers/iommu/apple-dart.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/bitfield.h>
+>  #include <linux/clk.h>
+>  #include <linux/dev_printk.h>
+> +#include <linux/dma-iommu.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/err.h>
+>  #include <linux/interrupt.h>
+
+Thanks for fixing this. Lorenzo, do you mind slapping this on top of
+the Apple PCIe series?
 
 Thanks,
-Jean
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
