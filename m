@@ -2,69 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9FA429E8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2469429E96
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233968AbhJLH0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:26:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:22548 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232500AbhJLH0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:26:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="227351934"
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="227351934"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 00:24:41 -0700
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="490831842"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.255.29.110]) ([10.255.29.110])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 00:24:39 -0700
-Subject: Re: [patch 28/31] x86/sev: Include fpu/xcr.h
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-References: <20211011215813.558681373@linutronix.de>
- <20211011223611.964445769@linutronix.de>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <2e0ab426-acd4-0c8b-6f80-8ce4d2bcf29d@intel.com>
-Date:   Tue, 12 Oct 2021 15:24:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S234160AbhJLH12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234043AbhJLH1P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 03:27:15 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F22C061745;
+        Tue, 12 Oct 2021 00:25:13 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 904081F42FFF;
+        Tue, 12 Oct 2021 08:25:11 +0100 (BST)
+Date:   Tue, 12 Oct 2021 09:25:08 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Apurva Nandan <a-nandan@ti.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <p.yadav@ti.com>
+Subject: Re: [PATCH v2 11/14] mtd: spinand: Perform Power-on-Reset on the
+ flash in mtd_suspend()
+Message-ID: <20211012092508.1647047b@collabora.com>
+In-Reply-To: <20211011204619.81893-12-a-nandan@ti.com>
+References: <20211011204619.81893-1-a-nandan@ti.com>
+        <20211011204619.81893-12-a-nandan@ti.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20211011223611.964445769@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/2021 8:00 AM, Thomas Gleixner wrote:
-> Include the header which only provides the XRC accessors. That's all what
-                                               ^
-                                             typo, should be XCR
+On Tue, 12 Oct 2021 02:16:16 +0530
+Apurva Nandan <a-nandan@ti.com> wrote:
 
-> is needed here.
+> A soft reset using FFh command doesn't erase the flash's configuration
+> and doesn't reset the SPI IO mode also. This can result in the flash
+> being in a different SPI IO mode, e.g. Octal DTR, when resuming from
+> sleep. This could put the flash in an unrecognized SPI IO mode, making
+> it unusable.
 > 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Perform a Power-on-Reset (PoR), if available in the flash, when
+> performing mtd_suspend(). This would set the flash to clean
+> state for reinitialization during resume and would also ensure that it
+> is in standard SPI IO mode (1S-1S-1S) before the resume begins.
+> 
+> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
 > ---
->   arch/x86/kernel/sev.c |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mtd/nand/spi/core.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
 > 
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -23,7 +23,7 @@
->   #include <asm/stacktrace.h>
->   #include <asm/sev.h>
->   #include <asm/insn-eval.h>
-> -#include <asm/fpu/internal.h>
-> +#include <asm/fpu/xcr.h>
->   #include <asm/processor.h>
->   #include <asm/realmode.h>
->   #include <asm/traps.h>
-> 
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> index 9b570570ee81..60408531979a 100644
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -1316,6 +1316,11 @@ static void spinand_mtd_resume(struct mtd_info *mtd)
+>  	int ret;
+>  
+>  	spinand->reg_proto = SPINAND_SINGLE_STR;
+> +	/*
+> +	 * PoR Reset (if available by the manufacturer) is performed at the suspend
+> +	 * time. Hence, those flashes remain in power-on-state at this point, in a
+> +	 * standard SPI IO mode. So, now the core unanimously performs a soft reset.
+> +	 */
+>  	ret = spinand_reset_op(spinand);
+>  	if (ret)
+>  		return;
+> @@ -1327,6 +1332,21 @@ static void spinand_mtd_resume(struct mtd_info *mtd)
+>  	spinand_ecc_enable(spinand, false);
+>  }
+>  
+> +static int spinand_mtd_suspend(struct mtd_info *mtd)
+> +{
+> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
+> +	int ret;
+> +
+> +	if (!(spinand->flags & SPINAND_HAS_POR_CMD_BIT))
+> +		return 0;
+> +
+> +	ret = spinand_power_on_rst_op(spinand);
+> +	if (ret)
+> +		dev_err(&spinand->spimem->spi->dev, "suspend() failed\n");
+> +
+> +	return ret;
+> +}
+
+I suspect you need to implement the spi_mem_driver.shutdown() method
+and do a PoR in that case too. If the device doesn't support the PoR
+command, we should at least switch back to the 1-1-1-STR mode manually.
+
+> +
+>  static int spinand_init(struct spinand_device *spinand)
+>  {
+>  	struct device *dev = &spinand->spimem->spi->dev;
+> @@ -1399,6 +1419,7 @@ static int spinand_init(struct spinand_device *spinand)
+>  	mtd->_erase = spinand_mtd_erase;
+>  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
+>  	mtd->_resume = spinand_mtd_resume;
+> +	mtd->_suspend = spinand_mtd_suspend;
+>  
+>  	if (nand->ecc.engine) {
+>  		ret = mtd_ooblayout_count_freebytes(mtd);
 
