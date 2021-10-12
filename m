@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76B742B018
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F20F42B01A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235535AbhJLX1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 19:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
+        id S235885AbhJLX1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 19:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233180AbhJLX1d (ORCPT
+        with ESMTP id S235541AbhJLX1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 19:27:33 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2555C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:25:30 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id oa4so799266pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:25:30 -0700 (PDT)
+        Tue, 12 Oct 2021 19:27:34 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D42C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:25:32 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id 21so534846plo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:25:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=posk.io; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+MCbUR+9Em0iYarChlkTpQ1HVke2G/DGf/+kVt506hA=;
-        b=K9rtvqDADOFi/pV5Xt1D0nPncFQCJGbmTgJ6Gh9DcnS3GNIm588XShQ24y6u8kIcAB
-         GmbYJg3UT98mpFJfsSaNTUzmRplRn67F3kZuwMvDNrZq+PENH7D9XR1Wl0+y91tTRCnD
-         bCd4A2n2YUHcESbQsCNiVMQCg0SDCPV1gMYMeg1xO8RwEYoWoCvPqK2AsKDAxuIOzNAv
-         z1BeJuotoWsSKzPV6HyMGPBbdxkbLLSMS0lwPoaLj/FWv/vMZzBzoFNAHRAJqP6t5So6
-         Ay5NNU+Wu84lNQ08vuDl9qk97LMNxXBm9PREA9ck+9zarZYhb4SNrlHrlnwW7aHv+/zq
-         Ws9g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=g+AAlSGdfykU1tO7w/flE6eblBoqjmus4rn0qbCYx5Y=;
+        b=AOOMDKLEjpTIzLN/vIxj+Sop5AXNOpIZViYdWXnt644rrwdnl8WZQLZU34oi5ObIW8
+         LKfVKIZa+YTZ5GS6Zg7Ai/8ED7pCYe69eOp/AQCE6Acslk9WrjTEUjR8jfsTHx5DchuE
+         sE/z/EmcB6hAKEaIfUwxF6SpTORvci8CD2JC4InwTBqLp6NgAqhx9cSEr3sBV1pwURXW
+         OZ9yvzZNRilMWGVvXQBYwdOzLB1b/lXcDFi973ZAh+CNuP1p2osjYmCw0b7sntKP5FRO
+         rBU0Yi66VVe7eweJ5YRvAeznEZLuzqrvw8RpC24/SCavF6BtN4QtcmmYMVb3eIkJmLkv
+         r1bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+MCbUR+9Em0iYarChlkTpQ1HVke2G/DGf/+kVt506hA=;
-        b=lvUlA4m7uu/uSAns2FKi+ROQ7k71Fl4NrliYTYmnqi9MGvv174vCvG0tZKrrDU9Yhl
-         6YTpEp7F/+uUMtLqd/5B09b/INALF478jfSZIPcV0ZFG8bVBIRL0Bh5gQCYSgFjwoBw1
-         /VhuJ/4Mfiw3XinErqarjyqJpR3vSGKW4qtZLmzSea8orlTbf/FAfBNTiSaVj0H7HO0D
-         Nc58OSlBlaDPoA4VhHqKeV5CD90jMFHjyjZ2GoAzY7ad/jMN6GsOaQdykofKzKIml05K
-         +auIyj9QORq8xegxQE7g+JQipMA/5tf1p6iHDxS+RYFVuWtCczzPnVRJ2lCZLMxsmr37
-         0mzA==
-X-Gm-Message-State: AOAM532181+lR4vQw78AFq4HD2KsT8xvLaBWS6IzRAZNUP9R9M+/nLTe
-        w0cgMGjY1KEww+TADLjV5uxS9A==
-X-Google-Smtp-Source: ABdhPJxjh74j84b81uD2Wn5kWtHXWmrQZ1OVNkdEUMaIHUWxMYB0qGb8Uw91qe1lKFjIKloQRA4B7g==
-X-Received: by 2002:a17:902:db01:b0:13e:d9ac:b8ff with SMTP id m1-20020a170902db0100b0013ed9acb8ffmr33135606plx.46.1634081130322;
-        Tue, 12 Oct 2021 16:25:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=g+AAlSGdfykU1tO7w/flE6eblBoqjmus4rn0qbCYx5Y=;
+        b=lyrFNSTOXqQ+N6c0m1EfBMRrcL9p3mdwCrLGTzrQtL5t6K073OZnpgaoaSI3x73nVy
+         2qnVMSlzeYGoVw+1uVQb6PuMifIoqpVfIP5jqe8iaTC5n2kiWqBM2ux1VGYMB1JHc1+S
+         cbNS9t5Wkhfi4VBKqmobRQcN6GXO9wJWPVAhr2zQe1M947Ht+N5vIKdJdshZex73uGCK
+         haPEMzPvRqv8ia/JWPH//nyfA66ueKVhnpaWGW+wTPrRqp4p6U844nYpmZ15+c6I2R8E
+         vniMLJ1XmYPFFYBYZUD0597Z1uGBmLkGkIsSacOQVSiJXf75jV6HTaLVslYF2k5N+aH0
+         DTFg==
+X-Gm-Message-State: AOAM533I8zJXzwrLk3XbMkGKWLpT2XxZ1nQbRq07iS5au2Hk4WK3VS2+
+        Qgu2npbQF4RrY45ue+ooAYeANQ==
+X-Google-Smtp-Source: ABdhPJyC/bMU8enieCExPqMGGvVINf9J+YdHsRgtgg57gRVB06c6oeDKHVZwlWLsky9sQunaICaWDQ==
+X-Received: by 2002:a17:90b:4d84:: with SMTP id oj4mr9558127pjb.58.1634081131906;
+        Tue, 12 Oct 2021 16:25:31 -0700 (PDT)
 Received: from posk-g1.lan (23-118-52-46.lightspeed.sntcca.sbcglobal.net. [23.118.52.46])
-        by smtp.gmail.com with ESMTPSA id v20sm12675026pgc.38.2021.10.12.16.25.28
+        by smtp.gmail.com with ESMTPSA id v20sm12675026pgc.38.2021.10.12.16.25.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 16:25:29 -0700 (PDT)
+        Tue, 12 Oct 2021 16:25:31 -0700 (PDT)
 From:   Peter Oskolkov <posk@posk.io>
 X-Google-Original-From: Peter Oskolkov <posk@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
@@ -62,73 +62,95 @@ Cc:     Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
         Peter Oskolkov <posk@posk.io>,
         Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
         Thierry Delisle <tdelisle@uwaterloo.ca>
-Subject: [PATCH v0.7 0/5] sched,mm,x86/uaccess: implement User Managed Concurrency Groups
-Date:   Tue, 12 Oct 2021 16:25:17 -0700
-Message-Id: <20211012232522.714898-1-posk@google.com>
+Subject: [PATCH v0.7 1/5] sched/umcg: add WF_CURRENT_CPU and externise ttwu
+Date:   Tue, 12 Oct 2021 16:25:18 -0700
+Message-Id: <20211012232522.714898-2-posk@google.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211012232522.714898-1-posk@google.com>
+References: <20211012232522.714898-1-posk@google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-User Managed Concurrency Groups (UMCG) is an M:N threading
-subsystem/toolkit that lets user space application developers implement
-in-process user space schedulers.
+Add WF_CURRENT_CPU wake flag that advices the scheduler to
+move the wakee to the current CPU. This is useful for fast on-CPU
+context switching use cases such as UMCG.
 
-Key changes from the previous patchset
-https://lore.kernel.org/all/20210917180323.278250-1-posk@google.com/ :
-
-- userspace atomic helpers moved into mm/
-- UMCG task states are now tagged with timestamps
-- cross-mm interactions (wakeups) are not permitted
-- several smaller fixes and refactorings
-
-These big things remain to be addressed (in no particular order):
-- support tracing/debugging
-- make context switches faster (see umcg_do_context_switch in umcg.c)
-- support other architectures
-- cleanup and post userspace support in tools/lib/umcg/
-- cleanup and post selftests in tools/testing/selftests/umcg/
-- allow cross-mm wakeups (securely)
-
-I'm working on finalizing libumcg and kselftests.
+In addition, make ttwu external rather than static so that
+the flag could be passed to it from outside of sched/core.c.
 
 Signed-off-by: Peter Oskolkov <posk@google.com>
+---
+ kernel/sched/core.c  |  3 +--
+ kernel/sched/fair.c  |  4 ++++
+ kernel/sched/sched.h | 15 +++++++++------
+ 3 files changed, 14 insertions(+), 8 deletions(-)
 
-Peter Oskolkov (5):
-  sched/umcg: add WF_CURRENT_CPU and externise ttwu
-  mm, x86/uaccess: add userspace atomic helpers
-  sched/umcg: implement UMCG syscalls
-  sched/umcg: add Documentation/userspace-api/umcg.rst
-  sched/umcg: add Documentation/userspace-api/umcg.txt
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 935c2da00339..d6da1efb5ce6 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3944,8 +3944,7 @@ bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
+  * Return: %true if @p->state changes (an actual wakeup was done),
+  *	   %false otherwise.
+  */
+-static int
+-try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
++int try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ {
+ 	unsigned long flags;
+ 	int cpu, success = 0;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 87db481e8a56..c900a3f16607 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6890,6 +6890,10 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
+ 	if (wake_flags & WF_TTWU) {
+ 		record_wakee(p);
 
- Documentation/userspace-api/umcg.rst   | 611 ++++++++++++++++
- Documentation/userspace-api/umcg.txt   | 594 ++++++++++++++++
- arch/x86/entry/syscalls/syscall_64.tbl |   2 +
- arch/x86/include/asm/uaccess_64.h      |  93 +++
- fs/exec.c                              |   1 +
- include/linux/sched.h                  |  71 ++
- include/linux/syscalls.h               |   3 +
- include/linux/uaccess.h                |  46 ++
- include/uapi/asm-generic/unistd.h      |   6 +-
- include/uapi/linux/umcg.h              | 137 ++++
- init/Kconfig                           |  10 +
- kernel/entry/common.c                  |   4 +-
- kernel/exit.c                          |   5 +
- kernel/sched/Makefile                  |   1 +
- kernel/sched/core.c                    |  12 +-
- kernel/sched/fair.c                    |   4 +
- kernel/sched/sched.h                   |  15 +-
- kernel/sched/umcg.c                    | 926 +++++++++++++++++++++++++
- kernel/sys_ni.c                        |   4 +
- mm/maccess.c                           | 264 +++++++
- 20 files changed, 2797 insertions(+), 12 deletions(-)
- create mode 100644 Documentation/userspace-api/umcg.rst
- create mode 100644 Documentation/userspace-api/umcg.txt
- create mode 100644 include/uapi/linux/umcg.h
- create mode 100644 kernel/sched/umcg.c
++		if ((wake_flags & WF_CURRENT_CPU) &&
++		    cpumask_test_cpu(cpu, p->cpus_ptr))
++			return cpu;
++
+ 		if (sched_energy_enabled()) {
+ 			new_cpu = find_energy_efficient_cpu(p, prev_cpu);
+ 			if (new_cpu >= 0)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index a00fc7057d97..4b566607952b 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2036,13 +2036,14 @@ static inline int task_on_rq_migrating(struct task_struct *p)
+ }
 
+ /* Wake flags. The first three directly map to some SD flag value */
+-#define WF_EXEC     0x02 /* Wakeup after exec; maps to SD_BALANCE_EXEC */
+-#define WF_FORK     0x04 /* Wakeup after fork; maps to SD_BALANCE_FORK */
+-#define WF_TTWU     0x08 /* Wakeup;            maps to SD_BALANCE_WAKE */
++#define WF_EXEC         0x02 /* Wakeup after exec; maps to SD_BALANCE_EXEC */
++#define WF_FORK         0x04 /* Wakeup after fork; maps to SD_BALANCE_FORK */
++#define WF_TTWU         0x08 /* Wakeup;            maps to SD_BALANCE_WAKE */
+
+-#define WF_SYNC     0x10 /* Waker goes to sleep after wakeup */
+-#define WF_MIGRATED 0x20 /* Internal use, task got migrated */
+-#define WF_ON_CPU   0x40 /* Wakee is on_cpu */
++#define WF_SYNC         0x10 /* Waker goes to sleep after wakeup */
++#define WF_MIGRATED     0x20 /* Internal use, task got migrated */
++#define WF_ON_CPU       0x40 /* Wakee is on_cpu */
++#define WF_CURRENT_CPU  0x80 /* Prefer to move the wakee to the current CPU. */
+
+ #ifdef CONFIG_SMP
+ static_assert(WF_EXEC == SD_BALANCE_EXEC);
+@@ -3060,6 +3061,8 @@ static inline bool is_per_cpu_kthread(struct task_struct *p)
+ extern void swake_up_all_locked(struct swait_queue_head *q);
+ extern void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
+
++extern int try_to_wake_up(struct task_struct *tsk, unsigned int state, int wake_flags);
++
+ #ifdef CONFIG_PREEMPT_DYNAMIC
+ extern int preempt_dynamic_mode;
+ extern int sched_dynamic_mode(const char *str);
 --
 2.25.1
 
