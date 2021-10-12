@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B663F42AC50
+	by mail.lfdr.de (Postfix) with ESMTP id 49EB942AC4F
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235228AbhJLSru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:47:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52448 "EHLO mail.kernel.org"
+        id S235196AbhJLSrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:47:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234164AbhJLSrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234911AbhJLSrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Oct 2021 14:47:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D48C360EE5;
+Received: by mail.kernel.org (Postfix) with ESMTPS id E2CBD60F38;
         Tue, 12 Oct 2021 18:45:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1634064345;
-        bh=orsRu50ErWxWNwiueOzLYLnYY/S8RlhRFc5OzwRgRyc=;
+        bh=yJMGLEN4kiAm0stsIklFSANLFeAHX2lD2w0VH5TtETE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=HwHqVps/vnX507S7KI23ZGrjcm1pAPb2vylRgw/7u/2bkJXwuNd+PJhsI3zvRKTi5
-         bJPk4h93ub1i+GiyXIE6wSX1xoQPGUSJPszY2mQnr4rW66A1UovVlDCB82e3WXiZ0c
-         43r+jmj2s78QvgD4LdLMKYfqc31gZHjUyeRrIXC2PDqcvrlhv/EuNX63CPRVDhFpQQ
-         0zsIdKl6ZO9DUgfHAzC0H5ZffQT1EpFM98G6DrK4WKz+S9hIy5hbij5u/wVGrbmIu7
-         GGGEiA4P3XbfoR0O5PPHeEFVTqeyu/7hTr5DApb5ZqGwWZ4CV7fjCf+L2YU/XFkvxa
-         mf1ay81ngsQTQ==
+        b=fejikyBHiUXY2SZEhiywmgvhu6JCHwV5sfy4rSlC3eAKIOAzGoe2uxhhr9SRsjkQB
+         pGhVEuXf/luPy9Cicqy+UByOb/EYxEZSR1WkikjWhWAy3stDxdeql7iLhh7C2UzrR8
+         gU9PGeT4dl1avgV+5V/zhJ+znzLtNL5x9UJPhmEO+LUUbd1hphGY1BG7WuA1sRzx1n
+         svkoA+MQUyC62GAKUulZLK/aYmzurz8+NSaV+OewlTGBhhZ2ZCG4mWj+fZvGtn8qez
+         4g6KJEcNMS+VE44Ya41snA1CLSC4IqODDMiSfb9N9auoeju5Kg0+Oxweo3RboVipoh
+         weHerVT62pRsQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C0C5660965;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D6159609EF;
         Tue, 12 Oct 2021 18:45:45 +0000 (UTC)
-Subject: Re: [GIT PULL] platform-drivers-x86 for 5.15-3
+Subject: Re: [GIT PULL] arm64 fixes for 5.15-rc6
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <30dcf211-9359-dd17-dcee-cb688a7bfc71@redhat.com>
-References: <30dcf211-9359-dd17-dcee-cb688a7bfc71@redhat.com>
+In-Reply-To: <YWW+CSv9tLuteHQm@arm.com>
+References: <YWW+CSv9tLuteHQm@arm.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <30dcf211-9359-dd17-dcee-cb688a7bfc71@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.15-3
-X-PR-Tracked-Commit-Id: 7df227847ab562c42d318bceccebb0c911c87b04
+X-PR-Tracked-Message-Id: <YWW+CSv9tLuteHQm@arm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+X-PR-Tracked-Commit-Id: 596143e3aec35c93508d6b7a05ddc999ee209b61
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ed47291911d375f7d0bf63b9afb7516988305d94
-Message-Id: <163406434573.24253.5411539614749816356.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: f4d0cc426f77df6890aa868f96c2de89686aae8a
+Message-Id: <163406434587.24253.11671685230581187428.pr-tracker-bot@kernel.org>
 Date:   Tue, 12 Oct 2021 18:45:45 +0000
-To:     Hans de Goede <hdegoede@redhat.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 12 Oct 2021 17:17:38 +0200:
+The pull request you sent on Tue, 12 Oct 2021 17:55:37 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.15-3
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ed47291911d375f7d0bf63b9afb7516988305d94
+https://git.kernel.org/torvalds/c/f4d0cc426f77df6890aa868f96c2de89686aae8a
 
 Thank you!
 
