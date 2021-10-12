@@ -2,107 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6C342AAB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7C842AAB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbhJLR3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:29:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52608 "EHLO mail.kernel.org"
+        id S232374AbhJLRac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:30:32 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:41563 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230306AbhJLR3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:29:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0EB460EFE;
-        Tue, 12 Oct 2021 17:27:09 +0000 (UTC)
-Date:   Tue, 12 Oct 2021 18:27:06 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [RFC][arm64] possible infinite loop in btrfs search_ioctl()
-Message-ID: <YWXFagjRVdNanGSy@arm.com>
-References: <CAHk-=wjMyZLH+ta5SohAViSc10iPj-hRnHc-KPDoj1XZCmxdBg@mail.gmail.com>
- <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk>
- <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
- <YSqOUb7yZ7kBoKRY@zeniv-ca.linux.org.uk>
- <YS40qqmXL7CMFLGq@arm.com>
- <YS5KudP4DBwlbPEp@zeniv-ca.linux.org.uk>
- <YWR2cPKeDrc0uHTK@arm.com>
- <CAHk-=wjvQWj7mvdrgTedUW50c2fkdn6Hzxtsk-=ckkMrFoTXjQ@mail.gmail.com>
- <YWSnvq58jDsDuIik@arm.com>
- <CAHk-=wiNWOY5QW5ZJukt_9pHTWvrJhE2=DxPpEtFHAWdzOPDTg@mail.gmail.com>
+        id S230306AbhJLRaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 13:30:24 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HTN103qCjz9sSN;
+        Tue, 12 Oct 2021 19:28:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id BLNfPwSJXZSO; Tue, 12 Oct 2021 19:28:20 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HTN102rz4z9sSL;
+        Tue, 12 Oct 2021 19:28:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4C72D8B77A;
+        Tue, 12 Oct 2021 19:28:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id hSLIKLkcH9IS; Tue, 12 Oct 2021 19:28:20 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.154])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A690A8B763;
+        Tue, 12 Oct 2021 19:28:19 +0200 (CEST)
+Subject: Re: [PATCH] powerpc: don't select KFENCE on platform PPC_FSL_BOOK3E
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Marco Elver <elver@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210924063927.1341241-1-liushixin2@huawei.com>
+ <77ce95e4-1af1-6536-5f0c-a573c648801a@huawei.com>
+ <87bl3u7oay.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <9c1ee778-b38b-3d41-37f3-5ea22dca063b@csgroup.eu>
+Date:   Tue, 12 Oct 2021 19:28:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiNWOY5QW5ZJukt_9pHTWvrJhE2=DxPpEtFHAWdzOPDTg@mail.gmail.com>
+In-Reply-To: <87bl3u7oay.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 04:59:28PM -0700, Linus Torvalds wrote:
-> On Mon, Oct 11, 2021 at 2:08 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > +#ifdef CONFIG_ARM64_MTE
-> > +#define FAULT_GRANULE_SIZE     (16)
-> > +#define FAULT_GRANULE_MASK     (~(FAULT_GRANULE_SIZE-1))
+
+
+Le 12/10/2021 à 08:24, Michael Ellerman a écrit :
+> Liu Shixin <liushixin2@huawei.com> writes:
+>> kindly ping.
 > 
-> [...]
+> I was under the impression you were trying to debug why it wasn't
+> working with Christophe.
+
+The investigation was a bit dormant to be honest since Liu confirmed 
+that neither KFENCE not DEBUG_PAGEALLOC works.
+
+I now looked at the effort to make it work, and it is not trivial.
+At the time being, all linear space is mapped with pinned TLBs and 
+everything is setup for space 0, with space 1 being used temporarily 
+when doing heavy changes to space 0.
+
+We can't use standard pages for linear space on space 0 because we need 
+memory mapped at all time for exceptions (on booke exception run with 
+MMU on in space 0).
+
+In order to use standard pages, we'd need to reorganise the kernel to 
+have it run mostly in space 1 (for data at least) where we would map 
+almost everything with standard pages, and keep pinned TLB to map linear 
+space on space 0 for TLB miss exceptions. Then we'd do more or less like 
+book3s/32 and switch back into space 1 into other exceptions prolog.
+
+That could be good to do it as we could maybe have more code in common 
+with non booke 32 bits, but it is not a trivial job.
+
+So I suggest that for now, we just make KFENCE and DEBUG_PAGEALLOC 
+unselectable for booke/32 (e500 and 44x).
+
+Christophe
+
 > 
-> > If this looks in the right direction, I'll do some proper patches
-> > tomorrow.
+> cheers
 > 
-> Looks fine to me. It's going to be quite expensive and bad for caches,
-> though.
-> 
-> That said, fault_in_writable() is _supposed_ to all be for the slow
-> path when things go south and the normal path didn't work out, so I
-> think it's fine.
-> 
-> I do wonder how the sub-page granularity works. Is it sufficient to
-> just read from it?
-
-For arm64 MTE and I think SPARC ADI, just reading should be sufficient.
-There is CHERI in the long run, if it takes off, where the user can set
-independent read/write permissions and uaccess would use the capability
-rather than a match-all pointer (hence checked).
-
-> Because then a _slightly_ better option might be to
-> do one write per page (to catch page table writability) and then one
-> read per "granule" (to catch pointer coloring or cache poisoning
-> issues)?
-> 
-> That said, since this is all preparatory to us wanting to write to it
-> eventually anyway, maybe marking it all dirty in the caches is only
-> good.
-
-It depends on how much would be written in the actual copy. For
-significant memcpy on arm CPUs, write streaming usually kicks in and the
-cache dirtying is skipped. This probably matters more for
-copy_page_to_iter_iovec() than the btrfs search ioctl.
-
-Apart from fault_in_pages_*(), there's also fault_in_user_writeable()
-called from the futex code which uses the GUP mechanism as the write
-would be destructive. It looks like it could potentially trigger the
-same infinite loop on -EFAULT. For arm64 MTE, we get away with this by
-disabling the tag checking around the arch futex code (we did it for an
-unrelated issue - we don't have LDXR/STXR that would run with user
-permissions in kernel mode like we do with LDTR/STTR).
-
-I wonder whether we should actually just disable tag checking around the
-problematic accesses. What these callers seem to have in common is using
-pagefault_disable/enable(). We could abuse this to disable tag checking
-or maybe in_atomic() when handling the exception to lazily disable such
-faults temporarily.
-
-A more invasive change would be to return a different error for such
-faults like -EACCESS and treat them differently in the caller.
-
--- 
-Catalin
+>> On 2021/9/24 14:39, Liu Shixin wrote:
+>>> On platform PPC_FSL_BOOK3E, all lowmem is managed by tlbcam. That means
+>>> we didn't really map the kfence pool with page granularity. Therefore,
+>>> if KFENCE is enabled, the system will hit the following panic:
+>>>
+>>>      BUG: Kernel NULL pointer dereference on read at 0x00000000
+>>>      Faulting instruction address: 0xc01de598
+>>>      Oops: Kernel access of bad area, sig: 11 [#1]
+>>>      BE PAGE_SIZE=4K SMP NR_CPUS=4 MPC8544 DS
+>>>      Dumping ftrace buffer:
+>>>         (ftrace buffer empty)
+>>>      Modules linked in:
+>>>      CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc3+ #298
+>>>      NIP:  c01de598 LR: c08ae9c4 CTR: 00000000
+>>>      REGS: c0b4bea0 TRAP: 0300   Not tainted  (5.12.0-rc3+)
+>>>      MSR:  00021000 <CE,ME>  CR: 24000228  XER: 20000000
+>>>      DEAR: 00000000 ESR: 00000000
+>>>      GPR00: c08ae9c4 c0b4bf60 c0ad64e0 ef720000 00021000 00000000 00000000 00000200
+>>>      GPR08: c0ad5000 00000000 00000000 00000004 00000000 008fbb30 00000000 00000000
+>>>      GPR16: 00000000 00000000 00000000 00000000 c0000000 00000000 00000000 00000000
+>>>      GPR24: c08ca004 c08ca004 c0b6a0e0 c0b60000 c0b58f00 c0850000 c08ca000 ef720000
+>>>      NIP [c01de598] kfence_protect+0x44/0x6c
+>>>      LR [c08ae9c4] kfence_init+0xfc/0x2a4
+>>>      Call Trace:
+>>>      [c0b4bf60] [efffe160] 0xefffe160 (unreliable)
+>>>      [c0b4bf70] [c08ae9c4] kfence_init+0xfc/0x2a4
+>>>      [c0b4bfb0] [c0894d3c] start_kernel+0x3bc/0x574
+>>>      [c0b4bff0] [c0000470] set_ivor+0x14c/0x188
+>>>      Instruction dump:
+>>>      7c0802a6 8109d594 546a653a 90010014 54630026 39200000 7d48502e 2c0a0000
+>>>      41820010 554a0026 5469b53a 7d295214 <81490000> 38831000 554a003c 91490000
+>>>      random: get_random_bytes called from print_oops_end_marker+0x40/0x78 with crng_init=0
+>>>      ---[ end trace 0000000000000000 ]---
+>>>
+>>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>>> ---
+>>>   arch/powerpc/Kconfig | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+>>> index d46db0bfb998..cffd57bcb5e4 100644
+>>> --- a/arch/powerpc/Kconfig
+>>> +++ b/arch/powerpc/Kconfig
+>>> @@ -185,7 +185,7 @@ config PPC
+>>>   	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
+>>>   	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
+>>>   	select HAVE_ARCH_KGDB
+>>> -	select HAVE_ARCH_KFENCE			if PPC32
+>>> +	select HAVE_ARCH_KFENCE			if PPC32 && !PPC_FSL_BOOK3E
+>>>   	select HAVE_ARCH_MMAP_RND_BITS
+>>>   	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
+>>>   	select HAVE_ARCH_NVRAM_OPS
