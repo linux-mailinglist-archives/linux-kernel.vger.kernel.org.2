@@ -2,434 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A85F42A7F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B308342A7FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235015AbhJLPOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:14:08 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:54354 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhJLPOG (ORCPT
+        id S237293AbhJLPO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:14:59 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:38652 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229565AbhJLPO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:14:06 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 3538E1F43B75
-Received: by earth.universe (Postfix, from userid 1000)
-        id 0F3C73C0CA8; Tue, 12 Oct 2021 17:12:02 +0200 (CEST)
-Date:   Tue, 12 Oct 2021 17:12:02 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Kate Hsuan <hpa@redhat.com>, hen-Yu Tsai <wens@csie.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] power: supply: axp288-charger: Optimize register reading
- method
-Message-ID: <20211012151202.ezxfnmplg74wvvqr@earth.universe>
-References: <20211012054545.27314-1-hpa@redhat.com>
- <18a8262e-ee7c-767d-68c1-e18b9043a781@redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fabmqnmpymwuaqpn"
+        Tue, 12 Oct 2021 11:14:56 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19CEfarM010972;
+        Tue, 12 Oct 2021 15:12:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=corp-2021-07-09;
+ bh=YAxmKmUQqq1z9mrYRoMh6WH4Gjo/bH3SFQQoXE+byII=;
+ b=VtUsgvxSvzrFCsZBPcLZd/4pbedrtJVk9ejEP3yeEvGMAERNXrIDD8ig6JlsX3CBQ+gg
+ hFHHrn9t1SA0ml6wWrXIgKh/traWdbJJmrXW/tSBHvh3r947/A3HL+2jWKIZSuCKIRaB
+ 4rv4ne7fwOb09JbJtV5xK8hU2wLSX3ElhaNarivEDWN0mqAop2nTpD1UCr4kUiTF8BXG
+ pSJsXztA+Rb3jAfg+ojjXTUXZfBcRRCYOWNIVFmo3TFeKldRTlqKrByJTs6kU/EyVUP9
+ fkFLJ/eu12KNSSMv5/MWmU1vqj1dBgS5Wvcp6QyR5ax07K5RQtZYXz8pyzkvvM1gDfNc Jg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bmq29ry5d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 15:12:40 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19CFAOKP110371;
+        Tue, 12 Oct 2021 15:12:39 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2174.outbound.protection.outlook.com [104.47.59.174])
+        by aserp3030.oracle.com with ESMTP id 3bkyxru8q0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 15:12:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KocL6Sns53BaMag0OsooDR3aMM8rVdYD7IAo8juakdmPJjJsUflLfsE5EX3hvkVsnZzSLaWU9KK8PGGe4cXgHjxZ8lCGlCcxrLQlRqhPC6qmo444H2zmtDtXVMni4Wa+DEPifc0KDSODEJNcHlDcxj9Cl9ISL/TAMph2iRAkSWxxqaYbiXYFJMJoSRaROZO0x0jLhD/PFV+O7groAhX/Rx2rANeeBruHktIH2+CmPSCtSzyBYyDNn8vsajHwRgZyOx6ykaeBZomctA7ufw8FJgJzUjzi2tomWTeCV7rxYzkLvxHa3LJhi910mibFmKbft0EGKd1XL5DRQODNO6VNOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=afwuR/o9GcMBhBUVWXsp4KAOLuRotFW9HgspBHxWMLQ=;
+ b=QYXjPGvdHPOySaozdUCr/HVTYpcf1DsdT1llF0XwGmVG/W4eJT6hfK3uid0cqwc6rglVUfx341bofI5ZuTd98mR3CLshfVKVc+x7GCShwYygnKesup3iXZL+r+kxOuCRSEF2qwW0J1+rObYlTG98+08KWrbvv+T6vijrVjboJcma66xV9/b9EBr7pNtD7+rYVXFpNlPAQKaptwR+cmd0FviAPxDXNeNTCh9oU37D6kKp6U1LBCvtlUrm0T4zBdGg7fb6weW6TG3thBrNv3VY2tJEC6q7ajfkQ982geg62IdBF/HhcakEMdO7wZPyKi2DkPa4QHunt/rLCkSFjNCcNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=afwuR/o9GcMBhBUVWXsp4KAOLuRotFW9HgspBHxWMLQ=;
+ b=qe2GUE0K0WOnEKDifvxwmwVbqUZYJ/AyY8pw9fcriN5eXj+v4PkzGZHrKhfBzfqlZBVA2/6PWD7By6AKVziVd+H5lCpgO7wsTVo2A1VJiIH885YnLm3EM70jsU2KPKtfdZVLjBGI9l7uRuA80CziCayWIgoG4iZDC7weA5N+umQ=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MW5PR10MB5808.namprd10.prod.outlook.com
+ (2603:10b6:303:19b::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Tue, 12 Oct
+ 2021 15:12:37 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4587.026; Tue, 12 Oct 2021
+ 15:12:37 +0000
+Date:   Tue, 12 Oct 2021 18:12:18 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthew Auld <matthew.auld@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] drm/i915: Fix dereference of pointer backup before
+ it is null checked
+Message-ID: <20211012151218.GF8429@kadam>
+References: <20211012132549.260089-1-colin.king@canonical.com>
+ <c49654d9-7174-f6db-e64b-bec3ecde7b5c@linux.intel.com>
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <18a8262e-ee7c-767d-68c1-e18b9043a781@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c49654d9-7174-f6db-e64b-bec3ecde7b5c@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JN2P275CA0046.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::34)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+MIME-Version: 1.0
+Received: from kadam (62.8.83.99) by JN2P275CA0046.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.21 via Frontend Transport; Tue, 12 Oct 2021 15:12:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a9698186-5dd2-4c61-3c62-08d98d92b96a
+X-MS-TrafficTypeDiagnostic: MW5PR10MB5808:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW5PR10MB5808F330D1B127FEEA6457958EB69@MW5PR10MB5808.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QEAaldaAlN9pcOxC9ea7JDSYyQbdWfDee0V6GUpbKeYQqnj2r9klUgR3Q4NFGbtjURPCcR8k6wm7Eszdu5ctZ1vzPeGC6aMIq3IENzPu3jDSlDZjw3OMMZ72OSV2FGLM5ZxBK9aCbuC5oZ1BQVPl5jBesIXyar130ftM3tyFGZs8CJwsw+aumHrM+JCnM0lH4+9ysOzIlOoeMO15zfEcdnLXYrZq1K345HK9PIcS5wIyVjHhYNBxwcJWkqhV0G0T9VeiqF9TKR1vbuS9vWfIoMd4dR1aRNkiygQXpbQs5PgsxdLlB+Dwbk2aEiM9rYbqn37xbCUdf8lv2F1c8LvMbZplIHgWpfD4SeAZlcshUvlx+eiYDc0txotL4JH1wQJwH0a8Be+DHWFBd+1GFOv3ooq9Wh91syMTZZqKq4fh4Y5fAxG/6+lS4v6AIbvqDKP1JGKQmTXn5Bmh4RLJnzBvchMuvBrDP1oMn6gWbUyi4IWoIWb0Mc5T89HHhuDTXPYM8ihSAqEJOFCAnEj+h8BvI90PTHeUMh1+eCw6s+BfREV3uoK6UbSMZTlNB4lyEjydyOecm3puBCa9yh3ol3c4KQgc+JZq6Pht2gannFJ1TihENn7mit/uI0iLdXH3mCRIDCUGgiAtFEFtDKifqfmpfoNKIDC9k9d2pnTnRXloFlUhsZHn99muuTvV0o0sn4MAV55KdmK/xWoNj/8dNZ823g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(86362001)(33656002)(66946007)(66556008)(33716001)(9576002)(52116002)(4744005)(508600001)(83380400001)(9686003)(55016002)(53546011)(1076003)(66574015)(956004)(6666004)(66476007)(186003)(4326008)(8936002)(26005)(6496006)(8676002)(5660300002)(7416002)(54906003)(2906002)(44832011)(38100700002)(38350700002)(6916009)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?AGUB5G3UWS5e5Iw1tbZAyX7KjMypYWmgibhW9doarpFjSXvvRMriTvYTrE?=
+ =?iso-8859-1?Q?w5ntB0Yi7Z8BuyAFCTQlH6DiEBNZk760dMqWCR5TRV2Om0vnpR1Tzp7K7O?=
+ =?iso-8859-1?Q?1cqSNNOsP/2rlG5ias6/h6SYh6A6kIJKaE9sT+6zl0VgL1POkM+ZE6WLX1?=
+ =?iso-8859-1?Q?NyXmRzCxzJTzWF7lxaTS6ZCReE3hoZGkNqVULafW/HmGivdMJ/7Ulgn5uN?=
+ =?iso-8859-1?Q?vrT+Mkf9qaU7Lhsw6H1imqCVLElVVMPbaN5+rEUMWbq+NMRN5tPLbepYNB?=
+ =?iso-8859-1?Q?OkiXtSUhgO9k+1gfmHw3TKdayZHwo/0WZMsV09pBCtrJdNL1smpZ+WhGgx?=
+ =?iso-8859-1?Q?R6f0T8+Geuex7uNBGITZR7lnlNrhtwOAPD3XCe4PcjbsN+vrALa50WqONq?=
+ =?iso-8859-1?Q?15TgbusV53BHnFkoWYwdvrLRheK8f6t4VMnWGCqOA3YYg0dwZmEtoJrPhR?=
+ =?iso-8859-1?Q?myZb2V99HlR+fn6DeRCV5FdNvZxhxu6kl8BZy0r9Ltn+/LeGrcxQZdKv+P?=
+ =?iso-8859-1?Q?wlTAPPl/HLmoKeiTm31cVrqWvAnox8HFY++EHrMMA/f3Y+QH/Uqm+HOTpH?=
+ =?iso-8859-1?Q?zPySmuOJSZmBoHZyNtBlaOwT9Ht/zoaHhcqW27HmTTHQ//jzDOSUfR5OW9?=
+ =?iso-8859-1?Q?GSGy1LiLrIr2gBOcBjSY6GMF3dH40Y757USiJB4D1sSAIEDX9eErKSfwtI?=
+ =?iso-8859-1?Q?PEQGfkhOo1340/9RuN2CtZ2w1be9ZyjHvZCQBMc2VQkx7E36QazYgHZ1NA?=
+ =?iso-8859-1?Q?JAV2REuU6vaxkBXTHIgtCBrDgz49USHz2FkxO30GSiqnCFsRyb5sabSqqG?=
+ =?iso-8859-1?Q?GfFXBkgZZ0harzIxvfbYvPTMPqp10gfly/6HK7HJYBjjTByWqkSf/tNWAf?=
+ =?iso-8859-1?Q?xsRwIsqQNPIh3OFHoshNIw69rnll1Vy0bJyVZrEu/mZHqV7WyaFbd/34PI?=
+ =?iso-8859-1?Q?BQANfL5eyqoSIwjAjG9pQKreCkQQ6ucS8raOqJxSdO2838Pk3vQ3wSrwwu?=
+ =?iso-8859-1?Q?F+CH4cjLPCAq1eHo41ZX4yBxEZPL0mTyo17BZRZ1c9qvo+097yDeq8lxQk?=
+ =?iso-8859-1?Q?fYIdNyTi7uRIOvBBw65ul7N3UkGLFWNA4CU6/eumk2Q1zjBV+YbrVZBgKH?=
+ =?iso-8859-1?Q?e1rVGOKXVDW5yrmNoICZFXIii9R9t4hFHK1QQDN0Lh8zNhpAK/FqRT5kXs?=
+ =?iso-8859-1?Q?wdJALj7mwcV7Y78P4ROqFwc1ezE5gg/D2e6osSqxVcqCkezjo9Kq9ELWpw?=
+ =?iso-8859-1?Q?/eaYEdOf745S7vj+GAzyqcRDdzk2d6mEkC+MGIR34ttJ1IaSOK+IJoYicD?=
+ =?iso-8859-1?Q?/ALz2tQz/GXzSemayNS4gtAS7+2A322HTS91rOZ9I2f4WRF4M/Nn48liBl?=
+ =?iso-8859-1?Q?LJAgRQu+Ty?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9698186-5dd2-4c61-3c62-08d98d92b96a
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2021 15:12:37.2050
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EFkHbay6bmjbnKeZJkrXwHxePsz3PKtpeufa/0sFhQJ4J9fDJfEB5QMbbZ80WLhDpgnnF5gFO4x8gcGHsJynRDeKDWAky7Oo0r2sjFyyK7A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR10MB5808
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10135 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110120085
+X-Proofpoint-ORIG-GUID: 8ITYZy3AUPlyLj8yqPfoLZRWgpqth-CX
+X-Proofpoint-GUID: 8ITYZy3AUPlyLj8yqPfoLZRWgpqth-CX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 12, 2021 at 04:47:24PM +0200, Thomas Hellström wrote:
+> Hi,
+> 
+> On 10/12/21 15:25, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> > 
+> > The assignment of pointer backup_bo dereferences pointer backup before
+> > backup is null checked, this could lead to a null pointer dereference
+> > issue. Fix this by only assigning backup_bo after backup has been null
+> > checked.
+> > 
+> > Addresses-Coverity: ("Dereference before null check")
+> > Fixes: c56ce9565374 ("drm/i915 Implement LMEM backup and restore for suspend / resume")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> There's not really a pointer dereference here, just pointer arithmetics, so
+> the code should be safe (but admittedly fragile), so to keep Coverity happy,
+> 
+> Reviewed-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
 
---fabmqnmpymwuaqpn
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah.  I kind of feel like we shouldn't work around static checker bugs.
+But when we do then there shouldn't be a Fixes tag.
 
-Hi,
+regards,
+dan carpenter
 
-On Tue, Oct 12, 2021 at 09:52:52AM +0200, Hans de Goede wrote:
-> On 10/12/21 7:45 AM, Kate Hsuan wrote:
-> > The original implementation access the charger the same register value
-> > several=A0times to get the charger status, such as online, enabled, and
-> > bus limits. It takes a long time and bandwidth for every "status get"
-> > operation.=A0
-> >=20
-> > To reduce the access of the register and save bandwidth, this commit
-> > integrated every read operation into only one "register value get"=A0
-> > operation and cache them in the variables. Once the "get properties"
-> > is requested from the user space, the cached information can be returned
-> > immediately.
-> >=20
-> > I2C access between Linux kernel and P-Unit is improved by explicitly ta=
-king
-> > semaphore once for the entire set of register accesses in the new
-> > axp288_charger_usb_update_property() function. The I2C-Bus to the XPower
-> > AXP288 is shared between the Linux kernel and SoCs P-Unit. The P-Unit
-> > has a semaphore which the kernel must "lock" before it may use the bus.
-> > If not explicitly taken by the I2C-Driver, then this semaphore is
-> > automatically taken by the I2C-bus-driver for each I2C-transfer. In
-> > other words, the semaphore will be locked and released several times for
-> > entire set of register accesses.
-> >=20
-> > Signed-off-by: Kate Hsuan <hpa@redhat.com>
->=20
-> Thanks, patch looks good to me:
->=20
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
->=20
-> I've also given this a test run on a device with an AXP288 PMIC:
->=20
-> Tested-by: Hans de Goede <hdegoede@redhat.com>
-
-Thanks, queued.
-
--- Sebastian
-
->=20
-> Regards,
->=20
-> Hans
->=20
-> > ---
-> >  drivers/power/supply/axp288_charger.c | 150 +++++++++++++++++---------
-> >  1 file changed, 99 insertions(+), 51 deletions(-)
-> >=20
-> > diff --git a/drivers/power/supply/axp288_charger.c b/drivers/power/supp=
-ly/axp288_charger.c
-> > index b9553be9bed5..fd4983c98fd9 100644
-> > --- a/drivers/power/supply/axp288_charger.c
-> > +++ b/drivers/power/supply/axp288_charger.c
-> > @@ -22,6 +22,7 @@
-> >  #include <linux/mfd/axp20x.h>
-> >  #include <linux/extcon.h>
-> >  #include <linux/dmi.h>
-> > +#include <asm/iosf_mbi.h>
-> > =20
-> >  #define PS_STAT_VBUS_TRIGGER		BIT(0)
-> >  #define PS_STAT_BAT_CHRG_DIR		BIT(2)
-> > @@ -95,6 +96,8 @@
-> >  #define CV_4200MV			4200	/* 4200mV */
-> >  #define CV_4350MV			4350	/* 4350mV */
-> > =20
-> > +#define AXP288_REG_UPDATE_INTERVAL	(60 * HZ)
-> > +
-> >  #define AXP288_EXTCON_DEV_NAME		"axp288_extcon"
-> >  #define USB_HOST_EXTCON_HID		"INT3496"
-> >  #define USB_HOST_EXTCON_NAME		"INT3496:00"
-> > @@ -118,6 +121,7 @@ struct axp288_chrg_info {
-> >  	struct regmap_irq_chip_data *regmap_irqc;
-> >  	int irq[CHRG_INTR_END];
-> >  	struct power_supply *psy_usb;
-> > +	struct mutex lock;
-> > =20
-> >  	/* OTG/Host mode */
-> >  	struct {
-> > @@ -138,6 +142,12 @@ struct axp288_chrg_info {
-> >  	int cv;
-> >  	int max_cc;
-> >  	int max_cv;
-> > +
-> > +	unsigned long last_updated;
-> > +	unsigned int input_status;
-> > +	unsigned int op_mode;
-> > +	unsigned int backend_control;
-> > +	bool valid;
-> >  };
-> > =20
-> >  static inline int axp288_charger_set_cc(struct axp288_chrg_info *info,=
- int cc)
-> > @@ -197,11 +207,8 @@ static inline int axp288_charger_set_cv(struct axp=
-288_chrg_info *info, int cv)
-> >  static int axp288_charger_get_vbus_inlmt(struct axp288_chrg_info *info)
-> >  {
-> >  	unsigned int val;
-> > -	int ret;
-> > =20
-> > -	ret =3D regmap_read(info->regmap, AXP20X_CHRG_BAK_CTRL, &val);
-> > -	if (ret < 0)
-> > -		return ret;
-> > +	val =3D info->backend_control;
-> > =20
-> >  	val >>=3D CHRG_VBUS_ILIM_BIT_POS;
-> >  	switch (val) {
-> > @@ -297,55 +304,34 @@ static int axp288_charger_enable_charger(struct a=
-xp288_chrg_info *info,
-> > =20
-> >  static int axp288_charger_is_present(struct axp288_chrg_info *info)
-> >  {
-> > -	int ret, present =3D 0;
-> > -	unsigned int val;
-> > -
-> > -	ret =3D regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
-> > -	if (ret < 0)
-> > -		return ret;
-> > +	int present =3D 0;
-> > =20
-> > -	if (val & PS_STAT_VBUS_PRESENT)
-> > +	if (info->input_status & PS_STAT_VBUS_PRESENT)
-> >  		present =3D 1;
-> >  	return present;
-> >  }
-> > =20
-> >  static int axp288_charger_is_online(struct axp288_chrg_info *info)
-> >  {
-> > -	int ret, online =3D 0;
-> > -	unsigned int val;
-> > -
-> > -	ret =3D regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
-> > -	if (ret < 0)
-> > -		return ret;
-> > +	int online =3D 0;
-> > =20
-> > -	if (val & PS_STAT_VBUS_VALID)
-> > +	if (info->input_status & PS_STAT_VBUS_VALID)
-> >  		online =3D 1;
-> >  	return online;
-> >  }
-> > =20
-> >  static int axp288_get_charger_health(struct axp288_chrg_info *info)
-> >  {
-> > -	int ret, pwr_stat, chrg_stat;
-> >  	int health =3D POWER_SUPPLY_HEALTH_UNKNOWN;
-> > -	unsigned int val;
-> > =20
-> > -	ret =3D regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
-> > -	if ((ret < 0) || !(val & PS_STAT_VBUS_PRESENT))
-> > +	if (!(info->input_status & PS_STAT_VBUS_PRESENT))
-> >  		goto health_read_fail;
-> > -	else
-> > -		pwr_stat =3D val;
-> > =20
-> > -	ret =3D regmap_read(info->regmap, AXP20X_PWR_OP_MODE, &val);
-> > -	if (ret < 0)
-> > -		goto health_read_fail;
-> > -	else
-> > -		chrg_stat =3D val;
-> > -
-> > -	if (!(pwr_stat & PS_STAT_VBUS_VALID))
-> > +	if (!(info->input_status & PS_STAT_VBUS_VALID))
-> >  		health =3D POWER_SUPPLY_HEALTH_DEAD;
-> > -	else if (chrg_stat & CHRG_STAT_PMIC_OTP)
-> > +	else if (info->op_mode & CHRG_STAT_PMIC_OTP)
-> >  		health =3D POWER_SUPPLY_HEALTH_OVERHEAT;
-> > -	else if (chrg_stat & CHRG_STAT_BAT_SAFE_MODE)
-> > +	else if (info->op_mode & CHRG_STAT_BAT_SAFE_MODE)
-> >  		health =3D POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE;
-> >  	else
-> >  		health =3D POWER_SUPPLY_HEALTH_GOOD;
-> > @@ -362,30 +348,86 @@ static int axp288_charger_usb_set_property(struct=
- power_supply *psy,
-> >  	int ret =3D 0;
-> >  	int scaled_val;
-> > =20
-> > +	mutex_lock(&info->lock);
-> >  	switch (psp) {
-> >  	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
-> >  		scaled_val =3D min(val->intval, info->max_cc);
-> >  		scaled_val =3D DIV_ROUND_CLOSEST(scaled_val, 1000);
-> >  		ret =3D axp288_charger_set_cc(info, scaled_val);
-> > -		if (ret < 0)
-> > +		if (ret < 0) {
-> >  			dev_warn(&info->pdev->dev, "set charge current failed\n");
-> > +			goto out;
-> > +		}
-> >  		break;
-> >  	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
-> >  		scaled_val =3D min(val->intval, info->max_cv);
-> >  		scaled_val =3D DIV_ROUND_CLOSEST(scaled_val, 1000);
-> >  		ret =3D axp288_charger_set_cv(info, scaled_val);
-> > -		if (ret < 0)
-> > +		if (ret < 0) {
-> >  			dev_warn(&info->pdev->dev, "set charge voltage failed\n");
-> > +			goto out;
-> > +		}
-> >  		break;
-> >  	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-> >  		ret =3D axp288_charger_set_vbus_inlmt(info, val->intval);
-> > -		if (ret < 0)
-> > +		if (ret < 0) {
-> >  			dev_warn(&info->pdev->dev, "set input current limit failed\n");
-> > +			goto out;
-> > +		}
-> > +		info->valid =3D false;
-> >  		break;
-> >  	default:
-> >  		ret =3D -EINVAL;
-> >  	}
-> > =20
-> > +out:
-> > +	mutex_unlock(&info->lock);
-> > +	return ret;
-> > +}
-> > +
-> > +static int axp288_charger_reg_readb(struct axp288_chrg_info *info, int=
- reg, unsigned int *ret_val)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret =3D regmap_read(info->regmap, reg, ret_val);
-> > +	if (ret < 0) {
-> > +		dev_err(&info->pdev->dev, "Error %d on reading value from register 0=
-x%04x\n",
-> > +			ret,
-> > +			reg);
-> > +		return ret;
-> > +	}
-> > +	return 0;
-> > +}
-> > +
-> > +static int axp288_charger_usb_update_property(struct axp288_chrg_info =
-*info)
-> > +{
-> > +	int ret =3D 0;
-> > +
-> > +	if (info->valid && time_before(jiffies, info->last_updated + AXP288_R=
-EG_UPDATE_INTERVAL))
-> > +		return 0;
-> > +
-> > +	dev_dbg(&info->pdev->dev, "Charger updating register values...\n");
-> > +
-> > +	ret =3D iosf_mbi_block_punit_i2c_access();
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	ret =3D axp288_charger_reg_readb(info, AXP20X_PWR_INPUT_STATUS, &info=
-->input_status);
-> > +	if (ret < 0)
-> > +		goto out;
-> > +
-> > +	ret =3D axp288_charger_reg_readb(info, AXP20X_PWR_OP_MODE, &info->op_=
-mode);
-> > +	if (ret < 0)
-> > +		goto out;
-> > +
-> > +	ret =3D axp288_charger_reg_readb(info, AXP20X_CHRG_BAK_CTRL, &info->b=
-ackend_control);
-> > +	if (ret < 0)
-> > +		goto out;
-> > +
-> > +	info->last_updated =3D jiffies;
-> > +	info->valid =3D true;
-> > +out:
-> > +	iosf_mbi_unblock_punit_i2c_access();
-> >  	return ret;
-> >  }
-> > =20
-> > @@ -396,6 +438,11 @@ static int axp288_charger_usb_get_property(struct =
-power_supply *psy,
-> >  	struct axp288_chrg_info *info =3D power_supply_get_drvdata(psy);
-> >  	int ret;
-> > =20
-> > +	mutex_lock(&info->lock);
-> > +	ret =3D axp288_charger_usb_update_property(info);
-> > +	if (ret < 0)
-> > +		goto out;
-> > +
-> >  	switch (psp) {
-> >  	case POWER_SUPPLY_PROP_PRESENT:
-> >  		/* Check for OTG case first */
-> > @@ -403,10 +450,7 @@ static int axp288_charger_usb_get_property(struct =
-power_supply *psy,
-> >  			val->intval =3D 0;
-> >  			break;
-> >  		}
-> > -		ret =3D axp288_charger_is_present(info);
-> > -		if (ret < 0)
-> > -			return ret;
-> > -		val->intval =3D ret;
-> > +		val->intval =3D axp288_charger_is_present(info);
-> >  		break;
-> >  	case POWER_SUPPLY_PROP_ONLINE:
-> >  		/* Check for OTG case first */
-> > @@ -414,10 +458,7 @@ static int axp288_charger_usb_get_property(struct =
-power_supply *psy,
-> >  			val->intval =3D 0;
-> >  			break;
-> >  		}
-> > -		ret =3D axp288_charger_is_online(info);
-> > -		if (ret < 0)
-> > -			return ret;
-> > -		val->intval =3D ret;
-> > +		val->intval =3D axp288_charger_is_online(info);
-> >  		break;
-> >  	case POWER_SUPPLY_PROP_HEALTH:
-> >  		val->intval =3D axp288_get_charger_health(info);
-> > @@ -435,16 +476,15 @@ static int axp288_charger_usb_get_property(struct=
- power_supply *psy,
-> >  		val->intval =3D info->max_cv * 1000;
-> >  		break;
-> >  	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-> > -		ret =3D axp288_charger_get_vbus_inlmt(info);
-> > -		if (ret < 0)
-> > -			return ret;
-> > -		val->intval =3D ret;
-> > +		val->intval =3D axp288_charger_get_vbus_inlmt(info);
-> >  		break;
-> >  	default:
-> > -		return -EINVAL;
-> > +		ret =3D -EINVAL;
-> >  	}
-> > =20
-> > -	return 0;
-> > +out:
-> > +	mutex_unlock(&info->lock);
-> > +	return ret;
-> >  }
-> > =20
-> >  static int axp288_charger_property_is_writeable(struct power_supply *p=
-sy,
-> > @@ -540,7 +580,9 @@ static irqreturn_t axp288_charger_irq_thread_handle=
-r(int irq, void *dev)
-> >  		dev_warn(&info->pdev->dev, "Spurious Interrupt!!!\n");
-> >  		goto out;
-> >  	}
-> > -
-> > +	mutex_lock(&info->lock);
-> > +	info->valid =3D false;
-> > +	mutex_unlock(&info->lock);
-> >  	power_supply_changed(info->psy_usb);
-> >  out:
-> >  	return IRQ_HANDLED;
-> > @@ -613,6 +655,9 @@ static void axp288_charger_extcon_evt_worker(struct=
- work_struct *work)
-> >  	if (!(val & PS_STAT_VBUS_VALID)) {
-> >  		dev_dbg(&info->pdev->dev, "USB charger disconnected\n");
-> >  		axp288_charger_enable_charger(info, false);
-> > +		mutex_lock(&info->lock);
-> > +		info->valid =3D false;
-> > +		mutex_unlock(&info->lock);
-> >  		power_supply_changed(info->psy_usb);
-> >  		return;
-> >  	}
-> > @@ -644,6 +689,9 @@ static void axp288_charger_extcon_evt_worker(struct=
- work_struct *work)
-> >  		dev_err(&info->pdev->dev,
-> >  			"error setting current limit (%d)\n", ret);
-> > =20
-> > +	mutex_lock(&info->lock);
-> > +	info->valid =3D false;
-> > +	mutex_unlock(&info->lock);
-> >  	power_supply_changed(info->psy_usb);
-> >  }
-> > =20
-> >=20
->=20
-
---fabmqnmpymwuaqpn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFlpbwACgkQ2O7X88g7
-+po/xg//cePRV5LHD2dkc/QQgKqYZGFaS5hQAqVnO/5EWLkwMQz0YUJirXxE/kZl
-n1nO/GgpFFPqUQYm1zD6LayJhQSUrJoYBrt5yPtF+b5M0k4Dx4CexT+QwYlRZ+DV
-3mKBySH9sMrZqScYaJN3WzhO+Ws5da3Q/l1q2XlfAJOuis/1LTb0g5/ZSRrSzPhi
-3ziNzyBqKJTIwYuaMRFBDl0IPg3z3aAiYgTbFs4U/Qm6GgsydMt60hcQVuISo0On
-3R7aF6s1HnTvXunfoRXNyPon+rrnD8tB7WaZ441tInASgsos7/DXAsQFnN082ld/
-f0ibBGpr7qlFIwtH6ylbxBtbCm+VzRabiaw+DAsSfv0RZ5XzI/BXlWfV/7rBLdhZ
-elvHRE0qJmbtiXuirf296ieW3qZTC6ic8AHW3kChc/v6637Sv/6g/ohVxVGqRw0W
-rodldgHFEVKpBDaGCbHTqhCU6jV21MOFdD4b51kuMJ86CtZUUm8kVfLSr5tFKwS1
-W+MGdPjGRGo/XYtvXVKNkEp7t36iWMML7XhSOyih/P2dmjrJ8Ik5X0F821Xwxi7w
-6SPwMTf/IC1iOZO99XJpcNkmRAXWp55kpol0b1+/3iwAvJIK9BH2EdMzT62AQbns
-FA4et7nPB1+REAdYy/9WpZeNAz4IaMMVb7qvBM47Vvx9O+c3Gkk=
-=ObbB
------END PGP SIGNATURE-----
-
---fabmqnmpymwuaqpn--
