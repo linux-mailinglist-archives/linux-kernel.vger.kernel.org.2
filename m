@@ -2,68 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FE5429DA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F7C429DAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232966AbhJLGZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 02:25:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233085AbhJLGZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:25:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19C5560EDF;
-        Tue, 12 Oct 2021 06:23:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634019798;
-        bh=GdcaW52Qft7w3IzkVpFppX5OfAJA+jde2Qeea4ajf00=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MtXbXT9dgjwLHd0+J5Ez9y5dpn8ebX8/WKkKae6bIyFpfrI34iBFImb3DEfW4xDMw
-         4rjSku5U1W8QHnAIueMK8WbqbGLf4+DAaWt9NUikDrGbdHnG8lt6lGs5qzpcipYrlV
-         uYSz8fw0qFrimABHT22OQ2vJzUkSbLUQPockPoQWRGZwUY2NsUYgTfTsgyk2R5ZsNA
-         aA/MkoM/uHzxHUUdmtN2GHusHgn33LHf+VFrTmlfiN9JzeUvKu78FentKlRCb2IKs6
-         mKF/I7iLiEf5J/GZl+Ne8QD0rIJ6u9dYBetq3O9R46pgrgldowianuRjvJOS7Djtq/
-         iCb54/ImmnPSg==
-Date:   Tue, 12 Oct 2021 09:23:14 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, bharat@chelsio.com,
-        yishaih@nvidia.com, bmt@zurich.ibm.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA: Remove redundant 'flush_workqueue()' calls
-Message-ID: <YWUp0s6TD6R1cse8@unreal>
-References: <ca7bac6e6c9c5cc8d04eec3944edb13de0e381a3.1633874776.git.christophe.jaillet@wanadoo.fr>
+        id S233039AbhJLG1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 02:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231190AbhJLG1w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 02:27:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D949FC061570;
+        Mon, 11 Oct 2021 23:25:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=B1aPVJuxZP/j2NM7qjbxfmvVLLNT6DBv5a9xDWQIXWk=; b=j6rCaX0Gu1sym2HCXotded7fAx
+        2ysZOuz3e9z6KFbD18nX6XHMULIgkcrUi/+SyWJn+P9YvmDy22zbUl3EXXY48sN86YE71X+8F0zl/
+        qUoBotRMGo6ovSg9kmbYNt2TL4KMrh09nrxOY6fMG5sagfppcpG2Zr0tf6Xnyj/fD8tcm/PeF0p8w
+        QZDI9OJQsDaqla7RGF7c8A+PlovNIHPlv67TIEvYjQD/E8psGtPKSZg/9LC/G/jYnLindpimWxCiC
+        9U2O3qOjQdahPCjKA/txA7K4x2mBVOq3IyQ5V4MPCzbxVPS9dle6wPXasIfy8nkSfEa9wSP+lY61O
+        MS7CwnYQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1maBDH-006GOS-JR; Tue, 12 Oct 2021 06:25:03 +0000
+Date:   Tue, 12 Oct 2021 07:24:35 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jinyoung CHOI <j-young.choi@samsung.com>
+Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] block-map: added error handling for bio_copy_kern()
+Message-ID: <YWUqI/SkoJxYAeco@infradead.org>
+References: <CGME20210928063420epcms2p8f0cad25e1b820169755962ff4555d3ac@epcms2p1>
+ <20210928063919epcms2p12ef0dfc94e6756f7bf85945522720e8f@epcms2p1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ca7bac6e6c9c5cc8d04eec3944edb13de0e381a3.1633874776.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20210928063919epcms2p12ef0dfc94e6756f7bf85945522720e8f@epcms2p1>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 04:08:10PM +0200, Christophe JAILLET wrote:
-> 'destroy_workqueue()' already drains the queue before destroying it, so
-> there is no need to flush it explicitly.
-> 
-> Remove the redundant 'flush_workqueue()' calls.
-> 
-> This was generated with coccinelle:
-> 
-> @@
-> expression E;
-> @@
-> - 	flush_workqueue(E);
-> 	destroy_workqueue(E);
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/infiniband/core/sa_query.c        | 1 -
->  drivers/infiniband/hw/cxgb4/cm.c          | 1 -
->  drivers/infiniband/hw/cxgb4/device.c      | 1 -
->  drivers/infiniband/hw/mlx4/alias_GUID.c   | 4 +---
->  drivers/infiniband/sw/siw/siw_cm.c        | 4 +---
->  drivers/infiniband/ulp/ipoib/ipoib_main.c | 1 -
->  6 files changed, 2 insertions(+), 10 deletions(-)
-> 
+> +       int do_copy = 0;
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Please make this a bool.  Otherwise the patch looks good.
