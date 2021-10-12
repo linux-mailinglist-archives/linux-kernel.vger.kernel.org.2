@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B545A42A79A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CA042A79E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237270AbhJLOs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237186AbhJLOst (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:48:49 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20DA0C06174E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:46:48 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id t2so67746218wrb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:46:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=RbIVq/UEdcc303XkmHmHl8p3Hwos0Z4AAzrjzZdBALI=;
-        b=DU9GCSdjmbQDH4t2pDu84NBnFqarQaZSsu55xSBMjG9CuOeHu0S+r8gzFr7IuIvQnc
-         sz3qWc0KiqJMIf1/O5UHJF/ZQyT9FSyiPvDTjThe/lPMMoVWQP94D7a3eb/Ed6O/gOzC
-         qCrXwhx587iVKnxlmWxcYurRTQBfv8gZ/WC6qJX3EbBGc89eXNQfHo+VdRJSfGq2WyLT
-         3DwUq/WNRTHFdnECHj5IphjGV/RrwTkdZ8tXxbTUmOiRf7EwEQGO5NBS8Gy6TCK6o7VC
-         x/ND7fepNo8yjbelB1nDSrrx2+h3Zg5625L4ntpq//PcOSzpmeJ8Ym8ZKe+6SpxYGJzm
-         NSqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=RbIVq/UEdcc303XkmHmHl8p3Hwos0Z4AAzrjzZdBALI=;
-        b=zCTQhailhEcoBGN8ddJQzVjLXzyJdX3yGwqEitvVDY9qDdgRKDDkoYv0lP663CNxYb
-         OGb9P0XleUYGbJPq38L64N6R/GOSZcYYgM3wpoiFsPZRzsXmYsIKwLddIb80Vb2B9xN0
-         U+6zHGpUPyhEXR8txw6vgnplyEKtOowB69lIEu0BISLuYuOleyBnGeIN8qUDH91fOCFO
-         Q08hj8IJQsJVbS2H7ufalPk4HZQb0U0rxRVcoYeVD84umGQxqXngMaLrCNBRxDrfBgC9
-         O3WSnETu5Up4gn7zkC56bOMS+8vw3WFMSpr1+bgwXJdnIgXrRBXPNHoBmwwmgXFtW6kl
-         rCZw==
-X-Gm-Message-State: AOAM533wKuLIliRMmWnLzZ9n+47sw17WVNlRR9tMtJLTEbsUs/ltkM/y
-        eGx8kZb+0gdg7QJ259/egPBurg==
-X-Google-Smtp-Source: ABdhPJxncDBh31Ae/0zMNyUymugMmwtXjQ3mNw2WOuxjxw1IkmIyhIycZL34TQNU5ljpM7BBpBo+Cw==
-X-Received: by 2002:adf:bd8a:: with SMTP id l10mr32155651wrh.159.1634050006604;
-        Tue, 12 Oct 2021 07:46:46 -0700 (PDT)
-Received: from google.com ([95.148.6.175])
-        by smtp.gmail.com with ESMTPSA id d24sm2570330wmb.35.2021.10.12.07.46.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 07:46:46 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 15:46:43 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mfd: qcom-spmi-pmic: Document eight more PMICs to
- binding
-Message-ID: <YWWfkyoV0rF4C4PP@google.com>
-References: <20211005024812.2038249-1-bjorn.andersson@linaro.org>
+        id S237305AbhJLOti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:49:38 -0400
+Received: from mga04.intel.com ([192.55.52.120]:17640 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236637AbhJLOtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 10:49:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="225943036"
+X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
+   d="scan'208";a="225943036"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 07:47:30 -0700
+X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
+   d="scan'208";a="625975427"
+Received: from pmnk-mobl1.gar.corp.intel.com (HELO [10.249.254.42]) ([10.249.254.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 07:47:27 -0700
+Message-ID: <c49654d9-7174-f6db-e64b-bec3ecde7b5c@linux.intel.com>
+Date:   Tue, 12 Oct 2021 16:47:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH][next] drm/i915: Fix dereference of pointer backup before
+ it is null checked
+Content-Language: en-US
+To:     Colin King <colin.king@canonical.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthew Auld <matthew.auld@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211012132549.260089-1-colin.king@canonical.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+In-Reply-To: <20211012132549.260089-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211005024812.2038249-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Oct 2021, Bjorn Andersson wrote:
+Hi,
 
-> Update the binding with eitght more SPMI PMIC compatibles found in the
+On 10/12/21 15:25, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The assignment of pointer backup_bo dereferences pointer backup before
+> backup is null checked, this could lead to a null pointer dereference
+> issue. Fix this by only assigning backup_bo after backup has been null
+> checked.
+>
+> Addresses-Coverity: ("Dereference before null check")
+> Fixes: c56ce9565374 ("drm/i915 Implement LMEM backup and restore for suspend / resume")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Spell check.
+There's not really a pointer dereference here, just pointer arithmetics, 
+so the code should be safe (but admittedly fragile), so to keep Coverity 
+happy,
 
-> PMIC info list in the Qualcomm socinfo driver.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+
+
+
 > ---
->  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> index 5ef79bf3d035..1d2b5f067556 100644
-> --- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> +++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> @@ -29,6 +29,8 @@ Required properties:
->                     "qcom,pm8916",
->                     "qcom,pm8004",
->                     "qcom,pm8909",
-> +                   "qcom,pm8028",
-> +                   "qcom,pm8901",
->                     "qcom,pm8950",
->                     "qcom,pmi8950",
->                     "qcom,pm8998",
-> @@ -38,6 +40,12 @@ Required properties:
->                     "qcom,pmk8350",
->                     "qcom,pm7325",
->                     "qcom,pmr735a",
-> +                   "qcom,pm8150",
-> +                   "qcom,pm8150l",
-> +                   "qcom,pm8150b",
-> +                   "qcom,pmk8002",
-> +                   "qcom,pm8150c",
-> +                   "qcom,smb2351",
->                     or generalized "qcom,spmi-pmic".
->  - reg:             Specifies the SPMI USID slave address for this device.
->                     For more information see:
-
-Is there any reason why these can't be in lexicographical order?
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>   drivers/gpu/drm/i915/gem/i915_gem_ttm_pm.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_ttm_pm.c b/drivers/gpu/drm/i915/gem/i915_gem_ttm_pm.c
+> index 3b6d14b5c604..4ec6c557083a 100644
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_ttm_pm.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_ttm_pm.c
+> @@ -149,7 +149,7 @@ static int i915_ttm_restore(struct i915_gem_apply_to_region *apply,
+>   	struct i915_gem_ttm_pm_apply *pm_apply =
+>   		container_of(apply, typeof(*pm_apply), base);
+>   	struct drm_i915_gem_object *backup = obj->ttm.backup;
+> -	struct ttm_buffer_object *backup_bo = i915_gem_to_ttm(backup);
+> +	struct ttm_buffer_object *backup_bo;
+>   	struct ttm_operation_ctx ctx = {};
+>   	int err;
+>   
+> @@ -163,6 +163,8 @@ static int i915_ttm_restore(struct i915_gem_apply_to_region *apply,
+>   	if (err)
+>   		return err;
+>   
+> +	backup_bo = i915_gem_to_ttm(backup);
+> +
+>   	/* Content may have been swapped. */
+>   	err = ttm_tt_populate(backup_bo->bdev, backup_bo->ttm, &ctx);
+>   	if (!err) {
