@@ -2,267 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E755B429CBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 06:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878B2429CC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 06:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbhJLEv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 00:51:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:45160 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229871AbhJLEv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 00:51:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3E8B101E;
-        Mon, 11 Oct 2021 21:49:55 -0700 (PDT)
-Received: from [10.163.74.251] (unknown [10.163.74.251])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9FEBB3F70D;
-        Mon, 11 Oct 2021 21:49:53 -0700 (PDT)
-Subject: Re: [PATCH V2] arm64/mm: Fix idmap on [16K|36VA|48PA]
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org
-References: <1632807225-20189-1-git-send-email-anshuman.khandual@arm.com>
- <20211004104947.GA4430@C02TD0UTHF1T.local>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <fe138d79-56d3-14a4-fbb7-586d624e89df@arm.com>
-Date:   Tue, 12 Oct 2021 10:19:49 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232383AbhJLEyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 00:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhJLEyo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 00:54:44 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2809CC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 21:52:43 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id j21so64866985lfe.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 21:52:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eguaqqaEvocg16XhRYlmwRB3LITVZC7ytOcijWENE0U=;
+        b=EJEHDw8MDWlcDjViuvBxD2G3aXkTevpz/dtCabTJWdXzwSG5X3UXVXtjh4GDMxLDG0
+         ZbGEZ1bd0nV637XJzB1XopqQBrOs/j7VbRt8FCUTtjMQ96BIvM8K0aHLu/T9y2WlrObe
+         M/B3z6zPd20ff/B2haFkyB4w54BiUVh56dyw7wf9hrzw1CLEJidS5QqK4IftUzOdb31a
+         cBfatIbZRFjTcJ4Jj8iLbnShTN5IO+K3cb342cwQ1DLr2hf9aCUlbXa6Jvq8X/KK953Z
+         f8WlDD0/A4f21U3kINeu5zbYlAj8Eu0uhtA6JTHed/GzkvHvkpBgTaIYkPiIeiMhmger
+         3Odw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eguaqqaEvocg16XhRYlmwRB3LITVZC7ytOcijWENE0U=;
+        b=XIVYSqfOagtnOZ/5Tb7HoZtjdcaHR8cl79A2YYjSU4CDobc2oeGx8UflWRiAc++nCK
+         nber8rADCSSwKW074YtNFBTbTVXY1OTDfTA+xDzguIbW2eQIxtfE4jJuLOqPvE/YciQ6
+         Rz9cYU45dsQ3RwLVnQ/O5y1BKHCiebmS7+HQWeO9TZpxcm0zMxn/jDoaYqfV614knwTK
+         WUsxM+PyxhJYsbkSItOj96GMDBEHRXToE32tT/tsKqmDMR1Lgyz9F8L/ZN3O2uViH1DM
+         xHnhxH0Ya0EB2zFocnUbPOYH2cp+YSUasIujIPOqJZ12Az4uV4UDc4xYbz7grsuqRTFR
+         RsQg==
+X-Gm-Message-State: AOAM530yRus1EAPyubluJ2OdCLqBgjutKIYall3DbuBTDoxbClc5k5/F
+        aAAgNQr26nhnFOx2g9C+f6IgDEN+gTZGwCp8NZ5XRw==
+X-Google-Smtp-Source: ABdhPJxtUg6ArzDf8obZOLIcqFThlsjDLBOVq82DDyM5iTD1J4eoPBzh0GUwczmY73KQLKkHIE2YxZiFsXZxoQmYGNQ=
+X-Received: by 2002:a05:6512:3f86:: with SMTP id x6mr31750475lfa.389.1634014361420;
+ Mon, 11 Oct 2021 21:52:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211004104947.GA4430@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211008080305.13401-1-yanghui.def@bytedance.com>
+ <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com> <c70a418d-4748-6876-ac8a-c9d1b7e94e78@gmail.com>
+In-Reply-To: <c70a418d-4748-6876-ac8a-c9d1b7e94e78@gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 11 Oct 2021 21:52:29 -0700
+Message-ID: <CALAqxLVgQ6QEThWaN65nOW9F_XCh7885n9RigAQDU+OgDntS5g@mail.gmail.com>
+Subject: Re: [PATCH] Clocksource: Avoid misjudgment of clocksource
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     yanghui <yanghui.def@bytedance.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 9, 2021 at 7:04 AM brookxu <brookxu.cn@gmail.com> wrote:
+>
+> hello
+>
+> John Stultz wrote on 2021/10/9 7:45:
+> > On Fri, Oct 8, 2021 at 1:03 AM yanghui <yanghui.def@bytedance.com> wrote:
+> >>
+> >> clocksource_watchdog is executed every WATCHDOG_INTERVAL(0.5s) by
+> >> Timer. But sometimes system is very busy and the Timer cannot be
+> >> executed in 0.5sec. For example,if clocksource_watchdog be executed
+> >> after 10sec, the calculated value of abs(cs_nsec - wd_nsec) will
+> >> be enlarged. Then the current clocksource will be misjudged as
+> >> unstable. So we add conditions to prevent the clocksource from
+> >> being misjudged.
+> >>
+> >> Signed-off-by: yanghui <yanghui.def@bytedance.com>
+> >> ---
+> >>  kernel/time/clocksource.c | 6 +++++-
+> >>  1 file changed, 5 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> >> index b8a14d2fb5ba..d535beadcbc8 100644
+> >> --- a/kernel/time/clocksource.c
+> >> +++ b/kernel/time/clocksource.c
+> >> @@ -136,8 +136,10 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
+> >>
+> >>  /*
+> >>   * Interval: 0.5sec.
+> >> + * MaxInterval: 1s.
+> >>   */
+> >>  #define WATCHDOG_INTERVAL (HZ >> 1)
+> >> +#define WATCHDOG_MAX_INTERVAL_NS (NSEC_PER_SEC)
+> >>
+> >>  static void clocksource_watchdog_work(struct work_struct *work)
+> >>  {
+> >> @@ -404,7 +406,9 @@ static void clocksource_watchdog(struct timer_list *unused)
+> >>
+> >>                 /* Check the deviation from the watchdog clocksource. */
+> >>                 md = cs->uncertainty_margin + watchdog->uncertainty_margin;
+> >> -               if (abs(cs_nsec - wd_nsec) > md) {
+> >> +               if ((abs(cs_nsec - wd_nsec) > md) &&
+> >> +                       cs_nsec < WATCHDOG_MAX_INTERVAL_NS &&
+> >
+> > Sorry, it's been awhile since I looked at this code, but why are you
+> > bounding the clocksource delta here?
+> > It seems like if the clocksource being watched was very wrong (with a
+> > delta larger than the MAX_INTERVAL_NS), we'd want to throw it out.
+> >
+> >> +                       wd_nsec < WATCHDOG_MAX_INTERVAL_NS) {
+> >
+> > Bounding the watchdog interval on the check does seem reasonable.
+> > Though one may want to keep track that if we are seeing too many of
+> > these delayed watchdog checks we provide some feedback via dmesg.
+>
+> For some fast timeout timers, such as acpi-timer, checking wd_nsec should not
+> make much sense, because when wacthdog is called, the timer may overflow many
+> times.
 
+Indeed. But in that case we can't tell which way is up. This is what I
+was fretting about when I said:
+> So I do worry these watchdog robustness fixes are papering over a
+> problem, pushing expectations closer to the edge of how far the system
+> should tolerate bad behavior. Because at some point we'll fall off. :)
 
-On 10/4/21 4:19 PM, Mark Rutland wrote:
-> Hi Anshuman,
-> 
-> On Tue, Sep 28, 2021 at 11:03:45AM +0530, Anshuman Khandual wrote:
->> When creating the idmap, the kernel may add one extra level to idmap memory
->> outside the VA range. But for [16K|36VA|48PA], we need two levels to reach
->> 48 bits. If the bootloader places the kernel in memory above (1 << 46), the
->> kernel will fail to enable the MMU. Although we are not aware of a platform
->> where this happens, it is worth to accommodate such scenarios and prevent a
->> possible kernel crash.
-> 
-> I think it's worth noting here that ARM64_VA_BITS_36 depends on EXPERT,
-> so very few people are likely to be using this configuration.
-> 
->> Lets fix this problem by carefully analyzing existing VA_BITS with respect
->> to maximum possible mapping with the existing PGDIR level i.e (PGDIR_SHIFT
->> + PAGE_SHIFT - 3) and then evaluating how many extra page table levels are
->> required to accommodate the reduced idmap_t0sz to map __idmap_text_end.
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: James Morse <james.morse@arm.com>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Fixes: 215399392fe4 ("arm64: 36 bit VA")
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->> This applies on v5.15-rc3.
->>
->> This is a different approach as compared to V1 which still applies on the
->> latest mainline. Besides this enables all upcoming FEAT_LPA2 combinations
->> as well. Please do suggest which approach would be preferred.
->> - Anshuman
->>
->>  V1:  https://lore.kernel.org/all/1627879359-30303-1-git-send-email-anshuman.khandual@arm.com/
->> RFC: https://lore.kernel.org/lkml/1627019894-14819-1-git-send-email-anshuman.khandual@arm.com/
-> 
-> If we need something to backport, I'm not opposed to taking one of these
-> patches (and as v1 is simpler, I'd prefer that), but I think either
-> approach is further bodging around the `map_memory` macro not being a
-> great fit for the idmap creation, and it would be better to rework the
-> structure of the pagetable creation code to do the right thing from the
-> outset.
+If the timer is delayed long enough for the watchdog to wrap, we're
+way out of tolerable behavior. There's not much we can do because we
+can't even tell what happened.
 
-Agreed. The idmap page table creation does not have much similarity with
-that of init_pg_dir. So probably a simpler idmap table creation would be
-better.
+But in the case where the watchdog has not wrapped, I don't see a
+major issue with trying to be a bit more robust in the face of just
+slightly delayed timers.
+(And yes, we can't really distinguish between slightly delayed and
+watchdog-wrap-interval + slight delay, but in either case we can
+probably skip disqualifying the clocksource as we know something seems
+off)
 
-> 
-> Catalin, Will, do you have any preference as to having a backportable
-> fix for this?
-
-Although I would have preferred to have at least the V1 merged and back
-ported, but Will has already answered that question on the thread.
-
-> 
-> Ignoring backports, I'd prefer if we could refactor things such that we
-> decouple the `idmap_pg_dir` creation from the `init_pg_dir` creation,
-
-Decoupling both page table creation makes sense.
-
-> and create the idmap in terms of the architectural levels rather than
-> pgd/p4d/pud/pmd/pte, so that we can consistently create the idmap with
-> at least 48 bits of VA.
-
-The rationale for creating the idmap table in terms of architectural
-levels, rather than kernel pgd/p4d/pud/pmd/pte is to avoid handling
-page table folding stuff and also to make it simpler ?
-
-> 
-> Pseudo-code wise, I'd like something that looks like:
-> 
-> 	create_idmap(...)
-> 	{
-> 		idmap_va_bits = 48;
-> 		idmap_t0size = TCR_T0SZ(48);
-> 
-> 		if (need_52_bit_va(__idmap_text_start)) {
-
-s/__idmap_text_start/__idmap_text_end/ instead ?
-
-> 			if (!supports_52bit_va()) {
-> 				some_early_spin_loop();
-
-With a new CPU_STUCK_REASON_ code ?
-
-> 			}
-> 			idmap_va_bits = 52;
-> 			idmap_t0size = TCR_T0SZ(52);
-> 		}
-> 	
-> 		if (need_table_level(idmap_va_bits, -1))
-> 			create_table_level(-1, ...);
-> 
-> 		if (need_table_level(idmap_va_bits, 0))
-> 			create_table_level(0, ...);
-> 
-> 		if (need_table_level(idmap_va_bits, 1))
-> 			create_table_level(1, ...);
-> 
-> 		if (need_table_level(idmap_va_bits, 2))
-> 			create_table_level(2, ...);
-> 
-> 		create_table_level(3, ...);
-> 	}
-> 
-> ... which I think would be much easier to reason about consistently.
-> 
-> How does that sound to you?
-
-This approach will be simpler and as you mentioned, easier to reason about.
-
-> 
-> I've pushed some preparatory rework out to my arm64/pgtable/idmap
-> branch, splitting out a __create_idmap_tables() function (and ensuring
-> that idmap_t0sz doesn't get silently overridden elsewhere):
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/pgtable/idmap
->   git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git arm64/pgtable/idmap
-> 
-> ... but I haven't had the chance to do the actual rework of the idmap
-> creation code.
-> 
-> I can send that as a series if that's helpful.
-
-I could also just pick those changes from the above branch and complete
-the rework.
-
-> 
-> Thanks,
-> Mark.
-> 
->>  arch/arm64/include/asm/assembler.h |  9 ++++++++
->>  arch/arm64/kernel/head.S           | 46 +++++++++++++++++++++++---------------
->>  2 files changed, 37 insertions(+), 18 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
->> index bfa5840..e5b5d3a 100644
->> --- a/arch/arm64/include/asm/assembler.h
->> +++ b/arch/arm64/include/asm/assembler.h
->> @@ -25,6 +25,15 @@
->>  #include <asm/ptrace.h>
->>  #include <asm/thread_info.h>
->>  
->> +	.macro shift_to_ptrs, ptrs, shift, tmp, tmp1
->> +	ldr_l   \tmp1, idmap_t0sz
->> +	add     \tmp1, \tmp1, \shift
->> +	mov     \tmp, #64
->> +	sub     \tmp, \tmp, \tmp1
->> +	mov     \ptrs, #1
->> +	lsr     \ptrs, \ptrs, \tmp
->> +	.endm
->> +
->>  	/*
->>  	 * Provide a wxN alias for each wN register so what we can paste a xN
->>  	 * reference after a 'w' to obtain the 32-bit version.
->> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
->> index 1796245..b93d50d 100644
->> --- a/arch/arm64/kernel/head.S
->> +++ b/arch/arm64/kernel/head.S
->> @@ -328,30 +328,40 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
->>  	dmb	sy
->>  	dc	ivac, x6		// Invalidate potentially stale cache line
->>  
->> -#if (VA_BITS < 48)
->>  #define EXTRA_SHIFT	(PGDIR_SHIFT + PAGE_SHIFT - 3)
->> -#define EXTRA_PTRS	(1 << (PHYS_MASK_SHIFT - EXTRA_SHIFT))
->> -
->> -	/*
->> -	 * If VA_BITS < 48, we have to configure an additional table level.
->> -	 * First, we have to verify our assumption that the current value of
->> -	 * VA_BITS was chosen such that all translation levels are fully
->> -	 * utilised, and that lowering T0SZ will always result in an additional
->> -	 * translation level to be configured.
->> -	 */
->> -#if VA_BITS != EXTRA_SHIFT
->> +#define EXTRA_SHIFT_1	(EXTRA_SHIFT + PAGE_SHIFT - 3)
->> +#if (VA_BITS > EXTRA_SHIFT)
->>  #error "Mismatch between VA_BITS and page size/number of translation levels"
->>  #endif
->>  
->> -	mov	x4, EXTRA_PTRS
->> +#if (VA_BITS == EXTRA_SHIFT)
->> +	mov	x6, #TCR_T0SZ(VA_BITS_MIN)
->> +	sub	x6, x6, x5
->> +	cmp	x6, #(PAGE_SHIFT - 3)
->> +	b.gt	8f
->> +
->> +	shift_to_ptrs x4, EXTRA_SHIFT, x5, x6
->>  	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
->> -#else
->> -	/*
->> -	 * If VA_BITS == 48, we don't have to configure an additional
->> -	 * translation level, but the top-level table has more entries.
->> -	 */
->> -	mov	x4, #1 << (PHYS_MASK_SHIFT - PGDIR_SHIFT)
->> +	b	1f
->> +8:
->> +	shift_to_ptrs x4, EXTRA_SHIFT_1, x5, x6
->> +	create_table_entry x0, x3, EXTRA_SHIFT_1, x4, x5, x6
->> +
->> +	mov     x4, PTRS_PER_PTE
->> +	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
->> +#elif (VA_BITS < EXTRA_SHIFT)
->> +	mov	x6, #64
->> +	sub	x6, x6, x5
->> +	cmp	x6, EXTRA_SHIFT
->> +	b.eq	1f
->> +	b.gt	9f
->> +
->> +	shift_to_ptrs x4, PGDIR_SHIFT, x5, x6
->>  	str_l	x4, idmap_ptrs_per_pgd, x5
->> +	b	1f
->> +9:
->> +	shift_to_ptrs x4, EXTRA_SHIFT, x5, x6
->> +	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
->>  #endif
->>  1:
->>  	ldr_l	x4, idmap_ptrs_per_pgd
->> -- 
->> 2.7.4
->>
+thanks
+-john
