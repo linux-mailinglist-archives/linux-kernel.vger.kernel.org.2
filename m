@@ -2,120 +2,434 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E08F42A7EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A85F42A7F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234711AbhJLPKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:10:39 -0400
-Received: from mail-ua1-f52.google.com ([209.85.222.52]:34553 "EHLO
-        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhJLPKh (ORCPT
+        id S235015AbhJLPOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:14:08 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54354 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhJLPOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:10:37 -0400
-Received: by mail-ua1-f52.google.com with SMTP id h4so19148134uaw.1;
-        Tue, 12 Oct 2021 08:08:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/XLXN3xuVJOPHw5HRsxgIv5QkrLOCu749y9xpxhKV0I=;
-        b=vhwsS8t3myfqtctpmEr/kYoGwR9fXtd4/EeW662Zm8QuRRx/KpifzFbmMPIU9Dqoga
-         8GJ4W6uE+cx3EGruvWA3gT1pII1ZJOiOmtFpaqBtZR/nLpCU5VMVzrQQkt088m1fsCzA
-         c2mNoPC6+vufjPZp1CkA6MFAPNKjDcPmCxVNYxg/E2/mqaYDysPI/d3BOXI/a6w4UFsp
-         oA4YJGHmTqSWt5TAPZ/c7Qx7gmgG33J8UOEXBXfackVxyO13Ihg/dMCVYmNBeVLsOwop
-         E8C0o1wXNYQC3QXNDDfXvOR/DEPpclMSgLICHzc2A/20BIt8I/HdmGwyjZ2Hxdr9ivKu
-         lzrQ==
-X-Gm-Message-State: AOAM5338ryK7zpD3fCwBT3pYf0o0Wi9V9z/2p2oksBFw1wON4ewCug/Q
-        HW3xVZI5UCGgusLznFBX5eWeNaSIGhxJOG7h0yw=
-X-Google-Smtp-Source: ABdhPJx2RXQoSzE3pVGjeyVKDiENolt+HF3oWRJaUKqTdpAr/yDbBfb7YrzLDlKtQtHEEvyxafjPhHIcAcktEVDfYpE=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr31833215vsl.9.1634051314899;
- Tue, 12 Oct 2021 08:08:34 -0700 (PDT)
+        Tue, 12 Oct 2021 11:14:06 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 3538E1F43B75
+Received: by earth.universe (Postfix, from userid 1000)
+        id 0F3C73C0CA8; Tue, 12 Oct 2021 17:12:02 +0200 (CEST)
+Date:   Tue, 12 Oct 2021 17:12:02 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Kate Hsuan <hpa@redhat.com>, hen-Yu Tsai <wens@csie.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] power: supply: axp288-charger: Optimize register reading
+ method
+Message-ID: <20211012151202.ezxfnmplg74wvvqr@earth.universe>
+References: <20211012054545.27314-1-hpa@redhat.com>
+ <18a8262e-ee7c-767d-68c1-e18b9043a781@redhat.com>
 MIME-Version: 1.0
-References: <20210914143835.511051-1-geert@linux-m68k.org> <20210914143835.511051-20-geert@linux-m68k.org>
- <4602a8e681db4d0ebc43e4dafee8c28e@protonic.nl> <CAMuHMdVOa8DAGJQpJ8AotARxfh9PvpskJJa6k48jE92-P+GLRA@mail.gmail.com>
- <bc1632943ecbb7e244b87c285501f706@protonic.nl>
-In-Reply-To: <bc1632943ecbb7e244b87c285501f706@protonic.nl>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 12 Oct 2021 17:08:23 +0200
-Message-ID: <CAMuHMdUrSpvVKPmi3EXvyKnDrq48Z5jvRY-a1kEoGSt2kS8J_Q@mail.gmail.com>
-Subject: Re: [PATCH v6 19/19] auxdisplay: ht16k33: Add LED support
-To:     Robin van der Gracht <robin@protonic.nl>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fabmqnmpymwuaqpn"
+Content-Disposition: inline
+In-Reply-To: <18a8262e-ee7c-767d-68c1-e18b9043a781@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hoi Robin,
 
-On Mon, Oct 4, 2021 at 10:26 AM Robin van der Gracht <robin@protonic.nl> wrote:
-> On 2021-10-01 17:51, Geert Uytterhoeven wrote:
-> > On Thu, Sep 30, 2021 at 12:57 PM Robin van der Gracht <robin@protonic.nl>
-> > wrote:
-> >> On 2021-09-14 16:38, Geert Uytterhoeven wrote:
-> >> > Instantiate a single LED based on the "led" subnode in DT.
-> >> > This allows the user to control display brightness and blinking (backed
-> >> > by hardware support) through the LED class API and triggers, and exposes
-> >> > the display color.  The LED will be named
-> >> > "auxdisplay:<color>:<function>".
-> >> >
-> >> > When running in dot-matrix mode and if no "led" subnode is found, the
-> >> > driver falls back to the traditional backlight mode, to preserve
-> >> > backwards compatibility.
-> >> >
-> >> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+--fabmqnmpymwuaqpn
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> >> > +
-> >> > +     err = devm_led_classdev_register_ext(dev, led, &init_data);
-> >> > +     if (err)
-> >> > +             dev_err(dev, "Failed to register LED\n");
-> >>
-> >> You might want to call ht16k33_brightness_set(priv, brightness) here to get
-> >> a
-> >> know value into the display setup register (0x80).
-> >>
-> >> Right now if I enable hardware blinking and (soft)reboot my board it keeps
-> >> on
-> >> blinking even after a re-probe.
-> >
-> > I don't have that issue.
-> > Aha, ht16k33_seg_probe() calls ht16k33_brightness_set(), but
-> > ht16k33_fbdev_probe() doesn't.  The latter should do that, too,
-> > when not using backwards compatibility mode.
->
-> Ack. I have hardware which uses the ht16k33 in dot matrix mode and I tested
-> both the backlight and led setup. I ran into this with the fbdev + led setup.
->
-> I noticed ht16k33_bl_update_status() is called in ht16k33_fbdev_probe()
-> before the fbdev device is registered. Which is fine right now, but in theory
-> the fbdev blank state can influence the backlight setting (nitpick since
-> the fbdev device is unblanked by default).
->
-> The point: Maybe ht16k33_brightness_set() (or ht16k33_bl_update_status() for
-> backlight device) should be called in one central place (i.e at the end of
-> the
-> main probe function).
+Hi,
 
-That would mean the main function need to know more about which mode
-is being used, so I think it's better to leave it to the individual display
-sub-drivers.
+On Tue, Oct 12, 2021 at 09:52:52AM +0200, Hans de Goede wrote:
+> On 10/12/21 7:45 AM, Kate Hsuan wrote:
+> > The original implementation access the charger the same register value
+> > several=A0times to get the charger status, such as online, enabled, and
+> > bus limits. It takes a long time and bandwidth for every "status get"
+> > operation.=A0
+> >=20
+> > To reduce the access of the register and save bandwidth, this commit
+> > integrated every read operation into only one "register value get"=A0
+> > operation and cache them in the variables. Once the "get properties"
+> > is requested from the user space, the cached information can be returned
+> > immediately.
+> >=20
+> > I2C access between Linux kernel and P-Unit is improved by explicitly ta=
+king
+> > semaphore once for the entire set of register accesses in the new
+> > axp288_charger_usb_update_property() function. The I2C-Bus to the XPower
+> > AXP288 is shared between the Linux kernel and SoCs P-Unit. The P-Unit
+> > has a semaphore which the kernel must "lock" before it may use the bus.
+> > If not explicitly taken by the I2C-Driver, then this semaphore is
+> > automatically taken by the I2C-bus-driver for each I2C-transfer. In
+> > other words, the semaphore will be locked and released several times for
+> > entire set of register accesses.
+> >=20
+> > Signed-off-by: Kate Hsuan <hpa@redhat.com>
+>=20
+> Thanks, patch looks good to me:
+>=20
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>=20
+> I've also given this a test run on a device with an AXP288 PMIC:
+>=20
+> Tested-by: Hans de Goede <hdegoede@redhat.com>
 
-Gr{oetje,eeting}s,
+Thanks, queued.
 
-                        Geert
+-- Sebastian
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>=20
+> Regards,
+>=20
+> Hans
+>=20
+> > ---
+> >  drivers/power/supply/axp288_charger.c | 150 +++++++++++++++++---------
+> >  1 file changed, 99 insertions(+), 51 deletions(-)
+> >=20
+> > diff --git a/drivers/power/supply/axp288_charger.c b/drivers/power/supp=
+ly/axp288_charger.c
+> > index b9553be9bed5..fd4983c98fd9 100644
+> > --- a/drivers/power/supply/axp288_charger.c
+> > +++ b/drivers/power/supply/axp288_charger.c
+> > @@ -22,6 +22,7 @@
+> >  #include <linux/mfd/axp20x.h>
+> >  #include <linux/extcon.h>
+> >  #include <linux/dmi.h>
+> > +#include <asm/iosf_mbi.h>
+> > =20
+> >  #define PS_STAT_VBUS_TRIGGER		BIT(0)
+> >  #define PS_STAT_BAT_CHRG_DIR		BIT(2)
+> > @@ -95,6 +96,8 @@
+> >  #define CV_4200MV			4200	/* 4200mV */
+> >  #define CV_4350MV			4350	/* 4350mV */
+> > =20
+> > +#define AXP288_REG_UPDATE_INTERVAL	(60 * HZ)
+> > +
+> >  #define AXP288_EXTCON_DEV_NAME		"axp288_extcon"
+> >  #define USB_HOST_EXTCON_HID		"INT3496"
+> >  #define USB_HOST_EXTCON_NAME		"INT3496:00"
+> > @@ -118,6 +121,7 @@ struct axp288_chrg_info {
+> >  	struct regmap_irq_chip_data *regmap_irqc;
+> >  	int irq[CHRG_INTR_END];
+> >  	struct power_supply *psy_usb;
+> > +	struct mutex lock;
+> > =20
+> >  	/* OTG/Host mode */
+> >  	struct {
+> > @@ -138,6 +142,12 @@ struct axp288_chrg_info {
+> >  	int cv;
+> >  	int max_cc;
+> >  	int max_cv;
+> > +
+> > +	unsigned long last_updated;
+> > +	unsigned int input_status;
+> > +	unsigned int op_mode;
+> > +	unsigned int backend_control;
+> > +	bool valid;
+> >  };
+> > =20
+> >  static inline int axp288_charger_set_cc(struct axp288_chrg_info *info,=
+ int cc)
+> > @@ -197,11 +207,8 @@ static inline int axp288_charger_set_cv(struct axp=
+288_chrg_info *info, int cv)
+> >  static int axp288_charger_get_vbus_inlmt(struct axp288_chrg_info *info)
+> >  {
+> >  	unsigned int val;
+> > -	int ret;
+> > =20
+> > -	ret =3D regmap_read(info->regmap, AXP20X_CHRG_BAK_CTRL, &val);
+> > -	if (ret < 0)
+> > -		return ret;
+> > +	val =3D info->backend_control;
+> > =20
+> >  	val >>=3D CHRG_VBUS_ILIM_BIT_POS;
+> >  	switch (val) {
+> > @@ -297,55 +304,34 @@ static int axp288_charger_enable_charger(struct a=
+xp288_chrg_info *info,
+> > =20
+> >  static int axp288_charger_is_present(struct axp288_chrg_info *info)
+> >  {
+> > -	int ret, present =3D 0;
+> > -	unsigned int val;
+> > -
+> > -	ret =3D regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
+> > -	if (ret < 0)
+> > -		return ret;
+> > +	int present =3D 0;
+> > =20
+> > -	if (val & PS_STAT_VBUS_PRESENT)
+> > +	if (info->input_status & PS_STAT_VBUS_PRESENT)
+> >  		present =3D 1;
+> >  	return present;
+> >  }
+> > =20
+> >  static int axp288_charger_is_online(struct axp288_chrg_info *info)
+> >  {
+> > -	int ret, online =3D 0;
+> > -	unsigned int val;
+> > -
+> > -	ret =3D regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
+> > -	if (ret < 0)
+> > -		return ret;
+> > +	int online =3D 0;
+> > =20
+> > -	if (val & PS_STAT_VBUS_VALID)
+> > +	if (info->input_status & PS_STAT_VBUS_VALID)
+> >  		online =3D 1;
+> >  	return online;
+> >  }
+> > =20
+> >  static int axp288_get_charger_health(struct axp288_chrg_info *info)
+> >  {
+> > -	int ret, pwr_stat, chrg_stat;
+> >  	int health =3D POWER_SUPPLY_HEALTH_UNKNOWN;
+> > -	unsigned int val;
+> > =20
+> > -	ret =3D regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
+> > -	if ((ret < 0) || !(val & PS_STAT_VBUS_PRESENT))
+> > +	if (!(info->input_status & PS_STAT_VBUS_PRESENT))
+> >  		goto health_read_fail;
+> > -	else
+> > -		pwr_stat =3D val;
+> > =20
+> > -	ret =3D regmap_read(info->regmap, AXP20X_PWR_OP_MODE, &val);
+> > -	if (ret < 0)
+> > -		goto health_read_fail;
+> > -	else
+> > -		chrg_stat =3D val;
+> > -
+> > -	if (!(pwr_stat & PS_STAT_VBUS_VALID))
+> > +	if (!(info->input_status & PS_STAT_VBUS_VALID))
+> >  		health =3D POWER_SUPPLY_HEALTH_DEAD;
+> > -	else if (chrg_stat & CHRG_STAT_PMIC_OTP)
+> > +	else if (info->op_mode & CHRG_STAT_PMIC_OTP)
+> >  		health =3D POWER_SUPPLY_HEALTH_OVERHEAT;
+> > -	else if (chrg_stat & CHRG_STAT_BAT_SAFE_MODE)
+> > +	else if (info->op_mode & CHRG_STAT_BAT_SAFE_MODE)
+> >  		health =3D POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE;
+> >  	else
+> >  		health =3D POWER_SUPPLY_HEALTH_GOOD;
+> > @@ -362,30 +348,86 @@ static int axp288_charger_usb_set_property(struct=
+ power_supply *psy,
+> >  	int ret =3D 0;
+> >  	int scaled_val;
+> > =20
+> > +	mutex_lock(&info->lock);
+> >  	switch (psp) {
+> >  	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
+> >  		scaled_val =3D min(val->intval, info->max_cc);
+> >  		scaled_val =3D DIV_ROUND_CLOSEST(scaled_val, 1000);
+> >  		ret =3D axp288_charger_set_cc(info, scaled_val);
+> > -		if (ret < 0)
+> > +		if (ret < 0) {
+> >  			dev_warn(&info->pdev->dev, "set charge current failed\n");
+> > +			goto out;
+> > +		}
+> >  		break;
+> >  	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
+> >  		scaled_val =3D min(val->intval, info->max_cv);
+> >  		scaled_val =3D DIV_ROUND_CLOSEST(scaled_val, 1000);
+> >  		ret =3D axp288_charger_set_cv(info, scaled_val);
+> > -		if (ret < 0)
+> > +		if (ret < 0) {
+> >  			dev_warn(&info->pdev->dev, "set charge voltage failed\n");
+> > +			goto out;
+> > +		}
+> >  		break;
+> >  	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
+> >  		ret =3D axp288_charger_set_vbus_inlmt(info, val->intval);
+> > -		if (ret < 0)
+> > +		if (ret < 0) {
+> >  			dev_warn(&info->pdev->dev, "set input current limit failed\n");
+> > +			goto out;
+> > +		}
+> > +		info->valid =3D false;
+> >  		break;
+> >  	default:
+> >  		ret =3D -EINVAL;
+> >  	}
+> > =20
+> > +out:
+> > +	mutex_unlock(&info->lock);
+> > +	return ret;
+> > +}
+> > +
+> > +static int axp288_charger_reg_readb(struct axp288_chrg_info *info, int=
+ reg, unsigned int *ret_val)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret =3D regmap_read(info->regmap, reg, ret_val);
+> > +	if (ret < 0) {
+> > +		dev_err(&info->pdev->dev, "Error %d on reading value from register 0=
+x%04x\n",
+> > +			ret,
+> > +			reg);
+> > +		return ret;
+> > +	}
+> > +	return 0;
+> > +}
+> > +
+> > +static int axp288_charger_usb_update_property(struct axp288_chrg_info =
+*info)
+> > +{
+> > +	int ret =3D 0;
+> > +
+> > +	if (info->valid && time_before(jiffies, info->last_updated + AXP288_R=
+EG_UPDATE_INTERVAL))
+> > +		return 0;
+> > +
+> > +	dev_dbg(&info->pdev->dev, "Charger updating register values...\n");
+> > +
+> > +	ret =3D iosf_mbi_block_punit_i2c_access();
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	ret =3D axp288_charger_reg_readb(info, AXP20X_PWR_INPUT_STATUS, &info=
+->input_status);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> > +	ret =3D axp288_charger_reg_readb(info, AXP20X_PWR_OP_MODE, &info->op_=
+mode);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> > +	ret =3D axp288_charger_reg_readb(info, AXP20X_CHRG_BAK_CTRL, &info->b=
+ackend_control);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> > +	info->last_updated =3D jiffies;
+> > +	info->valid =3D true;
+> > +out:
+> > +	iosf_mbi_unblock_punit_i2c_access();
+> >  	return ret;
+> >  }
+> > =20
+> > @@ -396,6 +438,11 @@ static int axp288_charger_usb_get_property(struct =
+power_supply *psy,
+> >  	struct axp288_chrg_info *info =3D power_supply_get_drvdata(psy);
+> >  	int ret;
+> > =20
+> > +	mutex_lock(&info->lock);
+> > +	ret =3D axp288_charger_usb_update_property(info);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> >  	switch (psp) {
+> >  	case POWER_SUPPLY_PROP_PRESENT:
+> >  		/* Check for OTG case first */
+> > @@ -403,10 +450,7 @@ static int axp288_charger_usb_get_property(struct =
+power_supply *psy,
+> >  			val->intval =3D 0;
+> >  			break;
+> >  		}
+> > -		ret =3D axp288_charger_is_present(info);
+> > -		if (ret < 0)
+> > -			return ret;
+> > -		val->intval =3D ret;
+> > +		val->intval =3D axp288_charger_is_present(info);
+> >  		break;
+> >  	case POWER_SUPPLY_PROP_ONLINE:
+> >  		/* Check for OTG case first */
+> > @@ -414,10 +458,7 @@ static int axp288_charger_usb_get_property(struct =
+power_supply *psy,
+> >  			val->intval =3D 0;
+> >  			break;
+> >  		}
+> > -		ret =3D axp288_charger_is_online(info);
+> > -		if (ret < 0)
+> > -			return ret;
+> > -		val->intval =3D ret;
+> > +		val->intval =3D axp288_charger_is_online(info);
+> >  		break;
+> >  	case POWER_SUPPLY_PROP_HEALTH:
+> >  		val->intval =3D axp288_get_charger_health(info);
+> > @@ -435,16 +476,15 @@ static int axp288_charger_usb_get_property(struct=
+ power_supply *psy,
+> >  		val->intval =3D info->max_cv * 1000;
+> >  		break;
+> >  	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
+> > -		ret =3D axp288_charger_get_vbus_inlmt(info);
+> > -		if (ret < 0)
+> > -			return ret;
+> > -		val->intval =3D ret;
+> > +		val->intval =3D axp288_charger_get_vbus_inlmt(info);
+> >  		break;
+> >  	default:
+> > -		return -EINVAL;
+> > +		ret =3D -EINVAL;
+> >  	}
+> > =20
+> > -	return 0;
+> > +out:
+> > +	mutex_unlock(&info->lock);
+> > +	return ret;
+> >  }
+> > =20
+> >  static int axp288_charger_property_is_writeable(struct power_supply *p=
+sy,
+> > @@ -540,7 +580,9 @@ static irqreturn_t axp288_charger_irq_thread_handle=
+r(int irq, void *dev)
+> >  		dev_warn(&info->pdev->dev, "Spurious Interrupt!!!\n");
+> >  		goto out;
+> >  	}
+> > -
+> > +	mutex_lock(&info->lock);
+> > +	info->valid =3D false;
+> > +	mutex_unlock(&info->lock);
+> >  	power_supply_changed(info->psy_usb);
+> >  out:
+> >  	return IRQ_HANDLED;
+> > @@ -613,6 +655,9 @@ static void axp288_charger_extcon_evt_worker(struct=
+ work_struct *work)
+> >  	if (!(val & PS_STAT_VBUS_VALID)) {
+> >  		dev_dbg(&info->pdev->dev, "USB charger disconnected\n");
+> >  		axp288_charger_enable_charger(info, false);
+> > +		mutex_lock(&info->lock);
+> > +		info->valid =3D false;
+> > +		mutex_unlock(&info->lock);
+> >  		power_supply_changed(info->psy_usb);
+> >  		return;
+> >  	}
+> > @@ -644,6 +689,9 @@ static void axp288_charger_extcon_evt_worker(struct=
+ work_struct *work)
+> >  		dev_err(&info->pdev->dev,
+> >  			"error setting current limit (%d)\n", ret);
+> > =20
+> > +	mutex_lock(&info->lock);
+> > +	info->valid =3D false;
+> > +	mutex_unlock(&info->lock);
+> >  	power_supply_changed(info->psy_usb);
+> >  }
+> > =20
+> >=20
+>=20
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--fabmqnmpymwuaqpn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFlpbwACgkQ2O7X88g7
++po/xg//cePRV5LHD2dkc/QQgKqYZGFaS5hQAqVnO/5EWLkwMQz0YUJirXxE/kZl
+n1nO/GgpFFPqUQYm1zD6LayJhQSUrJoYBrt5yPtF+b5M0k4Dx4CexT+QwYlRZ+DV
+3mKBySH9sMrZqScYaJN3WzhO+Ws5da3Q/l1q2XlfAJOuis/1LTb0g5/ZSRrSzPhi
+3ziNzyBqKJTIwYuaMRFBDl0IPg3z3aAiYgTbFs4U/Qm6GgsydMt60hcQVuISo0On
+3R7aF6s1HnTvXunfoRXNyPon+rrnD8tB7WaZ441tInASgsos7/DXAsQFnN082ld/
+f0ibBGpr7qlFIwtH6ylbxBtbCm+VzRabiaw+DAsSfv0RZ5XzI/BXlWfV/7rBLdhZ
+elvHRE0qJmbtiXuirf296ieW3qZTC6ic8AHW3kChc/v6637Sv/6g/ohVxVGqRw0W
+rodldgHFEVKpBDaGCbHTqhCU6jV21MOFdD4b51kuMJ86CtZUUm8kVfLSr5tFKwS1
+W+MGdPjGRGo/XYtvXVKNkEp7t36iWMML7XhSOyih/P2dmjrJ8Ik5X0F821Xwxi7w
+6SPwMTf/IC1iOZO99XJpcNkmRAXWp55kpol0b1+/3iwAvJIK9BH2EdMzT62AQbns
+FA4et7nPB1+REAdYy/9WpZeNAz4IaMMVb7qvBM47Vvx9O+c3Gkk=
+=ObbB
+-----END PGP SIGNATURE-----
+
+--fabmqnmpymwuaqpn--
