@@ -2,186 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9739942A07F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B81542A083
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235347AbhJLJBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:01:50 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45480 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232578AbhJLJBt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:01:49 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C86tU0027299;
-        Tue, 12 Oct 2021 04:59:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=8opnfFh4lHmoH9HGtIhzPcGHJKyVpO+apY3j26QZm+g=;
- b=V1R+a0zlIRScDL2URpp6nCQHdvU+nN4IzNSh9SG+we8gpF9t/CPSYs84Be4FZS5CO00g
- a4qESXU9JFZdUgHAAyATYbar0Qii3eET28zqu1SnHVD4i0DvrgPZ0SPfNgnNiCu4S8nF
- 8JijKV35QVLarB2JOhuB7/nnN93qAHz+51dsGWhoZ/5SmHFU9+Z1RxDqvurIv8EUoj44
- V2PJDydvX1b4jGJ3PZfWzQLl/7z20GLKic6/0/lQBu5J+sOo4dmvnihwYUGOnBcfMzNC
- wG9jBXFP37fTH3yFUZWIT+XRgdKeqN3WhdzuewQm2aLBKA9uWBGtRTqvAKaItt6Fflof Zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn49yky1m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 04:59:47 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19C8j4TF017583;
-        Tue, 12 Oct 2021 04:59:47 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn49yky11-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 04:59:47 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19C8rN81032257;
-        Tue, 12 Oct 2021 08:59:45 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 3bk2q9mpr6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 08:59:44 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19C8xcRE2294424
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 08:59:38 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 47D0C4C046;
-        Tue, 12 Oct 2021 08:59:38 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 740E44C050;
-        Tue, 12 Oct 2021 08:59:37 +0000 (GMT)
-Received: from li-43c5434c-23b8-11b2-a85c-c4958fb47a68.ibm.com (unknown [9.171.4.239])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Oct 2021 08:59:37 +0000 (GMT)
-Subject: Re: [PATCH v5 04/14] KVM: s390: pv: avoid stalls when making pages
- secure
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, frankja@linux.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
-References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
- <20210920132502.36111-5-imbrenda@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <bea91f27-8caa-86bf-e757-da4308330139@de.ibm.com>
-Date:   Tue, 12 Oct 2021 10:59:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S235430AbhJLJCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:02:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232578AbhJLJCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:02:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6D7760E54;
+        Tue, 12 Oct 2021 09:00:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634029240;
+        bh=TVj9dloozAyW16amMZxZwPSuRXoQgPT1QTvMuSQGFX4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QC9WQeY+nVU75Hp+bftVBJ68Qsrc7UbaMkO8RAHotlG+QFh1ouPAmwWDHpi4t8m2u
+         hqysN2IEoNEXRtQFevKnS+QaoCYSHsSNdtwM5GHqXIGA/PlrQHny77emzrZ94kCpF4
+         DtHpKnX7DTg57ZQXGtaM2zmYTMfL5qmile3rdSErZkZSW1d+ixUcLWznEuajkkoDbp
+         fU8f5fyRbVmTnez/PTmCb9sBuMv8Es7cea95Is/QVQmhPpLHBINrM1tMpxDvuTmVEm
+         4Gg/F7PzGR/Ey9rK4T7tb4WUDupD2h0FBwzH76LGC5gKhVn6tOKXbNvyGaYkDtC5LH
+         //xj60vru9/1Q==
+Received: by pali.im (Postfix)
+        id 905885BC; Tue, 12 Oct 2021 11:00:37 +0200 (CEST)
+Date:   Tue, 12 Oct 2021 11:00:37 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Brian Norris <briannorris@chromium.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: Re: [PATCH] mwifiex: Add quirk resetting the PCI bridge on MS
+ Surface devices
+Message-ID: <20211012090037.v3w4za5hshtm253f@pali>
+References: <20211011165301.GA1650148@bhelgaas>
+ <fee8b431-617f-3890-3ad2-67a61d3ffca2@v0yd.nl>
 MIME-Version: 1.0
-In-Reply-To: <20210920132502.36111-5-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jwqKicYK_6CsNXyM5qS7mEI0tzvv9JbT
-X-Proofpoint-GUID: bQuNmozOk6dERLBFurUkfWY95FZYugMm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-12_02,2021-10-11_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999 malwarescore=0
- adultscore=0 priorityscore=1501 phishscore=0 spamscore=0 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110120047
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fee8b431-617f-3890-3ad2-67a61d3ffca2@v0yd.nl>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tuesday 12 October 2021 10:48:49 Jonas Dreßler wrote:
+> 1) Revert the cards firmware in linux-firmware back to the second-latest
+> version. That firmware didn't report a fixed LTR value and also doesn't
+> have any other obvious issues I know of compared to the latest one.
 
-Am 20.09.21 um 15:24 schrieb Claudio Imbrenda:
-> Improve make_secure_pte to avoid stalls when the system is heavily
-> overcommitted. This was especially problematic in kvm_s390_pv_unpack,
-> because of the loop over all pages that needed unpacking.
-> 
-> Due to the locks being held, it was not possible to simply replace
-> uv_call with uv_call_sched. A more complex approach was
-> needed, in which uv_call is replaced with __uv_call, which does not
-> loop. When the UVC needs to be executed again, -EAGAIN is returned, and
-> the caller (or its caller) will try again.
-> 
-> When -EAGAIN is returned, the path is the same as when the page is in
-> writeback (and the writeback check is also performed, which is
-> harmless).
-> 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Fixes: 214d9bbcd3a672 ("s390/mm: provide memory management functions for protected KVM guests")
+FYI, there are new bugs with new firmware versions for 8997 sent by NXP
+to linux-firmware repository... and questions what to do with it. Seems
+that NXP again do not respond to any questions after new version was
+merged into linux-firmware repo.
 
-applied this one.
-> ---
->   arch/s390/kernel/uv.c     | 29 +++++++++++++++++++++++------
->   arch/s390/kvm/intercept.c |  5 +++++
->   2 files changed, 28 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-> index aeb0a15bcbb7..68a8fbafcb9c 100644
-> --- a/arch/s390/kernel/uv.c
-> +++ b/arch/s390/kernel/uv.c
-> @@ -180,7 +180,7 @@ static int make_secure_pte(pte_t *ptep, unsigned long addr,
->   {
->   	pte_t entry = READ_ONCE(*ptep);
->   	struct page *page;
-> -	int expected, rc = 0;
-> +	int expected, cc = 0;
->   
->   	if (!pte_present(entry))
->   		return -ENXIO;
-> @@ -196,12 +196,25 @@ static int make_secure_pte(pte_t *ptep, unsigned long addr,
->   	if (!page_ref_freeze(page, expected))
->   		return -EBUSY;
->   	set_bit(PG_arch_1, &page->flags);
-> -	rc = uv_call(0, (u64)uvcb);
-> +	/*
-> +	 * If the UVC does not succeed or fail immediately, we don't want to
-> +	 * loop for long, or we might get stall notifications.
-> +	 * On the other hand, this is a complex scenario and we are holding a lot of
-> +	 * locks, so we can't easily sleep and reschedule. We try only once,
-> +	 * and if the UVC returned busy or partial completion, we return
-> +	 * -EAGAIN and we let the callers deal with it.
-> +	 */
-> +	cc = __uv_call(0, (u64)uvcb);
->   	page_ref_unfreeze(page, expected);
-> -	/* Return -ENXIO if the page was not mapped, -EINVAL otherwise */
-> -	if (rc)
-> -		rc = uvcb->rc == 0x10a ? -ENXIO : -EINVAL;
-> -	return rc;
-> +	/*
-> +	 * Return -ENXIO if the page was not mapped, -EINVAL for other errors.
-> +	 * If busy or partially completed, return -EAGAIN.
-> +	 */
-> +	if (cc == UVC_CC_OK)
-> +		return 0;
-> +	else if (cc == UVC_CC_BUSY || cc == UVC_CC_PARTIAL)
-> +		return -EAGAIN;
-> +	return uvcb->rc == 0x10a ? -ENXIO : -EINVAL;
->   }
->   
->   /*
-> @@ -254,6 +267,10 @@ int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb)
->   	mmap_read_unlock(gmap->mm);
->   
->   	if (rc == -EAGAIN) {
-> +		/*
-> +		 * If we are here because the UVC returned busy or partial
-> +		 * completion, this is just a useless check, but it is safe.
-> +		 */
->   		wait_on_page_writeback(page);
->   	} else if (rc == -EBUSY) {
->   		/*
-> diff --git a/arch/s390/kvm/intercept.c b/arch/s390/kvm/intercept.c
-> index 72b25b7cc6ae..47833ade4da5 100644
-> --- a/arch/s390/kvm/intercept.c
-> +++ b/arch/s390/kvm/intercept.c
-> @@ -516,6 +516,11 @@ static int handle_pv_uvc(struct kvm_vcpu *vcpu)
->   	 */
->   	if (rc == -EINVAL)
->   		return 0;
-> +	/*
-> +	 * If we got -EAGAIN here, we simply return it. It will eventually
-> +	 * get propagated all the way to userspace, which should then try
-> +	 * again.
-> +	 */
->   	return rc;
->   }
->   
-> 
+https://lore.kernel.org/linux-firmware/edeb34bc-7c85-7f1d-79e4-e3e21df86334@gk2.net/
+
+So firmware revert also for other ex-Marvell / NXP chips is not
+something which could not happen.
