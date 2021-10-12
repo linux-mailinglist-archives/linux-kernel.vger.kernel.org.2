@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515B7429AE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6775E429AE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234869AbhJLBUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:20:19 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14328 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234787AbhJLBUR (ORCPT
+        id S234958AbhJLBU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234857AbhJLBU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:20:17 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HSyN505N2z8yMM;
-        Tue, 12 Oct 2021 09:13:25 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 12 Oct 2021 09:18:14 +0800
-Received: from [10.174.178.174] (10.174.178.174) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 12 Oct 2021 09:18:13 +0800
-Subject: Re: [PATCH] regmap: Fix possible double-free in
- regcache_rbtree_exit()
-To:     Mark Brown <broonie@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <rafael@kernel.org>,
-        <gregkh@linuxfoundation.org>
-References: <20211011135526.282115-1-yangyingliang@huawei.com>
- <YWR2+CAtFuGl4cSz@sirena.org.uk>
-From:   Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <02aa09c9-e873-c741-dfb5-9ed439cc7cea@huawei.com>
-Date:   Tue, 12 Oct 2021 09:18:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 11 Oct 2021 21:20:26 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548EFC06161C;
+        Mon, 11 Oct 2021 18:18:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=eXBIFEgTO+nqupPPIAP0fZrutKKFYMtvu8j/H82owZA=; b=FpKBuU7ug1NjckcahWRIgefQWU
+        xckATGgFPpjnL9E4yiMaopNLFUoqyrJb4IUEk6aIM6Ke2pTAFQ/dYIEaoTzFzExXjp2yF3CuMkVZ8
+        3EXn+FO8lFzl+4/PIZrsKMOOUzuv9LFw3upg02klUwqOphqtF0LykeZln4atZCSVHSAkWZXrdYq3n
+        J0h8iYl+Ky3FyP7LqSj6k19cX4ylIAIwY3bUzhe42UAArR0mRq8QCaKBZ/pkoZ7hT+ynt/gES+jX6
+        RXQwF6vdIm6CSV32RiMTk7vq/w8z06TdAI5X35YFlwzxmPxRVjAqn6dkIIEPHVcuA/q3BIFm7gGjE
+        d37cQiZA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ma6Qq-00BBBM-KQ; Tue, 12 Oct 2021 01:18:16 +0000
+Subject: Re: [PATCH 7/8] watchdog: max77714: add driver for the watchdog in
+ the MAX77714 PMIC
+To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>
+References: <20211011155615.257529-1-luca@lucaceresoli.net>
+ <20211011155615.257529-8-luca@lucaceresoli.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <319589ca-0dfb-008f-052a-01f0f25d86fa@infradead.org>
+Date:   Mon, 11 Oct 2021 18:18:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YWR2+CAtFuGl4cSz@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20211011155615.257529-8-luca@lucaceresoli.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 2021/10/12 1:40, Mark Brown wrote:
-> On Mon, Oct 11, 2021 at 09:55:26PM +0800, Yang Yingliang wrote:
->> In regcache_rbtree_insert_to_block(), when 'present' realloc failed,
->> the 'blk' which is supposed to assign to 'rbnode->block' will be freed,
->> so 'rbnode->block' points a freed memory, in the error handling path of
->> regcache_rbtree_init(), 'rbnode->block' will be freed again in
->> regcache_rbtree_exit(), KASAN will report double-free as follows:
->>
->> BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
->> Call Trace:
->>   dump_stack_lvl+0xe2/0x152
->>   print_address_description.constprop.7+0x21/0x150
->>   kasan_report_invalid_free+0x6f/0xa0
->>   __kasan_slab_free+0x125/0x140
-> Please think hard before including complete backtraces in upstream
-> reports, they are very large and contain almost no useful information
-> relative to their size so often obscure the relevant content in your
-> message. If part of the backtrace is usefully illustrative (it often is
-> for search engines if nothing else) then it's usually better to pull out
-> the relevant sections.
-OK
->
->> Set rbnode->block to NULL when the 'present' realloc failed to fix this.
-> This is not a good fix, it will both leak block and corrupt the data
-> structure since now there's a NULL pointer where there should be a data
-> block.  We should instead be moving the assignment of rbnode->block up
-> to immediately after the reallocation has succeeded so that the data
-> structure stays valid even if the second reallocation fails.
-I will send a v2 later.
+On 10/11/21 8:56 AM, Luca Ceresoli wrote:
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index bf59faeb3de1..00bc3f932a6c 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -699,6 +699,15 @@ config MAX77620_WATCHDOG
+>   	 MAX77620 chips. To compile this driver as a module,
+>   	 choose M here: the module will be called max77620_wdt.
+>   
+> +config MAX77714_WATCHDOG
+> +	tristate "Maxim MAX77714 Watchdog Timer"
+> +	depends on MFD_MAX77714 || COMPILE_TEST
+> +	help
+> +	 This is the driver for watchdog timer in the MAX77714 PMIC.
+> +	 Say 'Y' here to enable the watchdog timer support for
+> +	 MAX77714 chips. To compile this driver as a module,
+> +	 choose M here: the module will be called max77714_wdt.
 
-Thanks,
-Yang
+Please follow coding-style for Kconfig files:
+
+(from Documentation/process/coding-style.rst, section 10):
+
+For all of the Kconfig* configuration files throughout the source tree,
+the indentation is somewhat different.  Lines under a ``config`` definition
+are indented with one tab, while help text is indented an additional two
+spaces.
+
+
+-- 
+~Randy
