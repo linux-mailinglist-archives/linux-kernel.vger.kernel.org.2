@@ -2,141 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0697F42A02C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055DE42A02E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235308AbhJLIpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:45:52 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:27806 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234611AbhJLIpu (ORCPT
+        id S234686AbhJLIqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235324AbhJLIp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:45:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1634028224;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=oICanehRZg82dw1asdlmnqvCvX+rTSrsFz+ERtaRocs=;
-    b=rprOtrQPIFnqkl88wQKIIwGK3SFmMXfPbv6xeqppPdZCUJuPmgI4YJAUg7Zv+i8Xv1
-    RjYv8H6vcHm9g6b7t32IuaHr/MGF1RfJp33oXlx9N54DMRJ+3Ureb30gBMLKUYw7d/D/
-    I7QLwUTjFkND2TKilcMuhbhz9wdE/o55D010a3pQMIsKjC21tx/XM6/EVXBl38hEecmm
-    vIZKBsW6u7RN6yXpD0cg0PKWSJ5zpfec+fndNjNgkjoyXrkz5CZ5bOL4Nx8L5UKgBzyW
-    p1r99V2AFCFJpVScUlpoHIRFkk/tKOVv2ytVfBOvs7Yq/4aLArb/+O8MiwH6jwn6Vt4O
-    EhbA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4pSA8p7h"
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.33.8 SBL|AUTH)
-    with ESMTPSA id 301038x9C8hgyWn
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 12 Oct 2021 10:43:42 +0200 (CEST)
-Date:   Tue, 12 Oct 2021 10:43:41 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Loic Poulain <loic.poulain@linaro.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dmaengine@vger.kernel.org, devicetree <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Subject: Re: [PATCH net-next v2 4/4] net: wwan: Add Qualcomm BAM-DMUX WWAN
- network driver
-Message-ID: <YWVKvTzohFCaZalj@gerhold.net>
-References: <20211011141733.3999-1-stephan@gerhold.net>
- <20211011141733.3999-5-stephan@gerhold.net>
- <YWRPXnzh+NLVqHvo@gerhold.net>
- <CAMZdPi8G5wtcAxTYfzwdJVMauEx+5wk7eqP9VX9QaVqrzsZkEw@mail.gmail.com>
+        Tue, 12 Oct 2021 04:45:59 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBAEC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:43:57 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id t200so9076189vkt.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:43:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smartx-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZgZqaOGPm3fGQ9iYZFcmBjXmsmUelLzgvid1aIpfJQ4=;
+        b=PWsCk7uXhaqI3sO4lfo2smARJmvXEd45tQOp3dfvQ/CZUwRO4m7RxijZ2V5Xvr81/w
+         IyF+bTDVvDYXvEAAw49QpsWU1LGhmTgaKZXiMoFbTeossBkzm+cjCD53tzUMp6v6wUQX
+         wpL93gPZ3Z+Av+fjPGzHXfCIK6lDNEkTZxbGpO2aviLF0vADG2OzmD+e90yjvoosnSKT
+         hPMxtqc7FVCu8TH3yDusrKCfJuf+Bd8strSePQFIzGQdgrCuel469nqFAPMVI5XH8fwP
+         z8XM7emx/adjqNjIMzk8R7DwcruOpDJvKqRUGZLmSYsGxXskH9nrJu47sX1BZtCALpfz
+         5+YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZgZqaOGPm3fGQ9iYZFcmBjXmsmUelLzgvid1aIpfJQ4=;
+        b=IcuvCj9fQFpYPSblpE2Zyk2alFRrnutsP2N6/+GZL/+GHkX6bSbmJnzKF2o3nJmm0X
+         LSmXOZe2XGg2l7KcJKQYZ/t8EiwDUuII4Dge0A50ihTYFqaEikHRizmVqAsSWul+Fugo
+         Dak+D6NGgZ7aw5RObswA0M96ubXnEIYJyB1up8e792/HcdEPSQTHFYl6nTxFc4d1hXTg
+         iBaGZ5WpQBfXhy1zVFDu90AsIZ231Ys3zI+Si9CayfU2m42ynYqvF6j5HwdvSdUPsC/R
+         koKJkQxopu6zMjE2FVOspcC98yfNLzBCZAAwn4FTt+8Dqmz5Tf4MrjHIHKytBY1js+Iy
+         kwvg==
+X-Gm-Message-State: AOAM5301bQaklPInfkbUrC0qqnOt/kV3VvUg+gmLL40JHwViLrlSH+9j
+        CBLOpKwfKCBC6Z28gjsCZ8EFVHp3BNMbSDpIdIZh6+hun3t+Qw==
+X-Google-Smtp-Source: ABdhPJz2MWRH30ay4UqAGCweGR1qXBnPa6UC1+/lNVGWcyJvFutNRSSQL58AVsrEME2lXekP2PZFuCbqgB6cZOV3xh0=
+X-Received: by 2002:a1f:1ed1:: with SMTP id e200mr25078417vke.7.1634028236636;
+ Tue, 12 Oct 2021 01:43:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZdPi8G5wtcAxTYfzwdJVMauEx+5wk7eqP9VX9QaVqrzsZkEw@mail.gmail.com>
+References: <20211008032231.1143467-1-fengli@smartx.com> <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
+ <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com>
+ <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
+ <CALTww28CsJdmVOLFeoHC8FgbHDK78h8Lncsf9fFA0RYXEj=R9A@mail.gmail.com>
+ <CAHckoCzzVP7npmU4LWedzD-f1QmkH4K0iLk_=8ptSFXrFfRoDw@mail.gmail.com> <CAPhsuW4VFTpM94by-iMkTQ=b9Y7FqZ2oqHH+jV-f8BM=YKWyiA@mail.gmail.com>
+In-Reply-To: <CAPhsuW4VFTpM94by-iMkTQ=b9Y7FqZ2oqHH+jV-f8BM=YKWyiA@mail.gmail.com>
+From:   Li Feng <fengli@smartx.com>
+Date:   Tue, 12 Oct 2021 16:43:45 +0800
+Message-ID: <CAHckoCxRj1qb=yfeQ2o_8n_BSSLD9JXqm8GopUp2qx9NEPxr7w@mail.gmail.com>
+Subject: Re: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
+To:     Song Liu <song@kernel.org>
+Cc:     Xiao Ni <xni@redhat.com>,
+        "open list:SOFTWARE RAID (Multiple Disks) SUPPORT" 
+        <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 09:55:48AM +0200, Loic Poulain wrote:
-> Hi Stephan,
-> 
-> On Mon, 11 Oct 2021 at 16:51, Stephan Gerhold <stephan@gerhold.net> wrote:
-> > > Like in the RFC version [1], the driver does not currently use the link
-> > > management of the WWAN subsystem. Instead, it simply exposes one network
-> > > interface for each of the up to 8 channels.
-> > >
-> > > This setup works out of the box with all available open-source userspace
-> > > WWAN implementations, especially ModemManager (no changes needed).
-> > > oFono works too although it requires minor changes to support WWAN control
-> > > ports (/dev/wwan0qmi0) which are independent of BAM-DMUX (already provided
-> > > by the "rpmsg_wwan_ctrl" driver).
-> > > It was easy to support because the setup is very similar to ones already
-> > > supported for USB modems. Some of them provide multiple network interfaces
-> > > and ModemManager can bundle them together to a single modem.
-> > >
-> > > I believe it is best to keep this setup as-is for now and not add even
-> > > more complexity to userspace with another setup that works only in this
-> > > particular configuration. I will reply to this patch separately to explain
-> > > that a bit more clearly. This patch is already long enough as-is. :)
-> > >
-> > > [1]: https://lore.kernel.org/netdev/20210719145317.79692-5-stephan@gerhold.net/
-> > >
+Song Liu <song@kernel.org> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=A5=E5=
+=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=884:17=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Tue, Oct 12, 2021 at 1:07 AM Li Feng <fengli@smartx.com> wrote:
 > >
-> > The main goal of the WWAN link management is to make the multiplexing
-> > setup transparent to userspace. Unfortunately it's still unclear to me
-> > how or even if this can be achieved for the many different different
-> > setups that exist for Qualcomm modems. To show that more clearly I'll
-> > "briefly" list the various currently supported setups in ModemManager
-> > (there might be even more that I am not even aware of).
-> 
-> The goal is also to have a common hierarchy, with the network link
-> being a child of the WWAN device, as for the control ports. Making it
-> easier for the user side to find the relation between all these
-> devices. Moreover, it allows having a common set of attributes, like
-> the LINK ID, and possibly new ones in the future. I mean it's probably
-> fine if you create a static set of network devices and do not support
-> dynamic link creation, but I think they should be created in some way
-> via the WWAN subsystem, and get the same attributes (link id), we can
-> have special meaning link ids (-1) for e.g. non context specific
-> netdevs (e.g. for rmnet/qmap transport iface).
-> 
+> > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=A5=
+=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=882:58=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > On Mon, Oct 11, 2021 at 5:42 PM Li Feng <fengli@smartx.com> wrote:
+> > > >
+> > > > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8811=E6=97=
+=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:49=E5=86=99=E9=81=93=EF=BC=9A
+> > > > >
+> > > > > Hi all
+> > > > >
+> > > > > Now the per device sysfs interface file state can change failfast=
+. Do
+> > > > > we need a new file for failfast?
+> > > > >
+> > > > > I did a test. The steps are:
+> > > > >
+> > > > > mdadm -CR /dev/md0 -l1 -n2 /dev/sdb /dev/sdc --assume-clean
+> > > > > cd /sys/block/md0/md/dev-sdb
+> > > > > echo failfast > state
+> > > > > cat state
+> > > > > in_sync,failfast
+> > > >
+> > > > This works,  will it be persisted to disk?
+> > > >
+> > >
+> > > mdadm --detail /dev/md0 can show the failfast information. So it
+> > > should be written in superblock.
+> > > But I don't find how md does this. I'm looking at this.
+> > >
+> > Yes, I have tested that it has been persisted, but don't understand who=
+ does it.
+>
+> I think this is not guaranteed to be persistent:
+>
+> [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
+> in_sync,failfast
+> [root@eth50-1 ~]# echo -failfast >  /sys/block/md127/md/rd1/state
+> [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
+> in_sync
+> [root@eth50-1 ~]# mdadm --stop /dev/md*
+> mdadm: /dev/md does not appear to be an md device
+> mdadm: stopped /dev/md127
+> [root@eth50-1 ~]# mdadm -As
+> mdadm: /dev/md/0_0 has been started with 4 drives.
+> [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
+> in_sync,failfast
+>
+> How about we fix state_store to make sure it is always persistent?
+>
+I agree with you.
 
-At the moment, my driver makes the link IDs available via "dev_port".
-I think this was also suggested for the WWAN subsystem at some point. [1]
-
-If we skip the dynamic link creation as a first step, but want to create
-the network device below the WWAN parent device, the main problem that
-remains is that there is currently no good way to get the driver that
-provides the network interfaces. The common WWAN parent device in my
-case is the device that represents the modem remote processor, but this
-is not enough to identify "bam-dmux".
-
-Userspace needs to know which driver it is dealing with to set up the
-multiplexing correctly via QMI. (The QMI message is different for
-BAM-DMUX and e.g. rmnet).
-
-I guess if the goal is only to have a common hierarchy (and not
-necessarily to have multiplexing entirely transparent to userspace),
-it is not too bad to make the driver that provides the ports somehow
-available to userspace. Perhaps via some extra sysfs attribute.
-What do you think?
-
-Also note that a common hierarchy for all configurations is not possible
-unless someone finds a solution to integrate the QRTR network sockets
-into the WWAN subsystem. This is primarily relevant for the IPA driver,
-but there are some SoCs with QRTR + BAM-DMUX as well. This will only
-work in my case because I only work on "older" SoCs where QMI can still
-go via the RPMSG_WWAN_CTRL driver.
-
-Thanks,
-Stephan
-
-[1]: https://lore.kernel.org/netdev/CAMZdPi_e+ibRQiytAYkjo1A9GzLm6Np6Tma-6KMHuWfFcaFsCg@mail.gmail.com/
+> Thanks,
+> Song
