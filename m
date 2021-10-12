@@ -2,333 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00ED442AFF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28D242AFF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235877AbhJLXFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 19:05:20 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:59752 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233180AbhJLXFT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 19:05:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634079797; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=a4t991OwV2xXbjyViZs5vlfdqAxNi0mnYFmk6dV5awQ=;
- b=NyE56aSp2WuP47HJCsPBLLwY4I87aHpURIOl3yFCGFu13gDq4SsfyEmuVrOU58HJiRgvSpYg
- DUhGusFkyPunjNypy9kx/lh8AUVbMrIIYl8ZkknpRUSWPGhs0V3urHKqeXEplR9UL6jsHGUK
- FRh8gKBF4MlAgGrw8D7nYBEcz+k=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6166142cff0285fb0a99d44c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Oct 2021 23:03:08
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DDE81C43619; Tue, 12 Oct 2021 23:03:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 29C25C4338F;
-        Tue, 12 Oct 2021 23:03:06 +0000 (UTC)
+        id S234727AbhJLXIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 19:08:47 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:40032 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229588AbhJLXIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 19:08:46 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1maQqy-0000bk-RR; Wed, 13 Oct 2021 01:06:36 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Guo Ren <guoren@kernel.org>, linux-riscv@lists.infradead.org
+Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Anup Patel <anup@brainfault.org>
+Subject: Re: [PATCH V2 2/2] irqchip/sifive-plic: Add thead,c9xx-plic support
+Date:   Wed, 13 Oct 2021 01:06:35 +0200
+Message-ID: <4404316.9H8m7z83OK@diego>
+In-Reply-To: <CAAhSdy32wkwH5k3iwdUNDsXjUNX8icQwcz_h2E6UixH7ZmD5KQ@mail.gmail.com>
+References: <20211012153432.2817285-1-guoren@kernel.org> <20211012153432.2817285-2-guoren@kernel.org> <CAAhSdy32wkwH5k3iwdUNDsXjUNX8icQwcz_h2E6UixH7ZmD5KQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 12 Oct 2021 16:03:06 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dp: Use the connector passed to dp_debug_get()
-In-Reply-To: <20211010030435.4000642-1-bjorn.andersson@linaro.org>
-References: <20211010030435.4000642-1-bjorn.andersson@linaro.org>
-Message-ID: <50925d684962690e42b2eb8ab8479835@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-09 20:04, Bjorn Andersson wrote:
-> The debugfs code is provided an array of a single drm_connector. Then 
-> to
-> access the connector, the list of all connectors of the DRM device is
-> traversed and all non-DisplayPort connectors are skipped, to find the
-> one and only DisplayPort connector.
-> 
-> But as we move to support multiple DisplayPort controllers this will 
-> now
-> find multiple connectors and has no way to distinguish them.
-> 
-> Pass the single connector to dp_debug_get() and use this in the debugfs
-> functions instead, both to simplify the code and the support the
-> multiple instances.
-> 
-Change itself is fine, hence
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+Hi,
 
-What has to be checked now is now to create multiple DP nodes for 
-multi-DP cases.
-Today, the debug node will be created only once :
+Am Dienstag, 12. Oktober 2021, 18:40:26 CEST schrieb Anup Patel:
+> On Tue, Oct 12, 2021 at 9:04 PM <guoren@kernel.org> wrote:
+> >
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > thead,c9xx-plic would mask IRQ with readl(claim), so it needn't
+> > mask/unmask which needed in RISC-V PLIC.
+> >
+> > When in IRQS_ONESHOT & IRQCHIP_EOI_THREADED path, unnecessary mask
+> > operation would cause a blocking irq bug in thead,c9xx-plic. Because
+> > when IRQ is disabled in c9xx, writel(hwirq, claim) would be invalid.
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Anup Patel <anup@brainfault.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > Cc: Atish Patra <atish.patra@wdc.com>
+> >
+> > ---
+> >
+> > Changes since V2:
+> >  - Add a separate compatible string "thead,c9xx-plic"
+> >  - set irq_mask/unmask of "plic_chip" to NULL and point
+> >    irq_enable/disable of "plic_chip" to plic_irq_mask/unmask
+> >  - Add a detailed comment block in plic_init() about the
+> >    differences in Claim/Completion process of RISC-V PLIC and C9xx
+> >    PLIC.
+> > ---
+> >  drivers/irqchip/irq-sifive-plic.c | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> >
+> > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> > index cf74cfa82045..3756b1c147c3 100644
+> > --- a/drivers/irqchip/irq-sifive-plic.c
+> > +++ b/drivers/irqchip/irq-sifive-plic.c
+> > @@ -79,6 +79,7 @@ struct plic_handler {
+> >  };
+> >  static int plic_parent_irq __ro_after_init;
+> >  static bool plic_cpuhp_setup_done __ro_after_init;
+> > +static bool disable_mask_unmask __ro_after_init;
+> >  static DEFINE_PER_CPU(struct plic_handler, plic_handlers);
+> >
+> >  static inline void plic_toggle(struct plic_handler *handler,
+> > @@ -181,6 +182,13 @@ static int plic_irqdomain_map(struct irq_domain *d, unsigned int irq,
+> >  {
+> >         struct plic_priv *priv = d->host_data;
+> >
+> > +       if (disable_mask_unmask) {
+> > +               plic_chip.irq_mask      = NULL;
+> > +               plic_chip.irq_unmask    = NULL;
+> > +               plic_chip.irq_enable    = plic_irq_unmask;
+> > +               plic_chip.irq_disable   = plic_irq_mask;
+> > +       }
+> > +
+> >         irq_domain_set_info(d, irq, hwirq, &plic_chip, d->host_data,
+> >                             handle_fasteoi_irq, NULL, NULL);
+> >         irq_set_noprobe(irq);
+> > @@ -390,5 +398,14 @@ static int __init plic_init(struct device_node *node,
+> >         return error;
+> >  }
+> >
+> > +static int __init thead_c9xx_plic_init(struct device_node *node,
+> > +               struct device_node *parent)
+> > +{
+> > +       disable_mask_unmask = true;
+> 
+> The plic_irqdomain_map() is called for each irq so "plic_chip"
+> will be updated multiple times.
+> 
+> You can drop the disable_mask_unmask variable and instead
+> directly update "plic_chip" here.
 
-https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c#L206
+Actually I'd think something more dynamic might be appropriate?
 
-This also needs to be expanded for multi-DP to make the solution 
-complete.
+I.e. don't modify the generic plic_chip structure, but define a second
+one for this type of chip and reference that one in plic_irqdomain_map
+depending on the block found?
 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_debug.c   | 131 ++++++++++------------------
->  drivers/gpu/drm/msm/dp/dp_debug.h   |   2 +-
->  drivers/gpu/drm/msm/dp/dp_display.c |   2 +-
->  3 files changed, 46 insertions(+), 89 deletions(-)
+According to [0] a system can have multiple PLICs and nothing
+guarantees that they'll always be the same variant on future socs
+[hardware engineers are very creative]
+
+So adding more stuff that modifies static content used by all PLICs
+doesn't really improve driver quality here ;-)
+
+
+Heiko
+
+
+[0] https://lore.kernel.org/linux-riscv/1839bf9ef91de2358a7e8ecade361f7a@www.loen.fr/T/
+
+
 > 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c
-> b/drivers/gpu/drm/msm/dp/dp_debug.c
-> index af709d93bb9f..da4323556ef3 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_debug.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_debug.c
-> @@ -24,7 +24,7 @@ struct dp_debug_private {
->  	struct dp_usbpd *usbpd;
->  	struct dp_link *link;
->  	struct dp_panel *panel;
-> -	struct drm_connector **connector;
-> +	struct drm_connector *connector;
->  	struct device *dev;
->  	struct drm_device *drm_dev;
+> > +
+> > +       return plic_init(node, parent);
+> > +}
+> > +
+> >  IRQCHIP_DECLARE(sifive_plic, "sifive,plic-1.0.0", plic_init);
+> >  IRQCHIP_DECLARE(riscv_plic0, "riscv,plic0", plic_init); /* for legacy systems */
+> > +IRQCHIP_DECLARE(thead_c9xx_plic, "thead,c9xx-plic", thead_c9xx_plic_init);
+> > --
+> > 2.25.1
+> >
 > 
-> @@ -97,59 +97,35 @@ DEFINE_SHOW_ATTRIBUTE(dp_debug);
+> Regards,
+> Anup
 > 
->  static int dp_test_data_show(struct seq_file *m, void *data)
->  {
-> -	struct drm_device *dev;
-> -	struct dp_debug_private *debug;
-> -	struct drm_connector *connector;
-> -	struct drm_connector_list_iter conn_iter;
-> +	const struct dp_debug_private *debug = m->private;
-> +	const struct drm_connector *connector = debug->connector;
->  	u32 bpc;
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 > 
-> -	debug = m->private;
-> -	dev = debug->drm_dev;
-> -	drm_connector_list_iter_begin(dev, &conn_iter);
-> -	drm_for_each_connector_iter(connector, &conn_iter) {
-> -
-> -		if (connector->connector_type !=
-> -			DRM_MODE_CONNECTOR_DisplayPort)
-> -			continue;
-> -
-> -		if (connector->status == connector_status_connected) {
-> -			bpc = debug->link->test_video.test_bit_depth;
-> -			seq_printf(m, "hdisplay: %d\n",
-> -					debug->link->test_video.test_h_width);
-> -			seq_printf(m, "vdisplay: %d\n",
-> -					debug->link->test_video.test_v_height);
-> -			seq_printf(m, "bpc: %u\n",
-> -					dp_link_bit_depth_to_bpc(bpc));
-> -		} else
-> -			seq_puts(m, "0");
-> +	if (connector->status == connector_status_connected) {
-> +		bpc = debug->link->test_video.test_bit_depth;
-> +		seq_printf(m, "hdisplay: %d\n",
-> +				debug->link->test_video.test_h_width);
-> +		seq_printf(m, "vdisplay: %d\n",
-> +				debug->link->test_video.test_v_height);
-> +		seq_printf(m, "bpc: %u\n",
-> +				dp_link_bit_depth_to_bpc(bpc));
-> +	} else {
-> +		seq_puts(m, "0");
->  	}
-> 
-> -	drm_connector_list_iter_end(&conn_iter);
-> -
->  	return 0;
->  }
->  DEFINE_SHOW_ATTRIBUTE(dp_test_data);
-> 
->  static int dp_test_type_show(struct seq_file *m, void *data)
->  {
-> -	struct dp_debug_private *debug = m->private;
-> -	struct drm_device *dev = debug->drm_dev;
-> -	struct drm_connector *connector;
-> -	struct drm_connector_list_iter conn_iter;
-> -
-> -	drm_connector_list_iter_begin(dev, &conn_iter);
-> -	drm_for_each_connector_iter(connector, &conn_iter) {
-> -
-> -		if (connector->connector_type !=
-> -			DRM_MODE_CONNECTOR_DisplayPort)
-> -			continue;
-> +	const struct dp_debug_private *debug = m->private;
-> +	const struct drm_connector *connector = debug->connector;
-> 
-> -		if (connector->status == connector_status_connected)
-> -			seq_printf(m, "%02x", DP_TEST_LINK_VIDEO_PATTERN);
-> -		else
-> -			seq_puts(m, "0");
-> -	}
-> -	drm_connector_list_iter_end(&conn_iter);
-> +	if (connector->status == connector_status_connected)
-> +		seq_printf(m, "%02x", DP_TEST_LINK_VIDEO_PATTERN);
-> +	else
-> +		seq_puts(m, "0");
-> 
->  	return 0;
->  }
-> @@ -161,14 +137,12 @@ static ssize_t dp_test_active_write(struct file 
-> *file,
->  {
->  	char *input_buffer;
->  	int status = 0;
-> -	struct dp_debug_private *debug;
-> -	struct drm_device *dev;
-> -	struct drm_connector *connector;
-> -	struct drm_connector_list_iter conn_iter;
-> +	const struct dp_debug_private *debug;
-> +	const struct drm_connector *connector;
->  	int val = 0;
-> 
->  	debug = ((struct seq_file *)file->private_data)->private;
-> -	dev = debug->drm_dev;
-> +	connector = debug->connector;
-> 
->  	if (len == 0)
->  		return 0;
-> @@ -179,30 +153,22 @@ static ssize_t dp_test_active_write(struct file 
-> *file,
-> 
->  	DRM_DEBUG_DRIVER("Copied %d bytes from user\n", (unsigned int)len);
-> 
-> -	drm_connector_list_iter_begin(dev, &conn_iter);
-> -	drm_for_each_connector_iter(connector, &conn_iter) {
-> -		if (connector->connector_type !=
-> -			DRM_MODE_CONNECTOR_DisplayPort)
-> -			continue;
-> -
-> -		if (connector->status == connector_status_connected) {
-> -			status = kstrtoint(input_buffer, 10, &val);
-> -			if (status < 0)
-> -				break;
-> -			DRM_DEBUG_DRIVER("Got %d for test active\n", val);
-> -			/* To prevent erroneous activation of the compliance
-> -			 * testing code, only accept an actual value of 1 here
-> -			 */
-> -			if (val == 1)
-> -				debug->panel->video_test = true;
-> -			else
-> -				debug->panel->video_test = false;
-> +	if (connector->status == connector_status_connected) {
-> +		status = kstrtoint(input_buffer, 10, &val);
-> +		if (status < 0) {
-> +			kfree(input_buffer);
-> +			return status;
->  		}
-> +		DRM_DEBUG_DRIVER("Got %d for test active\n", val);
-> +		/* To prevent erroneous activation of the compliance
-> +		 * testing code, only accept an actual value of 1 here
-> +		 */
-> +		if (val == 1)
-> +			debug->panel->video_test = true;
-> +		else
-> +			debug->panel->video_test = false;
->  	}
-> -	drm_connector_list_iter_end(&conn_iter);
->  	kfree(input_buffer);
-> -	if (status < 0)
-> -		return status;
-> 
->  	*offp += len;
->  	return len;
-> @@ -211,25 +177,16 @@ static ssize_t dp_test_active_write(struct file 
-> *file,
->  static int dp_test_active_show(struct seq_file *m, void *data)
->  {
->  	struct dp_debug_private *debug = m->private;
-> -	struct drm_device *dev = debug->drm_dev;
-> -	struct drm_connector *connector;
-> -	struct drm_connector_list_iter conn_iter;
-> -
-> -	drm_connector_list_iter_begin(dev, &conn_iter);
-> -	drm_for_each_connector_iter(connector, &conn_iter) {
-> -		if (connector->connector_type !=
-> -			DRM_MODE_CONNECTOR_DisplayPort)
-> -			continue;
-> -
-> -		if (connector->status == connector_status_connected) {
-> -			if (debug->panel->video_test)
-> -				seq_puts(m, "1");
-> -			else
-> -				seq_puts(m, "0");
-> -		} else
-> +	struct drm_connector *connector = debug->connector;
-> +
-> +	if (connector->status == connector_status_connected) {
-> +		if (debug->panel->video_test)
-> +			seq_puts(m, "1");
-> +		else
->  			seq_puts(m, "0");
-> +	} else {
-> +		seq_puts(m, "0");
->  	}
-> -	drm_connector_list_iter_end(&conn_iter);
-> 
->  	return 0;
->  }
-> @@ -278,7 +235,7 @@ static int dp_debug_init(struct dp_debug
-> *dp_debug, struct drm_minor *minor)
-> 
->  struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel 
-> *panel,
->  		struct dp_usbpd *usbpd, struct dp_link *link,
-> -		struct drm_connector **connector, struct drm_minor *minor)
-> +		struct drm_connector *connector, struct drm_minor *minor)
->  {
->  	int rc = 0;
->  	struct dp_debug_private *debug;
-> diff --git a/drivers/gpu/drm/msm/dp/dp_debug.h
-> b/drivers/gpu/drm/msm/dp/dp_debug.h
-> index 7eaedfbb149c..3f90acfffc5a 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_debug.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_debug.h
-> @@ -43,7 +43,7 @@ struct dp_debug {
->   */
->  struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel 
-> *panel,
->  		struct dp_usbpd *usbpd, struct dp_link *link,
-> -		struct drm_connector **connector,
-> +		struct drm_connector *connector,
->  		struct drm_minor *minor);
-> 
->  /**
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
-> b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 1708b7cdc1b3..41a6f58916e6 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -1464,7 +1464,7 @@ void msm_dp_debugfs_init(struct msm_dp
-> *dp_display, struct drm_minor *minor)
->  	dev = &dp->pdev->dev;
-> 
->  	dp->debug = dp_debug_get(dev, dp->panel, dp->usbpd,
-> -					dp->link, &dp->dp_display.connector,
-> +					dp->link, dp->dp_display.connector,
->  					minor);
->  	if (IS_ERR(dp->debug)) {
->  		rc = PTR_ERR(dp->debug);
+
+
+
+
