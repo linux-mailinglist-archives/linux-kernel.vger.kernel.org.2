@@ -2,158 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5A942AC40
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A7442AC9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235042AbhJLSoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234973AbhJLSoH (ORCPT
+        id S234546AbhJLSzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:55:08 -0400
+Received: from leibniz.telenet-ops.be ([195.130.137.77]:60492 "EHLO
+        leibniz.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233551AbhJLSxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:44:07 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A782C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:42:05 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id h125so369347pfe.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wN8CEqu9IDhN0o8bgtb7CzSHPiAoXV5xxvj/l+eqo8c=;
-        b=YO5QWcxWa939WoPA4A04cnQQOESQqDbcYZ0LefOb+NhyG0OV3S+ksmjmE9biKAwBXE
-         dSrCBz3Hs2Hf7vjjlnq0MWXQnqEu1IJiK/+qAtvZKza3i83ZPIejzVzouNAtDspVHd3B
-         Uu2EBXG842Y2sISfzLUdzk7w2s6XI69NX5Fudvixn79eRoxlSMlyJlVs+bfSF35VPjqm
-         DLu99R/A7Adft3pLfThhfzDI8PGh5E7tEDAKA/wzfL3BgfBwc75qil6KWLyNMUVI1pmD
-         gx8WxLuqbaWLAk783vyPo6lvT7lPvGiiaMU6LbRxN0eB/H4OPfRBf+5T6kND/yYNpAzS
-         FA5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wN8CEqu9IDhN0o8bgtb7CzSHPiAoXV5xxvj/l+eqo8c=;
-        b=XMJzD1BqFnYFjJ5vNeuLMhl0DL+Hzvtsfmxg1ANnULN0i4NsCNbd+7Lfh36ZdRTgF9
-         HigLZclC3SiuP73cEAlQUykkhSoHrFGbHisgmRkqQ5gAv0u/BoWRRwHwPJiEDP6Du9zF
-         ChcBZMqmA1GeCmH72JM+1arlh/XbsZv3DbylkG5QMSeUuvctz7ODeZmKFTrLN0VI98Jr
-         6ir5a7IKE2Ee3VHqrgmysP2I/D43eLQi9KkgX3WfYkAfLjJS4T2fUG3Ek/rDFeWuJI4h
-         tkIOdgtpmlC5Ksc+Y1b7BMhIkcTzWDgB/B8UAYfMbbQgO5ul9XpfQSv3ZY6ET1vg4DEu
-         L8xA==
-X-Gm-Message-State: AOAM530I+IONH+zoRO1JITMQS5mnpEK49brVeGB7lCJoJHDlcLo8bomc
-        CsIblkXOMcjfH+NbE6IrO/vYVvdR1ys=
-X-Google-Smtp-Source: ABdhPJxduJAk6Xr98sXwk0uPwXHBuMn4GKm7PUtk0Vv2ad+dZdtFlIr+N2W/NtXxsMMhowCWGsWFeA==
-X-Received: by 2002:a05:6e02:14d3:: with SMTP id o19mr26151385ilk.156.1634063609658;
-        Tue, 12 Oct 2021 11:33:29 -0700 (PDT)
-Received: from samwise.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id x5sm2257999ioh.23.2021.10.12.11.33.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 11:33:29 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH 3/5] dyndbg: use alt-quotes in vpr-infos, not those user might use
-Date:   Tue, 12 Oct 2021 12:33:08 -0600
-Message-Id: <20211012183310.1016678-4-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211012183310.1016678-1-jim.cromie@gmail.com>
-References: <20211012183310.1016678-1-jim.cromie@gmail.com>
+        Tue, 12 Oct 2021 14:53:07 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by leibniz.telenet-ops.be (Postfix) with ESMTPS id 4HTPZD2lFfzMqhH6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 20:38:44 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9c93:91ff:d58:ecfb])
+        by andre.telenet-ops.be with bizsmtp
+        id 56ZW2600e0KW32a016ZWBn; Tue, 12 Oct 2021 20:33:34 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1maMag-004RTm-F6; Tue, 12 Oct 2021 20:33:30 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1maMaf-002j5H-Ls; Tue, 12 Oct 2021 20:33:29 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v7 02/21] dt-bindings: auxdisplay: ht16k33: Document Adafruit segment displays
+Date:   Tue, 12 Oct 2021 20:33:08 +0200
+Message-Id: <20211012183327.649865-3-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211012183327.649865-1-geert@linux-m68k.org>
+References: <20211012183327.649865-1-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-   echo format $str +p > control
+The Holtek HT16K33 LED controller is not only used for driving
+dot-matrix displays, but also for driving segment displays.
 
-can be finicky from within a script, `awith respect to quoting
-of input terms, so lets not complicate things by wrapping that input
-with either quoting char, using <%s> instead.
+Document compatible values for the Adafruit 7-segment[1] and
+14-segment[2] FeatherWing expansion boards with red displays.  According
+to the schematics, all other Adafruit 7-segment and 14-segment display
+backpack and FeatherWing expansion boards (including bare boards and
+boards fitted with displays) are compatible with these two boards.
 
-This draws a checkpatch warning on pr_cont() altered quoting.
-no functional changes.
+[1] https://www.adafruit.com/product/3108
+[2] https://www.adafruit.com/product/3130
 
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- lib/dynamic_debug.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+v7:
+  - No changes,
 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index e645807cb20a..75e702223730 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -132,7 +132,7 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
- 			fmtlen--;
- 	}
+v6:
+  - No changes,
+
+v5:
+  - Add Reviewed-by,
+
+v4:
+  - Combine compatible values for 7/14 segment displays into an enum,
+
+v3:
+  - Drop color property,
+
+v2:
+  - Fix type of color to uint32,
+  - "refresh-rate-hz" is still required for dot-matrix displays.
+
+Alternatives I considered:
+  1. Document the attached display type in a child node.
+     I.e. specify segment type, number of characters, and wiring.
+     Especially the latter would become really complex, due to the sheer
+     amount of possible wiring combinations.
+     Using this method, you also loose the ability to just connect a
+     display to an i2c bus, and instantiate the device from sysfs,
+     without using DT:
+
+	echo adafruit,3130 0x70 > /sys/class/i2c/i2c-adapter/.../new_device
+
+  2. Document all Adafruit 7-segment and 14-segment display backpack and
+     FeatherWing expansion boards.
+     This would lead to a myriad of compatible values:
+
+      - items:
+	  - enum:
+	      - adafruit,878      # 0.56" 4-Digit 7-Segment Display Backpack (Red)
+	      - adafruit,879      # 0.56" 4-Digit 7-Segment Display Backpack (Yellow)
+	      - adafruit,880      # 0.56" 4-Digit 7-Segment Display Backpack (Green)
+	      - adafruit,881      # 0.56" 4-Digit 7-Segment Display Backpack (Blue)
+	      - adafruit,1002     # 0.56" 4-Digit 7-Segment Display Backpack (White)
+	  - const: adafruit,877   # 0.56" 4-Digit 7-Segment Backpack
+	  - const: holtek,ht16k33
+
+      - items:
+	  - enum:
+	      - adafruit,1268     # 1.2" 4-Digit 7-Segment Display Backpack (Green)
+	      - adafruit,1269     # 1.2" 4-Digit 7-Segment Display Backpack (Yellow)
+	      - adafruit,1270     # 1.2" 4-Digit 7-Segment Display Backpack (Red)
+	  - const: adafruit,1271  # 1.2" 4-Digit 7-Segment Backpack
+	  - const: holtek,ht16k33
+
+      - items:
+	  - enum:
+	      - adafruit,1911     # 0.54" Quad Alphanumeric Display Backpack (Red)
+	      - adafruit,1912     # 0.54" Quad Alphanumeric Display Backpack (Blue)
+	      - adafruit,2157     # 0.54" Quad Alphanumeric Display Backpack (White)
+	      - adafruit,2158     # 0.54" Quad Alphanumeric Display Backpack (Yellow)
+	      - adafruit,2159     # 0.54" Quad Alphanumeric Display Backpack (Yellow-Green)
+	      - adafruit,2160     # 0.54" Quad Alphanumeric Display Backpack (Green)
+	  - const: adafruit,1910  # 0.54" Quad 14-segment Alphanumeric Backpack
+	  - const: holtek,ht16k33
+
+      - items:
+	  - enum:
+	      - adafruit,3106     # 0.56" 4-Digit 7-Segment FeatherWing Display (Blue)
+	      - adafruit,3107     # 0.56" 4-Digit 7-Segment FeatherWing Display (Green)
+	      - adafruit,3108     # 0.56" 4-Digit 7-Segment FeatherWing Display (Red)
+	      - adafruit,3109     # 0.56" 4-Digit 7-Segment FeatherWing Display (White)
+	      - adafruit,3110     # 0.56" 4-Digit 7-Segment FeatherWing Display (Yellow)
+	  - const: adafruit,3088  # 0.56" 4-Digit 7-Segment FeatherWing
+	  - const: holtek,ht16k33
+
+      - items:
+	  - enum:
+	      - adafruit,3127     # 0.54" Quad Alphanumeric FeatherWing Display (White)
+	      - adafruit,3128     # 0.54" Quad Alphanumeric FeatherWing Display (Blue)
+	      - adafruit,3129     # 0.54" Quad Alphanumeric FeatherWing Display (Green)
+	      - adafruit,3130     # 0.54" Quad Alphanumeric FeatherWing Display (Red)
+	      - adafruit,3131     # 0.54" Quad Alphanumeric FeatherWing Display (Yellow)
+	      - adafruit,3132     # 0.54" Quad Alphanumeric FeatherWing Display (Yellow-Green)
+	  - const: adafruit,3089  # 0.54" Quad 14-segment Alphanumeric FeatherWing
+	  - const: holtek,ht16k33
+---
+ .../bindings/auxdisplay/holtek,ht16k33.yaml   | 20 ++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml b/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+index 64ffff460026040f..6baf1200c9d8488e 100644
+--- a/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
++++ b/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+@@ -14,14 +14,21 @@ allOf:
  
--	v3pr_info("%s: func=\"%s\" file=\"%s\" module=\"%s\" format=\"%.*s\" lineno=%u-%u\n",
-+	v3pr_info("%s: func=<%s> file=<%s> module=<%s> format=<%.*s> lineno=%u-%u\n",
- 		 msg,
- 		 query->function ?: "",
- 		 query->filename ?: "",
-@@ -279,7 +279,7 @@ static int ddebug_tokenize(char *buf, char *words[], int maxwords)
- 		int i;
- 		pr_info("split into words:");
- 		for (i = 0; i < nwords; i++)
--			pr_cont(" \"%s\"", words[i]);
-+			pr_cont(" <%s>", words[i]);
- 		pr_cont("\n");
- 	}
+ properties:
+   compatible:
+-    const: holtek,ht16k33
++    oneOf:
++      - items:
++          - enum:
++              - adafruit,3108  # 0.56" 4-Digit 7-Segment FeatherWing Display (Red)
++              - adafruit,3130  # 0.54" Quad Alphanumeric FeatherWing Display (Red)
++          - const: holtek,ht16k33
++
++      - const: holtek,ht16k33     # Generic 16*8 LED controller with dot-matrix display
  
-@@ -419,7 +419,7 @@ static int ddebug_parse_query(char *words[], int nwords,
- 			if (parse_linerange(query, arg))
- 				return -EINVAL;
- 		} else {
--			pr_err("unknown keyword \"%s\"\n", keyword);
-+			pr_err("unknown keyword <%s>\n", keyword);
- 			return -EINVAL;
- 		}
- 		if (rc)
-@@ -449,7 +449,7 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
- 		pr_err("bad flag-op %c, at start of %s\n", *str, str);
- 		return -EINVAL;
- 	}
--	v3pr_info("op='%c'\n", op);
-+	v3pr_info("op=<%c>\n", op);
+   reg:
+     maxItems: 1
  
- 	for (; *str ; ++str) {
- 		for (i = ARRAY_SIZE(opt_array) - 1; i >= 0; i--) {
-@@ -531,7 +531,7 @@ static int ddebug_exec_queries(char *query, const char *modname)
- 		if (!query || !*query || *query == '#')
- 			continue;
+   refresh-rate-hz:
+     maxItems: 1
+-    description: Display update interval in Hertz
++    description: Display update interval in Hertz for dot-matrix displays
  
--		v2pr_info("query %d: \"%s\" mod:%s\n", i, query, modname ?: "*");
-+		v2pr_info("query %d: <%s> mod:<%s>\n", i, query, modname ?: "*");
+   interrupts:
+     maxItems: 1
+@@ -44,7 +51,14 @@ properties:
+ required:
+   - compatible
+   - reg
+-  - refresh-rate-hz
++
++if:
++  properties:
++    compatible:
++      const: holtek,ht16k33
++then:
++  required:
++    - refresh-rate-hz
  
- 		rc = ddebug_exec_query(query, modname);
- 		if (rc < 0) {
-@@ -1000,7 +1000,7 @@ static int ddebug_dyndbg_param_cb(char *param, char *val,
- static int ddebug_dyndbg_boot_param_cb(char *param, char *val,
- 				const char *unused, void *arg)
- {
--	vpr_info("%s=\"%s\"\n", param, val);
-+	vpr_info("%s=<%s>\n", param, val);
- 	return ddebug_dyndbg_param_cb(param, val, NULL, 0);
- }
+ additionalProperties: false
  
-@@ -1011,7 +1011,7 @@ static int ddebug_dyndbg_boot_param_cb(char *param, char *val,
-  */
- int ddebug_dyndbg_module_param_cb(char *param, char *val, const char *module)
- {
--	vpr_info("module: %s %s=\"%s\"\n", module, param, val);
-+	vpr_info("module: %s %s=<%s>\n", module, param, val);
- 	return ddebug_dyndbg_param_cb(param, val, module, -ENOENT);
- }
- 
-@@ -1030,7 +1030,7 @@ int ddebug_remove_module(const char *mod_name)
- 	struct ddebug_table *dt, *nextdt;
- 	int ret = -ENOENT;
- 
--	v2pr_info("removing module \"%s\"\n", mod_name);
-+	v2pr_info("removing module <%s>\n", mod_name);
- 
- 	mutex_lock(&ddebug_lock);
- 	list_for_each_entry_safe(dt, nextdt, &ddebug_tables, link) {
 -- 
-2.31.1
+2.25.1
 
