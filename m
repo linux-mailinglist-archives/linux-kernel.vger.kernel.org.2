@@ -2,76 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AE942A6E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E7542A6EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237184AbhJLOPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:15:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25567 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236953AbhJLOPh (ORCPT
+        id S237196AbhJLOP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236943AbhJLOP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:15:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634048015;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BzTrRfXXNk8+PLvonfcHlML3JOVXOT6Q8/EMkco8wbY=;
-        b=cBByThrrnAx8WOGUenhiJhoN74tVjE692iUz0mOnoXDuciyMQ9ofIh8I5LIHd6NP4rHVUk
-        SpjqukgZnU61OJw200pSmQAVyAtAlJQtbPnXZaYORIAzQxucmBjPenoE/Zus0r8Uz0ik4M
-        4s6haU2bFhvCtdDFmUJiap779dkhjPw=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-HV-7YYE1M925D2QiQjtaaw-1; Tue, 12 Oct 2021 10:13:33 -0400
-X-MC-Unique: HV-7YYE1M925D2QiQjtaaw-1
-Received: by mail-wr1-f69.google.com with SMTP id h11-20020adfa4cb000000b00160c791a550so15655578wrb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:13:33 -0700 (PDT)
+        Tue, 12 Oct 2021 10:15:57 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC45FC061570;
+        Tue, 12 Oct 2021 07:13:55 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id y1so13581025plk.10;
+        Tue, 12 Oct 2021 07:13:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NnwqvTRj0woh3E8EshCqUWUgR2UVN04yKDTc5wj96cI=;
+        b=GI9XXj/5uxLbMyp8Z4wuPimGYeSjPoyFsqA33pX229q4NEccEYmPA6gFvQecPx7q+Q
+         0XPLaV2/clb8higyTzATpmmijhDbfDQm4SHSRgETl0tg2MuXImkxL86x3mZ6e2kfbeu/
+         zhSQim6hIpTEv/3i4UzQ7JhMu0N7pBTZ1vG00dymbZxzHAz7oJ3Ph9mTQ0ONYJweoO3V
+         fkwhHPCvL0+xm+XZdrQxTh/9qJt0CW5Q+JyufvRsSG08Ql+IxZAbcU/zgHwgwZGFMq1S
+         GgIjGapdd7tvC81KRCOWnIee3+Y2+vTxe5wt8h+NxgiZAVNaJj+Ees1TDR63qealCEkU
+         ag0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=BzTrRfXXNk8+PLvonfcHlML3JOVXOT6Q8/EMkco8wbY=;
-        b=Zav7gTDh4ZaghDFHWVbkTirAvpMwqolJaHAMHjEY4iguvDmqAj0wFM5Hw8AEFgdq1V
-         +wDsU/R0gFzFLbrMJn4s9JjETORS66YpkFOVRiIWz+BGuLficNqvR82u61F/SqxGjdn+
-         ruLg4jrKY6Fcci3UvUEZ/5QCP6fGCTbNlDZzPT24AJ+kPEeovDG6k4IyuLSni+EpM4tY
-         vXKPa/+cijlqDqZ6NhzHCnecIAs9VQXhSLFZ0zWxo5W3s3L4LJ62lVjBiGsHYfL1schV
-         45lHx8hk7jwds3Vhp+AN2JUQ29IJe6Kv+gPzFaZqdyPs9xmEBg/4GkSmM8baSk+AU7Mw
-         C6tg==
-X-Gm-Message-State: AOAM533hBbQmGAUz9LgZYdEyIlInEBFkYS7kTV7EN0zOvlIqT3i8YMpT
-        5EXSb4a4hNSLnDQoJGoJwB0FcAuePGS8rvpPCorX87tskgsdYLF1M+LsDVUi8GvIdfMod1BG7Mt
-        pvJuJPsCf2X4f/6hP3Eee1cff
-X-Received: by 2002:adf:9b97:: with SMTP id d23mr31775892wrc.53.1634048012782;
-        Tue, 12 Oct 2021 07:13:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzDOcPDg93RfEOergksAHpsDa13Q8GcPCVdb5DKzHu8nWEQyeen+YOwraUjsQmj973pkAC+qw==
-X-Received: by 2002:adf:9b97:: with SMTP id d23mr31775866wrc.53.1634048012603;
-        Tue, 12 Oct 2021 07:13:32 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6a12.dip0.t-ipconnect.de. [91.12.106.18])
-        by smtp.gmail.com with ESMTPSA id b19sm2797722wmb.1.2021.10.12.07.13.31
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NnwqvTRj0woh3E8EshCqUWUgR2UVN04yKDTc5wj96cI=;
+        b=6pxVpte/XaycQXRL0EYUedG9/enf5kScALIEnF8SaoZnDO5qxuNhxf0gFr1WkyAMmU
+         Xww2Uufwvuy0OxqDr2ZoXGvFJq+SzmsjeBmJevFahGCxOqT4LfXE6BSAIBE1madwtDw3
+         XxwA29SlJXjthybm8cRL3be58bzVsVa8aMGKPK0WSNuE2J7txtR55QvRPB4DRW8MAsvI
+         Em4yk7cxKXqRSFtJhjcaLt3mtTafrhTKaesm+URT1SjuQkFCwz3gp9IfE+ogvyVqc76I
+         QYYHzBcElJ9eM7w18tWqbM7VoGCPfdobvJc7p2JrTJ5BJKoddNG4TWHHyRcLrqVujwg4
+         yUCw==
+X-Gm-Message-State: AOAM531T+jeQsP36xezO6Sc+87ffiUlZGUYjFNUJKbwqtC2Og/u0v29Q
+        M+xEqvpjGlR6x0Yv9MB/b6o=
+X-Google-Smtp-Source: ABdhPJwJvdOQ0jPl3L9eYjYXV/rgGLEfs79cpa7JfWJIAUgeaN6stVSAdOP2EQqyAjt0k+CMZ/SJVg==
+X-Received: by 2002:a17:903:1c6:b0:13f:2b8:afe8 with SMTP id e6-20020a17090301c600b0013f02b8afe8mr30748592plh.81.1634048035338;
+        Tue, 12 Oct 2021 07:13:55 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
+        by smtp.gmail.com with ESMTPSA id n202sm11477588pfd.160.2021.10.12.07.13.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 07:13:31 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] mm: use pidfd_get_task()
-To:     Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Bobrowski <repnop@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Jan Kara <jack@suse.cz>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Minchan Kim <minchan@kernel.org>
-References: <20211011133245.1703103-1-brauner@kernel.org>
- <20211011133245.1703103-3-brauner@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <b91f642b-2b64-a60c-89e2-0317164c7b70@redhat.com>
-Date:   Tue, 12 Oct 2021 16:13:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 12 Oct 2021 07:13:54 -0700 (PDT)
+Subject: Re: [PATCH V7 5/9] x86/sev-es: Expose __sev_es_ghcb_hv_call() to call
+ ghcb hv call out of sev code
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com,
+        konrad.wilk@oracle.com, hch@lst.de, robin.murphy@arm.com,
+        joro@8bytes.org, parri.andrea@gmail.com, dave.hansen@intel.com,
+        Hikys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, davem@davemloft.net, kuba@kernel.org,
+        gregkh@linuxfoundation.org, arnd@arndb.de, jroedel@suse.de,
+        brijesh.singh@amd.com, Tianyu.Lan@microsoft.com, pgonda@google.com,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        rppt@kernel.org, tj@kernel.org, aneesh.kumar@linux.ibm.com,
+        saravanand@fb.com, hannes@cmpxchg.org, rientjes@google.com,
+        michael.h.kelley@microsoft.com
+References: <20211006063651.1124737-1-ltykernel@gmail.com>
+ <20211006063651.1124737-6-ltykernel@gmail.com>
+ <9b5fc629-9f88-039c-7d5d-27cbdf6b00fd@gmail.com> <YWRyvD413h+PwU9B@zn.tnic>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <92cff62b-806d-2762-7a5d-922843cff3f2@gmail.com>
+Date:   Tue, 12 Oct 2021 22:13:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20211011133245.1703103-3-brauner@kernel.org>
+In-Reply-To: <YWRyvD413h+PwU9B@zn.tnic>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -79,35 +85,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.10.21 15:32, Christian Brauner wrote:
-> From: Christian Brauner <christian.brauner@ubuntu.com>
+Sure. Will do that. Thanks.
+
+On 10/12/2021 1:22 AM, Borislav Petkov wrote:
+> On Mon, Oct 11, 2021 at 10:42:18PM +0800, Tianyu Lan wrote:
+>> Hi @Tom and Borislav:
+>>       Please have a look at this patch. If it's ok, could you give your ack.
 > 
-> Instead of duplicating the same code in two places use the newly added
-> pidfd_get_task() helper. This fixes an (unimportant for now) bug where
-> PIDTYPE_PID is used whereas PIDTYPE_TGID should have been used.
-
-What would have been the effect of the BUG? Is it worth Fixes: or better 
-even separating out the fix?
-
+> I needed to do some cleanups in that area first:
 > 
-> Link: https://lore.kernel.org/r/20211004125050.1153693-3-christian.brauner@ubuntu.com
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: Matthew Bobrowski <repnop@google.com>
-> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Reviewed-by: Matthew Bobrowski <repnop@google.com>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> ---
-> /* v2 */
-> unchanged
-
-Acked-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+> https://lore.kernel.org/r/YWRwxImd9Qcls/Yy@zn.tnic
+> 
+> Can you redo yours ontop so that you can show what exactly you need
+> exported for HyperV?
+> 
+> Thx.
+> 
