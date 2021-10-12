@@ -2,108 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8942342A4B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0417F42A4BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236405AbhJLMlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:41:36 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:45101 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232900AbhJLMle (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:41:34 -0400
-Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MTikV-1mAonu1vu1-00U6II for <linux-kernel@vger.kernel.org>; Tue, 12 Oct
- 2021 14:39:31 +0200
-Received: by mail-wr1-f46.google.com with SMTP id u18so66732874wrg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:39:31 -0700 (PDT)
-X-Gm-Message-State: AOAM533HVANlpAHPe4vgmKgZTj1HMMGvTTZVRlU0aDNdx4b1KziGDRsh
-        zqw5smkRPwZQZLOX/idTmE/0sN+HneqfUzciQtk=
-X-Google-Smtp-Source: ABdhPJycDrwq9fjLRevQV4F9PRVUimkG5w4H6XTXXjDWasGIzvcz5dzzU9Lb1ifEFm7lEgIcQzkIsOoTK7wd5WS9ZDc=
-X-Received: by 2002:adf:a3da:: with SMTP id m26mr30755774wrb.336.1634042371064;
- Tue, 12 Oct 2021 05:39:31 -0700 (PDT)
+        id S236445AbhJLMnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 08:43:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232900AbhJLMns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 08:43:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D517060E97;
+        Tue, 12 Oct 2021 12:41:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634042507;
+        bh=sGn6oX7A/cABQ/SZVLhoSRBwTYLT5p/BpAYt7PeiP3Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bQ9HfOz7uy2lfWuiJiFxP6Pa5lGDOIqx3P9OAeW6hIh7NySdnIte7vFU7m8COMvRa
+         Vy1ZlE/Zu2ipSuyfqcfWa6CVChucrz7z4o/MSDLogUWHP+rV+nNtPa6DGA0EvuFpIr
+         CFaw1BtOzugdUiSitKs7+EFJcKQDchr2CtwVXjO8=
+Date:   Tue, 12 Oct 2021 14:41:44 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
+Message-ID: <YWWCiLE6id43uJjp@kroah.com>
+References: <YWLbEdHUE3k/i0fe@kroah.com>
+ <s5hily46316.wl-tiwai@suse.de>
+ <YWRYD7fphcaWKEOG@kroah.com>
+ <s5h7dej4kbe.wl-tiwai@suse.de>
+ <YWRy+UoG1YHcQ7UM@kroah.com>
+ <s5ho87u3dcb.wl-tiwai@suse.de>
 MIME-Version: 1.0
-References: <20210726140001.24820-1-nikita.shubin@maquefel.me>
- <20210726140001.24820-9-nikita.shubin@maquefel.me> <ed557882a9530f2fd6245e34657be62399df76bc.camel@gmail.com>
- <CAK8P3a0Y4uwX4B10d5CR3WjZ1qXAqhKJGJ0EhUEF60uB1q3H9A@mail.gmail.com>
- <e50f2da7af1fa6f02fd413081fa5762837b86895.camel@gmail.com>
- <CAK8P3a3jAdYQerE03O5s2_PBUqt5QPCPSQxxs54E7-V=0HVBXA@mail.gmail.com>
- <YWVixgDQtJ8EGbwo@sirena.org.uk> <7f7acc8986aca1c895de732297b2995d05ec23e7.camel@gmail.com>
- <YWVmvHsEkPFkrD/R@sirena.org.uk> <7ec1690ea0ca9f6538b8228f78e62b2f38405fd4.camel@gmail.com>
- <YWVvyKq4W4VShiRU@sirena.org.uk> <00781d5212bb4015064d07e762ae0695d16e834e.camel@gmail.com>
- <CAMuHMdUCpfpORD9r28r1hdtdKMPyvXtkYZQsiBCfM8WDcLYKFw@mail.gmail.com>
-In-Reply-To: <CAMuHMdUCpfpORD9r28r1hdtdKMPyvXtkYZQsiBCfM8WDcLYKFw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 12 Oct 2021 14:39:13 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2cvd+od4+UwwrBQ=7F3+cpEAMFz9tBfsZ=nR1Ak1ppwQ@mail.gmail.com>
-Message-ID: <CAK8P3a2cvd+od4+UwwrBQ=7F3+cpEAMFz9tBfsZ=nR1Ak1ppwQ@mail.gmail.com>
-Subject: Re: [PATCH v2 8/8] ep93xx: clock: convert in-place to COMMON_CLK
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Mike Rapoport <rppt@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:oYkoYGSrU5UsWg9p053GUIhLF5WJN613Ak1mJiMtpSg1WHcXIw3
- J6yVJ4PTPBIa9iSlWICYdFT0dAxl+fflfc+ZhZdIy1yTbjLaj61R+KKd39ECjio2qJawriv
- cluJelB3vtqbrunq+MDyR43lRYn97fsGt7VrsBMMufGTuAX8RPKvXbE381ODWcUYinphlxh
- oMZuHF0sCgZRCWKLoJLrw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:N8hvaeEeIjE=:QkbNzGOWTNlFlmbcw5hiM8
- 10wZimC88zSWV+xs+ZEArj9VseOUXJR/hz3Gc9gDq814VzidWsQKqb3rBtkrRtq2UAOjAy/4n
- tc0JTav40YtHO491ZIAHJs24mE6RTmTXQsfWWdnq4XJKpORbpoe6DnbwayttHHUZ6Sol6zZVo
- yAhJ7lau4lZ+CNGRlWcCo7bz9HPCbXJvzZ97OKNx1rC9FN2A9lAqAl2ri6hk97cYMjjoyCObn
- DLrhddqYg2aWttwmiNmxpPpKxfSCqcFrglyb/Pk+AY/HlIrbeJMGtXob0TkrSSnKn0ownzfjZ
- 1r6gC6RVDv1WgTxMCQIfheYa8k76coz82o5rZ4Jztqgo+jgu/0IpFyqS8/X1YAU64A5Y0MXpZ
- +1Ze0pg40Vugsi/3mpUilcI5c8l6ejQQePizg/J15lq7ExQTA40SHS7JIuLgsbkEzkdmKDUb+
- 07mqEevSKW6rzeZI2Vl90Luqd8iMIQ9aG01pQQOoG+zZJq0kE3H9QUG0miC7FYuWQ9OrLm6UK
- uCzi8y94Es1fPz1rex73/ujPjNXtpc99WLpAFOYvmRlt4CxdSdk9sonOGcXb1NVVMCDnAnOTY
- Q8w9KbEoRdh6RsGADz0u3oK4bvqudNUKrfNjmWIDtEDVx7yomzj9jWuRz/zR1iWaNgDdGP9k/
- sQ/uuL+1ywTeRCMo5uGZQ+UmBu74GnD+6G9HuJtdn0EBl0/hzFjjyy5b2rIt0YGuThM3TOu4n
- LXQB8jcG/nEJnnivIH7lCymjR51F9ymWajuTSA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5ho87u3dcb.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 1:30 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Tue, Oct 12, 2021 at 1:26 PM Alexander Sverdlin <alexander.sverdlin@gmail.com> wrote:
-> > On Tue, 2021-10-12 at 12:21 +0100, Mark Brown wrote:
-> > >  Looks like Arnd is ready to pick it, and the only dependency which is
-> > > > not yet merged into Linus's tree is "ASoC: cirrus: i2s: Prepare clock before using it".
-> > >
-> > > OK, so I'm still unclear as to what's going on here.  Arnd's mail where
-> > > I got copied into this subthread suggested that things were getting
-> > > merged by individual trees which is generally easiest?
-> >
-> > I only wanted to ask you to pick ASoC patch, I can resend it if you'd like.
-> > It has no dependencies and all the previous patches were already picked
-> > and are visible in the Linus's master.
->
-> So it might be better for Arnd to pick up the ASoC patch, too.
-> Else he has to postpone the final CCF conversion patch one more cycle,
-> to avoid regressions.
+On Tue, Oct 12, 2021 at 09:35:16AM +0200, Takashi Iwai wrote:
+> On Mon, 11 Oct 2021 19:23:05 +0200,
+> Greg Kroah-Hartman wrote:
+> > 
+> > On Mon, Oct 11, 2021 at 06:07:01PM +0200, Takashi Iwai wrote:
+> > > Could you also post the contents of /proc/asound/card*/usbmixer (only
+> > > for the corresponding device), too?
+> > 
+> > Sure, here it is:
+> > 
+> > USB Mixer: usb_id=0x30be0101, ctrlif=0, ctlerr=0
+> > Card: Schiit Audio Schiit Hel at usb-0000:47:00.1-2.2, high speed
+> >   Unit: 5
+> >     Control: name="Mic - Input Jack", index=0
+> >     Info: id=5, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> >   Unit: 7
+> >     Control: name="Speaker - Output Jack", index=0
+> >     Info: id=7, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> >   Unit: 13
+> >     Control: name="PCM Playback Switch", index=0
+> >     Info: id=13, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
+> >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> >   Unit: 17
+> >     Control: name="Mic Capture Switch", index=0
+> >     Info: id=17, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
+> >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> >   Unit: 18
+> >     Control: name="Clock Source 18 Validity", index=0
+> >     Info: id=18, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> >   Unit: 22
+> >     Control: name="Clock Source 22 Validity", index=0
+> >     Info: id=22, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> 
+> Hm, I expected more exotic control that failed, but it was Mic Capture
+> Switch, which should be treated normally.
+> 
+> Could you try the patch below?  This will still show other warning
+> messages, but it'll forcibly initialize the mixer elements at probe
+> time, and the rest should work.
+> 
+> Once after it's confirmed to work, we may shut up the device warnings
+> with a quirk.
 
-Right, if everything else is in mainline, then having the last two patches
-in the soc tree gets the job done the quickest.
+Only one warning message shows up, here's the dmesg with this patch
+applied:
 
-If any of the other patches are only in linux-next but not in mainline yet,
-then it seems best for Mark to take the ASoC/i2s patch for v5.16, and I'll
-take the last one for v5.17, or maybe queue it separately from the rest
-and send that in the second half of the 5.16 merge window after everything
-else has landed.
 
-       Arnd
+[Oct12 14:39] usb 7-2.2: new high-speed USB device number 10 using xhci_hcd
+[  +0.123157] usb 7-2.2: New USB device found, idVendor=30be, idProduct=0101, bcdDevice= 1.02
+[  +0.000009] usb 7-2.2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+[  +0.000003] usb 7-2.2: Product: Schiit Hel
+[  +0.000002] usb 7-2.2: Manufacturer: Schiit Audio
+[  +0.339785] usb 7-2.2: 17:0: failed to get current value for ch 0 (-32)
+[  +0.020373] input: Schiit Audio Schiit Hel as /devices/pci0000:40/0000:40:01.1/0000:41:00.0/0000:42:08.0/0000:47:00.1/usb7/7-2/7-2.2/7-2.2:1.3/0003:30BE:0101.000B/input/input24
+[  +0.056868] hid-generic 0003:30BE:0101.000B: input,hidraw6: USB HID v1.00 Device [Schiit Audio Schiit Hel] on usb-0000:47:00.1-2.2/input3
+
+
+I don't see a "mic capture switch" on this device, but maybe it triggers
+when I plug a mic into the microphone port, which is currently empty?
+
+thanks,
+
+greg k-h
