@@ -2,134 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AC342AC10
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAE642AC16
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234150AbhJLShO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:37:14 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:41784 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233972AbhJLShM (ORCPT
+        id S233554AbhJLSgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:36:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46858 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233486AbhJLSgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:37:12 -0400
-Received: by mail-wr1-f44.google.com with SMTP id t2so206117wrb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+MzK5n1Jhif+mQxJnLglldcWXS1nPzxCkrew0qXtEOU=;
-        b=qn1yIPH7igXgUYvJyNf+lMA5Na1WkDrCtZvVkXDSLw3RYsheB/SjL7h3oe/8VfJRM6
-         swQ+pEZhKhXRLK0J7GjaKAw8HyX4RQL9VuhdDJTaw8WEEoFtv3LceihfxBKTEDW1wWlC
-         sq9V5PZjA8G/NC1fEC2w00TP3lC+KxQbc7SSQhuj568escPq5duCyLxSNuCPu0umt3bs
-         YfDykx8uhUghunO2sbCrnjf+oXClI/6o6kZHLmFv3fSsihcvO2EQKE2JcwNHjRoR6yjz
-         e2QWFe5SRnH8cPWNhSD2oK2Xaj6RJsh4PJQqiZPF1BnGyCgSFE3qZOWMQfT9+yo4rqMt
-         yGIw==
+        Tue, 12 Oct 2021 14:36:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634063649;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nbgsOsSSo9Yem7q4TZdpOJzLhRx02NYo3rwP+kVjrbw=;
+        b=TUbYBc46z9KklrUPtJF+vw/jBIkY8pMr+TuLznxDbo3bFA6AmA7UfZgwcKCpeFgxJasmDw
+        UrlzykWb56Xx1q5CYvcVbZgWoAt9LE+WxN6UvwCnUbamtZIg+x6et24JIKqHqbjhbBVU1V
+        LFgS5cZE+h38viOJALnk9KaNwxsfWQA=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-91-TvePjk6vMJ6_vqUPbJKFPQ-1; Tue, 12 Oct 2021 14:34:08 -0400
+X-MC-Unique: TvePjk6vMJ6_vqUPbJKFPQ-1
+Received: by mail-pj1-f71.google.com with SMTP id u13-20020a17090a4bcd00b00198e965f8f4so2062769pjl.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:34:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+MzK5n1Jhif+mQxJnLglldcWXS1nPzxCkrew0qXtEOU=;
-        b=NRhBMmdulvy7jWdXKiVpOsTbCtnaGOvd/eaZ2YNcL3yxRc36LYZBPEqRuIbfg83Y+u
-         KgVotamZ9nHfZI1fI27psfn6Ck77+G3vHcfTET/1qYaxwSA3s5ayRiAQA4WHGGurG646
-         MZdOYb93uwn1z5HrmI7ReNeI72EvFVSSwU7wH1K1HsU/X0OjOPgn+cBySVoNCrczu7x+
-         U+YV6ESN2a/wSS/s5J7xOLTcVxj3UlSJJPx/wWByE+jLSMXnVyNcc4c5jXBsYt70fEa6
-         pKrIm2kSF5bxa9LSjwim7ZauHEKRzXFOasI0qHmuoHSxv7+JkGHcZ9IjSyCQVOvqn8TA
-         0gdA==
-X-Gm-Message-State: AOAM5301Q8bvLZeMB9ya7PbbIze5hvv9hamJyf5L1ahL6+jOVWUPqtIj
-        iKiclQQG1bvsQIV+cTJFK09b7A==
-X-Google-Smtp-Source: ABdhPJzE2frHKu4EaDqt6/zHRBoiXTrb/eEMPkovNnZJcaC+XoHGHrBMDZtJYnqBgCnZDk55XC5iow==
-X-Received: by 2002:a7b:c4c8:: with SMTP id g8mr7525574wmk.101.1634063611193;
-        Tue, 12 Oct 2021 11:33:31 -0700 (PDT)
-Received: from google.com ([95.148.6.175])
-        by smtp.gmail.com with ESMTPSA id c7sm4759799wmq.13.2021.10.12.11.33.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nbgsOsSSo9Yem7q4TZdpOJzLhRx02NYo3rwP+kVjrbw=;
+        b=nJlczz1kJMAi39tbv8wOWbvHoeRiLgNEEIgWG/vFtL6iHlYIRYDV+v++TMlIo4oQG7
+         ZTtx80+COQZzjMaxfSR66mnLG+ws9ufLfa+Pl+osaDSYBb9cKkFCsTkKgDQZpni14KXA
+         ZVolAhJk3U5A2UYf+/cw97Lw2pvc8FLkSNY+IhhjrwGL4wctGgq4TgEBzkzR99xpbPYn
+         N4+rTsC0/uEzAxBCMZX7SC48jy+kZGTE2NGpgkkt0RiFi9Rofo3yHooPvU1GIwsKlXg0
+         XQWJ0ZoHGw+F1AsnxLQlAQjS1RDA0a+ET3CyY1+HJPuS2YFNFRrSXCLzwE5MMlrwTGAc
+         dNcQ==
+X-Gm-Message-State: AOAM531yUmAsYXEQxzlT1/ikOcgYuE5OhLx03DA0zaJIuTgXCdcmX7WU
+        cbhmX8KwegJ7r2o4Xxq5WuebJld5jC2wH7iekznnenuoR3AVzaxK9aSYRAMaTHa3PihI6Jn2Vyl
+        YyMJIg9Mnk9VyolfD4VDaMSHp
+X-Received: by 2002:a63:4743:: with SMTP id w3mr23574438pgk.245.1634063647124;
+        Tue, 12 Oct 2021 11:34:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxYV7ys83DL9nO+JaPOB7MrYoWsFwBT15nWiNWaKVgwPs7OrtAs4HQB9269x7iDVWU1Btmyvw==
+X-Received: by 2002:a63:4743:: with SMTP id w3mr23574406pgk.245.1634063646889;
+        Tue, 12 Oct 2021 11:34:06 -0700 (PDT)
+Received: from samantha.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b10sm11617706pfi.122.2021.10.12.11.33.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 11:33:30 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 19:33:28 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mfd: qcom-spmi-pmic: Document eight more PMICs to
- binding
-Message-ID: <YWXU+LDZowd4iXcW@google.com>
-References: <20211005024812.2038249-1-bjorn.andersson@linaro.org>
- <YWWfkyoV0rF4C4PP@google.com>
- <YWXACBenQ4xrBZvY@builder.lan>
+        Tue, 12 Oct 2021 11:34:06 -0700 (PDT)
+From:   wefu@redhat.com
+To:     anup.patel@wdc.com, atish.patra@wdc.com, palmerdabbelt@google.com,
+        guoren@kernel.org, christoph.muellner@vrull.eu,
+        philipp.tomsich@vrull.eu, hch@lst.de, liush@allwinnertech.com,
+        wefu@redhat.com, lazyparser@gmail.com, drew@beagleboard.org
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
+        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
+        guoren@linux.alibaba.com, arnd@arndb.de, wens@csie.org,
+        maxime@cerno.tech, dlustig@nvidia.com, gfavor@ventanamicro.com,
+        andrea.mondelli@huawei.com, behrensj@mit.edu, xinhaoqu@huawei.com,
+        huffman@cadence.com, mick@ics.forth.gr,
+        allen.baum@esperantotech.com, jscheid@ventanamicro.com,
+        rtrauben@gmail.com, Fu Wei <fu.wei@linaro.org>
+Subject: [PATCH 0/2] riscv: Add RISC-V svpbmt extension supports
+Date:   Wed, 13 Oct 2021 02:33:42 +0800
+Message-Id: <20211012183344.105637-1-wefu@redhat.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YWXACBenQ4xrBZvY@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021, Bjorn Andersson wrote:
+From: Fu Wei <fu.wei@linaro.org>
 
-> On Tue 12 Oct 09:46 CDT 2021, Lee Jones wrote:
-> 
-> > On Mon, 04 Oct 2021, Bjorn Andersson wrote:
-> > 
-> > > Update the binding with eitght more SPMI PMIC compatibles found in the
-> > 
-> > Spell check.
-> > 
-> 
-> Bummer...
-> 
-> > > PMIC info list in the Qualcomm socinfo driver.
-> > > 
-> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt | 8 ++++++++
-> > >  1 file changed, 8 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> > > index 5ef79bf3d035..1d2b5f067556 100644
-> > > --- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> > > +++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> > > @@ -29,6 +29,8 @@ Required properties:
-> > >                     "qcom,pm8916",
-> > >                     "qcom,pm8004",
-> > >                     "qcom,pm8909",
-> > > +                   "qcom,pm8028",
-> > > +                   "qcom,pm8901",
-> > >                     "qcom,pm8950",
-> > >                     "qcom,pmi8950",
-> > >                     "qcom,pm8998",
-> > > @@ -38,6 +40,12 @@ Required properties:
-> > >                     "qcom,pmk8350",
-> > >                     "qcom,pm7325",
-> > >                     "qcom,pmr735a",
-> > > +                   "qcom,pm8150",
-> > > +                   "qcom,pm8150l",
-> > > +                   "qcom,pm8150b",
-> > > +                   "qcom,pmk8002",
-> > > +                   "qcom,pm8150c",
-> > > +                   "qcom,smb2351",
-> > >                     or generalized "qcom,spmi-pmic".
-> > >  - reg:             Specifies the SPMI USID slave address for this device.
-> > >                     For more information see:
-> > 
-> > Is there any reason why these can't be in lexicographical order?
-> > 
-> 
-> Definitely not, both this list and the list compatible list in the
-> driver would be better of sorted. I just didn't want to sort and add the
-> entries in a single commit.
-> 
-> Do you want me to respin this, adding two patches that sort the
-> elements? Or will you fix my awesome spelling of 8 above and I send you
-> the patches that shuffles the entries?
+This patch follows the standard pure RISC-V Svpbmt extension in 
+privilege spec to solve the non-coherent SOC DMA synchronization
+issues.
 
-If you can fix the spelling and send the whole set, I'll apply it in
-one go.
+Wei Fu (2):
+  dt-bindings: riscv: Add mmu-supports with svpbmt
+  riscv: Add RISC-V svpbmt supports
+
+ .../devicetree/bindings/riscv/cpus.yaml       |  5 +++
+ arch/riscv/include/asm/fixmap.h               |  2 +-
+ arch/riscv/include/asm/pgtable-64.h           |  8 ++--
+ arch/riscv/include/asm/pgtable-bits.h         | 41 ++++++++++++++++++-
+ arch/riscv/include/asm/pgtable.h              | 39 ++++++++++++++----
+ arch/riscv/kernel/cpufeature.c                | 32 +++++++++++++++
+ arch/riscv/mm/init.c                          |  5 +++
+ 7 files changed, 117 insertions(+), 15 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.4
+
