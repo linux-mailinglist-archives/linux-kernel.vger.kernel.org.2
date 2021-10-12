@@ -2,289 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29F842A5E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED2D42A5D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236997AbhJLNlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:41:11 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49138 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236994AbhJLNlH (ORCPT
+        id S236978AbhJLNkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:40:40 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:55692 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233296AbhJLNk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:41:07 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19CC1jl7006720;
-        Tue, 12 Oct 2021 09:38:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=JdF3PyMzHVdIeottPX4XsVKf2P4Vtqm36fHzXHbLZ2I=;
- b=nsHqwGFUAXiGfk6Bnb9TN3dRtLfMZHg0IjyKiL/uVdrwkzWRINSbynvgyMckzucdiNva
- qWcSlesN7W8daKYcy3YnjG63lDmtP4xTg6Ft2nD2Cx/vVm+GRaJnpXjIMSKS3Cjqdk2l
- V8/yfbfok/ap/LHDKKUZelrbufm/2Coh0mtUGPp3PwwYvd+pVdfCZwzzc7t1T1S7Dz/S
- VCCXSFBkG47WvsyC3GSMR7uSFuyvdTWJpkku2AXe4NbdS4vkWx1yLf0K6wgmweZEl3Qv
- 4LSPZ1no8YO06NDWUPPlGVWVpRaF7iheHqTcbuzc2wiu6Li2Rii9G4tgBzPw0OlQeoVc 6w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bna0rtd2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 09:38:48 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19CD8SGP014554;
-        Tue, 12 Oct 2021 09:38:47 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bna0rtd1y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 09:38:47 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19CDRPQF011096;
-        Tue, 12 Oct 2021 13:38:46 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 3bk2qa151g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 13:38:45 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19CDcVhU50332016
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 13:38:31 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2995E11C066;
-        Tue, 12 Oct 2021 13:38:31 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B8A2611C087;
-        Tue, 12 Oct 2021 13:38:26 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Oct 2021 13:38:26 +0000 (GMT)
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: [PATCH 4/4] samples: add s390 support for ftrace direct call samples
-Date:   Tue, 12 Oct 2021 15:38:02 +0200
-Message-Id: <20211012133802.2460757-5-hca@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211012133802.2460757-1-hca@linux.ibm.com>
-References: <20211012133802.2460757-1-hca@linux.ibm.com>
+        Tue, 12 Oct 2021 09:40:29 -0400
+Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id ECDA7F1;
+        Tue, 12 Oct 2021 15:38:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634045903;
+        bh=N8uxQ9NyAxZH3uOWCc3RVKPEmZO/5GjhQNo8ppobBpk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=NOXMlHHmC9r1YQqn3/AS+C/ke3PWHkWUxqX0i63bDOek50htnnEa+TPKkx5eQgix1
+         clTSeohfenCBS0rntuuMMhAeABgnLSXILOXfDmbbr8kGSgghIYbyhQKk/iuplJPbAO
+         48tcOenYnYWUTnj7Liwsw/HcphUSzSDSe29CgDFE=
+Subject: Re: [PATCH v5 5/8] drm/omap: Add global state as a private atomic
+ object
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, khilman@baylibre.com,
+        Benoit Parrot <bparrot@ti.com>
+References: <20210923070701.145377-1-narmstrong@baylibre.com>
+ <20210923070701.145377-6-narmstrong@baylibre.com>
+ <2609ca32-90e8-1335-2769-14dcbcdfafde@ideasonboard.com>
+ <ab06e379-1579-2352-3525-dbdca6a94f9b@baylibre.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Message-ID: <00ad704f-cd01-cfc2-0418-1cb0561c41a5@ideasonboard.com>
+Date:   Tue, 12 Oct 2021 16:38:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <ab06e379-1579-2352-3525-dbdca6a94f9b@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: EOpDuwseaqhNSeSviLHUuwraEFUdooCT
-X-Proofpoint-ORIG-GUID: VGKo3ZNbINLaLcvI1BouYa0X31q80pRh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-12_03,2021-10-12_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- impostorscore=0 mlxlogscore=999 malwarescore=0 lowpriorityscore=0
- spamscore=0 phishscore=0 suspectscore=0 priorityscore=1501 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110120079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add s390 support for ftrace direct call samples, which also enables
-ftrace direct call selftests within ftrace selftests.
+On 12/10/2021 16:23, Neil Armstrong wrote:
 
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Reviewed-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
----
- arch/s390/Kconfig                     |  1 +
- samples/ftrace/ftrace-direct-modify.c | 44 +++++++++++++++++++++++++++
- samples/ftrace/ftrace-direct-too.c    | 28 +++++++++++++++++
- samples/ftrace/ftrace-direct.c        | 28 +++++++++++++++++
- 4 files changed, 101 insertions(+)
+>>> +    struct drm_private_obj glob_obj;
+>>> +
+>>>        struct drm_fb_helper *fbdev;
+>>>          struct workqueue_struct *wq;
+>>> @@ -88,5 +105,9 @@ struct omap_drm_private {
+>>>        void omap_debugfs_init(struct drm_minor *minor);
+>>> +struct omap_global_state *__must_check
+>>> +omap_get_global_state(struct drm_atomic_state *s);
+>>> +struct omap_global_state *
+>>> +omap_get_existing_global_state(struct omap_drm_private *priv);
+>>
+>> These could also be separated by empty lines. At least to my eyes it gets confusing if those declarations are not separated.
+> 
+> Atomic states can be extremely confusing, and hard to track.
+> I checked and they do what they are documented for...
+> 
+> The omap_get_existing_global_state() is the most confusing since the result depends if
+> we are in an atomic transaction of not.
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 908da6f1aa0d..f615c3f65f5a 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -192,6 +192,7 @@ config S390
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_RELIABLE_STACKTRACE
- 	select HAVE_RSEQ
-+	select HAVE_SAMPLE_FTRACE_DIRECT
- 	select HAVE_SOFTIRQ_ON_OWN_STACK
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_VIRT_CPU_ACCOUNTING
-diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
-index 5b9a09957c6e..690e4a9ff333 100644
---- a/samples/ftrace/ftrace-direct-modify.c
-+++ b/samples/ftrace/ftrace-direct-modify.c
-@@ -2,6 +2,7 @@
- #include <linux/module.h>
- #include <linux/kthread.h>
- #include <linux/ftrace.h>
-+#include <asm/asm-offsets.h>
- 
- void my_direct_func1(void)
- {
-@@ -18,6 +19,8 @@ extern void my_tramp2(void *);
- 
- static unsigned long my_ip = (unsigned long)schedule;
- 
-+#ifdef CONFIG_X86_64
-+
- asm (
- "	.pushsection    .text, \"ax\", @progbits\n"
- "	.type		my_tramp1, @function\n"
-@@ -41,6 +44,47 @@ asm (
- "	.popsection\n"
- );
- 
-+#endif /* CONFIG_X86_64 */
-+
-+#ifdef CONFIG_S390
-+
-+asm (
-+"	.pushsection	.text, \"ax\", @progbits\n"
-+"	.type		my_tramp1, @function\n"
-+"	.globl		my_tramp1\n"
-+"   my_tramp1:"
-+"	lgr		%r1,%r15\n"
-+"	stmg		%r0,%r5,"__stringify(__SF_GPRS)"(%r15)\n"
-+"	stg		%r14,"__stringify(__SF_GPRS+8*8)"(%r15)\n"
-+"	aghi		%r15,"__stringify(-STACK_FRAME_OVERHEAD)"\n"
-+"	stg		%r1,"__stringify(__SF_BACKCHAIN)"(%r15)\n"
-+"	brasl		%r14,my_direct_func1\n"
-+"	aghi		%r15,"__stringify(STACK_FRAME_OVERHEAD)"\n"
-+"	lmg		%r0,%r5,"__stringify(__SF_GPRS)"(%r15)\n"
-+"	lg		%r14,"__stringify(__SF_GPRS+8*8)"(%r15)\n"
-+"	lgr		%r1,%r0\n"
-+"	br		%r1\n"
-+"	.size		my_tramp1, .-my_tramp1\n"
-+"	.type		my_tramp2, @function\n"
-+"	.globl		my_tramp2\n"
-+"   my_tramp2:"
-+"	lgr		%r1,%r15\n"
-+"	stmg		%r0,%r5,"__stringify(__SF_GPRS)"(%r15)\n"
-+"	stg		%r14,"__stringify(__SF_GPRS+8*8)"(%r15)\n"
-+"	aghi		%r15,"__stringify(-STACK_FRAME_OVERHEAD)"\n"
-+"	stg		%r1,"__stringify(__SF_BACKCHAIN)"(%r15)\n"
-+"	brasl		%r14,my_direct_func2\n"
-+"	aghi		%r15,"__stringify(STACK_FRAME_OVERHEAD)"\n"
-+"	lmg		%r0,%r5,"__stringify(__SF_GPRS)"(%r15)\n"
-+"	lg		%r14,"__stringify(__SF_GPRS+8*8)"(%r15)\n"
-+"	lgr		%r1,%r0\n"
-+"	br		%r1\n"
-+"	.size		my_tramp2, .-my_tramp2\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_S390 */
-+
- static unsigned long my_tramp = (unsigned long)my_tramp1;
- static unsigned long tramps[2] = {
- 	(unsigned long)my_tramp1,
-diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
-index 3f0079c9bd6f..6e0de725bf22 100644
---- a/samples/ftrace/ftrace-direct-too.c
-+++ b/samples/ftrace/ftrace-direct-too.c
-@@ -3,6 +3,7 @@
- 
- #include <linux/mm.h> /* for handle_mm_fault() */
- #include <linux/ftrace.h>
-+#include <asm/asm-offsets.h>
- 
- void my_direct_func(struct vm_area_struct *vma,
- 			unsigned long address, unsigned int flags)
-@@ -13,6 +14,8 @@ void my_direct_func(struct vm_area_struct *vma,
- 
- extern void my_tramp(void *);
- 
-+#ifdef CONFIG_X86_64
-+
- asm (
- "	.pushsection    .text, \"ax\", @progbits\n"
- "	.type		my_tramp, @function\n"
-@@ -33,6 +36,31 @@ asm (
- "	.popsection\n"
- );
- 
-+#endif /* CONFIG_X86_64 */
-+
-+#ifdef CONFIG_S390
-+
-+asm (
-+"	.pushsection	.text, \"ax\", @progbits\n"
-+"	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
-+"   my_tramp:"
-+"	lgr		%r1,%r15\n"
-+"	stmg		%r0,%r5,"__stringify(__SF_GPRS)"(%r15)\n"
-+"	stg		%r14,"__stringify(__SF_GPRS+8*8)"(%r15)\n"
-+"	aghi		%r15,"__stringify(-STACK_FRAME_OVERHEAD)"\n"
-+"	stg		%r1,"__stringify(__SF_BACKCHAIN)"(%r15)\n"
-+"	brasl		%r14,my_direct_func\n"
-+"	aghi		%r15,"__stringify(STACK_FRAME_OVERHEAD)"\n"
-+"	lmg		%r0,%r5,"__stringify(__SF_GPRS)"(%r15)\n"
-+"	lg		%r14,"__stringify(__SF_GPRS+8*8)"(%r15)\n"
-+"	lgr		%r1,%r0\n"
-+"	br		%r1\n"
-+"	.size		my_tramp, .-my_tramp\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_S390 */
- 
- static int __init ftrace_direct_init(void)
- {
-diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
-index a2729d1ef17f..a30aa42ec76a 100644
---- a/samples/ftrace/ftrace-direct.c
-+++ b/samples/ftrace/ftrace-direct.c
-@@ -3,6 +3,7 @@
- 
- #include <linux/sched.h> /* for wake_up_process() */
- #include <linux/ftrace.h>
-+#include <asm/asm-offsets.h>
- 
- void my_direct_func(struct task_struct *p)
- {
-@@ -11,6 +12,8 @@ void my_direct_func(struct task_struct *p)
- 
- extern void my_tramp(void *);
- 
-+#ifdef CONFIG_X86_64
-+
- asm (
- "	.pushsection    .text, \"ax\", @progbits\n"
- "	.type		my_tramp, @function\n"
-@@ -27,6 +30,31 @@ asm (
- "	.popsection\n"
- );
- 
-+#endif /* CONFIG_X86_64 */
-+
-+#ifdef CONFIG_S390
-+
-+asm (
-+"	.pushsection	.text, \"ax\", @progbits\n"
-+"	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
-+"   my_tramp:"
-+"	lgr		%r1,%r15\n"
-+"	stmg		%r0,%r5,"__stringify(__SF_GPRS)"(%r15)\n"
-+"	stg		%r14,"__stringify(__SF_GPRS+8*8)"(%r15)\n"
-+"	aghi		%r15,"__stringify(-STACK_FRAME_OVERHEAD)"\n"
-+"	stg		%r1,"__stringify(__SF_BACKCHAIN)"(%r15)\n"
-+"	brasl		%r14,my_direct_func\n"
-+"	aghi		%r15,"__stringify(STACK_FRAME_OVERHEAD)"\n"
-+"	lmg		%r0,%r5,"__stringify(__SF_GPRS)"(%r15)\n"
-+"	lg		%r14,"__stringify(__SF_GPRS+8*8)"(%r15)\n"
-+"	lgr		%r1,%r0\n"
-+"	br		%r1\n"
-+"	.size		my_tramp, .-my_tramp\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_S390 */
- 
- static int __init ftrace_direct_init(void)
- {
--- 
-2.25.1
+So here I was just talking about the cosmetics, how the lines above look 
+like. I have trouble seeing where the function declaration starts and 
+where it ends without looking closely, as both lines of the declaration 
+start at the first column, and there are no empty lines between the 
+declarations.
 
+But now that you mention, yes, the states are confusing =). And this 
+series is somewhat difficult. I think it's important for future 
+maintainability to include explanations and comments in this series for 
+the confusing parts (plane-overlay mapping and state handling, mostly).
+
+  Tomi
