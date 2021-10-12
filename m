@@ -2,129 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F88A42A5BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D3C42A5C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236896AbhJLNfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:35:36 -0400
-Received: from office.oderland.com ([91.201.60.5]:33750 "EHLO
-        office.oderland.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236748AbhJLNff (ORCPT
+        id S236926AbhJLNfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:35:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35235 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236917AbhJLNfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:35:35 -0400
-Received: from 161.193-180-18.r.oderland.com ([193.180.18.161]:33232 helo=[10.137.0.14])
-        by office.oderland.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <josef@oderland.se>)
-        id 1maHuN-003NMa-4k; Tue, 12 Oct 2021 15:33:31 +0200
-Message-ID: <fdfb6267-e467-4785-b4a0-00859f6dc161@oderland.se>
-Date:   Tue, 12 Oct 2021 15:33:29 +0200
+        Tue, 12 Oct 2021 09:35:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634045620;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MT+WGN85virsYnfaWkabBnlRhl4BVNJstj9q0qW4GvU=;
+        b=WAkNm9RAMsl8kADHC/Ll7LYL9tWPVXZe5AUDQnY+ajQYiOmfNg7aFP2NQDUXI2l+dbMF8c
+        JTNlePdols522arFbvuWgM4us9iHkre/Kq7tFBizanbuSIF+ESXsRfd6cOY6J79fowDyii
+        MYrnJUoWwVKtA7WZfiR1zf8B9ZCCXHQ=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-FiVAVNxRO56vw46IWMgbKw-1; Tue, 12 Oct 2021 09:33:38 -0400
+X-MC-Unique: FiVAVNxRO56vw46IWMgbKw-1
+Received: by mail-wr1-f70.google.com with SMTP id h11-20020adfa4cb000000b00160c791a550so15563387wrb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 06:33:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MT+WGN85virsYnfaWkabBnlRhl4BVNJstj9q0qW4GvU=;
+        b=OoVFHkx5Rr0BTg0tgGREI4Wr2M4Bn5Be40vQkm1puk+t+dzFhoxyRhNN/wY1nECswj
+         qESS8/MaAShs4wmyW9l0XsacdcL4/5aTm+tezLnTmv15wiYE86Z0erj440GXNJ3YUzjd
+         RhqEDrJh0yGIh0VIJlVIaK6QsLXmle/p6psX+fHJYG4c9+0w05IQWa+QBV2BoMfpvjsB
+         3hReFGh/5ijW0hI1A0VMgF1rTrk5LD82Nrn8nMh6GzX98AhgNMEEv1hw8ezymxzv4CNK
+         Oqs8NVZzI6su18zfHqv6vb04ra1vSv3yY9KCkEUyk44kJZ+1aaPKs4/PP1+4Z3ZHumIH
+         7eMw==
+X-Gm-Message-State: AOAM532vMxv+7D2ciGGq7f+XrrZMkqSCoIricYSqqvqGO8C7IFhMOtbh
+        9iGsewv5gMXXPN2uOGq2GR4rovrfpfuTHsFbcMr6WSCiNEwfWkUYQz1QXdo13Bo+s1Pd+Gfpp2w
+        Ok8Nq0PYqK1EKRkCqyOqc2aVqFOYxgKf2dlB5FROhJ+oL3B0bLuY580M+oxwSM0JpnPpxmpGo7Q
+        s=
+X-Received: by 2002:a05:600c:a45:: with SMTP id c5mr5550816wmq.79.1634045616612;
+        Tue, 12 Oct 2021 06:33:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxhDxKhOlvfo/706pxslzpu1FHeBx94YPhwo2SnElkp9WJha5oN/R8hfR1LOXibQ33TMS0vwQ==
+X-Received: by 2002:a05:600c:a45:: with SMTP id c5mr5550783wmq.79.1634045616303;
+        Tue, 12 Oct 2021 06:33:36 -0700 (PDT)
+Received: from kherbst.pingu.com (ip1f10bb48.dynamic.kabel-deutschland.de. [31.16.187.72])
+        by smtp.gmail.com with ESMTPSA id q204sm2656305wme.10.2021.10.12.06.33.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 06:33:35 -0700 (PDT)
+From:   Karol Herbst <kherbst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Karol Herbst <kherbst@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        nouveau@lists.freedesktop.org
+Subject: [PATCH] drm/nouveau/mmu/gp100: remove unused variable
+Date:   Tue, 12 Oct 2021 15:33:34 +0200
+Message-Id: <20211012133334.1737918-1-kherbst@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:93.0) Gecko/20100101
- Thunderbird/93.0
-Subject: Re: [REGRESSION][BISECTED] 5.15-rc1: Broken AHCI on NVIDIA ION
- (MCP79)
-Content-Language: en-US
-To:     Jason Andryuk <jandryuk@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, maz@kernel.org,
-        linux-pci@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        xen-devel <xen-devel@lists.xenproject.org>
-References: <CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com>
- <b023adf9-e21c-59ac-de49-57915c8cede8@oderland.se>
- <c9218eb4-9fc1-28f4-d053-895bab0473d4@oderland.se>
- <ef163327-f965-09f8-4396-2c1c4e689a6d@oderland.se>
- <CAKf6xpvGyCKVHsvauP54=0j10fxis4XiiqBNWH+1cpkbtt_QJw@mail.gmail.com>
-From:   Josef Johansson <josef@oderland.se>
-In-Reply-To: <CAKf6xpvGyCKVHsvauP54=0j10fxis4XiiqBNWH+1cpkbtt_QJw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - office.oderland.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - oderland.se
-X-Get-Message-Sender-Via: office.oderland.com: authenticated_id: josjoh@oderland.se
-X-Authenticated-Sender: office.oderland.com: josjoh@oderland.se
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 15:07, Jason Andryuk wrote:
-> On Tue, Oct 12, 2021 at 2:09 AM Josef Johansson <josef@oderland.se> wrote:
->> On 10/11/21 21:34, Josef Johansson wrote:
->>> On 10/11/21 20:47, Josef Johansson wrote:
->>>> More can be read over at freedesktop:
->>>> https://gitlab.freedesktop.org/drm/amd/-/issues/1715
-> Hi, Josef,
->
-> If you compare
-> commit fcacdfbef5a1633211ebfac1b669a7739f5b553e "PCI/MSI: Provide a
-> new set of mask and unmask functions"
-> and
-> commit 446a98b19fd6da97a1fb148abb1766ad89c9b767 "PCI/MSI: Use new
-> mask/unmask functions" some of the replacement functions in 446198b1
-> no longer exit early for the pci_msi_ignore_mask flag.
->
-> Josef, I'd recommend you try adding pci_msi_ignore_mask checks to the
-> new functions in fcacdfbef5a to see if that helps.
->
-> There was already a pci_msi_ignore_mask fixup in commit
-> 1a519dc7a73c977547d8b5108d98c6e769c89f4b "PCI/MSI: Skip masking MSI-X
-> on Xen PV" though the kernel was crashing in that case.
->
-> Regards,
-> Jason
+Fixes a compilation issue introduced because I forgot to test with WERROR
+enabled.
 
-Hi Jason,
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: DRI <dri-devel@lists.freedesktop.org>
+Cc: nouveau@lists.freedesktop.org
+Fixes: 404046cf4805 ("drm/nouveau/mmu/gp100-: drop unneeded assignment in the if condition.")
+Signed-off-by: Karol Herbst <kherbst@redhat.com>
+---
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Makes sense. I am compiling now, will try it as soon as it's done.
-
-diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-index 0099a00af361..620928fd0065 100644
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -148,6 +148,9 @@ static noinline void pci_msi_update_mask(struct
-msi_desc *desc, u32 clear, u32 s
-     raw_spinlock_t *lock = &desc->dev->msi_lock;
-     unsigned long flags;
- 
-+    if (pci_msi_ignore_mask)
-+        return;
-+
-     raw_spin_lock_irqsave(lock, flags);
-     desc->msi_mask &= ~clear;
-     desc->msi_mask |= set;
-@@ -179,6 +182,9 @@ static inline void __iomem
-*pci_msix_desc_addr(struct msi_desc *desc)
-  */
- static void pci_msix_write_vector_ctrl(struct msi_desc *desc, u32 ctrl)
- {
-+    if (pci_msi_ignore_mask)
-+        return;
-+
-     void __iomem *desc_addr = pci_msix_desc_addr(desc);
- 
-     writel(ctrl, desc_addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
-@@ -186,6 +192,9 @@ static void pci_msix_write_vector_ctrl(struct
-msi_desc *desc, u32 ctrl)
- 
- static inline void pci_msix_mask(struct msi_desc *desc)
- {
-+    if (pci_msi_ignore_mask)
-+        return;
-+
-     desc->msix_ctrl |= PCI_MSIX_ENTRY_CTRL_MASKBIT;
-     pci_msix_write_vector_ctrl(desc, desc->msix_ctrl);
-     /* Flush write to device */
-@@ -194,6 +203,9 @@ static inline void pci_msix_mask(struct msi_desc *desc)
- 
- static inline void pci_msix_unmask(struct msi_desc *desc)
- {
-+    if (pci_msi_ignore_mask)
-+        return;
-+
-     desc->msix_ctrl &= ~PCI_MSIX_ENTRY_CTRL_MASKBIT;
-     pci_msix_write_vector_ctrl(desc, desc->msix_ctrl);
- }
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c
+index 2b21f43069aa..17899fc95b2d 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c
+@@ -488,7 +488,7 @@ gp100_vmm_fault_cancel(struct nvkm_vmm *vmm, void *argv, u32 argc)
+ 		struct gp100_vmm_fault_cancel_v0 v0;
+ 	} *args = argv;
+ 	int ret = -ENOSYS;
+-	u32 inst, aper;
++	u32 aper;
+ 
+ 	if ((ret = nvif_unpack(ret, &argv, &argc, args->v0, 0, 0, false)))
+ 		return ret;
+-- 
+2.31.1
 
