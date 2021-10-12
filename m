@@ -2,101 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4925542A045
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE6542A044
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbhJLItd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:49:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:56644 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235462AbhJLItc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235429AbhJLItc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Oct 2021 04:49:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86EEAED1;
-        Tue, 12 Oct 2021 01:47:30 -0700 (PDT)
-Received: from [10.57.21.6] (unknown [10.57.21.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A23433F694;
-        Tue, 12 Oct 2021 01:47:28 -0700 (PDT)
-Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
-To:     Will Deacon <will@kernel.org>, German Gomez <german.gomez@arm.com>
-Cc:     Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-4-german.gomez@arm.com>
- <20210923135016.GG400258@leoy-ThinkPad-X240s>
- <20210923144048.GB603008@leoy-ThinkPad-X240s>
- <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
- <20211004122724.GC174271@leoy-ThinkPad-X240s>
- <6b092f13-832f-5d1d-a504-aea96c81bf17@arm.com>
- <20211006095124.GC14400@leoy-ThinkPad-X240s>
- <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
- <20211012081948.GA5156@willie-the-truck>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <55f8978f-e656-5d5f-94e2-f4be4a70656d@arm.com>
-Date:   Tue, 12 Oct 2021 09:47:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Received: from smtp-out1.suse.de ([195.135.220.28]:44740 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235423AbhJLIta (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 04:49:30 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 06FDC21FAC;
+        Tue, 12 Oct 2021 08:47:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634028448; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1H9U6FZdTMLg0N90m1o6mLcfzhK9dGZJ71HH3rnxZXg=;
+        b=0/zM0CyoZVl6slnTaJ8guNPB+tPsoONS7QulTscas9O52uPAXO/P74CbsWP6t2QmZ7mjOO
+        yBZpDuJIxKjau+7DqC/wiDQHzCCsiKS6PC+H65k4MeQXd5+eUxAsntyZlpbAaEWU9QSDTM
+        oywsMOL8YPr5OEbwctdoXT9pOv6SWcw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634028448;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1H9U6FZdTMLg0N90m1o6mLcfzhK9dGZJ71HH3rnxZXg=;
+        b=h8hk2o8uMmL2kEjW6zhLNDHLdNKBvDKi6YGFFxAt1TRLJ5hZGHwS3eOSgSX+grWXVS3mrl
+        9NiPp+YqvMfqakCw==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id ADE23A3B95;
+        Tue, 12 Oct 2021 08:47:27 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 760561E1409; Tue, 12 Oct 2021 10:47:27 +0200 (CEST)
+Date:   Tue, 12 Oct 2021 10:47:27 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     yebin <yebin10@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
+ previous check time
+Message-ID: <20211012084727.GF9697@quack2.suse.cz>
+References: <20210911090059.1876456-1-yebin10@huawei.com>
+ <20210911090059.1876456-3-yebin10@huawei.com>
+ <20211007123100.GG12712@quack2.suse.cz>
+ <615FA55B.5070404@huawei.com>
+ <615FAF27.8070000@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20211012081948.GA5156@willie-the-truck>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <615FAF27.8070000@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/10/2021 09:19, Will Deacon wrote:
-> On Mon, Oct 11, 2021 at 04:55:37PM +0100, German Gomez wrote:
->> Hi Leo,
->>
->> On 06/10/2021 10:51, Leo Yan wrote:
->>> On Wed, Oct 06, 2021 at 10:35:20AM +0100, German Gomez wrote:
->>>
->>> [...]
->>>
->>>>> So simply say, I think the head pointer monotonically increasing is
->>>>> the right thing to do in Arm SPE driver.
->>>> I will talk to James about how we can proceed on this.
->>> Thanks!
->>
->> I took this offline with James and, though it looks possible to patch
->> the SPE driver to have a monotonically increasing head pointer in order
->> to simplify the handling in the perf tool, it could be a breaking change
->> for users of the perf_event_open syscall that currently rely on the way
->> it works now.
->>
->> An alternative way we considered to simplify the patch is to change the
->> logic inside the find_snapshot callback so that it records the entire
->> contents of the aux buffer every time.
->>
->> What do you think?
+On Fri 08-10-21 10:38:31, yebin wrote:
+> On 2021/10/8 9:56, yebin wrote:
+> > On 2021/10/7 20:31, Jan Kara wrote:
+> > > On Sat 11-09-21 17:00:55, Ye Bin wrote:
+> > > > kmmpd:
+> > > > ...
+> > > >      diff = jiffies - last_update_time;
+> > > >      if (diff > mmp_check_interval * HZ) {
+> > > > ...
+> > > > As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
+> > > > than 'mmp_update_interval', so there will never trigger detection.
+> > > > Introduce last_check_time record previous check time.
+> > > > 
+> > > > Signed-off-by: Ye Bin <yebin10@huawei.com>
+> > > I think the check is there only for the case where write_mmp_block() +
+> > > sleep took longer than mmp_check_interval. I agree that should rarely
+> > > happen but on a really busy system it is possible and in that case
+> > > we would
+> > > miss updating mmp block for too long and so another node could have
+> > > started
+> > > using the filesystem. I actually don't see a reason why kmmpd should be
+> > > checking the block each mmp_check_interval as you do -
+> > > mmp_check_interval
+> > > is just for ext4_multi_mount_protect() to know how long it should wait
+> > > before considering mmp block stale... Am I missing something?
+> > > 
+> > >                                 Honza
+> > I'm sorry, I didn't understand the detection mechanism here before. Now
+> > I understand
+> > the detection mechanism here.
+> > As you said, it's just an abnormal protection. There's really no problem.
+> > 
+> Yeah, i did test as following steps
+> hostA                        hostB
+>    mount
+>      ext4_multi_mount_protect  -> seq == EXT4_MMP_SEQ_CLEAN
+>         delay 5s after label "skip" so hostB will see seq is
+> EXT4_MMP_SEQ_CLEAN
+>                        mount
+>                        ext4_multi_mount_protect -> seq == EXT4_MMP_SEQ_CLEAN
+>                                run  kmmpd
+>     run kmmpd
 > 
-> What does intel-pt do?
+> Actually，in this  situation kmmpd will not detect  confliction.
+> In ext4_multi_mount_protect function we write mmp data first and wait
+> 'wait_time * HZ'  seconds,
+> read mmp data do check. Most of the time, If 'wait_time' is zero, it can pass
+> check.
 
-Intel-pt has a wrapped head, which is why it has the intel_pt_find_snapshot()
-function in perf to try to not save any zeros from the buffer that haven't
-been written yet. (With a wrapped head pointer it's impossible to tell).
+But how can be wait_time zero? As far as I'm reading the code, wait_time
+must be at least EXT4_MMP_MIN_CHECK_INTERVAL...
 
-Coresight has a monotonically increasing head pointer so it is possible to
-tell. Recently, Leo removed the Coresight version of find_snapshot() for this
-reason.
+								Honza
 
-It would be nice to do the same for SPE because that function has a heuristic
-and is also slow, but I imagine that not returning wrapped head pointers could
-break anything that expects them.
-
-James
- 
-> 
-> Will
-> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
