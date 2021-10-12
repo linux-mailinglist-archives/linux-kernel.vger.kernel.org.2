@@ -2,69 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C47742A0B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F82642A0A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235277AbhJLJJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:09:03 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:44171 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235868AbhJLJI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:08:58 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 19C96crM030348;
-        Tue, 12 Oct 2021 11:06:38 +0200
-Date:   Tue, 12 Oct 2021 11:06:38 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the
- clobber list
-Message-ID: <20211012090638.GD28951@1wt.eu>
-References: <20211012052822.GA28951@1wt.eu>
- <20211012083644.543775-1-ammarfaizi2@gmail.com>
+        id S235681AbhJLJIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:08:19 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:43800 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235515AbhJLJIL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:08:11 -0400
+X-UUID: 7ab4f167e4e14508a0f398268e47d28f-20211012
+X-UUID: 7ab4f167e4e14508a0f398268e47d28f-20211012
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1131730382; Tue, 12 Oct 2021 17:06:04 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Tue, 12 Oct 2021 17:06:03 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Tue, 12 Oct 2021 17:06:02 +0800
+From:   <guangming.cao@mediatek.com>
+To:     <christian.koenig@amd.com>
+CC:     <dri-devel@lists.freedesktop.org>, <guangming.cao@mediatek.com>,
+        <linaro-mm-sig@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
+        <sumit.semwal@linaro.org>, <wsd_upstream@mediatek.com>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: Re: [PATCH v2] dma-buf: acquire name lock before read/write dma_buf.name
+Date:   Tue, 12 Oct 2021 17:07:55 +0800
+Message-ID: <20211012090755.177441-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <169957a7-302b-1de9-39b0-415c4675743a@amd.com>
+References: <169957a7-302b-1de9-39b0-415c4675743a@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012083644.543775-1-ammarfaizi2@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 03:36:44PM +0700, Ammar Faizi wrote:
-> I have tried to search for the documentation about this one, but I
-> couldn't find any. Checking at `Documentation/x86/entry_64.rst`, but
-> it doesn't tell anything relevant.
-(...)
+From: Guangming Cao <Guangming.Cao@mediatek.com>
 
-OK thanks for the detailed story, thus I didn't miss any obvious
-reference.
-
-> My stance comes from SO, Telegram group discussion, and reading source
-> code. Therefore, I don't think I can attach the link to it as
-> "authoritative information". Or can I?
-
-You're right, that's not exactly what we can call authoritative :-)
-
-> When I sent this patch, I also added entry_64.S's maintainers to CC
-> list. In hope they can help to at least acknowledge it. Mainly because
-> I can't find the documentation from Linux that tells about this.
+> Am 08.10.21 um 09:54 schrieb guangming.cao@mediatek.com:
+> > From: Guangming Cao <Guangming.Cao@mediatek.com>
+> >
+> > Because dma-buf.name can be freed in func: "dma_buf_set_name",
+> > so, we need to acquire lock first before we read/write dma_buf.name
+> > to prevent Use After Free(UAF) issue.
+> >
+> > Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
 > 
-> Andy, Thomas, Ingo, Borislav, H. Peter.
+> Reviewed-by: Christian König <christian.koenig@amd.com>
 > 
-> Could one of you shed some light so that I can attach the link to your
-> message in the commit message?
+> Going to push that upstream if nobody else objects.
+> 
+> Thanks,
+> Christian.
 
-Let's indeed wait for any of the x86 maintainers to confirm your
-analysis.
+I'm sorry to disturb you, actually I need this patch to solve our issues.
+Is there any question about it? seems it hasn't been merged into mainline.
 
-Thanks!
-Willy
+Thanks,
+Guangming.
+> 
+> > ---
+> >   drivers/dma-buf/dma-buf.c | 3 +++
+> >   1 file changed, 3 insertions(+)
+> >
+> > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> > index 511fe0d217a0..a7f6fd13a635 100644
+> > --- a/drivers/dma-buf/dma-buf.c
+> > +++ b/drivers/dma-buf/dma-buf.c
+> > @@ -1372,6 +1372,8 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
+> >   		if (ret)
+> >   			goto error_unlock;
+> >   
+> > +
+> > +		spin_lock(&buf_obj->name_lock);
+> >   		seq_printf(s, "%08zu\t%08x\t%08x\t%08ld\t%s\t%08lu\t%s\n",
+> >   				buf_obj->size,
+> >   				buf_obj->file->f_flags, buf_obj->file->f_mode,
+> > @@ -1379,6 +1381,7 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
+> >   				buf_obj->exp_name,
+> >   				file_inode(buf_obj->file)->i_ino,
+> >   				buf_obj->name ?: "");
+> > +		spin_unlock(&buf_obj->name_lock);
+> >   
+> >   		robj = buf_obj->resv;
+> >   		fence = dma_resv_excl_fence(robj);
+
