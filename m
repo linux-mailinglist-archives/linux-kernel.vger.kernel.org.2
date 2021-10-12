@@ -2,289 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563E842AE95
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9645742AE99
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232852AbhJLVRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 17:17:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58420 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235355AbhJLVR1 (ORCPT
+        id S235219AbhJLVS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 17:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232542AbhJLVSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 17:17:27 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634073324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qGhYUU4PHqVJauASorElxOKLAG5bEMxQ+CpOTI3+RsI=;
-        b=fKNggHZvcGPtxJAtQCJ3dnoyzVtmBN4tahLERFruoxNxJqFesIEai5rSFGMehdRfUTZXJe
-        +Fql1tijZKw84/0EbNtqfytwBIt3vqrQ4aPnM9U0zXqq12LDjMOG/uJ6/wmZRtSU3QaTCu
-        S81pWa/oiXzOnU0lI0THFU98kfl6HJ0tTSR9VcfCIwACSyCIdaYS7RZoDjyIHXRG92TNaI
-        HMU29wND8i1dkUBXLKodvxuk9c9blCHxypi2uuku2Z9aLsLt19syrOOkzX+8VfIYsqH9HB
-        hvItk5Rf1vf4CsKwLYU28QU+GVS0aGO4XpEuNqifCSTtUT5dj7oHmS3Lap8idA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634073324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qGhYUU4PHqVJauASorElxOKLAG5bEMxQ+CpOTI3+RsI=;
-        b=LS1QIsnFHEksYaCDDOZ2hvkYxuf+hk5dtjmY+d/Co7upain9ujGe/P/wWhKT2cRdy5a9R5
-        esPpTsRV6cUxQ1DQ==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [patch 00/31] x86/fpu: Preparatory cleanups for AMX support
- (part 1)
-In-Reply-To: <20211011215813.558681373@linutronix.de>
-References: <20211011215813.558681373@linutronix.de>
-Date:   Tue, 12 Oct 2021 23:15:23 +0200
-Message-ID: <87o87u9c7o.ffs@tglx>
+        Tue, 12 Oct 2021 17:18:54 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFABC061570;
+        Tue, 12 Oct 2021 14:16:52 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so1044131ott.2;
+        Tue, 12 Oct 2021 14:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tpRHrhRHOYU9iuoKoCcZIq+nm1ewybzfrH6Qbry9P/0=;
+        b=MAxv7SfM+N0xJcoHOn/225jtHOWJ/1DmZkahHvJipbvzWf05w0D5UNLLLUmFKoDObF
+         AtdUWEE78aEanAYCuASXspKkxKWqM0lc2ZdA5sAi3/LnlszsdSEB5Ty7MrBYHbk4+M5L
+         ro5iCAiOsd+az0W4ItR8OdUm4rZltrTQ2KE84I4xgF5Mpmmn3P/m12Iv+dNI1wJ9kMoT
+         HlKa9TptCsh4aD0Oq2N7c1u7RxQJDzn8tIVWADShNv/wkgt/Sm5Hb5toued/YGXvAKIQ
+         +AK3uevu2Ph3int/WC02KXDuL8OAvsy3mI+YxF3lEYszuLF0ml5xd4b3e6chfiPy6Z3g
+         UnTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=tpRHrhRHOYU9iuoKoCcZIq+nm1ewybzfrH6Qbry9P/0=;
+        b=4z/HUhkpy0Zpb2Uv8Tsh2SXxFK6+43kxZd1xvjjoeVjjNWnK1sgm72U93yRhpxKv2z
+         NA5mtniNNEqnxQPCWatqUAVwTzHaqBV7hNSlMi1B5dNO1gzbIzPFluY5WVWyYDGZn7UG
+         rzpsZvIvH9rle5igcoGrOqmB37nwbPu/43Zwo0281rYdyTWa9xRoNvRVyeDJ7PYeOG/k
+         qPkM5jdWbuzkZliGiG9gPj0sxsoCUKANAkfnaS5DLVuF2B6h+PLLxTorEsJRAkpjxyLk
+         KtSxBzY3Qj3ckOCCPF7TULvaho0Yw2tePT5uvUte/xiYpwsJ2mmYekyvEPpprt9o7hO2
+         xKxg==
+X-Gm-Message-State: AOAM530mM5uew2LrqSBYUTd/cNKjC6GktkLPcJOg3unFa+cK3ZWxDIX/
+        3k+T+Ez17UHelHPJjDJXxebRLoAw+S8=
+X-Google-Smtp-Source: ABdhPJw1tQ6AYuGJu4KLnO0AwfFgOxJJglzxQgovqFJ3EqD5kjBeGKy3jYxJOTAKdBxQ+th1h1BhJQ==
+X-Received: by 2002:a05:6830:95:: with SMTP id a21mr28675325oto.43.1634073411858;
+        Tue, 12 Oct 2021 14:16:51 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o16sm2257525oor.41.2021.10.12.14.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 14:16:51 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 12 Oct 2021 14:16:49 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/27] 4.19.211-rc3 review
+Message-ID: <20211012211649.GA646065@roeck-us.net>
+References: <20211012093340.313468813@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012093340.313468813@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12 2021 at 01:59, Thomas Gleixner wrote:
->
-> The current series (#1) is based on:
->
->    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/fpu
->
-> and also available from git:
->
->    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu-1
+On Tue, Oct 12, 2021 at 11:36:57AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.211 release.
+> There are 27 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 14 Oct 2021 09:33:32 +0000.
+> Anything received after that time might be too late.
+> 
 
-I've updated the git branch with the review comments which came in today
-addressed.
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 439 pass: 439 fail: 0
 
-The full stack is rebased on top of that along with a few other fixes.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-The delta patch to the current part-1 series is below.
-
-I'm going to wait a bit before sending out a V2 to give people time to
-react. Though I'm planning to send out part-2 based on the current state
-soonish.
-
-Thanks,
-
-        tglx
----
-diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-index 4cf54d8ce17d..5ac5e4596b53 100644
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -130,13 +130,13 @@ static inline void fpstate_init_soft(struct swregs_state *soft) {}
- /* State tracking */
- DECLARE_PER_CPU(struct fpu *, fpu_fpregs_owner_ctx);
- 
--/* FPSTATE related functions which are exported to KVM */
-+/* fpstate-related functions which are exported to KVM */
- extern void fpu_init_fpstate_user(struct fpu *fpu);
- 
- /* KVM specific functions */
- extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask);
- 
--extern int fpu_copy_kvm_uabi_to_vcpu(struct fpu *fpu, const void *buf, u64 xcr0, u32 *pkru);
--extern void fpu_copy_vcpu_to_kvm_uabi(struct fpu *fpu, void *buf, unsigned int size, u32 pkru);
-+extern int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *buf, u64 xcr0, u32 *pkru);
-+extern void fpu_copy_fpstate_to_kvm_uabi(struct fpu *fpu, void *buf, unsigned int size, u32 pkru);
- 
- #endif /* _ASM_X86_FPU_API_H */
-diff --git a/arch/x86/include/asm/fpu/sched.h b/arch/x86/include/asm/fpu/sched.h
-index 99a8820e8cc4..cdb78d590c86 100644
---- a/arch/x86/include/asm/fpu/sched.h
-+++ b/arch/x86/include/asm/fpu/sched.h
-@@ -11,7 +11,7 @@
- 
- extern void save_fpregs_to_fpstate(struct fpu *fpu);
- extern void fpu__drop(struct fpu *fpu);
--extern int  fpu_clone(struct task_struct *dst, unsigned long clone_flags);
-+extern int  fpu_clone(struct task_struct *dst);
- extern void fpu_flush_thread(void);
- 
- /*
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 1c5e753ba3f1..ac540a7d410e 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -184,7 +184,7 @@ void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask)
- }
- EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpu);
- 
--void fpu_copy_vcpu_to_kvm_uabi(struct fpu *fpu, void *buf,
-+void fpu_copy_fpstate_to_kvm_uabi(struct fpu *fpu, void *buf,
- 			       unsigned int size, u32 pkru)
- {
- 	union fpregs_state *kstate = &fpu->state;
-@@ -196,12 +196,14 @@ void fpu_copy_vcpu_to_kvm_uabi(struct fpu *fpu, void *buf,
- 					  XSTATE_COPY_XSAVE);
- 	} else {
- 		memcpy(&ustate->fxsave, &kstate->fxsave, sizeof(ustate->fxsave));
-+		/* Make it restorable on a XSAVE enabled host */
-+		ustate->xsave.header.xfeatures = XFEATURE_MASK_FPSSE;
- 	}
- }
--EXPORT_SYMBOL_GPL(fpu_copy_vcpu_to_kvm_uabi);
-+EXPORT_SYMBOL_GPL(fpu_copy_fpstate_to_kvm_uabi);
- 
--int fpu_copy_kvm_uabi_to_vcpu(struct fpu *fpu, const void *buf, u64 xcr0,
--			      u32 *vpkru)
-+int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *buf, u64 xcr0,
-+				 u32 *vpkru)
- {
- 	union fpregs_state *kstate = &fpu->state;
- 	const union fpregs_state *ustate = buf;
-@@ -234,7 +236,7 @@ int fpu_copy_kvm_uabi_to_vcpu(struct fpu *fpu, const void *buf, u64 xcr0,
- 	xstate_init_xcomp_bv(&kstate->xsave, xfeatures_mask_uabi());
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(fpu_copy_kvm_uabi_to_vcpu);
-+EXPORT_SYMBOL_GPL(fpu_copy_kvm_uabi_to_fpstate);
- #endif /* CONFIG_KVM */
- 
- void kernel_fpu_begin_mask(unsigned int kfpu_mask)
-@@ -344,7 +346,7 @@ EXPORT_SYMBOL_GPL(fpu_init_fpstate_user);
- #endif
- 
- /* Clone current's FPU state on fork */
--int fpu_clone(struct task_struct *dst, unsigned long clone_flags)
-+int fpu_clone(struct task_struct *dst)
- {
- 	struct fpu *src_fpu = &current->thread.fpu;
- 	struct fpu *dst_fpu = &dst->thread.fpu;
-@@ -363,11 +365,9 @@ int fpu_clone(struct task_struct *dst, unsigned long clone_flags)
- 
- 	/*
- 	 * No FPU state inheritance for kernel threads and IO
--	 * worker threads. Neither CLONE_THREAD needs a copy
--	 * of the FPU state.
-+	 * worker threads.
- 	 */
--	if (clone_flags & CLONE_THREAD ||
--	    dst->flags & (PF_KTHREAD | PF_IO_WORKER)) {
-+	if (dst->flags & (PF_KTHREAD | PF_IO_WORKER)) {
- 		/* Clear out the minimal state */
- 		memcpy(&dst_fpu->state, &init_fpstate,
- 		       init_fpstate_copy_size());
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 6e729060beb3..b022df95a302 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1195,15 +1195,13 @@ int copy_sigframe_from_user_to_xstate(struct xregs_state *xsave,
- 	return copy_uabi_to_xstate(xsave, NULL, ubuf);
- }
- 
--static bool validate_xsaves_xrstors(u64 mask)
-+static bool validate_independent_components(u64 mask)
- {
- 	u64 xchk;
- 
- 	if (WARN_ON_FPU(!cpu_feature_enabled(X86_FEATURE_XSAVES)))
- 		return false;
--	/*
--	 * Validate that this is a independent compoment.
--	 */
-+
- 	xchk = ~xfeatures_mask_independent();
- 
- 	if (WARN_ON_ONCE(!mask || mask & xchk))
-@@ -1222,13 +1220,13 @@ static bool validate_xsaves_xrstors(u64 mask)
-  * buffer should be zeroed otherwise a consecutive XRSTORS from that buffer
-  * can #GP.
-  *
-- * The feature mask must be a subset of the independent features
-+ * The feature mask must be a subset of the independent features.
-  */
- void xsaves(struct xregs_state *xstate, u64 mask)
- {
- 	int err;
- 
--	if (!validate_xsaves_xrstors(mask))
-+	if (!validate_independent_components(mask))
- 		return;
- 
- 	XSTATE_OP(XSAVES, xstate, (u32)mask, (u32)(mask >> 32), err);
-@@ -1246,13 +1244,13 @@ void xsaves(struct xregs_state *xstate, u64 mask)
-  * Proper usage is to restore the state which was saved with
-  * xsaves() into @xstate.
-  *
-- * The feature mask must be a subset of the independent features
-+ * The feature mask must be a subset of the independent features.
-  */
- void xrstors(struct xregs_state *xstate, u64 mask)
- {
- 	int err;
- 
--	if (!validate_xsaves_xrstors(mask))
-+	if (!validate_independent_components(mask))
- 		return;
- 
- 	XSTATE_OP(XRSTORS, xstate, (u32)mask, (u32)(mask >> 32), err);
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 83a34fd828d5..5cd82082353e 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -154,7 +154,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
- 	frame->flags = X86_EFLAGS_FIXED;
- #endif
- 
--	fpu_clone(p, clone_flags);
-+	fpu_clone(p);
- 
- 	/* Kernel thread ? */
- 	if (unlikely(p->flags & PF_KTHREAD)) {
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ac02945756ec..f7826148edc9 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4701,9 +4701,9 @@ static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
- 	if (!vcpu->arch.guest_fpu)
- 		return;
- 
--	fpu_copy_vcpu_to_kvm_uabi(vcpu->arch.guest_fpu, guest_xsave->region,
--				  sizeof(guest_xsave->region),
--				  vcpu->arch.pkru);
-+	fpu_copy_fpstate_to_kvm_uabi(vcpu->arch.guest_fpu, guest_xsave->region,
-+				     sizeof(guest_xsave->region),
-+				     vcpu->arch.pkru);
- }
- 
- static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
-@@ -4712,9 +4712,9 @@ static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
- 	if (!vcpu->arch.guest_fpu)
- 		return 0;
- 
--	return fpu_copy_kvm_uabi_to_vcpu(vcpu->arch.guest_fpu,
--					 guest_xsave->region,
--					 supported_xcr0, &vcpu->arch.pkru);
-+	return fpu_copy_kvm_uabi_to_fpstate(vcpu->arch.guest_fpu,
-+					    guest_xsave->region,
-+					    supported_xcr0, &vcpu->arch.pkru);
- }
- 
- static void kvm_vcpu_ioctl_x86_get_xcrs(struct kvm_vcpu *vcpu,
-@@ -9787,8 +9787,8 @@ static int complete_emulated_mmio(struct kvm_vcpu *vcpu)
- static void kvm_load_guest_fpu(struct kvm_vcpu *vcpu)
- {
- 	/*
--	 * Guest with protected state have guest_fpu == NULL which makes
--	 * the swap only safe the host state. Exclude PKRU from restore as
-+	 * Guests with protected state have guest_fpu == NULL which makes
-+	 * the swap only save the host state. Exclude PKRU from restore as
- 	 * it is restored separately in kvm_x86_ops.run().
- 	 */
- 	fpu_swap_kvm_fpu(vcpu->arch.user_fpu, vcpu->arch.guest_fpu,
-@@ -9800,7 +9800,7 @@ static void kvm_load_guest_fpu(struct kvm_vcpu *vcpu)
- static void kvm_put_guest_fpu(struct kvm_vcpu *vcpu)
- {
- 	/*
--	 * Guest with protected state have guest_fpu == NULL which makes
-+	 * Guests with protected state have guest_fpu == NULL which makes
- 	 * swap only restore the host state.
- 	 */
- 	fpu_swap_kvm_fpu(vcpu->arch.guest_fpu, vcpu->arch.user_fpu, ~0ULL);
+Guenter
