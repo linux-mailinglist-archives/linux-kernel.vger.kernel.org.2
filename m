@@ -2,152 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E6342A6E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AE942A6E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237148AbhJLOPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:15:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236953AbhJLOPV (ORCPT
+        id S237184AbhJLOPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:15:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25567 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236953AbhJLOPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:15:21 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F7CC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:13:19 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id z20so27305edc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ieKETngd4wQHVII+IJcs5CQY5wbzV3iEx77J8xRx2vA=;
-        b=bWaI4AeFcuNvWGD1I8cg7W6CG/azm1vaRBxjX1dsRUwDZWLVCDsVzS85MZqppDPqW9
-         34rds3D76bwkkPcvjsGuCTXawVOxwdB47aCElSGmvamfQoH+DDNnXd3o+dxEIfXWrjbD
-         9So44VhRb03JVhThMjaEnhw5YCUaZMPe/VCwNVxdjRE0o6eP32scGLvrv27NbXQkVhLG
-         QYRO+iyEJ5oGBWxHSDEfHBIXts79CsmV5cbX2N+FVqkQp/3zRx7G8QI8fCoNxTXhr8Lp
-         cOCeSQ0fT/VSaazPoGa379Fp+1k7ZCgjR7y/PXuIDNZ0PKRb5OjvhAoDrfEbCq60UVDa
-         yVWw==
+        Tue, 12 Oct 2021 10:15:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634048015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BzTrRfXXNk8+PLvonfcHlML3JOVXOT6Q8/EMkco8wbY=;
+        b=cBByThrrnAx8WOGUenhiJhoN74tVjE692iUz0mOnoXDuciyMQ9ofIh8I5LIHd6NP4rHVUk
+        SpjqukgZnU61OJw200pSmQAVyAtAlJQtbPnXZaYORIAzQxucmBjPenoE/Zus0r8Uz0ik4M
+        4s6haU2bFhvCtdDFmUJiap779dkhjPw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-596-HV-7YYE1M925D2QiQjtaaw-1; Tue, 12 Oct 2021 10:13:33 -0400
+X-MC-Unique: HV-7YYE1M925D2QiQjtaaw-1
+Received: by mail-wr1-f69.google.com with SMTP id h11-20020adfa4cb000000b00160c791a550so15655578wrb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:13:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ieKETngd4wQHVII+IJcs5CQY5wbzV3iEx77J8xRx2vA=;
-        b=QThb0FXzWK4wSTVbqeAxckTEmDhU9coBsXPbSGYZTzTE2EewLNk+2u4zPKTL8/6WEv
-         Qg1NSJHA4oZcmCXmKQq5shZrrWqxymhWpMRJgozgNs1OFnoIyMRQURTde4Skm9pK/VH+
-         SabfYiOqt1TYEA7v5fd8vlzUepMJQHFeKEcJCzko/fenFsT+zeRMHlCOtaSeDpE+5GRx
-         qWMyqMHJRqiVs+HwPgG1ICwfTiJce8+9h2w34cS4a0Hs/0lFqniIfHK1Uf+PV2kwmmMe
-         eBqGuIAFesPNdS5NlALSbrY3enAr5pGZmGgoFprQMElC15m9J0EciNwUocS5DcR4T17T
-         nT6g==
-X-Gm-Message-State: AOAM530L8eAm2RHNjd7fHpErpXV1jsq7X4ThEWCeDd1T0XvoF4lsV54y
-        fTg8pQ03TV6l03YBdy2t8cgfZ1HvaC4Qwcj8PzM1
-X-Google-Smtp-Source: ABdhPJwOMKZYa/n4x55N6Emss5rBP+EcS7P39AqLbYHCH7HSMgM0Rumxq877HQtO60UwMW0rF+Cn72qdnnCrQ2cNdok=
-X-Received: by 2002:a17:906:2f16:: with SMTP id v22mr32291219eji.126.1634047997689;
- Tue, 12 Oct 2021 07:13:17 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=BzTrRfXXNk8+PLvonfcHlML3JOVXOT6Q8/EMkco8wbY=;
+        b=Zav7gTDh4ZaghDFHWVbkTirAvpMwqolJaHAMHjEY4iguvDmqAj0wFM5Hw8AEFgdq1V
+         +wDsU/R0gFzFLbrMJn4s9JjETORS66YpkFOVRiIWz+BGuLficNqvR82u61F/SqxGjdn+
+         ruLg4jrKY6Fcci3UvUEZ/5QCP6fGCTbNlDZzPT24AJ+kPEeovDG6k4IyuLSni+EpM4tY
+         vXKPa/+cijlqDqZ6NhzHCnecIAs9VQXhSLFZ0zWxo5W3s3L4LJ62lVjBiGsHYfL1schV
+         45lHx8hk7jwds3Vhp+AN2JUQ29IJe6Kv+gPzFaZqdyPs9xmEBg/4GkSmM8baSk+AU7Mw
+         C6tg==
+X-Gm-Message-State: AOAM533hBbQmGAUz9LgZYdEyIlInEBFkYS7kTV7EN0zOvlIqT3i8YMpT
+        5EXSb4a4hNSLnDQoJGoJwB0FcAuePGS8rvpPCorX87tskgsdYLF1M+LsDVUi8GvIdfMod1BG7Mt
+        pvJuJPsCf2X4f/6hP3Eee1cff
+X-Received: by 2002:adf:9b97:: with SMTP id d23mr31775892wrc.53.1634048012782;
+        Tue, 12 Oct 2021 07:13:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzDOcPDg93RfEOergksAHpsDa13Q8GcPCVdb5DKzHu8nWEQyeen+YOwraUjsQmj973pkAC+qw==
+X-Received: by 2002:adf:9b97:: with SMTP id d23mr31775866wrc.53.1634048012603;
+        Tue, 12 Oct 2021 07:13:32 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6a12.dip0.t-ipconnect.de. [91.12.106.18])
+        by smtp.gmail.com with ESMTPSA id b19sm2797722wmb.1.2021.10.12.07.13.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 07:13:31 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] mm: use pidfd_get_task()
+To:     Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Matthew Bobrowski <repnop@google.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Jan Kara <jack@suse.cz>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Minchan Kim <minchan@kernel.org>
+References: <20211011133245.1703103-1-brauner@kernel.org>
+ <20211011133245.1703103-3-brauner@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <b91f642b-2b64-a60c-89e2-0317164c7b70@redhat.com>
+Date:   Tue, 12 Oct 2021 16:13:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20211007004629.1113572-1-tkjos@google.com> <20211007004629.1113572-3-tkjos@google.com>
- <CAHC9VhSDnwapGk6Pvn5iuKv0zCtZSbfnGAkZwKcxVYLVRH6CLg@mail.gmail.com>
- <8c07f9b7-58b8-18b5-84f8-9b6c78acb08b@schaufler-ca.com> <20211012094101.GE8429@kadam>
-In-Reply-To: <20211012094101.GE8429@kadam>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 12 Oct 2021 10:13:06 -0400
-Message-ID: <CAHC9VhROz8V7MWch8UfrhjR030VmY7rKEUFgUvYqL6kdZCy3aw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] binder: use cred instead of task for getsecid
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>,
-        Todd Kjos <tkjos@google.com>, zohar@linux.ibm.com,
-        arve@android.com, joel@joelfernandes.org,
-        devel@driverdev.osuosl.org,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        James Morris <jmorris@namei.org>, kernel-team@android.com,
-        tkjos@android.com, keescook@chromium.org, jannh@google.com,
-        selinux@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
-        maco@android.com, christian@brauner.io, gregkh@linuxfoundation.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211011133245.1703103-3-brauner@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 5:41 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Mon, Oct 11, 2021 at 02:59:13PM -0700, Casey Schaufler wrote:
-> > On 10/11/2021 2:33 PM, Paul Moore wrote:
-> > > On Wed, Oct 6, 2021 at 8:46 PM Todd Kjos <tkjos@google.com> wrote:
-> > >> Use the 'struct cred' saved at binder_open() to lookup
-> > >> the security ID via security_cred_getsecid(). This
-> > >> ensures that the security context that opened binder
-> > >> is the one used to generate the secctx.
-> > >>
-> > >> Fixes: ec74136ded79 ("binder: create node flag to request sender's
-> > >> security context")
-> > >> Signed-off-by: Todd Kjos <tkjos@google.com>
-> > >> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-> > >> Reported-by: kernel test robot <lkp@intel.com>
-> > >> Cc: stable@vger.kernel.org # 5.4+
-> > >> ---
-> > >> v3: added this patch to series
-> > >> v4: fix build-break for !CONFIG_SECURITY
-> > >>
-> > >>  drivers/android/binder.c | 11 +----------
-> > >>  include/linux/security.h |  4 ++++
-> > >>  2 files changed, 5 insertions(+), 10 deletions(-)
-> > >>
-> > >> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> > >> index ca599ebdea4a..989afd0804ca 100644
-> > >> --- a/drivers/android/binder.c
-> > >> +++ b/drivers/android/binder.c
-> > >> @@ -2722,16 +2722,7 @@ static void binder_transaction(struct binder_proc *proc,
-> > >>                 u32 secid;
-> > >>                 size_t added_size;
-> > >>
-> > >> -               /*
-> > >> -                * Arguably this should be the task's subjective LSM secid but
-> > >> -                * we can't reliably access the subjective creds of a task
-> > >> -                * other than our own so we must use the objective creds, which
-> > >> -                * are safe to access.  The downside is that if a task is
-> > >> -                * temporarily overriding it's creds it will not be reflected
-> > >> -                * here; however, it isn't clear that binder would handle that
-> > >> -                * case well anyway.
-> > >> -                */
-> > >> -               security_task_getsecid_obj(proc->tsk, &secid);
-> > >> +               security_cred_getsecid(proc->cred, &secid);
-> > >>                 ret = security_secid_to_secctx(secid, &secctx, &secctx_sz);
-> > >>                 if (ret) {
-> > >>                         return_error = BR_FAILED_REPLY;
-> > >> diff --git a/include/linux/security.h b/include/linux/security.h
-> > >> index 6344d3362df7..f02cc0211b10 100644
-> > >> --- a/include/linux/security.h
-> > >> +++ b/include/linux/security.h
-> > >> @@ -1041,6 +1041,10 @@ static inline void security_transfer_creds(struct cred *new,
-> > >>  {
-> > >>  }
-> > >>
-> > >> +static inline void security_cred_getsecid(const struct cred *c, u32 *secid)
-> > >> +{
-> > >> +}
-> > > Since security_cred_getsecid() doesn't return an error code we should
-> > > probably set the secid to 0 in this case, for example:
-> > >
-> > >   static inline void security_cred_getsecid(...)
-> > >   {
-> > >     *secid = 0;
-> > >   }
-> >
-> > If CONFIG_SECURITY is unset there shouldn't be any case where
-> > the secid value is ever used for anything. Are you suggesting that
-> > it be set out of an abundance of caution?
->
-> The security_secid_to_secctx() function is probably inlined so probably
-> KMSan will not warn about this.  But Smatch will warn about passing
-> unitialized variables.  You probably wouldn't recieve and email about
-> it, and I would just add an exception that security_cred_getsecid()
-> should be ignored.
+On 11.10.21 15:32, Christian Brauner wrote:
+> From: Christian Brauner <christian.brauner@ubuntu.com>
+> 
+> Instead of duplicating the same code in two places use the newly added
+> pidfd_get_task() helper. This fixes an (unimportant for now) bug where
+> PIDTYPE_PID is used whereas PIDTYPE_TGID should have been used.
 
-I'd much rather just see the secid set to zero in the !CONFIG_SECURITY case.
+What would have been the effect of the BUG? Is it worth Fixes: or better 
+even separating out the fix?
+
+> 
+> Link: https://lore.kernel.org/r/20211004125050.1153693-3-christian.brauner@ubuntu.com
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Matthew Bobrowski <repnop@google.com>
+> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Minchan Kim <minchan@kernel.org>
+> Reviewed-by: Matthew Bobrowski <repnop@google.com>
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+> ---
+> /* v2 */
+> unchanged
+
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
-paul moore
-www.paul-moore.com
+Thanks,
+
+David / dhildenb
+
