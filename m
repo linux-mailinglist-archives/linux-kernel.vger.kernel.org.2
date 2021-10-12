@@ -2,132 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE50242AA46
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F5E42AA48
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhJLRGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231672AbhJLRGM (ORCPT
+        id S232227AbhJLRHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:07:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31520 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229606AbhJLRHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:06:12 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E78AC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:04:11 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so183054otk.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:04:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Gf0L13uSii7MojEsnWksglO0xsvhFpJcmZAlnq3Pg+E=;
-        b=esGdid55ZR9bCKI/QbCUWRXJbIODKcncDyBVDLpTIC30LQz09Agm2+Dtwr0C5okmdb
-         ctCca3LEC3jh5MJESKccL8D+yJdnQRdq+/BsuKUUCXLTp4lJTPq9dV8nX72MUobG0Ku0
-         5cBZFrh0FCPNUoYZ322S58iUU+03vU33dLDT0M6s4hRVG11s9kOGDOQ7FPuYeo7JFnvc
-         z3NFSmzQT6XmO4MQyTTNzXSp4l/IBkWpEbGyreM/U5exAQdwieALtgTRx5ZYgbCz75VR
-         +xXgPz9g/CGK5dhRAnUUPWcVxjEQlMbZ3c/VTB66SnlaHlkRDu0cg3kIPUAFo1nnKYDK
-         l/iA==
+        Tue, 12 Oct 2021 13:07:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634058299;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Zv2suu7TZ2BZjNAY7Fx5N+NNNZcHunY8SSActvahWDE=;
+        b=V/h8sVsGe+ckFF2+JGsOwK6MEUwh+yHUdBggfI1zEoT+Zl54C3lMDlatzsOGzJozhSNjAz
+        Jmp/46Zp9o2FzLegvLsNt+qy3w325DuoDHshIiPj/pNON6YZcY0wou+ENweX+HQ33mT+Oe
+        PzWWdBQGO4ZFjFBmBI3Dssntp2Vufa0=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-DVP7h4UKMl-cdQklpPeyPw-1; Tue, 12 Oct 2021 13:04:58 -0400
+X-MC-Unique: DVP7h4UKMl-cdQklpPeyPw-1
+Received: by mail-ed1-f71.google.com with SMTP id c8-20020a50d648000000b003daa53c7518so485955edj.21
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:04:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Gf0L13uSii7MojEsnWksglO0xsvhFpJcmZAlnq3Pg+E=;
-        b=7zL3uxGkG7bpJRyL+nazbk/IvwBhW6XRLn84c8ic8etNJyFZ1a6HAd8ysyCoGNkwtP
-         XdLNJxd2aiprE7Do/7hW37aUuQg41WeUIMDlyO6s9jipxUwqS64dP4TBchR+seeC4eHh
-         0WKPUlETroUSye3/tzbz3hq4K9tx3BZrYbycUK7L38qj91WQmfYE6nQ+MYbhlrB1tY5a
-         kpS98SCqu/8FQvI/znBLQQaHe4GUlMBCdPf8AXG6d1P+xbfF/1EEZE46xSFSrSsFbGb9
-         3hw0X6v7Bu7EG5DA9vhj70FB4P2xz5wEfdioL3Z+iauWq84qHHbhOtENgELnPQNuBe0Z
-         rw/A==
-X-Gm-Message-State: AOAM532GtsBePzDyZO+EsgpCFYI7j8LtC0StZlxZPy61gBN9FdXs35Tj
-        2FoO3r0V2/UTSHqhcBwxhtBxGw==
-X-Google-Smtp-Source: ABdhPJz21Dp7s6QAAqXmbuotHmAyoTENKlHT9ql5SjsNnd3exHtLWbGEeHfu1fakREawJUYAyRg0JA==
-X-Received: by 2002:a9d:4f1a:: with SMTP id d26mr25662931otl.65.1634058250501;
-        Tue, 12 Oct 2021 10:04:10 -0700 (PDT)
-Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
-        by smtp.gmail.com with ESMTPSA id h26sm905877oov.28.2021.10.12.10.04.09
+        bh=Zv2suu7TZ2BZjNAY7Fx5N+NNNZcHunY8SSActvahWDE=;
+        b=T+MvgEKmYWVEN0jtEmWSVi12j1TNeR+r2l3uXlyMxQokjJ4+yNIAaU2nxF3grNRjta
+         Cp24laF8U68vCPN5+vllqWLqcabH0nQPhgTz4ZUhfbclfckAVYy1XsJ3EYPE62EE0gLj
+         1Db8/rtcL5R1BwSueK3fYIyRVSPgIrbbXRI5P2f74w41elTi5ATFRNPJ/hUaCGGeq2ZS
+         B/Fx0bMEeevS+gVGBHAMzZYmQSaO6F885WFLaeGW0hO35h1gmHk/5UOCh45VRxUM+Bzy
+         vjKymROYFG3ouocgIbg7jMEBBBp6l8/B2ei7z3+6HwYgX3y/mYVs/QnG1lghYQrrkkoU
+         MlHQ==
+X-Gm-Message-State: AOAM533MbBkeLuSiRDGu8bP1pqA7kbUxAYOM776eKOkukWVE5TtxaAI+
+        AgwfFOxEbg37O1kw7BjcwdQnWrNR94p+8aZS0sArY7fGz2KcPAokHtBIPidORvidyOThe+DUwIr
+        eJjkVnEM6SA2vhCwmqElfOy/M
+X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr33622164ejc.494.1634058295745;
+        Tue, 12 Oct 2021 10:04:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwHdjuAiKRrQdj3TGjYYQwVTXm0QdW86MwEWtHVztudehRLFxGkkxaVFB3lvRzbd7INiO0Xvg==
+X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr33622143ejc.494.1634058295520;
+        Tue, 12 Oct 2021 10:04:55 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id e13sm5226755eje.95.2021.10.12.10.04.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 10:04:10 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 12:04:08 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mfd: qcom-spmi-pmic: Document eight more PMICs to
- binding
-Message-ID: <YWXACBenQ4xrBZvY@builder.lan>
-References: <20211005024812.2038249-1-bjorn.andersson@linaro.org>
- <YWWfkyoV0rF4C4PP@google.com>
+        Tue, 12 Oct 2021 10:04:54 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 19:04:53 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] s390: DYNAMIC_FTRACE_WITH_DIRECT_CALL support
+Message-ID: <YWXANRbkPIE3HtOE@krava>
+References: <20211012133802.2460757-1-hca@linux.ibm.com>
+ <20211012094852.7f6a59b8@gandalf.local.home>
+ <YWWithSCGThguq7s@osiris>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YWWfkyoV0rF4C4PP@google.com>
+In-Reply-To: <YWWithSCGThguq7s@osiris>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12 Oct 09:46 CDT 2021, Lee Jones wrote:
-
-> On Mon, 04 Oct 2021, Bjorn Andersson wrote:
-> 
-> > Update the binding with eitght more SPMI PMIC compatibles found in the
-> 
-> Spell check.
-> 
-
-Bummer...
-
-> > PMIC info list in the Qualcomm socinfo driver.
+On Tue, Oct 12, 2021 at 04:59:02PM +0200, Heiko Carstens wrote:
+> On Tue, Oct 12, 2021 at 09:48:52AM -0400, Steven Rostedt wrote:
+> > On Tue, 12 Oct 2021 15:37:58 +0200
+> > Heiko Carstens <hca@linux.ibm.com> wrote:
+> > > This small series adds DYNAMIC_FTRACE_WITH_DIRECT_CALL support for
+> > > s390 and is based on linux-next 20211012.
+> ...
+> > > Besides the architecture backend this also adds s390 ftrace direct
+> > > call samples, and slightly changes config option handling a bit, so
+> > > that options only have to be selected. This way also additional future
+> > > architectures can easily add their trampolines to the samples.
+> ...
+> > > If ok, I'd like to get this upstream via the s390 tree with the next
+> > > merge window.
 > > 
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
+> > A quick look at the patches look fine to me. I'll do a bit more digging
+> > before adding a Reviewed-by.
 > > 
-> > diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> > index 5ef79bf3d035..1d2b5f067556 100644
-> > --- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> > +++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
-> > @@ -29,6 +29,8 @@ Required properties:
-> >                     "qcom,pm8916",
-> >                     "qcom,pm8004",
-> >                     "qcom,pm8909",
-> > +                   "qcom,pm8028",
-> > +                   "qcom,pm8901",
-> >                     "qcom,pm8950",
-> >                     "qcom,pmi8950",
-> >                     "qcom,pm8998",
-> > @@ -38,6 +40,12 @@ Required properties:
-> >                     "qcom,pmk8350",
-> >                     "qcom,pm7325",
-> >                     "qcom,pmr735a",
-> > +                   "qcom,pm8150",
-> > +                   "qcom,pm8150l",
-> > +                   "qcom,pm8150b",
-> > +                   "qcom,pmk8002",
-> > +                   "qcom,pm8150c",
-> > +                   "qcom,smb2351",
-> >                     or generalized "qcom,spmi-pmic".
-> >  - reg:             Specifies the SPMI USID slave address for this device.
-> >                     For more information see:
+> > One thing you may want to note, we are working on fixing direct trampolines
+> > that conflict with the function graph tracer, and have patches that fix it.
+> > I'm not that familiar on how ftrace works on s390, but you may want to
+> > investigate this, because if s390 has the issues that x86 has, where you
+> > can't have both function graph tracing and a direct trampoline on the same
+> > function.
+> > 
+> > See here:
+> > 
+> >   https://lore.kernel.org/all/20211008091336.33616-1-jolsa@kernel.org/
 > 
-> Is there any reason why these can't be in lexicographical order?
+> I applied Jiri's patch set and the newly added selftest passes.
+
+nice, could I have your Tested-by? ;-)
+
+thanks,
+jirka
+
+> 
+> Note: s390 will also get HAVE_DYNAMIC_FTRACE_WITH_ARGS support, which is
+> required for the new selftest - this is currently only in linux-next.
+> See commit 5740a7c71ab6 ("s390/ftrace: add HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> support") in linux-next.
+> 
+> Also manually testing with loading the ftrace-direct test module and
+> enabling the function graph tracer seems to work correctly:
+> 
+>   6) + 15.138 us   |            }
+>   6)               |            wake_up_process() {
+>   6)               |              my_direct_func [ftrace_direct]() {
+>   6)               |                /* waking up ksoftirqd/6-44 */
+>   6)   0.944 us    |              }
+>   6)               |              try_to_wake_up() {
+>   6)   0.185 us    |                kthread_is_per_cpu();
+> 
+> One thing to note: Jiri adds a new a sample module, which obviously
+> will not compile for s390. Not sure if the config mechanism I propose
+> with this patch set is the best way to address this - it would then
+> require to add a config option for each new sample module.
 > 
 
-Definitely not, both this list and the list compatible list in the
-driver would be better of sorted. I just didn't want to sort and add the
-entries in a single commit.
-
-Do you want me to respin this, adding two patches that sort the
-elements? Or will you fix my awesome spelling of 8 above and I send you
-the patches that shuffles the entries?
-
-Thanks,
-Bjorn
-
-> -- 
-> Lee Jones [?????????]
-> Senior Technical Lead - Developer Services
-> Linaro.org ??? Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
