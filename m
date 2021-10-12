@@ -2,74 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB0042ADCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A2542ADD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbhJLUaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58070 "EHLO
+        id S234577AbhJLUcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231902AbhJLUaL (ORCPT
+        with ESMTP id S232986AbhJLUcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:30:11 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718E8C061570;
-        Tue, 12 Oct 2021 13:28:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=5IE6qAD4wcr48hJHMkptfnkPZIoHalUtFis0kheqFLg=; b=orpSKoGhm84/S/Gbv6Lc1eP+35
-        6wpajkgi4Gbx2ySUWgt7lJjUUgrbWdfHVjOplGAZ+oz+2jhB6bZ4PyGnYozVLJgCw65pOgwX0ZC6W
-        5PHYPimqT1ztyyw2OOmC1ypeVi/v97uxprdVYJPSaCgYWZ096pyIjGKZl0gA0ME6wfh0nef5jNqet
-        d7PKimwWTymmRrq7isUEKsaKeRdjE1m3FgqDCSSoRM2ANeKNqZv5eYn6RRvKsrVyKM6Uh7uYObcXY
-        pPsX/r92tH0vaCCtjej8Vuojd5FFSg4F/ZU+mQhzlCisrDHEz+ic3tQcL6aL+k8ZqRIP0if+JV5Le
-        jyx4megw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maONZ-00DvFt-KK; Tue, 12 Oct 2021 20:28:05 +0000
-Subject: Re: linux-next: Tree for Oct 12 (drivers/iio/adc/imx8qxp-adc.c)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Cai Huoqing <caihuoqing@baidu.com>
-References: <20211012204606.1dd72037@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <27c3f066-1926-db85-d183-d129a2ab43e8@infradead.org>
-Date:   Tue, 12 Oct 2021 13:28:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 12 Oct 2021 16:32:00 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E045DC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:29:58 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f194200461a217ceec11f7e.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:4200:461a:217c:eec1:1f7e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3728C1EC0445;
+        Tue, 12 Oct 2021 22:29:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634070597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=LV49XJer83pNAamSOHet+vAqgvGNQ6uIlzh1Yld/GaY=;
+        b=lBAaeMnL+gGQAkvkoFNbLTpMVPNhi/XqTPiQOGS/UpPZ57+561GItHaIG5My2cKsLcxotO
+        zLJEE5vCcbaYw/ZpIAQJMfOJwZnQWuDEufELstKNhQ6yNNKapYFoGcYH4G09gLpe4SCuAw
+        yD29qv/cbiDF/ffT7wtB6cYMGXa1spo=
+Date:   Tue, 12 Oct 2021 22:29:55 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the
+ clobber list
+Message-ID: <YWXwQ2P0M0uzHo0o@zn.tnic>
+References: <20211012052822.GA28951@1wt.eu>
+ <20211012083644.543775-1-ammarfaizi2@gmail.com>
+ <20211012090638.GD28951@1wt.eu>
 MIME-Version: 1.0
-In-Reply-To: <20211012204606.1dd72037@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211012090638.GD28951@1wt.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 2:46 AM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> News: there will be no linux-next release on Thursday.
-> 
-> Changes since 20211011:
-> 
+On Tue, Oct 12, 2021 at 11:06:38AM +0200, Willy Tarreau wrote:
+> Let's indeed wait for any of the x86 maintainers to confirm your
+> analysis.
 
-on x86_64:
+I guess the official doc you guys are looking for is the x86-64 ABI:
 
-../drivers/iio/adc/imx8qxp-adc.c:433:12: error: ‘imx8qxp_adc_runtime_resume’ defined but not used [-Werror=unused-function]
-  static int imx8qxp_adc_runtime_resume(struct device *dev)
-             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-../drivers/iio/adc/imx8qxp-adc.c:419:12: error: ‘imx8qxp_adc_runtime_suspend’ defined but not used [-Werror=unused-function]
-  static int imx8qxp_adc_runtime_suspend(struct device *dev)
-             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+https://gitlab.com/x86-psABIs/x86-64-ABI/
 
-# CONFIG_SUSPEND is not set
-# CONFIG_HIBERNATION is not set
-# CONFIG_PM is not set
+and recent pdfs are here:
 
+https://gitlab.com/x86-psABIs/x86-64-ABI/-/wikis/x86-64-psABI
+
+and there you scroll to
+
+"A.2 AMD64 Linux Kernel Conventions
+
+...
+
+A.2.1 Calling Conventions"
+
+and that section explains which regs go where.
+
+HTH.
 
 -- 
-~Randy
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
