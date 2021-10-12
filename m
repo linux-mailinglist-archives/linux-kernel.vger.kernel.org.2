@@ -2,311 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44638429B35
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBF0429B38
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhJLB5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhJLB5x (ORCPT
+        id S231361AbhJLB7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:59:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28099 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229544AbhJLB7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:57:53 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F62C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:55:51 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id a7so43173432yba.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:55:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TjlLE2YiWYdzh8oqCpc56pS1a8zvqSqEgosStR538+Y=;
-        b=A5mZTwPjTxTRUEGlYZdQN28xKFwLvg+ak4eAOFpv3QiM25OEWf8uiE+OWXLUf2ahtt
-         50jK0izMLB3iT1r/fCp/1QzTcPe5qkHXFeLpJzh320l3CscLsxSAYbvr+G577SVLSvAY
-         B4bGh0sKVDmncQWkaSiKEIxhifR4fqx7QYV4AXDWk5b4VP1meOVO/GLx98qNvIy+KcQC
-         EdVliPdHgkxz1/IZeFGZ6VpUDIrMtKUmDMFR2Uwuvl+VQTJszW18xlRt5k4as5tg5w7Z
-         reZOm5sexVhsirGsKS/tIUuDeJ1Vw9MJsngrH49DMHSTJQqpHueODCQkt3OjPUjtZjNt
-         +Cng==
+        Mon, 11 Oct 2021 21:59:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634003833;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z1mp2JWM4YiVwlRlVLQCKfDNv4dQeC/M1PO4QIwth7g=;
+        b=F0D5Ld7JV/CV5j6Iel8TYgMLtQDJmD/1hpL/+jYqLZW8yW/FFMwr+jA3G5a4XsQx2Jjj0Z
+        fSxb8Q1WllnYIzVwwxFXJ9KkqUUjxlWb8GKA+FK3YB78z3rcj1z1vnYxWBPMYmuEwXuUGc
+        t2OtKheCNf2uQQGLokW0YCRZx1YtWEk=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-553-D0Qc2RD4MNmSkqkevAHZ6Q-1; Mon, 11 Oct 2021 21:57:12 -0400
+X-MC-Unique: D0Qc2RD4MNmSkqkevAHZ6Q-1
+Received: by mail-pl1-f199.google.com with SMTP id z8-20020a170903018800b0013f23528cb6so2628361plg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:57:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TjlLE2YiWYdzh8oqCpc56pS1a8zvqSqEgosStR538+Y=;
-        b=gkWh66/b3MHyvEUgvNhPYG5scuWkiZDQ63TpgSeQ/to9sixnYAXvcbvqr6YgGHd3t8
-         A21izdNjK8iTW8z0spoUVSiCjOkny65LnThuI3IkaZlQ8BGEuSMbJ4vAxBOxIfZRMyz0
-         e6f8ixVUaWl2pHtfzDAfe63S9L0uaUWExq6dphWWw8DgxIkkctpHhSrVFW1JF+w8AuOv
-         +B46zG78VGnX/sCALLRDinWyRRnxy1ZWsxWDHb/r3mFBZnvlZmTfjk2IVNiFSAHdIgJ/
-         pADsdFqxhxpEZrwIsuab5AJgSiELcCm0ZCmtF+TqpONh9T6Ea2kydCCGb4DodatSeFdP
-         rhAQ==
-X-Gm-Message-State: AOAM5302IPSgO2w09g/R/snYbPiTrpm7T0Zbm/uJUJDRfchBM5vIRDSs
-        paaxj53KPvrVYukOiQxdWzW28dfnyZnspAMv9vI7oA==
-X-Google-Smtp-Source: ABdhPJxWCaOhumcxBWDXa4kI49G8ChrMvm47BO0yOG1kkQex2y3RL6ocRgySacYvG3O3Z9PgirT31dygUkkzfT1F0ok=
-X-Received: by 2002:a05:6902:120e:: with SMTP id s14mr28166626ybu.161.1634003750807;
- Mon, 11 Oct 2021 18:55:50 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z1mp2JWM4YiVwlRlVLQCKfDNv4dQeC/M1PO4QIwth7g=;
+        b=bHoesZV+/8VoIrCO8x+TZ3Djg4KeepP5uE3VI6kiyudcERQgqlYNs+6qA+oDeNJJmr
+         AkbMkO/1R0ouygv2uX18CBfFzb4Z6a6glPDHFBO6FG1UTTU2BTXooLGwOipQlA7nYOn5
+         u81eThwoH1BJ8DpNh/XxpOvc/U46mxQi3u4s5OEoUHA5C4kGzD0eCVpRA/NWzZSpW1dC
+         PjPR8W4/TGtZiKpE2DrP9dK0VXN+u9IKyYJYFwNZbGnYCBLdSy0Tbx2ItjXj2T/RqPt/
+         eIujas6+DQfsmASMYTPseKCy4sfRtI39RbUrLrtk0WUAUHxHIzYGHu0exDPrL1Sg5/67
+         9E4Q==
+X-Gm-Message-State: AOAM530mfqgzNPaPgGqHuz5uIqNe3szzZG7mmPfRVQr1DaU/5RitLWD2
+        zWPgasvfuWQyuYZrLlW/i0ng1sXxRHKHyXdZxo1r3R0IgpfVjEfyAOZ/KFOwCfpmVhCLKwx9/X4
+        wSbv/VeHx/MwTXn7oVLU3x8ha
+X-Received: by 2002:aa7:9884:0:b0:44c:4c1f:6e6 with SMTP id r4-20020aa79884000000b0044c4c1f06e6mr29290657pfl.57.1634003830900;
+        Mon, 11 Oct 2021 18:57:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyoY/Xa4Xw7ivczlmO9ms2t13BWtRuBIDKwNXoKSSChisi8+RUQEKHw9Ho6XNS5pE3+tIDo/g==
+X-Received: by 2002:aa7:9884:0:b0:44c:4c1f:6e6 with SMTP id r4-20020aa79884000000b0044c4c1f06e6mr29290627pfl.57.1634003830485;
+        Mon, 11 Oct 2021 18:57:10 -0700 (PDT)
+Received: from t490s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b23sm9193853pfi.135.2021.10.11.18.57.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 18:57:09 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 09:57:02 +0800
+From:   Peter Xu <peterx@redhat.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     naoya.horiguchi@nec.com, hughd@google.com,
+        kirill.shutemov@linux.intel.com, willy@infradead.org,
+        osalvador@suse.de, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [v3 PATCH 4/5] mm: shmem: don't truncate page if memory failure
+ happens
+Message-ID: <YWTrbgf0kpwayWHL@t490s>
+References: <20210930215311.240774-1-shy828301@gmail.com>
+ <20210930215311.240774-5-shy828301@gmail.com>
 MIME-Version: 1.0
-References: <20211012015244.693594-1-surenb@google.com>
-In-Reply-To: <20211012015244.693594-1-surenb@google.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 11 Oct 2021 18:55:39 -0700
-Message-ID: <CAJuCfpF7mZ9vxV2c4D3+rOQw3ky57JULY00==eCrT0e0ZbHPWA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] gup: document and work around "COW can break either
- way" issue
-To:     stable <stable@vger.kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jann Horn <jannh@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
-        Nadav Amit <namit@vmware.com>, Christoph Hellwig <hch@lst.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>, jack@suse.cz,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210930215311.240774-5-shy828301@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 6:52 PM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> From: Linus Torvalds <torvalds@linux-foundation.org>
->
-> From: Linus Torvalds <torvalds@linux-foundation.org>
+On Thu, Sep 30, 2021 at 02:53:10PM -0700, Yang Shi wrote:
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 88742953532c..75c36b6a405a 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2456,6 +2456,7 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
+>  	struct inode *inode = mapping->host;
+>  	struct shmem_inode_info *info = SHMEM_I(inode);
+>  	pgoff_t index = pos >> PAGE_SHIFT;
+> +	int ret = 0;
+>  
+>  	/* i_rwsem is held by caller */
+>  	if (unlikely(info->seals & (F_SEAL_GROW |
+> @@ -2466,7 +2467,17 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
+>  			return -EPERM;
+>  	}
+>  
+> -	return shmem_getpage(inode, index, pagep, SGP_WRITE);
+> +	ret = shmem_getpage(inode, index, pagep, SGP_WRITE);
+> +
+> +	if (*pagep) {
+> +		if (PageHWPoison(*pagep)) {
+> +			unlock_page(*pagep);
+> +			put_page(*pagep);
+> +			ret = -EIO;
+> +		}
+> +	}
+> +
+> +	return ret;
+>  }
+>  
+>  static int
+> @@ -2555,6 +2566,11 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+>  			unlock_page(page);
+>  		}
+>  
+> +		if (page && PageHWPoison(page)) {
+> +			error = -EIO;
+> +			break;
+> +		}
+> +
+>  		/*
+>  		 * We must evaluate after, since reads (unlike writes)
+>  		 * are called without i_rwsem protection against truncate
 
-Sorry Greg, I must have screwed up something and this "From:" line
-appeared twice. Do you want me to resent these backports or you can
-simply drop the duplicate line?
+[...]
 
->
-> commit 17839856fd588f4ab6b789f482ed3ffd7c403e1f upstream.
->
-> Doing a "get_user_pages()" on a copy-on-write page for reading can be
-> ambiguous: the page can be COW'ed at any time afterwards, and the
-> direction of a COW event isn't defined.
->
-> Yes, whoever writes to it will generally do the COW, but if the thread
-> that did the get_user_pages() unmapped the page before the write (and
-> that could happen due to memory pressure in addition to any outright
-> action), the writer could also just take over the old page instead.
->
-> End result: the get_user_pages() call might result in a page pointer
-> that is no longer associated with the original VM, and is associated
-> with - and controlled by - another VM having taken it over instead.
->
-> So when doing a get_user_pages() on a COW mapping, the only really safe
-> thing to do would be to break the COW when getting the page, even when
-> only getting it for reading.
->
-> At the same time, some users simply don't even care.
->
-> For example, the perf code wants to look up the page not because it
-> cares about the page, but because the code simply wants to look up the
-> physical address of the access for informational purposes, and doesn't
-> really care about races when a page might be unmapped and remapped
-> elsewhere.
->
-> This adds logic to force a COW event by setting FOLL_WRITE on any
-> copy-on-write mapping when FOLL_GET (or FOLL_PIN) is used to get a page
-> pointer as a result.
->
-> The current semantics end up being:
->
->  - __get_user_pages_fast(): no change. If you don't ask for a write,
->    you won't break COW. You'd better know what you're doing.
->
->  - get_user_pages_fast(): the fast-case "look it up in the page tables
->    without anything getting mmap_sem" now refuses to follow a read-only
->    page, since it might need COW breaking.  Which happens in the slow
->    path - the fast path doesn't know if the memory might be COW or not.
->
->  - get_user_pages() (including the slow-path fallback for gup_fast()):
->    for a COW mapping, turn on FOLL_WRITE for FOLL_GET/FOLL_PIN, with
->    very similar semantics to FOLL_FORCE.
->
-> If it turns out that we want finer granularity (ie "only break COW when
-> it might actually matter" - things like the zero page are special and
-> don't need to be broken) we might need to push these semantics deeper
-> into the lookup fault path.  So if people care enough, it's possible
-> that we might end up adding a new internal FOLL_BREAK_COW flag to go
-> with the internal FOLL_COW flag we already have for tracking "I had a
-> COW".
->
-> Alternatively, if it turns out that different callers might want to
-> explicitly control the forced COW break behavior, we might even want to
-> make such a flag visible to the users of get_user_pages() instead of
-> using the above default semantics.
->
-> But for now, this is mostly commentary on the issue (this commit message
-> being a lot bigger than the patch, and that patch in turn is almost all
-> comments), with that minimal "enable COW breaking early" logic using the
-> existing FOLL_WRITE behavior.
->
-> [ It might be worth noting that we've always had this ambiguity, and it
->   could arguably be seen as a user-space issue.
->
->   You only get private COW mappings that could break either way in
->   situations where user space is doing cooperative things (ie fork()
->   before an execve() etc), but it _is_ surprising and very subtle, and
->   fork() is supposed to give you independent address spaces.
->
->   So let's treat this as a kernel issue and make the semantics of
->   get_user_pages() easier to understand. Note that obviously a true
->   shared mapping will still get a page that can change under us, so this
->   does _not_ mean that get_user_pages() somehow returns any "stable"
->   page ]
->
-> [surenb: backport notes
->         Since gup_pgd_range does not exist, made appropriate changes on
->         the the gup_huge_pgd, gup_huge_pd and gup_pud_range calls instead.
->         Replaced (gup_flags | FOLL_WRITE) with write=1 in gup_huge_pgd,
->         gup_huge_pd and gup_pud_range.
->         Removed FOLL_PIN usage in should_force_cow_break since it's missing in
->         the earlier kernels.]
->
-> Reported-by: Jann Horn <jannh@google.com>
-> Tested-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Oleg Nesterov <oleg@redhat.com>
-> Acked-by: Kirill Shutemov <kirill@shutemov.name>
-> Acked-by: Jan Kara <jack@suse.cz>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> [surenb: backport to 4.4 kernel]
-> Cc: stable@vger.kernel.org # 4.4.x
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
->  mm/gup.c         | 48 ++++++++++++++++++++++++++++++++++++++++--------
->  mm/huge_memory.c |  7 +++----
->  2 files changed, 43 insertions(+), 12 deletions(-)
->
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 4c5857889e9d..c80cdc408228 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -59,13 +59,22 @@ static int follow_pfn_pte(struct vm_area_struct *vma, unsigned long address,
->  }
->
->  /*
-> - * FOLL_FORCE can write to even unwritable pte's, but only
-> - * after we've gone through a COW cycle and they are dirty.
-> + * FOLL_FORCE or a forced COW break can write even to unwritable pte's,
-> + * but only after we've gone through a COW cycle and they are dirty.
->   */
->  static inline bool can_follow_write_pte(pte_t pte, unsigned int flags)
->  {
-> -       return pte_write(pte) ||
-> -               ((flags & FOLL_FORCE) && (flags & FOLL_COW) && pte_dirty(pte));
-> +       return pte_write(pte) || ((flags & FOLL_COW) && pte_dirty(pte));
-> +}
+> @@ -4193,6 +4216,10 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
+>  		page = ERR_PTR(error);
+>  	else
+>  		unlock_page(page);
 > +
-> +/*
-> + * A (separate) COW fault might break the page the other way and
-> + * get_user_pages() would return the page from what is now the wrong
-> + * VM. So we need to force a COW break at GUP time even for reads.
-> + */
-> +static inline bool should_force_cow_break(struct vm_area_struct *vma, unsigned int flags)
-> +{
-> +       return is_cow_mapping(vma->vm_flags) && (flags & FOLL_GET);
->  }
->
->  static struct page *follow_page_pte(struct vm_area_struct *vma,
-> @@ -509,12 +518,18 @@ long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
->                         if (!vma || check_vma_flags(vma, gup_flags))
->                                 return i ? : -EFAULT;
->                         if (is_vm_hugetlb_page(vma)) {
-> +                               if (should_force_cow_break(vma, foll_flags))
-> +                                       foll_flags |= FOLL_WRITE;
->                                 i = follow_hugetlb_page(mm, vma, pages, vmas,
->                                                 &start, &nr_pages, i,
-> -                                               gup_flags);
-> +                                               foll_flags);
->                                 continue;
->                         }
->                 }
+> +	if (PageHWPoison(page))
+> +		page = ERR_PTR(-EIO);
 > +
-> +               if (should_force_cow_break(vma, foll_flags))
-> +                       foll_flags |= FOLL_WRITE;
+>  	return page;
+>  #else
+>  	/*
+> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+> index 7a9008415534..b688d5327177 100644
+> --- a/mm/userfaultfd.c
+> +++ b/mm/userfaultfd.c
+> @@ -233,6 +233,11 @@ static int mcontinue_atomic_pte(struct mm_struct *dst_mm,
+>  		goto out;
+>  	}
+>  
+> +	if (PageHWPoison(page)) {
+> +		ret = -EIO;
+> +		goto out_release;
+> +	}
 > +
->  retry:
->                 /*
->                  * If we have a pending SIGKILL, don't keep faulting pages and
-> @@ -1346,6 +1361,10 @@ static int gup_pud_range(pgd_t pgd, unsigned long addr, unsigned long end,
->  /*
->   * Like get_user_pages_fast() except it's IRQ-safe in that it won't fall back to
->   * the regular GUP. It will only return non-negative values.
-> + *
-> + * Careful, careful! COW breaking can go either way, so a non-write
-> + * access can get ambiguous page results. If you call this function without
-> + * 'write' set, you'd better be sure that you're ok with that ambiguity.
->   */
->  int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
->                           struct page **pages)
-> @@ -1375,6 +1394,12 @@ int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
->          *
->          * We do not adopt an rcu_read_lock(.) here as we also want to
->          * block IPIs that come from THPs splitting.
-> +        *
-> +        * NOTE! We allow read-only gup_fast() here, but you'd better be
-> +        * careful about possible COW pages. You'll get _a_ COW page, but
-> +        * not necessarily the one you intended to get depending on what
-> +        * COW event happens after this. COW may break the page copy in a
-> +        * random direction.
->          */
->
->         local_irq_save(flags);
-> @@ -1385,15 +1410,22 @@ int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
->                 next = pgd_addr_end(addr, end);
->                 if (pgd_none(pgd))
->                         break;
-> +               /*
-> +                * The FAST_GUP case requires FOLL_WRITE even for pure reads,
-> +                * because get_user_pages() may need to cause an early COW in
-> +                * order to avoid confusing the normal COW routines. So only
-> +                * targets that are already writable are safe to do by just
-> +                * looking at the page tables.
-> +                */
->                 if (unlikely(pgd_huge(pgd))) {
-> -                       if (!gup_huge_pgd(pgd, pgdp, addr, next, write,
-> +                       if (!gup_huge_pgd(pgd, pgdp, addr, next, 1,
->                                           pages, &nr))
->                                 break;
->                 } else if (unlikely(is_hugepd(__hugepd(pgd_val(pgd))))) {
->                         if (!gup_huge_pd(__hugepd(pgd_val(pgd)), addr,
-> -                                        PGDIR_SHIFT, next, write, pages, &nr))
-> +                                        PGDIR_SHIFT, next, 1, pages, &nr))
->                                 break;
-> -               } else if (!gup_pud_range(pgd, addr, next, write, pages, &nr))
-> +               } else if (!gup_pud_range(pgd, addr, next, 1, pages, &nr))
->                         break;
->         } while (pgdp++, addr = next, addr != end);
->         local_irq_restore(flags);
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 6404e4fcb4ed..fae45c56e2ee 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -1268,13 +1268,12 @@ out_unlock:
->  }
->
->  /*
-> - * FOLL_FORCE can write to even unwritable pmd's, but only
-> - * after we've gone through a COW cycle and they are dirty.
-> + * FOLL_FORCE or a forced COW break can write even to unwritable pmd's,
-> + * but only after we've gone through a COW cycle and they are dirty.
->   */
->  static inline bool can_follow_write_pmd(pmd_t pmd, unsigned int flags)
->  {
-> -       return pmd_write(pmd) ||
-> -              ((flags & FOLL_FORCE) && (flags & FOLL_COW) && pmd_dirty(pmd));
-> +       return pmd_write(pmd) || ((flags & FOLL_COW) && pmd_dirty(pmd));
->  }
->
->  struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
-> --
-> 2.33.0.882.g93a45727a2-goog
->
+>  	ret = mfill_atomic_install_pte(dst_mm, dst_pmd, dst_vma, dst_addr,
+>  				       page, false, wp_copy);
+>  	if (ret)
+> -- 
+> 2.26.2
+> 
+
+These are shmem_getpage_gfp() call sites:
+
+  shmem_getpage[151]             return shmem_getpage_gfp(inode, index, pagep, sgp,
+  shmem_fault[2112]              err = shmem_getpage_gfp(inode, vmf->pgoff, &vmf->page, SGP_CACHE,
+  shmem_read_mapping_page_gfp[4188] error = shmem_getpage_gfp(inode, index, &page, SGP_CACHE,
+
+These are further shmem_getpage() call sites:
+
+  collapse_file[1735]            if (shmem_getpage(mapping->host, index, &page,
+  shmem_undo_range[965]          shmem_getpage(inode, start - 1, &page, SGP_READ);
+  shmem_undo_range[980]          shmem_getpage(inode, end, &page, SGP_READ);
+  shmem_write_begin[2467]        return shmem_getpage(inode, index, pagep, SGP_WRITE);
+  shmem_file_read_iter[2544]     error = shmem_getpage(inode, index, &page, sgp);
+  shmem_fallocate[2733]          error = shmem_getpage(inode, index, &page, SGP_FALLOC);
+  shmem_symlink[3079]            error = shmem_getpage(inode, 0, &page, SGP_WRITE);
+  shmem_get_link[3120]           error = shmem_getpage(inode, 0, &page, SGP_READ);
+  mcontinue_atomic_pte[235]      ret = shmem_getpage(inode, pgoff, &page, SGP_READ);
+
+Wondering whether this patch covered all of them.
+
+This also reminded me that whether we should simply fail shmem_getpage_gfp()
+directly, then all above callers will get a proper failure, rather than we do
+PageHWPoison() check everywhere?
+
+-- 
+Peter Xu
+
