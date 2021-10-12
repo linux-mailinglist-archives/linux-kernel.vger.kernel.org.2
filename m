@@ -2,121 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352CC42A6BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9285242A6C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237114AbhJLOIl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Oct 2021 10:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236936AbhJLOIk (ORCPT
+        id S237178AbhJLOIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:08:44 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:9194 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237098AbhJLOIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:08:40 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE56C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:06:38 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1maIQ0-0006DE-Q2; Tue, 12 Oct 2021 16:06:12 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1maIPx-0002gx-Jv; Tue, 12 Oct 2021 16:06:09 +0200
-Message-ID: <9446163d07a2ff135965c7bff249f76bd0da5fb8.camel@pengutronix.de>
-Subject: Re: [PATCH v1 09/16] reset: starfive-jh7100: Add StarFive JH7100
- reset driver
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Emil Renner Berthing <kernel@esmil.dk>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 12 Oct 2021 16:06:09 +0200
-In-Reply-To: <20211012134027.684712-10-kernel@esmil.dk>
-References: <20211012134027.684712-1-kernel@esmil.dk>
-         <20211012134027.684712-10-kernel@esmil.dk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Tue, 12 Oct 2021 10:08:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634047600; x=1665583600;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qkYXIs5EMBD3c4RGdtzIghYRVVmFGigRG+iuqOoLpdM=;
+  b=uRUg0RKsWjG7T2HtLOrlGikmHqF3AQTLCPi2NtDx/pke9ZhKudRBj7bv
+   HDsiHXeiTaVMGQcA1i7i10XxJwFBHPUT66ErNk0eiBAR7zcMXtpQwuaRk
+   nPnpKI+qM/ncsvjBC/AfkbvlUv8fkZKAtaQfw4QJdw9RqCn6XRhVtQsPI
+   4WviNKqCWC2n+ehUqOGeGJp0Q7lpSb0/V6RTVm2HBqH1AtIMv5TTrYCyb
+   AWmsLBq7W36lzgYrAglREPhuK4hy8suhOh6Q6dcU4EKaZ04pHw8hHPB6N
+   O6Y2iNyI48TrJ6nLOr0OCFB2hHpy+uxWrnhA9jDTZw28yjbyiOO+p2zyP
+   g==;
+IronPort-SDR: 0lSaNcQS2mkgQM8wJqib3MGzTeGiPMvrtNfyMwG9kNro8iU6GyCExCrqB9p0PxymMx2arcahTx
+ RiF1E2KGHkcKbrMM+STQhKiCASMsjLXqZ/JMpha9T39KsOpP7gB2N5arT12JaN2p5XIxTlA8zH
+ 67bAmm9BGQzmCssh5nNZu3p+p+2BI0lNzTOUNJV+CxSEh06w66y2SbAPGNdWDQB1xu3vF3nME1
+ 4gbBsuzCdK2Scpff4vfikC1zrKL085b+ESFsvweelnz1GuHodJDNO2ml/x8SBAbxTQ7d2muFsk
+ XkYegdrEu81WL4gHAsZSqRGG
+X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
+   d="scan'208";a="72665534"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Oct 2021 07:06:22 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 12 Oct 2021 07:06:20 -0700
+Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Tue, 12 Oct 2021 07:06:18 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <robh+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        <codrin.ciubotariu@microchip.com>, <linux-i2c@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH 0/2] i2c: at91: Add support for programmable clock source
+Date:   Tue, 12 Oct 2021 16:07:16 +0200
+Message-ID: <20211012140718.2138278-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Emil,
+Add support to be able to set BRSRCCLK. This feature is support on lan966x
 
-On Tue, 2021-10-12 at 15:40 +0200, Emil Renner Berthing wrote:
-> Add a driver for the StarFive JH7100 reset controller.
-> 
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> ---
->  MAINTAINERS                           |   7 ++
->  drivers/reset/Kconfig                 |   8 ++
->  drivers/reset/Makefile                |   1 +
->  drivers/reset/reset-starfive-jh7100.c | 164 ++++++++++++++++++++++++++
->  4 files changed, 180 insertions(+)
->  create mode 100644 drivers/reset/reset-starfive-jh7100.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d2b95b96f0ec..f7883377895e 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17854,6 +17854,13 @@ F:	Documentation/devicetree/bindings/clock/starfive,jh7100-clkgen.yaml
->  F:	drivers/clk/starfive/clk-starfive-jh7100.c
->  F:	include/dt-bindings/clock/starfive-jh7100.h
->  
-> +STARFIVE JH7100 RESET CONTROLLER DRIVER
-> +M:	Emil Renner Berthing <kernel@esmil.dk>
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/reset/starfive,jh7100-reset.yaml
-> +F:	drivers/reset/reset-starfive-jh7100.c
-> +F:	include/dt-bindings/reset/starfive-jh7100.h
-> +
->  STATIC BRANCH/CALL
->  M:	Peter Zijlstra <peterz@infradead.org>
->  M:	Josh Poimboeuf <jpoimboe@redhat.com>
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index be799a5abf8a..8345521744b3 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -92,6 +92,14 @@ config RESET_INTEL_GW
->  	  Say Y to control the reset signals provided by reset controller.
->  	  Otherwise, say N.
->  
-> +config RESET_STARFIVE_JH7100
-> +	bool "StarFive JH7100 Reset Driver"
-> +	depends on SOC_STARFIVE || COMPILE_TEST
-> +	depends on OF
-> +	default SOC_STARFIVE
-> +	help
-> +	  This enables the reset controller driver for the StarFive JH7100 SoC.
-> +
+Horatiu Vultur (2):
+  dt-bindings: i2c: at91: Extend compatible list for lan966x
+  i2c: at91: add support for brsrcclk
 
-Please keep these in alphabetical (config symbol name) order.
+ .../devicetree/bindings/i2c/i2c-at91.txt      |  6 +++--
+ drivers/i2c/busses/i2c-at91-core.c            | 16 +++++++++++++
+ drivers/i2c/busses/i2c-at91-master.c          | 23 +++++++++++++++++--
+ drivers/i2c/busses/i2c-at91.h                 |  1 +
+ 4 files changed, 42 insertions(+), 4 deletions(-)
 
-regards
-Philipp
+-- 
+2.33.0
+
