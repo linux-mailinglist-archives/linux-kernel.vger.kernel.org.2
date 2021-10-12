@@ -2,121 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454C242A771
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7B742A77E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237383AbhJLOl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:41:29 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:31911 "EHLO
+        id S237297AbhJLOnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:43:37 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:32061 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237285AbhJLOlX (ORCPT
+        with ESMTP id S236637AbhJLOng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:41:23 -0400
+        Tue, 12 Oct 2021 10:43:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634049561; x=1665585561;
+  t=1634049694; x=1665585694;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=WtvyiwpQIdZSLb8nnAndMS1Cf2XB7Oc9bMXdt1ZKjI8=;
-  b=x0rK7ip+hRIiP4az1MXhYo7WJNQJ7SnRnPtc5cN7gGZ+I2GMpPpfW7K+
-   +Ec3ORI1H4icEBCsUY7t4619pTZZbc51cOwkesy0W68tkMt8bNJQQQDM9
-   a66qq9LiWKaIiP+0Oro70jfhS3GNsX/02K4HlrBlAyfgxJiJnSVOkP3BY
-   NVRnDke2gR+tAhM9hdjfI1Fh6XcbxDikg7Bn8Cd8ZltnMpnoUVyHyyFhy
-   vP8+rtTx/FMIvuaosQTa5hYYWI4C7cr41w7rDNxis5K65kivrW0iSDXic
-   tHzGnVnNwqX93LuU00LwKmSfVM+wAyG4oqu2eiiP695qgh9AQZC5WRwdA
-   Q==;
-IronPort-SDR: d07ygs5Vjduz6DOM6xDKgqbCuKmg/1GTwqx1wU3Lgl+Ybg81S1Z+7ir49SyqHVhQKSBpWm9ubq
- 9mAwirrkE/1cPlHmP+/3W89dQvP0sWNewuyDExl3g/Lb2+UaMPttsbZrb6qXTzff9ewlXZLD3Z
- ebScA9AMtMKjU2ZQg5+5dK34xFS/zyz5mo/JuVRXovvJzBBV29gbWrWoERGO8p0m7pDLy/Cc7G
- FZMaGWA0E5zihjRtVRGWpH3fU3SvWhIb1nVrTRyZXiQE/9tAEsB4XdI48jkB3sW5GFWzolElmH
- NY05ZyIzP97C4HlOZVf6Yjxg
+  bh=uaKFVdc8S/VvWiZuXCUCkebK43ut9xuhbG5d0/Im4a4=;
+  b=kbI6+nHosBQ9OCvaxLaD++uvkYC3ktxC8VDLSF4ZYIFGCWc/2ia8uQhw
+   0Zw1AV/8FXYzEarwe6msRVXljxZ95dK02KpT17O9qWoLCl7BwBN+jnM59
+   WGzjOVAK+TmuaX1IKDjOYXw8ReaJJ2nubEnplyiej0ku2vLfqFHvYPP0l
+   mRas97c9O5rXc8yB0NUwbtlGtAd/F8qS4XEEKvUn1IxrCCQGW7fnC+L5w
+   7mWWOJI7D51syfWkegDLVuh8oFwfvZ8qpMUeF6Cgud++WmAkoYDcWgINg
+   OrlURSJmjSXUe9Ue05Q9olrN41AvKxVCM93ASjKrgyDToQohPlLyRiNjR
+   A==;
+IronPort-SDR: G5/0/w2zkA1J/kUitsL+TTmBuTT6zOQBYeRhnhdJ1xc+U88DRMABe9O5d/81kVSnERBHzCd2OA
+ j8zVGqYj16GEvBA4cnAI/ethiQWXoh9KJ4Y8iQp1HPVPFQMYCceyuBO/KnJgXmx4hinrU9D7s3
+ h8wXxHdNWs7RfDwoRj9Ta6dJxGcVDy+0uynZhqJtGnFHj3FM5+BnVGDMVlF0B79k9T7s4XANfG
+ IFxSKUYcQrmk58k87mAUHYVOyduXGMvW2TDUkJtAP9q4PDbplxLvgGuZdZUWBoRV062jl+zD8/
+ x5GK9Wb2BhJ62/SgcXMCGxhX
 X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="147780029"
+   d="scan'208";a="132723629"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Oct 2021 07:39:21 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Oct 2021 07:41:33 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 12 Oct 2021 07:39:20 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Tue, 12 Oct 2021 07:39:20 -0700
-Date:   Tue, 12 Oct 2021 16:40:52 +0200
+ 15.1.2176.14; Tue, 12 Oct 2021 07:41:33 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Tue, 12 Oct 2021 07:41:33 -0700
+Date:   Tue, 12 Oct 2021 16:43:05 +0200
 From:   Horatiu Vultur <horatiu.vultur@microchip.com>
 To:     Philipp Zabel <p.zabel@pengutronix.de>
-CC:     <robh+dt@kernel.org>, <andrew@lunn.ch>,
-        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: reset: Add lan966x support
-Message-ID: <20211012144052.pmn4u3s2j27itwxe@soft-dev3-1.localhost>
-References: <20211012114238.2060101-1-horatiu.vultur@microchip.com>
- <20211012114238.2060101-2-horatiu.vultur@microchip.com>
- <91ae922d66b4b8c521142c8030bdd1a9f6d2fad1.camel@pengutronix.de>
+CC:     <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
+        <UNGLinuxDriver@microchip.com>, <linus.walleij@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pinctrl: microchip sgpio: use reset driver
+Message-ID: <20211012144305.cfvvtqlscnrhsvx2@soft-dev3-1.localhost>
+References: <20211012122435.2081930-1-horatiu.vultur@microchip.com>
+ <ea3b5be735f51dd7c9ac7e77a19596b0e4ced740.camel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <91ae922d66b4b8c521142c8030bdd1a9f6d2fad1.camel@pengutronix.de>
+In-Reply-To: <ea3b5be735f51dd7c9ac7e77a19596b0e4ced740.camel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/12/2021 15:35, Philipp Zabel wrote:
-
 Hi Philipp,
+
+The 10/12/2021 15:40, Philipp Zabel wrote:
 > 
-> Hi Horatiu,
-> 
-> On Tue, 2021-10-12 at 13:42 +0200, Horatiu Vultur wrote:
-> > This adds support for lan966x.
+> On Tue, 2021-10-12 at 14:24 +0200, Horatiu Vultur wrote:
+> > On lan966x platform when the switch gets reseted then also the sgpio
+> > gets reseted. The fix for this is to extend also the sgpio driver to
+> > call the reset driver which will be reseted only once by the first
+> > driver that is probed.
 > >
 > > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 > > ---
-> >  .../devicetree/bindings/reset/microchip,rst.yaml   | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
+> >  drivers/pinctrl/pinctrl-microchip-sgpio.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
 > >
-> > diff --git a/Documentation/devicetree/bindings/reset/microchip,rst.yaml b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> > index 370579aeeca1..622cf3d0455d 100644
-> > --- a/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> > +++ b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> > @@ -20,7 +20,11 @@ properties:
-> >      pattern: "^reset-controller@[0-9a-f]+$"
+> > diff --git a/drivers/pinctrl/pinctrl-microchip-sgpio.c b/drivers/pinctrl/pinctrl-microchip-sgpio.c
+> > index 072bccdea2a5..e8a91d0824cb 100644
+> > --- a/drivers/pinctrl/pinctrl-microchip-sgpio.c
+> > +++ b/drivers/pinctrl/pinctrl-microchip-sgpio.c
+> > @@ -17,6 +17,7 @@
+> >  #include <linux/pinctrl/pinmux.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/property.h>
+> > +#include <linux/reset.h>
 > >
-> >    compatible:
-> > -    const: microchip,sparx5-switch-reset
-> > +    oneOf:
-> > +      - items:
-> > +          - const: microchip,sparx5-switch-reset
-> > +      - items:
-> > +          - const: microchip,lan966x-switch-reset
+> >  #include "core.h"
+> >  #include "pinconf.h"
+> > @@ -803,6 +804,7 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
+> >       int div_clock = 0, ret, port, i, nbanks;
+> >       struct device *dev = &pdev->dev;
+> >       struct fwnode_handle *fwnode;
+> > +     struct reset_control *reset;
+> >       struct sgpio_priv *priv;
+> >       struct clk *clk;
+> >       u32 val;
+> > @@ -813,6 +815,10 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
 > >
-> >    reg:
-> >      items:
-> > @@ -37,6 +41,14 @@ properties:
-> >      $ref: "/schemas/types.yaml#/definitions/phandle"
-> >      description: syscon used to access CPU reset
+> >       priv->dev = dev;
 > >
-> > +  cuphy-syscon:
-> > +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> > +    description: syscon used to access CuPHY
-> > +
-> > +  gpios:
+> > +     reset = devm_reset_control_get_shared(&pdev->dev, "switch");
 > 
-> From the description I'd expect this to be called phy-reset-gpios.
+> This seems to be missing an update to the devicetree binding.
 
-Yes, I can rename this.
+Yes, I will fix this in the next version.
 
 > 
-> > +    description: used for release of reset of the external PHY
-> > +    maxItems: 1
-> > +
+> Just to make sure we aren't introducing a circular dependency here, are
+> the PHY reset GPIOs that are toggled by the "switch" reset controller in
+> [1] provided by one of the sgpio controllers?
 > 
-> Shouldn't an external PHY be described as a separate DT node, with its
-> own reset gpio?
+> [1] https://lore.kernel.org/all/20211012114238.2060101-3-horatiu.vultur@microchip.com/
 
-I am not sure, this is more board specific than PHY specific. On lan966x
-ung8290 board, the external PHYs are kept in reset until this GPIO is toggled.
+Nope, the GPIOs are provided by a differnet gpio controller.
 
 > 
 > regards
