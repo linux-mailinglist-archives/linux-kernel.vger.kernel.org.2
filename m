@@ -2,127 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F6A42AE64
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12EFE42AE67
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235211AbhJLVCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 17:02:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26479 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233866AbhJLVCD (ORCPT
+        id S233935AbhJLVDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 17:03:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:24797 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233224AbhJLVDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 17:02:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634072400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Exp5E6dmY1PTSyKlOFa3gXPk4wQssFca5mHGxtbGag0=;
-        b=igCTC4SM7jQR6qapOSFWL9jNvG9gX07POR3VmciQplPTVSGQ3ElgA0RNw0ZP49hiCd7Si5
-        xebfs9UCwTBAZMyKD6gHkCBYQ8Pz435UgOqpimFhX5oM7cXE+yZI0ZdDIWJk0ZFPvgbk65
-        FFKsvX22zCQrcTmUlfWAgPnpz1omz5Y=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-e8Vs6UFAPYm5nCLLFsmlng-1; Tue, 12 Oct 2021 16:59:59 -0400
-X-MC-Unique: e8Vs6UFAPYm5nCLLFsmlng-1
-Received: by mail-wr1-f71.google.com with SMTP id s18-20020adfbc12000000b00160b2d4d5ebso312514wrg.7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:59:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Exp5E6dmY1PTSyKlOFa3gXPk4wQssFca5mHGxtbGag0=;
-        b=k5FItgK4kcdCEBTgVQGY1FcbRCwHDVg0/VywLspUGFeKJXbzNxHtsJGFEG7odTG9Pc
-         hbqZH70Yy00IDQ8s2BZMYLS7FrPjLgZ9mo9hK2KmWfLIrZxKd4YIyrOq4G5csTgUGevA
-         vOeqsNMbSNzGUa7cibtobaLR6mhkoyWpeU+vaSzXuqTq/ghIIqjJrN7ta772KLsvaMuo
-         L+NV68zUWBitAUn7RPQGn/vsuhGNPqMjEG1STx2u7GFn87r8JDuK7Y6VfSQf/uXoe48F
-         rllRO4uGDg3Sf8t8U6RTAgoSpBv96K1PNsktSk+LXFDcGMJiQnV7a8d8aRCEZvdZHXg0
-         eDew==
-X-Gm-Message-State: AOAM533xTGpNktPdME8p2fdvYzljk9GlqNNh5Zi0yPU0AS4GJn2dA9Qg
-        8GnwDkvpdjsDufzQQfP0boNX/8e2xi8WyNbrfXGTOE2i4Nv4M35joXVQvQz66JWEy+a4bkdsj9I
-        du4vO2n1Mp5hh+p6ju5Bc+oy9
-X-Received: by 2002:a05:6000:1289:: with SMTP id f9mr10798874wrx.192.1634072398167;
-        Tue, 12 Oct 2021 13:59:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwBCYQfAelhSD7s+gLgNmxS7cksGV+rHTpSwlJhhXjwMp934f0UVw7OkfCfZxHBrxbJpbKA6g==
-X-Received: by 2002:a05:6000:1289:: with SMTP id f9mr10798853wrx.192.1634072398013;
-        Tue, 12 Oct 2021 13:59:58 -0700 (PDT)
-Received: from redhat.com ([2.55.159.57])
-        by smtp.gmail.com with ESMTPSA id 36sm11465676wrc.92.2021.10.12.13.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 13:59:57 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 16:59:51 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v5 16/16] x86/tdx: Add cmdline option to force use of
- ioremap_host_shared
-Message-ID: <20211012165705-mutt-send-email-mst@kernel.org>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-17-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009070132-mutt-send-email-mst@kernel.org>
- <8c906de6-5efa-b87a-c800-6f07b98339d0@linux.intel.com>
- <20211011075945-mutt-send-email-mst@kernel.org>
- <9d0ac556-6a06-0f2e-c4ff-0c3ce742a382@linux.intel.com>
- <20211011142330-mutt-send-email-mst@kernel.org>
- <4fe8d60a-2522-f111-995c-dcbefd0d5e31@linux.intel.com>
+        Tue, 12 Oct 2021 17:03:22 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-209-I912YUWeNjaH_VcVetXI8A-1; Tue, 12 Oct 2021 22:01:17 +0100
+X-MC-Unique: I912YUWeNjaH_VcVetXI8A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Tue, 12 Oct 2021 22:01:16 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Tue, 12 Oct 2021 22:01:16 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jarkko Sakkinen' <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Cai Huoqing <caihuoqing@baidu.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] tpm: ibmvtpm: Make use of dma_alloc_coherent()
+Thread-Topic: [PATCH] tpm: ibmvtpm: Make use of dma_alloc_coherent()
+Thread-Index: AQHXv5BF1vwPy+MMsUecj0afA36gwqvP2EkA
+Date:   Tue, 12 Oct 2021 21:01:16 +0000
+Message-ID: <ba8aefcd8c5a4e8e921e5f56e199a82f@AcuMS.aculab.com>
+References: <20211010160147.590-1-caihuoqing@baidu.com>
+         <31619f2f192a4f1584e458f468422cf6e8f7542f.camel@kernel.org>
+         <20211012154325.GI2688930@ziepe.ca>
+ <c36327cce24449b3eb79209c374514e750b38eb4.camel@kernel.org>
+In-Reply-To: <c36327cce24449b3eb79209c374514e750b38eb4.camel@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4fe8d60a-2522-f111-995c-dcbefd0d5e31@linux.intel.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 10:55:20AM -0700, Andi Kleen wrote:
-> 
-> > I mean ... it's already wide spread.
-> 
-> 
-> I meant wide spread usage with confidential guests.
-> 
-> > If we support it with TDX
-> > it will be used with TDX.
-> 
-> It has some security trade offs. The main reason to use TDX is security.
-> Also when people take the VT-d tradeoffs they might be ok with the BIOS
-> trade offs too.
-> 
-> -Andi
-
-Interesting. VT-d tradeoffs ... what are they?
-Allowing hypervisor to write into BIOS looks like it will
-trivially lead to code execution, won't it?
-
--- 
-MST
+RnJvbTogSmFya2tvIFNha2tpbmVuDQo+IFNlbnQ6IDEyIE9jdG9iZXIgMjAyMSAxODo0MQ0KPiAN
+Cj4gT24gVHVlLCAyMDIxLTEwLTEyIGF0IDEyOjQzIC0wMzAwLCBKYXNvbiBHdW50aG9ycGUgd3Jv
+dGU6DQo+ID4gT24gVHVlLCBPY3QgMTIsIDIwMjEgYXQgMDY6Mjk6NThQTSArMDMwMCwgSmFya2tv
+IFNha2tpbmVuIHdyb3RlOg0KPiA+ID4gT24gTW9uLCAyMDIxLTEwLTExIGF0IDAwOjAxICswODAw
+LCBDYWkgSHVvcWluZyB3cm90ZToNCj4gPiA+ID4gUmVwbGFjaW5nIGttYWxsb2Mva2ZyZWUvZ2V0
+X3plcm9lZF9wYWdlL2ZyZWVfcGFnZS9kbWFfbWFwX3NpbmdsZS8NCj4gPiA+IMKgIH5+fn5+fn5+
+fg0KPiA+ID4gwqAgUmVwbGFjZQ0KPiA+ID4NCj4gPiA+ID4gZG1hX3VubWFwX3NpbmdsZSgpIHdp
+dGggZG1hX2FsbG9jX2NvaGVyZW50L2RtYV9mcmVlX2NvaGVyZW50KCkNCj4gPiA+ID4gaGVscHMg
+dG8gcmVkdWNlIGNvZGUgc2l6ZSwgYW5kIHNpbXBsaWZ5IHRoZSBjb2RlLCBhbmQgY29oZXJlbnQN
+Cj4gPiA+ID4gRE1BIHdpbGwgbm90IGNsZWFyIHRoZSBjYWNoZSBldmVyeSB0aW1lLg0KPiA+ID4g
+Pg0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBDYWkgSHVvcWluZyA8Y2FpaHVvcWluZ0BiYWlkdS5j
+b20+DQo+ID4gPg0KPiA+ID4gSWYgdGhpcyBkb2VzIG5vdCBkbyBmdW5jdGlvbmFsbHkgYW55dGhp
+bmcgdXNlZnVsLCB0aGVyZSdzIG5vDQo+ID4gPiByZWFzb24gdG8gYXBwbHkgdGhpcy4NCj4gPg0K
+PiA+IEF0IGxlYXN0IGluIHRoaXMgY2FzZSBpdCBsb29rcyBsaWtlIHRoZSBpYm12dHBtIGlzIG5v
+dCB1c2luZyB0aGUgRE1BDQo+ID4gQVBJIHByb3Blcmx5LiBUaGVyZSBpcyBubyBzeW5jIGFmdGVy
+IGVhY2ggZGF0YSB0cmFuc2Zlci4gUmVwbGFjaW5nDQo+ID4gdGhpcyB3cm9uZyB1c2FnZSB3aXRo
+IHRoZSBjb2hlcmVudCBBUEkgaXMgcmVhc29uYWJsZS4NCj4gDQo+IFRoYW5rIHlvdS4gQXMgbG9u
+ZyBhcyB0aGlzIGlzIGRvY3VtZW50ZWQgdG8gdGhlIGNvbW1pdCBtZXNzYWdlLA0KPiBJJ20gY29v
+bCB3aXRoIHRoZSBjaGFuZ2UgaXRzZWxmLg0KPiANCj4gRS5nLiBzb21ldGhpbmcgbGlrZSB0aGlz
+IHdvdWxkIGJlIHBlcmZlY3RseSBmaW5lIHJlcGxhY2VtZW50IGZvciB0aGUNCj4gY3VycmVudCBj
+b21taXQgbWVzc2FnZToNCj4gDQo+ICJUaGUgY3VycmVudCB1c2FnZSBwYXR0ZXJuIGZvciB0aGUg
+RE1BIEFQSSBpcyBpbmFwcHJvcHJpYXRlLCBhcw0KPiBkYXRhIHRyYW5zZmVycyBhcmUgbm90IHN5
+bmNlZC4gUmVwbGFjZSB0aGUgZXhpc3RpbmcgRE1BIGNvZGUNCj4gd2l0aCB0aGUgY29oZXJlbnQg
+RE1BIEFQSS4iDQoNCldoeSBub3QgYWxzbyBzYXkgdGhhdCB0aGUgRE1BIGFjY2VzcyBzbm9vcCB0
+aGUgY2FjaGU/DQooSSB0aGluayB0aGF0IHdhcyBtZW50aW9uZWQgZWFybGllciBpbiB0aGUgdGhy
+ZWFkLikNCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxl
+eSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0
+aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
