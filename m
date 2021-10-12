@@ -2,172 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC7A429BF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08416429BF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbhJLD04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 23:26:56 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:40066 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231755AbhJLD0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 23:26:54 -0400
-Received: from BC-Mail-Ex11.internal.baidu.com (unknown [172.31.51.51])
-        by Forcepoint Email with ESMTPS id 10170D13D26DC406E149;
-        Tue, 12 Oct 2021 11:24:52 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex11.internal.baidu.com (172.31.51.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Tue, 12 Oct 2021 11:24:51 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 12 Oct 2021 11:24:48 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-integrity@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] tpm: ibmvtpm: Make use of dma_alloc_noncoherent()
-Date:   Tue, 12 Oct 2021 11:24:41 +0800
-Message-ID: <20211012032442.2423-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S232215AbhJLD1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 23:27:42 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:24515 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231742AbhJLD1j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 23:27:39 -0400
+Received: from grover.RMN.KIBA.LAB.jp (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 19C3P5Uu010598;
+        Tue, 12 Oct 2021 12:25:06 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 19C3P5Uu010598
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1634009106;
+        bh=N9ihZcXQO83Pmr9yBAmbfjXh+3i+xawv0MNHQHeUF5Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qaCZ1m9nRJmVqfRe//kWofMTthpKvqkR/LkoKrRIAzAN4O2TWrFL3H9lZ+NGgHiGg
+         cnoFUcKCRljv5VwYPWwFIY9zRWuB5O6uqrjuCxxgIVxLHNBEvnoHE7hhMGx041ueFl
+         ptZ2Y6i2s4dLV/GakNGKs8OHZRacS6MWDAwvXJXrTCecIgiyMJQXtQAkDx1pmZ/Onr
+         subBn31y7tz4Nb6p1JmWEW8H+88TmtImnpTmj68GvY1gP8jmmuiEjQ33krSNUnqcwL
+         N1mcF0UO5sAbR2lz/hu37iqSm2ZDVNnhw0AXtTGsXJMJ2LCT8L6AAuPNF724RJUpHh
+         CvCqcaQvQNmEg==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: split DEBUG_CFLAGS out to scripts/Makefile.debug
+Date:   Tue, 12 Oct 2021 12:25:03 +0900
+Message-Id: <20211012032503.459821-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-EX08.internal.baidu.com (172.31.51.48) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replacing kmalloc/kfree/get_zeroed_page/free_page/dma_map_single/
-dma_unmap_single() with dma_alloc_noncoherent/dma_free_noncoherent()
-helps to reduce code size, and simplify the code, and the hardware
-can keep DMA coherent itself.
+To slim down the top Makefile, split out the code block surrounded by
+ifdef CONFIG_DEBUG_INFO ... endif.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
-v1->v2:
-	*Change to dma_alloc/free_noncoherent from dma_alloc/free_coherent.
-	*Update changelog.
 
- drivers/char/tpm/tpm_ibmvtpm.c | 63 +++++++++++-----------------------
- 1 file changed, 20 insertions(+), 43 deletions(-)
+ Makefile               | 39 +--------------------------------------
+ scripts/Makefile.debug | 33 +++++++++++++++++++++++++++++++++
+ 2 files changed, 34 insertions(+), 38 deletions(-)
+ create mode 100644 scripts/Makefile.debug
 
-diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
-index 3af4c07a9342..b4552f8400b8 100644
---- a/drivers/char/tpm/tpm_ibmvtpm.c
-+++ b/drivers/char/tpm/tpm_ibmvtpm.c
-@@ -356,15 +356,13 @@ static void tpm_ibmvtpm_remove(struct vio_dev *vdev)
- 		rc = plpar_hcall_norets(H_FREE_CRQ, vdev->unit_address);
- 	} while (rc == H_BUSY || H_IS_LONG_BUSY(rc));
+diff --git a/Makefile b/Makefile
+index ee5896261d2f..8e3224470dc1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -847,44 +847,6 @@ ifdef CONFIG_ZERO_CALL_USED_REGS
+ KBUILD_CFLAGS	+= -fzero-call-used-regs=used-gpr
+ endif
  
--	dma_unmap_single(ibmvtpm->dev, ibmvtpm->crq_dma_handle,
--			 CRQ_RES_BUF_SIZE, DMA_BIDIRECTIONAL);
--	free_page((unsigned long)ibmvtpm->crq_queue.crq_addr);
+-DEBUG_CFLAGS	:=
 -
--	if (ibmvtpm->rtce_buf) {
--		dma_unmap_single(ibmvtpm->dev, ibmvtpm->rtce_dma_handle,
--				 ibmvtpm->rtce_size, DMA_BIDIRECTIONAL);
--		kfree(ibmvtpm->rtce_buf);
--	}
-+	dma_free_noncoherent(ibmvtpm->dev, CRQ_RES_BUF_SIZE, crq_q->crq_addr,
-+			     crq_q->crq_dma_handle, DMA_BIDIRECTIONAL);
+-ifdef CONFIG_DEBUG_INFO
+-
+-ifdef CONFIG_DEBUG_INFO_SPLIT
+-DEBUG_CFLAGS	+= -gsplit-dwarf
+-else
+-DEBUG_CFLAGS	+= -g
+-endif
+-
+-ifndef CONFIG_AS_IS_LLVM
+-KBUILD_AFLAGS	+= -Wa,-gdwarf-2
+-endif
+-
+-ifndef CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT
+-dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
+-dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
+-DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
+-endif
+-
+-ifdef CONFIG_DEBUG_INFO_REDUCED
+-DEBUG_CFLAGS	+= -fno-var-tracking
+-ifdef CONFIG_CC_IS_GCC
+-DEBUG_CFLAGS	+= -femit-struct-debug-baseonly
+-endif
+-endif
+-
+-ifdef CONFIG_DEBUG_INFO_COMPRESSED
+-DEBUG_CFLAGS	+= -gz=zlib
+-KBUILD_AFLAGS	+= -gz=zlib
+-KBUILD_LDFLAGS	+= --compress-debug-sections=zlib
+-endif
+-
+-endif # CONFIG_DEBUG_INFO
+-
+-KBUILD_CFLAGS += $(DEBUG_CFLAGS)
+-export DEBUG_CFLAGS
+-
+ ifdef CONFIG_FUNCTION_TRACER
+ ifdef CONFIG_FTRACE_MCOUNT_USE_CC
+   CC_FLAGS_FTRACE	+= -mrecord-mcount
+@@ -1033,6 +995,7 @@ KBUILD_CPPFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+ 
+ # include additional Makefiles when needed
+ include-y			:= scripts/Makefile.extrawarn
++include-$(CONFIG_DEBUG_INFO)	+= scripts/Makefile.debug
+ include-$(CONFIG_KASAN)		+= scripts/Makefile.kasan
+ include-$(CONFIG_KCSAN)		+= scripts/Makefile.kcsan
+ include-$(CONFIG_UBSAN)		+= scripts/Makefile.ubsan
+diff --git a/scripts/Makefile.debug b/scripts/Makefile.debug
+new file mode 100644
+index 000000000000..9f39b0130551
+--- /dev/null
++++ b/scripts/Makefile.debug
+@@ -0,0 +1,33 @@
++DEBUG_CFLAGS	:=
 +
-+	if (ibmvtpm->rtce_buf)
-+		dma_free_noncoherent(ibmvtpm->dev,
-+				     ibmvtpm->rtce_size, ibmvtpm->rtce_buf,
-+				     ibmvtpm->rtce_dma_handle, DMA_BIDIRECTIONAL);
- 
- 	kfree(ibmvtpm);
- 	/* For tpm_ibmvtpm_get_desired_dma */
-@@ -522,23 +520,12 @@ static void ibmvtpm_crq_process(struct ibmvtpm_crq *crq,
- 				return;
- 			}
- 			ibmvtpm->rtce_size = be16_to_cpu(crq->len);
--			ibmvtpm->rtce_buf = kmalloc(ibmvtpm->rtce_size,
--						    GFP_ATOMIC);
--			if (!ibmvtpm->rtce_buf) {
--				dev_err(ibmvtpm->dev, "Failed to allocate memory for rtce buffer\n");
--				return;
--			}
--
--			ibmvtpm->rtce_dma_handle = dma_map_single(ibmvtpm->dev,
--				ibmvtpm->rtce_buf, ibmvtpm->rtce_size,
--				DMA_BIDIRECTIONAL);
--
--			if (dma_mapping_error(ibmvtpm->dev,
--					      ibmvtpm->rtce_dma_handle)) {
--				kfree(ibmvtpm->rtce_buf);
--				ibmvtpm->rtce_buf = NULL;
--				dev_err(ibmvtpm->dev, "Failed to dma map rtce buffer\n");
--			}
-+			ibmvtpm->rtce_buf = dma_alloc_noncoherent(ibmvtpm->dev,
-+								  ibmvtpm->rtce_size,
-+								  &ibmvtpm->rtce_dma_handle,
-+								  DMA_BIDIRECTIONAL, GFP_ATOMIC);
-+			if (!ibmvtpm->rtce_buf)
-+				dev_err(ibmvtpm->dev, "Failed to dma allocate rtce buffer\n");
- 
- 			return;
- 		case VTPM_GET_VERSION_RES:
-@@ -618,22 +605,14 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
- 	ibmvtpm->vdev = vio_dev;
- 
- 	crq_q = &ibmvtpm->crq_queue;
--	crq_q->crq_addr = (struct ibmvtpm_crq *)get_zeroed_page(GFP_KERNEL);
--	if (!crq_q->crq_addr) {
--		dev_err(dev, "Unable to allocate memory for crq_addr\n");
--		goto cleanup;
--	}
- 
- 	crq_q->num_entry = CRQ_RES_BUF_SIZE / sizeof(*crq_q->crq_addr);
- 	init_waitqueue_head(&crq_q->wq);
--	ibmvtpm->crq_dma_handle = dma_map_single(dev, crq_q->crq_addr,
--						 CRQ_RES_BUF_SIZE,
--						 DMA_BIDIRECTIONAL);
--
--	if (dma_mapping_error(dev, ibmvtpm->crq_dma_handle)) {
--		dev_err(dev, "dma mapping failed\n");
-+	crq_q->crq_addr = dma_alloc_noncoherent(dev, CRQ_RES_BUF_SIZE,
-+						&ibmvtpm->crq_dma_handle,
-+						DMA_BIDIRECTIONAL, GFP_KERNEL);
-+	if (!crq_q->crq_addr)
- 		goto cleanup;
--	}
- 
- 	rc = plpar_hcall_norets(H_REG_CRQ, vio_dev->unit_address,
- 				ibmvtpm->crq_dma_handle, CRQ_RES_BUF_SIZE);
-@@ -642,7 +621,7 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
- 
- 	if (rc) {
- 		dev_err(dev, "Unable to register CRQ rc=%d\n", rc);
--		goto reg_crq_cleanup;
-+		goto cleanup;
- 	}
- 
- 	rc = request_irq(vio_dev->irq, ibmvtpm_interrupt, 0,
-@@ -704,13 +683,11 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
- 	do {
- 		rc1 = plpar_hcall_norets(H_FREE_CRQ, vio_dev->unit_address);
- 	} while (rc1 == H_BUSY || H_IS_LONG_BUSY(rc1));
--reg_crq_cleanup:
--	dma_unmap_single(dev, ibmvtpm->crq_dma_handle, CRQ_RES_BUF_SIZE,
--			 DMA_BIDIRECTIONAL);
- cleanup:
- 	if (ibmvtpm) {
- 		if (crq_q->crq_addr)
--			free_page((unsigned long)crq_q->crq_addr);
-+			dma_free_noncoherent(dev, CRQ_RES_BUF_SIZE, crq_q->crq_addr,
-+					     crq_q->crq_dma_handle, DMA_BIDIRECTIONAL);
- 		kfree(ibmvtpm);
- 	}
- 
++ifdef CONFIG_DEBUG_INFO_SPLIT
++DEBUG_CFLAGS	+= -gsplit-dwarf
++else
++DEBUG_CFLAGS	+= -g
++endif
++
++ifndef CONFIG_AS_IS_LLVM
++KBUILD_AFLAGS	+= -Wa,-gdwarf-2
++endif
++
++ifndef CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT
++dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
++dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
++DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
++endif
++
++ifdef CONFIG_DEBUG_INFO_REDUCED
++DEBUG_CFLAGS	+= -fno-var-tracking
++ifdef CONFIG_CC_IS_GCC
++DEBUG_CFLAGS	+= -femit-struct-debug-baseonly
++endif
++endif
++
++ifdef CONFIG_DEBUG_INFO_COMPRESSED
++DEBUG_CFLAGS	+= -gz=zlib
++KBUILD_AFLAGS	+= -gz=zlib
++KBUILD_LDFLAGS	+= --compress-debug-sections=zlib
++endif
++
++KBUILD_CFLAGS += $(DEBUG_CFLAGS)
++export DEBUG_CFLAGS
 -- 
-2.25.1
+2.30.2
 
