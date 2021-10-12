@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68FD42A2B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FB042A2B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236082AbhJLK64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235881AbhJLK6w (ORCPT
+        id S236103AbhJLK66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:58:58 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:36801 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236036AbhJLK6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:58:52 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE44DC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 03:56:50 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id m22so65803531wrb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 03:56:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7IHQW+klBLa8AAAQhMgTLFrZ1dvyLmJAZmPIs/4cI74=;
-        b=u77wdNYCxxWmmVx40mDxHpGXVHHMl6MTjLR2kOccMboGj0zoxDca/RCAKSbGCJ0gIB
-         Gf7mT/S/Qb5HuAxETw8brZXnXDVE6c0X3dYS+McglfeCQKoe+cZyWMbjH0OLFpyk4lnV
-         dhOh1EENx33KzBH/QNvuzJfoQuaQzAuDrMQs2SSqBujLpOQWUWNYlwgMyCIgD4rzDn3K
-         413gHkn6acbcTtLeVwp+52HSKSYdrOj42s4SabfBZQcFcUytU7bI4ogZ5qe7eHiLjsi/
-         vJUAfOCf62dHcgkCuwHEs1S4/8JfaNVzxtguUVbD9YTWKnYzeIQzhlAutjkQFDvSNOfK
-         Hxow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7IHQW+klBLa8AAAQhMgTLFrZ1dvyLmJAZmPIs/4cI74=;
-        b=EAfkN+XhMFj7ECnXM4P+cdlHL8hSf4oyebZRb4GJNKRHNuaQHMeUzTjnYqbM7w6QR6
-         LeMKl4Zp2eGJOCGz80ftEC1c6n0U968PStLgLEWtD7oPHSNJ37Spr5Z38bKYP+56AFIo
-         qZxJiBzdIpte4tWzQWdks6piN3J0jRPddd9kMRjdQRNepBIqB97gV3xBq9L6Za1GXywj
-         q6iGD+4fJnHL7aMtPPtXOhRiH6iH/3LS7zz4L51rQex6ZsyZh5G1J0zebqudDHQrpHIt
-         PJwbjRPm031FKR7Ee+RmGbVe2Vvpws0OIB08lZJlb5ne1siZB/6ukbHz1/grcnsPaJ2P
-         4d5Q==
-X-Gm-Message-State: AOAM530cypoucNaojGkXjCeuCDI63sui6llzoifDcW8KU794uScyrLnP
-        Wc9D4o/fUNGw/YVwmJvN3um1LBvp2ceF5w==
-X-Google-Smtp-Source: ABdhPJyDuhvsm44TAGtih3wqsCVUf9JrK216s70IpR50kV9Uh8u0s78M1rB5hWqryVOmaFuYyjsC0A==
-X-Received: by 2002:a05:6000:c:: with SMTP id h12mr2285112wrx.378.1634036209215;
-        Tue, 12 Oct 2021 03:56:49 -0700 (PDT)
-Received: from google.com ([95.148.6.175])
-        by smtp.gmail.com with ESMTPSA id e5sm10387986wrd.1.2021.10.12.03.56.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 03:56:48 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 11:56:46 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Ryan Barnett <ryan.barnett@collins.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v5] mfd: ti_am335x_tscadc: Add ADC1/magnetic reader
- support
-Message-ID: <YWVp7pftLsmm40zZ@google.com>
-References: <20211004155319.1507652-1-miquel.raynal@bootlin.com>
+        Tue, 12 Oct 2021 06:58:55 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HTCKJ5DcYz4xbV;
+        Tue, 12 Oct 2021 21:56:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634036213;
+        bh=Xf1lPcg61XghCxXyudffvXGozRoqikwBbfUwHO27xIw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=J18wbPSfa8fGX6RX6LtWwwxseI/SrZAVfoHTvyWNt5Sqdt1j3/kXy8ufUq7IA2ata
+         y5SIRh8+hHXOu9EWCqdzsDZYvULtQ8afZbfkVGC4KJBROwd2xUJqCbxrdCPbriT9XW
+         WraIS5FzqOnh4LT02Yc6xgf5T63CtOXx/f/XceWOlUHRhYAhhdaZNGkL9THUlkxuEH
+         BaMWUFd2yHzj8Gxsrcfxw5ZOE8pNtz8IbWiSWLO3hWW1CldqBnMCdYg5gNtYOQSCXn
+         r67nfuvbs2s66syUHBhmv1B1HjiBW3RS6HMB10duPkZgVrdB17FhFnUsTOlOjyoGbC
+         XBsnka7IRPF3Q==
+Date:   Tue, 12 Oct 2021 21:56:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings in Linus' tree
+Message-ID: <20211012215651.300f8bc1@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211004155319.1507652-1-miquel.raynal@bootlin.com>
+Content-Type: multipart/signed; boundary="Sig_/xES2aqxswmOIh2v9KQcV=WX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Oct 2021, Miquel Raynal wrote:
+--Sig_/xES2aqxswmOIh2v9KQcV=WX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Introduce a new compatible that has another set of driver data,
-> targeting am437x SoCs with a magnetic reader instead of the
-> touchscreen and a more featureful set of registers.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> ---
-> 
-> Changes in v5:
-> * Let the 48 v4 patch series aside, while only resending this patch that
->   triggered a robot warning. Use the use_mag boolean instead of sticking
->   to tscmag_wires which was not optimal anyway, silencing the 'not used'
->   warning while keeping the code simple and clear.
-> 
-> 
->  drivers/mfd/ti_am335x_tscadc.c       | 37 ++++++++++++++++++++++------
->  include/linux/mfd/ti_am335x_tscadc.h |  6 +++++
->  2 files changed, 36 insertions(+), 7 deletions(-)
+Hi all,
 
-Okay, so I've been battling with this set for a while.  I've finally
-managed to figure out how to apply the whole set including this
-straggler, but Patch 10 is not applying to my tree.  Could you please
-rebase and resend the whole set with this one included please?
+When building Linus' tree, today's linux-next build (htmldocs) produced
+these warnings:
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Error: Cannot open file drivers/counter/counter.c
+Error: Cannot open file drivers/counter/counter.c
+
+Introduced by commit
+
+  d70e46af7531 ("counter: Internalize sysfs interface code")
+
+$ git grep -w drivers/counter/counter.c Documentation
+Documentation/driver-api/generic-counter.rst:.. kernel-doc:: drivers/counte=
+r/counter.c
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/xES2aqxswmOIh2v9KQcV=WX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFlafMACgkQAVBC80lX
+0Gzdrwf+NhdXQRA8FrfoLzS0Jf7p/I1LB0T9+LL4C/RkoJR05RClQRFyOzHgNLKY
+uY82jt5yCJwGDR5x5eCboV2WexqFNHCQTRDVlkmkzxQs7K+I2yOOCs4f6R8kyUbS
+SIXyau1ERsJ8Fmy5K86xSvII8dmzc7TagcA68R3JnfXFLt4I+pgT2s2G+XwQBElz
+Fxo+LorzakLc8smz2FQDLUqlQoacRJ5+bDrb/Y6XpHZCRmLEw/YXVYPGcOiNj/sD
+qjqB4yJyg6ceFQcVvd285QQWBmHsyPpxllLA5G9ihtdyh5IykRlgEV+Vh0B/L+sC
+BMwcJq85m/QuqwHChfyDW0gmJT9dGQ==
+=dU+X
+-----END PGP SIGNATURE-----
+
+--Sig_/xES2aqxswmOIh2v9KQcV=WX--
