@@ -2,96 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AAB42AB85
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D98E42AB87
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233724AbhJLSFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhJLSFR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:05:17 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA29C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:03:15 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id m20so23823371iol.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GOQ7BI06TuQFnWKE95urhuyEQmkXfr9xNZ1rfiCFcV0=;
-        b=RwSdJqOuePUATzmfdatP6ktUs3JxP9wNWjs16CRFzEqdd/xXGIfNM8t4F3czA4anrL
-         hQhHFVhqd48gQEYx7HSjSfObDYkCahUVRP4o54R77tnBk7psm8UbSWgvk2yijzgxCYWN
-         0HAqgKpsQWRXPYf2cs8//o0mv8Cajvitl3KrU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GOQ7BI06TuQFnWKE95urhuyEQmkXfr9xNZ1rfiCFcV0=;
-        b=JUSf3Nou9lhOW+pcuuxhVN4/xppgFRdS2wsOMpiHA2zzRfKdi0QyOeblbZ5b2dLTiw
-         6Y3pDHZDkS1yVoIhDmWwIkg+LaoTZYiw8LLpsDkImCljNu5DAMeMNh+YR68fKullSI5y
-         Q+fzuyyfFRBsAlFoaYnvmTaD08AvuY5XNCNI/0fwGxnTROG7+hH5hum9BWLvtKJvC02Q
-         gDOIuvL7ErEt/svkham3KlRy0oemD06zo39O0gktXEndSLFwXaB0FXzdllnfxNtOgQed
-         G35c38jt2uFEyes4ci0tb89/3XuORJCEoIdAEbhgjG6NrJt7tXYZhSA1FIYminjZQbdD
-         pafA==
-X-Gm-Message-State: AOAM530ozkCFt2pjKtzegppQmmSMkXqbkxAcI/pqd1ThV7nC9De9s0z7
-        FvBX4vUgvWICToE3/ogfyH/xZw==
-X-Google-Smtp-Source: ABdhPJyQFE9NIO88ezFrovRwy7kSPNRlvvwTcWfbwkaLqGp8m0iruwe9NgNW5K+thX1EzJeLzEWNtw==
-X-Received: by 2002:a6b:cd87:: with SMTP id d129mr24158588iog.28.1634061794661;
-        Tue, 12 Oct 2021 11:03:14 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l12sm6065944ilh.19.2021.10.12.11.03.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 11:03:14 -0700 (PDT)
-Subject: Re: [PATCH 4.19 00/27] 4.19.211-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S232473AbhJLSF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:05:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:53410 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230002AbhJLSF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 14:05:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71A3C1FB;
+        Tue, 12 Oct 2021 11:03:52 -0700 (PDT)
+Received: from bogus (unknown [10.57.21.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14FD43F694;
+        Tue, 12 Oct 2021 11:03:50 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 19:03:48 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     op-tee@lists.trustedfirmware.org, jens.wiklander@linaro.org,
+        jerome@forissier.org, daniel.thompson@linaro.org,
+        maxim.uvarov@linaro.org, linux-arm-kernel@lists.infradead.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211012093340.313468813@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <55ceb757-9aba-4f48-8d2f-5f42cb1a7858@linuxfoundation.org>
-Date:   Tue, 12 Oct 2021 12:03:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Subject: Re: [PATCH] tee: optee: Fix missing devices unregister during
+ optee_remove
+Message-ID: <20211012180348.zalanzdw3ykqg4db@bogus>
+References: <20211012073116.4156054-1-sumit.garg@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20211012093340.313468813@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012073116.4156054-1-sumit.garg@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 3:36 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.211 release.
-> There are 27 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Oct 12, 2021 at 01:01:16PM +0530, Sumit Garg wrote:
+> When OP-TEE driver is built as a module, OP-TEE client devices
+> registered on TEE bus during probe should be unregistered during
+> optee_remove. So implement optee_unregister_devices() accordingly.
 > 
-> Responses should be made by Thu, 14 Oct 2021 09:33:32 +0000.
-> Anything received after that time might be too late.
+> Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
+> Reported-by: Sudeep Holla <sudeep.holla@arm.com>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  drivers/tee/optee/core.c          |  3 +++
+>  drivers/tee/optee/device.c        | 22 ++++++++++++++++++++++
+>  drivers/tee/optee/optee_private.h |  1 +
+>  3 files changed, 26 insertions(+)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.211-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> index ccad3c7c8f6d..3915dc574503 100644
+> --- a/drivers/tee/optee/core.c
+> +++ b/drivers/tee/optee/core.c
+> @@ -586,6 +586,9 @@ static int optee_remove(struct platform_device *pdev)
+>  {
+>  	struct optee *optee = platform_get_drvdata(pdev);
+>  
+> +	/* Unregister OP-TEE specific client devices on TEE bus */
+> +	optee_unregister_devices();
+> +
 
-Compiled and booted on my test system. No dmesg regressions.
+This is not based on FF-A support series by Jens I assume. I added
+optee_unregister_devices to optee_remove_common and that fixes the issue
+I reported. I haven't followed the comments by Jens on the approach yet.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+-- 
+Regards,
+Sudeep
