@@ -2,139 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C9442ACA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530E442AC52
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234481AbhJLS4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:56:39 -0400
-Received: from esa.hc503-62.ca.iphmx.com ([216.71.131.47]:14761 "EHLO
-        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbhJLS4c (ORCPT
+        id S235406AbhJLStK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234350AbhJLStG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:56:32 -0400
-X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Tue, 12 Oct 2021 14:56:30 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
-  t=1634064870; x=1665600870;
-  h=subject:to:cc:references:in-reply-to:from:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=fr0h/E/BFvN1dJoZmJSjdbZ+4m+4eoZS+8tjp01uHac=;
-  b=XrHTeY0vtDqQr1hSqPRFoDjiiBtz3P50oCb2qU4SuyfDAlFq7r8JWCCv
-   cVD+2w6nAe/H9Liv52JzOx9xTUT1dVHnJymdRe7F5rThBqTB2/N5UX62d
-   acuBoT/sQCzFyGsIGx0d8udqdMqc47OLRnEMGd0qsLRg7SRHeZxJMawpD
-   A=;
-IronPort-Data: A9a23:QlHVpqI/mZn2o/9UFE+RNZQlxSXFcZb7ZxGr2PjKsXjdYENS3z0Pz
- DAaWDrXaK3eMGPyett0a46+8R4AuJ/XmtBrTAcd+CA2RRqmiyZk6fd1jKvUF3nPRiEWZBs/t
- 63yTPGedJhsJpP7jkjxaeeJQUGRUchkf5KkYAL+EnkZqTRMFWFx1HqPp8Zj2tQx2IDgWVvX0
- T/Pi5S31GGNim8c3l08tvrrRCNH5JwebxtB4zTSzdgS1LPvvyF94KA3fMldHFOkKmVgJdNWc
- s6YpF2PEsE1yD92Yj+tuu6TnkTn2dc+NyDW4pZdc/DKbhSvOkXee0v0XRYRQR4/ttmHozx+4
- O9NjrbgeyYbB5fNgOEneiV0HA5XBLITrdcrIVDn2SCS50bBdX3sxq0ySkoxO4sV8foxHH5H6
- fECLDcKKBuK7w606OvhG6892YJ5dJmtYNh3VnJIlFk1Cd46TZ3HQr7O6PdFwz4si9pKGvGYb
- MNxhT9HNUWRPEcQYAh/5JQWmbmyvkjZKDJh73GF/YkSwTDazg5az+24WDbSUpnQLSlPpW6ar
- 2TA/0z2BRYVMNHZwj2AmlqlmObAnCXTV4UVG7m1sPVthTW73msICzUZUly0pfT/gUm7M/pVM
- EEb8y4qhac180OvQ5/2WBjQiGaGojYTXN1fF+B84waIooLQ4gCEFi0NVj9pdtMrrok1SCYs2
- 1vPmMnmbRRrsbuIWTee+62SoDeaJycYNykBaDUCQA9D5MPsyKkvgRbfZtJiFrOplNrzGCG2z
- z3ihC0/gboUpdQG26Wy4RbMhDfEjoDEUgMv9C3WWGy/5w90bYLjYJangXDD6u1DBJ6eVVrHv
- X9spiSFxOsJC5eAnzDLXfoEALyz4/GCdjbV6bJyI6QcG/2W0ybLVehtDPtWfy+F7u5slefVX
- XLu
-Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
-  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Oct 2021 14:46:51 -0400
-Received: from [10.42.0.123] (10.32.190.116) by connhm04.connect.uwaterloo.ca
- (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 12
- Oct 2021 14:46:50 -0400
-Subject: Re: [PATCH 5/5 v0.6] sched/umcg: add
- Documentation/userspace-api/umcg.txt
-To:     Peter Oskolkov <posk@posk.io>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <linux-api@vger.kernel.org>, Paul Turner <pjt@google.com>,
-        Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>
-References: <20210917180323.278250-1-posk@google.com>
- <20210917180323.278250-6-posk@google.com>
- <12eb2300-4a78-9e93-30a3-8e2ddba4693f@uwaterloo.ca>
- <CAFTs51W6ZHrGaoXEbXNCkVKLxe7_S2raYcXMBzypC7VUDMrU-w@mail.gmail.com>
- <e162fdea-5323-89d2-49d0-3fe56ba2ec3a@uwaterloo.ca>
- <CAFTs51X0kQLngHYXD-BxBmm6oRyMk1vy9nzaPu4V46PifO99LQ@mail.gmail.com>
-In-Reply-To: <CAFTs51X0kQLngHYXD-BxBmm6oRyMk1vy9nzaPu4V46PifO99LQ@mail.gmail.com>
-From:   Thierry Delisle <tdelisle@uwaterloo.ca>
-Message-ID: <40c37212-ab15-01ac-f5c5-e3f53c9b8e4e@uwaterloo.ca>
-Date:   Tue, 12 Oct 2021 14:46:50 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 12 Oct 2021 14:49:06 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02207C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:47:04 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so2622634pjw.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:47:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DfbFY8+dvVdayrpl/HC8aWmEL5nQTdONvOQ8G8k3sdI=;
+        b=btrJZ/IPtSJJEbgCzV6kLMKqVSQRPFad9W9idPv/BiZkJlo6bd8G81Kds8V+qlts68
+         3bQnjkeOOxKIBW56arcH1rokJD7Au9TeVsJ8TJ+Z5zeMOmbsetfD1dwwfcHcz6Ypn0kq
+         hM+nYHme6i+QiLuXnZc+fGlxFT9/zcx8u8iqhQ/6sSEjE12Dj53FwHia2CePuYV1/jkO
+         faSxpMuKmvLzs/e1NY8UN9zkG/5P75+JRJbV8MPR8oi6a1W0SYyP6vgly4sUvh4UQEoP
+         yGCsAs4zCy+iTJ0jhrZEFAcP5DBJ4XPOou6hakCEZOKj2fxsyuBfwVLPCkTnrkbgSqTq
+         H41g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DfbFY8+dvVdayrpl/HC8aWmEL5nQTdONvOQ8G8k3sdI=;
+        b=TQiyfEJWRf+ywjGHfN0TCfLQvdDOXbOZYJfEdDRQfp3zsbt3A5j8MxICQjN1O2unfY
+         ziCgQewjaKcaiYLYCwCujdVLf8pjY6VXI2QbvciRhmLDn+8pe/YbMZGxkyVgrxq/z1Me
+         eWTJAKxIksx3XdrJd8yA9Mp28yX0OOd0uVTSSjgyvnA6M1wzsKCOLg6J0Oo3HEc8eZqg
+         vYNrWqBFpsvwYoxKVD/PJjSqZ3QBNRkplvg2kAi3xUxiuyecY1alyHL73fiGKrLAxc9h
+         Aw+kNJVjspXRq9qBGgcLs2/ku7yuOsMGMTFVvehfSukE01YCWroYPrpjTwf66UyCzBDo
+         +L0g==
+X-Gm-Message-State: AOAM532ycNwc83ngtxgHEWzvqTo4fK97u72Ss7icR5wfL5SD1aVrdsLS
+        EmPxln1fWHZsobnba9/UIusulQ==
+X-Google-Smtp-Source: ABdhPJw+X5MZoBakEaHZNsLbsAa4QxFgESLNxqGtJNcguDnKmi32hzC66ItirwvCxHpvHxMp0faMyQ==
+X-Received: by 2002:a17:902:a710:b029:12b:9b9f:c461 with SMTP id w16-20020a170902a710b029012b9b9fc461mr31769695plq.59.1634064422208;
+        Tue, 12 Oct 2021 11:47:02 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id w2sm11975808pfq.207.2021.10.12.11.47.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 11:47:01 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 18:46:57 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 26/45] KVM: SVM: Mark the private vma unmerable
+ for SEV-SNP guests
+Message-ID: <YWXYIWuK2T8Kejng@google.com>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-27-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.32.190.116]
-X-ClientProxiedBy: connhm02.connect.uwaterloo.ca (172.16.137.66) To
- connhm04.connect.uwaterloo.ca (172.16.137.68)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820155918.7518-27-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- >> Just to be clear, sys_umcg_wait supports an operation that, when called
- >> from a worker, puts the worker to sleep without triggering block 
-detection
- >> or context-switching back to the server?
- >
- > Potentially, yes - when a worker wants to yield (e.g. as part of a
- > custom UMCG-aware mutex/condvar code), and calls into the userspace
- > scheduler, it may be faster to skip the server wakeup (e.g. reassign
- > the server to another sleeping worker and wake this worker). This is
- > not a supported operation right now, but I see how it could be used to
- > optimize some things in the future.
- >
- > Do you have any concerns here?
+On Fri, Aug 20, 2021, Brijesh Singh wrote:
+> When SEV-SNP is enabled, the guest private pages are added in the RMP
+> table; while adding the pages, the rmp_make_private() unmaps the pages
+> from the direct map. If KSM attempts to access those unmapped pages then
+> it will trigger #PF (page-not-present).
+> 
+> Encrypted guest pages cannot be shared between the process, so an
+> userspace should not mark the region mergeable but to be safe, mark the
+> process vma unmerable before adding the pages in the RMP table.
 
-To be honest, I did not realize this was a possibility until your previous
-email. I'm not sure I buy your example, it just sounds like worker to worker
-context-switching, but I could imagine "stop the world" cases or some "race
-to idle" policy using this feature.
+To be safe from what?  Does the !PRESENT #PF crash the kernel?
 
-It seems to me the corresponding wake needs to know if it needs to enqueue
-the worker into the idle workers list or if it should just schedule the 
-worker
-as it would a server.
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/kvm/svm/sev.c | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 4b126598b7aa..dcef0ae5f8e4 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -18,11 +18,13 @@
+>  #include <linux/processor.h>
+>  #include <linux/trace_events.h>
+>  #include <linux/sev.h>
+> +#include <linux/ksm.h>
+>  #include <asm/fpu/internal.h>
+>  
+>  #include <asm/pkru.h>
+>  #include <asm/trapnr.h>
+>  #include <asm/sev.h>
+> +#include <asm/mman.h>
+>  
+>  #include "x86.h"
+>  #include "svm.h"
+> @@ -1683,6 +1685,30 @@ static bool is_hva_registered(struct kvm *kvm, hva_t hva, size_t len)
+>  	return false;
+>  }
+>  
+> +static int snp_mark_unmergable(struct kvm *kvm, u64 start, u64 size)
+> +{
+> +	struct vm_area_struct *vma;
+> +	u64 end = start + size;
+> +	int ret;
+> +
+> +	do {
+> +		vma = find_vma_intersection(kvm->mm, start, end);
+> +		if (!vma) {
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		ret = ksm_madvise(vma, vma->vm_start, vma->vm_end,
+> +				  MADV_UNMERGEABLE, &vma->vm_flags);
+> +		if (ret)
+> +			break;
+> +
+> +		start = vma->vm_end;
+> +	} while (end > vma->vm_end);
+> +
+> +	return ret;
+> +}
+> +
+>  static int snp_launch_update(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>  {
+>  	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> @@ -1707,6 +1733,12 @@ static int snp_launch_update(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>  	if (!is_hva_registered(kvm, params.uaddr, params.len))
+>  		return -EINVAL;
+>  
+> +	mmap_write_lock(kvm->mm);
+> +	ret = snp_mark_unmergable(kvm, params.uaddr, params.len);
+> +	mmap_write_unlock(kvm->mm);
 
-How does the wake know which to do?
+This does not, and practically speaking cannot, work.  There are multiple TOCTOU
+bugs, here and in __snp_handle_page_state_change().  Userspace can madvise() the
+range at any later point, munmap()/mmap() the entire range, mess with the memslots
+in the PSC case, and so on and so forth.  Relying on MADV_UNMERGEABLE for functional
+correctness simply cannot work in KVM, barring mmu_notifier and a big pile of code.
 
-
-
- > I don't see a big difference here, sorry. We are  mixing levels of
- > abstraction here again, I think. For example, the higher level
- > userspace scheduling code will have more nuanced treatment of IDLE
- > workers; but down at the kernel they are all the same: IDLE worker is
- > a worker that the userspace can "schedule" by marking it RUNNING,
- > regardless of whether the worker is "parked", or "woke from a blocking
- > op", or whatever other semantically different state the worker can be.
- > For the kernel, they are all the same, idle, not runnable, waiting for
- > the userspace to explicitly "schedule" them.
- >
- > Similarly, I don't see a need to semantically distinguish "yield" from
- > "park" at the kernel level of things; this distinction seems to be a
- > higher-level abstraction that can be properly expressed in the
- > userspace, and does not need to be explicitly addressed in the kernel
- > (to make the code faster and simpler, for example).
-
- From the kernel's perspective, I can see two distinct operation:
-
-1 - Mark the worker as IDLE and put it to sleep.
-2 - Mark the worker as IDLE, put it to sleep *and* immediately add it
-     to the idle workers list.
-
-The wait in operation 1 expects an outside wakeup call to match it and 
-resume
-the worker, while operation 2 is its own wakeup. To me that is the 
-distinction
-between wait/park and yield, respectively.
-
-Is Operation 2 supported?
-
-I'm not sure this distinction can be handled in userspace in all cases. 
-Waking
-oneself is generally not a possibility.
+> +	if (ret)
+> +		return -EFAULT;
+> +
+>  	/*
+>  	 * The userspace memory is already locked so technically we don't
+>  	 * need to lock it again. Later part of the function needs to know
+> -- 
+> 2.17.1
+> 
