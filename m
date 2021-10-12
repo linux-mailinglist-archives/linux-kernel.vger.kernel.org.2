@@ -2,122 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FCC42A19A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B597C42A156
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235817AbhJLKD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:03:58 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51197 "EHLO m43-7.mailgun.net"
+        id S235757AbhJLJqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:46:16 -0400
+Received: from mout.web.de ([217.72.192.78]:47955 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235727AbhJLKD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:03:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634032916; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=bf4kIc6kjkQWlbI+cz9eUtnDezcOBvpXGOdTGTr61Eg=;
- b=O5EWTQRIasATZxnAY/PTbGvgyu7gZodlzja3Do6lwDE+Yr594D5kama3C5F/TPJweOu+xOnH
- Kb1KA2hq+SAcXjj9FyQkKHE1pKi4ylPwCCZfdPp+1Fgf1JuADSO9gThIRhU8ZCZR3eKM5U3j
- 28JsKMB7d61Yub18EDWHjxILBcI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 61655d0c8ea00a941f1f6d71 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Oct 2021 10:01:48
- GMT
-Sender: bgodavar=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 15F3FC43616; Tue, 12 Oct 2021 10:01:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bgodavar)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8D138C4360C;
-        Tue, 12 Oct 2021 10:01:46 +0000 (UTC)
+        id S235581AbhJLJqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:46:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1634031852;
+        bh=whkdE4B9xV53aFAl8prS48FIENaK0cTAtkpYL0iPJhs=;
+        h=X-UI-Sender-Class:To:Subject:From:Date;
+        b=Vf56MsTxqIDU3Objt1hThjuN5E8NC2YrWjk3qjs9M/TNiFnMVwTIp1g5/U296R7qQ
+         F3zB/2pXCkL2PhtGJBupKizX9dSfqqeV0eqHyx47NfHQLIJCnnfomAhyhE4tDOLO6U
+         CGhDju8GjAKhefGelLpV/ZqQApJdjc62LBnbdVVQ=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from localhost.localdomain ([146.60.72.88]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0M3T5g-1mrtfg0gbY-00r1cE for
+ <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:44:12 +0200
+To:     linux-kernel@vger.kernel.org
+Subject: Unwanted activation of root-processes getting highly activated
+From:   secret <andreas-stoewing@web.de>
+Date:   Tue, 12 Oct 2021 11:45:52 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 12 Oct 2021 15:31:46 +0530
-From:   bgodavar@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     marcel@holtmann.org, bjorn.andersson@linaro.org,
-        johan.hedberg@gmail.com, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, rjliao@codeaurora.org,
-        pharish@codeaurora.org, abhishekpandit@chromium.org
-Subject: Re: [PATCH v1 2/2] arm64: dts: qcom: sc7280: update bluetooth node in
- SC7280 IDP2 board
-In-Reply-To: <YV3fVjd5ngQhuA4K@google.com>
-References: <1633523403-32264-1-git-send-email-bgodavar@codeaurora.org>
- <1633523403-32264-2-git-send-email-bgodavar@codeaurora.org>
- <YV3fVjd5ngQhuA4K@google.com>
-Message-ID: <03a5d78d834a8c0b1463004bc1e4b015@codeaurora.org>
-X-Sender: bgodavar@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <202110121145.55865.andreas-stoewing@web.de>
+X-Provags-ID: V03:K1:raCBSXsRcurrkH9ogg3x7EITBT2oSlcw3SBNbXH/1Qlz2Pfuy7a
+ T4mPYF+s0TCSBgbq2dQSvj2DTpror573dHqiBN+2/B2CKU6qJW+1Yoo5TgiqGms5Oao3Fpv
+ pGVOHe4o22qRUrX2KrL0y5kfbFM5Nq4t5q5hn6SY0PiXXg2+ewdU6W908PqfH1u6sb0Q7gY
+ Nw6zjNeLYXeq3UIWgtQ6w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Z8ui8f5eZoA=:jcvsfWe1Ch+ehMFOQEZ61m
+ hCHC78yq1kZ+154aQVoxquC+5T7f99oTEcrJLimZjzooIWIvrv7Z7zzhtqwLmrcPOG9d0YJPO
+ 8/jiYYBnGqLqLE5nRujZPo3Npet8mYGhkm3af2Xj96s0vqlfmruFZEPOpr9Sy8Yx2nuoifxUa
+ ORarBOi69aWuRtNT2ztHpUReOSe+0IGZ3k9N8S/3W7ba1oZUTzIjKToaTB5AtVtKj/hfh07ZA
+ I2xQCqj1cVD17TWTXL0iTybkUfeAlM6+x/WPe8VUWWu7SvVoaE8e5+q2GrgTbDWSRBJ2XybBv
+ 0oQH1oMGDXSt8XuRaYYSb9JHidMmR3rRymCksn8QZ3YY+R9yXNF/RGMmPgp32zmamA5wk1c9H
+ mBxqo7gP3hPo3E/evERZPk5c/bmNoc483hgSBOhA+fgQOApIkvemyKSxfUMn7T28nzlbWiQJK
+ nS6KFCrl5TY5pJt8FZkmjT6WOGP82d91KLLLKvs5F7YlNc9jhBLDDc78FI0DXanJkcn7/TMXb
+ KYJVv5DrOQgYuN5pykjhY2wjVwmw/cJXm2mfy8ZqEGDHk2c+lHCMsVI/s2wsRPM7Pz/VUdv1Q
+ wvc9rSwXiYeCIYZMTa0+D1Fa8mSFBxL9jjD6WjjSn8TTVE1evptfNOAikM6kr5v8hX07dX1rv
+ nnzMmXeEr9buIzn0SzpTEWs1l60i9TaIHw21KE20fLDZxlSr3JXDOo8YMLiiDeSOBg4+21YaG
+ hjmm18kxQc4dJN67AX+C6F6Q5naA8HvumJ8ujEGrZg38fVzLV+jl3maAgQUW1zNOruKfilcmL
+ iLN+au1qCI9D7QDQ2AFROxWMgPmGGIKoFreEVHarcokrlGU5ro5VU7krdoyWqwJMMRApwR6an
+ 4vOTRRC3CO67Q11x96olqIlmHCBI577XbonabvWRb0BX8ANE7iy7eSXopXS3KSzPQyVPluC0j
+ w5ZfAKaYjPdHeF2roF5oRl3dal8yiR7kQm18S0V5o1Z5trNmxE1ocdMCi2mht7HmPQVSLRaTF
+ 75q9DediZ0cN9utE6/IM0ZcwK2mPn3XSXKT1DlfBT3hmdmWToBR/qk+ecbZr9uDU9s+D5U0/v
+ sGIbn2uVPZfDSA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+Oh, no, it does not have to do with the kernel-installation as I told you =
+my
+Email before for it happened again this day!
 
-On 2021-10-06 23:09, Matthias Kaehlcke wrote:
-> On Wed, Oct 06, 2021 at 06:00:03PM +0530, Balakrishna Godavarthi wrote:
->> Subject: arm64: dts: qcom: sc7280: update bluetooth node in SC7280 
->> IDP2 board
-> 
-> Not super helpful, what does 'update' mean?
-> 
-> It might be easier to have a single patch for both IDP boards, since
-> the Bluetooth node is added in the common sc7280-idp.dtsi board,
-> rather than explaining what this patch does :)
-[Bala]: Sure will have one patch.
+Regards
+Andreas
 
-> 
->> This patch updates bluetooth node in SC7280 IDP2 board.
->> 
->> Signed-off-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/sc7280-idp2.dts | 6 ++++++
->>  1 file changed, 6 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts 
->> b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
->> index 1fc2add..5c8d54b 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
->> @@ -15,9 +15,15 @@
->> 
->>  	aliases {
->>  		serial0 = &uart5;
->> +		bluetooth0 = &bluetooth;
->> +		hsuart0 = &uart7;
->>  	};
-> 
-> Sort aliases alphabetically
-> 
->> 
->>  	chosen {
->>  		stdout-path = "serial0:115200n8";
->>  	};
->>  };
->> +
->> +&bluetooth: wcn6750-bt {
-> 
-> &bluetooth {
-> 
->> +	vddio-supply = <&vreg_l18b_1p8>;
-> 
-> nit: if it's not really common across IDP boards or a default, you 
-> could
-> leave it unconfigured in sc7280-idp.dtsi, and set in both board files.
-> Just an idea, with only two boards it doesn't really matter too much.
+Hi again,
 
-[Bala]: Sure will update in similar way.
+concerns: Kernel-5.4.130 - Kernel-5.4.152
 
+Below problem must have to do with the installation of a new kernel-versio=
+n.
+
+I removed the old kernel(-version) and its modules completely from
+SSD/harddisk, before the system got restarted, so that listed root-process=
+es
+always act hyperactive whenever Pale Moon (within sandbox firejail and Tor=
+)
+gets started.
+
+So this might be a good hint for the belonging patch of this kernel.
+
+Regards,
+Andreas
+(Gooken)
+
+Date: 08.10.2021
+
+Subject/Betreff: Unwanted activation of root-processes reading and writing=
+ out
+the whole SSD/harddrive ! / Kernel-5.4.134 (pclos, AppArmor / Tor (OpenSuS=
+E)
+usw. etc.: Freigabe von Informationen, Ausf=FChren von Code mit h=F6heren
+Privilegien und beliebiger Kommandos in Linux, Erzeugung, Lesen und
+=DCberschreiben beliebiger Dateien
+
+Hi, Greg, dear Linux experts and friends,
+
+this is one of the most dangerous and worst things, Linux can happen!
+Refering to the actual kernel 5.4.134 ( now up to the actual version 5.4.1=
+51
+and higher, additional remark from 10.08.2021), there still is a problem w=
+ith
+unexpectedly activated, highly active root-processes (making the tower-LED
+causing readwrites onto harddiscs and making the SSD/harddrive blink serio=
+us-
+madly hard for about up to 20 minutes). The whole SSD/harddrive seems to g=
+et
+read out and overwritten!
+
+The unwanted, highly by tor (pclos, mga7) resp. firejail activated kernel-
+root-processes are named
+
+kworker/u2:1-kcryptd/253:2 (escpecially this one, CPU: gt; 10%)
+kworker/0:1H-kblockd
+dmcrypt_write/2 and
+jbd2/dm2--8
+
+This occurs since kernel around 5.4.13, whenever I start browsing (with Pa=
+le
+Moon), activating firejail and tor.
+
+Please patch the kernel-5.4 to prevent it in future!
+Regards
+Andreas St=F6wing (Gooken-producer, Gooken: https://gooken.safe-ws.de/gook=
+en)
+
+Appendix
+libapparmor.so.required by firejail (OpenSuSE 15.X) needed by tor (rosa201=
+6.1,
+mga7) must be the cause for the activation as much as high activity of som=
+e
+root-processes!
+I have got no other explanation.
+Kernel security module apparmor itself got deactivated within the kernel b=
+y my
+boot-parameters "security=3Dnone" and "apparmor=3Dnone".
+
+After tor and firejail version got changed from OpenSuSE 15.X to mga7
+(firejail) resp. to CentOS el7 (Tor), so that libapparmor.so.1  is not
+required anymore, such root-processes did not get activated resp. active t=
+oo
+much!<BR>
+But they did appear unexpectedly again in kernel-5.4.151 !
+<BR><BR>
+So I still await your patches for kernel-5.4.
+In my opinion, Linux is killing spy-software and rubbish, if you won&#180;=
+t
+patch it !
+
+Regards
+Gooken
