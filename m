@@ -2,164 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B9542A470
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50CC42A47B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbhJLMde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:33:34 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32350 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236346AbhJLMd0 (ORCPT
+        id S236532AbhJLMeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 08:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236414AbhJLMeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:33:26 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19CAnGwf013182;
-        Tue, 12 Oct 2021 08:31:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=NGL6uHWcC/qeuSR1nITAcLMws/D4n1oX/88GgyPHGmA=;
- b=Q5i6fvQHi4LemB7VEPAWBcXTlbNAaSpJ+smMK6Te2ea2aER/2MYsIsxVJ3SQ5WQQ5IWh
- WoQyx7+6COCyZIhjyt7Ts/4kDs+MJxe+PAKfE1UIgU3dOLk3YYc8f7cvN404XhQx6/8G
- T3r5lUrpVfLEaghCkAOoh/75JLMKgc8dMeYHQixQ5PX+MCG4zQx7jNUFzFOck9aZYijO
- bDXk+hllQW5rvqnRNwE4bGoE478aLG8eRlZjQb01SiRxDs6bpLX/w4ACDbYX/8Ae07xX
- 3cKUsO1G268nO6CKrko7lqiQJUgfCFgJooZI9qFSC7YybQOwt2p8VGSFLwYPWHBLF9v6 7A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bn66qnxe8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 08:31:24 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19CCHV9C024781;
-        Tue, 12 Oct 2021 08:31:23 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bn66qnxd3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 08:31:23 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19CCDNrH015897;
-        Tue, 12 Oct 2021 12:31:21 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3bk2qa0cm1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 12:31:21 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19CCPQcc45744540
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 12:25:26 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DD253AE06C;
-        Tue, 12 Oct 2021 12:31:01 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5C96DAE068;
-        Tue, 12 Oct 2021 12:31:01 +0000 (GMT)
-Received: from [9.145.51.19] (unknown [9.145.51.19])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Oct 2021 12:31:01 +0000 (GMT)
-Message-ID: <e18fb171-726e-dc28-7a09-3c110bb97ff8@linux.ibm.com>
-Date:   Tue, 12 Oct 2021 14:31:00 +0200
+        Tue, 12 Oct 2021 08:34:01 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC5DC06176E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:31:50 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id e12so66504562wra.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=R1Ct5vyNPAZ0T7oTekL4gDr61oOOk/9HTK9il68hSlE=;
+        b=oh6FIN17b7KQdDaecOXdnI/rpi3FnsQnY0vccXX4ZRvFY5HZ56IBxetBpOAGuHmbMn
+         NClZvEw7CF67oLakJhtKTQET7h+6ktX9TtSDYBmNIfoBHhCJETZWjtdfk6/7Zg/50d95
+         LLyGrfNC1MVBl6VFirD/+gN2OYm06Ste+nAxMxxsEATJmE6j9uoxnNKrBC1GEcMuGYYZ
+         TavAJBPcgZ1dN31c0bz73GtisMZcxsBuVAtCYuJrA52WuiVwN9/z6xwrP9LnNYI9OhOo
+         XTokWkpPRpGkgSi25pIrDmoHsSf4HXGMLjA1od07/03k8qCgljboWy8oIv3Jh35CKqK8
+         LHcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=R1Ct5vyNPAZ0T7oTekL4gDr61oOOk/9HTK9il68hSlE=;
+        b=q+fZvuNpM9t3kqh9RDohMogwB6KUAZG7c5G1pqjHmy+H5xQULXGAiYp6SnWv4469tU
+         Br+nlS6dM95VkXA2O3GdI4Bu6ql4DSPSbRG/vJeYv/DEZ50NdBjmft3tRW4Ye2TLivOo
+         FR184dkmYFyywRylMRfb+jeWQkYWnRPY3/pJqI0Tu1YlWnAARerJM8dbG90uNA/o4nKW
+         YT3VoQNToMPcr8CjMJ1gVZhECAmFPehO8qAztsGHEkin/kG9tR7Plc+pId1qfsBJUTA3
+         qL74cJeIBOLfcLD0V5/y0nunO01maIuGfIKTavs1jb0ZHMNPIov/bPum34Y7Un2eJE41
+         TKpw==
+X-Gm-Message-State: AOAM533z3VHfl3fbdSA5Zamf7BsnD6huMp31d0Vfwr7S+f9vaIb5aVC4
+        gcMyCJmJmEyXBjuU4Wjwg6I=
+X-Google-Smtp-Source: ABdhPJxxTEZshi/e0EgdWzT3n4K9vgXQhUVECxr6XcXmL2FxLOmMaAKdcS2PYaOp4HFhCP+cxEL4kw==
+X-Received: by 2002:adf:ab43:: with SMTP id r3mr31978341wrc.225.1634041908769;
+        Tue, 12 Oct 2021 05:31:48 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id q204sm2514112wme.10.2021.10.12.05.31.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 05:31:48 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 14:31:46 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+Subject: Re: [PATCH] ARM: handle CONFIG_CPU_ENDIAN_BE32 in
+ arch/arm/kernel/head.S
+Message-ID: <YWWAMk2PbYOxUdWU@Red>
+References: <20210929181645.21855-1-clabbe.montjoie@gmail.com>
+ <CACRpkdZgXW4HOTsiw30-oncfiU54Jr_nDvZL-ZznRp8Tym=TmQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v5 08/14] KVM: s390: pv: handle secure storage exceptions
- for normal guests
-Content-Language: en-US
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
-        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ulrich.Weigand@de.ibm.com
-References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
- <20210920132502.36111-9-imbrenda@linux.ibm.com>
- <f442a49f-dbc4-5c38-ffa1-6b17742592c3@linux.ibm.com>
- <20211012103550.501857f5@p-imbrenda>
-From:   Janosch Frank <frankja@linux.ibm.com>
-In-Reply-To: <20211012103550.501857f5@p-imbrenda>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MKPzYILyVDBdDYwg7M7oY0AHhr8jawDl
-X-Proofpoint-GUID: QFIgnLzIa6ncCera3gjj78_TO1pb7O-h
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-12_03,2021-10-12_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 impostorscore=0 suspectscore=0 bulkscore=0 phishscore=0
- clxscore=1015 mlxlogscore=912 priorityscore=1501 mlxscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110120073
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdZgXW4HOTsiw30-oncfiU54Jr_nDvZL-ZznRp8Tym=TmQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 10:35, Claudio Imbrenda wrote:
-> On Tue, 12 Oct 2021 10:16:26 +0200
-> Janosch Frank <frankja@linux.ibm.com> wrote:
+Le Wed, Sep 29, 2021 at 09:08:38PM +0200, Linus Walleij a écrit :
+> On Wed, Sep 29, 2021 at 8:19 PM Corentin Labbe
+> <clabbe.montjoie@gmail.com> wrote:
 > 
->> On 9/20/21 15:24, Claudio Imbrenda wrote:
->>> With upcoming patches, normal guests might touch secure pages.
->>>
->>> This patch extends the existing exception handler to convert the pages
->>> to non secure also when the exception is triggered by a normal guest.
->>>
->>> This can happen for example when a secure guest reboots; the first
->>> stage of a secure guest is non secure, and in general a secure guest
->>> can reboot into non-secure mode.
->>>
->>> If the secure memory of the previous boot has not been cleared up
->>> completely yet, a non-secure guest might touch secure memory, which
->>> will need to be handled properly.
->>>
->>> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
->>> ---
->>>    arch/s390/mm/fault.c | 10 +++++++++-
->>>    1 file changed, 9 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
->>> index eb68b4f36927..74784581f42d 100644
->>> --- a/arch/s390/mm/fault.c
->>> +++ b/arch/s390/mm/fault.c
->>> @@ -767,6 +767,7 @@ void do_secure_storage_access(struct pt_regs *regs)
->>>    	struct vm_area_struct *vma;
->>>    	struct mm_struct *mm;
->>>    	struct page *page;
->>> +	struct gmap *gmap;
->>>    	int rc;
->>>    
->>>    	/*
->>> @@ -796,6 +797,14 @@ void do_secure_storage_access(struct pt_regs *regs)
->>>    	}
->>>    
->>>    	switch (get_fault_type(regs)) {
->>> +	case GMAP_FAULT:
->>> +		gmap = (struct gmap *)S390_lowcore.gmap;
->>> +		addr = __gmap_translate(gmap, addr);
->>> +		if (IS_ERR_VALUE(addr)) {
->>> +			do_fault_error(regs, VM_ACCESS_FLAGS, VM_FAULT_BADMAP);
->>> +			break;
->>> +		}
->>> +		fallthrough;
->>
->> This would trigger an export and not a destroy, right?
+> > My intel-ixp42x-welltech-epbx100 no longer boot since 4.14.
+> > This is due to commit 463dbba4d189 ("ARM: 9104/2: Fix Keystone 2 kernel
+> > mapping regression")
+> > which forgot to handle CONFIG_CPU_ENDIAN_BE32 as possible BE config.
+> >
+> > Suggested-by: Krzysztof Hałasa <khalasa@piap.pl>
+> > Fixes: 463dbba4d189 ("ARM: 9104/2: Fix Keystone 2 kernel mapping regression")
+> > Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 > 
-> correct. but this would only happen for leftover secure pages touched
-> by non-secure guests, before the background thread could clean them up.
+> Good catch!
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> Please put this into Russell's patch tracker.
 
-I.e. we don't expect to need the destroy speed boost?
+hello
 
-> 
->>
->>>    	case USER_FAULT:
->>>    		mm = current->mm;
->>>    		mmap_read_lock(mm);
->>> @@ -824,7 +833,6 @@ void do_secure_storage_access(struct pt_regs *regs)
->>>    		if (rc)
->>>    			BUG();
->>>    		break;
->>> -	case GMAP_FAULT:
->>>    	default:
->>>    		do_fault_error(regs, VM_READ | VM_WRITE, VM_FAULT_BADMAP);
->>>    		WARN_ON_ONCE(1);
->>>    
->>
-> 
+How to achieve that ?
+Do you mean https://www.arm.linux.org.uk/developer/patches/add.php ?
 
+Regards
