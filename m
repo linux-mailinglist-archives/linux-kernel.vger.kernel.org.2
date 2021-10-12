@@ -2,163 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8336742AD48
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9F142AD38
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbhJLT1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 15:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43900 "EHLO
+        id S234165AbhJLTZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 15:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhJLT13 (ORCPT
+        with ESMTP id S233398AbhJLTZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 15:27:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC586C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:25:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/Io97xWCIAvhe+Q9IKSft7X2dCSmZRv6fmuAMd3ittU=; b=iaxMuyrlfJD+ROAL3kySF6k/hU
-        FTklnjA5ekaLB9Qm7xsCFLWvYfEXqRtAbjZvC3a1juvWqLbyDSOjy4fq1L9oaPhmCzGasrWsbATVJ
-        r4qwz/SeNol5SEF8vfzWbs1Iaclro0AY7+khNzfjxlgZhIvOa26BXb4gZg1/OxGy79DBDRa/zspTH
-        ObivPVdPCuLo2moHmdBHaliOv+k3LnLY1Vkj7E0iuPOITteEF696W9dmP4zdas7zeqmNYu4JAEd+4
-        fea1w+W+M82ALPjS0RrjT6wrcMS6Ebxf8Qq4VWG+JagMYmW83I72RbLCStaD0Q0w8wvEcv6Gw0hLO
-        tYW7QWfw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maNN0-006mCo-6N; Tue, 12 Oct 2021 19:23:37 +0000
-Date:   Tue, 12 Oct 2021 20:23:26 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-mm@kvack.org, Kent Overstreet <kent.overstreet@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 00/11] PageSlab: eliminate unnecessary compound_head()
- calls
-Message-ID: <YWXgrhRDIxcoBhA1@casper.infradead.org>
-References: <20211012180148.1669685-1-hannes@cmpxchg.org>
+        Tue, 12 Oct 2021 15:25:29 -0400
+Received: from smtp-42a9.mail.infomaniak.ch (smtp-42a9.mail.infomaniak.ch [IPv6:2001:1600:3:17::42a9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B40C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:23:25 -0700 (PDT)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4HTQYk4rdgzMqcBV;
+        Tue, 12 Oct 2021 21:23:22 +0200 (CEST)
+Received: from localhost (unknown [23.97.221.149])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4HTQYh144dzlhNwc;
+        Tue, 12 Oct 2021 21:23:19 +0200 (CEST)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Paul Moore <paul@paul-moore.com>,
+        =?UTF-8?q?Philippe=20Tr=C3=A9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [PATCH v15 0/3] Add trusted_for(2) (was O_MAYEXEC)
+Date:   Tue, 12 Oct 2021 21:24:07 +0200
+Message-Id: <20211012192410.2356090-1-mic@digikod.net>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012180148.1669685-1-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 02:01:37PM -0400, Johannes Weiner wrote:
-> PageSlab() currently imposes a compound_head() call on all callsites
-> even though only very few situations encounter tailpages. This short
-> series bubbles tailpage resolution up to the few sites that need it,
-> and eliminates it everywhere else.
-> 
-> This is a stand-alone improvement. However, it's inspired by Willy's
-> patches to split struct slab from struct page. Those patches currently
-> resolve a slab object pointer to its struct slab as follows:
-> 
-> 	slab = virt_to_slab(p);		/* tailpage resolution */
-> 	if (slab_test_cache(slab)) {	/* slab or page alloc bypass? */
-> 		do_slab_stuff(slab);
-> 	} else {
-> 		page = (struct page *)slab;
-> 		do_page_stuff(page);
-> 	}
-> 
-> which makes struct slab an ambiguous type that needs to self-identify
-> with the slab_test_cache() test (which in turn relies on PG_slab in
-> the flags field shared between page and slab).
-> 
-> It would be preferable to do:
-> 
-> 	page = virt_to_head_page(p);	/* tailpage resolution */
-> 	if (PageSlab(page)) {		/* slab or page alloc bypass? */
-> 		slab = page_slab(page);
-> 		do_slab_stuff(slab);
-> 	} else {
-> 		do_page_stuff(page);
-> 	}
-> 
-> and leave the ambiguity and the need to self-identify with struct
-> page, so that struct slab is a strong and unambiguous type, and a
-> non-NULL struct slab encountered in the wild is always a valid object
-> without the need to check another dedicated flag for validity first.
-> 
-> However, because PageSlab() currently implies tailpage resolution,
-> writing the virt->slab lookup in the preferred way would add yet more
-> unnecessary compound_head() call to the hottest MM paths.
-> 
-> The page flag helpers should eventually all be weaned off of those
-> compound_head() calls for their unnecessary overhead alone. But this
-> one in particular is now getting in the way of writing code in the
-> preferred manner, and bleeding page ambiguity into the new types that
-> are supposed to eliminate specifically that. It's ripe for a cleanup.
+Hi,
 
-So what I had in mind was more the patch at the end (which I now realise
-is missing the corresponding changes to __ClearPageSlab()).  There is,
-however, some weirdness with kfence, which appears to be abusing PageSlab
-by setting it on pages which are not slab pages???
+This new patch series, rebase on v5.15-rc4, adds a full syscall
+documentation as requested by Andrew Morton.  This cover letter also
+briefly describes the syscall.  Andrew, can you please consider to merge
+this into your tree?
 
-	page = virt_to_page(p);
-	if (PageSlab(page)) {		/* slab or page alloc bypass? */
-		slab = page_slab(page);	/* tail page resolution */
-		do_slab_stuff(slab);
-	} else {
-		do_page_stuff(page); /* or possibly compound_head(page) */
-	}
+Overview
+========
 
-There could also be a PageTail check in there for some of the cases --
-catch people doing something like:
-	kfree(kmalloc(65536, GFP_KERNEL) + 16384);
-which happens to work today, but should probably not.
+The final goal of this patch series is to enable the kernel to be a
+global policy manager by entrusting processes with access control at
+their level.  To reach this goal, two complementary parts are required:
+* user space needs to be able to know if it can trust some file
+  descriptor content for a specific usage;
+* and the kernel needs to make available some part of the policy
+  configured by the system administrator.
 
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 8951da34aa51..b4b62fa100eb 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -344,7 +344,7 @@ PAGEFLAG(Active, active, PF_HEAD) __CLEARPAGEFLAG(Active, active, PF_HEAD)
- 	TESTCLEARFLAG(Active, active, PF_HEAD)
- PAGEFLAG(Workingset, workingset, PF_HEAD)
- 	TESTCLEARFLAG(Workingset, workingset, PF_HEAD)
--__PAGEFLAG(Slab, slab, PF_NO_TAIL)
-+__PAGEFLAG(Slab, slab, PF_ANY)
- __PAGEFLAG(SlobFree, slob_free, PF_NO_TAIL)
- PAGEFLAG(Checked, checked, PF_NO_COMPOUND)	   /* Used by some filesystems */
- 
-diff --git a/mm/slab.c b/mm/slab.c
-index d0f725637663..c8c6e8576936 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -1371,6 +1371,7 @@ static struct page *kmem_getpages(struct kmem_cache *cachep, gfp_t flags,
- 								int nodeid)
- {
- 	struct page *page;
-+	int i;
- 
- 	flags |= cachep->allocflags;
- 
-@@ -1381,7 +1382,8 @@ static struct page *kmem_getpages(struct kmem_cache *cachep, gfp_t flags,
- 	}
- 
- 	account_slab_page(page, cachep->gfporder, cachep, flags);
--	__SetPageSlab(page);
-+	for (i = 0; i < compound_nr(page); i++)
-+		__SetPageSlab(page + i);
- 	/* Record if ALLOC_NO_WATERMARKS was set when allocating the slab */
- 	if (sk_memalloc_socks() && page_is_pfmemalloc(page))
- 		SetPageSlabPfmemalloc(page);
-diff --git a/mm/slub.c b/mm/slub.c
-index f7ac28646580..e442cebda4ef 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1916,7 +1916,8 @@ static struct page *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
- 	account_slab_page(page, oo_order(oo), s, flags);
- 
- 	page->slab_cache = s;
--	__SetPageSlab(page);
-+	for (idx = 0; idx < compound_nr(page); idx++)
-+		__SetPageSlab(page + idx);
- 	if (page_is_pfmemalloc(page))
- 		SetPageSlabPfmemalloc(page);
- 
+Primary goal of trusted_for(2)
+==============================
+
+This new syscall enables user space to ask the kernel: is this file
+descriptor's content trusted to be used for this purpose?  The set of
+usage currently only contains execution, but other may follow (e.g.
+configuration, sensitive data).  If the kernel identifies the file
+descriptor as trustworthy for this usage, user space should then take
+this information into account.  The "execution" usage means that the
+content of the file descriptor is trusted according to the system policy
+to be executed by user space, which means that it interprets the content
+or (try to) maps it as executable memory.
+
+A simple system-wide security policy can be set by the system
+administrator through a sysctl configuration consistent with the mount
+points or the file access rights.  The documentation explains the
+prerequisites.
+
+It is important to note that this can only enable to extend access
+control managed by the kernel.  Hence it enables current access control
+mechanism to be extended and become a superset of what they can
+currently control.  Indeed, the security policy could also be delegated
+to an LSM, either a MAC system or an integrity system.  For instance,
+this is required to close a major IMA measurement/appraisal interpreter
+integrity gap by bringing the ability to check the use of scripts [1].
+Other uses are expected, such as for magic-links [2], SGX integration
+[3], bpffs [4].
+
+Complementary W^X protections can be brought by SELinux, IPE [5] and
+trampfd [6].
+
+System call description
+=======================
+
+trusted_for(int fd, enum trusted_for_usage usage, u32 flags);
+
+@fd is the file descriptor to check.
+
+@usage identifies the user space usage intended for @fd: only
+TRUSTED_FOR_EXECUTION for now, but trusted_for_usage could be extended
+to identify other usages (e.g. configuration, sensitive data).
+
+@flags must be 0 for now but it could be used in the future to do
+complementary checks (e.g. signature or integrity requirements, origin
+of the file).
+
+This system call returns 0 on success, or -EACCES if the kernel policy
+denies the specified usage (which should be enforced by the caller).
+
+The first patch contains the full syscall and sysctl documentation.
+
+Prerequisite of its use
+=======================
+
+User space needs to adapt to take advantage of this new feature.  For
+example, the PEP 578 [7] (Runtime Audit Hooks) enables Python 3.8 to be
+extended with policy enforcement points related to code interpretation,
+which can be used to align with the PowerShell audit features.
+Additional Python security improvements (e.g. a limited interpreter
+without -c, stdin piping of code) are on their way [8].
+
+Examples
+========
+
+The initial idea comes from CLIP OS 4 and the original implementation
+has been used for more than 13 years:
+https://github.com/clipos-archive/clipos4_doc
+Chrome OS has a similar approach:
+https://chromium.googlesource.com/chromiumos/docs/+/master/security/noexec_shell_scripts.md
+
+Userland patches can be found here:
+https://github.com/clipos-archive/clipos4_portage-overlay/search?q=O_MAYEXEC
+Actually, there is more than the O_MAYEXEC changes (which matches this search)
+e.g., to prevent Python interactive execution. There are patches for
+Bash, Wine, Java (Icedtea), Busybox's ash, Perl and Python. There are
+also some related patches which do not directly rely on O_MAYEXEC but
+which restrict the use of browser plugins and extensions, which may be
+seen as scripts too:
+https://github.com/clipos-archive/clipos4_portage-overlay/tree/master/www-client
+
+An introduction to O_MAYEXEC was given at the Linux Security Summit
+Europe 2018 - Linux Kernel Security Contributions by ANSSI:
+https://www.youtube.com/watch?v=chNjCRtPKQY&t=17m15s
+The "write xor execute" principle was explained at Kernel Recipes 2018 -
+CLIP OS: a defense-in-depth OS:
+https://www.youtube.com/watch?v=PjRE0uBtkHU&t=11m14s
+See also a first LWN article about O_MAYEXEC and a new one about
+trusted_for(2) and its background:
+* https://lwn.net/Articles/820000/
+* https://lwn.net/Articles/832959/
+
+This patch series can be applied on top of v5.10-rc6 .  This can be
+tested with CONFIG_SYSCTL.  I would really appreciate constructive
+comments on this patch series.
+
+Previous series:
+https://lore.kernel.org/r/20211008104840.1733385-1-mic@digikod.net/
+
+[1] https://lore.kernel.org/lkml/1544647356.4028.105.camel@linux.ibm.com/
+[2] https://lore.kernel.org/lkml/20190904201933.10736-6-cyphar@cyphar.com/
+[3] https://lore.kernel.org/lkml/CALCETrVovr8XNZSroey7pHF46O=kj_c5D9K8h=z2T_cNrpvMig@mail.gmail.com/
+[4] https://lore.kernel.org/lkml/CALCETrVeZ0eufFXwfhtaG_j+AdvbzEWE0M3wjXMWVEO7pj+xkw@mail.gmail.com/
+[5] https://lore.kernel.org/lkml/20200406221439.1469862-12-deven.desai@linux.microsoft.com/
+[6] https://lore.kernel.org/lkml/20200922215326.4603-1-madvenka@linux.microsoft.com/
+[7] https://www.python.org/dev/peps/pep-0578/
+[8] https://lore.kernel.org/lkml/0c70debd-e79e-d514-06c6-4cd1e021fa8b@python.org/
+
+Regards,
+
+Mickaël Salaün (3):
+  fs: Add trusted_for(2) syscall implementation and related sysctl
+  arch: Wire up trusted_for(2)
+  selftest/interpreter: Add tests for trusted_for(2) policies
+
+ Documentation/admin-guide/sysctl/fs.rst       |  50 +++
+ arch/alpha/kernel/syscalls/syscall.tbl        |   1 +
+ arch/arm/tools/syscall.tbl                    |   1 +
+ arch/arm64/include/asm/unistd.h               |   2 +-
+ arch/arm64/include/asm/unistd32.h             |   2 +
+ arch/ia64/kernel/syscalls/syscall.tbl         |   1 +
+ arch/m68k/kernel/syscalls/syscall.tbl         |   1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl   |   1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl     |   1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl     |   1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl     |   1 +
+ arch/parisc/kernel/syscalls/syscall.tbl       |   1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl      |   1 +
+ arch/s390/kernel/syscalls/syscall.tbl         |   1 +
+ arch/sh/kernel/syscalls/syscall.tbl           |   1 +
+ arch/sparc/kernel/syscalls/syscall.tbl        |   1 +
+ arch/x86/entry/syscalls/syscall_32.tbl        |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl        |   1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl       |   1 +
+ fs/open.c                                     | 110 ++++++
+ include/linux/fs.h                            |   1 +
+ include/linux/syscalls.h                      |   2 +
+ include/uapi/asm-generic/unistd.h             |   4 +-
+ include/uapi/linux/trusted-for.h              |  18 +
+ kernel/sysctl.c                               |  12 +-
+ tools/testing/selftests/Makefile              |   1 +
+ .../testing/selftests/interpreter/.gitignore  |   2 +
+ tools/testing/selftests/interpreter/Makefile  |  21 +
+ tools/testing/selftests/interpreter/config    |   1 +
+ .../selftests/interpreter/trust_policy_test.c | 362 ++++++++++++++++++
+ 30 files changed, 600 insertions(+), 4 deletions(-)
+ create mode 100644 include/uapi/linux/trusted-for.h
+ create mode 100644 tools/testing/selftests/interpreter/.gitignore
+ create mode 100644 tools/testing/selftests/interpreter/Makefile
+ create mode 100644 tools/testing/selftests/interpreter/config
+ create mode 100644 tools/testing/selftests/interpreter/trust_policy_test.c
+
+
+base-commit: 9e1ff307c779ce1f0f810c7ecce3d95bbae40896
+-- 
+2.32.0
 
