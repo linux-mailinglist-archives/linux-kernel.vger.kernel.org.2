@@ -2,72 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE95C429D5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD74429D60
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhJLFxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 01:53:19 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:55965 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232673AbhJLFxQ (ORCPT
+        id S232721AbhJLFxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 01:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232650AbhJLFxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 01:53:16 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UrXy.sr_1634017873;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UrXy.sr_1634017873)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 12 Oct 2021 13:51:14 +0800
-Subject: Re: [RESEND PATCH v2] trace: prevent preemption in
- perf_ftrace_function_call()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-References: <eafba880-c1ae-2b99-c11e-d5041a2f6c3e@linux.alibaba.com>
- <20211008200328.5b88422d@oasis.local.home>
- <bcdbccc6-a516-2199-d3be-090a5e9f601d@linux.alibaba.com>
- <YWP2rtX9Ol9dZc/l@hirez.programming.kicks-ass.net>
- <YWP6W7Be0Yp6egsn@hirez.programming.kicks-ass.net>
- <87aeef5b-c457-d4df-8abf-f9f035d73dbc@linux.alibaba.com>
- <20211011144510.GE174703@worktop.programming.kicks-ass.net>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <d544af7d-60c2-bc3e-c7e4-eb26d5d7a836@linux.alibaba.com>
-Date:   Tue, 12 Oct 2021 13:51:13 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Tue, 12 Oct 2021 01:53:47 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2DCC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 22:51:46 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id h125so6711051pfe.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 22:51:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kBtpCZbIOWtvahLXRDKKDjKecXESKAiO4U+qtM3fqF4=;
+        b=TnaMy710dXLuP2UJpvYYEci0HGuzrNFBasfSx2IKwcweLvhm7Ijn2ywSfxqmyqB+pP
+         1QN5V1L+gMujcMAp8UkixsGDdqUFYk/ECuh4XIEV25SpY7BcW2YSUxOtLgd5ZBTsf3uY
+         hRmDbHVciUR81IbQvUPR9YFNx5LNWWAoQr41EirdPU2Us/c8VbuBU7Xof9R+ZOMlP/3l
+         tjjZ1mW36NloFY/ns5OkKXzyfaWG0wXP4ClZ3Neg3bYRZBvsULE1WZbaZVDflXXhQvFc
+         ZF/6VxzdRLWUhHgZxgkuDn634tLGA6Ek7AiEFNJ+w1Aemy0Y9wNI4aCjlhgow47qNwoN
+         9UgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kBtpCZbIOWtvahLXRDKKDjKecXESKAiO4U+qtM3fqF4=;
+        b=B77QyPOUu+8wM2f2E3ePkwbR1ceh9tseCG10UbPk/pMXmpyiWzWko6m2vtGk50jpji
+         rEDUPEzztqQ7fjZjcPA1piFUc3OLkgsERr3zNmzhkdJ8VjCxdY+dC5DbEPpff+vwMNVR
+         rcpPa6rKitiIwLQoN8slfDjgaI/vuxZajZ65HXPxctGwJhKUUDOaFn7HoD4XgGxOupeX
+         wdd7DoGsgxYSEStCvmWxCqZ74r9OzbmQIni7YqyNCScIVVq/XpHJZAnTptXqoADE/3Jw
+         ZgEuqDD/+UeZAAYMLtfRydg8fO5GGF3wui1PkEflbVSs8nr3dqFBcmpi22XHk1t/FsEb
+         3IMw==
+X-Gm-Message-State: AOAM532hFZnmy/29ega8qSNWLOltZIyXrtw8UjkZovnkB53FFihXsi+G
+        y7SjNyv4OGG7sOOoLE5rbdVcnw==
+X-Google-Smtp-Source: ABdhPJxmbvSSSRs/QD+1yS5ZcH1WaRkFLvr50doFVs/VKoJlbooNZMTu2jEh9QgF3xf5jI/HzOhtPQ==
+X-Received: by 2002:aa7:870b:0:b0:44b:bcef:32b4 with SMTP id b11-20020aa7870b000000b0044bbcef32b4mr29407229pfo.41.1634017905739;
+        Mon, 11 Oct 2021 22:51:45 -0700 (PDT)
+Received: from localhost ([106.201.113.61])
+        by smtp.gmail.com with ESMTPSA id y142sm9477261pfc.169.2021.10.11.22.51.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 22:51:45 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 11:21:43 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hector Martin <marcan@marcan.st>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device
+ does not exist
+Message-ID: <20211012055143.xmkbvhbnolspgjin@vireshk-i7>
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-5-marcan@marcan.st>
+ <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
+ <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
 MIME-Version: 1.0
-In-Reply-To: <20211011144510.GE174703@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/10/11 下午10:45, Peter Zijlstra wrote:
-[snip]
->>>
->>> Oh, I might've gotten that wrong, I assumed regular trylock semantics,
->>> but it doesn't look like that's right.
->>
->> I will use bit instead ret and give some testing :-)
->>
->> BTW, would you prefer to merge these changes into this patch or maybe send
->> another patch with your suggested-by?
+On 12-10-21, 14:34, Hector Martin wrote:
+> The table *is* assigned to a genpd (the memory controller), it's just that
+> that genpd isn't actually a parent of the CPU device. Without the patch you
+> end up with:
 > 
-> Yeah, please send another patch; once you've confirmed it actually works
-> etc.. I did this before waking (as evidence per the above), who knows
-> what else I did wrong :-)
+> [    3.040060] cpu cpu4: Failed to set performance rate of cpu4: 0 (-19)
+> [    3.042881] cpu cpu4: Failed to set required opps: -19
+> [    3.045508] cpufreq: __target_index: Failed to change cpu frequency: -19
 
-I've send the:
-  [PATCH 0/2] ftrace: make sure preemption disabled on recursion testing
+Hmm, Saravana and Sibi were working on a similar problem earlier and decided to
+solve this using devfreq instead. Don't remember the exact series which got
+merged for this, Sibi ?
 
-should have taking care all the places, but only testing with x86 since I
-got no machine for other arch... just by logically it should be fine.
+If this part fails, how do you actually set the performance state of the memory
+controller's genpd ?
 
-Regards,
-Michael Wang
-
-> 
+-- 
+viresh
