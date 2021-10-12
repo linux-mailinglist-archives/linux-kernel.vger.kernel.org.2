@@ -2,141 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878B2429CC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 06:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B267A429CD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 06:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhJLEyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 00:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhJLEyo (ORCPT
+        id S232311AbhJLE64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 00:58:56 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34220
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229593AbhJLE6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 00:54:44 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2809CC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 21:52:43 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id j21so64866985lfe.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 21:52:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eguaqqaEvocg16XhRYlmwRB3LITVZC7ytOcijWENE0U=;
-        b=EJEHDw8MDWlcDjViuvBxD2G3aXkTevpz/dtCabTJWdXzwSG5X3UXVXtjh4GDMxLDG0
-         ZbGEZ1bd0nV637XJzB1XopqQBrOs/j7VbRt8FCUTtjMQ96BIvM8K0aHLu/T9y2WlrObe
-         M/B3z6zPd20ff/B2haFkyB4w54BiUVh56dyw7wf9hrzw1CLEJidS5QqK4IftUzOdb31a
-         cBfatIbZRFjTcJ4Jj8iLbnShTN5IO+K3cb342cwQ1DLr2hf9aCUlbXa6Jvq8X/KK953Z
-         f8WlDD0/A4f21U3kINeu5zbYlAj8Eu0uhtA6JTHed/GzkvHvkpBgTaIYkPiIeiMhmger
-         3Odw==
+        Tue, 12 Oct 2021 00:58:53 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 678374000F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 04:56:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634014611;
+        bh=BCyxVEf5Gp0uM4KfbTjyQDlhtbT74n2HOTEb9vV8RKU=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=kJzFlPBr9mJMYAVwHtyZqTcK5biSO9T2/leTNQxyCcgVzcV0np6RH0hWYuzTCXoqJ
+         rs0kFDJ2aXrtxwimQZOAGLcV5g2mQ1yIbKYZFgO9oDTh9h17S06YN5CsgU7AacVcVz
+         J+ODNeFbBvcGHOvgzOVxbsqXBRZx+spAcQxVdQvjEXVyrUqXYs4W7IH/gSULdt5AS5
+         0K6a8o8o11m76Hl7uxsB2Mu0nJYIKtwMoTtOxlbr4hCIMdf3dptJSig4S0NnGTwcVc
+         Cu/6CfPnDc3T6k3gvcGXnGk3mi0HwZaZxlTjiykRWTmaDmNUhSKeI048ZNZ9Iqogzf
+         DJlY9305aYjyg==
+Received: by mail-ed1-f69.google.com with SMTP id p13-20020a056402044d00b003db3256e4f2so17885162edw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 21:56:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eguaqqaEvocg16XhRYlmwRB3LITVZC7ytOcijWENE0U=;
-        b=XIVYSqfOagtnOZ/5Tb7HoZtjdcaHR8cl79A2YYjSU4CDobc2oeGx8UflWRiAc++nCK
-         nber8rADCSSwKW074YtNFBTbTVXY1OTDfTA+xDzguIbW2eQIxtfE4jJuLOqPvE/YciQ6
-         Rz9cYU45dsQ3RwLVnQ/O5y1BKHCiebmS7+HQWeO9TZpxcm0zMxn/jDoaYqfV614knwTK
-         WUsxM+PyxhJYsbkSItOj96GMDBEHRXToE32tT/tsKqmDMR1Lgyz9F8L/ZN3O2uViH1DM
-         xHnhxH0Ya0EB2zFocnUbPOYH2cp+YSUasIujIPOqJZ12Az4uV4UDc4xYbz7grsuqRTFR
-         RsQg==
-X-Gm-Message-State: AOAM530yRus1EAPyubluJ2OdCLqBgjutKIYall3DbuBTDoxbClc5k5/F
-        aAAgNQr26nhnFOx2g9C+f6IgDEN+gTZGwCp8NZ5XRw==
-X-Google-Smtp-Source: ABdhPJxtUg6ArzDf8obZOLIcqFThlsjDLBOVq82DDyM5iTD1J4eoPBzh0GUwczmY73KQLKkHIE2YxZiFsXZxoQmYGNQ=
-X-Received: by 2002:a05:6512:3f86:: with SMTP id x6mr31750475lfa.389.1634014361420;
- Mon, 11 Oct 2021 21:52:41 -0700 (PDT)
+        bh=BCyxVEf5Gp0uM4KfbTjyQDlhtbT74n2HOTEb9vV8RKU=;
+        b=Ddw46qoSaTx48xuvLcbBTbDVT2KQorXLigkDFfcvwywEimELQeAl1eMHaSmm3d3uXm
+         ujODEInB0TZqpfPYGLpZE21vwSbJf/E3rqobT7KEpvxDL5fswSp7lrQR3HMrEfPDI4Ed
+         Tr0TzFQOEawoR3avdpjgmhu1Gkn4c2GM/17VhV6HGDEvUkx6gUKHFxNoMbY53r2AX1hb
+         oHOI5sSR5qLDr4Mg+v8zMuM9iBX8c/RiKwKMFY7mX5cU/HY3ehIlIwFkYy1fNiUc+BL1
+         lnAsu1WQceAF/zld+eNCORE3O9E0yBC9BmXIyYpr3VP0mq9GLl/gJ/wBKjIRV5emb0nY
+         bGzw==
+X-Gm-Message-State: AOAM530V6oniy5Zs880jZhUiG4zGRfzUow33vANRxfVcL46+mjqbev51
+        uUlzKDVCafTBnKI1jf2NXQMyY0SHGy8zmhSLW5NdHyLl0TSC1ieN9Xs67mPa4ShGjxWbx8oe5l5
+        CkV9yU8pMzUXBHSbOLypVG9SNjoz2WP/J5dnk/ipiqoqht+lXLByZMZQ1+g==
+X-Received: by 2002:a17:906:9414:: with SMTP id q20mr31344875ejx.241.1634014609951;
+        Mon, 11 Oct 2021 21:56:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzfX0PyiKdpuHUayAwncldug3i/rdZwjBSq4PyX9ATI6GhXFboX9vjkwh4+o6rNFZcu+ZPtQZmAMuoSunAduXw=
+X-Received: by 2002:a17:906:9414:: with SMTP id q20mr31344867ejx.241.1634014609793;
+ Mon, 11 Oct 2021 21:56:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211008080305.13401-1-yanghui.def@bytedance.com>
- <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com> <c70a418d-4748-6876-ac8a-c9d1b7e94e78@gmail.com>
-In-Reply-To: <c70a418d-4748-6876-ac8a-c9d1b7e94e78@gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 11 Oct 2021 21:52:29 -0700
-Message-ID: <CALAqxLVgQ6QEThWaN65nOW9F_XCh7885n9RigAQDU+OgDntS5g@mail.gmail.com>
-Subject: Re: [PATCH] Clocksource: Avoid misjudgment of clocksource
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     yanghui <yanghui.def@bytedance.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <20210920130248.145058-1-krzysztof.kozlowski@canonical.com> <20210920130248.145058-3-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210920130248.145058-3-krzysztof.kozlowski@canonical.com>
+From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Date:   Tue, 12 Oct 2021 06:56:38 +0200
+Message-ID: <CA+zEjCvhBYW5-QSRtanQjUsbB2Oqx79WaVpmRWnb+qOLU9pZqg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 3/5] riscv: dts: sifive: drop duplicated nodes
+ and properties in sifive
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 9, 2021 at 7:04 AM brookxu <brookxu.cn@gmail.com> wrote:
+On Mon, Sep 20, 2021 at 3:05 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 >
-> hello
+> The DTSI file defines soc node and address/size cells, so there is no
+> point in duplicating it in DTS file.
 >
-> John Stultz wrote on 2021/10/9 7:45:
-> > On Fri, Oct 8, 2021 at 1:03 AM yanghui <yanghui.def@bytedance.com> wrote:
-> >>
-> >> clocksource_watchdog is executed every WATCHDOG_INTERVAL(0.5s) by
-> >> Timer. But sometimes system is very busy and the Timer cannot be
-> >> executed in 0.5sec. For example,if clocksource_watchdog be executed
-> >> after 10sec, the calculated value of abs(cs_nsec - wd_nsec) will
-> >> be enlarged. Then the current clocksource will be misjudged as
-> >> unstable. So we add conditions to prevent the clocksource from
-> >> being misjudged.
-> >>
-> >> Signed-off-by: yanghui <yanghui.def@bytedance.com>
-> >> ---
-> >>  kernel/time/clocksource.c | 6 +++++-
-> >>  1 file changed, 5 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> >> index b8a14d2fb5ba..d535beadcbc8 100644
-> >> --- a/kernel/time/clocksource.c
-> >> +++ b/kernel/time/clocksource.c
-> >> @@ -136,8 +136,10 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
-> >>
-> >>  /*
-> >>   * Interval: 0.5sec.
-> >> + * MaxInterval: 1s.
-> >>   */
-> >>  #define WATCHDOG_INTERVAL (HZ >> 1)
-> >> +#define WATCHDOG_MAX_INTERVAL_NS (NSEC_PER_SEC)
-> >>
-> >>  static void clocksource_watchdog_work(struct work_struct *work)
-> >>  {
-> >> @@ -404,7 +406,9 @@ static void clocksource_watchdog(struct timer_list *unused)
-> >>
-> >>                 /* Check the deviation from the watchdog clocksource. */
-> >>                 md = cs->uncertainty_margin + watchdog->uncertainty_margin;
-> >> -               if (abs(cs_nsec - wd_nsec) > md) {
-> >> +               if ((abs(cs_nsec - wd_nsec) > md) &&
-> >> +                       cs_nsec < WATCHDOG_MAX_INTERVAL_NS &&
-> >
-> > Sorry, it's been awhile since I looked at this code, but why are you
-> > bounding the clocksource delta here?
-> > It seems like if the clocksource being watched was very wrong (with a
-> > delta larger than the MAX_INTERVAL_NS), we'd want to throw it out.
-> >
-> >> +                       wd_nsec < WATCHDOG_MAX_INTERVAL_NS) {
-> >
-> > Bounding the watchdog interval on the check does seem reasonable.
-> > Though one may want to keep track that if we are seeing too many of
-> > these delayed watchdog checks we provide some feedback via dmesg.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 >
-> For some fast timeout timers, such as acpi-timer, checking wd_nsec should not
-> make much sense, because when wacthdog is called, the timer may overflow many
-> times.
+> ---
+>
+> Changes since v1:
+> 1. None
+> ---
+>  arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 5 -----
+>  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 5 -----
+>  2 files changed, 10 deletions(-)
+>
+> diff --git a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+> index 2b4af7b4cc2f..ba304d4c455c 100644
+> --- a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+> +++ b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+> @@ -8,8 +8,6 @@
+>  #define RTCCLK_FREQ            1000000
+>
+>  / {
+> -       #address-cells = <2>;
+> -       #size-cells = <2>;
+>         model = "SiFive HiFive Unleashed A00";
+>         compatible = "sifive,hifive-unleashed-a00", "sifive,fu540-c000",
+>                      "sifive,fu540";
+> @@ -27,9 +25,6 @@ memory@80000000 {
+>                 reg = <0x0 0x80000000 0x2 0x00000000>;
+>         };
+>
+> -       soc {
+> -       };
+> -
+>         hfclk: hfclk {
+>                 #clock-cells = <0>;
+>                 compatible = "fixed-clock";
+> diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> index 9b0b9b85040e..4f66919215f6 100644
+> --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> @@ -8,8 +8,6 @@
+>  #define RTCCLK_FREQ            1000000
+>
+>  / {
+> -       #address-cells = <2>;
+> -       #size-cells = <2>;
+>         model = "SiFive HiFive Unmatched A00";
+>         compatible = "sifive,hifive-unmatched-a00", "sifive,fu740-c000",
+>                      "sifive,fu740";
+> @@ -27,9 +25,6 @@ memory@80000000 {
+>                 reg = <0x0 0x80000000 0x4 0x00000000>;
+>         };
+>
+> -       soc {
+> -       };
+> -
+>         hfclk: hfclk {
+>                 #clock-cells = <0>;
+>                 compatible = "fixed-clock";
+> --
+> 2.30.2
+>
+>
 
-Indeed. But in that case we can't tell which way is up. This is what I
-was fretting about when I said:
-> So I do worry these watchdog robustness fixes are papering over a
-> problem, pushing expectations closer to the edge of how far the system
-> should tolerate bad behavior. Because at some point we'll fall off. :)
+This looks good to me, you can add:
 
-If the timer is delayed long enough for the watchdog to wrap, we're
-way out of tolerable behavior. There's not much we can do because we
-can't even tell what happened.
+Reviewed-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Tested-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
 
-But in the case where the watchdog has not wrapped, I don't see a
-major issue with trying to be a bit more robust in the face of just
-slightly delayed timers.
-(And yes, we can't really distinguish between slightly delayed and
-watchdog-wrap-interval + slight delay, but in either case we can
-probably skip disqualifying the clocksource as we know something seems
-off)
+Thanks,
 
-thanks
--john
+Alex
+
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
