@@ -2,98 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B48429D6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A913429D76
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232783AbhJLGAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 02:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232254AbhJLGAC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:00:02 -0400
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF06C061570;
-        Mon, 11 Oct 2021 22:58:00 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 17A1E4206F;
-        Tue, 12 Oct 2021 05:57:52 +0000 (UTC)
-Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device does
- not exist
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211011165707.138157-1-marcan@marcan.st>
- <20211011165707.138157-5-marcan@marcan.st>
- <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
- <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
- <20211012055143.xmkbvhbnolspgjin@vireshk-i7>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <caf16a6c-f127-7f27-ed17-0522d9f1fb9e@marcan.st>
-Date:   Tue, 12 Oct 2021 14:57:50 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232837AbhJLGGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 02:06:30 -0400
+Received: from mout.gmx.net ([212.227.15.18]:33883 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232431AbhJLGG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 02:06:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634018618;
+        bh=t9NgUWQCN+x3V7Hp4Nfn0+U2T6Ph1w/p+Efg9vnjBf8=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=ff8FjRkeCGbDpe/67S+poZ4/cjMzIGK70KzKAoKGGO3UvGG+Ix7k9hOGT/JA5zFVb
+         b0wSwWqJ8dMxsjQlVFW3HytK5O2ttt/GMmp/w5AxEKZod1TvXVGZhceo9V7kW7X6iz
+         hClSRgqyy8hhts09vENLoYs8936bTXAsRMicxeAY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.128.177]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mplc7-1n5vBn0vWP-00q9gl; Tue, 12
+ Oct 2021 08:03:38 +0200
+Message-ID: <91b38fce-8a5c-ccc7-fba5-b75b9769d4fc@gmx.de>
+Date:   Tue, 12 Oct 2021 08:02:53 +0200
 MIME-Version: 1.0
-In-Reply-To: <20211012055143.xmkbvhbnolspgjin@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v1 04/10] asm-generic: Use
+ HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR to define associated stubs
+Content-Language: en-US
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
+ <8db2a3ca2b26a8325c671baa3e0492914597f079.1633964380.git.christophe.leroy@csgroup.eu>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <8db2a3ca2b26a8325c671baa3e0492914597f079.1633964380.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:3FVNBuFx64HT0tuoJYG2SIgMIMfL8fXzN53XykVw2JLzU6FqL0B
+ 47lugWj6rkUtNsiz8tcSM75G3rrpuahDYFok+XAuxw63YZr0F3Nhdr2cn7g/FuAFNgPo2yC
+ CK5N7YfnT66ssXgewYk+lLdJFDOEy4prM32Gprx7BezR9iX89W0jxYI1RVQZpS0fcrDSbsr
+ e0AtWhnfZqeJ2pYoyvi6A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:umUw8efNMTI=:/9tlCPWVCKekVvKKamGFwj
+ BsaJeIoRtjZCIzQfUGtUOy4GhMdkFU78x6mufwb1nMvsoc7NzTz8Q9gP0yAMU7CGYWq2JxYKN
+ KlVEg2hQJjl70wBfi5acPN0BuvbZBUj5hO2+w04TTvnUfmsDJ5rZ5s5s+XxUK1l+rd5r5ZLYP
+ 3QtzM2rz3+1qdNSOhvX7E3erRQkCijzBY/8rbNtm+QTfHiI7iq1TKJkIGxXjKPdSKHajjC9yd
+ RLdQGEIUVJpGCZfNDQQ1qDpn1bX83xhpFzZG22mXow6Du//OvXPejMza7rcsqLAJOlXNFw7YI
+ 2+98mFao5Cm2br+C+xQvtJKTFkhilgseoNe5cdpFQNWfqhlF6Buf3vMrQcroYBTtGEY0qZY5z
+ caVBMhqD0jjhDWo5rBeHIUTjkf7Xts6TqygocHWFmFatrtHqLmz3CcViihdysH99uzMB5wQJ3
+ zWcRj83iI2U6tIvgo4b5Dq5EtI6tWmFbib8nowxMiSbMpREz+yajuBBAIZyicGjZ55D/Oh7/m
+ swqmY0o0ObRMbrIwTxqy9uHn9RL86+ng4I0V7Qx53qGKp+QfKAzOBhlhuL4iywFYrJhloX1zr
+ MfXWy3vpu0zrMos+Nn5xMiFvbvbxEnjQe7EoUMnaRNMmsvQ0w7y0H4eB3C9Z8b8NLs2s15q8O
+ v7gh8pNHpJYWHy4nFkvBVZxKDjAO/uD0oYyhAl5bVuoIcmxRA9UY4d0o2+kyC6vZ1TZTYrJDk
+ ta2bQLCEG+2xpDnOHJAMXSfdgWdpXeVu0wU+Xkx/NG1xweXLZ8/wcnOYH9JvTJjvWI8CzUcme
+ 6So+BaIoAa/L3qjJZvf5eBIaPEg6RELwFbj+f/k+jXImqEP4Lv5TkXZN5TJPsYmeqz3KbIKRv
+ aBxuKiJNOBszOzO9VQWnHjxLXwClcL+tjwXNS3XwX8UEU8VrsmzWpMMZOW3nTJ2nwzDjzWQWx
+ BGOQ0y8GPQD+KVYUN628i7hwI6ntwrNiecBM4JjoWqV/ZT9rsaIS4dasc+sUpXJasDDp26unL
+ sDC01ifkzZiOzrrT/B31TP0moswG49S/dABdQ4qrLmnrxnobAtogIGonFxz2l341BK4NOCN+S
+ /UisBwh5D8+KG4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2021 14.51, Viresh Kumar wrote:
-> On 12-10-21, 14:34, Hector Martin wrote:
->> The table *is* assigned to a genpd (the memory controller), it's just that
->> that genpd isn't actually a parent of the CPU device. Without the patch you
->> end up with:
->>
->> [    3.040060] cpu cpu4: Failed to set performance rate of cpu4: 0 (-19)
->> [    3.042881] cpu cpu4: Failed to set required opps: -19
->> [    3.045508] cpufreq: __target_index: Failed to change cpu frequency: -19
-> 
-> Hmm, Saravana and Sibi were working on a similar problem earlier and decided to
-> solve this using devfreq instead. Don't remember the exact series which got
-> merged for this, Sibi ?
-> 
-> If this part fails, how do you actually set the performance state of the memory
-> controller's genpd ?
-
-The clock controller has the genpd as an actual power-domain parent, so 
-it does it instead. From patch #7:
-
-> +	if (cluster->has_pd)
-> +		dev_pm_genpd_set_performance_state(cluster->dev,
-> +						   dev_pm_opp_get_required_pstate(opp, 0));
+On 10/11/21 17:25, Christophe Leroy wrote:
+> Use HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR instead of 'dereference_functio=
+n_descriptor'
+> to know whether arch has function descriptors.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/ia64/include/asm/sections.h    | 4 ++--
+>  arch/parisc/include/asm/sections.h  | 6 ++++--
+>  arch/powerpc/include/asm/sections.h | 6 ++++--
+>  include/asm-generic/sections.h      | 3 ++-
+>  4 files changed, 12 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/ia64/include/asm/sections.h b/arch/ia64/include/asm/se=
+ctions.h
+> index 35f24e52149a..80f5868afb06 100644
+> --- a/arch/ia64/include/asm/sections.h
+> +++ b/arch/ia64/include/asm/sections.h
+> @@ -7,6 +7,8 @@
+>   *	David Mosberger-Tang <davidm@hpl.hp.com>
+>   */
+>
+> +#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
 > +
+>  #include <linux/elf.h>
+>  #include <linux/uaccess.h>
+>  #include <asm-generic/sections.h>
+> @@ -27,8 +29,6 @@ extern char __start_gate_brl_fsys_bubble_down_patchlis=
+t[], __end_gate_brl_fsys_b
+>  extern char __start_unwind[], __end_unwind[];
+>  extern char __start_ivt_text[], __end_ivt_text[];
+>
+> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+> -
+>  #undef dereference_function_descriptor
+>  static inline void *dereference_function_descriptor(void *ptr)
+>  {
+> diff --git a/arch/parisc/include/asm/sections.h b/arch/parisc/include/as=
+m/sections.h
+> index bb52aea0cb21..2e781ee19b66 100644
+> --- a/arch/parisc/include/asm/sections.h
+> +++ b/arch/parisc/include/asm/sections.h
+> @@ -2,6 +2,10 @@
+>  #ifndef _PARISC_SECTIONS_H
+>  #define _PARISC_SECTIONS_H
+>
+> +#ifdef CONFIG_64BIT
+> +#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+> +#endif
+> +
+>  /* nothing to see, move along */
+>  #include <asm-generic/sections.h>
+>
+> @@ -9,8 +13,6 @@ extern char __alt_instructions[], __alt_instructions_en=
+d[];
+>
+>  #ifdef CONFIG_64BIT
+>
+> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+> -
+>  #undef dereference_function_descriptor
+>  void *dereference_function_descriptor(void *);
+>
+> diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/=
+asm/sections.h
+> index 32e7035863ac..b7f1ba04e756 100644
+> --- a/arch/powerpc/include/asm/sections.h
+> +++ b/arch/powerpc/include/asm/sections.h
+> @@ -8,6 +8,10 @@
+>
+>  #define arch_is_kernel_initmem_freed arch_is_kernel_initmem_freed
+>
+> +#ifdef PPC64_ELF_ABI_v1
+> +#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+> +#endif
+> +
+>  #include <asm-generic/sections.h>
+>
+>  extern bool init_mem_is_free;
+> @@ -69,8 +73,6 @@ static inline int overlaps_kernel_text(unsigned long s=
+tart, unsigned long end)
+>
+>  #ifdef PPC64_ELF_ABI_v1
+>
+> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+> -
+>  #undef dereference_function_descriptor
+>  static inline void *dereference_function_descriptor(void *ptr)
+>  {
+> diff --git a/include/asm-generic/sections.h b/include/asm-generic/sectio=
+ns.h
+> index d16302d3eb59..1db5cfd69817 100644
+> --- a/include/asm-generic/sections.h
+> +++ b/include/asm-generic/sections.h
+> @@ -59,7 +59,8 @@ extern char __noinstr_text_start[], __noinstr_text_end=
+[];
+>  extern __visible const void __nosave_begin, __nosave_end;
+>
+>  /* Function descriptor handling (if any).  Override in asm/sections.h *=
+/
+> -#ifndef dereference_function_descriptor
+> +#ifdef HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR
+> +#else
 
-This is arguably not entirely representative of how the hardware works, 
-since technically the cluster switching couldn't care less what the 
-memory controller is doing; it's a soft dependency, states that should 
-be switched together but are not interdependent (in fact, the clock code 
-does this unconditionally after the CPU p-state change, regardless of 
-whether we're shifting up or down; this is, FWIW, the same order macOS 
-uses, and it clearly doesn't matter which way you do it).
+why not
+#ifndef HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR
+instead of #if/#else ?
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+>  #define dereference_function_descriptor(p) ((void *)(p))
+>  #define dereference_kernel_function_descriptor(p) ((void *)(p))
+>  #endif
+>
+
