@@ -2,118 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A4942A74B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75ED42A755
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237249AbhJLOgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32844 "EHLO
+        id S237318AbhJLOiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235294AbhJLOgt (ORCPT
+        with ESMTP id S236637AbhJLOiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:36:49 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9A2C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:34:47 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id p16so17916853lfa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:34:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h5yMuto80JoFAdSRxuic6aOBW+rt2vFNHvAzZQ/3FNs=;
-        b=KaqGYXutI6Ybc4eg29VuD7PIlDdKsedh63dB1OtY4vC0jTHTXnN1YEal2Ix/9QGRcg
-         AOZtpFM4Co8vmi1m9wsSbOCEyz8neyZrNzuzzVHRym/ePYiGBiS/iuZGPRfn0wSyQwZe
-         CUBRDuW45fmObbSWMGOtawFt1in94Lb2uZgJaA+AUeQR801b3SbmwDtISoyJJK6MI6j9
-         USB44iK/uzJyHQD4BmTGauqSyh7Bt8cRPiA/6kbqCUnu/2w1A7cGSBNRkpaF7itjoMS/
-         Nr6aa766kd99/XGHA+B3Qr7aeYUxfupm7hatK0TugtdI7nDpRiuFbtTxvkxNtmLBeDCk
-         FeOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h5yMuto80JoFAdSRxuic6aOBW+rt2vFNHvAzZQ/3FNs=;
-        b=lOT62yloSfaGSU++js6OVH2F3MFxz44Gbc/DRJ2Z/RbewL2najGDgUDlU2RUkb1rmQ
-         6JHVuI5YghGfoVy1DdJIHhtxZDcfQ/PqQRDiqRvCxXNiGTVfWXJ5f9x5Y/kG4j8Cc3lJ
-         sAFYBOqMIIJeAemJ2DFrAGTkITGqI1J2TpDkxN1Xm2K7YKaSpxwb4202tU4TTHFG2qGm
-         I6FMB6VOAPUfnMIMoGq6QmZfTrMCCjtzvOLwLGbVikZ8tkyFgAGfsPEPcuG2P7xl2C35
-         a6iT2RGbX6TA7qyq09nPeIT7rvMAzsB7ZlP+xLWbubIwXLsIeX833zSCWwTSpM+JXY8G
-         DBWg==
-X-Gm-Message-State: AOAM531GyuH6IE5ooKvoTko3+ardK8eg47JdCiXndz6MQCoJYzmBV3Vz
-        sDTJ3H4Kzxu2KXeLZInPT9l2l0H24qRgU1D2OM4sxA==
-X-Google-Smtp-Source: ABdhPJx4XYPBQn3R3kuVR9Ymld5M9oRjbA9SN6AgSqmBTCXLMQ62j7215pABtzQ6meOMLmIqE40l5TbiIU9/CjNehgI=
-X-Received: by 2002:a05:6512:398a:: with SMTP id j10mr33390426lfu.402.1634049285215;
- Tue, 12 Oct 2021 07:34:45 -0700 (PDT)
+        Tue, 12 Oct 2021 10:38:04 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439A1C061570;
+        Tue, 12 Oct 2021 07:36:03 -0700 (PDT)
+Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:4cb:a870:dcd8:9f87:c3be:dc06])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5B5891F43BC6;
+        Tue, 12 Oct 2021 15:36:00 +0100 (BST)
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     mchehab@kernel.org, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@gmail.com, hverkuil-cisco@xs4all.nl,
+        jc@kynesim.co.uk, ezequiel@vanguardiasur.com.ar
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v2 0/4]  media: HEVC: RPS clean up
+Date:   Tue, 12 Oct 2021 16:35:48 +0200
+Message-Id: <20211012143552.661751-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211005195213.2905030-1-pgonda@google.com> <fdf0c263-38e9-7780-d0ac-943b6d2dd3a3@amd.com>
-In-Reply-To: <fdf0c263-38e9-7780-d0ac-943b6d2dd3a3@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Tue, 12 Oct 2021 08:34:33 -0600
-Message-ID: <CAMkAt6piNiJdHDMzSqgm-aQ0o-xxM=ax4qMgn81fKzVuaNukPg@mail.gmail.com>
-Subject: Re: [PATCH] crypto: ccp - Consolidate sev INIT logic
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     "Lendacky, Thomas" <thomas.lendacky@amd.com>,
-        Marc Orr <marcorr@google.com>, Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Rientjes <rientjes@google.com>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 9:52 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
->
->
-> On 10/5/21 12:52 PM, Peter Gonda wrote:
-> >
-> > +static int sev_init_if_required(int cmd_id, bool writable,
-> > +                             struct sev_issue_cmd *argp)
-> > +{
-> > +     struct sev_device *sev = psp_master->sev_data;
-> > +
-> > +     lockdep_assert_held(&sev_cmd_mutex);
-> > +
-> > +     if (!writable)
-> > +             return -EPERM;
-> > +
-> > +     if (cmd_id == SEV_FACTORY_RESET || cmd_id == SEV_PLATFORM_STATUS ||
-> > +         cmd_id == SEV_GET_ID || cmd_id == SEV_GET_ID2)
-> > +             return 0;
-> > +
-> > +     if (sev->state == SEV_STATE_UNINIT)
-> > +             return __sev_platform_init_locked(&argp->error);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >  static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
-> >  {
-> >       void __user *argp = (void __user *)arg;
-> > @@ -840,8 +825,11 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
-> >
-> >       mutex_lock(&sev_cmd_mutex);
-> >
-> > -     switch (input.cmd) {
-> > +     ret = sev_init_if_required(input.cmd, writable, &input);
-> > +     if (ret)
-> > +             goto copy_out;
->
-> We need to call this function only for the SEV commands (i.e input.cmd
-> >=0 && input.cmd <= SEV_GET_ID2). Otherwise a invalid command may
-> trigger SEV_INIT. e.g below sequence:
->
-> 1) SEV_FACTORY_RESET   // this will transition the fw to UNINIT state.
->
-> 2) <INVALID_CMD_ID>   // since fw was in uninit this invalid command
-> will initialize the fw and then later switch will fail.
+This series aims to clean up Reference Picture Set usage and flags.
 
-Good catch, I took Marc's suggested approach for a V2. Does that sound
-reasonable?
+Long term flag was named with RPS prefix while it is not used for RPS
+but for mark long term references in DBP. Remane it and remove the two
+other useless RPS flags.
 
->
-> thanks
->
->
+Clarify documentation about RPS lists content and make sure that Hantro
+driver use them correctly (i.e without look up in DBP).
+
+These patches are the last in my backlog impacting HEVC uAPI.
+From my point of view, once they get merged, you could start talking
+about how move HEVC uAPI to stable.
+
+version 2:
+- change DPB field name from rps to flags
+
+Please note that the only purpose of commits 3 and 4 is to allow to test
+G2 hardware block for IMX8MQ until a proper solution isuing power domain
+can be found. Do not merge them.
+
+GStreamer HEVC plugin merge request can be found here:
+https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1079
+
+With those piece of code fluster score is 77/147.
+
+Benjamin
+
+Benjamin Gaignard (4):
+  media: hevc: Remove RPS named flags
+  media: hevc: Embedded indexes in RPS
+  media: hantro: Use syscon instead of 'ctrl' register
+  arm64: dts: imx8mq: Add node to G2 hardware
+
+ .../media/v4l/ext-ctrls-codec.rst             | 14 +++---
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 43 +++++++++++++----
+ drivers/staging/media/hantro/hantro.h         |  5 +-
+ .../staging/media/hantro/hantro_g2_hevc_dec.c | 27 +++--------
+ drivers/staging/media/hantro/imx8m_vpu_hw.c   | 48 ++++++++++++-------
+ .../staging/media/sunxi/cedrus/cedrus_h265.c  |  2 +-
+ include/media/hevc-ctrls.h                    |  6 +--
+ 7 files changed, 84 insertions(+), 61 deletions(-)
+
+-- 
+2.30.2
+
