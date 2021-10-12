@@ -2,150 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9AA429EDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D45429ED9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234243AbhJLHqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:46:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24172 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234082AbhJLHqk (ORCPT
+        id S234314AbhJLHqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234243AbhJLHqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:46:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634024678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5qXnnlO7kmq8KXinp8tIkwKgaF8XM9siD+0byK0/zq8=;
-        b=PURW0SUzTEZnsShmhYPR70zfxi31XpUysg6nrNzdnSFY8OZn4+onzw5ZMWAFN167nFb0Og
-        0fNLH/f+NJeEFucNcURfmfOTFTspAlmAL9ScrAYQ2SjCrV/fiuAE9f3fN5Q+mcTo3x7hhq
-        lRvYc9YBiJVbuQC47YTz7eOxsWj9+ik=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-568-cMSfTfroPXyUzmUYnQOPuQ-1; Tue, 12 Oct 2021 03:44:37 -0400
-X-MC-Unique: cMSfTfroPXyUzmUYnQOPuQ-1
-Received: by mail-wr1-f69.google.com with SMTP id a15-20020a056000188f00b00161068d8461so4726403wri.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:44:37 -0700 (PDT)
+        Tue, 12 Oct 2021 03:46:14 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F002BC061570;
+        Tue, 12 Oct 2021 00:44:12 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id r10so64069573wra.12;
+        Tue, 12 Oct 2021 00:44:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=nnMv/OAEx4USMgPTiIlCOrFEFrrEGCFJBKXwO1PlDGo=;
+        b=jconEz31ovJDDV+16dfBUvJWWa+PMysOWKL9g5yMAlYLwLhF3qsoBTJg0COzaOUyOw
+         wOMVRSHBPYywrKlXYx1IekSnbORx880tbuzIbosiApS0UIW+fIlDuS0CWTCfF5kmScnj
+         2FR9Qh0L0LcgLGvYJSYIOj4mLqxynu+67KWoyRkMCWDUyzwukQIiwT4g27oFmDluS44t
+         MSM4hjVaUxuieaooaJq8tRTBFOXzy9GIdmYjvwZXMuScYemH0eYmKrsbjKzb6dbt6Hr5
+         Ai0h+IwvlrKeU0YoEw4Kv6BdfPRk8FhMPU5Qk8jShxfSIo+eqOSgNNA4nCU1Kz2Aa6zL
+         fgBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=5qXnnlO7kmq8KXinp8tIkwKgaF8XM9siD+0byK0/zq8=;
-        b=DIJPtSm5NGEubkbURqCezczX98mQtOu0XFvXcy5uLzpqND3QK/4K0w1QQsxULc6900
-         iwp0j03gl4JpYxkD8e/L+9UjdEcjRcNesPyNGQM2IgzjXJ/GmtvTPqGkognW0Rl0Tq2a
-         wWJl+wrn5FNyStp2/6oS8SPFVjMOm3G/mnW4hR4UZNKAcL78feSwCf9J4XHMeOkFeT9J
-         fqouDHPD0UkxF6Gw4josoa99d7ZM3qQRcvAXuua5tYvU+Z8AsWShKcORKSuusAz+Yqzp
-         yLuM4j81BZEB59QwCLM4wHpmxTWVNgU5CpE/CLL2hDqxpainiIi/ZlVK8L1VfIjM0jNV
-         zN4Q==
-X-Gm-Message-State: AOAM533BvW5qM57gNdKadRsNyb2wSuFF+qcq9127xATfpNSx0h+ep/VU
-        ZMcqaMvOW1ZsySlrAoW70ZUjJ6J6QVcxkcXrOBro0b+TREkJxZPLl9UCCGHOM1bNi/tjAqxA+EH
-        ojaK0L3fMSGdTJAvW3RuXwidA
-X-Received: by 2002:adf:ee8a:: with SMTP id b10mr21815776wro.335.1634024676371;
-        Tue, 12 Oct 2021 00:44:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxHGKdxQCouYshY4aHJhSF1VyN+YjnwylycEyRo5FvejOGeaHtR7VXF5SvMyOExKtPUdEbvdA==
-X-Received: by 2002:adf:ee8a:: with SMTP id b10mr21815766wro.335.1634024676163;
-        Tue, 12 Oct 2021 00:44:36 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6a12.dip0.t-ipconnect.de. [91.12.106.18])
-        by smtp.gmail.com with ESMTPSA id s13sm1740601wmc.47.2021.10.12.00.43.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 00:44:35 -0700 (PDT)
-To:     Suren Baghdasaryan <surenb@google.com>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     Kees Cook <keescook@chromium.org>, Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-References: <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
- <20211007101527.GA26288@duo.ucw.cz>
- <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
- <YV8jB+kwU95hLqTq@dhcp22.suse.cz>
- <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
- <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz>
- <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
- <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
- <202110081344.FE6A7A82@keescook> <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
- <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-Message-ID: <26f9db1e-69e9-1a54-6d49-45c0c180067c@redhat.com>
-Date:   Tue, 12 Oct 2021 09:43:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=nnMv/OAEx4USMgPTiIlCOrFEFrrEGCFJBKXwO1PlDGo=;
+        b=xncxHtcVVH812zsJjkKr3nhwPQ2mX/Nxv8O4X2USwc5EujEDgbv8kiAwwacjWJPtqF
+         kP+++OJ8eAEEBozuzIkUADbRajsjCuYxdlhP+69DvhI+mkzhGBa3Na/YCgYtZYnBtA7j
+         rX28S1xCjHpGZKD/0fJHC3/xzes0CjO2QuyDPiYGk+MEzB40cTZyeRt+rXexV9w+K3GI
+         gRaovR3OpKHyPKNbPSgG742fbmtp8uLoUzXsK47AWOJO7wCcHC1VDI4mIUsImAN0Xwtq
+         +ZzW+QMOUDjCi93r6eOK02r+Fm3dnhX3aibGr5QbX3XN1Kf1oTRe1QsLfRxQPQrrwucz
+         O7zA==
+X-Gm-Message-State: AOAM530m7PSEF7zzmRqsozVw2UJQTFqgOioROMaha3B65NNt/UfV4TMl
+        ApkpnfEC7Z3IKKaHcfxfHqc=
+X-Google-Smtp-Source: ABdhPJzPkCvj/Jeh/e/BgewPc1DUNd/Y87S22F4EAhuWhj4+KVDdezBlMweFHz8ufdNyKSmZiJN83Q==
+X-Received: by 2002:a7b:c40b:: with SMTP id k11mr3801112wmi.181.1634024651624;
+        Tue, 12 Oct 2021 00:44:11 -0700 (PDT)
+Received: from [192.168.1.21] ([195.245.16.219])
+        by smtp.gmail.com with ESMTPSA id 73sm1754584wmb.40.2021.10.12.00.44.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 00:44:11 -0700 (PDT)
+Message-ID: <02275d22cf23901f0a1af83aafa4225eff5d0ba1.camel@gmail.com>
+Subject: Re: [PATCH 3/7] Input: ep93xx_keypad: Prepare clock before using it
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 12 Oct 2021 09:44:10 +0200
+In-Reply-To: <YWToKXF66a49mEf/@google.com>
+References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
+         <20210613233041.128961-4-alexander.sverdlin@gmail.com>
+         <YMfQR8iM9be5Qg8+@google.com>
+         <9bf87ee0e1c2a97b0a1b98734e34e456f84ea3d7.camel@gmail.com>
+         <YM60mjew2mqMAMRO@google.com>
+         <2cd73e19fde5a9dee6a962f9994b4dd5ea4d21be.camel@gmail.com>
+         <YWToKXF66a49mEf/@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-In-Reply-To: <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I'm still evaluating the proposal to use memfds but I'm not sure if
-> the issue that David Hildenbrand mentioned about additional memory
-> consumed in pagecache (which has to be addressed) is the only one we
-> will encounter with this approach. If anyone knows of any potential
-> issues with using memfds as named anonymous memory, I would really
-> appreciate your feedback before I go too far in that direction.
+Hello Dmitry,
 
-[MAP_PRIVATE memfd only behave that way with 4k, not with huge pages, so 
-I think it just has to be fixed. It doesn't make any sense to allocate a 
-page for the pagecache ("populate the file") when accessing via a 
-private mapping that's supposed to leave the file untouched]
+On Mon, 2021-10-11 at 18:43 -0700, Dmitry Torokhov wrote:
+> It looks like I forgot to mention it, but I applied this patch and it
+> should be in mainline now. I also CCed you on a few patches to
+> ep93xx_keyboard driver and woudl appreciate if you looked them over as I
+> do not have the hardware.
 
-My gut feeling is if you really need a string as identifier, then try 
-going with memfds. Yes, we might hit some road blocks to be sorted out, 
-but it just logically makes sense to me: Files have names. These names 
-exist before mapping and after mapping. They "name" the content.
-
-Maybe it's just me, but the whole interface, setting the name via a 
-prctl after the mapping was already instantiated doesn't really spark 
-joy at my end. That's not a strong pushback, but if we can avoid it 
-using something that's already there, that would be very much preferred.
+thank you for the note!
+I've acked 3 of the 4 patches you've sent, but will have comments on the
+4th one...
 
 -- 
-Thanks,
+Alexander Sverdlin.
 
-David / dhildenb
 
