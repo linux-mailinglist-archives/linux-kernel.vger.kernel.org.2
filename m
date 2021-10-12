@@ -2,107 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB4C429BEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC7A429BF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232338AbhJLD0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 23:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbhJLD0J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 23:26:09 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D79C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 20:24:08 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id q13so16075916uaq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 20:24:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=05JfAVZ+h7mE5tV9xgtjhMjstYtcv3IxzoXo5DOS8Bc=;
-        b=XGM4AalAX1+8HICtDV3dnndPWh3DVI6pEv6JOSiquVEJ1SblB3Wh3SA3h/YwHdvHIw
-         TFeHRn7DVGGovIQm7GiSEo3TTWu35UdhamQiNmKjFLeewc2jMEfCNBXcewwbWg3pV/RE
-         aZr/IatgS7PASkKmeIKcom7ExlE6sslE3J1fMgCoBWeYfE1k1KOtcLvXJlYdCyYbOgai
-         Y3zwAT51islrFirLE3tZfvAVm3kIk07XXO+eyI9isVaswWeHdttF+IyKI5PCSz6pQJgB
-         u6MIriWEatRnfAGsuACo/ebRYPdGwQ1MhyjI2KZoOS97VFWWq+Hds8CNDsG6ZQ2R+iKX
-         1Ziw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=05JfAVZ+h7mE5tV9xgtjhMjstYtcv3IxzoXo5DOS8Bc=;
-        b=kdqcei6bPLfjKAoux3XZrTtvtk0ubcg9bmj06yQDkjw0SzFZx2lSvblBnP7DQnvUgm
-         dWMMIcewypKOjqZhwsdXb6/IJPXofT7Neug53+JDk08g2053PpScTFSvFrouUEKPPXli
-         Qyu2WKflgJ9op3ZCwKGo0Q9ReR3bRVo0ureiI214E8FZAOt4rKLEuDso1Wp4bdRI85sP
-         3smiiKMggljx5c2pkThaTxjJ9YIPQwS0tf2FCX+z9QfKMB6gAIRnj/SYXdZ2NsRr9PIV
-         1MHcZJ24gqyu+WcOz6tQY0DBLtoriW6Td7s41UMw7tTp709OP+ABhWvWxmpkUDwvHypp
-         advw==
-X-Gm-Message-State: AOAM532KRF5BjIPE6GYtORtcMyDeBsjzNRAG7/vTTa6Eu/1GvNXAF+5M
-        EWYg+hZJ9i4EVakLJ3EbT0iu4uBaqDL58w==
-X-Google-Smtp-Source: ABdhPJz6WgBYu+RuHEVXvxf+e7LXJGJEwNqVoWCRKe+0ncKGBgDXKyCoe2oWAuKnrdznsGHQS8IaDw==
-X-Received: by 2002:a67:d48a:: with SMTP id g10mr27580438vsj.3.1634009047974;
-        Mon, 11 Oct 2021 20:24:07 -0700 (PDT)
-Received: from fedora ([2803:9800:98c2:8470:9f4:8e2a:88e5:ec01])
-        by smtp.gmail.com with ESMTPSA id p8sm4317509vke.11.2021.10.11.20.24.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 20:24:06 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 00:24:02 -0300
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To:     Mikhail Rudenko <mike.rudenko@gmail.com>
-Cc:     linux-media@vger.kernel.org,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: rockchip: rkisp1: use device name for debugfs
- subdir name
-Message-ID: <YWT/0gx1ByXQ7JyY@fedora>
-References: <20211010175457.438627-1-mike.rudenko@gmail.com>
+        id S232070AbhJLD04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 23:26:56 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:40066 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231755AbhJLD0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 23:26:54 -0400
+Received: from BC-Mail-Ex11.internal.baidu.com (unknown [172.31.51.51])
+        by Forcepoint Email with ESMTPS id 10170D13D26DC406E149;
+        Tue, 12 Oct 2021 11:24:52 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex11.internal.baidu.com (172.31.51.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Tue, 12 Oct 2021 11:24:51 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 12 Oct 2021 11:24:48 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-integrity@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] tpm: ibmvtpm: Make use of dma_alloc_noncoherent()
+Date:   Tue, 12 Oct 2021 11:24:41 +0800
+Message-ID: <20211012032442.2423-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211010175457.438627-1-mike.rudenko@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-EX08.internal.baidu.com (172.31.51.48) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 08:54:57PM +0300, Mikhail Rudenko wrote:
-> While testing Rockchip RK3399 with both ISPs enabled, a dmesg error
-> was observed:
-> ```
-> [   15.559141] debugfs: Directory 'rkisp1' with parent '/' already present!
-> ```
-> 
-> Fix it by using the device name for the debugfs subdirectory name
-> instead of the driver name, thus preventing name collision.
-> 
-> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+Replacing kmalloc/kfree/get_zeroed_page/free_page/dma_map_single/
+dma_unmap_single() with dma_alloc_noncoherent/dma_free_noncoherent()
+helps to reduce code size, and simplify the code, and the hardware
+can keep DMA coherent itself.
 
-Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+v1->v2:
+	*Change to dma_alloc/free_noncoherent from dma_alloc/free_coherent.
+	*Update changelog.
 
-Thanks!
+ drivers/char/tpm/tpm_ibmvtpm.c | 63 +++++++++++-----------------------
+ 1 file changed, 20 insertions(+), 43 deletions(-)
 
-> ---
->  drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-> index 7474150b94ed..560f928c3752 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-> @@ -426,7 +426,7 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
->  {
->  	struct rkisp1_debug *debug = &rkisp1->debug;
->  
-> -	debug->debugfs_dir = debugfs_create_dir(RKISP1_DRIVER_NAME, NULL);
-> +	debug->debugfs_dir = debugfs_create_dir(dev_name(rkisp1->dev), NULL);
->  	debugfs_create_ulong("data_loss", 0444, debug->debugfs_dir,
->  			     &debug->data_loss);
->  	debugfs_create_ulong("outform_size_err", 0444,  debug->debugfs_dir,
-> -- 
-> 2.33.0
-> 
+diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
+index 3af4c07a9342..b4552f8400b8 100644
+--- a/drivers/char/tpm/tpm_ibmvtpm.c
++++ b/drivers/char/tpm/tpm_ibmvtpm.c
+@@ -356,15 +356,13 @@ static void tpm_ibmvtpm_remove(struct vio_dev *vdev)
+ 		rc = plpar_hcall_norets(H_FREE_CRQ, vdev->unit_address);
+ 	} while (rc == H_BUSY || H_IS_LONG_BUSY(rc));
+ 
+-	dma_unmap_single(ibmvtpm->dev, ibmvtpm->crq_dma_handle,
+-			 CRQ_RES_BUF_SIZE, DMA_BIDIRECTIONAL);
+-	free_page((unsigned long)ibmvtpm->crq_queue.crq_addr);
+-
+-	if (ibmvtpm->rtce_buf) {
+-		dma_unmap_single(ibmvtpm->dev, ibmvtpm->rtce_dma_handle,
+-				 ibmvtpm->rtce_size, DMA_BIDIRECTIONAL);
+-		kfree(ibmvtpm->rtce_buf);
+-	}
++	dma_free_noncoherent(ibmvtpm->dev, CRQ_RES_BUF_SIZE, crq_q->crq_addr,
++			     crq_q->crq_dma_handle, DMA_BIDIRECTIONAL);
++
++	if (ibmvtpm->rtce_buf)
++		dma_free_noncoherent(ibmvtpm->dev,
++				     ibmvtpm->rtce_size, ibmvtpm->rtce_buf,
++				     ibmvtpm->rtce_dma_handle, DMA_BIDIRECTIONAL);
+ 
+ 	kfree(ibmvtpm);
+ 	/* For tpm_ibmvtpm_get_desired_dma */
+@@ -522,23 +520,12 @@ static void ibmvtpm_crq_process(struct ibmvtpm_crq *crq,
+ 				return;
+ 			}
+ 			ibmvtpm->rtce_size = be16_to_cpu(crq->len);
+-			ibmvtpm->rtce_buf = kmalloc(ibmvtpm->rtce_size,
+-						    GFP_ATOMIC);
+-			if (!ibmvtpm->rtce_buf) {
+-				dev_err(ibmvtpm->dev, "Failed to allocate memory for rtce buffer\n");
+-				return;
+-			}
+-
+-			ibmvtpm->rtce_dma_handle = dma_map_single(ibmvtpm->dev,
+-				ibmvtpm->rtce_buf, ibmvtpm->rtce_size,
+-				DMA_BIDIRECTIONAL);
+-
+-			if (dma_mapping_error(ibmvtpm->dev,
+-					      ibmvtpm->rtce_dma_handle)) {
+-				kfree(ibmvtpm->rtce_buf);
+-				ibmvtpm->rtce_buf = NULL;
+-				dev_err(ibmvtpm->dev, "Failed to dma map rtce buffer\n");
+-			}
++			ibmvtpm->rtce_buf = dma_alloc_noncoherent(ibmvtpm->dev,
++								  ibmvtpm->rtce_size,
++								  &ibmvtpm->rtce_dma_handle,
++								  DMA_BIDIRECTIONAL, GFP_ATOMIC);
++			if (!ibmvtpm->rtce_buf)
++				dev_err(ibmvtpm->dev, "Failed to dma allocate rtce buffer\n");
+ 
+ 			return;
+ 		case VTPM_GET_VERSION_RES:
+@@ -618,22 +605,14 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
+ 	ibmvtpm->vdev = vio_dev;
+ 
+ 	crq_q = &ibmvtpm->crq_queue;
+-	crq_q->crq_addr = (struct ibmvtpm_crq *)get_zeroed_page(GFP_KERNEL);
+-	if (!crq_q->crq_addr) {
+-		dev_err(dev, "Unable to allocate memory for crq_addr\n");
+-		goto cleanup;
+-	}
+ 
+ 	crq_q->num_entry = CRQ_RES_BUF_SIZE / sizeof(*crq_q->crq_addr);
+ 	init_waitqueue_head(&crq_q->wq);
+-	ibmvtpm->crq_dma_handle = dma_map_single(dev, crq_q->crq_addr,
+-						 CRQ_RES_BUF_SIZE,
+-						 DMA_BIDIRECTIONAL);
+-
+-	if (dma_mapping_error(dev, ibmvtpm->crq_dma_handle)) {
+-		dev_err(dev, "dma mapping failed\n");
++	crq_q->crq_addr = dma_alloc_noncoherent(dev, CRQ_RES_BUF_SIZE,
++						&ibmvtpm->crq_dma_handle,
++						DMA_BIDIRECTIONAL, GFP_KERNEL);
++	if (!crq_q->crq_addr)
+ 		goto cleanup;
+-	}
+ 
+ 	rc = plpar_hcall_norets(H_REG_CRQ, vio_dev->unit_address,
+ 				ibmvtpm->crq_dma_handle, CRQ_RES_BUF_SIZE);
+@@ -642,7 +621,7 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
+ 
+ 	if (rc) {
+ 		dev_err(dev, "Unable to register CRQ rc=%d\n", rc);
+-		goto reg_crq_cleanup;
++		goto cleanup;
+ 	}
+ 
+ 	rc = request_irq(vio_dev->irq, ibmvtpm_interrupt, 0,
+@@ -704,13 +683,11 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
+ 	do {
+ 		rc1 = plpar_hcall_norets(H_FREE_CRQ, vio_dev->unit_address);
+ 	} while (rc1 == H_BUSY || H_IS_LONG_BUSY(rc1));
+-reg_crq_cleanup:
+-	dma_unmap_single(dev, ibmvtpm->crq_dma_handle, CRQ_RES_BUF_SIZE,
+-			 DMA_BIDIRECTIONAL);
+ cleanup:
+ 	if (ibmvtpm) {
+ 		if (crq_q->crq_addr)
+-			free_page((unsigned long)crq_q->crq_addr);
++			dma_free_noncoherent(dev, CRQ_RES_BUF_SIZE, crq_q->crq_addr,
++					     crq_q->crq_dma_handle, DMA_BIDIRECTIONAL);
+ 		kfree(ibmvtpm);
+ 	}
+ 
+-- 
+2.25.1
+
