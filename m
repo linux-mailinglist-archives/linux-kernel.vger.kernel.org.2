@@ -2,80 +2,416 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B78429F04
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40AD429F07
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234534AbhJLHyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234496AbhJLHyL (ORCPT
+        id S234496AbhJLHzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:55:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51406 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234410AbhJLHy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:54:11 -0400
-Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE42C061745;
-        Tue, 12 Oct 2021 00:52:09 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id aCZvm6HUsk3b0aCZymPQIT; Tue, 12 Oct 2021 09:52:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1634025127; bh=fB0mX+jO/wJroKIPf/dNUY8QG1hbkg4tnVhjqpLVEDw=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=GaNB9PMph/qLqpy+3Bim56IfagCbJNnAVJRQp847QjwDfViHD+NyE/lfvwZgsXi4S
-         MlW7wn66qHGLe3TawAafM83Uu8oLU0st4OCdyxCVjRtlMGIcvRuedLLnZ4eb8kBw7t
-         G4L4AfTy6s61QqwzRRSwSmm4sEVb58C197sw8SR/Smktw2mDaWnB6yzsQbZ2hnu8Dj
-         XR3KuBLDqpgHWfuMT7Q5Y36lL7xIKeCmH7lYYeFTCztpoZQrg7mPLMW+I8Dk+2iVU+
-         3OGzMgK/C3LwUOb9F4CYnOZgK4PVPmJ1hXS020RB8gZ2j5Ub9WHWOYFqZUD/ebTrQ1
-         VbehxGd9m2jwA==
-Subject: Re: [PATCH] media: videobuf2: always set buffer vb2 pointer
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210928034634.333785-1-senozhatsky@chromium.org>
- <CAAFQd5DLiW23a0U_JjnpvoYmpcbiKbStq7=w=7KvbDP7zLvBaA@mail.gmail.com>
- <YWTrb0ZXv1HRmtfZ@google.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <bbc4477c-b075-aecb-64a3-23c6e0f4cdf3@xs4all.nl>
-Date:   Tue, 12 Oct 2021 09:52:03 +0200
+        Tue, 12 Oct 2021 03:54:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634025176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S+IUVi6nIC/kZ5DxikMNjeSf/MQOPx21yLgzKWWLWmA=;
+        b=QSNgSKDJSl/D6rLlfO4lkD8RfkI4ZLI9KB1ZTJWCzGRpAcZ4w/3Ai/DJgQizhnIFYuIADi
+        wsy/xpQD4V9Km6eF/ONE/BICNKrOP67w+ca5/1N2P51+r7aIlu8LV72kMFPiG6b7/SDqBn
+        dtA8UQ9WfnzffLHLKm0oBrVUOzHv5/o=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-JmWwVOElMlqj9UCBAAv1KQ-1; Tue, 12 Oct 2021 03:52:55 -0400
+X-MC-Unique: JmWwVOElMlqj9UCBAAv1KQ-1
+Received: by mail-ed1-f70.google.com with SMTP id l22-20020aa7c316000000b003dbbced0731so762963edq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:52:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S+IUVi6nIC/kZ5DxikMNjeSf/MQOPx21yLgzKWWLWmA=;
+        b=TLrklejxXDrIIODeKK/oO8/54yt9Ny2Y5Be8ByuitvVoKoIYBeqvxY8Elq80xxaZkF
+         4hmNxFX32dnZiz4z3MZ8+JpEC6ZWluN0XQzjkgOJ9SOE9vLzG46CYFY9Izd/z8ZHjkh1
+         UJ+F9q+zk9mgK6hYBQoVXzLOKwB0Fd3VsuGw6N5Ip8O9zdZdnLSmBhvdr7kYEoFjC0mU
+         ylxjBBWvZkGuugrXeO5rT/38ZZ1pzTvEcFszMIh1gIc3BIQmPksQg4WKbP+pbUQUprzp
+         B7QDrQJXSQiubpMOPh5IT92EJHxESVoJAo/3jGAlUou2Lgv4sinwzD2Ka69xDDTCHFE0
+         lbuw==
+X-Gm-Message-State: AOAM531QmJCTjhsEuG1sJmWOBvx09n53LrvFElyaAzMfvUbTUUz4SjsR
+        ni+sq0UnNiDwClUz0u+IeFreZKYcdg2ikpNi4m8Ocm8NvMi89WFf7fkG8uT+xdIX6av9ak56poM
+        O9URngRuT5gtliPy9iDAJ7ClDSVefmVAheNZa4xBvGkIif+zrtgSbf/XGuZUHV/Ht8Lb7sK7XdD
+        kV
+X-Received: by 2002:a17:906:d0c3:: with SMTP id bq3mr31637889ejb.277.1634025173885;
+        Tue, 12 Oct 2021 00:52:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwIyhvXf8ZzSXY8mply0lYHiiRDHV9oKgWeKHzmPm8KfxO1SEnY545kn/0jrGa38G7lkyGi2A==
+X-Received: by 2002:a17:906:d0c3:: with SMTP id bq3mr31637867ejb.277.1634025173621;
+        Tue, 12 Oct 2021 00:52:53 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id e11sm5501540edl.70.2021.10.12.00.52.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 00:52:53 -0700 (PDT)
+Subject: Re: [PATCH] power: supply: axp288-charger: Optimize register reading
+ method
+To:     Kate Hsuan <hpa@redhat.com>, Sebastian Reichel <sre@kernel.org>,
+        hen-Yu Tsai <wens@csie.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211012054545.27314-1-hpa@redhat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <18a8262e-ee7c-767d-68c1-e18b9043a781@redhat.com>
+Date:   Tue, 12 Oct 2021 09:52:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YWTrb0ZXv1HRmtfZ@google.com>
+In-Reply-To: <20211012054545.27314-1-hpa@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfLt3k3yW+iO597e6rXS1gsZJ1kGYec8vijN5F2PMSuSHTle4RLZBfNAcakp/5pqW46Fk/S0FWKHgl4Grm13EUsqijv/uNAXoyNyOdQflGU8Hb9OrIKqT
- KlWYWHA3CKb6H8/esH2E0skE39MobpYgzcCFAmpd7abXaS0qbb8IuX2pq6EIhk0ZLR4XeXSWWuGrOApFhjAKBOU6sQsRia9bOERiBNylxCOvIcZd1/4o8A82
- JeLD5uf8nGlLO2Isjmi2AoqakW0k8p5HQ6wOR2Mk9EN+vGhdiLqLHo/i9Z/27VidULMrLCCHCXTtRcbtGlfSJfxbvLOAvoA008rcHUKe+Et1xFIkTylFiGa4
- r2mmH7dSBtEZ0OhoMVDXd4gJ6Np4lWMj7hrzevl3vF3WeFGcDJ73SLMWNmV21dNKqZt1O89E
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2021 03:57, Sergey Senozhatsky wrote:
-> On (21/10/05 18:57), Tomasz Figa wrote:
->>
->> On Tue, Sep 28, 2021 at 12:46 PM Sergey Senozhatsky
->> <senozhatsky@chromium.org> wrote:
->>>
->>> We need to always link allocated vb2_dc_buf back to vb2_buffer because
->>> we dereference vb2 in prepare() and finish() callbacks.
->>>
->>> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
->>> ---
->>>  drivers/media/common/videobuf2/videobuf2-dma-contig.c | 3 +++
->>>  1 file changed, 3 insertions(+)
->>>
->>
->> Acked-by: Tomasz Figa <tfiga@chromium.org>
+Hi,
+
+On 10/12/21 7:45 AM, Kate Hsuan wrote:
+> The original implementation access the charger the same register value
+> several times to get the charger status, such as online, enabled, and
+> bus limits. It takes a long time and bandwidth for every "status get"
+> operation. 
 > 
-> Hans, can you please pick up this patch?
+> To reduce the access of the register and save bandwidth, this commit
+> integrated every read operation into only one "register value get" 
+> operation and cache them in the variables. Once the "get properties"
+> is requested from the user space, the cached information can be returned
+> immediately.
+> 
+> I2C access between Linux kernel and P-Unit is improved by explicitly taking
+> semaphore once for the entire set of register accesses in the new
+> axp288_charger_usb_update_property() function. The I2C-Bus to the XPower
+> AXP288 is shared between the Linux kernel and SoCs P-Unit. The P-Unit
+> has a semaphore which the kernel must "lock" before it may use the bus.
+> If not explicitly taken by the I2C-Driver, then this semaphore is
+> automatically taken by the I2C-bus-driver for each I2C-transfer. In
+> other words, the semaphore will be locked and released several times for
+> entire set of register accesses.
+> 
+> Signed-off-by: Kate Hsuan <hpa@redhat.com>
+
+Thanks, patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+I've also given this a test run on a device with an AXP288 PMIC:
+
+Tested-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+> ---
+>  drivers/power/supply/axp288_charger.c | 150 +++++++++++++++++---------
+>  1 file changed, 99 insertions(+), 51 deletions(-)
+> 
+> diff --git a/drivers/power/supply/axp288_charger.c b/drivers/power/supply/axp288_charger.c
+> index b9553be9bed5..fd4983c98fd9 100644
+> --- a/drivers/power/supply/axp288_charger.c
+> +++ b/drivers/power/supply/axp288_charger.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/mfd/axp20x.h>
+>  #include <linux/extcon.h>
+>  #include <linux/dmi.h>
+> +#include <asm/iosf_mbi.h>
+>  
+>  #define PS_STAT_VBUS_TRIGGER		BIT(0)
+>  #define PS_STAT_BAT_CHRG_DIR		BIT(2)
+> @@ -95,6 +96,8 @@
+>  #define CV_4200MV			4200	/* 4200mV */
+>  #define CV_4350MV			4350	/* 4350mV */
+>  
+> +#define AXP288_REG_UPDATE_INTERVAL	(60 * HZ)
+> +
+>  #define AXP288_EXTCON_DEV_NAME		"axp288_extcon"
+>  #define USB_HOST_EXTCON_HID		"INT3496"
+>  #define USB_HOST_EXTCON_NAME		"INT3496:00"
+> @@ -118,6 +121,7 @@ struct axp288_chrg_info {
+>  	struct regmap_irq_chip_data *regmap_irqc;
+>  	int irq[CHRG_INTR_END];
+>  	struct power_supply *psy_usb;
+> +	struct mutex lock;
+>  
+>  	/* OTG/Host mode */
+>  	struct {
+> @@ -138,6 +142,12 @@ struct axp288_chrg_info {
+>  	int cv;
+>  	int max_cc;
+>  	int max_cv;
+> +
+> +	unsigned long last_updated;
+> +	unsigned int input_status;
+> +	unsigned int op_mode;
+> +	unsigned int backend_control;
+> +	bool valid;
+>  };
+>  
+>  static inline int axp288_charger_set_cc(struct axp288_chrg_info *info, int cc)
+> @@ -197,11 +207,8 @@ static inline int axp288_charger_set_cv(struct axp288_chrg_info *info, int cv)
+>  static int axp288_charger_get_vbus_inlmt(struct axp288_chrg_info *info)
+>  {
+>  	unsigned int val;
+> -	int ret;
+>  
+> -	ret = regmap_read(info->regmap, AXP20X_CHRG_BAK_CTRL, &val);
+> -	if (ret < 0)
+> -		return ret;
+> +	val = info->backend_control;
+>  
+>  	val >>= CHRG_VBUS_ILIM_BIT_POS;
+>  	switch (val) {
+> @@ -297,55 +304,34 @@ static int axp288_charger_enable_charger(struct axp288_chrg_info *info,
+>  
+>  static int axp288_charger_is_present(struct axp288_chrg_info *info)
+>  {
+> -	int ret, present = 0;
+> -	unsigned int val;
+> -
+> -	ret = regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
+> -	if (ret < 0)
+> -		return ret;
+> +	int present = 0;
+>  
+> -	if (val & PS_STAT_VBUS_PRESENT)
+> +	if (info->input_status & PS_STAT_VBUS_PRESENT)
+>  		present = 1;
+>  	return present;
+>  }
+>  
+>  static int axp288_charger_is_online(struct axp288_chrg_info *info)
+>  {
+> -	int ret, online = 0;
+> -	unsigned int val;
+> -
+> -	ret = regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
+> -	if (ret < 0)
+> -		return ret;
+> +	int online = 0;
+>  
+> -	if (val & PS_STAT_VBUS_VALID)
+> +	if (info->input_status & PS_STAT_VBUS_VALID)
+>  		online = 1;
+>  	return online;
+>  }
+>  
+>  static int axp288_get_charger_health(struct axp288_chrg_info *info)
+>  {
+> -	int ret, pwr_stat, chrg_stat;
+>  	int health = POWER_SUPPLY_HEALTH_UNKNOWN;
+> -	unsigned int val;
+>  
+> -	ret = regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
+> -	if ((ret < 0) || !(val & PS_STAT_VBUS_PRESENT))
+> +	if (!(info->input_status & PS_STAT_VBUS_PRESENT))
+>  		goto health_read_fail;
+> -	else
+> -		pwr_stat = val;
+>  
+> -	ret = regmap_read(info->regmap, AXP20X_PWR_OP_MODE, &val);
+> -	if (ret < 0)
+> -		goto health_read_fail;
+> -	else
+> -		chrg_stat = val;
+> -
+> -	if (!(pwr_stat & PS_STAT_VBUS_VALID))
+> +	if (!(info->input_status & PS_STAT_VBUS_VALID))
+>  		health = POWER_SUPPLY_HEALTH_DEAD;
+> -	else if (chrg_stat & CHRG_STAT_PMIC_OTP)
+> +	else if (info->op_mode & CHRG_STAT_PMIC_OTP)
+>  		health = POWER_SUPPLY_HEALTH_OVERHEAT;
+> -	else if (chrg_stat & CHRG_STAT_BAT_SAFE_MODE)
+> +	else if (info->op_mode & CHRG_STAT_BAT_SAFE_MODE)
+>  		health = POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE;
+>  	else
+>  		health = POWER_SUPPLY_HEALTH_GOOD;
+> @@ -362,30 +348,86 @@ static int axp288_charger_usb_set_property(struct power_supply *psy,
+>  	int ret = 0;
+>  	int scaled_val;
+>  
+> +	mutex_lock(&info->lock);
+>  	switch (psp) {
+>  	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
+>  		scaled_val = min(val->intval, info->max_cc);
+>  		scaled_val = DIV_ROUND_CLOSEST(scaled_val, 1000);
+>  		ret = axp288_charger_set_cc(info, scaled_val);
+> -		if (ret < 0)
+> +		if (ret < 0) {
+>  			dev_warn(&info->pdev->dev, "set charge current failed\n");
+> +			goto out;
+> +		}
+>  		break;
+>  	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
+>  		scaled_val = min(val->intval, info->max_cv);
+>  		scaled_val = DIV_ROUND_CLOSEST(scaled_val, 1000);
+>  		ret = axp288_charger_set_cv(info, scaled_val);
+> -		if (ret < 0)
+> +		if (ret < 0) {
+>  			dev_warn(&info->pdev->dev, "set charge voltage failed\n");
+> +			goto out;
+> +		}
+>  		break;
+>  	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
+>  		ret = axp288_charger_set_vbus_inlmt(info, val->intval);
+> -		if (ret < 0)
+> +		if (ret < 0) {
+>  			dev_warn(&info->pdev->dev, "set input current limit failed\n");
+> +			goto out;
+> +		}
+> +		info->valid = false;
+>  		break;
+>  	default:
+>  		ret = -EINVAL;
+>  	}
+>  
+> +out:
+> +	mutex_unlock(&info->lock);
+> +	return ret;
+> +}
+> +
+> +static int axp288_charger_reg_readb(struct axp288_chrg_info *info, int reg, unsigned int *ret_val)
+> +{
+> +	int ret;
+> +
+> +	ret = regmap_read(info->regmap, reg, ret_val);
+> +	if (ret < 0) {
+> +		dev_err(&info->pdev->dev, "Error %d on reading value from register 0x%04x\n",
+> +			ret,
+> +			reg);
+> +		return ret;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int axp288_charger_usb_update_property(struct axp288_chrg_info *info)
+> +{
+> +	int ret = 0;
+> +
+> +	if (info->valid && time_before(jiffies, info->last_updated + AXP288_REG_UPDATE_INTERVAL))
+> +		return 0;
+> +
+> +	dev_dbg(&info->pdev->dev, "Charger updating register values...\n");
+> +
+> +	ret = iosf_mbi_block_punit_i2c_access();
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = axp288_charger_reg_readb(info, AXP20X_PWR_INPUT_STATUS, &info->input_status);
+> +	if (ret < 0)
+> +		goto out;
+> +
+> +	ret = axp288_charger_reg_readb(info, AXP20X_PWR_OP_MODE, &info->op_mode);
+> +	if (ret < 0)
+> +		goto out;
+> +
+> +	ret = axp288_charger_reg_readb(info, AXP20X_CHRG_BAK_CTRL, &info->backend_control);
+> +	if (ret < 0)
+> +		goto out;
+> +
+> +	info->last_updated = jiffies;
+> +	info->valid = true;
+> +out:
+> +	iosf_mbi_unblock_punit_i2c_access();
+>  	return ret;
+>  }
+>  
+> @@ -396,6 +438,11 @@ static int axp288_charger_usb_get_property(struct power_supply *psy,
+>  	struct axp288_chrg_info *info = power_supply_get_drvdata(psy);
+>  	int ret;
+>  
+> +	mutex_lock(&info->lock);
+> +	ret = axp288_charger_usb_update_property(info);
+> +	if (ret < 0)
+> +		goto out;
+> +
+>  	switch (psp) {
+>  	case POWER_SUPPLY_PROP_PRESENT:
+>  		/* Check for OTG case first */
+> @@ -403,10 +450,7 @@ static int axp288_charger_usb_get_property(struct power_supply *psy,
+>  			val->intval = 0;
+>  			break;
+>  		}
+> -		ret = axp288_charger_is_present(info);
+> -		if (ret < 0)
+> -			return ret;
+> -		val->intval = ret;
+> +		val->intval = axp288_charger_is_present(info);
+>  		break;
+>  	case POWER_SUPPLY_PROP_ONLINE:
+>  		/* Check for OTG case first */
+> @@ -414,10 +458,7 @@ static int axp288_charger_usb_get_property(struct power_supply *psy,
+>  			val->intval = 0;
+>  			break;
+>  		}
+> -		ret = axp288_charger_is_online(info);
+> -		if (ret < 0)
+> -			return ret;
+> -		val->intval = ret;
+> +		val->intval = axp288_charger_is_online(info);
+>  		break;
+>  	case POWER_SUPPLY_PROP_HEALTH:
+>  		val->intval = axp288_get_charger_health(info);
+> @@ -435,16 +476,15 @@ static int axp288_charger_usb_get_property(struct power_supply *psy,
+>  		val->intval = info->max_cv * 1000;
+>  		break;
+>  	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
+> -		ret = axp288_charger_get_vbus_inlmt(info);
+> -		if (ret < 0)
+> -			return ret;
+> -		val->intval = ret;
+> +		val->intval = axp288_charger_get_vbus_inlmt(info);
+>  		break;
+>  	default:
+> -		return -EINVAL;
+> +		ret = -EINVAL;
+>  	}
+>  
+> -	return 0;
+> +out:
+> +	mutex_unlock(&info->lock);
+> +	return ret;
+>  }
+>  
+>  static int axp288_charger_property_is_writeable(struct power_supply *psy,
+> @@ -540,7 +580,9 @@ static irqreturn_t axp288_charger_irq_thread_handler(int irq, void *dev)
+>  		dev_warn(&info->pdev->dev, "Spurious Interrupt!!!\n");
+>  		goto out;
+>  	}
+> -
+> +	mutex_lock(&info->lock);
+> +	info->valid = false;
+> +	mutex_unlock(&info->lock);
+>  	power_supply_changed(info->psy_usb);
+>  out:
+>  	return IRQ_HANDLED;
+> @@ -613,6 +655,9 @@ static void axp288_charger_extcon_evt_worker(struct work_struct *work)
+>  	if (!(val & PS_STAT_VBUS_VALID)) {
+>  		dev_dbg(&info->pdev->dev, "USB charger disconnected\n");
+>  		axp288_charger_enable_charger(info, false);
+> +		mutex_lock(&info->lock);
+> +		info->valid = false;
+> +		mutex_unlock(&info->lock);
+>  		power_supply_changed(info->psy_usb);
+>  		return;
+>  	}
+> @@ -644,6 +689,9 @@ static void axp288_charger_extcon_evt_worker(struct work_struct *work)
+>  		dev_err(&info->pdev->dev,
+>  			"error setting current limit (%d)\n", ret);
+>  
+> +	mutex_lock(&info->lock);
+> +	info->valid = false;
+> +	mutex_unlock(&info->lock);
+>  	power_supply_changed(info->psy_usb);
+>  }
+>  
 > 
 
-Yes, it's already part of my upcoming pull request.
-
-	Hans
