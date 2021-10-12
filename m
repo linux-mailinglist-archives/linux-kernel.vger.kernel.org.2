@@ -2,128 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E626429A3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 02:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D662429A08
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 02:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236393AbhJLAJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 20:09:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34042 "EHLO
+        id S234302AbhJLAFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 20:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234873AbhJLAI3 (ORCPT
+        with ESMTP id S230213AbhJLAFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 20:08:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2A0C061749;
-        Mon, 11 Oct 2021 17:06:29 -0700 (PDT)
-Message-ID: <20211011223612.145363780@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633997185;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=+DDPznsqgrt6mGetm00zwJ7IWc7hobGjiUCJd9lybJk=;
-        b=fS7P9nLP5NEzaJTFb/loVeS8dt+CcQRX4IyxpRXrPJhbIK7WJPbkYsPGrfB8faiGevEHg3
-        /3dt2XlavVuoO2ADZPvyyzepeBRS9tCwzbmD/KdZJSVuJFf/t9LAfBZkl4ATzk+puTKij4
-        zXjKBClMHCC346oXHU2agFmB+fti3HiSRwg488YwfjD3d7jP5+bLHh6R7jj5dpg0GsC+VS
-        Ma95grsxmSmlEI59eHdU1BvUI/JoqDFnq339ZtUEyJC2cN5vBV3NQrD2nJQeihxZQTuErK
-        CJnnpcy+qI4bderRSIIaKAssymZUFrwIz+zJ4bINOmENeo8GuK46wmSByMCWSw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633997185;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=+DDPznsqgrt6mGetm00zwJ7IWc7hobGjiUCJd9lybJk=;
-        b=TfTcEaElMUW4s8tDhEa+hGdo/bV/oRUEEmqy/t+jcwY8ZEuKAkbo1PvAmMLFd+2eZbWrlW
-        24tx2i2YnhmaOCBQ==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: [patch 31/31] x86/fpu: Provide a proper function for ex_handler_fprestore()
-References: <20211011215813.558681373@linutronix.de>
+        Mon, 11 Oct 2021 20:05:15 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190ACC061570;
+        Mon, 11 Oct 2021 17:03:15 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSwq40LFtz4xqP;
+        Tue, 12 Oct 2021 11:03:11 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633996992;
+        bh=gB89dn2qCWOpeT87X7TCgqp2JJ6phnH05D+Cb2xpK3A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bX+QI5lNCmRzbB4opLVZQB8ZPRzeFugVp/QvdyFki/wk05SS5ZFwucvdcvf8jpzVB
+         Uwo8LF+wVw3Xjg1a8SxEYBs5TNf2L/VK4cB92bq1E0X1dPqkPbUJY2tl+h4mTkBsPp
+         Bw/DDVm2asRNZqP8UeIpZVOF8BhLV2uMYPWOlYv4VYTTu9h8jyZOM9zsBTYibfMeYt
+         WmxIyfOmpRFbHv6zLTr/IU0wY559bDNnPwaPBOBXoG03uajmjgDwMloic42LGAekRF
+         XFHI7XiI49via2Wr+kwn0hRcH27fZ+jom0Opy5Z9uAPOB9q+9ZiYIiCnnmXI4Ryi5x
+         P81KUFYnlRuRQ==
+Date:   Tue, 12 Oct 2021 11:03:09 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the arm-soc tree
+Message-ID: <20211012110309.17d51c3e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 12 Oct 2021 02:00:45 +0200 (CEST)
+Content-Type: multipart/signed; boundary="Sig_/yWm6qW9lQrkde2DvXwd8lWO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make upcoming changes for support of dynamically enabled features
-simpler, provide a proper function for the exception handler which removes
-exposure of FPU internals.
+--Sig_/yWm6qW9lQrkde2DvXwd8lWO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Hi all,
+
+After merging the arm-soc tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
+
+Error: arch/arm/boot/dts/sama7g5.dtsi:167.3-7 syntax error
+FATAL ERROR: Unable to parse input tree
+
+Caused by commit
+
+  9be4be3ed1ec ("Merge branch 'arm/dt' into for-next")
+
+I added the following patch for today:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 12 Oct 2021 10:37:29 +1100
+Subject: [PATCH] merge fix for missing semicolon
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- arch/x86/include/asm/fpu/api.h |    4 +---
- arch/x86/kernel/fpu/core.c     |    5 +++++
- arch/x86/kernel/fpu/internal.h |    2 ++
- arch/x86/mm/extable.c          |    5 ++---
- 4 files changed, 10 insertions(+), 6 deletions(-)
+ arch/arm/boot/dts/sama7g5.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -113,6 +113,7 @@ static inline void update_pasid(void) {
- /* Trap handling */
- extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
- extern void fpu_sync_fpstate(struct fpu *fpu);
-+extern void fpu_reset_from_exception_fixup(void);
- 
- /* Boot, hotplug and resume */
- extern void fpu__init_cpu(void);
-@@ -129,9 +130,6 @@ static inline void fpstate_init_soft(str
- /* State tracking */
- DECLARE_PER_CPU(struct fpu *, fpu_fpregs_owner_ctx);
- 
--/* FPSTATE */
--extern union fpregs_state init_fpstate;
--
- /* FPSTATE related functions which are exported to KVM */
- extern void fpu_init_fpstate_user(struct fpu *fpu);
- 
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -155,6 +155,11 @@ void restore_fpregs_from_fpstate(union f
- 	}
- }
- 
-+void fpu_reset_from_exception_fixup(void)
-+{
-+	restore_fpregs_from_fpstate(&init_fpstate, xfeatures_mask_fpstate());
-+}
-+
- #if IS_ENABLED(CONFIG_KVM)
- void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask)
- {
---- a/arch/x86/kernel/fpu/internal.h
-+++ b/arch/x86/kernel/fpu/internal.h
-@@ -2,6 +2,8 @@
- #ifndef __X86_KERNEL_FPU_INTERNAL_H
- #define __X86_KERNEL_FPU_INTERNAL_H
- 
-+extern union fpregs_state init_fpstate;
-+
- /* CPU feature check wrappers */
- static __always_inline __pure bool use_xsave(void)
- {
---- a/arch/x86/mm/extable.c
-+++ b/arch/x86/mm/extable.c
-@@ -4,8 +4,7 @@
- #include <linux/sched/debug.h>
- #include <xen/xen.h>
- 
--#include <asm/fpu/signal.h>
--#include <asm/fpu/xstate.h>
-+#include <asm/fpu/api.h>
- #include <asm/sev.h>
- #include <asm/traps.h>
- #include <asm/kdebug.h>
-@@ -48,7 +47,7 @@ static bool ex_handler_fprestore(const s
- 	WARN_ONCE(1, "Bad FPU state detected at %pB, reinitializing FPU registers.",
- 		  (void *)instruction_pointer(regs));
- 
--	restore_fpregs_from_fpstate(&init_fpstate, xfeatures_mask_fpstate());
-+	fpu_reset_from_exception_fixup();
- 	return true;
- }
- 
+diff --git a/arch/arm/boot/dts/sama7g5.dtsi b/arch/arm/boot/dts/sama7g5.dtsi
+index efcaa6ad7533..f98977f3980d 100644
+--- a/arch/arm/boot/dts/sama7g5.dtsi
++++ b/arch/arm/boot/dts/sama7g5.dtsi
+@@ -162,7 +162,7 @@ ps_wdt: watchdog@e001d180 {
+ 		chipid@e0020000 {
+ 			compatible =3D "microchip,sama7g5-chipid";
+ 			reg =3D <0xe0020000 0x8>;
+-		}
++		};
+=20
+ 		adc: adc@e1000000 {
+ 			compatible =3D "microchip,sama7g5-adc";
+--=20
+2.33.0
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/yWm6qW9lQrkde2DvXwd8lWO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFk0L4ACgkQAVBC80lX
+0GzT6QgAlUmVQ8R7OjNvAHceuRUQ4TbMvp9oH1d9FRi+PipBaEPAb7zpzqkbngJo
+hgWEl1PI7ALiUAj8KatvtJc0nrH2bnC6eco14lpdp0udE3J48Ev4foBUkvbf7vRo
+LRgRS4LGAB0LrkGmFQSczOtp9M+R3D4izvBgeBVUrNFCS/3ag2da4QKVJe66NCZI
++RtNqkeEQn1ugtnUojkScoSdrZLRLPZMz7oSNA0/h8jVNKu06fKpZyPWzgi8Ghki
+p03FEDLc5kGXC3n0f50vDNZNk0JsH1uRtGFY/+MEQIgYmk5JBGhaftbJxOB3K9kO
+lI7H6yLpzwltDzrlRSPmWtbzWDTN8Q==
+=9y4p
+-----END PGP SIGNATURE-----
+
+--Sig_/yWm6qW9lQrkde2DvXwd8lWO--
