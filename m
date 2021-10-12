@@ -2,109 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEAD429EF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD417429F15
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234174AbhJLHvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:51:03 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:52747 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbhJLHu4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:50:56 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id DD8A822205;
-        Tue, 12 Oct 2021 09:48:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1634024927;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XTY/Z+zotHcX5KpcuZaorS0sZpvLJgkD21qg7w9gSRQ=;
-        b=LWsI1mI6pSamxpDS/0+dFr2odTpKKzNiH6/1yG4SErONEZ2/U+oBsSryCX6kdka0owzZMP
-        DhXdqjh+2CuV/P8auid/ozf8cdDxmpTGrRZc1+gBbUPCEgCMQeKqfe6uxsO40QV3wn5VNG
-        E5LGJih/KiyGiPJztKa8y0OH1XN3seM=
+        id S234480AbhJLH6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:58:14 -0400
+Received: from mga07.intel.com ([134.134.136.100]:10457 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234071AbhJLH6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 03:58:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="290565900"
+X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
+   d="scan'208";a="290565900"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 00:56:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
+   d="scan'208";a="480237924"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
+  by orsmga007.jf.intel.com with ESMTP; 12 Oct 2021 00:56:08 -0700
+Date:   Tue, 12 Oct 2021 15:49:44 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lgoncalv@redhat.com, hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v17 0/5] FPGA Image Load (previously Security Manager)
+Message-ID: <20211012074944.GC95330@yilunxu-OptiPlex-7050>
+References: <20210929230025.68961-1-russell.h.weight@intel.com>
+ <20211009080859.GA85181@yilunxu-OptiPlex-7050>
+ <450ed897-f726-9671-26b7-2a24bb046e89@redhat.com>
+ <20211011014154.GA82360@yilunxu-OptiPlex-7050>
+ <79350773-3629-2734-21c0-0314a762e722@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 12 Oct 2021 09:48:46 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: spi-nor: Add
- output-driver-strength property
-In-Reply-To: <20211012061704.284214-1-alexander.stein@ew.tq-group.com>
-References: <20211012061704.284214-1-alexander.stein@ew.tq-group.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <a347541ba3f8c76912d4afdb6dc64d4d@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <79350773-3629-2734-21c0-0314a762e722@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-10-12 08:17, schrieb Alexander Stein:
-> This property is for optimizing output voltage impedance and is
-> specific to each board. It overwrites the default set by the flash
-> device. Various flash devices support different impedances.
+On Mon, Oct 11, 2021 at 05:35:03AM -0700, Tom Rix wrote:
 > 
-> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-> ---
-> Changes in v2:
-> * Updated the property description and the commit message accordingly
+> On 10/10/21 6:41 PM, Xu Yilun wrote:
+> > On Sat, Oct 09, 2021 at 05:11:20AM -0700, Tom Rix wrote:
+> > > On 10/9/21 1:08 AM, Xu Yilun wrote:
+> > > > On Wed, Sep 29, 2021 at 04:00:20PM -0700, Russ Weight wrote:
+> > > > > The FPGA Image Load framework provides an API to upload image
+> > > > > files to an FPGA device. Image files are self-describing. They could
+> > > > > contain FPGA images, BMC images, Root Entry Hashes, or other device
+> > > > > specific files. It is up to the lower-level device driver and the
+> > > > > target device to authenticate and disposition the file data.
+> > > > I've reconsider the FPGA persistent image update again, and think we
+> > > > may include it in FPGA manager framework.
+> > > > 
+> > > > Sorry I raised this topic again when it is already at patch v17, but now
+> > > > I need to consider more seriously than before.
+> > > > 
+> > > > We have consensus the FPGA persistent image update is just like a normal
+> > > > firmware update which finally writes the nvmem like flash or eeprom,
+> > > > while the current FPGA manager deals with the active FPGA region update
+> > > > and re-activation. Could we just expand the FPGA manager and let it handle
+> > > > the nvmem update as well? Many FPGA cards have nvmem and downloaders
+> > > > supports updating both FPGA region and nvmem.
+> > > > 
+> > > > According to the patchset, the basic workflow of the 2 update types are
+> > > > quite similar, get the data, prepare for the HW, write and complete.
+> > > > They are already implemented in FPGA manager. We've discussed some
+> > > > differences like threading or canceling the update, which are
+> > > > not provided by FPGA manager but they may also nice to have for FPGA
+> > > > region update. An FPGA region update may also last for a long time??
+> > > > So I think having 2 sets of similar frameworks in FPGA is unnecessary.
+> > > > 
+> > > > My quick mind is that we add some flags in struct fpga_mgr & struct
+> > > > fpga_image_info to indicate the HW capability (support FPGA region
+> > > > update or nvmem update or both) of the download engine and the provided
+> > > > image type. Then the low-level driver knows how to download if it
+> > > > supports both image types.
+> > > > 
+> > > > An char device could be added for each fpga manager dev, providing the
+> > > > user APIs for nvmem update. We may not use the char dev for FPGA region
+> > > > update cause it changes the system HW devices and needs device hotplug
+> > > > in FPGA region. We'd better leave it to FPGA region class, this is
+> > > > another topic.
+> > > > 
+> > > > More discussion is appreciated.
+> > > I also think fpga_mgr could be extended.
+> > > 
+> > > In this patchset,
+> > > 
+> > > https://lore.kernel.org/linux-fpga/20210625195849.837976-1-trix@redhat.com/
+> > > 
+> > > A second, similar set of write ops was added to fpga_manger_ops,
+> > > 
+> > > new bit/flag was added to fpga_image_info
+> > > 
+> > > The intent was for dfl to add their specific ops to cover what is done in
+> > > this patchset.
+> > I think we don't have to add 2 ops for reconfig & reimage in framework,
+> > the 2 processes are almost the same.
+> > 
+> > Just add the _REIMAGE (or something else, NVMEM?) flag for
+> > fpga_image_info, and low level drivers handle it as they do for other
+> > flags.
+> > 
+> > How do you think?
 > 
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> A single set is fine.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index ed590d7c6e37..4c3c506a8853 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -72,6 +72,14 @@ properties:
->        be used on such systems, to denote the absence of a reliable 
-> reset
->        mechanism.
+> A difficult part of is the length of  time to do the write. The existing
+> write should be improved to use a worker thread.
+
+Yes, we could have a flag and optionally threading the writing.
+
+Thanks,
+Yilun
+
 > 
-> +  output-driver-strength:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Output driver strength in ohms which optimizes the impedance at 
-> Vcc/2
-> +      output voltage. This property overwrites the default set by the 
-> flash
-> +      device. This is board specific and should be determined by the
-> +      manufacturer. Various flash devices support different 
-> impedances.
-
-Mh, this seems to be very tailored to this flash chip. Eg. the "Vcc/2", 
-is
-this something specific to this flash or is this some kind of common 
-usage?
-For example, Winbond flashes specifies the output driver strength in 
-percent.
-Settings are 25%, 50%, 75%, 100% there.
-
-I'd have to ask a hardware guy, if one could convert between these two
-representations of the driver strength.
-
-Rob, do you know how is this case ususally handled? Can there be 
-different
-properties, like:
-
-output-driver-strength-ohms
-output-driver-strength-percent
-
-or similar.
-
--michael
+> Tom
+> 
+> > 
+> > Thanks,
+> > Yilun
+> > 
+> > > Any other driver would do similar.
+> > > 
+> > > Is this close to what you are thinking ?
+> > > 
+> > > Tom
+> > > 
+> > > > Thanks,
+> > > > Yilun
+> > > > 
