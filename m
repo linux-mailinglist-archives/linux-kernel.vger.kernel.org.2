@@ -2,236 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6762F42A9F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D6D42AA0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231442AbhJLQwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 12:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
+        id S231834AbhJLQyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 12:54:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhJLQwr (ORCPT
+        with ESMTP id S229510AbhJLQym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 12:52:47 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173ADC061746
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:50:46 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id u32so48019805ybd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:50:46 -0700 (PDT)
+        Tue, 12 Oct 2021 12:54:42 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEF2C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:52:40 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id x27so89965013lfa.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:52:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ar09QrWZPbtZ1MPFu1DvBkyuuQRpZh8UgkauKcNPOAM=;
-        b=YaK6rwZTq4aRgarlqFIa1o4IaxOiXPj3qbCjvidENvw68SISlHG+ig7WWufPr7cyyc
-         iLYpsHU9CVkCr3SrnNEDIABH0Rvvra4Y1Toyq7J1Hw07pRZXvbD3xXZu6kqc1t/0riCj
-         XixP30thoEdXn7Fkf4PxSST9mYIrZ9voaWm4ID3wWTwToLSCDjdFU/NMr5IDC54RW4C7
-         GD6zFsvDMeMJ5L4mc1VIn6D0XScIOUYxYtsXyV2PD9x4hnEfH/EPSldRjaHYwQnzJeD6
-         ds9Pe3GqsmSNwVDVfAhhG+AElXJLhzNGpKcnTmrpxin8D6FZvzDX5HXboNHhFNyKmoP4
-         oSfA==
+        bh=xawnIR012Yk1jlMpJVQsdMc2RuzZeUTjtaZq6SPv/vQ=;
+        b=CKhySEFvBmeBz2lcrERZC74hIR/KWwGPXSyIVPq6Td7ba04vZohMLOQL35RLwjANyH
+         tfRgYDWy9nS8fywNgnSJSAzXNkbXoJ8qv+rsx9CVsCqcxvQWM6yTOBwjT6GIxGxTJ309
+         bdaopyFfF+TiJh1ryg3F2OgcV1MxRjt94pHkqLEqDjFEn71AgZ/T64PwP29o9jxf8FOf
+         JQqiSaU7BsB1x3DmlIPL0UmzMPqNnYAeenGf9Xc0aIPeoz1FxZofoYiGi9sCj348z2MM
+         I5RdGgQMykcHrAo3w2BRDPeuDZh+Mh1f0p5hwizFdVfDfL5rTmqE5UK7aKtZ8hzLJi02
+         vXYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ar09QrWZPbtZ1MPFu1DvBkyuuQRpZh8UgkauKcNPOAM=;
-        b=UPPz3b5Tg5uwa66UYvjSmrZq8WPkvBDvKbenTxMlAyN8wku5bKH+3sA1XiPaKr1Tqt
-         m1hIM3ihkJsx9hbfXl7tA8PUY+wHLYfyRXv+M1R5W7/oMzbPciMF+1vwfDL89w8pDTkk
-         UKrbvI1lNSbWtOti/K47ygpzS9fhbb9ve7Ioj3oKWxFsq7DEBA9IlzTC/8qBRQQTgXqI
-         6U3GR7zx5jQ8okIykfg2OlCmyzNniOGQDdoZQhHJRxXFTBeiSCemruGY+Ym69UdzK7ic
-         8XWY9uTHXprvwQNg85PVejgse1uXzmYSBmJvnMUzA1U7+AAJFJfFHdpSEqG65N9zK698
-         j2GA==
-X-Gm-Message-State: AOAM5304Q0/kgFyNzmRyr15p9s+C/2qQMiUF0IBLnRnQvUSuTUK3ywJD
-        VcFzAWLkAJ2wV8p05RDseWDoPtR5FmNrKP2rDOdOpg==
-X-Google-Smtp-Source: ABdhPJz2dtiPou9PSUcVJPjWtl1ZS5oxDJf/t7tSJdJJSiEPO2SLzNa3EVK7YV+ElEwQ813Mhr+Eyk+va9mwyNRAxsc=
-X-Received: by 2002:a25:d1d3:: with SMTP id i202mr31604897ybg.487.1634057444798;
- Tue, 12 Oct 2021 09:50:44 -0700 (PDT)
+        bh=xawnIR012Yk1jlMpJVQsdMc2RuzZeUTjtaZq6SPv/vQ=;
+        b=wwHr/BWEt1R/4Mw9Fm1KjN8A4v4BCJHUboaplPuAOeYwpm451lDBneBMjW38GWsuci
+         +s11Jhlj6+2wdKNRxyTBAaje+FJTvw3WFOLwR3XMfMxumRLAD0grljKcbyQXdoCnZ5lC
+         +9BFaBZx3dsnzJ8vfHCLZIrqU7LdE8+lMIrOhOWijhtrxTHOoUY2SYOlstzAi5Eb1PfE
+         PGP/vz8wt3wbNk86OjI1l7AWYVDOSl1Y7vnzTel7W7k7He6h3xetpqXEmB+YcrDA5/YZ
+         pIE2/JW9t9MouFEYMEGpTHdfx3Xuy+PkGmkU1LSgsWBVi2IvmfYdFQsuQujmLGbuwB7D
+         PeGQ==
+X-Gm-Message-State: AOAM531ejQqlZA4g+rVj0hoWVMX6SgWoKw6+yTXR9Q20lHv7xzsFD+88
+        YG0ZnmcZwWxQWwAeRQQellnqIOj89lYrgJy261F8NQ==
+X-Google-Smtp-Source: ABdhPJwB9dqUf+AUdpqZ35D03WL9djp77vt7gTwCxcfcHj8MfPK1AU+kSPKFzNG8xdRVQ054ptpUFcbbXHlOvgM1N1Q=
+X-Received: by 2002:a05:6512:13a5:: with SMTP id p37mr34642679lfa.403.1634057558265;
+ Tue, 12 Oct 2021 09:52:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <YV8jB+kwU95hLqTq@dhcp22.suse.cz> <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
- <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz> <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
- <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
- <202110081344.FE6A7A82@keescook> <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
- <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
- <CAJuCfpHaF1e0V=wAoNO36nRL2A5EaNnuQrvZ2K3wh6PL6FrwZQ@mail.gmail.com> <YWU7FELcxIFmr9uz@dhcp22.suse.cz>
-In-Reply-To: <YWU7FELcxIFmr9uz@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 12 Oct 2021 09:50:33 -0700
-Message-ID: <CAJuCfpESeM_Xd8dhCj_okNggtDUXx3Nn9FpL_f9qsKXKZzCKpA@mail.gmail.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Kees Cook <keescook@chromium.org>, Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>,
-        Tim Murray <timmurray@google.com>
+References: <20211007004629.1113572-1-tkjos@google.com> <20211007004629.1113572-4-tkjos@google.com>
+ <CAHC9VhTRTcZW9eyXXvAN7T=ZCQ_zwH5iBz+d0h2ntf7=XHE-Vw@mail.gmail.com>
+ <CAHRSSEy=eC0rbHUzDmCo6Na7Ya=uCq7zJ6_cXysi0oWQB=19YQ@mail.gmail.com>
+ <CAHC9VhQVKTxwUUP02U43=zVZrEFWc0hhmpaR1YSxe+KHjhnhbw@mail.gmail.com>
+ <CAHRSSEwYrqFum7gS0XOYG0p3F+0Hv8qvaZbWLUyXUm0oCWpX9w@mail.gmail.com> <CAEjxPJ5YT36ZvrN6uSDOCNv3pYrWBzcutsnSjSzya-5e0v9Rpw@mail.gmail.com>
+In-Reply-To: <CAEjxPJ5YT36ZvrN6uSDOCNv3pYrWBzcutsnSjSzya-5e0v9Rpw@mail.gmail.com>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Tue, 12 Oct 2021 09:52:26 -0700
+Message-ID: <CAHRSSExyd--=r2g6FaRdhh5YtWBWPDOezyqW+8-HSOJw2bZhUw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] binder: use euid from cred instead of using task
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        arve@android.com, tkjos@android.com, maco@android.com,
+        christian@brauner.io, James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        devel@driverdev.osuosl.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 12:37 AM Michal Hocko <mhocko@suse.com> wrote:
+On Tue, Oct 12, 2021 at 5:24 AM Stephen Smalley
+<stephen.smalley.work@gmail.com> wrote:
 >
-> On Mon 11-10-21 18:20:25, Suren Baghdasaryan wrote:
-> > On Mon, Oct 11, 2021 at 6:18 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> On Mon, Oct 11, 2021 at 7:39 PM Todd Kjos <tkjos@google.com> wrote:
+> >
+> > On Mon, Oct 11, 2021 at 2:39 PM Paul Moore <paul@paul-moore.com> wrote:
 > > >
-> > > On Mon, Oct 11, 2021 at 1:36 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > On Fri, Oct 8, 2021 at 5:24 PM Todd Kjos <tkjos@google.com> wrote:
 > > > >
-> > > > On Fri 08-10-21 13:58:01, Kees Cook wrote:
-> > > > > - Strings for "anon" specifically have no required format (this is good)
-> > > > >   it's informational like the task_struct::comm and can (roughly)
-> > > > >   anything. There's no naming convention for memfds, AF_UNIX, etc. Why
-> > > > >   is one needed here? That seems like a completely unreasonable
-> > > > >   requirement.
+> > > > On Fri, Oct 8, 2021 at 2:12 PM Paul Moore <paul@paul-moore.com> wrote:
+> > > > >
+> > > > > On Wed, Oct 6, 2021 at 8:46 PM Todd Kjos <tkjos@google.com> wrote:
+> > > > > >
+> > > > > > Set a transaction's sender_euid from the 'struct cred'
+> > > > > > saved at binder_open() instead of looking up the euid
+> > > > > > from the binder proc's 'struct task'. This ensures
+> > > > > > the euid is associated with the security context that
+> > > > > > of the task that opened binder.
+> > > > > >
+> > > > > > Fixes: 457b9a6f09f0 ("Staging: android: add binder driver")
+> > > > > > Signed-off-by: Todd Kjos <tkjos@google.com>
+> > > > > > Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> > > > > > Cc: stable@vger.kernel.org # 4.4+
+> > > > > > ---
+> > > > > > v3: added this patch to series
+> > > > > >
+> > > > > >  drivers/android/binder.c | 2 +-
+> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >
+> > > > > This is an interesting ordering of the patches.  Unless I'm missing
+> > > > > something I would have expected patch 3/3 to come first, followed by
+> > > > > 2/3, with patch 1/3 at the end; basically the reverse of what was
+> > > > > posted here.
 > > > >
-> > > > I might be misreading the justification for the feature. Patch 2 is
-> > > > talking about tools that need to understand memeory usage to make
-> > > > further actions. Also Suren was suggesting "numbering convetion" as an
-> > > > argument against.
+> > > > 2/3 and 3/3 both depend on 1/3 (add "cred" member of struct
+> > > > binder_proc). I kept that in 1/3 to keep that patch the same as what
+> > > > had already been reviewed. I didn't think much about the ordering
+> > > > between 2/3 and 3/3 -- but I agree that it would have been sensible to
+> > > > reverse their order.
 > > > >
-> > > > So can we get a clear example how is this being used actually? If this
-> > > > is just to be used to debug by humans than I can see an argument for
-> > > > human readable form. If this is, however, meant to be used by tools to
-> > > > make some actions then the argument for strings is much weaker.
+> > > > >
+> > > > > My reading of the previous thread was that Casey has made his peace
+> > > > > with these changes so unless anyone has any objections I'll plan on
+> > > > > merging 2/3 and 3/3 into selinux/stable-5.15 and merging 1/3 into
+> > > > > selinux/next.
+> > > >
+> > > > Thanks Paul. I'm not familiar with the branch structure, but you need
+> > > > 1/3 in selinux/stable-5.15 to resolve the dependency on proc->cred.
 > > >
-> > > The simplest usecase is when we notice that a process consumes more
-> > > memory than usual and we do "cat /proc/$(pidof my_process)/maps" to
-> > > check which area is contributing to this growth. The names we assign
-> > > to anonymous areas are descriptive enough for a developer to get an
-> > > idea where the increased consumption is coming from and how to proceed
-> > > with their investigation.
-> > > There are of course cases when tools are involved, but the end-user is
-> > > always a human and the final report should contain easily
-> > > understandable data.
+> > > Yep, thanks.  My eyes kinda skipped over that part when looking at the
+> > > patchset but that would have fallen out as soon as I merged them.
+> > >
+> > > Unfortunately that pretty much defeats the purpose of splitting this
+> > > into three patches.  While I suppose one could backport patches 2/3
+> > > and 3/3 individually, both of them have a very small footprint
+> > > especially considering their patch 1/3 dependency.  At the very least
+> > > it looks like patch 2/3 needs to be respun to address the
+> > > !CONFIG_SECURITY case and seeing the split patches now I think the
+> > > smart thing is to just combine them into a single patch.  I apologize
+> > > for the bad recommendation earlier, I should have followed that thread
+> > > a bit closer after the discussion with Casey and Stephen.
+> >
+> > I'm happy to submit a single patch for all of this. Another part of
+> > the rationale
+> > for splitting it into 3 patches was correctly identify the patch that introduced
+> > the patch that introduced the issue -- so each of the 3 had a different
+> > "Fixes:" tag. Should I cite the oldest (binder introduction) with the "Fixes"
+> > tag and perhaps mention the other two in the commit message?
 >
-> OK, it would have been much more preferable to be explicit about this
-> main use case from the very beginning. Just to make sure we are at the
-> same page. Is the primary usecase usage and bug reporting?
+> Couldn't you just split patch 1 into the "add cred to binder proc"
+> part and "use cred in LSM/SELinux hooks" part, combine patch 3 with
+> the "add cred to binder proc" part to create new patch 1, then "use
+> cred in LSM/SELinux hooks" part is patch 2, and "switch task_getsecid
+> to cred_getsecid" to patch 3? Then patch 1 can be cherry-picked/ported
+> all the way back to the introduction of binder, patch 2 all the way
+> back to the introduction of binder LSM/SELinux hooks, and patch 3 just
+> back to where passing the secctx across binder was introduced.
 
-Sorry, I should have spent more time on patch #2 description. Yes,
-debugging memory issues is the primary usecase. In fact that's the
-only usecase in Android AFAIK.
-
->
-> My initial understanding was that at userspace managed memory management
-> could make an educated guess about targeted reclaim (e.g. MADV_{FREE,COLD,PAGEOUT}
-> for cached data in memory like uncompressed images/data). Such a usecase
-> would clearly require a standardized id/naming convention to be
-> application neutral.
-
-Ah, now I understand your angle. Our prior work on process_madvise()
-probably helped in leading your thoughts in this direction :) Sorry
-about the confusion.
-
->
-> > > IIUC, the main argument here is whether the userspace can provide
-> > > tools to perform the translations between ids and names, with the
-> > > kernel accepting and reporting ids instead of strings. Technically
-> > > it's possible, but to be practical that conversion should be fast
-> > > because we will need to make name->id conversion potentially for each
-> > > mmap. On the consumer side the performance is not as critical, but the
-> > > fact that instead of dumping /proc/$pid/maps we will have to parse the
-> > > file, do id->name conversion and replace all [anon:id] with
-> > > [anon:name] would be an issue when we do that in bulk, for example
-> > > when collecting system-wide data for a bugreport.
->
-> Whether you use ids or human readable strings you still have to
-> understand the underlying meaning to make any educated guess. Let me
-> give you an example. Say I have an application with a memory leak. Right
-> now I can only tell that it is anonymous memory growing but it is not
-> clear who uses that anonymous. You are adding a means to tell different
-> users appart. That is really helpful. Now I know this is an anon
-> user 1234 or MySuperAnonMemory. Neither of the will not tell me more
-> without a id/naming convention or reading the code. A convention can be
-> useful for the most common users (e.g. a specific allocator) but I am
-> rather dubious there are many more that would be _generally_ recognized
-> without some understanding of the said application.
-
-I guess an example would be better to clarify this. Here are some vma
-names from Google maps app:
-
-[anon:dalvik-main space (region space)]
-[anon:dalvik-/apex/com.android.art/javalib/boot.art]
-[anon:dalvik-/apex/com.android.art/javalib/boot-apache-xml.art]
-[anon:.bss]
-[anon:dalvik-zygote space]
-[anon:dalvik-non moving space]
-[anon:dalvik-free list large object space]
-[anon:dalvik-/product/app/Maps/oat/arm64/Maps.art]
-[anon:stack_and_tls:20792]
-[anon:stack_and_tls:20791]
-[anon:dalvik-LinearAlloc]
-[anon:dalvik-CompilerMetadata]
-[anon:dalvik-indirect ref table]
-[anon:dalvik-live stack]
-[anon:dalvik-allocation stack]
-[anon:dalvik-large object free list space allocation info map]
-[anon:scudo:primary]
-[anon:scudo:secondary]
-[anon:bionic_alloc_small_objects]
-
-Most of them have names standard for Android and can be recognized by
-developers and even Android framework (example where "anon:dalvik-main
-space" and other standard names are being parsed:
-https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/jni/android_os_Debug.cpp;l=340).
-Names like "anon:dalvik-/apex/com.android.art/javalib/boot.art" help
-the developer to recognize the component responsible for the memory.
-Names like "anon:stack_and_tls:20792" include the TID of the thread
-which uses this memory. All this information can help in narrowing
-down memory consumption investigation. Hopefully these examples
-clarify the usage a bit better?
-
->
-> Maybe the situation in Android is different because the runtime is more
-> coupled but is it reasonable to expect any common naming conventions for
-> general Linux platforms?
-
-Well, to be useful the system would have to agree to *some* convention I guess.
-
->
-> I am slightly worried that we have spent way too much time talking
-> specifics about id->name translation rather than the actual usability
-> of the token.
-
-Agree. I'll try to avoid further confusions.
-Thanks!
-
-> --
-> Michal Hocko
-> SUSE Labs
+Sending a v5 with this refactoring and the !CONFIG_SECURITY fix
