@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9401A42A836
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A3842A839
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237338AbhJLP1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:27:41 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:45366 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229633AbhJLP1k (ORCPT
+        id S237388AbhJLP2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:28:37 -0400
+Received: from sonic317-38.consmr.mail.ne1.yahoo.com ([66.163.184.49]:39628
+        "EHLO sonic317-38.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229633AbhJLP2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:27:40 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19CEf8ZC006877;
-        Tue, 12 Oct 2021 15:25:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2021-07-09; bh=t4aJCS6LYqnsi9zO49w4xshmVZghae5OieHodkULBvw=;
- b=BzSRQ89NAhOxoCEeWWp1VynQ5yMSOAKxuOk5hWLGLfR8znbJM7hsDpLGac/B2uEgt2vT
- Tu9TnkKBqHWEopZTb1Koigkbb+ecT/GhjVNFtqIab/QMr1QinFFgiP/SgNeHejpkHJss
- DReU3mn+4gLtlj882CifZFUGns7n2WhI99JLHBNLy6KfdfNuDxNFiQi3j3HVvGiCEC/W
- 0jod+GkNHl1xoGie8IncDEbKuZYzEAWPStlPefvgO4xt7YIpfeTXTw2O6faOejPaRkX+
- StQElo5342Rpcz5ScWvN7LMzRbPa7XP02Smn2uHbw3XamkKk0cn8YPj4l+8HwQhskJkq Xg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bmv41pcvy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 15:25:33 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19CFAkh3194429;
-        Tue, 12 Oct 2021 15:25:32 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3bmady654m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 15:25:32 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 19CFPVJo075308;
-        Tue, 12 Oct 2021 15:25:31 GMT
-Received: from t460.home (dhcp-10-175-26-251.vpn.oracle.com [10.175.26.251])
-        by aserp3020.oracle.com with ESMTP id 3bmady652d-1;
-        Tue, 12 Oct 2021 15:25:31 +0000
-From:   Vegard Nossum <vegard.nossum@oracle.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] net: korina: select CRC32
-Date:   Tue, 12 Oct 2021 17:25:09 +0200
-Message-Id: <20211012152509.21771-1-vegard.nossum@oracle.com>
-X-Mailer: git-send-email 2.23.0.718.g5ad94255a8
+        Tue, 12 Oct 2021 11:28:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1634052393; bh=2nz1UL+/i59bF1JQNp/CRy7h9MRCjukc4ooD4NdF7Ug=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=anxXjQu5kjdf2eyEEsiggmU5orVUdiee/rzbAn63STBz/cdULVOZmYMziSOnxamrkIjWD38wua1sFSHSMRWYwiYEuSmF8HUFn8YvZi19C5FUnoUAa2Q+Dx7WmtMkgsk3XsJBoaLaSpc+NDezNnVucSSJN6QGXfGVb0Ei3VAAXlFkf3AOehjSycKD5GUVG/Z4lhiwM6e2t+D3L4iG9IqFbMEImlFES/SgETOVReUdqJA1OgCL5FaOit9QnD/P1wl0+M3HFto0qx39qFTlc5NSEAFb2P//qQjLGwTu82QdNf7cZAz2W4/VyWD43fsregjQKoKUU+WK2cZiNPur6fbxRw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1634052393; bh=idWVnrTSL2rt0ncv8l/zkVDpfjvpK+DvPqWHrfhmrSx=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=h0d9uKS6UiMjw2Qj3KzFOt0axwviyqFdZB7aElRXwD6skn7ira79o/HqjP24NXXJntWIUrOkXq3/P101Gk7ymwh0Sh1KAgBcYVGZHgKaYIIIbf9hhOHnJZaX1LRVdFZ3IGcJIfDYRcIa3EGT9GN4nb2tiCCCuZo9QL3YjTuvAOkBQ8ao9Uu8gZyrbCEMdyhJQZSY3EDE54fldiCw50E8w7UXkplnZbm5oQTlCnY26hAVRcxhgMfLZ9Fut7o+VZ6qYvrMxzS1a971h92B46zdrUCe6kugvFFeuzUsdSUoCJHair8HKRBBOH367JDsDf9V5aFjY50y/30lCCHl6vZgKQ==
+X-YMail-OSG: iVz0YiQVM1lNsYkfddRUmaJRAQaWkMA6jixHuiKUXIy4g6mdlD139zHt.s1toi1
+ BN9OWFet79sKYu7FY_rbY0dmqVeN7ruSZxErHlOsAN33ZbDjVFBMqHX75SBtDNLr6hE1p.umqkNr
+ 90vz7.AiIZ5_jf41DvCr4k2uuHFFBHMfKUTqSz9VcaaCIcb_mZZhxNMRdhQQF6lKNE0Iyl6ga03N
+ BkHtS1GoPkKas8biQ1j3wSgyrFVm1cAe0wT_RsXZJu7ML.tjfIhXBpl3D9bYdWmTUjENWBfSP7vA
+ WhdYu0I7Q2lz2_c5izOBuxx9SAIFvNv19haZH7vZcyOXRlhABCirmC06uzLFqQHLDzn5EKuPLino
+ cPRDXldzusZzFXV_iD5104T25xdhmaJl1.in7yYhovtMh08Z3V7crj5ti353Ebd58qyDVQbPCVUK
+ 1FRBQsbjFjDrjcH6wqFwcize4O1zLOmBCEvqy_9S03TW6JoS1WsiiiL79HYal3GgQ2hncJeuGU_E
+ R1VsEP5FD0ZMDCtTmDWUOTdWYdTRqC9ii9ltDVwCmd9LF_UtJA.sg_umrbOfVJqWZI9ES19O0mx6
+ fMqLnVmc6udhifAqct9HCL.bT0isqGxZ6JORYHA7BCZepa0dv8jJuj.IVAhuGHUavwY8OqEuMezd
+ _1N08I_jBMqLXhB2p7r_L_n4RpYsOUBRHz4PtaPDbqjyWBLOLETkkxvOFE4CglbCOSC3lMc37Amq
+ zaz4OfrzhnFlay2buzOd17hvLX5wquFsNuD8AF.cpXr3CUfXlggu1R01lj5g.REuasFZ0a5SIK4F
+ ol3xhopJg5zrCdyp5F2pNPFWZp7u.8x1mkAcOLfil.FD_eEsNNMmtOkgWNe2PyiBDmqgdw3XxB3b
+ gVGYpI5C2Zp34hh2mvgTq5x8JJ_GJT7QqYfgcNylZjA6K9fe7NFijl2UcdKDFDjLsQHGB.yj3zLF
+ mkn6aKUwwwU7j4zxE.W4AkEsudPISeBcA3jqEIKBs2Z2WvEDyWnmnpcwFpPJdR2EZP7GNEVSJuoo
+ jevVbd7yNEMPU_AJX01FXhAC_F6o_3k57K_YfgBsaraSiuLssas9Lx__UiQRHdTJiUXJv2aEbNRu
+ e9s02.Edg42JrzkpPSPdbr.A.6CkfXXmwwn4P1ch.5BR1KpkbY90Z2T8V19qGIJA4zAvyQmIVYGr
+ HdbZY2nQa9BO0XtkmPNubMIIwc6GLDmZ0L4iGDsaaPqkW5YEmSglFhSmlyzCzmb5eJ1V0dU4oHOu
+ .6hWkYob14rqiw2YwsUwEAAlFQJ7suy0nCCHWwlTPz7CbpmKAwjnVEXQs7LP6zrvf4XmfQ5x3Ne_
+ CvfAgFPm9Q8iDRHT4jyiP9IekIFWxlVZ1dWFv9p4re88CyNkV_znbxwn7ls7N4iMuqyMOSf7YGwf
+ aPZwEbEV3OcJy.VG12nU5VVpRL9YUnfEK6u7SrT.RZj2Gxpxv1BDP8UeT09zOmGaATnQ._pyHrHw
+ 0Sg9HckplkGa72yhAqeD2ywesA2nBoCkD5KMBhY5yJuYjHUtVPflJOW7XueugJFv6crh7Pv88sbU
+ 9OP5jPwAu14Edu94RSneMVl05CE262lSgY05OnBeAx4mmsOIt7_75b20qqW_BbWUpmSNnBYwAp2R
+ WNhcqC_T5eZEpO5Gr7FrKZCPk4VfzNUJnao1kLiXCtROG1.hByD4jrfv0lwCTjz.piYmJz1q04Cc
+ VqEGiLMoDvEteJNVrySEOWvrwwQLuwKZhzcvKYdY1s8oIahuki39yqTpAESb8ZHwf2L_IQ.hcS5D
+ kpKflobY45a_jlDpeg85Bs3hDZZUJsl40SoJcFsJd_qMjTdJHBO1Ej1FI_qNJ5GvlrMgAApoSABC
+ P2DWqBRuL9fJqRtBX1hU70eReh5a1L6Kuw.YU3MYoYtALK3iLOA3joChtZ5FR50Q7DEhjg3xionD
+ LCZY2hEsT1TpwlwfAuej_fRYNwBLMbYjW7D3q7J_MVJWOP5qBrfIrfqyVXRUDrgnK7LJyX132kXc
+ wgb7QBJe28WYjqC_wM38dgMDwqqxx65BafqNz1_O8PU1aOazYP1iLRZGFSTylZ1lCzoY2AAGimOu
+ ad_0Nwj87AwDp6mMkx9A16DKaMHGj6MSuZ5.uIwPOvmRpV2JVJFAhZ3sswZg.b8JYSPjbVHnV0Dm
+ B.koXySjGDyq8IxY.ARYZifRo1rxIzubfCs41Bn35owuRp_HZrrJqRGoavwF.OK8UlBv42uOFxxt
+ JCgguDxSbBx.92heCPGwPhIxOZPF392CMKJU8X2JYGZ6Px8wupweKPCUlMPGJs3QSxPk7sMEwnYH
+ RJg--
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Tue, 12 Oct 2021 15:26:33 +0000
+Received: by kubenode534.mail-prod1.omega.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID c75242736be9955228ad0cd21120aad6;
+          Tue, 12 Oct 2021 15:26:31 +0000 (UTC)
+Subject: Re: [PATCH smack] smack: remove duplicated hook function
+To:     Florian Westphal <fw@strlen.de>
+Cc:     linux-security-module@vger.kernel.org, jmorris@namei.org,
+        serge@hallyn.com, linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20211011143309.17203-1-fw@strlen.de>
+ <700b26f3-a8ef-969b-dd3c-4ad849d8c4ab@schaufler-ca.com>
+ <20211012144015.GD2942@breakpoint.cc>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <1f59eff5-966c-f2a0-8596-0caced591171@schaufler-ca.com>
+Date:   Tue, 12 Oct 2021 08:26:31 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: KtO-051QlbXOLYVwy5kDu5yeAHbKWcNu
-X-Proofpoint-GUID: KtO-051QlbXOLYVwy5kDu5yeAHbKWcNu
+In-Reply-To: <20211012144015.GD2942@breakpoint.cc>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.19116 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following build/link error by adding a dependency on the CRC32
-routines:
+On 10/12/2021 7:40 AM, Florian Westphal wrote:
+> Casey Schaufler <casey@schaufler-ca.com> wrote:
+>>> Signed-off-by: Florian Westphal <fw@strlen.de>
+>> Looks fine, with the one change I've noted below. If you're
+>> OK with that change I can take it for smack-next.
+> Sure, smack_ip_output() is fine.
 
-  ld: drivers/net/ethernet/korina.o: in function `korina_multicast_list':
-  korina.c:(.text+0x1af): undefined reference to `crc32_le'
-
-Fixes: ef11291bcd5f9 ("Add support the Korina (IDT RC32434) Ethernet MAC")
-Cc: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
----
- drivers/net/ethernet/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ethernet/Kconfig b/drivers/net/ethernet/Kconfig
-index d796684ec9ca0..412ae3e43ffb7 100644
---- a/drivers/net/ethernet/Kconfig
-+++ b/drivers/net/ethernet/Kconfig
-@@ -100,6 +100,7 @@ config JME
- config KORINA
- 	tristate "Korina (IDT RC32434) Ethernet support"
- 	depends on MIKROTIK_RB532 || COMPILE_TEST
-+	select CRC32
- 	select MII
- 	help
- 	  If you have a Mikrotik RouterBoard 500 or IDT RC32434
--- 
-2.23.0.718.g5ad94255a8
+Added to smack-next#next. Thank you.
 
