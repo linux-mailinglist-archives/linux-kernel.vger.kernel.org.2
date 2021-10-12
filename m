@@ -2,165 +2,1364 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2C2429F4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09495429F4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235362AbhJLIGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:06:22 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:52712
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234936AbhJLIFG (ORCPT
+        id S235481AbhJLIGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234963AbhJLIFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:05:06 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 23B9A3F2FF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 08:03:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634025781;
-        bh=uRYagTk6MpIfpm938XTiHR//S2u2wtANBbTnjpAOHf0=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=NgJCNbn3G28wne8h7IZ8PbGMusLSGskQgaUV5A+hvM53JRMJsk1GDYoKcROpljjXc
-         nf6lbTBHgH56cPehzwjkT8z98Og9ZxPJithaF/R6yaNQOohbEWI5kxJLWRxCmuHFwH
-         tKn9nTRHEPxEC8nn7SgL5JR2m6zuLL7q6mUrGry9qTVCb+gI7JhHYaLxbl2mO8kPMj
-         uk3+TBjkKQ4ajTk2araUW/DMTwxEugtkSfM5NomedHfJuCc8I7P/VB0h5kO4HBijXr
-         GaQeTk++ZuXrnukbfgppZUX1DeAUPBNuaojSZi9quoHka3SALFkcPXQTDLooRo/tFF
-         PTiSIwnzj+2Nw==
-Received: by mail-lf1-f70.google.com with SMTP id v2-20020ac25582000000b003fd1c161a31so14453226lfg.15
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:03:01 -0700 (PDT)
+        Tue, 12 Oct 2021 04:05:16 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DD0C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:03:11 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id e12so64178676wra.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=nzd1N/UqobeQvV/uB8bpQC4f7uAdd5JM6stf6P7FIxE=;
+        b=ZNZnTCm1ahdge+S0nuLzWbzAwiPmoj/6dCxVCrImdGaXA3DWkI5INPeV4vKUj+4all
+         aYBfdXjXEqRTI+MB7ZOVePdIlEkdv/oR903Q9kEZdWW9cgmZ1tvhwdocm12/UsCvVQyo
+         k/xT1HjgSb1iYJxPy0Hh+JDVS7TWiKleHn72Ph5RaRkCL6EU9I8ix9anryWy+Ne7cb4B
+         qmM8/H/kQrGlAKNfsN5UyIGWqFJvaRh7CqZ8YYtU5Pnxp9Jvv4IpVM6t13JzfM0rWqq/
+         3gAtUluF+sVb9cRWhiJDi+aKMwKJc8ZLLRSzcIFJpIlTd9/MAqCEpKlmuPMBbzYx+T0C
+         nCrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uRYagTk6MpIfpm938XTiHR//S2u2wtANBbTnjpAOHf0=;
-        b=Hkax6qxq6siuicIf6NL15GhjV8EbUfwdtfEwzZ1HDSUJv/08O+nei4l+WvhkwfPWnh
-         kHYttaIGOaDzyhAQ5N7b3blxi31dWF5aqoGbyjnL7Qt2D4x4XGAJE4zvSw1/hF1hHvPr
-         4c3oKLuOEAamt32uwXU9Fcs4M5i8IKZAXdaHW2NlE6vOsIoq5i58ASx014ZlBMU8wS/J
-         OuiGFh0t8dpPPC7qQrfeZhw/Sv7/tjzExw4DA82jS/1uTkDbnuB8KLrtksnz54vD8hIo
-         1IBcQ/EBTULChN7pBLBqhRegwECUiSX96I6P4Y1zUOZUHTi72N4WggUrimt5+fE8Henb
-         Zr9g==
-X-Gm-Message-State: AOAM533qa5w8uxjc9xAMF/3HxqQpFzCU1aKe/fv7DRmY1C+1tgV+K239
-        Mjd/DMx1NjhDWxt4zAdxNZQf8Rg21vhzKLccaTpI8dG3sh+ljMwu4UIqaymUN8iio7hO32SxIE/
-        4TPW5a9f+htC4GppHVqGCoOf4zvTfWy2+Y24c5LsY0Q==
-X-Received: by 2002:a2e:5c43:: with SMTP id q64mr27667404ljb.224.1634025780497;
-        Tue, 12 Oct 2021 01:03:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxWblHn4Br++Rtsc1RT2izUIH3qGN0inuK9izfQk7VScP/dXcNHCxXTuwT/b4FMiYLl8dGHnw==
-X-Received: by 2002:a2e:5c43:: with SMTP id q64mr27667382ljb.224.1634025780318;
-        Tue, 12 Oct 2021 01:03:00 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id s11sm954282lfd.262.2021.10.12.01.02.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 01:02:59 -0700 (PDT)
-Subject: Re: [PATCH 5/8] dt-bindings: mfd: add Maxim MAX77714 PMIC
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>
-References: <20211011155615.257529-1-luca@lucaceresoli.net>
- <20211011155615.257529-6-luca@lucaceresoli.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <8ad40ebc-8430-9fa0-ae60-88e0d486e8cc@canonical.com>
-Date:   Tue, 12 Oct 2021 10:02:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=nzd1N/UqobeQvV/uB8bpQC4f7uAdd5JM6stf6P7FIxE=;
+        b=Y6ixB4S3lAufB7sXsdEnWyVqLHyl36PKg0iYjqeEftZJ0DpnnE/XFcplgEY9N7n6j0
+         HpHIar1mAbp4t/KYoOt3/onsk03ksc2QKeHIzaDgmmAs0J9Rpk7iPel9kGZXfR6EVCQu
+         f0vMooV1U0HwXgYsuQYJrxIp5AVUzLQf+VZK0uApbZOlwd5IfgdagobvBC2bsVpfA/dJ
+         Ku2tclUsP+xEEYGzHYh7kJcBkiC5AY53PaCIjCGd7uVZEh8c4U49o/z4tyWiTfZLQfuC
+         NII+3PUBN/fjC59fXmVSK9AqKqjfm1BoWMRONvrSnWGH4JmesHynxw+4m7AmaRa+Trit
+         Y/kg==
+X-Gm-Message-State: AOAM532PSqN1bUNwQzdd7dKnlyq0gl4pYzryMuij+d3dLD2t9NSn2QST
+        dBUvgTSEybP0EDsw+4JF5NY=
+X-Google-Smtp-Source: ABdhPJwn5BC77h1bGQjSWoPjfsuVKFeRY/FhwzjKGUK5Upm8GLqCgkmAlSCvzFHR+JJtO5FfvZGN1w==
+X-Received: by 2002:a7b:c938:: with SMTP id h24mr3965767wml.41.1634025790163;
+        Tue, 12 Oct 2021 01:03:10 -0700 (PDT)
+Received: from [192.168.1.21] ([195.245.16.219])
+        by smtp.gmail.com with ESMTPSA id o3sm10090065wra.52.2021.10.12.01.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 01:03:09 -0700 (PDT)
+Message-ID: <ed557882a9530f2fd6245e34657be62399df76bc.camel@gmail.com>
+Subject: Re: [PATCH v2 8/8] ep93xx: clock: convert in-place to COMMON_CLK
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Mike Rapoport <rppt@kernel.org>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 12 Oct 2021 10:03:08 +0200
+In-Reply-To: <20210726140001.24820-9-nikita.shubin@maquefel.me>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+         <20210726140001.24820-1-nikita.shubin@maquefel.me>
+         <20210726140001.24820-9-nikita.shubin@maquefel.me>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-In-Reply-To: <20211011155615.257529-6-luca@lucaceresoli.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 17:56, Luca Ceresoli wrote:
-> Add bindings for the MAX77714 PMIC with GPIO, RTC and watchdog.
+Hello Russel, Arnd,
+
+On Mon, 2021-07-26 at 16:59 +0300, Nikita Shubin wrote:
+> Converted in-place without moving file to drivers/clk.
 > 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> tested on ts7250 (EP9302).
+> 
+> Only setting rate and change parent tested for, as they
+> are missing on ts7250:
+> - video
+> - I2S
+> - ADC/KEYPAD
+> - PWM
+> 
+> Only video and I2S clock are interesting, as they are
+> GATE + double DIV + MUX, all other are pretty much
+> common but require ep93xx_syscon_swlocked_write to set
+> registers.
+> 
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+
+with an
+Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+and
+Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+
+shall I add this patch to the Russels patch system, or would
+Arnd take it to the SoC tree?
+
+There is already a merge commit 726e6f31b102 upstream which
+claims to merge it, but it's actually not in.
+
 > ---
->  .../bindings/mfd/maxim,max77714.yaml          | 58 +++++++++++++++++++
->  MAINTAINERS                                   |  5 ++
->  2 files changed, 63 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
+>  arch/arm/Kconfig             |   2 +-
+>  arch/arm/mach-ep93xx/clock.c | 975 ++++++++++++++++++++---------------
+>  arch/arm/mach-ep93xx/core.c  |   2 +-
+>  arch/arm/mach-ep93xx/soc.h   |  42 +-
+>  4 files changed, 581 insertions(+), 440 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/maxim,max77714.yaml b/Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
-> new file mode 100644
-> index 000000000000..2b0ce3b9bc92
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
-> @@ -0,0 +1,58 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/maxim,max77714.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index 24804f11302d..8f4a74a37406 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -357,7 +357,7 @@ config ARCH_EP93XX
+>         select CLKSRC_MMIO
+>         select CPU_ARM920T
+>         select GPIOLIB
+> -       select HAVE_LEGACY_CLK
+> +       select COMMON_CLK
+>         help
+>           This enables support for the Cirrus EP93xx series of CPUs.
+>  
+> diff --git a/arch/arm/mach-ep93xx/clock.c b/arch/arm/mach-ep93xx/clock.c
+> index 2810eb5b2aca..cc75087134d3 100644
+> --- a/arch/arm/mach-ep93xx/clock.c
+> +++ b/arch/arm/mach-ep93xx/clock.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/io.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/clkdev.h>
+> +#include <linux/clk-provider.h>
+>  #include <linux/soc/cirrus/ep93xx.h>
+>  
+>  #include "hardware.h"
+> @@ -24,348 +25,194 @@
+>  
+>  #include "soc.h"
+>  
+> -struct clk {
+> -       struct clk      *parent;
+> -       unsigned long   rate;
+> -       int             users;
+> -       int             sw_locked;
+> -       void __iomem    *enable_reg;
+> -       u32             enable_mask;
+> -
+> -       unsigned long   (*get_rate)(struct clk *clk);
+> -       int             (*set_rate)(struct clk *clk, unsigned long rate);
+> -};
+> -
+> -
+> -static unsigned long get_uart_rate(struct clk *clk);
+> -
+> -static int set_keytchclk_rate(struct clk *clk, unsigned long rate);
+> -static int set_div_rate(struct clk *clk, unsigned long rate);
+> -static int set_i2s_sclk_rate(struct clk *clk, unsigned long rate);
+> -static int set_i2s_lrclk_rate(struct clk *clk, unsigned long rate);
+> +static DEFINE_SPINLOCK(clk_lock);
+>  
+> -static struct clk clk_xtali = {
+> -       .rate           = EP93XX_EXT_CLK_RATE,
+> -};
+> -static struct clk clk_uart1 = {
+> -       .parent         = &clk_xtali,
+> -       .sw_locked      = 1,
+> -       .enable_reg     = EP93XX_SYSCON_DEVCFG,
+> -       .enable_mask    = EP93XX_SYSCON_DEVCFG_U1EN,
+> -       .get_rate       = get_uart_rate,
+> -};
+> -static struct clk clk_uart2 = {
+> -       .parent         = &clk_xtali,
+> -       .sw_locked      = 1,
+> -       .enable_reg     = EP93XX_SYSCON_DEVCFG,
+> -       .enable_mask    = EP93XX_SYSCON_DEVCFG_U2EN,
+> -       .get_rate       = get_uart_rate,
+> -};
+> -static struct clk clk_uart3 = {
+> -       .parent         = &clk_xtali,
+> -       .sw_locked      = 1,
+> -       .enable_reg     = EP93XX_SYSCON_DEVCFG,
+> -       .enable_mask    = EP93XX_SYSCON_DEVCFG_U3EN,
+> -       .get_rate       = get_uart_rate,
+> -};
+> -static struct clk clk_pll1 = {
+> -       .parent         = &clk_xtali,
+> -};
+> -static struct clk clk_f = {
+> -       .parent         = &clk_pll1,
+> -};
+> -static struct clk clk_h = {
+> -       .parent         = &clk_pll1,
+> -};
+> -static struct clk clk_p = {
+> -       .parent         = &clk_pll1,
+> -};
+> -static struct clk clk_pll2 = {
+> -       .parent         = &clk_xtali,
+> -};
+> -static struct clk clk_usb_host = {
+> -       .parent         = &clk_pll2,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_USH_EN,
+> -};
+> -static struct clk clk_keypad = {
+> -       .parent         = &clk_xtali,
+> -       .sw_locked      = 1,
+> -       .enable_reg     = EP93XX_SYSCON_KEYTCHCLKDIV,
+> -       .enable_mask    = EP93XX_SYSCON_KEYTCHCLKDIV_KEN,
+> -       .set_rate       = set_keytchclk_rate,
+> -};
+> -static struct clk clk_adc = {
+> -       .parent         = &clk_xtali,
+> -       .sw_locked      = 1,
+> -       .enable_reg     = EP93XX_SYSCON_KEYTCHCLKDIV,
+> -       .enable_mask    = EP93XX_SYSCON_KEYTCHCLKDIV_TSEN,
+> -       .set_rate       = set_keytchclk_rate,
+> -};
+> -static struct clk clk_spi = {
+> -       .parent         = &clk_xtali,
+> -       .rate           = EP93XX_EXT_CLK_RATE,
+> -};
+> -static struct clk clk_pwm = {
+> -       .parent         = &clk_xtali,
+> -       .rate           = EP93XX_EXT_CLK_RATE,
+> -};
+> +static char fclk_divisors[] = { 1, 2, 4, 8, 16, 1, 1, 1 };
+> +static char hclk_divisors[] = { 1, 2, 4, 5, 6, 8, 16, 32 };
+> +static char pclk_divisors[] = { 1, 2, 4, 8 };
+>  
+> -static struct clk clk_video = {
+> -       .sw_locked      = 1,
+> -       .enable_reg     = EP93XX_SYSCON_VIDCLKDIV,
+> -       .enable_mask    = EP93XX_SYSCON_CLKDIV_ENABLE,
+> -       .set_rate       = set_div_rate,
+> -};
+> +static char adc_divisors[] = { 16, 4 };
+> +static char sclk_divisors[] = { 2, 4 };
+> +static char lrclk_divisors[] = { 32, 64, 128 };
+>  
+> -static struct clk clk_i2s_mclk = {
+> -       .sw_locked      = 1,
+> -       .enable_reg     = EP93XX_SYSCON_I2SCLKDIV,
+> -       .enable_mask    = EP93XX_SYSCON_CLKDIV_ENABLE,
+> -       .set_rate       = set_div_rate,
+> +static const char * const mux_parents[] = {
+> +       "xtali",
+> +       "pll1",
+> +       "pll2"
+>  };
+>  
+> -static struct clk clk_i2s_sclk = {
+> -       .sw_locked      = 1,
+> -       .parent         = &clk_i2s_mclk,
+> -       .enable_reg     = EP93XX_SYSCON_I2SCLKDIV,
+> -       .enable_mask    = EP93XX_SYSCON_I2SCLKDIV_SENA,
+> -       .set_rate       = set_i2s_sclk_rate,
+> -};
+> +/*
+> + * PLL rate = 14.7456 MHz * (X1FBD + 1) * (X2FBD + 1) / (X2IPD + 1) / 2^PS
+> + */
+> +static unsigned long calc_pll_rate(unsigned long long rate, u32 config_word)
+> +{
+> +       int i;
+>  
+> -static struct clk clk_i2s_lrclk = {
+> -       .sw_locked      = 1,
+> -       .parent         = &clk_i2s_sclk,
+> -       .enable_reg     = EP93XX_SYSCON_I2SCLKDIV,
+> -       .enable_mask    = EP93XX_SYSCON_I2SCLKDIV_SENA,
+> -       .set_rate       = set_i2s_lrclk_rate,
+> -};
+> +       rate *= ((config_word >> 11) & 0x1f) + 1;               /* X1FBD */
+> +       rate *= ((config_word >> 5) & 0x3f) + 1;                /* X2FBD */
+> +       do_div(rate, (config_word & 0x1f) + 1);                 /* X2IPD */
+> +       for (i = 0; i < ((config_word >> 16) & 3); i++)         /* PS */
+> +               rate >>= 1;
+>  
+> -/* DMA Clocks */
+> -static struct clk clk_m2p0 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2P0,
+> -};
+> -static struct clk clk_m2p1 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2P1,
+> -};
+> -static struct clk clk_m2p2 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2P2,
+> -};
+> -static struct clk clk_m2p3 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2P3,
+> -};
+> -static struct clk clk_m2p4 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2P4,
+> -};
+> -static struct clk clk_m2p5 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2P5,
+> -};
+> -static struct clk clk_m2p6 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2P6,
+> -};
+> -static struct clk clk_m2p7 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2P7,
+> -};
+> -static struct clk clk_m2p8 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2P8,
+> -};
+> -static struct clk clk_m2p9 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2P9,
+> -};
+> -static struct clk clk_m2m0 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2M0,
+> -};
+> -static struct clk clk_m2m1 = {
+> -       .parent         = &clk_h,
+> -       .enable_reg     = EP93XX_SYSCON_PWRCNT,
+> -       .enable_mask    = EP93XX_SYSCON_PWRCNT_DMA_M2M1,
+> -};
+> +       return (unsigned long)rate;
+> +}
+>  
+> -#define INIT_CK(dev,con,ck)                                    \
+> -       { .dev_id = dev, .con_id = con, .clk = ck }
+> -
+> -static struct clk_lookup clocks[] = {
+> -       INIT_CK(NULL,                   "xtali",        &clk_xtali),
+> -       INIT_CK("apb:uart1",            NULL,           &clk_uart1),
+> -       INIT_CK("apb:uart2",            NULL,           &clk_uart2),
+> -       INIT_CK("apb:uart3",            NULL,           &clk_uart3),
+> -       INIT_CK(NULL,                   "pll1",         &clk_pll1),
+> -       INIT_CK(NULL,                   "fclk",         &clk_f),
+> -       INIT_CK(NULL,                   "hclk",         &clk_h),
+> -       INIT_CK(NULL,                   "apb_pclk",     &clk_p),
+> -       INIT_CK(NULL,                   "pll2",         &clk_pll2),
+> -       INIT_CK("ohci-platform",        NULL,           &clk_usb_host),
+> -       INIT_CK("ep93xx-keypad",        NULL,           &clk_keypad),
+> -       INIT_CK("ep93xx-adc",           NULL,           &clk_adc),
+> -       INIT_CK("ep93xx-fb",            NULL,           &clk_video),
+> -       INIT_CK("ep93xx-spi.0",         NULL,           &clk_spi),
+> -       INIT_CK("ep93xx-i2s",           "mclk",         &clk_i2s_mclk),
+> -       INIT_CK("ep93xx-i2s",           "sclk",         &clk_i2s_sclk),
+> -       INIT_CK("ep93xx-i2s",           "lrclk",        &clk_i2s_lrclk),
+> -       INIT_CK(NULL,                   "pwm_clk",      &clk_pwm),
+> -       INIT_CK(NULL,                   "m2p0",         &clk_m2p0),
+> -       INIT_CK(NULL,                   "m2p1",         &clk_m2p1),
+> -       INIT_CK(NULL,                   "m2p2",         &clk_m2p2),
+> -       INIT_CK(NULL,                   "m2p3",         &clk_m2p3),
+> -       INIT_CK(NULL,                   "m2p4",         &clk_m2p4),
+> -       INIT_CK(NULL,                   "m2p5",         &clk_m2p5),
+> -       INIT_CK(NULL,                   "m2p6",         &clk_m2p6),
+> -       INIT_CK(NULL,                   "m2p7",         &clk_m2p7),
+> -       INIT_CK(NULL,                   "m2p8",         &clk_m2p8),
+> -       INIT_CK(NULL,                   "m2p9",         &clk_m2p9),
+> -       INIT_CK(NULL,                   "m2m0",         &clk_m2m0),
+> -       INIT_CK(NULL,                   "m2m1",         &clk_m2m1),
+> +struct clk_psc {
+> +       struct clk_hw hw;
+> +       void __iomem *reg;
+> +       u8 bit_idx;
+> +       u32 mask;
+> +       u8 shift;
+> +       u8 width;
+> +       char *div;
+> +       u8 num_div;
+> +       spinlock_t *lock;
+>  };
+>  
+> -static DEFINE_SPINLOCK(clk_lock);
+> +#define to_clk_psc(_hw) container_of(_hw, struct clk_psc, hw)
+>  
+> -static void __clk_enable(struct clk *clk)
+> +static int ep93xx_clk_is_enabled(struct clk_hw *hw)
+>  {
+> -       if (!clk->users++) {
+> -               if (clk->parent)
+> -                       __clk_enable(clk->parent);
+> -
+> -               if (clk->enable_reg) {
+> -                       u32 v;
+> -
+> -                       v = __raw_readl(clk->enable_reg);
+> -                       v |= clk->enable_mask;
+> -                       if (clk->sw_locked)
+> -                               ep93xx_syscon_swlocked_write(v, clk->enable_reg);
+> -                       else
+> -                               __raw_writel(v, clk->enable_reg);
+> -               }
+> -       }
+> +       struct clk_psc *psc = to_clk_psc(hw);
+> +       u32 val = readl(psc->reg);
 > +
-> +title: MAX77714 PMIC with GPIO, RTC and watchdog from Maxim Integrated.
+> +       return (val & BIT(psc->bit_idx)) ? 1 : 0;
+>  }
+>  
+> -int clk_enable(struct clk *clk)
+> +static int ep93xx_clk_enable(struct clk_hw *hw)
+>  {
+> -       unsigned long flags;
+> +       struct clk_psc *psc = to_clk_psc(hw);
+> +       unsigned long flags = 0;
+> +       u32 val;
+>  
+> -       if (!clk)
+> -               return -EINVAL;
+> +       if (psc->lock)
+> +               spin_lock_irqsave(psc->lock, flags);
 > +
-> +maintainers:
-> +  - Luca Ceresoli <luca@lucaceresoli.net>
+> +       val = __raw_readl(psc->reg);
+> +       val |= BIT(psc->bit_idx);
 > +
-> +description: |
-> +  MAX77714 is a Power Management IC with 4 buck regulators, 9
-> +  low-dropout regulators, 8 GPIOs, RTC and watchdog.
+> +       ep93xx_syscon_swlocked_write(val, psc->reg);
+>  
+> -       spin_lock_irqsave(&clk_lock, flags);
+> -       __clk_enable(clk);
+> -       spin_unlock_irqrestore(&clk_lock, flags);
+> +       if (psc->lock)
+> +               spin_unlock_irqrestore(psc->lock, flags);
+>  
+>         return 0;
+>  }
+> -EXPORT_SYMBOL(clk_enable);
+>  
+> -static void __clk_disable(struct clk *clk)
+> +static void ep93xx_clk_disable(struct clk_hw *hw)
+>  {
+> -       if (!--clk->users) {
+> -               if (clk->enable_reg) {
+> -                       u32 v;
+> -
+> -                       v = __raw_readl(clk->enable_reg);
+> -                       v &= ~clk->enable_mask;
+> -                       if (clk->sw_locked)
+> -                               ep93xx_syscon_swlocked_write(v, clk->enable_reg);
+> -                       else
+> -                               __raw_writel(v, clk->enable_reg);
+> -               }
+> +       struct clk_psc *psc = to_clk_psc(hw);
+> +       unsigned long flags = 0;
+> +       u32 val;
+>  
+> -               if (clk->parent)
+> -                       __clk_disable(clk->parent);
+> -       }
+> -}
+> +       if (psc->lock)
+> +               spin_lock_irqsave(psc->lock, flags);
+>  
+> -void clk_disable(struct clk *clk)
+> -{
+> -       unsigned long flags;
+> +       val = __raw_readl(psc->reg);
+> +       val &= ~BIT(psc->bit_idx);
+>  
+> -       if (!clk)
+> -               return;
+> +       ep93xx_syscon_swlocked_write(val, psc->reg);
+>  
+> -       spin_lock_irqsave(&clk_lock, flags);
+> -       __clk_disable(clk);
+> -       spin_unlock_irqrestore(&clk_lock, flags);
+> +       if (psc->lock)
+> +               spin_unlock_irqrestore(psc->lock, flags);
+>  }
+> -EXPORT_SYMBOL(clk_disable);
+>  
+> -static unsigned long get_uart_rate(struct clk *clk)
+> -{
+> -       unsigned long rate = clk_get_rate(clk->parent);
+> -       u32 value;
+> +static const struct clk_ops clk_ep93xx_gate_ops = {
+> +       .enable = ep93xx_clk_enable,
+> +       .disable = ep93xx_clk_disable,
+> +       .is_enabled = ep93xx_clk_is_enabled,
+> +};
+>  
+> -       value = __raw_readl(EP93XX_SYSCON_PWRCNT);
+> -       if (value & EP93XX_SYSCON_PWRCNT_UARTBAUD)
+> -               return rate;
+> -       else
+> -               return rate / 2;
+> +static struct clk_hw *ep93xx_clk_register_gate(const char *name,
+> +                                   const char *parent_name,
+> +                                   void __iomem *reg,
+> +                                   u8 bit_idx)
+> +{
+> +       struct clk_init_data init;
+> +       struct clk_psc *psc;
+> +       struct clk *clk;
 > +
-> +properties:
-> +  compatible:
-> +    const: maxim,max77714
+> +       psc = kzalloc(sizeof(*psc), GFP_KERNEL);
+> +       if (!psc)
+> +               return ERR_PTR(-ENOMEM);
 > +
-> +  reg:
-> +    maxItems: 1
+> +       init.name = name;
+> +       init.ops = &clk_ep93xx_gate_ops;
+> +       init.flags = CLK_SET_RATE_PARENT;
+> +       init.parent_names = (parent_name ? &parent_name : NULL);
+> +       init.num_parents = (parent_name ? 1 : 0);
 > +
-> +  interrupts:
-> +    maxItems: 1
+> +       psc->reg = reg;
+> +       psc->bit_idx = bit_idx;
+> +       psc->hw.init = &init;
+> +       psc->lock = &clk_lock;
 > +
-> +  interrupt-controller: true
+> +       clk = clk_register(NULL, &psc->hw);
+> +       if (IS_ERR(clk))
+> +               kfree(psc);
 > +
-> +  "#interrupt-cells":
-> +    const: 2
-> +    description:
-> +      The first cell is the IRQ number, the second cell is the trigger type.
+> +       return &psc->hw;
+>  }
+>  
+> -unsigned long clk_get_rate(struct clk *clk)
+> +static u8 ep93xx_mux_get_parent(struct clk_hw *hw)
+>  {
+> -       if (clk->get_rate)
+> -               return clk->get_rate(clk);
+> +       struct clk_psc *psc = to_clk_psc(hw);
+> +       u32 val = __raw_readl(psc->reg);
+>  
+> -       return clk->rate;
+> +       if (!(val & EP93XX_SYSCON_CLKDIV_ESEL))
+> +               return 0;
 > +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-controller
-> +  - "#interrupt-cells"
+> +       if (!(val & EP93XX_SYSCON_CLKDIV_PSEL))
+> +               return 1;
 > +
-> +additionalProperties: false
+> +       return 2;
+>  }
+> -EXPORT_SYMBOL(clk_get_rate);
+>  
+> -static int set_keytchclk_rate(struct clk *clk, unsigned long rate)
+> +static int ep93xx_mux_set_parent_lock(struct clk_hw *hw, u8 index)
+>  {
+> +       struct clk_psc *psc = to_clk_psc(hw);
+> +       unsigned long flags = 0;
+>         u32 val;
+> -       u32 div_bit;
+>  
+> -       val = __raw_readl(clk->enable_reg);
+> +       if (index >= ARRAY_SIZE(mux_parents))
+> +               return -EINVAL;
+>  
+> -       /*
+> -        * The Key Matrix and ADC clocks are configured using the same
+> -        * System Controller register.  The clock used will be either
+> -        * 1/4 or 1/16 the external clock rate depending on the
+> -        * EP93XX_SYSCON_KEYTCHCLKDIV_KDIV/EP93XX_SYSCON_KEYTCHCLKDIV_ADIV
+> -        * bit being set or cleared.
+> -        */
+> -       div_bit = clk->enable_mask >> 15;
+> +       if (psc->lock)
+> +               spin_lock_irqsave(psc->lock, flags);
+>  
+> -       if (rate == EP93XX_KEYTCHCLK_DIV4)
+> -               val |= div_bit;
+> -       else if (rate == EP93XX_KEYTCHCLK_DIV16)
+> -               val &= ~div_bit;
+> -       else
+> -               return -EINVAL;
+> +       val = __raw_readl(psc->reg);
+> +       val &= ~(EP93XX_SYSCON_CLKDIV_ESEL | EP93XX_SYSCON_CLKDIV_PSEL);
 > +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
 > +
-> +        pmic@1c {
-> +            compatible = "maxim,max77714";
-> +            reg = <0x1c>;
-> +            interrupt-parent = <&gpio2>;
-> +            interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
+> +       if (index != 0) {
+> +               val |= EP93XX_SYSCON_CLKDIV_ESEL;
+> +               val |= (index - 1) ? EP93XX_SYSCON_CLKDIV_PSEL : 0;
+> +       }
 > +
-> +            interrupt-controller;
-> +            #interrupt-cells = <2>;
-> +        };
-> +    };
+> +       ep93xx_syscon_swlocked_write(val, psc->reg);
+> +
+> +       if (psc->lock)
+> +               spin_unlock_irqrestore(psc->lock, flags);
+>  
+> -       ep93xx_syscon_swlocked_write(val, clk->enable_reg);
+> -       clk->rate = rate;
+>         return 0;
+>  }
+>  
+> -static int calc_clk_div(struct clk *clk, unsigned long rate,
+> -                       int *psel, int *esel, int *pdiv, int *div)
+> +static bool is_best(unsigned long rate, unsigned long now,
+> +                    unsigned long best)
+>  {
+> -       struct clk *mclk;
+> -       unsigned long max_rate, actual_rate, mclk_rate, rate_err = -1;
+> -       int i, found = 0, __div = 0, __pdiv = 0;
+> +       return abs(rate - now) < abs(rate - best);
+> +}
+>  
+> -       /* Don't exceed the maximum rate */
+> -       max_rate = max3(clk_pll1.rate / 4, clk_pll2.rate / 4, clk_xtali.rate / 4);
+> -       rate = min(rate, max_rate);
+> +static int ep93xx_mux_determine_rate(struct clk_hw *hw,
+> +                               struct clk_rate_request *req)
+> +{
+> +       unsigned long rate = req->rate;
+> +       struct clk *best_parent = 0;
+> +       unsigned long __parent_rate;
+> +       unsigned long best_rate = 0, actual_rate, mclk_rate;
+> +       unsigned long best_parent_rate;
+> +       int __div = 0, __pdiv = 0;
+> +       int i;
+>  
+>         /*
+>          * Try the two pll's and the external clock
+> @@ -376,14 +223,11 @@ static int calc_clk_div(struct clk *clk, unsigned long rate,
+>          * http://be-a-maverick.com/en/pubs/appNote/AN269REV1.pdf
+>          *
+>          */
+> -       for (i = 0; i < 3; i++) {
+> -               if (i == 0)
+> -                       mclk = &clk_xtali;
+> -               else if (i == 1)
+> -                       mclk = &clk_pll1;
+> -               else
+> -                       mclk = &clk_pll2;
+> -               mclk_rate = mclk->rate * 2;
+> +       for (i = 0; i < ARRAY_SIZE(mux_parents); i++) {
+> +               struct clk *parent = clk_get_sys(mux_parents[i], NULL);
+> +
+> +               __parent_rate = clk_get_rate(parent);
+> +               mclk_rate = __parent_rate * 2;
+>  
+>                 /* Try each predivider value */
+>                 for (__pdiv = 4; __pdiv <= 6; __pdiv++) {
+> @@ -392,197 +236,494 @@ static int calc_clk_div(struct clk *clk, unsigned long rate,
+>                                 continue;
+>  
+>                         actual_rate = mclk_rate / (__pdiv * __div);
+> -
+> -                       if (!found || abs(actual_rate - rate) < rate_err) {
+> -                               *pdiv = __pdiv - 3;
+> -                               *div = __div;
+> -                               *psel = (i == 2);
+> -                               *esel = (i != 0);
+> -                               clk->parent = mclk;
+> -                               clk->rate = actual_rate;
+> -                               rate_err = abs(actual_rate - rate);
+> -                               found = 1;
+> +                       if (is_best(rate, actual_rate, best_rate)) {
+> +                               best_rate = actual_rate;
+> +                               best_parent_rate = __parent_rate;
+> +                               best_parent = parent;
+>                         }
+>                 }
+>         }
+>  
+> -       if (!found)
+> +       if (!best_parent)
+>                 return -EINVAL;
+>  
+> +       req->best_parent_rate = best_parent_rate;
+> +       req->best_parent_hw = __clk_get_hw(best_parent);
+> +       req->rate = best_rate;
+> +
+>         return 0;
+>  }
+>  
+> -static int set_div_rate(struct clk *clk, unsigned long rate)
+> +static unsigned long ep93xx_ddiv_recalc_rate(struct clk_hw *hw,
+> +                                               unsigned long parent_rate)
+>  {
+> -       int err, psel = 0, esel = 0, pdiv = 0, div = 0;
+> -       u32 val;
+> -
+> -       err = calc_clk_div(clk, rate, &psel, &esel, &pdiv, &div);
+> -       if (err)
+> -               return err;
+> +       struct clk_psc *psc = to_clk_psc(hw);
+> +       unsigned long rate = 0;
+> +       u32 val = __raw_readl(psc->reg);
+> +       int __pdiv = ((val >> EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) & 0x03);
+> +       int __div = val & 0x7f;
+>  
+> -       /* Clear the esel, psel, pdiv and div bits */
+> -       val = __raw_readl(clk->enable_reg);
+> -       val &= ~0x7fff;
+> +       if (__div > 0)
+> +               rate = (parent_rate * 2) / ((__pdiv + 3) * __div);
+>  
+> -       /* Set the new esel, psel, pdiv and div bits for the new clock rate */
+> -       val |= (esel ? EP93XX_SYSCON_CLKDIV_ESEL : 0) |
+> -               (psel ? EP93XX_SYSCON_CLKDIV_PSEL : 0) |
+> -               (pdiv << EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) | div;
+> -       ep93xx_syscon_swlocked_write(val, clk->enable_reg);
+> -       return 0;
+> +       return rate;
+>  }
+>  
+> -static int set_i2s_sclk_rate(struct clk *clk, unsigned long rate)
+> +static int ep93xx_ddiv_set_rate(struct clk_hw *hw, unsigned long rate,
+> +                               unsigned long parent_rate)
+>  {
+> -       unsigned val = __raw_readl(clk->enable_reg);
+> -
+> -       if (rate == clk_i2s_mclk.rate / 2)
+> -               ep93xx_syscon_swlocked_write(val & ~EP93XX_I2SCLKDIV_SDIV, 
+> -                                            clk->enable_reg);
+> -       else if (rate == clk_i2s_mclk.rate / 4)
+> -               ep93xx_syscon_swlocked_write(val | EP93XX_I2SCLKDIV_SDIV, 
+> -                                            clk->enable_reg);
+> -       else
+> +       struct clk_psc *psc = to_clk_psc(hw);
+> +       int pdiv = 0, div = 0;
+> +       unsigned long best_rate = 0, actual_rate, mclk_rate;
+> +       int __div = 0, __pdiv = 0;
+> +       u32 val;
+> +
+> +       mclk_rate = parent_rate * 2;
+> +
+> +       for (__pdiv = 4; __pdiv <= 6; __pdiv++) {
+> +               __div = mclk_rate / (rate * __pdiv);
+> +               if (__div < 2 || __div > 127)
+> +                       continue;
+> +
+> +               actual_rate = mclk_rate / (__pdiv * __div);
+> +               if (is_best(rate, actual_rate, best_rate)) {
+> +                       pdiv = __pdiv - 3;
+> +                       div = __div;
+> +                       best_rate = actual_rate;
+> +               }
+> +       }
+> +
+> +       if (!best_rate)
+>                 return -EINVAL;
+>  
+> -       clk_i2s_sclk.rate = rate;
+> +       val = __raw_readl(psc->reg);
+> +
+> +       /* Clear old dividers */
+> +       val &= ~0x37f;
+> +
+> +       /* Set the new pdiv and div bits for the new clock rate */
+> +       val |= (pdiv << EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) | div;
+> +       ep93xx_syscon_swlocked_write(val, psc->reg);
+> +
+>         return 0;
+>  }
+>  
+> -static int set_i2s_lrclk_rate(struct clk *clk, unsigned long rate)
+> -{
+> -       unsigned val = __raw_readl(clk->enable_reg) & 
+> -               ~EP93XX_I2SCLKDIV_LRDIV_MASK;
+> -       
+> -       if (rate == clk_i2s_sclk.rate / 32)
+> -               ep93xx_syscon_swlocked_write(val | EP93XX_I2SCLKDIV_LRDIV32,
+> -                                            clk->enable_reg);
+> -       else if (rate == clk_i2s_sclk.rate / 64)
+> -               ep93xx_syscon_swlocked_write(val | EP93XX_I2SCLKDIV_LRDIV64,
+> -                                            clk->enable_reg);
+> -       else if (rate == clk_i2s_sclk.rate / 128)
+> -               ep93xx_syscon_swlocked_write(val | EP93XX_I2SCLKDIV_LRDIV128,
+> -                                            clk->enable_reg);
+> -       else
+> -               return -EINVAL;
+> +static const struct clk_ops clk_ddiv_ops = {
+> +       .enable = ep93xx_clk_enable,
+> +       .disable = ep93xx_clk_disable,
+> +       .is_enabled = ep93xx_clk_is_enabled,
+> +       .get_parent = ep93xx_mux_get_parent,
+> +       .set_parent = ep93xx_mux_set_parent_lock,
+> +       .determine_rate = ep93xx_mux_determine_rate,
+> +       .recalc_rate = ep93xx_ddiv_recalc_rate,
+> +       .set_rate = ep93xx_ddiv_set_rate,
+> +};
+>  
+> -       clk_i2s_lrclk.rate = rate;
+> -       return 0;
+> +static struct clk_hw *clk_hw_register_ddiv(const char *name,
+> +                                         void __iomem *reg,
+> +                                         u8 bit_idx)
+> +{
+> +       struct clk_init_data init;
+> +       struct clk_psc *psc;
+> +       struct clk *clk;
+> +
+> +       psc = kzalloc(sizeof(*psc), GFP_KERNEL);
+> +       if (!psc)
+> +               return ERR_PTR(-ENOMEM);
+> +
+> +       init.name = name;
+> +       init.ops = &clk_ddiv_ops;
+> +       init.flags = 0;
+> +       init.parent_names = mux_parents;
+> +       init.num_parents = ARRAY_SIZE(mux_parents);
+> +
+> +       psc->reg = reg;
+> +       psc->bit_idx = bit_idx;
+> +       psc->lock = &clk_lock;
+> +       psc->hw.init = &init;
+> +
+> +       clk = clk_register(NULL, &psc->hw);
+> +       if (IS_ERR(clk))
+> +               kfree(psc);
+> +
+> +       return &psc->hw;
+>  }
+>  
+> -int clk_set_rate(struct clk *clk, unsigned long rate)
+> +static unsigned long ep93xx_div_recalc_rate(struct clk_hw *hw,
+> +                                           unsigned long parent_rate)
+>  {
+> -       if (clk->set_rate)
+> -               return clk->set_rate(clk, rate);
+> +       struct clk_psc *psc = to_clk_psc(hw);
+> +       u32 val = __raw_readl(psc->reg);
+> +       u8 index = (val & psc->mask) >> psc->shift;
+>  
+> -       return -EINVAL;
+> +       if (index > psc->num_div)
+> +               return 0;
+> +
+> +       return DIV_ROUND_UP_ULL(parent_rate, psc->div[index]);
+>  }
+> -EXPORT_SYMBOL(clk_set_rate);
+>  
+> -long clk_round_rate(struct clk *clk, unsigned long rate)
+> +static long ep93xx_div_round_rate(struct clk_hw *hw, unsigned long rate,
+> +                                  unsigned long *parent_rate)
+>  {
+> -       WARN_ON(clk);
+> -       return 0;
+> +       struct clk_psc *psc = to_clk_psc(hw);
+> +       unsigned long best = 0, now, maxdiv;
+> +       int i;
+> +
+> +       maxdiv = psc->div[psc->num_div - 1];
+> +
+> +       for (i = 0; i < psc->num_div; i++) {
+> +               if ((rate * psc->div[i]) == *parent_rate)
+> +                       return DIV_ROUND_UP_ULL((u64)*parent_rate, psc->div[i]);
+> +
+> +               now = DIV_ROUND_UP_ULL((u64)*parent_rate, psc->div[i]);
+> +
+> +               if (is_best(rate, now, best))
+> +                       best = now;
+> +       }
+> +
+> +       if (!best)
+> +               best = DIV_ROUND_UP_ULL(*parent_rate, maxdiv);
+> +
+> +       return best;
+>  }
+> -EXPORT_SYMBOL(clk_round_rate);
+>  
+> -int clk_set_parent(struct clk *clk, struct clk *parent)
+> +static int ep93xx_div_set_rate(struct clk_hw *hw, unsigned long rate,
+> +                              unsigned long parent_rate)
+>  {
+> -       WARN_ON(clk);
+> +       struct clk_psc *psc = to_clk_psc(hw);
+> +       u32 val = __raw_readl(psc->reg) & ~psc->mask;
+> +       int i;
+> +
+> +       for (i = 0; i < psc->num_div; i++)
+> +               if (rate == parent_rate / psc->div[i]) {
+> +                       val |= i << psc->shift;
+> +                       break;
+> +               }
+> +
+> +       if (i == psc->num_div)
+> +               return -EINVAL;
+> +
+> +       ep93xx_syscon_swlocked_write(val, psc->reg);
+> +
+>         return 0;
+>  }
+> -EXPORT_SYMBOL(clk_set_parent);
+>  
+> -struct clk *clk_get_parent(struct clk *clk)
+> +static const struct clk_ops ep93xx_div_ops = {
+> +       .enable = ep93xx_clk_enable,
+> +       .disable = ep93xx_clk_disable,
+> +       .is_enabled = ep93xx_clk_is_enabled,
+> +       .recalc_rate = ep93xx_div_recalc_rate,
+> +       .round_rate = ep93xx_div_round_rate,
+> +       .set_rate = ep93xx_div_set_rate,
+> +};
+> +
+> +static struct clk_hw *clk_hw_register_div(const char *name,
+> +                                         const char *parent_name,
+> +                                         void __iomem *reg,
+> +                                         u8 enable_bit,
+> +                                         u8 shift,
+> +                                         u8 width,
+> +                                         char *clk_divisors,
+> +                                         u8 num_div)
+>  {
+> -       return clk->parent;
+> +       struct clk_init_data init;
+> +       struct clk_psc *psc;
+> +       struct clk *clk;
+> +
+> +       psc = kzalloc(sizeof(*psc), GFP_KERNEL);
+> +       if (!psc)
+> +               return ERR_PTR(-ENOMEM);
+> +
+> +       init.name = name;
+> +       init.ops = &ep93xx_div_ops;
+> +       init.flags = 0;
+> +       init.parent_names = (parent_name ? &parent_name : NULL);
+> +       init.num_parents = 1;
+> +
+> +       psc->reg = reg;
+> +       psc->bit_idx = enable_bit;
+> +       psc->mask = GENMASK(shift + width - 1, shift);
+> +       psc->shift = shift;
+> +       psc->div = clk_divisors;
+> +       psc->num_div = num_div;
+> +       psc->lock = &clk_lock;
+> +       psc->hw.init = &init;
+> +
+> +       clk = clk_register(NULL, &psc->hw);
+> +       if (IS_ERR(clk))
+> +               kfree(psc);
+> +
+> +       return &psc->hw;
+>  }
+> -EXPORT_SYMBOL(clk_get_parent);
+>  
+> +struct ep93xx_gate {
+> +       unsigned int bit;
+> +       const char *dev_id;
+> +       const char *con_id;
+> +};
+>  
+> -static char fclk_divisors[] = { 1, 2, 4, 8, 16, 1, 1, 1 };
+> -static char hclk_divisors[] = { 1, 2, 4, 5, 6, 8, 16, 32 };
+> -static char pclk_divisors[] = { 1, 2, 4, 8 };
+> +static struct ep93xx_gate ep93xx_uarts[] = {
+> +       {EP93XX_SYSCON_DEVCFG_U1EN, "apb:uart1", NULL},
+> +       {EP93XX_SYSCON_DEVCFG_U2EN, "apb:uart2", NULL},
+> +       {EP93XX_SYSCON_DEVCFG_U3EN, "apb:uart3", NULL},
+> +};
+>  
+> -/*
+> - * PLL rate = 14.7456 MHz * (X1FBD + 1) * (X2FBD + 1) / (X2IPD + 1) / 2^PS
+> - */
+> -static unsigned long calc_pll_rate(u32 config_word)
+> +static void __init ep93xx_uart_clock_init(void)
+>  {
+> -       unsigned long long rate;
+> -       int i;
+> +       unsigned int i;
+> +       struct clk_hw *hw;
+> +       u32 value;
+> +       unsigned int clk_uart_div;
+>  
+> -       rate = clk_xtali.rate;
+> -       rate *= ((config_word >> 11) & 0x1f) + 1;               /* X1FBD */
+> -       rate *= ((config_word >> 5) & 0x3f) + 1;                /* X2FBD */
+> -       do_div(rate, (config_word & 0x1f) + 1);                 /* X2IPD */
+> -       for (i = 0; i < ((config_word >> 16) & 3); i++)         /* PS */
+> -               rate >>= 1;
+> +       value = __raw_readl(EP93XX_SYSCON_PWRCNT);
+> +       if (value & EP93XX_SYSCON_PWRCNT_UARTBAUD)
+> +               clk_uart_div = 1;
+> +       else
+> +               clk_uart_div = 2;
+>  
+> -       return (unsigned long)rate;
+> +       hw = clk_hw_register_fixed_factor(NULL, "uart", "xtali", 0, 1, clk_uart_div);
+> +
+> +       /* parenting uart gate clocks to uart clock */
+> +       for (i = 0; i < ARRAY_SIZE(ep93xx_uarts); i++) {
+> +               hw = ep93xx_clk_register_gate(ep93xx_uarts[i].dev_id,
+> +                                       "uart",
+> +                                       EP93XX_SYSCON_DEVCFG,
+> +                                       ep93xx_uarts[i].bit);
+> +
+> +               clk_hw_register_clkdev(hw, NULL, ep93xx_uarts[i].dev_id);
+> +       }
+>  }
+>  
+> +static struct ep93xx_gate ep93xx_dmas[] = {
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2P0, NULL, "m2p0"},
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2P1, NULL, "m2p1"},
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2P2, NULL, "m2p2"},
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2P3, NULL, "m2p3"},
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2P4, NULL, "m2p4"},
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2P5, NULL, "m2p5"},
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2P6, NULL, "m2p6"},
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2P7, NULL, "m2p7"},
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2P8, NULL, "m2p8"},
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2P9, NULL, "m2p9"},
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2M0, NULL, "m2m0"},
+> +       {EP93XX_SYSCON_PWRCNT_DMA_M2M1, NULL, "m2m1"},
+> +};
+> +
+>  static void __init ep93xx_dma_clock_init(void)
+>  {
+> -       clk_m2p0.rate = clk_h.rate;
+> -       clk_m2p1.rate = clk_h.rate;
+> -       clk_m2p2.rate = clk_h.rate;
+> -       clk_m2p3.rate = clk_h.rate;
+> -       clk_m2p4.rate = clk_h.rate;
+> -       clk_m2p5.rate = clk_h.rate;
+> -       clk_m2p6.rate = clk_h.rate;
+> -       clk_m2p7.rate = clk_h.rate;
+> -       clk_m2p8.rate = clk_h.rate;
+> -       clk_m2p9.rate = clk_h.rate;
+> -       clk_m2m0.rate = clk_h.rate;
+> -       clk_m2m1.rate = clk_h.rate;
+> +       unsigned int i;
+> +       struct clk_hw *hw;
+> +       int ret;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(ep93xx_dmas); i++) {
+> +               hw = clk_hw_register_gate(NULL, ep93xx_dmas[i].con_id,
+> +                                       "hclk", 0,
+> +                                       EP93XX_SYSCON_PWRCNT,
+> +                                       ep93xx_dmas[i].bit,
+> +                                       0,
+> +                                       &clk_lock);
+> +
+> +               ret = clk_hw_register_clkdev(hw, ep93xx_dmas[i].con_id, NULL);
+> +               if (ret)
+> +                       pr_err("%s: failed to register lookup %s\n",
+> +                              __func__, ep93xx_dmas[i].con_id);
+> +       }
+>  }
+>  
+>  static int __init ep93xx_clock_init(void)
+>  {
+>         u32 value;
+> +       struct clk_hw *hw;
+> +       unsigned long clk_pll1_rate;
+> +       unsigned long clk_f_rate;
+> +       unsigned long clk_h_rate;
+> +       unsigned long clk_p_rate;
+> +       unsigned long clk_pll2_rate;
+> +       unsigned int clk_f_div;
+> +       unsigned int clk_h_div;
+> +       unsigned int clk_p_div;
+> +       unsigned int clk_usb_div;
+> +       unsigned long clk_spi_div;
+> +
+> +       hw = clk_hw_register_fixed_rate(NULL, "xtali", NULL, 0, EP93XX_EXT_CLK_RATE);
+> +       clk_hw_register_clkdev(hw, NULL, "xtali");
+>  
+>         /* Determine the bootloader configured pll1 rate */
+>         value = __raw_readl(EP93XX_SYSCON_CLKSET1);
+>         if (!(value & EP93XX_SYSCON_CLKSET1_NBYP1))
+> -               clk_pll1.rate = clk_xtali.rate;
+> +               clk_pll1_rate = EP93XX_EXT_CLK_RATE;
+>         else
+> -               clk_pll1.rate = calc_pll_rate(value);
+> +               clk_pll1_rate = calc_pll_rate(EP93XX_EXT_CLK_RATE, value);
+> +
+> +       hw = clk_hw_register_fixed_rate(NULL, "pll1", "xtali", 0, clk_pll1_rate);
+> +       clk_hw_register_clkdev(hw, NULL, "pll1");
+>  
+>         /* Initialize the pll1 derived clocks */
+> -       clk_f.rate = clk_pll1.rate / fclk_divisors[(value >> 25) & 0x7];
+> -       clk_h.rate = clk_pll1.rate / hclk_divisors[(value >> 20) & 0x7];
+> -       clk_p.rate = clk_h.rate / pclk_divisors[(value >> 18) & 0x3];
+> +       clk_f_div = fclk_divisors[(value >> 25) & 0x7];
+> +       clk_h_div = hclk_divisors[(value >> 20) & 0x7];
+> +       clk_p_div = pclk_divisors[(value >> 18) & 0x3];
+> +
+> +       hw = clk_hw_register_fixed_factor(NULL, "fclk", "pll1", 0, 1, clk_f_div);
+> +       clk_f_rate = clk_get_rate(hw->clk);
+> +       hw = clk_hw_register_fixed_factor(NULL, "hclk", "pll1", 0, 1, clk_h_div);
+> +       clk_h_rate = clk_get_rate(hw->clk);
+> +       hw = clk_hw_register_fixed_factor(NULL, "pclk", "hclk", 0, 1, clk_p_div);
+> +       clk_p_rate = clk_get_rate(hw->clk);
+> +
+> +       clk_hw_register_clkdev(hw, "apb_pclk", NULL);
+> +
+>         ep93xx_dma_clock_init();
+>  
+>         /* Determine the bootloader configured pll2 rate */
+>         value = __raw_readl(EP93XX_SYSCON_CLKSET2);
+>         if (!(value & EP93XX_SYSCON_CLKSET2_NBYP2))
+> -               clk_pll2.rate = clk_xtali.rate;
+> +               clk_pll2_rate = EP93XX_EXT_CLK_RATE;
+>         else if (value & EP93XX_SYSCON_CLKSET2_PLL2_EN)
+> -               clk_pll2.rate = calc_pll_rate(value);
+> +               clk_pll2_rate = calc_pll_rate(EP93XX_EXT_CLK_RATE, value);
+>         else
+> -               clk_pll2.rate = 0;
+> +               clk_pll2_rate = 0;
+> +
+> +       hw = clk_hw_register_fixed_rate(NULL, "pll2", "xtali", 0, clk_pll2_rate);
+> +       clk_hw_register_clkdev(hw, NULL, "pll2");
+>  
+>         /* Initialize the pll2 derived clocks */
+> -       clk_usb_host.rate = clk_pll2.rate / (((value >> 28) & 0xf) + 1);
+> +       /*
+> +        * These four bits set the divide ratio between the PLL2
+> +        * output and the USB clock.
+> +        * 0000 - Divide by 1
+> +        * 0001 - Divide by 2
+> +        * 0010 - Divide by 3
+> +        * 0011 - Divide by 4
+> +        * 0100 - Divide by 5
+> +        * 0101 - Divide by 6
+> +        * 0110 - Divide by 7
+> +        * 0111 - Divide by 8
+> +        * 1000 - Divide by 9
+> +        * 1001 - Divide by 10
+> +        * 1010 - Divide by 11
+> +        * 1011 - Divide by 12
+> +        * 1100 - Divide by 13
+> +        * 1101 - Divide by 14
+> +        * 1110 - Divide by 15
+> +        * 1111 - Divide by 1
+> +        * On power-on-reset these bits are reset to 0000b.
+> +        */
+> +       clk_usb_div = (((value >> 28) & 0xf) + 1);
+> +       hw = clk_hw_register_fixed_factor(NULL, "usb_clk", "pll2", 0, 1, clk_usb_div);
+> +       hw = clk_hw_register_gate(NULL, "ohci-platform",
+> +                               "usb_clk", 0,
+> +                               EP93XX_SYSCON_PWRCNT,
+> +                               EP93XX_SYSCON_PWRCNT_USH_EN,
+> +                               0,
+> +                               &clk_lock);
+> +       clk_hw_register_clkdev(hw, NULL, "ohci-platform");
+>  
+>         /*
+>          * EP93xx SSP clock rate was doubled in version E2. For more information
+>          * see:
+>          *     http://www.cirrus.com/en/pubs/appNote/AN273REV4.pdf
+>          */
+> +       clk_spi_div = 1;
+>         if (ep93xx_chip_revision() < EP93XX_CHIP_REV_E2)
+> -               clk_spi.rate /= 2;
+> +               clk_spi_div = 2;
+> +       hw = clk_hw_register_fixed_factor(NULL, "ep93xx-spi.0", "xtali", 0, 1, clk_spi_div);
+> +       clk_hw_register_clkdev(hw, NULL, "ep93xx-spi.0");
+> +
+> +       /* pwm clock */
+> +       hw = clk_hw_register_fixed_factor(NULL, "pwm_clk", "xtali", 0, 1, 1);
+> +       clk_hw_register_clkdev(hw, "pwm_clk", NULL);
+>  
+>         pr_info("PLL1 running at %ld MHz, PLL2 at %ld MHz\n",
+> -               clk_pll1.rate / 1000000, clk_pll2.rate / 1000000);
+> +               clk_pll1_rate / 1000000, clk_pll2_rate / 1000000);
+>         pr_info("FCLK %ld MHz, HCLK %ld MHz, PCLK %ld MHz\n",
+> -               clk_f.rate / 1000000, clk_h.rate / 1000000,
+> -               clk_p.rate / 1000000);
+> +               clk_f_rate / 1000000, clk_h_rate / 1000000,
+> +               clk_p_rate / 1000000);
+> +
+> +       ep93xx_uart_clock_init();
+> +
+> +       /* touchscreen/adc clock */
+> +       hw = clk_hw_register_div("ep93xx-adc",
+> +                               "xtali",
+> +                               EP93XX_SYSCON_KEYTCHCLKDIV,
+> +                               EP93XX_SYSCON_KEYTCHCLKDIV_TSEN,
+> +                               EP93XX_SYSCON_KEYTCHCLKDIV_ADIV,
+> +                               1,
+> +                               adc_divisors,
+> +                               ARRAY_SIZE(adc_divisors));
+> +
+> +       clk_hw_register_clkdev(hw, NULL, "ep93xx-adc");
+> +
+> +       /* keypad clock */
+> +       hw = clk_hw_register_div("ep93xx-keypad",
+> +                               "xtali",
+> +                               EP93XX_SYSCON_KEYTCHCLKDIV,
+> +                               EP93XX_SYSCON_KEYTCHCLKDIV_KEN,
+> +                               EP93XX_SYSCON_KEYTCHCLKDIV_KDIV,
+> +                               1,
+> +                               adc_divisors,
+> +                               ARRAY_SIZE(adc_divisors));
+> +
+> +       clk_hw_register_clkdev(hw, NULL, "ep93xx-keypad");
+> +
+> +       /* On reset PDIV and VDIV is set to zero, while PDIV zero
+> +        * means clock disable, VDIV shouldn't be zero.
+> +        * So i set both dividers to minimum.
+> +        */
+> +       /* ENA - Enable CLK divider. */
+> +       /* PDIV - 00 - Disable clock */
+> +       /* VDIV - at least 2 */
+> +       /* Check and enable video clk registers */
+> +       value = __raw_readl(EP93XX_SYSCON_VIDCLKDIV);
+> +       value |= (1 << EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) | 2;
+> +       ep93xx_syscon_swlocked_write(value, EP93XX_SYSCON_VIDCLKDIV);
+> +
+> +       /* check and enable i2s clk registers */
+> +       value = __raw_readl(EP93XX_SYSCON_I2SCLKDIV);
+> +       value |= (1 << EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) | 2;
+> +       ep93xx_syscon_swlocked_write(value, EP93XX_SYSCON_I2SCLKDIV);
+> +
+> +       /* video clk */
+> +       hw = clk_hw_register_ddiv("ep93xx-fb",
+> +                               EP93XX_SYSCON_VIDCLKDIV,
+> +                               EP93XX_SYSCON_CLKDIV_ENABLE);
+> +
+> +       clk_hw_register_clkdev(hw, NULL, "ep93xx-fb");
+> +
+> +       /* i2s clk */
+> +       hw = clk_hw_register_ddiv("mclk",
+> +                               EP93XX_SYSCON_I2SCLKDIV,
+> +                               EP93XX_SYSCON_CLKDIV_ENABLE);
+> +
+> +       clk_hw_register_clkdev(hw, "mclk", "ep93xx-i2s");
+> +
+> +       /* i2s sclk */
+> +#define EP93XX_I2SCLKDIV_SDIV_SHIFT    16
+> +#define EP93XX_I2SCLKDIV_SDIV_WIDTH    1
+> +       hw = clk_hw_register_div("sclk",
+> +                               "mclk",
+> +                               EP93XX_SYSCON_I2SCLKDIV,
+> +                               EP93XX_SYSCON_I2SCLKDIV_SENA,
+> +                               EP93XX_I2SCLKDIV_SDIV_SHIFT,
+> +                               EP93XX_I2SCLKDIV_SDIV_WIDTH,
+> +                               sclk_divisors,
+> +                               ARRAY_SIZE(sclk_divisors));
+> +
+> +       clk_hw_register_clkdev(hw, "sclk", "ep93xx-i2s");
+> +
+> +       /* i2s lrclk */
+> +#define EP93XX_I2SCLKDIV_LRDIV32_SHIFT 17
+> +#define EP93XX_I2SCLKDIV_LRDIV32_WIDTH 3
+> +       hw = clk_hw_register_div("lrclk",
+> +                               "sclk",
+> +                               EP93XX_SYSCON_I2SCLKDIV,
+> +                               EP93XX_SYSCON_I2SCLKDIV_SENA,
+> +                               EP93XX_I2SCLKDIV_LRDIV32_SHIFT,
+> +                               EP93XX_I2SCLKDIV_LRDIV32_WIDTH,
+> +                               lrclk_divisors,
+> +                               ARRAY_SIZE(lrclk_divisors));
+> +
+> +       clk_hw_register_clkdev(hw, "lrclk", "ep93xx-i2s");
+>  
+> -       clkdev_add_table(clocks, ARRAY_SIZE(clocks));
+>         return 0;
+>  }
+>  postcore_initcall(ep93xx_clock_init);
+> diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+> index 6fb19a393fd2..bbb79f263331 100644
+> --- a/arch/arm/mach-ep93xx/core.c
+> +++ b/arch/arm/mach-ep93xx/core.c
+> @@ -214,7 +214,7 @@ static int ep93xx_ohci_power_on(struct platform_device *pdev)
+>                         return PTR_ERR(ep93xx_ohci_host_clock);
+>         }
+>  
+> -       return clk_enable(ep93xx_ohci_host_clock);
+> +       return clk_prepare_enable(ep93xx_ohci_host_clock);
+>  }
+>  
+>  static void ep93xx_ohci_power_off(struct platform_device *pdev)
+> diff --git a/arch/arm/mach-ep93xx/soc.h b/arch/arm/mach-ep93xx/soc.h
+> index f2dace1c9154..94ef7f275f94 100644
+> --- a/arch/arm/mach-ep93xx/soc.h
+> +++ b/arch/arm/mach-ep93xx/soc.h
+> @@ -111,19 +111,19 @@
+>  #define EP93XX_SYSCON_PWRCNT           EP93XX_SYSCON_REG(0x04)
+>  #define EP93XX_SYSCON_PWRCNT_FIR_EN    (1<<31)
+>  #define EP93XX_SYSCON_PWRCNT_UARTBAUD  (1<<29)
+> -#define EP93XX_SYSCON_PWRCNT_USH_EN    (1<<28)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2M1  (1<<27)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2M0  (1<<26)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2P8  (1<<25)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2P9  (1<<24)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2P6  (1<<23)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2P7  (1<<22)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2P4  (1<<21)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2P5  (1<<20)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2P2  (1<<19)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2P3  (1<<18)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2P0  (1<<17)
+> -#define EP93XX_SYSCON_PWRCNT_DMA_M2P1  (1<<16)
+> +#define EP93XX_SYSCON_PWRCNT_USH_EN    28
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2M1  27
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2M0  26
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2P8  25
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2P9  24
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2P6  23
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2P7  22
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2P4  21
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2P5  20
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2P2  19
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2P3  18
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2P0  17
+> +#define EP93XX_SYSCON_PWRCNT_DMA_M2P1  16
+>  #define EP93XX_SYSCON_HALT             EP93XX_SYSCON_REG(0x08)
+>  #define EP93XX_SYSCON_STANDBY          EP93XX_SYSCON_REG(0x0c)
+>  #define EP93XX_SYSCON_CLKSET1          EP93XX_SYSCON_REG(0x20)
+> @@ -139,13 +139,13 @@
+>  #define EP93XX_SYSCON_DEVCFG_GONK      (1<<27)
+>  #define EP93XX_SYSCON_DEVCFG_TONG      (1<<26)
+>  #define EP93XX_SYSCON_DEVCFG_MONG      (1<<25)
+> -#define EP93XX_SYSCON_DEVCFG_U3EN      (1<<24)
+> +#define EP93XX_SYSCON_DEVCFG_U3EN      24
+>  #define EP93XX_SYSCON_DEVCFG_CPENA     (1<<23)
+>  #define EP93XX_SYSCON_DEVCFG_A2ONG     (1<<22)
+>  #define EP93XX_SYSCON_DEVCFG_A1ONG     (1<<21)
+> -#define EP93XX_SYSCON_DEVCFG_U2EN      (1<<20)
+> +#define EP93XX_SYSCON_DEVCFG_U2EN      20
+>  #define EP93XX_SYSCON_DEVCFG_EXVC      (1<<19)
+> -#define EP93XX_SYSCON_DEVCFG_U1EN      (1<<18)
+> +#define EP93XX_SYSCON_DEVCFG_U1EN      18
+>  #define EP93XX_SYSCON_DEVCFG_TIN       (1<<17)
+>  #define EP93XX_SYSCON_DEVCFG_HC3IN     (1<<15)
+>  #define EP93XX_SYSCON_DEVCFG_HC3EN     (1<<14)
+> @@ -163,12 +163,12 @@
+>  #define EP93XX_SYSCON_DEVCFG_KEYS      (1<<1)
+>  #define EP93XX_SYSCON_DEVCFG_SHENA     (1<<0)
+>  #define EP93XX_SYSCON_VIDCLKDIV                EP93XX_SYSCON_REG(0x84)
+> -#define EP93XX_SYSCON_CLKDIV_ENABLE    (1<<15)
+> +#define EP93XX_SYSCON_CLKDIV_ENABLE    15
+>  #define EP93XX_SYSCON_CLKDIV_ESEL      (1<<14)
+>  #define EP93XX_SYSCON_CLKDIV_PSEL      (1<<13)
+>  #define EP93XX_SYSCON_CLKDIV_PDIV_SHIFT        8
+>  #define EP93XX_SYSCON_I2SCLKDIV                EP93XX_SYSCON_REG(0x8c)
+> -#define EP93XX_SYSCON_I2SCLKDIV_SENA   (1<<31)
+> +#define EP93XX_SYSCON_I2SCLKDIV_SENA   31
+>  #define EP93XX_SYSCON_I2SCLKDIV_ORIDE   (1<<29)
+>  #define EP93XX_SYSCON_I2SCLKDIV_SPOL   (1<<19)
+>  #define EP93XX_I2SCLKDIV_SDIV          (1 << 16)
+> @@ -177,9 +177,9 @@
+>  #define EP93XX_I2SCLKDIV_LRDIV128      (2 << 17)
+>  #define EP93XX_I2SCLKDIV_LRDIV_MASK    (3 << 17)
+>  #define EP93XX_SYSCON_KEYTCHCLKDIV     EP93XX_SYSCON_REG(0x90)
+> -#define EP93XX_SYSCON_KEYTCHCLKDIV_TSEN        (1<<31)
+> -#define EP93XX_SYSCON_KEYTCHCLKDIV_ADIV        (1<<16)
+> -#define EP93XX_SYSCON_KEYTCHCLKDIV_KEN (1<<15)
+> +#define EP93XX_SYSCON_KEYTCHCLKDIV_TSEN        31
+> +#define EP93XX_SYSCON_KEYTCHCLKDIV_ADIV        16
+> +#define EP93XX_SYSCON_KEYTCHCLKDIV_KEN 15
+>  #define EP93XX_SYSCON_KEYTCHCLKDIV_KDIV        (1<<0)
+>  #define EP93XX_SYSCON_SYSCFG           EP93XX_SYSCON_REG(0x9c)
+>  #define EP93XX_SYSCON_SYSCFG_REV_MASK  (0xf0000000)
 
-Looks good to me, but what about regulators and other properties? Are
-you planning to add them later?
+-- 
+Alexander Sverdlin.
 
 
-Best regards,
-Krzysztof
