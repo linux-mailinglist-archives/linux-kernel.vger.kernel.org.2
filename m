@@ -2,212 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B4342A0C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC8242A0CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235438AbhJLJQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
+        id S235502AbhJLJQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232657AbhJLJQF (ORCPT
+        with ESMTP id S235009AbhJLJQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:16:05 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4FFC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:14:04 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id g13so16762186uaj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:14:04 -0700 (PDT)
+        Tue, 12 Oct 2021 05:16:44 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F9AC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:14:42 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id w6so5543158pfd.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:14:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cdx68haq+GI9hYbv4kInfLBYws9f1YTUpzJDYZRtxTQ=;
-        b=0wKyXGV0Sg2HzurNg19D86iRRMxMHIHP6ii4dL16JWNKqKQYSc5SUyd7KX7qRZyWOl
-         DAhJ41KHAOMKyphg5k6jvKyLVx2+u8E3bfB75fMZnWHGNlD325rFCJosgkhW7gqYaona
-         qv/P81BHmuvTERxGFTIrd94wXylE1Y/5txUgNnxfopn+XYVlDYnLlZoVn0EeanjvoFFQ
-         Yog+CTTCvhiILRXszHSN6sevNmhwxeI2TtRT4OURFfOQen8MYtsbmDt4GGcSTzRbH6Eu
-         SM43VV7E1Odf93RpGuR5dgox7IxOnKMt0k6l6pD6AsYnM7DdDjZnoj88ZkXgHzTqGqwA
-         Hj5w==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gsikHghVru8/rUeORtbHI2W2haVRkZtoaZ66/GPgtEk=;
+        b=BTCpRmH5elkD+Jip61aEsZhqzOhbyYC68+4YO7JMTwp1bwEBHq0ziGmzxw8IHiTfTS
+         rUfWvgsS9AutyBX2aD7n7E3gcyuPG40NOsl/XgIMrKsEwqJP+5JjyUUhTnUvYMBzi6Zt
+         Y93nJ74qJYgBTrPB8tJg8A2Q2iG+eDGrNNuII=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cdx68haq+GI9hYbv4kInfLBYws9f1YTUpzJDYZRtxTQ=;
-        b=S2Piy4mKn8MPtohAUYCfCy12yRP8KFiZF6+WtTGd4O7yMs8xf9FKrfi6hF79MkzgSc
-         p/4pb08ZrP4WsCfvaey69IUGK8QgaAcYpzMmb8jPlyuC+7iA0xXMOMNZ2rq0I1rGeEJN
-         Ff/IQ/g3SZyzRHvyijwBNhLwMHJGaKpeE+rY2EYEF5xv3AVfXtQOi4IL9CUX79w2XJPt
-         RN1rewqgicG9vc+NiDHamTzokdl4H+Tn019ZT1d1Zvohj55m4mehDpFHbbDpU0CSv80v
-         Pk5Rpd2y3wz2THQhUuvQlNArGw6t2m8T7NysZ7nrCNuYMbjzwC1tkIja/M+G3qvFiOGk
-         RS9w==
-X-Gm-Message-State: AOAM533ZUouznZszymU789gCtkxFbCusDqeFGkTYnb7AcYYVgtJ8+auw
-        QuGiB/h7qu3w5ptfK04LPJdTnif+k/P1mgCErof2LQ==
-X-Google-Smtp-Source: ABdhPJzr8KcM6zJqeVR++RcjnWt01xCANrk81+BaS6dd8rKggMvZSv67FzuFQrLwYcVLcwrt5iWlrCz+XUDCCgFnUyE=
-X-Received: by 2002:ab0:36dc:: with SMTP id v28mr12460789uau.31.1634030043137;
- Tue, 12 Oct 2021 02:14:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gsikHghVru8/rUeORtbHI2W2haVRkZtoaZ66/GPgtEk=;
+        b=QmFj2otQXua2QTO2F96KwPaQ/8drQE7l6YnB0hnWZ3ZY9zheGL+BS+jyR2KUw+f1T3
+         IEu0I7e7AwG5j2z1o0KVSyRQYPQZqQlTLFf7o+XcawzibvauYwsKJVuZ/npk9w3bIto8
+         um2oGZVBkYH6c3PAlIrCruGjwlWE7lIxbnX1HdJzJYsi4H9KYE9H5/ctMnh0lmE59cUy
+         aZ1T8n2JGX5jenRFZ30SNQjaxmtGGlhSXLbCPGjyPxTWy0+siIYijfE0aJW9fh+4jzxX
+         6Rm9Ku182RX8+rwE3a7kHG+MACW6knFf88eJHfytGxKtrUsKOiASbME2Hz4hkHZNQrIF
+         82DA==
+X-Gm-Message-State: AOAM531qo+HKtPRs+jy2+BojbZ52hKpJpwmUz44SDbaSl/Jqzdepi7ib
+        LHbS00GCJdhwo7+rh9vDMtT86Q==
+X-Google-Smtp-Source: ABdhPJw5yBZbuCINijJ1z7bpgu3MLsahMnCPdTPx9qxUIVs1uc0Ins3QkDWTVp8njKQGjB/U8k44rQ==
+X-Received: by 2002:a63:1504:: with SMTP id v4mr22074972pgl.151.1634030082417;
+        Tue, 12 Oct 2021 02:14:42 -0700 (PDT)
+Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:8b6f:6c85:edfe:b252])
+        by smtp.gmail.com with ESMTPSA id i13sm5263233pgf.77.2021.10.12.02.14.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 02:14:41 -0700 (PDT)
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Suleiman Souhlal <suleiman@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCH] KVM: MMU: make PTE_PREFETCH_NUM tunable
+Date:   Tue, 12 Oct 2021 18:14:30 +0900
+Message-Id: <20211012091430.1754492-1-senozhatsky@chromium.org>
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
 MIME-Version: 1.0
-References: <20211008032231.1143467-1-fengli@smartx.com> <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
- <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com>
- <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
- <CALTww28CsJdmVOLFeoHC8FgbHDK78h8Lncsf9fFA0RYXEj=R9A@mail.gmail.com>
- <CAHckoCzzVP7npmU4LWedzD-f1QmkH4K0iLk_=8ptSFXrFfRoDw@mail.gmail.com>
- <CAPhsuW4VFTpM94by-iMkTQ=b9Y7FqZ2oqHH+jV-f8BM=YKWyiA@mail.gmail.com>
- <CAHckoCxRj1qb=yfeQ2o_8n_BSSLD9JXqm8GopUp2qx9NEPxr7w@mail.gmail.com> <CALTww2_eScuqd4yUtDFhaRUGAK-f8J_L=yOZdTVA9uZ7Tq4bxg@mail.gmail.com>
-In-Reply-To: <CALTww2_eScuqd4yUtDFhaRUGAK-f8J_L=yOZdTVA9uZ7Tq4bxg@mail.gmail.com>
-From:   Li Feng <fengli@smartx.com>
-Date:   Tue, 12 Oct 2021 17:13:51 +0800
-Message-ID: <CAHckoCys6_SG56jzuK0OfFwKb6BtBsUhpp6A70hOKFSeVTWU-Q@mail.gmail.com>
-Subject: Re: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
-To:     Xiao Ni <xni@redhat.com>
-Cc:     Song Liu <song@kernel.org>,
-        "open list:SOFTWARE RAID (Multiple Disks) SUPPORT" 
-        <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
-Feng Li
+Turn PTE_PREFETCH_NUM into a module parameter, so that it
+can be tuned per-VM.
 
-Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=A5=E5=91=
-=A8=E4=BA=8C =E4=B8=8B=E5=8D=884:49=E5=86=99=E9=81=93=EF=BC=9A
->
-> Hi all
->
-> How about this patch? Now writemostly flag doesn't be stored in
-> superblock too. So this patch fix this problem too.
-> If this patch is ok, I'll send the patch.
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 6c0c3d0d905a..9e8a8c5c7758 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -2977,6 +2977,7 @@ state_store(struct md_rdev *rdev, const char
-> *buf, size_t len)
->       *  {,-}failfast - set/clear FailFast
->       */
->      int err =3D -EINVAL;
-> +    int need_update_sb =3D 0;
->      if (cmd_match(buf, "faulty") && rdev->mddev->pers) {
->          md_error(rdev->mddev, rdev);
->          if (test_bit(Faulty, &rdev->flags))
-> @@ -2998,20 +2999,19 @@ state_store(struct md_rdev *rdev, const char
-> *buf, size_t len)
->
->              if (err =3D=3D 0) {
->                  md_kick_rdev_from_array(rdev);
-> -                if (mddev->pers) {
-> -                    set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
-> -                    md_wakeup_thread(mddev->thread);
-> -                }
-> +                need_update_sb =3D 1;
->                  md_new_event(mddev);
->              }
->          }
->      } else if (cmd_match(buf, "writemostly")) {
->          set_bit(WriteMostly, &rdev->flags);
->          mddev_create_serial_pool(rdev->mddev, rdev, false);
-> +        need_update_sb =3D 1;
->          err =3D 0;
->      } else if (cmd_match(buf, "-writemostly")) {
->          mddev_destroy_serial_pool(rdev->mddev, rdev, false);
->          clear_bit(WriteMostly, &rdev->flags);
-> +        need_update_sb =3D 1;
->          err =3D 0;
->      } else if (cmd_match(buf, "blocked")) {
->          set_bit(Blocked, &rdev->flags);
-> @@ -3037,9 +3037,11 @@ state_store(struct md_rdev *rdev, const char
-> *buf, size_t len)
->          err =3D 0;
->      } else if (cmd_match(buf, "failfast")) {
->          set_bit(FailFast, &rdev->flags);
-> +        need_update_sb =3D 1;
->          err =3D 0;
->      } else if (cmd_match(buf, "-failfast")) {
->          clear_bit(FailFast, &rdev->flags);
-> +        need_update_sb =3D 1;
->          err =3D 0;
->      } else if (cmd_match(buf, "-insync") && rdev->raid_disk >=3D 0 &&
->             !test_bit(Journal, &rdev->flags)) {
-> @@ -3120,6 +3122,11 @@ state_store(struct md_rdev *rdev, const char
-> *buf, size_t len)
->      }
->      if (!err)
->          sysfs_notify_dirent_safe(rdev->sysfs_state);
-> +    if (need_update_sb)
-> +        if (mddev->pers) {
-> +            set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
-> +            md_wakeup_thread(mddev->thread);
-> +        }
-When will mddev->pers is NULL?
-If it is NULL, this change will not on disk.
+- /sys/module/kvm/parameters/pte_prefetch_num 8
 
->      return err ? err : len;
->  }
->  static struct rdev_sysfs_entry rdev_state =3D
->
-> On Tue, Oct 12, 2021 at 4:44 PM Li Feng <fengli@smartx.com> wrote:
-> >
-> > Song Liu <song@kernel.org> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=A5=
-=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=884:17=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > On Tue, Oct 12, 2021 at 1:07 AM Li Feng <fengli@smartx.com> wrote:
-> > > >
-> > > > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=
-=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=882:58=E5=86=99=E9=81=93=EF=BC=9A
-> > > > >
-> > > > > On Mon, Oct 11, 2021 at 5:42 PM Li Feng <fengli@smartx.com> wrote=
-:
-> > > > > >
-> > > > > > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8811=E6=
-=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:49=E5=86=99=E9=81=93=EF=BC=9A
-> > > > > > >
-> > > > > > > Hi all
-> > > > > > >
-> > > > > > > Now the per device sysfs interface file state can change fail=
-fast. Do
-> > > > > > > we need a new file for failfast?
-> > > > > > >
-> > > > > > > I did a test. The steps are:
-> > > > > > >
-> > > > > > > mdadm -CR /dev/md0 -l1 -n2 /dev/sdb /dev/sdc --assume-clean
-> > > > > > > cd /sys/block/md0/md/dev-sdb
-> > > > > > > echo failfast > state
-> > > > > > > cat state
-> > > > > > > in_sync,failfast
-> > > > > >
-> > > > > > This works,  will it be persisted to disk?
-> > > > > >
-> > > > >
-> > > > > mdadm --detail /dev/md0 can show the failfast information. So it
-> > > > > should be written in superblock.
-> > > > > But I don't find how md does this. I'm looking at this.
-> > > > >
-> > > > Yes, I have tested that it has been persisted, but don't understand=
- who does it.
-> > >
-> > > I think this is not guaranteed to be persistent:
-> > >
-> > > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-> > > in_sync,failfast
-> > > [root@eth50-1 ~]# echo -failfast >  /sys/block/md127/md/rd1/state
-> > > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-> > > in_sync
-> > > [root@eth50-1 ~]# mdadm --stop /dev/md*
-> > > mdadm: /dev/md does not appear to be an md device
-> > > mdadm: stopped /dev/md127
-> > > [root@eth50-1 ~]# mdadm -As
-> > > mdadm: /dev/md/0_0 has been started with 4 drives.
-> > > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-> > > in_sync,failfast
-> > >
-> > > How about we fix state_store to make sure it is always persistent?
-> > >
-> > I agree with you.
-> >
-> > > Thanks,
-> > > Song
-> >
->
+             VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
+
+       EPT_VIOLATION     760998    54.85%     7.23%      0.92us  31765.89us      7.78us ( +-   1.46% )
+           MSR_WRITE     170599    12.30%     0.53%      0.60us   3334.13us      2.52us ( +-   0.86% )
+  EXTERNAL_INTERRUPT     159510    11.50%     1.65%      0.49us  43705.81us      8.45us ( +-   7.54% )
+[..]
+
+Total Samples:1387305, Total events handled time:81900258.99us.
+
+- /sys/module/kvm/parameters/pte_prefetch_num 16
+
+             VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
+
+       EPT_VIOLATION     658064    52.58%     7.04%      0.91us  17022.84us      8.34us ( +-   1.52% )
+           MSR_WRITE     163776    13.09%     0.54%      0.56us   5192.10us      2.57us ( +-   1.25% )
+  EXTERNAL_INTERRUPT     144588    11.55%     1.62%      0.48us  97410.16us      8.75us ( +-  11.44% )
+[..]
+
+Total Samples:1251546, Total events handled time:77956187.56us.
+
+Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+---
+ arch/x86/kvm/mmu/mmu.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 24a9f4c3f5e7..0ab4490674ec 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -115,6 +115,8 @@ module_param(dbg, bool, 0644);
+ #endif
+ 
+ #define PTE_PREFETCH_NUM		8
++static uint __read_mostly pte_prefetch_num = PTE_PREFETCH_NUM;
++module_param(pte_prefetch_num, uint, 0644);
+ 
+ #define PT32_LEVEL_BITS 10
+ 
+@@ -732,7 +734,7 @@ static int mmu_topup_memory_caches(struct kvm_vcpu *vcpu, bool maybe_indirect)
+ 
+ 	/* 1 rmap, 1 parent PTE per level, and the prefetched rmaps. */
+ 	r = kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_pte_list_desc_cache,
+-				       1 + PT64_ROOT_MAX_LEVEL + PTE_PREFETCH_NUM);
++				       1 + PT64_ROOT_MAX_LEVEL + pte_prefetch_num);
+ 	if (r)
+ 		return r;
+ 	r = kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_shadow_page_cache,
+@@ -2753,20 +2755,29 @@ static int direct_pte_prefetch_many(struct kvm_vcpu *vcpu,
+ 				    struct kvm_mmu_page *sp,
+ 				    u64 *start, u64 *end)
+ {
+-	struct page *pages[PTE_PREFETCH_NUM];
++	struct page **pages;
+ 	struct kvm_memory_slot *slot;
+ 	unsigned int access = sp->role.access;
+ 	int i, ret;
+ 	gfn_t gfn;
+ 
++	pages = kmalloc_array(pte_prefetch_num, sizeof(struct page *),
++			      GFP_KERNEL);
++	if (!pages)
++		return -1;
++
+ 	gfn = kvm_mmu_page_get_gfn(sp, start - sp->spt);
+ 	slot = gfn_to_memslot_dirty_bitmap(vcpu, gfn, access & ACC_WRITE_MASK);
+-	if (!slot)
+-		return -1;
++	if (!slot) {
++		ret = -1;
++		goto out;
++	}
+ 
+ 	ret = gfn_to_page_many_atomic(slot, gfn, pages, end - start);
+-	if (ret <= 0)
+-		return -1;
++	if (ret <= 0) {
++		ret = -1;
++		goto out;
++	}
+ 
+ 	for (i = 0; i < ret; i++, gfn++, start++) {
+ 		mmu_set_spte(vcpu, slot, start, access, gfn,
+@@ -2774,7 +2785,9 @@ static int direct_pte_prefetch_many(struct kvm_vcpu *vcpu,
+ 		put_page(pages[i]);
+ 	}
+ 
+-	return 0;
++out:
++	kfree(pages);
++	return ret;
+ }
+ 
+ static void __direct_pte_prefetch(struct kvm_vcpu *vcpu,
+@@ -2785,10 +2798,10 @@ static void __direct_pte_prefetch(struct kvm_vcpu *vcpu,
+ 
+ 	WARN_ON(!sp->role.direct);
+ 
+-	i = (sptep - sp->spt) & ~(PTE_PREFETCH_NUM - 1);
++	i = (sptep - sp->spt) & ~(pte_prefetch_num - 1);
+ 	spte = sp->spt + i;
+ 
+-	for (i = 0; i < PTE_PREFETCH_NUM; i++, spte++) {
++	for (i = 0; i < pte_prefetch_num; i++, spte++) {
+ 		if (is_shadow_present_pte(*spte) || spte == sptep) {
+ 			if (!start)
+ 				continue;
+-- 
+2.33.0.882.g93a45727a2-goog
+
