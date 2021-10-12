@@ -2,161 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF5B42A089
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C529C42A086
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235352AbhJLJGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235230AbhJLJGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235225AbhJLJGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Oct 2021 05:06:33 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CFAAC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:04:31 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id r7so64734240wrc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nM9ryI+c+NLtTNUZo2AiWUoKoEPFgkQ1TAdM3Mn2iis=;
-        b=OUCqqoYliTYGu9oksn4qZr2MyPWixyHxjPTni2yDBH1kmgpybP40V9gCaPPdkiIr7u
-         PkPxey9VPJZ/TNZS3NiV2AzsmP736DOYJKF8jYVVCsnIwNS3liD1B2gqbNrpyK2YGzto
-         K43oDQU9dxwfR7PVP2cfjhMeILXRQ4bRPoa40Fhgg+IMULk5UksDqwKgdupIdkEGftqm
-         DxRbmQRRSvQzD+ZQRH6D4+AyVbI6CFd2NdISUClrRDtOk2Cm1eTq9OUbznMi9wz3lcam
-         qg7afqFWap7t4DqaiVhLN2ib5AOttDy/YQoMDnggEodqWiZgYxUv6Xw8VxsOYEtvNMrH
-         uq+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nM9ryI+c+NLtTNUZo2AiWUoKoEPFgkQ1TAdM3Mn2iis=;
-        b=DhhMdLYBIDHnn6Y7vyOcOm68NwE2Ak2hHTb88yZa/gV3FSVaOy0EVjurQCR8n3RlY3
-         dm8oNsNzBQKDhkxDOIHdOjS9JYZle4lddyoBAVozomJ0xRXd2xIfEiJ+cCyFMTyQ0diq
-         b9v6GeW7zw8ZDntVQ2UgsCeOyA4b2im9UISNonh3GVH1aCbIzH7mwrPe1rU1osUtCXOa
-         nYkpbFeocVvIxMEwcJK7deNzUGb7hRt5d/HpCKQDE6evd6+j2IlgqvGqYAdE5J+1GmNw
-         DvodYT3y5P3F/LMaJUoQ4S0ostcFMid48kAX+XJFbyMAi7bF2NYJ8s5Ncp6W9v0hpWbk
-         D6ew==
-X-Gm-Message-State: AOAM533g3wOD7jwQiUoX/P+SI1O+bkNjh1+SP+/q8nuhVKCk1JRYtc74
-        Xa4UabChBUzIJyzOprAOrAKgsw==
-X-Google-Smtp-Source: ABdhPJzldmhbBry7GuAupyMrQ6kcGWOkrHsnOW8VChM5aqK1EEGJqirPQaDdD4vD8TnhCDjQXD0xLg==
-X-Received: by 2002:a7b:c114:: with SMTP id w20mr4093213wmi.143.1634029470271;
-        Tue, 12 Oct 2021 02:04:30 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id b19sm1987114wmb.1.2021.10.12.02.04.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 02:04:29 -0700 (PDT)
-Subject: Re: [PATCH v3 2/5] ASoC: qcom: dt-bindings: Add compatible names for
- lpass sc7280 digital codecs
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
-References: <1633702144-19017-1-git-send-email-srivasam@codeaurora.org>
- <1633702144-19017-3-git-send-email-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <8e042343-a40e-d00f-31a8-8368160329e4@linaro.org>
-Date:   Tue, 12 Oct 2021 10:04:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <1633702144-19017-3-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from smtp-out2.suse.de ([195.135.220.29]:53492 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232578AbhJLJGb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:06:31 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 4F83E20189;
+        Tue, 12 Oct 2021 09:04:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634029469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L+Vnu+dGJvhslOcjX53sAtUXL7sz0psnYar7lzgEPKQ=;
+        b=yoSfayA5O1BqV91h2E9/8cZJI0cVPjBR/g0mWBPiqJVt4UoXrZUJyzjh1vCLUrHJqCN3jN
+        M53UdLvAxC41ineH1LTR6vkNw2INsfLJiUQ0q+kn63lfI8s35yKxXckfisf0i8LiUTxKuU
+        PrT+tX9Q9FhBQ7ykoAcNFWOZXRuMmUM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634029469;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L+Vnu+dGJvhslOcjX53sAtUXL7sz0psnYar7lzgEPKQ=;
+        b=2SG6+XG+d/7HNHDj3pPjzqCL7dafXvbUiEF8N5+fUQXqEWCc+ZbVe4Y2YipD3ZDXlQ7l6l
+        RM8bT7XbhbbBIfCw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 4154BA3B8A;
+        Tue, 12 Oct 2021 09:04:29 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 11:04:29 +0200
+Message-ID: <s5hk0ii397m.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Jonas Hahnfeld <hahnjo@hahnjo.de>
+Cc:     Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: Add quirk for VF0770
+In-Reply-To: <27189cfac466b244e176f3098409204fc67a2a8d.camel@hahnjo.de>
+References: <20211010111947.5796-1-hahnjo@hahnjo.de>
+        <s5hh7do62zh.wl-tiwai@suse.de>
+        <27189cfac466b244e176f3098409204fc67a2a8d.camel@hahnjo.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 08/10/2021 15:09, Srinivasa Rao Mandadapu wrote:
-> Update compatible names in va, wsa, rx and tx macro codes for lpass sc7280
+On Mon, 11 Oct 2021 19:12:56 +0200,
+Jonas Hahnfeld wrote:
 > 
-
-TBH, I was also expecting the clks that are mandatory for sc7280 in this 
-binding patch.
-
-I think we need this and this will allow us to validate on the dt-entries.
-
-
-
---srini
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->   Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml  | 4 +++-
->   Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml  | 4 +++-
->   Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml  | 4 +++-
->   Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml | 4 +++-
->   4 files changed, 12 insertions(+), 4 deletions(-)
+> Am Sonntag, dem 10.10.2021 um 22:26 +0200 schrieb Takashi Iwai:
+> > On Sun, 10 Oct 2021 13:19:47 +0200,
+> > Jonas Hahnfeld wrote:
+> > > 
+> > > The device advertises 8 formats, but only a rate of 48kHz is honored
+> > > by the hardware and 24 bits give chopped audio, so only report the
+> > > one working combination. This fixes out-of-the-box audio experience
+> > > with PipeWire which otherwise attempts to choose S24_3LE (while
+> > > PulseAudio defaulted to S16_LE).
+> > > 
+> > > Signed-off-by: Jonas Hahnfeld <hahnjo@hahnjo.de>
+> > 
+> > Could you give alsa-info.sh output with and without patch, just for
+> > comparison?  Run the script with --no-upload option and attach the
+> > outputs.
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-> index 443d556..bc762b3 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-> @@ -11,7 +11,9 @@ maintainers:
->   
->   properties:
->     compatible:
-> -    const: qcom,sm8250-lpass-rx-macro
-> +    enum:
-> +      - qcom,sc7280-lpass-rx-macro
-> +      - qcom,sm8250-lpass-rx-macro
->   
->     reg:
->       maxItems: 1
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-> index 6b5ca02..74f5386 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-> @@ -11,7 +11,9 @@ maintainers:
->   
->   properties:
->     compatible:
-> -    const: qcom,sm8250-lpass-tx-macro
-> +    enum:
-> +      - qcom,sc7280-lpass-tx-macro
-> +      - qcom,sm8250-lpass-tx-macro
->   
->     reg:
->       maxItems: 1
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-> index 679b49c..99f2c36 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-> @@ -11,7 +11,9 @@ maintainers:
->   
->   properties:
->     compatible:
-> -    const: qcom,sm8250-lpass-va-macro
-> +    enum:
-> +      - qcom,sc7280-lpass-va-macro
-> +      - qcom,sm8250-lpass-va-macro
->   
->     reg:
->       maxItems: 1
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-> index 435b019..13cdb8a 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-> @@ -11,7 +11,9 @@ maintainers:
->   
->   properties:
->     compatible:
-> -    const: qcom,sm8250-lpass-wsa-macro
-> +    enum:
-> +      - qcom,sc7280-lpass-wsa-macro
-> +      - qcom,sm8250-lpass-wsa-macro
->   
->     reg:
->       maxItems: 1
-> 
+> Attached. Let me know if I should put any of this into the commit
+> message.
+
+Thanks.  The device is a UAC1, so the format quirk seems to be a valid
+way.
+
+But I found the terminator entry (.ifnum = -1) is missing in the
+QUIRK_COMPOSITE array.  Could you resubmit with the fix?
+
+
+thanks,
+
+Takashi
