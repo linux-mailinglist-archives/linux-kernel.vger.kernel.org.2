@@ -2,131 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C50B429EB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2CE429EB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234171AbhJLHhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbhJLHhI (ORCPT
+        id S234209AbhJLHh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:37:26 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40328 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232565AbhJLHhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:37:08 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4A1C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:35:07 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id d9so53536141edh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:35:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0LdgTQXaIMFK90MNm2LnmaoXjv7Xz1qZCtdN0PVVc54=;
-        b=Qiq8iA5ULEqujdzoJDRiufJoirupCSn8sZCgDe767gWHWs0sgPrEVPSs6Qg2ThZQzw
-         ditUsjX+68E/QYrCxf1k6wkDf4vIBlcWKBbTkz0Mefc9MVMXlQ/euRUbR7ashmrrxrvr
-         tggvc0sIY9OUkq1N1QoaWRKBFs5m+XerdEjwnlqgrTnYaA3ImTDG6vnrKY7AbaNgeDCo
-         nnP424+10CuNHb7Rp7Q8q8bPFBbjBCUHEWkhIh5sCUj+FYEYoeWXtIqg6i2VX++knvCg
-         YC0h09cOVwdX1QBAcjRHmW2dLsGI+e+6JhlJdu8hoIwKjd3CLzpO5fSp9kWh5bDHankt
-         MAMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0LdgTQXaIMFK90MNm2LnmaoXjv7Xz1qZCtdN0PVVc54=;
-        b=E7dgh9+QbyY0tL64Ph6IBN7wh+3KIpn3RCHcFIWO8+GfGrru5Lf9r6gJBn52blZTDy
-         AcOPFRcEEYrA+NpnGLTYRFYe6EoOmVhwePrdhESgShy9hJz55oA4/qBEuPSJOClvXoOi
-         eXLtYrf7kGRw+8xihpXRMftoNsrjzNNDzcAG1Y+zfPrNxulpp6Pu1FzBtq4nr457/5gq
-         lGJekPNLRIvibnPsUl+WlvYX1Q/H5Re7F+MmuSwGr3JDAvCrTtlwsYykLnNzy6faEGKk
-         2ce0UqbAyZSpjTtcCK8oboSvt/+dFliFZQh887Xbe34b5CxDo+T+DUEMwUuOMW1nRgjb
-         wd8w==
-X-Gm-Message-State: AOAM530oZ6jRty7ALh7o+4EYfj+1SlaxRSPtF1R/GsfqLcXYspDSKIOU
-        1L82bY2ScaD764Nt7OjBcNKTziGpP9DWmqNrqZZufg==
-X-Google-Smtp-Source: ABdhPJwCt53XHpRv0O60+/zV2VTB2O0ZJQiUr07Ip2Ze2mcCpt8//Lsk0vB2lrIScioA4EveNy3rJQRIEtb4pBNUe50=
-X-Received: by 2002:a17:906:c302:: with SMTP id s2mr30057500ejz.499.1634024105733;
- Tue, 12 Oct 2021 00:35:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211012064436.577746139@linuxfoundation.org>
-In-Reply-To: <20211012064436.577746139@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 12 Oct 2021 13:04:54 +0530
-Message-ID: <CA+G9fYt3vmhvuoFJ6p49DHiFE60oBeWUwuSLrh7vXwr=8_rpfg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/52] 5.4.153-rc2 review
+        Tue, 12 Oct 2021 03:37:18 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 4340E1FF2A;
+        Tue, 12 Oct 2021 07:35:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634024116; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tFCztFG0NMzu9QUaokuXv6oskYuEM7OIjk8q5b1QKmM=;
+        b=deeaLoY1E/z/wmhY6SlfmEIF79usbAz4JOh5UwnEucv0H4S8GxDZ0J+G8/mDfdBDBnH4nb
+        B7VuSU3ockDrWm0Qjwl9socQVto0y7+n425ClOdEUvLQ+LaudFysMUkuKU+yPqR22vMLB2
+        KgnYO8EAKvksmVySp0tiKjm5EjhePOI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634024116;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tFCztFG0NMzu9QUaokuXv6oskYuEM7OIjk8q5b1QKmM=;
+        b=pWxtcK1rtSj4CMlAUVXexNrniQrKjYQIRCMWjUI4gUu+v0JSjHwjW0Njekh5TCIjDcV5Id
+        8+z6aZtjtwybCpAw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 27E0EA3B85;
+        Tue, 12 Oct 2021 07:35:16 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 09:35:16 +0200
+Message-ID: <s5ho87u3dcb.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Song Liu <songliubraving@fb.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        bpf <bpf@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
+In-Reply-To: <YWRy+UoG1YHcQ7UM@kroah.com>
+References: <YWLbEdHUE3k/i0fe@kroah.com>
+        <s5hily46316.wl-tiwai@suse.de>
+        <YWRYD7fphcaWKEOG@kroah.com>
+        <s5h7dej4kbe.wl-tiwai@suse.de>
+        <YWRy+UoG1YHcQ7UM@kroah.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 at 12:16, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.153 release.
-> There are 52 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 14 Oct 2021 06:44:25 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Mon, 11 Oct 2021 19:23:05 +0200,
+Greg Kroah-Hartman wrote:
+> 
+> On Mon, Oct 11, 2021 at 06:07:01PM +0200, Takashi Iwai wrote:
+> > Could you also post the contents of /proc/asound/card*/usbmixer (only
+> > for the corresponding device), too?
+> 
+> Sure, here it is:
+> 
+> USB Mixer: usb_id=0x30be0101, ctrlif=0, ctlerr=0
+> Card: Schiit Audio Schiit Hel at usb-0000:47:00.1-2.2, high speed
+>   Unit: 5
+>     Control: name="Mic - Input Jack", index=0
+>     Info: id=5, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+>     Volume: min=0, max=1, dBmin=0, dBmax=0
+>   Unit: 7
+>     Control: name="Speaker - Output Jack", index=0
+>     Info: id=7, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+>     Volume: min=0, max=1, dBmin=0, dBmax=0
+>   Unit: 13
+>     Control: name="PCM Playback Switch", index=0
+>     Info: id=13, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
+>     Volume: min=0, max=1, dBmin=0, dBmax=0
+>   Unit: 17
+>     Control: name="Mic Capture Switch", index=0
+>     Info: id=17, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
+>     Volume: min=0, max=1, dBmin=0, dBmax=0
+>   Unit: 18
+>     Control: name="Clock Source 18 Validity", index=0
+>     Info: id=18, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+>     Volume: min=0, max=1, dBmin=0, dBmax=0
+>   Unit: 22
+>     Control: name="Clock Source 22 Validity", index=0
+>     Info: id=22, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+>     Volume: min=0, max=1, dBmin=0, dBmax=0
 
-stable rc 5.4.153-rc2 Powerpc build failed.
+Hm, I expected more exotic control that failed, but it was Mic Capture
+Switch, which should be treated normally.
 
-In file included from arch/powerpc/net/bpf_jit64.h:11,
-                 from arch/powerpc/net/bpf_jit_comp64.c:19:
-arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
-arch/powerpc/net/bpf_jit.h:32:9: error: expected expression before 'do'
-   32 |         do { if (d) { (d)[idx] = instr; } idx++; } while (0)
-      |         ^~
-arch/powerpc/net/bpf_jit.h:33:33: note: in expansion of macro 'PLANT_INSTR'
-   33 | #define EMIT(instr)             PLANT_INSTR(image, ctx->idx, instr)
-      |                                 ^~~~~~~~~~~
-arch/powerpc/net/bpf_jit_comp64.c:415:41: note: in expansion of macro 'EMIT'
-  415 |                                         EMIT(PPC_LI(dst_reg, 0));
-      |                                         ^~~~
-arch/powerpc/net/bpf_jit.h:33:33: note: in expansion of macro 'PLANT_INSTR'
-   33 | #define EMIT(instr)             PLANT_INSTR(image, ctx->idx, instr)
-      |                                 ^~~~~~~~~~~
-arch/powerpc/net/bpf_jit.h:41:33: note: in expansion of macro 'EMIT'
-   41 | #define PPC_ADDI(d, a, i)       EMIT(PPC_INST_ADDI |
-___PPC_RT(d) |           \
-      |                                 ^~~~
-arch/powerpc/net/bpf_jit.h:44:33: note: in expansion of macro 'PPC_ADDI'
-   44 | #define PPC_LI(r, i)            PPC_ADDI(r, 0, i)
-      |                                 ^~~~~~~~
-arch/powerpc/net/bpf_jit_comp64.c:415:46: note: in expansion of macro 'PPC_LI'
-  415 |                                         EMIT(PPC_LI(dst_reg, 0));
-      |                                              ^~~~~~
-make[3]: *** [scripts/Makefile.build:262:
-arch/powerpc/net/bpf_jit_comp64.o] Error 1
-make[3]: Target '__build' not remade because of errors.
+Could you try the patch below?  This will still show other warning
+messages, but it'll forcibly initialize the mixer elements at probe
+time, and the rest should work.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Once after it's confirmed to work, we may shut up the device warnings
+with a quirk.
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+
+thanks,
+
+Takashi
+
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -361,9 +361,8 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request,
+ 
+ 	memset(buf, 0, sizeof(buf));
+ 
+-	ret = snd_usb_lock_shutdown(chip) ? -EIO : 0;
+-	if (ret)
+-		goto error;
++	if (snd_usb_lock_shutdown(chip))
++		return -EIO;
+ 
+ 	idx = mixer_ctrl_intf(cval->head.mixer) | (cval->head.id << 8);
+ 	ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), bRequest,
+@@ -372,8 +371,7 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request,
+ 	snd_usb_unlock_shutdown(chip);
+ 
+ 	if (ret < 0) {
+-error:
+-		usb_audio_err(chip,
++		usb_audio_dbg(chip,
+ 			"cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
+ 			request, validx, idx, cval->val_type);
+ 		return ret;
+@@ -1201,12 +1199,32 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 	}
+ }
+ 
++/* forcibly initialize the current mixer value; if GET_CUR fails, set to
++ * the minimum as default
++ */
++static void init_cur_mix_raw(struct usb_mixer_elem_info *cval, int ch, int idx)
++{
++	int val, err;
++
++	err = snd_usb_get_cur_mix_value(cval, ch, idx, &val);
++	if (!err)
++		return;
++	if (!cval->head.mixer->ignore_ctl_error)
++		usb_audio_warn(cval->head.mixer->chip,
++			       "%d:%d: failed to get current value for ch %d (%d)\n",
++			       cval->head.id, mixer_ctrl_intf(cval->head.mixer),
++			       ch, err);
++	snd_usb_set_cur_mix_value(cval, ch, idx, cval->min);
++}
++
+ /*
+  * retrieve the minimum and maximum values for the specified control
+  */
+ static int get_min_max_with_quirks(struct usb_mixer_elem_info *cval,
+ 				   int default_min, struct snd_kcontrol *kctl)
+ {
++	int i, idx;
++
+ 	/* for failsafe */
+ 	cval->min = default_min;
+ 	cval->max = cval->min + 1;
+@@ -1219,7 +1237,6 @@ static int get_min_max_with_quirks(struct usb_mixer_elem_info *cval,
+ 	} else {
+ 		int minchn = 0;
+ 		if (cval->cmask) {
+-			int i;
+ 			for (i = 0; i < MAX_CHANNELS; i++)
+ 				if (cval->cmask & (1 << i)) {
+ 					minchn = i + 1;
+@@ -1320,6 +1337,19 @@ static int get_min_max_with_quirks(struct usb_mixer_elem_info *cval,
+ 		}
+ 	}
+ 
++	/* initialize all elements */
++	if (!cval->cmask) {
++		init_cur_mix_raw(cval, 0, 0);
++	} else {
++		idx = 0;
++		for (i = 0; i < MAX_CHANNELS; i++) {
++			if (cval->cmask & (1 << i)) {
++				init_cur_mix_raw(cval, i + 1, idx);
++				idx++;
++			}
++		}
++	}
++
+ 	return 0;
+ }
+ 
