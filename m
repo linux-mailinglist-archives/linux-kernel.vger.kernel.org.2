@@ -2,130 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E1442ACE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1944042ACE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbhJLTEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 15:04:30 -0400
-Received: from mga18.intel.com ([134.134.136.126]:1838 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231756AbhJLTE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 15:04:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="214189599"
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="214189599"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 12:02:26 -0700
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="591882244"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 12:02:24 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1maN28-0003OA-BY;
-        Tue, 12 Oct 2021 22:01:52 +0300
-Date:   Tue, 12 Oct 2021 22:01:52 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] hwmon: acpi_power_meter: Use acpi_bus_get_acpi_device()
-Message-ID: <YWXboLaVc54MSQ8e@smile.fi.intel.com>
-References: <11864888.O9o76ZdvQC@kreacher>
+        id S233551AbhJLTEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 15:04:55 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:35612 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232281AbhJLTEt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 15:04:49 -0400
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+        by linux.microsoft.com (Postfix) with ESMTPSA id EDDC520B9CB4;
+        Tue, 12 Oct 2021 12:02:46 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EDDC520B9CB4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1634065367;
+        bh=h7msdjyKlH7DMukKsw6wTUVUKmOZkrR3GgOBaADS810=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=j+SFv391M6ABEjBq6ofYyRR6Iq63JqpocmjeqsZtcHlLdRVn1nhsDbtjsw3tbY1EJ
+         Fatkvy9QZdkHSzcEva/uokY49ij5FQ3vraOfNEvDlhmSQk+3cgwDOebVz9/Ob9HVzf
+         iLlbhfxcpVfox0g7wR8BsaZprMfSK+HDYueIFm1A=
+Received: by mail-pg1-f180.google.com with SMTP id d23so21875pgh.8;
+        Tue, 12 Oct 2021 12:02:46 -0700 (PDT)
+X-Gm-Message-State: AOAM531Cwnu9mBz8ZPSXNHGck2zTyamyewe+tmgE5zmHoVT22Y5uUys3
+        HUP4J+5RPUEfIFrTqVZn5qFmKupzEDVuLfPs2A4=
+X-Google-Smtp-Source: ABdhPJzAZ6vlfFZUd7AzbtGkqfNjCx0LuuKNza7jjbYlXeW0io9vHAqduKhwAGndLhCeZOXFuiJrpKJAz95bnw7NpqA=
+X-Received: by 2002:aa7:8609:0:b0:44b:346a:7404 with SMTP id
+ p9-20020aa78609000000b0044b346a7404mr33544764pfn.86.1634065366569; Tue, 12
+ Oct 2021 12:02:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11864888.O9o76ZdvQC@kreacher>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211012185858.54637-1-mcroce@linux.microsoft.com>
+In-Reply-To: <20211012185858.54637-1-mcroce@linux.microsoft.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Tue, 12 Oct 2021 21:02:10 +0200
+X-Gmail-Original-Message-ID: <CAFnufp1JtsJF0i5tbTvknnOqHBOaoJgz90Sb325bmm=CbHsrVQ@mail.gmail.com>
+Message-ID: <CAFnufp1JtsJF0i5tbTvknnOqHBOaoJgz90Sb325bmm=CbHsrVQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/2] bpf: add signature to eBPF instructions
+To:     bpf <bpf@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Luca Boccassi <bluca@debian.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 07:30:40PM +0200, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael@kernel.org>
-> 
-> In read_domain_devices(), acpi_bus_get_device() is called to obtain
-> the ACPI device object attached to the given ACPI handle and
-> subsequently that object is passed to get_device() for reference
-> counting, but there is a window between the acpi_bus_get_device()
-> and get_device() calls in which the ACPI device object in question
-> may go away.
-> 
-> To address this issue, make read_domain_devices() use
-> acpi_bus_get_acpi_device() to reference count and return the given
-> ACPI device object in one go and export that function to modules.
-> 
-> While at it, also make read_domain_devices() and
-> remove_domain_devices() use acpi_dev_put() instead of calling
-> put_device() directly on the ACPI device objects returned by
-> acpi_bus_get_acpi_device().
-
-Good catch!
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
+On Tue, Oct 12, 2021 at 8:59 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+>
+> From: Matteo Croce <mcroce@microsoft.com>
+>
+> When loading a BPF program, pass a signature which is used to validate
+> the instructions.
+> The signature type is the same used to validate the kernel modules.
+>
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 > ---
->  drivers/acpi/scan.c              |    1 +
->  drivers/hwmon/acpi_power_meter.c |   13 +++++--------
->  2 files changed, 6 insertions(+), 8 deletions(-)
-> 
-> Index: linux-pm/drivers/hwmon/acpi_power_meter.c
-> ===================================================================
-> --- linux-pm.orig/drivers/hwmon/acpi_power_meter.c
-> +++ linux-pm/drivers/hwmon/acpi_power_meter.c
-> @@ -535,7 +535,7 @@ static void remove_domain_devices(struct
->  
->  		sysfs_remove_link(resource->holders_dir,
->  				  kobject_name(&obj->dev.kobj));
-> -		put_device(&obj->dev);
-> +		acpi_dev_put(obj);
->  	}
->  
->  	kfree(resource->domain_devices);
-> @@ -597,18 +597,15 @@ static int read_domain_devices(struct ac
->  			continue;
->  
->  		/* Create a symlink to domain objects */
-> -		resource->domain_devices[i] = NULL;
-> -		if (acpi_bus_get_device(element->reference.handle,
-> -					&resource->domain_devices[i]))
-> +		obj = acpi_bus_get_acpi_device(element->reference.handle);
-> +		resource->domain_devices[i] = obj;
-> +		if (!obj)
->  			continue;
->  
-> -		obj = resource->domain_devices[i];
-> -		get_device(&obj->dev);
-> -
->  		res = sysfs_create_link(resource->holders_dir, &obj->dev.kobj,
->  				      kobject_name(&obj->dev.kobj));
->  		if (res) {
-> -			put_device(&obj->dev);
-> +			acpi_dev_put(obj);
->  			resource->domain_devices[i] = NULL;
->  		}
->  	}
-> Index: linux-pm/drivers/acpi/scan.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/scan.c
-> +++ linux-pm/drivers/acpi/scan.c
-> @@ -608,6 +608,7 @@ struct acpi_device *acpi_bus_get_acpi_de
->  {
->  	return handle_to_device(handle, get_acpi_device);
->  }
-> +EXPORT_SYMBOL_GPL(acpi_bus_get_acpi_device);
->  
->  static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
->  {
-> 
-> 
-> 
 
+Slipped out by mistake, duplicate of:
+
+https://lore.kernel.org/bpf/20211012190028.54828-2-mcroce@linux.microsoft.com/T/#u
+
+Sorry,
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+per aspera ad upstream
