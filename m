@@ -2,103 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBCF42A44A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D633842A459
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236391AbhJLMZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:25:12 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:40467 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236281AbhJLMZK (ORCPT
+        id S236439AbhJLM0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 08:26:51 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36472 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236414AbhJLM0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:25:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634041390; x=1665577390;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=2SfxK57vRWHEZrPMMA/I/4JeY6YI1pn+Pq8lPJzvFYk=;
-  b=ZcWIhaO3dwkGN//pXdPvM9Zs/UGPg4SMLd/5+RUL0JNdth+YdpExRUqy
-   tWKt09EBy/8l+DqsDyN/h9WorspBuxF7q0/E3rq8g4r/0KgxkwMQVqFMW
-   vSzA070GCH0A9HB/kLdWR4rOcqz6sXMvDzVkheXLauwxFwddMYzMejj7X
-   WiQw6s/LAZFLsGowCExhW8YFepHX/Wgi9HPXamwFaSxxrfyr/TpWNyuOR
-   PvazAvZ4N3Ljcu5eZRwA0chQaiim0as+Nuxz1GgmDnLnWF49wk23bY4TJ
-   t4F/w6VnVKv0U5g7Fvvzm8mpNaiPiTQQjIzcU5s2k8kyAZcfqX0oSzjYM
-   Q==;
-IronPort-SDR: kUJmdcpXewFX2mpXw7sJ01Se7cqsg36TfUOlLLul1+v9j472YREF+WdaT8kXO7Q5CKyaRDoblo
- 5b9Kix/6QfsSlXlCN4Kuv5DPfqkMlySUCazsy7mhiy/6kZnukjRd3f+1tVSbHux2wjY3RpR0pM
- IlyvPAvjBclwBCWs3WaDwRGXIDxmCIX7cvQgo7t6av0w2Fwpqiw3FuKI87FpDYfsWP/Ytav0JJ
- cIzztCGMkZfRYO2zxIKS8OZHm14YNCUQwmjx8YkcCghqiOUe8me1Y7aPdG8AfcN5VGSdbZhS2V
- F1mG0CftwcukEwTnd5D4rV+Y
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="139400192"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Oct 2021 05:23:10 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 12 Oct 2021 05:23:08 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 12 Oct 2021 05:23:07 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <linus.walleij@linaro.org>,
-        <p.zabel@pengutronix.de>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH] pinctrl: microchip sgpio: use reset driver
-Date:   Tue, 12 Oct 2021 14:24:35 +0200
-Message-ID: <20211012122435.2081930-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.33.0
+        Tue, 12 Oct 2021 08:26:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 52F7E2008D;
+        Tue, 12 Oct 2021 12:24:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634041486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ak50EaVK3T2xTOor5Gd356wiLx9ZgAxHtCEMYkhSwNY=;
+        b=NpEckCnyzfzZUxRiTtHccM6MSmoh8iAqzDmMQH3nvC9cklNV1aH2j0mqOYNL6LBcF1FeMn
+        ZS7r6xkvovnOOVDfrUeNHLg+1IzJSOHmBmp9BmIxbCSlOHerYxzwJLnjrK76VmPaF4eviM
+        Mtj7AQh9vh6k4vNWt1qYyojA7mlg/Nc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634041486;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ak50EaVK3T2xTOor5Gd356wiLx9ZgAxHtCEMYkhSwNY=;
+        b=Txq3fZPPSrbXYn9fRcHcLC8++QyRUHTnoTmwTaV7ZXHhoiXC5v/Y+ZRgg4PZ9Lgr86Iqhj
+        AAWT2wwIZo5qkwCA==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id F220BA3B84;
+        Tue, 12 Oct 2021 12:24:43 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 14:24:43 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     =?ISO-2022-JP?Q?=1B$B2&lV=1B=28J?= <yun.wang@linux.alibaba.com>
+cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH 1/2] ftrace: disable preemption on the testing of
+ recursion
+In-Reply-To: <a8756482-024c-c858-b3d1-1ffa9a5eb3f7@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.21.2110121421260.3394@pobox.suse.cz>
+References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com> <a8756482-024c-c858-b3d1-1ffa9a5eb3f7@linux.alibaba.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On lan966x platform when the switch gets reseted then also the sgpio
-gets reseted. The fix for this is to extend also the sgpio driver to
-call the reset driver which will be reseted only once by the first
-driver that is probed.
+> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+> index a9f9c57..805f9c4 100644
+> --- a/include/linux/trace_recursion.h
+> +++ b/include/linux/trace_recursion.h
+> @@ -214,7 +214,14 @@ static __always_inline void trace_clear_recursion(int bit)
+>  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+>  							 unsigned long parent_ip)
+>  {
+> -	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
+> +	int bit;
+> +
+> +	preempt_disable_notrace();
+> +	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
+> +	if (bit < 0)
+> +		preempt_enable_notrace();
+> +
+> +	return bit;
+>  }
+> 
+>  /**
+> @@ -226,6 +233,7 @@ static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+>  static __always_inline void ftrace_test_recursion_unlock(int bit)
+>  {
+>  	trace_clear_recursion(bit);
+> +	preempt_enable_notrace();
+>  }
+> 
+>  #endif /* CONFIG_TRACING */
+> diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
+> index e8029ae..6e66ccd 100644
+> --- a/kernel/livepatch/patch.c
+> +++ b/kernel/livepatch/patch.c
+> @@ -52,11 +52,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>  	if (WARN_ON_ONCE(bit < 0))
+>  		return;
+> -	/*
+> -	 * A variant of synchronize_rcu() is used to allow patching functions
+> -	 * where RCU is not watching, see klp_synchronize_transition().
+> -	 */
+> -	preempt_disable_notrace();
+> 
+>  	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
+>  				      stack_node);
+> @@ -120,7 +115,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+>  	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
+> 
+>  unlock:
+> -	preempt_enable_notrace();
+>  	ftrace_test_recursion_unlock(bit);
+>  }
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/pinctrl/pinctrl-microchip-sgpio.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+I don't like this change much. We have preempt_disable there not because 
+of ftrace_test_recursion, but because of RCU. ftrace_test_recursion was 
+added later. Yes, it would work with the change, but it would also hide 
+things which should not be hidden in my opinion.
 
-diff --git a/drivers/pinctrl/pinctrl-microchip-sgpio.c b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-index 072bccdea2a5..e8a91d0824cb 100644
---- a/drivers/pinctrl/pinctrl-microchip-sgpio.c
-+++ b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-@@ -17,6 +17,7 @@
- #include <linux/pinctrl/pinmux.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
-+#include <linux/reset.h>
- 
- #include "core.h"
- #include "pinconf.h"
-@@ -803,6 +804,7 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
- 	int div_clock = 0, ret, port, i, nbanks;
- 	struct device *dev = &pdev->dev;
- 	struct fwnode_handle *fwnode;
-+	struct reset_control *reset;
- 	struct sgpio_priv *priv;
- 	struct clk *clk;
- 	u32 val;
-@@ -813,6 +815,10 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
- 
- 	priv->dev = dev;
- 
-+	reset = devm_reset_control_get_shared(&pdev->dev, "switch");
-+	if (!IS_ERR(reset))
-+		reset_control_reset(reset);
-+
- 	clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(clk))
- 		return dev_err_probe(dev, PTR_ERR(clk), "Failed to get clock\n");
--- 
-2.33.0
-
+Miroslav
