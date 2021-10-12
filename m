@@ -2,151 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DC7429F19
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8414F429F1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234499AbhJLH7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:59:00 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:32624 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234071AbhJLH64 (ORCPT
+        id S234537AbhJLH7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:59:18 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:43119 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234071AbhJLH7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:58:56 -0400
-X-UUID: b30b6fa905654b719d555b87d7ddde5f-20211012
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=42MbtHaE4DAIiMKFHplZ1S3Y2/ONK7RbeH5lUTmtMs0=;
-        b=RjCZeK0+NnCxJC/Yb5ee9eDnUp6w78qpCLyS2N9etm6bu3Y9XWu0v602eII8DhfVoo1BgprOt28EUtLWG1xy6tpRpGNc0HYjsYzvcbJHDGOyizTjZuanhfQWjlV/xTmU7XFen7WtSvEA1AQc4agLrL4lsC4cF79obkEI4PEdl4c=;
-X-UUID: b30b6fa905654b719d555b87d7ddde5f-20211012
-Received: from mtkcas36.mediatek.inc [(172.27.5.253)] by mailgw02.mediatek.com
-        (envelope-from <mingchuang.qiao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 15761383; Tue, 12 Oct 2021 15:56:52 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 12 Oct
- 2021 15:56:49 +0800
-Received: from mcddlt001.gcn.mediatek.inc (10.19.240.15) by
- MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 12 Oct 2021 15:56:48 +0800
-From:   <mingchuang.qiao@mediatek.com>
-To:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <mingchuang.qiao@mediatek.com>, <haijun.liu@mediatek.com>,
-        <lambert.wang@mediatek.com>, <kerun.zhu@mediatek.com>,
-        <rjw@rjwysocki.net>, <alex.williamson@redhat.com>,
-        <utkarsh.h.patel@intel.com>, <mika.westerberg@linux.intel.com>,
-        <rajatja@google.com>
-Subject: [v5] PCI: Avoid unsync of LTR mechanism configuration
-Date:   Tue, 12 Oct 2021 15:56:14 +0800
-Message-ID: <20211012075614.54576-1-mingchuang.qiao@mediatek.com>
-X-Mailer: git-send-email 2.17.0
+        Tue, 12 Oct 2021 03:59:17 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MDN3O-1mQoTU2fN0-00ATlq; Tue, 12 Oct 2021 09:57:14 +0200
+Received: by mail-wr1-f52.google.com with SMTP id k7so63966282wrd.13;
+        Tue, 12 Oct 2021 00:57:14 -0700 (PDT)
+X-Gm-Message-State: AOAM530MB4Sh3F6fS42xG83uXgsMIujmhDy4dwZppDXtXR07q5epu2ca
+        he0cxEmgpNJwcCSY5SCVtroQLdHKqG6lTz4o0v0=
+X-Google-Smtp-Source: ABdhPJzWrZtND5T+4NGejpva/W8WIuD9h+k1kDLd+VcFgHNzaQqSyGSZf5ek5xhDWcL5GxoX2zXDA9fgG0pHtoPUydE=
+X-Received: by 2002:a05:600c:4f42:: with SMTP id m2mr1227990wmq.82.1634025434301;
+ Tue, 12 Oct 2021 00:57:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 641A7F88397021256AFDB3C2C859A85B7615E10DB2369B6D7FA859C9FBF72CAB2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20211012110309.17d51c3e@canb.auug.org.au> <97e578a3-b12e-1975-717d-a0cf663673f0@microchip.com>
+In-Reply-To: <97e578a3-b12e-1975-717d-a0cf663673f0@microchip.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 12 Oct 2021 09:56:57 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0G9VoB71aBWGrtdxe2bNbv7apaAQqQXSf==TGwcKQvaw@mail.gmail.com>
+Message-ID: <CAK8P3a0G9VoB71aBWGrtdxe2bNbv7apaAQqQXSf==TGwcKQvaw@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the arm-soc tree
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:YCjqiO5d8rM/ML//nqqgeghr7hhfufNL84KVlvlohxLkuHFH8JP
+ psa2SD4+IMonWusynNJKPSIuqBCgpBQK1EApliaZmVZ6PG4Mh5NxdlmikRlTE4no18bolqF
+ uyHYLe+CbiGtDtlMfy3A+iKsZsRvOId6/o3Q+cipFeOcCx58Bq4NopOJKqMg6bl9yjvRjgm
+ fMH2EFOPoo7f7tohcXV5A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:B0fYAbf004E=:osQJhuFZv855WWeJkzfbpl
+ 1XaGwpYsOW4tA8opfTFAHZzDDQmMhf6KkrCUnXqvnKlt/Wj8nt/4G+Tq4XCDUFs/TqPY5Yzf/
+ bBM00PyHf6cU3xOZVfsvExpC4+UXDM4HyHcltY+Jb5quzZbXMerKCnCuk5Ti6rTT+dZ3dJ5Ar
+ 0LA6fCiuLY8WKK9Y23tsRrF0yasXsWnfIUrDCOjNY3sSKZ1qIYDkmXKVndtMnVHJDEh84kQyP
+ 0aqgtFarXPWyjNiZNBI6lsm7/bT2w3YKwyXv++lBaz+DbuT3Xnt6NszA6fwSGR1hSzsQUArmz
+ dE7Rd9ij9qNFbG98oU+hk8AGnjMrKOvrsZv5YWzfWywgPBxnv7prOpdpDx4T5DM8ccMVBVH7Q
+ WvS8lqHT98dS9qynBR8Z/h3DOV7IG6uGPqFpB0vBMHt6qOeC7CBfbOoDTEwPIUTD+A2RRkD9v
+ 1QKtz3dYgmNiQINbgb78Q87B8z4j0dqz40kIs0x2/88+Xa/CYB9GCSqD7xNgb3YO+72s4E+SB
+ dpbSC8HJp6hy1xdyKMkLmQf+Hqros2cHZWn5eRoOdag9nhOyjgdh0y4lnoYXLTTuKIMT5/xSq
+ X7JK/fXIDFw9ntgIodXHT47lAlPksQn2f9XT7TrF77+Zu2w58ttkZuyrLMnW55yiwOdmYj0lc
+ jdWSeVFXVhCqEF8ZWYpIB171W60t5Vr1xdPBfwsBIykcm30P4TWbJ6mePaaadRlfT6eRxD7Fn
+ 8W4lhGBYJg7aO1clr2HQG1R8rjaPBHK1JTN4KQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWluZ2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KDQpJ
-biBidXMgc2NhbiBmbG93LCB0aGUgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgb2YgREVWQ1RM
-MiByZWdpc3RlciBpcw0KY29uZmlndXJlZCBpbiBwY2lfY29uZmlndXJlX2x0cigpLiBJZiBkZXZp
-Y2UgYW5kIGJyaWRnZSBib3RoIHN1cHBvcnQgTFRSDQptZWNoYW5pc20sIHRoZSAiTFRSIE1lY2hh
-bmlzbSBFbmFibGUiIGJpdCBvZiBkZXZpY2UgYW5kIGJyaWRnZSB3aWxsIGJlDQplbmFibGVkIGlu
-IERFVkNUTDIgcmVnaXN0ZXIuIEFuZCBwY2lfZGV2LT5sdHJfcGF0aCB3aWxsIGJlIHNldCBhcyAx
-Lg0KDQpJZiBQQ0llIGxpbmsgZ29lcyBkb3duLCB0aGUgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBi
-aXQgb2YgYnJpZGdlIHdpbGwgDQpjaGFuZ2UgdG8gMCBhY2NvcmRpbmcgdG8gUENJZSByNS4wLCBz
-ZWMgNy41LjMuMTYuIEhvd2V2ZXIsIHRoZSAtPmx0cl9wYXRoIA0Kb2YgYnJpZGdlIGlzIHN0aWxs
-IHNldC4NCg0KRm9sbG93aW5nIHNob3dzIHR3byBzY2VuYXJpb3Mgb2YgdGhpcyBMVFIgaXNzdWU6
-DQoNCi1zY2VuYXJpbyBvZiBkZXZpY2UgcmVzdG9yZQ0KIC0tIGJyaWRnZSBMVFIgZW5hYmxlZA0K
-IC0tIGRldmljZSBMVFIgZW5hYmxlZA0KIC0tIHJlc2V0IGRldmljZQ0KIC0tIGxpbmsgZ29lcyBk
-b3duLCBicmlkZ2UgZGlzYWJsZXMgTFRSDQogLS0gbGluayBjb21lcyBiYWNrIHVwLCBMVFIgZGlz
-YWJsZWQgaW4gYm90aCBicmlkZ2UgYW5kIGRldmljZQ0KIC0tIHJlc3RvcmUgZGV2aWNlIHN0YXRl
-LCBpbmNsdWRpbmcgTFRSIGVuYWJsZQ0KIC0tIGRldmljZSBzZW5kcyBMVFIgbWVzc2FnZQ0KIC0t
-IGJyaWRnZSByZXBvcnRzIFVuc3VwcG9ydGVkIFJlcXVlc3QNCg0KLXNjZW5hcmlvIG9mIGRldmlj
-ZSBob3QtcmVtb3ZlL2hvdC1hZGQNCiAtLSBicmlkZ2UgTFRSIGVuYWJsZWQNCiAtLSBkZXZpY2Ug
-TFRSIGVuYWJsZWQNCiAtLSBob3QtcmVtb3ZlIGRldmljZQ0KIC0tIGxpbmsgZ29lcyBkb3duLCBi
-cmlkZ2UgZGlzYWJsZXMgTFRSDQogLS0gaG90LWFkZCBkZXZpY2UgYW5kIGxpbmsgY29tZXMgYmFj
-ayB1cA0KIC0tIHNjYW4gZGV2aWNlLCBzZXQgTFRSIGVuYWJsZSBiaXQgb2YgZGV2aWNlDQogLS0g
-ZGV2aWNlIHNlbmRzIExUUiBtZXNzYWdlDQogLS0gYnJpZGdlIHJlcG9ydHMgVW5zdXBwb3J0ZWQg
-UmVxdWVzdA0KDQpUaGlzIGlzc3VlIHdhcyBub3RpY2VkIGJ5IEFFUiBsb2cgYXMgZm9sbG93aW5n
-IHNob3dzOg0KcGNpZXBvcnQgMDAwMDowMDoxZC4wOiBBRVI6IFVuY29ycmVjdGVkIChOb24tRmF0
-YWwpIGVycm9yIHJlY2VpdmVkOiBpZD0wMGU4DQpwY2llcG9ydCAwMDAwOjAwOjFkLjA6IFBDSWUg
-QnVzIEVycm9yOiBzZXZlcml0eT1VbmNvcnJlY3RlZCAoTm9uLUZhdGFsKSwgDQp0eXBlPVRyYW5z
-YWN0aW9uIExheWVyLCBpZD0wMGU4KFJlcXVlc3RlciBJRCkNCnBjaWVwb3J0IDAwMDA6MDA6MWQu
-MDogICBkZXZpY2UgWzgwODY6OWQxOF0gZXJyb3IgDQpzdGF0dXMvbWFzaz0wMDEwMDAwMC8wMDAx
-MDAwMA0KcGNpZXBvcnQgMDAwMDowMDoxZC4wOiAgICBbMjBdIFVuc3VwcG9ydGVkIFJlcXVlc3Qg
-ICAgKEZpcnN0KQ0KDQpJdCB3YXMgYWxzbyBub3RpY2VkIHdoZW4gUENJZSBkZXZpY2VzICh0aHVu
-ZGVyYm9sdCBkb2Nrcykgd2VyZSBob3QgcmVtb3ZlZCANCmZyb20gY2hyb21lYm9va3MsIGFuZCB0
-aGVuIGhvdC1wbHVnZ2VkIGJhY2sgYWdhaW4uIE9uY2UgaG90cGx1Z2dlZCBiYWNrLCANCnRoZSBu
-ZXdlciBJbnRlbCBjaHJvbWVib29rcyBmYWlsIHRvIGdvIGludG8gUzBpeCBsb3cgcG93ZXIgc3Rh
-dGUgYmVjYXVzZSANCm9mIHRoaXMgTFRSIGlzc3VlLihodHRwczovL3BhdGNod29yay5rZXJuZWwu
-b3JnL3Byb2plY3QvbGludXgtcGNpL3BhdGNoLw0KMjAyMTAyMDQwOTUxMjUuOTIxMi0xLW1pbmdj
-aHVhbmcucWlhb0BtZWRpYXRlay5jb20vKQ0KDQpUbyByZXNvbHZlIHRoaXMgaXNzdWUsIGNoZWNr
-IGFuZCByZS1jb25maWd1cmUgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQNCm9mIGJyaWRnZSB0
-byBtYWtlICJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0IG1hdGNoIGx0cl9wYXRoIHZhbHVlIGlu
-DQpmb2xsb3dpbmcgY29uZGl0aW9ucy4NCiAgIC1iZWZvcmUgY29uZmlndXJpbmcgZGV2aWNlJ3Mg
-TFRSIGZvciBob3QtcmVtb3ZlL2hvdC1hZGQNCiAgIC1iZWZvcmUgcmVzdG9yaW5nIGRldmljZSdz
-IERFVkNUTDIgcmVnaXN0ZXIgd2hlbiByZXN0b3JlIGRldmljZSBzdGF0ZQ0KDQpSZXZpZXdlZC1i
-eTogTWlrYSBXZXN0ZXJiZXJnIDxtaWthLndlc3RlcmJlcmdAbGludXguaW50ZWwuY29tPg0KU2ln
-bmVkLW9mZi1ieTogTWluZ2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29t
-Pg0KLS0tDQpjaGFuZ2VzIG9mIHY1DQogLWFkZCBtb3JlIGRldGFpbHMgaW4gY29tbWl0IG1lc3Nh
-Z2UNCmNoYW5nZXMgb2YgdjQNCiAtZml4IHR5cG8gb2YgY29tbWl0IG1lc3NhZ2UNCiAtcmVuYW1l
-OiBwY2lfcmVjb25maWd1cmVfYnJpZGdlX2x0cigpLT5wY2lfYnJpZGdlX3JlY29uZmlndXJlX2x0
-cigpDQpjaGFuZ2VzIG9mIHYzDQogLWNhbGwgcGNpX3JlY29uZmlndXJlX2JyaWRnZV9sdHIoKSBp
-biBwcm9iZS5jDQpjaGFuZ2VzIG9mIHYyDQogLW1vZGlmeSBwYXRjaCBkZXNjcmlwdGlvbg0KIC1y
-ZWNvbmZpZ3VyZSBicmlkZ2UncyBMVFIgYmVmb3JlIHJlc3RvcmluZyBkZXZpY2UgREVWQ1RMMiBy
-ZWdpc3Rlcg0KLS0tDQogZHJpdmVycy9wY2kvcGNpLmMgICB8IDI1ICsrKysrKysrKysrKysrKysr
-KysrKysrKysNCiBkcml2ZXJzL3BjaS9wY2kuaCAgIHwgIDEgKw0KIGRyaXZlcnMvcGNpL3Byb2Jl
-LmMgfCAxMyArKysrKysrKysrLS0tDQogMyBmaWxlcyBjaGFuZ2VkLCAzNiBpbnNlcnRpb25zKCsp
-LCAzIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcGNpLmMgYi9kcml2
-ZXJzL3BjaS9wY2kuYw0KaW5kZXggYjlmZWNjMjVkMjEzLi42YmY2NWQyOTUzMzEgMTAwNjQ0DQot
-LS0gYS9kcml2ZXJzL3BjaS9wY2kuYw0KKysrIGIvZHJpdmVycy9wY2kvcGNpLmMNCkBAIC0xNDM3
-LDYgKzE0MzcsMjQgQEAgc3RhdGljIGludCBwY2lfc2F2ZV9wY2llX3N0YXRlKHN0cnVjdCBwY2lf
-ZGV2ICpkZXYpDQogCXJldHVybiAwOw0KIH0NCiANCit2b2lkIHBjaV9icmlkZ2VfcmVjb25maWd1
-cmVfbHRyKHN0cnVjdCBwY2lfZGV2ICpkZXYpDQorew0KKyNpZmRlZiBDT05GSUdfUENJRUFTUE0N
-CisJc3RydWN0IHBjaV9kZXYgKmJyaWRnZTsNCisJdTMyIGN0bDsNCisNCisJYnJpZGdlID0gcGNp
-X3Vwc3RyZWFtX2JyaWRnZShkZXYpOw0KKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+bHRyX3BhdGgp
-IHsNCisJCXBjaWVfY2FwYWJpbGl0eV9yZWFkX2R3b3JkKGJyaWRnZSwgUENJX0VYUF9ERVZDVEwy
-LCAmY3RsKTsNCisJCWlmICghKGN0bCAmIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pKSB7DQorCQkJ
-cGNpX2RiZyhicmlkZ2UsICJyZS1lbmFibGluZyBMVFJcbiIpOw0KKwkJCXBjaWVfY2FwYWJpbGl0
-eV9zZXRfd29yZChicmlkZ2UsIFBDSV9FWFBfREVWQ1RMMiwNCisJCQkJCQkgUENJX0VYUF9ERVZD
-VEwyX0xUUl9FTik7DQorCQl9DQorCX0NCisjZW5kaWYNCit9DQorDQogc3RhdGljIHZvaWQgcGNp
-X3Jlc3RvcmVfcGNpZV9zdGF0ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KIHsNCiAJaW50IGkgPSAw
-Ow0KQEAgLTE0NDcsNiArMTQ2NSwxMyBAQCBzdGF0aWMgdm9pZCBwY2lfcmVzdG9yZV9wY2llX3N0
-YXRlKHN0cnVjdCBwY2lfZGV2ICpkZXYpDQogCWlmICghc2F2ZV9zdGF0ZSkNCiAJCXJldHVybjsN
-CiANCisJLyoNCisJICogRG93bnN0cmVhbSBwb3J0cyByZXNldCB0aGUgTFRSIGVuYWJsZSBiaXQg
-d2hlbiBsaW5rIGdvZXMgZG93bi4NCisJICogQ2hlY2sgYW5kIHJlLWNvbmZpZ3VyZSB0aGUgYml0
-IGhlcmUgYmVmb3JlIHJlc3RvcmluZyBkZXZpY2UuDQorCSAqIFBDSWUgcjUuMCwgc2VjIDcuNS4z
-LjE2Lg0KKwkgKi8NCisJcGNpX2JyaWRnZV9yZWNvbmZpZ3VyZV9sdHIoZGV2KTsNCisNCiAJY2Fw
-ID0gKHUxNiAqKSZzYXZlX3N0YXRlLT5jYXAuZGF0YVswXTsNCiAJcGNpZV9jYXBhYmlsaXR5X3dy
-aXRlX3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNUTCwgY2FwW2krK10pOw0KIAlwY2llX2NhcGFiaWxp
-dHlfd3JpdGVfd29yZChkZXYsIFBDSV9FWFBfTE5LQ1RMLCBjYXBbaSsrXSk7DQpkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9wY2kvcGNpLmggYi9kcml2ZXJzL3BjaS9wY2kuaA0KaW5kZXggNWM1OTM2NTA5
-MmZhLi5iM2E1ZTUyODdjYjcgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3BjaS9wY2kuaA0KKysrIGIv
-ZHJpdmVycy9wY2kvcGNpLmgNCkBAIC0xMTEsNiArMTExLDcgQEAgdm9pZCBwY2lfZnJlZV9jYXBf
-c2F2ZV9idWZmZXJzKHN0cnVjdCBwY2lfZGV2ICpkZXYpOw0KIGJvb2wgcGNpX2JyaWRnZV9kM19w
-b3NzaWJsZShzdHJ1Y3QgcGNpX2RldiAqZGV2KTsNCiB2b2lkIHBjaV9icmlkZ2VfZDNfdXBkYXRl
-KHN0cnVjdCBwY2lfZGV2ICpkZXYpOw0KIHZvaWQgcGNpX2JyaWRnZV93YWl0X2Zvcl9zZWNvbmRh
-cnlfYnVzKHN0cnVjdCBwY2lfZGV2ICpkZXYpOw0KK3ZvaWQgcGNpX2JyaWRnZV9yZWNvbmZpZ3Vy
-ZV9sdHIoc3RydWN0IHBjaV9kZXYgKmRldik7DQogDQogc3RhdGljIGlubGluZSB2b2lkIHBjaV93
-YWtldXBfZXZlbnQoc3RydWN0IHBjaV9kZXYgKmRldikNCiB7DQpkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9wY2kvcHJvYmUuYyBiL2RyaXZlcnMvcGNpL3Byb2JlLmMNCmluZGV4IDk1M2YxNWFiYzg1MC4u
-YWRlMDU1ZTlmYjU4IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9wY2kvcHJvYmUuYw0KKysrIGIvZHJp
-dmVycy9wY2kvcHJvYmUuYw0KQEAgLTIxMzIsOSArMjEzMiwxNiBAQCBzdGF0aWMgdm9pZCBwY2lf
-Y29uZmlndXJlX2x0cihzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KIAkgKiBDb21wbGV4IGFuZCBhbGwg
-aW50ZXJtZWRpYXRlIFN3aXRjaGVzIGluZGljYXRlIHN1cHBvcnQgZm9yIExUUi4NCiAJICogUENJ
-ZSByNC4wLCBzZWMgNi4xOC4NCiAJICovDQotCWlmIChwY2lfcGNpZV90eXBlKGRldikgPT0gUENJ
-X0VYUF9UWVBFX1JPT1RfUE9SVCB8fA0KLQkgICAgKChicmlkZ2UgPSBwY2lfdXBzdHJlYW1fYnJp
-ZGdlKGRldikpICYmDQotCSAgICAgIGJyaWRnZS0+bHRyX3BhdGgpKSB7DQorCWlmIChwY2lfcGNp
-ZV90eXBlKGRldikgPT0gUENJX0VYUF9UWVBFX1JPT1RfUE9SVCkgew0KKwkJcGNpZV9jYXBhYmls
-aXR5X3NldF93b3JkKGRldiwgUENJX0VYUF9ERVZDVEwyLA0KKwkJCQkJIFBDSV9FWFBfREVWQ1RM
-Ml9MVFJfRU4pOw0KKwkJZGV2LT5sdHJfcGF0aCA9IDE7DQorCQlyZXR1cm47DQorCX0NCisNCisJ
-YnJpZGdlID0gcGNpX3Vwc3RyZWFtX2JyaWRnZShkZXYpOw0KKwlpZiAoYnJpZGdlICYmIGJyaWRn
-ZS0+bHRyX3BhdGgpIHsNCisJCXBjaV9icmlkZ2VfcmVjb25maWd1cmVfbHRyKGRldik7DQogCQlw
-Y2llX2NhcGFiaWxpdHlfc2V0X3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNUTDIsDQogCQkJCQkgUENJ
-X0VYUF9ERVZDVEwyX0xUUl9FTik7DQogCQlkZXYtPmx0cl9wYXRoID0gMTsNCi0tIA0KMi4xOC4w
-DQo=
+On Tue, Oct 12, 2021 at 9:35 AM Nicolas Ferre
+<nicolas.ferre@microchip.com> wrote:
+> On 12/10/2021 at 02:03, Stephen Rothwell wrote:
+> >
+> > After merging the arm-soc tree, today's linux-next build (arm
+> > multi_v7_defconfig) failed like this:
+> >
+> > Error: arch/arm/boot/dts/sama7g5.dtsi:167.3-7 syntax error
+> > FATAL ERROR: Unable to parse input tree
+> >
+> > Caused by commit
+> >
+> >    9be4be3ed1ec ("Merge branch 'arm/dt' into for-next")
 
+Thank you for the report!
+
+I had verified the arm/dt branch by itself, but didn't recheck it after I
+merged it into the for-next branch. At least that one is easy to fix
+up as I don't send the combined branch to Linus, and the arm/dt
+branch does not have the problem.
+
+> I had following patch to have the nodes in alphabetical order:
+>
+...
+>
+> Sorry for not having mentioned this conflict in the pull-request.
+
+No worries,
+
+I had assumed you had them sorted by unit-address, so I had them
+ in the wrong order as well. Fixing up both issues in for-next
+now by redoing the merge.
+
+       Arnd
