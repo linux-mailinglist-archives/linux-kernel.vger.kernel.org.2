@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C68B42AB6B
+	by mail.lfdr.de (Postfix) with ESMTP id 5930842AB6C
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbhJLSEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
+        id S233005AbhJLSEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbhJLSD4 (ORCPT
+        with ESMTP id S232404AbhJLSD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:03:56 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1686C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:01:54 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id az39so6532125qkb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:01:54 -0700 (PDT)
+        Tue, 12 Oct 2021 14:03:57 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA20C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:01:55 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id q125so20166686qkd.12
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:01:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Lyh5VszI4R7zeybDzYqsIPSiDXABCH8mlDeTJtPXHYo=;
-        b=uW83OlcYmd9OYcOM7gdtBuDzsXhWtXx1xhFC2d6WrbzMz8avtsJakLyys2WcAwd1id
-         t+puB5jH0LxZZN+VR7IXNhLdGUeCFeEIot2al+WyrrFsMFcrwu/yKJzyNNyFE6+K/rKi
-         2i8FnA1fOa4exo5V9P4Ilme1WXxoywz7C8xWoWiBw921RNFjH7kfo2PtgutGdCKrBRoY
-         4pa505He3m0IqeodsA/Z8+ifYbmV6SxZwfNnQ7d3nuryD9A0w2z3+PWk4fe+8BG/B4sA
-         ndwiMUfixeU3DYgvLWGursDymyc5jmBd7KUfoSEpqAOnFOYviOf1xQ3dPZsjVAHQT1JF
-         zuDw==
+        bh=0e0rL00kLadi2lyvM6hOzWlirSZ5oBt2j8X8F7bJZSM=;
+        b=chQcxN4bRHoM7gj2TinQmcPE3Y4oJRxOkiEHEqowVxhCJo6D+Op8aYj8LkysJoHjDt
+         Ayh2luHwOdYCu+ecHB4EonMFD7nG5YVFsuzIR1Non/doeQFyR3rwSnBvD2tgIX719L5D
+         NtJIuo/6VjEkihK9V8OZrEvY7+8xrBHkeKCUeVFHJFwICJ0/U2v4UXYBhUBwo6I0W7t1
+         MrxJ0Bx8nlpqDdR6T2tOncI4YqW7cw53JU2/mObdD/bJBfEqeA6EihjNw5M/h991Zvgp
+         r/mHE8Kxz8P9RbBBsKrnLUEyV6JbZInyDW84XQIr+1R9nW/jlR07K3uM55hJPtBeMTFB
+         T0MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Lyh5VszI4R7zeybDzYqsIPSiDXABCH8mlDeTJtPXHYo=;
-        b=a9vpAhbmdyA2uKk/yZkZXb1AX7X6b3FdwNPfspRFMSFqH9fnMqwG1QbkWWzxH0c/z6
-         xo51q4KSYzCQgYHMVEtYcf1Ri3GX0s8RXqeMGCMDcNj9xbojToJGSZxOMaIjV6jqBCfG
-         3mRwtnWugqsAVidGhNFGUDTtwUZAk6vTrs8RhFoEEiiTQ25a6g+l8+ah6WTWmFCxesy9
-         4ifE54rsXxPhr5EzNmLCKrXiiZdeiqV2/jLvF0upVHJHsoXEeeTv7TE1knVcW8zk4PDt
-         QjLVaO8j3E99yZG1GSukjjWN0SQMaNQe3tsk6bXMhP/pK6XvjwYO5N8LrQosWd2TusWi
-         BSNg==
-X-Gm-Message-State: AOAM530WKvoCAwrbL5wClYMWg3lUuYfsK7lUGL+bYvoGfBHuEFM1QJYH
-        14+8uUUWvNiCpDAr938gIhTiZQ==
-X-Google-Smtp-Source: ABdhPJzrK8bQDC7NK5HHGHuo4A32b4Tvsk/5CgUECMVqu9ckf3I8IoJVXNxz+cQGMAGQgU4EnksWpA==
-X-Received: by 2002:a37:2743:: with SMTP id n64mr8926545qkn.394.1634061713973;
-        Tue, 12 Oct 2021 11:01:53 -0700 (PDT)
+        bh=0e0rL00kLadi2lyvM6hOzWlirSZ5oBt2j8X8F7bJZSM=;
+        b=LAueUD4grwbHnHmTKjqOWd+2CPYBGn8qwmH7qs9/F9xCkTGyECM5ixPgOzjzMdrJT/
+         6Z+bcSQM99HK2FZmCoEa29TUC5FbkvjCgQ3eJamWV1a8/IAI5VzN05ftoHA72M+IkzvK
+         DGaMiJqqU2l0T5poPpSR5IyPLEzHHDPfVe9vgQ8sPRGOuH1PMQUDbxPE3oaV888N7jSa
+         jKwfLGXzjEUaxNrZnyApSFlv90K/3eMxcjALv6pCHLI/OngihDYmRm3qYSKVlqD7x2QR
+         SkD2HreLbrVRhsUwKyLKw+Xm37WbaejuvwNtjXQgErjZbREpqZRsHCBC+AwPRDOkRwq/
+         2rGg==
+X-Gm-Message-State: AOAM5310y9cf88CzTKsSYOPbuuLnbKS+GtJZHS9mhkIn4/5IG1nGk40D
+        wdtRg4epPzhEQlh2OwZfO0+Plw==
+X-Google-Smtp-Source: ABdhPJza8yelISHYV2A2JNlOPcudILx0Sa5Dcpdsaxzffy0q9fqNcu137J6I1K7iZBHRbBmYnVVrFw==
+X-Received: by 2002:a37:a041:: with SMTP id j62mr21265322qke.423.1634061714932;
+        Tue, 12 Oct 2021 11:01:54 -0700 (PDT)
 Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id a4sm5526589qtm.12.2021.10.12.11.01.53
+        by smtp.gmail.com with ESMTPSA id a16sm5992748qkn.16.2021.10.12.11.01.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 11:01:53 -0700 (PDT)
+        Tue, 12 Oct 2021 11:01:54 -0700 (PDT)
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     linux-mm@kvack.org
 Cc:     Matthew Wilcox <willy@infradead.org>,
@@ -56,9 +56,9 @@ Cc:     Matthew Wilcox <willy@infradead.org>,
         Vlastimil Babka <vbabka@suse.cz>,
         Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
         linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 02/11] PageSlab: eliminate unnecessary compound_head() calls in fs/proc/page
-Date:   Tue, 12 Oct 2021 14:01:39 -0400
-Message-Id: <20211012180148.1669685-3-hannes@cmpxchg.org>
+Subject: [PATCH 03/11] PageSlab: eliminate unnecessary compound_head() calls in kernel/resource
+Date:   Tue, 12 Oct 2021 14:01:40 -0400
+Message-Id: <20211012180148.1669685-4-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211012180148.1669685-1-hannes@cmpxchg.org>
 References: <20211012180148.1669685-1-hannes@cmpxchg.org>
@@ -68,60 +68,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cache multiple lookups in a local variable.
+virt_to_head_page() implies it.
 
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- fs/proc/page.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/proc/page.c b/fs/proc/page.c
-index 2c249f84e1fd..37d95309e1c1 100644
---- a/fs/proc/page.c
-+++ b/fs/proc/page.c
-@@ -108,6 +108,7 @@ static inline u64 kpf_copy_bit(u64 kflags, int ubit, int kbit)
+diff --git a/kernel/resource.c b/kernel/resource.c
+index a363211fda99..ca9f5198a01f 100644
+--- a/kernel/resource.c
++++ b/kernel/resource.c
+@@ -151,7 +151,7 @@ static void free_resource(struct resource *res)
+ 	if (!res)
+ 		return;
  
- u64 stable_page_flags(struct page *page)
- {
-+	struct page *head;
- 	u64 k;
- 	u64 u;
- 
-@@ -118,6 +119,7 @@ u64 stable_page_flags(struct page *page)
- 	if (!page)
- 		return 1 << KPF_NOPAGE;
- 
-+	head = compound_head(page);
- 	k = page->flags;
- 	u = 0;
- 
-@@ -127,7 +129,7 @@ u64 stable_page_flags(struct page *page)
- 	 * Note that page->_mapcount is overloaded in SLOB/SLUB/SLQB, so the
- 	 * simple test in page_mapped() is not enough.
- 	 */
--	if (!PageSlab(compound_head(page)) && page_mapped(page))
-+	if (!PageSlab(head) && page_mapped(page))
- 		u |= 1 << KPF_MMAP;
- 	if (PageAnon(page))
- 		u |= 1 << KPF_ANON;
-@@ -151,8 +153,6 @@ u64 stable_page_flags(struct page *page)
- 	 * to make sure a given page is a thp, not a non-huge compound page.
- 	 */
- 	else if (PageTransCompound(page)) {
--		struct page *head = compound_head(page);
--
- 		/* XXX: misses isolated file THPs */
- 		if (PageLRU(head) || PageAnon(head))
- 			u |= 1 << KPF_THP;
-@@ -185,7 +185,7 @@ u64 stable_page_flags(struct page *page)
- 	u |= kpf_copy_bit(k, KPF_LOCKED,	PG_locked);
- 
- 	u |= kpf_copy_bit(k, KPF_SLAB,		PG_slab);
--	if (PageTail(page) && PageSlab(compound_head(page)))
-+	if (PageTail(page) && PageSlab(head))
- 		u |= 1 << KPF_SLAB;
- 
- 	u |= kpf_copy_bit(k, KPF_ERROR,		PG_error);
+-	if (!PageSlab(compound_head(virt_to_head_page(res)))) {
++	if (!PageSlab(virt_to_head_page(res))) {
+ 		spin_lock(&bootmem_resource_lock);
+ 		res->sibling = bootmem_resource_free;
+ 		bootmem_resource_free = res;
 -- 
 2.32.0
 
