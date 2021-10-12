@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AFB429AE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515B7429AE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234765AbhJLBUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234417AbhJLBUN (ORCPT
+        id S234869AbhJLBUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:20:19 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14328 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234787AbhJLBUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:20:13 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DE7C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:18:13 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id r134so10701323iod.11
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:18:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XwNLlCoziqCq19LxKxXu4mYNmRBF6cKqLUssHiFb0dQ=;
-        b=ZC8R7IHpko2asLw/HuOIXVPb/Dut3Wq24jMlbFWZ54gGGCNd+8usxO6I9wFiawEla/
-         pcVtu8ic3Y4ec+P5DIiWoWp1EdVAiUQ8snbyNmGywPh196wD+BJlmqDD18Y9q1FVAlqM
-         lctbFmb46Ji6JSTK2MPa9pOfdwEA5n7X0ClW4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XwNLlCoziqCq19LxKxXu4mYNmRBF6cKqLUssHiFb0dQ=;
-        b=bcp/qwryEezgBx5xEKct7kVL7bvqTYdhKMMpfxXvkzrOLbcXbh2nSA9oAV+/0nqhH7
-         6EjU44s29HdUiRkgBCBJEKs4Qv5CqQZ27MSN3i8hioHUtK3mvBuB2ZdkMp8C5gDYTYGq
-         3UOc5tXbWZQYO8XpLXQAVAw38ztAs/2T1pCXYs9M+BX+3AsdHQchLXafJnaOXy0wTjZ4
-         2hzD89O73kyay3dFNUEmUetFrAAVtrYPBtw69Hu1taWkt1+K+4AMDzPajBOJ8PQAqE7f
-         EDWY7/stbz1b2CKXYZ1O0LmUZarS3g0L3sBbVqRfpD60t0SDc2tnpNg2QJoXcI6yRtOZ
-         AIRw==
-X-Gm-Message-State: AOAM532wKfTu+vU2e53ExZ8Gu1i+xRNdJL+hUD/WX9Qz887ihxVzoonk
-        3aoGDsSJ7TDM+03WilModP6mUQ==
-X-Google-Smtp-Source: ABdhPJxazTDKAqVtr9YVrzsm9pb3WTmYCgW6VaZrYCstuSgq3LawnYSgf5meydiHZ91bv0aRWvQQZw==
-X-Received: by 2002:a02:2a04:: with SMTP id w4mr5376258jaw.107.1634001492278;
-        Mon, 11 Oct 2021 18:18:12 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v17sm4809968ilh.67.2021.10.11.18.18.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 18:18:11 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/52] 5.4.153-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211011134503.715740503@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <756a412b-d060-5efc-0039-e5878a744c8a@linuxfoundation.org>
-Date:   Mon, 11 Oct 2021 19:18:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 11 Oct 2021 21:20:17 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HSyN505N2z8yMM;
+        Tue, 12 Oct 2021 09:13:25 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 09:18:14 +0800
+Received: from [10.174.178.174] (10.174.178.174) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 09:18:13 +0800
+Subject: Re: [PATCH] regmap: Fix possible double-free in
+ regcache_rbtree_exit()
+To:     Mark Brown <broonie@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <rafael@kernel.org>,
+        <gregkh@linuxfoundation.org>
+References: <20211011135526.282115-1-yangyingliang@huawei.com>
+ <YWR2+CAtFuGl4cSz@sirena.org.uk>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <02aa09c9-e873-c741-dfb5-9ed439cc7cea@huawei.com>
+Date:   Tue, 12 Oct 2021 09:18:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <YWR2+CAtFuGl4cSz@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/21 7:45 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.153 release.
-> There are 52 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Oct 2021 13:44:51 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi,
 
-Compiled and booted on my test system. No dmesg regressions.
+On 2021/10/12 1:40, Mark Brown wrote:
+> On Mon, Oct 11, 2021 at 09:55:26PM +0800, Yang Yingliang wrote:
+>> In regcache_rbtree_insert_to_block(), when 'present' realloc failed,
+>> the 'blk' which is supposed to assign to 'rbnode->block' will be freed,
+>> so 'rbnode->block' points a freed memory, in the error handling path of
+>> regcache_rbtree_init(), 'rbnode->block' will be freed again in
+>> regcache_rbtree_exit(), KASAN will report double-free as follows:
+>>
+>> BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
+>> Call Trace:
+>>   dump_stack_lvl+0xe2/0x152
+>>   print_address_description.constprop.7+0x21/0x150
+>>   kasan_report_invalid_free+0x6f/0xa0
+>>   __kasan_slab_free+0x125/0x140
+> Please think hard before including complete backtraces in upstream
+> reports, they are very large and contain almost no useful information
+> relative to their size so often obscure the relevant content in your
+> message. If part of the backtrace is usefully illustrative (it often is
+> for search engines if nothing else) then it's usually better to pull out
+> the relevant sections.
+OK
+>
+>> Set rbnode->block to NULL when the 'present' realloc failed to fix this.
+> This is not a good fix, it will both leak block and corrupt the data
+> structure since now there's a NULL pointer where there should be a data
+> block.  We should instead be moving the assignment of rbnode->block up
+> to immediately after the reallocation has succeeded so that the data
+> structure stays valid even if the second reallocation fails.
+I will send a v2 later.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+Thanks,
+Yang
