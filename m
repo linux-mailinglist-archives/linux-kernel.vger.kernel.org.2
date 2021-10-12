@@ -2,96 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098B042A003
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB96242A006
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235029AbhJLIho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234745AbhJLIhm (ORCPT
+        id S235087AbhJLIiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:38:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40398 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234745AbhJLIiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:37:42 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967F2C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:35:41 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id i83-20020a256d56000000b005b706d1417bso26412129ybc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=2PxooU0wMNWHRoqVg8KGWycx2G1vRUD/xvnBqPnO+Cw=;
-        b=spzW640BaOKfr0hbZcimKSsUIxmi9aHJwfY7TPcMFosV8HHVLQ66+2SUyvTnniKPPb
-         KepRy35l2WP5YsEj4uzZxcKfXhkbSjNmXkq0Jj0bI1OgdEWOqTCMkvyiGZFRzVVaKeIt
-         R24G1kQbcJ0OiheevlxwUeRSfu8L6EoJLtIB0If3bBW9z54EIwQvD0AYdyPi1uRrph/t
-         r3pqbZJi6MtobB/f65O8Wbm1a6U2N0trK1AHbKvaMnq5gb6A93J+41dZo7OkwK4n5BUL
-         BViigYx/MBTXPNF0lXhx5lxDEYzSmmLQLUfflMHdDwRT5/6MLTFnxN4uUVrb8rTftX0V
-         EVpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=2PxooU0wMNWHRoqVg8KGWycx2G1vRUD/xvnBqPnO+Cw=;
-        b=j9Hpw1tvf05swDOrihyxj0nwha5D+pxtgRsaRcR4q5HTCUx9r+ixV415QaiO29IEkL
-         NKeAzSuZyw0ZCZXxyNPYBphEdRl2PzV8KI3spbDJd3J19eAnYBvjbfOCWI3dZtu9kBPz
-         oyVbl0zThi3c+BtEKPc0GZm72+WH/AQ55DwytZxQtM3M6xQM/YPWS5qDatwjyNyhyatZ
-         Rw+lFXJso+Bb7a0vZBWufeOID8zn2HKAGhYX3SNzxGTO+c7IPzi4DRfEU9t6ejO8VnBk
-         gPJWR+2VPsaRJYzjt5axpa4t7AFhojqDS+8eNvTUbDimiNSqs8bR6VRW16pGix36btcx
-         8FfQ==
-X-Gm-Message-State: AOAM532rsh4pjvs7KBmrKjGcgL9ZHbIr6oBreQzEtc0MwJZH9bUp6vJc
-        YaHEvM9Y+iuemwhuiAy6mL91FNR5zfud5g==
-X-Google-Smtp-Source: ABdhPJzsF7hKhKik4m/BXdA5SYLtnCn2FwEwKL8zo0ZS0qJXXGfN7j/oMoAqO+Vb1MWa2LKVTRR/JNUbx4/7Ug==
-X-Received: from woodylin.ntc.corp.google.com ([2401:fa00:fc:202:4a20:efbd:8eb8:c383])
- (user=woodylin job=sendgmr) by 2002:a25:e08d:: with SMTP id
- x135mr26667230ybg.199.1634027740838; Tue, 12 Oct 2021 01:35:40 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 16:35:21 +0800
-Message-Id: <20211012083521.973587-1-woodylin@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH] sched/scs: Reset the shadow stack when idle_task_exit
-From:   Woody Lin <woodylin@google.com>
-To:     Ingo Molnar <mingo@redhat.com>, Ben Segall <bsegall@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, Woody Lin <woodylin@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 12 Oct 2021 04:38:06 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C8CB7x027311;
+        Tue, 12 Oct 2021 04:36:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=clgthSWCQb948dpI0HY7W2uAGrXqwjNJF48BWMWj+PA=;
+ b=ITy+HwOQwlTwI2Ywsphuyz3hujZFu5Gcs3CYv0atYg0MTAf7/MGiOo99T0/emNHLW0y6
+ 3+BOJoH/4XdWRrbhktgg1Q7YkuXHN0S8REJ/hSQacW/pLkfU1mEjlQTagddDG/nTIy1I
+ CChbhBJ58W9Eq8c5YbRseI7tnc9b6C7jDLNcHLeY9UHPrmh9vskCOvRIx4ffYt1/W+fv
+ WgIAP0gU32fx1QLp5lWz4xz+jjR0e4TpA83oOUuukZdalCoX3VBkKu49kn8cFvgc2g4q
+ yyKUcvdVbGksOORWSqL7X0SYOSsWDkYn0xf2+gJWq2jdTPKvIMVJCNrGyCkHvJGNj2gX SQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn6n20em0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 04:36:04 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19C8EVbV003122;
+        Tue, 12 Oct 2021 04:36:04 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn6n20ek8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 04:36:04 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19C8XpbR024314;
+        Tue, 12 Oct 2021 08:36:02 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 3bk2bj6964-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 08:36:02 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19C8ZsCl46989778
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 08:35:54 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0B8404C04E;
+        Tue, 12 Oct 2021 08:35:54 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 873F64C050;
+        Tue, 12 Oct 2021 08:35:53 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.7.88])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Oct 2021 08:35:53 +0000 (GMT)
+Date:   Tue, 12 Oct 2021 10:35:50 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Janosch Frank <frankja@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com
+Subject: Re: [PATCH v5 08/14] KVM: s390: pv: handle secure storage
+ exceptions for normal guests
+Message-ID: <20211012103550.501857f5@p-imbrenda>
+In-Reply-To: <f442a49f-dbc4-5c38-ffa1-6b17742592c3@linux.ibm.com>
+References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
+        <20210920132502.36111-9-imbrenda@linux.ibm.com>
+        <f442a49f-dbc4-5c38-ffa1-6b17742592c3@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: XxPXb4BXkf5Qz2hd_qh0N4TO2Yn4Gxe8
+X-Proofpoint-GUID: 0nHswJhhYAqjQsYfIfe1v7v3C53-AikG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-12_02,2021-10-11_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ mlxscore=0 priorityscore=1501 mlxlogscore=968 impostorscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110120047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There was a 'init_idle' that resets scs sp to base, but is removed by
-f1a0a376ca0c. Without the resetting, the hot-plugging implemented by
-cpu_psci_cpu_boot will use the previous scs sp as new base when starting
-up a CPU core, so the usage on scs page is being stacked up until
-overflow.
+On Tue, 12 Oct 2021 10:16:26 +0200
+Janosch Frank <frankja@linux.ibm.com> wrote:
 
-This only happens on idle task since __cpu_up is using idle task as the
-main thread to start up a CPU core, so the overflow can be fixed by
-resetting scs sp to base in 'idle_task_exit'.
+> On 9/20/21 15:24, Claudio Imbrenda wrote:
+> > With upcoming patches, normal guests might touch secure pages.
+> > 
+> > This patch extends the existing exception handler to convert the pages
+> > to non secure also when the exception is triggered by a normal guest.
+> > 
+> > This can happen for example when a secure guest reboots; the first
+> > stage of a secure guest is non secure, and in general a secure guest
+> > can reboot into non-secure mode.
+> > 
+> > If the secure memory of the previous boot has not been cleared up
+> > completely yet, a non-secure guest might touch secure memory, which
+> > will need to be handled properly.
+> > 
+> > Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> > ---
+> >   arch/s390/mm/fault.c | 10 +++++++++-
+> >   1 file changed, 9 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> > index eb68b4f36927..74784581f42d 100644
+> > --- a/arch/s390/mm/fault.c
+> > +++ b/arch/s390/mm/fault.c
+> > @@ -767,6 +767,7 @@ void do_secure_storage_access(struct pt_regs *regs)
+> >   	struct vm_area_struct *vma;
+> >   	struct mm_struct *mm;
+> >   	struct page *page;
+> > +	struct gmap *gmap;
+> >   	int rc;
+> >   
+> >   	/*
+> > @@ -796,6 +797,14 @@ void do_secure_storage_access(struct pt_regs *regs)
+> >   	}
+> >   
+> >   	switch (get_fault_type(regs)) {
+> > +	case GMAP_FAULT:
+> > +		gmap = (struct gmap *)S390_lowcore.gmap;
+> > +		addr = __gmap_translate(gmap, addr);
+> > +		if (IS_ERR_VALUE(addr)) {
+> > +			do_fault_error(regs, VM_ACCESS_FLAGS, VM_FAULT_BADMAP);
+> > +			break;
+> > +		}
+> > +		fallthrough;  
+> 
+> This would trigger an export and not a destroy, right?
 
-Fixes: f1a0a376ca0c ("sched/core: Initialize the idle task with preemption disabled")
-Signed-off-by: Woody Lin <woodylin@google.com>
----
- kernel/sched/core.c | 1 +
- 1 file changed, 1 insertion(+)
+correct. but this would only happen for leftover secure pages touched
+by non-secure guests, before the background thread could clean them up.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 1bba4128a3e6..f21714ea3db8 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8795,6 +8795,7 @@ void idle_task_exit(void)
- 		finish_arch_post_lock_switch();
- 	}
- 
-+	scs_task_reset(current);
- 	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
- }
- 
--- 
-2.33.0.882.g93a45727a2-goog
+> 
+> >   	case USER_FAULT:
+> >   		mm = current->mm;
+> >   		mmap_read_lock(mm);
+> > @@ -824,7 +833,6 @@ void do_secure_storage_access(struct pt_regs *regs)
+> >   		if (rc)
+> >   			BUG();
+> >   		break;
+> > -	case GMAP_FAULT:
+> >   	default:
+> >   		do_fault_error(regs, VM_READ | VM_WRITE, VM_FAULT_BADMAP);
+> >   		WARN_ON_ONCE(1);
+> >   
+> 
 
