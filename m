@@ -2,244 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EC9429C40
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 06:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F924429C6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 06:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhJLE0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 00:26:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:43836 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229593AbhJLE0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 00:26:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AFA85101E;
-        Mon, 11 Oct 2021 21:24:21 -0700 (PDT)
-Received: from [10.163.74.251] (unknown [10.163.74.251])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2591E3F70D;
-        Mon, 11 Oct 2021 21:24:18 -0700 (PDT)
-Subject: Re: [RFC V3 13/13] KVM: arm64: Enable FEAT_LPA2 based 52 bits IPA
- size on 4K and 16K
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suzuki.poulose@arm.com, mark.rutland@arm.com, will@kernel.org,
-        catalin.marinas@arm.com, james.morse@arm.com, steven.price@arm.com
-References: <1632998116-11552-1-git-send-email-anshuman.khandual@arm.com>
- <1632998116-11552-14-git-send-email-anshuman.khandual@arm.com>
- <87r1crq32z.wl-maz@kernel.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <acf7847f-a6c6-38a7-7bce-48a24549716b@arm.com>
-Date:   Tue, 12 Oct 2021 09:54:15 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232331AbhJLEbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 00:31:25 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:33804
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229593AbhJLEbY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 00:31:24 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8D7543F31E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 04:29:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634012962;
+        bh=j5GNvlDgAlpbmrfI4AhEJkka1LKpKihb4cfJWgaespQ=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=o2d/EIT9pjX/s8yapFXXI2flCqLaI3JaWWEzA4Xt1+VjSgNq8pjCEaN5O9vEzK6QI
+         412ZdWBViwJ/1CBnV5BSA2WmjshqlmvwKHkGy1ls1DgfvtUddsNLo6/r0qoV0ou77i
+         wlypT6mQTNlpCYPMQa8SATFoTS7tjK1z2dL3X7kOtOG2T0M/GDX+Djfi/KayuPh14U
+         ZVrNRzDTXtNQCRRI2YrqYXCZ8HLBmsTfdds3oJ13XyQM7BeeDbKjKxuV/WAO+f/fxD
+         5zUcs2fhj9cy/z1+FNYHocsxOv+YlYA70iVPh9iGQZn5sFnJkMyqS8TvFkXpAI2Qlf
+         qDdjJkmylPl8g==
+Received: by mail-ed1-f70.google.com with SMTP id x5-20020a50f185000000b003db0f796903so17735548edl.18
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 21:29:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j5GNvlDgAlpbmrfI4AhEJkka1LKpKihb4cfJWgaespQ=;
+        b=2f/60zaYr/YZSd8ib6iT5lTt11nhPqJIOgpRrVm2fr4rTM2LhVsm3vXLHkHxVfENKj
+         BcHpF0hjeuNIVIseGUvCdF5WbhMd++kbjeKZr7G9z5AexTaNeC1FG/qnTew8u/GMeM/K
+         6Jt6c+LCh8NOQLZPZ/t2k6YtkxV0VaWEVnJADCRjuP8c+uTz6uO8CNrr6eBkBeHGIa2v
+         dmI63FByP6MoeiQrJxaBZOHgC7euRYv87ox3Z7RcycqZR6yD8BOQ9xWCTMPpyIwTKq3r
+         8pvbkMmADk/lb7dj/vQvzDIVk34g38aA8ak5dVKLNj/LxjvJfgLOu+pH5I9YryL7BIvC
+         gf9g==
+X-Gm-Message-State: AOAM532+DT1dIURLCHDkdO46bBcotXhfAsTXchxyVzQfOxAyh0q7eM5f
+        PVEDMutyFlQYglUxbAG9WR2EhMLtV07csZTqCN673/GU+5Rcny39WlRF1ZtOoLhHEuk3QxTE1Sm
+        6/2uTO5Knt//iUiSH4SYT2Mts0j2NVIOuRJAMFaxEE+NoDD9icg2jxpnviA==
+X-Received: by 2002:a17:906:ed1:: with SMTP id u17mr30550100eji.304.1634012962264;
+        Mon, 11 Oct 2021 21:29:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx1ksJYjK/aiihSiZEfvwLRPik2LJg90bitpHrZfMyTVNB23tXG2VJI1i1iMS2CddkouS6IqXMkzMJJbVhtgTw=
+X-Received: by 2002:a17:906:ed1:: with SMTP id u17mr30550085eji.304.1634012962057;
+ Mon, 11 Oct 2021 21:29:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87r1crq32z.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210920130248.145058-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210920130248.145058-1-krzysztof.kozlowski@canonical.com>
+From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Date:   Tue, 12 Oct 2021 06:29:10 +0200
+Message-ID: <CA+zEjCtTbJnvmrM1g-CR8ZUtT375Wd-4dt0YR1zLG5nOvtDyGg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 1/5] riscv: dts: sifive: use only generic JEDEC
+ SPI NOR flash compatible
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Marc,
+hi Krzysztof,
 
-On 10/11/21 3:46 PM, Marc Zyngier wrote:
-> On Thu, 30 Sep 2021 11:35:16 +0100,
-> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
->>
->> Stage-2 FEAT_LPA2 support is independent and also orthogonal to FEAT_LPA2
->> support either in Stage-1 or in the host kernel. Stage-2 IPA range support
->> is evaluated from the platform via ID_AA64MMFR0_TGRAN_2_SUPPORTED_LPA2 and
->> gets enabled regardless of Stage-1 translation.
->>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  arch/arm64/include/asm/kvm_pgtable.h | 10 +++++++++-
->>  arch/arm64/kvm/hyp/pgtable.c         | 25 +++++++++++++++++++++++--
->>  arch/arm64/kvm/reset.c               | 14 ++++++++++----
->>  3 files changed, 42 insertions(+), 7 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
->> index 0277838..78a9d12 100644
->> --- a/arch/arm64/include/asm/kvm_pgtable.h
->> +++ b/arch/arm64/include/asm/kvm_pgtable.h
->> @@ -29,18 +29,26 @@ typedef u64 kvm_pte_t;
->>  
->>  #define KVM_PTE_ADDR_MASK		GENMASK(47, PAGE_SHIFT)
->>  #define KVM_PTE_ADDR_51_48		GENMASK(15, 12)
->> +#define KVM_PTE_ADDR_51_50		GENMASK(9, 8)
->>  
->>  static inline bool kvm_pte_valid(kvm_pte_t pte)
->>  {
->>  	return pte & KVM_PTE_VALID;
->>  }
->>  
->> +void set_kvm_lpa2_enabled(void);
->> +bool get_kvm_lpa2_enabled(void);
->> +
->>  static inline u64 kvm_pte_to_phys(kvm_pte_t pte)
->>  {
->>  	u64 pa = pte & KVM_PTE_ADDR_MASK;
->>  
->> -	if (PAGE_SHIFT == 16)
->> +	if (PAGE_SHIFT == 16) {
->>  		pa |= FIELD_GET(KVM_PTE_ADDR_51_48, pte) << 48;
->> +	} else {
->> +		if (get_kvm_lpa2_enabled())
-> 
-> Having to do a function call just for this test seems bad, specially
-> for something that is used so often on the fault path.
-> 
-> Why can't this be made a normal capability that indicates LPA support
-> for the current page size?
+On Mon, Sep 20, 2021 at 3:05 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> The compatible "issi,is25wp256" is undocumented and instead only a
+> generic jedec,spi-nor should be used (if appropriate).
 
-Although I could look into making this a normal capability check, would
-not a static key based implementation be preferred if the function call
-based construct here is too expensive ?
+Why not do it the other way around? I mean adding this compatible to
+the expected list: don't we lose information using the generic
+compatible?
 
-Originally, avoided capability method for stage-2 because it would have
-been difficult in stage-1 where the FEAT_LPA2 detection is required way
-earlier during boot before cpu capability comes up. Hence just followed
-a simple variable method both for stage-1 and stage-2 keeping it same.
+Thanks,
 
-> 
->> +			pa |= FIELD_GET(KVM_PTE_ADDR_51_50, pte) << 50;
-> 
-> Where are bits 48 and 49?
+Alex
 
-Unlike the current FEAT_LPA feature, bits 48 and 49 are part of the PA
-itself. Only the bits 50 and 51 move into bits 8 and 9, while creating
-a PTE.
-
-> 
->> +	}
->>  
->>  	return pa;
->>  }
->> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->> index f8ceebe..58141bf 100644
->> --- a/arch/arm64/kvm/hyp/pgtable.c
->> +++ b/arch/arm64/kvm/hyp/pgtable.c
->> @@ -49,6 +49,18 @@
->>  #define KVM_INVALID_PTE_OWNER_MASK	GENMASK(9, 2)
->>  #define KVM_MAX_OWNER_ID		1
->>  
->> +static bool kvm_lpa2_enabled;
->> +
->> +bool get_kvm_lpa2_enabled(void)
->> +{
->> +	return kvm_lpa2_enabled;
->> +}
->> +
->> +void set_kvm_lpa2_enabled(void)
->> +{
->> +	kvm_lpa2_enabled = true;
->> +}
->> +
->>  struct kvm_pgtable_walk_data {
->>  	struct kvm_pgtable		*pgt;
->>  	struct kvm_pgtable_walker	*walker;
->> @@ -126,8 +138,12 @@ static kvm_pte_t kvm_phys_to_pte(u64 pa)
->>  {
->>  	kvm_pte_t pte = pa & KVM_PTE_ADDR_MASK;
->>  
->> -	if (PAGE_SHIFT == 16)
->> +	if (PAGE_SHIFT == 16) {
->>  		pte |= FIELD_PREP(KVM_PTE_ADDR_51_48, pa >> 48);
->> +	} else {
->> +		if (get_kvm_lpa2_enabled())
->> +			pte |= FIELD_PREP(KVM_PTE_ADDR_51_50, pa >> 50);
->> +	}
->>  
->>  	return pte;
->>  }
->> @@ -540,6 +556,9 @@ u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift)
->>  	 */
->>  	vtcr |= VTCR_EL2_HA;
->>  
->> +	if (get_kvm_lpa2_enabled())
->> +		vtcr |= VTCR_EL2_DS;
->> +
->>  	/* Set the vmid bits */
->>  	vtcr |= (get_vmid_bits(mmfr1) == 16) ?
->>  		VTCR_EL2_VS_16BIT :
->> @@ -577,7 +596,9 @@ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot p
->>  	if (prot & KVM_PGTABLE_PROT_W)
->>  		attr |= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W;
->>  
->> -	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S2_SH, sh);
->> +	if (!get_kvm_lpa2_enabled())
->> +		attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S2_SH, sh);
->> +
->>  	attr |= KVM_PTE_LEAF_ATTR_LO_S2_AF;
->>  	attr |= prot & KVM_PTE_LEAF_ATTR_HI_SW;
->>  	*ptep = attr;
->> diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
->> index 5ce36b0..97ec387 100644
->> --- a/arch/arm64/kvm/reset.c
->> +++ b/arch/arm64/kvm/reset.c
->> @@ -315,26 +315,32 @@ u32 get_kvm_ipa_limit(void)
->>  
->>  int kvm_set_ipa_limit(void)
->>  {
->> -	unsigned int parange;
->> +	unsigned int parange, tgran;
->>  	u64 mmfr0;
->>  
->>  	mmfr0 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
->>  	parange = cpuid_feature_extract_unsigned_field(mmfr0,
->>  				ID_AA64MMFR0_PARANGE_SHIFT);
->> +	tgran = cpuid_feature_extract_unsigned_field(mmfr0,
->> +				ID_AA64MMFR0_TGRAN_2_SHIFT);
->>  	/*
->>  	 * IPA size beyond 48 bits could not be supported
->>  	 * on either 4K or 16K page size. Hence let's cap
->>  	 * it to 48 bits, in case it's reported as larger
->>  	 * on the system.
-> 
-> Shouldn't you fix this comment?
-
-Ahh ! sure, will fix the comment.
-
-> 
->>  	 */
->> -	if (PAGE_SIZE != SZ_64K)
->> -		parange = min(parange, (unsigned int)ID_AA64MMFR0_PARANGE_48);
->> +	if (PAGE_SIZE != SZ_64K) {
->> +		if (tgran == ID_AA64MMFR0_TGRAN_2_SUPPORTED_LPA2)
->> +			set_kvm_lpa2_enabled();
->> +		else
->> +			parange = min(parange, (unsigned int)ID_AA64MMFR0_PARANGE_48);
->> +	}
->>  
->>  	/*
->>  	 * Check with ARMv8.5-GTG that our PAGE_SIZE is supported at
->>  	 * Stage-2. If not, things will stop very quickly.
->>  	 */
->> -	switch (cpuid_feature_extract_unsigned_field(mmfr0, ID_AA64MMFR0_TGRAN_2_SHIFT)) {
->> +	switch (tgran) {
->>  	case ID_AA64MMFR0_TGRAN_2_SUPPORTED_NONE:
->>  		kvm_err("PAGE_SIZE not supported at Stage-2, giving up\n");
->>  		return -EINVAL;
-> 
-> Another thing I don't see is how you manage TLB invalidation by level
-> now that we gain a level 0 at 4kB, breaking the current assumptions
-> encoded in __tlbi_level().
-
-Right, I guess something like this (not build tested) will be required as
-level 0 for 4K and level 1 for 16K would only make sense when FEAT_LPA2 is
-implemented, otherwise it will fallback to the default behaviour i.e table
-level hint was not provided (TTL[3:2] is 0b00). Is there any other concern
-which I might be missing here ?
-
---- a/arch/arm64/include/asm/tlbflush.h
-+++ b/arch/arm64/include/asm/tlbflush.h
-@@ -104,8 +104,7 @@ static inline unsigned long get_trans_granule(void)
- #define __tlbi_level(op, addr, level) do {                             \
-        u64 arg = addr;                                                 \
-                                                                        \
--       if (cpus_have_const_cap(ARM64_HAS_ARMv8_4_TTL) &&               \
--           level) {                                                    \
-+       if (cpus_have_const_cap(ARM64_HAS_ARMv8_4_TTL) {                \
-                u64 ttl = level & 3;                                    \
-                ttl |= get_trans_granule() << 2;                        \
-                arg &= ~TLBI_TTL_MASK;                                  \
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>
+> ---
+>
+> Changes since v1:
+> 1. New patch
+> ---
+>  arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 2 +-
+>  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+> index 60846e88ae4b..633b31b6e25c 100644
+> --- a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+> +++ b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
+> @@ -63,7 +63,7 @@ &i2c0 {
+>  &qspi0 {
+>         status = "okay";
+>         flash@0 {
+> -               compatible = "issi,is25wp256", "jedec,spi-nor";
+> +               compatible = "jedec,spi-nor";
+>                 reg = <0>;
+>                 spi-max-frequency = <50000000>;
+>                 m25p,fast-read;
+> diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> index 2e4ea84f27e7..9b0b9b85040e 100644
+> --- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> +++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+> @@ -211,7 +211,7 @@ vdd_ldo11: ldo11 {
+>  &qspi0 {
+>         status = "okay";
+>         flash@0 {
+> -               compatible = "issi,is25wp256", "jedec,spi-nor";
+> +               compatible = "jedec,spi-nor";
+>                 reg = <0>;
+>                 spi-max-frequency = <50000000>;
+>                 m25p,fast-read;
+> --
+> 2.30.2
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
