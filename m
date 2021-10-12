@@ -2,262 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A90742A219
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFA442A222
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235970AbhJLK3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235796AbhJLK3u (ORCPT
+        id S235954AbhJLKbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:31:38 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:45944 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235153AbhJLKbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:29:50 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8272C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 03:27:48 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id z20so79119899edc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 03:27:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8EXwD11SEIxjl+Mcu3oG+NFAC6OahBb/SWO5Y89SEOI=;
-        b=d6/ooUZu0fIRAhiz/tXS9E1OVaG/iBKY1Hd3/CiSPrLgzH5EQN5HkBYICkiPPDJpQj
-         kEH4nbhSzYVuh6fwjBX9l0Q0Z6IUlrWgPxD+7T23o2CuH+TyQ1vmRMj8zxDCXuFlL/iH
-         OOoTgF/+sK39j4FO/g4Bh8GpyCxgwkEUWulrwXCymvRjvDOp0/37DeGFppw3pNoRcwBh
-         PtVrc6+RA0pwovPuVmweNkAagnHX2etdrr5fVG61XvWUKWVtezTVBQG5UT1SzEDs0qri
-         AMCutF3OR+rN834UTXZKZGVBTM94Av9jhoBm0BiV0YCEGUjNymvLxS8QGwX0cZTPG9I3
-         qE3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8EXwD11SEIxjl+Mcu3oG+NFAC6OahBb/SWO5Y89SEOI=;
-        b=2TcHm0kjRCR8dHXVm8fzxhJbPEEVuTYDcrpCRZEon7FMrI9sczZ+VxNVm9XWuChVcs
-         uhaPr91eQKZ+AXFZa+5D44mHAjXZfNKsnPH05koefhZrR1aiBiLRoUarGJxvLuN111dR
-         9rYHW9WJZSZZ4SjXWBd5BTStHNxiIADv/zNsqvzwOrUsgnLx9+1pGQM6wuADIEFdYFgz
-         XcUMhEWVqbju8Iaoh201DKPBBByglCQIS/7cf3imXWNZYzg/BmmiWaJG2i0nbvSXHw2O
-         eZ8iuPLCZnUkSko4uKSQDL5M+McYEZ6V9JmHAKbM9ndhO1GLMo7FXwU1c/R+INnRqnNq
-         EdZQ==
-X-Gm-Message-State: AOAM530QCNFP0x79lLaveXnqDBsrvBNHfWab7hTDubHI8ZvjWRjbTpyh
-        uXxzdKe/YXQTSm8oPzG9jmxnxhq0SzTq0/Iv6q0JQQ==
-X-Google-Smtp-Source: ABdhPJxfc8UsxvJoVjCDdnXXfCJDTbt0Yc6Wq/WwXRKdXPDpftaOm4XzahiPwLuBxKE1XqOFijy8YCDfIo5+URqeJis=
-X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr32708608ejc.69.1634034467139;
- Tue, 12 Oct 2021 03:27:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211011134517.833565002@linuxfoundation.org>
-In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 12 Oct 2021 15:57:35 +0530
-Message-ID: <CA+G9fYsci1oPQhPs_WbGO3WO+ZZTTCxMYE4sTQBzQxhCRNRyyw@mail.gmail.com>
-Subject: Re: [PATCH 5.14 000/151] 5.14.12-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+        Tue, 12 Oct 2021 06:31:37 -0400
+X-UUID: 4408c824a8f947aaa53b05f088e8147e-20211012
+X-UUID: 4408c824a8f947aaa53b05f088e8147e-20211012
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <sam.shih@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 869037599; Tue, 12 Oct 2021 18:29:30 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 12 Oct 2021 18:29:29 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 12 Oct 2021 18:29:28 +0800
+Message-ID: <315d7823aa108c909a3d36464fe54763b76ab2f4.camel@mediatek.com>
+Subject: Re: [v3,7/9] dt-bindings: arm64: dts: mediatek: Add mt7986 series
+From:   Sam Shih <sam.shih@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <Ryder.Lee@mediatek.com>, <devicetree@vger.kernel.org>,
+        <enric.balletbo@collabora.com>, <fparent@baylibre.com>,
+        <gregkh@linuxfoundation.org>, <herbert@gondor.apana.org.au>,
+        <hsinyi@chromium.org>, <john@phrozen.org>,
+        <linus.walleij@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-clk@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <linux@roeck-us.net>, <mpm@selenic.com>, <mturquette@baylibre.com>,
+        <robh+dt@kernel.org>, <sboyd@kernel.org>, <sean.wang@kernel.org>,
+        <seiya.wang@mediatek.com>, <wim@linux-watchdog.org>
+Date:   Tue, 12 Oct 2021 18:29:28 +0800
+In-Reply-To: <bc29d5bc-9ce7-6147-a708-e6304249b600@gmail.com>
+References: <9552b0dc-337f-7edc-2997-50603dfe8bcd@gmail.com>
+         <20210924114046.26070-1-sam.shih@mediatek.com>
+         <bc29d5bc-9ce7-6147-a708-e6304249b600@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 at 19:28, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.14.12 release.
-> There are 151 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 13 Oct 2021 13:44:51 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.14.12-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi
 
-Results from Linaro=E2=80=99s test farm.
-Regressions detected on arm.
+On Fri, 2021-10-08 at 15:53 +0200, Matthias Brugger wrote:
+> Hi Sam,
+> 
+> I'd advise to split this series in parts for:
+> - basic device support via dts.
+> - pinctrl driver + dts
+> - clk driver + dts
 
-The reported crash on the arm x15 is an intermittent problem.
-Which is also noticed on Linux next and mainline.
+Okay, I will split the patches that are still under review into the
+above patch series.
 
-We are investigating this problem.
+But I have a dumb question, currently, we have some patches that have
+been assigned version numbers.
+If I want to seprate original patch series, and resend 3 new patch
+series (basic / pinctrl / clock) according to your comment, if I want
+to keep the preview change log, tags in the patch set: 
 
-Kernel panic - not syncing: stack-protector: Kernel
-stack is corrupted in: __lock_acquire+0x2520/0x326c
+like:
+---
+v3: changed 'MT7986' to 'MT7986 series' in the commit message
+v2: added an Acked-by tag
+---
 
-URL:
-https://lore.kernel.org/stable/CA+G9fYutz0ZgJ=3Drrg8=3DFd7vh9c7G-SJfF2YoH5w=
-ZyGzUHu4Dqw@mail.gmail.com/
+Which version number should I use for these new patch series ?
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Does the version number in corver-letter and the version number in each
+patch need to be the same in the entire patch series ?
 
-## Build
-* kernel: 5.14.12-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.14.y
-* git commit: d98305d056b808dd938d2ae6bfd0e3ccac00a106
-* git describe: v5.14.11-152-gd98305d056b8
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
-.11-152-gd98305d056b8
+// (Original patch series/thread, version number is v3)
+[PATCH v3 0/3] Add basic SoC support for mediatek mt7986
+  [PATCH v3 1/3] dt-bindings: arm64: dts: mediatek: Add mt7986 series
+  // (the version number has been updated to v5 previously)
+  // (basic part only, not include pinctrl and clock nodes)
+  [PATCH v5 2/3] arm64: dts: mediatek: add mt7986a support
+  [PATCH v5 3/3] arm64: dts: mediatek: add mt7986b support
 
-## No regressions (compared to v5.14.11)
+// (New clock driver patch series)
+[PATCH 0/3] Add clock driver support for mediatek mt7986
+  [PATCH v3,1/3] dt-bindings: clock: mediatek: document clk bindings   
+for mediatek mt7986 SoC
+  // (the version number has been updated to v3 previously)
+  [PATCH v3 2/3] clk: mediatek: add mt7986 clock IDs
+  [PATCH v2 3/3] clk: mediatek: add mt7986 clock support
 
-## No fixes (compared to v5.14.11)
+// (New pinctrl driver patch series)
+[PATCH 0/4] Add pinctrl driver support for mediatek mt7986
+  // (the version number has been updated to v6 previously)
+  [PATCH v6 1/4] dt-bindings: pinctrl: update bindings for MT7986 SoC
+  // (the version number has been updated to v2 previously)
+  [PATCH v2 2/4] pinctrl: mediatek: add support for MT7986 SoC
+  [PATCH 3/4] arm64: dts: mediatek: add mt7986a pinctrl support
+  [PATCH 3/4] arm64: dts: mediatek: add mt7986b pinctrl support
 
-## Test result summary
-total: 94671, pass: 79926, fail: 1186, skip: 12797, xfail: 762
+> 
+> I would also advise to not send new versions of patches as new
+> threads and don't 
+> respond in the same thread. At least for me that breaks my workflow
+> as I use b4.
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 289 total, 289 passed, 0 failed
-* arm64: 39 total, 39 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 38 total, 38 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 39 total, 39 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 30 total, 30 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 39 total, 39 passed, 0 failed
+If I don't respond to the next patch set in the same thread, should I
+create an entire new patch series ?
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* prep-tmp-disk
-* rcutorture
-* ssuite
-* v4l2-compliance
+For example, if I want to update PATCH 2/3 in the bellows patch series,
+and my PATCH 1/3 has been accepted by reviewer previously
 
---
-Linaro LKFT
-https://lkft.linaro.org
+[PATCH v2 0/3] Add basic SoC support for mediatek mt7986
+  [PATCH v2 1/3] ...   (patch set v1, applied by matainer)
+  [PATCH v2 2/3] ...   (patch set v2, need to be upgrade to v3)
+  [PATCH v2 3/3] ...   (patch set v1, waiting for review)
+
+Is this correct to send patch mail to maintaiers for the above
+situation ?
+
+[PATCH v3 0/2] Add basic SoC support for mediatek mt7986
+  [PATCH v3 1/2] ...   (patch set v3)
+  [PATCH v3 2/2] ...   (still patch set v1, waiting for review)
+
+
+> 
+> Regards,
+> Matthias
+> 
+> 
+> On 24/09/2021 13:40, Sam Shih wrote:
+> > MT7986 series is Mediatek's new 4-core SoC, which is mainly for
+> > wifi-router application. The difference between mt7986a and mt7986b
+> > is that some pins do not exist on mt7986b.
+> > 
+> > Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > 
+> > ---
+> > v3: changed 'MT7986' to 'MT7986 series' in the commit message
+> > v2: added an Acked-by tag
+> > ---
+> >   Documentation/devicetree/bindings/arm/mediatek.yaml | 8 ++++++++
+> >   1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> > b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> > index 80a05f6fee85..a9a778269684 100644
+> > --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> > @@ -76,6 +76,14 @@ properties:
+> >             - enum:
+> >                 - mediatek,mt7629-rfb
+> >             - const: mediatek,mt7629
+> > +      - items:
+> > +          - enum:
+> > +              - mediatek,mt7986a-rfb
+> > +          - const: mediatek,mt7986a
+> > +      - items:
+> > +          - enum:
+> > +              - mediatek,mt7986b-rfb
+> > +          - const: mediatek,mt7986b
+> >         - items:
+> >             - enum:
+> >                 - mediatek,mt8127-moose
+> > 
+
+Thanks,
+Sam
+
