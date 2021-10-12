@@ -2,116 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C703D42AAD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A0842AAD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbhJLRdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:33:12 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:55466 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232705AbhJLRdK (ORCPT
+        id S232221AbhJLRdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhJLRdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:33:10 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:51984)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1maLcJ-00Ca0L-CA; Tue, 12 Oct 2021 11:31:07 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:60918 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1maLcI-00Gtkd-Gi; Tue, 12 Oct 2021 11:31:06 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Rune Kleveland <rune.kleveland@infomedia.dk>
-Cc:     Yu Zhao <yuzhao@google.com>, Alexey Gladkov <legion@kernel.org>,
-        Jordan Glover <Golden_Miller83@protonmail.ch>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        containers@lists.linux-foundation.org
-References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
-        <87ee9pa6xw.fsf@disp2133>
-        <OJK-F2NSBlem52GqvCQYzaVxs2x9Csq3qO4QbTG4A4UUNaQpebpAQmyyKzUd70CIo27C4K7CL3bhIzcxulIzYMu067QOMXCFz8ejh3ZtFhE=@protonmail.ch>
-        <U6ByMUZ9LgvxXX6eb0M9aBx8cw8GpgE1qU22LaxaJ_2bOdnGLLJHDgnLL-6cJT7dKdcG_Ms37APSutc3EIMmtpgpP_2kotVLCNRoUq-wTJ8=@protonmail.ch>
-        <878rzw77i3.fsf@disp2133>
-        <o3tuBB58KUQjyQsALqWi0s1tSPlgVPST4PNNjHewIgRB7CUOOVyFSFxSBLCOJdUH3ly21cIjBthNyqQGnDgJD7fjU8NiVHq7i0JcMvYuzUA=@protonmail.ch>
-        <20210929173611.fo5traia77o63gpw@example.org>
-        <hPgvCJ2KbKeauk78uWJEsuKJ5VfMqknPJ_oyOZe6M78-6eG7qnj0t0UKC-joPVowo_nOikIsEWP-ZDioARfI-Cl6zrHjCHPJST3drpi5ALE=@protonmail.ch>
-        <20210930130640.wudkpmn3cmah2cjz@example.org>
-        <CAOUHufZmAjuKyRcmq6GH8dfdZxchykS=BTZDsk-gDAh3LJTe1Q@mail.gmail.com>
-        <878rz8wwb6.fsf@disp2133> <87v92cvhbf.fsf@disp2133>
-        <ccbccf82-dc50-00b2-1cfd-3da5e2c81dbf@infomedia.dk>
-Date:   Tue, 12 Oct 2021 12:31:00 -0500
-In-Reply-To: <ccbccf82-dc50-00b2-1cfd-3da5e2c81dbf@infomedia.dk> (Rune
-        Kleveland's message of "Sun, 10 Oct 2021 10:59:10 +0200")
-Message-ID: <87o87u2lrf.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1maLcI-00Gtkd-Gi;;;mid=<87o87u2lrf.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/mi8WNgfr/F/tuuyDRQWaOtXEfsPIVixM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.2 required=8.0 tests=ALL_TRUSTED,BAYES_05,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_12,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.5 BAYES_05 BODY: Bayes spam probability is 1 to 5%
-        *      [score: 0.0486]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 T_XMDrugObfuBody_12 obfuscated drug references
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Rune Kleveland <rune.kleveland@infomedia.dk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 287 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 12 (4.3%), b_tie_ro: 11 (3.8%), parse: 1.11
-        (0.4%), extract_message_metadata: 13 (4.6%), get_uri_detail_list: 1.11
-        (0.4%), tests_pri_-1000: 5 (1.8%), tests_pri_-950: 1.28 (0.4%),
-        tests_pri_-900: 1.08 (0.4%), tests_pri_-90: 57 (19.9%), check_bayes:
-        55 (19.3%), b_tokenize: 6 (1.9%), b_tok_get_all: 4.7 (1.6%),
-        b_comp_prob: 1.93 (0.7%), b_tok_touch_all: 40 (13.9%), b_finish: 0.91
-        (0.3%), tests_pri_0: 174 (60.7%), check_dkim_signature: 0.59 (0.2%),
-        check_dkim_adsp: 3.0 (1.0%), poll_dns_idle: 0.76 (0.3%), tests_pri_10:
-        2.2 (0.8%), tests_pri_500: 16 (5.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: linux 5.14.3: free_user_ns causes NULL pointer dereference
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+        Tue, 12 Oct 2021 13:33:51 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072ABC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:31:50 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id c29so185652pfp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=pUEbToLkXzO64sMzwi8hZSFYRVuGFaFClCMCV1JpE/4=;
+        b=FuafK/ST/MY15E3ZByuFdbwhEhPuiRWJQtQhsDDMAbRGZep2/+iILYUgLn0Z+LxJhL
+         gUco/dBkSrN5/a3IPJuNMW/DZoAyaNGZhj6JMAKwOr71ZNxVW5pn+lc0XZ4hrbKrUGbx
+         HO0ngdd9xD1X+nGHuxsQb+2OO4Xnw7OwZc/C8x0CcBnOiBrKmtiE7D1ifhUmD+memw7G
+         mnoRAvXHlc8u1uW/0eHruND1Rk//SIwgunzWHq2h9h/ZMe/te8o+sAYBA/MbC/yrpz/2
+         5ulyN5+xA1f4z+59P++c2PieBpV1kvSSDEP56sDH1BID7pZhpahLbp3cVFtFVGdeARi5
+         qlEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=pUEbToLkXzO64sMzwi8hZSFYRVuGFaFClCMCV1JpE/4=;
+        b=EmJNLeV13MBRK0mJsht+O7br33ZejMFRfYzPpNjd8B4SJ+hwEbJuZq0H2+eC4CXj4G
+         nx7QRGccNS6FLxnG8vFm9oxQONKmL8ny1B59tvUmJG9Dimt1bi0YX8ZXIVHYt6G6GI3n
+         AuKG7jW4hM8WM+MmWpmwn0nGfmzn05t351RtmhOieLPe7V0zgo0BsK9J5BQrhPPwV2e/
+         BOgWTLsd0TbVuqJUE6J2REsh2kYKXoj3aSp+BUp7pckr9r7GX/mP9HznZ/nuizaF8TUx
+         /4lGhPrOr0Jhf9+BEXp2wOoTbv6k7BWge8IO8sHK9ESAYm8uAoT9pdRSP07YIuwAIoxy
+         IrPg==
+X-Gm-Message-State: AOAM533VROOPSOu6ezs7cRZc0jlwJQoRwOm5FxqY7vOFpTogxLWRn14A
+        qk+JQzw8KvzPG027/Y/9gwI=
+X-Google-Smtp-Source: ABdhPJwXpmp/S4EF2gzYO6qNsdVEIT9OWiwycw7gt/wn++LKHsR/mPbzLTr51ZPTVzNj5pp3vki+CQ==
+X-Received: by 2002:aa7:9103:0:b0:44d:4d1d:6f36 with SMTP id 3-20020aa79103000000b0044d4d1d6f36mr1487780pfh.72.1634059909219;
+        Tue, 12 Oct 2021 10:31:49 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id 11sm11421880pfl.41.2021.10.12.10.31.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 12 Oct 2021 10:31:48 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH 1/2] mm/mprotect: use mmu_gather
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <YWVgdmKIFnZcgjeY@t490s>
+Date:   Tue, 12 Oct 2021 10:31:45 -0700
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <2CED2F72-4D1C-4DBC-AC03-4B246E1673C2@gmail.com>
+References: <20210925205423.168858-1-namit@vmware.com>
+ <20210925205423.168858-2-namit@vmware.com> <YWVgdmKIFnZcgjeY@t490s>
+To:     Peter Xu <peterx@redhat.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rune Kleveland <rune.kleveland@infomedia.dk> writes:
 
-> Hi!
->
-> Just wanted to let you know that I still get these on stock Fedora kernel
-> 5.14.10 on the IBM blades. But it took 10 hours before the first server
-> crashed. The other 4 still runs fine since 15 hours ago. So for me it seems more
-> stable now, but that could just be a coincidence.
 
-Alex and I have been working on this and we are still tracking down
-whatever is going on.
+> On Oct 12, 2021, at 3:16 AM, Peter Xu <peterx@redhat.com> wrote:
+>=20
+> On Sat, Sep 25, 2021 at 01:54:22PM -0700, Nadav Amit wrote:
+>> @@ -338,25 +344,25 @@ static unsigned long =
+change_protection_range(struct vm_area_struct *vma,
+>> 	struct mm_struct *mm =3D vma->vm_mm;
+>> 	pgd_t *pgd;
+>> 	unsigned long next;
+>> -	unsigned long start =3D addr;
+>> 	unsigned long pages =3D 0;
+>> +	struct mmu_gather tlb;
+>>=20
+>> 	BUG_ON(addr >=3D end);
+>> 	pgd =3D pgd_offset(mm, addr);
+>> 	flush_cache_range(vma, addr, end);
+>> 	inc_tlb_flush_pending(mm);
+>> +	tlb_gather_mmu(&tlb, mm);
+>> +	tlb_start_vma(&tlb, vma);
+>=20
+> Pure question:
+>=20
+> I actually have no idea why tlb_start_vma() is needed here, as =
+protection range
+> can be just a single page, but anyway.. I do see that tlb_start_vma() =
+contains
+> a whole-vma flush_cache_range() when the arch needs it, then does it =
+mean that
+> besides the inc_tlb_flush_pending() to be dropped, so as to the other =
+call to
+> flush_cache_range() above?
 
-While we haven't found the issue yet we have found a trivially correct
-change that allows us to reproduce the issue faster.
+Good point.
 
-Hopefully this will allow us to narrow down on whatever it is soon.
+tlb_start_vma() and tlb_end_vma() are required since some archs do not
+batch TLB flushes across VMAs (e.g., ARM). I am not sure whether =
+that=E2=80=99s
+the best behavior for all archs, but I do not want to change it.
 
-diff --git a/kernel/ucount.c b/kernel/ucount.c
-index bb51849e6375..3b7e176cf7a2 100644
---- a/kernel/ucount.c
-+++ b/kernel/ucount.c
-@@ -203,6 +203,7 @@ void put_ucounts(struct ucounts *ucounts)
- 
- 	if (atomic_dec_and_lock_irqsave(&ucounts->count, &ucounts_lock, flags)) {
- 		hlist_del_init(&ucounts->node);
-+		ucounts->ns = NULL;
- 		spin_unlock_irqrestore(&ucounts_lock, flags);
- 		kfree(ucounts);
- 	}
+Anyhow, you make a valid point that the flush_cache_range() should be
+dropped as well. I will do so for next version.
 
-Eric
+Regards,
+Nadav=
