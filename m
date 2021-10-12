@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D827142A350
+	by mail.lfdr.de (Postfix) with ESMTP id 54B3242A34E
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236265AbhJLLbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:31:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39870 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236266AbhJLLbj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:31:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634038177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+956HXQTjGs6a34u/u+/FjVYaM1e8zxxcd9Fx/dYps8=;
-        b=S/dabcEG9ULECkofY7tOHVwcSkVlkRqm2uhSktU4itFX976xigSUvXK9QU0L4CGtdXbg1D
-        AoOId0KxJrorPxCEEWmmCuS/sSrLQrPJ13QHRpA/wADi5KRqN67XcBlRoNzikQQoDVoaXz
-        1QLOB8NYWrzS98aScxPO1pxf1bE5oH4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313-kQ71V3HUMj6hMZXVR2JuTw-1; Tue, 12 Oct 2021 07:29:36 -0400
-X-MC-Unique: kQ71V3HUMj6hMZXVR2JuTw-1
-Received: by mail-wr1-f72.google.com with SMTP id h11-20020adfa4cb000000b00160c791a550so15308229wrb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 04:29:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+956HXQTjGs6a34u/u+/FjVYaM1e8zxxcd9Fx/dYps8=;
-        b=FJc+dgIXNd4TYcEGUGaMf/oBQ1H0TcvVpXkdFmPG+y8WPJwJl3h7ZQZ8NvMVGst/Yf
-         gZIT0NixAhizBtbkwo+ZYN9ttJsAm7GrAJwQfSzXR4ez66YdpWxZ28PAbqtAke/1U3Np
-         l3eOkNWP21iyNA2NFTJ7SH/T7xNKe1nGd7llobMWfQve9Trx/IRdGthmynU0ma49SpmA
-         wpglkxeQX+/g+vxlgQSo/72p4fUJTohEEplI/OPkN+Qg95oqEe9plYjY4ZHZqpFV9uJU
-         qYcdTDn6/tajLMqPuX+v1EON3g5a78dUzzyYcWyx8qA64eKCTDd+H5eH3INrZFJ42mUh
-         /3ZQ==
-X-Gm-Message-State: AOAM530MXObR4+gQxqNQWv8oaL3YMu3NerFFBfapZaZ3/RgK7rcfvTWS
-        l+1xrd2cnF1FWIU9Vx6rzvdhzm94F1nihGdkt4Lg4M/tjmnJhL07MmhhbryGR3qf2T0ruEAVtZY
-        CJR+nOPQBULxhsgwm+vb8ZaTLxSO8vGeMPys4NzQi
-X-Received: by 2002:a05:600c:284b:: with SMTP id r11mr4940980wmb.179.1634038174952;
-        Tue, 12 Oct 2021 04:29:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzSIW87MAnP/YGW/e3O+0hW0JLMaF3rLvNqNrNOXN3NYEhTe6teWlliWCUN6zZ66tm7KP2tKzRbb4aLIwOsxAQ=
-X-Received: by 2002:a05:600c:284b:: with SMTP id r11mr4940959wmb.179.1634038174772;
- Tue, 12 Oct 2021 04:29:34 -0700 (PDT)
+        id S236263AbhJLLbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 07:31:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236149AbhJLLbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 07:31:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F04A61040;
+        Tue, 12 Oct 2021 11:29:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634038175;
+        bh=U3HP5QIpD7LIdnqxGqxBn+ZxL4oXuDRgiGQEgFAeD9I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=gzkWeCj3+rCgN3HeS32XpHTxPTGe22Omg/sVDC6hrexHcJIxGdbXEsGL8tq7ItDzD
+         k1KOydqi4TSCumBjoxJhO7O3JG1VOr7ATNYT3ud9143Kt7G0RTtZWZL8Sohpf7MhWC
+         7b8nST/WVImgTG/MpeJBCSTXtO79DC53/v5ZzWm9I2Qit4DW8APooapQGdT9wN+z4m
+         mUREPGwnVpC8mvaCGLe76eUPBldhm1Opmh+dMAoDMjVv/082gDCNeGw8YbxWmTvagv
+         BBvNsJE00j5RwpOKDSkzVA38DevTdvadLWuJqBEDAHYROOGQsu7Bryg2sLLChBCl76
+         9FrJIvtJlD/cg==
+Date:   Tue, 12 Oct 2021 06:29:32 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Brian Norris <briannorris@chromium.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: Re: [PATCH] mwifiex: Add quirk resetting the PCI bridge on MS
+ Surface devices
+Message-ID: <20211012112932.GA1735699@bhelgaas>
 MIME-Version: 1.0
-References: <20211012131836.4e17a031@canb.auug.org.au>
-In-Reply-To: <20211012131836.4e17a031@canb.auug.org.au>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Tue, 12 Oct 2021 13:29:24 +0200
-Message-ID: <CACO55ttUA1nwFf0UP_+8q8f_baYey0+WwcwJvLMixFDv=RsncQ@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Luo penghao <luo.penghao@zte.com.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fee8b431-617f-3890-3ad2-67a61d3ffca2@v0yd.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-uhh, that's on me. I will send out a patch today. I just noticed that
-the config file I used for testing had WERROR disabled.
+On Tue, Oct 12, 2021 at 10:48:49AM +0200, Jonas Dreßler wrote:
+> On 10/11/21 18:53, Bjorn Helgaas wrote:
+> > On Mon, Oct 11, 2021 at 03:42:38PM +0200, Jonas Dreßler wrote:
+> > > The most recent firmware (15.68.19.p21) of the 88W8897 PCIe+USB card
+> > > reports a hardcoded LTR value to the system during initialization,
+> > > probably as an (unsuccessful) attempt of the developers to fix firmware
+> > > crashes. This LTR value prevents most of the Microsoft Surface devices
+> > > from entering deep powersaving states (either platform C-State 10 or
+> > > S0ix state), because the exit latency of that state would be higher than
+> > > what the card can tolerate.
+> > 
+> > S0ix and C-State 10 are ACPI concepts that don't mean anything in a
+> > PCIe context.
+> > 
+> > I think LTR is only involved in deciding whether to enter the ASPM
+> > L1.2 substate.  Maybe the system will only enter C-State 10 or S0ix
+> > when the link is in L1.2?
+> 
+> Yup, this is indeed the case, see https://01.org/blogs/qwang59/2020/linux-s0ix-troubleshooting
+> (ctrl+f "IP LINK PM STATE").
 
-On Tue, Oct 12, 2021 at 4:18 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the drm-misc tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->
-> drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c: In function 'gp100_vmm_fault_cancel':
-> drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c:491:6: error: unused variable 'inst' [-Werror=unused-variable]
->   491 |  u32 inst, aper;
->       |      ^~~~
-> cc1: all warnings being treated as errors
->
-> Caused by commit
->
->   404046cf4805 ("drm/nouveau/mmu/gp100-: drop unneeded assignment in the if condition.")
->
-> I have used the drm-misc tree from next-20211011 for today.
->
-> --
-> Cheers,
-> Stephen Rothwell
+I think it would be helpful if the commit log included this missing
+link, e.g., the LTR value prevents the link from going to L1.2, which
+in turn prevents use of C-State 10/S0ix.
 
+> There's two alternatives I can think of to deal with this issue:
+> 
+> 1) Revert the cards firmware in linux-firmware back to the second-latest
+> version. That firmware didn't report a fixed LTR value and also doesn't
+> have any other obvious issues I know of compared to the latest one.
+
+You've mentioned "fixed LTR value" more than once.  My weak
+understanding of LTR and L1.2 is that the latencies a device reports
+via LTR messages are essentially a function of buffering in the device
+and electrical characteristics of the link.  I expect them to be set
+once and not changed.
+
+But did the previous firmware report different latencies at different
+times?  Or did it just not advertise L1.2 support at all?  Or do you
+mean the new firmware reports a "corrected" LTR value that doesn't
+work as well?
+
+> 2) Somehow interact with the PMC Core driver to make it ignore the LTR
+> values reported by the card (I doubt that's possible from mwifiex).
+> It can be done manually via debugfs by writing to
+> /sys/kernel/debug/pmc_core/ltr_ignore.
+
+Interesting; I wasn't aware of that, thanks.  This still feels like a
+configuration issue.  If we ignore the reported LTR values, I guess
+you mean the root port assumes it's *always* safe to enter L1.2, i.e.,
+the device has enough buffering to deal with the exit latency?
+
+I would think there would be a way to program the LTR capability to
+have the device itself report that, so we wouldn't have to fiddle with
+the upstream end.
+
+> > > +	 * We need to do it here because it must happen after firmware
+> > > +	 * initialization and this function is called right after that is done.
+> > > +	 */
+
+> > > +	if (card->quirks & QUIRK_DO_FLR_ON_BRIDGE)
+> > > +		pci_reset_function(parent_pdev);
+> > 
+> > PCIe r5.0, sec 7.5.3.3, says Function Level Reset can only be
+> > supported by endpoints, so I guess this will actually do some other
+> > kind of reset.
+> 
+> Interesting, I briefly searched and it doesn't seem like think
+> there's public documentation available by Intel that goes into
+> the specifics here, maybe someone working at Intel knows more?
+
+"lspci -vv" will tell you whether the root port advertises FLR
+support.  The spec says it shouldn't, but I think pci_reset_function()
+relies on what DevCap says.  You could instrument pci_reset_function()
+to see exactly what kind of reset we do.  
+
+Bjorn
