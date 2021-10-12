@@ -2,126 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5B342AAAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5129442AAB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232085AbhJLR0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
+        id S232230AbhJLR2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:28:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhJLR0X (ORCPT
+        with ESMTP id S229810AbhJLR2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:26:23 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1933DC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:24:20 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so228386otr.7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:24:20 -0700 (PDT)
+        Tue, 12 Oct 2021 13:28:21 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203A7C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:26:19 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so235244otr.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:26:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=WtGUxGcFjuCHfdY5GXb0D0YOU0tDNV4fZPj+DPhXlYE=;
-        b=Ygp4ifFUh4fnPgEXFZgBH9TuzFDWRciRle3R6C/OmN+Tc/gQLgSkXTXTbZRIdnddLR
-         UlzAbrEJvydN+RLG9v95HhKmXtQ4EsNuUd3x32f2XMCsp23nzD6HWws72TAOktZCnwHl
-         +N28WqLe+HezX9sOMCLZ84clVPeX8L0/dGnvk=
+         :subject:to;
+        bh=oKDmzQVDInY69AvycwANzPpjx7ZqBlmMGOtvQZUkY1g=;
+        b=n4LIj3RFradCq/gDR26Lu5B/Gfb5aZ9f7r1dV3vP3dhGNmXed1NJjOA5k8cqj+aAfS
+         z5pxVkExHQBncNBEiB/aHM4WxnYR3mHM0HvocNXQSwr1pf6p9bDuNKeCoueyJoajXIvO
+         PCosVZff1gFA4W7raa2mnIKVm0d5SDAayNxMY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=WtGUxGcFjuCHfdY5GXb0D0YOU0tDNV4fZPj+DPhXlYE=;
-        b=id+ZRkZz72/SsgzHVvP+ZybiSOrrkbsiFVvhhCAQmY8dgkn6ckb7bFdHnwWS5+kQRt
-         UE6wrcQdwIgPENIwkMWXUV+jm+HPA05QkioKr/7zuLioy1bfsI6L2x6PxQGnb0Iewd6h
-         UIJJoQiX5XhSC7C13WqczC6ORmdXwE2PuHyphI+clh9PdmXFioFj7eme+7767CFJv1cg
-         FinIO753DJ1a52xPgyCuf95Buv2RPZ/USz5w8TwIMtcMkMIpEZeVLn79VDnVwFd45Wam
-         TQ+QhibYEPc3gXmkU4Rz6+HdbvWljUjy6dDq8/g5ff1pthVOeRmw3v431RRBUoRvJGo+
-         CXaw==
-X-Gm-Message-State: AOAM531DZjtzVQsetjl2c7QyJcC4HH6AuPmGswvVUhb4dfILthsIWdGl
-        BwjJKnu3X5KHoZCgOeU2AJRDlM+sMmy6p9nqnL4G1Q==
-X-Google-Smtp-Source: ABdhPJyyzBj7ga+1h/1rc7fPUC6+eHYYeexKxLGfIUioGQJOYFkovXPDVM16Ib6kWcg+ovb2j2roI86MtptDRyCsa0g=
-X-Received: by 2002:a9d:12f4:: with SMTP id g107mr22637198otg.77.1634059459215;
- Tue, 12 Oct 2021 10:24:19 -0700 (PDT)
+         :user-agent:date:message-id:subject:to;
+        bh=oKDmzQVDInY69AvycwANzPpjx7ZqBlmMGOtvQZUkY1g=;
+        b=kc8Qsnr9HhqkSULMvOAHtm31pqoIq5HXjEVs4Q4KGrLFlpqrsOpoyPaC/gRVgF9ZfF
+         PMaQD8JRTZKEBwlisMc9SctUUnwYxJzcfu3ZNahf3+BLiZg1cot5W5IBCBQz2mtRnbBn
+         rzSk92c/SroMS9jRvxbeslBubbq35quGezqXJe6TuTddBw8V047IEp7qWJqMZcRp5725
+         oZhczRDkWcWDOr2Gkvt/ja4mmTqmV1AV6E3WJOodoQGTyIk12bnSTZ7hfwuW/7FLMe+C
+         /pGix6iOjM0oi86QGPCrYeMazOcZ7ItDwH2zvcub64UJo5pFzXYA3uqpdGwru5jAl5M1
+         kuIQ==
+X-Gm-Message-State: AOAM530uUkOngeR1yyE/N7meGzXZoUh8Me/Qtv/XlM8EnyxXM4iEpfJ1
+        e6qC9rTfFjk47QFDvLQAHpAWIF0DYnEZSFAv/J7U9A==
+X-Google-Smtp-Source: ABdhPJwJQxOvbo8Om0Km5y9OimprxVmFNbKTVmhcm51VzSCNaU1txHP3887kZW6mEIAq0HbLNofDoxDVd0XpnjzN5Bg=
+X-Received: by 2002:a05:6830:2317:: with SMTP id u23mr12829780ote.126.1634059578506;
+ Tue, 12 Oct 2021 10:26:18 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 12 Oct 2021 10:24:18 -0700
+ HTTPREST; Tue, 12 Oct 2021 10:26:17 -0700
 MIME-Version: 1.0
-In-Reply-To: <1634043698-20256-1-git-send-email-bgodavar@codeaurora.org>
-References: <1634043698-20256-1-git-send-email-bgodavar@codeaurora.org>
+In-Reply-To: <1634042171-31461-1-git-send-email-pmaliset@codeaurora.org>
+References: <1634042171-31461-1-git-send-email-pmaliset@codeaurora.org>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Tue, 12 Oct 2021 10:24:18 -0700
-Message-ID: <CAE-0n52uUh5TrKpJq9-qkJTdWWU_EZFvoROWFeGEjuc1Ebc8xg@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Add bluetooth node on SC7280
-To:     Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        bjorn.andersson@linaro.org, johan.hedberg@gmail.com,
-        marcel@holtmann.org
-Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, pharish@codeaurora.org,
-        rjliao@codeaurora.org, hbandi@codeaurora.org,
-        saluvala@codeaurora.org, abhishekpandit@chromium.org
+Date:   Tue, 12 Oct 2021 10:26:17 -0700
+Message-ID: <CAE-0n53vBa5Tn4OEey1ZmBrM+kN5KbXv1Spoj-dtHY6jzN_bbA@mail.gmail.com>
+Subject: Re: [PATCH v1] arm64: dts: qcom: sc7280: Add pcie clock support
+To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        manivannan.sadhasivam@linaro.org, robh+dt@kernel.org,
+        sanm@codeaurora.org, vbadigan@codeaurora.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Balakrishna Godavarthi (2021-10-12 06:01:38)
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> index 272d5ca..09adc802 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> @@ -393,6 +393,23 @@
->                                 <&tlmm 31 IRQ_TYPE_EDGE_FALLING>;
->         pinctrl-names = "default", "sleep";
->         pinctrl-1 = <&qup_uart7_sleep_cts>, <&qup_uart7_sleep_rts>, <&qup_uart7_sleep_tx>, <&qup_uart7_sleep_rx>;
-> +
-> +       bluetooth: wcn6750-bt {
+Quoting Prasad Malisetty (2021-10-12 05:36:11)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 39635da..78694c1 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -569,9 +569,10 @@
+>                         reg = <0 0x00100000 0 0x1f0000>;
+>                         clocks = <&rpmhcc RPMH_CXO_CLK>,
+>                                  <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
+> -                                <0>, <0>, <0>, <0>, <0>, <0>;
+> +                                <0>, <&pcie1_lane 0>,
+> +                                <0>, <0>, <0>, <0>;
+>                         clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
+> -                                     "pcie_0_pipe_clk", "pcie_1_pipe-clk",
+> +                                     "pcie_0_pipe_clk", "pcie_1_pipe_clk",
 
-bluetooth: bluetooth {
+It looks like a fix because the name doesn't match the binding. Can you
+add a Fixes tag?
 
-Node names should be generic.
-
-> +               compatible = "qcom,wcn6750-bt";
-> +               pinctrl-names = "default";
-> +               pinctrl-0 = <&bt_en_default>;
-> +               enable-gpios = <&tlmm 85 GPIO_ACTIVE_HIGH>;
-> +               swctrl-gpios = <&tlmm 86 GPIO_ACTIVE_HIGH>;
-
-Is there any pinctrl config for gpio 86?
-
-> +               vddaon-supply = <&vreg_s7b_0p9>;
-> +               vddbtcxmx-supply = <&vreg_s7b_0p9>;
-> +               vddrfacmn-supply = <&vreg_s7b_0p9>;
-> +               vddrfa0p8-supply = <&vreg_s7b_0p9>;
-> +               vddrfa1p7-supply = <&vreg_s1b_1p8>;
-> +               vddrfa1p2-supply = <&vreg_s8b_1p2>;
-> +               vddrfa2p2-supply = <&vreg_s1c_2p2>;
-> +               vddasd-supply = <&vreg_l11c_2p8>;
-> +               max-speed = <3200000>;
-> +       };
->  };
->
->  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
-> @@ -504,6 +521,14 @@
->                  */
->                 bias-pull-up;
->         };
-> +
-> +       bt_en_default: bt_en_default {
-
-bt_en: bt-en {
-
-Node names shouldn't have underscores and 'default' is redundant.
-
-> +               pins = "gpio85";
-> +               function = "gpio";
-> +               drive-strength = <2>;
-> +               output-low;
-> +               bias-pull-down;
-
-Why is there a pull down on an output gpio? Shouldn't this be
-bias-disable?
-
-> +       };
->  };
->
->  &sdc1_on {
+>                                       "ufs_phy_rx_symbol_0_clk", "ufs_phy_rx_symbol_1_clk",
+>                                       "ufs_phy_tx_symbol_0_clk",
+>                                       "usb3_phy_wrapper_gcc_usb30_pipe_clk";
