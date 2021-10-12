@@ -2,133 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A67042A88F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342B442A87F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237587AbhJLPmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47662 "EHLO
+        id S237546AbhJLPmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237570AbhJLPmJ (ORCPT
+        with ESMTP id S237462AbhJLPmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:42:09 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B734DC061768
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 08:40:02 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1maJsk-0000Ic-K5; Tue, 12 Oct 2021 17:39:58 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1maJsk-0004kc-2O; Tue, 12 Oct 2021 17:39:58 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1maJsc-0004Ya-W8; Tue, 12 Oct 2021 17:39:50 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Hennerich <michael.hennerich@analog.com>
-Cc:     Mark Brown <broonie@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: [PATCH v2 11/20] misc: ad525x_dpot: Make ad_dpot_remove() return void
-Date:   Tue, 12 Oct 2021 17:39:36 +0200
-Message-Id: <20211012153945.2651412-12-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211012153945.2651412-1-u.kleine-koenig@pengutronix.de>
-References: <20211012153945.2651412-1-u.kleine-koenig@pengutronix.de>
+        Tue, 12 Oct 2021 11:42:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC989C061570;
+        Tue, 12 Oct 2021 08:39:59 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634053197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yq9pdM+pdjvFyxYq6vmMvIVLBnPdOuhx9oiz5uGo6UU=;
+        b=xitHgukXgKA2MBj8PCjURdDGoMTZH/BxUY7N7QC4gA7vKPdxi7JltDNhcp6mYCeafKOIJE
+        K4iRvrII0avJScGvUumRxPbtZPQt/6bXVggOfVop1/A332m71KVCBkOldJVWmRr9P2kVj3
+        1uUWpfHdkjfSpDrOpXcn+X4/c0xeE95wGbqZY9wuqJf6vZzk0L2+4dxJrx5zxOBM3EpcAP
+        9GOvR13XoCyTQtGUvVn+jCN9pejPewlu3GCEEIMwsOZcoz/enNJe4ZePT1lp8B2OzfpqVB
+        yo0FhQmqhwDVUdxfw+OgWebMATFqE8nc7PspPOH6xYORVjMee9rGXBtlR27Zpg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634053197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yq9pdM+pdjvFyxYq6vmMvIVLBnPdOuhx9oiz5uGo6UU=;
+        b=bCBuDgsB4Kz2NnLkDj2Oy10PeA5fq9vy2jLWrl8/AL4sSoo+OUTH5CyNQ9tozjT6WQEE/g
+        YWWgUNvrQHHAOCDw==
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Subject: Re: [GIT PULL] arm64 fixes for 5.15-rc5
+In-Reply-To: <20211012140243.GA41546@C02TD0UTHF1T.local>
+References: <YWCPyK+xotTgUMy/@arm.com>
+ <CAHk-=whWZ4OxfKQwKVrRc-E9=w-ygKdVFn_HcAMW-DW8SgranQ@mail.gmail.com>
+ <20211011104729.GB1421@C02TD0UTHF1T.local>
+ <CAHk-=wjTAJwMJZ-6PPxvdtDmkL0=pfRF77nJ5qWw2vbiTzT4nQ@mail.gmail.com>
+ <87czoacrfr.ffs@tglx> <20211012140243.GA41546@C02TD0UTHF1T.local>
+Date:   Tue, 12 Oct 2021 17:39:56 +0200
+Message-ID: <87mtneb6b7.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Patch-Hashes: v=1; h=sha256; i=EXMrVNkUbqY7V63T+YTPXXS2HlLbCtvatL19qm2WHtg=; m=BGTwvqK+RKGgnKfGCyGNhmDyuScjHEci5h4DxVv3qZM=; p=yQdEfF2PwN8/D0REJaPAIE32zm4eLHsNwhbjpfrb8sA=; g=815ab97c4c8e25de58d548a08c2b1645b2fa6f38
-X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFlrBoACgkQwfwUeK3K7AmGcggAoNS 06dPcnO+6j1pP3ayFGgKUoNViSu9t9pTbqsP+nGynrmy0BmboLt4Or9PtUDkjBYhe1oTm/epKjODS KxGtdXdOk9tf7GMUqobiMj0M4FlGAVQNrXVFvQ/865TGqZpKJIHM4DSpjH8UPbuskxMt8DT6PRp7G hr4EWdwFTvkgMLAebwxOFBAr1U+QaJRTT6S93oanABwCl4/MiiYlSj1DniyFCueVIJDejeoSI3b0Y NFxptp7/yvI45y+lp/xxwjy5fDwquaH1mz9At5lDQbojbBpPbkxJzwleqC7uRc5eDHHuJAYwMz6qf V5aUXMHf5vbb9KEcNPIIHKo8JUctJ/Q==
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Up to now ad_dpot_remove() returns zero unconditionally. Make it return
-void instead which makes it easier to see in the callers that there is
-no error to handle.
+On Tue, Oct 12 2021 at 15:02, Mark Rutland wrote:
+> On Tue, Oct 12, 2021 at 03:18:16PM +0200, Thomas Gleixner wrote:
+>> On Mon, Oct 11 2021 at 12:54, Linus Torvalds wrote:
+> I'm happy with this in principle. The only reason we didn't go down that
+> route initially is because the callers are (typically) in the bowels of
+> arch asm or platform code, they all need to be fixed in one go to avoid
+> breaking anything, and it's a headache if we collide with any rework
+> (e.g. MIPS moving to generic entry).
 
-Also the return value of i2c and spi remove callbacks is ignored anyway.
+mips-next looks pretty empty vs. that.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+>> > It really looks like there is a very tight connection between "uses
+>> > handle_domain_irq()" and "uses handle_arch_irq/set_handle_irq()". No?
+>> 
+>> Looks like. That might conflict with the MIPS rework though. I don't
+>> know how far that came already. Cc'ed the MIPS people.
+>
+> There's also a bunch of old platforms on arch/arm which have a
+> hard-coded handler (so not using handle_arch_irq/set_handle_irq()) which
+> calls handle_domain_irq() -- those can be fixed up.
+
+If that turns out to be ugly, then somehting like the below might be
+less horrible as a stop gap.
+
+Thanks,
+
+        tglx
 ---
- drivers/misc/ad525x_dpot-i2c.c | 3 ++-
- drivers/misc/ad525x_dpot-spi.c | 3 ++-
- drivers/misc/ad525x_dpot.c     | 4 +---
- drivers/misc/ad525x_dpot.h     | 2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/misc/ad525x_dpot-i2c.c b/drivers/misc/ad525x_dpot-i2c.c
-index bd869ec5edba..0ee0c6d808c3 100644
---- a/drivers/misc/ad525x_dpot-i2c.c
-+++ b/drivers/misc/ad525x_dpot-i2c.c
-@@ -69,7 +69,8 @@ static int ad_dpot_i2c_probe(struct i2c_client *client,
+--- a/arch/x86/xen/smp.c
++++ b/arch/x86/xen/smp.c
+@@ -268,20 +268,16 @@ void xen_send_IPI_allbutself(int vector)
  
- static int ad_dpot_i2c_remove(struct i2c_client *client)
+ static irqreturn_t xen_call_function_interrupt(int irq, void *dev_id)
  {
--	return ad_dpot_remove(&client->dev);
-+	ad_dpot_remove(&client->dev);
-+	return 0;
+-	irq_enter();
+ 	generic_smp_call_function_interrupt();
+ 	inc_irq_stat(irq_call_count);
+-	irq_exit();
+ 
+ 	return IRQ_HANDLED;
  }
  
- static const struct i2c_device_id ad_dpot_id[] = {
-diff --git a/drivers/misc/ad525x_dpot-spi.c b/drivers/misc/ad525x_dpot-spi.c
-index aea931dd272e..a9e75d80ad36 100644
---- a/drivers/misc/ad525x_dpot-spi.c
-+++ b/drivers/misc/ad525x_dpot-spi.c
-@@ -92,7 +92,8 @@ static int ad_dpot_spi_probe(struct spi_device *spi)
- 
- static int ad_dpot_spi_remove(struct spi_device *spi)
+ static irqreturn_t xen_call_function_single_interrupt(int irq, void *dev_id)
  {
--	return ad_dpot_remove(&spi->dev);
-+	ad_dpot_remove(&spi->dev);
-+	return 0;
- }
+-	irq_enter();
+ 	generic_smp_call_function_single_interrupt();
+ 	inc_irq_stat(irq_call_count);
+-	irq_exit();
  
- static const struct spi_device_id ad_dpot_spi_id[] = {
-diff --git a/drivers/misc/ad525x_dpot.c b/drivers/misc/ad525x_dpot.c
-index 5d8f3f6a95f2..756ef6912b5a 100644
---- a/drivers/misc/ad525x_dpot.c
-+++ b/drivers/misc/ad525x_dpot.c
-@@ -743,7 +743,7 @@ int ad_dpot_probe(struct device *dev,
+ 	return IRQ_HANDLED;
  }
- EXPORT_SYMBOL(ad_dpot_probe);
+--- a/arch/x86/xen/smp_pv.c
++++ b/arch/x86/xen/smp_pv.c
+@@ -458,10 +458,8 @@ static void xen_pv_stop_other_cpus(int w
  
--int ad_dpot_remove(struct device *dev)
-+void ad_dpot_remove(struct device *dev)
+ static irqreturn_t xen_irq_work_interrupt(int irq, void *dev_id)
  {
- 	struct dpot_data *data = dev_get_drvdata(dev);
- 	int i;
-@@ -753,8 +753,6 @@ int ad_dpot_remove(struct device *dev)
- 			ad_dpot_remove_files(dev, data->feat, i);
+-	irq_enter();
+ 	irq_work_run();
+ 	inc_irq_stat(apic_irq_work_irqs);
+-	irq_exit();
  
- 	kfree(data);
+ 	return IRQ_HANDLED;
+ }
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -33,6 +33,9 @@ config HOTPLUG_SMT
+ config GENERIC_ENTRY
+        bool
+ 
++config ARCH_ENTRY_RCU_CLEAN
++       bool
++
+ config KPROBES
+ 	bool "Kprobes"
+ 	depends on MODULES
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -66,6 +66,7 @@ config X86
+ 	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
+ 	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if (PGTABLE_LEVELS > 2) && (X86_64 || X86_PAE)
+ 	select ARCH_ENABLE_THP_MIGRATION if X86_64 && TRANSPARENT_HUGEPAGE
++	select ARCH_ENTRY_RCU_CLEAN
+ 	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
+ 	select ARCH_HAS_CACHE_LINE_SIZE
+ 	select ARCH_HAS_DEBUG_VIRTUAL
+--- a/kernel/irq/irqdesc.c
++++ b/kernel/irq/irqdesc.c
+@@ -677,24 +677,13 @@ int generic_handle_domain_irq(struct irq
+ EXPORT_SYMBOL_GPL(generic_handle_domain_irq);
+ 
+ #ifdef CONFIG_HANDLE_DOMAIN_IRQ
+-/**
+- * handle_domain_irq - Invoke the handler for a HW irq belonging to a domain,
+- *                     usually for a root interrupt controller
+- * @domain:	The domain where to perform the lookup
+- * @hwirq:	The HW irq number to convert to a logical one
+- * @regs:	Register file coming from the low-level handling code
+- *
+- * Returns:	0 on success, or -EINVAL if conversion has failed
+- */
+-int handle_domain_irq(struct irq_domain *domain,
+-		      unsigned int hwirq, struct pt_regs *regs)
++static int __handle_domain_irq(struct irq_domain *domain,
++			       unsigned int hwirq, struct pt_regs *regs)
+ {
+ 	struct pt_regs *old_regs = set_irq_regs(regs);
+ 	struct irq_desc *desc;
+ 	int ret = 0;
+ 
+-	irq_enter();
 -
--	return 0;
+ 	/* The irqdomain code provides boundary checks */
+ 	desc = irq_resolve_mapping(domain, hwirq);
+ 	if (likely(desc))
+@@ -702,12 +691,41 @@ int handle_domain_irq(struct irq_domain
+ 	else
+ 		ret = -EINVAL;
+ 
+-	irq_exit();
+ 	set_irq_regs(old_regs);
+ 	return ret;
  }
- EXPORT_SYMBOL(ad_dpot_remove);
  
-diff --git a/drivers/misc/ad525x_dpot.h b/drivers/misc/ad525x_dpot.h
-index ee8dc9f5a45a..72a9d6801937 100644
---- a/drivers/misc/ad525x_dpot.h
-+++ b/drivers/misc/ad525x_dpot.h
-@@ -209,6 +209,6 @@ struct ad_dpot_bus_data {
+ /**
++ * handle_domain_irq - Invoke the handler for a HW irq belonging to a domain,
++ *                     usually for a root interrupt controller
++ * @domain:	The domain where to perform the lookup
++ * @hwirq:	The HW irq number to convert to a logical one
++ * @regs:	Register file coming from the low-level handling code
++ *
++ * Returns:	0 on success, or -EINVAL if conversion has failed
++ */
++#ifdef CONFIG_ARCH_ENTRY_RCU_CLEAN
++int handle_domain_irq(struct irq_domain *domain,
++		      unsigned int hwirq, struct pt_regs *regs)
++{
++	__handle_domain_irq(domain, hwirq, regs);
++}
++#else
++int handle_domain_irq(struct irq_domain *domain,
++		      unsigned int hwirq, struct pt_regs *regs)
++{
++	/*
++	 * irq_enter()/exit() has to be done in low level
++	 * architecture code. Bandaid for not yet fixed
++	 * architectures.
++	 */
++	irq_enter();
++	__handle_domain_irq(domain, hwirq, regs);
++	irq_exit();
++}
++#endif
++
++/**
+  * handle_domain_nmi - Invoke the handler for a HW irq belonging to a domain
+  * @domain:	The domain where to perform the lookup
+  * @hwirq:	The HW irq number to convert to a logical one
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -601,6 +601,7 @@ void irq_enter_rcu(void)
+ 	account_hardirq_enter(current);
+ }
  
- int ad_dpot_probe(struct device *dev, struct ad_dpot_bus_data *bdata,
- 		  unsigned long devid, const char *name);
--int ad_dpot_remove(struct device *dev);
-+void ad_dpot_remove(struct device *dev);
++#ifndef ARCH_ENTRY_RCU_CLEAN
+ /**
+  * irq_enter - Enter an interrupt context including RCU update
+  */
+@@ -609,6 +610,7 @@ void irq_enter(void)
+ 	rcu_irq_enter();
+ 	irq_enter_rcu();
+ }
++#endif
  
- #endif
--- 
-2.30.2
-
+ static inline void tick_irq_exit(void)
+ {
+@@ -650,6 +652,7 @@ void irq_exit_rcu(void)
+ 	lockdep_hardirq_exit();
+ }
+ 
++#ifndef ARCH_ENTRY_RCU_CLEAN
+ /**
+  * irq_exit - Exit an interrupt context, update RCU and lockdep
+  *
+@@ -662,6 +665,7 @@ void irq_exit(void)
+ 	 /* must be last! */
+ 	lockdep_hardirq_exit();
+ }
++#endif
+ 
+ /*
+  * This function must run with irqs disabled!
