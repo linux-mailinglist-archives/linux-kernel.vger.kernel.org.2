@@ -2,129 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEEF42AD1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061A342AD22
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233497AbhJLTSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 15:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
+        id S233581AbhJLTTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 15:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhJLTSD (ORCPT
+        with ESMTP id S231586AbhJLTTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 15:18:03 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F162C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:16:01 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id x27so1228553lfa.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:16:01 -0700 (PDT)
+        Tue, 12 Oct 2021 15:19:49 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DA4C061570;
+        Tue, 12 Oct 2021 12:17:47 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id d9so382976edh.5;
+        Tue, 12 Oct 2021 12:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FlkXYxQnX9cVBCYrCYu43bah3uf5UinO45u+04/Rykc=;
-        b=SrvvI2ZUyaZ1LhlLNYmdcbMFBohw/ez4k/YvlQbUMbxIjXI3gwpNuwsF1lEWTbNpWT
-         9npnSxmYIw57vGlQDfFf3BS35QVZ73agXC/DxeAFrHMjtLk1Z6N72RPSvwPaniXJN0lz
-         cwH5Sn1toi5AFngKI+T3hAkx9nywZBi5KetwE=
+        bh=56fKb7CcbuqktWpgMry6SjvQCRBJgPclG+WWBci/N1U=;
+        b=ofv0TOnNlGBFLe51dgG5OnmJG9qkC2CqbFDJxP5PdQqvaBETe9QiZBsVEzj/6275Me
+         2gTNF8zQQjqsQ8W6T2DQ4jVOjf+5wWNOmax7L44r8hYXWq1ihO7vwFkZB2lYyyEzXs/H
+         8VXQE/dgFRSZ1xcTzVrWcZLykFk6eW2wZQZxoJU7oSFMi9aBJpS26EX29z0r2EefPIdC
+         oCmXu5KAtT3AG0os9ixKaZD7RDhKGyqV8rbfLimP3cyTUJajh3iM5bR2J2Y2bj5awPbt
+         HrpR3esr8TEsXQoZ89DhUKu1U/OSEr3X/81npuwXDM24/TObn2Uyl0Zae2hfNhT/MLLg
+         McLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FlkXYxQnX9cVBCYrCYu43bah3uf5UinO45u+04/Rykc=;
-        b=HDSKgg4CoTrDtuTEmO+tKgtjAb7GXLKzJp/BqQ1Z7785+Uc5otF/3pa/WPrcw4xbzw
-         2Vmmcvc2dlcEQXDDkdYcohabWU4wBAM38D0ZMwfprfL8iE6bMHfnWeTF72uCxHvWc21s
-         ZkP/3/UZ1O35lwPpFMEhnIw9rucJ+vb1WCxJqva0/yW7YmGLu03O1V0X3WtoV+x0cQ44
-         NMkX37YOupGjq8Q3HpuhdW8O/QVzqnBWvGIvMN19QsE2l7R+66+ZHfmkBGD3Y+nSNnun
-         6AoZiUV8mSoTKu1sg8jojVWVN6LlMcs7cnFS8HaDCVCvy8Jyy+F2gytq+MSwm6U3PzU9
-         KFfg==
-X-Gm-Message-State: AOAM532aVvsJgJTsvenbvOBUF8MMQNka20P72DcEY/AQjrkByTvKUfZi
-        CA64ssO/i6jJKDwWSoFyAx8/CSWgOizTsBy4
-X-Google-Smtp-Source: ABdhPJywfuGB9kYtwHrwj9E6jFzES5Ly04K/Ew2GTte3LXPwvNLkDrmIs7rO0A6WZvTRb1NTd1IxSw==
-X-Received: by 2002:a05:651c:160c:: with SMTP id f12mr31333920ljq.80.1634066159512;
-        Tue, 12 Oct 2021 12:15:59 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id f17sm934173ljc.46.2021.10.12.12.15.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 12:15:58 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id x27so1228125lfa.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:15:57 -0700 (PDT)
-X-Received: by 2002:a2e:5cc7:: with SMTP id q190mr23168712ljb.494.1634066157039;
- Tue, 12 Oct 2021 12:15:57 -0700 (PDT)
+        bh=56fKb7CcbuqktWpgMry6SjvQCRBJgPclG+WWBci/N1U=;
+        b=L2z6B3qP6nFoUSUvSCR6i882xP02yJpmaBDMzyr9vK10Xr3/n2ihDAWzk90dBjdpql
+         jgpHcHJDx8gHc3leiQaGYMM/XoeGA7eV1zGIS6etODeSmKYvXjqwu6X1Fp3hhXh97i0F
+         rb3PPbB6Db13Fbghv2v3zw1EBwu6RxhxEsd2xw2cBr9KHxb//ycJSO6h0xFWSNfIbwQY
+         cVQ8d/lGtQkVEWbsS7H6ulMiv48L29GcYvjKNdTyEhpsGVDWd/Hihwb15OTbyRXpR+F1
+         sCQA5mE0qAFwjttKorfJc3Q/cAJ39kBkpqVHskB+99jTgvUiCikSJlleAnpPmJ49NdG9
+         nmLA==
+X-Gm-Message-State: AOAM532YY91MK028Of1/7gTk5aLIq6kW7lX/9R9q8cM/YyoX39t/g3J/
+        yVkL9lnUbZOA5vo7EmrVbwGqeBQXNwS//qaQKgIS40Ka
+X-Google-Smtp-Source: ABdhPJw8N+UTY9qYXvlJOjYjlnaJ60e7PjmRWzxiW5mF9oViVC/RcCLqBI5rfVRQKpM4JeBP3qZXJiH5m0OrDcinAkE=
+X-Received: by 2002:a17:907:6297:: with SMTP id nd23mr36478716ejc.62.1634066265573;
+ Tue, 12 Oct 2021 12:17:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211012141131.3c9a2eb1@gandalf.local.home> <CAHk-=wj2SbVnsO7yxgaD20HBaH=0rNM60nD92+BDSwQxofd9SQ@mail.gmail.com>
- <20211012145540.343541e9@gandalf.local.home>
-In-Reply-To: <20211012145540.343541e9@gandalf.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 12 Oct 2021 12:15:40 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg6fw130AkO72GPFow9PHvP9odnC5LZ0UaY9bJQuF-C5A@mail.gmail.com>
-Message-ID: <CAHk-=wg6fw130AkO72GPFow9PHvP9odnC5LZ0UaY9bJQuF-C5A@mail.gmail.com>
-Subject: Re: [BUG] WARNING: CPU: 3 PID: 1 at mm/debug_vm_pgtable.c:493
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Gavin Shan <gshan@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-5-shy828301@gmail.com>
+ <YWTrbgf0kpwayWHL@t490s>
+In-Reply-To: <YWTrbgf0kpwayWHL@t490s>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 12 Oct 2021 12:17:33 -0700
+Message-ID: <CAHbLzkrJ9YZYUS+T64L9vFzg77qVg2SZ4DBGC013kgGTRvpieA@mail.gmail.com>
+Subject: Re: [v3 PATCH 4/5] mm: shmem: don't truncate page if memory failure happens
+To:     Peter Xu <peterx@redhat.com>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: multipart/mixed; boundary="000000000000d4b35f05ce2cac37"
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000d4b35f05ce2cac37
-Content-Type: text/plain; charset="UTF-8"
-
-On Tue, Oct 12, 2021 at 11:55 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, Oct 11, 2021 at 6:57 PM Peter Xu <peterx@redhat.com> wrote:
 >
+> On Thu, Sep 30, 2021 at 02:53:10PM -0700, Yang Shi wrote:
+> > diff --git a/mm/shmem.c b/mm/shmem.c
+> > index 88742953532c..75c36b6a405a 100644
+> > --- a/mm/shmem.c
+> > +++ b/mm/shmem.c
+> > @@ -2456,6 +2456,7 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
+> >       struct inode *inode = mapping->host;
+> >       struct shmem_inode_info *info = SHMEM_I(inode);
+> >       pgoff_t index = pos >> PAGE_SHIFT;
+> > +     int ret = 0;
+> >
+> >       /* i_rwsem is held by caller */
+> >       if (unlikely(info->seals & (F_SEAL_GROW |
+> > @@ -2466,7 +2467,17 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
+> >                       return -EPERM;
+> >       }
+> >
+> > -     return shmem_getpage(inode, index, pagep, SGP_WRITE);
+> > +     ret = shmem_getpage(inode, index, pagep, SGP_WRITE);
+> > +
+> > +     if (*pagep) {
+> > +             if (PageHWPoison(*pagep)) {
+> > +                     unlock_page(*pagep);
+> > +                     put_page(*pagep);
+> > +                     ret = -EIO;
+> > +             }
+> > +     }
+> > +
+> > +     return ret;
+> >  }
+> >
+> >  static int
+> > @@ -2555,6 +2566,11 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+> >                       unlock_page(page);
+> >               }
+> >
+> > +             if (page && PageHWPoison(page)) {
+> > +                     error = -EIO;
+> > +                     break;
+> > +             }
+> > +
+> >               /*
+> >                * We must evaluate after, since reads (unlike writes)
+> >                * are called without i_rwsem protection against truncate
 >
-> I saved off that warning from a different branch, and looking at the dmesg,
-> it is:
+> [...]
 >
->   Linux version 5.14.0-rc2-test+
+> > @@ -4193,6 +4216,10 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
+> >               page = ERR_PTR(error);
+> >       else
+> >               unlock_page(page);
+> > +
+> > +     if (PageHWPoison(page))
+> > +             page = ERR_PTR(-EIO);
+> > +
+> >       return page;
+> >  #else
+> >       /*
+> > diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+> > index 7a9008415534..b688d5327177 100644
+> > --- a/mm/userfaultfd.c
+> > +++ b/mm/userfaultfd.c
+> > @@ -233,6 +233,11 @@ static int mcontinue_atomic_pte(struct mm_struct *dst_mm,
+> >               goto out;
+> >       }
+> >
+> > +     if (PageHWPoison(page)) {
+> > +             ret = -EIO;
+> > +             goto out_release;
+> > +     }
+> > +
+> >       ret = mfill_atomic_install_pte(dst_mm, dst_pmd, dst_vma, dst_addr,
+> >                                      page, false, wp_copy);
+> >       if (ret)
+> > --
+> > 2.26.2
+> >
 >
-> Which shows this happened on 5.14 as well (and explains why the line
-> numbers are different).
+> These are shmem_getpage_gfp() call sites:
+>
+>   shmem_getpage[151]             return shmem_getpage_gfp(inode, index, pagep, sgp,
+>   shmem_fault[2112]              err = shmem_getpage_gfp(inode, vmf->pgoff, &vmf->page, SGP_CACHE,
+>   shmem_read_mapping_page_gfp[4188] error = shmem_getpage_gfp(inode, index, &page, SGP_CACHE,
+>
+> These are further shmem_getpage() call sites:
+>
+>   collapse_file[1735]            if (shmem_getpage(mapping->host, index, &page,
+>   shmem_undo_range[965]          shmem_getpage(inode, start - 1, &page, SGP_READ);
+>   shmem_undo_range[980]          shmem_getpage(inode, end, &page, SGP_READ);
+>   shmem_write_begin[2467]        return shmem_getpage(inode, index, pagep, SGP_WRITE);
+>   shmem_file_read_iter[2544]     error = shmem_getpage(inode, index, &page, sgp);
+>   shmem_fallocate[2733]          error = shmem_getpage(inode, index, &page, SGP_FALLOC);
+>   shmem_symlink[3079]            error = shmem_getpage(inode, 0, &page, SGP_WRITE);
+>   shmem_get_link[3120]           error = shmem_getpage(inode, 0, &page, SGP_READ);
+>   mcontinue_atomic_pte[235]      ret = shmem_getpage(inode, pgoff, &page, SGP_READ);
+>
+> Wondering whether this patch covered all of them.
 
-Ok, yes, that's the exact same "pud_set_huge()" failure.
+No, it doesn't need. Not all places care about hwpoison page, for
+example, truncate, hole punch, etc. Only the APIs which return the
+data back to userspace or write back to disk need care about if the
+data is corrupted or not since. This has been elaborated in the cover
+letter.
 
-So it's the same issue, and has been going on for a while, and
-presumably very few people end up enabling DEBUG_VM_PGTABLE (together
-with it being hard to trigger).
+>
+> This also reminded me that whether we should simply fail shmem_getpage_gfp()
+> directly, then all above callers will get a proper failure, rather than we do
+> PageHWPoison() check everywhere?
 
-Or it's something specific to your setup, but that sounds unlikely.
+Actually I did a prototype for this approach by returning
+ERR_PTR(-EIO). But all the callers have to check this return value
+even though the callers don't care about hwpoison page since all the
+callers (not only shmem, but also all other filesystems) just check if
+page is NULL but not check if it is an error pointer. This actually
+incur more changes. It sounds not optimal IMHO. So I just treat
+hwpoison as other flags, for example, Uptodate, and have callers check
+it when necessary.
 
-You might add some debugging to the x86 pud_set_huge() function,
-something like the attached (obviously entirely untested) patch.
-
-           Linus
-
---000000000000d4b35f05ce2cac37
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kuogsax20>
-X-Attachment-Id: f_kuogsax20
-
-IGFyY2gveDg2L21tL3BndGFibGUuYyB8IDggKysrKysrLS0KIDEgZmlsZSBjaGFuZ2VkLCA2IGlu
-c2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC94ODYvbW0vcGd0
-YWJsZS5jIGIvYXJjaC94ODYvbW0vcGd0YWJsZS5jCmluZGV4IDM0ODFiMzVjYjRlYy4uMGEzZDY3
-ZWM3M2Q0IDEwMDY0NAotLS0gYS9hcmNoL3g4Ni9tbS9wZ3RhYmxlLmMKKysrIGIvYXJjaC94ODYv
-bW0vcGd0YWJsZS5jCkBAIC03MDYsMTIgKzcwNiwxNiBAQCBpbnQgcHVkX3NldF9odWdlKHB1ZF90
-ICpwdWQsIHBoeXNfYWRkcl90IGFkZHIsIHBncHJvdF90IHByb3QpCiAKIAltdHJyID0gbXRycl90
-eXBlX2xvb2t1cChhZGRyLCBhZGRyICsgUFVEX1NJWkUsICZ1bmlmb3JtKTsKIAlpZiAoKG10cnIg
-IT0gTVRSUl9UWVBFX0lOVkFMSUQpICYmICghdW5pZm9ybSkgJiYKLQkgICAgKG10cnIgIT0gTVRS
-Ul9UWVBFX1dSQkFDSykpCisJICAgIChtdHJyICE9IE1UUlJfVFlQRV9XUkJBQ0spKSB7CisJCXBy
-X2RlYnVnKCJtdHJyX3R5cGVfbG9va3VwKCkgcmV0dXJuZWQgJWQgKCVkKVxuIiwgbXRyciwgdW5p
-Zm9ybSk7CiAJCXJldHVybiAwOworCX0KIAogCS8qIEJhaWwgb3V0IGlmIHdlIGFyZSB3ZSBvbiBh
-IHBvcHVsYXRlZCBub24tbGVhZiBlbnRyeTogKi8KLQlpZiAocHVkX3ByZXNlbnQoKnB1ZCkgJiYg
-IXB1ZF9odWdlKCpwdWQpKQorCWlmIChwdWRfcHJlc2VudCgqcHVkKSAmJiAhcHVkX2h1Z2UoKnB1
-ZCkpIHsKKwkJcHJfZGVidWcoInB1ZCBpcyBhbHJlYWR5IHByZXNlbnQgKCVseClcbiIsICh1bnNp
-Z25lZCBsb25nKXB1ZF92YWwoKnB1ZCkpOwogCQlyZXR1cm4gMDsKKwl9CiAKIAlzZXRfcHRlKChw
-dGVfdCAqKXB1ZCwgcGZuX3B0ZSgKIAkJKHU2NClhZGRyID4+IFBBR0VfU0hJRlQsCg==
---000000000000d4b35f05ce2cac37--
+>
+> --
+> Peter Xu
+>
