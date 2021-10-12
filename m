@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1434942AD4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2510D42AD51
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbhJLTeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 15:34:11 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:48364 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhJLTeJ (ORCPT
+        id S233486AbhJLThc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 15:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232419AbhJLTha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 15:34:09 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id ce40f750960f5126; Tue, 12 Oct 2021 21:32:06 +0200
-Received: from kreacher.localnet (unknown [213.134.187.88])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Tue, 12 Oct 2021 15:37:30 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BECC061570;
+        Tue, 12 Oct 2021 12:35:29 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id C861766A7F3;
-        Tue, 12 Oct 2021 21:32:05 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH v2 5/7] surface: surface3_power: Drop redundant acpi_bus_get_device() call
-Date:   Tue, 12 Oct 2021 21:32:04 +0200
-Message-ID: <2503491.Lt9SDvczpP@kreacher>
-In-Reply-To: <3089655.5fSG56mABF@kreacher>
-References: <4369779.LvFx2qVVIh@kreacher> <3089655.5fSG56mABF@kreacher>
+        by ms.lwn.net (Postfix) with ESMTPSA id 1A02E2D3;
+        Tue, 12 Oct 2021 19:35:28 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1A02E2D3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1634067328; bh=EgAtlDj4fhvTO94uMQSmyS4JNxVrEFT/socN49pCeyo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=aJIXoKCvtmy5aDtnLdDOZgYcUzIz+zvrbROBAOHw0hfm5Ri/kgDwGF9XJQWPKJr1F
+         yLIrsG1OkHJbUz+KlvEibaCVt+JxPWdN8K0M9DQeeSFMBubb7cHFpeHX1RW3x0i3iC
+         mE6+ChBnALhXPOQMEitTjrqAedyMQij1Mblm9qb1cvjSZphaQtqNZp5ltL6rpHm4QM
+         YdK7c0/xz/UmUnzFkhgujtUTKKr++RZnjpe9a+KzZ07UzhW9tbpQsVQ9oqdiI6qZag
+         UeeZZisIB/+2eOuDQK/6EwYA5fnNmb+nErnDqpGP7ronDeWrQqGNLO6Wvt7z40kkN3
+         5yLjwJTxyXMdw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joe Perches <joe@perches.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Subject: Re: [PATCH v5] docs: Explain the desired position of function
+ attributes
+In-Reply-To: <20211005152611.4120605-1-keescook@chromium.org>
+References: <20211005152611.4120605-1-keescook@chromium.org>
+Date:   Tue, 12 Oct 2021 13:35:27 -0600
+Message-ID: <87mtneujcw.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.187.88
-X-CLIENT-HOSTNAME: 213.134.187.88
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtkedgudefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppedvudefrddufeegrddukeejrdekkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukeejrdekkedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehluhiimhgrgihimhhilhhirghnsehgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhguvghgohgvuggvsehrvgguhhgrthdrtghomhdprhgtphhtthhopehmghhrohhssheslhhinhhugidr
- ihhnthgvlhdrtghomhdprhgtphhtthhopehplhgrthhfohhrmhdqughrihhvvghrqdigkeeisehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael@kernel.org>
+Kees Cook <keescook@chromium.org> writes:
 
-If the ACPI companion of a given device is not present, the result
-of the ACPI_HANDLE() evaluation for it will be NULL, so calling
-acpi_bus_get_device() on ACPI_HANDLE() result in order to validate
-it is redundant.
+> While discussing how to format the addition of various function
+> attributes, some "unwritten rules" of ordering surfaced[1]. Capture as
+> close as possible to Linus's preferences for future reference.
+>
+> (Though I note the dissent voiced by Joe Perches, Alexey Dobriyan, and
+> others that would prefer all attributes live on a separate leading line.)
+>
+> [1] https://lore.kernel.org/mm-commits/CAHk-=wiOCLRny5aifWNhr621kYrJwhfURsa0vFPeUEm8mF0ufg@mail.gmail.com/
+>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+> v5:
+> - drop extern (joe)
+> - fix __malloc position (miguel)
+> v4: https://lore.kernel.org/lkml/20210930235754.2635912-1-keescook@chromium.org
+> ---
+>  Documentation/process/coding-style.rst | 37 +++++++++++++++++++++++++-
+>  1 file changed, 36 insertions(+), 1 deletion(-)
 
-Drop the redundant acpi_bus_get_device() call from mshw0011_notify()
-along with a local variable related to it.
+I've applied this, thanks.
 
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
----
-
-v1 -> v2:
-   * Instead of switching over to using ACPI_COMPANION(), just drop the
-     redundant acpi_bus_get_device() call from mshw0011_notify() and
-     update the subject and changelog accordingly.
-
----
- drivers/platform/surface/surface3_power.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-Index: linux-pm/drivers/platform/surface/surface3_power.c
-===================================================================
---- linux-pm.orig/drivers/platform/surface/surface3_power.c
-+++ linux-pm/drivers/platform/surface/surface3_power.c
-@@ -159,12 +159,11 @@ mshw0011_notify(struct mshw0011_data *cd
- 		unsigned int *ret_value)
- {
- 	union acpi_object *obj;
--	struct acpi_device *adev;
- 	acpi_handle handle;
- 	unsigned int i;
- 
- 	handle = ACPI_HANDLE(&cdata->adp1->dev);
--	if (!handle || acpi_bus_get_device(handle, &adev))
-+	if (!handle)
- 		return -ENODEV;
- 
- 	obj = acpi_evaluate_dsm_typed(handle, &mshw0011_guid, arg1, arg2, NULL,
-
-
-
+jon
