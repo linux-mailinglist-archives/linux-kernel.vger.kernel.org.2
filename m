@@ -2,233 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82EA42A2BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E657542A2BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236175AbhJLK7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:59:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30762 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236161AbhJLK7u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:59:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634036269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+Zw60AjhnogKvFsid6jZRIlOGhKxa7549SrLAzuCWvc=;
-        b=hKTxn2S4UMXa+bA3pu0iAodGBY0FUF2qe6aTmQD/egEJremjpQYaoCGOzB+9gw6kPp9wSw
-        h+4+oDmTRZn6nTUS4lQ5fNh/Q2d/bQjODNSpsABZy4BQcMYr3MuLIJpqxgkAva9VH0TOg2
-        BmJnHCE8cP3MQmVem5iXmDrb0A6li+w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-552-ttc-XjFDP7qpKN0p4L35Kg-1; Tue, 12 Oct 2021 06:57:12 -0400
-X-MC-Unique: ttc-XjFDP7qpKN0p4L35Kg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C14B8801AA7;
-        Tue, 12 Oct 2021 10:57:10 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3610C5D6D5;
-        Tue, 12 Oct 2021 10:57:10 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com, seanjc@google.com, x86@kernel.org,
-        yang.zhong@intel.com, jarkko@kernel.org
-Subject: [PATCH v2 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
-Date:   Tue, 12 Oct 2021 06:57:08 -0400
-Message-Id: <20211012105708.2070480-3-pbonzini@redhat.com>
-In-Reply-To: <20211012105708.2070480-1-pbonzini@redhat.com>
-References: <20211012105708.2070480-1-pbonzini@redhat.com>
+        id S236150AbhJLK7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:59:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:35274 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236036AbhJLK7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:59:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E050D101E;
+        Tue, 12 Oct 2021 03:57:35 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72E9B3F694;
+        Tue, 12 Oct 2021 03:57:34 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Woody Lin <woodylin@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Ben Segall <bsegall@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/scs: Reset the shadow stack when idle_task_exit
+In-Reply-To: <CAHn4Dec0Jyc30vWMLAXwQ-ge4eS5S26hxfMky-e4f-TTtFrbEQ@mail.gmail.com>
+References: <20211012083521.973587-1-woodylin@google.com> <87zgrek1gl.mognet@arm.com> <CAHn4Dec0Jyc30vWMLAXwQ-ge4eS5S26hxfMky-e4f-TTtFrbEQ@mail.gmail.com>
+Date:   Tue, 12 Oct 2021 11:57:32 +0100
+Message-ID: <87wnmijysj.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For bare-metal SGX on real hardware, the hardware provides guarantees
-SGX state at reboot.  For instance, all pages start out uninitialized.
-The vepc driver provides a similar guarantee today for freshly-opened
-vepc instances, but guests such as Windows expect all pages to be in
-uninitialized state on startup, including after every guest reboot.
+On 12/10/21 18:35, Woody Lin wrote:
+> On Tue, Oct 12, 2021 at 6:00 PM Valentin Schneider
+> <valentin.schneider@arm.com> wrote:
+>>
+>> So AIUI for SCS that works just fine - one thing I'm unclear on is how the
+>> following pops are going to work given the SP reset happens in the middle
+>> of a call stack, but AFAICT that was already the case before I messed about
+>> with init_idle(), so that must already be handled.
+>
+> Hi Valentin,
+>
+> Thanks for the question. The 'scs_task_reset' here resets only the
+> '.thread_info.scs_sp' of the task, so the register (on arm64 it's x18)
+> is still pointing to the same location for popping and storing call
+> frames. The register will be updated to '.thread_info.scs_sp' in
+> '__secondary_switched', which starts a new core and there is no popping
+> after the updating, so it won't introduce an underflow.
+>
 
-Some userspace implementations of virtual SGX would rather avoid having
-to close and reopen the /dev/sgx_vepc file descriptor and re-mmap the
-virtual EPC.  For example, they could sandbox themselves after the guest
-starts and forbid further calls to open(), in order to mitigate exploits
-from untrusted guests.
+I think I got it; __secondary_switched() -> init_cpu_task() -> scs_load()
 
-Therefore, add a ioctl that does this with EREMOVE.  Userspace can
-invoke the ioctl to bring its vEPC pages back to uninitialized state.
-There is a possibility that some pages fail to be removed if they are
-SECS pages, and the child and SECS pages could be in separate vEPC
-regions.  Therefore, the ioctl returns the number of EREMOVE failures,
-telling userspace to try the ioctl again after it's done with all
-vEPC regions.  A more verbose description of the correct usage and
-the possible error conditions is documented in sgx.rst.
+Thanks!
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
-	v1->v2: return EBUSY for SGX_ENCLAVE_ACT, adjust docs
-		add cond_resched
+>>
+>> I'm not familiar enough with KASAN to say whether that
+>> kasan_unpoison_task_stack() should rather happen upon hotplugging the CPU
+>> back (rather than on hot-unplug). If that is the case, then maybe somewhere
+>> around cpu_startup_entry() might work (and then you could bunch these two
+>> "needs to be re-run at init for the idle task" functions into a common
+>> helper).
+>
+> unpoison looks more like an one-time thing to me; the idle tasks will
+> reuse the same stack pages until system resets, so I think we don't need
+> to re-unpoison that during hotplugging as long as it's unpoisoned in
+> 'init_idle'.
+>
 
- Documentation/x86/sgx.rst       | 26 +++++++++++++++
- arch/x86/include/asm/sgx.h      |  3 ++
- arch/x86/include/uapi/asm/sgx.h |  2 ++
- arch/x86/kernel/cpu/sgx/virt.c  | 57 +++++++++++++++++++++++++++++++++
- 4 files changed, 88 insertions(+)
+I would tend to agree, but was bitten by s390 freeing some memory on
+hot-unplug and re-allocating it upon hotplug:
 
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index dd0ac96ff9ef..7bc9c3b297d6 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -250,3 +250,29 @@ user wants to deploy SGX applications both on the host and in guests
- on the same machine, the user should reserve enough EPC (by taking out
- total virtual EPC size of all SGX VMs from the physical EPC size) for
- host SGX applications so they can run with acceptable performance.
-+
-+Architectural behavior is to restore all EPC pages to an uninitialized
-+state also after a guest reboot.  Because this state can be reached only
-+through the privileged ``ENCLS[EREMOVE]`` instruction, ``/dev/sgx_vepc``
-+provides the ``SGX_IOC_VEPC_REMOVE_ALL`` ioctl to execute the instruction
-+on all pages in the virtual EPC.
-+
-+``EREMOVE`` can fail for two reasons, which Linux relays to userspace
-+in a different manner:
-+
-+1. Page removal will always fail when any thread is running in the
-+   enclave to which the page belongs.  In this case the ioctl will
-+   return ``EBUSY`` independent of whether it has successfully removed
-+   some pages; userspace can avoid these failures by preventing execution
-+   of any vcpu which maps the virtual EPC.
-+
-+2) Page removal will also fail for SGX "SECS" metadata pages which still
-+   have child pages.  Child pages can be removed by executing
-+   ``SGX_IOC_VEPC_REMOVE_ALL`` on all ``/dev/sgx_vepc`` file descriptors
-+   mapped into the guest.  This means that the ioctl() must be called
-+   twice: an initial set of calls to remove child pages and a subsequent
-+   set of calls to remove SECS pages.  The second set of calls is only
-+   required for those mappings that returned a nonzero value from the
-+   first call.  It indicates a bug in the kernel or the userspace client
-+   if any of the second round of ``SGX_IOC_VEPC_REMOVE_ALL`` calls has
-+   a return code other than 0.
-diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
-index 05f3e21f01a7..2e5d8c97655e 100644
---- a/arch/x86/include/asm/sgx.h
-+++ b/arch/x86/include/asm/sgx.h
-@@ -50,6 +50,8 @@ enum sgx_encls_function {
-  * %SGX_NOT_TRACKED:		Previous ETRACK's shootdown sequence has not
-  *				been completed yet.
-  * %SGX_CHILD_PRESENT		SECS has child pages present in the EPC.
-+ * %SGX_ENCLAVE_ACT		One or more logical processors are executing
-+ *				inside the enclave.
-  * %SGX_INVALID_EINITTOKEN:	EINITTOKEN is invalid and enclave signer's
-  *				public key does not match IA32_SGXLEPUBKEYHASH.
-  * %SGX_UNMASKED_EVENT:		An unmasked event, e.g. INTR, was received
-@@ -57,6 +59,7 @@ enum sgx_encls_function {
- enum sgx_return_code {
- 	SGX_NOT_TRACKED			= 11,
- 	SGX_CHILD_PRESENT		= 13,
-+	SGX_ENCLAVE_ACT			= 14,
- 	SGX_INVALID_EINITTOKEN		= 16,
- 	SGX_UNMASKED_EVENT		= 128,
- };
-diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
-index 9690d6899ad9..f4b81587e90b 100644
---- a/arch/x86/include/uapi/asm/sgx.h
-+++ b/arch/x86/include/uapi/asm/sgx.h
-@@ -27,6 +27,8 @@ enum sgx_page_flags {
- 	_IOW(SGX_MAGIC, 0x02, struct sgx_enclave_init)
- #define SGX_IOC_ENCLAVE_PROVISION \
- 	_IOW(SGX_MAGIC, 0x03, struct sgx_enclave_provision)
-+#define SGX_IOC_VEPC_REMOVE_ALL \
-+	_IO(SGX_MAGIC, 0x04)
- 
- /**
-  * struct sgx_enclave_create - parameter structure for the
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-index 59cdf3f742ac..81a0a0f22007 100644
---- a/arch/x86/kernel/cpu/sgx/virt.c
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -150,6 +150,46 @@ static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
- 	return 0;
- }
- 
-+static long sgx_vepc_remove_all(struct sgx_vepc *vepc)
-+{
-+	struct sgx_epc_page *entry;
-+	unsigned long index;
-+	long failures = 0;
-+
-+	xa_for_each(&vepc->page_array, index, entry) {
-+		int ret = sgx_vepc_remove_page(entry);
-+		switch (ret) {
-+		case 0:
-+			break;
-+
-+		case SGX_CHILD_PRESENT:
-+			failures++;
-+			break;
-+
-+		case SGX_ENCLAVE_ACT:
-+			/*
-+			 * Unlike in sgx_vepc_free_page, userspace could be calling
-+			 * the ioctl while logical processors are running in the
-+			 * enclave; do not warn.
-+			 */
-+			return -EBUSY;
-+
-+		default:
-+			WARN_ONCE(1, EREMOVE_ERROR_MESSAGE, ret, ret);
-+			failures++;
-+			break;
-+		}
-+		cond_resched();
-+	}
-+
-+	/*
-+	 * Return the number of pages that failed to be removed, so
-+	 * userspace knows that there are still SECS pages lying
-+	 * around.
-+	 */
-+	return failures;
-+}
-+
- static int sgx_vepc_release(struct inode *inode, struct file *file)
- {
- 	struct sgx_vepc *vepc = file->private_data;
-@@ -235,9 +274,27 @@ static int sgx_vepc_open(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
-+static long sgx_vepc_ioctl(struct file *file,
-+			   unsigned int cmd, unsigned long arg)
-+{
-+	struct sgx_vepc *vepc = file->private_data;
-+
-+	switch (cmd) {
-+	case SGX_IOC_VEPC_REMOVE_ALL:
-+		if (arg)
-+			return -EINVAL;
-+		return sgx_vepc_remove_all(vepc);
-+
-+	default:
-+		return -ENOTTY;
-+	}
-+}
-+
- static const struct file_operations sgx_vepc_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= sgx_vepc_open,
-+	.unlocked_ioctl	= sgx_vepc_ioctl,
-+	.compat_ioctl	= sgx_vepc_ioctl,
- 	.release	= sgx_vepc_release,
- 	.mmap		= sgx_vepc_mmap,
- };
--- 
-2.27.0
+  6a942f578054 ("s390: preempt: Fix preempt_count initialization")
 
+This makes me doubt whether we can assert the idle task stack pages are
+perennial vs hotplug on all architectures.
+
+>>
+>> >  }
+>> >
+>> > --
+>> > 2.33.0.882.g93a45727a2-goog
