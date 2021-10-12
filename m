@@ -2,144 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9265642AE1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547B542AE32
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235067AbhJLUqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33668 "EHLO
+        id S235058AbhJLUwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232986AbhJLUqx (ORCPT
+        with ESMTP id S234047AbhJLUwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:46:53 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B10C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:44:51 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id lk8-20020a17090b33c800b001a0a284fcc2so2797701pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:44:51 -0700 (PDT)
+        Tue, 12 Oct 2021 16:52:33 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37029C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:50:31 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so2789601pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:50:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8ViV5/pFsBw3tEZCSEbQNY/kwVRna/LjOJ8u3cbMomY=;
-        b=IfAyv/ESGEJl3OXMAEkUu+1eEAYJA1DTprmw/n6iHXk1vORtYBH6NWmjsICnrglySW
-         u7p6FjmJtFivP7gXm0vB/abB4I9+1WFQe5HLQ7V6ApO4BHTChuG7TZwTup3PbhpP8ORf
-         s7pIkXdxhoHubE0p2y27bbwtAdXnhW7ucmiFnOoUJVSXDtwTQssYCtr0rcS6WZ0ZELOv
-         nzEycl41/WtD5NbUjilm5cJSac15mm8pJixeptm3CRTrdN+dtG/LP7GPimIBGI0IfkHa
-         y8ld4AZNzIcxoppNzAgiSpotsMxXw8q20/UigY5MJ624DjAJsU+N/ypOQ4SWeJaHz8u0
-         pl/Q==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=niP7v3xFwLnCjLXmT0nzm06tTYa6qI3k7igZv8TEJsc=;
+        b=MrnlfgVEgsrzhHRtZFc5utknl/ytW5WjQcYfTv2HnZ6fS9lKKuW+F42Nrbx+gHripS
+         Xc2RIA6gaKDSc/bn3xBmR20a0BtY+7gzFpyZmggMd//w3Ub3xZ+2jCun1uq9tVGlgJIT
+         sVMI8bJ+eODJIFrgH34toluuVDOHJLd8ha9UY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8ViV5/pFsBw3tEZCSEbQNY/kwVRna/LjOJ8u3cbMomY=;
-        b=xn1NrtmwfQtpVjLKyTzX+l1E+NAw/bXPEn25Vfpa1YM2FHyWNxoeElucDxOzAQkWnC
-         kZMN2HSbSDPuzAVtW3jggM2TsPiLbhKcCb8lsXeYnf/Xm4hGCMxZPz08DV2IN/cLTqM1
-         TbdI1bGkP5wYhxjUdFMm4wUOOjeSLhGUih3Ee1Lxil9Q51aIhTdh/Zjo4q7kvgaZ3vPt
-         gnhbnoMN4Kh7XMZJT7uuTkb3A3ktUrqMbOUAAVN8H8BycTpSFkSUJFzGx3YsjK389I73
-         wQifVoqsQVixVtj8oBIwdBt7OM30qh827yqyMo3+OqEI+Zs1XFD6xw2H+pxwb1QwyaUG
-         8agg==
-X-Gm-Message-State: AOAM532Z0FKAz9kj5C/bs7nL9pIv3GHtj01ap4zO0TBf40ZNdg8JLEag
-        4SiOPIa6+s3oDzXHatWG50se8Q==
-X-Google-Smtp-Source: ABdhPJxwGw5yVkX9qLympbpNPYa4ihCOPDnJEFbWRsVu8t6dvIwYQRRToQPlei3MyDTRcSYspl6LPA==
-X-Received: by 2002:a17:903:2303:b0:13f:e63:e27d with SMTP id d3-20020a170903230300b0013f0e63e27dmr28278411plh.84.1634071490561;
-        Tue, 12 Oct 2021 13:44:50 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id w17sm10177165pff.191.2021.10.12.13.44.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 13:44:49 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 20:44:46 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 21/45] KVM: SVM: Make AVIC backing, VMSA and
- VMCB memory allocation SNP safe
-Message-ID: <YWXzvhuE9/iCcqxZ@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-22-brijesh.singh@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=niP7v3xFwLnCjLXmT0nzm06tTYa6qI3k7igZv8TEJsc=;
+        b=EzYH18vnTAtxEZmBKQbf+m4f37QvT7OCNdcCJhRhmL0WIFZQhFYNRjfsN4ADlDW9P/
+         VjjNheNABOKHIjJ1aIPzc5qrtpdFilV/7vLTTZC+nzwJFsVyE46Eyh4b607Wt6qCkxwZ
+         ULiOUdl/lrrh10e9a6k+IP9MKwtLBAo8EFQhHAprtgOs4QPQeH78qAIxyLN8S9vxfZ27
+         gDc10WtHmYWdfTk3YjD2EoXFI8ORWQCJwIjFcAXOleSycWEnw2r/DqVKZK5Ij2LAXM5d
+         LtbfMrlrZThEUv/RTDUDPuFsWHI3H68S2M45oeSel5GkGbRb3oNj1ffPPkJR82I8glKY
+         mymw==
+X-Gm-Message-State: AOAM533l7N2tBbA4Q06D++GSzoYMUa9fAd01J+HotfnW3X7nDc/iIM1r
+        C+6zWJnPDfdj+vEgoyl32q5yXVAPAh/g/g==
+X-Google-Smtp-Source: ABdhPJwMrNZVf/uCIGNke+KhPOuFe2TfzE2YxhhhBLQHGfz84Sz3avFPR0sXDjQkafDtZXBlu7WWGw==
+X-Received: by 2002:a17:90a:7d05:: with SMTP id g5mr8568637pjl.14.1634071830488;
+        Tue, 12 Oct 2021 13:50:30 -0700 (PDT)
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com. [209.85.215.176])
+        by smtp.gmail.com with ESMTPSA id s20sm12294899pgq.85.2021.10.12.13.50.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 13:50:30 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id r2so231242pgl.10
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:50:30 -0700 (PDT)
+X-Received: by 2002:a6b:f915:: with SMTP id j21mr25937447iog.98.1634071515111;
+ Tue, 12 Oct 2021 13:45:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210820155918.7518-22-brijesh.singh@amd.com>
+References: <20211006024018.320394-1-lyude@redhat.com> <20211006024018.320394-5-lyude@redhat.com>
+In-Reply-To: <20211006024018.320394-5-lyude@redhat.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 12 Oct 2021 13:45:04 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WV15+qBBA8ZcgxwOQ=i_LHsytdrUWyqZHZZBwuJJ6CFQ@mail.gmail.com>
+Message-ID: <CAD=FV=WV15+qBBA8ZcgxwOQ=i_LHsytdrUWyqZHZZBwuJJ6CFQ@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] drm/dp, drm/i915: Add support for VESA backlights
+ using PWM for brightness control
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        Rajeev Nandan <rajeevny@codeaurora.org>,
+        Satadru Pramanik <satadru@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021, Brijesh Singh wrote:
-> Implement a workaround for an SNP erratum where the CPU will incorrectly
-> signal an RMP violation #PF if a hugepage (2mb or 1gb) collides with the
-> RMP entry of a VMCB, VMSA or AVIC backing page.
+Hi,
 
-...
-
-> @@ -4539,6 +4539,16 @@ static int svm_vm_init(struct kvm *kvm)
->  	return 0;
+On Tue, Oct 5, 2021 at 7:41 PM Lyude Paul <lyude@redhat.com> wrote:
+>
+> @@ -1859,8 +1859,7 @@ drm_dp_sink_can_do_video_without_timing_msa(const u8 dpcd[DP_RECEIVER_CAP_SIZE])
+>  static inline bool
+>  drm_edp_backlight_supported(const u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE])
+>  {
+> -       return (edp_dpcd[1] & DP_EDP_TCON_BACKLIGHT_ADJUSTMENT_CAP) &&
+> -               (edp_dpcd[2] & DP_EDP_BACKLIGHT_BRIGHTNESS_AUX_SET_CAP);
+> +       return !!(edp_dpcd[1] & DP_EDP_TCON_BACKLIGHT_ADJUSTMENT_CAP);
 >  }
->  
-> +static void *svm_alloc_apic_backing_page(struct kvm_vcpu *vcpu)
-> +{
-> +	struct page *page = snp_safe_alloc_page(vcpu);
-> +
-> +	if (!page)
-> +		return NULL;
-> +
-> +	return page_address(page);
-> +}
-> +
->  static struct kvm_x86_ops svm_x86_ops __initdata = {
->  	.hardware_unsetup = svm_hardware_teardown,
->  	.hardware_enable = svm_hardware_enable,
-> @@ -4667,6 +4677,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->  	.complete_emulated_msr = svm_complete_emulated_msr,
->  
->  	.vcpu_deliver_sipi_vector = svm_vcpu_deliver_sipi_vector,
-> +
-> +	.alloc_apic_backing_page = svm_alloc_apic_backing_page,
 
-IMO, this should be guarded by a module param or X86_BUG_* to make it clear that
-this is a bug and not working as intended.
+nit: I don't believe that the "!!" is needed in the above. C should
+automatically handle this since the return type of the function is
+"bool".
 
-And doesn't the APIC page need these shenanigans iff AVIC is enabled? (the module
-param, not necessarily in the VM)
+I've reviewed the generic (non-intel) code and it looks like a
+reasonable approach to me.
 
->  };
->  
->  static struct kvm_x86_init_ops svm_init_ops __initdata = {
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index d1f1512a4b47..e40800e9c998 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -575,6 +575,7 @@ void sev_es_create_vcpu(struct vcpu_svm *svm);
->  void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
->  void sev_es_prepare_guest_switch(struct vcpu_svm *svm, unsigned int cpu);
->  void sev_es_unmap_ghcb(struct vcpu_svm *svm);
-> +struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu);
->  
->  /* vmenter.S */
->  
-> -- 
-> 2.17.1
-> 
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
