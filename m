@@ -2,263 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65EAC429AF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665F9429AF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235402AbhJLBWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
+        id S232261AbhJLBXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235397AbhJLBWr (ORCPT
+        with ESMTP id S232148AbhJLBXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:22:47 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA40C06161C;
-        Mon, 11 Oct 2021 18:20:45 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id w6so4664638pfd.11;
-        Mon, 11 Oct 2021 18:20:45 -0700 (PDT)
+        Mon, 11 Oct 2021 21:23:43 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DC0C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:21:42 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so672837pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:21:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vKo6dHBGZGRZ+QVhKsHKS/1oEEF3K0Wf4gbpvEJ/Pxo=;
-        b=jePH8u6HWYzIhDz6pM03+izScQaod7BzUWSZVd1Rep9FnYAfCRc3bmvMhRSjZ2uzwX
-         DnAlF99qOK80sBUV6WtKRPpaUILp6ZKPf0Z/3Lh4id+3iS3c7Qr4L3lvcaOymV21GDpk
-         7CttodWKv1DSfSj51ay5jQ98HYe5gMn7PfAqCi132xlqWYMnQ89JNZtz5eKb4afGNg9V
-         mXJYN1iNArxv/oKDPaV/5fACAmvBbEmFY2x24ZpwKd6fmpklYcBHSgdzN4yxfxswC7gZ
-         RVBzQ2Ursconyme/8KNY2v0aaqYhU2Iqwt7CwtY6lV7iUpxMvm+kev8Phn/8+7H1bImw
-         mYqQ==
+         :cc;
+        bh=IPoscquxjIb2AeDUSXUKVfU6+dDnudQArTvMu9Qs840=;
+        b=dD4lXSjQIOkMIOZ5hkbI0As/8rhccuPxt+Bt5ZM0xA7AKE5luhxiqYhUIVwjqcbycy
+         /F4GlFCY6fr2Nhqo/vz+MwZG3TSskBWN4ogLGV9YLhxbVcNVZ6L2xXQ3dS64f0aRA8+p
+         8+0uttdf8HefKMA0J0Tb3r4HJfQHvcLtXOf+ZUiCKHaZ7vdBm1zA6fzuGLbcTEQ4DEbR
+         nsEGfNyeC5wI782IuPKT3xA6Wpr7pCt+2Hk2x83BbdGu90yyENJuolD8CzIj5mHddHvL
+         9LThohDe/YqYNGKl7T495Wxdki7W3+Qn/ThQf85plXIyhFwhS+mvAWNqTJaGk3Bo7vNV
+         g25A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vKo6dHBGZGRZ+QVhKsHKS/1oEEF3K0Wf4gbpvEJ/Pxo=;
-        b=wPd+G1J76bH9N/cPncF9Qu3gXhUSs8Oh1ieg+zgSdEZvSw1PBeDlbEIyRGTgECuL6h
-         JX8RmtT4EkZsvL88FoxrJvLPj3tQykhZkLnGjKzwj55nYfytM6pzWDHkbCjhi1CcsfQi
-         TjYOUQK8cJKpsqtXm4HF5iLUjG6zWBPCmOYTNikMfePDqaprDlNeUGaVtXNb0SzB6T/+
-         Cy2vYsBBaIj83D/mRiqQLX4wWCwJcibwV8ESdWwkD40IDuuv9Hf3oWcqkpGDvJJTVz73
-         U5X4jEzdsf5/mGqVEmh3vna0NKY1LjnY9EUFaXPD8M0UmTZLNvb3kEKFPdEM2vE9PZ5H
-         CU0Q==
-X-Gm-Message-State: AOAM53055G6xPQ6Kv0xFfbFIywR/a46I+RGcTeyXA+meaADFw5uXPWvv
-        YtBHJkCishKQ1PhXX6OpoNm5K4apB3uqQmh4Hg==
-X-Google-Smtp-Source: ABdhPJzcw0AzrmP92HLJlycv/fFNJ6Y7IghaAFuMZHgD0Zx577rdajuQqdPPLbMh8BHQXtjRL9x1MwACukeBvqlWEpw=
-X-Received: by 2002:a63:85c6:: with SMTP id u189mr20294748pgd.381.1634001645144;
- Mon, 11 Oct 2021 18:20:45 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=IPoscquxjIb2AeDUSXUKVfU6+dDnudQArTvMu9Qs840=;
+        b=eHH1t/F2TZro0mvJC74qQ33RnShQqFk+Ujr6x+jd3kEWqKtpxd/Gbw/jWGKVNgkUeS
+         QajQEVCwX+4/FE+iyNr2IHN5tsqsP6NFStfCsO2AhQ/D1jdtG8ijk3ZdY7uM0Mh5A+6z
+         160rVW69tzR/pa1rMa5hUXpZeZgDVGBG7gae+ZQn3aXGDb9ZdwqS1An38OBfbF+oXdji
+         XKJ7MXbOpKY+OA3ZjqjxJ321oZ9vUtTAWb0j89jRTf3/XYnwJc/glN86c5LJRHL78XWh
+         5U1d1tM7QqTJjXYf7Y7Q+T+dfCl2EC/523dz2ilEdvT0v1/X+N9mVScrQHlslAw3EPMr
+         KqCw==
+X-Gm-Message-State: AOAM533EmZVBSKZLnrqhJhqLAXF55MzNiJG/pfHO4g8SPTabqhDElccJ
+        LVG7xoYU5cJNmQx+FD/Fyol43C6hCXDFGYRaU+HXNQ==
+X-Google-Smtp-Source: ABdhPJyc9fvpBx2zXVPF/JGgtN+qX9uTdF68t25f0qveOndhtTzMoQHZub/nZw0Pt/FTnJa8Mq9Nhou735ZXl/y5dcM=
+X-Received: by 2002:a17:903:41c2:b0:13f:f26:d6b9 with SMTP id
+ u2-20020a17090341c200b0013f0f26d6b9mr23228927ple.14.1634001702062; Mon, 11
+ Oct 2021 18:21:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACkBjsb1dE7A_v_=yYfMOO0HSGT9a0Zc7=cC6cmYREWepHhxpw@mail.gmail.com>
- <20211011222135.GA17897@localhost.localdomain>
-In-Reply-To: <20211011222135.GA17897@localhost.localdomain>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Tue, 12 Oct 2021 09:20:34 +0800
-Message-ID: <CACkBjsY3VOvyAF1mrmyM1Fsx9QGSsOamjq944d5+X+zkH9rFEw@mail.gmail.com>
-Subject: Re: kernel BUG in ext4_da_get_block_prep
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211008183256.1558105-1-almasrymina@google.com> <b889652d-7050-a721-367c-dcf3ff084daa@oracle.com>
+In-Reply-To: <b889652d-7050-a721-367c-dcf3ff084daa@oracle.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Mon, 11 Oct 2021 18:21:31 -0700
+Message-ID: <CAHS8izPjCJf=qotNMKdpzrRtR78nUux1mAUUY8SPW+ydj56QyA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] mm, hugepages: add mremap() support for hugepage
+ backed vma
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Ken Chen <kenchen@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Kirill Shutemov <kirill@shutemov.name>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Whitney <enwlinux@gmail.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=
-=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=886:21=E5=86=99=E9=81=93=EF=BC=9A
+On Mon, Oct 11, 2021 at 5:18 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
 >
-> * Hao Sun <sunhao.th@gmail.com>:
-> > Hello,
+> On 10/8/21 11:32 AM, Mina Almasry wrote:
+> > Support mremap() for hugepage backed vma segment by simply repositioning
+> > page table entries. The page table entries are repositioned to the new
+> > virtual address on mremap().
 > >
-> > When using Healer to fuzz the latest Linux kernel, the following crash
-> > was triggered.
+> > Hugetlb mremap() support is of course generic; my motivating use case
+> > is a library (hugepage_text), which reloads the ELF text of executables
+> > in hugepages. This significantly increases the execution performance of
+> > said executables.
 > >
-> > HEAD commit: 60a9483534ed Merge tag 'warning-fixes-20211005'
-> > git tree: upstream
-> > console output:
-> > https://drive.google.com/file/d/1zMa_o4PaMiO_nYcQ4giUjNhFszYjFae-/view?=
-usp=3Dsharing
-> > kernel config: https://drive.google.com/file/d/1u-ncYGLkq3xqdlNQYJz8-G6=
-Fhf3H-moP/view?usp=3Dsharing
-> > Syzlang reproducer:
-> > https://drive.google.com/file/d/1LWQjzVVjjI8q6sO1f4AYlq5NlcN-shBP/view?=
-usp=3Dsharing
+> > Restricts the mremap operation on hugepages to up to the size of the
+> > original mapping as the underlying hugetlb reservation is not yet
+> > capable of handling remapping to a larger size.
 > >
-> > Sorry, I don't have a C reproducer for this crash, hope the symbolized
-> > report and Syzlang reproducer can help.
-> > If you fix this issue, please add the following tag to the commit:
-> > Reported-by: Hao Sun <sunhao.th@gmail.com>
+> > During the mremap() operation we detect pmd_share'd mappings and we
+> > unshare those during the mremap(). On access and fault the sharing is
+> > established again.
 > >
-> > ------------[ cut here ]------------
-> > kernel BUG at fs/ext4/inode.c:1721!
-> > invalid opcode: 0000 [#1] PREEMPT SMP
-> > CPU: 1 PID: 19701 Comm: syz-executor Not tainted 5.15.0-rc4+ #22
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> > rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> > RIP: 0010:ext4_da_map_blocks fs/ext4/inode.c:1721 [inline]
-> > RIP: 0010:ext4_da_get_block_prep+0x52a/0x5a0 fs/ext4/inode.c:1830
-> > Code: 0f 0b ba 01 00 00 00 e9 d0 fd ff ff e8 7f 42 c0 ff f0 80 4b 01
-> > 01 4c 89 ef 31 ed e8 a0 c7 b3 ff e9 f2 fb ff ff e8 66 42 c0 ff <0f> 0b
-> > e8 5f 42 c0 ff 0f 0b e8 58 42 c0 ff 0f 0b e8 51 42 c0 ff 49
-> > RSP: 0018:ffffc9000f8978d0 EFLAGS: 00010246
-> > RAX: 0000000000040000 RBX: ffff888121a493f0 RCX: ffffc900011f9000
-> > RDX: 0000000000040000 RSI: ffffffff81774f6a RDI: ffffffff853cd076
-> > RBP: 27ffffffffffffff R08: 0000000000000001 R09: 0000000000000000
-> > R10: ffffc9000f897740 R11: 0000000000000002 R12: ffff88811560b220
-> > R13: 00000000000008f3 R14: 0000000000000004 R15: ffffffffffff0000
-> > FS:  00007f773e1d6700(0000) GS:ffff88813dc00000(0000) knlGS:00000000000=
-00000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007f773e1abdb8 CR3: 000000000a5d7000 CR4: 0000000000750ee0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > PKRU: 55555554
-> > Call Trace:
-> >  ext4_block_write_begin+0x208/0x980 fs/ext4/inode.c:1078
-> >  ext4_da_write_begin+0x1d4/0x490 fs/ext4/inode.c:2969
-> >  generic_perform_write+0xce/0x220 mm/filemap.c:3770
-> >  ext4_buffered_write_iter+0xd6/0x190 fs/ext4/file.c:269
-> >  ext4_file_write_iter+0x80/0x940 fs/ext4/file.c:680
-> >  call_write_iter include/linux/fs.h:2163 [inline]
-> >  do_iter_readv_writev+0x1e8/0x2b0 fs/read_write.c:729
-> >  do_iter_write+0xaf/0x250 fs/read_write.c:855
-> >  vfs_iter_write+0x38/0x60 fs/read_write.c:896
-> >  iter_file_splice_write+0x2d8/0x450 fs/splice.c:689
-> >  do_splice_from fs/splice.c:767 [inline]
-> >  direct_splice_actor+0x4a/0x80 fs/splice.c:936
-> >  splice_direct_to_actor+0x123/0x2d0 fs/splice.c:891
-> >  do_splice_direct+0xc3/0x110 fs/splice.c:979
-> >  do_sendfile+0x338/0x740 fs/read_write.c:1249
-> >  __do_sys_sendfile64 fs/read_write.c:1314 [inline]
-> >  __se_sys_sendfile64 fs/read_write.c:1300 [inline]
-> >  __x64_sys_sendfile64+0xc7/0xe0 fs/read_write.c:1300
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > RIP: 0033:0x46ae99
-> > Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-> > 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-> > 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> > RSP: 002b:00007f773e1d5c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-> > RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
-> > RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000003
-> > RBP: 00000000004e4809 R08: 0000000000000000 R09: 0000000000000000
-> > R10: 00008400fffffffb R11: 0000000000000246 R12: 000000000078c0a0
-> > R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007fffca657850
-> > Modules linked in:
-> > Dumping ftrace buffer:
-> >    (ftrace buffer empty)
-> > ---[ end trace 46bee01b7f620b60 ]---
-> > RIP: 0010:ext4_da_map_blocks fs/ext4/inode.c:1721 [inline]
-> > RIP: 0010:ext4_da_get_block_prep+0x52a/0x5a0 fs/ext4/inode.c:1830
-> > Code: 0f 0b ba 01 00 00 00 e9 d0 fd ff ff e8 7f 42 c0 ff f0 80 4b 01
-> > 01 4c 89 ef 31 ed e8 a0 c7 b3 ff e9 f2 fb ff ff e8 66 42 c0 ff <0f> 0b
-> > e8 5f 42 c0 ff 0f 0b e8 58 42 c0 ff 0f 0b e8 51 42 c0 ff 49
-> > RSP: 0018:ffffc9000f8978d0 EFLAGS: 00010246
-> > RAX: 0000000000040000 RBX: ffff888121a493f0 RCX: ffffc900011f9000
-> > RDX: 0000000000040000 RSI: ffffffff81774f6a RDI: ffffffff853cd076
-> > RBP: 27ffffffffffffff R08: 0000000000000001 R09: 0000000000000000
-> > R10: ffffc9000f897740 R11: 0000000000000002 R12: ffff88811560b220
-> > R13: 00000000000008f3 R14: 0000000000000004 R15: ffffffffffff0000
-> > FS:  00007f773e1d6700(0000) GS:ffff88813dc00000(0000) knlGS:00000000000=
-00000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007f773e1abdb8 CR3: 000000000a5d7000 CR4: 0000000000750ee0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > PKRU: 55555554
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+> ...
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index 6d2f4c25dd9fb..8200b4c8d09d8 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -1015,6 +1015,35 @@ void reset_vma_resv_huge_pages(struct vm_area_struct *vma)
+> >               vma->vm_private_data = (void *)0;
+> >  }
+> >
+> > +/*
+> > + * Reset and decrement one ref on hugepage private reservation.
+> > + * Called with mm->mmap_sem writer semaphore held.
+> > + * This function should be only used by move_vma() and operate on
+> > + * same sized vma. It should never come here with last ref on the
+> > + * reservation.
+> > + */
+> > +void clear_vma_resv_huge_pages(struct vm_area_struct *vma)
+> > +{
+> > +     /*
+> > +      * Clear the old hugetlb private page reservation.
+> > +      * It has already been transferred to new_vma.
+> > +      *
+> > +      * During a mremap() operation of a hugetlb vma we call move_vma()
+> > +      * which copies *vma* into *new_vma* and unmaps *vma*. After the copy
+> > +      * operation both *new_vma* and *vma* share a reference to the resv_map
+> > +      * struct, and at that point *vma* is about to be unmapped. We don't
+> > +      * want to return the reservation to the pool at unmap of *vma* because
+> > +      * the reservation still lives on in new_vma, so simply decrement the
+> > +      * ref here and remove the resv_map reference from this vma.
+> > +      */
 >
-> Hi:
->
-> Thanks for the report.
->
-> Violation of the assertion enforced on line 1721 in fs/ext4/inode.c has
-> already been reported separately in a recent upstream kernel.
->
-> It's not clear what can be done with the information reported here.  A
-> reproducer would be most useful but it's not obvious how to generate that
-> from this information.  The supplied log suggests that 1) the test
-> file system was encountering ENOMEM at least from time to time in ext4_se=
-tattr
-> and that 2) some sort of fault was being injected to force a failure prio=
-r to
-> the crash.
->
-> What sort of fault was being injected?
+> Are the *...* for special formatting of the words somewhere?  Or, just
+> for simple added emphasis?  This convention is not used anywhere else in
+> the file.  Unless there is a good reason for doing so, I would prefer to
+> to drop the *...* convention here.
 >
 
-console output:
-https://drive.google.com/file/d/1zMa_o4PaMiO_nYcQ4giUjNhFszYjFae-/view?usp=
-=3Dsharing
-As can be seen in the full console log, the following faults were
-injected during execution.
+It was just emphasis, removed!
 
-[  618.499431][T19702] FAULT_INJECTION: forcing a failure.
-[  618.499431][T19702] name failslab, interval 1, probability 0, space
-0, times 0
-[  618.502116][T19702] CPU: 1 PID: 19702 Comm: syz-executor Not
-tainted 5.15.0-rc4+ #22
-[  618.503904][T19702] Hardware name: QEMU Standard PC (i440FX + PIIX,
-1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[  618.506049][T19702] Call Trace:
-[  618.506656][T19702]  dump_stack_lvl+0x8d/0xcf
-[  618.507496][T19702]  should_fail+0x13c/0x160
-[  618.508277][T19702]  should_failslab+0x5/0x10
-[  618.509259][T19702]  slab_pre_alloc_hook.constprop.99+0x4e/0xc0
-[  618.510334][T19702]  ? jbd2__journal_start+0xa0/0x350
-[  618.511835][T19702]  kmem_cache_alloc+0x44/0x280
-[  618.513404][T19702]  jbd2__journal_start+0xa0/0x350
-[  618.514364][T19702]  __ext4_journal_start_sb+0x1ea/0x270
-[  618.515499][T19702]  ext4_truncate+0x136/0x7e0
-[  618.516881][T19702]  ? unmap_mapping_pages+0x95/0x180
-[  618.518105][T19702]  ext4_setattr+0x9bf/0xdc0
-[  618.519125][T19702]  ? ext4_journalled_write_end+0x7a0/0x7a0
-[  618.520331][T19702]  notify_change+0x476/0x670
-[  618.521343][T19702]  do_truncate+0xa3/0x100
-[  618.522411][T19702]  path_openat+0xc81/0xe20
-[  618.523197][T19702]  ? __lock_acquire+0x4a8/0x1d60
-[  618.524155][T19702]  ? __lock_acquire+0x4a8/0x1d60
-[  618.525235][T19702]  do_filp_open+0xe3/0x170
-[  618.526191][T19702]  ? alloc_fd+0x1a1/0x290
-[  618.527059][T19702]  ? _find_next_bit+0x10a/0x130
-[  618.528074][T19702]  ? do_sys_openat2+0x357/0x4a0
-[  618.529063][T19702]  do_sys_openat2+0x357/0x4a0
-[  618.529997][T19702]  do_sys_open+0x87/0xd0
-[  618.530860][T19702]  do_syscall_64+0x34/0xb0
-[  618.531748][T19702]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  618.532529][T19702] RIP: 0033:0x46ae99
-[  618.533061][T19702] Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f
-44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b
-4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8
-64 89 01 48
-[  618.536000][T19702] RSP: 002b:00007f773e1abc48 EFLAGS: 00000246
-ORIG_RAX: 0000000000000055
-[  618.537368][T19702] RAX: ffffffffffffffda RBX: 000000000078c158
-RCX: 000000000046ae99
-[  618.538530][T19702] RDX: 0000000000000000 RSI: 00000000000000a1
-RDI: 00000000200002c0
-[  618.539773][T19702] RBP: 00007f773e1abc80 R08: 0000000000000000
-R09: 0000000000000000
-[  618.540912][T19702] R10: 0000000000000000 R11: 0000000000000246
-R12: 0000000000000013
-[  618.542395][T19702] R13: 0000000000000000 R14: 000000000078c158
-R15: 00007fffca657850
-[  618.544389][T19702] EXT4-fs error (device sda) in
-ext4_setattr:5488: Out of memory
-
-> The fact that the test system was running out of memory is a potentially
-> useful hint.
+> > +     struct resv_map *reservations = vma_resv_map(vma);
+> > +
+> > +     if (reservations && is_vma_resv_set(vma, HPAGE_RESV_OWNER))
+> > +             kref_put(&reservations->refs, resv_map_release);
+> > +
+> > +     reset_vma_resv_huge_pages(vma);
+> > +}
+> ...
+> > diff --git a/mm/mremap.c b/mm/mremap.c
+> > index c0b6c41b7b78f..6a3f7d38b7539 100644
+> > --- a/mm/mremap.c
+> > +++ b/mm/mremap.c
+> > @@ -489,6 +489,10 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
+> >       old_end = old_addr + len;
+> >       flush_cache_range(vma, old_addr, old_end);
+> >
+> > +     if (is_vm_hugetlb_page(vma))
+> > +             return move_hugetlb_page_tables(vma, new_vma, old_addr,
+> > +                                             new_addr, len);
+> > +
+> >       mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
+> >                               old_addr, old_end);
+> >       mmu_notifier_invalidate_range_start(&range);
+> > @@ -646,6 +650,10 @@ static unsigned long move_vma(struct vm_area_struct *vma,
+> >               mremap_userfaultfd_prep(new_vma, uf);
+> >       }
+> >
+> > +     if (is_vm_hugetlb_page(vma)) {
+> > +             clear_vma_resv_huge_pages(vma);
+> > +     }
+> > +
+> >       /* Conceal VM_ACCOUNT so old reservation is not undone */
+> >       if (vm_flags & VM_ACCOUNT && !(flags & MREMAP_DONTUNMAP)) {
+> >               vma->vm_flags &= ~VM_ACCOUNT;
+> > @@ -739,9 +747,6 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
+> >                       (vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP)))
+> >               return ERR_PTR(-EINVAL);
+> >
+> > -     if (is_vm_hugetlb_page(vma))
+> > -             return ERR_PTR(-EINVAL);
+> > -
+> >       /* We can't remap across vm area boundaries */
+> >       if (old_len > vma->vm_end - addr)
+> >               return ERR_PTR(-EFAULT);
+> > @@ -937,6 +942,27 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+> >
+> >       if (mmap_write_lock_killable(current->mm))
+> >               return -EINTR;
+> > +     vma = find_vma(mm, addr);
+> > +     if (!vma || vma->vm_start > addr) {
+> > +             ret = EFAULT;
+> > +             goto out;
+> > +     }
+> > +
+> > +     if (is_vm_hugetlb_page(vma)) {
+> > +             struct hstate *h __maybe_unused = hstate_vma(vma);
+> > +
+> > +             old_len = ALIGN(old_len, huge_page_size(h));
+> > +             new_len = ALIGN(new_len, huge_page_size(h));
+> > +             addr = ALIGN(addr, huge_page_size(h));
+> > +             new_addr = ALIGN(new_addr, huge_page_size(h));
 >
-> Thanks,
-> Eric
+> Instead of aligning addr and new_addr, we should be checking for huge
+> page alignment and returning error.  This makes it consistent with the
+> requirement that they be PAGE aligned in the non-hugetlb case.  Sorry if
+> that was unclear in previous comments.
 >
-> P.S.  The supplied kernel configuration produces a kernel that runs so sl=
-owly
-> that a trial run of the ext4 test appliance has made almost no forward
-> progress on my test system in three hours of running time on ext4/032 alo=
-ne
-> (4K test scenario).  So, that's not particularly useful.
+>                 /* addrs must be huge page aligned */
+>                 if (addr & ~huge_page_mask(h))
+>                         goto out;
+>                 if (new_addr & ~huge_page_mask(h))
+>                         goto out;
 >
 
-Expanding the VM resource, e.g., memory size, may resolve this.
-
-Regards
-Hao
+Sorry I misunderstood. Added!
