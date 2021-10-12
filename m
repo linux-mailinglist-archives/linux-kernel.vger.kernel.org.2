@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A4642A108
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD28542A10B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235667AbhJLJal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:30:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232657AbhJLJak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:30:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E16360F92;
-        Tue, 12 Oct 2021 09:28:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634030919;
-        bh=w6tJ0j7GZyF9EA8+IbdyJH2ct/ziottLxIdQqKTGRqU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Af/9zwXNiRPkvFTna55wceL8kexV3DRj4NlW8pN/pyovPyCs5nA2v/56fiiRDIU+c
-         HM3Yu00NmTQF5P/KOHjXwMKD/VP0O/X3b0SCsoNdDpQFnkr/DDBxo1KFcNTaVuCVAK
-         CleWg31dMcxiLmuLVt6pU/08nVbn/1ukk2C4m0v8=
-Date:   Tue, 12 Oct 2021 11:28:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Song Liu <songliubraving@fb.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        bpf <bpf@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH 5.4 00/52] 5.4.153-rc2 review
-Message-ID: <YWVVRDEDdaIQYKlX@kroah.com>
-References: <20211012064436.577746139@linuxfoundation.org>
- <CA+G9fYt3vmhvuoFJ6p49DHiFE60oBeWUwuSLrh7vXwr=8_rpfg@mail.gmail.com>
+        id S235695AbhJLJbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:31:17 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:58539 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232657AbhJLJbQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:31:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634030954; x=1665566954;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=f3zZcvsgAiAmDQe4g9mSaMYXTlCLVZMEuAwXlFHxwYU=;
+  b=2ss94vVkTdkGMLnVpsdLierAWA4fwUynFOI9E08azf3mHIN3vBnD98Ch
+   Lv4g22uDKTTkJn2cuhewlsORjzRaKXOobM1KrqF4f8RxGpQyc9jc/tgkt
+   pmF2iCIVrkZrpIDVlgQabMjSv5Qb9lKgnD4IEr0+aig6A/q3UCYN8j2bF
+   krCDszX2P+dzXXyT6p+SpBNPLeo4B9QJ2El0QhwPQ/YgtWLictApHRmgM
+   Iz1J4YVcpmVU14yZd3dyTaDnM9Inms/MlioZGQwmTlOl0jV2QMT04Iwh5
+   Ag/xmqaMThitSgD4iOltcLTKZFOslzIsEFqe8OmxWb90No42kEliack9H
+   g==;
+IronPort-SDR: y87y+K9Hh6Mb34RNV4RLDg1P1CZg9BjmWlrrkj20sLlK+WnHeIdMJUhE0fx+bu++F63I5NqA1j
+ ARsNUVvJ83mEMboIgRNHJ/TZmFXEGd+c+s6cKubypHAS28l49/0+Eir33DTFMFh89fuL4Ltabz
+ WZrgpA/TYy1y56h7w6bz9KEVoMYfNdcujXNMtAKw6oP0fpmBxNULYogaIFxgq8CVLciWEYnLya
+ kA8GPCmBFWg7KR+UVsu4bLm9auP7pcG95c78AHqX3kmOu5sITPv20CXsLELyWMpx0wQx00FbR2
+ kAl5IDcHJoc8zJaWSYaylyb0
+X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
+   d="scan'208";a="72636433"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Oct 2021 02:29:14 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 12 Oct 2021 02:29:13 -0700
+Received: from [10.159.245.112] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Tue, 12 Oct 2021 02:29:12 -0700
+Subject: Re: linux-next: build failure after merge of the arm-soc tree
+To:     Arnd Bergmann <arnd@arndb.de>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Olof Johansson <olof@lixom.net>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20211012110309.17d51c3e@canb.auug.org.au>
+ <97e578a3-b12e-1975-717d-a0cf663673f0@microchip.com>
+ <CAK8P3a0G9VoB71aBWGrtdxe2bNbv7apaAQqQXSf==TGwcKQvaw@mail.gmail.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <a8a4b2ef-4f7c-d44e-6f39-516944378ac6@microchip.com>
+Date:   Tue, 12 Oct 2021 11:29:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYt3vmhvuoFJ6p49DHiFE60oBeWUwuSLrh7vXwr=8_rpfg@mail.gmail.com>
+In-Reply-To: <CAK8P3a0G9VoB71aBWGrtdxe2bNbv7apaAQqQXSf==TGwcKQvaw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 01:04:54PM +0530, Naresh Kamboju wrote:
-> On Tue, 12 Oct 2021 at 12:16, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.4.153 release.
-> > There are 52 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Thu, 14 Oct 2021 06:44:25 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc2.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+On 12/10/2021 at 09:56, Arnd Bergmann wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> stable rc 5.4.153-rc2 Powerpc build failed.
+> On Tue, Oct 12, 2021 at 9:35 AM Nicolas Ferre
+> <nicolas.ferre@microchip.com> wrote:
+>> On 12/10/2021 at 02:03, Stephen Rothwell wrote:
+>>>
+>>> After merging the arm-soc tree, today's linux-next build (arm
+>>> multi_v7_defconfig) failed like this:
+>>>
+>>> Error: arch/arm/boot/dts/sama7g5.dtsi:167.3-7 syntax error
+>>> FATAL ERROR: Unable to parse input tree
+>>>
+>>> Caused by commit
+>>>
+>>>     9be4be3ed1ec ("Merge branch 'arm/dt' into for-next")
 > 
-> In file included from arch/powerpc/net/bpf_jit64.h:11,
->                  from arch/powerpc/net/bpf_jit_comp64.c:19:
-> arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
-> arch/powerpc/net/bpf_jit.h:32:9: error: expected expression before 'do'
->    32 |         do { if (d) { (d)[idx] = instr; } idx++; } while (0)
->       |         ^~
-> arch/powerpc/net/bpf_jit.h:33:33: note: in expansion of macro 'PLANT_INSTR'
->    33 | #define EMIT(instr)             PLANT_INSTR(image, ctx->idx, instr)
->       |                                 ^~~~~~~~~~~
-> arch/powerpc/net/bpf_jit_comp64.c:415:41: note: in expansion of macro 'EMIT'
->   415 |                                         EMIT(PPC_LI(dst_reg, 0));
->       |                                         ^~~~
-> arch/powerpc/net/bpf_jit.h:33:33: note: in expansion of macro 'PLANT_INSTR'
->    33 | #define EMIT(instr)             PLANT_INSTR(image, ctx->idx, instr)
->       |                                 ^~~~~~~~~~~
-> arch/powerpc/net/bpf_jit.h:41:33: note: in expansion of macro 'EMIT'
->    41 | #define PPC_ADDI(d, a, i)       EMIT(PPC_INST_ADDI |
-> ___PPC_RT(d) |           \
->       |                                 ^~~~
-> arch/powerpc/net/bpf_jit.h:44:33: note: in expansion of macro 'PPC_ADDI'
->    44 | #define PPC_LI(r, i)            PPC_ADDI(r, 0, i)
->       |                                 ^~~~~~~~
-> arch/powerpc/net/bpf_jit_comp64.c:415:46: note: in expansion of macro 'PPC_LI'
->   415 |                                         EMIT(PPC_LI(dst_reg, 0));
->       |                                              ^~~~~~
-> make[3]: *** [scripts/Makefile.build:262:
-> arch/powerpc/net/bpf_jit_comp64.o] Error 1
-> make[3]: Target '__build' not remade because of errors.
+> Thank you for the report!
 > 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> I had verified the arm/dt branch by itself, but didn't recheck it after I
+> merged it into the for-next branch. At least that one is easy to fix
+> up as I don't send the combined branch to Linus, and the arm/dt
+> branch does not have the problem.
+> 
+>> I had following patch to have the nodes in alphabetical order:
+>>
+> ...
+>>
+>> Sorry for not having mentioned this conflict in the pull-request.
+> 
+> No worries,
+> 
+> I had assumed you had them sorted by unit-address, so I had them
+>   in the wrong order as well. Fixing up both issues in for-next
+> now by redoing the merge.
 
-Ok, I'm just going to go delete this patch from the queue now...
+OMG, you're right, it's by unit-address: I'm removing my at91-next for 
+now to not cause more confusion and merge conflicts.
 
-Thanks for the quick report.
+Not a big deal if you already re-did the merge.
 
-greg k-h
+Best regards,
+   Nicolas
+
+
+-- 
+Nicolas Ferre
