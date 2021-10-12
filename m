@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E09242AAC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE97942AACE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbhJLRcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:32:47 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:61872 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhJLRcp (ORCPT
+        id S232565AbhJLRcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232509AbhJLRcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:32:45 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 6a0cc62dcedd71c2; Tue, 12 Oct 2021 19:30:42 +0200
-Received: from kreacher.localnet (unknown [213.134.187.88])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 51A6866A824;
-        Tue, 12 Oct 2021 19:30:41 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH] hwmon: acpi_power_meter: Use acpi_bus_get_acpi_device()
-Date:   Tue, 12 Oct 2021 19:30:40 +0200
-Message-ID: <11864888.O9o76ZdvQC@kreacher>
+        Tue, 12 Oct 2021 13:32:54 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBD8C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:30:52 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so6616707ooh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=z/0YDsWVgY8iQTsDuzbYnenwugKkL3hk/JKxgPGOGcI=;
+        b=HkxFstT0p4m1QLP90AGW9wtYHvxedTtvyniXxElQkMbozckVbZpY+ySg4/JdDB/trd
+         YmtybS62NmQKyuSF2NuUNk/j75EMhjXpkPYyXZ03J2Jfu55793aAlYSZtNV7lFbJFFi6
+         sWDSf+PNXbeErsE4e2zK60JCUsOUnmb+5L7FY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=z/0YDsWVgY8iQTsDuzbYnenwugKkL3hk/JKxgPGOGcI=;
+        b=Ymxs9fLlmwfo3aAZ8bABCm3OWqPXvDkcmxtCKZoXYgaR4TsvLIttsmLtdzHU2G0J4u
+         yMjwLzg79HQeaBScXuQL/QoDRpk6qOj3PzJPo8L6Vu8GXhAdt+sqZT/jEM9DBpLoToas
+         QBKzkM+Aevxa9jKpxNibp77y1fJB0+HIPKlnvNOvJ/CXeUTcVyV3dQVp/6BXbOHiatRD
+         2/IZbgup2CAqVTLWlgAgCr2GxgfeOpqb3fIh+enh5XqhYKpkPVf5jikqHo3LCIr1GlyZ
+         Wt4LwhTKpcxRoiXv0FffXXxuYHJcXJGstfbOCN+06TcHI7tUlLpa8yHrucMhneslyzg2
+         sPyg==
+X-Gm-Message-State: AOAM533i5ZhjblgFTjxqmYobnn/qcEwdb3KCbgpHp9arugM5+qR99l67
+        nUKkmp5ZOIa3ctwu1FWBsgenZw28MRcGb68O2RrIzw==
+X-Google-Smtp-Source: ABdhPJy9T8+9hT9hWwhL5IEf1cezLhdiiM+LB8rzFUvZfxvbjfDkAnsx9qGc3DeOFqc5EwvCafjQFtUNNiGGxNd26F8=
+X-Received: by 2002:a4a:e2d3:: with SMTP id l19mr24660471oot.1.1634059851594;
+ Tue, 12 Oct 2021 10:30:51 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 12 Oct 2021 10:30:51 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+In-Reply-To: <20211011201642.167700-1-marijn.suijten@somainline.org>
+References: <20211011201642.167700-1-marijn.suijten@somainline.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 12 Oct 2021 10:30:51 -0700
+Message-ID: <CAE-0n52raCkcBxz0nfdtGK_kR+cQptT5dVXgDBj2fhCySQOVTQ@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/msm/dsi: Use division result from div_u64_rem in
+ 7nm and 14nm PLL
+To:     Marijn Suijten <marijn.suijten@somainline.org>,
+        phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.187.88
-X-CLIENT-HOSTNAME: 213.134.187.88
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtkedguddutdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfegtdffjeehkeegleejveevtdeugfffieeijeduuddtkefgjedvheeujeejtedvnecukfhppedvudefrddufeegrddukeejrdekkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukeejrdekkedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhhfihmohhnsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhguvghlvhgrrhgvsehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigsehrohgvtghkqdhu
- shdrnhgvthdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael@kernel.org>
+Quoting Marijn Suijten (2021-10-11 13:16:40)
+> div_u64_rem provides the result of the division and additionally the
+> remainder; don't use this function to solely calculate the remainder
+> while calculating the division again with div_u64.
+>
+> A similar improvement was applied earlier to the 10nm pll in
+> 5c191fef4ce2 ("drm/msm/dsi_pll_10nm: Fix dividing the same numbers
+> twice").
+>
+> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> ---
 
-In read_domain_devices(), acpi_bus_get_device() is called to obtain
-the ACPI device object attached to the given ACPI handle and
-subsequently that object is passed to get_device() for reference
-counting, but there is a window between the acpi_bus_get_device()
-and get_device() calls in which the ACPI device object in question
-may go away.
-
-To address this issue, make read_domain_devices() use
-acpi_bus_get_acpi_device() to reference count and return the given
-ACPI device object in one go and export that function to modules.
-
-While at it, also make read_domain_devices() and
-remove_domain_devices() use acpi_dev_put() instead of calling
-put_device() directly on the ACPI device objects returned by
-acpi_bus_get_acpi_device().
-
-Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
----
- drivers/acpi/scan.c              |    1 +
- drivers/hwmon/acpi_power_meter.c |   13 +++++--------
- 2 files changed, 6 insertions(+), 8 deletions(-)
-
-Index: linux-pm/drivers/hwmon/acpi_power_meter.c
-===================================================================
---- linux-pm.orig/drivers/hwmon/acpi_power_meter.c
-+++ linux-pm/drivers/hwmon/acpi_power_meter.c
-@@ -535,7 +535,7 @@ static void remove_domain_devices(struct
- 
- 		sysfs_remove_link(resource->holders_dir,
- 				  kobject_name(&obj->dev.kobj));
--		put_device(&obj->dev);
-+		acpi_dev_put(obj);
- 	}
- 
- 	kfree(resource->domain_devices);
-@@ -597,18 +597,15 @@ static int read_domain_devices(struct ac
- 			continue;
- 
- 		/* Create a symlink to domain objects */
--		resource->domain_devices[i] = NULL;
--		if (acpi_bus_get_device(element->reference.handle,
--					&resource->domain_devices[i]))
-+		obj = acpi_bus_get_acpi_device(element->reference.handle);
-+		resource->domain_devices[i] = obj;
-+		if (!obj)
- 			continue;
- 
--		obj = resource->domain_devices[i];
--		get_device(&obj->dev);
--
- 		res = sysfs_create_link(resource->holders_dir, &obj->dev.kobj,
- 				      kobject_name(&obj->dev.kobj));
- 		if (res) {
--			put_device(&obj->dev);
-+			acpi_dev_put(obj);
- 			resource->domain_devices[i] = NULL;
- 		}
- 	}
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -608,6 +608,7 @@ struct acpi_device *acpi_bus_get_acpi_de
- {
- 	return handle_to_device(handle, get_acpi_device);
- }
-+EXPORT_SYMBOL_GPL(acpi_bus_get_acpi_device);
- 
- static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
- {
-
-
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
