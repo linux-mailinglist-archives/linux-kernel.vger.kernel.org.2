@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB0042AF8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 00:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F144042AF93
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 00:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235862AbhJLWNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 18:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53416 "EHLO
+        id S235718AbhJLWRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 18:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235360AbhJLWNw (ORCPT
+        with ESMTP id S229588AbhJLWRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 18:13:52 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBAFCC061570;
-        Tue, 12 Oct 2021 15:11:49 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id j5so2883814lfg.8;
-        Tue, 12 Oct 2021 15:11:49 -0700 (PDT)
+        Tue, 12 Oct 2021 18:17:44 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8ED2C061570;
+        Tue, 12 Oct 2021 15:15:41 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so718759pjb.4;
+        Tue, 12 Oct 2021 15:15:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PB0eDMKhk86i0GI1+A0jAKhTWNFDGyw5uusrHp5qJ1o=;
-        b=S1OiTP1dWe72LOR+oSOBC80jt1H1zlBIVX4x6c0VO9fYYYYlJV9jIoBJcmiir1CgZa
-         n/UUUUjfYZoqNE0vw4ZzgPB03GAJ/j3ffCDPLwoImscEzNeP1RHSPBBEzZPgSdiGdqte
-         3t0C6qwdCyPPsdinRhIx5a2du9iE4zGl3E4Xfo95x6xJsFA+w+0t3ocBUBxxYcBfdP7V
-         XSKTRGeldYrhJ66ILf7kPHtvZOAgZAXqCn6r0T04NxuMnKbeDnqo9wj9Dy31ydqxc1k2
-         qSTFz71PGVYfV0nBypO0UDPSUH69CV6KxE2YRgrwtk9TZZUxfOgq2cZcJ80d6UdaEaPa
-         Fg3A==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Kv/NWuxxzWppNE1SIvn3Q06v7ck6fvbIRjMBxoGczlI=;
+        b=mYyf965bzNNnPngaPld4vqm3Z0tv8l52PQDrQaOx9ELlNOia0nRwo/VUdbgaIzRxkp
+         WR5ayUK6/HN6moSqexY5jN+a3osQ+Tx/BV6Zgm/NMLU8YOfB1v2f+go2YQpqXnosIvA3
+         VHBZ0eLBvlobXHJ+ZM5XJrwddgPF2OVCqc6tJLOHyA5p1tFVTQlRpfydxjHM+BoKjDZ3
+         whmY+W/JviciRsasTo9GUx4PJKGwSp5Ou1XwHs8UsOwuxYg3J/Z+K4i91JRENCGX7Zds
+         8sbxWG/UqEPqkPuUl+ZgwcMUVCvchRHxqW8z+E4SuiaD5nhOPYl/WKo4DzOQo+sYKimX
+         T09Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=PB0eDMKhk86i0GI1+A0jAKhTWNFDGyw5uusrHp5qJ1o=;
-        b=dzIhLdG9joVJYSdDMN6deendWlAz4wvrk5QnZfd4f5vNpydZfg9Z685PEB6iRUhxDU
-         MjYobU75dAJYiglpH0/Fpj1AwJBPqukVaG7jUFW+GZFkxeVZLq5buQQoLgjRyZueZuvE
-         my+Rc/i5N899B+rll/HkKy7T4/jN9JiUZ0TfPImyRcpCrpGYZkOHlWky3GZJO51u9d/G
-         f+LwCKZCccJ6RHTGEu1vsq5sRhGo25obsi4TlRYL2zoecZ9ChRflXIlz+E8NOYIggL++
-         /lJAbXVoWdOdQX6hv4p3JGFFpDrx1PjfI6Eor7kANIwQ/EELVE3VUlxsZq1F/RSEXEUP
-         42kg==
-X-Gm-Message-State: AOAM530JWgKVi0T97FptvehEIHVgKzDga82SSOSlwcD6EEDoRw84AS+f
-        BhuIrhyIJqmwOnWDkhqszAQ=
-X-Google-Smtp-Source: ABdhPJzhfBx5c1yogIsQxrarVmSKN6V4lDQZbMNMVOMA7DFH4f6xxS3aIqwHk7TFuKFe4AJ/YqRnpQ==
-X-Received: by 2002:a2e:8756:: with SMTP id q22mr24920778ljj.271.1634076708253;
-        Tue, 12 Oct 2021 15:11:48 -0700 (PDT)
-Received: from localhost.localdomain (h-158-174-22-5.NA.cust.bahnhof.se. [158.174.22.5])
-        by smtp.gmail.com with ESMTPSA id v2sm645467lfo.119.2021.10.12.15.11.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 15:11:47 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] staging: media: rkvdec: Constify static struct v4l2_m2m_ops
-Date:   Wed, 13 Oct 2021 00:11:44 +0200
-Message-Id: <20211012221144.30638-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        bh=Kv/NWuxxzWppNE1SIvn3Q06v7ck6fvbIRjMBxoGczlI=;
+        b=oLCF8rjHPpNyUChcG8MBc3mpXc8++uvFzF8qiZ93pz+qY6ieOGJiScEwgFLvGDa+5d
+         WUQxiRYsY6VD6cVDcl9ooY+cylK2QB9dVEsE/I7WrylKThhQ6kd36C55OJxvvrLpODuE
+         QHmXWNIN8g4rbIftUKkQMuSWkUy88y0arDodlyh74/jnp+/iVz3EWwPveGqqBPQDxGZo
+         wqV+6Cm5PCQT9CJYgvoDt3pZGHXMzMxoEOAIvnQIBa2OyG0MzF5YejWTYAi5y+SuiS7p
+         Q9IgLZoUPD/dfWs26M/95vjMZcj7Ge2oWVOMz0XgGBz7aav8TmCeRqiyQlPTpvPG0Uzo
+         ROvA==
+X-Gm-Message-State: AOAM531OsX9OEZ7Za1CiugGL5bCJSUD/JDlBiPSwDnrHZaCxkvOLxYX6
+        BJjATq4c2sbijfI6L5Q5XHLSi4cxcg4=
+X-Google-Smtp-Source: ABdhPJytc4AdZe49r9RXVRDjl5Q6Ss2cTa/OcqJdXfKmC35nb/JU3zLzoy6G2Qlrp7lLwFynGni2zA==
+X-Received: by 2002:a17:902:fe83:b0:13f:5415:2710 with SMTP id x3-20020a170902fe8300b0013f54152710mr5367848plm.16.1634076940863;
+        Tue, 12 Oct 2021 15:15:40 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id mp16sm3887969pjb.1.2021.10.12.15.15.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 15:15:40 -0700 (PDT)
+Subject: Re: [PATCH 5.4 00/51] 5.4.153-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211012093344.002301190@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <43dc9488-ef13-af5a-eee0-b1f4f0225db4@gmail.com>
+Date:   Tue, 12 Oct 2021 15:15:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211012093344.002301190@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of rkvdec_m2m_ops is to pass its address to v4l2_m2m_init(),
-which takes a pointer to const v4l2_m2m_ops as argument. Make it const
-to allow the compiler to put it in read-only memory.
+On 10/12/21 2:37 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.153 release.
+> There are 51 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 14 Oct 2021 09:33:32 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/staging/media/rkvdec/rkvdec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels
 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index bf00fe6534a3..28aab5c7fe33 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -677,7 +677,7 @@ static void rkvdec_device_run(void *priv)
- 		rkvdec_job_finish(ctx, VB2_BUF_STATE_ERROR);
- }
- 
--static struct v4l2_m2m_ops rkvdec_m2m_ops = {
-+static const struct v4l2_m2m_ops rkvdec_m2m_ops = {
- 	.device_run = rkvdec_device_run,
- };
- 
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.33.0
-
+Florian
