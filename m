@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F1242A5BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0811842A5BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236939AbhJLNel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:34:41 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:33924
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236655AbhJLNej (ORCPT
+        id S236738AbhJLNfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:35:18 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55956 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236937AbhJLNfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:34:39 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 5DB313FFE2;
-        Tue, 12 Oct 2021 13:32:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634045556;
-        bh=dKXMSStMoPxCZm0p9/uoqNBAaXNVf2iSmUkWehBtigY=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=QIjK1rg/hK1MvI48l18670bu0Ps4BFgRAkdAP2oTPfC/vS6XsYo1VRgNvWos6zAhk
-         luCBLGbFIDOX9+y2jZU+ycqVywMhrvfaOCRw/ZWjtVxqJOQMX824A0j0koPAnagAWZ
-         OC/uoDfRYTrWZCBmeGJNoLCqpWpEsj9xy0UUrFUKkgD7Ca3bDZAjbFhpTeiL0w8Z8M
-         wUMXDmAWgXw4HpUpKt9jBtXo/0jmu58NW7Cz5urUwrJap/ZgWF3EtIMlHQHaky9EYm
-         /JB3vLoDfZjcZ4Bp6NDEYUys7kmrPVD7YiV4MrvNv+3EcTULr8m+I3MS52h3HhF1ys
-         362t2VO1inoUg==
-From:   Colin King <colin.king@canonical.com>
-To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Marc Zyngier <maz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] PCI: apple: Remove redundant initialization of pointer port_pdev
-Date:   Tue, 12 Oct 2021 14:32:35 +0100
-Message-Id: <20211012133235.260534-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 12 Oct 2021 09:35:12 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634045590; h=from:from:reply-to:subject:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type; bh=kzzhCfXTDEtjAULZoQTQAQVk/vJzN0Qs+xvw5wZ2xW8=;
+        b=fshm+r6GuZJqUIjderhxFapYx9zHU+cgacgZcb4X3qqfOA3jGaDvAbH+anIC+WP9685mk6
+        q0TKBkDt0g/d8TCr49QoRZoKVvEr9W7tfTXsay5DDNIsnJLYAZcf91hSz8dBlwGedoMCo9
+        E74g57CWEurmdTWYM21l5cxRenKL2vF/eJBF0PpyTMLJ6QaH0Fobe2OR8yswaRfFby+9eA
+        hDJbrq09yA+2Jq8k3m5/rJ7IQVWFni4JnkTVKlxJRtH1NXEuWURVID/OZfZGLUcu+Ku8wc
+        jpIijHLw/98IL8yJ54WQkKkChMx7UdL3OlW8F8slrV1oEnGz20/GXC4PLQttvA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634045590; h=from:from:reply-to:subject:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type; bh=kzzhCfXTDEtjAULZoQTQAQVk/vJzN0Qs+xvw5wZ2xW8=;
+        b=Jtzxoe+JH4LioMrpry7wl7nAZ54N2HKh7QirrOr/uYKDM93VU1+yZMsGl5o/abis+gR7Hv
+        XGzy0J0vXb45WQCQ==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org
+Subject: [PATCH] x86/xen: Remove redundant irq_enter/exit() invocations
+Subject: 
+Date:   Tue, 12 Oct 2021 15:33:09 +0200
+Message-ID: <877deicqqy.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+All these handlers are regular device interrupt handlers, so they already
+went through the proper entry code which handles this correctly.
 
-The pointer port_pdev is being initialized with a value that is never
-read, it is being updated later on. The assignment is redundant and
-can be removed.
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: x86@kernel.org
+Cc: xen-devel@lists.xenproject.org
 ---
- drivers/pci/controller/pcie-apple.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/xen/smp.c    |    4 ----
+ arch/x86/xen/smp_pv.c |    2 --
+ 2 files changed, 6 deletions(-)
 
-diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
-index b4db7a065553..19fd2d38aaab 100644
---- a/drivers/pci/controller/pcie-apple.c
-+++ b/drivers/pci/controller/pcie-apple.c
-@@ -634,7 +634,7 @@ static struct apple_pcie_port *apple_pcie_get_port(struct pci_dev *pdev)
- {
- 	struct pci_config_window *cfg = pdev->sysdata;
- 	struct apple_pcie *pcie = cfg->priv;
--	struct pci_dev *port_pdev = pdev;
-+	struct pci_dev *port_pdev;
- 	struct apple_pcie_port *port;
+--- a/arch/x86/xen/smp.c
++++ b/arch/x86/xen/smp.c
+@@ -268,20 +268,16 @@ void xen_send_IPI_allbutself(int vector)
  
- 	/* Find the root port this device is on */
--- 
-2.32.0
-
+ static irqreturn_t xen_call_function_interrupt(int irq, void *dev_id)
+ {
+-	irq_enter();
+ 	generic_smp_call_function_interrupt();
+ 	inc_irq_stat(irq_call_count);
+-	irq_exit();
+ 
+ 	return IRQ_HANDLED;
+ }
+ 
+ static irqreturn_t xen_call_function_single_interrupt(int irq, void *dev_id)
+ {
+-	irq_enter();
+ 	generic_smp_call_function_single_interrupt();
+ 	inc_irq_stat(irq_call_count);
+-	irq_exit();
+ 
+ 	return IRQ_HANDLED;
+ }
+--- a/arch/x86/xen/smp_pv.c
++++ b/arch/x86/xen/smp_pv.c
+@@ -458,10 +458,8 @@ static void xen_pv_stop_other_cpus(int w
+ 
+ static irqreturn_t xen_irq_work_interrupt(int irq, void *dev_id)
+ {
+-	irq_enter();
+ 	irq_work_run();
+ 	inc_irq_stat(apic_irq_work_irqs);
+-	irq_exit();
+ 
+ 	return IRQ_HANDLED;
+ }
