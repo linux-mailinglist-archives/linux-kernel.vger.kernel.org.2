@@ -2,88 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D94342A275
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F1D42A27B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236038AbhJLKnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:43:01 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:34007 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235984AbhJLKnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:43:00 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HTByx4BnRz9sVK;
-        Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id VQB6d9Ka3zca; Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HTByx3Dk3z9sVF;
-        Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 559578B770;
-        Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id znLH9-9lxJwi; Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.154])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1E7718B763;
-        Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19CAekBX1755822
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 12:40:46 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19CAegQt1755821;
-        Tue, 12 Oct 2021 12:40:42 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] powerpc: Set max_mapnr correctly
-Date:   Tue, 12 Oct 2021 12:40:37 +0200
-Message-Id: <77d99037782ac4b3c3b0124fc4ae80ce7b760b05.1634035228.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
+        id S236074AbhJLKni convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Oct 2021 06:43:38 -0400
+Received: from relay-b03.edpnet.be ([212.71.1.220]:45128 "EHLO
+        relay-b03.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235937AbhJLKng (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:43:36 -0400
+X-ASG-Debug-ID: 1634035293-15c4351aa511a50e0001-xx1T2L
+Received: from zotac.vandijck-laurijssen.be (94.105.120.149.dyn.edpnet.net [94.105.120.149]) by relay-b03.edpnet.be with ESMTP id 15nhFsRu6fTeBmie; Tue, 12 Oct 2021 12:41:33 +0200 (CEST)
+X-Barracuda-Envelope-From: dev.kurt@vandijck-laurijssen.be
+X-Barracuda-Effective-Source-IP: 94.105.120.149.dyn.edpnet.net[94.105.120.149]
+X-Barracuda-Apparent-Source-IP: 94.105.120.149
+Received: from x1.vandijck-laurijssen.be (x1.vandijck-laurijssen.be [IPv6:fd01::1a1d:eaff:fe02:d339])
+        by zotac.vandijck-laurijssen.be (Postfix) with ESMTPSA id 4CAD2169F842;
+        Tue, 12 Oct 2021 12:41:33 +0200 (CEST)
+Date:   Tue, 12 Oct 2021 12:41:32 +0200
+From:   Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-kernel@vger.kernel.org,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        linux-can@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): cancel session
+ if receive TP.DT with error length
+Message-ID: <20211012104132.GA14010@x1.vandijck-laurijssen.be>
+X-ASG-Orig-Subj: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): cancel session
+ if receive TP.DT with error length
+Mail-Followup-To: Oleksij Rempel <o.rempel@pengutronix.de>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-kernel@vger.kernel.org,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        linux-can@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
+References: <1632972800-45091-1-git-send-email-zhangchangzhong@huawei.com>
+ <20210930074206.GB7502@x1.vandijck-laurijssen.be>
+ <1cab07f2-593a-1d1c-3a29-43ee9df4b29e@huawei.com>
+ <20211008110007.GE29653@pengutronix.de>
+ <556a04ed-c350-7b2b-5bbe-98c03846630b@huawei.com>
+ <20211011063507.GI29653@pengutronix.de>
+ <7b1b2e47-46e6-acec-5858-fae77266cec8@huawei.com>
+ <20211012102131.GA14971@pengutronix.de>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1634035236; l=874; s=20211009; h=from:subject:message-id; bh=n9w/eJduhSwMHOhWBmX4XH+picWww91P1yn9wgz5lm8=; b=lxrjCZXZd4LnrftiiFXwlidGxe/m3FGSye7KaSn8pBSzhzM20+6BkCEJ9xZKNf673SuWttjB1dbH BoShmtbzAAMXRTffhQ5XoMgU8/y7oJhAtewlmOpGHDyw8QEwH2bU
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20211012102131.GA14971@pengutronix.de>
+User-Agent: Mutt/1.5.22 (2013-10-16)
+X-Barracuda-Connect: 94.105.120.149.dyn.edpnet.net[94.105.120.149]
+X-Barracuda-Start-Time: 1634035293
+X-Barracuda-URL: https://212.71.1.220:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at edpnet.be
+X-Barracuda-Scan-Msg-Size: 4655
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Spam-Score: 0.50
+X-Barracuda-Spam-Status: No, SCORE=0.50 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=BSF_RULE7568M
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.93216
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+        0.50 BSF_RULE7568M          Custom Rule 7568M
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-max_mapnr is used by virt_addr_valid() to check if a linear
-address is valid.
+On Tue, 12 Oct 2021 12:21:31 +0200, Oleksij Rempel wrote:
+> On Mon, Oct 11, 2021 at 06:40:15PM +0800, Zhang Changzhong wrote:
+> > On 2021/10/11 14:35, Oleksij Rempel wrote:
+> > > On Sat, Oct 09, 2021 at 04:43:56PM +0800, Zhang Changzhong wrote:
+> > >> On 2021/10/8 19:00, Oleksij Rempel wrote:
+> > >>> On Fri, Oct 08, 2021 at 05:22:12PM +0800, Zhang Changzhong wrote:
+> > >>>> Hi Kurt,
+> > >>>> Sorry for the late reply.
+> > >>>>
+> > >>>> On 2021/9/30 15:42, Kurt Van Dijck wrote:
+> > >>>>> On Thu, 30 Sep 2021 11:33:20 +0800, Zhang Changzhong wrote:
+> > >>>>>> According to SAE-J1939-21, the data length of TP.DT must be 8 bytes, so
+> > >>>>>> cancel session when receive unexpected TP.DT message.
+> > >>>>>
+> > >>>>> SAE-j1939-21 indeed says that all TP.DT must be 8 bytes.
+> > >>>>> However, the last TP.DT may contain up to 6 stuff bytes, which have no meaning.
+> > >>>>> If I remember well, they are even not 'reserved'.
+> > >>>>
+> > >>>> Agree, these bytes are meaningless for last TP.DT.
+> > >>>>
+> > >>>>>
+> > >>>>>>
+> > >>>>>> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> > >>>>>> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> > >>>>>> ---
+> > >>>>>>  net/can/j1939/transport.c | 7 +++++--
+> > >>>>>>  1 file changed, 5 insertions(+), 2 deletions(-)
+> > >>>>>>
+> > >>>>>> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> > >>>>>> index bb5c4b8..eedaeaf 100644
+> > >>>>>> --- a/net/can/j1939/transport.c
+> > >>>>>> +++ b/net/can/j1939/transport.c
+> > >>>>>> @@ -1789,6 +1789,7 @@ static void j1939_xtp_rx_dpo(struct j1939_priv *priv, struct sk_buff *skb,
+> > >>>>>>  static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+> > >>>>>>  				 struct sk_buff *skb)
+> > >>>>>>  {
+> > >>>>>> +	enum j1939_xtp_abort abort = J1939_XTP_ABORT_FAULT;
+> > >>>>>>  	struct j1939_priv *priv = session->priv;
+> > >>>>>>  	struct j1939_sk_buff_cb *skcb, *se_skcb;
+> > >>>>>>  	struct sk_buff *se_skb = NULL;
+> > >>>>>> @@ -1803,9 +1804,11 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+> > >>>>>>  
+> > >>>>>>  	skcb = j1939_skb_to_cb(skb);
+> > >>>>>>  	dat = skb->data;
+> > >>>>>> -	if (skb->len <= 1)
+> > >>>>>> +	if (skb->len != 8) {
+> > >>>>>>  		/* makes no sense */
+> > >>>>>> +		abort = J1939_XTP_ABORT_UNEXPECTED_DATA;
+> > >>>>>>  		goto out_session_cancel;
+> > >>>>>
+> > >>>>> I think this is a situation of
+> > >>>>> "be strict on what you send, be tolerant on what you receive".
+> > >>>>>
+> > >>>>> Did you find a technical reason to abort a session because the last frame didn't
+> > >>>>> bring overhead that you don't use?
+> > >>>>
+> > >>>> No technical reason. The only reason is that SAE-J1939-82 requires responder
+> > >>>> to abort session if any TP.DT less than 8 bytes (section A.3.4, Row 7).
+> > >>>
+> > >>> Do you mean: "BAM Transport: Ensure DUT discards BAM transport when
+> > >>> TP.DT data packets are not correct size" ... "Verify DUT discards the
+> > >>> BAM transport if any TP.DT data packet has less than 8 bytes"?
+> > >>
+> > >> Yes.
+> > > 
+> > > OK, then I have some problems to understand this part:
+> > > - 5.10.2.4 Connection Closure
+> > >   The “connection abort” message is not allowed to be used by responders in the
+> > >   case of a global destination (i.e. BAM).
+> > > 
+> > > My assumption would be: In case of broadcast transfer, multiple MCU are
+> > > receivers. If one of MCU was not able to get complete TP.DT, it should
+> > > not abort BAM for all.
+> > > 
+> > > So, "DUT discards the BAM transport" sounds for me as local action.
+> > > Complete TP would be dropped locally.
+> > 
+> > Yeah, you are right. With this patch receivers drop BAM transport locally
+> > because j1939_session_cancel() only send abort message in RTS/CTS transport.
+> > 
+> > For RTS/CTS transport, SAE-J1939-82 also has similar requirements:
+> > "RTS/CTS Transport: Data field size of Transport Data packets for RTS/CTS
+> > (DUT as Responder)"..."Verify DUT behavior, e.g., sends a TP.CM_CTS to have
+> > packets resent or sends a TP.Conn_Abort, when it receives TP.DT data packets
+> > with less than 8 bytes" (section A.3.6, Row 18)
+> 
+> You are right. Sounds plausible. If we find some device in the field
+> which will need a workaround to support less than 8byte, then we will
+> need to add some UAPI to configure it. By default we should follow the
+> spec. @Kurt, do you have anything against it?
 
-It must only include lowmem PFNs, like other architectures.
+Zhang Changzhong suggested that this is part of compliance testing nowadays.
+That obsoletes all technical arguments, and you have no choice than to adapt.
 
-Problem detected on a system with 1G mem (Only 768M are mapped), with
-CONFIG_DEBUG_VIRTUAL and CONFIG_TEST_DEBUG_VIRTUAL, it didn't report
-virt_to_phys(VMALLOC_START), VMALLOC_START being 0xf1000000.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/mm/mem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index c3c4e31462ec..889f36b55df9 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -256,7 +256,7 @@ void __init mem_init(void)
- #endif
- 
- 	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
--	set_max_mapnr(max_pfn);
-+	set_max_mapnr(max_low_pfn);
- 
- 	kasan_late_init();
- 
--- 
-2.31.1
-
+Kurt
