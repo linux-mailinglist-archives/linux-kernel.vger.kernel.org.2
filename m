@@ -2,121 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A7142AC9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CED42AC98
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235343AbhJLSzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:55:24 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:35971 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234843AbhJLSzO (ORCPT
+        id S233711AbhJLSy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232502AbhJLSy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:55:14 -0400
-Received: from leknes.fjasle.eu ([92.116.69.156]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1N1feo-1mlBed29zE-011yD0; Tue, 12 Oct 2021 20:52:51 +0200
-Received: from fjasle.eu (localhost [IPv6:::1])
-        by leknes.fjasle.eu (Postfix) with ESMTP id D83683C007;
-        Tue, 12 Oct 2021 20:52:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
-        t=1634064767; bh=7zC+WU8rJSnsIS5MS/l/G4k7mDre/ViawLNf4HaOAng=;
-        h=From:To:Cc:Subject:Date:From;
-        b=F4oj/qS12S6P1MZfApXUCHML0BQqwnUAa2PgiZ+LJoXiBG2WEAWlru3jkk2ES5HwH
-         pwpcY0sQbt5vakvMPmp8UoAdOg3XHOEPM9NsxYKFJX8ix8L63719QVuQlEF8BLKcIw
-         JPHHwfQy42W05Pgphk1tNfJIR2hoLZGRGw0gpTBs=
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Cc:     Nicolas Schier <nicolas@fjasle.eu>,
-        =?UTF-8?q?Thomas=20K=C3=BChnel?= <thomas.kuehnel@avm.de>
-Subject: [PATCH v2] initramfs: Check timestamp to prevent broken cpio archive
-Date:   Tue, 12 Oct 2021 18:52:34 +0000
-Message-Id: <20211012185234.3295982-1-nicolas@fjasle.eu>
-X-Mailer: git-send-email 2.30.1
+        Tue, 12 Oct 2021 14:54:56 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71E5C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:52:54 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id n65so688498ybb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:52:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u/2ikoEtS8dYmYHS2doDaEJiyDh/95oR0B9sccPpzdk=;
+        b=Vyyz0+FLDpJzrNSDS/uxgo1+Hm4MZB6FEECufC2oZe6BpSfY+2lQ9V1GDsPekCKA1Y
+         ibVu34ybCGuGun1lKL05DEmpThaQFlAOKMjGPxFH862ZDidj/rscSI2TnPPISvZpzdDq
+         LQPmKnwjhtdCt5hY31SJZuvA1n4iV9cF3qpN20fbGHfZrgRORPR8UPAtGgkArQiC3pZ4
+         dx9d01Fv1wuJ3GlTMrzZSFHZetnu2VX4wEX3/lRxqKu/ajoRZRZbpNqhCuvg9RVGHW9l
+         5W45uAAwFYd1aQd4mldwrYo5KJ8u4mbNZtQXjAp50QBiDmVr5J8hNiPGxjYGNmjTdUGA
+         fOhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u/2ikoEtS8dYmYHS2doDaEJiyDh/95oR0B9sccPpzdk=;
+        b=zeaovo6oNHjgInL+jjDePg/yl17USFayXwVcaksRyfp8Gi8+D8IufcSpMVLM/9sU0N
+         wFbYVKMEAfIM/JHeqfACobfUCKYvU9nZiBBzUQ1BpZTcDtkn8EYOBqWpaDJM+P0QeoTx
+         OfocuZn+djW4mXVHiRJ9Dr9jk6NaZcuRi+2V3JBpwHlposnJWTsxpVahbGkuq8zZl1kp
+         sBjs+Kodu0cNfR+Qe4YSGn+OxKukD4MAgKqSquUnldN1d9yBwC8XgYNshAaNVr5jBJUT
+         fqlDonYZc9hjVFBkBvHx9Gt0EedfJXdEd+L6YphVwjrLNVelJ6pB84auWJtc3PsE1sNX
+         Bwwg==
+X-Gm-Message-State: AOAM533xSJ3pQefldJF1yflUgQbdDu4gmt5BKrFl9G1ttLDNUCpet/R1
+        43/aFaDs/vhFN/D1ab5soTg5fRV5w7Jpqnki1x0yFw==
+X-Google-Smtp-Source: ABdhPJxAnjPTZ0/jHIA+UD3BTsvIofJny5fJqTHY79M0MwPby/nq2TnpuLlyL4tajdUpaaG2PpH5UTEuQiDn3qgZ3VI=
+X-Received: by 2002:a05:6902:120e:: with SMTP id s14mr33588722ybu.161.1634064773432;
+ Tue, 12 Oct 2021 11:52:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:NeJxAKI2+LIiBxhxiGuPj3uVVd5QakhhDqeBj6VLA6ETCJvkL86
- buOppCzqk9YTh4beTvYxXTXEATsGCfWO1brETAaR7315IkAst26AkhTIdYwqHsU6OMBuXqf
- VF4CoKIooxsPDOmJaaSYkktZJHmK1o/tsBqHTxEvyzg8c0YY9+FQ8gW+8odOsRJXs+PJwCP
- cjaYAn9nDPrVcSQR+m/7w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NgeIJsSzXho=:H/IYCmVXQbA/Y3KLxqLYf5
- hlQ050XIsGVoLSsy0XhjriQptdoMA0CeIrHuEo0TcR5YK4GhkqVB4NaydinS8UUUqfRzI/ue4
- k8TuKi9SHpAntBE5y9AZsw3HGGereSYbjbP9aBkoUb+1hk3aRqyiUE96MMnWsU/dvz9l3iDBn
- zNS971eczXtqksltPVIenE349dBnS8mtixmzHf+4IBHICBWcqMuF/DrRcQkQ+Wk+pgkA8rz4l
- U7FTUuUaYxsC/jG07mlkWi/IDirhSEtM2Vme+afpUwPpvpLCLqFAP5b7SvV37pS/ZnIc+3KxE
- 585UjH7Qpm5f4PljZWMIAEpM4YbVvYv/SdHYBaK0aNt02w9KrxVgLnA3lwAx9xpU/6aIK6czQ
- EE1qID7qr0BpcyQx9k5V3n3Fj0or+znP8Ifq+cCI9hs7FYfB3yI4VNrcwIaS2qIM4mfK9eZEy
- mOltvXnD4nfEKZvEABUc698Ga+ZP0+4SuFsOZKHvIXcq8PT+PnoYT/+wh0zedLCCsr1v1oIJp
- 7FezmPyfzqYuQAKWrTtuTBoCQKEZ5/L2QFVOMvJcv5P7OMDmV8Fj/D56L/JaVZedPRsCqOsdM
- 9eYhcLsjZze1w7xkOkAox52LoX86JKEvBOpwzyLVmX0yFRO+1BdK2zhZGqX6CXOLH8XhycG43
- 8e5xafO9NlT3RYKWMweRAkRwQ1w6GTnlP8NrYdEzs8KlGOAjP+naqKQ81Aaf2QCjuPh+o5bVA
- gqEfzgR+w2B5Az9a9Stx5h3krPiBNfTM8Q0qGg==
+References: <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz> <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
+ <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
+ <202110081344.FE6A7A82@keescook> <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
+ <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
+ <CAJuCfpHaF1e0V=wAoNO36nRL2A5EaNnuQrvZ2K3wh6PL6FrwZQ@mail.gmail.com>
+ <YWT6Ptp/Uo4QGeP4@cmpxchg.org> <CAJuCfpERX-nqHkYzx8FAi_DuOU1vkoV5ppCAhLHziOm7o7wj6g@mail.gmail.com>
+ <YWXTZOXQ/NpoDJFI@cmpxchg.org>
+In-Reply-To: <YWXTZOXQ/NpoDJFI@cmpxchg.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 12 Oct 2021 11:52:42 -0700
+Message-ID: <CAJuCfpEnad5RhhYS8Z6RXjnrpbUZs4nd99KybUFO34BcTH658w@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Kees Cook <keescook@chromium.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>,
+        Tim Murray <timmurray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cpio format reserves 8 bytes for an ASCII representation of a time_t timestamp.
-While 2106-02-07 06:28:15 UTC (time_t = 0xffffffff) is still some years in the
-future, a poorly chosen date string for KBUILD_BUILD_TIMESTAMP, converted into
-seconds since the epoch, might lead to exceeded cpio timestamp limits that
-result in a broken cpio archive.  Add timestamp checks to prevent overrun of
-the 8-byte cpio header field.
+On Tue, Oct 12, 2021 at 11:26 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Mon, Oct 11, 2021 at 10:36:24PM -0700, Suren Baghdasaryan wrote:
+> > On Mon, Oct 11, 2021 at 8:00 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > >
+> > > On Mon, Oct 11, 2021 at 06:20:25PM -0700, Suren Baghdasaryan wrote:
+> > > > On Mon, Oct 11, 2021 at 6:18 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > > > >
+> > > > > On Mon, Oct 11, 2021 at 1:36 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > >
+> > > > > > On Fri 08-10-21 13:58:01, Kees Cook wrote:
+> > > > > > > - Strings for "anon" specifically have no required format (this is good)
+> > > > > > >   it's informational like the task_struct::comm and can (roughly)
+> > > > > > >   anything. There's no naming convention for memfds, AF_UNIX, etc. Why
+> > > > > > >   is one needed here? That seems like a completely unreasonable
+> > > > > > >   requirement.
+> > > > > >
+> > > > > > I might be misreading the justification for the feature. Patch 2 is
+> > > > > > talking about tools that need to understand memeory usage to make
+> > > > > > further actions. Also Suren was suggesting "numbering convetion" as an
+> > > > > > argument against.
+> > > > > >
+> > > > > > So can we get a clear example how is this being used actually? If this
+> > > > > > is just to be used to debug by humans than I can see an argument for
+> > > > > > human readable form. If this is, however, meant to be used by tools to
+> > > > > > make some actions then the argument for strings is much weaker.
+> > > > >
+> > > > > The simplest usecase is when we notice that a process consumes more
+> > > > > memory than usual and we do "cat /proc/$(pidof my_process)/maps" to
+> > > > > check which area is contributing to this growth. The names we assign
+> > > > > to anonymous areas are descriptive enough for a developer to get an
+> > > > > idea where the increased consumption is coming from and how to proceed
+> > > > > with their investigation.
+> > > > > There are of course cases when tools are involved, but the end-user is
+> > > > > always a human and the final report should contain easily
+> > > > > understandable data.
+> > > > >
+> > > > > IIUC, the main argument here is whether the userspace can provide
+> > > > > tools to perform the translations between ids and names, with the
+> > > > > kernel accepting and reporting ids instead of strings. Technically
+> > > > > it's possible, but to be practical that conversion should be fast
+> > > > > because we will need to make name->id conversion potentially for each
+> > > > > mmap. On the consumer side the performance is not as critical, but the
+> > > > > fact that instead of dumping /proc/$pid/maps we will have to parse the
+> > > > > file, do id->name conversion and replace all [anon:id] with
+> > > > > [anon:name] would be an issue when we do that in bulk, for example
+> > > > > when collecting system-wide data for a bugreport.
+> > >
+> > > Is that something you need to do client-side? Or could the bug tool
+> > > upload the userspace-maintained name:ids database alongside the
+> > > /proc/pid/maps dump for external processing?
+> >
+> > You can generate a bugreport and analyze it locally or submit it as an
+> > attachment to a bug for further analyzes.
+> > Sure, we can attach the id->name conversion table to the bugreport but
+> > either way, some tool would have to post-process it to resolve the
+> > ids. If we are not analyzing the results immediately then that step
+> > can be postponed and I think that's what you mean? If so, then yes,
+> > that is correct.
+>
+> Right, somebody needs to do it at some point, but I suppose it's less
+> of a problem if a developer machine does it than a mobile device.
 
-My colleague Thomas Kühnel discovered the behaviour, when we accidentally fed
-SOURCE_DATE_EPOCH to KBUILD_BUILD_TIMESTAMP as is: some timestamps (e.g.
-1607420928 = 2021-12-08 10:48:48) will be interpreted by `date` as a valid date
-specification of science fictional times (here: year 160742).  Even though this
-is bad input for KBUILD_BUILD_TIMESTAMP, it should not break the initramfs
-cpio format.
+True, and that's why I mentioned that it's not as critical as the
+efficiency at mmap() time. In any case, if we could avoid translations
+at all that would be ideal.
 
-Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
-Cc: Thomas Kühnel <thomas.kuehnel@avm.de>
----
- usr/gen_init_cpio.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+>
+> One advantage of an ID over a string - besides not having to maintain
+> a deduplicating arbitrary string storage in the kernel - is that we
+> may be able to auto-assign unique IDs to VMAs in the kernel, in a way
+> that we could not with strings. You'd still have to do IPC calls to
+> write new name mappings into your db, but you wouldn't have to do the
+> prctl() to assign stuff in the kernel at all.
 
--- 
-Changes v1 to v2:
-  * add timezone name (UTC) to specific time stamps
-  * fix typo: results -> result 
+You still have to retrieve that tag from the kernel to record it in
+your db, so this would still require some syscall, no?
 
-diff --git a/usr/gen_init_cpio.c b/usr/gen_init_cpio.c
-index 03b21189d58b..584ea45cff70 100644
---- a/usr/gen_init_cpio.c
-+++ b/usr/gen_init_cpio.c
-@@ -320,6 +320,12 @@ static int cpio_mkfile(const char *name, const char *location,
- 		goto error;
- 	}
- 
-+	if (buf.st_mtime > 0xffffffff) {
-+		fprintf(stderr, "%s: Timestamp exceeds maximum cpio timestamp, clipping.\n",
-+			location);
-+		buf.st_mtime = 0xffffffff;
-+	}
-+
- 	filebuf = malloc(buf.st_size);
- 	if (!filebuf) {
- 		fprintf (stderr, "out of memory\n");
-@@ -551,6 +557,17 @@ int main (int argc, char *argv[])
- 		}
- 	}
- 
-+	/*
-+	 * Timestamps after 2106-02-07 06:28:15 UTC have an ascii hex time_t
-+	 * representation that exceeds 8 chars and breaks the cpio header
-+	 * specification.
-+	 */
-+	if (default_mtime > 0xffffffff) {
-+		fprintf(stderr, "ERROR: Timestamp 0x%08x too large for cpio format\n",
-+			default_mtime);
-+		exit(1);
-+	}
-+
- 	if (argc - optind != 1) {
- 		usage(argv[0]);
- 		exit(1);
--- 
-2.30.1
+> (We'd have to think of a solution of how IDs work with vma merging and
+> splitting, but I think to a certain degree that's policy and we should
+> be able to find something workable - a MAP_ID flag, using anon_vma as
+> identity, assigning IDs at mmap time and do merges only for protection
+> changes etc. etc.)
 
+Overall, I think keeping the kernel out of this and letting it treat
+this tag as a cookie which only userspace cares about is simpler.
+Unless you see other uses where kernel's involvement is needed.
