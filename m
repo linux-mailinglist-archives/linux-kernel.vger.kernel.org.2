@@ -2,126 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE804429C0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29723429C12
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232156AbhJLDss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 23:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhJLDsr (ORCPT
+        id S232242AbhJLDuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 23:50:35 -0400
+Received: from smtprelay0154.hostedemail.com ([216.40.44.154]:33866 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232185AbhJLDue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 23:48:47 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F65C061570;
-        Mon, 11 Oct 2021 20:46:46 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HT1mx1kCLz4xbX;
-        Tue, 12 Oct 2021 14:46:40 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634010401;
-        bh=PIC4BSEKnCvQwkHth6WKNqu0xVPqlnAt0cs3pKbCgD8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Xyi/KwD0+zHyQxw7CbCEOxc6fNqyucmO4pvGWDDvlBg8TBf82PQTZlkxYuUjZg1GE
-         Jzj8QFQ8trGXkmU6rlAsUgMAwyciv65n13QiAeORE2QSiGT8qJ5vbZ2hlbvBIVVnnH
-         mBqnEU5qZofBLGZSV/yHo+BlDg+UaMx5sgzpqdPNnWXzZnL3jLo6GgMBlPhrLlgLfq
-         fdi3hAWGN561IYRbKbhx3xyjz8evWE947WL98UmAQbDfeQ0iRSnFY25Tllv4I8crZu
-         PphLDBkandmA6e7xEjPGEhUB3FDV3KE5dNx3IWQONYdsIEPeG14zOhFw9TFMPrU7EP
-         0fiiQIQkR8scQ==
-Date:   Tue, 12 Oct 2021 14:46:39 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the iommu tree
-Message-ID: <20211012144639.0af3457c@canb.auug.org.au>
+        Mon, 11 Oct 2021 23:50:34 -0400
+Received: from omf12.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 1D3D21802DA54;
+        Tue, 12 Oct 2021 03:48:30 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id C3ACA240234;
+        Tue, 12 Oct 2021 03:48:28 +0000 (UTC)
+Message-ID: <bcf19290a2ed959fdf8d80a3668a19e79c87ca7f.camel@perches.com>
+Subject: Re: [PATCH virt-pci] Fix application of sizeof to pointer
+From:   Joe Perches <joe@perches.com>
+To:     davidcomponentone@gmail.com, jdike@addtoit.com
+Cc:     richard@nod.at, anton.ivanov@cambridgegreys.com,
+        johannes.berg@intel.com, linux-um@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
+Date:   Mon, 11 Oct 2021 20:48:27 -0700
+In-Reply-To: <20211012032333.184581-1-davidcomponentone@gmail.com>
+References: <20211012032333.184581-1-davidcomponentone@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ljwz=aOq0fN5CTerz2Y83Fy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.17
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: C3ACA240234
+X-Stat-Signature: binj6x89q49obhw13edru8en7ewo6tc8
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18JxvwUdVn1sTGW1bpFG5dyWY/YH1ba9Eo=
+X-HE-Tag: 1634010508-615943
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ljwz=aOq0fN5CTerz2Y83Fy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2021-10-12 at 11:23 +0800, davidcomponentone@gmail.com wrote:
+> From: David Yang <davidcomponentone@gmail.com>
+> 
+> The coccinelle check report:
+> "./arch/um/drivers/virt-pci.c:192:20-26:
+> ERROR: application of sizeof to pointer"
+> Using the "sizeof(buf->data)" to fix it.
+[]
+> diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+[]
+> @@ -189,7 +189,7 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+>  	buf = get_cpu_var(um_pci_msg_bufs);
+>  	data = buf->data;
+> 
+> -	memset(data, 0xff, sizeof(data));
+> +	memset(data, 0xff, sizeof(buf->data));
 
-Hi all,
+Perhaps change this to:
 
-After merging the iommu tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+	memset(buf->data, 0xff, sizeof(buf->data));
+	data = buf->data;
 
-drivers/iommu/apple-dart.c: In function 'apple_dart_get_resv_regions':
-drivers/iommu/apple-dart.c:758:2: error: implicit declaration of function '=
-iommu_dma_get_resv_regions'; did you mean 'iommu_get_resv_regions'? [-Werro=
-r=3Dimplicit-function-declaration]
-  758 |  iommu_dma_get_resv_regions(dev, head);
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~
-      |  iommu_get_resv_regions
-cc1: all warnings being treated as errors
-
-Caused by commit
-
-  b2b2781a9755 ("iommu/dart: Clean up IOVA cookie crumbs")
-
-interactig with commit
-
-  05dc551614a4 ("iommu/dart: Exclude MSI doorbell from PCIe device IOVA ran=
-ge")
-
-from the pci tree.
-
-I have applied the following merge fix patch.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 12 Oct 2021 14:40:49 +1100
-Subject: [PATCH] fix for "iommu/dart: Exclude MSI doorbell from PCIe device
- IOVA range"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+but honestly, the indirection to data doesn't make the code
+much more readable so maybe just remove data altogether.
 ---
- drivers/iommu/apple-dart.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/um/drivers/virt-pci.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
-index 912be9b7669c..280ff8df728d 100644
---- a/drivers/iommu/apple-dart.c
-+++ b/drivers/iommu/apple-dart.c
-@@ -15,6 +15,7 @@
- #include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/dev_printk.h>
-+#include <linux/dma-iommu.h>
- #include <linux/dma-mapping.h>
- #include <linux/err.h>
- #include <linux/interrupt.h>
---=20
-2.33.0
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index c080666330234..75e05ead97b9a 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -180,7 +180,6 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 	};
+ 	/* buf->data is maximum size - we may only use parts of it */
+ 	struct um_pci_message_buffer *buf;
+-	u8 *data;
+ 	unsigned long ret = ~0ULL;
+ 
+ 	if (!dev)
+@@ -189,7 +188,7 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 	buf = get_cpu_var(um_pci_msg_bufs);
+ 	data = buf->data;
+ 
+-	memset(data, 0xff, sizeof(data));
++	memset(buf->data, 0xff, sizeof(buf->data));
+ 
+ 	switch (size) {
+ 	case 1:
+@@ -204,22 +203,22 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 		goto out;
+ 	}
+ 
+-	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, 8))
++	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, buf->data, 8))
+ 		goto out;
+ 
+ 	switch (size) {
+ 	case 1:
+-		ret = data[0];
++		ret = buf->data[0];
+ 		break;
+ 	case 2:
+-		ret = le16_to_cpup((void *)data);
++		ret = le16_to_cpup((void *)buf->data);
+ 		break;
+ 	case 4:
+-		ret = le32_to_cpup((void *)data);
++		ret = le32_to_cpup((void *)buf->data);
+ 		break;
+ #ifdef CONFIG_64BIT
+ 	case 8:
+-		ret = le64_to_cpup((void *)data);
++		ret = le64_to_cpup((void *)buf->data);
+ 		break;
+ #endif
+ 	default:
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/ljwz=aOq0fN5CTerz2Y83Fy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFlBR8ACgkQAVBC80lX
-0GxvgQgAoSue+NksAmcxW49jy2puuTJgg5+d5/8YOyZWd7xQEpW1G8P/6SJ+2vrk
-ghXdw9Ux45xrJ45Pqm0t4ZVbYMMjLrXDjv4MQdhJfOUclqHjtHgMIEG6W+uTzMg3
-Lb2XTyduaRtSjLMO4QPfeEFUktpglEfm9bmCvIeUoI64gAxelM8jKbia49XHWb5Y
-s52dQI+B913qkf4i0N9bnNs4u+HRBCYvPJySrGFHGSCjePxqXAluMFnLC4QKG3va
-+oGb3LGHm1RsQzPfwfaNa0k9XPnKJUDL2/jwH0vhJr7otdDOwX1F22bqWCYeLzIa
-cEc6CYConhlazf+JHkrrqi58nhbjhA==
-=NOYp
------END PGP SIGNATURE-----
-
---Sig_/ljwz=aOq0fN5CTerz2Y83Fy--
