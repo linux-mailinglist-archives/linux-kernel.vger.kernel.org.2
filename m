@@ -2,218 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875ED42A9F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6762F42A9F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbhJLQxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 12:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35760 "EHLO
+        id S231442AbhJLQwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 12:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231717AbhJLQw5 (ORCPT
+        with ESMTP id S229996AbhJLQwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 12:52:57 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A648C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:50:55 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id x27so89943692lfa.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:50:54 -0700 (PDT)
+        Tue, 12 Oct 2021 12:52:47 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173ADC061746
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:50:46 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id u32so48019805ybd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:50:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HXB7pq6VEUj8hxAFp1wWH0HcYGQ43G7lLPeeJ7mMODg=;
-        b=qMyN2kuRAR8/b61nBYxlai/y5zhTPNYGYI5pokwNJupaFCQHgeTZug5eGhtgzpvxdi
-         hCEQSkXye10IsuHbo6/vc/0sfEtJFkAsHrxa5na2TzV1rrGmVvuiOkqTulzBA1aVD1Qw
-         nqfVej6T3hSdhTVenZqFlGwJLSc+N1OAfO6P2oBAYUJ5C2OTWwLvaZ3pGKaEgdZ8DsMk
-         P6tHTzZMOm7n7/1hLByRhwqP6Bn6j6m9DC/WhPEF+PATF0J3l1FvU+QwU1XaqJHqSrDW
-         Hfu6cqaCFWCM08slvQEEigCwglxJqlkpigGtEJXs1m1hQe4kfkKxDyLRf6C2ZabDIb9c
-         ZsoA==
+        bh=Ar09QrWZPbtZ1MPFu1DvBkyuuQRpZh8UgkauKcNPOAM=;
+        b=YaK6rwZTq4aRgarlqFIa1o4IaxOiXPj3qbCjvidENvw68SISlHG+ig7WWufPr7cyyc
+         iLYpsHU9CVkCr3SrnNEDIABH0Rvvra4Y1Toyq7J1Hw07pRZXvbD3xXZu6kqc1t/0riCj
+         XixP30thoEdXn7Fkf4PxSST9mYIrZ9voaWm4ID3wWTwToLSCDjdFU/NMr5IDC54RW4C7
+         GD6zFsvDMeMJ5L4mc1VIn6D0XScIOUYxYtsXyV2PD9x4hnEfH/EPSldRjaHYwQnzJeD6
+         ds9Pe3GqsmSNwVDVfAhhG+AElXJLhzNGpKcnTmrpxin8D6FZvzDX5HXboNHhFNyKmoP4
+         oSfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HXB7pq6VEUj8hxAFp1wWH0HcYGQ43G7lLPeeJ7mMODg=;
-        b=f4a26YtdR0DkdDpJ4FbGfsWhxWZjaEH6RFrWMxuj3zQCLdR/dK+IEKfqdj6FI0UPeI
-         KqUZ46e1hM4DF6k2GnnOwv2NMY7SeMK3/zvem1HdV/job9d+aSjePhr26Xy6NyUNVL6z
-         nS8ZnmjwG8qS/y0DRPWoSG6r4C4LkZUW7P/g0bD+7oXUA0e807hMAN3rKqF0TIotr6ZQ
-         3jK/RneVP36Bkk3FnALvlK/oWSF0e33GNRQZPH77tXPJgJ/IMjigNIZuamumXvEy305z
-         4dnax3Xy0HwHxMyZJ5D4BsR3iCLfQOqnav5WrKK4kEqIbNlMNfUGDaRKOlGIkktdYjb0
-         qBOA==
-X-Gm-Message-State: AOAM532XS69rq6PCecp3DJOW0cTnvKZH9DTwE3bT/VbOVgKp40XAvTHX
-        ViHta5Y5t8fSAXLjOfW+X9GCf9Gd99UtWuaXRFNhxw==
-X-Google-Smtp-Source: ABdhPJwWQLl4ltH8rAZrzzqG8B8i7VNzN/0vHCSMf8t5s88yo7nWOqGyVHQXfqtovpVFQYCo5iMwh/2kr8ApnffK130=
-X-Received: by 2002:a2e:461a:: with SMTP id t26mr31245857lja.198.1634057452993;
- Tue, 12 Oct 2021 09:50:52 -0700 (PDT)
+        bh=Ar09QrWZPbtZ1MPFu1DvBkyuuQRpZh8UgkauKcNPOAM=;
+        b=UPPz3b5Tg5uwa66UYvjSmrZq8WPkvBDvKbenTxMlAyN8wku5bKH+3sA1XiPaKr1Tqt
+         m1hIM3ihkJsx9hbfXl7tA8PUY+wHLYfyRXv+M1R5W7/oMzbPciMF+1vwfDL89w8pDTkk
+         UKrbvI1lNSbWtOti/K47ygpzS9fhbb9ve7Ioj3oKWxFsq7DEBA9IlzTC/8qBRQQTgXqI
+         6U3GR7zx5jQ8okIykfg2OlCmyzNniOGQDdoZQhHJRxXFTBeiSCemruGY+Ym69UdzK7ic
+         8XWY9uTHXprvwQNg85PVejgse1uXzmYSBmJvnMUzA1U7+AAJFJfFHdpSEqG65N9zK698
+         j2GA==
+X-Gm-Message-State: AOAM5304Q0/kgFyNzmRyr15p9s+C/2qQMiUF0IBLnRnQvUSuTUK3ywJD
+        VcFzAWLkAJ2wV8p05RDseWDoPtR5FmNrKP2rDOdOpg==
+X-Google-Smtp-Source: ABdhPJz2dtiPou9PSUcVJPjWtl1ZS5oxDJf/t7tSJdJJSiEPO2SLzNa3EVK7YV+ElEwQ813Mhr+Eyk+va9mwyNRAxsc=
+X-Received: by 2002:a25:d1d3:: with SMTP id i202mr31604897ybg.487.1634057444798;
+ Tue, 12 Oct 2021 09:50:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211012091430.1754492-1-senozhatsky@chromium.org>
-In-Reply-To: <20211012091430.1754492-1-senozhatsky@chromium.org>
-From:   David Matlack <dmatlack@google.com>
-Date:   Tue, 12 Oct 2021 09:50:26 -0700
-Message-ID: <CALzav=dYeCs=ieC2p074J4KVyFpRsxRVa5ZQuST--2GOVJm7Kw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: MMU: make PTE_PREFETCH_NUM tunable
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <YV8jB+kwU95hLqTq@dhcp22.suse.cz> <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
+ <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz> <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
+ <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
+ <202110081344.FE6A7A82@keescook> <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
+ <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
+ <CAJuCfpHaF1e0V=wAoNO36nRL2A5EaNnuQrvZ2K3wh6PL6FrwZQ@mail.gmail.com> <YWU7FELcxIFmr9uz@dhcp22.suse.cz>
+In-Reply-To: <YWU7FELcxIFmr9uz@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 12 Oct 2021 09:50:33 -0700
+Message-ID: <CAJuCfpESeM_Xd8dhCj_okNggtDUXx3Nn9FpL_f9qsKXKZzCKpA@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Kees Cook <keescook@chromium.org>, Pavel Machek <pavel@ucw.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>,
+        Tim Murray <timmurray@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 2:16 AM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
+On Tue, Oct 12, 2021 at 12:37 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> Turn PTE_PREFETCH_NUM into a module parameter, so that it
-> can be tuned per-VM.
+> On Mon 11-10-21 18:20:25, Suren Baghdasaryan wrote:
+> > On Mon, Oct 11, 2021 at 6:18 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > On Mon, Oct 11, 2021 at 1:36 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Fri 08-10-21 13:58:01, Kees Cook wrote:
+> > > > > - Strings for "anon" specifically have no required format (this is good)
+> > > > >   it's informational like the task_struct::comm and can (roughly)
+> > > > >   anything. There's no naming convention for memfds, AF_UNIX, etc. Why
+> > > > >   is one needed here? That seems like a completely unreasonable
+> > > > >   requirement.
+> > > >
+> > > > I might be misreading the justification for the feature. Patch 2 is
+> > > > talking about tools that need to understand memeory usage to make
+> > > > further actions. Also Suren was suggesting "numbering convetion" as an
+> > > > argument against.
+> > > >
+> > > > So can we get a clear example how is this being used actually? If this
+> > > > is just to be used to debug by humans than I can see an argument for
+> > > > human readable form. If this is, however, meant to be used by tools to
+> > > > make some actions then the argument for strings is much weaker.
+> > >
+> > > The simplest usecase is when we notice that a process consumes more
+> > > memory than usual and we do "cat /proc/$(pidof my_process)/maps" to
+> > > check which area is contributing to this growth. The names we assign
+> > > to anonymous areas are descriptive enough for a developer to get an
+> > > idea where the increased consumption is coming from and how to proceed
+> > > with their investigation.
+> > > There are of course cases when tools are involved, but the end-user is
+> > > always a human and the final report should contain easily
+> > > understandable data.
+>
+> OK, it would have been much more preferable to be explicit about this
+> main use case from the very beginning. Just to make sure we are at the
+> same page. Is the primary usecase usage and bug reporting?
 
-Module parameters do not allow tuning per VM, they effect every VM on
-the machine.
+Sorry, I should have spent more time on patch #2 description. Yes,
+debugging memory issues is the primary usecase. In fact that's the
+only usecase in Android AFAIK.
 
-If you want per-VM tuning you could introduce a VM ioctl.
+>
+> My initial understanding was that at userspace managed memory management
+> could make an educated guess about targeted reclaim (e.g. MADV_{FREE,COLD,PAGEOUT}
+> for cached data in memory like uncompressed images/data). Such a usecase
+> would clearly require a standardized id/naming convention to be
+> application neutral.
+
+Ah, now I understand your angle. Our prior work on process_madvise()
+probably helped in leading your thoughts in this direction :) Sorry
+about the confusion.
 
 >
-> - /sys/module/kvm/parameters/pte_prefetch_num 8
+> > > IIUC, the main argument here is whether the userspace can provide
+> > > tools to perform the translations between ids and names, with the
+> > > kernel accepting and reporting ids instead of strings. Technically
+> > > it's possible, but to be practical that conversion should be fast
+> > > because we will need to make name->id conversion potentially for each
+> > > mmap. On the consumer side the performance is not as critical, but the
+> > > fact that instead of dumping /proc/$pid/maps we will have to parse the
+> > > file, do id->name conversion and replace all [anon:id] with
+> > > [anon:name] would be an issue when we do that in bulk, for example
+> > > when collecting system-wide data for a bugreport.
 >
->              VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
->
->        EPT_VIOLATION     760998    54.85%     7.23%      0.92us  31765.89us      7.78us ( +-   1.46% )
->            MSR_WRITE     170599    12.30%     0.53%      0.60us   3334.13us      2.52us ( +-   0.86% )
->   EXTERNAL_INTERRUPT     159510    11.50%     1.65%      0.49us  43705.81us      8.45us ( +-   7.54% )
-> [..]
->
-> Total Samples:1387305, Total events handled time:81900258.99us.
->
-> - /sys/module/kvm/parameters/pte_prefetch_num 16
->
->              VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
->
->        EPT_VIOLATION     658064    52.58%     7.04%      0.91us  17022.84us      8.34us ( +-   1.52% )
->            MSR_WRITE     163776    13.09%     0.54%      0.56us   5192.10us      2.57us ( +-   1.25% )
->   EXTERNAL_INTERRUPT     144588    11.55%     1.62%      0.48us  97410.16us      8.75us ( +-  11.44% )
-> [..]
->
-> Total Samples:1251546, Total events handled time:77956187.56us.
->
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 31 ++++++++++++++++++++++---------
+> Whether you use ids or human readable strings you still have to
+> understand the underlying meaning to make any educated guess. Let me
+> give you an example. Say I have an application with a memory leak. Right
+> now I can only tell that it is anonymous memory growing but it is not
+> clear who uses that anonymous. You are adding a means to tell different
+> users appart. That is really helpful. Now I know this is an anon
+> user 1234 or MySuperAnonMemory. Neither of the will not tell me more
+> without a id/naming convention or reading the code. A convention can be
+> useful for the most common users (e.g. a specific allocator) but I am
+> rather dubious there are many more that would be _generally_ recognized
+> without some understanding of the said application.
 
-Please also update the shadow paging prefetching code in
-arch/x86/kvm/mmu/paging_tmpl.h, unless there is a good reason to
-diverge.
+I guess an example would be better to clarify this. Here are some vma
+names from Google maps app:
 
->  1 file changed, 22 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 24a9f4c3f5e7..0ab4490674ec 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -115,6 +115,8 @@ module_param(dbg, bool, 0644);
->  #endif
->
->  #define PTE_PREFETCH_NUM               8
-> +static uint __read_mostly pte_prefetch_num = PTE_PREFETCH_NUM;
-> +module_param(pte_prefetch_num, uint, 0644);
->
->  #define PT32_LEVEL_BITS 10
->
-> @@ -732,7 +734,7 @@ static int mmu_topup_memory_caches(struct kvm_vcpu *vcpu, bool maybe_indirect)
->
->         /* 1 rmap, 1 parent PTE per level, and the prefetched rmaps. */
->         r = kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_pte_list_desc_cache,
-> -                                      1 + PT64_ROOT_MAX_LEVEL + PTE_PREFETCH_NUM);
-> +                                      1 + PT64_ROOT_MAX_LEVEL + pte_prefetch_num);
+[anon:dalvik-main space (region space)]
+[anon:dalvik-/apex/com.android.art/javalib/boot.art]
+[anon:dalvik-/apex/com.android.art/javalib/boot-apache-xml.art]
+[anon:.bss]
+[anon:dalvik-zygote space]
+[anon:dalvik-non moving space]
+[anon:dalvik-free list large object space]
+[anon:dalvik-/product/app/Maps/oat/arm64/Maps.art]
+[anon:stack_and_tls:20792]
+[anon:stack_and_tls:20791]
+[anon:dalvik-LinearAlloc]
+[anon:dalvik-CompilerMetadata]
+[anon:dalvik-indirect ref table]
+[anon:dalvik-live stack]
+[anon:dalvik-allocation stack]
+[anon:dalvik-large object free list space allocation info map]
+[anon:scudo:primary]
+[anon:scudo:secondary]
+[anon:bionic_alloc_small_objects]
 
-There is a sampling problem. What happens if the user changes
-pte_prefetch_num while a fault is being handled?
+Most of them have names standard for Android and can be recognized by
+developers and even Android framework (example where "anon:dalvik-main
+space" and other standard names are being parsed:
+https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/jni/android_os_Debug.cpp;l=340).
+Names like "anon:dalvik-/apex/com.android.art/javalib/boot.art" help
+the developer to recognize the component responsible for the memory.
+Names like "anon:stack_and_tls:20792" include the TID of the thread
+which uses this memory. All this information can help in narrowing
+down memory consumption investigation. Hopefully these examples
+clarify the usage a bit better?
 
->         if (r)
->                 return r;
->         r = kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_shadow_page_cache,
-> @@ -2753,20 +2755,29 @@ static int direct_pte_prefetch_many(struct kvm_vcpu *vcpu,
->                                     struct kvm_mmu_page *sp,
->                                     u64 *start, u64 *end)
->  {
-> -       struct page *pages[PTE_PREFETCH_NUM];
-> +       struct page **pages;
->         struct kvm_memory_slot *slot;
->         unsigned int access = sp->role.access;
->         int i, ret;
->         gfn_t gfn;
 >
-> +       pages = kmalloc_array(pte_prefetch_num, sizeof(struct page *),
-> +                             GFP_KERNEL);
+> Maybe the situation in Android is different because the runtime is more
+> coupled but is it reasonable to expect any common naming conventions for
+> general Linux platforms?
 
-This code runs with the MMU lock held. From
-https://www.kernel.org/doc/html/latest/core-api/memory-allocation.html:
+Well, to be useful the system would have to agree to *some* convention I guess.
 
-    Note, that using GFP_KERNEL implies GFP_RECLAIM, which means
-    that direct reclaim may be triggered under memory pressure; the calling
-    context must be allowed to sleep.
+>
+> I am slightly worried that we have spent way too much time talking
+> specifics about id->name translation rather than the actual usability
+> of the token.
 
-In general we avoid doing any dynamic memory allocation while the MMU
-lock is held. That's why the memory caches exist. You can avoid
-allocating under a lock by allocating the prefetch array when the vCPU
-is first initialized. This would also solve the module parameter
-sampling problem because you can read it once and store it in struct
-kvm_vcpu.
+Agree. I'll try to avoid further confusions.
+Thanks!
 
-> +       if (!pages)
-> +               return -1;
-> +
->         gfn = kvm_mmu_page_get_gfn(sp, start - sp->spt);
->         slot = gfn_to_memslot_dirty_bitmap(vcpu, gfn, access & ACC_WRITE_MASK);
-> -       if (!slot)
-> -               return -1;
-> +       if (!slot) {
-> +               ret = -1;
-> +               goto out;
-> +       }
->
->         ret = gfn_to_page_many_atomic(slot, gfn, pages, end - start);
-> -       if (ret <= 0)
-> -               return -1;
-> +       if (ret <= 0) {
-> +               ret = -1;
-> +               goto out;
-> +       }
->
->         for (i = 0; i < ret; i++, gfn++, start++) {
->                 mmu_set_spte(vcpu, slot, start, access, gfn,
-> @@ -2774,7 +2785,9 @@ static int direct_pte_prefetch_many(struct kvm_vcpu *vcpu,
->                 put_page(pages[i]);
->         }
->
-> -       return 0;
-> +out:
-> +       kfree(pages);
-> +       return ret;
->  }
->
->  static void __direct_pte_prefetch(struct kvm_vcpu *vcpu,
-> @@ -2785,10 +2798,10 @@ static void __direct_pte_prefetch(struct kvm_vcpu *vcpu,
->
->         WARN_ON(!sp->role.direct);
->
-> -       i = (sptep - sp->spt) & ~(PTE_PREFETCH_NUM - 1);
-> +       i = (sptep - sp->spt) & ~(pte_prefetch_num - 1);
-
-This code assumes pte_prefetch_num is a power of 2, which is now no
-longer guaranteed to be true.
-
->         spte = sp->spt + i;
->
-> -       for (i = 0; i < PTE_PREFETCH_NUM; i++, spte++) {
-> +       for (i = 0; i < pte_prefetch_num; i++, spte++) {
->                 if (is_shadow_present_pte(*spte) || spte == sptep) {
->                         if (!start)
->                                 continue;
 > --
-> 2.33.0.882.g93a45727a2-goog
->
+> Michal Hocko
+> SUSE Labs
