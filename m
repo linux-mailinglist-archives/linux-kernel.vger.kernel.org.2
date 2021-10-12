@@ -2,92 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E9442B08B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D8242B08E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236340AbhJLXs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 19:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45940 "EHLO
+        id S236344AbhJLXsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 19:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233903AbhJLXs0 (ORCPT
+        with ESMTP id S236388AbhJLXsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 19:48:26 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDCEC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:46:24 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id w10-20020ac87e8a000000b002a68361412bso783584qtj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:46:24 -0700 (PDT)
+        Tue, 12 Oct 2021 19:48:35 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C73C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:46:33 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id b197-20020a2534ce000000b005b71a4e189eso1255212yba.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:46:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=U1CBuwTvctaYUlQJhZIppI9ILyM5IxB5cbt7UE9WsqY=;
-        b=OSXAr37CFli6hdER8dhZKrAe0g0va7VrU/6C3pfS6bZYyesWzvxQw545v2Yz9Pgc+r
-         6HQkzMenAvbRIbO+IIrHmDOeN1b8XIJaeKHiulsk6zDy1u8SQTp23lqzy9Ezbx/l0zdZ
-         x1a5dT+3iCs2WIsnXsqEMSBXRI56rjZ9YiH+H0t2eD0anXIicY4dn7DsXbKTdL5atUYp
-         99VHdz3+OH/drwGUdFuQppxPIrtk0FbLHR+sjBMRQy3fQchBRiL/E+qSIpa+Q+Gzj0fm
-         63c2whJ59wPRHe2ModiqsDZYyFzE/rovMwrsBF6E/NOLAxAmOz2AoNgHsHGMH2sj0nAE
-         hrIQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=453jnyDh5+St7IVUodDCbgLxZ13MiKlNZ2J3hqUdcvM=;
+        b=GiQnyCyCbpwY9yiy0ekI90qBi524flhldE7LmLeUFKKWm8lctHKu1bsmytldY+TUxY
+         WMA98mLcf0kJRjamikFx99dWxHiXdDQLUsWaBbPirwJP5+eAXKVU6FDo57sKENYlyzdO
+         31bd6OFulXpLt3bpfK93NK4yL0spwCACKTB+vrKQ7GCPXzLILOSFqFt9AeYBJ3ciZwlv
+         YXwZM2deyztIXu8I1fxaflF94jcNJufrpRf4U9azIBZ2hfFutsdTt1NAvQ48d9Dg3wcF
+         sT+Wl1DFt+Wlq7oF10x8A5XCORu2v+sT0dd7XEmbKggavRr1+GKEW5K5OKOGZYlPpuhb
+         7kNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=U1CBuwTvctaYUlQJhZIppI9ILyM5IxB5cbt7UE9WsqY=;
-        b=ufIe9UisQJMBGQX50gpSfScOgldSqf5D1a+sXFHLNIEoxKBRYhDg8aPnZf5XbK+vam
-         +978lahLotaLWi32ZjvI8MK9AtmLvK9qlP6tJon/VhovNw9FPJLkDtlbDPHAjVd+T1SU
-         ScbwP0JBZWkGoWVVJa0FdZ7p0T9WmhhdP7b2dYfOGomOPtiJPJMVdhcyZcczEmB8Ca/9
-         xeYFfb/3Z0U4ZoizA5iFgYAK9ZhIMUr/tYWCgku4FauLR/v6apq1hy/RVPg+wn2NqqUz
-         TV7xnPmLl+BFHtWgrGHAPIZ8F9f2kkpI0s0keN2DIRYD5PBZIH3B68lzPjKrrUmWZ/d4
-         1SYQ==
-X-Gm-Message-State: AOAM531AX0ddT7T06wUjB3YPigulUTT3WovbZyA6pAIg5ZYoEOZC19/B
-        0T4cdhmir0K7D1jznid30Alsv0FMSJu1C2a3nGg=
-X-Google-Smtp-Source: ABdhPJwFJFZTxamtNTe57wwrUCI8q0lOwHN9rjl8tqB//Wb8EHJ7CsLVhYYvxb32TE+NYnY5KAdX5Ts4ad+rdVgDB2E=
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=453jnyDh5+St7IVUodDCbgLxZ13MiKlNZ2J3hqUdcvM=;
+        b=715YSagb/0H8T/r/Ep0ZtPlK538IKuHj28E2YZjQ2xEtKuiO9TC92Ws8kqOQFQDB2P
+         f0Kt9T97nUrJZzYYe9jpCfGRv+L/PyZzO8P8SuSOFidDko0FjVrM9l+AYbIkZOHQZNoF
+         p7WoWQOynjwxNUonwSqyCSGkYOkCC3qtCn2vNoi1z7gRDhrydJ71C8r8ESBfVcEFpDTR
+         +8zweWnUw82ZvqhhhiGUuAnIlH57MJuByEpGWJhkzcww9c6xEdRUm1crZXWtjD/i4PQD
+         RVYC4pw9nFe2+X8pbn3q37JjnVuBYGLGu3JLZbGiGF9TvZ8ZHbfsMhjrEtMiWNfzROyy
+         d0XA==
+X-Gm-Message-State: AOAM531BNCydta32RwghKkunlY+hfZBuNo9ByqDZpCPGoDno38mk0FrR
+        t9B90kvuRj6uJenEhgeTaM1bR75t7NGAtt9c2Vs=
+X-Google-Smtp-Source: ABdhPJzDpvjNkv+aSz66oQo+gO0Q3iFyt0KqnBrqcpv1ZIS3EYj2e1x+fBZ2NNF1cqaK6s2XL2w7RMeIIcdjpCl0gRg=
 X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:9b44:962:5897:17c0])
- (user=ndesaulniers job=sendgmr) by 2002:ac8:7c96:: with SMTP id
- y22mr25820433qtv.338.1634082383291; Tue, 12 Oct 2021 16:46:23 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 16:46:03 -0700
-Message-Id: <20211012234606.91717-1-ndesaulniers@google.com>
+ (user=ndesaulniers job=sendgmr) by 2002:a25:5ed6:: with SMTP id
+ s205mr34338891ybb.31.1634082392753; Tue, 12 Oct 2021 16:46:32 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 16:46:04 -0700
+In-Reply-To: <20211012234606.91717-1-ndesaulniers@google.com>
+Message-Id: <20211012234606.91717-2-ndesaulniers@google.com>
 Mime-Version: 1.0
+References: <20211012234606.91717-1-ndesaulniers@google.com>
 X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=lvO/pmg+aaCb6dPhyGC1GyOCvPueDrrc8Zeso5CaGKE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1634082365; l=859; s=20211004;
- h=from:subject; bh=g3CBsvmGQbuOYnCD8e3MLFwlDDGe9HbIj3f8iC/Hh/s=;
- b=PgfEWmno8ql8mPhYJpHZoIzk7yY9SH3UKBR5mlpy2uh4OOOeVfmJR0VHB4XCATUsta9Us6DdJRUy
- UD+2nr3mBYXbBuAEIc0tINg6Wq6or+VSndHCgZ4nSboOdFC3wfVu
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1634082366; l=2752;
+ s=20211004; h=from:subject; bh=F9HRxccJOmwhcZZiuHrzsbCihhzYYcSweRituqKRuSc=;
+ b=eZ+y9VuclQWGHxZZCUU0M238NP4YS16hxLmrZFuG4syjxneIbvLJ1p9XCrFVIvsJox33KLDaEcmw
+ cJtLdaZODfd7SymUzuS2rZgM0tbdGiSw/dZCb+obsqKfSgQzt0Es
 X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH 0/3] compat vdso cleanups
+Subject: [PATCH 1/3] arm64: vdso32: drop the test for dmb ishld
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
 Cc:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Christian Biesinger <cbiesinger@google.com>,
+        Simon Marchi <simon.marchi@polymtl.ca>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three fixes for compat vdso, the first two are related, the third is
-standalone.
+Binutils added support for this instruction in commit
+e797f7e0b2bedc9328d4a9a0ebc63ca7a2dbbebc which shipped in 2.34 (just
+missing the 2.33 release) but was cherry-picked into 2.33 in commit
+27a50d6755bae906bc73b4ec1a8b448467f0bea1. Thanks to Christian and Simon
+for helping me with the patch archaeology.
 
-The first two fix a warning observed for `mrproper` targets when
-$(CROSS_COMPILE_COMPAT)gcc is not in the $PATH.
+According to Documentation/process/changes.rst, the minimum supported
+version of binutils is 2.33. Since all supported versions of GAS support
+this instruction, drop the assembler invocation, preprocessor
+flags/guards, and the cross assembler macro that's now unused.
 
-The third makes is so that CROSS_COMPILE_COMPAT is not necessary to
-select COMPAT_VDSO when using clang+lld.
+This also avoids a recursive self reference in a follow up cleanup
+patch.
 
-Based on arm64/linux.git/for-next/misc.
+Cc: Christian Biesinger <cbiesinger@google.com>
+Cc: Simon Marchi <simon.marchi@polymtl.ca>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ arch/arm64/include/asm/vdso/compat_barrier.h | 2 +-
+ arch/arm64/kernel/vdso32/Makefile            | 8 --------
+ 2 files changed, 1 insertion(+), 9 deletions(-)
 
-Nick Desaulniers (3):
-  arm64: vdso32: drop the test for dmb ishld
-  arm64: vdso32: lazily invoke COMPAT_CC
-  arm64: vdso32: require CROSS_COMPILE_COMPAT for gcc+bfd
-
- arch/arm64/Kconfig                           |  3 +-
- arch/arm64/include/asm/vdso/compat_barrier.h |  2 +-
- arch/arm64/kernel/vdso32/Makefile            | 33 ++++++--------------
- 3 files changed, 12 insertions(+), 26 deletions(-)
-
-
-base-commit: de56379f21c70196ff18c48790e8e43865893869
+diff --git a/arch/arm64/include/asm/vdso/compat_barrier.h b/arch/arm64/include/asm/vdso/compat_barrier.h
+index 3fd8fd6d8fc2..fb60a88b5ed4 100644
+--- a/arch/arm64/include/asm/vdso/compat_barrier.h
++++ b/arch/arm64/include/asm/vdso/compat_barrier.h
+@@ -20,7 +20,7 @@
+ 
+ #define dmb(option) __asm__ __volatile__ ("dmb " #option : : : "memory")
+ 
+-#if __LINUX_ARM_ARCH__ >= 8 && defined(CONFIG_AS_DMB_ISHLD)
++#if __LINUX_ARM_ARCH__ >= 8
+ #define aarch32_smp_mb()	dmb(ish)
+ #define aarch32_smp_rmb()	dmb(ishld)
+ #define aarch32_smp_wmb()	dmb(ishst)
+diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+index 3dba0c4f8f42..89299a26638b 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -29,8 +29,6 @@ cc32-option = $(call try-run,\
+         $(CC_COMPAT) $(1) -c -x c /dev/null -o "$$TMP",$(1),$(2))
+ cc32-disable-warning = $(call try-run,\
+ 	$(CC_COMPAT) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
+-cc32-as-instr = $(call try-run,\
+-	printf "%b\n" "$(1)" | $(CC_COMPAT) $(VDSO_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
+ 
+ # We cannot use the global flags to compile the vDSO files, the main reason
+ # being that the 32-bit compiler may be older than the main (64-bit) compiler
+@@ -113,12 +111,6 @@ endif
+ VDSO_AFLAGS := $(VDSO_CAFLAGS)
+ VDSO_AFLAGS += -D__ASSEMBLY__
+ 
+-# Check for binutils support for dmb ishld
+-dmbinstr := $(call cc32-as-instr,dmb ishld,-DCONFIG_AS_DMB_ISHLD=1)
+-
+-VDSO_CFLAGS += $(dmbinstr)
+-VDSO_AFLAGS += $(dmbinstr)
+-
+ # From arm vDSO Makefile
+ VDSO_LDFLAGS += -Bsymbolic --no-undefined -soname=linux-vdso.so.1
+ VDSO_LDFLAGS += -z max-page-size=4096 -z common-page-size=4096
 -- 
 2.33.0.882.g93a45727a2-goog
 
