@@ -2,224 +2,413 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F4742A150
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5109442A155
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235759AbhJLJoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:44:00 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:8808 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235687AbhJLJn7 (ORCPT
+        id S235784AbhJLJo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:44:57 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:42864 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235678AbhJLJoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:43:59 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C9NUuW017600;
-        Tue, 12 Oct 2021 09:41:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=xRd/SmtCU4CB5sYP8IkF+uibD5Tet7jRIdHiGXGAePg=;
- b=YXrxl14alUt9CuXTZDtuPYVXkMFewws2hVMMY3Qek8rj4xdd71rbnJ4R2Dt/Ckd2sbiD
- 8djYnRqY8mq5Ge5ftiIXb2se4Z5E/wq13T3yuOmHwqZ+36zZw8w7dZGgSvUzSlkrigsv
- xPR5hUkqRCszfHp25LmcJVhQT5oe8881SQWy4J0hU9KixU0h36refR9Ggm5UIZrwWxZV
- 9pvQvpye26CUq0nCSp/ZG/0q7nPjMEsVuhYO9iflwGxxxAcqvX6qd8aipPVL9WveM95O
- 4qgQgsUc2PBn10pgNDpyXCwvsSLTTwNj8PZrGyriQJ8rsEut5fMnYuMg8WAjJRiJrUVL NA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bmtmk4pqq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 09:41:43 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19C9ZJDs030613;
-        Tue, 12 Oct 2021 09:41:27 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
-        by userp3020.oracle.com with ESMTP id 3bkyv9ucup-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 09:41:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UxRiPrutkcqVF4LPksajYahMGPevEQKraWtEH0QynehFbZieuoOfqCeHO8R1J+laFIgyxhEbWHROXUvWuJHVhEbgDyE/A5hb9Oq37zggN1sD/aW4mgAxoTibWWsDzK5+5CjhRAwL6rDXC1u4kxXqEaO5M5TyQSjf4s715fh0VGogpMeZOC+IjvebxTf9g59S9Jka59rZCCc0aI7K+O1hDAw7rzOiX496CnkeUVXF3y2/2o0u1i1FsZpiPyBxOp7Qesnf3/FfRvaN+uwOIJwfrH0e7vXR48pjbZ9c5ubVQ1F/7wcUBKWUyMJlRcYRC4x6b/Uda9aU60+KPf90M/mb2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xRd/SmtCU4CB5sYP8IkF+uibD5Tet7jRIdHiGXGAePg=;
- b=CZP9MAlQa1eC5i93RRg/K31gzOybqZBLJ7ZWKC4foeZw2Jhb90mAC6rcnn6VymcxPm7PscijmqeR3Sw1IDR1kgzo+Ewem0C/zkkmuApqSKLvCDVR9VvStxp1eTZTMUmiXQDo0SHZzQ7jPfmVyclYofwjEW0Rr/vCpHONZuogxy68KMAxl1M4JDSGUfCzSOcc8PUMUaJufEqZJNIuKrGMAFiyLOSMdr5bcuch6GCyHE08xt0f3gDm904SQwpecY/lWgC9uq6Ul1jw0FjeUZXnOX9MAzldDjqcmJdi3tdgdTi6t3hwdcUWdRL9iq3RuJiD1yR3nH8XOj/pGu9w5sm0Lw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xRd/SmtCU4CB5sYP8IkF+uibD5Tet7jRIdHiGXGAePg=;
- b=UqVWedQB6jWU5tA67C8kE5sGxTGYI5rxt21EbN0m4GV0JU7B7qlGHimQr07yM9spz3ErVYkDKK9guGv/uEN8T8R7k0hiiQGWNpfQGNrHc0cUhLzPV35Wd/DF4cDxphdshsrZ6xZR+w53ZNAlFuvKuMx6PiWbwCY60PVaB9A78zE=
-Authentication-Results: schaufler-ca.com; dkim=none (message not signed)
- header.d=none;schaufler-ca.com; dmarc=none action=none
- header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1485.namprd10.prod.outlook.com
- (2603:10b6:300:25::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Tue, 12 Oct
- 2021 09:41:25 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4587.026; Tue, 12 Oct 2021
- 09:41:25 +0000
-Date:   Tue, 12 Oct 2021 12:41:01 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Paul Moore <paul@paul-moore.com>, Todd Kjos <tkjos@google.com>,
-        zohar@linux.ibm.com, arve@android.com, joel@joelfernandes.org,
-        devel@driverdev.osuosl.org,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        James Morris <jmorris@namei.org>, kernel-team@android.com,
-        tkjos@android.com, keescook@chromium.org, jannh@google.com,
-        selinux@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
-        maco@android.com, christian@brauner.io, gregkh@linuxfoundation.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] binder: use cred instead of task for getsecid
-Message-ID: <20211012094101.GE8429@kadam>
-References: <20211007004629.1113572-1-tkjos@google.com>
- <20211007004629.1113572-3-tkjos@google.com>
- <CAHC9VhSDnwapGk6Pvn5iuKv0zCtZSbfnGAkZwKcxVYLVRH6CLg@mail.gmail.com>
- <8c07f9b7-58b8-18b5-84f8-9b6c78acb08b@schaufler-ca.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c07f9b7-58b8-18b5-84f8-9b6c78acb08b@schaufler-ca.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNXP275CA0018.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::30)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Tue, 12 Oct 2021 05:44:55 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C8W1wQ005003;
+        Tue, 12 Oct 2021 11:42:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=KxJ7OJ5JYoAMjFCaVSgCUGyFnhzVBYvosIiRDzNF85o=;
+ b=aWRc6TWQf0N2/KmjuXrpchH6MDkK/exSWcIjawGV3vN89iBJw80Oc9WNBbQ6FMnqh+2w
+ CDnnGU7ZwNyvy66bGNF3S3x2Dpzl63vcoE/mpXq7396VvXkOsI4nSJWLGC7KQsQvPvXL
+ LpODFqBAwBCp5eeiMF9EnhOSIMAVoax2C7VRi/Rc7g3a1UwQSwbcUyVujXx1aLXPVfY3
+ nUqQK8cV/MQKu6Q2xMdDrItxWIPFi51GdOjcl9u3YpmHIPTnigJbR7z2GdEqTN45ZHVF
+ /s3qv5uymTNbLN9eNySj+z/z9mgQo6Jdqosx7aMXVVzyOU1thEqpMFsgGZp6Uqw40x+W cQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bn1bjawx4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 11:42:29 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6B46910002A;
+        Tue, 12 Oct 2021 11:42:27 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6109221A220;
+        Tue, 12 Oct 2021 11:42:27 +0200 (CEST)
+Received: from [10.48.0.126] (10.75.127.46) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 12 Oct
+ 2021 11:42:26 +0200
+Subject: Re: [Linux-stm32] [PATCH v4 5/7] iio: adc: stm32-adc: add support of
+ internal channels
+To:     Olivier Moysan <olivier.moysan@foss.st.com>,
+        Jonathan Cameron <jic23@kernel.org>
+CC:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20211011155717.1594-1-olivier.moysan@foss.st.com>
+ <20211011155717.1594-6-olivier.moysan@foss.st.com>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <2dec4a96-d002-2140-1e00-c74422214c40@foss.st.com>
+Date:   Tue, 12 Oct 2021 11:42:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Received: from kadam (62.8.83.99) by JNXP275CA0018.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.24 via Frontend Transport; Tue, 12 Oct 2021 09:41:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0bb7a870-095e-4dd1-4c04-08d98d6474c1
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1485:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR10MB1485FBDF8509C5B43F4896D18EB69@MWHPR10MB1485.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qb6uopPr2uc0VR2Wws/Y1pkhxOg8WoRZlx7xbuLkYoQ/lRyQoKfVuhgVN646gRFIKMFO9BG5pADznMFwSG3CuzMAS7yIQoy5Wk0DCmQ6DWFdQXGb9eKyk3Jzs2McuXNnsqXJ5duzrXQMM8VEYjL+eszPxXHH1oDLpkIOJ3TzysajVf0QJRZXaVVx214vxHUJ2y/3Sj23qBybo5m02GckjEg/L3PWrSyer9Bh/TSibDo2qch72BCBE2KkeegsCLnnTvW/pX/0qARun7EL9SJfx9kIJU9pBItNKs5gzt1msuDoHIVdWzR8o7diXwWRWyJ9jW03A+8P4BwhAXANj5EaYZOxBtLAUcmHVLgr5BPMoKZlxX6KoO/qPEhF733W9eNDgKuPvhe3SsCKnIEGQ+Xb0QEyr358FIfdPQGl49819cMJkrDyTASjqzp0PBa0Eta/zyBreE3XVZaw4+/8qn/9FNYZfKFXzlZnI059hhAg8aK1NZLO5VV2ePcUX98XLJLU6zi2VjWNOyarBNVwF/mCobNCwEOn12Ak/jg3zO5FIDMZDnOnVfTC6fkH8maVYhjuPHGIMLBghIvVsb2VsUAdPdAyjGcuWZYxUNYwnP5wH9TJdrhx1REBEKQzrQ+OPkUy00+uSosEKGT69gLJPyAFJvb3Evis+HNswWiScN75/LtFxrRCJwdeosqZ0qOxq+CSaXKswRvfRLT2VilxHX420g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(9686003)(66946007)(53546011)(6496006)(508600001)(4326008)(66476007)(66556008)(7416002)(52116002)(55016002)(186003)(26005)(8936002)(8676002)(33716001)(1076003)(316002)(54906003)(6666004)(5660300002)(9576002)(956004)(6916009)(33656002)(2906002)(86362001)(83380400001)(44832011)(38100700002)(38350700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7IKkuEvMpNfWN31RlCmw0c95ZmzYALPSlsKEN6K5nXoaHCJOJMvj4ILwVUHc?=
- =?us-ascii?Q?CmAhU8/U88QMEyPsGTXogmc4l2gRYDQ62w/WNZ+QijpfLcmt0mvrD8J3EEN4?=
- =?us-ascii?Q?AEXT93f5bg1jBe/XOa5var9jxljKyJHFqvfqm3v3Ir6OnJFp/9kAKH+X9DHV?=
- =?us-ascii?Q?5hBZ4eYm2AabwUpesei7ZqenactaV+EwGOfcJooTccDjpx2tzaVxVm3/FlZD?=
- =?us-ascii?Q?778LQCs7NXDwZfiS7FkxJk7Q62/X57dJkr/D8JvNW3XO4er9tINXZGcxMLJo?=
- =?us-ascii?Q?SJgfwWrtvp0uiBsUgDmfWfG8eSrLhOI2Iw3IErZBJyKJIEftRnumPplfPipU?=
- =?us-ascii?Q?lupbRny8Yb2zCEhv3dtnjelPHSsikGA37DzGNGvD5saiJwDtpm507hbKE4D7?=
- =?us-ascii?Q?xHKnGiKY9D9N6bDqqFkH5uglxophw9XlEfYcKtkowvEx+4Bhe1dvKA+OS46r?=
- =?us-ascii?Q?S2uXqRz9s+ZWYD+TZUM+beUK89Y+9ls6LIkM1SjcXvylIaXEYB2mlkU/k9O2?=
- =?us-ascii?Q?kzE11ZRYl64xJlN6TWqUsZ3FiGTkA3bur1fU0eHmp7VkAjWXHGWVjr0R2Qeg?=
- =?us-ascii?Q?oUHpcS9lDvVBgSDAtbf0q83qUBSsK+XnIWFvAEhAjtkvQjxGYPdU1JymLVvy?=
- =?us-ascii?Q?K1FX9OBghG/CE3GnrTcdmfAoRDtDgPfSYCA9Ew5ps2G3C4C6XQmP72GNnRm5?=
- =?us-ascii?Q?KaQyPCkqowA9b9IqhUyQczSt9CB9iQ7utfWqyDYoYhAGvC/hPhAst7qUvVf1?=
- =?us-ascii?Q?YHLz8dPSoOrFtkGMjYyl5Um+dCTLI1KWlGVON59tnuBOOtj6u4HVJEeT7IHr?=
- =?us-ascii?Q?0M8rYx2NX2EGeEiKxpSUkqrKs5E4w3qNISSbAYOKP5Hj/idcjQq/VQOm2sRr?=
- =?us-ascii?Q?jTm36YgiOhSJln1alX9ivecmUot27cr5rW13a/Uc9pNSa9ySoqyqYQuHTjYD?=
- =?us-ascii?Q?3xsrCgjcgIwBzavOm5n24ar/JglEqy6wq0MtsgZUqnPxd2012+9BmBLCuT11?=
- =?us-ascii?Q?o0VSu8kpk54Ic7wKGMWvJHrxm7stpWfQkh16Ez0iB/tnNm2hzOES6y+FEjrs?=
- =?us-ascii?Q?a6TZheka8u/3oNgZNEmleg2v5rEZNj3KpcPDrJ8E5LFLThNY00JvVIzU8CX2?=
- =?us-ascii?Q?eK1nhTjXJqTVWlMkArs3fbCFCMb+xrD0eLnYu7/F4by4iBHZSUdRQ7NAtD4n?=
- =?us-ascii?Q?1dRbVQ2eJRiErQikKToA38IzKoRETTzkIg9xqBtspW4Yy2nP/BW8EuEbsbz2?=
- =?us-ascii?Q?du4pRvK8xC9g+J4SRMcM7o6qDS8Q53H+UiTRxNWmbDR6+dooeK+SmHfjnbsr?=
- =?us-ascii?Q?rEoaRxe0JmbwsEpu7Hw3fZCe?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0bb7a870-095e-4dd1-4c04-08d98d6474c1
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2021 09:41:24.9334
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +WmhxGUjERlROeSM2yyPJMIvoqWLfD54dVpzO9Nuq/jRbWgAZsEOU+7OLaIXNK6Kz0FsSDnnVH3gbrTmOgYlFw/bdQ/8SXnASiJBEk2fwTI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1485
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10134 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- adultscore=0 bulkscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110120054
-X-Proofpoint-GUID: JTU0P7iOClnRDJtKii4-54icXUWo52Io
-X-Proofpoint-ORIG-GUID: JTU0P7iOClnRDJtKii4-54icXUWo52Io
+In-Reply-To: <20211011155717.1594-6-olivier.moysan@foss.st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-12_02,2021-10-11_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 02:59:13PM -0700, Casey Schaufler wrote:
-> On 10/11/2021 2:33 PM, Paul Moore wrote:
-> > On Wed, Oct 6, 2021 at 8:46 PM Todd Kjos <tkjos@google.com> wrote:
-> >> Use the 'struct cred' saved at binder_open() to lookup
-> >> the security ID via security_cred_getsecid(). This
-> >> ensures that the security context that opened binder
-> >> is the one used to generate the secctx.
-> >>
-> >> Fixes: ec74136ded79 ("binder: create node flag to request sender's
-> >> security context")
-> >> Signed-off-by: Todd Kjos <tkjos@google.com>
-> >> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Cc: stable@vger.kernel.org # 5.4+
-> >> ---
-> >> v3: added this patch to series
-> >> v4: fix build-break for !CONFIG_SECURITY
-> >>
-> >>  drivers/android/binder.c | 11 +----------
-> >>  include/linux/security.h |  4 ++++
-> >>  2 files changed, 5 insertions(+), 10 deletions(-)
-> >>
-> >> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> >> index ca599ebdea4a..989afd0804ca 100644
-> >> --- a/drivers/android/binder.c
-> >> +++ b/drivers/android/binder.c
-> >> @@ -2722,16 +2722,7 @@ static void binder_transaction(struct binder_proc *proc,
-> >>                 u32 secid;
-> >>                 size_t added_size;
-> >>
-> >> -               /*
-> >> -                * Arguably this should be the task's subjective LSM secid but
-> >> -                * we can't reliably access the subjective creds of a task
-> >> -                * other than our own so we must use the objective creds, which
-> >> -                * are safe to access.  The downside is that if a task is
-> >> -                * temporarily overriding it's creds it will not be reflected
-> >> -                * here; however, it isn't clear that binder would handle that
-> >> -                * case well anyway.
-> >> -                */
-> >> -               security_task_getsecid_obj(proc->tsk, &secid);
-> >> +               security_cred_getsecid(proc->cred, &secid);
-> >>                 ret = security_secid_to_secctx(secid, &secctx, &secctx_sz);
-> >>                 if (ret) {
-> >>                         return_error = BR_FAILED_REPLY;
-> >> diff --git a/include/linux/security.h b/include/linux/security.h
-> >> index 6344d3362df7..f02cc0211b10 100644
-> >> --- a/include/linux/security.h
-> >> +++ b/include/linux/security.h
-> >> @@ -1041,6 +1041,10 @@ static inline void security_transfer_creds(struct cred *new,
-> >>  {
-> >>  }
-> >>
-> >> +static inline void security_cred_getsecid(const struct cred *c, u32 *secid)
-> >> +{
-> >> +}
-> > Since security_cred_getsecid() doesn't return an error code we should
-> > probably set the secid to 0 in this case, for example:
-> >
-> >   static inline void security_cred_getsecid(...)
-> >   {
-> >     *secid = 0;
-> >   }
+On 10/11/21 5:57 PM, Olivier Moysan wrote:
+> Add support of ADC2 internal channels VDDCORE, VREFINT and VBAT.
+> The reserved label name "vddcore", "vrefint" and "vbat" must
+> be used in Device Tree channel node, to enable the corresponding
+> internal channel.
 > 
-> If CONFIG_SECURITY is unset there shouldn't be any case where
-> the secid value is ever used for anything. Are you suggesting that
-> it be set out of an abundance of caution?
+> Note: This patch does not provide support of internal channels
+> for F4 and H7.
+> 
+> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
 
-The security_secid_to_secctx() function is probably inlined so probably
-KMSan will not warn about this.  But Smatch will warn about passing
-unitialized variables.  You probably wouldn't recieve and email about
-it, and I would just add an exception that security_cred_getsecid()
-should be ignored.
+Hi Olivier,
 
-regards,
-dan carpenter
+You can add my:
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
+Thanks for the patch,
+Regards,
+Fabrice
+> ---
+>  drivers/iio/adc/stm32-adc-core.c |   1 +
+>  drivers/iio/adc/stm32-adc-core.h |  10 +++
+>  drivers/iio/adc/stm32-adc.c      | 138 ++++++++++++++++++++++++++++++-
+>  3 files changed, 146 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
+> index c088cb990193..b6e18eb101f7 100644
+> --- a/drivers/iio/adc/stm32-adc-core.c
+> +++ b/drivers/iio/adc/stm32-adc-core.c
+> @@ -659,6 +659,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+>  
+>  	priv->cfg = (const struct stm32_adc_priv_cfg *)
+>  		of_match_device(dev->driver->of_match_table, dev)->data;
+> +	spin_lock_init(&priv->common.lock);
+>  
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	priv->common.base = devm_ioremap_resource(&pdev->dev, res);
+> diff --git a/drivers/iio/adc/stm32-adc-core.h b/drivers/iio/adc/stm32-adc-core.h
+> index 2322809bfd2f..faedf7a49555 100644
+> --- a/drivers/iio/adc/stm32-adc-core.h
+> +++ b/drivers/iio/adc/stm32-adc-core.h
+> @@ -102,6 +102,9 @@
+>  #define STM32H7_ADC_CALFACT		0xC4
+>  #define STM32H7_ADC_CALFACT2		0xC8
+>  
+> +/* STM32MP1 - ADC2 instance option register */
+> +#define STM32MP1_ADC2_OR		0xD0
+> +
+>  /* STM32H7 - common registers for all ADC instances */
+>  #define STM32H7_ADC_CSR			(STM32_ADCX_COMN_OFFSET + 0x00)
+>  #define STM32H7_ADC_CCR			(STM32_ADCX_COMN_OFFSET + 0x08)
+> @@ -168,23 +171,30 @@ enum stm32h7_adc_dmngt {
+>  #define STM32H7_EOC_MST			BIT(2)
+>  
+>  /* STM32H7_ADC_CCR - bit fields */
+> +#define STM32H7_VBATEN			BIT(24)
+> +#define STM32H7_VREFEN			BIT(22)
+>  #define STM32H7_PRESC_SHIFT		18
+>  #define STM32H7_PRESC_MASK		GENMASK(21, 18)
+>  #define STM32H7_CKMODE_SHIFT		16
+>  #define STM32H7_CKMODE_MASK		GENMASK(17, 16)
+>  
+> +/* STM32MP1_ADC2_OR - bit fields */
+> +#define STM32MP1_VDDCOREEN		BIT(0)
+> +
+>  /**
+>   * struct stm32_adc_common - stm32 ADC driver common data (for all instances)
+>   * @base:		control registers base cpu addr
+>   * @phys_base:		control registers base physical addr
+>   * @rate:		clock rate used for analog circuitry
+>   * @vref_mv:		vref voltage (mv)
+> + * @lock:		spinlock
+>   */
+>  struct stm32_adc_common {
+>  	void __iomem			*base;
+>  	phys_addr_t			phys_base;
+>  	unsigned long			rate;
+>  	int				vref_mv;
+> +	spinlock_t			lock;		/* lock for common register */
+>  };
+>  
+>  #endif
+> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> index 85d09cbd41ae..943ca03f4d31 100644
+> --- a/drivers/iio/adc/stm32-adc.c
+> +++ b/drivers/iio/adc/stm32-adc.c
+> @@ -77,6 +77,30 @@ enum stm32_adc_extsel {
+>  	STM32_EXT20,
+>  };
+>  
+> +enum stm32_adc_int_ch {
+> +	STM32_ADC_INT_CH_NONE = -1,
+> +	STM32_ADC_INT_CH_VDDCORE,
+> +	STM32_ADC_INT_CH_VREFINT,
+> +	STM32_ADC_INT_CH_VBAT,
+> +	STM32_ADC_INT_CH_NB,
+> +};
+> +
+> +/**
+> + * struct stm32_adc_ic - ADC internal channels
+> + * @name:	name of the internal channel
+> + * @idx:	internal channel enum index
+> + */
+> +struct stm32_adc_ic {
+> +	const char *name;
+> +	u32 idx;
+> +};
+> +
+> +static const struct stm32_adc_ic stm32_adc_ic[STM32_ADC_INT_CH_NB] = {
+> +	{ "vddcore", STM32_ADC_INT_CH_VDDCORE },
+> +	{ "vrefint", STM32_ADC_INT_CH_VREFINT },
+> +	{ "vbat", STM32_ADC_INT_CH_VBAT },
+> +};
+> +
+>  /**
+>   * struct stm32_adc_trig_info - ADC trigger info
+>   * @name:		name of the trigger, corresponding to its source
+> @@ -126,6 +150,9 @@ struct stm32_adc_regs {
+>   * @res:		resolution selection register & bitfield
+>   * @smpr:		smpr1 & smpr2 registers offset array
+>   * @smp_bits:		smpr1 & smpr2 index and bitfields
+> + * @or_vdd:		option register & vddcore bitfield
+> + * @ccr_vbat:		common register & vbat bitfield
+> + * @ccr_vref:		common register & vrefint bitfield
+>   */
+>  struct stm32_adc_regspec {
+>  	const u32 dr;
+> @@ -139,6 +166,9 @@ struct stm32_adc_regspec {
+>  	const struct stm32_adc_regs res;
+>  	const u32 smpr[2];
+>  	const struct stm32_adc_regs *smp_bits;
+> +	const struct stm32_adc_regs or_vdd;
+> +	const struct stm32_adc_regs ccr_vbat;
+> +	const struct stm32_adc_regs ccr_vref;
+>  };
+>  
+>  struct stm32_adc;
+> @@ -195,6 +225,7 @@ struct stm32_adc_cfg {
+>   * @cal:		optional calibration data on some devices
+>   * @chan_name:		channel name array
+>   * @num_diff:		number of differential channels
+> + * @int_ch:		internal channel indexes array
+>   */
+>  struct stm32_adc {
+>  	struct stm32_adc_common	*common;
+> @@ -219,6 +250,7 @@ struct stm32_adc {
+>  	struct stm32_adc_calib	cal;
+>  	char			chan_name[STM32_ADC_CH_MAX][STM32_ADC_CH_SZ];
+>  	u32			num_diff;
+> +	int			int_ch[STM32_ADC_INT_CH_NB];
+>  };
+>  
+>  struct stm32_adc_diff_channel {
+> @@ -451,6 +483,24 @@ static const struct stm32_adc_regspec stm32h7_adc_regspec = {
+>  	.smp_bits = stm32h7_smp_bits,
+>  };
+>  
+> +static const struct stm32_adc_regspec stm32mp1_adc_regspec = {
+> +	.dr = STM32H7_ADC_DR,
+> +	.ier_eoc = { STM32H7_ADC_IER, STM32H7_EOCIE },
+> +	.ier_ovr = { STM32H7_ADC_IER, STM32H7_OVRIE },
+> +	.isr_eoc = { STM32H7_ADC_ISR, STM32H7_EOC },
+> +	.isr_ovr = { STM32H7_ADC_ISR, STM32H7_OVR },
+> +	.sqr = stm32h7_sq,
+> +	.exten = { STM32H7_ADC_CFGR, STM32H7_EXTEN_MASK, STM32H7_EXTEN_SHIFT },
+> +	.extsel = { STM32H7_ADC_CFGR, STM32H7_EXTSEL_MASK,
+> +		    STM32H7_EXTSEL_SHIFT },
+> +	.res = { STM32H7_ADC_CFGR, STM32H7_RES_MASK, STM32H7_RES_SHIFT },
+> +	.smpr = { STM32H7_ADC_SMPR1, STM32H7_ADC_SMPR2 },
+> +	.smp_bits = stm32h7_smp_bits,
+> +	.or_vdd = { STM32MP1_ADC2_OR, STM32MP1_VDDCOREEN },
+> +	.ccr_vbat = { STM32H7_ADC_CCR, STM32H7_VBATEN },
+> +	.ccr_vref = { STM32H7_ADC_CCR, STM32H7_VREFEN },
+> +};
+> +
+>  /*
+>   * STM32 ADC registers access routines
+>   * @adc: stm32 adc instance
+> @@ -489,6 +539,14 @@ static void stm32_adc_set_bits(struct stm32_adc *adc, u32 reg, u32 bits)
+>  	spin_unlock_irqrestore(&adc->lock, flags);
+>  }
+>  
+> +static void stm32_adc_set_bits_common(struct stm32_adc *adc, u32 reg, u32 bits)
+> +{
+> +	spin_lock(&adc->common->lock);
+> +	writel_relaxed(readl_relaxed(adc->common->base + reg) | bits,
+> +		       adc->common->base + reg);
+> +	spin_unlock(&adc->common->lock);
+> +}
+> +
+>  static void stm32_adc_clr_bits(struct stm32_adc *adc, u32 reg, u32 bits)
+>  {
+>  	unsigned long flags;
+> @@ -498,6 +556,14 @@ static void stm32_adc_clr_bits(struct stm32_adc *adc, u32 reg, u32 bits)
+>  	spin_unlock_irqrestore(&adc->lock, flags);
+>  }
+>  
+> +static void stm32_adc_clr_bits_common(struct stm32_adc *adc, u32 reg, u32 bits)
+> +{
+> +	spin_lock(&adc->common->lock);
+> +	writel_relaxed(readl_relaxed(adc->common->base + reg) & ~bits,
+> +		       adc->common->base + reg);
+> +	spin_unlock(&adc->common->lock);
+> +}
+> +
+>  /**
+>   * stm32_adc_conv_irq_enable() - Enable end of conversion interrupt
+>   * @adc: stm32 adc instance
+> @@ -579,6 +645,60 @@ static int stm32_adc_hw_start(struct device *dev)
+>  	return ret;
+>  }
+>  
+> +static void stm32_adc_int_ch_enable(struct iio_dev *indio_dev)
+> +{
+> +	struct stm32_adc *adc = iio_priv(indio_dev);
+> +	u32 i;
+> +
+> +	for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
+> +		if (adc->int_ch[i] == STM32_ADC_INT_CH_NONE)
+> +			continue;
+> +
+> +		switch (i) {
+> +		case STM32_ADC_INT_CH_VDDCORE:
+> +			dev_dbg(&indio_dev->dev, "Enable VDDCore\n");
+> +			stm32_adc_set_bits(adc, adc->cfg->regs->or_vdd.reg,
+> +					   adc->cfg->regs->or_vdd.mask);
+> +			break;
+> +		case STM32_ADC_INT_CH_VREFINT:
+> +			dev_dbg(&indio_dev->dev, "Enable VREFInt\n");
+> +			stm32_adc_set_bits_common(adc, adc->cfg->regs->ccr_vref.reg,
+> +						  adc->cfg->regs->ccr_vref.mask);
+> +			break;
+> +		case STM32_ADC_INT_CH_VBAT:
+> +			dev_dbg(&indio_dev->dev, "Enable VBAT\n");
+> +			stm32_adc_set_bits_common(adc, adc->cfg->regs->ccr_vbat.reg,
+> +						  adc->cfg->regs->ccr_vbat.mask);
+> +			break;
+> +		}
+> +	}
+> +}
+> +
+> +static void stm32_adc_int_ch_disable(struct stm32_adc *adc)
+> +{
+> +	u32 i;
+> +
+> +	for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
+> +		if (adc->int_ch[i] == STM32_ADC_INT_CH_NONE)
+> +			continue;
+> +
+> +		switch (i) {
+> +		case STM32_ADC_INT_CH_VDDCORE:
+> +			stm32_adc_clr_bits(adc, adc->cfg->regs->or_vdd.reg,
+> +					   adc->cfg->regs->or_vdd.mask);
+> +			break;
+> +		case STM32_ADC_INT_CH_VREFINT:
+> +			stm32_adc_clr_bits_common(adc, adc->cfg->regs->ccr_vref.reg,
+> +						  adc->cfg->regs->ccr_vref.mask);
+> +			break;
+> +		case STM32_ADC_INT_CH_VBAT:
+> +			stm32_adc_clr_bits_common(adc, adc->cfg->regs->ccr_vbat.reg,
+> +						  adc->cfg->regs->ccr_vbat.mask);
+> +			break;
+> +		}
+> +	}
+> +}
+> +
+>  /**
+>   * stm32f4_adc_start_conv() - Start conversions for regular channels.
+>   * @indio_dev: IIO device instance
+> @@ -947,11 +1067,13 @@ static int stm32h7_adc_prepare(struct iio_dev *indio_dev)
+>  		goto pwr_dwn;
+>  	calib = ret;
+>  
+> +	stm32_adc_int_ch_enable(indio_dev);
+> +
+>  	stm32_adc_writel(adc, STM32H7_ADC_DIFSEL, adc->difsel);
+>  
+>  	ret = stm32h7_adc_enable(indio_dev);
+>  	if (ret)
+> -		goto pwr_dwn;
+> +		goto ch_disable;
+>  
+>  	/* Either restore or read calibration result for future reference */
+>  	if (calib)
+> @@ -967,6 +1089,8 @@ static int stm32h7_adc_prepare(struct iio_dev *indio_dev)
+>  
+>  disable:
+>  	stm32h7_adc_disable(indio_dev);
+> +ch_disable:
+> +	stm32_adc_int_ch_disable(adc);
+>  pwr_dwn:
+>  	stm32h7_adc_enter_pwr_down(adc);
+>  
+> @@ -978,6 +1102,7 @@ static void stm32h7_adc_unprepare(struct iio_dev *indio_dev)
+>  	struct stm32_adc *adc = iio_priv(indio_dev);
+>  
+>  	stm32h7_adc_disable(indio_dev);
+> +	stm32_adc_int_ch_disable(adc);
+>  	stm32h7_adc_enter_pwr_down(adc);
+>  }
+>  
+> @@ -1800,7 +1925,7 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+>  	const struct stm32_adc_info *adc_info = adc->cfg->adc_info;
+>  	struct device_node *child;
+>  	const char *name;
+> -	int val, scan_index = 0, ret;
+> +	int val, scan_index = 0, ret, i;
+>  	bool differential;
+>  	u32 vin[2];
+>  
+> @@ -1820,6 +1945,10 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+>  				return -EINVAL;
+>  			}
+>  			strncpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
+> +			for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
+> +				if (!strncmp(stm32_adc_ic[i].name, name, STM32_ADC_CH_SZ))
+> +					adc->int_ch[i] = val;
+> +			}
+>  		} else if (ret != -EINVAL) {
+>  			dev_err(&indio_dev->dev, "Invalid label %d\n", ret);
+>  			goto err;
+> @@ -1869,6 +1998,9 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+>  	u32 smp = 0;
+>  	bool legacy = false;
+>  
+> +	for (i = 0; i < STM32_ADC_INT_CH_NB; i++)
+> +		adc->int_ch[i] = STM32_ADC_INT_CH_NONE;
+> +
+>  	num_channels = of_get_available_child_count(node);
+>  	/* If no channels have been found, fallback to channels legacy properties. */
+>  	if (!num_channels) {
+> @@ -2219,7 +2351,7 @@ static const struct stm32_adc_cfg stm32h7_adc_cfg = {
+>  };
+>  
+>  static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+> -	.regs = &stm32h7_adc_regspec,
+> +	.regs = &stm32mp1_adc_regspec,
+>  	.adc_info = &stm32h7_adc_info,
+>  	.trigs = stm32h7_adc_trigs,
+>  	.has_vregready = true,
+> 
