@@ -2,162 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D19429FAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A91429FB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234940AbhJLIXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59586 "EHLO
+        id S234969AbhJLIZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234484AbhJLIXm (ORCPT
+        with ESMTP id S234501AbhJLIZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:23:42 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BF0C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:21:40 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id j21so66889201lfe.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:21:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zoYjW5j+sOrn45B5pRctVsrBAhO/9eEsS+3u6fho2Es=;
-        b=iH9n8IVXMan4pahTGmYgbHfDX2n55rghvdRMD7PAz/2G/49LjrPUasa4rV+IbSDXBS
-         2vg9lBag0gxo4RS1QF8NFgwxput17DFWURK55PolzkVaXI6JxPP9epyuF7i2duu5kto5
-         j7hvghtZ2rpknFt12zP57iX8/d/1r0LR73mlcKe0wYXFEjicd3ZUHR5crJzwNXWYvQXu
-         HigrwWHxh6qT9UuWHZeZAxkjqQ88VsFDHCfOuoAiy9r3au48J3jFFjTdkw95BQzUledi
-         f5khu2yrnclGRewhz/t+dT7/yMSRlPsQa+py5xqg4Go9IwrRjUIUGEk28j23wDCvw2yC
-         Yd+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zoYjW5j+sOrn45B5pRctVsrBAhO/9eEsS+3u6fho2Es=;
-        b=D99tNgFf0xvaduQqlTXJxzHBqKQhFRM08XmeFp8V8KTLafnFeO75AX2JwAK/uNmkCB
-         RTMT0k9UW8omDan5+PaIVhex3URDiOrNE9SMZpLswuAOhif2lBKuwRJ3yDv782sUld0+
-         7/qb1btLEpNDB2AbKphx1wljP3Zfb2n5VcINa6wB65lq3+284LE6zwGFTyB+9lPNl4R/
-         kDwZh+FeRi/V4z4KoPFE3R6MFlzqokS9TgdXvo/l51R1+9RFhZgyB7P8jvJEo6J7a7O5
-         uFkeI7CN94qfnhLmKs2gV/Deta30Y5Enz+EkZyMKRfHBKm5jEZwGcNJ3emAfrOl0UQhF
-         eejg==
-X-Gm-Message-State: AOAM533eCmW6teJSUaP9XFO8GQWbmcgyDeK/7uZ8HHSLreF+PBrIZAYS
-        TlyU+P9cyJEhP/vUQIVd3NqHmQ==
-X-Google-Smtp-Source: ABdhPJysh8x5oAFbj2l+BgJU9qDGKJz1aeMCrdcOwGpbmUdPka+KdREsXae0Z/KZntv2x0MCMPfBQg==
-X-Received: by 2002:a19:5e0d:: with SMTP id s13mr30948604lfb.174.1634026898712;
-        Tue, 12 Oct 2021 01:21:38 -0700 (PDT)
-Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
-        by smtp.gmail.com with ESMTPSA id p18sm1087057ljc.114.2021.10.12.01.21.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 01:21:38 -0700 (PDT)
-Subject: Re: Panic on kmemleak scan
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-References: <8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org>
- <YWUmaV7pDBX9zSOl@kernel.org>
-From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Message-ID: <147cd17b-7cba-e015-ce94-ad4b9c3f07e6@linaro.org>
-Date:   Tue, 12 Oct 2021 11:21:38 +0300
+        Tue, 12 Oct 2021 04:25:15 -0400
+Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75A2C061570;
+        Tue, 12 Oct 2021 01:23:13 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id aD40m6YsKk3b0aD44mPZdY; Tue, 12 Oct 2021 10:23:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1634026992; bh=IcmG4hlwkywRE0PK6X1+E437tEYrBkwUPVeE4O1mHiY=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=RCnAujWlRxHBoL1QdKw48WfQpGdxT6iixcng9vb0Xc1Z1wUrLPFQ1mVx9C7flL3a8
+         Y7TZllynMNSC9Mvw0HgVf/SUIz2OQieIJ3LmTTLAIHzreKT+aJe968qIOqekjDSLqd
+         p9i641lKestJ0hR6dFGgkny/B9rrd6TlRmlj/V+bh441ZYM2AifkLjgnKlxru5Xp7n
+         /3JW8PNUlReSH2oWq7bz36bnVcUEY1x0WSsIInhHqAMC7b14d4KNqF4oNSKmBqnrqv
+         RvySXj/7O8zdxhcTdmAmo/h9+OdU08NA9H3PnCCK7TlqYTXqa3sNxE2kH8x/rQt1Dy
+         zg/yZtjKhOSzw==
+Subject: Re: [PATCH] media: Kconfig: Make DVB_CORE=m possible when
+ MEDIA_SUPPORT=y
+To:     Lecopzer Chen <lecopzer.chen@mediatek.com>, mchehab@kernel.org,
+        linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, yj.chiang@mediatek.com
+References: <20211005105110.14082-1-lecopzer.chen@mediatek.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <5086eb11-621f-29ed-e2dd-2a262857b78c@xs4all.nl>
+Date:   Tue, 12 Oct 2021 10:23:08 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <YWUmaV7pDBX9zSOl@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20211005105110.14082-1-lecopzer.chen@mediatek.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfE/P2szUh3UowWLMZqnKxz/PUYZfRHCTaA2A7qVF8Y5nVArKLxkVRNI9niMZUYQjgR2wrx96rDLeiC+F1OrKBhpbh1S2YxkJeEWDEpZR/K9rqsFcGD7i
+ xnG4TRY9gW44QLWvk/71efYDqvDpEjIl4g7Eh3/CP6vx+0laTcwJuy/RSIWNHGFHlat5UM+o3zDLPB0Hf7WhgZScMBHlfoWd/9Y6oqNL8PazR/lVE/8bx2YW
+ v+GY5T/P0FE7ht0fhuUHSdaccWVgBnRrBHYmqSSFF/DmiyhStMWU1dE0AhU8ZAAgeG8IPwqCmO0+Wp8PniuZrdDVC62qD/iNAnSBXvBRbXAOQ01BXNgL85C7
+ 63DCnrFp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
-
-On 10/12/21 9:08 AM, Mike Rapoport wrote:
-> (added Catalin)
+On 05/10/2021 12:51, Lecopzer Chen wrote:
+> A case that we need VIDEO_DEV=y but DVB_CORE=m, and this doesn't
+> work since DVB_CORE is default MEDIA_DIGITAL_TV_SUPPORT and then
+> follows MEDIA_SUPPORT.
 > 
-> On Mon, Oct 11, 2021 at 02:23:31PM +0300, Vladimir Zapolskiy wrote:
->> Hello Mike,
->>
->> commit a7259df767 ("memblock: make memblock_find_in_range method private") [1]
->> invokes a kernel panic while running kmemleak on OF platforms with nomaped
->> regions, basically it's similar to an issue reported and fixed earlier by [2]:
->>
->>    Unable to handle kernel paging request at virtual address ffff000021e00000
+> Change to tristate to make DVB_CORE=m possible when MEDIA_SUPPORT=y
 > 
-> Does this virtual address correspond to a nomap area?
-
-Yes, it does:
-
-   OF: reserved mem: allocated memory for 'rmtfs@86700000' node: base 0x00000000a1e00000, size 2 MiB
-
-and 'rmtfs@86700000' device node has a 'no-map' property.
-
-Also:
-
-# echo dump=0xffff000021e00000 > /sys/kernel/debug/kmemleak
-[   35.679096] kmemleak: Object 0xffff000021e00000 (size 2097152):
-[   35.679172] kmemleak:   comm "swapper", pid 0, jiffies 4294892296
-[   35.683860] kmemleak:   min_count = 0
-[   35.690106] kmemleak:   count = 0
-[   35.693752] kmemleak:   flags = 0x1
-[   35.697050] kmemleak:   checksum = 0
-[   35.700350] kmemleak:   backtrace:
-[   35.704170]      kmemleak_alloc_phys+0x2c/0x40
-[   35.707381]      memblock_alloc_range_nid+0x150/0x170
-[   35.711810]      memblock_phys_alloc_range+0xb8/0xc8
-[   35.716931]      early_init_dt_alloc_reserved_memory_arch+0x40/0x94
-[   35.721968]      __reserved_mem_alloc_size+0x200/0x308
-[   35.727955]      fdt_init_reserved_mem+0x154/0x284
-[   35.733164]      early_init_fdt_scan_reserved_mem+0x80/0xfc
-[   35.737939]      arm64_memblock_init+0x23c/0x278
-[   35.743406]      setup_arch+0x18c/0x228
-[   35.748266]      start_kernel+0x94/0x610
-[   35.751825]      __primary_switched+0xc0/0xc8
-
-> Can you check if this patch helps:
+> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> ---
+>  drivers/media/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 184dcd2e5d99..5c3503c98b2f 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -936,7 +936,12 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
->    */
->   int __init_memblock memblock_mark_nomap(phys_addr_t base, phys_addr_t size)
->   {
-> -	return memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
-> +	int ret = memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
-> +
-> +	if (!ret)
-> +		kmemleak_free_part_phys(base, size);
-> +
-> +	return ret;
->   }
->   
->   /**
+> diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
+> index b07812657cee..c3baf92b4d02 100644
+> --- a/drivers/media/Kconfig
+> +++ b/drivers/media/Kconfig
+> @@ -88,7 +88,7 @@ config MEDIA_ANALOG_TV_SUPPORT
+>  		will disable support for them.
+>  
+>  config MEDIA_DIGITAL_TV_SUPPORT
+> -	bool
+> +	tristate
+>  	prompt "Digital TV" if MEDIA_SUPPORT_FILTER
+>  	default y if !MEDIA_SUPPORT_FILTER
+>  	help
 > 
 
-The change fixes the issue, thank you!
+I don't think this is the right approach.
 
-The object is also gone from being under kmemleak:
+I think the following patch would fix the issue, and it is also in line
+with what config VIDEO_DEV does.
 
-# echo dump=0xffff000021e00000 > /sys/kernel/debug/kmemleak
-kmemleak: Unknown object at 0xffff000021e00000
+What do you think, Mauro?
 
-Please feel free to add my
+Regards,
 
-Tested-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+	Hans
 
->>    [...]
->>      scan_block+0x64/0x170
->>      scan_gray_list+0xe8/0x17c
->>      kmemleak_scan+0x270/0x514
->>      kmemleak_write+0x34c/0x4ac
->>
->> I believe it would be a trivial problem to correct for you, thank you in
->> advance!
->>
->> [1] https://lore.kernel.org/all/20210816122622.30279-1-rppt@kernel.org/T/#u
->> [2] https://lore.kernel.org/lkml/20190119132832.GA29881@MBP.local/t/#m032124f36c07
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+---
+diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
+index c3baf92b4d02..46f7b1f75630 100644
+--- a/drivers/media/Kconfig
++++ b/drivers/media/Kconfig
+@@ -179,8 +179,7 @@ config MEDIA_CONTROLLER
+ #
 
---
-Best wishes,
-Vladimir
+ config DVB_CORE
+-	tristate
+-	depends on MEDIA_DIGITAL_TV_SUPPORT
++	tristate "DVB core"
+ 	depends on (I2C || I2C=n)
+ 	default MEDIA_DIGITAL_TV_SUPPORT
+ 	select CRC32
