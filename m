@@ -2,125 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA4642A00D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C81E42A0A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235109AbhJLIl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:41:26 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42782 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234870AbhJLIlZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:41:25 -0400
-X-UUID: 4cf412d9876e48d4b14de15c2228a019-20211012
-X-UUID: 4cf412d9876e48d4b14de15c2228a019-20211012
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1964211283; Tue, 12 Oct 2021 16:39:21 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Tue, 12 Oct 2021 16:39:20 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 12 Oct 2021 16:39:20 +0800
-From:   <guangming.cao@mediatek.com>
-To:     <christian.koenig@amd.com>
-CC:     <dri-devel@lists.freedesktop.org>, <guangming.cao@mediatek.com>,
-        <linaro-mm-sig@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <rdunlap@infradead.org>, <sumit.semwal@linaro.org>,
-        <wsd_upstream@mediatek.com>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: Re: [PATCH v2] dma-buf: remove restriction of IOCTL:DMA_BUF_SET_NAME
-Date:   Tue, 12 Oct 2021 16:41:09 +0800
-Message-ID: <20211012084109.176542-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <eba79a76-413b-570c-aec0-899a5f918d38@amd.com>
-References: <eba79a76-413b-570c-aec0-899a5f918d38@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        id S235612AbhJLJIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:08:17 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:45510 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235490AbhJLJIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:08:11 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AFE061A1D25;
+        Tue, 12 Oct 2021 11:06:06 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 75BD11A1D2C;
+        Tue, 12 Oct 2021 11:06:06 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id BD24E183AD0B;
+        Tue, 12 Oct 2021 17:06:04 +0800 (+08)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     l.stach@pengutronix.de, tharvey@gateworks.com, kishon@ti.com,
+        vkoul@kernel.org, robh@kernel.org, galak@kernel.crashing.org,
+        shawnguo@kernel.org
+Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-imx@nxp.com,
+        Richard Zhu <hongxing.zhu@nxp.com>
+Subject: [PATCH v3 1/9] dt-bindings: phy: phy-imx8-pcie: Add binding for the pad modes of imx8 pcie phy
+Date:   Tue, 12 Oct 2021 16:41:10 +0800
+Message-Id: <1634028078-2387-2-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
+References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangming Cao <Guangming.Cao@mediatek.com>
+Add binding for reference clock PAD modes of the i.MX8 PCIe PHY.
 
-> Am 09.10.21 um 07:55 schrieb guangming.cao@mediatek.com:
-> From: Guangming Cao <Guangming.Cao@mediatek.com>
-> >
-> > If dma-buf don't want userspace users to touch the dmabuf buffer,
-> > it seems we should add this restriction into dma_buf_ops.mmap,
-> > not in this IOCTL:DMA_BUF_SET_NAME.
-> >
-> > With this restriction, we can only know the kernel users of the dmabuf
-> > by attachments.
-> > However, for many userspace users, such as userpsace users of dma_heap,
-> > they also need to mark the usage of dma-buf, and they don't care about
-> > who attached to this dmabuf, and seems it's no meaning to be waiting for
-> > IOCTL:DMA_BUF_SET_NAME rather than mmap.
-> 
-> Sounds valid to me, but I have no idea why this restriction was added in 
-> the first place.
-> 
-> Can you double check the git history and maybe identify when that was 
-> added? Mentioning this change in the commit message then might make 
-> things a bit easier to understand.
-> 
-> Thanks,
-> Christian.
-It was add in this patch: https://patchwork.freedesktop.org/patch/310349/.
-However, there is no illustration about it.
-I guess it wants users to set_name when no attachments on the dmabuf,
-for case with attachments, we can find owner by device in attachments.
-But just I said in commit message, this is might not a good idea.
+Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+---
+ include/dt-bindings/phy/phy-imx8-pcie.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+ create mode 100644 include/dt-bindings/phy/phy-imx8-pcie.h
 
-Do you have any idea?
-> 
-> >
-> > Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
-> > ---
-> >   drivers/dma-buf/dma-buf.c | 14 ++------------
-> >   1 file changed, 2 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> > index 511fe0d217a0..db2f4efdec32 100644
-> > --- a/drivers/dma-buf/dma-buf.c
-> > +++ b/drivers/dma-buf/dma-buf.c
-> > @@ -325,10 +325,8 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
-> >   
-> >   /**
-> >    * dma_buf_set_name - Set a name to a specific dma_buf to track the usage.
-> > - * The name of the dma-buf buffer can only be set when the dma-buf is not
-> > - * attached to any devices. It could theoritically support changing the
-> > - * name of the dma-buf if the same piece of memory is used for multiple
-> > - * purpose between different devices.
-> > + * It could theoretically support changing the name of the dma-buf if the same
-> > + * piece of memory is used for multiple purpose between different devices.
-> >    *
-> >    * @dmabuf: [in]     dmabuf buffer that will be renamed.
-> >    * @buf:    [in]     A piece of userspace memory that contains the name of
-> > @@ -346,19 +344,11 @@ static long dma_buf_set_name(struct dma_buf *dmabuf, const char __user *buf)
-> >   	if (IS_ERR(name))
-> >   		return PTR_ERR(name);
-> >   
-> > -	dma_resv_lock(dmabuf->resv, NULL);
-> > -	if (!list_empty(&dmabuf->attachments)) {
-> > -		ret = -EBUSY;
-> > -		kfree(name);
-> > -		goto out_unlock;
-> > -	}
-> >   	spin_lock(&dmabuf->name_lock);
-> >   	kfree(dmabuf->name);
-> >   	dmabuf->name = name;
-> >   	spin_unlock(&dmabuf->name_lock);
-> >   
-> > -out_unlock:
-> > -	dma_resv_unlock(dmabuf->resv);
-> >   	return ret;
-> >   }
-> >   
+diff --git a/include/dt-bindings/phy/phy-imx8-pcie.h b/include/dt-bindings/phy/phy-imx8-pcie.h
+new file mode 100644
+index 000000000000..2bc7f1b31c6b
+--- /dev/null
++++ b/include/dt-bindings/phy/phy-imx8-pcie.h
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * This header provides constants for i.MX8 PCIe.
++ */
++
++#ifndef _DT_BINDINGS_IMX8_PCIE_H
++#define _DT_BINDINGS_IMX8_PCIE_H
++
++/* Reference clock PAD mode */
++#define IMX8_PCIE_REFCLK_PAD_UNUSED	0
++#define IMX8_PCIE_REFCLK_PAD_INPUT	1
++#define IMX8_PCIE_REFCLK_PAD_OUTPUT	2
++
++#endif /* _DT_BINDINGS_IMX8_PCIE_H */
+-- 
+2.25.1
+
