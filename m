@@ -2,117 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6391442A0C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B4342A0C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbhJLJO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:14:28 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38524 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232502AbhJLJO1 (ORCPT
+        id S235438AbhJLJQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232657AbhJLJQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:14:27 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C8gFWN023071;
-        Tue, 12 Oct 2021 05:12:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=MIH7MWUn5vJZX39nwodbJORz2WPIGlaALqP0WppLcj4=;
- b=RnUes36uz2B7EmEmsC6yW6LScrm1+YaGWWWZ01cyRC4zlB0wBFb/j2nHfBf+QUuIY40i
- oVDyJjHzDc1mC6JHqNWRGgR1QrzsfRAL9XWwtWmmP/NbW6OwcMaFJ8GVpRIGRVyIMET1
- d624NFeZyjxoNRO+qTGYFqj/cKBIPQJN37EaihPldLdAIR/z1k7IbyuIQVExUn8PqxtG
- 2q18WBbKmuSKEbxrV8iHbEbn+Kj5QkSVlZIVqM6r3tBzDtcngGrOFqxYkHD5wq2//EHo
- YI6V2NZGZSh4PVl4gt3nHdStdw1VBQ3ZsPjdZSZVGSwlbfhmGFCVNynXvjuxwMqJaZta 9A== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn72x0hxp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 05:12:22 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19C97P2u006745;
-        Tue, 12 Oct 2021 09:12:19 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 3bk2q9xdba-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 09:12:19 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19C9CFXo3605168
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 09:12:15 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9761BAE051;
-        Tue, 12 Oct 2021 09:12:15 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4D77CAE045;
-        Tue, 12 Oct 2021 09:12:15 +0000 (GMT)
-Received: from osiris (unknown [9.145.173.66])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 12 Oct 2021 09:12:15 +0000 (GMT)
-Date:   Tue, 12 Oct 2021 11:12:13 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: Re: [PATCH v1 1/1] s390: Use string_upper() instead of open coded
- variant
-Message-ID: <YWVRbQrDk7jtYApD@osiris>
-References: <20211001130201.72545-1-andriy.shevchenko@linux.intel.com>
- <YVtksmjj1eGqw5GY@osiris>
- <c372092aecc243ad880ea9a5bdf7d080@AcuMS.aculab.com>
- <YWQNZb25R3SjsQAL@osiris>
- <985bbceb3ee046bbbee6199efcf7c90c@AcuMS.aculab.com>
+        Tue, 12 Oct 2021 05:16:05 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4FFC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:14:04 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id g13so16762186uaj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:14:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smartx-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cdx68haq+GI9hYbv4kInfLBYws9f1YTUpzJDYZRtxTQ=;
+        b=0wKyXGV0Sg2HzurNg19D86iRRMxMHIHP6ii4dL16JWNKqKQYSc5SUyd7KX7qRZyWOl
+         DAhJ41KHAOMKyphg5k6jvKyLVx2+u8E3bfB75fMZnWHGNlD325rFCJosgkhW7gqYaona
+         qv/P81BHmuvTERxGFTIrd94wXylE1Y/5txUgNnxfopn+XYVlDYnLlZoVn0EeanjvoFFQ
+         Yog+CTTCvhiILRXszHSN6sevNmhwxeI2TtRT4OURFfOQen8MYtsbmDt4GGcSTzRbH6Eu
+         SM43VV7E1Odf93RpGuR5dgox7IxOnKMt0k6l6pD6AsYnM7DdDjZnoj88ZkXgHzTqGqwA
+         Hj5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cdx68haq+GI9hYbv4kInfLBYws9f1YTUpzJDYZRtxTQ=;
+        b=S2Piy4mKn8MPtohAUYCfCy12yRP8KFiZF6+WtTGd4O7yMs8xf9FKrfi6hF79MkzgSc
+         p/4pb08ZrP4WsCfvaey69IUGK8QgaAcYpzMmb8jPlyuC+7iA0xXMOMNZ2rq0I1rGeEJN
+         Ff/IQ/g3SZyzRHvyijwBNhLwMHJGaKpeE+rY2EYEF5xv3AVfXtQOi4IL9CUX79w2XJPt
+         RN1rewqgicG9vc+NiDHamTzokdl4H+Tn019ZT1d1Zvohj55m4mehDpFHbbDpU0CSv80v
+         Pk5Rpd2y3wz2THQhUuvQlNArGw6t2m8T7NysZ7nrCNuYMbjzwC1tkIja/M+G3qvFiOGk
+         RS9w==
+X-Gm-Message-State: AOAM533ZUouznZszymU789gCtkxFbCusDqeFGkTYnb7AcYYVgtJ8+auw
+        QuGiB/h7qu3w5ptfK04LPJdTnif+k/P1mgCErof2LQ==
+X-Google-Smtp-Source: ABdhPJzr8KcM6zJqeVR++RcjnWt01xCANrk81+BaS6dd8rKggMvZSv67FzuFQrLwYcVLcwrt5iWlrCz+XUDCCgFnUyE=
+X-Received: by 2002:ab0:36dc:: with SMTP id v28mr12460789uau.31.1634030043137;
+ Tue, 12 Oct 2021 02:14:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <985bbceb3ee046bbbee6199efcf7c90c@AcuMS.aculab.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: IJcfOqBw4ZieZn-YQMxkOYYGyjGrdiYb
-X-Proofpoint-GUID: IJcfOqBw4ZieZn-YQMxkOYYGyjGrdiYb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-12_02,2021-10-11_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
- impostorscore=0 clxscore=1015 malwarescore=0 bulkscore=0 suspectscore=0
- phishscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110120051
+References: <20211008032231.1143467-1-fengli@smartx.com> <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
+ <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com>
+ <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
+ <CALTww28CsJdmVOLFeoHC8FgbHDK78h8Lncsf9fFA0RYXEj=R9A@mail.gmail.com>
+ <CAHckoCzzVP7npmU4LWedzD-f1QmkH4K0iLk_=8ptSFXrFfRoDw@mail.gmail.com>
+ <CAPhsuW4VFTpM94by-iMkTQ=b9Y7FqZ2oqHH+jV-f8BM=YKWyiA@mail.gmail.com>
+ <CAHckoCxRj1qb=yfeQ2o_8n_BSSLD9JXqm8GopUp2qx9NEPxr7w@mail.gmail.com> <CALTww2_eScuqd4yUtDFhaRUGAK-f8J_L=yOZdTVA9uZ7Tq4bxg@mail.gmail.com>
+In-Reply-To: <CALTww2_eScuqd4yUtDFhaRUGAK-f8J_L=yOZdTVA9uZ7Tq4bxg@mail.gmail.com>
+From:   Li Feng <fengli@smartx.com>
+Date:   Tue, 12 Oct 2021 17:13:51 +0800
+Message-ID: <CAHckoCys6_SG56jzuK0OfFwKb6BtBsUhpp6A70hOKFSeVTWU-Q@mail.gmail.com>
+Subject: Re: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
+To:     Xiao Ni <xni@redhat.com>
+Cc:     Song Liu <song@kernel.org>,
+        "open list:SOFTWARE RAID (Multiple Disks) SUPPORT" 
+        <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 08:04:58AM +0000, David Laight wrote:
-> From: Heiko Carstens
-> > Sent: 11 October 2021 11:10
-> > 
-> > On Mon, Oct 11, 2021 at 08:21:15AM +0000, David Laight wrote:
-> > > ...
-> > > > > +	 * This snprintf() call does two things:
-> > > > > +	 * - makes a NUL-terminated copy of the input string
-> > > > > +	 * - pads it with spaces
-> > > > > +	 */
-> > > > > +	snprintf(tmp, sizeof(tmp), "%s        ", name);
-> > > >
-> > > > I can't say I like code where I have to count spaces in order to
-> > > > verify if the code is actually correct.
-> > >
-> > > What it wrong with "%-8.8s" ?
-> > 
-> > There's nothing wrong with it, except lack of imagination on my side ;)
-> > Andy, care to to send a separate patch just for extmem.c?
-> 
-> Are any of the snprintf() versions actually correct at all?
-> The implication of the comment is that the input string might
-> not be NUL terminated - in which case it shouldn't be passed
-> to snprintf().
-> I don't think you can assume that the format processing doesn't
-> do a strlen() of any %s argument - even if a maximum field
-> width is given.
+Thanks,
+Feng Li
 
-The input string is a NUL terminated ASCII string. The output string
-is not. It is used to communicate with a hypervisor, which expects an
-eight character EBCDIC non NUL terminated name, where the name is
-either eight characters long or filled up with spaces.
-So using snprintf here should be fine. On the other hand I really
-don't see a pressing need to change anything here.
+Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=A5=E5=91=
+=A8=E4=BA=8C =E4=B8=8B=E5=8D=884:49=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Hi all
+>
+> How about this patch? Now writemostly flag doesn't be stored in
+> superblock too. So this patch fix this problem too.
+> If this patch is ok, I'll send the patch.
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 6c0c3d0d905a..9e8a8c5c7758 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -2977,6 +2977,7 @@ state_store(struct md_rdev *rdev, const char
+> *buf, size_t len)
+>       *  {,-}failfast - set/clear FailFast
+>       */
+>      int err =3D -EINVAL;
+> +    int need_update_sb =3D 0;
+>      if (cmd_match(buf, "faulty") && rdev->mddev->pers) {
+>          md_error(rdev->mddev, rdev);
+>          if (test_bit(Faulty, &rdev->flags))
+> @@ -2998,20 +2999,19 @@ state_store(struct md_rdev *rdev, const char
+> *buf, size_t len)
+>
+>              if (err =3D=3D 0) {
+>                  md_kick_rdev_from_array(rdev);
+> -                if (mddev->pers) {
+> -                    set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
+> -                    md_wakeup_thread(mddev->thread);
+> -                }
+> +                need_update_sb =3D 1;
+>                  md_new_event(mddev);
+>              }
+>          }
+>      } else if (cmd_match(buf, "writemostly")) {
+>          set_bit(WriteMostly, &rdev->flags);
+>          mddev_create_serial_pool(rdev->mddev, rdev, false);
+> +        need_update_sb =3D 1;
+>          err =3D 0;
+>      } else if (cmd_match(buf, "-writemostly")) {
+>          mddev_destroy_serial_pool(rdev->mddev, rdev, false);
+>          clear_bit(WriteMostly, &rdev->flags);
+> +        need_update_sb =3D 1;
+>          err =3D 0;
+>      } else if (cmd_match(buf, "blocked")) {
+>          set_bit(Blocked, &rdev->flags);
+> @@ -3037,9 +3037,11 @@ state_store(struct md_rdev *rdev, const char
+> *buf, size_t len)
+>          err =3D 0;
+>      } else if (cmd_match(buf, "failfast")) {
+>          set_bit(FailFast, &rdev->flags);
+> +        need_update_sb =3D 1;
+>          err =3D 0;
+>      } else if (cmd_match(buf, "-failfast")) {
+>          clear_bit(FailFast, &rdev->flags);
+> +        need_update_sb =3D 1;
+>          err =3D 0;
+>      } else if (cmd_match(buf, "-insync") && rdev->raid_disk >=3D 0 &&
+>             !test_bit(Journal, &rdev->flags)) {
+> @@ -3120,6 +3122,11 @@ state_store(struct md_rdev *rdev, const char
+> *buf, size_t len)
+>      }
+>      if (!err)
+>          sysfs_notify_dirent_safe(rdev->sysfs_state);
+> +    if (need_update_sb)
+> +        if (mddev->pers) {
+> +            set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
+> +            md_wakeup_thread(mddev->thread);
+> +        }
+When will mddev->pers is NULL?
+If it is NULL, this change will not on disk.
+
+>      return err ? err : len;
+>  }
+>  static struct rdev_sysfs_entry rdev_state =3D
+>
+> On Tue, Oct 12, 2021 at 4:44 PM Li Feng <fengli@smartx.com> wrote:
+> >
+> > Song Liu <song@kernel.org> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=A5=
+=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=884:17=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > On Tue, Oct 12, 2021 at 1:07 AM Li Feng <fengli@smartx.com> wrote:
+> > > >
+> > > > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=
+=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=882:58=E5=86=99=E9=81=93=EF=BC=9A
+> > > > >
+> > > > > On Mon, Oct 11, 2021 at 5:42 PM Li Feng <fengli@smartx.com> wrote=
+:
+> > > > > >
+> > > > > > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8811=E6=
+=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:49=E5=86=99=E9=81=93=EF=BC=9A
+> > > > > > >
+> > > > > > > Hi all
+> > > > > > >
+> > > > > > > Now the per device sysfs interface file state can change fail=
+fast. Do
+> > > > > > > we need a new file for failfast?
+> > > > > > >
+> > > > > > > I did a test. The steps are:
+> > > > > > >
+> > > > > > > mdadm -CR /dev/md0 -l1 -n2 /dev/sdb /dev/sdc --assume-clean
+> > > > > > > cd /sys/block/md0/md/dev-sdb
+> > > > > > > echo failfast > state
+> > > > > > > cat state
+> > > > > > > in_sync,failfast
+> > > > > >
+> > > > > > This works,  will it be persisted to disk?
+> > > > > >
+> > > > >
+> > > > > mdadm --detail /dev/md0 can show the failfast information. So it
+> > > > > should be written in superblock.
+> > > > > But I don't find how md does this. I'm looking at this.
+> > > > >
+> > > > Yes, I have tested that it has been persisted, but don't understand=
+ who does it.
+> > >
+> > > I think this is not guaranteed to be persistent:
+> > >
+> > > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
+> > > in_sync,failfast
+> > > [root@eth50-1 ~]# echo -failfast >  /sys/block/md127/md/rd1/state
+> > > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
+> > > in_sync
+> > > [root@eth50-1 ~]# mdadm --stop /dev/md*
+> > > mdadm: /dev/md does not appear to be an md device
+> > > mdadm: stopped /dev/md127
+> > > [root@eth50-1 ~]# mdadm -As
+> > > mdadm: /dev/md/0_0 has been started with 4 drives.
+> > > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
+> > > in_sync,failfast
+> > >
+> > > How about we fix state_store to make sure it is always persistent?
+> > >
+> > I agree with you.
+> >
+> > > Thanks,
+> > > Song
+> >
+>
