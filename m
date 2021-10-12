@@ -2,145 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894AE42AB81
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB6C42AB80
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbhJLSFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:05:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233507AbhJLSE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:04:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 294BE610CE;
-        Tue, 12 Oct 2021 18:02:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634061774;
-        bh=xTN1PjqxcKL64k4FjBSP0uPIUc967wpJd6JWcfYGptQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VkWxnZ4AdwcZOrLECs7LwOd2c9krNsSkWbN4SZ1zwEAlTpWr00f/aWx22Zqx82KkV
-         zZ2r1bSmAmhv2WVSmNCLAKRgHWRNZ+reGUKY6CSZ1qGVsGPyZXs6IB/Ei0ATlAl5kI
-         f0UJV8f/xAe9Ou5SJOWwXdnzg9cACx+LAYP6jL8qAgfyAN4yU8dMYPAhIqI03q0vjm
-         JWRls1TQp/KVRaC/D4/eYBSXcQR0BSjrBOS1LicD+vyGkJ9MkcObROljn1ufaKTHPy
-         OfdyvXa7gBCsthA5+L2mrwVaM4pni2MlpQLe5rfSw2/rtSgXgZQfKzUEFp0sr9Py3x
-         QaCdUJNUOUxIw==
-Received: by mail-ed1-f42.google.com with SMTP id d9so2738642edh.5;
-        Tue, 12 Oct 2021 11:02:54 -0700 (PDT)
-X-Gm-Message-State: AOAM530ZmPkw9u4gyxy79iH6AP2Qnpax4oEw97RepjechBdV0ll024/Z
-        edTMrzsKzyaHoN2BuAiHbEFWLiy0cCLPMTUI8w==
-X-Google-Smtp-Source: ABdhPJxx05UpaUAZBZhobVr3mWSJ/Vmt1Vre3u4+SUHd1FZeloZmFdpglKPZPp5Q7X+iaEzRfGBddajKTnGEf+TRS58=
-X-Received: by 2002:a05:6402:1d55:: with SMTP id dz21mr1780223edb.164.1634061772482;
- Tue, 12 Oct 2021 11:02:52 -0700 (PDT)
+        id S231165AbhJLSFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234516AbhJLSEy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 14:04:54 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4C8C061771
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:02:50 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id k3so9009ilu.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:02:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2bpq9vZ1ywmjFaWaTaSoSw7oZ5Xe9ZrJkc7mehLIaLo=;
+        b=MurefTEGF9K6Y1js68Sz9jyL+FdvW1g0UvodpMH6zHP4NG+ZjJwrPAB14pLQppUzCV
+         pi/HVqcCIADjGpGfEPr5mpAIKRFXSFytgRE4XLceuj7iNsetiwctjrpO2/W++The8H9M
+         Nd079/VKzGa5s2opuk8Lo2Fd+IuqDTjnjxlO4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2bpq9vZ1ywmjFaWaTaSoSw7oZ5Xe9ZrJkc7mehLIaLo=;
+        b=wFShXA8vZYwyM1bVyNtkG3g92dtt+tNYObQr9Dfva1TE56J2GaXYaYUp5qhiL4fDbA
+         gU/ei//fQMBnBicPsDhoSAUQXuKHol97GL/EYPx4brt8CiKNleQX74WA0rbqXaNC5C+w
+         vUu+Doq1MLEZx6wSxeKRBHv7KEZFkXvqEF1nkc0GFWxynKgg0V3KSsrmyZO1b8O37y7+
+         re0s3m9PI1yExzvuPX8Ul5MKcgO/EO19iiPAYR5QBMom+AfJo9TFApgBPAX5yIaKSLce
+         l/NHnloqIoPjtb1mtb3YxCXMj+wJje/051OEJbcYoqJxgmoR//npKte5EckeRtIKSEEk
+         lIag==
+X-Gm-Message-State: AOAM530Tn+uKVHei7VaSJpN6lUxqnidOEnCvwVwckMllOLUoL0LIOOI5
+        mJhdk+dTIj5KReyLn9hC4ffaYg==
+X-Google-Smtp-Source: ABdhPJwS1eH0lSH0qFVNOw1ExzVPoBsE/sZUZvSLF0mwf1Jz0tMd/jH0sX+NooWgJabd1z59EqDF0w==
+X-Received: by 2002:a05:6e02:1d9b:: with SMTP id h27mr21488582ila.274.1634061769818;
+        Tue, 12 Oct 2021 11:02:49 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l20sm5823796ioh.34.2021.10.12.11.02.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 11:02:49 -0700 (PDT)
+Subject: Re: [PATCH 5.4 00/51] 5.4.153-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211012093344.002301190@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <0253dcfe-95bf-65c3-ae26-89a87b997003@linuxfoundation.org>
+Date:   Tue, 12 Oct 2021 12:02:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <cover.1633972263.git.naveennaidu479@gmail.com>
- <c632b07eb1b08cc7d4346455a55641436a379abd.1633972263.git.naveennaidu479@gmail.com>
- <YWS1QtNJh7vPCftH@robh.at.kernel.org> <20211012162054.rxx7aubwdvhl2eqj@theprophet>
-In-Reply-To: <20211012162054.rxx7aubwdvhl2eqj@theprophet>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 12 Oct 2021 13:02:39 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKYP+6Bzm5hvcVbAz5R3+omREDJoOspJ4eTBeMwBSfkfw@mail.gmail.com>
-Message-ID: <CAL_JsqKYP+6Bzm5hvcVbAz5R3+omREDJoOspJ4eTBeMwBSfkfw@mail.gmail.com>
-Subject: Re: [PATCH 02/22] PCI: Unify PCI error response checking
-To:     Naveen Naidu <naveennaidu479@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211012093344.002301190@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 11:21 AM Naveen Naidu <naveennaidu479@gmail.com> wrote:
->
-> On 11/10, Rob Herring wrote:
-> > On Mon, Oct 11, 2021 at 11:08:32PM +0530, Naveen Naidu wrote:
-> > > An MMIO read from a PCI device that doesn't exist or doesn't respond
-> > > causes a PCI error.  There's no real data to return to satisfy the
-> > > CPU read, so most hardware fabricates ~0 data.
-> > >
-> > > Use SET_PCI_ERROR_RESPONSE() to set the error response and
-> > > RESPONSE_IS_PCI_ERROR() to check the error response during hardware
-> > > read.
-> > >
-> > > These definitions make error checks consistent and easier to find.
-> > >
-> > > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> > > ---
-> > >  drivers/pci/access.c | 22 +++++++++++-----------
-> > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > >
-> > > diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-> > > index 46935695cfb9..e1954bbbd137 100644
-> > > --- a/drivers/pci/access.c
-> > > +++ b/drivers/pci/access.c
-> > > @@ -81,7 +81,7 @@ int pci_generic_config_read(struct pci_bus *bus, unsigned int devfn,
-> > >
-> > >     addr = bus->ops->map_bus(bus, devfn, where);
-> > >     if (!addr) {
-> > > -           *val = ~0;
-> > > +           SET_PCI_ERROR_RESPONSE(val);
-> >
-> > This to me doesn't look like kernel style. I'd rather see a define
-> > replace just '~0', but I defer to Bjorn.
-> >
->
-> Apologies, if this is a lame question. Why is the macro
-> SET_PCI_ERROR_RESPONSE not a kernel style. I ask this so that I do not
-> end up making the same mistake again.
+On 10/12/21 3:37 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.153 release.
+> There are 51 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 14 Oct 2021 09:33:32 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Generally, we don't do macros if a static inline function will work
-because you get more type checking with a function. There's exceptions
-like struct initializers which need to work in declarations.
+Compiled and booted on my test system. No dmesg regressions.
 
-Second, I think the above obfuscates the code. I know exactly what the
-original line is doing to val. With SET_PCI_ERROR_RESPONSE(), I have
-to go look and it hasn't saved us any LOC to make the caller more
-readable. The downside of the original way, is I don't know why we set
-val to ~0, but just a define would tell me that.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-> Bjorn, did initally make a patch with only replacing '~0' but then
-> Andrew suggested in the patch [1] that we should use the macro.
->
-> [1]:
-> https://lore.kernel.org/linux-pci/20190823104415.GC14582@e119886-lin.cambridge.arm.com/
-> [Adding Andrew in the CC for this]
+thanks,
+-- Shuah
 
-He's no longer at Arm nor active upstream.
-
-> Apologies, I should have added this link in the cover letter but I
-> completely forgot about it.
->
-> That's why I decided to go with the macro. If that is not the right
-> approach please let me know and I can fix it up.
->
-> > >             return PCIBIOS_DEVICE_NOT_FOUND;
-> >
-> > Neither does this using custom error codes rather than standard Linux
-> > errno. I point this out as I that's were I'd start with the config
-> > accessors. Though there are lots of occurrences so we'd need a way to do
-> > this in manageable steps.
-> >
->
-> I am sorry, but I do not have any answer for this. I really do not know
-> why we return custom error codes instead of standard Linux errno. Maybe
-> someone else can pitch in on this.
-
-I don't either. My guess is either just too many places to fix or
-somehow it trickles up to userspace (but probably not since the error
-codes aren't in a uapi header).
-
-> > Can't we make PCI_OP_READ and PCI_USER_READ_CONFIG set the data value
-> > and delete the drivers all doing this? Then we have 2 copies (in source)
-> > rather than the many this series modifies. Though I'm not sure if there
-> > are other cases of calling pci_bus.ops.read() which expect to get ~0.
-> >
->
-> This seems like a really good idea :) But again, I am not entirely sure
-> if doing so would give us any unexpected behaviour. I'll wait for some
-> one to reply to this and if people agree to it, I would be glad to make
-> the changes to PCI_OP_READ and PCI_USER_READ_CONFIG and send a new
-> patch.
-
-I'm expecting Bjorn to chime in.
-
-Rob
