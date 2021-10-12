@@ -2,105 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2B542A1A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE9142A1A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235843AbhJLKEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:04:38 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:60843 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235805AbhJLKEg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:04:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634032955; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=KzrF2C1DpEGFxREoByICYhE38ZCMJzobznNOOwUoPhY=;
- b=UuxT7gym4RjhN+yU1Nk5PreGqXkTJpTiBWs3O7A/cNCfZ81lrYnN9YieigriARWWwRAPCFOO
- WD00WrPbOof0rafs+ns8cPr8CMPV07V8YnKY+ZZpybPfknVpa1jAAsi5Gae0y7Win27QUQD1
- 1xNWG2wsXro8Wx4abiPiPkmMxSw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 61655d3a446c6db0cb9fc404 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Oct 2021 10:02:34
- GMT
-Sender: bgodavar=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A2160C4338F; Tue, 12 Oct 2021 10:02:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bgodavar)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D78A4C4360C;
-        Tue, 12 Oct 2021 10:02:31 +0000 (UTC)
+        id S235805AbhJLKI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:08:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235534AbhJLKIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:08:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D487360698;
+        Tue, 12 Oct 2021 10:06:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634033183;
+        bh=afRaiB2x46Dy5EwPdZ0GaOyJyMOe/U1RoFhf+sQW94k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1CdakWEr955c3rxOuGkNsleaaeIP4jvOURkXyKGQ16kXeHMi1IT07zKNSblMHbJLW
+         y1/rppdbRKcWEjGQtBQVm9JrY9SSSVYlhhNCli9m4i6LNUBa+10tkPiE9D1rxzWUtM
+         U9vIuE2/exPIfXhX/zREsXLN7fov6zO63Yxgsw88=
+Date:   Tue, 12 Oct 2021 12:06:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     stable@vger.kernel.org, jannh@google.com,
+        torvalds@linux-foundation.org, vbabka@suse.cz, peterx@redhat.com,
+        aarcange@redhat.com, david@redhat.com, jgg@ziepe.ca,
+        ktkhai@virtuozzo.com, shli@fb.com, namit@vmware.com, hch@lst.de,
+        oleg@redhat.com, kirill@shutemov.name, jack@suse.cz,
+        willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH 1/1] gup: document and work around "COW can break either
+ way" issue
+Message-ID: <YWVeHbWp3kqf7Hyj@kroah.com>
+References: <20211012015244.693594-1-surenb@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 12 Oct 2021 15:32:31 +0530
-From:   bgodavar@codeaurora.org
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     marcel@holtmann.org, bjorn.andersson@linaro.org,
-        johan.hedberg@gmail.com, mka@chromium.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        rjliao@codeaurora.org, pharish@codeaurora.org,
-        abhishekpandit@chromium.org
-Subject: Re: [PATCH v1 2/2] arm64: dts: qcom: sc7280: update bluetooth node in
- SC7280 IDP2 board
-In-Reply-To: <fee220ea-4d20-79a2-fe3a-4df09535eca1@linaro.org>
-References: <1633523403-32264-1-git-send-email-bgodavar@codeaurora.org>
- <1633523403-32264-2-git-send-email-bgodavar@codeaurora.org>
- <fee220ea-4d20-79a2-fe3a-4df09535eca1@linaro.org>
-Message-ID: <34c0794417eab5dd75ecc25cbd15a976@codeaurora.org>
-X-Sender: bgodavar@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012015244.693594-1-surenb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
-
-On 2021-10-06 22:18, Dmitry Baryshkov wrote:
-> On 06/10/2021 15:30, Balakrishna Godavarthi wrote:
->> This patch updates bluetooth node in SC7280 IDP2 board.
->> 
->> Signed-off-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
->> ---
->>   arch/arm64/boot/dts/qcom/sc7280-idp2.dts | 6 ++++++
->>   1 file changed, 6 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts 
->> b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
->> index 1fc2add..5c8d54b 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
->> @@ -15,9 +15,15 @@
->>     	aliases {
->>   		serial0 = &uart5;
->> +		bluetooth0 = &bluetooth;
->> +		hsuart0 = &uart7;
+On Mon, Oct 11, 2021 at 06:52:44PM -0700, Suren Baghdasaryan wrote:
+> From: Linus Torvalds <torvalds@linux-foundation.org>
 > 
-> hsuartX does not follow existing aliases definition, so it was frowned
-> upon by Rob Herring in the past.
+> From: Linus Torvalds <torvalds@linux-foundation.org>
 > 
-[Bala]: Thanks for pointing out will do in similar way.
+> commit 17839856fd588f4ab6b789f482ed3ffd7c403e1f upstream.
 
->>   	};
->>     	chosen {
->>   		stdout-path = "serial0:115200n8";
->>   	};
->>   };
->> +
->> +&bluetooth: wcn6750-bt {
->> +	vddio-supply = <&vreg_l18b_1p8>;
->> +};
->> 
+Both backports now queued up, thanks.
+
+greg k-h
