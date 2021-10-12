@@ -2,144 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F87429EB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C50B429EB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234063AbhJLHgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
+        id S234171AbhJLHhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232530AbhJLHgE (ORCPT
+        with ESMTP id S234085AbhJLHhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:36:04 -0400
-Received: from lb2-smtp-cloud7.xs4all.net (lb2-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF6BC061570;
-        Tue, 12 Oct 2021 00:34:02 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id aCIOm68q3k3b0aCIRmPMmY; Tue, 12 Oct 2021 09:34:00 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1634024040; bh=K9friEJkZ5Q7D+co6uEjCR7+fPf9hr4m70FOs99cVU0=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=Hqda4GXFn6MjbMOOzxblg64uGR4rJCdzfdWtRCVokNxrkQXrIdOL8x/dT46tM+0ZM
-         z3c//dnRlxs5vY72wIVME3ypNeA66PKUmsNIu97+EBo64BHIcxycunTsEL530L4ocl
-         OK1SG0+AvgBAHqDOGPeAuvu7q4tj6CbCH2nR+UKCAN6tZPYSxCndgCXlVJ+HTONEee
-         B3f63XiaJmC0rNZ4YVwIJkDrxoKSjx7D9eDWFMUXxg/JElVRkWk9YEv36i5z9sYIOS
-         Q3FOJfBaxj645kJInYwwzP075th8CJY5cfWyneoJfFMdxEqY1r4ijKYe6JBnM8deIy
-         EUxdLfqyQOpsw==
-Subject: Re: [PATCH v2] media: rcar-vin: add G/S_PARM ioctls
-To:     Jacopo Mondi <jacopo@jmondi.org>,
-        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc:     =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-References: <YU2gSJKfsqP+gUci@oden.dyn.berto.se>
- <20210924135138.29950-1-nikita.yoush@cogentembedded.com>
- <20210928084323.5vuhvkp6ev2emv2z@uno.localdomain>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <46a129ad-c57e-3230-3a8c-5724be34479b@xs4all.nl>
-Date:   Tue, 12 Oct 2021 09:33:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        Tue, 12 Oct 2021 03:37:08 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4A1C061749
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:35:07 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id d9so53536141edh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:35:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0LdgTQXaIMFK90MNm2LnmaoXjv7Xz1qZCtdN0PVVc54=;
+        b=Qiq8iA5ULEqujdzoJDRiufJoirupCSn8sZCgDe767gWHWs0sgPrEVPSs6Qg2ThZQzw
+         ditUsjX+68E/QYrCxf1k6wkDf4vIBlcWKBbTkz0Mefc9MVMXlQ/euRUbR7ashmrrxrvr
+         tggvc0sIY9OUkq1N1QoaWRKBFs5m+XerdEjwnlqgrTnYaA3ImTDG6vnrKY7AbaNgeDCo
+         nnP424+10CuNHb7Rp7Q8q8bPFBbjBCUHEWkhIh5sCUj+FYEYoeWXtIqg6i2VX++knvCg
+         YC0h09cOVwdX1QBAcjRHmW2dLsGI+e+6JhlJdu8hoIwKjd3CLzpO5fSp9kWh5bDHankt
+         MAMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0LdgTQXaIMFK90MNm2LnmaoXjv7Xz1qZCtdN0PVVc54=;
+        b=E7dgh9+QbyY0tL64Ph6IBN7wh+3KIpn3RCHcFIWO8+GfGrru5Lf9r6gJBn52blZTDy
+         AcOPFRcEEYrA+NpnGLTYRFYe6EoOmVhwePrdhESgShy9hJz55oA4/qBEuPSJOClvXoOi
+         eXLtYrf7kGRw+8xihpXRMftoNsrjzNNDzcAG1Y+zfPrNxulpp6Pu1FzBtq4nr457/5gq
+         lGJekPNLRIvibnPsUl+WlvYX1Q/H5Re7F+MmuSwGr3JDAvCrTtlwsYykLnNzy6faEGKk
+         2ce0UqbAyZSpjTtcCK8oboSvt/+dFliFZQh887Xbe34b5CxDo+T+DUEMwUuOMW1nRgjb
+         wd8w==
+X-Gm-Message-State: AOAM530oZ6jRty7ALh7o+4EYfj+1SlaxRSPtF1R/GsfqLcXYspDSKIOU
+        1L82bY2ScaD764Nt7OjBcNKTziGpP9DWmqNrqZZufg==
+X-Google-Smtp-Source: ABdhPJwCt53XHpRv0O60+/zV2VTB2O0ZJQiUr07Ip2Ze2mcCpt8//Lsk0vB2lrIScioA4EveNy3rJQRIEtb4pBNUe50=
+X-Received: by 2002:a17:906:c302:: with SMTP id s2mr30057500ejz.499.1634024105733;
+ Tue, 12 Oct 2021 00:35:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210928084323.5vuhvkp6ev2emv2z@uno.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfIXZ77Buivuccp/MoYzJt9vqCVjSij+tqIIReMqGXF5ihHswaVjy3vmEdCkEr5gYUYlvu+rAuUWxUpRyKKyWHJSEgT6PfNbHhxItY5+OV59QEC7YKKBw
- W+bZB3Wg3VdyklZ+iZOHIN6kSwegMowyKPOYmFIiR8f4HP2JiTE2eU602fziBqHaHnuKB1dFR8ZanIRtZrm8w4xNQ1B0hj9t1gPZwiI/ktOnC1HRcrP3zikj
- 14R+7Q7EdxC5kJajgsNhRP8QnR+BibI4gZscp12J2o5aCKehsJ43jNyWLwm+V5MM4CNMTHj4mmymCSMmoxihjm6Z9YhNCErX0S7Y4JMnJLm85ZBChoMe8/JY
- BPan99Ga5vWapHKGDnHTWBJJhFB+yNS4JnEhrSIRIefiAlh5b8ix3EvP77MOewgO46KfLVVKdEvMzoLX/7vW3WAkiPxfK1mSm1LARet3rnBdt4JfTAKLKWYq
- Ht9MOH9DXRENOD3P
+References: <20211012064436.577746139@linuxfoundation.org>
+In-Reply-To: <20211012064436.577746139@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 12 Oct 2021 13:04:54 +0530
+Message-ID: <CA+G9fYt3vmhvuoFJ6p49DHiFE60oBeWUwuSLrh7vXwr=8_rpfg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/52] 5.4.153-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Song Liu <songliubraving@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        bpf <bpf@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+On Tue, 12 Oct 2021 at 12:16, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.153 release.
+> There are 52 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 14 Oct 2021 06:44:25 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 28/09/2021 10:43, Jacopo Mondi wrote:
-> Hello
->   explicit Cc Hans, as I recall the usage of s/g_parm was deprecated
-> and discouraged in mainline.
+stable rc 5.4.153-rc2 Powerpc build failed.
 
-It's perfectly fine to use it, but for the non-MC case only. Which is what
-this patch does, so I'm accepting it.
+In file included from arch/powerpc/net/bpf_jit64.h:11,
+                 from arch/powerpc/net/bpf_jit_comp64.c:19:
+arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
+arch/powerpc/net/bpf_jit.h:32:9: error: expected expression before 'do'
+   32 |         do { if (d) { (d)[idx] = instr; } idx++; } while (0)
+      |         ^~
+arch/powerpc/net/bpf_jit.h:33:33: note: in expansion of macro 'PLANT_INSTR'
+   33 | #define EMIT(instr)             PLANT_INSTR(image, ctx->idx, instr)
+      |                                 ^~~~~~~~~~~
+arch/powerpc/net/bpf_jit_comp64.c:415:41: note: in expansion of macro 'EMIT'
+  415 |                                         EMIT(PPC_LI(dst_reg, 0));
+      |                                         ^~~~
+arch/powerpc/net/bpf_jit.h:33:33: note: in expansion of macro 'PLANT_INSTR'
+   33 | #define EMIT(instr)             PLANT_INSTR(image, ctx->idx, instr)
+      |                                 ^~~~~~~~~~~
+arch/powerpc/net/bpf_jit.h:41:33: note: in expansion of macro 'EMIT'
+   41 | #define PPC_ADDI(d, a, i)       EMIT(PPC_INST_ADDI |
+___PPC_RT(d) |           \
+      |                                 ^~~~
+arch/powerpc/net/bpf_jit.h:44:33: note: in expansion of macro 'PPC_ADDI'
+   44 | #define PPC_LI(r, i)            PPC_ADDI(r, 0, i)
+      |                                 ^~~~~~~~
+arch/powerpc/net/bpf_jit_comp64.c:415:46: note: in expansion of macro 'PPC_LI'
+  415 |                                         EMIT(PPC_LI(dst_reg, 0));
+      |                                              ^~~~~~
+make[3]: *** [scripts/Makefile.build:262:
+arch/powerpc/net/bpf_jit_comp64.o] Error 1
+make[3]: Target '__build' not remade because of errors.
 
-s/g_parm isn't deprecated for non-MC drivers, it's ugly but it's the only
-way to set or report the framerate for such drivers.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Regards,
-
-	Hans
-
-> 
-> Hans: Support for g/s_param is required by Nikita to maintain
-> compatibility with (out of tree?) subdevice drivers. Should we add it
-> to the mainline receiver driver ?
-> 
-> What other API should be used to control the subdevice framerate ?
-> Should it go through VIDIOC_SUBDEV_S_FRAME_INTERVAL instead ?
-> 
-> Thanks
->    j
-> 
-> On Fri, Sep 24, 2021 at 04:51:38PM +0300, Nikita Yushchenko wrote:
->> From: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
->>
->> This adds g/s_parm ioctls for parallel interface.
->>
->> Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
->> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
->> ---
->> Changes from v1:
->> - use &vin->vdev to access vin's struct video_device
->>
->>  drivers/media/platform/rcar-vin/rcar-v4l2.c | 21 +++++++++++++++++++++
->>  1 file changed, 21 insertions(+)
->>
->> diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
->> index bdeff51bf768..a5bfa76fdac6 100644
->> --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
->> +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
->> @@ -527,6 +527,24 @@ static int rvin_s_selection(struct file *file, void *fh,
->>  	return 0;
->>  }
->>
->> +static int rvin_g_parm(struct file *file, void *priv,
->> +		       struct v4l2_streamparm *parm)
->> +{
->> +	struct rvin_dev *vin = video_drvdata(file);
->> +	struct v4l2_subdev *sd = vin_to_source(vin);
->> +
->> +	return v4l2_g_parm_cap(&vin->vdev, sd, parm);
->> +}
->> +
->> +static int rvin_s_parm(struct file *file, void *priv,
->> +		       struct v4l2_streamparm *parm)
->> +{
->> +	struct rvin_dev *vin = video_drvdata(file);
->> +	struct v4l2_subdev *sd = vin_to_source(vin);
->> +
->> +	return v4l2_s_parm_cap(&vin->vdev, sd, parm);
->> +}
->> +
->>  static int rvin_g_pixelaspect(struct file *file, void *priv,
->>  			      int type, struct v4l2_fract *f)
->>  {
->> @@ -743,6 +761,9 @@ static const struct v4l2_ioctl_ops rvin_ioctl_ops = {
->>  	.vidioc_g_selection		= rvin_g_selection,
->>  	.vidioc_s_selection		= rvin_s_selection,
->>
->> +	.vidioc_g_parm			= rvin_g_parm,
->> +	.vidioc_s_parm			= rvin_s_parm,
->> +
->>  	.vidioc_g_pixelaspect		= rvin_g_pixelaspect,
->>
->>  	.vidioc_enum_input		= rvin_enum_input,
->> --
->> 2.30.2
->>
-
+-- 
+Linaro LKFT
+https://lkft.linaro.org
