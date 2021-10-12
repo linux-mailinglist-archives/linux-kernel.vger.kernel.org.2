@@ -2,107 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD7342A289
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3791542A28E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235984AbhJLKpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:45:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50372 "EHLO mail.kernel.org"
+        id S236117AbhJLKp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:45:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235900AbhJLKpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:45:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A1E860E53;
-        Tue, 12 Oct 2021 10:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634035390;
-        bh=ZzuHwAkSRLULPaz5CoWOR7W7eK4U24fD6YHIlI+xiI8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dbozJf5gW2DrlHhLoCJdkCk41D5YsfI/EZpV7yYxzGe4aPj34aoYbKQk3TNci7H5O
-         38By9ZLPYiV+y0C24F+0oVgwcoofLiSsWHy2xuk5c/JmIa7JbmTaO7Wpr43lDC/PfN
-         5HiGZbCfHCDmuxM4Sjwvvu/qutgD5kM7Urq0iRLnVrbzPWfkYlQI1+V5unIh4FcZF2
-         NsKXgGkt1MKkXcuUJOsjcwk8PYYHKdCO6qZmCxJcWwq5FHmF/RTfJvs8mVK0eqksm+
-         MnkU7rKHEjqbGJ1WICWZo3Zy73JDDA53HxYwCvs2kVVEI+2+RB8V3KKJXX5Vfzb+6s
-         eLPLxZV9sICXQ==
-Date:   Tue, 12 Oct 2021 11:43:08 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Mike Rapoport <rppt@kernel.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 8/8] ep93xx: clock: convert in-place to COMMON_CLK
-Message-ID: <YWVmvHsEkPFkrD/R@sirena.org.uk>
-References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
- <20210726140001.24820-1-nikita.shubin@maquefel.me>
- <20210726140001.24820-9-nikita.shubin@maquefel.me>
- <ed557882a9530f2fd6245e34657be62399df76bc.camel@gmail.com>
- <CAK8P3a0Y4uwX4B10d5CR3WjZ1qXAqhKJGJ0EhUEF60uB1q3H9A@mail.gmail.com>
- <e50f2da7af1fa6f02fd413081fa5762837b86895.camel@gmail.com>
- <CAK8P3a3jAdYQerE03O5s2_PBUqt5QPCPSQxxs54E7-V=0HVBXA@mail.gmail.com>
- <YWVixgDQtJ8EGbwo@sirena.org.uk>
- <7f7acc8986aca1c895de732297b2995d05ec23e7.camel@gmail.com>
+        id S236114AbhJLKpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:45:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D88E60E53;
+        Tue, 12 Oct 2021 10:43:22 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 12:43:19 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Dave Jones <davej@codemonkey.org.uk>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: Should EXIT_DEAD be visible to userspace ?
+Message-ID: <20211012104319.il5g3vkooh5qmsmd@wittgenstein>
+References: <20211011194016.GA16788@codemonkey.org.uk>
+ <CAHk-=wgx6VQW192hbUiZABmkmZjNDynH75OR=-wvg=un960nRA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="os5yym2RVMTDw1VG"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <7f7acc8986aca1c895de732297b2995d05ec23e7.camel@gmail.com>
-X-Cookie: You buttered your bread, now lie in it.
+In-Reply-To: <CAHk-=wgx6VQW192hbUiZABmkmZjNDynH75OR=-wvg=un960nRA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 11, 2021 at 01:33:21PM -0700, Linus Torvalds wrote:
+> On Mon, Oct 11, 2021 at 12:40 PM Dave Jones <davej@codemonkey.org.uk> wrote:
+> >
+> > One of our users reported a crash in some userspace tooling this
+> > morning, which scrapes /proc/pid to gather stack traces, process states
+> > etc of everything running at the time.
+> >
+> > The crash occurred because it fell over an unexpected task state,
+> > which was 'X'.   According to the procps man-pages, this state should
+> > never be seen, but here it clearly was.
+> 
+> Heh.
+> 
+> > The kernel running at the time was kinda old (5.2) but I don't see much
+> > change in the EXIT_DEAD space that would explain something that got
+> > fixed subsequently.   It's also probably going to be difficult to
+> > reproduce unfortunately.
+> >
+> > So my question is, is procps wrong and code should expect to see X state
+> > processes in proc ?  The code in question is being hardened to handle
+> > unexpected inputs, but I'm curious if the kernel is leaking some state
+> > that it shouldn't.
+> 
+> My gut feel is that the man-pages have clearly been wrong - or at
+> least misleading - for at least the last couple of years (and possibly
+> longer), and this is the first report we've ever had of it actually
+> causing problems.
+> 
+> The docs *do* mention 'X'. Even if they say 'should never be seen',
+> it's not like it's not right there.
+> 
+> So we could either ask to just have the man-pages fixed to be a little
+> less strongly worded ("never" -> "seldom" or whatever). And apparently
+> procps is already getting fixed.
+> 
+> Or we could hide the 'X' state in newer kernels, and just call them
+> zombies to user space. We could literally just change the string from
+> "X (dead)" to "Z (dead)" and the "dead" part would still be there (and
+> different from "Z (zombie)").
+> 
+> And either way, it's likely not going to be something that people will
+> notice ever again. You update your system, and you wouldn't see the
+> problem, because whether the kernel was changed or not, procps was
+> updated.
+> 
+> And if the argument is that people didn't update procps, but *did*
+> update the kernel, then sure, that could avoid somebody hitting this
+> again, but that's where the "at least a couple of years and nobody has
+> noticed before" comes in.
+> 
+> So I can certainly take a patch that hides 'X', and we can even mark
+> it for stable.
+> 
+> But it feels like realistically nobody will actually care, and the
+> real fix is the one to procps, and that fix will make any kernel
+> change irrelevant (and possibly even a slight negative, since now
+> procps might report interesting cases?).
+> 
+> End result: if somebody cares enough and sends me a tested patch, I'll
+> apply it. But I personally wouldn't care much, and wouldn't push for
+> it unless we get somebody who does.
+> 
+> And I really think that "should never be seen" in the docs is just wrong.
+> 
+> Yes, we hold the task lock in task_state() when you look at
+> /proc/<pid>/status. So maybe it will never be seen there, because
+> maybe (I didn't check) we move from X->Z while holding the lock.
+> 
+> But other parts of /proc don't actually do that lock_task(), I think.
+> IOW, looking at /proc/<pid>/stat (which shows just the first letter of
+> the state), doesn't do that, I think. So it's not actually serialized
+> with the process going through its dying moments.
+> 
+> So I _think_ the "never" was always just "almost never".
+> 
+> In fact, take a look at commit ad86622b478e ("wait: swap EXIT_ZOMBIE
+> and EXIT_DEAD to hide EXIT_TRACE from user-space"). That 'X' has been
+> seen before. It's not great when it happens, but I think this is an
+> example of "the 'never' has never been true, and goes back to at least
+> 2014".
+> 
+> .. and that 2014 was just when we happened on it before. The actual
+> issue of 'X' showing up looks like it probably predates it (and likely
+> goes back to before git history).
+> 
+> So I suspect that stray 'X' is not actually a regression. Just rare
+> enough to be _almost_ "never".
 
---os5yym2RVMTDw1VG
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Imho, let's
+1. update the manpage
+2. update procps
+and call it done.
 
-On Tue, Oct 12, 2021 at 12:36:54PM +0200, Alexander Sverdlin wrote:
-> On Tue, 2021-10-12 at 11:26 +0100, Mark Brown wrote:
-> > On Tue, Oct 12, 2021 at 11:05:08AM +0200, Arnd Bergmann wrote:
-
-> > You're going to have to tell me what's going on here:
-
-> > =A0=A0 https://lore.kernel.org/all/20210914103212.GB4434@sirena.org.uk/
-
-> here you were asking about "spi: spi-ep93xx: Prepare clock before using i=
-t"
-> which you've already applied (as 7c72dc56a631).
-
-Right, you asked me to do the same thing on two patches so I didn't send
-the same thing over and over again.
-
-> Nevertheless, there are no dependencies in the patches 1..7, they are all
-> pre-requsites for the last patch 8/8.
-
-So what's going on with patch 8 then?  Is there some plan to merge it?
-
---os5yym2RVMTDw1VG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFlZrsACgkQJNaLcl1U
-h9CB6wf/a0ZkktyCoQ535RjWNK5MCH2fqOa/THbkumTymP6jPTw0SFzxXku9k7zv
-LggvJZEx3SDK7E7ZqwYp/YpehuetaLvRYM66Zy7zjaq4glHzY3cjhaJ/rvkoEQsg
-njPJHrVDG/k4qAnQCNmz5xascl8CnwtOPul0ExjkSUx5IZXZewlaNKnpweoGACVF
-OHuPHPpSWiTtKYs1QuVWAXZKJjceTCX+CXb4vKHh5aIBjIF9w/YxUsnNg9ny3T2Q
-iGSf90YAOc/7qMEQ46kK9kv2bh5lkTtpGqVd1CqEksTRY649YzMqBZ56C3vCiJFI
-zsgbbJ/RLlNwBhWj1sKQAanHv+Ohnw==
-=+n8j
------END PGP SIGNATURE-----
-
---os5yym2RVMTDw1VG--
+Christian
