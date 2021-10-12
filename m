@@ -2,113 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DAB429B19
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CFA429B1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhJLBl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:41:29 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14329 "EHLO
+        id S229627AbhJLBnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:43:40 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14330 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhJLBl2 (ORCPT
+        with ESMTP id S229456AbhJLBni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:41:28 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HSyrW6m9wz907W;
-        Tue, 12 Oct 2021 09:34:35 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+        Mon, 11 Oct 2021 21:43:38 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HSyv35HmPz907V;
+        Tue, 12 Oct 2021 09:36:47 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 09:41:24 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Tue, 12 Oct 2021 09:39:22 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Tue, 12 Oct 2021 09:39:21 +0800
-Subject: Re: [PATCH] blk-cgroup: check blkcg policy is enabled in
- blkg_create()
-To:     Tejun Heo <tj@kernel.org>
-CC:     <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20211008072720.797814-1-yukuai3@huawei.com>
- <YWRxi2OaIHhG9rOc@slm.duckdns.org>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <9d9ac88b-43e6-5b50-bc0b-98ad4704eca5@huawei.com>
-Date:   Tue, 12 Oct 2021 09:39:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ 15.1.2308.8; Tue, 12 Oct 2021 09:41:23 +0800
+Message-ID: <22320379-1905-d678-bfd7-2e5e118fa578@huawei.com>
+Date:   Tue, 12 Oct 2021 09:41:23 +0800
 MIME-Version: 1.0
-In-Reply-To: <YWRxi2OaIHhG9rOc@slm.duckdns.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v3 0/6] ARM: mm: cleanup page fault and fix pxn process
+ issue
+Content-Language: en-US
+To:     Russell King <linux@armlinux.org.uk>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jungseung Lee <js07.lee@gmail.com>,
+        Will Deacon <will@kernel.org>
+References: <20210610123556.171328-1-wangkefeng.wang@huawei.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <20210610123556.171328-1-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema762-chm.china.huawei.com (10.1.198.204)
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/12 1:16, Tejun Heo wrote:
-> On Fri, Oct 08, 2021 at 03:27:20PM +0800, Yu Kuai wrote:
->> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
->> index eb48090eefce..00e1d97621ea 100644
->> --- a/block/blk-cgroup.c
->> +++ b/block/blk-cgroup.c
->> @@ -226,6 +226,20 @@ struct blkcg_gq *blkg_lookup_slowpath(struct blkcg *blkcg,
->>   }
->>   EXPORT_SYMBOL_GPL(blkg_lookup_slowpath);
->>   
->> +static void blkg_check_pd(struct request_queue *q, struct blkcg_gq *blkg)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < BLKCG_MAX_POLS; i++) {
->> +		struct blkcg_policy *pol = blkcg_policy[i];
->> +
->> +		if (blkg->pd[i] && !blkcg_policy_enabled(q, pol)) {
->> +			pol->pd_free_fn(blkg->pd[i]);
->> +			blkg->pd[i] = NULL;
->> +		}
->> +	}
->> +}
->> +
->>   /*
->>    * If @new_blkg is %NULL, this function tries to allocate a new one as
->>    * necessary using %GFP_NOWAIT.  @new_blkg is always consumed on return.
->> @@ -252,6 +266,9 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg,
->>   		goto err_free_blkg;
->>   	}
->>   
->> +	if (new_blkg)
->> +		blkg_check_pd(q, new_blkg);
->> +
-> 
-> Can't this happen the other way around too? ie. Linking a pd which doesn't
-> have an entry for a policy which got enabled inbetween? And what if an
-> existing policy was de-registered and another policy got the policy id
-> inbetween? I think the correct solution here would be synchronizing alloc -
-> create blocks against policy deactivation rather than trying to patch an
-> allocated blkg later. Deactivation being a really slow path, there are
-> plenty of options. The main challenge would making it difficult to make
-> mistakes with, I guess.
 
-For the case policy was de-registered, I think there won't be a problem
-because pd_init_fn() is not called yet, and the blkg is not at
-blkg_list, it's fine to use this blkg for the new policy.
 
-For the case policy got enabled inbetween, the problem is that the pd
-still doesn't have an entry for the policy, perhaps we can call
-pd_alloc_fn() additionally in blkg_create?
+On 2021/6/10 20:35, Kefeng Wang wrote:
+> The patchset cleanup ARM page fault handle to improve readability,
+> fix the page table entries printing and fix infinite loop in the
+> page fault handler when user code execution with privilege mode if
+> ARM_LPAE enabled.
 
-If checking the blkg in blkg_create() is not a good solution, and we
-decide to synchronize alloc-create blkg against policy deactivation.
-Since only bfq policy can be deactivated or activated while queue is
-not dying, and queue is freezed during activation and deactivation,
-can we get a q->q_usage_counter and put it after blkg_create() is done
-to prevent concurrent bfq policy activation and deactivation?
+Hi Russell, I send the v3(most patches were reviewed by you in v2[1]) to
+ARM patch system due to no more comments, and this patchset is suspended
+too long without any changes, looking forward to your reply and hope it
+could be merged, many thanks.
 
-Thanks,
-Kuai
-> 
-> Thanks.
-> 
+[1] 
+https://lore.kernel.org/linux-arm-kernel/20210602070246.83990-1-wangkefeng.wang@huawei.com/
