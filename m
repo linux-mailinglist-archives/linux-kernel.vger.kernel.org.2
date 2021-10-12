@@ -2,79 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D753F429D28
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D3E429D38
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbhJLFg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 01:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
+        id S232579AbhJLFij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 01:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbhJLFgW (ORCPT
+        with ESMTP id S232254AbhJLFii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 01:36:22 -0400
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9ABC061570;
-        Mon, 11 Oct 2021 22:34:20 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 681F2423B9;
-        Tue, 12 Oct 2021 05:34:12 +0000 (UTC)
-Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device does
- not exist
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211011165707.138157-1-marcan@marcan.st>
- <20211011165707.138157-5-marcan@marcan.st>
- <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
-Date:   Tue, 12 Oct 2021 14:34:09 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 12 Oct 2021 01:38:38 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212D1C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 22:36:37 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id g6so44087069ybb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 22:36:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7XL2OhH3/JP2d1n5i0NoQYVBLyR5b6ih9F8rC7fPaw8=;
+        b=YIz7schr62o25Kk8g7+lX0aqEsOX9ha4KRCurs5t8nYWe3ybb0BGYRyTNxOMDQOt4L
+         gRMaIvi1d5c020EPGi2iB+KhmmRlH0d6ErcqsmawK4hViPXWSHB8THppCf0yRlDWQsbS
+         1eMwwPcHGB5y/XIJhsmmdMZc+YTZntrOYcrGKVIusunJdjDqMyhxNosruNdKybo6Ghla
+         I5rPA1ih4GOrBL5FL9LswuwUgRYkdHRsI22iY+KhbSsZxVkOzruQfuAcp6IixjL8uPKU
+         4dC/+SScw5mAcuOp40squ2No5UFu3JEoaMnizIyl/RoGHsoQwZwD7NU0S2kEc+cOqUZh
+         a1wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7XL2OhH3/JP2d1n5i0NoQYVBLyR5b6ih9F8rC7fPaw8=;
+        b=KDwKYZCF96e4XClIC7K4Ov//5QC3tnFkIQpVWAJ75yeXPAyi1stn3aFPs3usudNjxv
+         zthCXTsZKWrzSkIx1cOc6CWytyXnBRPKKPKDUQVLYeyTn9dOC2J8fJSXbMl3lt+KRoQA
+         rAFDC6kgPZGat6jEnCpYDxV48Xjh9SwbUigBv9bwDUfUPEWVvmmXOxT/aCMKQp6vlPlh
+         +FLc3YNwBiTZrfkpDHm8J1tQFYM01sJlTbkXu0kxe2QRMAexj+OfKhW3QGEiV+d+INdw
+         m1Ojpq0c9fS2q2hXKptyiMdlkom4MU5fDQN1keigmamRrUH9YkluTj/bviNgWG8V1jeN
+         QmYA==
+X-Gm-Message-State: AOAM533Ze4VutHtAiB6VCfx6+WXrwUD1c47nffBQ2D6XFPnGQGwjfPUo
+        7CjRG1qOWcnD3bZZjGhdUSj7qCKlzL3ehtXJxO20tA==
+X-Google-Smtp-Source: ABdhPJyTsM4JaN/xPnjTpzxxuo73xadaPUNGih6GtuXol8Vc+QjBmhQFZit4fZr7hGyTs8vyfUE4twxwx2HN6kT73h4=
+X-Received: by 2002:a25:3:: with SMTP id 3mr27812738yba.418.1634016995938;
+ Mon, 11 Oct 2021 22:36:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+References: <YV8jB+kwU95hLqTq@dhcp22.suse.cz> <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
+ <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz> <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
+ <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
+ <202110081344.FE6A7A82@keescook> <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
+ <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
+ <CAJuCfpHaF1e0V=wAoNO36nRL2A5EaNnuQrvZ2K3wh6PL6FrwZQ@mail.gmail.com> <YWT6Ptp/Uo4QGeP4@cmpxchg.org>
+In-Reply-To: <YWT6Ptp/Uo4QGeP4@cmpxchg.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 11 Oct 2021 22:36:24 -0700
+Message-ID: <CAJuCfpERX-nqHkYzx8FAi_DuOU1vkoV5ppCAhLHziOm7o7wj6g@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Kees Cook <keescook@chromium.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>,
+        Tim Murray <timmurray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2021 12.21, Viresh Kumar wrote:
-> I am not sure why you need this, since _set_required_opps() has this check:
-> 
-> 	if (unlikely(!required_opp_tables[0]->is_genpd)) {
-> 		dev_err(dev, "required-opps don't belong to a genpd\n");
-> 		return -ENOENT;
-> 	}
-> 
+On Mon, Oct 11, 2021 at 8:00 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Mon, Oct 11, 2021 at 06:20:25PM -0700, Suren Baghdasaryan wrote:
+> > On Mon, Oct 11, 2021 at 6:18 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > On Mon, Oct 11, 2021 at 1:36 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Fri 08-10-21 13:58:01, Kees Cook wrote:
+> > > > > - Strings for "anon" specifically have no required format (this is good)
+> > > > >   it's informational like the task_struct::comm and can (roughly)
+> > > > >   anything. There's no naming convention for memfds, AF_UNIX, etc. Why
+> > > > >   is one needed here? That seems like a completely unreasonable
+> > > > >   requirement.
+> > > >
+> > > > I might be misreading the justification for the feature. Patch 2 is
+> > > > talking about tools that need to understand memeory usage to make
+> > > > further actions. Also Suren was suggesting "numbering convetion" as an
+> > > > argument against.
+> > > >
+> > > > So can we get a clear example how is this being used actually? If this
+> > > > is just to be used to debug by humans than I can see an argument for
+> > > > human readable form. If this is, however, meant to be used by tools to
+> > > > make some actions then the argument for strings is much weaker.
+> > >
+> > > The simplest usecase is when we notice that a process consumes more
+> > > memory than usual and we do "cat /proc/$(pidof my_process)/maps" to
+> > > check which area is contributing to this growth. The names we assign
+> > > to anonymous areas are descriptive enough for a developer to get an
+> > > idea where the increased consumption is coming from and how to proceed
+> > > with their investigation.
+> > > There are of course cases when tools are involved, but the end-user is
+> > > always a human and the final report should contain easily
+> > > understandable data.
+> > >
+> > > IIUC, the main argument here is whether the userspace can provide
+> > > tools to perform the translations between ids and names, with the
+> > > kernel accepting and reporting ids instead of strings. Technically
+> > > it's possible, but to be practical that conversion should be fast
+> > > because we will need to make name->id conversion potentially for each
+> > > mmap. On the consumer side the performance is not as critical, but the
+> > > fact that instead of dumping /proc/$pid/maps we will have to parse the
+> > > file, do id->name conversion and replace all [anon:id] with
+> > > [anon:name] would be an issue when we do that in bulk, for example
+> > > when collecting system-wide data for a bugreport.
+>
+> Is that something you need to do client-side? Or could the bug tool
+> upload the userspace-maintained name:ids database alongside the
+> /proc/pid/maps dump for external processing?
 
-The table *is* assigned to a genpd (the memory controller), it's just 
-that that genpd isn't actually a parent of the CPU device. Without the 
-patch you end up with:
-
-[    3.040060] cpu cpu4: Failed to set performance rate of cpu4: 0 (-19)
-[    3.042881] cpu cpu4: Failed to set required opps: -19
-[    3.045508] cpufreq: __target_index: Failed to change cpu frequency: -19
-
-
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+You can generate a bugreport and analyze it locally or submit it as an
+attachment to a bug for further analyzes.
+Sure, we can attach the id->name conversion table to the bugreport but
+either way, some tool would have to post-process it to resolve the
+ids. If we are not analyzing the results immediately then that step
+can be postponed and I think that's what you mean? If so, then yes,
+that is correct.
