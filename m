@@ -2,113 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F112742A4FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF2F42A43E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236612AbhJLM7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236326AbhJLM7t (ORCPT
+        id S236363AbhJLMW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 08:22:57 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:23369 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233053AbhJLMWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:59:49 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AA6C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:57:48 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id r7so66766969wrc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:57:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=9BRnICML+eh11SmOadr/4aabH8joUGg2Wy5/vcK4NCA=;
-        b=k05qddI4yMu88qAtizX86dn+CSQ7sN6YlzZGwHC/ASkZAXkHZX2hPh/kjQJF0Q6WLf
-         uMeg0bprEYDw/1ymRRz4N6JvPWYfxYB+tKd+DilwPwKEJveflVRPWzwj5slwRny2Fv00
-         ZwzUK9K7cZekAfkYsqx6BltBBgTqXzmiSR7v4nnDWfD4+8u3/cxulBQ0m1LIDs4eObxO
-         LtI2i9uYFE1sm97ppjTCHsZehlFbIanMqM0c3vZJQUuMADJj9Y+OrAxozWtmGDWMk/N3
-         +zRsTb1mBdXTfFRMgdsrZr2soLzGHQPujDyk74s4pcFv29KcOG/jtbWVFrSZxR+lCKJ6
-         xdhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=9BRnICML+eh11SmOadr/4aabH8joUGg2Wy5/vcK4NCA=;
-        b=FZjF4vX8adshECP0dPWvwsasvEhncOMnnhnUp6Syv6xa1sVvZN4AuSaLt3QzP2Ko9G
-         6Dhpkkcth0GYryxYpVrAxImdTBwlp+IJXGRO9eD6ShoLWbx/GtjuAVbux3jGubzlhIW9
-         zOQQwFVDK4bMM/vb3SZQuNNh7GSfNxlxi+cGuRjjT+etCgXm0Fc8QX5GP+svsl8Ri4RJ
-         kEObz4yHzIhZSD/rGM2zMqtTzA4XVrDd7MKNGfkOFD9sH5z2Mumqu3qGY4IL/5vh5kOP
-         p68jAb3jaTENxVUbpNj5fUnO52jz9WrOW8RyMuNgIpZeiDHmtugcBWfacb8YMq/xx1tO
-         FEFQ==
-X-Gm-Message-State: AOAM530Cp6xzVo15a9bamm85zu37H9hHazlb6qLbMgWBpArdWJPBANeB
-        uPjuLFeJfvMTjKgOAKAC+HI=
-X-Google-Smtp-Source: ABdhPJzLYzD62tUiHRV/dwDOcWPFQYWHFzpV3DkNYqm2qNlN/GuIXT0Ga4u8NFeMMlIaug2C56H0JQ==
-X-Received: by 2002:a1c:7201:: with SMTP id n1mr5306097wmc.19.1634043466664;
-        Tue, 12 Oct 2021 05:57:46 -0700 (PDT)
-Received: from [192.168.1.21] ([195.245.16.219])
-        by smtp.gmail.com with ESMTPSA id m15sm2656721wmq.0.2021.10.12.05.57.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 05:57:46 -0700 (PDT)
-Message-ID: <3ea0db23ab3284fdee2fec6cfc08026a0acccb6f.camel@gmail.com>
-Subject: Re: [PATCH v2 8/8] ep93xx: clock: convert in-place to COMMON_CLK
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Mike Rapoport <rppt@kernel.org>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>
-Date:   Tue, 12 Oct 2021 14:57:45 +0200
-In-Reply-To: <CAK8P3a2cvd+od4+UwwrBQ=7F3+cpEAMFz9tBfsZ=nR1Ak1ppwQ@mail.gmail.com>
-References: <20210726140001.24820-1-nikita.shubin@maquefel.me>
-         <20210726140001.24820-9-nikita.shubin@maquefel.me>
-         <ed557882a9530f2fd6245e34657be62399df76bc.camel@gmail.com>
-         <CAK8P3a0Y4uwX4B10d5CR3WjZ1qXAqhKJGJ0EhUEF60uB1q3H9A@mail.gmail.com>
-         <e50f2da7af1fa6f02fd413081fa5762837b86895.camel@gmail.com>
-         <CAK8P3a3jAdYQerE03O5s2_PBUqt5QPCPSQxxs54E7-V=0HVBXA@mail.gmail.com>
-         <YWVixgDQtJ8EGbwo@sirena.org.uk>
-         <7f7acc8986aca1c895de732297b2995d05ec23e7.camel@gmail.com>
-         <YWVmvHsEkPFkrD/R@sirena.org.uk>
-         <7ec1690ea0ca9f6538b8228f78e62b2f38405fd4.camel@gmail.com>
-         <YWVvyKq4W4VShiRU@sirena.org.uk>
-         <00781d5212bb4015064d07e762ae0695d16e834e.camel@gmail.com>
-         <CAMuHMdUCpfpORD9r28r1hdtdKMPyvXtkYZQsiBCfM8WDcLYKFw@mail.gmail.com>
-         <CAK8P3a2cvd+od4+UwwrBQ=7F3+cpEAMFz9tBfsZ=nR1Ak1ppwQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        Tue, 12 Oct 2021 08:22:51 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HTF5060qczYgVV;
+        Tue, 12 Oct 2021 20:16:20 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 20:20:45 +0800
+Received: from huawei.com (10.175.113.32) by kwepemm600003.china.huawei.com
+ (7.193.23.202) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 12 Oct
+ 2021 20:20:43 +0800
+From:   Nanyong Sun <sunnanyong@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <yashsri421@gmail.com>, <weiyongjun1@huawei.com>,
+        <krzysztof.kozlowski@canonical.com>, <shenyang39@huawei.com>,
+        <dingsenjie@yulong.com>, <rdunlap@infradead.org>,
+        <jringle@gridpoint.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] net: encx24j600: check error in devm_regmap_init_encx24j600
+Date:   Tue, 12 Oct 2021 20:59:01 +0800
+Message-ID: <20211012125901.3623144-1-sunnanyong@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+devm_regmap_init may return error which caused by like out of memory,
+this will results in null pointer dereference later when reading
+or writing register:
 
-On Tue, 2021-10-12 at 14:39 +0200, Arnd Bergmann wrote:
-> Right, if everything else is in mainline, then having the last two patches
-> in the soc tree gets the job done the quickest.
-> 
-> If any of the other patches are only in linux-next but not in mainline yet,
-> then it seems best for Mark to take the ASoC/i2s patch for v5.16, and I'll
-> take the last one for v5.17, or maybe queue it separately from the rest
-> and send that in the second half of the 5.16 merge window after everything
-> else has landed.
+general protection fault in encx24j600_spi_probe
+KASAN: null-ptr-deref in range [0x0000000000000090-0x0000000000000097]
+CPU: 0 PID: 286 Comm: spi-encx24j600- Not tainted 5.15.0-rc2-00142-g9978db750e31-dirty #11 9c53a778c1306b1b02359f3c2bbedc0222cba652
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:regcache_cache_bypass drivers/base/regmap/regcache.c:540
+Code: 54 41 89 f4 55 53 48 89 fb 48 83 ec 08 e8 26 94 a8 fe 48 8d bb a0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 4a 03 00 00 4c 8d ab b0 00 00 00 48 8b ab a0 00
+RSP: 0018:ffffc900010476b8 EFLAGS: 00010207
+RAX: dffffc0000000000 RBX: fffffffffffffff4 RCX: 0000000000000000
+RDX: 0000000000000012 RSI: ffff888002de0000 RDI: 0000000000000094
+RBP: ffff888013c9a000 R08: 0000000000000000 R09: fffffbfff3f9cc6a
+R10: ffffc900010476e8 R11: fffffbfff3f9cc69 R12: 0000000000000001
+R13: 000000000000000a R14: ffff888013c9af54 R15: ffff888013c9ad08
+FS:  00007ffa984ab580(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055a6384136c8 CR3: 000000003bbe6003 CR4: 0000000000770ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ encx24j600_spi_probe drivers/net/ethernet/microchip/encx24j600.c:459
+ spi_probe drivers/spi/spi.c:397
+ really_probe drivers/base/dd.c:517
+ __driver_probe_device drivers/base/dd.c:751
+ driver_probe_device drivers/base/dd.c:782
+ __device_attach_driver drivers/base/dd.c:899
+ bus_for_each_drv drivers/base/bus.c:427
+ __device_attach drivers/base/dd.c:971
+ bus_probe_device drivers/base/bus.c:487
+ device_add drivers/base/core.c:3364
+ __spi_add_device drivers/spi/spi.c:599
+ spi_add_device drivers/spi/spi.c:641
+ spi_new_device drivers/spi/spi.c:717
+ new_device_store+0x18c/0x1f1 [spi_stub 4e02719357f1ff33f5a43d00630982840568e85e]
+ dev_attr_store drivers/base/core.c:2074
+ sysfs_kf_write fs/sysfs/file.c:139
+ kernfs_fop_write_iter fs/kernfs/file.c:300
+ new_sync_write fs/read_write.c:508 (discriminator 4)
+ vfs_write fs/read_write.c:594
+ ksys_write fs/read_write.c:648
+ do_syscall_64 arch/x86/entry/common.c:50
+ entry_SYSCALL_64_after_hwframe arch/x86/entry/entry_64.S:113
 
-correct, everything else is in mainline, only these two left floating.
-Should I resend them for soc patchwork?
+Add error check in devm_regmap_init_encx24j600 to avoid this situation.
 
+Fixes: 04fbfce7a222 ("net: Microchip encx24j600 driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+---
+ drivers/net/ethernet/microchip/encx24j600-regmap.c | 8 +++++++-
+ drivers/net/ethernet/microchip/encx24j600.c        | 5 ++++-
+ drivers/net/ethernet/microchip/encx24j600_hw.h     | 2 +-
+ 3 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/encx24j600-regmap.c b/drivers/net/ethernet/microchip/encx24j600-regmap.c
+index 796e46a53926..e324d965d631 100644
+--- a/drivers/net/ethernet/microchip/encx24j600-regmap.c
++++ b/drivers/net/ethernet/microchip/encx24j600-regmap.c
+@@ -497,13 +497,19 @@ static struct regmap_bus phymap_encx24j600 = {
+ 	.reg_read = regmap_encx24j600_phy_reg_read,
+ };
+ 
+-void devm_regmap_init_encx24j600(struct device *dev,
++int devm_regmap_init_encx24j600(struct device *dev,
+ 				 struct encx24j600_context *ctx)
+ {
+ 	mutex_init(&ctx->mutex);
+ 	regcfg.lock_arg = ctx;
+ 	ctx->regmap = devm_regmap_init(dev, &regmap_encx24j600, ctx, &regcfg);
++	if (IS_ERR(ctx->regmap))
++		return PTR_ERR(ctx->regmap);
+ 	ctx->phymap = devm_regmap_init(dev, &phymap_encx24j600, ctx, &phycfg);
++	if (IS_ERR(ctx->phymap))
++		return PTR_ERR(ctx->phymap);
++
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(devm_regmap_init_encx24j600);
+ 
+diff --git a/drivers/net/ethernet/microchip/encx24j600.c b/drivers/net/ethernet/microchip/encx24j600.c
+index d4680113e249..79167c3a3179 100644
+--- a/drivers/net/ethernet/microchip/encx24j600.c
++++ b/drivers/net/ethernet/microchip/encx24j600.c
+@@ -1023,10 +1023,13 @@ static int encx24j600_spi_probe(struct spi_device *spi)
+ 	priv->speed = SPEED_100;
+ 
+ 	priv->ctx.spi = spi;
+-	devm_regmap_init_encx24j600(&spi->dev, &priv->ctx);
+ 	ndev->irq = spi->irq;
+ 	ndev->netdev_ops = &encx24j600_netdev_ops;
+ 
++	ret = devm_regmap_init_encx24j600(&spi->dev, &priv->ctx);
++	if (ret)
++		goto out_free;
++
+ 	mutex_init(&priv->lock);
+ 
+ 	/* Reset device and check if it is connected */
+diff --git a/drivers/net/ethernet/microchip/encx24j600_hw.h b/drivers/net/ethernet/microchip/encx24j600_hw.h
+index fac61a8fbd02..97be3edb91e0 100644
+--- a/drivers/net/ethernet/microchip/encx24j600_hw.h
++++ b/drivers/net/ethernet/microchip/encx24j600_hw.h
+@@ -15,7 +15,7 @@ struct encx24j600_context {
+ 	int bank;
+ };
+ 
+-void devm_regmap_init_encx24j600(struct device *dev,
++int devm_regmap_init_encx24j600(struct device *dev,
+ 				 struct encx24j600_context *ctx);
+ 
+ /* Single-byte instructions */
 -- 
-Alexander Sverdlin.
-
+2.25.1
 
