@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A60A429E33
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85630429E3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhJLG4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 02:56:48 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57832 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233414AbhJLG4l (ORCPT
+        id S233545AbhJLHAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:00:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39947 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233378AbhJLHAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:56:41 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E611E1F410A6;
-        Tue, 12 Oct 2021 07:54:38 +0100 (BST)
-Date:   Tue, 12 Oct 2021 08:54:35 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <p.yadav@ti.com>
-Subject: Re: [PATCH v2 05/14] mtd: spinand: Add adjust_op() in
- manufacturer_ops to modify the ops for manufacturer specific changes
-Message-ID: <20211012085435.1aedfb7f@collabora.com>
-In-Reply-To: <20211011204619.81893-6-a-nandan@ti.com>
-References: <20211011204619.81893-1-a-nandan@ti.com>
-        <20211011204619.81893-6-a-nandan@ti.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Tue, 12 Oct 2021 03:00:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634021923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q8RijpfQi+prw8bXnwoWv3a6J45QoIwKMNHS02qVkCw=;
+        b=KgNE9GMJYRJmjekzIrzTg1CbXspW3stzRTjevR4bAQ/AA6cIYraeQAniftHpD2Q2RzenTA
+        0jx57b/mlvvNxwRqDP8GtYFQQ35lc4w282J3DNHj2x3MrJXplvlxuMN39kLTbMA6oMxyHM
+        ZLfkzs0EESqRJVjHSbdP/kI9uq2/1ag=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-TrcHSLI2NWqrhI9MUaCFaA-1; Tue, 12 Oct 2021 02:58:42 -0400
+X-MC-Unique: TrcHSLI2NWqrhI9MUaCFaA-1
+Received: by mail-ed1-f70.google.com with SMTP id p20-20020a50cd94000000b003db23619472so18051668edi.19
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 23:58:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=q8RijpfQi+prw8bXnwoWv3a6J45QoIwKMNHS02qVkCw=;
+        b=meSZGmTfrUPhStiKBffP2wgbVdZCuZoo7dsFoYm9R0JGtV7P6hkm5ekx8KH8VVm74s
+         sOVboW2R+HObDw4E+HDF0Ex1d3miT0RfJeucKJOvEE0oKJSLsOOyJkYXusARKFfzRv5p
+         mCVjIHhxQ1DXFTUYSckLXWq/M8x+2tcplxxFYPAatvLmlRHXeHlPq+D6Px2E55YnYCF4
+         lY5Xp5ZuIJaDLxGsbqHmOItHU2QcH0YZucvL2CeEfnh/PQMuMkmwTXpxJzcNRSqYQ9Xm
+         wYFDK9VXDVcwEncyX9qhrA4VETaXpodIhCom7+qVMTi+iqk3comE7WgxQraX7siNF61L
+         8Alg==
+X-Gm-Message-State: AOAM531XvGxsehJ0NqAO/NNeA9DIPunralhnRlKFJziav1hEA79Lm9rn
+        JRS74qf631WaFkqXe+HJ0F6DpwYXzpGcAsgpbfzyr5FDDOgW3Bwl/EOYafV8kvktVT0LYwT0vDM
+        8zW0Hh7PPvPK0TCT8OpMn+NjFZi6IFb27MRrrefcv
+X-Received: by 2002:a17:906:6d0a:: with SMTP id m10mr29787749ejr.90.1634021921119;
+        Mon, 11 Oct 2021 23:58:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRHeJ989p7dVG/ei6yafdn1mzzyjVVyI8bkiTnv+xsecY3u5UUD0ZFpoZSsrAAywRK1lgyPepPpZKinKOGrh4=
+X-Received: by 2002:a17:906:6d0a:: with SMTP id m10mr29787733ejr.90.1634021920886;
+ Mon, 11 Oct 2021 23:58:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211008032231.1143467-1-fengli@smartx.com> <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
+ <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com> <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
+In-Reply-To: <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
+From:   Xiao Ni <xni@redhat.com>
+Date:   Tue, 12 Oct 2021 14:58:30 +0800
+Message-ID: <CALTww28CsJdmVOLFeoHC8FgbHDK78h8Lncsf9fFA0RYXEj=R9A@mail.gmail.com>
+Subject: Re: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
+To:     Li Feng <fengli@smartx.com>
+Cc:     Song Liu <song@kernel.org>,
+        "open list:SOFTWARE RAID (Multiple Disks) SUPPORT" 
+        <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 02:16:10 +0530
-Apurva Nandan <a-nandan@ti.com> wrote:
+On Mon, Oct 11, 2021 at 5:42 PM Li Feng <fengli@smartx.com> wrote:
+>
+> Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8811=E6=97=A5=E5=
+=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:49=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > Hi all
+> >
+> > Now the per device sysfs interface file state can change failfast. Do
+> > we need a new file for failfast?
+> >
+> > I did a test. The steps are:
+> >
+> > mdadm -CR /dev/md0 -l1 -n2 /dev/sdb /dev/sdc --assume-clean
+> > cd /sys/block/md0/md/dev-sdb
+> > echo failfast > state
+> > cat state
+> > in_sync,failfast
+>
+> This works,  will it be persisted to disk?
+>
 
-> Manufacturers might use a variation of standard SPI NAND flash
-> instructions, e.g. Winbond W35N01JW changes the dummy cycle length for
-> read register commands when in Octal DTR mode.
-> 
-> Add new function in manufacturer_ops: adjust_op(), which can be called
-> to correct the spi_mem op for any alteration in the instruction made by
-> the manufacturers. And hence, this function can also be used for
-> incorporating variations of SPI instructions in Octal DTR mode.
+mdadm --detail /dev/md0 can show the failfast information. So it
+should be written in superblock.
+But I don't find how md does this. I'm looking at this.
 
-Okay, so now we have reg accesses differing between vendors in DTR.
-Looks like we should have an OP-table for non-IO commands too (similar
-to the op_variants mechanism we have for IO commands), at least when
-operating in DTR. The reg access path would just end up doing:
-
-	struct spi_mem_op op =
-		spinand->templates[spinand->protocol][cmd];
-
-This way you get rid of all this live-patching/vendor-specific
-adjustment (which is likely to get more and more complex since flash
-vendors have a tendency of diverging from the common behavior), and
-everything gets initialized at probe time.
-
-> 
-> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  drivers/mtd/nand/spi/core.c | 3 +++
->  include/linux/mtd/spinand.h | 4 ++++
->  2 files changed, 7 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 4da794ae728d..8e6cf7941a0f 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -61,6 +61,9 @@ static void spinand_patch_op(const struct spinand_device *spinand,
->  		op->data.buswidth = op_buswidth;
->  		op->data.dtr = op_is_dtr;
->  	}
-> +
-> +	if (spinand->manufacturer->ops->adjust_op)
-> +		spinand->manufacturer->ops->adjust_op(op, spinand->reg_proto);
->  }
->  
->  static void spinand_patch_reg_op(const struct spinand_device *spinand,
-> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-> index f6093cd98d7b..ebb19b2cec84 100644
-> --- a/include/linux/mtd/spinand.h
-> +++ b/include/linux/mtd/spinand.h
-> @@ -257,6 +257,8 @@ struct spinand_devid {
->  /**
->   * struct manufacurer_ops - SPI NAND manufacturer specific operations
->   * @init: initialize a SPI NAND device
-> + * @adjust_op: modify the ops for any variation in their cmd, address, dummy or
-> + *	       data phase by the manufacturer
->   * @cleanup: cleanup a SPI NAND device
->   *
->   * Each SPI NAND manufacturer driver should implement this interface so that
-> @@ -264,6 +266,8 @@ struct spinand_devid {
->   */
->  struct spinand_manufacturer_ops {
->  	int (*init)(struct spinand_device *spinand);
-> +	void (*adjust_op)(struct spi_mem_op *op,
-> +			  const enum spinand_proto reg_proto);
->  	void (*cleanup)(struct spinand_device *spinand);
->  };
->  
+Regards
+Xiao
 
