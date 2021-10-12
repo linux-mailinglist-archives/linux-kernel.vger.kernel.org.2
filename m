@@ -2,50 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F7C429DAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB49E429DA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhJLG1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 02:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbhJLG1w (ORCPT
+        id S233000AbhJLG1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 02:27:02 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:32895 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232690AbhJLG1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:27:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D949FC061570;
-        Mon, 11 Oct 2021 23:25:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=B1aPVJuxZP/j2NM7qjbxfmvVLLNT6DBv5a9xDWQIXWk=; b=j6rCaX0Gu1sym2HCXotded7fAx
-        2ysZOuz3e9z6KFbD18nX6XHMULIgkcrUi/+SyWJn+P9YvmDy22zbUl3EXXY48sN86YE71X+8F0zl/
-        qUoBotRMGo6ovSg9kmbYNt2TL4KMrh09nrxOY6fMG5sagfppcpG2Zr0tf6Xnyj/fD8tcm/PeF0p8w
-        QZDI9OJQsDaqla7RGF7c8A+PlovNIHPlv67TIEvYjQD/E8psGtPKSZg/9LC/G/jYnLindpimWxCiC
-        9U2O3qOjQdahPCjKA/txA7K4x2mBVOq3IyQ5V4MPCzbxVPS9dle6wPXasIfy8nkSfEa9wSP+lY61O
-        MS7CwnYQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maBDH-006GOS-JR; Tue, 12 Oct 2021 06:25:03 +0000
-Date:   Tue, 12 Oct 2021 07:24:35 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jinyoung CHOI <j-young.choi@samsung.com>
-Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] block-map: added error handling for bio_copy_kern()
-Message-ID: <YWUqI/SkoJxYAeco@infradead.org>
-References: <CGME20210928063420epcms2p8f0cad25e1b820169755962ff4555d3ac@epcms2p1>
- <20210928063919epcms2p12ef0dfc94e6756f7bf85945522720e8f@epcms2p1>
+        Tue, 12 Oct 2021 02:27:00 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HT5HY6fjyz4xb9;
+        Tue, 12 Oct 2021 17:24:57 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1634019898;
+        bh=347ctPqhsS5IaLblCKv5phu1n7PGnyVqN5oJsZcxlUk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=f2eZZN4KOw1R8VYJk3QQTbeucJ85RyFTJUp0z6fgRGJ79Lh9XtSaWtvnaepFCN58N
+         vCUggjmFvl+wjyv5vrn2LpJwXNyvDbDbSKryldqVZBZhlh5z9afWW5flVS8ZP9RUML
+         Ev7MOS73ZC2hEada1xEXpEFU7cmt1W85gY2fKQ7ZSYT86xe0yX/vPtb6xBPB0YyKgt
+         c6uR+Qb5EIwUoFecb/fZMw0+07ZqL9pPXht+PyHu3k7pP411bvcDRFXH99FtuVcF9c
+         RsXKaAh/Q1tPGu0i4N72GL/R5QHyq21Dv2BtZ3jVzdOYs+aARERXnqILMmfK7xh6do
+         Ra6CiM/fzOoYQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Liu Shixin <liushixin2@huawei.com>, Marco Elver <elver@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc: don't select KFENCE on platform PPC_FSL_BOOK3E
+In-Reply-To: <77ce95e4-1af1-6536-5f0c-a573c648801a@huawei.com>
+References: <20210924063927.1341241-1-liushixin2@huawei.com>
+ <77ce95e4-1af1-6536-5f0c-a573c648801a@huawei.com>
+Date:   Tue, 12 Oct 2021 17:24:53 +1100
+Message-ID: <87bl3u7oay.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928063919epcms2p12ef0dfc94e6756f7bf85945522720e8f@epcms2p1>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +       int do_copy = 0;
+Liu Shixin <liushixin2@huawei.com> writes:
+> kindly ping.
 
-Please make this a bool.  Otherwise the patch looks good.
+I was under the impression you were trying to debug why it wasn't
+working with Christophe.
+
+cheers
+
+> On 2021/9/24 14:39, Liu Shixin wrote:
+>> On platform PPC_FSL_BOOK3E, all lowmem is managed by tlbcam. That means
+>> we didn't really map the kfence pool with page granularity. Therefore,
+>> if KFENCE is enabled, the system will hit the following panic:
+>>
+>>     BUG: Kernel NULL pointer dereference on read at 0x00000000
+>>     Faulting instruction address: 0xc01de598
+>>     Oops: Kernel access of bad area, sig: 11 [#1]
+>>     BE PAGE_SIZE=4K SMP NR_CPUS=4 MPC8544 DS
+>>     Dumping ftrace buffer:
+>>        (ftrace buffer empty)
+>>     Modules linked in:
+>>     CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc3+ #298
+>>     NIP:  c01de598 LR: c08ae9c4 CTR: 00000000
+>>     REGS: c0b4bea0 TRAP: 0300   Not tainted  (5.12.0-rc3+)
+>>     MSR:  00021000 <CE,ME>  CR: 24000228  XER: 20000000
+>>     DEAR: 00000000 ESR: 00000000
+>>     GPR00: c08ae9c4 c0b4bf60 c0ad64e0 ef720000 00021000 00000000 00000000 00000200
+>>     GPR08: c0ad5000 00000000 00000000 00000004 00000000 008fbb30 00000000 00000000
+>>     GPR16: 00000000 00000000 00000000 00000000 c0000000 00000000 00000000 00000000
+>>     GPR24: c08ca004 c08ca004 c0b6a0e0 c0b60000 c0b58f00 c0850000 c08ca000 ef720000
+>>     NIP [c01de598] kfence_protect+0x44/0x6c
+>>     LR [c08ae9c4] kfence_init+0xfc/0x2a4
+>>     Call Trace:
+>>     [c0b4bf60] [efffe160] 0xefffe160 (unreliable)
+>>     [c0b4bf70] [c08ae9c4] kfence_init+0xfc/0x2a4
+>>     [c0b4bfb0] [c0894d3c] start_kernel+0x3bc/0x574
+>>     [c0b4bff0] [c0000470] set_ivor+0x14c/0x188
+>>     Instruction dump:
+>>     7c0802a6 8109d594 546a653a 90010014 54630026 39200000 7d48502e 2c0a0000
+>>     41820010 554a0026 5469b53a 7d295214 <81490000> 38831000 554a003c 91490000
+>>     random: get_random_bytes called from print_oops_end_marker+0x40/0x78 with crng_init=0
+>>     ---[ end trace 0000000000000000 ]---
+>>
+>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>> ---
+>>  arch/powerpc/Kconfig | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+>> index d46db0bfb998..cffd57bcb5e4 100644
+>> --- a/arch/powerpc/Kconfig
+>> +++ b/arch/powerpc/Kconfig
+>> @@ -185,7 +185,7 @@ config PPC
+>>  	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
+>>  	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
+>>  	select HAVE_ARCH_KGDB
+>> -	select HAVE_ARCH_KFENCE			if PPC32
+>> +	select HAVE_ARCH_KFENCE			if PPC32 && !PPC_FSL_BOOK3E
+>>  	select HAVE_ARCH_MMAP_RND_BITS
+>>  	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
+>>  	select HAVE_ARCH_NVRAM_OPS
