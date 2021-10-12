@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E13242AD25
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D4742AD1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233853AbhJLTUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 15:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42278 "EHLO
+        id S233692AbhJLTP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 15:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232486AbhJLTUT (ORCPT
+        with ESMTP id S232865AbhJLTP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 15:20:19 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFF9C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:18:17 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so2679727pjw.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:18:17 -0700 (PDT)
+        Tue, 12 Oct 2021 15:15:27 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF058C061749
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:13:25 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so2648558pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:13:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rZojLxNHDG9L7+3rBw8GD2erwwT1gR6rCpMitvc63e0=;
-        b=tmFO6TcJoOdc9Uwt0V6Q6OIdANSPgpyKyYXF68sVhVU4R0xAQhislD8qKjtIimIDVa
-         zdFb5nn6ehNoAp4vHMoIT9Mji+vLVRlE/PIAUQ3i0zhd+4+vxVkRLfSJ/yY3nb3aRZuC
-         Kz4LQbD5By/aHvLScYZSZdZ6E4hK2Afy0xjW6q7WRBvZVy6J0UfEIAYi7MiL4pHW7oN4
-         trkuplyZLAmeGJ8euR1Wavrd64RTePolxHvyxaNX+Rs9J5D0jKQk06opNsDrm24eVPnn
-         ZpvqzLelSDG8dBOoyW8OYxYLXaq+Sm+AzvoonVkLFAd4ZLhxAUVQZQWiRZTgEEpCcHxg
-         etbA==
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x0Pu5SkQy434ZkX51MnktY5ssWOIrsLEYRF7ntLLX9U=;
+        b=0jctKiGZ96Dsvad5OoCsdnFQ90uhqg1CiK1Bu0TfnxVnL6DCcOHWSNEaxF2Q506KkR
+         4HtMZYOUQL39cLxqSpXNajGrgxx+RmvKyhX9L62DSpa2FFz1DwK1pXjqe0gPg6jzDMKu
+         WkA7Fi0xfKpYSR5vgaxJseL9c8Tv3DOZBBhmW2kjevu4TlUZ1AYGMy6keZGF9sAknJ9l
+         hDA7MVJBkGzifUBk8/e/fmnFd3BwShLwj4oAUm8kr8DgAxB3H+Xy66k+IPlhE69rsxE+
+         etyGZvxl/HxhIrzvur1lJ5f+acFnxyUDpgERXDK7KG94rmnmm7OmQdlxHrmjvC6jSJ+W
+         hxlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rZojLxNHDG9L7+3rBw8GD2erwwT1gR6rCpMitvc63e0=;
-        b=U80O64bVE4v1HB657zrXWMK3JMiGmDNbdR8FOMYEFp1xiE9wuN1NssYliYsbb0iyOU
-         E5N9fLc3SU/5b+2iADCwvmu70Q7plqtzOnVh/jFdI1LJuP5HQ7VwRS1X3fZsu04MbM2/
-         WZh27Bj+hOFh0iF77Ps0rofgLWkfYy/5EBR0rahb6QVVkCGX1OlGcsnJ8QIPr4Tyj5VP
-         Tfm8IlLkESbFeF60HGPdvbhcTmhFh0xhhmaAIBzPt48b9+dnsfFGYEy+wbznJfYzufLH
-         Unr/CHe6284zZJDM78I0Ch0fiZv2OHPB/3iWC2dKc8UPvRHRBvbn0GLoiFxZNCevXshj
-         RkPQ==
-X-Gm-Message-State: AOAM530EEfG2q9hNdhPk9i5SHpEuk3jhawKj2p1zvgA26H930SiGKbXO
-        0lonlJV6CpHXpawXTZs1/RYVVw==
-X-Google-Smtp-Source: ABdhPJxLhhrR7V1Yrp1Bh/N/xYlCfPjHADDWFcDrI1Nm4TmYW4ilTk5/Ck9mf1567yZUtUrCDO9JhQ==
-X-Received: by 2002:a17:903:1207:b0:13d:b9b1:ead7 with SMTP id l7-20020a170903120700b0013db9b1ead7mr31653976plh.63.1634066297097;
-        Tue, 12 Oct 2021 12:18:17 -0700 (PDT)
-Received: from x1.hsd1.or.comcast.net ([2601:1c2:1000:35e0:e8e2:9471:3c5b:c7c4])
-        by smtp.gmail.com with ESMTPSA id z11sm11586812pfk.204.2021.10.12.12.18.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 12:18:16 -0700 (PDT)
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Benoit Cousson <bcousson@baylibre.com>,
-        Dave Gerlach <d-gerlach@ti.com>, Keerthy <j-keerthy@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Drew Fustini <dfustini@baylibre.com>
-Subject: [PATCH] ARM: dts: am335x: Add rtc node as system-power-controller
-Date:   Tue, 12 Oct 2021 12:13:12 -0700
-Message-Id: <20211012191311.879838-1-dfustini@baylibre.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x0Pu5SkQy434ZkX51MnktY5ssWOIrsLEYRF7ntLLX9U=;
+        b=z3Z41JKZraSahccSIrqxVOMMQalnV8IzAkwEA5scKfGzzonItDtWjlDuowAxszSzNF
+         U9Y4O2ilGYBG6WgAlG+Z9H6RameKO8HGhsyYET6jPSes/9t8Ozal/ByHianL9Nq8gkPx
+         1PhiiVeM3rqyddsdpjO16sx54WnBE1kIMhIxclD40vzl2bHjoO12p7T/2+YOrjDdxuTU
+         p43areJzxi5mN9A/oNp3KHA/y2gk1OzOYW1BrNnLAdx7yiuv3KMzggaPaGfP/LNnC5sn
+         DmQodezdMrSJVBJHMxovImJaMaw0GmxCaYB0/kvCpT5Ipi0evL9e/vFzM3fUnxHVWD8S
+         9eyA==
+X-Gm-Message-State: AOAM533drf+0+gD8U1BpAS7FH5eXtJrpZz7BErRfgoJ6I5DmspBihuiM
+        OyOydoSmzESP1Mvo31+oSrqIwvOQpINiJl5B0pvHyg==
+X-Google-Smtp-Source: ABdhPJyNOix5cZDMBclXmOSXO+RM6EpABwDw+QW/CroDmQMvsjA4/EVROp8ApuvNtORV3RBVktyntd/Xd2M0AJ958a8=
+X-Received: by 2002:a17:90b:350f:: with SMTP id ls15mr8210876pjb.220.1634066005117;
+ Tue, 12 Oct 2021 12:13:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053103-mutt-send-email-mst@kernel.org> <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
+ <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com> <DM8PR11MB57501C8F8F5C8B315726882EE7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <f850d2d6-d427-8aeb-bd38-f9b5eb088191@linux.intel.com> <DM8PR11MB57505C520763DF706309E177E7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
+In-Reply-To: <DM8PR11MB57505C520763DF706309E177E7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 12 Oct 2021 12:13:13 -0700
+Message-ID: <CAPcyv4g8VjbMaVnXXyWVh8tXNakO9FmDXfANJmPmgvDfZX-OBA@mail.gmail.com>
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(), pci_iomap_host_shared_range()
+To:     "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keerthy <j-keerthy@ti.com>
+On Tue, Oct 12, 2021 at 11:57 AM Reshetova, Elena
+<elena.reshetova@intel.com> wrote:
+>
+>
+> > I suspect the true number is even higher because that doesn't include IO
+> > inside calls to other modules and indirect pointers, correct?
+>
+> Actually everything should be included. Smatch has cross-function db and
+> I am using it for getting the call chains and it follows function pointers.
+> Also since I am starting from a list of individual read IOs, every single
+> base read IO in drivers/* should be covered as far as I can see. But if it uses
+> some weird IO wrappers then the actual list might be higher.
 
-PMIC_PWR_EN pin of RTC on am335x-evm, bone, and boneblack is connected to
-PMIC on board, so flag rtc node as system-power-controller to allow
-software to poweroff boards.
-
-Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
-Signed-off-by: Keerthy <j-keerthy@ti.com>
-Signed-off-by: Drew Fustini <dfustini@baylibre.com>
----
- arch/arm/boot/dts/am335x-bone-common.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
-index 0ccdc7cd463b..56ae5095a5b8 100644
---- a/arch/arm/boot/dts/am335x-bone-common.dtsi
-+++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
-@@ -399,6 +399,7 @@ &sham {
- &rtc {
- 	clocks = <&clk_32768_ck>, <&clk_24mhz_clkctrl AM3_CLK_24MHZ_CLKDIV32K_CLKCTRL 0>;
- 	clock-names = "ext-clk", "int-clk";
-+	system-power-controller;
- };
- 
- &pruss_tm {
--- 
-2.27.0
-
+Why analyze individual IO calls? I thought the goal here was to
+disable entire classes of ioremap() users?
