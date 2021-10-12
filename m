@@ -2,169 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAE342AC51
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8B542AC4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbhJLSsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234350AbhJLSss (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:48:48 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630FFC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:46:27 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id y12so67435eda.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:46:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4ZlTOS6cwW0YQw8cb3jx4k6dstuzxOfbAAnxoavlKaE=;
-        b=b45g58tVEGcE0eIvcqBE27yzsC1YgR+4YO4qjfXkGdTmmS3EpN9JvwFsUN0SuTfRGr
-         gSa5qR5DSeu7YLDNFb6U69gE00tXM1JSR0GtWWg212z3lHr1lVwUjSpm/dazi5Q6cbaQ
-         WL2Ql0wnJIakshI1HqEwMPa94SXOZ2Tstjq50=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ZlTOS6cwW0YQw8cb3jx4k6dstuzxOfbAAnxoavlKaE=;
-        b=RohMMeCSTvN4ZOwEzDdUmmZ6fG+ilVlcuFte8UBlWHs1xWCCRMBmCJaH05oF4UklZX
-         elNFeGAC4At5HpLL70wb4TtQke6nC1lnZgV40590X1rTLzf9nG4iiTHyrSQ6SiZLx3lC
-         E77ZBX62JSIK89gE+3GnmaAdqBnq2aq2f+MCy0ite/h6PdPDm86IZLnz6snqM8SuwBlK
-         gnJaeSSVrnMsv74hi5wOqKU0FCJ/JVxslI/XrhxIAbo8pvaTd+A2C5ZMpAUmm0T8BGUx
-         ye+jX5OCn7amJXwtSUEl2UK99bXkX+PFr30YsRDVbP9N765oLyCOnPyXMnj3zOp0+nZ0
-         oYeA==
-X-Gm-Message-State: AOAM530xGeyGJcIJP/TebS0+HixvGVvLlQjt5XAdKRilZdCORdGRDTIe
-        dZLnSHiTeFVX+oALDPld2C42Eb7p8VT8hBLG
-X-Google-Smtp-Source: ABdhPJzNmtCALDieo/G1NWrz2v4/7GTXdQqx6HiBJdf2VtN7LFS8sawEYVQLYGpZ1Xts75O7WgjSQQ==
-X-Received: by 2002:a2e:b804:: with SMTP id u4mr30954812ljo.425.1634063675757;
-        Tue, 12 Oct 2021 11:34:35 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id t7sm1187600lfg.60.2021.10.12.11.34.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 11:34:35 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id y26so749973lfa.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:34:35 -0700 (PDT)
-X-Received: by 2002:a2e:1510:: with SMTP id s16mr30124071ljd.56.1634063674845;
- Tue, 12 Oct 2021 11:34:34 -0700 (PDT)
+        id S235121AbhJLSok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:44:40 -0400
+Received: from mga12.intel.com ([192.55.52.136]:25600 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235100AbhJLSoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 14:44:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="207352546"
+X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
+   d="scan'208";a="207352546"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 11:35:07 -0700
+X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
+   d="scan'208";a="562780166"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.115.208]) ([10.209.115.208])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 11:35:05 -0700
+Message-ID: <9302f1c2-b3f8-2c9e-52c5-d5a4a2987409@linux.intel.com>
+Date:   Tue, 12 Oct 2021 11:35:04 -0700
 MIME-Version: 1.0
-References: <20211012141131.3c9a2eb1@gandalf.local.home>
-In-Reply-To: <20211012141131.3c9a2eb1@gandalf.local.home>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 12 Oct 2021 11:34:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj2SbVnsO7yxgaD20HBaH=0rNM60nD92+BDSwQxofd9SQ@mail.gmail.com>
-Message-ID: <CAHk-=wj2SbVnsO7yxgaD20HBaH=0rNM60nD92+BDSwQxofd9SQ@mail.gmail.com>
-Subject: Re: [BUG] WARNING: CPU: 3 PID: 1 at mm/debug_vm_pgtable.c:493
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
+ pci_iomap_host_shared_range()
+Content-Language: en-US
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053103-mutt-send-email-mst@kernel.org>
+ <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
+ <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
+ <CAPcyv4g0v0YHZ-okxf4wwVCYxHotxdKwsJpZGkoT+fhvvAJEFg@mail.gmail.com>
+From:   Andi Kleen <ak@linux.intel.com>
+In-Reply-To: <CAPcyv4g0v0YHZ-okxf4wwVCYxHotxdKwsJpZGkoT+fhvvAJEFg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding x86 people (VM in particular). The tests were written primarily
-for ARM, but should work on x86 too.
 
-That warning seems to be due to pud_set_huge() failing (the "line 438"
-one I don't know what it is - there's no warning on that line in my
-tree, so I worry a bit that Steven has other things in his tree).
+> The "better safe-than-sorry" argument is hard to build consensus
+> around. The spectre mitigations ran into similar problems where the
+> community rightly wanted to see the details and instrument the
+> problematic paths rather than blanket sprinkle lfence "just to be
+> safe".
 
-On x86, that can fail due to mtrr differences, or if there's already
-an entry there. Neither _should_ be an issue during the boot-time
-tests, but who knows..
+But that was due to performance problems in hot paths. Nothing of this 
+applies here.
 
-Or there's something wrong with the tests. The fact that it's not
-repeatable despite being a boot-time thing is a bit odd.
+> In this case the rules about when a driver is suitably
+> "hardened" are vague and the overlapping policy engines are confusing.
 
-             Linus
+What is confusing exactly?
 
-On Tue, Oct 12, 2021 at 11:11 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+For me it both seems very straight forward and simple (but then I'm biased)
+
+The policy is:
+
+- Have an allow list at driver registration.
+
+- Have an additional opt-in for MMIO mappings (and potentially config 
+space, but that's not currently there) to cover init calls completely.
+
 >
-> My tests have been triggering on this every so often. My code is based on
-> v5.15-rc3. Note, this is not fully reproducible.
+> I'd rather see more concerted efforts focused/limited core changes
+> rather than leaf driver changes until there is a clearer definition of
+> hardened.
+
+A hardened driver is a driver that
+
+- Had similar security (not API) oriented review of its IO operations 
+(mainly MMIO access, but also PCI config space) as a non privileged user 
+interface (like a ioctl). That review should be focused on memory safety.
+
+- Had some fuzzing on these IO interfaces using to be released tools.
+
+Right now it's only three virtio drivers (console, net, block)
+
+Really it's no different than what we do for every new unprivileged user 
+interface.
+
+
+> I.e. instead of jumping to the assertion that fixing up
+> these init-path vulnerabilities are too big to fix, dig to the next
+> level to provide more evidence that per-driver opt-in is the only
+> viable option.
 >
-> I also get errors an mm/debug_vm_pgtable.c:438
+> For example, how many of these problematic paths are built-in to the
+> average kernel config?
+
+I don't think arguments from "the average kernel config" (if such a 
+thing even exists) are useful. That's would be just hand waving.
+
+
+> A strawman might be to add a sprinkling error
+> exits in the module_init() of the problematic drivers, and only fail
+> if the module is built-in, and let modprobe policy handle the rest.
+
+
+That would be already hundreds of changes. I have no idea how such a 
+thing could be maintained or sustained either.
+
+Really I don't even see how these alternatives can be considered. Tree 
+sweeps should always be last resort. They're a pain for everyone. But 
+here they're casually thrown around as alternatives to straight forward 
+one or two line changes.
+
+
+
+
 >
-> And it also triggers the WARN_ON()s after that as well.
+>> Default policy in user space just seems to be a bad idea here. Who
+>> should know if a driver is hardened other than the kernel? Maintaining
+>> the list somewhere else just doesn't make sense to me.
+> I do not understand the maintenance burden correlation of where the
+> policy is driven vs where the list is maintained?
+
+All the hardening and auditing happens in the kernel tree. So it seems 
+the natural place to store the result is in the kernel tree.
+
+But there's no single package for initrd, so you would need custom 
+configurations for all the supported distros.
+
+Also we're really arguing about a list that currently has three entries.
+
+
+>   Even if I agreed
+> with the contention that out-of-tree userspace would have a hard time
+> tracking the "hardened" driver list there is still an in-tree
+> userspace path to explore. E.g. perf maintains lists of things tightly
+> coupled to the kernel, this authorized device list seems to be in the
+> same category of data.
+
+You mean the event list? perf is in the kernel tree, so it's maintained 
+together with the kernel.
+
+But we don't have a kernel initrd.
+
+
+
 >
-> Always happens at the debug_vm_pgtable() during boot up.
->
-> Here's the last splat:
->
-> ------------[ cut here ]------------
->  WARNING: CPU: 3 PID: 1 at mm/debug_vm_pgtable.c:492 debug_vm_pgtable+0x1312/0x1693
->  Modules linked in:
->  CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc3-test+ #24
->  Hardware name: MSI MS-7823/CSM-H87M-G43 (MS-7823), BIOS V1.6 02/22/2014
->  RIP: 0010:debug_vm_pgtable+0x1312/0x1693
->  Code: 38 ff ff ff 48 c7 00 00 00 00 00 48 8b 75 b8 48 8b 95 78 ff ff ff 48 8b bd 38 ff ff ff 48 c1 e6 0c e8 62 4e 62 fe 85 c0 75 02 <0f> 0b 48 8b bd 38 ff ff ff e8 e0 50 62 fe 85 c0 75 02 0f 0b 48 8b
->  RSP: 0000:ffffa1eac0033da8 EFLAGS: 00010246
->  RAX: 0000000000000000 RBX: bffffffffffffff7 RCX: 0000000000000000
->  RDX: ffffffffffe00000 RSI: ffffffff8bb477d0 RDI: 0000000000000007
->  RBP: ffffa1eac0033e98 R08: ffffa1eac0033d23 R09: 000000021ee00000
->  R10: 000000021effffff R11: 0000000000000000 R12: ffff8cf1436da538
->  R13: 00003e8b00000000 R14: 000fffffffe00000 R15: 0000000000000027
->  FS:  0000000000000000(0000) GS:ffff8cf256800000(0000) knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 0000000000000000 CR3: 000000020f612001 CR4: 00000000001706e0
->  Call Trace:
->   ? destroy_args+0x281/0x281
->   do_one_initcall+0x68/0x2d0
->   ? rcu_read_lock_sched_held+0x46/0x80
->   kernel_init_freeable+0x1a5/0x1f4
->   ? rest_init+0x280/0x280
->   kernel_init+0x1a/0x120
->   ret_from_fork+0x22/0x30
->  irq event stamp: 880991
->  hardirqs last  enabled at (881001): [<ffffffff8a1096ef>] __up_console_sem+0x6f/0x80
->  hardirqs last disabled at (881016): [<ffffffff8a1096d4>] __up_console_sem+0x54/0x80
->  softirqs last  enabled at (881014): [<ffffffff8a097033>] irq_exit_rcu+0xa3/0xd0
->  softirqs last disabled at (881009): [<ffffffff8a097033>] irq_exit_rcu+0xa3/0xd0
->  ---[ end trace 731534acace262b5 ]---
->  ------------[ cut here ]------------
->  WARNING: CPU: 3 PID: 1 at mm/debug_vm_pgtable.c:493 debug_vm_pgtable+0x1324/0x1693
->  Modules linked in:
->  CPU: 3 PID: 1 Comm: swapper/0 Tainted: G        W         5.15.0-rc3-test+ #24
->  Hardware name: MSI MS-7823/CSM-H87M-G43 (MS-7823), BIOS V1.6 02/22/2014
->  RIP: 0010:debug_vm_pgtable+0x1324/0x1693
->  Code: 78 ff ff ff 48 8b bd 38 ff ff ff 48 c1 e6 0c e8 62 4e 62 fe 85 c0 75 02 0f 0b 48 8b bd 38 ff ff ff e8 e0 50 62 fe 85 c0 75 02 <0f> 0b 48 8b 85 38 ff ff ff 48 8b 00 48 a9 9f ff ff ff 74 02 0f 0b
->  RSP: 0000:ffffa1eac0033da8 EFLAGS: 00010246
->  RAX: 0000000000000000 RBX: bffffffffffffff7 RCX: 0000000000000000
->  RDX: ffffffffffe00000 RSI: ffffffff8bb477d0 RDI: ffff8cf1436db160
->  RBP: ffffa1eac0033e98 R08: 0000000000000000 R09: 000000021ee00000
->  R10: 000000021effffff R11: 0000000000000000 R12: ffff8cf1436da538
->  R13: 00003e8b00000000 R14: 000fffffffe00000 R15: 0000000000000027
->  FS:  0000000000000000(0000) GS:ffff8cf256800000(0000) knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 0000000000000000 CR3: 000000020f612001 CR4: 00000000001706e0
->  Call Trace:
->   ? destroy_args+0x281/0x281
->   do_one_initcall+0x68/0x2d0
->   ? rcu_read_lock_sched_held+0x46/0x80
->   kernel_init_freeable+0x1a5/0x1f4
->   ? rest_init+0x280/0x280
->   kernel_init+0x1a/0x120
->   ret_from_fork+0x22/0x30
->  irq event stamp: 881327
->  hardirqs last  enabled at (881337): [<ffffffff8a1096ef>] __up_console_sem+0x6f/0x80
->  hardirqs last disabled at (881352): [<ffffffff8a1096d4>] __up_console_sem+0x54/0x80
->  softirqs last  enabled at (881350): [<ffffffff8a097033>] irq_exit_rcu+0xa3/0xd0
->  softirqs last disabled at (881345): [<ffffffff8a097033>] irq_exit_rcu+0xa3/0xd0
->  ---[ end trace 731534acace262b6 ]---
->
-> Config attached (this is x86_64).
->
-> -- Steve
+>> Also there is the more practical problem that some devices are needed
+>> for booting. For example in TDX we can't print something to the console
+>> with this mechanism, so you would never get any output before the
+>> initrd. Just seems like a nightmare for debugging anything. There really
+>> needs to be an authorization mechanism that works reasonably early.
+>>
+>> I can see a point of having user space overrides though, but we need to
+>> have a sane kernel default that works early.
+> Right, as I suggested [1], just enough early authorization to
+> bootstrap/debug initramfs and then that can authorize the remainder.
+
+But how do you debug the kernel then? Making early undebuggable seems 
+just bad policy to me.
+
+And if you fix if for the console why not add the two more entries for 
+virtio net and block too?
+
+
+-Andi
+
