@@ -2,169 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C31429FC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82281429FCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234839AbhJLI3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
+        id S234867AbhJLIaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234587AbhJLI3b (ORCPT
+        with ESMTP id S234587AbhJLIaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:29:31 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15AAC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:27:29 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id j5so84672229lfg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:27:29 -0700 (PDT)
+        Tue, 12 Oct 2021 04:30:18 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E8BC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:28:16 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id t9so83117888lfd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:28:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ApYBeTWI44dYIPB+lMACs1RUAes/aAO/lSyjzNwRlVk=;
-        b=n0+29KyssdGUj5j2/MOijAI4inJEladscyYTuWVZuvc3jFM1iMQHvg+bo+5iL/2koo
-         dpoh/hpFBlGOSK/pbGiyd6Ua9hJDxaVzBrlFnT68h4cF+Z07yngMQaxjsYYvoY00wtyI
-         xhojnCmi7gZj5nvsHjDFUEogRtpBAy2DhL2MxMCuuibf4IwAyqH7BBr3Wr4aA1EUIOgZ
-         0W1wTOVZoXKZFd60xKNYMrTdZ0hWAQd8DjByQQez8FcGHYB5VQzXIIPcTgdkdDn1W6A6
-         bJ5Rjo3/jrTE7Y3IA7rRJbkso+42elodqb2SFtWyVveFrTSCrYlSn/Y9Tx6s02Nz+Z/R
-         Gu3Q==
+        bh=TqrU2cFlasxqkRqpiYWWW8WqiL3iPrIO9687ezTTKRI=;
+        b=hJfcN/qDfclUWPP4E7Tyb36Msq1t/iAmwmHBv7DcB4/3+nOkvGPjBnpx24dfLCX14W
+         4wCqaAfftoH3aRqdcW+Br6QcSjj2Jhk6KVdzqgchJRGl2zaFbumb0vfvs0xEO8HBwvY0
+         zuJrnAo+kkgO1JGHW+b8PmR59LJjgzVfAa3/hZNyxorAbcYoCBOQ4KxgZoJF2X+MZ2YW
+         wEjKZ+Z6e6pl/zBljPxZli2EkOQwQlFhU+KAejWJ3qTkTAT51aZ5fkbEk86sSdA3hXS9
+         +icaZt4VmL+UL5PpzajC6AvDptZnzdO2u1KXeuVjPP+KUISew4C+7A0rLTBnpHPJD/36
+         7Fow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ApYBeTWI44dYIPB+lMACs1RUAes/aAO/lSyjzNwRlVk=;
-        b=yaaM7B4y7dd5lsrdCeeMMnNoM4Bw58tHDyrhUrYhxR6stx6tQ9PnpoBOSZoeNjNdtj
-         ZznXdP9zCLlf9kxcdCyzewP7VbTzNtMFw94AM8V2Dt3LxWNNksOQ5NBfQ/+B97D15nDO
-         j5ogtL1rRtYJ639Ky34nXgXO4t6k+dThNZ4hSJ8v0elsNCivIQFXfQV030723Qdag8L3
-         wOJS2E4uGghzjbEiWaDV98EwBKNxFhgXLs6PS0UdOmdAdfGalbZ8AO3139tQT0uWSWXw
-         TSRmCQluq2VCJdGaGqJXraNFQWQ1HK1GZff9Rdzv56n9Cbvk1Eq7nzJpcnnqqC+ABYAd
-         tu/g==
-X-Gm-Message-State: AOAM530nbO4euGpSn6NPSnKQq+2/jVtVTN3+42UMTxC1s73CMN2+PCqF
-        /i0Ze/EUztUwWPRXVNi9QuVI3SuFW0TkV/3f3OBgkA==
-X-Google-Smtp-Source: ABdhPJyc5JpKeOk2dvxL5D0VIZGL+TKr/0a4WVwHdy6an55o93p1ds7rrNSXcHsX5UItoS0g2dkZAOpNmEq8Ejd6Lrs=
-X-Received: by 2002:a05:6512:3b94:: with SMTP id g20mr33146156lfv.119.1634027248038;
- Tue, 12 Oct 2021 01:27:28 -0700 (PDT)
+        bh=TqrU2cFlasxqkRqpiYWWW8WqiL3iPrIO9687ezTTKRI=;
+        b=8MfIylI2Ggzi/FqqJfTv4Da6R5mvGHuZKK8pIfYrbSnjdU3K2uP9B4+7eK35r5DA0y
+         2Mi+fQMf4gqn7di3ndJ0WrFe/jZudFkoZQp++suPZ21zceVqs7t2wmLSFP0mCAwQZP3c
+         BZkkA/RRbXF0pR4y0jr/PWHEHuz2UgD/rg6DnWO0/VnzrfvTk56jJe2X8oixPHtwKmlJ
+         KV3Ryd+t8myTTIPYszFBadORcaG8gdRCnmLjmCoIOIFZV+WD6g0d2dfrahk7RDph2LyS
+         rp+KO5vG6i6kN9OZtxcuIBlwrAXlnxc3ZZk2bPycnj0D/durRT910pu0Hp+cuwJkkUab
+         aM+g==
+X-Gm-Message-State: AOAM530IcGYduJ1/ocGILVH1B6CiVy2Aqz7qmubhezQ+K/xKkg8xtq33
+        wC723yCnXRi+cSogflwv4lMN3mX54h+1FNRkbg6tmA==
+X-Google-Smtp-Source: ABdhPJxgFFm23/W0H3AeChVmx6tYmbVLkmEarDtdQaV1AerU2A94yipRaSPVs1z1DCtqoWswDxAdZ7vS3zkCIYAp4ms=
+X-Received: by 2002:a19:6a16:: with SMTP id u22mr31250288lfu.254.1634027294895;
+ Tue, 12 Oct 2021 01:28:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211012073116.4156054-1-sumit.garg@linaro.org> <CAHUa44HW=7GhvWSd7LwG3wc+47bQWHHiFq+qA-8qMnDV1C0yBQ@mail.gmail.com>
-In-Reply-To: <CAHUa44HW=7GhvWSd7LwG3wc+47bQWHHiFq+qA-8qMnDV1C0yBQ@mail.gmail.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 12 Oct 2021 13:57:16 +0530
-Message-ID: <CAFA6WYMcKLPj-ZHSBHPeg4TPmzutf-7VTffMyMbv+7ax+uJf1w@mail.gmail.com>
-Subject: Re: [PATCH] tee: optee: Fix missing devices unregister during optee_remove
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Jerome Forissier <jerome@forissier.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211009041918.28419-1-xiongx18@fudan.edu.cn>
+In-Reply-To: <20211009041918.28419-1-xiongx18@fudan.edu.cn>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 12 Oct 2021 10:27:38 +0200
+Message-ID: <CAPDyKFpnQWeKdxc1oMWj+i9hBq0oqjZ9vvgXWdct+oNnR4dndg@mail.gmail.com>
+Subject: Re: [PATCH v4] drivers/mmc: fix reference count leaks in moxart_probe
+To:     Xin Xiong <xiongx18@fudan.edu.cn>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
-
-On Tue, 12 Oct 2021 at 13:29, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+On Sat, 9 Oct 2021 at 06:20, Xin Xiong <xiongx18@fudan.edu.cn> wrote:
 >
-> Hi Sumit,
+> The issue happens in several error handling paths on two refcounted
+> object related to the object "host" (dma_chan_rx, dma_chan_tx). In
+> these paths, the function forgets to decrement one or both objects'
+> reference count increased earlier by dma_request_chan(), causing
+> reference count leaks.
 >
-> On Tue, Oct 12, 2021 at 9:31 AM Sumit Garg <sumit.garg@linaro.org> wrote:
-> >
-> > When OP-TEE driver is built as a module, OP-TEE client devices
-> > registered on TEE bus during probe should be unregistered during
-> > optee_remove. So implement optee_unregister_devices() accordingly.
-> >
-> > Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
-> > Reported-by: Sudeep Holla <sudeep.holla@arm.com>
-> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > ---
-> >  drivers/tee/optee/core.c          |  3 +++
-> >  drivers/tee/optee/device.c        | 22 ++++++++++++++++++++++
-> >  drivers/tee/optee/optee_private.h |  1 +
-> >  3 files changed, 26 insertions(+)
-> >
-> > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> > index ccad3c7c8f6d..3915dc574503 100644
-> > --- a/drivers/tee/optee/core.c
-> > +++ b/drivers/tee/optee/core.c
-> > @@ -586,6 +586,9 @@ static int optee_remove(struct platform_device *pdev)
-> >  {
-> >         struct optee *optee = platform_get_drvdata(pdev);
-> >
-> > +       /* Unregister OP-TEE specific client devices on TEE bus */
-> > +       optee_unregister_devices();
-> > +
-> >         /*
-> >          * Ask OP-TEE to free all cached shared memory objects to decrease
-> >          * reference counters and also avoid wild pointers in secure world
-> > diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-> > index ec1d24693eba..128a2d2a50a1 100644
-> > --- a/drivers/tee/optee/device.c
-> > +++ b/drivers/tee/optee/device.c
-> > @@ -53,6 +53,13 @@ static int get_devices(struct tee_context *ctx, u32 session,
-> >         return 0;
-> >  }
-> >
-> > +static void optee_release_device(struct device *dev)
-> > +{
-> > +       struct tee_client_device *optee_device = to_tee_client_device(dev);
-> > +
-> > +       kfree(optee_device);
-> > +}
-> > +
-> >  static int optee_register_device(const uuid_t *device_uuid)
-> >  {
-> >         struct tee_client_device *optee_device = NULL;
-> > @@ -63,6 +70,7 @@ static int optee_register_device(const uuid_t *device_uuid)
-> >                 return -ENOMEM;
-> >
-> >         optee_device->dev.bus = &tee_bus_type;
-> > +       optee_device->dev.release = optee_release_device;
-> >         if (dev_set_name(&optee_device->dev, "optee-ta-%pUb", device_uuid)) {
-> >                 kfree(optee_device);
-> >                 return -ENOMEM;
-> > @@ -154,3 +162,17 @@ int optee_enumerate_devices(u32 func)
-> >  {
-> >         return  __optee_enumerate_devices(func);
-> >  }
-> > +
-> > +static int __optee_unregister_device(struct device *dev, void *data)
-> > +{
-> > +       if (!strncmp(dev_name(dev), "optee-ta", strlen("optee-ta")))
-
-The issue you described below should be handled by this check as we
-would register TAs with unique name corresponding to each OP-TEE
-driver.
-
-> > +               device_unregister(dev);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +void optee_unregister_devices(void)
-> > +{
-> > +       bus_for_each_dev(&tee_bus_type, NULL, NULL,
-> > +                        __optee_unregister_device);
+> Fix it by balancing the refcounts of both objects in some error
+> handling paths. In correspondence with the changes in moxart_probe(),
+> IS_ERR() is replaced with IS_ERR_OR_NULL() in moxart_remove() as well.
 >
-> I had something like this in mind too, but there's one potential
-> problem with this approach. What if there's more than one OP-TEE
-> driver with TAs here? It seems that we'll remove TAs from other
-> drivers too then.
+> Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 
-We should be able to easily differentiate among TAs associated with
-any of multiple OP-TEE drivers based on their unique device name.
+Applied for next, thanks!
 
+Kind regards
+Uffe
+
+
+> ---
+>  drivers/mmc/host/moxart-mmc.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
 >
-> This is not likely to be a problem at upstream for the moment so I
-> might be enough just to keep this in mind if/when the OP-TEE driver is
-> extended in a way that there can be multiple OP-TEEs handled.
+> diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
+> index 6c9d38132..7b9fcef49 100644
+> --- a/drivers/mmc/host/moxart-mmc.c
+> +++ b/drivers/mmc/host/moxart-mmc.c
+> @@ -621,6 +621,14 @@ static int moxart_probe(struct platform_device *pdev)
+>                         ret = -EPROBE_DEFER;
+>                         goto out;
+>                 }
+> +               if (!IS_ERR(host->dma_chan_tx)) {
+> +                       dma_release_channel(host->dma_chan_tx);
+> +                       host->dma_chan_tx = NULL;
+> +               }
+> +               if (!IS_ERR(host->dma_chan_rx)) {
+> +                       dma_release_channel(host->dma_chan_rx);
+> +                       host->dma_chan_rx = NULL;
+> +               }
+>                 dev_dbg(dev, "PIO mode transfer enabled\n");
+>                 host->have_dma = false;
+>         } else {
+> @@ -675,6 +683,10 @@ static int moxart_probe(struct platform_device *pdev)
+>         return 0;
 >
-
-Given above comments, I think it should be easily handled.
-
--Sumit
-
-> Cheers,
-> Jens
+>  out:
+> +       if (!IS_ERR_OR_NULL(host->dma_chan_tx))
+> +               dma_release_channel(host->dma_chan_tx);
+> +       if (!IS_ERR_OR_NULL(host->dma_chan_rx))
+> +               dma_release_channel(host->dma_chan_rx);
+>         if (mmc)
+>                 mmc_free_host(mmc);
+>         return ret;
+> @@ -687,9 +699,9 @@ static int moxart_remove(struct platform_device *pdev)
+>
+>         dev_set_drvdata(&pdev->dev, NULL);
+>
+> -       if (!IS_ERR(host->dma_chan_tx))
+> +       if (!IS_ERR_OR_NULL(host->dma_chan_tx))
+>                 dma_release_channel(host->dma_chan_tx);
+> -       if (!IS_ERR(host->dma_chan_rx))
+> +       if (!IS_ERR_OR_NULL(host->dma_chan_rx))
+>                 dma_release_channel(host->dma_chan_rx);
+>         mmc_remove_host(mmc);
+>         mmc_free_host(mmc);
+> --
+> 2.25.1
+>
