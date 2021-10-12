@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC874429B08
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D255429B06
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234476AbhJLBeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhJLBd7 (ORCPT
+        id S233470AbhJLBcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:32:42 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13720 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231135AbhJLBcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:33:59 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAB7C061570;
-        Mon, 11 Oct 2021 18:31:58 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 133so12376360pgb.1;
-        Mon, 11 Oct 2021 18:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JN8v54LeipJeYyNhtrVL0FNG8zho/hvYlwrieKnepzs=;
-        b=BzaYLFpQc+z52UONCvo4bZd+CrTBA9Dzn/UB6HG75CaHtyZMepabEhDz+bv6+sDAKg
-         XMgNfImSJDygOyU7BshTJKyXcUh8ht4rxuVm45ogkUuh/0vRJm4PBqs3jEtrTxqAEiKY
-         CAqVOr60shv/fq/ZKjo/9HXjy4Xi7rtrTREihf76WCu+fvuqpdE0KWCpre6SFsU10OD9
-         yHQfSCfHVEq4GGxvKTsaGF25gqeGONORtdzHQMx/TTt2KQnr21RG63zvYQJdok3bw3qc
-         uhPLWL4+7Ne/0YycU83oeFMcn2apu2czQUXg221jWnab1VED7m/Da6LCfIq/UHJFKf8p
-         sslg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JN8v54LeipJeYyNhtrVL0FNG8zho/hvYlwrieKnepzs=;
-        b=OATxm/63DPGSw91MErd9BFKRIzWLKkV/3T3h+1FO5aJjWmlJAUBvl7/q+82tVpQHbE
-         NzUrFkWlNA2R5nK8tRIfHVj2iur69RsrjgspATHYvdx0QSOluOaaalOZGZV6z/9nQJ0W
-         1aoS+u8cK+67aceeo24FqRw9kj0ZVoAWR6HeCrITmyX0PV1w+fL8By0J+wUwtam7yNoU
-         /LAPUMO0vEtEHuTHFQRmS043Cf/YBiw0kpTANpapoAo9xqDMN+kEgtiJi78550H9RCFZ
-         1v3q4AMv0x/8yZHxwUAOBbHMW9Ye5YSOx/9wtieiKWO2rw0ccgNMgP5YTP6smWT50XKJ
-         rqdA==
-X-Gm-Message-State: AOAM532HD92lUAbP1VM7/fzlmXmu/vUxmkxEjtIVaz0RNO0QSIyUK7Yb
-        /HP2csNBpCDuj0FrxUJYhZDuwhYvT0E=
-X-Google-Smtp-Source: ABdhPJzG8qEmeMxB+6MmceSNqyBMtE3x246SMKFqZPgKrTdYqKYpUU+ZoG1sb5ZhxJ072ioVCcsTDQ==
-X-Received: by 2002:a63:3e4a:: with SMTP id l71mr20070375pga.318.1634002317366;
-        Mon, 11 Oct 2021 18:31:57 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:10fb:4b55:2926:7ada])
-        by smtp.gmail.com with ESMTPSA id o6sm9047141pfp.79.2021.10.11.18.31.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 18:31:56 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 18:31:53 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     John Keeping <john@metanate.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Andrej Valek <andrej.valek@siemens.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: st1232 - prefer asynchronous probing
-Message-ID: <YWTlidGfIGXukwCC@google.com>
-References: <20211007111217.1935858-1-john@metanate.com>
+        Mon, 11 Oct 2021 21:32:41 -0400
+Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HSyk71006zWP0G;
+        Tue, 12 Oct 2021 09:29:03 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.44) by
+ dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 09:30:38 +0800
+From:   Gaosheng Cui <cuigaosheng1@huawei.com>
+To:     <paul@paul-moore.com>, <eparis@redhat.com>
+CC:     <linux-audit@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <xiujianfeng@huawei.com>, <wangweiyang2@huawei.com>
+Subject: [PATCH -next] audit: return early if the rule has a lower priority
+Date:   Tue, 12 Oct 2021 09:32:40 +0800
+Message-ID: <20211012013240.63072-1-cuigaosheng1@huawei.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007111217.1935858-1-john@metanate.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.44]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme762-chm.china.huawei.com (10.3.19.108)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 12:12:16PM +0100, John Keeping wrote:
-> The device may take up to 100ms to become responsive during probe, so
-> prefer asynchronous probing to avoid delaying the rest of the system.
-> 
-> Suggested-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Signed-off-by: John Keeping <john@metanate.com>
+It is not necessary for audit_filter_rules() functions to check
+audit fileds of the rule with a lower priority, and if we did,
+there might be some unintended effects, such as the ctx->ppid
+may be changed unexpectedly, so return early if the rule has
+a lower priority.
 
-Applied, thank you.
+Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+---
+ kernel/auditsc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index 4ba3b8573ff4..eee14dfad0fa 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -470,6 +470,9 @@ static int audit_filter_rules(struct task_struct *tsk,
+ 	u32 sid;
+ 	unsigned int sessionid;
+ 
++	if (ctx && rule->prio <= ctx->prio)
++		return 0;
++
+ 	cred = rcu_dereference_check(tsk->cred, tsk == current || task_creation);
+ 
+ 	for (i = 0; i < rule->field_count; i++) {
+@@ -737,8 +740,6 @@ static int audit_filter_rules(struct task_struct *tsk,
+ 	}
+ 
+ 	if (ctx) {
+-		if (rule->prio <= ctx->prio)
+-			return 0;
+ 		if (rule->filterkey) {
+ 			kfree(ctx->filterkey);
+ 			ctx->filterkey = kstrdup(rule->filterkey, GFP_ATOMIC);
 -- 
-Dmitry
+2.30.0
+
