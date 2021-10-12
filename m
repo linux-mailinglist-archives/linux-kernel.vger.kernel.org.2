@@ -2,101 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3298642A469
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B9542A470
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236410AbhJLMb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:31:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236281AbhJLMbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:31:25 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8122460E74;
-        Tue, 12 Oct 2021 12:29:21 +0000 (UTC)
-Date:   Tue, 12 Oct 2021 08:29:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
-        Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH 1/2] ftrace: disable preemption on the testing of
- recursion
-Message-ID: <20211012082920.1f8d6557@gandalf.local.home>
-In-Reply-To: <alpine.LSU.2.21.2110121421260.3394@pobox.suse.cz>
-References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com>
-        <a8756482-024c-c858-b3d1-1ffa9a5eb3f7@linux.alibaba.com>
-        <alpine.LSU.2.21.2110121421260.3394@pobox.suse.cz>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233053AbhJLMde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 08:33:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32350 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236346AbhJLMd0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 08:33:26 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19CAnGwf013182;
+        Tue, 12 Oct 2021 08:31:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=NGL6uHWcC/qeuSR1nITAcLMws/D4n1oX/88GgyPHGmA=;
+ b=Q5i6fvQHi4LemB7VEPAWBcXTlbNAaSpJ+smMK6Te2ea2aER/2MYsIsxVJ3SQ5WQQ5IWh
+ WoQyx7+6COCyZIhjyt7Ts/4kDs+MJxe+PAKfE1UIgU3dOLk3YYc8f7cvN404XhQx6/8G
+ T3r5lUrpVfLEaghCkAOoh/75JLMKgc8dMeYHQixQ5PX+MCG4zQx7jNUFzFOck9aZYijO
+ bDXk+hllQW5rvqnRNwE4bGoE478aLG8eRlZjQb01SiRxDs6bpLX/w4ACDbYX/8Ae07xX
+ 3cKUsO1G268nO6CKrko7lqiQJUgfCFgJooZI9qFSC7YybQOwt2p8VGSFLwYPWHBLF9v6 7A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bn66qnxe8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 08:31:24 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19CCHV9C024781;
+        Tue, 12 Oct 2021 08:31:23 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bn66qnxd3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 08:31:23 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19CCDNrH015897;
+        Tue, 12 Oct 2021 12:31:21 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3bk2qa0cm1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 12:31:21 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19CCPQcc45744540
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 12:25:26 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD253AE06C;
+        Tue, 12 Oct 2021 12:31:01 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5C96DAE068;
+        Tue, 12 Oct 2021 12:31:01 +0000 (GMT)
+Received: from [9.145.51.19] (unknown [9.145.51.19])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Oct 2021 12:31:01 +0000 (GMT)
+Message-ID: <e18fb171-726e-dc28-7a09-3c110bb97ff8@linux.ibm.com>
+Date:   Tue, 12 Oct 2021 14:31:00 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v5 08/14] KVM: s390: pv: handle secure storage exceptions
+ for normal guests
+Content-Language: en-US
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com
+References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
+ <20210920132502.36111-9-imbrenda@linux.ibm.com>
+ <f442a49f-dbc4-5c38-ffa1-6b17742592c3@linux.ibm.com>
+ <20211012103550.501857f5@p-imbrenda>
+From:   Janosch Frank <frankja@linux.ibm.com>
+In-Reply-To: <20211012103550.501857f5@p-imbrenda>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: MKPzYILyVDBdDYwg7M7oY0AHhr8jawDl
+X-Proofpoint-GUID: QFIgnLzIa6ncCera3gjj78_TO1pb7O-h
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-12_03,2021-10-12_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 impostorscore=0 suspectscore=0 bulkscore=0 phishscore=0
+ clxscore=1015 mlxlogscore=912 priorityscore=1501 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110120073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 14:24:43 +0200 (CEST)
-Miroslav Benes <mbenes@suse.cz> wrote:
-
-> > +++ b/kernel/livepatch/patch.c
-> > @@ -52,11 +52,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
-> >  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
-> >  	if (WARN_ON_ONCE(bit < 0))
-> >  		return;
-> > -	/*
-> > -	 * A variant of synchronize_rcu() is used to allow patching functions
-> > -	 * where RCU is not watching, see klp_synchronize_transition().
-> > -	 */
-> > -	preempt_disable_notrace();
-> > 
-> >  	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
-> >  				      stack_node);
-> > @@ -120,7 +115,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
-> >  	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
-> > 
-> >  unlock:
-> > -	preempt_enable_notrace();
-> >  	ftrace_test_recursion_unlock(bit);
-> >  }  
+On 10/12/21 10:35, Claudio Imbrenda wrote:
+> On Tue, 12 Oct 2021 10:16:26 +0200
+> Janosch Frank <frankja@linux.ibm.com> wrote:
 > 
-> I don't like this change much. We have preempt_disable there not because 
-> of ftrace_test_recursion, but because of RCU. ftrace_test_recursion was 
-> added later. Yes, it would work with the change, but it would also hide 
-> things which should not be hidden in my opinion.
+>> On 9/20/21 15:24, Claudio Imbrenda wrote:
+>>> With upcoming patches, normal guests might touch secure pages.
+>>>
+>>> This patch extends the existing exception handler to convert the pages
+>>> to non secure also when the exception is triggered by a normal guest.
+>>>
+>>> This can happen for example when a secure guest reboots; the first
+>>> stage of a secure guest is non secure, and in general a secure guest
+>>> can reboot into non-secure mode.
+>>>
+>>> If the secure memory of the previous boot has not been cleared up
+>>> completely yet, a non-secure guest might touch secure memory, which
+>>> will need to be handled properly.
+>>>
+>>> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+>>> ---
+>>>    arch/s390/mm/fault.c | 10 +++++++++-
+>>>    1 file changed, 9 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+>>> index eb68b4f36927..74784581f42d 100644
+>>> --- a/arch/s390/mm/fault.c
+>>> +++ b/arch/s390/mm/fault.c
+>>> @@ -767,6 +767,7 @@ void do_secure_storage_access(struct pt_regs *regs)
+>>>    	struct vm_area_struct *vma;
+>>>    	struct mm_struct *mm;
+>>>    	struct page *page;
+>>> +	struct gmap *gmap;
+>>>    	int rc;
+>>>    
+>>>    	/*
+>>> @@ -796,6 +797,14 @@ void do_secure_storage_access(struct pt_regs *regs)
+>>>    	}
+>>>    
+>>>    	switch (get_fault_type(regs)) {
+>>> +	case GMAP_FAULT:
+>>> +		gmap = (struct gmap *)S390_lowcore.gmap;
+>>> +		addr = __gmap_translate(gmap, addr);
+>>> +		if (IS_ERR_VALUE(addr)) {
+>>> +			do_fault_error(regs, VM_ACCESS_FLAGS, VM_FAULT_BADMAP);
+>>> +			break;
+>>> +		}
+>>> +		fallthrough;
+>>
+>> This would trigger an export and not a destroy, right?
+> 
+> correct. but this would only happen for leftover secure pages touched
+> by non-secure guests, before the background thread could clean them up.
 
-Agreed, but I believe the change is fine, but requires a nice comment to
-explain what you said above.
+I.e. we don't expect to need the destroy speed boost?
 
-Thus, before the "ftrace_test_recursion_trylock()" we need:
+> 
+>>
+>>>    	case USER_FAULT:
+>>>    		mm = current->mm;
+>>>    		mmap_read_lock(mm);
+>>> @@ -824,7 +833,6 @@ void do_secure_storage_access(struct pt_regs *regs)
+>>>    		if (rc)
+>>>    			BUG();
+>>>    		break;
+>>> -	case GMAP_FAULT:
+>>>    	default:
+>>>    		do_fault_error(regs, VM_READ | VM_WRITE, VM_FAULT_BADMAP);
+>>>    		WARN_ON_ONCE(1);
+>>>    
+>>
+> 
 
-	/*
-	 * The ftrace_test_recursion_trylock() will disable preemption,
-	 * which is required for the variant of synchronize_rcu() that is
-	 * used to allow patching functions where RCU is not watching.
-	 * See klp_synchronize_transition() for more details.
-	 */
-
--- Steve
