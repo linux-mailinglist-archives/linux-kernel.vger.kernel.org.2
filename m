@@ -2,162 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41AE429BA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5D5429BA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhJLCyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 22:54:13 -0400
-Received: from mga09.intel.com ([134.134.136.24]:55732 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231649AbhJLCyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 22:54:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="226921453"
-X-IronPort-AV: E=Sophos;i="5.85,366,1624345200"; 
-   d="scan'208";a="226921453"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 19:52:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,366,1624345200"; 
-   d="scan'208";a="441664143"
-Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 11 Oct 2021 19:52:10 -0700
-Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ma7th-00030E-C4; Tue, 12 Oct 2021 02:52:09 +0000
-Date:   Tue, 12 Oct 2021 10:51:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 7413431c622fec602c030b7333f7e1a4c81b37ce
-Message-ID: <6164f82c.0J8/LmOYCYzVZrwv%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231927AbhJLCyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 22:54:41 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:52443 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231790AbhJLCyk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 22:54:40 -0400
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 19C2q77p020888;
+        Tue, 12 Oct 2021 11:52:08 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 19C2q77p020888
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1634007128;
+        bh=trZNy2SOmOFqSbX3fgMgW1+O8/BOm+x1o2j/beOb/7I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uhPvL0juPQFB+0g19tLRt9shxybBpUQ47ebM5AUNlOhm6mfiAqrw/Cb5Dd5EJrgcq
+         km+g338ZBRRzX6MMvLo/jkVO8dQ0gjEOySA18JyGsFlkrGUEI+fckiq67fgsHN5DMv
+         4BVNlBZfy66EEvfZIUIbRqC4MAFlQ2u4YcfVNd8KXVJ1rCCpTieCexsSzPBTWrIami
+         fag3aY1R4FDADpGCVmDWJPqi1Img6a4ozi1Lne3M3FMjDimXaYyIRH/VvljdcbePq8
+         rKOP0hNDDOzDR0dx42b4P58Bm8ZcCGNIregzi4t1I67Ey4ggkD8VNlzFSMFuMDmmyk
+         WDrkpHtA2QXMA==
+X-Nifty-SrcIP: [209.85.214.171]
+Received: by mail-pl1-f171.google.com with SMTP id g5so9513081plg.1;
+        Mon, 11 Oct 2021 19:52:07 -0700 (PDT)
+X-Gm-Message-State: AOAM5324k+StPuGUskKe3cpXsT8IASxjraRC6HUtYKM6O92QMaaxCRX1
+        gxu0luBrCZJylM/TnbGrz3dC66U3owqQV6S4ZCk=
+X-Google-Smtp-Source: ABdhPJxgUSB+eGWq/P7GmhRltLD7uwZ6Www8ovmlHRZU7yZzL0MA6xIWY+izQliR+nQWS3xchfMpxi/OQrDUj+DrrUs=
+X-Received: by 2002:a17:90b:1d06:: with SMTP id on6mr3095062pjb.119.1634007127136;
+ Mon, 11 Oct 2021 19:52:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20211008112438.GA1243425@localhost.localdomain>
+In-Reply-To: <20211008112438.GA1243425@localhost.localdomain>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 12 Oct 2021 11:51:30 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARhAXKhRbm6UAJ9q=C17XXAUc5M1CPDS=a7-3-X0B1FzQ@mail.gmail.com>
+Message-ID: <CAK7LNARhAXKhRbm6UAJ9q=C17XXAUc5M1CPDS=a7-3-X0B1FzQ@mail.gmail.com>
+Subject: Re: [PATCH] scripts: update the comments of kallsyms support
+To:     Hui Su <suhui_kernel@163.com>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 7413431c622fec602c030b7333f7e1a4c81b37ce  Merge remote-tracking branch 'tip/x86/fpu' into tip-master
+On Fri, Oct 8, 2021 at 8:25 PM Hui Su <suhui_kernel@163.com> wrote:
+>
+> update the comments of kallsyms support
+>
+> Signed-off-by: Hui Su <suhui_kernel@163.com>
+> ---
 
-elapsed time: 894m
+I added
 
-configs tested: 104
-configs skipped: 3
+Fixes: af73d78bd384 ("kbuild: Remove debug info from kallsyms linking")
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211012
-xtensa                    smp_lx200_defconfig
-arc                        nsim_700_defconfig
-sh                           sh2007_defconfig
-xtensa                           alldefconfig
-arm                        spear3xx_defconfig
-powerpc                         ps3_defconfig
-powerpc                 xes_mpc85xx_defconfig
-sh                ecovec24-romimage_defconfig
-sparc                       sparc64_defconfig
-sh                        sh7757lcr_defconfig
-mips                        maltaup_defconfig
-parisc                generic-32bit_defconfig
-microblaze                          defconfig
-sh                        sh7785lcr_defconfig
-mips                           ip22_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                      footbridge_defconfig
-mips                    maltaup_xpa_defconfig
-mips                         mpc30x_defconfig
-arm                        multi_v7_defconfig
-arm                  randconfig-c002-20211011
-i386                 randconfig-c001-20211011
-x86_64               randconfig-c001-20211011
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a015-20211011
-x86_64               randconfig-a012-20211011
-x86_64               randconfig-a016-20211011
-x86_64               randconfig-a014-20211011
-x86_64               randconfig-a013-20211011
-x86_64               randconfig-a011-20211011
-i386                 randconfig-a016-20211011
-i386                 randconfig-a014-20211011
-i386                 randconfig-a011-20211011
-i386                 randconfig-a015-20211011
-i386                 randconfig-a012-20211011
-i386                 randconfig-a013-20211011
-arc                  randconfig-r043-20211011
-s390                 randconfig-r044-20211011
-riscv                randconfig-r042-20211011
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Applied to linux-kbuild. Thanks.
 
-clang tested configs:
-x86_64               randconfig-a004-20211011
-x86_64               randconfig-a006-20211011
-x86_64               randconfig-a001-20211011
-x86_64               randconfig-a005-20211011
-x86_64               randconfig-a002-20211011
-x86_64               randconfig-a003-20211011
-i386                 randconfig-a001-20211011
-i386                 randconfig-a003-20211011
-i386                 randconfig-a004-20211011
-i386                 randconfig-a005-20211011
-i386                 randconfig-a002-20211011
-i386                 randconfig-a006-20211011
-hexagon              randconfig-r041-20211011
-hexagon              randconfig-r045-20211011
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+
+>  scripts/link-vmlinux.sh | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index d74cee5c4326..a98c4f045302 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -369,14 +369,14 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
+>         # kallsyms support
+>         # Generate section listing all symbols and add it into vmlinux
+>         # It's a three step process:
+> -       # 1)  Link .tmp_vmlinux1 so it has all symbols and sections,
+> +       # 1)  Link .tmp_vmlinux.kallsyms1 so it has all symbols and sections,
+>         #     but __kallsyms is empty.
+>         #     Running kallsyms on that gives us .tmp_kallsyms1.o with
+>         #     the right size
+> -       # 2)  Link .tmp_vmlinux2 so it now has a __kallsyms section of
+> +       # 2)  Link .tmp_vmlinux.kallsyms2 so it now has a __kallsyms section of
+>         #     the right size, but due to the added section, some
+>         #     addresses have shifted.
+> -       #     From here, we generate a correct .tmp_kallsyms2.o
+> +       #     From here, we generate a correct .tmp_vmlinux.kallsyms2.o
+>         # 3)  That link may have expanded the kernel image enough that
+>         #     more linker branch stubs / trampolines had to be added, which
+>         #     introduces new names, which further expands kallsyms. Do another
+> --
+> 2.25.1
+>
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
