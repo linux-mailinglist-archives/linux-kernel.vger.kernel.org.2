@@ -2,148 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6B3429F9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482F8429F9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234826AbhJLISp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:18:45 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11612 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234501AbhJLISo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:18:44 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C6bklo013750;
-        Tue, 12 Oct 2021 04:16:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=sCHeE5N0DNCQKcwXOPP+AL0+kwJtk8g7J0h6YarbhZ8=;
- b=hl11BKmd5EBo7M0pYCWzMF4GxrN9mRHDdfUz63oO/BvGfEcqE1RzKJTjjGW0yLz34O9Z
- wWWs/fB0NUyod0vN3tQXuXgx/wCYB6P90TBL2cTgqyrh2RnviM7yAx0Upde2+hrGW+fr
- ndmLWEEj/yJ++IvU33HCFPSgwDkLUyvHToM3CtLEtutYcvbZAukb3tkHimkWXkJu0/QH
- MAuP9TBty0DGAfnxpNFFKMToc9HAVBKGIpB3znVCsX1MPD13Xu/S9FlxUGY6CiUNe8aS
- Dyws+Ja7ckSVNmnWyiYRd+KNZfdwVPZVHjF/+WOP+8BpjfaLGx6moEfyDxlsg8ptb7b2 yg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bmvh9k7g1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 04:16:42 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19C6p6Jg002284;
-        Tue, 12 Oct 2021 04:16:41 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bmvh9k7fk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 04:16:41 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19C8BSsS007817;
-        Tue, 12 Oct 2021 08:16:39 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 3bk2bjchqq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 08:16:38 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19C8Aq6r44827110
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 08:10:52 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A454111C054;
-        Tue, 12 Oct 2021 08:16:27 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 23E0211C064;
-        Tue, 12 Oct 2021 08:16:27 +0000 (GMT)
-Received: from [9.145.20.44] (unknown [9.145.20.44])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Oct 2021 08:16:27 +0000 (GMT)
-Message-ID: <f442a49f-dbc4-5c38-ffa1-6b17742592c3@linux.ibm.com>
-Date:   Tue, 12 Oct 2021 10:16:26 +0200
+        id S234714AbhJLIT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:19:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232541AbhJLIT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 04:19:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFF6660F23;
+        Tue, 12 Oct 2021 08:17:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634026677;
+        bh=O6YnQ6b4Trs6QluMttA3AsFs4aF9SM6xHU/t4DKvyTg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BZdnk4kj10eF4uEL6UQmlX9cXLWKhntEHIog5IiiWy6oi03Rs9Vy7hiLkoMhb01cK
+         jkTMvDk3/sOBe8RY6RI3z5BqnRY2kIdrTfg96CxHS+JzKGwP9zBPMuzUXwp9ZC1OkB
+         NJUacUssiNN5o3CVEzhgoGRTONDLUhhKakBld00Z1/9Sxvk3LEkrzmYWRAmzJxFvjQ
+         BAEhmY2czxDkkZurU7PoPFstdMkndfphZ41VupVyoZPTsVlD9bbkq+PsaXQgpkcFrg
+         qs35g/FOskmvwWI+RHt9w40Vhce1DrugvKNc92XT5eM58rLbbnibObKRrCJr49hb2c
+         AaT4ixBlT+iLw==
+Received: by mail-lf1-f54.google.com with SMTP id u18so84176791lfd.12;
+        Tue, 12 Oct 2021 01:17:56 -0700 (PDT)
+X-Gm-Message-State: AOAM530PIop8lR92HAGFVlhFVXo2Acpwx8utvQup1hzMwdb1BWomUHpE
+        IM/BHBtZ7lgO4XJDUYVeq3NaqQYmpZ74Xi5FZKk=
+X-Google-Smtp-Source: ABdhPJzzS8BadDYCdKON8s6JDRiKBtNpl1vB+T18h7RmJroMdHNwePQeKdXq4Urk7tLajYxYtDSkgGqauBXv5xb5xfs=
+X-Received: by 2002:a2e:3907:: with SMTP id g7mr28814014lja.285.1634026675077;
+ Tue, 12 Oct 2021 01:17:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v5 08/14] KVM: s390: pv: handle secure storage exceptions
- for normal guests
-Content-Language: en-US
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
-References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
- <20210920132502.36111-9-imbrenda@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-In-Reply-To: <20210920132502.36111-9-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: nK4buYSFW41FI9f_Wi3VZVwR9hqyKAxC
-X-Proofpoint-GUID: z2KkevzjgqzfsB2GU9ql2vGq9UJRv-Ve
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-12_01,2021-10-11_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- bulkscore=0 malwarescore=0 clxscore=1015 adultscore=0 lowpriorityscore=0
- phishscore=0 impostorscore=0 spamscore=0 mlxlogscore=864 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110120045
+References: <20211008032231.1143467-1-fengli@smartx.com> <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
+ <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com>
+ <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
+ <CALTww28CsJdmVOLFeoHC8FgbHDK78h8Lncsf9fFA0RYXEj=R9A@mail.gmail.com> <CAHckoCzzVP7npmU4LWedzD-f1QmkH4K0iLk_=8ptSFXrFfRoDw@mail.gmail.com>
+In-Reply-To: <CAHckoCzzVP7npmU4LWedzD-f1QmkH4K0iLk_=8ptSFXrFfRoDw@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 12 Oct 2021 01:17:43 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4VFTpM94by-iMkTQ=b9Y7FqZ2oqHH+jV-f8BM=YKWyiA@mail.gmail.com>
+Message-ID: <CAPhsuW4VFTpM94by-iMkTQ=b9Y7FqZ2oqHH+jV-f8BM=YKWyiA@mail.gmail.com>
+Subject: Re: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
+To:     Li Feng <fengli@smartx.com>
+Cc:     Xiao Ni <xni@redhat.com>,
+        "open list:SOFTWARE RAID (Multiple Disks) SUPPORT" 
+        <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/21 15:24, Claudio Imbrenda wrote:
-> With upcoming patches, normal guests might touch secure pages.
-> 
-> This patch extends the existing exception handler to convert the pages
-> to non secure also when the exception is triggered by a normal guest.
-> 
-> This can happen for example when a secure guest reboots; the first
-> stage of a secure guest is non secure, and in general a secure guest
-> can reboot into non-secure mode.
-> 
-> If the secure memory of the previous boot has not been cleared up
-> completely yet, a non-secure guest might touch secure memory, which
-> will need to be handled properly.
-> 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> ---
->   arch/s390/mm/fault.c | 10 +++++++++-
->   1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
-> index eb68b4f36927..74784581f42d 100644
-> --- a/arch/s390/mm/fault.c
-> +++ b/arch/s390/mm/fault.c
-> @@ -767,6 +767,7 @@ void do_secure_storage_access(struct pt_regs *regs)
->   	struct vm_area_struct *vma;
->   	struct mm_struct *mm;
->   	struct page *page;
-> +	struct gmap *gmap;
->   	int rc;
->   
->   	/*
-> @@ -796,6 +797,14 @@ void do_secure_storage_access(struct pt_regs *regs)
->   	}
->   
->   	switch (get_fault_type(regs)) {
-> +	case GMAP_FAULT:
-> +		gmap = (struct gmap *)S390_lowcore.gmap;
-> +		addr = __gmap_translate(gmap, addr);
-> +		if (IS_ERR_VALUE(addr)) {
-> +			do_fault_error(regs, VM_ACCESS_FLAGS, VM_FAULT_BADMAP);
-> +			break;
-> +		}
-> +		fallthrough;
+On Tue, Oct 12, 2021 at 1:07 AM Li Feng <fengli@smartx.com> wrote:
+>
+> Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=A5=E5=
+=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=882:58=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Mon, Oct 11, 2021 at 5:42 PM Li Feng <fengli@smartx.com> wrote:
+> > >
+> > > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8811=E6=97=A5=
+=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:49=E5=86=99=E9=81=93=EF=BC=9A
+> > > >
+> > > > Hi all
+> > > >
+> > > > Now the per device sysfs interface file state can change failfast. =
+Do
+> > > > we need a new file for failfast?
+> > > >
+> > > > I did a test. The steps are:
+> > > >
+> > > > mdadm -CR /dev/md0 -l1 -n2 /dev/sdb /dev/sdc --assume-clean
+> > > > cd /sys/block/md0/md/dev-sdb
+> > > > echo failfast > state
+> > > > cat state
+> > > > in_sync,failfast
+> > >
+> > > This works,  will it be persisted to disk?
+> > >
+> >
+> > mdadm --detail /dev/md0 can show the failfast information. So it
+> > should be written in superblock.
+> > But I don't find how md does this. I'm looking at this.
+> >
+> Yes, I have tested that it has been persisted, but don't understand who d=
+oes it.
 
-This would trigger an export and not a destroy, right?
+I think this is not guaranteed to be persistent:
 
->   	case USER_FAULT:
->   		mm = current->mm;
->   		mmap_read_lock(mm);
-> @@ -824,7 +833,6 @@ void do_secure_storage_access(struct pt_regs *regs)
->   		if (rc)
->   			BUG();
->   		break;
-> -	case GMAP_FAULT:
->   	default:
->   		do_fault_error(regs, VM_READ | VM_WRITE, VM_FAULT_BADMAP);
->   		WARN_ON_ONCE(1);
-> 
+[root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
+in_sync,failfast
+[root@eth50-1 ~]# echo -failfast >  /sys/block/md127/md/rd1/state
+[root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
+in_sync
+[root@eth50-1 ~]# mdadm --stop /dev/md*
+mdadm: /dev/md does not appear to be an md device
+mdadm: stopped /dev/md127
+[root@eth50-1 ~]# mdadm -As
+mdadm: /dev/md/0_0 has been started with 4 drives.
+[root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
+in_sync,failfast
 
+How about we fix state_store to make sure it is always persistent?
+
+Thanks,
+Song
