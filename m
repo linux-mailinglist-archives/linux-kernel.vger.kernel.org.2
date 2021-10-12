@@ -2,109 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1910429FDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6C1429FE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234791AbhJLIcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:32:03 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:54094
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235067AbhJLIbr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:31:47 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S235140AbhJLIcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:32:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235196AbhJLIcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 04:32:12 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id BF0153FFE3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 08:29:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634027383;
-        bh=iGpGmbwC/XUGzipXWdmzUImvvrSqMI37QUV5/5ZOdKM=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=omCs2kMoDeve3ZNMbTSGim0PYB7WBLJKHLWvMNEwMq3d0kEwaEWwEYyZmdGF6BK06
-         QkLh3YTcO0J4suRSsKpyccbCxN3yVYuRAya/ZZAinbcjvZBmNz//gutJmbVG+gM8iF
-         8h65BKIFC252sMJRn/h+nszpD2ZU5QtmNBYNpsA7tAanHnBDkZuKNYgCa7AR8QwzLS
-         OkrYh/kaewNEiZsUPHNI/IhMK/AyT2Rphs38Juc80C+bvp6uFhKbydjnkht1EdHb41
-         uD0Rg+k9jw8p4rH42nrGy+l5VMcQJd5hhtc8Z/knYmgQVD0eX/LZaSS46Y59hCcz3c
-         OExGFXz70p2vA==
-Received: by mail-lf1-f72.google.com with SMTP id k8-20020a0565123d8800b003fd6e160c77so9717428lfv.17
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:29:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iGpGmbwC/XUGzipXWdmzUImvvrSqMI37QUV5/5ZOdKM=;
-        b=khP6HJd33keIQWaV7tUdj31eG8sNEIJLNElrRmyTxbDang5tZyIngZa2uC/VaQmDfj
-         wQO3loQhjLmGpOedkxTCd99kC4Oc3hUdVwVTivCRId6S4OTgDnviIYIH0c4SpSoXWacY
-         a7lBKojJOKL/W1KDS8P/qcoNFnq5uWZEAJazD9KnFJDu/SvqRKAYM0YrU2F3+0gX78VX
-         ST0hJUQh1KbMZoaoqSp+yoWG++oDmTl+c+vnQNkPDhMd+8ClkFFpgkYd+sEm5uc59XJ7
-         t9xlIuxNQYQNSRJj0t00atB2Cd5cCzybU7/YDB87WOEZ3xQ3+3fls/+VuYOqjHmGzvpT
-         +u4g==
-X-Gm-Message-State: AOAM532CswM5fO8TsscYMHeAi4GhU1l2tTQeCvLB8kL6nTUHBvUH2x+8
-        Zm5LY5kMkQ0+qP2QnRbh78XrCVJfU5rSDNKZ+CADnNwMRxLJ2v2p/iZTwc4hkPT4vm50ArKwa7a
-        4LlGQDVaAI2A2dgPDk5nXanWH0R1F+7QorDot2nnEVQ==
-X-Received: by 2002:a05:6512:e96:: with SMTP id bi22mr32713182lfb.156.1634027383146;
-        Tue, 12 Oct 2021 01:29:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzB++EhkkGqUB23nWGZIGhBurRqOemieVTFSKW5Gv1q+IvObEloBVf0AhlKcitoUCD+gPLm1Q==
-X-Received: by 2002:a05:6512:e96:: with SMTP id bi22mr32713168lfb.156.1634027382990;
-        Tue, 12 Oct 2021 01:29:42 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id c16sm1041571lfi.180.2021.10.12.01.29.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 01:29:42 -0700 (PDT)
-Subject: Re: [PATCH 8/8] rtc: max77686: add MAX77714 support
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>
-References: <20211011155615.257529-1-luca@lucaceresoli.net>
- <20211011155615.257529-9-luca@lucaceresoli.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <ae0f0f8b-3328-921d-1a3f-fb05859609ab@canonical.com>
-Date:   Tue, 12 Oct 2021 10:29:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211011155615.257529-9-luca@lucaceresoli.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        by mail.kernel.org (Postfix) with ESMTPSA id 195FD60E74;
+        Tue, 12 Oct 2021 08:30:11 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1maDAn-00GCnq-15; Tue, 12 Oct 2021 09:30:09 +0100
+Date:   Tue, 12 Oct 2021 09:30:08 +0100
+Message-ID: <87k0iiprvz.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        suzuki.poulose@arm.com, mark.rutland@arm.com, will@kernel.org,
+        catalin.marinas@arm.com, james.morse@arm.com, steven.price@arm.com
+Subject: Re: [RFC V3 13/13] KVM: arm64: Enable FEAT_LPA2 based 52 bits IPA size on 4K and 16K
+In-Reply-To: <acf7847f-a6c6-38a7-7bce-48a24549716b@arm.com>
+References: <1632998116-11552-1-git-send-email-anshuman.khandual@arm.com>
+        <1632998116-11552-14-git-send-email-anshuman.khandual@arm.com>
+        <87r1crq32z.wl-maz@kernel.org>
+        <acf7847f-a6c6-38a7-7bce-48a24549716b@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, suzuki.poulose@arm.com, mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com, steven.price@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 22:25, Luca Ceresoli wrote:
-> The RTC included in the MAX77714 PMIC is very similar to the one in the
-> MAX77686. Reuse the rtc-max77686.c driver with the minimum required changes
-> for the MAX77714 RTC.
+On Tue, 12 Oct 2021 05:24:15 +0100,
+Anshuman Khandual <anshuman.khandual@arm.com> wrote:
 > 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> ---
+> Hello Marc,
 > 
-> *** NOTE ***
+> On 10/11/21 3:46 PM, Marc Zyngier wrote:
+> > On Thu, 30 Sep 2021 11:35:16 +0100,
+> > Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> >>
+> >> Stage-2 FEAT_LPA2 support is independent and also orthogonal to FEAT_LPA2
+> >> support either in Stage-1 or in the host kernel. Stage-2 IPA range support
+> >> is evaluated from the platform via ID_AA64MMFR0_TGRAN_2_SUPPORTED_LPA2 and
+> >> gets enabled regardless of Stage-1 translation.
+> >>
+> >> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> >> ---
+> >>  arch/arm64/include/asm/kvm_pgtable.h | 10 +++++++++-
+> >>  arch/arm64/kvm/hyp/pgtable.c         | 25 +++++++++++++++++++++++--
+> >>  arch/arm64/kvm/reset.c               | 14 ++++++++++----
+> >>  3 files changed, 42 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> >> index 0277838..78a9d12 100644
+> >> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> >> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> >> @@ -29,18 +29,26 @@ typedef u64 kvm_pte_t;
+> >>  
+> >>  #define KVM_PTE_ADDR_MASK		GENMASK(47, PAGE_SHIFT)
+> >>  #define KVM_PTE_ADDR_51_48		GENMASK(15, 12)
+> >> +#define KVM_PTE_ADDR_51_50		GENMASK(9, 8)
+> >>  
+> >>  static inline bool kvm_pte_valid(kvm_pte_t pte)
+> >>  {
+> >>  	return pte & KVM_PTE_VALID;
+> >>  }
+> >>  
+> >> +void set_kvm_lpa2_enabled(void);
+> >> +bool get_kvm_lpa2_enabled(void);
+> >> +
+> >>  static inline u64 kvm_pte_to_phys(kvm_pte_t pte)
+> >>  {
+> >>  	u64 pa = pte & KVM_PTE_ADDR_MASK;
+> >>  
+> >> -	if (PAGE_SHIFT == 16)
+> >> +	if (PAGE_SHIFT == 16) {
+> >>  		pa |= FIELD_GET(KVM_PTE_ADDR_51_48, pte) << 48;
+> >> +	} else {
+> >> +		if (get_kvm_lpa2_enabled())
+> > 
+> > Having to do a function call just for this test seems bad, specially
+> > for something that is used so often on the fault path.
+> > 
+> > Why can't this be made a normal capability that indicates LPA support
+> > for the current page size?
 > 
-> This patch didn't reach most recipients having hit a limit in my service
-> provider (125 e-mails per hour). I'm resending it, as far as possible with
-> proper message-id etc. Apologies for any duplicate.
+> Although I could look into making this a normal capability check, would
+> not a static key based implementation be preferred if the function call
+> based construct here is too expensive ?
+
+A capability *is* a static key. Specially if you make it final.
+
+> Originally, avoided capability method for stage-2 because it would have
+> been difficult in stage-1 where the FEAT_LPA2 detection is required way
+> earlier during boot before cpu capability comes up. Hence just followed
+> a simple variable method both for stage-1 and stage-2 keeping it same.
+
+I think you'll have to find a way to make it work with a capability
+for S1 too. Capabilities can be used even when not final, and you may
+have to do something similar.
+
+> > 
+> >> +			pa |= FIELD_GET(KVM_PTE_ADDR_51_50, pte) << 50;
+> > 
+> > Where are bits 48 and 49?
 > 
->  drivers/rtc/Kconfig        |  2 +-
->  drivers/rtc/rtc-max77686.c | 24 ++++++++++++++++++++++++
->  2 files changed, 25 insertions(+), 1 deletion(-)
+> Unlike the current FEAT_LPA feature, bits 48 and 49 are part of the PA
+> itself. Only the bits 50 and 51 move into bits 8 and 9, while creating
+> a PTE.
+
+So why are you actively dropping these bits? Hint: look at
+KVM_PTE_ADDR_MASK and the way it is used to extract the initial value
+of 'pa'.
+
+[...]
+
+> > Another thing I don't see is how you manage TLB invalidation by level
+> > now that we gain a level 0 at 4kB, breaking the current assumptions
+> > encoded in __tlbi_level().
+> 
+> Right, I guess something like this (not build tested) will be required as
+> level 0 for 4K and level 1 for 16K would only make sense when FEAT_LPA2 is
+> implemented, otherwise it will fallback to the default behaviour i.e table
+> level hint was not provided (TTL[3:2] is 0b00). Is there any other concern
+> which I might be missing here ?
+> 
+> --- a/arch/arm64/include/asm/tlbflush.h
+> +++ b/arch/arm64/include/asm/tlbflush.h
+> @@ -104,8 +104,7 @@ static inline unsigned long get_trans_granule(void)
+>  #define __tlbi_level(op, addr, level) do {                             \
+>         u64 arg = addr;                                                 \
+>                                                                         \
+> -       if (cpus_have_const_cap(ARM64_HAS_ARMv8_4_TTL) &&               \
+> -           level) {                                                    \
+> +       if (cpus_have_const_cap(ARM64_HAS_ARMv8_4_TTL) {                \
+>                 u64 ttl = level & 3;                                    \
+>                 ttl |= get_trans_granule() << 2;                        \
+>                 arg &= ~TLBI_TTL_MASK;                                  \
 > 
 
+That's a start, but 0 has always meant 'at any level' until now. You
+will have to audit all the call sites and work out whether they can
+pass 0 if they don't track the actual level.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+	M.
 
-
-Best regards,
-Krzysztof
+-- 
+Without deviation from the norm, progress is not possible.
