@@ -2,166 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E319E42AAA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4404F42AAAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhJLRXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:23:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229510AbhJLRW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:22:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A0F860F38;
-        Tue, 12 Oct 2021 17:20:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634059257;
-        bh=KLl+8VX4c+ZHvAiUyKBm4KSnrVYLhkWpkOqTx+1Xg4w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Z2xEFEL96TpHzRNOvLt4aUcaDUXFHGEVxQmLRSAtRnrWcV5PgkBj2KkskG1zO1e33
-         GTm6+9WfWytxi6TzoSj5fKWvPd1KYdQ95Ms4l14xNemzw8xJGTNTSHh/CjXJxiOR/v
-         IyAzPzTaiasexyCwM59Eig41PeAwggHBU6eqaxD2PFS/Gf0VEggyPZSK8TWUSiHmNT
-         znaZMqhUj2bAhjLdRATqudk1UGxALj/QseGw/3HMeLM+ij/z4627mUUgVu+D1D148X
-         j05+IIk26QQWk26Yncm59YLR6SGZ35Ohif7wLOmacAQwnw2Ta1CyrCcWcZfhWNE4P8
-         4oAjTNIlzsWTg==
-Received: by mail-lf1-f53.google.com with SMTP id j5so16504lfg.8;
-        Tue, 12 Oct 2021 10:20:57 -0700 (PDT)
-X-Gm-Message-State: AOAM531ikpbEwazs0jmf3fVvrfNxum+48E0Ul3U13ml1MdwVE1VpgYkf
-        Txv+l8hEMBcyTCjNPFVx/sqoM8pkQt+IEPiaZM0=
-X-Google-Smtp-Source: ABdhPJybb1dYd09nhHdN5yW0bkJ51EQt4i1dBYJspuCmUsXDo07fUhszhEc/95naLZORz1gl34KRE5gIykClV1ajGjI=
-X-Received: by 2002:a2e:6e0b:: with SMTP id j11mr30821450ljc.527.1634059255633;
- Tue, 12 Oct 2021 10:20:55 -0700 (PDT)
+        id S232360AbhJLRYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:24:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27546 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232374AbhJLRYU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 13:24:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634059337;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RJ4hKggkAg1oAa2rnQG+wzzAGkhAl0EY2OE5++4GObU=;
+        b=GRHXfUILnFuISMr9lA5EomcRJdnuTIxlaniKfz6pIXXvLk4naKRYRKutKEJl2i7HkkuD9h
+        0ICfhZwg7IfE8IkzZOi68mfu5bmHLK8OWRQ1d0vJoHQs1QI/ufadZKFXO65+bgWWLw3okZ
+        RpmO+9CUTm/+1wBLRuEzLMIQqAbggBM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-490-LxXC8qj-OQODeSM4DL22Ng-1; Tue, 12 Oct 2021 13:22:16 -0400
+X-MC-Unique: LxXC8qj-OQODeSM4DL22Ng-1
+Received: by mail-wr1-f72.google.com with SMTP id 41-20020adf812c000000b00160dfbfe1a2so12672801wrm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:22:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=RJ4hKggkAg1oAa2rnQG+wzzAGkhAl0EY2OE5++4GObU=;
+        b=h4170DKNXOao8zweR0q2g2j9M1BCZLMxHD1NQqoVZp0wf6q/E3EFEu33ryDReYtYHY
+         FpmBfmCR942eKT9D3CG9G/6nAIUAehXkMGq9OnPXXFNTdAyEsjd299daaC7F2x40+XoR
+         CQ0dHziAYw1nKWctxadDxmfrHnRBs3Fs8yBbOSPMDs5rMbOrR+4SElIClkYKqXXSmysy
+         Xr2g+G8MdNRxSCvHy9QQyMqjsyck17H1O/ZGQRr8Kk84tJHXTtz4jxpbsXEQbS5aVXoN
+         jZHqBF/4OulMV1jyCN/M59TRFhkUzWft843cd6MbbJLgjsxzzFL0TsTd3LzelV5NyzWr
+         o7FA==
+X-Gm-Message-State: AOAM533Hg7ickqpKKCozrVErCiUq1nyHIi2Y7I4f6ZYlQl8p6Ccuycdk
+        vCzgiwk5hMqA5qCZiv0jkhGHybrhxwoKYpQvZoZfwwJ5IlpJUzqTQ9WuvzkOdK0z65BoHygoY3u
+        x/7+zWwl1Z6QaSbXwpV7AnSNz
+X-Received: by 2002:adf:a390:: with SMTP id l16mr33839911wrb.104.1634059335294;
+        Tue, 12 Oct 2021 10:22:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwQZApRtqcdcbKaVEYG74IKLvcLvdupOOoFwEE9VXa/g62lQHLJ4OSprs1zgUHNjnhfy/uy9A==
+X-Received: by 2002:adf:a390:: with SMTP id l16mr33839870wrb.104.1634059334928;
+        Tue, 12 Oct 2021 10:22:14 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id v23sm3002264wmj.4.2021.10.12.10.22.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 10:22:13 -0700 (PDT)
+Message-ID: <8a5762ab-18d5-56f8-78a6-c722a2f387c5@redhat.com>
+Date:   Tue, 12 Oct 2021 19:22:12 +0200
 MIME-Version: 1.0
-References: <20211008032231.1143467-1-fengli@smartx.com> <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
- <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com>
- <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
- <CALTww28CsJdmVOLFeoHC8FgbHDK78h8Lncsf9fFA0RYXEj=R9A@mail.gmail.com>
- <CAHckoCzzVP7npmU4LWedzD-f1QmkH4K0iLk_=8ptSFXrFfRoDw@mail.gmail.com>
- <CAPhsuW4VFTpM94by-iMkTQ=b9Y7FqZ2oqHH+jV-f8BM=YKWyiA@mail.gmail.com>
- <CAHckoCxRj1qb=yfeQ2o_8n_BSSLD9JXqm8GopUp2qx9NEPxr7w@mail.gmail.com> <CALTww2_eScuqd4yUtDFhaRUGAK-f8J_L=yOZdTVA9uZ7Tq4bxg@mail.gmail.com>
-In-Reply-To: <CALTww2_eScuqd4yUtDFhaRUGAK-f8J_L=yOZdTVA9uZ7Tq4bxg@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 12 Oct 2021 10:20:44 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6F6kF8CWAFk8Af+-WrELKVz8BYuYPFF1Fy_fAq8us84Q@mail.gmail.com>
-Message-ID: <CAPhsuW6F6kF8CWAFk8Af+-WrELKVz8BYuYPFF1Fy_fAq8us84Q@mail.gmail.com>
-Subject: Re: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
-To:     Xiao Ni <xni@redhat.com>
-Cc:     Li Feng <fengli@smartx.com>,
-        "open list:SOFTWARE RAID (Multiple Disks) SUPPORT" 
-        <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org
+References: <20211011215813.558681373@linutronix.de>
+ <20211011223611.069324121@linutronix.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211011223611.069324121@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 1:49 AM Xiao Ni <xni@redhat.com> wrote:
->
-> Hi all
->
-> How about this patch? Now writemostly flag doesn't be stored in
-> superblock too. So this patch fix this problem too.
-> If this patch is ok, I'll send the patch.
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 6c0c3d0d905a..9e8a8c5c7758 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -2977,6 +2977,7 @@ state_store(struct md_rdev *rdev, const char
-> *buf, size_t len)
->       *  {,-}failfast - set/clear FailFast
->       */
->      int err =3D -EINVAL;
-> +    int need_update_sb =3D 0;
+On 12/10/21 02:00, Thomas Gleixner wrote:
+> Swapping the host/guest FPU is directly fiddling with FPU internals which
+> requires 5 exports. The upcoming support of dymanically enabled states
+> would even need more.
+> 
+> Implement a swap function in the FPU core code and export that instead.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: kvm@vger.kernel.org
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>   arch/x86/include/asm/fpu/api.h      |    8 +++++
+>   arch/x86/include/asm/fpu/internal.h |   15 +---------
+>   arch/x86/kernel/fpu/core.c          |   30 ++++++++++++++++++---
+>   arch/x86/kernel/fpu/init.c          |    1
+>   arch/x86/kernel/fpu/xstate.c        |    1
+>   arch/x86/kvm/x86.c                  |   51 +++++++-----------------------------
+>   arch/x86/mm/extable.c               |    2 -
+>   7 files changed, 48 insertions(+), 60 deletions(-)
+> 
+> --- a/arch/x86/include/asm/fpu/api.h
+> +++ b/arch/x86/include/asm/fpu/api.h
+> @@ -12,6 +12,8 @@
+>   #define _ASM_X86_FPU_API_H
+>   #include <linux/bottom_half.h>
+>   
+> +#include <asm/fpu/types.h>
+> +
+>   /*
+>    * Use kernel_fpu_begin/end() if you intend to use FPU in kernel context. It
+>    * disables preemption so be careful if you intend to use it for long periods
+> @@ -108,4 +110,10 @@ extern int cpu_has_xfeatures(u64 xfeatur
+>   
+>   static inline void update_pasid(void) { }
+>   
+> +/* FPSTATE related functions which are exported to KVM */
+> +extern void fpu_init_fpstate_user(struct fpu *fpu);
+> +
+> +/* KVM specific functions */
+> +extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask);
+> +
+>   #endif /* _ASM_X86_FPU_API_H */
+> --- a/arch/x86/include/asm/fpu/internal.h
+> +++ b/arch/x86/include/asm/fpu/internal.h
+> @@ -74,14 +74,8 @@ static __always_inline __pure bool use_f
+>   	return static_cpu_has(X86_FEATURE_FXSR);
+>   }
+>   
+> -/*
+> - * fpstate handling functions:
+> - */
+> -
+>   extern union fpregs_state init_fpstate;
+> -
+>   extern void fpstate_init_user(union fpregs_state *state);
+> -extern void fpu_init_fpstate_user(struct fpu *fpu);
+>   
+>   #ifdef CONFIG_MATH_EMULATION
+>   extern void fpstate_init_soft(struct swregs_state *soft);
+> @@ -381,12 +375,7 @@ static inline int os_xrstor_safe(struct
+>   	return err;
+>   }
+>   
+> -extern void __restore_fpregs_from_fpstate(union fpregs_state *fpstate, u64 mask);
+> -
+> -static inline void restore_fpregs_from_fpstate(union fpregs_state *fpstate)
+> -{
+> -	__restore_fpregs_from_fpstate(fpstate, xfeatures_mask_fpstate());
+> -}
+> +extern void restore_fpregs_from_fpstate(union fpregs_state *fpstate, u64 mask);
+>   
+>   extern bool copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size);
+>   
+> @@ -467,7 +456,7 @@ static inline void fpregs_restore_userre
+>   		 */
+>   		mask = xfeatures_mask_restore_user() |
+>   			xfeatures_mask_supervisor();
+> -		__restore_fpregs_from_fpstate(&fpu->state, mask);
+> +		restore_fpregs_from_fpstate(&fpu->state, mask);
+>   
+>   		fpregs_activate(fpu);
+>   		fpu->last_cpu = cpu;
+> --- a/arch/x86/kernel/fpu/core.c
+> +++ b/arch/x86/kernel/fpu/core.c
+> @@ -124,9 +124,8 @@ void save_fpregs_to_fpstate(struct fpu *
+>   	asm volatile("fnsave %[fp]; fwait" : [fp] "=m" (fpu->state.fsave));
+>   	frstor(&fpu->state.fsave);
+>   }
+> -EXPORT_SYMBOL(save_fpregs_to_fpstate);
+>   
+> -void __restore_fpregs_from_fpstate(union fpregs_state *fpstate, u64 mask)
+> +void restore_fpregs_from_fpstate(union fpregs_state *fpstate, u64 mask)
+>   {
+>   	/*
+>   	 * AMD K7/K8 and later CPUs up to Zen don't save/restore
+> @@ -151,7 +150,31 @@ void __restore_fpregs_from_fpstate(union
+>   			frstor(&fpstate->fsave);
+>   	}
+>   }
+> -EXPORT_SYMBOL_GPL(__restore_fpregs_from_fpstate);
+> +
+> +#if IS_ENABLED(CONFIG_KVM)
+> +void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask)
+> +{
+> +	fpregs_lock();
+> +
+> +	if (save) {
+> +		if (test_thread_flag(TIF_NEED_FPU_LOAD)) {
+> +			memcpy(&save->state, &current->thread.fpu.state,
+> +			       fpu_kernel_xstate_size);
+> +		} else {
+> +			save_fpregs_to_fpstate(save);
+> +		}
+> +	}
+> +
+> +	if (rstor) {
+> +		restore_mask &= xfeatures_mask_fpstate();
+> +		restore_fpregs_from_fpstate(&rstor->state, restore_mask);
+> +	}
+> +
+> +	fpregs_mark_activate();
+> +	fpregs_unlock();
+> +}
+> +EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpu);
+> +#endif
+>   
+>   void kernel_fpu_begin_mask(unsigned int kfpu_mask)
+>   {
+> @@ -459,7 +482,6 @@ void fpregs_mark_activate(void)
+>   	fpu->last_cpu = smp_processor_id();
+>   	clear_thread_flag(TIF_NEED_FPU_LOAD);
+>   }
+> -EXPORT_SYMBOL_GPL(fpregs_mark_activate);
+>   
+>   /*
+>    * x87 math exception handling:
+> --- a/arch/x86/kernel/fpu/init.c
+> +++ b/arch/x86/kernel/fpu/init.c
+> @@ -136,7 +136,6 @@ static void __init fpu__init_system_gene
+>    * components into a single, continuous memory block:
+>    */
+>   unsigned int fpu_kernel_xstate_size __ro_after_init;
+> -EXPORT_SYMBOL_GPL(fpu_kernel_xstate_size);
+>   
+>   /* Get alignment of the TYPE. */
+>   #define TYPE_ALIGN(TYPE) offsetof(struct { char x; TYPE test; }, test)
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -65,7 +65,6 @@ static short xsave_cpuid_features[] __in
+>    * XSAVE buffer, both supervisor and user xstates.
+>    */
+>   u64 xfeatures_mask_all __ro_after_init;
+> -EXPORT_SYMBOL_GPL(xfeatures_mask_all);
+>   
+>   static unsigned int xstate_offsets[XFEATURE_MAX] __ro_after_init =
+>   	{ [ 0 ... XFEATURE_MAX - 1] = -1};
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -68,7 +68,9 @@
+>   #include <asm/mce.h>
+>   #include <asm/pkru.h>
+>   #include <linux/kernel_stat.h>
+> -#include <asm/fpu/internal.h> /* Ugh! */
+> +#include <asm/fpu/api.h>
+> +#include <asm/fpu/xcr.h>
+> +#include <asm/fpu/xstate.h>
+>   #include <asm/pvclock.h>
+>   #include <asm/div64.h>
+>   #include <asm/irq_remapping.h>
+> @@ -9899,58 +9901,27 @@ static int complete_emulated_mmio(struct
+>   	return 0;
+>   }
+>   
+> -static void kvm_save_current_fpu(struct fpu *fpu)
+> -{
+> -	/*
+> -	 * If the target FPU state is not resident in the CPU registers, just
+> -	 * memcpy() from current, else save CPU state directly to the target.
+> -	 */
+> -	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+> -		memcpy(&fpu->state, &current->thread.fpu.state,
+> -		       fpu_kernel_xstate_size);
+> -	else
+> -		save_fpregs_to_fpstate(fpu);
+> -}
+> -
+>   /* Swap (qemu) user FPU context for the guest FPU context. */
+>   static void kvm_load_guest_fpu(struct kvm_vcpu *vcpu)
+>   {
+> -	fpregs_lock();
+> -
+> -	kvm_save_current_fpu(vcpu->arch.user_fpu);
+> -
+>   	/*
+> -	 * Guests with protected state can't have it set by the hypervisor,
+> -	 * so skip trying to set it.
+> +	 * Guest with protected state have guest_fpu == NULL which makes
+> +	 * the swap only safe the host state. Exclude PKRU from restore as
+> +	 * it is restored separately in kvm_x86_ops.run().
+>   	 */
+> -	if (vcpu->arch.guest_fpu)
+> -		/* PKRU is separately restored in kvm_x86_ops.run. */
+> -		__restore_fpregs_from_fpstate(&vcpu->arch.guest_fpu->state,
+> -					~XFEATURE_MASK_PKRU);
+> -
+> -	fpregs_mark_activate();
+> -	fpregs_unlock();
+> -
+> +	fpu_swap_kvm_fpu(vcpu->arch.user_fpu, vcpu->arch.guest_fpu,
+> +			 ~XFEATURE_MASK_PKRU);
+>   	trace_kvm_fpu(1);
+>   }
+>   
+>   /* When vcpu_run ends, restore user space FPU context. */
+>   static void kvm_put_guest_fpu(struct kvm_vcpu *vcpu)
+>   {
+> -	fpregs_lock();
+> -
+>   	/*
+> -	 * Guests with protected state can't have it read by the hypervisor,
+> -	 * so skip trying to save it.
+> +	 * Guest with protected state have guest_fpu == NULL which makes
+> +	 * swap only restore the host state.
+>   	 */
+> -	if (vcpu->arch.guest_fpu)
+> -		kvm_save_current_fpu(vcpu->arch.guest_fpu);
+> -
+> -	restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state);
+> -
+> -	fpregs_mark_activate();
+> -	fpregs_unlock();
+> -
+> +	fpu_swap_kvm_fpu(vcpu->arch.guest_fpu, vcpu->arch.user_fpu, ~0ULL);
+>   	++vcpu->stat.fpu_reload;
+>   	trace_kvm_fpu(0);
+>   }
+> --- a/arch/x86/mm/extable.c
+> +++ b/arch/x86/mm/extable.c
+> @@ -47,7 +47,7 @@ static bool ex_handler_fprestore(const s
+>   	WARN_ONCE(1, "Bad FPU state detected at %pB, reinitializing FPU registers.",
+>   		  (void *)instruction_pointer(regs));
+>   
+> -	__restore_fpregs_from_fpstate(&init_fpstate, xfeatures_mask_fpstate());
+> +	restore_fpregs_from_fpstate(&init_fpstate, xfeatures_mask_fpstate());
+>   	return true;
+>   }
+>   
+> 
 
-Please use bool for need_update_sb.
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
->      if (cmd_match(buf, "faulty") && rdev->mddev->pers) {
->          md_error(rdev->mddev, rdev);
->          if (test_bit(Faulty, &rdev->flags))
-
-[...]
-
-> @@ -3120,6 +3122,11 @@ state_store(struct md_rdev *rdev, const char
-> *buf, size_t len)
->      }
->      if (!err)
->          sysfs_notify_dirent_safe(rdev->sysfs_state);
-> +    if (need_update_sb)
-> +        if (mddev->pers) {
-We can merge the two conditions in in one line
-
-if (need_update_sb && mddev->pers) {
-...
-}
-
-> +            set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
-> +            md_wakeup_thread(mddev->thread);
-> +        }
->      return err ? err : len;
->  }
->  static struct rdev_sysfs_entry rdev_state =3D
->
-> On Tue, Oct 12, 2021 at 4:44 PM Li Feng <fengli@smartx.com> wrote:
-> >
-> > Song Liu <song@kernel.org> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=A5=
-=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=884:17=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > On Tue, Oct 12, 2021 at 1:07 AM Li Feng <fengli@smartx.com> wrote:
-> > > >
-> > > > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=
-=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=882:58=E5=86=99=E9=81=93=EF=BC=9A
-> > > > >
-> > > > > On Mon, Oct 11, 2021 at 5:42 PM Li Feng <fengli@smartx.com> wrote=
-:
-> > > > > >
-> > > > > > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8811=E6=
-=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:49=E5=86=99=E9=81=93=EF=BC=9A
-> > > > > > >
-> > > > > > > Hi all
-> > > > > > >
-> > > > > > > Now the per device sysfs interface file state can change fail=
-fast. Do
-> > > > > > > we need a new file for failfast?
-> > > > > > >
-> > > > > > > I did a test. The steps are:
-> > > > > > >
-> > > > > > > mdadm -CR /dev/md0 -l1 -n2 /dev/sdb /dev/sdc --assume-clean
-> > > > > > > cd /sys/block/md0/md/dev-sdb
-> > > > > > > echo failfast > state
-> > > > > > > cat state
-> > > > > > > in_sync,failfast
-> > > > > >
-> > > > > > This works,  will it be persisted to disk?
-> > > > > >
-> > > > >
-> > > > > mdadm --detail /dev/md0 can show the failfast information. So it
-> > > > > should be written in superblock.
-> > > > > But I don't find how md does this. I'm looking at this.
-> > > > >
-> > > > Yes, I have tested that it has been persisted, but don't understand=
- who does it.
-> > >
-> > > I think this is not guaranteed to be persistent:
-> > >
-> > > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-> > > in_sync,failfast
-> > > [root@eth50-1 ~]# echo -failfast >  /sys/block/md127/md/rd1/state
-> > > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-> > > in_sync
-> > > [root@eth50-1 ~]# mdadm --stop /dev/md*
-> > > mdadm: /dev/md does not appear to be an md device
-> > > mdadm: stopped /dev/md127
-> > > [root@eth50-1 ~]# mdadm -As
-> > > mdadm: /dev/md/0_0 has been started with 4 drives.
-> > > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-> > > in_sync,failfast
-> > >
-> > > How about we fix state_store to make sure it is always persistent?
-> > >
-> > I agree with you.
-> >
-> > > Thanks,
-> > > Song
-> >
->
