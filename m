@@ -2,114 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72BA429EC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2137D429ED7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234137AbhJLHk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:40:28 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:25177 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbhJLHkZ (ORCPT
+        id S234208AbhJLHqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:46:09 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26906 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233988AbhJLHqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:40:25 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HT6v021wXz8tWb;
-        Tue, 12 Oct 2021 15:37:16 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 12 Oct 2021 15:38:21 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Tue, 12 Oct
- 2021 15:38:15 +0800
-Subject: Re: [PATCH net-next -v5 3/4] mm: introduce __get_page() and
- __put_page()
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-CC:     John Hubbard <jhubbard@nvidia.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <brouer@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <akpm@linux-foundation.org>, <hawk@kernel.org>,
-        <peterz@infradead.org>, <yuzhao@google.com>, <will@kernel.org>,
-        <willy@infradead.org>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <willemb@google.com>, <cong.wang@bytedance.com>,
-        <pabeni@redhat.com>, <haokexin@gmail.com>, <nogikh@google.com>,
-        <elver@google.com>, <memxor@gmail.com>, <vvs@virtuozzo.com>,
-        <linux-mm@kvack.org>, <edumazet@google.com>,
-        <alexander.duyck@gmail.com>, <dsahern@gmail.com>
-References: <20211009093724.10539-1-linyunsheng@huawei.com>
- <20211009093724.10539-4-linyunsheng@huawei.com>
- <62106771-7d2a-3897-c318-79578360a88a@nvidia.com>
- <89bcc42a-ad95-e729-0748-bf394bf770be@redhat.com>
- <YWQuRpdJOMyJBBrs@apalos.home>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <3bba942e-eefd-7ac2-7a8c-b6c349641dd4@huawei.com>
-Date:   Tue, 12 Oct 2021 15:38:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Tue, 12 Oct 2021 03:46:08 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C7Gr0V012880;
+        Tue, 12 Oct 2021 03:44:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=9R1iOQaqbm44RHJE+TIceOf9mmITe7a3j0p2IsAMwz4=;
+ b=E3Wycd1A+gAa7VjQqn6gMresUt1M6YM/snKE1XNohevcwU9TD2GCQgBHXsYezPStvrQo
+ bLzMooKJqfZAyXBKJr2k8SgmuqryjSgkhCWM9EVZxVdMWFMnHfXcM4AFdJwzALy+QviO
+ RS1mIhgps3qb9R0Ex3YMZKcjxKUpwO5gnp0t9Mqg1xZbQQ3Mvqvc7Xp/Cd7Em2X+oD6U
+ ROmwp2RW/r3hx6I0aqPYWUDVL4qgnhI5mvUNqNc9IJDvq4KoZonV2A1yvOFaIukar0sn
+ fwnKjDkOGzP5WdemKLA9lxqIu0YKkNvy01/5WtwRMJfozHLlqSiagSfKsnbn5G+ojxrN dg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn3dtbfd3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 03:44:06 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19C6nllG038870;
+        Tue, 12 Oct 2021 03:44:05 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn3dtbfcg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 03:44:05 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19C7fOKJ029460;
+        Tue, 12 Oct 2021 07:44:04 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 3bk2q9m2s8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 07:44:03 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19C7cOn950397570
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 07:38:24 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A382AA4072;
+        Tue, 12 Oct 2021 07:43:56 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E508A404D;
+        Tue, 12 Oct 2021 07:43:56 +0000 (GMT)
+Received: from [9.145.20.44] (unknown [9.145.20.44])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Oct 2021 07:43:56 +0000 (GMT)
+Message-ID: <2ce2d86e-d3cc-fb9c-60b7-6143f37f6dac@linux.ibm.com>
+Date:   Tue, 12 Oct 2021 09:43:55 +0200
 MIME-Version: 1.0
-In-Reply-To: <YWQuRpdJOMyJBBrs@apalos.home>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v5 04/14] KVM: s390: pv: avoid stalls when making pages
+ secure
 Content-Language: en-US
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
+        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
+References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
+ <20210920132502.36111-5-imbrenda@linux.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+In-Reply-To: <20210920132502.36111-5-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: w1mw6hRWnc-JmkV9oAdDNQKqgM2Cba9L
+X-Proofpoint-GUID: 8DEcIN-GvnK8wXPlaJfWOwcgynQCtBei
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-12_01,2021-10-11_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ suspectscore=0 lowpriorityscore=0 impostorscore=0 adultscore=0 mlxscore=0
+ priorityscore=1501 phishscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110120041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/11 20:29, Ilias Apalodimas wrote:
-> On Mon, Oct 11, 2021 at 02:25:08PM +0200, Jesper Dangaard Brouer wrote:
->>
->>
->> On 09/10/2021 21.49, John Hubbard wrote:
->>> So in case it's not clear, I'd like to request that you drop this one
->>> patch from your series.
->>
->> In my opinion as page_pool maintainer, you should also drop patch 4/4 from
->> this series.
->>
->> I like the first two patches, and they should be resend and can be applied
->> without too much further discussion.
+On 9/20/21 15:24, Claudio Imbrenda wrote:
+> Improve make_secure_pte to avoid stalls when the system is heavily
+> overcommitted. This was especially problematic in kvm_s390_pv_unpack,
+> because of the loop over all pages that needed unpacking.
 > 
-> +1
-
-Ok, it seems there is a lot of contention about how to avoid calling
-compound_head() now.
-
-Will send out the uncontroversial one first.
-
-> That's what I hinted on the previous version. The patches right now go way
-> beyond the spec of page pool.  We are starting to change core networking
-> functions and imho we need a lot more people involved in this discussion,
-> than the ones participating already.
+> Due to the locks being held, it was not possible to simply replace
+> uv_call with uv_call_sched. A more complex approach was
+> needed, in which uv_call is replaced with __uv_call, which does not
+> loop. When the UVC needs to be executed again, -EAGAIN is returned, and
+> the caller (or its caller) will try again.
 > 
-> As a general note and the reason I am so hesitant,  is that we are starting
-> to violate layers here (at least in my opinion).  When the recycling was
-> added,  my main concern was to keep the network stack unaware (apart from
-> the skb bit).  Now suddenly we need to teach frag_ref/unref internal page
-
-Maybe the skb recycle bit is a clever way to avoid dealing with the network
-stack directly.
-
-But that bit might also introduce or hide some problem, like the data race
-as pointed out by Alexander, and the odd using of page pool in mlx5 driver.
-
-> pool counters and that doesn't feel right.  We first need to prove the race
-> can actually happen, before starting to change things.
-
-As the network stack is adding a lot of performance improvement, such as
-sockmap for BPF, which may cause problem for them, will dig more to prove
-that.
-
+> When -EAGAIN is returned, the path is the same as when the page is in
+> writeback (and the writeback check is also performed, which is
+> harmless).
 > 
-> Regards
-> /Ilias
->>
->> --Jesper
->>
-> .
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Fixes: 214d9bbcd3a672 ("s390/mm: provide memory management functions for protected KVM guests")
+
+Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+
+> ---
+>   arch/s390/kernel/uv.c     | 29 +++++++++++++++++++++++------
+>   arch/s390/kvm/intercept.c |  5 +++++
+>   2 files changed, 28 insertions(+), 6 deletions(-)
 > 
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index aeb0a15bcbb7..68a8fbafcb9c 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -180,7 +180,7 @@ static int make_secure_pte(pte_t *ptep, unsigned long addr,
+>   {
+>   	pte_t entry = READ_ONCE(*ptep);
+>   	struct page *page;
+> -	int expected, rc = 0;
+> +	int expected, cc = 0;
+>   
+>   	if (!pte_present(entry))
+>   		return -ENXIO;
+> @@ -196,12 +196,25 @@ static int make_secure_pte(pte_t *ptep, unsigned long addr,
+>   	if (!page_ref_freeze(page, expected))
+>   		return -EBUSY;
+>   	set_bit(PG_arch_1, &page->flags);
+> -	rc = uv_call(0, (u64)uvcb);
+> +	/*
+> +	 * If the UVC does not succeed or fail immediately, we don't want to
+> +	 * loop for long, or we might get stall notifications.
+> +	 * On the other hand, this is a complex scenario and we are holding a lot of
+> +	 * locks, so we can't easily sleep and reschedule. We try only once,
+> +	 * and if the UVC returned busy or partial completion, we return
+> +	 * -EAGAIN and we let the callers deal with it.
+> +	 */
+> +	cc = __uv_call(0, (u64)uvcb);
+>   	page_ref_unfreeze(page, expected);
+> -	/* Return -ENXIO if the page was not mapped, -EINVAL otherwise */
+> -	if (rc)
+> -		rc = uvcb->rc == 0x10a ? -ENXIO : -EINVAL;
+> -	return rc;
+> +	/*
+> +	 * Return -ENXIO if the page was not mapped, -EINVAL for other errors.
+> +	 * If busy or partially completed, return -EAGAIN.
+> +	 */
+> +	if (cc == UVC_CC_OK)
+> +		return 0;
+> +	else if (cc == UVC_CC_BUSY || cc == UVC_CC_PARTIAL)
+> +		return -EAGAIN;
+> +	return uvcb->rc == 0x10a ? -ENXIO : -EINVAL;
+>   }
+>   
+>   /*
+> @@ -254,6 +267,10 @@ int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb)
+>   	mmap_read_unlock(gmap->mm);
+>   
+>   	if (rc == -EAGAIN) {
+> +		/*
+> +		 * If we are here because the UVC returned busy or partial
+> +		 * completion, this is just a useless check, but it is safe.
+> +		 */
+>   		wait_on_page_writeback(page);
+>   	} else if (rc == -EBUSY) {
+>   		/*
+> diff --git a/arch/s390/kvm/intercept.c b/arch/s390/kvm/intercept.c
+> index 72b25b7cc6ae..47833ade4da5 100644
+> --- a/arch/s390/kvm/intercept.c
+> +++ b/arch/s390/kvm/intercept.c
+> @@ -516,6 +516,11 @@ static int handle_pv_uvc(struct kvm_vcpu *vcpu)
+>   	 */
+>   	if (rc == -EINVAL)
+>   		return 0;
+> +	/*
+> +	 * If we got -EAGAIN here, we simply return it. It will eventually
+> +	 * get propagated all the way to userspace, which should then try
+> +	 * again.
+> +	 */
+>   	return rc;
+>   }
+>   
+> 
+
