@@ -2,84 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526B3429FE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555D5429FEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbhJLIdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:33:10 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:32894 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234745AbhJLIdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:33:05 -0400
-Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxL2q7R2VhdJkYAA--.23631S2;
-        Tue, 12 Oct 2021 16:30:55 +0800 (CST)
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Patchwork Bot <patchwork-bot@kernel.org>
-Cc:     zhuyinbo@loongson.cn
-Subject: [PATCH v5] usb: ohci: disable start-of-frame interrupt in ohci_rh_suspend
-Date:   Tue, 12 Oct 2021 16:30:50 +0800
-Message-Id: <1634027450-3358-1-git-send-email-zhuyinbo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9DxL2q7R2VhdJkYAA--.23631S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJrWxCFWrGF1kAF1UCw1Dtrb_yoW8Gw17pF
-        4a9r43tw43ta1jvF1UGFs7CayrK3Z8KrW7tasFk3yUA39xtw1F9r9rKFW5tFn3WrWfKw1a
-        vFsYv345Wa18uaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK6svPMxAI
-        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+        id S234812AbhJLIdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:33:55 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48694 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235009AbhJLIdt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 04:33:49 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 79F0220189;
+        Tue, 12 Oct 2021 08:31:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634027504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jzhciBvqQ0vTMCmMY7ans9eWDLkjdIgrfHAs17HgGQk=;
+        b=GBFKzyqP4aFaQYz4LYka2c25/WepD8eDLhKgmdlwDY6a8+PWKuJOb/YiFgASvKISf+L/pN
+        FFzTAIJY1yefHrYYwunVYeLbVw0tieKnuvSd6XVLWG0qQWCEm3uATRZKjOAVKucSkYj50p
+        BpzuKXYmE+VYr0N1cW0G+pdI9wI8XsM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634027504;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jzhciBvqQ0vTMCmMY7ans9eWDLkjdIgrfHAs17HgGQk=;
+        b=HJtXWc9v/GvoS2ZYZ+y3ofWWVJOYc0BvONGgP+qhjWtSFMdTcUMAsyyfJnKKIrhzt7u3Nr
+        XBa1gvw9kPfaDFAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E7E8613AD5;
+        Tue, 12 Oct 2021 08:31:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +SDwN+9HZWFCSwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 12 Oct 2021 08:31:43 +0000
+Message-ID: <f4f9c5b8-7bff-4d5d-8768-5e58ee1cc907@suse.cz>
+Date:   Tue, 12 Oct 2021 10:31:43 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] lib/stackdepot: allow optional init and stack_table
+ allocation by kvmalloc()
+Content-Language: en-US
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, kasan-dev@googlegroups.com,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Oliver Glitta <glittao@gmail.com>,
+        Imran Khan <imran.f.khan@oracle.com>
+References: <20211007095815.3563-1-vbabka@suse.cz>
+ <YV7TnygBLdHJjmRW@elver.google.com>
+ <2a62971d-467f-f354-caac-2b5ecf258e3c@suse.cz>
+ <CANpmjNP4U9a5HFoRt=HLHpUCNiR5v82ia++wfRCezTY1TpR9RA@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CANpmjNP4U9a5HFoRt=HLHpUCNiR5v82ia++wfRCezTY1TpR9RA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The usb states of ohci controller include UsbOperational, UsbReset,
-UsbSuspend and UsbResume. Among them, only the UsbOperational state
-supports launching the start-of-frame for host controller according
-the ohci protocol spec, but in S3 and S4 (suspend to memory/suspend
-to disk) press test procedure, it may happen that the start-of-
-frame was launched in UsbSuspend status and cause ohci works failed
-that the phenomenon was hc will allways reproduce the SoF interrupt
-and consider that hc doesn't deal with the ed/td/done list in non-
-UsbOperational, and this patch was to disable SoF interrupt in ohci
-_rh_suspend so that it can fix ohci SoF abnormally interrupt issue.
+On 10/11/21 19:08, Marco Elver wrote:
+> On Mon, 11 Oct 2021 at 19:02, Vlastimil Babka <vbabka@suse.cz> wrote:
+> [...]
+>> > On the other hand, the lazy initialization mode you're introducing
+>> > requires an explicit stack_depot_init() call somewhere and isn't as
+>> > straightforward as before.
+>> >
+>> > Not sure what is best. My intuition tells me STACKDEPOT_LAZY_INIT would
+>> > be safer as it's a deliberate opt-in to the lazy initialization
+>> > behaviour.
+>>
+>> I think it should be fine with ALWAYS_INIT. There are not many stackdepot
+>> users being added, and anyone developing a new one will very quickly find
+>> out if they forget to call stack_depot_init()?
+> 
+> I think that's fine.
+> 
+>> > Preferences?
+>> >
+>> > [...]
+>> >> --- a/drivers/gpu/drm/drm_mm.c
+>> >> +++ b/drivers/gpu/drm/drm_mm.c
+>> >> @@ -980,6 +980,10 @@ void drm_mm_init(struct drm_mm *mm, u64 start, u64 size)
+>> >>      add_hole(&mm->head_node);
+>> >>
+>> >>      mm->scan_active = 0;
+>> >> +
+>> >> +#ifdef CONFIG_DRM_DEBUG_MM
+>> >> +    stack_depot_init();
+>> >> +#endif
+>> >
+>> > DRM_DEBUG_MM implies STACKDEPOT. Not sure what is more readable to drm
+>> > maintainers, but perhaps it'd be nicer to avoid the #ifdef here, and
+>> > instead just keep the no-op version of stack_depot_init() in
+>> > <linux/stackdepot.h>. I don't have a strong preference.
+>>
+>> Hm, but in case STACKDEPOT is also selected by something else (e.g.
+>> CONFIG_PAGE_OWNER) which uses lazy init but isn't enabled on boot, then
+>> without #ifdef CONFIG_DRM_DEBUG_MM above, this code would call a
+>> stack_depot_init() (that's not a no-op) even in case it's not going to be
+>> using it, so not what we want to achieve.
+>> But it could be changed to use IS_ENABLED() if that's preferred by DRM folks.
+> 
+> You're right -- but I'll leave this to DRM folks.
 
-Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
----
-Change in v5:
-		Move the key code change into ohci_rh_suspend.
-		Rework the commit log information.
-
-
- drivers/usb/host/ohci-hub.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/usb/host/ohci-hub.c b/drivers/usb/host/ohci-hub.c
-index f474f2f..80a0094 100644
---- a/drivers/usb/host/ohci-hub.c
-+++ b/drivers/usb/host/ohci-hub.c
-@@ -88,6 +88,8 @@ static int ohci_rh_suspend (struct ohci_hcd *ohci, int autostop)
- 		msleep (8);
- 		spin_lock_irq (&ohci->lock);
- 	}
-+	/* All ED unlinks should be finished, no need for SOF interrupts */
-+	ohci_writel(ohci, OHCI_INTR_SF, &ohci->regs->intrdisable);
- 	update_done_list(ohci);
- 	ohci_work(ohci);
- 
--- 
-1.8.3.1
-
+Ah, the file only includes stackdepot.h in a #ifdef CONFIG_DRM_DEBUG_MM
+section so I will keep the #ifdef here for a minimal change, unless
+requested otherwise.
