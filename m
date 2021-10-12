@@ -2,378 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83FC429D56
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996F6429D5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232708AbhJLFse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 01:48:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36792 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229688AbhJLFsd (ORCPT
+        id S232631AbhJLFv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 01:51:56 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:58989 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229688AbhJLFv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 01:48:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634017591;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=KguWvQDYZIA8Q0Omvv5IVY7vWVbGRkWdvLgicv5hIx4=;
-        b=IOeBfeowjqClJJiTrWpblVkpqA34Kz0xAX/WdeTNrzi1WvQcNNAi3MOeduc9Dgzt+HIubP
-        B8BZZPpss8olrgTxTT3/t09Pwjr+yYuekn8HO7cleDCfgDRkBK4noK8iq63e4fP/mlSAX7
-        c3u0+gQWGGITBEJadLEurvE2CVGnS2Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-428-rjpD7aZlOLC4NFoan8mOiA-1; Tue, 12 Oct 2021 01:46:30 -0400
-X-MC-Unique: rjpD7aZlOLC4NFoan8mOiA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D8A918125C0;
-        Tue, 12 Oct 2021 05:46:29 +0000 (UTC)
-Received: from fedora-t480.redhat.com (unknown [10.39.192.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C514C5F707;
-        Tue, 12 Oct 2021 05:46:21 +0000 (UTC)
-From:   Kate Hsuan <hpa@redhat.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        hen-Yu Tsai <wens@csie.org>
-Cc:     Kate Hsuan <hpa@redhat.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] power: supply: axp288-charger: Optimize register reading method
-Date:   Tue, 12 Oct 2021 13:45:45 +0800
-Message-Id: <20211012054545.27314-1-hpa@redhat.com>
+        Tue, 12 Oct 2021 01:51:56 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UrY4FKf_1634017792;
+Received: from localhost.localdomain(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UrY4FKf_1634017792)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 12 Oct 2021 13:49:53 +0800
+From:   Xin Hao <xhao@linux.alibaba.com>
+To:     sjpark@amazon.de
+Cc:     xhao@linux.alibaba.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/damon/dbgfs: add region_stat interface
+Date:   Tue, 12 Oct 2021 13:49:48 +0800
+Message-Id: <20211012054948.90381-1-xhao@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original implementation access the charger the same register value
-several times to get the charger status, such as online, enabled, and
-bus limits. It takes a long time and bandwidth for every "status get"
-operation. 
+Using damon-dbgfs has brought great convenience to user-mode
+operation damon, but sometimes if i want to be able to view
+the division of task regions, nr_access values etc,but i found
+that it is impossible to view directly through the dbgfs interface,
+so there i add a interface "region_stat", it displays like this.
 
-To reduce the access of the register and save bandwidth, this commit
-integrated every read operation into only one "register value get" 
-operation and cache them in the variables. Once the "get properties"
-is requested from the user space, the cached information can be returned
-immediately.
+ # cat region_stat
+ last_aggregation=120.87s
+ target_id=5148
+ nr_regions=10
+ 400000-258c000(34352 KiB): 1
+ 258c000-4719000(34356 KiB): 0
+ 4719000-abbf000(103064 KiB): 0
+ abbf000-c4d4000(25684 KiB): 11
+ c4d4000-ff5c000(59936 KiB): 15
+ ff5c000-152f9000(85620 KiB): 20
+ 152f9000-1599e000(6804 KiB): 10
+ 1599e000-19573000(61268 KiB): 0
+ 19573000-1f92c000(102116 KiB): 0
+ 1f92c000-22a4c000(50304 KiB): 0
 
-I2C access between Linux kernel and P-Unit is improved by explicitly taking
-semaphore once for the entire set of register accesses in the new
-axp288_charger_usb_update_property() function. The I2C-Bus to the XPower
-AXP288 is shared between the Linux kernel and SoCs P-Unit. The P-Unit
-has a semaphore which the kernel must "lock" before it may use the bus.
-If not explicitly taken by the I2C-Driver, then this semaphore is
-automatically taken by the I2C-bus-driver for each I2C-transfer. In
-other words, the semaphore will be locked and released several times for
-entire set of register accesses.
-
-Signed-off-by: Kate Hsuan <hpa@redhat.com>
+Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
 ---
- drivers/power/supply/axp288_charger.c | 150 +++++++++++++++++---------
- 1 file changed, 99 insertions(+), 51 deletions(-)
+ mm/damon/dbgfs.c | 60 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 58 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/power/supply/axp288_charger.c b/drivers/power/supply/axp288_charger.c
-index b9553be9bed5..fd4983c98fd9 100644
---- a/drivers/power/supply/axp288_charger.c
-+++ b/drivers/power/supply/axp288_charger.c
-@@ -22,6 +22,7 @@
- #include <linux/mfd/axp20x.h>
- #include <linux/extcon.h>
- #include <linux/dmi.h>
-+#include <asm/iosf_mbi.h>
+diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+index faee070977d8..269a336e92f0 100644
+--- a/mm/damon/dbgfs.c
++++ b/mm/damon/dbgfs.c
+@@ -266,6 +266,57 @@ static ssize_t dbgfs_kdamond_pid_read(struct file *file,
+ 	return len;
+ }
  
- #define PS_STAT_VBUS_TRIGGER		BIT(0)
- #define PS_STAT_BAT_CHRG_DIR		BIT(2)
-@@ -95,6 +96,8 @@
- #define CV_4200MV			4200	/* 4200mV */
- #define CV_4350MV			4350	/* 4350mV */
- 
-+#define AXP288_REG_UPDATE_INTERVAL	(60 * HZ)
++static ssize_t dbgfs_region_stat_read(struct file *file,
++		char __user *buf, size_t count, loff_t *ppos)
++{
++	struct damon_ctx *ctx = file->private_data;
++	struct damon_target *t;
++	char *kbuf;
++	ssize_t len;
++	int id, rc, written = 0;
 +
- #define AXP288_EXTCON_DEV_NAME		"axp288_extcon"
- #define USB_HOST_EXTCON_HID		"INT3496"
- #define USB_HOST_EXTCON_NAME		"INT3496:00"
-@@ -118,6 +121,7 @@ struct axp288_chrg_info {
- 	struct regmap_irq_chip_data *regmap_irqc;
- 	int irq[CHRG_INTR_END];
- 	struct power_supply *psy_usb;
-+	struct mutex lock;
- 
- 	/* OTG/Host mode */
- 	struct {
-@@ -138,6 +142,12 @@ struct axp288_chrg_info {
- 	int cv;
- 	int max_cc;
- 	int max_cv;
++	kbuf = kmalloc(count, GFP_KERNEL);
++	if (!kbuf)
++		return -ENOMEM;
 +
-+	unsigned long last_updated;
-+	unsigned int input_status;
-+	unsigned int op_mode;
-+	unsigned int backend_control;
-+	bool valid;
++	mutex_lock(&ctx->kdamond_lock);
++	damon_for_each_target(t, ctx) {
++		struct damon_region *r;
++
++		if (targetid_is_pid(ctx))
++			id = (int)pid_vnr((struct pid *)t->id);
++
++		rc = scnprintf(&kbuf[written], count - written,
++				"last_aggregation=%lld.%lds\ntarget_id=%d\nnr_regions=%u\n",
++				ctx->last_aggregation.tv_sec,
++				ctx->last_aggregation.tv_nsec / 1000000,
++				id, t->nr_regions);
++		if (!rc)
++			goto out;
++
++		written += rc;
++
++		damon_for_each_region(r, t) {
++			rc = scnprintf(&kbuf[written], count - written,
++				       "%lx-%lx(%lu KiB): %u\n",
++				       r->ar.start, r->ar.end,
++					   (r->ar.end - r->ar.start) >> 10,
++					   r->nr_accesses);
++			if (!rc)
++				goto out;
++
++			written += rc;
++		}
++
++		len += simple_read_from_buffer(buf, count, ppos, kbuf, written);
++	}
++
++out:
++	mutex_unlock(&ctx->kdamond_lock);
++	kfree(kbuf);
++	return len;
++}
++
+ static int damon_dbgfs_open(struct inode *inode, struct file *file)
+ {
+ 	file->private_data = inode->i_private;
+@@ -290,12 +341,17 @@ static const struct file_operations kdamond_pid_fops = {
+ 	.read = dbgfs_kdamond_pid_read,
  };
  
- static inline int axp288_charger_set_cc(struct axp288_chrg_info *info, int cc)
-@@ -197,11 +207,8 @@ static inline int axp288_charger_set_cv(struct axp288_chrg_info *info, int cv)
- static int axp288_charger_get_vbus_inlmt(struct axp288_chrg_info *info)
++static const struct file_operations region_stat_fops = {
++	.open = damon_dbgfs_open,
++	.read = dbgfs_region_stat_read,
++};
++
+ static void dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
  {
- 	unsigned int val;
--	int ret;
+ 	const char * const file_names[] = {"attrs", "target_ids",
+-		"kdamond_pid"};
++		"kdamond_pid", "region_stat"};
+ 	const struct file_operations *fops[] = {&attrs_fops, &target_ids_fops,
+-		&kdamond_pid_fops};
++		&kdamond_pid_fops, &region_stat_fops};
+ 	int i;
  
--	ret = regmap_read(info->regmap, AXP20X_CHRG_BAK_CTRL, &val);
--	if (ret < 0)
--		return ret;
-+	val = info->backend_control;
- 
- 	val >>= CHRG_VBUS_ILIM_BIT_POS;
- 	switch (val) {
-@@ -297,55 +304,34 @@ static int axp288_charger_enable_charger(struct axp288_chrg_info *info,
- 
- static int axp288_charger_is_present(struct axp288_chrg_info *info)
- {
--	int ret, present = 0;
--	unsigned int val;
--
--	ret = regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
--	if (ret < 0)
--		return ret;
-+	int present = 0;
- 
--	if (val & PS_STAT_VBUS_PRESENT)
-+	if (info->input_status & PS_STAT_VBUS_PRESENT)
- 		present = 1;
- 	return present;
- }
- 
- static int axp288_charger_is_online(struct axp288_chrg_info *info)
- {
--	int ret, online = 0;
--	unsigned int val;
--
--	ret = regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
--	if (ret < 0)
--		return ret;
-+	int online = 0;
- 
--	if (val & PS_STAT_VBUS_VALID)
-+	if (info->input_status & PS_STAT_VBUS_VALID)
- 		online = 1;
- 	return online;
- }
- 
- static int axp288_get_charger_health(struct axp288_chrg_info *info)
- {
--	int ret, pwr_stat, chrg_stat;
- 	int health = POWER_SUPPLY_HEALTH_UNKNOWN;
--	unsigned int val;
- 
--	ret = regmap_read(info->regmap, AXP20X_PWR_INPUT_STATUS, &val);
--	if ((ret < 0) || !(val & PS_STAT_VBUS_PRESENT))
-+	if (!(info->input_status & PS_STAT_VBUS_PRESENT))
- 		goto health_read_fail;
--	else
--		pwr_stat = val;
- 
--	ret = regmap_read(info->regmap, AXP20X_PWR_OP_MODE, &val);
--	if (ret < 0)
--		goto health_read_fail;
--	else
--		chrg_stat = val;
--
--	if (!(pwr_stat & PS_STAT_VBUS_VALID))
-+	if (!(info->input_status & PS_STAT_VBUS_VALID))
- 		health = POWER_SUPPLY_HEALTH_DEAD;
--	else if (chrg_stat & CHRG_STAT_PMIC_OTP)
-+	else if (info->op_mode & CHRG_STAT_PMIC_OTP)
- 		health = POWER_SUPPLY_HEALTH_OVERHEAT;
--	else if (chrg_stat & CHRG_STAT_BAT_SAFE_MODE)
-+	else if (info->op_mode & CHRG_STAT_BAT_SAFE_MODE)
- 		health = POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE;
- 	else
- 		health = POWER_SUPPLY_HEALTH_GOOD;
-@@ -362,30 +348,86 @@ static int axp288_charger_usb_set_property(struct power_supply *psy,
- 	int ret = 0;
- 	int scaled_val;
- 
-+	mutex_lock(&info->lock);
- 	switch (psp) {
- 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
- 		scaled_val = min(val->intval, info->max_cc);
- 		scaled_val = DIV_ROUND_CLOSEST(scaled_val, 1000);
- 		ret = axp288_charger_set_cc(info, scaled_val);
--		if (ret < 0)
-+		if (ret < 0) {
- 			dev_warn(&info->pdev->dev, "set charge current failed\n");
-+			goto out;
-+		}
- 		break;
- 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
- 		scaled_val = min(val->intval, info->max_cv);
- 		scaled_val = DIV_ROUND_CLOSEST(scaled_val, 1000);
- 		ret = axp288_charger_set_cv(info, scaled_val);
--		if (ret < 0)
-+		if (ret < 0) {
- 			dev_warn(&info->pdev->dev, "set charge voltage failed\n");
-+			goto out;
-+		}
- 		break;
- 	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
- 		ret = axp288_charger_set_vbus_inlmt(info, val->intval);
--		if (ret < 0)
-+		if (ret < 0) {
- 			dev_warn(&info->pdev->dev, "set input current limit failed\n");
-+			goto out;
-+		}
-+		info->valid = false;
- 		break;
- 	default:
- 		ret = -EINVAL;
- 	}
- 
-+out:
-+	mutex_unlock(&info->lock);
-+	return ret;
-+}
-+
-+static int axp288_charger_reg_readb(struct axp288_chrg_info *info, int reg, unsigned int *ret_val)
-+{
-+	int ret;
-+
-+	ret = regmap_read(info->regmap, reg, ret_val);
-+	if (ret < 0) {
-+		dev_err(&info->pdev->dev, "Error %d on reading value from register 0x%04x\n",
-+			ret,
-+			reg);
-+		return ret;
-+	}
-+	return 0;
-+}
-+
-+static int axp288_charger_usb_update_property(struct axp288_chrg_info *info)
-+{
-+	int ret = 0;
-+
-+	if (info->valid && time_before(jiffies, info->last_updated + AXP288_REG_UPDATE_INTERVAL))
-+		return 0;
-+
-+	dev_dbg(&info->pdev->dev, "Charger updating register values...\n");
-+
-+	ret = iosf_mbi_block_punit_i2c_access();
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = axp288_charger_reg_readb(info, AXP20X_PWR_INPUT_STATUS, &info->input_status);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = axp288_charger_reg_readb(info, AXP20X_PWR_OP_MODE, &info->op_mode);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = axp288_charger_reg_readb(info, AXP20X_CHRG_BAK_CTRL, &info->backend_control);
-+	if (ret < 0)
-+		goto out;
-+
-+	info->last_updated = jiffies;
-+	info->valid = true;
-+out:
-+	iosf_mbi_unblock_punit_i2c_access();
- 	return ret;
- }
- 
-@@ -396,6 +438,11 @@ static int axp288_charger_usb_get_property(struct power_supply *psy,
- 	struct axp288_chrg_info *info = power_supply_get_drvdata(psy);
- 	int ret;
- 
-+	mutex_lock(&info->lock);
-+	ret = axp288_charger_usb_update_property(info);
-+	if (ret < 0)
-+		goto out;
-+
- 	switch (psp) {
- 	case POWER_SUPPLY_PROP_PRESENT:
- 		/* Check for OTG case first */
-@@ -403,10 +450,7 @@ static int axp288_charger_usb_get_property(struct power_supply *psy,
- 			val->intval = 0;
- 			break;
- 		}
--		ret = axp288_charger_is_present(info);
--		if (ret < 0)
--			return ret;
--		val->intval = ret;
-+		val->intval = axp288_charger_is_present(info);
- 		break;
- 	case POWER_SUPPLY_PROP_ONLINE:
- 		/* Check for OTG case first */
-@@ -414,10 +458,7 @@ static int axp288_charger_usb_get_property(struct power_supply *psy,
- 			val->intval = 0;
- 			break;
- 		}
--		ret = axp288_charger_is_online(info);
--		if (ret < 0)
--			return ret;
--		val->intval = ret;
-+		val->intval = axp288_charger_is_online(info);
- 		break;
- 	case POWER_SUPPLY_PROP_HEALTH:
- 		val->intval = axp288_get_charger_health(info);
-@@ -435,16 +476,15 @@ static int axp288_charger_usb_get_property(struct power_supply *psy,
- 		val->intval = info->max_cv * 1000;
- 		break;
- 	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
--		ret = axp288_charger_get_vbus_inlmt(info);
--		if (ret < 0)
--			return ret;
--		val->intval = ret;
-+		val->intval = axp288_charger_get_vbus_inlmt(info);
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
- 	}
- 
--	return 0;
-+out:
-+	mutex_unlock(&info->lock);
-+	return ret;
- }
- 
- static int axp288_charger_property_is_writeable(struct power_supply *psy,
-@@ -540,7 +580,9 @@ static irqreturn_t axp288_charger_irq_thread_handler(int irq, void *dev)
- 		dev_warn(&info->pdev->dev, "Spurious Interrupt!!!\n");
- 		goto out;
- 	}
--
-+	mutex_lock(&info->lock);
-+	info->valid = false;
-+	mutex_unlock(&info->lock);
- 	power_supply_changed(info->psy_usb);
- out:
- 	return IRQ_HANDLED;
-@@ -613,6 +655,9 @@ static void axp288_charger_extcon_evt_worker(struct work_struct *work)
- 	if (!(val & PS_STAT_VBUS_VALID)) {
- 		dev_dbg(&info->pdev->dev, "USB charger disconnected\n");
- 		axp288_charger_enable_charger(info, false);
-+		mutex_lock(&info->lock);
-+		info->valid = false;
-+		mutex_unlock(&info->lock);
- 		power_supply_changed(info->psy_usb);
- 		return;
- 	}
-@@ -644,6 +689,9 @@ static void axp288_charger_extcon_evt_worker(struct work_struct *work)
- 		dev_err(&info->pdev->dev,
- 			"error setting current limit (%d)\n", ret);
- 
-+	mutex_lock(&info->lock);
-+	info->valid = false;
-+	mutex_unlock(&info->lock);
- 	power_supply_changed(info->psy_usb);
- }
- 
+ 	for (i = 0; i < ARRAY_SIZE(file_names); i++)
 -- 
-2.31.1
+2.27.0
 
