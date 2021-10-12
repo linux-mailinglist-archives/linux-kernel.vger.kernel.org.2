@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A2942A83E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A229842A842
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237402AbhJLP3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:29:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229633AbhJLP3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:29:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E92EE601FF;
-        Tue, 12 Oct 2021 15:27:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634052425;
-        bh=JHsNRkImaZso/PdEhq7lyB1jAuHIPy/YNePO+70974o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tfz5lBCZzH0JKgOGsRgMim4fgUflHSc+NzJKbYotcGljbTf7PO2CDwWHuLqWloEnD
-         +osAhLbdsiFpEh1r/Ee5+G23epykAedEb9oZuKEzTgjDzoghoVjHwXJaGA6qe+39CA
-         VTpVY+qq6hXn1Xh1On+VUZVHkSEVCdVvR869EEhNbjCe+Vrl9VyIalPm17mWpCeE8i
-         LMFUAV/LGi2azLF3wmzkS73ciOLK8H4QY9vCvh81OLjBJZY+CWsUS3X+u8/Ux0blXz
-         Pv++7boIgmVd1DCPKQUz8qDrke+Hp4zsV0pD9WNp/0emfjx42PgS92v0RZMJ3EBgH4
-         w4EkG51zemCbg==
-Date:   Tue, 12 Oct 2021 08:27:03 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alvin =?UTF-8?B?xaBpcHJhZ2E=?= <alvin@pqrs.dk>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alvin =?UTF-8?B?xaBpcHJhZ2E=?= <alsi@bang-olufsen.dk>,
-        Michael Rasmussen <mir@bang-olufsen.dk>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 5/6] net: dsa: realtek-smi: add rtl8365mb
- subdriver for RTL8365MB-VC
-Message-ID: <20211012082703.7b31e73b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211012123557.3547280-6-alvin@pqrs.dk>
-References: <20211012123557.3547280-1-alvin@pqrs.dk>
-        <20211012123557.3547280-6-alvin@pqrs.dk>
+        id S237347AbhJLPbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237199AbhJLPbu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 11:31:50 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885DDC061570;
+        Tue, 12 Oct 2021 08:29:48 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id DC6221F43D1A
+Received: by earth.universe (Postfix, from userid 1000)
+        id 867523C0CA8; Tue, 12 Oct 2021 17:29:44 +0200 (CEST)
+Date:   Tue, 12 Oct 2021 17:29:44 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        iskren.chernev@gmail.com
+Subject: Re: [PATCH] power: supply: max17040: fix null-ptr-deref in
+ max17040_probe()
+Message-ID: <20211012152944.facevquz5nsfk6zc@earth.universe>
+References: <20211008063150.822066-1-yangyingliang@huawei.com>
+ <394b0984-50a6-af80-195b-033bf9624dea@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kngmmh6z6q435rks"
+Content-Disposition: inline
+In-Reply-To: <394b0984-50a6-af80-195b-033bf9624dea@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 14:35:54 +0200 Alvin =C5=A0ipraga wrote:
-> +	{ 0, 4, 2, "dot3StatsFCSErrors" },
-> +	{ 0, 6, 2, "dot3StatsSymbolErrors" },
-> +	{ 0, 8, 2, "dot3InPauseFrames" },
-> +	{ 0, 10, 2, "dot3ControlInUnknownOpcodes" },
-...
 
-You must expose counters via existing standard APIs.
+--kngmmh6z6q435rks
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-You should implement these ethtool ops:
+Hi,
 
-	void	(*get_eth_phy_stats)(struct net_device *dev,
-				     struct ethtool_eth_phy_stats *phy_stats);
-	void	(*get_eth_mac_stats)(struct net_device *dev,
-				     struct ethtool_eth_mac_stats *mac_stats);
-	void	(*get_eth_ctrl_stats)(struct net_device *dev,
-				      struct ethtool_eth_ctrl_stats *ctrl_stats);
-	void	(*get_rmon_stats)(struct net_device *dev,
-				  struct ethtool_rmon_stats *rmon_stats,
-				  const struct ethtool_rmon_hist_range **ranges);
+On Sat, Oct 09, 2021 at 07:18:30PM +0200, Krzysztof Kozlowski wrote:
+> On 08/10/2021 08:31, Yang Yingliang wrote:
+> > Add check the return value of devm_regmap_init_i2c(), otherwise
+> > later access may cause null-ptr-deref as follows:
+> >=20
+> > KASAN: null-ptr-deref in range [0x0000000000000360-0x0000000000000367]
+> > RIP: 0010:regmap_read+0x33/0x170
+> > Call Trace:
+> >   max17040_probe+0x61b/0xff0 [max17040_battery]
+> >  ? write_comp_data+0x2a/0x90
+> >  ? max17040_set_property+0x1d0/0x1d0 [max17040_battery]
+> >  ? tracer_hardirqs_on+0x33/0x520
+> >  ? __sanitizer_cov_trace_pc+0x1d/0x50
+> >  ? _raw_spin_unlock_irqrestore+0x4b/0x60
+> >  ? trace_hardirqs_on+0x63/0x2d0
+> >  ? write_comp_data+0x2a/0x90
+> >  ? __sanitizer_cov_trace_pc+0x1d/0x50
+> >  ? max17040_set_property+0x1d0/0x1d0 [max17040_battery]
+> >  i2c_device_probe+0xa31/0xbe0
+> >=20
+> > Fixes: 6455a8a84bdf ("power: supply: max17040: Use regmap i2c")
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> > ---
+> >  drivers/power/supply/max17040_battery.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+>=20
+>=20
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-> +static int rtl8365mb_setup(struct dsa_switch *ds)
-> +{
-> +	struct realtek_smi *smi =3D ds->priv;
-> +	struct rtl8365mb *mb;
-> +	int ret;
-> +	int i;
-> +
-> +	mb =3D smi->chip_data;
+Thanks, queued.
 
-drivers/net/dsa/rtl8365mb.c:1428:20: warning: variable =E2=80=98mb=E2=80=99=
- set but not used [-Wunused-but-set-variable]
- 1428 |  struct rtl8365mb *mb;
-      |                    ^~
+-- Sebastian
+
+--kngmmh6z6q435rks
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFlqeQACgkQ2O7X88g7
++prlEw//WPn9+8y3sCuv9/yIVXBi63dF/jtvF1FzXbXSRtPVS+0eHWgSZevQhYRM
+yAeekAWm9P0i4BVAT+MLpT7dXm3SNuydlCH4f+uV52xjBzCpb6hLZyjdl/2ZbELl
+yUdFzNtU+otwZdA5n7v1T4kZPBSqurdRQlRWY6wsFjh25SZeOs97lLhgmZqR0Rhr
+VOZR7yA/N98AUrCL+idl8DOKyoCC06QrDOb3ZBOqSEw9uurWTxCpMKE7j8us3N88
+XP+84Fp2HncHH5qiqqRT/lmRlFnaSQ1WXHElohXqU7DrRSgqK+u0SJ25IznujbIr
+j3kWFZHnSZEUsmO/4B46iqF5TjRS9+GTsTe92Vfa/b2K2hvTBsAvRX3luOImbl9j
+DLLwUpoOdObHGNgIqZOo79X9xenDiv3j+KfRljfHFGSrkHg5O581BR8as9uvavmD
++46h0iMjar4BfgSC8xSyOhYceddC93r3Gppt3MUhdh/jGDsql22yCKG4pT/Yt8bA
+KHVFZ2yL2zcjEQag/aGTVlBxxw+VhTZoElbz87mdleNKfz3MeMyGVR5CIM/f1Jpf
+lKnQ/hekgVN9fg2t46nArKhXpNkabuHKKB4xDqdSXsy8wCf3Sa7nUzm3ZFREWAPa
+jLsakY+8hsyZ1Py/7D1zjUUbvwtAMP9ivg1wzFrtijPcSgNjAbo=
+=6soH
+-----END PGP SIGNATURE-----
+
+--kngmmh6z6q435rks--
