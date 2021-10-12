@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C7F42A736
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 250BF42A737
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237251AbhJLOdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:33:12 -0400
-Received: from mga03.intel.com ([134.134.136.65]:19517 "EHLO mga03.intel.com"
+        id S237168AbhJLOdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:33:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237376AbhJLOdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237299AbhJLOdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Oct 2021 10:33:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="227118766"
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="227118766"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 07:31:06 -0700
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="441253376"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.174.65]) ([10.249.174.65])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 07:31:03 -0700
-Subject: Re: [kbuild-all] Re: [tip:sched/core 14/47]
- kernel/sched/fair.c:893:22: error: variable 'p' set but not used
-To:     Peter Zijlstra <peterz@infradead.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-References: <202110121132.N2z9JrD0-lkp@intel.com>
- <YWVw/oVd5ztGZDAK@hirez.programming.kicks-ass.net>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <40d464a8-86b6-d4cf-6e3a-d0712ac351c3@intel.com>
-Date:   Tue, 12 Oct 2021 22:31:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <YWVw/oVd5ztGZDAK@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE8186109E;
+        Tue, 12 Oct 2021 14:31:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634049070;
+        bh=njzTc3xqmkP7t9RJnxc+gu8i4Cm7MWiWADSxg9Kw7tg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kaIZ952nJrulRT853/2b4BfKnsyV7Y1vw4hDwFsg+EeDS6fxS44ottY5CRU6ZnF8Y
+         3KThAS7KnOS4ZYFdiFCVT5nuSllIpeVlLaaOI8rlZ0EKaxbZw1BtLLj6ttMau5harB
+         e4UQnAGUJ5Jk0NHrPzFKoI38heZRLAl7xuoILCuA4dMoPQdOYbNaw3FVtbjvNSnDQE
+         oW//u/WkUnM+LSJrxlOcYRGOb1o+Z2CPbjUQLIVQ3VPGBRAjbd3q1fdQOu8iXiF5PD
+         cfXGxsdo/JwLaN/qvprSgKnwabLfOgM6fXaBSXpzlPw2W11qKgNtUxktgHH0nVY//I
+         prnGijcD1iOSQ==
+Date:   Tue, 12 Oct 2021 23:31:07 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Yordan Karadzhov <y.karadz@gmail.com>
+Subject: Re: [PATCH v2] tracing: Fix event probe removal from dynamic events
+Message-Id: <20211012233107.671725f6ec0316b3d0a9dd85@kernel.org>
+In-Reply-To: <20211012081925.0e19cc4f@gandalf.local.home>
+References: <20211012081925.0e19cc4f@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 12 Oct 2021 08:19:25 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-
-On 10/12/2021 7:26 PM, Peter Zijlstra wrote:
-> On Tue, Oct 12, 2021 at 11:57:41AM +0800, kernel test robot wrote:
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
->> head:   b2d5b9cec60fecc72a13191c2c6c05acf60975a5
->> commit: 60f2415e19d3948641149ac6aca137a7be1d1952 [14/47] sched: Make schedstats helpers independent of fair sched class
->> config: hexagon-buildonly-randconfig-r002-20211012 (attached as .config)
->> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c3dcf39554dbea780d6cb7e12239451ba47a2668)
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=60f2415e19d3948641149ac6aca137a7be1d1952
->>          git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
->>          git fetch --no-tags tip sched/core
->>          git checkout 60f2415e19d3948641149ac6aca137a7be1d1952
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=hexagon
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>     kernel/sched/fair.c:860:28: error: variable 'stats' set but not used [-Werror,-Wunused-but-set-variable]
->>                     struct sched_statistics *stats;
->>                                              ^
->>     kernel/sched/fair.c:892:27: error: variable 'stats' set but not used [-Werror,-Wunused-but-set-variable]
->>             struct sched_statistics *stats;
->>                                      ^
->>>> kernel/sched/fair.c:893:22: error: variable 'p' set but not used [-Werror,-Wunused-but-set-variable]
->>             struct task_struct *p = NULL;
->>                                 ^
->>     kernel/sched/fair.c:910:22: error: variable 'p' set but not used [-Werror,-Wunused-but-set-variable]
->>             struct task_struct *p = NULL;
->>                                 ^
->>     kernel/sched/fair.c:909:27: error: variable 'stats' set but not used [-Werror,-Wunused-but-set-variable]
->>             struct sched_statistics *stats;
->>                                      ^
->>>> kernel/sched/fair.c:936:22: error: variable 'tsk' set but not used [-Werror,-Wunused-but-set-variable]
->>             struct task_struct *tsk = NULL;
->>                                 ^
->>     kernel/sched/fair.c:935:27: error: variable 'stats' set but not used [-Werror,-Wunused-but-set-variable]
->>             struct sched_statistics *stats;
->>                                      ^
->>     kernel/sched/fair.c:4451:28: error: variable 'stats' set but not used [-Werror,-Wunused-but-set-variable]
->>                     struct sched_statistics *stats;
->>                                              ^
->>     8 errors generated.
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 > 
-> Again, I have absolutely no intention of fixing this. IMO this is the
-> compiler being a total pain in the arse.
+> When an event probe is to be removed via the API to remove dynamic events,
+> an -EBUSY error is returned.
 > 
-> Please stop reporting this.
+> This is because the removal of the event probe does not expect to see the
+> event system and name that the event probe is attached to, even though
+> that's part of the API to create it. As the removal of probes is to use
+> the same API as they are created, fix it by first testing if the first
+> parameter of the event probe to be removed matches the system and event
+> that the probe is attached to, and then adjust the argc and argv of the
+> parameters to match the rest of the syntax.
 
-Hi Peterz,
+Hmm, this seems something wrong. Via dynamic_events interface, all the
+events must be parsed equaly. If you have to pass the attached "system/event"
+that's something wrong. The dynamic_events interface will accept 
 
-Sorry for the noise, we'll ignore the unused-but-set-variable warning in
-kernel/sched/ part. Is there any other issue should be ignored?
+-:[GROUP/]EVENT [optional arguments]
 
-Best Regards,
-Rong Chen
+Or
+
+!e:[GROUP/]EVENT [optional arguments]
+
+What did you expect other that these syntax?
+
+Thank you,
+
+> 
+> Link: https://lkml.kernel.org/r/20211011211105.48b6a5fd@oasis.local.home
+> 
+> Fixes: 7491e2c442781 ("tracing: Add a probe that attaches to trace events")
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+> Changes since v1:
+>    - amended the commit with the definition of "slash"
+> 
+>  kernel/trace/trace_eprobe.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
+> index 570d081929fb..2bcfa8da5cef 100644
+> --- a/kernel/trace/trace_eprobe.c
+> +++ b/kernel/trace/trace_eprobe.c
+> @@ -119,6 +119,26 @@ static bool eprobe_dyn_event_match(const char *system, const char *event,
+>  			int argc, const char **argv, struct dyn_event *ev)
+>  {
+>  	struct trace_eprobe *ep = to_trace_eprobe(ev);
+> +	const char *slash;
+> +
+> +	/* First argument is the system/event the probe is attached to */
+> +
+> +	if (argc < 1)
+> +		return false;
+> +
+> +	slash = strchr(argv[0], '/');
+> +	if (!slash)
+> +		slash = strchr(argv[0], '.');
+> +	if (!slash)
+> +		return false;
+> +
+> +	if (strncmp(ep->event_system, argv[0], slash - argv[0]))
+> +		return false;
+> +	if (strcmp(ep->event_name, slash + 1))
+> +		return false;
+> +
+> +	argc--;
+> +	argv++;
+>  
+>  	return strcmp(trace_probe_name(&ep->tp), event) == 0 &&
+>  	    (!system || strcmp(trace_probe_group_name(&ep->tp), system) == 0) &&
+> -- 
+> 2.31.1
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
