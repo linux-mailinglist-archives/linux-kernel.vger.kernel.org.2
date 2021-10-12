@@ -2,73 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF2A429EA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5009E429EA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233943AbhJLHav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:30:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232500AbhJLHau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:30:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 134AE6108F;
-        Tue, 12 Oct 2021 07:28:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634023728;
-        bh=Vw7yAdNZuRR+JFWTGL++rcQPXKi75JyotcQgHBK2vwA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uiw/+oWlg31bGKYZ5oSDe1VgAZdxyySq/aEDShR4JJcQbsmH21exUhnp7QulfXCIh
-         t1zUvv7kwCn+qEzf9VdeGDZhD0zi+MWA0nmv4LWb0PEuyONBr/JetoP7phJFFLRrPz
-         eGnkey3mbf9j5DNcDy0JCA6pxL9KMZhtLFexyuJjl0Z7YZ9B/226HM86ik1Kxoykdf
-         HyE60Jf1G5Suwn3QRcHFqw3PYAQe1hYPepjjSgguLBT7c4Hr9rMESVL3x0a2mPbpkR
-         1aotArCFrHNTaNtlo+5BcYylfLQtl5U/aqGzYh0di1y69bAykFGAIUV17ZScuD8WYg
-         AowJ6puYX3YXQ==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: [PATCH rdma-next] RDMA/mlx4: Return missed an error if device doesn't support steering
-Date:   Tue, 12 Oct 2021 10:28:43 +0300
-Message-Id: <91c61f6e60eb0240f8bbc321fda7a1d2986dd03c.1634023677.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S234036AbhJLHc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232500AbhJLHcz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 03:32:55 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20568C061570;
+        Tue, 12 Oct 2021 00:30:54 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id i12so51204201wrb.7;
+        Tue, 12 Oct 2021 00:30:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=JnveVyUJxymNAFHeYFircy9L/buzTM+7agfcS4bgS2o=;
+        b=TU62GjX2/BZDoFark1y4nnk0jlgAgrIF/JtLmiZnhk/Z4Y6xlod4+x/C0K66hsDJRJ
+         MmGkW96ZAesQxpXtVHQpXaHhwadUf5VYF26bFRl/y0XzfweSwN/CQDuc+yKj3kCgcVyy
+         M+z9wSHZEQDTIJ5CKMOGUe5ZXp8BRZmXmIetYOLZuuf7/woTXd70h9qc9+kE/gB9orSk
+         scpIKU823W33z5tLxDCZEXVMLVY5tdwnFRNSTNvYtWX04016eJ2cTU9lfqO2lvlBj5OT
+         J8EYsqdvvZyuSzAC2vSxRUYH3lVbI4CSLNEOSzeuSA1Eg5d5baLZO+5GIulBe8LgQdt4
+         Jxrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=JnveVyUJxymNAFHeYFircy9L/buzTM+7agfcS4bgS2o=;
+        b=Mj22CQIKr0rG7R04kz3RbkPdI3vvNcM0xnx9hHxRcGnMZpbzeZzcFxmZTMq4vcXhwB
+         zahLSISreifc4ONq7o1XSARU68h/Xd/gGBFAfZGZhb3J2WUXb7EvMW5bZdExUCQM1RfO
+         3fZnRX7PEgMN7z2dzlWHQGrtEjfIT81oG1DkRnxnq9qGZMtuGcZzkuPA9EadefH+yj0Y
+         INyFhVwsmTy7azd1EPEBhugklUUPW2BHlpzrTaxpg/bMmyVj3vHsLbkWmcS/UuxFoWGP
+         EjsnJuH6c85D/lTXLAyaN+bvkhEv9Ly/F8O4NOnhFCh78EgQNHyfRlRl6i+/3URKnwyz
+         jJjg==
+X-Gm-Message-State: AOAM530/TPaEDWq6r4lKnP66YLgCNAaUG6XQOrVcn83KYxaGKEqPtEIG
+        mvitWM9SKyCJq2f5gxR5XqM=
+X-Google-Smtp-Source: ABdhPJwuahxXDHHhV8wkQVubDOGdt2+/V5al4MPm2RApziKBwUSF7QkB06Gegto/1uXFcxE4I9fj0Q==
+X-Received: by 2002:a05:600c:3595:: with SMTP id p21mr3803779wmq.71.1634023852780;
+        Tue, 12 Oct 2021 00:30:52 -0700 (PDT)
+Received: from [192.168.1.21] ([195.245.16.219])
+        by smtp.gmail.com with ESMTPSA id j14sm4237565wrw.12.2021.10.12.00.30.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 00:30:52 -0700 (PDT)
+Message-ID: <f7ea1bc2e2c50aa4cc75af3bba2d09803a485b93.camel@gmail.com>
+Subject: Re: [PATCH 3/4] Input: ep93xx_keypad - use dev_pm_set_wake_irq()
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Date:   Tue, 12 Oct 2021 09:30:46 +0200
+In-Reply-To: <20211012013735.3523140-3-dmitry.torokhov@gmail.com>
+References: <20211012013735.3523140-1-dmitry.torokhov@gmail.com>
+         <20211012013735.3523140-3-dmitry.torokhov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Hi!
 
-The error flow fixed in this patch is not possible because all kernel
-users of create QP interface check that device supports steering before
-set IB_QP_CREATE_NETIF_QP flag.
+On Mon, 2021-10-11 at 18:37 -0700, Dmitry Torokhov wrote:
+> Instead of manually toggling interrupt as wakeup source in suspend/resume
+> methods, let's declare keypad interrupt and wakeup interrupt and leave the
+> rest to the PM core.
+> 
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Fixes: c1c98501121e ("IB/mlx4: Add support for steerable IB UD QPs")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx4/qp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index 8662f462e2a5..3a1a4ac9dd33 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -1099,8 +1099,10 @@ static int create_qp_common(struct ib_pd *pd, struct ib_qp_init_attr *init_attr,
- 			if (dev->steering_support ==
- 			    MLX4_STEERING_MODE_DEVICE_MANAGED)
- 				qp->flags |= MLX4_IB_QP_NETIF;
--			else
-+			else {
-+				err = -EINVAL;
- 				goto err;
-+			}
- 		}
- 
- 		err = set_kernel_sq_size(dev, &init_attr->cap, qp_type, qp);
+> ---
+>  drivers/input/keyboard/ep93xx_keypad.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/input/keyboard/ep93xx_keypad.c b/drivers/input/keyboard/ep93xx_keypad.c
+> index 6be5474ba2f2..a66cfeaf5b21 100644
+> --- a/drivers/input/keyboard/ep93xx_keypad.c
+> +++ b/drivers/input/keyboard/ep93xx_keypad.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/soc/cirrus/ep93xx.h>
+>  #include <linux/platform_data/keypad-ep93xx.h>
+> +#include <linux/pm_wakeirq.h>
+>  
+>  /*
+>   * Keypad Interface Register offsets
+> @@ -191,9 +192,6 @@ static int __maybe_unused ep93xx_keypad_suspend(struct device *dev)
+>  
+>         mutex_unlock(&input_dev->mutex);
+>  
+> -       if (device_may_wakeup(&pdev->dev))
+> -               enable_irq_wake(keypad->irq);
+> -
+>         return 0;
+>  }
+>  
+> @@ -203,9 +201,6 @@ static int __maybe_unused ep93xx_keypad_resume(struct device *dev)
+>         struct ep93xx_keypad *keypad = platform_get_drvdata(pdev);
+>         struct input_dev *input_dev = keypad->input_dev;
+>  
+> -       if (device_may_wakeup(&pdev->dev))
+> -               disable_irq_wake(keypad->irq);
+> -
+>         mutex_lock(&input_dev->mutex);
+>  
+>         if (input_device_enabled(input_dev)) {
+> @@ -316,7 +311,11 @@ static int ep93xx_keypad_probe(struct platform_device *pdev)
+>                 goto failed_free_irq;
+>  
+>         platform_set_drvdata(pdev, keypad);
+> +
+>         device_init_wakeup(&pdev->dev, 1);
+> +       err = dev_pm_set_wake_irq(&pdev->dev, keypad->irq);
+> +       if (err)
+> +               dev_warn(&pdev->dev, "failed to set up wakeup irq: %d\n", err);
+>  
+>         return 0;
+>  
+> @@ -342,6 +341,8 @@ static int ep93xx_keypad_remove(struct platform_device *pdev)
+>         struct ep93xx_keypad *keypad = platform_get_drvdata(pdev);
+>         struct resource *res;
+>  
+> +       dev_pm_clear_wake_irq(&pdev->dev);
+> +
+>         free_irq(keypad->irq, keypad);
+>  
+>         if (keypad->enabled)
+
 -- 
-2.31.1
+Alexander Sverdlin.
+
 
