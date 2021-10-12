@@ -2,195 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8693F429E60
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19922429E62
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbhJLHQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:16:31 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48734 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233378AbhJLHQU (ORCPT
+        id S233678AbhJLHQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232500AbhJLHQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:16:20 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2C37C1F4339C;
-        Tue, 12 Oct 2021 08:14:18 +0100 (BST)
-Date:   Tue, 12 Oct 2021 09:14:15 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <p.yadav@ti.com>
-Subject: Re: [PATCH v2 07/14] mtd: spinand: Allow enabling Octal DTR mode in
- the core
-Message-ID: <20211012091415.4fa0ce7c@collabora.com>
-In-Reply-To: <20211011204619.81893-8-a-nandan@ti.com>
-References: <20211011204619.81893-1-a-nandan@ti.com>
-        <20211011204619.81893-8-a-nandan@ti.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Tue, 12 Oct 2021 03:16:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35807C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:14:47 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1maBzk-0002MU-3d; Tue, 12 Oct 2021 09:14:40 +0200
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1maBzi-0007ok-Fh; Tue, 12 Oct 2021 09:14:38 +0200
+Date:   Tue, 12 Oct 2021 09:14:38 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     alexandru.tachici@analog.com
+Cc:     andrew@lunn.ch, davem@davemloft.net, devicetree@vger.kernel.org,
+        hkallweit1@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v3 3/8] net: phy: Add BaseT1 auto-negotiation registers
+Message-ID: <20211012071438.GB938@pengutronix.de>
+References: <20211011142215.9013-1-alexandru.tachici@analog.com>
+ <20211011142215.9013-4-alexandru.tachici@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211011142215.9013-4-alexandru.tachici@analog.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:53:18 up 236 days, 10:17, 115 users,  load average: 0.45, 0.49,
+ 0.41
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 02:16:12 +0530
-Apurva Nandan <a-nandan@ti.com> wrote:
-
-> Enable Octal DTR SPI mode, i.e. 8D-8D-8D mode, if the SPI NAND flash
-> device supports it. Mixed OSPI (1S-1S-8S & 1S-8S-8S), mixed DTR modes
-> (1S-1D-8D), etc. aren't supported yet.
+On Mon, Oct 11, 2021 at 05:22:10PM +0300, alexandru.tachici@analog.com wrote:
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
 > 
-> The method to switch to Octal DTR SPI mode may vary across
-> manufacturers. For example, for Winbond, it is enabled by writing
-> values to the volatile configuration register. So, let the
-> manufacturer's code have their own implementation for switching to
-> Octal DTR SPI mode.
+> Added BASE-T1 AN advertisement register (Registers 7.514, 7.515, and
+> 7.516) and BASE-T1 AN LP Base Page ability register (Registers 7.517,
+> 7.518, and 7.519).
 > 
-> Check for the SPI NAND device's support for Octal DTR mode using
-> spinand flags, and if the op_templates allows 8D-8D-8D, call
-> octal_dtr_enable() manufacturer op. If the SPI controller doesn't
-> supports these modes, the selected op_templates will prevent switching
-> to the Octal DTR mode. And finally update the spinand reg_proto
-> on success.
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
 > ---
->  drivers/mtd/nand/spi/core.c | 46 +++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/spinand.h |  3 +++
->  2 files changed, 49 insertions(+)
+>  include/uapi/linux/mdio.h | 40 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 8e6cf7941a0f..1210946f8447 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -257,6 +257,48 @@ static int spinand_init_quad_enable(struct spinand_device *spinand)
->  			       enable ? CFG_QUAD_ENABLE : 0);
->  }
+> diff --git a/include/uapi/linux/mdio.h b/include/uapi/linux/mdio.h
+> index 8ae82fe3aece..58ac5cdf7eb4 100644
+> --- a/include/uapi/linux/mdio.h
+> +++ b/include/uapi/linux/mdio.h
+> @@ -67,6 +67,14 @@
+>  #define MDIO_AN_10GBT_STAT	33	/* 10GBASE-T auto-negotiation status */
+>  #define MDIO_PMA_10T1L_STAT	2295	/* 10BASE-T1L PMA status */
+>  #define MDIO_PCS_10T1L_CTRL	2278	/* 10BASE-T1L PCS control */
+> +#define MDIO_AN_T1_CTRL		512	/* BASE-T1 AN control */
+> +#define MDIO_AN_T1_STAT		513	/* BASE-T1 AN status */
+> +#define MDIO_AN_T1_ADV_L	514	/* BASE-T1 AN advertisement register [15:0] */
+> +#define MDIO_AN_T1_ADV_M	515	/* BASE-T1 AN advertisement register [31:16] */
+> +#define MDIO_AN_T1_ADV_H	516	/* BASE-T1 AN advertisement register [47:32] */
+> +#define MDIO_AN_T1_LP_L		517	/* BASE-T1 AN LP's base page register [15:0] */
+> +#define MDIO_AN_T1_LP_M		518	/* BASE-T1 AN LP's base page register [31:16] */
+> +#define MDIO_AN_T1_LP_H		519	/* BASE-T1 AN LP's base page register [47:32] */
+
+Please use same wording as in the spec: "BASE-T1 AN LP Base Page ability
+register".
+
+>  /* LASI (Link Alarm Status Interrupt) registers, defined by XENPAK MSA. */
+>  #define MDIO_PMA_LASI_RXCTRL	0x9000	/* RX_ALARM control */
+> @@ -278,6 +286,38 @@
+>  #define MDIO_PCS_10T1L_CTRL_LB		0x4000	/* Enable PCS level loopback mode */
+>  #define MDIO_PCS_10T1L_CTRL_RESET	0x8000	/* PCS reset */
 >  
-> +static bool spinand_op_is_octal_dtr(const struct spi_mem_op *op)
-> +{
-> +	return  op->cmd.buswidth == 8 && op->cmd.dtr &&
-> +		op->addr.buswidth == 8 && op->addr.dtr &&
-> +		op->data.buswidth == 8 && op->data.dtr;
-> +}
+> +/* BASE-T1 auto-negotiation advertisement register [15:0] */
+> +#define MDIO_AN_T1_ADV_L_PAUSE_CAP	ADVERTISE_PAUSE_CAP
+> +#define MDIO_AN_T1_ADV_L_PAUSE_ASYM	ADVERTISE_PAUSE_ASYM
+> +#define MDIO_AN_T1_ADV_L_FORCE_MS	0x1000	/* Force Master/slave Configuration */
+> +#define MDIO_AN_T1_ADV_L_REMOTE_FAULT	ADVERTISE_RFAULT
+> +#define MDIO_AN_T1_ADV_L_ACK		ADVERTISE_LPACK
+> +#define MDIO_AN_T1_ADV_L_NEXT_PAGE_REQ	ADVERTISE_NPAGE
 > +
-> +static int spinand_init_octal_dtr_enable(struct spinand_device *spinand)
+> +/* BASE-T1 auto-negotiation advertisement register [31:16] */
+> +#define MDIO_AN_T1_ADV_M_B10L		0x4000	/* device is compatible with 10BASE-T1L */
+> +#define MDIO_AN_T1_ADV_M_MST		0x0010	/* advertise master preference */
 
-I see no spinand_octal_dtr_disable(), and I feel like we'll want to get
-back to single-STR mode just before rebooting/kexec-ing, or if/when
-we need to execute other maintenance operations. Actually, I think we
-should have something more generic to enter a new mode (see below
-for a detailed explanation).
+Hm.. MDIO_AN_T1_ADV_M_MST is T4 of Link codeword Base Page. The spec says:
+"Transmitted Nonce Field (T[4:0]) is a 5-bit wide field whose lower 4
+bits contains a random or pseudorandom number. A new value shall be
+generated for each entry to the Ability Detect state"
 
-> +{
-> +	struct device *dev = &spinand->spimem->spi->dev;
-> +	int ret;
-> +
-> +	if (!(spinand->flags & SPINAND_HAS_OCTAL_DTR_BIT))
-> +		return 0;
-> +
-> +	if (!(spinand_op_is_octal_dtr(spinand->op_templates.read_cache) &&
-> +	      spinand_op_is_octal_dtr(spinand->op_templates.write_cache) &&
-> +	      spinand_op_is_octal_dtr(spinand->op_templates.update_cache)))
-> +		return 0;
+Should we actually do it?
 
-Ok, so you check the controller-side octal-DTR capability when selecting
-the read/write/update_cache variants, but what if other commands (reg
-access, erase, ...) can't be issued in this mode? I really think all
-the commands you might use should be tested at probe time, not just
-these 3 operations.
+> +/* BASE-T1 auto-negotiation advertisement register [47:32] */
+> +#define MDIO_AN_T1_ADV_H_10L_TX_HI_REQ	0x1000	/* 10BASE-T1L High Level Transmit Request */
+> +#define MDIO_AN_T1_ADV_H_10L_TX_HI	0x2000	/* 10BASE-T1L High Level Transmit Ability */
+> +
+> +/* BASE-T1 AN LP's base page register [15:0] */
+> +#define MDIO_AN_T1_LP_L_PAUSE_CAP	LPA_PAUSE_CAP
+> +#define MDIO_AN_T1_LP_L_PAUSE_ASYM	LPA_PAUSE_ASYM
+> +#define MDIO_AN_T1_LP_L_FORCE_MS	0x1000	/* LP Force Master/slave Configuration */
+> +#define MDIO_AN_T1_LP_L_REMOTE_FAULT	LPA_RFAULT
+> +#define MDIO_AN_T1_LP_L_ACK		LPA_LPACK
+> +#define MDIO_AN_T1_LP_L_NEXT_PAGE_REQ	LPA_NPAGE
+> +
+> +/* BASE-T1 AN LP's base page register [31:16] */
+> +#define MDIO_AN_T1_LP_M_MST		0x0080	/* LP master preference */
 
-> +
-> +	if (!spinand->manufacturer->ops->octal_dtr_enable) {
-> +		dev_dbg(dev,
-> +			"Missing ->octal_dtr_enable(), unable to switch mode\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = spinand->manufacturer->ops->octal_dtr_enable(spinand);
-> +	if (ret) {
-> +		dev_err(dev,
-> +			"Failed to enable Octal DTR SPI mode (err = %d)\n",
-> +			ret);
-> +		return ret;
-> +	}
-> +
-> +	spinand->reg_proto = SPINAND_OCTAL_DTR;
-> +
-> +	dev_dbg(dev,
-> +		"%s SPI NAND switched to Octal DTR SPI (8D-8D-8D) mode\n",
-> +		spinand->manufacturer->name);
-> +	return 0;
-> +}
-> +
->  static int spinand_ecc_enable(struct spinand_device *spinand,
->  			      bool enable)
->  {
-> @@ -1192,6 +1234,10 @@ static int spinand_init_flash(struct spinand_device *spinand)
->  	if (ret)
->  		return ret;
->  
-> +	ret = spinand_init_octal_dtr_enable(spinand);
-> +	if (ret)
-> +		return ret;
-> +
+0x0080 is A2 == 1000BASE-T1 ability. Not master preference (T4).
 
-Why not delaying the 'enter fastest available mode' at the end of this
-initialization? I fear some flashes won't support some of the
-maintenance commands in 8-8-8-DTR, so it's probably safer to enter it
-once you've initialized everything else.
-
->  	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
->  	if (ret)
->  		return ret;
-> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-> index 35816b8cfe81..daa2ac5c3110 100644
-> --- a/include/linux/mtd/spinand.h
-> +++ b/include/linux/mtd/spinand.h
-> @@ -271,6 +271,7 @@ struct spinand_devid {
->   * @init: initialize a SPI NAND device
->   * @adjust_op: modify the ops for any variation in their cmd, address, dummy or
->   *	       data phase by the manufacturer
-> + * @octal_dtr_enable: switch the SPI NAND flash into Octal DTR SPI mode
->   * @cleanup: cleanup a SPI NAND device
+> +#define MDIO_AN_T1_LP_M_B10L		0x4000	/* LP is compatible with 10BASE-T1L */
+> +
+> +/* BASE-T1 AN LP's base page register [47:32] */
+> +#define MDIO_AN_T1_LP_H_10L_TX_HI_REQ	0x1000	/* 10BASE-T1L High Level LP Transmit Request */
+> +#define MDIO_AN_T1_LP_H_10L_TX_HI	0x2000	/* 10BASE-T1L High Level LP Transmit Ability */
+> +
+>  /* EEE Supported/Advertisement/LP Advertisement registers.
 >   *
->   * Each SPI NAND manufacturer driver should implement this interface so that
-> @@ -280,6 +281,7 @@ struct spinand_manufacturer_ops {
->  	int (*init)(struct spinand_device *spinand);
->  	void (*adjust_op)(struct spi_mem_op *op,
->  			  const enum spinand_proto reg_proto);
-> +	int (*octal_dtr_enable)(struct spinand_device *spinand);
+>   * EEE capability Register (3.20), Advertisement (7.60) and
+> -- 
+> 2.25.1
+> 
+> 
 
-I'd probably opt for a more generic name and pass the spinand_protocol
-you want to enter in:
-
-	int (*change_mode)(struct spinand_device *spinand,
-			   enum spinand_protocol proto);
-
-This way we can get back to 1-1-1-STR if we have to, and we can also
-easily extend the logic to support 4-4-4-STR and 8-8-8-STR, which,
-IIRC, are a thing (at least they exist on SPI NORs).
-
->  	void (*cleanup)(struct spinand_device *spinand);
->  };
->  
-> @@ -348,6 +350,7 @@ struct spinand_ecc_info {
->  
->  #define SPINAND_HAS_QE_BIT		BIT(0)
->  #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
-> +#define SPINAND_HAS_OCTAL_DTR_BIT	BIT(2)
->  
->  /**
->   * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
-
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
