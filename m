@@ -2,103 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD74429D60
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8F5429D62
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232721AbhJLFxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 01:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232650AbhJLFxr (ORCPT
+        id S232793AbhJLF4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 01:56:43 -0400
+Received: from h2.fbrelay.privateemail.com ([131.153.2.43]:40127 "EHLO
+        h2.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232752AbhJLF4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 01:53:47 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2DCC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 22:51:46 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id h125so6711051pfe.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 22:51:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kBtpCZbIOWtvahLXRDKKDjKecXESKAiO4U+qtM3fqF4=;
-        b=TnaMy710dXLuP2UJpvYYEci0HGuzrNFBasfSx2IKwcweLvhm7Ijn2ywSfxqmyqB+pP
-         1QN5V1L+gMujcMAp8UkixsGDdqUFYk/ECuh4XIEV25SpY7BcW2YSUxOtLgd5ZBTsf3uY
-         hRmDbHVciUR81IbQvUPR9YFNx5LNWWAoQr41EirdPU2Us/c8VbuBU7Xof9R+ZOMlP/3l
-         tjjZ1mW36NloFY/ns5OkKXzyfaWG0wXP4ClZ3Neg3bYRZBvsULE1WZbaZVDflXXhQvFc
-         ZF/6VxzdRLWUhHgZxgkuDn634tLGA6Ek7AiEFNJ+w1Aemy0Y9wNI4aCjlhgow47qNwoN
-         9UgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kBtpCZbIOWtvahLXRDKKDjKecXESKAiO4U+qtM3fqF4=;
-        b=B77QyPOUu+8wM2f2E3ePkwbR1ceh9tseCG10UbPk/pMXmpyiWzWko6m2vtGk50jpji
-         rEDUPEzztqQ7fjZjcPA1piFUc3OLkgsERr3zNmzhkdJ8VjCxdY+dC5DbEPpff+vwMNVR
-         rcpPa6rKitiIwLQoN8slfDjgaI/vuxZajZ65HXPxctGwJhKUUDOaFn7HoD4XgGxOupeX
-         wdd7DoGsgxYSEStCvmWxCqZ74r9OzbmQIni7YqyNCScIVVq/XpHJZAnTptXqoADE/3Jw
-         ZgEuqDD/+UeZAAYMLtfRydg8fO5GGF3wui1PkEflbVSs8nr3dqFBcmpi22XHk1t/FsEb
-         3IMw==
-X-Gm-Message-State: AOAM532hFZnmy/29ega8qSNWLOltZIyXrtw8UjkZovnkB53FFihXsi+G
-        y7SjNyv4OGG7sOOoLE5rbdVcnw==
-X-Google-Smtp-Source: ABdhPJxmbvSSSRs/QD+1yS5ZcH1WaRkFLvr50doFVs/VKoJlbooNZMTu2jEh9QgF3xf5jI/HzOhtPQ==
-X-Received: by 2002:aa7:870b:0:b0:44b:bcef:32b4 with SMTP id b11-20020aa7870b000000b0044bbcef32b4mr29407229pfo.41.1634017905739;
-        Mon, 11 Oct 2021 22:51:45 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id y142sm9477261pfc.169.2021.10.11.22.51.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 22:51:45 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 11:21:43 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Hector Martin <marcan@marcan.st>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device
- does not exist
-Message-ID: <20211012055143.xmkbvhbnolspgjin@vireshk-i7>
-References: <20211011165707.138157-1-marcan@marcan.st>
- <20211011165707.138157-5-marcan@marcan.st>
- <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
- <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
+        Tue, 12 Oct 2021 01:56:42 -0400
+Received: from MTA-12-3.privateemail.com (mta-12-1.privateemail.com [198.54.122.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id 09777800DF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:54:40 -0400 (EDT)
+Received: from mta-12.privateemail.com (localhost [127.0.0.1])
+        by mta-12.privateemail.com (Postfix) with ESMTP id 6585A18000A7;
+        Tue, 12 Oct 2021 01:54:38 -0400 (EDT)
+Received: from hal-station.. (unknown [10.20.151.235])
+        by mta-12.privateemail.com (Postfix) with ESMTPA id 68C5B18000A0;
+        Tue, 12 Oct 2021 01:54:37 -0400 (EDT)
+From:   Hamza Mahfooz <someguy@effective-light.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Hamza Mahfooz <someguy@effective-light.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH] dma-debug: teach add_dma_entry() about DMA_ATTR_SKIP_CPU_SYNC
+Date:   Tue, 12 Oct 2021 01:54:03 -0400
+Message-Id: <20211012055404.88571-1-someguy@effective-light.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-10-21, 14:34, Hector Martin wrote:
-> The table *is* assigned to a genpd (the memory controller), it's just that
-> that genpd isn't actually a parent of the CPU device. Without the patch you
-> end up with:
-> 
-> [    3.040060] cpu cpu4: Failed to set performance rate of cpu4: 0 (-19)
-> [    3.042881] cpu cpu4: Failed to set required opps: -19
-> [    3.045508] cpufreq: __target_index: Failed to change cpu frequency: -19
+Mapping something twice should be possible as long as,
+DMA_ATTR_SKIP_CPU_SYNC is passed to the strictly speaking second relevant
+mapping operation (that attempts to map the same thing). So, don't issue a
+warning if the specified condition is met in add_dma_entry().
 
-Hmm, Saravana and Sibi were working on a similar problem earlier and decided to
-solve this using devfreq instead. Don't remember the exact series which got
-merged for this, Sibi ?
+Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+---
+ kernel/dma/debug.c   | 24 ++++++++++++++----------
+ kernel/dma/debug.h   | 24 ++++++++++++++++--------
+ kernel/dma/mapping.c | 12 ++++++------
+ 3 files changed, 36 insertions(+), 24 deletions(-)
 
-If this part fails, how do you actually set the performance state of the memory
-controller's genpd ?
-
+diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index 95445bd6eb72..c4128df3de41 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -552,7 +552,7 @@ static void active_cacheline_remove(struct dma_debug_entry *entry)
+  * Wrapper function for adding an entry to the hash.
+  * This function takes care of locking itself.
+  */
+-static void add_dma_entry(struct dma_debug_entry *entry)
++static void add_dma_entry(struct dma_debug_entry *entry, unsigned long attrs)
+ {
+ 	struct hash_bucket *bucket;
+ 	unsigned long flags;
+@@ -566,7 +566,7 @@ static void add_dma_entry(struct dma_debug_entry *entry)
+ 	if (rc == -ENOMEM) {
+ 		pr_err("cacheline tracking ENOMEM, dma-debug disabled\n");
+ 		global_disable = true;
+-	} else if (rc == -EEXIST) {
++	} else if ((rc == -EEXIST) && !(attrs & DMA_ATTR_SKIP_CPU_SYNC)) {
+ 		err_printk(entry->dev, entry,
+ 			"cacheline tracking EEXIST, overlapping mappings aren't supported\n");
+ 	}
+@@ -1191,7 +1191,8 @@ void debug_dma_map_single(struct device *dev, const void *addr,
+ EXPORT_SYMBOL(debug_dma_map_single);
+ 
+ void debug_dma_map_page(struct device *dev, struct page *page, size_t offset,
+-			size_t size, int direction, dma_addr_t dma_addr)
++			size_t size, int direction, dma_addr_t dma_addr,
++			unsigned long attrs)
+ {
+ 	struct dma_debug_entry *entry;
+ 
+@@ -1222,7 +1223,7 @@ void debug_dma_map_page(struct device *dev, struct page *page, size_t offset,
+ 		check_for_illegal_area(dev, addr, size);
+ 	}
+ 
+-	add_dma_entry(entry);
++	add_dma_entry(entry, attrs);
+ }
+ 
+ void debug_dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
+@@ -1280,7 +1281,8 @@ void debug_dma_unmap_page(struct device *dev, dma_addr_t addr,
+ }
+ 
+ void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
+-		      int nents, int mapped_ents, int direction)
++		      int nents, int mapped_ents, int direction,
++		      unsigned long attrs)
+ {
+ 	struct dma_debug_entry *entry;
+ 	struct scatterlist *s;
+@@ -1312,7 +1314,7 @@ void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 
+ 		check_sg_segment(dev, s);
+ 
+-		add_dma_entry(entry);
++		add_dma_entry(entry, attrs);
+ 	}
+ }
+ 
+@@ -1368,7 +1370,8 @@ void debug_dma_unmap_sg(struct device *dev, struct scatterlist *sglist,
+ }
+ 
+ void debug_dma_alloc_coherent(struct device *dev, size_t size,
+-			      dma_addr_t dma_addr, void *virt)
++			      dma_addr_t dma_addr, void *virt,
++			      unsigned long attrs)
+ {
+ 	struct dma_debug_entry *entry;
+ 
+@@ -1398,7 +1401,7 @@ void debug_dma_alloc_coherent(struct device *dev, size_t size,
+ 	else
+ 		entry->pfn = page_to_pfn(virt_to_page(virt));
+ 
+-	add_dma_entry(entry);
++	add_dma_entry(entry, attrs);
+ }
+ 
+ void debug_dma_free_coherent(struct device *dev, size_t size,
+@@ -1429,7 +1432,8 @@ void debug_dma_free_coherent(struct device *dev, size_t size,
+ }
+ 
+ void debug_dma_map_resource(struct device *dev, phys_addr_t addr, size_t size,
+-			    int direction, dma_addr_t dma_addr)
++			    int direction, dma_addr_t dma_addr,
++			    unsigned long attrs)
+ {
+ 	struct dma_debug_entry *entry;
+ 
+@@ -1449,7 +1453,7 @@ void debug_dma_map_resource(struct device *dev, phys_addr_t addr, size_t size,
+ 	entry->direction	= direction;
+ 	entry->map_err_type	= MAP_ERR_NOT_CHECKED;
+ 
+-	add_dma_entry(entry);
++	add_dma_entry(entry, attrs);
+ }
+ 
+ void debug_dma_unmap_resource(struct device *dev, dma_addr_t dma_addr,
+diff --git a/kernel/dma/debug.h b/kernel/dma/debug.h
+index 83643b3010b2..f525197d3cae 100644
+--- a/kernel/dma/debug.h
++++ b/kernel/dma/debug.h
+@@ -11,26 +11,30 @@
+ #ifdef CONFIG_DMA_API_DEBUG
+ extern void debug_dma_map_page(struct device *dev, struct page *page,
+ 			       size_t offset, size_t size,
+-			       int direction, dma_addr_t dma_addr);
++			       int direction, dma_addr_t dma_addr,
++			       unsigned long attrs);
+ 
+ extern void debug_dma_unmap_page(struct device *dev, dma_addr_t addr,
+ 				 size_t size, int direction);
+ 
+ extern void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
+-			     int nents, int mapped_ents, int direction);
++			     int nents, int mapped_ents, int direction,
++			     unsigned long attrs);
+ 
+ extern void debug_dma_unmap_sg(struct device *dev, struct scatterlist *sglist,
+ 			       int nelems, int dir);
+ 
+ extern void debug_dma_alloc_coherent(struct device *dev, size_t size,
+-				     dma_addr_t dma_addr, void *virt);
++				     dma_addr_t dma_addr, void *virt,
++				     unsigned long attrs);
+ 
+ extern void debug_dma_free_coherent(struct device *dev, size_t size,
+ 				    void *virt, dma_addr_t addr);
+ 
+ extern void debug_dma_map_resource(struct device *dev, phys_addr_t addr,
+ 				   size_t size, int direction,
+-				   dma_addr_t dma_addr);
++				   dma_addr_t dma_addr,
++				   unsigned long attrs);
+ 
+ extern void debug_dma_unmap_resource(struct device *dev, dma_addr_t dma_addr,
+ 				     size_t size, int direction);
+@@ -53,7 +57,8 @@ extern void debug_dma_sync_sg_for_device(struct device *dev,
+ #else /* CONFIG_DMA_API_DEBUG */
+ static inline void debug_dma_map_page(struct device *dev, struct page *page,
+ 				      size_t offset, size_t size,
+-				      int direction, dma_addr_t dma_addr)
++				      int direction, dma_addr_t dma_addr,
++				      unsigned long attrs)
+ {
+ }
+ 
+@@ -63,7 +68,8 @@ static inline void debug_dma_unmap_page(struct device *dev, dma_addr_t addr,
+ }
+ 
+ static inline void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
+-				    int nents, int mapped_ents, int direction)
++				    int nents, int mapped_ents, int direction,
++				    unsigned long attrs)
+ {
+ }
+ 
+@@ -74,7 +80,8 @@ static inline void debug_dma_unmap_sg(struct device *dev,
+ }
+ 
+ static inline void debug_dma_alloc_coherent(struct device *dev, size_t size,
+-					    dma_addr_t dma_addr, void *virt)
++					    dma_addr_t dma_addr, void *virt,
++					    unsigned long attrs)
+ {
+ }
+ 
+@@ -85,7 +92,8 @@ static inline void debug_dma_free_coherent(struct device *dev, size_t size,
+ 
+ static inline void debug_dma_map_resource(struct device *dev, phys_addr_t addr,
+ 					  size_t size, int direction,
+-					  dma_addr_t dma_addr)
++					  dma_addr_t dma_addr,
++					  unsigned long attrs)
+ {
+ }
+ 
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index 06fec5547e7c..17c6d217f8fb 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -156,7 +156,7 @@ dma_addr_t dma_map_page_attrs(struct device *dev, struct page *page,
+ 		addr = dma_direct_map_page(dev, page, offset, size, dir, attrs);
+ 	else
+ 		addr = ops->map_page(dev, page, offset, size, dir, attrs);
+-	debug_dma_map_page(dev, page, offset, size, dir, addr);
++	debug_dma_map_page(dev, page, offset, size, dir, addr, attrs);
+ 
+ 	return addr;
+ }
+@@ -195,7 +195,7 @@ static int __dma_map_sg_attrs(struct device *dev, struct scatterlist *sg,
+ 		ents = ops->map_sg(dev, sg, nents, dir, attrs);
+ 
+ 	if (ents > 0)
+-		debug_dma_map_sg(dev, sg, nents, ents, dir);
++		debug_dma_map_sg(dev, sg, nents, ents, dir, attrs);
+ 	else if (WARN_ON_ONCE(ents != -EINVAL && ents != -ENOMEM &&
+ 			      ents != -EIO))
+ 		return -EIO;
+@@ -305,7 +305,7 @@ dma_addr_t dma_map_resource(struct device *dev, phys_addr_t phys_addr,
+ 	else if (ops->map_resource)
+ 		addr = ops->map_resource(dev, phys_addr, size, dir, attrs);
+ 
+-	debug_dma_map_resource(dev, phys_addr, size, dir, addr);
++	debug_dma_map_resource(dev, phys_addr, size, dir, addr, attrs);
+ 	return addr;
+ }
+ EXPORT_SYMBOL(dma_map_resource);
+@@ -510,7 +510,7 @@ void *dma_alloc_attrs(struct device *dev, size_t size, dma_addr_t *dma_handle,
+ 	else
+ 		return NULL;
+ 
+-	debug_dma_alloc_coherent(dev, size, *dma_handle, cpu_addr);
++	debug_dma_alloc_coherent(dev, size, *dma_handle, cpu_addr, attrs);
+ 	return cpu_addr;
+ }
+ EXPORT_SYMBOL(dma_alloc_attrs);
+@@ -566,7 +566,7 @@ struct page *dma_alloc_pages(struct device *dev, size_t size,
+ 	struct page *page = __dma_alloc_pages(dev, size, dma_handle, dir, gfp);
+ 
+ 	if (page)
+-		debug_dma_map_page(dev, page, 0, size, dir, *dma_handle);
++		debug_dma_map_page(dev, page, 0, size, dir, *dma_handle, 0);
+ 	return page;
+ }
+ EXPORT_SYMBOL_GPL(dma_alloc_pages);
+@@ -644,7 +644,7 @@ struct sg_table *dma_alloc_noncontiguous(struct device *dev, size_t size,
+ 
+ 	if (sgt) {
+ 		sgt->nents = 1;
+-		debug_dma_map_sg(dev, sgt->sgl, sgt->orig_nents, 1, dir);
++		debug_dma_map_sg(dev, sgt->sgl, sgt->orig_nents, 1, dir, attrs);
+ 	}
+ 	return sgt;
+ }
 -- 
-viresh
+2.33.0
+
