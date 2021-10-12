@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FC642ADBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB0042ADCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234713AbhJLUZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56944 "EHLO
+        id S234383AbhJLUaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234460AbhJLUZF (ORCPT
+        with ESMTP id S231902AbhJLUaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:25:05 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB7AC061570;
-        Tue, 12 Oct 2021 13:23:03 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 70101867;
-        Tue, 12 Oct 2021 20:23:03 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 70101867
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1634070183; bh=PhDRRDsbPgnqz354Ak81v6Z2JVw2XYiMO3GaAtKamAA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ZUC13kaJI2qTg6EA4kJjdIOd5hC1SwCjo2joucD4AVP6VuqOb5/7OfvzX286+onpe
-         aJpnILxlFZl2KcfOndpF9C5Ggkyc4Lb502D8FTlk++YIMUrS6hnJYClT0Fw9W6mMcc
-         KfP/hTUDBFciTMMDtVYTd+kjm8ppP6rKYAxNYPkvLnM3RS1j/vgo3zDj+83ISHZqv5
-         A0pGYS89nCb46qNU/7MObv4pRa8p1L4VQoesQqzYkMWy/+XHeDMLjiBBY9KHUqFOYc
-         sN4xGavwjecHL6vYFO/weYCaFvIXWwdQVXPowxvVqq1G1x+bkm4/+Txy/S2qNGhydd
-         Kw32xgx78XZXw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Joe Perches <joe@perches.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] scripts: kernel-doc: Ignore __alloc_size() attribute
-In-Reply-To: <20211011180650.3603988-1-keescook@chromium.org>
-References: <20211011180650.3603988-1-keescook@chromium.org>
-Date:   Tue, 12 Oct 2021 14:23:02 -0600
-Message-ID: <87sfx6t2l5.fsf@meer.lwn.net>
+        Tue, 12 Oct 2021 16:30:11 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718E8C061570;
+        Tue, 12 Oct 2021 13:28:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=5IE6qAD4wcr48hJHMkptfnkPZIoHalUtFis0kheqFLg=; b=orpSKoGhm84/S/Gbv6Lc1eP+35
+        6wpajkgi4Gbx2ySUWgt7lJjUUgrbWdfHVjOplGAZ+oz+2jhB6bZ4PyGnYozVLJgCw65pOgwX0ZC6W
+        5PHYPimqT1ztyyw2OOmC1ypeVi/v97uxprdVYJPSaCgYWZ096pyIjGKZl0gA0ME6wfh0nef5jNqet
+        d7PKimwWTymmRrq7isUEKsaKeRdjE1m3FgqDCSSoRM2ANeKNqZv5eYn6RRvKsrVyKM6Uh7uYObcXY
+        pPsX/r92tH0vaCCtjej8Vuojd5FFSg4F/ZU+mQhzlCisrDHEz+ic3tQcL6aL+k8ZqRIP0if+JV5Le
+        jyx4megw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1maONZ-00DvFt-KK; Tue, 12 Oct 2021 20:28:05 +0000
+Subject: Re: linux-next: Tree for Oct 12 (drivers/iio/adc/imx8qxp-adc.c)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Cai Huoqing <caihuoqing@baidu.com>
+References: <20211012204606.1dd72037@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <27c3f066-1926-db85-d183-d129a2ab43e8@infradead.org>
+Date:   Tue, 12 Oct 2021 13:28:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20211012204606.1dd72037@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+On 10/12/21 2:46 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> News: there will be no linux-next release on Thursday.
+> 
+> Changes since 20211011:
+> 
 
-> Fixes "Compiler Attributes: add __alloc_size() for better bounds checking"
-> so that the __alloc_size() macro is ignored for function prototypes when
-> generating kerndoc. Avoids warnings like:
->
-> ./include/linux/slab.h:662: warning: Function parameter or member '1' not described in '__alloc_size'
-> ./include/linux/slab.h:662: warning: Function parameter or member '2' not described in '__alloc_size'
-> ./include/linux/slab.h:662: warning: expecting prototype for kcalloc().  Prototype was for __alloc_size() instead
->
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  scripts/kernel-doc | 1 +
->  1 file changed, 1 insertion(+)
+on x86_64:
 
-Applied, thanks.
+../drivers/iio/adc/imx8qxp-adc.c:433:12: error: ‘imx8qxp_adc_runtime_resume’ defined but not used [-Werror=unused-function]
+  static int imx8qxp_adc_runtime_resume(struct device *dev)
+             ^~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/iio/adc/imx8qxp-adc.c:419:12: error: ‘imx8qxp_adc_runtime_suspend’ defined but not used [-Werror=unused-function]
+  static int imx8qxp_adc_runtime_suspend(struct device *dev)
+             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-jon
+# CONFIG_SUSPEND is not set
+# CONFIG_HIBERNATION is not set
+# CONFIG_PM is not set
+
+
+-- 
+~Randy
