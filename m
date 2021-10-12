@@ -2,139 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3195F42AEF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DC142AF01
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235423AbhJLVcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 17:32:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:48633 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235060AbhJLVcs (ORCPT
+        id S235552AbhJLVeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 17:34:31 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52754 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233650AbhJLVea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 17:32:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634074245;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 12 Oct 2021 17:34:30 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CE2CC1FF6B;
+        Tue, 12 Oct 2021 21:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634074346; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eq+RzJgPHGQ1lh7AV+pnk4SW99n38qW+iDQrUerrfKQ=;
-        b=S1pGqFAtZflV7/4+/KOYFjNtM4GsgLjuwrKSu3HlmI2O0Tdow9hi/sRxk83gb6UMEM7O1P
-        WIFfwfgDJLdrIsgmbPPytJXrJBTbIQsnNZzNAT2xGu8JI28+yP9hkdtsYaN3krU8sVm/15
-        ZqMRay0JPNxMs8Qwi3lnsQjkOd4Dfpo=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-15-tuoU8aiMMJWE-yErkHhpAA-1; Tue, 12 Oct 2021 17:30:44 -0400
-X-MC-Unique: tuoU8aiMMJWE-yErkHhpAA-1
-Received: by mail-wr1-f71.google.com with SMTP id r16-20020adfbb10000000b00160958ed8acso326887wrg.16
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 14:30:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eq+RzJgPHGQ1lh7AV+pnk4SW99n38qW+iDQrUerrfKQ=;
-        b=bXepiDW5cPFHLQOzplrSiWbuWtZUiT0RS2lR31eSgfJBj1t8xJEkh65R7SP7P11+X+
-         YV/YlPtzZEwYlmcUeWVzu78wyLXaMFaDT51hHYXf2XORaf1asuUCcXgkGJ6jTG2DOCnh
-         6Mg/9YDlDrjgzQfUVpiNKF288Tpfpwf6XVlELelUkuXKcuIasqKqkRATDrJ252Eyx6Kw
-         8SUQ44eVPprGsbYpgGoBepo7LODYug8SZx8DOv3UqFhMPIclk5g1NYEox+hyy4v+h5fm
-         JBhp9++ptprUfmMlt0ky4zky9lT+1SsXc3oahXJh/P/waUrNrcr8iROl3EgZXT5DQywj
-         nAHw==
-X-Gm-Message-State: AOAM532LIwppmRijq7IPgAg3JE9N6cJOOyzdycSdETL9li7lJYiA/wEu
-        zv0LAztpq18XuebjHUhMXKjotE/9ZAP77scqMzqkmQLle6sP+M3Dnzy5R3SpXGMeXvltLSVNJS0
-        ue4Gf8nIvQM8w/c9WsXz5zwZD
-X-Received: by 2002:a1c:f216:: with SMTP id s22mr8596828wmc.27.1634074243374;
-        Tue, 12 Oct 2021 14:30:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwDiipoOYS8wHel/0NefRnO1CIzQW9KYRq/ON4whSk4X4kD3O7SLlEE9ljv12IUks5+RmoxVw==
-X-Received: by 2002:a1c:f216:: with SMTP id s22mr8596816wmc.27.1634074243191;
-        Tue, 12 Oct 2021 14:30:43 -0700 (PDT)
-Received: from redhat.com ([2.55.159.57])
-        by smtp.gmail.com with ESMTPSA id k17sm3951985wmj.0.2021.10.12.14.30.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 14:30:42 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 17:30:36 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v5 16/16] x86/tdx: Add cmdline option to force use of
- ioremap_host_shared
-Message-ID: <20211012171846-mutt-send-email-mst@kernel.org>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-17-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009070132-mutt-send-email-mst@kernel.org>
- <8c906de6-5efa-b87a-c800-6f07b98339d0@linux.intel.com>
- <20211011075945-mutt-send-email-mst@kernel.org>
- <9d0ac556-6a06-0f2e-c4ff-0c3ce742a382@linux.intel.com>
- <20211011142330-mutt-send-email-mst@kernel.org>
- <4fe8d60a-2522-f111-995c-dcbefd0d5e31@linux.intel.com>
- <20211012165705-mutt-send-email-mst@kernel.org>
- <c09c961d-f433-4a68-0b38-208ffe8b36c7@linux.intel.com>
+        bh=g7HK2Kf8c4mJukZ0Mo4rZUFzKfAvYTuMEdKV03E7+Ik=;
+        b=FpSMq6bMGmBtf+GXUgoy6QUKoqjS1iGl/eQaDcISbQN+vLEzbaRikq+rrgGfXAgkENuWNX
+        Dcvkx6oUYx9HNZqBEH7kuaqzeciKuFaOm+4Zsu3R2zfthgtWdfdUs1tvqTUyxUByoGZvsG
+        kngIxSaiHdr0h5zCvzrVVfnmhoaEf8M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634074346;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g7HK2Kf8c4mJukZ0Mo4rZUFzKfAvYTuMEdKV03E7+Ik=;
+        b=Ge3Os5wqd0rcf6HlPW9CMrCK6lYZBkjzDchFjPg2nqQ83OzMXRU5UZJJ+t2Ug47uFb3LXV
+        Sr/bd6t3aQGi6uCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 81E3913C8A;
+        Tue, 12 Oct 2021 21:32:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 3n1HHur+ZWFqNQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 12 Oct 2021 21:32:26 +0000
+Message-ID: <9db5d16a-2999-07a4-c49d-7417601f834f@suse.cz>
+Date:   Tue, 12 Oct 2021 23:32:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c09c961d-f433-4a68-0b38-208ffe8b36c7@linux.intel.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
+Content-Language: en-US
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     Rustam Kovhaev <rkovhaev@gmail.com>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, gregkh@linuxfoundation.org,
+        Al Viro <viro@zeniv.linux.org.uk>, dvyukov@google.com
+References: <20210929212347.1139666-1-rkovhaev@gmail.com>
+ <20210930044202.GP2361455@dread.disaster.area>
+ <17f537b3-e2eb-5d0a-1465-20f3d3c960e2@suse.cz> <YVYGcLbu/aDKXkag@nuc10>
+ <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz> <YVZXF3mbaW+Pe+Ji@nuc10>
+ <1e0df91-556e-cee5-76f7-285d28fe31@google.com>
+ <20211012204320.GP24307@magnolia> <20211012204345.GQ24307@magnolia>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211012204345.GQ24307@magnolia>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 02:18:01PM -0700, Andi Kleen wrote:
+On 10/12/2021 10:43 PM, Darrick J. Wong wrote:
+> On Tue, Oct 12, 2021 at 01:43:20PM -0700, Darrick J. Wong wrote:
+>> On Sun, Oct 03, 2021 at 06:07:20PM -0700, David Rientjes wrote:
+>>> On Thu, 30 Sep 2021, Rustam Kovhaev wrote:
+>>>
+>>>>>>> I think it's fair if something like XFS (not meant for tiny systems AFAIK?)
+>>>>>>> excludes SLOB (meant for tiny systems). Clearly nobody tried to use these
+>>>>>>> two together last 5 years anyway.
+>>>>>>
+>>>>>> +1 for adding Kconfig option, it seems like some things are not meant to
+>>>>>> be together.
+>>>>>
+>>>>> But if we patch SLOB, we won't need it.
+>>>>
+>>>> OK, so we consider XFS on SLOB a supported configuration that might be
+>>>> used and should be tested.
+>>>> I'll look into maybe adding a config with CONFIG_SLOB and CONFIG_XFS_FS
+>>>> to syzbot.
+>>>>
+>>>> It seems that we need to patch SLOB anyway, because any other code can
+>>>> hit the very same issue.
+>>>>
+>>>
+>>> It's probably best to introduce both (SLOB fix and Kconfig change for 
+>>> XFS), at least in the interim because the combo of XFS and SLOB could be 
+>>> broken in other ways.  If syzbot doesn't complain with a patched kernel to 
+>>> allow SLOB to be used with XFS, then we could potentially allow them to be 
+>>> used together.
+>>>
+>>> (I'm not sure that this freeing issue is the *only* thing that is broken, 
+>>> nor that we have sufficient information to make that determination right 
+>>> now..)
+>>
+>> I audited the entire xfs (kernel) codebase and didn't find any other
+>> usage errors.  Thanks for the patch; I'll apply it to for-next.
+
+Which patch, the one that started this thread and uses kmem_cache_free() instead
+of kfree()? I thought we said it's not the best way?
+
+> Also, the obligatory
 > 
-> > Interesting. VT-d tradeoffs ... what are they?
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 > 
-> The connection to the device is not encrypted and also not authenticated.
+> --D
 > 
-> This is different that even talking to the (untrusted) host through shared
-> memory where you at least still have a common key.
-
-Well it's different sure enough but how is talking to host less secure?
-Cold boot attacks and such?
-
-> > Allowing hypervisor to write into BIOS looks like it will
-> > trivially lead to code execution, won't it?
-> 
-> This is not about BIOS code executing. While the guest firmware runs it is
-> protected of course. This is for BIOS structures like ACPI tables that are
-> mapped by Linux. While AML can run byte code it can normally not write to
-> arbitrary memory.
-
-I thought you basically create an OperationRegion of SystemMemory type,
-and off you go. Maybe the OSPM in Linux is clever and protects
-some memory, I wouldn't know.
-
-> The risk is more that all the Linux code dealing with this hasn't been
-> hardened to deal with malicious input.
-> 
-> -Andi
-
-
--- 
-MST
+>>
+>> --D
 
