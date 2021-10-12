@@ -2,121 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC82F42A250
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DB942A24C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236064AbhJLKjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:39:13 -0400
-Received: from mail-bn8nam11on2050.outbound.protection.outlook.com ([40.107.236.50]:35425
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236056AbhJLKjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:39:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TSczLJUgSnQ6HjFy/XzfNZid+5AbKBhSdrrngrcxiDLe0CK9pUPIMiPlS6aq1hwNfmNedlCM2JUOesVRgYgKqc/RM3k7PpO21cXPHLOOsfjQCz16qgv13aYNeARIEK5PmT9xCGH2O8NVzRSlMDT0BjY0ZxVUTFSE21OJrKnhipIlD14W/1bprSx4xuHssyp+aRK4+KVq0mZRPNn4jYnn5NEch/6AkwT0rkDl81SykZvTuHnNJLJeChi9vaKBtSsSq/HJW0mFhhbHOX6gscXp2Dyn06lRAeqe4S/UUp638lfZ1Dgb/jNGysgCa6RheS2ZFzqY2vgBOuYfI1cvzRx8aA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JPMxurB2NI5SzJfr0gq8/11S3hLEoYL20o8ByRd5AU8=;
- b=AtTmvvMwwxUqaHGgvdTfXtyBPkWXrGWIuWTvkHvl/f4I19pJ8Y1fwJgp3R1+Hi/hk3af9Msasn/exQbt1VJ3NqtsbB+ADp8kEHRl9ECog84CphEpL7AYmsfwQqF+s5qzZ+joiG9ba0q5T4jqUIoyPfoPbZxVoTA7VlfwA2ybZZ311q4F3mGvdAUjznoBgQ/Vdv476RqqzKBmUSkUCzZRxzxaM4ekPDBPV2JS6EHgk5CJhoAP1EuACN0N4+qnnGW+29loEIXtQRSpwMX4TWQBtvzAG7uVr+BtwfHFnwGlRst7wIkkZLFK/RrE36nvYk2yhzNJQo21HAU0WmBsBCK81Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JPMxurB2NI5SzJfr0gq8/11S3hLEoYL20o8ByRd5AU8=;
- b=G7nWVyH/BRt1f1lqSQUGyAdFB0/w0/NPnYuA97yliGX2RznMhcByTF72nBUZat1wT0FcWj0sHdi6XPzs9ulFWhY1de+ERPjEeJ93RMvsOSu9Ddlil9pKCe1sLfbOCzjNgYz3PUnZu8QWoRaYRov15NfPPkx2zzzW33BCy5kzs8o=
-Received: from DM5PR15CA0063.namprd15.prod.outlook.com (2603:10b6:3:ae::25) by
- BY5PR12MB4965.namprd12.prod.outlook.com (2603:10b6:a03:1c4::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Tue, 12 Oct
- 2021 10:37:06 +0000
-Received: from DM6NAM11FT054.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:ae:cafe::2c) by DM5PR15CA0063.outlook.office365.com
- (2603:10b6:3:ae::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend
- Transport; Tue, 12 Oct 2021 10:37:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DM6NAM11FT054.mail.protection.outlook.com (10.13.173.95) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4587.18 via Frontend Transport; Tue, 12 Oct 2021 10:37:06 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 12 Oct
- 2021 05:37:05 -0500
-Received: from chrome.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2308.8 via Frontend
- Transport; Tue, 12 Oct 2021 05:37:02 -0500
-From:   Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-To:     <sboyd@kernel.org>, <linux-clk@vger.kernel.org>
-CC:     <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-        <Sunil-kumar.Dommati@amd.com>, <Alexander.Deucher@amd.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "open list" <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 5/5] clk: x86: Fix clk_gate_flags for RV_CLK_GATE
-Date:   Tue, 12 Oct 2021 16:06:12 +0530
-Message-ID: <20211012103612.101859-6-AjitKumar.Pandey@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211012103612.101859-1-AjitKumar.Pandey@amd.com>
-References: <20211012103612.101859-1-AjitKumar.Pandey@amd.com>
+        id S236086AbhJLKjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236056AbhJLKi6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:38:58 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35AC6C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 03:36:57 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id e3so31865504wrc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 03:36:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=u8KoHqciBlPRfZiEEzMpxTtlARh9EB21VEjR+8BCYuM=;
+        b=VstF64oG+VLBoC6+RF7RZrMmETzmIQsSxwIrM4iuyJZNbsj7SD0CiGmCCdBIvYMrCn
+         x46f0WdDiuhe4cDCG9+Zhp0AS9Deyf/Fn5cTjdNYZFPE3n4OGlkNQWSqkwuN8i0duDx2
+         NpdSOrjavvb/J2Z+jkKzNf9ur5FPHC6zUJ1qfXdH+ahRDqIsYiUPd1UWK59JpzFLx3go
+         92dcYyXso/JVC2CbQe6Iv4ueVyx1PWtf/aWC5qu8i11Djuse6kzZJwuMwv1QYlZ57Ldt
+         kDrI6lVRtKpRmvDtSnx1y3CYj43ZM2Qzl212+Y+wroMfAYA6k5d/KICMaMwweN/6Falz
+         mbEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=u8KoHqciBlPRfZiEEzMpxTtlARh9EB21VEjR+8BCYuM=;
+        b=H3AUvnaIMGnHNWKYO9Xl8dYF5Inv0UWKNFzl9lS7m/ywCnu2/VQZNP01iSHjfvSVfj
+         Q0tz6VLHs0r4/7QvUe+kjo6iHzSVNh7lRzybYcmRElhOsQ5U8NVPFpxKBS7jNZV91EDf
+         w9fzLFgMtIgnFP3J1TWDyrIZp4JgK1C7O5b1SGNCb5WTeAoBO2guaiZk6+ZHKLP7XKDc
+         ybnPTlI/V+tXl4I6XewJxDN/Vqa3Kl/BSQixJKy7EeBoLsjgjoK/n5qEt8eY5qvSwimk
+         RDQlTJPksPmauBv69IxJYg/mbal9HMgiSwJhHrrJVYoGHLUXZi+llTD1vPxxLs+r76F4
+         BZKw==
+X-Gm-Message-State: AOAM533cvUcLqw4r2Sl1Ouf/ft7zPipdXMzrR65yY1HGk92TJenCwhe/
+        0mbm+7U+Yf4iDL3t3Rr49XQ=
+X-Google-Smtp-Source: ABdhPJwkI6gxGiZNTp8TKZdQ1IFiaoSipIChH3SuBqVR8DUSUZjP7GyglXTl2Fw1/yRQWS923c81KQ==
+X-Received: by 2002:a05:600c:35c2:: with SMTP id r2mr4727738wmq.26.1634035015752;
+        Tue, 12 Oct 2021 03:36:55 -0700 (PDT)
+Received: from [192.168.1.21] ([195.245.16.219])
+        by smtp.gmail.com with ESMTPSA id v185sm2152672wme.35.2021.10.12.03.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 03:36:55 -0700 (PDT)
+Message-ID: <7f7acc8986aca1c895de732297b2995d05ec23e7.camel@gmail.com>
+Subject: Re: [PATCH v2 8/8] ep93xx: clock: convert in-place to COMMON_CLK
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Mike Rapoport <rppt@kernel.org>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 12 Oct 2021 12:36:54 +0200
+In-Reply-To: <YWVixgDQtJ8EGbwo@sirena.org.uk>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+         <20210726140001.24820-1-nikita.shubin@maquefel.me>
+         <20210726140001.24820-9-nikita.shubin@maquefel.me>
+         <ed557882a9530f2fd6245e34657be62399df76bc.camel@gmail.com>
+         <CAK8P3a0Y4uwX4B10d5CR3WjZ1qXAqhKJGJ0EhUEF60uB1q3H9A@mail.gmail.com>
+         <e50f2da7af1fa6f02fd413081fa5762837b86895.camel@gmail.com>
+         <CAK8P3a3jAdYQerE03O5s2_PBUqt5QPCPSQxxs54E7-V=0HVBXA@mail.gmail.com>
+         <YWVixgDQtJ8EGbwo@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 78de4af4-43d9-4221-5191-08d98d6c3cb9
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4965:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB4965BCFA2EEA916ECD95BA2B82B69@BY5PR12MB4965.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /A66F+tYcwsoJ1pnMaPnyeOOa/Nl5FhYr5Wbe2+9tL+KNRavHcK1eL+T0r41kYFZhmW0QQmd7bSqDrd/XUL5vyqOo5IJQizC/i4+6pTYs5U7Sk+wpsuvfQNgfm+2TVg0r271dGStBt3hD0JFUWVKc1HfAVl4RruPtnY30t1S+AXnHshDk43+9Uo6Qnlgww3Fm7HcyBo3X+Slsgf6BMKJBMRSfUOb2JRpjbMdMlV5j4w+fS8VPeyBg002AJuXSlpGnqe64cKWypDr+7ul7iH3g0rXEoeIbu62JPSceYCcIEVowR2L0Grn02yVS0pr0m/1buzmwUZM9Ct9Fu109nKftdEIVxENIC8ldbPxAEUwBbXCwDCMLd9AszMxbQFhAWk72qnh2a0L0LsHcLBy/jyiiTcece7Duaa1wO/GPv+CqnxbgLum42r0NJY2D7i1eL6TbysRtF3l3Qg+mr/MCeZfXgozhhl3hjdO0qLOQlmJjoQvR36Zf0TvvcIaG+HpNhDaviLuUi4uDTiVGPXWCdcdxS6EdlxmjTIXdOg8IvLxGdZPhxafLoMbIEjnVJvfIp68GhoelgDvWANEUF5qdC8PpvTpjP0Rg66/LxTUr+eYZXinVJ2Bru9qVBsuvEifdkPOw3chTVdkV/WB1Ab7nd889G9/0+rbvPacmeo3Y54OI75ccmtPj3gEDt9WbyszsmUXRbnJClgu083B4jB/on5x/VxN43akUzcbcpwY4uBTnaM=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(47076005)(2616005)(83380400001)(36860700001)(186003)(8676002)(1076003)(7696005)(8936002)(26005)(86362001)(82310400003)(6666004)(4744005)(426003)(36756003)(5660300002)(336012)(508600001)(110136005)(54906003)(70586007)(70206006)(81166007)(356005)(4326008)(316002)(2906002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2021 10:37:06.3588
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78de4af4-43d9-4221-5191-08d98d6c3cb9
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT054.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4965
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In AMD's SoC we have to clear bit for disabling 48MHz oscillator
-clock gate. Remove CLK_GATE_SET_TO_DISABLE flag for proper enable
-and disable of 48MHz clock.
+Hello Mark,
 
-Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
----
- drivers/clk/x86/clk-fch.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, 2021-10-12 at 11:26 +0100, Mark Brown wrote:
+> On Tue, Oct 12, 2021 at 11:05:08AM +0200, Arnd Bergmann wrote:
+> > On Tue, Oct 12, 2021 at 10:37 AM Alexander Sverdlin
+> 
+> > > There is "ASoC: cirrus: i2s: Prepare clock before using it" still
+> > > unmerged as well with an ACK from Mark Brown, I did remind him
+> > > about it again this morning, but I can resend it to you if you wish.
+> 
+> > (adding Mark to cc)
+> 
+> > Let's wait for him to reply then. I don't think it matters much either
+> > way, since the series is not doing an atomic conversion if the other
+> > drivers are merged through different trees, and Mark has given
+> > an Ack for the driver.
+> 
+> You're going to have to tell me what's going on here:
+> 
+>    https://lore.kernel.org/all/20210914103212.GB4434@sirena.org.uk/
 
-diff --git a/drivers/clk/x86/clk-fch.c b/drivers/clk/x86/clk-fch.c
-index 19a5c8cf1b3f..517061fc771c 100644
---- a/drivers/clk/x86/clk-fch.c
-+++ b/drivers/clk/x86/clk-fch.c
-@@ -66,7 +66,7 @@ static int fch_clk_probe(struct platform_device *pdev)
- 
- 		hws[CLK_GATE_FIXED] = clk_hw_register_gate(NULL, "oscout1",
- 			"clk48MHz", 0, fch_data->base + MISCCLKCNTL1,
--			OSCCLKENB, CLK_GATE_SET_TO_DISABLE, NULL);
-+			OSCCLKENB, 0, NULL);
- 
- 		devm_clk_hw_register_clkdev(&pdev->dev, hws[CLK_GATE_FIXED],
- 					    fch_data->name, NULL);
+here you were asking about "spi: spi-ep93xx: Prepare clock before using it"
+which you've already applied (as 7c72dc56a631).
+
+Nevertheless, there are no dependencies in the patches 1..7, they are all
+pre-requsites for the last patch 8/8.
+
 -- 
-2.25.1
+Alexander Sverdlin.
+
 
