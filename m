@@ -2,284 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36AA429F32
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62424429FE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234823AbhJLIDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:03:22 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:50760 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234566AbhJLICD (ORCPT
+        id S235048AbhJLIcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:32:46 -0400
+Received: from service.sunplusit.com ([211.20.105.19]:45471 "EHLO
+        itmg.sunplusit.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234829AbhJLIcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:02:03 -0400
-Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 17E01F1;
-        Tue, 12 Oct 2021 10:00:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1634025600;
-        bh=1LolTykz25ZRqhJ0HndWPDaSMEgQLzF8E+TYn1nz52w=;
-        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
-        b=TQc8mSpKVruBEmeAJ+UBwlESPzg6K3Gx+nodHvu4mGx0adpSW+MXY+2gDK95xUGos
-         oiHHFO0G0eURkza3sqcUQD2myOkwzH/vxmVVhgbdoALjs1Df/vMi7aOstbB6C8Fubd
-         gRKRILPbUO6NzCBTaHfhy9xjhaFLH+THyEFskG8E=
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, khilman@baylibre.com,
-        Benoit Parrot <bparrot@ti.com>
-References: <20210923070701.145377-1-narmstrong@baylibre.com>
- <20210923070701.145377-4-narmstrong@baylibre.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH v5 3/8] drm/omap: introduce omap_hw_overlay
-Message-ID: <6e5980a6-218e-b585-3ad7-3e55350929b6@ideasonboard.com>
-Date:   Tue, 12 Oct 2021 10:59:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 12 Oct 2021 04:32:43 -0400
+X-MailGates: (compute_score:DELIVER,40,3)(audit_rules:UAAAAAAAAAALBAo1Kx
+        ZNRjcjSVkUPl0SPEsQbXwDXHsXAARpAg9DCFwjDWNUbCY3eyQfAGhiTCkdNS0ZRjcyVwB4AV
+        NBKBxWAUsLYB1/VnhpWRJcejlYew==)
+X-MGADT: QAAAAAAAAAALHwo1KxZNRjcjSVkUPl0SPEsQbXwDXHsXAARpAg9DCFwjDWMwbxUWXQ0/I
+        EhUWkFUFScXA29zAEpxERsLaVsX
+Received: from 172.30.8.112
+        by itmg2.sunplusit.com.tw with MailGates ESMTP Server V5.0(28610:0:AUTH_RELAY)
+        (envelope-from <hn.chen@sunplusit.com>); Tue, 12 Oct 2021 15:59:58 +0800 (CST)
+In-Reply-To: <20210915200525.448941-1-ribalda@chromium.org>
+References: <20210915200525.448941-1-ribalda@chromium.org>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210923070701.145377-4-narmstrong@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 0/3] uvcvideo: Fix hw timestamp in Sunplus modules
+X-KeepSent: 2CD4BF44:6BBDEBB3-4825876C:002AB862;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3 September 15, 2011
+Message-ID: <OF2CD4BF44.6BBDEBB3-ON4825876C.002AB862-4825876C.002BF1E7@sunplusit.com>
+From:   hn.chen@sunplusit.com
+Date:   Tue, 12 Oct 2021 15:59:59 +0800
+X-MIMETrack: Serialize by Router on itmail06/SunplusIT(Release 8.5.3FP3|November 15, 2012) at
+ 10/12/2021 03:59:59 PM,
+        Serialize complete at 10/12/2021 03:59:59 PM
+Content-Type: text/plain; charset="Big5"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/2021 10:06, Neil Armstrong wrote:
-> From: Benoit Parrot <bparrot@ti.com>
-> 
-> Split out the hardware overlay specifics from omap_plane.
-> To start, the hw overlays are statically assigned to planes.
-> 
-> The goal is to eventually assign hw overlays dynamically to planes
-> during plane->atomic_check() based on requested caps (scaling, YUV,
-> etc). And then perform hw overlay re-assignment if required.
-> 
-> Signed-off-by: Benoit Parrot <bparrot@ti.com>
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->   drivers/gpu/drm/omapdrm/Makefile       |  1 +
->   drivers/gpu/drm/omapdrm/omap_drv.c     |  9 ++-
->   drivers/gpu/drm/omapdrm/omap_drv.h     |  4 ++
->   drivers/gpu/drm/omapdrm/omap_overlay.c | 87 ++++++++++++++++++++++++++
->   drivers/gpu/drm/omapdrm/omap_overlay.h | 31 +++++++++
->   drivers/gpu/drm/omapdrm/omap_plane.c   | 42 ++++++-------
->   6 files changed, 151 insertions(+), 23 deletions(-)
->   create mode 100644 drivers/gpu/drm/omapdrm/omap_overlay.c
->   create mode 100644 drivers/gpu/drm/omapdrm/omap_overlay.h
-> 
-> diff --git a/drivers/gpu/drm/omapdrm/Makefile b/drivers/gpu/drm/omapdrm/Makefile
-> index 21e8277ff88f..710b4e0abcf0 100644
-> --- a/drivers/gpu/drm/omapdrm/Makefile
-> +++ b/drivers/gpu/drm/omapdrm/Makefile
-> @@ -9,6 +9,7 @@ omapdrm-y := omap_drv.o \
->   	omap_debugfs.o \
->   	omap_crtc.o \
->   	omap_plane.o \
-> +	omap_overlay.o \
->   	omap_encoder.o \
->   	omap_fb.o \
->   	omap_gem.o \
-> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.c b/drivers/gpu/drm/omapdrm/omap_drv.c
-> index f86e20578143..b994014b22e8 100644
-> --- a/drivers/gpu/drm/omapdrm/omap_drv.c
-> +++ b/drivers/gpu/drm/omapdrm/omap_drv.c
-> @@ -583,10 +583,14 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
->   
->   	omap_gem_init(ddev);
->   
-> +	ret = omap_hwoverlays_init(priv);
-> +	if (ret)
-> +		goto err_gem_deinit;
-> +
->   	ret = omap_modeset_init(ddev);
->   	if (ret) {
->   		dev_err(priv->dev, "omap_modeset_init failed: ret=%d\n", ret);
-> -		goto err_gem_deinit;
-> +		goto err_free_overlays;
->   	}
->   
->   	/* Initialize vblank handling, start with all CRTCs disabled. */
-> @@ -618,6 +622,8 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
->   	omap_fbdev_fini(ddev);
->   err_cleanup_modeset:
->   	omap_modeset_fini(ddev);
-> +err_free_overlays:
-> +	omap_hwoverlays_destroy(priv);
->   err_gem_deinit:
->   	omap_gem_deinit(ddev);
->   	destroy_workqueue(priv->wq);
-> @@ -642,6 +648,7 @@ static void omapdrm_cleanup(struct omap_drm_private *priv)
->   	drm_atomic_helper_shutdown(ddev);
->   
->   	omap_modeset_fini(ddev);
-> +	omap_hwoverlays_destroy(priv);
->   	omap_gem_deinit(ddev);
->   
->   	destroy_workqueue(priv->wq);
-> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.h b/drivers/gpu/drm/omapdrm/omap_drv.h
-> index 591d4c273f02..b4d9c2062723 100644
-> --- a/drivers/gpu/drm/omapdrm/omap_drv.h
-> +++ b/drivers/gpu/drm/omapdrm/omap_drv.h
-> @@ -24,6 +24,7 @@
->   #include "omap_gem.h"
->   #include "omap_irq.h"
->   #include "omap_plane.h"
-> +#include "omap_overlay.h"
->   
->   #define DBG(fmt, ...) DRM_DEBUG_DRIVER(fmt"\n", ##__VA_ARGS__)
->   #define VERB(fmt, ...) if (0) DRM_DEBUG_DRIVER(fmt, ##__VA_ARGS__) /* verbose debug */
-> @@ -57,6 +58,9 @@ struct omap_drm_private {
->   	unsigned int num_planes;
->   	struct drm_plane *planes[8];
->   
-> +	unsigned int num_ovls;
-> +	struct omap_hw_overlay *overlays[8];
-> +
->   	struct drm_fb_helper *fbdev;
->   
->   	struct workqueue_struct *wq;
-> diff --git a/drivers/gpu/drm/omapdrm/omap_overlay.c b/drivers/gpu/drm/omapdrm/omap_overlay.c
-> new file mode 100644
-> index 000000000000..2b1416d2aad2
-> --- /dev/null
-> +++ b/drivers/gpu/drm/omapdrm/omap_overlay.c
-> @@ -0,0 +1,87 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2018 Texas Instruments Incorporated -  http://www.ti.com/
-> + * Author: Benoit Parrot, <bparrot@ti.com>
-
-Extra comma there, and similar case below.
-
-> + */
-> +
-> +#include <drm/drm_atomic.h>
-> +#include <drm/drm_atomic_helper.h>
-> +#include <drm/drm_plane_helper.h>
-> +
-> +#include "omap_dmm_tiler.h"
-> +#include "omap_drv.h"
-> +
-> +/*
-> + * overlay funcs
-> + */
-> +static const char * const overlay_id_to_name[] = {
-> +	[OMAP_DSS_GFX] = "gfx",
-> +	[OMAP_DSS_VIDEO1] = "vid1",
-> +	[OMAP_DSS_VIDEO2] = "vid2",
-> +	[OMAP_DSS_VIDEO3] = "vid3",
-> +};
-
-I was expecting to see the name array to be removed from omap_plane.c as 
-it's moved here, but that's not the case. Why is that? Especially as 
-after this series these names make no sense with the planes.
-
-> +static void omap_overlay_destroy(struct omap_hw_overlay *overlay)
-> +{
-> +	kfree(overlay);
-> +}
-> +
-> +static struct omap_hw_overlay *omap_overlay_init(enum omap_plane_id overlay_id,
-> +						 enum omap_overlay_caps caps)
-> +{
-> +	struct omap_hw_overlay *overlay;
-> +
-> +	overlay = kzalloc(sizeof(*overlay), GFP_KERNEL);
-> +	if (!overlay)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	overlay->name = overlay_id_to_name[overlay_id];
-> +	overlay->overlay_id = overlay_id;
-> +	overlay->caps = caps;
-> +	/*
-> +	 * When this is called priv->num_crtcs is not known yet.
-> +	 * Use a safe mask value to start with, it will get updated to the
-> +	 * proper value after the first use.
-> +	 */
-> +	overlay->possible_crtcs = 0xff;
-
-This sounds like a hack. Why do we need possible_crtcs anyway? If I'm 
-not mistaken, on all DSS versions any overlay can be used on any ctrtc. 
-On the DRM plane level we need the possible_crtc as the DRM framework 
-needs that (i.e. we just always set all crtcs available for all planes), 
-but why is it needed here?
-
-> +	return overlay;
-> +}
-> +
-> +int omap_hwoverlays_init(struct omap_drm_private *priv)
-> +{
-> +	static const enum omap_plane_id hw_plane_ids[] = {
-> +			OMAP_DSS_GFX, OMAP_DSS_VIDEO1,
-> +			OMAP_DSS_VIDEO2, OMAP_DSS_VIDEO3,
-> +	};
-> +	u32 num_overlays = dispc_get_num_ovls(priv->dispc);
-> +	enum omap_overlay_caps caps;
-> +	int i, ret;
-> +
-> +	for (i = 0; i < num_overlays; i++) {
-> +		struct omap_hw_overlay *overlay;
-> +
-> +		caps = dispc_ovl_get_caps(priv->dispc, hw_plane_ids[i]);
-> +		overlay = omap_overlay_init(hw_plane_ids[i], caps);
-> +		if (IS_ERR(overlay)) {
-> +			ret = PTR_ERR(overlay);
-> +			dev_err(priv->dev, "failed to construct overlay for %s (%d)\n",
-> +				overlay_id_to_name[i], ret);
-> +			return ret;
-> +		}
-
-I think this leaks memory if omap_overlay_init() fails.
-
-> +		overlay->idx = priv->num_ovls;
-> +		priv->overlays[priv->num_ovls++] = overlay;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +void omap_hwoverlays_destroy(struct omap_drm_private *priv)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < priv->num_ovls; i++) {
-> +		omap_overlay_destroy(priv->overlays[i]);
-> +		priv->overlays[i] = NULL;
-> +	}
-> +}
-> diff --git a/drivers/gpu/drm/omapdrm/omap_overlay.h b/drivers/gpu/drm/omapdrm/omap_overlay.h
-> new file mode 100644
-> index 000000000000..892fecb67adb
-> --- /dev/null
-> +++ b/drivers/gpu/drm/omapdrm/omap_overlay.h
-> @@ -0,0 +1,31 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2018 Texas Instruments Incorporated -  http://www.ti.com/
-> + * Author: Benoit Parrot, <bparrot@ti.com>
-> + */
-> +
-> +#ifndef __OMAPDRM_OVERLAY_H__
-> +#define __OMAPDRM_OVERLAY_H__
-> +
-> +#include <linux/types.h>
-> +
-> +enum drm_plane_type;
-> +
-> +struct drm_device;
-> +struct drm_mode_object;
-> +struct drm_plane;
-> +
-> +/* Used to associate a HW overlay/plane to a plane */
-> +struct omap_hw_overlay {
-> +	int idx;
-
-unsigned int.
-
-> +
-> +	const char *name;
-> +	enum omap_plane_id overlay_id;
-
-Perhaps just "id" is fine. You don't have "overlay_name" there either, 
-but just "name".
-
-  Tomi
+VGVzdGVkLWJ5OiBobi5jaGVuIDxobi5jaGVuQHN1bnBsdXNpdC5jb20+DQpUaGlzIHBhdGNoZWQg
+ZHJ2aWVyIGNhbiBmaW5kIHRoZSBTUElUJ3MgZGV2aWNlIHRvIHNldCB0aGUgcXVpcmsgdmFsdWUg
+YW5kIA0KdGltZXN0YW1wcyBsb29rIG9rLg0KVGhlIHBsYXRmb3JtIEkgdXNlZCBpcyBhIHg2NCBw
+YyBydW5uaW5nIENocm9taXVtIE9TIHdpdGgga2VybmVsIDQuMTQuDQoNCm5vdGU6IEJhY2twb3J0
+ZWQgdG8gNC4xNCBmb3Igb3VyIHRlc3QgZHVlIHRvIHBsYXRmb3JtIHJlcXVpcmVtZW50cy4NCg0K
+DQoNCg0KDQoNCkZyb206ICAgUmljYXJkbyBSaWJhbGRhIDxyaWJhbGRhQGNocm9taXVtLm9yZz4N
+ClRvOiAgICAgTGF1cmVudCBQaW5jaGFydCA8bGF1cmVudC5waW5jaGFydEBpZGVhc29uYm9hcmQu
+Y29tPiwgTWF1cm8gDQpDYXJ2YWxobyBDaGVoYWIgPG1jaGVoYWJAa2VybmVsLm9yZz4sIGxpbnV4
+LW1lZGlhQHZnZXIua2VybmVsLm9yZywgDQpsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnLCBo
+bi5jaGVuQHN1bnBsdXNpdC5jb20sIA0KQ2M6ICAgICBSaWNhcmRvIFJpYmFsZGEgPHJpYmFsZGFA
+Y2hyb21pdW0ub3JnPg0KRGF0ZTogICAyMDIxLzA5LzE2IKRXpMggMDQ6MzcNClN1YmplY3Q6ICAg
+ICAgICBbUEFUQ0ggMC8zXSB1dmN2aWRlbzogRml4IGh3IHRpbWVzdGFtcCBpbiBTdW5wbHVzIG1v
+ZHVsZXMNCg0KDQoNCkFkZCBhIHF1aXJrIHRvIGZpeCB0aGUgaGFyZHdhcmUgdGltZXN0YW1waW5n
+IGluIFN1bnBsdXMgY2FtZXJhIG1vZHVsZXMuDQoNClJpY2FyZG8gUmliYWxkYSAoMyk6DQogIG1l
+ZGlhOiB1dmM6IEV4dGVuZCBkb2N1bWVudGF0aW9uIG9mIHV2Y192aWRlb19jbG9ja19kZWNvZGUo
+KQ0KICBtZWRpYTogdXZjOiBBbGxvdyBxdWlya2luZyBieSBlbnRpdHkgZ3VpZA0KICBtZWRpYTog
+dXZjOiBDcmVhdGUgVVZDX1FVSVJLX0lHTk9SRV9FTVBUWV9UUyBxdWlyaw0KDQogZHJpdmVycy9t
+ZWRpYS91c2IvdXZjL3V2Y19kcml2ZXIuYyB8IDM2ICsrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKw0KIGRyaXZlcnMvbWVkaWEvdXNiL3V2Yy91dmNfdmlkZW8uYyAgfCAxMSArKysrKysrKysN
+CiBkcml2ZXJzL21lZGlhL3VzYi91dmMvdXZjdmlkZW8uaCAgIHwgIDEgKw0KIDMgZmlsZXMgY2hh
+bmdlZCwgNDggaW5zZXJ0aW9ucygrKQ0KDQotLSANCjIuMzMuMC4zMDkuZzMwNTJiODk0MzgtZ29v
+Zw0KDQoNCg0K
