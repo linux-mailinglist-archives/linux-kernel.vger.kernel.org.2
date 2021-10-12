@@ -2,143 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F105429CB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 06:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10519429CBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 06:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbhJLEui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 00:50:38 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:55433 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhJLEud (ORCPT
+        id S232345AbhJLEvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 00:51:45 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34082
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229871AbhJLEvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 00:50:33 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Tue, 12 Oct 2021 00:51:43 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HT38F4bP5z4xb9;
-        Tue, 12 Oct 2021 15:48:29 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634014111;
-        bh=FJNzj0iQa+QNUJ+e+1TYvef3simjmmBQ7rllRp9fYRc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qngT4LJoE3IZjN6xmikS9obwg9Jh2apsGq+j8Th1NFmsGS5gXJmqBswLfu+g2c7yR
-         MXegVhiJVGF5MQgk3/s2l3LKwfHt+GEn15CwVUw/zZbTSiuZ32Z7Gh+r0aC+htp/Zu
-         DG1NKjCHjpc4etmSb3S2nFb9r6Ut+4oYQlSw3+G39iBXMaWweU1BGB/XGgEo6q/A5G
-         pKkvRcFoIZamoT0c8HLqHCJ+RwESXuGxh0Ocez0FYYunSB0Z6L7wm89tkhftVnSK/p
-         eo9E7d/jr0BjWmfBBoEyG8XKUCjdPHwe6Sa2776oq0WKqDQhoyJ4clJ+8NYz736isB
-         a/h2cyTVpauqg==
-Date:   Tue, 12 Oct 2021 15:48:28 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the rcu tree with the tip tree
-Message-ID: <20211012154828.312f870f@canb.auug.org.au>
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A50AF3F31E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 04:49:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634014181;
+        bh=DQTYFgRBjShgCc44LIKsX+ZkXacYI29O6N2UU4NvQ2c=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=Q/drEbRHsPt9GqL8MDp6bzq+4McGHUXT0BBYYM9rywGtvw5qpwWFAvs+cYA3SvZHT
+         lChvekrRQZkJceMnS5zpzU8RNLRDSH9UbynTVbHVfBSJ3gBB+fN4ofgtSaVA5yjME1
+         0PAVKtR8TvqwUjo2HutuiUqmqOgA9pZDN+BXzjTM50Xg/SU25IvARY4Aqd6GiikHP5
+         ysbtZZyfJ7D12wW+XuKDuaRRUG1JtmLT40G+nhmkrV+SQIDKHGSRpy0TrTFpYroK1X
+         nnS7/ucDNAbsJfmjGYGDXbbGZI2+MRkqagfUfnVK6C18gibHvjHiOMuAkNpMpxwt7Q
+         dO5syeuCPE7Ow==
+Received: by mail-ed1-f69.google.com with SMTP id p13-20020a056402044d00b003db3256e4f2so17874244edw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 21:49:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DQTYFgRBjShgCc44LIKsX+ZkXacYI29O6N2UU4NvQ2c=;
+        b=7hRwMNJJ6Tx9eoTyzCWX9B+GtQnW7e5ZxrjM+uA76L8GscEWuULnPSpI5O/8QrS8IW
+         n1CBr9ok6n/b59wux4BZq+tfYUWt6YyZzKkyX2gxAIclJYB8fgByLh/N1B+ExmBdb20+
+         Zwy4tnOPteH+IYjGTKJEAlSsnr4WjxmrgBcsVKrp64xC4oxHwCaobX59bPkw46UU3tCW
+         GiDXoQ1wjXBdle6LegUCBaE+PRsf8P1Sl+LO4Qvt8mK+bbD9oAPt37+S/8ku64kdUESm
+         03ZpioCGUamwDoPotOZqsKHCRkVim6qbFrdvOgYhduNaApFY+fP/p85EG8S4R4BT3huG
+         xn1g==
+X-Gm-Message-State: AOAM532LfuiikpHglPlneg2dgpFsNRhdrDXh2LomnhQcFMujSmjZWTdb
+        XNKLGD5mp/4hFOvU+oF/iIX1SMRkDj9Lstxx+YSWJsOWDAXzsp0zHHWENM2vixICmoEWDF8HHma
+        mhCdD67CJr6SFZeWBdnBMa7KQk2NIaTRzAICP1oK53GUrvMWxC79suukvXg==
+X-Received: by 2002:a17:906:5a8d:: with SMTP id l13mr31820110ejq.95.1634014181400;
+        Mon, 11 Oct 2021 21:49:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzTsvZiY9lixAtDhIJzHvONlvktGzyfRy9ZhG9KGRllcgbenZcXXrCZUfA21DF2hwyZpsjXAiUDGxByaRarDis=
+X-Received: by 2002:a17:906:5a8d:: with SMTP id l13mr31820091ejq.95.1634014181236;
+ Mon, 11 Oct 2021 21:49:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Kb.nPBRY5QO_NX+JtXLlX3y";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210920130248.145058-1-krzysztof.kozlowski@canonical.com> <20210920130412.145231-2-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210920130412.145231-2-krzysztof.kozlowski@canonical.com>
+From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Date:   Tue, 12 Oct 2021 06:49:30 +0200
+Message-ID: <CA+zEjCs6i7H9DWNmG5FDtJM0V5vCMUbUbianFEr+AeLPKnUVNg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 5/5] riscv: dts: sifive: add missing compatible
+ for plic
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Kb.nPBRY5QO_NX+JtXLlX3y
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 20, 2021 at 3:06 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> Add proper compatible for Platform-Level Interrupt Controller to silence
+> dtbs_check warnings:
+>
+>   interrupt-controller@c000000: compatible: ['sifive,plic-1.0.0'] is too short
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>
+> ---
+>
+> Changes since v1:
+> 1. None
+> ---
+>  arch/riscv/boot/dts/sifive/fu540-c000.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/boot/dts/sifive/fu540-c000.dtsi b/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
+> index 7db861053483..0655b5c4201d 100644
+> --- a/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
+> +++ b/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
+> @@ -141,7 +141,7 @@ soc {
+>                 ranges;
+>                 plic0: interrupt-controller@c000000 {
+>                         #interrupt-cells = <1>;
+> -                       compatible = "sifive,plic-1.0.0";
+> +                       compatible = "sifive,fu540-c000-plic", "sifive,plic-1.0.0";
+>                         reg = <0x0 0xc000000 0x0 0x4000000>;
+>                         riscv,ndev = <53>;
+>                         interrupt-controller;
+> --
+> 2.30.2
+>
+>
 
-Hi all,
+This looks good to me, you can add:
 
-Today's linux-next merge of the rcu tree got a conflict in:
+Reviewed-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Tested-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
 
-  kernel/rcu/tasks.h
+Thanks,
 
-between commit:
+Alex
 
-  9b3c4ab3045e ("sched,rcu: Rework try_invoke_on_locked_down_task()")
-
-from the tip tree and commit:
-
-  18f08e758f34 ("rcu-tasks: Add trc_inspect_reader() checks for exiting cri=
-tical section")
-
-from the rcu tree.
-
-I fixed it up (I hope - see below) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc kernel/rcu/tasks.h
-index 171bc848e8e3,e4a32db9f712..000000000000
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@@ -928,10 -919,10 +919,10 @@@ reset_ipi
-  }
- =20
-  /* Callback function for scheduler to check locked-down task.  */
- -static bool trc_inspect_reader(struct task_struct *t, void *arg)
- +static int trc_inspect_reader(struct task_struct *t, void *arg)
-  {
-  	int cpu =3D task_cpu(t);
-- 	bool in_qs =3D false;
-+ 	int nesting;
-  	bool ofl =3D cpu_is_offline(cpu);
- =20
-  	if (task_curr(t)) {
-@@@ -951,18 -942,18 +942,18 @@@
-  		n_heavy_reader_updates++;
-  		if (ofl)
-  			n_heavy_reader_ofl_updates++;
-- 		in_qs =3D true;
-+ 		nesting =3D 0;
-  	} else {
-  		// The task is not running, so C-language access is safe.
-- 		in_qs =3D likely(!t->trc_reader_nesting);
-+ 		nesting =3D t->trc_reader_nesting;
-  	}
- =20
-- 	// Mark as checked so that the grace-period kthread will
-- 	// remove it from the holdout list.
-- 	t->trc_reader_checked =3D true;
--=20
-- 	if (in_qs)
-- 		return 0;  // Already in quiescent state, done!!!
-+ 	// If not exiting a read-side critical section, mark as checked
-+ 	// so that the grace-period kthread will remove it from the
-+ 	// holdout list.
-+ 	t->trc_reader_checked =3D nesting >=3D 0;
-+ 	if (nesting <=3D 0)
- -		return !nesting;  // If in QS, done, otherwise try again later.
-++		return (!nesting) ? 0 : -EINVAL;  // If in QS, done, otherwise try agai=
-n later.
- =20
-  	// The task is in a read-side critical section, so set up its
-  	// state so that it will awaken the grace-period kthread upon exit
-
---Sig_/Kb.nPBRY5QO_NX+JtXLlX3y
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFlE5wACgkQAVBC80lX
-0Gxl5gf8Ca1lWACFU7u842u1TQLwdNTyy5HhXOKhl97fnGDr42+SqdcBpyvvmWFC
-ZDjxPOednIagRBPYf176EHx6ugqGC+vAq1YUK58GLxAaNhKoeltAxYhZZPHi4f6S
-2dONeS51ic+m6swXyyWm700k26djbYqQCgdwjkTJydlc4W+e0HpRYfNEDhdlxROj
-0iY1+Wu3cYiWKU8/aofpOj6p5MV4hTkAjB4qQrvg0OzUn5qPwvWACwX0BOjqBmFN
-9dUNl7LKXP8BoD4lmdo5orxdKThzgfQh7Us46vVhs2zRnxAgqjp0ePiW/8xT6KY2
-9c5pDm7gLZ2Ws/8C2Nrbyvos8v8HRA==
-=2qKt
------END PGP SIGNATURE-----
-
---Sig_/Kb.nPBRY5QO_NX+JtXLlX3y--
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
