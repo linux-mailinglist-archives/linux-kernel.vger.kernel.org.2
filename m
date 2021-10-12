@@ -2,336 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F40C42AC5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0DEA42AC29
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235537AbhJLSug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35058 "EHLO
+        id S234728AbhJLSki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235501AbhJLSuc (ORCPT
+        with ESMTP id S234330AbhJLSkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:50:32 -0400
-Received: from newton.telenet-ops.be (newton.telenet-ops.be [IPv6:2a02:1800:120:4::f00:d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88496C06174E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:48:29 -0700 (PDT)
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by newton.telenet-ops.be (Postfix) with ESMTPS id 4HTPfT02fhzMrBZn
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 20:42:25 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9c93:91ff:d58:ecfb])
-        by baptiste.telenet-ops.be with bizsmtp
-        id 56ZW2600A0KW32a016ZWZ2; Tue, 12 Oct 2021 20:33:32 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1maMag-004RTl-5G; Tue, 12 Oct 2021 20:33:30 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1maMaf-002j5A-Ky; Tue, 12 Oct 2021 20:33:29 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v7 01/21] uapi: Add <linux/map_to_14segment.h>
-Date:   Tue, 12 Oct 2021 20:33:07 +0200
-Message-Id: <20211012183327.649865-2-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211012183327.649865-1-geert@linux-m68k.org>
-References: <20211012183327.649865-1-geert@linux-m68k.org>
+        Tue, 12 Oct 2021 14:40:37 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D29EC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:37:18 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id n7so41155iod.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=407bQN3BNnj/ULJKMvpptH4AszOJMHY+BDHDpDHjc9o=;
+        b=ISClzWgA1WKcr1nQjMRSgTmZzLROYuWC+aWBgcyTSqnr6L3yacrB24GWzW0yoQU15D
+         obOdmPL8TAe1iD75Os3kWLztlYXnROWnVruzjCiRBlqeGE5Em94JcKpblXRnCLytKcuK
+         dJlGp6pQAcDbiecNunLXf58mNGH5dDiVnmi6pmVaE1y0X/al1PgeMuXdksudxunAacKP
+         BjmQVZAFk4AffKT13+SNw21J3JZqgNPQfqsU+n+bUdc/qKAxq/pd7QOIQIvr+xHVZz1T
+         1rBk0MzejSxd8Zzgpvo/RCuIYif18szaCXtGs4y6AZn/+PdwuwNo5qUYp3/V8OHpc/Y2
+         1WVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=407bQN3BNnj/ULJKMvpptH4AszOJMHY+BDHDpDHjc9o=;
+        b=Mer6nX4MBKvz1PIE4bsNIvomet5BDc9x2Feyhowxy8mH8Pi2XZAJckSHEN4bNME8mX
+         8zJ05lr0JNFJDrmpPZ6zw3uQ+E/K5qNKmQISe9buD/bbHy/iVEWWtN7bIhOTcZMba5H2
+         uDVOXlS1vUOUYC5vpgjyyoHKr7KNAfYLr9ZLnL1ZZasXeczF0jtyaIO6yKp4Q66GurER
+         oviCsf+si4rL2kZGudc0dt9dGl3IMx1AVNdGwgspEdptWrQGYWQd0gDtF110zlJXntpj
+         NEp/SvrawrM08PAxMGgbsz7gUsOQPA1BdOZ41Mu+aQgqP12lNcTnynoJGtJlNegJ2+6Y
+         S1KA==
+X-Gm-Message-State: AOAM531SCJuyDF37uqvUQWqEzENwWnfjgWSGb/FTvHm4NbLUe9Xmaoc6
+        RFxDsBWLDpZNQiTz3vqeUsw=
+X-Google-Smtp-Source: ABdhPJyUtEa8b3v1YzZa56yBYmlJZpHs5Sx//AQaZ6FG3jaduUrTPCVi6Sqk1oktN5Dzl45U5nETUw==
+X-Received: by 2002:a6b:d210:: with SMTP id q16mr7038390iob.187.1634063608708;
+        Tue, 12 Oct 2021 11:33:28 -0700 (PDT)
+Received: from samwise.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id x5sm2257999ioh.23.2021.10.12.11.33.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 11:33:28 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH 2/5] dyndbg: refine verbosity 1-4 summary-detail
+Date:   Tue, 12 Oct 2021 12:33:07 -0600
+Message-Id: <20211012183310.1016678-3-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211012183310.1016678-1-jim.cromie@gmail.com>
+References: <20211012183310.1016678-1-jim.cromie@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a header file providing translation primitives and tables for the
-conversion of (ASCII) characters to a 14-segments notation, as used by
-14-segment alphanumeric displays.
+adjust current v*pr_info() calls to fit an overview..detail scheme:
 
-This follows the spirit of include/uapi/linux/map_to_7segment.h.
+-1 module level activity: add/remove, etc
+-2 command ingest, splitting, summary of effects.
+   per >control write
+-3 command parsing, 6 vpr-infos changed to this.
+-4 per-site change - was v2, too noisy there.
+   can yield 3k logs per command.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+-2 is new, to isolate a problem where a stress-test script (which
+feeds large multi-command strings) would produce short writes,
+truncating last command and causing parsing errors, which confused
+test results.  The 1st fix was to use syswrite in the script, to
+deliver full proper commands.
+
+-4 gets per-callsite "changed:" pr-infos, which are very noisy during
+stress tests, and formerly obscured v1-3 messages, and dominated the
+static-key workload being tested.
+
+The verbose parameter has previously seen adjustment:
+commit 481c0e33f1e7 ("dyndbg: refine debug verbosity; 1 is basic, 2 more chatty")
+
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
-v7:
-  - No changes,
+The script driving these adjustments is:
 
-v6:
-  - No changes,
+ !/usr/bin/perl -w
 
-v5:
-  - No changes,
+=for Doc
 
-v4:
-  - No changes,
+1st purpose was to benchmark the effect of wildcard queries on query
+performance; if wildcards are cheap enough, we can deploy them in the
+(floating) format search.  1st finding: wildcards take 2x as long to
+process.
 
-v3:
-  - No changes,
+2nd purpose was to benchmark real static-key changes VS simple flag
+changes.  Found ~100x decrease for the hard work.
 
-v2:
-  - No changes.
+The script maximizes workload per >control by packing it a long
+sequence of "+p; -p;" commands; this uncovered some broken stuff.
 
-You can find an image of the full character set at
-https://drive.google.com/file/d/1h3EYFBWHIjh8B_cwPA5ocAD-lFYipRie/view
+The 85th query failed, and appears to be truncated, so is gramatically
+incorrect.  Its either an error here, or in the kernel.  Its not
+happening atm, retest.
 
-Note that all non-empty characters are unique, except for "[" and "C",
-and "|" and ":".
+Plot thickens: fail only happens doing +-p, not +-mf, likely load
+dependent.  Error remains consistent.  Looks like a short write,
+longer on writer than kernel-reader.  Try syswrite on handle to
+control this.  That fixed short write.
+
+=cut
+
+use Getopt::Std;
+
+getopts('vN:k:', \my %opts) or die <<EOH;
+$0 options:
+    -v		verbose
+    -k=n	kernel dyndbg verbosity
+    -N=n	number of loops.. tbrc
+EOH
+$opts{N} //= 10; # !undef, 0 tests too long.
+
+my $ctrl = '/proc/dynamic_debug/control';
+
+vx($opts{k}) if defined $opts{k}; # works on -k0
+
+open(my $CTL, '>', $ctrl) or die "cant open $ctrl for writing: $!\n";
+
+sub vx {
+    my $arg = shift;
+    my $cmd = "echo $arg > /sys/module/dynamic_debug/parameters/verbose";
+    system($cmd);
+    warn("vx problem: rc:$? err:$! qry: $cmd\n") if ($?);
+}
+
+sub qryOK {
+    my $qry = shift;
+
+    print "syntax test: <\n$qry>\n" if $opts{v};
+    my $bytes = syswrite $CTL, $qry;
+    printf "short read: $bytes / %d\n", length $qry if $bytes < length $qry;
+    if ($?) {
+	warn "rc:$? err:$! qry: $qry\n";
+	return 0;
+    }
+    return 1;
+}
+
+sub build_queries {
+    my ($cmd, $flags, $ct) = @_;
+
+    # build experiment and reference queries
+
+    my $cycle = " $cmd +$flags # on ; $cmd -$flags # off \n";
+    my $ref   = " +$flags ; -$flags \n";
+
+    my $len = length $cycle;
+    my $max = int(4096 / $len); # break/fit to buffer size
+    $ct |= $max;
+    print "qry: ct:$max x << \n$cycle >>\n";
+
+    return unless qryOK($ref);
+    return unless qryOK($cycle);
+
+    my $wild = $cycle x $ct;
+    my $empty = $ref x $ct;
+
+    printf "len: %d, %d\n", length $wild, length $empty;
+
+    return { trial => $wild,
+	     ref => $empty,
+	     probe => $cycle,
+	     zero => $ref,
+	     count => $ct,
+	     max => $max
+    };
+}
+
+my $query_set = build_queries(' file "*" module "*" func "*" ', "mf");
+
+qryOK($query_set->{zero});
+qryOK($query_set->{probe});
+
+qryOK($query_set->{ref});
+qryOK($query_set->{trial});
+
+use Benchmark;
+sub dobatch {
+    my ($cmd, $flags, $reps, $ct) = @_;
+    $reps ||= $opts{N};
+
+    my $qs = build_queries($cmd, $flags, $ct);
+
+    timethese($reps,
+	      {
+		  wildcards => sub {
+		      syswrite $CTL, $qs->{trial};
+		  },
+		  no_search => sub {
+		      syswrite $CTL, $qs->{ref};
+		  }
+	      }
+	);
+}
+
+sub bench_static_key_toggle {
+    vx 0;
+    dobatch(' file "*" module "*" func "*" ', "mf");
+    dobatch(' file "*" module "*" func "*" ', "p");
+}
+
+sub bench_verbose_levels {
+    for my $i (0..4) {
+	vx $i;
+	dobatch(' file "*" module "*" func "*" ', "mf");
+    }
+}
+
+bench_static_key_toggle();
+
+__END__
 ---
- include/uapi/linux/map_to_14segment.h | 239 ++++++++++++++++++++++++++
- 1 file changed, 239 insertions(+)
- create mode 100644 include/uapi/linux/map_to_14segment.h
+ lib/dynamic_debug.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/include/uapi/linux/map_to_14segment.h b/include/uapi/linux/map_to_14segment.h
-new file mode 100644
-index 0000000000000000..957c3c43181043c5
---- /dev/null
-+++ b/include/uapi/linux/map_to_14segment.h
-@@ -0,0 +1,239 @@
-+/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
-+/*
-+ * Copyright (C) 2021 Glider bv
-+ *
-+ * Based on include/uapi/linux/map_to_7segment.h:
-+
-+ * Copyright (c) 2005 Henk Vergonet <Henk.Vergonet@gmail.com>
-+ */
-+
-+#ifndef MAP_TO_14SEGMENT_H
-+#define MAP_TO_14SEGMENT_H
-+
-+/* This file provides translation primitives and tables for the conversion
-+ * of (ASCII) characters to a 14-segments notation.
-+ *
-+ * The 14 segment's wikipedia notation below is used as standard.
-+ * See: https://en.wikipedia.org/wiki/Fourteen-segment_display
-+ *
-+ * Notation:	+---a---+
-+ *		|\  |  /|
-+ *		f h i j b
-+ *		|  \|/  |
-+ *		+-g1+-g2+
-+ *		|  /|\  |
-+ *		e k l m c
-+ *		|/  |  \|
-+ *		+---d---+
-+ *
-+ * Usage:
-+ *
-+ *   Register a map variable, and fill it with a character set:
-+ *	static SEG14_DEFAULT_MAP(map_seg14);
-+ *
-+ *
-+ *   Then use for conversion:
-+ *	seg14 = map_to_seg14(&map_seg14, some_char);
-+ *	...
-+ *
-+ * In device drivers it is recommended, if required, to make the char map
-+ * accessible via the sysfs interface using the following scheme:
-+ *
-+ * static ssize_t map_seg14_show(struct device *dev,
-+ *				 struct device_attribute *attr, char *buf)
-+ * {
-+ *	memcpy(buf, &map_seg14, sizeof(map_seg14));
-+ *	return sizeof(map_seg14);
-+ * }
-+ * static ssize_t map_seg14_store(struct device *dev,
-+ *				  struct device_attribute *attr,
-+ *				  const char *buf, size_t cnt)
-+ * {
-+ *	if (cnt != sizeof(map_seg14))
-+ *		return -EINVAL;
-+ *	memcpy(&map_seg14, buf, cnt);
-+ *	return cnt;
-+ * }
-+ * static DEVICE_ATTR_RW(map_seg14);
-+ */
-+#include <linux/errno.h>
-+#include <linux/types.h>
-+
-+#include <asm/byteorder.h>
-+
-+#define BIT_SEG14_A		0
-+#define BIT_SEG14_B		1
-+#define BIT_SEG14_C		2
-+#define BIT_SEG14_D		3
-+#define BIT_SEG14_E		4
-+#define BIT_SEG14_F		5
-+#define BIT_SEG14_G1		6
-+#define BIT_SEG14_G2		7
-+#define BIT_SEG14_H		8
-+#define BIT_SEG14_I		9
-+#define BIT_SEG14_J		10
-+#define BIT_SEG14_K		11
-+#define BIT_SEG14_L		12
-+#define BIT_SEG14_M		13
-+#define BIT_SEG14_RESERVED1	14
-+#define BIT_SEG14_RESERVED2	15
-+
-+struct seg14_conversion_map {
-+	__be16 table[128];
-+};
-+
-+static __inline__ int map_to_seg14(struct seg14_conversion_map *map, int c)
-+{
-+	return c >= 0 && c < sizeof(map->table) ? __be16_to_cpu(map->table[c])
-+						: -EINVAL;
-+}
-+
-+#define SEG14_CONVERSION_MAP(_name, _map)	\
-+	struct seg14_conversion_map _name = { .table = { _map } }
-+
-+/*
-+ * It is recommended to use a facility that allows user space to redefine
-+ * custom character sets for LCD devices. Please use a sysfs interface
-+ * as described above.
-+ */
-+#define MAP_TO_SEG14_SYSFS_FILE	"map_seg14"
-+
-+/*******************************************************************************
-+ * ASCII conversion table
-+ ******************************************************************************/
-+
-+#define _SEG14(sym, a, b, c, d, e, f, g1, g2, h, j, k, l, m, n)	\
-+	__cpu_to_be16( a << BIT_SEG14_A  |  b << BIT_SEG14_B  |	\
-+		       c << BIT_SEG14_C  |  d << BIT_SEG14_D  |	\
-+		       e << BIT_SEG14_E  |  f << BIT_SEG14_F  |	\
-+		      g1 << BIT_SEG14_G1 | g2 << BIT_SEG14_G2 |	\
-+		       h << BIT_SEG14_H  |  j << BIT_SEG14_I  |	\
-+		       k << BIT_SEG14_J  |  l << BIT_SEG14_K  |	\
-+		       m << BIT_SEG14_L  |  n << BIT_SEG14_M )
-+
-+#define _MAP_0_32_ASCII_SEG14_NON_PRINTABLE				\
-+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-+
-+#define _MAP_33_47_ASCII_SEG14_SYMBOL				\
-+	_SEG14('!', 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('"', 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),	\
-+	_SEG14('#', 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('$', 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('%', 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0),	\
-+	_SEG14('&', 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1),	\
-+	_SEG14('\'',0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),	\
-+	_SEG14('(', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1),	\
-+	_SEG14(')', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0),	\
-+	_SEG14('*', 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1),	\
-+	_SEG14('+', 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14(',', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0),	\
-+	_SEG14('-', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('.', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('/', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0),
-+
-+#define _MAP_48_57_ASCII_SEG14_NUMERIC				\
-+	_SEG14('0', 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0),	\
-+	_SEG14('1', 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0),	\
-+	_SEG14('2', 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('3', 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('4', 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('5', 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('6', 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('7', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0),	\
-+	_SEG14('8', 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('9', 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0),
-+
-+#define _MAP_58_64_ASCII_SEG14_SYMBOL				\
-+	_SEG14(':', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14(';', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0),	\
-+	_SEG14('<', 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1),	\
-+	_SEG14('=', 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('>', 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0),	\
-+	_SEG14('?', 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0),	\
-+	_SEG14('@', 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0),
-+
-+#define _MAP_65_90_ASCII_SEG14_ALPHA_UPPER			\
-+	_SEG14('A', 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('B', 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('C', 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('D', 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('E', 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('F', 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('G', 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('H', 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('I', 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('J', 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('K', 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1),	\
-+	_SEG14('L', 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('M', 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0),	\
-+	_SEG14('N', 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1),	\
-+	_SEG14('O', 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('P', 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('Q', 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('R', 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('S', 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('T', 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('U', 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('V', 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0),	\
-+	_SEG14('W', 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1),	\
-+	_SEG14('X', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1),	\
-+	_SEG14('Y', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0),	\
-+	_SEG14('Z', 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0),
-+
-+#define _MAP_91_96_ASCII_SEG14_SYMBOL				\
-+	_SEG14('[', 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('\\',0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1),	\
-+	_SEG14(']', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('^', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1),	\
-+	_SEG14('_', 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('`', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0),
-+
-+#define _MAP_97_122_ASCII_SEG14_ALPHA_LOWER			\
-+	_SEG14('a', 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0),	\
-+	_SEG14('b', 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('c', 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('d', 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0),	\
-+	_SEG14('e', 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0),	\
-+	_SEG14('f', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0),	\
-+	_SEG14('g', 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0),	\
-+	_SEG14('h', 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0),	\
-+	_SEG14('i', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0),	\
-+	_SEG14('j', 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0),	\
-+	_SEG14('k', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1),	\
-+	_SEG14('l', 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('m', 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0),	\
-+	_SEG14('n', 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0),	\
-+	_SEG14('o', 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('p', 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0),	\
-+	_SEG14('q', 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0),	\
-+	_SEG14('r', 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('s', 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('t', 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('u', 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('v', 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0),	\
-+	_SEG14('w', 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1),	\
-+	_SEG14('x', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1),	\
-+	_SEG14('y', 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0),	\
-+	_SEG14('z', 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0),
-+
-+#define _MAP_123_126_ASCII_SEG14_SYMBOL				\
-+	_SEG14('{', 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0),	\
-+	_SEG14('|', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('}', 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1),	\
-+	_SEG14('~', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0),
-+
-+/* Maps */
-+#define MAP_ASCII14SEG_ALPHANUM			\
-+	_MAP_0_32_ASCII_SEG14_NON_PRINTABLE	\
-+	_MAP_33_47_ASCII_SEG14_SYMBOL		\
-+	_MAP_48_57_ASCII_SEG14_NUMERIC		\
-+	_MAP_58_64_ASCII_SEG14_SYMBOL		\
-+	_MAP_65_90_ASCII_SEG14_ALPHA_UPPER	\
-+	_MAP_91_96_ASCII_SEG14_SYMBOL		\
-+	_MAP_97_122_ASCII_SEG14_ALPHA_LOWER	\
-+	_MAP_123_126_ASCII_SEG14_SYMBOL
-+
-+#define SEG14_DEFAULT_MAP(_name)		\
-+	SEG14_CONVERSION_MAP(_name, MAP_ASCII14SEG_ALPHANUM)
-+
-+#endif	/* MAP_TO_14SEGMENT_H */
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index dfe1e6a857bc..e645807cb20a 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -118,6 +118,8 @@ do {								\
+ 
+ #define vpr_info(fmt, ...)	vnpr_info(1, fmt, ##__VA_ARGS__)
+ #define v2pr_info(fmt, ...)	vnpr_info(2, fmt, ##__VA_ARGS__)
++#define v3pr_info(fmt, ...)	vnpr_info(3, fmt, ##__VA_ARGS__)
++#define v4pr_info(fmt, ...)	vnpr_info(4, fmt, ##__VA_ARGS__)
+ 
+ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
+ {
+@@ -130,7 +132,7 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
+ 			fmtlen--;
+ 	}
+ 
+-	vpr_info("%s: func=\"%s\" file=\"%s\" module=\"%s\" format=\"%.*s\" lineno=%u-%u\n",
++	v3pr_info("%s: func=\"%s\" file=\"%s\" module=\"%s\" format=\"%.*s\" lineno=%u-%u\n",
+ 		 msg,
+ 		 query->function ?: "",
+ 		 query->filename ?: "",
+@@ -213,7 +215,7 @@ static int ddebug_change(const struct ddebug_query *query,
+ 				static_branch_enable(&dp->key.dd_key_true);
+ #endif
+ 			dp->flags = newflags;
+-			v2pr_info("changed %s:%d [%s]%s =%s\n",
++			v4pr_info("changed %s:%d [%s]%s =%s\n",
+ 				 trim_prefix(dp->filename), dp->lineno,
+ 				 dt->mod_name, dp->function,
+ 				 ddebug_describe_flags(dp->flags, &fbuf));
+@@ -273,7 +275,7 @@ static int ddebug_tokenize(char *buf, char *words[], int maxwords)
+ 		buf = end;
+ 	}
+ 
+-	if (verbose) {
++	if (verbose >= 3) {
+ 		int i;
+ 		pr_info("split into words:");
+ 		for (i = 0; i < nwords; i++)
+@@ -333,7 +335,7 @@ static int parse_linerange(struct ddebug_query *query, const char *first)
+ 	} else {
+ 		query->last_lineno = query->first_lineno;
+ 	}
+-	vpr_info("parsed line %d-%d\n", query->first_lineno,
++	v3pr_info("parsed line %d-%d\n", query->first_lineno,
+ 		 query->last_lineno);
+ 	return 0;
+ }
+@@ -447,7 +449,7 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
+ 		pr_err("bad flag-op %c, at start of %s\n", *str, str);
+ 		return -EINVAL;
+ 	}
+-	vpr_info("op='%c'\n", op);
++	v3pr_info("op='%c'\n", op);
+ 
+ 	for (; *str ; ++str) {
+ 		for (i = ARRAY_SIZE(opt_array) - 1; i >= 0; i--) {
+@@ -461,7 +463,7 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
+ 			return -EINVAL;
+ 		}
+ 	}
+-	vpr_info("flags=0x%x\n", modifiers->flags);
++	v3pr_info("flags=0x%x\n", modifiers->flags);
+ 
+ 	/* calculate final flags, mask based upon op */
+ 	switch (op) {
+@@ -477,7 +479,7 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
+ 		modifiers->flags = 0;
+ 		break;
+ 	}
+-	vpr_info("*flagsp=0x%x *maskp=0x%x\n", modifiers->flags, modifiers->mask);
++	v3pr_info("*flagsp=0x%x *maskp=0x%x\n", modifiers->flags, modifiers->mask);
+ 
+ 	return 0;
+ }
+@@ -540,7 +542,7 @@ static int ddebug_exec_queries(char *query, const char *modname)
+ 		}
+ 		i++;
+ 	}
+-	vpr_info("processed %d queries, with %d matches, %d errs\n",
++	v2pr_info("processed %d queries, with %d matches, %d errs\n",
+ 		 i, nfound, errs);
+ 
+ 	if (exitcode)
+@@ -781,7 +783,7 @@ static ssize_t ddebug_proc_write(struct file *file, const char __user *ubuf,
+ 	tmpbuf = memdup_user_nul(ubuf, len);
+ 	if (IS_ERR(tmpbuf))
+ 		return PTR_ERR(tmpbuf);
+-	vpr_info("read %d bytes from userspace\n", (int)len);
++	v2pr_info("read %zu bytes from userspace <\n%s>\n", len, tmpbuf);
+ 
+ 	ret = ddebug_exec_queries(tmpbuf, NULL);
+ 	kfree(tmpbuf);
+@@ -969,7 +971,7 @@ int ddebug_add_module(struct _ddebug *tab, unsigned int n,
+ 	list_add(&dt->link, &ddebug_tables);
+ 	mutex_unlock(&ddebug_lock);
+ 
+-	v2pr_info("%3u debug prints in module %s\n", n, dt->mod_name);
++	vpr_info("%3u debug prints in module %s\n", n, dt->mod_name);
+ 	return 0;
+ }
+ 
 -- 
-2.25.1
+2.31.1
 
