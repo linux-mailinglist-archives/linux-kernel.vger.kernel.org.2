@@ -2,213 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E24742A2FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8891842A31D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236168AbhJLLUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:20:14 -0400
-Received: from verein.lst.de ([213.95.11.211]:40992 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232665AbhJLLUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:20:10 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5B16267373; Tue, 12 Oct 2021 13:18:06 +0200 (CEST)
-Date:   Tue, 12 Oct 2021 13:18:06 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
-        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
-        lucmaga@gmail.com, David Gow <davidgow@google.com>,
-        Daniel Latypov <dlatypov@google.com>
-Subject: Re: [PATCH v6 0/1] lib: Convert UUID runtime test to KUnit
-Message-ID: <20211012111806.GA2537@lst.de>
-References: <20211006001345.73898-1-andrealmeid@collabora.com>
+        id S236200AbhJLLXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 07:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232820AbhJLLXw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 07:23:52 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701A0C061570;
+        Tue, 12 Oct 2021 04:21:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=UdEw1pT+fzl3XWuMYAjaroJq/eSkWpToEoEiK0H4tc8=; b=FQxDrQd8VQL8FLxSXHhYsFD549
+        Bw3bzrYjTSkvz6brYato3qgL9mUti/CSCA7aSlS/rdOtg3iWvvcBBvUgAeYrIFknl4VrCnIAyARwb
+        W2ZXY143bMOgnoZk5lM0F0hWDwSbN7tcO2rrRt3vOI6Gu/hOdQfvMSUKEbu89ZHT8kEVJjserHvJd
+        T7a8jHQf222nRNoBi1vcek3vurQIbT0ONUwczkQh/COwwW0ZYFL0GAmCPPO+A5W3537y79C/w1pmK
+        EI8baZ2LtgSX5reCbuBE8jcoOFTckA/Kx6YdhS5bzDlaMwjvlkTi6AJztbRxgYS/jG5G8VzhIIzeL
+        6WxmRXvw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1maFpg-009P0D-Kh; Tue, 12 Oct 2021 11:20:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5AAF630032E;
+        Tue, 12 Oct 2021 13:20:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0E30E20218D80; Tue, 12 Oct 2021 13:20:29 +0200 (CEST)
+Date:   Tue, 12 Oct 2021 13:20:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH 2/2] ftrace: prevent preemption in
+ perf_ftrace_function_call()
+Message-ID: <YWVvfBybqjKuifum@hirez.programming.kicks-ass.net>
+References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com>
+ <7ec34e08-a357-58d6-2ce4-c7472d8b0381@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211006001345.73898-1-andrealmeid@collabora.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <7ec34e08-a357-58d6-2ce4-c7472d8b0381@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems I only received the 0/1 but never the actual patch?
+On Tue, Oct 12, 2021 at 01:40:31PM +0800, çŽ‹è´‡ wrote:
 
-On Tue, Oct 05, 2021 at 09:13:44PM -0300, André Almeida wrote:
-> Hi,
+> diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+> index 6aed10e..33c2f76 100644
+> --- a/kernel/trace/trace_event_perf.c
+> +++ b/kernel/trace/trace_event_perf.c
+> @@ -441,12 +441,19 @@ void perf_trace_buf_update(void *record, u16 type)
+>  	if (!rcu_is_watching())
+>  		return;
 > 
-> This patch converts existing UUID runtime test to use KUnit framework.
+> +	/*
+> +	 * Prevent CPU changing from now on. rcu must
+> +	 * be in watching if the task was migrated and
+> +	 * scheduled.
+> +	 */
+> +	preempt_disable_notrace();
+> +
+>  	if ((unsigned long)ops->private != smp_processor_id())
+> -		return;
+> +		goto out;
 > 
-> Below, there's a comparison between the old output format and the new
-> one. Keep in mind that even if KUnit seems very verbose, this is the
-> corner case where _every_ test has failed.
+>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>  	if (bit < 0)
+> -		return;
+> +		goto out;
 > 
-> * This is how the current output looks like in success:
+>  	event = container_of(ops, struct perf_event, ftrace_ops);
 > 
->   test_uuid: all 18 tests passed
-> 
-> * And when it fails:
-> 
->   test_uuid: conversion test #1 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: cmp test #2 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: cmp test #2 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: conversion test #3 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: cmp test #4 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: cmp test #4 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
->   test_uuid: conversion test #5 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: cmp test #6 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: cmp test #6 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: conversion test #7 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: cmp test #8 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: cmp test #8 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
->   test_uuid: conversion test #9 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: cmp test #10 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: cmp test #10 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: conversion test #11 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: cmp test #12 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: cmp test #12 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
->   test_uuid: negative test #13 passed on wrong LE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
->   test_uuid: negative test #14 passed on wrong BE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
->   test_uuid: negative test #15 passed on wrong LE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
->   test_uuid: negative test #16 passed on wrong BE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
->   test_uuid: negative test #17 passed on wrong LE data: '0cb4ddff-a545-4401-9d06-688af53e'
->   test_uuid: negative test #18 passed on wrong BE data: '0cb4ddff-a545-4401-9d06-688af53e'
->   test_uuid: failed 18 out of 18 tests
-> 
-> 
-> * Now, here's how it looks like with KUnit:
-> 
->   ======== [PASSED] uuid ========
->   [PASSED] uuid_correct_be
->   [PASSED] uuid_correct_le
->   [PASSED] uuid_wrong_be
->   [PASSED] uuid_wrong_le
-> 
-> * And if every test fail with KUnit:
-> 
->   ======== [FAILED] uuid ========
->   [FAILED] uuid_correct_be
->       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
->       Expected uuid_parse(data->uuid, &be) == 1, but
->           uuid_parse(data->uuid, &be) == 0
->   
->   failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
->       # uuid_correct_be: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
->       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
->       Expected uuid_parse(data->uuid, &be) == 1, but
->           uuid_parse(data->uuid, &be) == 0
->   
->   failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
->       # uuid_correct_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
->       # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
->       Expected uuid_parse(data->uuid, &be) == 1, but
->           uuid_parse(data->uuid, &be) == 0
->   
->   failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
->       # uuid_correct_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
->       not ok 1 - uuid_correct_be
->   
->   [FAILED] uuid_correct_le
->       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
->       Expected guid_parse(data->uuid, &le) == 1, but
->           guid_parse(data->uuid, &le) == 0
->   
->   failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
->       # uuid_correct_le: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
->       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
->       Expected guid_parse(data->uuid, &le) == 1, but
->           guid_parse(data->uuid, &le) == 0
->   
->   failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
->       # uuid_correct_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
->       # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
->       Expected guid_parse(data->uuid, &le) == 1, but
->           guid_parse(data->uuid, &le) == 0
->   
->   failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
->       # uuid_correct_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
->       not ok 2 - uuid_correct_le
->   
->   [FAILED] uuid_wrong_be
->       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
->       Expected uuid_parse(*data, &be) == 0, but
->           uuid_parse(*data, &be) == -22
->   
->   parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
->       # uuid_wrong_be: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
->       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
->       Expected uuid_parse(*data, &be) == 0, but
->           uuid_parse(*data, &be) == -22
->   
->   parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
->       # uuid_wrong_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
->       # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
->       Expected uuid_parse(*data, &be) == 0, but
->           uuid_parse(*data, &be) == -22
->   
->   parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
->       # uuid_wrong_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
->       not ok 3 - uuid_wrong_be
->   
->   [FAILED] uuid_wrong_le
->       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
->       Expected guid_parse(*data, &le) == 0, but
->           guid_parse(*data, &le) == -22
->   
->   parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
->       # uuid_wrong_le: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
->       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
->       Expected guid_parse(*data, &le) == 0, but
->           guid_parse(*data, &le) == -22
->   
->   parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
->       # uuid_wrong_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
->       # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
->       Expected guid_parse(*data, &le) == 0, but
->           guid_parse(*data, &le) == -22
->   
->   parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
->       # uuid_wrong_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
->       not ok 4 - uuid_wrong_le
-> 
-> Changes from v5:
->  - Add reviewed-by Brendan
->  - Rebased on top of 5.15-rc4
-> 
-> Changes from v4:
->  - Add reviewed-by
-> v4: https://lore.kernel.org/lkml/20210621133148.9226-1-andrealmeid@collabora.com/
-> 
-> Changes from v3:
->  - Drop unnecessary casts and braces.
->  - Simplify Kconfig entry
-> v3: https://lore.kernel.org/lkml/20210610163959.71634-1-andrealmeid@collabora.com/
-> 
-> Changes from v2:
->  - Clarify in commit message the new test cases setup
-> v2: https://lore.kernel.org/lkml/20210609233730.164082-1-andrealmeid@collabora.com/
-> 
-> Changes from v1:
->  - Test suite name: uuid_test -> uuid
->  - Config name: TEST_UUID -> UUID_KUNIT_TEST
->  - Config entry in the Kconfig file left where it is
->  - Converted tests to use _MSG variant
-> v1: https://lore.kernel.org/lkml/20210605215215.171165-1-andrealmeid@collabora.com/
-> 
-> André Almeida (1):
->   lib: Convert UUID runtime test to KUnit
-> 
->  lib/Kconfig.debug |   8 ++-
->  lib/Makefile      |   2 +-
->  lib/test_uuid.c   | 137 +++++++++++++++++++---------------------------
->  3 files changed, 64 insertions(+), 83 deletions(-)
-> 
-> -- 
-> 2.33.0
----end quoted text---
+
+This seems rather daft, wouldn't it be easier to just put that check
+under the recursion thing?
