@@ -2,97 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FDB42AB79
+	by mail.lfdr.de (Postfix) with ESMTP id BF6E742AB7A
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbhJLSEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233102AbhJLSEQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:04:16 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B256C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:02:15 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id m20so23819862iol.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:02:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HWMBYFcPPSpPSOapwvCHPnEcEXN+cbXNvc/FUpmqj/s=;
-        b=gzUMOO9quRcSZIuuuShZ1OIpfju6KJCf6HA3a3gQxZEB8+cZ9zdJaFm+GIMIvNBhcM
-         jA3k8y3uSFHvYhTaVYkfW8IApKmorL7CQ2vScSAhr5b8odfL5cAp7XZynEGV7fgumiWe
-         vb3r6qBfFLsO/tP8niYUUJJfQzOdV0tL0hSZs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HWMBYFcPPSpPSOapwvCHPnEcEXN+cbXNvc/FUpmqj/s=;
-        b=GuZDk2RCZUBjkzugeEcugTzPg9HYNoHnuT2rflqfehvnhyr8VR/IlFqpYRjp5uFUCH
-         YtweT9hOjFb+du+YVwm5Jb4sOjLkoggJ9MX3h/d188wuNAqaUL2rRv/zxsXfxATIcZZ2
-         6lDM4BvTPAkoLjXHo+IjjtAEL+VdJH1iePPB8uBs8GJaWbUNZrV8mTi2ErizxuFbu1xm
-         5YKNMToIBTOrSPt7ascK8bStJ8Rmaw3eBw0ZZPXteVmo8jO3ahOr3jFSFfgRVNHw/UcZ
-         wHMT6ao4bJxEgC5FnnL0fRcK8mdypraGt0jDOF4c8fQEEnhe25P0h10lC3c4yzkpp5St
-         FD0w==
-X-Gm-Message-State: AOAM532bfoQjNVUVlCzlXgqBh68tpSsdNnPo2DARR+aM1LZQMM420JfV
-        q5KpF4dHGb4AQsBDIkKRvVXRcA==
-X-Google-Smtp-Source: ABdhPJxImgM52y6KPEok3S6p210meTqd7Uz0eoFQB3wM34Wkajm5FoQyVG6+/QIu9yf4Uf42uuLjOw==
-X-Received: by 2002:a02:c761:: with SMTP id k1mr23313375jao.74.1634061733815;
-        Tue, 12 Oct 2021 11:02:13 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s5sm5836403ilq.59.2021.10.12.11.02.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 11:02:13 -0700 (PDT)
-Subject: Re: [PATCH 5.10 00/81] 5.10.73-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211012093348.134236881@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <06abb5fd-ab78-6819-b5dc-784866e8de60@linuxfoundation.org>
-Date:   Tue, 12 Oct 2021 12:02:12 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234318AbhJLSEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:04:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233357AbhJLSEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 14:04:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9B15604DA;
+        Tue, 12 Oct 2021 18:02:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634061740;
+        bh=IA9bq939HFIthWZowdjpzrEL9kw+TYWcbEgjEet03Ug=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=svmJ5mNLvHOtxjPznYH+3g2TTlo6RwUN53E9jlQqQR6sQYnaRS5BONRC8Xo1zZ91m
+         5udB0bi6UrQZojOQ6pfqbbIjy+mEucEP/oqnBVS4FLmdTInpXEBizyRzfeQKCde857
+         zXgH73ite2ix+1TnOxTNks+QmWsy6F3PYYYORMHqScIWFcAKXut0ebTB7OkuZPYDHD
+         DtrCr8de0WOnZuMqa23tHQoheCSFq46hpXaTEA1xzsqE7/XK5ZeUsWVg3SaviiPVZf
+         52/SAE6Kp8cJ3NZ8TKI0n1toJlOZC47Pdtmmioz2x9RMBhZViR5047zneon8O7njy8
+         uJxSku4dMraYw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20211012093348.134236881@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1631860384-26608-4-git-send-email-quic_fenglinw@quicinc.com>
+References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com> <1631860384-26608-4-git-send-email-quic_fenglinw@quicinc.com>
+Subject: Re: [RESEND PATCH v1 3/9] spmi: pmic-arb: check apid against limits before calling irq handler
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     collinsd@codeaurora.org, subbaram@codeaurora.org,
+        quic_fenglinw@quicinc.com
+To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 12 Oct 2021 11:02:18 -0700
+Message-ID: <163406173869.936959.6395787327312518099@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 3:37 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.73 release.
-> There are 81 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 14 Oct 2021 09:33:32 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.73-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Quoting Fenglin Wu (2021-09-16 23:32:58)
+> From: David Collins <collinsd@codeaurora.org>
+>=20
+> Check that the apid for an SPMI interrupt falls between the
+> min_apid and max_apid that can be handled by the APPS processor
+> before invoking the per-apid interrupt handler:
+> periph_interrupt().
+>=20
+> This avoids an access violation in rare cases where the status
+> bit is set for an interrupt that is not owned by the APPS
+> processor.
+>=20
+> Signed-off-by: David Collins <collinsd@codeaurora.org>
+> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+> ---
 
-Compiled and booted on my test system. No dmesg regressions.
+Fixes? BTW, a lot of these patches are irqchip specific. It would be
+good to get review from irqchip maintainers. Maybe we should split the
+irqchip driver off via the auxiliary bus so that irqchip maintainers can
+review. Please Cc them on irqchip related patches.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+IRQCHIP DRIVERS
+M:      Thomas Gleixner <tglx@linutronix.de>
+M:      Marc Zyngier <maz@kernel.org>
 
-thanks,
--- Shuah
+>  drivers/spmi/spmi-pmic-arb.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
+> index 4d7ad004..c4adc06 100644
+> --- a/drivers/spmi/spmi-pmic-arb.c
+> +++ b/drivers/spmi/spmi-pmic-arb.c
+> @@ -535,6 +535,12 @@ static void pmic_arb_chained_irq(struct irq_desc *de=
+sc)
+>                         id =3D ffs(status) - 1;
+>                         status &=3D ~BIT(id);
+>                         apid =3D id + i * 32;
+> +                       if (apid < pmic_arb->min_apid
+> +                           || apid > pmic_arb->max_apid) {
 
+The || goes on the line above. What about making a local variable for
+first and last and then shifting by 5 in the loop?
+
+int first =3D pmic_arb->min_apid;
+int last =3D pmic_arb->max_apid;
+
+for (i =3D first >> 5; i <=3D last >> 5; i++)
+
+	if (apid < first || apid > last)
+
+> +                               WARN_ONCE(true, "spurious spmi irq receiv=
+ed for apid=3D%d\n",
+> +                                       apid);
+
+Is there any way to recover from this? Or once the mapping is wrong
+we're going to get interrupts that we don't know what to do with
+forever?
+
+> +                               continue;
+> +                       }
+>                         enable =3D readl_relaxed(
+>                                         ver_ops->acc_enable(pmic_arb, api=
+d));
+>                         if (enable & SPMI_PIC_ACC_ENABLE_BIT)
