@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42C742A0FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A4642A108
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235654AbhJLJ2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235598AbhJLJ2H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:28:07 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F84EC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:26:06 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id y7so7575915pfg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UThv9/l5JLWRg1EUeAvAf2rdPT35TBaOdfxcZAHIs5s=;
-        b=voDlimX1xu+r1wO6ZvIbywJAaRgOgRtqddCp3Hh1AeXbQ93FTDKhoeQ42v9vpzTxYv
-         HFn/5wqHW1p4MuYCK2nkAEW5LeRFKqprZ8K6iURkCe/V5KrfviM0SOYVYaebrv0WBRSZ
-         RKJxDFFc+kCsdm5lAe9oQoolSePNiEGXpBIbn2t1OlAvRDo9NzlcrIqG5AIjZ5c6MISO
-         Nd2ivsspRDIPUS4BfUtKRspXloSe/k0oCTpttKIxUWfLchexZZ+KW8uOdt4BnO26/I0o
-         cu8FeKhUJgmm/PDqrPK4jCXM+U0L8HVP+fnWvwNrdXo2YL0TZc3zq6TgH6wzQRfuOkaJ
-         AzbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UThv9/l5JLWRg1EUeAvAf2rdPT35TBaOdfxcZAHIs5s=;
-        b=sdXCKVGhUQ0aFICovoAH7E1VJyqVvMn24DHHEYzvNyMwVI0aEL7fLiADT41RpaAafR
-         2OFM/+dZOstaDp2rYQT2eWbkBpSaM1XpS7DwgfL4xK2x3vq9tbw8ZYFL/LqpJhouHQc1
-         u+7rmdWiBNzhd5E7LyrpJBalBZHdWyhRUSCr+eyGW0BCDgoCpMDR+coWrXX9us95TJRs
-         roNmIMySDhHlibfRmWXyQhKVRPmtJHZNtQC768ajgHu7jQ3YMGrlYV3fKgzaab+NjPlX
-         KOPz61NuukwFSPk5z29QQGnZKkfPpf0YTCp2XKTCRyCOus2n45CISeoGSlvYglsSCorH
-         KT9Q==
-X-Gm-Message-State: AOAM531LhxyiYFxLSXcL2P2xamN3wM8lcj1f4V+z7RIxtwciDbPnrKNW
-        BGQy7AEUTpPSTuNs855QudakvA==
-X-Google-Smtp-Source: ABdhPJxfgS8Y8jGCRj45ARUvTIJ99eYeufFhQrb7v3F0pttpzckQD45Ok68amrQxDgv2TgaRtqRFuQ==
-X-Received: by 2002:a63:555d:: with SMTP id f29mr22264998pgm.33.1634030765435;
-        Tue, 12 Oct 2021 02:26:05 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id w13sm1961636pjc.29.2021.10.12.02.26.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 02:26:04 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 14:56:03 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Sibi Sankar <sibis@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device
- does not exist
-Message-ID: <20211012092603.lkmhhjoo5v67wh44@vireshk-i7>
-References: <20211011165707.138157-1-marcan@marcan.st>
- <20211011165707.138157-5-marcan@marcan.st>
- <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
- <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
- <20211012055143.xmkbvhbnolspgjin@vireshk-i7>
- <caf16a6c-f127-7f27-ed17-0522d9f1fb9e@marcan.st>
+        id S235667AbhJLJal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:30:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232657AbhJLJak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:30:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E16360F92;
+        Tue, 12 Oct 2021 09:28:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634030919;
+        bh=w6tJ0j7GZyF9EA8+IbdyJH2ct/ziottLxIdQqKTGRqU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Af/9zwXNiRPkvFTna55wceL8kexV3DRj4NlW8pN/pyovPyCs5nA2v/56fiiRDIU+c
+         HM3Yu00NmTQF5P/KOHjXwMKD/VP0O/X3b0SCsoNdDpQFnkr/DDBxo1KFcNTaVuCVAK
+         CleWg31dMcxiLmuLVt6pU/08nVbn/1ukk2C4m0v8=
+Date:   Tue, 12 Oct 2021 11:28:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Song Liu <songliubraving@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        bpf <bpf@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 5.4 00/52] 5.4.153-rc2 review
+Message-ID: <YWVVRDEDdaIQYKlX@kroah.com>
+References: <20211012064436.577746139@linuxfoundation.org>
+ <CA+G9fYt3vmhvuoFJ6p49DHiFE60oBeWUwuSLrh7vXwr=8_rpfg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <caf16a6c-f127-7f27-ed17-0522d9f1fb9e@marcan.st>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <CA+G9fYt3vmhvuoFJ6p49DHiFE60oBeWUwuSLrh7vXwr=8_rpfg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-10-21, 14:57, Hector Martin wrote:
-> On 12/10/2021 14.51, Viresh Kumar wrote:
-> > On 12-10-21, 14:34, Hector Martin wrote:
-> > > The table *is* assigned to a genpd (the memory controller), it's just that
-> > > that genpd isn't actually a parent of the CPU device. Without the patch you
-> > > end up with:
-> > > 
-> > > [    3.040060] cpu cpu4: Failed to set performance rate of cpu4: 0 (-19)
-> > > [    3.042881] cpu cpu4: Failed to set required opps: -19
-> > > [    3.045508] cpufreq: __target_index: Failed to change cpu frequency: -19
-> > 
-> > Hmm, Saravana and Sibi were working on a similar problem earlier and decided to
-> > solve this using devfreq instead. Don't remember the exact series which got
-> > merged for this, Sibi ?
-> > 
-> > If this part fails, how do you actually set the performance state of the memory
-> > controller's genpd ?
+On Tue, Oct 12, 2021 at 01:04:54PM +0530, Naresh Kamboju wrote:
+> On Tue, 12 Oct 2021 at 12:16, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.4.153 release.
+> > There are 52 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 14 Oct 2021 06:44:25 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc2.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> The clock controller has the genpd as an actual power-domain parent, so it
-> does it instead. From patch #7:
+> stable rc 5.4.153-rc2 Powerpc build failed.
 > 
-> > +	if (cluster->has_pd)
-> > +		dev_pm_genpd_set_performance_state(cluster->dev,
-> > +						   dev_pm_opp_get_required_pstate(opp, 0));
-> > +
+> In file included from arch/powerpc/net/bpf_jit64.h:11,
+>                  from arch/powerpc/net/bpf_jit_comp64.c:19:
+> arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
+> arch/powerpc/net/bpf_jit.h:32:9: error: expected expression before 'do'
+>    32 |         do { if (d) { (d)[idx] = instr; } idx++; } while (0)
+>       |         ^~
+> arch/powerpc/net/bpf_jit.h:33:33: note: in expansion of macro 'PLANT_INSTR'
+>    33 | #define EMIT(instr)             PLANT_INSTR(image, ctx->idx, instr)
+>       |                                 ^~~~~~~~~~~
+> arch/powerpc/net/bpf_jit_comp64.c:415:41: note: in expansion of macro 'EMIT'
+>   415 |                                         EMIT(PPC_LI(dst_reg, 0));
+>       |                                         ^~~~
+> arch/powerpc/net/bpf_jit.h:33:33: note: in expansion of macro 'PLANT_INSTR'
+>    33 | #define EMIT(instr)             PLANT_INSTR(image, ctx->idx, instr)
+>       |                                 ^~~~~~~~~~~
+> arch/powerpc/net/bpf_jit.h:41:33: note: in expansion of macro 'EMIT'
+>    41 | #define PPC_ADDI(d, a, i)       EMIT(PPC_INST_ADDI |
+> ___PPC_RT(d) |           \
+>       |                                 ^~~~
+> arch/powerpc/net/bpf_jit.h:44:33: note: in expansion of macro 'PPC_ADDI'
+>    44 | #define PPC_LI(r, i)            PPC_ADDI(r, 0, i)
+>       |                                 ^~~~~~~~
+> arch/powerpc/net/bpf_jit_comp64.c:415:46: note: in expansion of macro 'PPC_LI'
+>   415 |                                         EMIT(PPC_LI(dst_reg, 0));
+>       |                                              ^~~~~~
+> make[3]: *** [scripts/Makefile.build:262:
+> arch/powerpc/net/bpf_jit_comp64.o] Error 1
+> make[3]: Target '__build' not remade because of errors.
 > 
-> This is arguably not entirely representative of how the hardware works,
-> since technically the cluster switching couldn't care less what the memory
-> controller is doing; it's a soft dependency, states that should be switched
-> together but are not interdependent (in fact, the clock code does this
-> unconditionally after the CPU p-state change, regardless of whether we're
-> shifting up or down; this is, FWIW, the same order macOS uses, and it
-> clearly doesn't matter which way you do it).
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Yeah, I understand what you are doing. But the current patch is
-incorrect in the sense that it can cause a bug on other platforms. To
-make this work, you should rather set this genpd as parent of CPU
-devices (which are doing anyway since you are updating them with CPU's
-DVFS). With that the clk driver won't be required to do the magic
-behind the scene.
+Ok, I'm just going to go delete this patch from the queue now...
 
--- 
-viresh
+Thanks for the quick report.
+
+greg k-h
