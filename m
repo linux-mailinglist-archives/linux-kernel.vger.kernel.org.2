@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F2042A368
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA56042A36B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236252AbhJLLig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
+        id S236261AbhJLLjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 07:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbhJLLie (ORCPT
+        with ESMTP id S236177AbhJLLjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:38:34 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DE7C061570;
-        Tue, 12 Oct 2021 04:36:33 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id r18so80037570edv.12;
-        Tue, 12 Oct 2021 04:36:32 -0700 (PDT)
+        Tue, 12 Oct 2021 07:39:09 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2571C061570;
+        Tue, 12 Oct 2021 04:37:07 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so1663279pjb.1;
+        Tue, 12 Oct 2021 04:37:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Cv09Uzz4AMtrdLJZ5UZjOHd8Tiq6ImxAlIz05CK9/+E=;
-        b=j5cuUb7Knk/rorV2lZi5Nfo2fyNSQ/i/uvK0eKwXmLappUMuLpS+WAGlqScNr5RZ7T
-         OIzOcHTxt7DQbrXra+T1c3f+2tJQu4BKTmgnQYYE8D2W1NXQOsDRfu2cZvrNb20khsQ7
-         qEoDVWYvLXIi97FGu2wqZ03eKHBTeTUfVOhGPt0Bg/6AQIQLGnwmUKp3n+UBUvWwuLBV
-         Y6jTUUj47O5sNtm1Cg6YhDKc8m03S0rkd3KWLT54UnDugjm4BJBKNskHe1aTxEwCDh92
-         lpDenkFBT4eMVwTp1yVvFioTMj2ELsUOSJTOWtLWFGqA5pczMz35CPTX5ElJCDG3SPi9
-         3s9g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NCKzsnWQrGuy+GoB4AipIdmem4eM9oZp/c1lqXnnmZc=;
+        b=jzEqQUq7qkbv6bGh/qUJM6FKpmVepYYwP5n7iaOD+ViAWVQHLdyUoXgoyiItxfvGxQ
+         1KNZN6IrMluZIXIZmZzOdhtAskxTD68VNShgFja49MWjjuBirvc/FMM9R3T55WQ8ZYvm
+         x6OYHfc6XXog2Q6Kz5+sagYUWXt1d0q0286YW4rZlD8u8x88CDgDYrjUMc+Kv1Myiou9
+         NaY14+9LaSZCUhbnBz2PELnyCwV5wy+iiuU51ev9dr6ThflBYwmcJCYic0hVV9EBSPS4
+         dSl7+VVZXIKhLGyU7z5tUzmdvkOMXd1iDBlrmEubgB7JkjVeswJhKEtnh7xcnBmJRq2r
+         wmXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Cv09Uzz4AMtrdLJZ5UZjOHd8Tiq6ImxAlIz05CK9/+E=;
-        b=Pvscit3TOWNTIlJ5L4h1lQiM1kiXzrF1NdQy7zQgT3Sm2Z1qxwhYfSdM9Ckxib02uz
-         MZBPTw67KF3hBX/+Bji4qtNQ6gRVTfT0ClBwsYX6nCLajHXGND8oJ1+piw4nsQcHD4Dp
-         +dDXWDzq1eRVQWt0d+ztWWAJdgIeuQf5XjBeiSIoNwRmPonpAgerZWqEPdMoT+PgCERt
-         y/nK1xSusJOAaoIJxLkRer5oiwDobzJ5/b2HaTpRjTsOIoLS7SNA1QdrfxDeIBuLwjlh
-         IvF1y2GJJTJptUZ3TWprJAZYsRld0gXq59clZ4SgQi2cM65Xl0+1NG+8usC5nGsaBhYT
-         0Z4w==
-X-Gm-Message-State: AOAM533eByTaW4wdF0tPGUTPJdlnN1U5RB2QjmlKr8r4ncH+faA786MY
-        1iRG1zq9uqqtNMOehmEXArA=
-X-Google-Smtp-Source: ABdhPJyrQ4Q5v01yQ5nxsqBMaCaX35lvdjY+e6ybHR5kzLZWQ2xp/Kaw0qkCPTYF0NmeCqpOj3KgLg==
-X-Received: by 2002:a50:9b06:: with SMTP id o6mr50396874edi.284.1634038591578;
-        Tue, 12 Oct 2021 04:36:31 -0700 (PDT)
-Received: from skbuf ([188.26.53.217])
-        by smtp.gmail.com with ESMTPSA id l16sm4715224eje.67.2021.10.12.04.36.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 04:36:31 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 14:36:30 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: fix spurious error message when
- unoffloaded port leaves bridge
-Message-ID: <20211012113630.f4memvtchrgxswti@skbuf>
-References: <20211012112730.3429157-1-alvin@pqrs.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NCKzsnWQrGuy+GoB4AipIdmem4eM9oZp/c1lqXnnmZc=;
+        b=ERZPYAoAhdHQH3Qlc98KK2Od5ce0vbCiKapFsMWuvKrv++7IszonZym1jAc45yo9UU
+         +nvDCm5szmZv3DezmUyGscXzrCrSQwhXZ7h+gfBpAb06pdqZmZQqE9DFmTbhRt1A4dHH
+         6ospaMjsOB5DLmV5oStkaLgalNnEmZ3tRlH+erbaIvmwNaDF01yTcmTEfMwWWfkBtMc3
+         vuCcwJK11MSkvZ8C7Qcj/AHccwRkFqYbmHkgYmM9YLTJ1sVPbhvn36KgqVBXRNoBGvje
+         7zbMBw+UP/ACBlC1uvvrwI3psD3zvFPSPcip0NoLCA513zO20LQfynO7jGMFf/0xvx86
+         6P/Q==
+X-Gm-Message-State: AOAM530bn6BcndiuL/j7KKq0wMCrgQMuqFQmSeKUYx1fOuYxOvJkTigT
+        8SGO0GwJnpWt4SLN7If09Z7OxPhyLxLeSIptcuA=
+X-Google-Smtp-Source: ABdhPJwKJ9m5lXkGT/8CpdM5JK7H/Z3kNgE43JzWMeyOnb4h6T6DFR2bdkeoXcKbeqsMf/lKXp8z9KGwmDouu2fIoLw=
+X-Received: by 2002:a17:90a:cd:: with SMTP id v13mr5397305pjd.81.1634038627231;
+ Tue, 12 Oct 2021 04:37:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211012112730.3429157-1-alvin@pqrs.dk>
+References: <20211012092513.1349295-1-yangyingliang@huawei.com>
+In-Reply-To: <20211012092513.1349295-1-yangyingliang@huawei.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Tue, 12 Oct 2021 14:36:55 +0300
+Message-ID: <CA+U=DsrHSwaiS7mT4rcHT_ZQwfPg+-Hwm-jkib11+m7W-VA_FQ@mail.gmail.com>
+Subject: Re: [PATCH] iio: buffer: Fix double-free in iio_buffers_alloc_sysfs_and_mask()
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 01:27:31PM +0200, Alvin Šipraga wrote:
-> From: Alvin Šipraga <alsi@bang-olufsen.dk>
-> 
-> Flip the sign of a return value check, thereby suppressing the following
-> spurious error:
-> 
->   port 2 failed to notify DSA_NOTIFIER_BRIDGE_LEAVE: -EOPNOTSUPP
-> 
-> ... which is emitted when removing an unoffloaded DSA switch port from a
-> bridge.
-> 
-> Fixes: d371b7c92d19 ("net: dsa: Unset vlan_filtering when ports leave the bridge")
-> Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+On Tue, Oct 12, 2021 at 12:18 PM Yang Yingliang
+<yangyingliang@huawei.com> wrote:
+>
+> When __iio_buffer_alloc_sysfs_and_mask() failed, 'unwind_idx' should be
+> set to 'i - 1' to prevent double-free when cleanup resources.
+>
+> BUG: KASAN: double-free or invalid-free in __iio_buffer_free_sysfs_and_mask+0x32/0xb0 [industrialio]
+> Call Trace:
+>  kfree+0x117/0x4c0
+>  __iio_buffer_free_sysfs_and_mask+0x32/0xb0 [industrialio]
+>  iio_buffers_alloc_sysfs_and_mask+0x60d/0x1570 [industrialio]
+>  __iio_device_register+0x483/0x1a30 [industrialio]
+>  ina2xx_probe+0x625/0x980 [ina2xx_adc]
+>
+
+Makes sense.
+Thanks for the catch.
+
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: ee708e6baacd ("iio: buffer: introduce support for attaching more IIO buffers")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > ---
->  net/dsa/switch.c | 2 +-
+>  drivers/iio/industrialio-buffer.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/dsa/switch.c b/net/dsa/switch.c
-> index 1c797ec8e2c2..6466d0539af9 100644
-> --- a/net/dsa/switch.c
-> +++ b/net/dsa/switch.c
-> @@ -168,7 +168,7 @@ static int dsa_switch_bridge_leave(struct dsa_switch *ds,
->  		if (extack._msg)
->  			dev_err(ds->dev, "port %d: %s\n", info->port,
->  				extack._msg);
-> -		if (err && err != EOPNOTSUPP)
-> +		if (err && err != -EOPNOTSUPP)
->  			return err;
->  	}
->  
-> -- 
-> 2.32.0
-> 
-
-Ouch, good catch.
-
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+>
+> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> index a95cc2da56be..5f4bd0b73d03 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+> @@ -1616,7 +1616,7 @@ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
+>                 buffer = iio_dev_opaque->attached_buffers[i];
+>                 ret = __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev, i);
+>                 if (ret) {
+> -                       unwind_idx = i;
+> +                       unwind_idx = i - 1;
+>                         goto error_unwind_sysfs_and_mask;
+>                 }
+>         }
+> --
+> 2.25.1
+>
