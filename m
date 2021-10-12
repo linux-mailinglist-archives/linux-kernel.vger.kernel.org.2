@@ -2,165 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B311542A4F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4A242A4FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236667AbhJLMyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:54:40 -0400
-Received: from mail-bn8nam12on2040.outbound.protection.outlook.com ([40.107.237.40]:17120
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        id S236588AbhJLM57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 08:57:59 -0400
+Received: from mail-dm6nam08on2054.outbound.protection.outlook.com ([40.107.102.54]:8608
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236559AbhJLMyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:54:39 -0400
+        id S236326AbhJLM56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 08:57:58 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ntnkvd+WePNwTNA7Zyg/RvI54Igt04Dikj+/a/7QQM8OL7Xsof0ps3Cishi53qogcUmGeROQ6W8PELhvu5U2lUFt25xvcozauaaFO2X06y2BWh5s5y850mg8O4y8BVQg6rXUOcsYU3uySa3qpm1RBCp5/N+PbeMuGRy8ebspBJpervRTwjSRSgyseDndpSMr93TWOgEYNWfLvMoPdBiciwq6wZ+D9ogvfTDlaBVifRGeA5W/cUYCoQ0qnFRePvq473Ky+DN9D5J48bJOxK7BF7IA9qN5Xr05Axq64QIM0bC94MBBovUYqZtsxlLhtufuv/9RfhyGhTkv2dp7Bh9e9g==
+ b=Yqdbqxp9wQ8FjpGe1Xin/+YVCnB+7szTxAyoD1l+Dx/FDo7atRqJSLbacYBtOxdfckq+HiVZHpQlilJMBosbYF1Xu1oojgB2/mXvomDQItlqEGg2Xbjy5zMxfo8C1HXYbJ+H/EcDFwPChOzBjcy+nXMpOMP23UxzGsTpK3NcXl+e9+TgP25s2iuTUDyYjcQFEK19GHXQwDI020aZMRxSDeBxZlKZWK38tUKNVkksqGgz+ujoPqQKXv4A86N0JXMLZgLQmd48WgW/FtRljYrwgAYRGUb/g4gd8UkETcW9QKXhXwd7TAX7hrJODqOGBbtUrh1a35nbP54zpL890ZAnkQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eQhyerLQo9X0fdHLPs91FE+EVOoKRdcd039OVdOJpbs=;
- b=goR/LFqD9E3eYeNYCluOXTpSUw+qA3EdadfhgIQQ2AscSilDaDTeEgtf4fu5BllZUbtCRT+pIRan8cvGI7ZOJ3CoCRYoJxdCTlFj6BGJusWdJK56EVdX+H35xLkaZCZg/bEiFVTl7skiEQJGqGFNZj6RE1QHkx6jcRqLCJGoLOTJxBRjGALOj8OZYSqx1BHO2UDCLle+q7t7P7mogb3Lnry8TTkclIR0+CGsdbIdhYM5CkMua6sMHp/oKCZpBV5/mOcDkZZbPsdaeU5p1mjuds2vLrR6Wm9IObgqeqX2W7Ir8C/2v/u97nNgXVTdwEBQ3g9QuGS+ka7fm+oSy/EZdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=izrEM28SWfUf2L0HmJiijQQUGtrY9e4uK6O3EZtXOzE=;
+ b=oU6qxA3pzBx5RdT3asqAD8dL1//y3eJAbGYhpt6ZBlmcZdluOZ7OrxJtudxkNzi2/GbCiPWjt/+iWR6HjxYhvWk/0Ja9+cfscItukZDQIG+ZadbRNVHJPov87qy1Ojhbv/phcKsbluVYOvB0FnmRIg72cfuYrLxbVuaAOhJCH1fCzAHpHKQSjhyOqRuoHYs0kk3T3ag3Drgcsyw7kYQHI/OXd/FHj7q+JGjS/3D9uEORAvDz+EjxHRf+lzz0t3qx80/bKDLsh28Oa99nj/YETKuQbANurLWYVb3nLAEjx6tnLCCqnkrHl5uktLek/B95jpQp1l+NSLsMy6qEYXwTqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eQhyerLQo9X0fdHLPs91FE+EVOoKRdcd039OVdOJpbs=;
- b=NvLfW9MrWuJBiskEUN5JKFfApxN3zNM/wZg2fU6SsFjufGhncFpH5lfQB+cHLdGa2M//AY14sPPvg0tPBMXAVXLaVeVLH4AVu9+fgkZPASQTztf/aGv4jp4qeQQwsnluuhHrDuQoz2XjEbV1VEPYpIJ12mm4xBJBSn7jsVBh1tLOb5WbLGuNtdlPDfTxCyN/oYcxR3gTtzrvOdhAFa7hbjX/dNBeVjs18D4/uWRLUsdPYdLkMoT33AyjAIwFjDrnuTrr1cPnwHeJf20m9Vm3KOX0dQ2VN61Rl5ESevIqp69M7grdj/JwqOoUCk8IF8NtWP67PQw8AFSt4ZPzNL7LAQ==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5080.namprd12.prod.outlook.com (2603:10b6:208:30a::6) with
+ bh=izrEM28SWfUf2L0HmJiijQQUGtrY9e4uK6O3EZtXOzE=;
+ b=rH5mSnAe0itPAovvykn/hA+2y2SdBbBrNpVnWHUwgIOzQJs0InF6rrhi49h5/hdei8Q/7JeMW6H8LgV+mpbmeCnmEV8miBaUhz6KvDLUrBjPbXtDtpLnMSk7O3rNdNbWNYAYTCFqy/mmOjUGlXqpq1fES8+dI2rXrEApyyIiq/c=
+Received: from DS7PR03CA0343.namprd03.prod.outlook.com (2603:10b6:8:55::17) by
+ CY4PR1201MB0023.namprd12.prod.outlook.com (2603:10b6:910:1f::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.24; Tue, 12 Oct
- 2021 12:52:36 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%6]) with mapi id 15.20.4608.014; Tue, 12 Oct 2021
- 12:52:36 +0000
-Date:   Tue, 12 Oct 2021 09:52:34 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH mlx5-next 1/7] RDMA/mlx5: Don't set esc_size in user mr
-Message-ID: <20211012125234.GU2744544@nvidia.com>
-References: <cover.1634033956.git.leonro@nvidia.com>
- <f60a002566ae19014659afe94d7fcb7a10cfb353.1634033956.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f60a002566ae19014659afe94d7fcb7a10cfb353.1634033956.git.leonro@nvidia.com>
-X-ClientProxiedBy: BL1P223CA0019.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:208:2c4::24) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ 2021 12:55:53 +0000
+Received: from DM6NAM11FT060.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:8:55:cafe::be) by DS7PR03CA0343.outlook.office365.com
+ (2603:10b6:8:55::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend
+ Transport; Tue, 12 Oct 2021 12:55:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT060.mail.protection.outlook.com (10.13.173.63) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4587.18 via Frontend Transport; Tue, 12 Oct 2021 12:55:53 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 12 Oct
+ 2021 07:55:51 -0500
+Date:   Tue, 12 Oct 2021 07:55:36 -0500
+From:   Michael Roth <michael.roth@amd.com>
+To:     Marc Orr <marcorr@google.com>
+CC:     <linux-kselftest@vger.kernel.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
+        Nathan Tempelman <natet@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        "Sean Christopherson" <seanjc@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Ricardo Koller <ricarkol@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Subject: Re: [RFC 06/16] KVM: selftests: add library for creating/interacting
+ with SEV guests
+Message-ID: <20211012125536.qpewvk6cou3mxya7@amd.com>
+References: <20211005234459.430873-1-michael.roth@amd.com>
+ <20211006203710.13326-1-michael.roth@amd.com>
+ <CAA03e5EmnbpKOwfNJUV7fog-7UpJJNpu7mQYmCODpk=tYfXxig@mail.gmail.com>
+ <20211012011537.q7dwebcistxddyyj@amd.com>
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1P223CA0019.NAMP223.PROD.OUTLOOK.COM (2603:10b6:208:2c4::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25 via Frontend Transport; Tue, 12 Oct 2021 12:52:35 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1maHGk-00Duup-MF; Tue, 12 Oct 2021 09:52:34 -0300
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211012011537.q7dwebcistxddyyj@amd.com>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8d0e75a6-817a-4bfa-3faa-08d98d7f2a26
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5080:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB50809EF3BC33FA65D3ABA889C2B69@BL1PR12MB5080.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Office365-Filtering-Correlation-Id: fa65b257-4674-473c-1796-08d98d7f9fea
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB0023:
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB0023B688AFBAA7BA2CA4488295B69@CY4PR1201MB0023.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oQU7IyD77nasmsBalY/cto2oxXmn5b6cZiUVC2gwxdjOltZWbW2npsyMfus8mYKk9vdtUDpH4gjmdeheioxZON3A37B16MMyXC44W0uZA3URxQSDWcK1h9B/Lesa2gvCV9zFU52eVitaWSFLJym9M+knGVBX+4GF85mZcU+fN5IvX4EWGpotWUoZsePJvHm2oJ87DDxoXxe1HsRhWA7Uq3NzjoW19MQFoyyseR+ScvglzOmD8Niel/HSVB/dx4J9Iw0z91VoHoGo8THU8L7hJl+obXi3fHKPhwkK0ZkRMUT0fWvDSiCCMQEKhZPYZhORDAm1NJurrbUJMsgzlKCG6gajXQFMtFn97IT4lzWkfZ6vCOk6XK/sL6kD7j9wKgOWPE1xrtvS/f71NmjOnqxmvG7NCZ+iA7vg1/Deh66UXnHhI1cKgccmWSbUSQmx3t3qifatSFfMAXEwHyxkVtvAIhabiQEI35DXo+oDEB1qFUmld2AeqCT0gb10fZ07jO9ReVtVeJ7dJvhds0oqSRRKuTBeeDVbaod70iTmMj0dwq5OELGd+G/FbGOvwtA89E1Yv2xfsA3Wcd/9fo6rCTTv6R/3vu0A8nmxU18ipDeW83OJ7rV9UcRvCIgOoD/RfXHqa4n+zZXnbHQflzwUzzAUwQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(1076003)(8676002)(9746002)(86362001)(26005)(54906003)(6916009)(426003)(38100700002)(9786002)(186003)(33656002)(5660300002)(316002)(36756003)(2906002)(4326008)(66556008)(7416002)(508600001)(66946007)(66476007)(8936002)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6cXjIcgfR5QTwhoVeBLkOMKEdOBSMYhJlR6cBYvXxNURNinfsO2PTf0IhBVS?=
- =?us-ascii?Q?NJpMmlMpGtDfhkB3LcEQhDPcNxFDrc4JwzxKSRn9ZHOq4TrQKVM7wE8RJ0NB?=
- =?us-ascii?Q?Y6bGqhVS4TrVZrIn5e/SBJC3NN3ZGz5+eNblgpZ8svs5jb7pL9rUcS9RWqEb?=
- =?us-ascii?Q?CAsH3Ie01UKpgg1xwWN8KxRSRnb1CpvcOXg3WwwrX7G3um7thvJ7LSdvmJHd?=
- =?us-ascii?Q?9t98EOl+cNV/MrDnDfFemJFiq7plrvWo2PuroFMVZIv/xh+J0C+q73JWo3oW?=
- =?us-ascii?Q?9tWLwXYlAZ6COiJRL0xJOJJx5H5kjtIJOMwSLhr78pFrcMKkeoGtbUF41STD?=
- =?us-ascii?Q?kZuNLL7ooITbl6jxMnfHY+940zfmQXKrgyfJWgqVSB/FK6MWzpd2DUe8PIIb?=
- =?us-ascii?Q?CpkC4ZnJyEJMVvvBoU0ectSUIYarQ6eAc+vYzFa4S8NH/n0zwdqK6RS6h9lG?=
- =?us-ascii?Q?4oOy16db0fWK5+VM5dFhmx44LsyYSNMlLQJmlVQg3YC4H4n44jhqJyuLXnPo?=
- =?us-ascii?Q?oaAOX56V8uP/cBAwjPT8QA6wIcNc2bkpJYcMttCzJF6gzPdkhIDUM2vJRoT4?=
- =?us-ascii?Q?WZ/Ko8iuSy/wYkAXNWJWwgHl68f0npacxO2wDNG4r5lciV9QPrU1KBtyILtg?=
- =?us-ascii?Q?UwfippQv9Ss47l+vzALpsrxxYnAg7wamOkncfBkVIUjfJbNVBuyMZO8gKQKy?=
- =?us-ascii?Q?zsFlEXHHNP/RcTVa6ludWF8j1vPfkcfIHgYrFSM0nNZ4ATW6ybQzEdBdId4j?=
- =?us-ascii?Q?kZakqTfZ2a8lZhL+4mUnNB0us7RcTh/fPrZdbe/9hUQ+Zyz63XiPENT9v7qi?=
- =?us-ascii?Q?vFd1lmRZORGr+71pexRqBbX2mNLwEfr48uWKySrppuPjvG/evXWZgNeUmNi+?=
- =?us-ascii?Q?nE5bzpFN/JE+1qYMHs+3geQDnFwdC5Gb2gRR7WnddUyMJOO9LMrCdAadjnRV?=
- =?us-ascii?Q?I5QoMS9J+w0Z6ZJ1JzhuaL5sGt2czNEFg2JBwlyp93yCrHB9g1jwGGq7K79X?=
- =?us-ascii?Q?4n6oKIpHdrxooqEQowwGoHYQI1nyuPfHJOWdTyesREA7qLDOzVxQaIxfssVa?=
- =?us-ascii?Q?Zv0JGgeQ5sqjU1NN8G3LWxJpZkUPQd8PonUkVOONS8B/TTutfntcBnxFR/rg?=
- =?us-ascii?Q?BzVTzsgmXO+Isy9HSB/WEDaG9I2Wakh5RmWCneA9h1SdIkVxlcvBR+BnqC9m?=
- =?us-ascii?Q?tSC16bEdUDWxd+lFJ3TTBWXUK5YpAzlqe5ng3seGPqcv6M5BTK1Ir7D4jYpP?=
- =?us-ascii?Q?d94ZMd6BqfVZWlS0TzVrl5shfmtVA3gKsTj5Id134OH6LV6pVI++A9l7Gkb7?=
- =?us-ascii?Q?tnugBvdGIaAOR4i62av2hn4w?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d0e75a6-817a-4bfa-3faa-08d98d7f2a26
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2021 12:52:35.8960
+X-Microsoft-Antispam-Message-Info: ai5dAXNdJKKb42SL2bp+J2yCCyYF4XDk2GmyZ+8Q+qi+JwbJcNSh/x7JjhatULu2SGXpqcA1IzsDgNw4DXuPOXo254x17moaas02emX/2UPlbRbQmkI+tlHB44RvZ0MTcEK/DZPas/nP0cgb+pNOh0V2AiX8PJbq0fwv0GaOz7ertyncaSB0jZDmavs1/uaHD0qK0a0U7IgJGXhW8iAHmFTUKg2AL1qXCUetJ579XoQ9C0jTM8N1M9jEifjY5TBe1TEhbZqdZ3gWx+Lzk+MBZXsciVlnchDHxfhf3bL5KqO1vWUkyNrXay6tPmO3AGC+7dNB/RNdwdzJMu738SCzbH7PfGatQk57EA46UsexhOG0jwfWKxr+F2tQe3HImOOG+KyWZZZmE7sklmLm3xkNk10Y+r8l+E7QbF1ZAfWlv4FfhUjmKhrEEaLGyVXpaizsKMaxtvLuru6COP2ZpIeG+pHv2bD6M8JNa0Z4KHI/ysMGaOGyGvoNgU76ikZztpF9XmgXXtxnFTwQhqjbTlPgDqz3Ho3GuYMcFSAJBT66KOKg2Yk/klL1pkDqmtrhWQ3oy7XQD7PJoqSKMzshMOFwgWILviEMHXU8XMa3Xs/NqYmz+Qca6sgewDP6ER86fbqfxnf9KfkTnhITvDj925Q4QytomO5eaRVi42tdNEPDvX73cfKlWs4eK4+gjZJJTskN29ED4IJVSLhSwJKa8EEiQaUbY7HmMuvcYUxCqWKypgQ=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(8676002)(316002)(86362001)(508600001)(2906002)(83380400001)(70206006)(6666004)(70586007)(47076005)(5660300002)(36756003)(7416002)(356005)(36860700001)(16526019)(186003)(44832011)(26005)(1076003)(82310400003)(54906003)(426003)(2616005)(8936002)(336012)(4326008)(53546011)(81166007)(6916009)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2021 12:55:53.2144
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Q1HPmQLyNRu+CL4n82WTp0fbrsjnnxIF+78Bfty6RGF6KZ/eMEzYZFyXl0nKnCTv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5080
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa65b257-4674-473c-1796-08d98d7f9fea
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT060.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 01:26:29PM +0300, Leon Romanovsky wrote:
-> From: Aharon Landau <aharonl@nvidia.com>
+On Mon, Oct 11, 2021 at 08:15:37PM -0500, Michael Roth wrote:
+> On Sun, Oct 10, 2021 at 08:17:00PM -0700, Marc Orr wrote:
+> > On Wed, Oct 6, 2021 at 1:40 PM Michael Roth <michael.roth@amd.com> wrote:
+> > >
+> > > Add interfaces to allow tests to create/manage SEV guests. The
+> > > additional state associated with these guests is encapsulated in a new
+> > > struct sev_vm, which is a light wrapper around struct kvm_vm. These
+> > > VMs will use vm_set_memory_encryption() and vm_get_encrypted_phy_pages()
+> > > under the covers to configure and sync up with the core kvm_util
+> > > library on what should/shouldn't be treated as encrypted memory.
+> > >
+> > > Signed-off-by: Michael Roth <michael.roth@amd.com>
+> > > ---
+> > >  tools/testing/selftests/kvm/Makefile          |   1 +
+> > >  .../selftests/kvm/include/x86_64/sev.h        |  62 ++++
+> > >  tools/testing/selftests/kvm/lib/x86_64/sev.c  | 303 ++++++++++++++++++
+> > >  3 files changed, 366 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/kvm/include/x86_64/sev.h
+> > >  create mode 100644 tools/testing/selftests/kvm/lib/x86_64/sev.c
+> > >
+> > > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> > > index 5832f510a16c..c7a5e1c69e0c 100644
+> > > --- a/tools/testing/selftests/kvm/Makefile
+> > > +++ b/tools/testing/selftests/kvm/Makefile
+> > > @@ -35,6 +35,7 @@ endif
+> > >
+> > >  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
+> > >  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
+> > > +LIBKVM_x86_64 += lib/x86_64/sev.c
+> > 
+> > Regarding RFC-level feedback: First off, I'm super jazzed with what
+> > I'm seeing so far! (While this is my first review, I've been studying
+> > the patches up through the SEV boot test, i.e., patch #7). One thing
+> > I'm wondering is: the way this is structured is to essentially split
+> > the test cases into non-SEV and SEV. I'm wondering how hard it would
+> > be to add some flag or environment variable to set up pre-existing
+> > tests to run under SEV. Or is this something you all thought about,
+> > and decided that it does not make sense?
+> > 
+> > Looking at how the guest memory is handled, it seems like it's not far
+> > off from handling SEV transparently across all test cases. I'd think
+> > that we could just default all memory to use the encryption bit, and
+> > then have test cases, such as the test case in patch #7, clear the
+> > encryption bit for shared pages. However, I think the VM creation
+> > would need a bit more refactoring to work with other test cases.
 > 
-> reg_create() is used for user MRs only and should not set desc_size at
-> all. Attempt to set it causes to the following trace:
+> I think it's possible, but there's a few missing pieces:
 > 
-> BUG: unable to handle page fault for address: 0000000800000000
-> PGD 0 P4D 0
-> Oops: 0000 [#1] SMP PTI
-> CPU: 5 PID: 890 Comm: ib_write_bw Not tainted 5.15.0-rc4+ #47
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:mlx5_ib_dereg_mr+0x14/0x3b0 [mlx5_ib]
-> Code: 48 63 cd 4c 89 f7 48 89 0c 24 e8 37 30 03 e1 48 8b 0c 24 eb a0 90 0f 1f 44 00 00 41 56 41 55 41 54 55 53 48 89 fb 48 83 ec 30 <48> 8b 2f 65 48 8b 04 25 28 00 00 00 48 89 44 24 28 31 c0 8b 87 c8
-> RSP: 0018:ffff88811afa3a60 EFLAGS: 00010286
-> RAX: 000000000000001c RBX: 0000000800000000 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000800000000
-> RBP: 0000000800000000 R08: 0000000000000000 R09: c0000000fffff7ff
-> R10: ffff88811afa38f8 R11: ffff88811afa38f0 R12: ffffffffa02c7ac0
-> R13: 0000000000000000 R14: ffff88811afa3cd8 R15: ffff88810772fa00
-> FS:  00007f47b9080740(0000) GS:ffff88852cd40000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000800000000 CR3: 000000010761e003 CR4: 0000000000370ea0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  mlx5_ib_free_odp_mr+0x95/0xc0 [mlx5_ib]
->  mlx5_ib_dereg_mr+0x128/0x3b0 [mlx5_ib]
->  ib_dereg_mr_user+0x45/0xb0 [ib_core]
->  ? xas_load+0x8/0x80
->  destroy_hw_idr_uobject+0x1a/0x50 [ib_uverbs]
->  uverbs_destroy_uobject+0x2f/0x150 [ib_uverbs]
->  uobj_destroy+0x3c/0x70 [ib_uverbs]
->  ib_uverbs_cmd_verbs+0x467/0xb00 [ib_uverbs]
->  ? uverbs_finalize_object+0x60/0x60 [ib_uverbs]
->  ? ttwu_queue_wakelist+0xa9/0xe0
->  ? pty_write+0x85/0x90
->  ? file_tty_write.isra.33+0x214/0x330
->  ? process_echoes+0x60/0x60
->  ib_uverbs_ioctl+0xa7/0x110 [ib_uverbs]
->  __x64_sys_ioctl+0x10d/0x8e0
->  ? vfs_write+0x17f/0x260
->  do_syscall_64+0x3c/0x80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 1) As you indicated, existing tests which rely on vm_create(),
+>    vm_create_default(), vm_create_default_with_vcpus(), etc. would either
+>    need to be updated with whatever new interface provides this 'use-sev'
+>    flag, or it would need to happen underneath the covers based on said
+>    environment variable/global/etc. There's also the question of where
+>    to hook in the sev_vm_launch_start() hooks. Maybe the first time a
+>    vcpu_run() is issued? Or maybe some explict call each test will need
+>    to be updated to call just prior to initial execution.
 > 
-> Fixes: a639e66703ee ("RDMA/mlx5: Zero out ODP related items in the mlx5_ib_mr")
+> 2) Many of the existing tests use the GUESY_SYNC/ucall stuff to handle
+>    synchronization between host userspace and guest kernel, which relies on
+>    guests issuing PIO instructions to particular port addresses to cause an
+>    exit back to host userspace, with various parameters passed via register
+>    arguments.
+> 
+>    - For SEV this would almost work as-is, but some tests might rely on
+>      things like memory addresses being passed in this way so would need
+>      to audit the code and mark that memory as shared where needed.
+> 
+>    - For SEV-ES/SEV-SNP, there's a bit more work since:
+> 
+>      - The registers will not be accessible through the existing
+>        KVM_GET_REGS mechanism. It may be possible to set some flag/hook to
+>        set/access arguments through some other mechanism like a shared
+>        buffer for certain VM types though.
+> 
+>      - Additionally, the #VC handler only supports CPUID currently, and
+>        leverages that fact to avoid doing any significant instruction
+>        decoding. Instead the SEV tests use HLT instructions to handle exits
+>        to host userspace, which may not work for some tests. So unless
+>        there's some other mechanism that SEV/non-SEV tests could utilize
+>        rather that PIO, the #VC handler would need to support PIO, which
+>        would be nice to have either way, but would likely involve
+>        pulling in the intruction decoder library used in the kernel, or
+>        some subset/re-implementation of it at least.
+> 
+> 3) Similar to SEV-ES/SEV-SNP requirements for 1), tests which generate
+>    PIO/MMIO and other NAE events would need appropriate support for those
+>    events in the #VC handler. Nice-to-have either way, but not sure atm
+>    how much it would be to implement all of that. Also any tests relying
+>    on things like KVM_GET_REGS/KVM_GET_SREGS are non-starters.
 
-Can you explain why this is crashing?
+One more I should mention:
 
-reg_create isn't used on the ODP implicit children path.
-
-Jason
+4) After encryption, the page table is no longer usable for translations by
+   stuff like addr_gva2gpa(), so tests would either need to be
+   audited/updated to do these translations upfront and only rely on
+   cached/stored values thereafter, or perhaps a "shadow" copy could be
+   maintained by kvm_util so the translations will continue to work
+   after encryption.
