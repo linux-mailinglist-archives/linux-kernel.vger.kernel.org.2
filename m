@@ -2,144 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FA8429D72
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A2D429D7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232707AbhJLGFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 02:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232431AbhJLGFZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:05:25 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEA1C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 23:03:13 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id n7so13565657iod.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 23:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o+7aPzNJtII1336x9PZ93O1J12OEBlr516bC0jjHtfA=;
-        b=evRelUUN+ob8U7+qNCBffGX/v+NPxEOvvw/qBAkEoohKZ8Tvcr8W1uNowd6wEeAJn9
-         LIEIMWPe7wM12PlnkRGeDrh+FglVJzfXqAVHscsF+By4fhkTRYL7hChN9ctQUPr9KZ35
-         mfFL9L0HAr69nrpHyg50XfZv1hxRia5d3ahJ/IQ5qTB0l4jNRnV60gOafT8liiPeA6YE
-         HS8Y1/kkxlfgxfCDfZHN48883zbC9Yz4KZoMDHLUCFC5ONxspVtAliuEibQHApia1eHl
-         QJ+McoXSldP/PzL56NoXIl+qpv077uNNqcKpcCYIBZ2xLGragDCOLBOOBueltL9OXPfn
-         +6lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o+7aPzNJtII1336x9PZ93O1J12OEBlr516bC0jjHtfA=;
-        b=kPB9uZjKqUt94ilnaYWSKcvlanJZUo0yGQNxQVICjLxpmqbXgn1owVPKbX5POqubqY
-         JNQuqpi6qs65EdA7FcV45aB24E6airc/Tkj+HfWwO+Et2e6VxB4MFt7AuHzH0FbWBfh8
-         YMQ55hvp1JOFIDjIb7529bZnRcXadUWW4/wPpJRSGEL7PYZ/ePNx22iP4Kq/T3diMK+0
-         c2svxf1TV2Uh/oFn0KtQ+xX1r+li8zblnOP78EKYNN3juioEjiqdJWZeVilS4ApUbVv2
-         JAvVac9ws1mYWilf7DLHeSYOzWu9132gBp6oWDNhMeoaARGswkR+Q6QpNWKwavl8HEKg
-         HTGA==
-X-Gm-Message-State: AOAM530gm1ZKR4RMJQ+GzrAvCINIg0uHHi8OlzctRD5C5IEMuNHaLL6S
-        6u9RL6qCyyIXmmLjN3kpoMbMyUXNy84Vx5Wio6Q=
-X-Google-Smtp-Source: ABdhPJxn6Fo5mvRxLgjOoz8tCevc84MTHudNBLPA9klwXomm8fBwrEQ3ddhHkhPK27GV3H7OUOzFp8uUV9llz0ITlKE=
-X-Received: by 2002:a05:6602:140d:: with SMTP id t13mr9598815iov.120.1634018592437;
- Mon, 11 Oct 2021 23:03:12 -0700 (PDT)
+        id S232853AbhJLGKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 02:10:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232431AbhJLGKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 02:10:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E5F661076;
+        Tue, 12 Oct 2021 06:08:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634018926;
+        bh=G5sKg3ur0G15l4uMWAUDfX+JPW8gLjBXoFrTph+IFjM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m1ktLpcAI9KZGTeL7NeSwH7jPpYd2Nob8gRqAjbdt/jKfcXjbg3QXtXxmIK7ULuu2
+         xXIsenm5rCQplL+v6lb72J0ua4mQ6Z/IA+q17UKjFEH+KXw4NHF79btjJXtIGxIU1F
+         b46TpYoS9QX1DPmuX/AGsM9XwSBrANNORc4xlzJV8zcamevi8K1Ft1SJJ3lFMLYrA6
+         P2BKnEixcKDleXTCAb5GCVvjMK9OpwyaDLchCT1HJUudiZCC4w+dNxLodLukQfK9u3
+         x0qEr9KGM5CmM0FRssOFkmt9hIHiIsklpzbeBhWGbM6iqVDaRzvfgyM+VptB6sA5TJ
+         1E0NCTxrY9lSQ==
+Date:   Tue, 12 Oct 2021 09:08:41 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: Panic on kmemleak scan
+Message-ID: <YWUmaV7pDBX9zSOl@kernel.org>
+References: <8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org>
 MIME-Version: 1.0
-References: <20211012032333.184581-1-davidcomponentone@gmail.com> <bcf19290a2ed959fdf8d80a3668a19e79c87ca7f.camel@perches.com>
-In-Reply-To: <bcf19290a2ed959fdf8d80a3668a19e79c87ca7f.camel@perches.com>
-From:   David Yang <davidcomponentone@gmail.com>
-Date:   Tue, 12 Oct 2021 14:03:00 +0800
-Message-ID: <CA+E=9oto+8PptNNSzwkwrRd+_Ty4GpeyxE=xAggTa140pJxk9A@mail.gmail.com>
-Subject: Re: [PATCH virt-pci] Fix application of sizeof to pointer
-To:     Joe Perches <joe@perches.com>
-Cc:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
-        johannes.berg@intel.com, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm agree with you. Using the "buf->data" instead is better.
+(added Catalin)
 
+On Mon, Oct 11, 2021 at 02:23:31PM +0300, Vladimir Zapolskiy wrote:
+> Hello Mike,
+> 
+> commit a7259df767 ("memblock: make memblock_find_in_range method private") [1]
+> invokes a kernel panic while running kmemleak on OF platforms with nomaped
+> regions, basically it's similar to an issue reported and fixed earlier by [2]:
+> 
+>   Unable to handle kernel paging request at virtual address ffff000021e00000
 
-On Mon, Oct 11, 2021 at 08:48:27PM -0700, Joe Perches wrote:
-> On Tue, 2021-10-12 at 11:23 +0800, davidcomponentone@gmail.com wrote:
-> > From: David Yang <davidcomponentone@gmail.com>
-> >
-> > The coccinelle check report:
-> > "./arch/um/drivers/virt-pci.c:192:20-26:
-> > ERROR: application of sizeof to pointer"
-> > Using the "sizeof(buf->data)" to fix it.
-> []
-> > diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-> []
-> > @@ -189,7 +189,7 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
-> >     buf = get_cpu_var(um_pci_msg_bufs);
-> >     data = buf->data;
-> >
-> > -   memset(data, 0xff, sizeof(data));
-> > +   memset(data, 0xff, sizeof(buf->data));
->
-> Perhaps change this to:
->
->       memset(buf->data, 0xff, sizeof(buf->data));
->       data = buf->data;
->
-> but honestly, the indirection to data doesn't make the code
-> much more readable so maybe just remove data altogether.
-> ---
->  arch/um/drivers/virt-pci.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-> index c080666330234..75e05ead97b9a 100644
-> --- a/arch/um/drivers/virt-pci.c
-> +++ b/arch/um/drivers/virt-pci.c
-> @@ -180,7 +180,6 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
->       };
->       /* buf->data is maximum size - we may only use parts of it */
->       struct um_pci_message_buffer *buf;
-> -     u8 *data;
->       unsigned long ret = ~0ULL;
->
->       if (!dev)
-> @@ -189,7 +188,7 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
->       buf = get_cpu_var(um_pci_msg_bufs);
->       data = buf->data;
->
-> -     memset(data, 0xff, sizeof(data));
-> +     memset(buf->data, 0xff, sizeof(buf->data));
->
->       switch (size) {
->       case 1:
-> @@ -204,22 +203,22 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
->               goto out;
->       }
->
-> -     if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, 8))
-> +     if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, buf->data, 8))
->               goto out;
->
->       switch (size) {
->       case 1:
-> -             ret = data[0];
-> +             ret = buf->data[0];
->               break;
->       case 2:
-> -             ret = le16_to_cpup((void *)data);
-> +             ret = le16_to_cpup((void *)buf->data);
->               break;
->       case 4:
-> -             ret = le32_to_cpup((void *)data);
-> +             ret = le32_to_cpup((void *)buf->data);
->               break;
->  #ifdef CONFIG_64BIT
->       case 8:
-> -             ret = le64_to_cpup((void *)data);
-> +             ret = le64_to_cpup((void *)buf->data);
->               break;
->  #endif
->       default:
->
->
+Does this virtual address correspond to a nomap area?
+
+Can you check if this patch helps:
+
+diff --git a/mm/memblock.c b/mm/memblock.c
+index 184dcd2e5d99..5c3503c98b2f 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -936,7 +936,12 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
+  */
+ int __init_memblock memblock_mark_nomap(phys_addr_t base, phys_addr_t size)
+ {
+-	return memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
++	int ret = memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
++
++	if (!ret)
++		kmemleak_free_part_phys(base, size);
++
++	return ret;
+ }
+ 
+ /**
+
+>   [...]
+>     scan_block+0x64/0x170
+>     scan_gray_list+0xe8/0x17c
+>     kmemleak_scan+0x270/0x514
+>     kmemleak_write+0x34c/0x4ac
+> 
+> I believe it would be a trivial problem to correct for you, thank you in
+> advance!
+> 
+> [1] https://lore.kernel.org/all/20210816122622.30279-1-rppt@kernel.org/T/#u
+> [2] https://lore.kernel.org/lkml/20190119132832.GA29881@MBP.local/t/#m032124f36c07
+> 
+> --
+> Best wishes,
+> Vladimir
+
+-- 
+Sincerely yours,
+Mike.
