@@ -2,45 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11ADE42A26A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C36442A271
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236006AbhJLKlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:41:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48146 "EHLO mail.kernel.org"
+        id S236061AbhJLKmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:42:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235881AbhJLKla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:41:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E82B661050;
-        Tue, 12 Oct 2021 10:39:26 +0000 (UTC)
-Date:   Tue, 12 Oct 2021 12:39:24 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] coredump: Remove redundant initialization of
- variable core_waiters
-Message-ID: <20211012103924.nem4ol3pxblcph3q@wittgenstein>
-References: <20211011131635.30852-1-colin.king@canonical.com>
+        id S235881AbhJLKmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:42:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 90C9E61050;
+        Tue, 12 Oct 2021 10:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634035207;
+        bh=nnjTj0Y9hAswpZ09sM7G6s00RB7D+qpeMVe4h5mKLoE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=mKCd3ByfYUSpIOPEPwJzkPMQyyY7q1Gc1Su5O7OENDmgvDxBjo6whiGDM361q8m34
+         7RoLeVMRqyYlhPv7N5b+yC0awWVioZ2p2eQ1wsKZmFax6xKYOawu6uE2LdhQCVRrsM
+         ejv3+xqdLRS+0LzS9AlLAx9+0pdRSfNtx2CrklMIFUKJrbRkqChBeS8AwqjipNGojU
+         AIOxfberTUbez2bTRAUrUtOAa4LVDg8HrnVs+xnig3VcH8nS43MdM7taAwH+6+WkcC
+         L0nr7/8ljjFRtOltwF3ivGFSgMHWMxGSC8R5+ypBjV/pAd4G+8l2potQNFWdeXR444
+         l7PiLdwpuqd/w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 760E2609EF;
+        Tue, 12 Oct 2021 10:40:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211011131635.30852-1-colin.king@canonical.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 net] net: dsa: microchip: Added the condition for
+ scheduling ksz_mib_read_work
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163403520747.25122.15656227462874718417.git-patchwork-notify@kernel.org>
+Date:   Tue, 12 Oct 2021 10:40:07 +0000
+References: <20211011154808.25820-1-arun.ramadoss@microchip.com>
+In-Reply-To: <20211011154808.25820-1-arun.ramadoss@microchip.com>
+To:     Arun Ramadoss <arun.ramadoss@microchip.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        george.mccollister@gmail.com, kuba@kernel.org, davem@davemloft.net,
+        olteanv@gmail.com, f.fainelli@gmail.com, vivien.didelot@gmail.com,
+        andrew@lunn.ch, UNGLinuxDriver@microchip.com,
+        woojung.huh@microchip.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 02:16:35PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The variable core_waiters is being initialized with a value that is never
-> read, it is being updated later on. The assignment is redundant and can
-> be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
+Hello:
 
-Thanks!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
+
+On Mon, 11 Oct 2021 21:18:08 +0530 you wrote:
+> When the ksz module is installed and removed using rmmod, kernel crashes
+> with null pointer dereferrence error. During rmmod, ksz_switch_remove
+> function tries to cancel the mib_read_workqueue using
+> cancel_delayed_work_sync routine and unregister switch from dsa.
+> 
+> During dsa_unregister_switch it calls ksz_mac_link_down, which in turn
+> reschedules the workqueue since mib_interval is non-zero.
+> Due to which queue executed after mib_interval and it tries to access
+> dp->slave. But the slave is unregistered in the ksz_switch_remove
+> function. Hence kernel crashes.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,net] net: dsa: microchip: Added the condition for scheduling ksz_mib_read_work
+    https://git.kernel.org/netdev/net/c/ef1100ef20f2
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
