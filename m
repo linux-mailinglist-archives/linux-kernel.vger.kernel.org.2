@@ -2,93 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A2D429D7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67030429D80
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbhJLGKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 02:10:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51722 "EHLO mail.kernel.org"
+        id S232856AbhJLGNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 02:13:15 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:57903 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232431AbhJLGKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:10:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E5F661076;
-        Tue, 12 Oct 2021 06:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634018926;
-        bh=G5sKg3ur0G15l4uMWAUDfX+JPW8gLjBXoFrTph+IFjM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m1ktLpcAI9KZGTeL7NeSwH7jPpYd2Nob8gRqAjbdt/jKfcXjbg3QXtXxmIK7ULuu2
-         xXIsenm5rCQplL+v6lb72J0ua4mQ6Z/IA+q17UKjFEH+KXw4NHF79btjJXtIGxIU1F
-         b46TpYoS9QX1DPmuX/AGsM9XwSBrANNORc4xlzJV8zcamevi8K1Ft1SJJ3lFMLYrA6
-         P2BKnEixcKDleXTCAb5GCVvjMK9OpwyaDLchCT1HJUudiZCC4w+dNxLodLukQfK9u3
-         x0qEr9KGM5CmM0FRssOFkmt9hIHiIsklpzbeBhWGbM6iqVDaRzvfgyM+VptB6sA5TJ
-         1E0NCTxrY9lSQ==
-Date:   Tue, 12 Oct 2021 09:08:41 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: Panic on kmemleak scan
-Message-ID: <YWUmaV7pDBX9zSOl@kernel.org>
-References: <8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org>
+        id S232254AbhJLGNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 02:13:14 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HT4zg2MvVz9sTt;
+        Tue, 12 Oct 2021 08:11:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ESq3r2SxTcuk; Tue, 12 Oct 2021 08:11:11 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HT4zg1Kb8z9sTq;
+        Tue, 12 Oct 2021 08:11:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 155688B76E;
+        Tue, 12 Oct 2021 08:11:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id N0ZWAChyDGr0; Tue, 12 Oct 2021 08:11:10 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (po18920.idsi0.si.c-s.fr [192.168.202.149])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DC6698B763;
+        Tue, 12 Oct 2021 08:11:09 +0200 (CEST)
+Subject: Re: [PATCH v1 04/10] asm-generic: Use
+ HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR to define associated stubs
+To:     Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
+ <8db2a3ca2b26a8325c671baa3e0492914597f079.1633964380.git.christophe.leroy@csgroup.eu>
+ <91b38fce-8a5c-ccc7-fba5-b75b9769d4fc@gmx.de>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <09bcd71a-baae-92b7-4c89-c8d446396d1c@csgroup.eu>
+Date:   Tue, 12 Oct 2021 08:11:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org>
+In-Reply-To: <91b38fce-8a5c-ccc7-fba5-b75b9769d4fc@gmx.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(added Catalin)
 
-On Mon, Oct 11, 2021 at 02:23:31PM +0300, Vladimir Zapolskiy wrote:
-> Hello Mike,
+
+Le 12/10/2021 à 08:02, Helge Deller a écrit :
+> On 10/11/21 17:25, Christophe Leroy wrote:
+>> Use HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR instead of 'dereference_function_descriptor'
+>> to know whether arch has function descriptors.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/ia64/include/asm/sections.h    | 4 ++--
+>>   arch/parisc/include/asm/sections.h  | 6 ++++--
+>>   arch/powerpc/include/asm/sections.h | 6 ++++--
+>>   include/asm-generic/sections.h      | 3 ++-
+>>   4 files changed, 12 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/arch/ia64/include/asm/sections.h b/arch/ia64/include/asm/sections.h
+>> index 35f24e52149a..80f5868afb06 100644
+>> --- a/arch/ia64/include/asm/sections.h
+>> +++ b/arch/ia64/include/asm/sections.h
+>> @@ -7,6 +7,8 @@
+>>    *	David Mosberger-Tang <davidm@hpl.hp.com>
+>>    */
+>>
+>> +#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+>> +
+>>   #include <linux/elf.h>
+>>   #include <linux/uaccess.h>
+>>   #include <asm-generic/sections.h>
+>> @@ -27,8 +29,6 @@ extern char __start_gate_brl_fsys_bubble_down_patchlist[], __end_gate_brl_fsys_b
+>>   extern char __start_unwind[], __end_unwind[];
+>>   extern char __start_ivt_text[], __end_ivt_text[];
+>>
+>> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+>> -
+>>   #undef dereference_function_descriptor
+>>   static inline void *dereference_function_descriptor(void *ptr)
+>>   {
+>> diff --git a/arch/parisc/include/asm/sections.h b/arch/parisc/include/asm/sections.h
+>> index bb52aea0cb21..2e781ee19b66 100644
+>> --- a/arch/parisc/include/asm/sections.h
+>> +++ b/arch/parisc/include/asm/sections.h
+>> @@ -2,6 +2,10 @@
+>>   #ifndef _PARISC_SECTIONS_H
+>>   #define _PARISC_SECTIONS_H
+>>
+>> +#ifdef CONFIG_64BIT
+>> +#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+>> +#endif
+>> +
+>>   /* nothing to see, move along */
+>>   #include <asm-generic/sections.h>
+>>
+>> @@ -9,8 +13,6 @@ extern char __alt_instructions[], __alt_instructions_end[];
+>>
+>>   #ifdef CONFIG_64BIT
+>>
+>> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+>> -
+>>   #undef dereference_function_descriptor
+>>   void *dereference_function_descriptor(void *);
+>>
+>> diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/asm/sections.h
+>> index 32e7035863ac..b7f1ba04e756 100644
+>> --- a/arch/powerpc/include/asm/sections.h
+>> +++ b/arch/powerpc/include/asm/sections.h
+>> @@ -8,6 +8,10 @@
+>>
+>>   #define arch_is_kernel_initmem_freed arch_is_kernel_initmem_freed
+>>
+>> +#ifdef PPC64_ELF_ABI_v1
+>> +#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+>> +#endif
+>> +
+>>   #include <asm-generic/sections.h>
+>>
+>>   extern bool init_mem_is_free;
+>> @@ -69,8 +73,6 @@ static inline int overlaps_kernel_text(unsigned long start, unsigned long end)
+>>
+>>   #ifdef PPC64_ELF_ABI_v1
+>>
+>> -#define HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR 1
+>> -
+>>   #undef dereference_function_descriptor
+>>   static inline void *dereference_function_descriptor(void *ptr)
+>>   {
+>> diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
+>> index d16302d3eb59..1db5cfd69817 100644
+>> --- a/include/asm-generic/sections.h
+>> +++ b/include/asm-generic/sections.h
+>> @@ -59,7 +59,8 @@ extern char __noinstr_text_start[], __noinstr_text_end[];
+>>   extern __visible const void __nosave_begin, __nosave_end;
+>>
+>>   /* Function descriptor handling (if any).  Override in asm/sections.h */
+>> -#ifndef dereference_function_descriptor
+>> +#ifdef HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR
+>> +#else
 > 
-> commit a7259df767 ("memblock: make memblock_find_in_range method private") [1]
-> invokes a kernel panic while running kmemleak on OF platforms with nomaped
-> regions, basically it's similar to an issue reported and fixed earlier by [2]:
+> why not
+> #ifndef HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR
+> instead of #if/#else ?
+
+To avoid changing it again in patch 6, or getting an ugly #ifndef/#else 
+at the end.
+
 > 
->   Unable to handle kernel paging request at virtual address ffff000021e00000
-
-Does this virtual address correspond to a nomap area?
-
-Can you check if this patch helps:
-
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 184dcd2e5d99..5c3503c98b2f 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -936,7 +936,12 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
-  */
- int __init_memblock memblock_mark_nomap(phys_addr_t base, phys_addr_t size)
- {
--	return memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
-+	int ret = memblock_setclr_flag(base, size, 1, MEMBLOCK_NOMAP);
-+
-+	if (!ret)
-+		kmemleak_free_part_phys(base, size);
-+
-+	return ret;
- }
- 
- /**
-
->   [...]
->     scan_block+0x64/0x170
->     scan_gray_list+0xe8/0x17c
->     kmemleak_scan+0x270/0x514
->     kmemleak_write+0x34c/0x4ac
+>>   #define dereference_function_descriptor(p) ((void *)(p))
+>>   #define dereference_kernel_function_descriptor(p) ((void *)(p))
+>>   #endif
+>>
 > 
-> I believe it would be a trivial problem to correct for you, thank you in
-> advance!
-> 
-> [1] https://lore.kernel.org/all/20210816122622.30279-1-rppt@kernel.org/T/#u
-> [2] https://lore.kernel.org/lkml/20190119132832.GA29881@MBP.local/t/#m032124f36c07
-> 
-> --
-> Best wishes,
-> Vladimir
-
--- 
-Sincerely yours,
-Mike.
