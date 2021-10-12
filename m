@@ -2,142 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996F6429D5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE95C429D5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbhJLFv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 01:51:56 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:58989 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229688AbhJLFv4 (ORCPT
+        id S232736AbhJLFxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 01:53:19 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:55965 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232673AbhJLFxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 01:51:56 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UrY4FKf_1634017792;
-Received: from localhost.localdomain(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UrY4FKf_1634017792)
+        Tue, 12 Oct 2021 01:53:16 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UrXy.sr_1634017873;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UrXy.sr_1634017873)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 12 Oct 2021 13:49:53 +0800
-From:   Xin Hao <xhao@linux.alibaba.com>
-To:     sjpark@amazon.de
-Cc:     xhao@linux.alibaba.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/damon/dbgfs: add region_stat interface
-Date:   Tue, 12 Oct 2021 13:49:48 +0800
-Message-Id: <20211012054948.90381-1-xhao@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.0
+          Tue, 12 Oct 2021 13:51:14 +0800
+Subject: Re: [RESEND PATCH v2] trace: prevent preemption in
+ perf_ftrace_function_call()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+References: <eafba880-c1ae-2b99-c11e-d5041a2f6c3e@linux.alibaba.com>
+ <20211008200328.5b88422d@oasis.local.home>
+ <bcdbccc6-a516-2199-d3be-090a5e9f601d@linux.alibaba.com>
+ <YWP2rtX9Ol9dZc/l@hirez.programming.kicks-ass.net>
+ <YWP6W7Be0Yp6egsn@hirez.programming.kicks-ass.net>
+ <87aeef5b-c457-d4df-8abf-f9f035d73dbc@linux.alibaba.com>
+ <20211011144510.GE174703@worktop.programming.kicks-ass.net>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <d544af7d-60c2-bc3e-c7e4-eb26d5d7a836@linux.alibaba.com>
+Date:   Tue, 12 Oct 2021 13:51:13 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20211011144510.GE174703@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using damon-dbgfs has brought great convenience to user-mode
-operation damon, but sometimes if i want to be able to view
-the division of task regions, nr_access values etc,but i found
-that it is impossible to view directly through the dbgfs interface,
-so there i add a interface "region_stat", it displays like this.
 
- # cat region_stat
- last_aggregation=120.87s
- target_id=5148
- nr_regions=10
- 400000-258c000(34352 KiB): 1
- 258c000-4719000(34356 KiB): 0
- 4719000-abbf000(103064 KiB): 0
- abbf000-c4d4000(25684 KiB): 11
- c4d4000-ff5c000(59936 KiB): 15
- ff5c000-152f9000(85620 KiB): 20
- 152f9000-1599e000(6804 KiB): 10
- 1599e000-19573000(61268 KiB): 0
- 19573000-1f92c000(102116 KiB): 0
- 1f92c000-22a4c000(50304 KiB): 0
 
-Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
----
- mm/damon/dbgfs.c | 60 ++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 58 insertions(+), 2 deletions(-)
+On 2021/10/11 下午10:45, Peter Zijlstra wrote:
+[snip]
+>>>
+>>> Oh, I might've gotten that wrong, I assumed regular trylock semantics,
+>>> but it doesn't look like that's right.
+>>
+>> I will use bit instead ret and give some testing :-)
+>>
+>> BTW, would you prefer to merge these changes into this patch or maybe send
+>> another patch with your suggested-by?
+> 
+> Yeah, please send another patch; once you've confirmed it actually works
+> etc.. I did this before waking (as evidence per the above), who knows
+> what else I did wrong :-)
 
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index faee070977d8..269a336e92f0 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -266,6 +266,57 @@ static ssize_t dbgfs_kdamond_pid_read(struct file *file,
- 	return len;
- }
- 
-+static ssize_t dbgfs_region_stat_read(struct file *file,
-+		char __user *buf, size_t count, loff_t *ppos)
-+{
-+	struct damon_ctx *ctx = file->private_data;
-+	struct damon_target *t;
-+	char *kbuf;
-+	ssize_t len;
-+	int id, rc, written = 0;
-+
-+	kbuf = kmalloc(count, GFP_KERNEL);
-+	if (!kbuf)
-+		return -ENOMEM;
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	damon_for_each_target(t, ctx) {
-+		struct damon_region *r;
-+
-+		if (targetid_is_pid(ctx))
-+			id = (int)pid_vnr((struct pid *)t->id);
-+
-+		rc = scnprintf(&kbuf[written], count - written,
-+				"last_aggregation=%lld.%lds\ntarget_id=%d\nnr_regions=%u\n",
-+				ctx->last_aggregation.tv_sec,
-+				ctx->last_aggregation.tv_nsec / 1000000,
-+				id, t->nr_regions);
-+		if (!rc)
-+			goto out;
-+
-+		written += rc;
-+
-+		damon_for_each_region(r, t) {
-+			rc = scnprintf(&kbuf[written], count - written,
-+				       "%lx-%lx(%lu KiB): %u\n",
-+				       r->ar.start, r->ar.end,
-+					   (r->ar.end - r->ar.start) >> 10,
-+					   r->nr_accesses);
-+			if (!rc)
-+				goto out;
-+
-+			written += rc;
-+		}
-+
-+		len += simple_read_from_buffer(buf, count, ppos, kbuf, written);
-+	}
-+
-+out:
-+	mutex_unlock(&ctx->kdamond_lock);
-+	kfree(kbuf);
-+	return len;
-+}
-+
- static int damon_dbgfs_open(struct inode *inode, struct file *file)
- {
- 	file->private_data = inode->i_private;
-@@ -290,12 +341,17 @@ static const struct file_operations kdamond_pid_fops = {
- 	.read = dbgfs_kdamond_pid_read,
- };
- 
-+static const struct file_operations region_stat_fops = {
-+	.open = damon_dbgfs_open,
-+	.read = dbgfs_region_stat_read,
-+};
-+
- static void dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
- {
- 	const char * const file_names[] = {"attrs", "target_ids",
--		"kdamond_pid"};
-+		"kdamond_pid", "region_stat"};
- 	const struct file_operations *fops[] = {&attrs_fops, &target_ids_fops,
--		&kdamond_pid_fops};
-+		&kdamond_pid_fops, &region_stat_fops};
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(file_names); i++)
--- 
-2.27.0
+I've send the:
+  [PATCH 0/2] ftrace: make sure preemption disabled on recursion testing
 
+should have taking care all the places, but only testing with x86 since I
+got no machine for other arch... just by logically it should be fine.
+
+Regards,
+Michael Wang
+
+> 
