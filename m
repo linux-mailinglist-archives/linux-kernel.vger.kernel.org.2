@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AF742AD7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA2942AD7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234155AbhJLTvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 15:51:19 -0400
-Received: from mga14.intel.com ([192.55.52.115]:10914 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232648AbhJLTvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 15:51:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="227537886"
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="227537886"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 12:49:10 -0700
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="562799204"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.115.208]) ([10.209.115.208])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 12:49:07 -0700
-Message-ID: <f3002304-ae85-1d88-219d-c67574e80427@linux.intel.com>
-Date:   Tue, 12 Oct 2021 12:49:06 -0700
+        id S234206AbhJLTvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 15:51:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232648AbhJLTvg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 15:51:36 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CDFC061570;
+        Tue, 12 Oct 2021 12:49:35 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id CB9D72D3;
+        Tue, 12 Oct 2021 19:49:34 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net CB9D72D3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1634068174; bh=J+VU/Z23eHXA/EXm5a9vouyZ4Lxsf+8UqKzwH+KayRs=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=tfgrx9pFnAIoXBvayFLyFIS+/tKl/s1NQ8jmQjVM4bXSUcnk+dDsRnMxVhH//Tjaz
+         1cKBCYPFxHBhaEgjFovqMVpHaKXleyOqv77+5Ou5WxDmaA2F/5WpoZUgUYDD3RoBMg
+         ArrQUh/7D5OLcUrBVAyGAbK7r0knf4UTs+G2+9y5JybLYTWWb41Ly2fhHWN+B30E5K
+         lDH9eSOxjghTIQZwYKzUs57yXPNxq8h8iPxiHBZZfdAoQhZdamEf49nYX8C22xNaKU
+         6pKWiUr1LztKBPg/11/9HGtN+l/PGeFdZlkRctYPgvYB1rIKLc5iHinazbk5kM0MTW
+         sRpbylLod2C+A==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     tomm.merciai@gmail.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, arjan@linux.intel.com
+Subject: Re: [PATCH] docs: update file link location
+In-Reply-To: <20211003220706.7784-1-tomm.merciai@gmail.com>
+References: <20211003220706.7784-1-tomm.merciai@gmail.com>
+Date:   Tue, 12 Oct 2021 13:49:34 -0600
+Message-ID: <87ee8quipd.fsf@meer.lwn.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-Content-Language: en-US
-To:     Dan Williams <dan.j.williams@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053103-mutt-send-email-mst@kernel.org>
- <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
- <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
- <DM8PR11MB57501C8F8F5C8B315726882EE7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
- <f850d2d6-d427-8aeb-bd38-f9b5eb088191@linux.intel.com>
- <DM8PR11MB57505C520763DF706309E177E7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
- <CAPcyv4g8VjbMaVnXXyWVh8tXNakO9FmDXfANJmPmgvDfZX-OBA@mail.gmail.com>
-From:   Andi Kleen <ak@linux.intel.com>
-In-Reply-To: <CAPcyv4g8VjbMaVnXXyWVh8tXNakO9FmDXfANJmPmgvDfZX-OBA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Tommaso Merciai <tomm.merciai@gmail.com> writes:
 
-On 10/12/2021 12:13 PM, Dan Williams wrote:
-> On Tue, Oct 12, 2021 at 11:57 AM Reshetova, Elena
-> <elena.reshetova@intel.com> wrote:
->>
->>> I suspect the true number is even higher because that doesn't include IO
->>> inside calls to other modules and indirect pointers, correct?
->> Actually everything should be included. Smatch has cross-function db and
->> I am using it for getting the call chains and it follows function pointers.
->> Also since I am starting from a list of individual read IOs, every single
->> base read IO in drivers/* should be covered as far as I can see. But if it uses
->> some weird IO wrappers then the actual list might be higher.
-> Why analyze individual IO calls? I thought the goal here was to
-> disable entire classes of ioremap() users?
+[CC += Arjan just in case]
 
-This is everything that would need to be moved somewhere else if we 
-didn't disable the entire classes of ioremap users.
+> Fix web error: this site can't be reached
+>
+> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> ---
+>  Documentation/process/submitting-drivers.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/process/submitting-drivers.rst b/Documentation/process/submitting-drivers.rst
+> index 3861887e0ca5..8413b693d10d 100644
+> --- a/Documentation/process/submitting-drivers.rst
+> +++ b/Documentation/process/submitting-drivers.rst
+> @@ -185,7 +185,7 @@ Linux USB project:
+>  	http://www.linux-usb.org/
+>  
+>  How to NOT write kernel driver by Arjan van de Ven:
+> -	http://www.fenrus.org/how-to-not-write-a-device-driver-paper.pdf
+> +	https://landley.net/kdocs/ols/2002/ols2002-pages-545-555.pdf
 
--Andi
+This is an OK change, I guess...a working link is better than a broken
+one.  That said, I do have to wonder whether this link needs to be
+preserved at all.  That paper was good advice 19 years ago, but I'm not
+sure it has much to tell people in 2021; the days of having to tell
+developers to think about SMP systems are past.
 
+I'll apply this for now, though.
+
+Thanks,
+
+jon
