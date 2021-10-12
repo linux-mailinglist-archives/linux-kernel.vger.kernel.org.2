@@ -2,149 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4C942AD89
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA26342AE0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbhJLUCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:02:23 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:49195 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231904AbhJLUCR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:02:17 -0400
-Received: from leknes.fjasle.eu ([92.116.69.156]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1N2BQM-1mkamx44CM-013fqp; Tue, 12 Oct 2021 21:59:50 +0200
-Received: from lillesand.fjasle.eu (unknown [10.10.0.51])
+        id S234886AbhJLUl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:41:28 -0400
+Received: from ixit.cz ([94.230.151.217]:39042 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233709AbhJLUl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 16:41:26 -0400
+Received: from newone.brmlab.cz (unknown [91.146.121.5])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-         client-signature RSA-PSS (2048 bits) client-digest SHA256)
-        (Client CN "lillesand.fjasle.eu", Issuer "Fake LE Intermediate X1" (not verified))
-        by leknes.fjasle.eu (Postfix) with ESMTPS id 9DEA93C062;
-        Tue, 12 Oct 2021 21:59:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
-        t=1634068787; bh=SDNWooDxN+hW1fHqOH3QYEFwTGIaEcBi9435tsNXDTU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mLFNjzjs/Vnoum1dFAWj7OALHEaIDHtiMXc7WN6F3xr44FUZMgqA0VB7TMiBs8jvz
-         Ihw0vmcFyA9nNgEPeGvZw34zssfUN7wtWEnddyDO3naPET+kmRhkoLWF66BrcUvcKC
-         PAf/Y394WbX0TJ/mde95w5vfHiKlqY7ibuSHfies=
-Received: by lillesand.fjasle.eu (Postfix, from userid 1000)
-        id 7F7BA1045BD; Tue, 12 Oct 2021 21:59:46 +0200 (CEST)
-Date:   Tue, 12 Oct 2021 21:59:46 +0200
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Cc:     Thomas =?iso-8859-1?Q?K=FChnel?= <thomas.kuehnel@avm.de>
-Subject: Re: [PATCH v2] initramfs: Check timestamp to prevent broken cpio
- archive
-Message-ID: <YWXpMnMIX8AKumS6@lillesand.fjasle.eu>
-Mail-Followup-To: Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Thomas =?iso-8859-1?Q?K=FChnel?= <thomas.kuehnel@avm.de>
-References: <20211012185234.3295982-1-nicolas@fjasle.eu>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 73109240AA;
+        Tue, 12 Oct 2021 20:16:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1634062613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q3P9IbjFNoNabo0fnGDClGjownkWCBtmtTIaLTOnQS4=;
+        b=CUd/WD0SvjwoEcON1Xprphkg029gDJxVlbXJXVYbh0FezB2QQb3BYm43CpgJjwZ38RrQIy
+        8sMPUGJUQ7XWh2ZIUxR1Qe9s09fk0vTbyfnDwHRhFnCamgg7iWNTQYqm+0uw191N/re2/2
+        62Aomq2UaJLnibf7iH9HoRzjjSckF1M=
+From:   David Heidelberg <david@ixit.cz>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>
+Subject: [PATCH v2 4/4] dt-bindings: reserved-memory: ramoops: Convert txt bindings to yaml
+Date:   Tue, 12 Oct 2021 20:15:00 +0200
+Message-Id: <20211012181500.5309-4-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211012181500.5309-1-david@ixit.cz>
+References: <20211012181500.5309-1-david@ixit.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211012185234.3295982-1-nicolas@fjasle.eu>
-X-Operating-System: Debian GNU/Linux bookworm/sid
-Jabber-ID: nicolas@jabber.no
-X-Provags-ID: V03:K1:cK46y886Ufo4xgy6WFuNJfP7MRNLxscrcolIyhj3iPuf1qPJwvA
- rzeUPil2g3PADN/uoMghM5hY4U6Mb9eXAH9thiJQ0E6s67W201pjlQapqDTp7to75XRu5+G
- 06dglQ23TuRhHRvAYi1YAt8k6cZAv+MsvOWDgZxKAmwczsn4WnWGEoqZn6OLlDgd5N4bc0p
- 3cYEHo0V6rEY6e3axH8Eg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5PcPrbPUtck=:ZMWX9GaE95U1f8KUccMnw6
- IIPAPPWyDP6X8uypVOoUjuVWUiA6WEeaV6ihjYYzHyJPlLPEjQjuG3bQ1sWD/KW49QK8WsU/H
- 3dJZfrIiwNdOvOCzNVyWMb7VqE4v9wz/wY40TivjT8Hk5FrRg4Xr6r5qWcMJCbOeD7ScWfu0O
- iosato9Dw10EajxICnt0xprbMEB/+t+LkDCo788NWC2t88JacWed46YGoi6bssVSfvzLQDYRY
- HbHOkBNIPdZJquNrcLxeM33P8Rbl4z/75nAdGpMeCv7iJ9Uo12b80pzURIlYmlJQVc8ak6pb8
- ACjRVcpaxS1CGnhqznlEcvpwDCvu7lK0Sx60Y0AGBJmZIcQy9GI8lnDIuc9KTnY90N6yyunsh
- WXz5rGfkDna/ynxCQd4pCNwrYY1LFQpCn1kYLEI/PKR7bR164Xl54xv3adLH/CS6ZH+y9FfDV
- JCLxeZ65Ik6AN0iTd7d2CN8+3qNoopibtpbufPfCCyqCCxvt29sOv5ukYRGDItuXAMVSmFJPg
- CqvEqBopp5w3fVVVX2INmUXdvZAnqEuM3d4qrnLITq9lYuzLAMoiUA5lmAcWlVCyDuDgdsSOe
- uYStgzz8WeaArm4neLWoOLxIxT2DeBDQMtTmRSGlFLRWiHsbM4qDV0F+I9YVtTKgjJzzy2L5H
- 3odIjjleD4zqM9IqRbRbv2j94LlOqRE96UxryXs66C6Ny5eofoi9cXwrEFyilv7HSZPl7MA2L
- grKJYQ22md+izp+h6RXh4FW/aP7irtsyRHZbTw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12 Oct 2021 18:52:34 GMT Nicolas Schier wrote:
-> Cpio format reserves 8 bytes for an ASCII representation of a time_t 
-> timestamp.
-> While 2106-02-07 06:28:15 UTC (time_t = 0xffffffff) is still some years in the
-> future, a poorly chosen date string for KBUILD_BUILD_TIMESTAMP, converted into
-> seconds since the epoch, might lead to exceeded cpio timestamp limits that
-> result in a broken cpio archive.  Add timestamp checks to prevent overrun of
-> the 8-byte cpio header field.
-> 
-> My colleague Thomas Kühnel discovered the behaviour, when we accidentally fed
-> SOURCE_DATE_EPOCH to KBUILD_BUILD_TIMESTAMP as is: some timestamps (e.g.
-> 1607420928 = 2021-12-08 10:48:48) will be interpreted by `date` as a valid date
-> specification of science fictional times (here: year 160742).  Even though this
-> is bad input for KBUILD_BUILD_TIMESTAMP, it should not break the initramfs
-> cpio format.
-> 
-> Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
-> Cc: Thomas Kühnel <thomas.kuehnel@avm.de>
-> ---
->  usr/gen_init_cpio.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> -- 
-> Changes v1 to v2:
->   * add timezone name (UTC) to specific time stamps
->   * fix typo: results -> result 
-> 
-> diff --git a/usr/gen_init_cpio.c b/usr/gen_init_cpio.c
-> index 03b21189d58b..584ea45cff70 100644
-> --- a/usr/gen_init_cpio.c
-> +++ b/usr/gen_init_cpio.c
-> @@ -320,6 +320,12 @@ static int cpio_mkfile(const char *name, const char *location,
->  		goto error;
->  	}
->  
-> +	if (buf.st_mtime > 0xffffffff) {
-> +		fprintf(stderr, "%s: Timestamp exceeds maximum cpio timestamp, clipping.\n",
-> +			location);
-> +		buf.st_mtime = 0xffffffff;
-> +	}
-> +
->  	filebuf = malloc(buf.st_size);
->  	if (!filebuf) {
->  		fprintf (stderr, "out of memory\n");
-> @@ -551,6 +557,17 @@ int main (int argc, char *argv[])
->  		}
->  	}
->  
-> +	/*
-> +	 * Timestamps after 2106-02-07 06:28:15 UTC have an ascii hex time_t
-> +	 * representation that exceeds 8 chars and breaks the cpio header
-> +	 * specification.
-> +	 */
-> +	if (default_mtime > 0xffffffff) {
-> +		fprintf(stderr, "ERROR: Timestamp 0x%08x too large for cpio format\n",
+Convert ramoops driver to the YAML syntax.
 
-"0x%08x" is at least missing an 'l'.  Possibly, showing the invalid 
-timestamp does not make much sense.  If someone feeds the string 
-"1607420928" into KBUILD_BUILD_TIMESTAMP, as written in the commit 
-message, $(date -d $KBUILD_BUILD_TIMESTAMP +%s) returns a value that 
-will probably not be helpful.
+v2:
+ - inherit reserved-memory properties
+ - switch to unevaluatedProperties
 
-Sorry for the noise; v3 follows.
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ .../bindings/reserved-memory/ramoops.txt      |  66 ---------
+ .../bindings/reserved-memory/ramoops.yaml     | 129 ++++++++++++++++++
+ 2 files changed, 129 insertions(+), 66 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/reserved-memory/ramoops.txt
+ create mode 100644 Documentation/devicetree/bindings/reserved-memory/ramoops.yaml
 
-> +			default_mtime);
-> +		exit(1);
-> +	}
-> +
->  	if (argc - optind != 1) {
->  		usage(argv[0]);
->  		exit(1);
-> -- 
-> 2.30.1
-
+diff --git a/Documentation/devicetree/bindings/reserved-memory/ramoops.txt b/Documentation/devicetree/bindings/reserved-memory/ramoops.txt
+deleted file mode 100644
+index b571ef6dab0f..000000000000
+--- a/Documentation/devicetree/bindings/reserved-memory/ramoops.txt
++++ /dev/null
+@@ -1,66 +0,0 @@
+-Ramoops oops/panic logger
+-=========================
+-
+-ramoops provides persistent RAM storage for oops and panics, so they can be
+-recovered after a reboot. This is a child-node of "/reserved-memory", and
+-is named "ramoops" after the backend, rather than "pstore" which is the
+-subsystem.
+-
+-Parts of this storage may be set aside for other persistent log buffers, such
+-as kernel log messages, or for optional ECC error-correction data.  The total
+-size of these optional buffers must fit in the reserved region.
+-
+-Any remaining space will be used for a circular buffer of oops and panic
+-records.  These records have a configurable size, with a size of 0 indicating
+-that they should be disabled.
+-
+-At least one of "record-size", "console-size", "ftrace-size", or "pmsg-size"
+-must be set non-zero, but are otherwise optional as listed below.
+-
+-
+-Required properties:
+-
+-- compatible: must be "ramoops"
+-
+-- reg: region of memory that is preserved between reboots
+-
+-
+-Optional properties:
+-
+-- ecc-size: enables ECC support and specifies ECC buffer size in bytes
+-  (defaults to 0: no ECC)
+-
+-- record-size: maximum size in bytes of each kmsg dump.
+-  (defaults to 0: disabled)
+-
+-- console-size: size in bytes of log buffer reserved for kernel messages
+-  (defaults to 0: disabled)
+-
+-- ftrace-size: size in bytes of log buffer reserved for function tracing and
+-  profiling (defaults to 0: disabled)
+-
+-- pmsg-size: size in bytes of log buffer reserved for userspace messages
+-  (defaults to 0: disabled)
+-
+-- mem-type: if present, sets the type of mapping is to be used to map the
+-  reserved region. mem-type: 0 = write-combined (default), 1 = unbuffered,
+-  2 = cached.
+-
+-- unbuffered: deprecated, use mem_type instead. If present, and mem_type is
+-  not specified, it is equivalent to mem_type = 1 and uses unbuffered mappings
+-  to map the reserved region (defaults to buffered mappings mem_type = 0). If
+-  both are specified -- "mem_type" overrides "unbuffered".
+-
+-- max-reason: if present, sets maximum type of kmsg dump reasons to store
+-  (defaults to 2: log Oopses and Panics). This can be set to INT_MAX to
+-  store all kmsg dumps. See include/linux/kmsg_dump.h KMSG_DUMP_* for other
+-  kmsg dump reason values. Setting this to 0 (KMSG_DUMP_UNDEF), means the
+-  reason filtering will be controlled by the printk.always_kmsg_dump boot
+-  param: if unset, it will be KMSG_DUMP_OOPS, otherwise KMSG_DUMP_MAX.
+-
+-- no-dump-oops: deprecated, use max_reason instead. If present, and
+-  max_reason is not specified, it is equivalent to max_reason = 1
+-  (KMSG_DUMP_PANIC).
+-
+-- flags: if present, pass ramoops behavioral flags (defaults to 0,
+-  see include/linux/pstore_ram.h RAMOOPS_FLAG_* for flag values).
+diff --git a/Documentation/devicetree/bindings/reserved-memory/ramoops.yaml b/Documentation/devicetree/bindings/reserved-memory/ramoops.yaml
+new file mode 100644
+index 000000000000..a21a27e84a6d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/reserved-memory/ramoops.yaml
+@@ -0,0 +1,129 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/reserved-memory/ramoops.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Ramoops oops/panic logger
++
++description: |
++  ramoops provides persistent RAM storage for oops and panics, so they can be
++  recovered after a reboot. This is a child-node of "/reserved-memory", and
++  is named "ramoops" after the backend, rather than "pstore" which is the
++  subsystem.
++
++  Parts of this storage may be set aside for other persistent log buffers, such
++  as kernel log messages, or for optional ECC error-correction data.  The total
++  size of these optional buffers must fit in the reserved region.
++
++  Any remaining space will be used for a circular buffer of oops and panic
++  records.  These records have a configurable size, with a size of 0 indicating
++  that they should be disabled.
++
++  At least one of "record-size", "console-size", "ftrace-size", or "pmsg-size"
++  must be set non-zero, but are otherwise optional as listed below.
++
++maintainers:
++  - Kees Cook <keescook@chromium.org>
++
++allOf:
++  - $ref: "reserved-memory.yaml"
++
++properties:
++  compatible:
++    const: ramoops
++
++  reg:
++    description: region of memory that is preserved between reboots
++
++  ecc-size:
++    description: enables ECC support and specifies ECC buffer size in bytes
++    default: 0 # no ECC
++
++  record-size:
++    description: maximum size in bytes of each kmsg dump
++    default: 0
++
++  console-size:
++    description: size in bytes of log buffer reserved for kernel messages
++    default: 0
++
++  ftrace-size:
++    description: size in bytes of log buffer reserved for function tracing and profiling
++    default: 0
++
++  pmsg-size:
++    description: size in bytes of log buffer reserved for userspace messages
++    default: 0
++
++  mem-type:
++    description: if present, sets the type of mapping is to be used to map the reserved region.
++    default: 0
++    enum:
++      - const: 0
++        description: write-combined
++      - const: 1
++        description: unbuffered
++      - const: 2
++        description: cached
++
++  unbuffered:
++    deprecated: true
++    description: |
++      use mem_type instead. If present, and mem_type is not specified,
++      it is equivalent to mem_type = 1 and uses unbuffered mappings to map
++      the reserved region (defaults to buffered mappings mem_type = 0).
++      If both are specified -- "mem_type" overrides "unbuffered".
++
++  max-reason:
++    default: 2 # log oopses and panics
++    description: |
++      If present, sets maximum type of kmsg dump reasons to store.
++      This can be set to INT_MAX to store all kmsg dumps.
++      See include/linux/kmsg_dump.h KMSG_DUMP_* for other
++      kmsg dump reason values. Setting this to 0 (KMSG_DUMP_UNDEF), means the
++      reason filtering will be controlled by the printk.always_kmsg_dump boot
++
++  param:
++    description: if unset, it will be KMSG_DUMP_OOPS, otherwise KMSG_DUMP_MAX.
++
++  no-dump-oops:
++    deprecated: true
++    description: |
++      Use max_reason instead. If present, and max_reason is not specified,
++      it is equivalent to max_reason = 1 (KMSG_DUMP_PANIC).
++
++  flags:
++    default: 0
++    description: |
++      If present, pass ramoops behavioral flags
++      (see include/linux/pstore_ram.h RAMOOPS_FLAG_* for flag values).
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++
++anyOf:
++  - required: [record-size]
++  - required: [console-size]
++  - required: [ftrace-size]
++  - required: [pmsg-size]
++
++examples:
++  - |
++    reserved-memory {
++      #address-cells = <1>;
++      #size-cells = <1>;
++      ranges;
++
++      ramoops@bfdf0000 {
++        compatible = "ramoops";
++        reg = <0xbfdf0000 0x10000>; /* 64kB */
++        console-size = <0x8000>;    /* 32kB */
++        record-size = <0x400>;      /*  1kB */
++        ecc-size = <16>;
++      };
++    };
++
 -- 
-epost|xmpp: nicolas@fjasle.eu          irc://oftc.net/nsc
-↳ gpg: 18ed 52db e34f 860e e9fb  c82b 7d97 0932 55a0 ce7f
-     -- frykten for herren er opphav til kunnskap --
+2.33.0
+
