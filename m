@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8458742A3C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE5842A3C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236314AbhJLMEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236297AbhJLMEJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:04:09 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144ECC06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:02:08 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id g8so80236008edt.7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:02:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jAcPXDzhn5XqOaTwDcEtw2GqEA7kUJwUT0gZY1JmW2E=;
-        b=DPbfSiPVobJV2Q4NaUz4Zx8nPPKhVu6lJzZlNHK5+NGhnm7VVxJM15ZtYtoouecq+T
-         I2rMiguacPD+JNJXmaQYRwqmIh90Lz06EG2Go8VBTHdd2K2Co3HcWaaBp2EMy/kY7cEy
-         f1i0P0hEAeI6wW+/WCP3FKhW8YU873ZrRuk5s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jAcPXDzhn5XqOaTwDcEtw2GqEA7kUJwUT0gZY1JmW2E=;
-        b=at99S8FTeYozpui2Ew56fOyiQrcGrNKOWg04XjAk+wSjxk0tWxY35cxc0xVF5uUoDY
-         oQtsbhl8MJb1H2yyrPejwh+sMyXIdm9cpdZRfd29LXrCLhuPWx1Z/OeKD05Vz/03aDQn
-         10CRzIFh3Gz/R6hKl2OB9GQ5OlVLoq3MzxhI0wTkLremKuy8jW0FG429hBNZIv2W9dor
-         0fPllAGgLZ9nsMBtqNVB7rn3f7Sy3A7zepymQTq1xKhD+cCX0k1m0U8Rfvt/1ePnL0zc
-         nE26Hu/7k2wG/zmCh3PvJw2VlS/MgjyfUn8sv4hqSyBeS91yeIDd85K9LDeO1hNgRamp
-         E0og==
-X-Gm-Message-State: AOAM5316sJxlz5Pg9cOH7/4rpVK+7KfUQPlGeS42JXltFpEfj5kjBaL7
-        YPk7H1DVAxmfpI21Ivo4qGU+oA==
-X-Google-Smtp-Source: ABdhPJxVaLcLFS1DQQkiZKIzmjq2hDClhDm1yvv4cdEua6mm59xty7Y5iVaFq2dyZFA3yDIYa/Hxfw==
-X-Received: by 2002:a05:6402:1e88:: with SMTP id f8mr37837821edf.346.1634040122488;
-        Tue, 12 Oct 2021 05:02:02 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:928c])
-        by smtp.gmail.com with ESMTPSA id l23sm4859401ejn.15.2021.10.12.05.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 05:02:02 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 13:02:01 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH memcg] mm/page_alloc.c: avoid statistic update with 0
-Message-ID: <YWV5OY5I0MhTtsn1@chrisdown.name>
-References: <b2371951-bb8a-e62e-8d33-10830bbf6275@virtuozzo.com>
- <29155011-f884-b0e5-218e-911039568acb@suse.cz>
- <f52c5cd3-9b74-0fd5-2b7b-83ca21c52b2a@virtuozzo.com>
+        id S236324AbhJLMEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 08:04:21 -0400
+Received: from www.zeus03.de ([194.117.254.33]:42942 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236309AbhJLMET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 08:04:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=swnIN0Vy8h2ui1QuoJpRo/wj4mII
+        f+e6qODbS8r12RE=; b=FcTVqPXpG6KFMsO2wAfMeRmaA4VtOUrgd+qE2I7XXqxM
+        MT/TLxQ1JGhbTlFHCOcBaogxjTIHFylbmqvr7Usk9La34tay0sF46FPzrX1EnpxT
+        OePROVFC9x7ClEJT1Y1eejGQQoz++EOZ64XS67VU0UuzS70lDijluqne3JUdXPg=
+Received: (qmail 203684 invoked from network); 12 Oct 2021 14:02:15 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 12 Oct 2021 14:02:15 +0200
+X-UD-Smtp-Session: l3s3148p1@JQjRnSbOoLQgAwDPXw9GANTxpJbLr/qt
+Date:   Tue, 12 Oct 2021 14:02:15 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH] dt-bindings: pwm: tpu: Add R-Car M3-W+ device tree
+ bindings
+Message-ID: <YWV5R1dqpvnPFim5@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Rob Herring <robh@kernel.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+References: <20210906094536.45223-1-wsa+renesas@sang-engineering.com>
+ <YTjAGLlLvUOF4eO9@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HfJVpUODR/arx7iB"
 Content-Disposition: inline
-In-Reply-To: <f52c5cd3-9b74-0fd5-2b7b-83ca21c52b2a@virtuozzo.com>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+In-Reply-To: <YTjAGLlLvUOF4eO9@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vasily Averin writes:
->Yes, it's not a bug, it just makes the kernel a bit more efficient in a very unlikely case.
->However, it looks strange and makes uninformed code reviewers like me worry about possible
->problems inside the affected functions. No one else calls these functions from 0.
 
-This statement is meaningless without data. If you have proof that it makes the 
-kernel more efficient, then please provide the profiles.
+--HfJVpUODR/arx7iB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As it is I'd be surprised if this improved things. Either the code is hot 
-enough that the additional branch is cumbersome, or it's cold enough that it 
-doesn't even matter.
+Hi Rob,
+
+> > Add device tree bindings for TPU found on R-Car M3-W+ SoCs.
+> >=20
+> > Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> > ---
+> >  Documentation/devicetree/bindings/pwm/renesas,tpu-pwm.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> >=20
+>=20
+> Acked-by: Rob Herring <robh@kernel.org>
+
+could you apply it, please? Looking at git history, the YAML changes
+for PWM went through your tree.
+
+Thanks and have a nice week,
+
+   Wolfram
+
+
+--HfJVpUODR/arx7iB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFleUIACgkQFA3kzBSg
+KbaCvg/7B5EVyT/cL0NPbxFqhcqFGAssDR1SPUXb7bLLJc88KLM34/2Wqf/xg/Nb
+xPNNJDkR7JZrghN79TWIDmfqdoLlEcHYD9zUQvSqksXB7ZJcvxk9qB58pSbVwd40
+TjjwBZiVDO6qiTlrODLx/KYik24QCGxPiySi2dY/6E4klDb/IJKrZEbhxrq9sV94
+msf59Qi/lXKN7guBZS3GXoX4CfoyEPMyXY1IdviB9BSYmddqvNbTWjbky7BWV66F
+J+FCkL016cEBn8CZg/rcdxnrTmC//iJHQR37fAvU48JYkCa6JO5Z/awUNy1nZOID
+tdS3k8cjahjwWKpiMVo837ydpHv3wDwnz1lIzZeqWWGvNmOtXIyxh7SROJufVC7A
+KQ1sIGciHHgJGk3VU5nWdDhazbulWKK4ZMUyVoqZ28ehgJ3avd9esjlRW4+Y8zXQ
+SxOz8os/pmyujJnyDc4UdytMYlv/PY6ZOnT6iuW/CtXQCdCEa+t4X6ALrhWTq9Ch
+LL5hcz4q6bbQAccPafcneje7ZI9+b3C3fn3xQ/j+TxWy/EwN9qkx4UivJ4mUGsr6
+qFnrcwi0vNu92axo91owjbaI9vPwH8sy2gH+jWroM0ZrnxA2q6Qc/F8ZDnaMpusI
+mYP/LhIHQda0BGVv4L2cSWT2qVWK4Csgp8xb6iAilmLi0wE0FT8=
+=kb+4
+-----END PGP SIGNATURE-----
+
+--HfJVpUODR/arx7iB--
