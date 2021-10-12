@@ -2,195 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E7C42A76F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B5842A775
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237359AbhJLOlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:41:22 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34144 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235422AbhJLOlS (ORCPT
+        id S237378AbhJLOmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:42:19 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:45495 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237260AbhJLOmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:41:18 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3999D220B0;
-        Tue, 12 Oct 2021 14:39:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634049555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XU/0uGfOl2ynUsla9eoZ3FW3nLryazaxQqK6ENWJUQ0=;
-        b=fJoHljkl2jbF1HPvtdzcv7yYel+n7lwsY82K2WwEUKxlQybhUzs9iJvt12zgD5VSWFOakO
-        pCOlQqGZeLsViMQg7qcTtNEyZf3kRUPyWpLjutrBZdqAahpQKwLiE8TCklhU6Hkp8JjmNG
-        sIGnKWNUHOsI/l32VId0aiVdBc7J5fU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 096FA13BEC;
-        Tue, 12 Oct 2021 14:39:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id BPu1AROeZWHGDAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 12 Oct 2021 14:39:15 +0000
-Date:   Tue, 12 Oct 2021 16:39:13 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <20211012143913.GA22036@blackbody.suse.cz>
-References: <20210825213750.6933-1-longman@redhat.com>
- <20210825213750.6933-6-longman@redhat.com>
- <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
- <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
- <YShjb2WwvuB4s4gX@slm.duckdns.org>
- <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
- <YSlY0H/qeXQIGOfk@slm.duckdns.org>
- <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
- <YSl2yxEvnDrPxzUV@slm.duckdns.org>
- <3533e4f9-169c-d13c-9c4e-d9ec6bdc78f0@redhat.com>
+        Tue, 12 Oct 2021 10:42:16 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MvazO-1mrHKt0xaY-00sg8K; Tue, 12 Oct 2021 16:40:13 +0200
+Received: by mail-wr1-f48.google.com with SMTP id e3so34015636wrc.11;
+        Tue, 12 Oct 2021 07:40:13 -0700 (PDT)
+X-Gm-Message-State: AOAM531dj7yPXOKfrMR+lrifguTg+u8bbz7Qb3YfPrLRItDJoBbuJo9+
+        QO+zqvmRcNfQs5qqq42r28sXIuGttZcn0X3gBoE=
+X-Google-Smtp-Source: ABdhPJwsX00JvLV147YNI/vITnilDiDSyCMYaOBQxpBe5IV6UNyEVoOL9Nc4pFKmxwenTCCaRUt2Gu+9DapKCFiP6aE=
+X-Received: by 2002:a1c:2358:: with SMTP id j85mr5978288wmj.1.1634049612821;
+ Tue, 12 Oct 2021 07:40:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3533e4f9-169c-d13c-9c4e-d9ec6bdc78f0@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211008164728.30e3d3a3@canb.auug.org.au> <20211011082704.3cff4568@canb.auug.org.au>
+ <CAL_JsqJE_GHnehBz-71BOGXfjm6q2p0u6FQA5KwO8zK_i1LpMQ@mail.gmail.com>
+In-Reply-To: <CAL_JsqJE_GHnehBz-71BOGXfjm6q2p0u6FQA5KwO8zK_i1LpMQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 12 Oct 2021 16:39:56 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1EcNuxT-w-8w-HDr2+idsP=vFZ3Cn27fX7o56GOuu_Cg@mail.gmail.com>
+Message-ID: <CAK8P3a1EcNuxT-w-8w-HDr2+idsP=vFZ3Cn27fX7o56GOuu_Cg@mail.gmail.com>
+Subject: Re: linux-next: build warnings in Linus' tree
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Anatolij Gustschin <agust@denx.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:tmFm9ObBhI7LEVPCH+fNRyD3HR566ndNt9VAoC376+nLsGFC9M2
+ JwkcoMll6ImpR9wr21a40R6+PqucZRONlA9i9yAM+5FmhghxCRyDqWMHK7Meln2ztqaphDP
+ EO1A6A37xBKEhuGV9bzr1rpMEKSzlyDkdDElGHaTnw3OniRrc7MwtTk2MYcDq9ubg69PP5e
+ QbpjCKRbLkarB1cXpvkeQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:on4rvQwVu1g=:SKNCD0SACllaiYOpEF4ojM
+ luo3rsjFqdDHVnrJMrqgEykKWkugyiuBVpwm4lt2yv8zVx9hjYLoOYfl96I7afLRPKeIE3r7d
+ 87H/pjqTk2v/Nw8V2Z0ExaNp7UPvXY44Z6+19oO70TFErcshlmYWnp26fHe91Lqtfjn/4W96z
+ OqULaRg99HTHgD8b2uCkhQtSHddZlCrmOFWJjMebf4fJflvHxy1McgSthLjH4xK6ZINI5FYAs
+ Ky2pYPy09tBU3ZixtzUlimJUDZu86aex7CpzNZSEplSbSNQY/BMo/XUnaOZIhNITxRdyGVpx1
+ nQjrC9s6lRaVpMW2v12Xk1GS/Bfa+cluQm9NTvZqVt1QW1fwCodndIJi/WSzyVjgdovHk6yXD
+ X75VvkX/TZsByhTiVLNK3cCWkTc36zT9C//nbWP/99mTVa3fTKDJCBevSnb7bTp6e4SyjUk77
+ NwvZNdE4E1FNOd9bC4s+jyxEHx6kDgB6LBstoxmoO7OfkYxDjWz7TzqMSDkq36ASa8B2gri5M
+ zPB4d8MuMjIPoN3XlzkJX3hr3AWwLDtJvraI703SovrrXT5MDrE3+qfJy+RwMUwDV4ehXiq7q
+ sJNyZiZLK5VOKIwkKJ22CKYiGiUS7fHPynSzMo4U+3JkVL/R32Tc0OwFN7PlYLSnDMQeGyZjv
+ ZxcRGFH6clh5Wuka9StkWmj3r0jmRbUfeBEPzzuzd7C/Um5REggDzRjB11N3u8Le31UDlR/fV
+ IDqbth3RI79HtSFahsq4OhZDhurkzpe/3X2Ypg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 02:21:03PM -0400, Waiman Long <llong@redhat.com> wrote:
-> Sorry for not following up with this patchset sooner as I was busy on other
-> tasks.
+On Mon, Oct 11, 2021 at 10:42 PM Rob Herring <robh+dt@kernel.org> wrote:
+> On Sun, Oct 10, 2021 at 4:27 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> FYI, u-boot removed mpc5xxx support in 2017, so maybe there's
+> similarly not a need to keep them in the kernel? It does appear NXP
+> will still sell you the parts though the last BSP was 2009.
 
-Thanks for continuing with this.
+Specifically, MPC5200B has a 15 year lifetime, which ends in
+11 months from now. The original bplan/Genesi Efika 5K2 was
+quite popular at the time it came out, and there are probably
+still some of those hanging around, but they came with Open
+Firmware rather than relying on the dts files that ship with the
+kernel.
 
-> 	1) The "cpuset.cpus" is not empty and the list of CPUs are
-> 	   exclusive, i.e. they are not shared by any of its siblings.
-> 	2) The parent cgroup is a partition root.
-> 	3) The "cpuset.cpus" is a subset of the union of parent's
-> 	   "cpuset.cpus.effective" and offlined CPUs in parent's
-> 	   "cpuset.cpus".
-> 	4) There is no child cgroups with cpuset enabled.  This avoids
-> 	   cpu migrations of multiple cgroups simultaneously which can
-> 	   be problematic.
-> 
->         A partition, when enabled, can be in an invalid state. An example
->         is when its parent is also an invalid partition.
+Grant Likely was the original maintainer for MPC52xx until 2011,
+Anatolij Gustschin is still listed as maintainer since then but hasn't
+been active in it for a while either. Anatolij can probably best judge
+which of these boards are still in going to be used with future kernels,
+but I suspect once you start removing bits from 52xx, the newer
+but less common 512x platform can go away as well.
 
-You say:
-"it can only be enabled in a cgroup if all the following conditions are met.",
-"2) The parent cgroup is a partition root."
-
-and then the example:
-"A partition, when enabled, can be in an invalid state. An example is
-when its parent is also an invalid partition."
-
-But the first two statements imply you can't have enabled the partition
-in such a case.
-
-I think there is still mixup of partition validity conditions and
-transition conditions, yours would roughly divide into (not precisely,
-just to share my understanding):
-
-Validity conditions
- 	1) The "cpuset.cpus" is not empty and the list of CPUs are
- 	   exclusive, i.e. they are not shared by any of its siblings.
- 	2) The parent cgroup is a partition root.
-
-Transition conditions:
- 	3) The "cpuset.cpus" is a subset of the union of parent's
- 	   "cpuset.cpus.effective" and offlined CPUs in parent's
- 	   "cpuset.cpus".
- 	4) There is no child cgroups with cpuset enabled.  This avoids
- 	   cpu migrations of multiple cgroups simultaneously which can
- 	   be problematic.
-
-(I've put no. 3 into transition conditions because _after_ the
-transition parent's cpuset.cpus.effective are subtracted the new root's
-cpuset.cpus but I'd like to have something similar as a validity
-condition but I haven't come up with that yet.)
-
-I consider the following situation:
-
-r		// all cpus 0-7
-`- part1	cpus=0-3	root >partition
-   ` subpart1	cpus=0-1	root >partition
-   ` subpart2	cpus=2-3	root >partition
-`- other	cpus=4-7	// member by default
-
-Both subpart1 and subpart2 are valid partition roots.
-Look at actions listed below (as alternatives, not a sequence):
-
-a) hotplug offlines cpu 3
-  - would part1 still be considered a valid root? 
-    - perhaps not
-  - would subpart1 still be considered a valid root? 
-    - it could be, but its parent is invalid so no?
-  - would subpart2 still be considered a valid root? 
-    - perhaps not
-    
-b) administrative change writes 0-2 into part1 cpus
-  - would part1 still be considered a valid root? 
-    - yes
-  - would subpart1 still be considered a valid root? 
-    - yes
-  - would subpart2 still be considered a valid root? 
-    - perhaps not
-
-c) administrative change writes 3-7 into `other` cpus
-  - should this fail or invalidate a root partition part1?
-    - perhaps fail since the same "owner" manages all siblings and
-      should reduce part1 first
-
-The answers above are just my "natural" responses, the ideal may be
-different. The issue I want to illustrate is that if all the conditions
-are formed as transition conditions only, they can't be used to reason
-about hotplug or config changes (except for cpuset.cpus.partitions
-writes).
-
-What would help me with the understanding -- the invalid root partition is defined as
-1) such a cgroup where no cpus are granted from the top (and thus has to fall back to ancestors)
-or
-2) such a cgroup where cpus requested in cpuset.cpus can't be fulfilled (i.e. any missing invalidates)?
-
-Furthermore, another example (motivated by the patch 4/6)
-
-r		// all cpus 0-7
-`- part1	cpus=0-4	root >partition
-   ` subpart1	cpus=0-1	root >partition
-   ` subpart2	cpus=2-3	root >partition
-   ` task
-`- other	cpus=5-7	// member by default
-
-It's a valid and achievable state (even on v2 since cpuset is a threaded
-controller). 
-
-a) cpu 4 is offlined
-  - this should invalidate part1 (and propagate invalidation into
-    subpart1 and subpart2).
-b) administrative write 0-3 into part1 cpus
-  - should this invalidate part1 or be rejected?
-
-
-In conclusion, it'd be good to have validity conditions separate from
-transition conditions (since hotplug transition can't be rejected) and
-perhaps treat administrative changes from an ancestor equally as a
-hotplug.
-
-Thanks,
-Michal
+         Arnd
