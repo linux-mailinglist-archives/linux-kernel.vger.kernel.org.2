@@ -2,150 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6910429DCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE74429DCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhJLGhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 02:37:18 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:52952 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233215AbhJLGhQ (ORCPT
+        id S233187AbhJLGhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 02:37:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:58420 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232340AbhJLGhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:37:16 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C6Ajo4030335;
-        Tue, 12 Oct 2021 06:35:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=83rJVu4hp36OJOZbYTRKe1umUqRUueUvJ+iTXnhugAM=;
- b=BFSX9y2cRwZGujSB4v6/Up/ilzvu9xAh6CZtiRlT9mbw569+2bsxfc1h0RGiqU3qwxc2
- gsGqZaXks8U7MBPWntQD9j+4W177ZhgHVLca0uSWZlyPdFD9BfhDTZUPrwPrWP+uw8Br
- QDQw1d8SIoFo17zEwGuFv9TxOlXTx57h5kHamV1ezPNeMpesNres3yASh0zFSpXuV1tL
- 7I8tgNVv1TydW6aXCXKSVr6k/DK0Be5H0QBRiYYofS4H7Ec+UvMeCaFfBaPw0NbaPSX4
- mxo1lAdN0dc01zJtlSflWUoH91kh4Exl7x2+Het0r/60EF1d5zHETfwMJcXF70mKX1mC DQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bmv41jwf0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 06:35:07 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19C6YhVw011981;
-        Tue, 12 Oct 2021 06:35:06 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-        by aserp3020.oracle.com with ESMTP id 3bmadxfhna-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 06:35:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iwx4Kl5p6SO8LFqa9r6JzTpcAvwoeBDAaP/P/gFp2sqNDci6cKM5+U4SrZF5jN4yivIELV8oUjGlJiZsFOvoKTjHS1NgM5pVLcaMm3wyuMfIm+lwsh426aFU1tfclB++bNg2W8GFloVriFHajGQ8wzTUrW7hv0/J2T3D+4cnyqByWsx3eEYnlckbRZDXsJWlM/duGnwasDWkLMuB6uIhodBj9hbM16ubf6HOHUUPo9ZDHQpQdtSGtgX4iXktoe/2vDPzyWrbFQ3ySREvJXRp+DmFjdhiW+ylKLmEnoFMcYk44JCexDpdPI1CusaB1K7BZ2qsb2wSJsLYRaKakakbsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=83rJVu4hp36OJOZbYTRKe1umUqRUueUvJ+iTXnhugAM=;
- b=GX/fP+xKvDpRIU1EJ/5uILXl1xLpNdgpu4OoDQF326e3rEcGOeXbSeL714Nksfr6ZIudRQXegf4oya0RDcMy26EU0wBUVjN82B/RQqbUON53BUFx+XnraU3A+ssyHQObdnPrN3zZNL1TVOa3+PL3sIRI8UOwusMHtQwk3oVuOCj786LPK+Ftl6tpawlaT2yh3iaX/iamZzyZ1EpgwlvnLKdpglOmCsg6NOoL6o6ortK92tUNRu9+tbpn0UFcf69Oowf0DtHkiNYlkLAr1ovkqw8q+MxZQBuAa/FYQVxT9zujIMfFbFM5Rok0xvZx0Ncjb5ybF31h0jE1E7TlcxSH0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=83rJVu4hp36OJOZbYTRKe1umUqRUueUvJ+iTXnhugAM=;
- b=QkXKLAEmCy+IDXxL5WHbpYIC4F0xYEVBJIRfuUBcQvnGwZd0qlPhWrkVKR+PZVdexPnMJKvNbO1aCgWO15dGDGzP3xGGVOVbTuRRhuTH02c6U9kxpD7+utw85OgeiHtSLxxihHpz31b+ALy30oMCDu+d3L8vLQmpWo6SSGkomqw=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR1001MB2320.namprd10.prod.outlook.com
- (2603:10b6:301:2e::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25; Tue, 12 Oct
- 2021 06:35:04 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4587.026; Tue, 12 Oct 2021
- 06:35:04 +0000
-Date:   Tue, 12 Oct 2021 09:34:46 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, marcocesati@gmail.com,
-        insafonov@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: rtl8723bs: os_dep: simplify the return
- statement.
-Message-ID: <20211012063446.GQ2083@kadam>
-References: <YWG3oIchovDZnPl8@user>
- <20211011122631.GA8429@kadam>
- <05689c1a-546b-7d5d-0196-59f1a2caaba4@gmail.com>
+        Tue, 12 Oct 2021 02:37:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634020508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=07yQxsFrv9aCC9EQPgz10osBGEGuDJBT37EZevFNgi4=;
+        b=K6flW5tEyWbrirvXpnhryztqrDAKh5NyP1B4ULAVgvmxt5yABQ0GaLWDTEKW/OQQ0E2okB
+        U+lJWqGHJqNoC48Q9cExVdgsB6gQ5M7flxzwS00ltIcge2FJBpsFyDMbJe+2CvV0MSxjrE
+        IJCQ180UrTG5MDE3zZcHTHctvrBKpIU=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-TJBX9oJxO2uE-Ww1dKrqEw-1; Tue, 12 Oct 2021 02:35:06 -0400
+X-MC-Unique: TJBX9oJxO2uE-Ww1dKrqEw-1
+Received: by mail-ed1-f70.google.com with SMTP id z23-20020aa7cf97000000b003db7be405e1so7085499edx.13
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 23:35:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=07yQxsFrv9aCC9EQPgz10osBGEGuDJBT37EZevFNgi4=;
+        b=WENs3uFC2urudqEWR1SIDK6TJark0dcZexzwomJU+DgxCPARpfD+eb8IlrSqjgYZIL
+         klHH7MMRbioGcH0/7GsuvZ9Bb99wHpOCEfwO6daa393Kyux77JAlhwBIcqzYvQKrUDT3
+         rAhKhO0z09ppM6TSLPvGoa8A6eEI6OXRGWb/Pw4Qwypi4e/O3iyndiK66MW3L4MRxAZe
+         VUza+DxkRcM9EC+QV+sB6jP8CfxRYdi7KjTw0kRPIdtMqZy2h6MxmveLkASPqykfIT1d
+         jQ4IxuTQd9Pw/lM+9ED1WM24M6ITSQvujXvJKDKfo94X/GyXmnSaUF2xsKVyrhtPb1va
+         0Ktw==
+X-Gm-Message-State: AOAM5310sSEPua+ER+WUQWfFat3RRLm8igmBHpUVoKCGPcf2vhpTQbcH
+        Pa8Lo4ncNDxo2wdTKjMp/1cDK+AkqS+ARKDi9K8uVSbqbkwsADJH44e6HiMDv7OS6YBpB5u2ABX
+        69tPY8oEzzOT6eQu560/3IbmB
+X-Received: by 2002:a17:906:1c04:: with SMTP id k4mr31450835ejg.279.1634020505473;
+        Mon, 11 Oct 2021 23:35:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJjqxOJdzsQQ6EA0NUB680VtYg/nQIvKR/A9v6mnC+QayQG7JOVCRSCVz5PQz+Mam4tCRtGg==
+X-Received: by 2002:a17:906:1c04:: with SMTP id k4mr31450818ejg.279.1634020505208;
+        Mon, 11 Oct 2021 23:35:05 -0700 (PDT)
+Received: from redhat.com ([2.55.159.57])
+        by smtp.gmail.com with ESMTPSA id d30sm5429213edn.49.2021.10.11.23.35.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 23:35:04 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 02:35:01 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Subject: Re: [PATCH 0/9] More virtio hardening
+Message-ID: <20211012022024-mutt-send-email-mst@kernel.org>
+References: <20210913055353.35219-1-jasowang@redhat.com>
+ <20211005032924-mutt-send-email-mst@kernel.org>
+ <CACGkMEuQU6jXV_D5QvE29mX9spF6KcyrCDuvVwX99_jSf-x7fQ@mail.gmail.com>
+ <20211011082640-mutt-send-email-mst@kernel.org>
+ <CACGkMEtwAFy=bm62X+rjPMJEwChAhZkZ2bBwDJPULdzhWdzagA@mail.gmail.com>
+ <20211012012617-mutt-send-email-mst@kernel.org>
+ <CACGkMEu5oP=vix8gZgQi0Y==VBvxqoTg+yG-cu1FenZH6csepw@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <05689c1a-546b-7d5d-0196-59f1a2caaba4@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0003.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::8)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
-MIME-Version: 1.0
-Received: from kadam (62.8.83.99) by JNAP275CA0003.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25 via Frontend Transport; Tue, 12 Oct 2021 06:34:59 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ec86965a-d0e1-40d0-dad2-08d98d4a6cbd
-X-MS-TrafficTypeDiagnostic: MWHPR1001MB2320:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR1001MB2320DD69A6598079A601B8628EB69@MWHPR1001MB2320.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YY7Qm5yYFZQ9yrV2twnqS5A2dinb/41v/KuTp1yRwe0KGc89vzp5ejkjNP25W2NPcehIgxFzU2i92ildgv4MCyoWCP40cHDYEkCWAdarbzJVbsp1wQtOK5J2dKEn7kETiPQKHaRpsx7/BALQg12CTqT4gZcIjAeKfE/gij+VzfnrPyriXcUcyGPPskPlb2nYXXKhNPvSi2ksXxhDgY63x/v47/eiRbUyUE18cMO3TR7Xpl38q13Y/2zTo3OhjhskUfWBe91AF0xE9qATH7XOFx/JpeVCo6fZ1zMElJv20Yxk/4UdipfV82G0sQAcdq41EjS3MRP75UdW5wOEVOVRr/Mw4biQZc3QF0St6P7Z7AS8KHYT8j1ty8j6N9NirCeScnJth6d7dXUu80DR4NDBpQVxXbPL685xtWzlk6zTZarU4i/koHjlxmbcDTY7zh9rQigo0x4OzRQPOiNtkwhZbiYWo5x8yUrh3rIU0pQiGQ7rYwmpIWNW1exSCRTeHqCViFYtw0VaXBgN6DtHEyxTOucPrHa+Yb45hwg+UZuxhLi3YiUVGQ+GQYgA+fle2NDWiplb0hpnTcg/JJHa9vacycY6NPW9KfHLurUqK0v2ARFFg6XzkyKUdB3lGxXcRWLLicern7kw8LxcJKDOlMUItRg1J5LsC4eZl+WZwtT38AWydfdFsPs7MqrJb07/q1iJTATaK43/2KIJ9fMy54QZKQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38350700002)(6496006)(38100700002)(55016002)(9686003)(33716001)(52116002)(508600001)(8676002)(8936002)(1076003)(5660300002)(44832011)(33656002)(86362001)(66946007)(66476007)(66556008)(4744005)(186003)(6916009)(4326008)(9576002)(6666004)(316002)(956004)(26005)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iIzP5WVrRU6ya2jsTCC/0K00TOVrLrplc3FqWDHhBreNQrFV4cYtooNyMDNY?=
- =?us-ascii?Q?ppjsAzktchciiTYwQbFitPODWzRJ+kZY2JC7wDScBwr7Jx1F9zIVP32rMtrr?=
- =?us-ascii?Q?0zjF6ZeIuiL/shqv448BgMApczWfYDCxEPz9qYn40g/TOc/ycdNlPPYUnix9?=
- =?us-ascii?Q?fe9PvTnxh2XusOWa0HJ799uroga6CoJ5trEgrj2v9brEuiaJs9WcpJs4lZNq?=
- =?us-ascii?Q?OHmcy9nq8ZyHO2fV8Qel5W+5S/dHWnZO6mxSet5KzB/P+KQrKf7L+7Ro1Rcd?=
- =?us-ascii?Q?cYqvSOZcULwibBchS5y1vm2ky5t+R8Y7jpEO2w0LbMTu86e1e8oH9YMrJAq6?=
- =?us-ascii?Q?exhCpyzcwZ9znqVsHM8+xT+ootvjcc8OEWNIg06pLs2+teDovhD30GFzNQqL?=
- =?us-ascii?Q?COQlKfo8srkltljvPQoPy5etxiCciZQd3Fg7x72h9pAlMVqvguXKgAwoquvi?=
- =?us-ascii?Q?q/+VRyjGlK+mAXfyKafWlPyz3s+aFMTqYokQnFx3iFaJryZPhle+U6BU0VJo?=
- =?us-ascii?Q?crsO5wq0M0gO6i00pygxmy7tyGRIJ+yKbcCe61wVmJalGJYQCzE2TKy68K4Y?=
- =?us-ascii?Q?0JRl++tiKqBNqHzOEDTSoT0lRTTFnVQMK0Qgxa+e7LwiFqubsbP1Th3XYFxi?=
- =?us-ascii?Q?cmXRH3c8eYKpiHw0tzlrOZ02/eZwT5wDDmqMPT7c124/X809PopoftCKYOqn?=
- =?us-ascii?Q?ZVPa7Q+BW79uToEE1p1d/aAzebaTiHv+I0hmhwl3eu58tw+28A80qJbrULmt?=
- =?us-ascii?Q?88TJwdtA5j9QnKuo8+OzUocHhrwK+it5D+mm8fxdCsZWd0bU7onQ6yNPeq05?=
- =?us-ascii?Q?xuT73Y/XOKbmeX1HrpRxaiAABVhz5l6/wmHL7TUyc/6OSe7kI+zhsssNF0Gq?=
- =?us-ascii?Q?z7h40skbN4DcZjt0R8NmV/rema1hkzdJbisdYIC6zw6LG+0R8xLGVRgtbhTu?=
- =?us-ascii?Q?Tcq/b4qrJrmxXrxNEqEq8M+sKTXkgaELvsDV/6HgRKavi/an30TdSOY58c49?=
- =?us-ascii?Q?3jg13z5gGedwunvwUGD/8VhexxTRxqLrChwdCVRqrGfzqZkNiYL1dM+Q7SQ6?=
- =?us-ascii?Q?htnnEKlTGJ6npbxA0LhSoHV7fI/+lztoBl7u/z5FVvkYzTadqblwGGq7HkWT?=
- =?us-ascii?Q?M8TNJMiTB6nmZBPthy0Dqb4xdPYM/sOHOXC6t2+dlQ1QKO2kZI4vwbbxrt+2?=
- =?us-ascii?Q?STmv26FmobFNe/3NOFt0YA6QCoD0QHh+KJppXaHeBOO8rRozx8cYecRwfdue?=
- =?us-ascii?Q?FVL9Ey/3Gnn7c2Z7pVCQAzpOvkMrHcduL98Z2Wt54lEHMOGrqlqpJreZ/8am?=
- =?us-ascii?Q?hB3jFOFYYFjhwRjLNWOACR0c?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec86965a-d0e1-40d0-dad2-08d98d4a6cbd
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2021 06:35:04.4102
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0ctfUtfmj/d8uHtUNrBjLLxDhQMm7Yw5/TziUe1sc3PGU64qDzXQdA2fOp+L5LIap47lAgy7c2eN9okemJ/twZQ65iOPIKMc8tWduIqrTaU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2320
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10134 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- suspectscore=0 mlxlogscore=807 bulkscore=0 mlxscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110120035
-X-Proofpoint-ORIG-GUID: FkoURdv08XFnz9Hw7RLl0S2qYex9EUIO
-X-Proofpoint-GUID: FkoURdv08XFnz9Hw7RLl0S2qYex9EUIO
+In-Reply-To: <CACGkMEu5oP=vix8gZgQi0Y==VBvxqoTg+yG-cu1FenZH6csepw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 11:56:10PM +0530, Saurav Girepunje wrote:
->
-> I didn't removed local variable assignment to NULL on this patch. 
-> However I agree this is another improvement possible on this function and can be done along with other changes. 
-> Please let me know you opinion whether I should send one patch or multiple patch in a single series.
+On Tue, Oct 12, 2021 at 02:11:10PM +0800, Jason Wang wrote:
+> On Tue, Oct 12, 2021 at 1:44 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Tue, Oct 12, 2021 at 10:43:57AM +0800, Jason Wang wrote:
+> > > On Mon, Oct 11, 2021 at 8:36 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > >
+> > > > On Mon, Oct 11, 2021 at 03:36:51PM +0800, Jason Wang wrote:
+> > > > > On Tue, Oct 5, 2021 at 3:42 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > > >
+> > > > > > On Mon, Sep 13, 2021 at 01:53:44PM +0800, Jason Wang wrote:
+> > > > > > > Hi All:
+> > > > > > >
+> > > > > > > This series treis to do more hardening for virito.
+> > > > > > >
+> > > > > > > patch 1 validates the num_queues for virio-blk device.
+> > > > > > > patch 2-4 validates max_nr_ports for virito-console device.
+> > > > > > > patch 5-7 harden virtio-pci interrupts to make sure no exepcted
+> > > > > > > interrupt handler is tiggered. If this makes sense we can do similar
+> > > > > > > things in other transport drivers.
+> > > > > > > patch 8-9 validate used ring length.
+> > > > > > >
+> > > > > > > Smoking test on blk/net with packed=on/off and iommu_platform=on/off.
+> > > > > > >
+> > > > > > > Please review.
+> > > > > > >
+> > > > > > > Thanks
+> > > > > >
+> > > > > > So I poked at console at least, and I think I see
+> > > > > > an issue: if interrupt handler queues a work/bh,
+> > > > > > then it can still run while reset is in progress.
+> > > > >
+> > > > > Looks like a bug which is unrelated to the hardening?
+> > > >
+> > > > Won't preventing use after free be relevant?
+> > >
+> > > Oh right.
+> > >
+> > > > I frankly don't know what does hardening means then.
+> > > > > E.g the driver
+> > > > > should sync with work/bh before reset.
+> > > >
+> > > > No, there's no way to fix it ATM without extra locks and state which I
+> > > > think we should strive to avoid or make it generic, not per-driver,
+> > > > since sync before reset is useless, new interrupts will just arrive and
+> > > > queue more work. And a sync after reset is too late since driver will
+> > > > try to add buffers.
+> > >
+> > > Can we do something like
+> > >
+> > > 1) disable interrupt
+> > > 2) sync bh
+> > >
+> > > Or I guess this is somehow you meant in the following steps.
+> >
+> > So that would mean a new API to disable vq interrupts.
+> > reset will re-enable.
+> > E.g. virtqueue_cancel_cb_before_reset()?
+> >
+> > Then drivers can sync, then reset.
+> > This means maintaining more state though, which I don't like.
+> >
+> > An alternative is something like this:
+> >
+> > static void (*virtio_flush_device)(struct virtio_device *dev);
+> >
+> > void virtio_reset_device(struct virtio_device *dev, virtio_flush_device flush)
+> > {
+> >         might_sleep();
+> >         if (flush) {
+> >                 dev->config->disable_interrupts(dev);
+> >                 flush(dev);
+> >                 dev->config->reset(dev);
+> >                 dev->config->enable_interrupts(dev);
+> 
+> I wonder whether this is needed. As done in this series,
+> enable_interrupt should be done in virtio_device_ready().
+> 
+> Others should work.
+> 
+> >         } else {
+> >                 dev->config->reset(dev);
+> >         }
+> > }
+> >
+> > I have patches wrapping all reset calls in virtio_reset_device
+> > (without the flush parameter but that's easy to tweak).
+> 
+> Does it work if I post V2 and you post those patches on top?
 
-Since it's on the same line then do it in one patch.
+The reset things? Sure.
 
-regards,
-dan carpenter
+> >
+> >
+> > > >
+> > > > Maybe we can break device. Two issues with that
+> > > > - drivers might not be ready to handle add_buf failures
+> > > > - restore needs to unbreak then and we don't have a way to do that yet
+> > > >
+> > > > So .. careful reading of all device drivers and hoping we don't mess
+> > > > things up even more ... here we come.
+> > >
+> > > Yes.
+> >
+> > The biggest issue with this trick is drivers not handling add_buf
+> > errors, adding a failure path here risks creating memory leaks.
+> > OTOH with e.g. bounce buffers maybe it's possible for add buf to
+> > fail anyway?
+> 
+> I'm not sure I get this, a simple git grep told me at least the return
+> value of add_inbuf() were all checked.
+> 
+> Thanks
+
+Checked locally, but not always error is handled all the way
+to the top. E.g. add_port in console returns an error code
+but that is never checked. Well, console is a mess generally.
+
+> >
+> > > >
+> > > > > >
+> > > > > > I sent a patch to fix it for console removal specifically,
+> > > > > > but I suspect it's not enough e.g. freeze is still broken.
+> > > > > > And note this has been reported without any TDX things -
+> > > > > > it's not a malicious device issue, can be triggered just
+> > > > > > by module unload.
+> > > > > >
+> > > > > > I am vaguely thinking about new APIs to disable/enable callbacks.
+> > > > > > An alternative:
+> > > > > >
+> > > > > > 1. adding new remove_nocb/freeze_nocb calls
+> > > > > > 2. disabling/enabling interrupts automatically around these
+> > > > > > 3. gradually moving devices to using these
+> > > > > > 4. once/if all device move, removing the old callbacks
+> > > > > >
+> > > > > > the advantage here is that we'll be sure calls are always
+> > > > > > paired correctly.
+> > > > >
+> > > > > I'm not sure I get the idea, but my feeling is that it doesn't
+> > > > > conflict with the interrupt hardening here (or at least the same
+> > > > > method is required e.g NO_AUTO_EN).
+> > > > >
+> > > > > Thanks
+> > > >
+> > > > Right.  It's not that it conflicts, it's that I was hoping that
+> > > > since you are working on hardening you can take up fixing that.
+> > > > Let me know whether you have the time. Thanks!
+> > >
+> > > I can do that.
+> > >
+> > > Thanks
+> > >
+> > > >
+> > > > > >
+> > > > > >
+> > > > > >
+> > > > > >
+> > > > > >
+> > > > > > > Jason Wang (9):
+> > > > > > >   virtio-blk: validate num_queues during probe
+> > > > > > >   virtio: add doc for validate() method
+> > > > > > >   virtio-console: switch to use .validate()
+> > > > > > >   virtio_console: validate max_nr_ports before trying to use it
+> > > > > > >   virtio_config: introduce a new ready method
+> > > > > > >   virtio_pci: harden MSI-X interrupts
+> > > > > > >   virtio-pci: harden INTX interrupts
+> > > > > > >   virtio_ring: fix typos in vring_desc_extra
+> > > > > > >   virtio_ring: validate used buffer length
+> > > > > > >
+> > > > > > >  drivers/block/virtio_blk.c         |  3 +-
+> > > > > > >  drivers/char/virtio_console.c      | 51 +++++++++++++++++++++---------
+> > > > > > >  drivers/virtio/virtio_pci_common.c | 43 +++++++++++++++++++++----
+> > > > > > >  drivers/virtio/virtio_pci_common.h |  7 ++--
+> > > > > > >  drivers/virtio/virtio_pci_legacy.c |  5 +--
+> > > > > > >  drivers/virtio/virtio_pci_modern.c |  6 ++--
+> > > > > > >  drivers/virtio/virtio_ring.c       | 27 ++++++++++++++--
+> > > > > > >  include/linux/virtio.h             |  1 +
+> > > > > > >  include/linux/virtio_config.h      |  6 ++++
+> > > > > > >  9 files changed, 118 insertions(+), 31 deletions(-)
+> > > > > > >
+> > > > > > > --
+> > > > > > > 2.25.1
+> > > > > >
+> > > >
+> >
+
