@@ -2,271 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2AA42A292
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273BC42A2A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236069AbhJLKqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235881AbhJLKqP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:46:15 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4022CC061570;
-        Tue, 12 Oct 2021 03:44:14 -0700 (PDT)
-Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8AC8DF1;
-        Tue, 12 Oct 2021 12:44:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1634035451;
-        bh=I3o+eF6qMXWtqB1e0jLelJZ+Ll1+7ojcRN226D7ZWqY=;
-        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
-        b=vgMqgLWqtMYuAGlej861F2L/7i5YKd2/RB0a7D533FRij0STGT6ZKdAZTmeg0xRZJ
-         IZyS28/hD8heIYhD8S1rUleyp8FEovrsxK4V86Abk9b3GD2g8L/EHTo1Q/kRvQZRf3
-         enwaM9vfr5eS2mB6PVHBxRJNcOpBVadZKWuULQPk=
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, khilman@baylibre.com,
-        Benoit Parrot <bparrot@ti.com>
-References: <20210923070701.145377-1-narmstrong@baylibre.com>
- <20210923070701.145377-6-narmstrong@baylibre.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH v5 5/8] drm/omap: Add global state as a private atomic
- object
-Message-ID: <2609ca32-90e8-1335-2769-14dcbcdfafde@ideasonboard.com>
-Date:   Tue, 12 Oct 2021 13:44:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236057AbhJLKvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:51:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236018AbhJLKvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:51:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FCDE60240;
+        Tue, 12 Oct 2021 10:49:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634035762;
+        bh=7RxK5vIYZ8w49aIatScu2gUFdQZO076SRJYJxhOzvA8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=fP71SMj5YBbMdMJxE8D1GwSY76B6TNy33EE8QCmDhj1NexRkrJsc5STht2r8HB62g
+         3MKcjvvqizeXhLKn+4ktBQDg5keb/b+65i8WxM4cBCvtM0bJyNtESYKgFFwuhyN1qP
+         yJ3Kk/pNm+35DsM15Abvd/RHXoCcD3ea0YB8NfJSGXnfGtUlgAZX/kpQpGDJougfqi
+         6yzGwZ7z1sGAfBVtOzQ1SiNRXod7mtJbLfgehskoLAosmJ8d5cmEcj4FNkBZT2w1aL
+         P6uXPBIGXT2e8ayHUONtMHfPmzXp5ns5wxe8FTYEJAkxlB28vZxwr+S2Dg/t6g5S5N
+         pN7srbLnYapaA==
+Message-ID: <5fd543da-fd49-23c5-f4ba-531aaf8cb377@kernel.org>
+Date:   Tue, 12 Oct 2021 13:49:12 +0300
 MIME-Version: 1.0
-In-Reply-To: <20210923070701.145377-6-narmstrong@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Subject: Re: [PATCH] arm64: defconfig: Enable SC7180 interconnect driver
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org, bjorn.andersson@linaro.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, shawnguo@kernel.org,
+        krzk@kernel.org, geert+renesas@glider.be, vkoul@kernel.org,
+        jagan@amarulasolutions.com, agx@sigxcpu.org,
+        biju.das.jz@bp.renesas.com, enric.balletbo@collabora.com,
+        aford173@gmail.com, nm@ti.com,
+        andrey.zhizhikin@leica-geosystems.com, saravanak@google.com,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org
+References: <20211011154003.904355-1-angelogioacchino.delregno@collabora.com>
+From:   Georgi Djakov <djakov@kernel.org>
+In-Reply-To: <20211011154003.904355-1-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/2021 10:06, Neil Armstrong wrote:
-> From: Benoit Parrot <bparrot@ti.com>
+On 11.10.21 18:40, AngeloGioacchino Del Regno wrote:
+> On SC7180 device trees, almost all of the nodes are declaring
+> interconnect properties, including the QUP nodes: at least on
+> some machines, leaving this configuration option disabled, or
+> as a module, the kernel appears to hang while initializing the
+> QUP node containing the UART device.
 > 
-> Global shared resources (like hw overlays) for omapdrm are implemented
-> as a part of atomic state using the drm_private_obj infrastructure
-> available in the atomic core.
+> To solve this issue, enable the interconnect driver for this
+> SoC as built-in.
 > 
-> omap_global_state is introduced as a drm atomic private object. The two
-> funcs omap_get_global_state() and omap_get_existing_global_state() are
-> the two variants that will be used to access omap_global_state.
-> 
-> drm_mode_config_init() needs to be called earlier because it
-> creates/initializes the private_obj link list maintained by the atomic
-> framework. The private_obj link list has to exist prior to calling
-> drm_atomic_private_obj_init(). Similarly the cleanup handler are
-> reordered appropriately.
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-I'm not really familiar with the private object. Did you check how 
-current drivers use it? These patches are 3 years old, and things might 
-have changed around the private object.
+Acked-by: Georgi Djakov <djakov@kernel.org>
 
-> Signed-off-by: Benoit Parrot <bparrot@ti.com>
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 > ---
->   drivers/gpu/drm/omapdrm/omap_drv.c | 91 +++++++++++++++++++++++++++++-
->   drivers/gpu/drm/omapdrm/omap_drv.h | 21 +++++++
->   2 files changed, 109 insertions(+), 3 deletions(-)
+>   arch/arm64/configs/defconfig | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.c b/drivers/gpu/drm/omapdrm/omap_drv.c
-> index b994014b22e8..c7912374d393 100644
-> --- a/drivers/gpu/drm/omapdrm/omap_drv.c
-> +++ b/drivers/gpu/drm/omapdrm/omap_drv.c
-> @@ -128,6 +128,82 @@ static const struct drm_mode_config_funcs omap_mode_config_funcs = {
->   	.atomic_commit = drm_atomic_helper_commit,
->   };
->   
-> +/* Global/shared object state funcs */
-> +
-> +/*
-> + * This is a helper that returns the private state currently in operation.
-> + * Note that this would return the "old_state" if called in the atomic check
-> + * path, and the "new_state" after the atomic swap has been done.
-> + */
-> +struct omap_global_state *
-> +omap_get_existing_global_state(struct omap_drm_private *priv)
-> +{
-> +	return to_omap_global_state(priv->glob_obj.state);
-> +}
-> +
-> +/*
-> + * This acquires the modeset lock set aside for global state, creates
-> + * a new duplicated private object state.
-> + */
-> +struct omap_global_state *__must_check
-> +omap_get_global_state(struct drm_atomic_state *s)
-> +{
-> +	struct omap_drm_private *priv = s->dev->dev_private;
-> +	struct drm_private_state *priv_state;
-> +
-> +	priv_state = drm_atomic_get_private_obj_state(s, &priv->glob_obj);
-> +	if (IS_ERR(priv_state))
-> +		return ERR_CAST(priv_state);
-> +
-> +	return to_omap_global_state(priv_state);
-> +}
-> +
-> +static struct drm_private_state *
-> +omap_global_duplicate_state(struct drm_private_obj *obj)
-> +{
-> +	struct omap_global_state *state;
-> +
-> +	state = kmemdup(obj->state, sizeof(*state), GFP_KERNEL);
-> +	if (!state)
-> +		return NULL;
-> +
-> +	__drm_atomic_helper_private_obj_duplicate_state(obj, &state->base);
-> +
-> +	return &state->base;
-> +}
-> +
-> +static void omap_global_destroy_state(struct drm_private_obj *obj,
-> +				      struct drm_private_state *state)
-> +{
-> +	struct omap_global_state *omap_state = to_omap_global_state(state);
-> +
-> +	kfree(omap_state);
-> +}
-> +
-> +static const struct drm_private_state_funcs omap_global_state_funcs = {
-> +	.atomic_duplicate_state = omap_global_duplicate_state,
-> +	.atomic_destroy_state = omap_global_destroy_state,
-> +};
-> +
-> +static int omap_global_obj_init(struct drm_device *dev)
-> +{
-> +	struct omap_drm_private *priv = dev->dev_private;
-> +	struct omap_global_state *state;
-> +
-> +	state = kzalloc(sizeof(*state), GFP_KERNEL);
-> +	if (!state)
-> +		return -ENOMEM;
-> +
-> +	drm_atomic_private_obj_init(dev, &priv->glob_obj, &state->base,
-> +				    &omap_global_state_funcs);
-> +	return 0;
-> +}
-> +
-> +static void omap_global_obj_fini(struct omap_drm_private *priv)
-> +{
-> +	drm_atomic_private_obj_fini(&priv->glob_obj);
-> +}
-> +
->   static void omap_disconnect_pipelines(struct drm_device *ddev)
->   {
->   	struct omap_drm_private *priv = ddev->dev_private;
-> @@ -231,8 +307,6 @@ static int omap_modeset_init(struct drm_device *dev)
->   	if (!omapdss_stack_is_ready())
->   		return -EPROBE_DEFER;
->   
-> -	drm_mode_config_init(dev);
-> -
->   	ret = omap_modeset_init_properties(dev);
->   	if (ret < 0)
->   		return ret;
-> @@ -583,10 +657,16 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
->   
->   	omap_gem_init(ddev);
->   
-> -	ret = omap_hwoverlays_init(priv);
-> +	drm_mode_config_init(ddev);
-> +
-> +	ret = omap_global_obj_init(ddev);
->   	if (ret)
->   		goto err_gem_deinit;
->   
-> +	ret = omap_hwoverlays_init(priv);
-> +	if (ret)
-> +		goto err_free_priv_obj;
-> +
->   	ret = omap_modeset_init(ddev);
->   	if (ret) {
->   		dev_err(priv->dev, "omap_modeset_init failed: ret=%d\n", ret);
-> @@ -624,7 +704,10 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
->   	omap_modeset_fini(ddev);
->   err_free_overlays:
->   	omap_hwoverlays_destroy(priv);
-> +err_free_priv_obj:
-> +	omap_global_obj_fini(priv);
->   err_gem_deinit:
-> +	drm_mode_config_cleanup(ddev);
->   	omap_gem_deinit(ddev);
->   	destroy_workqueue(priv->wq);
->   	omap_disconnect_pipelines(ddev);
-> @@ -649,6 +732,8 @@ static void omapdrm_cleanup(struct omap_drm_private *priv)
->   
->   	omap_modeset_fini(ddev);
->   	omap_hwoverlays_destroy(priv);
-> +	omap_global_obj_fini(priv);
-> +	drm_mode_config_cleanup(ddev);
->   	omap_gem_deinit(ddev);
->   
->   	destroy_workqueue(priv->wq);
-> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.h b/drivers/gpu/drm/omapdrm/omap_drv.h
-> index b4d9c2062723..280cdd27bc8e 100644
-> --- a/drivers/gpu/drm/omapdrm/omap_drv.h
-> +++ b/drivers/gpu/drm/omapdrm/omap_drv.h
-> @@ -14,6 +14,7 @@
->   #include "dss/omapdss.h"
->   #include "dss/dss.h"
->   
-> +#include <drm/drm_atomic.h>
->   #include <drm/drm_gem.h>
->   #include <drm/omap_drm.h>
->   
-> @@ -41,6 +42,15 @@ struct omap_drm_pipeline {
->   	unsigned int alias_id;
->   };
->   
-> +/*
-> + * Global private object state for tracking resources that are shared across
-> + * multiple kms objects (planes/crtcs/etc).
-> + */
-> +#define to_omap_global_state(x) container_of(x, struct omap_global_state, base)
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index fc40ae9e9bdb..171848ace3ac 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -1172,6 +1172,7 @@ CONFIG_INTERCONNECT_IMX8MQ=m
+>   CONFIG_INTERCONNECT_QCOM=y
+>   CONFIG_INTERCONNECT_QCOM_MSM8916=m
+>   CONFIG_INTERCONNECT_QCOM_OSM_L3=m
+> +CONFIG_INTERCONNECT_QCOM_SC7180=y
+>   CONFIG_INTERCONNECT_QCOM_SDM845=y
+>   CONFIG_INTERCONNECT_QCOM_SM8150=m
+>   CONFIG_INTERCONNECT_QCOM_SM8250=m
+> 
 
-Add empty line here.
-
-> +struct omap_global_state {
-> +	struct drm_private_state base;
-> +};
-> +
->   struct omap_drm_private {
->   	struct drm_device *ddev;
->   	struct device *dev;
-> @@ -61,6 +71,13 @@ struct omap_drm_private {
->   	unsigned int num_ovls;
->   	struct omap_hw_overlay *overlays[8];
->   
-> +	/*
-> +	 * Global private object state, Do not access directly, use
-> +	 * omap_global_get_state()
-> +	 */
-> +	struct drm_modeset_lock glob_obj_lock;
-
-This is not used... What am I missing?
-
-> +	struct drm_private_obj glob_obj;
-> +
->   	struct drm_fb_helper *fbdev;
->   
->   	struct workqueue_struct *wq;
-> @@ -88,5 +105,9 @@ struct omap_drm_private {
->   
->   
->   void omap_debugfs_init(struct drm_minor *minor);
-> +struct omap_global_state *__must_check
-> +omap_get_global_state(struct drm_atomic_state *s);
-> +struct omap_global_state *
-> +omap_get_existing_global_state(struct omap_drm_private *priv);
-
-These could also be separated by empty lines. At least to my eyes it 
-gets confusing if those declarations are not separated.
-
-  Tomi
