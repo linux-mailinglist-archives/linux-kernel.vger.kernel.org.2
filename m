@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B393F42AA50
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147EC42AAB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhJLRLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40124 "EHLO
+        id S232435AbhJLRas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:30:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhJLRLK (ORCPT
+        with ESMTP id S230306AbhJLRar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:11:10 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CE9C061570;
-        Tue, 12 Oct 2021 10:09:08 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id t16so2101326eds.9;
-        Tue, 12 Oct 2021 10:09:08 -0700 (PDT)
+        Tue, 12 Oct 2021 13:30:47 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B83C061570;
+        Tue, 12 Oct 2021 10:28:45 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id y12so2420582eda.4;
+        Tue, 12 Oct 2021 10:28:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ETBlO0R7ftFoQf331hVqlj1UmmT4m6MaJEZrp8aaMUI=;
-        b=H4bbH1wue/tDYUXhbNmTeFVFOJ5I+RECXE8zhADA7HY8NzNeFa0rDHOGK5cchjHHfq
-         V/ZNyvecT/VlCowZNtV50RrwYjmRf81vKCp1PxzuPdiuc0rovzuBZvXHl/DzLUaCwuS+
-         95gEAH9q7qRIr0YYtRUhC564Lg1eytaIiQMMABos1Rt40ZHzUkgEQfUTydXKKo5txFHn
-         9z93Hc/KZw7qzNo9AXlkvsrWePJQ9kvwfoPWDOuQ78iam9vHx2q3ccRpJvSNebFTHWGA
-         xnrI52v+jWUSzlaxMMwHJxb6Sp3tDWrK907OcVbBJ4bukvkCiX+vl3QqnzktT+3XwT0b
-         9oAw==
+        bh=jYV5uswBdPhLkzQCchLXy1vzDSrs7wbq+uP4fTIgJew=;
+        b=EqiiBxf9HamAePfjyBIkSQxkgGGjmVmOOiUHx7Af964g/OmYXmEtvMqcdu7TmFHfnm
+         SNMA2cwgQebfN/8LOqxFf4EwKL5q8vWO0mO+RI0iqHOpKUxe6D3TiNTzNKY7/bq+UIzM
+         o6ykO2t18179Gfmk5eXRhicIeBSeYXJvyfZRK1dHbLbZCUoC2hFZvA5uhE4LvD3uVB8g
+         NTeBDOOCprN2VsmEIhK1mjcDtyVTZ3TGeCqoU9jXMhshslPECIaIDL8lSaypDsgQPW0T
+         /huc9Te52IDjRzd4EENstG+YzLkeINGlNUyl0nTp3FzqbuQzWQwoAnho+H8CdC7xka7R
+         eIkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ETBlO0R7ftFoQf331hVqlj1UmmT4m6MaJEZrp8aaMUI=;
-        b=JRIUXkMv9zEwU+S5haWWITJnH6etcCyZ/KDUPwI8vnT73uxpopPRoPzeKQE/Yrc2CN
-         ZrcwcwfB5Go03yvS7yI+tjtufItwW7YVHYAn9b/IbwYgyZx/fjjuyuCkNW+MO9waCY6o
-         kKRa6z/sPw4ftk15/JXkHfKBm6o1s0Qy559Dg9qR7bzLaVXKQKLwNVHzRSF+GEHzMQaT
-         ELFk7Asro6zdP3uLN3S1UQPtZJQXJD2zucGFzpr+OODjdheLBkcqIrW7KIunc55e7vju
-         1Aa713SkaVBS7Vpq0yPi9uQzdysdY12ki7C/V33OAf0SddwXpKoZVfcvgaRSmvHBwlag
-         F6EA==
-X-Gm-Message-State: AOAM53041+R8BfzYMER9iieNSem24vBWFc2guSQ88XGSHRscl6Ojz3YU
-        KJ8L/BtDofr09zgL222lJNZLSOolN64cK8USHHs=
-X-Google-Smtp-Source: ABdhPJxvT7gKhdGGRY0SC1Yseo5/vsnz0N9pv27Y7/5CAWbNCOg+5Po82HIaAqdBMiFuLXb1gHVqtXFBYtIE9pPXE5c=
-X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr5301651ejb.356.1634058546919;
- Tue, 12 Oct 2021 10:09:06 -0700 (PDT)
+        bh=jYV5uswBdPhLkzQCchLXy1vzDSrs7wbq+uP4fTIgJew=;
+        b=aqtObiwoDaYE8utncOUkWSJSo+hEoS2Y0tF1Dk94eqT06DyoHjjAT6Y01mKkOBIy31
+         vKO6lH7eoyp5cBo2I4GIh2xQxzSaxe/VMFXYWTQ9q+7ITbn/LldgGOF1PuTVHvUyqvP1
+         ex5AH4X2+iheVp/eU9yTSmOuKOvKJL7CTxVIEFU8+nwJxQ9ZiMLEmJS55Vde3CqI/Bt6
+         F1RsCDAq1KR3WVgZhvLtEVXXQ9ctELvJSb8ORyzEUMrOZ0Ekx/za75sxAtIP53meysfn
+         YjumRNMjMMwgr64F7c/wLUFa9hW3s/O4UnQEUgODE6Uvq6tjWKJdER7EIDH+WyEygOqt
+         VoLg==
+X-Gm-Message-State: AOAM531CIWXgQRQ4rvGTq5biLdq6fnQ30P6oZUHsaAFAfQz1bR5Otv77
+        PzPNPQzSaJamw1O7oQ3kcla/4KKSmHFFYtaitGO/WhzO7t6nQ0Mj
+X-Google-Smtp-Source: ABdhPJylsYNadtxJaenpcnUtTiNrM4FgodsUYbNb7BPGrQnMd7AAoOjjIUX49eIg+nwVBLusEB7wq5LbutUl63nydto=
+X-Received: by 2002:a17:906:eb86:: with SMTP id mh6mr34830343ejb.141.1634059724156;
+ Tue, 12 Oct 2021 10:28:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211012134027.684712-1-kernel@esmil.dk> <20211012134027.684712-15-kernel@esmil.dk>
-In-Reply-To: <20211012134027.684712-15-kernel@esmil.dk>
+References: <20211011092028.2310144-1-yangyingliang@huawei.com>
+In-Reply-To: <20211011092028.2310144-1-yangyingliang@huawei.com>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 12 Oct 2021 23:08:19 +0300
-Message-ID: <CAHp75Vfw+G5TC+gcS1aBEd9dTjzbQG6rYdXPFg0ua3dMtWP4Uw@mail.gmail.com>
-Subject: Re: [PATCH v1 14/16] serial: 8250_dw: Add skip_clk_set_rate quirk
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 12 Oct 2021 23:27:56 +0300
+Message-ID: <CAHp75VdAbhmd1UeFmyN1qPYOh-GKWmdStAC7WRSn91=UpDQ+Tw@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: core: fix double free in iio_device_unregister_sysfs()
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>, ars@metafoo.de,
+        Jonathan Cameron <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 4:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+On Mon, Oct 11, 2021 at 12:12 PM Yang Yingliang
+<yangyingliang@huawei.com> wrote:
 >
-> On the StarFive JH7100 SoC the uart core clocks can't be set to exactly
-> 16 * 115200Hz and many other common bitrates. Trying this will only
-> result in a higher input clock, but low enough that the uart's internal
-> divisor can't come close enough to the baud rate target. So rather than
-> try to set the input clock it's better to rely solely on the uart's
-> internal divisor.
+> I got the double free report:
+>
+> BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
+>
+> CPU: 0 PID: 359 Comm: xrun Tainted: G        W         5.15.0-rc3-00109-g4dfd49fafc4d-dirty #474 523b7f3c65c42247635e2ac04a95f61f9f36678d
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+> Call Trace:
+>  dump_stack_lvl+0xe2/0x152
+>  print_address_description.constprop.7+0x21/0x150
+>  kasan_report_invalid_free+0x6f/0xa0
+>  __kasan_slab_free+0x125/0x140
+>  slab_free_freelist_hook+0x10d/0x240
+>  kfree+0xce/0x390
+>  iio_device_unregister_sysfs+0x108/0x13b [industrialio]
+>  iio_dev_release+0x9e/0x10e [industrialio]
+>  device_release+0xa5/0x240
+>  kobject_put+0x1e5/0x540
+>  put_device+0x20/0x30
+>  devm_iio_device_release+0x21/0x30 [industrialio]
+>  release_nodes+0xc3/0x3b0
+>  devres_release_group+0x1da/0x2c0
+>  i2c_device_probe+0x628/0xbb0
+>  really_probe+0x285/0xc30
 
-s/uart/UART/g
-
-...
-
->         unsigned int            skip_autocfg:1;
->         unsigned int            uart_16550_compatible:1;
-> +       unsigned int            skip_clk_set_rate:1;
-
-Keep skip_* bitfields grouped.
-
-...
-
-> +       if (!d->skip_clk_set_rate) {
-
-I believe you have to rebase this patch on top of tty/tty-next.
-Besides that, please, avoid indentation changes, i.e. refactor your
-patch accordgingly.
-
->         }
+Please, reduce this noise to the ~4-5 important lines only!
 
 -- 
 With Best Regards,
