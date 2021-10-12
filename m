@@ -2,230 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D26429F4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36AA429F32
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234825AbhJLIGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:06:31 -0400
-Received: from mga01.intel.com ([192.55.52.88]:45978 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234979AbhJLIFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:05:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="250470280"
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="250470280"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 01:03:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="480240040"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by orsmga007.jf.intel.com with ESMTP; 12 Oct 2021 01:03:12 -0700
-Date:   Tue, 12 Oct 2021 15:56:49 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgoncalv@redhat.com, hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v17 0/5] FPGA Image Load (previously Security Manager)
-Message-ID: <20211012075649.GD95330@yilunxu-OptiPlex-7050>
-References: <20210929230025.68961-1-russell.h.weight@intel.com>
- <20211009080859.GA85181@yilunxu-OptiPlex-7050>
- <450ed897-f726-9671-26b7-2a24bb046e89@redhat.com>
- <20211011014154.GA82360@yilunxu-OptiPlex-7050>
- <79350773-3629-2734-21c0-0314a762e722@redhat.com>
- <336e4827-b09a-e1ab-b67d-d8755012d71c@intel.com>
- <20211012074752.GB95330@yilunxu-OptiPlex-7050>
+        id S234823AbhJLIDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:03:22 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:50760 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234566AbhJLICD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 04:02:03 -0400
+Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 17E01F1;
+        Tue, 12 Oct 2021 10:00:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634025600;
+        bh=1LolTykz25ZRqhJ0HndWPDaSMEgQLzF8E+TYn1nz52w=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
+        b=TQc8mSpKVruBEmeAJ+UBwlESPzg6K3Gx+nodHvu4mGx0adpSW+MXY+2gDK95xUGos
+         oiHHFO0G0eURkza3sqcUQD2myOkwzH/vxmVVhgbdoALjs1Df/vMi7aOstbB6C8Fubd
+         gRKRILPbUO6NzCBTaHfhy9xjhaFLH+THyEFskG8E=
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, khilman@baylibre.com,
+        Benoit Parrot <bparrot@ti.com>
+References: <20210923070701.145377-1-narmstrong@baylibre.com>
+ <20210923070701.145377-4-narmstrong@baylibre.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH v5 3/8] drm/omap: introduce omap_hw_overlay
+Message-ID: <6e5980a6-218e-b585-3ad7-3e55350929b6@ideasonboard.com>
+Date:   Tue, 12 Oct 2021 10:59:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20210923070701.145377-4-narmstrong@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211012074752.GB95330@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 03:47:52PM +0800, Xu Yilun wrote:
-> On Mon, Oct 11, 2021 at 06:00:16PM -0700, Russ Weight wrote:
-> > 
-> > 
-> > On 10/11/21 5:35 AM, Tom Rix wrote:
-> > >
-> > > On 10/10/21 6:41 PM, Xu Yilun wrote:
-> > >> On Sat, Oct 09, 2021 at 05:11:20AM -0700, Tom Rix wrote:
-> > >>> On 10/9/21 1:08 AM, Xu Yilun wrote:
-> > >>>> On Wed, Sep 29, 2021 at 04:00:20PM -0700, Russ Weight wrote:
-> > >>>>> The FPGA Image Load framework provides an API to upload image
-> > >>>>> files to an FPGA device. Image files are self-describing. They could
-> > >>>>> contain FPGA images, BMC images, Root Entry Hashes, or other device
-> > >>>>> specific files. It is up to the lower-level device driver and the
-> > >>>>> target device to authenticate and disposition the file data.
-> > >>>> I've reconsider the FPGA persistent image update again, and think we
-> > >>>> may include it in FPGA manager framework.
-> > >>>>
-> > >>>> Sorry I raised this topic again when it is already at patch v17, but now
-> > >>>> I need to consider more seriously than before.
-> > >>>>
-> > >>>> We have consensus the FPGA persistent image update is just like a normal
-> > >>>> firmware update which finally writes the nvmem like flash or eeprom,
-> > >>>> while the current FPGA manager deals with the active FPGA region update
-> > >>>> and re-activation. Could we just expand the FPGA manager and let it handle
-> > >>>> the nvmem update as well? Many FPGA cards have nvmem and downloaders
-> > >>>> supports updating both FPGA region and nvmem.
-> > The fpga-image-load driver is actually just a data transfer. The class
+On 23/09/2021 10:06, Neil Armstrong wrote:
+> From: Benoit Parrot <bparrot@ti.com>
 > 
-> IMHO, The fpga-mgr dev is also a data transfer. The fpga-region dev is
-> acting as the FPGA region admin responsible for gating, transfering and
-> re-enumerating.
+> Split out the hardware overlay specifics from omap_plane.
+> To start, the hw overlays are statically assigned to planes.
 > 
-> So my opinion is to add a new data transfer type and keep a unified process.
+> The goal is to eventually assign hw overlays dynamically to planes
+> during plane->atomic_check() based on requested caps (scaling, YUV,
+> etc). And then perform hw overlay re-assignment if required.
 > 
-> > driver has no knowledge about what the data is or where/if the data will
-> > be stored.
+> Signed-off-by: Benoit Parrot <bparrot@ti.com>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>   drivers/gpu/drm/omapdrm/Makefile       |  1 +
+>   drivers/gpu/drm/omapdrm/omap_drv.c     |  9 ++-
+>   drivers/gpu/drm/omapdrm/omap_drv.h     |  4 ++
+>   drivers/gpu/drm/omapdrm/omap_overlay.c | 87 ++++++++++++++++++++++++++
+>   drivers/gpu/drm/omapdrm/omap_overlay.h | 31 +++++++++
+>   drivers/gpu/drm/omapdrm/omap_plane.c   | 42 ++++++-------
+>   6 files changed, 151 insertions(+), 23 deletions(-)
+>   create mode 100644 drivers/gpu/drm/omapdrm/omap_overlay.c
+>   create mode 100644 drivers/gpu/drm/omapdrm/omap_overlay.h
 > 
-> The fpga-image-load driver knows the data will be stored in nvmem, while
-> the fpga-mgr knows the data will be stored in FPGA cells. They may need
-> to know the exact physical position to store, may not, depends on what the
-> HW engines are.
-> 
-> > 
-> > This functionality could, of course, be merged into the fpga-mgr. I did
-> > a proof of concept of this a while back and we discussed the pros and cons.
-> > See this email for a recap:
-> > 
-> > https://marc.info/?l=linux-fpga&m=161998085507374&w=2
-> > 
-> > Things have changed some with the evolution of the driver. The IOCTL
-> > approach probably fits better than the sysfs implementation. At the time
-> > it seemed that a merge would add unnecessary complexity without adding value.
-> 
-> I think at least developers don't have to go through 2 sets of software
-> stacks which are of the same concept. And adding some new features like
-> optionally threading or canceling data transfer are also good to FPGA
-> region update. And the nvmem update could also be benifit from exsiting
-> implementations like scatter-gather buffers, in-kernel firmware loading.
-> 
-> I try to explain myself according to each of your concern from that mail
-> thread:
-> 
-> Purpose of the 2 updates
-> ========================
-> 
->   As I said before, I think they are both data transfer devices. FPGA
-> region update gets extra support from fpga-region & fpga-bridge, and
-> FPGA nvmem update could be a standalone fpga-mgr.
-> 
-> Extra APIs that are unique to nvmem update
-> ==========================================
-> 
->   cdev APIs for nvmem update:
->     Yes we need to expand the functionality so we need them.
-> 
->   available_images, image_load APIs for loading nvmem content to FPGA
->   region:
->     These are features in later patchsets which are not submitted, but we
->     could talk about it in advance. I think this is actually a FPGA region
->     update from nvmem, it also requires gating, data loading (no SW transfer)
->     and re-enumeration, or a single command to image_load HW may result system
->     disordered. The FPGA framework now only supports update from in-kernel
->     user data, maybe we add support for update from nvmem later.
-> 
->   fpga-mgr state extend:
->     I think it could be extended, The current states are not perfect,
->     adding something like IDLE or READY is just fine.
-> 
->   fpga-mgr status extend:
->     Add general error definitions as needed. If there is some status
->     that is quite vendor specific, expose it in low-level driver.
-> 
->   remaining-size:
->     Nice to have for all.
-> 
-> Threading the update
-> ====================
-> 
->   Also a good option for FPGA region update, maybe we also have a slow FPGA
->   reprogrammer?
+> diff --git a/drivers/gpu/drm/omapdrm/Makefile b/drivers/gpu/drm/omapdrm/Makefile
+> index 21e8277ff88f..710b4e0abcf0 100644
+> --- a/drivers/gpu/drm/omapdrm/Makefile
+> +++ b/drivers/gpu/drm/omapdrm/Makefile
+> @@ -9,6 +9,7 @@ omapdrm-y := omap_drv.o \
+>   	omap_debugfs.o \
+>   	omap_crtc.o \
+>   	omap_plane.o \
+> +	omap_overlay.o \
+>   	omap_encoder.o \
+>   	omap_fb.o \
+>   	omap_gem.o \
+> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.c b/drivers/gpu/drm/omapdrm/omap_drv.c
+> index f86e20578143..b994014b22e8 100644
+> --- a/drivers/gpu/drm/omapdrm/omap_drv.c
+> +++ b/drivers/gpu/drm/omapdrm/omap_drv.c
+> @@ -583,10 +583,14 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
+>   
+>   	omap_gem_init(ddev);
+>   
+> +	ret = omap_hwoverlays_init(priv);
+> +	if (ret)
+> +		goto err_gem_deinit;
+> +
+>   	ret = omap_modeset_init(ddev);
+>   	if (ret) {
+>   		dev_err(priv->dev, "omap_modeset_init failed: ret=%d\n", ret);
+> -		goto err_gem_deinit;
+> +		goto err_free_overlays;
+>   	}
+>   
+>   	/* Initialize vblank handling, start with all CRTCs disabled. */
+> @@ -618,6 +622,8 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
+>   	omap_fbdev_fini(ddev);
+>   err_cleanup_modeset:
+>   	omap_modeset_fini(ddev);
+> +err_free_overlays:
+> +	omap_hwoverlays_destroy(priv);
+>   err_gem_deinit:
+>   	omap_gem_deinit(ddev);
+>   	destroy_workqueue(priv->wq);
+> @@ -642,6 +648,7 @@ static void omapdrm_cleanup(struct omap_drm_private *priv)
+>   	drm_atomic_helper_shutdown(ddev);
+>   
+>   	omap_modeset_fini(ddev);
+> +	omap_hwoverlays_destroy(priv);
+>   	omap_gem_deinit(ddev);
+>   
+>   	destroy_workqueue(priv->wq);
+> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.h b/drivers/gpu/drm/omapdrm/omap_drv.h
+> index 591d4c273f02..b4d9c2062723 100644
+> --- a/drivers/gpu/drm/omapdrm/omap_drv.h
+> +++ b/drivers/gpu/drm/omapdrm/omap_drv.h
+> @@ -24,6 +24,7 @@
+>   #include "omap_gem.h"
+>   #include "omap_irq.h"
+>   #include "omap_plane.h"
+> +#include "omap_overlay.h"
+>   
+>   #define DBG(fmt, ...) DRM_DEBUG_DRIVER(fmt"\n", ##__VA_ARGS__)
+>   #define VERB(fmt, ...) if (0) DRM_DEBUG_DRIVER(fmt, ##__VA_ARGS__) /* verbose debug */
+> @@ -57,6 +58,9 @@ struct omap_drm_private {
+>   	unsigned int num_planes;
+>   	struct drm_plane *planes[8];
+>   
+> +	unsigned int num_ovls;
+> +	struct omap_hw_overlay *overlays[8];
+> +
+>   	struct drm_fb_helper *fbdev;
+>   
+>   	struct workqueue_struct *wq;
+> diff --git a/drivers/gpu/drm/omapdrm/omap_overlay.c b/drivers/gpu/drm/omapdrm/omap_overlay.c
+> new file mode 100644
+> index 000000000000..2b1416d2aad2
+> --- /dev/null
+> +++ b/drivers/gpu/drm/omapdrm/omap_overlay.c
+> @@ -0,0 +1,87 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2018 Texas Instruments Incorporated -  http://www.ti.com/
+> + * Author: Benoit Parrot, <bparrot@ti.com>
 
-Another thought is, could we implement the non-threading version
-firstly, so there would be less change and faster to have the basic
-functionality. But either is OK for me.
+Extra comma there, and similar case below.
 
-Thanks,
-Yilun
+> + */
+> +
+> +#include <drm/drm_atomic.h>
+> +#include <drm/drm_atomic_helper.h>
+> +#include <drm/drm_plane_helper.h>
+> +
+> +#include "omap_dmm_tiler.h"
+> +#include "omap_drv.h"
+> +
+> +/*
+> + * overlay funcs
+> + */
+> +static const char * const overlay_id_to_name[] = {
+> +	[OMAP_DSS_GFX] = "gfx",
+> +	[OMAP_DSS_VIDEO1] = "vid1",
+> +	[OMAP_DSS_VIDEO2] = "vid2",
+> +	[OMAP_DSS_VIDEO3] = "vid3",
+> +};
 
-> 
-> Cancelling the update
-> ====================
-> 
->   Also a good option for FPGA region update if HW engine supports.
-> 
-> Thanks,
-> Yilun
-> 
-> > 
-> > >>>>
-> > >>>> According to the patchset, the basic workflow of the 2 update types are
-> > >>>> quite similar, get the data, prepare for the HW, write and complete.
-> > >>>> They are already implemented in FPGA manager. We've discussed some
-> > >>>> differences like threading or canceling the update, which are
-> > >>>> not provided by FPGA manager but they may also nice to have for FPGA
-> > >>>> region update. An FPGA region update may also last for a long time??
-> > >>>> So I think having 2 sets of similar frameworks in FPGA is unnecessary.
-> > >>>>
-> > >>>> My quick mind is that we add some flags in struct fpga_mgr & struct
-> > >>>> fpga_image_info to indicate the HW capability (support FPGA region
-> > >>>> update or nvmem update or both) of the download engine and the provided
-> > >>>> image type. Then the low-level driver knows how to download if it
-> > >>>> supports both image types.An char device could be added for each fpga manager dev, providing the
-> > >>>> user APIs for nvmem update. We may not use the char dev for FPGA region
-> > >>>> update cause it changes the system HW devices and needs device hotplug
-> > >>>> in FPGA region. We'd better leave it to FPGA region class, this is
-> > >>>> another topic.
-> > I'll give this some more thought and see if I can come up with some RFC
-> > patches.
-> > 
-> > - Russ
-> > >>>>
-> > >>>> More discussion is appreciated.
-> > >>> I also think fpga_mgr could be extended.
-> > >>>
-> > >>> In this patchset,
-> > >>>
-> > >>> https://lore.kernel.org/linux-fpga/20210625195849.837976-1-trix@redhat.com/
-> > >>>
-> > >>> A second, similar set of write ops was added to fpga_manger_ops,
-> > >>>
-> > >>> new bit/flag was added to fpga_image_info
-> > >>>
-> > >>> The intent was for dfl to add their specific ops to cover what is done in
-> > >>> this patchset.
-> > >> I think we don't have to add 2 ops for reconfig & reimage in framework,
-> > >> the 2 processes are almost the same.
-> > >>
-> > >> Just add the _REIMAGE (or something else, NVMEM?) flag for
-> > >> fpga_image_info, and low level drivers handle it as they do for other
-> > >> flags.
-> > >>
-> > >> How do you think?
-> > >
-> > > A single set is fine.
-> > >
-> > > A difficult part of is the length of  time to do the write. The existing write should be improved to use a worker thread.
-> > >
-> > > Tom
-> > >
-> > >>
-> > >> Thanks,
-> > >> Yilun
-> > >>
-> > >>> Any other driver would do similar.
-> > >>>
-> > >>> Is this close to what you are thinking ?
-> > >>>
-> > >>> Tom
-> > >>>
-> > >>>> Thanks,
-> > >>>> Yilun
-> > >>>>
-> > >
+I was expecting to see the name array to be removed from omap_plane.c as 
+it's moved here, but that's not the case. Why is that? Especially as 
+after this series these names make no sense with the planes.
+
+> +static void omap_overlay_destroy(struct omap_hw_overlay *overlay)
+> +{
+> +	kfree(overlay);
+> +}
+> +
+> +static struct omap_hw_overlay *omap_overlay_init(enum omap_plane_id overlay_id,
+> +						 enum omap_overlay_caps caps)
+> +{
+> +	struct omap_hw_overlay *overlay;
+> +
+> +	overlay = kzalloc(sizeof(*overlay), GFP_KERNEL);
+> +	if (!overlay)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	overlay->name = overlay_id_to_name[overlay_id];
+> +	overlay->overlay_id = overlay_id;
+> +	overlay->caps = caps;
+> +	/*
+> +	 * When this is called priv->num_crtcs is not known yet.
+> +	 * Use a safe mask value to start with, it will get updated to the
+> +	 * proper value after the first use.
+> +	 */
+> +	overlay->possible_crtcs = 0xff;
+
+This sounds like a hack. Why do we need possible_crtcs anyway? If I'm 
+not mistaken, on all DSS versions any overlay can be used on any ctrtc. 
+On the DRM plane level we need the possible_crtc as the DRM framework 
+needs that (i.e. we just always set all crtcs available for all planes), 
+but why is it needed here?
+
+> +	return overlay;
+> +}
+> +
+> +int omap_hwoverlays_init(struct omap_drm_private *priv)
+> +{
+> +	static const enum omap_plane_id hw_plane_ids[] = {
+> +			OMAP_DSS_GFX, OMAP_DSS_VIDEO1,
+> +			OMAP_DSS_VIDEO2, OMAP_DSS_VIDEO3,
+> +	};
+> +	u32 num_overlays = dispc_get_num_ovls(priv->dispc);
+> +	enum omap_overlay_caps caps;
+> +	int i, ret;
+> +
+> +	for (i = 0; i < num_overlays; i++) {
+> +		struct omap_hw_overlay *overlay;
+> +
+> +		caps = dispc_ovl_get_caps(priv->dispc, hw_plane_ids[i]);
+> +		overlay = omap_overlay_init(hw_plane_ids[i], caps);
+> +		if (IS_ERR(overlay)) {
+> +			ret = PTR_ERR(overlay);
+> +			dev_err(priv->dev, "failed to construct overlay for %s (%d)\n",
+> +				overlay_id_to_name[i], ret);
+> +			return ret;
+> +		}
+
+I think this leaks memory if omap_overlay_init() fails.
+
+> +		overlay->idx = priv->num_ovls;
+> +		priv->overlays[priv->num_ovls++] = overlay;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +void omap_hwoverlays_destroy(struct omap_drm_private *priv)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < priv->num_ovls; i++) {
+> +		omap_overlay_destroy(priv->overlays[i]);
+> +		priv->overlays[i] = NULL;
+> +	}
+> +}
+> diff --git a/drivers/gpu/drm/omapdrm/omap_overlay.h b/drivers/gpu/drm/omapdrm/omap_overlay.h
+> new file mode 100644
+> index 000000000000..892fecb67adb
+> --- /dev/null
+> +++ b/drivers/gpu/drm/omapdrm/omap_overlay.h
+> @@ -0,0 +1,31 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2018 Texas Instruments Incorporated -  http://www.ti.com/
+> + * Author: Benoit Parrot, <bparrot@ti.com>
+> + */
+> +
+> +#ifndef __OMAPDRM_OVERLAY_H__
+> +#define __OMAPDRM_OVERLAY_H__
+> +
+> +#include <linux/types.h>
+> +
+> +enum drm_plane_type;
+> +
+> +struct drm_device;
+> +struct drm_mode_object;
+> +struct drm_plane;
+> +
+> +/* Used to associate a HW overlay/plane to a plane */
+> +struct omap_hw_overlay {
+> +	int idx;
+
+unsigned int.
+
+> +
+> +	const char *name;
+> +	enum omap_plane_id overlay_id;
+
+Perhaps just "id" is fine. You don't have "overlay_name" there either, 
+but just "name".
+
+  Tomi
