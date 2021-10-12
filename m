@@ -2,128 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220D042A5B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1F342A5BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236732AbhJLNc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:32:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:42520 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233296AbhJLNc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:32:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2EB91063;
-        Tue, 12 Oct 2021 06:30:54 -0700 (PDT)
-Received: from [10.57.21.6] (unknown [10.57.21.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D0A593F66F;
-        Tue, 12 Oct 2021 06:30:52 -0700 (PDT)
-Subject: Re: [PATCH 0/3] perf tools: Enable strict JSON parsing
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        kajoljain <kjain@linux.ibm.com>
-Cc:     john.garry@huawei.com, ak@linux.intel.com,
-        linux-perf-users@vger.kernel.org, Nick.Forrington@arm.com,
-        Andrew.Kilroy@arm.com, Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211007110543.564963-1-james.clark@arm.com>
- <c15fd2bf-104e-6ab0-6496-7e5cf77a218f@linux.ibm.com>
- <e8752b2d-65a7-1ed8-3c68-30d9006261ba@arm.com>
- <5947c093-cff9-f70e-af20-75bc053edf5f@linux.ibm.com>
- <YWCVTnOUM2P4FRPi@kernel.org>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <0d73d04f-925c-4c97-9a07-18cc64a9c68b@arm.com>
-Date:   Tue, 12 Oct 2021 14:30:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236890AbhJLNek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236727AbhJLNei (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 09:34:38 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593EAC061570;
+        Tue, 12 Oct 2021 06:32:37 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so8571608otq.12;
+        Tue, 12 Oct 2021 06:32:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lZ7Vrmf9d2xbm+q8X0yumIO1w+C3Yq5fjSeU+n7YeJ4=;
+        b=Y4of+zcZTT2qRSlpOr8737KUph+/+qqIM5/WFjhwDT3+WNagKLQQkJZF4MRZ53DpbU
+         V/rWaBp3ilHUeuRZNad8NCl4ilQexGvjtZ4FF/9q1GxeN0SiJYqBC8nAebCXQaKAM0ys
+         AkpqtLaaibrwhiJt/uNm8XQmmK0lO9uv8A5LuaAgZ7xwf1gWsHvSF41goCfC1I9f+K38
+         R2rwtKK+3VYMCeWvabpao1vd88Ujp0W4QIYUGNDxaVF0ttRpyYfn1w9CBFuAqUA152Cv
+         8zxzvqCagrJuEIVLlREDzOChs+ejmVmFKMbXBVcBG3IZ2et4hQhAUEwcpyA4Nq2bTtHB
+         OcJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lZ7Vrmf9d2xbm+q8X0yumIO1w+C3Yq5fjSeU+n7YeJ4=;
+        b=Lk156Sf/LOYHd1nKc3UANf4ol7GKo35JFtEYBS++9ro1Y5u84KqSmrhZLi7X3KZvpR
+         uv2sFHkhHIgvMx68tAADBqGR5n+snE3CfCXLN63lScvi/K+zZfVluUlKUnWvpiXZIFOA
+         VZbrcEYWnA+/6fpTCqz/kBwPae0A/WqPE92rQ8T5ROGF7HuEcfIRuKScoGrmYu4PgiG7
+         nM8YAV5hJKSt+o2wjZWlyhh/tMy9QVwLglWgiY9tLklM1SUBSJwoHlUNRap3xmn5q5ov
+         PMXFpJ5EKZx4XrhJ6D8fDfBrNRnLd2IUe0CI1BXZg7W/jnsH4/2A0kjBzbeXBmuMOukj
+         Qc7A==
+X-Gm-Message-State: AOAM5335qEsSv9ejlqxbk07eU9JAUb1fbVqvLFegRxOBaUOBoUvYHxmc
+        /vV4rI7DB+FB2BW8CXTzJ0kAUA7P1Z25ZTlZZDGAD0YFVsQ=
+X-Google-Smtp-Source: ABdhPJzur/SiBvRHhaGs0GFst1Y5rPRxox6pQZUPDy+DQ7q4Is4o4cm0jKQ3f4QXAxV4xaDb9/UIpQshf2NUyseq3Vc=
+X-Received: by 2002:a05:6830:23ac:: with SMTP id m12mr4492411ots.357.1634045556644;
+ Tue, 12 Oct 2021 06:32:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YWCVTnOUM2P4FRPi@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211008113116.4bdd7b6c@canb.auug.org.au> <20211012132526.237d8f6e@canb.auug.org.au>
+In-Reply-To: <20211012132526.237d8f6e@canb.auug.org.au>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 12 Oct 2021 09:32:25 -0400
+Message-ID: <CADnq5_M+xwzsf5=nZk_B_XsBeTMx5O1ViaByh0jpVzswvoOt_g@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the amdgpu tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Simon Ser <contact@emersion.fr>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 11, 2021 at 10:25 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi Stephen,
+>
+> On Fri, 8 Oct 2021 11:31:16 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > After merging the amdgpu tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >
+> > ERROR: modpost: "get_mm_exe_file" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
+> >
+> > Caused by commit
+> >
+> >   f4f80155e6e8 ("amd/display: only require overlay plane to cover whole CRTC on ChromeOS")
+> >
+> > I have used the amdgpu tree from next-20211007 for today.
+>
+> This failure has returned today ...
 
+Whoops, pushed the wrong branch.  Fixed.
 
-On 08/10/2021 20:00, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Oct 08, 2021 at 04:56:55PM +0530, kajoljain escreveu:
->>
->>
->> On 10/8/21 3:32 PM, James Clark wrote:
->>>
->>>
->>> On 08/10/2021 08:43, kajoljain wrote:
->>>>
->>>>
->>>> On 10/7/21 4:35 PM, James Clark wrote:
->>>>> After a discussion on "[PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1 json",
->>>>> John Garry suggested that we can just modify the parser to make it more strict. Hopefully this will
->>>>> remove the need to apply any future JSON comma fixup commits.
->>>>>
->>>>> Applies on top of "[PATCH v2 1/3] perf vendor events: Syntax corrections in Neoverse N1 json" on
->>>>> perf/core.
->>>>>
->>>>> Also available at:
->>>>>   git clone --branch james-json-parse-fix git@git.gitlab.arm.com:linux-arm/linux-jc.git
->>>>
->>>> Hi James,
->>>>    Do we have any dependency patches on top of this patch series. I am
->>>> reviewing and testing it, but in both powerpc and x86 system I am
->>>> getting build issue. Not sure if I am missing something> 
->>>> I am trying your changes on top of upstream perf.
->>>>
->>>> pmu-events/arch/test/test_soc/sys/uncore.json: json error Invalid
->>>> character inside JSON string
->>>
->>> Hi Kajol,
->>>
->>> A trailing comma was fixed in this file 3 weeks ago at b8b350a. Can you
->>> confirm if you have updated to get this commit on perf core?
->>>
->>> Alternately you could pull from my branch above which is up to date enough
->>> to include it.
->>
->> Hi James,
->>    Thanks for pointing it. Not getting build issue now.
->>>
->>> The file is in pmu-events/arch/test/ so I would expect it to fail on all platforms.
->>>
->>>> make[3]: *** [pmu-events/Build:18: pmu-events/pmu-events.c] Error 1
->>>> make[3]: *** Deleting file 'pmu-events/pmu-events.c'
->>>> make[2]: *** [Makefile.perf:667: pmu-events/pmu-events-in.o] Error 2
->>>> make[2]: *** Waiting for unfinished jobs....
->>>> make[1]: *** [Makefile.perf:238: sub-make] Error 2
->>>> make: *** [Makefile:70: all] Error 2
->>>>
->>>> Also, Is it possible to add line number along with file name while
->>>> showing this error `json error Invalid character inside JSON string`.
->>>> It might make it easy to fix.
->>>
->>> I can add a character number with the following fix if you think that would
->>> be good enough? A line number might be a bigger change and involve keeping
->>> track of newline characters.
->>
->> Sure. I think then we can skip this change. Not sure if character
->> number will be helpful.
->>
->> Patch-set looks good to me.
->>
->> Reviewed-by Kajol Jain<kjain@linux.ibm.com>
-> 
-> Applied ok as-is to my perf/core branch, applied and added your
-> Reviewed-by, thanks.
-> 
+Alex
 
-Thanks Arnaldo. This does mean that the arm64 build will fail until
-"[PATCH v2 1/3] perf vendor events: Syntax corrections in Neoverse N1 json" is
-applied. I think there is also an arm64 build issue with "[PATCH 02/21] perf
-pmu: Add const to pmu_events_map." which Andrew Kilroy has replied to.
-
-James
-
+> --
+> Cheers,
+> Stephen Rothwell
