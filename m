@@ -2,89 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3878C42A36F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B54B642A2D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236272AbhJLLkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:40:04 -0400
-Received: from m15111.mail.126.com ([220.181.15.111]:51703 "EHLO
-        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236177AbhJLLkA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:40:00 -0400
-X-Greylist: delayed 1841 seconds by postgrey-1.27 at vger.kernel.org; Tue, 12 Oct 2021 07:40:00 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=sHHaDOnhNcxuYRU/Gc
-        8plYu8LofSoJnRYwgUX7P/g3w=; b=kAMS/H7LA5Bacjx46zis0G+w9yJpjxL/Or
-        dUGDhZntcZxJ2ox/D5HI+ZYHpKh+aTnzC/2N9jz+m7yAmH1t0BMIHiRlHBYhOjO2
-        PLHpJtxYIozcv9Uk2vU2oXI4kBqQQXBWinu5VOwQDFqOVZ/wedoJLydaq27iBmqd
-        esTJwJbRc=
-Received: from localhost.localdomain (unknown [221.221.165.193])
-        by smtp1 (Coremail) with SMTP id C8mowAB3EKxWbGVhG9KUBA--.10361S4;
-        Tue, 12 Oct 2021 19:07:04 +0800 (CST)
-From:   zhang kai <zhangkaiheb@126.com>
-To:     davem@davemloft.net
-Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhang kai <zhangkaiheb@126.com>
-Subject: [PATCH] ipv4: only allow increasing fib_info_hash_size
-Date:   Tue, 12 Oct 2021 19:06:58 +0800
-Message-Id: <20211012110658.10166-1-zhangkaiheb@126.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: C8mowAB3EKxWbGVhG9KUBA--.10361S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uFyDXw18KFWrZFW8XF1fWFg_yoW8Xrykpr
-        yakw1ktFWDJFyxKr17X3WkGwnxJw18CF18GrZ2vrs5trnxGryUXayqkrWI9FWUAFZ7ZF48
-        KFZ7KryfJFn8W3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j8cTQUUUUU=
-X-Originating-IP: [221.221.165.193]
-X-CM-SenderInfo: x2kd0wxndlxvbe6rjloofrz/1tbi1xgq-l53XQooxgAAsL
+        id S236105AbhJLLJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 07:09:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:35860 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233324AbhJLLJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 07:09:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73BA41FB;
+        Tue, 12 Oct 2021 04:07:49 -0700 (PDT)
+Received: from [10.1.34.171] (e127744.cambridge.arm.com [10.1.34.171])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 315823F694;
+        Tue, 12 Oct 2021 04:07:46 -0700 (PDT)
+Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
+To:     Leo Yan <leo.yan@linaro.org>, Namhyung Kim <namhyung@kernel.org>
+Cc:     James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+References: <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com>
+ <20210923142305.GA603008@leoy-ThinkPad-X240s>
+ <363c4107-fc6f-51d0-94d8-a3f579c8f5a2@arm.com>
+ <20211004062638.GB174271@leoy-ThinkPad-X240s>
+ <f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com>
+ <20211006093620.GA14400@leoy-ThinkPad-X240s>
+ <CAM9d7cghXgUbAqUUJjyKAea+9=jxei7RDScgV5Fd_i9bXyXkKA@mail.gmail.com>
+ <be937a2e-311b-2a8b-1094-39c203c6d9f3@arm.com>
+ <CAM9d7cho2hN+NDWd9-P-AQAf3D8WfPgCpEDe7cD6hk5FoA_c8Q@mail.gmail.com>
+ <87dad53f-a9a5-cd36-7348-ee10f4edd8fb@arm.com>
+ <20211011142940.GB37383@leoy-ThinkPad-X240s>
+From:   German Gomez <german.gomez@arm.com>
+Message-ID: <8a1eafe3-d19e-40d6-f659-de0e9daa5877@arm.com>
+Date:   Tue, 12 Oct 2021 12:07:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20211011142940.GB37383@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-and when failed to allocate memory, check fib_info_hash_size.
+Hi, Leo and Namhyung,
 
-Signed-off-by: zhang kai <zhangkaiheb@126.com>
----
- net/ipv4/fib_semantics.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+I want to make sure I'm on the same page as you regarding this topic.
 
-diff --git a/net/ipv4/fib_semantics.c b/net/ipv4/fib_semantics.c
-index a632b66bc..7547708a9 100644
---- a/net/ipv4/fib_semantics.c
-+++ b/net/ipv4/fib_semantics.c
-@@ -1403,17 +1403,20 @@ struct fib_info *fib_create_info(struct fib_config *cfg,
- 
- 		if (!new_size)
- 			new_size = 16;
--		bytes = new_size * sizeof(struct hlist_head *);
--		new_info_hash = fib_info_hash_alloc(bytes);
--		new_laddrhash = fib_info_hash_alloc(bytes);
--		if (!new_info_hash || !new_laddrhash) {
--			fib_info_hash_free(new_info_hash, bytes);
--			fib_info_hash_free(new_laddrhash, bytes);
--		} else
--			fib_info_hash_move(new_info_hash, new_laddrhash, new_size);
--
--		if (!fib_info_hash_size)
--			goto failure;
-+
-+		if (new_size > fib_info_hash_size) {
-+			bytes = new_size * sizeof(struct hlist_head *);
-+			new_info_hash = fib_info_hash_alloc(bytes);
-+			new_laddrhash = fib_info_hash_alloc(bytes);
-+			if (!new_info_hash || !new_laddrhash) {
-+				fib_info_hash_free(new_info_hash, bytes);
-+				fib_info_hash_free(new_laddrhash, bytes);
-+
-+				if (!fib_info_hash_size)
-+					goto failure;
-+			} else
-+				fib_info_hash_move(new_info_hash, new_laddrhash, new_size);
-+		}
- 	}
- 
- 	fi = kzalloc(struct_size(fi, fib_nh, nhs), GFP_KERNEL);
--- 
-2.17.1
+On 11/10/2021 15:29, Leo Yan wrote:
+> Hi German,
+>
+> On Mon, Oct 11, 2021 at 02:58:40PM +0100, German Gomez wrote:
+>> Hi Namhyung,
+>>
+>> On 09/10/2021 01:12, Namhyung Kim wrote:
+>>
+>>> Hi German,
+>>>
+>>> On Fri, Oct 8, 2021 at 4:08 AM German Gomez <german.gomez@arm.com> wrote:
+>>>
+>>> [...]
+>>>
+>>> I think we should use context-switch even for kernel samples, but
+>>> only if the context packets are not available.
 
+Do you think we should use them also when tracing outside of the root
+namespace? I'm no sure if we are considering the driver patch to disable
+context packets in non-root ns from earlier.
+
+>> [...]
+>> Actually I took time to try to find some way to enable switch events
+>> conditionally.  As Namhyung suggested, we can enable the switch events
+>> in the perf tool (should do this in arm_spe_recording_options()), I am
+>> just wandering if perf tool can enable switch event only when it runs
+>> in the non-root namespace.  I looked the code util/namespaces.c but
+>> still fail to find any approach to confirm the perf is running in
+>> the root namespace...  anyway, this is not critical for this work.
+>>
+>> Welcome if anyone has idea for this.
+
+Thanks, Leo. We'll let you know if we come up with something too.
+
+>
+>> @Leo, what are your thoughts on this? Perhaps adding a warning message
+>> to tell the user to please enable context packets, otherwise the results
+>> will have workload-dependant inaccuracies, could be a good enough
+>> compromise?
+> Yeah, this is exactly what I think.  It's good to give a warning so
+> users have knowledge for the potential inaccuracies.
+>
+> Thanks,
+> Leo
+
+If we are not considering patching the driver at this stage, so we allow
+hardware tracing on non-root namespaces. I think we could proceed like
+this:
+
+  - For userspace, always use context-switch events as they are
+    accurate and consistent with namespaces.
+  - For kernel tracing, if context packets are enabled, use them, but
+    warn the user that the PIDs correspond to the root namespace.
+  - Otherwise, use context-switch events and warn the user of the time
+    inaccuracies.
+
+Later, if the driver is patched to disable context packets outside the
+root namespace, kernel tracing could fall back to using context-switch
+events and warn the user with a single message about the time
+inaccuracies.
+
+If we are aligned, we could collect your feedback and share an updated
+patch that considers the warnings.
+
+Many thanks
+Best regards
