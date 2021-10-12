@@ -2,88 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE97942AACE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E42842AAD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbhJLRcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232509AbhJLRcy (ORCPT
+        id S232673AbhJLRdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:33:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49282 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232494AbhJLRdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:32:54 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBD8C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:30:52 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so6616707ooh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:30:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=z/0YDsWVgY8iQTsDuzbYnenwugKkL3hk/JKxgPGOGcI=;
-        b=HkxFstT0p4m1QLP90AGW9wtYHvxedTtvyniXxElQkMbozckVbZpY+ySg4/JdDB/trd
-         YmtybS62NmQKyuSF2NuUNk/j75EMhjXpkPYyXZ03J2Jfu55793aAlYSZtNV7lFbJFFi6
-         sWDSf+PNXbeErsE4e2zK60JCUsOUnmb+5L7FY=
+        Tue, 12 Oct 2021 13:33:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634059862;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7O9XAJPqw1pERvs0EKY5qZyYY4IGf7kZ5Q2zMZNRDY4=;
+        b=PFbALK+WMwLC/MM/8Lig2SCIdCWhagbrS+41ACaUuYuwumi5HA94fv1tfpHASuw/6lhQp7
+        JWlSjca5K7r3Qyzt1E42tomFcSFUHCcOvrdSQGogs8eqSOd/YuobcseMtXmapoKLdV+tIJ
+        yQmpGoV9wgTiajhNvy2+EZxAJtyb/WA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-91-21eG4blaNJqCRbsZ_mKQhg-1; Tue, 12 Oct 2021 13:31:01 -0400
+X-MC-Unique: 21eG4blaNJqCRbsZ_mKQhg-1
+Received: by mail-wr1-f70.google.com with SMTP id j19-20020adfb313000000b00160a9de13b3so16350594wrd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:31:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=z/0YDsWVgY8iQTsDuzbYnenwugKkL3hk/JKxgPGOGcI=;
-        b=Ymxs9fLlmwfo3aAZ8bABCm3OWqPXvDkcmxtCKZoXYgaR4TsvLIttsmLtdzHU2G0J4u
-         yMjwLzg79HQeaBScXuQL/QoDRpk6qOj3PzJPo8L6Vu8GXhAdt+sqZT/jEM9DBpLoToas
-         QBKzkM+Aevxa9jKpxNibp77y1fJB0+HIPKlnvNOvJ/CXeUTcVyV3dQVp/6BXbOHiatRD
-         2/IZbgup2CAqVTLWlgAgCr2GxgfeOpqb3fIh+enh5XqhYKpkPVf5jikqHo3LCIr1GlyZ
-         Wt4LwhTKpcxRoiXv0FffXXxuYHJcXJGstfbOCN+06TcHI7tUlLpa8yHrucMhneslyzg2
-         sPyg==
-X-Gm-Message-State: AOAM533i5ZhjblgFTjxqmYobnn/qcEwdb3KCbgpHp9arugM5+qR99l67
-        nUKkmp5ZOIa3ctwu1FWBsgenZw28MRcGb68O2RrIzw==
-X-Google-Smtp-Source: ABdhPJy9T8+9hT9hWwhL5IEf1cezLhdiiM+LB8rzFUvZfxvbjfDkAnsx9qGc3DeOFqc5EwvCafjQFtUNNiGGxNd26F8=
-X-Received: by 2002:a4a:e2d3:: with SMTP id l19mr24660471oot.1.1634059851594;
- Tue, 12 Oct 2021 10:30:51 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 12 Oct 2021 10:30:51 -0700
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=7O9XAJPqw1pERvs0EKY5qZyYY4IGf7kZ5Q2zMZNRDY4=;
+        b=ffDZadtBh3av3nSLZ5/4Hreu59kKj+pECr0WpQXEBGKlzNbBMOdQ9JHHx7oedpSAif
+         WMalvwJmE30JURXqtKDPelZRNcL7ydRwrQfy+TIjvzKJ6a+iUrmoyLJChnrKtMbSoST9
+         7aZtRInn32QJTKHrp+p1CQSrAPDu0FHX0LOWWTBgLNQE3Bf5g2l7F3kSPa73gP/sRmtc
+         Qaq9H+opiU4japalAzAxl0FKxQUEBmPgRp4UrO5mGBVSgxxo9UwKhf3+PODEn0WopwrM
+         V5BkPvIbqPq4/LXj+9b73g3g4/rnVliIzmjZ3X9ywGlF+BgSoDC+v4ehWwE1RgQgTWb1
+         ybNA==
+X-Gm-Message-State: AOAM531hWwNhtDYxfKx7HoOB69Hs3bLT62vxAjZO18TwXTOB5wLxCLIK
+        e8vXLbCX4ARIfJg49PulbEoWv163UZCn7LdpzIKYFCnRP07unefUuDXTagyPbl4tG9umfdL+BTp
+        XLe4qYCgsHP0QwQSx+vJ3Bjub
+X-Received: by 2002:a1c:4302:: with SMTP id q2mr7321652wma.133.1634059859909;
+        Tue, 12 Oct 2021 10:30:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+cx6C+ClIaLXdBDG70Wy6jSMQPxmPmEqwxGgVvlLrD2bo6JjJAkb4wAwYLBA7jyUr8x8Zuw==
+X-Received: by 2002:a1c:4302:: with SMTP id q2mr7321614wma.133.1634059859632;
+        Tue, 12 Oct 2021 10:30:59 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id p19sm3011439wmg.29.2021.10.12.10.30.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 10:30:59 -0700 (PDT)
+Message-ID: <bbf53506-43df-78cc-c954-ed4e8384b1d2@redhat.com>
+Date:   Tue, 12 Oct 2021 19:30:58 +0200
 MIME-Version: 1.0
-In-Reply-To: <20211011201642.167700-1-marijn.suijten@somainline.org>
-References: <20211011201642.167700-1-marijn.suijten@somainline.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 12 Oct 2021 10:30:51 -0700
-Message-ID: <CAE-0n52raCkcBxz0nfdtGK_kR+cQptT5dVXgDBj2fhCySQOVTQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/msm/dsi: Use division result from div_u64_rem in
- 7nm and 14nm PLL
-To:     Marijn Suijten <marijn.suijten@somainline.org>,
-        phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [patch 15/31] x86/fpu: Rework copy_xstate_to_uabi_buf()
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org
+References: <20211011215813.558681373@linutronix.de>
+ <20211011223611.189084655@linutronix.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211011223611.189084655@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Marijn Suijten (2021-10-11 13:16:40)
-> div_u64_rem provides the result of the division and additionally the
-> remainder; don't use this function to solely calculate the remainder
-> while calculating the division again with div_u64.
->
-> A similar improvement was applied earlier to the 10nm pll in
-> 5c191fef4ce2 ("drm/msm/dsi_pll_10nm: Fix dividing the same numbers
-> twice").
->
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+On 12/10/21 02:00, Thomas Gleixner wrote:
+> Prepare for replacing the KVM copy xstate to user function by extending
+> copy_xstate_to_uabi_buf() with a pkru argument which allows the caller to
+> hand in the pkru value, which is required for KVM because the guest PKRU is
+> not accessible via current. Fixup all callsites accordingly.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 > ---
+>   arch/x86/kernel/fpu/xstate.c |   34 ++++++++++++++++++++++++++--------
+>   arch/x86/kernel/fpu/xstate.h |    3 +++
+>   2 files changed, 29 insertions(+), 8 deletions(-)
+> 
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -940,9 +940,10 @@ static void copy_feature(bool from_xstat
+>   }
+>   
+>   /**
+> - * copy_xstate_to_uabi_buf - Copy kernel saved xstate to a UABI buffer
+> + * __copy_xstate_to_uabi_buf - Copy kernel saved xstate to a UABI buffer
+>    * @to:		membuf descriptor
+> - * @tsk:	The task from which to copy the saved xstate
+> + * @xsave:	The xsave from which to copy
+> + * @pkru_val:	The PKRU value to store in the PKRU component
+>    * @copy_mode:	The requested copy mode
+>    *
+>    * Converts from kernel XSAVE or XSAVES compacted format to UABI conforming
+> @@ -951,11 +952,10 @@ static void copy_feature(bool from_xstat
+>    *
+>    * It supports partial copy but @to.pos always starts from zero.
+>    */
+> -void copy_xstate_to_uabi_buf(struct membuf to, struct task_struct *tsk,
+> -			     enum xstate_copy_mode copy_mode)
+> +void __copy_xstate_to_uabi_buf(struct membuf to, struct xregs_state *xsave,
+> +			       u32 pkru_val, enum xstate_copy_mode copy_mode)
+>   {
+>   	const unsigned int off_mxcsr = offsetof(struct fxregs_state, mxcsr);
+> -	struct xregs_state *xsave = &tsk->thread.fpu.state.xsave;
+>   	struct xregs_state *xinit = &init_fpstate.xsave;
+>   	struct xstate_header header;
+>   	unsigned int zerofrom;
+> @@ -1033,10 +1033,9 @@ void copy_xstate_to_uabi_buf(struct memb
+>   			struct pkru_state pkru = {0};
+>   			/*
+>   			 * PKRU is not necessarily up to date in the
+> -			 * thread's XSAVE buffer.  Fill this part from the
+> -			 * per-thread storage.
+> +			 * XSAVE buffer. Use the provided value.
+>   			 */
+> -			pkru.pkru = tsk->thread.pkru;
+> +			pkru.pkru = pkru_val;
+>   			membuf_write(&to, &pkru, sizeof(pkru));
+>   		} else {
+>   			copy_feature(header.xfeatures & BIT_ULL(i), &to,
+> @@ -1056,6 +1055,25 @@ void copy_xstate_to_uabi_buf(struct memb
+>   		membuf_zero(&to, to.left);
+>   }
+>   
+> +/**
+> + * copy_xstate_to_uabi_buf - Copy kernel saved xstate to a UABI buffer
+> + * @to:		membuf descriptor
+> + * @tsk:	The task from which to copy the saved xstate
+> + * @copy_mode:	The requested copy mode
+> + *
+> + * Converts from kernel XSAVE or XSAVES compacted format to UABI conforming
+> + * format, i.e. from the kernel internal hardware dependent storage format
+> + * to the requested @mode. UABI XSTATE is always uncompacted!
+> + *
+> + * It supports partial copy but @to.pos always starts from zero.
+> + */
+> +void copy_xstate_to_uabi_buf(struct membuf to, struct task_struct *tsk,
+> +			     enum xstate_copy_mode copy_mode)
+> +{
+> +	__copy_xstate_to_uabi_buf(to, &tsk->thread.fpu.state.xsave,
+> +				  tsk->thread.pkru, copy_mode);
+> +}
+> +
+>   static int copy_from_buffer(void *dst, unsigned int offset, unsigned int size,
+>   			    const void *kbuf, const void __user *ubuf)
+>   {
+> --- a/arch/x86/kernel/fpu/xstate.h
+> +++ b/arch/x86/kernel/fpu/xstate.h
+> @@ -15,4 +15,7 @@ static inline void xstate_init_xcomp_bv(
+>   		xsave->header.xcomp_bv = mask | XCOMP_BV_COMPACTED_FORMAT;
+>   }
+>   
+> +extern void __copy_xstate_to_uabi_buf(struct membuf to, struct xregs_state *xsave,
+> +				      u32 pkru_val, enum xstate_copy_mode copy_mode);
+> +
+>   #endif
+> 
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+
