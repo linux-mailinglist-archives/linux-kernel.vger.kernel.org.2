@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D662429A08
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 02:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03852429A48
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 02:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234302AbhJLAFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 20:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhJLAFP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 20:05:15 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190ACC061570;
-        Mon, 11 Oct 2021 17:03:15 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSwq40LFtz4xqP;
-        Tue, 12 Oct 2021 11:03:11 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633996992;
-        bh=gB89dn2qCWOpeT87X7TCgqp2JJ6phnH05D+Cb2xpK3A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bX+QI5lNCmRzbB4opLVZQB8ZPRzeFugVp/QvdyFki/wk05SS5ZFwucvdcvf8jpzVB
-         Uwo8LF+wVw3Xjg1a8SxEYBs5TNf2L/VK4cB92bq1E0X1dPqkPbUJY2tl+h4mTkBsPp
-         Bw/DDVm2asRNZqP8UeIpZVOF8BhLV2uMYPWOlYv4VYTTu9h8jyZOM9zsBTYibfMeYt
-         WmxIyfOmpRFbHv6zLTr/IU0wY559bDNnPwaPBOBXoG03uajmjgDwMloic42LGAekRF
-         XFHI7XiI49via2Wr+kwn0hRcH27fZ+jom0Opy5Z9uAPOB9q+9ZiYIiCnnmXI4Ryi5x
-         P81KUFYnlRuRQ==
-Date:   Tue, 12 Oct 2021 11:03:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the arm-soc tree
-Message-ID: <20211012110309.17d51c3e@canb.auug.org.au>
+        id S235082AbhJLAMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 20:12:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235753AbhJLAMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 20:12:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id EB86860F3A;
+        Tue, 12 Oct 2021 00:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633997409;
+        bh=ELHpK8xz4vQA8Tv2SU+NIPkYoNnsj5JErkWWiMYVkXk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=UaYzglY0p/Lp3+GSWU+4YVNuSXFX2mzGSzWPypYcPLSRpLovYIoaLqIuBD7fXoDq8
+         /9BHZ0BqGfk7CkXbR15j19IN5YzBPDJGTK3zJU/zrQ0u9myrlJJa3NZk8ZT+tILWk4
+         RMDgeMwSVLgF/E/Zh9q35ILHqSOpXaoPMuJEvrOTt+nBHB7q7VMcB/9nybamswH1zz
+         FYpnXsAhY3MOedo24Imi33Of6Nk9ykjDWC5H11geIfucY8Gnizi0FZXxs2fPLkKR8V
+         f4DZ9lBBHUdKdnXt5h723P3xvrorEuZNkWAov0UHizlrO9cR6VgpsN6tqnNasQ5Iwk
+         F1H1AK5hb1clQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DBD27609AB;
+        Tue, 12 Oct 2021 00:10:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/yWm6qW9lQrkde2DvXwd8lWO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 0/7] nfc: minor printk cleanup
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163399740889.30056.14308792441517445393.git-patchwork-notify@kernel.org>
+Date:   Tue, 12 Oct 2021 00:10:08 +0000
+References: <20211011133835.236347-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211011133835.236347-1-krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     k.opasiak@samsung.com, mgreer@animalcreek.com, davem@davemloft.net,
+        kuba@kernel.org, linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        joe@perches.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/yWm6qW9lQrkde2DvXwd8lWO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This series was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-After merging the arm-soc tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+On Mon, 11 Oct 2021 15:38:28 +0200 you wrote:
+> Hi,
+> 
+> 
+> Changes since v2:
+> 1. Correct SPDX license in patch 2/7 (as Joe pointed out).
+> 
+> Changes since v1:
+> 1. Remove unused variable in pn533 (reported by kbuild).
+> 
+> [...]
 
-Error: arch/arm/boot/dts/sama7g5.dtsi:167.3-7 syntax error
-FATAL ERROR: Unable to parse input tree
+Here is the summary with links:
+  - [v3,1/7] nfc: drop unneeded debug prints
+    https://git.kernel.org/netdev/net-next/c/5b25a5bf5e04
+  - [v3,2/7] nfc: nci: replace GPLv2 boilerplate with SPDX
+    https://git.kernel.org/netdev/net-next/c/f141cfe364ef
+  - [v3,3/7] nfc: s3fwrn5: simplify dereferencing pointer to struct device
+    https://git.kernel.org/netdev/net-next/c/edfa5366ef42
+  - [v3,4/7] nfc: st-nci: drop unneeded debug prints
+    https://git.kernel.org/netdev/net-next/c/84910319fad4
+  - [v3,5/7] nfc: st21nfca: drop unneeded debug prints
+    https://git.kernel.org/netdev/net-next/c/e52cc2a625a6
+  - [v3,6/7] nfc: trf7970a: drop unneeded debug prints
+    https://git.kernel.org/netdev/net-next/c/f0563ebec68f
+  - [v3,7/7] nfc: microread: drop unneeded debug prints
+    https://git.kernel.org/netdev/net-next/c/f41e137abd25
 
-Caused by commit
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  9be4be3ed1ec ("Merge branch 'arm/dt' into for-next")
 
-I added the following patch for today:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 12 Oct 2021 10:37:29 +1100
-Subject: [PATCH] merge fix for missing semicolon
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- arch/arm/boot/dts/sama7g5.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/sama7g5.dtsi b/arch/arm/boot/dts/sama7g5.dtsi
-index efcaa6ad7533..f98977f3980d 100644
---- a/arch/arm/boot/dts/sama7g5.dtsi
-+++ b/arch/arm/boot/dts/sama7g5.dtsi
-@@ -162,7 +162,7 @@ ps_wdt: watchdog@e001d180 {
- 		chipid@e0020000 {
- 			compatible =3D "microchip,sama7g5-chipid";
- 			reg =3D <0xe0020000 0x8>;
--		}
-+		};
-=20
- 		adc: adc@e1000000 {
- 			compatible =3D "microchip,sama7g5-adc";
---=20
-2.33.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/yWm6qW9lQrkde2DvXwd8lWO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFk0L4ACgkQAVBC80lX
-0GzT6QgAlUmVQ8R7OjNvAHceuRUQ4TbMvp9oH1d9FRi+PipBaEPAb7zpzqkbngJo
-hgWEl1PI7ALiUAj8KatvtJc0nrH2bnC6eco14lpdp0udE3J48Ev4foBUkvbf7vRo
-LRgRS4LGAB0LrkGmFQSczOtp9M+R3D4izvBgeBVUrNFCS/3ag2da4QKVJe66NCZI
-+RtNqkeEQn1ugtnUojkScoSdrZLRLPZMz7oSNA0/h8jVNKu06fKpZyPWzgi8Ghki
-p03FEDLc5kGXC3n0f50vDNZNk0JsH1uRtGFY/+MEQIgYmk5JBGhaftbJxOB3K9kO
-lI7H6yLpzwltDzrlRSPmWtbzWDTN8Q==
-=9y4p
------END PGP SIGNATURE-----
-
---Sig_/yWm6qW9lQrkde2DvXwd8lWO--
