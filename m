@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863DF429E9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF2A429EA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbhJLH3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:29:03 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:36976
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233834AbhJLH3C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:29:02 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B761F4000F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:26:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634023618;
-        bh=k2NEwJTMkdNZ/mQBT62GUXF45y2w4za6ULFuaRm133M=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=hsSCYjtcroyuxwL45MBHQ8y2l8rmaE3oNDx9hQuhmxxzodwUd2XlbApModygJLtcz
-         qTc3wwEGdpCOKIYEUwcKcEvWERH8Q6Jvjk8whx3khfjkt6vwyTrd+eXbz9pyNg+pWW
-         tEFoMqdzs3lfzU2+0wZMV8gipxqKj9nvNpyYVs1SuV4IV5NB52SW1IG+HEAi5e1vhh
-         zBUk6kiX0DK8PrIYLXjwW701qZyXB0tyVDMZzXPIcY1AqAfSdl1OyTPbk3U4JmB8Zz
-         aFIOzvRvc56dSPkDMXPuIr9sxGnuLxx+7AbYZaxfMAsBAhn6Pl6CW1eTnPjcIT7DSW
-         S1fuHK8eSOrHw==
-Received: by mail-lf1-f71.google.com with SMTP id bp4-20020a056512158400b003fd96a37f3bso2117044lfb.21
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:26:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k2NEwJTMkdNZ/mQBT62GUXF45y2w4za6ULFuaRm133M=;
-        b=VQRtD8iP2p/yzidtKjbhWnJ5wgG7/ZYV9+KBVR4EfUhqUTMB0hOnOxN9jYiwnKC6k+
-         SikMapqeW0uptuGOIrcv35Auys/GhH8Om68Um03lCFXGb06GVEUqZoA5MAWkQ0UDqUd8
-         GyLLOaKNavnNyAbdePq07ZhZ6kfIVaBKxAM+TePNOX6Tjqb6wyDfeYlEumsb4jcmjQUu
-         unHEPr8YTuJ7WNBGIKYOxjDA27nYBa93+WJHSclHSecgsBifJXD6YJE5Dw4AWCFO8+r5
-         gtG1ecZ8aV3qEdDQbC8rmB0sjzgi8Or6KkLQ/HoQV0R7RiHxFaaQnJJFVi9tC/k2d5Nx
-         i9Qg==
-X-Gm-Message-State: AOAM533byuVkgDmFadxLBVWQZMBrGoQDJDr6pWD4sKC4zuUK/TADmu5d
-        kXKd8/Gp1U/YAJJQCpiqSqehRoUCkIq+IWqy8cIOlIjFzP1CVIMGPtPOY/6GfZMfxReWHbRwtyU
-        Bi47SjK8nWX0p0i0FMzQFxATxiAFgKKK6xfOb8FVIBw==
-X-Received: by 2002:a05:6512:1196:: with SMTP id g22mr8857295lfr.661.1634023617757;
-        Tue, 12 Oct 2021 00:26:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4GFs4SsQ3dTIrIIjTkzK2fCPWl1cJOA8SGQyTyUrED6DMlpgotr7qOq4gqkacaBZsg7BKGw==
-X-Received: by 2002:a05:6512:1196:: with SMTP id g22mr8857282lfr.661.1634023617586;
-        Tue, 12 Oct 2021 00:26:57 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id d26sm1185415ljj.45.2021.10.12.00.26.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 00:26:56 -0700 (PDT)
-Subject: Re: [RESEND PATCH v2 1/5] riscv: dts: sifive: use only generic JEDEC
- SPI NOR flash compatible
-To:     Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-References: <20210920130248.145058-1-krzysztof.kozlowski@canonical.com>
- <CA+zEjCtTbJnvmrM1g-CR8ZUtT375Wd-4dt0YR1zLG5nOvtDyGg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <9a2a01af-3e34-b454-3ec5-930eba8b435e@canonical.com>
-Date:   Tue, 12 Oct 2021 09:26:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233943AbhJLHav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:30:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232500AbhJLHau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 03:30:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 134AE6108F;
+        Tue, 12 Oct 2021 07:28:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634023728;
+        bh=Vw7yAdNZuRR+JFWTGL++rcQPXKi75JyotcQgHBK2vwA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uiw/+oWlg31bGKYZ5oSDe1VgAZdxyySq/aEDShR4JJcQbsmH21exUhnp7QulfXCIh
+         t1zUvv7kwCn+qEzf9VdeGDZhD0zi+MWA0nmv4LWb0PEuyONBr/JetoP7phJFFLRrPz
+         eGnkey3mbf9j5DNcDy0JCA6pxL9KMZhtLFexyuJjl0Z7YZ9B/226HM86ik1Kxoykdf
+         HyE60Jf1G5Suwn3QRcHFqw3PYAQe1hYPepjjSgguLBT7c4Hr9rMESVL3x0a2mPbpkR
+         1aotArCFrHNTaNtlo+5BcYylfLQtl5U/aqGzYh0di1y69bAykFGAIUV17ZScuD8WYg
+         AowJ6puYX3YXQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: [PATCH rdma-next] RDMA/mlx4: Return missed an error if device doesn't support steering
+Date:   Tue, 12 Oct 2021 10:28:43 +0300
+Message-Id: <91c61f6e60eb0240f8bbc321fda7a1d2986dd03c.1634023677.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CA+zEjCtTbJnvmrM1g-CR8ZUtT375Wd-4dt0YR1zLG5nOvtDyGg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2021 06:29, Alexandre Ghiti wrote:
-> hi Krzysztof,
-> 
-> On Mon, Sep 20, 2021 at 3:05 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
->>
->> The compatible "issi,is25wp256" is undocumented and instead only a
->> generic jedec,spi-nor should be used (if appropriate).
-> 
-> Why not do it the other way around? I mean adding this compatible to
-> the expected list: don't we lose information using the generic
-> compatible?
-> 
-> Thanks,
-> 
+From: Leon Romanovsky <leonro@nvidia.com>
 
-We discussed it:
-https://lore.kernel.org/lkml/ae4c58fe-0af5-3f1d-cc16-27b78772cbb5@microchip.com/
+The error flow fixed in this patch is not possible because all kernel
+users of create QP interface check that device supports steering before
+set IB_QP_CREATE_NETIF_QP flag.
 
+Fixes: c1c98501121e ("IB/mlx4: Add support for steerable IB UD QPs")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx4/qp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Best regards,
-Krzysztof
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index 8662f462e2a5..3a1a4ac9dd33 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -1099,8 +1099,10 @@ static int create_qp_common(struct ib_pd *pd, struct ib_qp_init_attr *init_attr,
+ 			if (dev->steering_support ==
+ 			    MLX4_STEERING_MODE_DEVICE_MANAGED)
+ 				qp->flags |= MLX4_IB_QP_NETIF;
+-			else
++			else {
++				err = -EINVAL;
+ 				goto err;
++			}
+ 		}
+ 
+ 		err = set_kernel_sq_size(dev, &init_attr->cap, qp_type, qp);
+-- 
+2.31.1
+
