@@ -2,143 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8774B42A9E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566A242A9E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbhJLQsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 12:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbhJLQsM (ORCPT
+        id S231701AbhJLQtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 12:49:32 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:33120
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231565AbhJLQta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 12:48:12 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A29FC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:46:10 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id e7so14412261pgk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:46:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=WxtJ6kTMjB335FQT7eQ0eT+70TQDiMjlEAzZlxMqe30=;
-        b=bKOflXsLFzC3VU2LBpYLCOQSqWZeASP6ZYpwtMXyXCQ24DvBTaHGYfF64wgjZDKsla
-         LpPBv3FFCMFYsmS+evB4X2EmqUiQKWI7oaGecXjhcm4t10DJpJr2vmOVqhi9jQY9eJXi
-         9a6BmBu4332+d7Ju7hIbBp1ZnLa2LGcKGoTyDvfvwICGsr9y4cx2bX3A4DiwdeDSleK6
-         ADuM4LSQ5VFYhTx9WO6iia8tKPWVl1qqkwJiMW8Bt/75nqycZwR4exTh/O2RXjV8cMPx
-         kBII7YI8Dhm4R3Hr2cD4FnOV4Ddw1flpexyUS8KyOwUiN8m8eaoqUtQ2eqAhi9HeeGkk
-         8HoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=WxtJ6kTMjB335FQT7eQ0eT+70TQDiMjlEAzZlxMqe30=;
-        b=yfUOYtbnZTWdhbJj9b6Z+tOcuyBuu7Er5f3UJrbGlYUGrverTzqMriecQXg72tCeUf
-         zHGxOQJvDXem6uqTob+AN9eyCx0SrqSbeJ9MtelaWGhn1RjsPWz3ZWOMNCtPnozy97s7
-         8inFHDDxdlNm+BI/k5mv4yKgjoPMMBsmKMvQh0RfeQvCU+db3oNdFzJtBB2f1WoxIKwT
-         OrTsQrUTHYzDYBCwu5cuzccYZJHKr5KXGi3X5HYHV1qwBFtqjJgA2CduTC8zSGaJGCpC
-         73Uqz7LVfgymUHz9XYSnl7pwkoNFL9JULOIMLnhJHULLSuF7P8F8fZ+b4/HHbqtqiYpx
-         tDQQ==
-X-Gm-Message-State: AOAM531213evwpUUJkSXF823nLWguvG1ockWYNOzPKtlAiD+L1qIYrFf
-        N12w3334YToUXqqV36SpV3H9PQ==
-X-Google-Smtp-Source: ABdhPJwqjQYiIu9GVaeWoRMdEp/IOLk9KZQUl3zIehqyu0N4NWB1pHgyw7wIiEOvLESAmyrDCLnUww==
-X-Received: by 2002:a63:564a:: with SMTP id g10mr23601412pgm.199.1634057168886;
-        Tue, 12 Oct 2021 09:46:08 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id z19sm11467471pfj.156.2021.10.12.09.46.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 09:46:08 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 16:46:04 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Atish Patra <Atish.Patra@wdc.com>
-Cc:     "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "vincent.chen@sifive.com" <vincent.chen@sifive.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "wangkefeng.wang@huawei.com" <wangkefeng.wang@huawei.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 5/5] RISC-V: Add SBI HSM extension in KVM
-Message-ID: <YWW7zGWUpqXLXE/4@google.com>
-References: <20211008032036.2201971-1-atish.patra@wdc.com>
- <20211008032036.2201971-6-atish.patra@wdc.com>
- <YWBdbCNQdikbhhBq@google.com>
- <0383b5cacb25e9dc293d891284df9f4cbc06ee3a.camel@wdc.com>
- <YWRLBknWXjzPnF1w@google.com>
- <a762f0263090d7e818e58873d63139d7b6829d87.camel@wdc.com>
+        Tue, 12 Oct 2021 12:49:30 -0400
+Received: from workstation5.fritz.box (ip-88-152-144-157.hsi03.unitymediagroup.de [88.152.144.157])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id A750B3FFF7;
+        Tue, 12 Oct 2021 16:47:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634057248;
+        bh=/P/G2tQaU+J00Hwl+lWdgaHlFqUMRDqts18zTv/hnao=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=wRhM2CKkIllKP94EtAEooVNUqc5wog9LqlVI2CGihLTtA50LpyDCXNHfJssriK+du
+         o1zJTnuW1l5BAukX2YDsqDK0lRfej7OsyZJLq4NS1VDBsYZNThfFeB+uScWZVhSt4K
+         qbz0aBwZrAtr/iUerZdoBEU+xeMdy52gH1M7bpklChMoIYAsZSmAtJ0UJ8FjpRb9Af
+         UzJDs/yquAfxqo3hJvGZxwvYziWFlXb32mzpuuML5ViX0ZohjaST5Tw+/tOtRwclUa
+         2FQDzTk4rlZtU4eVOLQlnP+5Y0DshVwQudvTFCBYCgW4MKE4ixrdB7b5pJViUDDaeP
+         GGetpzaLavgOQ==
+From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Anup Patel <anup.patel@wdc.com>, Jens Axboe <axboe@kernel.dk>,
+        Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Subject: [PATCH 1/1] riscv: defconfig: enable DRM_NOUVEAU
+Date:   Tue, 12 Oct 2021 18:46:58 +0200
+Message-Id: <20211012164658.81894-1-heinrich.schuchardt@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a762f0263090d7e818e58873d63139d7b6829d87.camel@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021, Atish Patra wrote:
-> On Mon, 2021-10-11 at 14:32 +0000, Sean Christopherson wrote:
-> > On Mon, Oct 11, 2021, Atish Patra wrote:
-> > > On Fri, 2021-10-08 at 15:02 +0000, Sean Christopherson wrote:
-> > > > On Thu, Oct 07, 2021, Atish Patra wrote:
-> > > > > +       preempt_disable();
-> > > > > +       loaded = (vcpu->cpu != -1);
-> > > > > +       if (loaded)
-> > > > > +               kvm_arch_vcpu_put(vcpu);
-> > > > 
-> > > > Oof.  Looks like this pattern was taken from arm64. 
-> > > 
-> > > Yes. This part is similar to arm64 because the same race condition
-> > > can
-> > > happen in riscv due to save/restore of CSRs during reset.
-> > > 
-> > > 
-> > > > Is there really no better approach to handling this?  I don't see
-> > > > anything  in kvm_riscv_reset_vcpu() that will obviously break if the
-> > > > vCPU is  loaded.  If the goal is purely to effect a CSR reset via
-> > > > kvm_arch_vcpu_load(), then why not just factor out a helper to do
-> > > > exactly that?
-> > 
-> > What about the question here?
-> 
-> Are you suggesting to factor the csr reset part to a different function?
+Both RADEON and NOUVEAU graphics cards are supported on RISC-V. Enabling
+the one and not the other does not make sense.
 
-More or less.  I'm mostly asking why putting the vCPU is necessary.
+As typically at most one of RADEON, NOUVEAU, or VIRTIO GPU support will be
+needed DRM drivers should be compiled as modules.
 
-> > > > >  void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
-> > > > >  {
-> > > > > +       /**
-> > > > > +        * vcpu with id 0 is the designated boot cpu.
-> > > > > +        * Keep all vcpus with non-zero cpu id in power-off
-> > > > > state
-> > > > > so that they
-> > > > > +        * can brought to online using SBI HSM extension.
-> > > > > +        */
-> > > > > +       if (vcpu->vcpu_idx != 0)
-> > > > > +               kvm_riscv_vcpu_power_off(vcpu);
-> > > > 
-> > > > Why do this in postcreate?
-> > > > 
-> > > 
-> > > Because we need to absolutely sure that the vcpu is created. It is
-> > > cleaner in this way rather than doing this here at the end of
-> > > kvm_arch_vcpu_create. create_vcpu can also fail after
-> > > kvm_arch_vcpu_create returns.
-> > 
-> > But kvm_riscv_vcpu_power_off() doesn't doesn't anything outside of the
-> > vCPU.  It clears vcpu->arch.power_off, makes a request, and kicks the
-> > vCPU.  None of that has side effects to anything else in KVM.  If the vCPU
-> > isn't created successfully, it gets deleted and nothing ever sees that
-> > state change.
-> 
-> I am assuming that you are suggesting to add this logic at the end of
-> the kvm_arch_vcpu_create() instead of kvm_arch_vcpu_postcreate().
-> 
-> vcpu_idx is assigned after kvm_arch_vcpu_create() returns in the
-> kvm_vm_ioctl_create_vcpu. kvm_arch_vcpu_postcreate() is the arch hookup
-> after vcpu_idx is assigned.
+Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+---
+ arch/riscv/configs/defconfig | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Ah, it's the consumption of vcpu->vcpu_idx that's problematic.  Thanks!
+diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+index 4ebc80315f01..c252fd5706d2 100644
+--- a/arch/riscv/configs/defconfig
++++ b/arch/riscv/configs/defconfig
+@@ -72,9 +72,10 @@ CONFIG_GPIOLIB=y
+ CONFIG_GPIO_SIFIVE=y
+ # CONFIG_PTP_1588_CLOCK is not set
+ CONFIG_POWER_RESET=y
+-CONFIG_DRM=y
+-CONFIG_DRM_RADEON=y
+-CONFIG_DRM_VIRTIO_GPU=y
++CONFIG_DRM=m
++CONFIG_DRM_RADEON=m
++CONFIG_DRM_NOUVEAU=m
++CONFIG_DRM_VIRTIO_GPU=m
+ CONFIG_FRAMEBUFFER_CONSOLE=y
+ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+-- 
+2.32.0
+
