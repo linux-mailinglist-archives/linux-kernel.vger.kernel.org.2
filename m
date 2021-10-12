@@ -2,998 +2,754 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3452A429CFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597CA429D33
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhJLFSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 01:18:00 -0400
-Received: from mga06.intel.com ([134.134.136.31]:33070 "EHLO mga06.intel.com"
+        id S232588AbhJLFiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 01:38:02 -0400
+Received: from mga03.intel.com ([134.134.136.65]:41881 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231254AbhJLFR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 01:17:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="287918679"
+        id S229739AbhJLFiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 01:38:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="227002659"
 X-IronPort-AV: E=Sophos;i="5.85,366,1624345200"; 
-   d="scan'208";a="287918679"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 22:15:57 -0700
+   d="gz'50?scan'50,208,50";a="227002659"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 22:35:58 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,366,1624345200"; 
-   d="scan'208";a="441067743"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by orsmga006.jf.intel.com with ESMTP; 11 Oct 2021 22:15:54 -0700
-Date:   Tue, 12 Oct 2021 13:09:31 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Lizhi Hou <lizhi.hou@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
-        maxz@xilinx.com, sonal.santan@xilinx.com, yliu@xilinx.com,
-        michal.simek@xilinx.com, stefanos@xilinx.com,
-        devicetree@vger.kernel.org, trix@redhat.com, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-Subject: Re: [PATCH V9 XRT Alveo 01/14] Documentation: fpga: Add a document
- describing XRT Alveo drivers
-Message-ID: <20211012050931.GA95330@yilunxu-OptiPlex-7050>
-References: <20210802160521.331031-1-lizhi.hou@xilinx.com>
- <20210802160521.331031-2-lizhi.hou@xilinx.com>
+   d="gz'50?scan'50,208,50";a="441697667"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 11 Oct 2021 22:35:56 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1maASB-00036a-Gz; Tue, 12 Oct 2021 05:35:55 +0000
+Date:   Tue, 12 Oct 2021 13:18:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [tip:sched/core 17/47] kernel/sched/rt.c:1292:22: error: variable
+ 'p' set but not used
+Message-ID: <202110121312.AAlEiy7c-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/mixed; boundary="azLHFNyN32YCQGCU"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210802160521.331031-2-lizhi.hou@xilinx.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 09:05:08AM -0700, Lizhi Hou wrote:
-> Describe XRT driver architecture and provide basic overview of
-> Xilinx Alveo platform.
-> 
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
-> Reviewed-by: Tom Rix <trix@redhat.com>
-> ---
->  Documentation/fpga/index.rst |   1 +
->  Documentation/fpga/xrt.rst   | 870 +++++++++++++++++++++++++++++++++++
->  MAINTAINERS                  |  11 +
->  3 files changed, 882 insertions(+)
->  create mode 100644 Documentation/fpga/xrt.rst
-> 
-> diff --git a/Documentation/fpga/index.rst b/Documentation/fpga/index.rst
-> index f80f95667ca2..30134357b70d 100644
-> --- a/Documentation/fpga/index.rst
-> +++ b/Documentation/fpga/index.rst
-> @@ -8,6 +8,7 @@ fpga
->      :maxdepth: 1
->  
->      dfl
-> +    xrt
->  
->  .. only::  subproject and html
->  
-> diff --git a/Documentation/fpga/xrt.rst b/Documentation/fpga/xrt.rst
-> new file mode 100644
-> index 000000000000..84eb41be9ac1
-> --- /dev/null
-> +++ b/Documentation/fpga/xrt.rst
-> @@ -0,0 +1,870 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +==================================
-> +XRTV2 Linux Kernel Driver Overview
-> +==================================
-> +
-> +Authors:
-> +
-> +* Sonal Santan <sonal.santan@xilinx.com>
-> +* Max Zhen <max.zhen@xilinx.com>
-> +* Lizhi Hou <lizhi.hou@xilinx.com>
-> +
-> +XRTV2 drivers are second generation `XRT <https://github.com/Xilinx/XRT>`_
-> +drivers which support `Alveo <https://www.xilinx.com/products/boards-and-kits/alveo.html>`_
-> +PCIe platforms from Xilinx.
-> +
-> +XRTV2 drivers support *subsystem* style data driven platforms where driver's
-> +configuration and behavior are determined by metadata provided by the platform
-> +(in *device tree* format). Primary management physical function (MPF) driver
-> +is called **xrt-mgmt**. Primary user physical function (UPF) driver is called
-> +**xrt-user** and is under development. xrt_driver framework and HW subsystem
-> +drivers are packaged into a library module called **xrt-lib**, which is shared
-> +by **xrt-mgmt** and **xrt-user** (under development). The xrt_driver framework
-> +implements a ``bus_type`` called **xrt_bus_type** which is used to discover HW
-> +subsystems and facilitate inter HW subsystem interaction.
-> +
-> +Driver Modules
-> +==============
-> +
-> +xrt-lib.ko
-> +----------
-> +
-> +xrt-lib is the repository of all subsystem drivers and pure software modules that
-> +can potentially be shared between xrt-mgmt and xrt-user. All these drivers are
-> +structured as **xrt_driver** and are instantiated by xrt-mgmt (or xrt-user under
-> +development) based on the metadata associated with the hardware. The metadata is
-> +in the form of a device tree as mentioned before. Each xrt_driver statically
-> +defines a subsystem node array by using a node name or a string in its ``.endpoints``
-> +property. And this array is eventually translated to IOMEM resources in the
-> +instantiated **xrt_device**.
-> +
-> +The xrt-lib infrastructure provides hooks to xrt_drivers for device node
-> +management, user file operations and ioctl callbacks. The core infrastructure also
-> +provides a bus functionality called **xrt_bus_type** for xrt_driver registration,
-> +discovery and inter xrt_driver calls. xrt-lib does not have any dependency on PCIe
-> +subsystem.
-> +
-> +.. note::
-> +   See code in ``include/xleaf.h`` and ``include/xdevice.h``
-> +
-> +
-> +xrt-mgmt.ko
-> +------------
-> +
-> +The xrt-mgmt driver is a PCIe device driver driving MPF found on Xilinx's Alveo
-> +PCIe device. It consists of one *root* driver, one or more *group* drivers
-> +and one or more *xleaf* drivers. The group and xleaf drivers are instantiations
-> +of the xrt_driver but are called group and xleaf to symbolize the logical operation
-> +performed by them.
-> +
-> +The root driver manages the life cycle of multiple group drivers, which, in turn,
-> +manages multiple xleaf drivers. This flexibility allows xrt-mgmt.ko and xrt-lib.ko
-> +to support various HW subsystems exposed by different Alveo shells. The differences
-> +among these Alveo shells is handled in xleaf drivers. The root and group
-> +drivers are part of the infrastructure which provide common services to xleaf
-> +drivers found on various Alveo shells. See :ref:`alveo_platform_overview`.
-> +
-> +The instantiation of specific group driver or xleaf drivers is completely data
-> +driven based on metadata (mostly in device tree format) found through VSEC
-> +capability and inside the firmware files, such as platform xsabin or user xclbin
-> +file.
-> +
-> +
-> +Driver Object Model
-> +===================
-> +
-> +The driver object model looks like the following::
-> +
-> +                    +-----------+
-> +                    |   xroot   |
-> +                    +-----+-----+
-> +                          |
-> +              +-----------+-----------+
-> +              |                       |
-> +              v                       v
-> +        +-----------+          +-----------+
-> +        |   group   |    ...   |   group   |
-> +        +-----+-----+          +------+----+
-> +              |                       |
-> +              |                       |
-> +        +-----+----+            +-----+----+
-> +        |          |            |          |
-> +        v          v            v          v
-> +    +-------+  +-------+    +-------+  +-------+
-> +    | xleaf |..| xleaf |    | xleaf |..| xleaf |
-> +    +-------+  +-------+    +-------+  +-------+
-> +
-> +As an example, for Xilinx Alveo U50 before user xclbin download, the tree
-> +looks like the following::
-> +
-> +                                +-----------+
-> +                                |  xrt-mgmt |
-> +                                +-----+-----+
-> +                                      |
-> +            +-------------------------+--------------------+
-> +            |                         |                    |
-> +            v                         v                    v
-> +       +--------+                +--------+            +--------+
-> +       | group0 |                | group1 |            | group2 |
-> +       +----+---+                +----+---+            +---+----+
-> +            |                         |                    |
-> +            |                         |                    |
-> +      +-----+-----+        +----+-----+---+    +-----+-----+----+--------+
-> +      |           |        |    |         |    |     |          |        |
-> +      v           v        |    v         v    |     v          v        |
-> + +------------+  +------+  | +------+ +------+ |  +------+ +-----------+ |
-> + | xmgmt_main |  | VSEC |  | | GPIO | | QSPI | |  |  CMC | | AXI-GATE0 | |
-> + +------------+  +------+  | +------+ +------+ |  +------+ +-----------+ |
-> +                           | +---------+       |  +------+ +-----------+ |
-> +                           +>| MAILBOX |       +->| ICAP | | AXI-GATE1 |<+
-> +                             +---------+       |  +------+ +-----------+
-> +                                               |  +-------+
-> +                                               +->| CALIB |
-> +                                                  +-------+
-> +
-> +After a xclbin is downloaded, group3 will be added and the tree looks like the
-> +following::
-> +
-> +                                +-----------+
-> +                                |  xrt-mgmt |
-> +                                +-----+-----+
-> +                                      |
-> +            +-------------------------+--------------------+-----------------+
-> +            |                         |                    |                 |
-> +            v                         v                    v                 |
-> +       +--------+                +--------+            +--------+            |
-> +       | group0 |                | group1 |            | group2 |            |
-> +       +----+---+                +----+---+            +---+----+            |
-> +            |                         |                    |                 |
-> +            |                         |                    |                 |
-> +      +-----+-----+       +-----+-----+---+    +-----+-----+----+--------+   |
-> +      |           |       |     |         |    |     |          |        |   |
-> +      v           v       |     v         v    |     v          v        |   |
-> + +------------+  +------+ | +------+ +------+  |  +------+ +-----------+ |   |
-> + | xmgmt_main |  | VSEC | | | GPIO | | QSPI |  |  |  CMC | | AXI-GATE0 | |   |
-> + +------------+  +------+ | +------+ +------+  |  +------+ +-----------+ |   |
-> +                          | +---------+        |  +------+ +-----------+ |   |
-> +                          +>| MAILBOX |        +->| ICAP | | AXI-GATE1 |<+   |
-> +                            +---------+        |  +------+ +-----------+     |
-> +                                               |  +-------+                  |
-> +                                               +->| CALIB |                  |
-> +                                                  +-------+                  |
-> +                      +---+----+                                             |
-> +                      | group3 |<--------------------------------------------+
-> +                      +--------+
-> +                          |
-> +                          |
-> +     +-------+--------+---+--+--------+------+-------+
-> +     |       |        |      |        |      |       |
-> +     v       |        v      |        v      |       v
-> + +--------+  |   +--------+  |   +--------+  |    +-----+
-> + | CLOCK0 |  |   | CLOCK1 |  |   | CLOCK2 |  |    | UCS |
-> + +--------+  v   +--------+  v   +--------+  v    +-----+
-> + +-------------+ +-------------+ +-------------+
-> + | CLOCK-FREQ0 | | CLOCK-FREQ1 | | CLOCK-FREQ2 |
-> + +-------------+ +-------------+ +-------------+
-> +
-> +
-> +root
-> +----
-> +
-> +The root driver is a PCIe device driver attached to MPF. It's part of the
-> +infrastructure of the MPF driver and resides in xrt-mgmt.ko. This driver
-> +
-> +* manages one or more group drivers
-> +* provides access to functionalities that requires pci_dev, such as PCIE config
-> +  space access, to other xleaf drivers through root calls
-> +* facilities inter xleaf driver calls for other xleaf drivers
-> +* facilities event callbacks for other xleaf drivers
-> +
-> +When the root driver starts, it will explicitly create an initial group instance,
-> +which contains xleaf drivers that will trigger the creation of other group
-> +instances. The root driver will wait for all group and xleaf drivers to be
-> +created before it returns from its probe routine and claim success of the
-> +initialization of the entire xrt-mgmt driver. If any xleaf fails to initialize
-> +the xrt-mgmt driver will still come online but with limited functionality.
-> +
-> +.. note::
-> +   See code in ``lib/xroot.c`` and ``mgmt/root.c``
-> +
-> +
-> +group
-> +-----
-> +
-> +The group driver represents a pseudo device whose life cycle is managed by
-> +root and does not have real IO mem or IRQ resources. It's part of the
-> +infrastructure of the MPF driver and resides in xrt-lib.ko. This driver
-> +
-> +* manages one or more xleaf drivers
-> +* provides access to root from xleaf drivers, so that root calls, event
-> +  notifications and inter xleaf calls can happen
-> +
-> +In xrt-mgmt, an initial group driver instance will be created by the root. This
-> +instance contains xleaf drivers that will trigger group instances to be created
-> +to manage groups of xleaf drivers found on different partitions of hardware,
-> +such as VSEC, Shell, and User.
-> +
-> +Every *fpga_region* has a group driver associated with it. The group driver is
-> +created when a xclbin image is loaded on the fpga_region. The existing group
-> +is destroyed when a new xclbin image is loaded. The fpga_region persists
-> +across xclbin downloads.
-> +
-> +.. note::
-> +   See code in ``lib/group.c``
-> +
-> +
-> +xleaf
-> +-----
-> +
-> +The xleaf driver is a xrt_driver whose life cycle is managed by
-> +a group driver and may or may not have real IO mem or IRQ resources. They
-> +manage HW subsystems they are attached to.
-> +
-> +A xleaf driver without real hardware resources manages in-memory states for
-> +xrt-mgmt. These states are shareable by other xleaf drivers.
-> +
-> +Xleaf drivers assigned to specific hardware resources drive a specific subsystem
-> +in the device. To manipulate the subsystem or carry out a task, a xleaf driver
-> +may ask for help from the root via root calls and/or from other leaves via
-> +inter xleaf calls.
-> +
-> +A xleaf can also broadcast events through infrastructure code for other leaves
-> +to process. It can also receive event notification from infrastructure about
-> +certain events, such as post-creation or pre-exit of a particular xleaf.
-> +
-> +.. note::
-> +   See code in ``lib/xleaf/*.c``
-> +
-> +
-> +xrt_bus_type
-> +------------
-> +
-> +xrt_bus_type defines a virtual bus which handles xrt_driver probe, remove and match
-> +operations. All xrt_drivers register with xrt_bus_type as part of xrt-lib driver
-> +``module_init`` and un-register as part of xrt-lib driver ``module_exit``.
-> +
-> +.. note::
-> +   See code in ``lib/lib-drv.c``
-> +
-> +FPGA Manager Interaction
-> +========================
-> +
-> +fpga_manager
-> +------------
-> +
-> +An instance of fpga_manager is created by xmgmt_main and is used for xclbin
-> +image download. fpga_manager requires the full xclbin image before it can
-> +start programming the FPGA configuration engine via Internal Configuration
-> +Access Port (ICAP) xrt_driver.
-> +
-> +fpga_region
-> +-----------
-> +
-> +For every interface exposed by the currently loaded xclbin/xsabin in the
-> +*parent* fpga_region a new instance of fpga_region is created like a *child*
-> +fpga_region. The device tree of the *parent* fpga_region defines the
-> +resources for a new instance of fpga_bridge which isolates the parent from
-> +child fpga_region. This new instance of fpga_bridge will be used when a
-> +xclbin image is loaded on the child fpga_region. After the xclbin image is
-> +downloaded to the fpga_region, an instance of a group is created for the
-> +fpga_region using the device tree obtained as part of the xclbin. If this
-> +device tree defines any child interfaces, it can trigger the creation of
-> +fpga_bridge and fpga_region for the next region in the chain.
-> +
-> +fpga_bridge
-> +-----------
-> +
-> +Like the fpga_region, an fpga_bridge is created by walking the device tree
-> +of the parent group. The bridge is used for isolation between a parent and
-> +its child.
-> +
-> +Driver Interfaces
-> +=================
-> +
-> +xrt-mgmt Driver Ioctls
-> +----------------------
-> +
-> +Ioctls exposed by the xrt-mgmt driver to user space are enumerated in the
-> +following table:
-> +
-> +== ===================== ============================ ==========================
-> +#  Functionality         ioctl request code            data format
-> +== ===================== ============================ ==========================
-> +1  FPGA image download   XMGMT_IOCICAPDOWNLOAD_AXLF    xmgmt_ioc_bitstream_axlf
-> +== ===================== ============================ ==========================
-> +
-> +A user xclbin can be downloaded by using the xbmgmt tool from the XRT open source
-> +suite. See example usage below::
-> +
-> +  xbmgmt partition --program --path /lib/firmware/xilinx/862c7020a250293e32036f19956669e5/test/verify.xclbin --force
-> +
-> +xrt-mgmt Driver Sysfs
-> +----------------------
-> +
-> +The xrt-mgmt driver exposes a rich set of sysfs interfaces. Subsystem xrt
-> +drivers export sysfs node for every platform instance.
-> +
-> +Every partition also exports its UUIDs. See below for examples::
-> +
-> +  /sys/bus/pci/devices/0000:06:00.0/xmgmt_main.0/interface_uuids
-> +  /sys/bus/pci/devices/0000:06:00.0/xmgmt_main.0/logic_uuids
-> +
-> +
-> +hwmon
-> +-----
-> +
-> +The xrt-mgmt driver exposes standard hwmon interface to report voltage, current,
-> +temperature, power, etc. These can easily be viewed using *sensors* command line
-> +utility.
-> +
-> +.. _alveo_platform_overview:
-> +
-> +Alveo Platform Overview
-> +=======================
-> +
-> +Alveo platforms are architected as two physical FPGA partitions: *Shell* and
-> +*User*. The Shell provides basic infrastructure for the Alveo platform like
-> +PCIe connectivity, board management, Dynamic Function Exchange (DFX), sensors,
-> +clocking, reset, and security. DFX, partial reconfiguration, is responsible for
-> +loading the user compiled FPGA binary.
-> +
-> +For DFX to work properly, physical partitions require strict HW compatibility
-> +with each other. Every physical partition has two interface UUIDs: the *parent*
-> +UUID and the *child* UUID. For simple single stage platforms, Shell → User forms
-> +the parent child relationship.
-> +
-> +.. note::
-> +   Partition compatibility matching is a key design component of the Alveo platforms
-> +   and XRT. Partitions have child and parent relationship. A loaded partition
-> +   exposes child partition UUID to advertise its compatibility requirement. When
-> +   loading a child partition, the xrt-mgmt driver matches the parent
-> +   UUID of the child partition against the child UUID exported by the parent.
-> +   The parent and child partition UUIDs are stored in the *xclbin* (for the user)
-> +   and the *xsabin* (for the shell). Except for the root UUID exported by VSEC,
-> +   the hardware itself does not know about the UUIDs. The UUIDs are stored in
-> +   xsabin and xclbin. The image format has a special node called Partition UUIDs
-> +   which define the compatibility UUIDs. See :ref:`partition_uuids`.
-> +
-> +
-> +The physical partitions and their loading are illustrated below::
-> +
-> +           SHELL                               USER
-> +        +-----------+                  +-------------------+
-> +        |           |                  |                   |
-> +        | VSEC UUID | CHILD     PARENT |    LOGIC UUID     |
-> +        |           o------->|<--------o                   |
-> +        |           | UUID       UUID  |                   |
-> +        +-----+-----+                  +--------+----------+
-> +              |                                 |
-> +              .                                 .
-> +              |                                 |
-> +          +---+---+                      +------+--------+
-> +          |  POR  |                      | USER COMPILED |
-> +          | FLASH |                      |    XCLBIN     |
-> +          +-------+                      +---------------+
-> +
-> +
-> +Loading Sequence
-> +----------------
-> +
-> +The Shell partition is loaded from flash at system boot time. It establishes the
-> +PCIe link and exposes two physical functions to the BIOS. After the OS boots,
-> +the xrt-mgmt driver attaches to the PCIe physical function 0 exposed by the Shell
-> +and then looks for VSEC in the PCIe extended configuration space. Using VSEC, it
-> +determines the logic UUID of the Shell and uses the UUID to load matching *xsabin*
-> +file from Linux firmware directory. The xsabin file contains the metadata to
-> +discover the peripherals that are part of the Shell and the firmware for any
-> +embedded soft processors in the Shell. The xsabin file also contains Partition
-> +UUIDs as described here :ref:`partition_uuids`.
-> +
-> +The Shell exports a child interface UUID which is used for the compatibility
-> +check when loading the user compiled xclbin over the User partition as part of DFX.
-> +When a user requests loading of a specific xclbin, the xrt-mgmt driver reads
-> +the parent interface UUID specified in the xclbin and matches it with the child
-> +interface UUID exported by the Shell to determine if the xclbin is compatible with
-> +the Shell. If the match fails, loading of xclbin is denied.
-> +
-> +xclbin loading is requested using the ICAP_DOWNLOAD_AXLF ioctl command. When loading
-> +a xclbin, the xrt-mgmt driver performs the following *logical* operations:
-> +
-> +1. Copy xclbin from user to kernel memory
-> +2. Sanity check the xclbin contents
-> +3. Isolate the User partition
-> +4. Download the bitstream using the FPGA config engine (ICAP)
-> +5. De-isolate the User partition
-> +6. Program the clocks (ClockWiz) driving the User partition
-> +7. Wait for the memory controller (MIG) calibration
-> +8. Return the loading status back to the caller
-> +
-> +`Platform Loading Overview <https://xilinx.github.io/XRT/master/html/platforms_partitions.html>`_
-> +provides more detailed information on platform loading.
-> +
-> +
-> +xsabin
-> +------
-> +
-> +Each Alveo platform comes packaged with its own xsabin. The xsabin is a trusted
-> +component of the platform. For format details refer to :ref:`xsabin_xclbin_container_format`
-> +below. xsabin contains basic information like UUIDs, platform name and metadata in the
-> +form of device tree. See :ref:`device_tree_usage` below for details and example.
-> +
-> +xclbin
-> +------
-> +
-> +xclbin is compiled by end user using
-> +`Vitis <https://www.xilinx.com/products/design-tools/vitis/vitis-platform.html>`_
-> +tool set from Xilinx. The xclbin contains sections describing user compiled
-> +acceleration engines/kernels, memory subsystems, clocking information etc. It also
-> +contains an FPGA bitstream for the user partition, UUIDs, platform name, etc.
-> +
-> +
-> +.. _xsabin_xclbin_container_format:
-> +
-> +xsabin/xclbin Container Format
-> +------------------------------
-> +
-> +xclbin/xsabin is ELF-like binary container format. It is structured as series of
-> +sections. There is a file header followed by several section headers which is
-> +followed by sections. A section header points to an actual section. There is an
-> +optional signature at the end. The format is defined by the header file ``xclbin.h``.
-> +The following figure illustrates a typical xclbin::
-> +
-> +
-> +           +---------------------+
-> +           |                     |
-> +           |       HEADER        |
-> +           +---------------------+
-> +           |   SECTION  HEADER   |
-> +           |                     |
-> +           +---------------------+
-> +           |         ...         |
-> +           |                     |
-> +           +---------------------+
-> +           |   SECTION  HEADER   |
-> +           |                     |
-> +           +---------------------+
-> +           |       SECTION       |
-> +           |                     |
-> +           +---------------------+
-> +           |         ...         |
-> +           |                     |
-> +           +---------------------+
-> +           |       SECTION       |
-> +           |                     |
-> +           +---------------------+
-> +           |      SIGNATURE      |
-> +           |      (OPTIONAL)     |
-> +           +---------------------+
-> +
-> +
-> +xclbin/xsabin files can be packaged, un-packaged and inspected using an XRT
-> +utility called **xclbinutil**. xclbinutil is part of the XRT open source
-> +software stack. The source code for xclbinutil can be found at
-> +https://github.com/Xilinx/XRT/tree/master/src/runtime_src/tools/xclbinutil
-> +
-> +For example, to enumerate the contents of a xclbin/xsabin use the *--info* switch
-> +as shown below::
-> +
-> +
-> +  xclbinutil --info --input /opt/xilinx/firmware/u50/gen3x16-xdma/blp/test/bandwidth.xclbin
-> +  xclbinutil --info --input /lib/firmware/xilinx/862c7020a250293e32036f19956669e5/partition.xsabin
-> +
-> +
-> +.. _device_tree_usage:
-> +
-> +Device Tree Usage
-> +-----------------
-> +
-> +The xsabin file stores metadata which advertise HW subsystems present in a
-> +partition. The metadata is stored in device tree format with a well defined
-> +schema. XRT management driver uses this information to bind *xrt_drivers* to
-> +the subsystem instantiations. The xrt_drivers are found in **xrt-lib.ko** kernel
-> +module.
 
-I'm still catching up the patchset from the very beginning, and just
-finished the Documentation part. So far, I see the DT usage concern
-which may impact the architecure a lot, so I should raise it ASAP.
+--azLHFNyN32YCQGCU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The concern raised by the DT maintainer:
-https://lore.kernel.org/linux-fpga/CAL_JsqLod6FBGFhu7WXtMrB_z7wj8-up0EetM1QS9M3gjm8d7Q@mail.gmail.com/
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+head:   b2d5b9cec60fecc72a13191c2c6c05acf60975a5
+commit: 57a5c2dafca8e3ce4f70e975a9c7727b66b5071f [17/47] sched/rt: Support schedstats for RT sched class
+config: hexagon-buildonly-randconfig-r002-20211012 (attached as .config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c3dcf39554dbea780d6cb7e12239451ba47a2668)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=57a5c2dafca8e3ce4f70e975a9c7727b66b5071f
+        git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+        git fetch --no-tags tip sched/core
+        git checkout 57a5c2dafca8e3ce4f70e975a9c7727b66b5071f
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=hexagon 
 
-First of all, directly parsing FDT in device drivers is not a normal usage of DT
-in linux. It is out of the current DT usage model. So it should be agreed by DT
-maintainers.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Current FPGA framework modifies kernel's live tree by DT overlay, when FPGA is
-dynamically reprogrammed and new HW devices appear. See
-Documentation/devicetree/bindings/fpga/fpga-region.txt.
+All errors (new ones prefixed by >>):
 
-Then something less important:
+   kernel/sched/rt.c:669:6: error: no previous prototype for function 'sched_rt_bandwidth_account' [-Werror,-Wmissing-prototypes]
+   bool sched_rt_bandwidth_account(struct rt_rq *rt_rq)
+        ^
+   kernel/sched/rt.c:669:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   bool sched_rt_bandwidth_account(struct rt_rq *rt_rq)
+   ^
+   static 
+>> kernel/sched/rt.c:1292:22: error: variable 'p' set but not used [-Werror,-Wunused-but-set-variable]
+           struct task_struct *p = NULL;
+                               ^
+   kernel/sched/rt.c:1311:22: error: variable 'p' set but not used [-Werror,-Wunused-but-set-variable]
+           struct task_struct *p = NULL;
+                               ^
+   kernel/sched/rt.c:1341:22: error: variable 'p' set but not used [-Werror,-Wunused-but-set-variable]
+           struct task_struct *p = NULL;
+                               ^
+   4 errors generated.
 
-  1. The bindings should be documented in Documentation/devicetree/bindings/.
-  2. Are all the example DT usage conform to the exsiting bindings? I
-     didn't go through all device classes, but remember like the
-     interrupt-controller should have a "interrupt-controller" property, and
-     the PCI properties are also different from PCI bindings.
 
-Thanks,
-Yilun
+vim +/p +1292 kernel/sched/rt.c
 
-> +
-> +Logic UUID
-> +^^^^^^^^^^
-> +A partition is identified uniquely through ``logic_uuid`` property::
-> +
-> +  /dts-v1/;
-> +  / {
-> +      logic_uuid = "0123456789abcdef0123456789abcdef";
-> +      ...
-> +    }
-> +
-> +Schema Version
-> +^^^^^^^^^^^^^^
-> +Schema version is defined through the ``schema_version`` node. It contains
-> +``major`` and ``minor`` properties as below::
-> +
-> +  /dts-v1/;
-> +  / {
-> +       schema_version {
-> +           major = <0x01>;
-> +           minor = <0x00>;
-> +       };
-> +       ...
-> +    }
-> +
-> +.. _partition_uuids:
-> +
-> +Partition UUIDs
-> +^^^^^^^^^^^^^^^
-> +Each partition may have parent and child UUIDs. These UUIDs are
-> +defined by ``interfaces`` node and ``interface_uuid`` property::
-> +
-> +  /dts-v1/;
-> +  / {
-> +       interfaces {
-> +           @0 {
-> +                  interface_uuid = "0123456789abcdef0123456789abcdef";
-> +           };
-> +           @1 {
-> +                  interface_uuid = "fedcba9876543210fedcba9876543210";
-> +           };
-> +           ...
-> +        };
-> +       ...
-> +    }
-> +
-> +
-> +Subsystem Instantiations
-> +^^^^^^^^^^^^^^^^^^^^^^^^
-> +Subsystem instantiations are captured as children of ``addressable_endpoints``
-> +node::
-> +
-> +  /dts-v1/;
-> +  / {
-> +       addressable_endpoints {
-> +           abc {
-> +               ...
-> +           };
-> +           def {
-> +               ...
-> +           };
-> +           ...
-> +       }
-> +  }
-> +
-> +Subnode 'abc' and 'def' are the name of subsystem nodes
-> +
-> +Subsystem Node
-> +^^^^^^^^^^^^^^
-> +Each subsystem node and its properties define a hardware instance::
-> +
-> +
-> +  addressable_endpoints {
-> +      abc {
-> +          reg = <0x00 0x1f05000 0x00 0x1000>>
-> +          pcie_physical_function = <0x0>;
-> +          pcie_bar_mapping = <0x2>;
-> +          compatible = "abc def";
-> +          interrupts = <0x09 0x0c>;
-> +          firmware {
-> +              firmware_product_name = "abc"
-> +              firmware_branch_name = "def"
-> +              firmware_version_major = <1>
-> +              firmware_version_minor = <2>
-> +          };
-> +      }
-> +      ...
-> +  }
-> +
-> +:reg:
-> + Property defines an address range. `<0x00 0x1f05000 0x00 0x1000>` indicates
-> + *0x00 0x1f05000* as BAR offset and *0x00 0x1000* as address length.
-> +:pcie_physical_function:
-> + Property specifies which PCIe physical function the subsystem node resides.
-> + `<0x0>` implies physical function 0.
-> +:pcie_bar_mapping:
-> + Property specifies which PCIe BAR the subsystem node resides. `<0x2>` implies
-> + BAR 2. A value of 0 means the property is not defined.
-> +:compatible:
-> + Property is a list of strings. The first string in the list specifies the exact
-> + subsystem node. The following strings represent other devices that the device
-> + is compatible with.
-> +:interrupts:
-> + Property specifies start and end interrupts for this subsystem node.
-> + `<0x09 0x0c>` implies interrupts 9 to 13 are used by this subsystem.
-> +:firmware:
-> + Subnode defines the firmware required by this subsystem node.
-> +
-> +Alveo U50 Platform Example
-> +^^^^^^^^^^^^^^^^^^^^^^^^^^
-> +::
-> +
-> +  /dts-v1/;
-> +
-> +  /{
-> +        logic_uuid = "f465b0a3ae8c64f619bc150384ace69b";
-> +
-> +        schema_version {
-> +                major = <0x01>;
-> +                minor = <0x00>;
-> +        };
-> +
-> +        interfaces {
-> +
-> +                @0 {
-> +                        interface_uuid = "862c7020a250293e32036f19956669e5";
-> +                };
-> +        };
-> +
-> +        addressable_endpoints {
-> +
-> +                ep_blp_rom_00 {
-> +                        reg = <0x00 0x1f04000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +                };
-> +
-> +                ep_card_flash_program_00 {
-> +                        reg = <0x00 0x1f06000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_quad_spi-1.0\0axi_quad_spi";
-> +                        interrupts = <0x03 0x03>;
-> +                };
-> +
-> +                ep_cmc_firmware_mem_00 {
-> +                        reg = <0x00 0x1e20000 0x00 0x20000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +
-> +                        firmware {
-> +                                firmware_product_name = "cmc";
-> +                                firmware_branch_name = "u50";
-> +                                firmware_version_major = <0x01>;
-> +                                firmware_version_minor = <0x00>;
-> +                        };
-> +                };
-> +
-> +                ep_cmc_intc_00 {
-> +                        reg = <0x00 0x1e03000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_intc-1.0\0axi_intc";
-> +                        interrupts = <0x04 0x04>;
-> +                };
-> +
-> +                ep_cmc_mutex_00 {
-> +                        reg = <0x00 0x1e02000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_cmc_regmap_00 {
-> +                        reg = <0x00 0x1e08000 0x00 0x2000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +
-> +                        firmware {
-> +                                firmware_product_name = "sc-fw";
-> +                                firmware_branch_name = "u50";
-> +                                firmware_version_major = <0x05>;
-> +                        };
-> +                };
-> +
-> +                ep_cmc_reset_00 {
-> +                        reg = <0x00 0x1e01000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_ddr_mem_calib_00 {
-> +                        reg = <0x00 0x63000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_debug_bscan_mgmt_00 {
-> +                        reg = <0x00 0x1e90000 0x00 0x10000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-debug_bridge-1.0\0debug_bridge";
-> +                };
-> +
-> +                ep_ert_base_address_00 {
-> +                        reg = <0x00 0x21000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_ert_command_queue_mgmt_00 {
-> +                        reg = <0x00 0x40000 0x00 0x10000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-ert_command_queue-1.0\0ert_command_queue";
-> +                };
-> +
-> +                ep_ert_command_queue_user_00 {
-> +                        reg = <0x00 0x40000 0x00 0x10000>;
-> +                        pcie_physical_function = <0x01>;
-> +                        compatible = "xilinx.com,reg_abs-ert_command_queue-1.0\0ert_command_queue";
-> +                };
-> +
-> +                ep_ert_firmware_mem_00 {
-> +                        reg = <0x00 0x30000 0x00 0x8000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +
-> +                        firmware {
-> +                                firmware_product_name = "ert";
-> +                                firmware_branch_name = "v20";
-> +                                firmware_version_major = <0x01>;
-> +                        };
-> +                };
-> +
-> +                ep_ert_intc_00 {
-> +                        reg = <0x00 0x23000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_intc-1.0\0axi_intc";
-> +                        interrupts = <0x05 0x05>;
-> +                };
-> +
-> +                ep_ert_reset_00 {
-> +                        reg = <0x00 0x22000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_ert_sched_00 {
-> +                        reg = <0x00 0x50000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x01>;
-> +                        compatible = "xilinx.com,reg_abs-ert_sched-1.0\0ert_sched";
-> +                        interrupts = <0x09 0x0c>;
-> +                };
-> +
-> +                ep_fpga_configuration_00 {
-> +                        reg = <0x00 0x1e88000 0x00 0x8000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_hwicap-1.0\0axi_hwicap";
-> +                        interrupts = <0x02 0x02>;
-> +                };
-> +
-> +                ep_icap_reset_00 {
-> +                        reg = <0x00 0x1f07000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_msix_00 {
-> +                        reg = <0x00 0x00 0x00 0x20000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-msix-1.0\0msix";
-> +                        pcie_bar_mapping = <0x02>;
-> +                };
-> +
-> +                ep_pcie_link_mon_00 {
-> +                        reg = <0x00 0x1f05000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_pr_isolate_plp_00 {
-> +                        reg = <0x00 0x1f01000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_pr_isolate_ulp_00 {
-> +                        reg = <0x00 0x1000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_uuid_rom_00 {
-> +                        reg = <0x00 0x64000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +                };
-> +
-> +                ep_xdma_00 {
-> +                        reg = <0x00 0x00 0x00 0x10000>;
-> +                        pcie_physical_function = <0x01>;
-> +                        compatible = "xilinx.com,reg_abs-xdma-1.0\0xdma";
-> +                        pcie_bar_mapping = <0x02>;
-> +                };
-> +        };
-> +
-> +  }
-> +
-> +
-> +
-> +Deployment Models
-> +=================
-> +
-> +Baremetal
-> +---------
-> +
-> +In bare-metal deployments, both MPF and UPF are visible and accessible. The
-> +xrt-mgmt driver binds to MPF. The xrt-mgmt driver operations are privileged and
-> +available to system administrator. The full stack is illustrated below::
-> +
-> +                            HOST
-> +
-> +               [XRT-MGMT]         [XRT-USER]
-> +                    |                  |
-> +                    |                  |
-> +                 +-----+            +-----+
-> +                 | MPF |            | UPF |
-> +                 |     |            |     |
-> +                 | PF0 |            | PF1 |
-> +                 +--+--+            +--+--+
-> +          ......... ^................. ^..........
-> +                    |                  |
-> +                    |   PCIe DEVICE    |
-> +                    |                  |
-> +                 +--+------------------+--+
-> +                 |         SHELL          |
-> +                 |                        |
-> +                 +------------------------+
-> +                 |         USER           |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 +------------------------+
-> +
-> +
-> +
-> +Virtualized
-> +-----------
-> +
-> +In virtualized deployments, the privileged MPF is assigned to the host but the
-> +unprivileged UPF is assigned to a guest VM via PCIe pass-through. The xrt-mgmt
-> +driver in host binds to MPF. The xrt-mgmt driver operations are privileged and
-> +only accessible to the MPF. The full stack is illustrated below::
-> +
-> +
-> +                                 ..............
-> +                  HOST           .    VM      .
-> +                                 .            .
-> +               [XRT-MGMT]        . [XRT-USER] .
-> +                    |            .     |      .
-> +                    |            .     |      .
-> +                 +-----+         .  +-----+   .
-> +                 | MPF |         .  | UPF |   .
-> +                 |     |         .  |     |   .
-> +                 | PF0 |         .  | PF1 |   .
-> +                 +--+--+         .  +--+--+   .
-> +          ......... ^................. ^..........
-> +                    |                  |
-> +                    |   PCIe DEVICE    |
-> +                    |                  |
-> +                 +--+------------------+--+
-> +                 |         SHELL          |
-> +                 |                        |
-> +                 +------------------------+
-> +                 |         USER           |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 +------------------------+
-> +
-> +
-> +
-> +
-> +
-> +Platform Security Considerations
-> +================================
-> +
-> +`Security of Alveo Platform <https://xilinx.github.io/XRT/master/html/security.html>`_
-> +discusses the deployment options and security implications in great detail.
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 056966c9aac9..beeaf0257364 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7274,6 +7274,17 @@ F:	Documentation/fpga/
->  F:	drivers/fpga/
->  F:	include/linux/fpga/
->  
-> +FPGA XRT DRIVERS
-> +M:	Lizhi Hou <lizhi.hou@xilinx.com>
-> +R:	Max Zhen <max.zhen@xilinx.com>
-> +R:	Sonal Santan <sonal.santan@xilinx.com>
-> +L:	linux-fpga@vger.kernel.org
-> +S:	Supported
-> +W:	https://github.com/Xilinx/XRT
-> +F:	Documentation/fpga/xrt.rst
-> +F:	drivers/fpga/xrt/
-> +F:	include/uapi/linux/xrt/
-> +
->  FPU EMULATOR
->  M:	Bill Metzenthen <billm@melbpc.org.au>
->  S:	Maintained
-> -- 
-> 2.27.0
+  1287	
+  1288	static inline void
+  1289	update_stats_wait_start_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se)
+  1290	{
+  1291		struct sched_statistics *stats;
+> 1292		struct task_struct *p = NULL;
+  1293	
+  1294		if (!schedstat_enabled())
+  1295			return;
+  1296	
+  1297		if (rt_entity_is_task(rt_se))
+  1298			p = rt_task_of(rt_se);
+  1299	
+  1300		stats = __schedstats_from_rt_se(rt_se);
+  1301		if (!stats)
+  1302			return;
+  1303	
+  1304		__update_stats_wait_start(rq_of_rt_rq(rt_rq), p, stats);
+  1305	}
+  1306	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--azLHFNyN32YCQGCU
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+
+--azLHFNyN32YCQGCU--
