@@ -2,95 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85630429E3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2231429E39
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbhJLHAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:00:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39947 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233378AbhJLHAp (ORCPT
+        id S233215AbhJLHAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232499AbhJLHAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:00:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634021923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q8RijpfQi+prw8bXnwoWv3a6J45QoIwKMNHS02qVkCw=;
-        b=KgNE9GMJYRJmjekzIrzTg1CbXspW3stzRTjevR4bAQ/AA6cIYraeQAniftHpD2Q2RzenTA
-        0jx57b/mlvvNxwRqDP8GtYFQQ35lc4w282J3DNHj2x3MrJXplvlxuMN39kLTbMA6oMxyHM
-        ZLfkzs0EESqRJVjHSbdP/kI9uq2/1ag=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-TrcHSLI2NWqrhI9MUaCFaA-1; Tue, 12 Oct 2021 02:58:42 -0400
-X-MC-Unique: TrcHSLI2NWqrhI9MUaCFaA-1
-Received: by mail-ed1-f70.google.com with SMTP id p20-20020a50cd94000000b003db23619472so18051668edi.19
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 23:58:42 -0700 (PDT)
+        Tue, 12 Oct 2021 03:00:39 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A85BC061570;
+        Mon, 11 Oct 2021 23:58:38 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id o20so63439052wro.3;
+        Mon, 11 Oct 2021 23:58:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=bg6lNHmeKOpJXeIiSb+VjW+H8cWSnozAwzSA/SSRX50=;
+        b=ImJxeCkowEk8w2VTqnpcKXGXpnwB8DN1ba9G+xkEfTcgraL8E8ndoqrGOq4lkB6VcJ
+         WY8QHEDJqbwxc/HI1/D8CxMADsOZqpgcW7zC7RRaVn6PAj0jKo6V6J2/pvWdY+jgtcpy
+         fiXfsl//+M0Dw3qlFoczXz89jVTImyqFm7Xgqlei2Se2E1ScRLri/pEZbDbgCw9ov4Jz
+         YYbdgqyx65eNNFQcz2ZKzkvshk4zPpnJxCEHntko6gbT6Yl2vUrvg1+9Q0CneX6JclUC
+         8PqcMcApUKSP5+eeVsmtQx+3WP7bJOCBAGj4zE5T4vqpRYUfXhrL1mH3yKKsTBoFPWs8
+         kgtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=q8RijpfQi+prw8bXnwoWv3a6J45QoIwKMNHS02qVkCw=;
-        b=meSZGmTfrUPhStiKBffP2wgbVdZCuZoo7dsFoYm9R0JGtV7P6hkm5ekx8KH8VVm74s
-         sOVboW2R+HObDw4E+HDF0Ex1d3miT0RfJeucKJOvEE0oKJSLsOOyJkYXusARKFfzRv5p
-         mCVjIHhxQ1DXFTUYSckLXWq/M8x+2tcplxxFYPAatvLmlRHXeHlPq+D6Px2E55YnYCF4
-         lY5Xp5ZuIJaDLxGsbqHmOItHU2QcH0YZucvL2CeEfnh/PQMuMkmwTXpxJzcNRSqYQ9Xm
-         wYFDK9VXDVcwEncyX9qhrA4VETaXpodIhCom7+qVMTi+iqk3comE7WgxQraX7siNF61L
-         8Alg==
-X-Gm-Message-State: AOAM531XvGxsehJ0NqAO/NNeA9DIPunralhnRlKFJziav1hEA79Lm9rn
-        JRS74qf631WaFkqXe+HJ0F6DpwYXzpGcAsgpbfzyr5FDDOgW3Bwl/EOYafV8kvktVT0LYwT0vDM
-        8zW0Hh7PPvPK0TCT8OpMn+NjFZi6IFb27MRrrefcv
-X-Received: by 2002:a17:906:6d0a:: with SMTP id m10mr29787749ejr.90.1634021921119;
-        Mon, 11 Oct 2021 23:58:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzRHeJ989p7dVG/ei6yafdn1mzzyjVVyI8bkiTnv+xsecY3u5UUD0ZFpoZSsrAAywRK1lgyPepPpZKinKOGrh4=
-X-Received: by 2002:a17:906:6d0a:: with SMTP id m10mr29787733ejr.90.1634021920886;
- Mon, 11 Oct 2021 23:58:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211008032231.1143467-1-fengli@smartx.com> <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
- <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com> <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
-In-Reply-To: <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
-From:   Xiao Ni <xni@redhat.com>
-Date:   Tue, 12 Oct 2021 14:58:30 +0800
-Message-ID: <CALTww28CsJdmVOLFeoHC8FgbHDK78h8Lncsf9fFA0RYXEj=R9A@mail.gmail.com>
-Subject: Re: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
-To:     Li Feng <fengli@smartx.com>
-Cc:     Song Liu <song@kernel.org>,
-        "open list:SOFTWARE RAID (Multiple Disks) SUPPORT" 
-        <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=bg6lNHmeKOpJXeIiSb+VjW+H8cWSnozAwzSA/SSRX50=;
+        b=nrvbY1i8IbjsNKA235FxrTsXR87nOq5VjXI0oUuFuT8KnrAj5fHpdo7oajxCTYdmpy
+         8YHYWstobQ6nRX0NHh0Ry1dRSp6nGAz3QqQocrofxnNazxEDaGSBoFWdSLXve3dEiiwB
+         tSlM+x7pOjFxUIfsr4NvIJdmL3FCVAHHhy8EnXwni9Jk4V2dszSWzMUD+8NxD6z1eblU
+         Dk2kL/7g/vbmrjlKUkW/DCHvhScyGou1Aq1afuVlKCcyxHQoPQ0VxfVnRGQe1N4jorU+
+         hOHaEXOVlvdSrT70a1LHVYstlEWKgrbUC7/xTw0I6qrV3CsJ1DzfHouNR9Y0VEEqlgLo
+         InbA==
+X-Gm-Message-State: AOAM531t0Yb42akYsli1uqjTSxqc88OKxlEUK+CnRED50XJfRhF89K7Z
+        aaFPtCIgZ21s08KIQaxxfBhr19wErLE=
+X-Google-Smtp-Source: ABdhPJwQ8QnSmiV97Fj1Sy0gQc2+UrX2b1ojpaDeJCUwcm+BdW35CcKojXk8x1EL1Xc4I89Q+W6FRw==
+X-Received: by 2002:adf:d1c3:: with SMTP id b3mr13284433wrd.237.1634021916906;
+        Mon, 11 Oct 2021 23:58:36 -0700 (PDT)
+Received: from [192.168.1.21] ([195.245.16.219])
+        by smtp.gmail.com with ESMTPSA id l21sm1620499wmh.31.2021.10.11.23.58.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 23:58:36 -0700 (PDT)
+Message-ID: <6b0d2338e7b8a1e1f86bd4565182377255f27729.camel@gmail.com>
+Subject: Re: [PATCH 2/4] Input: ep93xx_keypad - use BIT() and GENMASK()
+ macros
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Date:   Tue, 12 Oct 2021 08:58:35 +0200
+In-Reply-To: <20211012013735.3523140-2-dmitry.torokhov@gmail.com>
+References: <20211012013735.3523140-1-dmitry.torokhov@gmail.com>
+         <20211012013735.3523140-2-dmitry.torokhov@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 5:42 PM Li Feng <fengli@smartx.com> wrote:
->
-> Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8811=E6=97=A5=E5=
-=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:49=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > Hi all
-> >
-> > Now the per device sysfs interface file state can change failfast. Do
-> > we need a new file for failfast?
-> >
-> > I did a test. The steps are:
-> >
-> > mdadm -CR /dev/md0 -l1 -n2 /dev/sdb /dev/sdc --assume-clean
-> > cd /sys/block/md0/md/dev-sdb
-> > echo failfast > state
-> > cat state
-> > in_sync,failfast
->
-> This works,  will it be persisted to disk?
->
+Hi!
 
-mdadm --detail /dev/md0 can show the failfast information. So it
-should be written in superblock.
-But I don't find how md does this. I'm looking at this.
+On Mon, 2021-10-11 at 18:37 -0700, Dmitry Torokhov wrote:
+> Also drop parenthesis around macros that do not use expressions as they are
+> not needed.
+> 
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Regards
-Xiao
+Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+
+> ---
+>  drivers/input/keyboard/ep93xx_keypad.c | 37 +++++++++++++-------------
+>  1 file changed, 19 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/input/keyboard/ep93xx_keypad.c b/drivers/input/keyboard/ep93xx_keypad.c
+> index a0c6cdf8e0d3..6be5474ba2f2 100644
+> --- a/drivers/input/keyboard/ep93xx_keypad.c
+> +++ b/drivers/input/keyboard/ep93xx_keypad.c
+> @@ -17,6 +17,7 @@
+>   * flag.
+>   */
+>  
+> +#include <linux/bits.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/interrupt.h>
+> @@ -35,28 +36,28 @@
+>  #define KEY_REG                        0x08    /* Key Value Capture register */
+>  
+>  /* Key Scan Initialization Register bit defines */
+> -#define KEY_INIT_DBNC_MASK     (0x00ff0000)
+> -#define KEY_INIT_DBNC_SHIFT    (16)
+> -#define KEY_INIT_DIS3KY                (1<<15)
+> -#define KEY_INIT_DIAG          (1<<14)
+> -#define KEY_INIT_BACK          (1<<13)
+> -#define KEY_INIT_T2            (1<<12)
+> -#define KEY_INIT_PRSCL_MASK    (0x000003ff)
+> -#define KEY_INIT_PRSCL_SHIFT   (0)
+> +#define KEY_INIT_DBNC_MASK     GENMASK(23, 16)
+> +#define KEY_INIT_DBNC_SHIFT    16
+> +#define KEY_INIT_DIS3KY                BIT(15)
+> +#define KEY_INIT_DIAG          BIT(14)
+> +#define KEY_INIT_BACK          BIT(13)
+> +#define KEY_INIT_T2            BIT(12)
+> +#define KEY_INIT_PRSCL_MASK    GENMASK(9, 0)
+> +#define KEY_INIT_PRSCL_SHIFT   0
+>  
+>  /* Key Scan Diagnostic Register bit defines */
+> -#define KEY_DIAG_MASK          (0x0000003f)
+> -#define KEY_DIAG_SHIFT         (0)
+> +#define KEY_DIAG_MASK          GENMASK(5, 0)
+> +#define KEY_DIAG_SHIFT         0
+>  
+>  /* Key Value Capture Register bit defines */
+> -#define KEY_REG_K              (1<<15)
+> -#define KEY_REG_INT            (1<<14)
+> -#define KEY_REG_2KEYS          (1<<13)
+> -#define KEY_REG_1KEY           (1<<12)
+> -#define KEY_REG_KEY2_MASK      (0x00000fc0)
+> -#define KEY_REG_KEY2_SHIFT     (6)
+> -#define KEY_REG_KEY1_MASK      (0x0000003f)
+> -#define KEY_REG_KEY1_SHIFT     (0)
+> +#define KEY_REG_K              BIT(15)
+> +#define KEY_REG_INT            BIT(14)
+> +#define KEY_REG_2KEYS          BIT(13)
+> +#define KEY_REG_1KEY           BIT(12)
+> +#define KEY_REG_KEY2_MASK      GENMASK(11, 6)
+> +#define KEY_REG_KEY2_SHIFT     6
+> +#define KEY_REG_KEY1_MASK      GENMASK(5, 0)
+> +#define KEY_REG_KEY1_SHIFT     0
+>  
+>  #define EP93XX_MATRIX_SIZE     (EP93XX_MATRIX_ROWS * EP93XX_MATRIX_COLS)
+>  
+
+-- 
+Alexander Sverdlin.
+
 
