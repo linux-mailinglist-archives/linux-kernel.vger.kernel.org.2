@@ -2,84 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8AC7429B37
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C213B429B16
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhJLB7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
+        id S230108AbhJLBkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhJLB7J (ORCPT
+        with ESMTP id S229590AbhJLBke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:59:09 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1BCC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:57:08 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id n11so12068123plf.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:57:08 -0700 (PDT)
+        Mon, 11 Oct 2021 21:40:34 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0F2C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:38:33 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id h196so9138281iof.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:38:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8a2/JQmuX57q2aJcf/iLLoukKQpiybtglq5HXNGxygk=;
-        b=PF5vNeMNX9icXXQWUjw/IfVkmeyvFN8puq/1IIkvkghg5Xvth78HKDEiB2/0abuRWD
-         YgylLNMG+Krukn/+gt8Q+0JLMQl8kbW62p/YuHM/DDYZO00e4H9BLLcEojJMsdkbf1GW
-         EnF8hdhlzzKwCB5FeYJsPHzJJxT0j/QJoCS24=
+        d=landley-net.20210112.gappssmtp.com; s=20210112;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=3E2lZgR6WlfqtvFtqNr57xZdEqFDKbM7UDdFQZaAY30=;
+        b=tJvrAjY0LdQyKl8FxIAs/v58IFcP0Huoy/xQYoyiq+6Hrr/xPQTJO+bOLJcwb/W5rD
+         80fvGo/Hsev1ANQ3wuHwZQ+sRxg5/WpL2QwSZT114Vpn1A5zjl7mkdegNYkB23UVFNgc
+         vSljFDNPXfKRDYV+CnCXnAvQTlgtp68dS1rYc0BC9lqhGjnEzqvJ1Sgzfh/XxooaPlUC
+         HJiKANladNEaHHd6XbJCX6uOAcrio5ISsRun0GC8ZE1ghJcIs5+tPFEapwVKMctUHy44
+         IwQWPMExPjNqOrAZ2O38XLO2QtHVb3McLSdNyW+qgW81d5TQxe+pLB+IWPmvbUqJer2R
+         Y8Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8a2/JQmuX57q2aJcf/iLLoukKQpiybtglq5HXNGxygk=;
-        b=zo9U0KVycfQcL+4bI9fGcu/Ezi5yGj+6+djes15H/ms3EwGcIqaZCaNyqLf9sBAxuK
-         7OJSknxfo7SkHzlE0QsBWMZAgbsZKs78R/+bFqqrdulA/1SRgg4EZ+wZDCN7UwWgCEaf
-         k/nvJw+c+E+HFlr851eHjw0401XzHUAKneEEc+koMwxy1kPlUZnnkLFFmM1/uuEQGWWL
-         TherdcdU/V/xguWVW0k7P+tj4A1EWmaLGoTIAa7k646lFVb+RI0LRXPmJBMxAU51KwC8
-         XhQZCu0o6tr9XosrT7XMMrWaKE7ldAYm9lliG7HRgSCm8SibAdP2ju9GPe2q2ST17/3+
-         o6Hw==
-X-Gm-Message-State: AOAM531xOkkzB+Lo3cglyOLC+znBrGDMUQvuYIOWm9tq6IPXurhf08fq
-        YgyY2UdIoXvDl7naqitV3GGVvw==
-X-Google-Smtp-Source: ABdhPJzcFDpZfHc3nRVVa+/bAj0gmaEk7b2C9Ped1tQLsHMJultYAblQyLdBAYeCsoDxNIF9/iTxSw==
-X-Received: by 2002:a17:90b:4011:: with SMTP id ie17mr2858973pjb.41.1634003828296;
-        Mon, 11 Oct 2021 18:57:08 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:61aa:8522:1051:5bfe])
-        by smtp.gmail.com with ESMTPSA id h23sm5850281pfn.109.2021.10.11.18.57.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 18:57:07 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 10:57:03 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: videobuf2: always set buffer vb2 pointer
-Message-ID: <YWTrb0ZXv1HRmtfZ@google.com>
-References: <20210928034634.333785-1-senozhatsky@chromium.org>
- <CAAFQd5DLiW23a0U_JjnpvoYmpcbiKbStq7=w=7KvbDP7zLvBaA@mail.gmail.com>
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=3E2lZgR6WlfqtvFtqNr57xZdEqFDKbM7UDdFQZaAY30=;
+        b=C0LGosTJnL+Z3LarF/VedLhE+FtYtr1fQ5eMaW4LVRnBrK8EjBCsRT1nNfF38w41Lf
+         PC4hAoWU/ZORPD64XoMPf5sHvCKIzkXadx5ewf/ruhxpM0wdl8EiiuR21K1zSIdVzvgX
+         2KzV6GgIctXo74uHz+WArItGH32zzo4QtKAUw0OhQb0c2whlIjMwl4BWh7oony9wo3CB
+         5YMGZVFJnjyDjJLzRbXzF+fpjn31JdZkbFC/XWg5/Q0hzmZjphepUGr98J3IJ4vcsZUw
+         K4PaPhnuwrmYVILPqcVgrLlQwdJPvzVJJJIY1BJkTbabu2oEpbJLhdFvtIoT5V4HCvel
+         +4SA==
+X-Gm-Message-State: AOAM531/cBfqdkY6ly81vIahg5jT73lcF236uodB9am0gvN2pMULvvX/
+        XNIHdmG610IYT2ZBMKYdOx5kVJtDFCYJ6w==
+X-Google-Smtp-Source: ABdhPJy4rxoGas4YJ1Xai/QQVAJd1k1Kp99/lCF542HiY63Ue4j4tEDlCmsfruz0aqb8YQWz/4Mjxg==
+X-Received: by 2002:a5e:9612:: with SMTP id a18mr21258847ioq.57.1634002712889;
+        Mon, 11 Oct 2021 18:38:32 -0700 (PDT)
+Received: from [192.168.39.11] ([172.58.83.63])
+        by smtp.gmail.com with ESMTPSA id l12sm5017090ilh.19.2021.10.11.18.38.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 18:38:32 -0700 (PDT)
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Rob Landley <rob@landley.net>
+Subject: timer_create(CLOCK_PROCESS_CPUTIME_ID) for child?
+Message-ID: <cbb6ce6a-bde9-dc16-b7f2-9bbf78d310b3@landley.net>
+Date:   Mon, 11 Oct 2021 20:58:37 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAFQd5DLiW23a0U_JjnpvoYmpcbiKbStq7=w=7KvbDP7zLvBaA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/10/05 18:57), Tomasz Figa wrote:
-> 
-> On Tue, Sep 28, 2021 at 12:46 PM Sergey Senozhatsky
-> <senozhatsky@chromium.org> wrote:
-> >
-> > We need to always link allocated vb2_dc_buf back to vb2_buffer because
-> > we dereference vb2 in prepare() and finish() callbacks.
-> >
-> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > ---
-> >  drivers/media/common/videobuf2/videobuf2-dma-contig.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> 
-> Acked-by: Tomasz Figa <tfiga@chromium.org>
+Is there any way to timer_create(CLOCK_PROCESS_CPUTIME_ID) but have the signal
+delivered to the parent process instead of the child?
 
-Hans, can you please pick up this patch?
+Possibly there's something that could be done with ptrace, but I'm not figuring
+it out. (I don't want to create a timer _in_ the child, that visibly messes with
+the child's state, and I might intercept the child's own timer...)
+
+Rob
