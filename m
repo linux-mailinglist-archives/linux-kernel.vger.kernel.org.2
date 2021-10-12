@@ -2,75 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2061D42A9DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4D442A9DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbhJLQru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 12:47:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55142 "EHLO mail.kernel.org"
+        id S231771AbhJLQsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 12:48:04 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:39336 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231622AbhJLQrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 12:47:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D801A601FA;
-        Tue, 12 Oct 2021 16:45:36 +0000 (UTC)
-Date:   Tue, 12 Oct 2021 17:45:33 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Hanjun Guo <guohanjun@huawei.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Len Brown <lenb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Marc Zyngier <maz@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] acpi: arm64: fix section mismatch warning
-Message-ID: <YWW7rTJKUJKTbvFE@arm.com>
-References: <20210927141921.1760209-1-arnd@kernel.org>
- <988fa24c-76d2-1c9d-9761-b356efb0576c@huawei.com>
- <CAK8P3a0Ny=Q=3Ass2xemWSG4wUkmojh5QxXryebiemroo6oruw@mail.gmail.com>
- <CAJZ5v0hGrZuNvM1gYOZscSnrgMMHZc9mXUtvUUKOnZch+0hWnw@mail.gmail.com>
+        id S229996AbhJLQsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 12:48:03 -0400
+Received: from zn.tnic (p200300ec2f19420044c1262ed1e42b8c.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:4200:44c1:262e:d1e4:2b8c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 15ECB1EC0295;
+        Tue, 12 Oct 2021 18:46:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634057160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0YXv+LtBs1VFcaBEIJLdx3R96cV6B6FVy/GIzso/ifg=;
+        b=FZdujRWw1jN+b0uc3fmR2F9k8Yrk/v0gzxjgzWY5JXvcyHABz4Vonyt/fQCnbnY7uF0wt2
+        z0miD6gzSwHRM0IExAjIQmSsQHFbPDIlBSfWCoFZsyfMRGJKF4qHC6ycES5NLRVQepblCd
+        j9fZzFpWysokbuiGz2hhy7QSXm8Bsgw=
+Date:   Tue, 12 Oct 2021 18:45:56 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [patch 11/31] x86/fpu/xstate: Provide and use for_each_xfeature()
+Message-ID: <YWW7xGPosnlXOiQl@zn.tnic>
+References: <20211011215813.558681373@linutronix.de>
+ <20211011223610.950054267@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hGrZuNvM1gYOZscSnrgMMHZc9mXUtvUUKOnZch+0hWnw@mail.gmail.com>
+In-Reply-To: <20211011223610.950054267@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 04:16:09PM +0200, Rafael J. Wysocki wrote:
-> On Tue, Oct 12, 2021 at 9:20 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > On Tue, Oct 12, 2021 at 9:03 AM Hanjun Guo <guohanjun@huawei.com> wrote:
-> > > On 2021/9/27 22:19, Arnd Bergmann wrote:
-> > > > From: Arnd Bergmann <arnd@arndb.de>
-> > > >
-> > > > In a gcc-11 randconfig build I came across this warning:
-> > > >
-> > > > WARNING: modpost: vmlinux.o(.text.unlikely+0x2c084): Section mismatch in reference from the function next_platform_timer() to the variable .init.data:acpi_gtdt_desc
-> > > > The function next_platform_timer() references
-> > > > the variable __initdata acpi_gtdt_desc.
-> > > > This is often because next_platform_timer lacks a __initdata
-> > > > annotation or the annotation of acpi_gtdt_desc is wrong.
-> > > >
-> > > > This happens when next_platform_timer() fails to get inlined
-> > > > despite the inline annotation. Adding '__init' solves the issue,
-> > > > and it seems best to remove the 'inline' in the process seems
-> > > > better anyway.
-> > >
-> > > There was a patch to fix this issue as well [1],
-> > > but not merged yet.
-> > >
-> > > [1]:
-> > > https://lore.kernel.org/linux-acpi/7f29a149-e005-f13f-2cc4-a9eb737107e1@huawei.com/T/
-> >
-> > Right, either of those patches should be fine.
-> >
-> > Rafael, can you pick one of them up?
-> 
-> I can, but arm54 ACPI changes go in via arm64 as a rule.
+On Tue, Oct 12, 2021 at 02:00:14AM +0200, Thomas Gleixner wrote:
+> These loops evaluating xfeature bits are really hard to read. Create an
+> iterator and use for_each_set_bit_from() inside which already does the right
+> thing.
 
-Queued as https://git.kernel.org/arm64/c/596143e3aec3
+<--- No functional changes.
+
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/kernel/fpu/xstate.c |   56 +++++++++++++++++--------------------------
+>  1 file changed, 23 insertions(+), 33 deletions(-)
 
 -- 
-Catalin
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
