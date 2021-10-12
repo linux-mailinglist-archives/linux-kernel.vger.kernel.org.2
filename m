@@ -2,209 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159E9429EC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC51429EC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234121AbhJLHi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233869AbhJLHi4 (ORCPT
+        id S234372AbhJLHjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:39:11 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34702 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234164AbhJLHi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:38:56 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC93C061570;
-        Tue, 12 Oct 2021 00:36:55 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id j5so84149992lfg.8;
-        Tue, 12 Oct 2021 00:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vB9uYdJsN7HfFIh1EPeV/AmLli9Pcmu7LFRCY4ZOmhM=;
-        b=hbUYGPANbCGobhRYJTcf/mlq+dyADWC7z6fvhcM3ER2+BCPyQcaZToBU/wADPB7b0N
-         0prHdPAExgBgj1pER9QInpPSAuoEgDCa7xC2H3SEsAY5MXpdzdzFeb6SY7ChaH4S20ep
-         MzDiYLrS8OUmL6hL0iVsjVkBb6BfYMX4gPwmr70cr4ozpt075mUoH7ZJEwfhVEpeF/cL
-         d8o1FxWcmqIlzLLM5VqhPeYdj2Tet+fPZL13gz/S6PMzU7YUD+3vwawjczx6tKABZ0VV
-         WMjxuQkuqMBjcwQtkFXHdfhpZlt0aOfD1zfmOg8xoEpv3TELSYQYi0rL22J95y4Ccw5L
-         ugRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vB9uYdJsN7HfFIh1EPeV/AmLli9Pcmu7LFRCY4ZOmhM=;
-        b=YArRLnfgB1SU3q4Es2VetCxQFefDJ1QYNmqLyZF3zaRpUN+jU6y/3d+XyGvbOFO3ja
-         SGDHUXK9OXmJcy/Cii8tIvWcIM8xh4UbSe7BMnZJoK7sn6ZWGnfLb85Z5zUCP2A9LU5j
-         N22M/6jqwAjOzTuD9/heCZow3gvrZe2VHd0yCKQqap5ZOLLRAW6nasRk1R3DUE9atzZj
-         dYSLO7+qE4oxKH3FtBl3kPAPH+z3yq0892IfJAGYS7+DvpmWejdRSjjdr4WoAEBopleh
-         es8ebgXYa4010gDzJqJol/Gm9VC2eUOJnF7YlkdvQ3chPsqbNzuh6Z83Bqqw0w+4M8G/
-         lHiA==
-X-Gm-Message-State: AOAM530nwdgypB5OHuVHU2+f/7qqKtD39XcXBq09xux17izecbLKRheA
-        b/1/jLKNn52LPvf6+6awOGY=
-X-Google-Smtp-Source: ABdhPJxmsAtVWTmIwhXUKqHrj680l/Z9xEbT0Q5zkjpkJtxYwr/pmbkLLqsNA5Vua7Wdkm6x2zYrAw==
-X-Received: by 2002:a05:6512:1595:: with SMTP id bp21mr7199977lfb.188.1634024213565;
-        Tue, 12 Oct 2021 00:36:53 -0700 (PDT)
-Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id a14sm951376lfs.26.2021.10.12.00.36.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 00:36:53 -0700 (PDT)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Yifeng Zhao <yifeng.zhao@rock-chips.com>
-Cc:     heiko@sntech.de, robh+dt@kernel.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        vkoul@kernel.org, michael.riesch@wolfvision.net,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, kishon@ti.com,
-        p.zabel@pengutronix.de
-Subject: Re: [PATCH v1 2/3] phy/rockchip: add naneng combo phy for RK3568
-Date:   Tue, 12 Oct 2021 09:36:51 +0200
-Message-ID: <1807525.kHsN9XgAzY@archbook>
-In-Reply-To: <20210826123844.8464-3-yifeng.zhao@rock-chips.com>
-References: <20210826123844.8464-1-yifeng.zhao@rock-chips.com> <20210826123844.8464-3-yifeng.zhao@rock-chips.com>
+        Tue, 12 Oct 2021 03:38:59 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id EA78A22150;
+        Tue, 12 Oct 2021 07:36:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634024216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4nD2ISDAf2TQ3t3VfHUt8r1cCwete3O5TAZWbE4kE7M=;
+        b=C6A/Psx27DoZPrXya2lWB+l7IwGjlMGmwcL8xgtP+rlT5//7r1Ou5LMxdw1roHmjKf3q7F
+        81xK5su5B8gm1HWP+lEF6NWpiv2Ko43ifsKNqSqqA1lnIYYJT+AHiZufyRXlgf0cF/5ivF
+        Cpowdql7MZF6RmK+IF0F45XrHXvkJIE=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 854B8A3B89;
+        Tue, 12 Oct 2021 07:36:54 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 09:36:52 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, Pavel Machek <pavel@ucw.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>,
+        Tim Murray <timmurray@google.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+Message-ID: <YWU7FELcxIFmr9uz@dhcp22.suse.cz>
+References: <YV8jB+kwU95hLqTq@dhcp22.suse.cz>
+ <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
+ <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz>
+ <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
+ <202110071111.DF87B4EE3@keescook>
+ <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
+ <202110081344.FE6A7A82@keescook>
+ <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
+ <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
+ <CAJuCfpHaF1e0V=wAoNO36nRL2A5EaNnuQrvZ2K3wh6PL6FrwZQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpHaF1e0V=wAoNO36nRL2A5EaNnuQrvZ2K3wh6PL6FrwZQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Donnerstag, 26. August 2021 14:38:43 CEST Yifeng Zhao wrote:
-> This patch implements a combo phy driver for Rockchip SoCs
-> with NaNeng IP block. This phy can be used as pcie-phy, usb3-phy,
-> sata-phy or sgmii-phy.
-> 
-> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
-> ---
-> [...]
-> +static int rockchip_combphy_pcie_init(struct rockchip_combphy_priv *priv)
-> +{
-> +	int ret = 0;
-> +
-> +	if (priv->cfg->combphy_cfg) {
-> +		ret = priv->cfg->combphy_cfg(priv);
-> +		if (ret) {
-> +			dev_err(priv->dev, "failed to init phy for 
-pcie\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int rockchip_combphy_usb3_init(struct rockchip_combphy_priv *priv)
-> +{
-> +	int ret = 0;
-> +
-> +	if (priv->cfg->combphy_cfg) {
-> +		ret = priv->cfg->combphy_cfg(priv);
-> +		if (ret) {
-> +			dev_err(priv->dev, "failed to init phy for 
-usb3\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int rockchip_combphy_sata_init(struct rockchip_combphy_priv *priv)
-> +{
-> +	int ret = 0;
-> +
-> +	if (priv->cfg->combphy_cfg) {
-> +		ret = priv->cfg->combphy_cfg(priv);
-> +		if (ret) {
-> +			dev_err(priv->dev, "failed to init phy for 
-sata\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int rockchip_combphy_sgmii_init(struct rockchip_combphy_priv *priv)
-> +{
-> +	int ret = 0;
-> +
-> +	if (priv->cfg->combphy_cfg) {
-> +		ret = priv->cfg->combphy_cfg(priv);
-> +		if (ret) {
-> +			dev_err(priv->dev, "failed to init phy for 
-sgmii\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int rockchip_combphy_set_mode(struct rockchip_combphy_priv *priv)
-> +{
-> +	switch (priv->mode) {
-> +	case PHY_TYPE_PCIE:
-> +		rockchip_combphy_pcie_init(priv);
-> +		break;
-> +	case PHY_TYPE_USB3:
-> +		rockchip_combphy_usb3_init(priv);
-> +		break;
-> +	case PHY_TYPE_SATA:
-> +		rockchip_combphy_sata_init(priv);
-> +		break;
-> +	case PHY_TYPE_SGMII:
-> +	case PHY_TYPE_QSGMII:
-> +		return rockchip_combphy_sgmii_init(priv);
-> +	default:
-> +		dev_err(priv->dev, "incompatible PHY type\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
+On Mon 11-10-21 18:20:25, Suren Baghdasaryan wrote:
+> On Mon, Oct 11, 2021 at 6:18 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > On Mon, Oct 11, 2021 at 1:36 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Fri 08-10-21 13:58:01, Kees Cook wrote:
+> > > > - Strings for "anon" specifically have no required format (this is good)
+> > > >   it's informational like the task_struct::comm and can (roughly)
+> > > >   anything. There's no naming convention for memfds, AF_UNIX, etc. Why
+> > > >   is one needed here? That seems like a completely unreasonable
+> > > >   requirement.
+> > >
+> > > I might be misreading the justification for the feature. Patch 2 is
+> > > talking about tools that need to understand memeory usage to make
+> > > further actions. Also Suren was suggesting "numbering convetion" as an
+> > > argument against.
+> > >
+> > > So can we get a clear example how is this being used actually? If this
+> > > is just to be used to debug by humans than I can see an argument for
+> > > human readable form. If this is, however, meant to be used by tools to
+> > > make some actions then the argument for strings is much weaker.
+> >
+> > The simplest usecase is when we notice that a process consumes more
+> > memory than usual and we do "cat /proc/$(pidof my_process)/maps" to
+> > check which area is contributing to this growth. The names we assign
+> > to anonymous areas are descriptive enough for a developer to get an
+> > idea where the increased consumption is coming from and how to proceed
+> > with their investigation.
+> > There are of course cases when tools are involved, but the end-user is
+> > always a human and the final report should contain easily
+> > understandable data.
 
-All of the _init functions appear to be the same except for the error
-string.
+OK, it would have been much more preferable to be explicit about this
+main use case from the very beginning. Just to make sure we are at the
+same page. Is the primary usecase usage and bug reporting?
 
-I think it would be better to just have the init done in _set_mode,
-and then use the switch case statement to show the right error
-message on if (ret).
+My initial understanding was that at userspace managed memory management
+could make an educated guess about targeted reclaim (e.g. MADV_{FREE,COLD,PAGEOUT}
+for cached data in memory like uncompressed images/data). Such a usecase
+would clearly require a standardized id/naming convention to be
+application neutral.
 
-> [...]
-> +
-> +static int rockchip_combphy_probe(struct platform_device *pdev)
-> +{
-> +	struct phy_provider *phy_provider;
-> +	struct device *dev = &pdev->dev;
-> +	struct rockchip_combphy_priv *priv;
-> +	const struct rockchip_combphy_cfg *phy_cfg;
-> +	struct resource *res;
-> +	int ret;
-> +
-> +	phy_cfg = of_device_get_match_data(dev);
-> +	if (!phy_cfg) {
-> +		dev_err(dev, "No OF match data provided\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	priv->mmio = devm_ioremap_resource(dev, res);
+> > IIUC, the main argument here is whether the userspace can provide
+> > tools to perform the translations between ids and names, with the
+> > kernel accepting and reporting ids instead of strings. Technically
+> > it's possible, but to be practical that conversion should be fast
+> > because we will need to make name->id conversion potentially for each
+> > mmap. On the consumer side the performance is not as critical, but the
+> > fact that instead of dumping /proc/$pid/maps we will have to parse the
+> > file, do id->name conversion and replace all [anon:id] with
+> > [anon:name] would be an issue when we do that in bulk, for example
+> > when collecting system-wide data for a bugreport.
 
-I think devm_platform_get_and_ioremap_resource is preferred here,
-using it also means you can get rid of res.
+Whether you use ids or human readable strings you still have to
+understand the underlying meaning to make any educated guess. Let me
+give you an example. Say I have an application with a memory leak. Right
+now I can only tell that it is anonymous memory growing but it is not
+clear who uses that anonymous. You are adding a means to tell different
+users appart. That is really helpful. Now I know this is an anon
+user 1234 or MySuperAnonMemory. Neither of the will not tell me more
+without a id/naming convention or reading the code. A convention can be
+useful for the most common users (e.g. a specific allocator) but I am
+rather dubious there are many more that would be _generally_ recognized
+without some understanding of the said application.
 
-> +	if (IS_ERR(priv->mmio)) {
-> +		ret = PTR_ERR(priv->mmio);
-> +		return ret;
-> +	}
-> +
-> [...]
+Maybe the situation in Android is different because the runtime is more
+coupled but is it reasonable to expect any common naming conventions for
+general Linux platforms?
 
-Regards,
-Nicolas Frattaroli
-
-
+I am slightly worried that we have spent way too much time talking
+specifics about id->name translation rather than the actual usability
+of the token.
+-- 
+Michal Hocko
+SUSE Labs
