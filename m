@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169CB429B1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084CB429B1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhJLBpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhJLBpK (ORCPT
+        id S230061AbhJLBpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:45:32 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:24243 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhJLBpb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:45:10 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9E7C061570;
-        Mon, 11 Oct 2021 18:43:10 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id g14so16260433pfm.1;
-        Mon, 11 Oct 2021 18:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aaPgiHJn15zNIap+eZg+EerM3NP47gZ4DTG/7AGcqDU=;
-        b=ibkUO6s7sr32QaV28gFq4Te8miEtqiHGyph/cbLhFcP9vpZTJNlVs8a4KiermjP+82
-         gQ1+hN20FSXfgcMd7gWMsyl8F03pyXT5cPtvYl2q+jKZTzOT8Obha6YTP5OgsYM13VmR
-         Bnlmk/iMnU4aubMRQ7e/jBxVpPL6a3gaamMMgxOjSC9nbYqq8PXJxNUZa1c9wAvVsy/o
-         sSxdThMUr2Nbi26g22OAPj4AFwvqlrkDvhFP8FjY+WzbgU89FpCR9wxS5e+HhaHu1gHW
-         8HU+G7Pbb9xsYnL9foUt1gUNDbGkeNb1iNR43GgRI70+V1f5Dt3XseRbErT33pa3d1+H
-         kDuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aaPgiHJn15zNIap+eZg+EerM3NP47gZ4DTG/7AGcqDU=;
-        b=QeZIN2dCb1A4r7V4cqIfagFzsg+N/+6URZuiYoq0vELQ5YpMTIYg//twWpdfAYhPf0
-         5hACi+IXkb0eE3H1CQgyr/OUOLSQErLFhyoq7Fl0xOR0kpIz15LdgpG5bjOMlvLBvTFJ
-         X/XFl3XzYmVfXnnqq61J41BSBiKLU584w9In5ANlMlazlMbxXDUCe2bR/pGxuZHz248B
-         KmAkYL0t+JUDcAgtjCy+Xgq23t8TRNxd9THSDW+7NqQdeC6fL5iaQ806W7FHZwsM+cU9
-         ulnT+FLjP4JWQ1rnsyxDqq0YN8XU5mGCTBQ37leWJTLkEpr+NMhOMft673A0ODXJdpSm
-         D8gQ==
-X-Gm-Message-State: AOAM533fHECkSIYq++rdjDYiHqKAPDt6bqjdwZF2pXYx722WQB7dMnVg
-        deqPafHd8htpmYLIEv02dryVvtYdO+w=
-X-Google-Smtp-Source: ABdhPJxn5ABtPWNaQC1n/OgsENcsTha5zCyuk1bSerqk84x/UBaFf90cHvAZMiJajSnf4YN0613csg==
-X-Received: by 2002:a63:7e45:: with SMTP id o5mr20563078pgn.445.1634002988886;
-        Mon, 11 Oct 2021 18:43:08 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:10fb:4b55:2926:7ada])
-        by smtp.gmail.com with ESMTPSA id t8sm6638670pgk.66.2021.10.11.18.43.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 18:43:07 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 18:43:05 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] Input: ep93xx_keypad: Prepare clock before using it
-Message-ID: <YWToKXF66a49mEf/@google.com>
-References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
- <20210613233041.128961-4-alexander.sverdlin@gmail.com>
- <YMfQR8iM9be5Qg8+@google.com>
- <9bf87ee0e1c2a97b0a1b98734e34e456f84ea3d7.camel@gmail.com>
- <YM60mjew2mqMAMRO@google.com>
- <2cd73e19fde5a9dee6a962f9994b4dd5ea4d21be.camel@gmail.com>
+        Mon, 11 Oct 2021 21:45:31 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HSz1W0phzz8tZh;
+        Tue, 12 Oct 2021 09:42:23 +0800 (CST)
+Received: from dggpemm100009.china.huawei.com (7.185.36.113) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 09:43:28 +0800
+Received: from [10.174.179.24] (10.174.179.24) by
+ dggpemm100009.china.huawei.com (7.185.36.113) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 09:43:28 +0800
+Subject: Re: [PATCH] powerpc: don't select KFENCE on platform PPC_FSL_BOOK3E
+To:     Marco Elver <elver@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+References: <20210924063927.1341241-1-liushixin2@huawei.com>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <77ce95e4-1af1-6536-5f0c-a573c648801a@huawei.com>
+Date:   Tue, 12 Oct 2021 09:43:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2cd73e19fde5a9dee6a962f9994b4dd5ea4d21be.camel@gmail.com>
+In-Reply-To: <20210924063927.1341241-1-liushixin2@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.24]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm100009.china.huawei.com (7.185.36.113)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+kindly ping.
 
-On Mon, Sep 13, 2021 at 11:29:14PM +0200, Alexander Sverdlin wrote:
-> Hello Dmitry,
-> 
-> On Sat, 2021-06-19 at 20:23 -0700, Dmitry Torokhov wrote:
-> > > On Mon, 2021-06-14 at 14:55 -0700, Dmitry Torokhov wrote:
-> > > > > Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
-> > > > > to Common Clock Framework.
-> > > > 
-> > > > Can this be merged standalone?
-> > > 
-> > > In principle, yes, but I thought it would be easier if the patches
-> > > would go via the same path as CCF conversion.
-> > 
-> > OK, in this case:
-> > 
-> > Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> 
-> our initial attempt to find a maintainer for the whole series
-> didn't work out. Would you take this single patch, please?
-> Three others were already taken into respective subsystems
-> and I'll ping the rest of maintainers individually...
 
-It looks like I forgot to mention it, but I applied this patch and it
-should be in mainline now. I also CCed you on a few patches to
-ep93xx_keyboard driver and woudl appreciate if you looked them over as I
-do not have the hardware.
+On 2021/9/24 14:39, Liu Shixin wrote:
+> On platform PPC_FSL_BOOK3E, all lowmem is managed by tlbcam. That means
+> we didn't really map the kfence pool with page granularity. Therefore,
+> if KFENCE is enabled, the system will hit the following panic:
+>
+>     BUG: Kernel NULL pointer dereference on read at 0x00000000
+>     Faulting instruction address: 0xc01de598
+>     Oops: Kernel access of bad area, sig: 11 [#1]
+>     BE PAGE_SIZE=4K SMP NR_CPUS=4 MPC8544 DS
+>     Dumping ftrace buffer:
+>        (ftrace buffer empty)
+>     Modules linked in:
+>     CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc3+ #298
+>     NIP:  c01de598 LR: c08ae9c4 CTR: 00000000
+>     REGS: c0b4bea0 TRAP: 0300   Not tainted  (5.12.0-rc3+)
+>     MSR:  00021000 <CE,ME>  CR: 24000228  XER: 20000000
+>     DEAR: 00000000 ESR: 00000000
+>     GPR00: c08ae9c4 c0b4bf60 c0ad64e0 ef720000 00021000 00000000 00000000 00000200
+>     GPR08: c0ad5000 00000000 00000000 00000004 00000000 008fbb30 00000000 00000000
+>     GPR16: 00000000 00000000 00000000 00000000 c0000000 00000000 00000000 00000000
+>     GPR24: c08ca004 c08ca004 c0b6a0e0 c0b60000 c0b58f00 c0850000 c08ca000 ef720000
+>     NIP [c01de598] kfence_protect+0x44/0x6c
+>     LR [c08ae9c4] kfence_init+0xfc/0x2a4
+>     Call Trace:
+>     [c0b4bf60] [efffe160] 0xefffe160 (unreliable)
+>     [c0b4bf70] [c08ae9c4] kfence_init+0xfc/0x2a4
+>     [c0b4bfb0] [c0894d3c] start_kernel+0x3bc/0x574
+>     [c0b4bff0] [c0000470] set_ivor+0x14c/0x188
+>     Instruction dump:
+>     7c0802a6 8109d594 546a653a 90010014 54630026 39200000 7d48502e 2c0a0000
+>     41820010 554a0026 5469b53a 7d295214 <81490000> 38831000 554a003c 91490000
+>     random: get_random_bytes called from print_oops_end_marker+0x40/0x78 with crng_init=0
+>     ---[ end trace 0000000000000000 ]---
+>
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> ---
+>  arch/powerpc/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index d46db0bfb998..cffd57bcb5e4 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -185,7 +185,7 @@ config PPC
+>  	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
+>  	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
+>  	select HAVE_ARCH_KGDB
+> -	select HAVE_ARCH_KFENCE			if PPC32
+> +	select HAVE_ARCH_KFENCE			if PPC32 && !PPC_FSL_BOOK3E
+>  	select HAVE_ARCH_MMAP_RND_BITS
+>  	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
+>  	select HAVE_ARCH_NVRAM_OPS
 
-Thanks.
-
--- 
-Dmitry
