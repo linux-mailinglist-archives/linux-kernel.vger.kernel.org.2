@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC93442B08A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E9442B08B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236336AbhJLXsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 19:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45832 "EHLO
+        id S236340AbhJLXs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 19:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236321AbhJLXsC (ORCPT
+        with ESMTP id S233903AbhJLXs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 19:48:02 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F735C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:45:59 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id y12so2580213eda.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:45:59 -0700 (PDT)
+        Tue, 12 Oct 2021 19:48:26 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDCEC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:46:24 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id w10-20020ac87e8a000000b002a68361412bso783584qtj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:46:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g9QIQ7pA6on+PhPbmC46MmFbUXQiDnzNiglml743kow=;
-        b=k2m1G+XqaO6GS9hxIV80tHPHDWpZY4uwLvDS+MT4diT5j6QCboVs3PDEau/U8LUwTW
-         A6XepDfgCu5N08ZkIPJxerRz+/JGwOB2tjrirHQZ3McM1QnSir2qAoARulRpYgOvuqCM
-         O1LwpUCr4ooefYltNCvn2LBwWK6OoU+Dw5EIMOUCXR5H6r2e9L/NbA5dpgYyPEcklvTD
-         Q4+Ohi0pI+jnB/Cv6F8uJAUzLDC0me96Wc2TLjhAGe5/KN5CJWGvdEfx0Mi6eGwBQEJT
-         yAzytTfNKk35T700tp2dqkUaZ4Aw9sg11TI+STxlLKa9a0Gae0rkumMyw6d65TYkP+KA
-         PZfA==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=U1CBuwTvctaYUlQJhZIppI9ILyM5IxB5cbt7UE9WsqY=;
+        b=OSXAr37CFli6hdER8dhZKrAe0g0va7VrU/6C3pfS6bZYyesWzvxQw545v2Yz9Pgc+r
+         6HQkzMenAvbRIbO+IIrHmDOeN1b8XIJaeKHiulsk6zDy1u8SQTp23lqzy9Ezbx/l0zdZ
+         x1a5dT+3iCs2WIsnXsqEMSBXRI56rjZ9YiH+H0t2eD0anXIicY4dn7DsXbKTdL5atUYp
+         99VHdz3+OH/drwGUdFuQppxPIrtk0FbLHR+sjBMRQy3fQchBRiL/E+qSIpa+Q+Gzj0fm
+         63c2whJ59wPRHe2ModiqsDZYyFzE/rovMwrsBF6E/NOLAxAmOz2AoNgHsHGMH2sj0nAE
+         hrIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g9QIQ7pA6on+PhPbmC46MmFbUXQiDnzNiglml743kow=;
-        b=bVHoyyrIvYw2ccPmXMl6QmSGWz8rUqLRNXIHXEIMU3SG5DquVCUoeZyMMDUJCoFurl
-         Dm7Pvj+QsZN43U2hu7z5Wkrt5liIlPTyTqPmRQezCnAUKh/jiUgStvDbQ28kSYB5xon7
-         8PUlJvs/zdAMY0MfuAEa/5SvwS5ktjlJqLePXQagDd89tsFpeECkOEJv1NSQDfQYXpg/
-         T5mIac3t6iPHMlen4bj+eQHeot3JrS7f+buV45HLZZVwA34XuNFN/Zs+PiQEdRclPMrm
-         YPuDKN0MZ4rgi1J8TPz1Y0OoYx26bvWLrNWEP4C+fBxeVYvhmnkyV5hdI95gx5n2ULU5
-         jwdg==
-X-Gm-Message-State: AOAM533vEo5OvsBmKvQAocLAy1QkKC/INxPLYkSYXx8WxdX+lOw88j0v
-        F76MKH2ellyfo2H6jwJPyaZ0F+Dj5Ak2sz6opg1ZD6EI1Yw=
-X-Google-Smtp-Source: ABdhPJwCFUpePR+Sp++Rs+7vC3g8AGn9zz5QRwj1VvVdaDdZ2qI0vgrM9Ktl6M/kclmNKHUDk8LFA+Gd/VjkqPSuWbc=
-X-Received: by 2002:a05:6402:34f:: with SMTP id r15mr2991976edw.111.1634082358220;
- Tue, 12 Oct 2021 16:45:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211008092656.421-1-caihuoqing@baidu.com>
-In-Reply-To: <20211008092656.421-1-caihuoqing@baidu.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 13 Oct 2021 01:45:47 +0200
-Message-ID: <CACRpkdY0uM4BNapd7XNUhZ5U0sGdP3hu5Tr+dM1jigg5vQ+KDw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] iio: light: cm3605: Make use of the helper
- function dev_err_probe()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Kevin Tsai <ktsai@capellamicro.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=U1CBuwTvctaYUlQJhZIppI9ILyM5IxB5cbt7UE9WsqY=;
+        b=ufIe9UisQJMBGQX50gpSfScOgldSqf5D1a+sXFHLNIEoxKBRYhDg8aPnZf5XbK+vam
+         +978lahLotaLWi32ZjvI8MK9AtmLvK9qlP6tJon/VhovNw9FPJLkDtlbDPHAjVd+T1SU
+         ScbwP0JBZWkGoWVVJa0FdZ7p0T9WmhhdP7b2dYfOGomOPtiJPJMVdhcyZcczEmB8Ca/9
+         xeYFfb/3Z0U4ZoizA5iFgYAK9ZhIMUr/tYWCgku4FauLR/v6apq1hy/RVPg+wn2NqqUz
+         TV7xnPmLl+BFHtWgrGHAPIZ8F9f2kkpI0s0keN2DIRYD5PBZIH3B68lzPjKrrUmWZ/d4
+         1SYQ==
+X-Gm-Message-State: AOAM531AX0ddT7T06wUjB3YPigulUTT3WovbZyA6pAIg5ZYoEOZC19/B
+        0T4cdhmir0K7D1jznid30Alsv0FMSJu1C2a3nGg=
+X-Google-Smtp-Source: ABdhPJwFJFZTxamtNTe57wwrUCI8q0lOwHN9rjl8tqB//Wb8EHJ7CsLVhYYvxb32TE+NYnY5KAdX5Ts4ad+rdVgDB2E=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:9b44:962:5897:17c0])
+ (user=ndesaulniers job=sendgmr) by 2002:ac8:7c96:: with SMTP id
+ y22mr25820433qtv.338.1634082383291; Tue, 12 Oct 2021 16:46:23 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 16:46:03 -0700
+Message-Id: <20211012234606.91717-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=lvO/pmg+aaCb6dPhyGC1GyOCvPueDrrc8Zeso5CaGKE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1634082365; l=859; s=20211004;
+ h=from:subject; bh=g3CBsvmGQbuOYnCD8e3MLFwlDDGe9HbIj3f8iC/Hh/s=;
+ b=PgfEWmno8ql8mPhYJpHZoIzk7yY9SH3UKBR5mlpy2uh4OOOeVfmJR0VHB4XCATUsta9Us6DdJRUy
+ UD+2nr3mBYXbBuAEIc0tINg6Wq6or+VSndHCgZ4nSboOdFC3wfVu
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH 0/3] compat vdso cleanups
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 11:27 AM Cai Huoqing <caihuoqing@baidu.com> wrote:
+Three fixes for compat vdso, the first two are related, the third is
+standalone.
 
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> Using dev_err_probe() can reduce code size, and the error value
-> gets printed.
->
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
-> v2->v3:
->         *Handle platform_get_irq() that returns -EPROBE_DEFER.
->         *Handle the lack of availability of an IIO channel
->          by converting an -ENODEV to an -EPROBE_DEFER.
+The first two fix a warning observed for `mrproper` targets when
+$(CROSS_COMPILE_COMPAT)gcc is not in the $PATH.
 
-This looks good to me!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+The third makes is so that CROSS_COMPILE_COMPAT is not necessary to
+select COMPAT_VDSO when using clang+lld.
 
-Yours,
-Linus Walleij
+Based on arm64/linux.git/for-next/misc.
+
+Nick Desaulniers (3):
+  arm64: vdso32: drop the test for dmb ishld
+  arm64: vdso32: lazily invoke COMPAT_CC
+  arm64: vdso32: require CROSS_COMPILE_COMPAT for gcc+bfd
+
+ arch/arm64/Kconfig                           |  3 +-
+ arch/arm64/include/asm/vdso/compat_barrier.h |  2 +-
+ arch/arm64/kernel/vdso32/Makefile            | 33 ++++++--------------
+ 3 files changed, 12 insertions(+), 26 deletions(-)
+
+
+base-commit: de56379f21c70196ff18c48790e8e43865893869
+-- 
+2.33.0.882.g93a45727a2-goog
+
