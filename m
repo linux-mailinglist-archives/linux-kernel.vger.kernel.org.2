@@ -2,94 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5773042A1E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AD842A1E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235940AbhJLKWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235153AbhJLKWM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:22:12 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3687C061570;
-        Tue, 12 Oct 2021 03:20:10 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HTBVt4qsDz4xbG;
-        Tue, 12 Oct 2021 21:20:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634034009;
-        bh=OyyvlVJQv7EGGiQ92vclYwV2x6aVR2+zcJ53U1caZLg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gkSDSJcIpyqtcuIRf05AEj2Uynfr4Nset7atqr6wpyubhbBEjVC71JB9c4TdjHJEn
-         SHHWLQ5L9Rw95+XW2k/jZYJ6YuLrAAsHNRS4qjw+2LrfBFbRb/7lDoxEZn1RvdFOMf
-         3qgBGzhouY3s1Xgurq0QKByDMMCAyU8oJIaBF+7jtuO7Xf83QHzWhN528zSjV+1B9W
-         I+929J0Ml8v08cUsWXFo3y/b8tF0SI7BTlSkVjHxn/gn2Yy1TBblaYJgObEIbmcyUM
-         tisUW+qy/gYiIZXNQ6Gigxo7y7jkTGALb7dbdobYtd4E4pOT6TSSGI7aWvvdALbUe8
-         4+VrdNZBq/P6w==
-Date:   Tue, 12 Oct 2021 21:20:05 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the tip tree
-Message-ID: <20211012212005.4e8fecdd@canb.auug.org.au>
+        id S235909AbhJLKWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:22:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235153AbhJLKWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:22:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D74D761056;
+        Tue, 12 Oct 2021 10:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634034006;
+        bh=gNymWPiDlchEDLhjNPYvJKld6H+Htdyogl+URBc/S3M=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=nQcn6EvUTUx9wRtYJgezac/78sTJcvEnvYeoNQ8Oxl2xoJ7wefi8D0niMj3C9Dbsu
+         9et3Zjg11Wm6DZyHzpg8EsodPFv8CuHWdBbhXhXztftNNH8hZzrxRpr+kbb7nO7dXp
+         YM0Y9hWw9QCiNZAEACupR0mw0YFhwCx8TmEe+SHFU8tcLYeY4QBQKVAwPikIo6k4bT
+         wNnBR54PqWtSc2vLy2NtepcHiZ9cdVQx3B5Iacp1vEf/+MppNQONaZaYOlu/Xm0SS3
+         EYSEcq1GvvJkr3LdkDYNMwHwDqcqFZ5Kqswdkwek4MmdaQvAfKfxJ8yPuML8GT/S4n
+         O1qH06p4GHi0g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C069360965;
+        Tue, 12 Oct 2021 10:20:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/YNrivWfIN=a+2Ba/Bz4Lg7l";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] af_unix: Rename UNIX-DGRAM to UNIX to maintain backwards
+ compatability
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163403400678.16702.616769036972068377.git-patchwork-notify@kernel.org>
+Date:   Tue, 12 Oct 2021 10:20:06 +0000
+References: <20211008215946.3961353-1-swboyd@chromium.org>
+In-Reply-To: <20211008215946.3961353-1-swboyd@chromium.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, jiang.wang@bytedance.com,
+        andrii@kernel.org, cong.wang@bytedance.com, jakub@cloudflare.com,
+        john.fastabend@gmail.com, digetx@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/YNrivWfIN=a+2Ba/Bz4Lg7l
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-After merging the tip tree, today's linux-next build (htmldocs) produced
-these warnings:
+On Fri,  8 Oct 2021 14:59:45 -0700 you wrote:
+> Then name of this protocol changed in commit 94531cfcbe79 ("af_unix: Add
+> unix_stream_proto for sockmap") because that commit added stream support
+> to the af_unix protocol. Renaming the existing protocol makes a ChromeOS
+> protocol test[1] fail now that the name has changed in
+> /proc/net/protocols from "UNIX" to "UNIX-DGRAM".
+> 
+> Let's put the name back to how it was while keeping the stream protocol
+> as "UNIX-STREAM" so that the procfs interface doesn't change. This fixes
+> the test and maintains backwards compatibility in proc.
+> 
+> [...]
 
-Error: Cannot open file kernel/futex.c
-Error: Cannot open file kernel/futex.c
-Error: Cannot open file kernel/futex.c
-Error: Cannot open file kernel/futex.c
+Here is the summary with links:
+  - af_unix: Rename UNIX-DGRAM to UNIX to maintain backwards compatability
+    https://git.kernel.org/netdev/net/c/0edf0824e0dc
 
-Introduced by commit
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  77e52ae35463 ("futex: Move to kernel/futex/")
 
-$ git grep kernel/futex Documentation
-Documentation/kernel-hacking/locking.rst:.. kernel-doc:: kernel/futex.c
-Documentation/translations/it_IT/kernel-hacking/locking.rst:.. kernel-doc::=
- kernel/futex.c
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/YNrivWfIN=a+2Ba/Bz4Lg7l
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFlYVUACgkQAVBC80lX
-0GwxAAf/X/vgCIMo+FM40uo8lM/m8YjWJ/ffzwHejX5PliwxHOLGs45jUVhVOv7o
-OMnNucShYijtthRjXkjiifgjHWpNFKApJmXaqucNsf/594oIkCjIzlWmNiezNsMg
-YKKCaGPYwueZeIMr9aIYpoEV3xBPs8eu3XX06RwPW7fgCkMt7/nPwx0lQnCEYkqm
-d5C/3/m1hSGXCMH2+RM6XK/izYdaHiQHmABfJdKuQGRyYSaJqj35cXAdmp654Qg8
-mMFy1noHfPIHlKGdJJ0O3bVgID9onoi295fTTjcH+VUERhng+MzjmIGWwt+YrpI5
-vl/6DPczsFQf4dwW8FJ8ihcnDiIlpg==
-=7Osp
------END PGP SIGNATURE-----
-
---Sig_/YNrivWfIN=a+2Ba/Bz4Lg7l--
