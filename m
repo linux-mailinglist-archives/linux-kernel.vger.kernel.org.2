@@ -2,117 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B80842ABD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B0842ABDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbhJLS1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:27:07 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:58896 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbhJLS1F (ORCPT
+        id S233439AbhJLS1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:27:45 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41638 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232880AbhJLS1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:27:05 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19CIOmlx112024;
-        Tue, 12 Oct 2021 13:24:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1634063088;
-        bh=N8ljt3/BRUcAh5ZZnY7/+EAddTqC56LKEo+230v3DP8=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=dvtybZxnEXfOAPFzHahAi4h+49ZWfumNFXU4FfgWU5/ya8OHh0FAXqWq6Lj7ZRaLI
-         aOTWQQ/ceuCKExKgIwxJQQmr9FEGvixLl94Gf52P3H9g3ezlKTjAo2BboszUhznQC1
-         paqLjAiobQemQDLEA5THjNKbPMeaWHtDcbwh0TYA=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19CIOmDr054576
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 Oct 2021 13:24:48 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 12
- Oct 2021 13:24:48 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 12 Oct 2021 13:24:48 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19CIOk0D038630;
-        Tue, 12 Oct 2021 13:24:47 -0500
-Date:   Tue, 12 Oct 2021 23:54:46 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Sven Eckelmann <sven@narfation.org>
-CC:     <openwrt-devel@lists.openwrt.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Adrian Schmutzler <dev@schmutzler.it>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        <linux-mtd@lists.infradead.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: nvmem: Defining cells on mtd created by mtdparts
-Message-ID: <20211012182444.qrn3lzp7vukklwlx@ti.com>
-References: <18728084.NGlc0Rocea@sven-desktop>
- <14722734.oMan5NXi5u@sven-desktop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+        Tue, 12 Oct 2021 14:27:44 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19CHfnlW005523;
+        Tue, 12 Oct 2021 14:25:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=HjljicUc8K4UWNb9V2Ad2P6lDN0azjF8+m9yoIs2cXc=;
+ b=YSun5YxscLaQtZFHc5+VakSZ97dWSB6oAgqK+VbzofmN/1DrcR4ngbLuoDdBKpnWpYrs
+ yI2epWEL2Ua989Q7tc2Kz4OvxuKxEeBUW1bbfHWSHIs4TvNR55qLvXLH+Vfd5fyNKpro
+ R7aPsfSz8hJ/WoWzyatxmZ85rziA93VTiEDdHF7cB1h4Je97irtPRPb9axFqB4l1nLF+
+ iLcsd6IiyFgS7l3eOVPX2a91GUyv6cMCfrjunZ2UpSw6bNgSaCOg5vtf+y9NFYWyYus7
+ Q/DouPBxSmpwzHgoYWCB5Oeu1Cc/YggM1Z196IcdXEeV+NUm/V8CEvrNzWhZprxe107r ZA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bnf018vkk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 14:25:20 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19CHh6h0008318;
+        Tue, 12 Oct 2021 14:25:20 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bnf018vk1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 14:25:20 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19CINPnG015496;
+        Tue, 12 Oct 2021 18:25:18 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3bk2qa3jgs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 18:25:18 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19CIJeEs64487816
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 18:19:40 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 342ED4C058;
+        Tue, 12 Oct 2021 18:25:16 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D60924C044;
+        Tue, 12 Oct 2021 18:25:15 +0000 (GMT)
+Received: from osiris (unknown [9.145.95.158])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 12 Oct 2021 18:25:15 +0000 (GMT)
+Date:   Tue, 12 Oct 2021 20:25:14 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] s390: DYNAMIC_FTRACE_WITH_DIRECT_CALL support
+Message-ID: <YWXTCm2S8WFIZKbh@osiris>
+References: <20211012133802.2460757-1-hca@linux.ibm.com>
+ <20211012094852.7f6a59b8@gandalf.local.home>
+ <YWWithSCGThguq7s@osiris>
+ <YWXANRbkPIE3HtOE@krava>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <14722734.oMan5NXi5u@sven-desktop>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <YWXANRbkPIE3HtOE@krava>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: wXpCcBTUryJED5_ym5X2ycw3TaGgK5Az
+X-Proofpoint-ORIG-GUID: fGjxMn0CqYkSsvc_NxiDFum5QzUXB1kD
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-12_04,2021-10-12_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ phishscore=0 mlxlogscore=870 malwarescore=0 lowpriorityscore=0
+ adultscore=0 priorityscore=1501 suspectscore=0 spamscore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110120097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sven,
-
-On 11/10/21 09:06AM, Sven Eckelmann wrote:
-> On Sunday, 10 October 2021 14:53:13 CEST Sven Eckelmann wrote:
-> [...]
-> > Since there are most likely more devices out there which use mtdparts, I would 
-> > guess that there might already be a strategy out there which can be used to 
-> > define the nvmem-provider for mtdparts defined partitions. At least I saw that 
-> > Bartosz Golaszewski added all the mtd devices automatically as nvmem provider 
-> > in c4dfa25ab307 ("mtd: add support for reading MTD devices via the nvmem 
-> > API"). So there might also be something for nvmem-cells to find the correct 
-> > mtd instead of relying on the fixed-partitions registration + of_node (which 
-> > doesn't exist because it comes from mtdparts and not devicetree).
-
-I have been wanting to fix this problem for a while but just never got 
-around to it. I was thinking about either extending the mtdparts syntax 
-to maybe add nvmem cell information in there or adding a separate 
-cmdline argument that complements mtdparts with nvmem cell info. Dunno 
-if either of these would work well though...
-
+On Tue, Oct 12, 2021 at 07:04:53PM +0200, Jiri Olsa wrote:
+> > > See here:
+> > > 
+> > >   https://lore.kernel.org/all/20211008091336.33616-1-jolsa@kernel.org/
+> > 
+> > I applied Jiri's patch set and the newly added selftest passes.
 > 
-> Ansuel Smith just proposed in OpenWrt [1] a workaround. It basically adds a 
-> minimal fixed-partitions parser to the mtd cmdlinepart parser (responsible for 
-> the mtdparts=) that tries to find the matching (size + offset) fixed-partition 
-> from the devicetree. The code in mtd_device_parse_register
-> (add_mtd_partitions -> add_mtd_device -> mtd_nvmem_add) will then 
-> automatically take care of the rest.
+> nice, could I have your Tested-by? ;-)
 
-I don't quite see how this helps. You say that some devices don't have a 
-device tree at all so how would you even match the fixed partition? And 
-this of course doesn't solve the problem where you might want nvmem 
-cells with a partition layout that is different from the one in device 
-tree.
+Well, now I added also the missing pieces to ftrace-direct-multi
+sample module and when loading that and looking into
+/sys/kernel/debug/tracing/trace it looks like "my_direct_func" gets
+some random junk as parameter and nothing that could count as "ip".
 
-I unfortunately don't really have any answers for this at this point, 
-but maybe I can figure something out in the future...
-
-> 
-> Kind regards,
-> 	Sven
-> 
-> [1] https://github.com/openwrt/openwrt/pull/4664#issuecomment-939567963
-
-
-
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Will look into that, probably tomorrow.
