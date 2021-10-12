@@ -2,148 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33468429A4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 02:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F395429A50
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 02:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbhJLAO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 20:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbhJLAO4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 20:14:56 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAE7C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 17:12:55 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id n65so42715192ybb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 17:12:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5Xa7WZvDaaI+8DWcjuNvPs4flE1gI9QC13fmDzSq2tU=;
-        b=Feibu0llNNPqA/JWC/XofUsvREaq7pXBCsp8qRnUM/dt6vMZL2ImS9k9Mt4fKu+Yu3
-         xlDI2P48zmC0OKuGTDY7+lM7WW7QWIR/rnNMip/DXUQ8oilsQvmZRuSK38Em+PNP4FrP
-         Lp4ajVBHY9elc6+aplbIa+IZ6FnjfISFFcWLzF4AcgT9b7s7P1gq9Wscs7/kObw37Duu
-         rfb3PYOx4Y/U2HArdr6/2+pSgX77SJfa41nvfHcy2qWUmgkDp2PVeQgwXEb5wq27mUjR
-         Up9gWsjG2qAKxZ2YW3SSOjY13nqFPfDr5FtlkS6jCGwBr+L8D+Bq7GkH7MQzdDhKTW1f
-         +5bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5Xa7WZvDaaI+8DWcjuNvPs4flE1gI9QC13fmDzSq2tU=;
-        b=ep9e0h0HqX0nQSUQdxFkVwPP5KmafvjSagO/y7kpUBXSn0vxFEgPVt4go/UTX2awkQ
-         gjBmY73uVJE+08tMuT8xaKtZItTpoOJQaF27xz36acEKlFg2+lC83fPOG1m5mdy7ZPZF
-         Ma7xrkVAsmz/xk7arv+nqNP7CCG/WGfRcstILSAPOrxicwrJVbnFwo7MMwQd2+SyuS/h
-         amARKeBJHkUmJcbQJVMsGQVeaWHCYPkQUkmm+f3iSDc7U7Xu6nT5A2nqAxBarT+fHjbN
-         5Zzablh9Dgej3qctZcHVPtofBpFDOEu3Jz+KaTGQM9DNIIqkw65gn8X62kZMb08DJUDT
-         PlAA==
-X-Gm-Message-State: AOAM5308lwThHHNK5kH3WSS5ajl9hdti8JlyGK3J1dLnJNj+5jinGveR
-        GYcObTu84u7TYxgAz0psDhKa5V12DnrsOg3pL6Zk/Q==
-X-Google-Smtp-Source: ABdhPJwf0vVo3cqcG7ldVcs7h2QPlNnInE5RAG+nWnZGrJmuEvFxYSliDKR3wp5F30vmeVOmIhGLyrszKk69yKwQDN8=
-X-Received: by 2002:a25:1145:: with SMTP id 66mr25527463ybr.354.1633997574590;
- Mon, 11 Oct 2021 17:12:54 -0700 (PDT)
+        id S233148AbhJLAPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 20:15:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231352AbhJLAPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 20:15:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88FE060EE9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:13:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633997614;
+        bh=OXUvi6G050AJQ4OPBek0ufw7ZKzRxTQhHX/0FYRiCE8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Q4UGSzvjtHyHLu68/g1K/x33KNDmpnLBws9RDs38WRclHkjTS2eXTjUQobHqxsZz5
+         XM/G1BYUiNJZ/BT734m29NFQFGzFXy7mrx6mMkOinz/a0ns30M5jxUppddo6Tr3Ueg
+         kDfXJghO5wfm5cfqUCAhextUwZIMBqPzGV6crlIWf4Gvgk1O/4cHHqAtvYMJpJd5bv
+         0swnGclMpgVPdoVN26pC1p50IML2YtHe6ZiRDbwLKm3vHzBKVW0RwN+YQXsSno9EeN
+         LtKWWPmOcpOTNp2IzPQht/gsYxYEf+e715BXi/Sqr55fMoIjGPRN1d304snEK6iwWG
+         bqd3Eu9KQuRSg==
+Received: by mail-ed1-f52.google.com with SMTP id ec8so24297544edb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 17:13:34 -0700 (PDT)
+X-Gm-Message-State: AOAM532MO6xh0HE/Aj5an9W/jxqBDwGRp29vGVcN9fOm5I9DIGDr9aWd
+        F9QUZiyWQwH65E4TU5MHkmH5ulz57/CgXGwkfw==
+X-Google-Smtp-Source: ABdhPJy4tjjmTrFlejaCRoODEcML/sZ2dFjPaUPpY/JaPn4e9sT6cT9XzsRs7SGjmICTqvgKEJcCe3ia86anOYl+97Y=
+X-Received: by 2002:a17:906:f85b:: with SMTP id ks27mr30575894ejb.430.1633997612955;
+ Mon, 11 Oct 2021 17:13:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211008000825.1364224-1-joshdon@google.com> <20211009155435.GW174703@worktop.programming.kicks-ass.net>
-In-Reply-To: <20211009155435.GW174703@worktop.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Mon, 11 Oct 2021 17:12:43 -0700
-Message-ID: <CABk29Nu6F4__ryF5p0En--Ze6CCev1Jy81W=LkTYaacf-YLkFg@mail.gmail.com>
-Subject: Re: [PATCH] sched/core: forced idle accounting
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineethrp@gmail.com>,
-        Hao Luo <haoluo@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20211007235310.14626-1-chunkuang.hu@kernel.org> <CAFqH_51hO2efxbQkkbzNHSk92zOZGeFJBu4Ocijk_cpxFDJ2fw@mail.gmail.com>
+In-Reply-To: <CAFqH_51hO2efxbQkkbzNHSk92zOZGeFJBu4Ocijk_cpxFDJ2fw@mail.gmail.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 12 Oct 2021 08:13:21 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8L_Pd+EmPVw5yQeZPzLVPkJM681y_uQmCbZ79tfF92AA@mail.gmail.com>
+Message-ID: <CAAOTY_8L_Pd+EmPVw5yQeZPzLVPkJM681y_uQmCbZ79tfF92AA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] Revert series "CMDQ refinement of Mediatek DRM driver"
+To:     Enric Balletbo Serra <eballetbo@gmail.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 9, 2021 at 8:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
+Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=
+=888=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=889:33=E5=AF=AB=E9=81=93=
+=EF=BC=9A
 >
-> On Thu, Oct 07, 2021 at 05:08:25PM -0700, Josh Don wrote:
-> > Adds accounting for "forced idle" time, which is time where a cookie'd
-> > task forces its SMT sibling to idle, despite the presence of runnable
-> > tasks.
+> Hi Chun-Kuang,
+>
+> Thank you to take time to send this, for full series
+>
+> Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>
+> Display is now working again.
+
+Applied to mediatek-drm-fixes [1].
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-fixes
+
+Regards,
+Chun-Kuang.
+
+>
+> Thanks,
+>   Enric
+>
+>
+> Missatge de Chun-Kuang Hu <chunkuang.hu@kernel.org> del dia dv., 8
+> d=E2=80=99oct. 2021 a les 1:53:
 > >
-> > Forced idle time is one means to measure the cost of enabling core
-> > scheduling (ie. the capacity lost due to the need to force idle).
->
-> It seems an excessive amount of code for what it says to do.
-
-I think I can cut some of that down by simplifying the SMT>2 case :)
-
->
-> > +     smt_count = cpumask_weight(smt_mask);
->
-> That's a fairly expensive operation to find a number that's going the be
-> to same over and over and over...
-
-Per Tao's suggestion, the nr_running and nr_forced_idle can be
-computed and cached in pick(). Then there won't be any extra overhead
-here, other than a potential division when SMT>2.
-
-> > +     if (smt_count > 2) {
-> > +             unsigned int nr_forced_idle = 0, nr_running = 0;
-> > +
-> > +             for_each_cpu(i, smt_mask) {
-> > +                     rq_i = cpu_rq(i);
-> > +                     p = rq_i->core_pick ?: rq_i->curr;
-> > +
-> > +                     if (p != rq_i->idle)
-> > +                             nr_running++;
-> > +                     else if (rq_i->nr_running)
-> > +                             nr_forced_idle++;
-> > +             }
-> > +
-> > +             if (WARN_ON_ONCE(!nr_running)) {
-> > +                     /* can't be forced idle without a running task */
-> > +             } else {
-> > +                     delta *= nr_forced_idle;
-> > +                     delta /= nr_running;
-> > +             }
->
-> Now the comment sayeth:
->
-> > +     /*
-> > +      * For larger SMT configurations, we need to scale the charged
-> > +      * forced idle amount since there can be more than one forced idle
-> > +      * sibling and more than one running cookied task.
-> > +      */
->
-> But why?
-
-We scale by the number of cpus actually forced idle, since we don't
-want to falsely over or under charge forced idle time (defined
-strictly as time where we have a runnable task but idle the cpu). The
-more important scaling here though is the division over the number of
-running entities. This is done so that the aggregate amount of forced
-idle over some group of threads makes sense. Ie if we have a cpu with
-SMT8, and a group of 7 threads sharing a cookie, we don't want to
-accrue 7 units of forced idle time per unit time while the 8th SMT is
-forced idle.
-
-> > +     }
-> > +
-> > +     for_each_cpu(i, smt_mask) {
-> > +             rq_i = cpu_rq(i);
-> > +             p = rq_i->core_pick ?: rq_i->curr;
-> > +
-> > +             if (!p->core_cookie)
-> > +                     continue;
-> > +
-> > +             p->core_forceidle_sum += delta;
-> > +
-> > +             /* Optimize for common case. */
-> > +             if (smt_count == 2)
-> > +                     break;
-> > +     }
-> > +}
+> > Commit c1ec54b7b5af
+> > ("drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb")
+> > would cause numerous mtk cmdq mailbox driver warning:
+> >
+> > WARNING: CPU: 0 PID: 0 at drivers/mailbox/mtk-cmdq-mailbox.c:198
+> > cmdq_task_exec_done+0xb8/0xe0
+> >
+> > So revert that patch and all the patches depend on that patch.
+> >
+> > Chun-Kuang Hu (5):
+> >   Revert "drm/mediatek: Clear pending flag when cmdq packet is done"
+> >   Revert "drm/mediatek: Add cmdq_handle in mtk_crtc"
+> >   Revert "drm/mediatek: Detect CMDQ execution timeout"
+> >   Revert "drm/mediatek: Remove struct cmdq_client"
+> >   Revert "drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb=
+"
+> >
+> >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 157 ++++--------------------
+> >  1 file changed, 24 insertions(+), 133 deletions(-)
+> >
+> > --
+> > 2.25.1
+> >
