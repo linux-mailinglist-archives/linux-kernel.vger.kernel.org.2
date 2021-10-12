@@ -2,298 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571DE42A0E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C672142A0E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235587AbhJLJVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:21:20 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:56116
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235494AbhJLJVT (ORCPT
+        id S235418AbhJLJXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:23:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39347 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235230AbhJLJXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:21:19 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id F2E8F3FFF1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:19:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634030357;
-        bh=r5y5/vVnc4K5UB1TBSz+7rG5tu9PmtPkhFbjFAsJwpg=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=G1GyQ3sOTkG1Zfk+/lK0GOEH1peCoEC/7WgxxxlllgvTdAyNfyQZpuWh4Z7tWzUgt
-         KafitgFlOblGI5u6fcQXkX7yEa+/jG4o5vwCe0zN1oBNd19UC5+HgpOVZqWzVcEFoF
-         LRCN/UXBS/VIOwXvvyieKz9tImP0X7USwwAIzrrPt/l05Ye2eJewb6DpkgOrRQboH6
-         tatmZcKcOERIU++XXfmyDAib3neqJ0aJbbuqo6xlNodDdPmsESHnaUCPd7bEdFX6Ke
-         F2mwixlIH8ZbZHAg04ngMiFc/bpvBpmn1cWUqcOnW8Y9n9eRwV4Cr02LvQEBZkNQly
-         j3dVdW13d+1FA==
-Received: by mail-lf1-f70.google.com with SMTP id bp4-20020a056512158400b003fd96a37f3bso2326118lfb.21
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:19:16 -0700 (PDT)
+        Tue, 12 Oct 2021 05:23:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634030457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NQvvX7DYevVvifiKrUIFSDiboyiIsSpy6G0Ys71FCOg=;
+        b=c/qUJUm23gubkCjkKaJTg0BJoNmbmO/zqoqec20IGXYP3x5gtxnGqgbdn1WPt1jjsOy3nJ
+        xoxz4yCVncxZ/nJtPA6Z2MFMYlP6PvogEXXR1pSwklIcT1w2d3SBZOGkPxL16tBOggIz4r
+        r9TWaDid2L5PdXKPWrVuQIkrnWu4kIM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-1IHrZk8TORG6CBfObcz0nQ-1; Tue, 12 Oct 2021 05:20:56 -0400
+X-MC-Unique: 1IHrZk8TORG6CBfObcz0nQ-1
+Received: by mail-wr1-f72.google.com with SMTP id r25-20020adfab59000000b001609ddd5579so15256590wrc.21
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:20:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=r5y5/vVnc4K5UB1TBSz+7rG5tu9PmtPkhFbjFAsJwpg=;
-        b=C0DaI4hNTFCJpACAANXiUpnJti4bT4DSY8KP/qLEHO3Q5mngBcXQD0h/aqRHssm6h9
-         bwKEBsm2yoMsimbpMOACwTzjtZyy5dlkkjVy7ZKMhyF/a2CLOpz692dc0ki2KNC33iVR
-         TjxFGAxNmlWkhCjDqrNc/cHxCvvu9V5XPS46mCVBlwhpoNqyKcP9oN5UO1zMCHnzJt8Y
-         vkPHEUHDOdaux4+PofYb1/KjytQxlBdB1aUpYpQqcoUBhPs7VQoURHqJ1kD4OUn7CUHt
-         qj612w9Qa/I8UyolkKOnzzc9VX+yuXXWQtUI58y3n7ZV2FKgG7mVaNtd7p8qR5gnlhHk
-         w+Mg==
-X-Gm-Message-State: AOAM53301Zws/QJe8so7PRGIseemG0TeKbO979sYA+EeKS5JweLjGe5A
-        /rQ2FJdw4ROjgIzj4mPp3g6I5Y6Cl283EGKBpLDl/e4aIa+n9Mk16PThZ8pF3r2wlAiwFJ0EMs/
-        X5v4j8nEEMkerp/ogaqPuIE5kr2y/bd4ZDxf+cOhTNw==
-X-Received: by 2002:ac2:4c48:: with SMTP id o8mr27115421lfk.286.1634030356149;
-        Tue, 12 Oct 2021 02:19:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzq4pSLuFbcE7Kzfui9ayq9HU6yRKFDzy2Lesl+hVFgdjVy7SmfrAycDlAL4d25TBxgXwLBng==
-X-Received: by 2002:ac2:4c48:: with SMTP id o8mr27115394lfk.286.1634030355941;
-        Tue, 12 Oct 2021 02:19:15 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id s3sm567364lfs.175.2021.10.12.02.19.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 02:19:15 -0700 (PDT)
-To:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211011165707.138157-1-marcan@marcan.st>
- <20211011165707.138157-7-marcan@marcan.st>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [RFC PATCH 6/9] memory: apple: Add apple-mcc driver to manage MCC
- perf in Apple SoCs
-Message-ID: <a9f6898d-bd76-b94e-52fc-98e9da1a04bd@canonical.com>
-Date:   Tue, 12 Oct 2021 11:19:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=NQvvX7DYevVvifiKrUIFSDiboyiIsSpy6G0Ys71FCOg=;
+        b=RXCDeYfadP0pk+T0V2EdGT+MuUaL4ZKAaiQw1UzJlyFONDHHLtUQm5a9vDJLIE2s4J
+         jCpFEfWCCD63gDh78QyrqVSO3Fdz+vlXxwujHgFRP/1MN38yO6idyZGWiC0zQuZ/T01C
+         IaPg3kahy9Ly6ptV5AbYSar+q4cTQ5VnIjy25BR6R/ni0ZODzGv4wt02ptMP5R27Vb6V
+         HblDxPLPooOE4RkxzrDZNndrOFAcz2GCgINAvkFX64y8no1zLzpR4CZzobkgI2LaNNSN
+         Ltm6xJVDxrPvkOS3ZF/lAvF9jW+6aUbRdpm0R7nEgL94tttmyT0+fJEQ09o9/hC58zHT
+         49Zg==
+X-Gm-Message-State: AOAM531iEK5iqjZR0jmMahb8z/vra/Dz9FvLeWBh3UvB+9XJ+tS9P+2W
+        bHj4Zb3bllpKQP4rm+zVlmuKD0zeqbjTnZW8MFnE+Poa3QdjJCIcQExI4Vm2tE/HuqeUEN6ACkc
+        i8yquIQjvni+UfB999lnp+Gy3
+X-Received: by 2002:a1c:a9d5:: with SMTP id s204mr4267010wme.193.1634030455617;
+        Tue, 12 Oct 2021 02:20:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywk9hzf7x2/zkP49ad7b+yMh+89MNX7bHIg+1V/CfDIKZ/l9tK1gZVUSfBDowQDZu+/gW3aA==
+X-Received: by 2002:a1c:a9d5:: with SMTP id s204mr4266983wme.193.1634030455431;
+        Tue, 12 Oct 2021 02:20:55 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-231-16.dyn.eolo.it. [146.241.231.16])
+        by smtp.gmail.com with ESMTPSA id p11sm2137819wmi.0.2021.10.12.02.20.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 02:20:55 -0700 (PDT)
+Message-ID: <b6441514ee17eb12934dad304854939308f5c4c1.camel@redhat.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in veth_xdp_rcv
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        syzbot <syzbot+67f89551088ea1a6850e@syzkaller.appspotmail.com>
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>
+Date:   Tue, 12 Oct 2021 11:20:53 +0200
+In-Reply-To: <20211011164747.303ffcd0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <000000000000c1524005cdeacc5f@google.com>
+         <20211011164747.303ffcd0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20211011165707.138157-7-marcan@marcan.st>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 18:57, Hector Martin wrote:
-> This driver binds to the memory controller hardware in Apple SoCs such
-> as the Apple M1, and provides a power domain that downstream devices can
-> use to change the performance state of the memory controller.
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  drivers/memory/Kconfig     |   9 +++
->  drivers/memory/Makefile    |   1 +
->  drivers/memory/apple-mcc.c | 130 +++++++++++++++++++++++++++++++++++++
->  3 files changed, 140 insertions(+)
->  create mode 100644 drivers/memory/apple-mcc.c
-> 
-> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-> index 72c0df129d5c..48ef3d563a1c 100644
-> --- a/drivers/memory/Kconfig
-> +++ b/drivers/memory/Kconfig
-> @@ -30,6 +30,15 @@ config ARM_PL172_MPMC
->  	  If you have an embedded system with an AMBA bus and a PL172
->  	  controller, say Y or M here.
->  
-> +config APPLE_MCC
-> +	tristate "Apple SoC MCC driver"
-> +	default y if ARCH_APPLE
-> +	select PM_GENERIC_DOMAINS
-> +	depends on ARCH_APPLE || COMPILE_TEST
-> +	help
-> +	  This driver manages performance tuning for the memory controller in
-> +	  Apple SoCs, such as the Apple M1.
-> +
->  config ATMEL_SDRAMC
->  	bool "Atmel (Multi-port DDR-)SDRAM Controller"
->  	default y if ARCH_AT91
-> diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
-> index bc7663ed1c25..947840cbd2d4 100644
-> --- a/drivers/memory/Makefile
-> +++ b/drivers/memory/Makefile
-> @@ -8,6 +8,7 @@ ifeq ($(CONFIG_DDR),y)
->  obj-$(CONFIG_OF)		+= of_memory.o
->  endif
->  obj-$(CONFIG_ARM_PL172_MPMC)	+= pl172.o
-> +obj-$(CONFIG_APPLE_MCC)		+= apple-mcc.o
->  obj-$(CONFIG_ATMEL_SDRAMC)	+= atmel-sdramc.o
->  obj-$(CONFIG_ATMEL_EBI)		+= atmel-ebi.o
->  obj-$(CONFIG_BRCMSTB_DPFE)	+= brcmstb_dpfe.o
-> diff --git a/drivers/memory/apple-mcc.c b/drivers/memory/apple-mcc.c
-> new file mode 100644
-> index 000000000000..55959f034b9a
-> --- /dev/null
-> +++ b/drivers/memory/apple-mcc.c
-> @@ -0,0 +1,130 @@
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
-> +/*
-> + * Apple SoC MCC memory controller performance control driver
-> + *
-> + * Copyright The Asahi Linux Contributors
+On Mon, 2021-10-11 at 16:47 -0700, Jakub Kicinski wrote:
+> CC: Paolo, Toke
 
-Copyright date?
+Thanks for the head-up! will look at this soon.
 
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_domain.h>
-> +#include <linux/pm_opp.h>
-> +
-> +#define APPLE_MCC_PERF_CONFIG1  0xdc4
-> +#define APPLE_MCC_PERF_CONFIG2  0xdbc
-> +#define APPLE_MCC_CHANNEL(x)	((x) * 0x40000)
-> +
-> +struct apple_mcc {
-> +	struct device *dev;
-> +	struct generic_pm_domain genpd;
-> +	void __iomem *reg_base;
-> +	u32 num_channels;
-> +};
-> +
-> +#define to_apple_mcc(_genpd) container_of(_genpd, struct apple_mcc, genpd)
-> +
-> +static int apple_mcc_set_performance_state(struct generic_pm_domain *genpd, unsigned int state)
-> +{
-> +	struct apple_mcc *mcc = to_apple_mcc(genpd);
-> +	struct dev_pm_opp *opp;
-> +	struct device_node *np;
-> +	u32 perf_config[2];
-> +	unsigned int i;
-> +
-> +	dev_dbg(mcc->dev, "switching to perf state %d\n", state);
-> +
-> +	opp = dev_pm_opp_find_level_exact(&mcc->genpd.dev, state);
-> +	if (IS_ERR(opp))
-> +		return PTR_ERR(opp);
-> +
-> +	np = dev_pm_opp_get_of_node(opp);
-> +	if (of_property_read_u32_array(np, "apple,memory-perf-config",
-> +		perf_config, ARRAY_SIZE(perf_config))) {
-> +		dev_err(mcc->dev, "missing apple,memory-perf-config property");
-> +		of_node_put(np);
-> +		return -EINVAL;
-> +	}
-> +	of_node_put(np);
-> +
-> +	for (i = 0; i < mcc->num_channels; i++) {
-> +		writel_relaxed(perf_config[0],
-> +			       mcc->reg_base + APPLE_MCC_CHANNEL(i) + APPLE_MCC_PERF_CONFIG1);
-> +		writel_relaxed(perf_config[1],
-> +			       mcc->reg_base + APPLE_MCC_CHANNEL(i) + APPLE_MCC_PERF_CONFIG2);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static unsigned int apple_mcc_opp_to_performance_state(struct generic_pm_domain *genpd,
-> +						       struct dev_pm_opp *opp)
-> +{
-> +	return dev_pm_opp_get_level(opp);
-> +}
-> +
-> +static int apple_mcc_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *node = dev->of_node;
+Cheers,
 
-By convention mostly we call the variable "np".
+Paolo
 
-> +	struct apple_mcc *mcc;
-> +	int ret;
-> +
-> +	mcc = devm_kzalloc(dev, sizeof(*mcc), GFP_KERNEL);
-> +	if (!mcc)
-> +		return -ENOMEM;
-> +
-> +	mcc->reg_base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(mcc->reg_base))
-> +		return PTR_ERR(mcc->reg_base);
-> +
-> +	if (of_property_read_u32(node, "apple,num-channels", &mcc->num_channels)) {
-
-Don't you have a limit of supported channels? It cannot be any uint32...
-
-> +		dev_err(dev, "missing apple,num-channels property\n");
-
-Use almost everywhere dev_err_probe - less code and you get error msg
-printed.
-
-> +		return -ENOENT;
-> +	}
-> +
-> +	mcc->dev = dev;
-> +	mcc->genpd.name = "apple-mcc-perf";
-> +	mcc->genpd.opp_to_performance_state = apple_mcc_opp_to_performance_state;
-> +	mcc->genpd.set_performance_state = apple_mcc_set_performance_state;
-> +
-> +	ret = pm_genpd_init(&mcc->genpd, NULL, false);
-> +	if (ret < 0) {
-> +		dev_err(dev, "pm_genpd_init failed\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = of_genpd_add_provider_simple_noclk(node, &mcc->genpd);
-> +	if (ret < 0) {
-> +		dev_err(dev, "of_genpd_add_provider_simple failed\n");
-> +		return ret;
-> +	}
-> +
-> +	dev_info(dev, "Apple MCC performance driver initialized\n");
-
-Please skip it, or at least make it a dev_dbg, you don't print any
-valuable information here.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id apple_mcc_of_match[] = {
-> +	{ .compatible = "apple,mcc" },
-> +	{}
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, apple_mcc_of_match);
-> +
-> +static struct platform_driver apple_mcc_driver = {
-> +	.probe = apple_mcc_probe,
-> +	.driver = {
-> +		.name = "apple-mcc",
-> +		.of_match_table = apple_mcc_of_match,
-> +	},
-> +};
-
-module_platform_driver() goes here.
-
-> +
-> +MODULE_AUTHOR("Hector Martin <marcan@marcan.st>");
-> +MODULE_DESCRIPTION("MCC memory controller performance tuning driver for Apple SoCs");
-> +MODULE_LICENSE("GPL v2");
-
-I think this will be "Dual MIT/GPL", based on your SPDX.
-
-> +
-> +module_platform_driver(apple_mcc_driver);
-> 
-
-
-Best regards,
-Krzysztof
