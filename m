@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC6F42AF7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 00:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF07E42AF89
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 00:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235733AbhJLWGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 18:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232260AbhJLWGT (ORCPT
+        id S235771AbhJLWMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 18:12:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33866 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229588AbhJLWMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 18:06:19 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5788AC061570;
-        Tue, 12 Oct 2021 15:04:17 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id g6so1747427ybb.3;
-        Tue, 12 Oct 2021 15:04:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=auG+UMx9zytYp9lINzhPZO9u/TFK5cE+R08OejH5B0w=;
-        b=ne7652o0LqsXxa1F1cgXnxgCK2bxwNWHDrsyhUBtlAmcbIV/AtPK8pJIgvmbUIbEaD
-         h92TyPmec2iTl0SXhH/vi63WZzRK7W9caxUYKHcMVdC227jK67QU7owKiG83zjMU3MBb
-         bb61mGP/yDMpyVAZSY0IJkRZEr5mk50g0hAEHr7RL+q8EBT1w+cNjzMVs2cIG0y5xbic
-         0W86qaLtxTeBPyMXA9tztIq7/maRwyqxexf/TqB2kPSdB0xbM9RVHUrOajFjEvlJyYQ0
-         dktD5Gp41bhoYKK2kIZbhi3WP5OQSlqIMuFHUEaAawTV36hlLtIqFepSObHS1+HC79YP
-         Ogiw==
+        Tue, 12 Oct 2021 18:12:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634076614;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ua5oJG0CdYheQ7ierae4aE9Z756sdeVCm8xh3uzk1vo=;
+        b=GPUpMRrOQo6VVie6L2crtdV6WIyYG/iefwRiFauhRJLjWsEOSzkxhOgbK03A1WXmSkrDb4
+        TcXCc+5Mr8fjNkQtIppvRh48NEN556bNS+btbJY8KrZs+AhHm4d6pmBSxfrJiNlEaSKrdS
+        vyLz5ywjs4gtv5/S4Wi5hmtqHFYDUJA=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-529-h2QyQMHkNFG5er6eNF498A-1; Tue, 12 Oct 2021 18:10:13 -0400
+X-MC-Unique: h2QyQMHkNFG5er6eNF498A-1
+Received: by mail-pl1-f199.google.com with SMTP id k1-20020a170902c40100b0013f47bac4d8so135635plk.14
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 15:10:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=auG+UMx9zytYp9lINzhPZO9u/TFK5cE+R08OejH5B0w=;
-        b=TgVVpCFeeQ/vQKCJOJ4iQ8J/rUKOflS5NOQ4+8PWCVLXWt5a8KXQjIE/5V5V89Wsnn
-         J7GckFl/P5kaxqpxoNsoGT645gB5zGXaX8gFpQqWQGhF7UiVQB6qw6G/Ln3vHyYSFC4I
-         cI1HKbLrGc3SVSlctH50+Y8QO/S6xE5GkMmF2T/QPZ/6DMsclhLXWaAyzMq3XAC/jcpd
-         BSnvKuZGF4QDLU88pfrDLNCjRh2+ecuDgexjMBavV6kN0mnE8Cj8nnqEwgihFI0YQ7SF
-         OmDAEUMM/35yLYPgaJmU7EIlzFpu3I1BEFnlVgNAuDpSoF1XsHjvtAz0y3an2NnWenwW
-         7SOg==
-X-Gm-Message-State: AOAM531zKIk+pDt4q7UKMdtOOIzAnkeKv9nRlj8MyJ1LC/TIc2YbDjTG
-        4f7kJMH0fUpMHRX9x3/QZd1fIooEkC+yIRiKW8k=
-X-Google-Smtp-Source: ABdhPJy122ifGFhlEjzoGnOh1Y838UQ+5VnA3gX7zYtFxeJ4IZzHKXhB7X/f+krIMq3PbEeKYpoBnJ7DKFa3wwIoKco=
-X-Received: by 2002:a25:9a81:: with SMTP id s1mr32001654ybo.230.1634076256610;
- Tue, 12 Oct 2021 15:04:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ua5oJG0CdYheQ7ierae4aE9Z756sdeVCm8xh3uzk1vo=;
+        b=caX0o8FD9b0ZqRfX26KFS23cCWdOAt+vIa4GOXaMWg7ikGNR+ekHOFZSvp3q1amkO8
+         8cbac0JRVIjQstDBQSFDl2ddwBqpFBhNIZoOV5ZznjfezlQM3HRc6VfZT+/frPe6zNbl
+         QyNUBm+L4p7P0KIKppL15N7mPbDiSUXolEYTPZq1OZ5PirsgXOIRXgbcRyBSLtFx2hm1
+         ebfWsvKvY8+qOs1SxMfaHdE0SIRZO4EMDx+FdxtfJUg4am7uFObIabOi7n4zev8Zy3Jm
+         RXlCfQtvkgF8tYfwfeaKyQCpeTzEckikgcHH4vJvNZpwLSPOI/jduwzdCEmcbLF04huG
+         oFlw==
+X-Gm-Message-State: AOAM531bmWstO6OXVg0CZNvGL5YuGJKsx7G/p62qe87ufUfHqTGIM7f6
+        5OLdDjjsEcuXN5iNTADZJ5sWBykmkwtVrY7s0TpNE64R33p2PnoOrdTeH2A9tGygPYfGtkBl24t
+        Eg6fGR8cgmXsgh0lRYum6nMSy
+X-Received: by 2002:aa7:8294:0:b0:44c:c0b:d94c with SMTP id s20-20020aa78294000000b0044c0c0bd94cmr34036402pfm.24.1634076612542;
+        Tue, 12 Oct 2021 15:10:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVcl7YM/k3v8LTKkEj6FzmcyKS70hDecSUEZ9AzemVvzccMcT6kL62psxDZo6c4AlO7y5zwg==
+X-Received: by 2002:aa7:8294:0:b0:44c:c0b:d94c with SMTP id s20-20020aa78294000000b0044c0c0bd94cmr34036372pfm.24.1634076612191;
+        Tue, 12 Oct 2021 15:10:12 -0700 (PDT)
+Received: from t490s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id z13sm11967179pfq.130.2021.10.12.15.10.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 15:10:11 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 06:10:02 +0800
+From:   Peter Xu <peterx@redhat.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+Message-ID: <YWYHukJIo8Ol2sHN@t490s>
+References: <20210930215311.240774-1-shy828301@gmail.com>
+ <20210930215311.240774-3-shy828301@gmail.com>
+ <YV4Dz3y4NXhtqd6V@t490s>
+ <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
+ <CAHbLzkqm_Os8TLXgbkL-oxQVsQqRbtmjdMdx0KxNke8mUF1mWA@mail.gmail.com>
+ <YWTc/n4r6CJdvPpt@t490s>
+ <YWTobPkBc3TDtMGd@t490s>
+ <CAHbLzkrOsNygu5x8vbMHedv+P3dEqOxOC6=O6ACSm1qKzmoCng@mail.gmail.com>
 MIME-Version: 1.0
-References: <4369779.LvFx2qVVIh@kreacher> <21245442.EfDdHjke4D@kreacher>
-In-Reply-To: <21245442.EfDdHjke4D@kreacher>
-From:   Ben Skeggs <skeggsb@gmail.com>
-Date:   Wed, 13 Oct 2021 08:04:05 +1000
-Message-ID: <CACAvsv4-MUEuoq0cb3mQ2PK3u8jnD7U2yPHVM++57X6QZEDX2w@mail.gmail.com>
-Subject: Re: [PATCH v1 2/7] nouveau: ACPI: Use the ACPI_COMPANION() macro directly
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        ML nouveau <nouveau@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkrOsNygu5x8vbMHedv+P3dEqOxOC6=O6ACSm1qKzmoCng@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 at 03:58, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> From: Rafael J. Wysocki <rafael@kernel.org>
->
-> The ACPI_HANDLE() macro is a wrapper arond the ACPI_COMPANION()
-> macro and the ACPI handle produced by the former comes from the
-> ACPI device object produced by the latter, so it is way more
-> straightforward to evaluate the latter directly instead of passing
-> the handle produced by the former to acpi_bus_get_device().
->
-> Modify nouveau_acpi_edid() accordingly (no intentional functional
-> impact).
->
-> Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
-Reviewed-by: Ben Skeggs <bskeggs@redhat.com>
+On Tue, Oct 12, 2021 at 11:02:09AM -0700, Yang Shi wrote:
+> On Mon, Oct 11, 2021 at 6:44 PM Peter Xu <peterx@redhat.com> wrote:
+> >
+> > On Mon, Oct 11, 2021 at 08:55:26PM -0400, Peter Xu wrote:
+> > > Another thing is I noticed soft_offline_in_use_page() will still ignore file
+> > > backed split.  I'm not sure whether it means we'd better also handle that case
+> > > as well, so shmem thp can be split there too?
+> >
+> > Please ignore this paragraph - I somehow read "!PageHuge(page)" as
+> > "PageAnon(page)"...  So I think patch 5 handles soft offline too.
+> 
+> Yes, exactly. And even though the split is failed (or file THP didn't
+> get split before patch 5/5), soft offline would just return -EBUSY
+> instead of calling __soft_offline_page->page_handle_poison(). So
+> page_handle_poison() should not see THP at all.
 
-> ---
->  drivers/gpu/drm/nouveau/nouveau_acpi.c |    9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
->
-> Index: linux-pm/drivers/gpu/drm/nouveau/nouveau_acpi.c
-> ===================================================================
-> --- linux-pm.orig/drivers/gpu/drm/nouveau/nouveau_acpi.c
-> +++ linux-pm/drivers/gpu/drm/nouveau/nouveau_acpi.c
-> @@ -364,7 +364,6 @@ void *
->  nouveau_acpi_edid(struct drm_device *dev, struct drm_connector *connector)
->  {
->         struct acpi_device *acpidev;
-> -       acpi_handle handle;
->         int type, ret;
->         void *edid;
->
-> @@ -377,12 +376,8 @@ nouveau_acpi_edid(struct drm_device *dev
->                 return NULL;
->         }
->
-> -       handle = ACPI_HANDLE(dev->dev);
-> -       if (!handle)
-> -               return NULL;
-> -
-> -       ret = acpi_bus_get_device(handle, &acpidev);
-> -       if (ret)
-> +       acpidev = ACPI_COMPANION(dev->dev);
-> +       if (!acpidev)
->                 return NULL;
->
->         ret = acpi_video_get_edid(acpidev, type, -1, &edid);
->
->
->
+I see, so I'm trying to summarize myself on what I see now with the new logic..
+
+I think the offline code handles hwpoison differently as it sets PageHWPoison
+at the end of the process, IOW if anything failed during the offline process
+the hwpoison bit is not set.
+
+That's different from how the memory failure path is handling this, as in that
+case the hwpoison bit on the subpage is set firstly, e.g. before split thp.  I
+believe that's also why memory failure requires the extra sub-page-hwpoison bit
+while offline code shouldn't need to: because for soft offline split happens
+before setting hwpoison so we just won't ever see a "poisoned file thp", while
+for memory failure it could happen, and the sub-page-hwpoison will be a temp
+bit anyway only exist for a very short period right after we set hwpoison on
+the small page but before we split the thp.
+
+Am I right above?
+
+I feel like __soft_offline_page() still has some code that assumes "thp can be
+there", e.g. iiuc after your change to allow file thp split, "hpage" will
+always be the same as "page" then in that function, and isolate_page() does not
+need to pass in a pagelist pointer too as it'll always be handling a small page
+anyway.  But maybe they're fine to be there for now as they'll just work as
+before, I think, so just raise it up.
+
+-- 
+Peter Xu
+
