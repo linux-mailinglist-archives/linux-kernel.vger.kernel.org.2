@@ -2,166 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C234A429F13
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DC7429F19
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234455AbhJLH6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:58:01 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:33617 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234071AbhJLH6A (ORCPT
+        id S234499AbhJLH7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:59:00 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:32624 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234071AbhJLH64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:58:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634025359; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=96X9VuZYresXMYy8CSPQup19Qrt5vZ+1GegB/kjwYDg=; b=PiJYNvLQffEOn+YiWKkYTjpd7yXV1l5T1DwiTaVai5K8KbNeSyuwmzFc0ZS8daioytkW0IB2
- dl48keHjuruz2QhDeQhQv4Uh9LjP4+X6JMNJR5G16vEx36kkmHwbA2XARPFyfheWxrQvyrk8
- LBRrwCRW1P0BFjUUuNwaIsLZe+o=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 61653f8eff0285fb0a3e0279 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Oct 2021 07:55:58
- GMT
-Sender: tjiang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AA4CCC4360C; Tue, 12 Oct 2021 07:55:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: tjiang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B75F1C4338F;
-        Tue, 12 Oct 2021 07:55:56 +0000 (UTC)
+        Tue, 12 Oct 2021 03:58:56 -0400
+X-UUID: b30b6fa905654b719d555b87d7ddde5f-20211012
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=42MbtHaE4DAIiMKFHplZ1S3Y2/ONK7RbeH5lUTmtMs0=;
+        b=RjCZeK0+NnCxJC/Yb5ee9eDnUp6w78qpCLyS2N9etm6bu3Y9XWu0v602eII8DhfVoo1BgprOt28EUtLWG1xy6tpRpGNc0HYjsYzvcbJHDGOyizTjZuanhfQWjlV/xTmU7XFen7WtSvEA1AQc4agLrL4lsC4cF79obkEI4PEdl4c=;
+X-UUID: b30b6fa905654b719d555b87d7ddde5f-20211012
+Received: from mtkcas36.mediatek.inc [(172.27.5.253)] by mailgw02.mediatek.com
+        (envelope-from <mingchuang.qiao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 15761383; Tue, 12 Oct 2021 15:56:52 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 12 Oct
+ 2021 15:56:49 +0800
+Received: from mcddlt001.gcn.mediatek.inc (10.19.240.15) by
+ MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Tue, 12 Oct 2021 15:56:48 +0800
+From:   <mingchuang.qiao@mediatek.com>
+To:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <mingchuang.qiao@mediatek.com>, <haijun.liu@mediatek.com>,
+        <lambert.wang@mediatek.com>, <kerun.zhu@mediatek.com>,
+        <rjw@rjwysocki.net>, <alex.williamson@redhat.com>,
+        <utkarsh.h.patel@intel.com>, <mika.westerberg@linux.intel.com>,
+        <rajatja@google.com>
+Subject: [v5] PCI: Avoid unsync of LTR mechanism configuration
+Date:   Tue, 12 Oct 2021 15:56:14 +0800
+Message-ID: <20211012075614.54576-1-mingchuang.qiao@mediatek.com>
+X-Mailer: git-send-email 2.17.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 12 Oct 2021 15:55:56 +0800
-From:   tjiang@codeaurora.org
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
-Subject: [PATCH v2] Bluetooth: btusb: Add support for variant WCN6855 by using
-  different nvm
-Message-ID: <81add00a4a038008e9f734c5f5e5b712@codeaurora.org>
-X-Sender: tjiang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 641A7F88397021256AFDB3C2C859A85B7615E10DB2369B6D7FA859C9FBF72CAB2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the RF performance of wcn6855 soc chip from different foundries will be
-difference, so we should use different nvm to configure them.
+RnJvbTogTWluZ2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KDQpJ
+biBidXMgc2NhbiBmbG93LCB0aGUgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgb2YgREVWQ1RM
+MiByZWdpc3RlciBpcw0KY29uZmlndXJlZCBpbiBwY2lfY29uZmlndXJlX2x0cigpLiBJZiBkZXZp
+Y2UgYW5kIGJyaWRnZSBib3RoIHN1cHBvcnQgTFRSDQptZWNoYW5pc20sIHRoZSAiTFRSIE1lY2hh
+bmlzbSBFbmFibGUiIGJpdCBvZiBkZXZpY2UgYW5kIGJyaWRnZSB3aWxsIGJlDQplbmFibGVkIGlu
+IERFVkNUTDIgcmVnaXN0ZXIuIEFuZCBwY2lfZGV2LT5sdHJfcGF0aCB3aWxsIGJlIHNldCBhcyAx
+Lg0KDQpJZiBQQ0llIGxpbmsgZ29lcyBkb3duLCB0aGUgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBi
+aXQgb2YgYnJpZGdlIHdpbGwgDQpjaGFuZ2UgdG8gMCBhY2NvcmRpbmcgdG8gUENJZSByNS4wLCBz
+ZWMgNy41LjMuMTYuIEhvd2V2ZXIsIHRoZSAtPmx0cl9wYXRoIA0Kb2YgYnJpZGdlIGlzIHN0aWxs
+IHNldC4NCg0KRm9sbG93aW5nIHNob3dzIHR3byBzY2VuYXJpb3Mgb2YgdGhpcyBMVFIgaXNzdWU6
+DQoNCi1zY2VuYXJpbyBvZiBkZXZpY2UgcmVzdG9yZQ0KIC0tIGJyaWRnZSBMVFIgZW5hYmxlZA0K
+IC0tIGRldmljZSBMVFIgZW5hYmxlZA0KIC0tIHJlc2V0IGRldmljZQ0KIC0tIGxpbmsgZ29lcyBk
+b3duLCBicmlkZ2UgZGlzYWJsZXMgTFRSDQogLS0gbGluayBjb21lcyBiYWNrIHVwLCBMVFIgZGlz
+YWJsZWQgaW4gYm90aCBicmlkZ2UgYW5kIGRldmljZQ0KIC0tIHJlc3RvcmUgZGV2aWNlIHN0YXRl
+LCBpbmNsdWRpbmcgTFRSIGVuYWJsZQ0KIC0tIGRldmljZSBzZW5kcyBMVFIgbWVzc2FnZQ0KIC0t
+IGJyaWRnZSByZXBvcnRzIFVuc3VwcG9ydGVkIFJlcXVlc3QNCg0KLXNjZW5hcmlvIG9mIGRldmlj
+ZSBob3QtcmVtb3ZlL2hvdC1hZGQNCiAtLSBicmlkZ2UgTFRSIGVuYWJsZWQNCiAtLSBkZXZpY2Ug
+TFRSIGVuYWJsZWQNCiAtLSBob3QtcmVtb3ZlIGRldmljZQ0KIC0tIGxpbmsgZ29lcyBkb3duLCBi
+cmlkZ2UgZGlzYWJsZXMgTFRSDQogLS0gaG90LWFkZCBkZXZpY2UgYW5kIGxpbmsgY29tZXMgYmFj
+ayB1cA0KIC0tIHNjYW4gZGV2aWNlLCBzZXQgTFRSIGVuYWJsZSBiaXQgb2YgZGV2aWNlDQogLS0g
+ZGV2aWNlIHNlbmRzIExUUiBtZXNzYWdlDQogLS0gYnJpZGdlIHJlcG9ydHMgVW5zdXBwb3J0ZWQg
+UmVxdWVzdA0KDQpUaGlzIGlzc3VlIHdhcyBub3RpY2VkIGJ5IEFFUiBsb2cgYXMgZm9sbG93aW5n
+IHNob3dzOg0KcGNpZXBvcnQgMDAwMDowMDoxZC4wOiBBRVI6IFVuY29ycmVjdGVkIChOb24tRmF0
+YWwpIGVycm9yIHJlY2VpdmVkOiBpZD0wMGU4DQpwY2llcG9ydCAwMDAwOjAwOjFkLjA6IFBDSWUg
+QnVzIEVycm9yOiBzZXZlcml0eT1VbmNvcnJlY3RlZCAoTm9uLUZhdGFsKSwgDQp0eXBlPVRyYW5z
+YWN0aW9uIExheWVyLCBpZD0wMGU4KFJlcXVlc3RlciBJRCkNCnBjaWVwb3J0IDAwMDA6MDA6MWQu
+MDogICBkZXZpY2UgWzgwODY6OWQxOF0gZXJyb3IgDQpzdGF0dXMvbWFzaz0wMDEwMDAwMC8wMDAx
+MDAwMA0KcGNpZXBvcnQgMDAwMDowMDoxZC4wOiAgICBbMjBdIFVuc3VwcG9ydGVkIFJlcXVlc3Qg
+ICAgKEZpcnN0KQ0KDQpJdCB3YXMgYWxzbyBub3RpY2VkIHdoZW4gUENJZSBkZXZpY2VzICh0aHVu
+ZGVyYm9sdCBkb2Nrcykgd2VyZSBob3QgcmVtb3ZlZCANCmZyb20gY2hyb21lYm9va3MsIGFuZCB0
+aGVuIGhvdC1wbHVnZ2VkIGJhY2sgYWdhaW4uIE9uY2UgaG90cGx1Z2dlZCBiYWNrLCANCnRoZSBu
+ZXdlciBJbnRlbCBjaHJvbWVib29rcyBmYWlsIHRvIGdvIGludG8gUzBpeCBsb3cgcG93ZXIgc3Rh
+dGUgYmVjYXVzZSANCm9mIHRoaXMgTFRSIGlzc3VlLihodHRwczovL3BhdGNod29yay5rZXJuZWwu
+b3JnL3Byb2plY3QvbGludXgtcGNpL3BhdGNoLw0KMjAyMTAyMDQwOTUxMjUuOTIxMi0xLW1pbmdj
+aHVhbmcucWlhb0BtZWRpYXRlay5jb20vKQ0KDQpUbyByZXNvbHZlIHRoaXMgaXNzdWUsIGNoZWNr
+IGFuZCByZS1jb25maWd1cmUgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQNCm9mIGJyaWRnZSB0
+byBtYWtlICJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0IG1hdGNoIGx0cl9wYXRoIHZhbHVlIGlu
+DQpmb2xsb3dpbmcgY29uZGl0aW9ucy4NCiAgIC1iZWZvcmUgY29uZmlndXJpbmcgZGV2aWNlJ3Mg
+TFRSIGZvciBob3QtcmVtb3ZlL2hvdC1hZGQNCiAgIC1iZWZvcmUgcmVzdG9yaW5nIGRldmljZSdz
+IERFVkNUTDIgcmVnaXN0ZXIgd2hlbiByZXN0b3JlIGRldmljZSBzdGF0ZQ0KDQpSZXZpZXdlZC1i
+eTogTWlrYSBXZXN0ZXJiZXJnIDxtaWthLndlc3RlcmJlcmdAbGludXguaW50ZWwuY29tPg0KU2ln
+bmVkLW9mZi1ieTogTWluZ2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29t
+Pg0KLS0tDQpjaGFuZ2VzIG9mIHY1DQogLWFkZCBtb3JlIGRldGFpbHMgaW4gY29tbWl0IG1lc3Nh
+Z2UNCmNoYW5nZXMgb2YgdjQNCiAtZml4IHR5cG8gb2YgY29tbWl0IG1lc3NhZ2UNCiAtcmVuYW1l
+OiBwY2lfcmVjb25maWd1cmVfYnJpZGdlX2x0cigpLT5wY2lfYnJpZGdlX3JlY29uZmlndXJlX2x0
+cigpDQpjaGFuZ2VzIG9mIHYzDQogLWNhbGwgcGNpX3JlY29uZmlndXJlX2JyaWRnZV9sdHIoKSBp
+biBwcm9iZS5jDQpjaGFuZ2VzIG9mIHYyDQogLW1vZGlmeSBwYXRjaCBkZXNjcmlwdGlvbg0KIC1y
+ZWNvbmZpZ3VyZSBicmlkZ2UncyBMVFIgYmVmb3JlIHJlc3RvcmluZyBkZXZpY2UgREVWQ1RMMiBy
+ZWdpc3Rlcg0KLS0tDQogZHJpdmVycy9wY2kvcGNpLmMgICB8IDI1ICsrKysrKysrKysrKysrKysr
+KysrKysrKysNCiBkcml2ZXJzL3BjaS9wY2kuaCAgIHwgIDEgKw0KIGRyaXZlcnMvcGNpL3Byb2Jl
+LmMgfCAxMyArKysrKysrKysrLS0tDQogMyBmaWxlcyBjaGFuZ2VkLCAzNiBpbnNlcnRpb25zKCsp
+LCAzIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcGNpLmMgYi9kcml2
+ZXJzL3BjaS9wY2kuYw0KaW5kZXggYjlmZWNjMjVkMjEzLi42YmY2NWQyOTUzMzEgMTAwNjQ0DQot
+LS0gYS9kcml2ZXJzL3BjaS9wY2kuYw0KKysrIGIvZHJpdmVycy9wY2kvcGNpLmMNCkBAIC0xNDM3
+LDYgKzE0MzcsMjQgQEAgc3RhdGljIGludCBwY2lfc2F2ZV9wY2llX3N0YXRlKHN0cnVjdCBwY2lf
+ZGV2ICpkZXYpDQogCXJldHVybiAwOw0KIH0NCiANCit2b2lkIHBjaV9icmlkZ2VfcmVjb25maWd1
+cmVfbHRyKHN0cnVjdCBwY2lfZGV2ICpkZXYpDQorew0KKyNpZmRlZiBDT05GSUdfUENJRUFTUE0N
+CisJc3RydWN0IHBjaV9kZXYgKmJyaWRnZTsNCisJdTMyIGN0bDsNCisNCisJYnJpZGdlID0gcGNp
+X3Vwc3RyZWFtX2JyaWRnZShkZXYpOw0KKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+bHRyX3BhdGgp
+IHsNCisJCXBjaWVfY2FwYWJpbGl0eV9yZWFkX2R3b3JkKGJyaWRnZSwgUENJX0VYUF9ERVZDVEwy
+LCAmY3RsKTsNCisJCWlmICghKGN0bCAmIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pKSB7DQorCQkJ
+cGNpX2RiZyhicmlkZ2UsICJyZS1lbmFibGluZyBMVFJcbiIpOw0KKwkJCXBjaWVfY2FwYWJpbGl0
+eV9zZXRfd29yZChicmlkZ2UsIFBDSV9FWFBfREVWQ1RMMiwNCisJCQkJCQkgUENJX0VYUF9ERVZD
+VEwyX0xUUl9FTik7DQorCQl9DQorCX0NCisjZW5kaWYNCit9DQorDQogc3RhdGljIHZvaWQgcGNp
+X3Jlc3RvcmVfcGNpZV9zdGF0ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KIHsNCiAJaW50IGkgPSAw
+Ow0KQEAgLTE0NDcsNiArMTQ2NSwxMyBAQCBzdGF0aWMgdm9pZCBwY2lfcmVzdG9yZV9wY2llX3N0
+YXRlKHN0cnVjdCBwY2lfZGV2ICpkZXYpDQogCWlmICghc2F2ZV9zdGF0ZSkNCiAJCXJldHVybjsN
+CiANCisJLyoNCisJICogRG93bnN0cmVhbSBwb3J0cyByZXNldCB0aGUgTFRSIGVuYWJsZSBiaXQg
+d2hlbiBsaW5rIGdvZXMgZG93bi4NCisJICogQ2hlY2sgYW5kIHJlLWNvbmZpZ3VyZSB0aGUgYml0
+IGhlcmUgYmVmb3JlIHJlc3RvcmluZyBkZXZpY2UuDQorCSAqIFBDSWUgcjUuMCwgc2VjIDcuNS4z
+LjE2Lg0KKwkgKi8NCisJcGNpX2JyaWRnZV9yZWNvbmZpZ3VyZV9sdHIoZGV2KTsNCisNCiAJY2Fw
+ID0gKHUxNiAqKSZzYXZlX3N0YXRlLT5jYXAuZGF0YVswXTsNCiAJcGNpZV9jYXBhYmlsaXR5X3dy
+aXRlX3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNUTCwgY2FwW2krK10pOw0KIAlwY2llX2NhcGFiaWxp
+dHlfd3JpdGVfd29yZChkZXYsIFBDSV9FWFBfTE5LQ1RMLCBjYXBbaSsrXSk7DQpkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9wY2kvcGNpLmggYi9kcml2ZXJzL3BjaS9wY2kuaA0KaW5kZXggNWM1OTM2NTA5
+MmZhLi5iM2E1ZTUyODdjYjcgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3BjaS9wY2kuaA0KKysrIGIv
+ZHJpdmVycy9wY2kvcGNpLmgNCkBAIC0xMTEsNiArMTExLDcgQEAgdm9pZCBwY2lfZnJlZV9jYXBf
+c2F2ZV9idWZmZXJzKHN0cnVjdCBwY2lfZGV2ICpkZXYpOw0KIGJvb2wgcGNpX2JyaWRnZV9kM19w
+b3NzaWJsZShzdHJ1Y3QgcGNpX2RldiAqZGV2KTsNCiB2b2lkIHBjaV9icmlkZ2VfZDNfdXBkYXRl
+KHN0cnVjdCBwY2lfZGV2ICpkZXYpOw0KIHZvaWQgcGNpX2JyaWRnZV93YWl0X2Zvcl9zZWNvbmRh
+cnlfYnVzKHN0cnVjdCBwY2lfZGV2ICpkZXYpOw0KK3ZvaWQgcGNpX2JyaWRnZV9yZWNvbmZpZ3Vy
+ZV9sdHIoc3RydWN0IHBjaV9kZXYgKmRldik7DQogDQogc3RhdGljIGlubGluZSB2b2lkIHBjaV93
+YWtldXBfZXZlbnQoc3RydWN0IHBjaV9kZXYgKmRldikNCiB7DQpkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9wY2kvcHJvYmUuYyBiL2RyaXZlcnMvcGNpL3Byb2JlLmMNCmluZGV4IDk1M2YxNWFiYzg1MC4u
+YWRlMDU1ZTlmYjU4IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9wY2kvcHJvYmUuYw0KKysrIGIvZHJp
+dmVycy9wY2kvcHJvYmUuYw0KQEAgLTIxMzIsOSArMjEzMiwxNiBAQCBzdGF0aWMgdm9pZCBwY2lf
+Y29uZmlndXJlX2x0cihzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KIAkgKiBDb21wbGV4IGFuZCBhbGwg
+aW50ZXJtZWRpYXRlIFN3aXRjaGVzIGluZGljYXRlIHN1cHBvcnQgZm9yIExUUi4NCiAJICogUENJ
+ZSByNC4wLCBzZWMgNi4xOC4NCiAJICovDQotCWlmIChwY2lfcGNpZV90eXBlKGRldikgPT0gUENJ
+X0VYUF9UWVBFX1JPT1RfUE9SVCB8fA0KLQkgICAgKChicmlkZ2UgPSBwY2lfdXBzdHJlYW1fYnJp
+ZGdlKGRldikpICYmDQotCSAgICAgIGJyaWRnZS0+bHRyX3BhdGgpKSB7DQorCWlmIChwY2lfcGNp
+ZV90eXBlKGRldikgPT0gUENJX0VYUF9UWVBFX1JPT1RfUE9SVCkgew0KKwkJcGNpZV9jYXBhYmls
+aXR5X3NldF93b3JkKGRldiwgUENJX0VYUF9ERVZDVEwyLA0KKwkJCQkJIFBDSV9FWFBfREVWQ1RM
+Ml9MVFJfRU4pOw0KKwkJZGV2LT5sdHJfcGF0aCA9IDE7DQorCQlyZXR1cm47DQorCX0NCisNCisJ
+YnJpZGdlID0gcGNpX3Vwc3RyZWFtX2JyaWRnZShkZXYpOw0KKwlpZiAoYnJpZGdlICYmIGJyaWRn
+ZS0+bHRyX3BhdGgpIHsNCisJCXBjaV9icmlkZ2VfcmVjb25maWd1cmVfbHRyKGRldik7DQogCQlw
+Y2llX2NhcGFiaWxpdHlfc2V0X3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNUTDIsDQogCQkJCQkgUENJ
+X0VYUF9ERVZDVEwyX0xUUl9FTik7DQogCQlkZXYtPmx0cl9wYXRoID0gMTsNCi0tIA0KMi4xOC4w
+DQo=
 
-Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
----
-  drivers/bluetooth/btusb.c | 56 
-+++++++++++++++++++++++++++++++++++------------
-  1 file changed, 42 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 75c83768c257..f352ff351b61 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3190,6 +3190,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev 
-*hdev,
-  #define QCA_DFU_TIMEOUT		3000
-  #define QCA_FLAG_MULTI_NVM      0x80
-
-+#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-+#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
-+
-  struct qca_version {
-  	__le32	rom_version;
-  	__le32	patch_version;
-@@ -3221,6 +3224,7 @@ static const struct qca_device_info 
-qca_devices_table[] = {
-  	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
-  	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
-  	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-+	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
-  };
-
-  static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 
-request,
-@@ -3375,6 +3379,43 @@ static int btusb_setup_qca_load_rampatch(struct 
-hci_dev *hdev,
-  	return err;
-  }
-
-+static void btusb_generate_qca_nvm_name(char *fwname,
-+					size_t max_size,
-+					struct qca_version *ver)
-+{
-+	u32 rom_version = le32_to_cpu(ver->rom_version);
-+	u16 flag = le16_to_cpu(ver->flag);
-+
-+	if (((flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-+		u16 board_id = le16_to_cpu(ver->board_id);
-+		u32 ram_version = le32_to_cpu(ver->ram_version);
-+		const char *variant;
-+
-+		switch (ram_version) {
-+		case WCN6855_2_0_RAM_VERSION_GF:
-+		case WCN6855_2_1_RAM_VERSION_GF:
-+			variant = "_gf";
-+			break;
-+		default:
-+			variant = "";
-+			break;
-+		}
-+
-+		/* if boardid equal 0, use default nvm without suffix */
-+		if (board_id == 0x0) {
-+			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s.bin",
-+				rom_version, variant);
-+		} else {
-+			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s_%04x.bin",
-+				rom_version, variant, board_id);
-+		}
-+	} else {
-+		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
-+			rom_version);
-+	}
-+
-+}
-+
-  static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
-  				    struct qca_version *ver,
-  				    const struct qca_device_info *info)
-@@ -3383,20 +3424,7 @@ static int btusb_setup_qca_load_nvm(struct 
-hci_dev *hdev,
-  	char fwname[64];
-  	int err;
-
--	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
--		/* if boardid equal 0, use default nvm without surfix */
--		if (le16_to_cpu(ver->board_id) == 0x0) {
--			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
--				 le32_to_cpu(ver->rom_version));
--		} else {
--			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
--				le32_to_cpu(ver->rom_version),
--				le16_to_cpu(ver->board_id));
--		}
--	} else {
--		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
--			 le32_to_cpu(ver->rom_version));
--	}
-+	btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver);
-
-  	err = request_firmware(&fw, fwname, &hdev->dev);
-  	if (err) {
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum, a Linux Foundation Collaborative Project
