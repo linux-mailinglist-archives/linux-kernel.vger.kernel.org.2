@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F395429A50
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 02:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC305429A52
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 02:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233148AbhJLAPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 20:15:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231352AbhJLAPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 20:15:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88FE060EE9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:13:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633997614;
-        bh=OXUvi6G050AJQ4OPBek0ufw7ZKzRxTQhHX/0FYRiCE8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Q4UGSzvjtHyHLu68/g1K/x33KNDmpnLBws9RDs38WRclHkjTS2eXTjUQobHqxsZz5
-         XM/G1BYUiNJZ/BT734m29NFQFGzFXy7mrx6mMkOinz/a0ns30M5jxUppddo6Tr3Ueg
-         kDfXJghO5wfm5cfqUCAhextUwZIMBqPzGV6crlIWf4Gvgk1O/4cHHqAtvYMJpJd5bv
-         0swnGclMpgVPdoVN26pC1p50IML2YtHe6ZiRDbwLKm3vHzBKVW0RwN+YQXsSno9EeN
-         LtKWWPmOcpOTNp2IzPQht/gsYxYEf+e715BXi/Sqr55fMoIjGPRN1d304snEK6iwWG
-         bqd3Eu9KQuRSg==
-Received: by mail-ed1-f52.google.com with SMTP id ec8so24297544edb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 17:13:34 -0700 (PDT)
-X-Gm-Message-State: AOAM532MO6xh0HE/Aj5an9W/jxqBDwGRp29vGVcN9fOm5I9DIGDr9aWd
-        F9QUZiyWQwH65E4TU5MHkmH5ulz57/CgXGwkfw==
-X-Google-Smtp-Source: ABdhPJy4tjjmTrFlejaCRoODEcML/sZ2dFjPaUPpY/JaPn4e9sT6cT9XzsRs7SGjmICTqvgKEJcCe3ia86anOYl+97Y=
-X-Received: by 2002:a17:906:f85b:: with SMTP id ks27mr30575894ejb.430.1633997612955;
- Mon, 11 Oct 2021 17:13:32 -0700 (PDT)
+        id S233990AbhJLAQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 20:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232758AbhJLAQl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 20:16:41 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE86FC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 17:14:40 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id n65so42721523ybb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 17:14:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ENwk9JEgz2hASvxdoAsgjgcUl2M7wlCV95vN1r9bfoY=;
+        b=qp7HifvdbhtSoBNZrHOxPz3g/MDHOhlHgP6YBDMWBCJl6RN+Q5vXyIG7MtYoR6sX2H
+         Rt971+DgVcNmdHbhe2d+PJWaWKWQGYOHg8ZiXsHu6SHZh0J3rLB5daWYaFPJIOy1bTjq
+         NfFwYHPxQOOg4VMxegJxVzpm5MoGvWIueAc9vPp9K5h8DUjf68Q0yGHmiJYER4a0b30S
+         CqEKxXvhKdBNbAhpGk+CByb8jH26k2AgOYVDLO85dqn6hSqjJjPzyyn7l/xt+mBsx3ps
+         4Swl2mGBx3g5/5MoBECGr6Mjk2EBPlX7Ze2dIK2DVcvxXHQiLXvXCLp0ReGKE+P6xW8/
+         ygvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ENwk9JEgz2hASvxdoAsgjgcUl2M7wlCV95vN1r9bfoY=;
+        b=uQRUbEfDP9ahnJVvuUaQjDXld2k2oRms/YJaq7fVEC0DInosm9+9I510VI2vAjsylR
+         1VInjiFVrnj3Blsm8EXT/oij/buNc0QCvkoxaDZa50MT6lOa4grNZGoNh0h/LKBJ7sL2
+         BfZQPKvDG9hrAlRxZGPCFN4lT43PrzhepRM0huGBFVW0FqnECLX/7yoEaaKcVnb6ovNa
+         w9Pr8TULg1AGg8xkoLhTCJ1lmzrMEoLhu21uPWJGigvOcdAo25icQoVLPSvAhyXOTWsW
+         Dq3rsbiCQ5d+r3jZqj+xrusOT7nwtlteZHPbNLkazt67jkga6hS2RJHxay4Q2mJ0Uy9b
+         3jdw==
+X-Gm-Message-State: AOAM533MN2Fus4hQ3JGo9kwB60+RdDI2Pp4zVCk2BuspeYo0KBY8XoGN
+        w7exBdFUd3xdps4ufKXsYJpXFFcOFolPFzTJ7QA6KQ==
+X-Google-Smtp-Source: ABdhPJz9tBBDp0oiCcVSM5zfAK9VtYOAXppecfvPYXPKxw+HVtBAf6+BrtYjNslmbhhb3UbCr+hcv2lRcGYb9oxkvbU=
+X-Received: by 2002:a25:cf07:: with SMTP id f7mr25077060ybg.100.1633997679963;
+ Mon, 11 Oct 2021 17:14:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211007235310.14626-1-chunkuang.hu@kernel.org> <CAFqH_51hO2efxbQkkbzNHSk92zOZGeFJBu4Ocijk_cpxFDJ2fw@mail.gmail.com>
-In-Reply-To: <CAFqH_51hO2efxbQkkbzNHSk92zOZGeFJBu4Ocijk_cpxFDJ2fw@mail.gmail.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 12 Oct 2021 08:13:21 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8L_Pd+EmPVw5yQeZPzLVPkJM681y_uQmCbZ79tfF92AA@mail.gmail.com>
-Message-ID: <CAAOTY_8L_Pd+EmPVw5yQeZPzLVPkJM681y_uQmCbZ79tfF92AA@mail.gmail.com>
-Subject: Re: [PATCH 0/5] Revert series "CMDQ refinement of Mediatek DRM driver"
-To:     Enric Balletbo Serra <eballetbo@gmail.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+References: <20211008000825.1364224-1-joshdon@google.com> <YWHbV8NFSEj2qtQo@geo.homenetwork>
+In-Reply-To: <YWHbV8NFSEj2qtQo@geo.homenetwork>
+From:   Josh Don <joshdon@google.com>
+Date:   Mon, 11 Oct 2021 17:14:29 -0700
+Message-ID: <CABk29Nt5pcJpbx7mKUfqbf+yahBw3uz50QpBvOm7u3B6uA+AuA@mail.gmail.com>
+Subject: Re: [PATCH] sched/core: forced idle accounting
+To:     Tao Zhou <tao.zhou@linux.dev>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineethrp@gmail.com>,
+        Hao Luo <haoluo@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=
-=888=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=889:33=E5=AF=AB=E9=81=93=
-=EF=BC=9A
+On Sat, Oct 9, 2021 at 11:11 AM Tao Zhou <tao.zhou@linux.dev> wrote:
+[snip]
+> > +     smt_count = cpumask_weight(smt_mask);
+> > +     if (smt_count > 2) {
+> > +             unsigned int nr_forced_idle = 0, nr_running = 0;
+> > +
+> > +             for_each_cpu(i, smt_mask) {
+> > +                     rq_i = cpu_rq(i);
+> > +                     p = rq_i->core_pick ?: rq_i->curr;
+> > +
+> > +                     if (p != rq_i->idle)
+> > +                             nr_running++;
+> > +                     else if (rq_i->nr_running)
+> > +                             nr_forced_idle++;
+> > +             }
+> > +
+> > +             if (WARN_ON_ONCE(!nr_running)) {
+> > +                     /* can't be forced idle without a running task */
+> > +             } else {
+> > +                     delta *= nr_forced_idle;
+> > +                     delta /= nr_running;
+> > +             }
 >
-> Hi Chun-Kuang,
->
-> Thank you to take time to send this, for full series
->
-> Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->
-> Display is now working again.
+> Is it possible to use (smt_count - core_occupation) / core_occupation
+> to evaluate this delta ?
 
-Applied to mediatek-drm-fixes [1].
+Good point, we can use the pre-computed info here. This will help
+simplify this logic.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-fixes
-
-Regards,
-Chun-Kuang.
-
->
-> Thanks,
->   Enric
->
->
-> Missatge de Chun-Kuang Hu <chunkuang.hu@kernel.org> del dia dv., 8
-> d=E2=80=99oct. 2021 a les 1:53:
-> >
-> > Commit c1ec54b7b5af
-> > ("drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb")
-> > would cause numerous mtk cmdq mailbox driver warning:
-> >
-> > WARNING: CPU: 0 PID: 0 at drivers/mailbox/mtk-cmdq-mailbox.c:198
-> > cmdq_task_exec_done+0xb8/0xe0
-> >
-> > So revert that patch and all the patches depend on that patch.
-> >
-> > Chun-Kuang Hu (5):
-> >   Revert "drm/mediatek: Clear pending flag when cmdq packet is done"
-> >   Revert "drm/mediatek: Add cmdq_handle in mtk_crtc"
-> >   Revert "drm/mediatek: Detect CMDQ execution timeout"
-> >   Revert "drm/mediatek: Remove struct cmdq_client"
-> >   Revert "drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb=
-"
-> >
-> >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 157 ++++--------------------
-> >  1 file changed, 24 insertions(+), 133 deletions(-)
-> >
-> > --
-> > 2.25.1
-> >
+Thanks,
+Josh
