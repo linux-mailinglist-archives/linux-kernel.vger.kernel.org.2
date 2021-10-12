@@ -2,111 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D1B42AE23
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E45E42AE2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235001AbhJLUtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:49:24 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:38770 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233709AbhJLUtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:49:19 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id C704DFB03;
-        Tue, 12 Oct 2021 22:47:15 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id VTm-C2K1n71u; Tue, 12 Oct 2021 22:47:14 +0200 (CEST)
-Date:   Tue, 12 Oct 2021 22:47:12 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/bridge: Ignore -EPROBE_DEFER when bridge attach fails
-Message-ID: <YWX0UPyw+5OBsBA6@qwark.sigxcpu.org>
-References: <00493cc61d1443dab1c131c46c5890f95f6f9b25.1634068657.git.agx@sigxcpu.org>
- <YWXtQ778N/rn+Jnu@pendragon.ideasonboard.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YWXtQ778N/rn+Jnu@pendragon.ideasonboard.com>
+        id S235224AbhJLUvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234757AbhJLUvF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 16:51:05 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D1AC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:49:03 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id n1-20020a05622a11c100b002a749aace38so498514qtk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=teEEhVWJN+Qa6H6Qk1wKq131PVGwnj7NNqky10GsyoI=;
+        b=OiGTRrzaxSz0x5HSUuTg4hDTD/OeCBAaD/mWV8UZ8XyjJG/gdgfKyZcn0SQPwisM+h
+         fXqoflM2sv0pCaZUKFh6qXeNq3Vd+aNA3I0J0Q2TL1yC4iw4fc25ZGn1XbPKhRO9rKLV
+         eLlEt/S+g02f1ZSqsow1cq5Ce6FY2ZhJzliLWojrXbuSpDTC7Y/AAlvthgYohIzgl7X3
+         KR4tLcEk8wR1f+i93CD2P3zvLCZhqQGopG9tAh/QCC78f2zvgC0nWq3+WTQZ5OpxY5LS
+         cctPwwBnkZ+h0SJW5XJWeYRFEcD1IPUnuuToF19ElOm8dOhe/7me0v5RLB267vWGMCf6
+         pJpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=teEEhVWJN+Qa6H6Qk1wKq131PVGwnj7NNqky10GsyoI=;
+        b=W8uBRJ5dX0QDH/LuZmjXmwTbJLuQ2tJ10iSW9CFn8abu+nAGZBlCnXbElzI+Qn/k0c
+         l+jjfTTics124VLYnHPQRDmvwPaLqwpmKfd5EdLpgJZ8k3ilJ4s96G4o4XBCqUfpzuoz
+         ZKLxrGShgjmNvq4nwjE/ca86j+VAVFdmzOOExzfA1Z2jmnw2FBpI1l8p5uDGEWslTdP2
+         XdcGEZfde1zye1vUAgypHPx7Yf2LBjsL1pW/d2PgyNfcrA64Acbczm4+K3GgOkv1KO87
+         AfxwnrDghNs0/Vch5MQXvMD+4FzsCTOdkZCitREwbvyPkO9oK4J7016OvMC47uTFOYyp
+         Ilww==
+X-Gm-Message-State: AOAM532hhkn64J6VgFhadKsCEJCX7EzylvC2BRnqXqT9foJo77/bb8L4
+        SuWcOGJtFQWNf/EBGQ/Mxq0tKoNPSmo=
+X-Google-Smtp-Source: ABdhPJxFeI5OJl1z1+FmDrAXsT2HYKR4TceIvtLx4TbVTlU8OdQG/KZr0T4g+ZTxK0Y9ntVAQXi3xx+NCTw=
+X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:bab5:e2c:2623:d2f8])
+ (user=pgonda job=sendgmr) by 2002:ac8:5e14:: with SMTP id h20mr24196018qtx.364.1634071742702;
+ Tue, 12 Oct 2021 13:49:02 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 13:48:53 -0700
+Message-Id: <20211012204858.3614961-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH 0/5 V10] Add AMD SEV and SEV-ES intra host migration support
+From:   Peter Gonda <pgonda@google.com>
+To:     kvm@vger.kernel.org
+Cc:     Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-On Tue, Oct 12, 2021 at 11:17:07PM +0300, Laurent Pinchart wrote:
-> Hi Guido,
-> 
-> Thank you for the patch.
-> 
-> On Tue, Oct 12, 2021 at 09:58:58PM +0200, Guido Günther wrote:
-> > Otherwise logs are filled with
-> > 
-> >   [drm:drm_bridge_attach] *ERROR* failed to attach bridge /soc@0/bus@30800000/mipi-dsi@30a0 0000 to encoder None-34: -517
-> > 
-> > when the bridge isn't ready yet.
-> > 
-> > Fixes: fb8d617f8fd6 ("drm/bridge: Centralize error message when bridge attach fails")
-> > Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> > ---
-> >  drivers/gpu/drm/drm_bridge.c | 11 ++++++-----
-> >  1 file changed, 6 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> > index a8ed66751c2d..f0508e85ae98 100644
-> > --- a/drivers/gpu/drm/drm_bridge.c
-> > +++ b/drivers/gpu/drm/drm_bridge.c
-> > @@ -227,14 +227,15 @@ int drm_bridge_attach(struct drm_encoder *encoder, struct drm_bridge *bridge,
-> >  	bridge->encoder = NULL;
-> >  	list_del(&bridge->chain_node);
-> >  
-> > +	if (ret != -EPROBE_DEFER) {
-> >  #ifdef CONFIG_OF
-> > -	DRM_ERROR("failed to attach bridge %pOF to encoder %s: %d\n",
-> > -		  bridge->of_node, encoder->name, ret);
-> > +		DRM_ERROR("failed to attach bridge %pOF to encoder %s: %d\n",
-> > +			  bridge->of_node, encoder->name, ret);
-> >  #else
-> > -	DRM_ERROR("failed to attach bridge to encoder %s: %d\n",
-> > -		  encoder->name, ret);
-> > +		DRM_ERROR("failed to attach bridge to encoder %s: %d\n",
-> > +			  encoder->name, ret);
-> >  #endif
-> > -
-> > +	}
-> 
-> This looks fine as such, but I'm concerned about the direction it's
-> taking. Ideally, probe deferral should happen at probe time, way before
-> the bridge is attached. Doing otherwise is a step in the wrong direction
-> in my opinion, and something we'll end up regretting when we'll feel the
-> pain it inflicts.
+Intra host migration provides a low-cost mechanism for userspace VMM
+upgrades.  It is an alternative to traditional (i.e., remote) live
+migration. Whereas remote migration handles moving a guest to a new host,
+intra host migration only handles moving a guest to a new userspace VMM
+within a host.  This can be used to update, rollback, change flags of the
+VMM, etc. The lower cost compared to live migration comes from the fact
+that the guest's memory does not need to be copied between processes. A
+handle to the guest memory simply gets passed to the new VMM, this could
+be done via /dev/shm with share=on or similar feature.
 
-The particular case I'm seeing this is the nwl driver probe deferrals if
-the panel bridge isn't ready (which needs a bunch of components
-(dsi, panel, backlight wrapped led, ...) and it probes fine later on so I
-wonder where you see the actual error cause? That downstream of the
-bridge isn't ready or that the display controller is already attaching
-the bridge?
+The guest state can be transferred from an old VMM to a new VMM as follows:
+1. Export guest state from KVM to the old user-space VMM via a getter
+user-space/kernel API 2. Transfer guest state from old VMM to new VMM via
+IPC communication 3. Import guest state into KVM from the new user-space
+VMM via a setter user-space/kernel API VMMs by exporting from KVM using
+getters, sending that data to the new VMM, then setting it again in KVM.
 
-Cheers,
- -- Guido
+In the common case for intra host migration, we can rely on the normal
+ioctls for passing data from one VMM to the next. SEV, SEV-ES, and other
+confidential compute environments make most of this information opaque, and
+render KVM ioctls such as "KVM_GET_REGS" irrelevant.  As a result, we need
+the ability to pass this opaque metadata from one VMM to the next. The
+easiest way to do this is to leave this data in the kernel, and transfer
+ownership of the metadata from one KVM VM (or vCPU) to the next. For
+example, we need to move the SEV enabled ASID, VMSAs, and GHCB metadata
+from one VMM to the next.  In general, we need to be able to hand off any
+data that would be unsafe/impossible for the kernel to hand directly to
+userspace (and cannot be reproduced using data that can be handed safely to
+userspace).
 
-> 
-> >  	return ret;
-> >  }
-> >  EXPORT_SYMBOL(drm_bridge_attach);
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
-> 
+V10
+ * Add new starting patch to refactor all SEV-ES related vCPU data into
+   for easier copying.
+
+V9
+ * Fix sev_lock_vcpus_for_migration from unlocking the vCPU mutex it
+   failed to unlock.
+
+V8
+ * Update to require that @dst is not SEV or SEV-ES enabled.
+ * Address selftest feedback.
+
+V7
+ * Address selftest feedback.
+
+V6
+ * Add selftest.
+
+V5:
+ * Fix up locking scheme
+ * Address marcorr@ comments.
+
+V4:
+ * Move to seanjc@'s suggestion of source VM FD based single ioctl design.
+
+v3:
+ * Fix memory leak found by dan.carpenter@
+
+v2:
+ * Added marcorr@ reviewed by tag
+ * Renamed function introduced in 1/3
+ * Edited with seanjc@'s review comments
+ ** Cleaned up WARN usage
+ ** Userspace makes random token now
+ * Edited with brijesh.singh@'s review comments
+ ** Checks for different LAUNCH_* states in send function
+
+v1: https://lore.kernel.org/kvm/20210621163118.1040170-1-pgonda@google.com/
+
+base-commit: 2acbc5c9a0ec
+
+Cc: Marc Orr <marcorr@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Wanpeng Li <wanpengli@tencent.com>
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Peter Gonda (5):
+  Refactor out sev_es_state struct
+  KVM: SEV: Add support for SEV intra host migration
+  KVM: SEV: Add support for SEV-ES intra host migration
+  selftest: KVM: Add open sev dev helper
+  selftest: KVM: Add intra host migration tests
+
+ Documentation/virt/kvm/api.rst                |  15 +
+ arch/x86/include/asm/kvm_host.h               |   1 +
+ arch/x86/kvm/svm/sev.c                        | 264 +++++++++++++++---
+ arch/x86/kvm/svm/svm.c                        |   9 +-
+ arch/x86/kvm/svm/svm.h                        |  28 +-
+ arch/x86/kvm/x86.c                            |   6 +
+ include/uapi/linux/kvm.h                      |   1 +
+ tools/testing/selftests/kvm/Makefile          |   3 +-
+ .../testing/selftests/kvm/include/kvm_util.h  |   1 +
+ .../selftests/kvm/include/x86_64/svm_util.h   |   2 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  24 +-
+ tools/testing/selftests/kvm/lib/x86_64/svm.c  |  13 +
+ .../selftests/kvm/x86_64/sev_vm_tests.c       | 203 ++++++++++++++
+ 13 files changed, 504 insertions(+), 66 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+
+-- 
+2.33.0.882.g93a45727a2-goog
+
