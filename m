@@ -2,100 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35AC42AEDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6725142AEE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235562AbhJLV00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 17:26:26 -0400
-Received: from mga09.intel.com ([134.134.136.24]:27414 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234011AbhJLV0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 17:26:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="227172660"
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="227172660"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 14:24:10 -0700
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="562833280"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.115.208]) ([10.209.115.208])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 14:24:07 -0700
-Message-ID: <4aa51c58-63f5-c7de-f8e5-f4184fd1c822@linux.intel.com>
-Date:   Tue, 12 Oct 2021 14:24:07 -0700
+        id S235328AbhJLV2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 17:28:43 -0400
+Received: from mail-pf1-f171.google.com ([209.85.210.171]:45963 "EHLO
+        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233387AbhJLV2l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 17:28:41 -0400
+Received: by mail-pf1-f171.google.com with SMTP id i65so596943pfe.12;
+        Tue, 12 Oct 2021 14:26:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=67Wm548vxd64jvyzHGx2cJ1FuE3KgBqc4EcFAWPdars=;
+        b=krfrf7NoGFvUZvYJEciVJTAnL3G74+xqXa9jDmkqEoV3S8YbN0EC6R0NfmWTMPZxoM
+         n3qMqxwOq3pB56eWLPngeJDiphVt/L9tFRozjz1W40962uvN25rmccaTS8v9vRaoppJJ
+         3q9ai6bqTTSkPt4MdVb+G0iifrR+Npfyv3U+LwG+rzvTb12SeyhzJSAp2aIyHggC/c2r
+         F0BS8GH2+gK9DLTVJvAGzGDotWFvSINGFcKV+ltYVIjzyI8iO8cY/S2/FlBpBS8UJN9v
+         TlWtOQIJ/Qe/uMzNZbV8MI5tNnyBdBzcl4kCQr8+o/mxbQ0kN0/2Zs0uQTGy0PPDrT9a
+         soXw==
+X-Gm-Message-State: AOAM532eqpUgX+BqLk78L1baeU2udIlW/RK4GuB03nZ3j7g9lYxxwW8X
+        Zy+z7gMBm4iJDKm6c65jlZcO7sn/4aDGU++8yDk=
+X-Google-Smtp-Source: ABdhPJx3LuMpsgeccnPFD90fzK89K2LwT3vY2QzV1lqSWMBpesQf1r+E1dxT/hIFDwKbjbdR+DVtVdFWffwQUKpsJoE=
+X-Received: by 2002:a62:5257:0:b0:44c:ed84:350a with SMTP id
+ g84-20020a625257000000b0044ced84350amr22789150pfb.79.1634073999294; Tue, 12
+ Oct 2021 14:26:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+References: <20211012134027.684712-1-kernel@esmil.dk> <20211012134027.684712-7-kernel@esmil.dk>
+ <CAHp75Vetqi=FMoRxfXHL+d1DhAXgLr+5e7ss1M_Rkhqa07H5Jg@mail.gmail.com>
+ <CANBLGcyCpSrxQi7pxLWQLkgbVGAKxJMXhoVbF_DdYDiv5_YJXQ@mail.gmail.com> <CAHp75VcM97vcrNOG_T==E0JyZ_RT_n8MCiVtfmYQM4g8kVtegg@mail.gmail.com>
+In-Reply-To: <CAHp75VcM97vcrNOG_T==E0JyZ_RT_n8MCiVtfmYQM4g8kVtegg@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Tue, 12 Oct 2021 23:26:27 +0200
+Message-ID: <CANBLGcxBjrhp6sfLqsKu=0hgYh+oxmozriWVCwdSKFYWtYnPmQ@mail.gmail.com>
+Subject: Re: [PATCH v1 06/16] clk: starfive: Add JH7100 clock generator driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053103-mutt-send-email-mst@kernel.org>
- <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
- <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
- <CAPcyv4g0v0YHZ-okxf4wwVCYxHotxdKwsJpZGkoT+fhvvAJEFg@mail.gmail.com>
- <9302f1c2-b3f8-2c9e-52c5-d5a4a2987409@linux.intel.com>
- <CAPcyv4hG0HcbUO8Mb=ccDp5Bz3RJNkAJwKwNzRkQ1gCMpp_OMQ@mail.gmail.com>
- <20211012171628-mutt-send-email-mst@kernel.org>
-From:   Andi Kleen <ak@linux.intel.com>
-In-Reply-To: <20211012171628-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 12 Oct 2021 at 23:21, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>
+> On Tue, Oct 12, 2021 at 11:08 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > On Tue, 12 Oct 2021 at 17:40, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > On Tue, Oct 12, 2021 at 4:42 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+>
+> ...
+>
+> > > > +       value |= readl_relaxed(reg) & ~mask;
+> > >
+> > > value is not masked, is it okay?
+> > >
+> > > Usual pattern for this kind of operations is
+> > >
+> > > value = (current & ~mask) | (value & mask);
+> >
+> > This function is only ever called with constants, already masked
+> > values or the parent number from the clk framework, so it should be
+> > ok.
+>
+> Up to you, but I think it's better to have a usual pattern.
+>
+> > > > +       writel_relaxed(value, reg);
+>
+> ...
+>
+> > > > +       rate = parent / div;
+> > > > +       if (rate < req->min_rate && div > 1) {
+> > > > +               div -= 1;
+> > > > +               rate = parent / div;
+> > > > +       }
+> > >
+> > > Seems like homegrown DIV_ROUND_UP() or so. Who will guarantee that
+> > > decreasing div by 1 will satisfy the conditional again?
+> >
+> > Maths unless I'm mistaken: div = DIV_ROUND_UP(parent, target), so in
+> > rational numbers
+> >   div - 1 < parent / target
+> > But the target is clamped by min_rate and max_rate, so
+> >   min_rate <= target < parent / (div - 1) = rate
+> >
+> > Sorry, re-using the rate varable for both the target and result is
+> > confusing. I'll fix that.
+>
+> Also needs a comment, I believe.
 
-On 10/12/2021 2:18 PM, Michael S. Tsirkin wrote:
-> On Tue, Oct 12, 2021 at 02:14:44PM -0700, Dan Williams wrote:
->> Especially in this case where the virtio use case being
->> opted-in is *already* in a path that has been authorized by the
->> device-filter policy engine.
-> That's a good point. Andi, how about setting a per-device flag
-> if its ID has been allowed and then making pci_iomap create
-> a shared mapping transparently?
+Will add.
 
-Yes for pci_iomap we could do that.
+> ...
+>
+> > > > +#ifdef CONFIG_DEBUG_FS
+> > >
+> > > Perhaps __maybe_unused?
+> >
+> > I can definitely use __maybe_unused for the function declaration, but
+> > then I'll need a conditional every time clk_ops.debug_init needs to be
+> > initialized to either the function or NULL depending on
+> > CONFIG_DEBUG_FS below. Is that better?
+>
+> Actually, why can't you always initialize the field? Shouldn't CLK
+> core take care about this conditional?
 
-If someone uses raw ioremap without a device it won't work, but I don't 
-think that's the case for virtio at least.
+It could, but I see other drivers avoiding the code bloat when debugfs
+is not enabled, so I thought I'd copy that.
 
-I suppose we could solve that problem if it actually happens.
-
--Andi
-
+> > > > +#else
+> > > > +#define jh7100_clk_debug_init NULL
+> > > > +#endif
+>
+> ...
+>
+> > > > +       while (idx > 0)
+> > > > +               clk_hw_unregister(&priv->reg[--idx].hw);
+> > >
+> > > The
+> > >
+> > >        while (idx--)
+> > >                clk_hw_unregister(&priv->reg[idx].hw);
+> > >
+> > > is slightly better to read.
+> >
+> > It's not something I'll insist hard on, but I must admit I disagree.
+> > To me the above looks like cartoon characters running off a cliff and
+> > back. As a middle ground could we maybe do this?
+> >
+> >   while (idx)
+> >     clk_hw_unregister(&priv->reg[--idx].hw);
+>
+> My point is exactly in having the common pattern for error paths, i.e.
+>
+>   while (counter--)
+>     ...bla-bla-bla...
+>
+> Your second approach is better, but I think that proposed by me is even better.
+>
+> ...
+>
+> > > > +subsys_initcall(clk_starfive_jh7100_init);
+> > >
+> > > Any  explanation why subsys_initcall() is in use?
+> >
+> > TBH I just inherited that from Geert's first mock driver and never
+> > thought to question it. What would be a better alternative to try?
+>
+> At least add a comment to explain the choice.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
