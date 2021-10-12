@@ -2,192 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9280C42ACC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADCD42ACC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbhJLS76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:59:58 -0400
-Received: from mga11.intel.com ([192.55.52.93]:46306 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232648AbhJLS75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:59:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="224671475"
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="224671475"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 11:57:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="491108150"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga008.jf.intel.com with ESMTP; 12 Oct 2021 11:57:54 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 12 Oct 2021 11:57:54 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 12 Oct 2021 11:57:53 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Tue, 12 Oct 2021 11:57:53 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Tue, 12 Oct 2021 11:57:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F94PbaBrlx+mXkltm9ZNLiSoEKS3fHgoFOIBLnrpREj3dJdSABLvTUYIYnBl4div8bIF7ajYe7vKAcl7TO0JkCaRV1YFgnTUSRmtLheUiR64kpuCqkVpERsG+YvlpCV1hQ99EpOpnH1Cpr7Np/pbm71ho7ntP1y7PCw+hLVom5CjV9AyzpsqadKGvc2PitkESDHlEMpFt08pnOrAkm3P0z7GHdGyEr0fvQLjAFPgHIRtkZ4EUsmJ0r6LKhXZlBnOoext7Wxrt7qZt6rYFrFyOCAVHN33pFa+jCKcrTi6DRMxVrGpelk2i8pBNHqsyU+Jjk4F/AF/341ef8xC0KXybQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9tQEhZp7Fz5yReuniT0/Mr73X5oCAzaFEpsmKL0Znzg=;
- b=erkhEuTuDV25RsvGCfhl9A8U/0anwntGF4pGr2EfavQgL9TXgrVJGpFfexhiuhM6D26AGd8NrT7cgLgHgM5UOauqSQ4Ye2QlmKjVM0rKBBexTJQ+ZkJdl+1luDZAuCBOAnfISTTuQ1i4uONPqQyxfgXA/cuJilOfZdhWGsG72ykQQOjIYOQzHuYtvALx2p5lnXG9PQPhaSA4TA6EBaC6fuE6lgdu8ECjg/MRqBRHWFgudQje0Dkm7S5L8EAjW2gkhHgW3ZpAvazlbtK9LUtIap9B5UYIzyCl5t6bOCOuasjWwgIJB9Nn9NnSDv6b3GSHCuIUWIm3nXt5M/dx3Ev39Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9tQEhZp7Fz5yReuniT0/Mr73X5oCAzaFEpsmKL0Znzg=;
- b=KtiIbhl3GnnffqJPVQ/6d4XaEyQiQXXM0vYSfM9rj0YOShmGD4W5SArl5QsfNY/7GKYxPZWEZqpmXAreUk9+dnV3pO3saD02Plu21k3KJTF81kEsdgOHDpwkeiF07AS54ALqLmDwlwRygAbcK/mY2k9e0rJ00aA7Ezs8VZRocOE=
-Received: from DM8PR11MB5750.namprd11.prod.outlook.com (2603:10b6:8:11::17) by
- DM6PR11MB4442.namprd11.prod.outlook.com (2603:10b6:5:1d9::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.18; Tue, 12 Oct 2021 18:57:46 +0000
-Received: from DM8PR11MB5750.namprd11.prod.outlook.com
- ([fe80::e52d:425f:5db8:9742]) by DM8PR11MB5750.namprd11.prod.outlook.com
- ([fe80::e52d:425f:5db8:9742%5]) with mapi id 15.20.4587.026; Tue, 12 Oct 2021
- 18:57:46 +0000
-From:   "Reshetova, Elena" <elena.reshetova@intel.com>
-To:     Andi Kleen <ak@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "David Hildenbrand" <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Josh Poimboeuf" <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Kirill Shutemov" <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Subject: RE: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-Thread-Topic: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-Thread-Index: AQHXvKYONYCiLR7qcUWwBEZSAUzHCavKbb0AgAC0m4CAAavhgIAC4/bggAAFVICAAABFkA==
-Date:   Tue, 12 Oct 2021 18:57:46 +0000
-Message-ID: <DM8PR11MB57505C520763DF706309E177E7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053103-mutt-send-email-mst@kernel.org>
- <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
- <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
- <DM8PR11MB57501C8F8F5C8B315726882EE7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
- <f850d2d6-d427-8aeb-bd38-f9b5eb088191@linux.intel.com>
-In-Reply-To: <f850d2d6-d427-8aeb-bd38-f9b5eb088191@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 32e11cba-a657-46d5-de4b-08d98db22dea
-x-ms-traffictypediagnostic: DM6PR11MB4442:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB44428E08F3E6D66F1BCBE141E7B69@DM6PR11MB4442.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 66MuJTFanBOloxNxaSeT1N2KwLiBmNM6DwtJQOd2DQzmL6/R6iYlg0oPLWlV/Pl5HbcrMUcqjtOoytCi9eTyzs/nPIjGqltVI6LkN1NNu/qMx/GUgVeUcbVOvZ08p1fVo/dRUCXVXkqYDQ5bPO7AvKlaL8gHomltV8NOpCGhaaFqp0ljiuo9taDwpTkxiBGt1Bc5bHfKiDQbWNClS/b/NDajuD35+BQC5Sb4Ul9vjNisaxXipgxDD9iRx2nE/uYKyMO9ny+YMiF5riXFCl8BDZ3lG98PpDxQXvZlf+zM1Q/qON9Gz9WESEhzOc/XkyEjr66ArlbJE4ej4f2/rcwD5SHGq7lWEN/Dwt24RsQyUDLBGUtPKffzL6mStiStAm1wHF3yPYfwwCxDor46h/axaPQn6AEz87T0UGAjqj9CRMK7rSN+tvgZnIAZOeCBn1pTitCILTxkpPyqcwL9GrqKM5o6Ewwei3LP65bl0CVYGI/Z06tobnP19WxqyEwR56us7TpvW76JFGprHmqfcgaqWfSswNKHZPRbW/LWdlsDBa/Tg9Mh8y0ljuSQMYOJ83JsjhUIQVD8RkYNu2VDvLNaF1XG5vqlKyWW0T4ejyVIWOL6ztn5V5PvaxAXxljPN1q+uYAFK3WCsxgHImdcUi2n6w9qlyClg9pCbeB8yUI6p0qIP778I1RMUZ+rKvm5wxscuHIMgOv5eJ89CBoBkMxUSg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5750.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(55016002)(8676002)(64756008)(8936002)(66946007)(66556008)(66446008)(76116006)(71200400001)(52536014)(9686003)(26005)(186003)(66476007)(7406005)(7416002)(6506007)(7696005)(508600001)(5660300002)(4744005)(54906003)(316002)(110136005)(38070700005)(86362001)(2906002)(122000001)(38100700002)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Vk93YjcxSW12QnhPN2pjRnJ3NjVMdXRad0Y4MmhEa0JPak53bnJPNS9SdmFn?=
- =?utf-8?B?bEszMDgzWWpXTm5FSjhIVVFJZEp4UkZhRnBNeWRMTTJIU2hGVUwzUWhwWGxK?=
- =?utf-8?B?SGRKRXBZNkZGdmFCMTg5TzZSZW5QL1lkc2pKYkFIbXRVWGJvMFF3ZDNGSkt1?=
- =?utf-8?B?R1k3bTVwaU9DaU1lMXd6SlZvZW5xTGhaSHJMWktOTUJqYU5FeHRHTG5kaU00?=
- =?utf-8?B?VEhobWhwSFJiVWlYRDV1eHViSXFweGtxc292SkNKckNGV2poSEZGNlRPQ3c1?=
- =?utf-8?B?dHR1V2lPSm1GQitqbVlOcG9iVTFRV3BQOGtJV09rYmNGNStxa3NQcGhpOXhO?=
- =?utf-8?B?REsyME9JZDc3dFNjNmNMYUlOQU1EaUtTcmpBNHpLVkpDeHk5dFlMQ3JsQm9W?=
- =?utf-8?B?L3BkZnZmK21XM2hWdStGSU9yM3FkaXJKcGpScEoya25XcjR1eERwM3JYSmhk?=
- =?utf-8?B?UE1JMFA4NmdMV25nL2xRa0JOanJUYklGKzFmWi91OS9kSFR5TysyQ1FhR2xv?=
- =?utf-8?B?U1RkbENqQ3FnaW44NDVMSUFZQkFaRHBRYm1oNlI5RGlyN1JIendWQjhYNi80?=
- =?utf-8?B?ajZXSTZiMTZpb3l5N05pN1M5RHhDaVhiYlZqdThNd25aay9oZ3hjNklrcENW?=
- =?utf-8?B?Q0pPbFZHS1lIMWpiMklLcXlkeFJwa2ZZc3d1WEJ3VUt2RXVZVDhoU1RUQ0ow?=
- =?utf-8?B?dDNQd0JVWE9WOVNZdS9kdkUyT1NLdU1tR2lZcUxsRWFjclBGUnd3OW51U0lK?=
- =?utf-8?B?dlZiM21VOEc5R2pUVDNXRkhqcjlzU1J1Y2xqdFZqOExDL0c5Vk1qMWhPcUU0?=
- =?utf-8?B?dWJVM1k5Njl6VVBZeU5HSVVZb0dSZlZ0WmdySG9RZFdKcURKbTBxME5Eeklo?=
- =?utf-8?B?TEhpenFWMzVHQjJPZVdRWXp1TVNVZjlxUXg5OENUbGNUUUhSbE9BTG5qekY4?=
- =?utf-8?B?cGNHY3o3Q2twUHVnbnlnUjJEMDVRZ2I4dU84RGx1TEN2dDdmL1dGSXE4dVBw?=
- =?utf-8?B?Z1JyV1BYdE0wb1FzbjBzQ2ptMjI1bEpQclBQVGtTLzdvbGtOdk5wVzI3VW51?=
- =?utf-8?B?S2h3SDh3U3BHNndHbnV1Y3JYdXluWE1wSlZWdGdvc1MrV016emhWc2FUMU94?=
- =?utf-8?B?YUlzZnFBRTZua1Y4SXk2eUpLZ0ZUSlNPRmFvTGl4UkdMallYOTJpcWdsemtY?=
- =?utf-8?B?bHcvNjFoYTZ3cXA2VjdTTmhxeG5UaVB3M1BGVFNDdXB1Q295VjRvZHV4VXBP?=
- =?utf-8?B?clo1NGR5Y1dXSzV1Mmhsd3Bya1VLZVd6eUFvdy9XVnJrbVZFbmdTSmtra2pP?=
- =?utf-8?B?aWlQZmE5Ynd4VUVPTGNVVUxvdEs4S2RHYVNnTGIvblRtY1NvL0tmSUVTU01i?=
- =?utf-8?B?NDgzcHNWb3hrUlpqLzUrK0xWU01NTDB1dVdPSVc4SXFtZVFDS1NELzlISlNm?=
- =?utf-8?B?UG5aL3J5b3pEVGxTbmdWN3pmVjJma1YwaGNKM3E1VzFXZTdmaHh3aGdYRUpx?=
- =?utf-8?B?aVUwRW5Bd3JUVlRWdFdMWDZYK0RHSjdUTVZhbDMvdVFLVWl4YUFQdzVLNnEx?=
- =?utf-8?B?N0FnNTRNeGVkN2dvTE1tWm1PZjJ5UVFHbmU3TC9YMG96K1pTUVFwYjRvWkx6?=
- =?utf-8?B?UG1OQ0hlYVFSeWd5a3pPT3o4MFZEdkNMeEwrL2hBZnN0bEp2eCtlN3BTWE5m?=
- =?utf-8?B?OWN4R2NLWGNvMTlISE8xOUpwZFUwU0pNZ1dETGdneTNFK3Q5amdmcloybEVr?=
- =?utf-8?Q?BMEKGbJ1mflDnSjZBchX3oWMKhbrt5I5guAjgn1?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S234925AbhJLTAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 15:00:14 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:44814
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232648AbhJLTAL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 15:00:11 -0400
+Received: from mussarela (unknown [177.9.89.30])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id E056A3F044;
+        Tue, 12 Oct 2021 18:58:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634065087;
+        bh=cmYtI7bXUnsLPfs56Qxs+Az6PvpR/YxQ/1rY8vXKZAE=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=gWSbGeItsj9E4+cCI4VlOlKiOYilSwwt8bcUtsNJfJuayQIQVyeVJv4RFfRbVuyxI
+         dq0uE/BCQsptSFTghdFdYQ+8ItJdok3EcfeLDDnIow2jNp0p5mCkCC0Ru2tSEyMa3Q
+         6SGYjlL46acap3uQFnkW2jONLVq/xhPgd24q59XCE/u6Wsl23+OS2Dmu5YQkbizwJH
+         Fi5dbaE/Yt/pIuvSsNfhywkEZLxpE/6f/2ffHh8y7IyLMSPOb3QVQFzYzthwU4tqKz
+         mAROZZNJdDx9+OEgmhWqqZWaIBhQ73U0D4sUIk4Ua0+3nlsi2s5njZ1husfBtqB9JD
+         hvx3kQ5rlD23g==
+Date:   Tue, 12 Oct 2021 15:57:51 -0300
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Jan Kara <jack@suse.cz>,
+        Suren Baghdasaryan <surenb@google.com>, stable@vger.kernel.org,
+        jannh@google.com, torvalds@linux-foundation.org, peterx@redhat.com,
+        aarcange@redhat.com, david@redhat.com, jgg@ziepe.ca,
+        ktkhai@virtuozzo.com, shli@fb.com, namit@vmware.com, hch@lst.de,
+        oleg@redhat.com, kirill@shutemov.name, willy@infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH 1/1] gup: document and work around "COW can break either
+ way" issue
+Message-ID: <YWXar5/JJD4NYcHa@mussarela>
+References: <20211012015244.693594-1-surenb@google.com>
+ <20211012080649.GE9697@quack2.suse.cz>
+ <b9568b73-70ef-cd0f-f533-41556cae6a0f@suse.cz>
+ <YWVKgIUY6hWagEPo@kroah.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5750.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32e11cba-a657-46d5-de4b-08d98db22dea
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2021 18:57:46.2124
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZZdJy8O1qjvfWVOHdjaVfaduftQ5/hzrdPSBBFS5sO20YWfWPDzqJJJbRQHyghd/BUZoNt2V+v8nBn6dF6JwhRB5Vpp48pGL7rhtgxW4+1A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4442
-X-OriginatorOrg: intel.com
+Content-Type: multipart/mixed; boundary="SgIC40tiGMOi4sUs"
+Content-Disposition: inline
+In-Reply-To: <YWVKgIUY6hWagEPo@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IEkgc3VzcGVjdCB0aGUgdHJ1ZSBudW1iZXIgaXMgZXZlbiBoaWdoZXIgYmVjYXVzZSB0aGF0
-IGRvZXNuJ3QgaW5jbHVkZSBJTw0KPiBpbnNpZGUgY2FsbHMgdG8gb3RoZXIgbW9kdWxlcyBhbmQg
-aW5kaXJlY3QgcG9pbnRlcnMsIGNvcnJlY3Q/DQoNCkFjdHVhbGx5IGV2ZXJ5dGhpbmcgc2hvdWxk
-IGJlIGluY2x1ZGVkLiBTbWF0Y2ggaGFzIGNyb3NzLWZ1bmN0aW9uIGRiIGFuZA0KSSBhbSB1c2lu
-ZyBpdCBmb3IgZ2V0dGluZyB0aGUgY2FsbCBjaGFpbnMgYW5kIGl0IGZvbGxvd3MgZnVuY3Rpb24g
-cG9pbnRlcnMuDQpBbHNvIHNpbmNlIEkgYW0gc3RhcnRpbmcgZnJvbSBhIGxpc3Qgb2YgaW5kaXZp
-ZHVhbCByZWFkIElPcywgZXZlcnkgc2luZ2xlDQpiYXNlIHJlYWQgSU8gaW4gZHJpdmVycy8qIHNo
-b3VsZCBiZSBjb3ZlcmVkIGFzIGZhciBhcyBJIGNhbiBzZWUuIEJ1dCBpZiBpdCB1c2VzDQpzb21l
-IHdlaXJkIElPIHdyYXBwZXJzIHRoZW4gdGhlIGFjdHVhbCBsaXN0IG1pZ2h0IGJlIGhpZ2hlci4g
-DQo=
+
+--SgIC40tiGMOi4sUs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Oct 12, 2021 at 10:42:40AM +0200, Greg KH wrote:
+> On Tue, Oct 12, 2021 at 10:14:27AM +0200, Vlastimil Babka wrote:
+> > On 10/12/21 10:06, Jan Kara wrote:
+> > > On Mon 11-10-21 18:52:44, Suren Baghdasaryan wrote:
+> > >> From: Linus Torvalds <torvalds@linux-foundation.org>
+> > >> 
+> > >> From: Linus Torvalds <torvalds@linux-foundation.org>
+> > >> 
+> > >> commit 17839856fd588f4ab6b789f482ed3ffd7c403e1f upstream.
+> > >> 
+> > >> Doing a "get_user_pages()" on a copy-on-write page for reading can be
+> > >> ambiguous: the page can be COW'ed at any time afterwards, and the
+> > >> direction of a COW event isn't defined.
+> > >> 
+> > >> Yes, whoever writes to it will generally do the COW, but if the thread
+> > >> that did the get_user_pages() unmapped the page before the write (and
+> > >> that could happen due to memory pressure in addition to any outright
+> > >> action), the writer could also just take over the old page instead.
+> > >> 
+> > >> End result: the get_user_pages() call might result in a page pointer
+> > >> that is no longer associated with the original VM, and is associated
+> > >> with - and controlled by - another VM having taken it over instead.
+> > >> 
+> > >> So when doing a get_user_pages() on a COW mapping, the only really safe
+> > >> thing to do would be to break the COW when getting the page, even when
+> > >> only getting it for reading.
+> > >> 
+> > >> At the same time, some users simply don't even care.
+> > >> 
+> > >> For example, the perf code wants to look up the page not because it
+> > >> cares about the page, but because the code simply wants to look up the
+> > >> physical address of the access for informational purposes, and doesn't
+> > >> really care about races when a page might be unmapped and remapped
+> > >> elsewhere.
+> > >> 
+> > >> This adds logic to force a COW event by setting FOLL_WRITE on any
+> > >> copy-on-write mapping when FOLL_GET (or FOLL_PIN) is used to get a page
+> > >> pointer as a result.
+> > >> 
+> > >> The current semantics end up being:
+> > >> 
+> > >>  - __get_user_pages_fast(): no change. If you don't ask for a write,
+> > >>    you won't break COW. You'd better know what you're doing.
+> > >> 
+> > >>  - get_user_pages_fast(): the fast-case "look it up in the page tables
+> > >>    without anything getting mmap_sem" now refuses to follow a read-only
+> > >>    page, since it might need COW breaking.  Which happens in the slow
+> > >>    path - the fast path doesn't know if the memory might be COW or not.
+> > >> 
+> > >>  - get_user_pages() (including the slow-path fallback for gup_fast()):
+> > >>    for a COW mapping, turn on FOLL_WRITE for FOLL_GET/FOLL_PIN, with
+> > >>    very similar semantics to FOLL_FORCE.
+> > >> 
+> > >> If it turns out that we want finer granularity (ie "only break COW when
+> > >> it might actually matter" - things like the zero page are special and
+> > >> don't need to be broken) we might need to push these semantics deeper
+> > >> into the lookup fault path.  So if people care enough, it's possible
+> > >> that we might end up adding a new internal FOLL_BREAK_COW flag to go
+> > >> with the internal FOLL_COW flag we already have for tracking "I had a
+> > >> COW".
+> > >> 
+> > >> Alternatively, if it turns out that different callers might want to
+> > >> explicitly control the forced COW break behavior, we might even want to
+> > >> make such a flag visible to the users of get_user_pages() instead of
+> > >> using the above default semantics.
+> > >> 
+> > >> But for now, this is mostly commentary on the issue (this commit message
+> > >> being a lot bigger than the patch, and that patch in turn is almost all
+> > >> comments), with that minimal "enable COW breaking early" logic using the
+> > >> existing FOLL_WRITE behavior.
+> > >> 
+> > >> [ It might be worth noting that we've always had this ambiguity, and it
+> > >>   could arguably be seen as a user-space issue.
+> > >> 
+> > >>   You only get private COW mappings that could break either way in
+> > >>   situations where user space is doing cooperative things (ie fork()
+> > >>   before an execve() etc), but it _is_ surprising and very subtle, and
+> > >>   fork() is supposed to give you independent address spaces.
+> > >> 
+> > >>   So let's treat this as a kernel issue and make the semantics of
+> > >>   get_user_pages() easier to understand. Note that obviously a true
+> > >>   shared mapping will still get a page that can change under us, so this
+> > >>   does _not_ mean that get_user_pages() somehow returns any "stable"
+> > >>   page ]
+> > >> 
+> > >> [surenb: backport notes
+> > >>         Since gup_pgd_range does not exist, made appropriate changes on
+> > >>         the the gup_huge_pgd, gup_huge_pd and gup_pud_range calls instead.
+> > >> 	Replaced (gup_flags | FOLL_WRITE) with write=1 in gup_huge_pgd,
+> > >>         gup_huge_pd and gup_pud_range.
+> > >> 	Removed FOLL_PIN usage in should_force_cow_break since it's missing in
+> > >> 	the earlier kernels.]
+> > > 
+> > > I'd be really careful with backporting this to stable. There was a lot of
+> > > userspace breakage caused by this change if I remember right which needed
+> > > to be fixed up later. There is a nice summary at
+> > > https://lwn.net/Articles/849638/ and https://lwn.net/Articles/849876/ and
+> > > some problems are still being found...
+> > 
+> > Yeah that was my initial reaction. But looks like back in April we agreed
+> > that backporting only this commit could be feasible - the relevant subthread
+> > starts around here [1]. The known breakage for just this commit was uffd
+> > functionality introduced only in 5.7, and strace on dax on pmem (that was
+> > never properly root caused). 5.4 stable already has the backport since year
+> > ago, Suren posted 4.14 and 4.19 in April after [1]. Looks like nobody
+> > reported issues? Continuing with 4.4 and 4.9 makes this consistent at least,
+> > although the risk of breaking something is always there and the CVE probably
+> > not worth it, but whatever...
+> 
+> I have had people "complain" that the issue was not fixed on these older
+> kernels, now if that is just because those groups have a "it has a CVE
+> so it must be fixed!" policy or not, it is hard to tell.
+> 
+> But this seems to be exploitable, and we have a reproducer somewhere
+> around here, so it would be nice to get resolved for the reason of it
+> being a bug that we should fix if possible.
+> 
+> So I would err on the side of "lets merge this" as fixing a known issue
+> is ALWAYS better than the fear of "maybe something might break".  We can
+> always revert if the latter happens in testing.
+> 
+> thanks,
+> 
+> greg k-h
+
+When we backported this to the Ubuntu kernel based on 4.4, we found a
+regression that required commit 38e088546522e1e86d2b8f401a1354ad3a9b3303
+("mm: check VMA flags to avoid invalid PROT_NONE NUMA balancing") as a fix.
+
+I tested that this was also the case with the 4.4.y stable-rc tree and I am
+providing our backport below, which I also tested. The reproducer that
+regresses reads from /proc/self/mem. Writing to /proc/self/mem seems to
+have been a bug on 4.4 for a while and is also fixed by this backport, so
+should be considered in any case.
+
+Cascardo.
+
+--SgIC40tiGMOi4sUs
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-mm-check-VMA-flags-to-avoid-invalid-PROT_NONE-NUMA-b.patch"
+
+From 757597f803f5770ebd7c70d4bf0068aa525c033a Mon Sep 17 00:00:00 2001
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+Date: Mon, 5 Apr 2021 22:36:00 +0200
+Subject: [PATCH 4.4] mm: check VMA flags to avoid invalid PROT_NONE NUMA
+ balancing
+
+commit 38e088546522e1e86d2b8f401a1354ad3a9b3303 upstream.
+
+The NUMA balancing logic uses an arch-specific PROT_NONE page table flag
+defined by pte_protnone() or pmd_protnone() to mark PTEs or huge page
+PMDs respectively as requiring balancing upon a subsequent page fault.
+User-defined PROT_NONE memory regions which also have this flag set will
+not normally invoke the NUMA balancing code as do_page_fault() will send
+a segfault to the process before handle_mm_fault() is even called.
+
+However if access_remote_vm() is invoked to access a PROT_NONE region of
+memory, handle_mm_fault() is called via faultin_page() and
+__get_user_pages() without any access checks being performed, meaning
+the NUMA balancing logic is incorrectly invoked on a non-NUMA memory
+region.
+
+A simple means of triggering this problem is to access PROT_NONE mmap'd
+memory using /proc/self/mem which reliably results in the NUMA handling
+functions being invoked when CONFIG_NUMA_BALANCING is set.
+
+This issue was reported in bugzilla (issue 99101) which includes some
+simple repro code.
+
+There are BUG_ON() checks in do_numa_page() and do_huge_pmd_numa_page()
+added at commit c0e7cad to avoid accidentally provoking strange
+behaviour by attempting to apply NUMA balancing to pages that are in
+fact PROT_NONE.  The BUG_ON()'s are consistently triggered by the repro.
+
+This patch moves the PROT_NONE check into mm/memory.c rather than
+invoking BUG_ON() as faulting in these pages via faultin_page() is a
+valid reason for reaching the NUMA check with the PROT_NONE page table
+flag set and is therefore not always a bug.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=99101
+Reported-by: Trevor Saunders <tbsaunde@tbsaunde.org>
+Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+Acked-by: Rik van Riel <riel@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+Signed-off-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+[cascardo: context adjustments were necessary]
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+---
+ mm/huge_memory.c |  3 ---
+ mm/memory.c      | 12 +++++++-----
+ 2 files changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index fae45c56e2ee..2f53786098c5 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1340,9 +1340,6 @@ int do_huge_pmd_numa_page(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	bool was_writable;
+ 	int flags = 0;
+ 
+-	/* A PROT_NONE fault should not end up here */
+-	BUG_ON(!(vma->vm_flags & (VM_READ | VM_EXEC | VM_WRITE)));
+-
+ 	ptl = pmd_lock(mm, pmdp);
+ 	if (unlikely(!pmd_same(pmd, *pmdp)))
+ 		goto out_unlock;
+diff --git a/mm/memory.c b/mm/memory.c
+index 360d28224a8e..6bfc6a021c4f 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3209,9 +3209,6 @@ static int do_numa_page(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	bool was_writable = pte_write(pte);
+ 	int flags = 0;
+ 
+-	/* A PROT_NONE fault should not end up here */
+-	BUG_ON(!(vma->vm_flags & (VM_READ | VM_EXEC | VM_WRITE)));
+-
+ 	/*
+ 	* The "pte" at this point cannot be used safely without
+ 	* validation through pte_unmap_same(). It's of NUMA type but
+@@ -3304,6 +3301,11 @@ static int wp_huge_pmd(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	return VM_FAULT_FALLBACK;
+ }
+ 
++static inline bool vma_is_accessible(struct vm_area_struct *vma)
++{
++	return vma->vm_flags & (VM_READ | VM_EXEC | VM_WRITE);
++}
++
+ /*
+  * These routines also need to handle stuff like marking pages dirty
+  * and/or accessed for architectures that don't do it in hardware (most
+@@ -3350,7 +3352,7 @@ static int handle_pte_fault(struct mm_struct *mm,
+ 					pte, pmd, flags, entry);
+ 	}
+ 
+-	if (pte_protnone(entry))
++	if (pte_protnone(entry) && vma_is_accessible(vma))
+ 		return do_numa_page(mm, vma, address, entry, pte, pmd);
+ 
+ 	ptl = pte_lockptr(mm, pmd);
+@@ -3425,7 +3427,7 @@ static int __handle_mm_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			if (pmd_trans_splitting(orig_pmd))
+ 				return 0;
+ 
+-			if (pmd_protnone(orig_pmd))
++			if (pmd_protnone(orig_pmd) && vma_is_accessible(vma))
+ 				return do_huge_pmd_numa_page(mm, vma, address,
+ 							     orig_pmd, pmd);
+ 
+-- 
+2.30.2
+
+
+--SgIC40tiGMOi4sUs--
