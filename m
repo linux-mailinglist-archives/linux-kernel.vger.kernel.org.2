@@ -2,115 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2788042B016
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76B742B018
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbhJLXY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 19:24:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229588AbhJLXY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 19:24:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC82E60E0C;
-        Tue, 12 Oct 2021 23:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634080976;
-        bh=19NERmz1OqKhIhpjNbFrKpQAyB+6CWRvPQ5u6HEy1lg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eZQXhhZqPtEhDAbDT69+mDQw8CryvBAxGrDUcNYq+M5YfmJkgPp51lyCcAzgMtZEt
-         7TbOEw0t0kMIbkf3Z5bSlywAm9JONFZB5KB1TNf7yLezBFhHrV1fc6vdPbRteHtvJi
-         nnhMhvvvMPaaBKjRWb37CLwCxyOnj0GYxS30cro3ff2RuT64lKd5aEzH6Yd+up3OaH
-         HQVGdst1F0TFZ9vO5MpC4Th1gmnarMLVmZ3qzDvsAammTQomu51Lm/h8YoIxo6gwi0
-         Xzo8Gn/yQ1XN4VSJ7a3hFIVcM2lEAqgwGj/+siE20Dz8VVFusSRxHmWdVH/pXc+ZrH
-         5kNamSSFyjrFQ==
-Date:   Tue, 12 Oct 2021 16:22:55 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Rustam Kovhaev <rkovhaev@gmail.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, gregkh@linuxfoundation.org,
-        Al Viro <viro@zeniv.linux.org.uk>, dvyukov@google.com
-Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
-Message-ID: <20211012232255.GS24307@magnolia>
-References: <20210929212347.1139666-1-rkovhaev@gmail.com>
- <20210930044202.GP2361455@dread.disaster.area>
- <17f537b3-e2eb-5d0a-1465-20f3d3c960e2@suse.cz>
- <YVYGcLbu/aDKXkag@nuc10>
- <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz>
- <YVZXF3mbaW+Pe+Ji@nuc10>
- <1e0df91-556e-cee5-76f7-285d28fe31@google.com>
- <20211012204320.GP24307@magnolia>
- <20211012204345.GQ24307@magnolia>
- <9db5d16a-2999-07a4-c49d-7417601f834f@suse.cz>
+        id S235535AbhJLX1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 19:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233180AbhJLX1d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 19:27:33 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2555C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:25:30 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id oa4so799266pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:25:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+MCbUR+9Em0iYarChlkTpQ1HVke2G/DGf/+kVt506hA=;
+        b=K9rtvqDADOFi/pV5Xt1D0nPncFQCJGbmTgJ6Gh9DcnS3GNIm588XShQ24y6u8kIcAB
+         GmbYJg3UT98mpFJfsSaNTUzmRplRn67F3kZuwMvDNrZq+PENH7D9XR1Wl0+y91tTRCnD
+         bCd4A2n2YUHcESbQsCNiVMQCg0SDCPV1gMYMeg1xO8RwEYoWoCvPqK2AsKDAxuIOzNAv
+         z1BeJuotoWsSKzPV6HyMGPBbdxkbLLSMS0lwPoaLj/FWv/vMZzBzoFNAHRAJqP6t5So6
+         Ay5NNU+Wu84lNQ08vuDl9qk97LMNxXBm9PREA9ck+9zarZYhb4SNrlHrlnwW7aHv+/zq
+         Ws9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+MCbUR+9Em0iYarChlkTpQ1HVke2G/DGf/+kVt506hA=;
+        b=lvUlA4m7uu/uSAns2FKi+ROQ7k71Fl4NrliYTYmnqi9MGvv174vCvG0tZKrrDU9Yhl
+         6YTpEp7F/+uUMtLqd/5B09b/INALF478jfSZIPcV0ZFG8bVBIRL0Bh5gQCYSgFjwoBw1
+         /VhuJ/4Mfiw3XinErqarjyqJpR3vSGKW4qtZLmzSea8orlTbf/FAfBNTiSaVj0H7HO0D
+         Nc58OSlBlaDPoA4VhHqKeV5CD90jMFHjyjZ2GoAzY7ad/jMN6GsOaQdykofKzKIml05K
+         +auIyj9QORq8xegxQE7g+JQipMA/5tf1p6iHDxS+RYFVuWtCczzPnVRJ2lCZLMxsmr37
+         0mzA==
+X-Gm-Message-State: AOAM532181+lR4vQw78AFq4HD2KsT8xvLaBWS6IzRAZNUP9R9M+/nLTe
+        w0cgMGjY1KEww+TADLjV5uxS9A==
+X-Google-Smtp-Source: ABdhPJxjh74j84b81uD2Wn5kWtHXWmrQZ1OVNkdEUMaIHUWxMYB0qGb8Uw91qe1lKFjIKloQRA4B7g==
+X-Received: by 2002:a17:902:db01:b0:13e:d9ac:b8ff with SMTP id m1-20020a170902db0100b0013ed9acb8ffmr33135606plx.46.1634081130322;
+        Tue, 12 Oct 2021 16:25:30 -0700 (PDT)
+Received: from posk-g1.lan (23-118-52-46.lightspeed.sntcca.sbcglobal.net. [23.118.52.46])
+        by smtp.gmail.com with ESMTPSA id v20sm12675026pgc.38.2021.10.12.16.25.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 16:25:29 -0700 (PDT)
+From:   Peter Oskolkov <posk@posk.io>
+X-Google-Original-From: Peter Oskolkov <posk@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Cc:     Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Peter Oskolkov <posk@posk.io>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: [PATCH v0.7 0/5] sched,mm,x86/uaccess: implement User Managed Concurrency Groups
+Date:   Tue, 12 Oct 2021 16:25:17 -0700
+Message-Id: <20211012232522.714898-1-posk@google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9db5d16a-2999-07a4-c49d-7417601f834f@suse.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 11:32:25PM +0200, Vlastimil Babka wrote:
-> On 10/12/2021 10:43 PM, Darrick J. Wong wrote:
-> > On Tue, Oct 12, 2021 at 01:43:20PM -0700, Darrick J. Wong wrote:
-> >> On Sun, Oct 03, 2021 at 06:07:20PM -0700, David Rientjes wrote:
-> >>> On Thu, 30 Sep 2021, Rustam Kovhaev wrote:
-> >>>
-> >>>>>>> I think it's fair if something like XFS (not meant for tiny systems AFAIK?)
-> >>>>>>> excludes SLOB (meant for tiny systems). Clearly nobody tried to use these
-> >>>>>>> two together last 5 years anyway.
-> >>>>>>
-> >>>>>> +1 for adding Kconfig option, it seems like some things are not meant to
-> >>>>>> be together.
-> >>>>>
-> >>>>> But if we patch SLOB, we won't need it.
-> >>>>
-> >>>> OK, so we consider XFS on SLOB a supported configuration that might be
-> >>>> used and should be tested.
-> >>>> I'll look into maybe adding a config with CONFIG_SLOB and CONFIG_XFS_FS
-> >>>> to syzbot.
-> >>>>
-> >>>> It seems that we need to patch SLOB anyway, because any other code can
-> >>>> hit the very same issue.
-> >>>>
-> >>>
-> >>> It's probably best to introduce both (SLOB fix and Kconfig change for 
-> >>> XFS), at least in the interim because the combo of XFS and SLOB could be 
-> >>> broken in other ways.  If syzbot doesn't complain with a patched kernel to 
-> >>> allow SLOB to be used with XFS, then we could potentially allow them to be 
-> >>> used together.
-> >>>
-> >>> (I'm not sure that this freeing issue is the *only* thing that is broken, 
-> >>> nor that we have sufficient information to make that determination right 
-> >>> now..)
-> >>
-> >> I audited the entire xfs (kernel) codebase and didn't find any other
-> >> usage errors.  Thanks for the patch; I'll apply it to for-next.
-> 
-> Which patch, the one that started this thread and uses kmem_cache_free() instead
-> of kfree()? I thought we said it's not the best way?
+User Managed Concurrency Groups (UMCG) is an M:N threading
+subsystem/toolkit that lets user space application developers implement
+in-process user space schedulers.
 
-It's probably better to fix slob to be able to tell that a kmem_free'd
-object actually belongs to a cache and should get freed that way, just
-like its larger sl[ua]b cousins.
+Key changes from the previous patchset
+https://lore.kernel.org/all/20210917180323.278250-1-posk@google.com/ :
 
-However, even if that does come to pass, anybody /else/ who wants to
-start(?) using XFS on a SLOB system will need this patch to fix the
-minor papercut.  Now that I've checked the rest of the codebase, I don't
-find it reasonable to make XFS mutually exclusive with SLOB over two
-instances of slab cache misuse.  Hence the RVB. :)
+- userspace atomic helpers moved into mm/
+- UMCG task states are now tagged with timestamps
+- cross-mm interactions (wakeups) are not permitted
+- several smaller fixes and refactorings
 
---D
+These big things remain to be addressed (in no particular order):
+- support tracing/debugging
+- make context switches faster (see umcg_do_context_switch in umcg.c)
+- support other architectures
+- cleanup and post userspace support in tools/lib/umcg/
+- cleanup and post selftests in tools/testing/selftests/umcg/
+- allow cross-mm wakeups (securely)
 
-> > Also, the obligatory
-> > 
-> > Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> > 
-> > --D
-> > 
-> >>
-> >> --D
-> 
+I'm working on finalizing libumcg and kselftests.
+
+Signed-off-by: Peter Oskolkov <posk@google.com>
+
+Peter Oskolkov (5):
+  sched/umcg: add WF_CURRENT_CPU and externise ttwu
+  mm, x86/uaccess: add userspace atomic helpers
+  sched/umcg: implement UMCG syscalls
+  sched/umcg: add Documentation/userspace-api/umcg.rst
+  sched/umcg: add Documentation/userspace-api/umcg.txt
+
+ Documentation/userspace-api/umcg.rst   | 611 ++++++++++++++++
+ Documentation/userspace-api/umcg.txt   | 594 ++++++++++++++++
+ arch/x86/entry/syscalls/syscall_64.tbl |   2 +
+ arch/x86/include/asm/uaccess_64.h      |  93 +++
+ fs/exec.c                              |   1 +
+ include/linux/sched.h                  |  71 ++
+ include/linux/syscalls.h               |   3 +
+ include/linux/uaccess.h                |  46 ++
+ include/uapi/asm-generic/unistd.h      |   6 +-
+ include/uapi/linux/umcg.h              | 137 ++++
+ init/Kconfig                           |  10 +
+ kernel/entry/common.c                  |   4 +-
+ kernel/exit.c                          |   5 +
+ kernel/sched/Makefile                  |   1 +
+ kernel/sched/core.c                    |  12 +-
+ kernel/sched/fair.c                    |   4 +
+ kernel/sched/sched.h                   |  15 +-
+ kernel/sched/umcg.c                    | 926 +++++++++++++++++++++++++
+ kernel/sys_ni.c                        |   4 +
+ mm/maccess.c                           | 264 +++++++
+ 20 files changed, 2797 insertions(+), 12 deletions(-)
+ create mode 100644 Documentation/userspace-api/umcg.rst
+ create mode 100644 Documentation/userspace-api/umcg.txt
+ create mode 100644 include/uapi/linux/umcg.h
+ create mode 100644 kernel/sched/umcg.c
+
+--
+2.25.1
+
