@@ -2,176 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4886E42A394
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D7442A3AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236298AbhJLLs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:48:29 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13726 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbhJLLs2 (ORCPT
+        id S236274AbhJLL4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 07:56:16 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:22026 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232665AbhJLL4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:48:28 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HTDNc6jYCzVflZ;
-        Tue, 12 Oct 2021 19:44:48 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Tue, 12 Oct 2021 19:46:24 +0800
-Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
- previous check time
-To:     Jan Kara <jack@suse.cz>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-3-yebin10@huawei.com>
- <20211007123100.GG12712@quack2.suse.cz> <615FA55B.5070404@huawei.com>
- <615FAF27.8070000@huawei.com> <20211012084727.GF9697@quack2.suse.cz>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <61657590.2050407@huawei.com>
-Date:   Tue, 12 Oct 2021 19:46:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Tue, 12 Oct 2021 07:56:15 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19CBqHki010546;
+        Tue, 12 Oct 2021 11:54:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2021-07-09; bh=GOvdf50VyIqyVyyskw2X4oyOo7gaVVfLw8MH7DW22do=;
+ b=TTy2tFud9/lhTKr2Ivkqm5YD4SgO4kmY3mMsohTFDI6AuaeJxvEqUFj/LGtH9sqs9yxo
+ MnfBp8DNcz/N6plQjHD6wVOIEOpN8Au+xl8TQ6XIoE1XdO7A8Aiz+5BKLxWYFzAjKYnG
+ 4DiyG93YR+pNDoZxSQzw7ueo4EIuKQf4eGqsr1z7z/dnlHySuexivPhg1zoA0QFN92oC
+ 3WYjN/hHnfpogyqqnIDn1PmcGhSQYXvkqyaeyJgGJ2/+DYFsogG7AJRL1/iL+pMCqZXB
+ BmrJtsZxZVKIFJDGLU+AY7VLyWpsEtehlXaJBE2d1G6eUpguBo6v2E4Z7f+pwrtzR7iK ww== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bmq29q7wd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 11:53:50 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19CBoPYu156819;
+        Tue, 12 Oct 2021 11:53:34 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 3bkyxrj1ac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 11:53:34 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 19CBq7kS167266;
+        Tue, 12 Oct 2021 11:53:33 GMT
+Received: from t460.home (dhcp-10-175-26-251.vpn.oracle.com [10.175.26.251])
+        by aserp3030.oracle.com with ESMTP id 3bkyxrj19q-1;
+        Tue, 12 Oct 2021 11:53:33 +0000
+From:   Vegard Nossum <vegard.nossum@oracle.com>
+To:     Stefan Mavrodiev <stefan@olimex.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] drm/panel: olimex-lcd-olinuxino: select CRC32
+Date:   Tue, 12 Oct 2021 13:52:42 +0200
+Message-Id: <20211012115242.10325-1-vegard.nossum@oracle.com>
+X-Mailer: git-send-email 2.23.0.718.g5ad94255a8
 MIME-Version: 1.0
-In-Reply-To: <20211012084727.GF9697@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+X-Proofpoint-ORIG-GUID: 5erpPMEU2r0ZG6OyF1FKTHOIhRW-UxED
+X-Proofpoint-GUID: 5erpPMEU2r0ZG6OyF1FKTHOIhRW-UxED
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following build/link error by adding a dependency on the CRC32
+routines:
 
+  ld: drivers/gpu/drm/panel/panel-olimex-lcd-olinuxino.o: in function `lcd_olinuxino_probe':
+  panel-olimex-lcd-olinuxino.c:(.text+0x303): undefined reference to `crc32_le'
 
-On 2021/10/12 16:47, Jan Kara wrote:
-> On Fri 08-10-21 10:38:31, yebin wrote:
->> On 2021/10/8 9:56, yebin wrote:
->>> On 2021/10/7 20:31, Jan Kara wrote:
->>>> On Sat 11-09-21 17:00:55, Ye Bin wrote:
->>>>> kmmpd:
->>>>> ...
->>>>>       diff = jiffies - last_update_time;
->>>>>       if (diff > mmp_check_interval * HZ) {
->>>>> ...
->>>>> As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
->>>>> than 'mmp_update_interval', so there will never trigger detection.
->>>>> Introduce last_check_time record previous check time.
->>>>>
->>>>> Signed-off-by: Ye Bin <yebin10@huawei.com>
->>>> I think the check is there only for the case where write_mmp_block() +
->>>> sleep took longer than mmp_check_interval. I agree that should rarely
->>>> happen but on a really busy system it is possible and in that case
->>>> we would
->>>> miss updating mmp block for too long and so another node could have
->>>> started
->>>> using the filesystem. I actually don't see a reason why kmmpd should be
->>>> checking the block each mmp_check_interval as you do -
->>>> mmp_check_interval
->>>> is just for ext4_multi_mount_protect() to know how long it should wait
->>>> before considering mmp block stale... Am I missing something?
->>>>
->>>>                                  Honza
->>> I'm sorry, I didn't understand the detection mechanism here before. Now
->>> I understand
->>> the detection mechanism here.
->>> As you said, it's just an abnormal protection. There's really no problem.
->>>
->> Yeah, i did test as following steps
->> hostA                        hostB
->>     mount
->>       ext4_multi_mount_protect  -> seq == EXT4_MMP_SEQ_CLEAN
->>          delay 5s after label "skip" so hostB will see seq is
->> EXT4_MMP_SEQ_CLEAN
->>                         mount
->>                         ext4_multi_mount_protect -> seq == EXT4_MMP_SEQ_CLEAN
->>                                 run  kmmpd
->>      run kmmpd
->>
->> Actually，in this  situation kmmpd will not detect  confliction.
->> In ext4_multi_mount_protect function we write mmp data first and wait
->> 'wait_time * HZ'  seconds,
->> read mmp data do check. Most of the time, If 'wait_time' is zero, it can pass
->> check.
-> But how can be wait_time zero? As far as I'm reading the code, wait_time
-> must be at least EXT4_MMP_MIN_CHECK_INTERVAL...
->
-> 								Honza
-  int ext4_multi_mount_protect(struct super_block *sb,
-                                      ext4_fsblk_t mmp_block)
-  {
-          struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-          struct buffer_head *bh = NULL;
-          struct mmp_struct *mmp = NULL;
-          u32 seq;
-          unsigned int mmp_check_interval = 
-le16_to_cpu(es->s_mmp_update_interval);
-          unsigned int wait_time = 0;                    --> wait_time 
-is equal with zero
-          int retval;
+Fixes: 17fd7a9d324fd ("drm/panel: Add support for Olimex LCD-OLinuXino panel")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+---
+ drivers/gpu/drm/panel/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-          if (mmp_block < le32_to_cpu(es->s_first_data_block) ||
-              mmp_block >= ext4_blocks_count(es)) {
-                  ext4_warning(sb, "Invalid MMP block in superblock");
-                  goto failed;
-          }
-
-          retval = read_mmp_block(sb, &bh, mmp_block);
-          if (retval)
-                  goto failed;
-
-          mmp = (struct mmp_struct *)(bh->b_data);
-
-          if (mmp_check_interval < EXT4_MMP_MIN_CHECK_INTERVAL)
-                  mmp_check_interval = EXT4_MMP_MIN_CHECK_INTERVAL;
-
-          /*
-           * If check_interval in MMP block is larger, use that instead of
-           * update_interval from the superblock.
-           */
-          if (le16_to_cpu(mmp->mmp_check_interval) > mmp_check_interval)
-                  mmp_check_interval = le16_to_cpu(mmp->mmp_check_interval);
-
-          seq = le32_to_cpu(mmp->mmp_seq);
-          if (seq == EXT4_MMP_SEQ_CLEAN)   --> If hostA and hostB mount 
-the same block device at the same time,
---> HostA and hostB  maybe get 'seq' with the same value 
-EXT4_MMP_SEQ_CLEAN.
-                  goto skip;
-...
-skip:
-         /*
-          * write a new random sequence number.
-          */
-         seq = mmp_new_seq();
-         mmp->mmp_seq = cpu_to_le32(seq);
-
-         retval = write_mmp_block(sb, bh);
-         if (retval)
-                 goto failed;
-
-         /*
-          * wait for MMP interval and check mmp_seq.
-          */
-         if (schedule_timeout_interruptible(HZ * wait_time) != 0) 
-{        --> If seq is equal with EXT4_MMP_SEQ_CLEAN, wait_time is zero.
-                 ext4_warning(sb, "MMP startup interrupted, failing mount");
-                 goto failed;
-         }
-
-         retval = read_mmp_block(sb, &bh, mmp_block); -->We may get the 
-same data with which we wrote, so we can't detect conflict at here.
-         if (retval)
-                 goto failed;
-         mmp = (struct mmp_struct *)(bh->b_data);
-         if (seq != le32_to_cpu(mmp->mmp_seq)) {
-                 dump_mmp_msg(sb, mmp,
-                              "Device is already active on another node.");
-                 goto failed;
-         }
-...
-}
+diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+index beb581b96ecdc..418638e6e3b0a 100644
+--- a/drivers/gpu/drm/panel/Kconfig
++++ b/drivers/gpu/drm/panel/Kconfig
+@@ -295,6 +295,7 @@ config DRM_PANEL_OLIMEX_LCD_OLINUXINO
+ 	depends on OF
+ 	depends on I2C
+ 	depends on BACKLIGHT_CLASS_DEVICE
++	select CRC32
+ 	help
+ 	  The panel is used with different sizes LCDs, from 480x272 to
+ 	  1280x800, and 24 bit per pixel.
+-- 
+2.23.0.718.g5ad94255a8
 
