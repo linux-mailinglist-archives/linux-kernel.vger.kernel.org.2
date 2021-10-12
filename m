@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8414F429F1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B343A429F1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234537AbhJLH7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:59:18 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:43119 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234071AbhJLH7R (ORCPT
+        id S234551AbhJLH70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:59:26 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:55067 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234071AbhJLH7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:59:17 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MDN3O-1mQoTU2fN0-00ATlq; Tue, 12 Oct 2021 09:57:14 +0200
-Received: by mail-wr1-f52.google.com with SMTP id k7so63966282wrd.13;
-        Tue, 12 Oct 2021 00:57:14 -0700 (PDT)
-X-Gm-Message-State: AOAM530MB4Sh3F6fS42xG83uXgsMIujmhDy4dwZppDXtXR07q5epu2ca
-        he0cxEmgpNJwcCSY5SCVtroQLdHKqG6lTz4o0v0=
-X-Google-Smtp-Source: ABdhPJzWrZtND5T+4NGejpva/W8WIuD9h+k1kDLd+VcFgHNzaQqSyGSZf5ek5xhDWcL5GxoX2zXDA9fgG0pHtoPUydE=
-X-Received: by 2002:a05:600c:4f42:: with SMTP id m2mr1227990wmq.82.1634025434301;
- Tue, 12 Oct 2021 00:57:14 -0700 (PDT)
+        Tue, 12 Oct 2021 03:59:22 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UrYcJvG_1634025437;
+Received: from B-X3VXMD6M-2058.local(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UrYcJvG_1634025437)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 12 Oct 2021 15:57:18 +0800
+From:   Xin Hao <xhao@linux.alibaba.com>
+Reply-To: xhao@linux.alibaba.com
+Subject: Re: [PATCH] mm/damon/dbgfs: add region_stat interface
+To:     SeongJae Park <sj@kernel.org>
+Cc:     sjpark@amazon.de, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20211012071119.32320-1-sj@kernel.org>
+Message-ID: <7ab062d3-f087-78ef-4630-471bb6d16275@linux.alibaba.com>
+Date:   Tue, 12 Oct 2021 15:57:17 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20211012110309.17d51c3e@canb.auug.org.au> <97e578a3-b12e-1975-717d-a0cf663673f0@microchip.com>
-In-Reply-To: <97e578a3-b12e-1975-717d-a0cf663673f0@microchip.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 12 Oct 2021 09:56:57 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0G9VoB71aBWGrtdxe2bNbv7apaAQqQXSf==TGwcKQvaw@mail.gmail.com>
-Message-ID: <CAK8P3a0G9VoB71aBWGrtdxe2bNbv7apaAQqQXSf==TGwcKQvaw@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the arm-soc tree
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:YCjqiO5d8rM/ML//nqqgeghr7hhfufNL84KVlvlohxLkuHFH8JP
- psa2SD4+IMonWusynNJKPSIuqBCgpBQK1EApliaZmVZ6PG4Mh5NxdlmikRlTE4no18bolqF
- uyHYLe+CbiGtDtlMfy3A+iKsZsRvOId6/o3Q+cipFeOcCx58Bq4NopOJKqMg6bl9yjvRjgm
- fMH2EFOPoo7f7tohcXV5A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:B0fYAbf004E=:osQJhuFZv855WWeJkzfbpl
- 1XaGwpYsOW4tA8opfTFAHZzDDQmMhf6KkrCUnXqvnKlt/Wj8nt/4G+Tq4XCDUFs/TqPY5Yzf/
- bBM00PyHf6cU3xOZVfsvExpC4+UXDM4HyHcltY+Jb5quzZbXMerKCnCuk5Ti6rTT+dZ3dJ5Ar
- 0LA6fCiuLY8WKK9Y23tsRrF0yasXsWnfIUrDCOjNY3sSKZ1qIYDkmXKVndtMnVHJDEh84kQyP
- 0aqgtFarXPWyjNiZNBI6lsm7/bT2w3YKwyXv++lBaz+DbuT3Xnt6NszA6fwSGR1hSzsQUArmz
- dE7Rd9ij9qNFbG98oU+hk8AGnjMrKOvrsZv5YWzfWywgPBxnv7prOpdpDx4T5DM8ccMVBVH7Q
- WvS8lqHT98dS9qynBR8Z/h3DOV7IG6uGPqFpB0vBMHt6qOeC7CBfbOoDTEwPIUTD+A2RRkD9v
- 1QKtz3dYgmNiQINbgb78Q87B8z4j0dqz40kIs0x2/88+Xa/CYB9GCSqD7xNgb3YO+72s4E+SB
- dpbSC8HJp6hy1xdyKMkLmQf+Hqros2cHZWn5eRoOdag9nhOyjgdh0y4lnoYXLTTuKIMT5/xSq
- X7JK/fXIDFw9ntgIodXHT47lAlPksQn2f9XT7TrF77+Zu2w58ttkZuyrLMnW55yiwOdmYj0lc
- jdWSeVFXVhCqEF8ZWYpIB171W60t5Vr1xdPBfwsBIykcm30P4TWbJ6mePaaadRlfT6eRxD7Fn
- 8W4lhGBYJg7aO1clr2HQG1R8rjaPBHK1JTN4KQ==
+In-Reply-To: <20211012071119.32320-1-sj@kernel.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 9:35 AM Nicolas Ferre
-<nicolas.ferre@microchip.com> wrote:
-> On 12/10/2021 at 02:03, Stephen Rothwell wrote:
-> >
-> > After merging the arm-soc tree, today's linux-next build (arm
-> > multi_v7_defconfig) failed like this:
-> >
-> > Error: arch/arm/boot/dts/sama7g5.dtsi:167.3-7 syntax error
-> > FATAL ERROR: Unable to parse input tree
-> >
-> > Caused by commit
-> >
-> >    9be4be3ed1ec ("Merge branch 'arm/dt' into for-next")
 
-Thank you for the report!
-
-I had verified the arm/dt branch by itself, but didn't recheck it after I
-merged it into the for-next branch. At least that one is easy to fix
-up as I don't send the combined branch to Linus, and the arm/dt
-branch does not have the problem.
-
-> I had following patch to have the nodes in alphabetical order:
+ÔÚ 2021/10/12 ÏÂÎç3:11, SeongJae Park Ð´µÀ:
+> Hello Xin, thank you for this patch!
 >
-...
+> On Tue, 12 Oct 2021 13:49:48 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
 >
-> Sorry for not having mentioned this conflict in the pull-request.
+>> Using damon-dbgfs has brought great convenience to user-mode
+>> operation damon, but sometimes if i want to be able to view
+>> the division of task regions, nr_access values etc,but i found
+>> that it is impossible to view directly through the dbgfs interface,
+>> so there i add a interface "region_stat", it displays like this.
+>>
+>>   # cat region_stat
+>>   last_aggregation=120.87s
+>>   target_id=5148
+>>   nr_regions=10
+>>   400000-258c000(34352 KiB): 1
+>>   258c000-4719000(34356 KiB): 0
+>>   4719000-abbf000(103064 KiB): 0
+>>   abbf000-c4d4000(25684 KiB): 11
+>>   c4d4000-ff5c000(59936 KiB): 15
+>>   ff5c000-152f9000(85620 KiB): 20
+>>   152f9000-1599e000(6804 KiB): 10
+>>   1599e000-19573000(61268 KiB): 0
+>>   19573000-1f92c000(102116 KiB): 0
+>>   1f92c000-22a4c000(50304 KiB): 0
+> I think similar information could also be collected via the 'damon_aggregated'
+> tracepoint[1], which is merged in the mainline, or 'DAMOS_STAT'[2], which is
+> merged in -mm.  The recording feature[3] could also be used, though it would
+> take some time before it is merged in the mainline.  Have you considered using
+> those but found some problem?
 
-No worries,
+Yes, i know we can use damon_aggregated tracepoint, but i think, add a 
+"region_stat" will be more
 
-I had assumed you had them sorted by unit-address, so I had them
- in the wrong order as well. Fixing up both issues in for-next
-now by redoing the merge.
+convenient and intuitive, especially when we use damon-dbgfs interface.
 
-       Arnd
+>
+> [1] https://git.kernel.org/torvalds/c/2fcb93629ad8
+> [2] https://lore.kernel.org/linux-mm/20211001125604.29660-6-sj@kernel.org/
+> [3] https://lore.kernel.org/linux-mm/20211008094509.16179-1-sj@kernel.org/
+>
+>
+> Thanks,
+> SJ
+>
+> [...]
+
+-- 
+Best Regards!
+Xin Hao
+
