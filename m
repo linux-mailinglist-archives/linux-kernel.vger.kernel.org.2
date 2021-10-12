@@ -2,180 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0101942AC94
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AC342AC10
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235183AbhJLSxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:53:22 -0400
-Received: from leibniz.telenet-ops.be ([195.130.137.77]:60346 "EHLO
-        leibniz.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233915AbhJLSxI (ORCPT
+        id S234150AbhJLShO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:37:14 -0400
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:41784 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233972AbhJLShM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:53:08 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by leibniz.telenet-ops.be (Postfix) with ESMTPS id 4HTPZN23pkzMqhGw
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 20:38:52 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9c93:91ff:d58:ecfb])
-        by andre.telenet-ops.be with bizsmtp
-        id 56ZY2600B0KW32a016ZYC1; Tue, 12 Oct 2021 20:33:36 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1maMai-004RUQ-03; Tue, 12 Oct 2021 20:33:32 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1maMag-002j7u-Gw; Tue, 12 Oct 2021 20:33:30 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v7 21/21] auxdisplay: ht16k33: Make use of device properties
-Date:   Tue, 12 Oct 2021 20:33:27 +0200
-Message-Id: <20211012183327.649865-22-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211012183327.649865-1-geert@linux-m68k.org>
-References: <20211012183327.649865-1-geert@linux-m68k.org>
+        Tue, 12 Oct 2021 14:37:12 -0400
+Received: by mail-wr1-f44.google.com with SMTP id t2so206117wrb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:34:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+MzK5n1Jhif+mQxJnLglldcWXS1nPzxCkrew0qXtEOU=;
+        b=qn1yIPH7igXgUYvJyNf+lMA5Na1WkDrCtZvVkXDSLw3RYsheB/SjL7h3oe/8VfJRM6
+         swQ+pEZhKhXRLK0J7GjaKAw8HyX4RQL9VuhdDJTaw8WEEoFtv3LceihfxBKTEDW1wWlC
+         sq9V5PZjA8G/NC1fEC2w00TP3lC+KxQbc7SSQhuj568escPq5duCyLxSNuCPu0umt3bs
+         YfDykx8uhUghunO2sbCrnjf+oXClI/6o6kZHLmFv3fSsihcvO2EQKE2JcwNHjRoR6yjz
+         e2QWFe5SRnH8cPWNhSD2oK2Xaj6RJsh4PJQqiZPF1BnGyCgSFE3qZOWMQfT9+yo4rqMt
+         yGIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+MzK5n1Jhif+mQxJnLglldcWXS1nPzxCkrew0qXtEOU=;
+        b=NRhBMmdulvy7jWdXKiVpOsTbCtnaGOvd/eaZ2YNcL3yxRc36LYZBPEqRuIbfg83Y+u
+         KgVotamZ9nHfZI1fI27psfn6Ck77+G3vHcfTET/1qYaxwSA3s5ayRiAQA4WHGGurG646
+         MZdOYb93uwn1z5HrmI7ReNeI72EvFVSSwU7wH1K1HsU/X0OjOPgn+cBySVoNCrczu7x+
+         U+YV6ESN2a/wSS/s5J7xOLTcVxj3UlSJJPx/wWByE+jLSMXnVyNcc4c5jXBsYt70fEa6
+         pKrIm2kSF5bxa9LSjwim7ZauHEKRzXFOasI0qHmuoHSxv7+JkGHcZ9IjSyCQVOvqn8TA
+         0gdA==
+X-Gm-Message-State: AOAM5301Q8bvLZeMB9ya7PbbIze5hvv9hamJyf5L1ahL6+jOVWUPqtIj
+        iKiclQQG1bvsQIV+cTJFK09b7A==
+X-Google-Smtp-Source: ABdhPJzE2frHKu4EaDqt6/zHRBoiXTrb/eEMPkovNnZJcaC+XoHGHrBMDZtJYnqBgCnZDk55XC5iow==
+X-Received: by 2002:a7b:c4c8:: with SMTP id g8mr7525574wmk.101.1634063611193;
+        Tue, 12 Oct 2021 11:33:31 -0700 (PDT)
+Received: from google.com ([95.148.6.175])
+        by smtp.gmail.com with ESMTPSA id c7sm4759799wmq.13.2021.10.12.11.33.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 11:33:30 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 19:33:28 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mfd: qcom-spmi-pmic: Document eight more PMICs to
+ binding
+Message-ID: <YWXU+LDZowd4iXcW@google.com>
+References: <20211005024812.2038249-1-bjorn.andersson@linaro.org>
+ <YWWfkyoV0rF4C4PP@google.com>
+ <YWXACBenQ4xrBZvY@builder.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWXACBenQ4xrBZvY@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device property API allows drivers to gather device resources from
-different sources, such as ACPI, and lift the dependency on Device Tree.
-Convert the driver to unleash the power of the device property API.
+On Tue, 12 Oct 2021, Bjorn Andersson wrote:
 
-Suggested-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
-v7:
-  - Integrate into this series,
-  - Add Reviewed-by,
-  - Use device_property_read_bool() as replacement for
-    of_get_property(),
-  - Call matrix_keypad_parse_properties() instead of
-    matrix_keypad_parse_of_params().
----
- drivers/auxdisplay/Kconfig   |  2 +-
- drivers/auxdisplay/ht16k33.c | 27 ++++++++++++---------------
- 2 files changed, 13 insertions(+), 16 deletions(-)
+> On Tue 12 Oct 09:46 CDT 2021, Lee Jones wrote:
+> 
+> > On Mon, 04 Oct 2021, Bjorn Andersson wrote:
+> > 
+> > > Update the binding with eitght more SPMI PMIC compatibles found in the
+> > 
+> > Spell check.
+> > 
+> 
+> Bummer...
+> 
+> > > PMIC info list in the Qualcomm socinfo driver.
+> > > 
+> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > ---
+> > >  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
+> > > index 5ef79bf3d035..1d2b5f067556 100644
+> > > --- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
+> > > +++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
+> > > @@ -29,6 +29,8 @@ Required properties:
+> > >                     "qcom,pm8916",
+> > >                     "qcom,pm8004",
+> > >                     "qcom,pm8909",
+> > > +                   "qcom,pm8028",
+> > > +                   "qcom,pm8901",
+> > >                     "qcom,pm8950",
+> > >                     "qcom,pmi8950",
+> > >                     "qcom,pm8998",
+> > > @@ -38,6 +40,12 @@ Required properties:
+> > >                     "qcom,pmk8350",
+> > >                     "qcom,pm7325",
+> > >                     "qcom,pmr735a",
+> > > +                   "qcom,pm8150",
+> > > +                   "qcom,pm8150l",
+> > > +                   "qcom,pm8150b",
+> > > +                   "qcom,pmk8002",
+> > > +                   "qcom,pm8150c",
+> > > +                   "qcom,smb2351",
+> > >                     or generalized "qcom,spmi-pmic".
+> > >  - reg:             Specifies the SPMI USID slave address for this device.
+> > >                     For more information see:
+> > 
+> > Is there any reason why these can't be in lexicographical order?
+> > 
+> 
+> Definitely not, both this list and the list compatible list in the
+> driver would be better of sorted. I just didn't want to sort and add the
+> entries in a single commit.
+> 
+> Do you want me to respin this, adding two patches that sort the
+> elements? Or will you fix my awesome spelling of 8 above and I send you
+> the patches that shuffles the entries?
 
-diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
-index e32ef7f9945d49b2..64012cda4d126707 100644
---- a/drivers/auxdisplay/Kconfig
-+++ b/drivers/auxdisplay/Kconfig
-@@ -169,7 +169,7 @@ config IMG_ASCII_LCD
- 
- config HT16K33
- 	tristate "Holtek Ht16K33 LED controller with keyscan"
--	depends on FB && OF && I2C && INPUT
-+	depends on FB && I2C && INPUT
- 	select FB_SYS_FOPS
- 	select FB_SYS_FILLRECT
- 	select FB_SYS_COPYAREA
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index aef3dc87dc9f5ed2..1134ae9f30de4baa 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -12,7 +12,7 @@
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/i2c.h>
--#include <linux/of.h>
-+#include <linux/property.h>
- #include <linux/fb.h>
- #include <linux/slab.h>
- #include <linux/backlight.h>
-@@ -491,15 +491,13 @@ static int ht16k33_led_probe(struct device *dev, struct led_classdev *led,
- 			     unsigned int brightness)
- {
- 	struct led_init_data init_data = {};
--	struct device_node *node;
- 	int err;
- 
- 	/* The LED is optional */
--	node = of_get_child_by_name(dev->of_node, "led");
--	if (!node)
-+	init_data.fwnode = device_get_named_child_node(dev, "led");
-+	if (!init_data.fwnode)
- 		return 0;
- 
--	init_data.fwnode = of_fwnode_handle(node);
- 	init_data.devicename = "auxdisplay";
- 	init_data.devname_mandatory = true;
- 
-@@ -520,7 +518,6 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
- 				struct ht16k33_keypad *keypad)
- {
- 	struct device *dev = &client->dev;
--	struct device_node *node = dev->of_node;
- 	u32 rows = HT16K33_MATRIX_KEYPAD_MAX_ROWS;
- 	u32 cols = HT16K33_MATRIX_KEYPAD_MAX_COLS;
- 	int err;
-@@ -539,17 +536,17 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
- 	keypad->dev->open = ht16k33_keypad_start;
- 	keypad->dev->close = ht16k33_keypad_stop;
- 
--	if (!of_get_property(node, "linux,no-autorepeat", NULL))
-+	if (!device_property_read_bool(dev, "linux,no-autorepeat"))
- 		__set_bit(EV_REP, keypad->dev->evbit);
- 
--	err = of_property_read_u32(node, "debounce-delay-ms",
--				   &keypad->debounce_ms);
-+	err = device_property_read_u32(dev, "debounce-delay-ms",
-+				       &keypad->debounce_ms);
- 	if (err) {
- 		dev_err(dev, "key debounce delay not specified\n");
- 		return err;
- 	}
- 
--	err = matrix_keypad_parse_of_params(dev, &rows, &cols);
-+	err = matrix_keypad_parse_properties(dev, &rows, &cols);
- 	if (err)
- 		return err;
- 	if (rows > HT16K33_MATRIX_KEYPAD_MAX_ROWS ||
-@@ -634,8 +631,8 @@ static int ht16k33_fbdev_probe(struct device *dev, struct ht16k33_priv *priv,
- 		goto err_fbdev_buffer;
- 	}
- 
--	err = of_property_read_u32(dev->of_node, "refresh-rate-hz",
--				   &fbdev->refresh_rate);
-+	err = device_property_read_u32(dev, "refresh-rate-hz",
-+				       &fbdev->refresh_rate);
- 	if (err) {
- 		dev_err(dev, "refresh rate not specified\n");
- 		goto err_fbdev_info;
-@@ -741,8 +738,8 @@ static int ht16k33_probe(struct i2c_client *client)
- 	if (err)
- 		return err;
- 
--	err = of_property_read_u32(dev->of_node, "default-brightness-level",
--				   &dft_brightness);
-+	err = device_property_read_u32(dev, "default-brightness-level",
-+				       &dft_brightness);
- 	if (err) {
- 		dft_brightness = MAX_BRIGHTNESS;
- 	} else if (dft_brightness > MAX_BRIGHTNESS) {
-@@ -830,7 +827,7 @@ static struct i2c_driver ht16k33_driver = {
- 	.remove		= ht16k33_remove,
- 	.driver		= {
- 		.name		= DRIVER_NAME,
--		.of_match_table	= of_match_ptr(ht16k33_of_match),
-+		.of_match_table	= ht16k33_of_match,
- 	},
- 	.id_table = ht16k33_i2c_match,
- };
+If you can fix the spelling and send the whole set, I'll apply it in
+one go.
+
 -- 
-2.25.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
