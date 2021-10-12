@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3248242A667
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E9842A66A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237019AbhJLNuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236678AbhJLNuV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:50:21 -0400
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989EEC061570;
-        Tue, 12 Oct 2021 06:48:19 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S237052AbhJLNvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:51:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236678AbhJLNu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 09:50:56 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 7D39F426A2;
-        Tue, 12 Oct 2021 13:48:12 +0000 (UTC)
-Subject: Re: [RFC PATCH 3/9] dt-bindings: clock: Add apple,cluster-clk binding
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-References: <20211011165707.138157-1-marcan@marcan.st>
- <20211011165707.138157-4-marcan@marcan.st>
- <0fe602f6-3adc-dfac-beee-2854b01cec5c@canonical.com>
- <20211012093529.pzzfo44ikq5oc6cl@vireshk-i7>
- <D0DE08FE-562E-4A48-BCA0-9094DAFCA564@marcan.st>
- <20211012094302.3cownyzr4phxwifs@vireshk-i7>
- <64584F8C-D49F-41B5-9658-CF8A25186E67@marcan.st>
- <20211012095735.mhh2lzu52ohtotl6@vireshk-i7>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <0168a91d-0e7d-41df-8a65-bc739fc50498@marcan.st>
-Date:   Tue, 12 Oct 2021 22:48:09 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 46C6260E94;
+        Tue, 12 Oct 2021 13:48:54 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 09:48:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] s390: DYNAMIC_FTRACE_WITH_DIRECT_CALL support
+Message-ID: <20211012094852.7f6a59b8@gandalf.local.home>
+In-Reply-To: <20211012133802.2460757-1-hca@linux.ibm.com>
+References: <20211012133802.2460757-1-hca@linux.ibm.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20211012095735.mhh2lzu52ohtotl6@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2021 18.57, Viresh Kumar wrote:
-> I didn't realize earlier that we have moved out of lists :)
+On Tue, 12 Oct 2021 15:37:58 +0200
+Heiko Carstens <hca@linux.ibm.com> wrote:
 
-Whoops, sorry, I was on mobile and must've hit the wrong reply button! 
-My apologies.
+> This small series adds DYNAMIC_FTRACE_WITH_DIRECT_CALL support for
+> s390 and is based on linux-next 20211012.
 
-> On 12-10-21, 18:54, Hector Martin "marcan" wrote:
->> Typically cpufreq-dt is used with clock drivers that directly take
->> the clock frequency and do whatever voodoo is necessary to set it
->> for the CPU. But here, the hardware just wants to know the index,
->> and does everything itself. So we need to encode that somewhere, to
->> avoid hardcoding it in the clock driver.
->>
->> In general, based on how these SoCs are designed, we're trying to
->> avoid having tables of volatile information in the drivers, and
->> instead keep everything in the DT. This means we have a good chance
->> that these drivers will continue to work with future SoC
->> generations, since Apple doesn't change register definitions
->> randomly most of the time.
+Cool!
+
 > 
-> Yeah I get that and it is actually better this way. I just wanted to
-> point out that we didn't think of it this way earlier :)
+> Besides the architecture backend this also adds s390 ftrace direct
+> call samples, and slightly changes config option handling a bit, so
+> that options only have to be selected. This way also additional future
+> architectures can easily add their trampolines to the samples.
 
-Yeah, makes sense. Seems to work fine :)
+Makes sense.
+
+> 
+> If ok, I'd like to get this upstream via the s390 tree with the next
+> merge window.
+
+A quick look at the patches look fine to me. I'll do a bit more digging
+before adding a Reviewed-by.
+
+One thing you may want to note, we are working on fixing direct trampolines
+that conflict with the function graph tracer, and have patches that fix it.
+I'm not that familiar on how ftrace works on s390, but you may want to
+investigate this, because if s390 has the issues that x86 has, where you
+can't have both function graph tracing and a direct trampoline on the same
+function.
+
+See here:
+
+  https://lore.kernel.org/all/20211008091336.33616-1-jolsa@kernel.org/
+
+-- Steve
 
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+> 
+> Heiko Carstens (4):
+>   s390/ftrace: add HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALL support
+>   s390: make STACK_FRAME_OVERHEAD available via asm-offsets.h
+>   samples: add HAVE_SAMPLE_FTRACE_DIRECT config option
+>   samples: add s390 support for ftrace direct call samples
+> 
+>  arch/s390/Kconfig                     |  2 ++
+>  arch/s390/include/asm/ftrace.h        | 12 ++++++++
+>  arch/s390/kernel/asm-offsets.c        |  1 +
+>  arch/s390/kernel/mcount.S             | 23 ++++++++++----
+>  arch/x86/Kconfig                      |  1 +
+>  samples/Kconfig                       |  5 ++-
+>  samples/ftrace/ftrace-direct-modify.c | 44 +++++++++++++++++++++++++++
+>  samples/ftrace/ftrace-direct-too.c    | 28 +++++++++++++++++
+>  samples/ftrace/ftrace-direct.c        | 28 +++++++++++++++++
+>  9 files changed, 137 insertions(+), 7 deletions(-)
+> 
+
