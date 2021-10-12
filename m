@@ -2,58 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D6D42AAD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD1742AADF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbhJLReM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:34:12 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:47064 "EHLO mail.skyhub.de"
+        id S231671AbhJLRgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:36:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229495AbhJLReL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:34:11 -0400
-Received: from zn.tnic (p200300ec2f19420044c1262ed1e42b8c.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:4200:44c1:262e:d1e4:2b8c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6B0EF1EC047E;
-        Tue, 12 Oct 2021 19:32:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634059928;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=qdAfGM7dg0L+IttARcHhODz9Kt1lSwaIYIr7sfkL9KM=;
-        b=l+tp5/EZ+vMNJ7pgMbA4jLnz/cYiiOa0GH0MxF0wRDFyO7oKcy0EN1gepxG+C3I/eAnP5r
-        LDYmmj/DwWygsZVS5FA+hwp9/aArAPLncY9hMOQynl/LlYpOTzHWXnB0NSZvqtAnD2whlO
-        kcjjCYs5zpYWYgYMW1ee2i20qg9UJto=
-Date:   Tue, 12 Oct 2021 19:32:06 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [patch 24/31] x86/fpu: Move fpregs_restore_userregs() to core
-Message-ID: <YWXGlsJsmn7jFeFL@zn.tnic>
-References: <20211011215813.558681373@linutronix.de>
- <20211011223611.727493295@linutronix.de>
+        id S229495AbhJLRgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 13:36:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 102DB60F3A;
+        Tue, 12 Oct 2021 17:34:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634060059;
+        bh=vQbEidpgXr6FaFFn7V0wQVFQj8i1/kMIP06dD8XVfKI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=FMFXZHVJfcoeh8Z/aKa+0uWphQld+A5M0vvJ2jfNQCOR6/26sAHeT2oksujVBLR6T
+         4g1clLPN2oFCIZwJh8MMjW0MvFIJXh1UTPRlWubeVeYwbSXDVIgZajcWY1YZgJbVHW
+         akr2ByLYWkTZQTwriV8KplrDxL0ncHpdrZYfDi0dPgZs2KAsDJsrLBP4v8dxA3x3eq
+         2MdMFd8+71dmmtREeGtU8KCTGWT3ZPyGqQ3oexUnRvZ7uENLBHEqsw5w/lqT0LKV56
+         9rwSOaNoobocy3nGeD36D45i9EgK34JQq1+uJYif/CcF0MwMs+fLRyaH4T4wED9sFF
+         jSMepMizG/4pg==
+Message-ID: <b990e7af84075968f2c0cd018077f40ec280d136.camel@kernel.org>
+Subject: Re: [PATCH v2 1/1] tpm: add request_locality before write
+ TPM_INT_ENABLE
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Chen Jun <chenjun102@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, rui.xiang@huawei.com
+Date:   Tue, 12 Oct 2021 20:34:16 +0300
+In-Reply-To: <20211012124803.11956-1-chenjun102@huawei.com>
+References: <20211012124803.11956-1-chenjun102@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211011223611.727493295@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 02:00:34AM +0200, Thomas Gleixner wrote:
-> Only used core internaly.
+On Tue, 2021-10-12 at 12:48 +0000, Chen Jun wrote:
+> the addr can not be written without request_locality.
 
-"Only used internally in the FPU core."
+So, you need to describe the commit does here, e.g. you could replace
+what you have with
 
-or so.
+"
+Locality is not appropriately requested before writing the int mask.
+Add the missing boilerplate.
+"
 
--- 
-Regards/Gruss,
-    Boris.
+I.e. for any commit you need to be able to describe what you are doing,
+not just the sympton.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+>=20
+> Fixes: e6aef069b6e9 ("tpm_tis: convert to using locality callbacks")
+> Signed-off-by: Chen Jun <chenjun102@huawei.com>
+> ---
+> =C2=A0drivers/char/tpm/tpm_tis_core.c | 8 ++++++++
+> =C2=A01 file changed, 8 insertions(+)
+>=20
+> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_c=
+ore.c
+> index 69579efb247b..bea587301917 100644
+> --- a/drivers/char/tpm/tpm_tis_core.c
+> +++ b/drivers/char/tpm/tpm_tis_core.c
+> @@ -978,7 +978,15 @@ int tpm_tis_core_init(struct device *dev, struct tpm=
+_tis_data *priv, int irq,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0intmask |=3D TPM_INTF_CMD=
+_READY_INT | TPM_INTF_LOCALITY_CHANGE_INT |
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 TPM_INTF_DATA_AVAIL_INT | TPM_INTF_STS=
+_VALID_INT;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0intmask &=3D ~TPM_GLOBAL_=
+INT_ENABLE;
+> +
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0rc =3D request_locality(chip, =
+0);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (rc < 0) {
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0rc =3D -ENODEV;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0goto out_err;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> +
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_tis_write32(priv, TPM=
+_INT_ENABLE(priv->locality), intmask);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0release_locality(chip, 0);
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0rc =3D tpm_chip_start(chi=
+p);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (rc)
+
+Thanks a lot for the fix. If you could fix the commit message,
+I'm happy to apply this.
+
+Also add:
+
+Cc: stable@vger.kernel.org
+
+/Jarkko
+
