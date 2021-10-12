@@ -2,140 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5009E429EA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4329F429EAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234036AbhJLHc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232500AbhJLHcz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:32:55 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20568C061570;
-        Tue, 12 Oct 2021 00:30:54 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id i12so51204201wrb.7;
-        Tue, 12 Oct 2021 00:30:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=JnveVyUJxymNAFHeYFircy9L/buzTM+7agfcS4bgS2o=;
-        b=TU62GjX2/BZDoFark1y4nnk0jlgAgrIF/JtLmiZnhk/Z4Y6xlod4+x/C0K66hsDJRJ
-         MmGkW96ZAesQxpXtVHQpXaHhwadUf5VYF26bFRl/y0XzfweSwN/CQDuc+yKj3kCgcVyy
-         M+z9wSHZEQDTIJ5CKMOGUe5ZXp8BRZmXmIetYOLZuuf7/woTXd70h9qc9+kE/gB9orSk
-         scpIKU823W33z5tLxDCZEXVMLVY5tdwnFRNSTNvYtWX04016eJ2cTU9lfqO2lvlBj5OT
-         J8EYsqdvvZyuSzAC2vSxRUYH3lVbI4CSLNEOSzeuSA1Eg5d5baLZO+5GIulBe8LgQdt4
-         Jxrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=JnveVyUJxymNAFHeYFircy9L/buzTM+7agfcS4bgS2o=;
-        b=Mj22CQIKr0rG7R04kz3RbkPdI3vvNcM0xnx9hHxRcGnMZpbzeZzcFxmZTMq4vcXhwB
-         zahLSISreifc4ONq7o1XSARU68h/Xd/gGBFAfZGZhb3J2WUXb7EvMW5bZdExUCQM1RfO
-         3fZnRX7PEgMN7z2dzlWHQGrtEjfIT81oG1DkRnxnq9qGZMtuGcZzkuPA9EadefH+yj0Y
-         INyFhVwsmTy7azd1EPEBhugklUUPW2BHlpzrTaxpg/bMmyVj3vHsLbkWmcS/UuxFoWGP
-         EjsnJuH6c85D/lTXLAyaN+bvkhEv9Ly/F8O4NOnhFCh78EgQNHyfRlRl6i+/3URKnwyz
-         jJjg==
-X-Gm-Message-State: AOAM530/TPaEDWq6r4lKnP66YLgCNAaUG6XQOrVcn83KYxaGKEqPtEIG
-        mvitWM9SKyCJq2f5gxR5XqM=
-X-Google-Smtp-Source: ABdhPJwuahxXDHHhV8wkQVubDOGdt2+/V5al4MPm2RApziKBwUSF7QkB06Gegto/1uXFcxE4I9fj0Q==
-X-Received: by 2002:a05:600c:3595:: with SMTP id p21mr3803779wmq.71.1634023852780;
-        Tue, 12 Oct 2021 00:30:52 -0700 (PDT)
-Received: from [192.168.1.21] ([195.245.16.219])
-        by smtp.gmail.com with ESMTPSA id j14sm4237565wrw.12.2021.10.12.00.30.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 00:30:52 -0700 (PDT)
-Message-ID: <f7ea1bc2e2c50aa4cc75af3bba2d09803a485b93.camel@gmail.com>
-Subject: Re: [PATCH 3/4] Input: ep93xx_keypad - use dev_pm_set_wake_irq()
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Date:   Tue, 12 Oct 2021 09:30:46 +0200
-In-Reply-To: <20211012013735.3523140-3-dmitry.torokhov@gmail.com>
-References: <20211012013735.3523140-1-dmitry.torokhov@gmail.com>
-         <20211012013735.3523140-3-dmitry.torokhov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        id S234089AbhJLHdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:33:20 -0400
+Received: from www.zeus03.de ([194.117.254.33]:57830 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233839AbhJLHdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 03:33:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=k+hc0LSqnRlLyAmA5ndee0bb+bdx
+        PickL2OMT3KDJ2A=; b=QpNcJGSvkhsSbw9V3qrSHAVeGitvSJ++ylGiq1zM1qyF
+        vYBQ9Mvt6APCO/hsl8CeqzqX7Qj7Ml3vuJQbXwpEuSQsHQH33f114ShA18/Kee7v
+        UNkTFxv+/aFN+dPF3ci2vmz2BEsFjQPhWKCcgJUuM5b6a2EJr+3ePlfnnOZZjks=
+Received: (qmail 116915 invoked from network); 12 Oct 2021 09:31:15 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 12 Oct 2021 09:31:15 +0200
+X-UD-Smtp-Session: l3s3148p1@rRNs1CLOgNggAwDPXw9GALaHP6nygzLh
+Date:   Tue, 12 Oct 2021 09:31:11 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>, linux-iio@vger.kernel.org
+Subject: Re: [PATCH 6/9] iio: common: cros_ec_sensors: simplify getting
+ .driver_data
+Message-ID: <YWU5v8aH3wtsAMlp@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>, linux-iio@vger.kernel.org
+References: <20210920090522.23784-1-wsa+renesas@sang-engineering.com>
+ <20210920090522.23784-7-wsa+renesas@sang-engineering.com>
+ <716533b5-380d-be72-b45e-d9909f09286b@collabora.com>
+ <20210925155445.1edf4752@jic23-huawei>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="H8wWZOzgwv6hePvi"
+Content-Disposition: inline
+In-Reply-To: <20210925155445.1edf4752@jic23-huawei>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
 
-On Mon, 2021-10-11 at 18:37 -0700, Dmitry Torokhov wrote:
-> Instead of manually toggling interrupt as wakeup source in suspend/resume
-> methods, let's declare keypad interrupt and wakeup interrupt and leave the
-> rest to the PM core.
-> 
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+--H8wWZOzgwv6hePvi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Hi Jonathan,
 
-> ---
->  drivers/input/keyboard/ep93xx_keypad.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/input/keyboard/ep93xx_keypad.c b/drivers/input/keyboard/ep93xx_keypad.c
-> index 6be5474ba2f2..a66cfeaf5b21 100644
-> --- a/drivers/input/keyboard/ep93xx_keypad.c
-> +++ b/drivers/input/keyboard/ep93xx_keypad.c
-> @@ -27,6 +27,7 @@
->  #include <linux/slab.h>
->  #include <linux/soc/cirrus/ep93xx.h>
->  #include <linux/platform_data/keypad-ep93xx.h>
-> +#include <linux/pm_wakeirq.h>
->  
->  /*
->   * Keypad Interface Register offsets
-> @@ -191,9 +192,6 @@ static int __maybe_unused ep93xx_keypad_suspend(struct device *dev)
->  
->         mutex_unlock(&input_dev->mutex);
->  
-> -       if (device_may_wakeup(&pdev->dev))
-> -               enable_irq_wake(keypad->irq);
-> -
->         return 0;
->  }
->  
-> @@ -203,9 +201,6 @@ static int __maybe_unused ep93xx_keypad_resume(struct device *dev)
->         struct ep93xx_keypad *keypad = platform_get_drvdata(pdev);
->         struct input_dev *input_dev = keypad->input_dev;
->  
-> -       if (device_may_wakeup(&pdev->dev))
-> -               disable_irq_wake(keypad->irq);
-> -
->         mutex_lock(&input_dev->mutex);
->  
->         if (input_device_enabled(input_dev)) {
-> @@ -316,7 +311,11 @@ static int ep93xx_keypad_probe(struct platform_device *pdev)
->                 goto failed_free_irq;
->  
->         platform_set_drvdata(pdev, keypad);
-> +
->         device_init_wakeup(&pdev->dev, 1);
-> +       err = dev_pm_set_wake_irq(&pdev->dev, keypad->irq);
-> +       if (err)
-> +               dev_warn(&pdev->dev, "failed to set up wakeup irq: %d\n", err);
->  
->         return 0;
->  
-> @@ -342,6 +341,8 @@ static int ep93xx_keypad_remove(struct platform_device *pdev)
->         struct ep93xx_keypad *keypad = platform_get_drvdata(pdev);
->         struct resource *res;
->  
-> +       dev_pm_clear_wake_irq(&pdev->dev);
-> +
->         free_irq(keypad->irq, keypad);
->  
->         if (keypad->enabled)
+> It's not something that ever bothered me that much, but we have had debat=
+es in
+> the past about whether there are semantic issues around this sort of clea=
+nup
+> as it mixes
+>=20
+> platform_set_drvdata() with device_get_drvdata()
 
--- 
-Alexander Sverdlin.
+Yeah, I see this concern. Mixing the two makes reading the code a bit
+more difficult. As I said, it wasn't so easy to convert set_drvdata, but
+I will have another go at this.
+
+> Whilst they access the same pointer today, in theory that isn't necessari=
+ly
+> always going to be the case in future and it isn't necessarily apparent
+> to the casual reader of the code.
+
+That one I don't really see. *_get_drvdata() should always get
+'dev->driver_data' and the prefix just tells from what namespace we
+come. If you want to change that, a lot of things will break loose, I'd
+think. Even in the unlikely case of platform_device gaining a seperate
+driver_data(?), it probably should be named *_get_pdrvdata(), or?
+
+Thanks and happy hacking,
+
+   Wolfram
 
 
+--H8wWZOzgwv6hePvi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFlObsACgkQFA3kzBSg
+KbYHVxAAjVE/Na4B2QboUrgsaxXsyQVAW6iHuD1YLul89LLjniraw9jmgty2R1at
+CYAfsZ2X3vK9/uoGcHVnH6eqCHZETvD9B1fqHUXP3GsPibLGCFrd8jF1qbHgo6hA
+jDJlcvffRpWymJEylM1EySX4MOpaStFWmhTzhuGKFhpk5FdPD6/5Y1tMNyNL1ftO
+rrCYEwtzhyIJNCTTh/825Fzal3WnhaUnYLijCBip/43LEhpEGPU0bHqe14AkToYj
+yY9kfGU4gHD742fTOOGTqOmFLSY+7J7r/zp7dwlx+84Fee+1x+kCnXoCalqD/jQy
+r5Zlaij6C4KroQ6/8K17TgGKP+H4cfy7ZqJj0rJEvcsW/uM7txG5r3qBj2vzIMEK
+qyNlQWm8CxPuwKjZ1vSBIpb0NkE5Qqn2+ekY7gi+ckHQUCZNBcOunCr3K+w52a98
+k1dRoMWGYy1657yUQgZoi1AvGEGYs1u8RLLNVfykwcIqntUbsZJpL0ZxbYe+4bYz
+cDBOc4eTME75Vu6EREOuUQk7V+OxEasO1UfH+LV7S0seduchTXBxjeJKdNalprFa
+BxuUPEFw91ldNO0O6JI3hzRLp8VRn5tRlDoBO7T01AALyxDDgqYGKjp4JC+TE7tP
+L//s2Wt0fLoZcnAlnswb6HL/67Bx7vB7e28ksM+qgokAXQPTXk4=
+=Xx+O
+-----END PGP SIGNATURE-----
+
+--H8wWZOzgwv6hePvi--
