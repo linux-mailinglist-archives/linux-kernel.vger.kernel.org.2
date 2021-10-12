@@ -2,301 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7B842A04F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE9742A055
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235181AbhJLIuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:50:50 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50398 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234611AbhJLIur (ORCPT
+        id S235527AbhJLIvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235277AbhJLIvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:50:47 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Tue, 12 Oct 2021 04:51:05 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71998C061570;
+        Tue, 12 Oct 2021 01:49:04 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:105:465:1:4:0])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 70AF32018C;
-        Tue, 12 Oct 2021 08:48:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634028525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q3KUcXkQJ10FRCj4YgZOCN8rFwXTQD7vMOH9ik9p7iA=;
-        b=sffvnVCB3QQpIpRny0e7FcxRcmpQxsvWaFUCOBST3H+ud49L5hRYNM+aVaQgL57tjSvpjB
-        byOEVLiToOADDY50a4JDCeRMv0UyxRC7Z+sqmHkPTitdCKEh9EJGVcAxUR+dpWoUpnszDf
-        /GiwMMbQcoOjMbS5bC8ueMd5W5DNqbQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 05920132D4;
-        Tue, 12 Oct 2021 08:48:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yUgdAO1LZWERUwAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 12 Oct 2021 08:48:45 +0000
-Subject: Re: [PATCH linux 1/2] xen: delay xen_hvm_init_time_ops() if kdump is
- boot on vcpu>=32
-To:     Dongli Zhang <dongli.zhang@oracle.com>,
-        xen-devel@lists.xenproject.org
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        boris.ostrovsky@oracle.com, sstabellini@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        andrew.cooper3@citrix.com, george.dunlap@citrix.com,
-        iwj@xenproject.org, jbeulich@suse.com, julien@xen.org, wl@xen.org,
-        joe.jin@oracle.com
-References: <20211012072428.2569-1-dongli.zhang@oracle.com>
- <20211012072428.2569-2-dongli.zhang@oracle.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <c58fe0bb-d1be-4dac-acf1-040cceb1271a@suse.com>
-Date:   Tue, 12 Oct 2021 10:48:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4HT8Tn3Ln9zQkhX;
+        Tue, 12 Oct 2021 10:49:01 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Message-ID: <fee8b431-617f-3890-3ad2-67a61d3ffca2@v0yd.nl>
+Date:   Tue, 12 Oct 2021 10:48:49 +0200
 MIME-Version: 1.0
-In-Reply-To: <20211012072428.2569-2-dongli.zhang@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="MqMswA9vGM6pPMxHJ3Nj3XxEnoTGHrXao"
+Subject: Re: [PATCH] mwifiex: Add quirk resetting the PCI bridge on MS Surface
+ devices
+Content-Language: en-US
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Brian Norris <briannorris@chromium.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <20211011165301.GA1650148@bhelgaas>
+From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
+In-Reply-To: <20211011165301.GA1650148@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 5514626E
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MqMswA9vGM6pPMxHJ3Nj3XxEnoTGHrXao
-Content-Type: multipart/mixed; boundary="5J4vDOXKh5d9mCnHws61KPXU9QUYI7STa";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Dongli Zhang <dongli.zhang@oracle.com>, xen-devel@lists.xenproject.org
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org, boris.ostrovsky@oracle.com,
- sstabellini@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- hpa@zytor.com, andrew.cooper3@citrix.com, george.dunlap@citrix.com,
- iwj@xenproject.org, jbeulich@suse.com, julien@xen.org, wl@xen.org,
- joe.jin@oracle.com
-Message-ID: <c58fe0bb-d1be-4dac-acf1-040cceb1271a@suse.com>
-Subject: Re: [PATCH linux 1/2] xen: delay xen_hvm_init_time_ops() if kdump is
- boot on vcpu>=32
-References: <20211012072428.2569-1-dongli.zhang@oracle.com>
- <20211012072428.2569-2-dongli.zhang@oracle.com>
-In-Reply-To: <20211012072428.2569-2-dongli.zhang@oracle.com>
+On 10/11/21 18:53, Bjorn Helgaas wrote:
+> [+cc Alex]
+> 
+> On Mon, Oct 11, 2021 at 03:42:38PM +0200, Jonas Dreßler wrote:
+>> The most recent firmware (15.68.19.p21) of the 88W8897 PCIe+USB card
+>> reports a hardcoded LTR value to the system during initialization,
+>> probably as an (unsuccessful) attempt of the developers to fix firmware
+>> crashes. This LTR value prevents most of the Microsoft Surface devices
+>> from entering deep powersaving states (either platform C-State 10 or
+>> S0ix state), because the exit latency of that state would be higher than
+>> what the card can tolerate.
+> 
+> S0ix and C-State 10 are ACPI concepts that don't mean anything in a
+> PCIe context.
+> 
+> I think LTR is only involved in deciding whether to enter the ASPM
+> L1.2 substate.  Maybe the system will only enter C-State 10 or S0ix
+> when the link is in L1.2?
 
---5J4vDOXKh5d9mCnHws61KPXU9QUYI7STa
-Content-Type: multipart/mixed;
- boundary="------------4AF84FE6AF4427206B1EC4B0"
-Content-Language: en-US
+Yup, this is indeed the case, see https://01.org/blogs/qwang59/2020/linux-s0ix-troubleshooting
+(ctrl+f "IP LINK PM STATE").
 
-This is a multi-part message in MIME format.
---------------4AF84FE6AF4427206B1EC4B0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+> 
+>> Turns out the card works just the same (including the firmware crashes)
+>> no matter if that hardcoded LTR value is reported or not, so it's kind
+>> of useless and only prevents us from saving power.
+>>
+>> To get rid of those hardcoded LTR requirements, it's possible to reset
+>> the PCI bridge device after initializing the cards firmware. I'm not
+>> exactly sure why that works, maybe the power management subsystem of the
+>> PCH resets its stored LTR values when doing a function level reset of
+>> the bridge device. Doing the reset once after starting the wifi firmware
+>> works very well, probably because the firmware only reports that LTR
+>> value a single time during firmware startup.
+>>
+>> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+>> ---
+>>   drivers/net/wireless/marvell/mwifiex/pcie.c   | 12 +++++++++
+>>   .../wireless/marvell/mwifiex/pcie_quirks.c    | 26 +++++++++++++------
+>>   .../wireless/marvell/mwifiex/pcie_quirks.h    |  1 +
+>>   3 files changed, 31 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
+>> index c6ccce426b49..2506e7e49f0c 100644
+>> --- a/drivers/net/wireless/marvell/mwifiex/pcie.c
+>> +++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
+>> @@ -1748,9 +1748,21 @@ mwifiex_pcie_send_boot_cmd(struct mwifiex_adapter *adapter, struct sk_buff *skb)
+>>   static int mwifiex_pcie_init_fw_port(struct mwifiex_adapter *adapter)
+>>   {
+>>   	struct pcie_service_card *card = adapter->card;
+>> +	struct pci_dev *pdev = card->dev;
+>> +	struct pci_dev *parent_pdev = pci_upstream_bridge(pdev);
+>>   	const struct mwifiex_pcie_card_reg *reg = card->pcie.reg;
+>>   	int tx_wrap = card->txbd_wrptr & reg->tx_wrap_mask;
+>>   
+>> +	/* Trigger a function level reset of the PCI bridge device, this makes
+>> +	 * the firmware (latest version 15.68.19.p21) of the 88W8897 PCIe+USB
+>> +	 * card stop reporting a fixed LTR value that prevents the system from
+>> +	 * entering package C10 and S0ix powersaving states.
+> 
+> I don't believe this.  Why would resetting the root port change what
+> the downstream device reports via LTR messages?
+> 
+>  From PCIe r5.0, sec 5.5.1:
+> 
+>    The following rules define how the L1.1 and L1.2 substates are entered:
+>      ...
+>      * When in ASPM L1.0 and the ASPM L1.2 Enable bit is Set, the L1.2
+>        substate must be entered when CLKREQ# is deasserted and all of
+>        the following conditions are true:
+> 
+>        - The reported snooped LTR value last sent or received by this
+> 	Port is greater than or equal to the value set by the
+> 	LTR_L1.2_THRESHOLD Value and Scale fields, or there is no
+> 	snoop service latency requirement.
+> 
+>        - The reported non-snooped LTR last sent or received by this
+> 	Port value is greater than or equal to the value set by the
+> 	LTR_L1.2_THRESHOLD Value and Scale fields, or there is no
+> 	non-snoop service latency requirement.
+> 
+>  From the LTR Message format in sec 6.18:
+> 
+>    No-Snoop Latency and Snoop Latency: As shown in Figure 6-15, these
+>    fields include a Requirement bit that indicates if the device has a
+>    latency requirement for the given type of Request. If the
+>    Requirement bit is Set, the LatencyValue and LatencyScale fields
+>    describe the latency requirement. If the Requirement bit is Clear,
+>    there is no latency requirement and the LatencyValue and
+>    LatencyScale fields are ignored.
+> 
+> Resetting the root port might make it forget the LTR value it last
+> received.  If that's equivalent to having no service latency
+> requirement, it *might* enable L1.2 entry, although that doesn't seem
+> equivalent to the downstream device having sent an LTR message with
+> the Requirement bit cleared.
+> 
+> I think the endpoint is required to send a new LTR message before it
+> goes to a non-D0 state (sec 6.18), so the bridge will capture the
+> latency again, and we'll probably be back in the same state.
 
-On 12.10.21 09:24, Dongli Zhang wrote:
-> The sched_clock() can be used very early since upstream
-> commit 857baa87b642 ("sched/clock: Enable sched clock early"). In addit=
-ion,
-> with upstream commit 38669ba205d1 ("x86/xen/time: Output xen sched_cloc=
-k
-> time from 0"), kdump kernel in Xen HVM guest may panic at very early st=
-age
-> when accessing &__this_cpu_read(xen_vcpu)->time as in below:
->=20
-> setup_arch()
->   -> init_hypervisor_platform()
->       -> x86_init.hyper.init_platform =3D xen_hvm_guest_init()
->           -> xen_hvm_init_time_ops()
->               -> xen_clocksource_read()
->                   -> src =3D &__this_cpu_read(xen_vcpu)->time;
->=20
-> This is because Xen HVM supports at most MAX_VIRT_CPUS=3D32 'vcpu_info'=
+Indeed that happens when suspending the device, after resuming the LTR
+value is back to the initial value. mwifiex_pcie_init_fw_port() is
+executed on resume, too though (I should probably have mentioned this
+in the commit message, will do in v2), so this is taken care of.
 
-> embedded inside 'shared_info' during early stage until xen_vcpu_setup()=
- is
-> used to allocate/relocate 'vcpu_info' for boot cpu at arbitrary address=
-=2E
->=20
-> However, when Xen HVM guest panic on vcpu >=3D 32, since
-> xen_vcpu_info_reset(0) would set per_cpu(xen_vcpu, cpu) =3D NULL when
-> vcpu >=3D 32, xen_clocksource_read() on vcpu >=3D 32 would panic.
->=20
-> This patch delays xen_hvm_init_time_ops() to later in
-> xen_hvm_smp_prepare_boot_cpu() after the 'vcpu_info' for boot vcpu is
-> registered when the boot vcpu is >=3D 32.
->=20
-> This issue can be reproduced on purpose via below command at the guest
-> side when kdump/kexec is enabled:
->=20
-> "taskset -c 33 echo c > /proc/sysrq-trigger"
->=20
-> Cc: Joe Jin <joe.jin@oracle.com>
-> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-> ---
->   arch/x86/xen/enlighten_hvm.c | 20 +++++++++++++++++++-
->   arch/x86/xen/smp_hvm.c       |  3 +++
->   2 files changed, 22 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.=
-c
-> index e68ea5f4ad1c..152279416d9a 100644
-> --- a/arch/x86/xen/enlighten_hvm.c
-> +++ b/arch/x86/xen/enlighten_hvm.c
-> @@ -216,7 +216,25 @@ static void __init xen_hvm_guest_init(void)
->   	WARN_ON(xen_cpuhp_setup(xen_cpu_up_prepare_hvm, xen_cpu_dead_hvm));
->   	xen_unplug_emulated_devices();
->   	x86_init.irqs.intr_init =3D xen_init_IRQ;
-> -	xen_hvm_init_time_ops();
-> +
-> +	/*
-> +	 * Only MAX_VIRT_CPUS 'vcpu_info' are embedded inside 'shared_info'
-> +	 * and the VM would use them until xen_vcpu_setup() is used to
-> +	 * allocate/relocate them at arbitrary address.
-> +	 *
-> +	 * However, when Xen HVM guest panic on vcpu >=3D MAX_VIRT_CPUS,
-> +	 * per_cpu(xen_vcpu, cpu) is still NULL at this stage. To access
-> +	 * per_cpu(xen_vcpu, cpu) via xen_clocksource_read() would panic.
-> +	 *
-> +	 * Therefore we delay xen_hvm_init_time_ops() to
-> +	 * xen_hvm_smp_prepare_boot_cpu() when boot vcpu is >=3D MAX_VIRT_CPU=
-S.
-> +	 */
-> +	if (xen_vcpu_nr(0) >=3D MAX_VIRT_CPUS)
-> +		pr_info("Delay xen_hvm_init_time_ops() as kernel is running on vcpu=3D=
-%d\n",
-> +			xen_vcpu_nr(0));
-> +	else
-> +		xen_hvm_init_time_ops();
-> +
->   	xen_hvm_init_mmu_ops();
->  =20
->   #ifdef CONFIG_KEXEC_CORE
-> diff --git a/arch/x86/xen/smp_hvm.c b/arch/x86/xen/smp_hvm.c
-> index 6ff3c887e0b9..60cd4fafd188 100644
-> --- a/arch/x86/xen/smp_hvm.c
-> +++ b/arch/x86/xen/smp_hvm.c
-> @@ -19,6 +19,9 @@ static void __init xen_hvm_smp_prepare_boot_cpu(void)=
+While suspended, the device goes into D3 anyway and S0ix is achieved
+regardless of the LTR value.
 
->   	 */
->   	xen_vcpu_setup(0);
->  =20
-> +	if (xen_vcpu_nr(0) >=3D MAX_VIRT_CPUS)
-> +		xen_hvm_init_time_ops();
-> +
+> 
+> This all seems fragile to me.  If we force the link to L1.2 without
+> knowing accurate exit latencies and latency tolerance, the device is
+> liable to drop packets.
 
-Please add a comment referencing the related code in
-xen_hvm_guest_init().
+Yeah, I'm not saying this patch isn't an ugly hack...
 
+What I can say though is that this patch has been running in the
+linux-surface (https://github.com/linux-surface/kernel/pull/72) kernel
+for a few months now, and so far we've only received positive feedback.
 
-Juergen
+There's two alternatives I can think of to deal with this issue:
 
---------------4AF84FE6AF4427206B1EC4B0
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+1) Revert the cards firmware in linux-firmware back to the second-latest
+version. That firmware didn't report a fixed LTR value and also doesn't
+have any other obvious issues I know of compared to the latest one.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+2) Somehow interact with the PMC Core driver to make it ignore the LTR
+values reported by the card (I doubt that's possible from mwifiex).
+It can be done manually via debugfs by writing to
+/sys/kernel/debug/pmc_core/ltr_ignore.
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+> 
+>> +	 * We need to do it here because it must happen after firmware
+>> +	 * initialization and this function is called right after that is done.
+>> +	 */
+>> +	if (card->quirks & QUIRK_DO_FLR_ON_BRIDGE)
+>> +		pci_reset_function(parent_pdev);
+> 
+> PCIe r5.0, sec 7.5.3.3, says Function Level Reset can only be
+> supported by endpoints, so I guess this will actually do some other
+> kind of reset.
 
---------------4AF84FE6AF4427206B1EC4B0--
+Interesting, I briefly searched and it doesn't seem like think
+there's public documentation available by Intel that goes into
+the specifics here, maybe someone working at Intel knows more?
 
---5J4vDOXKh5d9mCnHws61KPXU9QUYI7STa--
+> 
+>>   	/* Write the RX ring read pointer in to reg->rx_rdptr */
+>>   	if (mwifiex_write_reg(adapter, reg->rx_rdptr, card->rxbd_rdptr |
+>>   			      tx_wrap)) {
+>> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
+>> index 0234cf3c2974..cbf0565353ae 100644
+>> --- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
+>> +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
+>> @@ -27,7 +27,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+>>   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+>>   			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 4"),
+>>   		},
+>> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+>> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
+>> +					QUIRK_DO_FLR_ON_BRIDGE),
+>>   	},
+>>   	{
+>>   		.ident = "Surface Pro 5",
+>> @@ -36,7 +37,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+>>   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+>>   			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1796"),
+>>   		},
+>> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+>> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
+>> +					QUIRK_DO_FLR_ON_BRIDGE),
+>>   	},
+>>   	{
+>>   		.ident = "Surface Pro 5 (LTE)",
+>> @@ -45,7 +47,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+>>   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+>>   			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1807"),
+>>   		},
+>> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+>> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
+>> +					QUIRK_DO_FLR_ON_BRIDGE),
+>>   	},
+>>   	{
+>>   		.ident = "Surface Pro 6",
+>> @@ -53,7 +56,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+>>   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+>>   			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 6"),
+>>   		},
+>> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+>> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
+>> +					QUIRK_DO_FLR_ON_BRIDGE),
+>>   	},
+>>   	{
+>>   		.ident = "Surface Book 1",
+>> @@ -61,7 +65,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+>>   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+>>   			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book"),
+>>   		},
+>> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+>> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
+>> +					QUIRK_DO_FLR_ON_BRIDGE),
+>>   	},
+>>   	{
+>>   		.ident = "Surface Book 2",
+>> @@ -69,7 +74,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+>>   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+>>   			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book 2"),
+>>   		},
+>> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+>> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
+>> +					QUIRK_DO_FLR_ON_BRIDGE),
+>>   	},
+>>   	{
+>>   		.ident = "Surface Laptop 1",
+>> @@ -77,7 +83,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+>>   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+>>   			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop"),
+>>   		},
+>> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+>> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
+>> +					QUIRK_DO_FLR_ON_BRIDGE),
+>>   	},
+>>   	{
+>>   		.ident = "Surface Laptop 2",
+>> @@ -85,7 +92,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
+>>   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+>>   			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop 2"),
+>>   		},
+>> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+>> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
+>> +					QUIRK_DO_FLR_ON_BRIDGE),
+>>   	},
+>>   	{}
+>>   };
+>> @@ -103,6 +111,8 @@ void mwifiex_initialize_quirks(struct pcie_service_card *card)
+>>   		dev_info(&pdev->dev, "no quirks enabled\n");
+>>   	if (card->quirks & QUIRK_FW_RST_D3COLD)
+>>   		dev_info(&pdev->dev, "quirk reset_d3cold enabled\n");
+>> +	if (card->quirks & QUIRK_DO_FLR_ON_BRIDGE)
+>> +		dev_info(&pdev->dev, "quirk do_flr_on_bridge enabled\n");
+>>   }
+>>   
+>>   static void mwifiex_pcie_set_power_d3cold(struct pci_dev *pdev)
+>> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
+>> index 8ec4176d698f..f8d463f4269a 100644
+>> --- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
+>> +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
+>> @@ -18,6 +18,7 @@
+>>   #include "pcie.h"
+>>   
+>>   #define QUIRK_FW_RST_D3COLD	BIT(0)
+>> +#define QUIRK_DO_FLR_ON_BRIDGE	BIT(1)
+>>   
+>>   void mwifiex_initialize_quirks(struct pcie_service_card *card);
+>>   int mwifiex_pcie_reset_d3cold_quirk(struct pci_dev *pdev);
+>> -- 
+>> 2.31.1
+>>
 
---MqMswA9vGM6pPMxHJ3Nj3XxEnoTGHrXao
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFlS+wFAwAAAAAACgkQsN6d1ii/Ey96
-Fgf/cUeloFlsH/cedS7E2oehk/aXw62ESyjJVfKjNl9tW7JE6CX0NxvqARl4VepSr/Tk4k7LZc88
-75QR6XX+pGqB1jX+zIy6tXKuK48yi1tBwkFsLSn11FJ0yV+g+084fTDw48TwxolaSLV2J8ev4YKR
-Ny+KDA+FokyXtdzHt363NFj3cafY+f0PuXISN4sLOkQhRs//ZcAnaLwvclmoUsrlyO25LTk5fL6N
-zeg/ryClEy5zMHy14Df9pXEA5NQuh+7rohYTH2virh+w4487Id/i54Pd6SzK0LNWoMJcKy1UE0f2
-mtco8lWymvneU+91zgTtCVwkU9AqiY6KOAj/lUlTaw==
-=xKpQ
------END PGP SIGNATURE-----
-
---MqMswA9vGM6pPMxHJ3Nj3XxEnoTGHrXao--
