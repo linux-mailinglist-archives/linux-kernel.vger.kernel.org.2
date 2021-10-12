@@ -2,175 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE3342A6E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E6342A6E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237175AbhJLOOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:14:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34710 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237060AbhJLON6 (ORCPT
+        id S237148AbhJLOPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:15:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236953AbhJLOPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:13:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634047916;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OsimebWiWHiIoUpKbRqBPY9Rl7kaR7A4B63k1RE+UMA=;
-        b=E5b79mUIOOZ76oJRXYAWnHAYsJU7OjQGev5olArwO21XZ/YCmfJ5QHiUCfZF0XS4rgb0lh
-        Cpyneqvy/lxT5TFeCFaj3wIhZ94RGnLtDxRjvAlPyin+6A/tiryVstKFTgMPl1+SgGiSbk
-        cFprZicKqB+rs8l8Hg51d7fUCe2WOiU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-305ZjSnnMxqwC4MYIEKOBA-1; Tue, 12 Oct 2021 10:11:55 -0400
-X-MC-Unique: 305ZjSnnMxqwC4MYIEKOBA-1
-Received: by mail-wr1-f69.google.com with SMTP id c4-20020a5d6cc4000000b00160edc8bb28so10051773wrc.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:11:55 -0700 (PDT)
+        Tue, 12 Oct 2021 10:15:21 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F7CC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:13:19 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id z20so27305edc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:13:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ieKETngd4wQHVII+IJcs5CQY5wbzV3iEx77J8xRx2vA=;
+        b=bWaI4AeFcuNvWGD1I8cg7W6CG/azm1vaRBxjX1dsRUwDZWLVCDsVzS85MZqppDPqW9
+         34rds3D76bwkkPcvjsGuCTXawVOxwdB47aCElSGmvamfQoH+DDNnXd3o+dxEIfXWrjbD
+         9So44VhRb03JVhThMjaEnhw5YCUaZMPe/VCwNVxdjRE0o6eP32scGLvrv27NbXQkVhLG
+         QYRO+iyEJ5oGBWxHSDEfHBIXts79CsmV5cbX2N+FVqkQp/3zRx7G8QI8fCoNxTXhr8Lp
+         cOCeSQ0fT/VSaazPoGa379Fp+1k7ZCgjR7y/PXuIDNZ0PKRb5OjvhAoDrfEbCq60UVDa
+         yVWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=OsimebWiWHiIoUpKbRqBPY9Rl7kaR7A4B63k1RE+UMA=;
-        b=q46cS72KXq61LJas71F8oZXq9uQHL2tcjiVKwq474QtURFYB2FSsg/0emD6zTW/H9j
-         i+IAZoWxSTCmLCzcJCNf/XMY+vAl1aUIMmtvNTk8OyKAaktU0K2XxYN+ofggzV8RpgPX
-         24xkWV7W1XrwvuuHUWELmDo/KrSgzMS6TWT/p3SiL4qaXKwaGqiIMjIQzbJULOLLtSUR
-         lKBUP3uHQWUdoWRQ4oImLM6pQSX6gqMsAY5adWIAfk6irOWPNV0QNfkblg1slbowvUbo
-         4FDto3pu8YtqDQCdFucl/topyMuPOn2UOwzuLaKki15503ozN8zFBkdklc++8o8GqSLt
-         qp6g==
-X-Gm-Message-State: AOAM530RoVCeMIKRee5N2cvtYljQzQZhXdZnoV9ys466RxMffproGpPG
-        rYUw0EfNnwph3g39gQy322wYgBZdXvSCxuJFewndnfGtusj+uSeZ8vaAP/egxghzBFefSWAP6op
-        anR7Y6VdS1nxeSomrby4ZbV4X
-X-Received: by 2002:a1c:2358:: with SMTP id j85mr5783116wmj.1.1634047914661;
-        Tue, 12 Oct 2021 07:11:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyvqRQrklWThEKlc50AA6u4uzIfi/vB/pwWCl+oe/S2LBpw2e7bnvnn8I9rpJJ7ta4bF5p5Ng==
-X-Received: by 2002:a1c:2358:: with SMTP id j85mr5783090wmj.1.1634047914456;
-        Tue, 12 Oct 2021 07:11:54 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6a12.dip0.t-ipconnect.de. [91.12.106.18])
-        by smtp.gmail.com with ESMTPSA id a2sm11046607wru.82.2021.10.12.07.11.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 07:11:54 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] pid: add pidfd_get_task() helper
-To:     Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Bobrowski <repnop@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Jan Kara <jack@suse.cz>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Minchan Kim <minchan@kernel.org>
-References: <20211011133245.1703103-1-brauner@kernel.org>
- <20211011133245.1703103-2-brauner@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <9eaad83c-d7cb-b3ab-df28-0c6436f156f3@redhat.com>
-Date:   Tue, 12 Oct 2021 16:11:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ieKETngd4wQHVII+IJcs5CQY5wbzV3iEx77J8xRx2vA=;
+        b=QThb0FXzWK4wSTVbqeAxckTEmDhU9coBsXPbSGYZTzTE2EewLNk+2u4zPKTL8/6WEv
+         Qg1NSJHA4oZcmCXmKQq5shZrrWqxymhWpMRJgozgNs1OFnoIyMRQURTde4Skm9pK/VH+
+         SabfYiOqt1TYEA7v5fd8vlzUepMJQHFeKEcJCzko/fenFsT+zeRMHlCOtaSeDpE+5GRx
+         qWMyqMHJRqiVs+HwPgG1ICwfTiJce8+9h2w34cS4a0Hs/0lFqniIfHK1Uf+PV2kwmmMe
+         eBqGuIAFesPNdS5NlALSbrY3enAr5pGZmGgoFprQMElC15m9J0EciNwUocS5DcR4T17T
+         nT6g==
+X-Gm-Message-State: AOAM530L8eAm2RHNjd7fHpErpXV1jsq7X4ThEWCeDd1T0XvoF4lsV54y
+        fTg8pQ03TV6l03YBdy2t8cgfZ1HvaC4Qwcj8PzM1
+X-Google-Smtp-Source: ABdhPJwOMKZYa/n4x55N6Emss5rBP+EcS7P39AqLbYHCH7HSMgM0Rumxq877HQtO60UwMW0rF+Cn72qdnnCrQ2cNdok=
+X-Received: by 2002:a17:906:2f16:: with SMTP id v22mr32291219eji.126.1634047997689;
+ Tue, 12 Oct 2021 07:13:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211011133245.1703103-2-brauner@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211007004629.1113572-1-tkjos@google.com> <20211007004629.1113572-3-tkjos@google.com>
+ <CAHC9VhSDnwapGk6Pvn5iuKv0zCtZSbfnGAkZwKcxVYLVRH6CLg@mail.gmail.com>
+ <8c07f9b7-58b8-18b5-84f8-9b6c78acb08b@schaufler-ca.com> <20211012094101.GE8429@kadam>
+In-Reply-To: <20211012094101.GE8429@kadam>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 12 Oct 2021 10:13:06 -0400
+Message-ID: <CAHC9VhROz8V7MWch8UfrhjR030VmY7rKEUFgUvYqL6kdZCy3aw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] binder: use cred instead of task for getsecid
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        Todd Kjos <tkjos@google.com>, zohar@linux.ibm.com,
+        arve@android.com, joel@joelfernandes.org,
+        devel@driverdev.osuosl.org,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        James Morris <jmorris@namei.org>, kernel-team@android.com,
+        tkjos@android.com, keescook@chromium.org, jannh@google.com,
+        selinux@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        maco@android.com, christian@brauner.io, gregkh@linuxfoundation.org,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.10.21 15:32, Christian Brauner wrote:
-> From: Christian Brauner <christian.brauner@ubuntu.com>
-> 
-> The number of system calls making use of pidfds is constantly
-> increasing. Some of those new system calls duplicate the code to turn a
-> pidfd into task_struct it refers to. Give them a simple helper for this.
-> 
-> Link: https://lore.kernel.org/r/20211004125050.1153693-2-christian.brauner@ubuntu.com
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: Matthew Bobrowski <repnop@google.com>
-> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Reviewed-by: Matthew Bobrowski <repnop@google.com>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> ---
-> /* v2 */
-> - David Hildenbrand <david@redhat.com>:
->    - Also document that the caller is expected to decrease the reference
->      count on the returned task.
-> ---
->   include/linux/pid.h |  1 +
->   kernel/pid.c        | 36 ++++++++++++++++++++++++++++++++++++
->   2 files changed, 37 insertions(+)
-> 
-> diff --git a/include/linux/pid.h b/include/linux/pid.h
-> index af308e15f174..343abf22092e 100644
-> --- a/include/linux/pid.h
-> +++ b/include/linux/pid.h
-> @@ -78,6 +78,7 @@ struct file;
->   
->   extern struct pid *pidfd_pid(const struct file *file);
->   struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags);
-> +struct task_struct *pidfd_get_task(int pidfd, unsigned int *flags);
->   int pidfd_create(struct pid *pid, unsigned int flags);
->   
->   static inline struct pid *get_pid(struct pid *pid)
-> diff --git a/kernel/pid.c b/kernel/pid.c
-> index efe87db44683..2fc0a16ec77b 100644
-> --- a/kernel/pid.c
-> +++ b/kernel/pid.c
-> @@ -539,6 +539,42 @@ struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags)
->   	return pid;
->   }
->   
-> +/**
-> + * pidfd_get_task() - Get the task associated with a pidfd
-> + *
-> + * @pidfd: pidfd for which to get the task
-> + * @flags: flags associated with this pidfd
-> + *
-> + * Return the task associated with @pidfd. The function takes a reference on
-> + * the returned task. The caller is responsible for releasing that reference.
-> + *
-> + * Currently, the process identified by @pidfd is always a thread-group leader.
-> + * This restriction currently exists for all aspects of pidfds including pidfd
-> + * creation (CLONE_PIDFD cannot be used with CLONE_THREAD) and pidfd polling
-> + * (only supports thread group leaders).
-> + *
-> + * Return: On success, the task_struct associated with the pidfd.
-> + *	   On error, a negative errno number will be returned.
-> + */
-> +struct task_struct *pidfd_get_task(int pidfd, unsigned int *flags)
-> +{
-> +	unsigned int f_flags;
-> +	struct pid *pid;
-> +	struct task_struct *task;
-> +
-> +	pid = pidfd_get_pid(pidfd, &f_flags);
-> +	if (IS_ERR(pid))
-> +		return ERR_CAST(pid);
-> +
-> +	task = get_pid_task(pid, PIDTYPE_TGID);
-> +	put_pid(pid);
-> +	if (!task)
-> +		return ERR_PTR(-ESRCH);
-> +
-> +	*flags = f_flags;
-> +	return task;
-> +}
-> +
->   /**
->    * pidfd_create() - Create a new pid file descriptor.
->    *
-> 
+On Tue, Oct 12, 2021 at 5:41 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Mon, Oct 11, 2021 at 02:59:13PM -0700, Casey Schaufler wrote:
+> > On 10/11/2021 2:33 PM, Paul Moore wrote:
+> > > On Wed, Oct 6, 2021 at 8:46 PM Todd Kjos <tkjos@google.com> wrote:
+> > >> Use the 'struct cred' saved at binder_open() to lookup
+> > >> the security ID via security_cred_getsecid(). This
+> > >> ensures that the security context that opened binder
+> > >> is the one used to generate the secctx.
+> > >>
+> > >> Fixes: ec74136ded79 ("binder: create node flag to request sender's
+> > >> security context")
+> > >> Signed-off-by: Todd Kjos <tkjos@google.com>
+> > >> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> > >> Reported-by: kernel test robot <lkp@intel.com>
+> > >> Cc: stable@vger.kernel.org # 5.4+
+> > >> ---
+> > >> v3: added this patch to series
+> > >> v4: fix build-break for !CONFIG_SECURITY
+> > >>
+> > >>  drivers/android/binder.c | 11 +----------
+> > >>  include/linux/security.h |  4 ++++
+> > >>  2 files changed, 5 insertions(+), 10 deletions(-)
+> > >>
+> > >> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> > >> index ca599ebdea4a..989afd0804ca 100644
+> > >> --- a/drivers/android/binder.c
+> > >> +++ b/drivers/android/binder.c
+> > >> @@ -2722,16 +2722,7 @@ static void binder_transaction(struct binder_proc *proc,
+> > >>                 u32 secid;
+> > >>                 size_t added_size;
+> > >>
+> > >> -               /*
+> > >> -                * Arguably this should be the task's subjective LSM secid but
+> > >> -                * we can't reliably access the subjective creds of a task
+> > >> -                * other than our own so we must use the objective creds, which
+> > >> -                * are safe to access.  The downside is that if a task is
+> > >> -                * temporarily overriding it's creds it will not be reflected
+> > >> -                * here; however, it isn't clear that binder would handle that
+> > >> -                * case well anyway.
+> > >> -                */
+> > >> -               security_task_getsecid_obj(proc->tsk, &secid);
+> > >> +               security_cred_getsecid(proc->cred, &secid);
+> > >>                 ret = security_secid_to_secctx(secid, &secctx, &secctx_sz);
+> > >>                 if (ret) {
+> > >>                         return_error = BR_FAILED_REPLY;
+> > >> diff --git a/include/linux/security.h b/include/linux/security.h
+> > >> index 6344d3362df7..f02cc0211b10 100644
+> > >> --- a/include/linux/security.h
+> > >> +++ b/include/linux/security.h
+> > >> @@ -1041,6 +1041,10 @@ static inline void security_transfer_creds(struct cred *new,
+> > >>  {
+> > >>  }
+> > >>
+> > >> +static inline void security_cred_getsecid(const struct cred *c, u32 *secid)
+> > >> +{
+> > >> +}
+> > > Since security_cred_getsecid() doesn't return an error code we should
+> > > probably set the secid to 0 in this case, for example:
+> > >
+> > >   static inline void security_cred_getsecid(...)
+> > >   {
+> > >     *secid = 0;
+> > >   }
+> >
+> > If CONFIG_SECURITY is unset there shouldn't be any case where
+> > the secid value is ever used for anything. Are you suggesting that
+> > it be set out of an abundance of caution?
+>
+> The security_secid_to_secctx() function is probably inlined so probably
+> KMSan will not warn about this.  But Smatch will warn about passing
+> unitialized variables.  You probably wouldn't recieve and email about
+> it, and I would just add an exception that security_cred_getsecid()
+> should be ignored.
 
-Acked-by: David Hildenbrand <david@redhat.com>
+I'd much rather just see the secid set to zero in the !CONFIG_SECURITY case.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+paul moore
+www.paul-moore.com
