@@ -2,296 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B6442A649
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF7842A5EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237110AbhJLNox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237144AbhJLNo3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:44:29 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744CBC061766;
-        Tue, 12 Oct 2021 06:42:24 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id p16so17252712lfa.2;
-        Tue, 12 Oct 2021 06:42:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cbeHlNwKol/P/1xSu0ws0uqYe/FZJCZw0pLtjT2oTVc=;
-        b=Hdi6lFiHxTQtsuTTfdmWSEg3NsUoRwsDI6KMRJx/jzYj6tvrlIsL9HVOpvTnp47uyo
-         m19vwMV8+LbguCTWAiQ1NbZnrf2GasZSEaG8zM40ACkSQHfRc8VO9J8lM7jNXcnc3W43
-         oZQy8ADVAz8S1RCP60FInyxszcEQ0wpGfnKkSCNsFbJr7Ca8suPR4XNKYUWcyeaJGk8G
-         6RZSks7SAP3XIfqC94PQsxzxPLmuorp5U2QCPkdgKGNPS1iul5o495Vt/Zh5HDdL2l1h
-         Onb2KBXhNvL6RcAK4bkdrvyedrnC+JeygRuS+lJNpysTBkVcnfyK2G7ySC8hkPtg1UqD
-         Yzew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=cbeHlNwKol/P/1xSu0ws0uqYe/FZJCZw0pLtjT2oTVc=;
-        b=S4lH4Q0e9sr3WicPnbE/STi4y9ZRBx5/T/7DZnn6EwNH4e8luas2zJ4rJXR1Ra0WNd
-         r5NKRRkPJb1a5tWuM0Kxd28qMpit4jHPn6pqZ0nMbi32FRcHdfdO4QzoojO5COhZRoc7
-         saIL0qknXLYtizq62QzKlaBbeuU9pSUeFQz59bNIBIidBXoVVb8HYZyDxSSE20IVs33h
-         E9slcomaOV+YrsyPao8bjC6JJioDoxWzJbgW5b7YtUL2yfSEtWM8YAnxiqWrCDijtGdK
-         qt4TK25ErTN9IoBJhUCqqSpBY4YVtukF+botjPIAaon+B3/BYdwgdZh+ibpk9dIzQAl1
-         8RmA==
-X-Gm-Message-State: AOAM532LebLcQFjHUGsQapzl4u2WliwVHS+hzexbiF+4+Y8BvODfwAH3
-        KKBRuqrv4AoeJ9sFOy2CX0k=
-X-Google-Smtp-Source: ABdhPJx4WCAZwLlqLtq1R/xAEtv9AGzk3zM2XV/iyK4JOU/Av9ew0yaOMNAMGlfQF2JRVRQfYJvUzA==
-X-Received: by 2002:a2e:9346:: with SMTP id m6mr17757191ljh.188.1634046142879;
-        Tue, 12 Oct 2021 06:42:22 -0700 (PDT)
-Received: from stitch.. (80.71.140.73.ipv4.parknet.dk. [80.71.140.73])
-        by smtp.gmail.com with ESMTPSA id k16sm1033761lfo.219.2021.10.12.06.42.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 06:42:22 -0700 (PDT)
-Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-To:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 16/16] RISC-V: Add BeagleV Starlight Beta device tree
-Date:   Tue, 12 Oct 2021 15:40:27 +0200
-Message-Id: <20211012134027.684712-17-kernel@esmil.dk>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211012134027.684712-1-kernel@esmil.dk>
-References: <20211012134027.684712-1-kernel@esmil.dk>
+        id S236981AbhJLNnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:43:09 -0400
+Received: from relay.sw.ru ([185.231.240.75]:40460 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236956AbhJLNnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 09:43:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=m1S1D0BOHHl8xO22dPdxOubNSxbBt34TOe4ZNsgxgG4=; b=Ufns1m00Soru9p/iT
+        WBqn/k/N0pCyPOHMnjsGEght0QH1wQgKn05EwmfpQEMbzai0lNl6clEU5IoC04i1KRYjOwhSxnjYf
+        QT4ssJ/9xPM9uYOJMoQj1rjgAoF4EzipBAAzI4WmfRw8aU/2ACV5pRdvrG5rtfMwKEniEo02rCBGY
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1maI1e-005oE5-NL; Tue, 12 Oct 2021 16:41:02 +0300
+Subject: Re: [PATCH mm v2] memcg: enable memory accounting in
+ __alloc_pages_bulk
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <CALvZod7_fhgV39HXmmMApubW-39CjJ5t+WjmkyA_DNGF7b5O+w@mail.gmail.com>
+ <2410e99a-087c-3f89-9bdf-b62a7d5df725@virtuozzo.com>
+ <20211012131019.GV3959@techsingularity.net>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
+Date:   Tue, 12 Oct 2021 16:40:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211012131019.GV3959@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial device tree for the BeagleV Starlight Beta board. About 300
-of these boards were sent out as part of a now cancelled BeagleBoard.org
-project.
+On 12.10.2021 16:10, Mel Gorman wrote:
+> On Tue, Oct 12, 2021 at 01:18:39PM +0300, Vasily Averin wrote:
+>> Enable memory accounting for bulk page allocator.
+>>
+>> Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
+>> Cc: <stable@vger.kernel.org>
+>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>> ---
+>> v2: modified according to Shakeel Butt's remarks
+>> ---
+>>  include/linux/memcontrol.h | 11 +++++++++
+>>  mm/memcontrol.c            | 48 +++++++++++++++++++++++++++++++++++++-
+>>  mm/page_alloc.c            | 14 ++++++++++-
+>>  3 files changed, 71 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> index 3096c9a0ee01..990acd70c846 100644
+>> --- a/include/linux/memcontrol.h
+>> +++ b/include/linux/memcontrol.h
+>> @@ -810,6 +810,12 @@ static inline void obj_cgroup_put(struct obj_cgroup *objcg)
+>>  	percpu_ref_put(&objcg->refcnt);
+>>  }
+>>  
+>> +static inline void obj_cgroup_put_many(struct obj_cgroup *objcg,
+>> +				       unsigned long nr)
+>> +{
+>> +	percpu_ref_put_many(&objcg->refcnt, nr);
+>> +}
+>> +
+>>  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
+>>  {
+>>  	if (memcg)
+>> @@ -1746,4 +1752,9 @@ static inline struct mem_cgroup *mem_cgroup_from_obj(void *p)
+>>  
+>>  #endif /* CONFIG_MEMCG_KMEM */
+>>  
+>> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
+>> +				unsigned int nr_pages);
+>> +void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page);
+>> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
+>> +				 unsigned int nr_pages);
+>>  #endif /* _LINUX_MEMCONTROL_H */
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 87e41c3cac10..16fe3384c12c 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -3239,7 +3239,53 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
+>>  	refill_obj_stock(objcg, size, true);
+>>  }
+>>  
+>> -#endif /* CONFIG_MEMCG_KMEM */
+>> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
+>> +				unsigned int nr_pages)
+>> +{
+>> +	struct obj_cgroup *objcg = NULL;
+>> +
+>> +	if (!memcg_kmem_enabled() || !(gfp & __GFP_ACCOUNT))
+>> +		return true;
+>> +
+>> +	objcg = get_obj_cgroup_from_current();
+>> +
+>> +	if (objcg && obj_cgroup_charge_pages(objcg, gfp, nr_pages)) {
+>> +		obj_cgroup_put(objcg);
+>> +		return false;
+>> +	}
+>> +	obj_cgroup_get_many(objcg, nr_pages - 1);
+>> +	*objcgp = objcg;
+>> +	return true;
+>> +}
+>> +
+> 
+> This is probably a stupid question but why is it necessary to get many
+> references instead of taking one reference here and dropping it in
+> memcg_bulk_post_charge_hook?
 
-I2C timing data is based on the device tree in the vendor u-boot port.
-Heartbeat LED added by Geert.
+Each allocated page keeps the referenece and releases it on free.
 
-Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-Co-developed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/riscv/boot/dts/Makefile                  |   1 +
- arch/riscv/boot/dts/starfive/Makefile         |   2 +
- .../dts/starfive/jh7100-beaglev-starlight.dts | 162 ++++++++++++++++++
- 3 files changed, 165 insertions(+)
- create mode 100644 arch/riscv/boot/dts/starfive/Makefile
- create mode 100644 arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
+>> +void memcg_bulk_charge_hook(struct obj_cgroup *objcg, struct page *page)
+>> +{
+>> +	page->memcg_data = (unsigned long)objcg | MEMCG_DATA_KMEM;
+>> +}
+>> +
+>> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
+>> +				 unsigned int nr_pages)
+>> +{
+>> +	obj_cgroup_uncharge_pages(objcg, nr_pages);
+>> +	obj_cgroup_put_many(objcg, nr_pages);
+>> +}
+> 
+> And are you sure obj_cgroup_uncharge_pages should be called here? I
+> thought the pages get uncharged on free.
 
-diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
-index fe996b88319e..ff174996cdfd 100644
---- a/arch/riscv/boot/dts/Makefile
-+++ b/arch/riscv/boot/dts/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- subdir-y += sifive
-+subdir-y += starfive
- subdir-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) += canaan
- subdir-y += microchip
- 
-diff --git a/arch/riscv/boot/dts/starfive/Makefile b/arch/riscv/boot/dts/starfive/Makefile
-new file mode 100644
-index 000000000000..0ea1bc15ab30
---- /dev/null
-+++ b/arch/riscv/boot/dts/starfive/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+dtb-$(CONFIG_SOC_STARFIVE) += jh7100-beaglev-starlight.dtb
-diff --git a/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts b/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
-new file mode 100644
-index 000000000000..d30d42d299c6
---- /dev/null
-+++ b/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
-@@ -0,0 +1,162 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/* Copyright (C) 2021 StarFive Technology Co., Ltd. */
-+/* Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk> */
-+
-+/dts-v1/;
-+#include "jh7100.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/pinctrl/pinctrl-starfive.h>
-+
-+/ {
-+	model = "BeagleV Starlight Beta";
-+	compatible = "beagle,beaglev-starlight-jh7100-r0", "starfive,jh7100";
-+
-+	aliases {
-+		serial0 = &uart3;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	cpus {
-+		timebase-frequency = <6250000>;
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x0 0x80000000 0x2 0x0>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-ack {
-+			gpios = <&gpio 43 GPIO_ACTIVE_HIGH>;
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_HEARTBEAT;
-+			linux,default-trigger = "heartbeat";
-+			label = "ack";
-+		};
-+	};
-+};
-+
-+&gpio {
-+	i2c0_pins: i2c0-0 {
-+		i2c-pins {
-+			pinmux = <GPIOMUX(62, GPO_LOW,
-+				  GPO_I2C0_PAD_SCK_OEN,
-+				  GPI_I2C0_PAD_SCK_IN)>,
-+				 <GPIOMUX(61, GPO_LOW,
-+				  GPO_I2C0_PAD_SDA_OEN,
-+				  GPI_I2C0_PAD_SDA_IN)>;
-+			bias-disable; /* external pull-up */
-+			input-enable;
-+			input-schmitt-enable;
-+		};
-+	};
-+
-+	i2c1_pins: i2c1-0 {
-+		i2c-pins {
-+			pinmux = <GPIOMUX(47, GPO_LOW,
-+				  GPO_I2C1_PAD_SCK_OEN,
-+				  GPI_I2C1_PAD_SCK_IN)>,
-+				 <GPIOMUX(48, GPO_LOW,
-+				  GPO_I2C1_PAD_SDA_OEN,
-+				  GPI_I2C1_PAD_SDA_IN)>;
-+			bias-pull-up;
-+			input-enable;
-+			input-schmitt-enable;
-+		};
-+	};
-+
-+	i2c2_pins: i2c2-0 {
-+		i2c-pins {
-+			pinmux = <GPIOMUX(60, GPO_LOW,
-+				  GPO_I2C2_PAD_SCK_OEN,
-+				  GPI_I2C2_PAD_SCK_IN)>,
-+				 <GPIOMUX(59, GPO_LOW,
-+				  GPO_I2C2_PAD_SDA_OEN,
-+				  GPI_I2C2_PAD_SDA_IN)>;
-+			bias-disable; /* external pull-up */
-+			input-enable;
-+			input-schmitt-enable;
-+		};
-+	};
-+
-+	uart3_pins: uart3-0 {
-+		rx-pin {
-+			pinmux = <GPIOMUX(13, GPO_LOW, GPO_DISABLE,
-+				  GPI_UART3_PAD_SIN)>;
-+			bias-pull-up;
-+			drive-strength = <14>;
-+			input-enable;
-+			input-schmitt-enable;
-+			slew-rate = <0>;
-+		};
-+		tx-pin {
-+			pinmux = <GPIOMUX(14, GPO_UART3_PAD_SOUT,
-+				  GPO_ENABLE, GPI_NONE)>;
-+			bias-disable;
-+			drive-strength = <35>;
-+			input-disable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+	};
-+};
-+
-+&i2c0 {
-+	clock-frequency = <100000>;
-+	i2c-sda-hold-time-ns = <300>;
-+	i2c-sda-falling-time-ns = <500>;
-+	i2c-scl-falling-time-ns = <500>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c0_pins>;
-+	status = "okay";
-+
-+	pmic@5e {
-+		compatible = "ti,tps65086";
-+		reg = <0x5e>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		regulators {
-+		};
-+	};
-+};
-+
-+&i2c1 {
-+	clock-frequency = <400000>;
-+	i2c-sda-hold-time-ns = <300>;
-+	i2c-sda-falling-time-ns = <100>;
-+	i2c-scl-falling-time-ns = <100>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c1_pins>;
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	clock-frequency = <100000>;
-+	i2c-sda-hold-time-ns = <300>;
-+	i2c-sda-falling-time-ns = <500>;
-+	i2c-scl-falling-time-ns = <500>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c2_pins>;
-+	status = "okay";
-+};
-+
-+&osc_sys {
-+	clock-frequency = <25000000>;
-+};
-+
-+&osc_aud {
-+	clock-frequency = <27000000>;
-+};
-+
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart3_pins>;
-+	status = "okay";
-+};
--- 
-2.33.0
+Here we decrement counters for non-allocated but pre-charged pages.
+If all pre-chared pages are allocated we release noting.
+However in this case we will be called with nr_pages = 0,
+and I think this time it makes sense to add this check.
+I will do it in next patch version.
+
+>> +#else /* !CONFIG_MEMCG_KMEM */
+>> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
+>> +				unsigned int nr_pages)
+>> +{
+>> +	return true;
+>> +}
+>> +
+>> +void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page)
+>> +{
+>> +}
+>> +
+>> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
+>> +				 unsigned int nr_pages)
+>> +{
+>> +}
+>> +#endif
+>> +
+>>  
+>>  /*
+>>   * Because page_memcg(head) is not set on tails, set it now.
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index b37435c274cf..eb37177bf507 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -5207,6 +5207,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>>  	gfp_t alloc_gfp;
+>>  	unsigned int alloc_flags = ALLOC_WMARK_LOW;
+>>  	int nr_populated = 0, nr_account = 0;
+>> +	unsigned int nr_pre_charge = 0;
+>> +	struct obj_cgroup *objcg = NULL;
+>>  
+>>  	/*
+>>  	 * Skip populated array elements to determine if any pages need
+>> @@ -5275,6 +5277,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>>  	if (unlikely(!zone))
+>>  		goto failed;
+>>  
+>> +	nr_pre_charge = nr_pages - nr_populated;
+>> +	if (!memcg_bulk_pre_charge_hook(&objcg, gfp, nr_pre_charge))
+>> +		goto failed;
+>> +
+>>  	/* Attempt the batch allocation */
+>>  	local_lock_irqsave(&pagesets.lock, flags);
+>>  	pcp = this_cpu_ptr(zone->per_cpu_pageset);
+>> @@ -5299,6 +5305,9 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>>  		nr_account++;
+>>  
+>>  		prep_new_page(page, 0, gfp, 0);
+>> +		if (objcg)
+>> +			memcg_bulk_charge_hook(objcg, page);
+>> +
+>>  		if (page_list)
+>>  			list_add(&page->lru, page_list);
+>>  		else
+>> @@ -5310,13 +5319,16 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>>  
+>>  	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+>>  	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
+>> +	if (objcg)
+>> +		memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
+>>  
+>>  out:
+>>  	return nr_populated;
+>>  
+>>  failed_irq:
+>>  	local_unlock_irqrestore(&pagesets.lock, flags);
+>> -
+>> +	if (objcg)
+>> +		memcg_bulk_post_charge_hook(objcg, nr_pre_charge);
+>>  failed:
+>>  	page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
+>>  	if (page) {
+>> -- 
+>> 2.31.1
+>>
+> 
 
