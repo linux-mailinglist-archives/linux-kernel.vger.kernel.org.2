@@ -2,138 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7DD429B6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08200429B5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231987AbhJLCV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 22:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231617AbhJLCVM (ORCPT
+        id S231629AbhJLCUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 22:20:44 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:40159 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229556AbhJLCUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 22:21:12 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BF1C061766;
-        Mon, 11 Oct 2021 19:19:00 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k23so14612571pji.0;
-        Mon, 11 Oct 2021 19:19:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=RCbwDqaYyU7DEfK+5zBSBE8At7VsmINx/OhzQWtobRc=;
-        b=BIU0wMEUlHaLVCSYCdZXVuZrQxTEB6LELQMfT9XhEOsuEFvGWi1l3oFc6E8yeULuj8
-         48bKfZcjIp0RW6D3euyOdx53LSyHzYvPyPKcehoye55iQ9eKkZX+9GezBO4o56NaJlZ3
-         /CzFB4OVpKaQGL8I7JIDsscFKGP4C1kIFK5n/7lyXqhMMeFmj1PwCn8RvIyKnzqD/Pkt
-         IoJBusZ/KYZbNR9nwVU3KX9tt8ivtxmHXE28OzUX0Lj5z8dce13QyFsVR5rgw9G80NqY
-         Hp/kK5u1q4eN92VwJoDicyEi9x5hdSLSU3ezi3XxzsJ2x2N2CscWeBkNxfwOVf3CiMy9
-         6EIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=RCbwDqaYyU7DEfK+5zBSBE8At7VsmINx/OhzQWtobRc=;
-        b=jytSUP5XT3LqHLiPCcO6Sc2sdxJGEuTFL5mVpFeIgCn5eIVePy9JrWjWhNMi0U4ZWj
-         Yv4TXH37IChlS/x/vlA4O5UoE8q1G5QwB5jyel4ObYdSNJ7rKhVjcGwxY/ioE5hw6qP7
-         fzHz99u/ARH08fi4dRrIT2iKCGppQ0/q4IjHIFbufasNfhbkWrZerEyrKhiOj2Kmqz9z
-         7sKR4yuSYPHs1bT+9CX7rDqv8lSJhjIW90TcDalI6igexkjXdmwlD7/dU2XyEdDSisQX
-         7JJYMxwdOno4ae9ogRly8jBRu42l0ThpbCJKL7+2f6WcMN3YJR0uMNzu3LJ99b/xK+G3
-         wAsQ==
-X-Gm-Message-State: AOAM531Sq9MhK5ZJ4tZJP4aMVhpeoCzrbtldVBc8NBY5qFUXLjDYOMHe
-        IJije4cch4gRx9lUFCM2NSu2pEWNzNw=
-X-Google-Smtp-Source: ABdhPJy+OiKp8N2Qrs4ql0S67qxXpzBBzooL62cf1M7grRFHC/qhGeXCsIM6sEterZ33/FDAIZ7pxA==
-X-Received: by 2002:a17:903:1103:b0:13e:ec6d:524a with SMTP id n3-20020a170903110300b0013eec6d524amr27349238plh.85.1634005139331;
-        Mon, 11 Oct 2021 19:18:59 -0700 (PDT)
-Received: from localhost.localdomain ([162.14.23.249])
-        by smtp.gmail.com with ESMTPSA id l207sm8963835pfd.199.2021.10.11.19.18.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Oct 2021 19:18:58 -0700 (PDT)
-From:   Hongbo Li <herbert.tencent@gmail.com>
-To:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
-        herberthbli@tencent.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] crypto: add eddsa test vector
-Date:   Tue, 12 Oct 2021 10:17:56 +0800
-Message-Id: <1634005076-17534-6-git-send-email-herbert.tencent@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1634005076-17534-1-git-send-email-herbert.tencent@gmail.com>
-References: <1634005076-17534-1-git-send-email-herbert.tencent@gmail.com>
+        Mon, 11 Oct 2021 22:20:42 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSzqL3w2Bz4xqP;
+        Tue, 12 Oct 2021 13:18:37 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634005120;
+        bh=7TdwyrOsBCjwW6kUZLQ0ge42Vqvzaat+9cR/oYtHFUQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VYfu0/fB6iI+Rzc+h/RAHVjla9SGIeXzax2RuDc9USZYB0FKyd66GQ3M3d3yo0kWF
+         8B9dYbG2roCO0ayVXP40pFmaB8zo0rUMJdabTcQ095IbcCgzqmVcwMoj3GbJTKeYgK
+         oA0SI+7kltUIfPiczgIcKPRXQAy32Xm1rc8jYhKCRCY3ary5kknqpOndLBzdDkBCXz
+         UvXicU9Oz5RMvz0A99R0zFRtesl67NPRJmSW5/vYmorARw7sFftx2KRMs7BGQtkNvp
+         G0Mo5TkxuJioVdXYC/f+QjpzVbWe/LJIbCq0LRctDR8yCo5QzgoNcHWIyXYM4g8Wkt
+         tfl+nEJwBISCA==
+Date:   Tue, 12 Oct 2021 13:18:36 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Karol Herbst <kherbst@redhat.com>,
+        Luo penghao <luo.penghao@zte.com.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20211012131836.4e17a031@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/aSVkmKQBx7LDjmkhgmtejTx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hongbo Li <herberthbli@tencent.com>
+--Sig_/aSVkmKQBx7LDjmkhgmtejTx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This patch adds the test vector for ed25519.
-The test vector is from RFC8032 section 7.1 [1]
+Hi all,
 
-[1]https://datatracker.ietf.org/doc/html/rfc8032#section-7.1
+After merging the drm-misc tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-Signed-off-by: Hongbo Li <herberthbli@tencent.com>
----
- crypto/testmgr.c |  6 ++++++
- crypto/testmgr.h | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
+drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c: In function 'gp100_vmm_=
+fault_cancel':
+drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c:491:6: error: unused var=
+iable 'inst' [-Werror=3Dunused-variable]
+  491 |  u32 inst, aper;
+      |      ^~~~
+cc1: all warnings being treated as errors
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 58eee8e..e795b6a 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4968,6 +4968,12 @@ static int alg_test_null(const struct alg_test_desc *desc,
- 			.akcipher = __VECS(ecrdsa_tv_template)
- 		}
- 	}, {
-+		.alg = "eddsa-25519",
-+		.test = alg_test_akcipher,
-+		.suite = {
-+			.akcipher = __VECS(eddsa_25519_tv_template)
-+		}
-+	}, {
- 		.alg = "essiv(authenc(hmac(sha256),cbc(aes)),sha256)",
- 		.test = alg_test_aead,
- 		.fips_allowed = 1,
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index e6fca34..b5f291c 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -1145,6 +1145,38 @@ struct kpp_testvec {
- };
- 
- /*
-+ * EDDSA test vectors.
-+ * From RFC8032 section 7.1
-+ */
-+static const struct akcipher_testvec eddsa_25519_tv_template[] = {
-+	{
-+	.key =
-+	"\x3d\x40\x17\xc3\xe8\x43\x89\x5a\x92\xb7\x0a\xa7\x4d\x1b\x7e\xbc"
-+	"\x9c\x98\x2c\xcf\x2e\xc4\x96\x8c\xc0\xcd\x55\xf1\x2a\xf4\x66\x0c",
-+	.key_len = 32,
-+	/*
-+	 * RFC8032 section 5.1.7. m is SHA512(dom2(F, C) || R || A || PH(M))
-+	 * M is 0x72
-+	 */
-+	.m =
-+	"\xa2\x71\xdf\x0d\x2b\x0d\x03\xbd\x17\xb4\xed\x9a\x4b\x6a\xfd\xdf"
-+	"\x2e\x73\x28\x7f\xd6\x30\xf1\xa1\x37\xd8\x7c\xe8\x73\xa5\x91\xcc"
-+	"\x31\xb6\xdd\x85\x2a\x98\xb5\xdd\x12\x26\xfe\x99\x3d\x82\x28\x27"
-+	"\x8c\xeb\xa2\x1f\x80\xb8\xfc\x95\x98\x6a\x70\xd7\x1e\xdf\x3f\xaf",
-+	.m_size = 64,
-+	.c =
-+	"\x92\xa0\x09\xa9\xf0\xd4\xca\xb8\x72\x0e\x82\x0b\x5f\x64\x25\x40"
-+	"\xa2\xb2\x7b\x54\x16\x50\x3f\x8f\xb3\x76\x22\x23\xeb\xdb\x69\xda"
-+	"\x08\x5a\xc1\xe4\x3e\x15\x99\x6e\x45\x8f\x36\x13\xd0\xf1\x1d\x8c"
-+	"\x38\x7b\x2e\xae\xb4\x30\x2a\xee\xb0\x0d\x29\x16\x12\xbb\x0c\x00",
-+	.c_size = 64,
-+	.algo = OID_ed25519,
-+	.public_key_vec = true,
-+	.siggen_sigver_test = true,
-+	}
-+};
-+
-+/*
-  * PKCS#1 RSA test vectors. Obtained from CAVS testing.
-  */
- static const struct akcipher_testvec pkcs1pad_rsa_tv_template[] = {
--- 
-1.8.3.1
+Caused by commit
 
+  404046cf4805 ("drm/nouveau/mmu/gp100-: drop unneeded assignment in the if=
+ condition.")
+
+I have used the drm-misc tree from next-20211011 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/aSVkmKQBx7LDjmkhgmtejTx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFk8HwACgkQAVBC80lX
+0GxR9gf/dWV2TjBgsZxX9IdzhcV03t7T1O/NqxYkgb8OAGgM4dTbIKVqPLoHPOHN
+C+S/I6iPKyiFKcMhdzepdt3VDZJ11Ww4vauK3NWQTZ9a+SgmaH9ykbDp6+nkOrzS
+PfPi4mEMnfS//WmCgd8PWgULRkOcoFvwuGpy7kml4TLGTI06i9tHZreRQKkUzBN8
+Oy+k1ev2ZPh9g0aqeBxucB4yXHxGSPNON3XqIO8/91qPFtTubJ8wrFBg6CIJw2gl
+I3Qp+EnJ35kWlszJQiHmmTzVQzbBw7Lw1Ztz8ZgZblUCgvBtEjoA6a1KHBw89Jnv
+rzbtA1U9Xx8IcRqtnUygkFvxySkvjA==
+=O10a
+-----END PGP SIGNATURE-----
+
+--Sig_/aSVkmKQBx7LDjmkhgmtejTx--
