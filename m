@@ -2,108 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FD442A138
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8489042A13E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235776AbhJLJhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232657AbhJLJhe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:37:34 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E75C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:35:32 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id om14so3383944pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=o1k8Z+wdh4QOPkQnS+F7/9QuIX0JH9DSlOiSZOGiLJ0=;
-        b=JPI1N3b7+PMvCr14EefM11K1KWWL9gaM68fMQB7IOAiZNObXnUiboTUHWlnYJDNW4Q
-         mAL5untW+5tZk/Drg861zZnJ9H4YHfyVpz6p6D8S9xoKxTdQVHUTycAjL9cKWw8J1PiX
-         cinbdgMKzCE4rX5LNwEYerT8da3aVSR2j4wjuDJVPrWYQfsUMfLgK1JDGIjjGZftmbR4
-         NfkMIKuopr20cjROoPqyebI1ELIut1t1FrnCNI1rm0SN4UeT0GFxPEmu6D3Mb6gc/vpf
-         NvU9Ikd8PH7/TCmv20xvT7bPLqqXs259HgnHrkCC0K33EmuDKKIWryZ0FLbBfB/rBqNc
-         UMfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=o1k8Z+wdh4QOPkQnS+F7/9QuIX0JH9DSlOiSZOGiLJ0=;
-        b=8OWL6aDujH/awlswcqyDEPYORKpfd7FFE35YsESiKwtNv8jogbfRQ0NaOHL0oOxA21
-         m4ZPalGnmXVlEGqsshvsT/Tl+2qD9sp5B0UF5y7bRLnBW+LCc8aXQPRaDLdXIwT6AupQ
-         EV6HNCuVvjOwsp+GREjOs8sS314bAPum36xTghWY6u9NVCQHZ7KV8bAXFeAsvuqt0l8e
-         2/Gyt2DKwTbc7DZnO1BDhqfHmAkfQWn4fDoISpzvcUdaZDvPF2Wfx84Xd1cG9yFMepa8
-         42d7NxN6k9iVH6L2bmp3lr5BpXEhsOKjOQq3hkTWWivrNRzgKFM34sa4ZcfC3Ziie9bF
-         TL5A==
-X-Gm-Message-State: AOAM532DKeFwTzfWSskGCS+42cSdz8H/OSBtao3tOo1F4i6oB7eN5u1Y
-        yGd+J0ZHaDR3e5pNy+gSIOm1Yg==
-X-Google-Smtp-Source: ABdhPJwmjNVx5j57L4zEiPRXtEe8aH/7F8Q9b0NO96Wmfmn8nm+42QOAA5HdzvgpsdPfHkHGSn5kpQ==
-X-Received: by 2002:a17:902:8494:b0:13b:9365:6f12 with SMTP id c20-20020a170902849400b0013b93656f12mr28929229plo.19.1634031332258;
-        Tue, 12 Oct 2021 02:35:32 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id e15sm10067916pfc.134.2021.10.12.02.35.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 02:35:31 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 15:05:29 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel@lists.infradead.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 3/9] dt-bindings: clock: Add apple,cluster-clk binding
-Message-ID: <20211012093529.pzzfo44ikq5oc6cl@vireshk-i7>
-References: <20211011165707.138157-1-marcan@marcan.st>
- <20211011165707.138157-4-marcan@marcan.st>
- <0fe602f6-3adc-dfac-beee-2854b01cec5c@canonical.com>
+        id S235697AbhJLJjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:39:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232657AbhJLJjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:39:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D169861076;
+        Tue, 12 Oct 2021 09:36:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634031420;
+        bh=6ieQ4dqLsJNUtHC/moJebUCQhifHOPPMAfGXcFsbhi8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rEtQ14DkREa27Atw4C4FHdkqGkb7exId9OKcYeZjw7nNDFA55CJb31hLQqzZ4RHqM
+         oqqTeqQLCb+wtcCkglGL/sKnkNFQt2XqP/F86z+nrr1liUvqOUJcQgWbR7Ee3V4rXW
+         rmTIcs2Di/fSrZAPM2x+XN552ZhsRoY1Kqx1WgYw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.19 00/27] 4.19.211-rc3 review
+Date:   Tue, 12 Oct 2021 11:36:57 +0200
+Message-Id: <20211012093340.313468813@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0fe602f6-3adc-dfac-beee-2854b01cec5c@canonical.com>
-User-Agent: NeoMutt/20180716-391-311a52
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.211-rc3.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.211-rc3
+X-KernelTest-Deadline: 2021-10-14T09:33+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apart from what Krzysztof already said:
+This is the start of the stable review cycle for the 4.19.211 release.
+There are 27 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-On 12-10-21, 10:51, Krzysztof Kozlowski wrote:
-> On 11/10/2021 18:57, Hector Martin wrote:
-> > +    pcluster_opp: opp-table-1 {
-> > +        compatible = "operating-points-v2";
-> > +        opp-shared;
-> > +
-> > +        opp01 {
-> > +            opp-hz = /bits/ 64 <600000000>;
-> > +            opp-microvolt = <781000>;
-> > +            opp-level = <1>;
+Responses should be made by Thu, 14 Oct 2021 09:33:32 +0000.
+Anything received after that time might be too late.
 
-The opp-level thing wasn't designed to work this way, though it may
-work just fine. It was designed as a unique key for power-domains,
-which don't have opp-hz. The OPP core currently looks at 3 different
-values, which can act as a unique key to identify the OPP. clk-rate,
-bandwidth and level.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.211-rc3.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-I think this is the first platform which has both hz and level in the
-CPUs OPP table. What exactly is level in this case ?
+thanks,
 
-Again, it may work fine, I just don't know where it may end up
-breaking :)
+greg k-h
 
--- 
-viresh
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.211-rc3
+
+Lukas Bulwahn <lukas.bulwahn@gmail.com>
+    x86/Kconfig: Correct reference to MWINCHIP3D
+
+Jamie Iles <quic_jiles@quicinc.com>
+    i2c: acpi: fix resource leak in reconfiguration device addition
+
+Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
+    i40e: Fix freeing of uninitialized misc IRQ vector
+
+Jiri Benc <jbenc@redhat.com>
+    i40e: fix endless loop under rtnl
+
+Eric Dumazet <edumazet@google.com>
+    rtnetlink: fix if_nlmsg_stats_size() under estimation
+
+Yang Yingliang <yangyingliang@huawei.com>
+    drm/nouveau/debugfs: fix file release memory leak
+
+Eric Dumazet <edumazet@google.com>
+    netlink: annotate data races around nlk->bound
+
+Sean Anderson <sean.anderson@seco.com>
+    net: sfp: Fix typo in state machine debug string
+
+Eric Dumazet <edumazet@google.com>
+    net: bridge: use nla_total_size_64bit() in br_get_linkxstats_size()
+
+Oleksij Rempel <o.rempel@pengutronix.de>
+    ARM: imx6: disable the GIC CPU interface before calling stby-poweroff sequence
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    ptp_pch: Load module automatically if ID matches
+
+Pali Rohár <pali@kernel.org>
+    powerpc/fsl/dts: Fix phy-connection-type for fm1mac3
+
+Eric Dumazet <edumazet@google.com>
+    net_sched: fix NULL deref in fifo_set_limit()
+
+Pavel Skripkin <paskripkin@gmail.com>
+    phy: mdio: fix memory leak
+
+Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
+    bpf: Fix integer overflow in prealloc_elems_and_freelist()
+
+Johan Almbladh <johan.almbladh@anyfinetworks.com>
+    bpf, arm: Fix register clobbering in div/mod implementation
+
+Max Filippov <jcmvbkbc@gmail.com>
+    xtensa: call irqchip_init only when CONFIG_USE_OF is selected
+
+Piotr Krysiuk <piotras@gmail.com>
+    bpf, mips: Validate conditional branch offsets
+
+David Heidelberg <david@ixit.cz>
+    ARM: dts: qcom: apq8064: use compatible which contains chipid
+
+Roger Quadros <rogerq@kernel.org>
+    ARM: dts: omap3430-sdp: Fix NAND device node
+
+Juergen Gross <jgross@suse.com>
+    xen/balloon: fix cancelled balloon action
+
+Trond Myklebust <trond.myklebust@hammerspace.com>
+    nfsd4: Handle the NFSv4 READDIR 'dircount' hint being zero
+
+Zheng Liang <zhengliang6@huawei.com>
+    ovl: fix missing negative dentry check in ovl_rename()
+
+Jan Beulich <jbeulich@suse.com>
+    xen/privcmd: fix error handling in mmap-resource processing
+
+Johan Hovold <johan@kernel.org>
+    USB: cdc-acm: fix break reporting
+
+Johan Hovold <johan@kernel.org>
+    USB: cdc-acm: fix racy tty buffer accesses
+
+Ben Hutchings <ben@decadent.org.uk>
+    Partially revert "usb: Kconfig: using select for USB_COMMON dependency"
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                    |  4 +-
+ arch/arm/boot/dts/omap3430-sdp.dts          |  2 +-
+ arch/arm/boot/dts/qcom-apq8064.dtsi         |  3 +-
+ arch/arm/mach-imx/pm-imx6.c                 |  2 +
+ arch/arm/net/bpf_jit_32.c                   | 19 ++++++++++
+ arch/mips/net/bpf_jit.c                     | 57 ++++++++++++++++++++++-------
+ arch/powerpc/boot/dts/fsl/t1023rdb.dts      |  2 +-
+ arch/x86/Kconfig                            |  2 +-
+ arch/xtensa/kernel/irq.c                    |  2 +-
+ drivers/gpu/drm/nouveau/nouveau_debugfs.c   |  1 +
+ drivers/i2c/i2c-core-acpi.c                 |  1 +
+ drivers/net/ethernet/intel/i40e/i40e_main.c |  5 ++-
+ drivers/net/phy/mdio_bus.c                  |  7 ++++
+ drivers/net/phy/sfp.c                       |  2 +-
+ drivers/ptp/ptp_pch.c                       |  1 +
+ drivers/usb/Kconfig                         |  3 +-
+ drivers/usb/class/cdc-acm.c                 |  8 ++++
+ drivers/xen/balloon.c                       | 21 ++++++++---
+ drivers/xen/privcmd.c                       |  7 ++--
+ fs/nfsd/nfs4xdr.c                           | 19 ++++++----
+ fs/overlayfs/dir.c                          | 10 +++--
+ kernel/bpf/stackmap.c                       |  3 +-
+ net/bridge/br_netlink.c                     |  2 +-
+ net/core/rtnetlink.c                        |  2 +-
+ net/netlink/af_netlink.c                    | 14 +++++--
+ net/sched/sch_fifo.c                        |  3 ++
+ 26 files changed, 148 insertions(+), 54 deletions(-)
+
+
