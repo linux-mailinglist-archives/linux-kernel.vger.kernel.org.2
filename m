@@ -2,141 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457A642A349
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D827142A350
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbhJLLbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:31:14 -0400
-Received: from mga01.intel.com ([192.55.52.88]:62234 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236242AbhJLLbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:31:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="250511798"
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="250511798"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 04:29:10 -0700
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="490926632"
-Received: from anicol1x-mobl.ger.corp.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.249.40.213])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 04:29:08 -0700
-From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To:     apw@canonical.com, joe@perches.com
-Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v5] checkpatch: get default codespell dictionary path from package location
-Date:   Tue, 12 Oct 2021 14:29:18 +0300
-Message-Id: <20211012112918.19166-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S236265AbhJLLbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 07:31:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39870 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236266AbhJLLbj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 07:31:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634038177;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+956HXQTjGs6a34u/u+/FjVYaM1e8zxxcd9Fx/dYps8=;
+        b=S/dabcEG9ULECkofY7tOHVwcSkVlkRqm2uhSktU4itFX976xigSUvXK9QU0L4CGtdXbg1D
+        AoOId0KxJrorPxCEEWmmCuS/sSrLQrPJ13QHRpA/wADi5KRqN67XcBlRoNzikQQoDVoaXz
+        1QLOB8NYWrzS98aScxPO1pxf1bE5oH4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-313-kQ71V3HUMj6hMZXVR2JuTw-1; Tue, 12 Oct 2021 07:29:36 -0400
+X-MC-Unique: kQ71V3HUMj6hMZXVR2JuTw-1
+Received: by mail-wr1-f72.google.com with SMTP id h11-20020adfa4cb000000b00160c791a550so15308229wrb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 04:29:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+956HXQTjGs6a34u/u+/FjVYaM1e8zxxcd9Fx/dYps8=;
+        b=FJc+dgIXNd4TYcEGUGaMf/oBQ1H0TcvVpXkdFmPG+y8WPJwJl3h7ZQZ8NvMVGst/Yf
+         gZIT0NixAhizBtbkwo+ZYN9ttJsAm7GrAJwQfSzXR4ez66YdpWxZ28PAbqtAke/1U3Np
+         l3eOkNWP21iyNA2NFTJ7SH/T7xNKe1nGd7llobMWfQve9Trx/IRdGthmynU0ma49SpmA
+         wpglkxeQX+/g+vxlgQSo/72p4fUJTohEEplI/OPkN+Qg95oqEe9plYjY4ZHZqpFV9uJU
+         qYcdTDn6/tajLMqPuX+v1EON3g5a78dUzzyYcWyx8qA64eKCTDd+H5eH3INrZFJ42mUh
+         /3ZQ==
+X-Gm-Message-State: AOAM530MXObR4+gQxqNQWv8oaL3YMu3NerFFBfapZaZ3/RgK7rcfvTWS
+        l+1xrd2cnF1FWIU9Vx6rzvdhzm94F1nihGdkt4Lg4M/tjmnJhL07MmhhbryGR3qf2T0ruEAVtZY
+        CJR+nOPQBULxhsgwm+vb8ZaTLxSO8vGeMPys4NzQi
+X-Received: by 2002:a05:600c:284b:: with SMTP id r11mr4940980wmb.179.1634038174952;
+        Tue, 12 Oct 2021 04:29:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzSIW87MAnP/YGW/e3O+0hW0JLMaF3rLvNqNrNOXN3NYEhTe6teWlliWCUN6zZ66tm7KP2tKzRbb4aLIwOsxAQ=
+X-Received: by 2002:a05:600c:284b:: with SMTP id r11mr4940959wmb.179.1634038174772;
+ Tue, 12 Oct 2021 04:29:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211012131836.4e17a031@canb.auug.org.au>
+In-Reply-To: <20211012131836.4e17a031@canb.auug.org.au>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Tue, 12 Oct 2021 13:29:24 +0200
+Message-ID: <CACO55ttUA1nwFf0UP_+8q8f_baYey0+WwcwJvLMixFDv=RsncQ@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Luo penghao <luo.penghao@zte.com.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The standard location of dictionary.txt is under codespell's package, on
-my machine atm (codespell 2.1, Artix Linux):
-/usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
+uhh, that's on me. I will send out a patch today. I just noticed that
+the config file I used for testing had WERROR disabled.
 
-Since we enable the codespell by default for SOF I have constant:
-No codespell typos will be found - \
-file '/usr/share/codespell/dictionary.txt': No such file or directory
-
-The patch proposes to try to fix up the path following the recommendation
-found here:
-https://github.com/codespell-project/codespell/issues/1540
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
-Hi,
-
-Changes since v4:
-- Use the readable version suggested by Joe Perches (store the pyhton snippet in
-  python_codespell_dict)
-
-Changes since v3:
-- Do not try to override the use provided codespell file location
-
-Changes since v2:
-- Only try to check for dictionary path it is enabled or when the help is
-  displayed
- - Move the check after the GetOptions()
- - Set $help to 2 in case invalid option is passed in order to be able to use
-   correct exitcode and still display the correct path for dictionary.txt
-
-Changes sicne v1:
-- add missing ';' to the line updating the $codespellfile with $codespell_dict
-
-Regards,
-Peter
-
- scripts/checkpatch.pl | 31 +++++++++++++++++++++++++++----
- 1 file changed, 27 insertions(+), 4 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index c27d2312cfc3..9fe6f596738a 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -63,6 +63,7 @@ my $min_conf_desc_length = 4;
- my $spelling_file = "$D/spelling.txt";
- my $codespell = 0;
- my $codespellfile = "/usr/share/codespell/dictionary.txt";
-+my $user_codespellfile = "";
- my $conststructsfile = "$D/const_structs.checkpatch";
- my $docsfile = "$D/../Documentation/dev-tools/checkpatch.rst";
- my $typedefsfile;
-@@ -130,7 +131,7 @@ Options:
-   --ignore-perl-version      override checking of perl version.  expect
-                              runtime errors.
-   --codespell                Use the codespell dictionary for spelling/typos
--                             (default:/usr/share/codespell/dictionary.txt)
-+                             (default:$codespellfile)
-   --codespellfile            Use this codespell dictionary
-   --typedefsfile             Read additional types from this file
-   --color[=WHEN]             Use colors 'always', 'never', or only when output
-@@ -317,7 +318,7 @@ GetOptions(
- 	'debug=s'	=> \%debug,
- 	'test-only=s'	=> \$tst_only,
- 	'codespell!'	=> \$codespell,
--	'codespellfile=s'	=> \$codespellfile,
-+	'codespellfile=s'	=> \$user_codespellfile,
- 	'typedefsfile=s'	=> \$typedefsfile,
- 	'color=s'	=> \$color,
- 	'no-color'	=> \$color,	#keep old behaviors of -nocolor
-@@ -325,9 +326,31 @@ GetOptions(
- 	'kconfig-prefix=s'	=> \${CONFIG_},
- 	'h|help'	=> \$help,
- 	'version'	=> \$help
--) or help(1);
-+) or $help = 2;
-+
-+my $python_codespell_dict = << "EOF";
-+import os.path as op
-+import codespell_lib
-+codespell_dir = op.dirname(codespell_lib.__file__)
-+codespell_file = op.join(codespell_dir, 'data', 'dictionary.txt')
-+print(codespell_file, end='')
-+EOF
-+;
-+
-+if ($user_codespellfile) {
-+	# Use the user provided codespell file unconditionally
-+	$codespellfile = $user_codespellfile;
-+} else {
-+	# Try to find the codespell install location to use it as default path
-+	if (($codespell || $help) && which("codespell") ne "" && which("python") ne "") {
-+		my $codespell_dict = `python3 -c "$python_codespell_dict" 2> /dev/null`;
-+		$codespellfile = $codespell_dict if (-e $codespell_dict);
-+	}
-+}
- 
--help(0) if ($help);
-+# $help is 1 if either -h, --help or --version is passed as option - exitcode: 0
-+# $help is 2 if invalid option is passed - exitcode: 1
-+help($help - 1) if ($help);
- 
- die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
- die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
--- 
-2.33.0
+On Tue, Oct 12, 2021 at 4:18 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the drm-misc tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>
+> drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c: In function 'gp100_vmm_fault_cancel':
+> drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmgp100.c:491:6: error: unused variable 'inst' [-Werror=unused-variable]
+>   491 |  u32 inst, aper;
+>       |      ^~~~
+> cc1: all warnings being treated as errors
+>
+> Caused by commit
+>
+>   404046cf4805 ("drm/nouveau/mmu/gp100-: drop unneeded assignment in the if condition.")
+>
+> I have used the drm-misc tree from next-20211011 for today.
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
