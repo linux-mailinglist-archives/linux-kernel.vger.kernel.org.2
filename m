@@ -2,303 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3825542A585
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955C642A595
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236802AbhJLNZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236601AbhJLNZH (ORCPT
+        id S236873AbhJLN0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:26:17 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48372 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236948AbhJLN0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:25:07 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D4C3C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 06:23:05 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id e3so33305991wrc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 06:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YTaDn2p7VZ92sBtgQtYNbQCTZ1WpJ/csOglKb3v7qtk=;
-        b=qFdM3wTDBfuNv5JxSuq6lSdFJrwntH4ICGRNfvUUktT+fPFwZj49/CcIKO+D08vGjb
-         O9Z8e+DnniJm1vkFiKiDwOsWxPJMdq0S6moTaqYQw+ztEZ6ujf2sYcPQIADPzmPO+WHl
-         z4ebD2YVQVi/wkg6Jc57cJrnMZGzUuz3nad75nU8Zh7d9yt4IsVDRs1SjyZFH53orTrR
-         KmHmTlfqlQ3CkWdD2p3v5PWu12C4VfYCSBy8KR/IAZ+scqWumsFGpXigJoWV5u9Y3mm5
-         v5lwk0zTJNC6UHXVn/6f+7VEaGk6u8uK7KBDJeDt3Ga7yZYMsNHeVWPbTvMjVjYhoNs5
-         IreQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=YTaDn2p7VZ92sBtgQtYNbQCTZ1WpJ/csOglKb3v7qtk=;
-        b=QdM/tf5LNVfSN3x3ScqiA0LOMOYLX7oMKMUBgdgzLjtnTDHmFU7JdLnQf0kACIxxcr
-         j6/YfE62zIhLC1rRV2dgFsfGJogCx98eB26ynzlKhQ1V0w3Oz7X08VuFUE9FuVRUkAVg
-         4yJs/02uhJv+64iSVpSaITTRf+Gw1LXspcnaAm1EJtuL8UCsPsTOuj3IbiXvNEb9SaPZ
-         QVJXKB0bU1m4L7jbAfzQuXIsVsvMr+4dRp7gJQuJd1TZEhcLstZOqf9WkJ2RKJVq1QIC
-         Qhyu6/QE4CMSSZcMpQIMtDp6Yu5g8uRffiTKV/yKFEmHLvKk2QUNQSt6eoG2vHqJo2Q7
-         2JdQ==
-X-Gm-Message-State: AOAM530OGp8GDffi+HAiGE8aFMLiAYQ5vRilqKHK60EKogMxi8HAswe0
-        xhdSquG3lj0HCuoYaBYwJmo00Q==
-X-Google-Smtp-Source: ABdhPJz6RBo0jNXjVfPu1Mtxy4onFJopYOBEsV1SiaFxd5M+Y3ynxZphwdmFy7PyBzahcNwdTQ+xbQ==
-X-Received: by 2002:a1c:751a:: with SMTP id o26mr5746307wmc.94.1634044982250;
-        Tue, 12 Oct 2021 06:23:02 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:4e93:9fa7:4d66:4f5c? ([2001:861:44c0:66c0:4e93:9fa7:4d66:4f5c])
-        by smtp.gmail.com with ESMTPSA id z6sm6628205wro.25.2021.10.12.06.23.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 06:23:01 -0700 (PDT)
-Subject: Re: [PATCH v5 5/8] drm/omap: Add global state as a private atomic
- object
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, khilman@baylibre.com,
-        Benoit Parrot <bparrot@ti.com>
-References: <20210923070701.145377-1-narmstrong@baylibre.com>
- <20210923070701.145377-6-narmstrong@baylibre.com>
- <2609ca32-90e8-1335-2769-14dcbcdfafde@ideasonboard.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <ab06e379-1579-2352-3525-dbdca6a94f9b@baylibre.com>
-Date:   Tue, 12 Oct 2021 15:23:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <2609ca32-90e8-1335-2769-14dcbcdfafde@ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Tue, 12 Oct 2021 09:26:09 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5748F2009E;
+        Tue, 12 Oct 2021 13:24:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634045044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n3GgDvylGNJ7V1J2rldQvLGL+9Bh4F5sQ7kCcd8S7RM=;
+        b=kL8nwYRKsxneTCZl2UsPJBlQ7KenSrLldX8DTudpBryFw/t+YyzrmjTB2HFxtSIyMC9Gir
+        XgQdp8vE1jQz7zSu7J8QS7AqVvrwTS54WvGIhvh+GpUWBzeZF7LcrzQshIVl+Gn6JyyEkz
+        vD6/+VFD6vfyD5+xcCWBMxjGmzlOYPg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634045044;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n3GgDvylGNJ7V1J2rldQvLGL+9Bh4F5sQ7kCcd8S7RM=;
+        b=/rL67Ip2ThtFFd6yxcEM8gYPr1qTBrwW7CVIXmDTVZQeI3BOeTOOX657ZVbfndOjqRRLgJ
+        oBD5Z1JCbbC89vAA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 3BD34A3B96;
+        Tue, 12 Oct 2021 13:24:04 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 15:24:04 +0200
+Message-ID: <s5hsfx61imj.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
+In-Reply-To: <YWWCiLE6id43uJjp@kroah.com>
+References: <YWLbEdHUE3k/i0fe@kroah.com>
+        <s5hily46316.wl-tiwai@suse.de>
+        <YWRYD7fphcaWKEOG@kroah.com>
+        <s5h7dej4kbe.wl-tiwai@suse.de>
+        <YWRy+UoG1YHcQ7UM@kroah.com>
+        <s5ho87u3dcb.wl-tiwai@suse.de>
+        <YWWCiLE6id43uJjp@kroah.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 12/10/2021 12:44, Tomi Valkeinen wrote:
-> On 23/09/2021 10:06, Neil Armstrong wrote:
->> From: Benoit Parrot <bparrot@ti.com>
->>
->> Global shared resources (like hw overlays) for omapdrm are implemented
->> as a part of atomic state using the drm_private_obj infrastructure
->> available in the atomic core.
->>
->> omap_global_state is introduced as a drm atomic private object. The two
->> funcs omap_get_global_state() and omap_get_existing_global_state() are
->> the two variants that will be used to access omap_global_state.
->>
->> drm_mode_config_init() needs to be called earlier because it
->> creates/initializes the private_obj link list maintained by the atomic
->> framework. The private_obj link list has to exist prior to calling
->> drm_atomic_private_obj_init(). Similarly the cleanup handler are
->> reordered appropriately.
+On Tue, 12 Oct 2021 14:41:44 +0200,
+Greg Kroah-Hartman wrote:
 > 
-> I'm not really familiar with the private object. Did you check how current drivers use it? These patches are 3 years old, and things might have changed around the private object.
-
-Indeed, I checked and this is used in vc4/tegra/arm/amd & msm in the same as way.
-
+> On Tue, Oct 12, 2021 at 09:35:16AM +0200, Takashi Iwai wrote:
+> > On Mon, 11 Oct 2021 19:23:05 +0200,
+> > Greg Kroah-Hartman wrote:
+> > > 
+> > > On Mon, Oct 11, 2021 at 06:07:01PM +0200, Takashi Iwai wrote:
+> > > > Could you also post the contents of /proc/asound/card*/usbmixer (only
+> > > > for the corresponding device), too?
+> > > 
+> > > Sure, here it is:
+> > > 
+> > > USB Mixer: usb_id=0x30be0101, ctrlif=0, ctlerr=0
+> > > Card: Schiit Audio Schiit Hel at usb-0000:47:00.1-2.2, high speed
+> > >   Unit: 5
+> > >     Control: name="Mic - Input Jack", index=0
+> > >     Info: id=5, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > >   Unit: 7
+> > >     Control: name="Speaker - Output Jack", index=0
+> > >     Info: id=7, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > >   Unit: 13
+> > >     Control: name="PCM Playback Switch", index=0
+> > >     Info: id=13, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
+> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > >   Unit: 17
+> > >     Control: name="Mic Capture Switch", index=0
+> > >     Info: id=17, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
+> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > >   Unit: 18
+> > >     Control: name="Clock Source 18 Validity", index=0
+> > >     Info: id=18, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > >   Unit: 22
+> > >     Control: name="Clock Source 22 Validity", index=0
+> > >     Info: id=22, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > 
+> > Hm, I expected more exotic control that failed, but it was Mic Capture
+> > Switch, which should be treated normally.
+> > 
+> > Could you try the patch below?  This will still show other warning
+> > messages, but it'll forcibly initialize the mixer elements at probe
+> > time, and the rest should work.
+> > 
+> > Once after it's confirmed to work, we may shut up the device warnings
+> > with a quirk.
 > 
->> Signed-off-by: Benoit Parrot <bparrot@ti.com>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->> ---
->>   drivers/gpu/drm/omapdrm/omap_drv.c | 91 +++++++++++++++++++++++++++++-
->>   drivers/gpu/drm/omapdrm/omap_drv.h | 21 +++++++
->>   2 files changed, 109 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.c b/drivers/gpu/drm/omapdrm/omap_drv.c
->> index b994014b22e8..c7912374d393 100644
->> --- a/drivers/gpu/drm/omapdrm/omap_drv.c
->> +++ b/drivers/gpu/drm/omapdrm/omap_drv.c
->> @@ -128,6 +128,82 @@ static const struct drm_mode_config_funcs omap_mode_config_funcs = {
->>       .atomic_commit = drm_atomic_helper_commit,
->>   };
->>   +/* Global/shared object state funcs */
->> +
->> +/*
->> + * This is a helper that returns the private state currently in operation.
->> + * Note that this would return the "old_state" if called in the atomic check
->> + * path, and the "new_state" after the atomic swap has been done.
->> + */
->> +struct omap_global_state *
->> +omap_get_existing_global_state(struct omap_drm_private *priv)
->> +{
->> +    return to_omap_global_state(priv->glob_obj.state);
->> +}
->> +
->> +/*
->> + * This acquires the modeset lock set aside for global state, creates
->> + * a new duplicated private object state.
->> + */
->> +struct omap_global_state *__must_check
->> +omap_get_global_state(struct drm_atomic_state *s)
->> +{
->> +    struct omap_drm_private *priv = s->dev->dev_private;
->> +    struct drm_private_state *priv_state;
->> +
->> +    priv_state = drm_atomic_get_private_obj_state(s, &priv->glob_obj);
->> +    if (IS_ERR(priv_state))
->> +        return ERR_CAST(priv_state);
->> +
->> +    return to_omap_global_state(priv_state);
->> +}
->> +
->> +static struct drm_private_state *
->> +omap_global_duplicate_state(struct drm_private_obj *obj)
->> +{
->> +    struct omap_global_state *state;
->> +
->> +    state = kmemdup(obj->state, sizeof(*state), GFP_KERNEL);
->> +    if (!state)
->> +        return NULL;
->> +
->> +    __drm_atomic_helper_private_obj_duplicate_state(obj, &state->base);
->> +
->> +    return &state->base;
->> +}
->> +
->> +static void omap_global_destroy_state(struct drm_private_obj *obj,
->> +                      struct drm_private_state *state)
->> +{
->> +    struct omap_global_state *omap_state = to_omap_global_state(state);
->> +
->> +    kfree(omap_state);
->> +}
->> +
->> +static const struct drm_private_state_funcs omap_global_state_funcs = {
->> +    .atomic_duplicate_state = omap_global_duplicate_state,
->> +    .atomic_destroy_state = omap_global_destroy_state,
->> +};
->> +
->> +static int omap_global_obj_init(struct drm_device *dev)
->> +{
->> +    struct omap_drm_private *priv = dev->dev_private;
->> +    struct omap_global_state *state;
->> +
->> +    state = kzalloc(sizeof(*state), GFP_KERNEL);
->> +    if (!state)
->> +        return -ENOMEM;
->> +
->> +    drm_atomic_private_obj_init(dev, &priv->glob_obj, &state->base,
->> +                    &omap_global_state_funcs);
->> +    return 0;
->> +}
->> +
->> +static void omap_global_obj_fini(struct omap_drm_private *priv)
->> +{
->> +    drm_atomic_private_obj_fini(&priv->glob_obj);
->> +}
->> +
->>   static void omap_disconnect_pipelines(struct drm_device *ddev)
->>   {
->>       struct omap_drm_private *priv = ddev->dev_private;
->> @@ -231,8 +307,6 @@ static int omap_modeset_init(struct drm_device *dev)
->>       if (!omapdss_stack_is_ready())
->>           return -EPROBE_DEFER;
->>   -    drm_mode_config_init(dev);
->> -
->>       ret = omap_modeset_init_properties(dev);
->>       if (ret < 0)
->>           return ret;
->> @@ -583,10 +657,16 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
->>         omap_gem_init(ddev);
->>   -    ret = omap_hwoverlays_init(priv);
->> +    drm_mode_config_init(ddev);
->> +
->> +    ret = omap_global_obj_init(ddev);
->>       if (ret)
->>           goto err_gem_deinit;
->>   +    ret = omap_hwoverlays_init(priv);
->> +    if (ret)
->> +        goto err_free_priv_obj;
->> +
->>       ret = omap_modeset_init(ddev);
->>       if (ret) {
->>           dev_err(priv->dev, "omap_modeset_init failed: ret=%d\n", ret);
->> @@ -624,7 +704,10 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
->>       omap_modeset_fini(ddev);
->>   err_free_overlays:
->>       omap_hwoverlays_destroy(priv);
->> +err_free_priv_obj:
->> +    omap_global_obj_fini(priv);
->>   err_gem_deinit:
->> +    drm_mode_config_cleanup(ddev);
->>       omap_gem_deinit(ddev);
->>       destroy_workqueue(priv->wq);
->>       omap_disconnect_pipelines(ddev);
->> @@ -649,6 +732,8 @@ static void omapdrm_cleanup(struct omap_drm_private *priv)
->>         omap_modeset_fini(ddev);
->>       omap_hwoverlays_destroy(priv);
->> +    omap_global_obj_fini(priv);
->> +    drm_mode_config_cleanup(ddev);
->>       omap_gem_deinit(ddev);
->>         destroy_workqueue(priv->wq);
->> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.h b/drivers/gpu/drm/omapdrm/omap_drv.h
->> index b4d9c2062723..280cdd27bc8e 100644
->> --- a/drivers/gpu/drm/omapdrm/omap_drv.h
->> +++ b/drivers/gpu/drm/omapdrm/omap_drv.h
->> @@ -14,6 +14,7 @@
->>   #include "dss/omapdss.h"
->>   #include "dss/dss.h"
->>   +#include <drm/drm_atomic.h>
->>   #include <drm/drm_gem.h>
->>   #include <drm/omap_drm.h>
->>   @@ -41,6 +42,15 @@ struct omap_drm_pipeline {
->>       unsigned int alias_id;
->>   };
->>   +/*
->> + * Global private object state for tracking resources that are shared across
->> + * multiple kms objects (planes/crtcs/etc).
->> + */
->> +#define to_omap_global_state(x) container_of(x, struct omap_global_state, base)
+> Only one warning message shows up, here's the dmesg with this patch
+> applied:
 > 
-> Add empty line here.
-
-Ack
-
 > 
->> +struct omap_global_state {
->> +    struct drm_private_state base;
->> +};
->> +
->>   struct omap_drm_private {
->>       struct drm_device *ddev;
->>       struct device *dev;
->> @@ -61,6 +71,13 @@ struct omap_drm_private {
->>       unsigned int num_ovls;
->>       struct omap_hw_overlay *overlays[8];
->>   +    /*
->> +     * Global private object state, Do not access directly, use
->> +     * omap_global_get_state()
->> +     */
->> +    struct drm_modeset_lock glob_obj_lock;
-> 
-> This is not used... What am I missing?
+> [Oct12 14:39] usb 7-2.2: new high-speed USB device number 10 using xhci_hcd
+> [  +0.123157] usb 7-2.2: New USB device found, idVendor=30be, idProduct=0101, bcdDevice= 1.02
+> [  +0.000009] usb 7-2.2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+> [  +0.000003] usb 7-2.2: Product: Schiit Hel
+> [  +0.000002] usb 7-2.2: Manufacturer: Schiit Audio
+> [  +0.339785] usb 7-2.2: 17:0: failed to get current value for ch 0 (-32)
+> [  +0.020373] input: Schiit Audio Schiit Hel as /devices/pci0000:40/0000:40:01.1/0000:41:00.0/0000:42:08.0/0000:47:00.1/usb7/7-2/7-2.2/7-2.2:1.3/0003:30BE:0101.000B/input/input24
+> [  +0.056868] hid-generic 0003:30BE:0101.000B: input,hidraw6: USB HID v1.00 Device [Schiit Audio Schiit Hel] on usb-0000:47:00.1-2.2/input3
 
-It's a leftover from v4, now the lock has been moved into drm_atomic_get_private_obj_state()
+OK, then the problem is only about this unit and about the master
+channel.
 
-> 
->> +    struct drm_private_obj glob_obj;
->> +
->>       struct drm_fb_helper *fbdev;
->>         struct workqueue_struct *wq;
->> @@ -88,5 +105,9 @@ struct omap_drm_private {
->>       void omap_debugfs_init(struct drm_minor *minor);
->> +struct omap_global_state *__must_check
->> +omap_get_global_state(struct drm_atomic_state *s);
->> +struct omap_global_state *
->> +omap_get_existing_global_state(struct omap_drm_private *priv);
-> 
-> These could also be separated by empty lines. At least to my eyes it gets confusing if those declarations are not separated.
+> I don't see a "mic capture switch" on this device, but maybe it triggers
+> when I plug a mic into the microphone port, which is currently empty?
 
-Atomic states can be extremely confusing, and hard to track.
-I checked and they do what they are documented for...
+This should be persistent and visible; try to run "amixer -c1" (or the
+different card index for the device).
 
-The omap_get_existing_global_state() is the most confusing since the result depends if
-we are in an atomic transaction of not.
+So far, so good.  The only remaining piece is how this -EPIPE error
+comes up.  Is this a protocol stall error or such?  Would it be
+avoided by adding the delay like done for some devices?
 
-Neil
+With the 5.15-rc kernel, you can pass quirk_flags option to
+snd-usb-audio module for applying known quirks.
+e.g. quirk_flags=0x100 will set the 1msec delay at each control
+message.  Please check whether it makes any difference.
+The option is an integer array for multiple devices, so if you have
+multiple USB-audio devices, put at the appropriate position in the
+array (e.g. quirk_flags=,,0x100 for the 3rd slot).
 
-> 
->  Tomi
+The quirk bit 0x4000 will shut up the control errors.  If the above
+doesn't fix the warning and the device is working more or less, set
+this quirk to shut up the warning.  It can be set statically in the
+table at the end in sound/usb/quirks.c.
 
+
+Takashi
