@@ -2,96 +2,406 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8A1429ADC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D76429ADD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232758AbhJLBTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49776 "EHLO
+        id S234461AbhJLBTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhJLBTP (ORCPT
+        with ESMTP id S233657AbhJLBTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:19:15 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F43EC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:17:14 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id i11so18949931ila.12
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:17:14 -0700 (PDT)
+        Mon, 11 Oct 2021 21:19:32 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF017C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:17:31 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id c65-20020a251c44000000b005ba81fe4944so15219822ybc.14
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:17:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=22UDNeDQRMRsf4J6KSBgPECViTea6fN+IAAnb/JuSlc=;
-        b=SjLODv5Jn/O9FzbTwh1WCfNXMTx0SIj330RMvgLmpATICkOY08usw3MJe2TRwMiee5
-         g0ZfL5EOuz/bZ1EHOQxZxz58QBQxqbeEfNWfNkUnSzVEINgotLmh3VbinnfosZFOmr+e
-         st0IEwpqZ1RvsGokrdYU2F335rZwayYGmRw30=
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=bGbpyFsi1zCs9YQDf5XQdvwqdaD2wirD+A7f9Qi/V9s=;
+        b=XuPCK1Kswix6uy4jS2XUDLxMRAEHDKsvkpUFAigO2xyhxtH7i26jffNR4xZTEW0ULN
+         chhVFGQ/4IuGOV+lh8wsJTak451mpG3JGQvPifQ4i2VhRfY1TccCzhXj4U4JwydBFiOk
+         Am5ugyRxJmwlBvf5i1A34Fg8v5+wHR6n1vL7o9Xr7sTMlQXbyYYTHpJlX9T0E+zpIFFw
+         js2jDzgDBWegfY+FQW8kFV1PVYRRpiuv2JlXQwnB+q3QvTt4axwg97VPPQQxarkAj4mI
+         yUd2L0F0KJbbzxfFmKhAmOstXnLPMdZKqu2Rmllyi6DRQ0qlz4jOsGrynpyJwDH1Py/g
+         Vvmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=22UDNeDQRMRsf4J6KSBgPECViTea6fN+IAAnb/JuSlc=;
-        b=GtdE2QpiewxywEQ4nlqDrCPwQ41hNTw5yfjD+FnOqvgTaGbqVdjPeD8UQpmnb/fbHz
-         ty/L0CHW3BjJtKKDBDIDY452I67JeKZW4EoOXpm1bskJt8/oP00W+ZqNq56fkVidnwrJ
-         L0RETd9A+yckoKN/SDj6Xwo/dLxiEy5L5LKl4aLoJbhcxbnVCLU4daMWau6jocpew5rH
-         PPXChSqaQfTAX5+U93Xp94bGL2Jqr2MMPVipEy+jlrgKItL2jsnsZz7g/UbWzrV1eb+v
-         B7b1Y5ywk7d0kHpyXrD4MLwN+eTn1eKYe0Jsl52gXKcVvMFFvyvH08By6cAddP/n6qGe
-         ItBQ==
-X-Gm-Message-State: AOAM532aLuTvjw7zx/WUHBZy9GORI/4fL8VjuOKcNiXjv9EaqwTxp7+G
-        LaU6qsLlNM4VW27N+Ej79depYQ==
-X-Google-Smtp-Source: ABdhPJztuTgkv9nhNSbSOJTSmjyAOegunllGZPDp0IWj93zJDJF6pG76UysWYHEQjVpN/zkdSHvNmg==
-X-Received: by 2002:a92:c7a1:: with SMTP id f1mr4210756ilk.263.1634001429616;
-        Mon, 11 Oct 2021 18:17:09 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l18sm4596634ilj.12.2021.10.11.18.17.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 18:17:09 -0700 (PDT)
-Subject: Re: [PATCH 5.14 000/151] 5.14.12-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211011134517.833565002@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <a4d5ca5a-50f9-bf9c-f39e-6d23bb543fe2@linuxfoundation.org>
-Date:   Mon, 11 Oct 2021 19:17:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=bGbpyFsi1zCs9YQDf5XQdvwqdaD2wirD+A7f9Qi/V9s=;
+        b=gEW6E91cxuQKzFkFEx6+8erVCQleJK3wFe6grGRZcZjP9Cf1rzi+rkOnOuo7k3SbR0
+         JlOHWtitzMxkvDS42zwtpClD6WOmFiq0d2iRIYGgRV9iDYfoF3Da2H56O/TOn16AvSwi
+         9IeYLL1FnLCWbsnoywifT+z54IQzbGPz31850TYpsbychR7KhUhxuayoOK6ydTsbDEDS
+         2SkGX3sgouF2swXinp8MN4BRO6x8SG5SIOWC6lsx6NlEIpP7qSziFY3yebXqvCJr2DKZ
+         ltmCTprqjzHd6wvHRRZoZVT32znRL0+F1dbzxI7QQgpKcvOPANn2SqwftXdrHk9jW7Dd
+         IZfw==
+X-Gm-Message-State: AOAM533x9gwVKjb6ldt0/Pa+Dly/uRA3wiez1mWQRK7/NTLfTJ01Q7gA
+        Fu1BZ1PANNVJ9z34GrOtNYHc6WGq9bc86QJ9Lw==
+X-Google-Smtp-Source: ABdhPJyvxgqPo4Es9a7HNhaYBFtdGlvqui4Kwhur0Jik+9b4nQHGtL12M4Ek2rVFBOl+ejnbgtuE3aHK4QqXV9LkRw==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:62d9:8583:862e:cb1d])
+ (user=almasrymina job=sendgmr) by 2002:a25:b309:: with SMTP id
+ l9mr24284908ybj.188.1634001451084; Mon, 11 Oct 2021 18:17:31 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 18:17:26 -0700
+Message-Id: <20211012011728.646120-1-almasrymina@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH v6 1/2] mm, hugepages: add mremap() support for hugepage
+ backed vma
+From:   Mina Almasry <almasrymina@google.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Ken Chen <kenchen@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Kirill Shutemov <kirill@shutemov.name>
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/21 7:44 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.12 release.
-> There are 151 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Oct 2021 13:44:51 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.12-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Support mremap() for hugepage backed vma segment by simply repositioning
+page table entries. The page table entries are repositioned to the new
+virtual address on mremap().
 
-Compiled and booted on my test system. No dmesg regressions.
+Hugetlb mremap() support is of course generic; my motivating use case
+is a library (hugepage_text), which reloads the ELF text of executables
+in hugepages. This significantly increases the execution performance of
+said executables.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Restricts the mremap operation on hugepages to up to the size of the
+original mapping as the underlying hugetlb reservation is not yet
+capable of handling remapping to a larger size.
 
-thanks,
--- Shuah
+During the mremap() operation we detect pmd_share'd mappings and we
+unshare those during the mremap(). On access and fault the sharing is
+established again.
+
+Signed-off-by: Mina Almasry <almasrymina@google.com>
+
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Ken Chen <kenchen@google.com>
+Cc: Chris Kennelly <ckennelly@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Kirill Shutemov <kirill@shutemov.name>
+
+
+---
+
+Changes in v6:
+- Converted hugetlb_vma_shareable() to static only (fixes build warning).
+- Removed huge_pmd_shared(). It's not needed since I removed the
+BUG_ON(huge_pmd_shared) in v3.
+- Removed *...* format for emphasis.
+- Fixed mremap behavior to hugepage-align lengths but return error if
+addresses are not hugepage aligned.
+
+Changes in v5:
+- Remove hugetlb_vma_shareable and huge_pmd_shared dummy definitions for
+!CONFIG_HUGETLB_PAGE config, since they are not used and were causing
+added warning and build errors.
+
+Changes in v4:
+- Added addr, new_addr, old_len, and new_len hugepage alignment.
+
+Changes in v3:
+- Addressed review comments from Mike.
+- Separated tests into their own patch.
+
+Changes in v2:
+- Re-wrote comment around clear_vma_resv_huge_pages() to make it clear
+that the resv_map has been moved to the new VMA and why we need to clear it
+from the current VMA.
+- We detect huge_pmd_shared() pte's and unshare those rather than bug on
+hugetlb_vma_shareable().
+- This case now returns EFAULT:
+if (!vma || vma->vm_start > addr)
+	 goto out;
+- Added kselftests for mremap() support.
+
+---
+ include/linux/hugetlb.h |  15 ++++++
+ mm/hugetlb.c            | 116 +++++++++++++++++++++++++++++++++++++---
+ mm/mremap.c             |  36 +++++++++++--
+ 3 files changed, 156 insertions(+), 11 deletions(-)
+
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index ebaba02706c87..c6b70f1ede6bf 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -124,6 +124,7 @@ struct hugepage_subpool *hugepage_new_subpool(struct hstate *h, long max_hpages,
+ void hugepage_put_subpool(struct hugepage_subpool *spool);
+
+ void reset_vma_resv_huge_pages(struct vm_area_struct *vma);
++void clear_vma_resv_huge_pages(struct vm_area_struct *vma);
+ int hugetlb_sysctl_handler(struct ctl_table *, int, void *, size_t *, loff_t *);
+ int hugetlb_overcommit_handler(struct ctl_table *, int, void *, size_t *,
+ 		loff_t *);
+@@ -132,6 +133,10 @@ int hugetlb_treat_movable_handler(struct ctl_table *, int, void *, size_t *,
+ int hugetlb_mempolicy_sysctl_handler(struct ctl_table *, int, void *, size_t *,
+ 		loff_t *);
+
++int move_hugetlb_page_tables(struct vm_area_struct *vma,
++			     struct vm_area_struct *new_vma,
++			     unsigned long old_addr, unsigned long new_addr,
++			     unsigned long len);
+ int copy_hugetlb_page_range(struct mm_struct *, struct mm_struct *, struct vm_area_struct *);
+ long follow_hugetlb_page(struct mm_struct *, struct vm_area_struct *,
+ 			 struct page **, struct vm_area_struct **,
+@@ -215,6 +220,10 @@ static inline void reset_vma_resv_huge_pages(struct vm_area_struct *vma)
+ {
+ }
+
++static inline void clear_vma_resv_huge_pages(struct vm_area_struct *vma)
++{
++}
++
+ static inline unsigned long hugetlb_total_pages(void)
+ {
+ 	return 0;
+@@ -262,6 +271,12 @@ static inline int copy_hugetlb_page_range(struct mm_struct *dst,
+ 	return 0;
+ }
+
++#define move_hugetlb_page_tables(vma, new_vma, old_addr, new_addr, len)        \
++	({                                                                     \
++		BUG();                                                         \
++		0;                                                             \
++	})
++
+ static inline void hugetlb_report_meminfo(struct seq_file *m)
+ {
+ }
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 6d2f4c25dd9fb..6e91cd3905e73 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1015,6 +1015,35 @@ void reset_vma_resv_huge_pages(struct vm_area_struct *vma)
+ 		vma->vm_private_data = (void *)0;
+ }
+
++/*
++ * Reset and decrement one ref on hugepage private reservation.
++ * Called with mm->mmap_sem writer semaphore held.
++ * This function should be only used by move_vma() and operate on
++ * same sized vma. It should never come here with last ref on the
++ * reservation.
++ */
++void clear_vma_resv_huge_pages(struct vm_area_struct *vma)
++{
++	/*
++	 * Clear the old hugetlb private page reservation.
++	 * It has already been transferred to new_vma.
++	 *
++	 * During a mremap() operation of a hugetlb vma we call move_vma()
++	 * which copies vma into new_vma and unmaps vma. After the copy
++	 * operation both new_vma and vma share a reference to the resv_map
++	 * struct, and at that point vma is about to be unmapped. We don't
++	 * want to return the reservation to the pool at unmap of vma because
++	 * the reservation still lives on in new_vma, so simply decrement the
++	 * ref here and remove the resv_map reference from this vma.
++	 */
++	struct resv_map *reservations = vma_resv_map(vma);
++
++	if (reservations && is_vma_resv_set(vma, HPAGE_RESV_OWNER))
++		kref_put(&reservations->refs, resv_map_release);
++
++	reset_vma_resv_huge_pages(vma);
++}
++
+ /* Returns true if the VMA has associated reserve pages */
+ static bool vma_has_reserves(struct vm_area_struct *vma, long chg)
+ {
+@@ -4800,6 +4829,82 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
+ 	return ret;
+ }
+
++static void move_huge_pte(struct vm_area_struct *vma, unsigned long old_addr,
++			  unsigned long new_addr, pte_t *src_pte)
++{
++	struct hstate *h = hstate_vma(vma);
++	struct mm_struct *mm = vma->vm_mm;
++	pte_t *dst_pte, pte;
++	spinlock_t *src_ptl, *dst_ptl;
++
++	dst_pte = huge_pte_offset(mm, new_addr, huge_page_size(h));
++	dst_ptl = huge_pte_lock(h, mm, dst_pte);
++	src_ptl = huge_pte_lockptr(h, mm, src_pte);
++
++	/*
++	 * We don't have to worry about the ordering of src and dst ptlocks
++	 * because exclusive mmap_sem (or the i_mmap_lock) prevents deadlock.
++	 */
++	if (src_ptl != dst_ptl)
++		spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
++
++	pte = huge_ptep_get_and_clear(mm, old_addr, src_pte);
++	set_huge_pte_at(mm, new_addr, dst_pte, pte);
++
++	if (src_ptl != dst_ptl)
++		spin_unlock(src_ptl);
++	spin_unlock(dst_ptl);
++}
++
++int move_hugetlb_page_tables(struct vm_area_struct *vma,
++			     struct vm_area_struct *new_vma,
++			     unsigned long old_addr, unsigned long new_addr,
++			     unsigned long len)
++{
++	struct hstate *h = hstate_vma(vma);
++	struct address_space *mapping = vma->vm_file->f_mapping;
++	unsigned long sz = huge_page_size(h);
++	struct mm_struct *mm = vma->vm_mm;
++	unsigned long old_end = old_addr + len;
++	unsigned long old_addr_copy;
++	pte_t *src_pte, *dst_pte;
++	struct mmu_notifier_range range;
++
++	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, mm, old_addr,
++				old_end);
++	adjust_range_if_pmd_sharing_possible(vma, &range.start, &range.end);
++	mmu_notifier_invalidate_range_start(&range);
++	/* Prevent race with file truncation */
++	i_mmap_lock_write(mapping);
++	for (; old_addr < old_end; old_addr += sz, new_addr += sz) {
++		src_pte = huge_pte_offset(mm, old_addr, sz);
++		if (!src_pte)
++			continue;
++		if (huge_pte_none(huge_ptep_get(src_pte)))
++			continue;
++
++		/* old_addr arg to huge_pmd_unshare() is a pointer and so the
++		 * arg may be modified. Pass a copy instead to preserve the
++		 * value in old_arg.
++		 */
++		old_addr_copy = old_addr;
++
++		if (huge_pmd_unshare(mm, vma, &old_addr_copy, src_pte))
++			continue;
++
++		dst_pte = huge_pte_alloc(mm, new_vma, new_addr, sz);
++		if (!dst_pte)
++			break;
++
++		move_huge_pte(vma, old_addr, new_addr, src_pte);
++	}
++	i_mmap_unlock_write(mapping);
++	flush_tlb_range(vma, old_end - len, old_end);
++	mmu_notifier_invalidate_range_end(&range);
++
++	return len + old_addr - old_end;
++}
++
+ static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+ 				   unsigned long start, unsigned long end,
+ 				   struct page *ref_page)
+@@ -6280,7 +6385,8 @@ static unsigned long page_table_shareable(struct vm_area_struct *svma,
+ 	return saddr;
+ }
+
+-static bool vma_shareable(struct vm_area_struct *vma, unsigned long addr)
++static bool hugetlb_vma_shareable(struct vm_area_struct *vma,
++				  unsigned long addr)
+ {
+ 	unsigned long base = addr & PUD_MASK;
+ 	unsigned long end = base + PUD_SIZE;
+@@ -6299,7 +6405,7 @@ bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr)
+ 	if (uffd_disable_huge_pmd_share(vma))
+ 		return false;
+ #endif
+-	return vma_shareable(vma, addr);
++	return hugetlb_vma_shareable(vma, addr);
+ }
+
+ /*
+@@ -6339,12 +6445,6 @@ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
+  * sharing is possible.  For hugetlbfs, this prevents removal of any page
+  * table entries associated with the address space.  This is important as we
+  * are setting up sharing based on existing page table entries (mappings).
+- *
+- * NOTE: This routine is only called from huge_pte_alloc.  Some callers of
+- * huge_pte_alloc know that sharing is not possible and do not take
+- * i_mmap_rwsem as a performance optimization.  This is handled by the
+- * if !vma_shareable check at the beginning of the routine. i_mmap_rwsem is
+- * only required for subsequent processing.
+  */
+ pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
+ 		      unsigned long addr, pud_t *pud)
+diff --git a/mm/mremap.c b/mm/mremap.c
+index c0b6c41b7b78f..002eec83e91e5 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -489,6 +489,10 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
+ 	old_end = old_addr + len;
+ 	flush_cache_range(vma, old_addr, old_end);
+
++	if (is_vm_hugetlb_page(vma))
++		return move_hugetlb_page_tables(vma, new_vma, old_addr,
++						new_addr, len);
++
+ 	mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
+ 				old_addr, old_end);
+ 	mmu_notifier_invalidate_range_start(&range);
+@@ -646,6 +650,10 @@ static unsigned long move_vma(struct vm_area_struct *vma,
+ 		mremap_userfaultfd_prep(new_vma, uf);
+ 	}
+
++	if (is_vm_hugetlb_page(vma)) {
++		clear_vma_resv_huge_pages(vma);
++	}
++
+ 	/* Conceal VM_ACCOUNT so old reservation is not undone */
+ 	if (vm_flags & VM_ACCOUNT && !(flags & MREMAP_DONTUNMAP)) {
+ 		vma->vm_flags &= ~VM_ACCOUNT;
+@@ -739,9 +747,6 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
+ 			(vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP)))
+ 		return ERR_PTR(-EINVAL);
+
+-	if (is_vm_hugetlb_page(vma))
+-		return ERR_PTR(-EINVAL);
+-
+ 	/* We can't remap across vm area boundaries */
+ 	if (old_len > vma->vm_end - addr)
+ 		return ERR_PTR(-EFAULT);
+@@ -937,6 +942,31 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+
+ 	if (mmap_write_lock_killable(current->mm))
+ 		return -EINTR;
++	vma = find_vma(mm, addr);
++	if (!vma || vma->vm_start > addr) {
++		ret = EFAULT;
++		goto out;
++	}
++
++	if (is_vm_hugetlb_page(vma)) {
++		struct hstate *h __maybe_unused = hstate_vma(vma);
++
++		old_len = ALIGN(old_len, huge_page_size(h));
++		new_len = ALIGN(new_len, huge_page_size(h));
++
++		/* addrs must be huge page aligned */
++		if (addr & ~huge_page_mask(h))
++			goto out;
++		if (new_addr & ~huge_page_mask(h))
++			goto out;
++
++		/*
++		 * Don't allow remap expansion, because the underlying hugetlb
++		 * reservation is not yet capable to handle split reservation.
++		 */
++		if (new_len > old_len)
++			goto out;
++	}
+
+ 	if (flags & (MREMAP_FIXED | MREMAP_DONTUNMAP)) {
+ 		ret = mremap_to(addr, old_len, new_addr, new_len,
+--
+2.33.0.882.g93a45727a2-goog
