@@ -2,231 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5663C42AEC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CA542AED0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 23:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235422AbhJLVYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 17:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
+        id S235501AbhJLV0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 17:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235356AbhJLVYI (ORCPT
+        with ESMTP id S234011AbhJLV0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 17:24:08 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DF2C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 14:22:06 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id u9-20020a0cf889000000b003834c01c6e8so776786qvn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 14:22:06 -0700 (PDT)
+        Tue, 12 Oct 2021 17:26:09 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE2FC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 14:24:07 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id 3-20020a620603000000b0042aea40c2ddso317488pfg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 14:24:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:message-id:mime-version:subject:from:to:cc;
-        bh=ZV6TjaTmR5m6rKqeJ0Ugf3x95r0PRkvOdsKiB8NimqE=;
-        b=Ef5lOQLGiEGa0Z2iWPKcR4mvQag2AUcnfg5XNHUcgrFTJ5PQYAab+dyrLk3fy+GTby
-         0DzukwOF14jIpcpaKAGFZfrksjW7SmegQNv594JOWhtk4HwtB5P9doeCrD9C0tKj7Jfr
-         K4sy3LIfQBx/1fV3xsEpoJHNv8/gmHaisL0D6krteKedoFF1HRNoRHTimf33Q0YE9X2Y
-         JOIJYjcOpfe8/Ze1C6+M9fOZfBJ+F0pyNB9UbHpZFqYaFO/xusBfAcok4z4KdQAvO7TF
-         xwzi0Lv85LqiXdLW05qpd5jIBx9B9vUgQat4+XsKgwWRzqDSiXMFf7WwxB12dRkHevP4
-         kX0w==
+        bh=Fk9Xc4yx4FRlEZPM/PxyifjRQnzIl7D2v+UAZuEFymU=;
+        b=ovnmzoXtj8x1i1N6aZPMYIJZELeMQteZJSdDAGmHK8ZPk4g7b05jLa5tBwSIx18WuZ
+         zglO/Dz81lWJ96COiEvtD5+NZn3fdrAsVU7TxKUemIgm3SwKEKUyorHGP9Hi5UMmWSXM
+         lBpT944rENO6kBF3LtXfLTZ+BZ/+eFKyeAfx62UJ1fYSCgl7VmSY5JQgbPGuA9FoGLqS
+         yaYRNl83UNtnVnp4j/V9TLfRTtee+gF+N6Mb+kX9Rz+nPJEUiGmXQ/YfIJM/vz9gCVi0
+         KabBrdesb9BolJmfBg7kG29UDQ4q9dVxPBRWU0oFHUVItlje5oWEyIgBa3h5CV3iSQAD
+         /8TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=ZV6TjaTmR5m6rKqeJ0Ugf3x95r0PRkvOdsKiB8NimqE=;
-        b=nCTk8oIpt5WX9+X1p9e5LIplGPTbIjEmilrbPuSCd8zuJkzcRkdwqGXkC4fW5xxe+H
-         srAWXO1NTcBvs8mcVy6KhIY0SKnKuOZ5gNQf3KirciyjOI95yfu6DoqcNcACHFvX+Jqe
-         T26a3x/kDx1AV9dL8FUFeo1yMUwGPlx4SKgrjN+ic9IQ7ZfatBkLNpD1MItInrv234rR
-         iVW42xcMk9Jl3aOAz45JGtL60k5qL81VbC5mAlobtQM6b31wuIUQX0X2IqpLRs9BVF9s
-         x4Th6O4YQ7SmrVrjzLjgju2dS/xeBx4X5PIestufqt/zmtwR6k5lHHx/ksaEsXJj3O97
-         D6Aw==
-X-Gm-Message-State: AOAM531Rr6fH0quGzq2alSKlW6jGNdOoCSYCDyorQPuG6GzMPOqjN5eF
-        szVT3aMWfE5oCgTllAIkLILVBbXvr/M=
-X-Google-Smtp-Source: ABdhPJy25y1PabrGp4VcJYZFBCiIf1DG7kBfBJV+PR6+iijk9KJg9RRp2yyzwE+tpnZSV/Nn92hK9YUFKW0=
+        bh=Fk9Xc4yx4FRlEZPM/PxyifjRQnzIl7D2v+UAZuEFymU=;
+        b=sHUNsVeN39hCNGa1B9phVoeSmjm91r8y8edPu8g4XxBmQmykLQlgRtUtRIFjUWxscm
+         qL+bwSIEWuOsGcnjm0QeXtL0RjrSETXtulxtCFAj+tJ/jFENpcQu7qaDWGzVGTDtyoBo
+         3Ta2IhslJX6jdkw3VpukyC+r+mqr2e3xeZQDozVMGLhvFmlePFal4vy5w2MAcHwbYQ9m
+         RL+6/xTXFc1G7GAi5B4riGe11qVLAmfAjXQ7M45APaJJqerUVHxBpjdOsY9+Zw6jDgZB
+         kKkoJscNkoAdnAFTQdCqeMj2zfnc6lIMZvwnjSmC0m/S7N+B9//3HhMt4RaqAOl9f9di
+         x4Rw==
+X-Gm-Message-State: AOAM533f//uhtYA2yJvOowSpXleAOfWHj1mrkTCimmtN8RLV37FRtF26
+        4FGPyTeO38YJRXHi0yOasJOvlSAtZHs=
+X-Google-Smtp-Source: ABdhPJzUNd6X3fnJWFIj5LQq1wrKz7v+Lf0DkrpQJ5NNth+0+4D6rrh+G2utbI850CfwvWb4yY4GMuqYDAk=
 X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:bab5:e2c:2623:d2f8])
- (user=pgonda job=sendgmr) by 2002:ac8:7f52:: with SMTP id g18mr24954409qtk.196.1634073725487;
- Tue, 12 Oct 2021 14:22:05 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 14:22:02 -0700
-Message-Id: <20211012212202.3862372-1-pgonda@google.com>
+ (user=pgonda job=sendgmr) by 2002:aa7:92d0:0:b0:44c:ab24:cce7 with SMTP id
+ k16-20020aa792d0000000b0044cab24cce7mr33818605pfa.6.1634073846954; Tue, 12
+ Oct 2021 14:24:06 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 14:24:03 -0700
+Message-Id: <20211012212403.3863482-1-pgonda@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH V2] crypto: ccp - Consolidate sev INIT logic
+Subject: [PATCH V3] KVM: SEV: Acquire vcpu mutex when updating VMSA
 From:   Peter Gonda <pgonda@google.com>
-To:     thomas.lendacky@amd.com
-Cc:     Peter Gonda <pgonda@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Marc Orr <marcorr@google.com>, Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Rientjes <rientjes@google.com>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     kvm@vger.kernel.org
+Cc:     Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds new helper function sev_init_if_required() for use in sev_ioctl().
-The function calls __sev_platform_init_locked() if the command requires
-the PSP's internal state be at least SEV_STATE_INIT. This consolidates
-many checks scattered through out the ioctl delegation functions.
+Adds vcpu mutex guard to the VMSA updating code. Refactors out
+__sev_launch_update_vmsa() function to deal with per vCPU parts
+of sev_launch_update_vmsa().
+
+Fixes: ad73109ae7ec ("KVM: SVM: Provide support to launch and run an SEV-ES guest")
 
 Signed-off-by: Peter Gonda <pgonda@google.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
 Cc: Marc Orr <marcorr@google.com>
-Cc: Joerg Roedel <jroedel@suse.de>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: David Rientjes <rientjes@google.com>
-Cc: John Allen <john.allen@amd.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: kvm@vger.kernel.org
+Cc: stable@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
+V3
+ *  Fixes bug with missing 'guest_state_protected = true' after
+    refactor.
 
 V2
- * Move calls of sev_init_if_required() into command specific functions
-   to remove tedious command_id if statement.
+ * Refactor per vcpu work to separate function.
+ * Remove check to skip already initialized VMSAs.
+ * Removed vmsa struct zeroing.
 
 ---
- drivers/crypto/ccp/sev-dev.c | 62 +++++++++++++++++-------------------
- 1 file changed, 30 insertions(+), 32 deletions(-)
+ arch/x86/kvm/svm/sev.c | 56 +++++++++++++++++++++++++-----------------
+ 1 file changed, 34 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index e09925d86bf3..3f40cc73459c 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -384,26 +384,37 @@ static int sev_ioctl_do_platform_status(struct sev_issue_cmd *argp)
- 	return ret;
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 75e0b21ad07c..f192a6897c68 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -595,43 +595,55 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
+ 	return 0;
  }
  
--static int sev_ioctl_do_pek_pdh_gen(int cmd, struct sev_issue_cmd *argp, bool writable)
-+static int sev_init_if_required(bool writable, int *error)
+-static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
++static int __sev_launch_update_vmsa(struct kvm *kvm, struct kvm_vcpu *vcpu,
++				    int *error)
  {
- 	struct sev_device *sev = psp_master->sev_data;
+-	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+ 	struct sev_data_launch_update_vmsa vmsa;
++	struct vcpu_svm *svm = to_svm(vcpu);
++	int ret;
 +
-+	lockdep_assert_held(&sev_cmd_mutex);
++	/* Perform some pre-encryption checks against the VMSA */
++	ret = sev_es_sync_vmsa(svm);
++	if (ret)
++		return ret;
 +
-+	if (sev->state != SEV_STATE_UNINIT)
-+		return 0;
++	/*
++	 * The LAUNCH_UPDATE_VMSA command will perform in-place encryption of
++	 * the VMSA memory content (i.e it will write the same memory region
++	 * with the guest's key), so invalidate it first.
++	 */
++	clflush_cache_range(svm->vmsa, PAGE_SIZE);
 +
-+	if (!writable)
-+		return -EPERM;
++	vmsa.reserved = 0;
++	vmsa.handle = to_kvm_svm(kvm)->sev_info.handle;
++	vmsa.address = __sme_pa(svm->vmsa);
++	vmsa.len = PAGE_SIZE;
++	ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, error);
++	if (ret)
++	  return ret;
 +
-+	return __sev_platform_init_locked(error);
++	vcpu->arch.guest_state_protected = true;
++	return 0;
 +}
 +
-+static int sev_ioctl_do_pek_pdh_gen(int cmd, struct sev_issue_cmd *argp, bool writable)
++static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
 +{
- 	int rc;
+ 	struct kvm_vcpu *vcpu;
+ 	int i, ret;
  
- 	if (!writable)
- 		return -EPERM;
+ 	if (!sev_es_guest(kvm))
+ 		return -ENOTTY;
  
--	if (sev->state == SEV_STATE_UNINIT) {
--		rc = __sev_platform_init_locked(&argp->error);
--		if (rc)
--			return rc;
--	}
-+	rc = sev_init_if_required(writable, &argp->error);
-+	if (rc)
-+		return rc;
- 
- 	return __sev_do_cmd_locked(cmd, NULL, &argp->error);
- }
- 
- static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
- {
--	struct sev_device *sev = psp_master->sev_data;
- 	struct sev_user_data_pek_csr input;
- 	struct sev_data_pek_csr data;
- 	void __user *input_address;
-@@ -413,6 +424,10 @@ static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
- 	if (!writable)
- 		return -EPERM;
- 
-+	ret = sev_init_if_required(writable, &argp->error);
-+	if (ret)
-+		return ret;
-+
- 	if (copy_from_user(&input, (void __user *)argp->data, sizeof(input)))
- 		return -EFAULT;
- 
-@@ -435,12 +450,6 @@ static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
- 	data.len = input.length;
- 
- cmd:
--	if (sev->state == SEV_STATE_UNINIT) {
--		ret = __sev_platform_init_locked(&argp->error);
--		if (ret)
--			goto e_free_blob;
--	}
+-	vmsa.reserved = 0;
 -
- 	ret = __sev_do_cmd_locked(SEV_CMD_PEK_CSR, &data, &argp->error);
- 
- 	 /* If we query the CSR length, FW responded with expected data. */
-@@ -586,7 +595,6 @@ static int sev_update_firmware(struct device *dev)
- 
- static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
- {
--	struct sev_device *sev = psp_master->sev_data;
- 	struct sev_user_data_pek_cert_import input;
- 	struct sev_data_pek_cert_import data;
- 	void *pek_blob, *oca_blob;
-@@ -595,6 +603,10 @@ static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
- 	if (!writable)
- 		return -EPERM;
- 
-+	ret = sev_init_if_required(writable, &argp->error);
-+	if (ret)
-+		return ret;
-+
- 	if (copy_from_user(&input, (void __user *)argp->data, sizeof(input)))
- 		return -EFAULT;
- 
-@@ -617,17 +629,10 @@ static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
- 	data.oca_cert_address = __psp_pa(oca_blob);
- 	data.oca_cert_len = input.oca_cert_len;
- 
--	/* If platform is not in INIT state then transition it to INIT */
--	if (sev->state != SEV_STATE_INIT) {
--		ret = __sev_platform_init_locked(&argp->error);
--		if (ret)
--			goto e_free_oca;
--	}
+ 	kvm_for_each_vcpu(i, vcpu, kvm) {
+-		struct vcpu_svm *svm = to_svm(vcpu);
 -
- 	ret = __sev_do_cmd_locked(SEV_CMD_PEK_CERT_IMPORT, &data, &argp->error);
+-		/* Perform some pre-encryption checks against the VMSA */
+-		ret = sev_es_sync_vmsa(svm);
++		ret = mutex_lock_killable(&vcpu->mutex);
+ 		if (ret)
+ 			return ret;
  
--e_free_oca:
- 	kfree(oca_blob);
-+
- e_free_pek:
- 	kfree(pek_blob);
- 	return ret;
-@@ -730,7 +735,6 @@ static int sev_ioctl_do_get_id(struct sev_issue_cmd *argp)
+-		/*
+-		 * The LAUNCH_UPDATE_VMSA command will perform in-place
+-		 * encryption of the VMSA memory content (i.e it will write
+-		 * the same memory region with the guest's key), so invalidate
+-		 * it first.
+-		 */
+-		clflush_cache_range(svm->vmsa, PAGE_SIZE);
++		ret = __sev_launch_update_vmsa(kvm, vcpu, &argp->error);
  
- static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
- {
--	struct sev_device *sev = psp_master->sev_data;
- 	struct sev_user_data_pdh_cert_export input;
- 	void *pdh_blob = NULL, *cert_blob = NULL;
- 	struct sev_data_pdh_cert_export data;
-@@ -738,15 +742,9 @@ static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
- 	void __user *input_pdh_cert_address;
- 	int ret;
- 
--	/* If platform is not in INIT state then transition it to INIT. */
--	if (sev->state != SEV_STATE_INIT) {
--		if (!writable)
--			return -EPERM;
+-		vmsa.handle = sev->handle;
+-		vmsa.address = __sme_pa(svm->vmsa);
+-		vmsa.len = PAGE_SIZE;
+-		ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa,
+-				    &argp->error);
++		mutex_unlock(&vcpu->mutex);
+ 		if (ret)
+ 			return ret;
 -
--		ret = __sev_platform_init_locked(&argp->error);
--		if (ret)
--			return ret;
--	}
-+	ret = sev_init_if_required(writable, &argp->error);
-+	if (ret)
-+		return ret;
+-		svm->vcpu.arch.guest_state_protected = true;
+ 	}
  
- 	if (copy_from_user(&input, (void __user *)argp->data, sizeof(input)))
- 		return -EFAULT;
+ 	return 0;
 -- 
 2.33.0.882.g93a45727a2-goog
 
