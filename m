@@ -2,176 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBF0429B38
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AC7429B37
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbhJLB7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:59:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28099 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229544AbhJLB7P (ORCPT
+        id S231274AbhJLB7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhJLB7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:59:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634003833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z1mp2JWM4YiVwlRlVLQCKfDNv4dQeC/M1PO4QIwth7g=;
-        b=F0D5Ld7JV/CV5j6Iel8TYgMLtQDJmD/1hpL/+jYqLZW8yW/FFMwr+jA3G5a4XsQx2Jjj0Z
-        fSxb8Q1WllnYIzVwwxFXJ9KkqUUjxlWb8GKA+FK3YB78z3rcj1z1vnYxWBPMYmuEwXuUGc
-        t2OtKheCNf2uQQGLokW0YCRZx1YtWEk=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-D0Qc2RD4MNmSkqkevAHZ6Q-1; Mon, 11 Oct 2021 21:57:12 -0400
-X-MC-Unique: D0Qc2RD4MNmSkqkevAHZ6Q-1
-Received: by mail-pl1-f199.google.com with SMTP id z8-20020a170903018800b0013f23528cb6so2628361plg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:57:12 -0700 (PDT)
+        Mon, 11 Oct 2021 21:59:09 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1BCC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:57:08 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id n11so12068123plf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8a2/JQmuX57q2aJcf/iLLoukKQpiybtglq5HXNGxygk=;
+        b=PF5vNeMNX9icXXQWUjw/IfVkmeyvFN8puq/1IIkvkghg5Xvth78HKDEiB2/0abuRWD
+         YgylLNMG+Krukn/+gt8Q+0JLMQl8kbW62p/YuHM/DDYZO00e4H9BLLcEojJMsdkbf1GW
+         EnF8hdhlzzKwCB5FeYJsPHzJJxT0j/QJoCS24=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Z1mp2JWM4YiVwlRlVLQCKfDNv4dQeC/M1PO4QIwth7g=;
-        b=bHoesZV+/8VoIrCO8x+TZ3Djg4KeepP5uE3VI6kiyudcERQgqlYNs+6qA+oDeNJJmr
-         AkbMkO/1R0ouygv2uX18CBfFzb4Z6a6glPDHFBO6FG1UTTU2BTXooLGwOipQlA7nYOn5
-         u81eThwoH1BJ8DpNh/XxpOvc/U46mxQi3u4s5OEoUHA5C4kGzD0eCVpRA/NWzZSpW1dC
-         PjPR8W4/TGtZiKpE2DrP9dK0VXN+u9IKyYJYFwNZbGnYCBLdSy0Tbx2ItjXj2T/RqPt/
-         eIujas6+DQfsmASMYTPseKCy4sfRtI39RbUrLrtk0WUAUHxHIzYGHu0exDPrL1Sg5/67
-         9E4Q==
-X-Gm-Message-State: AOAM530mfqgzNPaPgGqHuz5uIqNe3szzZG7mmPfRVQr1DaU/5RitLWD2
-        zWPgasvfuWQyuYZrLlW/i0ng1sXxRHKHyXdZxo1r3R0IgpfVjEfyAOZ/KFOwCfpmVhCLKwx9/X4
-        wSbv/VeHx/MwTXn7oVLU3x8ha
-X-Received: by 2002:aa7:9884:0:b0:44c:4c1f:6e6 with SMTP id r4-20020aa79884000000b0044c4c1f06e6mr29290657pfl.57.1634003830900;
-        Mon, 11 Oct 2021 18:57:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyoY/Xa4Xw7ivczlmO9ms2t13BWtRuBIDKwNXoKSSChisi8+RUQEKHw9Ho6XNS5pE3+tIDo/g==
-X-Received: by 2002:aa7:9884:0:b0:44c:4c1f:6e6 with SMTP id r4-20020aa79884000000b0044c4c1f06e6mr29290627pfl.57.1634003830485;
-        Mon, 11 Oct 2021 18:57:10 -0700 (PDT)
-Received: from t490s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id b23sm9193853pfi.135.2021.10.11.18.57.05
+        bh=8a2/JQmuX57q2aJcf/iLLoukKQpiybtglq5HXNGxygk=;
+        b=zo9U0KVycfQcL+4bI9fGcu/Ezi5yGj+6+djes15H/ms3EwGcIqaZCaNyqLf9sBAxuK
+         7OJSknxfo7SkHzlE0QsBWMZAgbsZKs78R/+bFqqrdulA/1SRgg4EZ+wZDCN7UwWgCEaf
+         k/nvJw+c+E+HFlr851eHjw0401XzHUAKneEEc+koMwxy1kPlUZnnkLFFmM1/uuEQGWWL
+         TherdcdU/V/xguWVW0k7P+tj4A1EWmaLGoTIAa7k646lFVb+RI0LRXPmJBMxAU51KwC8
+         XhQZCu0o6tr9XosrT7XMMrWaKE7ldAYm9lliG7HRgSCm8SibAdP2ju9GPe2q2ST17/3+
+         o6Hw==
+X-Gm-Message-State: AOAM531xOkkzB+Lo3cglyOLC+znBrGDMUQvuYIOWm9tq6IPXurhf08fq
+        YgyY2UdIoXvDl7naqitV3GGVvw==
+X-Google-Smtp-Source: ABdhPJzcFDpZfHc3nRVVa+/bAj0gmaEk7b2C9Ped1tQLsHMJultYAblQyLdBAYeCsoDxNIF9/iTxSw==
+X-Received: by 2002:a17:90b:4011:: with SMTP id ie17mr2858973pjb.41.1634003828296;
+        Mon, 11 Oct 2021 18:57:08 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:61aa:8522:1051:5bfe])
+        by smtp.gmail.com with ESMTPSA id h23sm5850281pfn.109.2021.10.11.18.57.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 18:57:09 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 09:57:02 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     naoya.horiguchi@nec.com, hughd@google.com,
-        kirill.shutemov@linux.intel.com, willy@infradead.org,
-        osalvador@suse.de, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [v3 PATCH 4/5] mm: shmem: don't truncate page if memory failure
- happens
-Message-ID: <YWTrbgf0kpwayWHL@t490s>
-References: <20210930215311.240774-1-shy828301@gmail.com>
- <20210930215311.240774-5-shy828301@gmail.com>
+        Mon, 11 Oct 2021 18:57:07 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 10:57:03 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: videobuf2: always set buffer vb2 pointer
+Message-ID: <YWTrb0ZXv1HRmtfZ@google.com>
+References: <20210928034634.333785-1-senozhatsky@chromium.org>
+ <CAAFQd5DLiW23a0U_JjnpvoYmpcbiKbStq7=w=7KvbDP7zLvBaA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210930215311.240774-5-shy828301@gmail.com>
+In-Reply-To: <CAAFQd5DLiW23a0U_JjnpvoYmpcbiKbStq7=w=7KvbDP7zLvBaA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 02:53:10PM -0700, Yang Shi wrote:
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 88742953532c..75c36b6a405a 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -2456,6 +2456,7 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
->  	struct inode *inode = mapping->host;
->  	struct shmem_inode_info *info = SHMEM_I(inode);
->  	pgoff_t index = pos >> PAGE_SHIFT;
-> +	int ret = 0;
->  
->  	/* i_rwsem is held by caller */
->  	if (unlikely(info->seals & (F_SEAL_GROW |
-> @@ -2466,7 +2467,17 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
->  			return -EPERM;
->  	}
->  
-> -	return shmem_getpage(inode, index, pagep, SGP_WRITE);
-> +	ret = shmem_getpage(inode, index, pagep, SGP_WRITE);
-> +
-> +	if (*pagep) {
-> +		if (PageHWPoison(*pagep)) {
-> +			unlock_page(*pagep);
-> +			put_page(*pagep);
-> +			ret = -EIO;
-> +		}
-> +	}
-> +
-> +	return ret;
->  }
->  
->  static int
-> @@ -2555,6 +2566,11 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  			unlock_page(page);
->  		}
->  
-> +		if (page && PageHWPoison(page)) {
-> +			error = -EIO;
-> +			break;
-> +		}
-> +
->  		/*
->  		 * We must evaluate after, since reads (unlike writes)
->  		 * are called without i_rwsem protection against truncate
-
-[...]
-
-> @@ -4193,6 +4216,10 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
->  		page = ERR_PTR(error);
->  	else
->  		unlock_page(page);
-> +
-> +	if (PageHWPoison(page))
-> +		page = ERR_PTR(-EIO);
-> +
->  	return page;
->  #else
->  	/*
-> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> index 7a9008415534..b688d5327177 100644
-> --- a/mm/userfaultfd.c
-> +++ b/mm/userfaultfd.c
-> @@ -233,6 +233,11 @@ static int mcontinue_atomic_pte(struct mm_struct *dst_mm,
->  		goto out;
->  	}
->  
-> +	if (PageHWPoison(page)) {
-> +		ret = -EIO;
-> +		goto out_release;
-> +	}
-> +
->  	ret = mfill_atomic_install_pte(dst_mm, dst_pmd, dst_vma, dst_addr,
->  				       page, false, wp_copy);
->  	if (ret)
-> -- 
-> 2.26.2
+On (21/10/05 18:57), Tomasz Figa wrote:
 > 
+> On Tue, Sep 28, 2021 at 12:46 PM Sergey Senozhatsky
+> <senozhatsky@chromium.org> wrote:
+> >
+> > We need to always link allocated vb2_dc_buf back to vb2_buffer because
+> > we dereference vb2 in prepare() and finish() callbacks.
+> >
+> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > ---
+> >  drivers/media/common/videobuf2/videobuf2-dma-contig.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> 
+> Acked-by: Tomasz Figa <tfiga@chromium.org>
 
-These are shmem_getpage_gfp() call sites:
-
-  shmem_getpage[151]             return shmem_getpage_gfp(inode, index, pagep, sgp,
-  shmem_fault[2112]              err = shmem_getpage_gfp(inode, vmf->pgoff, &vmf->page, SGP_CACHE,
-  shmem_read_mapping_page_gfp[4188] error = shmem_getpage_gfp(inode, index, &page, SGP_CACHE,
-
-These are further shmem_getpage() call sites:
-
-  collapse_file[1735]            if (shmem_getpage(mapping->host, index, &page,
-  shmem_undo_range[965]          shmem_getpage(inode, start - 1, &page, SGP_READ);
-  shmem_undo_range[980]          shmem_getpage(inode, end, &page, SGP_READ);
-  shmem_write_begin[2467]        return shmem_getpage(inode, index, pagep, SGP_WRITE);
-  shmem_file_read_iter[2544]     error = shmem_getpage(inode, index, &page, sgp);
-  shmem_fallocate[2733]          error = shmem_getpage(inode, index, &page, SGP_FALLOC);
-  shmem_symlink[3079]            error = shmem_getpage(inode, 0, &page, SGP_WRITE);
-  shmem_get_link[3120]           error = shmem_getpage(inode, 0, &page, SGP_READ);
-  mcontinue_atomic_pte[235]      ret = shmem_getpage(inode, pgoff, &page, SGP_READ);
-
-Wondering whether this patch covered all of them.
-
-This also reminded me that whether we should simply fail shmem_getpage_gfp()
-directly, then all above callers will get a proper failure, rather than we do
-PageHWPoison() check everywhere?
-
--- 
-Peter Xu
-
+Hans, can you please pick up this patch?
