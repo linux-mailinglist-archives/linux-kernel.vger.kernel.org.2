@@ -2,157 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28D242AFF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8817242AFF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbhJLXIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 19:08:47 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:40032 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229588AbhJLXIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 19:08:46 -0400
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1maQqy-0000bk-RR; Wed, 13 Oct 2021 01:06:36 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Guo Ren <guoren@kernel.org>, linux-riscv@lists.infradead.org
-Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Anup Patel <anup@brainfault.org>
-Subject: Re: [PATCH V2 2/2] irqchip/sifive-plic: Add thead,c9xx-plic support
-Date:   Wed, 13 Oct 2021 01:06:35 +0200
-Message-ID: <4404316.9H8m7z83OK@diego>
-In-Reply-To: <CAAhSdy32wkwH5k3iwdUNDsXjUNX8icQwcz_h2E6UixH7ZmD5KQ@mail.gmail.com>
-References: <20211012153432.2817285-1-guoren@kernel.org> <20211012153432.2817285-2-guoren@kernel.org> <CAAhSdy32wkwH5k3iwdUNDsXjUNX8icQwcz_h2E6UixH7ZmD5KQ@mail.gmail.com>
+        id S234005AbhJLXLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 19:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229588AbhJLXLo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 19:11:44 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9A6C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:09:41 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id g125so1320946oif.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:09:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kv3MNtctfewkPWmi8TsTvMO+6OS1HVfE+g6O9k4Getc=;
+        b=F14ZxPIh4QP7ON8FpxoeydXVdD6Ch1bg1fOMEAXUKqYn2Vq58BCu8RjdLBZX8RCkb8
+         xvyVpjAG6F6GsiqGKBWIlRQgPeIfqylUyBmO0b0BRVYEmPUU2oRxX+6fCxIsAK+H/rxY
+         MspYSbLbSsrypvzf7VrI8RRqXbbWicSNsC8MJ64tHociziWG9WNTU/SGPvNT68V7GSQB
+         0GMu9GIFQBFzKGXPtpTMrjyZtAdzGYoRI+xlqouYDr8u0MaY7bwtTzlyUnIMPonaC8MP
+         KOGagvIXLVXECa8D+QW4sKergo5s6hJxfj4mPDJVrUa5Kzq/tpXV/DTSx8/L47aoMEqM
+         yuDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=kv3MNtctfewkPWmi8TsTvMO+6OS1HVfE+g6O9k4Getc=;
+        b=tzFxqyHsTQdoQp5MmW+mSOolkAN/yNRZYKFb0m3E0Frx50WxunjaYcY5RuuJ4VlT4N
+         CnFtsZd28YIEl3R0iT05O3Q4/XtaUEQMLdMkP0kxR/EkT699nfmuf11uvU7yePsug6f3
+         KoE7FwcxFpNfOzQOp17fJLxhJ6JRUxRFnb6UWXk4pX4EblMpcQPKqaJOZXzOgKabKHwl
+         e0X9TWlkQ973o78o1k1b9QAiruS5fM24nPfUpmEEtRD0UJER1RQj+fskorUKi5a7IF0C
+         sHFNSNP3VE7krwUxvM8tKpxU8RtbVsjpuQAjQPCUL2ja+kcZ0frpKG1jwlOgGpleH3Zo
+         ZmZg==
+X-Gm-Message-State: AOAM533R7SqZMO0fnqjMlpY7fXNFbaRjOqS2WiZX15cdHIdN9OVL0V41
+        JXqsmWtlYMB/1v4H670Uiw==
+X-Google-Smtp-Source: ABdhPJzmeOhFMQ3gl6AF4nX/+FcKCgsKRS61vMrZKGhmfaMTYRSrfMqdG5iVRxzcAibYZ/4ZpsAZhQ==
+X-Received: by 2002:a05:6808:138c:: with SMTP id c12mr5564087oiw.34.1634080181105;
+        Tue, 12 Oct 2021 16:09:41 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id a10sm187081otb.7.2021.10.12.16.09.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 16:09:40 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:5420:eef4:496e:3efb])
+        by serve.minyard.net (Postfix) with ESMTPSA id 01EEA180053;
+        Tue, 12 Oct 2021 23:09:39 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 18:09:38 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH -next] ipmi: ipmb: fix dependencies to eliminate build
+ error
+Message-ID: <20211012230938.GE66936@minyard.net>
+Reply-To: minyard@acm.org
+References: <20211012204416.23108-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012204416.23108-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Oct 12, 2021 at 01:44:16PM -0700, Randy Dunlap wrote:
+> When CONFIG_I2C=m, CONFIG_I2C_SLAVE=y (bool), and CONFIG_IPMI_IPMB=y,
+> the build fails with:
 
-Am Dienstag, 12. Oktober 2021, 18:40:26 CEST schrieb Anup Patel:
-> On Tue, Oct 12, 2021 at 9:04 PM <guoren@kernel.org> wrote:
-> >
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > thead,c9xx-plic would mask IRQ with readl(claim), so it needn't
-> > mask/unmask which needed in RISC-V PLIC.
-> >
-> > When in IRQS_ONESHOT & IRQCHIP_EOI_THREADED path, unnecessary mask
-> > operation would cause a blocking irq bug in thead,c9xx-plic. Because
-> > when IRQ is disabled in c9xx, writel(hwirq, claim) would be invalid.
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Cc: Anup Patel <anup@brainfault.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> > Cc: Atish Patra <atish.patra@wdc.com>
-> >
-> > ---
-> >
-> > Changes since V2:
-> >  - Add a separate compatible string "thead,c9xx-plic"
-> >  - set irq_mask/unmask of "plic_chip" to NULL and point
-> >    irq_enable/disable of "plic_chip" to plic_irq_mask/unmask
-> >  - Add a detailed comment block in plic_init() about the
-> >    differences in Claim/Completion process of RISC-V PLIC and C9xx
-> >    PLIC.
-> > ---
-> >  drivers/irqchip/irq-sifive-plic.c | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> >
-> > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> > index cf74cfa82045..3756b1c147c3 100644
-> > --- a/drivers/irqchip/irq-sifive-plic.c
-> > +++ b/drivers/irqchip/irq-sifive-plic.c
-> > @@ -79,6 +79,7 @@ struct plic_handler {
-> >  };
-> >  static int plic_parent_irq __ro_after_init;
-> >  static bool plic_cpuhp_setup_done __ro_after_init;
-> > +static bool disable_mask_unmask __ro_after_init;
-> >  static DEFINE_PER_CPU(struct plic_handler, plic_handlers);
-> >
-> >  static inline void plic_toggle(struct plic_handler *handler,
-> > @@ -181,6 +182,13 @@ static int plic_irqdomain_map(struct irq_domain *d, unsigned int irq,
-> >  {
-> >         struct plic_priv *priv = d->host_data;
-> >
-> > +       if (disable_mask_unmask) {
-> > +               plic_chip.irq_mask      = NULL;
-> > +               plic_chip.irq_unmask    = NULL;
-> > +               plic_chip.irq_enable    = plic_irq_unmask;
-> > +               plic_chip.irq_disable   = plic_irq_mask;
-> > +       }
-> > +
-> >         irq_domain_set_info(d, irq, hwirq, &plic_chip, d->host_data,
-> >                             handle_fasteoi_irq, NULL, NULL);
-> >         irq_set_noprobe(irq);
-> > @@ -390,5 +398,14 @@ static int __init plic_init(struct device_node *node,
-> >         return error;
-> >  }
-> >
-> > +static int __init thead_c9xx_plic_init(struct device_node *node,
-> > +               struct device_node *parent)
-> > +{
-> > +       disable_mask_unmask = true;
-> 
-> The plic_irqdomain_map() is called for each irq so "plic_chip"
-> will be updated multiple times.
-> 
-> You can drop the disable_mask_unmask variable and instead
-> directly update "plic_chip" here.
+Got it, thanks.
 
-Actually I'd think something more dynamic might be appropriate?
-
-I.e. don't modify the generic plic_chip structure, but define a second
-one for this type of chip and reference that one in plic_irqdomain_map
-depending on the block found?
-
-According to [0] a system can have multiple PLICs and nothing
-guarantees that they'll always be the same variant on future socs
-[hardware engineers are very creative]
-
-So adding more stuff that modifies static content used by all PLICs
-doesn't really improve driver quality here ;-)
-
-
-Heiko
-
-
-[0] https://lore.kernel.org/linux-riscv/1839bf9ef91de2358a7e8ecade361f7a@www.loen.fr/T/
-
+-corey
 
 > 
-> > +
-> > +       return plic_init(node, parent);
-> > +}
-> > +
-> >  IRQCHIP_DECLARE(sifive_plic, "sifive,plic-1.0.0", plic_init);
-> >  IRQCHIP_DECLARE(riscv_plic0, "riscv,plic0", plic_init); /* for legacy systems */
-> > +IRQCHIP_DECLARE(thead_c9xx_plic, "thead,c9xx-plic", thead_c9xx_plic_init);
-> > --
-> > 2.25.1
-> >
+> ld: drivers/char/ipmi/ipmi_ipmb.o: in function `ipmi_ipmb_remove':
+> ipmi_ipmb.c:(.text+0x6b): undefined reference to `i2c_slave_unregister'
+> ld: drivers/char/ipmi/ipmi_ipmb.o: in function `ipmi_ipmb_thread':
+> ipmi_ipmb.c:(.text+0x2a4): undefined reference to `i2c_transfer'
+> ld: drivers/char/ipmi/ipmi_ipmb.o: in function `ipmi_ipmb_probe':
+> ipmi_ipmb.c:(.text+0x646): undefined reference to `i2c_slave_register'
+> ld: drivers/char/ipmi/ipmi_ipmb.o: in function `ipmi_ipmb_driver_init':
+> ipmi_ipmb.c:(.init.text+0xa): undefined reference to `i2c_register_driver'
+> ld: drivers/char/ipmi/ipmi_ipmb.o: in function `ipmi_ipmb_driver_exit':
+> ipmi_ipmb.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
 > 
-> Regards,
-> Anup
+> This is due to having a tristate depending on a bool symbol.
+> By adding I2C (tristate) as a dependency, the desired dependencies
+> are met, causing IPMI_IPMB to be changed from =y to =m:
 > 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>   -CONFIG_IPMI_IPMB=y
+>   +CONFIG_IPMI_IPMB=m
 > 
-
-
-
-
+> Fixes: 63c4eb347164 ("ipmi:ipmb: Add initial support for IPMI over IPMB")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Corey Minyard <minyard@acm.org>
+> Cc: openipmi-developer@lists.sourceforge.net
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/char/ipmi/Kconfig |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- linux-next-20211012.orig/drivers/char/ipmi/Kconfig
+> +++ linux-next-20211012/drivers/char/ipmi/Kconfig
+> @@ -77,7 +77,7 @@ config IPMI_SSIF
+>  
+>  config IPMI_IPMB
+>  	tristate 'IPMI IPMB interface'
+> -	depends on I2C_SLAVE
+> +	depends on I2C && I2C_SLAVE
+>  	help
+>  	  Provides a driver for a system running right on the IPMB bus.
+>  	  It supports normal system interface messages to a BMC on the IPMB
