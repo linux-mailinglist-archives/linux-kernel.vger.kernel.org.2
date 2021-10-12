@@ -2,126 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD02742A1BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E307142A1DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235871AbhJLKSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:18:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53546 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232638AbhJLKSg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:18:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634033794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZoTN3jo1U0TNsMaOgGR+Z4Eg7VJc5SuDhxCfX96qS/w=;
-        b=YgNRPcPP6riKHrZEYc7ZdESH2spr32uzRMFvshOvQHiUaPwq+UhBuvFICGkdHIbMXpSP4F
-        I5IYrjPVGmMZHKJk/qD3hCYyus/pw/aWKEN/ZH/5E5gw+Rh9wISpKpJYPU0O9dTVezqUDi
-        BX25bnJ7hXAvRlNcXPbf5f4LdaViC1g=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-589-c5d1qhrCM2WBmTrTXgzzHw-1; Tue, 12 Oct 2021 06:16:32 -0400
-X-MC-Unique: c5d1qhrCM2WBmTrTXgzzHw-1
-Received: by mail-pj1-f70.google.com with SMTP id z23-20020a17090ab11700b001a070e36178so5172785pjq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 03:16:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZoTN3jo1U0TNsMaOgGR+Z4Eg7VJc5SuDhxCfX96qS/w=;
-        b=hLudSiAdgVlT2LB3k+yM8i1hL3GsvhoMsS/FobYwOJYuqToYNGLB3sBso53c09VnLE
-         6nfEVk8ooZl012JbiUaQSb4GOlPkZriF2GZcxa0mX7RDsLobzVXT73OO4UoXj+yGdYuk
-         QRVmP0rHnK6rmb4BsxbKJlCS4mea7n+8EsRtZTSg3TMq6Cvc/cM/tDFT3m7api14SUP4
-         lV4/VWJqZ2M0mOURGKUyu1KJZztr/1fPUTrft6Amt9QRhyeztEXT0SRzNa0oAQKmx7hO
-         Ml3P3UNJaQKTC3KMDwiqivyUfl1JxQKfpUn0nCtNdMeqCyqDYavtsMKYphmeelooXaUj
-         BE5g==
-X-Gm-Message-State: AOAM531GRCjtk8IQAPcxaIXWKteKjqCkyfiMQ+Qj1jfwUvO35IXfAvSf
-        czZxIWM88VQ6flqtzzJAemVnQkDDhbkvyxoaE5Icg6UW8mJhB0qh0XYvGGBnpv6pIEg5DmS4KSY
-        z1oW/VtrcewxWisw6x9BjRi3i
-X-Received: by 2002:a17:90a:7e82:: with SMTP id j2mr4937795pjl.165.1634033791873;
-        Tue, 12 Oct 2021 03:16:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwkghYFByrZHWmiyuVaP/T5E/0uYqrI4d0vpEGa+/BuFxVaGcBXZCk9WyZp0G0JjIXp3aT0CA==
-X-Received: by 2002:a17:90a:7e82:: with SMTP id j2mr4937753pjl.165.1634033791509;
-        Tue, 12 Oct 2021 03:16:31 -0700 (PDT)
-Received: from t490s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 197sm10449044pfv.6.2021.10.12.03.16.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 03:16:30 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 18:16:22 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Subject: Re: [PATCH 1/2] mm/mprotect: use mmu_gather
-Message-ID: <YWVgdmKIFnZcgjeY@t490s>
-References: <20210925205423.168858-1-namit@vmware.com>
- <20210925205423.168858-2-namit@vmware.com>
+        id S235894AbhJLKVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:21:14 -0400
+Received: from relay.sw.ru ([185.231.240.75]:46830 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235877AbhJLKVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:21:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=8rJ+XIdW21uQTmdwLWrTlCZ6Z0iC9PvW7PwYWi7Lxm8=; b=Fr5tYoeGULbawkQ7Adk
+        DF6UzznqTCzJ1QigjEfGsbfG2TfaU5+iSrPxt8sGQUE5sYdivT0hS1CPPW3zkQ00hBVpPVOLvJGM3
+        DG40JyQ+UnAP1EFkrG9HByh9CpRywktFBlpa3sDw0kK4IUXeU7N71gOD8mo0S+3nDBRKRyBywNs=;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1maEs8-005n5x-J5; Tue, 12 Oct 2021 13:19:00 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH mm v2] memcg: enable memory accounting in __alloc_pages_bulk
+To:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <CALvZod7_fhgV39HXmmMApubW-39CjJ5t+WjmkyA_DNGF7b5O+w@mail.gmail.com>
+Message-ID: <2410e99a-087c-3f89-9bdf-b62a7d5df725@virtuozzo.com>
+Date:   Tue, 12 Oct 2021 13:18:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <CALvZod7_fhgV39HXmmMApubW-39CjJ5t+WjmkyA_DNGF7b5O+w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210925205423.168858-2-namit@vmware.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 01:54:22PM -0700, Nadav Amit wrote:
-> @@ -338,25 +344,25 @@ static unsigned long change_protection_range(struct vm_area_struct *vma,
->  	struct mm_struct *mm = vma->vm_mm;
->  	pgd_t *pgd;
->  	unsigned long next;
-> -	unsigned long start = addr;
->  	unsigned long pages = 0;
-> +	struct mmu_gather tlb;
->  
->  	BUG_ON(addr >= end);
->  	pgd = pgd_offset(mm, addr);
->  	flush_cache_range(vma, addr, end);
->  	inc_tlb_flush_pending(mm);
-> +	tlb_gather_mmu(&tlb, mm);
-> +	tlb_start_vma(&tlb, vma);
+Enable memory accounting for bulk page allocator.
 
-Pure question:
+Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+v2: modified according to Shakeel Butt's remarks
+---
+ include/linux/memcontrol.h | 11 +++++++++
+ mm/memcontrol.c            | 48 +++++++++++++++++++++++++++++++++++++-
+ mm/page_alloc.c            | 14 ++++++++++-
+ 3 files changed, 71 insertions(+), 2 deletions(-)
 
-I actually have no idea why tlb_start_vma() is needed here, as protection range
-can be just a single page, but anyway.. I do see that tlb_start_vma() contains
-a whole-vma flush_cache_range() when the arch needs it, then does it mean that
-besides the inc_tlb_flush_pending() to be dropped, so as to the other call to
-flush_cache_range() above?
-
->  	do {
->  		next = pgd_addr_end(addr, end);
->  		if (pgd_none_or_clear_bad(pgd))
->  			continue;
-> -		pages += change_p4d_range(vma, pgd, addr, next, newprot,
-> +		pages += change_p4d_range(&tlb, vma, pgd, addr, next, newprot,
->  					  cp_flags);
->  	} while (pgd++, addr = next, addr != end);
->  
-> -	/* Only flush the TLB if we actually modified any entries: */
-> -	if (pages)
-> -		flush_tlb_range(vma, start, end);
-> -	dec_tlb_flush_pending(mm);
-> +	tlb_end_vma(&tlb, vma);
-> +	tlb_finish_mmu(&tlb);
->  
->  	return pages;
->  }
-> -- 
-> 2.25.1
-> 
-
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 3096c9a0ee01..990acd70c846 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -810,6 +810,12 @@ static inline void obj_cgroup_put(struct obj_cgroup *objcg)
+ 	percpu_ref_put(&objcg->refcnt);
+ }
+ 
++static inline void obj_cgroup_put_many(struct obj_cgroup *objcg,
++				       unsigned long nr)
++{
++	percpu_ref_put_many(&objcg->refcnt, nr);
++}
++
+ static inline void mem_cgroup_put(struct mem_cgroup *memcg)
+ {
+ 	if (memcg)
+@@ -1746,4 +1752,9 @@ static inline struct mem_cgroup *mem_cgroup_from_obj(void *p)
+ 
+ #endif /* CONFIG_MEMCG_KMEM */
+ 
++bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
++				unsigned int nr_pages);
++void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page);
++void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
++				 unsigned int nr_pages);
+ #endif /* _LINUX_MEMCONTROL_H */
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 87e41c3cac10..16fe3384c12c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3239,7 +3239,53 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
+ 	refill_obj_stock(objcg, size, true);
+ }
+ 
+-#endif /* CONFIG_MEMCG_KMEM */
++bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
++				unsigned int nr_pages)
++{
++	struct obj_cgroup *objcg = NULL;
++
++	if (!memcg_kmem_enabled() || !(gfp & __GFP_ACCOUNT))
++		return true;
++
++	objcg = get_obj_cgroup_from_current();
++
++	if (objcg && obj_cgroup_charge_pages(objcg, gfp, nr_pages)) {
++		obj_cgroup_put(objcg);
++		return false;
++	}
++	obj_cgroup_get_many(objcg, nr_pages - 1);
++	*objcgp = objcg;
++	return true;
++}
++
++void memcg_bulk_charge_hook(struct obj_cgroup *objcg, struct page *page)
++{
++	page->memcg_data = (unsigned long)objcg | MEMCG_DATA_KMEM;
++}
++
++void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
++				 unsigned int nr_pages)
++{
++	obj_cgroup_uncharge_pages(objcg, nr_pages);
++	obj_cgroup_put_many(objcg, nr_pages);
++}
++#else /* !CONFIG_MEMCG_KMEM */
++bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
++				unsigned int nr_pages)
++{
++	return true;
++}
++
++void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page)
++{
++}
++
++void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
++				 unsigned int nr_pages)
++{
++}
++#endif
++
+ 
+ /*
+  * Because page_memcg(head) is not set on tails, set it now.
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b37435c274cf..eb37177bf507 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5207,6 +5207,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	gfp_t alloc_gfp;
+ 	unsigned int alloc_flags = ALLOC_WMARK_LOW;
+ 	int nr_populated = 0, nr_account = 0;
++	unsigned int nr_pre_charge = 0;
++	struct obj_cgroup *objcg = NULL;
+ 
+ 	/*
+ 	 * Skip populated array elements to determine if any pages need
+@@ -5275,6 +5277,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	if (unlikely(!zone))
+ 		goto failed;
+ 
++	nr_pre_charge = nr_pages - nr_populated;
++	if (!memcg_bulk_pre_charge_hook(&objcg, gfp, nr_pre_charge))
++		goto failed;
++
+ 	/* Attempt the batch allocation */
+ 	local_lock_irqsave(&pagesets.lock, flags);
+ 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
+@@ -5299,6 +5305,9 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 		nr_account++;
+ 
+ 		prep_new_page(page, 0, gfp, 0);
++		if (objcg)
++			memcg_bulk_charge_hook(objcg, page);
++
+ 		if (page_list)
+ 			list_add(&page->lru, page_list);
+ 		else
+@@ -5310,13 +5319,16 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 
+ 	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+ 	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
++	if (objcg)
++		memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
+ 
+ out:
+ 	return nr_populated;
+ 
+ failed_irq:
+ 	local_unlock_irqrestore(&pagesets.lock, flags);
+-
++	if (objcg)
++		memcg_bulk_post_charge_hook(objcg, nr_pre_charge);
+ failed:
+ 	page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
+ 	if (page) {
 -- 
-Peter Xu
+2.31.1
 
