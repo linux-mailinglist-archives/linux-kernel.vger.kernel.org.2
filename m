@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3108A42A288
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD7342A289
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236053AbhJLKpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:45:08 -0400
-Received: from relay.sw.ru ([185.231.240.75]:44362 "EHLO relay.sw.ru"
+        id S235984AbhJLKpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:45:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235900AbhJLKpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:45:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=bEbXgNx8UNhTNiQSVrQ+7EoBtCdD7MvBGkcwxGWc4cs=; b=SmT2sdTNW0HEqxE0m
-        moILfvR4WUkRN/qJdfdiDnBRMRXGquRZAofXgF5d54Zzkt1ln9tBN8XPALEk1iDBhHy8erFkLJ9Bo
-        WnQyYEjYw1xSV/QWTN12zef+4kbJJVBsuatmIdz3aKFLQvIc7iGUuzKemcaf9gjg/k06zn9PtE2KM
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1maFFO-005nHz-Qb; Tue, 12 Oct 2021 13:43:02 +0300
-Subject: Re: [PATCH memcg] mm/page_alloc.c: avoid statistic update with 0
-To:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        id S235900AbhJLKpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:45:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A1E860E53;
+        Tue, 12 Oct 2021 10:43:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634035390;
+        bh=ZzuHwAkSRLULPaz5CoWOR7W7eK4U24fD6YHIlI+xiI8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dbozJf5gW2DrlHhLoCJdkCk41D5YsfI/EZpV7yYxzGe4aPj34aoYbKQk3TNci7H5O
+         38By9ZLPYiV+y0C24F+0oVgwcoofLiSsWHy2xuk5c/JmIa7JbmTaO7Wpr43lDC/PfN
+         5HiGZbCfHCDmuxM4Sjwvvu/qutgD5kM7Urq0iRLnVrbzPWfkYlQI1+V5unIh4FcZF2
+         NsKXgGkt1MKkXcuUJOsjcwk8PYYHKdCO6qZmCxJcWwq5FHmF/RTfJvs8mVK0eqksm+
+         MnkU7rKHEjqbGJ1WICWZo3Zy73JDDA53HxYwCvs2kVVEI+2+RB8V3KKJXX5Vfzb+6s
+         eLPLxZV9sICXQ==
+Date:   Tue, 12 Oct 2021 11:43:08 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Uladzislau Rezki <urezki@gmail.com>
-References: <b2371951-bb8a-e62e-8d33-10830bbf6275@virtuozzo.com>
- <29155011-f884-b0e5-218e-911039568acb@suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <f52c5cd3-9b74-0fd5-2b7b-83ca21c52b2a@virtuozzo.com>
-Date:   Tue, 12 Oct 2021 13:42:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Mike Rapoport <rppt@kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2 8/8] ep93xx: clock: convert in-place to COMMON_CLK
+Message-ID: <YWVmvHsEkPFkrD/R@sirena.org.uk>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+ <20210726140001.24820-1-nikita.shubin@maquefel.me>
+ <20210726140001.24820-9-nikita.shubin@maquefel.me>
+ <ed557882a9530f2fd6245e34657be62399df76bc.camel@gmail.com>
+ <CAK8P3a0Y4uwX4B10d5CR3WjZ1qXAqhKJGJ0EhUEF60uB1q3H9A@mail.gmail.com>
+ <e50f2da7af1fa6f02fd413081fa5762837b86895.camel@gmail.com>
+ <CAK8P3a3jAdYQerE03O5s2_PBUqt5QPCPSQxxs54E7-V=0HVBXA@mail.gmail.com>
+ <YWVixgDQtJ8EGbwo@sirena.org.uk>
+ <7f7acc8986aca1c895de732297b2995d05ec23e7.camel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <29155011-f884-b0e5-218e-911039568acb@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="os5yym2RVMTDw1VG"
+Content-Disposition: inline
+In-Reply-To: <7f7acc8986aca1c895de732297b2995d05ec23e7.camel@gmail.com>
+X-Cookie: You buttered your bread, now lie in it.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.10.2021 14:47, Vlastimil Babka wrote:
-> On 10/8/21 11:24, Vasily Averin wrote:
->> __alloc_pages_bulk can call __count_zid_vm_events and zone_statistics
->> with nr_account = 0.
-> 
-> But that's not a bug, right? Just an effective no-op that's not commonly
-> happening, so is it worth the check?
 
-Why not?
+--os5yym2RVMTDw1VG
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, it's not a bug, it just makes the kernel a bit more efficient in a very unlikely case.
-However, it looks strange and makes uninformed code reviewers like me worry about possible
-problems inside the affected functions. No one else calls these functions from 0.
- 
->> Fixes: 3e23060b2d0b ("mm/page_alloc: batch the accounting updates in the bulk allocator")
->> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
->> ---
->>  mm/page_alloc.c | 7 ++++---
->>  1 file changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index 602819a232e5..e67113452ee8 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -5364,9 +5364,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->>  	}
->>  
->>  	local_unlock_irqrestore(&pagesets.lock, flags);
->> -
->> -	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
->> -	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
->> +	if (nr_account) {
->> +		__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
->> +		zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
->> +	}
->>  	if (objcg)
->>  		memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
->>  
->>
-> 
+On Tue, Oct 12, 2021 at 12:36:54PM +0200, Alexander Sverdlin wrote:
+> On Tue, 2021-10-12 at 11:26 +0100, Mark Brown wrote:
+> > On Tue, Oct 12, 2021 at 11:05:08AM +0200, Arnd Bergmann wrote:
 
+> > You're going to have to tell me what's going on here:
+
+> > =A0=A0 https://lore.kernel.org/all/20210914103212.GB4434@sirena.org.uk/
+
+> here you were asking about "spi: spi-ep93xx: Prepare clock before using i=
+t"
+> which you've already applied (as 7c72dc56a631).
+
+Right, you asked me to do the same thing on two patches so I didn't send
+the same thing over and over again.
+
+> Nevertheless, there are no dependencies in the patches 1..7, they are all
+> pre-requsites for the last patch 8/8.
+
+So what's going on with patch 8 then?  Is there some plan to merge it?
+
+--os5yym2RVMTDw1VG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFlZrsACgkQJNaLcl1U
+h9CB6wf/a0ZkktyCoQ535RjWNK5MCH2fqOa/THbkumTymP6jPTw0SFzxXku9k7zv
+LggvJZEx3SDK7E7ZqwYp/YpehuetaLvRYM66Zy7zjaq4glHzY3cjhaJ/rvkoEQsg
+njPJHrVDG/k4qAnQCNmz5xascl8CnwtOPul0ExjkSUx5IZXZewlaNKnpweoGACVF
+OHuPHPpSWiTtKYs1QuVWAXZKJjceTCX+CXb4vKHh5aIBjIF9w/YxUsnNg9ny3T2Q
+iGSf90YAOc/7qMEQ46kK9kv2bh5lkTtpGqVd1CqEksTRY649YzMqBZ56C3vCiJFI
+zsgbbJ/RLlNwBhWj1sKQAanHv+Ohnw==
+=+n8j
+-----END PGP SIGNATURE-----
+
+--os5yym2RVMTDw1VG--
