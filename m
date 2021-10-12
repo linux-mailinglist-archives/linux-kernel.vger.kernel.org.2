@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2366B429D31
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D753F429D28
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 07:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhJLFhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 01:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
+        id S232455AbhJLFg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 01:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbhJLFh2 (ORCPT
+        with ESMTP id S229739AbhJLFgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 01:37:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E8DC061570;
-        Mon, 11 Oct 2021 22:35:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BSSAC90BiE8gg+UZzsBqoP8nG2ttujvFSkUF5owSkxY=; b=MzXQA4NAznHV2pOmBegGNgm87K
-        oVvwG/zN+yRPIuuYShlDqNtJYhMRNhkmqMZWNbAGWU49/Nv/2aW0znA9f/78BPDOtCjiwwQ83WulP
-        TkiMflpjzdtJOgE6ux0vY80O5LkHY9rVp+YfZ6ERYdw9pl5b/phfUwwQuVO1nW524yrgR9bXDK52v
-        iQtcN1C4SwI2Vszu9JjLlNiMm+aYLX8nchJCdIvnJjMHdYZXD6DxxaeOfocpJDQv2kd3vaGZaz7xA
-        GdpMpGjxJoO6YOsVq7aZSRDvbAsE3E77p4d3rWhsorSBG3Ni1XElTYbf6rNlFf7ZzoRSfhDeAHUYF
-        e3s2gKcw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maANi-006Ezp-GU; Tue, 12 Oct 2021 05:31:43 +0000
-Date:   Tue, 12 Oct 2021 06:31:18 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-Message-ID: <YWUdpik4SP/7QlbN@infradead.org>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YWPunfa+WK86Cgnv@infradead.org>
- <a070274e-6a3a-fb0a-68ff-d320d0729377@linux.intel.com>
- <20211011142956-mutt-send-email-mst@kernel.org>
+        Tue, 12 Oct 2021 01:36:22 -0400
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9ABC061570;
+        Mon, 11 Oct 2021 22:34:20 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 681F2423B9;
+        Tue, 12 Oct 2021 05:34:12 +0000 (UTC)
+Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device does
+ not exist
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-5-marcan@marcan.st>
+ <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
+Date:   Tue, 12 Oct 2021 14:34:09 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011142956-mutt-send-email-mst@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 03:09:09PM -0400, Michael S. Tsirkin wrote:
-> The reason we have trouble is that it's not clear what does the API mean
-> outside the realm of TDX.
-> If we really, truly want an API that says "ioremap and it's a hardened
-> driver" then I guess ioremap_hardened_driver is what you want.
+On 12/10/2021 12.21, Viresh Kumar wrote:
+> I am not sure why you need this, since _set_required_opps() has this check:
+> 
+> 	if (unlikely(!required_opp_tables[0]->is_genpd)) {
+> 		dev_err(dev, "required-opps don't belong to a genpd\n");
+> 		return -ENOENT;
+> 	}
+> 
 
-Yes.  And why would be we ioremap the BIOS anyway?  It is not I/O memory
-in any of the senses we generally use ioremap for.
+The table *is* assigned to a genpd (the memory controller), it's just 
+that that genpd isn't actually a parent of the CPU device. Without the 
+patch you end up with:
+
+[    3.040060] cpu cpu4: Failed to set performance rate of cpu4: 0 (-19)
+[    3.042881] cpu cpu4: Failed to set required opps: -19
+[    3.045508] cpufreq: __target_index: Failed to change cpu frequency: -19
+
+
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
