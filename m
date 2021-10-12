@@ -2,111 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A6742ACEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC61D42AC4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235005AbhJLTFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 15:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbhJLTFj (ORCPT
+        id S235167AbhJLSq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:46:57 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57634 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234995AbhJLSqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 15:05:39 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EF8C061745;
-        Tue, 12 Oct 2021 12:03:37 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f194200eaffd58d18ef125f.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:4200:eaff:d58d:18ef:125f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2D4C41EC047E;
-        Tue, 12 Oct 2021 20:39:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634063993;
+        Tue, 12 Oct 2021 14:46:55 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634064033;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=8Sp+eleeSlkMveboN9yGLXRy3+zpBsRKI2ycgGcwO+c=;
-        b=Dm89jgCV6WyVafkaKnSrbYeHME2ZlsVKpzn3pepunFErqUQj/DXUAmY733EhvfF85Z//tP
-        RYfWJqiFoAUJ4IDFwSavTIVHKru40OpOvQ36Wi8K1yoSd6tJ6NKgpj6apo02zXgFEdR/eZ
-        AtDinE3Ab/7tVUiJpMA/GUateh9TiqY=
-Date:   Tue, 12 Oct 2021 20:39:50 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: kernel BUG at fs/ext4/inode.c:1721!
-Message-ID: <YWXWdlut+IW9eh8B@zn.tnic>
-References: <YWANK0HchPv9m6hA@zn.tnic>
- <20211008173305.GA28198@localhost.localdomain>
- <YWCL2OXaz8/OnBiF@zn.tnic>
- <20211011231124.GB17897@localhost.localdomain>
+         in-reply-to:in-reply-to:references:references;
+        bh=KW+IJ7OIyygtO/OUib0E/8GQRDwfz133sFxAz7WGAxc=;
+        b=if4AgnZt3vh78PzErZ4D+P8AL4EAGFPgHqgITlTOjCtWExcVjyr+WRGutjEkhGdAXGI3Tf
+        8bEBavF4jCqR92er3KEb/7PR2JGmzw08HTtArGN92IcY6YL9SspWR1FSeWWYKAOoSgq3n/
+        B+rdjCvnVfjy3FbKkzohq9r8ONHxRFKo00fcuLeNlFbxeirt085rcheR4Czi1nPKYGrTYw
+        NvtDZB/JQ26kslfqDrVp5pIWf/fnUFCVJ+NjFOGATbTCznkiEaI/8/wxuNGvT4vbRqDl0B
+        Dx68Uwly/S5e6/4G0q7WeY6B+IrBbLld+JdO8KyWv6UWmNWnpXWlLt9bA1kpzw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634064033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KW+IJ7OIyygtO/OUib0E/8GQRDwfz133sFxAz7WGAxc=;
+        b=Kd4INlPzpimcW+3qnVdzxma4uFCdRF49G8PXqO/bBZxtq+FMdI0w2Q1OxHLA2OBChJNnI3
+        5w81b0QJQyGwkkBw==
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org
+Subject: [patch V2 16/31] x86/fpu: Replace KVMs home brewed FPU copy to user
+In-Reply-To: <87fst6b0f5.ffs@tglx>
+References: <20211011215813.558681373@linutronix.de>
+ <20211011223611.249593446@linutronix.de>
+ <0d222978-014a-cdcb-f8aa-5b3179cb0809@redhat.com> <87fst6b0f5.ffs@tglx>
+Date:   Tue, 12 Oct 2021 20:40:32 +0200
+Message-ID: <87zgre9jdr.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211011231124.GB17897@localhost.localdomain>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 07:11:24PM -0400, Eric Whitney wrote:
-> I've tried numerous kernel builds with -rc4 and rerun the full set of xfstests
-> we use when regressing ext4 each rc using a kernel that doesn't enable
-> FS_ENCRYPTION (I normally run with that) without luck.  The code that caused
-> the splat you saw is new and would run when an assertion is violated,
-> suggesting that there may be an unsuspected bug elsewhere in ext4.
+Similar to the copy from user function the FPU core has this already
+implemented with all bells and whistles.
 
-Hmm.
+Get rid of the duplicated code and use the core functionality.
 
-> Do you recall having seen any evidence of ENOMEM or ENOSPC conditions prior
-> to the failure?
+The memset(0) of the buffer is not required as it is already allocated
+with kzalloc() at the call site.
 
-I don't see anything of the sorts in the dmesg I've saved.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: kvm@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+---
+V2: Add the missing xsave header assignment in the !XSAVE path
+    and explain the memset(0) removal in the changelog - Paolo
+    Rename the function and fix subject - Borislav
+---
+ arch/x86/include/asm/fpu/api.h |    1 
+ arch/x86/kernel/fpu/core.c     |   18 +++++++++++++
+ arch/x86/kvm/x86.c             |   56 ++---------------------------------------
+ 3 files changed, 22 insertions(+), 53 deletions(-)
 
-> If you're willing to share, please send along your kernel config file and I'll
-> try working with that as well.
-
-Sure, I'll send you the config I used and the dmesg I caught privately -
-you might see something I've missed. Stuff like this, for example:
-
-[   10.254952] Adding 15721468k swap on /dev/nvme0n1p1.  Priority:-2 extents:1 across:15721468k SS
-[   10.275365] EXT4-fs (nvme0n1p2): re-mounted. Opts: errors=remount-ro. Quota mode: disabled.
-[   10.417820] device-mapper: ioctl: 4.45.0-ioctl (2021-03-22) initialised: dm-devel@redhat.com
-[   10.595392] loop: module loaded
-[   10.661742] EXT4-fs (sdc1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-[   10.758774] EXT4-fs (sda1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-[   10.930331] r8169 0000:18:00.0 eth0: Link is Up - 100Mbps/Full - flow control rx/tx
-[   10.939298] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-[   13.306747] EXT4-fs (sdb1): recovery complete
-[   13.325960] EXT4-fs (sdb1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-[   13.353624] EXT4-fs (nvme1n1p1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-[  191.896690] loop0: detected capacity change from 0 to 2048
-[  191.941350] EXT4-fs (dm-0): mounting ext2 file system using the ext4 subsystem
-[  191.948773] EXT4-fs (dm-0): mounted filesystem without journal. Opts: (null). Quota mode: disabled.
-[  282.932355] fuse: init (API version 7.34)
-[ 3159.620840] loop1: detected capacity change from 0 to 4194304
-[ 3160.125963] EXT4-fs (dm-1): mounting ext3 file system using the ext4 subsystem
-[ 3160.203143] EXT4-fs (dm-1): mounted filesystem with ordered data mode. Opts: (null). Quota mode: disabled.
-
-Dunno if using ext4 to mount ext2 and ext3 filesystems would be
-relevant.
-
-> In the meantime, should this bug get in your way, just revert the following
-> patch and you should be able to run without further trouble:
-> 
-> 948ca5f30e1d "ext4: enforce buffer head state assertion in ext4_da_map_blocks"
-> 
-> I'll likely be posting a patch to revert this shortly, since it's going to
-> take some time to sort out what's going on without a reproducer.
-
-Gotcha.
-
-> Thanks again for your help,
-
-Thanks too for taking a look.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--- a/arch/x86/include/asm/fpu/api.h
++++ b/arch/x86/include/asm/fpu/api.h
+@@ -117,5 +117,6 @@ extern void fpu_init_fpstate_user(struct
+ extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask);
+ 
+ extern int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *buf, u64 xcr0, u32 *pkru);
++extern void fpu_copy_fpstate_to_kvm_uabi(struct fpu *fpu, void *buf, unsigned int size, u32 pkru);
+ 
+ #endif /* _ASM_X86_FPU_API_H */
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -175,6 +175,24 @@ void fpu_swap_kvm_fpu(struct fpu *save,
+ }
+ EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpu);
+ 
++void fpu_copy_fpstate_to_kvm_uabi(struct fpu *fpu, void *buf,
++			       unsigned int size, u32 pkru)
++{
++	union fpregs_state *kstate = &fpu->state;
++	union fpregs_state *ustate = buf;
++	struct membuf mb = { .p = buf, .left = size };
++
++	if (cpu_feature_enabled(X86_FEATURE_XSAVE)) {
++		__copy_xstate_to_uabi_buf(mb, &kstate->xsave, pkru,
++					  XSTATE_COPY_XSAVE);
++	} else {
++		memcpy(&ustate->fxsave, &kstate->fxsave, sizeof(ustate->fxsave));
++		/* Make it restorable on a XSAVE enabled host */
++		ustate->xsave.header.xfeatures = XFEATURE_MASK_FPSSE;
++	}
++}
++EXPORT_SYMBOL_GPL(fpu_copy_fpstate_to_kvm_uabi);
++
+ int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *buf, u64 xcr0,
+ 				 u32 *vpkru)
+ {
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -4695,65 +4695,15 @@ static int kvm_vcpu_ioctl_x86_set_debugr
+ 	return 0;
+ }
+ 
+-static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
+-{
+-	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
+-	u64 xstate_bv = xsave->header.xfeatures;
+-	u64 valid;
+-
+-	/*
+-	 * Copy legacy XSAVE area, to avoid complications with CPUID
+-	 * leaves 0 and 1 in the loop below.
+-	 */
+-	memcpy(dest, xsave, XSAVE_HDR_OFFSET);
+-
+-	/* Set XSTATE_BV */
+-	xstate_bv &= vcpu->arch.guest_supported_xcr0 | XFEATURE_MASK_FPSSE;
+-	*(u64 *)(dest + XSAVE_HDR_OFFSET) = xstate_bv;
+-
+-	/*
+-	 * Copy each region from the possibly compacted offset to the
+-	 * non-compacted offset.
+-	 */
+-	valid = xstate_bv & ~XFEATURE_MASK_FPSSE;
+-	while (valid) {
+-		u32 size, offset, ecx, edx;
+-		u64 xfeature_mask = valid & -valid;
+-		int xfeature_nr = fls64(xfeature_mask) - 1;
+-		void *src;
+-
+-		cpuid_count(XSTATE_CPUID, xfeature_nr,
+-			    &size, &offset, &ecx, &edx);
+-
+-		if (xfeature_nr == XFEATURE_PKRU) {
+-			memcpy(dest + offset, &vcpu->arch.pkru,
+-			       sizeof(vcpu->arch.pkru));
+-		} else {
+-			src = get_xsave_addr(xsave, xfeature_nr);
+-			if (src)
+-				memcpy(dest + offset, src, size);
+-		}
+-
+-		valid -= xfeature_mask;
+-	}
+-}
+-
+ static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
+ 					 struct kvm_xsave *guest_xsave)
+ {
+ 	if (!vcpu->arch.guest_fpu)
+ 		return;
+ 
+-	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
+-		memset(guest_xsave, 0, sizeof(struct kvm_xsave));
+-		fill_xsave((u8 *) guest_xsave->region, vcpu);
+-	} else {
+-		memcpy(guest_xsave->region,
+-			&vcpu->arch.guest_fpu->state.fxsave,
+-			sizeof(struct fxregs_state));
+-		*(u64 *)&guest_xsave->region[XSAVE_HDR_OFFSET / sizeof(u32)] =
+-			XFEATURE_MASK_FPSSE;
+-	}
++	fpu_copy_fpstate_to_kvm_uabi(vcpu->arch.guest_fpu, guest_xsave->region,
++				     sizeof(guest_xsave->region),
++				     vcpu->arch.pkru);
+ }
+ 
+ static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
