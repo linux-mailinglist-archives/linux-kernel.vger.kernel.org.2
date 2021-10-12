@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D98E42AB87
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1058142AB8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhJLSF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:05:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:53410 "EHLO foss.arm.com"
+        id S232650AbhJLSHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:07:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230002AbhJLSF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:05:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71A3C1FB;
-        Tue, 12 Oct 2021 11:03:52 -0700 (PDT)
-Received: from bogus (unknown [10.57.21.181])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14FD43F694;
-        Tue, 12 Oct 2021 11:03:50 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 19:03:48 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     op-tee@lists.trustedfirmware.org, jens.wiklander@linaro.org,
-        jerome@forissier.org, daniel.thompson@linaro.org,
-        maxim.uvarov@linaro.org, linux-arm-kernel@lists.infradead.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tee: optee: Fix missing devices unregister during
- optee_remove
-Message-ID: <20211012180348.zalanzdw3ykqg4db@bogus>
-References: <20211012073116.4156054-1-sumit.garg@linaro.org>
+        id S231808AbhJLSG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 14:06:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6025D6109E;
+        Tue, 12 Oct 2021 18:04:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634061897;
+        bh=TOIZ/lPFpgW5s2Q1ZJj0S3XD3XwX6DCR2QMtHMh5HnI=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=lSrOSqOZZCP+H7YGOynlMHxLFlORNDK1/ZLMvLOK2rugUv8G5e6i567su/tntefoJ
+         UwMWrAxnW3WClWMisGlFUtxhS4IStUZRCtqeNIk9tE7N6swnPFSWhYxtj6h6uNne3y
+         y+4RNpyg9Sl/bPbx6T9jE7xhAhdu/o4J9sBL9x2T70uTeOz0YwBmBRcAXEVfD8hVz+
+         88kXQZyK6KPZrzV9o9Xe5JVVQUQYGdEyMUKoE99mE7+0EFYfB5UGMfEcIeuicTyYZZ
+         nAOEJySasmDku2hwG0UAvlzEZiTcWMNJbKDsiX/90Tr+i+ZnJZ78wcnURS/bH/FsWa
+         O0/kkpnOH4doQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012073116.4156054-1-sumit.garg@linaro.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210914090338.5945-1-hsin-hsiung.wang@mediatek.com>
+References: <20210914090338.5945-1-hsin-hsiung.wang@mediatek.com>
+Subject: Re: [PATCH v12 0/5] Add SPMI support for Mediatek SoC IC
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 12 Oct 2021 11:04:56 -0700
+Message-ID: <163406189612.936959.767305130802405261@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 01:01:16PM +0530, Sumit Garg wrote:
-> When OP-TEE driver is built as a module, OP-TEE client devices
-> registered on TEE bus during probe should be unregistered during
-> optee_remove. So implement optee_unregister_devices() accordingly.
-> 
-> Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
-> Reported-by: Sudeep Holla <sudeep.holla@arm.com>
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->  drivers/tee/optee/core.c          |  3 +++
->  drivers/tee/optee/device.c        | 22 ++++++++++++++++++++++
->  drivers/tee/optee/optee_private.h |  1 +
->  3 files changed, 26 insertions(+)
-> 
-> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> index ccad3c7c8f6d..3915dc574503 100644
-> --- a/drivers/tee/optee/core.c
-> +++ b/drivers/tee/optee/core.c
-> @@ -586,6 +586,9 @@ static int optee_remove(struct platform_device *pdev)
->  {
->  	struct optee *optee = platform_get_drvdata(pdev);
->  
-> +	/* Unregister OP-TEE specific client devices on TEE bus */
-> +	optee_unregister_devices();
-> +
+Quoting Hsin-Hsiung Wang (2021-09-14 02:03:33)
+> This series adds support for new SoC MT6873/MT8192/MT8195 to the spmi dri=
+ver.
+> This series is based on Chun-Jie's patches[1].
+>=20
+> [1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=3D52=
+1655
+>=20
+> changes since v11:
+> - rebase to v5.15-rc1.
+>=20
+> Henry Chen (1):
+>   spmi: mediatek: Add support for MT8195
+>=20
+> Hsin-Hsiung Wang (4):
+>   dt-bindings: spmi: modify the constraint 'maxItems' to 'minItems'
+>   dt-bindings: spmi: document binding for the Mediatek SPMI controller
+>   spmi: mediatek: Add support for MT6873/8192
+>   arm64: dts: mt8192: add spmi node
 
-This is not based on FF-A support series by Jens I assume. I added
-optee_unregister_devices to optee_remove_common and that fixes the issue
-I reported. I haven't followed the comments by Jens on the approach yet.
-
--- 
-Regards,
-Sudeep
+Please drop the dts patch from the series so I can easily pick up the
+whole lot. Also fix the binding problem reported by Rob. Otherwise the
+patches look OK to me.
