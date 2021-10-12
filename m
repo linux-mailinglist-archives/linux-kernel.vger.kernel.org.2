@@ -2,85 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FB042A2B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E30D42A2B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236103AbhJLK66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:58:58 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:36801 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236036AbhJLK6z (ORCPT
+        id S236119AbhJLK7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:59:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60214 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236036AbhJLK7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:58:55 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Tue, 12 Oct 2021 06:59:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634036232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jxLfujbKXdx96upt5Ex3rPh2ayhKNjcG6TV0Iacz4Iw=;
+        b=ASby/8fNAwW4tpgp7ApFKgvbZbh+6m8MFmT4Ly0Y2z2QeshjW4mAgIYkjZ95HTjn8JT5ty
+        QPBGeFBwyR7AC9u++NW0ObmC9hcndITcR05Y+7uLLd3uuTBQO+ta38gXwjjvfHmr6uX5nr
+        0uZPPVGH6Gpi5YPJI1hOehlbBl9bPEs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-Ed2bY93-MfWNoRnlmixODw-1; Tue, 12 Oct 2021 06:57:10 -0400
+X-MC-Unique: Ed2bY93-MfWNoRnlmixODw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HTCKJ5DcYz4xbV;
-        Tue, 12 Oct 2021 21:56:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634036213;
-        bh=Xf1lPcg61XghCxXyudffvXGozRoqikwBbfUwHO27xIw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=J18wbPSfa8fGX6RX6LtWwwxseI/SrZAVfoHTvyWNt5Sqdt1j3/kXy8ufUq7IA2ata
-         y5SIRh8+hHXOu9EWCqdzsDZYvULtQ8afZbfkVGC4KJBROwd2xUJqCbxrdCPbriT9XW
-         WraIS5FzqOnh4LT02Yc6xgf5T63CtOXx/f/XceWOlUHRhYAhhdaZNGkL9THUlkxuEH
-         BaMWUFd2yHzj8Gxsrcfxw5ZOE8pNtz8IbWiSWLO3hWW1CldqBnMCdYg5gNtYOQSCXn
-         r67nfuvbs2s66syUHBhmv1B1HjiBW3RS6HMB10duPkZgVrdB17FhFnUsTOlOjyoGbC
-         XBsnka7IRPF3Q==
-Date:   Tue, 12 Oct 2021 21:56:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings in Linus' tree
-Message-ID: <20211012215651.300f8bc1@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75FC2BBEE0;
+        Tue, 12 Oct 2021 10:57:09 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CFF6F5D6D5;
+        Tue, 12 Oct 2021 10:57:08 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     dave.hansen@linux.intel.com, seanjc@google.com, x86@kernel.org,
+        yang.zhong@intel.com, jarkko@kernel.org
+Subject: [PATCH v2 0/2] x86: sgx_vepc: implement ioctl to EREMOVE all pages
+Date:   Tue, 12 Oct 2021 06:57:06 -0400
+Message-Id: <20211012105708.2070480-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xES2aqxswmOIh2v9KQcV=WX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xES2aqxswmOIh2v9KQcV=WX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add to /dev/sgx_vepc a ioctl that brings vEPC pages back to uninitialized
+state with EREMOVE.  This is useful in order to match the expectations
+of guests after reboot, and to match the behavior of real hardware.
 
-Hi all,
+The ioctl is a cleaner alternative to closing and reopening the
+/dev/sgx_vepc device; reopening /dev/sgx_vepc could be problematic in
+case userspace has sandboxed itself since the time it first opened the
+device, and has thus lost permissions to do so.
 
-When building Linus' tree, today's linux-next build (htmldocs) produced
-these warnings:
+If possible, I would like these patches to be included in 5.15 through
+either the x86 or the KVM tree.
 
-Error: Cannot open file drivers/counter/counter.c
-Error: Cannot open file drivers/counter/counter.c
+Thanks,
 
-Introduced by commit
+Paolo
 
-  d70e46af7531 ("counter: Internalize sysfs interface code")
+Changes from RFC:
+- improved commit messages, added documentation
+- renamed ioctl from SGX_IOC_VEPC_REMOVE to SGX_IOC_VEPC_REMOVE_ALL
 
-$ git grep -w drivers/counter/counter.c Documentation
-Documentation/driver-api/generic-counter.rst:.. kernel-doc:: drivers/counte=
-r/counter.c
+Change from v1:
+- fixed documentation and code to cover SGX_ENCLAVE_ACT errors
+- removed Tested-by since the code is quite different now
 
---=20
-Cheers,
-Stephen Rothwell
+Paolo Bonzini (2):
+  x86: sgx_vepc: extract sgx_vepc_remove_page
+  x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE_ALL ioctl
 
---Sig_/xES2aqxswmOIh2v9KQcV=WX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+ Documentation/x86/sgx.rst       | 26 +++++++++++++
+ arch/x86/include/asm/sgx.h      |  3 ++
+ arch/x86/include/uapi/asm/sgx.h |  2 +
+ arch/x86/kernel/cpu/sgx/virt.c  | 69 ++++++++++++++++++++++++++++++---
+ 4 files changed, 95 insertions(+), 5 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.27.0
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFlafMACgkQAVBC80lX
-0Gzdrwf+NhdXQRA8FrfoLzS0Jf7p/I1LB0T9+LL4C/RkoJR05RClQRFyOzHgNLKY
-uY82jt5yCJwGDR5x5eCboV2WexqFNHCQTRDVlkmkzxQs7K+I2yOOCs4f6R8kyUbS
-SIXyau1ERsJ8Fmy5K86xSvII8dmzc7TagcA68R3JnfXFLt4I+pgT2s2G+XwQBElz
-Fxo+LorzakLc8smz2FQDLUqlQoacRJ5+bDrb/Y6XpHZCRmLEw/YXVYPGcOiNj/sD
-qjqB4yJyg6ceFQcVvd285QQWBmHsyPpxllLA5G9ihtdyh5IykRlgEV+Vh0B/L+sC
-BMwcJq85m/QuqwHChfyDW0gmJT9dGQ==
-=dU+X
------END PGP SIGNATURE-----
-
---Sig_/xES2aqxswmOIh2v9KQcV=WX--
