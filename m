@@ -2,151 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F80D429F27
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4146E429F2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234524AbhJLIBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbhJLIBw (ORCPT
+        id S234595AbhJLICC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:02:02 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49568 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232541AbhJLICB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:01:52 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78668C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:59:50 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id m22so64268372wrb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:59:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qZL0IgCxwxZOCc6N60q9ODZfFXYO+v+wjDyRWnfQDxU=;
-        b=j5xf/Tz0qzecApKo55JWzWhVD7IuOay2Z08jr+B1NfbCO9C7j+94M32PU1JVNWXgBq
-         lCTFIaO/lKQpswhsgcSQc13d7ZeKVTa8v0TjZMxD8F0YcgrQexjJTBnxwvgPQCq/C2O9
-         SRmI/CAo4LkRPjFdtNyTs/PUzwj3/ATn5SHr8hRjr0selHPJZ5LE6nqBWCxq1EPDPnVw
-         sMiX7Uxaz9ntSMEaV6Fsg5AwFk2GLg/ucT9mye0pZcnO1dzvsKMzb8gTRgNPKv/T6Kn6
-         L9Tk1HcxaYHstY8qCBzmyNGG3bNpHkXWpa0+MX41S5rlKJ1Wo0KxeoX0rDl5owjC/atY
-         xpcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qZL0IgCxwxZOCc6N60q9ODZfFXYO+v+wjDyRWnfQDxU=;
-        b=uiHcbxAYRC8znA35XQcRMdB+PWr4aixkUFyKat0fEWMf52yy1FashNZQ752aBeJLOE
-         PPaBtNsDuCWqb2vf8Xa6T9QssJe7iWqaw5Lt3wq2fcH9jart9rmiljUEbWUknVKhiejL
-         uLeG44hoVM53ITD1ty7Nl3SrXA1WLoxTFqBbnL6mjrjIIMEUk9mENnlhDTxQ6qHtgrel
-         XIfk/hJlahRLLw47uHNtkyS9864cIgm9IpsQzWK1H3yscfplo1QleuTe9c1PoVoT0TyQ
-         P/0FkeTuQzsCRO0kLpe7PdmhNBrwpMlqWA3NgW4WeUJlrEO48qQrykrRx9x+doLzPkOF
-         EK6w==
-X-Gm-Message-State: AOAM532F8SE9uQVxRdu5/sQoTNr71Oi6IouPMTIZc5ZY+b61zYHzZABj
-        PMIIW4PypzC/l9eqay5E3KorNDy5BC3WV4iuhVFmRg==
-X-Google-Smtp-Source: ABdhPJwZ+vuj68nKJDo6F5dRTy5sMRtn99gwDMZHCHSI64JSatybZLfgqB9p7RAomfB3RSYsYSjczZ8IJR09Pm+GQ+k=
-X-Received: by 2002:a7b:cbd1:: with SMTP id n17mr3819677wmi.113.1634025588965;
- Tue, 12 Oct 2021 00:59:48 -0700 (PDT)
+        Tue, 12 Oct 2021 04:02:01 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C7fgfC013201;
+        Tue, 12 Oct 2021 03:59:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=wrVENqNRU25Q88pa8wtSKcLPj3NzanGtOG60FEay2AY=;
+ b=seOtrbXYYpl6dhJjpkv2nSSCqb6WoC25J93sh4xf1tTlRNiowlkJcCXyvnKSU7ACJwqR
+ h8uCPAIE/suVl/3JoI4Tj2Esn+aDxqNvKMMZYV8VxsXwL0xvGi6chehViO3n4UupK+9G
+ SOoqWziy6rjmdGG08iTFy+h36kjfygOnyP5B8sDVyoPD/yuqyIPALXnycHXaVGSgV1ZS
+ F8Qpnnewt68LgOiq3KfBNpAQq6+fAvBQ1nBrJhpyaDqUsMYwpwNjqJi/HUaKhu3P5p5A
+ xcMBF2kyem3tw6htn1i9utMituvPC4XVcxln2JgQh5Jb1pOnU6FQy/Wx4jsOMlwOEKcv /Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bn66qgaku-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 03:59:59 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19C7hs6m021288;
+        Tue, 12 Oct 2021 03:59:58 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bn66qgakf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 03:59:58 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19C7vNoV002477;
+        Tue, 12 Oct 2021 07:59:57 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 3bk2q9ws42-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 07:59:56 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19C7xp8166257176
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 07:59:51 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6C831A4059;
+        Tue, 12 Oct 2021 07:59:51 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DF300A4055;
+        Tue, 12 Oct 2021 07:59:50 +0000 (GMT)
+Received: from [9.145.20.44] (unknown [9.145.20.44])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Oct 2021 07:59:50 +0000 (GMT)
+Message-ID: <0da85285-3624-5a41-2f0e-1c462ee72d1a@linux.ibm.com>
+Date:   Tue, 12 Oct 2021 09:59:50 +0200
 MIME-Version: 1.0
-References: <20211012073116.4156054-1-sumit.garg@linaro.org>
-In-Reply-To: <20211012073116.4156054-1-sumit.garg@linaro.org>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Tue, 12 Oct 2021 09:59:38 +0200
-Message-ID: <CAHUa44HW=7GhvWSd7LwG3wc+47bQWHHiFq+qA-8qMnDV1C0yBQ@mail.gmail.com>
-Subject: Re: [PATCH] tee: optee: Fix missing devices unregister during optee_remove
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Jerome Forissier <jerome@forissier.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v5 06/14] KVM: s390: pv: properly handle page flags for
+ protected guests
+Content-Language: en-US
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
+        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
+References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
+ <20210920132502.36111-7-imbrenda@linux.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+In-Reply-To: <20210920132502.36111-7-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 4PJL1rj-imEYZ6aGo0Wc9BMFgAhT0ZMY
+X-Proofpoint-GUID: fb71DUZLzzGKY0bYoYff2bfbfd0YBVO7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-12_01,2021-10-11_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 impostorscore=0 suspectscore=0 bulkscore=0 phishscore=0
+ clxscore=1015 mlxlogscore=999 priorityscore=1501 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110120041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sumit,
+On 9/20/21 15:24, Claudio Imbrenda wrote:
+> Introduce variants of the convert and destroy page functions that also
+> clear the PG_arch_1 bit used to mark them as secure pages.
+> 
+> The PG_arch_1 flag is always allowed to overindicate; using the new
+> functions introduced here allows to reduce the extent of overindication
+> and thus improve performance.
+> 
+> These new functions can only be called on pages for which a reference
+> is already being held.
+> 
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Acked-by: Janosch Frank <frankja@linux.ibm.com>
 
-On Tue, Oct 12, 2021 at 9:31 AM Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> When OP-TEE driver is built as a module, OP-TEE client devices
-> registered on TEE bus during probe should be unregistered during
-> optee_remove. So implement optee_unregister_devices() accordingly.
->
-> Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
-> Reported-by: Sudeep Holla <sudeep.holla@arm.com>
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+You can make this one a Reviewed-by
+
+> Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
 > ---
->  drivers/tee/optee/core.c          |  3 +++
->  drivers/tee/optee/device.c        | 22 ++++++++++++++++++++++
->  drivers/tee/optee/optee_private.h |  1 +
->  3 files changed, 26 insertions(+)
->
-> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> index ccad3c7c8f6d..3915dc574503 100644
-> --- a/drivers/tee/optee/core.c
-> +++ b/drivers/tee/optee/core.c
-> @@ -586,6 +586,9 @@ static int optee_remove(struct platform_device *pdev)
->  {
->         struct optee *optee = platform_get_drvdata(pdev);
->
-> +       /* Unregister OP-TEE specific client devices on TEE bus */
-> +       optee_unregister_devices();
+>   arch/s390/include/asm/pgtable.h |  9 ++++++---
+>   arch/s390/include/asm/uv.h      | 10 ++++++++--
+>   arch/s390/kernel/uv.c           | 34 ++++++++++++++++++++++++++++++++-
+>   arch/s390/mm/gmap.c             |  4 +++-
+>   4 files changed, 50 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+> index dcac7b2df72c..0f1af2232ebe 100644
+> --- a/arch/s390/include/asm/pgtable.h
+> +++ b/arch/s390/include/asm/pgtable.h
+> @@ -1074,8 +1074,9 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+>   	pte_t res;
+>   
+>   	res = ptep_xchg_lazy(mm, addr, ptep, __pte(_PAGE_INVALID));
+> +	/* At this point the reference through the mapping is still present */
+>   	if (mm_is_protected(mm) && pte_present(res))
+> -		uv_convert_from_secure(pte_val(res) & PAGE_MASK);
+> +		uv_convert_owned_from_secure(pte_val(res) & PAGE_MASK);
+>   	return res;
+>   }
+>   
+> @@ -1091,8 +1092,9 @@ static inline pte_t ptep_clear_flush(struct vm_area_struct *vma,
+>   	pte_t res;
+>   
+>   	res = ptep_xchg_direct(vma->vm_mm, addr, ptep, __pte(_PAGE_INVALID));
+> +	/* At this point the reference through the mapping is still present */
+>   	if (mm_is_protected(vma->vm_mm) && pte_present(res))
+> -		uv_convert_from_secure(pte_val(res) & PAGE_MASK);
+> +		uv_convert_owned_from_secure(pte_val(res) & PAGE_MASK);
+>   	return res;
+>   }
+>   
+> @@ -1116,8 +1118,9 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
+>   	} else {
+>   		res = ptep_xchg_lazy(mm, addr, ptep, __pte(_PAGE_INVALID));
+>   	}
+> +	/* At this point the reference through the mapping is still present */
+>   	if (mm_is_protected(mm) && pte_present(res))
+> -		uv_convert_from_secure(pte_val(res) & PAGE_MASK);
+> +		uv_convert_owned_from_secure(pte_val(res) & PAGE_MASK);
+>   	return res;
+>   }
+>   
+> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
+> index b35add51b967..3236293d5a31 100644
+> --- a/arch/s390/include/asm/uv.h
+> +++ b/arch/s390/include/asm/uv.h
+> @@ -356,8 +356,9 @@ static inline int is_prot_virt_host(void)
+>   }
+>   
+>   int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb);
+> -int uv_destroy_page(unsigned long paddr);
+> +int uv_destroy_owned_page(unsigned long paddr);
+>   int uv_convert_from_secure(unsigned long paddr);
+> +int uv_convert_owned_from_secure(unsigned long paddr);
+>   int gmap_convert_to_secure(struct gmap *gmap, unsigned long gaddr);
+>   
+>   void setup_uv(void);
+> @@ -367,7 +368,7 @@ void adjust_to_uv_max(unsigned long *vmax);
+>   static inline void setup_uv(void) {}
+>   static inline void adjust_to_uv_max(unsigned long *vmax) {}
+>   
+> -static inline int uv_destroy_page(unsigned long paddr)
+> +static inline int uv_destroy_owned_page(unsigned long paddr)
+>   {
+>   	return 0;
+>   }
+> @@ -376,6 +377,11 @@ static inline int uv_convert_from_secure(unsigned long paddr)
+>   {
+>   	return 0;
+>   }
 > +
->         /*
->          * Ask OP-TEE to free all cached shared memory objects to decrease
->          * reference counters and also avoid wild pointers in secure world
-> diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-> index ec1d24693eba..128a2d2a50a1 100644
-> --- a/drivers/tee/optee/device.c
-> +++ b/drivers/tee/optee/device.c
-> @@ -53,6 +53,13 @@ static int get_devices(struct tee_context *ctx, u32 session,
->         return 0;
->  }
->
-> +static void optee_release_device(struct device *dev)
+> +static inline int uv_convert_owned_from_secure(unsigned long paddr)
 > +{
-> +       struct tee_client_device *optee_device = to_tee_client_device(dev);
+> +	return 0;
+> +}
+>   #endif
+>   
+>   #if defined(CONFIG_PROTECTED_VIRTUALIZATION_GUEST) || IS_ENABLED(CONFIG_KVM)
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index 68a8fbafcb9c..05f8bf61d20a 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -115,7 +115,7 @@ static int uv_pin_shared(unsigned long paddr)
+>    *
+>    * @paddr: Absolute host address of page to be destroyed
+>    */
+> -int uv_destroy_page(unsigned long paddr)
+> +static int uv_destroy_page(unsigned long paddr)
+>   {
+>   	struct uv_cb_cfs uvcb = {
+>   		.header.cmd = UVC_CMD_DESTR_SEC_STOR,
+> @@ -135,6 +135,22 @@ int uv_destroy_page(unsigned long paddr)
+>   	return 0;
+>   }
+>   
+> +/*
+> + * The caller must already hold a reference to the page
+> + */
+> +int uv_destroy_owned_page(unsigned long paddr)
+> +{
+> +	struct page *page = phys_to_page(paddr);
+> +	int rc;
 > +
-> +       kfree(optee_device);
+> +	get_page(page);
+> +	rc = uv_destroy_page(paddr);
+> +	if (!rc)
+> +		clear_bit(PG_arch_1, &page->flags);
+> +	put_page(page);
+> +	return rc;
 > +}
 > +
->  static int optee_register_device(const uuid_t *device_uuid)
->  {
->         struct tee_client_device *optee_device = NULL;
-> @@ -63,6 +70,7 @@ static int optee_register_device(const uuid_t *device_uuid)
->                 return -ENOMEM;
->
->         optee_device->dev.bus = &tee_bus_type;
-> +       optee_device->dev.release = optee_release_device;
->         if (dev_set_name(&optee_device->dev, "optee-ta-%pUb", device_uuid)) {
->                 kfree(optee_device);
->                 return -ENOMEM;
-> @@ -154,3 +162,17 @@ int optee_enumerate_devices(u32 func)
->  {
->         return  __optee_enumerate_devices(func);
->  }
-> +
-> +static int __optee_unregister_device(struct device *dev, void *data)
+>   /*
+>    * Requests the Ultravisor to encrypt a guest page and make it
+>    * accessible to the host for paging (export).
+> @@ -154,6 +170,22 @@ int uv_convert_from_secure(unsigned long paddr)
+>   	return 0;
+>   }
+>   
+> +/*
+> + * The caller must already hold a reference to the page
+> + */
+> +int uv_convert_owned_from_secure(unsigned long paddr)
 > +{
-> +       if (!strncmp(dev_name(dev), "optee-ta", strlen("optee-ta")))
-> +               device_unregister(dev);
+> +	struct page *page = phys_to_page(paddr);
+> +	int rc;
 > +
-> +       return 0;
+> +	get_page(page);
+> +	rc = uv_convert_from_secure(paddr);
+> +	if (!rc)
+> +		clear_bit(PG_arch_1, &page->flags);
+> +	put_page(page);
+> +	return rc;
 > +}
 > +
-> +void optee_unregister_devices(void)
-> +{
-> +       bus_for_each_dev(&tee_bus_type, NULL, NULL,
-> +                        __optee_unregister_device);
+>   /*
+>    * Calculate the expected ref_count for a page that would otherwise have no
+>    * further pins. This was cribbed from similar functions in other places in
+> diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+> index 5a138f6220c4..38b792ab57f7 100644
+> --- a/arch/s390/mm/gmap.c
+> +++ b/arch/s390/mm/gmap.c
+> @@ -2678,8 +2678,10 @@ static int __s390_reset_acc(pte_t *ptep, unsigned long addr,
+>   {
+>   	pte_t pte = READ_ONCE(*ptep);
+>   
+> +	/* There is a reference through the mapping */
+>   	if (pte_present(pte))
+> -		WARN_ON_ONCE(uv_destroy_page(pte_val(pte) & PAGE_MASK));
+> +		WARN_ON_ONCE(uv_destroy_owned_page(pte_val(pte) & PAGE_MASK));
+> +
+>   	return 0;
+>   }
+>   
+> 
 
-I had something like this in mind too, but there's one potential
-problem with this approach. What if there's more than one OP-TEE
-driver with TAs here? It seems that we'll remove TAs from other
-drivers too then.
-
-This is not likely to be a problem at upstream for the moment so I
-might be enough just to keep this in mind if/when the OP-TEE driver is
-extended in a way that there can be multiple OP-TEEs handled.
-
-Cheers,
-Jens
