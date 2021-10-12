@@ -2,71 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391A542A30A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C68FD42A2B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236134AbhJLLVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:21:33 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:38688 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236088AbhJLLVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:21:32 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 188AA1A1D75;
-        Tue, 12 Oct 2021 13:19:29 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D4EFB1A1503;
-        Tue, 12 Oct 2021 13:19:28 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 785E8183AC8B;
-        Tue, 12 Oct 2021 19:19:27 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, ckeepax@opensource.cirrus.com,
-        kuninori.morimoto.gx@renesas.com, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] ASoC: wm8960: Fix clock configuration on slave mode
-Date:   Tue, 12 Oct 2021 18:54:30 +0800
-Message-Id: <1634036070-2671-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S236082AbhJLK64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235881AbhJLK6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:58:52 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE44DC06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 03:56:50 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id m22so65803531wrb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 03:56:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=7IHQW+klBLa8AAAQhMgTLFrZ1dvyLmJAZmPIs/4cI74=;
+        b=u77wdNYCxxWmmVx40mDxHpGXVHHMl6MTjLR2kOccMboGj0zoxDca/RCAKSbGCJ0gIB
+         Gf7mT/S/Qb5HuAxETw8brZXnXDVE6c0X3dYS+McglfeCQKoe+cZyWMbjH0OLFpyk4lnV
+         dhOh1EENx33KzBH/QNvuzJfoQuaQzAuDrMQs2SSqBujLpOQWUWNYlwgMyCIgD4rzDn3K
+         413gHkn6acbcTtLeVwp+52HSKSYdrOj42s4SabfBZQcFcUytU7bI4ogZ5qe7eHiLjsi/
+         vJUAfOCf62dHcgkCuwHEs1S4/8JfaNVzxtguUVbD9YTWKnYzeIQzhlAutjkQFDvSNOfK
+         Hxow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=7IHQW+klBLa8AAAQhMgTLFrZ1dvyLmJAZmPIs/4cI74=;
+        b=EAfkN+XhMFj7ECnXM4P+cdlHL8hSf4oyebZRb4GJNKRHNuaQHMeUzTjnYqbM7w6QR6
+         LeMKl4Zp2eGJOCGz80ftEC1c6n0U968PStLgLEWtD7oPHSNJ37Spr5Z38bKYP+56AFIo
+         qZxJiBzdIpte4tWzQWdks6piN3J0jRPddd9kMRjdQRNepBIqB97gV3xBq9L6Za1GXywj
+         q6iGD+4fJnHL7aMtPPtXOhRiH6iH/3LS7zz4L51rQex6ZsyZh5G1J0zebqudDHQrpHIt
+         PJwbjRPm031FKR7Ee+RmGbVe2Vvpws0OIB08lZJlb5ne1siZB/6ukbHz1/grcnsPaJ2P
+         4d5Q==
+X-Gm-Message-State: AOAM530cypoucNaojGkXjCeuCDI63sui6llzoifDcW8KU794uScyrLnP
+        Wc9D4o/fUNGw/YVwmJvN3um1LBvp2ceF5w==
+X-Google-Smtp-Source: ABdhPJyDuhvsm44TAGtih3wqsCVUf9JrK216s70IpR50kV9Uh8u0s78M1rB5hWqryVOmaFuYyjsC0A==
+X-Received: by 2002:a05:6000:c:: with SMTP id h12mr2285112wrx.378.1634036209215;
+        Tue, 12 Oct 2021 03:56:49 -0700 (PDT)
+Received: from google.com ([95.148.6.175])
+        by smtp.gmail.com with ESMTPSA id e5sm10387986wrd.1.2021.10.12.03.56.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 03:56:48 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 11:56:46 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, Ryan Barnett <ryan.barnett@collins.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v5] mfd: ti_am335x_tscadc: Add ADC1/magnetic reader
+ support
+Message-ID: <YWVp7pftLsmm40zZ@google.com>
+References: <20211004155319.1507652-1-miquel.raynal@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211004155319.1507652-1-miquel.raynal@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a noise issue for 8kHz sample rate on slave mode.
-Compared with master mode, the difference is the DACDIV
-setting, after correcting the DACDIV, the noise is gone.
+On Mon, 04 Oct 2021, Miquel Raynal wrote:
 
-There is no noise issue for 48kHz sample rate, because
-the default value of DACDIV is correct for 48kHz.
+> Introduce a new compatible that has another set of driver data,
+> targeting am437x SoCs with a magnetic reader instead of the
+> touchscreen and a more featureful set of registers.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> ---
+> 
+> Changes in v5:
+> * Let the 48 v4 patch series aside, while only resending this patch that
+>   triggered a robot warning. Use the use_mag boolean instead of sticking
+>   to tscmag_wires which was not optimal anyway, silencing the 'not used'
+>   warning while keeping the code simple and clear.
+> 
+> 
+>  drivers/mfd/ti_am335x_tscadc.c       | 37 ++++++++++++++++++++++------
+>  include/linux/mfd/ti_am335x_tscadc.h |  6 +++++
+>  2 files changed, 36 insertions(+), 7 deletions(-)
 
-So wm8960_configure_clocking() should be functional for
-ADC and DAC function even if it is slave mode.
+Okay, so I've been battling with this set for a while.  I've finally
+managed to figure out how to apply the whole set including this
+straggler, but Patch 10 is not applying to my tree.  Could you please
+rebase and resend the whole set with this one included please?
 
-In order to be compatible for old use case, just add
-condition for checking that sysclk is zero with
-slave mode.
-
-Fixes: 0e50b51aa22f ("ASoC: wm8960: Let wm8960 driver configure its bit clock and frame clock")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/wm8960.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 9e621a254392..9c6af76a60fd 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -742,7 +742,7 @@ static int wm8960_configure_clocking(struct snd_soc_component *component)
- 	int i, j, k;
- 	int ret;
- 
--	if (!(iface1 & (1<<6))) {
-+	if (!(iface1 & (1 << 6)) && !wm8960->sysclk) {
- 		dev_dbg(component->dev,
- 			"Codec is slave mode, no need to configure clock\n");
- 		return 0;
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
