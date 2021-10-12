@@ -2,70 +2,446 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAE7429B95
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207C3429B9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhJLCoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 22:44:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231742AbhJLCoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 22:44:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED16860295;
-        Tue, 12 Oct 2021 02:42:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634006526;
-        bh=eDyrZDG1jUlDOn/b9aiQ8V81XA+O3akwZLY+saZGUko=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kjtrClA06mEeMugwfVFxqxIb+lpmpL1K51FzZZ6Hf6/I7J0K/pZYM6OFwkt6YHFg9
-         xr8qZUxIt8BkPsVmv21dEvXY2XgkfWbBe+8tIlOmwOUq4b98NBsGBrr9LJ24xMF+9m
-         uw9CKk1f7bPsHsY+p0hImPm0X0piuRWoq/1WQ+NKPqmoZUq4292oDS7St9uctzwdtX
-         LchJF4nH9sgnd8Vg98oQo0phMq35Lrh96jKmhA7o+TpyD/PKb1k3+aKe1RyJ2N8g4f
-         UIFQCyFtc2UOFAbKVo1loT1vNMbFyWDlmT7uSecOuFYgahiDMVM1JBHyXyyH8tZJ2Q
-         iUdHP9rqPzv9A==
-Date:   Mon, 11 Oct 2021 21:46:24 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] staging: r8188eu: Use zeroing allocator in
- wpa_set_encryption()
-Message-ID: <20211012024624.GA1062447@embeddedor>
+        id S231775AbhJLCtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 22:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231682AbhJLCtB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 22:49:01 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BB0C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 19:47:01 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id w10-20020a056830280a00b0054e4e6c85a6so15068349otu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 19:47:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9joI6JDHuBK1+NM6CtSLlOqed391Z9ZIOMHBaaKusFA=;
+        b=OCzzTPlji4T3XPnBk31wN+o/mhzpRvgRRljxJ+OfPvwPKg1dMEqZ7S8qJtCd+wwXRh
+         lWJn4/z7IZRBlt6x6STdoEIP6+w/iIDzBPy5tsPbzk7M7uyjrF/pJr9Hj+xIZ2U/28zx
+         iUb6cKJRQ/z4sB8FfeAa0bzZ+NpSzm+39SJgUIFsesG04rx3sjPxKDqxG2NkAcajUd/I
+         pDkyAF5HD93HYHxGRbrgAdLncA2+0q0rFWXxSyVpBCPfTrUvQypOiemLsetKp198XGRc
+         AE3BMVkZsB9NaHHhKmXHtliEYBpB6C+/8sPDgrhW7eb5HqL1oeC/Ns0FpLaXcZuqA80E
+         r13A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9joI6JDHuBK1+NM6CtSLlOqed391Z9ZIOMHBaaKusFA=;
+        b=paR7+j+IW01fHWR4IlFmoUU5wD/C1rqrGHxmQAFWvvykt6p0GBTwcKyG6ont4iekXU
+         82OorVK79AZmWcM6wPxLxyoCILD0+CmWSWC9WRo50YwDAVk0xqc9HTGNS8vMGgaT/I2B
+         VgJyeSknaAjzMgHhk71vCcFLp6RY9VAowr/gAeH//45yENsWUm8twXP6RTsAOVfFLQzz
+         4mpZt5jrfBflwWIfEaYDwnN3aaSFAyavWszR4mHOCUHduou1tk6M9YzKgA1V03wqCqX7
+         g4lmMsYFv63FW95cKKwD4jxSgljuMwbcgVhjiwD4a8Dmu4L64CV4BJFgPbJ/VNgMyeaR
+         myrg==
+X-Gm-Message-State: AOAM531Qzj3qIWwxxcW7xZMG9WeWNDWnGToOF8hmlsOcPLEZiBUPBghE
+        v/eP10kLrkIEx0DkP3BuyE32og==
+X-Google-Smtp-Source: ABdhPJzLvdDZiiG0IG1e/jpOdujT5p70twKJpudN9+1bKkCidEQuilkMLuzxpYixDt+uCOQoR5ObjA==
+X-Received: by 2002:a05:6830:2372:: with SMTP id r18mr17270123oth.179.1634006820178;
+        Mon, 11 Oct 2021 19:47:00 -0700 (PDT)
+Received: from yoga ([2600:1700:a0:3dc8:c84c:8eff:fe1e:256f])
+        by smtp.gmail.com with ESMTPSA id n17sm2058459oic.21.2021.10.11.19.46.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 19:46:59 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 21:46:57 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Kuogee Hsieh <khsieh@codeaurora.org>
+Cc:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@linux.ie,
+        agross@kernel.org, dmitry.baryshkov@linaro.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dp: do not initialize combo phy until plugin
+ interrupt
+Message-ID: <YWT3IQz38zyebljD@yoga>
+References: <1633535966-21005-1-git-send-email-khsieh@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1633535966-21005-1-git-send-email-khsieh@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use zeroing allocator rather than allocator followed by memset with 0.
+On Wed 06 Oct 10:59 CDT 2021, Kuogee Hsieh wrote:
 
-This issue was detected with the help of Coccinelle.
+> Combo phy support both USB3 and DP simultaneously. USB3 is the
+> master of combo phy so that USB3 should initialize and power on
+> its phy before DP initialize its phy. At current implementation,
+> DP driver initialize its phy happen earlier than  USB3 initialize
+> its phy which cause timeout error at procedure of power up USB3 phy
+> which prevent USB3 from working.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/staging/r8188eu/os_dep/ioctl_linux.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+To me this is a problem with the QMP phy driver and shouldn't be hacked
+around in the DP driver.
 
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index e8fadbfcb3a9..8a125c869c27 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -419,11 +419,10 @@ static int wpa_set_encryption(struct net_device *dev, struct ieee_param *param,
- 		if (wep_key_len > 0) {
- 			wep_key_len = wep_key_len <= 5 ? 5 : 13;
- 			wep_total_len = wep_key_len + FIELD_OFFSET(struct ndis_802_11_wep, KeyMaterial);
--			pwep = kmalloc(wep_total_len, GFP_KERNEL);
-+			pwep = kzalloc(wep_total_len, GFP_KERNEL);
- 			if (!pwep)
- 				goto exit;
- 
--			memset(pwep, 0, wep_total_len);
- 			pwep->KeyLength = wep_key_len;
- 			pwep->Length = wep_total_len;
- 			if (wep_key_len == 13) {
--- 
-2.27.0
+In particular if we're taking this route, this should clearly state what
+the actual problem in the QMP phy is and why it's impossible to solve
+this without hacking around in the DP driver.
 
+> To avoid confliction of phy
+> initialization between USB3 and DP, this patch have DP driver postpone
+> phy initialization until plugin interrupt handler. DP driver only enable
+> regulator, configure its HPD controller and enable interrupt so that it
+> is able to receive HPD interrupts after completion of the initialization
+> phase. DP driver will initialize and power up phy at plugin interrupt
+> handler during normal operation so that both USB3 and DP are work
+> simultaneously.
+> 
+
+What happens if I get a HPD before the USB driver probes?
+
+Regards,
+Bjorn
+
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 68 ++++++++++++++++++++++---------------
+>  drivers/gpu/drm/msm/dp/dp_ctrl.h    |  9 +++--
+>  drivers/gpu/drm/msm/dp/dp_display.c | 51 +++++++++++++++++++++-------
+>  3 files changed, 84 insertions(+), 44 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> index 5551a8d..4c5d507 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> @@ -1378,7 +1378,25 @@ static int dp_ctrl_enable_stream_clocks(struct dp_ctrl_private *ctrl)
+>  	return ret;
+>  }
+>  
+> -int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
+> +void dp_ctrl_irq_enable(struct dp_ctrl *dp_ctrl, bool flip)
+> +{
+> +	struct dp_ctrl_private *ctrl;
+> +
+> +	if (!dp_ctrl) {
+> +		DRM_ERROR("Invalid input data\n");
+> +		return;
+> +	}
+> +
+> +	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+> +
+> +	ctrl->dp_ctrl.orientation = flip;
+> +
+> +	dp_catalog_ctrl_reset(ctrl->catalog);
+> +
+> +	dp_catalog_ctrl_enable_irq(ctrl->catalog, true);
+> +}
+> +
+> +void dp_ctrl_phy_init(struct dp_ctrl *dp_ctrl)
+>  {
+>  	struct dp_ctrl_private *ctrl;
+>  	struct dp_io *dp_io;
+> @@ -1386,33 +1404,44 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset)
+>  
+>  	if (!dp_ctrl) {
+>  		DRM_ERROR("Invalid input data\n");
+> -		return -EINVAL;
+> +		return;
+>  	}
+>  
+>  	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+>  	dp_io = &ctrl->parser->io;
+>  	phy = dp_io->phy;
+>  
+> -	ctrl->dp_ctrl.orientation = flip;
+> -
+> -	if (reset)
+> -		dp_catalog_ctrl_reset(ctrl->catalog);
+> -
+>  	dp_catalog_ctrl_phy_reset(ctrl->catalog);
+>  	phy_init(phy);
+> -	dp_catalog_ctrl_enable_irq(ctrl->catalog, true);
+> +}
+>  
+> -	return 0;
+> +void dp_ctrl_phy_exit(struct dp_ctrl *dp_ctrl)
+> +{
+> +	struct dp_ctrl_private *ctrl;
+> +	struct dp_io *dp_io;
+> +	struct phy *phy;
+> +
+> +	if (!dp_ctrl) {
+> +		DRM_ERROR("Invalid input data\n");
+> +		return;
+> +	}
+> +
+> +	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+> +	dp_io = &ctrl->parser->io;
+> +	phy = dp_io->phy;
+> +
+> +	dp_catalog_ctrl_phy_reset(ctrl->catalog);
+> +	phy_exit(phy);
+>  }
+>  
+>  /**
+> - * dp_ctrl_host_deinit() - Uninitialize DP controller
+> + * dp_ctrl_irq_phy_exit() - disable dp irq and exit phy
+>   * @dp_ctrl: Display Port Driver data
+>   *
+>   * Perform required steps to uninitialize DP controller
+>   * and its resources.
+>   */
+> -void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
+> +void dp_ctrl_irq_phy_exit(struct dp_ctrl *dp_ctrl)
+>  {
+>  	struct dp_ctrl_private *ctrl;
+>  	struct dp_io *dp_io;
+> @@ -1866,23 +1895,6 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
+>  	return ret;
+>  }
+>  
+> -void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl)
+> -{
+> -	struct dp_ctrl_private *ctrl;
+> -	struct dp_io *dp_io;
+> -	struct phy *phy;
+> -
+> -	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
+> -	dp_io = &ctrl->parser->io;
+> -	phy = dp_io->phy;
+> -
+> -	dp_catalog_ctrl_reset(ctrl->catalog);
+> -
+> -	phy_exit(phy);
+> -
+> -	DRM_DEBUG_DP("DP off phy done\n");
+> -}
+> -
+>  int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
+>  {
+>  	struct dp_ctrl_private *ctrl;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+> index 2363a2d..c1e4b1b 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+> @@ -19,12 +19,9 @@ struct dp_ctrl {
+>  	u32 pixel_rate;
+>  };
+>  
+> -int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
+> -void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
+>  int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
+>  int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
+>  int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
+> -void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl);
+>  int dp_ctrl_off(struct dp_ctrl *dp_ctrl);
+>  void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl);
+>  void dp_ctrl_isr(struct dp_ctrl *dp_ctrl);
+> @@ -34,4 +31,10 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, struct dp_link *link,
+>  			struct dp_power *power, struct dp_catalog *catalog,
+>  			struct dp_parser *parser);
+>  
+> +void dp_ctrl_irq_enable(struct dp_ctrl *dp_ctrl, bool flip);
+> +void dp_ctrl_irq_disable(struct dp_ctrl *dp_ctrl);
+> +void dp_ctrl_phy_init(struct dp_ctrl *dp_ctrl);
+> +void dp_ctrl_phy_exit(struct dp_ctrl *dp_ctrl);
+> +void dp_ctrl_irq_phy_exit(struct dp_ctrl *dp_ctrl);
+> +
+>  #endif /* _DP_CTRL_H_ */
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index cad25dd..44032ae 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -62,6 +62,11 @@ enum {
+>  	EV_DISCONNECT_PENDING_TIMEOUT,
+>  };
+>  
+> +enum {
+> +	TYPE_eDP = 1,
+> +	TYPE_DP,
+> +};
+> +
+>  #define EVENT_TIMEOUT	(HZ/10)	/* 100ms */
+>  #define DP_EVENT_Q_MAX	8
+>  
+> @@ -81,6 +86,7 @@ struct dp_display_private {
+>  	int irq;
+>  
+>  	int id;
+> +	int type;
+>  
+>  	/* state variables */
+>  	bool core_initialized;
+> @@ -121,31 +127,37 @@ struct dp_display_private {
+>  
+>  struct msm_dp_config { 
+>  	phys_addr_t io_start[3];
+> +	int type;
+>  	size_t num_dp;
+>  };
+>  
+>  static const struct msm_dp_config sc7180_dp_cfg = {
+>  	.io_start = { 0x0ae90000 },
+> +	.type = TYPE_DP,
+>  	.num_dp = 1,
+>  };
+>  
+>  static const struct msm_dp_config sc8180x_dp_cfg = {
+>  	.io_start = { 0xae90000, 0xae98000, 0 },
+> +	.type = TYPE_DP,
+>  	.num_dp = 3,
+>  };
+>  
+>  static const struct msm_dp_config sc8180x_edp_cfg = {
+>  	.io_start = { 0, 0, 0xae9a000 },
+>  	.num_dp = 3,
+> +	.type = TYPE_eDP,
+>  };
+>  
+>  static const struct msm_dp_config sc7280_edp_cfg = {
+>  	.io_start = { 0xaea0000, 0 },
+> +	.type = TYPE_eDP,
+>  	.num_dp = 2,
+>  };
+>  
+>  static const struct msm_dp_config sc7280_dp_cfg = { 
+>  	.io_start = { 0, 0xae90000 },
+> +	.type = TYPE_DP,
+>  	.num_dp = 2,
+>  };
+>  
+> @@ -392,7 +404,7 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+>  	return rc;
+>  }
+>  
+> -static void dp_display_host_init(struct dp_display_private *dp, int reset)
+> +static void dp_display_host_init(struct dp_display_private *dp)
+>  {
+>  	bool flip = false;
+>  
+> @@ -404,12 +416,21 @@ static void dp_display_host_init(struct dp_display_private *dp, int reset)
+>  	if (dp->usbpd->orientation == ORIENTATION_CC2)
+>  		flip = true;
+>  
+> -	dp_power_init(dp->power, flip);
+> -	dp_ctrl_host_init(dp->ctrl, flip, reset);
+> +	dp_power_init(dp->power, false);
+> +	dp_ctrl_irq_enable(dp->ctrl, flip);
+> +
+> +	if (dp->type == TYPE_eDP)
+> +		dp_ctrl_phy_init(dp->ctrl);
+> +
+>  	dp_aux_init(dp->aux);
+>  	dp->core_initialized = true;
+>  }
+>  
+> +static void dp_display_host_phy_init(struct dp_display_private *dp)
+> +{
+> +	dp_ctrl_phy_init(dp->ctrl);
+> +}
+> +
+>  static void dp_display_host_deinit(struct dp_display_private *dp)
+>  {
+>  	if (!dp->core_initialized) {
+> @@ -417,7 +438,7 @@ static void dp_display_host_deinit(struct dp_display_private *dp)
+>  		return;
+>  	}
+>  
+> -	dp_ctrl_host_deinit(dp->ctrl);
+> +	dp_ctrl_irq_phy_exit(dp->ctrl);
+>  	dp_aux_deinit(dp->aux);
+>  	dp_power_deinit(dp->power);
+>  
+> @@ -435,7 +456,7 @@ static int dp_display_usbpd_configure_cb(struct device *dev)
+>  		goto end;
+>  	}
+>  
+> -	dp_display_host_init(dp, false);
+> +	dp_display_host_phy_init(dp);
+>  
+>  	rc = dp_display_process_hpd_high(dp);
+>  end:
+> @@ -646,9 +667,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+>  	if (state == ST_DISCONNECTED) {
+>  		/* triggered by irq_hdp with sink_count = 0 */
+>  		if (dp->link->sink_count == 0) {
+> -			dp_ctrl_off_phy(dp->ctrl);
+> +			dp_ctrl_phy_exit(dp->ctrl);
+>  			hpd->hpd_high = 0;
+> -			dp->core_initialized = false;
+>  		}
+>  		mutex_unlock(&dp->event_mutex);
+>  		return 0;
+> @@ -1040,7 +1060,7 @@ int dp_display_get_test_bpp(struct msm_dp *dp)
+>  static void dp_display_config_hpd(struct dp_display_private *dp)
+>  {
+>  
+> -	dp_display_host_init(dp, true);
+> +	dp_display_host_init(dp);
+>  	dp_catalog_ctrl_hpd_config(dp->catalog);
+>  
+>  	/* Enable interrupt first time
+> @@ -1222,7 +1242,8 @@ int dp_display_request_irq(struct msm_dp *dp_display)
+>  	return 0;
+>  }
+>  
+> -static int dp_display_get_id(struct platform_device *pdev)
+> +static int dp_display_get_id(struct platform_device *pdev,
+> +				struct msm_dp_config *dp_cfg)
+>  {
+>  	const struct msm_dp_config *cfg = of_device_get_match_data(&pdev->dev);
+>  	struct resource *res;
+> @@ -1234,8 +1255,10 @@ static int dp_display_get_id(struct platform_device *pdev)
+>  		return -EINVAL;
+>  
+>  	for (i = 0; i < cfg->num_dp; i++) {
+> -		if (cfg->io_start[i] == res->start)
+> +		if (cfg->io_start[i] == res->start) {
+> +			*dp_cfg = *cfg;
+>  			return i;
+> +		}
+>  	}
+>  
+>  	dev_err(&pdev->dev, "unknown displayport instance\n");
+> @@ -1246,6 +1269,7 @@ static int dp_display_probe(struct platform_device *pdev)
+>  {
+>  	int rc = 0;
+>  	struct dp_display_private *dp;
+> +	struct msm_dp_config dp_cfg;
+>  
+>  	if (!pdev || !pdev->dev.of_node) {
+>  		DRM_ERROR("pdev not found\n");
+> @@ -1256,12 +1280,13 @@ static int dp_display_probe(struct platform_device *pdev)
+>  	if (!dp)
+>  		return -ENOMEM;
+>  
+> -	dp->id = dp_display_get_id(pdev);
+> +	dp->id = dp_display_get_id(pdev, &dp_cfg);
+>  	if (dp->id < 0)
+>  		return -EINVAL;
+>  
+>  	dp->pdev = pdev;
+>  	dp->name = "drm_dp";
+> +	dp->type = dp_cfg.type;
+>  
+>  	rc = dp_init_sub_modules(dp);
+>  	if (rc) {
+> @@ -1314,7 +1339,7 @@ static int dp_pm_resume(struct device *dev)
+>  	dp->hpd_state = ST_DISCONNECTED;
+>  
+>  	/* turn on dp ctrl/phy */
+> -	dp_display_host_init(dp, true);
+> +	dp_display_host_init(dp);
+>  
+>  	dp_catalog_ctrl_hpd_config(dp->catalog);
+>  
+> @@ -1531,7 +1556,7 @@ int msm_dp_display_enable(struct msm_drm_private *priv, struct drm_encoder *enco
+>  	state =  dp_display->hpd_state;
+>  
+>  	if (state == ST_DISPLAY_OFF)
+> -		dp_display_host_init(dp_display, true);
+> +		dp_display_host_phy_init(dp_display);
+>  
+>  	dp_display_enable(dp_display, 0);
+>  
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
