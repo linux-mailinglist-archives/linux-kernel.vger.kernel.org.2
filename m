@@ -2,196 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F094429ACF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89D5429AD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbhJLBMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:12:07 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:34539 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234181AbhJLBMG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:12:06 -0400
-Received: by mail-ot1-f53.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so23943787otb.1;
-        Mon, 11 Oct 2021 18:10:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BHu3CTNJcW0DF5BNGHVDrnCULEBWgL3rBnbu71YErj0=;
-        b=oP8+Vnuy2Qql5QtEAnwCBTqHXzM4YxL+KbETs+yHU/I9j202seqGxVY2AaxgSSNpeX
-         gG0ppHpOffYjYtLVwQ5gogrXBpxXUfd7l2ZCD9iqbHCacKtvXvX1HvfeCcPxURNBF22q
-         bu3JGkALhXd1Cjn8n5r0PZEd3ExqKdiKc+sbFx4MVV8Lz0iTHkC0wZPQRa6JjDo6fKqQ
-         r2bsU/TR8dQA0+/TKoPlXjV3RE2EIhTrLzcvDpe6lhYwlAkhDLt6RQ11VU/bp3PnM+oV
-         sGhZvR/7CC92sOyCFSAqhHMgsDNpKkOINIb6PoBtqi6W6sUo9FydvuQCgjWVY6Xm2UaA
-         /lwA==
-X-Gm-Message-State: AOAM532jtWgBhZoPyroXmvXykhkrcFlp8fslMm1951X9w3/EkzT4lsYe
-        1ZSgwkT6MEQWsmxD19mbYQ==
-X-Google-Smtp-Source: ABdhPJxO2NBWb5MDE8WhIKRdZ0dLfwhGnsFavfLIfI3dUuhOiwT1yihMphEvXIvtJSRbEL1vlHbnyQ==
-X-Received: by 2002:a05:6830:351:: with SMTP id h17mr2967815ote.31.1634001005002;
-        Mon, 11 Oct 2021 18:10:05 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id e7sm1031364otq.4.2021.10.11.18.10.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 18:10:04 -0700 (PDT)
-Received: (nullmailer pid 1519116 invoked by uid 1000);
-        Tue, 12 Oct 2021 01:10:03 -0000
-Date:   Mon, 11 Oct 2021 20:10:03 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] dt-bindings: arm: sunxi: Expand MBUS binding
-Message-ID: <YWTga7XwvWAXoluU@robh.at.kernel.org>
-References: <20211004012739.39053-1-samuel@sholland.org>
- <20211004012739.39053-3-samuel@sholland.org>
+        id S234592AbhJLBNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:13:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234475AbhJLBNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 21:13:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6562360F21;
+        Tue, 12 Oct 2021 01:11:07 +0000 (UTC)
+Date:   Mon, 11 Oct 2021 21:11:05 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Yordan Karadzhov <y.karadz@gmail.com>
+Subject: [PATCH] tracing: Fix event probe removal from dynamic events
+Message-ID: <20211011211105.48b6a5fd@oasis.local.home>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004012739.39053-3-samuel@sholland.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 08:27:35PM -0500, Samuel Holland wrote:
-> The MBUS provides more than address translation and bandwidth control.
-> It also provides a PMU to measure bandwidth usage by certain masters,
-> and it provides notification via IRQ when they are active or idle.
-> 
-> The MBUS is also tightly integrated with the DRAM controller to provide
-> a Memory Dynamic Frequency Scaling (MDFS) feature. In view of this, the
-> MBUS binding needs to represent the hardware resources needed for MDFS,
-> which include the clocks and MMIO range of the adjacent DRAM controller.
-> 
-> Add the additional resources for the H3 and A64 compatibles, and a new
-> example showing how they are used.
-> 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  .../arm/sunxi/allwinner,sun4i-a10-mbus.yaml   | 75 ++++++++++++++++++-
->  1 file changed, 72 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/sunxi/allwinner,sun4i-a10-mbus.yaml b/Documentation/devicetree/bindings/arm/sunxi/allwinner,sun4i-a10-mbus.yaml
-> index e713a6fe4cf7..c1fb404d2fb3 100644
-> --- a/Documentation/devicetree/bindings/arm/sunxi/allwinner,sun4i-a10-mbus.yaml
-> +++ b/Documentation/devicetree/bindings/arm/sunxi/allwinner,sun4i-a10-mbus.yaml
-> @@ -33,10 +33,33 @@ properties:
->        - allwinner,sun50i-a64-mbus
->  
->    reg:
-> -    maxItems: 1
-> +    minItems: 1
-> +    items:
-> +      - description: MBUS interconnect/bandwidth/PMU registers
-> +      - description: DRAM controller/PHY registers
-> +
-> +  reg-names:
-> +    items:
-> +      - const: "mbus"
-> +      - const: "dram"
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Don't need quotes.
+When an event probe is to be removed via the API to remove dynamic events,
+an -EBUSY error is returned.
 
-Is it your intention that reg-names has to have 2 entries. Usually we 
-aren't that strict and 1 would be allowed (when reg has 1).
+This is because the removal of the event probe does not expect to see the
+event system and name that the event probe is attached to, even though
+that's part of the API to create it. As the removal of probes is to use
+the same API as they are created, fix it by first testing if the first
+parameter of the event probe to be removed matches the system and event
+that the probe is attached to, and then adjust the argc and argv of the
+parameters to match the rest of the syntax.
 
->  
->    clocks:
-> +    minItems: 1
-> +    items:
-> +      - description: MBUS interconnect module clock
-> +      - description: DRAM controller/PHY module clock
-> +      - description: Register bus clock, shared by MBUS and DRAM
-> +
-> +  clock-names:
-> +    items:
-> +      - const: "mbus"
-> +      - const: "dram"
-> +      - const: "bus"
-> +
-> +  interrupts:
->      maxItems: 1
-> +    description:
-> +      MBUS PMU activity interrupt.
->  
->    dma-ranges:
->      description:
-> @@ -53,13 +76,42 @@ required:
->    - clocks
->    - dma-ranges
->  
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - allwinner,sun8i-h3-mbus
-> +          - allwinner,sun50i-a64-mbus
-> +
-> +then:
-> +  properties:
-> +    reg:
-> +      minItems: 2
-> +
-> +    clocks:
-> +      minItems: 3
-> +
-> +  required:
-> +    - reg-names
-> +    - clock-names
-> +
-> +else:
-> +  properties:
-> +    reg:
-> +      maxItems: 1
-> +
-> +    clocks:
-> +      maxItems: 1
-> +
->  additionalProperties: false
->  
->  examples:
->    - |
-> -    #include <dt-bindings/clock/sun5i-ccu.h>
-> +    #include <dt-bindings/clock/sun50i-a64-ccu.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->  
-> -    mbus: dram-controller@1c01000 {
-> +    dram-controller@1c01000 {
->          compatible = "allwinner,sun5i-a13-mbus";
->          reg = <0x01c01000 0x1000>;
->          clocks = <&ccu CLK_MBUS>;
-> @@ -69,4 +121,21 @@ examples:
->          #interconnect-cells = <1>;
->      };
->  
-> +  - |
-> +    dram-controller@1c62000 {
-> +        compatible = "allwinner,sun50i-a64-mbus";
-> +        reg = <0x01c62000 0x1000>,
-> +              <0x01c63000 0x1000>;
-> +        reg-names = "mbus", "dram";
-> +        clocks = <&ccu CLK_MBUS>,
-> +                 <&ccu CLK_DRAM>,
-> +                 <&ccu CLK_BUS_DRAM>;
-> +        clock-names = "mbus", "dram", "bus";
-> +        interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        dma-ranges = <0x00000000 0x40000000 0xc0000000>;
-> +        #interconnect-cells = <1>;
-> +    };
-> +
->  ...
-> -- 
-> 2.32.0
-> 
-> 
+Fixes: 7491e2c442781 ("tracing: Add a probe that attaches to trace events")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_eprobe.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
+index 3044b762cbd7..20ee265f01fd 100644
+--- a/kernel/trace/trace_eprobe.c
++++ b/kernel/trace/trace_eprobe.c
+@@ -120,6 +120,25 @@ static bool eprobe_dyn_event_match(const char *system, const char *event,
+ {
+ 	struct trace_eprobe *ep = to_trace_eprobe(ev);
+ 
++	/* First argument is the system/event the probe is attached to */
++
++	if (argc < 1)
++		return false;
++
++	slash = strchr(argv[0], '/');
++	if (!slash)
++		slash = strchr(argv[0], '.');
++	if (!slash)
++		return false;
++
++	if (strncmp(ep->event_system, argv[0], slash - argv[0]))
++		return false;
++	if (strcmp(ep->event_name, slash + 1))
++		return false;
++
++	argc--;
++	argv++;
++
+ 	return strcmp(trace_probe_name(&ep->tp), event) == 0 &&
+ 	    (!system || strcmp(trace_probe_group_name(&ep->tp), system) == 0) &&
+ 	    trace_probe_match_command_args(&ep->tp, argc, argv);
+-- 
+2.31.1
+
