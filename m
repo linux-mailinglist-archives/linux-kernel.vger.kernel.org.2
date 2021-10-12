@@ -2,126 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3791542A28E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2AA42A292
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236117AbhJLKp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:45:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236114AbhJLKpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:45:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D88E60E53;
-        Tue, 12 Oct 2021 10:43:22 +0000 (UTC)
-Date:   Tue, 12 Oct 2021 12:43:19 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Jones <davej@codemonkey.org.uk>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: Should EXIT_DEAD be visible to userspace ?
-Message-ID: <20211012104319.il5g3vkooh5qmsmd@wittgenstein>
-References: <20211011194016.GA16788@codemonkey.org.uk>
- <CAHk-=wgx6VQW192hbUiZABmkmZjNDynH75OR=-wvg=un960nRA@mail.gmail.com>
+        id S236069AbhJLKqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235881AbhJLKqP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:46:15 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4022CC061570;
+        Tue, 12 Oct 2021 03:44:14 -0700 (PDT)
+Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8AC8DF1;
+        Tue, 12 Oct 2021 12:44:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634035451;
+        bh=I3o+eF6qMXWtqB1e0jLelJZ+Ll1+7ojcRN226D7ZWqY=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
+        b=vgMqgLWqtMYuAGlej861F2L/7i5YKd2/RB0a7D533FRij0STGT6ZKdAZTmeg0xRZJ
+         IZyS28/hD8heIYhD8S1rUleyp8FEovrsxK4V86Abk9b3GD2g8L/EHTo1Q/kRvQZRf3
+         enwaM9vfr5eS2mB6PVHBxRJNcOpBVadZKWuULQPk=
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, khilman@baylibre.com,
+        Benoit Parrot <bparrot@ti.com>
+References: <20210923070701.145377-1-narmstrong@baylibre.com>
+ <20210923070701.145377-6-narmstrong@baylibre.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH v5 5/8] drm/omap: Add global state as a private atomic
+ object
+Message-ID: <2609ca32-90e8-1335-2769-14dcbcdfafde@ideasonboard.com>
+Date:   Tue, 12 Oct 2021 13:44:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgx6VQW192hbUiZABmkmZjNDynH75OR=-wvg=un960nRA@mail.gmail.com>
+In-Reply-To: <20210923070701.145377-6-narmstrong@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 01:33:21PM -0700, Linus Torvalds wrote:
-> On Mon, Oct 11, 2021 at 12:40 PM Dave Jones <davej@codemonkey.org.uk> wrote:
-> >
-> > One of our users reported a crash in some userspace tooling this
-> > morning, which scrapes /proc/pid to gather stack traces, process states
-> > etc of everything running at the time.
-> >
-> > The crash occurred because it fell over an unexpected task state,
-> > which was 'X'.   According to the procps man-pages, this state should
-> > never be seen, but here it clearly was.
+On 23/09/2021 10:06, Neil Armstrong wrote:
+> From: Benoit Parrot <bparrot@ti.com>
 > 
-> Heh.
+> Global shared resources (like hw overlays) for omapdrm are implemented
+> as a part of atomic state using the drm_private_obj infrastructure
+> available in the atomic core.
 > 
-> > The kernel running at the time was kinda old (5.2) but I don't see much
-> > change in the EXIT_DEAD space that would explain something that got
-> > fixed subsequently.   It's also probably going to be difficult to
-> > reproduce unfortunately.
-> >
-> > So my question is, is procps wrong and code should expect to see X state
-> > processes in proc ?  The code in question is being hardened to handle
-> > unexpected inputs, but I'm curious if the kernel is leaking some state
-> > that it shouldn't.
+> omap_global_state is introduced as a drm atomic private object. The two
+> funcs omap_get_global_state() and omap_get_existing_global_state() are
+> the two variants that will be used to access omap_global_state.
 > 
-> My gut feel is that the man-pages have clearly been wrong - or at
-> least misleading - for at least the last couple of years (and possibly
-> longer), and this is the first report we've ever had of it actually
-> causing problems.
-> 
-> The docs *do* mention 'X'. Even if they say 'should never be seen',
-> it's not like it's not right there.
-> 
-> So we could either ask to just have the man-pages fixed to be a little
-> less strongly worded ("never" -> "seldom" or whatever). And apparently
-> procps is already getting fixed.
-> 
-> Or we could hide the 'X' state in newer kernels, and just call them
-> zombies to user space. We could literally just change the string from
-> "X (dead)" to "Z (dead)" and the "dead" part would still be there (and
-> different from "Z (zombie)").
-> 
-> And either way, it's likely not going to be something that people will
-> notice ever again. You update your system, and you wouldn't see the
-> problem, because whether the kernel was changed or not, procps was
-> updated.
-> 
-> And if the argument is that people didn't update procps, but *did*
-> update the kernel, then sure, that could avoid somebody hitting this
-> again, but that's where the "at least a couple of years and nobody has
-> noticed before" comes in.
-> 
-> So I can certainly take a patch that hides 'X', and we can even mark
-> it for stable.
-> 
-> But it feels like realistically nobody will actually care, and the
-> real fix is the one to procps, and that fix will make any kernel
-> change irrelevant (and possibly even a slight negative, since now
-> procps might report interesting cases?).
-> 
-> End result: if somebody cares enough and sends me a tested patch, I'll
-> apply it. But I personally wouldn't care much, and wouldn't push for
-> it unless we get somebody who does.
-> 
-> And I really think that "should never be seen" in the docs is just wrong.
-> 
-> Yes, we hold the task lock in task_state() when you look at
-> /proc/<pid>/status. So maybe it will never be seen there, because
-> maybe (I didn't check) we move from X->Z while holding the lock.
-> 
-> But other parts of /proc don't actually do that lock_task(), I think.
-> IOW, looking at /proc/<pid>/stat (which shows just the first letter of
-> the state), doesn't do that, I think. So it's not actually serialized
-> with the process going through its dying moments.
-> 
-> So I _think_ the "never" was always just "almost never".
-> 
-> In fact, take a look at commit ad86622b478e ("wait: swap EXIT_ZOMBIE
-> and EXIT_DEAD to hide EXIT_TRACE from user-space"). That 'X' has been
-> seen before. It's not great when it happens, but I think this is an
-> example of "the 'never' has never been true, and goes back to at least
-> 2014".
-> 
-> .. and that 2014 was just when we happened on it before. The actual
-> issue of 'X' showing up looks like it probably predates it (and likely
-> goes back to before git history).
-> 
-> So I suspect that stray 'X' is not actually a regression. Just rare
-> enough to be _almost_ "never".
+> drm_mode_config_init() needs to be called earlier because it
+> creates/initializes the private_obj link list maintained by the atomic
+> framework. The private_obj link list has to exist prior to calling
+> drm_atomic_private_obj_init(). Similarly the cleanup handler are
+> reordered appropriately.
 
-Imho, let's
-1. update the manpage
-2. update procps
-and call it done.
+I'm not really familiar with the private object. Did you check how 
+current drivers use it? These patches are 3 years old, and things might 
+have changed around the private object.
 
-Christian
+> Signed-off-by: Benoit Parrot <bparrot@ti.com>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>   drivers/gpu/drm/omapdrm/omap_drv.c | 91 +++++++++++++++++++++++++++++-
+>   drivers/gpu/drm/omapdrm/omap_drv.h | 21 +++++++
+>   2 files changed, 109 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.c b/drivers/gpu/drm/omapdrm/omap_drv.c
+> index b994014b22e8..c7912374d393 100644
+> --- a/drivers/gpu/drm/omapdrm/omap_drv.c
+> +++ b/drivers/gpu/drm/omapdrm/omap_drv.c
+> @@ -128,6 +128,82 @@ static const struct drm_mode_config_funcs omap_mode_config_funcs = {
+>   	.atomic_commit = drm_atomic_helper_commit,
+>   };
+>   
+> +/* Global/shared object state funcs */
+> +
+> +/*
+> + * This is a helper that returns the private state currently in operation.
+> + * Note that this would return the "old_state" if called in the atomic check
+> + * path, and the "new_state" after the atomic swap has been done.
+> + */
+> +struct omap_global_state *
+> +omap_get_existing_global_state(struct omap_drm_private *priv)
+> +{
+> +	return to_omap_global_state(priv->glob_obj.state);
+> +}
+> +
+> +/*
+> + * This acquires the modeset lock set aside for global state, creates
+> + * a new duplicated private object state.
+> + */
+> +struct omap_global_state *__must_check
+> +omap_get_global_state(struct drm_atomic_state *s)
+> +{
+> +	struct omap_drm_private *priv = s->dev->dev_private;
+> +	struct drm_private_state *priv_state;
+> +
+> +	priv_state = drm_atomic_get_private_obj_state(s, &priv->glob_obj);
+> +	if (IS_ERR(priv_state))
+> +		return ERR_CAST(priv_state);
+> +
+> +	return to_omap_global_state(priv_state);
+> +}
+> +
+> +static struct drm_private_state *
+> +omap_global_duplicate_state(struct drm_private_obj *obj)
+> +{
+> +	struct omap_global_state *state;
+> +
+> +	state = kmemdup(obj->state, sizeof(*state), GFP_KERNEL);
+> +	if (!state)
+> +		return NULL;
+> +
+> +	__drm_atomic_helper_private_obj_duplicate_state(obj, &state->base);
+> +
+> +	return &state->base;
+> +}
+> +
+> +static void omap_global_destroy_state(struct drm_private_obj *obj,
+> +				      struct drm_private_state *state)
+> +{
+> +	struct omap_global_state *omap_state = to_omap_global_state(state);
+> +
+> +	kfree(omap_state);
+> +}
+> +
+> +static const struct drm_private_state_funcs omap_global_state_funcs = {
+> +	.atomic_duplicate_state = omap_global_duplicate_state,
+> +	.atomic_destroy_state = omap_global_destroy_state,
+> +};
+> +
+> +static int omap_global_obj_init(struct drm_device *dev)
+> +{
+> +	struct omap_drm_private *priv = dev->dev_private;
+> +	struct omap_global_state *state;
+> +
+> +	state = kzalloc(sizeof(*state), GFP_KERNEL);
+> +	if (!state)
+> +		return -ENOMEM;
+> +
+> +	drm_atomic_private_obj_init(dev, &priv->glob_obj, &state->base,
+> +				    &omap_global_state_funcs);
+> +	return 0;
+> +}
+> +
+> +static void omap_global_obj_fini(struct omap_drm_private *priv)
+> +{
+> +	drm_atomic_private_obj_fini(&priv->glob_obj);
+> +}
+> +
+>   static void omap_disconnect_pipelines(struct drm_device *ddev)
+>   {
+>   	struct omap_drm_private *priv = ddev->dev_private;
+> @@ -231,8 +307,6 @@ static int omap_modeset_init(struct drm_device *dev)
+>   	if (!omapdss_stack_is_ready())
+>   		return -EPROBE_DEFER;
+>   
+> -	drm_mode_config_init(dev);
+> -
+>   	ret = omap_modeset_init_properties(dev);
+>   	if (ret < 0)
+>   		return ret;
+> @@ -583,10 +657,16 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
+>   
+>   	omap_gem_init(ddev);
+>   
+> -	ret = omap_hwoverlays_init(priv);
+> +	drm_mode_config_init(ddev);
+> +
+> +	ret = omap_global_obj_init(ddev);
+>   	if (ret)
+>   		goto err_gem_deinit;
+>   
+> +	ret = omap_hwoverlays_init(priv);
+> +	if (ret)
+> +		goto err_free_priv_obj;
+> +
+>   	ret = omap_modeset_init(ddev);
+>   	if (ret) {
+>   		dev_err(priv->dev, "omap_modeset_init failed: ret=%d\n", ret);
+> @@ -624,7 +704,10 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
+>   	omap_modeset_fini(ddev);
+>   err_free_overlays:
+>   	omap_hwoverlays_destroy(priv);
+> +err_free_priv_obj:
+> +	omap_global_obj_fini(priv);
+>   err_gem_deinit:
+> +	drm_mode_config_cleanup(ddev);
+>   	omap_gem_deinit(ddev);
+>   	destroy_workqueue(priv->wq);
+>   	omap_disconnect_pipelines(ddev);
+> @@ -649,6 +732,8 @@ static void omapdrm_cleanup(struct omap_drm_private *priv)
+>   
+>   	omap_modeset_fini(ddev);
+>   	omap_hwoverlays_destroy(priv);
+> +	omap_global_obj_fini(priv);
+> +	drm_mode_config_cleanup(ddev);
+>   	omap_gem_deinit(ddev);
+>   
+>   	destroy_workqueue(priv->wq);
+> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.h b/drivers/gpu/drm/omapdrm/omap_drv.h
+> index b4d9c2062723..280cdd27bc8e 100644
+> --- a/drivers/gpu/drm/omapdrm/omap_drv.h
+> +++ b/drivers/gpu/drm/omapdrm/omap_drv.h
+> @@ -14,6 +14,7 @@
+>   #include "dss/omapdss.h"
+>   #include "dss/dss.h"
+>   
+> +#include <drm/drm_atomic.h>
+>   #include <drm/drm_gem.h>
+>   #include <drm/omap_drm.h>
+>   
+> @@ -41,6 +42,15 @@ struct omap_drm_pipeline {
+>   	unsigned int alias_id;
+>   };
+>   
+> +/*
+> + * Global private object state for tracking resources that are shared across
+> + * multiple kms objects (planes/crtcs/etc).
+> + */
+> +#define to_omap_global_state(x) container_of(x, struct omap_global_state, base)
+
+Add empty line here.
+
+> +struct omap_global_state {
+> +	struct drm_private_state base;
+> +};
+> +
+>   struct omap_drm_private {
+>   	struct drm_device *ddev;
+>   	struct device *dev;
+> @@ -61,6 +71,13 @@ struct omap_drm_private {
+>   	unsigned int num_ovls;
+>   	struct omap_hw_overlay *overlays[8];
+>   
+> +	/*
+> +	 * Global private object state, Do not access directly, use
+> +	 * omap_global_get_state()
+> +	 */
+> +	struct drm_modeset_lock glob_obj_lock;
+
+This is not used... What am I missing?
+
+> +	struct drm_private_obj glob_obj;
+> +
+>   	struct drm_fb_helper *fbdev;
+>   
+>   	struct workqueue_struct *wq;
+> @@ -88,5 +105,9 @@ struct omap_drm_private {
+>   
+>   
+>   void omap_debugfs_init(struct drm_minor *minor);
+> +struct omap_global_state *__must_check
+> +omap_get_global_state(struct drm_atomic_state *s);
+> +struct omap_global_state *
+> +omap_get_existing_global_state(struct omap_drm_private *priv);
+
+These could also be separated by empty lines. At least to my eyes it 
+gets confusing if those declarations are not separated.
+
+  Tomi
