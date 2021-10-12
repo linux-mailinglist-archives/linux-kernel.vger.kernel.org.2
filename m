@@ -2,94 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D6A42A040
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1592B42A0AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235324AbhJLItQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:49:16 -0400
-Received: from isilmar-4.linta.de ([136.243.71.142]:43408 "EHLO
-        isilmar-4.linta.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235263AbhJLItO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:49:14 -0400
-X-Greylist: delayed 392 seconds by postgrey-1.27 at vger.kernel.org; Tue, 12 Oct 2021 04:49:13 EDT
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-Received: from light.dominikbrodowski.net (brodo.linta [10.2.0.102])
-        by isilmar-4.linta.de (Postfix) with ESMTPSA id 96AB52000BB;
-        Tue, 12 Oct 2021 08:40:38 +0000 (UTC)
-Received: by light.dominikbrodowski.net (Postfix, from userid 1000)
-        id 3898A206D1; Tue, 12 Oct 2021 10:40:34 +0200 (CEST)
-Date:   Tue, 12 Oct 2021 10:40:34 +0200
-From:   Dominik Brodowski <linux@dominikbrodowski.net>
-To:     "Ivan T. Ivanov" <iivanov@suse.de>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "efi/random: Treat EFI_RNG_PROTOCOL output as
- bootloader randomness"
-Message-ID: <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
-References: <20211012082708.121931-1-iivanov@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012082708.121931-1-iivanov@suse.de>
+        id S235668AbhJLJIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:08:21 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:45362 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235343AbhJLJIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:08:11 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 753431A1D1C;
+        Tue, 12 Oct 2021 11:06:05 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3B6C91A1D11;
+        Tue, 12 Oct 2021 11:06:05 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 9B2AE183AD14;
+        Tue, 12 Oct 2021 17:06:03 +0800 (+08)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     l.stach@pengutronix.de, tharvey@gateworks.com, kishon@ti.com,
+        vkoul@kernel.org, robh@kernel.org, galak@kernel.crashing.org,
+        shawnguo@kernel.org
+Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-imx@nxp.com
+Subject: [PATCH v3 0/9] add the imx8m pcie phy driver and imx8mm pcie support
+Date:   Tue, 12 Oct 2021 16:41:09 +0800
+Message-Id: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Tue, Oct 12, 2021 at 11:27:08AM +0300 schrieb Ivan T. Ivanov:
-> This reverts commit 18b915ac6b0ac5ba7ded03156860f60a9f16df2b.
-> 
-> When CONFIG_RANDOM_TRUST_BOOTLOADER is enabled add_bootloader_randomness()
-> calls add_hwgenerator_randomness() which might sleep,
+refer to the discussion [1] when try to enable i.MX8MM PCIe support,
+one standalone PCIe PHY driver should be seperated from i.MX PCIe
+driver when enable i.MX8MM PCIe support.
 
-Wouldn't it be better to fix add_bootloader_randomness(), considering that
-calls to that function are likely to happen quite early during kernel
-initialization? Especially as it seems to have worked beforehand?
+This patch-set adds the standalone PCIe PHY driver suport[1-5], and i.MX8MM
+PCIe support[6-9] to have whole view to review this patch-set.
 
-Thanks,
-	Dominik
+The PCIe works on i.MX8MM EVK board based the the blkctrl power driver
+[2] and this PHY driver patch-set.
 
-> but this is not
-> possible during early kernel initialization. This revert fixes following
-> NULL pointer deference:
-> 
-> [    0.000000] efi: seeding entropy pool
-> [    0.000000] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-> ...
-> [    0.000000] pc : kthread_should_stop+0x2c/0x60
-> [    0.000000] lr : add_hwgenerator_randomness+0x58/0x178
-> ...
-> [    0.000000] Call trace:
-> [    0.000000]  kthread_should_stop+0x2c/0x60
-> [    0.000000]  add_bootloader_randomness+0x2c/0x38
-> [    0.000000]  efi_config_parse_tables+0x120/0x250
-> [    0.000000]  efi_init+0x138/0x1e0
-> [    0.000000]  setup_arch+0x394/0x778
-> [    0.000000]  start_kernel+0x90/0x568
-> 
-> Signed-off-by: Ivan T. Ivanov <iivanov@suse.de>
-> ---
->  drivers/firmware/efi/efi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-> index 847f33ffc4ae..8aad3c524947 100644
-> --- a/drivers/firmware/efi/efi.c
-> +++ b/drivers/firmware/efi/efi.c
-> @@ -600,7 +600,7 @@ int __init efi_config_parse_tables(const efi_config_table_t *config_tables,
->  					      sizeof(*seed) + size);
->  			if (seed != NULL) {
->  				pr_notice("seeding entropy pool\n");
-> -				add_bootloader_randomness(seed->bits, size);
-> +				add_device_randomness(seed->bits, size);
->  				early_memunmap(seed, sizeof(*seed) + size);
->  			} else {
->  				pr_err("Could not map UEFI random seed!\n");
-> -- 
-> 2.33.0
-> 
+[1] https://patchwork.ozlabs.org/project/linux-pci/patch/20210510141509.929120-3-l.stach@pengutronix.de/
+[2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210910202640.980366-1-l.stach@pengutronix.de/
+
+Main changes v2 --> v3:
+- Regarding Lucas' comments.
+ - to have a whole view to review the patches, send out the i.MX8MM PCIe support too.
+ - move the PHY related bits manipulations of the GPR/SRC to standalone PHY driver.
+ - split the dts changes to SOC and board DT, and use the enum instead of raw value.
+ - update the license of the dt-binding header file.
+
+Changes v1 --> v2:
+- Update the license of the dt-binding header file to make the license
+  compatible with dts files.
+- Fix the dt_binding_check errors.
+
+Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml    |   6 +++
+Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.yaml |  79 +++++++++++++++++++++++++++++
+arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi                |  53 ++++++++++++++++++++
+arch/arm64/boot/dts/freescale/imx8mm.dtsi                    |  46 ++++++++++++++++-
+drivers/pci/controller/dwc/pci-imx6.c                        |  63 ++++++++++++++++++++++-
+drivers/phy/freescale/Kconfig                                |   9 ++++
+drivers/phy/freescale/Makefile                               |   1 +
+drivers/phy/freescale/phy-fsl-imx8m-pcie.c                   | 218 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+include/dt-bindings/phy/phy-imx8-pcie.h                      |  14 ++++++
+9 files changed, 486 insertions(+), 3 deletions(-)
+
+[PATCH v3 1/9] dt-bindings: phy: phy-imx8-pcie: Add binding for the
+[PATCH v3 2/9] dt-bindings: phy: add imx8 pcie phy driver support
+[PATCH v3 3/9] arm64: dts: imx8mm: add the pcie phy support
+[PATCH v3 4/9] arm64: dts: imx8mm-evk: add the pcie phy support
+[PATCH v3 5/9] phy: freescale: pcie: initialize the imx8 pcie
+[PATCH v3 6/9] dt-bindings: imx6q-pcie: Add PHY phandles and name
+[PATCH v3 7/9] arm64: dts: imx8mm: add the pcie support
+[PATCH v3 8/9] arm64: dts: imx8mm-evk: add the pcie support on imx8mm
+[PATCH v3 9/9] PCI: imx: add the imx8mm pcie support
