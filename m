@@ -2,57 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8922442AAFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7E042AB02
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbhJLRow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:44:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232771AbhJLRos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:44:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E819060F3A;
-        Tue, 12 Oct 2021 17:42:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634060567;
-        bh=BA+06VWln97cmd/cHAx6KaJ8yiJBYdBzo79RKu0OPyQ=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=mEeZFJGrNTMopaU9b1Yi2/WbnWwrdq4s4stQ8Qi/kAMJkTkieQCOkA4n1Yf3l6jjy
-         tl+I00RKU4wX7MtCRakcCpK+afZPVHOUYgj5ui8iYxFvbkKbFt1BFvxuiMX/kIVHPS
-         37Va+SNexppwM5VyU5SYyxr3a21231I9+RfCJXdhzKdvNe6Uwv4Vf2uAeHN+/zv/Es
-         M32qw883xhqqOpuuCi9ikTAbUtfqOFqEtsu8r5An6mqfV+/Vh+SRb4cRsG+9svuEoI
-         bWouJjAS9tmKrVgj4kL4Qgwi02cFCi5qldFUwLuDOsBvdzBHPaKcWDGOyFJOZUqH7B
-         Rs6xepqy2QkQQ==
-Content-Type: text/plain; charset="utf-8"
+        id S230268AbhJLRpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232771AbhJLRpG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 13:45:06 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C50C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:43:04 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id c29so209819pfp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:43:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c0eaXCym61eiyhGT8GrUnwQDVzwTszJGE9WWYZbnw/I=;
+        b=WxPZdN095KQgIlI5yU5qv0kDDUbBxKJaeY7ZC60bwwjCmldsE5dJp8xBjUlh2H3f7u
+         KDcadpUVFwub2imKyC31S7f+xXPYC3o0QZayMhGwBFND9QSSkipX+sNLN90JdelYcTQV
+         icggDdPWpuMAw4t03MeCBYYi/bC9qevHqZZYs+zUb+0aiQ7EAIJHrMdiFnYoTYu422eg
+         uJNegZaUShKK4Z3PYQkHuOa7SLoCwsbTusMRGb7Z+VqP1cY9TG6mW5XMlJLFBqIp0ND4
+         Qohcz53rKRmxnjn2Kc0dL0iebauPHDeU9Xe9+UkQrP37q/4ILF/V1eyPuoG9gexwZ1Jh
+         vFjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c0eaXCym61eiyhGT8GrUnwQDVzwTszJGE9WWYZbnw/I=;
+        b=LCNrD+juLgxRfeuSCQtmH9ibFd+1l/7T8DsXFAC/5KQhCLpiewSJkpysDyjisVWinK
+         DcUJSDTRk3/odp8vsZcuGcQogS50ERILSWSsPIk4gqh7sG9cdPR5Xm9EPwuGQQiw3i0d
+         +/huhdJxNRF/sy1bpOl0GTf6RzQHWZO8ncEOpVUbvFOjN49VGmm2qFLzGx3jxqml59Gx
+         q3YSykCwF/r+tT4wXvT4eW/FtOthXUrmspHhDGfDcfHwtCZqQmlGgdzoVAgwDhjmzLoq
+         vBVBB4xIA9owMh5uFAH/J8q+3OXxr6DxoMPxKt5Y5BF0OPh6zEGAApn3UDLOv+husNhU
+         7CFg==
+X-Gm-Message-State: AOAM530aH25ZN8y82IqZQVebL333NHzBwRfWS4+213kHHIkJ9wJav4hG
+        9crezlftxm9sX3TYaQ2ebyCmmp2+YVReZEp5o9NPRA==
+X-Google-Smtp-Source: ABdhPJw1VjQ62MwbxnVetu2KFatM9kheWAJJfezTYytAXzbh88FOGY4hTcSMBpDz0J/dm4EaQSnWU4J67TnjFV+cb6o=
+X-Received: by 2002:a62:1b92:0:b0:3eb:3f92:724 with SMTP id
+ b140-20020a621b92000000b003eb3f920724mr33331175pfb.3.1634060583829; Tue, 12
+ Oct 2021 10:43:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1631860384-26608-8-git-send-email-quic_fenglinw@quicinc.com>
-References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com> <1631860384-26608-8-git-send-email-quic_fenglinw@quicinc.com>
-Subject: Re: [RESEND PATCH v1 7/9] spmi: pmic-arb: support updating interrupt type flags
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     collinsd@codeaurora.org, subbaram@codeaurora.org,
-        quic_fenglinw@quicinc.com, Yimin Peng <yiminp@codeaurora.org>
-To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 12 Oct 2021 10:42:45 -0700
-Message-ID: <163406056577.936959.16157334001404276084@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053103-mutt-send-email-mst@kernel.org> <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
+ <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
+In-Reply-To: <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 12 Oct 2021 10:42:52 -0700
+Message-ID: <CAPcyv4g0v0YHZ-okxf4wwVCYxHotxdKwsJpZGkoT+fhvvAJEFg@mail.gmail.com>
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(), pci_iomap_host_shared_range()
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Fenglin Wu (2021-09-16 23:33:02)
-> From: Yimin Peng <yiminp@codeaurora.org>
->=20
-> Have the qpnpint_irq_set_type function clear unwanted high/low
-> trigger bits when updating the interrupt flags.
+On Sun, Oct 10, 2021 at 3:11 PM Andi Kleen <ak@linux.intel.com> wrote:
+>
+>
+> On 10/9/2021 1:39 PM, Dan Williams wrote:
+> > On Sat, Oct 9, 2021 at 2:53 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >> On Fri, Oct 08, 2021 at 05:37:07PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> >>> From: Andi Kleen <ak@linux.intel.com>
+> >>>
+> >>> For Confidential VM guests like TDX, the host is untrusted and hence
+> >>> the devices emulated by the host or any data coming from the host
+> >>> cannot be trusted. So the drivers that interact with the outside world
+> >>> have to be hardened by sharing memory with host on need basis
+> >>> with proper hardening fixes.
+> >>>
+> >>> For the PCI driver case, to share the memory with the host add
+> >>> pci_iomap_host_shared() and pci_iomap_host_shared_range() APIs.
+> >>>
+> >>> Signed-off-by: Andi Kleen <ak@linux.intel.com>
+> >>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> >> So I proposed to make all pci mappings shared, eliminating the need
+> >> to patch drivers.
+> >>
+> >> To which Andi replied
+> >>          One problem with removing the ioremap opt-in is that
+> >>          it's still possible for drivers to get at devices without going through probe.
+> >>
+> >> To which Greg replied:
+> >> https://lore.kernel.org/all/YVXBNJ431YIWwZdQ@kroah.com/
+> >>          If there are in-kernel PCI drivers that do not do this, they need to be
+> >>          fixed today.
+> >>
+> >> Can you guys resolve the differences here?
+> > I agree with you and Greg here. If a driver is accessing hardware
+> > resources outside of the bind lifetime of one of the devices it
+> > supports, and in a way that neither modrobe-policy nor
+> > device-authorization -policy infrastructure can block, that sounds
+> > like a bug report.
+>
+> The 5.15 tree has something like ~2.4k IO accesses (including MMIO and
+> others) in init functions that also register drivers (thanks Elena for
+> the number)
+>
+> Some are probably old drivers that could be fixed, but it's quite a few
+> legitimate cases. For example for platform or ISA drivers that's the
+> only way they can be implemented because they often have no other
+> enumeration mechanism. For PCI drivers it's rarer, but also still can
+> happen. One example that comes to mind here is the x86 Intel uncore
+> drivers, which support a mix of MSR, ioremap and PCI config space
+> accesses all from the same driver. This particular example can (and
+> should be) fixed in other ways, but similar things also happen in other
+> drivers, and they're not all broken. Even for the broken ones they're
+> usually for some crufty old devices that has very few users, so it's
+> likely untestable in practice.
+>
+> My point is just that the ecosystem of devices that Linux supports is
+> messy enough that there are legitimate exceptions from the "First IO
+> only in probe call only" rule.
+>
+> And we can't just fix them all. Even if we could it would be hard to
+> maintain.
+>
+> Using a "firewall model" hooking into a few strategic points like we're
+> proposing here is much saner for everyone.
+>
+> Now we can argue about the details. Right now what we're proposing has
+> some redundancies: it has both a device model filter and low level
+> filter for ioremap (this patch and some others). The low level filter is
+> for catching issues that don't clearly fit into the
+> "enumeration<->probe" model. You could call that redundant, but I would
+> call it defense in depth or better safe than sorry. In theory it would
+> be enough to have the low level opt-in only, but that would have the
+> drawback that is something gets enumerated after all you would have all
+> kind of weird device driver failures and in some cases even killed
+> guests. So I think it makes sense to have
 
-Why?
+The "better safe-than-sorry" argument is hard to build consensus
+around. The spectre mitigations ran into similar problems where the
+community rightly wanted to see the details and instrument the
+problematic paths rather than blanket sprinkle lfence "just to be
+safe". In this case the rules about when a driver is suitably
+"hardened" are vague and the overlapping policy engines are confusing.
 
->=20
-> Signed-off-by: Yimin Peng <yiminp@codeaurora.org>
-> Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
-> ---
+I'd rather see more concerted efforts focused/limited core changes
+rather than leaf driver changes until there is a clearer definition of
+hardened. I.e. instead of jumping to the assertion that fixing up
+these init-path vulnerabilities are too big to fix, dig to the next
+level to provide more evidence that per-driver opt-in is the only
+viable option.
 
-Does this need a Fixes tag?
+For example, how many of these problematic paths are built-in to the
+average kernel config? A strawman might be to add a sprinkling error
+exits in the module_init() of the problematic drivers, and only fail
+if the module is built-in, and let modprobe policy handle the rest.
+
+>
+>
+> > Fix those drivers instead of sprinkling
+> > ioremap_shared in select places and with unclear rules about when a
+> > driver is allowed to do "shared" mappings.
+>
+> Only add it when the driver has been audited and hardened.
+>
+> But I agree we need on a documented process for this. I will work on
+> some documentation for a proposal. But essentially I think it should be
+> some variant of what Elena has outlined in her talk at Security Summit.
+>
+> https://static.sched.com/hosted_files/lssna2021/b6/LSS-HardeningLinuxGuestForCCC.pdf
+>
+> That is using extra auditing/scrutiny at review time, supported with
+> some static code analysis that points to the interaction points, and
+> code needs to be fuzzed explicitly.
+>
+> However short term it's only three virtio drivers, so this is not a
+> urgent problem.
+>
+> > Let the new
+> > device-authorization mechanism (with policy in userspace)
+>
+>
+> Default policy in user space just seems to be a bad idea here. Who
+> should know if a driver is hardened other than the kernel? Maintaining
+> the list somewhere else just doesn't make sense to me.
+
+I do not understand the maintenance burden correlation of where the
+policy is driven vs where the list is maintained? Even if I agreed
+with the contention that out-of-tree userspace would have a hard time
+tracking the "hardened" driver list there is still an in-tree
+userspace path to explore. E.g. perf maintains lists of things tightly
+coupled to the kernel, this authorized device list seems to be in the
+same category of data.
+
+> Also there is the more practical problem that some devices are needed
+> for booting. For example in TDX we can't print something to the console
+> with this mechanism, so you would never get any output before the
+> initrd. Just seems like a nightmare for debugging anything. There really
+> needs to be an authorization mechanism that works reasonably early.
+>
+> I can see a point of having user space overrides though, but we need to
+> have a sane kernel default that works early.
+
+Right, as I suggested [1], just enough early authorization to
+bootstrap/debug initramfs and then that can authorize the remainder.
+
+[1]: https://lore.kernel.org/all/CAPcyv4im4Tsj1SnxSWe=cAHBP1mQ=zgO-D81n2BpD+_HkpitbQ@mail.gmail.com/
