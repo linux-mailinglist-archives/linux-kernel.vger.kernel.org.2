@@ -2,240 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A781242A7B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EBF42A7BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236987AbhJLO6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237338AbhJLO6U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:58:20 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03371C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:56:19 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id g14so17792005pfm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pWh/9AciCMr0ljhjPDNOgYWq6TQQIm9MhYZYP9zV/HE=;
-        b=IN/XPHbfacJEAxpLEZ5ohYLAJcrL8sm8duNumi3u++bgHTlYM4+cZV0qpKUHqQqcsO
-         x3Gworxc4KnKGzlfv5OKjorSncKSOI/smfHVQ6pWj2d1jyqDFROA/6TYOV42EMtzXYkZ
-         4bJ+PcMIqs4L4bkzfOWapmsqYPJQLKNhWfGvt0BH4IA7V0+S85d3XLZJJjOjSG7ITZKQ
-         juXkVhJO5ALo8Jbv7Iq/O6nOjXHtXk5P3ejbdrn2czQFBjaSB1gPIllQXLHzn2l79DYC
-         jzQKx5eiObxn2tBko6rt3MTMiJ6DMpDcnG5U4mhoQarn8bZKuqT1KFEbLzuDcgMMcXHm
-         /70g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pWh/9AciCMr0ljhjPDNOgYWq6TQQIm9MhYZYP9zV/HE=;
-        b=1g6/xVfuwUNGF7106doOlnChJZI9g7U/XWY8kROxAaHdrk3q11tIkVV7sxuCkHZxQo
-         rarhI4+5/hJ+OqmAdbE7xv9tKcy4+ZQmsu7Ca/vmm6NhnriGytSulBc79Bt/wyGv64kX
-         oBVBtaK3EhM9liYxS8xHk/7GUj04Fvbzwwf1eNEFafpkfsfhOlEkBSqrrH7lEb6Y/2H+
-         74PJh6VZh2hIgJQcTJ0VolUGCYf//tGuK11imHH9E4aJ1+m/ibVcsigBB/CP1wf9SrRh
-         49t1/ekGCY+RoPoKcKTHjUCRVMk/IEgVLuk2tGmxqSjNbokO3ubHTLQcWV9oB85nzxDB
-         ICnA==
-X-Gm-Message-State: AOAM530qMQNCHBxc26Ag9HRtYyxZ6Y8dpJFfvkvc8BNp6uR+pWxs6arq
-        vKmjDjWOsNKr88l2gz18Lw2bcuYAmagYkw==
-X-Google-Smtp-Source: ABdhPJxvDbiNrUetWzBgtlQHbAiXnQ+8B/1KNC2rKqkZm6DBdwZ8aOcaDtlmZPtVyqxoSqY4bJ/sIg==
-X-Received: by 2002:a63:7d46:: with SMTP id m6mr23383732pgn.409.1634050578418;
-        Tue, 12 Oct 2021 07:56:18 -0700 (PDT)
-Received: from localhost.localdomain ([61.120.150.75])
-        by smtp.gmail.com with ESMTPSA id d21sm1300225pfl.135.2021.10.12.07.56.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Oct 2021 07:56:18 -0700 (PDT)
-From:   Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-To:     miklos@szeredi.hu
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xieyongji@bytedance.com,
-        Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-Subject: [RFC] fuse: Sync attributes when the inode is clean in writeback mode
-Date:   Tue, 12 Oct 2021 22:55:58 +0800
-Message-Id: <20211012145558.19137-1-zhangjiachen.jaycee@bytedance.com>
-X-Mailer: git-send-email 2.28.0
+        id S237324AbhJLPAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:00:49 -0400
+Received: from relay.sw.ru ([185.231.240.75]:45866 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237062AbhJLPAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 11:00:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=RnsGlL3UBRJ/4cEPNnMhtn3bFoiisljeaKBlGJj1gVU=; b=evsQghIYusTLmgdlCUk
+        1uiMVa3tQ03LqhJBGeBL4KH5OGXVpyTc6yTLTyvvElFeOM3wkcqgExVqxr67g6ha10lkc0HiGztPf
+        GCu0OIBHexZinlW2uOtMD4dM1aR+Mrt5hxOghxX2gVABLz21xOwxfQJRtEnZVRHqWQHwIiVapLI=;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1maJEo-005om9-HH; Tue, 12 Oct 2021 17:58:42 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH mm v3] memcg: enable memory accounting in __alloc_pages_bulk
+To:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
+Message-ID: <60df0efd-f458-a13c-7c89-749bdab21d1d@virtuozzo.com>
+Date:   Tue, 12 Oct 2021 17:58:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When writeback cache is enabled, kernel will locally maintain the
-attributes, and never trusts any server side attribute changes. This
-limitaion is too strict in some use cases. For example, if a file is not
-actively wrote from the fuse mount in writeback mode, the writeback related
-caches should be clean, and the user may expect to see the new size changed
-from the server side. This commit tires to relax the limitation.
+Enable memory accounting for bulk page allocator.
 
-If there is no dirty page of an fuse inode, update its ctime, atime and
-size even in writeback_cache mode. The page cache cleaness checking is
-based on a new fuse writeback helper (fuse_file_is_writeback_locked) and a
-mm/filemap helper introduced recently (detials see commit 63135aa3866d
-("mm: provide filemap_range_needs_writeback() helper") ).
-
-Signed-off-by: Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
+Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 ---
- fs/fuse/dir.c    |  3 ++-
- fs/fuse/file.c   | 21 +++++++++++++++++++++
- fs/fuse/fuse_i.h |  3 ++-
- fs/fuse/inode.c  | 36 +++++++++++++++++++++++++++++++-----
- 4 files changed, 56 insertions(+), 7 deletions(-)
+v3: added comments,
+    removed call of post charge hook for nr_pages = 0
+v2: modified according to Shakeel Butt's remarks
+---
+ include/linux/memcontrol.h | 11 +++++++++
+ mm/memcontrol.c            | 48 +++++++++++++++++++++++++++++++++++++-
+ mm/page_alloc.c            | 21 ++++++++++++++++-
+ 3 files changed, 78 insertions(+), 2 deletions(-)
 
-diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-index 915493613a31..2ca68aaeb26a 100644
---- a/fs/fuse/dir.c
-+++ b/fs/fuse/dir.c
-@@ -1678,8 +1678,9 @@ int fuse_do_setattr(struct dentry *dentry, struct iattr *attr,
- 		/* FIXME: clear I_DIRTY_SYNC? */
- 	}
- 
-+    /* Don't update the c/mtime unconditionally when we trust_local_cmtime. */
- 	fuse_change_attributes_common(inode, &outarg.attr,
--				      attr_timeout(&outarg));
-+				attr_timeout(&outarg), !trust_local_cmtime);
- 	oldsize = inode->i_size;
- 	/* see the comment in fuse_change_attributes() */
- 	if (!is_wb || is_truncate || !S_ISREG(inode->i_mode))
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index bb3321098b69..108ab5106b52 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -413,6 +413,27 @@ static struct fuse_writepage_args *fuse_find_writeback(struct fuse_inode *fi,
- 	return NULL;
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 3096c9a0ee01..990acd70c846 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -810,6 +810,12 @@ static inline void obj_cgroup_put(struct obj_cgroup *objcg)
+ 	percpu_ref_put(&objcg->refcnt);
  }
  
-+/*
-+ * Check if any page of this file is under writeback.
-+ *
-+ * The fuse_inode lock should be held by the caller.
-+ */
-+bool fuse_file_is_writeback_locked(struct inode *inode)
++static inline void obj_cgroup_put_many(struct obj_cgroup *objcg,
++				       unsigned long nr)
 +{
-+	struct fuse_inode *fi = get_fuse_inode(inode);
-+	pgoff_t idx_from = 0;
-+	pgoff_t idx_to = 0;
-+	size_t fuse_inode_size = i_size_read(inode);
-+	bool found;
-+
-+	if (fuse_inode_size > 0)
-+		idx_to = (fuse_inode_size - 1) >> PAGE_SHIFT;
-+
-+	found = fuse_find_writeback(fi, idx_from, idx_to);
-+
-+	return found;
++	percpu_ref_put_many(&objcg->refcnt, nr);
 +}
 +
- /*
-  * Check if any page in a range is under writeback
-  *
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 0b2673a58cf5..0429f39de36a 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -1031,7 +1031,7 @@ void fuse_change_attributes(struct inode *inode, struct fuse_attr *attr,
- 			    u64 attr_valid, u64 attr_version);
+ static inline void mem_cgroup_put(struct mem_cgroup *memcg)
+ {
+ 	if (memcg)
+@@ -1746,4 +1752,9 @@ static inline struct mem_cgroup *mem_cgroup_from_obj(void *p)
  
- void fuse_change_attributes_common(struct inode *inode, struct fuse_attr *attr,
--				   u64 attr_valid);
-+				   u64 attr_valid, bool update_cmtime);
+ #endif /* CONFIG_MEMCG_KMEM */
  
- /**
-  * Initialize the client device
-@@ -1286,5 +1286,6 @@ struct fuse_file *fuse_file_open(struct fuse_mount *fm, u64 nodeid,
- 				 unsigned int open_flags, bool isdir);
- void fuse_file_release(struct inode *inode, struct fuse_file *ff,
- 		       unsigned int open_flags, fl_owner_t id, bool isdir);
-+bool fuse_file_is_writeback_locked(struct inode *inode);
- 
- #endif /* _FS_FUSE_I_H */
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 8068c666e1e6..371478f29425 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -23,6 +23,7 @@
- #include <linux/exportfs.h>
- #include <linux/posix_acl.h>
- #include <linux/pid_namespace.h>
-+#include <linux/fs.h>
- 
- MODULE_AUTHOR("Miklos Szeredi <miklos@szeredi.hu>");
- MODULE_DESCRIPTION("Filesystem in Userspace");
-@@ -164,7 +165,7 @@ static ino_t fuse_squash_ino(u64 ino64)
++bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
++				unsigned int nr_pages);
++void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page);
++void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
++				 unsigned int nr_pages);
+ #endif /* _LINUX_MEMCONTROL_H */
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 87e41c3cac10..16fe3384c12c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3239,7 +3239,53 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
+ 	refill_obj_stock(objcg, size, true);
  }
  
- void fuse_change_attributes_common(struct inode *inode, struct fuse_attr *attr,
--				   u64 attr_valid)
-+				   u64 attr_valid, bool update_cmtime)
- {
- 	struct fuse_conn *fc = get_fuse_conn(inode);
- 	struct fuse_inode *fi = get_fuse_inode(inode);
-@@ -183,8 +184,7 @@ void fuse_change_attributes_common(struct inode *inode, struct fuse_attr *attr,
- 	inode->i_blocks  = attr->blocks;
- 	inode->i_atime.tv_sec   = attr->atime;
- 	inode->i_atime.tv_nsec  = attr->atimensec;
--	/* mtime from server may be stale due to local buffered write */
--	if (!fc->writeback_cache || !S_ISREG(inode->i_mode)) {
-+	if (update_cmtime) {
- 		inode->i_mtime.tv_sec   = attr->mtime;
- 		inode->i_mtime.tv_nsec  = attr->mtimensec;
- 		inode->i_ctime.tv_sec   = attr->ctime;
-@@ -226,8 +226,22 @@ void fuse_change_attributes(struct inode *inode, struct fuse_attr *attr,
- 	bool is_wb = fc->writeback_cache;
- 	loff_t oldsize;
- 	struct timespec64 old_mtime;
-+	bool is_dirty = false;
- 
- 	spin_lock(&fi->lock);
+-#endif /* CONFIG_MEMCG_KMEM */
++bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
++				unsigned int nr_pages)
++{
++	struct obj_cgroup *objcg = NULL;
 +
-+	/*
-+	 * is_dirty will be true if:
-+	 *   1. Writeback cache is enabled,
-+	 *   2. the file is a regular one, and
-+	 *   3. at least one dirty page in the inode mapping, or at least
-+	 *      one fuse writeback page is in-flight.
-+	 */
-+	is_dirty = is_wb && S_ISREG(inode->i_mode) &&
-+		    (filemap_range_needs_writeback(inode->i_mapping, 0,
-+		    i_size_read(inode) - 1) ||
-+		    fuse_file_is_writeback_locked(inode));
++	if (!memcg_kmem_enabled() || !(gfp & __GFP_ACCOUNT))
++		return true;
 +
- 	if ((attr_version != 0 && fi->attr_version > attr_version) ||
- 	    test_bit(FUSE_I_SIZE_UNSTABLE, &fi->state)) {
- 		spin_unlock(&fi->lock);
-@@ -235,7 +249,11 @@ void fuse_change_attributes(struct inode *inode, struct fuse_attr *attr,
- 	}
- 
- 	old_mtime = inode->i_mtime;
--	fuse_change_attributes_common(inode, attr, attr_valid);
-+	/*
-+	 * mtime from server may be stale due to local buffered write, so
-+	 * don't update c/mtime when is_dirty is true.
-+	 */
-+	fuse_change_attributes_common(inode, attr, attr_valid, !is_dirty);
- 
- 	oldsize = inode->i_size;
- 	/*
-@@ -243,8 +261,16 @@ void fuse_change_attributes(struct inode *inode, struct fuse_attr *attr,
- 	 * extend local i_size without keeping userspace server in sync. So,
- 	 * attr->size coming from server can be stale. We cannot trust it.
- 	 */
--	if (!is_wb || !S_ISREG(inode->i_mode))
-+	if (!is_dirty) {
- 		i_size_write(inode, attr->size);
-+		/*
-+		 * If writeback cache is enabled, the truncated_pagecache should
-+		 * be executed with fi->lock held, in case of racing with write
-+		 * operations.
-+		 */
-+		if (is_wb && S_ISREG(inode->i_mode) && (oldsize != attr->size))
-+			truncate_pagecache(inode, attr->size);
++	objcg = get_obj_cgroup_from_current();
++
++	if (objcg && obj_cgroup_charge_pages(objcg, gfp, nr_pages)) {
++		obj_cgroup_put(objcg);
++		return false;
 +	}
- 	spin_unlock(&fi->lock);
++	obj_cgroup_get_many(objcg, nr_pages - 1);
++	*objcgp = objcg;
++	return true;
++}
++
++void memcg_bulk_charge_hook(struct obj_cgroup *objcg, struct page *page)
++{
++	page->memcg_data = (unsigned long)objcg | MEMCG_DATA_KMEM;
++}
++
++void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
++				 unsigned int nr_pages)
++{
++	obj_cgroup_uncharge_pages(objcg, nr_pages);
++	obj_cgroup_put_many(objcg, nr_pages);
++}
++#else /* !CONFIG_MEMCG_KMEM */
++bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
++				unsigned int nr_pages)
++{
++	return true;
++}
++
++void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page)
++{
++}
++
++void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
++				 unsigned int nr_pages)
++{
++}
++#endif
++
  
- 	if (!is_wb && S_ISREG(inode->i_mode)) {
+ /*
+  * Because page_memcg(head) is not set on tails, set it now.
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b37435c274cf..23a8b55df508 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5207,6 +5207,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	gfp_t alloc_gfp;
+ 	unsigned int alloc_flags = ALLOC_WMARK_LOW;
+ 	int nr_populated = 0, nr_account = 0;
++	unsigned int nr_pre_charge = 0;
++	struct obj_cgroup *objcg = NULL;
+ 
+ 	/*
+ 	 * Skip populated array elements to determine if any pages need
+@@ -5275,6 +5277,11 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	if (unlikely(!zone))
+ 		goto failed;
+ 
++	nr_pre_charge = nr_pages - nr_populated;
++	/* pre-charge memory and take refcounts for each allocated page */
++	if (!memcg_bulk_pre_charge_hook(&objcg, gfp, nr_pre_charge))
++		goto failed;
++
+ 	/* Attempt the batch allocation */
+ 	local_lock_irqsave(&pagesets.lock, flags);
+ 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
+@@ -5299,6 +5306,9 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 		nr_account++;
+ 
+ 		prep_new_page(page, 0, gfp, 0);
++		if (objcg)
++			memcg_bulk_charge_hook(objcg, page);
++
+ 		if (page_list)
+ 			list_add(&page->lru, page_list);
+ 		else
+@@ -5310,13 +5320,22 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 
+ 	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+ 	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
++	/*
++	 * Typically nr_pre_charge == nr_account,
++	 * otherwise a few extra pages was pre-charged,
++	 * and must be uncharged now.
++	 */
++	if (objcg && nr_pre_charge - nr_account)
++		memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
+ 
+ out:
+ 	return nr_populated;
+ 
+ failed_irq:
+ 	local_unlock_irqrestore(&pagesets.lock, flags);
+-
++	/* uncharge memory and decrement refcounts for all pre-charged pages */
++	if (objcg)
++		memcg_bulk_post_charge_hook(objcg, nr_pre_charge);
+ failed:
+ 	page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
+ 	if (page) {
 -- 
-2.20.1
+2.31.1
 
