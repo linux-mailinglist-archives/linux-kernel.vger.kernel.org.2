@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1EF542AE15
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 672D642AE1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234963AbhJLUpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:45:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234757AbhJLUps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:45:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA12260E09;
-        Tue, 12 Oct 2021 20:43:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634071425;
-        bh=q61LoQrLGHHMBvmawEYfkt6DnUrNORR1prK1fiM18ZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uEThPiosyyrbJ4oy20wf2VLQNoPPVJxrr7w8jRKgrJSKn2ukj1kohMQza/+0d2pO6
-         yRlD2jC0/EsF1SWAMF48Ki40jtsW7eaR636VJgs0TZx2XM9ppxGfdvjPJ+WX9I0hkX
-         Xrl9rq7ZnGE0t7KObzY2eQXdnfvyvIgJrMI8WsnbEgYh0DOSokYebdUXO9iCTiZo1h
-         8rD2jFMIJiQois0naFz2COeKuhTPyem/pK5xhXlMqJixUPECLB1P5smrct/KJxbCYT
-         pNrCAC3uZzAhusWCSxT8zpVXHk8teiGxxkqt7mgQ74BqK7N2NVtg2gVWvlfQJ2l/Rd
-         rGwbXgqgNuHsA==
-Date:   Tue, 12 Oct 2021 13:43:45 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     David Rientjes <rientjes@google.com>
-Cc:     Rustam Kovhaev <rkovhaev@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, gregkh@linuxfoundation.org,
-        Al Viro <viro@zeniv.linux.org.uk>, dvyukov@google.com
-Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
-Message-ID: <20211012204345.GQ24307@magnolia>
-References: <20210929212347.1139666-1-rkovhaev@gmail.com>
- <20210930044202.GP2361455@dread.disaster.area>
- <17f537b3-e2eb-5d0a-1465-20f3d3c960e2@suse.cz>
- <YVYGcLbu/aDKXkag@nuc10>
- <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz>
- <YVZXF3mbaW+Pe+Ji@nuc10>
- <1e0df91-556e-cee5-76f7-285d28fe31@google.com>
- <20211012204320.GP24307@magnolia>
+        id S235061AbhJLUqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234486AbhJLUqU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 16:46:20 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04611C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:44:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=sKGTat30RNCy2/FTRskvWCn5egJkoLenpbku9vap1/U=; b=YK8/Tw+cplklLXX9Rq2G0wY+87
+        oCnHKEyqtemkSgkAY2l6CMlou7JN2iYohsDoaCzWLtycs2YWInmIokYOJcD5mVIofVKlaiKprezDI
+        5PobrSqN58yc9KTpYidWIURe1KJ2fbMF5oIVAsGLqCC3ULtWcc2iUPYAHiwP+Eo5Jw6Kg+S2Oa3hO
+        jvrf+Bc04nfa1bJa3dRIjjvu3wI9Jk9V7AXV7N8UbWGMDQ/DI8XkDJUF1Bky/rY+9nCtXAFUZ3/8m
+        LXcYmtFPr+SXfGDQcnO77NCa8gJzrDbd+nX/qGPXTXl7SY4oQqCqdqDOZR4PbIgJ6WMaSHHGEXQrc
+        WqsJI0+w==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1maOdF-00Dx7u-CW; Tue, 12 Oct 2021 20:44:17 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Corey Minyard <minyard@acm.org>,
+        openipmi-developer@lists.sourceforge.net,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH -next] ipmi: ipmb: fix dependencies to eliminate build error
+Date:   Tue, 12 Oct 2021 13:44:16 -0700
+Message-Id: <20211012204416.23108-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012204320.GP24307@magnolia>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 01:43:20PM -0700, Darrick J. Wong wrote:
-> On Sun, Oct 03, 2021 at 06:07:20PM -0700, David Rientjes wrote:
-> > On Thu, 30 Sep 2021, Rustam Kovhaev wrote:
-> > 
-> > > > >> I think it's fair if something like XFS (not meant for tiny systems AFAIK?)
-> > > > >> excludes SLOB (meant for tiny systems). Clearly nobody tried to use these
-> > > > >> two together last 5 years anyway.
-> > > > > 
-> > > > > +1 for adding Kconfig option, it seems like some things are not meant to
-> > > > > be together.
-> > > > 
-> > > > But if we patch SLOB, we won't need it.
-> > > 
-> > > OK, so we consider XFS on SLOB a supported configuration that might be
-> > > used and should be tested.
-> > > I'll look into maybe adding a config with CONFIG_SLOB and CONFIG_XFS_FS
-> > > to syzbot.
-> > > 
-> > > It seems that we need to patch SLOB anyway, because any other code can
-> > > hit the very same issue.
-> > > 
-> > 
-> > It's probably best to introduce both (SLOB fix and Kconfig change for 
-> > XFS), at least in the interim because the combo of XFS and SLOB could be 
-> > broken in other ways.  If syzbot doesn't complain with a patched kernel to 
-> > allow SLOB to be used with XFS, then we could potentially allow them to be 
-> > used together.
-> > 
-> > (I'm not sure that this freeing issue is the *only* thing that is broken, 
-> > nor that we have sufficient information to make that determination right 
-> > now..)
-> 
-> I audited the entire xfs (kernel) codebase and didn't find any other
-> usage errors.  Thanks for the patch; I'll apply it to for-next.
+When CONFIG_I2C=m, CONFIG_I2C_SLAVE=y (bool), and CONFIG_IPMI_IPMB=y,
+the build fails with:
 
-Also, the obligatory
+ld: drivers/char/ipmi/ipmi_ipmb.o: in function `ipmi_ipmb_remove':
+ipmi_ipmb.c:(.text+0x6b): undefined reference to `i2c_slave_unregister'
+ld: drivers/char/ipmi/ipmi_ipmb.o: in function `ipmi_ipmb_thread':
+ipmi_ipmb.c:(.text+0x2a4): undefined reference to `i2c_transfer'
+ld: drivers/char/ipmi/ipmi_ipmb.o: in function `ipmi_ipmb_probe':
+ipmi_ipmb.c:(.text+0x646): undefined reference to `i2c_slave_register'
+ld: drivers/char/ipmi/ipmi_ipmb.o: in function `ipmi_ipmb_driver_init':
+ipmi_ipmb.c:(.init.text+0xa): undefined reference to `i2c_register_driver'
+ld: drivers/char/ipmi/ipmi_ipmb.o: in function `ipmi_ipmb_driver_exit':
+ipmi_ipmb.c:(.exit.text+0x8): undefined reference to `i2c_del_driver'
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+This is due to having a tristate depending on a bool symbol.
+By adding I2C (tristate) as a dependency, the desired dependencies
+are met, causing IPMI_IPMB to be changed from =y to =m:
 
---D
+  -CONFIG_IPMI_IPMB=y
+  +CONFIG_IPMI_IPMB=m
 
-> 
-> --D
+Fixes: 63c4eb347164 ("ipmi:ipmb: Add initial support for IPMI over IPMB")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Corey Minyard <minyard@acm.org>
+Cc: openipmi-developer@lists.sourceforge.net
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/char/ipmi/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-next-20211012.orig/drivers/char/ipmi/Kconfig
++++ linux-next-20211012/drivers/char/ipmi/Kconfig
+@@ -77,7 +77,7 @@ config IPMI_SSIF
+ 
+ config IPMI_IPMB
+ 	tristate 'IPMI IPMB interface'
+-	depends on I2C_SLAVE
++	depends on I2C && I2C_SLAVE
+ 	help
+ 	  Provides a driver for a system running right on the IPMB bus.
+ 	  It supports normal system interface messages to a BMC on the IPMB
