@@ -2,138 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFEF42A812
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595F542A817
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237379AbhJLPUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:20:12 -0400
-Received: from office.oderland.com ([91.201.60.5]:54686 "EHLO
-        office.oderland.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237248AbhJLPUJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:20:09 -0400
-Received: from [193.180.18.161] (port=38880 helo=[10.137.0.14])
-        by office.oderland.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <josef@oderland.se>)
-        id 1maJXZ-005qGI-W8; Tue, 12 Oct 2021 17:18:06 +0200
-Message-ID: <29bb9284-668a-8ccf-7727-1e1f0857a0ed@oderland.se>
-Date:   Tue, 12 Oct 2021 17:17:50 +0200
+        id S237421AbhJLPUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:20:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229633AbhJLPUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 11:20:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A63B60E0B;
+        Tue, 12 Oct 2021 15:18:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634051929;
+        bh=JiebhzwuHVXY80Oic6utfrmJONJx8VfAP7QNQDVcqMs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uR/kT2xSoizS9rasOuK34HL8QIyL1MeUKiN6cCH7xbeVXoqQdGga8pdfpOgEEWcKm
+         K60YyUfG/XcGQWkQw57Yz7uLcF+5aLJ50tqKanW87C69WAMmp/MwV6/MK9q6bLvlph
+         +cU+OmijhxAN+h3oV/4/rOVfq4Tf8iwIdOYjqIhXhHaPVYn0r33J605soOFJHSjhMa
+         exXEIB11fwoCOuoYxCWuqbEggd6k8oUzjCnGkGtEWA1RXodyXvVQiaWvaCLN0Y4RBZ
+         Hh4V81oUQX0ISzfYmfrzhv5/mELKa+USfhAzPFWHVv4kSVh8s7Nd52y2SgmF/VSESs
+         e8u0cLRb13ZAA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Alex Elder <elder@linaro.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iommu/arm: fix ARM_SMMU_QCOM compilation
+Date:   Tue, 12 Oct 2021 17:18:00 +0200
+Message-Id: <20211012151841.2639732-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:93.0) Gecko/20100101
- Thunderbird/93.0
-Subject: Re: [REGRESSION][BISECTED] 5.15-rc1: Broken AHCI on NVIDIA ION
- (MCP79)
-Content-Language: en-US
-From:   Josef Johansson <josef@oderland.se>
-To:     Jason Andryuk <jandryuk@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, maz@kernel.org,
-        linux-pci@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        xen-devel <xen-devel@lists.xenproject.org>
-References: <CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com>
- <b023adf9-e21c-59ac-de49-57915c8cede8@oderland.se>
- <c9218eb4-9fc1-28f4-d053-895bab0473d4@oderland.se>
- <ef163327-f965-09f8-4396-2c1c4e689a6d@oderland.se>
- <CAKf6xpvGyCKVHsvauP54=0j10fxis4XiiqBNWH+1cpkbtt_QJw@mail.gmail.com>
- <fdfb6267-e467-4785-b4a0-00859f6dc161@oderland.se>
-In-Reply-To: <fdfb6267-e467-4785-b4a0-00859f6dc161@oderland.se>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - office.oderland.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - oderland.se
-X-Get-Message-Sender-Via: office.oderland.com: authenticated_id: josjoh@oderland.se
-X-Authenticated-Sender: office.oderland.com: josjoh@oderland.se
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 15:33, Josef Johansson wrote:
-> On 10/12/21 15:07, Jason Andryuk wrote:
->> On Tue, Oct 12, 2021 at 2:09 AM Josef Johansson <josef@oderland.se> wrote:
->>> On 10/11/21 21:34, Josef Johansson wrote:
->>>> On 10/11/21 20:47, Josef Johansson wrote:
->>>>> More can be read over at freedesktop:
->>>>> https://gitlab.freedesktop.org/drm/amd/-/issues/1715
->> Hi, Josef,
->>
->> If you compare
->> commit fcacdfbef5a1633211ebfac1b669a7739f5b553e "PCI/MSI: Provide a
->> new set of mask and unmask functions"
->> and
->> commit 446a98b19fd6da97a1fb148abb1766ad89c9b767 "PCI/MSI: Use new
->> mask/unmask functions" some of the replacement functions in 446198b1
->> no longer exit early for the pci_msi_ignore_mask flag.
->>
->> Josef, I'd recommend you try adding pci_msi_ignore_mask checks to the
->> new functions in fcacdfbef5a to see if that helps.
->>
->> There was already a pci_msi_ignore_mask fixup in commit
->> 1a519dc7a73c977547d8b5108d98c6e769c89f4b "PCI/MSI: Skip masking MSI-X
->> on Xen PV" though the kernel was crashing in that case.
->>
->> Regards,
->> Jason
-> Hi Jason,
->
-> Makes sense. I am compiling now, will try it as soon as it's done.
->
-> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-> index 0099a00af361..620928fd0065 100644
-> --- a/drivers/pci/msi.c
-> +++ b/drivers/pci/msi.c
-> @@ -148,6 +148,9 @@ static noinline void pci_msi_update_mask(struct
-> msi_desc *desc, u32 clear, u32 s
->      raw_spinlock_t *lock = &desc->dev->msi_lock;
->      unsigned long flags;
->  
-> +    if (pci_msi_ignore_mask)
-> +        return;
-> +
->      raw_spin_lock_irqsave(lock, flags);
->      desc->msi_mask &= ~clear;
->      desc->msi_mask |= set;
-> @@ -179,6 +182,9 @@ static inline void __iomem
-> *pci_msix_desc_addr(struct msi_desc *desc)
->   */
->  static void pci_msix_write_vector_ctrl(struct msi_desc *desc, u32 ctrl)
->  {
-> +    if (pci_msi_ignore_mask)
-> +        return;
-> +
->      void __iomem *desc_addr = pci_msix_desc_addr(desc);
->  
->      writel(ctrl, desc_addr + PCI_MSIX_ENTRY_VECTOR_CTRL);
-> @@ -186,6 +192,9 @@ static void pci_msix_write_vector_ctrl(struct
-> msi_desc *desc, u32 ctrl)
->  
->  static inline void pci_msix_mask(struct msi_desc *desc)
->  {
-> +    if (pci_msi_ignore_mask)
-> +        return;
-> +
->      desc->msix_ctrl |= PCI_MSIX_ENTRY_CTRL_MASKBIT;
->      pci_msix_write_vector_ctrl(desc, desc->msix_ctrl);
->      /* Flush write to device */
-> @@ -194,6 +203,9 @@ static inline void pci_msix_mask(struct msi_desc *desc)
->  
->  static inline void pci_msix_unmask(struct msi_desc *desc)
->  {
-> +    if (pci_msi_ignore_mask)
-> +        return;
-> +
->      desc->msix_ctrl &= ~PCI_MSIX_ENTRY_CTRL_MASKBIT;
->      pci_msix_write_vector_ctrl(desc, desc->msix_ctrl);
->  }
->
-I love open source. It just works. Was my patch correct btw?
+From: Arnd Bergmann <arnd@arndb.de>
 
-Thanks Jason!
+My previous bugfix ended up making things worse for the QCOM IOMMU
+driver when it forgot to add the Kconfig symbol that is getting used to
+control the compilation of the SMMU implementation specific code
+for Qualcomm.
 
-Regards
+Fixes: 424953cf3c66 ("qcom_scm: hide Kconfig symbol")
+Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reported-by: John Stultz <john.stultz@linaro.org>
+Link: https://lore.kernel.org/lkml/20211010023350.978638-1-dmitry.baryshkov@linaro.org/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+In case we want fix it this way after all, here is the patch
+I made. Either this one or Dmitry patch from the link above
+is required for v5.15
+---
+ drivers/iommu/Kconfig | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-- Josef
+diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+index c5c71b7ab7e8..3eb68fa1b8cc 100644
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@ -355,6 +355,14 @@ config ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT
+ 	  'arm-smmu.disable_bypass' will continue to override this
+ 	  config.
+ 
++config ARM_SMMU_QCOM
++	def_tristate y
++	depends on ARM_SMMU && ARCH_QCOM
++	select QCOM_SCM
++	help
++	  When running on a Qualcomm platform that has the custom variant
++	  of the ARM SMMU, this needs to be built into the SMMU driver.
++
+ config ARM_SMMU_V3
+ 	tristate "ARM Ltd. System MMU Version 3 (SMMUv3) Support"
+ 	depends on ARM64
+-- 
+2.29.2
 
