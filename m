@@ -2,119 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4309042A6AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7C242A6AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237006AbhJLOEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbhJLOEg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:04:36 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C287CC061570;
-        Tue, 12 Oct 2021 07:02:34 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so9255436otr.7;
-        Tue, 12 Oct 2021 07:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2Q0Hb9oHK4KcWY8R31erb4VAXs7l6Pn0D6RYKuAbMqo=;
-        b=Yq0ybx5oUO6KRl2BgdyTUebTMHE0V1N6SUlOeLzmooYLbULfQ5zR20IIY87NnYijQh
-         X5EqrMG7H0ofNUv6kbg1+DfDEBeQr+h4fZX7umN12dSHqHbgLcDiJBXbA9gFGY3ZD9s/
-         JAhYNYBygHFReTI2G1t3CqAbsy4WMjGQQ6IkftLfOOYT5Wcq6mXFhczS+NuXJH8SZqiM
-         gyNOefmWCD19W3LLPgZl0A+ya1Mn9YvSVRAA5aphUWTgIKFiURHSZ+Lx95W/ACie4pP+
-         91Bm8NyOFOZNQX7gSNNWShqXCKWRfB12NaxsTeySZCzgNwwelb1mj4hZNk7AX7BYxe0g
-         TrBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2Q0Hb9oHK4KcWY8R31erb4VAXs7l6Pn0D6RYKuAbMqo=;
-        b=kAEDP50CjGWzPGgpVXBdyX7XKwQtaRAG1+TTM+cBhsS116+DNpfx3gb9ZpjiMJgOmL
-         +zipwq0gZJoFUGeBzfoyTasVGUl4XIVfyCrnG2dh3doaz/VgENP1BlBMrZ0JMBJ5Tqmz
-         Rq2VXyy0mhFYMV63DzVpkqxFwNyluQGutc90dUWylgMe1Sqz3/ugrSrTZ9/VdFwY1w59
-         d7sUCPbXC//WCE/qrgN660o13K9QA12dcrBgLqEjglnuTt7AdjVTVnYWz8ufNE7b2kxN
-         VDtt+ZBaE3Dk8Eo9MF2LFOrvE2bCneNYrpfpdb6R0bJ7BjII3ERA4/Iq0t6X/07b/A2u
-         5Nww==
-X-Gm-Message-State: AOAM533guAteQWt+wtfLJ6Fs8l2Hd1z1OHcdkpwI4pc2Hqh2C+vZIsQc
-        w5J8tHnnqtElMChJd00x/tRUCO6sTIshgoUWT38B2eK/MsJ5VA==
-X-Google-Smtp-Source: ABdhPJzCeultU29FTm/JBZilW5VAVm32j0fgdcu8Mvi1xP1XUxDRD2qYdD/eLWbeM65K6kc+s7uW063PChXvmPzgNW0=
-X-Received: by 2002:a05:6830:1653:: with SMTP id h19mr27310330otr.162.1634047354154;
- Tue, 12 Oct 2021 07:02:34 -0700 (PDT)
+        id S237086AbhJLOE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:04:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:44132 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237083AbhJLOEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 10:04:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4BB22ED1;
+        Tue, 12 Oct 2021 07:02:53 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.22.33])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C90843F66F;
+        Tue, 12 Oct 2021 07:02:50 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 15:02:43 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Subject: Re: [GIT PULL] arm64 fixes for 5.15-rc5
+Message-ID: <20211012140243.GA41546@C02TD0UTHF1T.local>
+References: <YWCPyK+xotTgUMy/@arm.com>
+ <CAHk-=whWZ4OxfKQwKVrRc-E9=w-ygKdVFn_HcAMW-DW8SgranQ@mail.gmail.com>
+ <20211011104729.GB1421@C02TD0UTHF1T.local>
+ <CAHk-=wjTAJwMJZ-6PPxvdtDmkL0=pfRF77nJ5qWw2vbiTzT4nQ@mail.gmail.com>
+ <87czoacrfr.ffs@tglx>
 MIME-Version: 1.0
-References: <20211002124012.18186-1-ajaygargnsit@gmail.com>
- <b9afdade-b121-cc9e-ce85-6e4ff3724ed9@linux.intel.com> <CAHP4M8Us753hAeoXL7E-4d29rD9+FzUwAqU6gKNmgd8G0CaQQw@mail.gmail.com>
- <20211004163146.6b34936b.alex.williamson@redhat.com> <CAHP4M8UeGRSqHBV+wDPZ=TMYzio0wYzHPzq2Y+JCY0uzZgBkmA@mail.gmail.com>
- <CAHP4M8UD-k76cg0JmeZAwaWh1deSP82RCE=VC1zHQEYQmX6N9A@mail.gmail.com>
- <CAHP4M8VPem7xEtx3vQPm3bzCQif7JZFiXgiUGZVErTt5vhOF8A@mail.gmail.com>
- <20211011085247.7f887b12.alex.williamson@redhat.com> <CAHP4M8UmnBH58H3qqba1p3kyEiPUk9xTp063yJr8RFduUNjgbg@mail.gmail.com>
-In-Reply-To: <CAHP4M8UmnBH58H3qqba1p3kyEiPUk9xTp063yJr8RFduUNjgbg@mail.gmail.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Tue, 12 Oct 2021 19:32:21 +0530
-Message-ID: <CAHP4M8Wyh92T3KBkpknkY+3gnN_ir-dfnLLf=D3_yUN0jj6Qxw@mail.gmail.com>
-Subject: Re: [PATCH] iommu: intel: remove flooding of non-error logs, when
- new-DMA-PTE is the same as old-DMA-PTE.
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87czoacrfr.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex, Lu.
+Hi Linus, Thomas,
 
-Posted v2 patch, as per
-https://lists.linuxfoundation.org/pipermail/iommu/2021-October/059955.html
+A couple of minor comments below -- I'll have a go at the rework Linus
+suggested and see what blows up.
 
-
-Kindly review, and let's continue on that thread now.
-
-
-Thanks and Regards,
-Ajay
-
-On Mon, Oct 11, 2021 at 11:43 PM Ajay Garg <ajaygargnsit@gmail.com> wrote:
->
-> Thanks Alex for your time.
->
-> I think I may have found the issue. Right now, when doing a
-> dma-unmapping, we do a "soft-unmapping" only, as the pte-values
-> themselves are not cleared in the unlinked pagetable-frame.
->
-> I have made the (simple) changes, and things are looking good as of
-> now (almost an hour now).
-> However, this time I will give it a day ;)
->
-> If there is not a single-flooding observed in the next 24 hours, I
-> would float the v2 patch for review.
->
->
-> Thanks again for your time and patience.
->
->
-> Thanks and Regards,
-> Ajay
->
->
+On Tue, Oct 12, 2021 at 03:18:16PM +0200, Thomas Gleixner wrote:
+> On Mon, Oct 11 2021 at 12:54, Linus Torvalds wrote:
+> > On Mon, Oct 11, 2021 at 3:47 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > And so the reason I really hate that patch is that it introduces a new
+> > "different architectures randomly and inexplicably do different
+> > things, and the generic behavior is very different on arm64 than it is
+> > elsewhere".
 > >
-> > Even this QEMU explanation doesn't make a lot of sense, vfio tracks
-> > userspace mappings and will return an -EEXIST error for duplicate or
-> > overlapping IOVA entries.  We expect to have an entirely empty IOMMU
-> > domain when a device is assigned, but it seems the only way userspace
-> > can trigger duplicate PTEs would be if mappings already exist, or we
-> > have a bug somewhere.
+> > That's just the worst kind of hack to me.
 > >
-> > If the most recent instance is purely on bare metal, then it seems the
-> > host itself has conflicting mappings.  I can only speculate with the
-> > limited data presented, but I'm suspicious there's something happening
-> > with RMRRs here (but that should also entirely preclude assignment).
-> > dmesg, lspci -vvv, and VM configuration would be useful.  Thanks,
+> > And in this case, it's really *horribly* hard to see what the call
+> > chain is. It all ends up being actively obfuscated and obscured
+> > through that 'handle_arch_irq' function pointer, that is sometimes set
+> > through set_handle_irq(), and sometimes set directly.
 > >
-> > Alex
+> > I really think that if the rule is "we can't do accounting in
+> > handle_domain_irq(), because it's too late for arm64", then the fix
+> > really should be to just not do that.
 > >
+> > Move the irq_enter()/irq_exit() to the callers - quite possibly far up
+> > the call chain to the root of it all, and just say "architecture code
+> > needs to do this in the low-level code before calling
+> > handle_arch_irq".
+> 
+> That's where it belongs. It's mandatory to have it there for NOHZ_FULL
+> to work correctly vs. instrumentation etc. I've pointed that out back
+> then after we fed the X86 entry code into the mincer and added noinstr
+> sections to keep tracers, BPF and kprobes away from it.
+> 
+> Looking at the architectures which "support" that by selecting
+> HAVE_CONTEXT_TRACKING:
+> 
+> arch/arm/Kconfig:	select HAVE_CONTEXT_TRACKING
+> arch/arm64/Kconfig:	select HAVE_CONTEXT_TRACKING
+> arch/csky/Kconfig:	select HAVE_CONTEXT_TRACKING
+> arch/mips/Kconfig:	select HAVE_CONTEXT_TRACKING
+> arch/powerpc/Kconfig:	select HAVE_CONTEXT_TRACKING		if PPC64
+> arch/riscv/Kconfig:	select HAVE_CONTEXT_TRACKING
+> arch/sparc/Kconfig:	select HAVE_CONTEXT_TRACKING
+> arch/x86/Kconfig:	select HAVE_CONTEXT_TRACKING		if X86_64
+> 
+> S390 and X86 are (mostly) complete and use the generic entry code. S390
+> does not even select HAVE_CONTEXT_TRACKING!
+> 
+> PPC64 has done quite some work to fix that, but it looks not yet complete. 
+> 
+> Mark is working on ARM64.
+> 
+> There is some effort underway to convert MIPS over to generic entry.
+> 
+> The rest needs all the fundamental architecture side changes.
+> 
+> > Anyway, it _looks_ to me like the pattern is very simple:
+> >
+> > Step 1:
+> >  - remove irq_enter/irq_exit from handle_domain_irq(), move it to all callers.
+> >
+> > This clearly doesn't change anything at all, but also doesn't fix the
+> > problem you have. But it's easy to verify that the code is the same
+> > before-and-after.
+
+I'm happy with this in principle. The only reason we didn't go down that
+route initially is because the callers are (typically) in the bowels of
+arch asm or platform code, they all need to be fixed in one go to avoid
+breaking anything, and it's a headache if we collide with any rework
+(e.g. MIPS moving to generic entry).
+
+As above, I'll have a go and see what blows up.
+
+It should be possible to have C wrappers for the common cases, and have
+the asm call that instead of branching directly to whichever irqchip
+handler handle_arch_irq points at.
+
+> > Step 2 is the pattern matching step:
+> >
+> >  - if the caller of handle_domain_irq() ends up being a function that
+> > is registered with set_handle_irq(), then we
+> >    (a) remove the irq_enter/irq_exit from it
+> >    (b) add it to the architectures that use handle_arch_irq.
+> >    (c) make sure that if there are other callers of it (not through
+> > handle_arch_irq) we move that irq_enter/irq_exit into them too
+> >
+> > I _suspect_ - but didn't check - that Step 2(c) doesn't actually
+> > exist. But who knows.
+> 
+> It only exists with chained handlers, but they do not need that at all
+> because:
+> 
+>         irq_enter()
+>         arch_handle_irq()
+>           handle_domain_irq()
+>             chained_handler()
+>               handle_domain_irq()
+
+... and this is exactly the shape of case where we need to avoid the
+nested calls so as to not break RCU's view of nesting.
+
+> which is still the same interrupt context and not a nested interrupt.
+> > It really looks like there is a very tight connection between "uses
+> > handle_domain_irq()" and "uses handle_arch_irq/set_handle_irq()". No?
+> 
+> Looks like. That might conflict with the MIPS rework though. I don't
+> know how far that came already. Cc'ed the MIPS people.
+
+There's also a bunch of old platforms on arch/arm which have a
+hard-coded handler (so not using handle_arch_irq/set_handle_irq()) which
+calls handle_domain_irq() -- those can be fixed up.
+
+Thanks,
+Mark.
