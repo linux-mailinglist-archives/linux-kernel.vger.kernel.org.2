@@ -2,75 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA26C42AB09
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F9542AB0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbhJLRpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:45:30 -0400
-Received: from smtprelay0034.hostedemail.com ([216.40.44.34]:38512 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231945AbhJLRp2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:45:28 -0400
-Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id F267B182CF669;
-        Tue, 12 Oct 2021 17:43:25 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id D433120A29E;
-        Tue, 12 Oct 2021 17:43:24 +0000 (UTC)
-Message-ID: <61c28865036cd40a96f2d1bb4c27fbbb08c2d3a5.camel@perches.com>
-Subject: Re: [PATCH] iio: buffer: Fix double-free in
- iio_buffers_alloc_sysfs_and_mask()
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>
-Date:   Tue, 12 Oct 2021 10:43:23 -0700
-In-Reply-To: <CAHp75Vf+DHNxiP5HzsKzzh5hFmr20P8SzOTnLXAvhC5Vb6hzMA@mail.gmail.com>
-References: <20211012092513.1349295-1-yangyingliang@huawei.com>
-         <CA+U=DsrHSwaiS7mT4rcHT_ZQwfPg+-Hwm-jkib11+m7W-VA_FQ@mail.gmail.com>
-         <CAHp75Vf+DHNxiP5HzsKzzh5hFmr20P8SzOTnLXAvhC5Vb6hzMA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+        id S232931AbhJLRpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:45:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229495AbhJLRpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 13:45:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3765610C9;
+        Tue, 12 Oct 2021 17:43:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634060627;
+        bh=yASkbNro1ryeq/Pn5XosEpr1G6AfQVBAJaOgTM+0Dn0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=nz7y5KBa+PIOjnf5zHSt/7PGOM48ZmDjlnwWT9m2ouhxtKrJ84S0Wh8DsGCa7rmrC
+         9P8kBS0340MOfHilxFpHcIlMaTcbwJXSty5L+mw6BcL+2kAwSDOMaDandi3ZSHzO26
+         wo5dTwKEtu7oNAub5pDl6PGH8gXPJegDOw6Xa+i8rLzIFcVtDmTK32UdlxWdukRcmj
+         3T1nGlnvUSWWU9Jmk/bbQkFnIMuDeFVXOMsoL7cjXfhr9BFvUR4GfxEywd4cmruKwX
+         CPnpklYmzy3pIhsO+jOnA6y2CnllPJs2HpVKIdK/zKoBGw9Mv1J5G18afcm1DYFhtG
+         jlK4slA0UQqnA==
+Message-ID: <9dbc9cedd6b49eb5c5078dd776aed808534534ec.camel@kernel.org>
+Subject: Re: [PATCH v2 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE
+ ioctl
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     dave.hansen@linux.intel.com, seanjc@google.com, x86@kernel.org,
+        yang.zhong@intel.com
+Date:   Tue, 12 Oct 2021 20:43:44 +0300
+In-Reply-To: <22c1c59f-9b7c-69fa-eff3-1670b94c77af@redhat.com>
+References: <20211012105708.2070480-1-pbonzini@redhat.com>
+         <20211012105708.2070480-3-pbonzini@redhat.com>
+         <644db39e4c995e1966b6dbc42af16684e8420785.camel@kernel.org>
+         <22c1c59f-9b7c-69fa-eff3-1670b94c77af@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.07
-X-Stat-Signature: z9zzireukwma57cfoj7sp1d5aw93oafd
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: D433120A29E
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+7/cZM/LWiim6mvI2uBZUhz4Od5CT6vMA=
-X-HE-Tag: 1634060604-209060
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-12 at 23:30 +0300, Andy Shevchenko wrote:
-> On Tue, Oct 12, 2021 at 2:37 PM Alexandru Ardelean
-> <ardeleanalex@gmail.com> wrote:
-> > 
-> > On Tue, Oct 12, 2021 at 12:18 PM Yang Yingliang
-> > <yangyingliang@huawei.com> wrote:
-> > > 
-> > > When __iio_buffer_alloc_sysfs_and_mask() failed, 'unwind_idx' should be
-> > > set to 'i - 1' to prevent double-free when cleanup resources.
-[]
-> 
-> I prefer to see
-> 
-> - for (; unwind_idx >= 0; unwind_idx--) {
-> + while (unwind_idx--)
+On Tue, 2021-10-12 at 19:03 +0200, Paolo Bonzini wrote:
+> On 12/10/21 18:57, Jarkko Sakkinen wrote:
+> > > +
+> > > =C2=A0=C2=A0static const struct file_operations sgx_vepc_fops =3D {
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.owner=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=3D THIS_MODULE,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.open=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=3D sgx_vepc_open,
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.unlocked_ioctl=C2=A0=3D s=
+gx_vepc_ioctl,
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.compat_ioctl=C2=A0=C2=A0=
+=C2=A0=3D sgx_vepc_ioctl,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.release=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=3D sgx_vepc_release,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.mmap=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=3D sgx_vepc_mmap,
+> > > =C2=A0=C2=A0};
+> > I went through this a few times, the code change is sound and
+> > reasoning makes sense in the commit message.
+> >=20
+> > The only thing that I think that is IMHO lacking is a simple
+> > kselftest. I think a trivial test for SGX_IOC_VEP_REMOVE_ALL
+> > would do.
+>=20
+> Yeah, a trivial test wouldn't cover a lot; it would be much better to at=
+=20
+> least set up a SECS, and check that the first call returns 1 and the=20
+> second returns 0.=C2=A0 There is no existing test for /dev/sgx_vepc at al=
+l.
+>=20
+> Right now I'm relying on Yang for testing this in QEMU, but I'll look=20
+> into adding a selftest that does the full setup and runs an enclave in a=
+=20
+> guest.
 
-Not the same code as unwind_idx would be decremented before entering
-the code block.
+This having a regression would not working would not cause that much collat=
+eral
+damage, especially since it would be probably quickly noticed by someone, s=
+o I
+think that this is not absolutely mandatory. So you can ignore kselftest pa=
+rt,
+and thus
 
-You'd want
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-	do {
-		...
-	} while (unwind_idx--);
+Thank you, this work helps me a lot, given that my SGX testing is based aro=
+und
+using QEMU ATM.
 
+/Jarkko
 
