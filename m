@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BF2429F7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585EF429F82
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234679AbhJLIPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:15:23 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:39150
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234660AbhJLIPU (ORCPT
+        id S234733AbhJLIQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234642AbhJLIQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:15:20 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D8C0040016
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 08:13:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634026397;
-        bh=Lax03IkPZGcQafL4kTdaW6vPwzUHxB/DSvDB2xM2dOc=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=m8lb4tSa4MMZ3TSHVMpWZHYiCiOzp/XTeoTFOJzy42sIbmnT/TErwUmGWA0gsfTgf
-         GmzufoNFBrk1DY+UfTaCEsA86UMzUHS/nZGWTQWw/QvEDs5QBEpRB1CIAndg7inmTu
-         xu+Pa4vs5t45SIaefnEuiG1exMuxE6OJJW4uN8LBg6ZD3Df5zOXnIEJyrwxFsq33NA
-         kKIRCPZPTRBHKxchqFKs0qNr8ofYOt5MaP+VtgCCys2zD63WjurdvxZ0LKIyR90K9U
-         kNOZ/lhXIl/FSqIkgA4AEKwv+dUo3xKjwWsC7I8YaXEvIp2JiCJXAy4xNTrZGLavGJ
-         +IJNbdMB683sQ==
-Received: by mail-lf1-f72.google.com with SMTP id p42-20020a05651213aa00b003fd8935b8d6so4790887lfa.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:13:17 -0700 (PDT)
+        Tue, 12 Oct 2021 04:16:02 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17672C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:14:01 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id h19so5617618uax.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:14:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gr2/Z0naSLUPb+MayH+nyDEWirany5uxuZ/i7RKgxSU=;
+        b=zcSk6kvpXDQ4j2EK2+y7ray0Na6HdRhS06AgQa+tTZBgcch7omm3zQSiHCXPGqiGS1
+         7EgWFanKh2TZ+n8Bk9pvTHBZR+eGXPXl5KtMb/qnD6CD70WR6hA4vjD9bEoP9mnOdxaa
+         pFeA3uurQzSmU9SoBvGE7xetAmf2nEphLtCOd5HRLdVisRsG+Nru5kNeiut+UgvI0wBC
+         mhzAduWdjAbZX8V3VRBeCKeqhBFo2JNAngpZE8L91QhX2yxmZtRiNN1+CM0FDo+nULQ/
+         lMj/lH15t7Fr6sWKopHhMU1x9nO+VfgJaDXlsP07OujuqQqQGAjthnVNM44c5oWaww/v
+         +B0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Lax03IkPZGcQafL4kTdaW6vPwzUHxB/DSvDB2xM2dOc=;
-        b=RsoFiGsJkeBH6krtygBlZCUa7c/J8zvTtaQnNm5UExiMH1SZC6xOG82EsbFtrnfSzH
-         mMt4ZSWWE+dATWfCMDms1+nbEuEXiXvkm5Og8lwMDLt2c8jZzj9P3gPxJ7xssgwARKjZ
-         0B2/x6s9BJm5HwBRCpqTyakmnL1WwaDMGCCyTO3ppfBUYXPd7PgzctmQnhgKEIpPfpN0
-         SWooDhoSujJU4a8dAWWme6FHNwPb8W9ssovJQCKUYFGD8GfSLPoCanju4zGikiKqZn2T
-         kGc4lpiyRNa3YtI3ECFfB4xpKvcGdOHbAXyyCOGqsd4lx6CwXj4hEiYRu3FSloAeUMB9
-         ovRA==
-X-Gm-Message-State: AOAM533wzRTWj1WngkdhfA739V5Y5nwVq5hgfg0PNpRqH/B+0vo0wqw6
-        oSk5vahMyMQu3ObYO3Z8dVrE7t3/07sEKxnUPByPYTeUYecuqz8BzauM59b7qdJG49oXIov7d1J
-        +P1P6yb8T0y/oR3nuB4HqJk85vWTfcejKaGGjMiOeDg==
-X-Received: by 2002:ac2:4c42:: with SMTP id o2mr32319697lfk.504.1634026397259;
-        Tue, 12 Oct 2021 01:13:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy5X496iLorhVFLrMc5Twzlh/1BiNaH21JTd0dWSkDt/8M4LBAfRGxFndv7DEG3Nxmhp451sw==
-X-Received: by 2002:ac2:4c42:: with SMTP id o2mr32319681lfk.504.1634026397094;
-        Tue, 12 Oct 2021 01:13:17 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id t12sm957129lfc.55.2021.10.12.01.13.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 01:13:16 -0700 (PDT)
-Subject: Re: [PATCH 3/8] rtc: max77686: rename day-of-month defines
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>
-References: <20211011155615.257529-1-luca@lucaceresoli.net>
- <20211011155615.257529-4-luca@lucaceresoli.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <757a941a-1b3c-8b5b-af40-0942b7a07239@canonical.com>
-Date:   Tue, 12 Oct 2021 10:13:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gr2/Z0naSLUPb+MayH+nyDEWirany5uxuZ/i7RKgxSU=;
+        b=B11dhnZW30ihvGRnamoyMn2+isXnCfCT5oHFh6vfPo6fDeN1Xs+KjweyiwMKT4WWxf
+         wi3AlRRPQLQpYsg3yX/WUFki2JNsJ6GGjriCprI81CEp+w4pbwhwzukKA0WWdwVC56UU
+         WdOT6ID/7Rw9oiJLTFORw+ZYhz1RZ2E99DsezJPvB+fOI0ePdrlvdB0LCVeBdc2mDjQI
+         A9r9CHpiRi7S9Zeap1ti5DXw9d6BLhGSOdJKk2Vmvvdlw0P434zcfp4kfr31ebHRE69X
+         5cQZrrWUdPRzuDApK50piZiT/r9IG+JX+nbOa/F9f2YMAQ/k0iuIbOyCGtUYB2wY89xp
+         PlkQ==
+X-Gm-Message-State: AOAM530KryE4csSPh5QKeBQSfRKIPdUGuS4llm0php84k67TE6Ij7rMO
+        v4VBIpcAZbTsialEdOVyLLJNDtmKQ/mIhhXd9+ZBXNcsBqQBqw==
+X-Google-Smtp-Source: ABdhPJzG9Dhgiod/wXzmIVRqNX8CNBE42sQEayZ3zzN4Dobgq28Rkx8L/n7OaxX73qh01VX5dkcbzs9vDVT+VUm8Dtk=
+X-Received: by 2002:ab0:16d4:: with SMTP id g20mr19911620uaf.114.1634026440192;
+ Tue, 12 Oct 2021 01:14:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211011155615.257529-4-luca@lucaceresoli.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211008154352.19519-1-semen.protsenko@linaro.org>
+ <20211008154352.19519-5-semen.protsenko@linaro.org> <7049b3a9-dc8f-2ae9-01e6-eb3b6f461400@kernel.org>
+ <CGME20211011101326eucas1p17e6deeaa2449bf3f0d6306fb930cce17@eucas1p1.samsung.com>
+ <CAPLW+4kJK=kaiCLDXX1EGLhbKJo5pcHQY9QCj0SVyGQP1n7q0g@mail.gmail.com> <ef781890-76ca-3392-9a17-3856fa1834cf@samsung.com>
+In-Reply-To: <ef781890-76ca-3392-9a17-3856fa1834cf@samsung.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Tue, 12 Oct 2021 11:13:48 +0300
+Message-ID: <CAPLW+4mXMLadAi6U3GiXqRHAGnLH79rZeK6w=EcbOccjqH4N9w@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] dt-bindings: clock: Document Exynos850 CMU bindings
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 17:56, Luca Ceresoli wrote:
-> RTC_DATE and REG_RTC_DATE are used for the registers holding the day of
-> month. Rename these constants to mean what they mean.
-> 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> ---
->  drivers/rtc/rtc-max77686.c           | 16 ++++++++--------
->  include/linux/mfd/max77686-private.h |  4 ++--
->  2 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
-> index bac52cdea97d..7e765207f28e 100644
-> --- a/drivers/rtc/rtc-max77686.c
-> +++ b/drivers/rtc/rtc-max77686.c
-> @@ -57,7 +57,7 @@ enum {
->  	RTC_WEEKDAY,
->  	RTC_MONTH,
->  	RTC_YEAR,
-> -	RTC_DATE,
-> +	RTC_MONTHDAY,
->  	RTC_NR_TIME
->  };
+Hi Rob,
 
+On Mon, 11 Oct 2021 at 13:42, Sylwester Nawrocki <s.nawrocki@samsung.com> wrote:
+>
+> On 11.10.2021 12:13, Sam Protsenko wrote:
+> > On Sat, 9 Oct 2021 at 23:41, Sylwester Nawrocki <snawrocki@kernel.org> wrote:
+> >>
+> >> On 08.10.2021 17:43, Sam Protsenko wrote:
+> >>> Provide dt-schema documentation for Exynos850 SoC clock controller.
+> >>>
+> >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> >>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> >>> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+> [...]
+> >>> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
+> >>> @@ -0,0 +1,185 @@
+> [...]
+> >>> +
+> >>> +title: Samsung Exynos850 SoC clock controller
+> >>> +
+> >>> +maintainers:
+> >>> +  - Sam Protsenko <semen.protsenko@linaro.org>
+> >>> +  - Chanwoo Choi <cw00.choi@samsung.com>
+> >>> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> >>> +  - Sylwester Nawrocki <s.nawrocki@samsung.com>
+> >>> +  - Tomasz Figa <tomasz.figa@gmail.com>
+> >>> +
+> >>> +description: |
+> >>> +  Exynos850 clock controller is comprised of several CMU units, generating
+> >>> +  clocks for different domains. Those CMU units are modeled as separate device
+> >>> +  tree nodes, and might depend on each other. Root clocks in that clock tree are
+> >>> +  two external clocks:: OSCCLK (26 MHz) and RTCCLK (32768 Hz). Those external
+> >>> +  clocks must be defined as fixed-rate clocks in dts.
+> >>> +
+> >>> +  CMU_TOP is a top-level CMU, where all base clocks are prepared using PLLs and
+> >>> +  dividers; all other leaf clocks (other CMUs) are usually derived from CMU_TOP.
+> >>> +
+> >>> +  Each clock is assigned an identifier and client nodes can use this identifier
+> >>> +  to specify the clock which they consume. All clocks that available for usage
+> >>
+> >> s/All clocks that available/All clocks available ?
+> >> No need to resend, I can amend it when applying.
+> >>
+> >
+> > Yeah, not a native speaker, I tend to do such mistakes sometimes :)
+> > Please fix when applying.
+> >
+> > Btw, I can see that you already applied 3 out of 5 patches from this
+> > patch series here: [1]. Can you please also apply the rest, or is
+> > there any outstanding comments that I missed?
+>
+> The patches look good to me, I just wanted to allow some for Rob to have
+> a look and provide an Ack.
+>
 
+Can you please review this one?
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Thanks!
 
-Best regards,
-Krzysztof
+> Regards,
+> --
+> Sylwester Nawrocki
+> Samsung R&D Institute Poland
