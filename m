@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5470142A134
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FD442A138
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235686AbhJLJhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:37:10 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:20520 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232657AbhJLJhJ (ORCPT
+        id S235776AbhJLJhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232657AbhJLJhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:37:09 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C9NUoh017600;
-        Tue, 12 Oct 2021 09:35:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2021-07-09;
- bh=eE5Sp0cDVe4/GifXOgOehqR1Epg5xlkrdK+O9AF8WjQ=;
- b=s1SkA6UlRUCRMEhT4RIaXsOcOImX9/3zRiJceJT3/+YsumeudnG9Cu/biZfg417+IVbs
- xtcshGt8mBlj7uO23qZDdOOd4OpDk+LzsoF7/JrPU3CxuMDyeHhy5y1Uk5wXZVmv7wBa
- gg4nlCq30fMbYIqXbweboTtD8SxkcpaGKZmNeB5MzVVBdoz6A7OMz7A+nLXrZBsUERPF
- 346xhfbJyiNdnGRoFDNVcQKdrHQkqH+7t88Svx7iGjaS5O8RfoCx5h5cVZvUpJH7/+uf
- o2rXAeCsIe9HgNEr6KHqTwthWzrokft+6YW9+XzRkVPdT6SHg1MUTA28dXkGT/MvTb/l 7Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bmtmk4ncn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 09:35:01 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19C9GOMj002992;
-        Tue, 12 Oct 2021 09:35:01 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 3bkyxrd38w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 09:35:01 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 19C9Z0oQ071579;
-        Tue, 12 Oct 2021 09:35:00 GMT
-Received: from t460.home (dhcp-10-175-26-251.vpn.oracle.com [10.175.26.251])
-        by aserp3030.oracle.com with ESMTP id 3bkyxrd367-1;
-        Tue, 12 Oct 2021 09:35:00 +0000
-From:   Vegard Nossum <vegard.nossum@oracle.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Beniamino Galvani <b.galvani@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2] net: arc: select CRC32
-Date:   Tue, 12 Oct 2021 11:34:46 +0200
-Message-Id: <20211012093446.1575-1-vegard.nossum@oracle.com>
-X-Mailer: git-send-email 2.23.0.718.g5ad94255a8
-In-Reply-To: <20211012091552.32403-1-vegard.nossum@oracle.com>
-References: <20211012091552.32403-1-vegard.nossum@oracle.com>
+        Tue, 12 Oct 2021 05:37:34 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E75C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:35:32 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id om14so3383944pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:35:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=o1k8Z+wdh4QOPkQnS+F7/9QuIX0JH9DSlOiSZOGiLJ0=;
+        b=JPI1N3b7+PMvCr14EefM11K1KWWL9gaM68fMQB7IOAiZNObXnUiboTUHWlnYJDNW4Q
+         mAL5untW+5tZk/Drg861zZnJ9H4YHfyVpz6p6D8S9xoKxTdQVHUTycAjL9cKWw8J1PiX
+         cinbdgMKzCE4rX5LNwEYerT8da3aVSR2j4wjuDJVPrWYQfsUMfLgK1JDGIjjGZftmbR4
+         NfkMIKuopr20cjROoPqyebI1ELIut1t1FrnCNI1rm0SN4UeT0GFxPEmu6D3Mb6gc/vpf
+         NvU9Ikd8PH7/TCmv20xvT7bPLqqXs259HgnHrkCC0K33EmuDKKIWryZ0FLbBfB/rBqNc
+         UMfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=o1k8Z+wdh4QOPkQnS+F7/9QuIX0JH9DSlOiSZOGiLJ0=;
+        b=8OWL6aDujH/awlswcqyDEPYORKpfd7FFE35YsESiKwtNv8jogbfRQ0NaOHL0oOxA21
+         m4ZPalGnmXVlEGqsshvsT/Tl+2qD9sp5B0UF5y7bRLnBW+LCc8aXQPRaDLdXIwT6AupQ
+         EV6HNCuVvjOwsp+GREjOs8sS314bAPum36xTghWY6u9NVCQHZ7KV8bAXFeAsvuqt0l8e
+         2/Gyt2DKwTbc7DZnO1BDhqfHmAkfQWn4fDoISpzvcUdaZDvPF2Wfx84Xd1cG9yFMepa8
+         42d7NxN6k9iVH6L2bmp3lr5BpXEhsOKjOQq3hkTWWivrNRzgKFM34sa4ZcfC3Ziie9bF
+         TL5A==
+X-Gm-Message-State: AOAM532DKeFwTzfWSskGCS+42cSdz8H/OSBtao3tOo1F4i6oB7eN5u1Y
+        yGd+J0ZHaDR3e5pNy+gSIOm1Yg==
+X-Google-Smtp-Source: ABdhPJwmjNVx5j57L4zEiPRXtEe8aH/7F8Q9b0NO96Wmfmn8nm+42QOAA5HdzvgpsdPfHkHGSn5kpQ==
+X-Received: by 2002:a17:902:8494:b0:13b:9365:6f12 with SMTP id c20-20020a170902849400b0013b93656f12mr28929229plo.19.1634031332258;
+        Tue, 12 Oct 2021 02:35:32 -0700 (PDT)
+Received: from localhost ([106.201.113.61])
+        by smtp.gmail.com with ESMTPSA id e15sm10067916pfc.134.2021.10.12.02.35.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 02:35:31 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 15:05:29 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel@lists.infradead.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 3/9] dt-bindings: clock: Add apple,cluster-clk binding
+Message-ID: <20211012093529.pzzfo44ikq5oc6cl@vireshk-i7>
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-4-marcan@marcan.st>
+ <0fe602f6-3adc-dfac-beee-2854b01cec5c@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: Uwm2zmYffT5-_2ZpLp-eJF2_kibW9BZk
-X-Proofpoint-ORIG-GUID: Uwm2zmYffT5-_2ZpLp-eJF2_kibW9BZk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0fe602f6-3adc-dfac-beee-2854b01cec5c@canonical.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following build/link error by adding a dependency on the CRC32
-routines:
+Apart from what Krzysztof already said:
 
-  ld: drivers/net/ethernet/arc/emac_main.o: in function `arc_emac_set_rx_mode':
-  emac_main.c:(.text+0xb11): undefined reference to `crc32_le'
+On 12-10-21, 10:51, Krzysztof Kozlowski wrote:
+> On 11/10/2021 18:57, Hector Martin wrote:
+> > +    pcluster_opp: opp-table-1 {
+> > +        compatible = "operating-points-v2";
+> > +        opp-shared;
+> > +
+> > +        opp01 {
+> > +            opp-hz = /bits/ 64 <600000000>;
+> > +            opp-microvolt = <781000>;
+> > +            opp-level = <1>;
 
-The crc32_le() call comes through the ether_crc_le() call in
-arc_emac_set_rx_mode().
+The opp-level thing wasn't designed to work this way, though it may
+work just fine. It was designed as a unique key for power-domains,
+which don't have opp-hz. The OPP core currently looks at 3 different
+values, which can act as a unique key to identify the OPP. clk-rate,
+bandwidth and level.
 
-[v2: moved the select to ARC_EMAC_CORE; the Makefile is a bit confusing,
-but the error comes from emac_main.o, which is part of the arc_emac module,
-which in turn is enabled by CONFIG_ARC_EMAC_CORE. Note that arc_emac is
-different from emac_arc...]
+I think this is the first platform which has both hz and level in the
+CPUs OPP table. What exactly is level in this case ?
 
-Fixes: 775dd682e2b0ec ("arc_emac: implement promiscuous mode and multicast filtering")
-Cc: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
----
- drivers/net/ethernet/arc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Again, it may work fine, I just don't know where it may end up
+breaking :)
 
-diff --git a/drivers/net/ethernet/arc/Kconfig b/drivers/net/ethernet/arc/Kconfig
-index 37a41773dd435..92a79c4ffa2c7 100644
---- a/drivers/net/ethernet/arc/Kconfig
-+++ b/drivers/net/ethernet/arc/Kconfig
-@@ -21,6 +21,7 @@ config ARC_EMAC_CORE
- 	depends on ARC || ARCH_ROCKCHIP || COMPILE_TEST
- 	select MII
- 	select PHYLIB
-+	select CRC32
- 
- config ARC_EMAC
- 	tristate "ARC EMAC support"
 -- 
-2.23.0.718.g5ad94255a8
-
+viresh
