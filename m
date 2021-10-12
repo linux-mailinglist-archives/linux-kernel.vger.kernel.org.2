@@ -2,111 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E5B42A95D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF0D42A968
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhJLQ1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 12:27:37 -0400
-Received: from esa.hc503-62.ca.iphmx.com ([216.71.135.51]:56847 "EHLO
-        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhJLQ1g (ORCPT
+        id S230038AbhJLQax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 12:30:53 -0400
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:42866 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhJLQaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 12:27:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
-  t=1634055934; x=1665591934;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=DtHWogmbefTOZHJ1zHpA6HOO+MNBFrIhVE63j1QS6y4=;
-  b=llE4hPPljvaT2XxEsi3vAwlxUh8fO66vdIKT83SOuqtAcOAAbbO/qise
-   +4daTgpWTnZws979Iwy4GViqpmsFGX3WjjiilUKAOgurz3YyJfywxnnWv
-   qQrZzQGZFtksCznHPDqUJN7o1eMcIu4w0b9esqjdbzySloLeNJsdzx2Y7
-   Q=;
-IronPort-Data: A9a23:tg1HLKwPIO6S1xzuzBh6t+fTxyrEfRIJ4+MujC+fZmUNrF6WrkUGm
- 2AaUGqOOfaOYGGmfd5xbYu0oEkFuZSAmIdgT1Rs+FhgHilAwSbn6XV1DatS0we6dJCroJdPt
- p1GAjXmBJ5sFie0SjCFbeS68hGQ7UwML1bFILas1hpZHGeIcw98z0I+8wIFqtQw24HgW1rX4
- YmaT/D3YTdJ5RYlYwr41Ire8HuDjNyq0N/PlgVjDRzjlAa2e0g9VPrzF4noR5fLatU88tqBe
- gr25OrRElU1XfsaIojNfr7TKiXmS1NJVOSEoiI+t6OK2nCuqsGuu0qS2TV1hUp/0l20c95NJ
- Nplrbi7TwICM5b3qb4SXjlcOWJ/IPJsweqSSZS/mZT7I0zueHzqxfVrVB1wNooe/Ot8HSdT6
- vUEJSoJaRfFjOveLLCTE7M9wJV8apOzbMVD4RmMzhmAZRoiaYzPTqHL/ttV9Covj9xDB/LZY
- IwSYFKDaTyaO0EeYQpOVfrSms+thCS4TQZ9lmibnq474nH2lQZM4bfyZY+9ltuiAJ89clyjj
- mDP+WL5Kh4dM9ObxHyO9XfErubRlCz6XqodE7q38vMsi1qWrkQLDwYVfVS8pva9hwi1XNc3A
- 0YP9yUnqawa+0usQd3wGRa/pRasphwAc9VXFOI+5UeGza+8ywKYAHUUCzdZafQ4u8IsAz8nz
- FmEm5XuHzMHmLmUT2+Ns7SZtzW/PQALImIYIywJVw0I55/kuo5bpg7ASsZLFK+zk8HvHjfx0
- 3aGoUAWgrQVgskjzai3/VnbxTmro/DhVgMp6x/FdmOj4BlwaIOsa8qv81ezxe5HN4WxVl6av
- z4FnKCjAPsmBpaLkiGGXKMQA7i16uyBNzqailcH84QdyglBMkWLJeh4iAyS7m8zWirYUVcFu
- HPuhD4=
-Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
-  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Oct 2021 12:25:32 -0400
-Received: from [10.42.0.123] (10.32.190.116) by connhm04.connect.uwaterloo.ca
- (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 12
- Oct 2021 12:25:31 -0400
-Subject: Re: [PATCH 5/5 v0.6] sched/umcg: add
- Documentation/userspace-api/umcg.txt
-To:     Peter Oskolkov <posk@posk.io>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <linux-api@vger.kernel.org>, Paul Turner <pjt@google.com>,
-        Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>
-References: <20210917180323.278250-1-posk@google.com>
- <20210917180323.278250-6-posk@google.com>
- <12eb2300-4a78-9e93-30a3-8e2ddba4693f@uwaterloo.ca>
- <CAFTs51W6ZHrGaoXEbXNCkVKLxe7_S2raYcXMBzypC7VUDMrU-w@mail.gmail.com>
-From:   Thierry Delisle <tdelisle@uwaterloo.ca>
-Message-ID: <e162fdea-5323-89d2-49d0-3fe56ba2ec3a@uwaterloo.ca>
-Date:   Tue, 12 Oct 2021 12:25:31 -0400
+        Tue, 12 Oct 2021 12:30:52 -0400
+Received: by mail-pl1-f174.google.com with SMTP id l6so13853069plh.9;
+        Tue, 12 Oct 2021 09:28:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lqr0Xjwo4bt3FrFTL/PXm4WKYr4cNF7lZlXpOFURPfQ=;
+        b=SjJGQP6U6oLLtzpWYa39+eIyV/ufxLuk60KmSL3tNqrNmmJ8T7IGinTHuTa9Gybf2h
+         K2MWmvZRv50yyRntsu8PJ4uJtcHMfuw+m9YSTaqd9071skdn+jPT4IA+c6A5pEV+/6xw
+         cZPk3gsrNMMuAJT5stit8AztCFtMAmr/5mG7cLci89wkkVJFVD4XBVnXKhsOEn7hdhjz
+         ZmeBTrlu/wcXxE7dyhzTp9NLZIIHi4VAuA7z2UFqgJhLrt4EY2zfFXGX5j0wagArblyc
+         nxaJavVfir0069ZZK74MXqKbAJ2gG5IYDByuwYWiauX7wUpfU4rLQygjXRqkoYLHFarI
+         KvAQ==
+X-Gm-Message-State: AOAM530QpWi4BwCYFrdZ2pxDv3AogGqO/Cx1ZgXnxpg0qpmFjgnaCFAy
+        fhJlelhuvP/jaZGvAMCVL61NH+/QoeQ=
+X-Google-Smtp-Source: ABdhPJzIvz2dXTPPZrJJPf3E236of698Im62a+c0zIOAN9z2BtB6E2tsUs4RK05DMhyFmQX5M4kIjA==
+X-Received: by 2002:a17:90a:b391:: with SMTP id e17mr7186659pjr.137.1634056129580;
+        Tue, 12 Oct 2021 09:28:49 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:8c1a:acb2:4eff:5d13])
+        by smtp.gmail.com with ESMTPSA id j6sm6268139pfb.175.2021.10.12.09.28.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 09:28:49 -0700 (PDT)
+Subject: Re: [PATCH] scsi: sd: print write through due to no caching mode page
+ as warning
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     dgilbert@interlog.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210122083000.32598-1-martin.kepplinger@puri.sm>
+ <2d3b0e8f422b7ff08a5c4ce804a1884eaf9b5d60.camel@puri.sm>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <87cad616-2075-b52e-cb8c-2f7180bbb1ee@acm.org>
+Date:   Tue, 12 Oct 2021 09:28:47 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <CAFTs51W6ZHrGaoXEbXNCkVKLxe7_S2raYcXMBzypC7VUDMrU-w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <2d3b0e8f422b7ff08a5c4ce804a1884eaf9b5d60.camel@puri.sm>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [10.32.190.116]
-X-ClientProxiedBy: connhm01.connect.uwaterloo.ca (172.16.137.65) To
- connhm04.connect.uwaterloo.ca (172.16.137.68)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- > Hi Thierry,
- >
- > sorry for the delayed reply - I'm finally going through the
- > documentation patches in preparation for the upcoming next version
- > patchset mail-out.
+On 10/12/21 8:18 AM, Martin Kepplinger wrote:
+> does this "consmetic" change have any chance of being acceptible? At
+> least it'd be nice if messages sent as error are real errors that needs
+> fixing.
 
-No problem.
+Hi Martin,
 
- > The documentation here outlines what sys_umcg_wait does, and it does
- > put the current task to sleep without context switching if next_tid is
- > zero. The question of whether this behavior is or is not appropriate
- > for a worker wishing to yield/park itself is at a "policy" level, if
- > you wish, and this "policy" level is described in "state transitions"
- > section later in the document. sys_umcg_wait() does not enforce this
- > "policy" directly, in order to make it simpler and easier to describe
- > and reason about.
+It seems like I overlooked that patch. Since this patch was posted ten 
+months ago, it is likely that it has disappeared from the mailboxes of 
+the people who are interested in this patch. Please repost this patch.
 
-Just to be clear, sys_umcg_wait supports an operation that, when called 
-from
-a worker, puts the worker to sleep without triggering block detection
-or context-switching back to the server?
+Thanks,
 
-
-
- >> With that said, I'm a little confused by the usage of "yields" in that
- >> example. I would expect workers yielding to behave like kernel threads
- >> calling sched_yield(), i.e., context switch to the server but also be
- >> immediately added to the idle_workers_ptr.
- >
- > I'm not a fan of arguing about how to name things. If the maintainers
- > ask me to rename wait/wake to park/unpark, I'll do that.
-
-I understand the sentiment, and I'm perfectly happy with the use of 
-wait/wake.
-I was exclusively referring to this one use of "yield" in the 
-documentation.
+Bart.
