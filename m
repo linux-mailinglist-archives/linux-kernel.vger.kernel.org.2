@@ -2,85 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89D5429AD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E993429AD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234592AbhJLBNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:13:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234475AbhJLBNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:13:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6562360F21;
-        Tue, 12 Oct 2021 01:11:07 +0000 (UTC)
-Date:   Mon, 11 Oct 2021 21:11:05 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH] tracing: Fix event probe removal from dynamic events
-Message-ID: <20211011211105.48b6a5fd@oasis.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233363AbhJLBRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:17:05 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:37697 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230074AbhJLBRC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 21:17:02 -0400
+Received: by mail-oi1-f176.google.com with SMTP id o83so19524032oif.4;
+        Mon, 11 Oct 2021 18:15:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8guroVPH6/gNfHo5cZ8DZfxGp6mmHxatL0hXvlIRlAw=;
+        b=l/csLqnZeJySMYywrWfGYjMDrzzCsWyXisr0Ry4DR91Texsg0kB7qEEwh+Qgg2yHzK
+         5T5wSQEj42CmcG1blDgCzDpPOgRKHNIYzfagmR58Ko+WHFu9IfUw2lxE//1aIGuf45P5
+         otqTkp0AZKj8nQzHazrl7kzNXVlDrElk52BzIdawPACkALYMtyLChW573f2WDrJgyd9D
+         xL9ChZEYVUOW80gMUy70n7oQG9o5544pG8X5zayPEgMYVYwBbk6MWJP/fSz9/yKyi7RY
+         zLrUzjeaARtHP5ErSNyhmttkljqCVtVPK3Y7indkTNh5aWkwvDDZf9ui8AuwouHisQIp
+         AN2w==
+X-Gm-Message-State: AOAM532VBIUyTYhW1gcMxGmR0huroeP0jZNguBHt3qmIg3zHiaP4vT73
+        j6xCo2d5NAVBqhmAlfNOmTLRkTMDcQ==
+X-Google-Smtp-Source: ABdhPJw8PjwiP0yFElsjrewyt2KeHNI9F0RpvFeFGvILZARkJje5Oautd2DPfd9OSd2Ci46Za3zjXQ==
+X-Received: by 2002:aca:b609:: with SMTP id g9mr1703544oif.154.1634001301381;
+        Mon, 11 Oct 2021 18:15:01 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id 21sm2071589oix.1.2021.10.11.18.14.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 18:15:00 -0700 (PDT)
+Received: (nullmailer pid 1526504 invoked by uid 1000);
+        Tue, 12 Oct 2021 01:14:59 -0000
+Date:   Mon, 11 Oct 2021 20:14:59 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: leds: Add Allwinner R329/D1 LED
+ controller
+Message-ID: <YWThkxDK72N5TC3a@robh.at.kernel.org>
+References: <20211004022601.10653-1-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004022601.10653-1-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Sun, Oct 03, 2021 at 09:26:00PM -0500, Samuel Holland wrote:
+> The Allwinner R329 and D1 SoCs contain an LED controller designed to
+> drive a series of RGB LED pixels. It supports PIO and DMA transfers, and
+> has configurable timing and pixel format.
+> 
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+> 
+> Changes from v1:
+>  - Fixed typo leading to duplicate t1h-ns property
+>  - Removed "items" layer in definition of dmas/dma-names
+>  - Replaced uint32 type reference with maxItems in timing properties
+> 
+>  .../leds/allwinner,sun50i-r329-ledc.yaml      | 140 ++++++++++++++++++
+>  1 file changed, 140 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml b/Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml
+> new file mode 100644
+> index 000000000000..d70cb2393a2e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml
+> @@ -0,0 +1,140 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/allwinner,sun50i-r329-ledc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Allwinner R329 LED Controller Bindings
+> +
+> +maintainers:
+> +  - Samuel Holland <samuel@sholland.org>
+> +
+> +description:
+> +  The LED controller found in Allwinner sunxi SoCs uses a one-wire serial
+> +  interface to drive up to 1024 RGB LEDs.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: allwinner,sun50i-r329-ledc
+> +      - items:
+> +          - enum:
+> +              - allwinner,sun20i-d1-ledc
+> +          - const: allwinner,sun50i-r329-ledc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  clocks:
+> +    items:
+> +      - description: Bus clock
+> +      - description: Module clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: bus
+> +      - const: mod
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  dmas:
+> +    maxItems: 1
+> +    description: TX DMA channel
+> +
+> +  dma-names:
+> +    const: tx
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  vled-supply:
+> +    description: Regulator supplying power to external LEDs
+> +
+> +  format:
+> +    description: Pixel format (subpixel transmission order), default is "grb"
+> +    enum:
+> +      - "bgr"
+> +      - "brg"
+> +      - "gbr"
+> +      - "grb"
+> +      - "rbg"
+> +      - "rgb"
 
-When an event probe is to be removed via the API to remove dynamic events,
-an -EBUSY error is returned.
+Don't need quotes.
 
-This is because the removal of the event probe does not expect to see the
-event system and name that the event probe is attached to, even though
-that's part of the API to create it. As the removal of probes is to use
-the same API as they are created, fix it by first testing if the first
-parameter of the event probe to be removed matches the system and event
-that the probe is attached to, and then adjust the argc and argv of the
-parameters to match the rest of the syntax.
+> +
+> +  t0h-ns:
+> +    maxItems: 1
+> +    description: Length of high pulse when transmitting a "0" bit
+> +
+> +  t0l-ns:
+> +    maxItems: 1
+> +    description: Length of low pulse when transmitting a "0" bit
+> +
+> +  t1h-ns:
+> +    maxItems: 1
+> +    description: Length of high pulse when transmitting a "1" bit
+> +
+> +  t1l-ns:
+> +    maxItems: 1
+> +    description: Length of low pulse when transmitting a "1" bit
+> +
+> +  treset-ns:
 
-Fixes: 7491e2c442781 ("tracing: Add a probe that attaches to trace events")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace_eprobe.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+All these need a vendor prefix.
 
-diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
-index 3044b762cbd7..20ee265f01fd 100644
---- a/kernel/trace/trace_eprobe.c
-+++ b/kernel/trace/trace_eprobe.c
-@@ -120,6 +120,25 @@ static bool eprobe_dyn_event_match(const char *system, const char *event,
- {
- 	struct trace_eprobe *ep = to_trace_eprobe(ev);
- 
-+	/* First argument is the system/event the probe is attached to */
-+
-+	if (argc < 1)
-+		return false;
-+
-+	slash = strchr(argv[0], '/');
-+	if (!slash)
-+		slash = strchr(argv[0], '.');
-+	if (!slash)
-+		return false;
-+
-+	if (strncmp(ep->event_system, argv[0], slash - argv[0]))
-+		return false;
-+	if (strcmp(ep->event_name, slash + 1))
-+		return false;
-+
-+	argc--;
-+	argv++;
-+
- 	return strcmp(trace_probe_name(&ep->tp), event) == 0 &&
- 	    (!system || strcmp(trace_probe_group_name(&ep->tp), system) == 0) &&
- 	    trace_probe_match_command_args(&ep->tp, argc, argv);
--- 
-2.31.1
-
+> +    maxItems: 1
+> +    description: Minimum delay between transmission frames
+> +
+> +patternProperties:
+> +  "^multi-led@[0-9a-f]+$":
+> +    type: object
+> +    $ref: leds-class-multicolor.yaml#
+> +    properties:
+> +      reg:
+> +        minimum: 0
+> +        maximum: 1023
+> +        description: Index of the LED in the series (must be contiguous)
+> +
+> +    required:
+> +      - reg
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - resets
+> +  - dmas
+> +  - dma-names
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/leds/common.h>
+> +
+> +    ledc: led-controller@2008000 {
+> +      compatible = "allwinner,sun20i-d1-ledc",
+> +                   "allwinner,sun50i-r329-ledc";
+> +      reg = <0x2008000 0x400>;
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      clocks = <&ccu 12>, <&ccu 34>;
+> +      clock-names = "bus", "mod";
+> +      resets = <&ccu 12>;
+> +      dmas = <&dma 42>;
+> +      dma-names = "tx";
+> +      interrupts = <36 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +      multi-led@0 {
+> +        reg = <0x0>;
+> +        color = <LED_COLOR_ID_RGB>;
+> +        function = LED_FUNCTION_INDICATOR;
+> +      };
+> +    };
+> +
+> +...
+> -- 
+> 2.32.0
+> 
+> 
