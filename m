@@ -2,136 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD417429F15
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D594429EF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234480AbhJLH6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:58:14 -0400
-Received: from mga07.intel.com ([134.134.136.100]:10457 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234071AbhJLH6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:58:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="290565900"
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="290565900"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 00:56:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,367,1624345200"; 
-   d="scan'208";a="480237924"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by orsmga007.jf.intel.com with ESMTP; 12 Oct 2021 00:56:08 -0700
-Date:   Tue, 12 Oct 2021 15:49:44 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgoncalv@redhat.com, hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v17 0/5] FPGA Image Load (previously Security Manager)
-Message-ID: <20211012074944.GC95330@yilunxu-OptiPlex-7050>
-References: <20210929230025.68961-1-russell.h.weight@intel.com>
- <20211009080859.GA85181@yilunxu-OptiPlex-7050>
- <450ed897-f726-9671-26b7-2a24bb046e89@redhat.com>
- <20211011014154.GA82360@yilunxu-OptiPlex-7050>
- <79350773-3629-2734-21c0-0314a762e722@redhat.com>
+        id S234380AbhJLHwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233988AbhJLHwC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 03:52:02 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3671AC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:50:01 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id y12so64728742eda.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:50:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zjhSxsxPmDkUBZgqIoPJCNZSxFw5dwlvuXZheYtUcVg=;
+        b=b2cCKTVjViEa00fDBlt1t+X+EnjEbzq3Y9qULPi0IFdRkhvDBXItqS4QyRXhWUHl3q
+         +kO9GX5KnfKGMiHNhepZRGx4YXYfjsrj9og/StGshwDBxaxAqcRMkhMeCwuQDspinotB
+         QmbT+wYgdIl+WdwiMXvE1b0QjUcxZRYyQR4090lYiA8cnCwIve4rYy9cKsnz7LIzpyy2
+         vjAUM6TOb1HYZWRY8qg/nhwuMiaXZKTEx7U25JRIkoYvqBxr33mWA+5tWlhTwqwB07eQ
+         RMt8Ofme6aKYl3PKwDk/mrNKgVEH/XjBYTKYowXatH+16kIT3XD4gtEpCi4+pj+aqutl
+         /CmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zjhSxsxPmDkUBZgqIoPJCNZSxFw5dwlvuXZheYtUcVg=;
+        b=GRo4ON2X8A31hzMwxyg0ndqteTD4BFGIrIJlQwEBe3nmXtEA4lsgmrlqEsItS1Xrz+
+         Qb36UehaBhmLyCxWicJnHzkLPmKf6tnSaQRRqPe3+g+rFduADnjhKexhVi7b6vnqUgQM
+         ilszBJQtKg+K3R/MOjKDD/xKNN8yvyrVl1JbNjxPJNQnnmoV9iyMkAIsvtG+UQN+9Q+h
+         gPey3vFTr1KVl4+56lDkoKTopd9As5Yl7Nt7AKXDPFL6Sv6bXjj7zOOMLg/or+xZzjth
+         v1bzwfXkXNxWinKZIYbukqWtq8ide8NRsDSx3HjZa6NLh1S30M8LjyoGsL3kFw95//a/
+         YLFg==
+X-Gm-Message-State: AOAM531wShJ8ICGEt5FnQHFqM2yASwJnjNraD2tSCYdiES9pXUPOsTez
+        /LZnbFcDWx5Utle0qznWHwpHMw==
+X-Google-Smtp-Source: ABdhPJwEFW5rMXWCaGXRtspf+k4QIl8RCZntZQkLWKOktRpPjqvjyyL6uimYwSRvt4kCgM75IuJc2Q==
+X-Received: by 2002:a17:906:d145:: with SMTP id br5mr26348894ejb.250.1634024999730;
+        Tue, 12 Oct 2021 00:49:59 -0700 (PDT)
+Received: from Iliass-MacBook-Pro.local ([62.74.11.155])
+        by smtp.gmail.com with ESMTPSA id m13sm5295878eda.41.2021.10.12.00.49.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 00:49:59 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 10:49:54 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>, davem@davemloft.net,
+        kuba@kernel.org, brouer@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
+        akpm@linux-foundation.org, hawk@kernel.org, peterz@infradead.org,
+        yuzhao@google.com, will@kernel.org, willy@infradead.org,
+        jgg@ziepe.ca, mcroce@microsoft.com, willemb@google.com,
+        cong.wang@bytedance.com, pabeni@redhat.com, haokexin@gmail.com,
+        nogikh@google.com, elver@google.com, memxor@gmail.com,
+        vvs@virtuozzo.com, linux-mm@kvack.org, edumazet@google.com,
+        alexander.duyck@gmail.com, dsahern@gmail.com
+Subject: Re: [PATCH net-next -v5 3/4] mm: introduce __get_page() and
+ __put_page()
+Message-ID: <YWU+Ihzmhf+UTnal@Iliass-MacBook-Pro.local>
+References: <20211009093724.10539-1-linyunsheng@huawei.com>
+ <20211009093724.10539-4-linyunsheng@huawei.com>
+ <62106771-7d2a-3897-c318-79578360a88a@nvidia.com>
+ <89bcc42a-ad95-e729-0748-bf394bf770be@redhat.com>
+ <YWQuRpdJOMyJBBrs@apalos.home>
+ <3bba942e-eefd-7ac2-7a8c-b6c349641dd4@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <79350773-3629-2734-21c0-0314a762e722@redhat.com>
+In-Reply-To: <3bba942e-eefd-7ac2-7a8c-b6c349641dd4@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 05:35:03AM -0700, Tom Rix wrote:
-> 
-> On 10/10/21 6:41 PM, Xu Yilun wrote:
-> > On Sat, Oct 09, 2021 at 05:11:20AM -0700, Tom Rix wrote:
-> > > On 10/9/21 1:08 AM, Xu Yilun wrote:
-> > > > On Wed, Sep 29, 2021 at 04:00:20PM -0700, Russ Weight wrote:
-> > > > > The FPGA Image Load framework provides an API to upload image
-> > > > > files to an FPGA device. Image files are self-describing. They could
-> > > > > contain FPGA images, BMC images, Root Entry Hashes, or other device
-> > > > > specific files. It is up to the lower-level device driver and the
-> > > > > target device to authenticate and disposition the file data.
-> > > > I've reconsider the FPGA persistent image update again, and think we
-> > > > may include it in FPGA manager framework.
-> > > > 
-> > > > Sorry I raised this topic again when it is already at patch v17, but now
-> > > > I need to consider more seriously than before.
-> > > > 
-> > > > We have consensus the FPGA persistent image update is just like a normal
-> > > > firmware update which finally writes the nvmem like flash or eeprom,
-> > > > while the current FPGA manager deals with the active FPGA region update
-> > > > and re-activation. Could we just expand the FPGA manager and let it handle
-> > > > the nvmem update as well? Many FPGA cards have nvmem and downloaders
-> > > > supports updating both FPGA region and nvmem.
-> > > > 
-> > > > According to the patchset, the basic workflow of the 2 update types are
-> > > > quite similar, get the data, prepare for the HW, write and complete.
-> > > > They are already implemented in FPGA manager. We've discussed some
-> > > > differences like threading or canceling the update, which are
-> > > > not provided by FPGA manager but they may also nice to have for FPGA
-> > > > region update. An FPGA region update may also last for a long time??
-> > > > So I think having 2 sets of similar frameworks in FPGA is unnecessary.
-> > > > 
-> > > > My quick mind is that we add some flags in struct fpga_mgr & struct
-> > > > fpga_image_info to indicate the HW capability (support FPGA region
-> > > > update or nvmem update or both) of the download engine and the provided
-> > > > image type. Then the low-level driver knows how to download if it
-> > > > supports both image types.
-> > > > 
-> > > > An char device could be added for each fpga manager dev, providing the
-> > > > user APIs for nvmem update. We may not use the char dev for FPGA region
-> > > > update cause it changes the system HW devices and needs device hotplug
-> > > > in FPGA region. We'd better leave it to FPGA region class, this is
-> > > > another topic.
-> > > > 
-> > > > More discussion is appreciated.
-> > > I also think fpga_mgr could be extended.
-> > > 
-> > > In this patchset,
-> > > 
-> > > https://lore.kernel.org/linux-fpga/20210625195849.837976-1-trix@redhat.com/
-> > > 
-> > > A second, similar set of write ops was added to fpga_manger_ops,
-> > > 
-> > > new bit/flag was added to fpga_image_info
-> > > 
-> > > The intent was for dfl to add their specific ops to cover what is done in
-> > > this patchset.
-> > I think we don't have to add 2 ops for reconfig & reimage in framework,
-> > the 2 processes are almost the same.
+On Tue, Oct 12, 2021 at 03:38:15PM +0800, Yunsheng Lin wrote:
+> On 2021/10/11 20:29, Ilias Apalodimas wrote:
+> > On Mon, Oct 11, 2021 at 02:25:08PM +0200, Jesper Dangaard Brouer wrote:
+> >>
+> >>
+> >> On 09/10/2021 21.49, John Hubbard wrote:
+> >>> So in case it's not clear, I'd like to request that you drop this one
+> >>> patch from your series.
+> >>
+> >> In my opinion as page_pool maintainer, you should also drop patch 4/4 from
+> >> this series.
+> >>
+> >> I like the first two patches, and they should be resend and can be applied
+> >> without too much further discussion.
 > > 
-> > Just add the _REIMAGE (or something else, NVMEM?) flag for
-> > fpga_image_info, and low level drivers handle it as they do for other
-> > flags.
+> > +1
+> 
+> Ok, it seems there is a lot of contention about how to avoid calling
+> compound_head() now.
+> 
+
+IMHO compound head is not that heavy.  So you could keep the get/put page
+calls as-is and worry about micro optimizations later,  especially since
+it's intersecting with folio changes atm.
+
+> Will send out the uncontroversial one first.
+> 
+
+Thanks!
+
+> > That's what I hinted on the previous version. The patches right now go way
+> > beyond the spec of page pool.  We are starting to change core networking
+> > functions and imho we need a lot more people involved in this discussion,
+> > than the ones participating already.
 > > 
-> > How do you think?
+> > As a general note and the reason I am so hesitant,  is that we are starting
+> > to violate layers here (at least in my opinion).  When the recycling was
+> > added,  my main concern was to keep the network stack unaware (apart from
+> > the skb bit).  Now suddenly we need to teach frag_ref/unref internal page
 > 
-> A single set is fine.
+> Maybe the skb recycle bit is a clever way to avoid dealing with the network
+> stack directly.
 > 
-> A difficult part of is the length of  time to do the write. The existing
-> write should be improved to use a worker thread.
+> But that bit might also introduce or hide some problem, like the data race
+> as pointed out by Alexander, and the odd using of page pool in mlx5 driver.
 
-Yes, we could have a flag and optionally threading the writing.
-
-Thanks,
-Yilun
+Yea.  I was always wondering if unmaping the buffers and let the network stack
+deal with them eventually would be a good idea (on those special cases).
+There's an obvious disadvantage (which imho is terrible) in this approach.
+Any future functions that we add in the core networking code, will need to
+keep that in mindxi,  and unmap some random driver memory  if they start
+playing tricks with the skb and their fragments. IOW I think this is very
+fragile.
 
 > 
-> Tom
+> > pool counters and that doesn't feel right.  We first need to prove the race
+> > can actually happen, before starting to change things.
 > 
-> > 
-> > Thanks,
-> > Yilun
-> > 
-> > > Any other driver would do similar.
-> > > 
-> > > Is this close to what you are thinking ?
-> > > 
-> > > Tom
-> > > 
-> > > > Thanks,
-> > > > Yilun
-> > > > 
+> As the network stack is adding a lot of performance improvement, such as
+> sockmap for BPF, which may cause problem for them, will dig more to prove
+> that.
+> 
+
+Ok that's something we need to look at.  Are those buffers freed eventually
+by skb_free_head() etc?
+
+Regards
+/Ilias
