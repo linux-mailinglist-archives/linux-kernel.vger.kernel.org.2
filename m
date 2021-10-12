@@ -2,246 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4923F42A0FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42C742A0FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235682AbhJLJ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
+        id S235654AbhJLJ2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235678AbhJLJ2J (ORCPT
+        with ESMTP id S235598AbhJLJ2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:28:09 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01BCEC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:26:08 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id g8so78641634edt.7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:26:07 -0700 (PDT)
+        Tue, 12 Oct 2021 05:28:07 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F84EC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:26:06 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id y7so7575915pfg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:26:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ozsk5wU9BRdehEm6wfFkwHm7LZpP1yOcjBM51oE2xXY=;
-        b=nxAZmBEO/uB9toOz505VYHMZKds9anF1BM4pyPIWx3CrqNyrN1RTGbT4dXhNK64xcv
-         DM9+uca91rPdwFXUoNsMyETp6X5Kn4RqKGyWLgQ5YUjVV7wrbkkFvAbd+9xMN1ir2Nyi
-         JF3E1+WxFXaDky+CYe+Awlm4eZ6YS3xuX2EOuRh6rW+C8rR621j+2UYIOw4fn8drfZhA
-         dBUdztzR/aZwdgVBwI0VWLlhkKFh0hB3YgPy2HQkkbtwRChNtqOkAs04cfkS/8V+gZrl
-         SAHbCmaA/Wqv614/qRh06GIw7Xnhc3VydLgijtV/KK1jZ7UVne1LB3Q82EB2k7f7tAfu
-         M2OQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UThv9/l5JLWRg1EUeAvAf2rdPT35TBaOdfxcZAHIs5s=;
+        b=voDlimX1xu+r1wO6ZvIbywJAaRgOgRtqddCp3Hh1AeXbQ93FTDKhoeQ42v9vpzTxYv
+         HFn/5wqHW1p4MuYCK2nkAEW5LeRFKqprZ8K6iURkCe/V5KrfviM0SOYVYaebrv0WBRSZ
+         RKJxDFFc+kCsdm5lAe9oQoolSePNiEGXpBIbn2t1OlAvRDo9NzlcrIqG5AIjZ5c6MISO
+         Nd2ivsspRDIPUS4BfUtKRspXloSe/k0oCTpttKIxUWfLchexZZ+KW8uOdt4BnO26/I0o
+         cu8FeKhUJgmm/PDqrPK4jCXM+U0L8HVP+fnWvwNrdXo2YL0TZc3zq6TgH6wzQRfuOkaJ
+         AzbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ozsk5wU9BRdehEm6wfFkwHm7LZpP1yOcjBM51oE2xXY=;
-        b=7yZtS0TNz8dZ5R/3ApT2GGlPYFI1JftZMs11hawEYWq6lR9cIKwQlAJdO7roEFJWYg
-         6nPU+/UUymnorOXI4kYx4loxMeRYb+HHohNGBRZoetvSgOghKHItxkPOdFe6fhNoLB1E
-         YTq4VXqXJgyIZ03cId6zX0V5QUHtkc9aN9rllrk4Pc5x+VWq+AioohSnr+LyLlXglIg4
-         LOPgPaeZa0qpwxMvhv4Fi1oVEynuWnFZ0V8Kt5PJGxMTe7UsBvfluhV5id3O6Vi4xveJ
-         RRGrXbT0D0tgZYO1x5A70w+kdUUNo/cSrqRarvMVHBJjCqAsOWJNmfKA0PDUzkcyMIau
-         QaGQ==
-X-Gm-Message-State: AOAM533Vpas3BO7YK4mFrIrGk+DHbnYyj66uMyMoNr8xgGD0hZCmJNla
-        +ACzjDifdWiCDU9ZqJzkNI0TiQX1TQ+GfuYNq72/0w==
-X-Google-Smtp-Source: ABdhPJwHd/r5h9LPbSQgbvVWqIim/F/A9SIvxiQ3dVgZYJqMkalFXGfXdPDRQ8ggp0IDSY9Ix47J9PxDApGWxVc7XlA=
-X-Received: by 2002:a50:e184:: with SMTP id k4mr49794940edl.217.1634030766417;
- Tue, 12 Oct 2021 02:26:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UThv9/l5JLWRg1EUeAvAf2rdPT35TBaOdfxcZAHIs5s=;
+        b=sdXCKVGhUQ0aFICovoAH7E1VJyqVvMn24DHHEYzvNyMwVI0aEL7fLiADT41RpaAafR
+         2OFM/+dZOstaDp2rYQT2eWbkBpSaM1XpS7DwgfL4xK2x3vq9tbw8ZYFL/LqpJhouHQc1
+         u+7rmdWiBNzhd5E7LyrpJBalBZHdWyhRUSCr+eyGW0BCDgoCpMDR+coWrXX9us95TJRs
+         roNmIMySDhHlibfRmWXyQhKVRPmtJHZNtQC768ajgHu7jQ3YMGrlYV3fKgzaab+NjPlX
+         KOPz61NuukwFSPk5z29QQGnZKkfPpf0YTCp2XKTCRyCOus2n45CISeoGSlvYglsSCorH
+         KT9Q==
+X-Gm-Message-State: AOAM531LhxyiYFxLSXcL2P2xamN3wM8lcj1f4V+z7RIxtwciDbPnrKNW
+        BGQy7AEUTpPSTuNs855QudakvA==
+X-Google-Smtp-Source: ABdhPJxfgS8Y8jGCRj45ARUvTIJ99eYeufFhQrb7v3F0pttpzckQD45Ok68amrQxDgv2TgaRtqRFuQ==
+X-Received: by 2002:a63:555d:: with SMTP id f29mr22264998pgm.33.1634030765435;
+        Tue, 12 Oct 2021 02:26:05 -0700 (PDT)
+Received: from localhost ([106.201.113.61])
+        by smtp.gmail.com with ESMTPSA id w13sm1961636pjc.29.2021.10.12.02.26.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 02:26:04 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 14:56:03 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Sibi Sankar <sibis@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device
+ does not exist
+Message-ID: <20211012092603.lkmhhjoo5v67wh44@vireshk-i7>
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-5-marcan@marcan.st>
+ <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
+ <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
+ <20211012055143.xmkbvhbnolspgjin@vireshk-i7>
+ <caf16a6c-f127-7f27-ed17-0522d9f1fb9e@marcan.st>
 MIME-Version: 1.0
-References: <20211011153306.939942789@linuxfoundation.org>
-In-Reply-To: <20211011153306.939942789@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 12 Oct 2021 14:55:54 +0530
-Message-ID: <CA+G9fYu1ybgNS4ttzk+-t_4evb5EsZMdTdCS1Qa1BGyHctR_dA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/82] 5.10.73-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <caf16a6c-f127-7f27-ed17-0522d9f1fb9e@marcan.st>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 at 21:04, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.73 release.
-> There are 82 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 13 Oct 2021 15:32:51 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.73-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 12-10-21, 14:57, Hector Martin wrote:
+> On 12/10/2021 14.51, Viresh Kumar wrote:
+> > On 12-10-21, 14:34, Hector Martin wrote:
+> > > The table *is* assigned to a genpd (the memory controller), it's just that
+> > > that genpd isn't actually a parent of the CPU device. Without the patch you
+> > > end up with:
+> > > 
+> > > [    3.040060] cpu cpu4: Failed to set performance rate of cpu4: 0 (-19)
+> > > [    3.042881] cpu cpu4: Failed to set required opps: -19
+> > > [    3.045508] cpufreq: __target_index: Failed to change cpu frequency: -19
+> > 
+> > Hmm, Saravana and Sibi were working on a similar problem earlier and decided to
+> > solve this using devfreq instead. Don't remember the exact series which got
+> > merged for this, Sibi ?
+> > 
+> > If this part fails, how do you actually set the performance state of the memory
+> > controller's genpd ?
+> 
+> The clock controller has the genpd as an actual power-domain parent, so it
+> does it instead. From patch #7:
+> 
+> > +	if (cluster->has_pd)
+> > +		dev_pm_genpd_set_performance_state(cluster->dev,
+> > +						   dev_pm_opp_get_required_pstate(opp, 0));
+> > +
+> 
+> This is arguably not entirely representative of how the hardware works,
+> since technically the cluster switching couldn't care less what the memory
+> controller is doing; it's a soft dependency, states that should be switched
+> together but are not interdependent (in fact, the clock code does this
+> unconditionally after the CPU p-state change, regardless of whether we're
+> shifting up or down; this is, FWIW, the same order macOS uses, and it
+> clearly doesn't matter which way you do it).
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Yeah, I understand what you are doing. But the current patch is
+incorrect in the sense that it can cause a bug on other platforms. To
+make this work, you should rather set this genpd as parent of CPU
+devices (which are doing anyway since you are updating them with CPU's
+DVFS). With that the clk driver won't be required to do the magic
+behind the scene.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.10.73-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.10.y
-* git commit: 0d59553e5bda91f40076ce48a3f6025079d45ac4
-* git describe: v5.10.72-83-g0d59553e5bda
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.72-83-g0d59553e5bda
-
-## No regressions (compared to v5.10.72-85-g9564d0571928)
-
-## No fixes (compared to v5.10.72-85-g9564d0571928)
-
-## Test result summary
-total: 88621, pass: 75123, fail: 566, skip: 12197, xfail: 735
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 289 total, 289 passed, 0 failed
-* arm64: 39 total, 39 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 38 total, 38 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 39 total, 39 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 30 total, 30 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 39 total, 39 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+viresh
