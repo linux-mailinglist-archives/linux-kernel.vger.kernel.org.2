@@ -2,172 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5A6429F98
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6B3429F9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234716AbhJLISN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:18:13 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:57180 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234707AbhJLISM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:18:12 -0400
-Received: from [10.180.13.145] (unknown [10.180.13.145])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxL2s_RGVhTpcYAA--.37061S2;
-        Tue, 12 Oct 2021 16:15:59 +0800 (CST)
-Subject: Re: [PATCH v3] usb: ohci: add check for host controller functional
- states
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Patchwork Bot <patchwork-bot@kernel.org>
-References: <1633677970-10619-1-git-send-email-zhuyinbo@loongson.cn>
- <20211008142639.GA721194@rowland.harvard.edu>
- <7a505fc4-ec47-ac83-633f-7a5251bd5f82@loongson.cn>
- <20211009193901.GA753830@rowland.harvard.edu>
- <adc67ae2-e162-a427-a8a9-7df55c92a00c@loongson.cn>
- <20211011161732.GA822456@rowland.harvard.edu>
-From:   zhuyinbo <zhuyinbo@loongson.cn>
-Message-ID: <e8aef4ff-5d5c-9330-a736-aa3586cba0ca@loongson.cn>
-Date:   Tue, 12 Oct 2021 16:15:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S234826AbhJLISp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:18:45 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11612 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234501AbhJLISo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 04:18:44 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C6bklo013750;
+        Tue, 12 Oct 2021 04:16:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=sCHeE5N0DNCQKcwXOPP+AL0+kwJtk8g7J0h6YarbhZ8=;
+ b=hl11BKmd5EBo7M0pYCWzMF4GxrN9mRHDdfUz63oO/BvGfEcqE1RzKJTjjGW0yLz34O9Z
+ wWWs/fB0NUyod0vN3tQXuXgx/wCYB6P90TBL2cTgqyrh2RnviM7yAx0Upde2+hrGW+fr
+ ndmLWEEj/yJ++IvU33HCFPSgwDkLUyvHToM3CtLEtutYcvbZAukb3tkHimkWXkJu0/QH
+ MAuP9TBty0DGAfnxpNFFKMToc9HAVBKGIpB3znVCsX1MPD13Xu/S9FlxUGY6CiUNe8aS
+ Dyws+Ja7ckSVNmnWyiYRd+KNZfdwVPZVHjF/+WOP+8BpjfaLGx6moEfyDxlsg8ptb7b2 yg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bmvh9k7g1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 04:16:42 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19C6p6Jg002284;
+        Tue, 12 Oct 2021 04:16:41 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bmvh9k7fk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 04:16:41 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19C8BSsS007817;
+        Tue, 12 Oct 2021 08:16:39 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06fra.de.ibm.com with ESMTP id 3bk2bjchqq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 08:16:38 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19C8Aq6r44827110
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 08:10:52 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A454111C054;
+        Tue, 12 Oct 2021 08:16:27 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 23E0211C064;
+        Tue, 12 Oct 2021 08:16:27 +0000 (GMT)
+Received: from [9.145.20.44] (unknown [9.145.20.44])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Oct 2021 08:16:27 +0000 (GMT)
+Message-ID: <f442a49f-dbc4-5c38-ffa1-6b17742592c3@linux.ibm.com>
+Date:   Tue, 12 Oct 2021 10:16:26 +0200
 MIME-Version: 1.0
-In-Reply-To: <20211011161732.GA822456@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v5 08/14] KVM: s390: pv: handle secure storage exceptions
+ for normal guests
 Content-Language: en-US
-X-CM-TRANSID: AQAAf9DxL2s_RGVhTpcYAA--.37061S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGrWxAw1kKw1kWw1fKw4rZrb_yoW7JryrpF
-        W2kanaka1DJr1FvrnFqw1kKr9Y9rW7t3y5Wr98CrW7Awn0q34agrs7KrWrCa95WrySg3W7
-        ZF4j9ay3Ww4UAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvYb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l
-        c2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWU
-        twCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07
-        bOoGdUUUUU=
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
+        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
+References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
+ <20210920132502.36111-9-imbrenda@linux.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+In-Reply-To: <20210920132502.36111-9-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: nK4buYSFW41FI9f_Wi3VZVwR9hqyKAxC
+X-Proofpoint-GUID: z2KkevzjgqzfsB2GU9ql2vGq9UJRv-Ve
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-12_01,2021-10-11_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ bulkscore=0 malwarescore=0 clxscore=1015 adultscore=0 lowpriorityscore=0
+ phishscore=0 impostorscore=0 spamscore=0 mlxlogscore=864 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110120045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/20/21 15:24, Claudio Imbrenda wrote:
+> With upcoming patches, normal guests might touch secure pages.
+> 
+> This patch extends the existing exception handler to convert the pages
+> to non secure also when the exception is triggered by a normal guest.
+> 
+> This can happen for example when a secure guest reboots; the first
+> stage of a secure guest is non secure, and in general a secure guest
+> can reboot into non-secure mode.
+> 
+> If the secure memory of the previous boot has not been cleared up
+> completely yet, a non-secure guest might touch secure memory, which
+> will need to be handled properly.
+> 
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> ---
+>   arch/s390/mm/fault.c | 10 +++++++++-
+>   1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> index eb68b4f36927..74784581f42d 100644
+> --- a/arch/s390/mm/fault.c
+> +++ b/arch/s390/mm/fault.c
+> @@ -767,6 +767,7 @@ void do_secure_storage_access(struct pt_regs *regs)
+>   	struct vm_area_struct *vma;
+>   	struct mm_struct *mm;
+>   	struct page *page;
+> +	struct gmap *gmap;
+>   	int rc;
+>   
+>   	/*
+> @@ -796,6 +797,14 @@ void do_secure_storage_access(struct pt_regs *regs)
+>   	}
+>   
+>   	switch (get_fault_type(regs)) {
+> +	case GMAP_FAULT:
+> +		gmap = (struct gmap *)S390_lowcore.gmap;
+> +		addr = __gmap_translate(gmap, addr);
+> +		if (IS_ERR_VALUE(addr)) {
+> +			do_fault_error(regs, VM_ACCESS_FLAGS, VM_FAULT_BADMAP);
+> +			break;
+> +		}
+> +		fallthrough;
 
-在 2021/10/12 上午12:17, Alan Stern 写道:
-> On Mon, Oct 11, 2021 at 01:10:18PM +0800, zhuyinbo wrote:
->> 在 2021/10/10 上午3:39, Alan Stern 写道:
->>> On Sat, Oct 09, 2021 at 10:01:25AM +0800, zhuyinbo wrote:
->>>> 在 2021/10/8 下午10:26, Alan Stern 写道:
->>>>> On Fri, Oct 08, 2021 at 03:26:10PM +0800, Yinbo Zhu wrote:
->>>>>> The usb states of ohci controller include UsbOperational, UsbReset,
->>>>>> UsbSuspend and UsbResume. Among them, only the UsbOperational state
->>>>>> supports launching the start of frame for host controller according
->>>>>> the ohci protocol spec, but in S3/S4 press test procedure, it may
->>>>> Nobody reading this will know what "S3/S4 press test procedure" means.
->>>>> You have to explain it, or use a different name that people will
->>>>> understand.
->>>> okay, I got it.
->>>>>> happen that the start of frame was launched in other usb states and
->>>>>> cause ohci works abnormally then kernel will allways report rcu
->>>>>> call trace. This patch was to add check for host controller
->>>>>> functional states and if it is not UsbOperational state that need
->>>>>> set INTR_SF in intrdisable register to ensure SOF Token generation
->>>>>> was been disabled.
->>>>> This doesn't make sense.  You already mentioned that only the
->>>>> UsbOperational state supports sending start-of-frame packets.  So if the
->>>>> controller is in a different state then it won't send these packets,
->>>>> whether INTR_SF is enabled or not.
->>>>>
->>>>> What problem are you really trying to solve?
->>>> Only UsbOperational state supports sending start-of-frame packets, but in
->>>> fact, in S3/S4 press test procedure,
->>>>
->>>> usb in non-UsbOperational state that send start-of-frame packets but hc
->>>> driver doesn't deal with this frame. and hc will
->>>>
->>>> allways lauched the SOF for finishing the frame, the cpu will hand this sof
->>>> interrupt and doesn't deal with time interrupt
->>>>
->>>> that will cause rcu call trace then system doesn't suspend to memory/disk.
->>> I still don't understand.
->>>
->>> Are you saying that your OHCI controller behaves badly because it sends
->>> SOF packets even when the state is different from UsbOperational?
->> HC will allways report the SoF interrupt in the all time when HC was not in
->> NO-UsbOperation state.
-> How did your host controller get into the non-UsbOperational state?
-> What part of the code is responsible for changing to a different state?
->
-> It looks like the only place where this could happen is in
-> ohci_rh_suspend().  So if you disable SOF interrupts there, it should
-> fix your problem.
+This would trigger an export and not a destroy, right?
 
-in fact, I want to consider all non-UsbOperational state for my patch, 
-as for UsbSuspend state and my issue that
-
-your advice is the pefect solution, and apply for the change according 
-to your advice, it can fix my problem by my test.
-
-in addition, I got the non-UsbOperationnal state was by read hcfs bits 
-in ohci control register, for the UsbSuspend status that
-
-it is only changed in ohci_rh_suspend. and other states was changed in 
-multiple place that seems disable sof interrupt was only
-
-in ohci_irq. but if you still think it  has risk i want to following 
-your advice and as it v5 version.
-
->
->> and no WritebackDoneHead interrupt that is the issue phenomenon. and this
->> situation is badly state for ohci.
->>
->>>> Hi Alan Stern,
->>>>
->>>>       even though ed_rm_list is non-NULL, if hc in non-UsbOperation state set
->>>> SoF status in usbsts register that is illegal,
->>>>
->>>> at this time hcd doesn't need care URB whether finished,  because hc had
->>>> into a wrong state. even thoug it doesn't has this patch,
->>>>
->>>> URB was not be able to finish when hc in above worng state. except software
->>>> can intervence this wrong state. but the SoF bit of usbsts
->>>>
->>>> register was set by HC, and this action will happen always !!! software
->>>> clear SoF state I think it isn't make sense. software only disable SoF
->>>>
->>>> interrupt to fix HC wrong state.
->>> This problem happens when you go into S3 or S4 suspend, right?  So you
->>> should fix the problem by disabling INTR_SF when the root hub is
->>> suspended.  Try adding
->>>
->>> 	/* All ED unlinks should be finished, no need for SOF interrupts */
->>> 	ohci_writel(ohci, OHCI_INTR_SF, &ohci->regs->intrdisable);
->>>
->>> into ohci_rh_suspend(), just before the update_done_list() call.  If you
->>> add this then INTR_SF will not be enabled during S3 or S4 suspend, so
->>> the problem shouldn't occur.  Does that work for you?
->> The system doesn't suspend to disk completely by my test result and hc will
->> always produce SoF interrupt.
-> Have you tried adding those two lines of code shown above?
->
-> If you haven't tested them, please don't write back until you have.
->
-> Alan Stern
-
-Hi Alan stern,
-
-     I have a try that follow your advice and the s3/s4 test result is 
-good for me.
-
-
-Thanks,
-
-Yinbo Zhu.
+>   	case USER_FAULT:
+>   		mm = current->mm;
+>   		mmap_read_lock(mm);
+> @@ -824,7 +833,6 @@ void do_secure_storage_access(struct pt_regs *regs)
+>   		if (rc)
+>   			BUG();
+>   		break;
+> -	case GMAP_FAULT:
+>   	default:
+>   		do_fault_error(regs, VM_READ | VM_WRITE, VM_FAULT_BADMAP);
+>   		WARN_ON_ONCE(1);
+> 
 
