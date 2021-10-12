@@ -2,67 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2A142A489
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87BB42A49E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236426AbhJLMgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:36:01 -0400
-Received: from office.oderland.com ([91.201.60.5]:49740 "EHLO
-        office.oderland.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236386AbhJLMf6 (ORCPT
+        id S236457AbhJLMjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 08:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236326AbhJLMjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:35:58 -0400
-Received: from [193.180.18.161] (port=33228 helo=[10.137.0.14])
-        by office.oderland.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <josef@oderland.se>)
-        id 1maGyg-001xTd-HN; Tue, 12 Oct 2021 14:33:54 +0200
-Message-ID: <ae50cd31-6b5d-3dc4-4ba7-d628a74dc722@oderland.se>
-Date:   Tue, 12 Oct 2021 14:33:53 +0200
+        Tue, 12 Oct 2021 08:39:03 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5070FC061745
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:37:01 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id a25so64669867edx.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:37:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pqrs.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9Oo+boBE+eAlZd6IuqDEtqKvRJtwbHtewLQoxfaOhls=;
+        b=kfT7unhmvoilGV6/AHKo7A+myzo7Y74AbsTelhnnuMoPgx/+7LGeMEqk01wfguHzED
+         HSTDVH6ck0ZHzyEF01fgdd9zMllTnqQobRb2Vmzect38QkOUsX3CYa68z0cvU0/J4HQY
+         zfotXFbZyYWseR0Ts5M2T5jWxO2foaGtGAfLw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9Oo+boBE+eAlZd6IuqDEtqKvRJtwbHtewLQoxfaOhls=;
+        b=iZON/jeK3kxEzadcAvV4L6LJivfoiP3RVo2RCRRZ7iIF0GqNDBV3u0E7W6PCueho8D
+         z47qYnksbeeetN9z7w99CkHm0OnOZXKnEadcSkhnOrcuR7ir3O5aNnAab5mzg3cbSrGa
+         UroCHjc9UtnXF0RU4u84chQ3ANTB/cpkLypf8KAyC3T4gak2kHtDAtowrB8Dw/xX3d29
+         n8H+AbHM8cpUGuArLFd48GqC0L04Tcr6NzJIXdg0e5ent1dDgv7BZ8Y3PUo1vAhkpx5H
+         9xlwiV9hQGAb0VDxkxK0p9Z8q/etVDgYHB7prQ1ckPN+ez3TkiYvwJw9Cz0FKVaM+mQY
+         rYZw==
+X-Gm-Message-State: AOAM531rUWfMfqP+4q3AuY4OPZma5w8YlYIageey2J90ACXKTRndAVE2
+        b1kQgeIgMpu3ylbM3DhEtQCSLg==
+X-Google-Smtp-Source: ABdhPJwnXMOGGn+nFu0moDIaL9BzwsDFS640vDAAKjNXXWeI35G8Kc1Dwg+JzeKQjhinRg9NuFseQw==
+X-Received: by 2002:a17:907:7388:: with SMTP id er8mr33437254ejc.324.1634042219554;
+        Tue, 12 Oct 2021 05:36:59 -0700 (PDT)
+Received: from capella.. (27-reverse.bang-olufsen.dk. [193.89.194.27])
+        by smtp.gmail.com with ESMTPSA id b5sm5763629edu.13.2021.10.12.05.36.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 05:36:59 -0700 (PDT)
+From:   =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alvin@pqrs.dk>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/6] net: dsa: add support for RTL8365MB-VC
+Date:   Tue, 12 Oct 2021 14:35:49 +0200
+Message-Id: <20211012123557.3547280-1-alvin@pqrs.dk>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:93.0) Gecko/20100101
- Thunderbird/93.0
-Subject: Re: [REGRESSION][BISECTED] 5.15-rc1: Broken AHCI on NVIDIA ION
- (MCP79)
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     tglx@linutronix.de, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rui Salvaterra <rsalvaterra@gmail.com>
-References: <CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com>
- <b023adf9-e21c-59ac-de49-57915c8cede8@oderland.se>
- <87fst6pjcu.wl-maz@kernel.org>
-From:   Josef Johansson <josef@oderland.se>
-In-Reply-To: <87fst6pjcu.wl-maz@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - office.oderland.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - oderland.se
-X-Get-Message-Sender-Via: office.oderland.com: authenticated_id: josjoh@oderland.se
-X-Authenticated-Sender: office.oderland.com: josjoh@oderland.se
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 13:34, Marc Zyngier wrote:
-> On Mon, 11 Oct 2021 19:47:21 +0100,
-> Josef Johansson <josef@oderland.se> wrote:
->> I've got a late regression to this commit as well, but in the GPU area.
->> The problem arises when booting it as XEN dom0.
-> What is the behaviour without Xen? We have some special treatment for
-> Xen PV which may or may not have an influence on the behaviour...
->
-> 	M.
->
-It's working if I'm booting without Xen.
+From: Alvin Šipraga <alsi@bang-olufsen.dk>
 
-Thanks!
+This series adds support for Realtek's RTL8365MB-VC, a 4+1 port
+10/100/1000M Ethernet switch. The driver - rtl8365mb - was developed by
+Michael Ramussen and myself.
 
-Regards
+This version of the driver is relatively slim, implementing only the
+standalone port functionality and no offload capabilities. It is based
+on a previous RFC series [1] from August, and the main difference is the
+removal of some spurious VLAN operations. Otherwise I have simply
+addressed most of the feedback. Please see the respective patches for
+more detail.
 
-- Josef
+In parallel I am working on offloading the bridge layer capabilities,
+but I would like to get the basic stuff upstreamed as soon as possible.
 
+[1] https://lore.kernel.org/netdev/20210822193145.1312668-1-alvin@pqrs.dk/
+
+Alvin Šipraga (6):
+  ether: add EtherType for proprietary Realtek protocols
+  net: dsa: move NET_DSA_TAG_RTL4_A to right place in Kconfig/Makefile
+  dt-bindings: net: dsa: realtek-smi: document new compatible rtl8365mb
+  net: dsa: tag_rtl8_4: add realtek 8 byte protocol 4 tag
+  net: dsa: realtek-smi: add rtl8365mb subdriver for RTL8365MB-VC
+  net: phy: realtek: add support for RTL8365MB-VC internal PHYs
+
+ .../bindings/net/dsa/realtek-smi.txt          |    1 +
+ drivers/net/dsa/Kconfig                       |    1 +
+ drivers/net/dsa/Makefile                      |    2 +-
+ drivers/net/dsa/realtek-smi-core.c            |    4 +
+ drivers/net/dsa/realtek-smi-core.h            |    1 +
+ drivers/net/dsa/rtl8365mb.c                   | 1610 +++++++++++++++++
+ drivers/net/phy/realtek.c                     |    8 +
+ include/net/dsa.h                             |    2 +
+ include/uapi/linux/if_ether.h                 |    1 +
+ net/dsa/Kconfig                               |   20 +-
+ net/dsa/Makefile                              |    3 +-
+ net/dsa/tag_rtl8_4.c                          |  166 ++
+ 12 files changed, 1810 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/net/dsa/rtl8365mb.c
+ create mode 100644 net/dsa/tag_rtl8_4.c
+
+-- 
+2.32.0
 
