@@ -2,134 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B3242A34E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0F642A356
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236263AbhJLLbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:31:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236149AbhJLLbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:31:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F04A61040;
-        Tue, 12 Oct 2021 11:29:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634038175;
-        bh=U3HP5QIpD7LIdnqxGqxBn+ZxL4oXuDRgiGQEgFAeD9I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=gzkWeCj3+rCgN3HeS32XpHTxPTGe22Omg/sVDC6hrexHcJIxGdbXEsGL8tq7ItDzD
-         k1KOydqi4TSCumBjoxJhO7O3JG1VOr7ATNYT3ud9143Kt7G0RTtZWZL8Sohpf7MhWC
-         7b8nST/WVImgTG/MpeJBCSTXtO79DC53/v5ZzWm9I2Qit4DW8APooapQGdT9wN+z4m
-         mUREPGwnVpC8mvaCGLe76eUPBldhm1Opmh+dMAoDMjVv/082gDCNeGw8YbxWmTvagv
-         BBvNsJE00j5RwpOKDSkzVA38DevTdvadLWuJqBEDAHYROOGQsu7Bryg2sLLChBCl76
-         9FrJIvtJlD/cg==
-Date:   Tue, 12 Oct 2021 06:29:32 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Brian Norris <briannorris@chromium.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: Re: [PATCH] mwifiex: Add quirk resetting the PCI bridge on MS
- Surface devices
-Message-ID: <20211012112932.GA1735699@bhelgaas>
+        id S236286AbhJLLce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 07:32:34 -0400
+Received: from mail-ua1-f47.google.com ([209.85.222.47]:37475 "EHLO
+        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232665AbhJLLcc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 07:32:32 -0400
+Received: by mail-ua1-f47.google.com with SMTP id f4so12151712uad.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 04:30:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mxx6LhYcnZkltIS5O+8bqf9djcqENUX/1eFzYLlP5Lg=;
+        b=nmv/W0yVar4shargUhbY8OPj5b6Inuc2xamVJF1fmzFu9e+/ZK3obJZXEMPNj5h4MK
+         baQBew+Z28ky/ePDWGywbnO9TNwdjYudliahE5jxLv1g6cnWW1uT+7Y7v0PT5dzTdn2T
+         KkDp6KqYy2Bf6pzNomntVzDkN2yChl+VRsJ9S5hp42yevFTxVJKR5Gfp9wX/j+iHlHlw
+         0jTYNMmS1wgKoXOf8E2eBWscWqZTdkdC9/OZqYpqGnfjXWfmPAKcHpS2FxfoYmD9vCNV
+         7JCZX96FbVRGBd2chDma7NdR38aoZTv2Csy/Kt8MYxtXSs/YEbL7++KfYZfctGlo0l0i
+         SfrQ==
+X-Gm-Message-State: AOAM530LVo1Y9+gzm0KtQLINYbd+iBnOTDB1xs8AR54bVA7vI3Sud/J/
+        x43ui1XwCNm3ZhRdWDk1Meoesa+PaO6vC55z2Ng=
+X-Google-Smtp-Source: ABdhPJzhbMf9LdDAbzUzsAhrGUK+yvRDXd5WORrlMPZf9brhwBfRpEWs7MqT7CHyxmMUVCsqCWLd24+Cn2Fd8eGISLQ=
+X-Received: by 2002:a67:d583:: with SMTP id m3mr29630362vsj.41.1634038230323;
+ Tue, 12 Oct 2021 04:30:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fee8b431-617f-3890-3ad2-67a61d3ffca2@v0yd.nl>
+References: <20210726140001.24820-1-nikita.shubin@maquefel.me>
+ <20210726140001.24820-9-nikita.shubin@maquefel.me> <ed557882a9530f2fd6245e34657be62399df76bc.camel@gmail.com>
+ <CAK8P3a0Y4uwX4B10d5CR3WjZ1qXAqhKJGJ0EhUEF60uB1q3H9A@mail.gmail.com>
+ <e50f2da7af1fa6f02fd413081fa5762837b86895.camel@gmail.com>
+ <CAK8P3a3jAdYQerE03O5s2_PBUqt5QPCPSQxxs54E7-V=0HVBXA@mail.gmail.com>
+ <YWVixgDQtJ8EGbwo@sirena.org.uk> <7f7acc8986aca1c895de732297b2995d05ec23e7.camel@gmail.com>
+ <YWVmvHsEkPFkrD/R@sirena.org.uk> <7ec1690ea0ca9f6538b8228f78e62b2f38405fd4.camel@gmail.com>
+ <YWVvyKq4W4VShiRU@sirena.org.uk> <00781d5212bb4015064d07e762ae0695d16e834e.camel@gmail.com>
+In-Reply-To: <00781d5212bb4015064d07e762ae0695d16e834e.camel@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 12 Oct 2021 13:30:19 +0200
+Message-ID: <CAMuHMdUCpfpORD9r28r1hdtdKMPyvXtkYZQsiBCfM8WDcLYKFw@mail.gmail.com>
+Subject: Re: [PATCH v2 8/8] ep93xx: clock: convert in-place to COMMON_CLK
+To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Mike Rapoport <rppt@kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 10:48:49AM +0200, Jonas Dreßler wrote:
-> On 10/11/21 18:53, Bjorn Helgaas wrote:
-> > On Mon, Oct 11, 2021 at 03:42:38PM +0200, Jonas Dreßler wrote:
-> > > The most recent firmware (15.68.19.p21) of the 88W8897 PCIe+USB card
-> > > reports a hardcoded LTR value to the system during initialization,
-> > > probably as an (unsuccessful) attempt of the developers to fix firmware
-> > > crashes. This LTR value prevents most of the Microsoft Surface devices
-> > > from entering deep powersaving states (either platform C-State 10 or
-> > > S0ix state), because the exit latency of that state would be higher than
-> > > what the card can tolerate.
-> > 
-> > S0ix and C-State 10 are ACPI concepts that don't mean anything in a
-> > PCIe context.
-> > 
-> > I think LTR is only involved in deciding whether to enter the ASPM
-> > L1.2 substate.  Maybe the system will only enter C-State 10 or S0ix
-> > when the link is in L1.2?
-> 
-> Yup, this is indeed the case, see https://01.org/blogs/qwang59/2020/linux-s0ix-troubleshooting
-> (ctrl+f "IP LINK PM STATE").
+Hi Alexander,
 
-I think it would be helpful if the commit log included this missing
-link, e.g., the LTR value prevents the link from going to L1.2, which
-in turn prevents use of C-State 10/S0ix.
+On Tue, Oct 12, 2021 at 1:26 PM Alexander Sverdlin
+<alexander.sverdlin@gmail.com> wrote:
+> On Tue, 2021-10-12 at 12:21 +0100, Mark Brown wrote:
+> >  Looks like Arnd is ready to pick it, and the only dependency which is
+> > > not yet merged into Linus's tree is "ASoC: cirrus: i2s: Prepare clock before using it".
+> >
+> > OK, so I'm still unclear as to what's going on here.  Arnd's mail where
+> > I got copied into this subthread suggested that things were getting
+> > merged by individual trees which is generally easiest?
+>
+> I only wanted to ask you to pick ASoC patch, I can resend it if you'd like.
+> It has no dependencies and all the previous patches were already picked
+> and are visible in the Linus's master.
 
-> There's two alternatives I can think of to deal with this issue:
-> 
-> 1) Revert the cards firmware in linux-firmware back to the second-latest
-> version. That firmware didn't report a fixed LTR value and also doesn't
-> have any other obvious issues I know of compared to the latest one.
+So it might be better for Arnd to pick up the ASoC patch, too.
+Else he has to postpone the final CCF conversion patch one more cycle,
+to avoid regressions.
 
-You've mentioned "fixed LTR value" more than once.  My weak
-understanding of LTR and L1.2 is that the latencies a device reports
-via LTR messages are essentially a function of buffering in the device
-and electrical characteristics of the link.  I expect them to be set
-once and not changed.
+Gr{oetje,eeting}s,
 
-But did the previous firmware report different latencies at different
-times?  Or did it just not advertise L1.2 support at all?  Or do you
-mean the new firmware reports a "corrected" LTR value that doesn't
-work as well?
+                        Geert
 
-> 2) Somehow interact with the PMC Core driver to make it ignore the LTR
-> values reported by the card (I doubt that's possible from mwifiex).
-> It can be done manually via debugfs by writing to
-> /sys/kernel/debug/pmc_core/ltr_ignore.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Interesting; I wasn't aware of that, thanks.  This still feels like a
-configuration issue.  If we ignore the reported LTR values, I guess
-you mean the root port assumes it's *always* safe to enter L1.2, i.e.,
-the device has enough buffering to deal with the exit latency?
-
-I would think there would be a way to program the LTR capability to
-have the device itself report that, so we wouldn't have to fiddle with
-the upstream end.
-
-> > > +	 * We need to do it here because it must happen after firmware
-> > > +	 * initialization and this function is called right after that is done.
-> > > +	 */
-
-> > > +	if (card->quirks & QUIRK_DO_FLR_ON_BRIDGE)
-> > > +		pci_reset_function(parent_pdev);
-> > 
-> > PCIe r5.0, sec 7.5.3.3, says Function Level Reset can only be
-> > supported by endpoints, so I guess this will actually do some other
-> > kind of reset.
-> 
-> Interesting, I briefly searched and it doesn't seem like think
-> there's public documentation available by Intel that goes into
-> the specifics here, maybe someone working at Intel knows more?
-
-"lspci -vv" will tell you whether the root port advertises FLR
-support.  The spec says it shouldn't, but I think pci_reset_function()
-relies on what DevCap says.  You could instrument pci_reset_function()
-to see exactly what kind of reset we do.  
-
-Bjorn
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
