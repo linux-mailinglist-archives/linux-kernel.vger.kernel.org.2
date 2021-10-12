@@ -2,252 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7063242A0B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B153942A021
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235846AbhJLJIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:08:38 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:58676 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235658AbhJLJIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:08:18 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 86C762025D0;
-        Tue, 12 Oct 2021 11:06:16 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2D0D12025C7;
-        Tue, 12 Oct 2021 11:06:16 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 7CD24183AD14;
-        Tue, 12 Oct 2021 17:06:14 +0800 (+08)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, tharvey@gateworks.com, kishon@ti.com,
-        vkoul@kernel.org, robh@kernel.org, galak@kernel.crashing.org,
-        shawnguo@kernel.org
-Cc:     linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-imx@nxp.com,
-        Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH v3 9/9] PCI: imx: add the imx8mm pcie support
-Date:   Tue, 12 Oct 2021 16:41:18 +0800
-Message-Id: <1634028078-2387-10-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S235223AbhJLIow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:44:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46952 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235061AbhJLIou (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 04:44:50 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C7C74B025604;
+        Tue, 12 Oct 2021 04:42:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=rK3EwTpFj9LRvp36w/iPeujwAgGDeB8sSzAGLI+vZEQ=;
+ b=pGidHLBzx7XnxMBwI17SZlst61RfbveN3cLfuPIqdp4IGjOGlxIaphUE3rtkrXRIIDUD
+ F5X5H9bh7Pur2SYeKt0sVajbTXvSQNHGqCmVgtK75ALKLhPAAiVZbN04dqtqxZnk4t83
+ u2YphOOy5G9D1kVlM7Siek3guh7fI7y/sPCNLI1ZhvlKMa0+4titwlG+IlVxsDh/t4VX
+ lhJGXzg43N4r6IzSR5VlyGeICLnA5TYmGy4JiP2wNGaK3MVEe1gHeHCx3GRZ2HpeteNh
+ ZVxmRLBkweDJdOydjKPHlw/vieqiIiKUhWwwLQ6K7G1VWgP+5xWo0F+lcdUFibDQq/gb Eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn5rtsv5t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 04:42:32 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19C8eU0V015379;
+        Tue, 12 Oct 2021 04:42:31 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn5rtsv56-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 04:42:31 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19C8ZQB0026597;
+        Tue, 12 Oct 2021 08:42:28 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bk2q9e5gq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 08:42:28 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19C8gOVw43778398
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 08:42:24 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 69378AE05F;
+        Tue, 12 Oct 2021 08:42:24 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AF8EFAE051;
+        Tue, 12 Oct 2021 08:42:19 +0000 (GMT)
+Received: from [9.43.19.240] (unknown [9.43.19.240])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Oct 2021 08:42:19 +0000 (GMT)
+Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     bristot@redhat.com, christian@brauner.io, ebiederm@xmission.com,
+        lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org,
+        mingo@kernel.org, juri.lelli@redhat.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cgroups@vger.kernel.org, containers@lists.linux.dev,
+        containers@lists.linux-foundation.org, pratik.r.sampat@gmail.com
+References: <20211009151243.8825-1-psampat@linux.ibm.com>
+ <20211011101124.d5mm7skqfhe5g35h@wittgenstein>
+From:   Pratik Sampat <psampat@linux.ibm.com>
+Message-ID: <a0f9ed06-1e5d-d3d0-21a5-710c8e27749c@linux.ibm.com>
+Date:   Tue, 12 Oct 2021 14:12:18 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20211011101124.d5mm7skqfhe5g35h@wittgenstein>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: hON9CxZwJ3YbnQZQADJaFNG-XDyMh0FS
+X-Proofpoint-ORIG-GUID: UE9RlvQyQcG0TApwRdTcpouIkHdRgZ3B
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-12_02,2021-10-11_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ bulkscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ spamscore=0 suspectscore=0 priorityscore=1501 clxscore=1011 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110120045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i.MX8MM PCIe works mostly like the i.MX8MQ one, but has a different PHY
-and allows to output the internal PHY reference clock via the refclk pad.
-Add the i.MX8MM PCIe support based on the standalone PHY driver.
+Hello,
+> Thank your for providing a new approach to this problem and thanks for
+> summarizing some of the painpoints and current solutions. I do agree
+> that this is a problem we should tackle in some form.
+>
+> I have one design comment and one process related comments.
+>
+> Fundamentally I think making this a new namespace is not the correct
+> approach. One core feature of a namespace it that it is an opt-in
+> isolation mechanism: if I do CLONE_NEW* that is when the new isolation
+> mechanism kicks. The correct reporting through procfs and sysfs is
+> built into that and we do bugfixes whenever reported information is
+> wrong.
+>
+> The cpu namespace would be different; a point I think you're making as
+> well further above:
+>
+>> The control and the display interface is fairly disjoint with each
+>> other. Restrictions can be set through control interfaces like cgroups,
+> A task wouldn't really opt-in to cpu isolation with CLONE_NEWCPU it
+> would only affect resource reporting. So it would be one half of the
+> semantics of a namespace.
+>
+I completely agree with you on this, fundamentally a namespace should
+isolate both the resource as well as the reporting. As you mentioned
+too, cgroups handles the resource isolation while this namespace
+handles the reporting and this seems to break the semantics of what a
+namespace should really be.
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- drivers/pci/controller/dwc/pci-imx6.c | 63 ++++++++++++++++++++++++++-
- 1 file changed, 61 insertions(+), 2 deletions(-)
+The CPU resource is unique in that sense, at least in this context,
+which makes it tricky to design a interface that presents coherent
+information.
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 26f49f797b0f..73022e37b1c5 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -29,6 +29,7 @@
- #include <linux/types.h>
- #include <linux/interrupt.h>
- #include <linux/reset.h>
-+#include <linux/phy/phy.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_runtime.h>
- 
-@@ -49,6 +50,7 @@ enum imx6_pcie_variants {
- 	IMX6QP,
- 	IMX7D,
- 	IMX8MQ,
-+	IMX8MM,
- };
- 
- #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
-@@ -80,6 +82,7 @@ struct imx6_pcie {
- 	u32			tx_deemph_gen2_6db;
- 	u32			tx_swing_full;
- 	u32			tx_swing_low;
-+	u32			refclk_pad_mode;
- 	struct regulator	*vpcie;
- 	struct regulator	*vph;
- 	void __iomem		*phy_base;
-@@ -88,6 +91,7 @@ struct imx6_pcie {
- 	struct device		*pd_pcie;
- 	/* power domain for pcie phy */
- 	struct device		*pd_pcie_phy;
-+	struct phy		*phy;
- 	const struct imx6_pcie_drvdata *drvdata;
- };
- 
-@@ -372,6 +376,8 @@ static void imx6_pcie_assert_core_reset(struct imx6_pcie *imx6_pcie)
- 	case IMX7D:
- 	case IMX8MQ:
- 		reset_control_assert(imx6_pcie->pciephy_reset);
-+		fallthrough;
-+	case IMX8MM:
- 		reset_control_assert(imx6_pcie->apps_reset);
- 		break;
- 	case IMX6SX:
-@@ -407,7 +413,8 @@ static void imx6_pcie_assert_core_reset(struct imx6_pcie *imx6_pcie)
- 
- static unsigned int imx6_pcie_grp_offset(const struct imx6_pcie *imx6_pcie)
- {
--	WARN_ON(imx6_pcie->drvdata->variant != IMX8MQ);
-+	WARN_ON(imx6_pcie->drvdata->variant != IMX8MQ &&
-+		imx6_pcie->drvdata->variant != IMX8MM);
- 	return imx6_pcie->controller_id == 1 ? IOMUXC_GPR16 : IOMUXC_GPR14;
- }
- 
-@@ -447,6 +454,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
- 	case IMX7D:
- 		break;
- 	case IMX8MQ:
-+	case IMX8MM:
- 		ret = clk_prepare_enable(imx6_pcie->pcie_aux);
- 		if (ret) {
- 			dev_err(dev, "unable to enable pcie_aux clock\n");
-@@ -522,6 +530,14 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
- 		goto err_ref_clk;
- 	}
- 
-+	switch (imx6_pcie->drvdata->variant) {
-+	case IMX8MM:
-+		if (phy_power_on(imx6_pcie->phy))
-+			pr_info("unable to enable pcie phy clock\n");
-+		break;
-+	default:
-+		break;
-+	}
- 	/* allow the clocks to stabilize */
- 	usleep_range(200, 500);
- 
-@@ -538,6 +554,10 @@ static void imx6_pcie_deassert_core_reset(struct imx6_pcie *imx6_pcie)
- 	case IMX8MQ:
- 		reset_control_deassert(imx6_pcie->pciephy_reset);
- 		break;
-+	case IMX8MM:
-+		if (phy_init(imx6_pcie->phy) != 0)
-+			dev_err(dev, "Waiting for PHY ready timeout!\n");
-+		break;
- 	case IMX7D:
- 		reset_control_deassert(imx6_pcie->pciephy_reset);
- 
-@@ -614,6 +634,8 @@ static void imx6_pcie_configure_type(struct imx6_pcie *imx6_pcie)
- static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
- {
- 	switch (imx6_pcie->drvdata->variant) {
-+	case IMX8MM:
-+		break;
- 	case IMX8MQ:
- 		/*
- 		 * TODO: Currently this code assumes external
-@@ -753,6 +775,7 @@ static void imx6_pcie_ltssm_enable(struct device *dev)
- 		break;
- 	case IMX7D:
- 	case IMX8MQ:
-+	case IMX8MM:
- 		reset_control_deassert(imx6_pcie->apps_reset);
- 		break;
- 	}
-@@ -871,6 +894,7 @@ static void imx6_pcie_ltssm_disable(struct device *dev)
- 				   IMX6Q_GPR12_PCIE_CTL_2, 0);
- 		break;
- 	case IMX7D:
-+	case IMX8MM:
- 		reset_control_assert(imx6_pcie->apps_reset);
- 		break;
- 	default:
-@@ -930,6 +954,7 @@ static void imx6_pcie_clk_disable(struct imx6_pcie *imx6_pcie)
- 				   IMX7D_GPR12_PCIE_PHY_REFCLK_SEL);
- 		break;
- 	case IMX8MQ:
-+	case IMX8MM:
- 		clk_disable_unprepare(imx6_pcie->pcie_aux);
- 		break;
- 	default:
-@@ -985,6 +1010,7 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 	struct imx6_pcie *imx6_pcie;
- 	struct device_node *np;
- 	struct resource *dbi_base;
-+	struct device_node *phy_node;
- 	struct device_node *node = dev->of_node;
- 	int ret;
- 	u16 val;
-@@ -1019,6 +1045,14 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 			return PTR_ERR(imx6_pcie->phy_base);
- 	}
- 
-+	imx6_pcie->phy = devm_phy_get(dev, "pcie-phy");
-+	if (IS_ERR(imx6_pcie->phy)) {
-+		if (PTR_ERR(imx6_pcie->phy) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		/* Set NULL if there is no pcie-phy */
-+		imx6_pcie->phy = NULL;
-+	}
-+
- 	dbi_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	pci->dbi_base = devm_ioremap_resource(dev, dbi_base);
- 	if (IS_ERR(pci->dbi_base))
-@@ -1090,6 +1124,18 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 			return PTR_ERR(imx6_pcie->apps_reset);
- 		}
- 		break;
-+	case IMX8MM:
-+		imx6_pcie->pcie_aux = devm_clk_get(dev, "pcie_aux");
-+		if (IS_ERR(imx6_pcie->pcie_aux))
-+			return dev_err_probe(dev, PTR_ERR(imx6_pcie->pcie_aux),
-+					     "pcie_aux clock source missing or invalid\n");
-+		imx6_pcie->apps_reset = devm_reset_control_get_exclusive(dev,
-+									 "apps");
-+		if (IS_ERR(imx6_pcie->apps_reset)) {
-+			dev_err(dev, "Failed to get PCIE APPS reset control\n");
-+			return PTR_ERR(imx6_pcie->apps_reset);
-+		}
-+		break;
- 	default:
- 		break;
- 	}
-@@ -1130,6 +1176,14 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 				 &imx6_pcie->tx_swing_low))
- 		imx6_pcie->tx_swing_low = 127;
- 
-+	/* get PHY refclk pad mode if there is PHY node */
-+	phy_node = of_parse_phandle(node, "phys", 0);
-+	if (phy_node) {
-+		of_property_read_u32(phy_node, "fsl,refclk-pad-mode",
-+				     &imx6_pcie->refclk_pad_mode);
-+		of_node_put(phy_node);
-+	}
-+
- 	/* Limit link speed */
- 	pci->link_gen = 1;
- 	of_property_read_u32(node, "fsl,max-link-speed", &pci->link_gen);
-@@ -1202,6 +1256,10 @@ static const struct imx6_pcie_drvdata drvdata[] = {
- 	[IMX8MQ] = {
- 		.variant = IMX8MQ,
- 	},
-+	[IMX8MM] = {
-+		.variant = IMX8MM,
-+		.flags = IMX6_PCIE_FLAG_SUPPORTS_SUSPEND,
-+	},
- };
- 
- static const struct of_device_id imx6_pcie_of_match[] = {
-@@ -1209,7 +1267,8 @@ static const struct of_device_id imx6_pcie_of_match[] = {
- 	{ .compatible = "fsl,imx6sx-pcie", .data = &drvdata[IMX6SX], },
- 	{ .compatible = "fsl,imx6qp-pcie", .data = &drvdata[IMX6QP], },
- 	{ .compatible = "fsl,imx7d-pcie",  .data = &drvdata[IMX7D],  },
--	{ .compatible = "fsl,imx8mq-pcie", .data = &drvdata[IMX8MQ], } ,
-+	{ .compatible = "fsl,imx8mq-pcie", .data = &drvdata[IMX8MQ], },
-+	{ .compatible = "fsl,imx8mm-pcie", .data = &drvdata[IMX8MM], },
- 	{},
- };
- 
--- 
-2.25.1
+> In all honesty, I think cpu resource reporting through procfs/sysfs as
+> done today without taking a tasks cgroup information into account is a
+> bug. But the community has long agreed that fixing this would be a
+> regression.
+>
+> I think that either we need to come up with new non-syscall based
+> interfaces that allow to query virtualized cpu information and buy into
+> the process of teaching userspace about them. This is even independent
+> of containers.
+> This is in line with proposing e.g. new procfs/sysfs files. Userspace
+> can then keep supplementing cpu virtualization via e.g. stuff like LXCFS
+> until tools have switched to read their cpu information from new
+> interfaces. Something that they need to be taught anyway.
+
+I too think that having a brand new interface all together and teaching
+userspace about it is much cleaner approach.
+On the same lines, if were to do that, we could also add more useful
+metrics in that interface like ballpark number of threads to saturate
+usage as well as gather more such metrics as suggested by Tejun Heo.
+
+My only concern for this would be that if today applications aren't
+modifying their code to read the existing cgroup interface and would
+rather resort to using userspace side-channel solutions like LXCFS or
+wrapping them up in kata containers, would it now be compelling enough
+to introduce yet another interface?
+
+While I concur with Tejun Heo's comment the mail thread and overloading
+existing interfaces of sys and proc which were originally designed for
+system wide resources, may not be a great idea:
+
+> There is a fundamental problem with trying to represent a resource shared
+> environment controlled with cgroup using system-wide interfaces including
+> procfs
+
+A fundamental question we probably need to ascertain could be -
+Today, is it incorrect for applications to look at the sys and procfs to
+get resource information, regardless of their runtime environment?
+
+Also, if an application were to only be able to view the resources
+based on the restrictions set regardless of the interface - would there
+be a disadvantage for them if they could only see an overloaded context
+sensitive view rather than the whole system view?
+
+> Or if we really want to have this tied to a namespace then I think we
+> should consider extending CLONE_NEWCGROUP since cgroups are were cpu
+> isolation for containers is really happening. And arguably we should
+> restrict this to cgroup v2.
+
+Given some thought, I tend to agree this could be wrapped in a cgroup
+namespace. However, some more deliberation is definitely needed to
+determine if by including CPU isolation here we aren't breaking
+another semantic set by the cgroup namespace itself as cgroups don't
+necessarily have to have restrictions on CPUs set and can also allow
+mixing of restrictions from cpuset and cfs period-quota.
+
+>
+>  From a process perspective, I think this is something were we will need
+> strong guidance from the cgroup and cpu crowd. Ultimately, they need to
+> be the ones merging a feature like this as this is very much into their
+> territory.
+
+I agree, we definitely need the guidance from the cgroups and cpu folks
+from the community. We would also benefit from guidance from the
+userspace community like containers and understand how they use the
+existing interfaces so that we can arrive at a holistic view of what
+everybody could benefit by.
+
+>
+> Christian
+
+Thank you once again for all the comments, the CPU namespace is me
+taking a stab trying to highlight the problem itself. Not without
+its flaws, having a coherent interface does seem to show benefits as
+well.
+Hence, if the consensus builds for the right interface for solving this
+problem, I would be glad to help in contributing to a solution towards
+it.
+
+Thanks,
+Pratik
+
+
 
