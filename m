@@ -2,76 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D255429B06
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC26A429B0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbhJLBcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:32:42 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13720 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhJLBcl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:32:41 -0400
-Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HSyk71006zWP0G;
-        Tue, 12 Oct 2021 09:29:03 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.44) by
- dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Tue, 12 Oct 2021 09:30:38 +0800
-From:   Gaosheng Cui <cuigaosheng1@huawei.com>
-To:     <paul@paul-moore.com>, <eparis@redhat.com>
-CC:     <linux-audit@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <xiujianfeng@huawei.com>, <wangweiyang2@huawei.com>
-Subject: [PATCH -next] audit: return early if the rule has a lower priority
-Date:   Tue, 12 Oct 2021 09:32:40 +0800
-Message-ID: <20211012013240.63072-1-cuigaosheng1@huawei.com>
-X-Mailer: git-send-email 2.30.0
+        id S234658AbhJLBgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:36:05 -0400
+Received: from mga01.intel.com ([192.55.52.88]:27025 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231135AbhJLBgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 21:36:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="250404503"
+X-IronPort-AV: E=Sophos;i="5.85,366,1624345200"; 
+   d="scan'208";a="250404503"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 18:33:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,366,1624345200"; 
+   d="scan'208";a="591540770"
+Received: from louislifei-optiplex-7050.sh.intel.com (HELO louislifei-OptiPlex-7050) ([10.239.154.151])
+  by orsmga004.jf.intel.com with ESMTP; 11 Oct 2021 18:33:57 -0700
+Date:   Tue, 12 Oct 2021 09:34:29 +0800
+From:   Li Fei1 <fei1.li@intel.com>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     keescook@chromium.org, gustavoars@kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        fei1.li@intel.com
+Subject: Re: [PATCH] virt: acrn: Prefer array_syze and struct_size over open
+ coded arithmetic
+Message-ID: <20211012013429.GA28284@louislifei-OptiPlex-7050>
+References: <20211011103902.15638-1-len.baker@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.44]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme762-chm.china.huawei.com (10.3.19.108)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211011103902.15638-1-len.baker@gmx.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not necessary for audit_filter_rules() functions to check
-audit fileds of the rule with a lower priority, and if we did,
-there might be some unintended effects, such as the ctx->ppid
-may be changed unexpectedly, so return early if the rule has
-a lower priority.
+On Mon, Oct 11, 2021 at 12:39:02PM +0200, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> So, use the array_size() helper to do the arithmetic instead of the
+> argument "count * size" in the vzalloc() function.
+> 
+> Also, take the opportunity to add a flexible array member of struct
+> vm_memory_region_op to the vm_memory_region_batch structure. And then,
+> change the code accordingly and use the struct_size() helper to do the
+> arithmetic instead of the argument "size + size * count" in the kzalloc
+> function.
+> 
+> This code was detected with the help of Coccinelle and audited and fixed
+> manually.
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
-Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
----
- kernel/auditsc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Hi Baker
 
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index 4ba3b8573ff4..eee14dfad0fa 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -470,6 +470,9 @@ static int audit_filter_rules(struct task_struct *tsk,
- 	u32 sid;
- 	unsigned int sessionid;
- 
-+	if (ctx && rule->prio <= ctx->prio)
-+		return 0;
-+
- 	cred = rcu_dereference_check(tsk->cred, tsk == current || task_creation);
- 
- 	for (i = 0; i < rule->field_count; i++) {
-@@ -737,8 +740,6 @@ static int audit_filter_rules(struct task_struct *tsk,
- 	}
- 
- 	if (ctx) {
--		if (rule->prio <= ctx->prio)
--			return 0;
- 		if (rule->filterkey) {
- 			kfree(ctx->filterkey);
- 			ctx->filterkey = kstrdup(rule->filterkey, GFP_ATOMIC);
--- 
-2.30.0
+Thanks for helping us to fix this issue. This patch looks good to me.
+Please add Signed-off-by: Fei Li <fei1.li@intel.com>.
+Only two minor comments.
 
+
+> ---
+>  drivers/virt/acrn/acrn_drv.h | 10 ++++++----
+>  drivers/virt/acrn/mm.c       |  9 ++++-----
+>  2 files changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
+> index 1be54efa666c..fcc2e3e5232a 100644
+> --- a/drivers/virt/acrn/acrn_drv.h
+> +++ b/drivers/virt/acrn/acrn_drv.h
+> @@ -48,6 +48,7 @@ struct vm_memory_region_op {
+>   * @reserved:		Reserved.
+>   * @regions_num:	The number of vm_memory_region_op.
+>   * @regions_gpa:	Physical address of a vm_memory_region_op array.
+> + * @regions_op:		Flexible array of vm_memory_region_op.
+One Tab please.
+>   *
+>   * HC_VM_SET_MEMORY_REGIONS uses this structure to manage EPT mappings of
+>   * multiple memory regions of a User VM. A &struct vm_memory_region_batch
+> @@ -55,10 +56,11 @@ struct vm_memory_region_op {
+>   * ACRN Hypervisor.
+>   */
+>  struct vm_memory_region_batch {
+> -	u16	vmid;
+> -	u16	reserved[3];
+> -	u32	regions_num;
+> -	u64	regions_gpa;
+> +	u16				vmid;
+> +	u16				reserved[3];
+> +	u32				regions_num;
+> +	u64				regions_gpa;
+> +	struct vm_memory_region_op	regions_op[];
+Please use Whitespace instead of Tab.
+>  };
+> 
+>  /**
+> diff --git a/drivers/virt/acrn/mm.c b/drivers/virt/acrn/mm.c
+> index c4f2e15c8a2b..a881742cd48d 100644
+> --- a/drivers/virt/acrn/mm.c
+> +++ b/drivers/virt/acrn/mm.c
+> @@ -168,7 +168,7 @@ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap)
+> 
+>  	/* Get the page number of the map region */
+>  	nr_pages = memmap->len >> PAGE_SHIFT;
+> -	pages = vzalloc(nr_pages * sizeof(struct page *));
+> +	pages = vzalloc(array_size(nr_pages, sizeof(struct page *)));
+>  	if (!pages)
+>  		return -ENOMEM;
+> 
+> @@ -220,16 +220,15 @@ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap)
+>  	}
+> 
+>  	/* Prepare the vm_memory_region_batch */
+> -	regions_info = kzalloc(sizeof(*regions_info) +
+> -			       sizeof(*vm_region) * nr_regions,
+> -			       GFP_KERNEL);
+> +	regions_info = kzalloc(struct_size(regions_info, regions_op,
+> +					   nr_regions), GFP_KERNEL);
+>  	if (!regions_info) {
+>  		ret = -ENOMEM;
+>  		goto unmap_kernel_map;
+>  	}
+> 
+>  	/* Fill each vm_memory_region_op */
+> -	vm_region = (struct vm_memory_region_op *)(regions_info + 1);
+> +	vm_region = regions_info->regions_op;
+>  	regions_info->vmid = vm->vmid;
+>  	regions_info->regions_num = nr_regions;
+>  	regions_info->regions_gpa = virt_to_phys(vm_region);
+> --
+> 2.25.1
+> 
