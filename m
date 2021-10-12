@@ -2,108 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157F142A4D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A799142A4CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236438AbhJLMtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbhJLMta (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:49:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFC2C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:47:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XpABCObaiIMLrlV6HMkqdEqou3Cn9Id8iPDiFDWo6F4=; b=XDr8QroVK+cjkDP2nwAncemwxK
-        YV2YGHlKsyefMJy6lhQxD7I4zV4dXJzV3Moxal/YrI8ihU9Pp5QN+bN76lSvUyVm3dLF3fAR//LHr
-        o2dBZh8EKfPiefRT6mhlt1Njgntc2rnNNlYpnL3c7CulGCgjQs109FuiQBTNovtknc2LzndTTsyiv
-        rkKa8SQzuXwxYGm44OpH81f4/lyXzA4weJnoPXV2cnU631jkyK2KyKk5UGoUJlc1rcKYjCGjuzrdW
-        ZgOjgMYBh0HKREnoawtQ5ahM56vsP80IrxAiKOLqukZT4opY57AI4QMXwCPYlDFpGHov40t2S1ZbA
-        lDdhMJAQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maH9w-006VaV-PS; Tue, 12 Oct 2021 12:45:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B717D30032E;
-        Tue, 12 Oct 2021 14:45:32 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 984D92C880EE3; Tue, 12 Oct 2021 14:45:32 +0200 (CEST)
-Date:   Tue, 12 Oct 2021 14:45:32 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S236507AbhJLMrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 08:47:32 -0400
+Received: from out10.migadu.com ([46.105.121.227]:62709 "EHLO out10.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232906AbhJLMrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 08:47:31 -0400
+Date:   Tue, 12 Oct 2021 20:46:11 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1634042727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZuN6RdU9+V+mfwW7uYhTEIc3kakTxoFz/4g+S0fdqTA=;
+        b=oRCpo35i581aqkMLHno+vNHYDEsedL5PM4OPunPGkl/He1fPFLxcKpjRgImXbZi6sYw/Lm
+        3ivG7dx1h5twqcVA7xPPJTmVpjCE7yO0zAPVFCnaCZNIeJQsBCcdm1NsfpZ0IGXeJkmWM7
+        jRGK+Xqlc79eM5iNIZQp/Tot0Iy1E30=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Tao Zhou <tao.zhou@linux.dev>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH] x86/apic: reduce cache line misses in
- __x2apic_send_IPI_mask()
-Message-ID: <YWWDbIU+Cpppc7PV@hirez.programming.kicks-ass.net>
-References: <20211007031756.345269-1-eric.dumazet@gmail.com>
- <20211007072917.GN174703@worktop.programming.kicks-ass.net>
- <CANn89iKOa+tqerm80vHvHEurc2UxTq_heQuOUE0KnVuJht8AKA@mail.gmail.com>
- <YV7+/0+Q1n67wCF8@hirez.programming.kicks-ass.net>
- <CANn89iLEz5POFii_=wU=2J0A9CE3H5JPq3sQFUQ8E400YumUpw@mail.gmail.com>
- <CANn89iKg2Te8if2t_8oaAo6wL2BFNr2cP3D2w+jDePkFO5xREg@mail.gmail.com>
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Tao Zhou <tao.zhou@linux.dev>
+Subject: Re: [PATCH] sched/fair: Use this_sd->weight to calculate span_avg
+Message-ID: <YWWDkwhrqVaCRrxv@geo.homenetwork>
+References: <20211009181055.20512-1-tao.zhou@linux.dev>
+ <20211011105802.344b907c@gandalf.local.home>
+ <YWRqbKc0nY29/Qiz@geo.homenetwork>
+ <CAKfTPtAY0oE+BFgFGx1jKRrtanO80XwT-Ee9GATSDm55ZbFv-A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANn89iKg2Te8if2t_8oaAo6wL2BFNr2cP3D2w+jDePkFO5xREg@mail.gmail.com>
+In-Reply-To: <CAKfTPtAY0oE+BFgFGx1jKRrtanO80XwT-Ee9GATSDm55ZbFv-A@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: tao.zhou@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 03:13:46PM -0700, Eric Dumazet wrote:
-> It seems wasteful to use tiny per-cpu variables and block hard irqs.
-> 
-> Quick and very dirty patch :
-> 
-> diff --git a/arch/x86/kernel/apic/x2apic_cluster.c
-> b/arch/x86/kernel/apic/x2apic_cluster.c
-> index e696e22d0531976f7cba72ed17443592eac72c13..c5076d40d4ea7bc9ffb06728531d91777a32cef4
-> 100644
-> --- a/arch/x86/kernel/apic/x2apic_cluster.c
-> +++ b/arch/x86/kernel/apic/x2apic_cluster.c
-> @@ -44,15 +44,18 @@ static void
->  __x2apic_send_IPI_mask(const struct cpumask *mask, int vector, int apic_dest)
->  {
->         unsigned int cpu, clustercpu;
-> -       struct cpumask *tmpmsk;
-> +       cpumask_var_t tmpmsk;
-> +#ifdef CONFIG_CPUMASK_OFFSTACK
->         unsigned long flags;
-> +#endif
->         u32 dest;
-> 
->         /* x2apic MSRs are special and need a special fence: */
->         weak_wrmsr_fence();
-> +#ifdef CONFIG_CPUMASK_OFFSTACK
->         local_irq_save(flags);
-> -
->         tmpmsk = this_cpu_cpumask_var_ptr(ipi_mask);
-> +#endif
->         cpumask_copy(tmpmsk, mask);
->         /* If IPI should not be sent to self, clear current CPU */
->         if (apic_dest != APIC_DEST_ALLINC)
-> @@ -74,7 +77,9 @@ __x2apic_send_IPI_mask(const struct cpumask *mask,
-> int vector, int apic_dest)
->                 cpumask_andnot(tmpmsk, tmpmsk, &cmsk->mask);
->         }
-> 
-> +#ifdef CONFIG_CPUMASK_OFFSTACK
->         local_irq_restore(flags);
-> +#endif
->  }
+Hi Vincent,
 
-I'm really conflicted about this. On the one hand, yes absolutely. On
-the other hand, urgh, code ugly :-)
+On Tue, Oct 12, 2021 at 09:11:23AM +0200, Vincent Guittot wrote:
+> On Mon, 11 Oct 2021 at 18:45, Tao Zhou <tao.zhou@linux.dev> wrote:
+> >
+> > Hi Steven,
+> >
+> > On Mon, Oct 11, 2021 at 10:58:02AM -0400, Steven Rostedt wrote:
+> > > On Sun, 10 Oct 2021 02:10:55 +0800
+> > > Tao Zhou <tao.zhou@linux.dev> wrote:
+> > >
+> > > > avg_idle, avg_cost got from this_rq and this_sd. I think
+> > > > use this_sd->weight to calculate and estimate the number
+> > > > of loop cpus in the target domain.
+> > >
+> > > If that's the case, then shouldn't the CPUs to be checked come from this_sd
+> > > as well? I mean, at the beginning of the function we have:
+> > >
+> > >       this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
+> > >       if (!this_sd)
+> > >               return -1;
+> > >
+> > >       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> > >
+> > > Where "cpus" comes from sd, and not this_sd.
+> >
+> > Thank you for reply.
+> >
+> >
+> > Cycles are spent on this CPU(and in this Domain) if I am not wrong.
+> > If T1(on this CPU) want to try to wake up T2 on another CPU, Kernel
+> > (on this CPU) should evaluate that not spend much time in finding
+> > idle siblings. And the avg_idle and span_avg are two fators to compare
+> > with. avg_idle is the CPU average idle time of this rq and avg_cost
+> > is the last time this Domain was being looped and the recorded avg
+> > cost time. Two values are history averaged. So, use the history to
+> > evaluate future that we do *now* the another Domain cpu search to not
+> > let this CPU(and in this Domain) too busy. This is what I want to say.
+> > Not sure yet.
+> 
+> this_rq->wake_avg_idle is used to guest estimate how much busy is this_cpu
+> this_sd->avg_scan_cost is used to estimate how much time was spent in
+> average looking at an idle cpu at this domain level on this cpu
+> and sd->span_weight is is used to take into account the size of the
+> target domain on which it is going to loop. But we don't really care
+> about the size of the domain of the this_cpu
+
+So slow for me to get to this, we need to know the loop number base on
+the target domain.
+
+Thank you for reply.
+
+> >
+> > > > ---
+> > > >  kernel/sched/fair.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > > index f6a05d9b5443..7fab7b70814c 100644
+> > > > --- a/kernel/sched/fair.c
+> > > > +++ b/kernel/sched/fair.c
+> > > > @@ -6300,7 +6300,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+> > > >             avg_idle = this_rq->wake_avg_idle;
+> > > >             avg_cost = this_sd->avg_scan_cost + 1;
+> > > >
+> > > > -           span_avg = sd->span_weight * avg_idle;
+> > > > +           span_avg = this_sd->span_weight * avg_idle;
+> > > >             if (span_avg > 4*avg_cost)
+> > > >                     nr = div_u64(span_avg, avg_cost);
+> > > >             else
+> > >
+> > >
+> > > And after this code, the nr that is determined from the above, is for
+> > > limiting the looping over those CPUs from sd, not this_sd:
+> > >
+> > >       for_each_cpu_wrap(cpu, cpus, target + 1) {
+> > >               if (has_idle_core) {
+> > >                       i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> > >                       if ((unsigned int)i < nr_cpumask_bits)
+> > >                               return i;
+> > >
+> > >               } else {
+> > >                       if (!--nr)
+> > >                               return -1;
+> > >                       idle_cpu = __select_idle_cpu(cpu, p);
+> > >                       if ((unsigned int)idle_cpu < nr_cpumask_bits)
+> > >                               break;
+> > >               }
+> > >       }
+> > >
+> > > I'm guessing there's nothing wrong here. But, I don't fully understand it
+> > > myself.
+> >
+> > I replied to Barry and not say that I missed that AND operation.
+> >
+> > Here is another go.
+> >
+> > @cpus is per-cpu and irq disable. I am not sure irq disable can
+> > be preempt in in RT. If that is possiable, cpu_ptr is not safe.
+> > Based on the code and comments in __do_set_cpus_allowed(), he will
+> > not use ->pi_lock to change affinity(eg. SCA_MIGRATE_DISABLE).
+> >
+> > If the cpu_ptr not get changed(I must be right and wrong more 5 time)
+> > @core is not in @cpu_ptr mask, BUT, the cpu in smt mask of @core is
+> > the one that we use to call select_idle_core() and @core is in this
+> > smt mask but is not allowed and we get @*idle_cpu and @idle is true
+> > we return the @core. Another not sure.
+
+Crap and wrong. Please ignore this.
+
+> > If the @cpu_ptr can changed in eg. just before the @core loop.
+> > It is possible that @*idle_cpu == -1 and all cpu in smt mask
+> > of @core is seemed to be not allowed. And, we return @core.
+> > This case is what I just look at select_idle_core() semantics
+> > and missed that AND operation.
+> >
+> > > -- Steve
+> >
+> >
+> >
+> >
+> > Thanks,
+> > Tao
 
 
+
+
+Thanks,
+Tao
