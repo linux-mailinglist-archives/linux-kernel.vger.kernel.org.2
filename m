@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FA742AE4A
+	by mail.lfdr.de (Postfix) with ESMTP id 99D3642AE4B
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235322AbhJLU7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:59:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34256 "EHLO mail.kernel.org"
+        id S235397AbhJLU7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:59:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232246AbhJLU7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:59:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DEA6160E90;
-        Tue, 12 Oct 2021 20:57:28 +0000 (UTC)
+        id S235332AbhJLU7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 16:59:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C514D60E74;
+        Tue, 12 Oct 2021 20:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634072250;
-        bh=dIzGTs3S2h6xBXJp02bhYZBaLj6puUdqW2ci75lTKtk=;
+        s=k20201202; t=1634072253;
+        bh=ORNIYJ/ALpIy4LLb1oEO8vL255Aanf+O0vLYvdGo9KE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j/U1Y17qQpNwwjr1HMIYe7G1DbWCJ9YwRkRRmsltZJBjEhUtnPbBbAObVtySV5wCD
-         DhvZmq8yyqwDpb8vb6PYd4KbizkrQSfx5Gu/UaDOelpzevkHi1enqPZsxPWS5XvK6b
-         Bobjfix9DYgn5v1axsBUTmZX6mb6PFw4LOKUuq4KT//ZrOxYok7y4f1m24zUZhU5oh
-         k+fY9RpR8h5v0lDizkoPk0Hk5c7N2X5zRHEa/3R5oUrNuIps94jH+yo9IvzptcY9tL
-         Ky9lGQ4TpvwaWw3qBas2dpRZ5pkkJripbf6cWXXvd7lTNWhLK/b8096F143mEKyZQN
-         VTk7INaXTZy8Q==
+        b=uwR97oJDwPuycXUN/pe4D776Nx8CCoEx2iX+uLm3cI2w/M8Rbdt978Kdq2Oz2gJBS
+         D1n+iDaxwzVQ89kxPb1k36egvfDtdljoVQOfU8y+ZTv8P6yGAul2zgm0t0FK2PEPmH
+         Q250BiqF1jwqEQOnWCP/0CZIVsvMuONgMNfZJZUlIoZgXursb/uxLbizQ6bgfjhkHv
+         H8RtMKQzvINEEBHIW5YYBdylPg+wEO8/IuIeYrprst8p8tc6DUFSQFmUSb1/f8Tlvl
+         DCubu5oq8nU81LtWLEumZvS+LbqjJEwln0E5/7jTbGZQ90hSU2S7msZ+lWAzy1pfdX
+         bLHpxwouiuIWw==
 From:   SeongJae Park <sj@kernel.org>
 To:     akpm@linux-foundation.org
 Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
@@ -32,9 +32,9 @@ Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
         rientjes@google.com, shakeelb@google.com, shuah@kernel.org,
         linux-damon@amazon.com, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/7] mm/damon/dbgfs-test: Add a unit test case for 'init_regions'
-Date:   Tue, 12 Oct 2021 20:57:06 +0000
-Message-Id: <20211012205711.29216-3-sj@kernel.org>
+Subject: [PATCH 3/7] Docs/admin-guide/mm/damon: Document 'init_regions' feature
+Date:   Tue, 12 Oct 2021 20:57:07 +0000
+Message-Id: <20211012205711.29216-4-sj@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211012205711.29216-1-sj@kernel.org>
 References: <20211012205711.29216-1-sj@kernel.org>
@@ -42,81 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds another test case for the new feature, 'init_regions'.
+This commit adds description of the 'init_regions' feature in the DAMON
+usage document.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
 ---
- mm/damon/dbgfs-test.h | 54 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+ Documentation/admin-guide/mm/damon/usage.rst | 41 +++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 2 deletions(-)
 
-diff --git a/mm/damon/dbgfs-test.h b/mm/damon/dbgfs-test.h
-index 4eddcfa73996..104b22957616 100644
---- a/mm/damon/dbgfs-test.h
-+++ b/mm/damon/dbgfs-test.h
-@@ -109,9 +109,63 @@ static void damon_dbgfs_test_set_targets(struct kunit *test)
- 	dbgfs_destroy_ctx(ctx);
- }
+diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
+index c0296c14babf..f7d5cfbb50c2 100644
+--- a/Documentation/admin-guide/mm/damon/usage.rst
++++ b/Documentation/admin-guide/mm/damon/usage.rst
+@@ -34,8 +34,9 @@ the reason, this document describes only the debugfs interface
+ debugfs Interface
+ =================
  
-+static void damon_dbgfs_test_set_init_regions(struct kunit *test)
-+{
-+	struct damon_ctx *ctx = damon_new_ctx();
-+	unsigned long ids[] = {1, 2, 3};
-+	/* Each line represents one region in ``<target id> <start> <end>`` */
-+	char * const valid_inputs[] = {"2 10 20\n 2   20 30\n2 35 45",
-+		"2 10 20\n",
-+		"2 10 20\n1 39 59\n1 70 134\n  2  20 25\n",
-+		""};
-+	/* Reading the file again will show sorted, clean output */
-+	char * const valid_expects[] = {"2 10 20\n2 20 30\n2 35 45\n",
-+		"2 10 20\n",
-+		"1 39 59\n1 70 134\n2 10 20\n2 20 25\n",
-+		""};
-+	char * const invalid_inputs[] = {"4 10 20\n",	/* target not exists */
-+		"2 10 20\n 2 14 26\n",		/* regions overlap */
-+		"1 10 20\n2 30 40\n 1 5 8"};	/* not sorted by address */
-+	char *input, *expect;
-+	int i, rc;
-+	char buf[256];
+-DAMON exports four files, ``attrs``, ``target_ids``, ``schemes`` and
+-``monitor_on`` under its debugfs directory, ``<debugfs>/damon/``.
++DAMON exports five files, ``attrs``, ``target_ids``, ``init_regions``,
++``schemes`` and ``monitor_on`` under its debugfs directory,
++``<debugfs>/damon/``.
+ 
+ 
+ Attributes
+@@ -74,6 +75,42 @@ check it again::
+ Note that setting the target ids doesn't start the monitoring.
+ 
+ 
++Initial Monitoring Target Regions
++---------------------------------
 +
-+	damon_set_targets(ctx, ids, 3);
++In case of the debugfs based monitoring, DAMON automatically sets and updates
++the monitoring target regions so that entire memory mappings of target
++processes can be covered.  However, users can want to limit the monitoring
++region to specific address ranges, such as the heap, the stack, or specific
++file-mapped area.  Or, some users can know the initial access pattern of their
++workloads and therefore want to set optimal initial regions for the 'adaptive
++regions adjustment'.
 +
-+	/* Put valid inputs and check the results */
-+	for (i = 0; i < ARRAY_SIZE(valid_inputs); i++) {
-+		input = valid_inputs[i];
-+		expect = valid_expects[i];
++In such cases, users can explicitly set the initial monitoring target regions
++as they want, by writing proper values to the ``init_regions`` file.  Each line
++of the input should represent one region in below form.::
 +
-+		rc = set_init_regions(ctx, input, strnlen(input, 256));
-+		KUNIT_EXPECT_EQ(test, rc, 0);
++    <target id> <start address> <end address>
 +
-+		memset(buf, 0, 256);
-+		sprint_init_regions(ctx, buf, 256);
++The ``target id`` should already in ``target_ids`` file, and the regions should
++be passed in address order.  For example, below commands will set a couple of
++address ranges, ``1-100`` and ``100-200`` as the initial monitoring target
++region of process 42, and another couple of address ranges, ``20-40`` and
++``50-100`` as that of process 4242.::
 +
-+		KUNIT_EXPECT_STREQ(test, (char *)buf, expect);
-+	}
-+	/* Put invlid inputs and check the return error code */
-+	for (i = 0; i < ARRAY_SIZE(invalid_inputs); i++) {
-+		input = invalid_inputs[i];
-+		pr_info("input: %s\n", input);
-+		rc = set_init_regions(ctx, input, strnlen(input, 256));
-+		KUNIT_EXPECT_EQ(test, rc, -EINVAL);
++    # cd <debugfs>/damon
++    # echo "42   1       100
++            42   100     200
++            4242 20      40
++            4242 50      100" > init_regions
 +
-+		memset(buf, 0, 256);
-+		sprint_init_regions(ctx, buf, 256);
++Note that this sets the initial monitoring target regions only.  In case of
++virtual memory monitoring, DAMON will automatically updates the boundary of the
++regions after one ``regions update interval``.  Therefore, users should set the
++``regions update interval`` large enough in this case, if they don't want the
++update.
 +
-+		KUNIT_EXPECT_STREQ(test, (char *)buf, "");
-+	}
 +
-+	damon_set_targets(ctx, NULL, 0);
-+	damon_destroy_ctx(ctx);
-+}
-+
- static struct kunit_case damon_test_cases[] = {
- 	KUNIT_CASE(damon_dbgfs_test_str_to_target_ids),
- 	KUNIT_CASE(damon_dbgfs_test_set_targets),
-+	KUNIT_CASE(damon_dbgfs_test_set_init_regions),
- 	{},
- };
+ Schemes
+ -------
  
 -- 
 2.17.1
