@@ -2,94 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D1142A43C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D1C42A442
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236354AbhJLMVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:21:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236196AbhJLMV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:21:29 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1923960E78;
-        Tue, 12 Oct 2021 12:19:27 +0000 (UTC)
-Date:   Tue, 12 Oct 2021 08:19:25 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH v2] tracing: Fix event probe removal from dynamic events
-Message-ID: <20211012081925.0e19cc4f@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236385AbhJLMXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 08:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236326AbhJLMXa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 08:23:30 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF95C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:21:29 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id w10so21434159ilc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 05:21:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=SaQJaLQJV1tXeTErb3iEo2Jt85n+Ln12ULE3k7m2zSU=;
+        b=CHKKTn8ZiI2hRLqCMCOn6VZrm+xdaGGfSisWuloBDsJWtAGXDMpYOt0EbXGl24ZLxf
+         DIZ2fklYc2RFHcKjvaPVMN1yHIGSPa9XBIYDUfE93bSiS4qtTpQd5t5zNLRyn2khDzWa
+         A5msOnXdVDqYg2e3D0zKIvP7ckdRpCQM6JoP1ACeviCLX4RhsRr+63EW+1J95jQSIdH/
+         dDX2NWobiuclJ8lyQDrGep1TNXg+XJQesJ9Hx1+20LbwyICD551uPh6uQJDOuV194cTO
+         yhjf10JaemTd4pv7mxAVvXYJlnTwWxXh/5/IDPvelun7i0OewT7vWMqqQivlMVTvhy6g
+         rEsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=SaQJaLQJV1tXeTErb3iEo2Jt85n+Ln12ULE3k7m2zSU=;
+        b=xm6cVm47TOzhtXxi8sLyriwZ8EHanjniqjQw5/bQ7Il6kMg9HUTrFUwfK6DLAsbp94
+         mlhry7VNjiHkriRdQofaVJhXOBixFuszfz16LOj60PWEHg2phaWshEEyb39i/9lfuagO
+         42awH1GRPtJ4zDzpTZ3sDXBPkDllvF62EvDc2eW2Kx3RSYxjiloNB1I9nzJ+1zCe6w4l
+         OCV78NUyIVMWtyWX4AumLNoLkuqdiulUheTkczNUba0J8cV7l6/A96zxFqwtGZ4CW9eT
+         QRWbdW3eNJP6JHSK9H0v4w/6DNpMpw+Hxw0E5Wwt55q/gC4PH2XFx/gEbDk/ke4jeMfp
+         ADLA==
+X-Gm-Message-State: AOAM533XdM6C8O9XsmXqfTMlwLT1A72wGQ82MT8HYF/WjYFnzUQVqstZ
+        51vDik3zIHqmJjpIJMXklaFsbw/kf0t5HjH3Pw==
+X-Google-Smtp-Source: ABdhPJz47Mi7zbmZ2CsnBaDZFrAvajO1klDoG4Q04NGl7TWJRQnvC7GP+juQKNxvllSoZ1wVRV88VMsV5JFzmO0hNSc=
+X-Received: by 2002:a05:6e02:1b8a:: with SMTP id h10mr10512678ili.124.1634041288356;
+ Tue, 12 Oct 2021 05:21:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6602:2dc3:0:0:0:0 with HTTP; Tue, 12 Oct 2021 05:21:27
+ -0700 (PDT)
+Reply-To: mrschantelhermans@gmail.com
+From:   Mrs Chantel Hermans <julibestene14@gmail.com>
+Date:   Tue, 12 Oct 2021 05:21:27 -0700
+Message-ID: <CAEBSGw_9WwoMnmQ=fMyk8CJ+0mwRupyWykcq-r6LVGFzbV7YZg@mail.gmail.com>
+Subject: ATTENTION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-
-When an event probe is to be removed via the API to remove dynamic events,
-an -EBUSY error is returned.
-
-This is because the removal of the event probe does not expect to see the
-event system and name that the event probe is attached to, even though
-that's part of the API to create it. As the removal of probes is to use
-the same API as they are created, fix it by first testing if the first
-parameter of the event probe to be removed matches the system and event
-that the probe is attached to, and then adjust the argc and argv of the
-parameters to match the rest of the syntax.
-
-Link: https://lkml.kernel.org/r/20211011211105.48b6a5fd@oasis.local.home
-
-Fixes: 7491e2c442781 ("tracing: Add a probe that attaches to trace events")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
-Changes since v1:
-   - amended the commit with the definition of "slash"
-
- kernel/trace/trace_eprobe.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
-index 570d081929fb..2bcfa8da5cef 100644
---- a/kernel/trace/trace_eprobe.c
-+++ b/kernel/trace/trace_eprobe.c
-@@ -119,6 +119,26 @@ static bool eprobe_dyn_event_match(const char *system, const char *event,
- 			int argc, const char **argv, struct dyn_event *ev)
- {
- 	struct trace_eprobe *ep = to_trace_eprobe(ev);
-+	const char *slash;
-+
-+	/* First argument is the system/event the probe is attached to */
-+
-+	if (argc < 1)
-+		return false;
-+
-+	slash = strchr(argv[0], '/');
-+	if (!slash)
-+		slash = strchr(argv[0], '.');
-+	if (!slash)
-+		return false;
-+
-+	if (strncmp(ep->event_system, argv[0], slash - argv[0]))
-+		return false;
-+	if (strcmp(ep->event_name, slash + 1))
-+		return false;
-+
-+	argc--;
-+	argv++;
- 
- 	return strcmp(trace_probe_name(&ep->tp), event) == 0 &&
- 	    (!system || strcmp(trace_probe_group_name(&ep->tp), system) == 0) &&
 -- 
-2.31.1
+ATTENTION
 
+
+You have been compensated with the sum of 6.9 million dollars in this
+United Nation the payment will be issue into ATM Visa Card,
+
+
+and send to you from the Santander Bank of Spain we need your
+Address,Passport and your whatsapp number.
+
+
+THANKS
+Mrs Chantel Hermans
