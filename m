@@ -2,155 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1172842A8BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0491A42A8C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237469AbhJLPrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:47:46 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:46922 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235155AbhJLPrp (ORCPT
+        id S237420AbhJLPuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:50:54 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:43802 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234892AbhJLPuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:47:45 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1B625221B6;
-        Tue, 12 Oct 2021 15:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634053543; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CGuvld8itT1JzVi5BiszW8GqTio+K8yzk1kRcbCgLho=;
-        b=lPpv/XSdAFY6ky7xX7mCR6ucPKpxtWFaizhkWbVlqkteOqNwSohF5/vJGWCmQ9+Xl3olQs
-        AYOruHMZJUYE7rRpBkBYrjukIfZ4ej78bHErmHy0NZbhrDltViFlevT8uO6enYIPqXBFUc
-        1ftKk1lXvdiBgG2XLfONhu6Y9lbRE58=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634053543;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CGuvld8itT1JzVi5BiszW8GqTio+K8yzk1kRcbCgLho=;
-        b=oId5psRFPMAgmG4WCetp1VXzSP7EwLfsLH7wc9LmuF9aL64S0xLI72YtZXt0fQz4xClSq7
-        l7PSyUwicKrzMpCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA73313BC9;
-        Tue, 12 Oct 2021 15:45:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id K5ySNKatZWEKLwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 12 Oct 2021 15:45:42 +0000
-Message-ID: <38d28332-6b15-b353-5bcb-f691455c6495@suse.cz>
-Date:   Tue, 12 Oct 2021 17:45:42 +0200
+        Tue, 12 Oct 2021 11:50:52 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19CFmYxn095048;
+        Tue, 12 Oct 2021 10:48:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1634053714;
+        bh=8rrPQGnqFCUnZxZtTYRofyZNsMnTrSL62XL4Y0etm78=;
+        h=From:To:CC:Subject:Date;
+        b=B9DVrORSVLNawA8+xF9RVzrc8HuD52+88+P34j7wuDeMX2iXKHj7+IhC1e7IprnAl
+         9+JHTwn6zQ5CF61Z493b0VxoXVtwa3HPSf5weqKI2rGxUjgARQfozpBIAuhkgVp+gn
+         fKIamx5kmDeMRqrp5SuzuOxLO1AhdIxLJTx26nfc=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19CFmY77105407
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Oct 2021 10:48:34 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 12
+ Oct 2021 10:48:34 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 12 Oct 2021 10:48:34 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19CFmYZb009701;
+        Tue, 12 Oct 2021 10:48:34 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Suman Anna <s-anna@ti.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
+Subject: [PATCH] dt-bindings: sram: Allow numbers in sram region node name
+Date:   Tue, 12 Oct 2021 10:48:33 -0500
+Message-ID: <20211012154833.14111-1-nm@ti.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        frederic@kernel.org, tglx@linutronix.de, peterz@infradead.org,
-        mtosatti@redhat.com, nilal@redhat.com, mgorman@suse.de,
-        linux-rt-users@vger.kernel.org, cl@linux.com, paulmck@kernel.org,
-        ppandit@redhat.com
-References: <20211008161922.942459-1-nsaenzju@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC 0/3] mm/page_alloc: Remote per-cpu lists drain support
-In-Reply-To: <20211008161922.942459-1-nsaenzju@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/21 18:19, Nicolas Saenz Julienne wrote:
-> This series replaces mm/page_alloc's per-cpu lists drain mechanism in order for
-> it to be able to be run remotely. Currently, only a local CPU is permitted to
-> change its per-cpu lists, and it's expected to do so, on-demand, whenever a
-> process demands it (by means of queueing a drain task on the local CPU). Most
-> systems will handle this promptly, but it'll cause problems for NOHZ_FULL CPUs
-> that can't take any sort of interruption without breaking their functional
-> guarantees (latency, bandwidth, etc...). Having a way for these processes to
-> remotely drain the lists themselves will make co-existing with isolated CPUs
-> possible, and comes with minimal performance[1]/memory cost to other users.
-> 
-> The new algorithm will atomically switch the pointer to the per-cpu lists and
-> use RCU to make sure it's not being used before draining them. 
-> 
-> I'm interested in an sort of feedback, but especially validating that the
-> approach is acceptable, and any tests/benchmarks you'd like to see run against
+Sram regions node name describes the region of reserved memory and can
+be names such as l3cache@1000. Permit numbers to be used as part of the
+reserved memory node name.
 
-So let's consider the added alloc/free fast paths overhead:
-- Patch 1 - __alloc_pages_bulk() used to determine pcp_list once, now it's
-determined for each allocated page in __rmqueue_pcplist().
-- Patch 2 - adds indirection from pcp->$foo to pcp->lp->$foo in each operation
-- Patch 3
-  - extra irqsave/irqrestore in free_pcppages_bulk (amortized)
-  - rcu_dereference_check() in free_unref_page_commit() and __rmqueue_pcplist()
+Signed-off-by: Nishanth Menon <nm@ti.com>
+---
+ Documentation/devicetree/bindings/sram/sram.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-BTW - I'm not sure if the RCU usage is valid here.
-
-The "read side" (normal operations) is using:
-rcu_dereference_check(pcp->lp,
-		lockdep_is_held(this_cpu_ptr(&pagesets.lock)));
-
-where the lockdep parameter according to the comments for
-rcu_dereference_check() means
-
-"indicate to lockdep that foo->bar may only be dereferenced if either
-rcu_read_lock() is held, or that the lock required to replace the bar struct
-at foo->bar is held."
-
-but you are not taking rcu_read_lock() and the "write side" (remote
-draining) actually doesn't take pagesets.lock, so it's not true that the
-"lock required to replace ... is held"? The write side uses
-rcu_replace_pointer(...,
-			mutex_is_locked(&pcpu_drain_mutex))
-which is a different lock.
-
-IOW, synchronize_rcu_expedited() AFAICS has nothing (no rcu_read_lock() to
-synchronize against? Might accidentally work on !RT thanks to disabled irqs,
-but not sure about with RT lock semantics of the local_lock...
-
-So back to overhead, if I'm correct above we can assume that there would be
-also rcu_read_lock() in the fast paths.
-
-The alternative proposed by tglx was IIRC that there would be a spinlock on
-each cpu, which would be mostly uncontended except when draining. Maybe an
-uncontended spin lock/unlock would have lower overhead than all of the
-above? It would be certainly simpler, so I would probably try that first and
-see if it's acceptable?
-
-> it. For now, I've been testing this successfully on both arm64 and x86_64
-> systems while forcing high memory pressure (i.e. forcing the
-> page_alloc's slow path).
-> 
-> Patches 1-2 serve as cleanups/preparation to make patch 3 easier to follow.
-> 
-> Here's my previous attempt at fixing this:
-> https://lkml.org/lkml/2021/9/21/599
-> 
-> [1] Proper performance numbers will be provided if the approach is deemed
->     acceptable. That said, mm/page_alloc.c's fast paths only grow by an extra
->     pointer indirection and a compiler barrier, which I think is unlikely to be
->     measurable.
-> 
-> ---
-> 
-> Nicolas Saenz Julienne (3):
->   mm/page_alloc: Simplify __rmqueue_pcplist()'s arguments
->   mm/page_alloc: Access lists in 'struct per_cpu_pages' indirectly
->   mm/page_alloc: Add remote draining support to per-cpu lists
-> 
->  include/linux/mmzone.h |  24 +++++-
->  mm/page_alloc.c        | 173 +++++++++++++++++++++--------------------
->  mm/vmstat.c            |   6 +-
->  3 files changed, 114 insertions(+), 89 deletions(-)
-> 
+diff --git a/Documentation/devicetree/bindings/sram/sram.yaml b/Documentation/devicetree/bindings/sram/sram.yaml
+index 3eda5049d183..939cf2418445 100644
+--- a/Documentation/devicetree/bindings/sram/sram.yaml
++++ b/Documentation/devicetree/bindings/sram/sram.yaml
+@@ -60,7 +60,7 @@ properties:
+     type: boolean
+ 
+ patternProperties:
+-  "^([a-z]*-)?sram(-section)?@[a-f0-9]+$":
++  "^([a-z0-9]*-)?sram(-section)?@[a-f0-9]+$":
+     type: object
+     description:
+       Each child of the sram node specifies a region of reserved memory.
+-- 
+2.32.0
 
