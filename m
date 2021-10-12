@@ -2,123 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345CA429A78
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 02:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0A4429A84
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 02:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235660AbhJLAeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 20:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235704AbhJLAeD (ORCPT
+        id S230309AbhJLAtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 20:49:25 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:45021 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhJLAtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 20:34:03 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7664C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 17:31:59 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id s4so42810279ybs.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 17:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3S62nvOHjceE7OYCQfU8AzRtrSAtZeU322vT6Q84Ffk=;
-        b=XHQTeHQPS0PjyB1Vm5EaNuYtJemY2DtY3b2aoOM1jPIXuy2FYfGrVklvUz4WycyF3m
-         /+y2RZ6Q1B7r65FNFTUMdJ4zEFFnFQYQOYpkt/rOjtZaMYBobDDFeijXtdhlatRGkqBc
-         gvovPmjfIxB3ikKZKInFvUTrnemtgV0mwbgSImuL+RI7Z5sunNDEbRJnWV+g6R9/ud2B
-         y6b2vdX5PtLT1xzy0BIc9SP9OQX8lHU7pInxDCX2ivCq1pzv1+tRa5x5QdWJDBEwVltd
-         DZnUoCnaCi5VM+SvHwfU2RMBdDfJ7Z3mh8hlRX6GiKnuuDJXEynPuBaXc+keWPqBRhbA
-         yCvw==
+        Mon, 11 Oct 2021 20:49:24 -0400
+Received: by mail-oi1-f171.google.com with SMTP id y207so23734409oia.11;
+        Mon, 11 Oct 2021 17:47:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3S62nvOHjceE7OYCQfU8AzRtrSAtZeU322vT6Q84Ffk=;
-        b=qyh6BIQ3HV9zhVd5zg4fHRyex86zcAhazOVzx56HejaweANh5nD/9c6h/kVyu3dCkb
-         1aBtKjOXGUGKg2XCGndlP4Iysa96EZJzTGSXtZWkoF1A7Zl0vdaMUPrw4YyFCa7cmPLm
-         jW33wxIUsnpPF49NOVojQoc0rHAq8iaPzfnHGhJy7/sGhvKXFQwDEQXyGrKVf0DppFmK
-         XGw8KVDxDYZwycfAGt6aIx6Qrm6tWrn0wKG80R/dr4J/7ssy3+kswBCI3gTncccJquJG
-         dal+J0xR9DMbaf1SqnsjjnivnPrmDRM4Zi388K801rUKU2/8eMISXbV//bFy9BdsaCJW
-         sUzw==
-X-Gm-Message-State: AOAM531QZ7QlDCBxwGo3Gy2rNgJS/qsM1bYTckaj0xS+RjmZW52ShpUw
-        PKPNUTrLDwMoFVjmgsmh8hTmqVzjUxVhwuKPHCCung==
-X-Google-Smtp-Source: ABdhPJzlvFm5xgBenGw3cXmywxLZcwEbpxxUcVyY1uvZhTm+uV/Sw7dcxz3GDgSmH0Hnm+l2wjW/unwzv4W279GdJVo=
-X-Received: by 2002:a25:1346:: with SMTP id 67mr25663864ybt.405.1633998712255;
- Mon, 11 Oct 2021 17:31:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=poTvpzF7Q9lxXOwqWE5CBjIxUnl36yVfDL/70ZxDuU0=;
+        b=1OVFrYSHgFQ3vvrh9LaA3PnIcwAUecksJNg3rnkl7hekqWesSVOZbxAiMESTXxROwQ
+         ARqQ+ALngZEZMEvvfZQilOniMchFT63J7ykjlBKM07YYQ4DbYoOsMieAX96h3ukPIa9L
+         k+UYhZ8TeKxcWdHt0i+3JhFZ1k5MdWAUNV26Sz+Ky+Hugiwmd4AAJGnuqHerI4DVHvUN
+         52QUfBfRO0kerwKDuG497DJgOfPXVVFLIzthQE8cAnf5ZubSghUeR20A+etO6TZUbP3V
+         y3Jp6mnsBrTfnuuco8/6Lxm8m3eb/Whuj537NIyiU2cBkGrHUD44riLOhrpaIbXIorMJ
+         r5hA==
+X-Gm-Message-State: AOAM530yYnzhsx9HQm5u8ojnpY8x0eLo9K9n0vwi/Un4mbPqfNLLg/yl
+        LoZL3j0xciBuMu0TYU/E3g==
+X-Google-Smtp-Source: ABdhPJzGSmuSZFEPBJaDjFQZmiYTURhJmygi0uSKOWovmVg93tr6x+ey0AByD0nfa+xwu9bjGJm7IQ==
+X-Received: by 2002:aca:59d5:: with SMTP id n204mr1631076oib.142.1633999638864;
+        Mon, 11 Oct 2021 17:47:18 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id e2sm1796921ooa.20.2021.10.11.17.47.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 17:47:18 -0700 (PDT)
+Received: (nullmailer pid 1479769 invoked by uid 1000);
+        Tue, 12 Oct 2021 00:47:17 -0000
+Date:   Mon, 11 Oct 2021 19:47:17 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     alexandru.tachici@analog.com
+Cc:     andrew@lunn.ch, o.rempel@pengutronix.de, davem@davemloft.net,
+        devicetree@vger.kernel.org, hkallweit1@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v3 8/8] dt-bindings: adin1100: Add binding for ADIN1100
+ Ethernet PHY
+Message-ID: <YWTbFfMKk4QQh8fa@robh.at.kernel.org>
+References: <20211011142215.9013-1-alexandru.tachici@analog.com>
+ <20211011142215.9013-9-alexandru.tachici@analog.com>
 MIME-Version: 1.0
-References: <20211008000825.1364224-1-joshdon@google.com> <CA+khW7g+HbLRWTV8vuo-oQ3ROv_ZnuSNMWA_pVp-BQGqT2d9-g@mail.gmail.com>
-In-Reply-To: <CA+khW7g+HbLRWTV8vuo-oQ3ROv_ZnuSNMWA_pVp-BQGqT2d9-g@mail.gmail.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Mon, 11 Oct 2021 17:31:41 -0700
-Message-ID: <CABk29NvPz3hDehsLC3z_Jpstr3BveL_XZBg_kcjqg9ewkH0RfQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/core: forced idle accounting
-To:     Hao Luo <haoluo@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineethrp@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211011142215.9013-9-alexandru.tachici@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 10:33 AM Hao Luo <haoluo@google.com> wrote:
->
-> On Thu, Oct 7, 2021 at 5:08 PM Josh Don <joshdon@google.com> wrote:
-> > -void sched_core_dequeue(struct rq *rq, struct task_struct *p)
-> > +void sched_core_dequeue(struct rq *rq, struct task_struct *p, int flags)
-> >  {
-> >         rq->core->core_task_seq++;
-> >
-> > -       if (!sched_core_enqueued(p))
-> > -               return;
-> > +       if (sched_core_enqueued(p)) {
-> > +               rb_erase(&p->core_node, &rq->core_tree);
-> > +               RB_CLEAR_NODE(&p->core_node);
-> > +       }
-> >
-> > -       rb_erase(&p->core_node, &rq->core_tree);
-> > -       RB_CLEAR_NODE(&p->core_node);
-> > +       /*
-> > +        * Migrating the last task off the cpu, with the cpu in forced idle
-> > +        * state. Reschedule to create an accounting edge for forced idle,
-> > +        * and re-examine whether the core is still in forced idle state.
-> > +        */
-> > +       if (!(flags & DEQUEUE_SAVE) && rq->nr_running == 1 &&
-> > +           rq->core->core_forceidle && rq->curr == rq->idle)
-> > +               resched_curr(rq);
->
-> Resched_curr is probably an unwanted side effect of dequeue. Maybe we
-> could extract the check and resched_curr out into a function, and call
-> the function outside of sched_core_dequeue(). In that way, the
-> interface of dequeue doesn't need to change.
+On Mon, Oct 11, 2021 at 05:22:15PM +0300, alexandru.tachici@analog.com wrote:
+> From: Alexandru Tachici <alexandru.tachici@analog.com>
+> 
+> DT bindings for the ADIN1100 10BASE-T1L Ethernet PHY.
+> 
+> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+> ---
+>  .../devicetree/bindings/net/adi,adin1100.yaml | 30 +++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/adi,adin1100.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/adi,adin1100.yaml b/Documentation/devicetree/bindings/net/adi,adin1100.yaml
+> new file mode 100644
+> index 000000000000..7f98ea8fdf51
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/adi,adin1100.yaml
+> @@ -0,0 +1,30 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/adi,adin1100.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices ADIN1100 PHY
+> +
+> +maintainers:
+> +  - Alexandru Tachici <alexandru.tachici@analog.com>
+> +
+> +description:
+> +  Bindings for Analog Devices Industrial Low Power 10BASE-T1L Ethernet PHY
 
-This resched is an atypical case; normal load balancing won't steal
-the last runnable task off a cpu. The main reasons this resched could
-trigger are: migration due to affinity change, and migration due to
-sched core doing a cookie_steal. Could bubble this up to
-deactivate_task(), but seems less brittle to keep this in dequeue()
-with the check against DEQUEUE_SAVE (since this creates an important
-accounting edge). Thoughts?
+This schema doesn't do anything. ethernet-phy.yaml is already applied 
+based on the node name and you haven't added any phy specific 
+properties.
 
-> >         /*
-> > @@ -5765,7 +5782,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
-> >         for_each_cpu_wrap(i, smt_mask, cpu) {
-> >                 rq_i = cpu_rq(i);
-> >
-> > -               if (i != cpu)
-> > +               if (i != cpu && (rq_i != rq->core || !core_clock_updated))
-> >                         update_rq_clock(rq_i);
->
-> Do you mean (rq_i != rq->core && !core_clock_updated)? I thought
-> rq->core has core_clock updated always.
-
-rq->clock is updated on entry to pick_next_task(). rq->core is only
-updated if rq == rq->core, or if we've done the clock update for
-rq->core above.
+> +
+> +allOf:
+> +  - $ref: ethernet-phy.yaml#
+> +
+> +examples:
+> +  - |
+> +    ethernet {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        10base-t1l-2.4vpp = <0>;
+> +
+> +        ethernet-phy@0 {
+> +            compatible = "ethernet-phy-id0283.bc81";
+> +            reg = <0>;
+> +        };
+> +    };
+> -- 
+> 2.25.1
+> 
+> 
