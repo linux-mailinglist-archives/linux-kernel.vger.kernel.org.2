@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482F8429F9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E6E429FA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234714AbhJLIT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:19:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51184 "EHLO mail.kernel.org"
+        id S234590AbhJLIWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:22:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232541AbhJLIT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:19:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFF6660F23;
-        Tue, 12 Oct 2021 08:17:56 +0000 (UTC)
+        id S232541AbhJLIVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 04:21:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C27A6101D;
+        Tue, 12 Oct 2021 08:19:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634026677;
-        bh=O6YnQ6b4Trs6QluMttA3AsFs4aF9SM6xHU/t4DKvyTg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BZdnk4kj10eF4uEL6UQmlX9cXLWKhntEHIog5IiiWy6oi03Rs9Vy7hiLkoMhb01cK
-         jkTMvDk3/sOBe8RY6RI3z5BqnRY2kIdrTfg96CxHS+JzKGwP9zBPMuzUXwp9ZC1OkB
-         NJUacUssiNN5o3CVEzhgoGRTONDLUhhKakBld00Z1/9Sxvk3LEkrzmYWRAmzJxFvjQ
-         BAEhmY2czxDkkZurU7PoPFstdMkndfphZ41VupVyoZPTsVlD9bbkq+PsaXQgpkcFrg
-         qs35g/FOskmvwWI+RHt9w40Vhce1DrugvKNc92XT5eM58rLbbnibObKRrCJr49hb2c
-         AaT4ixBlT+iLw==
-Received: by mail-lf1-f54.google.com with SMTP id u18so84176791lfd.12;
-        Tue, 12 Oct 2021 01:17:56 -0700 (PDT)
-X-Gm-Message-State: AOAM530PIop8lR92HAGFVlhFVXo2Acpwx8utvQup1hzMwdb1BWomUHpE
-        IM/BHBtZ7lgO4XJDUYVeq3NaqQYmpZ74Xi5FZKk=
-X-Google-Smtp-Source: ABdhPJzzS8BadDYCdKON8s6JDRiKBtNpl1vB+T18h7RmJroMdHNwePQeKdXq4Urk7tLajYxYtDSkgGqauBXv5xb5xfs=
-X-Received: by 2002:a2e:3907:: with SMTP id g7mr28814014lja.285.1634026675077;
- Tue, 12 Oct 2021 01:17:55 -0700 (PDT)
+        s=k20201202; t=1634026794;
+        bh=lDPufYSiKyvGGDrYONfULzGOTQL591ZiKQDt8MPRrw8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EbhrCQT6mNhvQPiAFl8cNGZj7me7jYjv8/NCbzUy/aKo5RfWSXhn4M4I78GlMhNRN
+         pruhFBcjfGZcQkqF+4MPON1fwgpXBNmSoDzYF/fF4/0mYUDH3g6ZXPuATahOpCcOgq
+         +q0S6w9teF4Kw+i2PtOTccVI0E/N4LIvGostQHdf+3j1mApKvEZyDRr7DlVJHOTpCE
+         nx5qm85PGJTFzlTIBreR9gDbjD/K+a/s0oVk3UIkQOQh6bgoQImCGJ4ckusQxKlJ/D
+         eAqfvgiMXVFt82AgIP8Y/awQPdli5FYtnaEAdAkxd4wg6pPT4RTUZVzqLF0EI5mlCy
+         rDeHnI04DOUdw==
+Date:   Tue, 12 Oct 2021 09:19:48 +0100
+From:   Will Deacon <will@kernel.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        James Clark <James.Clark@arm.com>
+Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
+Message-ID: <20211012081948.GA5156@willie-the-truck>
+References: <20210916154635.1525-1-german.gomez@arm.com>
+ <20210916154635.1525-4-german.gomez@arm.com>
+ <20210923135016.GG400258@leoy-ThinkPad-X240s>
+ <20210923144048.GB603008@leoy-ThinkPad-X240s>
+ <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
+ <20211004122724.GC174271@leoy-ThinkPad-X240s>
+ <6b092f13-832f-5d1d-a504-aea96c81bf17@arm.com>
+ <20211006095124.GC14400@leoy-ThinkPad-X240s>
+ <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
 MIME-Version: 1.0
-References: <20211008032231.1143467-1-fengli@smartx.com> <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
- <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com>
- <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
- <CALTww28CsJdmVOLFeoHC8FgbHDK78h8Lncsf9fFA0RYXEj=R9A@mail.gmail.com> <CAHckoCzzVP7npmU4LWedzD-f1QmkH4K0iLk_=8ptSFXrFfRoDw@mail.gmail.com>
-In-Reply-To: <CAHckoCzzVP7npmU4LWedzD-f1QmkH4K0iLk_=8ptSFXrFfRoDw@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 12 Oct 2021 01:17:43 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4VFTpM94by-iMkTQ=b9Y7FqZ2oqHH+jV-f8BM=YKWyiA@mail.gmail.com>
-Message-ID: <CAPhsuW4VFTpM94by-iMkTQ=b9Y7FqZ2oqHH+jV-f8BM=YKWyiA@mail.gmail.com>
-Subject: Re: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
-To:     Li Feng <fengli@smartx.com>
-Cc:     Xiao Ni <xni@redhat.com>,
-        "open list:SOFTWARE RAID (Multiple Disks) SUPPORT" 
-        <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 1:07 AM Li Feng <fengli@smartx.com> wrote:
->
-> Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=A5=E5=
-=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=882:58=E5=86=99=E9=81=93=EF=BC=9A
+On Mon, Oct 11, 2021 at 04:55:37PM +0100, German Gomez wrote:
+> Hi Leo,
+> 
+> On 06/10/2021 10:51, Leo Yan wrote:
+> > On Wed, Oct 06, 2021 at 10:35:20AM +0100, German Gomez wrote:
 > >
-> > On Mon, Oct 11, 2021 at 5:42 PM Li Feng <fengli@smartx.com> wrote:
-> > >
-> > > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8811=E6=97=A5=
-=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:49=E5=86=99=E9=81=93=EF=BC=9A
-> > > >
-> > > > Hi all
-> > > >
-> > > > Now the per device sysfs interface file state can change failfast. =
-Do
-> > > > we need a new file for failfast?
-> > > >
-> > > > I did a test. The steps are:
-> > > >
-> > > > mdadm -CR /dev/md0 -l1 -n2 /dev/sdb /dev/sdc --assume-clean
-> > > > cd /sys/block/md0/md/dev-sdb
-> > > > echo failfast > state
-> > > > cat state
-> > > > in_sync,failfast
-> > >
-> > > This works,  will it be persisted to disk?
-> > >
+> > [...]
 > >
-> > mdadm --detail /dev/md0 can show the failfast information. So it
-> > should be written in superblock.
-> > But I don't find how md does this. I'm looking at this.
-> >
-> Yes, I have tested that it has been persisted, but don't understand who d=
-oes it.
+> >>> So simply say, I think the head pointer monotonically increasing is
+> >>> the right thing to do in Arm SPE driver.
+> >> I will talk to James about how we can proceed on this.
+> > Thanks!
+> 
+> I took this offline with James and, though it looks possible to patch
+> the SPE driver to have a monotonically increasing head pointer in order
+> to simplify the handling in the perf tool, it could be a breaking change
+> for users of the perf_event_open syscall that currently rely on the way
+> it works now.
+> 
+> An alternative way we considered to simplify the patch is to change the
+> logic inside the find_snapshot callback so that it records the entire
+> contents of the aux buffer every time.
+> 
+> What do you think?
 
-I think this is not guaranteed to be persistent:
+What does intel-pt do?
 
-[root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-in_sync,failfast
-[root@eth50-1 ~]# echo -failfast >  /sys/block/md127/md/rd1/state
-[root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-in_sync
-[root@eth50-1 ~]# mdadm --stop /dev/md*
-mdadm: /dev/md does not appear to be an md device
-mdadm: stopped /dev/md127
-[root@eth50-1 ~]# mdadm -As
-mdadm: /dev/md/0_0 has been started with 4 drives.
-[root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-in_sync,failfast
-
-How about we fix state_store to make sure it is always persistent?
-
-Thanks,
-Song
+Will
