@@ -2,109 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2455942A81D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C14942A81F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237233AbhJLPWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:22:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232952AbhJLPWj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:22:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EB8160E0B;
-        Tue, 12 Oct 2021 15:20:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634052037;
-        bh=PJFtGAJ/i5vrU6he/YsT/9McMcu5XsKOvf+ehOHtKMI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=j56pxltmiq/yaaXtZ/NLMeN+/4RKTiaPaNJv+rTsP9S9eYpxR7bEYecqoPOhzDKiZ
-         WJiLA8w5rjE9lmhKq8kJL0PvhdLS4uRKkf5VLV7IMB78qVoLPYxarYFzpGHumNLhHg
-         RU2xrLdsIHgM2asHepxtq+VI1jqkmSDKDknOHJmy+/NG/GkdGZiqT/npITtxdzK/JL
-         xda87+WdSvgOPsnQS59EaRqbB7fZjcb/P3zBe/MQN8T5v0AgyeyWbIvvly5qSccf0J
-         epzUTY9aVbVk/R/Sh8r9LWUL1paFssJr3F8jza3ZURdCG4ZWCbColrWlRxYDuvfcRJ
-         NPP5dG6LGZagA==
-Message-ID: <500c72ecc99c127838dd4bded1e70fa48a1e97a3.camel@kernel.org>
-Subject: Re: [PATCH] tpm/st33zp24: Fix typo in st33zp24.c
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 12 Oct 2021 18:20:34 +0300
-In-Reply-To: <20211008052736.629562-1-sohaib.amhmd@gmail.com>
-References: <20211008052736.629562-1-sohaib.amhmd@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.0-1 
+        id S237336AbhJLPWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:22:51 -0400
+Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:36429 "EHLO
+        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237223AbhJLPWs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 11:22:48 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id 03668F806A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:20:45 +0100 (IST)
+Received: (qmail 1342 invoked from network); 12 Oct 2021 15:20:44 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Oct 2021 15:20:44 -0000
+Date:   Tue, 12 Oct 2021 16:20:43 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH mm v3] memcg: enable memory accounting in
+ __alloc_pages_bulk
+Message-ID: <20211012152043.GW3959@techsingularity.net>
+References: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
+ <60df0efd-f458-a13c-7c89-749bdab21d1d@virtuozzo.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <60df0efd-f458-a13c-7c89-749bdab21d1d@virtuozzo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 07:27 +0200, Sohaib Mohamed wrote:
-> Remove repeated world "device"
-> "datas" -> "data"
->=20
-> Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
-> ---
-> =C2=A0drivers/char/tpm/st33zp24/st33zp24.c | 4 ++--
-> =C2=A01 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/char/tpm/st33zp24/st33zp24.c b/drivers/char/tpm/st33=
-zp24/st33zp24.c
-> index 4ec10ab5e576..f888624c1ae7 100644
-> --- a/drivers/char/tpm/st33zp24/st33zp24.c
-> +++ b/drivers/char/tpm/st33zp24/st33zp24.c
-> @@ -62,7 +62,7 @@ enum tis_defaults {
->=20
-> =C2=A0/*
-> =C2=A0 * clear_interruption clear the pending interrupt.
-> - * @param: tpm_dev, the tpm device device.
-> + * @param: tpm_dev, the tpm device.
-> =C2=A0 * @return: the interrupt status value.
-> =C2=A0 */
-> =C2=A0static u8 clear_interruption(struct st33zp24_dev *tpm_dev)
-> @@ -434,7 +434,7 @@ static int st33zp24_send(struct tpm_chip *chip, unsig=
-ned char *buf,
-> =C2=A0/*
-> =C2=A0 * st33zp24_recv received TPM response through TPM phy.
-> =C2=A0 * @param: chip, the tpm_chip description as specified in driver/ch=
-ar/tpm/tpm.h.
-> - * @param: buf,=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the buffe=
-r to store datas.
-> + * @param: buf,=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the buffe=
-r to store data.
-> =C2=A0 * @param: count, the number of bytes to send.
-> =C2=A0 * @return: In case of success the number of bytes received.
-> =C2=A0 *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 In other case, a=
- < 0 value describing the issue.
-> --
-> 2.25.1
->=20
+On Tue, Oct 12, 2021 at 05:58:21PM +0300, Vasily Averin wrote:
+> Enable memory accounting for bulk page allocator.
+> 
+> Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 
-So, these do not follow kdoc syntax, and they are only local functions,
-i.e. it does not make sense to fix something that is already broken.
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 
-Having parameter descriptions for these is quite useless thing to
-maintain so you could just remove parameter descriptions, and make
-just a normal multi-line comment.
-
-E.g.
-
-/*
- * Clear the pending input.
- */
-static u8 clear_interruption(struct st33zp24_dev *tpm_dev)
-
-For the 2nd the current description is barely even a proper sentence,
-and it does not tell what the function does. Also for that you know
-what it does already, since it is just implementing the callback.
-
-So for that, just remove the comment altogether.
-
-Please add to the next patch version:
-
-Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
-
-
-/Jarkko
-
+-- 
+Mel Gorman
+SUSE Labs
