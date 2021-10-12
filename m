@@ -2,107 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A9C42A6AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77FAB42A6B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237106AbhJLOFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:05:22 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:44581 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237015AbhJLOFV (ORCPT
+        id S237135AbhJLOGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237015AbhJLOGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:05:21 -0400
-Received: by mail-il1-f197.google.com with SMTP id i11-20020a92540b000000b0025456903645so12177828ilb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:03:19 -0700 (PDT)
+        Tue, 12 Oct 2021 10:06:02 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54348C061570;
+        Tue, 12 Oct 2021 07:04:00 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id d9so81822edh.5;
+        Tue, 12 Oct 2021 07:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=80h6wvdwCXl8aMWCsxwnWoDnL0RhjgODdxJ4RifM/C0=;
+        b=XtYOZFlZxmtKBNhp2WkSGyR1I/zmsU2lQflUrDihgHq8M41/gHh5K1DlH1jzdBhKUn
+         nGpO9D5/7c4OuzKLUTMTE/boi/F4J/B8KS9N5TPGJRFBZ0oofjKeDAohqFts59lHINht
+         faJtPNPQjBA2HjkSbs+qabwwDSfAmDy/5LELRnX0cSZSRL/08a5ZkvtcQ7EXplaUJfKB
+         a4jL/ApVJtflYz/zLiLbt3C7Xyzni+WNYib0zSomeWEI1ifpXsGxazG4cYGrQjdqeMsm
+         tI0MQy84DNAkJGs7Q4gKAEhuc5Zf58YDYrG6knHPxXNAoEc3K+V7RPEJ1f4WNvjFX5JI
+         2Zdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=q/pqoxqAzyZZ8F1MtzXtJAA/iWzEt6hd22bQr+ZIXqo=;
-        b=SV4VoKnIdVBrTp4Q091Ng1a3dRDAx38x8jkeH6HyyN4kVdoAeHAcwf7O7Waipi47ev
-         amsgpO1ATjiClJyWq15iWoki4YF4XLhwg0qUc/hJCB5XxEJCyzl95mazTjUFWFLTfUmf
-         3wfOAUNbah7W9qLz83MndDRhkffVRd48YG1DNMU66CqoylDrSFZ/N9KsLOizEmzDmSCi
-         7gdx/YElvPG5Gv77/jb4GSD0wfnC8akrabxwwmkyMbsVh+OaP92ejCGTRyDN6jLOu+RV
-         2wkSC1nTA0UIsTGYBkTe61dC26u99otKXCfxWwuZiM7Fd7JsvzKc3a8q7CiX8qw5p6rY
-         a78w==
-X-Gm-Message-State: AOAM5315nNROwqQdmIwqzPHxhlFf6LCT8yaSbvDgNFaHq63HnhnG/lzo
-        ngKf9+MRG1iJSAgI/M+sBTb6nxDbWw87ChKZ6EUtXkPvqccs
-X-Google-Smtp-Source: ABdhPJxjIThpoG8yba4yssGvvE6hjTqANDNUg0HyeCaEZK1/NzaUyGwG8HljKgdp5DPeZ8pagDP38f8//lFSMiN9UDrG2mJfYTKn
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=80h6wvdwCXl8aMWCsxwnWoDnL0RhjgODdxJ4RifM/C0=;
+        b=EvWnM8lrm2ENRvpWyAlmiI2KQeKE+xUqEaw6o8ereCRm0QcugOZq+mb9w3Mjdkdl/I
+         owq4hVoeg+8jZFXNetX1tycC81XV4CTwlQkxlkLfdlQhANXFO+KVWtXdcrColo39xJAy
+         49PCENN2lRgN2zChmGnW/FEl5Qn1+8qP9jOGcgK7+jD+YNUZDSta6sMpzVjRf+kOTIh5
+         A+fqPhNPSRJMfqjdjfC+74S5z0Mx4E/XchQp4wbqk0GuIqKA2OqvvjL0GGfHY1UUL7ae
+         sVSsmx909D4BFxdMTKtQeq2C6XaRHeqQgIVlN7xAhl/zVnP+mvHCDg5wOkjVhTHuI3Fy
+         S2Sg==
+X-Gm-Message-State: AOAM533LrITWvan7yk8ArUBm37ADaU4Y+554OvNr+gtr/Ix+v1nhvnHs
+        DpFx49zcLkUW52plNFEmZ7A=
+X-Google-Smtp-Source: ABdhPJynBoEn4t6d+ZqG3M4W+MqVjISvbZV9McCkp+wFfS5YypAwvUbkRni8q1PBDIlnH3zGy1x/4w==
+X-Received: by 2002:a05:6402:50ca:: with SMTP id h10mr122465edb.262.1634047438686;
+        Tue, 12 Oct 2021 07:03:58 -0700 (PDT)
+Received: from skbuf ([188.26.53.217])
+        by smtp.gmail.com with ESMTPSA id q9sm4967451ejf.70.2021.10.12.07.03.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 07:03:58 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 17:03:56 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
+Cc:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Rasmussen <MIR@bang-olufsen.dk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 5/6] net: dsa: realtek-smi: add rtl8365mb
+ subdriver for RTL8365MB-VC
+Message-ID: <20211012140356.kqd5g6h2lhvugpxz@skbuf>
+References: <20211012123557.3547280-1-alvin@pqrs.dk>
+ <20211012123557.3547280-6-alvin@pqrs.dk>
+ <20211012130429.chiqugd57xoqf6hd@skbuf>
+ <6848079b-eb8b-91c9-f64d-5f0c3fde36ec@bang-olufsen.dk>
+ <ce2d43ae-d15e-4425-8728-07ed6fa38f9c@bang-olufsen.dk>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c262:: with SMTP id h2mr5696463ild.204.1634047399207;
- Tue, 12 Oct 2021 07:03:19 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 07:03:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c6a82505ce284e4c@google.com>
-Subject: [syzbot] BUG: sleeping function called from invalid context in copy_huge_page
-From:   syzbot <syzbot+aae069be1de40fb11825@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ce2d43ae-d15e-4425-8728-07ed6fa38f9c@bang-olufsen.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Oct 12, 2021 at 01:50:44PM +0000, Alvin Šipraga wrote:
+> >>> +static int rtl8365mb_ext_config_rgmii(struct realtek_smi *smi, int
+> >>> port,
+> >>> +                      phy_interface_t interface)
+> >>> +{
+> >>> +    int tx_delay = 0;
+> >>> +    int rx_delay = 0;
+> >>> +    int ext_port;
+> >>> +    int ret;
+> >>> +
+> >>> +    if (port == smi->cpu_port) {
+> >>> +        ext_port = PORT_NUM_L2E(port);
+> >>> +    } else {
+> >>> +        dev_err(smi->dev, "only one EXT port is currently
+> >>> supported\n");
+> >>> +        return -EINVAL;
+> >>> +    }
+> >>> +
+> >>> +    /* Set the RGMII TX/RX delay
+> >>> +     *
+> >>> +     * The Realtek vendor driver indicates the following possible
+> >>> +     * configuration settings:
+> >>> +     *
+> >>> +     *   TX delay:
+> >>> +     *     0 = no delay, 1 = 2 ns delay
+> >>> +     *   RX delay:
+> >>> +     *     0 = no delay, 7 = maximum delay
+> >>> +     *     No units are specified, but there are a total of 8 steps.
+> >>> +     *
+> >>> +     * The vendor driver also states that this must be configured
+> >>> *before*
+> >>> +     * forcing the external interface into a particular mode, which
+> >>> is done
+> >>> +     * in the rtl8365mb_phylink_mac_link_{up,down} functions.
+> >>> +     *
+> >>> +     * NOTE: For now this is hardcoded to tx_delay = 1, rx_delay = 4.
+> >>> +     */
+> >>> +    if (interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> >>> +        interface == PHY_INTERFACE_MODE_RGMII_TXID)
+> >>> +        tx_delay = 1; /* 2 ns */
+> >>> +
+> >>> +    if (interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> >>> +        interface == PHY_INTERFACE_MODE_RGMII_RXID)
+> >>> +        rx_delay = 4;
+> >>
+> >> There is this ongoing discussion that we have been interpreting the
+> >> meaning of "phy-mode" incorrectly for RGMII all along. The conclusion
+> >> seems to be that for a PHY driver, it is okay to configure its internal
+> >> delay lines based on the value of the phy-mode string, but for a MAC
+> >> driver it is not. The only viable option for a MAC driver to configure
+> >> its internal delays is based on parsing some new device tree properties
+> >> called rx-internal-delay-ps and tx-internal-delay-ps.
+> >> Since you do not seem to have any baggage to support here (new driver),
+> >> could you please just accept any PHY_INTERFACE_MODE_RGMII* value and
+> >> apply delays (or not) based on those other OF properties?
+> >> https://patchwork.kernel.org/project/netdevbpf/patch/20210723173108.459770-6-prasanna.vengateshan@microchip.com/>>
+> >
+> >
+> > Ugh, I remember my head spinning when I first looked into this. But OK,
+> > I can do as you suggest.
+> >
+> > Just to clarify: if the *-internal-delay-ps property is missing, you are
+> > saying that I should set the delay to 0 rather than my defaults (tx=1,
+> > rx=4), right?
 
-syzbot found the following issue on:
+Yes, I think so.
 
-HEAD commit:    1da38549dd64 Merge tag 'nfsd-5.15-3' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14379148b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=76f7496a8217e5ec
-dashboard link: https://syzkaller.appspot.com/bug?extid=aae069be1de40fb11825
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> Another problem is that for the RX delay, I have no idea what the actual
+> unit of measurement is. See the comment I left in
+> rtl8365mb_ext_config_rgmii().
+>
+> So I guess I could "reinterpret" rx-internal-delay-ps to mean these
+> magic step values, or otherwise I don't know what might be the best
+> practice.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I think what could work is you could accept only the 0 or 2000 ps values.
+For the TX delay you say it is clear that you should program "1" to hardware.
+For the RX delay I guess that the value of "4" is simply your best guess
+of what would correspond to 2 ns. So you could just transform the 2000 ps
+value into a "4" for the RX delay and make no other guesses otherwise.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+aae069be1de40fb11825@syzkaller.appspotmail.com
+> >>> +    ret = regmap_update_bits(
+> >>> +        smi->map, RTL8365MB_EXT_RGMXF_REG(ext_port),
+> >>> +        RTL8365MB_EXT_RGMXF_TXDELAY_MASK |
+> >>> +            RTL8365MB_EXT_RGMXF_RXDELAY_MASK,
+> >>> +        FIELD_PREP(RTL8365MB_EXT_RGMXF_TXDELAY_MASK, tx_delay) |
+> >>> +            FIELD_PREP(RTL8365MB_EXT_RGMXF_RXDELAY_MASK, rx_delay));
+> >>> +    if (ret)
+> >>> +        return ret;
+> >>> +
+> >>> +    ret = regmap_update_bits(
+> >>> +        smi->map, RTL8365MB_DIGITAL_INTERFACE_SELECT_REG(ext_port),
+> >>> +        RTL8365MB_DIGITAL_INTERFACE_SELECT_MODE_MASK(ext_port),
+> >>> +        RTL8365MB_EXT_PORT_MODE_RGMII
+> >>> +            << RTL8365MB_DIGITAL_INTERFACE_SELECT_MODE_OFFSET(
+> >>> +                   ext_port));
+> >>> +    if (ret)
+> >>> +        return ret;
+> >>> +
+> >>> +    return 0;
+> >>> +}
+> >>
+> >>> +static void rtl8365mb_phylink_mac_config(struct dsa_switch *ds, int
+> >>> port,
+> >>> +                     unsigned int mode,
+> >>> +                     const struct phylink_link_state *state)
+> >>> +{
+> >>> +    struct realtek_smi *smi = ds->priv;
+> >>> +    int ret;
+> >>> +
+> >>> +    if (!rtl8365mb_phy_mode_supported(ds, port, state->interface)) {
+> >>> +        dev_err(smi->dev, "phy mode %s is unsupported on port %d\n",
+> >>> +            phy_modes(state->interface), port);
+> >>> +        return;
+> >>> +    }
+> >>> +
+> >>> +    /* If port MAC is connected to an internal PHY, we have nothing
+> >>> to do */
+> >>> +    if (dsa_is_user_port(ds, port))
+> >>> +        return;
+> >>> +
+> >>> +    if (mode != MLO_AN_PHY && mode != MLO_AN_FIXED) {
+> >>> +        dev_err(smi->dev,
+> >>> +            "port %d supports only conventional PHY or fixed-link\n",
+> >>> +            port);
+> >>> +        return;
+> >>> +    }
+> >>> +
+> >>> +    if (phy_interface_mode_is_rgmii(state->interface)) {
+> >>> +        ret = rtl8365mb_ext_config_rgmii(smi, port, state->interface);
+> >>> +        if (ret)
+> >>> +            dev_err(smi->dev,
+> >>> +                "failed to configure RGMII mode on port %d: %d\n",
+> >>> +                port, ret);
+> >>> +        return;
+> >>> +    }
+> >>> +
+> >>> +    /* TODO: Implement MII and RMII modes, which the RTL8365MB-VC also
+> >>> +     * supports
+> >>> +     */
+> >>> +}
+> >>> +
+> >>> +static void rtl8365mb_phylink_mac_link_down(struct dsa_switch *ds,
+> >>> int port,
+> >>> +                        unsigned int mode,
+> >>> +                        phy_interface_t interface)
+> >>> +{
+> >>> +    struct realtek_smi *smi = ds->priv;
+> >>> +    int ret;
+> >>> +
+> >>> +    if (dsa_is_cpu_port(ds, port)) {
+> >>
+> >> I assume the "dsa_is_cpu_port()" check here can also be replaced with
+> >> "phy_interface_mode_is_rgmii(interface)"? Can you please do that for
+> >> consistency?
+> >
+> > Consistency with what exactly?
 
-BUG: sleeping function called from invalid context at mm/util.c:758
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 30700, name: syz-executor.2
-2 locks held by syz-executor.2/30700:
- #0: ffff88806ee498a8 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_lock include/linux/mmap_lock.h:71 [inline]
- #0: ffff88806ee498a8 (&mm->mmap_lock#2){++++}-{3:3}, at: do_mbind+0x25d/0xeb0 mm/mempolicy.c:1314
- #1: ffff888145989e18 (&mapping->private_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:363 [inline]
- #1: ffff888145989e18 (&mapping->private_lock){+.+.}-{2:2}, at: __buffer_migrate_page+0x3af/0xca0 mm/migrate.c:723
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 30700 Comm: syz-executor.2 Not tainted 5.15.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- ___might_sleep.cold+0x1f3/0x239 kernel/sched/core.c:9538
- copy_huge_page+0x126/0x360 mm/util.c:758
- migrate_page_copy+0xfc/0x340 mm/migrate.c:619
- __buffer_migrate_page+0x8cb/0xca0 mm/migrate.c:758
- move_to_new_page+0x339/0xef0 mm/migrate.c:905
- __unmap_and_move mm/migrate.c:1070 [inline]
- unmap_and_move mm/migrate.c:1211 [inline]
- migrate_pages+0xfc5/0x39e0 mm/migrate.c:1488
- do_mbind+0xbc7/0xeb0 mm/mempolicy.c:1340
- kernel_mbind mm/mempolicy.c:1483 [inline]
- __do_sys_mbind mm/mempolicy.c:1490 [inline]
- __se_sys_mbind mm/mempolicy.c:1486 [inline]
- __x64_sys_mbind+0x233/0x2b0 mm/mempolicy.c:1486
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f408623f8d9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f40837b6188 EFLAGS: 00000246 ORIG_RAX: 00000000000000ed
-RAX: ffffffffffffffda RBX: 00007f4086343f60 RCX: 00007f408623f8d9
-RDX: 0000000000000000 RSI: 0000000000c00000 RDI: 0000000020012000
-RBP: 00007f4086299cb4 R08: 0000000000000000 R09: 0000010000000002
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fff13d3589f R14: 00007f40837b6300 R15: 0000000000022000
+I was going to say with rtl8365mb_phylink_mac_config() where you do have
+a specific check for phy_interface_mode_is_rgmii(), but now I notice
+that it is further guarded by a "dsa_is_user_port()" check. So, with nothing.
 
+> > All I'm saying with this code is that for CPU ports, we have to
+> > force some mode on it in response to mac_link_up. This doesn't
+> > apply to user ports because the PHY is always internal to the switch
+> > (this appears to be the case for all switches in the rtl8365mb-like
+> > family). Or are you wondering about a scenario where the port is
+> > treated as a DSA port?
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Understood that the code is functionally correct, but you're not forcing
+the link because it's a CPU port, you're forcing the link because it's
+an RGMII port. Semantically, a CPU port means something entirely
+different: pass DSA-tagged frames to a host. Nothing at the physical link level.
+On your switch it is basically a coincidence that all user ports have
+internal PHYs, and the CPU port is RGMII. All I'm saying is to remove
+the assumptions based on port roles from your MAC configuration logic.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For somebody searching the git tree for .phylink_mac_link_up implementations
+and sleepwalking into your code, it will be deeply confusing to see such
+logic, even if there is a drawing at the top of the file.
+
+Why do you need these checks anyway and cannot simply distinguish based
+on PHY_INTERFACE_MODE_INTERNAL vs PHY_INTERFACE_MODE_RGMII*?
