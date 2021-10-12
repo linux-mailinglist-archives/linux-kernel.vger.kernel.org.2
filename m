@@ -2,222 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162A342B005
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E134642B00F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235753AbhJLXRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 19:17:11 -0400
-Received: from mga03.intel.com ([134.134.136.65]:3364 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234483AbhJLXRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 19:17:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="227253764"
-X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
-   d="scan'208";a="227253764"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 16:15:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
-   d="scan'208";a="717049022"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Oct 2021 16:15:06 -0700
-Received: from fmsmsx604.amr.corp.intel.com (10.18.126.84) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 12 Oct 2021 16:15:06 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Tue, 12 Oct 2021 16:15:05 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.174)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Tue, 12 Oct 2021 16:15:05 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GlsjysQy0rJcSvEOxSYp/QzDvNKSBchcEKG48SRjVwvw5eTHHk+zYwtGLi//W3SV126fndr5/RmF4QqbR0Us435QYmtjquxM3kSNm7GFXj5HCS8kGH9zD59kfUszFE85Kw0CaI61cI4zmeVImEvHMlaBFnBocAQYUizIwVw6R/+aotcRkQZOT6nlGPqsXg3xXFDoHffo7dBVlxW+uZgXHdmbpQgZAKeExEEE5p+hYSWSn8mp0x1LNyaVP1ITUzqcpeGLerqfQwxaC+nhhDxsKw0skgncfnyqph92rIo6/2UqbQ6ZDUuJ2TODHaD1z6KGQ+3jXLVitgmS8sO9LEstWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UIar0rxq4/xF8UZnP74GwakCXBdK4+rUZRtp3TNxUDk=;
- b=B5V6dovVWWTIIJKaKhc3eaNwLW6NI+XJkF37sLybgBpVCLVUSJbZ/Zy2y6r+4XlIVAB7/wljHIo7y4bYdLr0BAeelgs9hfnD9rhtmCEIiQw35OKEig+cAfK5h6nc36bSsr1/HGaRrtoB6jKohHZykvXw9i0SJnhq7afKhhdtUHgIqvhNtUp8Ua77CUKfSynyDoU9VZ8lzAYhESr6xfpTw8GePurhKkDiBudN+q4fkl/qG0IPIOr7pBCXISM7As1Vp2YB0F3VcrqIt5YERi/wjE9I+//NPO81kmkjUlPIlN1ZKXK9M6Nvswetq51VEC24+CikfgaklUMoThX/NjwwDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UIar0rxq4/xF8UZnP74GwakCXBdK4+rUZRtp3TNxUDk=;
- b=viuZm8590v/SeoiTcy3e0KR98KVMtPFpjA9ZucbLVxV6vwjXiwUgHBeXmLT60vZJh5athY/6tdKDFH+BWCcExosGwkuoJXS9VP/FWmaSRyxo106mk96LsxruqWxwiTxnmY1WZJ5ASLjDKB0K4F0k6VzK+SyCjoKnE7zGjYyf9Gk=
-Received: from CY4PR1101MB2278.namprd11.prod.outlook.com
- (2603:10b6:910:18::13) by CY4PR11MB2054.namprd11.prod.outlook.com
- (2603:10b6:903:2d::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Tue, 12 Oct
- 2021 23:15:00 +0000
-Received: from CY4PR1101MB2278.namprd11.prod.outlook.com
- ([fe80::c482:c237:bcf1:70bc]) by CY4PR1101MB2278.namprd11.prod.outlook.com
- ([fe80::c482:c237:bcf1:70bc%11]) with mapi id 15.20.4587.026; Tue, 12 Oct
- 2021 23:15:00 +0000
-From:   "Winiarska, Iwona" <iwona.winiarska@intel.com>
-To:     "bp@alien8.de" <bp@alien8.de>
-CC:     "corbet@lwn.net" <corbet@lwn.net>,
-        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "olof@lixom.net" <olof@lixom.net>, "arnd@arndb.de" <arnd@arndb.de>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "zweiss@equinix.com" <zweiss@equinix.com>,
-        "d.mueller@elsoft.ch" <d.mueller@elsoft.ch>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: [PATCH v2 01/15] x86/cpu: Move intel-family to arch-independent
- headers
-Thread-Topic: [PATCH v2 01/15] x86/cpu: Move intel-family to arch-independent
- headers
-Thread-Index: AQHXiFtZAf43JMVeikGj7NGS9LF26KvDlHGAgAsFNYCAAAyiAIAACPWAgAAO04CAAa8sAA==
-Date:   Tue, 12 Oct 2021 23:15:00 +0000
-Message-ID: <15d81463b631e03b00a7031510304d5598fc246c.camel@intel.com>
-References: <20210803113134.2262882-1-iwona.winiarska@intel.com>
-         <20210803113134.2262882-2-iwona.winiarska@intel.com>
-         <YVtQG+idmwKn0qLe@zn.tnic>
-         <58ef4107e9b2c60a2605aac0d2fb6670a95bc9e0.camel@intel.com>
-         <YWSZTq8NWWcCMXtA@zn.tnic>
-         <337b6332312ea63862aedd09279417c9e1c7e11f.camel@intel.com>
-         <YWStQSrRJQ09KXVY@zn.tnic>
-In-Reply-To: <YWStQSrRJQ09KXVY@zn.tnic>
-Accept-Language: en-US, pl-PL
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.40.4 (3.40.4-1.fc34) 
-authentication-results: alien8.de; dkim=none (message not signed)
- header.d=none;alien8.de; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a066c741-8302-4514-226a-08d98dd61d59
-x-ms-traffictypediagnostic: CY4PR11MB2054:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR11MB20542CD234DC6AEEFBFEFF00ECB69@CY4PR11MB2054.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fsOHkNNZJeF8VtPA14kO43F2X6j5Adz2UogYyvJBNHFSsQ6eTIrmVygdCXbJNN2OkkSVH929wDnc9CPWYpCEBCcjn2vbb0KiD1DHbJgw8nur4K9+adiNaDTHDIbfOrCyE4QN6lUV/mlQKvLo1EBTbsABkitA0Dt/7Ybu1pdhHHcZDCv5Nl2xJIYan87D0dU7vLKFkWsXxFEYDC/9Ruq1B6ZQfEO9p7o0VhR0TVXJWOgT7P+l/v130D8J1z25Hc12as6Dud76WWFySwOeaG/LtYvuvbXlU89t0wsr2gSDsfJhugHil2bsUAh5gQ4Ktq5dfde+JjdJI/lvyuz/F79CkuIpyaqz/cRCb8BOnIDFt1eX4nM5CG+7oLDhKZErchuDMqJr9rDOmFvN480B1PQ30ZFXcRZZ1ksjFoGNSs7ZxyDBCN3NKA0UxrTu3vltbZN5VUYQDnWQvprmIfTt3V/+oObMjiI6tMh+2E00Amhm5ozICqMxxavJ/Yhr4xz0KWYX41KF2Vx9SGcw4dSOZL7rDxkJhil3fXSExtT9PJpKWuK8Yh/1ns8t4kOUAtZBopJVSGmDjKPDxaoFahxpwbtxci4ltM50/miqhJ9XwQOb4llUMjf8bZQMKI6LNLUuMRVjI8XpwG2FPWjapILxUxs/25jie3/2ev91Qs1pS07sngVVdyR2/tH/A3zZ8+S7NbqfI/7VRnJHosCJF+/CRSasNw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2278.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4001150100001)(86362001)(83380400001)(7416002)(7406005)(2616005)(6512007)(316002)(8936002)(6506007)(5660300002)(54906003)(2906002)(82960400001)(26005)(186003)(38070700005)(66476007)(8676002)(38100700002)(91956017)(4326008)(66946007)(508600001)(6916009)(6486002)(64756008)(66556008)(36756003)(71200400001)(66446008)(76116006)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WnBOeW5PVEJvdTJKYzFheENFM0Q0OHh0SHhOK1hJSUxsb3BXZElHNWZIenYw?=
- =?utf-8?B?aGE1alZQVEpycG5BeHlGTHlydTI1RUJwaWFpeEwxbXhuWmVUTDVqVmZ1RlI1?=
- =?utf-8?B?TmYxamdFUVNmbS9WanpxY3laTUxmRWpGdnNSL2x4UGNpQjRxaFZwQlFqaksz?=
- =?utf-8?B?Wk1PRFlkSmZzdlJkSGpaaUhoVGVLN3lBNytCRFJRcG5ld05uWC93MjRnWW5Z?=
- =?utf-8?B?bXVBV01UQ3E2UnU1QnZTNDRET1d0QTV6YmZ6VlJybzVhVnhQYUVzNnUwWXU0?=
- =?utf-8?B?ZU9PcmtwT1J4RzRwZzU1NWNHVTBDdDh0cW1MTjdVaXVSK2d3UGFBRmJpNFlE?=
- =?utf-8?B?WSs4dW9VSDl5NWtReXhhbzE0RzVLSXN0WUVMQ0xxdWJWRCtvSXFLcmJnNHo3?=
- =?utf-8?B?U29uQzF4VUpETzVXbnVUcUZKUnovMTI3bnlHSmF0UzBic3NkNzl6MkxXWFd1?=
- =?utf-8?B?TGJOcWVJZ095M3JlVmRxLzNGaW9rbzJXOWk0OWs4TmVOMEFYZFUvSFBzNm8w?=
- =?utf-8?B?RkNZNlRnUkg0SEQxdU1PWHRacXByODFxU282d29MVERvejIxRDB5ZHNlejdu?=
- =?utf-8?B?eEcydUI1c0t0OFlHSzZ0RWZmRGpUMkJkSDc5RHg4dlVmcU5wOEhUU0RDcmZG?=
- =?utf-8?B?NlNGMTBJZGJkRlpnVVNNYk9TMlAwcHM3Q3pNYzVwQkVvQXdobXBzUCtQSS8z?=
- =?utf-8?B?YjhBek53VFlRNzhOYXlwb0dhSmhub3c5cEw4NlBVLzRnQ1BrUlNoUCtaREtv?=
- =?utf-8?B?ancrRWdxa21iVjRaNjh3WkgrSGt1b3RSYkxzeGZpZzVlcUZXNEdYalRTNUlu?=
- =?utf-8?B?SGdsNys2SjlMdGRtcGdtdktuRkhrNDE2VnJQZ2RERGtENHZ2TzdCcWNZcTly?=
- =?utf-8?B?OHJTZGJYNmlPWGhBdXdiN244R2k1TThkVXl3MDJkc1oxb1pHRnhlRHRNZlhF?=
- =?utf-8?B?QU9XNjUrTDRhekZTRDNMYTIwZUxnWGl2RXVvL3pDNHNxYUZwT0gvYWRMTUZR?=
- =?utf-8?B?emZyektpV0xjYzd4M2ZjQ0RmdXRwbDZlejF4SnJYdlhOMjYrcVlpNlNmeFJB?=
- =?utf-8?B?SExoU2pOWUNITkJ0UkIza0VOc1R2SHZoMm80akkrNUY0TUY0Rjc5N1dTVUlB?=
- =?utf-8?B?WFRzVitHK2pxYWtPZGZXeGdYVTFrZlpwNjRhUFZXdVo4a1ArVmVzYmwyT1dm?=
- =?utf-8?B?T1dURUZ5Wmg3bWpTWkxMNnd2cE5CWVBoNFNpejRYU3FlZmxXMEZmVUxIMFdh?=
- =?utf-8?B?NGNHTjQwSlZQVGJqc3h2YXgrSEpwVERObm5MU3lCR08xRVBUR2diM2NNdnhu?=
- =?utf-8?B?TXlONXI2T2Rjb05ER3VtQVhwbTF3L0drVHYvYU4rNm5SSnM4Q3czejBJNVph?=
- =?utf-8?B?ZnhSU2Jwb0o1eFM1R2c2akNiV0RUTlE3N2FFK0pjcFYyV2p3S1ZsdkRUZHll?=
- =?utf-8?B?Z0hDS0lyQUpYUnpKSGdoUHNDcWsxQ3U5V1NuUHA4QXkyVTZWY0E3ZUd4am5O?=
- =?utf-8?B?UlpIMHVaOUhwTTNCMExLSkR0SzNWeGI1Zm1laGE4dkpDQ0pCM0x3QWJWK0JE?=
- =?utf-8?B?MGZaSEE5M3A0U2dTZ1p1TTBoZnhaNmJVcVVoZStVSHFNN0hFUFlFaGlZTFlh?=
- =?utf-8?B?TWsvN2g4VW1FcGt4d3BEN1EvN09SUEFwSW5hL1NjOUd4TjdzaHc4SyszaEc4?=
- =?utf-8?B?dGZLODRHTWhLTUg1ZGovejVicHFpejE0M2IrdWljS2tLNU10VnJBRVdkZDEy?=
- =?utf-8?B?bVpvSWh5Y1JoSkFuZGVxaGZ5a0Eyd2RGUjBUUHhtVkhtQW9OZldkMTZZQVhy?=
- =?utf-8?B?akZ0R1JBTGgxMFRFOTRhZz09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5584D61A0EEEB040B4B6D93D6013587B@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S235390AbhJLXVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 19:21:03 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:36761 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229588AbhJLXU6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 19:20:58 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HTWnQ61KVz4xbV;
+        Wed, 13 Oct 2021 10:18:50 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1634080731;
+        bh=OE6oRoU7leftmpozpM8opqbtx84rI3zCAItSRNesiQk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Mdum3yIMUjGfJifyYvGdr+Ag2TbM1alq9gb+Sop2EEe2Fc35dSsmd99zNRoDgGo6v
+         FLGa/9XnuWu6lc5D6qRaJZ9oL1OsgLxwCdlK93/8Ib/MttYrhK5/2u2OpGtWIfHsk8
+         f5qgza7AW+PD6CrCdzF8pNBAeFlqUxvuPmuQVdS+TsO7OUQytk2qo+6Y0a/1fOmE7r
+         CLFAbVW1AXtYxIjnxcG/TyQNEJ3RyPktzL6Vtb1hAx+fGNbJC1NrxEyg1Z8/BBd4dd
+         DmtVYTYPLeuQU88R6ITWBCpw1F9j9UDi5uq2w4zT3o9qmdC7zDgkpzIEOpJcGXFqC7
+         8Hl15ysA9tyHg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Laurent Vivier <lvivier@redhat.com>, kvm-ppc@vger.kernel.org
+Cc:     Paul Mackerras <paulus@ozlabs.org>, Greg Kurz <groug@kaod.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Laurent Vivier <lvivier@redhat.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] KVM: PPC: Defer vtime accounting 'til after IRQ
+ handling
+In-Reply-To: <20211007142856.41205-1-lvivier@redhat.com>
+References: <20211007142856.41205-1-lvivier@redhat.com>
+Date:   Wed, 13 Oct 2021 10:18:47 +1100
+Message-ID: <875yu17rxk.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2278.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a066c741-8302-4514-226a-08d98dd61d59
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2021 23:15:00.2785
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jpHwdSfHeZKCd76kP+QZ6R5+gyTxfviQUfBLNLUf8ojpClBhW47tOxLurfkAXNxREFClexfYeyPCDpTmpHojE4b347SALhMZ9xsuXVwodFY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB2054
-X-OriginatorOrg: intel.com
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTEwLTExIGF0IDIzOjMxICswMjAwLCBCb3Jpc2xhdiBQZXRrb3Ygd3JvdGU6
-DQo+IE9uIE1vbiwgT2N0IDExLCAyMDIxIGF0IDA4OjM4OjQzUE0gKzAwMDAsIFdpbmlhcnNrYSwg
-SXdvbmEgd3JvdGU6DQo+ID4gRXZlcnl0aGluZyB0aGF0J3MgcGFydCBvZiB0aGlzIHNlcmllcyBy
-dW5zIG9uIHRoZSBCTUMgKEJhc2Vib2FyZA0KPiA+IE1hbmFnZW1lbnQgQ29udHJvbGxlcikuIFRo
-ZXJlJ3Mgbm90aGluZyBBUk0gc3BlY2lmaWMgdG8gaXQgLSBpdCdzIGp1c3QNCj4gPiB0aGF0IHRo
-ZSBCTUMgaGFyZHdhcmUgd2UncmUgY3VycmVudGx5IHN1cHBvcnRpbmcgaXMgQVJNLWJhc2VkLiBQ
-RUNJIGlzDQo+ID4gYW4gaW50ZXJmYWNlIHRoYXQncyBleHBvc2VkIGJ5IHNvbWUgeDg2IENQVXMg
-LSBidXQgdGhhdCdzIGEgaGFyZHdhcmUNCj4gPiBpbnRlcmZhY2UgKGF2YWlsYWJsZSBjb21wbGV0
-ZWx5IGluZGVwZW5kZW50IGZyb20gd2hhdGV2ZXIgaXMgYWN0dWFsbHkNCj4gPiBydW5uaW5nIG9u
-IHRoZSB4ODYgQ1BVKS4NCj4gDQo+IEFoYSwgSSB0aGluayBJIGdvdCBpdDogc28gdGhpcyB3aG9s
-ZSBQRUNJIHBpbGUgaXMgc3VwcG9zZWQgdG8gcnVuIG9uDQo+IHRoZSBCTUMgLSB3aGljaCBjYW4g
-YmUgQVJNIGJ1dCBkb2Vzbid0IGhhdmUgdG8gYmUsIGkuZS4sIGNvZGUgc2hvdWxkIGJlDQo+IGdl
-bmVyaWMgZW5vdWdoIC0gYW5kIHRoZSBpbnRlcmZhY2VzIHRvIHRoZSB4ODYgQ1BVIGRvIGdldCBl
-eHBvc2VkIHRvIHRoZQ0KPiBMaW51eCBydW5uaW5nIG9uIHRoZSBCTUMuDQo+IA0KPiBXaGljaCBi
-cmluZ3MgbWUgdG8gdGhlIGFuc3dlciB0byB5b3VyIG90aGVyIG1haWw6DQo+IA0KPiBPbiBNb24s
-IE9jdCAxMSwgMjAyMSBhdCAwNzozMjozOFBNICswMDAwLCBXaW5pYXJza2EsIEl3b25hIHdyb3Rl
-Og0KPiA+IE5vdGhpbmcgd3JvbmcgLSBqdXN0IGEgdHJhZGUtb2ZmIGJldHdlZW4gY2h1cm4gYW5k
-IGtlZXBpbmcgdGhpbmdzIHRpZHkNCj4gPiBhbmQgbm90IGR1cGxpY2F0ZWQsIHNpbWlsYXIgdG8g
-cGF0Y2ggMS4gQW5kIGp1c3QgbGlrZSBpbiBwYXRjaCAxLCBpZg0KPiA+IHlvdSBoYXZlIGEgc3Ry
-b25nIG9waW5pb24gYWdhaW5zdCBpdCAtIHdlIGNhbiBkdXBsaWNhdGUuDQo+IA0KPiBTbyBpdCBp
-cyBub3QgYWJvdXQgc3Ryb25nIG9waW5pb24uIFJhdGhlciwgaXQgaXMgYWJvdXQgd2hldGhlciB0
-aGlzDQo+IGV4cG9ydGluZyB3b3VsZCBiZSBkaXNhZHZhbnRhZ2VvdXMgZm9yIHg4NiBmcmVlZG9t
-LiBBbmQgSSB0aGluayBpdCB3aWxsDQo+IGJlOg0KPiANCj4gQmVjYXVzZSBpZiB5b3UgZXhwb3J0
-ZWQgdGhvc2UgYW5kIHRoZW4gd2Ugd2VudCBhbmQgY2hhbmdlZCB0aG9zZQ0KPiBpbnRlcmZhY2Vz
-IGFuZCBkZWZpbmVzIChjaGFuZ2VkIHRoZWlyIG5hbWluZywgZnVuY3Rpb24gYXJndW1lbnRzLA0K
-PiB3aGF0ZXZlcikgYW5kIHNvbWV0aGluZyBvdXRzaWRlIG9mIHg4NiB1c2VkIHRoZW0sIHdlIHdp
-bGwgYnJlYWsgdGhhdA0KPiBzb21ldGhpbmcuDQo+IA0KPiBBbmQgdXN1YWxseSB3ZSBnbyBhbmQg
-Zml4IHRob3NlIHVzZXJzIHRvbyBidXQgSSBkb3VidCBhbnlvbmUgaGFzIGFjY2Vzcw0KPiB0byB0
-aGF0IFBFQ0kgaHcgdG8gYWN0dWFsbHkgdGVzdCBmaXhlcywgZXRjLCBldGMuDQoNCldlIChPcGVu
-Qk1DKSBkbyBoYXZlIFBFQ0kgSFcsIHNvIHRoYXQgc2hvdWxkbid0IGJlIGEgcHJvYmxlbS4NCg0K
-PiBTbyBJJ2QgcHJlZmVyIHRoZSBzbWFsbCBhbW91bnQgb2YgZHVwbGljYXRpb24gdnMgZXh0ZXJu
-YWwgc3R1ZmYgdXNpbmcNCj4geDg2IGZhY2lsaXRpZXMgYW55IGRheSBvZiB0aGUgd2Vlay4gQW5k
-IHNvIEknZCBzdWdnZXN0IHlvdSBzaW1wbHkgY29weQ0KPiB0aGUgaGFuZGZ1bCBvZiBmdW5jdGlv
-bnMgYW5kIGRlZmluZXMgeW91J3JlIGdvbm5hIGJlIG5lZWRpbmcgYW5kIHRoZQ0KPiBkZWZpbmVz
-IGFuZCBiZSBkb25lIHdpdGggaXQuDQo+IA0KPiBEYXZlJ3MgaWRlYSBtYWtlcyBzZW5zZSB0byBt
-ZSB0b28gYnV0IGxhdGVseSBpdCBrZWVwcyBoYXBwZW5pbmcgdGhhdA0KPiB3ZSBjaGFuZ2Ugc29t
-ZXRoaW5nIGluIHg4Ni1sYW5kIGFuZCBpdCB0dXJucyBvdXQgc29tZXRoaW5nICJmcm9tIHRoZQ0K
-PiBvdXRzaWRlIiBpcyB1c2luZyBpdCBhbmQgaXQgYnJlYWtzLCBzbyBpdCBpcyBhIGxvdCBlYXNp
-ZXIgaWYgdGhpbmdzIGFyZQ0KPiBpbmRlcGVuZGVudC4NCg0KQm90aCBDUFVJRC5FQVg9MSBkZWNv
-ZGluZyBhbmQgZGVmaW5pdGlvbnMgaW4gaW50ZWwtZmFtaWx5IGFyZSBwcmV0dHkgIndlbGwtDQpk
-ZWZpbmVkIi4gSSB1bmRlcnN0YW5kIHRoZSBzY2VuYXJpbyB0aGF0IHlvdSdyZSBkZXNjcmliaW5n
-LCBidXQgaW4gb3JkZXIgdG8NCmJyZWFrIHRoZSBvdXRzaWRlIHVzZXIgdGhlcmUgd291bGQgbmVl
-ZCB0byBiZSBzb21lICJsb2dpYyIgYmVoaW5kIHRoZSBwdWxsZWQgaW4NCmNvbmNlcHRzIChpZiwg
-Zm9yIGV4YW1wbGUsIEkgd291bGQgdXNlIHNvbWV0aGluZyBsaWtlIFg4Nl9NQVRDSF8qIGRlZmlu
-ZXMgaW4NClBFQ0kpLg0KDQpUaGFua3MNCi1Jd29uYQ0KDQo+IA0KPiBUaHguDQo+IA0KDQo=
+Laurent Vivier <lvivier@redhat.com> writes:
+> Commit 112665286d08 moved guest_exit() in the interrupt protected
+> area to avoid wrong context warning (or worse), but the tick counter
+> cannot be updated and the guest time is accounted to the system time.
+>
+> To fix the problem port to POWER the x86 fix
+> 160457140187 ("Defer vtime accounting 'til after IRQ handling"):
+>
+> "Defer the call to account guest time until after servicing any IRQ(s)
+>  that happened in the guest or immediately after VM-Exit.  Tick-based
+>  accounting of vCPU time relies on PF_VCPU being set when the tick IRQ
+>  handler runs, and IRQs are blocked throughout the main sequence of
+>  vcpu_enter_guest(), including the call into vendor code to actually
+>  enter and exit the guest."
+>
+> Fixes: 112665286d08 ("KVM: PPC: Book3S HV: Context tracking exit guest context before enabling irqs")
+> Cc: npiggin@gmail.com
+> Cc: <stable@vger.kernel.org> # 5.12
+> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+> ---
+>
+> Notes:
+>     v2: remove reference to commit 61bd0f66ff92
+>         cc stable 5.12
+>         add the same comment in the code as for x86
+>
+>  arch/powerpc/kvm/book3s_hv.c | 24 ++++++++++++++++++++----
+>  1 file changed, 20 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+> index 2acb1c96cfaf..a694d1a8f6ce 100644
+> --- a/arch/powerpc/kvm/book3s_hv.c
+> +++ b/arch/powerpc/kvm/book3s_hv.c
+...
+> @@ -4506,13 +4514,21 @@ int kvmhv_run_single_vcpu(struct kvm_vcpu *vcpu, u64 time_limit,
+>  
+>  	srcu_read_unlock(&kvm->srcu, srcu_idx);
+>  
+> +	context_tracking_guest_exit();
+> +
+>  	set_irq_happened(trap);
+>  
+>  	kvmppc_set_host_core(pcpu);
+>  
+> -	guest_exit_irqoff();
+> -
+>  	local_irq_enable();
+> +	/*
+> +	 * Wait until after servicing IRQs to account guest time so that any
+> +	 * ticks that occurred while running the guest are properly accounted
+> +	 * to the guest.  Waiting until IRQs are enabled degrades the accuracy
+> +	 * of accounting via context tracking, but the loss of accuracy is
+> +	 * acceptable for all known use cases.
+> +	 */
+> +	vtime_account_guest_exit();
+
+This pops a warning for me, running guest(s) on Power8:
+ 
+  [  270.745303][T16661] ------------[ cut here ]------------
+  [  270.745374][T16661] WARNING: CPU: 72 PID: 16661 at arch/powerpc/kernel/time.c:311 vtime_account_kernel+0xe0/0xf0
+  [  270.745397][T16661] Modules linked in: nf_conntrack_netlink xfrm_user xfrm_algo xt_addrtype xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 xt_tcpudp iptable_mangle iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nfnetlink ip6table_filter ip6_tables iptable_filter tun overlay fuse kvm_hv kvm binfmt_misc squashfs mlx4_ib dm_multipath scsi_dh_rdac ib_uverbs scsi_dh_alua mlx4_en ib_core sr_mod cdrom lpfc bnx2x sg mlx4_core mdio crc_t10dif crct10dif_generic scsi_transport_fc vmx_crypto gf128mul leds_powernv crct10dif_vpmsum powernv_rng led_class crct10dif_common powernv_op_panel rng_core crc32c_vpmsum sunrpc ip_tables x_tables autofs4
+  [  270.745565][T16661] CPU: 72 PID: 16661 Comm: qemu-system-ppc Not tainted 5.15.0-rc5-01885-g5e96f0599cff #1
+  [  270.745578][T16661] NIP:  c000000000027c20 LR: c00800000b6e9ca8 CTR: c000000000027b40
+  [  270.745588][T16661] REGS: c00000081043f4f0 TRAP: 0700   Not tainted  (5.15.0-rc5-01885-g5e96f0599cff)
+  [  270.745599][T16661] MSR:  900000000282b033 <SF,HV,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 22442222  XER: 20000000
+  [  270.745635][T16661] CFAR: c000000000027b7c IRQMASK: 0
+  [  270.745635][T16661] GPR00: c00800000b6e9ca8 c00000081043f790 c00000000248f900 c000000ffffda820
+  [  270.745635][T16661] GPR04: c00000080b93b488 0000000000000006 00000000000f4240 c000001fffffc000
+  [  270.745635][T16661] GPR08: 0000000ffa6f0000 0000000000000000 0000000000008002 c00800000b6ffba8
+  [  270.745635][T16661] GPR12: c000000000027b40 c000000ffffd9e00 0000000000000001 0000000000000000
+  [  270.745635][T16661] GPR16: 0000000000000000 c00000000254c0b0 0000000000000000 c000000941e84414
+  [  270.745635][T16661] GPR20: 0000000000000001 0000000000000048 c00800000b710f0c 0000000000000001
+  [  270.745635][T16661] GPR24: c000000941e90aa8 0000000000000000 c0000000024c6d60 0000000000000001
+  [  270.745635][T16661] GPR28: c000000803222470 c00000080b93aa00 0000000000000008 c000000ffffd9e00
+  [  270.745747][T16661] NIP [c000000000027c20] vtime_account_kernel+0xe0/0xf0
+  [  270.745756][T16661] LR [c00800000b6e9ca8] kvmppc_run_core+0xda0/0x16c0 [kvm_hv]
+  [  270.745773][T16661] Call Trace:
+  [  270.745779][T16661] [c00000081043f790] [c00000081043f7d0] 0xc00000081043f7d0 (unreliable)
+  [  270.745793][T16661] [c00000081043f7d0] [c00800000b6e9ca8] kvmppc_run_core+0xda0/0x16c0 [kvm_hv]
+  [  270.745808][T16661] [c00000081043f950] [c00800000b6eee28] kvmppc_vcpu_run_hv+0x570/0xce0 [kvm_hv]
+  [  270.745823][T16661] [c00000081043fa10] [c00800000b5d2afc] kvmppc_vcpu_run+0x34/0x48 [kvm]
+  [  270.745847][T16661] [c00000081043fa30] [c00800000b5ce728] kvm_arch_vcpu_ioctl_run+0x340/0x450 [kvm]
+  [  270.745870][T16661] [c00000081043fac0] [c00800000b5bc060] kvm_vcpu_ioctl+0x338/0x930 [kvm]
+  [  270.745890][T16661] [c00000081043fca0] [c00000000050b7b4] sys_ioctl+0x6b4/0x13b0
+  [  270.745901][T16661] [c00000081043fdb0] [c00000000002fa54] system_call_exception+0x184/0x330
+  [  270.745912][T16661] [c00000081043fe10] [c00000000000c84c] system_call_common+0xec/0x268
+  [  270.745923][T16661] --- interrupt: c00 at 0x7fff9eb9f010
+  [  270.745930][T16661] NIP:  00007fff9eb9f010 LR: 0000000136aa3670 CTR: 0000000000000000
+  [  270.745937][T16661] REGS: c00000081043fe80 TRAP: 0c00   Not tainted  (5.15.0-rc5-01885-g5e96f0599cff)
+  [  270.745945][T16661] MSR:  900000000280f033 <SF,HV,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 22444802  XER: 00000000
+  [  270.745974][T16661] IRQMASK: 0
+  [  270.745974][T16661] GPR00: 0000000000000036 00007fff9d5bdc30 00007fff9ec97100 000000000000000d
+  [  270.745974][T16661] GPR04: 000000002000ae80 0000000000000000 0000000000000000 0000000000000000
+  [  270.745974][T16661] GPR08: 000000000000000d 0000000000000000 0000000000000000 0000000000000000
+  [  270.745974][T16661] GPR12: 0000000000000000 00007fff9d5c6290 00007fff9ece4410 0000000000000000
+  [  270.745974][T16661] GPR16: 00007fff9f970000 00007fff9ece0320 00007fff9d5bebe0 00007fff9f8d0028
+  [  270.745974][T16661] GPR20: 0000000000000000 0000000000000000 00000001370fd068 000000002000ae80
+  [  270.745974][T16661] GPR24: 00007fff9d7100ae 0000000000000000 00007fff9d5bf290 00007fff9d720010
+  [  270.745974][T16661] GPR28: 00000001376611c0 00007fff9d720010 0000000000000000 000000002000ae80
+  [  270.746064][T16661] NIP [00007fff9eb9f010] 0x7fff9eb9f010
+  [  270.746071][T16661] LR [0000000136aa3670] 0x136aa3670
+  [  270.746078][T16661] --- interrupt: c00
+  [  270.746083][T16661] Instruction dump:
+  [  270.746090][T16661] 7c691a14 f89f0a40 f87f0a30 e8010010 eba1ffe8 ebc1fff0 ebe1fff8 7c0803a6
+  [  270.746109][T16661] 4e800020 60000000 60000000 60420000 <0fe00000> 60000000 60000000 60420000
+  [  270.746128][T16661] irq event stamp: 2118
+  [  270.746133][T16661] hardirqs last  enabled at (2117): [<c00800000b6e9c8c>] kvmppc_run_core+0xd84/0x16c0 [kvm_hv]
+  [  270.746146][T16661] hardirqs last disabled at (2118): [<c0000000000293dc>] interrupt_enter_prepare.constprop.0+0xfc/0x140
+  [  270.746156][T16661] softirqs last  enabled at (1940): [<c000000000fd6b8c>] __do_softirq+0x5ec/0x658
+  [  270.746166][T16661] softirqs last disabled at (1935): [<c00000000011a6e8>] __irq_exit_rcu+0x158/0x1c0
+  [  270.746176][T16661] ---[ end trace b1b029e8dc7c2667 ]---
+
+
+cheers
