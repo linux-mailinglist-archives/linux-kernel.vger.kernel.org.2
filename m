@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D386429C9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 06:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F105429CB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 06:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233089AbhJLEiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 00:38:51 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:33896
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232690AbhJLEik (ORCPT
+        id S232306AbhJLEui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 00:50:38 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:55433 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhJLEud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 00:38:40 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        Tue, 12 Oct 2021 00:50:33 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 3DDCD40013
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 04:36:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634013398;
-        bh=cFDVYMnrfSERHChsUSOafRsFEi1MyUR6LNHqzOlq5OI=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=mGWC7i+nYnKJ26isJGMXP4rXSRW2pbFAfkAFCqJ9GBQ0O0itnbo3Ix5dYljYEQ5gC
-         ZFMUA1qOtNv6s10jcZRTfKTxem0MdgxJwNj44r/9mTu5eof5NJ3OUJX5gNyXQF487J
-         GGTcDki+Bj1nCX4ZKDSOW7/401fX4kPzKk+PfQQ+020gaO0sjzrH0yevrOtaIZaWuw
-         RB/nH7/gvcRc/rdNr3J/ww7KXZyoRTzB5WIQXF7+7EgHHXVO7awPf0c49gQq5Erfnk
-         HwIErTAQb8BxrLN8Hf+A9JSb1NymNg9RqLT8iOd8XfxSyPl/PE5rZFiVZp8paUyesl
-         VCBvMFwi/s31g==
-Received: by mail-ed1-f70.google.com with SMTP id i7-20020a50d747000000b003db0225d219so17834019edj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 21:36:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cFDVYMnrfSERHChsUSOafRsFEi1MyUR6LNHqzOlq5OI=;
-        b=XFIXl4JcUeAcnOrCRQs4M6MFfQfHxScjG4SsVKQ08SZ0zwIhtYH2e+W5upoTUk+f++
-         MfG57DneTLkJqNk8FuxjrB6x38l2dxv65BLV4cZWtFE+wZsNLx8YdfoRHYvW0tLA2/69
-         lURj68DYJywDyOYFJnFPOMRWXJzuAsBOLu/FdUH+mBj88AOWPi1crcyumEErgY9etsdv
-         VgBlSnaErGLWmLDoj7XqcuaDWbERN804V6tQ1isgcHddeMulu4VsFTSTtRsDni0hn2wD
-         KXNTU3Pk+FFH+v0aNdNWaZsD9KY5BKwVuT5Rv0BCa0PKJEtCP5UWexD0PuqdCUv6eNyn
-         HltA==
-X-Gm-Message-State: AOAM533yiLt/PMdezD8F5/cMzOr+R4cyV9L79ErzQ9jdbERZ36zsXOX/
-        TFZgdybCP1SA/zt5Zx3nlTc0g7vcA0/cug0mG6WOg8q7kgt/sAEMJSi90d22O2T9GWvVCNAxt6L
-        HiWcy4Bia1jy2A4vlL2qx77yis1C/GbXklrZ9Ij55qlpTlDdNoiqwsha4MA==
-X-Received: by 2002:a05:6402:190e:: with SMTP id e14mr8901006edz.20.1634013397730;
-        Mon, 11 Oct 2021 21:36:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDAwwNTxVTuAVNY2n7n4y7mjZ5+Vt7PQuywm97RBU9A4oXQFDeAQroJkl9fWjqHzLrLVVabbYnoGObk9MrsVI=
-X-Received: by 2002:a05:6402:190e:: with SMTP id e14mr8900996edz.20.1634013397600;
- Mon, 11 Oct 2021 21:36:37 -0700 (PDT)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HT38F4bP5z4xb9;
+        Tue, 12 Oct 2021 15:48:29 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1634014111;
+        bh=FJNzj0iQa+QNUJ+e+1TYvef3simjmmBQ7rllRp9fYRc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qngT4LJoE3IZjN6xmikS9obwg9Jh2apsGq+j8Th1NFmsGS5gXJmqBswLfu+g2c7yR
+         MXegVhiJVGF5MQgk3/s2l3LKwfHt+GEn15CwVUw/zZbTSiuZ32Z7Gh+r0aC+htp/Zu
+         DG1NKjCHjpc4etmSb3S2nFb9r6Ut+4oYQlSw3+G39iBXMaWweU1BGB/XGgEo6q/A5G
+         pKkvRcFoIZamoT0c8HLqHCJ+RwESXuGxh0Ocez0FYYunSB0Z6L7wm89tkhftVnSK/p
+         eo9E7d/jr0BjWmfBBoEyG8XKUCjdPHwe6Sa2776oq0WKqDQhoyJ4clJ+8NYz736isB
+         a/h2cyTVpauqg==
+Date:   Tue, 12 Oct 2021 15:48:28 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the rcu tree with the tip tree
+Message-ID: <20211012154828.312f870f@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210920130248.145058-1-krzysztof.kozlowski@canonical.com> <20210920130248.145058-2-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210920130248.145058-2-krzysztof.kozlowski@canonical.com>
-From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Date:   Tue, 12 Oct 2021 06:36:25 +0200
-Message-ID: <CA+zEjCtE6OQEcgV3GG3OxdKL0JB+dBWCij35MMd-XVZnTcbsrA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 2/5] riscv: dts: sifive: fix Unleashed board compatible
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Kb.nPBRY5QO_NX+JtXLlX3y";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 3:05 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> Add missing sifive,fu540 compatible to fix dtbs_check warnings:
->
->   arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dt.yaml: /: compatible: 'oneOf' conditional failed, one must be fixed:
->   ['sifive,hifive-unleashed-a00', 'sifive,fu540-c000'] is too short
->   'sifive,hifive-unleashed-a00' is not one of ['sifive,hifive-unmatched-a00']
->   'sifive,fu740-c000' was expected
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->
-> ---
->
-> Changes since v1:
-> 1. None
-> ---
->  arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-> index 633b31b6e25c..2b4af7b4cc2f 100644
-> --- a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-> +++ b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-> @@ -11,7 +11,8 @@ / {
->         #address-cells = <2>;
->         #size-cells = <2>;
->         model = "SiFive HiFive Unleashed A00";
-> -       compatible = "sifive,hifive-unleashed-a00", "sifive,fu540-c000";
-> +       compatible = "sifive,hifive-unleashed-a00", "sifive,fu540-c000",
-> +                    "sifive,fu540";
->
->         chosen {
->                 stdout-path = "serial0";
-> --
-> 2.30.2
->
->
+--Sig_/Kb.nPBRY5QO_NX+JtXLlX3y
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This looks good to me, you can add:
+Hi all,
 
-Reviewed-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Tested-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Today's linux-next merge of the rcu tree got a conflict in:
 
-Thanks,
+  kernel/rcu/tasks.h
 
-Alex
+between commit:
 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+  9b3c4ab3045e ("sched,rcu: Rework try_invoke_on_locked_down_task()")
+
+from the tip tree and commit:
+
+  18f08e758f34 ("rcu-tasks: Add trc_inspect_reader() checks for exiting cri=
+tical section")
+
+from the rcu tree.
+
+I fixed it up (I hope - see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc kernel/rcu/tasks.h
+index 171bc848e8e3,e4a32db9f712..000000000000
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@@ -928,10 -919,10 +919,10 @@@ reset_ipi
+  }
+ =20
+  /* Callback function for scheduler to check locked-down task.  */
+ -static bool trc_inspect_reader(struct task_struct *t, void *arg)
+ +static int trc_inspect_reader(struct task_struct *t, void *arg)
+  {
+  	int cpu =3D task_cpu(t);
+- 	bool in_qs =3D false;
++ 	int nesting;
+  	bool ofl =3D cpu_is_offline(cpu);
+ =20
+  	if (task_curr(t)) {
+@@@ -951,18 -942,18 +942,18 @@@
+  		n_heavy_reader_updates++;
+  		if (ofl)
+  			n_heavy_reader_ofl_updates++;
+- 		in_qs =3D true;
++ 		nesting =3D 0;
+  	} else {
+  		// The task is not running, so C-language access is safe.
+- 		in_qs =3D likely(!t->trc_reader_nesting);
++ 		nesting =3D t->trc_reader_nesting;
+  	}
+ =20
+- 	// Mark as checked so that the grace-period kthread will
+- 	// remove it from the holdout list.
+- 	t->trc_reader_checked =3D true;
+-=20
+- 	if (in_qs)
+- 		return 0;  // Already in quiescent state, done!!!
++ 	// If not exiting a read-side critical section, mark as checked
++ 	// so that the grace-period kthread will remove it from the
++ 	// holdout list.
++ 	t->trc_reader_checked =3D nesting >=3D 0;
++ 	if (nesting <=3D 0)
+ -		return !nesting;  // If in QS, done, otherwise try again later.
+++		return (!nesting) ? 0 : -EINVAL;  // If in QS, done, otherwise try agai=
+n later.
+ =20
+  	// The task is in a read-side critical section, so set up its
+  	// state so that it will awaken the grace-period kthread upon exit
+
+--Sig_/Kb.nPBRY5QO_NX+JtXLlX3y
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFlE5wACgkQAVBC80lX
+0Gxl5gf8Ca1lWACFU7u842u1TQLwdNTyy5HhXOKhl97fnGDr42+SqdcBpyvvmWFC
+ZDjxPOednIagRBPYf176EHx6ugqGC+vAq1YUK58GLxAaNhKoeltAxYhZZPHi4f6S
+2dONeS51ic+m6swXyyWm700k26djbYqQCgdwjkTJydlc4W+e0HpRYfNEDhdlxROj
+0iY1+Wu3cYiWKU8/aofpOj6p5MV4hTkAjB4qQrvg0OzUn5qPwvWACwX0BOjqBmFN
+9dUNl7LKXP8BoD4lmdo5orxdKThzgfQh7Us46vVhs2zRnxAgqjp0ePiW/8xT6KY2
+9c5pDm7gLZ2Ws/8C2Nrbyvos8v8HRA==
+=2qKt
+-----END PGP SIGNATURE-----
+
+--Sig_/Kb.nPBRY5QO_NX+JtXLlX3y--
