@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9E342ADA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8CC42ADA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234343AbhJLULT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
+        id S234052AbhJLUNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233112AbhJLULS (ORCPT
+        with ESMTP id S232419AbhJLUNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:11:18 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE94C061570;
-        Tue, 12 Oct 2021 13:09:16 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id EBFA7867;
-        Tue, 12 Oct 2021 20:09:15 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EBFA7867
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1634069356; bh=zxIqeYDiMyPPDwY3JGMtAhMaTDV44x2D+hOurfXa1sk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=e1HqYa43JiBAiw8JnNonutF/hvyDK2r/lr0romX6CuVuCPkhHtmPDihnjQwhJFHJm
-         CnQn72kHvTN72RNoLQCUwKGk/IARriNkQ0d7YLL2apzciF0GLD6Z+TzVfNuKU8rFEb
-         0JpW3YkY02dq4w24dH1w7HsPyF4zbwMl+4i8socpxXy2sapfJET1BtQ2qbqn9sOVfM
-         VK7mweXTwbIawz7J/EPoZEAbDHhRe2GcH55Vuy4x3doycTKkAjfRMSpnCH5UtTTAF/
-         yP0QWIVUldB+GmeuaitLrKSeZ+wwjOFy+3ceLYsi5nM220TKZeuRfLOIvjRol1zpl8
-         +AcAx71gB1nLA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: pdfdocs: Adjust \headheight for fancyhdr
-In-Reply-To: <c5a5577e-5de8-9cd4-9253-956ccc748417@gmail.com>
-References: <c5a5577e-5de8-9cd4-9253-956ccc748417@gmail.com>
-Date:   Tue, 12 Oct 2021 14:09:15 -0600
-Message-ID: <87wnmit384.fsf@meer.lwn.net>
+        Tue, 12 Oct 2021 16:13:00 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17633C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:10:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=1Gb/DWi57fzRHrYlHoB1x8a841FAYioHmYEN1p93abM=; b=o2CicTjqaWgesajCsp+E6/I06N
+        dycc5a81JhexVFNcR7SLrLKb666qI51UwP6BRmZrov2mKY2jwjoejk9j9c1Opc5urgTsxy3nu0gNu
+        8Zkaw/y2K1QUI6pu8jtg180iY69iFb0dbt+J4xR7Of7nD78xsYGo3vNTy3R0xh3FHfHh0XxgVvTY8
+        H0TISLFxdkbcyGGfX1rIXRujecVHO5c9kyCWg8oDGFHT1nM7LMSfInUV+Q4yZzd+0jkHV1DPETMIV
+        wkxfy/JdalrKmv986GjHhNi4suoP6VK8gzZrFePGD47FUQHrWLPoTRna5Zd4jcnjVoE/BIzfXvwIY
+        WLUfmd6Q==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1maO70-00DuAN-Fj; Tue, 12 Oct 2021 20:10:58 +0000
+Subject: Re: [PATCH] habanalabs: select CRC32
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Vegard Nossum <vegard.nossum@oracle.com>
+Cc:     Oded Gabbay <ogabbay@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211011151443.12040-1-vegard.nossum@oracle.com>
+ <CAK8P3a2+dU53PMJZvkDDGUyv=EiHuc03njGf6SXTxw9A4ByeHw@mail.gmail.com>
+ <47e60186-2408-19cf-3231-92bd9c30483a@oracle.com>
+ <CAK8P3a2nai8xGQPPMH89rO83252trdRFM67s-mmivAXeDE0zfA@mail.gmail.com>
+ <8b209292-5b94-5a14-dee0-2c152ac02a5d@oracle.com>
+ <CAK8P3a1X38CHrCFDxsZq=TYJw9Q_uP7MrM8fG1_D4X3-F2yL2Q@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d02ef168-e105-27b6-0456-6db590807dcb@infradead.org>
+Date:   Tue, 12 Oct 2021 13:10:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAK8P3a1X38CHrCFDxsZq=TYJw9Q_uP7MrM8fG1_D4X3-F2yL2Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Akira Yokosawa <akiyks@gmail.com> writes:
+On 10/11/21 11:44 PM, Arnd Bergmann wrote:
+> On Tue, Oct 12, 2021 at 7:54 AM Vegard Nossum <vegard.nossum@oracle.com> wrote:
+>> On 10/11/21 9:37 PM, Arnd Bergmann wrote:
+>>> On Mon, Oct 11, 2021 at 6:29 PM Vegard Nossum <vegard.nossum@oracle.com> wrote:
+>>
+>> Otherwise it's mostly CRC32 and a couple of odd ones like this that I've
+>> seen so far:
+>>
+>> ERROR: modpost: "dell_privacy_has_mic_mute"
+>> [drivers/platform/x86/dell/dell-laptop.ko] undefined!
+> 
+> I have a patch for this one that I should send out.
 
-> Fancyhdr prior to v4.0 outputs a message per document as follows:
->
->     Package Fancyhdr Warning: \headheight is too small (12.0pt):
->     Make it at least 13.59999pt.
->     We now make it that large for the rest of the document.
->     This may cause the page layout to be inconsistent, however.
->
-> Fancyhdr v4.0 complains (once a page!) as follows:
->
->     Package fancyhdr Warning: \headheight is too small (12.0pt):
->     (fancyhdr)    Make it at least 13.59999pt, for example:
->     (fancyhdr)    \setlength{\headheight}{13.59999pt}.
->     (fancyhdr)    You might also make \topmargin smaller to compensate:
->
->     (fancyhdr)    \addtolength{\topmargin}{-1.59999pt}.
->
-> Related item in fancyhdr v4.0 announcement on 2021-01-04 [1]:
->
->     Backward incompatible changes:
->       - Eliminate adjustments of \headheight or \footskip, when the
->         header or footer is too high.
->
-> [1]: https://www.ctan.org/ctan-ann/id/mailman.2685.1609863692.2532.ctan-ann@ctan.org
->
-> Silence the warnings by adding a couple of \addtolength commands in
-> the preamble.
->
-> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-> ---
-> Hi,
->
-> This update doesn't have much visual effects in the final PDFs
-> (adjustment of only 1.6pt), but getting rid of harmless warnings
-> would help spot potential important ones.
->
-> Tested against Sphinx versions 2.4.4 and 4.2.0, with Tex Live
-> versions 2017/debian (Ubuntu 18.04), 2019/debian (Ubuntu 20.04),
-> and vanilla 2021 (as of 2021-10-08).
->
->         Thanks, Akira
-> --
->  Documentation/conf.py | 3 +++
->  1 file changed, 3 insertions(+)
+I sent a patch for that. Hans de Goede replaced with:
+[PATCH] platform/x86: dell: Make DELL_WMI_PRIVACY depend on DELL_WMI
 
-Applied, thanks.
+<20211011132338.407571-1-hdegoede@redhat.com>
 
-jon
+so no need to send your patch.
+
+>>    CC      drivers/scsi/aic7xxx/aic79xx_reg_print.o
+>> gcc: error: drivers/scsi/aic7xxx/aic79xx_reg_print.c: No such file or
+>> directory
+>> gcc: fatal error: no input files
+>> compilation terminated.
+>> make[3]: *** [scripts/Makefile.build:271:
+>> drivers/scsi/aic7xxx/aic79xx_reg_print.o] Error 1
+> 
+> I never saw this one, as I only build with CONFIG_COMPILE_TEST=y
+> and CONFIG_PREVENT_FIRMWARE_BUILD=y. I think it's generally
+> a good idea to force these two options, to avoid known problems
+> and long compile times, but the aic7xxx error might be something
+> worth fixing regardless.
+
+thanks.
+-- 
+~Randy
