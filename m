@@ -2,119 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2469429E96
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921E8429E99
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbhJLH12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        id S234225AbhJLH17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234043AbhJLH1P (ORCPT
+        with ESMTP id S234276AbhJLH1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:27:15 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F22C061745;
-        Tue, 12 Oct 2021 00:25:13 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 904081F42FFF;
-        Tue, 12 Oct 2021 08:25:11 +0100 (BST)
-Date:   Tue, 12 Oct 2021 09:25:08 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <p.yadav@ti.com>
-Subject: Re: [PATCH v2 11/14] mtd: spinand: Perform Power-on-Reset on the
- flash in mtd_suspend()
-Message-ID: <20211012092508.1647047b@collabora.com>
-In-Reply-To: <20211011204619.81893-12-a-nandan@ti.com>
-References: <20211011204619.81893-1-a-nandan@ti.com>
-        <20211011204619.81893-12-a-nandan@ti.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Tue, 12 Oct 2021 03:27:45 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E37EC061753
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:25:35 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id t2so63876215wrb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:25:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=kxug8zb/EGJmL2xGeTXvkDk7vUlZHkHARgIrRXZWVYY=;
+        b=J4zVQsKIW0Fn+dUAqKQfD6f1xldVD6mI7fPCF+GfT8rigWHeW3pZfm1uVE+zEIJ/Fl
+         kydgpXuDZnam1OfImxkpgpoIAOpM+2qCW4mU1Qhhi3DfWqjEbhFVrIwan+L+sWAdqYxf
+         HJKJzZ17edGlKeRgOdvPbcwkhK2XAYK8RhTZgvJsFdhnkn1h2/JfRFj/dcpmwMuYWh/z
+         inI4q2lq88tmFDgB0ep6caL711yJBB0rYdtrb5WfD6dV2F6RKhb/Vad+A+k+bgaDf6K8
+         yixFzptHDMHadsVnB9FjAjlAsmVoC+zGi65UMklwBgJUfrlqT+OftgbeiTxsxLednWp9
+         rfZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=kxug8zb/EGJmL2xGeTXvkDk7vUlZHkHARgIrRXZWVYY=;
+        b=OIGJToKA+fW6uzhCU+9hesEovz4ikmtcvg00eu9L/oDaanJ724xsrutGG50h7OvEl3
+         Mfo+egpcuB8EwPzOdggLTMXFok05y54CnyebDk+q/XuieKzWuoHS1KVq2DzhjZkX0CWP
+         AYHbwynQBRm6BSMn1xBcxE3FiTMLc+h/mf/tUcq6EYPL7fTnCtFU/vXVv9+0uj/wct8O
+         Pw20gcVJrKEPFTdeBw3ncxd/EClcM//dTmvnqS2AboNXOdluOwrueD/vGAVTOhzOe9/a
+         /4zxnbeB+mEP/DmijkQev7F4fC0DL3rQMw81BPNBQi/McHpDrS0okBxv58/l97Nn8x6A
+         Wskw==
+X-Gm-Message-State: AOAM532/mMtI900HSpOvzFcGQWdnGnGCjOcEwPibFe7bfJTV/lRqe8wT
+        2C/hiXJW5rUoziZRVrirrr4NTrayGVtalA==
+X-Google-Smtp-Source: ABdhPJyWcLdcIK2F1yvYuz94KzMR4N0FArd3m10As4uYLTdeJ+s/yHqkz9aeF94peco5a1PRmNj64Q==
+X-Received: by 2002:a1c:7d56:: with SMTP id y83mr3798000wmc.86.1634023533805;
+        Tue, 12 Oct 2021 00:25:33 -0700 (PDT)
+Received: from [192.168.1.21] ([195.245.16.219])
+        by smtp.gmail.com with ESMTPSA id b2sm1798371wrv.67.2021.10.12.00.25.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 00:25:33 -0700 (PDT)
+Message-ID: <7cd9ccc118c1955b5f3b48f6f8a7157a72d5213e.camel@gmail.com>
+Subject: Re: [PATCH v2 6/8] ASoC: cirrus: i2s: Prepare clock before using it
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Tue, 12 Oct 2021 09:25:15 +0200
+In-Reply-To: <e23f7de1dbb02def413d721a3bf5759100380937.camel@gmail.com>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+         <20210726140001.24820-1-nikita.shubin@maquefel.me>
+         <20210726140001.24820-7-nikita.shubin@maquefel.me>
+         <20210726165124.GJ4670@sirena.org.uk>
+         <e23f7de1dbb02def413d721a3bf5759100380937.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 02:16:16 +0530
-Apurva Nandan <a-nandan@ti.com> wrote:
+Hello Mark,
 
-> A soft reset using FFh command doesn't erase the flash's configuration
-> and doesn't reset the SPI IO mode also. This can result in the flash
-> being in a different SPI IO mode, e.g. Octal DTR, when resuming from
-> sleep. This could put the flash in an unrecognized SPI IO mode, making
-> it unusable.
+On Mon, 2021-09-13 at 23:43 +0200, Alexander Sverdlin wrote:
+> On Mon, 2021-07-26 at 17:51 +0100, Mark Brown wrote:
+> > On Mon, Jul 26, 2021 at 04:59:54PM +0300, Nikita Shubin wrote:
+> > > From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> > > 
+> > > Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+> > > to Common Clock Framework, otherwise the following is visible:
+> > 
+> > Acked-by: Mark Brown <broonie@kernel.org>
 > 
-> Perform a Power-on-Reset (PoR), if available in the flash, when
-> performing mtd_suspend(). This would set the flash to clean
-> state for reinitialization during resume and would also ensure that it
-> is in standard SPI IO mode (1S-1S-1S) before the resume begins.
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  drivers/mtd/nand/spi/core.c | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 9b570570ee81..60408531979a 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -1316,6 +1316,11 @@ static void spinand_mtd_resume(struct mtd_info *mtd)
->  	int ret;
->  
->  	spinand->reg_proto = SPINAND_SINGLE_STR;
-> +	/*
-> +	 * PoR Reset (if available by the manufacturer) is performed at the suspend
-> +	 * time. Hence, those flashes remain in power-on-state at this point, in a
-> +	 * standard SPI IO mode. So, now the core unanimously performs a soft reset.
-> +	 */
->  	ret = spinand_reset_op(spinand);
->  	if (ret)
->  		return;
-> @@ -1327,6 +1332,21 @@ static void spinand_mtd_resume(struct mtd_info *mtd)
->  	spinand_ecc_enable(spinand, false);
->  }
->  
-> +static int spinand_mtd_suspend(struct mtd_info *mtd)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +	int ret;
-> +
-> +	if (!(spinand->flags & SPINAND_HAS_POR_CMD_BIT))
-> +		return 0;
-> +
-> +	ret = spinand_power_on_rst_op(spinand);
-> +	if (ret)
-> +		dev_err(&spinand->spimem->spi->dev, "suspend() failed\n");
-> +
-> +	return ret;
-> +}
+> would you take the patch to a tree of yours, please?
 
-I suspect you need to implement the spi_mem_driver.shutdown() method
-and do a PoR in that case too. If the device doesn't support the PoR
-command, we should at least switch back to the 1-1-1-STR mode manually.
+I still cannot find this patch in any of your trees, but I've found this one:
 
-> +
->  static int spinand_init(struct spinand_device *spinand)
->  {
->  	struct device *dev = &spinand->spimem->spi->dev;
-> @@ -1399,6 +1419,7 @@ static int spinand_init(struct spinand_device *spinand)
->  	mtd->_erase = spinand_mtd_erase;
->  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
->  	mtd->_resume = spinand_mtd_resume;
-> +	mtd->_suspend = spinand_mtd_suspend;
->  
->  	if (nand->ecc.engine) {
->  		ret = mtd_ooblayout_count_freebytes(mtd);
+commit 726e6f31b1026f62206f1d32b5cbb7e9582c4d03
+Merge: b09bff2676be 7c72dc56a631
+Author: Mark Brown <broonie@kernel.org>
+Date:   Tue Aug 3 23:27:27 2021 +0100
+
+    Merge series "arm: ep93xx: CCF conversion" from Nikita Shubin <nikita.shubin@maquefel.me>:
+    
+    This series series of patches converts ep93xx to Common Clock Framework.
+    
+    It consists of preparation patches to use clk_prepare_enable where it is
+    needed, instead of clk_enable used in ep93xx drivers prior to CCF and
+    a patch converting mach-ep93xx/clock.c to CCF.
+    
+    Link: https://lore.kernel.org/patchwork/cover/1445563/
+    Link: https://lore.kernel.org/patchwork/patch/1435884/
+    
+    v1->v2:
+    - added SoB
+    
+    Alexander Sverdlin (7):
+      iio: ep93xx: Prepare clock before using it
+      spi: spi-ep93xx: Prepare clock before using it
+      Input: ep93xx_keypad: Prepare clock before using it
+      video: ep93xx: Prepare clock before using it
+      dmaengine: ep93xx: Prepare clock before using it
+      ASoC: cirrus: i2s: Prepare clock before using it
+      pwm: ep93xx: Prepare clock before using it
+    
+    Nikita Shubin (1):
+      ep93xx: clock: convert in-place to COMMON_CLK
+
+
+... which claims to merge both "ASoC: cirrus: i2s: Prepare clock before using it"
+and "ep93xx: clock: convert in-place to COMMON_CLK", but they are actually not
+merged.
+
+Could you please consider ASoC patch, while I will resubmit the final clock conversion?
+
+-- 
+Alexander Sverdlin.
+
 
