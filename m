@@ -2,139 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A9242A160
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D737E42A16C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235749AbhJLJvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:51:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:59854 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232891AbhJLJvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:51:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5B6B1063;
-        Tue, 12 Oct 2021 02:49:45 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.22.33])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 029083F694;
-        Tue, 12 Oct 2021 02:49:43 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 10:49:36 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] arm64/mm: Fix idmap on [16K|36VA|48PA]
-Message-ID: <20211012094936.GA14289@C02TD0UTHF1T.local>
-References: <1632807225-20189-1-git-send-email-anshuman.khandual@arm.com>
- <20211004104947.GA4430@C02TD0UTHF1T.local>
- <fe138d79-56d3-14a4-fbb7-586d624e89df@arm.com>
+        id S235783AbhJLJzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:55:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20497 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230389AbhJLJzP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:55:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634032393;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=b6zpFaoEk3AK/+KJak32kXjy2MJ6L7r5CQXtJQyHUkY=;
+        b=Lo4RYWAuMv4rzX4M8V/Cud1nrOTsKVlA4Esc+sJACzLbht42noga/mbD8EEBiSfSvwTPjW
+        6J794qtaMCl2lr6hANujU6D/HPFgzmpIqdZXiu+4/lReHXoq1yNjmwPobm5+SdHinmDdD1
+        PLcBQLzxLLGmcp45Xd3z0sA+cda5Gq0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98-hsjvK7tAPIKhII0yFQdp_w-1; Tue, 12 Oct 2021 05:53:10 -0400
+X-MC-Unique: hsjvK7tAPIKhII0yFQdp_w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 067E979EDC;
+        Tue, 12 Oct 2021 09:53:09 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AB7E9717C0;
+        Tue, 12 Oct 2021 09:53:06 +0000 (UTC)
+Message-ID: <ebf038b7b242dd19aba1e4adb6f4ef2701c53748.camel@redhat.com>
+Subject: Re: [PATCH 0/2] KVM: x86: Fix and cleanup for recent AVIC changes
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 12 Oct 2021 12:53:05 +0300
+In-Reply-To: <YWRtHmAUaKcbWEzH@google.com>
+References: <20211009010135.4031460-1-seanjc@google.com>
+         <9e9e91149ab4fa114543b69eaf493f84d2f33ce2.camel@redhat.com>
+         <YWRJwZF1toUuyBdC@google.com> <YWRtHmAUaKcbWEzH@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe138d79-56d3-14a4-fbb7-586d624e89df@arm.com>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 10:19:49AM +0530, Anshuman Khandual wrote:
-> On 10/4/21 4:19 PM, Mark Rutland wrote:
-> > On Tue, Sep 28, 2021 at 11:03:45AM +0530, Anshuman Khandual wrote:
-> > Ignoring backports, I'd prefer if we could refactor things such that we
-> > decouple the `idmap_pg_dir` creation from the `init_pg_dir` creation,
+On Mon, 2021-10-11 at 16:58 +0000, Sean Christopherson wrote:
+> On Mon, Oct 11, 2021, Sean Christopherson wrote:
+> > On Sun, Oct 10, 2021, Maxim Levitsky wrote:
+> > > On Fri, 2021-10-08 at 18:01 -0700, Sean Christopherson wrote:
+> > > > Belated "code review" for Maxim's recent series to rework the AVIC inhibit
+> > > > code.  Using the global APICv status in the page fault path is wrong as
+> > > > the correct status is always the vCPU's, since that status is accurate
+> > > > with respect to the time of the page fault.  In a similar vein, the code
+> > > > to change the inhibit can be cleaned up since KVM can't rely on ordering
+> > > > between the update and the request for anything except consumers of the
+> > > > request.
+> > > > 
+> > > > Sean Christopherson (2):
+> > > >   KVM: x86/mmu: Use vCPU's APICv status when handling APIC_ACCESS
+> > > >     memslot
+> > > >   KVM: x86: Simplify APICv update request logic
+> > > > 
+> > > >  arch/x86/kvm/mmu/mmu.c |  2 +-
+> > > >  arch/x86/kvm/x86.c     | 16 +++++++---------
+> > > >  2 files changed, 8 insertions(+), 10 deletions(-)
+> > > > 
+> > > 
+> > > Are you sure about it? Let me explain how the algorithm works:
+> > > 
+> > > - kvm_request_apicv_update:
+> > > 
+> > > 	- take kvm->arch.apicv_update_lock
+> > > 
+> > > 	- if inhibition state doesn't really change (kvm->arch.apicv_inhibit_reasons still zero or non zero)
+> > > 		- update kvm->arch.apicv_inhibit_reasons
+> > > 		- release the lock
+> > > 
+> > > 	- raise KVM_REQ_APICV_UPDATE
+> > > 		* since kvm->arch.apicv_update_lock is taken, all vCPUs will be
+> > > 		kicked out of guest mode and will be either doing someing in
+> > > 		the KVM (like page fault) or stuck on trying to process that
+> > > 		request the important thing is that no vCPU will be able to get
+> > > 		back to the guest mode.
+> > > 
+> > > 	- update the kvm->arch.apicv_inhibit_reasons
+> > > 		* since we hold vm->arch.apicv_update_lock vcpus can't see the new value
+> > 
+> > This assertion is incorrect, kvm_apicv_activated() is not guarded by the lock.
+> > 
+> > > 	- update the SPTE that covers the APIC's mmio window:
+> > 
+> > This won't affect in-flight page faults.
+> > 
+> > 
+> >    vCPU0                               vCPU1
+> >    =====                               =====
+> >    Disabled APICv
+> >    #NPT                                Acquire apicv_update_lock
+> >                                        Re-enable APICv
+> >    kvm_apicv_activated() == false
 > 
-> Decoupling both page table creation makes sense.
+> Doh, that's supposed to be "true".
 > 
-> > and create the idmap in terms of the architectural levels rather than
-> > pgd/p4d/pud/pmd/pte, so that we can consistently create the idmap with
-> > at least 48 bits of VA.
+> >    incorrectly handle as regular MMIO
+> >                                        zap APIC pages
+> >    MMIO cache has bad entry
 > 
-> The rationale for creating the idmap table in terms of architectural
-> levels, rather than kernel pgd/p4d/pud/pmd/pte is to avoid handling
-> page table folding stuff and also to make it simpler ?
-
-Yup; decoupling it from the pgd/p4d/pud/pmd/pte levels means that we can
-avoid the conditional extension logic (which always has to be precisely
-the inverse of the regular table creation code), and means we can always
-map the idmap at page granularity regardless of whether we're using
-section mappings for the init_pg_dir.
-
-> > Pseudo-code wise, I'd like something that looks like:
-> > 
-> > 	create_idmap(...)
-> > 	{
-> > 		idmap_va_bits = 48;
-> > 		idmap_t0size = TCR_T0SZ(48);
-> > 
-> > 		if (need_52_bit_va(__idmap_text_start)) {
+> Argh, I forgot the memslot is still there, so the access won't be treated as MMIO
+> and thus won't end up in the MMIO cache.
 > 
-> s/__idmap_text_start/__idmap_text_end/ instead ?
+> So I agree that the code is functionally ok, but I'd still prefer to switch to
+> kvm_vcpu_apicv_active() so that this code is coherent with respect to the APICv
+> status at the time the fault occurred.
+> 
+> My objection to using kvm_apicv_activated() is that the result is completely
+> non-deterministic with respect to the vCPU's APICv status at the time of the
+> fault.  It works because all of the other mechanisms that are in place, e.g.
+> elevating the MMU notifier count, but the fact that the result is non-deterministic
+> means that using the per-vCPU status is also functionally ok.
 
-I don't think that's necessary. The idmap is always 4K aligned, and we
-force it to be no more than 4K in size, so as long as we can map the
-start we can map the rest.
+The problem is that it is just not correct to use local AVIC enable state 
+to determine if we want to populate the SPTE or or just jump to the emulation.
 
-If the idmap were exactly 4K in size, and happend to be placed at PA
-0x0000ffff_fffff000, we can map that with a 48-bit VA, but checking
-__idmap_text_end would force a 52-bit VA.
 
-That shouldn't really matter either way since the idmap is in the middle
-of the .text section, but I'd prefer we just check the start address so
-that we're using hte same address we'll use to create the mapping from.
+For example, assuming that the AVIC is now enabled on all vCPUs,
+we can have this scenario:
+
+    vCPU0                                   vCPU1
+    =====                                   =====
+
+- disable AVIC
+- VMRUN
+                                        - #NPT on AVIC MMIO access
+                                        - *stuck on something prior to the page fault code*
+- enable AVIC
+- VMRUN
+                                        - *still stuck on something prior to the page fault code*
+
+- disable AVIC:
+
+  - raise KVM_REQ_APICV_UPDATE request
+					
+  - set global avic state to disable
+
+  - zap the SPTE (does nothing, doesn't race
+	with anything either)
+
+  - handle KVM_REQ_APICV_UPDATE -
+    - disable vCPU0 AVIC
+
+- VMRUN
+					- *still stuck on something prior to the page fault code*
+
+                                                            ...
+                                                            ...
+                                                            ...
+
+                                        - now vCPU1 finally starts running the page fault code.
+
+                                        - vCPU1 AVIC is still enabled 
+                                          (because vCPU1 never handled KVM_REQ_APICV_UPDATE),
+                                          so the page fault code will populate the SPTE.
+                                          
+
+                                        - handle KVM_REQ_APICV_UPDATE
+                                           - finally disable vCPU1 AVIC
+
+                                        - VMRUN (vCPU1 AVIC disabled, SPTE populated)
+
+					                 ***boom***
+
+
 
 > 
-> > 			if (!supports_52bit_va()) {
-> > 				some_early_spin_loop();
-> 
-> With a new CPU_STUCK_REASON_ code ?
+> At a minimum, I'd like to add a blurb in the kvm_faultin_pfn() comment to call out
+> the reliance on mmu_notifier_seq.
 
-I'm happy with reusing CPU_STUCK_REASON_52_BIT_VA, or with adding some
-new CPU_STUCK_REASON_IDMAP_${whatever}.
+This is a very good idea!
 
-> > 			}
-> > 			idmap_va_bits = 52;
-> > 			idmap_t0size = TCR_T0SZ(52);
-> > 		}
-> > 	
-> > 		if (need_table_level(idmap_va_bits, -1))
-> > 			create_table_level(-1, ...);
-> > 
-> > 		if (need_table_level(idmap_va_bits, 0))
-> > 			create_table_level(0, ...);
-> > 
-> > 		if (need_table_level(idmap_va_bits, 1))
-> > 			create_table_level(1, ...);
-> > 
-> > 		if (need_table_level(idmap_va_bits, 2))
-> > 			create_table_level(2, ...);
-> > 
-> > 		create_table_level(3, ...);
-> > 	}
-> > 
-> > ... which I think would be much easier to reason about consistently.
-> > 
-> > How does that sound to you?
-> 
-> This approach will be simpler and as you mentioned, easier to reason about.
-> 
-> > 
-> > I've pushed some preparatory rework out to my arm64/pgtable/idmap
-> > branch, splitting out a __create_idmap_tables() function (and ensuring
-> > that idmap_t0sz doesn't get silently overridden elsewhere):
-> > 
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/pgtable/idmap
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git arm64/pgtable/idmap
-> > 
-> > ... but I haven't had the chance to do the actual rework of the idmap
-> > creation code.
-> > 
-> > I can send that as a series if that's helpful.
-> 
-> I could also just pick those changes from the above branch and complete
-> the rework.
 
-I'm happy with that if it works for you.
+> 
+> E.g. if kvm_zap_gfn_range() wins the race to acquire mmu_lock() after APICv is
+> inhibited/disabled by __kvm_request_apicv_update(), then direct_page_fault() will
+> retry the fault due to the change in mmu_notifier_seq.  If direct_page_fault()
+> wins the race, then kvm_zap_gfn_range() will zap the freshly-installed SPTEs.
+> For the uninhibit/enable case, at worst KVM will emulate an access that could have
+> been accelerated by retrying the instruction.
 
-Thanks,
-Mark.
+Yes, 100% agree. 
+
+The thing was super tricky to implement to avoid races that happen otherwise
+this way or another.
+
+
+
+Best regards,
+	Maxim Levitsky
+
+> 
+
+
+
+
