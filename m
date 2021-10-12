@@ -2,108 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E713942A910
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2585242A911
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhJLQHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 12:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
+        id S230023AbhJLQHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 12:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhJLQHb (ORCPT
+        with ESMTP id S230002AbhJLQHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 12:07:31 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF263C061570;
-        Tue, 12 Oct 2021 09:05:29 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id 187so17941496pfc.10;
-        Tue, 12 Oct 2021 09:05:29 -0700 (PDT)
+        Tue, 12 Oct 2021 12:07:38 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F221C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:05:36 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id y11so6175436qtn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:05:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mMOxU6+YA/sNdOBxrd9xR6DIR92SPqX/cAtPGdDmVKU=;
-        b=bDwa7qIkxxY4j1mjJTPYMU69RjYrf7BqhXHN8j96S+Q1bdbHT0UGhaGhYsTUiJzcgW
-         Q+h23U6lvfXttX1Xr5f4SLw+YP6GMI8ma5BcESwFQjnv19d5Pzkx+Nf0QYEODQ4eEgJM
-         5eEeI8PtE9M6SItS3znLiYEW5weFDD26ChmXer5Ekg1TKqcfTRSTZYQ1a1pv4TQLck5V
-         znNWK4tc3AIMqY1oL4iNthKN5YOrxIq7RNDXuI1p9eWy6AjxderpQclUoKUtMnKWpIT+
-         XYfzMq2vtlyWT7YiLP0mG+SqRjbsaj9tPcfTahwelLVbv5cjqooIZZTyX26bKICf8NhH
-         ZyKA==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ZdfPCf/bGB3hBbxIjNopsHT/Zm/P8PL8sSV4oLL/GWM=;
+        b=SNNj++YC67KLb7dYvoQsvR1Ewi8Ewq+2dZ3GTmWiVKMcZxFyoqmlbKb77Nz14dhIMu
+         53wBT0Ai2zWRzFEP0FsE1v1dWxmTlXmajX7f+pJp4A2BaGNfcynfbQM4/jhoksdhgBV1
+         38eL/CwIWsk8cH9jaYsKQKn7Bqc803FdER3RwxJ/gO/s2g+qO0hP9C06CKVbqDl9VNFZ
+         FCWOt2kYybzZH0NoLiusUiDRtKcOWzGDEnL6e3zVVVpFeJTnGu8KEAmRIimVJPl/7Seg
+         FGsUrX7QSMOBAiXmGqhlz0hA3k1ZInwC7KM0emURBPoVvsytve5U/9txqL8mAzQAdpPJ
+         h8ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mMOxU6+YA/sNdOBxrd9xR6DIR92SPqX/cAtPGdDmVKU=;
-        b=iKLUIRWCUGYZc1up70e98hsslut4TZqHfOXquf4sb+SXDvgKD9nZT2PAa6eah3dzh0
-         LgO3xkis0dCq7nTt1PsB07UgxfcGQehB31N/7CD77kQUMKQeJTDLu14lERN9puKTe60K
-         Nd+BQ8dvJgdS4nA+cPs+jWHKVCigfVHXxK8+cJNpJqwDfox0MiI5ZwCAgYZfi04Xs7GR
-         EmVwsWc0U+Lt1t3ppP7TIMZ+jP4+5WamP+gpAy3GO1kuL3Wv9PvXwRu1RltmCigSSfao
-         eY7GWsC9NyvVCChaQ0k0jZ3TvXPBDrljmzc1TjrYq4P9/TnPoGuTYxSbEsr1qtP+/U9Z
-         /08Q==
-X-Gm-Message-State: AOAM530uO/lUIEXQgiSHdZy/yk6ssfevVyD9t3LuDG7YCjyqRupSRPGe
-        vg2S+87pV0/jKM7IUlfWs0e7IkbEZvem5Iwo
-X-Google-Smtp-Source: ABdhPJw1IJ/QU67iU8+q118FcNosA5aecym8ZP3I99NBl9Ql4AcFwhi6Y+1cS+L7U0m4T9btUbxwfg==
-X-Received: by 2002:a63:2b4b:: with SMTP id r72mr23056190pgr.57.1634054728858;
-        Tue, 12 Oct 2021 09:05:28 -0700 (PDT)
-Received: from theprophet ([2406:7400:63:cada:3b09:6c3b:61f5:2cfd])
-        by smtp.gmail.com with ESMTPSA id m186sm11857248pfb.165.2021.10.12.09.05.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 09:05:27 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 21:35:13 +0530
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     bhelgaas@google.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: Re: [PATCH 16/22] PCI: pciehp: Use RESPONSE_IS_PCI_ERROR() to check
- read from hardware
-Message-ID: <20211012160505.3dov6gjnmxdq5lz6@theprophet>
-References: <cover.1633972263.git.naveennaidu479@gmail.com>
- <36c7c3005c4d86a6884b270807d84433a86c0953.1633972263.git.naveennaidu479@gmail.com>
- <20211011194740.GA14357@wunner.de>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ZdfPCf/bGB3hBbxIjNopsHT/Zm/P8PL8sSV4oLL/GWM=;
+        b=diy/mdVx3/sTHGdaYFAvk8NEXI8tpTah94ZaaXHq/eReMB6aeUX1pb8d/eWShNB6q+
+         54bbVX37wn+m1cYyGG6J7f6U4TDdm7MyLfiUgyxp/Nl4xwDNWRFGuvd+o4SDi4d65AMw
+         fZyoVbaRZ6u7QjIS6l+EYlMui/sxe+qvhr235p7Pd9V2IBNplewofetS0mQirf3mDZqA
+         Pd/l++Ea3Ij7FpHbZmWbF66fDy+6DfHNIY/dyjgcgA2MFFT3mB+qTlVdHJtgFQ/h9djn
+         2ZGSPpnae2vT9HbzPJhY1sSkMKx7X43lk7kA48uwPFRIkfywMFtiJxSX8QChf4tyMabh
+         sQUQ==
+X-Gm-Message-State: AOAM531x/Ca1biEsKcwvObZzf1CmRsip6kIu9HGiqSnmcu0gyq4/iG4x
+        t8RtjmccMPWrLXP9GktQ2o2n71NcbfhnXX4ZWQo=
+X-Google-Smtp-Source: ABdhPJzb6CxjSrUZnB5Axxxmww0q/3MyApkK5bdzeKtQTJYM4MLKO+icRL7impAGrsIRt3oQ/R+TnfqHevJFeb9YuxM=
+X-Received: by 2002:ac8:5682:: with SMTP id h2mr23773625qta.361.1634054735657;
+ Tue, 12 Oct 2021 09:05:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011194740.GA14357@wunner.de>
+Received: by 2002:ad4:5588:0:0:0:0:0 with HTTP; Tue, 12 Oct 2021 09:05:35
+ -0700 (PDT)
+Reply-To: biill.chantall@gmail.com
+From:   Bill Chantel <gaddafiaisha248@gmail.com>
+Date:   Tue, 12 Oct 2021 18:05:35 +0200
+Message-ID: <CABNqgZfJfqVYOBLHRrdrLJ=xN9bshJ98foh1ha14QaJbeN6L3w@mail.gmail.com>
+Subject: compensation payment usd$750,000.00
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10, Lukas Wunner wrote:
-> On Mon, Oct 11, 2021 at 11:37:33PM +0530, Naveen Naidu wrote:
-> > An MMIO read from a PCI device that doesn't exist or doesn't respond
-> > causes a PCI error.  There's no real data to return to satisfy the
-> > CPU read, so most hardware fabricates ~0 data.
-> > 
-> > Use RESPONSE_IS_PCI_ERROR() to check the response we get when we read
-> > data from hardware.
-> 
-> Actually what happens is that PCI read transactions *time out*,
-> so the host controller fabricates a response.
->
+-- 
+compensation payment usd$750,000.00
 
-Ah! yes. Now that I look at it, RESPONSE_IS_PCI_TIMEOUT() does indeed
-seem like a better option to RESPONSE_IS_PCI_ERROR(), since it's more
-specfic and depicts the actual condition. 
+You have been compensated with the sum of  USD$750 Thousand Dollars
+ by the United Nations. Your payment have arranged to be paid to you an
+through ATM Visa Card. You are to contact the director of International
+Payment officer with the followings;
 
-I'll wait for sometime and see if others have any objection/a better
-name for the macro and then redo the patch with that.
+1. Your Name:
+2. Country :
+3. Age:
+4. Occupation :
+5. Mobile Telephone:
+6. Delivery Address:
+7. Id Card Identification:
 
-Thank you very much for the review ^^ 
+We required your urgent response to this email as directed to avoid further
+delay.
 
-> By contrast, a PCI *error* usually denotes an Uncorrectable or
-> Correctable Error as specified in section 6.2.2 of the PCIe Base Spec.
-> 
-> Thus something like RESPONSE_IS_PCI_TIMEOUT() or IS_PCI_TIMEOUT() would
-> probably be more appropriate.  I'll leave the exact bikeshed color for
-> others to decide. :-)
-> 
-> 
-> > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> > ---
-> >  drivers/pci/hotplug/pciehp_hpc.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> Acked-by: Lukas Wunner <lukas@wunner.de>
+Yours faithfully,
+Director of International Payment
