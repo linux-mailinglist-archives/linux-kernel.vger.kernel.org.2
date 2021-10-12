@@ -2,98 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E265542A091
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C719842A095
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235486AbhJLJH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:07:29 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:42011 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235229AbhJLJH1 (ORCPT
+        id S235523AbhJLJHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235494AbhJLJHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:07:27 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mw9Dg-1mqmbQ2oXE-00s80l for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021
- 11:05:24 +0200
-Received: by mail-wr1-f53.google.com with SMTP id u18so64869726wrg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:05:24 -0700 (PDT)
-X-Gm-Message-State: AOAM531GgGVfloF6sLl0LV4l7KztMFcgf64Pq1iSUSiBbpX7ANiq8Ots
-        QgCDlbj6yTZ2cCZZTAFmNSthLMzzPyEjcqWz1Vs=
-X-Google-Smtp-Source: ABdhPJy8YBLmE7N8KB4FOO3aYrEez2mklhdQHbuXvneWzb0TO1JbMz5s8fZ9BIbyaa2PD1sNYND2ld5WfJAD3d6JRIE=
-X-Received: by 2002:adf:f481:: with SMTP id l1mr29558216wro.411.1634029524152;
- Tue, 12 Oct 2021 02:05:24 -0700 (PDT)
+        Tue, 12 Oct 2021 05:07:30 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41082C06161C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:05:29 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id o20so64507805wro.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:05:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wr/2NPJuS3pCGpcja/YdLD+ws/Bsmb2EvXsaz8P7nBk=;
+        b=c7IxciNHtOvpD93/zJf8U7mD2WwzdWpgTLDmu07hiDi8Wfl4HHdL5aazSay0mgUrPd
+         BWzDgu9hbnY2dGuy8OC0n3CwQ/ckOB/bp1oEq17L0WVFtWSNaCDnEglLBNyvWl/Kznaf
+         ZPrfxdOfTlZkRlH1ShlbVnyxdcezK92VgTpHJfxf5P4h4MpN4PyHW7X5z3J57bFA3D/k
+         0a7pM7AphUImc2xHdrzCi1W2mgUL4wUUI0l26dK0ui35nDLRs5y7lEuFuM+5GaQf1e/S
+         TyoUmr5kGUgu3QJCDo0dmCtANxufQAL/hEbl51pzlD34dt9/RqbDdat9+jOUND9oGuVL
+         Cbpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wr/2NPJuS3pCGpcja/YdLD+ws/Bsmb2EvXsaz8P7nBk=;
+        b=T64ME81SyzcsSP6rtiAFDmCIbxVet4EidpCk/vK5h9aseshNst1gu72Gi/iD88vcOL
+         U4XEutQrcwIL0QPunG3l+CFITOAan30F742yt7a2XK3F/NdAFjtj6Wz9/9Ag9dksl6Dk
+         JSFXDK4jfhElPsGyof8Rme+6R/XfbafMNmdRUQgo5abOq/fAvfeQdJ7hbC37S3zkjQkU
+         DJ1rY67L+mJcm/e2deza5oPVYeTdZnZAwDEgBKHpOblE87rYj3yiUk6zeSrm5Kjha3Uy
+         rm1ZwpCYorKrGPgApE2amV5OWGvidNjXlBpnCFyKpCkHfPU/bD2WgWDqUY/ruDRRpD+B
+         f5DA==
+X-Gm-Message-State: AOAM531IqSVw/Svh2tI9K3phXtVKguZUtlNajnh0oE1uEweti4E8xg1t
+        80DKffLCKCKkxtMeifzrqsqrtw==
+X-Google-Smtp-Source: ABdhPJzaM6vlGT8UtCZ7Hx0Ajh7TCVZxn9HXjngx99Nxx4cftOosPSp98BNwQTw4tPX0u8Kke6EvkQ==
+X-Received: by 2002:adf:a34c:: with SMTP id d12mr30919653wrb.267.1634029527864;
+        Tue, 12 Oct 2021 02:05:27 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id p8sm1892712wmg.15.2021.10.12.02.05.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 02:05:27 -0700 (PDT)
+Subject: Re: [PATCH v3 1/5] ASoC: qcom: Add compatible names in va,wsa,rx,tx
+ codec drivers for sc7280
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
+References: <1633702144-19017-1-git-send-email-srivasam@codeaurora.org>
+ <1633702144-19017-2-git-send-email-srivasam@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <8886b174-f3d3-7bad-a2b9-ea7def2a36e4@linaro.org>
+Date:   Tue, 12 Oct 2021 10:05:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
- <20210726140001.24820-1-nikita.shubin@maquefel.me> <20210726140001.24820-9-nikita.shubin@maquefel.me>
- <ed557882a9530f2fd6245e34657be62399df76bc.camel@gmail.com>
- <CAK8P3a0Y4uwX4B10d5CR3WjZ1qXAqhKJGJ0EhUEF60uB1q3H9A@mail.gmail.com> <e50f2da7af1fa6f02fd413081fa5762837b86895.camel@gmail.com>
-In-Reply-To: <e50f2da7af1fa6f02fd413081fa5762837b86895.camel@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 12 Oct 2021 11:05:08 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3jAdYQerE03O5s2_PBUqt5QPCPSQxxs54E7-V=0HVBXA@mail.gmail.com>
-Message-ID: <CAK8P3a3jAdYQerE03O5s2_PBUqt5QPCPSQxxs54E7-V=0HVBXA@mail.gmail.com>
-Subject: Re: [PATCH v2 8/8] ep93xx: clock: convert in-place to COMMON_CLK
-To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Mike Rapoport <rppt@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:nNUtpjJO7eEbbVpqcYvUb3VILss32duYAgFhOXMHSvFSnnCWZGP
- UgNNtdln4Hmv6iogSUUo3Dyz4skqkd/oxQ0CScy7mGWd4b8M3LE8hhNR3EpucNjtXKdszRM
- iia/N7thek9ZOJWk6q1Z1Te5ldJCzLrqctoqXwCLGO1s94C4+H3ww+lnNnn9H0ZBN/G0WKL
- kAK5adLjqeassPB0XsFyQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:F5p4+YUEj7c=:mEv7AIq5Q43JsXsHIDlQh9
- 4V+YTdIe1jykcSZfO0mVe3onTuih9+SKXRA/XsKxOSwMbBiXgscgseD3d/iUfkg+QHn2Ds3m5
- FIunFfkURsw6KkAb5nked6II1L2QQ9jH06m1xvj7l0am4ANSWuoF4REoNbCetg2K3fHRrwzHt
- AsWX4wHcRs8PjOzfHYQuh6oSi4Bbu8biGsUycVTbzcOUw6TkoJxESxLuG8H50XpgO67/cdEZv
- BWR8at1zuj52njqkwv3sG9+rQat4x8MdM4LS/e7shJCymfzG67VrFRzUqya6G8etKWSCZn7IW
- halXZJPsnaFSrkfmxC5xeMnI879XE9+Sfn4kz3UoD5L1v3b4eF3Bq/MCdfOwQCaV/TUwUhQHH
- P1io8JYvxqVVSwi397H1SHkaMHjtWTEKwwGhW4cTLEGTvfOgsyjUKTrpwul6N2Mge11jsbimi
- zePQHxJuNpstqLGSIZWDyYzwNxT0RcAZwLuzv7lmtZu9GWXkSeetYhVqWJO3o4j/Y7IPNY3P5
- oeMPrWP8F3Aei7i27HsUcUjEWgzwDV8MBmrefArjhC9JQc/Q8i6yHkZxlKE4n0EdTnvhlGdo4
- 6hAM8GcL3zBRF736vYsqKtsnFOcWxdYl1h56cA7ralCsQa03RrRexqQZKj3MFMxXXcRtR9Zyx
- uEv7phuYpoNybvvDUJ7D/VJOVzKhEsD6l7q7ScDdiwVoE48/TBzj35X4CgjWfnktdXI75xOJl
- nJqxsQKTqYF20gjZ0Th4NSWyCcbJqSrI6QpVamLu9j18A1ytUC0d0S5m4zWBG8aj6dJULdD2Y
- 9r4pDYkU9YKKlAI1iDFTO2suITZTiy7VHklUXB3CN+A9qtESvcX6LUUFR2wi/ppJCeKwANhc2
- suoOM3SDMAvYy9oCIaWA==
+In-Reply-To: <1633702144-19017-2-git-send-email-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 10:37 AM Alexander Sverdlin
-<alexander.sverdlin@gmail.com> wrote:
-> On Tue, 2021-10-12 at 10:29 +0200, Arnd Bergmann wrote:
-> > > > Converted in-place without moving file to drivers/clk.
-> > It looks like this is just the drivers/spi/ bit of the series. Are
-> > there any other driver changes that are needed along with
-> > the arch/arm/ patches, or is it just the actual clock support now?
->
-> There is "ASoC: cirrus: i2s: Prepare clock before using it" still
-> unmerged as well with an ACK from Mark Brown, I did remind him
-> about it again this morning, but I can resend it to you if you wish.
 
-(adding Mark to cc)
 
-Let's wait for him to reply then. I don't think it matters much either
-way, since the series is not doing an atomic conversion if the other
-drivers are merged through different trees, and Mark has given
-an Ack for the driver.
+On 08/10/2021 15:09, Srinivasa Rao Mandadapu wrote:
+> Add compatible names for sc7280 based targets in digital codec drivers
+> va,wsa,rx and tx.
+> 
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
 
-       Arnd
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+
+>   sound/soc/codecs/lpass-rx-macro.c  | 1 +
+>   sound/soc/codecs/lpass-tx-macro.c  | 1 +
+>   sound/soc/codecs/lpass-va-macro.c  | 1 +
+>   sound/soc/codecs/lpass-wsa-macro.c | 1 +
+>   4 files changed, 4 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+> index 196b068..c2b9333 100644
+> --- a/sound/soc/codecs/lpass-rx-macro.c
+> +++ b/sound/soc/codecs/lpass-rx-macro.c
+> @@ -3577,6 +3577,7 @@ static int rx_macro_remove(struct platform_device *pdev)
+>   }
+>   
+>   static const struct of_device_id rx_macro_dt_match[] = {
+> +	{ .compatible = "qcom,sc7280-lpass-rx-macro" },
+>   	{ .compatible = "qcom,sm8250-lpass-rx-macro" },
+>   	{ }
+>   };
+> diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
+> index 27a0d5d..5dcae73 100644
+> --- a/sound/soc/codecs/lpass-tx-macro.c
+> +++ b/sound/soc/codecs/lpass-tx-macro.c
+> @@ -1843,6 +1843,7 @@ static int tx_macro_remove(struct platform_device *pdev)
+>   }
+>   
+>   static const struct of_device_id tx_macro_dt_match[] = {
+> +	{ .compatible = "qcom,sc7280-lpass-tx-macro" },
+>   	{ .compatible = "qcom,sm8250-lpass-tx-macro" },
+>   	{ }
+>   };
+> diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
+> index 56c93f4..70f09b4 100644
+> --- a/sound/soc/codecs/lpass-va-macro.c
+> +++ b/sound/soc/codecs/lpass-va-macro.c
+> @@ -1472,6 +1472,7 @@ static int va_macro_remove(struct platform_device *pdev)
+>   }
+>   
+>   static const struct of_device_id va_macro_dt_match[] = {
+> +	{ .compatible = "qcom,sc7280-lpass-va-macro" },
+>   	{ .compatible = "qcom,sm8250-lpass-va-macro" },
+>   	{}
+>   };
+> diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+> index d3ac318..75baf8e 100644
+> --- a/sound/soc/codecs/lpass-wsa-macro.c
+> +++ b/sound/soc/codecs/lpass-wsa-macro.c
+> @@ -2445,6 +2445,7 @@ static int wsa_macro_remove(struct platform_device *pdev)
+>   }
+>   
+>   static const struct of_device_id wsa_macro_dt_match[] = {
+> +	{.compatible = "qcom,sc7280-lpass-wsa-macro"},
+>   	{.compatible = "qcom,sm8250-lpass-wsa-macro"},
+>   	{}
+>   };
+> 
