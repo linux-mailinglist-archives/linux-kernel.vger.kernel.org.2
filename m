@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E6E42A28C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3108A42A288
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236128AbhJLKpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:45:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236119AbhJLKpS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:45:18 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19E3C06161C;
-        Tue, 12 Oct 2021 03:43:16 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id d3so51778582edp.3;
-        Tue, 12 Oct 2021 03:43:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=9tW9+9W3ki2H59Q6eX3JXlQTuv6vyJPIiRkarHpBHmI=;
-        b=f09MjGXeVx3UdxZU1QExsJVyx6awn0E26xv4JjT2PxSfjRKn/LruRMI/J+Zwb8IHuK
-         5l6QBO5p6YTkpWIRImpkWYVB11luH/Ef3/eux/vUlrcYFVAlpkVvg+4eh2b72VL/duhm
-         nDnpT1lCTz1i14UA9JPF82xtRzl30dMwwrAPrIrk/BRT7myjWdd92YF7zNn11d256XbI
-         vZ0vw+RVCbaE5eIKThO8tLXaQ7lnKIYXHGZTRX82Qc+4QmgqSqryhcZhyKZwvf8KJb30
-         QgbQZrtxAlZ5Or7N3hk2i6TsiFiZTr26xiuzPqK9xZOtL3epl9oTdDjWHTwH5dTXhT/Y
-         rgaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=9tW9+9W3ki2H59Q6eX3JXlQTuv6vyJPIiRkarHpBHmI=;
-        b=4gdrB3jZ+zJ7IKIC6f393uEY7JfmVTIP+IOfOt3HyvjmUxZmcf5fCkyzuK+LP4YsJX
-         3E4hWW1qAlVC+Wk0DRX6khfcv7Ah8+PjLAFx0a9HnmJZHqCpCrb6kCN41TXv9eaXqSZa
-         Err9lZbqgXy7Hpq05Eg7DDLTdlXxKc/0FD0JuAUHTK7tU503USnJs/qFFtZXyl0qWMUa
-         LCDsf2waRyCD7VgrjTa1PC9vMpx3aeZ7htFlXZZJ3CbUktTtNRmIaRyvJfzPflRIuVn5
-         UPB746noDjUZa0Kc+IMe0bK+jfdCE431xqIz0cptm/6B5NHo1qsqCUKmzriBGwDdwJXW
-         uJUQ==
-X-Gm-Message-State: AOAM533gjSGiToI5Hm+X78SQzU59b9py5bXRH7oh1UJNnS/yKzKpKyJs
-        tjQ0kLF9nJH6/Skg8wZhGSw=
-X-Google-Smtp-Source: ABdhPJyF0hmHa8SE+WtkOJoKaC/5JnmaKOatJC+y7uCeYzMv2TRRSxamhElOAfjadUORbP77BJOXWA==
-X-Received: by 2002:a17:906:a0c9:: with SMTP id bh9mr32236875ejb.51.1634035394802;
-        Tue, 12 Oct 2021 03:43:14 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.129.215])
-        by smtp.gmail.com with ESMTPSA id f9sm990730edy.9.2021.10.12.03.43.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 03:43:14 -0700 (PDT)
-Message-ID: <659c1c9e-3df1-14f4-0630-88fd118f9e23@gmail.com>
-Date:   Tue, 12 Oct 2021 11:42:35 +0100
+        id S236053AbhJLKpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:45:08 -0400
+Received: from relay.sw.ru ([185.231.240.75]:44362 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235900AbhJLKpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:45:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=bEbXgNx8UNhTNiQSVrQ+7EoBtCdD7MvBGkcwxGWc4cs=; b=SmT2sdTNW0HEqxE0m
+        moILfvR4WUkRN/qJdfdiDnBRMRXGquRZAofXgF5d54Zzkt1ln9tBN8XPALEk1iDBhHy8erFkLJ9Bo
+        WnQyYEjYw1xSV/QWTN12zef+4kbJJVBsuatmIdz3aKFLQvIc7iGUuzKemcaf9gjg/k06zn9PtE2KM
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1maFFO-005nHz-Qb; Tue, 12 Oct 2021 13:43:02 +0300
+Subject: Re: [PATCH memcg] mm/page_alloc.c: avoid statistic update with 0
+To:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Uladzislau Rezki <urezki@gmail.com>
+References: <b2371951-bb8a-e62e-8d33-10830bbf6275@virtuozzo.com>
+ <29155011-f884-b0e5-218e-911039568acb@suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <f52c5cd3-9b74-0fd5-2b7b-83ca21c52b2a@virtuozzo.com>
+Date:   Tue, 12 Oct 2021 13:42:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [syzbot] WARNING in io_wq_submit_work (2)
+In-Reply-To: <29155011-f884-b0e5-218e-911039568acb@suse.cz>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     syzbot <syzbot+bc2d90f602545761f287@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, fgheet255t@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000061c94a05ce199f2a@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <00000000000061c94a05ce199f2a@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/21 21:32, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
+On 08.10.2021 14:47, Vlastimil Babka wrote:
+> On 10/8/21 11:24, Vasily Averin wrote:
+>> __alloc_pages_bulk can call __count_zid_vm_events and zone_statistics
+>> with nr_account = 0.
 > 
-> commit c57a91fb1ccfa203ba3e31e5a389cb04de5b0561
-> Author: Pavel Begunkov <asml.silence@gmail.com>
-> Date:   Wed Sep 8 19:49:17 2021 +0000
-> 
->      io_uring: fix missing mb() before waitqueue_active
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=143b46bf300000
-> start commit:   926de8c4326c Merge tag 'acpi-5.15-rc1-3' of git://git.kern..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=37df9ef5660a8387
-> dashboard link: https://syzkaller.appspot.com/bug?extid=bc2d90f602545761f287
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e4357d300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1173a663300000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
-> 
-> #syz fix: io_uring: fix missing mb() before waitqueue_active
+> But that's not a bug, right? Just an effective no-op that's not commonly
+> happening, so is it worth the check?
 
-#syz fix: io-wq: fix cancellation on create-worker failure
+Why not?
 
+Yes, it's not a bug, it just makes the kernel a bit more efficient in a very unlikely case.
+However, it looks strange and makes uninformed code reviewers like me worry about possible
+problems inside the affected functions. No one else calls these functions from 0.
+ 
+>> Fixes: 3e23060b2d0b ("mm/page_alloc: batch the accounting updates in the bulk allocator")
+>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>> ---
+>>  mm/page_alloc.c | 7 ++++---
+>>  1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index 602819a232e5..e67113452ee8 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -5364,9 +5364,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>>  	}
+>>  
+>>  	local_unlock_irqrestore(&pagesets.lock, flags);
+>> -
+>> -	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+>> -	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
+>> +	if (nr_account) {
+>> +		__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+>> +		zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
+>> +	}
+>>  	if (objcg)
+>>  		memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
+>>  
+>>
+> 
 
--- 
-Pavel Begunkov
