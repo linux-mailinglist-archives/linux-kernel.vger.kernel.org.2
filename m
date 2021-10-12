@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964C242A674
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C1A42A67E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237076AbhJLNxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:53:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27765 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237056AbhJLNw7 (ORCPT
+        id S236972AbhJLN5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230195AbhJLN52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:52:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634046657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lpesmbio9FZ09q7H/hgYyh50fUJ7X8y/Z2CXk6CH2Hw=;
-        b=cHIH/jD6oXD2L9FLu+pR7146TxFkk3TwgNGMEvp+dcq3vPa5wkV0rCLMSzDSEP0sThj7Q9
-        t2no58uzzcCvMtvk2A+Fhu03NRP5/SW3ypycSlf2WQzBkkDdC4lEzGyg/zVBFm/EVjiPfr
-        gRZeTUZObkwzcNmg42A1PVSBBpLOh1o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-7pqmE2CPNr-Jp9MqPCNWFg-1; Tue, 12 Oct 2021 09:50:52 -0400
-X-MC-Unique: 7pqmE2CPNr-Jp9MqPCNWFg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BBEE29126B;
-        Tue, 12 Oct 2021 13:50:50 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4468760BF4;
-        Tue, 12 Oct 2021 13:50:50 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Pierre Morel <pmorel@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, bfu@redhat.com,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [RFC PATCH 1/1] s390/cio: make ccw_device_dma_* more robust
-In-Reply-To: <20211011204837.7617301b.pasic@linux.ibm.com>
-Organization: Red Hat GmbH
-References: <20211011115955.2504529-1-pasic@linux.ibm.com>
- <466de207-e88d-ea93-beec-fbfe10e63a26@linux.ibm.com>
- <874k9ny6k6.fsf@redhat.com> <20211011204837.7617301b.pasic@linux.ibm.com>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Tue, 12 Oct 2021 15:50:48 +0200
-Message-ID: <87pmsawdvr.fsf@redhat.com>
+        Tue, 12 Oct 2021 09:57:28 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76F6C061570;
+        Tue, 12 Oct 2021 06:55:26 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id w11so18501634ilv.6;
+        Tue, 12 Oct 2021 06:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tHfaoDZl2aKS3pIJDtjv61N4CXjaQvKyjIgaX+6126o=;
+        b=WDtYAi+8vqWZQuqZUnRJaDElSisB9WHcH15ldknaudyKbnIH28LsYU6yKm+CE9ahle
+         rbKAuXNZ1CJNrcuSBtbfDWrgYa6fdbDPZay+O1gVYilERaB/QWBw6pMCMKBiWiqY70ZM
+         +E32u2XcmNv5Jvex5TX8R2EP9tpxU7AxBpZfEYJQq8BIlGosR1692D6ry7/m/phB/fTj
+         luRzdF1hD5gMRivh/pEH+g8igBox3UWWu4UnxiSPqzQiU8Vz07YUyff3mNsIONMarz2B
+         u+4uZyReBAW2QMiDlzKpJwxx9/BjCO8S0d+V1XKnjAZYsMapfTWQXwJD82KZCRSSIdKu
+         FjiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tHfaoDZl2aKS3pIJDtjv61N4CXjaQvKyjIgaX+6126o=;
+        b=g5R/Udge1WloWxhsDjDnk4FdCK/X0FmyP0HPjK8QBVwuI94rnAywr6RBG7RRYSV130
+         xCO0hLXsaorYKSiTS8OkQZSv+QrSbVhnSR2Kj3BLeg6T8m18NxVuXloIQ3ha6waUNb0+
+         APBP9CdZgJsmJKgLwBxrAKJ2vmO4Y+0CayC9LfXNfsBAjg2nA2IqLyXLmikbuEKESaE8
+         kpErvQGr3E79cOX98xbW1CKwG2cvrfAt9H64FkwC8CZhhk6YpQULZiKrOJNjz6jgua4L
+         sZubdz6OqU9oDPXhdjMHfllvhoT6kIJ2Ao+3q1uBHDKw3fB+Il15X6X4tSCi+rfu+E2M
+         gkMQ==
+X-Gm-Message-State: AOAM532fXxtw2fvSq3COUkcGTuGauyf+aVSZM/bmXa6Z7i6b8Vz+xbRM
+        glUWsb5+8tQit0qeThE8eHCoCpdVe0zhiw==
+X-Google-Smtp-Source: ABdhPJya7Rzl4jISSA8QShEp7dZnOVuWi1cgPowSWRS001XFnLMZ1722TKDbHUC1HDK9Jnr4lrHuBA==
+X-Received: by 2002:a05:6e02:1b81:: with SMTP id h1mr5346570ili.240.1634046926149;
+        Tue, 12 Oct 2021 06:55:26 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id s18sm3384357ilo.14.2021.10.12.06.55.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 06:55:25 -0700 (PDT)
+Subject: Re: [PATCH] ipv4: only allow increasing fib_info_hash_size
+To:     zhang kai <zhangkaiheb@126.com>, davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211012110658.10166-1-zhangkaiheb@126.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <23911752-3971-0230-cfd2-f8e30e8805db@gmail.com>
+Date:   Tue, 12 Oct 2021 07:55:24 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20211012110658.10166-1-zhangkaiheb@126.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+On 10/12/21 5:06 AM, zhang kai wrote:
+> and when failed to allocate memory, check fib_info_hash_size.
 
-> On Mon, 11 Oct 2021 16:33:45 +0200
-> Cornelia Huck <cohuck@redhat.com> wrote:
->
->> On Mon, Oct 11 2021, Pierre Morel <pmorel@linux.ibm.com> wrote:
->> 
->> > On 10/11/21 1:59 PM, Halil Pasic wrote:  
->> >> diff --git a/drivers/s390/cio/device_ops.c b/drivers/s390/cio/device_ops.c
->> >> index 0fe7b2f2e7f5..c533d1dadc6b 100644
->> >> --- a/drivers/s390/cio/device_ops.c
->> >> +++ b/drivers/s390/cio/device_ops.c
->> >> @@ -825,13 +825,23 @@ EXPORT_SYMBOL_GPL(ccw_device_get_chid);
->> >>    */
->> >>   void *ccw_device_dma_zalloc(struct ccw_device *cdev, size_t size)
->> >>   {
->> >> -	return cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
->> >> +	void *addr;
->> >> +
->> >> +	if (!get_device(&cdev->dev))
->> >> +		return NULL;
->> >> +	addr = cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
->> >> +	if (IS_ERR_OR_NULL(addr))  
->> >
->> > I can be wrong but it seems that only dma_alloc_coherent() used in 
->> > cio_gp_dma_zalloc() report an error but the error is ignored and used as 
->> > a valid pointer.  
->> 
->> Hm, I thought dma_alloc_coherent() returned either NULL or a valid
->> address?
->
-> Yes, that is what is documented.
->
->> 
->> >
->> > So shouldn't we modify this function and just test for a NULL address here?  
->> 
->> If I read cio_gp_dma_zalloc() correctly, we either get NULL or a valid
->> address, so yes.
->> 
->
-> I don't think the extra care will hurt us too badly. I prefer to keep
-> the IS_ERR_OR_NULL() check because it needs less domain specific
-> knowledge to be understood, and because it is more robust.
 
-It feels weird, though -- I'd rather have a comment that tells me
-exactly what cio_gp_dma_zalloc() is supposed to return; I would have
-expected that a _zalloc function always gives me a valid pointer or
-NULL.
+what problem are you trying to solve?
+
+
+
+> 
+> Signed-off-by: zhang kai <zhangkaiheb@126.com>
+> ---
+>  net/ipv4/fib_semantics.c | 25 ++++++++++++++-----------
+>  1 file changed, 14 insertions(+), 11 deletions(-)
+> 
+> diff --git a/net/ipv4/fib_semantics.c b/net/ipv4/fib_semantics.c
+> index a632b66bc..7547708a9 100644
+> --- a/net/ipv4/fib_semantics.c
+> +++ b/net/ipv4/fib_semantics.c
+> @@ -1403,17 +1403,20 @@ struct fib_info *fib_create_info(struct fib_config *cfg,
+>  
+>  		if (!new_size)
+>  			new_size = 16;
+> -		bytes = new_size * sizeof(struct hlist_head *);
+> -		new_info_hash = fib_info_hash_alloc(bytes);
+> -		new_laddrhash = fib_info_hash_alloc(bytes);
+> -		if (!new_info_hash || !new_laddrhash) {
+> -			fib_info_hash_free(new_info_hash, bytes);
+> -			fib_info_hash_free(new_laddrhash, bytes);
+> -		} else
+> -			fib_info_hash_move(new_info_hash, new_laddrhash, new_size);
+> -
+> -		if (!fib_info_hash_size)
+> -			goto failure;
+> +
+> +		if (new_size > fib_info_hash_size) {
+> +			bytes = new_size * sizeof(struct hlist_head *);
+> +			new_info_hash = fib_info_hash_alloc(bytes);
+> +			new_laddrhash = fib_info_hash_alloc(bytes);
+> +			if (!new_info_hash || !new_laddrhash) {
+> +				fib_info_hash_free(new_info_hash, bytes);
+> +				fib_info_hash_free(new_laddrhash, bytes);
+> +
+> +				if (!fib_info_hash_size)
+> +					goto failure;
+> +			} else
+> +				fib_info_hash_move(new_info_hash, new_laddrhash, new_size);
+> +		}
+>  	}
+>  
+>  	fi = kzalloc(struct_size(fi, fib_nh, nhs), GFP_KERNEL);
+> 
 
