@@ -2,166 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8BD429DEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CD9429DEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbhJLGrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 02:47:24 -0400
-Received: from mail-ua1-f50.google.com ([209.85.222.50]:39686 "EHLO
-        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhJLGrW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:47:22 -0400
-Received: by mail-ua1-f50.google.com with SMTP id f3so13187601uap.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 23:45:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kWPJleEiE+gVZvrcGOiWmft2F+gj6ko8JyHEGetfhVQ=;
-        b=KuV90g7pVcvfqlI3r4DnVsxj2vKM9jASYyZY0Ra/DyEz6FBal6N6oJJqYAbkVnYcB1
-         +6JTWEaZeiBwdZrSbHwvjwk7L7DOH75qCeapU1G4okAzoTw+q2UDGpDM6q1takAkLr03
-         AyHOfNA1RphwXDNaSCdsLea0gLjeL7higfnD7ACQWC8xEwiHEMNf+KlAItEuGoNEqXpf
-         dcfYEJ+oZ/h/ZZCaa9XD2ME9NwiBUPqa+iHprMY5FGJ/5oJ6OY0y01D/y4NvWpq4VeUX
-         N4YSAG0GzRQn5S327ZuseRsYMb9zIThGIOdSFrHqMVXT443pi3bZRg+C4UUQz7Vk3Eq+
-         GZ1w==
-X-Gm-Message-State: AOAM532Pz4repYzCbDmOJ5mmoFTm5vfPKdmwJGblPzJSwdWqv+zzbi0R
-        bEAGkTl+p/o9d3VomFV6PdLVMLt+vVK9UrTRinQ=
-X-Google-Smtp-Source: ABdhPJxuzIhTk17saXykKBoZYi6Lc9Pg3rBxOtURrGCe+Uo4iET197lYmvK8cWuKC6902dAATf0O6aS5WFg5GKe5cZw=
-X-Received: by 2002:a67:ac04:: with SMTP id v4mr28776833vse.50.1634021121297;
- Mon, 11 Oct 2021 23:45:21 -0700 (PDT)
+        id S233373AbhJLGsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 02:48:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232076AbhJLGsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 02:48:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D80B60F21;
+        Tue, 12 Oct 2021 06:46:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634021167;
+        bh=FglZxS6/2XghYHNYO0qhBtCKFa8TyjJzVboc6yU25oE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nZISZ93+5byuEVUJxmDJ1Pbh2p1NxORlWsVKOCn9OF9xN5fa++Kq88mtBi7u78urh
+         GDwMUgQ4OeLPaA2V83EdyhyZJ7clvky4IjMtvr5FdGiIo3udJK6i3noYT1tPKIZQ0a
+         IzmMgP5rmkLi/BY4bVyk8g+Dmj1le/kdqsHvFJ7s=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.19 00/28] 4.19.211-rc2 review
+Date:   Tue, 12 Oct 2021 08:46:04 +0200
+Message-Id: <20211012064417.149035532@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <202110120411.Ye2uGBNg-lkp@intel.com>
-In-Reply-To: <202110120411.Ye2uGBNg-lkp@intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 12 Oct 2021 08:45:09 +0200
-Message-ID: <CAMuHMdVJJtZJr4ZxV5g2EzO4KRszBFg3ysjX-OYsd2jXGx_z3Q@mail.gmail.com>
-Subject: Re: [rogerq:ti-5.10/am64-nand-1.0 3/11] drivers/memory/omap-gpmc.c:1457:29:
- warning: format '%llx' expects argument of type 'long long unsigned int', but
- argument 3 has type 'resource_size_t' {aka 'unsigned int'}
-To:     kernel test robot <lkp@intel.com>
-Cc:     Roger Quadros <rogerq@kernel.org>, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.211-rc2.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.211-rc2
+X-KernelTest-Deadline: 2021-10-14T06:44+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 10:38 PM kernel test robot <lkp@intel.com> wrote:
-> tree:   https://github.com/rogerq/linux ti-5.10/am64-nand-1.0
-> head:   10d87efaf33242b8e38807319ce22ee16c1ca438
-> commit: 956722fabd30d83fc4671bb70a7554c2b40701b8 [3/11] memory: omap-gpmc: Add support for GPMC on AM64 SoC
-> config: m68k-allmodconfig (attached as .config)
-> compiler: m68k-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/rogerq/linux/commit/956722fabd30d83fc4671bb70a7554c2b40701b8
->         git remote add rogerq https://github.com/rogerq/linux
->         git fetch --no-tags rogerq ti-5.10/am64-nand-1.0
->         git checkout 956722fabd30d83fc4671bb70a7554c2b40701b8
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=m68k
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
->    In file included from include/linux/device.h:15,
->                     from include/linux/gpio/driver.h:5,
->                     from drivers/memory/omap-gpmc.c:20:
->    drivers/memory/omap-gpmc.c: In function 'gpmc_mem_init':
-> >> drivers/memory/omap-gpmc.c:1457:29: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 3 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
->     1457 |         dev_info(gpmc->dev, "start: 0x%llx, end: 0x%llx\n", gpmc_mem_root.start, gpmc_mem_root.end);
+This is the start of the stable review cycle for the 4.19.211 release.
+There are 28 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Use %pR to print resources, cfr. Documentation/core-api/printk-formats.rst
+Responses should be made by Thu, 14 Oct 2021 06:44:01 +0000.
+Anything received after that time might be too late.
 
->          |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    include/linux/dev_printk.h:19:22: note: in definition of macro 'dev_fmt'
->       19 | #define dev_fmt(fmt) fmt
->          |                      ^~~
->    drivers/memory/omap-gpmc.c:1457:9: note: in expansion of macro 'dev_info'
->     1457 |         dev_info(gpmc->dev, "start: 0x%llx, end: 0x%llx\n", gpmc_mem_root.start, gpmc_mem_root.end);
->          |         ^~~~~~~~
->    drivers/memory/omap-gpmc.c:1457:42: note: format string is defined here
->     1457 |         dev_info(gpmc->dev, "start: 0x%llx, end: 0x%llx\n", gpmc_mem_root.start, gpmc_mem_root.end);
->          |                                       ~~~^
->          |                                          |
->          |                                          long long unsigned int
->          |                                       %x
->    In file included from include/linux/device.h:15,
->                     from include/linux/gpio/driver.h:5,
->                     from drivers/memory/omap-gpmc.c:20:
->    drivers/memory/omap-gpmc.c:1457:29: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 4 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
->     1457 |         dev_info(gpmc->dev, "start: 0x%llx, end: 0x%llx\n", gpmc_mem_root.start, gpmc_mem_root.end);
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.211-rc2.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-Likewise.
+thanks,
 
->          |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    include/linux/dev_printk.h:19:22: note: in definition of macro 'dev_fmt'
->       19 | #define dev_fmt(fmt) fmt
->          |                      ^~~
->    drivers/memory/omap-gpmc.c:1457:9: note: in expansion of macro 'dev_info'
->     1457 |         dev_info(gpmc->dev, "start: 0x%llx, end: 0x%llx\n", gpmc_mem_root.start, gpmc_mem_root.end);
->          |         ^~~~~~~~
->    drivers/memory/omap-gpmc.c:1457:55: note: format string is defined here
->     1457 |         dev_info(gpmc->dev, "start: 0x%llx, end: 0x%llx\n", gpmc_mem_root.start, gpmc_mem_root.end);
->          |                                                    ~~~^
->          |                                                       |
->          |                                                       long long unsigned int
->          |                                                    %x
->    In file included from include/linux/device.h:15,
->                     from include/linux/gpio/driver.h:5,
->                     from drivers/memory/omap-gpmc.c:20:
->    drivers/memory/omap-gpmc.c: In function 'gpmc_probe_generic_child':
-> >> drivers/memory/omap-gpmc.c:2178:34: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 4 has type 'phys_addr_t' {aka 'unsigned int'} [-Wformat=]
+greg k-h
 
-Use %pa to format phys_addr_t.
+-------------
+Pseudo-Shortlog of commits:
 
->     2178 |                                  "GPMC CS %d start cannot be lesser than 0x%llx\n",
->          |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    include/linux/dev_printk.h:19:22: note: in definition of macro 'dev_fmt'
->       19 | #define dev_fmt(fmt) fmt
->          |                      ^~~
->    drivers/memory/omap-gpmc.c:2177:25: note: in expansion of macro 'dev_info'
->     2177 |                         dev_info(&pdev->dev,
->          |                         ^~~~~~~~
->    drivers/memory/omap-gpmc.c:2178:79: note: format string is defined here
->     2178 |                                  "GPMC CS %d start cannot be lesser than 0x%llx\n",
->          |                                                                            ~~~^
->          |                                                                               |
->          |                                                                               long long unsigned int
->          |                                                                            %x
->    In file included from include/linux/device.h:15,
->                     from include/linux/gpio/driver.h:5,
->                     from drivers/memory/omap-gpmc.c:20:
->    drivers/memory/omap-gpmc.c:2182:34: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 4 has type 'phys_addr_t' {aka 'unsigned int'} [-Wformat=]
->     2182 |                                  "GPMC CS %d end cannot be greater than 0x%llx\n",
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.211-rc2
 
-Likewise.
+Lukas Bulwahn <lukas.bulwahn@gmail.com>
+    x86/Kconfig: Correct reference to MWINCHIP3D
 
->          |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    include/linux/dev_printk.h:19:22: note: in definition of macro 'dev_fmt'
->       19 | #define dev_fmt(fmt) fmt
->          |                      ^~~
->    drivers/memory/omap-gpmc.c:2181:25: note: in expansion of macro 'dev_info'
->     2181 |                         dev_info(&pdev->dev,
->          |                         ^~~~~~~~
->    drivers/memory/omap-gpmc.c:2182:78: note: format string is defined here
->     2182 |                                  "GPMC CS %d end cannot be greater than 0x%llx\n",
->          |                                                                           ~~~^
->          |                                                                              |
->          |                                                                              long long unsigned int
->          |                                                                           %x
+Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+    powerpc/bpf: Fix BPF_MOD when imm == 1
 
-Gr{oetje,eeting}s,
+Jamie Iles <quic_jiles@quicinc.com>
+    i2c: acpi: fix resource leak in reconfiguration device addition
 
-                        Geert
+Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
+    i40e: Fix freeing of uninitialized misc IRQ vector
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Jiri Benc <jbenc@redhat.com>
+    i40e: fix endless loop under rtnl
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Eric Dumazet <edumazet@google.com>
+    rtnetlink: fix if_nlmsg_stats_size() under estimation
+
+Yang Yingliang <yangyingliang@huawei.com>
+    drm/nouveau/debugfs: fix file release memory leak
+
+Eric Dumazet <edumazet@google.com>
+    netlink: annotate data races around nlk->bound
+
+Sean Anderson <sean.anderson@seco.com>
+    net: sfp: Fix typo in state machine debug string
+
+Eric Dumazet <edumazet@google.com>
+    net: bridge: use nla_total_size_64bit() in br_get_linkxstats_size()
+
+Oleksij Rempel <o.rempel@pengutronix.de>
+    ARM: imx6: disable the GIC CPU interface before calling stby-poweroff sequence
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    ptp_pch: Load module automatically if ID matches
+
+Pali Rohár <pali@kernel.org>
+    powerpc/fsl/dts: Fix phy-connection-type for fm1mac3
+
+Eric Dumazet <edumazet@google.com>
+    net_sched: fix NULL deref in fifo_set_limit()
+
+Pavel Skripkin <paskripkin@gmail.com>
+    phy: mdio: fix memory leak
+
+Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
+    bpf: Fix integer overflow in prealloc_elems_and_freelist()
+
+Johan Almbladh <johan.almbladh@anyfinetworks.com>
+    bpf, arm: Fix register clobbering in div/mod implementation
+
+Max Filippov <jcmvbkbc@gmail.com>
+    xtensa: call irqchip_init only when CONFIG_USE_OF is selected
+
+Piotr Krysiuk <piotras@gmail.com>
+    bpf, mips: Validate conditional branch offsets
+
+David Heidelberg <david@ixit.cz>
+    ARM: dts: qcom: apq8064: use compatible which contains chipid
+
+Roger Quadros <rogerq@kernel.org>
+    ARM: dts: omap3430-sdp: Fix NAND device node
+
+Juergen Gross <jgross@suse.com>
+    xen/balloon: fix cancelled balloon action
+
+Trond Myklebust <trond.myklebust@hammerspace.com>
+    nfsd4: Handle the NFSv4 READDIR 'dircount' hint being zero
+
+Zheng Liang <zhengliang6@huawei.com>
+    ovl: fix missing negative dentry check in ovl_rename()
+
+Jan Beulich <jbeulich@suse.com>
+    xen/privcmd: fix error handling in mmap-resource processing
+
+Johan Hovold <johan@kernel.org>
+    USB: cdc-acm: fix break reporting
+
+Johan Hovold <johan@kernel.org>
+    USB: cdc-acm: fix racy tty buffer accesses
+
+Ben Hutchings <ben@decadent.org.uk>
+    Partially revert "usb: Kconfig: using select for USB_COMMON dependency"
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                    |  4 +-
+ arch/arm/boot/dts/omap3430-sdp.dts          |  2 +-
+ arch/arm/boot/dts/qcom-apq8064.dtsi         |  3 +-
+ arch/arm/mach-imx/pm-imx6.c                 |  2 +
+ arch/arm/net/bpf_jit_32.c                   | 19 ++++++++++
+ arch/mips/net/bpf_jit.c                     | 57 ++++++++++++++++++++++-------
+ arch/powerpc/boot/dts/fsl/t1023rdb.dts      |  2 +-
+ arch/powerpc/net/bpf_jit_comp64.c           | 10 ++++-
+ arch/x86/Kconfig                            |  2 +-
+ arch/xtensa/kernel/irq.c                    |  2 +-
+ drivers/gpu/drm/nouveau/nouveau_debugfs.c   |  1 +
+ drivers/i2c/i2c-core-acpi.c                 |  1 +
+ drivers/net/ethernet/intel/i40e/i40e_main.c |  5 ++-
+ drivers/net/phy/mdio_bus.c                  |  7 ++++
+ drivers/net/phy/sfp.c                       |  2 +-
+ drivers/ptp/ptp_pch.c                       |  1 +
+ drivers/usb/Kconfig                         |  3 +-
+ drivers/usb/class/cdc-acm.c                 |  8 ++++
+ drivers/xen/balloon.c                       | 21 ++++++++---
+ drivers/xen/privcmd.c                       |  7 ++--
+ fs/nfsd/nfs4xdr.c                           | 19 ++++++----
+ fs/overlayfs/dir.c                          | 10 +++--
+ kernel/bpf/stackmap.c                       |  3 +-
+ net/bridge/br_netlink.c                     |  2 +-
+ net/core/rtnetlink.c                        |  2 +-
+ net/netlink/af_netlink.c                    | 14 +++++--
+ net/sched/sch_fifo.c                        |  3 ++
+ 27 files changed, 156 insertions(+), 56 deletions(-)
+
+
