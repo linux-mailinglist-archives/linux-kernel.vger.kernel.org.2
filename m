@@ -2,120 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BE4429AB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2D9429AB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhJLBFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:05:44 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14326 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhJLBFm (ORCPT
+        id S232265AbhJLBGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:06:53 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:35611 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhJLBGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:05:42 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HSy3G6HCHz8ypD;
-        Tue, 12 Oct 2021 08:58:50 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 12 Oct 2021 09:03:39 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Tue, 12 Oct 2021 09:03:39 +0800
-Message-ID: <3796d319-10a9-9721-f300-44a28f1f7507@huawei.com>
-Date:   Tue, 12 Oct 2021 09:03:38 +0800
+        Mon, 11 Oct 2021 21:06:51 -0400
+Received: by mail-ot1-f41.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so6001602ott.2;
+        Mon, 11 Oct 2021 18:04:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LQhuTohxiMBS7vgNzsE16/ddOgS0nDCEvrxLWN9UJbU=;
+        b=o/TPWAfSA98O9bme+OxYfnz/qgLCg1HIXG0eTeEqYMaxkmExDc/BsgoWNrn4U/lzdO
+         6t9B9BBxrhCXrNwtBV3BFhpu89aWMhRbggGuRFrHvVdqwJICvNQfX/HIyUsKMwrJecfb
+         3MMrp82rizhMpypMZg3g2cMukEwoBEBEJm5dwypnZ/elASYwp95BUTOJ4d18b4sHhw6Q
+         rmf8mVGHZfxXgiWKjftZ3P6hHJb+qZSMNsi7mIunRGVNkRkLA1jm2XTyZnqTS0ovsqUA
+         gtFvLgB+PS/tgNG7eWjDzSnjxhz9+A76v2JH5LDfvplXJEyuOV0bnbb40um/FesRuoIA
+         Ztuw==
+X-Gm-Message-State: AOAM531IcuwuFKMIyDKhEIRFtMuY9OgW0q6OzQ+D9BEGZFrYL9Xo1fmr
+        GuHyQnfRg0Tdm5LtNeJR8Q==
+X-Google-Smtp-Source: ABdhPJzlgJahdsMtNXbZ+/xje5QalLPp9GMiSr8yI4Kgx1H7ZqWAJXJCmElJKP+v3mOFiuKde/nUjg==
+X-Received: by 2002:a9d:5d15:: with SMTP id b21mr23336948oti.356.1634000690716;
+        Mon, 11 Oct 2021 18:04:50 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id c9sm2150812ots.30.2021.10.11.18.04.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 18:04:49 -0700 (PDT)
+Received: (nullmailer pid 1510904 invoked by uid 1000);
+        Tue, 12 Oct 2021 01:04:49 -0000
+Date:   Mon, 11 Oct 2021 20:04:49 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chukun Pan <amadeus@jmu.edu.cn>
+Cc:     Kyungmin Park <kyungmin.park@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lin Huang <hl@rock-chips.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: devfreq: rk3399_dmc: fix clocks in example
+Message-ID: <YWTfMaBMrKeXTy/x@robh.at.kernel.org>
+References: <20211001150024.18672-1-amadeus@jmu.edu.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: mm/kasan/init.c:282:20: error: redefinition of
- 'kasan_populate_early_vm_area_shadow'
-Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-CC:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-References: <CA+G9fYv1Vbc-Y_czipb-z1bG=9axE4R1BztKGqWz-yy=+Wcsqw@mail.gmail.com>
- <CA+G9fYtD2EFu7-j1wPLCiu2yVpZb_wObXXXebKNSW5o4gh9vgA@mail.gmail.com>
- <20211011135345.9506437ee2504a81054dc06f@linux-foundation.org>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <20211011135345.9506437ee2504a81054dc06f@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001150024.18672-1-amadeus@jmu.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/10/12 4:53, Andrew Morton wrote:
-> On Mon, 11 Oct 2021 18:12:44 +0530 Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+On Fri, 01 Oct 2021 23:00:24 +0800, Chukun Pan wrote:
+> The clocks in the example use 'SCLK_DDRCLK', which does not exist in
+> the rk3399-cru.h, correct it to 'SCLK_DDRC'.
 > 
->> + Andrew Morton <akpm@linux-foundation.org>
->>
->> On Mon, 11 Oct 2021 at 17:08, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->>>
->>> Regression found on x86_64 gcc-11 built with KASAN enabled.
->>> Following build warnings / errors reported on linux next 20211011.
->>>
->>> metadata:
->>>      git_describe: next-20211011
->>>      git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->>>      git_short_log: d3134eb5de85 (\"Add linux-next specific files for 20211011\")
->>>      target_arch: x86_64
->>>      toolchain: gcc-11
->>>
->>> build error :
->>> --------------
->>> mm/kasan/init.c:282:20: error: redefinition of
->>> 'kasan_populate_early_vm_area_shadow'
->>>    282 | void __init __weak kasan_populate_early_vm_area_shadow(void *start,
->>>        |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>> In file included from include/linux/mm.h:34,
->>>                   from include/linux/memblock.h:13,
->>>                   from mm/kasan/init.c:9:
->>> include/linux/kasan.h:463:20: note: previous definition of
->>> 'kasan_populate_early_vm_area_shadow' with type 'void(void *, long
->>> unsigned int)'
->>>    463 | static inline void kasan_populate_early_vm_area_shadow(void *start,
->>>        |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>> make[3]: *** [scripts/Makefile.build:288: mm/kasan/init.o] Error 1
->>> make[3]: Target '__build' not remade because of errors.
->>>
->>>
->>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>>
->>> build link:
->>> -----------
->>> https://builds.tuxbuild.com/1zLv2snHfZN8QV01yA9MB8NhUZt/build.log
->>>
->>> build config:
->>> -------------
->>> https://builds.tuxbuild.com/1zLv2snHfZN8QV01yA9MB8NhUZt/config
->>>
->>> # To install tuxmake on your system globally
->>> # sudo pip3 install -U tuxmake
->>> tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-11
->>> --kconfig defconfig --kconfig-add
->>> https://builds.tuxbuild.com/1zLv2snHfZN8QV01yA9MB8NhUZt/config
+> Ref: commit 7fbdfcd68783 ("clk: rockchip: add SCLK_DDRC id for rk3399 ddrc")
+> Fixes: c1ceb8f7c167 ("Documentation: bindings: add dt documentation for rk3399 dmc")
+> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+> ---
+>  Documentation/devicetree/bindings/devfreq/rk3399_dmc.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Presumably "kasan: arm64: fix pcpu_page_first_chunk crash with
-> KASAN_VMALLOC".  Let's cc Kefeng.
 
-Yes, I send a fix patch, and reply this mail, see
-https://lore.kernel.org/linux-mm/5077aa7e-0167-33b6-35f0-0ea7df8f2375@huawei.com/
-
-> 
-> .
-> 
+Applied, thanks!
