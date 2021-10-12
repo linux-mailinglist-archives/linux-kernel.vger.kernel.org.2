@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8CD42AC14
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34EC42AC0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbhJLShg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
+        id S234085AbhJLSg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234204AbhJLShe (ORCPT
+        with ESMTP id S234040AbhJLSg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:37:34 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00235C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:34:55 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9c93:91ff:d58:ecfb])
-        by baptiste.telenet-ops.be with bizsmtp
-        id 56ZW260090KW32a016ZWZ1; Tue, 12 Oct 2021 20:33:32 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1maMag-004RTn-3r; Tue, 12 Oct 2021 20:33:30 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1maMaf-002j5T-Mg; Tue, 12 Oct 2021 20:33:29 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v7 03/21] auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
-Date:   Tue, 12 Oct 2021 20:33:09 +0200
-Message-Id: <20211012183327.649865-4-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211012183327.649865-1-geert@linux-m68k.org>
-References: <20211012183327.649865-1-geert@linux-m68k.org>
+        Tue, 12 Oct 2021 14:36:57 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC617C061745
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:33:41 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id w10so35731ilc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 11:33:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=trSs1PSgTrmZz2ICAnT37i8p7I84Yyq/W/0tnWDyux0=;
+        b=ncROOvRHEYZruIaKhKZhc+uH94FSS0k95F93uF3y5KwPz/dq+bFik/9HtiScuq32fn
+         r7UVfixVQsDwrj9/eFi4pMpkjmIqDH9HnnMFZhxlPizCBdetR3qnL0Au1gSaUsyWhvfV
+         /jV5uv6eaDelQ6UXEZCNyZcxz+tiWce4Eh8jTsJR6p4K5RwnWebtNJw1xsiq8b/gFivy
+         1rGJf0zKRRbLLmzOlcMzL14fsrAnVtOIA8n94rZzEuwblxk0083FQHIyMyJx7iZe5nlD
+         +PDZQHKWkbczN+P82E5g0axZBQxOKWZgKP8Wu9a8fO/OjVR52bvNSSgZUsMtgL7CT3/g
+         qHcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=trSs1PSgTrmZz2ICAnT37i8p7I84Yyq/W/0tnWDyux0=;
+        b=Lj8WAWS+H3IJ6AWTjHmu4aAW3E4KjYnD9POEoXzBk6vLtmF598NK082YQTuUdAA/r6
+         kzvwyEQLmV42A3sOhcFrZvLyY8TrhLPM8Td4GLgCYVF3UDYfBRBPbzkF7pEUNKb/N3OZ
+         vj39qZqkg7CRQHRDN8iFVFiNvJSrWWf7kPBZn7ljTAgitzUvmZIQG9LEZ39wA5Ax2Y2G
+         Zk0yR6lwfj+fRpGAMQjmwXC3C3k1oxIVq019N5yQqtVPmS4Op8RgS2e4JXG7hhbhKTdz
+         Wd5J6PSiLiKMxL6CZXYyh3fGXWfavcn17g/6E5Y/tVg9Pr16UbR9RrbYDJ41AuuNCncd
+         fleA==
+X-Gm-Message-State: AOAM533o2Vpf3zQDxToNTfKKTwTBHD9ptf9UwGcgYoTF0QZvpevyi6JE
+        PZ3yeNx2qQVVePEAYjvi4iVdvNANaB8=
+X-Google-Smtp-Source: ABdhPJxUgsLiTmbWo/GdNGFD/wKiKSwVYC37UlgporueRf8gL+D+acOhhI5sAHSuoCH8tSr50s+qWQ==
+X-Received: by 2002:a05:6e02:1521:: with SMTP id i1mr26107851ilu.16.1634063610569;
+        Tue, 12 Oct 2021 11:33:30 -0700 (PDT)
+Received: from samwise.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id x5sm2257999ioh.23.2021.10.12.11.33.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 11:33:30 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH 4/5] dyndbg: vpr-info on remove-module complete, not starting
+Date:   Tue, 12 Oct 2021 12:33:09 -0600
+Message-Id: <20211012183310.1016678-5-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211012183310.1016678-1-jim.cromie@gmail.com>
+References: <20211012183310.1016678-1-jim.cromie@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While writing an empty string to a device attribute is a no-op, and thus
-does not need explicit safeguards, the user can still write a single
-newline to an attribute file:
+On qemu --smp 3 runs, remove-module can get called 3 times.
+So don't print on entry; instead print "removed" after entry is
+found and removed, so just once.
 
-    echo > .../message
-
-If that happens, img_ascii_lcd_display() trims the newline, yielding an
-empty string, and causing an infinite loop in img_ascii_lcd_scroll().
-
-Fix this by adding a check for empty strings.  Clear the display in case
-one is encountered.
-
-Fixes: 0cad855fbd083ee5 ("auxdisplay: img-ascii-lcd: driver for simple ASCII LCD displays")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
-Untested with img-ascii-lcd, but triggered with my initial version of
-linedisp.
+ lib/dynamic_debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-v7:
-  - No changes,
-
-v6:
-  - No changes,
-
-v5:
-  - No changes,
-
-v4:
-  - No changes,
-
-v3:
-  - No changes,
-
-v2:
-  - No changes.
----
- drivers/auxdisplay/img-ascii-lcd.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
-index 1cce409ce5cacbc8..e33ce0151cdfd150 100644
---- a/drivers/auxdisplay/img-ascii-lcd.c
-+++ b/drivers/auxdisplay/img-ascii-lcd.c
-@@ -280,6 +280,16 @@ static int img_ascii_lcd_display(struct img_ascii_lcd_ctx *ctx,
- 	if (msg[count - 1] == '\n')
- 		count--;
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index 75e702223730..18235de37f25 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -1030,8 +1030,6 @@ int ddebug_remove_module(const char *mod_name)
+ 	struct ddebug_table *dt, *nextdt;
+ 	int ret = -ENOENT;
  
-+	if (!count) {
-+		/* clear the LCD */
-+		devm_kfree(&ctx->pdev->dev, ctx->message);
-+		ctx->message = NULL;
-+		ctx->message_len = 0;
-+		memset(ctx->curr, ' ', ctx->cfg->num_chars);
-+		ctx->cfg->update(ctx);
-+		return 0;
-+	}
-+
- 	new_msg = devm_kmalloc(&ctx->pdev->dev, count + 1, GFP_KERNEL);
- 	if (!new_msg)
- 		return -ENOMEM;
+-	v2pr_info("removing module <%s>\n", mod_name);
+-
+ 	mutex_lock(&ddebug_lock);
+ 	list_for_each_entry_safe(dt, nextdt, &ddebug_tables, link) {
+ 		if (dt->mod_name == mod_name) {
+@@ -1041,6 +1039,8 @@ int ddebug_remove_module(const char *mod_name)
+ 		}
+ 	}
+ 	mutex_unlock(&ddebug_lock);
++	if (!ret)
++		v2pr_info("removed module <%s>\n", mod_name);
+ 	return ret;
+ }
+ 
 -- 
-2.25.1
+2.31.1
 
