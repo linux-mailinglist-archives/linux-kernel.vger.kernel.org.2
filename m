@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CAD42AE45
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6957E42AE47
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235206AbhJLU70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:59:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34086 "EHLO mail.kernel.org"
+        id S230467AbhJLU7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:59:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhJLU7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:59:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FD1360720;
-        Tue, 12 Oct 2021 20:57:21 +0000 (UTC)
+        id S232246AbhJLU73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 16:59:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD65060D07;
+        Tue, 12 Oct 2021 20:57:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634072242;
-        bh=jEFMjgQZz4+KQgEEsrewnMdWOVsCrfviXlFb0Khr1V0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eLVWLQhf46i7fgHPRfTkTmgQKmBxG6sfZKCygPMk17kjOfKkjjQATw29r2Ru6VFr0
-         JH3C+bGeN5BueOQz26IkOy9FWTI/liQCCEEdbrzH22Vb9iraDBI+h/ulpUUNOxEa6f
-         qy1HQtZuMXGX5UnmlkYAJ+Pk0YfpaGEvckUCMe6RR2kc/yq19mbkE/ivQpc3s/mEO4
-         NleKMPSudLMxL+GLv2A8KDF+MCsn2qBjBxdlAVOPlOz12TecJZQs/HBood6S6lKN80
-         PGGzdFVgtM0jO9RgaspDoQZpV3KJxyz5Eez0mOlpID9juADUZ+UnwGg49JdDvgJ2nS
-         8Y88eNHnqjn+g==
+        s=k20201202; t=1634072247;
+        bh=3PqXsZtkDqPckt18caPVvmKI6pnv8yKy72GqUMz8y1g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=W2HM9D7RGLVEbsY3gjf06LpPghM/KDfSHfShWw7nUtGX6r9M5ND9GyYPQpBWKbclN
+         CZiEBOMh5sMmb3O9PU4sqPANfvmuml0QAqufmasB+xM43RrZ9zuOzWMLmo/teEEdTI
+         qNopwQ3RSHd6qOTFqY+yLoqZw/n6qAXHbWm3XcYWeNFX6mzJ0SW+RqNCh7W6DMcdxS
+         mc2K+oW6sPQVskYSxcj08xLEfcEI8Ynnty4jWOkLpWTpSMTdH+GV+WZNx1cuoOP2Zu
+         9Bd/YimBc5BwUvYBN2PUreTTbDq+W4CLndJy53qMaYSIPzKvZm9WyF4RLaUFoQjtIT
+         sxfReQ5HVavQQ==
 From:   SeongJae Park <sj@kernel.org>
 To:     akpm@linux-foundation.org
 Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
@@ -32,95 +32,220 @@ Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
         rientjes@google.com, shakeelb@google.com, shuah@kernel.org,
         linux-damon@amazon.com, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/7] DAMON: Support Physical Memory Address Space Monitoring
-Date:   Tue, 12 Oct 2021 20:57:04 +0000
-Message-Id: <20211012205711.29216-1-sj@kernel.org>
+Subject: [PATCH 1/7] mm/damon/dbgfs: Allow users to set initial monitoring target regions
+Date:   Tue, 12 Oct 2021 20:57:05 +0000
+Message-Id: <20211012205711.29216-2-sj@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211012205711.29216-1-sj@kernel.org>
+References: <20211012205711.29216-1-sj@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes from Previous Version (RFC[1])
-======================================
+Some 'damon-dbgfs' users would want to monitor only a part of the entire
+virtual memory address space.  The program interface users in the kernel
+space could use '->before_start()' callback or set the regions inside
+the context struct as they want, but 'damon-dbgfs' users cannot.
 
-- Rebase on latest -mm tree
-- Remove page granularity idleness monitoring part
+For the reason, this commit introduces a new debugfs file called
+'init_region'.  'damon-dbgfs' users can specify which initial monitoring
+target address regions they want by writing special input to the file.
+The input should describe each region in each line in the below form:
 
-[1] https://lore.kernel.org/linux-mm/20201216094221.11898-1-sjpark@amazon.com/
+    <pid> <start address> <end address>
 
-Introduction
-============
+Note that the regions will be updated to cover entire memory mapped
+regions after a 'regions update interval' is passed.  If you want the
+regions to not be updated after the initial setting, you could set the
+interval as a very long time, say, a few decades.
 
-DAMON is currently supporting only virtual address spaces monitoring.  It can
-be easily extended for various use cases and address spaces by configuring its
-monitoring primitives layer to use appropriate primitives implementations,
-though.  This patchset implements monitoring primitives for the physical
-address space monitoring using the structure.
+Signed-off-by: SeongJae Park <sj@kernel.org>
+---
+ mm/damon/dbgfs.c | 156 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 154 insertions(+), 2 deletions(-)
 
-Baseline and Complete Git Trees
-===============================
-
-The patches are based on the latest -mm tree
-(v5.15-rc4-mmots-2021-10-10-18-34)[1].  You can also clone the complete git
-tree:
-
-    $ git clone git://git.kernel.org/pub/scm/linux/kernel/git/sj/linux.git -b damon-paddr/patches/v1
-
-The web is also available:
-https://git.kernel.org/pub/scm/linux/kernel/git/sj/linux.git/tag/?h=damon-paddr/patches/v1
-
-[1] https://github.com/hnaz/linux-mm/tree/v5.15-rc4-mmots-2021-10-10-18-34
-
-Sequence of Patches
-===================
-
-The first 3 patches allow the user space users manually set the monitoring
-regions.  The 1st patch implements the feature in the 'damon-dbgfs'.  Then,
-patches for adding a unit tests (the 2nd patch) and updating the documentation
-(the 3rd patch) follow.
-
-Following 4 patches implement the physical address space monitoring primitives.
-The 4th patch makes some primitive functions for the virtual address spaces
-primitives reusable.  The 5th patch implements the physical address space
-monitoring primitives.  The 6th patch links the primitives to the
-'damon-dbgfs'.  Finally, 7th patch documents this new features.
-
-Patch History
-=============
-
-Changes from RFC v10
-(https://lore.kernel.org/linux-mm/20201216094221.11898-1-sjpark@amazon.com/)
-- Rebase on latest -mm tree
-- Remove page granularity idleness monitoring part
-
-Please refer to RFC v10 for previous history.
-
-SeongJae Park (7):
-  mm/damon/dbgfs: Allow users to set initial monitoring target regions
-  mm/damon/dbgfs-test: Add a unit test case for 'init_regions'
-  Docs/admin-guide/mm/damon: Document 'init_regions' feature
-  mm/damon/vaddr: Separate commonly usable functions
-  mm/damon: Implement primitives for physical address space monitoring
-  mm/damon/dbgfs: Support physical memory monitoring
-  Docs/DAMON: Document physical memory monitoring support
-
- Documentation/admin-guide/mm/damon/usage.rst |  62 ++++-
- Documentation/vm/damon/design.rst            |  29 ++-
- Documentation/vm/damon/faq.rst               |   5 +-
- include/linux/damon.h                        |  10 +
- mm/damon/Kconfig                             |  10 +-
- mm/damon/Makefile                            |   3 +-
- mm/damon/dbgfs-test.h                        |  54 +++++
- mm/damon/dbgfs.c                             | 177 ++++++++++++++-
- mm/damon/paddr.c                             | 224 +++++++++++++++++++
- mm/damon/prmtv-common.c                      |  88 ++++++++
- mm/damon/prmtv-common.h                      |  17 ++
- mm/damon/vaddr.c                             |  87 +------
- 12 files changed, 655 insertions(+), 111 deletions(-)
- create mode 100644 mm/damon/paddr.c
- create mode 100644 mm/damon/prmtv-common.c
- create mode 100644 mm/damon/prmtv-common.h
-
+diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+index 28d6abf27763..1cce53cd241d 100644
+--- a/mm/damon/dbgfs.c
++++ b/mm/damon/dbgfs.c
+@@ -394,6 +394,152 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
+ 	return ret;
+ }
+ 
++static ssize_t sprint_init_regions(struct damon_ctx *c, char *buf, ssize_t len)
++{
++	struct damon_target *t;
++	struct damon_region *r;
++	int written = 0;
++	int rc;
++
++	damon_for_each_target(t, c) {
++		damon_for_each_region(r, t) {
++			rc = scnprintf(&buf[written], len - written,
++					"%lu %lu %lu\n",
++					t->id, r->ar.start, r->ar.end);
++			if (!rc)
++				return -ENOMEM;
++			written += rc;
++		}
++	}
++	return written;
++}
++
++static ssize_t dbgfs_init_regions_read(struct file *file, char __user *buf,
++		size_t count, loff_t *ppos)
++{
++	struct damon_ctx *ctx = file->private_data;
++	char *kbuf;
++	ssize_t len;
++
++	kbuf = kmalloc(count, GFP_KERNEL);
++	if (!kbuf)
++		return -ENOMEM;
++
++	mutex_lock(&ctx->kdamond_lock);
++	if (ctx->kdamond) {
++		mutex_unlock(&ctx->kdamond_lock);
++		len = -EBUSY;
++		goto out;
++	}
++
++	len = sprint_init_regions(ctx, kbuf, count);
++	mutex_unlock(&ctx->kdamond_lock);
++	if (len < 0)
++		goto out;
++	len = simple_read_from_buffer(buf, count, ppos, kbuf, len);
++
++out:
++	kfree(kbuf);
++	return len;
++}
++
++static int add_init_region(struct damon_ctx *c,
++			 unsigned long target_id, struct damon_addr_range *ar)
++{
++	struct damon_target *t;
++	struct damon_region *r, *prev;
++	unsigned long id;
++	int rc = -EINVAL;
++
++	if (ar->start >= ar->end)
++		return -EINVAL;
++
++	damon_for_each_target(t, c) {
++		id = t->id;
++		if (targetid_is_pid(c))
++			id = (unsigned long)pid_vnr((struct pid *)id);
++		if (id == target_id) {
++			r = damon_new_region(ar->start, ar->end);
++			if (!r)
++				return -ENOMEM;
++			damon_add_region(r, t);
++			if (damon_nr_regions(t) > 1) {
++				prev = damon_prev_region(r);
++				if (prev->ar.end > r->ar.start) {
++					damon_destroy_region(r, t);
++					return -EINVAL;
++				}
++			}
++			rc = 0;
++		}
++	}
++	return rc;
++}
++
++static int set_init_regions(struct damon_ctx *c, const char *str, ssize_t len)
++{
++	struct damon_target *t;
++	struct damon_region *r, *next;
++	int pos = 0, parsed, ret;
++	unsigned long target_id;
++	struct damon_addr_range ar;
++	int err;
++
++	damon_for_each_target(t, c) {
++		damon_for_each_region_safe(r, next, t)
++			damon_destroy_region(r, t);
++	}
++
++	while (pos < len) {
++		ret = sscanf(&str[pos], "%lu %lu %lu%n",
++				&target_id, &ar.start, &ar.end, &parsed);
++		if (ret != 3)
++			break;
++		err = add_init_region(c, target_id, &ar);
++		if (err)
++			goto fail;
++		pos += parsed;
++	}
++
++	return 0;
++
++fail:
++	damon_for_each_target(t, c) {
++		damon_for_each_region_safe(r, next, t)
++			damon_destroy_region(r, t);
++	}
++	return err;
++}
++
++static ssize_t dbgfs_init_regions_write(struct file *file,
++					  const char __user *buf, size_t count,
++					  loff_t *ppos)
++{
++	struct damon_ctx *ctx = file->private_data;
++	char *kbuf;
++	ssize_t ret = count;
++	int err;
++
++	kbuf = user_input_str(buf, count, ppos);
++	if (IS_ERR(kbuf))
++		return PTR_ERR(kbuf);
++
++	mutex_lock(&ctx->kdamond_lock);
++	if (ctx->kdamond) {
++		ret = -EBUSY;
++		goto unlock_out;
++	}
++
++	err = set_init_regions(ctx, kbuf, ret);
++	if (err)
++		ret = err;
++
++unlock_out:
++	mutex_unlock(&ctx->kdamond_lock);
++	kfree(kbuf);
++	return ret;
++}
++
+ static ssize_t dbgfs_kdamond_pid_read(struct file *file,
+ 		char __user *buf, size_t count, loff_t *ppos)
+ {
+@@ -445,6 +591,12 @@ static const struct file_operations target_ids_fops = {
+ 	.write = dbgfs_target_ids_write,
+ };
+ 
++static const struct file_operations init_regions_fops = {
++	.open = damon_dbgfs_open,
++	.read = dbgfs_init_regions_read,
++	.write = dbgfs_init_regions_write,
++};
++
+ static const struct file_operations kdamond_pid_fops = {
+ 	.open = damon_dbgfs_open,
+ 	.read = dbgfs_kdamond_pid_read,
+@@ -453,9 +605,9 @@ static const struct file_operations kdamond_pid_fops = {
+ static void dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
+ {
+ 	const char * const file_names[] = {"attrs", "schemes", "target_ids",
+-		"kdamond_pid"};
++		"init_regions", "kdamond_pid"};
+ 	const struct file_operations *fops[] = {&attrs_fops, &schemes_fops,
+-		&target_ids_fops, &kdamond_pid_fops};
++		&target_ids_fops, &init_regions_fops, &kdamond_pid_fops};
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(file_names); i++)
 -- 
 2.17.1
 
