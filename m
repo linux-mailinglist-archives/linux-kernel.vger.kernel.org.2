@@ -2,180 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC61D42AC4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13EB842AC54
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 20:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235167AbhJLSq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 14:46:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57634 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234995AbhJLSqz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:46:55 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634064033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KW+IJ7OIyygtO/OUib0E/8GQRDwfz133sFxAz7WGAxc=;
-        b=if4AgnZt3vh78PzErZ4D+P8AL4EAGFPgHqgITlTOjCtWExcVjyr+WRGutjEkhGdAXGI3Tf
-        8bEBavF4jCqR92er3KEb/7PR2JGmzw08HTtArGN92IcY6YL9SspWR1FSeWWYKAOoSgq3n/
-        B+rdjCvnVfjy3FbKkzohq9r8ONHxRFKo00fcuLeNlFbxeirt085rcheR4Czi1nPKYGrTYw
-        NvtDZB/JQ26kslfqDrVp5pIWf/fnUFCVJ+NjFOGATbTCznkiEaI/8/wxuNGvT4vbRqDl0B
-        Dx68Uwly/S5e6/4G0q7WeY6B+IrBbLld+JdO8KyWv6UWmNWnpXWlLt9bA1kpzw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634064033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KW+IJ7OIyygtO/OUib0E/8GQRDwfz133sFxAz7WGAxc=;
-        b=Kd4INlPzpimcW+3qnVdzxma4uFCdRF49G8PXqO/bBZxtq+FMdI0w2Q1OxHLA2OBChJNnI3
-        5w81b0QJQyGwkkBw==
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org
-Subject: [patch V2 16/31] x86/fpu: Replace KVMs home brewed FPU copy to user
-In-Reply-To: <87fst6b0f5.ffs@tglx>
-References: <20211011215813.558681373@linutronix.de>
- <20211011223611.249593446@linutronix.de>
- <0d222978-014a-cdcb-f8aa-5b3179cb0809@redhat.com> <87fst6b0f5.ffs@tglx>
-Date:   Tue, 12 Oct 2021 20:40:32 +0200
-Message-ID: <87zgre9jdr.ffs@tglx>
+        id S235437AbhJLSte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:49:34 -0400
+Received: from relay.sw.ru ([185.231.240.75]:43718 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233972AbhJLStd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 14:49:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=64IcsFb8bBS4pFgFI9KVjfapZy7rEeNKQF8dCkvviYY=; b=pcmeKt+OWhafIWGl+
+        Rsq0UqWHt6l2z4rGEpWKXORZXiSDMKTtmftnTOedW5rwjcVI2qepA2vleNRBTivfqynFbNdjJVz9i
+        rxsu0SoUkl2/uSmisuOWf21E9oDhshP6OrjfrNC1n8SV04Qxku1PBM1OKoscx4JNdBmVKnrZn6siY
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1maMml-005pmF-PE; Tue, 12 Oct 2021 21:45:59 +0300
+Subject: Re: [PATCH mm v3] memcg: enable memory accounting in
+ __alloc_pages_bulk
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
+ <60df0efd-f458-a13c-7c89-749bdab21d1d@virtuozzo.com>
+ <YWWrai/ChIgycgCo@dhcp22.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <3467508f-0f0f-fc28-c973-ad9f0eeb9818@virtuozzo.com>
+Date:   Tue, 12 Oct 2021 21:45:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YWWrai/ChIgycgCo@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to the copy from user function the FPU core has this already
-implemented with all bells and whistles.
+On 12.10.2021 18:36, Michal Hocko wrote:
+> On Tue 12-10-21 17:58:21, Vasily Averin wrote:
+>> Enable memory accounting for bulk page allocator.
+> 
+> ENOCHANGELOG
+>  
+> And I have to say I am not very happy about the solution. It adds a very
+> tricky code where it splits different charging steps apart.
+> 
+> Would it be just too inefficient to charge page-by-page once all pages
+> are already taken away from the pcp lists? This bulk should be small so
+> this shouldn't really cause massive problems. I mean something like
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index b37435c274cf..8bcd69195ef5 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5308,6 +5308,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  
+>  	local_unlock_irqrestore(&pagesets.lock, flags);
+>  
+> +	if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT)) {
+> +		/* charge pages here */
+> +	}
+> +
+>  	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+>  	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
+> 
 
-Get rid of the duplicated code and use the core functionality.
+In general it looks like we can do it.
 
-The memset(0) of the buffer is not required as it is already allocated
-with kzalloc() at the call site.
+We can traverse via filled page_array or page_list.
+For page_array we need to check is the page already accounted 
+(incoming array can contain some pages already, both in the beginning and in middle)
+For each taken page we can try to charge it.
+If it was charges successfully -- we will process next page in list/array.
+When charge fails we need to remove rest of pages from list/array and somehow release them. 
+At present I do not understand how to do it correctly -- perhaps just call free_page() ?
+Finally, we'll need to adjust nr_account and nr_populated properly.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: kvm@vger.kernel.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>
----
-V2: Add the missing xsave header assignment in the !XSAVE path
-    and explain the memset(0) removal in the changelog - Paolo
-    Rename the function and fix subject - Borislav
----
- arch/x86/include/asm/fpu/api.h |    1 
- arch/x86/kernel/fpu/core.c     |   18 +++++++++++++
- arch/x86/kvm/x86.c             |   56 ++---------------------------------------
- 3 files changed, 22 insertions(+), 53 deletions(-)
+I'll try to implement this tomorrow.
 
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -117,5 +117,6 @@ extern void fpu_init_fpstate_user(struct
- extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask);
- 
- extern int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *buf, u64 xcr0, u32 *pkru);
-+extern void fpu_copy_fpstate_to_kvm_uabi(struct fpu *fpu, void *buf, unsigned int size, u32 pkru);
- 
- #endif /* _ASM_X86_FPU_API_H */
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -175,6 +175,24 @@ void fpu_swap_kvm_fpu(struct fpu *save,
- }
- EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpu);
- 
-+void fpu_copy_fpstate_to_kvm_uabi(struct fpu *fpu, void *buf,
-+			       unsigned int size, u32 pkru)
-+{
-+	union fpregs_state *kstate = &fpu->state;
-+	union fpregs_state *ustate = buf;
-+	struct membuf mb = { .p = buf, .left = size };
-+
-+	if (cpu_feature_enabled(X86_FEATURE_XSAVE)) {
-+		__copy_xstate_to_uabi_buf(mb, &kstate->xsave, pkru,
-+					  XSTATE_COPY_XSAVE);
-+	} else {
-+		memcpy(&ustate->fxsave, &kstate->fxsave, sizeof(ustate->fxsave));
-+		/* Make it restorable on a XSAVE enabled host */
-+		ustate->xsave.header.xfeatures = XFEATURE_MASK_FPSSE;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(fpu_copy_fpstate_to_kvm_uabi);
-+
- int fpu_copy_kvm_uabi_to_fpstate(struct fpu *fpu, const void *buf, u64 xcr0,
- 				 u32 *vpkru)
- {
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4695,65 +4695,15 @@ static int kvm_vcpu_ioctl_x86_set_debugr
- 	return 0;
- }
- 
--static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
--{
--	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
--	u64 xstate_bv = xsave->header.xfeatures;
--	u64 valid;
--
--	/*
--	 * Copy legacy XSAVE area, to avoid complications with CPUID
--	 * leaves 0 and 1 in the loop below.
--	 */
--	memcpy(dest, xsave, XSAVE_HDR_OFFSET);
--
--	/* Set XSTATE_BV */
--	xstate_bv &= vcpu->arch.guest_supported_xcr0 | XFEATURE_MASK_FPSSE;
--	*(u64 *)(dest + XSAVE_HDR_OFFSET) = xstate_bv;
--
--	/*
--	 * Copy each region from the possibly compacted offset to the
--	 * non-compacted offset.
--	 */
--	valid = xstate_bv & ~XFEATURE_MASK_FPSSE;
--	while (valid) {
--		u32 size, offset, ecx, edx;
--		u64 xfeature_mask = valid & -valid;
--		int xfeature_nr = fls64(xfeature_mask) - 1;
--		void *src;
--
--		cpuid_count(XSTATE_CPUID, xfeature_nr,
--			    &size, &offset, &ecx, &edx);
--
--		if (xfeature_nr == XFEATURE_PKRU) {
--			memcpy(dest + offset, &vcpu->arch.pkru,
--			       sizeof(vcpu->arch.pkru));
--		} else {
--			src = get_xsave_addr(xsave, xfeature_nr);
--			if (src)
--				memcpy(dest + offset, src, size);
--		}
--
--		valid -= xfeature_mask;
--	}
--}
--
- static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
- 					 struct kvm_xsave *guest_xsave)
- {
- 	if (!vcpu->arch.guest_fpu)
- 		return;
- 
--	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
--		memset(guest_xsave, 0, sizeof(struct kvm_xsave));
--		fill_xsave((u8 *) guest_xsave->region, vcpu);
--	} else {
--		memcpy(guest_xsave->region,
--			&vcpu->arch.guest_fpu->state.fxsave,
--			sizeof(struct fxregs_state));
--		*(u64 *)&guest_xsave->region[XSAVE_HDR_OFFSET / sizeof(u32)] =
--			XFEATURE_MASK_FPSSE;
--	}
-+	fpu_copy_fpstate_to_kvm_uabi(vcpu->arch.guest_fpu, guest_xsave->region,
-+				     sizeof(guest_xsave->region),
-+				     vcpu->arch.pkru);
- }
- 
- static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
+Thank you,
+	Vasily Averin
