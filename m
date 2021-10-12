@@ -2,131 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289E242A5E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F1242A5F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236912AbhJLNlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
+        id S236956AbhJLNnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236821AbhJLNlo (ORCPT
+        with ESMTP id S236854AbhJLNnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:41:44 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270F0C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 06:39:43 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id r18so67187798wrg.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 06:39:43 -0700 (PDT)
+        Tue, 12 Oct 2021 09:43:41 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F63C061570;
+        Tue, 12 Oct 2021 06:41:39 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id y26so88692959lfa.11;
+        Tue, 12 Oct 2021 06:41:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=pwr4S1LGsyq6LS7IC4JlQZR0gOk5notLyIpNchi946Q=;
-        b=tK9iVXqDey9YSEkJ+qjEQoMoYG3Q+yPvTn0QMjolUFLgpwNQG2Kbfuvn3AKQWflRP3
-         k3XFBDIW1e/2dmJNWTVQLWuOo9sqFgOsV1OBwZRlzXTYDLpFdU4f9ykHp38yUULmIUQp
-         pdLnjA0dBKxfv6/4osweXzLDWkIP3kUeseU/V35qswDEahz/tbrzfqdmkp10J0Mxhzz+
-         SmmBm56eUahr3YFWwuDgFr2l0TMjtyghCi9nSHpPUjjejXr+wrEfX7ybHI4GGOUbHq8/
-         frof5wBNyIkGyb3WREZFnJaqFbnHlNEfatC4RffnWWfr+Sp9lro+4bey8iTYT6c5iEcw
-         /COw==
+        bh=jer+D64NwFqg3lswgRPWI11ACDNtMRc57uH44gzLJtg=;
+        b=euUG5Cl85wO2leafnMYDPaOFYjrD5EJsXk6bBLz4KQTDmfddtviBrNxH6ZE/W//Ogq
+         bcFZJskPNi1rzKGw0+ICAivGHQS4GqD5qORdoTYcrbWJ1Meh5W1FSrzMNyqEb4JaefuE
+         0O2kmSv8GcjU+xADdDhGzt4ug+d7lsJWG6F19UAIiTj2h4B5E0rwz1MWNQNdf4cBcXA6
+         ZhZu2gA+DTXk4gm4XGzzwFuG+ztx5swp5eKX86ooAOnfWrNaw76kvYitVF9PBxy+a+Hh
+         DWkk/WoFu129gwJ09TYqRingohCcFKqf+wrcMOvfaNavQgebwIRVJfHLNrbOxXy4SLAJ
+         tISA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pwr4S1LGsyq6LS7IC4JlQZR0gOk5notLyIpNchi946Q=;
-        b=wqyHCeIh83OreDaY2kqx0iu7QWA2S7JOpqc/mWjNJ66vmzTfw7XCu/l6GtoUSb9vmY
-         YfOp/CP7KZP96OJe9AVj/8m7L1a0hjg4GFG41nNJQrD+D5iSRygcsiq85SJjZcpz9Mh4
-         i5XjiAfyHFp33pTAwvRki32nf8P/y1MmoAP1/FfAYzrSwy6reTFQuPQfOqYg/iOYdH5a
-         EDKWkzxnRUDvyEco67dXVMC8EUSSVhjDCT3hmACKsP7QrtAKBMvs3m5v2az09Wwq+p7q
-         +seBfZAGWnmLwl0m05vWeBMAnNwly1+pnPpyhWNoud2YAS0XBvjrwRVG8iasgSSuNWLq
-         oGmg==
-X-Gm-Message-State: AOAM5305igUjT2kVRJvL0dhHak+VSQZwxBSlt8Fiwm8KfVfL6AATMUbH
-        LlTc5DFttzUaOtfu0AuEY3kI0/Uv0g6JcQ==
-X-Google-Smtp-Source: ABdhPJxQ1Gnp/p3bCIKdrXcPd8k+PI3uzFjtN6X6X7nwkZH8Q1Tjbk52kD+bGxnzgS6iNtoNS6Bi9g==
-X-Received: by 2002:a7b:c0d5:: with SMTP id s21mr5663269wmh.57.1634045981609;
-        Tue, 12 Oct 2021 06:39:41 -0700 (PDT)
-Received: from localhost.localdomain ([2001:861:44c0:66c0:4e93:9fa7:4d66:4f5c])
-        by smtp.gmail.com with ESMTPSA id w5sm10573455wrq.86.2021.10.12.06.39.40
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=jer+D64NwFqg3lswgRPWI11ACDNtMRc57uH44gzLJtg=;
+        b=3YrajwTFhM1UQlHrix2Hs94jTCoWgnhQWiuwO9Spps/HGnSsHeWnUnQ1os2E0fRDmf
+         lY1cmC+XU1CXRCnbzGMKZh+X6W0dwwPhqM6HWczAn0PhKIfUbkLXLid9VtKJrvxZv5sn
+         JHUPjL8yrRXPgFvJqgHAvGyPHLzhS98czn7bqIHi8YT+qymyIxNbOGWxvxDsF/cX9KBC
+         WXnl8WhB2T8OIaVJqwBhHc8d6NufScoDChtRK8IQzZ++lLQ8nxolLk9BofyyKwZq36X0
+         vo39+MZkA0ptnb57nlVkviISu6lgosG5QewTL74GhNg7CaDozrc+phaKM1mu1KOZqhhr
+         dMgQ==
+X-Gm-Message-State: AOAM5339tVYrEqjndgv7NHFqrjeCi64S0+vzEZYB9ZviNHZq1olBPZXk
+        +xX/v7ZDpOChIhNcktak1Ak=
+X-Google-Smtp-Source: ABdhPJw09X/T52DBQcqbij/xht30zGMRPqEKz9t98hER+srgMXNSFRn7x43yGUM7vmVB443vsV2dkg==
+X-Received: by 2002:a05:6512:3c88:: with SMTP id h8mr8189918lfv.128.1634046097813;
+        Tue, 12 Oct 2021 06:41:37 -0700 (PDT)
+Received: from stitch.. (80.71.140.73.ipv4.parknet.dk. [80.71.140.73])
+        by smtp.gmail.com with ESMTPSA id k16sm1033761lfo.219.2021.10.12.06.41.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 06:39:41 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     tomba@kernel.org
-Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, khilman@baylibre.com,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH] drm/omap: increase DSS5 max tv pclk to 192MHz
-Date:   Tue, 12 Oct 2021 15:39:39 +0200
-Message-Id: <20211012133939.2145462-1-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 12 Oct 2021 06:41:37 -0700 (PDT)
+Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+To:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 00/16] Basic StarFive JH7100 RISC-V SoC support
+Date:   Tue, 12 Oct 2021 15:40:11 +0200
+Message-Id: <20211012134027.684712-1-kernel@esmil.dk>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1828; i=narmstrong@baylibre.com;
- h=from:subject; bh=/IYAeOjznmFZKQtbyiNltXzbWx1SQSeSVXzsgL7Y0g0=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBhZY/kQXqtsmH1M5LcYhE+C3h0vv0cLeo6PfSgeey5
- U5lfFqSJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYWWP5AAKCRB33NvayMhJ0ULjD/
- 9i46pV2OVbqvg0OYjwURSFxSkXeze5h2UGKeEFVc8PrCVBu29GY5r5cm/37QzZTkev7b9nwKYuKj7s
- LP9/sE6WZF0UDRjOmAyquo6Rh01Hh+bfFcaLF0U5mklpnmy59qPw+m11uYcAvxbsh72r6sPCyWLSks
- Wuaa65aenK06yHvx6Gq/YYWOML/1xcK/HSpnfMzjkHOwvkJpBdT8LE+i/UsBgoOG0p4PveG36yA4N0
- sA2o1wqDOA4dIMvXj6NoG/dRwzzgUx1xnYlJIfBw+TCdSMja66I08mMzDwFHru9WvkJH5npk722cZ1
- Dkiy7wr0YLOmBCI9j5twVpH1bGmKqPbKZ165fFOJkDSqiJDe7uaR6rVoCTnnCniCPAmRPi9e+dsBtC
- 9YWC9bAcUA9rJD/S3sHRrfQT41Y98XeK2ZdqPiHfX00MT8tWMgeiQfGnXQh50Qe0WhoJx36jv8K/O5
- uzUu3fyUkHdDj0sorCg2cKS9SmnEmqBu3yc6lZaNPAy5zmemQUp894FmrPrgMCOrEdRVfBDSnlsVz4
- 1oFCBEG1lnNG/KFNqDrOnabaf+PSb849gbkWbIQj2mHKpJeRlaHyZJ8JlPENRZv/gJ8uYHeO5+bGLk
- yfJYPVIhghlOh57VX1ZwS+xsQbzv9rw8Goptklar80SmDswP3AxHOqcjqjIw==
-X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+This series adds support for the StarFive JH7100 RISC-V SoC. The SoC has
+many devices that needs non-coherent dma operations to work which isn't
+upstream yet[1], so this just adds basic support to boot up, get a
+serial console, blink an LED and reboot itself. Unlike the Allwinner D1
+this chip doesn't use any extra pagetable bits, but instead the DDR RAM
+appears twice in the memory map, with and without the cache.
 
-DSS5's maximum tv pclk rate (i.e. HDMI) is set to 186MHz, which comes
-from the TRM (DPLL_HDMI_CLK1 frequency must be lower than 186 MHz). To
-support DRA76's wide screen HDMI feature, we need to increase this
-maximum rate.
+The JH7100 is a test chip for the upcoming JH7110 and about 300 BeagleV
+Starlight Beta boards were sent out with them as part of a now cancelled
+BeagleBoard.org project. However StarFive has produced more of the
+JH7100s and more boards will be available[2] to buy. Hopefully before
+the end of the year.
 
-Testing shows that the PLL seems to work fine even with ~240MHz clocks,
-and even the HDMI output at that clock is stable enough for monitors to
-show a picture. This holds true for all DRA7 and AM5 SoCs (and probably
-also for OMAP5).
+This series is also available at
+https://github.com/esmil/linux/commits/starlight-minimal
+..but a more complete kernel including non-coherent dma operations can
+be found at
+https://github.com/starfive-tech/linux/tree/starlight
 
-However, the highest we can go without big refactoring to the clocking
-code is 192MHz, as that is the DSS func clock we get from the PRCM. So,
-increase the max HDMI pixel clock to 192MHz for now, to allow some more
-2k+ modes to work.
+/Emil
 
-This patch never had a clear confirmation from HW people, but this
-change stayed on production trees for multiple years without any report
-on an eventual breakage.
+[1]: https://lore.kernel.org/linux-riscv/20210723214031.3251801-2-atish.patra@wdc.com/
+[2]: https://www.linkedin.com/pulse/starfive-release-open-source-single-board-platform-q3-2021-starfive/
 
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- drivers/gpu/drm/omapdrm/dss/dispc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Emil Renner Berthing (12):
+  RISC-V: Add StarFive SoC Kconfig option
+  dt-bindings: timer: Add StarFive JH7100 clint
+  dt-bindings: interrupt-controller: Add StarFive JH7100 plic
+  dt-bindings: reset: Add Starfive JH7100 reset bindings
+  reset: starfive-jh7100: Add StarFive JH7100 reset driver
+  dt-bindings: pinctrl: Add StarFive pinctrl definitions
+  dt-bindings: pinctrl: Add StarFive JH7100 bindings
+  pinctrl: starfive: Add pinctrl driver for StarFive SoCs
+  dt-bindings: serial: snps-dw-apb-uart: Add JH7100 uarts
+  serial: 8250_dw: Add skip_clk_set_rate quirk
+  RISC-V: Add initial StarFive JH7100 device tree
+  RISC-V: Add BeagleV Starlight Beta device tree
 
-Tomi,
+Geert Uytterhoeven (4):
+  dt-bindings: clock: starfive: Add JH7100 clock definitions
+  dt-bindings: clock: starfive: Add JH7100 bindings
+  clk: starfive: Add JH7100 clock generator driver
+  dt-bindings: reset: Add StarFive JH7100 reset definitions
 
-I slighly changed the commit message to point the fact this patch has been
-used in production fort years without any sign of breakage.
+ .../clock/starfive,jh7100-clkgen.yaml         |   56 +
+ .../sifive,plic-1.0.0.yaml                    |    1 +
+ .../pinctrl/starfive,jh7100-pinctrl.yaml      |  274 ++++
+ .../bindings/reset/starfive,jh7100-reset.yaml |   38 +
+ .../bindings/serial/snps-dw-apb-uart.yaml     |    5 +
+ .../bindings/timer/sifive,clint.yaml          |    1 +
+ MAINTAINERS                                   |   22 +
+ arch/riscv/Kconfig.socs                       |    8 +
+ arch/riscv/boot/dts/Makefile                  |    1 +
+ arch/riscv/boot/dts/starfive/Makefile         |    2 +
+ .../dts/starfive/jh7100-beaglev-starlight.dts |  162 ++
+ arch/riscv/boot/dts/starfive/jh7100.dtsi      |  228 +++
+ drivers/clk/Kconfig                           |    1 +
+ drivers/clk/Makefile                          |    1 +
+ drivers/clk/starfive/Kconfig                  |   10 +
+ drivers/clk/starfive/Makefile                 |    3 +
+ drivers/clk/starfive/clk-starfive-jh7100.c    |  769 +++++++++
+ drivers/pinctrl/Kconfig                       |   17 +
+ drivers/pinctrl/Makefile                      |    1 +
+ drivers/pinctrl/pinctrl-starfive.c            | 1439 +++++++++++++++++
+ drivers/reset/Kconfig                         |    8 +
+ drivers/reset/Makefile                        |    1 +
+ drivers/reset/reset-starfive-jh7100.c         |  164 ++
+ drivers/tty/serial/8250/8250_dw.c             |   32 +-
+ include/dt-bindings/clock/starfive-jh7100.h   |  202 +++
+ .../dt-bindings/pinctrl/pinctrl-starfive.h    |  274 ++++
+ include/dt-bindings/reset/starfive-jh7100.h   |  126 ++
+ 27 files changed, 3833 insertions(+), 13 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh7100-clkgen.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/starfive,jh7100-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/reset/starfive,jh7100-reset.yaml
+ create mode 100644 arch/riscv/boot/dts/starfive/Makefile
+ create mode 100644 arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
+ create mode 100644 arch/riscv/boot/dts/starfive/jh7100.dtsi
+ create mode 100644 drivers/clk/starfive/Kconfig
+ create mode 100644 drivers/clk/starfive/Makefile
+ create mode 100644 drivers/clk/starfive/clk-starfive-jh7100.c
+ create mode 100644 drivers/pinctrl/pinctrl-starfive.c
+ create mode 100644 drivers/reset/reset-starfive-jh7100.c
+ create mode 100644 include/dt-bindings/clock/starfive-jh7100.h
+ create mode 100644 include/dt-bindings/pinctrl/pinctrl-starfive.h
+ create mode 100644 include/dt-bindings/reset/starfive-jh7100.h
 
-Neil
-
-diff --git a/drivers/gpu/drm/omapdrm/dss/dispc.c b/drivers/gpu/drm/omapdrm/dss/dispc.c
-index 5619420cc2cc..3c4a4991e45a 100644
---- a/drivers/gpu/drm/omapdrm/dss/dispc.c
-+++ b/drivers/gpu/drm/omapdrm/dss/dispc.c
-@@ -4458,7 +4458,7 @@ static const struct dispc_features omap54xx_dispc_feats = {
- 	.mgr_width_max		=	4096,
- 	.mgr_height_max		=	4096,
- 	.max_lcd_pclk		=	170000000,
--	.max_tv_pclk		=	186000000,
-+	.max_tv_pclk		=	192000000,
- 	.max_downscale		=	4,
- 	.max_line_width		=	2048,
- 	.min_pcd		=	1,
-
-base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
 -- 
-2.25.1
+2.33.0
 
