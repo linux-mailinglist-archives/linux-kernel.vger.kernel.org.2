@@ -2,407 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC19142A143
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713D442A144
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235790AbhJLJjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:39:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49774 "EHLO mail.kernel.org"
+        id S235818AbhJLJjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:39:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235777AbhJLJjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:39:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D41A160F92;
-        Tue, 12 Oct 2021 09:37:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634031434;
-        bh=WNjA1ANnGsd7Ny7HCv9o+f7B6QSYyBL+kS19sT2RX9M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=h1iLA4F3NoSs27tNNK0GcuytF5xUvBo+X3dCDx7VmzQ1T+DdqXzPLNe0o5Y22piWd
-         /MPA/lqaeojQSB60BRlcE7cb/ldGObF5t/dJP9JQqYuMcxnaVxrTN/LM0L9pRh3ARP
-         ma3ylwesssCnRs8J6JWn4rRxTnNKoDOfh3jMN5Ck=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 5.10 00/81] 5.10.73-rc3 review
-Date:   Tue, 12 Oct 2021 11:37:11 +0200
-Message-Id: <20211012093348.134236881@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
+        id S235817AbhJLJjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 05:39:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4154660F92;
+        Tue, 12 Oct 2021 09:37:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634031451;
+        bh=R0SmQ7S/jRl0PK0hlJ5/R750VuqmT/FeDVno38hWDr4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=mzfCcpVr8ALhVHoZHgieujKeAdV8tmt7NBQGrjgmA2ROwdKxQFfT3Ob98rwChUpQ6
+         E8nSFfPCYteYGrh7NtHRnhJEwQxknS0aujyJaMuDxemmJeonhN1d/OtEHmaRsySFty
+         q4v0DqOtNxUKfmSdv5F+JUx1eywsK7+4giQiX6abGn6vgYqE6vSuHdeQLd6w3Qx28L
+         KqJ1BlWlh1DfEoY02cX/4+VOwk0oOhSnwDEdw479bMmesw981ubORAL/iHR1SzrLRR
+         sPSJoEgJ8TlNHyCELfCdO9SOJrfoFQd+uLF/rEI/EtprWutRyEPd+dUoymHB8GA/o6
+         yzOJJXso1BvGA==
+From:   SeongJae Park <sj@kernel.org>
+To:     Xin Hao <xhao@linux.alibaba.com>
+Cc:     SeongJae Park <sj@kernel.org>, sjpark@amazon.de,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/damon/dbgfs: add region_stat interface
+Date:   Tue, 12 Oct 2021 09:37:26 +0000
+Message-Id: <20211012093726.33014-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.73-rc3.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.10.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.10.73-rc3
-X-KernelTest-Deadline: 2021-10-14T09:33+00:00
+In-Reply-To: <7ab062d3-f087-78ef-4630-471bb6d16275@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.10.73 release.
-There are 81 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
-
-Responses should be made by Thu, 14 Oct 2021 09:33:32 +0000.
-Anything received after that time might be too late.
-
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.73-rc3.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.10.73-rc3
-
-Thomas Gleixner <tglx@linutronix.de>
-    x86/hpet: Use another crystalball to evaluate HPET usability
-
-Vegard Nossum <vegard.nossum@oracle.com>
-    x86/entry: Clear X86_FEATURE_SMAP when CONFIG_X86_SMAP=n
-
-Lukas Bulwahn <lukas.bulwahn@gmail.com>
-    x86/entry: Correct reference to intended CONFIG_64_BIT
-
-Tom Lendacky <thomas.lendacky@amd.com>
-    x86/sev: Return an error on a returned non-zero SW_EXITINFO1[31:0]
-
-Lukas Bulwahn <lukas.bulwahn@gmail.com>
-    x86/Kconfig: Correct reference to MWINCHIP3D
-
-Lukas Bulwahn <lukas.bulwahn@gmail.com>
-    x86/platform/olpc: Correct ifdef symbol to intended CONFIG_OLPC_XO15_SCI
-
-Mahesh Salgaonkar <mahesh@linux.ibm.com>
-    pseries/eeh: Fix the kdump kernel crash during eeh_pseries_init
-
-Nicholas Piggin <npiggin@gmail.com>
-    powerpc/64s: fix program check interrupt emergency stack path
-
-Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-    powerpc/bpf: Fix BPF_SUB when imm == 0x80000000
-
-Palmer Dabbelt <palmerdabbelt@google.com>
-    RISC-V: Include clone3() on rv32
-
-Tiezhu Yang <yangtiezhu@loongson.cn>
-    bpf, s390: Fix potential memory leak about jit_data
-
-Tong Tiangen <tongtiangen@huawei.com>
-    riscv/vdso: make arch_setup_additional_pages wait for mmap_sem for write killable
-
-Kewei Xu <kewei.xu@mediatek.com>
-    i2c: mediatek: Add OFFSET_EXT_CONF setting back
-
-Jamie Iles <quic_jiles@quicinc.com>
-    i2c: acpi: fix resource leak in reconfiguration device addition
-
-Alexey Kardashevskiy <aik@ozlabs.ru>
-    powerpc/iommu: Report the correct most efficient DMA mask for PCI devices
-
-Mike Manning <mvrmanning@gmail.com>
-    net: prefer socket bound to interface when not in VRF
-
-Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
-    i40e: Fix freeing of uninitialized misc IRQ vector
-
-Jiri Benc <jbenc@redhat.com>
-    i40e: fix endless loop under rtnl
-
-Eric Dumazet <edumazet@google.com>
-    gve: report 64bit tx_bytes counter from gve_handle_report_stats()
-
-Eric Dumazet <edumazet@google.com>
-    gve: fix gve_get_stats()
-
-Eric Dumazet <edumazet@google.com>
-    rtnetlink: fix if_nlmsg_stats_size() under estimation
-
-Tao Liu <xliutaox@google.com>
-    gve: Avoid freeing NULL pointer
-
-Catherine Sullivan <csully@google.com>
-    gve: Correct available tx qpl check
-
-Yang Yingliang <yangyingliang@huawei.com>
-    drm/nouveau/debugfs: fix file release memory leak
-
-Yang Yingliang <yangyingliang@huawei.com>
-    drm/nouveau/kms/nv50-: fix file release memory leak
-
-Jeremy Cline <jcline@redhat.com>
-    drm/nouveau: avoid a use-after-free when BO init fails
-
-Mark Brown <broonie@kernel.org>
-    video: fbdev: gbefb: Only instantiate device when built for IP32
-
-Jernej Skrabec <jernej.skrabec@gmail.com>
-    drm/sun4i: dw-hdmi: Fix HDMI PHY clock setup
-
-Tony Lindgren <tony@atomide.com>
-    bus: ti-sysc: Use CLKDM_NOAUTO for dra7 dcan1 for errata i893
-
-John Garry <john.garry@huawei.com>
-    perf jevents: Tidy error handling
-
-Eric Dumazet <edumazet@google.com>
-    netlink: annotate data races around nlk->bound
-
-Sean Anderson <sean.anderson@seco.com>
-    net: sfp: Fix typo in state machine debug string
-
-Eric Dumazet <edumazet@google.com>
-    net/sched: sch_taprio: properly cancel timer from taprio_destroy()
-
-Eric Dumazet <edumazet@google.com>
-    net: bridge: fix under estimation in br_get_linkxstats_size()
-
-Eric Dumazet <edumazet@google.com>
-    net: bridge: use nla_total_size_64bit() in br_get_linkxstats_size()
-
-Oleksij Rempel <linux@rempel-privat.de>
-    ARM: imx6: disable the GIC CPU interface before calling stby-poweroff sequence
-
-Geert Uytterhoeven <geert+renesas@glider.be>
-    dt-bindings: drm/bridge: ti-sn65dsi86: Fix reg value
-
-Michael Walle <michael@walle.cc>
-    arm64: dts: ls1028a: add missing CAN nodes
-
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-    ptp_pch: Load module automatically if ID matches
-
-Pali Rohár <pali@kernel.org>
-    powerpc/fsl/dts: Fix phy-connection-type for fm1mac3
-
-Eric Dumazet <edumazet@google.com>
-    net_sched: fix NULL deref in fifo_set_limit()
-
-Pavel Skripkin <paskripkin@gmail.com>
-    phy: mdio: fix memory leak
-
-Moshe Shemesh <moshe@nvidia.com>
-    net/mlx5: E-Switch, Fix double allocation of acl flow counter
-
-Raed Salem <raeds@nvidia.com>
-    net/mlx5e: IPSEC RX, enable checksum complete
-
-Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
-    bpf: Fix integer overflow in prealloc_elems_and_freelist()
-
-Tony Lindgren <tony@atomide.com>
-    soc: ti: omap-prm: Fix external abort for am335x pruss
-
-Johan Almbladh <johan.almbladh@anyfinetworks.com>
-    bpf, arm: Fix register clobbering in div/mod implementation
-
-Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-    iwlwifi: pcie: add configuration of a Wi-Fi adapter on Dell XPS 15
-
-Max Filippov <jcmvbkbc@gmail.com>
-    xtensa: call irqchip_init only when CONFIG_USE_OF is selected
-
-Randy Dunlap <rdunlap@infradead.org>
-    xtensa: use CONFIG_USE_OF instead of CONFIG_OF
-
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-    arm64: dts: qcom: pm8150: use qcom,pm8998-pon binding
-
-Arnd Bergmann <arnd@arndb.de>
-    ath5k: fix building with LEDS=m
-
-Long Li <longli@microsoft.com>
-    PCI: hv: Fix sleep while in non-sleep context when removing child devices from the bus
-
-Fabio Estevam <festevam@gmail.com>
-    ARM: dts: imx6qdl-pico: Fix Ethernet support
-
-Marek Vasut <marex@denx.de>
-    ARM: dts: imx: Fix USB host power regulator polarity on M53Menlo
-
-Marek Vasut <marex@denx.de>
-    ARM: dts: imx: Add missing pinctrl-names for panel on M53Menlo
-
-Shawn Guo <shawn.guo@linaro.org>
-    soc: qcom: mdt_loader: Drop PT_LOAD check on hash segment
-
-Claudiu Beznea <claudiu.beznea@microchip.com>
-    ARM: at91: pm: do not panic if ram controllers are not enabled
-
-Marijn Suijten <marijn.suijten@somainline.org>
-    ARM: dts: qcom: apq8064: Use 27MHz PXO clock as DSI PLL reference
-
-Antonio Martorana <amartora@codeaurora.org>
-    soc: qcom: socinfo: Fixed argument passed to platform_set_data()
-
-Nathan Chancellor <nathan@kernel.org>
-    bus: ti-sysc: Add break in switch statement in sysc_init_soc()
-
-Alexandre Ghiti <alex@ghiti.fr>
-    riscv: Flush current cpu icache before other cpus
-
-David Heidelberg <david@ixit.cz>
-    ARM: dts: qcom: apq8064: use compatible which contains chipid
-
-Michal Vokáč <michal.vokac@ysoft.com>
-    ARM: dts: imx6dl-yapp4: Fix lp5562 LED driver probe
-
-Roger Quadros <rogerq@kernel.org>
-    ARM: dts: omap3430-sdp: Fix NAND device node
-
-Juergen Gross <jgross@suse.com>
-    xen/balloon: fix cancelled balloon action
-
-J. Bruce Fields <bfields@redhat.com>
-    SUNRPC: fix sign error causing rpcsec_gss drops
-
-Trond Myklebust <trond.myklebust@hammerspace.com>
-    nfsd4: Handle the NFSv4 READDIR 'dircount' hint being zero
-
-Patrick Ho <Patrick.Ho@netapp.com>
-    nfsd: fix error handling of register_pernet_subsys() in init_nfsd()
-
-Miklos Szeredi <mszeredi@redhat.com>
-    ovl: fix IOCB_DIRECT if underlying fs doesn't support direct IO
-
-Zheng Liang <zhengliang6@huawei.com>
-    ovl: fix missing negative dentry check in ovl_rename()
-
-Claudiu Beznea <claudiu.beznea@microchip.com>
-    mmc: sdhci-of-at91: replace while loop with read_poll_timeout
-
-Claudiu Beznea <claudiu.beznea@microchip.com>
-    mmc: sdhci-of-at91: wait for calibration done before proceed
-
-Neil Armstrong <narmstrong@baylibre.com>
-    mmc: meson-gx: do not use memcpy_to/fromio for dram-access-quirk
-
-Jan Beulich <jbeulich@suse.com>
-    xen/privcmd: fix error handling in mmap-resource processing
-
-Ben Skeggs <bskeggs@redhat.com>
-    drm/nouveau/kms/tu102-: delay enabling cursor until after assign_windows
-
-Xu Yang <xu.yang_2@nxp.com>
-    usb: typec: tcpm: handle SRC_STARTUP state if cc changes
-
-Johan Hovold <johan@kernel.org>
-    USB: cdc-acm: fix break reporting
-
-Johan Hovold <johan@kernel.org>
-    USB: cdc-acm: fix racy tty buffer accesses
-
-Fabio Estevam <festevam@gmail.com>
-    usb: chipidea: ci_hdrc_imx: Also search for 'phys' phandle
-
-Ben Hutchings <ben@decadent.org.uk>
-    Partially revert "usb: Kconfig: using select for USB_COMMON dependency"
-
-
--------------
-
-Diffstat:
-
- .../bindings/display/bridge/ti,sn65dsi86.yaml      |  2 +-
- Makefile                                           |  4 +-
- arch/arm/boot/dts/imx53-m53menlo.dts               |  4 +-
- arch/arm/boot/dts/imx6dl-yapp4-common.dtsi         |  5 ++
- arch/arm/boot/dts/imx6qdl-pico.dtsi                | 11 +++
- arch/arm/boot/dts/omap3430-sdp.dts                 |  2 +-
- arch/arm/boot/dts/qcom-apq8064.dtsi                |  7 +-
- arch/arm/mach-at91/pm.c                            | 58 ++++++++++---
- arch/arm/mach-imx/pm-imx6.c                        |  2 +
- arch/arm/mach-omap2/omap_hwmod.c                   |  2 +
- arch/arm/net/bpf_jit_32.c                          | 19 +++++
- arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi     | 18 ++++
- arch/arm64/boot/dts/qcom/pm8150.dtsi               |  2 +-
- arch/powerpc/boot/dts/fsl/t1023rdb.dts             |  2 +-
- arch/powerpc/kernel/dma-iommu.c                    |  9 ++
- arch/powerpc/kernel/exceptions-64s.S               | 17 ++--
- arch/powerpc/net/bpf_jit_comp64.c                  | 27 +++---
- arch/powerpc/platforms/pseries/eeh_pseries.c       |  4 +
- arch/riscv/include/uapi/asm/unistd.h               |  3 +-
- arch/riscv/kernel/vdso.c                           |  4 +-
- arch/riscv/mm/cacheflush.c                         |  2 +
- arch/s390/net/bpf_jit_comp.c                       |  2 +-
- arch/x86/Kconfig                                   |  2 +-
- arch/x86/include/asm/entry-common.h                |  2 +-
- arch/x86/kernel/cpu/common.c                       |  1 +
- arch/x86/kernel/early-quirks.c                     |  6 --
- arch/x86/kernel/hpet.c                             | 81 ++++++++++++++++++
- arch/x86/kernel/sev-es-shared.c                    |  2 +
- arch/x86/platform/olpc/olpc.c                      |  2 +-
- arch/xtensa/include/asm/kmem_layout.h              |  2 +-
- arch/xtensa/kernel/irq.c                           |  2 +-
- arch/xtensa/kernel/setup.c                         | 12 +--
- arch/xtensa/mm/mmu.c                               |  2 +-
- drivers/bus/ti-sysc.c                              |  4 +
- drivers/gpu/drm/nouveau/dispnv50/crc.c             |  1 +
- drivers/gpu/drm/nouveau/dispnv50/head.c            |  2 +-
- drivers/gpu/drm/nouveau/nouveau_debugfs.c          |  1 +
- drivers/gpu/drm/nouveau/nouveau_gem.c              |  4 +-
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c              |  7 +-
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h              |  4 +-
- drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c             | 97 ++++++++++++----------
- drivers/i2c/busses/i2c-mt65xx.c                    | 11 ++-
- drivers/i2c/i2c-core-acpi.c                        |  1 +
- drivers/mmc/host/meson-gx-mmc.c                    | 73 ++++++++++++----
- drivers/mmc/host/sdhci-of-at91.c                   | 22 ++---
- drivers/net/ethernet/google/gve/gve.h              |  2 +-
- drivers/net/ethernet/google/gve/gve_main.c         | 45 ++++++----
- drivers/net/ethernet/intel/i40e/i40e_main.c        |  5 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    |  7 +-
- .../mellanox/mlx5/core/esw/acl/egress_lgcy.c       | 12 ++-
- .../mellanox/mlx5/core/esw/acl/ingress_lgcy.c      |  4 +-
- drivers/net/phy/mdio_bus.c                         |  7 ++
- drivers/net/phy/sfp.c                              |  2 +-
- drivers/net/wireless/ath/ath5k/Kconfig             |  4 +-
- drivers/net/wireless/ath/ath5k/led.c               | 10 ++-
- drivers/net/wireless/intel/iwlwifi/pcie/drv.c      |  2 +
- drivers/pci/controller/pci-hyperv.c                | 13 ++-
- drivers/ptp/ptp_pch.c                              |  1 +
- drivers/soc/qcom/mdt_loader.c                      |  2 +-
- drivers/soc/qcom/socinfo.c                         |  2 +-
- drivers/soc/ti/omap_prm.c                          | 27 +++---
- drivers/usb/chipidea/ci_hdrc_imx.c                 | 15 ++--
- drivers/usb/class/cdc-acm.c                        |  8 ++
- drivers/usb/common/Kconfig                         |  3 +-
- drivers/usb/typec/tcpm/tcpm.c                      |  1 +
- drivers/video/fbdev/gbefb.c                        |  2 +-
- drivers/xen/balloon.c                              | 21 +++--
- drivers/xen/privcmd.c                              |  7 +-
- fs/nfsd/nfs4xdr.c                                  | 19 +++--
- fs/nfsd/nfsctl.c                                   |  2 +-
- fs/overlayfs/dir.c                                 | 10 ++-
- fs/overlayfs/file.c                                | 15 +++-
- kernel/bpf/stackmap.c                              |  3 +-
- net/bridge/br_netlink.c                            |  3 +-
- net/core/rtnetlink.c                               |  2 +-
- net/ipv4/inet_hashtables.c                         |  4 +-
- net/ipv4/udp.c                                     |  3 +-
- net/ipv6/inet6_hashtables.c                        |  2 +-
- net/ipv6/udp.c                                     |  3 +-
- net/netlink/af_netlink.c                           | 14 +++-
- net/sched/sch_fifo.c                               |  3 +
- net/sched/sch_taprio.c                             |  4 +
- net/sunrpc/auth_gss/svcauth_gss.c                  |  2 +-
- tools/perf/pmu-events/jevents.c                    | 83 ++++++++----------
- 84 files changed, 638 insertions(+), 283 deletions(-)
-
-
+On Tue, 12 Oct 2021 15:57:17 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
+
+> 
+> 在 2021/10/12 下午3:11, SeongJae Park 写道:
+> > Hello Xin, thank you for this patch!
+> >
+> > On Tue, 12 Oct 2021 13:49:48 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
+> >
+> >> Using damon-dbgfs has brought great convenience to user-mode
+> >> operation damon, but sometimes if i want to be able to view
+> >> the division of task regions, nr_access values etc,but i found
+> >> that it is impossible to view directly through the dbgfs interface,
+> >> so there i add a interface "region_stat", it displays like this.
+> >>
+> >>   # cat region_stat
+> >>   last_aggregation=120.87s
+> >>   target_id=5148
+> >>   nr_regions=10
+> >>   400000-258c000(34352 KiB): 1
+> >>   258c000-4719000(34356 KiB): 0
+> >>   4719000-abbf000(103064 KiB): 0
+> >>   abbf000-c4d4000(25684 KiB): 11
+> >>   c4d4000-ff5c000(59936 KiB): 15
+> >>   ff5c000-152f9000(85620 KiB): 20
+> >>   152f9000-1599e000(6804 KiB): 10
+> >>   1599e000-19573000(61268 KiB): 0
+> >>   19573000-1f92c000(102116 KiB): 0
+> >>   1f92c000-22a4c000(50304 KiB): 0
+> > I think similar information could also be collected via the 'damon_aggregated'
+> > tracepoint[1], which is merged in the mainline, or 'DAMOS_STAT'[2], which is
+> > merged in -mm.  The recording feature[3] could also be used, though it would
+> > take some time before it is merged in the mainline.  Have you considered using
+> > those but found some problem?
+> 
+> Yes, i know we can use damon_aggregated tracepoint, but i think, add a 
+> "region_stat" will be more
+> 
+> convenient and intuitive, especially when we use damon-dbgfs interface.
+
+Thanks for the answer.
+
+For more conveniend and intuitive interfaces, I recommend DAMON user-sapce
+tool[1] rather than the debugfs interface.  You can also implement your own
+user-space tool on top of the debugfs interface.  For example, the reference
+implementation[1] implements 'record' feature on top of the tracepoint.  The
+feature can provide below information, which is quite similar to what you want.
+For more information on this, please refer to the document[2].
+
+    # damo record $(pidof $workload)
+    # damo report raw
+    base_time_absolute: 8 m 59.809 s
+
+    monitoring_start:                0 ns
+    monitoring_end:            104.599 ms
+    monitoring_duration:       104.599 ms
+    target_id: 18446623438842320000
+    nr_regions: 3
+    563ebaa00000-563ebc99e000(  31.617 MiB):        1
+    7f938d7e1000-7f938ddfc000(   6.105 MiB):        0
+    7fff66b0a000-7fff66bb2000( 672.000 KiB):        0
+
+    monitoring_start:          104.599 ms
+    monitoring_end:            208.590 ms
+    monitoring_duration:       103.991 ms
+    target_id: 18446623438842320000
+    nr_regions: 4
+    563ebaa00000-563ebc99e000(  31.617 MiB):        1
+    7f938d7e1000-7f938d9b5000(   1.828 MiB):        0
+    7f938d9b5000-7f938ddfc000(   4.277 MiB):        0
+    7fff66b0a000-7fff66bb2000( 672.000 KiB):        5
+
+If this is still not so useful for you, could you please elaborate more on your
+detailed requirements and use cases?
+
+[1] https://github.com/awslabs/damo
+[2] https://github.com/awslabs/damo/blob/next/USAGE.md#raw
+
+
+Thanks,
+SJ
+
+> 
+> >
+> > [1] https://git.kernel.org/torvalds/c/2fcb93629ad8
+> > [2] https://lore.kernel.org/linux-mm/20211001125604.29660-6-sj@kernel.org/
+> > [3] https://lore.kernel.org/linux-mm/20211008094509.16179-1-sj@kernel.org/
+> >
+> >
+> > Thanks,
+> > SJ
+> >
+> > [...]
+> 
+> -- 
+> Best Regards!
+> Xin Hao
