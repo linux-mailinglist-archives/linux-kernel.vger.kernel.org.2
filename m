@@ -2,76 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6E742A544
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D0942A549
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236728AbhJLNSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:18:50 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:33773 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236544AbhJLNSp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:18:45 -0400
-Received: by mail-oi1-f169.google.com with SMTP id q129so8289175oib.0;
-        Tue, 12 Oct 2021 06:16:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H1gCfeZM8D46sKt+LlwE0xSTSKdW6wn+1al3obvMhhw=;
-        b=GOHrE+c0YLe01qmAPk9T9JCm8e52vgrMmc1emIk5kmP2Hs7ZAHXEqSYI8H/D7mCPG8
-         rdC1Xg8pd8cAN4ffF4Uri4w3KgnUxP4/0a+N2lkamDUp9UQwVTL6qD6By9M7ZzygcRyk
-         M0IWXthzC/6YF1EQV6w+27UPWRzMg/rX1N3IRtFWbqCloVGoejeEIJ6zdu0Qjl04Tl5I
-         Lqhloy0tPPQjDA5pLl+OtfHaWiCwaMDh8Nwyokf+H5maMIV8uxYctFA6vp934BuMZULz
-         NVuogrtGpWsdpmkC1crZDlMlo97f3sGUrpvrEVrp+vwOFI1PHBlLPWS7euSHNehq71mh
-         lurg==
-X-Gm-Message-State: AOAM531EPv1vctAKpANRBxVfSzmzCVuC+xsCq91mEXDLwRvrMTIGvINa
-        652E5z7Jj7rHiYrmnri9Lg==
-X-Google-Smtp-Source: ABdhPJzlnDcuhhVI4hiEfqlZ1Pe9A8O6OQwWK9MJEiy48yQsA1yVQVaR3yopwASE2T7I+7qKMSEfiA==
-X-Received: by 2002:a05:6808:3a7:: with SMTP id n7mr3550077oie.45.1634044603773;
-        Tue, 12 Oct 2021 06:16:43 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id e28sm1404519oiy.10.2021.10.12.06.16.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 06:16:43 -0700 (PDT)
-Received: (nullmailer pid 2655630 invoked by uid 1000);
-        Tue, 12 Oct 2021 13:16:42 -0000
-Date:   Tue, 12 Oct 2021 08:16:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Sean Anderson <sean.anderson@seco.com>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [RFC net-next PATCH 01/16] dt-bindings: net: Add pcs property
-Message-ID: <YWWKuhn4FfgbcqO/@robh.at.kernel.org>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-2-sean.anderson@seco.com>
- <YVwdWIJiV1nkJ4A3@shell.armlinux.org.uk>
+        id S236702AbhJLNUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:20:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:41632 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236541AbhJLNUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 09:20:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D40BED1;
+        Tue, 12 Oct 2021 06:18:07 -0700 (PDT)
+Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C6B0A3F70D;
+        Tue, 12 Oct 2021 06:18:05 -0700 (PDT)
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+To:     will@kernel.org, mathieu.poirier@linaro.org
+Cc:     catalin.marinas@arm.com, anshuman.khandual@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org, maz@kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: [PATCH v4 00/15] arm64: Self-hosted trace related errata workarounds
+Date:   Tue, 12 Oct 2021 14:17:28 +0100
+Message-Id: <20211012131743.2040596-1-suzuki.poulose@arm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVwdWIJiV1nkJ4A3@shell.armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 10:39:36AM +0100, Russell King (Oracle) wrote:
-> On Mon, Oct 04, 2021 at 03:15:12PM -0400, Sean Anderson wrote:
-> > Add a property for associating PCS devices with ethernet controllers.
-> > Because PCS has no generic analogue like PHY, I have left off the
-> > -handle suffix.
-> 
-> For PHYs, we used to have phy and phy-device as property names, but the
-> modern name is "phy-handle". I think we should do the same here, so I
-> would suggest using "pcs-handle".
 
-On 1G and up ethernet, we have 2 PHYs. There's the external (typically) 
-ethernet PHY which is what the above properties are for. Then there's 
-the on-chip serdes PHY similar to SATA, PCIe, etc. which includes the 
-PCS part. For this part, we should use the generic PHY binding. I think 
-we already have bindings doing that.
+This series adds CPU erratum work arounds related to the self-hosted
+tracing. The list of affected errata handled in this series are :
 
-Rob
+ * TRBE may overwrite trace in FILL mode
+   - Arm Neoverse-N2	#2139208
+   - Cortex-A710	#211985
+
+ * A TSB instruction may not flush the trace completely when executed
+   in trace prohibited region.
+
+   - Arm Neoverse-N2	#2067961
+   - Cortex-A710	#2054223
+
+ * TRBE may write to out-of-range address
+   - Arm Neoverse-N2	#2253138
+   - Cortex-A710	#2224489
+
+The series applies on coresight/next. The series has been reordered
+to make it easier to merge the patches via arm64 tree and the coresight
+tree.
+
+Patches 1-4 are could be picked up via arm64 tree. The rest can go via
+the coresight tree. The Kconfig items for the TRBE errata are initially
+dropped in with dependency on COMPILE_TEST. These are dropped only after
+the driver is equipped with the work around in later patches.
+
+
+A tree is available here :
+
+git@git.gitlab.arm.com:linux-arm/linux-skp.git  coresight/errata/trbe-tsb-n2-a710/v4
+
+Changes since v3:
+ 
+ - Fix missing Kconfig selection for TSB flush failure erratum (Will)
+   Merged the Kconfig changes to the core patch for TSB.
+ - Use COMPILE_TEST dependency for the TRBE work arounds instead of
+   delaying the Kconfig entries.
+
+Changes since v2:
+ * https://lkml.kernel.org/r/20210921134121.2423546-1-suzuki.poulose@arm.com 
+ - Dropped patch adding a helper to reach cpudata from perf handle
+ - Split the TSB erratum work around patch to split the Kconfig/erratum
+   list update changes(pushed to the end of the series).
+ - Added wrappers to check the erratum :
+    trbe_has_erratum(cpudata, TRBE_ERRATUM_<TITLE>) -> trbe_may_<title>
+ - More ASCII art explanation on workaround.
+
+Changes since v1:
+ * https://lkml.kernel.org/r/20210728135217.591173-1-suzuki.poulose@arm.com
+ - Added a fix to the TRBE driver handling of sink_specific data
+ - Added more description and ASCII art for overwrite in FILL mode
+   work around 
+ - Added another TRBE erratum to the list.
+  "TRBE may write to out-of-range address"
+  Patches from 12-17
+ - Added comment to list the expectations around TSB erratum workaround.
+
+
+Suzuki K Poulose (15):
+  arm64: Add Neoverse-N2, Cortex-A710 CPU part definition
+  arm64: errata: Add detection for TRBE overwrite in FILL mode
+  arm64: errata: Add workaround for TSB flush failures
+  arm64: errata: Add detection for TRBE write to out-of-range
+  coresight: trbe: Add a helper to calculate the trace generated
+  coresight: trbe: Add a helper to pad a given buffer area
+  coresight: trbe: Decouple buffer base from the hardware base
+  coresight: trbe: Allow driver to choose a different alignment
+  coresight: trbe: Add infrastructure for Errata handling
+  coresight: trbe: Workaround TRBE errata overwrite in FILL mode
+  coresight: trbe: Add a helper to determine the minimum buffer size
+  coresight: trbe: Make sure we have enough space
+  coresight: trbe: Work around write to out of range
+  arm64: errata: Enable workaround for TRBE overwrite in FILL mode
+  arm64: errata: Enable TRBE workaround for write to out-of-range
+    address
+
+ Documentation/arm64/silicon-errata.rst       |  12 +
+ arch/arm64/Kconfig                           | 111 ++++++
+ arch/arm64/include/asm/barrier.h             |  16 +-
+ arch/arm64/include/asm/cputype.h             |   4 +
+ arch/arm64/kernel/cpu_errata.c               |  64 ++++
+ arch/arm64/tools/cpucaps                     |   3 +
+ drivers/hwtracing/coresight/coresight-trbe.c | 382 +++++++++++++++++--
+ 7 files changed, 556 insertions(+), 36 deletions(-)
+
+-- 
+2.25.4
+
