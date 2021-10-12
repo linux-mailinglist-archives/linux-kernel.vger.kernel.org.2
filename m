@@ -2,197 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6918542AFEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00ED442AFF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235833AbhJLXEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 19:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234005AbhJLXE2 (ORCPT
+        id S235877AbhJLXFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 19:05:20 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:59752 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233180AbhJLXFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 19:04:28 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5066C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:02:25 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so787102pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amikom.ac.id; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NKBbs/bTesD2WYOSqLA0rpb9W1UUowr+/nHC1DH4F5w=;
-        b=FWLWUpvLeMVTrlItpohCiGQSTO613dil9KdbQBrRJEDNTgBGgp7az/5Rv5rpSMDLVa
-         pHQ9tZf7d4PqgFEYStu+AbLqh+Zq9r6vGDw49vn3+II2n9ll4u481URrJ/cWmKb5LAaP
-         oUunJFwSsy9bBWCmRnnV8CPXokfhlmk7LfMpQ5G25gSrsWj3XbugBYFYbFkMd1DjiffU
-         RCjKzTFUu2GH9OfJZHwLDGqdXqVYvPINWRwV6dol73qB2MGgvq3w8CwiPk7Q13mHVOfr
-         W93Zt+agfgTNTt0EXgCECF0Lb31yPvkarQaxr+trSLHMB4uasMg6BSJmX6xsdec66x1j
-         vYgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NKBbs/bTesD2WYOSqLA0rpb9W1UUowr+/nHC1DH4F5w=;
-        b=KJMXFvYwW2wvffEZyv8J41OzKiyLs7jkpVt+nFZAgf5Q6urYWJ89Tfp4rcHNH7Tmvz
-         Wsn8JprpEtGQVsXYco4BSECztIG5muIzEq75xXKQV73pSO+/qg+nV5DhVs1EYzN8Pchu
-         TOSW5/1VVti3LFSHz96YMd+756wxTgaGAXuVNIdyEXK0H1U1+6kFMdWnTJAHTyBOaD/7
-         NjfaynI3Gwm0sD76mqoamsQhwqCGacBfURjebZbN2sLsbQbLvIUVDy4GGzMfnT26PPQQ
-         +08T40nwsQwSBmVnZu4Wb3b2uhSMaqFUAnIQZRMoZaHfznvZNnCabUZJjrQKTbRPHDZW
-         4QUQ==
-X-Gm-Message-State: AOAM533ixwbONJNBMU9vcl4c200kA9SVgz6B/r+Q6cU/7rAvJ4KFj4+y
-        dT9pqfzNSitY+qoCOsCPYce5Kg==
-X-Google-Smtp-Source: ABdhPJwgVYqFmwCKcLlJ99MvLvqN+j/wHZU+fUxiPGgYTeKgDpfPfPp2CXBwr+/iRYhtNEUUysR6ow==
-X-Received: by 2002:a17:902:9a43:b0:13e:6386:d720 with SMTP id x3-20020a1709029a4300b0013e6386d720mr32322031plv.29.1634079745328;
-        Tue, 12 Oct 2021 16:02:25 -0700 (PDT)
-Received: from integral.. ([182.2.71.100])
-        by smtp.gmail.com with ESMTPSA id z24sm12954678pgu.54.2021.10.12.16.02.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 16:02:24 -0700 (PDT)
-From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Willy Tarreau <w@1wt.eu>, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Subject: RE: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the clobber list
-Date:   Wed, 13 Oct 2021 06:02:04 +0700
-Message-Id: <20211012230204.587193-1-ammar.faizi@students.amikom.ac.id>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <40f6f29f26f14b5b88076f5b12e1ecaa@AcuMS.aculab.com>
-References: <40f6f29f26f14b5b88076f5b12e1ecaa@AcuMS.aculab.com>
+        Tue, 12 Oct 2021 19:05:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634079797; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=a4t991OwV2xXbjyViZs5vlfdqAxNi0mnYFmk6dV5awQ=;
+ b=NyE56aSp2WuP47HJCsPBLLwY4I87aHpURIOl3yFCGFu13gDq4SsfyEmuVrOU58HJiRgvSpYg
+ DUhGusFkyPunjNypy9kx/lh8AUVbMrIIYl8ZkknpRUSWPGhs0V3urHKqeXEplR9UL6jsHGUK
+ FRh8gKBF4MlAgGrw8D7nYBEcz+k=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6166142cff0285fb0a99d44c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Oct 2021 23:03:08
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DDE81C43619; Tue, 12 Oct 2021 23:03:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 29C25C4338F;
+        Tue, 12 Oct 2021 23:03:06 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 12 Oct 2021 16:03:06 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dp: Use the connector passed to dp_debug_get()
+In-Reply-To: <20211010030435.4000642-1-bjorn.andersson@linaro.org>
+References: <20211010030435.4000642-1-bjorn.andersson@linaro.org>
+Message-ID: <50925d684962690e42b2eb8ab8479835@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 4:21 AM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Willy Tarreau
-> > Sent: 12 October 2021 10:07
-> >
-> > On Tue, Oct 12, 2021 at 03:36:44PM +0700, Ammar Faizi wrote:
-> > > I have tried to search for the documentation about this one, but I
-> > > couldn't find any. Checking at `Documentation/x86/entry_64.rst`, but
-> > > it doesn't tell anything relevant.
-> > (...)
-> >
-> > OK thanks for the detailed story, thus I didn't miss any obvious
-> > reference.
-> >
-> > > My stance comes from SO, Telegram group discussion, and reading source
-> > > code. Therefore, I don't think I can attach the link to it as
-> > > "authoritative information". Or can I?
-> >
-> > You're right, that's not exactly what we can call authoritative :-)
->
-> Given the cost of a system call the code benefit from telling
-> gcc that r8 to r10 are preserved is likely to be noise.
-> Especially since most syscalls are made from C library stubs
-> so the application calling code will assume they are trashed.
->
-> There may even be a bigger gain from the syscall exit code just
-> setting the registers to zero (instead of restoring them).
+On 2021-10-09 20:04, Bjorn Andersson wrote:
+> The debugfs code is provided an array of a single drm_connector. Then 
+> to
+> access the connector, the list of all connectors of the DRM device is
+> traversed and all non-DisplayPort connectors are skipped, to find the
+> one and only DisplayPort connector.
+> 
+> But as we move to support multiple DisplayPort controllers this will 
+> now
+> find multiple connectors and has no way to distinguish them.
+> 
+> Pass the single connector to dp_debug_get() and use this in the debugfs
+> functions instead, both to simplify the code and the support the
+> multiple instances.
+> 
+Change itself is fine, hence
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
 
-Setting those registers to zero on "syscall_return_via_sysret" would
-need to edit entry_64.S and that apparently breaks the userspace and
-results in an ABI change.
+What has to be checked now is now to create multiple DP nodes for 
+multi-DP cases.
+Today, the debug node will be created only once :
 
->
-> There are probably even bigger gains from zeroing the AVX
-> registers (which, IIRC, are all caller-saved) somewhere
-> between syscall entry and the process sleeping.
-> (This can't be done for non-syscall kernel entry.)
->
+https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c#L206
 
-I copy and paste my message just to clarify the misunderstanding here. We
-don't intend to change the ABI, so we can only strive for gaining more
-profit to optimize what we can do based on the current situation.
+This also needs to be expanded for multi-DP to make the solution 
+complete.
 
-I know for a fact that every "syscall" in the libc is wrapped with a
-function call.
-
-However, that is not the case for nolibc.h, because we have a potential
-to inline the "syscall" instruction (0f 05) to the user functions.
-
-All syscalls in the nolibc.h are written as a static function with inline
-ASM and are likely always inline if we use optimization flag, so this is
-a profit not to have r8, r9 and r10 in the clobber list (currently we 
-have them).
-
-FWIIW, I created an example where this matters.
-
-```
-#include "tools/include/nolibc/nolibc.h"
-
-#define read_abc(a, b, c) __asm__ volatile(""::"r"(a),"r"(b),"r"(c))
-
-int main(void)
-{
-    int a = 0xaa;
-    int b = 0xbb;
-    int c = 0xcc;
-
-    read_abc(a, b, c);
-    write(1, "test\n", 5);
-    read_abc(a, b, c);
-
-    return 0;
-}
-```
-
-Compile with:
-    gcc -Os test.c -o test -nostdlib
-
-
-With r8, r9, r10 in the clobber list, results in this:
-
-0000000000001000 <main>:
-    1000:	f3 0f 1e fa          	endbr64 
-    1004:	41 54                	push   %r12
-    1006:	41 bc cc 00 00 00    	mov    $0xcc,%r12d
-    100c:	55                   	push   %rbp
-    100d:	bd bb 00 00 00       	mov    $0xbb,%ebp
-    1012:	53                   	push   %rbx
-    1013:	bb aa 00 00 00       	mov    $0xaa,%ebx
-    1018:	b8 01 00 00 00       	mov    $0x1,%eax
-    101d:	bf 01 00 00 00       	mov    $0x1,%edi
-    1022:	ba 05 00 00 00       	mov    $0x5,%edx
-    1027:	48 8d 35 d2 0f 00 00 	lea    0xfd2(%rip),%rsi
-    102e:	0f 05                	syscall 
-    1030:	31 c0                	xor    %eax,%eax
-    1032:	5b                   	pop    %rbx
-    1033:	5d                   	pop    %rbp
-    1034:	41 5c                	pop    %r12
-    1036:	c3                   	ret 
-
-GCC thinks that syscall will clobber r8, r9, r10. So it spills 0xaa,
-0xbb and 0xcc to callee saved registers (r12, rbp and rbx). This is 
-clearly extra memory access and extra stack size for preserving them.
-
-But syscall does not actually clobber them, so this is a missed
-optimization.
-
-Now without r8, r9, r10 in the clobber list, results in better ASM code:
-
-0000000000001000 <main>:
-    1000:   f3 0f 1e fa             endbr64 
-    1004:   41 b8 aa 00 00 00       mov    $0xaa,%r8d
-    100a:   41 b9 bb 00 00 00       mov    $0xbb,%r9d
-    1010:   41 ba cc 00 00 00       mov    $0xcc,%r10d
-    1016:   b8 01 00 00 00          mov    $0x1,%eax
-    101b:   bf 01 00 00 00          mov    $0x1,%edi
-    1020:   ba 05 00 00 00          mov    $0x5,%edx
-    1025:   48 8d 35 d4 0f 00 00    lea    0xfd4(%rip),%rsi
-    102c:   0f 05                   syscall 
-    102e:   31 c0                   xor    %eax,%eax
-    1030:   c3                      ret  
-
-Does that make sense?
-
--- 
-Ammar Faizi
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_debug.c   | 131 ++++++++++------------------
+>  drivers/gpu/drm/msm/dp/dp_debug.h   |   2 +-
+>  drivers/gpu/drm/msm/dp/dp_display.c |   2 +-
+>  3 files changed, 46 insertions(+), 89 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_debug.c
+> b/drivers/gpu/drm/msm/dp/dp_debug.c
+> index af709d93bb9f..da4323556ef3 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_debug.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_debug.c
+> @@ -24,7 +24,7 @@ struct dp_debug_private {
+>  	struct dp_usbpd *usbpd;
+>  	struct dp_link *link;
+>  	struct dp_panel *panel;
+> -	struct drm_connector **connector;
+> +	struct drm_connector *connector;
+>  	struct device *dev;
+>  	struct drm_device *drm_dev;
+> 
+> @@ -97,59 +97,35 @@ DEFINE_SHOW_ATTRIBUTE(dp_debug);
+> 
+>  static int dp_test_data_show(struct seq_file *m, void *data)
+>  {
+> -	struct drm_device *dev;
+> -	struct dp_debug_private *debug;
+> -	struct drm_connector *connector;
+> -	struct drm_connector_list_iter conn_iter;
+> +	const struct dp_debug_private *debug = m->private;
+> +	const struct drm_connector *connector = debug->connector;
+>  	u32 bpc;
+> 
+> -	debug = m->private;
+> -	dev = debug->drm_dev;
+> -	drm_connector_list_iter_begin(dev, &conn_iter);
+> -	drm_for_each_connector_iter(connector, &conn_iter) {
+> -
+> -		if (connector->connector_type !=
+> -			DRM_MODE_CONNECTOR_DisplayPort)
+> -			continue;
+> -
+> -		if (connector->status == connector_status_connected) {
+> -			bpc = debug->link->test_video.test_bit_depth;
+> -			seq_printf(m, "hdisplay: %d\n",
+> -					debug->link->test_video.test_h_width);
+> -			seq_printf(m, "vdisplay: %d\n",
+> -					debug->link->test_video.test_v_height);
+> -			seq_printf(m, "bpc: %u\n",
+> -					dp_link_bit_depth_to_bpc(bpc));
+> -		} else
+> -			seq_puts(m, "0");
+> +	if (connector->status == connector_status_connected) {
+> +		bpc = debug->link->test_video.test_bit_depth;
+> +		seq_printf(m, "hdisplay: %d\n",
+> +				debug->link->test_video.test_h_width);
+> +		seq_printf(m, "vdisplay: %d\n",
+> +				debug->link->test_video.test_v_height);
+> +		seq_printf(m, "bpc: %u\n",
+> +				dp_link_bit_depth_to_bpc(bpc));
+> +	} else {
+> +		seq_puts(m, "0");
+>  	}
+> 
+> -	drm_connector_list_iter_end(&conn_iter);
+> -
+>  	return 0;
+>  }
+>  DEFINE_SHOW_ATTRIBUTE(dp_test_data);
+> 
+>  static int dp_test_type_show(struct seq_file *m, void *data)
+>  {
+> -	struct dp_debug_private *debug = m->private;
+> -	struct drm_device *dev = debug->drm_dev;
+> -	struct drm_connector *connector;
+> -	struct drm_connector_list_iter conn_iter;
+> -
+> -	drm_connector_list_iter_begin(dev, &conn_iter);
+> -	drm_for_each_connector_iter(connector, &conn_iter) {
+> -
+> -		if (connector->connector_type !=
+> -			DRM_MODE_CONNECTOR_DisplayPort)
+> -			continue;
+> +	const struct dp_debug_private *debug = m->private;
+> +	const struct drm_connector *connector = debug->connector;
+> 
+> -		if (connector->status == connector_status_connected)
+> -			seq_printf(m, "%02x", DP_TEST_LINK_VIDEO_PATTERN);
+> -		else
+> -			seq_puts(m, "0");
+> -	}
+> -	drm_connector_list_iter_end(&conn_iter);
+> +	if (connector->status == connector_status_connected)
+> +		seq_printf(m, "%02x", DP_TEST_LINK_VIDEO_PATTERN);
+> +	else
+> +		seq_puts(m, "0");
+> 
+>  	return 0;
+>  }
+> @@ -161,14 +137,12 @@ static ssize_t dp_test_active_write(struct file 
+> *file,
+>  {
+>  	char *input_buffer;
+>  	int status = 0;
+> -	struct dp_debug_private *debug;
+> -	struct drm_device *dev;
+> -	struct drm_connector *connector;
+> -	struct drm_connector_list_iter conn_iter;
+> +	const struct dp_debug_private *debug;
+> +	const struct drm_connector *connector;
+>  	int val = 0;
+> 
+>  	debug = ((struct seq_file *)file->private_data)->private;
+> -	dev = debug->drm_dev;
+> +	connector = debug->connector;
+> 
+>  	if (len == 0)
+>  		return 0;
+> @@ -179,30 +153,22 @@ static ssize_t dp_test_active_write(struct file 
+> *file,
+> 
+>  	DRM_DEBUG_DRIVER("Copied %d bytes from user\n", (unsigned int)len);
+> 
+> -	drm_connector_list_iter_begin(dev, &conn_iter);
+> -	drm_for_each_connector_iter(connector, &conn_iter) {
+> -		if (connector->connector_type !=
+> -			DRM_MODE_CONNECTOR_DisplayPort)
+> -			continue;
+> -
+> -		if (connector->status == connector_status_connected) {
+> -			status = kstrtoint(input_buffer, 10, &val);
+> -			if (status < 0)
+> -				break;
+> -			DRM_DEBUG_DRIVER("Got %d for test active\n", val);
+> -			/* To prevent erroneous activation of the compliance
+> -			 * testing code, only accept an actual value of 1 here
+> -			 */
+> -			if (val == 1)
+> -				debug->panel->video_test = true;
+> -			else
+> -				debug->panel->video_test = false;
+> +	if (connector->status == connector_status_connected) {
+> +		status = kstrtoint(input_buffer, 10, &val);
+> +		if (status < 0) {
+> +			kfree(input_buffer);
+> +			return status;
+>  		}
+> +		DRM_DEBUG_DRIVER("Got %d for test active\n", val);
+> +		/* To prevent erroneous activation of the compliance
+> +		 * testing code, only accept an actual value of 1 here
+> +		 */
+> +		if (val == 1)
+> +			debug->panel->video_test = true;
+> +		else
+> +			debug->panel->video_test = false;
+>  	}
+> -	drm_connector_list_iter_end(&conn_iter);
+>  	kfree(input_buffer);
+> -	if (status < 0)
+> -		return status;
+> 
+>  	*offp += len;
+>  	return len;
+> @@ -211,25 +177,16 @@ static ssize_t dp_test_active_write(struct file 
+> *file,
+>  static int dp_test_active_show(struct seq_file *m, void *data)
+>  {
+>  	struct dp_debug_private *debug = m->private;
+> -	struct drm_device *dev = debug->drm_dev;
+> -	struct drm_connector *connector;
+> -	struct drm_connector_list_iter conn_iter;
+> -
+> -	drm_connector_list_iter_begin(dev, &conn_iter);
+> -	drm_for_each_connector_iter(connector, &conn_iter) {
+> -		if (connector->connector_type !=
+> -			DRM_MODE_CONNECTOR_DisplayPort)
+> -			continue;
+> -
+> -		if (connector->status == connector_status_connected) {
+> -			if (debug->panel->video_test)
+> -				seq_puts(m, "1");
+> -			else
+> -				seq_puts(m, "0");
+> -		} else
+> +	struct drm_connector *connector = debug->connector;
+> +
+> +	if (connector->status == connector_status_connected) {
+> +		if (debug->panel->video_test)
+> +			seq_puts(m, "1");
+> +		else
+>  			seq_puts(m, "0");
+> +	} else {
+> +		seq_puts(m, "0");
+>  	}
+> -	drm_connector_list_iter_end(&conn_iter);
+> 
+>  	return 0;
+>  }
+> @@ -278,7 +235,7 @@ static int dp_debug_init(struct dp_debug
+> *dp_debug, struct drm_minor *minor)
+> 
+>  struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel 
+> *panel,
+>  		struct dp_usbpd *usbpd, struct dp_link *link,
+> -		struct drm_connector **connector, struct drm_minor *minor)
+> +		struct drm_connector *connector, struct drm_minor *minor)
+>  {
+>  	int rc = 0;
+>  	struct dp_debug_private *debug;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_debug.h
+> b/drivers/gpu/drm/msm/dp/dp_debug.h
+> index 7eaedfbb149c..3f90acfffc5a 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_debug.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_debug.h
+> @@ -43,7 +43,7 @@ struct dp_debug {
+>   */
+>  struct dp_debug *dp_debug_get(struct device *dev, struct dp_panel 
+> *panel,
+>  		struct dp_usbpd *usbpd, struct dp_link *link,
+> -		struct drm_connector **connector,
+> +		struct drm_connector *connector,
+>  		struct drm_minor *minor);
+> 
+>  /**
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
+> b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 1708b7cdc1b3..41a6f58916e6 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -1464,7 +1464,7 @@ void msm_dp_debugfs_init(struct msm_dp
+> *dp_display, struct drm_minor *minor)
+>  	dev = &dp->pdev->dev;
+> 
+>  	dp->debug = dp_debug_get(dev, dp->panel, dp->usbpd,
+> -					dp->link, &dp->dp_display.connector,
+> +					dp->link, dp->dp_display.connector,
+>  					minor);
+>  	if (IS_ERR(dp->debug)) {
+>  		rc = PTR_ERR(dp->debug);
