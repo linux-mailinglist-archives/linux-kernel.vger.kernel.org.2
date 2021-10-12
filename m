@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A21429B23
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABC4429B25
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 03:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhJLBqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 21:46:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37544 "EHLO
+        id S229913AbhJLBul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 21:50:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36237 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229847AbhJLBqY (ORCPT
+        by vger.kernel.org with ESMTP id S229544AbhJLBuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 21:46:24 -0400
+        Mon, 11 Oct 2021 21:50:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634003062;
+        s=mimecast20190719; t=1634003318;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=N7XuxV1xdve3zt5mwi5zf9rSsN0pawUAPW+pIisdSIo=;
-        b=ax131Si4wF6HBCBurh5MKfTQ53AiYwmsU+iAF0zhelt0JGdnFHnA6BtZ2M+ZrzhAXdi1Ca
-        leTF/rVTyfPmV0yiPYI3hJQ3xbtn5lVBfo7q4aplZkd5rzx5kOqtrwGVGUgsu/0VmrFXDc
-        odDzbtOA7xtSXXVFgY/Ku3ots82LYk0=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-68-AGjqv4S6PNuudrXC1ETRrg-1; Mon, 11 Oct 2021 21:44:21 -0400
-X-MC-Unique: AGjqv4S6PNuudrXC1ETRrg-1
-Received: by mail-pg1-f200.google.com with SMTP id z7-20020a63c047000000b0026b13e40309so7781229pgi.19
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:44:21 -0700 (PDT)
+        bh=OE4BpcPUL/+4NL3fF1YxxjxaT7QzlRidmwL0xj0Wr5s=;
+        b=K4LP7zqAejhBmmzGmWiLYOg6EpRCNkrKoMSarkCFhHGRe9NrCY1fS0ztNHyrPkPaDc1cB8
+        nvkzjUn5GesE4cH5gOaggrZ9yyG5nh37YOOurJxQsJ0zGWaNxYaVXLecFMABjVmV0wcVX0
+        GI3rrUHuBYV620ZxhAby2swKVUNJAHs=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-202-mBDcogsWPMCj9XVQruMJGw-1; Mon, 11 Oct 2021 21:48:37 -0400
+X-MC-Unique: mBDcogsWPMCj9XVQruMJGw-1
+Received: by mail-ot1-f69.google.com with SMTP id o23-20020a9d7197000000b0054e537c6628so7200491otj.14
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 18:48:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N7XuxV1xdve3zt5mwi5zf9rSsN0pawUAPW+pIisdSIo=;
-        b=iWnjfravcAOTdP+V8NzcLdl0s6HxGJZpvi84dO2Qt8Wg7fLvUbX/kKVfpVYcOnSRyX
-         EKC8nFjuJJ04h5hBRbXS8Qm9QkTd7Nvd6yoiswHxyJZ5kRSEhr6RX4Y5cYxcoPoezI5c
-         WormLpFzZF7L9Dlo5vN1vUF8EBNUxO7+cHn5fIuninOV2ZvMOD5QcBrSpwtdMHmPurHT
-         Uju5JWWMQKfoI0ZWY3lQWHm4b3Ax5yB4EVQ3TfuSnCjF+QhIrteXOUro+q9TfwlMmZ58
-         j+YmoHWjl5ZGr12dPubAsYYTlk6qNiBeKkGRJHphsTgmg9w0YWLG++LKDYkbISWeJahS
-         iZPQ==
-X-Gm-Message-State: AOAM532gtJkGcjyX+6NGGW8VaXH/TQm9D38sm69p5krHHMOtsytyZgnH
-        qn6aNL89eGWuLc4JYxaY9fPbu8TWq+IqZFf+09LJYyvAnJvoWcWqG2yzPDL2/85mLMvUuVjeyce
-        V46C01LvKGL/kEr5eIfM1Ta9o
-X-Received: by 2002:a17:90b:3852:: with SMTP id nl18mr2829332pjb.9.1634003060510;
-        Mon, 11 Oct 2021 18:44:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwlbuOxtzFHegnIMLUhs4POPvF85B+TNSTe0D0W5qKedOJQ0nmMQPvf79G11R3u3blaCXq0jw==
-X-Received: by 2002:a17:90b:3852:: with SMTP id nl18mr2829308pjb.9.1634003060166;
-        Mon, 11 Oct 2021 18:44:20 -0700 (PDT)
-Received: from t490s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id a22sm9062988pfg.61.2021.10.11.18.44.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 18:44:19 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 09:44:12 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-Message-ID: <YWTobPkBc3TDtMGd@t490s>
-References: <20210930215311.240774-1-shy828301@gmail.com>
- <20210930215311.240774-3-shy828301@gmail.com>
- <YV4Dz3y4NXhtqd6V@t490s>
- <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
- <CAHbLzkqm_Os8TLXgbkL-oxQVsQqRbtmjdMdx0KxNke8mUF1mWA@mail.gmail.com>
- <YWTc/n4r6CJdvPpt@t490s>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OE4BpcPUL/+4NL3fF1YxxjxaT7QzlRidmwL0xj0Wr5s=;
+        b=mxWTTjzKSMqyVDVTehjPHVYYsImSDL8OyIzZ+z9IQ2CkYeCO8cM7jjA+khWgYKEAFH
+         zvDbBYVHL2u9qmS3ziU97KMUo5Ba7s75ntGc1XtI8LC/Z4n4sp1cey6UGjH4+OOaVt1H
+         OZ9fc79HXTEAC7R+AazuOTYaVHukFYp+3lHWZ2cHBtwHChPEizM6cdXlII3fEy7o7nmp
+         bpFqZy/mb3UXhR81I1SvD3Ng5DePR9TX7ejSd6ai2SZnD7tkUEsTxmejxemlSf0f1xDk
+         sRBydyuPa+kZh3x4ITMLLoypk1ZZeiX7/aPrcCazEqxZszHSo1MUQUufXOZcy75okIRF
+         APHw==
+X-Gm-Message-State: AOAM532Ks1w+k66JGERYgMe9mDQkrfNIrdG2R4fLgLc+c4IgNK9QhIQP
+        P3W7azENr66RsZBIie6U+iylvISWdW4hqyCevj29SretKWRD5ZFsQ6J8NIXCWp111X0jejEUabX
+        4lQjzSP0zr1LP2Pf+IeQb3zue2M1Rzf5W3mjvRhxe
+X-Received: by 2002:a9d:189:: with SMTP id e9mr23685531ote.243.1634003316180;
+        Mon, 11 Oct 2021 18:48:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy0wjmU6qu0OKfix9B+u70tXguRr1Ws9yRlyrxW9wd6RRK26qY3EuemBKrlvcwkNxO1V6S7eHXRLoRLEwGkDBU=
+X-Received: by 2002:a9d:189:: with SMTP id e9mr23685522ote.243.1634003315958;
+ Mon, 11 Oct 2021 18:48:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YWTc/n4r6CJdvPpt@t490s>
+References: <0f7871be-9ca6-5ae4-3a40-5db9a8fb2365@amd.com> <a6d2d16c-173f-d49b-ec54-defd6be2bb0c@amd.com>
+In-Reply-To: <a6d2d16c-173f-d49b-ec54-defd6be2bb0c@amd.com>
+From:   David Airlie <airlied@redhat.com>
+Date:   Tue, 12 Oct 2021 11:48:24 +1000
+Message-ID: <CAMwc25o9wSPd4PgS56j7GApcFYE=ZY9LHpiFvtE6RVgdQKzBFA@mail.gmail.com>
+Subject: Re: BUG: KASAN: use-after-free in enqueue_timer+0x4f/0x1e0
+To:     Kim Phillips <kim.phillips@amd.com>
+Cc:     Ainux <ainux.wang@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        airlied <airlied@linux.ie>, "Vetter, Daniel" <daniel@ffwll.ch>,
+        sterlingteng@gmail.com, chenhuacai@kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 08:55:26PM -0400, Peter Xu wrote:
-> Another thing is I noticed soft_offline_in_use_page() will still ignore file
-> backed split.  I'm not sure whether it means we'd better also handle that case
-> as well, so shmem thp can be split there too?
+On Tue, Oct 12, 2021 at 2:07 AM Kim Phillips <kim.phillips@amd.com> wrote:
+>
+> Hi,
+>
+> On 10/5/21 1:10 PM, Kim Phillips wrote:
+> > Hi, I occasionally see the below trace with Linus' master on an
+> > AMD Milan system:
+> >
+> > [   25.657322] BUG: kernel NULL pointer dereference, address: 0000000000000000
+> > [   25.665097] #PF: supervisor instruction fetch in kernel mode
+> > [   25.671448] #PF: error_code(0x0010) - not-present page
+> <snip>
+> > That bisection led to this commit:
+> >
+> > commit aae74ff9caa8de9a45ae2e46068c417817392a26
+> > Author: Ainux <ainux.wang@gmail.com>
+> > Date:   Wed May 26 19:15:15 2021 +0800
+> >      drm/ast: Add detect function support
+> <snip>
+> > I confirmed that if I revert it from v5.15-rc4 (after reverting
+> > its dependent 572994bf18ff "drm/ast: Zero is missing in detect
+> > function"), the problem goes away.
+> >
+> > Full .config, dmesg attached.
+> >
+> > I can test any possible fixes...
+>
+>
+> Ping - if no fixes are in the works, can the offending commit(s)
+> be reverted?
 
-Please ignore this paragraph - I somehow read "!PageHuge(page)" as
-"PageAnon(page)"...  So I think patch 5 handles soft offline too.
+tzimmermann?
 
--- 
-Peter Xu
+Dave.
 
