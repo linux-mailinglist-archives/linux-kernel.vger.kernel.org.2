@@ -2,129 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8581142AB58
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C0442AB63
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhJLR7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:59:33 -0400
-Received: from mga17.intel.com ([192.55.52.151]:14899 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230522AbhJLR73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:59:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="208029258"
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="208029258"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 10:57:27 -0700
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="626042986"
-Received: from fiegl-mobl.ger.corp.intel.com (HELO [10.249.40.252]) ([10.249.40.252])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 10:57:26 -0700
-Message-ID: <77d10fa8-c07a-b679-d712-6fd05229e4d2@linux.intel.com>
-Date:   Tue, 12 Oct 2021 20:57:37 +0300
+        id S231994AbhJLSBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 14:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231739AbhJLSBI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 14:01:08 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93CEC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:59:06 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id u18so357937lfd.12
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:59:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fqSNsVOtXYPiifkp+lepAhAhHgqhsFkG1XDADIpg/Pc=;
+        b=FY/BRNyYSoeaiJSrAAHQ3BrZLM0CaAv9w/dXHHjnPfLhtbC9gLNZ9O9rgLQDmfFZ9o
+         8Mgo15NFVUl5gkJg7VmqhjBEsMkyCryU/OfNnkqXoLyp/rMiFDeur2O6jhe6h/s3zLwA
+         o2kFQw8ViM/udeGTcQaOp6dV30r8PdS4IHCjQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fqSNsVOtXYPiifkp+lepAhAhHgqhsFkG1XDADIpg/Pc=;
+        b=A18A9zuNWCrrcmHOc+X5QqnWgUxT9c+8oTJ9p4IMbNdU1MrKsCEgYoGu6vQMiomj1a
+         nll9pHGa/GzEnSdNkmeLWX161du6vPpv5i4kNwddTZHMp7VcaCZi8ibrtNNIX73GASOJ
+         6PQkF52rBBbPrremleAmVlPGOMi2Xu4dao7YJrnAdJsBwrZPktOAcI32KVr0yugQoRWw
+         gqIu39zH+jH9I5IUvaQy62PmMbfDPAvtjm9GrK7QYjJL703BcZJI+YVUHiqh839+Llep
+         b0856U3mfelNb2axE+2TfLDOTIQqQxEnwfjNaQO0Lzx/hgyf+jU0blx+wOYi7mjhU7Jr
+         NaNg==
+X-Gm-Message-State: AOAM533+vEnxNZ/OUeiugPw3IZ7rvq7/FpM5CruzBt0yHXv89Txf8kbE
+        whj6/wD9GNvnlqegSq1ix32jMzVyFiT/D/9Q
+X-Google-Smtp-Source: ABdhPJzWr+h36RUqWGWMsBYRDpEyKRpIp1Yu46eU8YXW/f7c6aWn6XlquT6jru6pq1GNMNgXE59/Hw==
+X-Received: by 2002:a2e:94cd:: with SMTP id r13mr30971436ljh.529.1634061544893;
+        Tue, 12 Oct 2021 10:59:04 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id h10sm1186688ljb.60.2021.10.12.10.59.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 10:59:03 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id t9so582400lfd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:59:02 -0700 (PDT)
+X-Received: by 2002:a05:6512:10d0:: with SMTP id k16mr2835560lfg.150.1634061542163;
+ Tue, 12 Oct 2021 10:59:02 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v5] checkpatch: get default codespell dictionary path from
- package location
-Content-Language: en-US
-To:     Joe Perches <joe@perches.com>, apw@canonical.com
-Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel@vger.kernel.org
-References: <20211012112918.19166-1-peter.ujfalusi@linux.intel.com>
- <307188c4a27dc488437e74d5f8980dfcad65ecbd.camel@perches.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <307188c4a27dc488437e74d5f8980dfcad65ecbd.camel@perches.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CAHk-=wjMyZLH+ta5SohAViSc10iPj-hRnHc-KPDoj1XZCmxdBg@mail.gmail.com>
+ <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk> <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
+ <YSqOUb7yZ7kBoKRY@zeniv-ca.linux.org.uk> <YS40qqmXL7CMFLGq@arm.com>
+ <YS5KudP4DBwlbPEp@zeniv-ca.linux.org.uk> <YWR2cPKeDrc0uHTK@arm.com>
+ <CAHk-=wjvQWj7mvdrgTedUW50c2fkdn6Hzxtsk-=ckkMrFoTXjQ@mail.gmail.com>
+ <YWSnvq58jDsDuIik@arm.com> <CAHk-=wiNWOY5QW5ZJukt_9pHTWvrJhE2=DxPpEtFHAWdzOPDTg@mail.gmail.com>
+ <YWXFagjRVdNanGSy@arm.com>
+In-Reply-To: <YWXFagjRVdNanGSy@arm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 12 Oct 2021 10:58:46 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg3prAnhWZetJvwZdugn7A7CpP4ruz1tdewha=8ZY8AJw@mail.gmail.com>
+Message-ID: <CAHk-=wg3prAnhWZetJvwZdugn7A7CpP4ruz1tdewha=8ZY8AJw@mail.gmail.com>
+Subject: Re: [RFC][arm64] possible infinite loop in btrfs search_ioctl()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 12, 2021 at 10:27 AM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> Apart from fault_in_pages_*(), there's also fault_in_user_writeable()
+> called from the futex code which uses the GUP mechanism as the write
+> would be destructive. It looks like it could potentially trigger the
+> same infinite loop on -EFAULT.
 
+Hmm.
 
-On 12/10/2021 16:57, Joe Perches wrote:
-> On Tue, 2021-10-12 at 14:29 +0300, Peter Ujfalusi wrote:
->> The standard location of dictionary.txt is under codespell's package, on
->> my machine atm (codespell 2.1, Artix Linux):
->> /usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
->>
->> Since we enable the codespell by default for SOF I have constant:
->> No codespell typos will be found - \
->> file '/usr/share/codespell/dictionary.txt': No such file or directory
->>
->> The patch proposes to try to fix up the path following the recommendation
->> found here:
->> https://github.com/codespell-project/codespell/issues/1540
-> 
-> trivia:
-> 
->> @@ -325,9 +326,31 @@ GetOptions(
->>  	'kconfig-prefix=s'	=> \${CONFIG_},
->>  	'h|help'	=> \$help,
->>  	'version'	=> \$help
->> -) or help(1);
->> +) or $help = 2;
->> +
->> +my $python_codespell_dict = << "EOF";
-> 
-> Because you add a semicolon after "EOF"
-> 
->> +import os.path as op
->> +import codespell_lib
->> +codespell_dir = op.dirname(codespell_lib.__file__)
->> +codespell_file = op.join(codespell_dir, 'data', 'dictionary.txt')
->> +print(codespell_file, end='')
->> +EOF
->> +;
-> 
-> this is an extra semicolon
+I think the reason we do fault_in_user_writeable() using GUP is that
 
-Ah, I see. It shows that perl is not my fo to scripting language.
+ (a) we can avoid the page fault overhead
 
-> 
->> +if ($user_codespellfile) {
->> +	# Use the user provided codespell file unconditionally
->> +	$codespellfile = $user_codespellfile;
->> +} else {
->> +	# Try to find the codespell install location to use it as default path
->> +	if (($codespell || $help) && which("codespell") ne "" && which("python") ne "") {
-> 
-> and I would keep the my $python_codespell_dict definition local to this block.
+ (b) we don't have any good "atomic_inc_user()" interface or similar
+that could do a write with a zero increment or something like that.
 
-OK, I did it like this because to my eyes this looks strange:
+We do have that "arch_futex_atomic_op_inuser()" thing, of course. It's
+all kinds of crazy, but we *could* do
 
-if ($user_codespellfile) {
-	# Use the user provided codespell file unconditionally
-	$codespellfile = $user_codespellfile;
-} else {
-	# Try to find the codespell install location to use it as default path
-	if (($codespell || $help) && which("codespell") ne "" && which("python") ne "") {
-		my $python_codespell_dict = << "EOF";
+       arch_futex_atomic_op_inuser(FUTEX_OP_ADD, 0, &dummy, uaddr);
 
-import os.path as op
-import codespell_lib
-codespell_dir = op.dirname(codespell_lib.__file__)
-codespell_file = op.join(codespell_dir, 'data', 'dictionary.txt')
-print(codespell_file, end='')
-EOF
+instead of doing the fault_in_user_writeable().
 
-		my $codespell_dict = `python -c "$python_codespell_dict" 2> /dev/null`;
-		$codespellfile = $codespell_dict if (-e $codespell_dict);
-	}
-}
- 
->> +		my $codespell_dict = `python3 -c "$python_codespell_dict" 2> /dev/null`;
->> +		$codespellfile = $codespell_dict if (-e $codespell_dict);
->> +	}
->> +}
-> 
-> It's wrong to check which("python") and then exec `python3 ...`
+That might be a good idea anyway. I dunno.
 
-Oops, you are right.
+But I agree other options exist:
 
-> 
-> 
+> I wonder whether we should actually just disable tag checking around the
+> problematic accesses. What these callers seem to have in common is using
+> pagefault_disable/enable(). We could abuse this to disable tag checking
+> or maybe in_atomic() when handling the exception to lazily disable such
+> faults temporarily.
 
--- 
-Péter
+Hmm. That would work for MTE, but possibly be very inconvenient for
+other situations.
+
+> A more invasive change would be to return a different error for such
+> faults like -EACCESS and treat them differently in the caller.
+
+That's _really_ hard for things like "copy_to_user()", that isn't a
+single operation, and is supposed to return the bytes left.
+
+Adding another error return would be nasty.
+
+We've had hacks like "squirrel away the actual error code in the task
+structure", but that tends to be unmaintainable because we have
+interrupts (and NMI's) doing their own possibly nested atomics, so
+even disabling preemption won't actually fix some of the nesting
+issues.
+
+All of these things make me think that the proper fix ends up being to
+make sure that our "fault_in_xyz()" functions simply should always
+handle all faults.
+
+Another option may be to teach the GUP code to actually check
+architecture-specific sub-page ranges.
+
+        Linus
