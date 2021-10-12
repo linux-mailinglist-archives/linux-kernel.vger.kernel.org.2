@@ -2,86 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E6E429FA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA68429FA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234590AbhJLIWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:22:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232541AbhJLIVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:21:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C27A6101D;
-        Tue, 12 Oct 2021 08:19:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634026794;
-        bh=lDPufYSiKyvGGDrYONfULzGOTQL591ZiKQDt8MPRrw8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EbhrCQT6mNhvQPiAFl8cNGZj7me7jYjv8/NCbzUy/aKo5RfWSXhn4M4I78GlMhNRN
-         pruhFBcjfGZcQkqF+4MPON1fwgpXBNmSoDzYF/fF4/0mYUDH3g6ZXPuATahOpCcOgq
-         +q0S6w9teF4Kw+i2PtOTccVI0E/N4LIvGostQHdf+3j1mApKvEZyDRr7DlVJHOTpCE
-         nx5qm85PGJTFzlTIBreR9gDbjD/K+a/s0oVk3UIkQOQh6bgoQImCGJ4ckusQxKlJ/D
-         eAqfvgiMXVFt82AgIP8Y/awQPdli5FYtnaEAdAkxd4wg6pPT4RTUZVzqLF0EI5mlCy
-         rDeHnI04DOUdw==
-Date:   Tue, 12 Oct 2021 09:19:48 +0100
-From:   Will Deacon <will@kernel.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        James Clark <James.Clark@arm.com>
-Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
-Message-ID: <20211012081948.GA5156@willie-the-truck>
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-4-german.gomez@arm.com>
- <20210923135016.GG400258@leoy-ThinkPad-X240s>
- <20210923144048.GB603008@leoy-ThinkPad-X240s>
- <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
- <20211004122724.GC174271@leoy-ThinkPad-X240s>
- <6b092f13-832f-5d1d-a504-aea96c81bf17@arm.com>
- <20211006095124.GC14400@leoy-ThinkPad-X240s>
- <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
+        id S234774AbhJLIWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:22:08 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:53692
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234697AbhJLIWF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 04:22:05 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 52DD03FFEE
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 08:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634026803;
+        bh=YgBOoBE6WBJkZpoEedU4v+wo/4fFb7GNdHb9LPdBNRo=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=BGs++jO/vuCh5StZVLRWBTmKB37QPS5q+A4+htnD5gPqDRl4sJO7y238yUZOs5vSq
+         WVPZKXNiSc7gwUjKKJiTDujtlTsew2bC8PyDjQKybiZeAXy7wIyTV3LXwLjUJyQNpO
+         XPmTvNbrrYMsb7tomPEzMKfdGTKx6+D3r5WYDv3fBTkGoMBLdXtnw1CC5WGZ/4s5YS
+         2l5Exv+ayVcluw+yMyc/x7e4maVInxu/1IFz85WTYQAMt3XTiuSwPMZ2rILyd+It/i
+         rKmFWW2XXO8J/ErP/Yk1VgzltrsBdcjtAzb2B25Gda+OfXMMrOEUwQMDV6j/ldP0Sx
+         9xyM2jaahEzkQ==
+Received: by mail-lf1-f72.google.com with SMTP id o5-20020ac24c45000000b003fd932e4642so3404800lfk.14
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:20:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YgBOoBE6WBJkZpoEedU4v+wo/4fFb7GNdHb9LPdBNRo=;
+        b=wLFcWVmQrNWSQiYNB1tt/sDJvQ8kptgw81cHMCBFDEqWNlQo3zgDTosthUfXp7d4d2
+         p0BAIZ/03khMIpkiE64uuAEOUESQOkpkNAtqiSpI53aGEBvTmdXpKkD3nxK0NbQuvv8J
+         Q55BoZQWNNU2cLxWRjg36p4Y64HwNibU6BamxP8zU/UvCptYC4Kp4Ci/v12m98pxWvfG
+         mMp3xtzqxFcOZxW0RL/uOKR2PBfi0CrfwFh0Mj8LODweIHbQcNIEGkrbcFzbqyoEcWJC
+         FyU5T5JoM0yoBA8RBWFLTUkfIL2XXeqW/g7KABdIfaq7TTS90QgXw7ehgaspYRhd9Utv
+         exdg==
+X-Gm-Message-State: AOAM532nUctjPbXx0KHMOnouedV9frKJxvQQ+HhPXk36cgpzwk2sb4Xv
+        Rb714sNvptRT9dgPtOufN4ln2GDRUfvj9E24VT4AHdxA2jfo2KKS0RJjgWAZ9K6ihJ3XguOcfMk
+        WsmNWO0XB8rtfEvl22W7gvOy69SE3RhzU20qs6LuEOg==
+X-Received: by 2002:a05:6512:36d0:: with SMTP id e16mr32049889lfs.562.1634026802679;
+        Tue, 12 Oct 2021 01:20:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx5nt1J/J3Tg2BYl7rjsgFihnOVidqeHI1J8sLxUySVlB5v/ZHqHtnXrW819/CHMQt6T+AsOA==
+X-Received: by 2002:a05:6512:36d0:: with SMTP id e16mr32049866lfs.562.1634026802484;
+        Tue, 12 Oct 2021 01:20:02 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id f4sm962512lfr.43.2021.10.12.01.20.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 01:20:02 -0700 (PDT)
+Subject: Re: [PATCH 8/8] rtc: max77686: add MAX77714 support
+To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>
+References: <20211011155615.257529-1-luca@lucaceresoli.net>
+ <20211011155615.257529-9-luca@lucaceresoli.net>
+ <6d7fd095-948a-c5a7-e53a-422fe33fec57@lucaceresoli.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <6af6de2c-673f-3405-6ac4-8b4c842ce9f1@canonical.com>
+Date:   Tue, 12 Oct 2021 10:20:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <6d7fd095-948a-c5a7-e53a-422fe33fec57@lucaceresoli.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 04:55:37PM +0100, German Gomez wrote:
-> Hi Leo,
+On 11/10/2021 18:12, Luca Ceresoli wrote:
+> Hi,
 > 
-> On 06/10/2021 10:51, Leo Yan wrote:
-> > On Wed, Oct 06, 2021 at 10:35:20AM +0100, German Gomez wrote:
-> >
-> > [...]
-> >
-> >>> So simply say, I think the head pointer monotonically increasing is
-> >>> the right thing to do in Arm SPE driver.
-> >> I will talk to James about how we can proceed on this.
-> > Thanks!
+> see below for the issues with interrupt implementation that I mentioned
+> in the cover letter.
 > 
-> I took this offline with James and, though it looks possible to patch
-> the SPE driver to have a monotonically increasing head pointer in order
-> to simplify the handling in the perf tool, it could be a breaking change
-> for users of the perf_event_open syscall that currently rely on the way
-> it works now.
+> On 11/10/21 17:56, Luca Ceresoli wrote:
+>> The RTC included in the MAX77714 PMIC is very similar to the one in the
+>> MAX77686. Reuse the rtc-max77686.c driver with the minimum required changes
+>> for the MAX77714 RTC.
+>>
+>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+>> ---
+>>  drivers/rtc/Kconfig        |  2 +-
+>>  drivers/rtc/rtc-max77686.c | 24 ++++++++++++++++++++++++
+>>  2 files changed, 25 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+>> index e1bc5214494e..a73591ad292b 100644
+>> --- a/drivers/rtc/Kconfig
+>> +++ b/drivers/rtc/Kconfig
+>> @@ -375,7 +375,7 @@ config RTC_DRV_MAX8997
+>>  
+>>  config RTC_DRV_MAX77686
+>>  	tristate "Maxim MAX77686"
+>> -	depends on MFD_MAX77686 || MFD_MAX77620 || COMPILE_TEST
+>> +	depends on MFD_MAX77686 || MFD_MAX77620 || MFD_MAX77714 || COMPILE_TEST
+>>  	help
+>>  	  If you say yes here you will get support for the
+>>  	  RTC of Maxim MAX77686/MAX77620/MAX77802 PMIC.
+>> diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
+>> index 9901c596998a..e6564bc2171e 100644
+>> --- a/drivers/rtc/rtc-max77686.c
+>> +++ b/drivers/rtc/rtc-max77686.c
+>> @@ -19,6 +19,7 @@
+>>  
+>>  #define MAX77686_I2C_ADDR_RTC		(0x0C >> 1)
+>>  #define MAX77620_I2C_ADDR_RTC		0x68
+>> +#define MAX77714_I2C_ADDR_RTC		0x48
+>>  #define MAX77686_INVALID_I2C_ADDR	(-1)
+>>  
+>>  /* Define non existing register */
+>> @@ -203,6 +204,28 @@ static const struct max77686_rtc_driver_data max77686_drv_data = {
+>>  	.regmap_config = &max77686_rtc_regmap_config,
+>>  };
+>>  
+>> +static const struct regmap_irq_chip max77714_rtc_irq_chip = {
+>> +	.name		= "max77714-rtc",
+>> +	.status_base	= MAX77686_RTC_INT,
+>> +	.mask_base	= MAX77686_RTC_INTM,
+>> +	.num_regs	= 1,
+>> +	.irqs		= max77686_rtc_irqs,
+>> +	.num_irqs	= ARRAY_SIZE(max77686_rtc_irqs) - 1, /* no WTSR on 77714 */
+>> +};
+>> +
+>> +static const struct max77686_rtc_driver_data max77714_drv_data = {
+>> +	.delay = 16000,
+>> +	.mask  = 0x7f,
+>> +	.map   = max77686_map,
+>> +	.alarm_enable_reg = false,
+>> +	.rtc_irq_from_platform = false,
 > 
-> An alternative way we considered to simplify the patch is to change the
-> logic inside the find_snapshot callback so that it records the entire
-> contents of the aux buffer every time.
+> As far as I could understand, rtc_irq_from_platform should be 'true'.
+> This would trigger the 'if' branch in function
+> max77686_init_rtc_regmap() [0]:
 > 
-> What do you think?
+>   if (info->drv_data->rtc_irq_from_platform) {
+> 	struct platform_device *pdev = to_platform_device(info->dev);
+> 
+> 	info->rtc_irq = platform_get_irq(pdev, 0);
+> 	if (info->rtc_irq < 0)
+> 		return info->rtc_irq;
+>   } else {
+> 	info->rtc_irq =  parent_i2c->irq;
+>   }
+> 
+> Calling platform_get_irq() seems correct for the MAX77714, which can
+> generate various IRQ events, collecting them in a register, and raise a
+> single IRQ to the CPU via a physical pin.
+> 
+> However, if I set rtc_irq_from_platform = true, platform_get_irq()
+> returns IRQ number '1', which ends up in:
+> 
+>   dummy 0-0048: Failed to request IRQ 1 for max77714-rtc: -22
+>   max77686-rtc max77714-rtc: Failed to add RTC irq chip: -22
+>   max77686-rtc: probe of max77714-rtc failed with error -22
+> 
+> I compared my code with other MFD drivers and their cell drivers (but
+> their datasheets is not available so I had to add some guesswork), and
+> couldn't find out where my code is wrong.
+> 
+> Unfortunately I have no IRQ access on my board (and I don't need them
+> for my use case). For this reason I initially thought of disabling all
+> the IRQ code in rtc-max77686.c via a new flag, but it would be quite
+> invasive and I wouldn't even be able to test that existing hardware
+> still works. Implementing a new RTC driver for the MAX77714 does not
+> seem to be a sane option as the hardware is really 99% equal to the
+> MAX77686 RTC.
+> 
 
-What does intel-pt do?
+I think the flag should be false, not true. The true means you have RTC
+device with its own interrupt. For example in DT it could look like:
 
-Will
+  pmic@1c {
+      compatible = "maxim,max77714";
+      reg = <0x1c>;
+      interrupt-parent = <&gpio2>;
+      interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
+
+      interrupt-controller;
+      #interrupt-cells = <2>;
+   };
+
+   rtc@48 {
+      compatible = "maxim,max77714-rtc";
+      reg = <0x48>;
+      interrupt-parent = <&gpio2>;
+      interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+   };
+
+In your case, the RTC device will not have its own devicetree node and
+will be instantiated as MFD child device. The only interrupt line
+available is the parents interrupt line - the same as in max77686 and
+max77802 setups.
+
+Have in mind that this does not necessarily reflect real HW, but how we
+represent it in devicetree and driver model.
+
+Best regards,
+Krzysztof
