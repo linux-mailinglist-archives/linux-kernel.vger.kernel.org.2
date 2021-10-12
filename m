@@ -2,120 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8095942ADD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D9E42ADD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbhJLUcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
+        id S234738AbhJLUcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233308AbhJLUcH (ORCPT
+        with ESMTP id S234611AbhJLUcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:32:07 -0400
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E662FC061745;
-        Tue, 12 Oct 2021 13:30:05 -0700 (PDT)
-Received: from hillosipuli.retiisi.eu (dkvn5pty0gzs3nltj987t-3.rev.dnainternet.fi [IPv6:2001:14ba:4457:9640:1e2d:1f75:a607:ef37])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 1390E1B000E5;
-        Tue, 12 Oct 2021 23:30:02 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1634070602;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5BeTqxU2tuCzwC78oNi5R6K+v6fdklNFj2d/0XcPbR0=;
-        b=IVqOLMmaw/yB1KRguzY4U6cLAmOe3Iitlnn1vXaAqgPbaUf/B4gs5gpB3PSmcnbpXT+gAM
-        t6EC1M421Fw8+rSo0mw7fA5NBW8iVbmrywo+BCzzeFsuG5LviSQlP65RZReBlJWUSVpo/X
-        9igrTvNO8Si0K+WmldyecApKBUzwuRHHOWLtffox5ELRyjcOM1zen12huhlSrMqgzOVVva
-        gUXCh49HH7FFmp4xV08nYb6ecXbYJPEL//n0kEw9D56PBTKRXgGJU+vPmTkzDCEeHDGsuO
-        fyHZ7iuIpAKUSPXH+MEOz4FDoj3vgLr/ec3H8LrZ2wN2r8LrmNoE1IuD1NSerg==
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 46723634C90;
-        Tue, 12 Oct 2021 23:30:01 +0300 (EEST)
-Date:   Tue, 12 Oct 2021 23:30:00 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     Jacopo Mondi <jacopo@jmondi.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>
-Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
-Message-ID: <YWXwSAm3OO/WTkOL@valkosipuli.retiisi.eu>
-References: <m3fstfoexa.fsf@t19.piap.pl>
- <20211009102446.jrvrdr7whtd2rv4z@uno.localdomain>
- <m3mtnflpna.fsf@t19.piap.pl>
- <20211011143420.vm6ncl5gdv44nsn3@uno.localdomain>
- <m3a6jel9ce.fsf@t19.piap.pl>
+        Tue, 12 Oct 2021 16:32:24 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FCCC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:30:22 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id v2so412675qve.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4GGg6YDFTFLvfSMfk2LZM8RdDFIaln1wMqw8oaDtqH0=;
+        b=hNZgve4nfR/ktStdvmJ6sLJWUwUq36MrsEVqNlZKX0dwKLeUTDFKu4eRUdwJYcr8Cp
+         X6logeGBS268aH1SnFYGh6rVHi1YJLJ46JtrC14GFV6BbSFVPk4PGhsG5+p2wIzgwJYz
+         A+WkTqpWVKef8hANRXErpe9o2JSE5/o+aYXIYqtSYoyLIspNFq2+odUg5AFuHkWpZDcv
+         mfdPN0tFwmaDXlp2bwWoJa4Zq8DBGQLztqG4mlQODEP+6Giyce04JLUa9WG4xNxydaTC
+         PnNmWri8Zl/VFcra7SLHzpexF3Dwi8be0Oxtrf+o0TD1plKuaRfCLrTw0gMfNtDrb1X/
+         gW1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4GGg6YDFTFLvfSMfk2LZM8RdDFIaln1wMqw8oaDtqH0=;
+        b=ikcNsu4hl+fLlKU2cItaloRQA/lU98R9RQql8SjyE8fjzHHM1ikLfBd4IpOQgCpjZ/
+         cGZXh/zvp9ShG6yzi7AU0BgzPUYTM2i4vgaLqrtAjdMpI6QGASU1B+Es70a2t/PVI900
+         wkDVfUNzpf+QqHt8S6jEi2++wq8dhVT+By7TPeK0DVJq8EdaSy+XK7jhH8jqzPj98GA2
+         oUlzkEdHsTenE6VxM+cfjU+rzMtrebA+yqcjsE7gGfCY/A+QQSlfSW+lOHq4erQ0Vu08
+         6oQon6UMBnvhtfn1VEQ+nIzC6AEIpuAefvRq6Uqj+q9AWlL+zl1fQ9WssD/Lb7q8ytFw
+         t94A==
+X-Gm-Message-State: AOAM532TeQi4KDESpRxMxkWzICEJJVx9yenkYBrMgmO3px8Em7T1Snbc
+        AZvzDVv57NWzbOA0jhwgyvES63PuYDwHag==
+X-Google-Smtp-Source: ABdhPJyV2lDPfCvp+7pjPuF37tNMrECpOnmB3AI6jaSTSf2ekiJvsj1OL7GqFeobXSywhFk8k38nuA==
+X-Received: by 2002:a0c:aa51:: with SMTP id e17mr32482978qvb.50.1634070621280;
+        Tue, 12 Oct 2021 13:30:21 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id p7sm5022319qkg.77.2021.10.12.13.30.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 13:30:21 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 16:30:20 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Kent Overstreet <kent.overstreet@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 00/11] PageSlab: eliminate unnecessary compound_head()
+ calls
+Message-ID: <YWXwXINogE0Qb0Ip@cmpxchg.org>
+References: <20211012180148.1669685-1-hannes@cmpxchg.org>
+ <YWXgrhRDIxcoBhA1@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <m3a6jel9ce.fsf@t19.piap.pl>
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1634070602; a=rsa-sha256;
-        cv=none;
-        b=pYuGKFQjZO3IAe5G6WaOKEi/KNw/4uPQ8WDmLUNFmK+lTVRQ6GWaI2TwAFRsk4GDhfnRDd
-        Xezagpd7dudZti9Zr+gH2BNO0c5C108+ffCP7wdEDc/H+WkXry5ENA610Hl5JtfbnNXkum
-        qseRqeaUvWct3IvdI36CnrilUsBy3PmhvQTwSQVr5jj7xQ/259tuAz+5Qxp7UNeUG6ffEh
-        V090BLAnt0ArUMN8ZcoIlbWt/jlQw5d1NYvwcqFm/fMFm3LoEGjMrglj+L1FuUPAGKmhFX
-        35bZuz8yTkPfy/GL+IRI6rA5/AU0oCgOzFTI7QSFsdpdTGb01Goj1cv3GehKNQ==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1634070602;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5BeTqxU2tuCzwC78oNi5R6K+v6fdklNFj2d/0XcPbR0=;
-        b=BHreCLVohgrtNfn39GHj8c8le+62JHSOpl62LuRKJjo0mSTipZPovIWoVvo38FHnB6XvUa
-        HKiLnqEVQFpT2e4yLLvQhm5WPeU1Qwef7Gp2W9azE88nD9YjxhyulGADKLVMsxpQ3PEQ6M
-        GPY3fJ676z8wwNYaS0Zz394Bo3OT4yvmSiZr+uZFSozAn6r0GMywIZgctcEi4RuODT+CCL
-        BeV0wQIZHVh9ogbwur0mxnp/rS5e7z/uT8LTaeXusDxtuBT8EPSvHor2rJQSU511V8upri
-        WFs/l7cRrM47MA1nd4NIcCgcuKZGO4SlQ1vjDstx7vULRE3XS849IEZMQ5to1g==
+In-Reply-To: <YWXgrhRDIxcoBhA1@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On Tue, Oct 12, 2021 at 02:24:17PM +0200, Krzysztof Hałasa wrote:
-> Jacopo,
+On Tue, Oct 12, 2021 at 08:23:26PM +0100, Matthew Wilcox wrote:
+> On Tue, Oct 12, 2021 at 02:01:37PM -0400, Johannes Weiner wrote:
+> > PageSlab() currently imposes a compound_head() call on all callsites
+> > even though only very few situations encounter tailpages. This short
+> > series bubbles tailpage resolution up to the few sites that need it,
+> > and eliminates it everywhere else.
+> > 
+> > This is a stand-alone improvement. However, it's inspired by Willy's
+> > patches to split struct slab from struct page. Those patches currently
+> > resolve a slab object pointer to its struct slab as follows:
+> > 
+> > 	slab = virt_to_slab(p);		/* tailpage resolution */
+> > 	if (slab_test_cache(slab)) {	/* slab or page alloc bypass? */
+> > 		do_slab_stuff(slab);
+> > 	} else {
+> > 		page = (struct page *)slab;
+> > 		do_page_stuff(page);
+> > 	}
+> > 
+> > which makes struct slab an ambiguous type that needs to self-identify
+> > with the slab_test_cache() test (which in turn relies on PG_slab in
+> > the flags field shared between page and slab).
+> > 
+> > It would be preferable to do:
+> > 
+> > 	page = virt_to_head_page(p);	/* tailpage resolution */
+> > 	if (PageSlab(page)) {		/* slab or page alloc bypass? */
+> > 		slab = page_slab(page);
+> > 		do_slab_stuff(slab);
+> > 	} else {
+> > 		do_page_stuff(page);
+> > 	}
+> > 
+> > and leave the ambiguity and the need to self-identify with struct
+> > page, so that struct slab is a strong and unambiguous type, and a
+> > non-NULL struct slab encountered in the wild is always a valid object
+> > without the need to check another dedicated flag for validity first.
+> > 
+> > However, because PageSlab() currently implies tailpage resolution,
+> > writing the virt->slab lookup in the preferred way would add yet more
+> > unnecessary compound_head() call to the hottest MM paths.
+> > 
+> > The page flag helpers should eventually all be weaned off of those
+> > compound_head() calls for their unnecessary overhead alone. But this
+> > one in particular is now getting in the way of writing code in the
+> > preferred manner, and bleeding page ambiguity into the new types that
+> > are supposed to eliminate specifically that. It's ripe for a cleanup.
 > 
-> > I'll pretend I haven't read this not to be dragged in tangential
-> > discussions. My whole point was such a commit message is useless as I
-> > assume if you submit a driver for inclusion you have tested it.
+> So what I had in mind was more the patch at the end (which I now realise
+> is missing the corresponding changes to __ClearPageSlab()).  There is,
+> however, some weirdness with kfence, which appears to be abusing PageSlab
+> by setting it on pages which are not slab pages???
 > 
-> Fine, I will remove that very commit comment.
-> 
-> > I think the clock rate should be assigned in DTS and you should verify
-> > it falls in the supported clock ranges.
-> 
-> Which driver does that, please?
-> clk_set_rate() appears to be used by multiple drivers, I was thinking
-> I can use it.
-> I can see clock frequencies in DTS, but they usually refer to fixed
-> clocks (e.g. crystal-based). The clock I use is IMX6QDL_CLK_CKO, some
-> sort of a shared generic clock from inside of the CPU. I don't know if
-> I could even set its frequency in DTS.
+> 	page = virt_to_page(p);
+> 	if (PageSlab(page)) {		/* slab or page alloc bypass? */
+> 		slab = page_slab(page);	/* tail page resolution */
+> 		do_slab_stuff(slab);
+> 	} else {
+> 		do_page_stuff(page); /* or possibly compound_head(page) */
+> 	}
 
-Please see:
+Can you elaborate why you think this would be better?
 
-	https://hverkuil.home.xs4all.nl/spec/driver-api/camera-sensor.html
+If the object is sitting in a tailpage, the flag test itself could
+avoid the compound_head(), but at the end of the day it's the slab or
+the headpage that needs to be operated on in the fastpaths, and we
+need to do the compound_head() whether the flag is set or not.
 
-Generally camera sensor drivers that set the clock in drivers themselves
-are (very) old.
+I suppose it could make some debugging checks marginally cheaper?
 
--- 
-Regards,
+But OTOH it comes at the cost of the flag setting and clearing loops
+in the slab allocation path, even when debugging checks are disabled.
 
-Sakari Ailus
+And it would further complicate the compound page model by introducing
+another distinct flag handling scheme (would there be other users for
+it?). The open-coded loops as a means to ensure flag integrity seem
+error prone; but creating Set and Clear variants that encapsulate the
+loops sounds like a move in the wrong direction, given the pain the
+compound_head() alone in them has already created.
+
+> There could also be a PageTail check in there for some of the cases --
+> catch people doing something like:
+> 	kfree(kmalloc(65536, GFP_KERNEL) + 16384);
+> which happens to work today, but should probably not.
+
+I actually wondered about that when looking at the slob code. Its
+kfree does this:
+
+	sp = virt_to_page(block);
+	if (PageSlab(compound_head(sp))) {
+		int align = max_t(size_t, ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN);
+		unsigned int *m = (unsigned int *)(block - align);
+		slob_free(m, *m + align);
+	} else {
+		unsigned int order = compound_order(sp);
+		mod_node_page_state(page_pgdat(sp), NR_SLAB_UNRECLAIMABLE_B,
+				    -(PAGE_SIZE << order));
+		__free_pages(sp, order);
+
+	}
+
+Note the virt_to_page(), instead of virt_to_head_page(). It does test
+PG_slab correctly, but if this is a bypass page, it operates on
+whatever tail page the kfree() argument points into. If you did what
+you write above, it would leak the pages before the object.
