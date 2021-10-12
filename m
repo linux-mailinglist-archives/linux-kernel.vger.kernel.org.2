@@ -2,217 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D737E42A16C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1053042A16F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235783AbhJLJzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:55:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20497 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230389AbhJLJzP (ORCPT
+        id S235787AbhJLJ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:57:37 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:46790 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235437AbhJLJ5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:55:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634032393;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b6zpFaoEk3AK/+KJak32kXjy2MJ6L7r5CQXtJQyHUkY=;
-        b=Lo4RYWAuMv4rzX4M8V/Cud1nrOTsKVlA4Esc+sJACzLbht42noga/mbD8EEBiSfSvwTPjW
-        6J794qtaMCl2lr6hANujU6D/HPFgzmpIqdZXiu+4/lReHXoq1yNjmwPobm5+SdHinmDdD1
-        PLcBQLzxLLGmcp45Xd3z0sA+cda5Gq0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-98-hsjvK7tAPIKhII0yFQdp_w-1; Tue, 12 Oct 2021 05:53:10 -0400
-X-MC-Unique: hsjvK7tAPIKhII0yFQdp_w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 12 Oct 2021 05:57:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634032533; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=5qSQYtrGHjpBWl/ojCdJhEuYiM0d4NPaFPe3p9m6H/w=;
+ b=Aqf/9lFmnt1sIUODnSWdosourSez/yRXRhla9PscFzwkyEYLiqVZl56rWHY52IR8qnXYTs/m
+ L6vcIs9WxXzJvVmZmNOnT7ZsaEzj35njiwH8fMt1K7orQEFI3aysbB83ymbo/aRAvXf1teVV
+ tKwD7iH6Fzt7tMhyHIsNfDUHHE4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 61655b8103355859c84bb50e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Oct 2021 09:55:13
+ GMT
+Sender: bgodavar=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F012AC4360C; Tue, 12 Oct 2021 09:55:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 067E979EDC;
-        Tue, 12 Oct 2021 09:53:09 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AB7E9717C0;
-        Tue, 12 Oct 2021 09:53:06 +0000 (UTC)
-Message-ID: <ebf038b7b242dd19aba1e4adb6f4ef2701c53748.camel@redhat.com>
-Subject: Re: [PATCH 0/2] KVM: x86: Fix and cleanup for recent AVIC changes
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 12 Oct 2021 12:53:05 +0300
-In-Reply-To: <YWRtHmAUaKcbWEzH@google.com>
-References: <20211009010135.4031460-1-seanjc@google.com>
-         <9e9e91149ab4fa114543b69eaf493f84d2f33ce2.camel@redhat.com>
-         <YWRJwZF1toUuyBdC@google.com> <YWRtHmAUaKcbWEzH@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        (Authenticated sender: bgodavar)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 45EAEC4338F;
+        Tue, 12 Oct 2021 09:55:11 +0000 (UTC)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Date:   Tue, 12 Oct 2021 15:25:11 +0530
+From:   bgodavar@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     marcel@holtmann.org, bjorn.andersson@linaro.org,
+        johan.hedberg@gmail.com, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, rjliao@codeaurora.org,
+        pharish@codeaurora.org, abhishekpandit@chromium.org
+Subject: Re: [PATCH v1 1/2] arm64: dts: qcom: sc7280: Add bluetooth node on
+ SC7280 IDP board
+In-Reply-To: <YV3cVzI4aVeCjMt2@google.com>
+References: <1633523403-32264-1-git-send-email-bgodavar@codeaurora.org>
+ <YV3cVzI4aVeCjMt2@google.com>
+Message-ID: <bac51fc71002bdd9c20b92571d3e1c7e@codeaurora.org>
+X-Sender: bgodavar@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-11 at 16:58 +0000, Sean Christopherson wrote:
-> On Mon, Oct 11, 2021, Sean Christopherson wrote:
-> > On Sun, Oct 10, 2021, Maxim Levitsky wrote:
-> > > On Fri, 2021-10-08 at 18:01 -0700, Sean Christopherson wrote:
-> > > > Belated "code review" for Maxim's recent series to rework the AVIC inhibit
-> > > > code.  Using the global APICv status in the page fault path is wrong as
-> > > > the correct status is always the vCPU's, since that status is accurate
-> > > > with respect to the time of the page fault.  In a similar vein, the code
-> > > > to change the inhibit can be cleaned up since KVM can't rely on ordering
-> > > > between the update and the request for anything except consumers of the
-> > > > request.
-> > > > 
-> > > > Sean Christopherson (2):
-> > > >   KVM: x86/mmu: Use vCPU's APICv status when handling APIC_ACCESS
-> > > >     memslot
-> > > >   KVM: x86: Simplify APICv update request logic
-> > > > 
-> > > >  arch/x86/kvm/mmu/mmu.c |  2 +-
-> > > >  arch/x86/kvm/x86.c     | 16 +++++++---------
-> > > >  2 files changed, 8 insertions(+), 10 deletions(-)
-> > > > 
-> > > 
-> > > Are you sure about it? Let me explain how the algorithm works:
-> > > 
-> > > - kvm_request_apicv_update:
-> > > 
-> > > 	- take kvm->arch.apicv_update_lock
-> > > 
-> > > 	- if inhibition state doesn't really change (kvm->arch.apicv_inhibit_reasons still zero or non zero)
-> > > 		- update kvm->arch.apicv_inhibit_reasons
-> > > 		- release the lock
-> > > 
-> > > 	- raise KVM_REQ_APICV_UPDATE
-> > > 		* since kvm->arch.apicv_update_lock is taken, all vCPUs will be
-> > > 		kicked out of guest mode and will be either doing someing in
-> > > 		the KVM (like page fault) or stuck on trying to process that
-> > > 		request the important thing is that no vCPU will be able to get
-> > > 		back to the guest mode.
-> > > 
-> > > 	- update the kvm->arch.apicv_inhibit_reasons
-> > > 		* since we hold vm->arch.apicv_update_lock vcpus can't see the new value
-> > 
-> > This assertion is incorrect, kvm_apicv_activated() is not guarded by the lock.
-> > 
-> > > 	- update the SPTE that covers the APIC's mmio window:
-> > 
-> > This won't affect in-flight page faults.
-> > 
-> > 
-> >    vCPU0                               vCPU1
-> >    =====                               =====
-> >    Disabled APICv
-> >    #NPT                                Acquire apicv_update_lock
-> >                                        Re-enable APICv
-> >    kvm_apicv_activated() == false
+Hi Matthias,
+
+On 2021-10-06 22:56, Matthias Kaehlcke wrote:
+> On Wed, Oct 06, 2021 at 06:00:02PM +0530, Balakrishna Godavarthi wrote:
+>> Add bluetooth SoC WCN6750 node for SC7280 IDP board.
+>> 
+>> Signed-off-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7280-idp.dts  |  2 ++
+>>  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 31 
+>> +++++++++++++++++++++++++++++++
+>>  2 files changed, 33 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> index 64fc22a..d3f5393 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+>> @@ -17,6 +17,8 @@
+>> 
+>>  	aliases {
+>>  		serial0 = &uart5;
+>> +		bluetooth0 = &bluetooth;
+>> +		hsuart0 = &uart7;
 > 
-> Doh, that's supposed to be "true".
+> Sort aliases alphabetically.
 > 
-> >    incorrectly handle as regular MMIO
-> >                                        zap APIC pages
-> >    MMIO cache has bad entry
+> Also 'hsuart' should not be used, as Dmitry already pointed out on
+> patch 2/2. I suppose it should be 'serial1', as in 'second serial
+> port of the board'.
 > 
-> Argh, I forgot the memslot is still there, so the access won't be treated as MMIO
-> and thus won't end up in the MMIO cache.
+[Bala]: will update it.
+>>  	};
+>> 
+>>  	chosen {
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> index 272d5ca..05aa729 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> @@ -393,6 +393,24 @@
+>>  				<&tlmm 31 IRQ_TYPE_EDGE_FALLING>;
+>>  	pinctrl-names = "default", "sleep";
+>>  	pinctrl-1 = <&qup_uart7_sleep_cts>, <&qup_uart7_sleep_rts>, 
+>> <&qup_uart7_sleep_tx>, <&qup_uart7_sleep_rx>;
+>> +
+>> +	bluetooth: wcn6750-bt {
+>> +		compatible = "qcom,wcn6750-bt";
+>> +		pinctrl-names = "default";
+>> +		pinctrl-0 = <&bt_en_default>;
 > 
-> So I agree that the code is functionally ok, but I'd still prefer to switch to
-> kvm_vcpu_apicv_active() so that this code is coherent with respect to the APICv
-> status at the time the fault occurred.
-> 
-> My objection to using kvm_apicv_activated() is that the result is completely
-> non-deterministic with respect to the vCPU's APICv status at the time of the
-> fault.  It works because all of the other mechanisms that are in place, e.g.
-> elevating the MMU notifier count, but the fact that the result is non-deterministic
-> means that using the per-vCPU status is also functionally ok.
-
-The problem is that it is just not correct to use local AVIC enable state 
-to determine if we want to populate the SPTE or or just jump to the emulation.
-
-
-For example, assuming that the AVIC is now enabled on all vCPUs,
-we can have this scenario:
-
-    vCPU0                                   vCPU1
-    =====                                   =====
-
-- disable AVIC
-- VMRUN
-                                        - #NPT on AVIC MMIO access
-                                        - *stuck on something prior to the page fault code*
-- enable AVIC
-- VMRUN
-                                        - *still stuck on something prior to the page fault code*
-
-- disable AVIC:
-
-  - raise KVM_REQ_APICV_UPDATE request
-					
-  - set global avic state to disable
-
-  - zap the SPTE (does nothing, doesn't race
-	with anything either)
-
-  - handle KVM_REQ_APICV_UPDATE -
-    - disable vCPU0 AVIC
-
-- VMRUN
-					- *still stuck on something prior to the page fault code*
-
-                                                            ...
-                                                            ...
-                                                            ...
-
-                                        - now vCPU1 finally starts running the page fault code.
-
-                                        - vCPU1 AVIC is still enabled 
-                                          (because vCPU1 never handled KVM_REQ_APICV_UPDATE),
-                                          so the page fault code will populate the SPTE.
-                                          
-
-                                        - handle KVM_REQ_APICV_UPDATE
-                                           - finally disable vCPU1 AVIC
-
-                                        - VMRUN (vCPU1 AVIC disabled, SPTE populated)
-
-					                 ***boom***
-
-
+> Do we also need a pinctrl entry for 'swctrl' ?
+[Bala]: It is in input to APPS and op of BT SoC.
+I don't think to set any configuration as BT SOC will take care of it.
 
 > 
-> At a minimum, I'd like to add a blurb in the kvm_faultin_pfn() comment to call out
-> the reliance on mmu_notifier_seq.
-
-This is a very good idea!
-
-
+>> +		enable-gpios = <&tlmm 85 GPIO_ACTIVE_HIGH>; /* BT_EN */
+>> +		swctrl-gpios = <&tlmm 86 GPIO_ACTIVE_HIGH>; /* SW_CTRL */
 > 
-> E.g. if kvm_zap_gfn_range() wins the race to acquire mmu_lock() after APICv is
-> inhibited/disabled by __kvm_request_apicv_update(), then direct_page_fault() will
-> retry the fault due to the change in mmu_notifier_seq.  If direct_page_fault()
-> wins the race, then kvm_zap_gfn_range() will zap the freshly-installed SPTEs.
-> For the uninhibit/enable case, at worst KVM will emulate an access that could have
-> been accelerated by retrying the instruction.
-
-Yes, 100% agree. 
-
-The thing was super tricky to implement to avoid races that happen otherwise
-this way or another.
-
-
-
-Best regards,
-	Maxim Levitsky
-
+> The comments aren't useful, the property names say the same.
 > 
+[Bala]: will remove them
 
-
+>> +		vddio-supply = <&vreg_l19b_1p8>;
+>> +		vddaon-supply = <&vreg_s7b_0p9>;
+>> +		vddbtcxmx-supply = <&vreg_s7b_0p9>;
+>> +		vddrfacmn-supply = <&vreg_s7b_0p9>;
+>> +		vddrfa0p8-supply = <&vreg_s7b_0p9>;
+>> +		vddrfa1p7-supply = <&vreg_s1b_1p8>;
+>> +		vddrfa1p2-supply = <&vreg_s8b_1p2>;
+>> +		vddrfa2p2-supply = <&vreg_s1c_2p2>;
+>> +		vddasd-supply = <&vreg_l11c_2p8>;
+>> +		max-speed = <3200000>;
+>> +	};
+>>  };
+>> 
+>>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
+>> @@ -504,6 +522,19 @@
+>>  		 */
+>>  		bias-pull-up;
+>>  	};
+>> +
+>> +	bt_en_default: bt_en_default {
+> 
+> 	bt_en: bt-en {
+> 
+>> +		pinmux {
+>> +			pins = "gpio85";
+>> +			function = "gpio";
+>> +		};
+>> +		pinconf {
+>> +			pins = "gpio85";
+>> +			drive-strength = <2>;
+>> +			output-low;
+>> +			bias-pull-down;
+>> +		};
+> 
+> No pinmux & pinconf nodes, see configuration for other pins.
+[Bala]: Thanks for pointing will update in next version
 
 
