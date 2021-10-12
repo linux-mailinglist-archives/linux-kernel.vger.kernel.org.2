@@ -2,101 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDB3429F85
+	by mail.lfdr.de (Postfix) with ESMTP id ED532429F87
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbhJLIQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:16:06 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14333 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234725AbhJLIQE (ORCPT
+        id S234849AbhJLIQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:16:09 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:51166 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234745AbhJLIQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:16:04 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HT7br0BvPz9007;
-        Tue, 12 Oct 2021 16:09:12 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 12 Oct 2021 16:14:00 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 12 Oct 2021 16:13:59 +0800
-Subject: Re: [PATCH 5.4 00/52] 5.4.153-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20211011134503.715740503@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <3edb8308-3846-b17d-c31c-02623142bbbe@huawei.com>
-Date:   Tue, 12 Oct 2021 16:13:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 12 Oct 2021 04:16:06 -0400
+Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0850DF1;
+        Tue, 12 Oct 2021 10:14:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1634026443;
+        bh=OsxZbQcwz1dtkRw/hcxIOr4+ACIDIZMxyBqiI9xMdBc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=agJyJ2+fUWzHCWIGvGGJa7JOWuwKVm2Tg/93XIp41HxFydtMPen19bMqOW2Z48qNA
+         gn0jhD+8BtcLrn8l90ChqvjaNs+NubhQLBeI8p3dB1hwImpLbkFGGCj2DDyLYQjLS3
+         BVJr+pAdrcgrucR7QqshyDZFv8xJganq172JljWI=
+Subject: Re: [PATCH v5 4/8] drm/omap: omap_plane: subclass drm_plane_state
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, khilman@baylibre.com,
+        Benoit Parrot <bparrot@ti.com>
+References: <20210923070701.145377-1-narmstrong@baylibre.com>
+ <20210923070701.145377-5-narmstrong@baylibre.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Message-ID: <b9bb0e4b-26b8-72f0-937b-1a08145352d8@ideasonboard.com>
+Date:   Tue, 12 Oct 2021 11:13:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210923070701.145377-5-narmstrong@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/10/11 21:45, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.153 release.
-> There are 52 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 23/09/2021 10:06, Neil Armstrong wrote:
+> From: Benoit Parrot <bparrot@ti.com>
 > 
-> Responses should be made by Wed, 13 Oct 2021 13:44:51 +0000.
-> Anything received after that time might be too late.
+> In preparation to add omap plane state specific extensions we need to
+> subclass drm_plane_state and add the relevant helpers.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
+> The addition of specific extension will be done separately.
 > 
-> thanks,
+> Signed-off-by: Benoit Parrot <bparrot@ti.com>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>   drivers/gpu/drm/omapdrm/omap_plane.c | 38 +++++++++++++++++++++++++---
+>   1 file changed, 35 insertions(+), 3 deletions(-)
 > 
-> greg k-h
-> 
+> diff --git a/drivers/gpu/drm/omapdrm/omap_plane.c b/drivers/gpu/drm/omapdrm/omap_plane.c
+> index 0df5381cc015..bda794b4c915 100644
+> --- a/drivers/gpu/drm/omapdrm/omap_plane.c
+> +++ b/drivers/gpu/drm/omapdrm/omap_plane.c
+> @@ -16,6 +16,13 @@
+>    * plane funcs
+>    */
+>   
+> +#define to_omap_plane_state(x) container_of(x, struct omap_plane_state, base)
+> +
+> +struct omap_plane_state {
+> +	/* Must be first. */
+> +	struct drm_plane_state base;
+> +};
+> +
+>   #define to_omap_plane(x) container_of(x, struct omap_plane, base)
+>   
+>   struct omap_plane {
+> @@ -207,11 +214,17 @@ void omap_plane_install_properties(struct drm_plane *plane,
+>   static void omap_plane_reset(struct drm_plane *plane)
+>   {
+>   	struct omap_plane *omap_plane = to_omap_plane(plane);
+> +	struct omap_plane_state *omap_state;
+>   
+> -	drm_atomic_helper_plane_reset(plane);
+> -	if (!plane->state)
+> +	if (plane->state)
+> +		drm_atomic_helper_plane_destroy_state(plane, plane->state);
+> +
+> +	omap_state = kzalloc(sizeof(*omap_state), GFP_KERNEL);
+> +	if (!omap_state)
+>   		return;
+>   
+> +	__drm_atomic_helper_plane_reset(plane, &omap_state->base);
+> +
+>   	/*
+>   	 * Set the zpos default depending on whether we are a primary or overlay
+>   	 * plane.
+> @@ -222,6 +235,25 @@ static void omap_plane_reset(struct drm_plane *plane)
+>   	plane->state->color_range = DRM_COLOR_YCBCR_FULL_RANGE;
+>   }
+>   
+> +static struct drm_plane_state *
+> +omap_plane_atomic_duplicate_state(struct drm_plane *plane)
+> +{
+> +	struct omap_plane_state *state;
+> +	struct omap_plane_state *copy;
+> +
+> +	if (WARN_ON(!plane->state))
+> +		return NULL;
+> +
+> +	state = to_omap_plane_state(plane->state);
+> +	copy = kmemdup(state, sizeof(*state), GFP_KERNEL);
+> +	if (!copy)
+> +		return NULL;
+> +
+> +	__drm_atomic_helper_plane_duplicate_state(plane, &copy->base);
+> +
+> +	return &copy->base;
+> +}
+> +
 
-Tested on arm64 and x86 for 5.4.153-rc1,
+omap_crtc.c has similar, but slightly different, functions. I think it 
+would be good to use the same style in omap_plane, or, if the approach 
+above is better, change omap_crtc to match the style here.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.153-rc1
-Commit: 2a225aa681c5c16b5283fb381b5326b94179fe6d
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+  Tomi
