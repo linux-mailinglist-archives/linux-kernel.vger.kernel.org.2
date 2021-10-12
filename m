@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2A5429C16
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FC0429C19
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhJLDwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 23:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55428 "EHLO
+        id S232294AbhJLDxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 23:53:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhJLDwL (ORCPT
+        with ESMTP id S229629AbhJLDxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 23:52:11 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39A5C061570;
-        Mon, 11 Oct 2021 20:50:10 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id om14so2825233pjb.5;
-        Mon, 11 Oct 2021 20:50:10 -0700 (PDT)
+        Mon, 11 Oct 2021 23:53:19 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE11C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 20:51:18 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id n8so79482950lfk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 20:51:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+6oao9/RKZ/3MAcA9E8XyptRvVdxPDYeqXrlRMKIUSM=;
-        b=cUpHCxzGTUjLul7YCGMklVvXS6FBN0B6bMVLWhXilg3Suluw0NRsJ/nFeYp2oXFdG+
-         cX8/g6rkWxQGbouAfXFcy7kyAJJ+EVuyaf6huFhDWA6X/brvG7YTBpZwJ4D0jNwTxltR
-         OLmpGIPPpoQ4G1YPlFSzCW5aWaieAggNJe/J3fXjaNomgxw7bRpSzxC60TT/vn2qnUx7
-         3rCpmyW5myYWrHeybxJt76pGHILxgejVCEfpayITxiKTLwo5Ir7ozqtgXMDQyD7GWaVJ
-         Fnrx6L7+/V9blF0XcYm5IQp3Fzdk46rRxzZIFnXM2foN67ATYEfbkkCK7qwVV+CpW1KM
-         ONIg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xDjD7RZHpOUApPSwMJVUbWhkPb2dLWqLjd7p/yXant4=;
+        b=zG7azwV81RO4QSJWumjEluj44iLDdvO6uEXZFWcfOWxf830iXJt7DaXFoll37RuVnQ
+         nqPvlWSpdouL0tqFFI4TRIwyDl/w64SsIBEgeb9oXeCUg0WiTu6RvBFhL6NmPgUXgtxQ
+         OFeLj96HEVMGrOtOct551A3E7KivhbKxV323aYhj0a7vcOTe2rLt9bY+ihHWQp+na4NZ
+         rSenHSs+16C8vDCWaNivFyedmJw4tWB+7/wabSm1h5zxn8tijbwCLewYy1Sdht/mcxpR
+         dGUouSFDTBtse1kfLeNKt+VteMwQpl2LArrn35yHuERCdOPKvMM2niSWYEoRVKOKWBqr
+         ReRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+6oao9/RKZ/3MAcA9E8XyptRvVdxPDYeqXrlRMKIUSM=;
-        b=NWvYSugQfu55PMpbB4hUWJcuFrG3rKGTGFPk0VS6845oDN4R5VJoBr3jO9WTtLHJIb
-         PQ4esKPpK8vMi+OeQnle8SYYYdSRoDv782/nVfV+mHUiDNHw4xXZUgbDKwFbmqme+YVk
-         GV9PXeTqsK7anPCc4/L2HXFDjhyXX58wceb0r4Arfk1gmFKd5NA/eWf0EUa2isro82YZ
-         fOtntBAexD9l2zG3dAU7nOqkIwzhqiJ1+J80JjC+falTvrLnTBGbce2ERwzaj3ejgUAW
-         fx3SeA/oVHTCoOtME57Wufl7IfNx7JGfsljyc1umtM6K4HeVhNLLu3EhE0jq6estwlGE
-         SWBA==
-X-Gm-Message-State: AOAM532IgejUjPC8kV7kfNu6oiXLCr6Mkln5VWRg9cSFIqrfoMu3NALU
-        J91kqcj1Y0CWPTILMOPXkTs=
-X-Google-Smtp-Source: ABdhPJwgVzEtgPXXX/SbNkEJL1zIlagHUulOVWGKQBAjKSR3237zvpRgUQXyKjxgTYXJ21tzXOa/VA==
-X-Received: by 2002:a17:90b:314d:: with SMTP id ip13mr3343841pjb.13.1634010610202;
-        Mon, 11 Oct 2021 20:50:10 -0700 (PDT)
-Received: from localhost.localdomain ([94.177.118.104])
-        by smtp.gmail.com with ESMTPSA id h6sm887443pji.6.2021.10.11.20.50.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 20:50:09 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Denis Efremov <efremov@linux.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] driver: floppy: fix warning in __alloc_pages
-Date:   Tue, 12 Oct 2021 11:49:54 +0800
-Message-Id: <20211012034955.2802626-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xDjD7RZHpOUApPSwMJVUbWhkPb2dLWqLjd7p/yXant4=;
+        b=h1z1cVE7ESpm5/puhd1l49Lyr0EAZ7g0Ahk54J//LeWUmkwNsx35TlONSVcIiM1HRE
+         pMNt5fLiQ1qOr4PcHkTEy3tFC9pFJ+IQEhiIZWRb2rL/bmFOZRZf+EkSR7cGm0waC65W
+         XHnh+ALDlIkYFMMGwR2uvxPlh3Nbm/2OpOzPuB/qDNO3fK9fxU6IwfOvZSyspVY+EmDH
+         qjBL0m7cXZdWOZmb2CLbWR5iIJ7bS4MCiZqGHs3QDxMNmvRNU1LGVOSXRvDJaVhtLc5X
+         jakUXyJdexRpIX5/zxkWFcYBsZIzpxG0m/6+oar0LIfJNwm0HT6FWekZx0nw/WV7oQK8
+         pdqw==
+X-Gm-Message-State: AOAM530A/xqjS7X8c3Gozi48avconlX8fBljBN34PWEuiTWIt3Bw4C3o
+        vblV76KqT9iMS0VW1xgcicXhZqKzYxRW1zpzKilUoARXsd0=
+X-Google-Smtp-Source: ABdhPJz4STbFFLSQ0yNRubH73OZ3bYCjOoIFDPPPo2B/adQ5KePnE56ta0US4JJxfaoMXLSYFaaC4/49MZdrO0ZG9M0=
+X-Received: by 2002:a05:6512:1196:: with SMTP id g22mr8179076lfr.661.1634010676610;
+ Mon, 11 Oct 2021 20:51:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211012032633.4169364-1-john.stultz@linaro.org> <YWUDAoDoPPewqcdO@yoga>
+In-Reply-To: <YWUDAoDoPPewqcdO@yoga>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 11 Oct 2021 20:51:04 -0700
+Message-ID: <CALAqxLW2BrbAmvTGA4t-+Sw0k70qR9u+Sorzo5bp1vtBHF_5Eg@mail.gmail.com>
+Subject: Re: [RFC][PATCH] iommu: Kconfig: Fix missing config option for CONFIG_ARM_SMMU_QCOM
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the user-provided length (ptr->length) is longer than one threshold,
-it will trigger a warning in __alloc_pages.
+On Mon, Oct 11, 2021 at 8:37 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Mon 11 Oct 22:26 CDT 2021, John Stultz wrote:
+>
+> > In commit 424953cf3c665 ("qcom_scm: hide Kconfig symbol"), some
+> > logic was added to make the code depend on CONFIG_ARM_SMMU_QCOM,
+> > however no such option exist.
+> >
+> > This caused regressions on db845c (and I suspect other qcom
+> > platforms), but can be easily fixed up by adding a new option
+> > to re-enable the newly conditionalized code.
+> >
+> > I set it to default to ARCH_QCOM, so folks don't have to
+> > discover this new option to keep things booting, but if folks
+> > would rather, I'm ok to drop that line.
+> >
+>
+> I've not looked where the discussion went, but Dmitry posted this end of
+> last week:
+>
+> https://lore.kernel.org/linux-arm-msm/20211010023350.978638-1-dmitry.baryshkov@linaro.org/
 
-Fix this by checking get_order(ptr->length) >= MAX_ORDER.
+Oh, my apologies for not seeing this! I did search my mail log
+earlier, but I must have missed it.
 
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- drivers/block/floppy.c | 2 ++
- 1 file changed, 2 insertions(+)
+So yes, I validated earlier that reverting the problematic chunks
+works as well, and I see Arnd did already have a similar patch to what
+I sent out.
 
-diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-index fef79ea52e3e..8b88960e2784 100644
---- a/drivers/block/floppy.c
-+++ b/drivers/block/floppy.c
-@@ -3109,6 +3109,8 @@ static int raw_cmd_copyin(int cmd, void __user *param,
- 	if (ptr->flags & (FD_RAW_READ | FD_RAW_WRITE)) {
- 		if (ptr->length <= 0)
- 			return -EINVAL;
-+		if (get_order(ptr->length) >= MAX_ORDER)
-+			return -EINVAL;
- 		ptr->kernel_data = (char *)fd_dma_mem_alloc(ptr->length);
- 		fallback_on_nodma_alloc(&ptr->kernel_data, ptr->length);
- 		if (!ptr->kernel_data)
--- 
-2.25.1
+I'd probably lean towards Arnd's patch, as he has been uncovering the
+problematic Kconfig edge cases.
 
+thanks
+-john
