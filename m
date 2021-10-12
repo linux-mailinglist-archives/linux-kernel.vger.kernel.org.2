@@ -2,213 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60A942A521
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBF342A52D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236673AbhJLNMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:12:55 -0400
-Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:49586 "EHLO
-        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236559AbhJLNMx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:12:53 -0400
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id 0099F18E036
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 14:10:50 +0100 (IST)
-Received: (qmail 24439 invoked from network); 12 Oct 2021 13:10:50 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Oct 2021 13:10:50 -0000
-Date:   Tue, 12 Oct 2021 14:10:19 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH mm v2] memcg: enable memory accounting in
- __alloc_pages_bulk
-Message-ID: <20211012131019.GV3959@techsingularity.net>
-References: <CALvZod7_fhgV39HXmmMApubW-39CjJ5t+WjmkyA_DNGF7b5O+w@mail.gmail.com>
- <2410e99a-087c-3f89-9bdf-b62a7d5df725@virtuozzo.com>
+        id S236615AbhJLNRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:17:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233100AbhJLNRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 09:17:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2E2D61078;
+        Tue, 12 Oct 2021 13:15:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634044532;
+        bh=o7kakXnsPyV9ARidLcUMPXHlRDmLhaJ2814BPZpXuEI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Fj8zavkOFLxOGWqggzXNZbB0N7hARpQFncEPuqe1NZxppnGtHCsbQnqzSdqBSS5IQ
+         ZtQlzwggE3Xk8Oxje+6cTLwL5pBOUiquX5z/VhgbCp31csY3+hz6pA3QQNHVNktZyg
+         2mlJowkvz7vZCKwnNbYVSbVkrkm+6Jxrrnr8BCl8Z1ZJphgB6XBH8y7meEjTKC1PoM
+         lP7+7y5LL25eOZDHmGvwPLXyh80FhRi4mqO8XhRC6KKtmvFesWhwTUGvH48aPF2K6H
+         SX58/nZu22+IKrY8FM4z0Y1/YG7VywteQG8pLV8itHfUrl3A0vwPynF1FHFYZFA+BA
+         GLvLHUmMc44Sw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Shay Drory <shayd@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: [PATCH net-next v4 0/6] devlink reload simplification
+Date:   Tue, 12 Oct 2021 16:15:20 +0300
+Message-Id: <cover.1634044267.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <2410e99a-087c-3f89-9bdf-b62a7d5df725@virtuozzo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 01:18:39PM +0300, Vasily Averin wrote:
-> Enable memory accounting for bulk page allocator.
-> 
-> Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
-> v2: modified according to Shakeel Butt's remarks
-> ---
->  include/linux/memcontrol.h | 11 +++++++++
->  mm/memcontrol.c            | 48 +++++++++++++++++++++++++++++++++++++-
->  mm/page_alloc.c            | 14 ++++++++++-
->  3 files changed, 71 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 3096c9a0ee01..990acd70c846 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -810,6 +810,12 @@ static inline void obj_cgroup_put(struct obj_cgroup *objcg)
->  	percpu_ref_put(&objcg->refcnt);
->  }
->  
-> +static inline void obj_cgroup_put_many(struct obj_cgroup *objcg,
-> +				       unsigned long nr)
-> +{
-> +	percpu_ref_put_many(&objcg->refcnt, nr);
-> +}
-> +
->  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
->  {
->  	if (memcg)
-> @@ -1746,4 +1752,9 @@ static inline struct mem_cgroup *mem_cgroup_from_obj(void *p)
->  
->  #endif /* CONFIG_MEMCG_KMEM */
->  
-> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
-> +				unsigned int nr_pages);
-> +void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page);
-> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
-> +				 unsigned int nr_pages);
->  #endif /* _LINUX_MEMCONTROL_H */
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 87e41c3cac10..16fe3384c12c 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3239,7 +3239,53 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
->  	refill_obj_stock(objcg, size, true);
->  }
->  
-> -#endif /* CONFIG_MEMCG_KMEM */
-> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
-> +				unsigned int nr_pages)
-> +{
-> +	struct obj_cgroup *objcg = NULL;
-> +
-> +	if (!memcg_kmem_enabled() || !(gfp & __GFP_ACCOUNT))
-> +		return true;
-> +
-> +	objcg = get_obj_cgroup_from_current();
-> +
-> +	if (objcg && obj_cgroup_charge_pages(objcg, gfp, nr_pages)) {
-> +		obj_cgroup_put(objcg);
-> +		return false;
-> +	}
-> +	obj_cgroup_get_many(objcg, nr_pages - 1);
-> +	*objcgp = objcg;
-> +	return true;
-> +}
-> +
+From: Leon Romanovsky <leonro@nvidia.com>
 
-This is probably a stupid question but why is it necessary to get many
-references instead of taking one reference here and dropping it in
-memcg_bulk_post_charge_hook?
+Changelog:
+v4:
+ * Removed legacy BUG_ON() in first patch.
+ * Added new patch that moves netdev_to_devlink functions to devlink.c.
+ * Rewrote devlink ops patch to use feature mask.
+v3: https://lore.kernel.org/all/cover.1633589385.git.leonro@nvidia.com
+ * Rewrote third patch to keep static const nature of ops. This is done
+   by extracting reload ops to separate ops structure.
+ * Changed commit message in last patch as was suggested by Ido.
+v2: https://lore.kernel.org/all/cover.1633284302.git.leonro@nvidia.com
+ * Dropped const removal patch
+ * Added new patch to hide struct devlink
+ * Added new patch to annotate devlink API
+ * Implemented copy of all callback in devlink ops
+v1: https://lore.kernel.org/all/cover.1632916329.git.leonro@nvidia.com
+ * Missed removal of extra WARN_ON
+ * Added "ops parameter to macro as Dan suggested.
+v0: https://lore.kernel.org/all/cover.1632909221.git.leonro@nvidia.com
 
-> +void memcg_bulk_charge_hook(struct obj_cgroup *objcg, struct page *page)
-> +{
-> +	page->memcg_data = (unsigned long)objcg | MEMCG_DATA_KMEM;
-> +}
-> +
-> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
-> +				 unsigned int nr_pages)
-> +{
-> +	obj_cgroup_uncharge_pages(objcg, nr_pages);
-> +	obj_cgroup_put_many(objcg, nr_pages);
-> +}
+-------------------------------------------------------------------
+Hi,
 
-And are you sure obj_cgroup_uncharge_pages should be called here? I
-thought the pages get uncharged on free.
+Simplify devlink reload APIs.
 
-> +#else /* !CONFIG_MEMCG_KMEM */
-> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
-> +				unsigned int nr_pages)
-> +{
-> +	return true;
-> +}
-> +
-> +void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page)
-> +{
-> +}
-> +
-> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
-> +				 unsigned int nr_pages)
-> +{
-> +}
-> +#endif
-> +
->  
->  /*
->   * Because page_memcg(head) is not set on tails, set it now.
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b37435c274cf..eb37177bf507 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5207,6 +5207,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  	gfp_t alloc_gfp;
->  	unsigned int alloc_flags = ALLOC_WMARK_LOW;
->  	int nr_populated = 0, nr_account = 0;
-> +	unsigned int nr_pre_charge = 0;
-> +	struct obj_cgroup *objcg = NULL;
->  
->  	/*
->  	 * Skip populated array elements to determine if any pages need
-> @@ -5275,6 +5277,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  	if (unlikely(!zone))
->  		goto failed;
->  
-> +	nr_pre_charge = nr_pages - nr_populated;
-> +	if (!memcg_bulk_pre_charge_hook(&objcg, gfp, nr_pre_charge))
-> +		goto failed;
-> +
->  	/* Attempt the batch allocation */
->  	local_lock_irqsave(&pagesets.lock, flags);
->  	pcp = this_cpu_ptr(zone->per_cpu_pageset);
-> @@ -5299,6 +5305,9 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  		nr_account++;
->  
->  		prep_new_page(page, 0, gfp, 0);
-> +		if (objcg)
-> +			memcg_bulk_charge_hook(objcg, page);
-> +
->  		if (page_list)
->  			list_add(&page->lru, page_list);
->  		else
-> @@ -5310,13 +5319,16 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  
->  	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
->  	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
-> +	if (objcg)
-> +		memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
->  
->  out:
->  	return nr_populated;
->  
->  failed_irq:
->  	local_unlock_irqrestore(&pagesets.lock, flags);
-> -
-> +	if (objcg)
-> +		memcg_bulk_post_charge_hook(objcg, nr_pre_charge);
->  failed:
->  	page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
->  	if (page) {
-> -- 
-> 2.31.1
-> 
+Thanks
+
+Leon Romanovsky (6):
+  devlink: Reduce struct devlink exposure
+  devlink: Move netdev_to_devlink helpers to devlink.c
+  devlink: Annotate devlink API calls
+  devlink: Allow control devlink ops behavior through feature mask
+  net/mlx5: Set devlink reload feature bit for supported devices only
+  devlink: Delete reload enable/disable interface
+
+ .../hisilicon/hns3/hns3pf/hclge_devlink.c     |   4 +-
+ .../hisilicon/hns3/hns3vf/hclgevf_devlink.c   |   4 +-
+ drivers/net/ethernet/mellanox/mlx4/main.c     |   3 +-
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |   4 +
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   3 -
+ .../mellanox/mlx5/core/sf/dev/driver.c        |   5 +-
+ drivers/net/ethernet/mellanox/mlxfw/mlxfw.h   |   2 +-
+ drivers/net/ethernet/mellanox/mlxsw/core.c    |   8 +-
+ drivers/net/netdevsim/dev.c                   |   4 +-
+ include/net/devlink.h                         |  79 ++-------
+ include/trace/events/devlink.h                |  72 ++++----
+ net/core/devlink.c                            | 164 +++++++++++++-----
+ 12 files changed, 181 insertions(+), 171 deletions(-)
 
 -- 
-Mel Gorman
-SUSE Labs
+2.31.1
+
