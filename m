@@ -2,148 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA7D429B53
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBA6429B54
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbhJLCOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 22:14:00 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:62931 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhJLCN7 (ORCPT
+        id S231479AbhJLCP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 22:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230023AbhJLCP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 22:13:59 -0400
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 19C2BTTZ009734;
-        Tue, 12 Oct 2021 11:11:30 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 19C2BTTZ009734
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1634004690;
-        bh=eGW6T4VJlT52JcnIFl4q6FgJvMhLi7Ij7bqrkiVx/Sk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=0YnaHWPlQVOJvbJwUUGUFQ4bBHOVpbi3em9M80y45paEP25PO/5ASR4YagahFt+YM
-         lJuavrlYvlia5mAG047OGuwNvCx8a2R8MyJSOIAcLKYgJKxrnF7Nrkb4S/xpVxrBhV
-         y+1iZwIXMnSZCG+DxnFigeiXlH12u7fGFtzWWZKNTvPvK3gVJtSWzPDgUhaJs/pjPW
-         evG2j4zbCKEJIHypXgVgZ/cPJZGSkoEPek6IEV7eVEwE+2HmXoeyDAwiIJUAcU9BT1
-         ZjZBjA6E/vW2Yqgpf4qWQLkyLCEgOPPC/zO8xqJrMwnLcFTD6pbzpF8fpKBNYsffaU
-         Aox759g8L2dTA==
-X-Nifty-SrcIP: [209.85.216.49]
-Received: by mail-pj1-f49.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so1348832pjb.4;
-        Mon, 11 Oct 2021 19:11:30 -0700 (PDT)
-X-Gm-Message-State: AOAM532gXpUZx+fg1trpx7IwpMi8/PtKFmLPLUP9+Ig4ObPAjRX2UjOm
-        eW+7fy0MOwUM0GYiDwOCQvxvu9glDPvXE92yOvk=
-X-Google-Smtp-Source: ABdhPJzxBTT/SvWzURVQRplBhLfCCDo3bYohh30l2YZgPu6I/gv0RAHjVZH9g4t9sPFmi4NBAQFbHySaHXKYyLKFScc=
-X-Received: by 2002:a17:902:f703:b029:12c:982:c9ae with SMTP id
- h3-20020a170902f703b029012c0982c9aemr27861383plo.20.1634004689469; Mon, 11
- Oct 2021 19:11:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211008113800.85155-1-pawel@jasiak.dev>
-In-Reply-To: <20211008113800.85155-1-pawel@jasiak.dev>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 12 Oct 2021 11:10:52 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASH2EaZ=SyxQ-xhmUn_0GXuvOJDRU3e=LVvTLdYruM=Bw@mail.gmail.com>
-Message-ID: <CAK7LNASH2EaZ=SyxQ-xhmUn_0GXuvOJDRU3e=LVvTLdYruM=Bw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Add make tarzst-pkg build option
-To:     =?UTF-8?Q?Pawe=C5=82_Jasiak?= <pawel@jasiak.dev>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Mon, 11 Oct 2021 22:15:28 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4648CC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 19:13:27 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id f8-20020a2585480000b02905937897e3daso25809001ybn.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 19:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=KXLwmwE4TrX9P6IfHZohm8oMSZRK5w3cuXTwrGX29F8=;
+        b=s6h5WrvxdhfH8nPtVCEp6yhLe6ki5NJkW+X0HSOkzIm7FaG/nM7ZNv4StjZs3cN8qx
+         FYoTKqfmeGy1MOSKo4Q3i6O/q+MKGpflPvh5SsGZAiM04or+oe6FezB+360Ra+pE1ixN
+         JaTWixNi5478C09QmtT0KvRY0s8sVz7n6uvkw0q0Izaa5TRFMr6Ffoi6p2mTBsI3dpmh
+         EW2qhP9uhfo1hM+x2ZIwOofiN5n6fennQEE+QzRa4olAEQlrPOhBqZX4WRVDHlIyX823
+         Kn1FtbQ7jgS08c37hYUeN5p8Mg5YoDME/EROZCWDuFw96pXQoEgVtBMmQUBxVITKn78/
+         DWWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=KXLwmwE4TrX9P6IfHZohm8oMSZRK5w3cuXTwrGX29F8=;
+        b=W1gDXozgVHhG+FEiXkpXdrP+x47qb6HJPuUgdWfml3lOk30+4EL1RrkuvFjNamoGhM
+         gH4Fds9XS7UXMtJGkHAzMyi/o1Smi8rlo/zehIbX+fCY+Ww1BrT4r3db/CMAFm0bb1Fp
+         orDy2lLVokAe3Ui8XKH7+hT3yRL44Zi8mD2VTSI2bUbuokOV+R9QD/KmYTWeVQSFN9wg
+         YlE0zCGQ0AtjBIF88QpeIPxnrYt1dlHbgs0HIYrO1K00/bXtKZn0dRqf8Ewfy4fheuTC
+         tVxeRX7EI2xZ7OrPjwYiagDA/WQ1He65L2fi7n7UN/PHncl2p5EAiOVZhVk/rHwiH4Eq
+         IDpA==
+X-Gm-Message-State: AOAM532gDXkrFQ71t9xmQndRJ9U42Z3/3POS3bpxdC+PrbssCVtc54Kr
+        G+YUKPcRvFcz6WIaw+GUrti7b5nSEdZk
+X-Google-Smtp-Source: ABdhPJxfuUu/Fl1OhTq4pm+CzhQzuD9E4KsYwVBblC10vTGer3AmqY3riet4zRq0i5pEY9PK3+keIiba7UVd
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:2ad2:cb91:6fbd:a6f2])
+ (user=irogers job=sendgmr) by 2002:a25:cc4a:: with SMTP id
+ l71mr24630825ybf.41.1634004806327; Mon, 11 Oct 2021 19:13:26 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 19:13:20 -0700
+Message-Id: <20211012021321.291635-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH v2 1/2] tools: Bump minimum LLVM C++ std to GNU++14
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Leo Yan <leo.yan@linaro.org>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        llvm@lists.linux.dev, Fangrui Song <maskray@google.com>
+Cc:     Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 8:48 PM Pawe=C5=82 Jasiak <pawel@jasiak.dev> wrote:
->
-> Add tarzst-pkg and perf-tarzst-src-pkg targets to build zstd compressed
-> tarballs.
->
-> Signed-off-by: Pawe=C5=82 Jasiak <pawel@jasiak.dev>
+LLVM 9 (current release is LLVM 13) moved the minimum C++ version to
+GNU++14. Bump the version numbers in the feature test and perf build.
 
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/build/feature/Makefile | 6 +++---
+ tools/perf/Makefile.config   | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Applied to linux-kbuild. Thanks.
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index d024b5204ba0..19f145a35a43 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -300,7 +300,7 @@ $(OUTPUT)test-jvmti-cmlr.bin:
+ 	$(BUILD)
+ 
+ $(OUTPUT)test-llvm.bin:
+-	$(BUILDXX) -std=gnu++11 				\
++	$(BUILDXX) -std=gnu++14 				\
+ 		-I$(shell $(LLVM_CONFIG) --includedir) 		\
+ 		-L$(shell $(LLVM_CONFIG) --libdir)		\
+ 		$(shell $(LLVM_CONFIG) --libs Core BPF)		\
+@@ -308,12 +308,12 @@ $(OUTPUT)test-llvm.bin:
+ 		> $(@:.bin=.make.output) 2>&1
+ 
+ $(OUTPUT)test-llvm-version.bin:
+-	$(BUILDXX) -std=gnu++11 				\
++	$(BUILDXX) -std=gnu++14					\
+ 		-I$(shell $(LLVM_CONFIG) --includedir)		\
+ 		> $(@:.bin=.make.output) 2>&1
+ 
+ $(OUTPUT)test-clang.bin:
+-	$(BUILDXX) -std=gnu++11 				\
++	$(BUILDXX) -std=gnu++14					\
+ 		-I$(shell $(LLVM_CONFIG) --includedir) 		\
+ 		-L$(shell $(LLVM_CONFIG) --libdir)		\
+ 		-Wl,--start-group -lclangBasic -lclangDriver	\
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 0ae2e3d8b832..86be3f6ec018 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -285,7 +285,7 @@ CORE_CFLAGS += -Wall
+ CORE_CFLAGS += -Wextra
+ CORE_CFLAGS += -std=gnu99
+ 
+-CXXFLAGS += -std=gnu++11 -fno-exceptions -fno-rtti
++CXXFLAGS += -std=gnu++14 -fno-exceptions -fno-rtti
+ CXXFLAGS += -Wall
+ CXXFLAGS += -fno-omit-frame-pointer
+ CXXFLAGS += -ggdb3
+-- 
+2.33.0.882.g93a45727a2-goog
 
-
-> ---
->  scripts/Makefile.package | 10 +++++++---
->  scripts/package/buildtar |  4 ++++
->  2 files changed, 11 insertions(+), 3 deletions(-)
->
-> diff --git a/scripts/Makefile.package b/scripts/Makefile.package
-> index b74c65284fb2..77b612183c08 100644
-> --- a/scripts/Makefile.package
-> +++ b/scripts/Makefile.package
-> @@ -103,7 +103,7 @@ snap-pkg:
->
->  # tarball targets
->  # ----------------------------------------------------------------------=
------
-> -tar-pkgs :=3D dir-pkg tar-pkg targz-pkg tarbz2-pkg tarxz-pkg
-> +tar-pkgs :=3D dir-pkg tar-pkg targz-pkg tarbz2-pkg tarxz-pkg tarzst-pkg
->  PHONY +=3D $(tar-pkgs)
->  $(tar-pkgs):
->         $(MAKE) -f $(srctree)/Makefile
-> @@ -130,10 +130,12 @@ $(if $(findstring tar-src,$@),,                    =
-                 \
->  $(if $(findstring bz2,$@),$(KBZIP2),                                 \
->  $(if $(findstring gz,$@),$(KGZIP),                                  \
->  $(if $(findstring xz,$@),$(XZ),                                     \
-> -$(error unknown target $@))))                                       \
-> +$(if $(findstring zst,$@),$(ZSTD),                                  \
-> +$(error unknown target $@)))))                                      \
->         -f -9 $(perf-tar).tar)
->
-> -perf-tar-pkgs :=3D perf-tar-src-pkg perf-targz-src-pkg perf-tarbz2-src-p=
-kg perf-tarxz-src-pkg
-> +perf-tar-pkgs :=3D perf-tar-src-pkg perf-targz-src-pkg perf-tarbz2-src-p=
-kg \
-> +                perf-tarxz-src-pkg perf-tarzst-src-pkg
->  PHONY +=3D $(perf-tar-pkgs)
->  $(perf-tar-pkgs):
->         $(call cmd,perf_tar)
-> @@ -153,9 +155,11 @@ help:
->         @echo '  targz-pkg           - Build the kernel as a gzip compres=
-sed tarball'
->         @echo '  tarbz2-pkg          - Build the kernel as a bzip2 compre=
-ssed tarball'
->         @echo '  tarxz-pkg           - Build the kernel as a xz compresse=
-d tarball'
-> +       @echo '  tarzst-pkg          - Build the kernel as a zstd compres=
-sed tarball'
->         @echo '  perf-tar-src-pkg    - Build $(perf-tar).tar source tarba=
-ll'
->         @echo '  perf-targz-src-pkg  - Build $(perf-tar).tar.gz source ta=
-rball'
->         @echo '  perf-tarbz2-src-pkg - Build $(perf-tar).tar.bz2 source t=
-arball'
->         @echo '  perf-tarxz-src-pkg  - Build $(perf-tar).tar.xz source ta=
-rball'
-> +       @echo '  perf-tarzst-src-pkg - Build $(perf-tar).tar.zst source t=
-arball'
->
->  .PHONY: $(PHONY)
-> diff --git a/scripts/package/buildtar b/scripts/package/buildtar
-> index 221aa7df008d..cb54c7f1aa80 100755
-> --- a/scripts/package/buildtar
-> +++ b/scripts/package/buildtar
-> @@ -39,6 +39,10 @@ case "${1}" in
->                 opts=3D"-I ${XZ}"
->                 tarball=3D${tarball}.xz
->                 ;;
-> +       tarzst-pkg)
-> +               opts=3D"-I ${ZSTD}"
-> +               tarball=3D${tarball}.zst
-> +               ;;
->         *)
->                 echo "Unknown tarball target \"${1}\" requested, please a=
-dd it to ${0}." >&2
->                 exit 1
-> --
-> 2.33.0
->
-
-
---=20
-Best Regards
-Masahiro Yamada
