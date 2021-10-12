@@ -2,86 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C7A429B49
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EE6429B4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhJLCEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 22:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhJLCEE (ORCPT
+        id S231425AbhJLCFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 22:05:40 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:38826 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230330AbhJLCFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 22:04:04 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C86C061570;
-        Mon, 11 Oct 2021 19:02:03 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so6133416ott.2;
-        Mon, 11 Oct 2021 19:02:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dGS77biGEVYZPNxQG5cg57ElQA9NN6lK5mWeN0B09nM=;
-        b=GPePzki1Dh2zsh/kEGudD8VPrkZLJlic3CURFT5wVrUz9sJpe4Hz+0BTKU6G7i+q6l
-         daK0+JTFYgWkkBh65Y5eRODVZ9TuTeVaM0usk3k36+2uJ4A/1jQ/ioTl6Z0M2K5fCw8W
-         i9q3Qsay42HBFQnb7klLZXqQ1ZBmpODdbuC4RXZOrzDGdr7cWtEkMUTGKU74d7jFDQXE
-         o+9Tz9MTCsJmqf2rc1y2ZCycZMXN4+mvnmOQuPDCvfZNWsVyUTFi8htgES5d9FQNR6/B
-         qr5oK8hvkXzKXZ+AxtW1Ll+8WPI0HEOVm7xo+Ye2+GJwZXSGfnRIESvUtERklz0tlgy9
-         OQAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=dGS77biGEVYZPNxQG5cg57ElQA9NN6lK5mWeN0B09nM=;
-        b=dljg1/0h1J2r/B9zbgF1iUovtemxBJDqiyzF+/rO6MK7nl5K2FzlMlwHo0ziswDW3j
-         A4BXro92IPi+I7xKq0kLY0jSXhJolNf7nhQC6AVsG8XtFyDDmh354ONcPbSqbJZv7VQA
-         IjZJYA1FCr+6e4sG0yvwq1+EO5Q+BT3asOHjDhiY9wOFn9QsnzJvHA6nUbP/JFyD2X0G
-         PpsYk+wuTmnTY0E8GgK9sfT3gkTZZnJQyDIkb9OcySnPFvLCn/ToK5bny8Z4dmHFjs8y
-         HD1RY43qmtJPqH4T45Jbw03zbb8CASy7J5s6mzVekUF0P6jMF3sXrO4JFVEUM5BvKBf1
-         mtQg==
-X-Gm-Message-State: AOAM531yPX3G6qVxH/x8MOiVJVThieFnnm+JBQ6eWGDL/NjCpHHkxWkh
-        hbOA+Iod5oGw6JRxbcIpyaY=
-X-Google-Smtp-Source: ABdhPJwn1aZr8135b9Ubs9m/GwXeUwTj773YF+xWmkljpkYiSDZ0t8m4OuPVIL3GRGfycgvQwg+b9w==
-X-Received: by 2002:a9d:871:: with SMTP id 104mr13713520oty.132.1634004122983;
-        Mon, 11 Oct 2021 19:02:02 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h17sm1825455oog.17.2021.10.11.19.02.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 19:02:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 11 Oct 2021 19:02:01 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 000/151] 5.14.12-rc1 review
-Message-ID: <20211012020201.GD2033605@roeck-us.net>
-References: <20211011134517.833565002@linuxfoundation.org>
+        Mon, 11 Oct 2021 22:05:39 -0400
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 19C23Asr022851;
+        Tue, 12 Oct 2021 11:03:11 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 19C23Asr022851
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1634004191;
+        bh=R9JRz7swgkXEBmHUNR4wFHuRpevBbW8mrsCesIA9m6U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=muNEQA8WeAYGvE6IlJvpyCH7KJ2cCfc/7fU3ORJWmQFTvRuOt3dosbM9Z4Sy7uoXe
+         yBgciD7pazv7xEGgscmqNvE74bB8BNcOizpWBKfZ7cvjA/l8lQj9Fq/bdDX7bNwp1O
+         cOlKrf+o0w53m/BweZLf3tsk7pV91hCdwEOooM0T/G8OTslfKlUrKEQig3tDataiZX
+         KEH/rI0idIdv4NhvrGD1WIBnxEO1wITNPNogcUeKybxX+VSqHnvX05PVqq/VrVr+UY
+         NxOx4lelRSf5Jq0P1pJkcYfot2cccv6OCi+4AE9sBEGrXRoIXTB9mlxfxz9M0BHMTN
+         dJ7gM4k8Y1Rcw==
+X-Nifty-SrcIP: [209.85.216.45]
+Received: by mail-pj1-f45.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so755118pjb.1;
+        Mon, 11 Oct 2021 19:03:10 -0700 (PDT)
+X-Gm-Message-State: AOAM530YvPpf4M9qUbFWXIY7v14Ur23mPMA4Bv77XerKZBcjQbDclKe4
+        TpQCWR3nm/G7VdLYutel26hoK69nBcDMN4I+zZU=
+X-Google-Smtp-Source: ABdhPJxuU0yUUCrzfHYFF8sGQP9SoCuZ5/jfaymL6RT40hWuLcJewfV2v54NzwlA7raVFXnVc4qcJ2uTKJC5wHgGxk0=
+X-Received: by 2002:a17:902:f703:b029:12c:982:c9ae with SMTP id
+ h3-20020a170902f703b029012c0982c9aemr27831626plo.20.1634004190051; Mon, 11
+ Oct 2021 19:03:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
+References: <20211007185900.2801788-1-nicolas@fjasle.eu>
+In-Reply-To: <20211007185900.2801788-1-nicolas@fjasle.eu>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 12 Oct 2021 11:02:33 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASDu7RK0vLtx1991abx880DtQHK+U2FK3qKbH5Kcz3ipw@mail.gmail.com>
+Message-ID: <CAK7LNASDu7RK0vLtx1991abx880DtQHK+U2FK3qKbH5Kcz3ipw@mail.gmail.com>
+Subject: Re: [PATCH] initramfs: Check timestamp to prevent broken cpio archive
+To:     Nicolas Schier <nicolas@fjasle.eu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        =?UTF-8?Q?Thomas_K=C3=BChnel?= <thomas.kuehnel@avm.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 03:44:32PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.12 release.
-> There are 151 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Oct 2021 13:44:51 +0000.
-> Anything received after that time might be too late.
-> 
+On Fri, Oct 8, 2021 at 3:59 AM Nicolas Schier <nicolas@fjasle.eu> wrote:
+>
+> Cpio format reserves 8 bytes for an ASCII representation of a time_t time=
+stamp.
+> While 2106-02-07 06:28:15 (time_t =3D 0xffffffff) is still some years in =
+the
+> future, a poorly chosen date string for KBUILD_BUILD_TIMESTAMP, converted=
+ into
+> seconds since the epoch, might lead to exceeded cpio timestamp limits tha=
+t
+> results in a broken cpio archive.  Add timestamp checks to prevent overru=
+n of
+> the 8-byte cpio header field.
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 480 pass: 480 fail: 0
+Out of curiosity, how did you figure out
+"2106-02-07 06:28:15" was the overflow point?
+Is it affected by leap seconds?
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Guenter
+I got ffff816f
+
+
+$ printf "%x"  $(date -d'2106-02-07 06:28:15'  +%s)
+ffff816f
+
+
+
+
+> My colleague Thomas K=C3=BChnel discovered the behaviour, when we acciden=
+tally fed
+> SOURCE_DATE_EPOCH to KBUILD_BUILD_TIMESTAMP as is: some timestamps (e.g.
+> 1607420928 =3D 2021-12-08 10:48:48) will be interpreted by `date` as a va=
+lid date
+> specification of science fictional times (here: year 160742).  Even thoug=
+h this
+> is bad input for KBUILD_BUILD_TIMESTAMP, it should not break the initramf=
+s
+> cpio format.
+>
+> Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
+> Cc: Thomas K=C3=BChnel <thomas.kuehnel@avm.de>
+> ---
+>  usr/gen_init_cpio.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>
+> diff --git a/usr/gen_init_cpio.c b/usr/gen_init_cpio.c
+> index 03b21189d58b..983dcdd35925 100644
+> --- a/usr/gen_init_cpio.c
+> +++ b/usr/gen_init_cpio.c
+> @@ -320,6 +320,12 @@ static int cpio_mkfile(const char *name, const char =
+*location,
+>                 goto error;
+>         }
+>
+> +       if (buf.st_mtime > 0xffffffff) {
+> +               fprintf(stderr, "%s: Timestamp exceeds maximum cpio times=
+tamp, clipping.\n",
+> +                       location);
+> +               buf.st_mtime =3D 0xffffffff;
+> +       }
+> +
+>         filebuf =3D malloc(buf.st_size);
+>         if (!filebuf) {
+>                 fprintf (stderr, "out of memory\n");
+> @@ -551,6 +557,17 @@ int main (int argc, char *argv[])
+>                 }
+>         }
+>
+> +       /*
+> +        * Timestamps after 2106-02-07 06:28:15 have an ascii hex time_t
+> +        * representation that exceeds 8 chars and breaks the cpio header
+> +        * specification.
+> +        */
+> +       if (default_mtime > 0xffffffff) {
+> +               fprintf(stderr, "ERROR: Timestamp 0x%08x too large for cp=
+io format\n",
+> +                       default_mtime);
+> +               exit(1);
+> +       }
+> +
+>         if (argc - optind !=3D 1) {
+>                 usage(argv[0]);
+>                 exit(1);
+> --
+> 2.30.1
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
