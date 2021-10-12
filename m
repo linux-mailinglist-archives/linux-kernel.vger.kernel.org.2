@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C4542AAF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF0242AB1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbhJLRo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:44:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
+        id S231945AbhJLRvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232231AbhJLRo0 (ORCPT
+        with ESMTP id S229495AbhJLRvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:44:26 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FB2C061570;
-        Tue, 12 Oct 2021 10:42:24 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id y12so2563303eda.4;
-        Tue, 12 Oct 2021 10:42:24 -0700 (PDT)
+        Tue, 12 Oct 2021 13:51:37 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17E9C061570;
+        Tue, 12 Oct 2021 10:49:35 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id p13so2830187edw.0;
+        Tue, 12 Oct 2021 10:49:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PQJ19sfXSUAL086edUdLoT09BoBIfIKIU6q87eukG+4=;
-        b=azsbS62tIN7g4mUG5ncni/SX9HVYBaLarqPOL6aus9VelEiHVOXj5rFzhypr74M7o2
-         e5vbb8xajqBTRrsSLLJPGv21jInnPPDalJvQa93Zn8bwQHb31OuMOQ/FXwl8rIlYUPW5
-         yrtof/2qszWcMJ83M7L5ykWU5hswa6PGBzpRolUd98w+P4zVLB1awPEE3tqQBSkJkWE9
-         f3QNWRAqqg+68XVlwtDK4HWWJA3HCkDqCfkPurKdnXIDC1uFCN6WSRtOy04Sd8VoY4W+
-         rdVryN2K20xvtflaX77vrWG+OspEAgPaqix3N1r8m/9GD+HR2wmASPy9/xYXBmupEl07
-         r1mw==
+        bh=11bwNe2+F48KthW6TCzMCLhbY7ty428AnAz5bOQsr34=;
+        b=oSNloqaM6CESIFbiqQWkAHdLvqg1CDTN46iitH5sWC+tW0qBFRetcQXr4gtK6a9G3v
+         WFOk0gE7PVv4tQOlNw/F0uZofjFTJvdmRSWoLW1xq1aYUlT6Y7qSJf1Op6VFwQewU+m8
+         YYKGSi7r8BstULxp6iansr+DUBhmMJx/nf6cJry48EwBxat+76hN6LYLqeT5bfSqnN95
+         zGaBZNhBnFjuSLa6za1lEcX2/FAxigcxqYWvzjSFEXJbW+TelJj/tg/pOEoIqQ+49/vf
+         KM7XGOJw8d+TxN7SgTl7lrvQNUXqoz0kCS7GyJ7elX767qbcwzi5BPqZLm34hEyzqkbW
+         3Y3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PQJ19sfXSUAL086edUdLoT09BoBIfIKIU6q87eukG+4=;
-        b=a79WF7OaejL5WtM6lo4x3NlwlJrtMXOtZX+KOt6y4+E5FZYcUREuJB/2KDIQhb6Az4
-         X7JKcFz6H+PL1Lt3KuzfQ7y5pts7LT0gq61lKQWrxWnDnUztocdZEwF4JbLYvCq14n5k
-         RCo3zW+xRJQ352Ew7HodtyUXdUmrkur2FDrVk9MPnctiM7e3FLXzDBZjsQ8jpK+gT3gp
-         /INWRQO7bOD7DEmgyqrywpf0E9F5fLOnmSlYaqKYDXhW1urUZU4UKZmJEQECZAUZQoCR
-         F7rvlQk0ig7chvF5WT7SLCdpzbGL5ut+svPRCPn9JERJZfhK7cD14PVv/+BjojFx1dN3
-         DKOg==
-X-Gm-Message-State: AOAM530gXgaIh8//awXGGUqhe8Ia/zhzfeb+iY2SbIp0IngAOKyb912K
-        7aSFO/97Bg9pwp+mhSHhwEdKmdFEOLoGHMGi0Pw=
-X-Google-Smtp-Source: ABdhPJw4jmlO8sy6C1IGKFwdfyNPWF9nDTQ2RBdB1gQAxKMue3XJ0n28BZM+XnO+4DBKtHM+YWgdOA9fstbbB69/Qqo=
-X-Received: by 2002:a17:906:a158:: with SMTP id bu24mr5499636ejb.356.1634060543536;
- Tue, 12 Oct 2021 10:42:23 -0700 (PDT)
+        bh=11bwNe2+F48KthW6TCzMCLhbY7ty428AnAz5bOQsr34=;
+        b=Ezru54kVpQmOOKuyC0M2YI1SIW5R0FHV5evGkuG/xsyaBk+g8KHbGwERNYrEBcXBpA
+         cmdFnYoA9RU/XcvzYhkNb48mTQ+yXKlXQUESbgPQfcXIK92vBAJ6ypcVf/LEGVm5DFrV
+         sXw4U0hcRIA+my6Paf4IKPuhEu8b79gLkerBYod185DoHumHiQBVt8sUuaEV481Al4qO
+         XfFNsQQuUnbktyggLmv4PGWhhBhyc7lLy1P8rvs40Yo8aT84H/21SrIymm+GRTS7AEzG
+         WzGmcjs9Rd3UVj2EB9urWnqZpfZDKycmXkRrQB/0g5ANiS6Z7w5PV4wb/EGmEQBl1Py8
+         bVjA==
+X-Gm-Message-State: AOAM530FFDaKOoDEspO5nb0Gsuc7SJ6eVkye+jT+nkIIRcny3g63PU2b
+        X0ctlfjZb6yxCPzxQ2toDz5gSlaYpKb5+NRbBr4=
+X-Google-Smtp-Source: ABdhPJwn29IO3PbqjZY1xNMc0eLVUZRDvmMTwIuaipgdjA0QWxJMdEmfMTvkqQwUtyt/mAOoFXJapR7Ex21pm2pX6s4=
+X-Received: by 2002:a05:6402:10da:: with SMTP id p26mr1580110edu.283.1634060974214;
+ Tue, 12 Oct 2021 10:49:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211005102430.63716-1-andriy.shevchenko@linux.intel.com>
- <YV8jfavX/W9T25YX@smile.fi.intel.com> <CAHQZ30BbXA0GEuzUy68=W94ArMiO=3Sbg-HQNqUdtSTcvWOF0A@mail.gmail.com>
-In-Reply-To: <CAHQZ30BbXA0GEuzUy68=W94ArMiO=3Sbg-HQNqUdtSTcvWOF0A@mail.gmail.com>
+References: <20211012092513.1349295-1-yangyingliang@huawei.com>
+ <CA+U=DsrHSwaiS7mT4rcHT_ZQwfPg+-Hwm-jkib11+m7W-VA_FQ@mail.gmail.com>
+ <CAHp75Vf+DHNxiP5HzsKzzh5hFmr20P8SzOTnLXAvhC5Vb6hzMA@mail.gmail.com> <61c28865036cd40a96f2d1bb4c27fbbb08c2d3a5.camel@perches.com>
+In-Reply-To: <61c28865036cd40a96f2d1bb4c27fbbb08c2d3a5.camel@perches.com>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 12 Oct 2021 23:41:36 +0300
-Message-ID: <CAHp75Ve1Uy=U8wuU4rG5OU5NNr7xcmhQmGBPCm-vJSCWih2MqA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/6] mmc: sdhci-pci: Add some CD GPIO related quirks
-To:     Raul Rangel <rrangel@chromium.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Eric Biggers <ebiggers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>
+Date:   Tue, 12 Oct 2021 23:48:46 +0300
+Message-ID: <CAHp75VfBXuMboFr6czRipXKfBpBNj8Syo9cvhiMXD7VaVaka+Q@mail.gmail.com>
+Subject: Re: [PATCH] iio: buffer: Fix double-free in iio_buffers_alloc_sysfs_and_mask()
+To:     Joe Perches <joe@perches.com>
+Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 1:29 AM Raul Rangel <rrangel@chromium.org> wrote:
+On Tue, Oct 12, 2021 at 8:43 PM Joe Perches <joe@perches.com> wrote:
 >
-> It looks like you were previously using the `cd-gpios` DT property to
-> determine this.
-
-No, it's not the case. The case is that we switched from hard coded
-stuff (board files) to ACPI.
-
-> It also sounds like you switched from DT to ACPI so
-> you lost the ability to use this field?
+> On Tue, 2021-10-12 at 23:30 +0300, Andy Shevchenko wrote:
+> > On Tue, Oct 12, 2021 at 2:37 PM Alexandru Ardelean
+> > <ardeleanalex@gmail.com> wrote:
+> > >
+> > > On Tue, Oct 12, 2021 at 12:18 PM Yang Yingliang
+> > > <yangyingliang@huawei.com> wrote:
+> > > >
+> > > > When __iio_buffer_alloc_sysfs_and_mask() failed, 'unwind_idx' should be
+> > > > set to 'i - 1' to prevent double-free when cleanup resources.
+> []
+> >
+> > I prefer to see
+> >
+> > - for (; unwind_idx >= 0; unwind_idx--) {
+> > + while (unwind_idx--)
 >
-> Can you not use something like the following:
-> https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:src/third_party/kernel/v5.10/drivers/mmc/host/sdhci-acpi.c;l=945
+> Not the same code as unwind_idx would be decremented before entering
+> the code block.
 
-No. It won't work. Anything like this won't work.
+It's kinda cryptic what you are pointing out.
 
-The problem here is on PCB level due to different uSD connectors ()
-being use: one is Active High, the other is Active Low for CD signal.
+What's needed additionally is to change
 
-...
+- unwind_idx = iio_dev_opaque->attached_buffers_cnt - 1;
++ unwind_idx = i;
 
-> > > Any comments, hints, advice are welcome!
+> You'd want
+>
+>         do {
+>                 ...
+>         } while (unwind_idx--);
+
+Of course not. See above. The usual pattern is
+
+  while (i--)
+    do_clean_item(i);
 
 -- 
 With Best Regards,
