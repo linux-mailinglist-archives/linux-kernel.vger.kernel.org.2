@@ -2,180 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFA442A222
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AEC42A225
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235954AbhJLKbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:31:38 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:45944 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235153AbhJLKbh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:31:37 -0400
-X-UUID: 4408c824a8f947aaa53b05f088e8147e-20211012
-X-UUID: 4408c824a8f947aaa53b05f088e8147e-20211012
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <sam.shih@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 869037599; Tue, 12 Oct 2021 18:29:30 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 12 Oct 2021 18:29:29 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 12 Oct 2021 18:29:28 +0800
-Message-ID: <315d7823aa108c909a3d36464fe54763b76ab2f4.camel@mediatek.com>
-Subject: Re: [v3,7/9] dt-bindings: arm64: dts: mediatek: Add mt7986 series
-From:   Sam Shih <sam.shih@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <Ryder.Lee@mediatek.com>, <devicetree@vger.kernel.org>,
-        <enric.balletbo@collabora.com>, <fparent@baylibre.com>,
-        <gregkh@linuxfoundation.org>, <herbert@gondor.apana.org.au>,
-        <hsinyi@chromium.org>, <john@phrozen.org>,
-        <linus.walleij@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-clk@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <linux@roeck-us.net>, <mpm@selenic.com>, <mturquette@baylibre.com>,
-        <robh+dt@kernel.org>, <sboyd@kernel.org>, <sean.wang@kernel.org>,
-        <seiya.wang@mediatek.com>, <wim@linux-watchdog.org>
-Date:   Tue, 12 Oct 2021 18:29:28 +0800
-In-Reply-To: <bc29d5bc-9ce7-6147-a708-e6304249b600@gmail.com>
-References: <9552b0dc-337f-7edc-2997-50603dfe8bcd@gmail.com>
-         <20210924114046.26070-1-sam.shih@mediatek.com>
-         <bc29d5bc-9ce7-6147-a708-e6304249b600@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S235993AbhJLKcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:32:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235153AbhJLKcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:32:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A129861100;
+        Tue, 12 Oct 2021 10:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634034606;
+        bh=5vYqtrhdvNEvXIHmpJjLVPqr54kR5V2eucOYXFMDoX8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=NbNGcoldHtqcYHd1YzNOFgU/17cKxn1kPcCmCEGib0vrxYJOSTaz6+KwYx2V4LfDQ
+         N3g+CVFIkviG4pVJ7rTXstqJeEPt5v11gKTXqXeuYoqRbwPXJ2XgT2THEqiJj2VF8b
+         71Nh9EwVjtFX34S3wHbnz9NhiaNJ6EwSbG+VBg3kkbTBr9682pFM/qNsUhEX26FXPU
+         CmHBHWdppbwsLRQqmGpgpt/8IRv0SdcegYX7Q5UsqXwe1XCRZurPX97NyGW2ubBC6a
+         7bvj6NPJyzOvX4Ddg/fmM+4lZiz2Y2n2gbbGRfDZbRid0F0Oym7M86avzKWDTX+1BM
+         9HYs9uCMPnxWA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9467760965;
+        Tue, 12 Oct 2021 10:30:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: mscc: ocelot: Fix dumplicated argument in ocelot
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163403460660.20758.17907661038717928533.git-patchwork-notify@kernel.org>
+Date:   Tue, 12 Oct 2021 10:30:06 +0000
+References: <20211011022742.3211-1-wanjiabing@vivo.com>
+In-Reply-To: <20211011022742.3211-1-wanjiabing@vivo.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     vladimir.oltean@nxp.com, claudiu.manoil@nxp.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kael_w@yeah.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hello:
 
-On Fri, 2021-10-08 at 15:53 +0200, Matthias Brugger wrote:
-> Hi Sam,
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
+
+On Mon, 11 Oct 2021 10:27:41 +0800 you wrote:
+> Fix the following coccicheck warning:
+> drivers/net/ethernet/mscc/ocelot.c:474:duplicated argument to & or |
+> drivers/net/ethernet/mscc/ocelot.c:476:duplicated argument to & or |
+> drivers/net/ethernet/mscc/ocelot_net.c:1627:duplicated argument
+> to & or |
 > 
-> I'd advise to split this series in parts for:
-> - basic device support via dts.
-> - pinctrl driver + dts
-> - clk driver + dts
-
-Okay, I will split the patches that are still under review into the
-above patch series.
-
-But I have a dumb question, currently, we have some patches that have
-been assigned version numbers.
-If I want to seprate original patch series, and resend 3 new patch
-series (basic / pinctrl / clock) according to your comment, if I want
-to keep the preview change log, tags in the patch set: 
-
-like:
----
-v3: changed 'MT7986' to 'MT7986 series' in the commit message
-v2: added an Acked-by tag
----
-
-Which version number should I use for these new patch series ?
-
-Does the version number in corver-letter and the version number in each
-patch need to be the same in the entire patch series ?
-
-// (Original patch series/thread, version number is v3)
-[PATCH v3 0/3] Add basic SoC support for mediatek mt7986
-  [PATCH v3 1/3] dt-bindings: arm64: dts: mediatek: Add mt7986 series
-  // (the version number has been updated to v5 previously)
-  // (basic part only, not include pinctrl and clock nodes)
-  [PATCH v5 2/3] arm64: dts: mediatek: add mt7986a support
-  [PATCH v5 3/3] arm64: dts: mediatek: add mt7986b support
-
-// (New clock driver patch series)
-[PATCH 0/3] Add clock driver support for mediatek mt7986
-  [PATCH v3,1/3] dt-bindings: clock: mediatek: document clk bindings   
-for mediatek mt7986 SoC
-  // (the version number has been updated to v3 previously)
-  [PATCH v3 2/3] clk: mediatek: add mt7986 clock IDs
-  [PATCH v2 3/3] clk: mediatek: add mt7986 clock support
-
-// (New pinctrl driver patch series)
-[PATCH 0/4] Add pinctrl driver support for mediatek mt7986
-  // (the version number has been updated to v6 previously)
-  [PATCH v6 1/4] dt-bindings: pinctrl: update bindings for MT7986 SoC
-  // (the version number has been updated to v2 previously)
-  [PATCH v2 2/4] pinctrl: mediatek: add support for MT7986 SoC
-  [PATCH 3/4] arm64: dts: mediatek: add mt7986a pinctrl support
-  [PATCH 3/4] arm64: dts: mediatek: add mt7986b pinctrl support
-
+> These DEV_CLOCK_CFG_MAC_TX_RST are duplicate here.
+> Here should be DEV_CLOCK_CFG_MAC_RX_RST.
 > 
-> I would also advise to not send new versions of patches as new
-> threads and don't 
-> respond in the same thread. At least for me that breaks my workflow
-> as I use b4.
+> [...]
 
-If I don't respond to the next patch set in the same thread, should I
-create an entire new patch series ?
+Here is the summary with links:
+  - net: mscc: ocelot: Fix dumplicated argument in ocelot
+    https://git.kernel.org/netdev/net/c/74a3bc42fe51
 
-For example, if I want to update PATCH 2/3 in the bellows patch series,
-and my PATCH 1/3 has been accepted by reviewer previously
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-[PATCH v2 0/3] Add basic SoC support for mediatek mt7986
-  [PATCH v2 1/3] ...   (patch set v1, applied by matainer)
-  [PATCH v2 2/3] ...   (patch set v2, need to be upgrade to v3)
-  [PATCH v2 3/3] ...   (patch set v1, waiting for review)
-
-Is this correct to send patch mail to maintaiers for the above
-situation ?
-
-[PATCH v3 0/2] Add basic SoC support for mediatek mt7986
-  [PATCH v3 1/2] ...   (patch set v3)
-  [PATCH v3 2/2] ...   (still patch set v1, waiting for review)
-
-
-> 
-> Regards,
-> Matthias
-> 
-> 
-> On 24/09/2021 13:40, Sam Shih wrote:
-> > MT7986 series is Mediatek's new 4-core SoC, which is mainly for
-> > wifi-router application. The difference between mt7986a and mt7986b
-> > is that some pins do not exist on mt7986b.
-> > 
-> > Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > 
-> > ---
-> > v3: changed 'MT7986' to 'MT7986 series' in the commit message
-> > v2: added an Acked-by tag
-> > ---
-> >   Documentation/devicetree/bindings/arm/mediatek.yaml | 8 ++++++++
-> >   1 file changed, 8 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml
-> > b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> > index 80a05f6fee85..a9a778269684 100644
-> > --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-> > +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> > @@ -76,6 +76,14 @@ properties:
-> >             - enum:
-> >                 - mediatek,mt7629-rfb
-> >             - const: mediatek,mt7629
-> > +      - items:
-> > +          - enum:
-> > +              - mediatek,mt7986a-rfb
-> > +          - const: mediatek,mt7986a
-> > +      - items:
-> > +          - enum:
-> > +              - mediatek,mt7986b-rfb
-> > +          - const: mediatek,mt7986b
-> >         - items:
-> >             - enum:
-> >                 - mediatek,mt8127-moose
-> > 
-
-Thanks,
-Sam
 
