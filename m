@@ -2,127 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C775242A8E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B61342A8EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237526AbhJLP6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237322AbhJLP63 (ORCPT
+        id S237536AbhJLP76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:59:58 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54990 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234892AbhJLP75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:58:29 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22645C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 08:56:28 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id w14so13857950pll.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 08:56:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mePc1vd/EHkCrzmAohlwat8GzWH/E7cD+W9nQvLLIu4=;
-        b=kVgy/+a6lh3I0ZXvFbqdwy4cdixEQ48qJ26ZMs6smSIwYFRMHnCYmK74ep66Sx3NOp
-         5DZI2jgV+ULNul+LewUNEth7jaeoPygVEtuP9gnEsicoqXqHN549VAJManTku0D5jOZh
-         /4aNCfAUh2JFPJN3uU8zI7/CYX+exCFxt+5NJTzB18HiDlKzLS7jZYywMt1OQNIEiGxN
-         xEEx2frxHKz7CMP4DJnzXoKGzi7Eo/4yd4/T/Ru0VxqVdIKOzVQ0f03R0stfXqKLZXFZ
-         zjyxI4X1ikLAAOU48ftSRGNlddJUAgPYuVygYJgHeqI+QI0JbR6wKnd2eJMndpbs23QA
-         +Tmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mePc1vd/EHkCrzmAohlwat8GzWH/E7cD+W9nQvLLIu4=;
-        b=AP3NsStIUgC6PtvSI0edySQ7UL8f/ng6z1X4pFrIk1A7fLssGlH5boja3g6hvu9Nkp
-         n8pdDDfmkbFti6XyeeKmsmW0WU1t+CPZQlXzKQzb1wqja79qTdWO6cG21pEVzH40jS0U
-         YJoSJYvf+vBc1ZDQ9/bb9rR/ONdti2WfFmM0BoAGMTIOOxFs+s544BJs5Ub0bB8I2fe3
-         QdOFg1HTxv4raYB7Xc1EhoSEzSq9tgGv59W4CB46AoyXVbMqc7St06v3ywP/EyGD+4jl
-         6e9kyML142K2zieZi4nPUjQxeQlLmzK97a/a2DuLvlbyanqCVntdcbSl+pfMIetpIQx8
-         lRzA==
-X-Gm-Message-State: AOAM531N57iAvaLdKpS7Q2TIkPULITjOHq7bS+kVBMZaZ/q7fP5NkzWg
-        qGehssrv9VaJYRVl8DVnInAc5A==
-X-Google-Smtp-Source: ABdhPJwyh5YfT0iKf7U16WPgkQZB6l1HXD7/F4XBZ7M7e/LoOYhdxvJgdgxKr+XWtz9DN2Y1ysYK4g==
-X-Received: by 2002:a17:90b:388f:: with SMTP id mu15mr6915883pjb.28.1634054187510;
-        Tue, 12 Oct 2021 08:56:27 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id jz10sm3246547pjb.39.2021.10.12.08.56.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 08:56:25 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 09:56:23 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com
-Subject: Re: [PATCH v6 0/4] Add remoteproc driver for DSP on i.MX
-Message-ID: <20211012155623.GA4010675@p14s>
-References: <1633944015-789-1-git-send-email-shengjiu.wang@nxp.com>
+        Tue, 12 Oct 2021 11:59:57 -0400
+Received: from [IPv6:2a01:e0a:4cb:a870:dcd8:9f87:c3be:dc06] (unknown [IPv6:2a01:e0a:4cb:a870:dcd8:9f87:c3be:dc06])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AF3521F43876;
+        Tue, 12 Oct 2021 16:57:53 +0100 (BST)
+Subject: Re: [PATCH v2 0/4] media: HEVC: RPS clean up
+To:     =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@gmail.com>,
+        mchehab@kernel.org, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        hverkuil-cisco@xs4all.nl, jc@kynesim.co.uk,
+        ezequiel@vanguardiasur.com.ar
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+References: <20211012143552.661751-1-benjamin.gaignard@collabora.com>
+ <21222555.EfDdHjke4D@kista>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <3c5851ac-3b8a-decc-93c1-01a65b1f8611@collabora.com>
+Date:   Tue, 12 Oct 2021 17:57:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1633944015-789-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <21222555.EfDdHjke4D@kista>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 05:20:11PM +0800, Shengjiu Wang wrote:
-> Provide a basic driver to control DSP processor found on NXP i.MX8QM,
-> i.MX8QXP, i.MX8MP and i.MX8ULP.
-> 
-> Currently it is able to resolve addresses between DSP and main CPU,
-> start and stop the processor, suspend and resume.
-> 
-> The communication between DSP and main CPU is based on mailbox, there
-> are three mailbox channels (tx, rx, rxdb).
-> 
-> This driver was tested on NXP i.MX8QM, i.MX8QXP, i.MX8MP and i.MX8ULP.
-> 
-> changes in v6:
-> - fix the apply issue for linux-next
-> - add if/then schema according to Rob's comments
-> 
-> changes in v5:
-> - refine driver according to Mathieu's comments
-> 
-> changes in v4:
-> - merge binding doc to fsl,dsp.yaml for Rob's comments
-> 
-> changes in v3:
-> - Add this cover letter
-> - refine clock-names according to Rob's comments
-> - move common struct from imx_rproc.c to header file
-> - add IMX_RPROC_SCU_API enum item
-> - refine driver according to Mathieu's comments
-> 
-> changes in v2:
-> - change syscon to fsl,dsp-ctrl
-> - add items for clock-names
-> 
-> Shengjiu Wang (4):
->   remoteproc: imx_rproc: Move common structure to header file
->   remoteproc: imx_rproc: Add IMX_RPROC_SCU_API method
->   remoteproc: imx_dsp_rproc: Add remoteproc driver for DSP on i.MX
->   dt-bindings: dsp: fsl: update binding document for remote proc driver
-> 
->  .../devicetree/bindings/dsp/fsl,dsp.yaml      |  123 +-
->  drivers/remoteproc/Kconfig                    |   11 +
->  drivers/remoteproc/Makefile                   |    1 +
->  drivers/remoteproc/imx_dsp_rproc.c            | 1206 +++++++++++++++++
->  drivers/remoteproc/imx_rproc.c                |   28 +-
->  drivers/remoteproc/imx_rproc.h                |   39 +
->  6 files changed, 1375 insertions(+), 33 deletions(-)
->  create mode 100644 drivers/remoteproc/imx_dsp_rproc.c
->  create mode 100644 drivers/remoteproc/imx_rproc.h
 
-I have applied this set.
+Le 12/10/2021 à 17:34, Jernej Škrabec a écrit :
+> Hi Benjamin!
+>
+> Dne torek, 12. oktober 2021 ob 16:35:48 CEST je Benjamin Gaignard napisal(a):
+>> This series aims to clean up Reference Picture Set usage and flags.
+>>
+>> Long term flag was named with RPS prefix while it is not used for RPS
+>> but for mark long term references in DBP. Remane it and remove the two
+>> other useless RPS flags.
+>>
+>> Clarify documentation about RPS lists content and make sure that Hantro
+>> driver use them correctly (i.e without look up in DBP).
+>>
+>> These patches are the last in my backlog impacting HEVC uAPI.
+>>  From my point of view, once they get merged, you could start talking
+>> about how move HEVC uAPI to stable.
+> With your changes, HEVC uAPI controls still won't be complete. Cedrus needs
+> entry point control, which in turn needs dynamic array support. I'm a bit lazy
+> implementing that control, but I guess I can take a look in a month or so.
+> rkvdec also needs more fields for HEVC. With patches collected here:
+> https://github.com/LibreELEC/LibreELEC.tv/blob/master/projects/Rockchip/
+> patches/linux/default/linux-2001-v4l-wip-rkvdec-hevc.patch
+> fluster HEVC test score is reportedly 121/135 (8-bit tests only).
 
-Thanks,
-Mathieu
+Hi Jernej,
 
-> 
-> -- 
-> 2.17.1
-> 
+Thanks for your feedback, getting a list of missing items in HEVC uAPI
+will definitively help to fill the hope.
+The patch you mention for rkvdec are already merged in mainline kernel (at
+least for uAPI part).
+Cedrus needs are about num_entry_point_offsets, offset_len_minus1 and entry_point_offset_minus1[ i ]
+in HEVC specifications ?
+
+Regards,
+Benjamin
+
+>
+> I would certainly wait with moving HEVC uAPI to stable.
+>
+> Best regards,
+> Jernej
+>
+>> version 2:
+>> - change DPB field name from rps to flags
+>>
+>> Please note that the only purpose of commits 3 and 4 is to allow to test
+>> G2 hardware block for IMX8MQ until a proper solution isuing power domain
+>> can be found. Do not merge them.
+>>
+>> GStreamer HEVC plugin merge request can be found here:
+>> https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1079
+>>
+>> With those piece of code fluster score is 77/147.
+>>
+>> Benjamin
+>>
+>> Benjamin Gaignard (4):
+>>    media: hevc: Remove RPS named flags
+>>    media: hevc: Embedded indexes in RPS
+>>    media: hantro: Use syscon instead of 'ctrl' register
+>>    arm64: dts: imx8mq: Add node to G2 hardware
+>>
+>>   .../media/v4l/ext-ctrls-codec.rst             | 14 +++---
+>>   arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 43 +++++++++++++----
+>>   drivers/staging/media/hantro/hantro.h         |  5 +-
+>>   .../staging/media/hantro/hantro_g2_hevc_dec.c | 27 +++--------
+>>   drivers/staging/media/hantro/imx8m_vpu_hw.c   | 48 ++++++++++++-------
+>>   .../staging/media/sunxi/cedrus/cedrus_h265.c  |  2 +-
+>>   include/media/hevc-ctrls.h                    |  6 +--
+>>   7 files changed, 84 insertions(+), 61 deletions(-)
+>>
+>> -- 
+>> 2.30.2
+>>
+>>
+>
