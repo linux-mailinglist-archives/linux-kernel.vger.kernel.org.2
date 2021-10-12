@@ -2,113 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDD542A273
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D94342A275
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 12:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236015AbhJLKmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 06:42:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48854 "EHLO mail.kernel.org"
+        id S236038AbhJLKnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 06:43:01 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:34007 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235881AbhJLKmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:42:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF1A561076;
-        Tue, 12 Oct 2021 10:40:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634035235;
-        bh=8Mo99hNpbVCPntx6qXcJMQQ8Zr6U+b7gnjdoRm7v9wA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IuY/0Ev7PWWGp+fKGsfoZGUoYxRammnb3CLy1qKbZ5vWTCmfWRDkQl6yG4b0f6BPc
-         M62CbOC8WSvWc2uF+xtTPJ4nyGjziTFUrBHorz+z/exgwe0L0KVM/a4bD/6pe6Mow+
-         KzeapNdc4esEnUTr4rb8pe8ybB78ZHGdHTOB2IxETMO9g59Q147K44yyZ2OlE8af+z
-         GCOG/C9iMHskpxKn3Wjs3OiCeplGvPfmJMWQL+P5iJFshfPjf1NynFaQwJAHxSzGx1
-         vPXNLQN0UQPIS24+9CG6fFz7gQN6nGMtBMi0vnkWgKg/UYFgH/mKnoTYAUAgwcbaxv
-         Fxj0/o9aWrzpw==
-Date:   Tue, 12 Oct 2021 11:40:32 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 6/8] ASoC: cirrus: i2s: Prepare clock before using it
-Message-ID: <YWVmIKM99Zp/eVLZ@sirena.org.uk>
-References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
- <20210726140001.24820-1-nikita.shubin@maquefel.me>
- <20210726140001.24820-7-nikita.shubin@maquefel.me>
- <20210726165124.GJ4670@sirena.org.uk>
- <e23f7de1dbb02def413d721a3bf5759100380937.camel@gmail.com>
- <7cd9ccc118c1955b5f3b48f6f8a7157a72d5213e.camel@gmail.com>
+        id S235984AbhJLKnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 06:43:00 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HTByx4BnRz9sVK;
+        Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id VQB6d9Ka3zca; Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HTByx3Dk3z9sVF;
+        Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 559578B770;
+        Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id znLH9-9lxJwi; Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.154])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1E7718B763;
+        Tue, 12 Oct 2021 12:40:57 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19CAekBX1755822
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 12 Oct 2021 12:40:46 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19CAegQt1755821;
+        Tue, 12 Oct 2021 12:40:42 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc: Set max_mapnr correctly
+Date:   Tue, 12 Oct 2021 12:40:37 +0200
+Message-Id: <77d99037782ac4b3c3b0124fc4ae80ce7b760b05.1634035228.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+Xxb2RUjTwxQcxkX"
-Content-Disposition: inline
-In-Reply-To: <7cd9ccc118c1955b5f3b48f6f8a7157a72d5213e.camel@gmail.com>
-X-Cookie: You buttered your bread, now lie in it.
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1634035236; l=874; s=20211009; h=from:subject:message-id; bh=n9w/eJduhSwMHOhWBmX4XH+picWww91P1yn9wgz5lm8=; b=lxrjCZXZd4LnrftiiFXwlidGxe/m3FGSye7KaSn8pBSzhzM20+6BkCEJ9xZKNf673SuWttjB1dbH BoShmtbzAAMXRTffhQ5XoMgU8/y7oJhAtewlmOpGHDyw8QEwH2bU
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+max_mapnr is used by virt_addr_valid() to check if a linear
+address is valid.
 
---+Xxb2RUjTwxQcxkX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It must only include lowmem PFNs, like other architectures.
 
-On Tue, Oct 12, 2021 at 09:25:15AM +0200, Alexander Sverdlin wrote:
-> On Mon, 2021-09-13 at 23:43 +0200, Alexander Sverdlin wrote:
+Problem detected on a system with 1G mem (Only 768M are mapped), with
+CONFIG_DEBUG_VIRTUAL and CONFIG_TEST_DEBUG_VIRTUAL, it didn't report
+virt_to_phys(VMALLOC_START), VMALLOC_START being 0xf1000000.
 
-> > would you take the patch to a tree of yours, please?
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/mm/mem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I still cannot find this patch in any of your trees, but I've found this =
-one:
+diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
+index c3c4e31462ec..889f36b55df9 100644
+--- a/arch/powerpc/mm/mem.c
++++ b/arch/powerpc/mm/mem.c
+@@ -256,7 +256,7 @@ void __init mem_init(void)
+ #endif
+ 
+ 	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
+-	set_max_mapnr(max_pfn);
++	set_max_mapnr(max_low_pfn);
+ 
+ 	kasan_late_init();
+ 
+-- 
+2.31.1
 
-You ignored my question about dependencies:
-
-    https://lore.kernel.org/all/20210914103212.GB4434@sirena.org.uk/
-
-so I've no idea if it's safe to apply or if other people might need this
-one patch from the middle of the series.
-
->       video: ep93xx: Prepare clock before using it
->       dmaengine: ep93xx: Prepare clock before using it
->       ASoC: cirrus: i2s: Prepare clock before using it
->       pwm: ep93xx: Prepare clock before using it
->    =20
->     Nikita Shubin (1):
->       ep93xx: clock: convert in-place to COMMON_CLK
->=20
->=20
-> ... which claims to merge both "ASoC: cirrus: i2s: Prepare clock before u=
-sing it"
-> and "ep93xx: clock: convert in-place to COMMON_CLK", but they are actuall=
-y not
-> merged.
-
-No, it doesn't - that's the cover letter from your series.
-
-> Could you please consider ASoC patch, while I will resubmit the final clo=
-ck conversion?
-
-So please answer my question then: what's the story with dependencies?
-
---+Xxb2RUjTwxQcxkX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFlZh8ACgkQJNaLcl1U
-h9DJkQf/YWStIGUowcgzXW+8LvZgoJQGF/Pz4DneFx9CyXhIuKBospPojXunjUn5
-/p7TXRzlC3nr7JKqqu/Yz3uQ0d5JiJ87XsRJe53YUGQbQ5AjnQ2cN6Z3s8MJEhbe
-F/cyYUXDCWnt4dTsTDmWEjrO5I37Lu62DWdEtuENbkh9tILWF8nPtBpxcuU7Bois
-n5u+A35nICssRSLyI3RYVQJyovkzjHUl06oT8L4wKiAgyJS7VoiJUv1dYP1QbsrG
-v1mDYcqerGWuRykGCL6nXzSeso0LFYy5wqEufHzlxP4WwwK0fcq3ISt0mlK7hVCo
-Mu7TVhcs9l8yG3imacbH5sL84IDU9Q==
-=XWRi
------END PGP SIGNATURE-----
-
---+Xxb2RUjTwxQcxkX--
