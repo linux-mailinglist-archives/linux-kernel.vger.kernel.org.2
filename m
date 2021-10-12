@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A91429FB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CD3429FC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234969AbhJLIZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234501AbhJLIZP (ORCPT
+        id S234811AbhJLI3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:29:22 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42676 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234736AbhJLI3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:25:15 -0400
-Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75A2C061570;
-        Tue, 12 Oct 2021 01:23:13 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id aD40m6YsKk3b0aD44mPZdY; Tue, 12 Oct 2021 10:23:12 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1634026992; bh=IcmG4hlwkywRE0PK6X1+E437tEYrBkwUPVeE4O1mHiY=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=RCnAujWlRxHBoL1QdKw48WfQpGdxT6iixcng9vb0Xc1Z1wUrLPFQ1mVx9C7flL3a8
-         Y7TZllynMNSC9Mvw0HgVf/SUIz2OQieIJ3LmTTLAIHzreKT+aJe968qIOqekjDSLqd
-         p9i641lKestJ0hR6dFGgkny/B9rrd6TlRmlj/V+bh441ZYM2AifkLjgnKlxru5Xp7n
-         /3JW8PNUlReSH2oWq7bz36bnVcUEY1x0WSsIInhHqAMC7b14d4KNqF4oNSKmBqnrqv
-         RvySXj/7O8zdxhcTdmAmo/h9+OdU08NA9H3PnCCK7TlqYTXqa3sNxE2kH8x/rQt1Dy
-         zg/yZtjKhOSzw==
-Subject: Re: [PATCH] media: Kconfig: Make DVB_CORE=m possible when
- MEDIA_SUPPORT=y
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>, mchehab@kernel.org,
-        linux-media@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, yj.chiang@mediatek.com
-References: <20211005105110.14082-1-lecopzer.chen@mediatek.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <5086eb11-621f-29ed-e2dd-2a262857b78c@xs4all.nl>
-Date:   Tue, 12 Oct 2021 10:23:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        Tue, 12 Oct 2021 04:29:20 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A1BEC21F2C;
+        Tue, 12 Oct 2021 08:27:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634027238; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=zD9QTV4WyXthA7N/2eYXkVzurQrRAnyA96sGjWbnf5A=;
+        b=j5ZCZf6SyHkjCi5k0JocrOJfsP4v3eZUU9uNo1rxGQJn8ktR7Tt2ubUs0JfqtrY2iNlpec
+        ETHMFEk73gM4gj74FUyTqsm0AipjlyOFV1YBu7fsDmm75SFH7s23MNqt5/fV47LFPBoRAC
+        NMJvAiKQNl/6f4F6NM3dkqQ9q5C32MU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634027238;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=zD9QTV4WyXthA7N/2eYXkVzurQrRAnyA96sGjWbnf5A=;
+        b=aLWA8vxcED2t4X6I9/ThVRx7D02Hpg3kFw8dnxb6bTL6fDlOacqKqIzWCqFya2DaRN19y3
+        udvxByOy2o86mVAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8792813AD5;
+        Tue, 12 Oct 2021 08:27:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id uHvPIOZGZWE+SQAAMHmgww
+        (envelope-from <iivanov@suse.de>); Tue, 12 Oct 2021 08:27:18 +0000
+From:   "Ivan T. Ivanov" <iivanov@suse.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Dominik Brodowski <linux@dominikbrodowski.net>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Ivan T. Ivanov" <iivanov@suse.de>
+Subject: [PATCH] Revert "efi/random: Treat EFI_RNG_PROTOCOL output as bootloader randomness"
+Date:   Tue, 12 Oct 2021 11:27:08 +0300
+Message-Id: <20211012082708.121931-1-iivanov@suse.de>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20211005105110.14082-1-lecopzer.chen@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfE/P2szUh3UowWLMZqnKxz/PUYZfRHCTaA2A7qVF8Y5nVArKLxkVRNI9niMZUYQjgR2wrx96rDLeiC+F1OrKBhpbh1S2YxkJeEWDEpZR/K9rqsFcGD7i
- xnG4TRY9gW44QLWvk/71efYDqvDpEjIl4g7Eh3/CP6vx+0laTcwJuy/RSIWNHGFHlat5UM+o3zDLPB0Hf7WhgZScMBHlfoWd/9Y6oqNL8PazR/lVE/8bx2YW
- v+GY5T/P0FE7ht0fhuUHSdaccWVgBnRrBHYmqSSFF/DmiyhStMWU1dE0AhU8ZAAgeG8IPwqCmO0+Wp8PniuZrdDVC62qD/iNAnSBXvBRbXAOQ01BXNgL85C7
- 63DCnrFp
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2021 12:51, Lecopzer Chen wrote:
-> A case that we need VIDEO_DEV=y but DVB_CORE=m, and this doesn't
-> work since DVB_CORE is default MEDIA_DIGITAL_TV_SUPPORT and then
-> follows MEDIA_SUPPORT.
-> 
-> Change to tristate to make DVB_CORE=m possible when MEDIA_SUPPORT=y
-> 
-> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> ---
->  drivers/media/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
-> index b07812657cee..c3baf92b4d02 100644
-> --- a/drivers/media/Kconfig
-> +++ b/drivers/media/Kconfig
-> @@ -88,7 +88,7 @@ config MEDIA_ANALOG_TV_SUPPORT
->  		will disable support for them.
->  
->  config MEDIA_DIGITAL_TV_SUPPORT
-> -	bool
-> +	tristate
->  	prompt "Digital TV" if MEDIA_SUPPORT_FILTER
->  	default y if !MEDIA_SUPPORT_FILTER
->  	help
-> 
+This reverts commit 18b915ac6b0ac5ba7ded03156860f60a9f16df2b.
 
-I don't think this is the right approach.
+When CONFIG_RANDOM_TRUST_BOOTLOADER is enabled add_bootloader_randomness()
+calls add_hwgenerator_randomness() which might sleep, but this is not
+possible during early kernel initialization. This revert fixes following
+NULL pointer deference:
 
-I think the following patch would fix the issue, and it is also in line
-with what config VIDEO_DEV does.
+[    0.000000] efi: seeding entropy pool
+[    0.000000] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+...
+[    0.000000] pc : kthread_should_stop+0x2c/0x60
+[    0.000000] lr : add_hwgenerator_randomness+0x58/0x178
+...
+[    0.000000] Call trace:
+[    0.000000]  kthread_should_stop+0x2c/0x60
+[    0.000000]  add_bootloader_randomness+0x2c/0x38
+[    0.000000]  efi_config_parse_tables+0x120/0x250
+[    0.000000]  efi_init+0x138/0x1e0
+[    0.000000]  setup_arch+0x394/0x778
+[    0.000000]  start_kernel+0x90/0x568
 
-What do you think, Mauro?
-
-Regards,
-
-	Hans
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Ivan T. Ivanov <iivanov@suse.de>
 ---
-diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
-index c3baf92b4d02..46f7b1f75630 100644
---- a/drivers/media/Kconfig
-+++ b/drivers/media/Kconfig
-@@ -179,8 +179,7 @@ config MEDIA_CONTROLLER
- #
+ drivers/firmware/efi/efi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- config DVB_CORE
--	tristate
--	depends on MEDIA_DIGITAL_TV_SUPPORT
-+	tristate "DVB core"
- 	depends on (I2C || I2C=n)
- 	default MEDIA_DIGITAL_TV_SUPPORT
- 	select CRC32
+diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+index 847f33ffc4ae..8aad3c524947 100644
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -600,7 +600,7 @@ int __init efi_config_parse_tables(const efi_config_table_t *config_tables,
+ 					      sizeof(*seed) + size);
+ 			if (seed != NULL) {
+ 				pr_notice("seeding entropy pool\n");
+-				add_bootloader_randomness(seed->bits, size);
++				add_device_randomness(seed->bits, size);
+ 				early_memunmap(seed, sizeof(*seed) + size);
+ 			} else {
+ 				pr_err("Could not map UEFI random seed!\n");
+-- 
+2.33.0
+
