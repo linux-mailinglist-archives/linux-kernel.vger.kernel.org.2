@@ -2,65 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233B242A4EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D80FB42A4CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 14:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236621AbhJLMyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 08:54:16 -0400
-Received: from mx1.riseup.net ([198.252.153.129]:53064 "EHLO mx1.riseup.net"
+        id S236539AbhJLMpi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Oct 2021 08:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236480AbhJLMyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:54:13 -0400
-X-Greylist: delayed 543 seconds by postgrey-1.27 at vger.kernel.org; Tue, 12 Oct 2021 08:54:12 EDT
-Received: from fews2.riseup.net (fews2-pn.riseup.net [10.0.1.84])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-         client-signature RSA-PSS (2048 bits) client-digest SHA256)
-        (Client CN "mail.riseup.net", Issuer "R3" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4HTFgs2pYHzF5dl;
-        Tue, 12 Oct 2021 05:43:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1634042585; bh=4w6t5fBBfKE9+SDNGm5cejSYucdNYt5oljmtArLdZnE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=iXI/1wYwXruF9xaJkGlL0KGZ5ns7WrBDxHKX/rl4WADVYEEX3uk8yS0LkaZBzBZkp
-         LKX/fDtnitFT3BJAvQz0nJ4sjmopFuE0yAbSBLyR2G/jFVR4feMwjLn2LYEep9qidX
-         1jgcvAATcD4sjg7GRIP9sjqLGnb5jWlw0CsLQPcQ=
-X-Riseup-User-ID: 0BC07B29D6927D1FBB6E95CCA9804A5792989B25CA201C700A167EBA105A55C6
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews2.riseup.net (Postfix) with ESMTPSA id 4HTFgn4rf1z1yWH;
-        Tue, 12 Oct 2021 05:43:01 -0700 (PDT)
-Message-ID: <98332725-14eb-a268-8086-d4ffd14b7c67@riseup.net>
-Date:   Tue, 12 Oct 2021 09:42:58 -0300
+        id S233125AbhJLMpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 08:45:36 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A316660E97;
+        Tue, 12 Oct 2021 12:43:32 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 08:43:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH 1/2] ftrace: disable preemption on the testing of
+ recursion
+Message-ID: <20211012084331.06b8dd23@gandalf.local.home>
+In-Reply-To: <a8756482-024c-c858-b3d1-1ffa9a5eb3f7@linux.alibaba.com>
+References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com>
+        <a8756482-024c-c858-b3d1-1ffa9a5eb3f7@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Subject: Re: [PATCH v6 0/1] lib: Convert UUID runtime test to KUnit
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
-        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
-        lucmaga@gmail.com, David Gow <davidgow@google.com>,
-        Daniel Latypov <dlatypov@google.com>
-References: <20211006001345.73898-1-andrealmeid@collabora.com>
- <20211012111806.GA2537@lst.de>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeida@riseup.net>
-In-Reply-To: <20211012111806.GA2537@lst.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+On Tue, 12 Oct 2021 13:40:08 +0800
+王贇 <yun.wang@linux.alibaba.com> wrote:
 
-Às 08:18 de 12/10/21, Christoph Hellwig escreveu:
-> It seems I only received the 0/1 but never the actual patch?
-> 
+> --- a/include/linux/trace_recursion.h
+> +++ b/include/linux/trace_recursion.h
+> @@ -214,7 +214,14 @@ static __always_inline void trace_clear_recursion(int bit)
+>  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+>  							 unsigned long parent_ip)
+>  {
+> -	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
+> +	int bit;
+> +
+> +	preempt_disable_notrace();
 
-According to lore, the patch was sent in your way:
-https://lore.kernel.org/lkml/20211006001345.73898-2-andrealmeid@collabora.com/
+The recursion test does not require preemption disabled, it uses the task
+struct, not per_cpu variables, so you should not disable it before the test.
 
-But I can do a resend anyways if you want.
+	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
+	if (bit >= 0)
+		preempt_disable_notrace();
+
+And if the bit is zero, it means a recursion check was already done by
+another caller (ftrace handler does the check, followed by calling perf),
+and you really don't even need to disable preemption in that case.
+
+	if (bit > 0)
+		preempt_disable_notrace();
+
+And on the unlock, have:
+
+ static __always_inline void ftrace_test_recursion_unlock(int bit)
+ {
+	if (bit)
+		preempt_enable_notrace();
+ 	trace_clear_recursion(bit);
+ }
+
+But maybe that's over optimizing ;-)
+
+-- Steve
+
+
+> +	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
+> +	if (bit < 0)
+> +		preempt_enable_notrace();
+> +
+> +	return bit;
+>  }
+
