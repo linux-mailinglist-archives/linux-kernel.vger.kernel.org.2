@@ -2,111 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E585F429B81
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC3A429B94
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 04:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbhJLCbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 22:31:53 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:28920 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbhJLCbw (ORCPT
+        id S231716AbhJLCmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 22:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231588AbhJLCmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 22:31:52 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HSzz65Xplzbmr6;
-        Tue, 12 Oct 2021 10:25:22 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 12 Oct 2021 10:29:49 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 12 Oct
- 2021 10:29:49 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <rafael@kernel.org>, <gregkh@linuxfoundation.org>,
-        <broonie@kernel.org>
-Subject: [PATCH v2] regmap: Fix possible double-free in regcache_rbtree_exit()
-Date:   Tue, 12 Oct 2021 10:37:35 +0800
-Message-ID: <20211012023735.1632786-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 11 Oct 2021 22:42:04 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCA8C061570;
+        Mon, 11 Oct 2021 19:40:02 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id y12so62145033eda.4;
+        Mon, 11 Oct 2021 19:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=I8QG1CNS71eJXPXNXyUa1Uy7gCcWD1xLBUuknUfK22Y=;
+        b=kgnsXSCYkqVxFo5v6rL8M9P69Zym/oKOA3LkridsxumPS7/+o3te83XYdTnT//jpEe
+         4yuJJ1bntWFhloyqRBGJ9HUhjgQVUJmR1F6vN6IgpKyCZZ5uciVvB9N4n1AQTF/OtskB
+         axnoAdicsIXgfWNulotfQTWowHqUz6OnqvvbjANSS1I6S+kRBnejsKd1znazKpLSvnhA
+         2+vu8QVQX+S5gMLIvMb0tv04RN1kWvSS8Nh02pb0IGrQf2bzph+FcDzUafPc6pcltHO5
+         QEbKFLXhF7rULy9hHoELnHrdzM1Xu2ZrfrSRrrzaQjbC3lRUczSd5GYF96/QXYnHaEAs
+         CkMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=I8QG1CNS71eJXPXNXyUa1Uy7gCcWD1xLBUuknUfK22Y=;
+        b=pvYnUV/l7PxBO+Qk/ODrk1+tq66T8VzpN+1QAPl2Dp1iF1QPRHVC2gGATc0WcRxSXD
+         4R9rS+1eFZyFS+7g4vvcAUdP0ik/Jr3RL9Rkgf7DPCIXFjCe1fVpU43ripv4d89ABZgT
+         4NjWXH3SFKZaw5/Sn8ohpJOhR1lCmxVQakZ+32MGi3vS64oMukqgma2ibNaWEhpQPODk
+         PbP24qFarPbcSqS6aBClUYwQJzTN2n1apfK+rAhMSEOMyhGvw564iSTuTYXbwRFSOQif
+         0bnQopGCVixgioWGzu8bnOg1idumW8FO78RCAjCssXd7FfP3xxtvFx3ASLHsOKUvOKWz
+         71fQ==
+X-Gm-Message-State: AOAM531XrwBmP3JpJ7ELXwsaRfgqGNeM0cFoibOGqdAhaSxiwoH5aeHE
+        RcoDrhjmAZwZL7ML8MMRobXM4z5P+g6gEQK/ACSpCAy6HkM=
+X-Google-Smtp-Source: ABdhPJwicVFGX/9VMtEVWUOF6rt0etMGEq+/5g1y29WsPR5EQ4a/UQa1hYt+ux3VGKQmQydcch0Nn+OqAPRBUBjHNxU=
+X-Received: by 2002:a17:906:94da:: with SMTP id d26mr1182294ejy.213.1634006397070;
+ Mon, 11 Oct 2021 19:39:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+References: <20211012020959.GA1708781@bhelgaas> <a6b772d6-edf6-c0a7-078d-0fdbdb9f4f2a@huawei.com>
+In-Reply-To: <a6b772d6-edf6-c0a7-078d-0fdbdb9f4f2a@huawei.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Tue, 12 Oct 2021 15:39:45 +1300
+Message-ID: <CAGsJ_4xx1NVd2m8iBLOG6sf1k_9-254Ro=C-Vb=3LLvZdW9wMA@mail.gmail.com>
+Subject: Re: [PATCH] PCI/MSI: fix page fault when msi_populate_sysfs() failed
+To:     "wanghai (M)" <wanghai38@huawei.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In regcache_rbtree_insert_to_block(), when 'present' realloc failed,
-the 'blk' which is supposed to assign to 'rbnode->block' will be freed,
-so 'rbnode->block' points a freed memory, in the error handling path of
-regcache_rbtree_init(), 'rbnode->block' will be freed again in
-regcache_rbtree_exit(), KASAN will report double-free as follows:
+On Tue, Oct 12, 2021 at 3:25 PM wanghai (M) <wanghai38@huawei.com> wrote:
+>
+>
+> =E5=9C=A8 2021/10/12 10:09, Bjorn Helgaas =E5=86=99=E9=81=93:
+> > On Tue, Oct 12, 2021 at 09:59:40AM +0800, wanghai (M) wrote:
+> >> =E5=9C=A8 2021/10/12 1:11, Bjorn Helgaas =E5=86=99=E9=81=93:
+> >>> For v2, please note "git log --oneline drivers/pci/msi.c" and make
+> >>> your patch follow the style, including capitalization.
+> >>>
+> >>> On Mon, Oct 11, 2021 at 05:15:28PM +0800, wanghai (M) wrote:
+> >>>> =E5=9C=A8 2021/10/11 16:52, Barry Song =E5=86=99=E9=81=93:
+> >>>>> On Mon, Oct 11, 2021 at 9:24 PM Wang Hai <wanghai38@huawei.com> wro=
+te:
+> >>>>>> I got a page fault report when doing fault injection test:
+> >>> When you send v2, can you include information about how you injected
+> >>> the fault?  If it's easy, others can reproduce the failure that way.
+> >> Sorry, the reproduction needs to be based on the fault injection frame=
+work
+> >> provided by Hulk Robot. I don't know how the framework is implemented.
+> >>
+> >> The way to reproduce this is to do a fault injection to make
+> >> 'msi_attrs =3D kcalloc() in msi_populate_sysfs()' fail when insmod
+> >> 9pnet_virtio.ko.
+> >>
+> >> I sent v2 yesterday, can you help review it?
+> >> https://lore.kernel.org/linux-pci/20211011130837.766323-1-wanghai38@hu=
+awei.com/
+> >>>>>> BUG: unable to handle page fault for address: fffffffffffffff4
+> >>>>>> ...
+> >>>>>> RIP: 0010:sysfs_remove_groups+0x25/0x60
+> >>>>>> ...
+> >>>>>> Call Trace:
+> >>>>>>     msi_destroy_sysfs+0x30/0xa0
+> >>>>>>     free_msi_irqs+0x11d/0x1b0
+> >>>>>>     __pci_enable_msix_range+0x67f/0x760
+> >>>>>>     pci_alloc_irq_vectors_affinity+0xe7/0x170
+> >>>>>>     vp_find_vqs_msix+0x129/0x560
+> >>>>>>     vp_find_vqs+0x52/0x230
+> >>>>>>     vp_modern_find_vqs+0x47/0xb0
+> >>>>>>     p9_virtio_probe+0xa1/0x460 [9pnet_virtio]
+> >>>>>>     virtio_dev_probe+0x1ed/0x2e0
+> >>>>>>     really_probe+0x1c7/0x400
+> >>>>>>     __driver_probe_device+0xa4/0x120
+> >>>>>>     driver_probe_device+0x32/0xe0
+> >>>>>>     __driver_attach+0xbf/0x130
+> >>>>>>     bus_for_each_dev+0xbb/0x110
+> >>>>>>     driver_attach+0x27/0x30
+> >>>>>>     bus_add_driver+0x1d9/0x270
+> >>>>>>     driver_register+0xa9/0x180
+> >>>>>>     register_virtio_driver+0x31/0x50
+> >>>>>>     p9_virtio_init+0x3c/0x1000 [9pnet_virtio]
+> >>>>>>     do_one_initcall+0x7b/0x380
+> >>>>>>     do_init_module+0x5f/0x21e
+> >>>>>>     load_module+0x265c/0x2c60
+> >>>>>>     __do_sys_finit_module+0xb0/0xf0
+> >>>>>>     __x64_sys_finit_module+0x1a/0x20
+> >>>>>>     do_syscall_64+0x34/0xb0
+> >>>>>>     entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >>>>>>
+> >>>>>> When populating msi_irqs sysfs failed in msi_capability_init() or
+> >>>>>> msix_capability_init(), dev->msi_irq_groups will point to ERR_PTR(=
+...).
+> >>>>>> This will cause a page fault when destroying the wrong
+> >>>>>> dev->msi_irq_groups in free_msi_irqs().
+> >>>>>>
+> >>>>>> Fix this by setting dev->msi_irq_groups to NULL when msi_populate_=
+sysfs()
+> >>>>>> failed.
+> >>>>>>
+> >>>>>> Fixes: 2f170814bdd2 ("genirq/msi: Move MSI sysfs handling from PCI=
+ to MSI core")
+> >>>>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+> >>> What exactly was reported by the Hulk Robot?  Did it really do the
+> >>> fault injection and report the page fault?
+> >> Yes, it reported the error and provided a way to reproduce it
+> > Great, can you include a link to that report then?
+> > .
+> Currently hulk robot is still in the process of continuous improvement an=
+d
+> is not open to the public for the time being, so you can not access our
+> links at the moment. We will open it in the future when it is perfected.
 
-BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
-Call Trace:
- slab_free_freelist_hook+0x10d/0x240
- kfree+0xce/0x390
- regcache_rbtree_exit+0x15d/0x1a0
- regcache_rbtree_init+0x224/0x2c0
- regcache_init+0x88d/0x1310
- __regmap_init+0x3151/0x4a80
- __devm_regmap_init+0x7d/0x100
- madera_spi_probe+0x10f/0x333 [madera_spi]
- spi_probe+0x183/0x210
- really_probe+0x285/0xc30
+hi hai, would you like to put some information in the commit log like
+if  'msi_attrs =3D kcalloc() in msi_populate_sysfs()' fails, blah, blah, bl=
+ah...
 
-To fix this, moving up the assignment of rbnode->block to immediately after
-the reallocation has succeeded so that the data structure stays valid even
-if the second reallocation fails.
+It seems this can make things a bit clearer to me. Anyway, it doesn't matte=
+r
+too much. The fix is correct.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 3f4ff561bc88b ("regmap: rbtree: Make cache_present bitmap per node")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
-v2:
-  - moving up the assignment of rbnode->block instead of setting
-  rbnode->block to NULL.
-  - drop some unuseful backtrace in commit message.
----
- drivers/base/regmap/regcache-rbtree.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/base/regmap/regcache-rbtree.c b/drivers/base/regmap/regcache-rbtree.c
-index cfa29dc89bbf..fabf87058d80 100644
---- a/drivers/base/regmap/regcache-rbtree.c
-+++ b/drivers/base/regmap/regcache-rbtree.c
-@@ -281,14 +281,14 @@ static int regcache_rbtree_insert_to_block(struct regmap *map,
- 	if (!blk)
- 		return -ENOMEM;
- 
-+	rbnode->block = blk;
-+
- 	if (BITS_TO_LONGS(blklen) > BITS_TO_LONGS(rbnode->blklen)) {
- 		present = krealloc(rbnode->cache_present,
- 				   BITS_TO_LONGS(blklen) * sizeof(*present),
- 				   GFP_KERNEL);
--		if (!present) {
--			kfree(blk);
-+		if (!present)
- 			return -ENOMEM;
--		}
- 
- 		memset(present + BITS_TO_LONGS(rbnode->blklen), 0,
- 		       (BITS_TO_LONGS(blklen) - BITS_TO_LONGS(rbnode->blklen))
-@@ -305,7 +305,6 @@ static int regcache_rbtree_insert_to_block(struct regmap *map,
- 	}
- 
- 	/* update the rbnode block, its size and the base register */
--	rbnode->block = blk;
- 	rbnode->blklen = blklen;
- 	rbnode->base_reg = base_reg;
- 	rbnode->cache_present = present;
--- 
-2.25.1
-
+>
+> --
+> Wang Hai
+>
+Thanks
+barry
