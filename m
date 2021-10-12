@@ -2,104 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B189942A51F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60A942A521
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236652AbhJLNL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbhJLNL6 (ORCPT
+        id S236673AbhJLNMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:12:55 -0400
+Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:49586 "EHLO
+        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236559AbhJLNMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:11:58 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517BDC061570;
-        Tue, 12 Oct 2021 06:09:56 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id d3so53270369edp.3;
-        Tue, 12 Oct 2021 06:09:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=YKueiV6JHnO2SWEg4ednq6nX+YbDshzzDq1vLvlG1cw=;
-        b=SVZka6ezsMJnMKeWlb8qWlQJzKHOERJP+vQLsax2MT+mBK82kltqBKzjoo+0K/dfDN
-         HRqMIXA74pQmlHINDCAHsxyHoACRFDl/WnH7r7DfppzY6yA12USg6fR1NR7tbxP6Tkwl
-         Mntb7UF/C3I7cWETSTxQOQbxBnteHoLlkN4SgIRfK0XjS5FzJduAfLiuRvh5kRU1iwe5
-         t8Asb7Djhmirt180RLLyOOkUkVOWGLLG5bj9WXQpJ4ulgmJtcr8+skoFYPfKBnHrDFQH
-         K5XSfV5QGCHPT/Doxd+FRsHXNijBi4FWKBRs58TwXVnqHyvl3/nX8ObYVfte+yz0Iw9v
-         Y4TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=YKueiV6JHnO2SWEg4ednq6nX+YbDshzzDq1vLvlG1cw=;
-        b=al+p5/skozzhggWh5ShDJRGbLUNn1hTgBk5HzayZHRxFUqtjOx+15FMarnwQ/R3RzV
-         1bFT0QG7+bNjJ2loBeZk4NhswSCDVP0ZLuT49hnQTCFeAgsV0ESt9ma9JDCyRM5gsdmm
-         73enaP33mgZrOfi6wCHFYlM2gyYVahM5cvRh7H9IabbCH2pDJdZoTM5Qol46kd3eywSU
-         6bf4zjkI8i4bPOc3MYqo+iuZM+ney4NK3xIS3hqKvaCrVVJvLDDiMAYc/C6EWoPQdCCA
-         jQZVdC13XfV4HmMQXb6GCALabkOys1+0TUN/fGblOdzHguBXyubA+x6gzOZmN8DoMzRC
-         tnaA==
-X-Gm-Message-State: AOAM53292HpMoZnYCnXs7phxgUAFdaEqj1eQZrv/rqNqu0RsHFIP2SuO
-        am0iUIufoAv5LgB7yihwetM=
-X-Google-Smtp-Source: ABdhPJzjqxBA2OJOfJfHdplJCe2+fTtUOt4o9kiCTXs2g+veaaqbTRtkdP0/5j/Ps6X9dpAu/N6GHQ==
-X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr49885819edd.231.1634044192626;
-        Tue, 12 Oct 2021 06:09:52 -0700 (PDT)
-Received: from skbuf ([188.26.53.217])
-        by smtp.gmail.com with ESMTPSA id m23sm4899248eja.6.2021.10.12.06.09.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 06:09:52 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 16:09:50 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/6] ether: add EtherType for proprietary
- Realtek protocols
-Message-ID: <20211012130950.nlrqoa6qjtvzvfdh@skbuf>
-References: <20211012123557.3547280-1-alvin@pqrs.dk>
- <20211012123557.3547280-2-alvin@pqrs.dk>
+        Tue, 12 Oct 2021 09:12:53 -0400
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id 0099F18E036
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 14:10:50 +0100 (IST)
+Received: (qmail 24439 invoked from network); 12 Oct 2021 13:10:50 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Oct 2021 13:10:50 -0000
+Date:   Tue, 12 Oct 2021 14:10:19 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH mm v2] memcg: enable memory accounting in
+ __alloc_pages_bulk
+Message-ID: <20211012131019.GV3959@techsingularity.net>
+References: <CALvZod7_fhgV39HXmmMApubW-39CjJ5t+WjmkyA_DNGF7b5O+w@mail.gmail.com>
+ <2410e99a-087c-3f89-9bdf-b62a7d5df725@virtuozzo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211012123557.3547280-2-alvin@pqrs.dk>
+In-Reply-To: <2410e99a-087c-3f89-9bdf-b62a7d5df725@virtuozzo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 02:35:50PM +0200, Alvin Šipraga wrote:
-> From: Alvin Šipraga <alsi@bang-olufsen.dk>
+On Tue, Oct 12, 2021 at 01:18:39PM +0300, Vasily Averin wrote:
+> Enable memory accounting for bulk page allocator.
 > 
-> Add a new EtherType ETH_P_REALTEK to the if_ether.h uapi header. The
-> EtherType 0x8899 is used in a number of different protocols from Realtek
-> Semiconductor Corp [1], so no general assumptions should be made when
-> trying to decode such packets. Observed protocols include:
-> 
->   0x1 - Realtek Remote Control protocol [2]
->   0x2 - Echo protocol [2]
->   0x3 - Loop detection protocol [2]
->   0x4 - RTL8365MB 4- and 8-byte switch CPU tag protocols [3]
->   0x9 - RTL8306 switch CPU tag protocol [4]
->   0xA - RTL8366RB switch CPU tag protocol [4]
-> 
-> [1] https://lore.kernel.org/netdev/CACRpkdYQthFgjwVzHyK3DeYUOdcYyWmdjDPG=Rf9B3VrJ12Rzg@mail.gmail.com/
-> [2] https://www.wireshark.org/lists/ethereal-dev/200409/msg00090.html
-> [3] https://lore.kernel.org/netdev/20210822193145.1312668-4-alvin@pqrs.dk/
-> [4] https://lore.kernel.org/netdev/20200708122537.1341307-2-linus.walleij@linaro.org/
-> 
-> Suggested-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+> Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 > ---
+> v2: modified according to Shakeel Butt's remarks
+> ---
+>  include/linux/memcontrol.h | 11 +++++++++
+>  mm/memcontrol.c            | 48 +++++++++++++++++++++++++++++++++++++-
+>  mm/page_alloc.c            | 14 ++++++++++-
+>  3 files changed, 71 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 3096c9a0ee01..990acd70c846 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -810,6 +810,12 @@ static inline void obj_cgroup_put(struct obj_cgroup *objcg)
+>  	percpu_ref_put(&objcg->refcnt);
+>  }
+>  
+> +static inline void obj_cgroup_put_many(struct obj_cgroup *objcg,
+> +				       unsigned long nr)
+> +{
+> +	percpu_ref_put_many(&objcg->refcnt, nr);
+> +}
+> +
+>  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
+>  {
+>  	if (memcg)
+> @@ -1746,4 +1752,9 @@ static inline struct mem_cgroup *mem_cgroup_from_obj(void *p)
+>  
+>  #endif /* CONFIG_MEMCG_KMEM */
+>  
+> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
+> +				unsigned int nr_pages);
+> +void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page);
+> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
+> +				 unsigned int nr_pages);
+>  #endif /* _LINUX_MEMCONTROL_H */
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 87e41c3cac10..16fe3384c12c 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3239,7 +3239,53 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
+>  	refill_obj_stock(objcg, size, true);
+>  }
+>  
+> -#endif /* CONFIG_MEMCG_KMEM */
+> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
+> +				unsigned int nr_pages)
+> +{
+> +	struct obj_cgroup *objcg = NULL;
+> +
+> +	if (!memcg_kmem_enabled() || !(gfp & __GFP_ACCOUNT))
+> +		return true;
+> +
+> +	objcg = get_obj_cgroup_from_current();
+> +
+> +	if (objcg && obj_cgroup_charge_pages(objcg, gfp, nr_pages)) {
+> +		obj_cgroup_put(objcg);
+> +		return false;
+> +	}
+> +	obj_cgroup_get_many(objcg, nr_pages - 1);
+> +	*objcgp = objcg;
+> +	return true;
+> +}
+> +
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+This is probably a stupid question but why is it necessary to get many
+references instead of taking one reference here and dropping it in
+memcg_bulk_post_charge_hook?
+
+> +void memcg_bulk_charge_hook(struct obj_cgroup *objcg, struct page *page)
+> +{
+> +	page->memcg_data = (unsigned long)objcg | MEMCG_DATA_KMEM;
+> +}
+> +
+> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
+> +				 unsigned int nr_pages)
+> +{
+> +	obj_cgroup_uncharge_pages(objcg, nr_pages);
+> +	obj_cgroup_put_many(objcg, nr_pages);
+> +}
+
+And are you sure obj_cgroup_uncharge_pages should be called here? I
+thought the pages get uncharged on free.
+
+> +#else /* !CONFIG_MEMCG_KMEM */
+> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
+> +				unsigned int nr_pages)
+> +{
+> +	return true;
+> +}
+> +
+> +void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page)
+> +{
+> +}
+> +
+> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
+> +				 unsigned int nr_pages)
+> +{
+> +}
+> +#endif
+> +
+>  
+>  /*
+>   * Because page_memcg(head) is not set on tails, set it now.
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index b37435c274cf..eb37177bf507 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5207,6 +5207,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  	gfp_t alloc_gfp;
+>  	unsigned int alloc_flags = ALLOC_WMARK_LOW;
+>  	int nr_populated = 0, nr_account = 0;
+> +	unsigned int nr_pre_charge = 0;
+> +	struct obj_cgroup *objcg = NULL;
+>  
+>  	/*
+>  	 * Skip populated array elements to determine if any pages need
+> @@ -5275,6 +5277,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  	if (unlikely(!zone))
+>  		goto failed;
+>  
+> +	nr_pre_charge = nr_pages - nr_populated;
+> +	if (!memcg_bulk_pre_charge_hook(&objcg, gfp, nr_pre_charge))
+> +		goto failed;
+> +
+>  	/* Attempt the batch allocation */
+>  	local_lock_irqsave(&pagesets.lock, flags);
+>  	pcp = this_cpu_ptr(zone->per_cpu_pageset);
+> @@ -5299,6 +5305,9 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  		nr_account++;
+>  
+>  		prep_new_page(page, 0, gfp, 0);
+> +		if (objcg)
+> +			memcg_bulk_charge_hook(objcg, page);
+> +
+>  		if (page_list)
+>  			list_add(&page->lru, page_list);
+>  		else
+> @@ -5310,13 +5319,16 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  
+>  	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+>  	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
+> +	if (objcg)
+> +		memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
+>  
+>  out:
+>  	return nr_populated;
+>  
+>  failed_irq:
+>  	local_unlock_irqrestore(&pagesets.lock, flags);
+> -
+> +	if (objcg)
+> +		memcg_bulk_post_charge_hook(objcg, nr_pre_charge);
+>  failed:
+>  	page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
+>  	if (page) {
+> -- 
+> 2.31.1
+> 
+
+-- 
+Mel Gorman
+SUSE Labs
