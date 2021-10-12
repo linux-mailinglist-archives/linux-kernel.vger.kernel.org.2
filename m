@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8891842A31D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F153442A317
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236200AbhJLLXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        id S236195AbhJLLXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 07:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232820AbhJLLXw (ORCPT
+        with ESMTP id S236184AbhJLLXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:23:52 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701A0C061570;
-        Tue, 12 Oct 2021 04:21:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=UdEw1pT+fzl3XWuMYAjaroJq/eSkWpToEoEiK0H4tc8=; b=FQxDrQd8VQL8FLxSXHhYsFD549
-        Bw3bzrYjTSkvz6brYato3qgL9mUti/CSCA7aSlS/rdOtg3iWvvcBBvUgAeYrIFknl4VrCnIAyARwb
-        W2ZXY143bMOgnoZk5lM0F0hWDwSbN7tcO2rrRt3vOI6Gu/hOdQfvMSUKEbu89ZHT8kEVJjserHvJd
-        T7a8jHQf222nRNoBi1vcek3vurQIbT0ONUwczkQh/COwwW0ZYFL0GAmCPPO+A5W3537y79C/w1pmK
-        EI8baZ2LtgSX5reCbuBE8jcoOFTckA/Kx6YdhS5bzDlaMwjvlkTi6AJztbRxgYS/jG5G8VzhIIzeL
-        6WxmRXvw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maFpg-009P0D-Kh; Tue, 12 Oct 2021 11:20:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Tue, 12 Oct 2021 07:23:00 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE642C061570;
+        Tue, 12 Oct 2021 04:20:58 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5AAF630032E;
-        Tue, 12 Oct 2021 13:20:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0E30E20218D80; Tue, 12 Oct 2021 13:20:29 +0200 (CEST)
-Date:   Tue, 12 Oct 2021 13:20:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH 2/2] ftrace: prevent preemption in
- perf_ftrace_function_call()
-Message-ID: <YWVvfBybqjKuifum@hirez.programming.kicks-ass.net>
-References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com>
- <7ec34e08-a357-58d6-2ce4-c7472d8b0381@linux.alibaba.com>
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4HTCs36VXgzQkkS;
+        Tue, 12 Oct 2021 13:20:55 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Message-ID: <3c98ea6c-b80f-59d4-ad84-85cf1c9ff440@v0yd.nl>
+Date:   Tue, 12 Oct 2021 13:20:46 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH] mwifiex: Add quirk resetting the PCI bridge on MS Surface
+ devices
+Content-Language: en-US
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Brian Norris <briannorris@chromium.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <20211011165301.GA1650148@bhelgaas>
+ <fee8b431-617f-3890-3ad2-67a61d3ffca2@v0yd.nl>
+ <20211012090037.v3w4za5hshtm253f@pali>
+From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
+In-Reply-To: <20211012090037.v3w4za5hshtm253f@pali>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7ec34e08-a357-58d6-2ce4-c7472d8b0381@linux.alibaba.com>
+X-Rspamd-Queue-Id: CBF09183C
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 01:40:31PM +0800, 王贇 wrote:
-
-> diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-> index 6aed10e..33c2f76 100644
-> --- a/kernel/trace/trace_event_perf.c
-> +++ b/kernel/trace/trace_event_perf.c
-> @@ -441,12 +441,19 @@ void perf_trace_buf_update(void *record, u16 type)
->  	if (!rcu_is_watching())
->  		return;
+On 10/12/21 11:00, Pali Rohár wrote:
+> On Tuesday 12 October 2021 10:48:49 Jonas Dreßler wrote:
+>> 1) Revert the cards firmware in linux-firmware back to the second-latest
+>> version. That firmware didn't report a fixed LTR value and also doesn't
+>> have any other obvious issues I know of compared to the latest one.
 > 
-> +	/*
-> +	 * Prevent CPU changing from now on. rcu must
-> +	 * be in watching if the task was migrated and
-> +	 * scheduled.
-> +	 */
-> +	preempt_disable_notrace();
-> +
->  	if ((unsigned long)ops->private != smp_processor_id())
-> -		return;
-> +		goto out;
+> FYI, there are new bugs with new firmware versions for 8997 sent by NXP
+> to linux-firmware repository... and questions what to do with it. Seems
+> that NXP again do not respond to any questions after new version was
+> merged into linux-firmware repo.
 > 
->  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
->  	if (bit < 0)
-> -		return;
-> +		goto out;
+> https://lore.kernel.org/linux-firmware/edeb34bc-7c85-7f1d-79e4-e3e21df86334@gk2.net/
 > 
->  	event = container_of(ops, struct perf_event, ftrace_ops);
+> So firmware revert also for other ex-Marvell / NXP chips is not
+> something which could not happen.
 > 
 
-This seems rather daft, wouldn't it be easier to just put that check
-under the recursion thing?
+Argh, nevermind, it seems like my memory is fooling me once again, sorry.
+I just tried the older firmware and I was completely wrong, there's no
+difference at all between the versions when it comes to LTR messages. So
+there goes alternative 1).
+
+Something interesting and reassuring I noticed though: After resuming from
+suspend the firmware actually doesn't send a new LTR message, which means
+now the LTR is 0 and we enter PC10/S0ix just fine. So basically the change
+this patch does is already in effect, just after one suspend/resume cycle.
+That gives me more confidence that we should maybe apply this patch for
+all 8897 devices, not only Surface devices?
