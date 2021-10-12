@@ -2,321 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE7742A047
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEF642A04E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235485AbhJLIty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbhJLItx (ORCPT
+        id S234873AbhJLIuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:50:20 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:40692
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235529AbhJLIuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:49:53 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2A6C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:47:51 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id r18so64627853wrg.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:47:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zbX6hKlpjnEluaYu/lsbeCfslnUmI3YRbwFY1Jibvtg=;
-        b=EuVHU0mSbR9/OGy5y8viyb3XVqJXl37DhVIe8dX07Z5jQ8Nje2QoKiiFdY6e9PbxLQ
-         dRQDFVnVH0XM1VGpFIuApB4RIfhxIjTIis/Lfggji80pHzTtdvkQCeQ74wIRtZs8Sxg3
-         bili+uILmV15CCNlbBtPiOPCXeWFK2Q+6ou5yhXQNOhZTdV2qFbZe5UT9eqVi3KHP01k
-         nu1KE0bA5TKLN63b4gle52C/ZYOAjbAQZkdln/9/24Ebg244702t1wIAZBDCxPsG41mT
-         j6+hSRq6XjdOQZuvWkiycFol+sI0GPDzH9KTu+Wi4V0PxqRQlNXCY2oAo5o5UnHDNgZS
-         BpRw==
+        Tue, 12 Oct 2021 04:50:17 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 6CF7E4001B
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 08:48:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634028495;
+        bh=/bLYqEWiuu93v2dUYStYjMMSSjdwzn3CWIi0Is9xJUs=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=oyxGPQzswBCJEnFBHOiXYbhTiU69N8i9+CFfDb0pEsC8jm2NIbFzYl/Orvsalu1Uj
+         Q6ManNSz915YEQiZdOE2x8XDCIuvlYhtD7q9VExwmM1wlm2346MN/yrQNU1ZZgrt0I
+         80v1CYOeO9tS3AqFNijdwfaK3UR4wfyiStAXvDXVL31XN7CPuUE8gPwMeKDt/bbFd+
+         pq1xK7ni2jSdlQbV6imrYOoR5CTQpYI6JMlzAvceCYbbBCQgZ1BFRaaCcaHoeM40M7
+         5UpQSjplHY5LL6o7x2lxxFQuqZyw0DXZyELSnYFL+/341QOoPIUd6mxEhk0WGMTiXE
+         LspTs9gRm4+lg==
+Received: by mail-lf1-f70.google.com with SMTP id p42-20020a05651213aa00b003fd8935b8d6so4856632lfa.10
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:48:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=zbX6hKlpjnEluaYu/lsbeCfslnUmI3YRbwFY1Jibvtg=;
-        b=THD3q0SGP/77O/i94eYviWHLx4clnKtVPzmUQrQz96CAswZPUycoZAU3ZL/Xg7peot
-         jAAEHdv/1oxE/vego4rHAUbkAiuP/akOJ146R8GZ23YZkFlrK+UVigIc8zRBNqo2Wbev
-         G3GtD2HHAnnL33aNKUYFqXd244TejGpmkO8uTDHGlwa069AvOiNizCi91H5zetwETXzl
-         cx0Et1F1sjEwZ4qgQA59Zohw3HvHgL+WTzN9bMlihcbkgGjJ9an1FWyBCM5hmBTv2/8G
-         28Fw6LKkEGJLiG06kpi5FLSxVQVx4rMNFjNslwuI9qa3G5toqolMqHF/RbU4Ai1R8t5M
-         Wxag==
-X-Gm-Message-State: AOAM532XccWwFIhpglzG+Am72RW54nWWovpYbzl2WM+uAQ4isjjNZiJr
-        BSPaW8cY59qP7nnRsdb79lK5og==
-X-Google-Smtp-Source: ABdhPJxOmIo0WWMlshzCTeHU91KlphCPToG02sGDwYhflW9nkfXLZ9f4EUlHyMMolREVzQaYIiFgbQ==
-X-Received: by 2002:a5d:6c65:: with SMTP id r5mr30137331wrz.26.1634028470054;
-        Tue, 12 Oct 2021 01:47:50 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:4e93:9fa7:4d66:4f5c? ([2001:861:44c0:66c0:4e93:9fa7:4d66:4f5c])
-        by smtp.gmail.com with ESMTPSA id p25sm1815128wma.2.2021.10.12.01.47.49
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/bLYqEWiuu93v2dUYStYjMMSSjdwzn3CWIi0Is9xJUs=;
+        b=iltDrWjMNDBNrqyIm5Kz8YmebgcQ5utSE3KM/OCPBkLjt6/oKsDWTK7Ixa2WiPjnp4
+         boIgvyiL2ZiURlKpPiXbaElmVp/mMN8i7W/e/HCAYvsnNvfe+0+ZMnw9lBLMw/ed7nrI
+         D/ZTSQiv3pK9rTVHYZuG9GHkJBYk2yrniJEon8gu/6Pew2VL9rojxPXPn2ZFpRMKeoD/
+         yr4Zl/Odon0BpwZ9Ow9bhU2xEq/jKSUUwpBePCbZNMIfOBDsGn7weTOrL0fLZSRg1fsr
+         4Wa1ycS8UdhfcCdom8vBTa1d8XSM7jU8cz2KWZbovWq3SzBNk/BH/p+AFA4K03f4z5NI
+         denQ==
+X-Gm-Message-State: AOAM5335I+6S23QelJFMbX7iWmKSKw86rtdatqbBt5XAVBHKVLyGVee7
+        IAIStNE0Pr4hlMjyLEdd5sNJhXy67dY29Eogi8aU4I/mHrKbtZ7TFcM5luI6jjlXkVdRXZ2wQVz
+        B4vvvPciBv1RktJkDgteNUJMDoop7xIl7gM3dZsofUw==
+X-Received: by 2002:a2e:bd02:: with SMTP id n2mr29708346ljq.412.1634028494426;
+        Tue, 12 Oct 2021 01:48:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz/KrA+FVuHKQaPlIEozCQYVijMCeVw0Gj89uGifpd5rxNy42hNDpCiwoLy0Hg/ZwsEICaIzw==
+X-Received: by 2002:a2e:bd02:: with SMTP id n2mr29708314ljq.412.1634028494178;
+        Tue, 12 Oct 2021 01:48:14 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id h23sm651216ljl.35.2021.10.12.01.48.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 01:47:49 -0700 (PDT)
-Subject: Re: [PATCH v5 3/8] drm/omap: introduce omap_hw_overlay
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     linux-omap@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, khilman@baylibre.com,
-        Benoit Parrot <bparrot@ti.com>
-References: <20210923070701.145377-1-narmstrong@baylibre.com>
- <20210923070701.145377-4-narmstrong@baylibre.com>
- <6e5980a6-218e-b585-3ad7-3e55350929b6@ideasonboard.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <654cae73-fe44-022a-ec81-e04979be6f76@baylibre.com>
-Date:   Tue, 12 Oct 2021 10:47:49 +0200
+        Tue, 12 Oct 2021 01:48:13 -0700 (PDT)
+Subject: Re: [RFC PATCH 2/9] dt-bindings: memory-controller: Add apple,mcc
+ binding
+To:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-3-marcan@marcan.st>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <6999f3f4-338c-f1ba-2360-40fa50ecd45d@canonical.com>
+Date:   Tue, 12 Oct 2021 10:48:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <6e5980a6-218e-b585-3ad7-3e55350929b6@ideasonboard.com>
+In-Reply-To: <20211011165707.138157-3-marcan@marcan.st>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2021 09:59, Tomi Valkeinen wrote:
-> On 23/09/2021 10:06, Neil Armstrong wrote:
->> From: Benoit Parrot <bparrot@ti.com>
->>
->> Split out the hardware overlay specifics from omap_plane.
->> To start, the hw overlays are statically assigned to planes.
->>
->> The goal is to eventually assign hw overlays dynamically to planes
->> during plane->atomic_check() based on requested caps (scaling, YUV,
->> etc). And then perform hw overlay re-assignment if required.
->>
->> Signed-off-by: Benoit Parrot <bparrot@ti.com>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->> ---
->>   drivers/gpu/drm/omapdrm/Makefile       |  1 +
->>   drivers/gpu/drm/omapdrm/omap_drv.c     |  9 ++-
->>   drivers/gpu/drm/omapdrm/omap_drv.h     |  4 ++
->>   drivers/gpu/drm/omapdrm/omap_overlay.c | 87 ++++++++++++++++++++++++++
->>   drivers/gpu/drm/omapdrm/omap_overlay.h | 31 +++++++++
->>   drivers/gpu/drm/omapdrm/omap_plane.c   | 42 ++++++-------
->>   6 files changed, 151 insertions(+), 23 deletions(-)
->>   create mode 100644 drivers/gpu/drm/omapdrm/omap_overlay.c
->>   create mode 100644 drivers/gpu/drm/omapdrm/omap_overlay.h
->>
->> diff --git a/drivers/gpu/drm/omapdrm/Makefile b/drivers/gpu/drm/omapdrm/Makefile
->> index 21e8277ff88f..710b4e0abcf0 100644
->> --- a/drivers/gpu/drm/omapdrm/Makefile
->> +++ b/drivers/gpu/drm/omapdrm/Makefile
->> @@ -9,6 +9,7 @@ omapdrm-y := omap_drv.o \
->>       omap_debugfs.o \
->>       omap_crtc.o \
->>       omap_plane.o \
->> +    omap_overlay.o \
->>       omap_encoder.o \
->>       omap_fb.o \
->>       omap_gem.o \
->> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.c b/drivers/gpu/drm/omapdrm/omap_drv.c
->> index f86e20578143..b994014b22e8 100644
->> --- a/drivers/gpu/drm/omapdrm/omap_drv.c
->> +++ b/drivers/gpu/drm/omapdrm/omap_drv.c
->> @@ -583,10 +583,14 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
->>         omap_gem_init(ddev);
->>   +    ret = omap_hwoverlays_init(priv);
->> +    if (ret)
->> +        goto err_gem_deinit;
->> +
->>       ret = omap_modeset_init(ddev);
->>       if (ret) {
->>           dev_err(priv->dev, "omap_modeset_init failed: ret=%d\n", ret);
->> -        goto err_gem_deinit;
->> +        goto err_free_overlays;
->>       }
->>         /* Initialize vblank handling, start with all CRTCs disabled. */
->> @@ -618,6 +622,8 @@ static int omapdrm_init(struct omap_drm_private *priv, struct device *dev)
->>       omap_fbdev_fini(ddev);
->>   err_cleanup_modeset:
->>       omap_modeset_fini(ddev);
->> +err_free_overlays:
->> +    omap_hwoverlays_destroy(priv);
->>   err_gem_deinit:
->>       omap_gem_deinit(ddev);
->>       destroy_workqueue(priv->wq);
->> @@ -642,6 +648,7 @@ static void omapdrm_cleanup(struct omap_drm_private *priv)
->>       drm_atomic_helper_shutdown(ddev);
->>         omap_modeset_fini(ddev);
->> +    omap_hwoverlays_destroy(priv);
->>       omap_gem_deinit(ddev);
->>         destroy_workqueue(priv->wq);
->> diff --git a/drivers/gpu/drm/omapdrm/omap_drv.h b/drivers/gpu/drm/omapdrm/omap_drv.h
->> index 591d4c273f02..b4d9c2062723 100644
->> --- a/drivers/gpu/drm/omapdrm/omap_drv.h
->> +++ b/drivers/gpu/drm/omapdrm/omap_drv.h
->> @@ -24,6 +24,7 @@
->>   #include "omap_gem.h"
->>   #include "omap_irq.h"
->>   #include "omap_plane.h"
->> +#include "omap_overlay.h"
->>     #define DBG(fmt, ...) DRM_DEBUG_DRIVER(fmt"\n", ##__VA_ARGS__)
->>   #define VERB(fmt, ...) if (0) DRM_DEBUG_DRIVER(fmt, ##__VA_ARGS__) /* verbose debug */
->> @@ -57,6 +58,9 @@ struct omap_drm_private {
->>       unsigned int num_planes;
->>       struct drm_plane *planes[8];
->>   +    unsigned int num_ovls;
->> +    struct omap_hw_overlay *overlays[8];
->> +
->>       struct drm_fb_helper *fbdev;
->>         struct workqueue_struct *wq;
->> diff --git a/drivers/gpu/drm/omapdrm/omap_overlay.c b/drivers/gpu/drm/omapdrm/omap_overlay.c
->> new file mode 100644
->> index 000000000000..2b1416d2aad2
->> --- /dev/null
->> +++ b/drivers/gpu/drm/omapdrm/omap_overlay.c
->> @@ -0,0 +1,87 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) 2018 Texas Instruments Incorporated -  http://www.ti.com/
->> + * Author: Benoit Parrot, <bparrot@ti.com>
+On 11/10/2021 18:57, Hector Martin wrote:
+> This device represents the memory controller in Apple SoCs, and is
+> chiefly in charge of adjusting performance characteristics according to
+> system demand.
 > 
-> Extra comma there, and similar case below.
-
-Fixed
-
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  .../memory-controllers/apple,mcc.yaml         | 80 +++++++++++++++++++
+>  .../opp/apple,mcc-operating-points.yaml       | 62 ++++++++++++++
+>  2 files changed, 142 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/apple,mcc.yaml
+>  create mode 100644 Documentation/devicetree/bindings/opp/apple,mcc-operating-points.yaml
 > 
->> + */
->> +
->> +#include <drm/drm_atomic.h>
->> +#include <drm/drm_atomic_helper.h>
->> +#include <drm/drm_plane_helper.h>
->> +
->> +#include "omap_dmm_tiler.h"
->> +#include "omap_drv.h"
->> +
->> +/*
->> + * overlay funcs
->> + */
->> +static const char * const overlay_id_to_name[] = {
->> +    [OMAP_DSS_GFX] = "gfx",
->> +    [OMAP_DSS_VIDEO1] = "vid1",
->> +    [OMAP_DSS_VIDEO2] = "vid2",
->> +    [OMAP_DSS_VIDEO3] = "vid3",
->> +};
-> 
-> I was expecting to see the name array to be removed from omap_plane.c as it's moved here, but that's not the case. Why is that? Especially as after this series these names make no sense with the planes.
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/apple,mcc.yaml b/Documentation/devicetree/bindings/memory-controllers/apple,mcc.yaml
+> new file mode 100644
+> index 000000000000..0774f10e65ed
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/memory-controllers/apple,mcc.yaml
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/memory-controllers/apple,mcc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Apple SoC MCC memory controller performance controls
+> +
+> +maintainers:
+> +  - Hector Martin <marcan@marcan.st>
+> +
+> +description: |
+> +  Apple SoCs contain a multichannel memory controller that can have its
+> +  configuration changed to adjust to changing performance requirements from
+> +  the rest of the SoC. This node represents the controller and provides a
+> +  power domain provider that downstream devices can use to adjust the memory
+> +  controller performance level.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - apple,t8103-mcc
+> +      - const: apple,mcc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#power-domain-cells":
+> +    const: 0
+> +
+> +  operating-points-v2:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description:
+> +      A reference to the OPP table describing the memory controller performance
+> +      levels. Each OPP node should contain an `apple,memory-perf-config`
+> +      property that contains the configuration values for that performance
+> +      level.
+> +
+> +  apple,num-channels:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      The number of memory channels in use.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#power-domain-cells"
+> +  - operating-points-v2
+> +  - apple,num-channels
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  # See clock/apple,cluster-clock.yaml for an example of downstream usage.
+> +  - |
+> +    mcc_opp: opp-table-2 {
+> +        compatible = "operating-points-v2";
 
-You're right, I'll remove the one from omap_plane.c and where it's used.
+apple,mcc-operating-points?
 
-> 
->> +static void omap_overlay_destroy(struct omap_hw_overlay *overlay)
->> +{
->> +    kfree(overlay);
->> +}
->> +
->> +static struct omap_hw_overlay *omap_overlay_init(enum omap_plane_id overlay_id,
->> +                         enum omap_overlay_caps caps)
->> +{
->> +    struct omap_hw_overlay *overlay;
->> +
->> +    overlay = kzalloc(sizeof(*overlay), GFP_KERNEL);
->> +    if (!overlay)
->> +        return ERR_PTR(-ENOMEM);
->> +
->> +    overlay->name = overlay_id_to_name[overlay_id];
->> +    overlay->overlay_id = overlay_id;
->> +    overlay->caps = caps;
->> +    /*
->> +     * When this is called priv->num_crtcs is not known yet.
->> +     * Use a safe mask value to start with, it will get updated to the
->> +     * proper value after the first use.
->> +     */
->> +    overlay->possible_crtcs = 0xff;
-> 
-> This sounds like a hack. Why do we need possible_crtcs anyway? If I'm not mistaken, on all DSS versions any overlay can be used on any ctrtc. On the DRM plane level we need the possible_crtc as the DRM framework needs that (i.e. we just always set all crtcs available for all planes), but why is it needed here?
+> +
+> +        mcc_lowperf: opp0 {
+> +            opp-level = <0>;
+> +            apple,memory-perf-config = <0x813057f 0x1800180>;
+> +        };
+> +        mcc_highperf: opp1 {
+> +            opp-level = <1>;
+> +            apple,memory-perf-config = <0x133 0x55555340>;
+> +        };
+> +    };
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        mcc: memory-controller@200200000 {
+> +            compatible = "apple,t8103-mcc", "apple,mcc";
+> +            #power-domain-cells = <0>;
+> +            reg = <0x2 0x200000 0x0 0x200000>;
+> +            operating-points-v2 = <&mcc_opp>;
+> +            apple,num-channels = <8>;
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/opp/apple,mcc-operating-points.yaml b/Documentation/devicetree/bindings/opp/apple,mcc-operating-points.yaml
+> new file mode 100644
+> index 000000000000..babf27841bb7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/opp/apple,mcc-operating-points.yaml
+> @@ -0,0 +1,62 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/opp/apple,mcc-operating-points.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Apple SoC memory controller OPP bindings
+> +
+> +maintainers:
+> +  - Hector Martin <marcan@marcan.st>
+> +
+> +description: |
+> +  Apple SoCs can have their memory controller performance adjusted depending on
+> +  system requirements. These performance states are represented by specific
+> +  memory controller register values. The apple-mcc driver uses these values
+> +  to change the MCC performance.
+> +
+> +allOf:
+> +  - $ref: opp-v2-base.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: apple,mcc-operating-points
+> +
+> +required:
+> +  - compatible
+> +
+> +patternProperties:
+> +  "opp[0-9]+":
+> +    type: object
+> +
+> +    properties:
+> +      opp-level: true
 
-Indeed, in omap_drv.c we have:
-plane_crtc_mask = (1 << priv->num_pipes) - 1;
+You don't need to mention it.
 
-for all planes, so I'll rework this.
+> +      apple,memory-perf-config:
+> +        $ref: /schemas/types.yaml#/definitions/uint32-array
+> +        description: |
+> +          A pair of register values used to configure this performance state.
+> +        minItems: 2
+> +        maxItems: 2
+> +
+> +    required:
+> +      - opp-level
+> +      - apple,memory-perf-config
+> +
+> +    unevaluatedProperties: false
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    mcc_opp: opp-table-2 {
+> +        compatible = "operating-points-v2";
 
-> 
->> +    return overlay;
->> +}
->> +
->> +int omap_hwoverlays_init(struct omap_drm_private *priv)
->> +{
->> +    static const enum omap_plane_id hw_plane_ids[] = {
->> +            OMAP_DSS_GFX, OMAP_DSS_VIDEO1,
->> +            OMAP_DSS_VIDEO2, OMAP_DSS_VIDEO3,
->> +    };
->> +    u32 num_overlays = dispc_get_num_ovls(priv->dispc);
->> +    enum omap_overlay_caps caps;
->> +    int i, ret;
->> +
->> +    for (i = 0; i < num_overlays; i++) {
->> +        struct omap_hw_overlay *overlay;
->> +
->> +        caps = dispc_ovl_get_caps(priv->dispc, hw_plane_ids[i]);
->> +        overlay = omap_overlay_init(hw_plane_ids[i], caps);
->> +        if (IS_ERR(overlay)) {
->> +            ret = PTR_ERR(overlay);
->> +            dev_err(priv->dev, "failed to construct overlay for %s (%d)\n",
->> +                overlay_id_to_name[i], ret);
->> +            return ret;
->> +        }
-> 
-> I think this leaks memory if omap_overlay_init() fails.
+Different compatible.
 
-Fixed
+> +
+> +        mcc_lowperf: opp0 {
+> +            opp-level = <0>;
+> +            apple,memory-perf-config = <0x813057f 0x1800180>;
+> +        };
+> +        mcc_highperf: opp1 {
+> +            opp-level = <1>;
+> +            apple,memory-perf-config = <0x133 0x55555340>;
+> +        };
+> +    };
+> 
 
-> 
->> +        overlay->idx = priv->num_ovls;
->> +        priv->overlays[priv->num_ovls++] = overlay;
->> +    }
->> +
->> +    return 0;
->> +}
->> +
->> +void omap_hwoverlays_destroy(struct omap_drm_private *priv)
->> +{
->> +    int i;
->> +
->> +    for (i = 0; i < priv->num_ovls; i++) {
->> +        omap_overlay_destroy(priv->overlays[i]);
->> +        priv->overlays[i] = NULL;
->> +    }
->> +}
->> diff --git a/drivers/gpu/drm/omapdrm/omap_overlay.h b/drivers/gpu/drm/omapdrm/omap_overlay.h
->> new file mode 100644
->> index 000000000000..892fecb67adb
->> --- /dev/null
->> +++ b/drivers/gpu/drm/omapdrm/omap_overlay.h
->> @@ -0,0 +1,31 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * Copyright (C) 2018 Texas Instruments Incorporated -  http://www.ti.com/
->> + * Author: Benoit Parrot, <bparrot@ti.com>
->> + */
->> +
->> +#ifndef __OMAPDRM_OVERLAY_H__
->> +#define __OMAPDRM_OVERLAY_H__
->> +
->> +#include <linux/types.h>
->> +
->> +enum drm_plane_type;
->> +
->> +struct drm_device;
->> +struct drm_mode_object;
->> +struct drm_plane;
->> +
->> +/* Used to associate a HW overlay/plane to a plane */
->> +struct omap_hw_overlay {
->> +    int idx;
-> 
-> unsigned int.
-> 
->> +
->> +    const char *name;
->> +    enum omap_plane_id overlay_id;
-> 
-> Perhaps just "id" is fine. You don't have "overlay_name" there either, but just "name".
 
-Ack
-
-> 
->  Tomi
-
-Thanks,
-Neil
+Best regards,
+Krzysztof
