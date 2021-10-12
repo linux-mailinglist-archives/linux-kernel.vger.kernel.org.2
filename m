@@ -2,204 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E4D42A056
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD5242A05E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235146AbhJLIvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:51:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20763 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235543AbhJLIvR (ORCPT
+        id S235084AbhJLIxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:53:24 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:40836
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235028AbhJLIxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:51:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634028556;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PZfuMOca3BMyKn1rZ5ck9ra0yqT4Ylul21gEYxqcVNk=;
-        b=ZjeG5hBsExaVH97d3qIbj4cYZEHnjsuYWlVmzjSIwSr9VUYHSN1VZ9mB8SCmUpYEOCHA3l
-        mhFNxHanqwviRwmnkcbdO3HARZMoyLVAce9D9nUJXOV2VA8ijKJTei3TNiZmr0h1+RtAoA
-        Yi9wnhIspA6Mgo1FErY+UYT5H4M4NQk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-22-D-6USiR9MwqDDqTvXhw2sg-1; Tue, 12 Oct 2021 04:49:15 -0400
-X-MC-Unique: D-6USiR9MwqDDqTvXhw2sg-1
-Received: by mail-ed1-f69.google.com with SMTP id t28-20020a508d5c000000b003dad7fc5caeso18253485edt.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:49:14 -0700 (PDT)
+        Tue, 12 Oct 2021 04:53:15 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 015AD40013
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 08:51:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634028672;
+        bh=T8ZOZOr5Y4GlENUxX/f29gdurL3ZGpNumPUv/2Px4/g=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=gnXXXVijaqXvQJFih4dE1eDBYUrOGdDVaa4Hg1XcddHYLDIiD6awSrwCsCgj+I3xF
+         kQJLGVnT83ACgcAdL5PAX7pcrM2X1NkagqS7yZaKww0pjDjqtMUEaf8kRBoDsoGti0
+         g42StT0QFz7lqq0gTqW7QhYiDc6cG2nqvpJCqGOk47p1db7+bIgwsy4q+/BkJ1muR8
+         05R9gzdO7ylhTVwpUf9DIC5XqAifnNjAAX8T+wq88nC/sBm06nqDjfOmsIRlmFORR4
+         hWSx5L6TofaXbJ+bEHqRHgbx7edgRnieIphhwljcVAxzK6+WIJg47RKUXOhelPdnzz
+         o5Ays3xqvdd+g==
+Received: by mail-lf1-f69.google.com with SMTP id p42-20020a05651213aa00b003fd8935b8d6so4862057lfa.10
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:51:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PZfuMOca3BMyKn1rZ5ck9ra0yqT4Ylul21gEYxqcVNk=;
-        b=xZRdRr9mwtf8qRCaKi3UN8ZxO4jan8sQKnkKNnjwDrzSdg9Bn4SKMNjEtWez0tYLMN
-         TdXBIDBwgJSyHOo2hlgDF+ohi/dGWHW35HaDdeUkTLM4Q+XxI8OpaDqw1pmf/P00hBJJ
-         zbcen//4b1rF0zsKuvqMW9qbQ9V56qQVIBUuht9AiJOPAAewu9lV5NVLstqxzdft+hJZ
-         36W8xy4uVQj+85lUY7lQ2DrA1/Fo9lb8u3EOmobwreLhtokgFon/i8/oSQMQyUEdhetP
-         CtHLoIPdf2LCZEqU6HvcEQc0XvqUHL2lPiFbHYZqufWCXsi6IsoG3Wos+qMyOx1LJdPg
-         vopA==
-X-Gm-Message-State: AOAM533jeYdGEn+jZL+PoTt3/pcW9GY0J208FxNFv8/7Hqs00lxGlO7m
-        E29iFjWGWjgjRBGX2IaygYEHQmjapLZMAL9Wzdx1eAOv2rRbfByDstSnkx+z6oGGza97BDfjAWh
-        utODJJ5lwRdfwsMHtnuArf5Ft3GgNYnogMCLI3AZq
-X-Received: by 2002:a17:906:3486:: with SMTP id g6mr31790747ejb.71.1634028553461;
-        Tue, 12 Oct 2021 01:49:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcou8Lgqn0Rq4uLIbUFsO5KlFaR+BNZCSxnz2ONJB3GR7hzH2MPFfyTEhB9bWdVtH5sVUQFiv64h5hS1OOKSY=
-X-Received: by 2002:a17:906:3486:: with SMTP id g6mr31790726ejb.71.1634028553265;
- Tue, 12 Oct 2021 01:49:13 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T8ZOZOr5Y4GlENUxX/f29gdurL3ZGpNumPUv/2Px4/g=;
+        b=GjntBkuk/uUy7JPjCAYJoCU0pzLfQVaGgt4Du1pyvVmHU89jvRgCZ+x/CjiB0lQ1gQ
+         T34V+uy7aNXQuD6DeIJcawO0CsY1L1EzRgGPoSj3LD1bR7CMUWNXPpiAqLQZB09XVyzk
+         vBIvVCLb+R6sMQUQVlAltdM74qNnI4qJQAMIWzBNUBxKk1b+LrL0fpb/co2gXJBoXBqa
+         ZyeMtsEgoOugP65XSNy+kLaahYIskcYGJUmGpxRKwpU5fAHpjisFCW6eTmQzW/+8VdRS
+         Fl4F9EmnxtlhB8lSuhpBNVv7o88vH9WWu1HIz6e+vZS4r1hxKe39ULc6RyLtR1PEAAnT
+         v0iw==
+X-Gm-Message-State: AOAM530LKyVaws+vt1mqIZkdJ0UwLCJ25qGjAcGihJhWr4WYbtf5M4J+
+        d8yp3MUWX96UtBCEqlWIBQWpcCfTVQBbiXuSVHwcGOqAN9/k+cmSQt8wwe730yFGr7XBrgDFm4B
+        0SsSV2SWa2QNegXevT6qvyGslDYIgoh/DA5QughQ7OQ==
+X-Received: by 2002:ac2:51cd:: with SMTP id u13mr3993651lfm.200.1634028671239;
+        Tue, 12 Oct 2021 01:51:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJztoea6HkNHM9Wjs5q7o+UVJ+H5Botof8Mx0a9li4apYYpZeNNCRerrFp6ZBW53kj/fYfSWfg==
+X-Received: by 2002:ac2:51cd:: with SMTP id u13mr3993612lfm.200.1634028670990;
+        Tue, 12 Oct 2021 01:51:10 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id c3sm344820lfr.187.2021.10.12.01.51.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 01:51:10 -0700 (PDT)
+Subject: Re: [RFC PATCH 3/9] dt-bindings: clock: Add apple,cluster-clk binding
+To:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-4-marcan@marcan.st>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <0fe602f6-3adc-dfac-beee-2854b01cec5c@canonical.com>
+Date:   Tue, 12 Oct 2021 10:51:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211008032231.1143467-1-fengli@smartx.com> <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
- <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com>
- <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
- <CALTww28CsJdmVOLFeoHC8FgbHDK78h8Lncsf9fFA0RYXEj=R9A@mail.gmail.com>
- <CAHckoCzzVP7npmU4LWedzD-f1QmkH4K0iLk_=8ptSFXrFfRoDw@mail.gmail.com>
- <CAPhsuW4VFTpM94by-iMkTQ=b9Y7FqZ2oqHH+jV-f8BM=YKWyiA@mail.gmail.com> <CAHckoCxRj1qb=yfeQ2o_8n_BSSLD9JXqm8GopUp2qx9NEPxr7w@mail.gmail.com>
-In-Reply-To: <CAHckoCxRj1qb=yfeQ2o_8n_BSSLD9JXqm8GopUp2qx9NEPxr7w@mail.gmail.com>
-From:   Xiao Ni <xni@redhat.com>
-Date:   Tue, 12 Oct 2021 16:49:01 +0800
-Message-ID: <CALTww2_eScuqd4yUtDFhaRUGAK-f8J_L=yOZdTVA9uZ7Tq4bxg@mail.gmail.com>
-Subject: Re: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
-To:     Li Feng <fengli@smartx.com>
-Cc:     Song Liu <song@kernel.org>,
-        "open list:SOFTWARE RAID (Multiple Disks) SUPPORT" 
-        <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211011165707.138157-4-marcan@marcan.st>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all
+On 11/10/2021 18:57, Hector Martin wrote:
+> This device represents the CPU performance state switching mechanism as
+> a clock controller, to be used with the standard cpufreq-dt
+> infrastructure.
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  .../bindings/clock/apple,cluster-clk.yaml     | 115 ++++++++++++++++++
+>  1 file changed, 115 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/apple,cluster-clk.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/apple,cluster-clk.yaml b/Documentation/devicetree/bindings/clock/apple,cluster-clk.yaml
+> new file mode 100644
+> index 000000000000..9a8b863dadc0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/apple,cluster-clk.yaml
+> @@ -0,0 +1,115 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/apple,cluster-clk.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: CPU cluster frequency scaling for Apple SoCs
+> +
+> +maintainers:
+> +  - Hector Martin <marcan@marcan.st>
+> +
+> +description: |
+> +  Apple SoCs control CPU cluster frequencies by using a performance state
+> +  index. This node represents the feature as a clock controller, and uses
+> +  a reference to the CPU OPP table to translate clock frequencies into
+> +  performance states. This allows the CPUs to use the standard cpufreq-dt
+> +  mechanism for frequency scaling.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - apple,t8103-cluster-clk
+> +      - const: apple,cluster-clk
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#clock-cells':
+> +    const: 0
+> +
+> +  operating-points-v2:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description:
+> +      A reference to the OPP table used for the CPU cluster controlled by this
+> +      device instance. The table should contain an `opp-level` property for
+> +      every OPP, which represents the p-state index used by the hardware to
+> +      represent this performance level.
+> +
+> +      OPPs may also have a `required-opps` property (see power-domains).
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +    description:
+> +      An optional reference to a power domain provider that links its
+> +      performance state to the CPU cluster performance state. This is typically
+> +      a memory controller. If set, the `required-opps` property in the CPU
+> +      frequency OPP nodes will be used to change the performance state of this
+> +      provider state in tandem with CPU frequency changes.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#clock-cells'
+> +  - operating-points-v2
+> +
+> +additionalProperties: false
+> +
+> +
 
-How about this patch? Now writemostly flag doesn't be stored in
-superblock too. So this patch fix this problem too.
-If this patch is ok, I'll send the patch.
+One line break.
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 6c0c3d0d905a..9e8a8c5c7758 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -2977,6 +2977,7 @@ state_store(struct md_rdev *rdev, const char
-*buf, size_t len)
-      *  {,-}failfast - set/clear FailFast
-      */
-     int err =3D -EINVAL;
-+    int need_update_sb =3D 0;
-     if (cmd_match(buf, "faulty") && rdev->mddev->pers) {
-         md_error(rdev->mddev, rdev);
-         if (test_bit(Faulty, &rdev->flags))
-@@ -2998,20 +2999,19 @@ state_store(struct md_rdev *rdev, const char
-*buf, size_t len)
+> +examples:
+> +  - |
+> +    pcluster_opp: opp-table-1 {
+> +        compatible = "operating-points-v2";
+> +        opp-shared;
+> +
+> +        opp01 {
+> +            opp-hz = /bits/ 64 <600000000>;
+> +            opp-microvolt = <781000>;
+> +            opp-level = <1>;
+> +            clock-latency-ns = <8000>;
+> +            required-opps = <&mcc_lowperf>;
+> +        };
+> +        /* intermediate p-states omitted */
+> +        opp15 {
+> +            opp-hz = /bits/ 64 <3204000000>;
+> +            opp-microvolt = <1081000>;
+> +            opp-level = <15>;
+> +            clock-latency-ns = <56000>;
+> +            required-opps = <&mcc_highperf>;
+> +        };
+> +    };
+> +
+> +    mcc_opp: opp-table-2 {
+> +        compatible = "operating-points-v2";
 
-             if (err =3D=3D 0) {
-                 md_kick_rdev_from_array(rdev);
--                if (mddev->pers) {
--                    set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
--                    md_wakeup_thread(mddev->thread);
--                }
-+                need_update_sb =3D 1;
-                 md_new_event(mddev);
-             }
-         }
-     } else if (cmd_match(buf, "writemostly")) {
-         set_bit(WriteMostly, &rdev->flags);
-         mddev_create_serial_pool(rdev->mddev, rdev, false);
-+        need_update_sb =3D 1;
-         err =3D 0;
-     } else if (cmd_match(buf, "-writemostly")) {
-         mddev_destroy_serial_pool(rdev->mddev, rdev, false);
-         clear_bit(WriteMostly, &rdev->flags);
-+        need_update_sb =3D 1;
-         err =3D 0;
-     } else if (cmd_match(buf, "blocked")) {
-         set_bit(Blocked, &rdev->flags);
-@@ -3037,9 +3037,11 @@ state_store(struct md_rdev *rdev, const char
-*buf, size_t len)
-         err =3D 0;
-     } else if (cmd_match(buf, "failfast")) {
-         set_bit(FailFast, &rdev->flags);
-+        need_update_sb =3D 1;
-         err =3D 0;
-     } else if (cmd_match(buf, "-failfast")) {
-         clear_bit(FailFast, &rdev->flags);
-+        need_update_sb =3D 1;
-         err =3D 0;
-     } else if (cmd_match(buf, "-insync") && rdev->raid_disk >=3D 0 &&
-            !test_bit(Journal, &rdev->flags)) {
-@@ -3120,6 +3122,11 @@ state_store(struct md_rdev *rdev, const char
-*buf, size_t len)
-     }
-     if (!err)
-         sysfs_notify_dirent_safe(rdev->sysfs_state);
-+    if (need_update_sb)
-+        if (mddev->pers) {
-+            set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
-+            md_wakeup_thread(mddev->thread);
-+        }
-     return err ? err : len;
- }
- static struct rdev_sysfs_entry rdev_state =3D
+Wrong compatible.
 
-On Tue, Oct 12, 2021 at 4:44 PM Li Feng <fengli@smartx.com> wrote:
->
-> Song Liu <song@kernel.org> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=A5=
-=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=884:17=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > On Tue, Oct 12, 2021 at 1:07 AM Li Feng <fengli@smartx.com> wrote:
-> > >
-> > > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8812=E6=97=A5=
-=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=882:58=E5=86=99=E9=81=93=EF=BC=9A
-> > > >
-> > > > On Mon, Oct 11, 2021 at 5:42 PM Li Feng <fengli@smartx.com> wrote:
-> > > > >
-> > > > > Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8811=E6=
-=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:49=E5=86=99=E9=81=93=EF=BC=9A
-> > > > > >
-> > > > > > Hi all
-> > > > > >
-> > > > > > Now the per device sysfs interface file state can change failfa=
-st. Do
-> > > > > > we need a new file for failfast?
-> > > > > >
-> > > > > > I did a test. The steps are:
-> > > > > >
-> > > > > > mdadm -CR /dev/md0 -l1 -n2 /dev/sdb /dev/sdc --assume-clean
-> > > > > > cd /sys/block/md0/md/dev-sdb
-> > > > > > echo failfast > state
-> > > > > > cat state
-> > > > > > in_sync,failfast
-> > > > >
-> > > > > This works,  will it be persisted to disk?
-> > > > >
-> > > >
-> > > > mdadm --detail /dev/md0 can show the failfast information. So it
-> > > > should be written in superblock.
-> > > > But I don't find how md does this. I'm looking at this.
-> > > >
-> > > Yes, I have tested that it has been persisted, but don't understand w=
-ho does it.
-> >
-> > I think this is not guaranteed to be persistent:
-> >
-> > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-> > in_sync,failfast
-> > [root@eth50-1 ~]# echo -failfast >  /sys/block/md127/md/rd1/state
-> > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-> > in_sync
-> > [root@eth50-1 ~]# mdadm --stop /dev/md*
-> > mdadm: /dev/md does not appear to be an md device
-> > mdadm: stopped /dev/md127
-> > [root@eth50-1 ~]# mdadm -As
-> > mdadm: /dev/md/0_0 has been started with 4 drives.
-> > [root@eth50-1 ~]# cat /sys/block/md127/md/rd1/state
-> > in_sync,failfast
-> >
-> > How about we fix state_store to make sure it is always persistent?
-> >
-> I agree with you.
->
-> > Thanks,
-> > Song
->
+> +
+> +        mcc_lowperf: opp0 {
+> +            opp-level = <0>;
+> +            apple,memory-perf-config = <0x813057f 0x1800180>;
+> +        };
+> +        mcc_highperf: opp1 {
+> +            opp-level = <1>;
+> +            apple,memory-perf-config = <0x133 0x55555340>;
+> +        };
+> +    };
+> +
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        mcc: memory-controller@200200000 {
+> +            compatible = "apple,t8103-mcc", "apple,mcc";
+> +            #power-domain-cells = <0>;
+> +            reg = <0x2 0x200000 0x0 0x200000>;
+> +            operating-points-v2 = <&mcc_opp>;
+> +            apple,num-channels = <8>;
+> +        };
+> +
+> +        clk_pcluster: clock-controller@211e20000 {
+> +            compatible = "apple,t8103-cluster-clk", "apple,cluster-clk";
+> +            #clock-cells = <0>;
+> +            reg = <0x2 0x11e20000 0x0 0x4000>;
+> +            operating-points-v2 = <&pcluster_opp>;
+> +            power-domains = <&mcc>;
+> +        };
+> +    };
+> 
 
+
+Best regards,
+Krzysztof
