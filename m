@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F9542AB0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E0742AB3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhJLRpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:45:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229495AbhJLRpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:45:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3765610C9;
-        Tue, 12 Oct 2021 17:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634060627;
-        bh=yASkbNro1ryeq/Pn5XosEpr1G6AfQVBAJaOgTM+0Dn0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=nz7y5KBa+PIOjnf5zHSt/7PGOM48ZmDjlnwWT9m2ouhxtKrJ84S0Wh8DsGCa7rmrC
-         9P8kBS0340MOfHilxFpHcIlMaTcbwJXSty5L+mw6BcL+2kAwSDOMaDandi3ZSHzO26
-         wo5dTwKEtu7oNAub5pDl6PGH8gXPJegDOw6Xa+i8rLzIFcVtDmTK32UdlxWdukRcmj
-         3T1nGlnvUSWWU9Jmk/bbQkFnIMuDeFVXOMsoL7cjXfhr9BFvUR4GfxEywd4cmruKwX
-         CPnpklYmzy3pIhsO+jOnA6y2CnllPJs2HpVKIdK/zKoBGw9Mv1J5G18afcm1DYFhtG
-         jlK4slA0UQqnA==
-Message-ID: <9dbc9cedd6b49eb5c5078dd776aed808534534ec.camel@kernel.org>
-Subject: Re: [PATCH v2 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE
- ioctl
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com, seanjc@google.com, x86@kernel.org,
-        yang.zhong@intel.com
-Date:   Tue, 12 Oct 2021 20:43:44 +0300
-In-Reply-To: <22c1c59f-9b7c-69fa-eff3-1670b94c77af@redhat.com>
-References: <20211012105708.2070480-1-pbonzini@redhat.com>
-         <20211012105708.2070480-3-pbonzini@redhat.com>
-         <644db39e4c995e1966b6dbc42af16684e8420785.camel@kernel.org>
-         <22c1c59f-9b7c-69fa-eff3-1670b94c77af@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.0-1 
+        id S233381AbhJLRxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:53:54 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:46916 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233033AbhJLRxY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 13:53:24 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id bcfb80dd1b5e0b5c; Tue, 12 Oct 2021 19:51:20 +0200
+Received: from kreacher.localnet (unknown [213.134.187.88])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id A58A166A819;
+        Tue, 12 Oct 2021 19:51:19 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org
+Subject: [PATCH v1 1/7] gpio-amdpt: ACPI: Use the ACPI_COMPANION() macro directly
+Date:   Tue, 12 Oct 2021 19:44:08 +0200
+Message-ID: <2179627.iZASKD2KPV@kreacher>
+In-Reply-To: <4369779.LvFx2qVVIh@kreacher>
+References: <4369779.LvFx2qVVIh@kreacher>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.187.88
+X-CLIENT-HOSTNAME: 213.134.187.88
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtkedgudduhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppedvudefrddufeegrddukeejrdekkeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukeejrdekkedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhhsrdifrghllhgvihhjsehlihhnrghrohdrohhrghdprhgtphhtthhopegsrhhglhessghguggvvhdrphhlpdhrtghpthhtoheplhhinhhugidqghhpihhosehvghgvrhdrkhgv
+ rhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-12 at 19:03 +0200, Paolo Bonzini wrote:
-> On 12/10/21 18:57, Jarkko Sakkinen wrote:
-> > > +
-> > > =C2=A0=C2=A0static const struct file_operations sgx_vepc_fops =3D {
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.owner=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=3D THIS_MODULE,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.open=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=3D sgx_vepc_open,
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.unlocked_ioctl=C2=A0=3D s=
-gx_vepc_ioctl,
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.compat_ioctl=C2=A0=C2=A0=
-=C2=A0=3D sgx_vepc_ioctl,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.release=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=3D sgx_vepc_release,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.mmap=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=3D sgx_vepc_mmap,
-> > > =C2=A0=C2=A0};
-> > I went through this a few times, the code change is sound and
-> > reasoning makes sense in the commit message.
-> >=20
-> > The only thing that I think that is IMHO lacking is a simple
-> > kselftest. I think a trivial test for SGX_IOC_VEP_REMOVE_ALL
-> > would do.
->=20
-> Yeah, a trivial test wouldn't cover a lot; it would be much better to at=
-=20
-> least set up a SECS, and check that the first call returns 1 and the=20
-> second returns 0.=C2=A0 There is no existing test for /dev/sgx_vepc at al=
-l.
->=20
-> Right now I'm relying on Yang for testing this in QEMU, but I'll look=20
-> into adding a selftest that does the full setup and runs an enclave in a=
-=20
-> guest.
+From: Rafael J. Wysocki <rafael@kernel.org>
 
-This having a regression would not working would not cause that much collat=
-eral
-damage, especially since it would be probably quickly noticed by someone, s=
-o I
-think that this is not absolutely mandatory. So you can ignore kselftest pa=
-rt,
-and thus
+The ACPI_HANDLE() macro is a wrapper arond the ACPI_COMPANION()
+macro and the ACPI handle produced by the former comes from the
+ACPI device object produced by the latter, so it is way more
+straightforward to evaluate the latter directly instead of passing
+the handle produced by the former to acpi_bus_get_device().
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Modify pt_gpio_probe() accordingly (no intentional functional impact).
 
-Thank you, this work helps me a lot, given that my SGX testing is based aro=
-und
-using QEMU ATM.
+Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
+---
+ drivers/gpio/gpio-amdpt.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-/Jarkko
+Index: linux-pm/drivers/gpio/gpio-amdpt.c
+===================================================================
+--- linux-pm.orig/drivers/gpio/gpio-amdpt.c
++++ linux-pm/drivers/gpio/gpio-amdpt.c
+@@ -72,12 +72,10 @@ static void pt_gpio_free(struct gpio_chi
+ static int pt_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct acpi_device *acpi_dev;
+-	acpi_handle handle = ACPI_HANDLE(dev);
+ 	struct pt_gpio_chip *pt_gpio;
+ 	int ret = 0;
+ 
+-	if (acpi_bus_get_device(handle, &acpi_dev)) {
++	if (!ACPI_COMPANION(dev)) {
+ 		dev_err(dev, "PT GPIO device node not found\n");
+ 		return -ENODEV;
+ 	}
+
+
 
