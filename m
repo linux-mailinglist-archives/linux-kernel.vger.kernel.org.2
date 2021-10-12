@@ -2,282 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3FE42A50D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F6E42A515
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236657AbhJLNGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 09:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39660 "EHLO
+        id S236434AbhJLNJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 09:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbhJLNGk (ORCPT
+        with ESMTP id S236441AbhJLNJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:06:40 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1A3C061570;
-        Tue, 12 Oct 2021 06:04:38 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id d3so53215463edp.3;
-        Tue, 12 Oct 2021 06:04:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=l3Hoe13dJbudIg5KGzsRSzJTtfXPYL9K9pjGIGdMZbs=;
-        b=J4johUiGmNcBLEd+ZeGKs39Ax6a1M9HjBIdgJsF3wUc1f6d4rVpS6Sjpk/5E3Wc+x+
-         j9V40IjdcNPXDDuwA4ITVBYOCK4F27c/DSJZkoMxIGApUp+CI4Q5Upv5YV8mDwfV/6b1
-         YScrvwDFUmerTwA/5ABQPUSSb2Y0HqiCLUrMAtW94538Jwbbu+Dm92eJpmUASrMa6Qli
-         l3Tqbpgu2VwLDN+Sdc9vO3Xnd4yVo21MOPqC5n+fMfoJ5PTL3TmWw1rFbOYpoSxQxMjK
-         Ee4ZcJ0o+pkW+7zbw8el3wv9VbHLYJcRUPcqMlyF1ag9nABlaUs0yeHsKfsdCnnohfpI
-         ODDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=l3Hoe13dJbudIg5KGzsRSzJTtfXPYL9K9pjGIGdMZbs=;
-        b=Wj5a8NO8oSQ/6iqI4z9bgeFV4Dkfuo/A6cqCRTYBVoKrqzk3xVfwxjqLakfrtt7SC8
-         jiOCFjyJc0qA8xeCskitIfpALaNzHuZHHc8Rtv6o4fbbxwbc7oR0pY9UbWJImP++5R1j
-         Zf988Nx+vRcdygbaKnb9GEEBCTsVJJX9yLli4rWzkikqorwojUu/u3sdiLHXpWO7tgSg
-         eoT4Tv8jK0xGLWfbv3f6WZ6hrBI99kYSYoMY808/4cuQz1YJdMH4LiX7KBckso5Vz2sC
-         aUmDkPqkffMMkoomk11THzaDCeHvMBRzJ2jhpMUOliyV5FiU+cOwjebG1Vqk8lnzISRm
-         qvAA==
-X-Gm-Message-State: AOAM532aPcGlHM7MT8GHvJ7Zoo/QVDB8b84e8mcTLWNt6Hlqg/q2ojKN
-        CHx4lskgOKmzQCPMoQgLuG0=
-X-Google-Smtp-Source: ABdhPJzsKh8tMs8xjAZ4kv8fjA4j5MvRcF0OA3z3MKEwrxH/TJ/2xshKS+1vHC4hLPajinS5dFWaoQ==
-X-Received: by 2002:a50:cf4d:: with SMTP id d13mr49408623edk.50.1634043871347;
-        Tue, 12 Oct 2021 06:04:31 -0700 (PDT)
-Received: from skbuf ([188.26.53.217])
-        by smtp.gmail.com with ESMTPSA id p8sm4912533ejo.2.2021.10.12.06.04.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 06:04:30 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 16:04:29 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Michael Rasmussen <mir@bang-olufsen.dk>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 5/6] net: dsa: realtek-smi: add rtl8365mb
- subdriver for RTL8365MB-VC
-Message-ID: <20211012130429.chiqugd57xoqf6hd@skbuf>
-References: <20211012123557.3547280-1-alvin@pqrs.dk>
- <20211012123557.3547280-6-alvin@pqrs.dk>
+        Tue, 12 Oct 2021 09:09:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F80FC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 06:07:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UIyFzqtjDrrV/LoTu85FR8nzJEt8XBEGmIGqLme6FJg=; b=HlpGjt6mci79Wtn2PRnwgCR5qb
+        zjrcQjFOwqOx2i2D8jAnKHLhjyB7J+Vh3UaxiYTdWrXREq8ivXVtIh/677QEYF4nOiUcyfGXSjL7M
+        vV1+eUj6Um0xPpceF1JZ/7ORDwFWBXzW3ncSfylSUGq3bd5Xmp+2hw+yJp3t2oyTmaXsUAtcOPPix
+        dQgcP4wzDubipYMzPm8OWKuctpfJge5toU0unsMWM3A46ds6+z4MkrkS0uvnuz4yG5gvDfkU81Y/s
+        7eOX7yTn4EXTvV06E022DTRRfqoh3m1K1XlSY8VObmlGKGac9lLExmSY2aEM3yx38g2wGgKWQ2IgL
+        /4LLV2RA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1maHTK-006WJv-MS; Tue, 12 Oct 2021 13:05:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CA67130032E;
+        Tue, 12 Oct 2021 15:05:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AED992C10165A; Tue, 12 Oct 2021 15:05:34 +0200 (CEST)
+Date:   Tue, 12 Oct 2021 15:05:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: [patch v4 1/8] add basic task isolation prctl interface
+Message-ID: <YWWIHkoAdTkzU0TP@hirez.programming.kicks-ass.net>
+References: <20211007192346.731667417@fedora.localdomain>
+ <20211007193525.755160804@fedora.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211012123557.3547280-6-alvin@pqrs.dk>
+In-Reply-To: <20211007193525.755160804@fedora.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 02:35:54PM +0200, Alvin Šipraga wrote:
-> From: Alvin Šipraga <alsi@bang-olufsen.dk>
+On Thu, Oct 07, 2021 at 04:23:47PM -0300, Marcelo Tosatti wrote:
+> Add basic prctl task isolation interface, which allows
+> informing the kernel that application is executing 
+> latency sensitive code (where interruptions are undesired).
 > 
-> This patch adds a realtek-smi subdriver for the RTL8365MB-VC 4+1 port
-> 10/100/1000M switch controller. The driver has been developed based on a
-> GPL-licensed OS-agnostic Realtek vendor driver known as rtl8367c found
-> in the OpenWrt source tree.
-> 
-> Despite the name, the RTL8365MB-VC has an entirely different register
-> layout to the already-supported RTL8366RB ASIC. Notwithstanding this,
-> the structure of the rtl8365mb subdriver is based on the rtl8366rb
-> subdriver and makes use of the rtl8366 helper library for setup of the
-> SMI interface and handling of MIB counters. Like the 'rb, it establishes
-> its own irqchip to handle cascaded PHY link status interrupts.
-> 
-> The RTL8365MB-VC switch is capable of offloading a large number of
-> features from the software, but this patch introduces only the most
-> basic DSA driver functionality. The ports always function as standalone
-> ports, with bridging handled in software.
-> 
-> One more thing. Realtek's nomenclature for switches makes it hard to
-> know exactly what other ASICs might be supported by this driver. The
-> vendor driver goes by the name rtl8367c, but as far as I can tell, no
-> chip actually exists under this name. As such, the subdriver is named
-> rtl8365mb to emphasize the potentially limited support. But it is clear
-> from the vendor sources that a number of other more advanced switches
-> share a similar register layout, and further support should not be too
-> hard to add given access to the relevant hardware. With this in mind,
-> the subdriver has been written with as few assumptions about the
-> particular chip as is reasonable. But the RTL8365MB-VC is the only
-> hardware I have available, so some further work is surely needed.
-> 
-> Co-developed-by: Michael Rasmussen <mir@bang-olufsen.dk>
-> Signed-off-by: Michael Rasmussen <mir@bang-olufsen.dk>
-> Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
-> ---
+> Interface is described by task_isolation.rst (added by
+> next patch).
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+That does not absolve you from actually writing a changelog here.
+Life is too short to try and read rst shit.
 
-Just one comment below
+What is the envisioned usage of these isolating prctl() thingies,
+including the kill-me-on-any-interruption thing, vs the inherently racy
+nature of some of the don't disturb me stuff.
 
-> +static int rtl8365mb_ext_config_rgmii(struct realtek_smi *smi, int port,
-> +				      phy_interface_t interface)
-> +{
-> +	int tx_delay = 0;
-> +	int rx_delay = 0;
-> +	int ext_port;
-> +	int ret;
-> +
-> +	if (port == smi->cpu_port) {
-> +		ext_port = PORT_NUM_L2E(port);
-> +	} else {
-> +		dev_err(smi->dev, "only one EXT port is currently supported\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Set the RGMII TX/RX delay
-> +	 *
-> +	 * The Realtek vendor driver indicates the following possible
-> +	 * configuration settings:
-> +	 *
-> +	 *   TX delay:
-> +	 *     0 = no delay, 1 = 2 ns delay
-> +	 *   RX delay:
-> +	 *     0 = no delay, 7 = maximum delay
-> +	 *     No units are specified, but there are a total of 8 steps.
-> +	 *
-> +	 * The vendor driver also states that this must be configured *before*
-> +	 * forcing the external interface into a particular mode, which is done
-> +	 * in the rtl8365mb_phylink_mac_link_{up,down} functions.
-> +	 *
-> +	 * NOTE: For now this is hardcoded to tx_delay = 1, rx_delay = 4.
-> +	 */
-> +	if (interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +	    interface == PHY_INTERFACE_MODE_RGMII_TXID)
-> +		tx_delay = 1; /* 2 ns */
-> +
-> +	if (interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +	    interface == PHY_INTERFACE_MODE_RGMII_RXID)
-> +		rx_delay = 4;
+Also, see:
 
-There is this ongoing discussion that we have been interpreting the
-meaning of "phy-mode" incorrectly for RGMII all along. The conclusion
-seems to be that for a PHY driver, it is okay to configure its internal
-delay lines based on the value of the phy-mode string, but for a MAC
-driver it is not. The only viable option for a MAC driver to configure
-its internal delays is based on parsing some new device tree properties
-called rx-internal-delay-ps and tx-internal-delay-ps.
-Since you do not seem to have any baggage to support here (new driver),
-could you please just accept any PHY_INTERFACE_MODE_RGMII* value and
-apply delays (or not) based on those other OF properties?
-https://patchwork.kernel.org/project/netdevbpf/patch/20210723173108.459770-6-prasanna.vengateshan@microchip.com/
+  https://lkml.kernel.org/r/20210929152429.186930629@infradead.org
 
-> +
-> +	ret = regmap_update_bits(
-> +		smi->map, RTL8365MB_EXT_RGMXF_REG(ext_port),
-> +		RTL8365MB_EXT_RGMXF_TXDELAY_MASK |
-> +			RTL8365MB_EXT_RGMXF_RXDELAY_MASK,
-> +		FIELD_PREP(RTL8365MB_EXT_RGMXF_TXDELAY_MASK, tx_delay) |
-> +			FIELD_PREP(RTL8365MB_EXT_RGMXF_RXDELAY_MASK, rx_delay));
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = regmap_update_bits(
-> +		smi->map, RTL8365MB_DIGITAL_INTERFACE_SELECT_REG(ext_port),
-> +		RTL8365MB_DIGITAL_INTERFACE_SELECT_MODE_MASK(ext_port),
-> +		RTL8365MB_EXT_PORT_MODE_RGMII
-> +			<< RTL8365MB_DIGITAL_INTERFACE_SELECT_MODE_OFFSET(
-> +				   ext_port));
-> +	if (ret)
-> +		return ret;
-> +
-> +	return 0;
-> +}
+Suppose:
 
-> +static void rtl8365mb_phylink_mac_config(struct dsa_switch *ds, int port,
-> +					 unsigned int mode,
-> +					 const struct phylink_link_state *state)
-> +{
-> +	struct realtek_smi *smi = ds->priv;
-> +	int ret;
-> +
-> +	if (!rtl8365mb_phy_mode_supported(ds, port, state->interface)) {
-> +		dev_err(smi->dev, "phy mode %s is unsupported on port %d\n",
-> +			phy_modes(state->interface), port);
-> +		return;
-> +	}
-> +
-> +	/* If port MAC is connected to an internal PHY, we have nothing to do */
-> +	if (dsa_is_user_port(ds, port))
-> +		return;
-> +
-> +	if (mode != MLO_AN_PHY && mode != MLO_AN_FIXED) {
-> +		dev_err(smi->dev,
-> +			"port %d supports only conventional PHY or fixed-link\n",
-> +			port);
-> +		return;
-> +	}
-> +
-> +	if (phy_interface_mode_is_rgmii(state->interface)) {
-> +		ret = rtl8365mb_ext_config_rgmii(smi, port, state->interface);
-> +		if (ret)
-> +			dev_err(smi->dev,
-> +				"failed to configure RGMII mode on port %d: %d\n",
-> +				port, ret);
-> +		return;
-> +	}
-> +
-> +	/* TODO: Implement MII and RMII modes, which the RTL8365MB-VC also
-> +	 * supports
-> +	 */
-> +}
-> +
-> +static void rtl8365mb_phylink_mac_link_down(struct dsa_switch *ds, int port,
-> +					    unsigned int mode,
-> +					    phy_interface_t interface)
-> +{
-> +	struct realtek_smi *smi = ds->priv;
-> +	int ret;
-> +
-> +	if (dsa_is_cpu_port(ds, port)) {
+	CPU0					CPU1
 
-I assume the "dsa_is_cpu_port()" check here can also be replaced with
-"phy_interface_mode_is_rgmii(interface)"? Can you please do that for
-consistency?
+	sys_prctl()
+	<kernel entry>
+	  // marks task 'important'
+						text_poke_sync()
+						  // checks CPU0, not userspace, queues IPI
+	<kernel exit>
 
-> +		ret = rtl8365mb_ext_config_forcemode(smi, port, false, 0, 0,
-> +						     false, false);
-> +		if (ret)
-> +			dev_err(smi->dev,
-> +				"failed to reset forced mode on port %d: %d\n",
-> +				port, ret);
-> +
-> +		return;
-> +	}
-> +}
-> +
-> +static void rtl8365mb_phylink_mac_link_up(struct dsa_switch *ds, int port,
-> +					  unsigned int mode,
-> +					  phy_interface_t interface,
-> +					  struct phy_device *phydev, int speed,
-> +					  int duplex, bool tx_pause,
-> +					  bool rx_pause)
-> +{
-> +	struct realtek_smi *smi = ds->priv;
-> +	int ret;
-> +
-> +	if (dsa_is_cpu_port(ds, port)) {
+	$important userspace			  arch_send_call_function_ipi_mask()
+	<IPI>
+	  // finds task is 'important' and
+	  // can't take interrupts
+	  sigkill()
 
-and here
+*Whoopsie*
 
-> +		ret = rtl8365mb_ext_config_forcemode(smi, port, true, speed,
-> +						     duplex, tx_pause,
-> +						     rx_pause);
-> +		if (ret)
-> +			dev_err(smi->dev,
-> +				"failed to force mode on port %d: %d\n", port,
-> +				ret);
-> +
-> +		return;
-> +	}
-> +}
+
+Fundamentally CPU1 can't elide the IPI until CPU0 is in userspace,
+therefore CPU0 can't wait for quescence in kernelspace, but if it goes
+to userspace, it'll get killed on interruption. Catch-22.
+
