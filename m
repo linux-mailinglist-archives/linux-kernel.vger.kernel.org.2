@@ -2,63 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A6D42ACFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034CC42AD08
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbhJLTJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 15:09:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233287AbhJLTJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 15:09:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E5B860E09;
-        Tue, 12 Oct 2021 19:07:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634065638;
-        bh=NvMXR+4Usl2rtR3OS7hkHAbHRkGS7009/ooHLmyiRpE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aFoHYXY/VjP1zbmJJxlGRdqfCNffdBP3v/dmMe3+1WovkSA5gdUhRppzi63h5qziy
-         WhikwQMnEBJgISdPETHf7VcW0cBF7Pz4HWsGMBDHGoQTWT6995bCYfh1MgRHp1F73w
-         mS/jgpqVSAMTzPlIGrdir0m/rd5+wAN3xrxm2BtTzHOeI3LJ9WVlwcNvENeObXTgf0
-         Xj+3dPWguwsmibReGjuA/QAxOwKZPv6T1XZ//ibaVWFVAkOz/uK666IOX22JcWnwUa
-         /azsn5Abf4LBMQZNGy4X8jt14zVxW17YPyXFjFimGQbnuzgmFpLR+HPJ8kw+E60Vkz
-         D8kEoZWrqRrug==
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     bp@alien8.de
-Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: [PATCHv4 4/4] dt-bindings: memory: add entry for version 3.80a
-Date:   Tue, 12 Oct 2021 14:07:09 -0500
-Message-Id: <20211012190709.1504152-4-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211012190709.1504152-1-dinguyen@kernel.org>
-References: <20211012190709.1504152-1-dinguyen@kernel.org>
+        id S233378AbhJLTNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 15:13:32 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:39539 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231886AbhJLTN2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 15:13:28 -0400
+Received: by mail-ot1-f47.google.com with SMTP id k2-20020a056830168200b0054e523d242aso618389otr.6;
+        Tue, 12 Oct 2021 12:11:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UsdaTdlqInk/Db+RELmJSVFeuk7KGQ8SYughWLnehY8=;
+        b=zeF1M07uZ8koHB8p8h4k4Af9rpsS7JfPitcYjb4dJizDs9kwcfTb6SIg1cjkj8xeoo
+         Cm/UONhKNolje1c0RBuxt6ATGTqlN6fGSyX6pMURacipxG5coD/I2i2j48Drho/ITQ/M
+         geJrpgW8zQLyjF6f8le34r0FJ85p6ffUtJ6OgMw0J0tYwD3FmStWzPV2kU5gcMX2ed2Z
+         uJ8Wg7Mv2MbUmtgrVZ6EZGcNgPV+qFQAMgRN/4Vt6EB7CrXdCSetvpZdPUVyz/q5sV3k
+         pJtta2ZEF8Kxb/x6J/MfsnF3CU3Ui6H+rfD9JyPWAYJ8Z16tOqhO22fbsVaWa0bH1JGZ
+         EOog==
+X-Gm-Message-State: AOAM530fRqCRX744roWP+N2vwVYC5wujpE0+4HpyyHDN/vebkZUAX+ed
+        0+8fs1PkZwOVGes5jnN1QLKpsj5PBtHbtINluxw=
+X-Google-Smtp-Source: ABdhPJytCGKquuZUCLHcTR60tHiVx+DiBYKNCYYXZyFiFB2yU1k6CxzHrr7FAo+69ScbY5+qP7A2HHxC8Gc+p27Jylg=
+X-Received: by 2002:a05:6830:1af0:: with SMTP id c16mr14677399otd.16.1634065886475;
+ Tue, 12 Oct 2021 12:11:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <4369779.LvFx2qVVIh@kreacher> <3089655.5fSG56mABF@kreacher> <e15036b7-b41f-a5cf-b8a6-b1b9023197cd@gmail.com>
+In-Reply-To: <e15036b7-b41f-a5cf-b8a6-b1b9023197cd@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 12 Oct 2021 21:11:15 +0200
+Message-ID: <CAJZ5v0hmvRDZjs6y4q8CuMdP6iu5cOcQ3KLJQm4kD5aNvt4pHw@mail.gmail.com>
+Subject: Re: [PATCH v1 5/7] surface: surface3_power: Use ACPI_COMPANION() directly
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an entry for version 3.80a of the Synopsys DDR controller.
+On Tue, Oct 12, 2021 at 8:21 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>
+> On 10/12/21 19:46, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael@kernel.org>
+> >
+> > The ACPI_HANDLE() macro is a wrapper arond the ACPI_COMPANION()
+> > macro and the ACPI handle produced by the former comes from the
+> > ACPI device object produced by the latter, so it is way more
+> > straightforward to evaluate the latter directly instead of passing
+> > the handle produced by the former to acpi_bus_get_device().
+> >
+> > Modify mshw0011_notify() accordingly (no intentional functional
+> > impact).
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
+>
+> Looks mostly good to me, small comment/question inline.
+>
+> > ---
+> >   drivers/platform/surface/surface3_power.c |    9 ++++-----
+> >   1 file changed, 4 insertions(+), 5 deletions(-)
+> >
+> > Index: linux-pm/drivers/platform/surface/surface3_power.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/platform/surface/surface3_power.c
+> > +++ linux-pm/drivers/platform/surface/surface3_power.c
+> > @@ -160,15 +160,14 @@ mshw0011_notify(struct mshw0011_data *cd
+> >   {
+> >       union acpi_object *obj;
+> >       struct acpi_device *adev;
+> > -     acpi_handle handle;
+> >       unsigned int i;
+> >
+> > -     handle = ACPI_HANDLE(&cdata->adp1->dev);
+> > -     if (!handle || acpi_bus_get_device(handle, &adev))
+> > +     adev = ACPI_COMPANION(&cdata->adp1->dev);
+> > +     if (!adev)
+> >               return -ENODEV;
+>
+> Do we need to get the ACPI device (adev) here? To me it looks like only
+> its handle is actually used so why not keep ACPI_HANDLE() and remove the
+> acpi_bus_get_device() call instead?
 
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
- .../bindings/memory-controllers/synopsys,ddrc-ecc.yaml           | 1 +
- 1 file changed, 1 insertion(+)
+It actually doesn't really matter, but you're right,
+acpi_bus_get_device() is simply redundant here, so ACPI_HANDLE() is
+sufficient.
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/synopsys,ddrc-ecc.yaml b/Documentation/devicetree/bindings/memory-controllers/synopsys,ddrc-ecc.yaml
-index a24588474625..fb7ae38a9c86 100644
---- a/Documentation/devicetree/bindings/memory-controllers/synopsys,ddrc-ecc.yaml
-+++ b/Documentation/devicetree/bindings/memory-controllers/synopsys,ddrc-ecc.yaml
-@@ -26,6 +26,7 @@ properties:
-     enum:
-       - xlnx,zynq-ddrc-a05
-       - xlnx,zynqmp-ddrc-2.40a
-+      - snps,ddrc-3.80a
- 
-   interrupts:
-     maxItems: 1
--- 
-2.25.1
+I'll send a v2 of this one.
 
+> >
+> > -     obj = acpi_evaluate_dsm_typed(handle, &mshw0011_guid, arg1, arg2, NULL,
+> > -                                   ACPI_TYPE_BUFFER);
+> > +     obj = acpi_evaluate_dsm_typed(adev->handle, &mshw0011_guid, arg1, arg2,
+> > +                                   NULL, ACPI_TYPE_BUFFER);
+> >       if (!obj) {
+> >               dev_err(&cdata->adp1->dev, "device _DSM execution failed\n");
+> >               return -ENODEV;
+> >
+> >
+> >
+>
+> Regards,
+> Max
