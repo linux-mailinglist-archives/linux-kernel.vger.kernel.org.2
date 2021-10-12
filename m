@@ -2,157 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB96242A006
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD5942A00A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235087AbhJLIiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:38:08 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40398 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234745AbhJLIiG (ORCPT
+        id S235115AbhJLIjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:39:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235033AbhJLIjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:38:06 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C8CB7x027311;
-        Tue, 12 Oct 2021 04:36:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=clgthSWCQb948dpI0HY7W2uAGrXqwjNJF48BWMWj+PA=;
- b=ITy+HwOQwlTwI2Ywsphuyz3hujZFu5Gcs3CYv0atYg0MTAf7/MGiOo99T0/emNHLW0y6
- 3+BOJoH/4XdWRrbhktgg1Q7YkuXHN0S8REJ/hSQacW/pLkfU1mEjlQTagddDG/nTIy1I
- CChbhBJ58W9Eq8c5YbRseI7tnc9b6C7jDLNcHLeY9UHPrmh9vskCOvRIx4ffYt1/W+fv
- WgIAP0gU32fx1QLp5lWz4xz+jjR0e4TpA83oOUuukZdalCoX3VBkKu49kn8cFvgc2g4q
- yyKUcvdVbGksOORWSqL7X0SYOSsWDkYn0xf2+gJWq2jdTPKvIMVJCNrGyCkHvJGNj2gX SQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn6n20em0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 04:36:04 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19C8EVbV003122;
-        Tue, 12 Oct 2021 04:36:04 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bn6n20ek8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 04:36:04 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19C8XpbR024314;
-        Tue, 12 Oct 2021 08:36:02 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 3bk2bj6964-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Oct 2021 08:36:02 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19C8ZsCl46989778
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Oct 2021 08:35:54 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0B8404C04E;
-        Tue, 12 Oct 2021 08:35:54 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 873F64C050;
-        Tue, 12 Oct 2021 08:35:53 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.7.88])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Oct 2021 08:35:53 +0000 (GMT)
-Date:   Tue, 12 Oct 2021 10:35:50 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Janosch Frank <frankja@linux.ibm.com>
-Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
-        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ulrich.Weigand@de.ibm.com
-Subject: Re: [PATCH v5 08/14] KVM: s390: pv: handle secure storage
- exceptions for normal guests
-Message-ID: <20211012103550.501857f5@p-imbrenda>
-In-Reply-To: <f442a49f-dbc4-5c38-ffa1-6b17742592c3@linux.ibm.com>
-References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
-        <20210920132502.36111-9-imbrenda@linux.ibm.com>
-        <f442a49f-dbc4-5c38-ffa1-6b17742592c3@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Tue, 12 Oct 2021 04:39:52 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8A0C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:37:50 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 133so13260255pgb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:37:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amikom.ac.id; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=f/ZhX2W4azA+P47mIglzjsvBY9azZVWhdYC/JQwaSAQ=;
+        b=fAtQe1MXK2H07NOhTSYMa7CPIDLmFSJ1h25ENose0aTY1bThY5ZQ9I04De8T+4MzUc
+         fegCEelb2V5w0ENG6hIRSJJSLrHCS1y03GsD0vTaE+OtwPzkn4JWIFEAzyyzVFdRLtRK
+         IT+T2N6NRB+K2dPAhR3Sp+dIOgQgW0iSe6Xs0oQpTQ/xAvGHl24szAHljDpR77+xiZoX
+         0PVQ/CizuXGsyKt3juxJpkSx3FMoEt7g1jhexTmeVxVMRK+5JNQRsiBEg074STyEIgCM
+         I6Wo9/z2yiy9nYhDJwQTPlosKzM3pmCvowT+GlsVH6sn4GG2yB4Y6A83AHhYZfSZufe3
+         PdZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=f/ZhX2W4azA+P47mIglzjsvBY9azZVWhdYC/JQwaSAQ=;
+        b=WenvbH5ZxCO/XdOPSWMjkrCL0GdwuwJ8kGxBZgQJ/+c+tecIoRp1xru0CuGTG3VCKA
+         Dgmpaqy8EOTmZv/75SWJeUHoQof+Jy5ErWlWeWSMCZkfM4429kmQLPmidlDcvO8pgC2Y
+         8+oELBOgAXkTHcTFkjTrbXIRZRFm1IgXxqJL+PcL3nUHHxk6gsQMQGlxO2C6xVm7hge7
+         e2IleEbikDwECF40OwUbbjQPwn1rAMNUJ52MwHiDwCmDOChrAhP6PHExsaXma6DGlfBj
+         dhnQvX+BQvamOCTtDcdQlWj5bjFS0fjjt9LbmeMESd4JwKzQ4v+UiP8dOl1qbuIeWula
+         ikgg==
+X-Gm-Message-State: AOAM532LMsyNIasA/2eCMt1tdiM7w7hYwGTOHfoAv0aeifYE2cxbkO0X
+        mzycw4R4EbFF7d8bfqC3mohNpQ==
+X-Google-Smtp-Source: ABdhPJximNfbQbEmlUNDyF5q+VsH0DtgA62kCTkP1sSqCMX8//OmgaoSvyreCxKC0v/TSrz4wweXeQ==
+X-Received: by 2002:a05:6a00:10c1:b0:44d:20e5:b4d6 with SMTP id d1-20020a056a0010c100b0044d20e5b4d6mr10415582pfu.25.1634027870087;
+        Tue, 12 Oct 2021 01:37:50 -0700 (PDT)
+Received: from integral.. ([182.2.71.100])
+        by smtp.gmail.com with ESMTPSA id a28sm10420076pfg.33.2021.10.12.01.37.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 01:37:49 -0700 (PDT)
+From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+X-Google-Original-From: Ammar Faizi <ammarfaizi2@gmail.com>
+To:     Willy Tarreau <w@1wt.eu>, Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the clobber list
+Date:   Tue, 12 Oct 2021 15:36:44 +0700
+Message-Id: <20211012083644.543775-1-ammarfaizi2@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211012052822.GA28951@1wt.eu>
+References: <20211012052822.GA28951@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: XxPXb4BXkf5Qz2hd_qh0N4TO2Yn4Gxe8
-X-Proofpoint-GUID: 0nHswJhhYAqjQsYfIfe1v7v3C53-AikG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-12_02,2021-10-11_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- mlxscore=0 priorityscore=1501 mlxlogscore=968 impostorscore=0
- suspectscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110120047
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 10:16:26 +0200
-Janosch Frank <frankja@linux.ibm.com> wrote:
+On Tue, Oct 12, 2021 at 12:28 PM Willy Tarreau <w@1wt.eu> wrote:
+>
+> Hello Ammar,
+>
+> First, thanks for your patch. I have a few questions below.
+>
+> On Mon, Oct 11, 2021 at 11:03:44AM +0700, Ammar Faizi wrote:
+> > Linux x86-64 syscall only clobbers rax, rcx and r11 (and "memory").
+> >
+> >   - rax for the return value.
+> >   - rcx to save the return address.
+> >   - r11 to save the rflags.
+> >
+> > Other registers are preserved.
+> >
+> > Having r8, r9 and r10 in the syscall clobber list is harmless, but this
+> > results in a missed-optimization.
+> >
+> > As the syscall doesn't clobber r8-r10, GCC should be allowed to reuse
+> > their value after the syscall returns to userspace. But since they are
+> > in the clobber list, GCC will always miss this opportunity.
+>
+> I agree with your conclusion about this but need to be perfectly sure
+> about the exact clobber list since I got a different impression when
+> implementing the calls. I got the impression that these ones were
+> clobbered by reading entry_64.S below:
+>
+>  * Registers on entry:
+>  * rax  system call number
+>  * rcx  return address
+>  * r11  saved rflags (note: r11 is callee-clobbered register in C ABI)
+>  * rdi  arg0
+>  * rsi  arg1
+>  * rdx  arg2
+>  * r10  arg3 (needs to be moved to rcx to conform to C ABI)
+>  * r8   arg4
+>  * r9   arg5
+>  * (note: r12-r15, rbp, rbx are callee-preserved in C ABI)
+>
+> See this last note ? Indicating that r12-15, rbp and rbx are preserved
+> made me think it's not the case for the other ones, but that might of
+> course be a misunderstanding.
+>
+> And calling.h says this:
+>
+>  x86 function call convention, 64-bit:
+>  -------------------------------------
+>   arguments           |  callee-saved      | extra caller-saved | return
+>  [callee-clobbered]   |                    | [callee-clobbered] |
+>  ---------------------------------------------------------------------------
+>  rdi rsi rdx rcx r8-9 | rbx rbp [*] r12-15 | r10-11             | rax, rdx [**]
+>
+> Note that it's indicated "function call convention", not "syscall",
+> leaving it open to have extra restrictions on syscalls. Later by
+> reading the POP_REGS macro called with pop_rdi=0 and skipr11rcx=1
+> on syscall leave, it seems to restore everything but r11, rcx, rax
+> and rdi (which is restored last with rsp).
+>
+> As such, could you please add in your commit message a link to the
+> location where you found that authoritative information above it there
+> is a better place (i.e. one that doesn't require to read all the macros)?
+> This would significantly help anyone facing the same doubts about this
+> in the future.
 
-> On 9/20/21 15:24, Claudio Imbrenda wrote:
-> > With upcoming patches, normal guests might touch secure pages.
-> > 
-> > This patch extends the existing exception handler to convert the pages
-> > to non secure also when the exception is triggered by a normal guest.
-> > 
-> > This can happen for example when a secure guest reboots; the first
-> > stage of a secure guest is non secure, and in general a secure guest
-> > can reboot into non-secure mode.
-> > 
-> > If the secure memory of the previous boot has not been cleared up
-> > completely yet, a non-secure guest might touch secure memory, which
-> > will need to be handled properly.
-> > 
-> > Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> > ---
-> >   arch/s390/mm/fault.c | 10 +++++++++-
-> >   1 file changed, 9 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
-> > index eb68b4f36927..74784581f42d 100644
-> > --- a/arch/s390/mm/fault.c
-> > +++ b/arch/s390/mm/fault.c
-> > @@ -767,6 +767,7 @@ void do_secure_storage_access(struct pt_regs *regs)
-> >   	struct vm_area_struct *vma;
-> >   	struct mm_struct *mm;
-> >   	struct page *page;
-> > +	struct gmap *gmap;
-> >   	int rc;
-> >   
-> >   	/*
-> > @@ -796,6 +797,14 @@ void do_secure_storage_access(struct pt_regs *regs)
-> >   	}
-> >   
-> >   	switch (get_fault_type(regs)) {
-> > +	case GMAP_FAULT:
-> > +		gmap = (struct gmap *)S390_lowcore.gmap;
-> > +		addr = __gmap_translate(gmap, addr);
-> > +		if (IS_ERR_VALUE(addr)) {
-> > +			do_fault_error(regs, VM_ACCESS_FLAGS, VM_FAULT_BADMAP);
-> > +			break;
-> > +		}
-> > +		fallthrough;  
-> 
-> This would trigger an export and not a destroy, right?
+Hi Willy,
 
-correct. but this would only happen for leftover secure pages touched
-by non-secure guests, before the background thread could clean them up.
+I have tried to search for the documentation about this one, but I
+couldn't find any. Checking at `Documentation/x86/entry_64.rst`, but
+it doesn't tell anything relevant.
 
-> 
-> >   	case USER_FAULT:
-> >   		mm = current->mm;
-> >   		mmap_read_lock(mm);
-> > @@ -824,7 +833,6 @@ void do_secure_storage_access(struct pt_regs *regs)
-> >   		if (rc)
-> >   			BUG();
-> >   		break;
-> > -	case GMAP_FAULT:
-> >   	default:
-> >   		do_fault_error(regs, VM_READ | VM_WRITE, VM_FAULT_BADMAP);
-> >   		WARN_ON_ONCE(1);
-> >   
-> 
+Background story, I browsed the nolibc.h file and found extra clobbers
+for Linux x86-64 syscall which I think they are unneccesary (r8, r9
+and r10).
 
+This finding had me worried a bit, because I have written syscall in
+inline ASM, based on my understanding the required clobbers are "rcx",
+"r11" and "memory". So in my mind was "Is my app safe?".
+
+So I opened a discussion on Stack Overflow, yesterday:
+https://stackoverflow.com/questions/69515893/when-does-linux-x86-64-syscall-clobber-r8-r9-and-r10
+
+While waiting for answers on Stack Overflow, I also checked "entry_64.S"
+and "calling.h". Now I strongly believe syscall only clobbers 3
+registers, they are rax, rcx and r11. The answer and comments on SO
+support it as well.
+
+These two macros do the job:
+
+	// saves all GPRs and zero some of them
+	PUSH_AND_CLEAR_REGS
+
+	// restore all GPRs, except rdi, r11, rcx
+	POP_REGS pop_rdi=0 skip_r11rcx=1
+
+	// later rdi is also restored.
+
+My stance comes from SO, Telegram group discussion, and reading source
+code. Therefore, I don't think I can attach the link to it as
+"authoritative information". Or can I?
+
+When I sent this patch, I also added entry_64.S's maintainers to CC
+list. In hope they can help to at least acknowledge it. Mainly because
+I can't find the documentation from Linux that tells about this.
+
+Andy, Thomas, Ingo, Borislav, H. Peter.
+
+Could one of you shed some light so that I can attach the link to your
+message in the commit message?
+
+Thanks,
+
+-- 
+Ammar Faizi
