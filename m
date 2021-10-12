@@ -2,180 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC8242A0CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC46342A0E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 11:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235502AbhJLJQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 05:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235009AbhJLJQo (ORCPT
+        id S235578AbhJLJUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 05:20:19 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:49976 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232502AbhJLJUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 05:16:44 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F9AC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:14:42 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id w6so5543158pfd.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 02:14:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gsikHghVru8/rUeORtbHI2W2haVRkZtoaZ66/GPgtEk=;
-        b=BTCpRmH5elkD+Jip61aEsZhqzOhbyYC68+4YO7JMTwp1bwEBHq0ziGmzxw8IHiTfTS
-         rUfWvgsS9AutyBX2aD7n7E3gcyuPG40NOsl/XgIMrKsEwqJP+5JjyUUhTnUvYMBzi6Zt
-         Y93nJ74qJYgBTrPB8tJg8A2Q2iG+eDGrNNuII=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gsikHghVru8/rUeORtbHI2W2haVRkZtoaZ66/GPgtEk=;
-        b=QmFj2otQXua2QTO2F96KwPaQ/8drQE7l6YnB0hnWZ3ZY9zheGL+BS+jyR2KUw+f1T3
-         IEu0I7e7AwG5j2z1o0KVSyRQYPQZqQlTLFf7o+XcawzibvauYwsKJVuZ/npk9w3bIto8
-         um2oGZVBkYH6c3PAlIrCruGjwlWE7lIxbnX1HdJzJYsi4H9KYE9H5/ctMnh0lmE59cUy
-         aZ1T8n2JGX5jenRFZ30SNQjaxmtGGlhSXLbCPGjyPxTWy0+siIYijfE0aJW9fh+4jzxX
-         6Rm9Ku182RX8+rwE3a7kHG+MACW6knFf88eJHfytGxKtrUsKOiASbME2Hz4hkHZNQrIF
-         82DA==
-X-Gm-Message-State: AOAM531qo+HKtPRs+jy2+BojbZ52hKpJpwmUz44SDbaSl/Jqzdepi7ib
-        LHbS00GCJdhwo7+rh9vDMtT86Q==
-X-Google-Smtp-Source: ABdhPJw5yBZbuCINijJ1z7bpgu3MLsahMnCPdTPx9qxUIVs1uc0Ins3QkDWTVp8njKQGjB/U8k44rQ==
-X-Received: by 2002:a63:1504:: with SMTP id v4mr22074972pgl.151.1634030082417;
-        Tue, 12 Oct 2021 02:14:42 -0700 (PDT)
-Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:8b6f:6c85:edfe:b252])
-        by smtp.gmail.com with ESMTPSA id i13sm5263233pgf.77.2021.10.12.02.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 02:14:41 -0700 (PDT)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Suleiman Souhlal <suleiman@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH] KVM: MMU: make PTE_PREFETCH_NUM tunable
-Date:   Tue, 12 Oct 2021 18:14:30 +0900
-Message-Id: <20211012091430.1754492-1-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+        Tue, 12 Oct 2021 05:20:18 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19C9G5oF017601;
+        Tue, 12 Oct 2021 09:18:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2021-07-09; bh=+aJDxyPICxWH3pewjoI7IFtcJBOOKilVtl3Z+efFcuM=;
+ b=sQ/pl7XnP8n07NJVzRhZ6VaoB2ftjWWNcZfZ6mRKgj7MgQOr0vjmIFMPOEo34TAQvrXf
+ aAjGCKVH9EtUxjtkhlB+f/wUXDoqyjMXl46rXtbxQaulP0OUDRSKtJv/WQqbGRTrqxdq
+ 7sJrFSQ1HRTj0Fegtrd+hLuSY5xmbnUDgbCekjLFsThnUWy1zRJWiymefN6ysBPaSwVJ
+ lxmVOg9YBYoTYc1nJLo84TJ/rQvgXatiVmOfafpgoOjg+c5O7l4WJO7hTf4xKNqEUPKX
+ E3SLnqh+wkg/nxsf2ffWuPSA+XLDoySXK7xB2xtyo4+ADlbl91+5NNiRTb7uh55Sdxfn sA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bmtmk4j8k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 09:18:12 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19C9EhYO059809;
+        Tue, 12 Oct 2021 09:18:11 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 3bmadxpbqr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 09:18:11 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 19C9Gu75067017;
+        Tue, 12 Oct 2021 09:18:10 GMT
+Received: from t460.home (dhcp-10-175-26-251.vpn.oracle.com [10.175.26.251])
+        by aserp3020.oracle.com with ESMTP id 3bmadxpbpd-1;
+        Tue, 12 Oct 2021 09:18:10 +0000
+From:   Vegard Nossum <vegard.nossum@oracle.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Beniamino Galvani <b.galvani@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] net: arc: select CRC32
+Date:   Tue, 12 Oct 2021 11:15:52 +0200
+Message-Id: <20211012091552.32403-1-vegard.nossum@oracle.com>
+X-Mailer: git-send-email 2.23.0.718.g5ad94255a8
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: XPkU9uvITsR9rFUeVwQtcM5Xo4aQ3ISk
+X-Proofpoint-ORIG-GUID: XPkU9uvITsR9rFUeVwQtcM5Xo4aQ3ISk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Turn PTE_PREFETCH_NUM into a module parameter, so that it
-can be tuned per-VM.
+Fix the following build/link error by adding a dependency on the CRC32
+routines:
 
-- /sys/module/kvm/parameters/pte_prefetch_num 8
+  ld: drivers/net/ethernet/arc/emac_main.o: in function `arc_emac_set_rx_mode':
+  emac_main.c:(.text+0xb11): undefined reference to `crc32_le'
 
-             VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
+The crc32_le() call comes through the ether_crc_le() call in
+arc_emac_set_rx_mode().
 
-       EPT_VIOLATION     760998    54.85%     7.23%      0.92us  31765.89us      7.78us ( +-   1.46% )
-           MSR_WRITE     170599    12.30%     0.53%      0.60us   3334.13us      2.52us ( +-   0.86% )
-  EXTERNAL_INTERRUPT     159510    11.50%     1.65%      0.49us  43705.81us      8.45us ( +-   7.54% )
-[..]
-
-Total Samples:1387305, Total events handled time:81900258.99us.
-
-- /sys/module/kvm/parameters/pte_prefetch_num 16
-
-             VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
-
-       EPT_VIOLATION     658064    52.58%     7.04%      0.91us  17022.84us      8.34us ( +-   1.52% )
-           MSR_WRITE     163776    13.09%     0.54%      0.56us   5192.10us      2.57us ( +-   1.25% )
-  EXTERNAL_INTERRUPT     144588    11.55%     1.62%      0.48us  97410.16us      8.75us ( +-  11.44% )
-[..]
-
-Total Samples:1251546, Total events handled time:77956187.56us.
-
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Fixes: 775dd682e2b0ec ("arc_emac: implement promiscuous mode and multicast filtering")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/arc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 24a9f4c3f5e7..0ab4490674ec 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -115,6 +115,8 @@ module_param(dbg, bool, 0644);
- #endif
+diff --git a/drivers/net/ethernet/arc/Kconfig b/drivers/net/ethernet/arc/Kconfig
+index 37a41773dd435..330185b624d03 100644
+--- a/drivers/net/ethernet/arc/Kconfig
++++ b/drivers/net/ethernet/arc/Kconfig
+@@ -6,6 +6,7 @@
+ config NET_VENDOR_ARC
+ 	bool "ARC devices"
+ 	default y
++	select CRC32
+ 	help
+ 	  If you have a network (Ethernet) card belonging to this class, say Y.
  
- #define PTE_PREFETCH_NUM		8
-+static uint __read_mostly pte_prefetch_num = PTE_PREFETCH_NUM;
-+module_param(pte_prefetch_num, uint, 0644);
- 
- #define PT32_LEVEL_BITS 10
- 
-@@ -732,7 +734,7 @@ static int mmu_topup_memory_caches(struct kvm_vcpu *vcpu, bool maybe_indirect)
- 
- 	/* 1 rmap, 1 parent PTE per level, and the prefetched rmaps. */
- 	r = kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_pte_list_desc_cache,
--				       1 + PT64_ROOT_MAX_LEVEL + PTE_PREFETCH_NUM);
-+				       1 + PT64_ROOT_MAX_LEVEL + pte_prefetch_num);
- 	if (r)
- 		return r;
- 	r = kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_shadow_page_cache,
-@@ -2753,20 +2755,29 @@ static int direct_pte_prefetch_many(struct kvm_vcpu *vcpu,
- 				    struct kvm_mmu_page *sp,
- 				    u64 *start, u64 *end)
- {
--	struct page *pages[PTE_PREFETCH_NUM];
-+	struct page **pages;
- 	struct kvm_memory_slot *slot;
- 	unsigned int access = sp->role.access;
- 	int i, ret;
- 	gfn_t gfn;
- 
-+	pages = kmalloc_array(pte_prefetch_num, sizeof(struct page *),
-+			      GFP_KERNEL);
-+	if (!pages)
-+		return -1;
-+
- 	gfn = kvm_mmu_page_get_gfn(sp, start - sp->spt);
- 	slot = gfn_to_memslot_dirty_bitmap(vcpu, gfn, access & ACC_WRITE_MASK);
--	if (!slot)
--		return -1;
-+	if (!slot) {
-+		ret = -1;
-+		goto out;
-+	}
- 
- 	ret = gfn_to_page_many_atomic(slot, gfn, pages, end - start);
--	if (ret <= 0)
--		return -1;
-+	if (ret <= 0) {
-+		ret = -1;
-+		goto out;
-+	}
- 
- 	for (i = 0; i < ret; i++, gfn++, start++) {
- 		mmu_set_spte(vcpu, slot, start, access, gfn,
-@@ -2774,7 +2785,9 @@ static int direct_pte_prefetch_many(struct kvm_vcpu *vcpu,
- 		put_page(pages[i]);
- 	}
- 
--	return 0;
-+out:
-+	kfree(pages);
-+	return ret;
- }
- 
- static void __direct_pte_prefetch(struct kvm_vcpu *vcpu,
-@@ -2785,10 +2798,10 @@ static void __direct_pte_prefetch(struct kvm_vcpu *vcpu,
- 
- 	WARN_ON(!sp->role.direct);
- 
--	i = (sptep - sp->spt) & ~(PTE_PREFETCH_NUM - 1);
-+	i = (sptep - sp->spt) & ~(pte_prefetch_num - 1);
- 	spte = sp->spt + i;
- 
--	for (i = 0; i < PTE_PREFETCH_NUM; i++, spte++) {
-+	for (i = 0; i < pte_prefetch_num; i++, spte++) {
- 		if (is_shadow_present_pte(*spte) || spte == sptep) {
- 			if (!start)
- 				continue;
 -- 
-2.33.0.882.g93a45727a2-goog
+2.23.0.718.g5ad94255a8
 
