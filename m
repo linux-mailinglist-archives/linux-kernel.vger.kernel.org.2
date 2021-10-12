@@ -2,96 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B72E42AB3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732DB42AB11
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233267AbhJLRxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:53:52 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:42148 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232404AbhJLRxS (ORCPT
+        id S232492AbhJLRsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhJLRsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:53:18 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 1dd9a816cb4bdd57; Tue, 12 Oct 2021 19:51:15 +0200
-Received: from kreacher.localnet (unknown [213.134.187.88])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Tue, 12 Oct 2021 13:48:17 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF92C061570;
+        Tue, 12 Oct 2021 10:46:15 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f19420044c1262ed1e42b8c.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:4200:44c1:262e:d1e4:2b8c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id ABF2D66A81B;
-        Tue, 12 Oct 2021 19:51:14 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH v1 4/7] surface: surface3-wmi: Use ACPI_COMPANION() directly
-Date:   Tue, 12 Oct 2021 19:44:42 +0200
-Message-ID: <3414042.iIbC2pHGDl@kreacher>
-In-Reply-To: <4369779.LvFx2qVVIh@kreacher>
-References: <4369779.LvFx2qVVIh@kreacher>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 06B2D1EC047E;
+        Tue, 12 Oct 2021 19:46:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634060774;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=x5jmEYoOWbIrx2JArtKtCDt/YV7kBkWkVjZ7M0GZpRo=;
+        b=OMOnnbtzuMLuJy+sTPLw5T/gkqxM0OExXMmNLgTnv+3n3CltiX/gh3PQ+vONw0Deppiuee
+        XOmDKN5BSv8UvEw2+hNL51feihcbSn7VnV5twVArLFycT40m0xjFCePNKH6x0TsX1RGMSm
+        hkucMlo9uP6TNx8Xu3erbkt1SP636m0=
+Date:   Tue, 12 Oct 2021 19:46:11 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [patch 26/31] x86/fpu: Move fpstate functions to api.h
+Message-ID: <YWXJ41WPh6udVXmE@zn.tnic>
+References: <20211011215813.558681373@linutronix.de>
+ <20211011223611.846280577@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.187.88
-X-CLIENT-HOSTNAME: 213.134.187.88
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtkedguddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppedvudefrddufeegrddukeejrdekkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukeejrdekkedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehhuggvghhovgguvgesrhgvughhrghtrdgtohhmpdhrtghpthhtohepmhhgrhhoshhssehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhuiihmrgigihhmihhlihgrnhes
- ghhmrghilhdrtghomhdprhgtphhtthhopehplhgrthhfohhrmhdqughrihhvvghrqdigkeeisehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211011223611.846280577@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael@kernel.org>
+On Tue, Oct 12, 2021 at 02:00:37AM +0200, Thomas Gleixner wrote:
+> Move function declarations which need to be globaly available to api.h
+> where they belong.
 
-The ACPI_HANDLE() macro is a wrapper arond the ACPI_COMPANION()
-macro and the ACPI handle produced by the former comes from the
-ACPI device object produced by the latter, so it is way more
-straightforward to evaluate the latter directly instead of passing
-the handle produced by the former to acpi_bus_get_device().
+"globally"
 
-Modify s3_wmi_check_platform_device() accordingly (no intentional
-functional impact).
+-- 
+Regards/Gruss,
+    Boris.
 
-Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
----
- drivers/platform/surface/surface3-wmi.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-Index: linux-pm/drivers/platform/surface/surface3-wmi.c
-===================================================================
---- linux-pm.orig/drivers/platform/surface/surface3-wmi.c
-+++ linux-pm/drivers/platform/surface/surface3-wmi.c
-@@ -139,13 +139,12 @@ static acpi_status s3_wmi_attach_spi_dev
- 
- static int s3_wmi_check_platform_device(struct device *dev, void *data)
- {
--	struct acpi_device *adev, *ts_adev = NULL;
--	acpi_handle handle;
-+	struct acpi_device *adev = ACPI_COMPANION(dev);
-+	struct acpi_device *ts_adev = NULL;
- 	acpi_status status;
- 
- 	/* ignore non ACPI devices */
--	handle = ACPI_HANDLE(dev);
--	if (!handle || acpi_bus_get_device(handle, &adev))
-+	if (!adev)
- 		return 0;
- 
- 	/* check for LID ACPI switch */
-@@ -159,7 +158,7 @@ static int s3_wmi_check_platform_device(
- 	    strlen(SPI_CTL_OBJ_NAME)))
- 		return 0;
- 
--	status = acpi_walk_namespace(ACPI_TYPE_DEVICE, handle, 1,
-+	status = acpi_walk_namespace(ACPI_TYPE_DEVICE, adev->handle, 1,
- 				     s3_wmi_attach_spi_device, NULL,
- 				     &ts_adev, NULL);
- 	if (ACPI_FAILURE(status))
-
-
-
+https://people.kernel.org/tglx/notes-about-netiquette
