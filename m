@@ -2,115 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1EB42ADA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FA142ADA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233961AbhJLUOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:14:52 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:43527 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhJLUOq (ORCPT
+        id S234330AbhJLUPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232145AbhJLUPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:14:46 -0400
-Received: from leknes.fjasle.eu ([92.116.69.156]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MV5KC-1m9Kp83Dss-00S6dc; Tue, 12 Oct 2021 22:12:28 +0200
-Received: from fjasle.eu (localhost [IPv6:::1])
-        by leknes.fjasle.eu (Postfix) with ESMTP id B65E73C062;
-        Tue, 12 Oct 2021 22:12:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
-        t=1634069545; bh=7ioTkt/dIjLk+061oxZYUFxlbF1EIkze9bV8n/8WIAM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Gm3QLty+4pzW172OIZbpnFwajmLWAagvrulwZ9egM83NzpQ048sneoiFCTdQPHi6a
-         txtzGM9zy1jx7F9Q4PQLLJWMoXv3H3QD6i/wbXypRLQkajgq/42GmSDd/eNL7Kt/Yp
-         RiNoH02CIkvH4TzWNad/Dx7V+BEvHpATXoznW9Rk=
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Cc:     Nicolas Schier <nicolas@fjasle.eu>,
-        =?UTF-8?q?Thomas=20K=C3=BChnel?= <thomas.kuehnel@avm.de>
-Subject: [PATCH v3] initramfs: Check timestamp to prevent broken cpio archive
-Date:   Tue, 12 Oct 2021 20:12:20 +0000
-Message-Id: <20211012201220.3310806-1-nicolas@fjasle.eu>
-X-Mailer: git-send-email 2.30.1
+        Tue, 12 Oct 2021 16:15:12 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56400C061570;
+        Tue, 12 Oct 2021 13:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=n58V8M3p+f5+C2ZTAmK8/0SrMrG0LAFyRVyaZfvNw60=; b=B1u4HyWlWb7hP3n/XPr38CccP+
+        6276I54bo3AJ8W14Yr5qsPbw5erpUbhPpGlJOlvpNAWkf4wQRWWWpgM/Z2SyHzoovu/5VST15upPe
+        W/OGIkBBLo8jhNu8i3oo0R0ACCrNHtsbYQquyeb4wUkuFmaQpu8y7qW1DkYzxM47OUdML9vgQK994
+        Ny3oNhG/ZoWs/J7r7Lmb+xIsyi2xk8uJ/TqzXj94rC41LbhUySoIom0uEqWGuFPgfvZeuC0N3g8wS
+        4XnQN0KSTa60qIJxM0w753MpJqVjVs7W7wpIAVrhnL3O5RZysydQzlJWzQQykgw0ATko+cViBSsf1
+        VOEcgSQw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1maO97-00DuIm-Hg; Tue, 12 Oct 2021 20:13:09 +0000
+Subject: Re: linux-next: build warnings in Linus' tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20211012215651.300f8bc1@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <87ec4a83-1262-03b9-dd86-f37568b38df0@infradead.org>
+Date:   Tue, 12 Oct 2021 13:13:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:7M7rZdSNQCf+6LRAbTcmVz5U6yF0PAE5lTK23NpjRlIo847dyqZ
- Y2gD1zIb5dL/BV2T+x76T+wy+G8079CPWzyyGHjK9laKoG5Pmp10HBXA2cOOHM65ErED5d8
- 6gJIkWcGB7v6jtf7ViW/Q7xzxD8CpZOyZw3IWQG0gJSBQUznBPOWPFaXp7UBvXp4+OJVOr+
- xGwgIO5eRMSPmlllcr2oA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jBrS5+DHFrY=:mF/3GpKrMCsYBu5PW7VxId
- NC4sGvqO9EazT6GSK8iLnNBZZQUXQVmmHDiT7GqC3/QCZ4CMe3lElL4Dwgk+ReCaqk+TfdazY
- zq+dbmN4+SZQtI/bLTrJkNtKVoH6+sejQ2LM4xvhAO2y1w+cUlul/OjqmMPjdOFNUcNAXuo3M
- 3T7rF4fGkcP60KwCIirgqUMXqBBLL8k0lpti2ilo2EASua6qbmBL7xI7kYvmEhqkvD64vFMCu
- AKS9/5jL5uFJHwvYgbE7y1ngqhJaeLq1DlJ4cRtmPIxPCRNrmpwsMT/6VKBHXeRDKfF33Fsri
- Su9NLfEftrsPTrejp3HcKMmbivhyvs0DS5ATaOyUr1fLeCPz/1jhRYzASwADmsBN9nHWkpPMC
- pylv/33m577m7An4K1z8lkJKKjo+G4dX+fQcMOLJaIK1uhkwmzFvOVQjAbw9vxVrGpmFdOsK+
- oxD28j1aTt/9pYVSN2+Kurit5Hq9xNK1UztOZJJB64RMAfocYnwEbueBb6htSB/UB4zg1Jmv2
- uxuHiz2E50py9Us3X1/u1V7sAIDFbEokq9tKIMjEwpKM9zggYUOwdQFU3wTFYfsjcInD8++Yw
- MTMLm6+SmngHTrUdDsMoV13lEL5j6R0iNjS9aKk2PBc6Lb4xgn5ILddZXMUiYlnPilU1zdCuY
- OH3WyDsWBYuavVca3gEdBhv5QQOZ+MlxVYneWp3aWfFTSY0uYYuqncTPJZWjdIGgWIp0y399n
- D+OO52AuFV1sKAa7w+D9jU79Prao+tvfZs8Wpw==
+In-Reply-To: <20211012215651.300f8bc1@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cpio format reserves 8 bytes for an ASCII representation of a time_t timestamp.
-While 2106-02-07 06:28:15 UTC (time_t = 0xffffffff) is still some years in the
-future, a poorly chosen date string for KBUILD_BUILD_TIMESTAMP, converted into
-seconds since the epoch, might lead to exceeded cpio timestamp limits that
-result in a broken cpio archive.  Add timestamp checks to prevent overrun of
-the 8-byte cpio header field.
+On 10/12/21 3:56 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> When building Linus' tree, today's linux-next build (htmldocs) produced
+> these warnings:
+> 
+> Error: Cannot open file drivers/counter/counter.c
+> Error: Cannot open file drivers/counter/counter.c
+> 
+> Introduced by commit
+> 
+>    d70e46af7531 ("counter: Internalize sysfs interface code")
+> 
+> $ git grep -w drivers/counter/counter.c Documentation
+> Documentation/driver-api/generic-counter.rst:.. kernel-doc:: drivers/counter/counter.c
+> 
 
-My colleague Thomas Kühnel discovered the behaviour, when we accidentally fed
-SOURCE_DATE_EPOCH to KBUILD_BUILD_TIMESTAMP as is: some timestamps (e.g.
-1607420928 = 2021-12-08 9:48:48 UTC) will be interpreted by `date` as a valid
-date specification of science fictional times (here: year 160742).  Even though
-this is bad input for KBUILD_BUILD_TIMESTAMP, it should not break the initramfs
-cpio format.
+Jonathan has already accepted my patch for this docs error.
+Hopefully it will show up in mainline soonish.
 
-Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
-Cc: Thomas Kühnel <thomas.kuehnel@avm.de>
----
- usr/gen_init_cpio.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/usr/gen_init_cpio.c b/usr/gen_init_cpio.c
-index 03b21189d58b..97aeeecf7386 100644
---- a/usr/gen_init_cpio.c
-+++ b/usr/gen_init_cpio.c
-@@ -320,6 +320,12 @@ static int cpio_mkfile(const char *name, const char *location,
- 		goto error;
- 	}
- 
-+	if (buf.st_mtime > 0xffffffff) {
-+		fprintf(stderr, "%s: Timestamp exceeds maximum cpio timestamp, clipping.\n",
-+			location);
-+		buf.st_mtime = 0xffffffff;
-+	}
-+
- 	filebuf = malloc(buf.st_size);
- 	if (!filebuf) {
- 		fprintf (stderr, "out of memory\n");
-@@ -551,6 +557,16 @@ int main (int argc, char *argv[])
- 		}
- 	}
- 
-+	/*
-+	 * Timestamps after 2106-02-07 06:28:15 UTC have an ascii hex time_t
-+	 * representation that exceeds 8 chars and breaks the cpio header
-+	 * specification.
-+	 */
-+	if (default_mtime > 0xffffffff) {
-+		fprintf(stderr, "ERROR: Timestamp too large for cpio format\n");
-+		exit(1);
-+	}
-+
- 	if (argc - optind != 1) {
- 		usage(argv[0]);
- 		exit(1);
+thanks.
 -- 
-2.30.1
-
+~Randy
