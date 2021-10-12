@@ -2,131 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E168342AA12
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A827142AA14
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhJLQzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 12:55:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60322 "EHLO mail.kernel.org"
+        id S231702AbhJLQ5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 12:57:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230148AbhJLQzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 12:55:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5901561076;
-        Tue, 12 Oct 2021 16:53:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634057627;
-        bh=bdYGI9lrx6Tnzb5nNPVXo02uugTxR7LDtvCKQbRJrTg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=rc+ZLr1kvmuvQrn90U9XVb1z84w5AebJQZ1IfVNAbutk09wV3W4S/UDhG7Yh63f7/
-         90JE8ahZHw8ozEKr5PchAIAJP0wfguSk41uOLZy6Hs6KrRixonY10vXDQmes7fr8UO
-         csG+nQkuMU041zIv9QeUe0GfljwLhilNCDGrm+H8drkAbbfB54Gbov1bLDaAKq8IIV
-         X5644lRcWqiYx6/brEP1VIeczRC3P2z7oOBHqn0FqZaCDwoxNJFIySqkcNgCfvK1Py
-         YbKhvcd4ICLMs2JDB0/ErJgdEv2j8qwfeNHtAG4RV4cphE9AE7BpujTMgw90Qyutvj
-         /J1eUX1vIzAUA==
-Message-ID: <7a456461cd1a23f5b8a3116d44e5b94db5f68826.camel@kernel.org>
-Subject: Re: [PATCH v2 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com, seanjc@google.com, x86@kernel.org,
-        yang.zhong@intel.com
-Date:   Tue, 12 Oct 2021 19:53:45 +0300
-In-Reply-To: <20211012105708.2070480-2-pbonzini@redhat.com>
-References: <20211012105708.2070480-1-pbonzini@redhat.com>
-         <20211012105708.2070480-2-pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.0-1 
+        id S229510AbhJLQ5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 12:57:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43D3E60462;
+        Tue, 12 Oct 2021 16:55:41 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 17:55:37 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [GIT PULL] arm64 fixes for 5.15-rc6
+Message-ID: <YWW+CSv9tLuteHQm@arm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-10-12 at 06:57 -0400, Paolo Bonzini wrote:
-> For bare-metal SGX on real hardware, the hardware provides guarantees
-> SGX state at reboot.=C2=A0 For instance, all pages start out uninitialize=
-d.
-> The vepc driver provides a similar guarantee today for freshly-opened
-> vepc instances, but guests such as Windows expect all pages to be in
-> uninitialized state on startup, including after every guest reboot.
->=20
-> One way to do this is to simply close and reopen the /dev/sgx_vepc file
-> descriptor and re-mmap the virtual EPC.=C2=A0 However, this is problemati=
-c
-> because it prevents sandboxing the userspace (for example forbidding
-> open() after the guest starts; this is doable with heavy use of SCM_RIGHT=
-S
-> file descriptor passing).
->=20
-> In order to implement this, we will need a ioctl that performs
-> EREMOVE on all pages mapped by a /dev/sgx_vepc file descriptor:
-> other possibilities, such as closing and reopening the device,
-> are racy.
->=20
-> Start the implementation by creating a separate function with just
-> the __eremove wrapper.
->=20
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0v1->v2: keep WARN in sgx_=
-vepc_free_page
->=20
-> =C2=A0arch/x86/kernel/cpu/sgx/virt.c | 12 +++++++-----
-> =C2=A01 file changed, 7 insertions(+), 5 deletions(-)
->=20
-> diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/vir=
-t.c
-> index 64511c4a5200..59cdf3f742ac 100644
-> --- a/arch/x86/kernel/cpu/sgx/virt.c
-> +++ b/arch/x86/kernel/cpu/sgx/virt.c
-> @@ -111,10 +111,8 @@ static int sgx_vepc_mmap(struct file *file, struct v=
-m_area_struct *vma)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> =C2=A0}
-> =C2=A0
-> -static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
-> +static int sgx_vepc_remove_page(struct sgx_epc_page *epc_page)
-> =C2=A0{
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int ret;
-> -
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/*
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Take a previously gues=
-t-owned EPC page and return it to the
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * general EPC page pool.
-> @@ -124,7 +122,12 @@ static int sgx_vepc_free_page(struct sgx_epc_page *e=
-pc_page)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * case that a guest prop=
-erly EREMOVE'd this page, a superfluous
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * EREMOVE is harmless.
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D __eremove(sgx_get_epc_=
-virt_addr(epc_page));
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return __eremove(sgx_get_epc_v=
-irt_addr(epc_page));
-> +}
-> +
-> +static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
-> +{
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int ret =3D sgx_vepc_remove_pa=
-ge(epc_page);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret) {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0/*
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 * Only SGX_CHILD_PRESENT is expected, which is bec=
-ause of
-> @@ -144,7 +147,6 @@ static int sgx_vepc_free_page(struct sgx_epc_page *ep=
-c_page)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0sgx_free_epc_page(epc_pag=
-e);
-> -
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> =C2=A0}
-> =C2=A0
+Hi Linus,
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+I dropped the IRQ changes and I'm re-submitting the pull request.
+Thanks.
 
-/Jarkko
+The following changes since commit 22b70e6f2da0a4c8b1421b00cfc3016bc9d4d9d4:
 
+  arm64: Restore forced disabling of KPTI on ThunderX (2021-09-23 15:59:15 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+
+for you to fetch changes up to 596143e3aec35c93508d6b7a05ddc999ee209b61:
+
+  acpi/arm64: fix next_platform_timer() section mismatch error (2021-10-12 17:41:19 +0100)
+
+----------------------------------------------------------------
+arm64 fixes:
+
+- Fix CMA gigantic page order for 16K/64K page sizes.
+
+- Fix section mismatch error in drivers/acpi/arm64/gtdt.c.
+
+----------------------------------------------------------------
+Jackie Liu (1):
+      acpi/arm64: fix next_platform_timer() section mismatch error
+
+Mike Kravetz (1):
+      arm64/hugetlb: fix CMA gigantic page order for non-4K PAGE_SIZE
+
+ arch/arm64/mm/hugetlbpage.c | 2 +-
+ drivers/acpi/arm64/gtdt.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+Catalin
