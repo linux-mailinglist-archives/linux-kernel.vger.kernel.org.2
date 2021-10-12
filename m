@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EF0429E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3D9429E56
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233598AbhJLHLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:11:37 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:36330 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233456AbhJLHLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:11:36 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 93D58A003F;
-        Tue, 12 Oct 2021 09:09:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 93D58A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1634022573; bh=MCKswC9dfx4z8lMqYYZ+iA/guE0ZI+EWy0JeZqlKWRg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=KdgpgBni8FQ8qf00KE9jd6F/lFFE4gBL/deP4Gzk7btbCektMaADrYppYboQ0kWUH
-         qpplY4C6k6A4bE615Q4s1ZOGDqE9skTxDMlPtBn8eVHwUDZ7PVJ6yeXG1cTCJF/Bn5
-         j81zXmnFi1sB3RRSHiFqhuGUHdOs/np/CqimKvsc=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S233712AbhJLHMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:12:41 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:45871 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233268AbhJLHMj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 03:12:39 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Tue, 12 Oct 2021 09:09:29 +0200 (CEST)
-Message-ID: <22cb5c18-9c92-7365-99a5-e0577e243fa2@perex.cz>
-Date:   Tue, 12 Oct 2021 09:09:29 +0200
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HT6JC4hV3z4xbT;
+        Tue, 12 Oct 2021 18:10:34 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1634022636;
+        bh=ZYvG5vqpEVtFsi2i8PDCJ+ItpwALv0k7O1f+80SFrLE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=rRwZvaVEkjdhrKAOp6diupDVvQZ7hXvLlOSoI+G2mukZWZFsN0eEU06RIDbHspKjs
+         ohYnOZrJlr3f6adzvVRf8A4tSsKLfC7WVT/S7692qI01dvIlmOy8Dysfr86uJgy9Gt
+         djKTiV2y9Pj8qtTeJQAPPX3dNSFSCXxSuoBvSda0cjjclcohiQ6lYRdKfh2nEuxdj/
+         hrjop70jfHtkPQpQ/vA9zlLreU6hcaGPNRsmwihNYJW1h5pp66jzfp+84nEMubWGpB
+         TjuTt7dqbGcp56zjRh3S7ZLFQax2txG9i3NYKxN9PVox4BrvUZQ0Tme/n+o+5ZJi6O
+         ijoJZj4FLkcXw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 01/10] powerpc: Move 'struct ppc64_opd_entry' back
+ into asm/elf.h
+In-Reply-To: <8ff3ec195d695033b652e9971fba2dc5528f7151.1633964380.git.christophe.leroy@csgroup.eu>
+References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
+ <8ff3ec195d695033b652e9971fba2dc5528f7151.1633964380.git.christophe.leroy@csgroup.eu>
+Date:   Tue, 12 Oct 2021 18:10:32 +1100
+Message-ID: <878ryy7m6v.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] ASoC: simple-card: Fill in driver name
-Content-Language: en-US
-To:     didi.debian@cknow.org
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>
-References: <YNGe3akAntQi8qJD@qwark.sigxcpu.org> <4974503.Y8KB3sNASq@bagend>
- <61a82214-0de8-816f-ff63-3979b86343bf@perex.cz> <5069869.zQgEQKRxDW@bagend>
- <f7efde11-067d-8822-45fa-7cdbe2d17d93@perex.cz>
- <97a1c38c48765fb6634de34387e3ce3c@cknow.org>
-From:   Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <97a1c38c48765fb6634de34387e3ce3c@cknow.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11. 10. 21 23:48, didi.debian@cknow.org wrote:
-> On 2021-10-11 19:16, Jaroslav Kysela wrote:
->> On 10. 10. 21 12:40, Diederik de Haas wrote:
->>> On Sunday, 10 October 2021 10:40:09 CEST Jaroslav Kysela wrote:
->>>>> Unfortunately this change broke multichannel audio on my Rock64
->>>>> device
->>>>> running Debian. My Rock64 is connected to my AVR (Pioneer SC-1224)
->>>>> via a
->>>>> HDMI cable.
->>>> This looks like an user space configuration problem.
->>>
->>> I have placed ALSA card definitions (I think) from LibreELEC on my
->>> system from
->>> https://github.com/LibreELEC/LibreELEC.tv/tree/master/projects/Rockchip/
->>> filesystem/usr/share/alsa/cards
->>
->> Apparently, the alsa-lib configuration is used in this case.
->>
->> It seems that there are four sound cards (Analog/HDMI/I2S/SPDIF)
->> created for your hardware. The alsa-lib configuration is a bit weird -
->> an obfuscation for the simple-card driver use. The simple way to
->> resolve this is to create a proper UCM configuration.
->>
->> If you need further assistance, create an issue for alsa-lib or
->> alsa-ucm-conf on github and with an output from the 'alsa-info.sh'
->> script.
-> 
-> Will do.
-> 
-> FTR: It's now working again for me on a kernel with this patch included:
-> https://github.com/LibreELEC/LibreELEC.tv/issues/5734#issuecomment-940088156
-> 
-> I have no idea whether this is a proper solution or another
-> 'workaround', but
-> it's working for me again :)
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> 'struct ppc64_opd_entry' doesn't belong to uapi/asm/elf.h
 
-The patch bellow resolved your issue - alsa-lib configuration fix. But it's 
-not an universal solution and there may be clashes with other simple-card 
-drivers in future.
+Agree, but ...
 
-https://github.com/LibreELEC/LibreELEC.tv/pull/5749/commits/f681a48a664bd0f0e8f0dc131bd58c5d7512adc3
+> It was initially in module_64.c and commit 2d291e902791 ("Fix compile
+> failure with non modular builds") moved it into asm/elf.h
+>
+> But it was by mistake added outside of __KERNEL__ section,
+> therefore commit c3617f72036c ("UAPI: (Scripted) Disintegrate
+> arch/powerpc/include/asm") moved it to uapi/asm/elf.h
 
-						Jaroslav
+... it's been visible to userspace since the first commit moved it, ~13
+years ago in 2008, v2.6.27.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> Move it back into asm/elf.h, this brings it back in line with
+> IA64 and PARISC architectures.
+
+Removing it from the uapi header risks breaking userspace, I doubt
+anything uses it, but who knows.
+
+Given how long it's been there I think it's a bit risky to remove it :/
+
+> diff --git a/arch/powerpc/include/asm/elf.h b/arch/powerpc/include/asm/elf.h
+> index b8425e3cfd81..64b523848cd7 100644
+> --- a/arch/powerpc/include/asm/elf.h
+> +++ b/arch/powerpc/include/asm/elf.h
+> @@ -176,4 +176,11 @@ do {									\
+>  /* Relocate the kernel image to @final_address */
+>  void relocate(unsigned long final_address);
+>  
+> +/* There's actually a third entry here, but it's unused */
+> +struct ppc64_opd_entry
+> +{
+> +	unsigned long funcaddr;
+> +	unsigned long r2;
+> +};
+> +
+>  #endif /* _ASM_POWERPC_ELF_H */
+> diff --git a/arch/powerpc/include/uapi/asm/elf.h b/arch/powerpc/include/uapi/asm/elf.h
+> index 860c59291bfc..308857123a08 100644
+> --- a/arch/powerpc/include/uapi/asm/elf.h
+> +++ b/arch/powerpc/include/uapi/asm/elf.h
+> @@ -289,12 +289,4 @@ typedef elf_fpreg_t elf_vsrreghalf_t32[ELF_NVSRHALFREG];
+>  /* Keep this the last entry.  */
+>  #define R_PPC64_NUM		253
+>  
+> -/* There's actually a third entry here, but it's unused */
+> -struct ppc64_opd_entry
+> -{
+> -	unsigned long funcaddr;
+> -	unsigned long r2;
+> -};
+
+Rather than removing it we can make it uapi only with:
+
+#ifndef __KERNEL__
+/* There's actually a third entry here, but it's unused */
+struct ppc64_opd_entry
+{
+	unsigned long funcaddr;
+	unsigned long r2;
+};
+#endif
+
+
+And then we can do whatever we want with the kernel internal version.
+
+cheers
