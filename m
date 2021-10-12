@@ -2,142 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06040429F26
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F80D429F27
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234446AbhJLIBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:01:34 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:38024
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232541AbhJLIBc (ORCPT
+        id S234524AbhJLIBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232541AbhJLIBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:01:32 -0400
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 362353FFFE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:59:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634025570;
-        bh=udP1IAy8X/njK/g0UuXAT72GSIqy69WCV4uZ074ifeI=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Kt9cvu9mk9zE+bwt9T1G7PinUsGFGdQVF8qmCQO4acJGbTzybVHA3+qWorCSaKAvY
-         agwyYoQ5b0oHcsfBxhkIqHEWSzF9nTU8+DPIwXJeY4ba0gz3kZJNNsfhZInhfe6ORO
-         jsroSXPWAAdzInxUgTaRyLjh+YmQ5jjayIxHYyuiyyjr5XtrudDDuuDdOzQOZCGV4z
-         2+fNC2muwgspMaUzcU37ZEfSoEQvTcxbPUbSrq7BV4dWLGVy/HU+hT+ISLKfGcvWym
-         LZWpz9VLTAo+Wv1DR7r86EpPZQeWcco0jXk30qj1HfirLMcv4JFwulP/aL4l7bAUSF
-         +2OexUO+v6iMA==
-Received: by mail-lf1-f69.google.com with SMTP id z29-20020a195e5d000000b003fd437f0e07so11630155lfi.20
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:59:30 -0700 (PDT)
+        Tue, 12 Oct 2021 04:01:52 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78668C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:59:50 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id m22so64268372wrb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:59:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qZL0IgCxwxZOCc6N60q9ODZfFXYO+v+wjDyRWnfQDxU=;
+        b=j5xf/Tz0qzecApKo55JWzWhVD7IuOay2Z08jr+B1NfbCO9C7j+94M32PU1JVNWXgBq
+         lCTFIaO/lKQpswhsgcSQc13d7ZeKVTa8v0TjZMxD8F0YcgrQexjJTBnxwvgPQCq/C2O9
+         SRmI/CAo4LkRPjFdtNyTs/PUzwj3/ATn5SHr8hRjr0selHPJZ5LE6nqBWCxq1EPDPnVw
+         sMiX7Uxaz9ntSMEaV6Fsg5AwFk2GLg/ucT9mye0pZcnO1dzvsKMzb8gTRgNPKv/T6Kn6
+         L9Tk1HcxaYHstY8qCBzmyNGG3bNpHkXWpa0+MX41S5rlKJ1Wo0KxeoX0rDl5owjC/atY
+         xpcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=udP1IAy8X/njK/g0UuXAT72GSIqy69WCV4uZ074ifeI=;
-        b=cCRdDNTAg+m8TE/VrgCDifDWqeEI35gD4H5U0ALtIBnVFLHzPj4NBkId3BiAG3mwqo
-         xlwZ002AxImygFB3Uf0e979CuG8K+MvebU3tmr/bhQyO86LMzv/b7N/WG6DiAbjN6oux
-         TldDttWEyFpG1ZTfBSAIFK8fhcaPEqk+VmFPtPEJi4h8r2b66S+SCryX3SVbLR5lb1hw
-         HcDcG9CGvhhfIHi463edyfccf9N0k8MbwCQYXkfmafXQr3IPgL2mtamUF+ikP9Wx/r14
-         umW1afRCaBI1s8RoaDuzViPTrhCujnJr0gAUAFVJquS6+Dz1esC6NMISZ1tk7d3dvGF1
-         n5AA==
-X-Gm-Message-State: AOAM533kTnuw0Rk94pjtEmWzd0IKryZvvGugHCQymzpDEBK3ja6KloPW
-        dgbYtBmvK5PNqq945HTrD9ZpCGe00XkpGMoSOFQdzMoW35GlO+9atUxxnlX57PgXKA4X6UR9a+i
-        Cn9/nphC7fM4TSS/X9n8F03VFvIEK6z4Bl9VvbVM4uw==
-X-Received: by 2002:ac2:58ec:: with SMTP id v12mr5219507lfo.371.1634025569551;
-        Tue, 12 Oct 2021 00:59:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyuGOXu93SUScai/jht0fjObEgFu5dy4JCt5WDgoRepmm92+N4gqDMUlzgRq54ku3YBBsczUg==
-X-Received: by 2002:ac2:58ec:: with SMTP id v12mr5219491lfo.371.1634025569352;
-        Tue, 12 Oct 2021 00:59:29 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id s23sm91126lfi.139.2021.10.12.00.59.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 00:59:28 -0700 (PDT)
-Subject: Re: [PATCH 0/8] Add MAX77714 PMIC minimal driver (RTC and watchdog
- only)
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>
-References: <20211011155615.257529-1-luca@lucaceresoli.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <f0602023-8d8d-d34a-3bc6-41d969a83837@canonical.com>
-Date:   Tue, 12 Oct 2021 09:59:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qZL0IgCxwxZOCc6N60q9ODZfFXYO+v+wjDyRWnfQDxU=;
+        b=uiHcbxAYRC8znA35XQcRMdB+PWr4aixkUFyKat0fEWMf52yy1FashNZQ752aBeJLOE
+         PPaBtNsDuCWqb2vf8Xa6T9QssJe7iWqaw5Lt3wq2fcH9jart9rmiljUEbWUknVKhiejL
+         uLeG44hoVM53ITD1ty7Nl3SrXA1WLoxTFqBbnL6mjrjIIMEUk9mENnlhDTxQ6qHtgrel
+         XIfk/hJlahRLLw47uHNtkyS9864cIgm9IpsQzWK1H3yscfplo1QleuTe9c1PoVoT0TyQ
+         P/0FkeTuQzsCRO0kLpe7PdmhNBrwpMlqWA3NgW4WeUJlrEO48qQrykrRx9x+doLzPkOF
+         EK6w==
+X-Gm-Message-State: AOAM532F8SE9uQVxRdu5/sQoTNr71Oi6IouPMTIZc5ZY+b61zYHzZABj
+        PMIIW4PypzC/l9eqay5E3KorNDy5BC3WV4iuhVFmRg==
+X-Google-Smtp-Source: ABdhPJwZ+vuj68nKJDo6F5dRTy5sMRtn99gwDMZHCHSI64JSatybZLfgqB9p7RAomfB3RSYsYSjczZ8IJR09Pm+GQ+k=
+X-Received: by 2002:a7b:cbd1:: with SMTP id n17mr3819677wmi.113.1634025588965;
+ Tue, 12 Oct 2021 00:59:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211011155615.257529-1-luca@lucaceresoli.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211012073116.4156054-1-sumit.garg@linaro.org>
+In-Reply-To: <20211012073116.4156054-1-sumit.garg@linaro.org>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Tue, 12 Oct 2021 09:59:38 +0200
+Message-ID: <CAHUa44HW=7GhvWSd7LwG3wc+47bQWHHiFq+qA-8qMnDV1C0yBQ@mail.gmail.com>
+Subject: Re: [PATCH] tee: optee: Fix missing devices unregister during optee_remove
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jerome Forissier <jerome@forissier.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 17:56, Luca Ceresoli wrote:
-> Hi,
-> 
-> this series adds minimal drivers for the Maxim Semiconductor MAX77714
-> (https://www.maximintegrated.com/en/products/power/power-management-ics/MAX77714.html).
-> Only RTC and watchdog are implemented by these patches.
-> 
-> Note! Something seems wrong in the interrupt management code. Due to the
-> fact that I'm not using interrupts on my hardware and since this is my
-> first addition of an MFD driver, I was unable to understand what is wrong
-> after studying the code for other MFD drivers. More details in reply to
-> patch 8. Advice would be greatly appreciated on this topic.
-> 
-> Except for that, all implemented functionality is tested and working: RTC
-> read/write, watchdog start/stop/ping/set_timeout.
-> 
-> The first 4 patches are trivial cleanups to the max77686 drivers and can
-> probably be applied easily.
-> 
-> Patches 5-8 add: dt bindings, mfd driver, watchdog driver and rtc driver.
-> 
-> Luca
-> 
-> Luca Ceresoli (8):
->   mfd: max77686: Correct tab-based alignment of register addresses
->   rtc: max77686: convert comments to kernel-doc format
->   rtc: max77686: rename day-of-month defines
->   rtc: max77686: remove useless variable
->   dt-bindings: mfd: add Maxim MAX77714 PMIC
->   mfd: max77714: Add driver for Maxim MAX77714 PMIC
->   watchdog: max77714: add driver for the watchdog in the MAX77714 PMIC
->   rtc: max77686: add MAX77714 support
-> 
->  .../bindings/mfd/maxim,max77714.yaml          |  58 ++++++
->  MAINTAINERS                                   |   8 +
->  drivers/mfd/Kconfig                           |  14 ++
->  drivers/mfd/Makefile                          |   1 +
->  drivers/mfd/max77714.c                        | 151 ++++++++++++++++
->  drivers/rtc/Kconfig                           |   2 +-
->  drivers/rtc/rtc-max77686.c                    |  72 +++++---
->  drivers/watchdog/Kconfig                      |   9 +
->  drivers/watchdog/Makefile                     |   1 +
->  drivers/watchdog/max77714_wdt.c               | 171 ++++++++++++++++++
->  include/linux/mfd/max77686-private.h          |  28 +--
->  include/linux/mfd/max77714.h                  |  68 +++++++
->  12 files changed, 541 insertions(+), 42 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
->  create mode 100644 drivers/mfd/max77714.c
->  create mode 100644 drivers/watchdog/max77714_wdt.c
->  create mode 100644 include/linux/mfd/max77714.h
-> 
+Hi Sumit,
 
-Thanks for the patches.
+On Tue, Oct 12, 2021 at 9:31 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> When OP-TEE driver is built as a module, OP-TEE client devices
+> registered on TEE bus during probe should be unregistered during
+> optee_remove. So implement optee_unregister_devices() accordingly.
+>
+> Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
+> Reported-by: Sudeep Holla <sudeep.holla@arm.com>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  drivers/tee/optee/core.c          |  3 +++
+>  drivers/tee/optee/device.c        | 22 ++++++++++++++++++++++
+>  drivers/tee/optee/optee_private.h |  1 +
+>  3 files changed, 26 insertions(+)
+>
+> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> index ccad3c7c8f6d..3915dc574503 100644
+> --- a/drivers/tee/optee/core.c
+> +++ b/drivers/tee/optee/core.c
+> @@ -586,6 +586,9 @@ static int optee_remove(struct platform_device *pdev)
+>  {
+>         struct optee *optee = platform_get_drvdata(pdev);
+>
+> +       /* Unregister OP-TEE specific client devices on TEE bus */
+> +       optee_unregister_devices();
+> +
+>         /*
+>          * Ask OP-TEE to free all cached shared memory objects to decrease
+>          * reference counters and also avoid wild pointers in secure world
+> diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
+> index ec1d24693eba..128a2d2a50a1 100644
+> --- a/drivers/tee/optee/device.c
+> +++ b/drivers/tee/optee/device.c
+> @@ -53,6 +53,13 @@ static int get_devices(struct tee_context *ctx, u32 session,
+>         return 0;
+>  }
+>
+> +static void optee_release_device(struct device *dev)
+> +{
+> +       struct tee_client_device *optee_device = to_tee_client_device(dev);
+> +
+> +       kfree(optee_device);
+> +}
+> +
+>  static int optee_register_device(const uuid_t *device_uuid)
+>  {
+>         struct tee_client_device *optee_device = NULL;
+> @@ -63,6 +70,7 @@ static int optee_register_device(const uuid_t *device_uuid)
+>                 return -ENOMEM;
+>
+>         optee_device->dev.bus = &tee_bus_type;
+> +       optee_device->dev.release = optee_release_device;
+>         if (dev_set_name(&optee_device->dev, "optee-ta-%pUb", device_uuid)) {
+>                 kfree(optee_device);
+>                 return -ENOMEM;
+> @@ -154,3 +162,17 @@ int optee_enumerate_devices(u32 func)
+>  {
+>         return  __optee_enumerate_devices(func);
+>  }
+> +
+> +static int __optee_unregister_device(struct device *dev, void *data)
+> +{
+> +       if (!strncmp(dev_name(dev), "optee-ta", strlen("optee-ta")))
+> +               device_unregister(dev);
+> +
+> +       return 0;
+> +}
+> +
+> +void optee_unregister_devices(void)
+> +{
+> +       bus_for_each_dev(&tee_bus_type, NULL, NULL,
+> +                        __optee_unregister_device);
 
-It's awesome to see extension of existing drivers - max77686 family.
+I had something like this in mind too, but there's one potential
+problem with this approach. What if there's more than one OP-TEE
+driver with TAs here? It seems that we'll remove TAs from other
+drivers too then.
 
-Best regards,
-Krzysztof
+This is not likely to be a problem at upstream for the moment so I
+might be enough just to keep this in mind if/when the OP-TEE driver is
+extended in a way that there can be multiple OP-TEEs handled.
+
+Cheers,
+Jens
