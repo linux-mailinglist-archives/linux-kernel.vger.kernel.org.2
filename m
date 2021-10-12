@@ -2,64 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD6542A692
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632BB42A69B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 15:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237032AbhJLOA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:00:29 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:53458 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236917AbhJLOA2 (ORCPT
+        id S237090AbhJLOBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236917AbhJLOBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:00:28 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id DAF981F43A49
-Message-ID: <495d088b-3428-f96f-9932-57d944c5d966@collabora.com>
-Date:   Tue, 12 Oct 2021 10:58:19 -0300
+        Tue, 12 Oct 2021 10:01:46 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32892C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 06:59:45 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id g25so20776625wrb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 06:59:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8+uJr5hp/PrwImyhLww643udSk+FgvtkOnzEH/iiMXA=;
+        b=S54KEdJVG5PidXuDq9r16txvb2g/cP+3eW8Jwk8oD7+pSdOTA4ADJE+GWkNmKRn6xt
+         E7ze+GwF/sNaoP3DUf9kqKEz1SuoC80Sab8lMxVpP4OZf9B9VIu8Cgce9Pqjgwvale19
+         ffQIHz52YRLNkhSog3jdhhM1IWstr0eIylMJQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8+uJr5hp/PrwImyhLww643udSk+FgvtkOnzEH/iiMXA=;
+        b=UH0Hrh4Hzda3n6rVrL+wv3W31MeVMmbM0CdKjM0ypNcP1bV3pvQyYFVCXgx27OJ0uu
+         JY9Ebl3Hj1Nf0/f8d3WQvuQmTtDs4GG2yu9viyjB3of1FUpC6dZyy0hm5iM201Mil+80
+         MRQnMeJmiVFPx6gHEYcC0jcWG/ZICtoe+yQoBMoqKdAVGsavSXbaBK9TvckiVDytRtAL
+         culHtdgqn2156D/py0gSghVYXMfydDc3HWeBQUVrrvmbGDKDzlCJ00tuKEF0RnHXp4CQ
+         7vDFipA2jNilZdAYxs4W/BCcbUA2cWgtlnf0LjoXpa0tykKfeaX6GyiC0/8qFszzU+lN
+         ZwLQ==
+X-Gm-Message-State: AOAM532D1Lo0pkEeFrn6fevZD2uGjz93nSquZkqro37eO4jhLAg4bgeO
+        SjFWAantLo9VHSPwtDq7figXdQ==
+X-Google-Smtp-Source: ABdhPJylp2yWYbawmjfOTMiLcasdN+Z6efwR6pCAb6UhqxWGMRgLmOkn2eCFQKHgteNVV4kv6gQhYw==
+X-Received: by 2002:adf:9bce:: with SMTP id e14mr31937800wrc.353.1634047183850;
+        Tue, 12 Oct 2021 06:59:43 -0700 (PDT)
+Received: from antares.. (d.5.b.3.f.b.d.4.c.0.9.7.6.8.3.1.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:1386:790c:4dbf:3b5d])
+        by smtp.gmail.com with ESMTPSA id o6sm14875894wri.49.2021.10.12.06.59.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 06:59:43 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     nicolas.dichtel@6wind.com, luke.r.nels@gmail.com,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Xi Wang <xi.wang@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/4] bpf: define bpf_jit_alloc_exec_limit for riscv JIT
+Date:   Tue, 12 Oct 2021 14:59:32 +0100
+Message-Id: <20211012135935.37054-2-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211012135935.37054-1-lmb@cloudflare.com>
+References: <20211012135935.37054-1-lmb@cloudflare.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: linux-next: build warnings after merge of the tip tree
-Content-Language: en-US
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20211012212005.4e8fecdd@canb.auug.org.au>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-In-Reply-To: <20211012212005.4e8fecdd@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Expose the maximum amount of useable memory from the riscv JIT.
 
-Às 07:20 de 12/10/21, Stephen Rothwell escreveu:
-> Hi all,
-> 
-> After merging the tip tree, today's linux-next build (htmldocs) produced
-> these warnings:
-> 
-> Error: Cannot open file kernel/futex.c
-> Error: Cannot open file kernel/futex.c
-> Error: Cannot open file kernel/futex.c
-> Error: Cannot open file kernel/futex.c
-> 
-> Introduced by commit
-> 
->   77e52ae35463 ("futex: Move to kernel/futex/")
-> 
-> $ git grep kernel/futex Documentation
-> Documentation/kernel-hacking/locking.rst:.. kernel-doc:: kernel/futex.c
-> Documentation/translations/it_IT/kernel-hacking/locking.rst:.. kernel-doc:: kernel/futex.c
-> 
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Acked-by: Luke Nelson <luke.r.nels@gmail.com>
+---
+ arch/riscv/net/bpf_jit_core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Thanks for pointing that out. I posted a fix:
+diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
+index fed86f42dfbe..0fee2cbaaf53 100644
+--- a/arch/riscv/net/bpf_jit_core.c
++++ b/arch/riscv/net/bpf_jit_core.c
+@@ -166,6 +166,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 	return prog;
+ }
+ 
++u64 bpf_jit_alloc_exec_limit(void)
++{
++	return BPF_JIT_REGION_SIZE;
++}
++
+ void *bpf_jit_alloc_exec(unsigned long size)
+ {
+ 	return __vmalloc_node_range(size, PAGE_SIZE, BPF_JIT_REGION_START,
+-- 
+2.30.2
 
-https://lore.kernel.org/lkml/20211012135549.14451-1-andrealmeid@collabora.com/
