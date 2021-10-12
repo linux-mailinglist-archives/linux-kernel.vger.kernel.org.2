@@ -2,303 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B20429F60
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A07429F5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234530AbhJLIJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:09:00 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43846 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234368AbhJLIIz (ORCPT
+        id S234504AbhJLII7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234439AbhJLIIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:08:55 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id EA98420189;
-        Tue, 12 Oct 2021 08:06:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634026010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C2AhIPiypQlFYvBRtPJow7c46TmArxAHhVqeRJSr764=;
-        b=1OFzVo4xbpngDBGGbdpcrG7ua6UsKiGufqo4Ddk5DSJZvBiRwM5T7iz/C0ZJrDVT2lIANn
-        zP3kvI4ixcpGPNP37WsyDkp+zplH9NN6J4z82xe52o7iYG/JkJWgJwyehNYCJ1Cg8K9gee
-        DCXMw8DHcyG7fgL3YzksVD1lW38xYP0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634026010;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C2AhIPiypQlFYvBRtPJow7c46TmArxAHhVqeRJSr764=;
-        b=sHMnCTRTT6CjObMoSlWKSEYUUa54Rtct18vBKUjBQtqOZATUosZKpWcjQs3ebE+MSg5WB1
-        lkYqbC/wCzmAROCQ==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id AF254A3B84;
-        Tue, 12 Oct 2021 08:06:50 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 87DBB1E1409; Tue, 12 Oct 2021 10:06:49 +0200 (CEST)
-Date:   Tue, 12 Oct 2021 10:06:49 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
-        jannh@google.com, torvalds@linux-foundation.org, vbabka@suse.cz,
-        peterx@redhat.com, aarcange@redhat.com, david@redhat.com,
-        jgg@ziepe.ca, ktkhai@virtuozzo.com, shli@fb.com, namit@vmware.com,
-        hch@lst.de, oleg@redhat.com, kirill@shutemov.name, jack@suse.cz,
-        willy@infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH 1/1] gup: document and work around "COW can break either
- way" issue
-Message-ID: <20211012080649.GE9697@quack2.suse.cz>
-References: <20211012015244.693594-1-surenb@google.com>
+        Tue, 12 Oct 2021 04:08:54 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B20C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:06:53 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id ls18so15101204pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:06:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Cir0rNkMhBrCvZqc6YS64//eAxtQvaY9T10QcgTExTA=;
+        b=UcBpiHosAoMMuSNxNbXVuat+Guqvjyv/o5VeyNEq6ME1KnrhvN5ZwgsojaSTz14DCu
+         9N5ENIXLbn66cVSMf6+E5MFvZtPVelull78aQu5EEngH4NLLnneQ4bT8Lty5kEYb7FUK
+         CguyiT+5Lkqotao4LE3wL/tPTbdPqk04xHdehongA/XPyzK89rRTk8Uvz0JJuUvJIF40
+         m2QZQaluzJiO9L6ZnifRWZIDuZ8K03gYpNvXGSnWqqO26wBGeEHztsgzhfAQV0gRShX4
+         L/JMxKngwHgB+k+oS+Tt56zpkB5Ln5AD/mZhcXk58eIvfI7nEiDeHdr2ZxKlZ2H1TsSk
+         rodw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Cir0rNkMhBrCvZqc6YS64//eAxtQvaY9T10QcgTExTA=;
+        b=quU6GLCC//RV0uxzZdMj87+GJc3VwO1iTeevQVEDAdIONUjO0BmkEXRTXW5PxKfi+e
+         1LZrhkI8qNC9U7i7RPrcz8NHVEQ0yH4cP6obM1x/uoO8xzDqBMmbXddz0wjF9lmAvYjq
+         W869bF7R0FA8Z/igP4qpcRauI7OO469qnDvONF9Y2XGvjHsLX7kWoy8hAFx+VvlOHqCe
+         mCxiCuuh09o2YX9OHLixaM7kpr5godYLTAAx0cbtBL7LONgaWQEXS4lAy+1yIDJEk9Bi
+         DoIBbJdBalmVwmrNAErXjyjItIelc/M+n8SHvrQJ5OFZ1zGxA6l+EaOsp4r/B/Od/ZG6
+         y6tw==
+X-Gm-Message-State: AOAM532sOMdJ1KCeYKqPNo7c6V7SHo3PtjwJRSFRoSllEshFzWOHSJ40
+        djIVokmI9bjD1rwa230UvEUdYK/GvLz5wA==
+X-Google-Smtp-Source: ABdhPJwyEHF+YqOFFfelwebP2Tm11qFO00Rgi7Gv/JT9RPNuEzSLDWgFK5xcnkdQHcUiWvkqkAWkAg==
+X-Received: by 2002:a17:90b:3588:: with SMTP id mm8mr4356227pjb.238.1634026012656;
+        Tue, 12 Oct 2021 01:06:52 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.111])
+        by smtp.gmail.com with ESMTPSA id u4sm10388598pfh.147.2021.10.12.01.06.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 01:06:52 -0700 (PDT)
+Subject: Re: [PATCH] Clocksource: Avoid misjudgment of clocksource
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     yanghui <yanghui.def@bytedance.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+References: <20211008080305.13401-1-yanghui.def@bytedance.com>
+ <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com>
+ <c70a418d-4748-6876-ac8a-c9d1b7e94e78@gmail.com>
+ <CALAqxLVgQ6QEThWaN65nOW9F_XCh7885n9RigAQDU+OgDntS5g@mail.gmail.com>
+ <6b715fb7-9850-04f3-4ab8-1a2a8a2cdfbf@gmail.com>
+ <CALAqxLWgw8tA1Lrg27JUUFrGWCQqPQXmhjHyjsTRA5a4qingkg@mail.gmail.com>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <95c1a031-6751-f90f-d003-b74fbec0e9d8@gmail.com>
+Date:   Tue, 12 Oct 2021 16:06:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012015244.693594-1-surenb@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CALAqxLWgw8tA1Lrg27JUUFrGWCQqPQXmhjHyjsTRA5a4qingkg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11-10-21 18:52:44, Suren Baghdasaryan wrote:
-> From: Linus Torvalds <torvalds@linux-foundation.org>
-> 
-> From: Linus Torvalds <torvalds@linux-foundation.org>
-> 
-> commit 17839856fd588f4ab6b789f482ed3ffd7c403e1f upstream.
-> 
-> Doing a "get_user_pages()" on a copy-on-write page for reading can be
-> ambiguous: the page can be COW'ed at any time afterwards, and the
-> direction of a COW event isn't defined.
-> 
-> Yes, whoever writes to it will generally do the COW, but if the thread
-> that did the get_user_pages() unmapped the page before the write (and
-> that could happen due to memory pressure in addition to any outright
-> action), the writer could also just take over the old page instead.
-> 
-> End result: the get_user_pages() call might result in a page pointer
-> that is no longer associated with the original VM, and is associated
-> with - and controlled by - another VM having taken it over instead.
-> 
-> So when doing a get_user_pages() on a COW mapping, the only really safe
-> thing to do would be to break the COW when getting the page, even when
-> only getting it for reading.
-> 
-> At the same time, some users simply don't even care.
-> 
-> For example, the perf code wants to look up the page not because it
-> cares about the page, but because the code simply wants to look up the
-> physical address of the access for informational purposes, and doesn't
-> really care about races when a page might be unmapped and remapped
-> elsewhere.
-> 
-> This adds logic to force a COW event by setting FOLL_WRITE on any
-> copy-on-write mapping when FOLL_GET (or FOLL_PIN) is used to get a page
-> pointer as a result.
-> 
-> The current semantics end up being:
-> 
->  - __get_user_pages_fast(): no change. If you don't ask for a write,
->    you won't break COW. You'd better know what you're doing.
-> 
->  - get_user_pages_fast(): the fast-case "look it up in the page tables
->    without anything getting mmap_sem" now refuses to follow a read-only
->    page, since it might need COW breaking.  Which happens in the slow
->    path - the fast path doesn't know if the memory might be COW or not.
-> 
->  - get_user_pages() (including the slow-path fallback for gup_fast()):
->    for a COW mapping, turn on FOLL_WRITE for FOLL_GET/FOLL_PIN, with
->    very similar semantics to FOLL_FORCE.
-> 
-> If it turns out that we want finer granularity (ie "only break COW when
-> it might actually matter" - things like the zero page are special and
-> don't need to be broken) we might need to push these semantics deeper
-> into the lookup fault path.  So if people care enough, it's possible
-> that we might end up adding a new internal FOLL_BREAK_COW flag to go
-> with the internal FOLL_COW flag we already have for tracking "I had a
-> COW".
-> 
-> Alternatively, if it turns out that different callers might want to
-> explicitly control the forced COW break behavior, we might even want to
-> make such a flag visible to the users of get_user_pages() instead of
-> using the above default semantics.
-> 
-> But for now, this is mostly commentary on the issue (this commit message
-> being a lot bigger than the patch, and that patch in turn is almost all
-> comments), with that minimal "enable COW breaking early" logic using the
-> existing FOLL_WRITE behavior.
-> 
-> [ It might be worth noting that we've always had this ambiguity, and it
->   could arguably be seen as a user-space issue.
-> 
->   You only get private COW mappings that could break either way in
->   situations where user space is doing cooperative things (ie fork()
->   before an execve() etc), but it _is_ surprising and very subtle, and
->   fork() is supposed to give you independent address spaces.
-> 
->   So let's treat this as a kernel issue and make the semantics of
->   get_user_pages() easier to understand. Note that obviously a true
->   shared mapping will still get a page that can change under us, so this
->   does _not_ mean that get_user_pages() somehow returns any "stable"
->   page ]
-> 
-> [surenb: backport notes
->         Since gup_pgd_range does not exist, made appropriate changes on
->         the the gup_huge_pgd, gup_huge_pd and gup_pud_range calls instead.
-> 	Replaced (gup_flags | FOLL_WRITE) with write=1 in gup_huge_pgd,
->         gup_huge_pd and gup_pud_range.
-> 	Removed FOLL_PIN usage in should_force_cow_break since it's missing in
-> 	the earlier kernels.]
 
-I'd be really careful with backporting this to stable. There was a lot of
-userspace breakage caused by this change if I remember right which needed
-to be fixed up later. There is a nice summary at
-https://lwn.net/Articles/849638/ and https://lwn.net/Articles/849876/ and
-some problems are still being found...
 
-								Honza
+John Stultz wrote on 2021/10/12 13:29:
+> On Mon, Oct 11, 2021 at 10:23 PM brookxu <brookxu.cn@gmail.com> wrote:
+>> John Stultz wrote on 2021/10/12 12:52 下午:
+>>> On Sat, Oct 9, 2021 at 7:04 AM brookxu <brookxu.cn@gmail.com> wrote:
+>>>>
+>>>> hello
+>>>>
+>>>> John Stultz wrote on 2021/10/9 7:45:
+>>>>> On Fri, Oct 8, 2021 at 1:03 AM yanghui <yanghui.def@bytedance.com> wrote:
+>>>>>>
+>>>>>> clocksource_watchdog is executed every WATCHDOG_INTERVAL(0.5s) by
+>>>>>> Timer. But sometimes system is very busy and the Timer cannot be
+>>>>>> executed in 0.5sec. For example,if clocksource_watchdog be executed
+>>>>>> after 10sec, the calculated value of abs(cs_nsec - wd_nsec) will
+>>>>>> be enlarged. Then the current clocksource will be misjudged as
+>>>>>> unstable. So we add conditions to prevent the clocksource from
+>>>>>> being misjudged.
+>>>>>>
+>>>>>> Signed-off-by: yanghui <yanghui.def@bytedance.com>
+>>>>>> ---
+>>>>>>  kernel/time/clocksource.c | 6 +++++-
+>>>>>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+>>>>>> index b8a14d2fb5ba..d535beadcbc8 100644
+>>>>>> --- a/kernel/time/clocksource.c
+>>>>>> +++ b/kernel/time/clocksource.c
+>>>>>> @@ -136,8 +136,10 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
+>>>>>>
+>>>>>>  /*
+>>>>>>   * Interval: 0.5sec.
+>>>>>> + * MaxInterval: 1s.
+>>>>>>   */
+>>>>>>  #define WATCHDOG_INTERVAL (HZ >> 1)
+>>>>>> +#define WATCHDOG_MAX_INTERVAL_NS (NSEC_PER_SEC)
+>>>>>>
+>>>>>>  static void clocksource_watchdog_work(struct work_struct *work)
+>>>>>>  {
+>>>>>> @@ -404,7 +406,9 @@ static void clocksource_watchdog(struct timer_list *unused)
+>>>>>>
+>>>>>>                 /* Check the deviation from the watchdog clocksource. */
+>>>>>>                 md = cs->uncertainty_margin + watchdog->uncertainty_margin;
+>>>>>> -               if (abs(cs_nsec - wd_nsec) > md) {
+>>>>>> +               if ((abs(cs_nsec - wd_nsec) > md) &&
+>>>>>> +                       cs_nsec < WATCHDOG_MAX_INTERVAL_NS &&
+>>>>>
+>>>>> Sorry, it's been awhile since I looked at this code, but why are you
+>>>>> bounding the clocksource delta here?
+>>>>> It seems like if the clocksource being watched was very wrong (with a
+>>>>> delta larger than the MAX_INTERVAL_NS), we'd want to throw it out.
+>>>>>
+>>>>>> +                       wd_nsec < WATCHDOG_MAX_INTERVAL_NS) {
+>>>>>
+>>>>> Bounding the watchdog interval on the check does seem reasonable.
+>>>>> Though one may want to keep track that if we are seeing too many of
+>>>>> these delayed watchdog checks we provide some feedback via dmesg.
+>>>>
+>>>> For some fast timeout timers, such as acpi-timer, checking wd_nsec should not
+>>>> make much sense, because when wacthdog is called, the timer may overflow many
+>>>> times.
+>>>
+>>> Indeed. But in that case we can't tell which way is up. This is what I
+>>> was fretting about when I said:
+>>>> So I do worry these watchdog robustness fixes are papering over a
+>>>> problem, pushing expectations closer to the edge of how far the system
+>>>> should tolerate bad behavior. Because at some point we'll fall off. :)
+>>>
+>>> If the timer is delayed long enough for the watchdog to wrap, we're
+>>> way out of tolerable behavior. There's not much we can do because we
+>>> can't even tell what happened.
+>>>
+>>> But in the case where the watchdog has not wrapped, I don't see a
+>>> major issue with trying to be a bit more robust in the face of just
+>>> slightly delayed timers.
+>>> (And yes, we can't really distinguish between slightly delayed and
+>>> watchdog-wrap-interval + slight delay, but in either case we can
+>>> probably skip disqualifying the clocksource as we know something seems
+>>> off)
+>>
+>> If we record the watchdog's start_time in clocksource_start_watchdog(), and then
+>> when we verify cycles in clocksource_watchdog(), check whether the clocksource
+>> watchdog is blocked. Due to MSB verification, if the blocked time is greater than
+>> half of the watchdog timer max_cycles, then we can safely ignore the current
+>> verification? Do you think this idea is okay?
+> 
+> I can't say I totally understand the idea. Maybe could you clarify with a patch?
+>
 
+Sorry, it looks almost as follows:
+
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index b8a14d2..87f3b67 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -119,6 +119,7 @@
+ static DECLARE_WORK(watchdog_work, clocksource_watchdog_work);
+ static DEFINE_SPINLOCK(watchdog_lock);
+ static int watchdog_running;
++static unsigned long watchdog_start_time;
+ static atomic_t watchdog_reset_pending;
+ 
+ static inline void clocksource_watchdog_lock(unsigned long *flags)
+@@ -356,6 +357,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 	int next_cpu, reset_pending;
+ 	int64_t wd_nsec, cs_nsec;
+ 	struct clocksource *cs;
++	unsigned long max_jiffies;
+ 	u32 md;
+ 
+ 	spin_lock(&watchdog_lock);
+@@ -402,6 +404,10 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 		if (atomic_read(&watchdog_reset_pending))
+ 			continue;
+ 
++		max_jiffies = nsecs_to_jiffies(cs->max_idle_ns);
++		if (time_is_before_jiffies(watchdog_start_time + max_jiffies))
++			continue;
++
+ 		/* Check the deviation from the watchdog clocksource. */
+ 		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
+ 		if (abs(cs_nsec - wd_nsec) > md) {
+@@ -474,6 +480,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 	 * pair clocksource_stop_watchdog() clocksource_start_watchdog().
+ 	 */
+ 	if (!timer_pending(&watchdog_timer)) {
++		watchdog_start_time = jiffies;
+ 		watchdog_timer.expires += WATCHDOG_INTERVAL;
+ 		add_timer_on(&watchdog_timer, next_cpu);
+ 	}
+@@ -488,6 +495,7 @@ static inline void clocksource_start_watchdog(void)
+ 	timer_setup(&watchdog_timer, clocksource_watchdog, 0);
+ 	watchdog_timer.expires = jiffies + WATCHDOG_INTERVAL;
+ 	add_timer_on(&watchdog_timer, cpumask_first(cpu_online_mask));
++	watchdog_start_time = jiffies;
+ 	watchdog_running = 1;
+ }
+
+
+> thanks
+> -john
 > 
-> Reported-by: Jann Horn <jannh@google.com>
-> Tested-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Oleg Nesterov <oleg@redhat.com>
-> Acked-by: Kirill Shutemov <kirill@shutemov.name>
-> Acked-by: Jan Kara <jack@suse.cz>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> [surenb: backport to 4.4 kernel]
-> Cc: stable@vger.kernel.org # 4.4.x
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
->  mm/gup.c         | 48 ++++++++++++++++++++++++++++++++++++++++--------
->  mm/huge_memory.c |  7 +++----
->  2 files changed, 43 insertions(+), 12 deletions(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 4c5857889e9d..c80cdc408228 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -59,13 +59,22 @@ static int follow_pfn_pte(struct vm_area_struct *vma, unsigned long address,
->  }
->  
->  /*
-> - * FOLL_FORCE can write to even unwritable pte's, but only
-> - * after we've gone through a COW cycle and they are dirty.
-> + * FOLL_FORCE or a forced COW break can write even to unwritable pte's,
-> + * but only after we've gone through a COW cycle and they are dirty.
->   */
->  static inline bool can_follow_write_pte(pte_t pte, unsigned int flags)
->  {
-> -	return pte_write(pte) ||
-> -		((flags & FOLL_FORCE) && (flags & FOLL_COW) && pte_dirty(pte));
-> +	return pte_write(pte) || ((flags & FOLL_COW) && pte_dirty(pte));
-> +}
-> +
-> +/*
-> + * A (separate) COW fault might break the page the other way and
-> + * get_user_pages() would return the page from what is now the wrong
-> + * VM. So we need to force a COW break at GUP time even for reads.
-> + */
-> +static inline bool should_force_cow_break(struct vm_area_struct *vma, unsigned int flags)
-> +{
-> +	return is_cow_mapping(vma->vm_flags) && (flags & FOLL_GET);
->  }
->  
->  static struct page *follow_page_pte(struct vm_area_struct *vma,
-> @@ -509,12 +518,18 @@ long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
->  			if (!vma || check_vma_flags(vma, gup_flags))
->  				return i ? : -EFAULT;
->  			if (is_vm_hugetlb_page(vma)) {
-> +				if (should_force_cow_break(vma, foll_flags))
-> +					foll_flags |= FOLL_WRITE;
->  				i = follow_hugetlb_page(mm, vma, pages, vmas,
->  						&start, &nr_pages, i,
-> -						gup_flags);
-> +						foll_flags);
->  				continue;
->  			}
->  		}
-> +
-> +		if (should_force_cow_break(vma, foll_flags))
-> +			foll_flags |= FOLL_WRITE;
-> +
->  retry:
->  		/*
->  		 * If we have a pending SIGKILL, don't keep faulting pages and
-> @@ -1346,6 +1361,10 @@ static int gup_pud_range(pgd_t pgd, unsigned long addr, unsigned long end,
->  /*
->   * Like get_user_pages_fast() except it's IRQ-safe in that it won't fall back to
->   * the regular GUP. It will only return non-negative values.
-> + *
-> + * Careful, careful! COW breaking can go either way, so a non-write
-> + * access can get ambiguous page results. If you call this function without
-> + * 'write' set, you'd better be sure that you're ok with that ambiguity.
->   */
->  int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
->  			  struct page **pages)
-> @@ -1375,6 +1394,12 @@ int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
->  	 *
->  	 * We do not adopt an rcu_read_lock(.) here as we also want to
->  	 * block IPIs that come from THPs splitting.
-> +	 *
-> +	 * NOTE! We allow read-only gup_fast() here, but you'd better be
-> +	 * careful about possible COW pages. You'll get _a_ COW page, but
-> +	 * not necessarily the one you intended to get depending on what
-> +	 * COW event happens after this. COW may break the page copy in a
-> +	 * random direction.
->  	 */
->  
->  	local_irq_save(flags);
-> @@ -1385,15 +1410,22 @@ int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
->  		next = pgd_addr_end(addr, end);
->  		if (pgd_none(pgd))
->  			break;
-> +		/*
-> +		 * The FAST_GUP case requires FOLL_WRITE even for pure reads,
-> +		 * because get_user_pages() may need to cause an early COW in
-> +		 * order to avoid confusing the normal COW routines. So only
-> +		 * targets that are already writable are safe to do by just
-> +		 * looking at the page tables.
-> +		 */
->  		if (unlikely(pgd_huge(pgd))) {
-> -			if (!gup_huge_pgd(pgd, pgdp, addr, next, write,
-> +			if (!gup_huge_pgd(pgd, pgdp, addr, next, 1,
->  					  pages, &nr))
->  				break;
->  		} else if (unlikely(is_hugepd(__hugepd(pgd_val(pgd))))) {
->  			if (!gup_huge_pd(__hugepd(pgd_val(pgd)), addr,
-> -					 PGDIR_SHIFT, next, write, pages, &nr))
-> +					 PGDIR_SHIFT, next, 1, pages, &nr))
->  				break;
-> -		} else if (!gup_pud_range(pgd, addr, next, write, pages, &nr))
-> +		} else if (!gup_pud_range(pgd, addr, next, 1, pages, &nr))
->  			break;
->  	} while (pgdp++, addr = next, addr != end);
->  	local_irq_restore(flags);
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 6404e4fcb4ed..fae45c56e2ee 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -1268,13 +1268,12 @@ out_unlock:
->  }
->  
->  /*
-> - * FOLL_FORCE can write to even unwritable pmd's, but only
-> - * after we've gone through a COW cycle and they are dirty.
-> + * FOLL_FORCE or a forced COW break can write even to unwritable pmd's,
-> + * but only after we've gone through a COW cycle and they are dirty.
->   */
->  static inline bool can_follow_write_pmd(pmd_t pmd, unsigned int flags)
->  {
-> -	return pmd_write(pmd) ||
-> -	       ((flags & FOLL_FORCE) && (flags & FOLL_COW) && pmd_dirty(pmd));
-> +	return pmd_write(pmd) || ((flags & FOLL_COW) && pmd_dirty(pmd));
->  }
->  
->  struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
-> -- 
-> 2.33.0.882.g93a45727a2-goog
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
