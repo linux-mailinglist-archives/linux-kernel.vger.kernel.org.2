@@ -2,72 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF0D42A968
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69C142A96C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhJLQax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 12:30:53 -0400
-Received: from mail-pl1-f174.google.com ([209.85.214.174]:42866 "EHLO
-        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhJLQaw (ORCPT
+        id S231156AbhJLQbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 12:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhJLQba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 12:30:52 -0400
-Received: by mail-pl1-f174.google.com with SMTP id l6so13853069plh.9;
-        Tue, 12 Oct 2021 09:28:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        Tue, 12 Oct 2021 12:31:30 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A3EC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:29:28 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id v17so68574495wrv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:29:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=6wind.com; s=google;
+        h=reply-to:subject:to:cc:references:from:organization:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=lqr0Xjwo4bt3FrFTL/PXm4WKYr4cNF7lZlXpOFURPfQ=;
-        b=SjJGQP6U6oLLtzpWYa39+eIyV/ufxLuk60KmSL3tNqrNmmJ8T7IGinTHuTa9Gybf2h
-         K2MWmvZRv50yyRntsu8PJ4uJtcHMfuw+m9YSTaqd9071skdn+jPT4IA+c6A5pEV+/6xw
-         cZPk3gsrNMMuAJT5stit8AztCFtMAmr/5mG7cLci89wkkVJFVD4XBVnXKhsOEn7hdhjz
-         ZmeBTrlu/wcXxE7dyhzTp9NLZIIHi4VAuA7z2UFqgJhLrt4EY2zfFXGX5j0wagArblyc
-         nxaJavVfir0069ZZK74MXqKbAJ2gG5IYDByuwYWiauX7wUpfU4rLQygjXRqkoYLHFarI
-         KvAQ==
-X-Gm-Message-State: AOAM530QpWi4BwCYFrdZ2pxDv3AogGqO/Cx1ZgXnxpg0qpmFjgnaCFAy
-        fhJlelhuvP/jaZGvAMCVL61NH+/QoeQ=
-X-Google-Smtp-Source: ABdhPJzIvz2dXTPPZrJJPf3E236of698Im62a+c0zIOAN9z2BtB6E2tsUs4RK05DMhyFmQX5M4kIjA==
-X-Received: by 2002:a17:90a:b391:: with SMTP id e17mr7186659pjr.137.1634056129580;
-        Tue, 12 Oct 2021 09:28:49 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:8c1a:acb2:4eff:5d13])
-        by smtp.gmail.com with ESMTPSA id j6sm6268139pfb.175.2021.10.12.09.28.48
+        bh=WoI+RIYPtTHHEGdSwuorNq+48h1lI38S5XMbUzci1do=;
+        b=IXnGkACIv8ATP6Rg+2IOmXepCL9y3vwvei56jej9pA2dn5ZGDyaixPeJaPEI3uby1y
+         Hr9e0UN5sFQlev6+W+k7RzkQNF1NZeX3p8ox3nucq6xMUHyOIkiWkCUpj2QGe/r9evuE
+         0+9pce8I5+0Da9ZDGxt/eAGDFuRmXasghtIlP/gDlRyfsh4EZP0K9uH+Qme+YarXosb5
+         5zT3IzvsQl62fzHEfSIBDXFRrezqj/75a6nuZ3KbS1egtb8NU9Wzc4noOWPXO8ZveJ3Z
+         4cHRUBorP1aqAr166LpyNMvn2pfPUk70LqYkfxJ4Nlxeu38PE8MIQIBdlilyvzYWAKHo
+         iA8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=WoI+RIYPtTHHEGdSwuorNq+48h1lI38S5XMbUzci1do=;
+        b=1GCyuQl8tdlAgc+//ep9scKg1jLA87P2yjoQzgI8zTOqaQsAEyDhHG7CIslx8exIhI
+         o9D4/ZAC+ZDGfLj50SD8vO262uIkHWFEX9ONx/r/W0OPmr/OiEEGPaU0ELkjQ6df/lL5
+         tGiri3A5ehut6janjIfFedNZV3a+LKwcQvazrWlP2qY5ZJorFzSKRHylTyv5Bh3nOrc7
+         0EAt7fPqoffsyeyj+MgokRMxg7pU2eGWEj4K/ULnh2m3jOTCVQ7lPFeci/XE+XpCsEAm
+         zMnCxGSWnDczi58ZEM0TcZuLcetbl2a6FtZ/bl92iOx2BSlln/Jv4DINeh1i2aBWi71B
+         3/yA==
+X-Gm-Message-State: AOAM530oQzRr2Mj1iJ6rFpgolMIqcj2Hj/yM1izbOcQp0q7PaIoZ9701
+        zGGn1AoCAbFtQqiyAZOZJshVNQ==
+X-Google-Smtp-Source: ABdhPJyOvOpRNu4YETAcMkAxjvEJmxG7khGK/O+O0wVECw82ef9aelrGdQva2GQHQ48aAFfflyUy1Q==
+X-Received: by 2002:adf:bc14:: with SMTP id s20mr33111077wrg.8.1634056167015;
+        Tue, 12 Oct 2021 09:29:27 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:410:bb00:5564:458a:9373:f0e4? ([2a01:e0a:410:bb00:5564:458a:9373:f0e4])
+        by smtp.gmail.com with ESMTPSA id p19sm2886484wmg.29.2021.10.12.09.29.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 09:28:49 -0700 (PDT)
-Subject: Re: [PATCH] scsi: sd: print write through due to no caching mode page
- as warning
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     dgilbert@interlog.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210122083000.32598-1-martin.kepplinger@puri.sm>
- <2d3b0e8f422b7ff08a5c4ce804a1884eaf9b5d60.camel@puri.sm>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <87cad616-2075-b52e-cb8c-2f7180bbb1ee@acm.org>
-Date:   Tue, 12 Oct 2021 09:28:47 -0700
+        Tue, 12 Oct 2021 09:29:26 -0700 (PDT)
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [PATCH v2 4/4] bpf: export bpf_jit_current
+To:     Lorenz Bauer <lmb@cloudflare.com>, luke.r.nels@gmail.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     kernel-team@cloudflare.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20211012135935.37054-1-lmb@cloudflare.com>
+ <20211012135935.37054-5-lmb@cloudflare.com>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+Message-ID: <836d9371-7d51-b01f-eefd-cc3bf6f5f68e@6wind.com>
+Date:   Tue, 12 Oct 2021 18:29:25 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <2d3b0e8f422b7ff08a5c4ce804a1884eaf9b5d60.camel@puri.sm>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20211012135935.37054-5-lmb@cloudflare.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 8:18 AM, Martin Kepplinger wrote:
-> does this "consmetic" change have any chance of being acceptible? At
-> least it'd be nice if messages sent as error are real errors that needs
-> fixing.
+Le 12/10/2021 à 15:59, Lorenz Bauer a écrit :
+> Expose bpf_jit_current as a read only value via sysctl.
+> 
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
 
-Hi Martin,
+[snip]
 
-It seems like I overlooked that patch. Since this patch was posted ten 
-months ago, it is likely that it has disappeared from the mailboxes of 
-the people who are interested in this patch. Please repost this patch.
+> +	{
+> +		.procname	= "bpf_jit_current",
+> +		.data		= &bpf_jit_current,
+> +		.maxlen		= sizeof(long),
+> +		.mode		= 0400,
+Why not 0444 ?
 
-Thanks,
 
-Bart.
+Regards,
+Nicolas
