@@ -2,175 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D9E42ADD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E135C42ADFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234738AbhJLUcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234611AbhJLUcY (ORCPT
+        id S233308AbhJLUic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:38:32 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:8178 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234916AbhJLUiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:32:24 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FCCC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:30:22 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id v2so412675qve.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:30:22 -0700 (PDT)
+        Tue, 12 Oct 2021 16:38:17 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19CKHGOg030657;
+        Tue, 12 Oct 2021 20:35:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=3cHIKIlIUhFzPtnQr2hdWSpw5GUpsHeJhyuTC8qWonM=;
+ b=qele6jvGapVPKahD90yTOeMY3GWkBhowV2o7ZlWP43nlYegCGeC+wbn8V5GgzEgAM6Ur
+ pko0KXqkEstetk6C9KEhIre7m2Fc0asO3mG0+p3OyjGdYhfwk+qcovCG/gnxDfKqw4eB
+ A204+dCRNNP3NHKmTmWzGEonDAlwUMYFejN8Qu/HrANEq1IOGZkkTyp+U+R7htYaS9xw
+ a229F0b0VYGN/j4jcNq8rSDev3hN1EJI7wHnKiokOwnO+RLTM1gAitx8zr6pTq11jGgf
+ X8aBIwqkRB/BBMC+irrX6PzTaPA6seYcg2RorT9GqTTwnSxoMgRmf8vLhBZWXGeOo27N HQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bmq3bjfqu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 20:35:30 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19CKYjUD033850;
+        Tue, 12 Oct 2021 20:35:29 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
+        by aserp3020.oracle.com with ESMTP id 3bmadyndfa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Oct 2021 20:35:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aT/lzWwB5Ddnvtz9dOmPFFjetmHuYgVqWKws05eitoeaHCWh7oNNMM0kYHobQwNtmJ8pA0RYL8qcU8Y3QeUeAXmZtLuSIdQvLqn1OijlnUkx+i8TldZvhtgzvPPp+Uovx5iyvybfSVmOfUW4hxhSxM0D18HNDxZpE2ozpz7WGBn8YpTyPJNAYkUkuFMiLdR1erXzoX4jqlMinD/kjzRXlLQ49/B60VLyMiG+NpaXPJbKAn/zuLrrBE7iweRg7jhJP+KOnXdgFFYANbQXLWMVIlZm+4Vx7cL1e5t9QrhXlj47JajECBa5o2gZijnL2BV2Ll3kiWmArQ54DrM0jwRu4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3cHIKIlIUhFzPtnQr2hdWSpw5GUpsHeJhyuTC8qWonM=;
+ b=h45Tlc5NFaa1czLNn5A72fCL+wxR9AigT6+lgow4h8OsXrpDxeOKsRhK4VapVloyoqaxftmA9rIn8kn4s8SkTkYvVCIy2aVtu1dqb86Os7Yt3jhgzqhWTEOWf62sld8yD32lL4WsrZU7nqGAQPwkK2QW8YHtv0bSzzU9QV97jq+5lYFNVU+ga2Nqxi9m/5kI73t2f71ZJ2Ebkn8KILBo4rURSyXLTCcXm5hXmrEoyeOIWjU1vbQ3J0j6dF9AsYPE0AlaRSf7oXmdQHl3mf+74dIhS5fjwPwrDR4nG1EKo0jvHeMvOUvDdV0nbMyOfJLE/zteLxRnPsGKkDendJbGjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4GGg6YDFTFLvfSMfk2LZM8RdDFIaln1wMqw8oaDtqH0=;
-        b=hNZgve4nfR/ktStdvmJ6sLJWUwUq36MrsEVqNlZKX0dwKLeUTDFKu4eRUdwJYcr8Cp
-         X6logeGBS268aH1SnFYGh6rVHi1YJLJ46JtrC14GFV6BbSFVPk4PGhsG5+p2wIzgwJYz
-         A+WkTqpWVKef8hANRXErpe9o2JSE5/o+aYXIYqtSYoyLIspNFq2+odUg5AFuHkWpZDcv
-         mfdPN0tFwmaDXlp2bwWoJa4Zq8DBGQLztqG4mlQODEP+6Giyce04JLUa9WG4xNxydaTC
-         PnNmWri8Zl/VFcra7SLHzpexF3Dwi8be0Oxtrf+o0TD1plKuaRfCLrTw0gMfNtDrb1X/
-         gW1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4GGg6YDFTFLvfSMfk2LZM8RdDFIaln1wMqw8oaDtqH0=;
-        b=ikcNsu4hl+fLlKU2cItaloRQA/lU98R9RQql8SjyE8fjzHHM1ikLfBd4IpOQgCpjZ/
-         cGZXh/zvp9ShG6yzi7AU0BgzPUYTM2i4vgaLqrtAjdMpI6QGASU1B+Es70a2t/PVI900
-         wkDVfUNzpf+QqHt8S6jEi2++wq8dhVT+By7TPeK0DVJq8EdaSy+XK7jhH8jqzPj98GA2
-         oUlzkEdHsTenE6VxM+cfjU+rzMtrebA+yqcjsE7gGfCY/A+QQSlfSW+lOHq4erQ0Vu08
-         6oQon6UMBnvhtfn1VEQ+nIzC6AEIpuAefvRq6Uqj+q9AWlL+zl1fQ9WssD/Lb7q8ytFw
-         t94A==
-X-Gm-Message-State: AOAM532TeQi4KDESpRxMxkWzICEJJVx9yenkYBrMgmO3px8Em7T1Snbc
-        AZvzDVv57NWzbOA0jhwgyvES63PuYDwHag==
-X-Google-Smtp-Source: ABdhPJyV2lDPfCvp+7pjPuF37tNMrECpOnmB3AI6jaSTSf2ekiJvsj1OL7GqFeobXSywhFk8k38nuA==
-X-Received: by 2002:a0c:aa51:: with SMTP id e17mr32482978qvb.50.1634070621280;
-        Tue, 12 Oct 2021 13:30:21 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id p7sm5022319qkg.77.2021.10.12.13.30.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 13:30:21 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 16:30:20 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, Kent Overstreet <kent.overstreet@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 00/11] PageSlab: eliminate unnecessary compound_head()
- calls
-Message-ID: <YWXwXINogE0Qb0Ip@cmpxchg.org>
-References: <20211012180148.1669685-1-hannes@cmpxchg.org>
- <YWXgrhRDIxcoBhA1@casper.infradead.org>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3cHIKIlIUhFzPtnQr2hdWSpw5GUpsHeJhyuTC8qWonM=;
+ b=rdJGp1Jcllsi6qHZm9zbRVOIWYQiXI+PBaVvZ4too09GOHajzktvoX+Z/Nz+FeH8we1/Q6NWMQSSIhnYky+jKESlms4qZV1e0p4Pb5yH2XsunNyO913+Gxu7dEhlSdlL6qRAlzzelsxRNpO5uzH4M+Gi13boHicdm1VikWyyBDk=
+Authentication-Results: linux.vnet.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.vnet.ibm.com; dmarc=none action=none
+ header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4486.namprd10.prod.outlook.com (2603:10b6:510:42::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Tue, 12 Oct
+ 2021 20:35:27 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::a457:48f2:991f:c349]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::a457:48f2:991f:c349%9]) with mapi id 15.20.4587.026; Tue, 12 Oct 2021
+ 20:35:27 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     jejb@linux.vnet.ibm.com, Don Brace <don.brace@microchip.com>,
+        hch@infradead.org, linux-scsi@vger.kernel.org
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        gerry.morong@microchip.com, linux-kernel@vger.kernel.org,
+        balsundar.p@microchip.com, mwilck@suse.com,
+        Kevin.Barnett@microchip.com, POSWALD@suse.com,
+        mike.mcgowen@microchip.com, jeff@canonical.com,
+        scott.teel@microchip.com, murthy.bhat@microchip.com,
+        joseph.szczypek@hpe.com, scott.benesh@microchip.com,
+        mahesh.rajashekhara@microchip.com, Justin.Lindley@microchip.com,
+        pmenzel@molgen.mpg.de, john.p.donnelly@oracle.com
+Subject: Re: [smartpqi updates PATCH V2 00/11] smartpqi updates
+Date:   Tue, 12 Oct 2021 16:35:09 -0400
+Message-Id: <163407081305.28503.12881597564561731203.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210928235442.201875-1-don.brace@microchip.com>
+References: <20210928235442.201875-1-don.brace@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SN4PR0801CA0022.namprd08.prod.outlook.com
+ (2603:10b6:803:29::32) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWXgrhRDIxcoBhA1@casper.infradead.org>
+Received: from ca-mkp.mkp.ca.oracle.com (138.3.201.9) by SN4PR0801CA0022.namprd08.prod.outlook.com (2603:10b6:803:29::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25 via Frontend Transport; Tue, 12 Oct 2021 20:35:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6e276045-3b4b-48da-c7ce-08d98dbfd315
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4486:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB448693F2CEB1954B5D273BBA8EB69@PH0PR10MB4486.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wMPDPb1w5kpN9vQKc616j8pTiQb9K1YrIENocFpCilwpUtQZOVdoel5isaYO74eFR6qwwEEZvukVYfTYA8vlOLoWh6WfDKESY981SaV5aLc/T2cJsOhXrr0W9EMoY4pROBtwARYNBjFQ2JHvLDXhSJV43Csvucz7G5ZdG6mgngyOePxt+SFxrI3uJJFjkJFLS/baA8EzhvjDombVAY8TpRXXRrqULdikBZ4qiR09pIKKSJj7yXhuTjHMcymHA1yzh+moOVjl32T+xMPBQPqLZsM0jd/6UweUTFYXA4N/kutbC5xaAJPuuQDx2gfuUFVymRihoAVySvKaXn1c6xllQAOn0UDpno09vSMXCgxNR3wkfU3+dqSS9TMf6vqMkfZdieVRXVHqZLQKCVmc/vK7FYHW5r4oerQ1R8qLtvtcXbPlZZo3ucXt1rrdRcbc21MD3F9gzG6HS8z07vZfjigBS7bIcFJ2FGY07+0LDs8dj4DPswZlmtAskDzsfRC2kBYXNiPvlBLK/X68EohkXM20PVvbDSfR2sz/2/Lq02XADRpVVjftC8kZT6UeaCqr2BfdWVlpaf/BPLscp8k6DaTUkVxyuJe1q0Jb5x9WCnLFesHhEEOhvPpsYRX7r09NxFqF1rK2yI8Lil7YTd0C4+gGuo3195i4GEvRWpKdhmjP0R2721NdSBunmIXU+6BK2G5AW7znOSBPunZFleNUYOQmk23kVAEFjbKH/mq0neaFC6jxqVP05xfH4hzHhCr2/aN1fDNuVF2hjhTsINP4OalHN6DQHqjXcQcuNRUgFGFLcZIqpMz0uQU59vLaMMaYUOM5x6ZPk4OXri79uV8LI2n9PQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(2906002)(5660300002)(66556008)(66476007)(7696005)(52116002)(6666004)(38100700002)(15650500001)(956004)(316002)(2616005)(38350700002)(103116003)(186003)(4326008)(26005)(508600001)(36756003)(966005)(8936002)(6486002)(8676002)(83380400001)(107886003)(86362001)(66946007)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NlU5Rm9hdDZaYzA4K0VGNVpsdXdueUFJYWRWV0c5S2xDanRnZTdBbnpCSEhI?=
+ =?utf-8?B?L1A1dWlXMWR1WVhmVE5VUXdjclVkT3gyaGw3cU9XTDZUaWJiSllWWlhUbzNS?=
+ =?utf-8?B?Vjd6ZjM0bHphcDRIemw4ajI0c0N6cnkyS0daaVZJaTUxa1VHSFlVN09xeWVI?=
+ =?utf-8?B?dXJ3eC9nRW0zU3ZCWmp2VWd2U3FkNkh5ZUZTOUxnRER0WnVwV0lxU2dLUkdv?=
+ =?utf-8?B?RUtXNE1pZFljOVhlcVUyOGdnNWNUOUxpQXYyNXduMU5maVRCcHRwa21ieXE0?=
+ =?utf-8?B?M2M0ZXRzUjJaKytuOXh2WC9FM045VVNPVjRuTnNlRGFlWm8vcDQwZStQV3BW?=
+ =?utf-8?B?cjEyMEFtZ2s1S20zZ3V2dit4b1lPeTU3MUtUdFhTT0wya3piV2d5aml1ZnZH?=
+ =?utf-8?B?VzhOV09MUWxyV1R6ZW44Y2FTa2ZvdEVDOXl3L1dQOWR6YUs5SWthMmVWL1k3?=
+ =?utf-8?B?RUlzQ2xzT1lYOTk0MDVWL3cyMUhQUm9EaGhMZ0lLWC96bi9YSmdGaGNucG5w?=
+ =?utf-8?B?VHhVZUJkbitPY0pVUEI4MUpZR1B6RFNjSGFReHM0dkgwN0RyRVVTeEpGSEpJ?=
+ =?utf-8?B?NUhkYlhLRTB2WUhKUVdwK29VNldxYWNGSWtNTGJkQnVxOFJVVVVLTUhQb0hE?=
+ =?utf-8?B?ZklPMGFBQktTUFFMbEFmUytSdS9XaGs2aW9Md0toZFY2c1ZLcWF3RUJ3Qng2?=
+ =?utf-8?B?bFFZUHFaNlJreXdEZVpWck51WWZYRGhRcGxXT20ydElEd2JsbGF4Kzh1Z3ZO?=
+ =?utf-8?B?alBZdVRKWGEwRmROUHVuKzlaNWVJdnJCREtRL3J4elhteFVuMU51WUZ5bTcz?=
+ =?utf-8?B?UjRzeS9WeG9weGJEcVJyQzhpSUJSVXNhcCtOSVVMSW1oTlp0ejFPeTJzVjQw?=
+ =?utf-8?B?VkozZXZYQ2lqM3FlUTVPWC9xemxveDcvU2piYXVKY1Y3SjdzSDdOZHM2NFBV?=
+ =?utf-8?B?dVBEVWVUR1BvTzhTanArNmFtZHRQbUFLZGlVcUR0K1E4UHFyMHNuRlFIbDZ4?=
+ =?utf-8?B?MHNXOTB0eG1XRm5uS1hqMlBibjlrclM2VVBMaW1kQ0gvdDFtKzlQb3diM0hJ?=
+ =?utf-8?B?VCtpRi9SRDJWNnFqTm1VcVFZUXJ1Kys5SVFEaWx5TzEyejIyMThWd3VHbC9l?=
+ =?utf-8?B?U1JGNzdiNmFHNmNKNmh4UDRiTWRMUWwzMGxrK0JDRkp6ZGdNUjhxbkZta1Yw?=
+ =?utf-8?B?SVp4Zk5MVHVQY2RwSjFQTkRsOE5SbVRPUjkyaDR6T0swRUl0eVhvTWx1REtD?=
+ =?utf-8?B?c2hxYU1hSVNvYTNXR2duVzBHNEJoTmZzcGNaM2ZVcmZjWmtHUW1ZeTFLenVx?=
+ =?utf-8?B?dXcrZExpRGlSREpIRk9OTlFPN2orNzhrOFlxZmUwT0E0aVh6dWpKaGd2ZHJE?=
+ =?utf-8?B?UjFYbmUzb2hzaHlDaWxRaXhIQTV1RW94R1I2T244V0crMmEybHhqZU9TTWdv?=
+ =?utf-8?B?elVJeFoyOW54S21qdlJTdWF6WVFvaFJFRkVEK3RyRzRQQ2U5eEdUVlpJc1hK?=
+ =?utf-8?B?cklKR2s5N0JYZ055ZWdwTVl6MmVvMEprUWw0WnNoSjBPTDhOOGZ6WDloWnJl?=
+ =?utf-8?B?NlFtTlFvcHZjaFVRT0tlZWxZVXRZSmNzZGpBbHBsU2t6VHZCUGlEODdTZVR3?=
+ =?utf-8?B?ZTZ0ZGFXRld2VkFvTlYzTEg3aTFNS2JMSGpmSlBQc0JNdURJOGhGMUp5RkJh?=
+ =?utf-8?B?TEVIZWF0eHRrVklwNWRIZy9mUm5kRUVyak0ycmFjMFJxakI2MUdyVFdlR3g5?=
+ =?utf-8?Q?D7Rs97B1IxRLAvPgEkxhsI+BF3N4lXXRAnlhxJp?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e276045-3b4b-48da-c7ce-08d98dbfd315
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2021 20:35:27.1038
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vlUKxQp1TyeeKpkf2SSLxiTeEtmTKnRcDxWstyWby3ghV7Q7UM8qR7tkiXbnfd1ls/GCcrMR/9L2/sCiNc7FfyvSeiLwEPYqViG1PFAO5BE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4486
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10135 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110120109
+X-Proofpoint-GUID: XMT_imLazJXQPU5r-uAVmDQt7uXCs-rH
+X-Proofpoint-ORIG-GUID: XMT_imLazJXQPU5r-uAVmDQt7uXCs-rH
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 08:23:26PM +0100, Matthew Wilcox wrote:
-> On Tue, Oct 12, 2021 at 02:01:37PM -0400, Johannes Weiner wrote:
-> > PageSlab() currently imposes a compound_head() call on all callsites
-> > even though only very few situations encounter tailpages. This short
-> > series bubbles tailpage resolution up to the few sites that need it,
-> > and eliminates it everywhere else.
-> > 
-> > This is a stand-alone improvement. However, it's inspired by Willy's
-> > patches to split struct slab from struct page. Those patches currently
-> > resolve a slab object pointer to its struct slab as follows:
-> > 
-> > 	slab = virt_to_slab(p);		/* tailpage resolution */
-> > 	if (slab_test_cache(slab)) {	/* slab or page alloc bypass? */
-> > 		do_slab_stuff(slab);
-> > 	} else {
-> > 		page = (struct page *)slab;
-> > 		do_page_stuff(page);
-> > 	}
-> > 
-> > which makes struct slab an ambiguous type that needs to self-identify
-> > with the slab_test_cache() test (which in turn relies on PG_slab in
-> > the flags field shared between page and slab).
-> > 
-> > It would be preferable to do:
-> > 
-> > 	page = virt_to_head_page(p);	/* tailpage resolution */
-> > 	if (PageSlab(page)) {		/* slab or page alloc bypass? */
-> > 		slab = page_slab(page);
-> > 		do_slab_stuff(slab);
-> > 	} else {
-> > 		do_page_stuff(page);
-> > 	}
-> > 
-> > and leave the ambiguity and the need to self-identify with struct
-> > page, so that struct slab is a strong and unambiguous type, and a
-> > non-NULL struct slab encountered in the wild is always a valid object
-> > without the need to check another dedicated flag for validity first.
-> > 
-> > However, because PageSlab() currently implies tailpage resolution,
-> > writing the virt->slab lookup in the preferred way would add yet more
-> > unnecessary compound_head() call to the hottest MM paths.
-> > 
-> > The page flag helpers should eventually all be weaned off of those
-> > compound_head() calls for their unnecessary overhead alone. But this
-> > one in particular is now getting in the way of writing code in the
-> > preferred manner, and bleeding page ambiguity into the new types that
-> > are supposed to eliminate specifically that. It's ripe for a cleanup.
+On Tue, 28 Sep 2021 18:54:31 -0500, Don Brace wrote:
+
+> These patches are based on Martin Petersen's 5.16/scsi-queue tree
+>   https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git
+>   5.16/scsi-queue
 > 
-> So what I had in mind was more the patch at the end (which I now realise
-> is missing the corresponding changes to __ClearPageSlab()).  There is,
-> however, some weirdness with kfence, which appears to be abusing PageSlab
-> by setting it on pages which are not slab pages???
+> This set of changes consist of:
+>   * Aligning device removal with our out of box driver.
+>   * Aligning kdump timing with controller memory dump.
+>     The OS was rebooting before the controller was finished dumping its own
+>     memory. Now the driver will wait for the controller to indicate that its
+>     dump has completed.
+>   * In rare cases where the controller stops responding to the driver, the
+>     driver can set reason codes to aid in debugging.
+>   * Enhance device reset operations. The driver was not obtaining the current
+>     number of outstanding commands during the check for outstanding command
+>     completions. This was causing reset hangs.
+>   * Add in a check for HBA devices undergoing sanitize. This was causing long
+>     boot up delays while the OS waited for sanitize to complete. The fix is to
+>     check for sanitize and keep the HBA disk offline. Note that the SSA spec
+>     states that the disk must be manually re-enabled after sanitize has
+>     completed. The link to the spec is noted in the patch.
+>   * When the OS off-lines a disk, the SCSI command pointers are cleaned up.
+>     The driver was attempting to return some outstanding commands that were
+>     no longer valid.
+>   * Add in more enhanced report physical luns (RPL) command. This is an
+>     internal command that yields more complete WWID information.
+>   * Correct a rare case where a poll for a register status before the
+>     register has been updated.
+>   * When multi-LUN tape devices are added to the OS, the OS does its own
+>     report LUNs and the tape devices were duplicated. A simple fix was to update
+>     slave_alloc/slave_configure to prevent this.
+>   * Add in some new PCI devices.
+>   * Bump the driver version.
 > 
-> 	page = virt_to_page(p);
-> 	if (PageSlab(page)) {		/* slab or page alloc bypass? */
-> 		slab = page_slab(page);	/* tail page resolution */
-> 		do_slab_stuff(slab);
-> 	} else {
-> 		do_page_stuff(page); /* or possibly compound_head(page) */
-> 	}
+> [...]
 
-Can you elaborate why you think this would be better?
+Applied to 5.16/scsi-queue, thanks!
 
-If the object is sitting in a tailpage, the flag test itself could
-avoid the compound_head(), but at the end of the day it's the slab or
-the headpage that needs to be operated on in the fastpaths, and we
-need to do the compound_head() whether the flag is set or not.
+[01/11] smartpqi: update device removal management
+        https://git.kernel.org/mkp/scsi/c/819225b03dc7
+[02/11] smartpqi: add controller handshake during kdump
+        https://git.kernel.org/mkp/scsi/c/9ee5d6e9ac52
+[03/11] smartpqi: capture controller reason codes
+        https://git.kernel.org/mkp/scsi/c/5d1f03e6f49a
+[04/11] smartpqi: update LUN reset handler
+        https://git.kernel.org/mkp/scsi/c/6ce1ddf53252
+[05/11] smartpqi: add tur check for sanitize operation
+        https://git.kernel.org/mkp/scsi/c/be76f90668d8
+[06/11] smartpqi: avoid failing ios for offline devices
+        https://git.kernel.org/mkp/scsi/c/4f3cefc3084d
+[07/11] smartpqi: add extended report physical luns
+        https://git.kernel.org/mkp/scsi/c/28ca6d876c5a
+[08/11] smartpqi: fix boot failure during lun rebuild
+        https://git.kernel.org/mkp/scsi/c/987d35605b7e
+[09/11] smartpqi: fix duplicate device nodes for tape changers
+        https://git.kernel.org/mkp/scsi/c/d4dc6aea93cb
+[10/11] smartpqi: add 3252-8i pci id
+        https://git.kernel.org/mkp/scsi/c/80982656b78e
+[11/11] smartpqi: update version to 2.1.12-055
+        https://git.kernel.org/mkp/scsi/c/605ae389ea02
 
-I suppose it could make some debugging checks marginally cheaper?
-
-But OTOH it comes at the cost of the flag setting and clearing loops
-in the slab allocation path, even when debugging checks are disabled.
-
-And it would further complicate the compound page model by introducing
-another distinct flag handling scheme (would there be other users for
-it?). The open-coded loops as a means to ensure flag integrity seem
-error prone; but creating Set and Clear variants that encapsulate the
-loops sounds like a move in the wrong direction, given the pain the
-compound_head() alone in them has already created.
-
-> There could also be a PageTail check in there for some of the cases --
-> catch people doing something like:
-> 	kfree(kmalloc(65536, GFP_KERNEL) + 16384);
-> which happens to work today, but should probably not.
-
-I actually wondered about that when looking at the slob code. Its
-kfree does this:
-
-	sp = virt_to_page(block);
-	if (PageSlab(compound_head(sp))) {
-		int align = max_t(size_t, ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN);
-		unsigned int *m = (unsigned int *)(block - align);
-		slob_free(m, *m + align);
-	} else {
-		unsigned int order = compound_order(sp);
-		mod_node_page_state(page_pgdat(sp), NR_SLAB_UNRECLAIMABLE_B,
-				    -(PAGE_SIZE << order));
-		__free_pages(sp, order);
-
-	}
-
-Note the virt_to_page(), instead of virt_to_head_page(). It does test
-PG_slab correctly, but if this is a bypass page, it operates on
-whatever tail page the kfree() argument points into. If you did what
-you write above, it would leak the pages before the object.
+-- 
+Martin K. Petersen	Oracle Linux Engineering
