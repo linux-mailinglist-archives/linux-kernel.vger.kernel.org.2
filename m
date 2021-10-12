@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E25429E69
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D78429E70
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 09:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233905AbhJLHRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 03:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233839AbhJLHRf (ORCPT
+        id S233773AbhJLHSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 03:18:54 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13724 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233482AbhJLHSx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 03:17:35 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86919C06161C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 00:15:34 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1maC0Y-0002cS-52; Tue, 12 Oct 2021 09:15:30 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1maC0X-0007vL-Hy; Tue, 12 Oct 2021 09:15:29 +0200
-Date:   Tue, 12 Oct 2021 09:15:29 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     alexandru.tachici@analog.com
-Cc:     andrew@lunn.ch, davem@davemloft.net, devicetree@vger.kernel.org,
-        hkallweit1@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v3 1/8] ethtool: Add 10base-T1L link mode entry
-Message-ID: <20211012071529.GC938@pengutronix.de>
-References: <20211011142215.9013-1-alexandru.tachici@analog.com>
- <20211011142215.9013-2-alexandru.tachici@analog.com>
+        Tue, 12 Oct 2021 03:18:53 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HT6PZ1p46zWlQ9;
+        Tue, 12 Oct 2021 15:15:14 +0800 (CST)
+Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 15:16:48 +0800
+Received: from huawei.com (10.175.104.82) by kwepemm600001.china.huawei.com
+ (7.193.23.3) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 12 Oct
+ 2021 15:16:47 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <bhelgaas@google.com>, <andy.shevchenko@gmail.com>,
+        <maz@kernel.org>, <tglx@linutronix.de>,
+        <song.bao.hua@hisilicon.com>, <21cnbao@gmail.com>,
+        <gregkh@linuxfoundation.org>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] PCI/MSI: fix page fault when msi_populate_sysfs() failed
+Date:   Tue, 12 Oct 2021 15:15:56 +0800
+Message-ID: <20211012071556.939137-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211011142215.9013-2-alexandru.tachici@analog.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:15:08 up 236 days, 10:39, 125 users,  load average: 0.10, 0.17,
- 0.24
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 05:22:08PM +0300, alexandru.tachici@analog.com wrote:
-> From: Alexandru Tachici <alexandru.tachici@analog.com>
-> 
-> Add entry for the 10base-T1L full duplex mode.
-> 
-> Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+I got a page fault report when doing fault injection test:
 
-Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+BUG: unable to handle page fault for address: fffffffffffffff4
+...
+RIP: 0010:sysfs_remove_groups+0x25/0x60
+...
+Call Trace:
+ msi_destroy_sysfs+0x30/0xa0
+ free_msi_irqs+0x11d/0x1b0
+ __pci_enable_msix_range+0x67f/0x760
+ pci_alloc_irq_vectors_affinity+0xe7/0x170
+ vp_find_vqs_msix+0x129/0x560
+ vp_find_vqs+0x52/0x230
+ vp_modern_find_vqs+0x47/0xb0
+ p9_virtio_probe+0xa1/0x460 [9pnet_virtio]
+...
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-> ---
->  drivers/net/phy/phy-core.c   | 3 ++-
->  include/uapi/linux/ethtool.h | 1 +
->  net/ethtool/common.c         | 3 +++
->  3 files changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
-> index 2870c33b8975..ed137c295a3d 100644
-> --- a/drivers/net/phy/phy-core.c
-> +++ b/drivers/net/phy/phy-core.c
-> @@ -13,7 +13,7 @@
->   */
->  const char *phy_speed_to_str(int speed)
->  {
-> -	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 92,
-> +	BUILD_BUG_ON_MSG(__ETHTOOL_LINK_MODE_MASK_NBITS != 93,
->  		"Enum ethtool_link_mode_bit_indices and phylib are out of sync. "
->  		"If a speed or mode has been added please update phy_speed_to_str "
->  		"and the PHY settings array.\n");
-> @@ -176,6 +176,7 @@ static const struct phy_setting settings[] = {
->  	/* 10M */
->  	PHY_SETTING(     10, FULL,     10baseT_Full		),
->  	PHY_SETTING(     10, HALF,     10baseT_Half		),
-> +	PHY_SETTING(     10, FULL,     10baseT1L_Full		),
->  };
->  #undef PHY_SETTING
->  
-> diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
-> index b6db6590baf0..2cdbd55566d6 100644
-> --- a/include/uapi/linux/ethtool.h
-> +++ b/include/uapi/linux/ethtool.h
-> @@ -1661,6 +1661,7 @@ enum ethtool_link_mode_bit_indices {
->  	ETHTOOL_LINK_MODE_400000baseCR4_Full_BIT	 = 89,
->  	ETHTOOL_LINK_MODE_100baseFX_Half_BIT		 = 90,
->  	ETHTOOL_LINK_MODE_100baseFX_Full_BIT		 = 91,
-> +	ETHTOOL_LINK_MODE_10baseT1L_Full_BIT		 = 92,
->  	/* must be last entry */
->  	__ETHTOOL_LINK_MODE_MASK_NBITS
->  };
-> diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-> index c63e0739dc6a..cbc2393a121b 100644
-> --- a/net/ethtool/common.c
-> +++ b/net/ethtool/common.c
-> @@ -200,6 +200,7 @@ const char link_mode_names[][ETH_GSTRING_LEN] = {
->  	__DEFINE_LINK_MODE_NAME(400000, CR4, Full),
->  	__DEFINE_LINK_MODE_NAME(100, FX, Half),
->  	__DEFINE_LINK_MODE_NAME(100, FX, Full),
-> +	__DEFINE_LINK_MODE_NAME(10, T1L, Full),
->  };
->  static_assert(ARRAY_SIZE(link_mode_names) == __ETHTOOL_LINK_MODE_MASK_NBITS);
->  
-> @@ -235,6 +236,7 @@ static_assert(ARRAY_SIZE(link_mode_names) == __ETHTOOL_LINK_MODE_MASK_NBITS);
->  #define __LINK_MODE_LANES_T1		1
->  #define __LINK_MODE_LANES_X		1
->  #define __LINK_MODE_LANES_FX		1
-> +#define __LINK_MODE_LANES_T1L		1
->  
->  #define __DEFINE_LINK_MODE_PARAMS(_speed, _type, _duplex)	\
->  	[ETHTOOL_LINK_MODE(_speed, _type, _duplex)] = {		\
-> @@ -348,6 +350,7 @@ const struct link_mode_info link_mode_params[] = {
->  	__DEFINE_LINK_MODE_PARAMS(400000, CR4, Full),
->  	__DEFINE_LINK_MODE_PARAMS(100, FX, Half),
->  	__DEFINE_LINK_MODE_PARAMS(100, FX, Full),
-> +	__DEFINE_LINK_MODE_PARAMS(10, T1L, Full),
->  };
->  static_assert(ARRAY_SIZE(link_mode_params) == __ETHTOOL_LINK_MODE_MASK_NBITS);
->  
-> -- 
-> 2.25.1
-> 
-> 
+When populating msi_irqs sysfs failed (such as msi_attrs = kcalloc()
+in msi_populate_sysfs() failed) in msi_capability_init() or
+msix_capability_init(), dev->msi_irq_groups will point to ERR_PTR(...).
+This will cause a page fault when destroying the wrong
+dev->msi_irq_groups in free_msi_irqs().
 
+msix_capability_init()/msi_capability_init()
+	msi_populate_sysfs()
+		msi_attrs = kcalloc() // fault injection, let msi_attrs = NULL
+	free_msi_irqs()
+		msi_destroy_sysfs() // msi_irq_groups is ERR_PTR(...), page fault
+
+Define a temp variable and assign it to dev->msi_irq_groups if
+the temp variable is not PTR_ERR.
+
+Fixes: 2f170814bdd2 ("genirq/msi: Move MSI sysfs handling from PCI to MSI core")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Acked-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+v2->v3: refine the commit log
+v1->v2: introduce temporary variable 'groups'
+ drivers/pci/msi.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 0099a00af361..4b4792940e86 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -535,6 +535,7 @@ static int msi_verify_entries(struct pci_dev *dev)
+ static int msi_capability_init(struct pci_dev *dev, int nvec,
+ 			       struct irq_affinity *affd)
+ {
++	const struct attribute_group **groups;
+ 	struct msi_desc *entry;
+ 	int ret;
+ 
+@@ -558,12 +559,14 @@ static int msi_capability_init(struct pci_dev *dev, int nvec,
+ 	if (ret)
+ 		goto err;
+ 
+-	dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
+-	if (IS_ERR(dev->msi_irq_groups)) {
+-		ret = PTR_ERR(dev->msi_irq_groups);
++	groups = msi_populate_sysfs(&dev->dev);
++	if (IS_ERR(groups)) {
++		ret = PTR_ERR(groups);
+ 		goto err;
+ 	}
+ 
++	dev->msi_irq_groups = groups;
++
+ 	/* Set MSI enabled bits	*/
+ 	pci_intx_for_msi(dev, 0);
+ 	pci_msi_set_enable(dev, 1);
+@@ -691,6 +694,7 @@ static void msix_mask_all(void __iomem *base, int tsize)
+ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+ 				int nvec, struct irq_affinity *affd)
+ {
++	const struct attribute_group **groups;
+ 	void __iomem *base;
+ 	int ret, tsize;
+ 	u16 control;
+@@ -730,12 +734,14 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+ 
+ 	msix_update_entries(dev, entries);
+ 
+-	dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
+-	if (IS_ERR(dev->msi_irq_groups)) {
+-		ret = PTR_ERR(dev->msi_irq_groups);
++	groups = msi_populate_sysfs(&dev->dev);
++	if (IS_ERR(groups)) {
++		ret = PTR_ERR(groups);
+ 		goto out_free;
+ 	}
+ 
++	dev->msi_irq_groups = groups;
++
+ 	/* Set MSI-X enabled bits and unmask the function */
+ 	pci_intx_for_msi(dev, 0);
+ 	dev->msix_enabled = 1;
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.17.1
+
