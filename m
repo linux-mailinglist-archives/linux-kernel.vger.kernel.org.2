@@ -2,141 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585EF429F82
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDB3429F85
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 10:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234733AbhJLIQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 04:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234642AbhJLIQC (ORCPT
+        id S234809AbhJLIQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 04:16:06 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14333 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234725AbhJLIQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 04:16:02 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17672C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:14:01 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id h19so5617618uax.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 01:14:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gr2/Z0naSLUPb+MayH+nyDEWirany5uxuZ/i7RKgxSU=;
-        b=zcSk6kvpXDQ4j2EK2+y7ray0Na6HdRhS06AgQa+tTZBgcch7omm3zQSiHCXPGqiGS1
-         7EgWFanKh2TZ+n8Bk9pvTHBZR+eGXPXl5KtMb/qnD6CD70WR6hA4vjD9bEoP9mnOdxaa
-         pFeA3uurQzSmU9SoBvGE7xetAmf2nEphLtCOd5HRLdVisRsG+Nru5kNeiut+UgvI0wBC
-         mhzAduWdjAbZX8V3VRBeCKeqhBFo2JNAngpZE8L91QhX2yxmZtRiNN1+CM0FDo+nULQ/
-         lMj/lH15t7Fr6sWKopHhMU1x9nO+VfgJaDXlsP07OujuqQqQGAjthnVNM44c5oWaww/v
-         +B0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gr2/Z0naSLUPb+MayH+nyDEWirany5uxuZ/i7RKgxSU=;
-        b=B11dhnZW30ihvGRnamoyMn2+isXnCfCT5oHFh6vfPo6fDeN1Xs+KjweyiwMKT4WWxf
-         wi3AlRRPQLQpYsg3yX/WUFki2JNsJ6GGjriCprI81CEp+w4pbwhwzukKA0WWdwVC56UU
-         WdOT6ID/7Rw9oiJLTFORw+ZYhz1RZ2E99DsezJPvB+fOI0ePdrlvdB0LCVeBdc2mDjQI
-         A9r9CHpiRi7S9Zeap1ti5DXw9d6BLhGSOdJKk2Vmvvdlw0P434zcfp4kfr31ebHRE69X
-         5cQZrrWUdPRzuDApK50piZiT/r9IG+JX+nbOa/F9f2YMAQ/k0iuIbOyCGtUYB2wY89xp
-         PlkQ==
-X-Gm-Message-State: AOAM530KryE4csSPh5QKeBQSfRKIPdUGuS4llm0php84k67TE6Ij7rMO
-        v4VBIpcAZbTsialEdOVyLLJNDtmKQ/mIhhXd9+ZBXNcsBqQBqw==
-X-Google-Smtp-Source: ABdhPJzG9Dhgiod/wXzmIVRqNX8CNBE42sQEayZ3zzN4Dobgq28Rkx8L/n7OaxX73qh01VX5dkcbzs9vDVT+VUm8Dtk=
-X-Received: by 2002:ab0:16d4:: with SMTP id g20mr19911620uaf.114.1634026440192;
- Tue, 12 Oct 2021 01:14:00 -0700 (PDT)
+        Tue, 12 Oct 2021 04:16:04 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HT7br0BvPz9007;
+        Tue, 12 Oct 2021 16:09:12 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 16:14:00 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 16:13:59 +0800
+Subject: Re: [PATCH 5.4 00/52] 5.4.153-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20211011134503.715740503@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <3edb8308-3846-b17d-c31c-02623142bbbe@huawei.com>
+Date:   Tue, 12 Oct 2021 16:13:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20211008154352.19519-1-semen.protsenko@linaro.org>
- <20211008154352.19519-5-semen.protsenko@linaro.org> <7049b3a9-dc8f-2ae9-01e6-eb3b6f461400@kernel.org>
- <CGME20211011101326eucas1p17e6deeaa2449bf3f0d6306fb930cce17@eucas1p1.samsung.com>
- <CAPLW+4kJK=kaiCLDXX1EGLhbKJo5pcHQY9QCj0SVyGQP1n7q0g@mail.gmail.com> <ef781890-76ca-3392-9a17-3856fa1834cf@samsung.com>
-In-Reply-To: <ef781890-76ca-3392-9a17-3856fa1834cf@samsung.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 12 Oct 2021 11:13:48 +0300
-Message-ID: <CAPLW+4mXMLadAi6U3GiXqRHAGnLH79rZeK6w=EcbOccjqH4N9w@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] dt-bindings: clock: Document Exynos850 CMU bindings
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-On Mon, 11 Oct 2021 at 13:42, Sylwester Nawrocki <s.nawrocki@samsung.com> wrote:
->
-> On 11.10.2021 12:13, Sam Protsenko wrote:
-> > On Sat, 9 Oct 2021 at 23:41, Sylwester Nawrocki <snawrocki@kernel.org> wrote:
-> >>
-> >> On 08.10.2021 17:43, Sam Protsenko wrote:
-> >>> Provide dt-schema documentation for Exynos850 SoC clock controller.
-> >>>
-> >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> >>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> >>> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-> [...]
-> >>> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
-> >>> @@ -0,0 +1,185 @@
-> [...]
-> >>> +
-> >>> +title: Samsung Exynos850 SoC clock controller
-> >>> +
-> >>> +maintainers:
-> >>> +  - Sam Protsenko <semen.protsenko@linaro.org>
-> >>> +  - Chanwoo Choi <cw00.choi@samsung.com>
-> >>> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> >>> +  - Sylwester Nawrocki <s.nawrocki@samsung.com>
-> >>> +  - Tomasz Figa <tomasz.figa@gmail.com>
-> >>> +
-> >>> +description: |
-> >>> +  Exynos850 clock controller is comprised of several CMU units, generating
-> >>> +  clocks for different domains. Those CMU units are modeled as separate device
-> >>> +  tree nodes, and might depend on each other. Root clocks in that clock tree are
-> >>> +  two external clocks:: OSCCLK (26 MHz) and RTCCLK (32768 Hz). Those external
-> >>> +  clocks must be defined as fixed-rate clocks in dts.
-> >>> +
-> >>> +  CMU_TOP is a top-level CMU, where all base clocks are prepared using PLLs and
-> >>> +  dividers; all other leaf clocks (other CMUs) are usually derived from CMU_TOP.
-> >>> +
-> >>> +  Each clock is assigned an identifier and client nodes can use this identifier
-> >>> +  to specify the clock which they consume. All clocks that available for usage
-> >>
-> >> s/All clocks that available/All clocks available ?
-> >> No need to resend, I can amend it when applying.
-> >>
-> >
-> > Yeah, not a native speaker, I tend to do such mistakes sometimes :)
-> > Please fix when applying.
-> >
-> > Btw, I can see that you already applied 3 out of 5 patches from this
-> > patch series here: [1]. Can you please also apply the rest, or is
-> > there any outstanding comments that I missed?
->
-> The patches look good to me, I just wanted to allow some for Rob to have
-> a look and provide an Ack.
->
 
-Can you please review this one?
+On 2021/10/11 21:45, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.153 release.
+> There are 52 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 13 Oct 2021 13:44:51 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Thanks!
+Tested on arm64 and x86 for 5.4.153-rc1,
 
-> Regards,
-> --
-> Sylwester Nawrocki
-> Samsung R&D Institute Poland
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.153-rc1
+Commit: 2a225aa681c5c16b5283fb381b5326b94179fe6d
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
