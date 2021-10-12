@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0491A42A8C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F1D42A8C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237420AbhJLPuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:50:54 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:43802 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234892AbhJLPuw (ORCPT
+        id S237427AbhJLPwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 11:52:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20417 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234892AbhJLPwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:50:52 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19CFmYxn095048;
-        Tue, 12 Oct 2021 10:48:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1634053714;
-        bh=8rrPQGnqFCUnZxZtTYRofyZNsMnTrSL62XL4Y0etm78=;
-        h=From:To:CC:Subject:Date;
-        b=B9DVrORSVLNawA8+xF9RVzrc8HuD52+88+P34j7wuDeMX2iXKHj7+IhC1e7IprnAl
-         9+JHTwn6zQ5CF61Z493b0VxoXVtwa3HPSf5weqKI2rGxUjgARQfozpBIAuhkgVp+gn
-         fKIamx5kmDeMRqrp5SuzuOxLO1AhdIxLJTx26nfc=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19CFmY77105407
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 Oct 2021 10:48:34 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 12
- Oct 2021 10:48:34 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 12 Oct 2021 10:48:34 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19CFmYZb009701;
-        Tue, 12 Oct 2021 10:48:34 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Suman Anna <s-anna@ti.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH] dt-bindings: sram: Allow numbers in sram region node name
-Date:   Tue, 12 Oct 2021 10:48:33 -0500
-Message-ID: <20211012154833.14111-1-nm@ti.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 12 Oct 2021 11:52:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634053813;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=OM6B3jqNboU2Hh/f2/hFxqXgrecxQ65nrQV6OMB0FCQ=;
+        b=IKcMn2vVbKGx1fKoyodZ4axKVttH63vofgLV6H09GVD7nTzY7t6m0gwfuSvC6iqKkdBv7c
+        7yYfgzZE7UdA2y+fXPmtvZaDQ7kTKdxAFrx/D1Q3XdpJ6a9d5GRJl7CHXHJ+I14TV6e+3s
+        bJByet8suo/x4Eu+Sn/7Oolq4f5dGyQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-120-UbqnepxiPXOWbjzgLEmkiQ-1; Tue, 12 Oct 2021 11:50:10 -0400
+X-MC-Unique: UbqnepxiPXOWbjzgLEmkiQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC82F91271;
+        Tue, 12 Oct 2021 15:50:08 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BCD1C5F4EA;
+        Tue, 12 Oct 2021 15:50:06 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     linux-hyperv@vger.kernel.org, Wei Liu <wei.liu@kernel.org>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH] x86/hyperv: Protect set_hv_tscchange_cb() against getting preempted
+Date:   Tue, 12 Oct 2021 17:50:05 +0200
+Message-Id: <20211012155005.1613352-1-vkuznets@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sram regions node name describes the region of reserved memory and can
-be names such as l3cache@1000. Permit numbers to be used as part of the
-reserved memory node name.
+The following issue is observed with CONFIG_DEBUG_PREEMPT when KVM loads:
 
-Signed-off-by: Nishanth Menon <nm@ti.com>
+ KVM: vmx: using Hyper-V Enlightened VMCS
+ BUG: using smp_processor_id() in preemptible [00000000] code: systemd-udevd/488
+ caller is set_hv_tscchange_cb+0x16/0x80
+ CPU: 1 PID: 488 Comm: systemd-udevd Not tainted 5.15.0-rc5+ #396
+ Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.0 12/17/2019
+ Call Trace:
+  dump_stack_lvl+0x6a/0x9a
+  check_preemption_disabled+0xde/0xe0
+  ? kvm_gen_update_masterclock+0xd0/0xd0 [kvm]
+  set_hv_tscchange_cb+0x16/0x80
+  kvm_arch_init+0x23f/0x290 [kvm]
+  kvm_init+0x30/0x310 [kvm]
+  vmx_init+0xaf/0x134 [kvm_intel]
+  ...
+
+set_hv_tscchange_cb() can get preempted in between acquiring
+smp_processor_id() and writing to HV_X64_MSR_REENLIGHTENMENT_CONTROL. This
+is not an issue by itself: HV_X64_MSR_REENLIGHTENMENT_CONTROL is a
+partition-wide MSR and it doesn't matter which particular CPU will be
+used to receive reenlightenment notifications. The only real problem can
+(in theory) be observed if the CPU whose id was acquired with
+smp_processor_id() goes offline before we manage to write to the MSR,
+the logic in hv_cpu_die() won't be able to reassign it correctly.
+
+Reported-by: Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 ---
- Documentation/devicetree/bindings/sram/sram.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/hyperv/hv_init.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sram/sram.yaml b/Documentation/devicetree/bindings/sram/sram.yaml
-index 3eda5049d183..939cf2418445 100644
---- a/Documentation/devicetree/bindings/sram/sram.yaml
-+++ b/Documentation/devicetree/bindings/sram/sram.yaml
-@@ -60,7 +60,7 @@ properties:
-     type: boolean
+diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+index 708a2712a516..179fc173104d 100644
+--- a/arch/x86/hyperv/hv_init.c
++++ b/arch/x86/hyperv/hv_init.c
+@@ -139,7 +139,6 @@ void set_hv_tscchange_cb(void (*cb)(void))
+ 	struct hv_reenlightenment_control re_ctrl = {
+ 		.vector = HYPERV_REENLIGHTENMENT_VECTOR,
+ 		.enabled = 1,
+-		.target_vp = hv_vp_index[smp_processor_id()]
+ 	};
+ 	struct hv_tsc_emulation_control emu_ctrl = {.enabled = 1};
  
- patternProperties:
--  "^([a-z]*-)?sram(-section)?@[a-f0-9]+$":
-+  "^([a-z0-9]*-)?sram(-section)?@[a-f0-9]+$":
-     type: object
-     description:
-       Each child of the sram node specifies a region of reserved memory.
+@@ -153,8 +152,12 @@ void set_hv_tscchange_cb(void (*cb)(void))
+ 	/* Make sure callback is registered before we write to MSRs */
+ 	wmb();
+ 
++	re_ctrl.target_vp = hv_vp_index[get_cpu()];
++
+ 	wrmsrl(HV_X64_MSR_REENLIGHTENMENT_CONTROL, *((u64 *)&re_ctrl));
+ 	wrmsrl(HV_X64_MSR_TSC_EMULATION_CONTROL, *((u64 *)&emu_ctrl));
++
++	put_cpu();
+ }
+ EXPORT_SYMBOL_GPL(set_hv_tscchange_cb);
+ 
 -- 
-2.32.0
+2.31.1
 
