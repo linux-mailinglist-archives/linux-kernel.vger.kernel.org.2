@@ -2,83 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCBB42A8AC
+	by mail.lfdr.de (Postfix) with ESMTP id 41A2D42A8AB
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 17:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237507AbhJLPnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 11:43:45 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:37328 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237246AbhJLPnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 11:43:35 -0400
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1maJu8-0006eg-Og; Tue, 12 Oct 2021 17:41:24 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     guoren@kernel.org, anup@brainfault.org, atish.patra@wdc.com,
-        maz@kernel.org, tglx@linutronix.de, palmer@dabbelt.com,
-        linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Rob Herring <robh@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>, guoren@kernel.org
-Subject: Re: [PATCH V2 1/2] dt-bindings: update riscv plic compatible string
-Date:   Tue, 12 Oct 2021 17:41:23 +0200
-Message-ID: <3384738.8kAFQ6LgSR@diego>
-In-Reply-To: <20211012153432.2817285-1-guoren@kernel.org>
-References: <20211012153432.2817285-1-guoren@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S237617AbhJLPno convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Oct 2021 11:43:44 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:58997 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237707AbhJLPnd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 11:43:33 -0400
+Received: from smtpclient.apple (p4fefcb73.dip0.t-ipconnect.de [79.239.203.115])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 36F4FCECE2;
+        Tue, 12 Oct 2021 17:41:30 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH] Bluetooth: btrtl: Ask ic_info to drop firmware
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <8fc481a872474919b2a53fc2c7072166@realtek.com>
+Date:   Tue, 12 Oct 2021 17:41:29 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
+        "apusaka@chromium.org" <apusaka@chromium.org>,
+        Max Chou <max.chou@realtek.com>,
+        "alex_lu@realsil.com.cn" <alex_lu@realsil.com.cn>,
+        KidmanLee <kidman@realtek.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <DEFB4160-D88E-447C-8B19-DB9DBFC9869A@holtmann.org>
+References: <20210930103634.1710-1-hildawu@realtek.com>
+ <D5B18E08-AE60-4B8B-960B-694D62E067B5@holtmann.org>
+ <912f4b6441b54a1d89df6ffe4a0511ab@realtek.com>
+ <065AC802-1C20-42F0-9B2F-24F2B2698B90@holtmann.org>
+ <8fc481a872474919b2a53fc2c7072166@realtek.com>
+To:     Hilda Wu <hildawu@realtek.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Hilda,
 
-Am Dienstag, 12. Oktober 2021, 17:34:31 CEST schrieb guoren@kernel.org:
-> From: Guo Ren <guoren@linux.alibaba.com>
-> 
-> Add the compatible string "thead,c9xx-plic" to the riscv plic
-> bindings to support SOCs with thead,c9xx processor cores.
-> 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Anup Patel <anup@brainfault.org>
-> Cc: Atish Patra <atish.patra@wdc.com>
-> ---
->  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml         | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> index 08d5a57ce00f..202eb7666f9b 100644
-> --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> @@ -46,6 +46,7 @@ properties:
->        - enum:
->            - sifive,fu540-c000-plic
->            - canaan,k210-plic
-> +          - thead,c9xx-plic
+> I'm a little confused about this.
+> Did you mean that if use existing MSFT/AOSP extensions vendor cmd/event to check device has this feature.
+> This way is not meeting your conception, a simple way to tell which RTL device supports the MSFT or AOSP extensions?
 
-Devicetree bindings shouldn't use asterisks (the xx-part).
-Instead you want (probably)
+issuing a HCI command and checking HCI command not supported error is not a good design. The Bluetooth Core spec doesn’t use that kind of design. It has supported features and supported commands. And so should any vendor extension.
 
-+          - thead,c906-plic
-+          - thead,c910-plic
+Regards
 
-to name the specific SoCs that plic is used on
-
-
-Heiko
-
->        - const: sifive,plic-1.0.0
->  
->    reg:
-> 
-
-
-
+Marcel
 
