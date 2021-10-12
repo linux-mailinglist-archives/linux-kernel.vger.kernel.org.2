@@ -2,160 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7C242A6AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A9C42A6AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237086AbhJLOE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:04:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:44132 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237083AbhJLOEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:04:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4BB22ED1;
-        Tue, 12 Oct 2021 07:02:53 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.22.33])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C90843F66F;
-        Tue, 12 Oct 2021 07:02:50 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 15:02:43 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: Re: [GIT PULL] arm64 fixes for 5.15-rc5
-Message-ID: <20211012140243.GA41546@C02TD0UTHF1T.local>
-References: <YWCPyK+xotTgUMy/@arm.com>
- <CAHk-=whWZ4OxfKQwKVrRc-E9=w-ygKdVFn_HcAMW-DW8SgranQ@mail.gmail.com>
- <20211011104729.GB1421@C02TD0UTHF1T.local>
- <CAHk-=wjTAJwMJZ-6PPxvdtDmkL0=pfRF77nJ5qWw2vbiTzT4nQ@mail.gmail.com>
- <87czoacrfr.ffs@tglx>
+        id S237106AbhJLOFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:05:22 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:44581 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237015AbhJLOFV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 10:05:21 -0400
+Received: by mail-il1-f197.google.com with SMTP id i11-20020a92540b000000b0025456903645so12177828ilb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 07:03:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=q/pqoxqAzyZZ8F1MtzXtJAA/iWzEt6hd22bQr+ZIXqo=;
+        b=SV4VoKnIdVBrTp4Q091Ng1a3dRDAx38x8jkeH6HyyN4kVdoAeHAcwf7O7Waipi47ev
+         amsgpO1ATjiClJyWq15iWoki4YF4XLhwg0qUc/hJCB5XxEJCyzl95mazTjUFWFLTfUmf
+         3wfOAUNbah7W9qLz83MndDRhkffVRd48YG1DNMU66CqoylDrSFZ/N9KsLOizEmzDmSCi
+         7gdx/YElvPG5Gv77/jb4GSD0wfnC8akrabxwwmkyMbsVh+OaP92ejCGTRyDN6jLOu+RV
+         2wkSC1nTA0UIsTGYBkTe61dC26u99otKXCfxWwuZiM7Fd7JsvzKc3a8q7CiX8qw5p6rY
+         a78w==
+X-Gm-Message-State: AOAM5315nNROwqQdmIwqzPHxhlFf6LCT8yaSbvDgNFaHq63HnhnG/lzo
+        ngKf9+MRG1iJSAgI/M+sBTb6nxDbWw87ChKZ6EUtXkPvqccs
+X-Google-Smtp-Source: ABdhPJxjIThpoG8yba4yssGvvE6hjTqANDNUg0HyeCaEZK1/NzaUyGwG8HljKgdp5DPeZ8pagDP38f8//lFSMiN9UDrG2mJfYTKn
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czoacrfr.ffs@tglx>
+X-Received: by 2002:a92:c262:: with SMTP id h2mr5696463ild.204.1634047399207;
+ Tue, 12 Oct 2021 07:03:19 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 07:03:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c6a82505ce284e4c@google.com>
+Subject: [syzbot] BUG: sleeping function called from invalid context in copy_huge_page
+From:   syzbot <syzbot+aae069be1de40fb11825@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus, Thomas,
+Hello,
 
-A couple of minor comments below -- I'll have a go at the rework Linus
-suggested and see what blows up.
+syzbot found the following issue on:
 
-On Tue, Oct 12, 2021 at 03:18:16PM +0200, Thomas Gleixner wrote:
-> On Mon, Oct 11 2021 at 12:54, Linus Torvalds wrote:
-> > On Mon, Oct 11, 2021 at 3:47 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > And so the reason I really hate that patch is that it introduces a new
-> > "different architectures randomly and inexplicably do different
-> > things, and the generic behavior is very different on arm64 than it is
-> > elsewhere".
-> >
-> > That's just the worst kind of hack to me.
-> >
-> > And in this case, it's really *horribly* hard to see what the call
-> > chain is. It all ends up being actively obfuscated and obscured
-> > through that 'handle_arch_irq' function pointer, that is sometimes set
-> > through set_handle_irq(), and sometimes set directly.
-> >
-> > I really think that if the rule is "we can't do accounting in
-> > handle_domain_irq(), because it's too late for arm64", then the fix
-> > really should be to just not do that.
-> >
-> > Move the irq_enter()/irq_exit() to the callers - quite possibly far up
-> > the call chain to the root of it all, and just say "architecture code
-> > needs to do this in the low-level code before calling
-> > handle_arch_irq".
-> 
-> That's where it belongs. It's mandatory to have it there for NOHZ_FULL
-> to work correctly vs. instrumentation etc. I've pointed that out back
-> then after we fed the X86 entry code into the mincer and added noinstr
-> sections to keep tracers, BPF and kprobes away from it.
-> 
-> Looking at the architectures which "support" that by selecting
-> HAVE_CONTEXT_TRACKING:
-> 
-> arch/arm/Kconfig:	select HAVE_CONTEXT_TRACKING
-> arch/arm64/Kconfig:	select HAVE_CONTEXT_TRACKING
-> arch/csky/Kconfig:	select HAVE_CONTEXT_TRACKING
-> arch/mips/Kconfig:	select HAVE_CONTEXT_TRACKING
-> arch/powerpc/Kconfig:	select HAVE_CONTEXT_TRACKING		if PPC64
-> arch/riscv/Kconfig:	select HAVE_CONTEXT_TRACKING
-> arch/sparc/Kconfig:	select HAVE_CONTEXT_TRACKING
-> arch/x86/Kconfig:	select HAVE_CONTEXT_TRACKING		if X86_64
-> 
-> S390 and X86 are (mostly) complete and use the generic entry code. S390
-> does not even select HAVE_CONTEXT_TRACKING!
-> 
-> PPC64 has done quite some work to fix that, but it looks not yet complete. 
-> 
-> Mark is working on ARM64.
-> 
-> There is some effort underway to convert MIPS over to generic entry.
-> 
-> The rest needs all the fundamental architecture side changes.
-> 
-> > Anyway, it _looks_ to me like the pattern is very simple:
-> >
-> > Step 1:
-> >  - remove irq_enter/irq_exit from handle_domain_irq(), move it to all callers.
-> >
-> > This clearly doesn't change anything at all, but also doesn't fix the
-> > problem you have. But it's easy to verify that the code is the same
-> > before-and-after.
+HEAD commit:    1da38549dd64 Merge tag 'nfsd-5.15-3' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14379148b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=76f7496a8217e5ec
+dashboard link: https://syzkaller.appspot.com/bug?extid=aae069be1de40fb11825
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-I'm happy with this in principle. The only reason we didn't go down that
-route initially is because the callers are (typically) in the bowels of
-arch asm or platform code, they all need to be fixed in one go to avoid
-breaking anything, and it's a headache if we collide with any rework
-(e.g. MIPS moving to generic entry).
+Unfortunately, I don't have any reproducer for this issue yet.
 
-As above, I'll have a go and see what blows up.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+aae069be1de40fb11825@syzkaller.appspotmail.com
 
-It should be possible to have C wrappers for the common cases, and have
-the asm call that instead of branching directly to whichever irqchip
-handler handle_arch_irq points at.
+BUG: sleeping function called from invalid context at mm/util.c:758
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 30700, name: syz-executor.2
+2 locks held by syz-executor.2/30700:
+ #0: ffff88806ee498a8 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_lock include/linux/mmap_lock.h:71 [inline]
+ #0: ffff88806ee498a8 (&mm->mmap_lock#2){++++}-{3:3}, at: do_mbind+0x25d/0xeb0 mm/mempolicy.c:1314
+ #1: ffff888145989e18 (&mapping->private_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:363 [inline]
+ #1: ffff888145989e18 (&mapping->private_lock){+.+.}-{2:2}, at: __buffer_migrate_page+0x3af/0xca0 mm/migrate.c:723
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 1 PID: 30700 Comm: syz-executor.2 Not tainted 5.15.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ ___might_sleep.cold+0x1f3/0x239 kernel/sched/core.c:9538
+ copy_huge_page+0x126/0x360 mm/util.c:758
+ migrate_page_copy+0xfc/0x340 mm/migrate.c:619
+ __buffer_migrate_page+0x8cb/0xca0 mm/migrate.c:758
+ move_to_new_page+0x339/0xef0 mm/migrate.c:905
+ __unmap_and_move mm/migrate.c:1070 [inline]
+ unmap_and_move mm/migrate.c:1211 [inline]
+ migrate_pages+0xfc5/0x39e0 mm/migrate.c:1488
+ do_mbind+0xbc7/0xeb0 mm/mempolicy.c:1340
+ kernel_mbind mm/mempolicy.c:1483 [inline]
+ __do_sys_mbind mm/mempolicy.c:1490 [inline]
+ __se_sys_mbind mm/mempolicy.c:1486 [inline]
+ __x64_sys_mbind+0x233/0x2b0 mm/mempolicy.c:1486
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f408623f8d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f40837b6188 EFLAGS: 00000246 ORIG_RAX: 00000000000000ed
+RAX: ffffffffffffffda RBX: 00007f4086343f60 RCX: 00007f408623f8d9
+RDX: 0000000000000000 RSI: 0000000000c00000 RDI: 0000000020012000
+RBP: 00007f4086299cb4 R08: 0000000000000000 R09: 0000010000000002
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fff13d3589f R14: 00007f40837b6300 R15: 0000000000022000
 
-> > Step 2 is the pattern matching step:
-> >
-> >  - if the caller of handle_domain_irq() ends up being a function that
-> > is registered with set_handle_irq(), then we
-> >    (a) remove the irq_enter/irq_exit from it
-> >    (b) add it to the architectures that use handle_arch_irq.
-> >    (c) make sure that if there are other callers of it (not through
-> > handle_arch_irq) we move that irq_enter/irq_exit into them too
-> >
-> > I _suspect_ - but didn't check - that Step 2(c) doesn't actually
-> > exist. But who knows.
-> 
-> It only exists with chained handlers, but they do not need that at all
-> because:
-> 
->         irq_enter()
->         arch_handle_irq()
->           handle_domain_irq()
->             chained_handler()
->               handle_domain_irq()
 
-... and this is exactly the shape of case where we need to avoid the
-nested calls so as to not break RCU's view of nesting.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> which is still the same interrupt context and not a nested interrupt.
-> > It really looks like there is a very tight connection between "uses
-> > handle_domain_irq()" and "uses handle_arch_irq/set_handle_irq()". No?
-> 
-> Looks like. That might conflict with the MIPS rework though. I don't
-> know how far that came already. Cc'ed the MIPS people.
-
-There's also a bunch of old platforms on arch/arm which have a
-hard-coded handler (so not using handle_arch_irq/set_handle_irq()) which
-calls handle_domain_irq() -- those can be fixed up.
-
-Thanks,
-Mark.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
