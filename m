@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AB942AD6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AF742AD7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 21:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233988AbhJLTrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 15:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhJLTrm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 15:47:42 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6512CC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:45:40 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id g6so1045267ybb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:45:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vD7FJ1ydlYC1IM4/HhgrveOKWM0Mobtkyxgs+mO+hzU=;
-        b=pE8V9KlHyJeJU/IxPDbxSChUWjX/h4mLADnFcPzYx9ZWZbMz2gutTt/qAjRMrsRjX5
-         QJFYumwrgLG6e19Fj1Io/xBvZBGXNbspxMyHAfdRe5g3cEX3o5CFoia4T/Q5gpWXuE1I
-         GTYAcaFecE40j7VLCeM+5nddDR+uRhcBiOfPCpI0eis5epjxHTt6Dr0Vcdx88U6yHwLK
-         B972hTQF0LiJIQJGAbfPmwEexIaySfuTmuUb/3P4HuJHYLceFEcgZcnYnV9nhyT3Psk+
-         00rjW13YP9u98v/P8cjDjwtwMfxgiw7rB2X31kDnWMIENRhpO1we8REZLRCFRBQNQwuy
-         SqoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vD7FJ1ydlYC1IM4/HhgrveOKWM0Mobtkyxgs+mO+hzU=;
-        b=WdiV9bdTONMhWU3Axa8JiFtwFyQl1xlVIeXTIoL1vkpsxG/y65xXPRkEdrWYCJ12Pv
-         Y1Tytk/LlQFeJLElDmET1ZTbWDaSr6hUwfWEbs/caVvmODOUJkhKlFvWGFQKs/7Po6mu
-         RUnGvmkaa+0ancW/sj887l0ae0gHkl+TKejXOA2/FjcZAYfjy/In8+mQStTmTKHdQr5I
-         9HhPeKhbuVSDy/kEoEuCSJBjxdFyv0N8YnCK9jXgk/t3fGZeLK2k490iW1WuAj1hXnt9
-         dFlwZ+KiRr286YmmhEWSroC+3iGdqebIwJJIcRBuu58Yqj7eELT6xqNw+koLU1yjr+rV
-         ImPQ==
-X-Gm-Message-State: AOAM532RJtx4bQJYzPrTIPqfxUfUj5QLYk9Ne48GXIrqwDirs5MBXl7l
-        OXpN0wxpvV9TCxwvsdMpyEHV9b9v2TNKHxQ9iTvYXQ==
-X-Google-Smtp-Source: ABdhPJxk+e5Ku0rCcnzTTEXYLNKKI9QkE2tuOkbIgt284meu9pfLnMAGjn/1/H/e5zbvD44u7C2OgUFAwbCIp5tTD9s=
-X-Received: by 2002:a25:cf07:: with SMTP id f7mr30461040ybg.100.1634067939279;
- Tue, 12 Oct 2021 12:45:39 -0700 (PDT)
+        id S234155AbhJLTvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 15:51:19 -0400
+Received: from mga14.intel.com ([192.55.52.115]:10914 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232648AbhJLTvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 15:51:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="227537886"
+X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
+   d="scan'208";a="227537886"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 12:49:10 -0700
+X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
+   d="scan'208";a="562799204"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.115.208]) ([10.209.115.208])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 12:49:07 -0700
+Message-ID: <f3002304-ae85-1d88-219d-c67574e80427@linux.intel.com>
+Date:   Tue, 12 Oct 2021 12:49:06 -0700
 MIME-Version: 1.0
-References: <20211008000825.1364224-1-joshdon@google.com> <20211009155435.GW174703@worktop.programming.kicks-ass.net>
- <CABk29Nu6F4__ryF5p0En--Ze6CCev1Jy81W=LkTYaacf-YLkFg@mail.gmail.com> <YWV/HNDJaIAOLdrt@hirez.programming.kicks-ass.net>
-In-Reply-To: <YWV/HNDJaIAOLdrt@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 12 Oct 2021 12:45:28 -0700
-Message-ID: <CABk29NucE__6r3P64Ts3Nbf4sUy5Zkw1sbNNnab9KZ=68ydy=w@mail.gmail.com>
-Subject: Re: [PATCH] sched/core: forced idle accounting
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineethrp@gmail.com>,
-        Hao Luo <haoluo@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
+ pci_iomap_host_shared_range()
+Content-Language: en-US
+To:     Dan Williams <dan.j.williams@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053103-mutt-send-email-mst@kernel.org>
+ <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
+ <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
+ <DM8PR11MB57501C8F8F5C8B315726882EE7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <f850d2d6-d427-8aeb-bd38-f9b5eb088191@linux.intel.com>
+ <DM8PR11MB57505C520763DF706309E177E7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAPcyv4g8VjbMaVnXXyWVh8tXNakO9FmDXfANJmPmgvDfZX-OBA@mail.gmail.com>
+From:   Andi Kleen <ak@linux.intel.com>
+In-Reply-To: <CAPcyv4g8VjbMaVnXXyWVh8tXNakO9FmDXfANJmPmgvDfZX-OBA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 5:27 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Oct 11, 2021 at 05:12:43PM -0700, Josh Don wrote:
->
-> > > > +             if (WARN_ON_ONCE(!nr_running)) {
-> > > > +                     /* can't be forced idle without a running task */
-> > > > +             } else {
-> > > > +                     delta *= nr_forced_idle;
-> > > > +                     delta /= nr_running;
-> > > > +             }
-> > >
-> > > Now the comment sayeth:
-> > >
-> > > > +     /*
-> > > > +      * For larger SMT configurations, we need to scale the charged
-> > > > +      * forced idle amount since there can be more than one forced idle
-> > > > +      * sibling and more than one running cookied task.
-> > > > +      */
-> > >
-> > > But why?
-> >
-> > We scale by the number of cpus actually forced idle, since we don't
-> > want to falsely over or under charge forced idle time (defined
-> > strictly as time where we have a runnable task but idle the cpu). The
-> > more important scaling here though is the division over the number of
-> > running entities. This is done so that the aggregate amount of forced
-> > idle over some group of threads makes sense. Ie if we have a cpu with
-> > SMT8, and a group of 7 threads sharing a cookie, we don't want to
-> > accrue 7 units of forced idle time per unit time while the 8th SMT is
-> > forced idle.
->
-> So why not simply compute the strict per-cpu force-idle time and let
-> userspace sort out the rest?
 
-Do you mean to compute force idle solely as a per-cpu value? I think
-that would be fine in addition to the per-thread field, but a
-desirable property here is proper attribution to the cause of the
-force idle. That lets system management understand which jobs are the
-most antagonistic from a coresched perspective, and is a signal
-(albeit noisy, due to system state and load balancing decisions) for
-scaling their capacity requirements.
+On 10/12/2021 12:13 PM, Dan Williams wrote:
+> On Tue, Oct 12, 2021 at 11:57 AM Reshetova, Elena
+> <elena.reshetova@intel.com> wrote:
+>>
+>>> I suspect the true number is even higher because that doesn't include IO
+>>> inside calls to other modules and indirect pointers, correct?
+>> Actually everything should be included. Smatch has cross-function db and
+>> I am using it for getting the call chains and it follows function pointers.
+>> Also since I am starting from a list of individual read IOs, every single
+>> base read IO in drivers/* should be covered as far as I can see. But if it uses
+>> some weird IO wrappers then the actual list might be higher.
+> Why analyze individual IO calls? I thought the goal here was to
+> disable entire classes of ioremap() users?
+
+This is everything that would need to be moved somewhere else if we 
+didn't disable the entire classes of ioremap users.
+
+-Andi
+
