@@ -2,141 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01718429D9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FE5429DA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 08:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232956AbhJLGYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 02:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232867AbhJLGYt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:24:49 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68974C061570;
-        Mon, 11 Oct 2021 23:22:48 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id t15so3037195pfl.13;
-        Mon, 11 Oct 2021 23:22:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=NEBAU1RWs6YJxzDRg0LMwfxlDVZpKjQ2JmxA/FMQn9I=;
-        b=McQMZTzzabqyQoFoDz0StgCDkbRur8jQXp9EFJgKGSMZZmgfGdvhTm38pr4OvcR12i
-         4PeD56h//3/bd+QLwPHJLYIBru6UZKbYVU4mXsBDbP8ANmFwUseGimunlsyKK9/GOZI3
-         RJ8Gx0lPDlQ504jIHHfRNG+iYpAigd+LGm16vlqDl+jEU8SC/3M+oMOcwyNTjfRWVj+S
-         WK//+a+XKGs0MvZvHk2Ia3LjWG2jO2KaoBAkgi4xGLYhad/e83YVZcJ3V4zTGDoivUrT
-         Q5e2J7VDTjG9bJirjL3AUh02qdzOR4MfAfdQFwr1HcyWCIAJSrixLQiAQa2FiVkoESJR
-         cMvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=NEBAU1RWs6YJxzDRg0LMwfxlDVZpKjQ2JmxA/FMQn9I=;
-        b=IqHmtkdAmYql39VZg8DJXuaULEUx10agZNUWRAfiNsHcggcod16Vt/X2Y5g2BW+cRj
-         3fLSr0pqnnyG3bkjSxNoLtHNA1HYvFRFXG7U9v6AmuhevDNTKo33y65DQkDU3RIXAfpZ
-         gCkCdQdVJNSS++6fJ/ScN8MDRHizT3ohmSuE2+Z+OgGL9Z/FLPVaiFAgVfYv0YYBtXVF
-         +fpM8vENYYCHWaZ7pyspnsGpR/6OjIkcpYHBbOtLO89vzKGL6s/brvGaXJfIga4N7VQX
-         Wxn1Azi3/tRimc22Deh9Gu2Fx03nStG5SwcNh+fI17tUhojBKtgjl+gDT7u+Z4r6tx4a
-         MefA==
-X-Gm-Message-State: AOAM533vIHohKBChUmr75qFGAZx8ulWSRDMrJvxeGTmHhP6LP03Ag2/2
-        itSVuF//raKEDhV0Tfshq5Y=
-X-Google-Smtp-Source: ABdhPJxATpW9oPrVRGySI6PVTwCs5AllHaaU5QwxgAoohRoVLEUprtd6ExSynuJ5fkMIyXgCVd1rzg==
-X-Received: by 2002:a63:7447:: with SMTP id e7mr12512872pgn.261.1634019767950;
-        Mon, 11 Oct 2021 23:22:47 -0700 (PDT)
-Received: from gmail.com ([2401:4900:1733:f30f:252a:9e24:80ca:38da])
-        by smtp.gmail.com with ESMTPSA id n207sm9769768pfd.143.2021.10.11.23.22.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 11 Oct 2021 23:22:47 -0700 (PDT)
-From:   Kumar Thangavel <kumarthangavel.hcl@gmail.com>
-X-Google-Original-From: Kumar Thangavel <thangavel.k@hcl.com>
-Date:   Tue, 12 Oct 2021 11:52:40 +0530
-To:     Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-aspeed@lists.ozlabs.org,
-        patrickw3@fb.com, Amithash Prasad <amithash@fb.com>,
-        velumanit@hcl.com
-Subject: [PATCH] net: ncsi: Adding padding bytes in the payload
-Message-ID: <20211012062240.GA5761@gmail.com>
+        id S232966AbhJLGZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 02:25:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233085AbhJLGZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 02:25:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19C5560EDF;
+        Tue, 12 Oct 2021 06:23:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634019798;
+        bh=GdcaW52Qft7w3IzkVpFppX5OfAJA+jde2Qeea4ajf00=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MtXbXT9dgjwLHd0+J5Ez9y5dpn8ebX8/WKkKae6bIyFpfrI34iBFImb3DEfW4xDMw
+         4rjSku5U1W8QHnAIueMK8WbqbGLf4+DAaWt9NUikDrGbdHnG8lt6lGs5qzpcipYrlV
+         uYSz8fw0qFrimABHT22OQ2vJzUkSbLUQPockPoQWRGZwUY2NsUYgTfTsgyk2R5ZsNA
+         aA/MkoM/uHzxHUUdmtN2GHusHgn33LHf+VFrTmlfiN9JzeUvKu78FentKlRCb2IKs6
+         mKF/I7iLiEf5J/GZl+Ne8QD0rIJ6u9dYBetq3O9R46pgrgldowianuRjvJOS7Djtq/
+         iCb54/ImmnPSg==
+Date:   Tue, 12 Oct 2021 09:23:14 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, bharat@chelsio.com,
+        yishaih@nvidia.com, bmt@zurich.ibm.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA: Remove redundant 'flush_workqueue()' calls
+Message-ID: <YWUp0s6TD6R1cse8@unreal>
+References: <ca7bac6e6c9c5cc8d04eec3944edb13de0e381a3.1633874776.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <ca7bac6e6c9c5cc8d04eec3944edb13de0e381a3.1633874776.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update NC-SI command handler (both standard and OEM) to take into
-account of payload paddings in allocating skb (in case of payload
-size is not 32-bit aligned).
+On Sun, Oct 10, 2021 at 04:08:10PM +0200, Christophe JAILLET wrote:
+> 'destroy_workqueue()' already drains the queue before destroying it, so
+> there is no need to flush it explicitly.
+> 
+> Remove the redundant 'flush_workqueue()' calls.
+> 
+> This was generated with coccinelle:
+> 
+> @@
+> expression E;
+> @@
+> - 	flush_workqueue(E);
+> 	destroy_workqueue(E);
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/infiniband/core/sa_query.c        | 1 -
+>  drivers/infiniband/hw/cxgb4/cm.c          | 1 -
+>  drivers/infiniband/hw/cxgb4/device.c      | 1 -
+>  drivers/infiniband/hw/mlx4/alias_GUID.c   | 4 +---
+>  drivers/infiniband/sw/siw/siw_cm.c        | 4 +---
+>  drivers/infiniband/ulp/ipoib/ipoib_main.c | 1 -
+>  6 files changed, 2 insertions(+), 10 deletions(-)
+> 
 
-The checksum field follows payload field, without taking payload
-padding into account can cause checksum being truncated, leading to
-dropped packets.
-
-Signed-off-by: Kumar Thangavel <thangavel.k@hcl.com>
-
----
- net/ncsi/ncsi-cmd.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
-
-diff --git a/net/ncsi/ncsi-cmd.c b/net/ncsi/ncsi-cmd.c
-index ba9ae482141b..4625fc935603 100644
---- a/net/ncsi/ncsi-cmd.c
-+++ b/net/ncsi/ncsi-cmd.c
-@@ -214,11 +214,19 @@ static int ncsi_cmd_handler_oem(struct sk_buff *skb,
- 	struct ncsi_cmd_oem_pkt *cmd;
- 	unsigned int len;
- 
-+	/* NC-SI spec requires payload to be padded with 0
-+	 * to 32-bit boundary before the checksum field.
-+	 * Ensure the padding bytes are accounted for in
-+	 * skb allocation
-+	 */
-+
-+	unsigned short payload = ALIGN(nca->payload, 4);
-+
- 	len = sizeof(struct ncsi_cmd_pkt_hdr) + 4;
--	if (nca->payload < 26)
-+	if (payload < 26)
- 		len += 26;
- 	else
--		len += nca->payload;
-+		len += payload;
- 
- 	cmd = skb_put_zero(skb, len);
- 	memcpy(&cmd->mfr_id, nca->data, nca->payload);
-@@ -272,6 +280,7 @@ static struct ncsi_request *ncsi_alloc_command(struct ncsi_cmd_arg *nca)
- 	struct net_device *dev = nd->dev;
- 	int hlen = LL_RESERVED_SPACE(dev);
- 	int tlen = dev->needed_tailroom;
-+	int payload;
- 	int len = hlen + tlen;
- 	struct sk_buff *skb;
- 	struct ncsi_request *nr;
-@@ -281,14 +290,18 @@ static struct ncsi_request *ncsi_alloc_command(struct ncsi_cmd_arg *nca)
- 		return NULL;
- 
- 	/* NCSI command packet has 16-bytes header, payload, 4 bytes checksum.
-+	 * Payload needs padding so that the checksum field follwoing payload is
-+	 * aligned to 32bit boundary.
- 	 * The packet needs padding if its payload is less than 26 bytes to
- 	 * meet 64 bytes minimal ethernet frame length.
- 	 */
- 	len += sizeof(struct ncsi_cmd_pkt_hdr) + 4;
--	if (nca->payload < 26)
-+
-+	payload = ALIGN(nca->payload, 4);
-+	if (payload < 26)
- 		len += 26;
- 	else
--		len += nca->payload;
-+		len += payload;
- 
- 	/* Allocate skb */
- 	skb = alloc_skb(len, GFP_ATOMIC);
--- 
-2.17.1
-
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
