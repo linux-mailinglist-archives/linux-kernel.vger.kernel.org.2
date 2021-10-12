@@ -2,166 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DB142AD92
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B7242AD9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234226AbhJLUHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:07:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43178 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234100AbhJLUHX (ORCPT
+        id S234326AbhJLUKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:10:14 -0400
+Received: from mail-pg1-f181.google.com ([209.85.215.181]:35780 "EHLO
+        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232145AbhJLUKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:07:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634069121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Izu+rZ+bydrqP5Ea4+zsV5r5PHcw8FRNGYQmKnuuTsQ=;
-        b=Qesu7kYU2iLqRQ/fK5gVfhKvN2RjN+d0ZA7SsNAGuzMoVjp88GuNedbUKXUYJN9b9lu6Lb
-        4c11FDzauZzDSEMOFjNPLN5/0xC5wDQ2+ERddqu5rDztXopnu97EhPSV/5mH+bE1kGDJda
-        ZMpAq8lDokzoO+PsjI/D12gVpI+uDBA=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-536-0-3oVFwvMRqlR90ZgltCQg-1; Tue, 12 Oct 2021 16:05:19 -0400
-X-MC-Unique: 0-3oVFwvMRqlR90ZgltCQg-1
-Received: by mail-ot1-f70.google.com with SMTP id u19-20020a0568301f1300b005472c85a1feso315782otg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:05:19 -0700 (PDT)
+        Tue, 12 Oct 2021 16:10:12 -0400
+Received: by mail-pg1-f181.google.com with SMTP id e7so178187pgk.2;
+        Tue, 12 Oct 2021 13:08:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Izu+rZ+bydrqP5Ea4+zsV5r5PHcw8FRNGYQmKnuuTsQ=;
-        b=YvxWreoq21lHBsqAnpx7Mzyl/lfNGwKsjUhbbCDz5JCH2q6ap7mb1SJSeD4NPdKw8w
-         F3hiA/RJIJyyxFsreRu/A43k7/qujtSWhc8DK1lQ7BJyOiAjPpvPmDwv66NkAsBvCj1H
-         6CuPg9nqnaBhALhZzo6xShdqYdl8ol6fNs4P30NxLC1yWf0xk9huY3Mq6Oq420vGRspK
-         s1UZgWyvrG6lkcpjtcpiOYOL8KRtMNa4bzn9EJPn2HMkkD2UIcEd1eHBnRqgrlI1usfu
-         MHmSqL3+h24IadIuSjeZHYd/YilOnsFNCJgJEFks5xUOuUb+nu9vdHR0qgbvy7PrA6Io
-         4lXQ==
-X-Gm-Message-State: AOAM532PyzKk9AIxxF2bV+qx0yiYRgiL1qOwbyaVQnVbd4X7kZA/7biP
-        N+6Tz3q2pnFKnmZsThka2G72AV7ulO1Kq9SFe840sf0oHBdbIsWJZPjoYvQ1u5jBz0YpM9o5Nrn
-        zfCtEdrmLp/sjQMqvFKdIDRXf
-X-Received: by 2002:a9d:1b7:: with SMTP id e52mr23201513ote.352.1634069118749;
-        Tue, 12 Oct 2021 13:05:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypL1uduEwPyz5IFlx9E/9+AA+30xBIuVrw1wb7qiXdQjSf3ur9Ov2wqqb1YqMhwczA/WtR2w==
-X-Received: by 2002:a9d:1b7:: with SMTP id e52mr23201490ote.352.1634069118419;
-        Tue, 12 Oct 2021 13:05:18 -0700 (PDT)
-Received: from redhat.com ([38.15.36.239])
-        by smtp.gmail.com with ESMTPSA id s18sm2135912otd.55.2021.10.12.13.05.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 13:05:18 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 14:05:16 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Matthew Ruffell <matthew.ruffell@canonical.com>
-Cc:     linux-pci@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        kvm@vger.kernel.org, nathan.langford@xcelesunifiedtechnologies.com
-Subject: Re: [PROBLEM] Frequently get "irq 31: nobody cared" when passing
- through 2x GPUs that share same pci switch via vfio
-Message-ID: <20211012140516.6838248b.alex.williamson@redhat.com>
-In-Reply-To: <CAKAwkKtJQ1mE3=iaDA1B_Dkn1+ZbN0jTSWrQon0=SAszRv5xFw@mail.gmail.com>
-References: <d4084296-9d36-64ec-8a79-77d82ac6d31c@canonical.com>
-        <20210914104301.48270518.alex.williamson@redhat.com>
-        <9e8d0e9e-1d94-35e8-be1f-cf66916c24b2@canonical.com>
-        <20210915103235.097202d2.alex.williamson@redhat.com>
-        <2fadf33d-8487-94c2-4460-2a20fdb2ea12@canonical.com>
-        <20211005171326.3f25a43a.alex.williamson@redhat.com>
-        <CAKAwkKtJQ1mE3=iaDA1B_Dkn1+ZbN0jTSWrQon0=SAszRv5xFw@mail.gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bbdMoLR3MNqiC0LoQYT4MoOoKEf+V9eiB1j1hxhS9ig=;
+        b=gSKInIkfSZRroPqODLpmYD4IwDzkCuJg6h8Tc0kUlF6O/uCH/StdwHxA4mX+9exZn2
+         UiTFRHj2qzeFkpmG5f5woUY2pTiMDF5alwqgygQmBVEprO0x80sq3P5XAHlYtWxlbIJ7
+         W3XhMD2HZhsb8b0LLZjpSUDj9DP6SptOQ16loWyMEF35gg/tFXYLEcTWfuRahi+wbXTo
+         kWfZHyjeMUCr9b5c8tgoODO07PVS3YxRwuW3aVx/M8lK+TZoLLUMyGBZm0VuWHfqikM/
+         QP/sF29C97GKNF4xrj4tXxBs6Cycbr4KNuegRLkwQRs8CR8UNqTeowUWK8UTHBC0mPOD
+         pr4g==
+X-Gm-Message-State: AOAM533T5RSVPSSNrB+Er3ngqezBykvabcql3czaMdW7iMV21VRZsObN
+        7+FpM/nxuBUjUriNbwNnZhCOdDpDUEkySHpyiqQ=
+X-Google-Smtp-Source: ABdhPJxIEhT0A0wVpkAWyb3hc4t9hpN8499Vhqb8Bd3ysP1JQepCnuyK3svchcCWMyR37vDvVIpRQ22WzQAamqTLU+8=
+X-Received: by 2002:a63:b11:: with SMTP id 17mr24269485pgl.51.1634069289917;
+ Tue, 12 Oct 2021 13:08:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211012134027.684712-1-kernel@esmil.dk> <20211012134027.684712-7-kernel@esmil.dk>
+ <CAHp75Vetqi=FMoRxfXHL+d1DhAXgLr+5e7ss1M_Rkhqa07H5Jg@mail.gmail.com>
+In-Reply-To: <CAHp75Vetqi=FMoRxfXHL+d1DhAXgLr+5e7ss1M_Rkhqa07H5Jg@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Tue, 12 Oct 2021 22:07:58 +0200
+Message-ID: <CANBLGcyCpSrxQi7pxLWQLkgbVGAKxJMXhoVbF_DdYDiv5_YJXQ@mail.gmail.com>
+Subject: Re: [PATCH v1 06/16] clk: starfive: Add JH7100 clock generator driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 17:58:07 +1300
-Matthew Ruffell <matthew.ruffell@canonical.com> wrote:
+On Tue, 12 Oct 2021 at 17:40, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>
+> On Tue, Oct 12, 2021 at 4:42 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> >
+> > From: Geert Uytterhoeven <geert@linux-m68k.org>
+> >
+> > Add a driver for the StarFive JH7100 clock generator.
+>
+> ...
+>
+> > +config CLK_STARFIVE_JH7100
+> > +       bool "StarFive JH7100 clock support"
+> > +       depends on SOC_STARFIVE || COMPILE_TEST
+>
+> > +       depends on OF
+>
+> Why? I haven't found a compile dependency, so you reduce the test
+> scope (when COMPILE_TEST=y).
 
-> Hi Alex,
-> 
-> On Wed, Oct 6, 2021 at 12:13 PM Alex Williamson
-> <alex.williamson@redhat.com> wrote:
-> > With both of these together, I'm so far able to prevent an interrupt
-> > storm for these cards.  I'd say the patch below is still extremely
-> > experimental, and I'm not sure how to get around the really hacky bit,
-> > but it would be interesting to see if it resolves the original issue.
-> > I've not yet tested this on a variety of devices, so YMMV.  Thanks,  
-> 
-> Thank you very much for your analysis and for the experimental patch, and we
-> have excellent news to report.
-> 
-> I sent Nathan a test kernel built on 5.14.0, and he has been running the
-> reproducer for a few days now.
-> 
-> Nathan writes:
-> 
-> > I've been testing heavily with the reproducer for a few days using all 8 GPUs
-> > and with the MSI fix for the audio devices in the guest disabled, i.e. a pretty
-> > much worst case scenario. As a control with kernel 5.14 (unpatched), the system
-> > locked up in 2,2,6,1, and 4 VM reset iterations, all in less than 10 minutes
-> > each time. With the patched kernel I'm currently at 1226 iterations running for
-> > 2 days 10 hours with no failures. This is excellent. FYI, I have disabled the
-> > dyndbg setting.  
-> 
-> The system is stable, and your patch sounds very promising.
+My thinking was that it can't ever be loaded on a !OF system, but
+you're right it'll just restrict compile testing. I'll remove, thanks.
 
-Great, I also ran a VM reboot loop for several days with all 6 GPUs
-assigned, no interrupt issues.
+> ...
+>
+> You are using
+> bits.h
+> mod_devicetable.h
+> which are not here
+>
+> > +#include <linux/clk.h>
+> > +#include <linux/clk-provider.h>
+> > +#include <linux/debugfs.h>
+> > +#include <linux/device.h>
+> > +#include <linux/init.h>
+> > +#include <linux/io.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/overflow.h>
+> > +#include <linux/platform_device.h>
+>
+> ...
+>
+> > +       value |= readl_relaxed(reg) & ~mask;
+>
+> value is not masked, is it okay?
+>
+> Usual pattern for this kind of operations is
+>
+> value = (current & ~mask) | (value & mask);
 
-> Nathan does have a small side effect to report:
-> 
-> > The only thing close to an issue that I have is that I still get frequent
-> > "irq 112: nobody cared" and "Disabling IRQ #112" errors. They just no longer
-> > lockup the system. If I watch the reproducer time between VM resets, I've
-> > noticed that it takes longer for the VM to startup after one of these
-> > "nobody cared" errors, and thus it takes longer until I can reset the VM again.
-> > I believe slow guest behavior in this disabled IRQ scenario is expected though?  
-> 
-> Full dmesg:
-> https://paste.ubuntu.com/p/hz8WdPZmNZ/
-> 
-> I had a look at all the lspci Nathan has provided me in the past, but 112 isn't
-> listed. I will ask Nathan for a fresh lspci so we can see what device it is.
-> The interesting thing is that we still hit __report_bad_irq() for 112 when we
-> have previously disabled it, typically after 1000+ seconds has gone by.
+This function is only ever called with constants, already masked
+values or the parent number from the clk framework, so it should be
+ok.
 
-The device might need to be operating in INTx mode, or at least had
-been at some point, to get the register filled.  It's essentially just
-a scratch register on the card that gets filled when the interrupt is
-configured.
+> > +       writel_relaxed(value, reg);
+>
+> ...
+>
+> > +       if (div > max)
+> > +               div = max;
+> > +
+> > +       return div;
+>
+> return min(div, max); ?
+>
+> ...
+>
+> > +       rate = parent / div;
+> > +       if (rate < req->min_rate && div > 1) {
+> > +               div -= 1;
+> > +               rate = parent / div;
+> > +       }
+>
+> Seems like homegrown DIV_ROUND_UP() or so. Who will guarantee that
+> decreasing div by 1 will satisfy the conditional again?
 
-Each time we register a new handler for the irq the masking due to
-spurious interrupt will be removed, but if it's actually causing the VM
-boot to take longer that suggests to me that the guest driver is
-stalled, perhaps because it's expecting an interrupt that's now masked
-in the host.  This could also be caused by a device that gets
-incorrectly probed for PCI-2.3 compliant interrupt masking.  For
-probing we can really only test that we have the ability to set the
-DisINTx bit, we can only hope that the hardware folks also properly
-implemented the INTx status bit to indicate the device is signaling
-INTx.  We should really figure out which device this is so that we can
-focus on whether it's another shared interrupt issue or something
-specific to the device.
+Maths unless I'm mistaken: div = DIV_ROUND_UP(parent, target), so in
+rational numbers
+  div - 1 < parent / target
+But the target is clamped by min_rate and max_rate, so
+  min_rate <= target < parent / (div - 1) = rate
 
-I'm also confused why this doesn't trigger the same panic/kexec as we
-were seeing with the other interrupt lines.  Are there some downstream
-patches or configs missing here that would promote these to more fatal
-errors?
+Sorry, re-using the rate varable for both the target and result is
+confusing. I'll fix that.
 
-> We think your patch fixes the interrupt storm issues. We are happy to continue
-> testing for as much as you need, and we are happy to test any followup patch
-> revisions.
-> 
-> Is there anything you can do to feel more comfortable about the
-> PCI_DEV_FLAGS_MSI_INTX_DISABLE_BUG dev flag hack? While it works, I can see why
-> you might not want to land it in mainline.
+> ...
+>
+> > +#ifdef CONFIG_DEBUG_FS
+>
+> Perhaps __maybe_unused?
 
-Yeah, it's a huge hack.  I wonder if we could look at the interrupt
-status and conditional'ize clearing DisINTx based on lack of a pending
-interrupt.  It seems somewhat reasonable not to clear the bit masking
-the interrupt if we know it's pending and know there's no handler for
-it.  I'll try to check if that's possible.  Thanks,
+I can definitely use __maybe_unused for the function declaration, but
+then I'll need a conditional every time clk_ops.debug_init needs to be
+initialized to either the function or NULL depending on
+CONFIG_DEBUG_FS below. Is that better?
 
-Alex
+> > +#else
+> > +#define jh7100_clk_debug_init NULL
+> > +#endif
+>
+> ...
+>
+> > +       if (idx >= JH7100_CLK_END) {
+>
+> > +               dev_err(priv->dev, "%s: invalid index %u\n", __func__, idx);
+>
+> __func__ means that the message has no value on its own. Make it
+> unique without using __func__, or drop completely.
+>
+> > +               return ERR_PTR(-EINVAL);
+> > +       }
+>
+> ...
+>
+> > +       for (idx = 0; idx < JH7100_CLK_PLL0_OUT; idx++) {
+> > +               struct clk_init_data init = {
+> > +                       .name = jh7100_clk_data[idx].name,
+> > +                       .ops = jh7100_clk_data[idx].ops,
+>
+> > +                       .num_parents = ((jh7100_clk_data[idx].max & JH7100_CLK_MUX_MASK)
+> > +                                       >> JH7100_CLK_MUX_SHIFT) + 1,
+>
+> With temporary variable this can be better written, or consider
+> something like this
+>
+>                        .num_parents =
+>                                ((jh7100_clk_data[idx].max &
+> JH7100_CLK_MUX_MASK) >> JH7100_CLK_MUX_SHIFT) + 1,
+>
+> > +                       .flags = jh7100_clk_data[idx].flags,
+> > +               };
+> > +               struct jh7100_clk *clk = &priv->reg[idx];
+>
+> ...
+>
+> > +       while (idx > 0)
+> > +               clk_hw_unregister(&priv->reg[--idx].hw);
+>
+> The
+>
+>        while (idx--)
+>                clk_hw_unregister(&priv->reg[idx].hw);
+>
+> is slightly better to read.
 
+It's not something I'll insist hard on, but I must admit I disagree.
+To me the above looks like cartoon characters running off a cliff and
+back. As a middle ground could we maybe do this?
+
+  while (idx)
+    clk_hw_unregister(&priv->reg[--idx].hw);
+
+> > +       return ret;
+> > +}
+>
+> ...
+>
+> > +static int __init clk_starfive_jh7100_init(void)
+> > +{
+> > +       return platform_driver_probe(&clk_starfive_jh7100_driver,
+> > +                                    clk_starfive_jh7100_probe);
+> > +}
+>
+> > +
+>
+> No need to have this blank line.
+> > +subsys_initcall(clk_starfive_jh7100_init);
+>
+> Any  explanation why subsys_initcall() is in use?
+
+TBH I just inherited that from Geert's first mock driver and never
+thought to question it. What would be a better alternative to try?
+
+Thanks!
+/Emil
