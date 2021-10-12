@@ -2,223 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1500142A70A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CAD42A70B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 16:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237242AbhJLOU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 10:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236695AbhJLOUZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 10:20:25 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44BBC061570;
-        Tue, 12 Oct 2021 07:18:23 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id m21so14000048pgu.13;
-        Tue, 12 Oct 2021 07:18:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Xf2ZZ4dUjskn2wzoA/na9mrwqcf1U/CnBUU6ZdkyGNw=;
-        b=f0x0Mp1+aw8gyzjTYOE2fGveQDjihAKtSAu5Rl/PbG2mSba8TWJbdNQybJpHwg0TS6
-         6XJqRb65/IRp/ibW7qXiIgZWjxkofIzOQWvOXl1C1QXeB11zHRj76YDAUHvXdO+CMXle
-         jeqTtZ6V9KhkJZnLXZ23/ewqjl1wTla2RrEWewTCB5Rkj7azHWlUQvjfgqFtDgfxSoXZ
-         lXKiUtEhap+ac5MeL0A/Tv9VpEUJYZ9vNrSPaTBpgG0oWorTuwe151VKmmUBp9WaAt+x
-         c/uMB2pnah2UIFTf9JHyUhHdh58vQydFY6VNAHEiU+L6ZFiRvnikjhdjVz9DAwpsl0zT
-         xrpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Xf2ZZ4dUjskn2wzoA/na9mrwqcf1U/CnBUU6ZdkyGNw=;
-        b=Gaz5x5csWOMU1HWy1jIrUPL4qfcz9xbw91qIeow4ln7oUXcVFm/kGfG+SyGpX3SFHb
-         mJrOyKKibkVYhMiKpRYFRSWWuW2KI065vvTdJtyesjqH9D38085GlbG3W23q8Hbep2h4
-         eoAJcx46IZ0DfEO8xDxm1IpCmXmD/DzHXyTdzk7FzXU72IySwNYuJHMRXmPVdp94fRlJ
-         i2XCbUixQiPkKLOZwmpkA72suIPontcJ87W+YVknoj8IF4bAHxXYygLm9eF+XHOfGw31
-         qqcKVd93MXepwFzcPpFOvgWToK0JL55spCPvbjOQJuKUQsbAyMM55+Sfm04ZmtWQjGxL
-         2GcQ==
-X-Gm-Message-State: AOAM532e8VaDdj7kYWk5OkFsDl2UZVP6Xm+GwFBswvrH8Otiis5/SVyU
-        C6PzIXysNddtnaJTG8vWslHU+xsWGSMWStLR
-X-Google-Smtp-Source: ABdhPJwczTJ/0WfRcgg+oiWJ4pkehoBQKkvLZn1mUO2VQu69XEcTIBA/6rUktoDu1GqymOTyylTX/g==
-X-Received: by 2002:a62:6544:0:b0:44b:508b:d05c with SMTP id z65-20020a626544000000b0044b508bd05cmr32131758pfb.56.1634048303387;
-        Tue, 12 Oct 2021 07:18:23 -0700 (PDT)
-Received: from rok-te3.. ([211.250.198.237])
-        by smtp.googlemail.com with ESMTPSA id r14sm11641143pgf.49.2021.10.12.07.18.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 07:18:22 -0700 (PDT)
-From:   Kyungrok Chung <acadx0@gmail.com>
-To:     Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Cc:     bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org
-Subject: [PATCH net-next] net: bridge: make use of helper netif_is_bridge_master()
-Date:   Tue, 12 Oct 2021 23:18:09 +0900
-Message-Id: <20211012141810.30661-1-acadx0@gmail.com>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S237268AbhJLOUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 10:20:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237248AbhJLOUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 10:20:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D4E560EFE;
+        Tue, 12 Oct 2021 14:18:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634048320;
+        bh=7fvG1qwOsQbbh48aDMK9Imgg95CjCCaeJfTcDCkFPqk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=W7a5X2f1XjAD3IZvefCwbMGY529p2jXc61NYvsA1O6NIn3rjYC6qMGamPymdaNUyE
+         mPPiNJhzLSc4QvcM38dcbpIAVJL1JUTps5ZSW2JChoHBkr+q5uQpDyWzvb9iSrZNcs
+         no3AGukJynB6lCaWi4aVy3ufdKU20p/CdKpkEnfVRRfQeIkUPoZsIm6T0WX6g3itrY
+         YBF6lsFDYacrClAu0w1Q9FbNXUC0mSQL3+FFs9vG1WaOLM/5sxFhpXcyetCy39RmGx
+         agWesXqiVUbATsvKe+MgTy2DBQmpZKMZCKL9kUQ7KocWdWeE+UKLnDCh8iTDaqqQjQ
+         WbwAYqLw/c3vA==
+Date:   Tue, 12 Oct 2021 23:18:35 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Nathan Huckleberry <nhuck@google.com>
+Subject: Re: [PATCH 6/8] ARM: clang: Do not relay on lr register for
+ stacktrace
+Message-Id: <20211012231835.522ac7ba366e5019192c1a5a@kernel.org>
+In-Reply-To: <CAKwvOdkdPHN0Y5GwTPUeaZyjtBttWrfoeLvQJFaJrfOHAtxkHg@mail.gmail.com>
+References: <163369609308.636038.15295764725220907794.stgit@devnote2>
+        <163369614818.636038.5019945597127474028.stgit@devnote2>
+        <CAKwvOdkdPHN0Y5GwTPUeaZyjtBttWrfoeLvQJFaJrfOHAtxkHg@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of netdev helper functions to improve code readability.
-Replace 'dev->priv_flags & IFF_EBRIDGE' with netif_is_bridge_master(dev).
+Hi Nick,
 
-Signed-off-by: Kyungrok Chung <acadx0@gmail.com>
----
- net/bridge/br.c                 | 4 ++--
- net/bridge/br_fdb.c             | 6 +++---
- net/bridge/br_if.c              | 2 +-
- net/bridge/br_ioctl.c           | 2 +-
- net/bridge/br_mdb.c             | 4 ++--
- net/bridge/br_netfilter_hooks.c | 2 +-
- net/bridge/br_netlink.c         | 4 ++--
- 7 files changed, 12 insertions(+), 12 deletions(-)
+On Mon, 11 Oct 2021 11:45:22 -0700
+Nick Desaulniers <ndesaulniers@google.com> wrote:
 
-diff --git a/net/bridge/br.c b/net/bridge/br.c
-index d3a32c6813e0..1fac72cc617f 100644
---- a/net/bridge/br.c
-+++ b/net/bridge/br.c
-@@ -36,7 +36,7 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
- 	bool changed_addr;
- 	int err;
- 
--	if (dev->priv_flags & IFF_EBRIDGE) {
-+	if (netif_is_bridge_master(dev)) {
- 		err = br_vlan_bridge_event(dev, event, ptr);
- 		if (err)
- 			return notifier_from_errno(err);
-@@ -349,7 +349,7 @@ static void __net_exit br_net_exit(struct net *net)
- 
- 	rtnl_lock();
- 	for_each_netdev(net, dev)
--		if (dev->priv_flags & IFF_EBRIDGE)
-+		if (netif_is_bridge_master(dev))
- 			br_dev_delete(dev, &list);
- 
- 	unregister_netdevice_many(&list);
-diff --git a/net/bridge/br_fdb.c b/net/bridge/br_fdb.c
-index 46812b659710..a6a68e18c70a 100644
---- a/net/bridge/br_fdb.c
-+++ b/net/bridge/br_fdb.c
-@@ -825,7 +825,7 @@ int br_fdb_dump(struct sk_buff *skb,
- 	struct net_bridge_fdb_entry *f;
- 	int err = 0;
- 
--	if (!(dev->priv_flags & IFF_EBRIDGE))
-+	if (!netif_is_bridge_master(dev))
- 		return err;
- 
- 	if (!filter_dev) {
-@@ -1076,7 +1076,7 @@ int br_fdb_add(struct ndmsg *ndm, struct nlattr *tb[],
- 		return -EINVAL;
- 	}
- 
--	if (dev->priv_flags & IFF_EBRIDGE) {
-+	if (netif_is_bridge_master(dev)) {
- 		br = netdev_priv(dev);
- 		vg = br_vlan_group(br);
- 	} else {
-@@ -1173,7 +1173,7 @@ int br_fdb_delete(struct ndmsg *ndm, struct nlattr *tb[],
- 	struct net_bridge *br;
- 	int err;
- 
--	if (dev->priv_flags & IFF_EBRIDGE) {
-+	if (netif_is_bridge_master(dev)) {
- 		br = netdev_priv(dev);
- 		vg = br_vlan_group(br);
- 	} else {
-diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
-index 4a02f8bb278a..c11bba3e7ec0 100644
---- a/net/bridge/br_if.c
-+++ b/net/bridge/br_if.c
-@@ -471,7 +471,7 @@ int br_del_bridge(struct net *net, const char *name)
- 	if (dev == NULL)
- 		ret =  -ENXIO; 	/* Could not find device */
- 
--	else if (!(dev->priv_flags & IFF_EBRIDGE)) {
-+	else if (!netif_is_bridge_master(dev)) {
- 		/* Attempt to delete non bridge device! */
- 		ret = -EPERM;
- 	}
-diff --git a/net/bridge/br_ioctl.c b/net/bridge/br_ioctl.c
-index 49c268871fc1..db4ab2c2ce18 100644
---- a/net/bridge/br_ioctl.c
-+++ b/net/bridge/br_ioctl.c
-@@ -26,7 +26,7 @@ static int get_bridge_ifindices(struct net *net, int *indices, int num)
- 	for_each_netdev_rcu(net, dev) {
- 		if (i >= num)
- 			break;
--		if (dev->priv_flags & IFF_EBRIDGE)
-+		if (netif_is_bridge_master(dev))
- 			indices[i++] = dev->ifindex;
- 	}
- 	rcu_read_unlock();
-diff --git a/net/bridge/br_mdb.c b/net/bridge/br_mdb.c
-index 0281453f7766..61ccf46fcc21 100644
---- a/net/bridge/br_mdb.c
-+++ b/net/bridge/br_mdb.c
-@@ -422,7 +422,7 @@ static int br_mdb_dump(struct sk_buff *skb, struct netlink_callback *cb)
- 	cb->seq = net->dev_base_seq;
- 
- 	for_each_netdev_rcu(net, dev) {
--		if (dev->priv_flags & IFF_EBRIDGE) {
-+		if (netif_is_bridge_master(dev)) {
- 			struct net_bridge *br = netdev_priv(dev);
- 			struct br_port_msg *bpm;
- 
-@@ -1016,7 +1016,7 @@ static int br_mdb_parse(struct sk_buff *skb, struct nlmsghdr *nlh,
- 		return -ENODEV;
- 	}
- 
--	if (!(dev->priv_flags & IFF_EBRIDGE)) {
-+	if (!netif_is_bridge_master(dev)) {
- 		NL_SET_ERR_MSG_MOD(extack, "Device is not a bridge");
- 		return -EOPNOTSUPP;
- 	}
-diff --git a/net/bridge/br_netfilter_hooks.c b/net/bridge/br_netfilter_hooks.c
-index 8edfb98ae1d5..b5af68c105a8 100644
---- a/net/bridge/br_netfilter_hooks.c
-+++ b/net/bridge/br_netfilter_hooks.c
-@@ -968,7 +968,7 @@ static int brnf_device_event(struct notifier_block *unused, unsigned long event,
- 	struct net *net;
- 	int ret;
- 
--	if (event != NETDEV_REGISTER || !(dev->priv_flags & IFF_EBRIDGE))
-+	if (event != NETDEV_REGISTER || !netif_is_bridge_master(dev))
- 		return NOTIFY_DONE;
- 
- 	ASSERT_RTNL();
-diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-index 5c6c4305ed23..0c8b5f1a15bc 100644
---- a/net/bridge/br_netlink.c
-+++ b/net/bridge/br_netlink.c
-@@ -106,7 +106,7 @@ static size_t br_get_link_af_size_filtered(const struct net_device *dev,
- 		p = br_port_get_check_rcu(dev);
- 		if (p)
- 			vg = nbp_vlan_group_rcu(p);
--	} else if (dev->priv_flags & IFF_EBRIDGE) {
-+	} else if (netif_is_bridge_master(dev)) {
- 		br = netdev_priv(dev);
- 		vg = br_vlan_group_rcu(br);
- 	}
-@@ -1050,7 +1050,7 @@ int br_dellink(struct net_device *dev, struct nlmsghdr *nlh, u16 flags)
- 
- 	p = br_port_get_rtnl(dev);
- 	/* We want to accept dev as bridge itself as well */
--	if (!p && !(dev->priv_flags & IFF_EBRIDGE))
-+	if (!p && !netif_is_bridge_master(dev))
- 		return -EINVAL;
- 
- 	err = br_afspec(br, p, afspec, RTM_DELLINK, &changed, NULL);
+> On Fri, Oct 8, 2021 at 5:29 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > Currently the stacktrace on clang compiled arm kernel uses the 'lr'
+> > register to find the first frame address from pt_regs. However, that
+> > is wrong after calling another function, because the 'lr' register
+> > is used by 'bl' instruction and never be recovered.
+> >
+> > As same as gcc arm kernel, directly use the frame pointer (x11) of
+> > the pt_regs to find the first frame address.
+> 
+> Hi Masami,
+> Thanks for the patch. Testing with ARCH=arm defconfig (multi_v7_defconfig)
+> 
+> Before this patch:
+> 
+> $ mount -t proc /proc
+> $ echo 0 > /proc/sys/kernel/kptr_restrict
+> $ cat /proc/self/stack
+> [<0>] proc_single_show+0x4c/0xb8
+> [<0>] seq_read_iter+0x174/0x4d8
+> [<0>] seq_read+0x134/0x158
+> [<0>] vfs_read+0xcc/0x2f8
+> [<0>] ksys_read+0x74/0xd0
+> [<0>] __entry_text_start+0x14/0x14
+> [<0>] 0xbea38cc0
+> 
+> After this patch:
+> $ mount -t proc /proc
+> $ echo 0 > /proc/sys/kernel/kptr_restrict
+> $ cat /proc/self/stack
+> [<0>] proc_single_show+0x4c/0xb8
+> [<0>] seq_read_iter+0x174/0x4d8
+> [<0>] seq_read+0x134/0x158
+> [<0>] vfs_read+0xcc/0x2f8
+> [<0>] ksys_read+0x74/0xd0
+> [<0>] __entry_text_start+0x14/0x14
+> [<0>] 0xbeb55cc0
+> 
+> Is there a different way to test/verify this patch? (I'm pretty sure
+> we had verified the WARN_ONCE functionality with this, too.)
+
+Hmm, I found this bug while testing my kretprobe-stacktrace test
+([2/8] in this series), so if you apply this series and revert
+this patch and enable CONFIG_KPROBES_SANITY_TEST, you'll see that
+the tests failures as below.
+
+[    4.062056]     ok 4 - test_kretprobes
+[    4.069944]     # test_stacktrace_on_kretprobe: EXPECTATION FAILED at kernel/test_kprobes.c:235
+[    4.069944]     Expected i != ret, but
+[    4.069944]         i == 10
+[    4.069944]         ret == 10
+[    4.072692]     not ok 5 - test_stacktrace_on_kretprobe
+[    4.088171]     # test_stacktrace_on_nested_kretprobe: EXPECTATION FAILED at kernel/test_kprobes.c:235
+[    4.088171]     Expected i != ret, but
+[    4.088171]         i == 10
+[    4.088171]         ret == 10
+[    4.091265]     not ok 6 - test_stacktrace_on_nested_kretprobe
+
+This means the test failed to find the correct return address from
+the stacktrace.
+Applying this patch,
+
+[    4.283953]     ok 4 - test_kretprobes
+[    4.290206]     ok 5 - test_stacktrace_on_kretprobe
+[    4.300429]     ok 6 - test_stacktrace_on_nested_kretprobe
+[    4.301743] # kprobes_test: pass:6 fail:0 skip:0 total:6
+
+
+> 
+> If I change from CONFIG_UNWINDER_ARM=y to
+> CONFIG_UNWINDER_FRAME_POINTER=y, before:
+> 
+> # cat /proc/self/stack
+> [<0>] stack_trace_save_tsk+0x50/0x6c
+> [<0>] proc_pid_stack+0xa0/0xf8
+> [<0>] proc_single_show+0x50/0xbc
+> [<0>] seq_read_iter+0x178/0x4ec
+> [<0>] seq_read+0x138/0x15c
+> [<0>] vfs_read+0xd0/0x304
+> [<0>] ksys_read+0x78/0xd4
+> [<0>] sys_read+0xc/0x10
+> 
+> after:
+> # cat /proc/self/stack
+> [<0>] proc_pid_stack+0xa0/0xf8
+> [<0>] proc_single_show+0x50/0xbc
+> [<0>] seq_read_iter+0x178/0x4ec
+> [<0>] seq_read+0x138/0x15c
+> [<0>] vfs_read+0xd0/0x304
+> [<0>] ksys_read+0x78/0xd4
+> [<0>] sys_read+0xc/0x10
+> [<0>] __entry_text_start+0x14/0x14
+> [<0>] 0xffffffff
+> 
+> So I guess this helps the CONFIG_UNWINDER_FRAME_POINTER=y case? (That
+> final frame address looks wrong, but is potentially yet another bug;
+> perhaps for clang we need to manually store the previous frame's pc at
+> a different offset before jumping to __entry_text_start).
+
+Ah, yes. I didn't touch the UNWINDER_ARM. As you may know the
+unwind_frame()@arch/arm/kernel/stacktrace.c is compiled only
+CONFIG_UNWINDER_FRAME_POINTER=y.
+
+> 
+> Also, I'm curious about CONFIG_THUMB2_KERNEL (forces CONFIG_UNWINDER_ARM=y).
+> 
+> before:
+> # cat /proc/self/stack
+> [<0>] proc_single_show+0x31/0x86
+> [<0>] seq_read_iter+0xff/0x326
+> [<0>] seq_read+0xd7/0xf2
+> [<0>] vfs_read+0x93/0x20e
+> [<0>] ksys_read+0x53/0x92
+> [<0>] ret_fast_syscall+0x1/0x52
+> [<0>] 0xbe9a9cc0
+> 
+> after:
+> # cat /proc/self/stack
+> [<0>] proc_single_show+0x31/0x86
+> [<0>] seq_read_iter+0xff/0x326
+> [<0>] seq_read+0xd7/0xf2
+> [<0>] vfs_read+0x93/0x20e
+> [<0>] ksys_read+0x53/0x92
+> [<0>] ret_fast_syscall+0x1/0x52
+> [<0>] 0xbec08cc0
+> 
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> 
+> so likely this fixes/improves CONFIG_UNWINDER_FRAME_POINTER=y? Is that correct?
+
+Yes, that is correct.
+
+Thank you!
+
+> 
+> >
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > ---
+> >  arch/arm/kernel/stacktrace.c |    3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> >
+> > diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
+> > index 76ea4178a55c..db798eac7431 100644
+> > --- a/arch/arm/kernel/stacktrace.c
+> > +++ b/arch/arm/kernel/stacktrace.c
+> > @@ -54,8 +54,7 @@ int notrace unwind_frame(struct stackframe *frame)
+> >
+> >         frame->sp = frame->fp;
+> >         frame->fp = *(unsigned long *)(fp);
+> > -       frame->pc = frame->lr;
+> > -       frame->lr = *(unsigned long *)(fp + 4);
+> > +       frame->pc = *(unsigned long *)(fp + 4);
+> >  #else
+> >         /* check current frame pointer is within bounds */
+> >         if (fp < low + 12 || fp > high - 4)
+> >
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
+
+
 -- 
-2.33.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
