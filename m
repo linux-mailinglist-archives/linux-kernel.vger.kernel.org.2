@@ -2,159 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D6D42AA0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B3842AA10
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 18:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbhJLQyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 12:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhJLQym (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 12:54:42 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEF2C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:52:40 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id x27so89965013lfa.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 09:52:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xawnIR012Yk1jlMpJVQsdMc2RuzZeUTjtaZq6SPv/vQ=;
-        b=CKhySEFvBmeBz2lcrERZC74hIR/KWwGPXSyIVPq6Td7ba04vZohMLOQL35RLwjANyH
-         tfRgYDWy9nS8fywNgnSJSAzXNkbXoJ8qv+rsx9CVsCqcxvQWM6yTOBwjT6GIxGxTJ309
-         bdaopyFfF+TiJh1ryg3F2OgcV1MxRjt94pHkqLEqDjFEn71AgZ/T64PwP29o9jxf8FOf
-         JQqiSaU7BsB1x3DmlIPL0UmzMPqNnYAeenGf9Xc0aIPeoz1FxZofoYiGi9sCj348z2MM
-         I5RdGgQMykcHrAo3w2BRDPeuDZh+Mh1f0p5hwizFdVfDfL5rTmqE5UK7aKtZ8hzLJi02
-         vXYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xawnIR012Yk1jlMpJVQsdMc2RuzZeUTjtaZq6SPv/vQ=;
-        b=wwHr/BWEt1R/4Mw9Fm1KjN8A4v4BCJHUboaplPuAOeYwpm451lDBneBMjW38GWsuci
-         +s11Jhlj6+2wdKNRxyTBAaje+FJTvw3WFOLwR3XMfMxumRLAD0grljKcbyQXdoCnZ5lC
-         +9BFaBZx3dsnzJ8vfHCLZIrqU7LdE8+lMIrOhOWijhtrxTHOoUY2SYOlstzAi5Eb1PfE
-         PGP/vz8wt3wbNk86OjI1l7AWYVDOSl1Y7vnzTel7W7k7He6h3xetpqXEmB+YcrDA5/YZ
-         pIE2/JW9t9MouFEYMEGpTHdfx3Xuy+PkGmkU1LSgsWBVi2IvmfYdFQsuQujmLGbuwB7D
-         PeGQ==
-X-Gm-Message-State: AOAM531ejQqlZA4g+rVj0hoWVMX6SgWoKw6+yTXR9Q20lHv7xzsFD+88
-        YG0ZnmcZwWxQWwAeRQQellnqIOj89lYrgJy261F8NQ==
-X-Google-Smtp-Source: ABdhPJwB9dqUf+AUdpqZ35D03WL9djp77vt7gTwCxcfcHj8MfPK1AU+kSPKFzNG8xdRVQ054ptpUFcbbXHlOvgM1N1Q=
-X-Received: by 2002:a05:6512:13a5:: with SMTP id p37mr34642679lfa.403.1634057558265;
- Tue, 12 Oct 2021 09:52:38 -0700 (PDT)
+        id S231849AbhJLQzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 12:55:43 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:40386 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229510AbhJLQzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 12:55:39 -0400
+Received: from zn.tnic (p200300ec2f19420044c1262ed1e42b8c.dip0.t-ipconnect.de [IPv6:2003:ec:2f19:4200:44c1:262e:d1e4:2b8c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3F02F1EC0295;
+        Tue, 12 Oct 2021 18:53:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634057616;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=XhG0eI6/ikMYsGMYYNFg1xgCN773kvIax9FWwldMVas=;
+        b=jWVOsEy100GpEu+IIeuhPgEJ58dh4/hxgyIlnntXdfjIWzjnsjd4ApfxbbY2G1CYzcaFFr
+        Rep+Dq5mvz4A0+MALuipfUhu7sMRpYXVwNe42fTSbs1pk4mu8luutkjqT1SbQOP2rXW5qh
+        ThVF6chDcdr1+E0HMUonFD6yYlZqYdQ=
+Date:   Tue, 12 Oct 2021 18:53:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+Message-ID: <YWW9ksxtp4hpT0GI@zn.tnic>
+References: <20211011215813.558681373@linutronix.de>
+ <20211011223611.069324121@linutronix.de>
 MIME-Version: 1.0
-References: <20211007004629.1113572-1-tkjos@google.com> <20211007004629.1113572-4-tkjos@google.com>
- <CAHC9VhTRTcZW9eyXXvAN7T=ZCQ_zwH5iBz+d0h2ntf7=XHE-Vw@mail.gmail.com>
- <CAHRSSEy=eC0rbHUzDmCo6Na7Ya=uCq7zJ6_cXysi0oWQB=19YQ@mail.gmail.com>
- <CAHC9VhQVKTxwUUP02U43=zVZrEFWc0hhmpaR1YSxe+KHjhnhbw@mail.gmail.com>
- <CAHRSSEwYrqFum7gS0XOYG0p3F+0Hv8qvaZbWLUyXUm0oCWpX9w@mail.gmail.com> <CAEjxPJ5YT36ZvrN6uSDOCNv3pYrWBzcutsnSjSzya-5e0v9Rpw@mail.gmail.com>
-In-Reply-To: <CAEjxPJ5YT36ZvrN6uSDOCNv3pYrWBzcutsnSjSzya-5e0v9Rpw@mail.gmail.com>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Tue, 12 Oct 2021 09:52:26 -0700
-Message-ID: <CAHRSSExyd--=r2g6FaRdhh5YtWBWPDOezyqW+8-HSOJw2bZhUw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] binder: use euid from cred instead of using task
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        arve@android.com, tkjos@android.com, maco@android.com,
-        christian@brauner.io, James Morris <jmorris@namei.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        devel@driverdev.osuosl.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211011223611.069324121@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 5:24 AM Stephen Smalley
-<stephen.smalley.work@gmail.com> wrote:
->
-> On Mon, Oct 11, 2021 at 7:39 PM Todd Kjos <tkjos@google.com> wrote:
-> >
-> > On Mon, Oct 11, 2021 at 2:39 PM Paul Moore <paul@paul-moore.com> wrote:
-> > >
-> > > On Fri, Oct 8, 2021 at 5:24 PM Todd Kjos <tkjos@google.com> wrote:
-> > > >
-> > > > On Fri, Oct 8, 2021 at 2:12 PM Paul Moore <paul@paul-moore.com> wrote:
-> > > > >
-> > > > > On Wed, Oct 6, 2021 at 8:46 PM Todd Kjos <tkjos@google.com> wrote:
-> > > > > >
-> > > > > > Set a transaction's sender_euid from the 'struct cred'
-> > > > > > saved at binder_open() instead of looking up the euid
-> > > > > > from the binder proc's 'struct task'. This ensures
-> > > > > > the euid is associated with the security context that
-> > > > > > of the task that opened binder.
-> > > > > >
-> > > > > > Fixes: 457b9a6f09f0 ("Staging: android: add binder driver")
-> > > > > > Signed-off-by: Todd Kjos <tkjos@google.com>
-> > > > > > Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-> > > > > > Cc: stable@vger.kernel.org # 4.4+
-> > > > > > ---
-> > > > > > v3: added this patch to series
-> > > > > >
-> > > > > >  drivers/android/binder.c | 2 +-
-> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > This is an interesting ordering of the patches.  Unless I'm missing
-> > > > > something I would have expected patch 3/3 to come first, followed by
-> > > > > 2/3, with patch 1/3 at the end; basically the reverse of what was
-> > > > > posted here.
-> > > >
-> > > > 2/3 and 3/3 both depend on 1/3 (add "cred" member of struct
-> > > > binder_proc). I kept that in 1/3 to keep that patch the same as what
-> > > > had already been reviewed. I didn't think much about the ordering
-> > > > between 2/3 and 3/3 -- but I agree that it would have been sensible to
-> > > > reverse their order.
-> > > >
-> > > > >
-> > > > > My reading of the previous thread was that Casey has made his peace
-> > > > > with these changes so unless anyone has any objections I'll plan on
-> > > > > merging 2/3 and 3/3 into selinux/stable-5.15 and merging 1/3 into
-> > > > > selinux/next.
-> > > >
-> > > > Thanks Paul. I'm not familiar with the branch structure, but you need
-> > > > 1/3 in selinux/stable-5.15 to resolve the dependency on proc->cred.
-> > >
-> > > Yep, thanks.  My eyes kinda skipped over that part when looking at the
-> > > patchset but that would have fallen out as soon as I merged them.
-> > >
-> > > Unfortunately that pretty much defeats the purpose of splitting this
-> > > into three patches.  While I suppose one could backport patches 2/3
-> > > and 3/3 individually, both of them have a very small footprint
-> > > especially considering their patch 1/3 dependency.  At the very least
-> > > it looks like patch 2/3 needs to be respun to address the
-> > > !CONFIG_SECURITY case and seeing the split patches now I think the
-> > > smart thing is to just combine them into a single patch.  I apologize
-> > > for the bad recommendation earlier, I should have followed that thread
-> > > a bit closer after the discussion with Casey and Stephen.
-> >
-> > I'm happy to submit a single patch for all of this. Another part of
-> > the rationale
-> > for splitting it into 3 patches was correctly identify the patch that introduced
-> > the patch that introduced the issue -- so each of the 3 had a different
-> > "Fixes:" tag. Should I cite the oldest (binder introduction) with the "Fixes"
-> > tag and perhaps mention the other two in the commit message?
->
-> Couldn't you just split patch 1 into the "add cred to binder proc"
-> part and "use cred in LSM/SELinux hooks" part, combine patch 3 with
-> the "add cred to binder proc" part to create new patch 1, then "use
-> cred in LSM/SELinux hooks" part is patch 2, and "switch task_getsecid
-> to cred_getsecid" to patch 3? Then patch 1 can be cherry-picked/ported
-> all the way back to the introduction of binder, patch 2 all the way
-> back to the introduction of binder LSM/SELinux hooks, and patch 3 just
-> back to where passing the secctx across binder was introduced.
+Just typos:
 
-Sending a v5 with this refactoring and the !CONFIG_SECURITY fix
+On Tue, Oct 12, 2021 at 02:00:17AM +0200, Thomas Gleixner wrote:
+> Swapping the host/guest FPU is directly fiddling with FPU internals which
+> requires 5 exports. The upcoming support of dymanically enabled states
+
+"dynamically"
+
+>  /*
+>   * Use kernel_fpu_begin/end() if you intend to use FPU in kernel context. It
+>   * disables preemption so be careful if you intend to use it for long periods
+> @@ -108,4 +110,10 @@ extern int cpu_has_xfeatures(u64 xfeatur
+>  
+>  static inline void update_pasid(void) { }
+>  
+> +/* FPSTATE related functions which are exported to KVM */
+
+fpstate-related
+
+> +extern void fpu_init_fpstate_user(struct fpu *fpu);
+> +
+> +/* KVM specific functions */
+> +extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask);
+> +
+>  #endif /* _ASM_X86_FPU_API_H */
+
+...
+
+>  /* Swap (qemu) user FPU context for the guest FPU context. */
+>  static void kvm_load_guest_fpu(struct kvm_vcpu *vcpu)
+>  {
+> -	fpregs_lock();
+> -
+> -	kvm_save_current_fpu(vcpu->arch.user_fpu);
+> -
+>  	/*
+> -	 * Guests with protected state can't have it set by the hypervisor,
+> -	 * so skip trying to set it.
+> +	 * Guest with protected state have guest_fpu == NULL which makes
+
+"Guests ... "
+
+> +	 * the swap only safe the host state. Exclude PKRU from restore as
+
+"save"
+
+> +	 * it is restored separately in kvm_x86_ops.run().
+>  	 */
+> -	if (vcpu->arch.guest_fpu)
+> -		/* PKRU is separately restored in kvm_x86_ops.run. */
+> -		__restore_fpregs_from_fpstate(&vcpu->arch.guest_fpu->state,
+> -					~XFEATURE_MASK_PKRU);
+> -
+> -	fpregs_mark_activate();
+> -	fpregs_unlock();
+> -
+> +	fpu_swap_kvm_fpu(vcpu->arch.user_fpu, vcpu->arch.guest_fpu,
+> +			 ~XFEATURE_MASK_PKRU);
+>  	trace_kvm_fpu(1);
+>  }
+>  
+>  /* When vcpu_run ends, restore user space FPU context. */
+>  static void kvm_put_guest_fpu(struct kvm_vcpu *vcpu)
+>  {
+> -	fpregs_lock();
+> -
+>  	/*
+> -	 * Guests with protected state can't have it read by the hypervisor,
+> -	 * so skip trying to save it.
+> +	 * Guest with protected state have guest_fpu == NULL which makes
+
+"Guests ... "
+
+> +	 * swap only restore the host state.
+>  	 */
+> -	if (vcpu->arch.guest_fpu)
+> -		kvm_save_current_fpu(vcpu->arch.guest_fpu);
+> -
+> -	restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state);
+> -
+> -	fpregs_mark_activate();
+> -	fpregs_unlock();
+> -
+> +	fpu_swap_kvm_fpu(vcpu->arch.guest_fpu, vcpu->arch.user_fpu, ~0ULL);
+>  	++vcpu->stat.fpu_reload;
+>  	trace_kvm_fpu(0);
+>  }
+> --- a/arch/x86/mm/extable.c
+> +++ b/arch/x86/mm/extable.c
+> @@ -47,7 +47,7 @@ static bool ex_handler_fprestore(const s
+>  	WARN_ONCE(1, "Bad FPU state detected at %pB, reinitializing FPU registers.",
+>  		  (void *)instruction_pointer(regs));
+>  
+> -	__restore_fpregs_from_fpstate(&init_fpstate, xfeatures_mask_fpstate());
+> +	restore_fpregs_from_fpstate(&init_fpstate, xfeatures_mask_fpstate());
+>  	return true;
+>  }
+>  
+> 
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
