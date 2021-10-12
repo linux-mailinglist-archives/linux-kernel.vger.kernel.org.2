@@ -2,68 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2918E42A370
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1172142A388
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236296AbhJLLkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:40:10 -0400
-Received: from outbound-smtp53.blacknight.com ([46.22.136.237]:34479 "EHLO
-        outbound-smtp53.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236289AbhJLLkJ (ORCPT
+        id S236375AbhJLLnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 07:43:49 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:62447 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236338AbhJLLnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:40:09 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp53.blacknight.com (Postfix) with ESMTPS id 3314AFAB37
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 12:38:06 +0100 (IST)
-Received: (qmail 17393 invoked from network); 12 Oct 2021 11:38:06 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Oct 2021 11:38:05 -0000
-Date:   Tue, 12 Oct 2021 12:38:04 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH memcg] mm/page_alloc.c: avoid statistic update with 0
-Message-ID: <20211012113804.GT3959@techsingularity.net>
-References: <b2371951-bb8a-e62e-8d33-10830bbf6275@virtuozzo.com>
- <29155011-f884-b0e5-218e-911039568acb@suse.cz>
- <f52c5cd3-9b74-0fd5-2b7b-83ca21c52b2a@virtuozzo.com>
+        Tue, 12 Oct 2021 07:43:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1634038903; x=1665574903;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=vhUkg9h0xV9ZvVTvkdqrzA9Qz3YC8T3rVvXz96y15vQ=;
+  b=RRTwmqyFWvTt0IT8903LhGpFaxOMUtz1yLKG5TvhKF+tDKa555qn1dfU
+   KXfgjTh0IGmv8aYexjw4SOpK2vOhVorBGpUBWJNnQiz5hSTXrs+zUhY49
+   Y8fD2KB8iY6IyBDUqc9kzGSMOyCv2Rz2xQkgHGHFY7ojUhdttmGc6JDVz
+   c=;
+X-IronPort-AV: E=Sophos;i="5.85,367,1624320000"; 
+   d="scan'208";a="148529692"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-686c2610.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 12 Oct 2021 11:41:34 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1a-686c2610.us-east-1.amazon.com (Postfix) with ESMTPS id 935D460EA7;
+        Tue, 12 Oct 2021 11:41:30 +0000 (UTC)
+Received: from [192.168.29.157] (10.43.160.241) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Tue, 12 Oct 2021 11:41:23 +0000
+Message-ID: <50bd7a39-b5ed-c15e-096f-2823d22cc5cc@amazon.com>
+Date:   Tue, 12 Oct 2021 14:41:17 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <f52c5cd3-9b74-0fd5-2b7b-83ca21c52b2a@virtuozzo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.2
+Subject: Re: [RFC PATCH 2/2] RDMA/efa: Add support for dmabuf memory regions
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Firas Jahjah <firasj@amazon.com>
+References: <20211007104301.76693-1-galpress@amazon.com>
+ <20211007104301.76693-3-galpress@amazon.com>
+ <20211007114018.GD2688930@ziepe.ca>
+ <77082c57-29f8-1eba-b260-7cb658ec34d1@amazon.com>
+ <20211011232839.GF2688930@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+In-Reply-To: <20211011232839.GF2688930@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.241]
+X-ClientProxiedBy: EX13D47UWA001.ant.amazon.com (10.43.163.6) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 01:42:41PM +0300, Vasily Averin wrote:
-> On 08.10.2021 14:47, Vlastimil Babka wrote:
-> > On 10/8/21 11:24, Vasily Averin wrote:
-> >> __alloc_pages_bulk can call __count_zid_vm_events and zone_statistics
-> >> with nr_account = 0.
-> > 
-> > But that's not a bug, right? Just an effective no-op that's not commonly
-> > happening, so is it worth the check?
+On 12/10/2021 2:28, Jason Gunthorpe wrote:
+> On Sun, Oct 10, 2021 at 09:55:49AM +0300, Gal Pressman wrote:
+>> On 07/10/2021 14:40, Jason Gunthorpe wrote:
+>>> On Thu, Oct 07, 2021 at 01:43:00PM +0300, Gal Pressman wrote:
+>>>
+>>>> @@ -1491,26 +1493,29 @@ static int efa_create_pbl(struct efa_dev *dev,
+>>>>    return 0;
+>>>>  }
+>>>>
+>>>> -struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
+>>>> -                   u64 virt_addr, int access_flags,
+>>>> -                   struct ib_udata *udata)
+>>>> +static void efa_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
+>>>> +{
+>>>> +  WARN_ON_ONCE(1,
+>>>> +               "Invalidate callback should not be called when memory is pinned\n");
+>>>> +}
+>>>> +
+>>>> +static struct dma_buf_attach_ops efa_dmabuf_attach_ops = {
+>>>> +  .allow_peer2peer = true,
+>>>> +  .move_notify = efa_dmabuf_invalidate_cb,
+>>>> +};
+>>>
+>>> Shouldn't move_notify really just be left as NULL? I mean fixing
+>>> whatever is preventing that?
+>>
+>> That's what I had in the previous RFC and I think Christian didn't really like it.
 > 
-> Why not?
+> Well, having drivers define a dummy function that only fails looks
+> a lot worse to me. If not null then it should be a general
+> 'dmabuf_unsupported_move_notify' shared function
+
+Will do.
+
+>>>> +  err = ib_umem_dmabuf_map_pages(umem_dmabuf);
+>>>> +  if (err) {
+>>>> +          ibdev_dbg(&dev->ibdev, "Failed to map dmabuf pages\n");
+>>>> +          goto err_unpin;
+>>>> +  }
+>>>> +  dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
+>>>
+>>> If it is really this simple the core code should have this logic,
+>>> 'ib_umem_dmabuf_get_pinned()' or something
+>>
+>> Should get_pinned do just get + dma_buf_pin, or should it do
+>> ib_umem_dmabuf_map_pages as well?
 > 
-> Yes, it's not a bug, it just makes the kernel a bit more efficient in a very unlikely case.
+> Yes the map_pages too, a umem is supposed to be dma mapped after
+> creation.
 
-At the cost of an additional branch in the likely case that may be
-mispredicted.
-
-> However, it looks strange and makes uninformed code reviewers like me worry about possible
-> problems inside the affected functions. No one else calls these functions from 0.
->  
-
-The accounting functions should still work with a 0 delta.
-
--- 
-Mel Gorman
-SUSE Labs
+Will do, thanks Jason.
