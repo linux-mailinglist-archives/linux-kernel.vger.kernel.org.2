@@ -2,146 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7C842AAB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E25BA42AABD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbhJLRac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:30:32 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:41563 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230306AbhJLRaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:30:24 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HTN103qCjz9sSN;
-        Tue, 12 Oct 2021 19:28:20 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id BLNfPwSJXZSO; Tue, 12 Oct 2021 19:28:20 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HTN102rz4z9sSL;
-        Tue, 12 Oct 2021 19:28:20 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4C72D8B77A;
-        Tue, 12 Oct 2021 19:28:20 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id hSLIKLkcH9IS; Tue, 12 Oct 2021 19:28:20 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.154])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A690A8B763;
-        Tue, 12 Oct 2021 19:28:19 +0200 (CEST)
-Subject: Re: [PATCH] powerpc: don't select KFENCE on platform PPC_FSL_BOOK3E
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Marco Elver <elver@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210924063927.1341241-1-liushixin2@huawei.com>
- <77ce95e4-1af1-6536-5f0c-a573c648801a@huawei.com>
- <87bl3u7oay.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <9c1ee778-b38b-3d41-37f3-5ea22dca063b@csgroup.eu>
-Date:   Tue, 12 Oct 2021 19:28:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232446AbhJLRcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:32:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24992 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229810AbhJLRcI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 13:32:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634059806;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nJCGcnKEbIqqHMfmUDpnKvwtwd5KiHx7SBZCiGYW5Nc=;
+        b=OBnojTsO4CqW8LjqRPoqYZLOjw5yrQnxZec+b07wEnhoOXeMKqizMGPHUBahd3PnPg9Vd2
+        RL5EJqadT5HqNwp92zfrF/56UQExrmOAq4E1lBAG4Trk95qNcufpv4BuNgoh49wqcb10hi
+        +kHOsKVYoCm2+oqk773rAUM9AX6+iUY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-559-8gLJTdDTO9y8Uen0RC7PoA-1; Tue, 12 Oct 2021 13:30:05 -0400
+X-MC-Unique: 8gLJTdDTO9y8Uen0RC7PoA-1
+Received: by mail-wr1-f70.google.com with SMTP id r25-20020adfab59000000b001609ddd5579so16333669wrc.21
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:30:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=nJCGcnKEbIqqHMfmUDpnKvwtwd5KiHx7SBZCiGYW5Nc=;
+        b=LxxYEVKlB8GAYT7qhdg4Q3W3tg3VwZDNvm/ONuwnjj24VDWxUl2jPIgXGKu9SBhIOw
+         9H7SeZgzCxy9+sO6bMvHDkZ+BcWvUrr/8aoGM7uncKsF9R8oHVpWDHHyx5OooVKZPe+Z
+         EeDnL8KOGuoTj2rjLWSh6zh0OssNmPQp4qd3C/w/tGCUbO4HCxudZ1Y1hr93DgK5KLb/
+         JEl57Uq0rmgIaLL6o3gjANgN/EcybRe+ne/UPyDKV5XVtywCgIZUZ9ZRUersySY/7knR
+         aKxJIKeHoTNDinfXJFAKaActBWjdtXLbTWF3CoVy0FCnsyGPLnrN+MqVrfq3QhZSjNTj
+         blxA==
+X-Gm-Message-State: AOAM533CoFZ92ly23D2YIxFgEKA0fWoSA7JAf+w5232Lr2dMHojgTYL8
+        HRttKQCPbW3IA/nUWOONyz4v0R28irNjldxfjxVpBemD7drO3a1jHB6vWpU2tI4SlQbnSVigb/7
+        rebe3BFndJ/xhf/+v1cnVkqY6
+X-Received: by 2002:a7b:c08b:: with SMTP id r11mr6983645wmh.167.1634059803819;
+        Tue, 12 Oct 2021 10:30:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxajnlq/YMP+te0l4ShanGzhvQVEbgsTy6Ll0MJfqn5Q8TCYVC10ObVnmGHZ8yW3jEoeiHIcA==
+X-Received: by 2002:a7b:c08b:: with SMTP id r11mr6983605wmh.167.1634059803498;
+        Tue, 12 Oct 2021 10:30:03 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id g25sm11692781wrc.88.2021.10.12.10.30.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 10:30:02 -0700 (PDT)
+Message-ID: <826f57f5-c312-86d1-598b-3f9ac1fc98ac@redhat.com>
+Date:   Tue, 12 Oct 2021 19:30:01 +0200
 MIME-Version: 1.0
-In-Reply-To: <87bl3u7oay.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [patch 14/31] x86/fpu: Replace KVMs homebrewn FPU copy from user
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org
+References: <20211011215813.558681373@linutronix.de>
+ <20211011223611.129308001@linutronix.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211011223611.129308001@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 12/10/2021 à 08:24, Michael Ellerman a écrit :
-> Liu Shixin <liushixin2@huawei.com> writes:
->> kindly ping.
+On 12/10/21 02:00, Thomas Gleixner wrote:
+> Copying a user space buffer to the memory buffer is already available in
+> the FPU core. The copy mechanism in KVM lacks sanity checks and needs to
+> use cpuid() to lookup the offset of each component, while the FPU core has
+> this information cached.
 > 
-> I was under the impression you were trying to debug why it wasn't
-> working with Christophe.
-
-The investigation was a bit dormant to be honest since Liu confirmed 
-that neither KFENCE not DEBUG_PAGEALLOC works.
-
-I now looked at the effort to make it work, and it is not trivial.
-At the time being, all linear space is mapped with pinned TLBs and 
-everything is setup for space 0, with space 1 being used temporarily 
-when doing heavy changes to space 0.
-
-We can't use standard pages for linear space on space 0 because we need 
-memory mapped at all time for exceptions (on booke exception run with 
-MMU on in space 0).
-
-In order to use standard pages, we'd need to reorganise the kernel to 
-have it run mostly in space 1 (for data at least) where we would map 
-almost everything with standard pages, and keep pinned TLB to map linear 
-space on space 0 for TLB miss exceptions. Then we'd do more or less like 
-book3s/32 and switch back into space 1 into other exceptions prolog.
-
-That could be good to do it as we could maybe have more code in common 
-with non booke 32 bits, but it is not a trivial job.
-
-So I suggest that for now, we just make KFENCE and DEBUG_PAGEALLOC 
-unselectable for booke/32 (e500 and 44x).
-
-Christophe
-
+> Make the FPU core variant accessible for KVM and replace the homebrewn
+> mechanism.
 > 
-> cheers
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: kvm@vger.kernel.org
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>   arch/x86/include/asm/fpu/api.h |    3 +
+>   arch/x86/kernel/fpu/core.c     |   38 ++++++++++++++++++++-
+>   arch/x86/kernel/fpu/xstate.c   |    3 -
+>   arch/x86/kvm/x86.c             |   74 +----------------------------------------
+>   4 files changed, 44 insertions(+), 74 deletions(-)
 > 
->> On 2021/9/24 14:39, Liu Shixin wrote:
->>> On platform PPC_FSL_BOOK3E, all lowmem is managed by tlbcam. That means
->>> we didn't really map the kfence pool with page granularity. Therefore,
->>> if KFENCE is enabled, the system will hit the following panic:
->>>
->>>      BUG: Kernel NULL pointer dereference on read at 0x00000000
->>>      Faulting instruction address: 0xc01de598
->>>      Oops: Kernel access of bad area, sig: 11 [#1]
->>>      BE PAGE_SIZE=4K SMP NR_CPUS=4 MPC8544 DS
->>>      Dumping ftrace buffer:
->>>         (ftrace buffer empty)
->>>      Modules linked in:
->>>      CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc3+ #298
->>>      NIP:  c01de598 LR: c08ae9c4 CTR: 00000000
->>>      REGS: c0b4bea0 TRAP: 0300   Not tainted  (5.12.0-rc3+)
->>>      MSR:  00021000 <CE,ME>  CR: 24000228  XER: 20000000
->>>      DEAR: 00000000 ESR: 00000000
->>>      GPR00: c08ae9c4 c0b4bf60 c0ad64e0 ef720000 00021000 00000000 00000000 00000200
->>>      GPR08: c0ad5000 00000000 00000000 00000004 00000000 008fbb30 00000000 00000000
->>>      GPR16: 00000000 00000000 00000000 00000000 c0000000 00000000 00000000 00000000
->>>      GPR24: c08ca004 c08ca004 c0b6a0e0 c0b60000 c0b58f00 c0850000 c08ca000 ef720000
->>>      NIP [c01de598] kfence_protect+0x44/0x6c
->>>      LR [c08ae9c4] kfence_init+0xfc/0x2a4
->>>      Call Trace:
->>>      [c0b4bf60] [efffe160] 0xefffe160 (unreliable)
->>>      [c0b4bf70] [c08ae9c4] kfence_init+0xfc/0x2a4
->>>      [c0b4bfb0] [c0894d3c] start_kernel+0x3bc/0x574
->>>      [c0b4bff0] [c0000470] set_ivor+0x14c/0x188
->>>      Instruction dump:
->>>      7c0802a6 8109d594 546a653a 90010014 54630026 39200000 7d48502e 2c0a0000
->>>      41820010 554a0026 5469b53a 7d295214 <81490000> 38831000 554a003c 91490000
->>>      random: get_random_bytes called from print_oops_end_marker+0x40/0x78 with crng_init=0
->>>      ---[ end trace 0000000000000000 ]---
->>>
->>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
->>> ---
->>>   arch/powerpc/Kconfig | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
->>> index d46db0bfb998..cffd57bcb5e4 100644
->>> --- a/arch/powerpc/Kconfig
->>> +++ b/arch/powerpc/Kconfig
->>> @@ -185,7 +185,7 @@ config PPC
->>>   	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
->>>   	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
->>>   	select HAVE_ARCH_KGDB
->>> -	select HAVE_ARCH_KFENCE			if PPC32
->>> +	select HAVE_ARCH_KFENCE			if PPC32 && !PPC_FSL_BOOK3E
->>>   	select HAVE_ARCH_MMAP_RND_BITS
->>>   	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
->>>   	select HAVE_ARCH_NVRAM_OPS
+> --- a/arch/x86/include/asm/fpu/api.h
+> +++ b/arch/x86/include/asm/fpu/api.h
+> @@ -116,4 +116,7 @@ extern void fpu_init_fpstate_user(struct
+>   /* KVM specific functions */
+>   extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask);
+>   
+> +struct kvm_vcpu;
+> +extern int fpu_copy_kvm_uabi_to_vcpu(struct fpu *fpu, const void *buf, u64 xcr0, u32 *pkru);
+> +
+>   #endif /* _ASM_X86_FPU_API_H */
+> --- a/arch/x86/kernel/fpu/core.c
+> +++ b/arch/x86/kernel/fpu/core.c
+> @@ -174,7 +174,43 @@ void fpu_swap_kvm_fpu(struct fpu *save,
+>   	fpregs_unlock();
+>   }
+>   EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpu);
+> -#endif
+> +
+> +int fpu_copy_kvm_uabi_to_vcpu(struct fpu *fpu, const void *buf, u64 xcr0,
+> +			      u32 *vpkru)
+> +{
+> +	union fpregs_state *kstate = &fpu->state;
+> +	const union fpregs_state *ustate = buf;
+> +	struct pkru_state *xpkru;
+> +	int ret;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_XSAVE)) {
+> +		if (ustate->xsave.header.xfeatures & ~XFEATURE_MASK_FPSSE)
+> +			return -EINVAL;
+> +		if (ustate->fxsave.mxcsr & ~mxcsr_feature_mask)
+> +			return -EINVAL;
+> +		memcpy(&kstate->fxsave, &ustate->fxsave, sizeof(ustate->fxsave));
+> +		return 0;
+> +	}
+> +
+> +	if (ustate->xsave.header.xfeatures & ~xcr0)
+> +		return -EINVAL;
+> +
+> +	ret = copy_uabi_from_kernel_to_xstate(&kstate->xsave, ustate);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Retrieve PKRU if not in init state */
+> +	if (kstate->xsave.header.xfeatures & XFEATURE_MASK_PKRU) {
+> +		xpkru = get_xsave_addr(&kstate->xsave, XFEATURE_PKRU);
+> +		*vpkru = xpkru->pkru;
+> +	}
+> +
+> +	/* Ensure that XCOMP_BV is set up for XSAVES */
+> +	xstate_init_xcomp_bv(&kstate->xsave, xfeatures_mask_uabi());
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(fpu_copy_kvm_uabi_to_vcpu);
+> +#endif /* CONFIG_KVM */
+>   
+>   void kernel_fpu_begin_mask(unsigned int kfpu_mask)
+>   {
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -1134,8 +1134,7 @@ static int copy_uabi_to_xstate(struct xr
+>   
+>   /*
+>    * Convert from a ptrace standard-format kernel buffer to kernel XSAVE[S]
+> - * format and copy to the target thread. This is called from
+> - * xstateregs_set().
+> + * format and copy to the target thread. Used by ptrace and KVM.
+>    */
+>   int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
+>   {
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4695,8 +4695,6 @@ static int kvm_vcpu_ioctl_x86_set_debugr
+>   	return 0;
+>   }
+>   
+> -#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
+> -
+>   static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
+>   {
+>   	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
+> @@ -4740,50 +4738,6 @@ static void fill_xsave(u8 *dest, struct
+>   	}
+>   }
+>   
+> -static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
+> -{
+> -	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
+> -	u64 xstate_bv = *(u64 *)(src + XSAVE_HDR_OFFSET);
+> -	u64 valid;
+> -
+> -	/*
+> -	 * Copy legacy XSAVE area, to avoid complications with CPUID
+> -	 * leaves 0 and 1 in the loop below.
+> -	 */
+> -	memcpy(xsave, src, XSAVE_HDR_OFFSET);
+> -
+> -	/* Set XSTATE_BV and possibly XCOMP_BV.  */
+> -	xsave->header.xfeatures = xstate_bv;
+> -	if (boot_cpu_has(X86_FEATURE_XSAVES))
+> -		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
+> -
+> -	/*
+> -	 * Copy each region from the non-compacted offset to the
+> -	 * possibly compacted offset.
+> -	 */
+> -	valid = xstate_bv & ~XFEATURE_MASK_FPSSE;
+> -	while (valid) {
+> -		u32 size, offset, ecx, edx;
+> -		u64 xfeature_mask = valid & -valid;
+> -		int xfeature_nr = fls64(xfeature_mask) - 1;
+> -
+> -		cpuid_count(XSTATE_CPUID, xfeature_nr,
+> -			    &size, &offset, &ecx, &edx);
+> -
+> -		if (xfeature_nr == XFEATURE_PKRU) {
+> -			memcpy(&vcpu->arch.pkru, src + offset,
+> -			       sizeof(vcpu->arch.pkru));
+> -		} else {
+> -			void *dest = get_xsave_addr(xsave, xfeature_nr);
+> -
+> -			if (dest)
+> -				memcpy(dest, src + offset, size);
+> -		}
+> -
+> -		valid -= xfeature_mask;
+> -	}
+> -}
+> -
+>   static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
+>   					 struct kvm_xsave *guest_xsave)
+>   {
+> @@ -4802,37 +4756,15 @@ static void kvm_vcpu_ioctl_x86_get_xsave
+>   	}
+>   }
+>   
+> -#define XSAVE_MXCSR_OFFSET 24
+> -
+>   static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
+>   					struct kvm_xsave *guest_xsave)
+>   {
+> -	u64 xstate_bv;
+> -	u32 mxcsr;
+> -
+>   	if (!vcpu->arch.guest_fpu)
+>   		return 0;
+>   
+> -	xstate_bv = *(u64 *)&guest_xsave->region[XSAVE_HDR_OFFSET / sizeof(u32)];
+> -	mxcsr = *(u32 *)&guest_xsave->region[XSAVE_MXCSR_OFFSET / sizeof(u32)];
+> -
+> -	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
+> -		/*
+> -		 * Here we allow setting states that are not present in
+> -		 * CPUID leaf 0xD, index 0, EDX:EAX.  This is for compatibility
+> -		 * with old userspace.
+> -		 */
+> -		if (xstate_bv & ~supported_xcr0 || mxcsr & ~mxcsr_feature_mask)
+> -			return -EINVAL;
+> -		load_xsave(vcpu, (u8 *)guest_xsave->region);
+> -	} else {
+> -		if (xstate_bv & ~XFEATURE_MASK_FPSSE ||
+> -			mxcsr & ~mxcsr_feature_mask)
+> -			return -EINVAL;
+> -		memcpy(&vcpu->arch.guest_fpu->state.fxsave,
+> -			guest_xsave->region, sizeof(struct fxregs_state));
+> -	}
+> -	return 0;
+> +	return fpu_copy_kvm_uabi_to_vcpu(vcpu->arch.guest_fpu,
+> +					 guest_xsave->region,
+> +					 supported_xcr0, &vcpu->arch.pkru);
+>   }
+>   
+>   static void kvm_vcpu_ioctl_x86_get_xcrs(struct kvm_vcpu *vcpu,
+> 
+
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+
