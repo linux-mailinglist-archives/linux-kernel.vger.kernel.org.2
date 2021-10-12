@@ -2,160 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E50429BDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561C3429BDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 05:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbhJLDXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 23:23:30 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:35986 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231742AbhJLDX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 23:23:29 -0400
-Received: from BC-Mail-Ex07.internal.baidu.com (unknown [172.31.51.47])
-        by Forcepoint Email with ESMTPS id 4E7EAD74461F2518E7E5;
-        Tue, 12 Oct 2021 11:21:17 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-EX07.internal.baidu.com (172.31.51.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Tue, 12 Oct 2021 11:21:17 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 12 Oct 2021 11:21:16 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <hch@infradead.org>
-CC:     Cai Huoqing <caihuoqing@baidu.com>,
-        Michael Cyr <mikecyr@linux.ibm.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] scsi: ibmvscsi_tgt: Use dma_alloc_noncoherent() instead of get_zeroed_page/dma_map_single()
-Date:   Tue, 12 Oct 2021 11:21:09 +0800
-Message-ID: <20211012032110.2224-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S232151AbhJLDXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 23:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232108AbhJLDXs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 23:23:48 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFC6C061749
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 20:21:47 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id x8so12565838plv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 20:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mindqxxsMB6gVGzm2IFNuF4jPvZILQH7yCXhl2T6zNY=;
+        b=QZJA/iS3B13DGkdmHHQotUlufTPmZqEGPTk+YGQR9U9cZt52XOM0UkmxMY/C1/lbjo
+         J3YW4Msr9PuEL5PUrM/pEs5lIYJBFuufQQruMV5zgAOkX8ePRf5NVRb/5CO9XJ0u1siO
+         1tBQkFEmWxax2bPkxeAH7diqEYZO8Kzeruq2cuHv67l3HiGT7x8b+Ug/DRNRnno0T39b
+         Q04SyzYt4oTHgnlDHgFq5wZYj7mPmVHjbAMVBQ2OKQWyPw+lKmSm/65N1iaaZH4pNwT1
+         kslCi4b8X6bgbbpgMQwptWWKFwkwaepWmMpTUpyxZqwssknfAwBZWmedud53BqzfT5Jj
+         PzeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mindqxxsMB6gVGzm2IFNuF4jPvZILQH7yCXhl2T6zNY=;
+        b=RCpuX1JVBvUeeOUj2+8leOm/Z3pe7EWQDtK0d+V/+AkWc+im2FytfHxVw1ca1MAM66
+         aXO5XPiz44snV3AfLig31HEytoU8N95Pi33gxLCDua+SpgfOzufTwUy+8ealkvXqVKav
+         8dRSzgSl3IYaqRhXuODlaxkAsE9y5WVlSfa7NZtZzfD5Zbzs6GsZZwk9Te7sF/v/LTyv
+         s9A7iog4XFqiEH32a8J3YKgnLyKZBbdO86eerq2o6xLcKoIn9m3pZqp1tNCJBHfnt9j6
+         9dxuiMDgQ8OlCzTmXOX9yhcRHj+y3eyLql5G9QvAMrjbyRivy7h96+42dFGOgz3zbVCG
+         u2Bw==
+X-Gm-Message-State: AOAM531GvOulWd4X/pifr9Ie6IY6imcFCYct4amCX0fQMeIeGWTqN48l
+        PhBkhFQWli8Z43ZbTe3gwIqVaw==
+X-Google-Smtp-Source: ABdhPJy+1lpNhmLNBJe3RH5BEItdUMqGMbgnXp9vZo25wQRTtyx7yUrY2QLo0Yap+EDx7zbe8I8/hw==
+X-Received: by 2002:a17:90a:578e:: with SMTP id g14mr3268069pji.184.1634008907137;
+        Mon, 11 Oct 2021 20:21:47 -0700 (PDT)
+Received: from localhost ([106.201.113.61])
+        by smtp.gmail.com with ESMTPSA id u17sm810195pjn.30.2021.10.11.20.21.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 20:21:46 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 08:51:44 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device
+ does not exist
+Message-ID: <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-5-marcan@marcan.st>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex12.internal.baidu.com (172.31.51.52) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211011165707.138157-5-marcan@marcan.st>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replacing get_zeroed_page/free_page/dma_map_single/dma_unmap_single()
-with dma_alloc_noncoherent/dma_free_noncoherent() helps to reduce
-code size, and simplify the code, and the hardware keep DMA coherent
-itself.
+On 12-10-21, 01:57, Hector Martin wrote:
+> When required-opps is used in CPU OPP tables, there is no parent power
+> domain to drive it. Squelch this error, to allow a clock driver to
+> handle this directly instead.
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  drivers/opp/core.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 04b4691a8aac..89e616721f70 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -873,12 +873,13 @@ static int _set_required_opp(struct device *dev, struct device *pd_dev,
+>  		return 0;
+>  
+>  	ret = dev_pm_genpd_set_performance_state(pd_dev, pstate);
+> -	if (ret) {
+> +	if (ret && ret != -ENODEV) {
+>  		dev_err(dev, "Failed to set performance rate of %s: %d (%d)\n",
+>  			dev_name(pd_dev), pstate, ret);
+> +		return ret;
+>  	}
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  /* This is only called for PM domain for now */
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
-v1->v2:
-	*Change to dma_alloc/free_noncoherent from dma_alloc/free_coherent.
-	*Update changelog.
+I am not sure why you need this, since _set_required_opps() has this check:
 
- drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c | 46 ++++++++----------------
- 1 file changed, 15 insertions(+), 31 deletions(-)
+	if (unlikely(!required_opp_tables[0]->is_genpd)) {
+		dev_err(dev, "required-opps don't belong to a genpd\n");
+		return -ENOENT;
+	}
 
-diff --git a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-index 61f06f6885a5..91199b969718 100644
---- a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-+++ b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-@@ -3007,20 +3007,13 @@ static long ibmvscsis_create_command_q(struct scsi_info *vscsi, int num_cmds)
- 
- 	vscsi->cmd_q.size = pages;
- 
--	vscsi->cmd_q.base_addr =
--		(struct viosrp_crq *)get_zeroed_page(GFP_KERNEL);
--	if (!vscsi->cmd_q.base_addr)
--		return -ENOMEM;
--
- 	vscsi->cmd_q.mask = ((uint)pages * CRQ_PER_PAGE) - 1;
- 
--	vscsi->cmd_q.crq_token = dma_map_single(&vdev->dev,
--						vscsi->cmd_q.base_addr,
--						PAGE_SIZE, DMA_BIDIRECTIONAL);
--	if (dma_mapping_error(&vdev->dev, vscsi->cmd_q.crq_token)) {
--		free_page((unsigned long)vscsi->cmd_q.base_addr);
-+	vscsi->cmd_q.base_addr = dma_alloc_noncoherent(&vdev->dev, PAGE_SIZE,
-+						       &vscsi->cmd_q.crq_token,
-+						       DMA_BIDIRECTIONAL, GFP_KERNEL);
-+	if (!vscsi->cmd_q.base_addr)
- 		return -ENOMEM;
--	}
- 
- 	return 0;
- }
-@@ -3036,9 +3029,9 @@ static long ibmvscsis_create_command_q(struct scsi_info *vscsi, int num_cmds)
-  */
- static void ibmvscsis_destroy_command_q(struct scsi_info *vscsi)
- {
--	dma_unmap_single(&vscsi->dma_dev->dev, vscsi->cmd_q.crq_token,
--			 PAGE_SIZE, DMA_BIDIRECTIONAL);
--	free_page((unsigned long)vscsi->cmd_q.base_addr);
-+	dma_free_noncoherent(&vscsi->dma_dev->dev,
-+			     PAGE_SIZE, vscsi->cmd_q.base_addr,
-+			     vscsi->cmd_q.crq_token, DMA_BIDIRECTIONAL);
- 	vscsi->cmd_q.base_addr = NULL;
- 	vscsi->state = NO_QUEUE;
- }
-@@ -3504,18 +3497,12 @@ static int ibmvscsis_probe(struct vio_dev *vdev,
- 		goto free_timer;
- 	}
- 
--	vscsi->map_buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
-+	vscsi->map_buf = dma_alloc_noncoherent(&vdev->dev,
-+					       PAGE_SIZE, &vscsi->map_ioba,
-+					       DMA_BIDIRECTIONAL, GFP_KERNEL);
- 	if (!vscsi->map_buf) {
- 		rc = -ENOMEM;
- 		dev_err(&vscsi->dev, "probe: allocating cmd buffer failed\n");
--		goto destroy_queue;
--	}
--
--	vscsi->map_ioba = dma_map_single(&vdev->dev, vscsi->map_buf, PAGE_SIZE,
--					 DMA_BIDIRECTIONAL);
--	if (dma_mapping_error(&vdev->dev, vscsi->map_ioba)) {
--		rc = -ENOMEM;
--		dev_err(&vscsi->dev, "probe: error mapping command buffer\n");
- 		goto free_buf;
- 	}
- 
-@@ -3544,7 +3531,7 @@ static int ibmvscsis_probe(struct vio_dev *vdev,
- 	if (!vscsi->work_q) {
- 		rc = -ENOMEM;
- 		dev_err(&vscsi->dev, "create_workqueue failed\n");
--		goto unmap_buf;
-+		goto destroy_queue;
- 	}
- 
- 	rc = request_irq(vdev->irq, ibmvscsis_interrupt, 0, "ibmvscsis", vscsi);
-@@ -3562,11 +3549,9 @@ static int ibmvscsis_probe(struct vio_dev *vdev,
- 
- destroy_WQ:
- 	destroy_workqueue(vscsi->work_q);
--unmap_buf:
--	dma_unmap_single(&vdev->dev, vscsi->map_ioba, PAGE_SIZE,
--			 DMA_BIDIRECTIONAL);
- free_buf:
--	kfree(vscsi->map_buf);
-+	dma_free_noncoherent(&vdev->dev, PAGE_SIZE, vscsi->map_buf,
-+			     vscsi->map_ioba, DMA_BIDIRECTIONAL);
- destroy_queue:
- 	tasklet_kill(&vscsi->work_task);
- 	ibmvscsis_unregister_command_q(vscsi);
-@@ -3602,9 +3587,8 @@ static void ibmvscsis_remove(struct vio_dev *vdev)
- 	vio_disable_interrupts(vdev);
- 	free_irq(vdev->irq, vscsi);
- 	destroy_workqueue(vscsi->work_q);
--	dma_unmap_single(&vdev->dev, vscsi->map_ioba, PAGE_SIZE,
--			 DMA_BIDIRECTIONAL);
--	kfree(vscsi->map_buf);
-+	dma_free_noncoherent(&vdev->dev, PAGE_SIZE, vscsi->map_buf,
-+			     vscsi->map_ioba, DMA_BIDIRECTIONAL);
- 	tasklet_kill(&vscsi->work_task);
- 	ibmvscsis_destroy_command_q(vscsi);
- 	ibmvscsis_freetimer(vscsi);
 -- 
-2.25.1
-
+viresh
