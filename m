@@ -2,157 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35FB42B090
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5517D42B08D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 01:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236450AbhJLXs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 19:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236442AbhJLXsz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 19:48:55 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A00AC061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:46:52 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id u84-20020a254757000000b005bbc2bc51fcso1247341yba.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 16:46:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=3talEs2itJqGmarZ00bRlZ+EZGYrtuuD53DfIvzQNtg=;
-        b=qzdeDSvgzhMcWtYkdUSFa0ZuPywUNS8d6Iq0opEXqOeXrVaoiG5JxPJ0TJQiRZh0LG
-         WrVHXzHG2RJrNxv+YjLx4cto+c5SmzGQ2/z0zUULMIT7Ylb7pXOl297B1+MWZ4URm6S3
-         K90m3PbtV9kWTxRgSNz3PeKremWzBOf0Cox3VCPKFO56xhD3za4t6+XsqAI+rP2pGL1W
-         cTfACzuqg94r2cGOPU8l0OIdCsWVRzb7nWFXAEYC/pjCatjBxM87j3vg47R/3uW0gnuW
-         mMjxF9pyyNF+/pFKR62WKfH+q/OPZAGXiRJrN508Uimg4ecnjxAB+2n+VMbix2baq+nU
-         YzeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=3talEs2itJqGmarZ00bRlZ+EZGYrtuuD53DfIvzQNtg=;
-        b=hxsGtNfyitsexM0dUGPiIdtH2I/dHT+zCYG5GY7ItzICTdHTFcOr9QpOGYUyEgoVlv
-         fnNkxJ8y88IrsQdTbjHnsUgphfdXUbMRQSG8e5IvBmpTBEjKctTZC7YgeDb2EilVIpqP
-         aXnEKGWjiIJ6J40seJprr+RKseIx7IfeWcIwvtw5BqSwDkp9KcXymfeJLdA3VzTjDf3k
-         eDl9+MdE4xKSDR1n8ehHtaRxFgWr56zwUHYHJRoPpKW9OSM4fb3hquMtJ2s9JCeGV9yh
-         /X6rv/dX9nff67DcZmFzejdMS481PIUHqVwT4lo+L7CXlZIFjTuPLjC6PAsCJ24mHqnG
-         nUCQ==
-X-Gm-Message-State: AOAM530IK0Ccpngw3asz46ZOlX1laAT4JkPXPCK8uOPfPD6rjfSH8XdX
-        poLqs0JF4zZY4zXwPK+iet0LV44n5IziUNqCIvI=
-X-Google-Smtp-Source: ABdhPJzIFutXhB9fFNe6qJTxVeF1qwVsjQr5R4imjUV0XUci065GZ+CKOL8HJ4Lt4zkEXo2DTCrWFbyf95vjjodTJI0=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:9b44:962:5897:17c0])
- (user=ndesaulniers job=sendgmr) by 2002:a25:81c5:: with SMTP id
- n5mr31228924ybm.276.1634082411872; Tue, 12 Oct 2021 16:46:51 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 16:46:06 -0700
-In-Reply-To: <20211012234606.91717-1-ndesaulniers@google.com>
-Message-Id: <20211012234606.91717-4-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20211012234606.91717-1-ndesaulniers@google.com>
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=lvO/pmg+aaCb6dPhyGC1GyOCvPueDrrc8Zeso5CaGKE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1634082366; l=2773;
- s=20211004; h=from:subject; bh=KivxBEiz8kY/YG1A752ABLoGXTndClfSbCaLd5U6VRE=;
- b=o6J8KwlbYffgoHGg/p2CFoh1PIdXMYZrdEsa/Db69BI0eYl2197Z05hXHSNfvgmMqr/qea2Oqv2M
- U0DjCIgcDQNjSaSxOvufMKH6LrB5PlivtBlBsJEAz4gLGwPgsM2T
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH 3/3] arm64: vdso32: require CROSS_COMPILE_COMPAT for gcc+bfd
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S236368AbhJLXsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 19:48:32 -0400
+Received: from mail-vi1eur05on2074.outbound.protection.outlook.com ([40.107.21.74]:1856
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233903AbhJLXsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 19:48:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CIqBkS+h10ogWZ0f26Cimh10K5xEdAt5b8cKITinalbEvDl19wJA90+aV7cD2RuICjWLvBBLY581XGP0Buhz0S2mtv354QqlnBe1g7KrQcPDJNKWTl0No1i+Ev3W5NxrS6qVkbiFP08ULgEd0mF8AV1mkB0NtbRRI1hPlesoawCEvfI7CyFVJzF6O7kuYwJHo8mAIuzIN4DTKMTQCSAXBvKnDr6HcTJIRjPubPuhf1gk9WIkvrMspHU6U2QwnBz5AAeQbe+eNAFpk+zsRTf1EADe6+TIsa1pS4e6zBGN5EmMUO+ds4wR/Vtx+Mw5Niw4YugJjy+CY3dQZm2mpkadvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8jDEZQDBUPoxzHEi8JPfp83BHuUzC+djE1x/+y9DumI=;
+ b=VlIqU2zsQiZOZciwqcrSs4lm5WcJIuLnfBBy4f74mqLstme2o/G95WICdPzYlPQL6/rb9SR6PIU/Ns23dg2hqSkPpwmbdUMN+jCgUoqrd/28DFzigBDMKJ9WIXJHrVM0yiqti94f3ICK8ZBpRfAMBE3nMXpVPj5GCjjKwAdvu/8wq3ocZJaFzkJLQDWnB0Cu3PaKxt8BKWTJcnn7z+46sNdYUYi1CYXXKHMiK6T0PBKSdyaCc6HJSg6f4swKnVx3zKdQy5oN9xLKacaSy5XFu4jngQAqCy3iPP1MYLsdGDrAmP6h4W3W63Dk2q/ABCwugA+InTI/SSll/guuhO8akg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8jDEZQDBUPoxzHEi8JPfp83BHuUzC+djE1x/+y9DumI=;
+ b=QUwRyR76oxhfzOiDUHahbNWl2mo925ZJ/pV4OKqgz/BsjyCEj2mq7lu9naXuNH6BfFbq/516s/LfsBq9VKMXjbJY9TC65C/SbQnrcbSD8wgIDTIDbjHQTYhx2QWtBNUCI9fQlGSE9i+PuVr/VYy8cU898eyfK8NY0daMPOvHhSU=
+Received: from AS8PR04MB8676.eurprd04.prod.outlook.com (2603:10a6:20b:42b::10)
+ by AS8PR04MB8436.eurprd04.prod.outlook.com (2603:10a6:20b:347::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.24; Tue, 12 Oct
+ 2021 23:46:25 +0000
+Received: from AS8PR04MB8676.eurprd04.prod.outlook.com
+ ([fe80::551d:cc86:4d67:587]) by AS8PR04MB8676.eurprd04.prod.outlook.com
+ ([fe80::551d:cc86:4d67:587%3]) with mapi id 15.20.4587.026; Tue, 12 Oct 2021
+ 23:46:25 +0000
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        "galak@kernel.crashing.org" <galak@kernel.crashing.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tharvey@gateworks.com" <tharvey@gateworks.com>,
+        "kishon@ti.com" <kishon@ti.com>, dl-linux-imx <linux-imx@nxp.com>,
+        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
+        "vkoul@kernel.org" <vkoul@kernel.org>
+Subject: RE: [PATCH v3 2/9] dt-bindings: phy: add imx8 pcie phy driver support
+Thread-Topic: [PATCH v3 2/9] dt-bindings: phy: add imx8 pcie phy driver
+ support
+Thread-Index: AQHXv0hlrBQmJmSLUUWUdasqgJ4mX6vPWLqAgACu40A=
+Date:   Tue, 12 Oct 2021 23:46:25 +0000
+Message-ID: <AS8PR04MB867657DBC4C2576930647EEE8CB69@AS8PR04MB8676.eurprd04.prod.outlook.com>
+References: <1634028078-2387-1-git-send-email-hongxing.zhu@nxp.com>
+ <1634028078-2387-3-git-send-email-hongxing.zhu@nxp.com>
+ <1634044709.029189.2661233.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1634044709.029189.2661233.nullmailer@robh.at.kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 420dfdff-a4f9-48ce-f329-08d98dda8111
+x-ms-traffictypediagnostic: AS8PR04MB8436:
+x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AS8PR04MB843642BCEB56417F2F9733DD8CB69@AS8PR04MB8436.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5t4PDkR0KIJr4k/bDwkCz7KMrWz3W+zuYU62PeHF+ge0UNV/9Y4Yl+eQETNhUtCIgQ0aejZ1xC1RXH8RQO9wOspE3q3ydGCVDFFm1MLw8qNB7idU225S52cs5kb5KG71R3XJJHUExVyW/Dlz6naY+wWlDofqZ5qSbc7wiS1+UKEgRbE7BkbtyjsHwWS2/7muyaNFg04ipdw+aagK+WnnrEBI6760FaBSlvsggGCRH3JTDImrtbnThJiUUI08cg+/RN1sryaXEr4I8F2qWPGkBHNZ1yJ9w932gn7kwPG7GXTMfdz7T+5YW7KysdWcVWIi7PgVBBrfc6Qq06Z6z+QMFR9e/QKcTHvzEAiiXSQi75PBtiscQ4QIQp11vlLhIJjHU+lhpTyah7g347mbvaA52gPhRr32N5y6BjWIKaGHs/Tpmh5bvGFnnPrUg7EUzWevEnnzCuEMiuGkNMRCTOvt8NffYzcbzFISW55YdgfN5lj1eiy/7G1DRGdNYZUD3nZqg7Tz1RzyFdX0S0G2+VSvsEJhxaowfkKzCI0DLAYDYZUJLyR7nzczRzs11xktYYfAl7f66T3kwuw0rIguh//O4IbzdeTtdtt9DF1KBBgeHCF8tfcZseyXEGN2WeNfnMVg4D0+2C/31cULRAPHIo0yIiWx5l8XYRlHkSlyZwO84HnnRcxNlmZEugoaB+VeVj0wRK/iWutilHQ+e7XrRwwSNnxC82P60QQ1ioT2wvNpLMoU6hB8U9N7kuFUA66ByiyLGIMPmWoEkXlFy2c02B6T0ONAEQjwcNJF3nJu3a1UJTA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8676.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(64756008)(66556008)(5660300002)(966005)(66446008)(6916009)(52536014)(45080400002)(26005)(316002)(7696005)(2906002)(9686003)(7416002)(86362001)(71200400001)(33656002)(54906003)(76116006)(186003)(508600001)(66476007)(53546011)(4326008)(8936002)(83380400001)(122000001)(38070700005)(6506007)(8676002)(66946007)(55016002)(38100700002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?evTR5BDXX9EDJf45pakTTFJiCQlwaor1ebL7lhllY4tjrR6l9HviXLmA9ckT?=
+ =?us-ascii?Q?Scix4r5Ehp3Lhjmc+lL1WMfQjPy1hxrWoHAlK9LDmHE0ImF6C5Pe2Y6QF5XK?=
+ =?us-ascii?Q?iHJ02z8znG4ZbGvZweEJK90nF75W3kw2xAiENgS+EjJCpBADj2SzaG/VqRg/?=
+ =?us-ascii?Q?4xg/ptZG7gVPul4kVMdqe/b/02kwvoSxSl8osn97/TmZTsQ9ZDKLKlegphqo?=
+ =?us-ascii?Q?w1RRW0s7/iX5DWEwgCsY74Q70cvcPLnwTGMBKkRG0GMgm34eSpx7sHrbF7Eg?=
+ =?us-ascii?Q?ztOqH9P92GOiiGlyceFFtMrj+sNtbDX6S60+Q/BhZM8v4oRw6jz8DByTxHEG?=
+ =?us-ascii?Q?G1TtjO8SsS0pfcbPe1RvBnDJNLTE+V3sxtwqsI2OsnfLUtWbfxtBDCT554IO?=
+ =?us-ascii?Q?sYtASEqMH7lhUglleQrj4Jay/gbWXMl2zaNdLRDWNbiDCi5k6SuwIceNH5gb?=
+ =?us-ascii?Q?eXkPQ9+Aw6Y/LHsaNyL+/wnplRhchnoFackfGqHE9JGWeJZztdGJ8fbwzH75?=
+ =?us-ascii?Q?Ru0EUFVqfb900F7k7QBJU2MCnQ1Jv8F5iBUik5TIja1zKnZQVD4pWsTX9Xfj?=
+ =?us-ascii?Q?vAjEn1/iN8Z35xoU6z8JDZwDOeRuB68HeBRPz2stCNlRfyengJ1AhQPNgYpM?=
+ =?us-ascii?Q?G7Xcik1Adlom5NtRMY5ckv4iTW6zKZK9RWD0j9ajGkeSt6mOYiWVGXXzwoub?=
+ =?us-ascii?Q?a6Ecg1QJ7W8P0uQsrzi3+jX6u+UZgaxCNhzYqqB6PkXD1pEqqOkQkl5m42qt?=
+ =?us-ascii?Q?PJlbbjCJKpmQ4oN/Zh0FgiWSwDVhx3lqvjjz4owMw+04WPQ0XV3AnDNCf4rR?=
+ =?us-ascii?Q?uulLp7IIDS4/TPM2gOVlmr3YcwDlKhdmAy+Ru74LoqlVOhqapYUmuuC4MBwi?=
+ =?us-ascii?Q?Xw/KSm3pVCmn/MwxdrGwTtqdfYZszWO1JDppjqn+0aU29fGtjujMwrHzMSXA?=
+ =?us-ascii?Q?8R9Qmp13E+4kXhgzK3lhBOhJ1OLO3wewAdAK7GnOYoeFt60ZlNDs/IElaAf2?=
+ =?us-ascii?Q?jprOJO1Onw0Er9jnC0jbglZ+712l2/RSFDo0GH8IkoUfB0k6O0+servvT2FM?=
+ =?us-ascii?Q?fyLidO4IfmTppDzF5Txc03zs52T5uQk8BRLn/ElBaV/1ihgnD/ceVLu3heIc?=
+ =?us-ascii?Q?XfdLOmxGnEOvvKLiisd3uG76NM6GmGfn1Ff+LKeTMRNV46RuPA1nC3DXSHgV?=
+ =?us-ascii?Q?Vt3shIHuNEYih1gjfNUmBxMjVltOGBYVZp2oY/Su2Ag2vaUMnfwXNYhXpL6m?=
+ =?us-ascii?Q?qzL75y02pXCZCq4yy6xkiW1H83lRP2d9815Ue0i0FKotdozF44fU+xRdcE4j?=
+ =?us-ascii?Q?xDyhPSgQklehGA4I/i8FSIYK?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8676.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 420dfdff-a4f9-48ce-f329-08d98dda8111
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2021 23:46:25.6394
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gzv6Uo0HmnGs66X2ZxpENdPHrgUwLnxC7hku113mfSgCn0va6VjARiEUCBGnejve7C8RQ9S2YNx4NTgWrmGfyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8436
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to
-commit 231ad7f409f1 ("Makefile: infer --target from ARCH for CC=clang")
-There really is no point in setting --target based on
-$CROSS_COMPILE_COMPAT for clang when the integrated assembler is being
-used.
 
-Allows COMPAT_VDSO to be selected without setting $CROSS_COMPILE_COMPAT
-when using clang and lld together.
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Tuesday, October 12, 2021 9:18 PM
+> To: Richard Zhu <hongxing.zhu@nxp.com>
+> Cc: shawnguo@kernel.org; linux-phy@lists.infradead.org;
+> galak@kernel.crashing.org; linux-arm-kernel@lists.infradead.org;
+> devicetree@vger.kernel.org; kernel@pengutronix.de;
+> linux-kernel@vger.kernel.org; tharvey@gateworks.com; kishon@ti.com;
+> dl-linux-imx <linux-imx@nxp.com>; l.stach@pengutronix.de;
+> vkoul@kernel.org
+> Subject: Re: [PATCH v3 2/9] dt-bindings: phy: add imx8 pcie phy driver su=
+pport
+>=20
+> On Tue, 12 Oct 2021 16:41:11 +0800, Richard Zhu wrote:
+> > Add dt-binding for the standalone i.MX8 PCIe PHY driver.
+> >
+> > Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> > ---
+> >  .../bindings/phy/fsl,imx8-pcie-phy.yaml       | 79
+> +++++++++++++++++++
+> >  1 file changed, 79 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.yaml
+> >
+>=20
+> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m
+> dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>=20
+> yamllint warnings/errors:
+>=20
+> dtschema/dtc warnings/errors:
+> Error:
+> Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.example.dts:30.3
+> 2-33 syntax error FATAL ERROR: Unable to parse input tree
+> make[1]: *** [scripts/Makefile.lib:385:
+> Documentation/devicetree/bindings/phy/fsl,imx8-pcie-phy.example.dt.yaml]
+> Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1441: dt_binding_check] Error 2
+>=20
+[Richard Zhu] I forget to merge to add the "#include <dt-bindings/reset/imx=
+8mq-reset.h>" after add the reset property.
+Sorry about that, would add it later.
 
-Before:
-$ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make -j72 LLVM=1 defconfig
-$ grep CONFIG_COMPAT_VDSO .config
-CONFIG_COMPAT_VDSO=y
-$ ARCH=arm64 make -j72 LLVM=1 defconfig
-$ grep CONFIG_COMPAT_VDSO .config
-$
 
-After:
-$ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make -j72 LLVM=1 defconfig
-$ grep CONFIG_COMPAT_VDSO .config
-CONFIG_COMPAT_VDSO=y
-$ ARCH=arm64 make -j72 LLVM=1 defconfig
-$ grep CONFIG_COMPAT_VDSO .config
-CONFIG_COMPAT_VDSO=y
-
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- arch/arm64/Kconfig                |  3 ++-
- arch/arm64/kernel/vdso32/Makefile | 17 +++++------------
- 2 files changed, 7 insertions(+), 13 deletions(-)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 5c7ae4c3954b..7b28dad2fb80 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1264,7 +1264,8 @@ config KUSER_HELPERS
- 
- config COMPAT_VDSO
- 	bool "Enable vDSO for 32-bit applications"
--	depends on !CPU_BIG_ENDIAN && "$(CROSS_COMPILE_COMPAT)" != ""
-+	depends on !CPU_BIG_ENDIAN
-+	depends on CC_IS_CLANG && LD_IS_LLD || "$(CROSS_COMPILE_COMPAT)" != ""
- 	select GENERIC_COMPAT_VDSO
- 	default y
- 	help
-diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-index d24b12318f4c..376261d3791f 100644
---- a/arch/arm64/kernel/vdso32/Makefile
-+++ b/arch/arm64/kernel/vdso32/Makefile
-@@ -10,18 +10,15 @@ include $(srctree)/lib/vdso/Makefile
- 
- # Same as cc-*option, but using CC_COMPAT instead of CC
- ifeq ($(CONFIG_CC_IS_CLANG), y)
--CC_COMPAT_CLANG_FLAGS := --target=$(notdir $(CROSS_COMPILE_COMPAT:%-=%))
--
- CC_COMPAT ?= $(CC)
--CC_COMPAT += $(CC_COMPAT_CLANG_FLAGS)
--
--ifneq ($(LLVM),)
--LD_COMPAT ?= $(LD)
-+CC_COMPAT += --target=arm-linux-gnueabi
- else
--LD_COMPAT ?= $(CROSS_COMPILE_COMPAT)ld
-+CC_COMPAT ?= $(CROSS_COMPILE_COMPAT)gcc
- endif
-+
-+ifeq ($(CONFIG_LD_IS_LLD), y)
-+LD_COMPAT ?= $(LD)
- else
--CC_COMPAT ?= $(CROSS_COMPILE_COMPAT)gcc
- LD_COMPAT ?= $(CROSS_COMPILE_COMPAT)ld
- endif
- 
-@@ -44,10 +41,6 @@ VDSO_CPPFLAGS += $(LINUXINCLUDE)
- # Common C and assembly flags
- # From top-level Makefile
- VDSO_CAFLAGS = $(VDSO_CPPFLAGS)
--ifneq ($(shell $(CC_COMPAT) --version 2>&1 | head -n 1 | grep clang),)
--VDSO_CAFLAGS += --target=$(notdir $(CROSS_COMPILE_COMPAT:%-=%))
--endif
--
- VDSO_CAFLAGS += $(call cc32-option,-fno-PIE)
- ifdef CONFIG_DEBUG_INFO
- VDSO_CAFLAGS += -g
--- 
-2.33.0.882.g93a45727a2-goog
+Best Regards
+Richard Zhu
+> doc reference errors (make refcheckdocs):
+>=20
+> See
+> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpatch
+> work.ozlabs.org%2Fpatch%2F1539660&amp;data=3D04%7C01%7Chongxing.zhu
+> %40nxp.com%7C64619a3cd64446cf204008d98d82ca07%7C686ea1d3bc2b4c
+> 6fa92cd99c5c301635%7C0%7C0%7C637696415146711570%7CUnknown%7
+> CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwi
+> LCJXVCI6Mn0%3D%7C1000&amp;sdata=3Djt2nbxfbKTBm1izvsYvsHEkMfSHqa6t
+> 24B1sJICAtXE%3D&amp;reserved=3D0
+>=20
+> This check can fail if there are any dependencies. The base for a patch s=
+eries
+> is generally the most recent rc1.
+>=20
+> If you already ran 'make dt_binding_check' and didn't see the above error=
+(s),
+> then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>=20
+> pip3 install dtschema --upgrade
+>=20
+> Please check and re-submit.
 
