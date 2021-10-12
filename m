@@ -2,271 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25BA42AABD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E09242AAC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 19:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhJLRcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 13:32:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24992 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229810AbhJLRcI (ORCPT
+        id S232499AbhJLRcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 13:32:47 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:61872 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229810AbhJLRcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 13:32:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634059806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nJCGcnKEbIqqHMfmUDpnKvwtwd5KiHx7SBZCiGYW5Nc=;
-        b=OBnojTsO4CqW8LjqRPoqYZLOjw5yrQnxZec+b07wEnhoOXeMKqizMGPHUBahd3PnPg9Vd2
-        RL5EJqadT5HqNwp92zfrF/56UQExrmOAq4E1lBAG4Trk95qNcufpv4BuNgoh49wqcb10hi
-        +kHOsKVYoCm2+oqk773rAUM9AX6+iUY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-8gLJTdDTO9y8Uen0RC7PoA-1; Tue, 12 Oct 2021 13:30:05 -0400
-X-MC-Unique: 8gLJTdDTO9y8Uen0RC7PoA-1
-Received: by mail-wr1-f70.google.com with SMTP id r25-20020adfab59000000b001609ddd5579so16333669wrc.21
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 10:30:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=nJCGcnKEbIqqHMfmUDpnKvwtwd5KiHx7SBZCiGYW5Nc=;
-        b=LxxYEVKlB8GAYT7qhdg4Q3W3tg3VwZDNvm/ONuwnjj24VDWxUl2jPIgXGKu9SBhIOw
-         9H7SeZgzCxy9+sO6bMvHDkZ+BcWvUrr/8aoGM7uncKsF9R8oHVpWDHHyx5OooVKZPe+Z
-         EeDnL8KOGuoTj2rjLWSh6zh0OssNmPQp4qd3C/w/tGCUbO4HCxudZ1Y1hr93DgK5KLb/
-         JEl57Uq0rmgIaLL6o3gjANgN/EcybRe+ne/UPyDKV5XVtywCgIZUZ9ZRUersySY/7knR
-         aKxJIKeHoTNDinfXJFAKaActBWjdtXLbTWF3CoVy0FCnsyGPLnrN+MqVrfq3QhZSjNTj
-         blxA==
-X-Gm-Message-State: AOAM533CoFZ92ly23D2YIxFgEKA0fWoSA7JAf+w5232Lr2dMHojgTYL8
-        HRttKQCPbW3IA/nUWOONyz4v0R28irNjldxfjxVpBemD7drO3a1jHB6vWpU2tI4SlQbnSVigb/7
-        rebe3BFndJ/xhf/+v1cnVkqY6
-X-Received: by 2002:a7b:c08b:: with SMTP id r11mr6983645wmh.167.1634059803819;
-        Tue, 12 Oct 2021 10:30:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxajnlq/YMP+te0l4ShanGzhvQVEbgsTy6Ll0MJfqn5Q8TCYVC10ObVnmGHZ8yW3jEoeiHIcA==
-X-Received: by 2002:a7b:c08b:: with SMTP id r11mr6983605wmh.167.1634059803498;
-        Tue, 12 Oct 2021 10:30:03 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id g25sm11692781wrc.88.2021.10.12.10.30.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 10:30:02 -0700 (PDT)
-Message-ID: <826f57f5-c312-86d1-598b-3f9ac1fc98ac@redhat.com>
-Date:   Tue, 12 Oct 2021 19:30:01 +0200
+        Tue, 12 Oct 2021 13:32:45 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 6a0cc62dcedd71c2; Tue, 12 Oct 2021 19:30:42 +0200
+Received: from kreacher.localnet (unknown [213.134.187.88])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 51A6866A824;
+        Tue, 12 Oct 2021 19:30:41 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH] hwmon: acpi_power_meter: Use acpi_bus_get_acpi_device()
+Date:   Tue, 12 Oct 2021 19:30:40 +0200
+Message-ID: <11864888.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [patch 14/31] x86/fpu: Replace KVMs homebrewn FPU copy from user
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org
-References: <20211011215813.558681373@linutronix.de>
- <20211011223611.129308001@linutronix.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211011223611.129308001@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.187.88
+X-CLIENT-HOSTNAME: 213.134.187.88
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtkedguddutdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfegtdffjeehkeegleejveevtdeugfffieeijeduuddtkefgjedvheeujeejtedvnecukfhppedvudefrddufeegrddukeejrdekkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukeejrdekkedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhhfihmohhnsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhguvghlvhgrrhgvsehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigsehrohgvtghkqdhu
+ shdrnhgvthdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/21 02:00, Thomas Gleixner wrote:
-> Copying a user space buffer to the memory buffer is already available in
-> the FPU core. The copy mechanism in KVM lacks sanity checks and needs to
-> use cpuid() to lookup the offset of each component, while the FPU core has
-> this information cached.
-> 
-> Make the FPU core variant accessible for KVM and replace the homebrewn
-> mechanism.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: kvm@vger.kernel.org
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->   arch/x86/include/asm/fpu/api.h |    3 +
->   arch/x86/kernel/fpu/core.c     |   38 ++++++++++++++++++++-
->   arch/x86/kernel/fpu/xstate.c   |    3 -
->   arch/x86/kvm/x86.c             |   74 +----------------------------------------
->   4 files changed, 44 insertions(+), 74 deletions(-)
-> 
-> --- a/arch/x86/include/asm/fpu/api.h
-> +++ b/arch/x86/include/asm/fpu/api.h
-> @@ -116,4 +116,7 @@ extern void fpu_init_fpstate_user(struct
->   /* KVM specific functions */
->   extern void fpu_swap_kvm_fpu(struct fpu *save, struct fpu *rstor, u64 restore_mask);
->   
-> +struct kvm_vcpu;
-> +extern int fpu_copy_kvm_uabi_to_vcpu(struct fpu *fpu, const void *buf, u64 xcr0, u32 *pkru);
-> +
->   #endif /* _ASM_X86_FPU_API_H */
-> --- a/arch/x86/kernel/fpu/core.c
-> +++ b/arch/x86/kernel/fpu/core.c
-> @@ -174,7 +174,43 @@ void fpu_swap_kvm_fpu(struct fpu *save,
->   	fpregs_unlock();
->   }
->   EXPORT_SYMBOL_GPL(fpu_swap_kvm_fpu);
-> -#endif
-> +
-> +int fpu_copy_kvm_uabi_to_vcpu(struct fpu *fpu, const void *buf, u64 xcr0,
-> +			      u32 *vpkru)
-> +{
-> +	union fpregs_state *kstate = &fpu->state;
-> +	const union fpregs_state *ustate = buf;
-> +	struct pkru_state *xpkru;
-> +	int ret;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_XSAVE)) {
-> +		if (ustate->xsave.header.xfeatures & ~XFEATURE_MASK_FPSSE)
-> +			return -EINVAL;
-> +		if (ustate->fxsave.mxcsr & ~mxcsr_feature_mask)
-> +			return -EINVAL;
-> +		memcpy(&kstate->fxsave, &ustate->fxsave, sizeof(ustate->fxsave));
-> +		return 0;
-> +	}
-> +
-> +	if (ustate->xsave.header.xfeatures & ~xcr0)
-> +		return -EINVAL;
-> +
-> +	ret = copy_uabi_from_kernel_to_xstate(&kstate->xsave, ustate);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Retrieve PKRU if not in init state */
-> +	if (kstate->xsave.header.xfeatures & XFEATURE_MASK_PKRU) {
-> +		xpkru = get_xsave_addr(&kstate->xsave, XFEATURE_PKRU);
-> +		*vpkru = xpkru->pkru;
-> +	}
-> +
-> +	/* Ensure that XCOMP_BV is set up for XSAVES */
-> +	xstate_init_xcomp_bv(&kstate->xsave, xfeatures_mask_uabi());
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(fpu_copy_kvm_uabi_to_vcpu);
-> +#endif /* CONFIG_KVM */
->   
->   void kernel_fpu_begin_mask(unsigned int kfpu_mask)
->   {
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -1134,8 +1134,7 @@ static int copy_uabi_to_xstate(struct xr
->   
->   /*
->    * Convert from a ptrace standard-format kernel buffer to kernel XSAVE[S]
-> - * format and copy to the target thread. This is called from
-> - * xstateregs_set().
-> + * format and copy to the target thread. Used by ptrace and KVM.
->    */
->   int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf)
->   {
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4695,8 +4695,6 @@ static int kvm_vcpu_ioctl_x86_set_debugr
->   	return 0;
->   }
->   
-> -#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
-> -
->   static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
->   {
->   	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
-> @@ -4740,50 +4738,6 @@ static void fill_xsave(u8 *dest, struct
->   	}
->   }
->   
-> -static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
-> -{
-> -	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
-> -	u64 xstate_bv = *(u64 *)(src + XSAVE_HDR_OFFSET);
-> -	u64 valid;
-> -
-> -	/*
-> -	 * Copy legacy XSAVE area, to avoid complications with CPUID
-> -	 * leaves 0 and 1 in the loop below.
-> -	 */
-> -	memcpy(xsave, src, XSAVE_HDR_OFFSET);
-> -
-> -	/* Set XSTATE_BV and possibly XCOMP_BV.  */
-> -	xsave->header.xfeatures = xstate_bv;
-> -	if (boot_cpu_has(X86_FEATURE_XSAVES))
-> -		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
-> -
-> -	/*
-> -	 * Copy each region from the non-compacted offset to the
-> -	 * possibly compacted offset.
-> -	 */
-> -	valid = xstate_bv & ~XFEATURE_MASK_FPSSE;
-> -	while (valid) {
-> -		u32 size, offset, ecx, edx;
-> -		u64 xfeature_mask = valid & -valid;
-> -		int xfeature_nr = fls64(xfeature_mask) - 1;
-> -
-> -		cpuid_count(XSTATE_CPUID, xfeature_nr,
-> -			    &size, &offset, &ecx, &edx);
-> -
-> -		if (xfeature_nr == XFEATURE_PKRU) {
-> -			memcpy(&vcpu->arch.pkru, src + offset,
-> -			       sizeof(vcpu->arch.pkru));
-> -		} else {
-> -			void *dest = get_xsave_addr(xsave, xfeature_nr);
-> -
-> -			if (dest)
-> -				memcpy(dest, src + offset, size);
-> -		}
-> -
-> -		valid -= xfeature_mask;
-> -	}
-> -}
-> -
->   static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
->   					 struct kvm_xsave *guest_xsave)
->   {
-> @@ -4802,37 +4756,15 @@ static void kvm_vcpu_ioctl_x86_get_xsave
->   	}
->   }
->   
-> -#define XSAVE_MXCSR_OFFSET 24
-> -
->   static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
->   					struct kvm_xsave *guest_xsave)
->   {
-> -	u64 xstate_bv;
-> -	u32 mxcsr;
-> -
->   	if (!vcpu->arch.guest_fpu)
->   		return 0;
->   
-> -	xstate_bv = *(u64 *)&guest_xsave->region[XSAVE_HDR_OFFSET / sizeof(u32)];
-> -	mxcsr = *(u32 *)&guest_xsave->region[XSAVE_MXCSR_OFFSET / sizeof(u32)];
-> -
-> -	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
-> -		/*
-> -		 * Here we allow setting states that are not present in
-> -		 * CPUID leaf 0xD, index 0, EDX:EAX.  This is for compatibility
-> -		 * with old userspace.
-> -		 */
-> -		if (xstate_bv & ~supported_xcr0 || mxcsr & ~mxcsr_feature_mask)
-> -			return -EINVAL;
-> -		load_xsave(vcpu, (u8 *)guest_xsave->region);
-> -	} else {
-> -		if (xstate_bv & ~XFEATURE_MASK_FPSSE ||
-> -			mxcsr & ~mxcsr_feature_mask)
-> -			return -EINVAL;
-> -		memcpy(&vcpu->arch.guest_fpu->state.fxsave,
-> -			guest_xsave->region, sizeof(struct fxregs_state));
-> -	}
-> -	return 0;
-> +	return fpu_copy_kvm_uabi_to_vcpu(vcpu->arch.guest_fpu,
-> +					 guest_xsave->region,
-> +					 supported_xcr0, &vcpu->arch.pkru);
->   }
->   
->   static void kvm_vcpu_ioctl_x86_get_xcrs(struct kvm_vcpu *vcpu,
-> 
+From: Rafael J. Wysocki <rafael@kernel.org>
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+In read_domain_devices(), acpi_bus_get_device() is called to obtain
+the ACPI device object attached to the given ACPI handle and
+subsequently that object is passed to get_device() for reference
+counting, but there is a window between the acpi_bus_get_device()
+and get_device() calls in which the ACPI device object in question
+may go away.
+
+To address this issue, make read_domain_devices() use
+acpi_bus_get_acpi_device() to reference count and return the given
+ACPI device object in one go and export that function to modules.
+
+While at it, also make read_domain_devices() and
+remove_domain_devices() use acpi_dev_put() instead of calling
+put_device() directly on the ACPI device objects returned by
+acpi_bus_get_acpi_device().
+
+Signed-off-by: Rafael J. Wysocki <rafael@kernel.org>
+---
+ drivers/acpi/scan.c              |    1 +
+ drivers/hwmon/acpi_power_meter.c |   13 +++++--------
+ 2 files changed, 6 insertions(+), 8 deletions(-)
+
+Index: linux-pm/drivers/hwmon/acpi_power_meter.c
+===================================================================
+--- linux-pm.orig/drivers/hwmon/acpi_power_meter.c
++++ linux-pm/drivers/hwmon/acpi_power_meter.c
+@@ -535,7 +535,7 @@ static void remove_domain_devices(struct
+ 
+ 		sysfs_remove_link(resource->holders_dir,
+ 				  kobject_name(&obj->dev.kobj));
+-		put_device(&obj->dev);
++		acpi_dev_put(obj);
+ 	}
+ 
+ 	kfree(resource->domain_devices);
+@@ -597,18 +597,15 @@ static int read_domain_devices(struct ac
+ 			continue;
+ 
+ 		/* Create a symlink to domain objects */
+-		resource->domain_devices[i] = NULL;
+-		if (acpi_bus_get_device(element->reference.handle,
+-					&resource->domain_devices[i]))
++		obj = acpi_bus_get_acpi_device(element->reference.handle);
++		resource->domain_devices[i] = obj;
++		if (!obj)
+ 			continue;
+ 
+-		obj = resource->domain_devices[i];
+-		get_device(&obj->dev);
+-
+ 		res = sysfs_create_link(resource->holders_dir, &obj->dev.kobj,
+ 				      kobject_name(&obj->dev.kobj));
+ 		if (res) {
+-			put_device(&obj->dev);
++			acpi_dev_put(obj);
+ 			resource->domain_devices[i] = NULL;
+ 		}
+ 	}
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -608,6 +608,7 @@ struct acpi_device *acpi_bus_get_acpi_de
+ {
+ 	return handle_to_device(handle, get_acpi_device);
+ }
++EXPORT_SYMBOL_GPL(acpi_bus_get_acpi_device);
+ 
+ static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
+ {
+
+
 
