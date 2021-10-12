@@ -2,218 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60ECC42AE0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBB342AE0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 22:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbhJLUnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 16:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233140AbhJLUnN (ORCPT
+        id S234861AbhJLUoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 16:44:24 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:42581 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232986AbhJLUoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 16:43:13 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4C9C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:41:10 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id c20so636897qtb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:41:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8ogQ4mnsQj8ETlpyzS2eA3WAs/OwqDsrN2VK9OaY8oc=;
-        b=GwAX9Yx4n+IDjslEE1dZgCNFztsk78R2Ca7CtDxH6fG6p+ZRILW1rOW02m8wCS3SHt
-         b65b57EQ1PQYtZjcPWlBWNmCjobMnxCmwODxExtlAr1Q9PW9hVxWyWez6d+9cG897VsV
-         6oCMBToXko/4s5pHzlj9zG35dPapqo9FB1YgKsWjOhKycJZI4OuXCkQc75kNPOGQxSb6
-         3UwOO+pErNGusoUTCLNqY7rOYZg4yAxI9UqfXgzAp0ivwLMA8Z5NB9hThvmuipuZIJUK
-         t6G/bdjJbvZzQ8xzCVDvq9zbqWOk5pxd1mAXn+tjshJMnl+c4CVWfNQ/ILvSHEyc4MuU
-         Ydaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8ogQ4mnsQj8ETlpyzS2eA3WAs/OwqDsrN2VK9OaY8oc=;
-        b=K/Zu0LM2y/BOvSvxa5nGFfFBA/wkJZBGmx7JhjT0yubCSdGcyVDDOVuCsYc2TUPuze
-         1h6XdLjptDr/R+p3K1mNWrV0OJrGF6BJb9KI/G8ozIh2GbWLAgvFg5aNrbzNjEGWElyT
-         n9QF6HuDyROu/iB1P/0HOyjZ29yTAr21EBxz+EHShEKsphv3DMWVWZORe0zc44uJPXk9
-         MUTp2HSj/k28fJ7VgHD/GQBNA/ANNRBflV+vpYYdRK7O8Eg4HJJh1R+bRRdL0/6psbS3
-         qTnzJ+PdgRjNqyfb/XEZ0TfiroOsbaUmo3gcZsUj2BwGSAcRuSumJ0LD4Up6+OKAdfu7
-         OVCg==
-X-Gm-Message-State: AOAM531BmOemfm0YYX/Z0IIF7D/Ts3Wz130SkGBHSDVD+VNH7e6Sj9gl
-        /z8KHQqvejhPNA8PloNZmHMlcA==
-X-Google-Smtp-Source: ABdhPJzzYJsAYpb2hxj6lNGz/zKTGxYdncafeuZQJ/SZWXP3nrJnoyhEDzPhVokQqE5iIAV6cZcL5w==
-X-Received: by 2002:ac8:6bcc:: with SMTP id b12mr25518988qtt.101.1634071269872;
-        Tue, 12 Oct 2021 13:41:09 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id 74sm6233475qke.109.2021.10.12.13.41.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 13:41:08 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 16:41:07 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Kees Cook <keescook@chromium.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>,
-        Tim Murray <timmurray@google.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-Message-ID: <YWXy4zEGOggb8Nzw@cmpxchg.org>
-References: <202110071111.DF87B4EE3@keescook>
- <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
- <202110081344.FE6A7A82@keescook>
- <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
- <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
- <CAJuCfpHaF1e0V=wAoNO36nRL2A5EaNnuQrvZ2K3wh6PL6FrwZQ@mail.gmail.com>
- <YWT6Ptp/Uo4QGeP4@cmpxchg.org>
- <CAJuCfpERX-nqHkYzx8FAi_DuOU1vkoV5ppCAhLHziOm7o7wj6g@mail.gmail.com>
- <YWXTZOXQ/NpoDJFI@cmpxchg.org>
- <CAJuCfpEnad5RhhYS8Z6RXjnrpbUZs4nd99KybUFO34BcTH658w@mail.gmail.com>
+        Tue, 12 Oct 2021 16:44:22 -0400
+Received: from mail-wr1-f44.google.com ([209.85.221.44]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MS3zP-1mCNI82qB1-00TY4k for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021
+ 22:42:19 +0200
+Received: by mail-wr1-f44.google.com with SMTP id u18so1154151wrg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 13:42:19 -0700 (PDT)
+X-Gm-Message-State: AOAM530DMosKuZ36EWK/83Tz9EkFlMd3Ptt0yOeZa2VN4BLBwsAb+Mgr
+        ZuIIok1JgRi0Bf32KueqjlJb/DRoWEO2Ky80tbY=
+X-Google-Smtp-Source: ABdhPJzvaI53OX+xGKvsUPbsLHcQ7HOum4/hh330wFgGF+KPXMCuEGxL8rfSW2+AfyYMWiKmpRUP1YMfpeKbT6lQ1zQ=
+X-Received: by 2002:adf:f481:: with SMTP id l1mr34009404wro.411.1634071339409;
+ Tue, 12 Oct 2021 13:42:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpEnad5RhhYS8Z6RXjnrpbUZs4nd99KybUFO34BcTH658w@mail.gmail.com>
+References: <20211011151443.12040-1-vegard.nossum@oracle.com>
+ <CAK8P3a2+dU53PMJZvkDDGUyv=EiHuc03njGf6SXTxw9A4ByeHw@mail.gmail.com>
+ <47e60186-2408-19cf-3231-92bd9c30483a@oracle.com> <CAK8P3a2nai8xGQPPMH89rO83252trdRFM67s-mmivAXeDE0zfA@mail.gmail.com>
+ <8b209292-5b94-5a14-dee0-2c152ac02a5d@oracle.com> <CAK8P3a1X38CHrCFDxsZq=TYJw9Q_uP7MrM8fG1_D4X3-F2yL2Q@mail.gmail.com>
+ <d02ef168-e105-27b6-0456-6db590807dcb@infradead.org>
+In-Reply-To: <d02ef168-e105-27b6-0456-6db590807dcb@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 12 Oct 2021 22:42:03 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2Ox4s7WbSueR85TvkPzt7R46MQL=yBXw2VBy1HK4wduw@mail.gmail.com>
+Message-ID: <CAK8P3a2Ox4s7WbSueR85TvkPzt7R46MQL=yBXw2VBy1HK4wduw@mail.gmail.com>
+Subject: Re: [PATCH] habanalabs: select CRC32
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:gi/9fzUixrcxTA3XlUhcKQNTiL2iiYoNamHvD7GRtBmnjlLksma
+ ghLhcwyGBFViFwsFsh/FPUL/kiE33Rl/8k7K27DZENtDOUF9aNirV8py6Se1y2/W8qWkS8C
+ ptJckcr0TAvMkjxMiuNyEU4jEBKm36gpywjToiWF5xhB3BzXVnzOfvNUdvrYnTpSjzQ5kJK
+ Ju+K789CDYaucZ8rRdl5w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Fb4mKkmeyyQ=:MhXO9uKkwA2p32QgJfI9hg
+ Ww/CeFxJMI5x7ReVcQI35wQR2Q9e1pH20LwriuTa/HZsmkiK6q206orfWCxe9+heIGMCFAwx6
+ 5MZy3qt3UPG3KM39cjJ1fCa7/JT+YHo2tI4CExs010n6/umCY0AbKde8CLMc9MqyfPEuz/56e
+ 5yVn/PKeOG1/0UjmggOEnyD+1PAnQzXjaGKzuzrmh5dSnskM0YCduZ8h0vzPT6CBuvUqRXOVm
+ lJbWaB33gO87erCZGmHiQHMZvc/ph+ocrtAUpz8k8xRkSGUGO2DuX9cYUG8tzmc+q5gOIpW1u
+ ++ShLnKU3zGbxQkm2fJQV7ddOPTDGB2kzf+7kVr2vlpGez3JBnRj9y59bJCmwyTKIYXPQcGS1
+ wEfZNM1ftScSP38uFoYLHxtwBj7mP0muJuwH/cJBLn/5xkBqlDlIB6qlEGhr9LdG+J4HuWwv8
+ 1ygcn5TkIpyUaoCYbysKH9R8IH+86IdGPl/kBM2y87KD881uteGCYackKJkZMh2VZViUYPBMw
+ OalxIkzh3IgiPTZ/lkueXlxKVKdXijwhIQ/kPJG4bjFJyqChux/klcfobWDhYZpDl9sHq/Hlg
+ Oo2SvCHGLi4afri7SFiygCKOh0y/+wXU5DZZgV4UUTXoBoanwd0FCerrocNEAPqr/MDxQrgOs
+ C6PTxqX20E7yiyGgZOHJbDtu6YS14RI315MiimX6zWq8QOdyIY00cjyV/IDoA1c0AFL9lvivt
+ /Q4dH45hoWSPuDQrS/Xj2Nu1juTq0iSEdSKCWg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 11:52:42AM -0700, Suren Baghdasaryan wrote:
-> On Tue, Oct 12, 2021 at 11:26 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Tue, Oct 12, 2021 at 10:10 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 10/11/21 11:44 PM, Arnd Bergmann wrote:
+> > On Tue, Oct 12, 2021 at 7:54 AM Vegard Nossum <vegard.nossum@oracle.com> wrote:
+> >> On 10/11/21 9:37 PM, Arnd Bergmann wrote:
+> >>> On Mon, Oct 11, 2021 at 6:29 PM Vegard Nossum <vegard.nossum@oracle.com> wrote:
+> >>
+> >> Otherwise it's mostly CRC32 and a couple of odd ones like this that I've
+> >> seen so far:
+> >>
+> >> ERROR: modpost: "dell_privacy_has_mic_mute"
+> >> [drivers/platform/x86/dell/dell-laptop.ko] undefined!
 > >
-> > On Mon, Oct 11, 2021 at 10:36:24PM -0700, Suren Baghdasaryan wrote:
-> > > On Mon, Oct 11, 2021 at 8:00 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > >
-> > > > On Mon, Oct 11, 2021 at 06:20:25PM -0700, Suren Baghdasaryan wrote:
-> > > > > On Mon, Oct 11, 2021 at 6:18 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> > > > > >
-> > > > > > On Mon, Oct 11, 2021 at 1:36 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > >
-> > > > > > > On Fri 08-10-21 13:58:01, Kees Cook wrote:
-> > > > > > > > - Strings for "anon" specifically have no required format (this is good)
-> > > > > > > >   it's informational like the task_struct::comm and can (roughly)
-> > > > > > > >   anything. There's no naming convention for memfds, AF_UNIX, etc. Why
-> > > > > > > >   is one needed here? That seems like a completely unreasonable
-> > > > > > > >   requirement.
-> > > > > > >
-> > > > > > > I might be misreading the justification for the feature. Patch 2 is
-> > > > > > > talking about tools that need to understand memeory usage to make
-> > > > > > > further actions. Also Suren was suggesting "numbering convetion" as an
-> > > > > > > argument against.
-> > > > > > >
-> > > > > > > So can we get a clear example how is this being used actually? If this
-> > > > > > > is just to be used to debug by humans than I can see an argument for
-> > > > > > > human readable form. If this is, however, meant to be used by tools to
-> > > > > > > make some actions then the argument for strings is much weaker.
-> > > > > >
-> > > > > > The simplest usecase is when we notice that a process consumes more
-> > > > > > memory than usual and we do "cat /proc/$(pidof my_process)/maps" to
-> > > > > > check which area is contributing to this growth. The names we assign
-> > > > > > to anonymous areas are descriptive enough for a developer to get an
-> > > > > > idea where the increased consumption is coming from and how to proceed
-> > > > > > with their investigation.
-> > > > > > There are of course cases when tools are involved, but the end-user is
-> > > > > > always a human and the final report should contain easily
-> > > > > > understandable data.
-> > > > > >
-> > > > > > IIUC, the main argument here is whether the userspace can provide
-> > > > > > tools to perform the translations between ids and names, with the
-> > > > > > kernel accepting and reporting ids instead of strings. Technically
-> > > > > > it's possible, but to be practical that conversion should be fast
-> > > > > > because we will need to make name->id conversion potentially for each
-> > > > > > mmap. On the consumer side the performance is not as critical, but the
-> > > > > > fact that instead of dumping /proc/$pid/maps we will have to parse the
-> > > > > > file, do id->name conversion and replace all [anon:id] with
-> > > > > > [anon:name] would be an issue when we do that in bulk, for example
-> > > > > > when collecting system-wide data for a bugreport.
-> > > >
-> > > > Is that something you need to do client-side? Or could the bug tool
-> > > > upload the userspace-maintained name:ids database alongside the
-> > > > /proc/pid/maps dump for external processing?
-> > >
-> > > You can generate a bugreport and analyze it locally or submit it as an
-> > > attachment to a bug for further analyzes.
-> > > Sure, we can attach the id->name conversion table to the bugreport but
-> > > either way, some tool would have to post-process it to resolve the
-> > > ids. If we are not analyzing the results immediately then that step
-> > > can be postponed and I think that's what you mean? If so, then yes,
-> > > that is correct.
-> >
-> > Right, somebody needs to do it at some point, but I suppose it's less
-> > of a problem if a developer machine does it than a mobile device.
-> 
-> True, and that's why I mentioned that it's not as critical as the
-> efficiency at mmap() time. In any case, if we could avoid translations
-> at all that would be ideal.
-> 
-> >
-> > One advantage of an ID over a string - besides not having to maintain
-> > a deduplicating arbitrary string storage in the kernel - is that we
-> > may be able to auto-assign unique IDs to VMAs in the kernel, in a way
-> > that we could not with strings. You'd still have to do IPC calls to
-> > write new name mappings into your db, but you wouldn't have to do the
-> > prctl() to assign stuff in the kernel at all.
-> 
-> You still have to retrieve that tag from the kernel to record it in
-> your db, so this would still require some syscall, no?
+> > I have a patch for this one that I should send out.
+>
+> I sent a patch for that. Hans de Goede replaced with:
+> [PATCH] platform/x86: dell: Make DELL_WMI_PRIVACY depend on DELL_WMI
+>
+> <20211011132338.407571-1-hdegoede@redhat.com>
+>
+> so no need to send your patch.
 
-Don't you have to do this with the string setting interface as well?
-How do you know the vma address to pass into the prctl()? Is this
-somehow coordinated with the mmap()?
+Unfortunately there is still a related problem that remains with
+"DELL_WMI=m && DELL_SMBIOS=y", and another one with
+"DELL_WMI=m && DELL_LAPTOP=y && DELL_WMI_PRIVACY=y".
 
-> > (We'd have to think of a solution of how IDs work with vma merging and
-> > splitting, but I think to a certain degree that's policy and we should
-> > be able to find something workable - a MAP_ID flag, using anon_vma as
-> > identity, assigning IDs at mmap time and do merges only for protection
-> > changes etc. etc.)
-> 
-> Overall, I think keeping the kernel out of this and letting it treat
-> this tag as a cookie which only userspace cares about is simpler.
-> Unless you see other uses where kernel's involvement is needed.
-
-It depends on what you consider keeping the kernel out of it. A small
-extension to assign unique IDs to mappings automatically in an
-intuitive way (with a compat option to disable) is a much smaller ABI
-commitment than a prctl()-controlled string storage.
-
-When I say policy on how to assign the ID, I didn't mean that it
-should be a free for all. Rather that we should pick one reasonable
-way to do it, comparable to picking the parameters for how long the
-stored strings could be, which characters to allow etc.
+      Arnd
