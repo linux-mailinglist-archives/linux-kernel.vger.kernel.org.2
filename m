@@ -2,81 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2555A42A391
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4886E42A394
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 13:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236289AbhJLLra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 07:47:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236197AbhJLLrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:47:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5898060EFE;
-        Tue, 12 Oct 2021 11:45:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634039121;
-        bh=yPmGfrIx5fsPNeovUyGC2nx0U7hr1ByxkC91ZqFvywU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kx+uAsyNqvX2hV5qn2Ah1xUjmbfU6xwJ7DONv8uVHgnvWHtBAkCV9aEzhb5AsbEER
-         tl2VH/EC37fCYXfoDsN9M4Xi+6nDagAHm7CGCD31ZdyJJflOT63dUP8DOiCfYV0JIO
-         hZrJKklagjh/utfDpW3x+PBcvE03pu+o+av00XIk+h5c6FURuroNKuVipaDaeidpox
-         avkp/mwKY4mKT+fb9jxRmRu8mXUxmKweZ3DsjbAEIRG/hSO2odcIudcRkfJV7SddY3
-         7BoMA0ZGoGeV2iD+PemNDskaE/gZBOMIF2UP4TRdQvVxFh9AohtxRnIIloA8PcNEgI
-         W5dl1uCrXUB0w==
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Stefan Binding <sbinding@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com
-Subject: Re: [PATCH] ASoC: cs42l42: Ensure 0dB full scale volume is used for headsets
-Date:   Tue, 12 Oct 2021 12:45:18 +0100
-Message-Id: <163403898174.2091644.6707785151456646793.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211011144903.28915-1-rf@opensource.cirrus.com>
-References: <20211011144903.28915-1-rf@opensource.cirrus.com>
+        id S236298AbhJLLs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 07:48:29 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13726 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232665AbhJLLs2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 07:48:28 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HTDNc6jYCzVflZ;
+        Tue, 12 Oct 2021 19:44:48 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 12 Oct 2021 19:46:24 +0800
+Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
+ previous check time
+To:     Jan Kara <jack@suse.cz>
+References: <20210911090059.1876456-1-yebin10@huawei.com>
+ <20210911090059.1876456-3-yebin10@huawei.com>
+ <20211007123100.GG12712@quack2.suse.cz> <615FA55B.5070404@huawei.com>
+ <615FAF27.8070000@huawei.com> <20211012084727.GF9697@quack2.suse.cz>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <61657590.2050407@huawei.com>
+Date:   Tue, 12 Oct 2021 19:46:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20211012084727.GF9697@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 15:49:03 +0100, Richard Fitzgerald wrote:
-> From: Stefan Binding <sbinding@opensource.cirrus.com>
-> 
-> Ensure the default 0dB playback path is always used.
-> 
-> The code that set FULL_SCALE_VOL based on LOAD_DET_RCSTAT was
-> spurious, and resulted in a -6dB attenuation being accidentally
-> inserted into the playback path.
-> 
-> [...]
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On 2021/10/12 16:47, Jan Kara wrote:
+> On Fri 08-10-21 10:38:31, yebin wrote:
+>> On 2021/10/8 9:56, yebin wrote:
+>>> On 2021/10/7 20:31, Jan Kara wrote:
+>>>> On Sat 11-09-21 17:00:55, Ye Bin wrote:
+>>>>> kmmpd:
+>>>>> ...
+>>>>>       diff = jiffies - last_update_time;
+>>>>>       if (diff > mmp_check_interval * HZ) {
+>>>>> ...
+>>>>> As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
+>>>>> than 'mmp_update_interval', so there will never trigger detection.
+>>>>> Introduce last_check_time record previous check time.
+>>>>>
+>>>>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>>>> I think the check is there only for the case where write_mmp_block() +
+>>>> sleep took longer than mmp_check_interval. I agree that should rarely
+>>>> happen but on a really busy system it is possible and in that case
+>>>> we would
+>>>> miss updating mmp block for too long and so another node could have
+>>>> started
+>>>> using the filesystem. I actually don't see a reason why kmmpd should be
+>>>> checking the block each mmp_check_interval as you do -
+>>>> mmp_check_interval
+>>>> is just for ext4_multi_mount_protect() to know how long it should wait
+>>>> before considering mmp block stale... Am I missing something?
+>>>>
+>>>>                                  Honza
+>>> I'm sorry, I didn't understand the detection mechanism here before. Now
+>>> I understand
+>>> the detection mechanism here.
+>>> As you said, it's just an abnormal protection. There's really no problem.
+>>>
+>> Yeah, i did test as following steps
+>> hostA                        hostB
+>>     mount
+>>       ext4_multi_mount_protect  -> seq == EXT4_MMP_SEQ_CLEAN
+>>          delay 5s after label "skip" so hostB will see seq is
+>> EXT4_MMP_SEQ_CLEAN
+>>                         mount
+>>                         ext4_multi_mount_protect -> seq == EXT4_MMP_SEQ_CLEAN
+>>                                 run  kmmpd
+>>      run kmmpd
+>>
+>> Actually，in this  situation kmmpd will not detect  confliction.
+>> In ext4_multi_mount_protect function we write mmp data first and wait
+>> 'wait_time * HZ'  seconds,
+>> read mmp data do check. Most of the time, If 'wait_time' is zero, it can pass
+>> check.
+> But how can be wait_time zero? As far as I'm reading the code, wait_time
+> must be at least EXT4_MMP_MIN_CHECK_INTERVAL...
+>
+> 								Honza
+  int ext4_multi_mount_protect(struct super_block *sb,
+                                      ext4_fsblk_t mmp_block)
+  {
+          struct ext4_super_block *es = EXT4_SB(sb)->s_es;
+          struct buffer_head *bh = NULL;
+          struct mmp_struct *mmp = NULL;
+          u32 seq;
+          unsigned int mmp_check_interval = 
+le16_to_cpu(es->s_mmp_update_interval);
+          unsigned int wait_time = 0;                    --> wait_time 
+is equal with zero
+          int retval;
 
-Thanks!
+          if (mmp_block < le32_to_cpu(es->s_first_data_block) ||
+              mmp_block >= ext4_blocks_count(es)) {
+                  ext4_warning(sb, "Invalid MMP block in superblock");
+                  goto failed;
+          }
 
-[1/1] ASoC: cs42l42: Ensure 0dB full scale volume is used for headsets
-      commit: aa18457c4af7a9dad1f2b150b11beae1d8ab57aa
+          retval = read_mmp_block(sb, &bh, mmp_block);
+          if (retval)
+                  goto failed;
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+          mmp = (struct mmp_struct *)(bh->b_data);
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+          if (mmp_check_interval < EXT4_MMP_MIN_CHECK_INTERVAL)
+                  mmp_check_interval = EXT4_MMP_MIN_CHECK_INTERVAL;
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+          /*
+           * If check_interval in MMP block is larger, use that instead of
+           * update_interval from the superblock.
+           */
+          if (le16_to_cpu(mmp->mmp_check_interval) > mmp_check_interval)
+                  mmp_check_interval = le16_to_cpu(mmp->mmp_check_interval);
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+          seq = le32_to_cpu(mmp->mmp_seq);
+          if (seq == EXT4_MMP_SEQ_CLEAN)   --> If hostA and hostB mount 
+the same block device at the same time,
+--> HostA and hostB  maybe get 'seq' with the same value 
+EXT4_MMP_SEQ_CLEAN.
+                  goto skip;
+...
+skip:
+         /*
+          * write a new random sequence number.
+          */
+         seq = mmp_new_seq();
+         mmp->mmp_seq = cpu_to_le32(seq);
 
-Thanks,
-Mark
+         retval = write_mmp_block(sb, bh);
+         if (retval)
+                 goto failed;
+
+         /*
+          * wait for MMP interval and check mmp_seq.
+          */
+         if (schedule_timeout_interruptible(HZ * wait_time) != 0) 
+{        --> If seq is equal with EXT4_MMP_SEQ_CLEAN, wait_time is zero.
+                 ext4_warning(sb, "MMP startup interrupted, failing mount");
+                 goto failed;
+         }
+
+         retval = read_mmp_block(sb, &bh, mmp_block); -->We may get the 
+same data with which we wrote, so we can't detect conflict at here.
+         if (retval)
+                 goto failed;
+         mmp = (struct mmp_struct *)(bh->b_data);
+         if (seq != le32_to_cpu(mmp->mmp_seq)) {
+                 dump_mmp_msg(sb, mmp,
+                              "Device is already active on another node.");
+                 goto failed;
+         }
+...
+}
+
