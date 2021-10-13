@@ -2,138 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 384BB42B3CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD6542B3D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237301AbhJMDrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbhJMDq6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:46:58 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3609BC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 20:44:56 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id m21so972036pgu.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 20:44:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NPYgrbf9559QlllyAfgrfZzaAR2G3z6MzzMdSacYVDk=;
-        b=qwTDO27q1hmN0i8E5OebUw3Fy9WikHhwEqwRQbWYg4iX56IgsvfOa6W/qc7Vx8NqX2
-         06Ifc3jggJa20HFM5uC8YZzDvrfDLkoul9BRvEQUSp91LPxehHsAKYUDvaREEkGsJO4E
-         akWnsEFPMol2kigezE/0fUWBPt+FKXxgD+rE2dwNuT5F5FF+kywYzcBVaok940z8IMhY
-         ZWf7aSlBlqvtG6+8oLeK7J8yWgqbBLNzZWnmCYShdL509863gKLKTezy7bhMzn5okr/F
-         m2oeGfO9E7f5ueN5PT+5rF9GHTEMKjyILFwzbJSB8NkbKCpm8ezO/fMa5D9GWfWS08wM
-         niAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NPYgrbf9559QlllyAfgrfZzaAR2G3z6MzzMdSacYVDk=;
-        b=AahrN3+FHAMuzQkgMVSqk+1t0Yn9qa+IbrLdbfIr2Pco9gsMOnc/FYlqupQ4UsVk02
-         i0AUs1PA3MisNd4pwj2lhw+rtDLgYV+JqR1lp0BNOI9SuFNz99X+hi0+zR4u815YJzo8
-         HKViBb8R3JeWPDrfY+SQSLF7BirjouL1cHaLoDVoKpUm2kLKlZSxb8rAJsL2uaWMJo62
-         5LZtEX7kpM7JoxnuECE0l+zzuKemn6D4TJhufjcoU7dMXPN4fAEXqLBU8QFyLmc0BM76
-         4aIKlZaijRCOe84Yp2Oioavn+cymQUK3r5OA59TwlZAeajc56iuy1PeBWLpBCL0iogzD
-         /tJw==
-X-Gm-Message-State: AOAM532t05vw+vtRVEd+61YZwVs5SKeJ0c1W9mL/T55OgsLSFz5eFxW7
-        VItwmNcAp1Pw+ZzXpEMFb94=
-X-Google-Smtp-Source: ABdhPJxvkBaMJi8cGjDOfMO7F/noVX+3tEWo5xolEbY8oKD+sSwF8+K5HXuaD6vx5S8NX8ty8nJ6OA==
-X-Received: by 2002:a05:6a00:8d0:b0:44c:26e6:1c13 with SMTP id s16-20020a056a0008d000b0044c26e61c13mr35896493pfu.28.1634096694122;
-        Tue, 12 Oct 2021 20:44:54 -0700 (PDT)
-Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
-        by smtp.gmail.com with ESMTPSA id m11sm12888291pga.27.2021.10.12.20.44.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 20:44:53 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 03:44:49 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Christoph Lameter <cl@gentwo.de>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC] Some questions and an idea on SLUB/SLAB
-Message-ID: <20211013034449.GA118049@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-References: <20211009001903.GA3285@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
- <alpine.DEB.2.22.394.2110110909150.130815@gentwo.de>
+        id S236287AbhJMDut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:50:49 -0400
+Received: from mga12.intel.com ([192.55.52.136]:43664 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229717AbhJMDus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 23:50:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="207454944"
+X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
+   d="scan'208";a="207454944"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 20:48:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
+   d="scan'208";a="442119721"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP; 12 Oct 2021 20:48:37 -0700
+Received: from linux.intel.com (vwong3-iLBPG3.png.intel.com [10.88.229.80])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 5A52D58066D;
+        Tue, 12 Oct 2021 20:48:35 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 11:48:32 +0800
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/2] net: phy: dp83867: add generic PHY loopback
+Message-ID: <20211013034832.GA3256@linux.intel.com>
+References: <20211013034128.2094426-1-boon.leong.ong@intel.com>
+ <20211013034128.2094426-3-boon.leong.ong@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2110110909150.130815@gentwo.de>
+In-Reply-To: <20211013034128.2094426-3-boon.leong.ong@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hello Christoph, thank you for answering.
-
-On Mon, Oct 11, 2021 at 09:13:52AM +0200, Christoph Lameter wrote:
-> On Sat, 9 Oct 2021, Hyeonggon Yoo wrote:
+On Wed, Oct 13, 2021 at 11:41:28AM +0800, Ong Boon Leong wrote:
+> From: "Lay, Kuan Loon" <kuan.loon.lay@intel.com>
 > 
-> >  - Is there a reason that SLUB does not implement cache coloring?
-> >    it will help utilizing hardware cache. Especially in block layer,
-> >    they are literally *squeezing* its performance now.
+> TI DP83867 supports loopback enabled using BMCR, so we add
+> genphy_loopback to the phy driver.
 > 
-> Well as Matthew says: The high associativity of caches 
-
-it seems not useful on my both machines (4-way / 8-way set associative) too.
-
-> and the execution
-> of other code path seems to make this not useful anymore.
+> Tested-by: Clement <clement@intel.com>
+> Signed-off-by: Lay, Kuan Loon <kuan.loon.lay@intel.com>
+> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+> ---
+>  drivers/net/phy/dp83867.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> I am sure you can find a benchmark that shows some benefit. But please
-> realize that in real-life the OS must perform work. This means that
-> multiple other code paths are executed that affect cache use and placement
-> of data in cache lines.
-> 
+> diff --git a/drivers/net/phy/dp83867.c b/drivers/net/phy/dp83867.c
+> index bb4369b75179..af47c62d6e04 100644
+> --- a/drivers/net/phy/dp83867.c
+> +++ b/drivers/net/phy/dp83867.c
+> @@ -878,6 +878,7 @@ static struct phy_driver dp83867_driver[] = {
+>  
+>  		.suspend	= genphy_suspend,
+>  		.resume		= genphy_resume,
+> +		.set_loopback	= genphy_loopback,
 
-cache coloring can make benchmark results better. But as slab uses more
-cache lines - that reduces other code paths' cache line. Did I get right?
+Isn't this already handled in phy_loopback() in 
+drivers/net/phy/phy_device.c?
 
-> 
-> >  - In SLAB, do we really need to flush queues every few seconds?
-> >    (per cpu queue and shared queue). Flushing alien caches makes
-> >    sense, but flushing queues seems reducing it's fastpath.
-> >    But yeah, we need to reclaim memory. can we just defer this?
-> 
-> The queues are designed to track cache hot objects (See the Bonwick
-> paper). After a while the cachelines will be used for other purposes and
-> no longer reflect what is in the caches. That is why they need to be
-> expired.
-
-I've read Bonwick paper but I thought expiring was need for reclaiming
-memory. maybe I got it wrong.. I should read it again.
-
-> 
-> 
-> >   - I don't like SLAB's per-node cache coloring, because L1 cache
-> >     isn't shared between cpus. For now, cpus in same node are sharing
-> >     its colour_next - but we can do better.
-> 
-> This differs based on the cpu architecture in use. SLAB has an ideal model
-> of how caches work and keeps objects cache hot based on that. In real life
-> the cpu architecture differs from what SLAB things how caches operate.
-> 
-
-So the point is, As cache hierarchy differs based on architecture,
-assuming cpus have both unique cache per cpu, and shared cache among
-cpus can misfit in some architectures.
-
-> >     what about splitting some per-cpu variables into kmem_cache_cpu
-> >     like SLUB? I think cpu_cache, colour (and colour_next),
-> >     alloc{hit,miss}, and free{hit,miss} can be per-cpu variables.
-> 
-> That would in turn increase memory use and potentially the cache footprint
-> of the hot paths.
->
-
-I thought splitting percpu data was need for coloring but it
-isn't useful. So that's unnecessary cost.
-
-Thanks,
-Hyeonggon.
+>  	},
+>  };
+>  module_phy_driver(dp83867_driver);
