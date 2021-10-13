@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866D042B362
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922E442B364
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237273AbhJMD1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:27:08 -0400
-Received: from mail-eopbgr1320099.outbound.protection.outlook.com ([40.107.132.99]:6608
+        id S237365AbhJMD1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:27:21 -0400
+Received: from mail-eopbgr1320100.outbound.protection.outlook.com ([40.107.132.100]:32000
         "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237289AbhJMD1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:27:02 -0400
+        id S235482AbhJMD1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 23:27:18 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fm4kKyD6nNR8y5zthhnpn9Kh6vTo7BKphP8ArnBZiZ4wdkcAFiQptFjanooHZA6o8rlKwctFQchIMJC50oDowoQpX8A5kfTfO9TldstIK5MYlHTBS5k7Gh3iUXdcZn0Wvgp0L3O8JwQH8SGftHsokeu0qtwOvAFuyoW8o4OJSG5GZd8pn1OdM4wpviyNk8huA/ZcZ8GRMo+V1Js6JPdp8+9ozRjQn2MVBLAZzPZBOBKEUe/6+qVV+Qm/47T0Gni3aIW6VXKSS8iF2T7qEeB0KqXIE1gjuEAUbzYy74dyfcHz/qaiZGC8MWAuPzvcw7LRX9NO6MXid2ZfZk1zHAPC2w==
+ b=lntnSoOedEaDrbYOF5CV/8/n9V1Ze0nRSTi8+VsaBSTzTB++BYwT9wwK8pWEzBzpyD91Mn8ue/g0p7mOzSVQoptTnPb66svS5lmrlhCxQ3Kw98m9+j/fuuu/+KermfxIOLNjvXEfsu7KJ6T3sghvHBJJRKWGuN3W5lxh/Ws3buSTuLHI2n9MctCd3Mbqw9+N7JfrFfNNjMCLUW0hr88Yj3Cgcej9FDrBqezFU8b+a8r+edRc03szuyvjl4R1tor1M9Qu9xly9EqTApPZ2JohfDSSRDvK07G+nLREBLKtapuXQkp9E0wmRZoXwKfMseNUDG6dv4t/3F9UOb67NHwCog==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CIdOid3KHZ5mSPXmYepT+86Rjr2PCaqdU3MFIisT/U4=;
- b=bZAO7MoYQavZ1tCiRzxvQ+cluG68qZ05uLZAi6oPkhIer87IFHZzKeir5WpA60c/kOhE2TXcZK7vnGKipJOqyvo4pmP846wgs5KxqOROWBiSL9Kdht1QzZ0YfvCFbmDVx9UwbwkOLTAaMTGGRi1/RjwgmhZw1tqz/gvMqFFeiQDFS0GNaAXRrkbk9nOvA9BSFm45rZNoGGruGFM3hIqU3rA5BkTzZ68yd5iWpQ44YziVsaagTYhTn3nHDV8974NyVN20DMvKmD8JKyKTGbOeNgKDhk8/uyJ0OO1IZGHFqbzrQ6cCj3icsRruhLjTNxZk4fzoAK9Gn0+f+Q7mvdJoow==
+ bh=RdnkKI5sjgGMYUhURPau85GDYzgdBORp9UjjsAtl63I=;
+ b=bXYDQhch4PDc1HFcd2PNdarZRahom/kS8m02g0gUqy+hk17Q/7p0HzVfzV2eMLrDm2ZlC1b2mbELyo4HNZbajazjvEvuGLwOM+RNZh0HqBjBs2+KdxuqO84szf0EK6T9j+3n09Nj1BApyY/8eZRbClIACqwaH9TWVfOH28myDuC6fjnr2P9og8bd0O7ZNxUzqM6NnIguLsPvFSQn1621ala9sONWkkKgVaGsiyWmAAUH/h1sRD3V7RA3K5PjvjNtr8rHv2yYU+UcH7MdzGHmJOYWUfh+RCP+omr8HBVcmR1qfshLRYnXDxIGovgDU0SxMNRLoNHcKWxTJlGRYRYJgA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
  s=selector2-vivo0-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CIdOid3KHZ5mSPXmYepT+86Rjr2PCaqdU3MFIisT/U4=;
- b=DjE7DqPH+tgvbzhkjqsU9V7CAtUX8Jc2sRRbdfxlEI3dN6mKgYCr+VfL2BCduO3zqFDjBJzjwyFK2hqixkMHw/cSKHXWe+GUnmwUD5XUAVFCK5dmrYLw+XzYXRBoTikPJ6PQJeHQdUGdXdo71nVQGh2dCGIyLhoiWNn01xWvfLw=
-Authentication-Results: rjwysocki.net; dkim=none (message not signed)
- header.d=none;rjwysocki.net; dmarc=none action=none header.from=vivo.com;
+ bh=RdnkKI5sjgGMYUhURPau85GDYzgdBORp9UjjsAtl63I=;
+ b=hhgzMBT55NWy45cNKsEZH6OMO/wTcUxE1EuFhKjG/8Mk/VVUv+J3dlxPyuALn/X49fugkskEa+NmHktG13wra0R+b2okGiG8szOBgnziM1qsCRZJVNODRiEKWG9JKZ95z1SOFdOS0SnkTx8A0eH1TZUOazKueAln6VvQinoLK90=
+Authentication-Results: kernel.dk; dkim=none (message not signed)
+ header.d=none;kernel.dk; dmarc=none action=none header.from=vivo.com;
 Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
  by SL2PR06MB3387.apcprd06.prod.outlook.com (2603:1096:100:3d::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14; Wed, 13 Oct
- 2021 03:24:58 +0000
+ 2021 03:25:13 +0000
 Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
  ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
  ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4587.024; Wed, 13 Oct 2021
- 03:24:58 +0000
+ 03:25:13 +0000
 From:   Qing Wang <wangqing@vivo.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+To:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH] acpi: replace snprintf in show functions with sysfs_emit
-Date:   Tue, 12 Oct 2021 20:24:50 -0700
-Message-Id: <1634095490-3799-1-git-send-email-wangqing@vivo.com>
+Subject: [PATCH] ata: replace snprintf in show functions with sysfs_emit
+Date:   Tue, 12 Oct 2021 20:25:04 -0700
+Message-Id: <1634095505-3849-1-git-send-email-wangqing@vivo.com>
 X-Mailer: git-send-email 2.7.4
 Content-Type: text/plain
-X-ClientProxiedBy: HK2PR04CA0050.apcprd04.prod.outlook.com
- (2603:1096:202:14::18) To SL2PR06MB3082.apcprd06.prod.outlook.com
+X-ClientProxiedBy: HK2PR04CA0059.apcprd04.prod.outlook.com
+ (2603:1096:202:14::27) To SL2PR06MB3082.apcprd06.prod.outlook.com
  (2603:1096:100:37::17)
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (218.213.202.189) by HK2PR04CA0050.apcprd04.prod.outlook.com (2603:1096:202:14::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.15 via Frontend Transport; Wed, 13 Oct 2021 03:24:57 +0000
+Received: from ubuntu.localdomain (218.213.202.189) by HK2PR04CA0059.apcprd04.prod.outlook.com (2603:1096:202:14::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.15 via Frontend Transport; Wed, 13 Oct 2021 03:25:12 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e88d29a5-6ca8-4394-73e8-08d98df9087a
+X-MS-Office365-Filtering-Correlation-Id: c497b5b3-aac8-4acc-fb93-08d98df911ca
 X-MS-TrafficTypeDiagnostic: SL2PR06MB3387:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB33874AEBC46FD219DC436A0EBDB79@SL2PR06MB3387.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:225;
+X-Microsoft-Antispam-PRVS: <SL2PR06MB338764CFEF0CA43F35CC58A4BDB79@SL2PR06MB3387.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:392;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KlY/Xta6U8WWSv4eRyeccxhD7DyF3oUJxMFuYp4ZFTMTLom/LudzdoRrxOjWgto/V8Zkh9SoTl16rOMwOq+wfVXXDXtNJtSv0nz5h4YFijNPLVfnSGo7fiQOZXD5MlW3LA1uLfGV5+Yq61RU/jbxWSSrFdU2vKxLLkByJqm4y0nAyRh8ONg774mW3tXLFJpxZZmqtOV05XNhwl+8L17uoc1KgFgTkKX9CZR87Q7ZxKyy+lb0wt5MAsP2hs0HzEG4aqSbUvi6w8xJM6gmcwo9LiOWXo406yMOE91QdvMor51SN8GCKW+qpfNKH7REEFC0/zMXavqmiBF63Fv2M/hD8q4eSXl2pXRo1/U8/6+f9GCVYbXlZpo/JAlYYAsX/lGy9tpCZlkqrrzE7Wwkze1of3amhlN1tG1pkR7kgZ25n4rv0zaJzXEa2DNwl3gOjW34EQzgbz8fiyixFuavH+3mXLpyNObsE6kbUICZ7yEo8bJAlBzaVt1d2UbpMHA6kaiVJ5m53r3SdICDxld48CPJICv1CLWhKG/pbUVFslUmKM5Qr1hhANouBoCdQ0G6+95rFDb+sT+LMS5u5e8LLfKs71eWbNDXlsprwBPC1graWMReh9RqzaryQjMcUgfR+YxHjsne0w0TqVEX8+8UlESjgXSwZUv58hZzsiL47varBeMgaMpYj74vZfLhX+y79eUFNnxPFFya3BhbY8Zxoavt6g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(86362001)(26005)(6486002)(316002)(38100700002)(5660300002)(66476007)(6666004)(83380400001)(4326008)(6506007)(38350700002)(66946007)(107886003)(110136005)(508600001)(66556008)(2616005)(8936002)(2906002)(52116002)(8676002)(6512007)(36756003)(956004);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: LcvnfryH+MFOSRkA3Jgt0EPEfv8znIctlXCRRERpPKeNu/3d0RvVfcvaAq/A7y0xDDWnd5b23T+TuNAthhK64V95X1sFTKDHalPiaQ232FrDMi8V8GkZw2Ntqybk02zOxdgDF/ZYrIkzNTZg454Hnxv8xHJ6fQ9bOPgQVpH7zwJdOOGG3I7e9GB8dZ85g9WB6hSpgrPnR7PGvkIcbF0T1qOrz0okU/cTzhXLWP3oLwy8D2ylfGWKCOJfeg90qVb4J6ktQEpQANjHsrgwV9mw1CXjpLqgZqciDanfLL0BVLys0AHb6J8nuUnlksv7OWzHGAHgP1yGp84EFEW8HJ7Y1YIrgwMQmEacIR+uVFJHGGu0lufCsIBQCDww8CJMvzPS+8hVGXT7ui/eIC3oHzuf5dT7oQuZmvi02i00kUci+8bQro58XnAI/rx/iYf/BzXMIznejWo3S6otp/ZeqYZdt+9smUOCugO+m2coQFuggHYjvJodsyybuUO1j9lQ8hjHiBEAdv8cx8fU+m7kREBRM+AgwLz2JTHDqKY2OgKDEIXZ4oaGk1UptThMhBHfuPRbqU3eF6aaejztzyt6nCyV5wtebzybXpqKXJoFCk/lb2PTcL9MAMQxbiXhRqBX15ftcG38rN/qBWfkOD/TiXB7eiHk8ib7TItOGMIN5yppY/a4Thg/6NxlwxeNuWfsyF5K
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(86362001)(26005)(6486002)(316002)(38100700002)(5660300002)(66476007)(6666004)(83380400001)(4326008)(6506007)(38350700002)(66946007)(107886003)(508600001)(66556008)(2616005)(4744005)(8936002)(2906002)(52116002)(8676002)(6512007)(36756003)(956004);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1k3dpCdCcoY1E4OtDP6r1t06nkowiXMDXqMAZS6CUBiTxr/tuTHhCr2nIS4H?=
- =?us-ascii?Q?W9rKJU5F52hRY6YZWw4H+ZBwQxsaeC0kvaiQPR0JcwrdoUiUCOT6LsFJR52s?=
- =?us-ascii?Q?IToOa8DaqExTgmh6xeN1viwL7BNmqFe3z6AeBuO8r5MeR89OF/WUbowjKuCw?=
- =?us-ascii?Q?1HMCE/G+G/nP5lx19nWr6acTI1TTPx/QSCLNd+utzMjQGUVsWmcghh2wEqbA?=
- =?us-ascii?Q?s6cRXxQ9+FRN4PXFr3ctt091hC+SmaFPu0BlvJK/5xu0zUxFtMirv2ivv1mq?=
- =?us-ascii?Q?PBT88tprWH5UbsMWPFDAFT400alfoHA48r5EMcStZbuq6eHCXncohh+BwS4V?=
- =?us-ascii?Q?OjPLb6sJe3JsBNrERETrZ4pHYArMN+zSdaywAOVpgJn+Q7XQf4spd1hu3mK9?=
- =?us-ascii?Q?hU8NZ4X2jupYh1Q328Z9vbLIIIgxOA8N2LIhWyNSxq38mMPXf49gAESI61ym?=
- =?us-ascii?Q?wW2WLD6qg2ZNLa5FOQeu1dXTW6oH370bx9i3u1TlG+vnG6EfKPRMfD+di74l?=
- =?us-ascii?Q?klT53Qio3fS4juTYWybCDDAzeTx1cc9LFm4W0I9Mgd8e4yNjit8Z8X0BGb6x?=
- =?us-ascii?Q?nCHWI6wnB6Yxr67+4EPz4Sz8xIJ4Bd99+YC3DmjuHx1tNqcXiL0X8QkpkA55?=
- =?us-ascii?Q?vWmwUrKxGohls7pTRTvPXIBuht73dWB3AsrVJ0oJc+/oOjKV3yeVFHiJNMhI?=
- =?us-ascii?Q?CqRQR+BUjjesm8gZambD0rI4fNkxlKiO3WaKtiNnR9emKOlMY6aiavWXbGy/?=
- =?us-ascii?Q?IuGPdv2IQ0tipteqNAVysxcdlOYw963FwCssr4QngNGdiBwcIM4pwCxnuHmi?=
- =?us-ascii?Q?T3gwpT+m1GsTmG8spMmbGS/FDRiuM6eLBgW0NPrmAlHi8tJ+X/LePAtgwYae?=
- =?us-ascii?Q?fPCmPMDe2cVe4P0u3CbuE3FT0NE2lDEBnTyIewe5LGabw6VyWE4/lrkvhe8d?=
- =?us-ascii?Q?qqwy7J9RDPHKSvxY6Otld2p6INFKYE8pIRuIxkRFWD00jlZuZiT+RtgzZvpf?=
- =?us-ascii?Q?xyS3wujrQAGavgXB1Am2dN7JFDEJui7nvBVfkfvrCzbjiw97EecT86J24e/2?=
- =?us-ascii?Q?LmkRakafHVJKFSxCsN5XNjfq46uIBGMDds6HwX3VIeN6tPFgh03kkBqDlVqd?=
- =?us-ascii?Q?WXOGNKpsDbbrK/NKkLN4WW9jAPIigRvgRP1lsMLHfv33DaNrRkNM+K2LteyW?=
- =?us-ascii?Q?p9O7otcuEdDQLD53H42Cjk021Uct9vOriHfcz+fpDW8mrTtWK1WTcJe/Q8Mk?=
- =?us-ascii?Q?XAD9nRyGCxNenDJuWVdphrvOmuOHPCgRF4PJbcphcnmLGUeSb3S7hGHarLwf?=
- =?us-ascii?Q?GX4eZBwZnhE6WDtdkcK4XYVP?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dApUzDyOoS/7fY3cf458d6wF2jw7o+G4HUurDjmHRmvZvw0eobhhhbpvBtV3?=
+ =?us-ascii?Q?f/tkCM1a6vvTnGBDdb9x0ays2v/S7dEOo2VcIgJnjjc0TLHrPwwVIRSSYj0c?=
+ =?us-ascii?Q?vmBHY73NCFFL3CgCWmwkwzeGQqZvET3N2EtDkQlBYxU7wQD8mHP8FPq+wFQQ?=
+ =?us-ascii?Q?EM+k8swBjUF+ccgVWpm0lqv/7l8UeIVr0wHM5uGgTk6IlCNJKr3myE/A0MRd?=
+ =?us-ascii?Q?/AHRtlLAPdh4BoyXxhaq51nFuLPRgF0nQqQvVYum7LLovCLCB2xtzWNtdfLI?=
+ =?us-ascii?Q?Dxp2yn7fwPX2ChOm/ZBCUFTADfvLS9f4Jg8trKG6/Kh2MPioxm8LtNbrBidI?=
+ =?us-ascii?Q?jWAgVx78jD3FJFnBwJuQ4s1IbdE24IhUej38Dy0yPbvFT0oTnEzgVhBSnxf7?=
+ =?us-ascii?Q?fF/Cj/soWLuMkrNCl9MY3p0tfJVkndyPe4dNJXWc8tgdbi4vgAFTaLGQDOag?=
+ =?us-ascii?Q?2k3QZ4EynsmUbwYVtBC+IqA7aEVuAA4HsnMLrarmk1Jva8pqWQDV0BAPYEbb?=
+ =?us-ascii?Q?4puZ1A2CGDMXvLl5dhruOWirPsAZnz84toZP6XN1F6dhkQWV8qUrKwATGDXJ?=
+ =?us-ascii?Q?HOIcyBBZF+SI3Ieie+1du2FV8lUc53th43HjVT8G3w4LdXbZO6KzaCq0Q/an?=
+ =?us-ascii?Q?J2BjcweA41H3w5r7K5SPtS//BZboch6lShAcPRLT3LjHiDggcHiJQzvyPtG+?=
+ =?us-ascii?Q?hD6KMRtF1iBCn1pI63OEnHGtJXrvRFvsJBC9CKBOWVK83TJxyRL/GX80BZWI?=
+ =?us-ascii?Q?/+U+ZML5U1X8+04Yv2PqYoqmljTv5KlxUfDpQ3gI+pHAr6a1n942hb3REviy?=
+ =?us-ascii?Q?w5Qn8q1JQ7xp8p5Xlyf6v9l5KEGto3A3lIApObHgeUZkhEIknidE381qs8M1?=
+ =?us-ascii?Q?gAt3p5fCocweTuqpOXHbEXZtUQ8UA8tURW9g8PjuzBbjDcwS9ugr8NQpN2PT?=
+ =?us-ascii?Q?p+uIHzyLjUbJkzKjIALwJ0jXZba2tFI1e2Yrrzm1M71W0xbGL18PU0gnBiKv?=
+ =?us-ascii?Q?b+7hnEtMnzhYAcu0iyWYiLJk7iL61ExAUZz/mbXV/YRiqOcB2LVahL+76W/C?=
+ =?us-ascii?Q?wZZyLuLZkqoZiKrZsMXak1nsiRFsqNXSEH2nxZClMFDzxv7bprJL7PZfDx1n?=
+ =?us-ascii?Q?suYYEwQFjU5PMfNPmbffJtg3cQ2V4prVZnN4COQBgjcV6iCZKiNzC2ncwU2r?=
+ =?us-ascii?Q?3aogwR6loJHgVFPoOGhT/TvZCSyzb/ToqojS+5RrFZWoS2+3QZni6wz7opP/?=
+ =?us-ascii?Q?7wGb5UC4IHQQiVW8+M67XHUSgvq7xOojKTePIePuIjyv6c8etSgDKwEaZmuN?=
+ =?us-ascii?Q?B7jEQVYPQMU+z/A4TUvuvVti?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e88d29a5-6ca8-4394-73e8-08d98df9087a
+X-MS-Exchange-CrossTenant-Network-Message-Id: c497b5b3-aac8-4acc-fb93-08d98df911ca
 X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 03:24:57.9650
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 03:25:13.6243
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Kn1ZfRRhAv1ghsVj2xx0KmPbCaOnnESXEUuarcL+AQsQ6KHzd97/Rj1FWZ2SOc8XVEWbAgTCtxy0INT/O3z9GA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: gfIog7ej7W6RhkUCZSOp2GVhSYo+ei830xYkfsNjmPU8XgBIsfiXLh696B1trFKHTZBEFEwNXcMh+MicsLohHg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3387
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -105,70 +104,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 coccicheck complains about the use of snprintf() in sysfs show functions.
 
-Fix the coccicheck warning:
-WARNING: use scnprintf or sprintf.
+Fix the following coccicheck warning:
+drivers/ata/libata-sata.c:830:8-16: WARNING: use scnprintf or sprintf.
 
 Use sysfs_emit instead of scnprintf or sprintf makes more sense.
 
 Signed-off-by: Qing Wang <wangqing@vivo.com>
 ---
- drivers/acpi/acpi_lpss.c | 2 +-
- drivers/acpi/dock.c      | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/ata/libata-sata.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
-index 894b7e6..9c437d4 100644
---- a/drivers/acpi/acpi_lpss.c
-+++ b/drivers/acpi/acpi_lpss.c
-@@ -748,7 +748,7 @@ static ssize_t lpss_ltr_show(struct device *dev, struct device_attribute *attr,
- 	if (ret)
- 		return ret;
+diff --git a/drivers/ata/libata-sata.c b/drivers/ata/libata-sata.c
+index 8adeab7..3e41cb1 100644
+--- a/drivers/ata/libata-sata.c
++++ b/drivers/ata/libata-sata.c
+@@ -827,7 +827,7 @@ static ssize_t ata_scsi_lpm_show(struct device *dev,
+ 	if (ap->target_lpm_policy >= ARRAY_SIZE(ata_lpm_policy_names))
+ 		return -EINVAL;
  
--	return snprintf(buf, PAGE_SIZE, "%08x\n", ltr_value);
-+	return sysfs_emit(buf, "%08x\n", ltr_value);
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
++	return sysfs_emit(buf, "%s\n",
+ 			ata_lpm_policy_names[ap->target_lpm_policy]);
  }
- 
- static ssize_t lpss_ltr_mode_show(struct device *dev,
-diff --git a/drivers/acpi/dock.c b/drivers/acpi/dock.c
-index 7cf9215..c8e9b96 100644
---- a/drivers/acpi/dock.c
-+++ b/drivers/acpi/dock.c
-@@ -492,7 +492,7 @@ static ssize_t docked_show(struct device *dev,
- 	struct acpi_device *adev = NULL;
- 
- 	acpi_bus_get_device(dock_station->handle, &adev);
--	return snprintf(buf, PAGE_SIZE, "%u\n", acpi_device_enumerated(adev));
-+	return sysfs_emit(buf, "%u\n", acpi_device_enumerated(adev));
- }
- static DEVICE_ATTR_RO(docked);
- 
-@@ -504,7 +504,7 @@ static ssize_t flags_show(struct device *dev,
- {
- 	struct dock_station *dock_station = dev->platform_data;
- 
--	return snprintf(buf, PAGE_SIZE, "%d\n", dock_station->flags);
-+	return sysfs_emit(buf, "%d\n", dock_station->flags);
- 
- }
- static DEVICE_ATTR_RO(flags);
-@@ -543,7 +543,7 @@ static ssize_t uid_show(struct device *dev,
- 	if (ACPI_FAILURE(status))
- 		return 0;
- 
--	return snprintf(buf, PAGE_SIZE, "%llx\n", lbuf);
-+	return sysfs_emit(buf, "%llx\n", lbuf);
- }
- static DEVICE_ATTR_RO(uid);
- 
-@@ -562,7 +562,7 @@ static ssize_t type_show(struct device *dev,
- 	else
- 		type = "unknown";
- 
--	return snprintf(buf, PAGE_SIZE, "%s\n", type);
-+	return sysfs_emit(buf, "%s\n", type);
- }
- static DEVICE_ATTR_RO(type);
- 
+ DEVICE_ATTR(link_power_management_policy, S_IRUGO | S_IWUSR,
 -- 
 2.7.4
 
