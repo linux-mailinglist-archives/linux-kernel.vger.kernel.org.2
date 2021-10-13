@@ -2,98 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D048042C1F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D4F42C1F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236145AbhJMOAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236067AbhJMN7z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:59:55 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2044FC061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:57:51 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id n8so12305378lfk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:57:51 -0700 (PDT)
+        id S236210AbhJMOAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:00:12 -0400
+Received: from mail-bn7nam10on2046.outbound.protection.outlook.com ([40.107.92.46]:54080
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235810AbhJMOAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:00:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lXCLeHg8E19jsDwpblV+EO3XucsznO7+XlC+wmuX54FfxjWepIllnaPf6kNVT5H0V9Lq3teF9H0LFpxcaAGtV5tCEr8qykvmVE5mZhIN9IbjBequSjAlcRceEZciKrHlIJ1NpS+QB4Cni+rXvr4HD6xY591VjJAp+Yn66PK1JnnXOfq429RH8J/9d8ne0jvysIq73/RAW6zXOC6ye2mjO8wXLsboIRRr/Vh5szN9t31Jbv6oHJNfn6Y3i2gs9rEew06PuvdFA/XE9Wdd44n8KZLeKWg/oPDiTFpe7wiuEoy41fEEkuSJ8sOvPlUuIk4+2dlrBhQRt8UWEdFV3qi++Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oU8VQj36Ahlx2bb+0ZxW6zWbE4ghXSayPQS27AOIaVk=;
+ b=gqJQVU6UVWv8XWBFGaPioIYqoFJS2+EXo04yEVXTzLR5Qh0jNPwT6h5WG4Uye0e+GG6OAfi6gcXh4H1+V662ck1Wg9A55pSKUPbVUXC40ISKZlJDSuIZIMuMev4N6/00iSXqgvzBjQTfU2Y6leofzCrix2dsXYzg/ozSluKBAon6R4P9cpNahmEY+w1U7NV5adXPit+/MwBdmTttFwRat0TMXVzJOpNgmLlVWOVDjUhilcGT+iDODVRttPuNGljesvRMkFcyaLZsydiH3JMpmxP2r/CIbA9LXH2keSSS0qfwCP/HFhQ/TN34HjwYotmAR1JwQKlvS0ZdaEItdeUf0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oFsM9Ei6gS0+k7pOO8LFkCGjMbL5J05nWd842ORwlvo=;
-        b=bakgxwHfosywcDZp3vMHev/J4RM6bPLRo/dfXh/5UK2leDCo15AUTppvS+39yC7i2N
-         AiNw8D+GTPVeu57Vq9P3qRgiKvzqS9bFOZ2XaYRV8YOnvpiiKV8Io+D8CNGF6WVqOsiv
-         4QDlg156HdyP7ze2ZlmuEs8/yM1BIa2cpkREtlw2dPkrxxTSfId2PEAxbNo5grOAtc2t
-         zez0j6XDWKzYKJ62kpx06yhQ8FYrSCWxhVYKxTUyiJ4RLpgjtnFFBfp6TfsOKbQ3UIV2
-         1L7u5XIHOqf+QVhiJhMTJcDSmuF7dgDY2HfEtvpdZPKSVxLUKIc69qFjhJDjsHBN8FTW
-         olUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oFsM9Ei6gS0+k7pOO8LFkCGjMbL5J05nWd842ORwlvo=;
-        b=gmO5D5oc6ORjXEY+6iBOjyRpriAHFsqFjrSiZzlb1NvI9eR9PiWJabbJFxF2FmjSy1
-         omECchmC+uhqBuEIzT7Yo064rr+2MdFBXnqbvzSqSOzuaKrk1Dkbiz/+JZZawZoeQIvf
-         IK6vGJo2O73Con+eKB4TxbpYCkCXrXyqBnCelYJYqdN4e0l9zDiEbwlqtGsmWRCBYhYt
-         rjam5DScAitID+GZ5TLRCBE4DbsK7Q/vJ+nDIjMvIiwdpTpn2g89eA98Zy8NrXJRAkGK
-         QblfsUsbmnXTB1QQRLBZSGq8vYp7JP6wHWCdadyAOxEzo7IeYk6p3YBgC0uFPW8yLys1
-         uWig==
-X-Gm-Message-State: AOAM532ziFPOlB3psXlFu6WkanF1RTZLF125KtI+sOBCL8fJlymZkZcZ
-        l4BvVdd6XhcuXKEEryAVz0jhoFFuQB4Icg==
-X-Google-Smtp-Source: ABdhPJwZhc4AfAcz46mBH0bDMlI3rEw082MyBrgaexGv8eU7y2Cw/wy3lYVccAe+lZM0MMzv73xu4g==
-X-Received: by 2002:ac2:4f02:: with SMTP id k2mr39851314lfr.265.1634133467547;
-        Wed, 13 Oct 2021 06:57:47 -0700 (PDT)
-Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
-        by smtp.gmail.com with ESMTPSA id z20sm1336791lfh.306.2021.10.13.06.57.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 06:57:47 -0700 (PDT)
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     bbrezillon@kernel.org, arno@natisbad.org, schalla@marvell.com,
-        sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com
-Cc:     linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH] include: marvell: octeontx2: build error: unknown type name 'u64'
-Date:   Wed, 13 Oct 2021 15:57:43 +0200
-Message-Id: <20211013135743.3826594-1-anders.roxell@linaro.org>
-X-Mailer: git-send-email 2.33.0
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oU8VQj36Ahlx2bb+0ZxW6zWbE4ghXSayPQS27AOIaVk=;
+ b=K3shnn53hnxM3BMacKTbKa9ZfnXG/VeeHNBskdwYSsMe6l/8/h39M0WvOQ2v+uDYkQIEMXssMKwFlajvgzwNIf3Y2NQLuJ+zWhB4NqnDPccwNybdssnoipKTTjUEtudtZ3IkoCkONrXeiUn6uKAO6+L0t6Zjpw/DVX2SLbR5KYU=
+Received: from SA1PR02MB8592.namprd02.prod.outlook.com (2603:10b6:806:1ff::18)
+ by SA1PR02MB8479.namprd02.prod.outlook.com (2603:10b6:806:1fa::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Wed, 13 Oct
+ 2021 13:57:59 +0000
+Received: from SA1PR02MB8592.namprd02.prod.outlook.com
+ ([fe80::6d3e:7010:c43d:fb23]) by SA1PR02MB8592.namprd02.prod.outlook.com
+ ([fe80::6d3e:7010:c43d:fb23%7]) with mapi id 15.20.4608.016; Wed, 13 Oct 2021
+ 13:57:59 +0000
+From:   Abhyuday Godhasara <agodhasa@xilinx.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     Michal Simek <michals@xilinx.com>, Rajan Vaja <RAJANV@xilinx.com>,
+        Manish Narani <MNARANI@xilinx.com>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>,
+        Sai Krishna Potthuri <lakshmis@xilinx.com>,
+        Jiaying Liang <jliang@xilinx.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH v4 0/6] Add Xilinx Event Management Driver
+Thread-Topic: [PATCH v4 0/6] Add Xilinx Event Management Driver
+Thread-Index: AQHXqjPsj2n6NIOYSUC8o2qDqfgxnKvRBXFQgAAKboCAAAG/AIAADkYw
+Date:   Wed, 13 Oct 2021 13:57:59 +0000
+Message-ID: <SA1PR02MB8592E68D021E12DCA45B70A2A1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
+References: <438b398c-a901-7568-11e0-cd9bf302343f@xilinx.com>
+ <20210915131615.16506-1-abhyuday.godhasara@xilinx.com>
+ <SA1PR02MB8592838B99062EFA6EAAE73DA1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
+ <YWbYKQXf8g8s55kG@kroah.com> <YWbZoPHDzc4e5Nme@kroah.com>
+In-Reply-To: <YWbZoPHDzc4e5Nme@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=xilinx.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5cefad77-b5ec-45a5-f171-08d98e517751
+x-ms-traffictypediagnostic: SA1PR02MB8479:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA1PR02MB847952A53E63153F05535BA4A1B79@SA1PR02MB8479.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xaSJ+QhsixqGLRp6zysgjPQL38nR/1NV87eng6y3fT25NblXtf/ZVIEniJNECgFOye/8NusENhffw9UESsTDAA2joFLgbXYKevYMGNAYqKuB//iIfPZ34Hd3WnnqZF3sjUn7l1+Yimv6ajcvXO4AxfoghwqS45Arm+m6mzTqjKdwxQDXO9ee/xwpWJ0rpWOHrWS06PfNkxpBFBiqGZrZo75ndZrOYzgbBaHMghcBEK/vOk03p/LTMucMpNYcUP9f/MERgjQJcFAcg4+gKBe7t+tPm7HD2BDpE0E2inM//7KQHjHjXXF3Ew50Rkw05SG1+K92JYkkQDtVbKgOsVfaAyTGnMhWLpFLplLARZNAexgzrmYt1GboeBKCjQc9R+BfgKi+19EuJMycZznJd4tcXWsjQJhepYryrpFFhwlYq5dYRmkl0QbMik6KPPeZUBseZqwVqIphPw40aB6/NIVYazBOpdwHnKKbOj8fX9sTP6FpKfk2XQghC6nS2/7uysbUaP0QU7JJLceshVZ/hYoSjU+KtEfl06tOLcKeBlFKKnZwzgmqUt1Q7zTxWzSTIcL+HoTDgrmkNobozugFuAK+sPMyKct5d4gGMP+LwMoxXsYQlM38NnWITaParb8wKkEaUrDR9081mr2ZxqOMtR/nWItNkzYLixgr8ZcF1RMllgvoZwh8jhQrXE2bKWZJMI760XDRRWn4D8emrCqRYUXgWQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR02MB8592.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(55016002)(26005)(76116006)(508600001)(66556008)(52536014)(4326008)(38100700002)(33656002)(53546011)(7696005)(66446008)(66476007)(64756008)(66946007)(186003)(6916009)(83380400001)(86362001)(38070700005)(5660300002)(122000001)(6506007)(9686003)(54906003)(8676002)(316002)(71200400001)(8936002)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?PSCsP928VrV4GCJHVSb5TOI3tt+0r2b7A/vF87M8r+ihMTqUNeR/zIp+YJJL?=
+ =?us-ascii?Q?3h3Df6hzHhuE1R0qIZG4rAb5TLYX71/Mf7rzkanf5GoNx1AG3A1sa9yrxfco?=
+ =?us-ascii?Q?6pHXk/SYvmPjNEtvilS4Gc0LwpwN/Vmt+ROgmiiiZv2ZpXCrTD26hhxLLK+d?=
+ =?us-ascii?Q?BPBpybnWmKERO0trbL4/2nubonsz2736k/M8RWsaI01LamBcZFntPuTSPOGD?=
+ =?us-ascii?Q?r/pOo3zHwmJnFUB3vDsGGHzPG6C5X4G/zh903jTeEJ4Swa+NDNodMkoLQETm?=
+ =?us-ascii?Q?kWzBBq5sTvmq4iG25/RWSABk9h2wxEUcE2hjUHWboMo1h8/XUUR0G03uLD7/?=
+ =?us-ascii?Q?CGL/6mAZs/k5RqTG0gSce6XfqAGoWixBKo1jVjQvzXxOZz96tr1sG8S6g/s7?=
+ =?us-ascii?Q?0QzA8FSZGMLB5WABAcjh0Zu99nPsE9HTkGv8A7FPkUSOW+ATHM3RUoGdgJuj?=
+ =?us-ascii?Q?+d/8EqHt1MDwiRInwYx+50FIQH1vNnVhzUrOSIm45kFej5Rdz2dF2cPSVH85?=
+ =?us-ascii?Q?BtlNmHUbiEMt55qRe21AJJiSI+OOLJIlmzemvaQQ2KJsbfaklOs7Nt8/ObB5?=
+ =?us-ascii?Q?7mCihthMdKESHzz10U5u2oEK1QSOcDVyyaHiFOMdg8p6g2xQSp0NkZ65fNGv?=
+ =?us-ascii?Q?kgWnHwIkKIz5B2aTLUIwY0vNh6/NkI3jbm0bQjp1iyZF4GyTbzGpRYZPunJE?=
+ =?us-ascii?Q?QCNt73dLch+VjiTpQ2YauW7LbVxS2XT9nCE9aEnph6HcAH1PWphe6WVa2+p5?=
+ =?us-ascii?Q?ArmrDUAj/j5+R3SyoU4PccD2gdLrH+MtAhgyMLJry+Ovqjxmqdl48GcHeVxE?=
+ =?us-ascii?Q?HbXyRRLxY8/kHAGy0dYQETeDlSCROsg745D3wuX0TX/pZTqFAzSpeNQBjlDZ?=
+ =?us-ascii?Q?qimS8YE1YYbydGRTSIdoaO1RYfWdOsdLNRAdqPJNZ6tvl7NDSBY+09cuR05T?=
+ =?us-ascii?Q?FOtZVddOT61+Qy1xtn//9ejHyatfywR+mCPyT7bOBtn/vxFGrvsm0bm6p+xc?=
+ =?us-ascii?Q?GxCjq8NBYWamopM4WwDjTB98dzM1qZ7tYDsK4ftBl13m1OG5BElCYLLAOMDw?=
+ =?us-ascii?Q?GssTg9/8/nFCW3dIkSbdp+AQIkprQSGftPrM7PRJcAOunLEpwPBhTxkkYNXt?=
+ =?us-ascii?Q?81vf7br+rOn3IirbcgBNWLAPf6p05zymMGIF/ohtvCQbAU+fJmK+wWutZeCy?=
+ =?us-ascii?Q?5ESXIeVGitGS7IrYO2p68rDa76z+QGavc8GyTFCMoYljBXRRzruKAJ5i6pur?=
+ =?us-ascii?Q?zf2n00wsCgkobRpLQYUetUde4NokOI8lwiwlOIg09UTNlPGyoft06+G1c52n?=
+ =?us-ascii?Q?f17R5X7zg9O+4CQ6Cjn34YAm?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR02MB8592.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5cefad77-b5ec-45a5-f171-08d98e517751
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2021 13:57:59.3078
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uT/o+J376D/Ae2LvK6MO+TjqBlTlkRPVWVuUVcTvtycrcZwX9YF1s9DN2zmj5D/GmZ/T6q+l60iR7GsIaNKWcg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR02MB8479
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building an allmodconfig kernel arm64 kernel, the following build error
-shows up:
+Hi Greg,
 
-In file included from drivers/crypto/marvell/octeontx2/cn10k_cpt.c:4:
-include/linux/soc/marvell/octeontx2/asm.h:38:15: error: unknown type name 'u64'
-   38 | static inline u64 otx2_atomic64_fetch_add(u64 incr, u64 *ptr)
-      |               ^~~
+> -----Original Message-----
+> From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+> Sent: Wednesday, October 13, 2021 6:36 PM
+> To: Abhyuday Godhasara <agodhasa@xilinx.com>
+> Cc: Michal Simek <michals@xilinx.com>; Rajan Vaja <RAJANV@xilinx.com>;
+> Manish Narani <MNARANI@xilinx.com>; zou_wei@huawei.com; Sai Krishna
+> Potthuri <lakshmis@xilinx.com>; Jiaying Liang <jliang@xilinx.com>; linux-
+> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+>=20
+> On Wed, Oct 13, 2021 at 02:59:21PM +0200, gregkh@linuxfoundation.org
+> wrote:
+> > On Wed, Oct 13, 2021 at 12:27:58PM +0000, Abhyuday Godhasara wrote:
+> > > Hi Greg,
+> > >
+> > > > -----Original Message-----
+> > > > From: Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
+> > > > Sent: Wednesday, September 15, 2021 6:46 PM
+> > > > To: gregkh@linuxfoundation.org
+> > > > Cc: Michal Simek <michals@xilinx.com>; Abhyuday Godhasara
+> > > > <agodhasa@xilinx.com>; Rajan Vaja <RAJANV@xilinx.com>; Manish
+> > > > Narani <MNARANI@xilinx.com>; zou_wei@huawei.com; Sai Krishna
+> > > > Potthuri <lakshmis@xilinx.com>; Jiaying Liang <jliang@xilinx.com>;
+> > > > Jiaying Liang <jliang@xilinx.com>; linux-kernel@vger.kernel.org;
+> > > > linux-arm- kernel@lists.infradead.org
+> > > > Subject: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > > >
+> > > > This Linux driver provides support to subscribe error/event
+> > > > notification and receive notification from firmware for
+> > > > error/event and forward event notification to subscribed driver via
+> registered callback.
+> > > >
+> > > > All types of events like power and error will be handled from
+> > > > single place as part of event management driver.
+> > > >
+> > > > Changes in v4:
+> > > > - Rebase on latest tree
+> > > >
+> > > > Changes in v3:
+> > > > - Update the commit message.
+> > > >
+> > > > Changes in v2:
+> > > > - Removed updated copyright year from unchanged files.
+> > > > - make sgi_num as module parameter for event management driver.
+> > > > - Use same object for error detection and printing.
+> > > >
+> > > > Acked-by: Michal Simek <michal.simek@xilinx.com>
+> > > [Abhyuday] Michal suggested to merge this via your tree. Please have =
+a
+> look.
+> > > Please let me know if there is anything required from my side.
+> >
+> > Ok, I'll pick it up, thanks.
+>=20
+> Nope, I can not as for some reason it all did not show up on lore.kernel.=
+org.
+>=20
+> Please resend this, with Michal's ack and I will be glad to pick it up.
+[Abhyuday] Sent v5 with Michal's ack.
 
-Include linux/types.h in asm.h so the compiler knows what the type
-'u64' are.
+Thanks,
+Abhyuday
 
-Fixes: af3826db74d1 ("octeontx2-pf: Use hardware register for CQE count")
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- include/linux/soc/marvell/octeontx2/asm.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/include/linux/soc/marvell/octeontx2/asm.h b/include/linux/soc/marvell/octeontx2/asm.h
-index 0f79fd7f81a1..d683251a0b40 100644
---- a/include/linux/soc/marvell/octeontx2/asm.h
-+++ b/include/linux/soc/marvell/octeontx2/asm.h
-@@ -5,6 +5,7 @@
- #ifndef __SOC_OTX2_ASM_H
- #define __SOC_OTX2_ASM_H
- 
-+#include <linux/types.h>
- #if defined(CONFIG_ARM64)
- /*
-  * otx2_lmt_flush is used for LMT store operation.
--- 
-2.33.0
-
+>=20
+> thanks,
+>=20
+> greg k-h
