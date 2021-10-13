@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A6642CF0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 01:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F8142CF0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 01:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhJMXSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 19:18:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229929AbhJMXSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 19:18:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F28C3611BD;
-        Wed, 13 Oct 2021 23:16:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634166969;
-        bh=+15ZoIbv/uEpT2AdMTN75zWx6H2AWH4qDe4G5cpnCGU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fuGVDU8AOCWO3jZACmuAKT5yB83y14eP6fDTuLUncKc0egH2mg5UHtW0H+GIEun4F
-         HwGtuDwpwwm62RN8VFuIlOahsaW58aEwYYCCOSJZooDZIl/p5ha3NCw2tAx5jp06X4
-         hd3bIcgqOOKA2eZ3pSWraJJ9Rk24bTN549xqYlcKfUlCF/Jk0h76JMYsCqeRZJuaDh
-         j1cptebpwXSj9OdzJ70BhZu/pgDZ7JjnDB8fuQH/bIORty6oB4rLRyetioEXs5UuqM
-         64UhyBimF6pfKyJvk4GTHDsxehS/WSwh4wUJkZjrKDTvuzULLfhwIn6ga9kdrdDPFq
-         WbJ6v1U8ge5uw==
-Date:   Thu, 14 Oct 2021 08:16:05 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Yordan Karadzhov <y.karadz@gmail.com>
-Subject: Re: [PATCH v2 0/2] tracing: Fix removal of eprobes and add test
-Message-Id: <20211014081605.69401833c1ceb18a9c308e7d@kernel.org>
-In-Reply-To: <20211013205111.587708359@goodmis.org>
-References: <20211013205111.587708359@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229927AbhJMXTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 19:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229745AbhJMXS7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 19:18:59 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27899C061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 16:16:55 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id w14so16553345edv.11
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 16:16:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tiCnQHVrdBabcToDZIXeMhi1lk1+r3rn3k08DaY++3k=;
+        b=gXp7ANWKXJjGzPX8TUlAUpIrWwa4yllom1qQmDKgBHfENLyvHx5P2aT5JqhvjUHg7u
+         eUAsV84owtZ5nGVG3xN+XfpnyICgDndXnGFWVxGJZnI9ZotQk02eFB4tTTSoi4Dcmui8
+         LvWYwMAnRZtOfCJ4/5YgIvAne78HKKPSGVZQFFNXrWDJvYC4VrBKSAXawZsQjE6fFBrB
+         6twNb9t/gbLWUzoVKSkY/GZ/OjS9w7NApeAyWkEjifx641uWxcq5EjFlRNVov/Pa61uU
+         cqqM5CUENzoh29AAnwd1oSryY7ZLY9zSG+KKJHTCvUFgb1bSNLps8T/RBwSOhC0sUzbz
+         ZskQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tiCnQHVrdBabcToDZIXeMhi1lk1+r3rn3k08DaY++3k=;
+        b=cqPTZZ0fWbDwuyOObYQxlu3NxXgq6CE433qRNbF1bcO/nSz7HoJy2P2yb1gAJdqv9C
+         uQEO7On20FoaDsvfvugN2SRChpowtIiHg4Htq1PKEzhLArIRx5uJAwKRCm0x9kWqFbkE
+         y57t4aEu6l0uf+N+Cpt/RjYZ+nc1C/uExFdvzdf+xR1s8oYnKMUUjLzD05jroJPbsWZs
+         PUMipLk2001+nGMQE1jr9Nwq8uBWc1g+zIfEmeArfgffsxddC8sh8KKpjjuG4+8HnENc
+         FSptPzClCqOVvaJ8y+Zqy8BKdtgqvm4SVy22ALEHMbTxVXCcdWlL9CTfZf0ZvSxsHb4g
+         MkBg==
+X-Gm-Message-State: AOAM530NZnLxK7FXBxYDEAGEzLZzF/VimiSol6sojSOEvLf+flDdx270
+        oYohBu6GeiMQp9pUV/n7HOW+AR3ZCS0Yny7X5L+m3w==
+X-Google-Smtp-Source: ABdhPJxu0km3cFQTmT8RT+LuC6goiXXQsKlnz/Be1AH+gs6vANTgQ5AtYZTSuZjdyka1+YfqWnTR3cs3oqVz8LGFO64=
+X-Received: by 2002:a05:6402:1d4e:: with SMTP id dz14mr3538927edb.348.1634167013772;
+ Wed, 13 Oct 2021 16:16:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211008122517.617633-1-fabien.dessenne@foss.st.com>
+In-Reply-To: <20211008122517.617633-1-fabien.dessenne@foss.st.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 14 Oct 2021 01:16:42 +0200
+Message-ID: <CACRpkdZqioY0uLJz1yQfxwmKreuJcwkNh_PbJNZ2c-Eh0aMPbw@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: stm32: use valid pin identifier in stm32_pinctrl_resume()
+To:     Fabien Dessenne <fabien.dessenne@foss.st.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 16:51:11 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, Oct 8, 2021 at 2:25 PM Fabien Dessenne
+<fabien.dessenne@foss.st.com> wrote:
 
-> When doing the following:
-> 
->  # echo 'e:hrstate timer/hrtimer_cancel state=+0x38($hrtimer):u8' >> dynamic_events
-> 
->  # echo '-:hrstate timer/hrtimer_cancel state=+0x38($hrtimer):u8' >> dynamic_events
-> 
-> It errors out with -ENOENT. This is because the "match" function does not
-> take into account the "timer/hrtimer_cancel" part. Fix it and also make it
-> work more genericly like kprobes and uprobes.
+> When resuming from low power, the driver attempts to restore the
+> configuration of some pins. This is done by a call to:
+>   stm32_pinctrl_restore_gpio_regs(struct stm32_pinctrl *pctl, u32 pin)
+> where 'pin' must be a valid pin value (i.e. matching some 'groups->pin').
+> Fix the current implementation which uses some wrong 'pin' value.
+>
+> Fixes: e2f3cf18c3e2 ("pinctrl: stm32: add suspend/resume management")
+> Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
 
-Thanks for update. This series looks good to me.
+Patch applied for fixes.
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-for the series.
-
-Thank you!
-
-> 
-> v1 at: https://lore.kernel.org/all/20211013234206.37dd18ffcc2a2cbf4493f125@kernel.org/
-> 
-> Changes since v1:
->  - Instead of just fixing the missing system/event, have it be more like
->    kprobes and uprobes.
-> 
-> Steven Rostedt (VMware) (2):
->       tracing: Fix event probe removal from dynamic events
->       selftests/ftrace: Update test for more eprobe removal process
-> 
-> ----
->  kernel/trace/trace_eprobe.c                        | 54 ++++++++++++++++++++--
->  .../ftrace/test.d/dynevent/add_remove_eprobe.tc    | 54 +++++++++++++++++++++-
->  2 files changed, 103 insertions(+), 5 deletions(-)
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Yours,
+Linus Walleij
