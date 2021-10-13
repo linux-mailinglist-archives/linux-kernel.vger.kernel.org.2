@@ -2,152 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B5942B985
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA1042B862
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238575AbhJMHvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:51:37 -0400
-Received: from twhmllg3.macronix.com ([122.147.135.201]:59872 "EHLO
-        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238649AbhJMHvf (ORCPT
+        id S232280AbhJMHH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhJMHH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:51:35 -0400
-X-Greylist: delayed 1725 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Oct 2021 03:51:34 EDT
-Received: from TWHMLLG3.macronix.com (localhost [127.0.0.2] (may be forged))
-        by TWHMLLG3.macronix.com with ESMTP id 19D758O6002107;
-        Wed, 13 Oct 2021 15:05:08 +0800 (GMT-8)
-        (envelope-from zhengxunli@mxic.com.tw)
-Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
-        by TWHMLLG3.macronix.com with ESMTP id 19D74Egk001058;
-        Wed, 13 Oct 2021 15:04:14 +0800 (GMT-8)
-        (envelope-from zhengxunli@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
-        by Forcepoint Email with ESMTP id 4A9624BE66CA0D66112B;
-        Wed, 13 Oct 2021 15:04:15 +0800 (CST)
-In-Reply-To: <OF11A0CCB6.4C81ABAD-ON4825876D.00256D6A-4825876D.00256F7A@LocalDomain>
-References: <20211008162228.1753083-1-miquel.raynal@bootlin.com> <20211008162228.1753083-9-miquel.raynal@bootlin.com> <OF11A0CCB6.4C81ABAD-ON4825876D.00256D6A-4825876D.00256F7A@LocalDomain>
-To:     "Miquel Raynal" <miquel.raynal@bootlin.com>
-Cc:     "Rob Herring" <robh+dt@kernel.org>,
-        "Mark Brown" <broonie@kernel.org>,
-        "Xiangsheng Hou" <Xiangsheng.Hou@mediatek.com>,
-        "Boris Brezillon" <bbrezillon@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jaimeliao@mxic.com.tw, juliensu@mxic.com.tw,
-        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
-        "Miquel Raynal" <miquel.raynal@bootlin.com>,
-        stable@vger.kernel.org, "Mason Yang" <masonccyang@mxic.com.tw>,
-        "Richard Weinberger" <richard@nod.at>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>,
-        "Tudor Ambarus" <Tudor.Ambarus@microchip.com>,
-        <linux-mtd@lists.infradead.org>, linux-spi@vger.kernel.org
-Subject: =?Big5?B?UmU6IKZeq0g6IFtSRkMgUEFUQ0ggMDgvMTBdIHNwaTogbXhpYzogRml4IHRoZQ==?=
- =?Big5?B?IHRyYW5zbWl0IHBhdGg=?=
+        Wed, 13 Oct 2021 03:07:27 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA67C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:05:24 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id z11so7430547lfj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:05:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PfnVX7fs5mOAIg5g0IqUeD9+3NCJp4mY90XboBsyTc0=;
+        b=PJn70qZ0of/CLO+ZxZI67bYUqZTq5pvu4J69Nxw34dbToC6iLbo2ubHihqjbU+KWvU
+         jT02ga161bl+/F27IiyaK0qLauaVLgIhgN5hOmgGgxjZ+XoUH49428zf2pNFYPHFfaCR
+         bplSjSXtd3xozXnXz7wtrKc5ZFxoqxM+9OoRo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PfnVX7fs5mOAIg5g0IqUeD9+3NCJp4mY90XboBsyTc0=;
+        b=YKEQfEwuk4vAz3CCg9jSpEoFFVx9p16St9lBhSqy6LJhd3JEAMCWyxm7qVpp9NIkmo
+         HuQ7gv+tDEaSH1sDrhzunV+oS+EPmk4PZd5xT0Wx1jDecj7HQNezeBeUjLMWY4NCc+OJ
+         x0OHV2zSqFV/4N4aIKuQiFTagRtU0jaVyaykO30q6nE+WnzsIeGPk4Kyu1FM0XHfge6v
+         DC0kx+JoE6SRTMHCD3xVRL2165/u8pJ8lJdS3PHoYLcyNnvVlj9KezcsYEkDugajxQqc
+         RC7V16KrwLfGunKWlDn17qg0jXAl1lCsJQUgOCKAB9LED1jKdYpWl9U2yiYxMQisjWGb
+         ezeg==
+X-Gm-Message-State: AOAM532XNxjdBErDPOfu2H2TW5CL9xRtcF54ueLgIOwx/P/HNmX+l2iL
+        JynZyqttmxTSid1dr6i4E24jaA5FkqROT19WHTjozw==
+X-Google-Smtp-Source: ABdhPJxYjLoBprzSyIXGzP7xjmn68PtGM7ruxdJkHX33kuYTv8KEpFlP6xZXAhM7paKE8nSoUpMNEuk3fyQqHBpe0pM=
+X-Received: by 2002:ac2:4e07:: with SMTP id e7mr1074589lfr.308.1634108722948;
+ Wed, 13 Oct 2021 00:05:22 -0700 (PDT)
 MIME-Version: 1.0
-X-KeepSent: 7B755571:931AC374-4825876D:0025ED60;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
-Message-ID: <OF7B755571.931AC374-ON4825876D.0025ED60-4825876D.0026D775@mxic.com.tw>
-From:   zhengxunli@mxic.com.tw
-Date:   Wed, 13 Oct 2021 15:04:15 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2021/10/13 PM 03:04:15,
-        Serialize complete at 2021/10/13 PM 03:04:15
-Content-Type: text/plain; charset="US-ASCII"
-X-MAIL: TWHMLLG3.macronix.com 19D74Egk001058
+References: <20211008100423.739462-1-wenst@chromium.org> <f108f23dadc846222c63c88af826dae9c5082d83.camel@ndufresne.ca>
+In-Reply-To: <f108f23dadc846222c63c88af826dae9c5082d83.camel@ndufresne.ca>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 13 Oct 2021 15:05:11 +0800
+Message-ID: <CAGXv+5FnFq1mN79sqUp-o6pHirYvp55gurnsUCgqYvEAX2=4oQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] media: rkvdec: Align decoder behavior with Hantro and Cedrus
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-> By working with external hardware ECC engines, we figured out that
-> Under certain circumstances, it is needed for the SPI controller to
-> check INT_TX_EMPTY and INT_RX_NOT_EMPTY in both receive and transmit
-> path (not only in the receive path). The delay penalty being
-> negligible, move this code in the common path.
-> 
-> Fixes: b942d80b0a39 ("spi: Add MXIC controller driver")
-> Cc: stable@vger.kernel.org
-> Suggested-by: Mason Yang <masonccyang@mxic.com.tw>
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/spi/spi-mxic.c | 28 ++++++++++++----------------
->  1 file changed, 12 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-> index 96b418293bf2..4fb19e6f94b0 100644
-> --- a/drivers/spi/spi-mxic.c
-> +++ b/drivers/spi/spi-mxic.c
-> @@ -304,25 +304,21 @@ static int mxic_spi_data_xfer(struct mxic_spi 
-> *mxic, const void *txbuf,
-> 
->        writel(data, mxic->regs + TXD(nbytes % 4));
-> 
-> +      ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-> +                sts & INT_TX_EMPTY, 0, USEC_PER_SEC);
-> +      if (ret)
-> +         return ret;
-> +
-> +      ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-> +                sts & INT_RX_NOT_EMPTY, 0,
-> +                USEC_PER_SEC);
-> +      if (ret)
-> +         return ret;
-> +
-> +      data = readl(mxic->regs + RXD);
->        if (rxbuf) {
-> -         ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-> -                   sts & INT_TX_EMPTY, 0,
-> -                   USEC_PER_SEC);
-> -         if (ret)
-> -            return ret;
-> -
-> -         ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-> -                   sts & INT_RX_NOT_EMPTY, 0,
-> -                   USEC_PER_SEC);
-> -         if (ret)
-> -            return ret;
-> -
-> -         data = readl(mxic->regs + RXD);
->           data >>= (8 * (4 - nbytes));
->           memcpy(rxbuf + pos, &data, nbytes);
-> -         WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
-> -      } else {
-> -         readl(mxic->regs + RXD);
->        }
->        WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
-> 
-> -- 
-> 2.27.0
-> 
+On Fri, Oct 8, 2021 at 11:42 PM Nicolas Dufresne <nicolas@ndufresne.ca> wro=
+te:
+>
+> Hi Chen-Yu,
+>
+> thanks for looking into this.
+>
+> Le vendredi 08 octobre 2021 =C3=A0 18:04 +0800, Chen-Yu Tsai a =C3=A9crit=
+ :
+> > Hi everyone,
+> >
+> > While working on the rkvdec H.264 decoder for ChromeOS, I noticed some
+> > behavioral differences compared to Hantro and Cedrus:
+> >
+> > 1. The driver always overrides the sizeimage setting given by userspace
+> >    for the output format. This results in insufficient buffer space whe=
+n
+> >    running the ChromeOS video_decode_accelerator_tests test program,
+> >    likely due to a small initial resolution followed by dynamic
+> >    resolution change.
+> >
+> > 2. Doesn't support dynamic resolution change.
+> >
+> > This small series fixes both and aligns the behavior with the other two
+> > stateless decoder drivers. This was tested on the downstream ChromeOS
+> > 5.10 kernel with ChromeOS. Also compiled tested on mainline but I don't
+> > have any other RK3399 devices set up to test video stuff, so testing
+> > would be very much appreciated.
+> >
+> > Also, I'm not sure if user applications are required to check the value
+> > of sizeimage upon S_FMT return. If the value is different or too small,
+> > what can the application do besides fail? AFAICT it can't split the
+> > data of one frame (or slice) between different buffers.
+>
+> While most software out there just assumes that driver will do it right a=
+nd
+> crash when it's not the case, application that do map the buffer to CPU m=
+ust
+> read back the fmt structure as the drivers are all fail-safe and will mod=
+ify
+> that structure to a set of valid value s for the context.
 
-Reviewed-by: Zhengxun Li <zhengxunli@mxic.com.tw>
+I believe what is happening in Chromium is that the decoder is opened with
+some default settings, including the smallest viable resolution for the
+output side, and the buffers allocated accordingly. When dynamic resolution
+change happens, the decoder does not check if the current buffers are
+sufficiently sized; it just assumes that they are. And when it starts
+pushing data into the buffers, it realizes they are too small and fails.
 
+The spec also says:
 
-CONFIDENTIALITY NOTE:
+    Clients are allowed to set the sizeimage field for variable length
+    compressed data flagged with V4L2_FMT_FLAG_COMPRESSED at ioctl
+    VIDIOC_ENUM_FMT, but the driver may ignore it and set the value itself,
+    or it may modify the provided value based on alignment requirements or
+    minimum/maximum size requirements.
 
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
+The spec only guarantees that the buffers are of sufficient size for the
+resolution configured at the time they were allocated/requested.
 
-Macronix International Co., Ltd.
+So I think my first patch is a workaround for a somewhat broken userspace.
+But it seems the other stateless drivers are providing similar behavior,
+as I previously mentioned.
 
-=====================================================================
+> As for opposite direction (output vs capture) format being changed, this =
+should
+> be documented in the spec, if you find it too unclear or missing for sate=
+less
+> codec (I know it's there for stateful but can't remember, would have to r=
+e-read,
+> for stateless) let us know.
+
+AFAICT the capture side is working OK and to spec.
 
 
+Regards
+ChenYu
 
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+> regards,
+> Nicolas
+>
+> >
+> > Andrzej, I believe the second patch would conflict with your VP9 series=
+.
+> >
+> >
+> > Regards
+> > ChenYu
+> >
+> > Chen-Yu Tsai (2):
+> >   media: rkvdec: Do not override sizeimage for output format
+> >   media: rkvdec: Support dynamic resolution changes
+> >
+> >  drivers/staging/media/rkvdec/rkvdec-h264.c |  5 +--
+> >  drivers/staging/media/rkvdec/rkvdec.c      | 40 +++++++++++-----------
+> >  2 files changed, 23 insertions(+), 22 deletions(-)
+> >
+>
+>
