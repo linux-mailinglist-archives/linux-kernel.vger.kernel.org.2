@@ -2,82 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFD042C76F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6304042C77D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237869AbhJMRT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:19:57 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:37042 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhJMRTz (ORCPT
+        id S237528AbhJMRWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230232AbhJMRWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:19:55 -0400
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id AFA6620B9CF8;
-        Wed, 13 Oct 2021 10:17:51 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AFA6620B9CF8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1634145471;
-        bh=6w7G9sjykt7RkTkpmi8YgipyaMWboWHG8s9GEMJ5XHY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GJI2PLUFSvM8L/EPA6LUiyY6XS4GuJ8Pe8FD0uQ6n96snSliezPU6GnaHTUo+aE2G
-         9srWgkqXxD45HUWGkX2ZDSZ/WO8M7V/pFgO+2W/s8BsblZyKc5KaEN/13TMVcWqMmo
-         xTcFH1SK6v1QCjEC/kAiMyVD4rLgydfnEph2nSdo=
-Date:   Wed, 13 Oct 2021 10:17:47 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] user_events: Enable user processes to create and write
- to trace events
-Message-ID: <20211013171747.GA1549@kbox>
-References: <20211006175611.GA2995@kbox>
- <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
- <20211007162204.GA30947@kbox>
- <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
- <20211008000540.GA31220@kbox>
- <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
- <20211011162523.GA1542@kbox>
- <20211012211852.2bbf921b@oasis.local.home>
- <20211013165043.GA1427@kbox>
- <20211013131155.69fa0e11@gandalf.local.home>
+        Wed, 13 Oct 2021 13:22:49 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A42C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:20:45 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x27so15156661lfu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4zZUExOF0hyjkUuayvESFrp0hpOC5bsezzAMG365TXc=;
+        b=jVHe5if0odQ3h3gs6Lq/533GPpFM71VvqJKxpmxEyuRr/I2s4Rvysokvg9L+KV3dn3
+         jRKt3VHl/ZpEYDkM/BH/iek34kzKyj4veqxzh8fQGB17xK/+O3hgNFd0wfiFi8GJFL8O
+         XGKIWscpPGckGAX2Xs2zotyUIBtmLVnQQZxEHyl7jUZCT2eoumnG9hdqBAbXwcV9VkC7
+         YVsKq97QPiDiZSw+I05pO7hVnS5lfOb4LpMGX3WBNKgTvYqcquezqMk82nwjo1T41Nwt
+         1fuMFta0MEDU+HsQuN1GGsxD+iaSbNXX+P38mduPvBswEpDmrnRsnBKN0spRJLnFFzf2
+         iqIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4zZUExOF0hyjkUuayvESFrp0hpOC5bsezzAMG365TXc=;
+        b=h8882qJHqOnbcc3OQE+arJfFxwqhTfnxC+8KzEui4UPZPXmVlCLD2zsFGkdDztIhaE
+         B7bkRYEonn4VKR181KyCF176tIYE9cGrBfnInjub4LHwfbqNkeYfGF8eOuEW8BHVQuod
+         PERXzowe4aT2OGIsKvJlnYm8Ex0U+VKTMN6tfOqgg5wDrE03pHrE6rAfGYTF3FSwudwS
+         xkZ4hcug64WnJLFUTm2JyX2B1ZvdBzms3EcDFK3vfFaLP8VUESFg4OubdZnQK/tsrVeH
+         NhKdLighh9+QCTYLXQE4vX+zIvTpMq3KbX8yTj7yMtlJiPulmLtm0ZF/F7DfD/nIJeYA
+         BqTg==
+X-Gm-Message-State: AOAM530tkWlz2xAhb1/pr943PTVLxKjIPtYLWsKvb6frBRBo/fJKRsnJ
+        A2XvGOYVIpFxm7OwvlWXv/Hqug==
+X-Google-Smtp-Source: ABdhPJwG8jkIxBjdv4FCfNEF54htx9eOR1dcNl/kyZV/O8USH10MekCsQswhdunIml07aX7jFJEXlA==
+X-Received: by 2002:a05:651c:1693:: with SMTP id bd19mr613631ljb.409.1634145643483;
+        Wed, 13 Oct 2021 10:20:43 -0700 (PDT)
+Received: from localhost ([31.134.121.151])
+        by smtp.gmail.com with ESMTPSA id c3sm13525ljh.58.2021.10.13.10.20.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 10:20:43 -0700 (PDT)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mike Tipton <mdtipton@codeaurora.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6] clk: Add write operation for clk_parent debugfs node
+Date:   Wed, 13 Oct 2021 20:20:42 +0300
+Message-Id: <20211013172042.10884-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013131155.69fa0e11@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 01:11:55PM -0400, Steven Rostedt wrote:
-> On Wed, 13 Oct 2021 09:50:43 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > > Does it require RCU synchronization as the updates only happen from
-> > > user space. But is this for the writing of the event? You want a
-> > > separate fd for each event to write to, instead of saying you have
-> > > another interface to write and just pass the given id?
-> > >  
-> > Yes, an example is a process creates the fd and registers some events.
-> > Then the process forks and the child registers another event using the
-> > same fd that was inherited.
-> 
-> Well, I was thinking simple locking could work too. But I guess RCU is like
-> Batman. You know, "Always be yourself. Unless you can be Batman, then
-> always be Batman!". So always use locking, unless you can use RCU,
-> then always use RCU.
-> 
-LOL, I'm happy to use a rwlock_t instead. Not sure which is faster, to
-me I care most about the write path not skewing clock times of the
-events being emitted. It seems like the contention case will be low in
-most cases, so these paths will be read-only most of the time.
+Useful for testing mux clocks. One can write the index of the parent to
+be set into clk_parent node, starting from 0. Example
 
-It seems rwlock_t has the disadvantage of the writes blocking on the
-realloc/free case during the resize. RCU can delay the free until
-something has time to do so, so seems a good fit.
+    # cd /sys/kernel/debug/clk/mout_peri_bus
+    # cat clk_possible_parents
+      dout_shared0_div4 dout_shared1_div4
+    # cat clk_parent
+      dout_shared0_div4
+    # echo 1 > clk_parent
+    # cat clk_parent
+      dout_shared1_div4
 
-Thoughts?
+CLOCK_ALLOW_WRITE_DEBUGFS has to be defined in drivers/clk/clk.c in
+order to use this feature.
 
-Thanks,
--Beau
+Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Changes in v6:
+  - Added R-b tag by Geert Uytterhoeven
+  - Removed curly braces around 'else' block (now delta is minimal and
+    the code looks better)
+
+Changes in v5:
+  - Used kstrtou8_from_user() API
+  - Got rid of code duplication
+  - Fixed typo in commit message
+  - Added R-b tag by Andy Shevchenko
+
+Changes in v4:
+  - Fixed the commit title
+
+Changes in v3:
+  - Removed unwanted changes added by mistake
+
+Changes in v2:
+  - Merged write() function into existing 'clk_parent' file
+  - Removed 'if (val >= core->num_parents)' check
+  - Removed incorrect usage of IS_ERR_OR_NULL()
+
+ drivers/clk/clk.c | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 65508eb89ec9..bf1eadfeaee0 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -3214,6 +3214,42 @@ static int current_parent_show(struct seq_file *s, void *data)
+ }
+ DEFINE_SHOW_ATTRIBUTE(current_parent);
+ 
++#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
++static ssize_t current_parent_write(struct file *file, const char __user *ubuf,
++				    size_t count, loff_t *ppos)
++{
++	struct seq_file *s = file->private_data;
++	struct clk_core *core = s->private;
++	struct clk_core *parent;
++	u8 idx;
++	int err;
++
++	err = kstrtou8_from_user(ubuf, count, 0, &idx);
++	if (err < 0)
++		return err;
++
++	parent = clk_core_get_parent_by_index(core, idx);
++	if (!parent)
++		return -ENOENT;
++
++	clk_prepare_lock();
++	err = clk_core_set_parent_nolock(core, parent);
++	clk_prepare_unlock();
++	if (err)
++		return err;
++
++	return count;
++}
++
++static const struct file_operations current_parent_rw_fops = {
++	.open		= current_parent_open,
++	.write		= current_parent_write,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= single_release,
++};
++#endif
++
+ static int clk_duty_cycle_show(struct seq_file *s, void *data)
+ {
+ 	struct clk_core *core = s->private;
+@@ -3281,6 +3317,12 @@ static void clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
+ 			    &clk_prepare_enable_fops);
+ #endif
+ 
++#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
++	if (core->num_parents > 1)
++		debugfs_create_file("clk_parent", 0644, root, core,
++				    &current_parent_rw_fops);
++	else
++#endif
+ 	if (core->num_parents > 0)
+ 		debugfs_create_file("clk_parent", 0444, root, core,
+ 				    &current_parent_fops);
+-- 
+2.30.2
+
