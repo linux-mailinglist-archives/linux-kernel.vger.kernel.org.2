@@ -2,134 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2C842B238
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C560042B23C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236467AbhJMBZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 21:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
+        id S235775AbhJMBbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 21:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234055AbhJMBZG (ORCPT
+        with ESMTP id S231337AbhJMBbF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 21:25:06 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12F6C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 18:23:03 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id r19so4312482lfe.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 18:23:03 -0700 (PDT)
+        Tue, 12 Oct 2021 21:31:05 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A9DC061570;
+        Tue, 12 Oct 2021 18:29:02 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id s75so744205pgs.5;
+        Tue, 12 Oct 2021 18:29:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oVi/APDdqSZMHreULpsgHcZuFlI60O4HhHetcQYYqQg=;
-        b=XDUgFJIs9eeMSx8N9tKRspYGtgb+QTCl9oYv8HzYdzjglQoLg7i/rcGK3R1+WczgHm
-         KywPgQGbYcZKDds4qTovMAmI5y/upHT4GN9ktjjUN+ernyIq3wS4v1IkRTDpgJoeHXqr
-         miFatnL1Y8cmYTFODsxWjOYautBGkBfmwFKHLRXL5wMLiV+UpUtjv4ih1o//OxghxdRA
-         1top+SqUulVcmJs1OJJ0J/356vR8t3Ylk/FWywjpoZ/AUQz8S2P93yRuxLjvOcMewZjw
-         J+y97K9f0bjJC9j1IJqy8pilVdwa9eQ3Iok4Zp035sCJj0IIyVZQO8XeC0yDglxhGYu8
-         bhcA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=IWgl1aq+EmvJ2d1nb99MQFV+HXmaPV8gEoyBP45tPlo=;
+        b=oybon7n1j7VI3+S8Po2yOnHaq7Pl8/cuf4hjNsRkIFikANw1PNe6g9SbSedn5yYxHj
+         bTs6BdxKLRT7CNTL364NGq+G+dSo2qGuT4HHAnS49NkCQjfiyoZLlrxmBBK53o2EjEfQ
+         XeFh8MbAoaobg9rcxFQBYWi1fHSpCuNQwhiOKrQGcmVPmW/qoawLQW/12tdVSU3kvl1E
+         Ki/0+PrAeWOnJwS1O1WOt9x8/cquw8UN0Kz23ffdx10Gt2JoaU4AHIxkOMzIWiOdw58G
+         NR8wZK0MpLVbJG569YPEJVPpzytc5VNX5wg2Y2DZi8WuYRX9YUbuDadmjOaSujBES+By
+         mZMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oVi/APDdqSZMHreULpsgHcZuFlI60O4HhHetcQYYqQg=;
-        b=xpmyRbp0IeeH1j0DRw9X4fc/mHN9MHR+biudCor5rPk87ih+YsBPCSQjzibU9hlTl5
-         RX9b4Z2GK0VjfDqE4URP+Cz5YBASrewqZIgYcIH3EMZk0doa4yXkUTt/zv8kSZIQhHE5
-         TllMmuhqwFKIrjCNoED7gFDc6DxvWHOyciBmxzSDyl3SAZeuGmb0pF0DttKbr5A/yeja
-         OMIDLc/kzUMnwj+ydLFghM3yJqE0IW3y6kzwcugNdtB84EcLzyITS1BsiuEKYi25avcM
-         HgEetdUtZhDxPQWgz/HozAOarbAQYbdiCdahjm/KRFMdnj6y1YklgipNhgTX766U58fQ
-         2JcQ==
-X-Gm-Message-State: AOAM530Ek3RDkAQm+Oakx0ng3kw+Fs5WKY04OPkgyAugNhlZBG9zlrgJ
-        NxVtddfIpyGn8J0v5QR22PMRrdovrmMU3NOeQwPESA==
-X-Google-Smtp-Source: ABdhPJxej28Um/+1vk3QWPE3S2BNE6R2RdaTdYrKrcuN0OVQKKsrKTicBgIul2NYLIVQr/wbeQYdGpn44aemygMVV9s=
-X-Received: by 2002:a2e:a889:: with SMTP id m9mr22955291ljq.83.1634088181991;
- Tue, 12 Oct 2021 18:23:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211012083521.973587-1-woodylin@google.com> <87zgrek1gl.mognet@arm.com>
- <CAHn4Dec0Jyc30vWMLAXwQ-ge4eS5S26hxfMky-e4f-TTtFrbEQ@mail.gmail.com> <87wnmijysj.mognet@arm.com>
-In-Reply-To: <87wnmijysj.mognet@arm.com>
-From:   Woody Lin <woodylin@google.com>
-Date:   Wed, 13 Oct 2021 09:22:50 +0800
-Message-ID: <CAHn4DedEV953QULZLAPOuXyHAw_mWRTdFj8bSm6zk3rNjFJj-A@mail.gmail.com>
-Subject: Re: [PATCH] sched/scs: Reset the shadow stack when idle_task_exit
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Ben Segall <bsegall@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=IWgl1aq+EmvJ2d1nb99MQFV+HXmaPV8gEoyBP45tPlo=;
+        b=H2XgQiXUOzRiuKjM46bjFJEgF5jUPay7R6Tp7ZBATQiWe6yMyoPP7YGg5f59OPtO+p
+         XdPbrJ3rlV09HuR7C7/lK5C2/PZ0mii/v5eTwru3ZBQUlbYTZqJBACpA/Xx6Ly0Tyo1g
+         nyHOLI6C8NG8wU/Si4U74UHg+zjTEj7iFSWhkL3IjyKUTNvG9xMJ7SZqrBgMoaUeh95k
+         MdHA/L+OZX6ewms6d7YJCfMJMR2BW4Ny7rmJqmDwGQ068dEBVMmMprRWEW48WCGyqSMM
+         65UfZrmZZE7IaF6cq+e5hvbPIzCQhch41nUnCJEeOTAVcP8e+5K2RxYHlsxuB+G5oQWV
+         7OEg==
+X-Gm-Message-State: AOAM532Z+I2YR7/xN9BmpXd/B1gd8Dz+PRyYrrFJtMZSXEA/9jwKq164
+        9I8AV4LkYxB0uWE4K1VxL54=
+X-Google-Smtp-Source: ABdhPJwBrpexdxGh/CJ5RpGs1codruYtlEMm2qAbpV65dApsrHonnuOgePMXfn20uq17VGh/KGZpbQ==
+X-Received: by 2002:aa7:8198:0:b0:44b:e191:7058 with SMTP id g24-20020aa78198000000b0044be1917058mr35290626pfi.39.1634088542216;
+        Tue, 12 Oct 2021 18:29:02 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:578:7fd7:52a:ae77:5bec:efe9])
+        by smtp.gmail.com with ESMTPSA id b11sm12144788pge.57.2021.10.12.18.28.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 12 Oct 2021 18:29:01 -0700 (PDT)
+From:   cy_huang <u0084500@gmail.com>
+To:     oder_chiou@realtek.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, robh+dt@kernel.org
+Cc:     lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, cy_huang@richtek.com,
+        devicetree@vger.kernel.org, allen_lin@richtek.com
+Subject: [PATCH v4 0/2] ASoC: rt9120: Add Richtek RT9120 supprot
+Date:   Wed, 13 Oct 2021 09:28:37 +0800
+Message-Id: <1634088519-995-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 6:57 PM Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
-> On 12/10/21 18:35, Woody Lin wrote:
-> > On Tue, Oct 12, 2021 at 6:00 PM Valentin Schneider
-> > <valentin.schneider@arm.com> wrote:
-> >>
-> >> So AIUI for SCS that works just fine - one thing I'm unclear on is how the
-> >> following pops are going to work given the SP reset happens in the middle
-> >> of a call stack, but AFAICT that was already the case before I messed about
-> >> with init_idle(), so that must already be handled.
-> >
-> > Hi Valentin,
-> >
-> > Thanks for the question. The 'scs_task_reset' here resets only the
-> > '.thread_info.scs_sp' of the task, so the register (on arm64 it's x18)
-> > is still pointing to the same location for popping and storing call
-> > frames. The register will be updated to '.thread_info.scs_sp' in
-> > '__secondary_switched', which starts a new core and there is no popping
-> > after the updating, so it won't introduce an underflow.
-> >
->
-> I think I got it; __secondary_switched() -> init_cpu_task() -> scs_load()
->
-> Thanks!
->
-> >>
-> >> I'm not familiar enough with KASAN to say whether that
-> >> kasan_unpoison_task_stack() should rather happen upon hotplugging the CPU
-> >> back (rather than on hot-unplug). If that is the case, then maybe somewhere
-> >> around cpu_startup_entry() might work (and then you could bunch these two
-> >> "needs to be re-run at init for the idle task" functions into a common
-> >> helper).
-> >
-> > unpoison looks more like an one-time thing to me; the idle tasks will
-> > reuse the same stack pages until system resets, so I think we don't need
-> > to re-unpoison that during hotplugging as long as it's unpoisoned in
-> > 'init_idle'.
-> >
->
-> I would tend to agree, but was bitten by s390 freeing some memory on
-> hot-unplug and re-allocating it upon hotplug:
->
->   6a942f578054 ("s390: preempt: Fix preempt_count initialization")
->
-> This makes me doubt whether we can assert the idle task stack pages are
-> perennial vs hotplug on all architectures.
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-I made a quick study on memory-hotplug and seems that only memory contains
-nothing other than migratable pages can be unplugged. So process stack
-pages should not be a concern for this, since which is an unmovable
-memory.
+This patch series Add the Richtek RT9120 support.
 
-However I don't have a chance to work on a system that enables
-memory-hotplug so far, so couldn't verify this assumption further. Guess
-we can create a separate thread to clarify this more.
+In v4:
+- Add 'classd_tlv' for 'SPK Gain Volume' control item.
+- Unify the tlv declaration to the postfix '_tlv'.
+- Fix 'digital_tlv' mute as 1 to declare the minimum is muted.
 
-Regards,
-Woody
+In v3:
+- Add dvdd regulator binding to check the dvdd voltage domain.
+- Refine sdo_select_text.
+- Use switch case in 'internal_power_event' function.
+- Remove the volume and mute initially write in component probe.
+- Remove the mute API. It's no need by HW design.
 
->
-> >>
-> >> >  }
-> >> >
-> >> > --
-> >> > 2.33.0.882.g93a45727a2-goog
+In v2:
+- Add missing #sound-dai-cells property.
+
+ChiYuan Huang (2):
+  ASoC: dt-bindings: rt9120: Add initial bindings
+  ASoC: rt9120: Add rt9210 audio amplifier support
+
+ .../devicetree/bindings/sound/richtek,rt9120.yaml  |  59 +++
+ sound/soc/codecs/Kconfig                           |  10 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/rt9120.c                          | 495 +++++++++++++++++++++
+ 4 files changed, 566 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/richtek,rt9120.yaml
+ create mode 100644 sound/soc/codecs/rt9120.c
+
+-- 
+2.7.4
+
