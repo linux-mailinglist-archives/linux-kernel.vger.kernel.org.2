@@ -2,99 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC57842B9BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5320D42B9BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238724AbhJMH5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:57:36 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:42945 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238722AbhJMH5f (ORCPT
+        id S232992AbhJMH50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:57:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54944 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233015AbhJMH5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:57:35 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N63NQ-1mpv7j0IB6-016Pg7 for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021
- 09:55:31 +0200
-Received: by mail-wr1-f47.google.com with SMTP id y3so5307652wrl.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:55:31 -0700 (PDT)
-X-Gm-Message-State: AOAM531XBqxaCqlQ8Gr2WWaJyPDCtNWMWkdtRaoLvgUSRyM8+3nxZKzo
-        HxkZhQZb2uEZeT5+GTUZp4QSEVh6/KCEd+OrsGs=
-X-Google-Smtp-Source: ABdhPJyiEJBpgNDpB6GmM5rJOFTTTfiFTaFUlnEWP59JJxhNZAk4i37kRw3Rf+g9OE/qnJqBSX5RUghnoccWBlIuMYo=
-X-Received: by 2002:a1c:2358:: with SMTP id j85mr11030180wmj.1.1634111730691;
- Wed, 13 Oct 2021 00:55:30 -0700 (PDT)
+        Wed, 13 Oct 2021 03:57:23 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 99BD022296;
+        Wed, 13 Oct 2021 07:55:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634111719; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i7IGip/6gbVvmHRaMhrhBlPAbqtmi4yf9VEPWWlaFeE=;
+        b=Ej27NFvhi/+3F1LnXiuEvJ3SmzHirAxauJBsGjgulCIyOssPQw6F6KwTNa9IaM5Au65bVy
+        pwr2XAZtxLt0rxZlJr0A7utwkQQTqhil/0XYYwHKx8ILmEECDzgVsKv24qdJ71W4uV3deH
+        oxQvor4tfFIz/5mrWPBwtKjE3PhLc20=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634111719;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i7IGip/6gbVvmHRaMhrhBlPAbqtmi4yf9VEPWWlaFeE=;
+        b=+w9Az0Z3KJ2VxO6gzBE7ap3QeAyDlZfweavR7c1nDpq45ogh1GvakBs8gocNDgbltKk/J+
+        vJikc3lgCt4lGSCQ==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 5FC20A3B88;
+        Wed, 13 Oct 2021 07:55:18 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 09:55:18 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     =?ISO-2022-JP?Q?=1B$B2&lV=1B=28J?= <yun.wang@linux.alibaba.com>
+cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [RESEND PATCH v2 1/2] ftrace: disable preemption between
+ ftrace_test_recursion_trylock/unlock()
+In-Reply-To: <75ee86ac-02f2-d687-ab1e-9c8c33032495@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.21.2110130948120.5647@pobox.suse.cz>
+References: <b1d7fe43-ce84-0ed7-32f7-ea1d12d0b716@linux.alibaba.com> <75ee86ac-02f2-d687-ab1e-9c8c33032495@linux.alibaba.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20211012234606.91717-1-ndesaulniers@google.com> <20211012234606.91717-2-ndesaulniers@google.com>
-In-Reply-To: <20211012234606.91717-2-ndesaulniers@google.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 13 Oct 2021 09:55:14 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3UBEJ0Py2ycz=rHfgog8g3mCOeQOwO0Gmp-iz6Uxkapg@mail.gmail.com>
-Message-ID: <CAK8P3a3UBEJ0Py2ycz=rHfgog8g3mCOeQOwO0Gmp-iz6Uxkapg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] arm64: vdso32: drop the test for dmb ishld
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, llvm@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Christian Biesinger <cbiesinger@google.com>,
-        Simon Marchi <simon.marchi@polymtl.ca>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:npAKHHmy7bOHdeDloam/+UPWm73dwd3it0I4/b1SHn/eOt0goGq
- mDx6C6x5Woseo6ocOE830/63W1Ew4LKawT0R/bZ4CJJ/Wu66TxqHlOZl3XxGQALJA2FY3+i
- INI5iHZw627IDCRCXbs56GHPQiWyASoQD0txQ80qZ60xYT3BQJOMPdpsasinhHl6Roftsxl
- MfUEru/tBQ4lmnjtQwAzw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3gMqScMmDwI=:ORNUdJU1H3UEuFK2BmB0Ht
- DTUvcZEfD5IRNkr45JzFwuPqAShvgDN3Nt9Mo/H6hE5ruOvAGPe7DxEENvAIo1b/t67XtH3iN
- gUocGAWQ+us6Bg9mpftI8Tc1cIeuSTY9RE0GV+Aa6oa3mlL03uXg8pEEz8BOkSOF6bgdQYi0o
- 8fm/yzaMOHGp3PGdUhKgotbWPhI6QL23rAzG1oKcYZQ5PyZQjbflGm8GB3iYprxUhAF3RCN/O
- jfEy7VSOAoC5EYiw7BzcX81LmhSIa7veZYHnwPfqiFeMCH8Q6VFvX2w3o7dqY4IQgfgtdKBdZ
- NxcnMPww2tkWRUebeO6DfVXp4WFuep2zJKM9RQlJXpRfYDfw9vQL0ZxaQ+es81fVmwp9R8mMO
- gENN95IcvCgSFpnd2Apgi8WxKYVFd0j8tbElMtJC7/rI3VjjlhSfe1QNHITyPtlxWq4WdzeGH
- WJRIFDN8ez/Bdid5waZQqdV3OVJJvN4yALIZQJQ4T8X9Yl4iAniudcYBgZ2Sr37YaBaXSqfb0
- Rq8jzkkaq2uOXfOEHmXcOT7iUVF5A3FGMejml8Sn8F9QvNjaeRhRMTuSQANxcypm2qZyDxcvx
- tkMKxi9RVwnCFTZbFJ4r2GI79UJQaLm2LzK5qxZS9RttaINf/C49nKyqPxgS1Iw+o+dXDeEO4
- NzDqlseC1PhoVGSYyZsQuEt6+2R48ILbxscrOyyiecGUn/SLAsv+pt8sYv1ksUubdE6/qnE/p
- rKFVCUytvcieW69dUp2Pzarr7nA9y02oYLv05UaC8PYLN1BCMJhLiNmIlTFOf6hs56vBLijQz
- Pvdvzz3JkVrS9eVZ8yIdyrsBVV0QbtJUFHudyqU4UNE/ZYBHUhu9UGcTVMppkRtGkGtxKdwoW
- GPXOSIsiGdUo4LmdrDFQ==
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 1:46 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> Binutils added support for this instruction in commit
-> e797f7e0b2bedc9328d4a9a0ebc63ca7a2dbbebc which shipped in 2.34 (just
-> missing the 2.33 release) but was cherry-picked into 2.33 in commit
-> 27a50d6755bae906bc73b4ec1a8b448467f0bea1. Thanks to Christian and Simon
-> for helping me with the patch archaeology.
->
-> According to Documentation/process/changes.rst, the minimum supported
-> version of binutils is 2.33. Since all supported versions of GAS support
-> this instruction, drop the assembler invocation, preprocessor
-> flags/guards, and the cross assembler macro that's now unused.
->
-> This also avoids a recursive self reference in a follow up cleanup
-> patch.
->
-> Cc: Christian Biesinger <cbiesinger@google.com>
-> Cc: Simon Marchi <simon.marchi@polymtl.ca>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+> index a9f9c57..101e1fb 100644
+> --- a/include/linux/trace_recursion.h
+> +++ b/include/linux/trace_recursion.h
+> @@ -208,13 +208,29 @@ static __always_inline void trace_clear_recursion(int bit)
+>   * Use this for ftrace callbacks. This will detect if the function
+>   * tracing recursed in the same context (normal vs interrupt),
+>   *
+> + * The ftrace_test_recursion_trylock() will disable preemption,
+> + * which is required for the variant of synchronize_rcu() that is
+> + * used to allow patching functions where RCU is not watching.
+> + * See klp_synchronize_transition() for more details.
+> + *
 
-This change looks good, but I think we should do the same for the gcc
-version check:
+I think that you misunderstood. Steven proposed to put the comment before 
+ftrace_test_recursion_trylock() call site in klp_ftrace_handler().
 
-> -#if __LINUX_ARM_ARCH__ >= 8 && defined(CONFIG_AS_DMB_ISHLD)
-> +#if __LINUX_ARM_ARCH__ >= 8
->  #define aarch32_smp_mb()       dmb(ish)
->  #define aarch32_smp_rmb()      dmb(ishld)
->  #define aarch32_smp_wmb()      dmb(ishst)
+>   * Returns: -1 if a recursion happened.
+>   *           >= 0 if no recursion
+>   */
+>  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
+>  							 unsigned long parent_ip)
+>  {
+> -	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
+> +	int bit;
+> +
+> +	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
+> +	/*
+> +	 * The zero bit indicate we are nested
+> +	 * in another trylock(), which means the
+> +	 * preemption already disabled.
+> +	 */
+> +	if (bit > 0)
+> +		preempt_disable_notrace();
+> +
+> +	return bit;
+>  }
 
-gcc-4.8 already supported -march=armv8, and we require gcc-5.1 now, so both
-this #if/#else construct and the corresponding "cc32-option,-march=armv8-a"
-check should be obsolete now.
+[...]
 
-       Arnd
+> diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
+> index e8029ae..6e66ccd 100644
+> --- a/kernel/livepatch/patch.c
+> +++ b/kernel/livepatch/patch.c
+> @@ -52,11 +52,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+
+Here
+
+>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>  	if (WARN_ON_ONCE(bit < 0))
+>  		return;
+> -	/*
+> -	 * A variant of synchronize_rcu() is used to allow patching functions
+> -	 * where RCU is not watching, see klp_synchronize_transition().
+> -	 */
+> -	preempt_disable_notrace();
+> 
+>  	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
+>  				      stack_node);
+> @@ -120,7 +115,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+>  	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
+> 
+>  unlock:
+> -	preempt_enable_notrace();
+>  	ftrace_test_recursion_unlock(bit);
+>  }
+
+Side note... the comment will eventually conflict with peterz's 
+https://lore.kernel.org/all/20210929152429.125997206@infradead.org/.
+
+Miroslav
