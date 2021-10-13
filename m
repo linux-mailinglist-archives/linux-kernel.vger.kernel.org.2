@@ -2,174 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CE542C130
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFC442C13E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235101AbhJMNSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:18:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23235 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229535AbhJMNSb (ORCPT
+        id S233580AbhJMNWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhJMNWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:18:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634130988;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3UweUBspHinuJSQhguEdx6WU40R4nh4wg670z3EQDCs=;
-        b=XNP1QDwX2f719a9ZrFnhwucrTmmJi3xG6/ZEi9kIsyI5EgoqN8WKfM1aPjoQSJIbgOQFYV
-        pFRVUyG4/rV6koPl8MKbwi0AXmQTYeRxBCWmzjs1lY2Bl9yZ8PmUbb1llOU47KJzq7j5Ui
-        2AnDvE9EkAQFUkWYniyGFIldV/jAtHA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-51EXKiPTPNOe2wB9MiFWRQ-1; Wed, 13 Oct 2021 09:16:25 -0400
-X-MC-Unique: 51EXKiPTPNOe2wB9MiFWRQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85FDA100A95A;
-        Wed, 13 Oct 2021 13:16:22 +0000 (UTC)
-Received: from horse.redhat.com (unknown [10.22.33.167])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6603219E7E;
-        Wed, 13 Oct 2021 13:16:20 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id DEFAB22023A; Wed, 13 Oct 2021 09:16:19 -0400 (EDT)
-Date:   Wed, 13 Oct 2021 09:16:19 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gonglei <arei.gonglei@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Jie Deng <jie.deng@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-um@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-i2c@vger.kernel.org, iommu@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, kvm@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
-Message-ID: <YWbcI15YOkhnPh5x@redhat.com>
-References: <20211013105226.20225-1-mst@redhat.com>
+        Wed, 13 Oct 2021 09:22:31 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E41C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:20:28 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id r18so8345280wrg.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:20:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bNlPB75M4XSOjxI3wOhKbU7nFj5ZW12aJOqcg2JsS4E=;
+        b=GGsU8yG1YnpioZClYoEgT5tK+YG6/PVqb45wEc6+RpzLdKx3gnFghuTwHu/wmSyF6X
+         R4335nDbbO/tf9WPJuyvI/GLpZ6YVUBYiJRf7vRrCrw+6Vl5QRv3e640luWgwSJShFiH
+         ILAy2aZzM7JdgYt92YquoHYuCbrEEMLDqRBHO9DmjEoyJIFRlAFDZ9ToNpRDD+mUW9Er
+         JQzXGTPcJLDy1uYhBkD99sibDzYq+5je0s96J3+MA9s0yP7GoZmSAISlfq/RKOtk2jjh
+         8FjmBxxH9edpGqriCXXCxq3uYzRJ6IdxmY2BgQvLHtQgtx51zo4hBTKk+t7ELE6vJo18
+         GxeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bNlPB75M4XSOjxI3wOhKbU7nFj5ZW12aJOqcg2JsS4E=;
+        b=5wVwtXztRDqnNqN1aLPQ+y8+9dKOgpDp0k5wwZ+CrTBCWLYuk1+GnlY2MT5e57swdW
+         bj/Mf2oYyDmRR3YghyqC8LDC5R6DWIrewpv27H00yOLXF2XzGAtguaF/NDw7ad3go0Ci
+         Q9WNtPs3kTPuaAI14nZqNmgrdJqZJ7toK9bvM0zAWg0go+wA0EsloMqKJgU6Yewa+u+A
+         qVxoNKpF2xfJ1HqSAn/iU54OiGJjhT8it43aDIbVduEe+AkeQoA6ReRDNlGeXFUDiCM9
+         DDT4pfKzLa49KXOGAM8P6UKx8Uluty94Lh9EoloF0eXLKHlBzztOz+tmczLXeAUlicgO
+         JYkg==
+X-Gm-Message-State: AOAM530a1niSZscDpU+Qo8O9xoWp1AjRIekfD+LxHaQuv50Nge9ebx//
+        sM/Dw/dwas9TJkv0up7Cumm6utL2sZQ=
+X-Google-Smtp-Source: ABdhPJyxQsmUqJniLZKhY2c3MZecZND9D3IR/GaFt7BiiAnimqvmsDph7NUndMk6iDAGUEmQh+tUKA==
+X-Received: by 2002:a05:600c:2159:: with SMTP id v25mr12445623wml.175.1634131226609;
+        Wed, 13 Oct 2021 06:20:26 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id r4sm2281367wrz.58.2021.10.13.06.20.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 06:20:26 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/3] nvmem: patches (set 1) for 5.16
+Date:   Wed, 13 Oct 2021 14:19:54 +0100
+Message-Id: <20211013131957.30271-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013105226.20225-1-mst@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 06:55:31AM -0400, Michael S. Tsirkin wrote:
-> This will enable cleanups down the road.
-> The idea is to disable cbs, then add "flush_queued_cbs" callback
-> as a parameter, this way drivers can flush any work
-> queued after callbacks have been disabled.
-> 
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->  arch/um/drivers/virt-pci.c                 | 2 +-
->  drivers/block/virtio_blk.c                 | 4 ++--
->  drivers/bluetooth/virtio_bt.c              | 2 +-
->  drivers/char/hw_random/virtio-rng.c        | 2 +-
->  drivers/char/virtio_console.c              | 4 ++--
->  drivers/crypto/virtio/virtio_crypto_core.c | 8 ++++----
->  drivers/firmware/arm_scmi/virtio.c         | 2 +-
->  drivers/gpio/gpio-virtio.c                 | 2 +-
->  drivers/gpu/drm/virtio/virtgpu_kms.c       | 2 +-
->  drivers/i2c/busses/i2c-virtio.c            | 2 +-
->  drivers/iommu/virtio-iommu.c               | 2 +-
->  drivers/net/caif/caif_virtio.c             | 2 +-
->  drivers/net/virtio_net.c                   | 4 ++--
->  drivers/net/wireless/mac80211_hwsim.c      | 2 +-
->  drivers/nvdimm/virtio_pmem.c               | 2 +-
->  drivers/rpmsg/virtio_rpmsg_bus.c           | 2 +-
->  drivers/scsi/virtio_scsi.c                 | 2 +-
->  drivers/virtio/virtio.c                    | 5 +++++
->  drivers/virtio/virtio_balloon.c            | 2 +-
->  drivers/virtio/virtio_input.c              | 2 +-
->  drivers/virtio/virtio_mem.c                | 2 +-
->  fs/fuse/virtio_fs.c                        | 4 ++--
+Hi Greg,
 
-fs/fuse/virtio_fs.c changes look good to me.
+Here are some nvmem patches for 5.16 mainly to add support for nvmem
+cell data post processing in the provider drivers.
+This is to help post process data like mac-address which are stored
+in a vendor specific format that is not directly understood by the
+nvmem consumer drivers.
 
-Reviewed-by: Vivek Goyal <vgoyal@redhat.com>
+Can you please queue them up for 5.16.
 
-Vivek
+thanks for you help,
+srini
 
-[..]
-> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
-> index 0ad89c6629d7..27c3b74070a2 100644
-> --- a/fs/fuse/virtio_fs.c
-> +++ b/fs/fuse/virtio_fs.c
-> @@ -895,7 +895,7 @@ static int virtio_fs_probe(struct virtio_device *vdev)
->  	return 0;
->  
->  out_vqs:
-> -	vdev->config->reset(vdev);
-> +	virtio_reset_device(vdev);
->  	virtio_fs_cleanup_vqs(vdev, fs);
->  	kfree(fs->vqs);
->  
-> @@ -927,7 +927,7 @@ static void virtio_fs_remove(struct virtio_device *vdev)
->  	list_del_init(&fs->list);
->  	virtio_fs_stop_all_queues(fs);
->  	virtio_fs_drain_all_queues_locked(fs);
-> -	vdev->config->reset(vdev);
-> +	virtio_reset_device(vdev);
->  	virtio_fs_cleanup_vqs(vdev, fs);
->  
->  	vdev->priv = NULL;
+Srinivas Kandagatla (3):
+  nvmem: core: rework nvmem cell instance creation
+  nvmem: core: add nvmem cell post processing callback
+  nvmem: imx-ocotp: add support for post processing
 
+ drivers/nvmem/core.c           | 174 +++++++++++++++++++++------------
+ drivers/nvmem/imx-ocotp.c      |  25 +++++
+ include/linux/nvmem-provider.h |   5 +
+ 3 files changed, 144 insertions(+), 60 deletions(-)
 
-Thanks
-Vivek
+-- 
+2.21.0
 
