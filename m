@@ -2,126 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51E942C099
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A0342C09F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbhJMMyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:54:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233431AbhJMMyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:54:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FF3161056;
-        Wed, 13 Oct 2021 12:52:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634129528;
-        bh=B1we/1rhh47HXdi5xle8mIjVtZAvV3OZ7/uPp5PXin8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BUpuSC89Zq+F9IBO/x+eY5VmrHqfG6dte2movuS0Mo6WrzDQTu72j/cGp3hFSCSJV
-         8AMnH4DXezNjSz3uSNP+HZxLu6UHR1o/FLXPaeNkRAmg953SMtipwtepUKP72uRr/w
-         oQFMPhehDv71jAptcLFn3LoV6RmR1OISvmrMsNq4s9Mc/kKhODo9CpQVMKZwSbNbSI
-         LmItxn78t3cLbWF6aT8W/nUqFgpAeTljWsmZ84cY9nzFDdWuDV/MDgIoJP3YL/Rq13
-         A7ZC22Y9aXHTwFANRb+qDq/v5oRyjJLfuA5kxhKWZa2bmJcILuF1++Tsa1t8cb+MSM
-         qqtCusI2zD3FA==
-Date:   Wed, 13 Oct 2021 21:52:06 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Sven Schnelle <svens@linux.ibm.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] tracing: BTF testing for kprobe-events
-Message-Id: <20211013215206.c7b49db96a939fc71eb988b3@kernel.org>
-In-Reply-To: <20211011182334.5030b2d8@gandalf.local.home>
-References: <163240078318.34105.12819521680435948398.stgit@devnote2>
-        <20211011182334.5030b2d8@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233564AbhJMMzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:55:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44017 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231294AbhJMMzB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 08:55:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634129578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EDsOoxW6EgtFgX4OT23FEb36jHTKMtrgphgk3Epw6BM=;
+        b=IycEkUZMrJ9b89yKS9324D3Bc2GpnnuByQwzrQR72QMeJhr57SlOMN6eeyQ08f91PQGqM/
+        O/zQlIvbPyMw0D0PLPdurmRtdw+f7ZYyBqBuTZVBsxojhgV/gfcPaQUsc37Ffgd5P6fnvi
+        hVD1hRMr2P64tAILNhSguabyNBK1YHM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-574-_kjdl3s9NGCosEq6_R0ySg-1; Wed, 13 Oct 2021 08:52:52 -0400
+X-MC-Unique: _kjdl3s9NGCosEq6_R0ySg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0C7F19200C4;
+        Wed, 13 Oct 2021 12:52:49 +0000 (UTC)
+Received: from localhost (unknown [10.39.193.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6286C5DA60;
+        Wed, 13 Oct 2021 12:52:39 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        markver@us.ibm.com, linux-s390@vger.kernel.org,
+        stefanha@redhat.com, Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        qemu-devel@nongnu.org
+Subject: Re: [PATCH v3 1/1] virtio: write back F_VERSION_1 before validate
+In-Reply-To: <20211013081836-mutt-send-email-mst@kernel.org>
+Organization: Red Hat GmbH
+References: <20211011053921.1198936-1-pasic@linux.ibm.com>
+ <20211013060923-mutt-send-email-mst@kernel.org>
+ <96561e29-e0d6-9a4d-3657-999bad59914e@de.ibm.com>
+ <20211013081836-mutt-send-email-mst@kernel.org>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Wed, 13 Oct 2021 14:52:38 +0200
+Message-ID: <87zgrdulwp.fsf@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 18:23:34 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, Oct 13 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
 
-> On Thu, 23 Sep 2021 21:39:43 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > Hi Steve,
-> > 
-> 
-> Hi Masami,
-> 
-> Sorry for the late reply, but Plumbers followed by OSS put me way behind,
-> and I just got to this email :-/
-> 
-> > Here I share my testing patch of the BTF for kprobe events.
-> > Currently this only allow user to specify '$$args' for
-> > tracing all arguments of the function. This is only
-> > avaialbe if
-> > - the probe point is on the function entry
-> > - the kernel is compiled with BTF (CONFIG_DEBUG_INFO_BTF)
-> > - the kernel is enables BPF (CONFIG_BPF_SYSCALL)
-> > 
-> > And Special thanks to Sven! Most of BTF handling part of
-> > this patch comes from his patch [1]
-> > 
-> > [1] https://stackframe.org/0001-ftrace-arg-hack.patch
-> 
-> Which is newer than this patch because he sent a v2, and that's a couple
-> patches down in my queue. I'll be looking at that one shortly as well.
+> On Wed, Oct 13, 2021 at 01:23:50PM +0200, Christian Borntraeger wrote:
+>> Can we get this kernel patch queued for 5.15 and stable without waiting for the QEMU patch
+>> as we have a regression with 4.14?
+>
+> Probably. Still trying to decide between this and plain revert for 5.15
+> and back. Maybe both?
 
-Did he send his BTF hack patch to you ?
-I didn't notice that.
+Probably better queue this one, in case we have some undiscovered
+problems with the config space access in virtio-net?
 
-
-> > What I thought while coding this were;
-> > - kernel/bpf/btf.c can be moved under lib/ so that
-> >   the other subsystems can reuse it, independent
-> >   from BPF. (Also, this should depends on CONFIG_DEBUG_INFO_BTF)
-> 
-> Makes sense.
-> 
-> > - some more utility functions can be exposed.
-> >   e.g. I copied btf_type_int() from btf.c
-> 
-> Agreed.
-> 
-> > - If there are more comments for the BTF APIs, it will
-> >   be more useful...
-> > - Overall, the BTF is easy to understand for who
-> >   already understand DWARF. Great work!
-> 
-> Great to hear.
-> 
-> > - I think I need 'ptr' and 'bool' types for fetcharg types.
-> > 
-> > Anyway, this is just for testing. I have to add some
-> > more cleanup, features and documentations, etc.
-> 
-> This is awesome, and something to look at for a generic ftrace args point
-> of view too.
-> 
-> One issue is how do we handle multiple register values? Like a u64 type on
-> 32 bit?  As $arg1 is just a register that is in $arg1, for a u64 parameter
-> on 32 bit, that is usually handled with two registers.
-> 
-> Have thoughts on that?
-
-Oh, that's a good point! The probe event supports such case, since I expected
-the user will use 2 arguments to record it. But indeed, using BTF means we need
-such extension.
-OK, let me consider how to extend fetchargs to support it.
-
-Thank you!
-
-> 
-> I'll play with your patch today.
-> 
-> -- Steve
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
