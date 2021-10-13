@@ -2,127 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934D942C103
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2036C42C100
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234043AbhJMNMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:12:08 -0400
-Received: from m12-16.163.com ([220.181.12.16]:36389 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233552AbhJMNMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:12:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=sUtf0XVHSTX2ol/mZr
-        WRCxgBkBPfPmN/2f2tz+1TqbI=; b=poQndgCxhffIodp3KZIUC6RR3Vl3WsaUSz
-        6o5/FFb60Pnb451TEO6aeKE/sxe0aNRYtFsVh9dxnaGdym/TW9lIzY3pAWUlwLPP
-        1OCJf8DQ2eUZCsICnMxt+A0L1pQ7Oh0dvacNI0jhP4C3z4AsPfJYbb58T+yXrTz2
-        OATwSdsQI=
-Received: from localhost.localdomain (unknown [171.221.151.0])
-        by smtp12 (Coremail) with SMTP id EMCowABHXi1y2mZheO5fEA--.28928S2;
-        Wed, 13 Oct 2021 21:09:19 +0800 (CST)
-From:   Chen Lin <chen45464546@163.com>
-To:     will@kernel.org
-Cc:     catalin.marinas@arm.com, mark.rutland@arm.com, joey.gouly@arm.com,
-        maz@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, chen.lin5@zte.com.cn,
-        Chen Lin <chen45464546@163.com>
-Subject: Re:Re: [PATCH] arm64: traps: add dump instr before BUG in kernel
-Date:   Wed, 13 Oct 2021 21:08:43 +0800
-Message-Id: <1634130523-2634-1-git-send-email-chen45464546@163.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <20211011100649.GB3681@willie-the-truck>
-References: <20211011100649.GB3681@willie-the-truck>
-X-CM-TRANSID: EMCowABHXi1y2mZheO5fEA--.28928S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXF48KFyfWF4xJF1xXrW5ZFb_yoW5uw47pF
-        W7u3WYyFWDWw4UCw1Utw4rK3W3tws8Jr47WFn8ta4Sywn0qF1IqF4vqr13CayqvrWxuw42
-        vFyjqF1293W7ZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UOjjkUUUUU=
-X-Originating-IP: [171.221.151.0]
-X-CM-SenderInfo: hfkh0kqvuwkkiuw6il2tof0z/xtbBqhsrnl75b4w9DAAAsx
+        id S234207AbhJMNLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:11:08 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:46413 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231294AbhJMNLH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:11:07 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UrhCxCT_1634130541;
+Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UrhCxCT_1634130541)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 13 Oct 2021 21:09:02 +0800
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     sj@kernel.org, akpm@linux-foundation.org
+Subject: [PATCH] mm/damon/dbgfs: remove unnecessary variables
+Date:   Wed, 13 Oct 2021 21:09:01 +0800
+Message-Id: <20211013130901.1017-1-rongwei.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At 2021-10-11 17:06:50, "Will Deacon" <will@kernel.org> wrote:
->On Thu, Sep 30, 2021 at 10:41:30PM +0800, Chen Lin wrote:
->> At 2021-09-30 15:42:47, "Will Deacon" <will@kernel.org> wrote:
->> 
->> >On Wed, Sep 29, 2021 at 09:29:46PM +0800, Chen Lin wrote:
->> >> From: Chen Lin <chen.lin5@zte.com.cn>
->> >> 
->> >> we should dump the real instructions before BUG in kernel mode, and
->> >> compare this to the instructions from objdump.
->> >> 
->> >> Signed-off-by: Chen Lin <chen.lin5@zte.com.cn>
->> >> ---
->> >>  arch/arm64/kernel/traps.c |    7 ++++++-
->> >>  1 file changed, 6 insertions(+), 1 deletion(-)
->> >> 
->> >> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
->> >> index b03e383..621a9dd 100644
->> >> --- a/arch/arm64/kernel/traps.c
->> >> +++ b/arch/arm64/kernel/traps.c
->> >> @@ -495,7 +495,12 @@ void do_undefinstr(struct pt_regs *regs)
->> >>  	if (call_undef_hook(regs) == 0)
->> >>  		return;
->> >>  
->> >> -	BUG_ON(!user_mode(regs));
->> >> +	if (!user_mode(regs)) {
->> >> +		pr_emerg("Undef instruction in kernel, dump instr:");
->> >> +		dump_kernel_instr(KERN_EMERG, regs);
->> >> +		BUG();
->> >> +	}
->> >
->> >Hmm, I'm not completely convinced about this as the instruction in the
->> >i-cache could be completely different. I think the PC value (for addr2line)
->> >is a lot more useful, and we should be printing that already.
->> >
->> >Maybe you can elaborate on a situation where this information was helpful?
->> >
->> >Thanks,
->> >
->> >Will
->> 
->> Undef instruction occurs in some cases
->> 
->> 1. CPU do not have the permission to execute the instruction or the current CPU
->>  version does not support the instruction. For example, execute 
->>  'mrs x0, tcr_el3' under el1.
->
->This really shouldn't happen, but if it did, the PC would surely be enough
->to debug the problem?
->
+In some functions, it's unnecessary to declare 'err'
+and 'ret' variables at the same time. This patch mainly
+to simplify the issue of such declarations by reusing
+one variable.
 
-yes, PC is enough in this situation.
+Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+---
+ mm/damon/dbgfs.c | 67 ++++++++++++++++++++++--------------------------
+ 1 file changed, 31 insertions(+), 36 deletions(-)
 
->> 2. The instruction is a normal instruction, but it is changed during board 
->> running in some abnormal situation. eg: DDR bit flip, the normal instruction 
->> will become an undefined one. By printing the instruction, we can see the 
->> accurate instruction code and compare it with the instruction code from objdump
->> to determine that it is a DDR issue.
->
->Is this really something we should be designing our exception handlers for?
->If we're getting DDR bit flips for kernel .text, then it sounds like we need
->ECC and/or RAS features to deal with them.
->
->So I'm not really sold on this change.
-
-1. About the DDR bit flip, YES, the instruction code information is really useless 
-in the ideal state. The ideal state includes the following conditions like: the DDR 
-controller do supports ECC, and also is configured correctly, such as ECC enabled 
-and ECC fixing enabled. There may exist various old boards or abnormal DDR 
-configurations in embedded systems.
-
-
-2. DDR flip is just one example. Other examples include text segment being overwritten 
-by DMA and other accidental writes, we want more info about what it writes. 
-Another example, some instructions may change at runtime by ALTERNATIVE(oldinstr, newinstr, feature) 
-or live patch, we want both the pc and the instruction code to double check what 
-happened if illegal instruction exception happen at such points.
-
-
-Personally, I think adding more information can make it easier to locate the above problems. 
-Anyway, Thank you for your patience in reading and replying.
->
->Will
+diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+index 28d6abf27763..d8dd68f72827 100644
+--- a/mm/damon/dbgfs.c
++++ b/mm/damon/dbgfs.c
+@@ -69,8 +69,7 @@ static ssize_t dbgfs_attrs_write(struct file *file,
+ 	struct damon_ctx *ctx = file->private_data;
+ 	unsigned long s, a, r, minr, maxr;
+ 	char *kbuf;
+-	ssize_t ret = count;
+-	int err;
++	ssize_t ret;
+ 
+ 	kbuf = user_input_str(buf, count, ppos);
+ 	if (IS_ERR(kbuf))
+@@ -88,9 +87,9 @@ static ssize_t dbgfs_attrs_write(struct file *file,
+ 		goto unlock_out;
+ 	}
+ 
+-	err = damon_set_attrs(ctx, s, a, r, minr, maxr);
+-	if (err)
+-		ret = err;
++	ret = damon_set_attrs(ctx, s, a, r, minr, maxr);
++	if (!ret)
++		ret = count;
+ unlock_out:
+ 	mutex_unlock(&ctx->kdamond_lock);
+ out:
+@@ -220,14 +219,13 @@ static ssize_t dbgfs_schemes_write(struct file *file, const char __user *buf,
+ 	struct damon_ctx *ctx = file->private_data;
+ 	char *kbuf;
+ 	struct damos **schemes;
+-	ssize_t nr_schemes = 0, ret = count;
+-	int err;
++	ssize_t nr_schemes = 0, ret;
+ 
+ 	kbuf = user_input_str(buf, count, ppos);
+ 	if (IS_ERR(kbuf))
+ 		return PTR_ERR(kbuf);
+ 
+-	schemes = str_to_schemes(kbuf, ret, &nr_schemes);
++	schemes = str_to_schemes(kbuf, count, &nr_schemes);
+ 	if (!schemes) {
+ 		ret = -EINVAL;
+ 		goto out;
+@@ -239,11 +237,12 @@ static ssize_t dbgfs_schemes_write(struct file *file, const char __user *buf,
+ 		goto unlock_out;
+ 	}
+ 
+-	err = damon_set_schemes(ctx, schemes, nr_schemes);
+-	if (err)
+-		ret = err;
+-	else
++	ret = damon_set_schemes(ctx, schemes, nr_schemes);
++	if (!ret) {
++		ret = count;
+ 		nr_schemes = 0;
++	}
++
+ unlock_out:
+ 	mutex_unlock(&ctx->kdamond_lock);
+ 	free_schemes_arr(schemes, nr_schemes);
+@@ -342,9 +341,8 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
+ 	char *kbuf, *nrs;
+ 	unsigned long *targets;
+ 	ssize_t nr_targets;
+-	ssize_t ret = count;
++	ssize_t ret;
+ 	int i;
+-	int err;
+ 
+ 	kbuf = user_input_str(buf, count, ppos);
+ 	if (IS_ERR(kbuf))
+@@ -352,7 +350,7 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
+ 
+ 	nrs = kbuf;
+ 
+-	targets = str_to_target_ids(nrs, ret, &nr_targets);
++	targets = str_to_target_ids(nrs, count, &nr_targets);
+ 	if (!targets) {
+ 		ret = -ENOMEM;
+ 		goto out;
+@@ -378,12 +376,12 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
+ 		goto unlock_out;
+ 	}
+ 
+-	err = damon_set_targets(ctx, targets, nr_targets);
+-	if (err) {
++	ret = damon_set_targets(ctx, targets, nr_targets);
++	if (ret < 0) {
+ 		if (targetid_is_pid(ctx))
+ 			dbgfs_put_pids(targets, nr_targets);
+-		ret = err;
+-	}
++	} else
++		ret = count;
+ 
+ unlock_out:
+ 	mutex_unlock(&ctx->kdamond_lock);
+@@ -548,8 +546,7 @@ static ssize_t dbgfs_mk_context_write(struct file *file,
+ {
+ 	char *kbuf;
+ 	char *ctx_name;
+-	ssize_t ret = count;
+-	int err;
++	ssize_t ret;
+ 
+ 	kbuf = user_input_str(buf, count, ppos);
+ 	if (IS_ERR(kbuf))
+@@ -567,9 +564,9 @@ static ssize_t dbgfs_mk_context_write(struct file *file,
+ 	}
+ 
+ 	mutex_lock(&damon_dbgfs_lock);
+-	err = dbgfs_mk_context(ctx_name);
+-	if (err)
+-		ret = err;
++	ret = dbgfs_mk_context(ctx_name);
++	if (!ret)
++		ret = count;
+ 	mutex_unlock(&damon_dbgfs_lock);
+ 
+ out:
+@@ -638,8 +635,7 @@ static ssize_t dbgfs_rm_context_write(struct file *file,
+ 		const char __user *buf, size_t count, loff_t *ppos)
+ {
+ 	char *kbuf;
+-	ssize_t ret = count;
+-	int err;
++	ssize_t ret;
+ 	char *ctx_name;
+ 
+ 	kbuf = user_input_str(buf, count, ppos);
+@@ -658,9 +654,9 @@ static ssize_t dbgfs_rm_context_write(struct file *file,
+ 	}
+ 
+ 	mutex_lock(&damon_dbgfs_lock);
+-	err = dbgfs_rm_context(ctx_name);
+-	if (err)
+-		ret = err;
++	ret = dbgfs_rm_context(ctx_name);
++	if (!ret)
++		ret = count;
+ 	mutex_unlock(&damon_dbgfs_lock);
+ 
+ out:
+@@ -684,9 +680,8 @@ static ssize_t dbgfs_monitor_on_read(struct file *file,
+ static ssize_t dbgfs_monitor_on_write(struct file *file,
+ 		const char __user *buf, size_t count, loff_t *ppos)
+ {
+-	ssize_t ret = count;
++	ssize_t ret;
+ 	char *kbuf;
+-	int err;
+ 
+ 	kbuf = user_input_str(buf, count, ppos);
+ 	if (IS_ERR(kbuf))
+@@ -699,14 +694,14 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
+ 	}
+ 
+ 	if (!strncmp(kbuf, "on", count))
+-		err = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
++		ret = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
+ 	else if (!strncmp(kbuf, "off", count))
+-		err = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
++		ret = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
+ 	else
+-		err = -EINVAL;
++		ret = -EINVAL;
+ 
+-	if (err)
+-		ret = err;
++	if (!ret)
++		ret = count;
+ 	kfree(kbuf);
+ 	return ret;
+ }
+-- 
+2.27.0
 
