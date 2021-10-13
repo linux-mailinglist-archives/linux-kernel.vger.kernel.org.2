@@ -2,319 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C0F42B447
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 06:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718EF42B442
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 06:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhJMEig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 00:38:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229634AbhJMEie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 00:38:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EC9260E0B;
-        Wed, 13 Oct 2021 04:36:30 +0000 (UTC)
-From:   Huacai Chen <chenhuacai@loongson.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH V7 07/10] irqchip/loongson-liointc: Add ACPI init support
-Date:   Wed, 13 Oct 2021 12:27:09 +0800
-Message-Id: <20211013042712.3077468-8-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211013042712.3077468-1-chenhuacai@loongson.cn>
-References: <20211013042712.3077468-1-chenhuacai@loongson.cn>
+        id S230020AbhJMEfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 00:35:23 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:47338 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229881AbhJMEfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 00:35:18 -0400
+Received: from localhost.localdomain (unknown [222.205.7.222])
+        by mail-app4 (Coremail) with SMTP id cS_KCgCXDSkQYWZhWpicAw--.35224S4;
+        Wed, 13 Oct 2021 12:31:12 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     linux-nfc@lists.01.org
+Cc:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
+        kuba@kernel.org, bongsu.jeon@samsung.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH] NFC: NULL out conn_info reference when conn is closed
+Date:   Wed, 13 Oct 2021 12:30:52 +0800
+Message-Id: <20211013043052.16379-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cS_KCgCXDSkQYWZhWpicAw--.35224S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF4xJrWDWryxKrWxtrWDurg_yoW8Xw1kpa
+        yfWFy3ta1DWr1ayF4UZFy8Xr13Zw4kGFZ7Kr95uw45C39xJryIvr4ktrya9FWDCFZ5Aanr
+        Ar1Uta1UWF17uwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
+        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8XwCF04k20xvY0x0EwIxG
+        rwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
+        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        UfcTPUUUUU=
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are preparing to add new Loongson (based on LoongArch, not compatible
-with old MIPS-based Loongson) support. LoongArch use ACPI other than DT
-as its boot protocol, so add ACPI init support.
+The nci_core_conn_close_rsp_packet() function will release the conn_info
+with given conn_id. However, this reference of this object may still held
+by other places like ndev->rf_conn_info in routine:
+.. -> nci_recv_frame()
+     -> nci_rx_work()
+       -> nci_rsp_packet()
+         -> nci_rf_disc_rsp_packet()
+           -> devm_kzalloc()
+              ndev->rf_conn_info = conn_info;
 
-LIOINTC stands for "Legacy I/O Interrupts" that described in Section
-11.1 of "Loongson 3A5000 Processor Reference Manual". For more
-information please refer Documentation/loongarch/irq-chip-model.rst.
+or ndev->hci_dev->conn_info in routine:
+.. -> nci_recv_frame()
+     -> nci_rx_work()
+       -> nci_rsp_packet()
+         -> nci_core_conn_create_rsp_packet()
+           -> devm_kzalloc()
+              ndev->hci_dev->conn_info = conn_info;
 
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+If these two places are not NULL out, potential UAF can be exploited by
+the attacker when emulating an UART NFC device. This patch compares the
+deallocating object with the two places and writes NULL to prevent that.
+
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
 ---
- drivers/irqchip/irq-loongson-liointc.c | 201 +++++++++++++++----------
- 1 file changed, 122 insertions(+), 79 deletions(-)
+ net/nfc/nci/rsp.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
-index 649c58391618..f5e3454aa35f 100644
---- a/drivers/irqchip/irq-loongson-liointc.c
-+++ b/drivers/irqchip/irq-loongson-liointc.c
-@@ -16,10 +16,14 @@
- #include <linux/smp.h>
- #include <linux/irqchip/chained_irq.h>
- 
-+#ifdef CONFIG_MIPS
- #include <loongson.h>
-+#else
-+#include <asm/loongson.h>
-+#endif
- 
- #define LIOINTC_CHIP_IRQ	32
--#define LIOINTC_NUM_PARENT 4
-+#define LIOINTC_NUM_PARENT	4
- #define LIOINTC_NUM_CORES	4
- 
- #define LIOINTC_INTC_CHIP_START	0x20
-@@ -41,6 +45,7 @@ struct liointc_handler_data {
- };
- 
- struct liointc_priv {
-+	struct fwnode_handle		*domain_handle;
- 	struct irq_chip_generic		*gc;
- 	struct liointc_handler_data	handler[LIOINTC_NUM_PARENT];
- 	void __iomem			*core_isr[LIOINTC_NUM_CORES];
-@@ -53,7 +58,7 @@ static void liointc_chained_handle_irq(struct irq_desc *desc)
- 	struct liointc_handler_data *handler = irq_desc_get_handler_data(desc);
- 	struct irq_chip *chip = irq_desc_get_chip(desc);
- 	struct irq_chip_generic *gc = handler->priv->gc;
--	int core = get_ebase_cpunum() % LIOINTC_NUM_CORES;
-+	int core = cpu_logical_map(smp_processor_id()) % LIOINTC_NUM_CORES;
- 	u32 pending;
- 
- 	chained_irq_enter(chip, desc);
-@@ -143,97 +148,62 @@ static void liointc_resume(struct irq_chip_generic *gc)
- 	irq_gc_unlock_irqrestore(gc, flags);
- }
- 
--static const char * const parent_names[] = {"int0", "int1", "int2", "int3"};
--static const char * const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
-+static int parent_irq[LIOINTC_NUM_PARENT];
-+static u32 parent_int_map[LIOINTC_NUM_PARENT];
-+static const char *const parent_names[] = {"int0", "int1", "int2", "int3"};
-+static const char *const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
- 
--static void __iomem *liointc_get_reg_byname(struct device_node *node,
--						const char *name)
--{
--	int index = of_property_match_string(node, "reg-names", name);
--
--	if (index < 0)
--		return NULL;
--
--	return of_iomap(node, index);
--}
--
--static int __init liointc_of_init(struct device_node *node,
--				  struct device_node *parent)
-+static int liointc_init(phys_addr_t addr, unsigned long size, int revision,
-+		struct fwnode_handle *domain_handle, struct device_node *node)
- {
-+	int i, err;
-+	void __iomem *base;
-+	struct irq_chip_type *ct;
- 	struct irq_chip_generic *gc;
- 	struct irq_domain *domain;
--	struct irq_chip_type *ct;
- 	struct liointc_priv *priv;
--	void __iomem *base;
--	u32 of_parent_int_map[LIOINTC_NUM_PARENT];
--	int parent_irq[LIOINTC_NUM_PARENT];
--	bool have_parent = FALSE;
--	int sz, i, err = 0;
- 
- 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
- 		return -ENOMEM;
- 
--	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
--		base = liointc_get_reg_byname(node, "main");
--		if (!base) {
--			err = -ENODEV;
--			goto out_free_priv;
--		}
-+	base = ioremap(addr, size);
-+	if (!base)
-+		goto out_free_priv;
- 
--		for (i = 0; i < LIOINTC_NUM_CORES; i++)
--			priv->core_isr[i] = liointc_get_reg_byname(node, core_reg_names[i]);
--		if (!priv->core_isr[0]) {
--			err = -ENODEV;
--			goto out_iounmap_base;
--		}
--	} else {
--		base = of_iomap(node, 0);
--		if (!base) {
--			err = -ENODEV;
--			goto out_free_priv;
--		}
-+	priv->domain_handle = domain_handle;
- 
--		for (i = 0; i < LIOINTC_NUM_CORES; i++)
--			priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
--	}
-+	for (i = 0; i < LIOINTC_NUM_CORES; i++)
-+		priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
- 
--	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
--		parent_irq[i] = of_irq_get_byname(node, parent_names[i]);
--		if (parent_irq[i] > 0)
--			have_parent = TRUE;
--	}
--	if (!have_parent) {
--		err = -ENODEV;
--		goto out_iounmap_isr;
--	}
-+	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
-+		priv->handler[i].parent_int_map = parent_int_map[i];
- 
--	sz = of_property_read_variable_u32_array(node,
--						"loongson,parent_int_map",
--						&of_parent_int_map[0],
--						LIOINTC_NUM_PARENT,
--						LIOINTC_NUM_PARENT);
--	if (sz < 4) {
--		pr_err("loongson-liointc: No parent_int_map\n");
--		err = -ENODEV;
--		goto out_iounmap_isr;
--	}
-+#ifdef CONFIG_OF
-+	if (revision > 1) {
-+		for (i = 0; i < LIOINTC_NUM_CORES; i++) {
-+			int index = of_property_match_string(node,
-+					"reg-names", core_reg_names[i]);
- 
--	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
--		priv->handler[i].parent_int_map = of_parent_int_map[i];
-+			if (index < 0)
-+				return -EINVAL;
-+
-+			priv->core_isr[i] = of_iomap(node, index);
-+		}
-+	}
-+#endif
- 
- 	/* Setup IRQ domain */
--	domain = irq_domain_add_linear(node, 32,
-+	domain = irq_domain_create_linear(domain_handle, LIOINTC_CHIP_IRQ,
- 					&irq_generic_chip_ops, priv);
- 	if (!domain) {
- 		pr_err("loongson-liointc: cannot add IRQ domain\n");
--		err = -EINVAL;
--		goto out_iounmap_isr;
-+		goto out_iounmap;
+diff --git a/net/nfc/nci/rsp.c b/net/nfc/nci/rsp.c
+index a2e72c003805..99de76e5e855 100644
+--- a/net/nfc/nci/rsp.c
++++ b/net/nfc/nci/rsp.c
+@@ -334,6 +334,14 @@ static void nci_core_conn_close_rsp_packet(struct nci_dev *ndev,
+ 							 ndev->cur_conn_id);
+ 		if (conn_info) {
+ 			list_del(&conn_info->list);
++			/* Other places held conn_info like
++			 * ndev->hci_dev->conn_info, ndev->rf_conn_info
++			 * need to be NULL out.
++			 */
++			if (ndev->hci_dev->conn_info == conn_info)
++				ndev->hci_dev->conn_info = NULL;
++			if (ndev->rf_conn_info == conn_info)
++				ndev->rf_conn_info = NULL;
+ 			devm_kfree(&ndev->nfc_dev->dev, conn_info);
+ 		}
  	}
- 
--	err = irq_alloc_domain_generic_chips(domain, 32, 1,
--					node->full_name, handle_level_irq,
--					IRQ_NOPROBE, 0, 0);
-+	err = irq_alloc_domain_generic_chips(domain, LIOINTC_CHIP_IRQ, 1,
-+					(node ? node->full_name : "LIOINTC"),
-+					handle_level_irq, 0, IRQ_NOPROBE, 0);
- 	if (err) {
- 		pr_err("loongson-liointc: unable to register IRQ domain\n");
- 		goto out_free_domain;
-@@ -293,20 +263,93 @@ static int __init liointc_of_init(struct device_node *node,
- 
- out_free_domain:
- 	irq_domain_remove(domain);
--out_iounmap_isr:
--	for (i = 0; i < LIOINTC_NUM_CORES; i++) {
--		if (!priv->core_isr[i])
--			continue;
--		iounmap(priv->core_isr[i]);
--	}
--out_iounmap_base:
-+out_iounmap:
- 	iounmap(base);
- out_free_priv:
- 	kfree(priv);
- 
--	return err;
-+	return -EINVAL;
-+}
-+
-+#ifdef CONFIG_OF
-+
-+static int __init liointc_of_init(struct device_node *node,
-+				  struct device_node *parent)
-+{
-+	bool have_parent = FALSE;
-+	int sz, i, index, revision, err = 0;
-+	struct resource res;
-+
-+	if (!of_device_is_compatible(node, "loongson,liointc-2.0")) {
-+		index = 0;
-+		revision = 1;
-+	} else {
-+		index = of_property_match_string(node, "reg-names", "main");
-+		revision = 2;
-+	}
-+
-+	if (of_address_to_resource(node, index, &res))
-+		return -EINVAL;
-+
-+	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
-+		parent_irq[i] = of_irq_get_byname(node, parent_names[i]);
-+		if (parent_irq[i] > 0)
-+			have_parent = TRUE;
-+	}
-+	if (!have_parent)
-+		return -ENODEV;
-+
-+	sz = of_property_read_variable_u32_array(node,
-+						"loongson,parent_int_map",
-+						&parent_int_map[0],
-+						LIOINTC_NUM_PARENT,
-+						LIOINTC_NUM_PARENT);
-+	if (sz < 4) {
-+		pr_err("loongson-liointc: No parent_int_map\n");
-+		return -ENODEV;
-+	}
-+
-+	err = liointc_init(res.start, resource_size(&res),
-+			revision, of_node_to_fwnode(node), node);
-+	if (err < 0)
-+		return err;
-+
-+	return 0;
- }
- 
- IRQCHIP_DECLARE(loongson_liointc_1_0, "loongson,liointc-1.0", liointc_of_init);
- IRQCHIP_DECLARE(loongson_liointc_1_0a, "loongson,liointc-1.0a", liointc_of_init);
- IRQCHIP_DECLARE(loongson_liointc_2_0, "loongson,liointc-2.0", liointc_of_init);
-+
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+
-+struct irq_domain *liointc_acpi_init(struct irq_domain *parent,
-+				     struct acpi_madt_lio_pic *acpi_liointc)
-+{
-+	int ret;
-+	struct fwnode_handle *domain_handle;
-+
-+	parent_int_map[0] = acpi_liointc->cascade_map[0];
-+	parent_int_map[1] = acpi_liointc->cascade_map[1];
-+
-+	parent_irq[0] = irq_create_mapping(parent, acpi_liointc->cascade[0]);
-+	if (!cpu_has_extioi)
-+		parent_irq[1] = irq_create_mapping(parent, acpi_liointc->cascade[1]);
-+
-+	domain_handle = irq_domain_alloc_fwnode((phys_addr_t *)acpi_liointc);
-+	if (!domain_handle) {
-+		pr_err("Unable to allocate domain handle\n");
-+		return NULL;
-+	}
-+
-+	ret = liointc_init(acpi_liointc->address, acpi_liointc->size,
-+			   1, domain_handle, NULL);
-+	if (ret < 0)
-+		return NULL;
-+
-+	return irq_find_matching_fwnode(domain_handle, DOMAIN_BUS_ANY);
-+}
-+
-+#endif
 -- 
-2.27.0
+2.33.0
 
