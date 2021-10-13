@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C551042CA88
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C256F42CA89
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239091AbhJMUCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:02:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40834 "EHLO mail.kernel.org"
+        id S239161AbhJMUCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:02:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239096AbhJMUCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:02:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2105611F0;
-        Wed, 13 Oct 2021 20:00:08 +0000 (UTC)
+        id S239107AbhJMUCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 16:02:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D99D611CB;
+        Wed, 13 Oct 2021 20:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634155209;
-        bh=jnF9fcRu7yXZHVCLu2T4kmJ5wS9Wn3iOmYmY9ymBctk=;
+        s=k20201202; t=1634155214;
+        bh=ywp+O16zxyBQI01Bzx+Q5zw0Ksa0nuT8E8DGdvjOEAI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mlU91my6+As/ZlrtRFPb33MOJr04ueUWqpj04zpTzp9jpFLNwk65SvrefXTyGzguV
-         dA79iV3/WT45uvvq6bwLVQDU81/0INNX94+hQ2H2DgIX2+0PgZnpY7f7vYVl+r1guF
-         +4mxdNE36lW2F+IFgmKYSCchYbph6yMn3JtzdlyD7o3+4r9VO8e23VMvVHLWMbAIl2
-         FC+IdC98SMG64v1gMcoqJm3hiZ9zXlklN4FAo3qTxLcHHgEbnis+TIGNwjXJ4Aa7QF
-         b5TkXUsF1OVRD/XDVK/lzFvwhciXu2Q0s+bb11VIN/FuCVGRc/EMlqvB/e6vvK0qWn
-         5/OJro8dxL9dQ==
+        b=AGJhvT4i7Rkz1UcTvHCsGIsOR2YiqEeZsZjPQI0SIKeDQP7Xu/iO4Atz4ifrhkX+a
+         34TZpzZB6cSHSHdR4k/O+js8XKeuljy+v7dmkpzsX3t6t2lfRD50eENQ0ZDlhWShU+
+         THNhMSHFlcb6+NOc/I+BN6qaSok8VAuZDFu3Fp/ovrAQJY4Zq9o7jNpXZwxxZFqx4A
+         pppASbbtzeq7UswC0ZIiDDlMVPBqHrO7WC212f/0GzHsXKSJ/x3oTPhNEScBovO3SJ
+         /7JlN9vfUTh+SCVh2BwcIjjpwfhLDmSqfOndKZgX1jG7QWvJuuUc830VAyt64GNd+J
+         VfXFPuKl8XyAA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+To:     kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+        tiwai@suse.com, lgirdwood@gmail.com, patches@opensource.cirrus.com,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        ckeepax@opensource.cirrus.com, perex@perex.cz,
         alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: amd: vangogh: constify static struct snd_soc_dai_ops
-Date:   Wed, 13 Oct 2021 20:59:49 +0100
-Message-Id: <163415517073.1358186.17967517863564230911.b4-ty@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: wm8960: Fix clock configuration on slave mode
+Date:   Wed, 13 Oct 2021 20:59:50 +0100
+Message-Id: <163415517074.1358186.2537803193300280145.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211012211506.21159-1-rikard.falkeborn@gmail.com>
-References: <20211012211506.21159-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <1634102224-3922-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1634102224-3922-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,12 +43,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 23:15:06 +0200, Rikard Falkeborn wrote:
-> The only usage of acp5x_i2s_dai_ops is to assign its address to the ops
-> field in the snd_soc_dai_driver struct, which is a pointer to const.
-> Make it const to allow the compiler to put it in read-only memory.
+On Wed, 13 Oct 2021 13:17:04 +0800, Shengjiu Wang wrote:
+> There is a noise issue for 8kHz sample rate on slave mode.
+> Compared with master mode, the difference is the DACDIV
+> setting, after correcting the DACDIV, the noise is gone.
 > 
+> There is no noise issue for 48kHz sample rate, because
+> the default value of DACDIV is correct for 48kHz.
 > 
+> [...]
 
 Applied to
 
@@ -58,8 +59,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: vangogh: constify static struct snd_soc_dai_ops
-      commit: bd6e4b992bb0580232e900762c131d95a73808b7
+[1/1] ASoC: wm8960: Fix clock configuration on slave mode
+      commit: 6b9b546dc00797c74bef491668ce5431ff54e1e2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
