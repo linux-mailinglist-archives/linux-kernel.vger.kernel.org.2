@@ -2,95 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF8742B2D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C067D42B2E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236993AbhJMCso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 22:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
+        id S236798AbhJMCu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 22:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhJMCsn (ORCPT
+        with ESMTP id S233544AbhJMCuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 22:48:43 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156CAC061746;
-        Tue, 12 Oct 2021 19:46:41 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id k26so1158299pfi.5;
-        Tue, 12 Oct 2021 19:46:41 -0700 (PDT)
+        Tue, 12 Oct 2021 22:50:55 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BCEC061570;
+        Tue, 12 Oct 2021 19:48:53 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id g8so3842800edt.7;
+        Tue, 12 Oct 2021 19:48:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=FMEXIPNbonyFdTY8B9TvCugTrgc+K9SofuDZ7xTg0nc=;
-        b=VFSV21mabifpeaOxrWBTv1sSFzQa5lz9M9nDY+QJsUs211pCDdOpVeY0U2wPumnN+E
-         l718ybRCLZD302WazJ07ZudValPJUKUYJeqNBoCY53D1lB5qNP3j2SuivetM0t9k2Nf/
-         JmAq87CYSKIRa9IlyWBZDJwLpzOxHlUvKjMtuoTviKrmgnvCuHvzRSYXAfPEztkEgOSA
-         2l+3tOaxyDXe7Z2/3rfNbjKapbo87ZgFtBJ+SALRzdKRmtkrlaMukxmROpw/PveoAC0s
-         2M3NRItkPsGZvdF1IaexNGoLyN4GTc3PGjiX0cSf7z2eye4r7ipGJ1hDdHzvA6fYFQp0
-         +5PQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JUR/mGvYPsKPEVw6jC+FILMezuz/OqDM8KSj68qp0LY=;
+        b=Yd7IDzDBhs1jYzqUmRgWTj0v0Cnn8J7FLaaZ2l6VmBUNzCK8QG1NW4v9hK40WDpe00
+         saC8+xJ1jSYUK5r0CY4FFwbvodFXwfYR8/Bms20ZkJDcmI3gwQNyvsuxqWQxQoSfIF8K
+         BdI6g/y1ttyMHQWTL+xpRnrTeR26bZF116KpKf1vFwYvDSS0dWcOr111q34shL817go/
+         beFOxa0TXvsVHQqecyLXW1ZTUNRlhDj52ZYeyvwLyzHW8ATTtOlhZ4DX0S+HNmVjXm9V
+         OtzZ2rnbqSoGm+qffj80VdSlCvIOMOP6l3+53d4c/gDekgXWfLTUS9uHjGyUNxa2ylO1
+         8DOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=FMEXIPNbonyFdTY8B9TvCugTrgc+K9SofuDZ7xTg0nc=;
-        b=MeNOAdLhG93uSML1jv3jJA4g9mSQNxWriq6O1kj7/FNu8QnYk1h4UXuXE3aUNcouDo
-         JzYYzKQNh4g4S15wqkf3uyeajktCT4slHMyYCIUL4AY3RZ2jmATWKsQfgvtxIqsT+3M4
-         WLwNZWKnuKCEJDQQen6Er7Wp71IpDcqZB7bd+Og53aO6x2w6e7K6VRkhfeT+F0m5XRAO
-         RPlhPmREcXpdjHjGmWFK99aeICnIdf7T3mLHNIbO1OHl1h8A+4Yoqzo+J7Xe8gSFVaiU
-         HX8H8dAyKqUhTeLuLWR7Kmge9HQNnXhHHl3mwT6tLjG6dAsTx5uQTzvbcCfFHJOff9xo
-         FbMQ==
-X-Gm-Message-State: AOAM531JSMtFMO9Dy9gvf6+JiG7nmUoRTtTGyUDzDzi7EuDFMWMfsIOv
-        6m9qpA6iLSer/xf1Ru4VJzs=
-X-Google-Smtp-Source: ABdhPJzZVfiKt7EcdbRsbFlucNQi9GWtSvz/e9OavuhatDTzX7yD0rIvI8qEik0blltHNMMy8+uH9A==
-X-Received: by 2002:aa7:9f05:0:b0:44c:619e:87da with SMTP id g5-20020aa79f05000000b0044c619e87damr35501477pfr.42.1634093200512;
-        Tue, 12 Oct 2021 19:46:40 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:618d:87ca:8f95:87c0])
-        by smtp.gmail.com with ESMTPSA id p2sm12579812pgd.84.2021.10.12.19.46.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 19:46:39 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 19:46:37 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Michael Hennerich <michael.hennerich@analog.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: adxl34x - fix sparse warning
-Message-ID: <YWZIjb91d6aAwgss@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JUR/mGvYPsKPEVw6jC+FILMezuz/OqDM8KSj68qp0LY=;
+        b=uEVZtY7ivV1hLv87MdrKAQBl4hhh/lIuUrv/pagwa7gvYx565jw8r0vyDd+OaaEbnN
+         n0JiG1FuxjBNrneeNVBHNCbPc8oU+JU2ZyHuwbkJuXI4URA+LGl4guJ2DDJlB1hPlfPW
+         bQiDBO0Xgw3RbdgiLQLsar4gBBnu7ObBK2Mrvz1c5MApTY9SWXfObQzeMUgssOhadEf6
+         eE4wyJYr54DJbkviCn/kcIVHQklzeO/3DDCLG7cWaH2tWFZpW/LU1zDoyf+ariCI4mmc
+         6n8Q5zf+z16ebqqXT0Vn/ILL3j1ihDqfqRWl44WFGrDU702wgmw/5J4jN2P18t6/3GUm
+         h2Hg==
+X-Gm-Message-State: AOAM531hBvLeWHWcvESnx7d74Mt7V7FazUa0k3AWMq/nM+LVvw3wUMkt
+        iqANBZayJHbKVLNK8uJUivs8YrJmgYpDdxgUa4TIpQgU
+X-Google-Smtp-Source: ABdhPJx0ADpL3IeCPgiQs+btp6hskCDISm/c40aR79xLjBbigm8sdFG+AmdFBaN76EVqmlE6VUa2c///RnYPJ92xsEs=
+X-Received: by 2002:a05:6402:16d2:: with SMTP id r18mr5591511edx.363.1634093331672;
+ Tue, 12 Oct 2021 19:48:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-3-shy828301@gmail.com>
+ <YV4Dz3y4NXhtqd6V@t490s> <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
+ <CAHbLzkqm_Os8TLXgbkL-oxQVsQqRbtmjdMdx0KxNke8mUF1mWA@mail.gmail.com>
+ <YWTc/n4r6CJdvPpt@t490s> <YWTobPkBc3TDtMGd@t490s> <CAHbLzkrOsNygu5x8vbMHedv+P3dEqOxOC6=O6ACSm1qKzmoCng@mail.gmail.com>
+ <YWYHukJIo8Ol2sHN@t490s>
+In-Reply-To: <YWYHukJIo8Ol2sHN@t490s>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 12 Oct 2021 19:48:39 -0700
+Message-ID: <CAHbLzkp3UXKs_NP9XD_ws=CSSFzUPk7jRxj0K=gvOqoi+GotmA@mail.gmail.com>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+To:     Peter Xu <peterx@redhat.com>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the following warning from sparse:
+On Tue, Oct 12, 2021 at 3:10 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Tue, Oct 12, 2021 at 11:02:09AM -0700, Yang Shi wrote:
+> > On Mon, Oct 11, 2021 at 6:44 PM Peter Xu <peterx@redhat.com> wrote:
+> > >
+> > > On Mon, Oct 11, 2021 at 08:55:26PM -0400, Peter Xu wrote:
+> > > > Another thing is I noticed soft_offline_in_use_page() will still ignore file
+> > > > backed split.  I'm not sure whether it means we'd better also handle that case
+> > > > as well, so shmem thp can be split there too?
+> > >
+> > > Please ignore this paragraph - I somehow read "!PageHuge(page)" as
+> > > "PageAnon(page)"...  So I think patch 5 handles soft offline too.
+> >
+> > Yes, exactly. And even though the split is failed (or file THP didn't
+> > get split before patch 5/5), soft offline would just return -EBUSY
+> > instead of calling __soft_offline_page->page_handle_poison(). So
+> > page_handle_poison() should not see THP at all.
+>
+> I see, so I'm trying to summarize myself on what I see now with the new logic..
+>
+> I think the offline code handles hwpoison differently as it sets PageHWPoison
+> at the end of the process, IOW if anything failed during the offline process
+> the hwpoison bit is not set.
+>
+> That's different from how the memory failure path is handling this, as in that
+> case the hwpoison bit on the subpage is set firstly, e.g. before split thp.  I
+> believe that's also why memory failure requires the extra sub-page-hwpoison bit
+> while offline code shouldn't need to: because for soft offline split happens
+> before setting hwpoison so we just won't ever see a "poisoned file thp", while
+> for memory failure it could happen, and the sub-page-hwpoison will be a temp
+> bit anyway only exist for a very short period right after we set hwpoison on
+> the small page but before we split the thp.
+>
+> Am I right above?
 
-  CC [M]  drivers/input/misc/adxl34x.o
-  CHECK   drivers/input/misc/adxl34x.c
-drivers/input/misc/adxl34x.c:245:29: warning: cast to restricted __le16
-drivers/input/misc/adxl34x.c:248:29: warning: cast to restricted __le16
-drivers/input/misc/adxl34x.c:251:29: warning: cast to restricted __le16
+Yeah, you are right. I noticed this too, only successfully migrated
+page is marked as hwpoison. But TBH I'm not sure why it does this way.
+Naoya may know. Anyway, THP doesn't get migrated if it can't be split,
+so PageHasHWPoisoned doesn't apply, right?
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/input/misc/adxl34x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> I feel like __soft_offline_page() still has some code that assumes "thp can be
+> there", e.g. iiuc after your change to allow file thp split, "hpage" will
+> always be the same as "page" then in that function, and isolate_page() does not
+> need to pass in a pagelist pointer too as it'll always be handling a small page
+> anyway.  But maybe they're fine to be there for now as they'll just work as
+> before, I think, so just raise it up.
 
-diff --git a/drivers/input/misc/adxl34x.c b/drivers/input/misc/adxl34x.c
-index 34beac80e6f0..a4af314392a9 100644
---- a/drivers/input/misc/adxl34x.c
-+++ b/drivers/input/misc/adxl34x.c
-@@ -237,7 +237,7 @@ static const struct adxl34x_platform_data adxl34x_default_init = {
- 
- static void adxl34x_get_triple(struct adxl34x *ac, struct axis_triple *axis)
- {
--	short buf[3];
-+	__le16 buf[3];
- 
- 	ac->bops->read_block(ac->dev, DATAX0, DATAZ1 - DATAX0 + 1, buf);
- 
--- 
-2.33.0.882.g93a45727a2-goog
+That compound_head() call seems to be for hugetlb since isolating
+hugetlb needs to pass in the head page IIUC. For the pagelist, I think
+it is just because migrate_pages() requires a list as the second
+parameter.
 
-
--- 
-Dmitry
+>
+> --
+> Peter Xu
+>
