@@ -2,101 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AD042B22C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6070B42B22F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236780AbhJMBTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 21:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236387AbhJMBSw (ORCPT
+        id S237630AbhJMBTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 21:19:53 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33012 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237675AbhJMBTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 21:18:52 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972CFC061778;
-        Tue, 12 Oct 2021 18:16:46 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id g8so3164416edt.7;
-        Tue, 12 Oct 2021 18:16:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=Yc2St6vhIr2LlU6gcnbxLVeVNItrvzMXlTgzpahCO5I=;
-        b=mgU88UaN4hTIBCf8oOcXmmbMFP1nNyVLqHogsPEIwK7CxZdYuF8K8m/UMrZlNgHZW4
-         ZBCbmJI7mrY2MLB+3zsprbgzsn3NOkNLrJAomSZxnNbw7W+L2IUGjt0WH1YtlX/mppHd
-         8SYcgPXxNsScJJdw45nBD1PJrB7Qh5c+Pp8ao40lvNH5X3AJQ5blJRk7bwqVWLZ8TWId
-         gqfFX1OrmfjZkQwMeVaOVV5MJ3av3Z+RJARIIz06XxBRgry0RKLAgXU880eDU/tVUjw8
-         Yfb6TAU0mAnOx88S5ZfMebDPv2LtH5qvvjkxXBWxSPZ11JK4lcTjjFW9c78TvrSYGx3Y
-         6kUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Yc2St6vhIr2LlU6gcnbxLVeVNItrvzMXlTgzpahCO5I=;
-        b=hWMuy83yKjUkLql4o9I7C2aXk6i6AKKyf3JTdDbE0kwkllY27sVilKOAba4VlDm20V
-         9Z42oGZtXhTyKvMqZ2jrA6YY/xqzINqyIuUBOcBoctHyz/ae//tl9a4AFpAte6/DFBg8
-         xyqN25hly+XbkamWIy9uBA7oLvymuil1XBJ1LL44piolfJ1/ZnTpK/4kKWz10TpEjQ7x
-         UjURIxZ9yv0kmIBq/ZgX2x0B+//UQ4Eq13llICr7JkopADrlS1oPTfJarkHLMmJBZo4j
-         vLANSOJxWdcsNGyNeEiNJ4bN/612mtAdnGetg4iMeAB/DObjJQRosjfaDt8gmtab4z1X
-         Ls9g==
-X-Gm-Message-State: AOAM532HQw8Ax6LwXIvN8lmZ8Yh/sTi9JWPX0lwjPmgWQBtU6WCTAmkZ
-        ZMOyLhERScuPaMNIJ6son1M=
-X-Google-Smtp-Source: ABdhPJyoO+72Dao2dN6ru0Vyn1ZgaxVabpAdLnhgZjSJg76aLMvxnYQlHUgyepbF/3mzSyBBLTU+BQ==
-X-Received: by 2002:a17:906:4f13:: with SMTP id t19mr37482624eju.53.1634087805123;
-        Tue, 12 Oct 2021 18:16:45 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.googlemail.com with ESMTPSA id v13sm6894630ede.79.2021.10.12.18.16.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 18:16:44 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Tue, 12 Oct 2021 21:19:18 -0400
+X-UUID: 95088808a2954397beafa37b1f51ae8a-20211013
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=t7k1wvNec9YBr9g8AUC0Ax/3BfSKfgXeVcp0+CHknXw=;
+        b=gSOSFIYR15LI3h2XykYFJbMAFA/8uSLSYAH7h1HmaTrx0h7TEpp+GI6pIFqlQ86p6Xa0Uem7ynBZ/hWAK+9BA/FxZ2Sw4p0bw3key4huIN1MZ2KvAirdIJMfVimcr6ogGC+DzbCH9PKR6OPAXy0AXpvUlNG4cWF6MXHATcocpaI=;
+X-UUID: 95088808a2954397beafa37b1f51ae8a-20211013
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 98030683; Wed, 13 Oct 2021 09:17:12 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 13 Oct 2021 09:17:12 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 13 Oct
+ 2021 09:17:11 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 13 Oct 2021 09:17:09 +0800
+Message-ID: <b3fa00e8b66658e120279e37261cbdb5db7edf52.camel@mediatek.com>
+Subject: Re: [PATCH v6, 00/15] Using component framework to support multi
+ hardware decode
+From:   "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+CC:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        "Tiffany Lin" <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        John Crispin <john@phrozen.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [net-next PATCH v6 16/16] dt-bindings: net: ipq8064-mdio: fix warning with new qca8k switch
-Date:   Wed, 13 Oct 2021 03:16:22 +0200
-Message-Id: <20211013011622.10537-17-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211013011622.10537-1-ansuelsmth@gmail.com>
-References: <20211013011622.10537-1-ansuelsmth@gmail.com>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Date:   Wed, 13 Oct 2021 09:17:13 +0800
+In-Reply-To: <CAAEAJfCHEBFc8B7C0bu7UxtJdffvDarqgA-rset1wPjLOiV01A@mail.gmail.com>
+References: <20210901083215.25984-1-yunfei.dong@mediatek.com>
+         <CAAEAJfDOt_GyDPojcj5P6Wou9HC2GC8YzRt2wYyqdrCOjfeOog@mail.gmail.com>
+         <3b9463e88d88ce85205da08f8263252da7726ade.camel@mediatek.com>
+         <aba7fb4ffe6e45ac90869b5017468386bce64d28.camel@mediatek.com>
+         <b7ed8b71578a98704e9b8ca29cac63c67cc14b3f.camel@mediatek.com>
+         <CAAEAJfCHEBFc8B7C0bu7UxtJdffvDarqgA-rset1wPjLOiV01A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix warning now that we have qca8k switch Documentation using yaml.
-
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- Documentation/devicetree/bindings/net/qcom,ipq8064-mdio.yaml | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/net/qcom,ipq8064-mdio.yaml b/Documentation/devicetree/bindings/net/qcom,ipq8064-mdio.yaml
-index 948677ade6d1..d7748dd33199 100644
---- a/Documentation/devicetree/bindings/net/qcom,ipq8064-mdio.yaml
-+++ b/Documentation/devicetree/bindings/net/qcom,ipq8064-mdio.yaml
-@@ -51,6 +51,9 @@ examples:
-         switch@10 {
-             compatible = "qca,qca8337";
-             reg = <0x10>;
--            /* ... */
-+
-+            ports {
-+              /* ... */
-+            };
-         };
-     };
--- 
-2.32.0
+SGkgRXplcXVpZWwsDQoNClRoYW5rcyBmb3IgeW91ciBmZWVkYmFjaywNCg0KVGhlIGRyaXZlciBj
+YW4gd29yayB3ZWxsIG5vdyBhY2NvcmRpbmcgdG8geW91ciBhZHZpY2Ugd2l0aA0Kb2ZfcGxhdGZv
+cm1fcG9wdWxhdGUgaW50ZXJmYWNlLg0KDQpJbiBvcmRlciB0byBzZXBhcmF0ZSBwYXJlbnQgbm9k
+ZSB3aXRoIGNoaWxkcmVuIG5vZGUsIHBhcmVudCBub2RlIGlzDQptYXN0ZXIgZGV2aWNlLCBjaGls
+ZHJlbiBub2RlIGlzIGNvbXBvbmVudCBkZXZpY2UuDQoNClRoZSBtYXN0ZXIgYW5kIGNvbXBvbmVu
+dCBhcmUgcmVnaXN0ZXJlZCBwbGF0Zm9ybSBkZXZpY2UuDQoNCg0KQ291bGQgeW91IHBsZWFzZSBo
+ZWxwIHRvIHJldmlldyB0aGUgcGF0Y2ggYWdhaW4gd2hlbiB5b3UgYXJlIGZyZWU6DQoNCmh0dHBz
+Oi8vcGF0Y2h3b3JrLmxpbnV4dHYub3JnL3Byb2plY3QvbGludXgtbWVkaWEvY292ZXIvMjAyMTEw
+MTEwNzAyNDcuNzkyLTEteXVuZmVpLmRvbmdAbWVkaWF0ZWsuY29tLw0KDQpCZXN0IFJlZ2FyZHMs
+DQpZdW5mZWkgRG9uZw0KDQpPbiBTdW4sIDIwMjEtMDktMjYgYXQgMTE6NTEgLTAzMDAsIEV6ZXF1
+aWVsIEdhcmNpYSB3cm90ZToNCj4gT24gU3VuLCAyNiBTZXB0IDIwMjEgYXQgMDU6MjcsIHl1bmZl
+aS5kb25nQG1lZGlhdGVrLmNvbQ0KPiA8eXVuZmVpLmRvbmdAbWVkaWF0ZWsuY29tPiB3cm90ZToN
+Cj4gPiANCj4gPiBIaSBFemVxdWllbCwNCj4gPiANCj4gPiBDb3VsZCB5b3UgcGxlYXNlIGhlbHAg
+dG8gZ2l2ZSBzb21lIGZlZWRiYWNrIHdoZW4geW91IGFyZSBmcmVlIGZvcg0KPiA+IGlvbW11DQo+
+ID4gbGltaXRhdGlvbj8NCj4gPiANCj4gDQo+IEhvdyBhYm91dCB5b3Ugd29yayBvbiB0aGUgYXJj
+aGl0ZWN0dXJlIEkgb3JpZ2luYWxseSBzdWdnZXN0ZWQ/DQo+IA0KPiBBcyB0aGUgc2F5aW5nIGdv
+ZXMsIHRhbGsgaXMgY2hlYXAsIHNob3cgdXMgdGhlIGNvZGUuDQo+IFNvIGxldCdzIHNlZSB0aGUg
+Y29kZSBhbmQgbGV0J3MgZGlzY3VzcyB0aGUgbGltaXRhdGlvbnMNCj4gd2l0aCB0aGUgY29kZS4N
+Cj4gDQo+ID4gQWNjb3JkaW5nIHRvIGdvb2dsZSdzIHN1Z2dlc3Rpb24sIGl0J3MgYmV0dGVyIG5v
+dCB0byB1c2UgdjRsMiBhc3luYw0KPiA+IGFsc28uDQo+IA0KPiBIdW0/IEkgaGF2ZW4ndCBzZWVu
+IHN1Y2ggb2JqZWN0aW9uIG9uIHRoZSBtYWlsaW5nIGxpc3QuDQo+IA0KPiBUaGFua3MsDQo+IEV6
+ZXF1aWVsDQo=
 
