@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA3442CCF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6180242CCF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhJMVnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 17:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJMVnL (ORCPT
+        id S230061AbhJMVne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 17:43:34 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39349 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229702AbhJMVnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 17:43:11 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C58C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:41:07 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id lk8-20020a17090b33c800b001a0a284fcc2so5443672pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:41:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WLc6IrRUzN1NvABbj03b/K9mQI1mZYYIfJGl67UGN1E=;
-        b=jDN/84phO6U6OaSVcThD15QLRd2ZqbAZo/8MbgCsAWe0rbQalRTW6L7kXvj6dKFnDc
-         Y8Z5L1EwDO/zlr8NNf6AXf/6y27lmdnHqn83Kg9p9yWsNj9NmvEFGJpiAZhd60h7stRo
-         G0dcmsDAPKzxg9a4reONasgPPFLjKSOdjl9tmetSamocgxCfsRzWe+vrv4nZlNd5GQmc
-         Um+3J/v85kAxFLVoQOuRDv8vnaxFgPGbhlbSXwg4Jj9Ltdcr0LVqNlNSkhfcvyoY1btE
-         IcnH0RBxKrQn37/gJEwgQbgXtt3BIJvri4wcPXfPvT2ZcyO/HSAgYZMrOSm6lNoONadY
-         dX6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WLc6IrRUzN1NvABbj03b/K9mQI1mZYYIfJGl67UGN1E=;
-        b=EmYsmggMd1mBaCph+skEOyGEVIAj4kHOd/9xiBthXahywoP0SjnXnGQbvoljgkGyJa
-         2O5OlESNnNGomvWRGRwTDjqZeVpYJB4fFY4hqOQ0TnWFtrnV0pki/jLsqBKwt8HKk+1/
-         Nn5WIPb5lSPbOT3/ktaOLRyoNs9L3TGyS92RIYUHEuhWpeC/zOzcLMcqUUAf33lw3U9g
-         jjWfEe+nnm9a/jeDpxk/Z99svHBh45V7b8llc1mrwttZt7VJ/nyJgPaQMlTIAmB4/E7n
-         ncg69T5EvYJOogXdb4P7I+84P3B/fmIrwQ2FWlygs39yinY85+6GGeEzCs7reMHSxJf5
-         b+eA==
-X-Gm-Message-State: AOAM530eSYpRb1poARMH5f8C/p1JX2q9wa33VX8IHELl1SIpuBU6or9c
-        dMA3WsPQX94JUS6P29cLmPH5fg==
-X-Google-Smtp-Source: ABdhPJy9LDPdllIYUeK920uW66OjzrCDW6L9SnC73V58zpH3rwB2+vHPLI64AB5nRJs+sl8PMx6vTg==
-X-Received: by 2002:a17:903:11c9:b0:13b:9a01:aa27 with SMTP id q9-20020a17090311c900b0013b9a01aa27mr1466854plh.46.1634161267013;
-        Wed, 13 Oct 2021 14:41:07 -0700 (PDT)
-Received: from x1 ([2601:1c2:1080:1950:bd36:67b6:1d6:68ff])
-        by smtp.gmail.com with ESMTPSA id n21sm398999pfv.115.2021.10.13.14.41.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 14:41:06 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 14:41:03 -0700
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Benoit Cousson <bcousson@baylibre.com>,
-        Dave Gerlach <d-gerlach@ti.com>, Keerthy <j-keerthy@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: am335x: Add rtc node as system-power-controller
-Message-ID: <20211013214103.GA10628@x1>
-References: <20211012191311.879838-1-dfustini@baylibre.com>
- <YWaJfofs8QAtBnVu@hovoldconsulting.com>
+        Wed, 13 Oct 2021 17:43:33 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 19DLfCeL022673
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 17:41:13 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A29C915C00CA; Wed, 13 Oct 2021 17:41:12 -0400 (EDT)
+Date:   Wed, 13 Oct 2021 17:41:12 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     yebin <yebin10@huawei.com>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
+ previous check time
+Message-ID: <YWdSeMuosYio7TFv@mit.edu>
+References: <20210911090059.1876456-1-yebin10@huawei.com>
+ <20210911090059.1876456-3-yebin10@huawei.com>
+ <20211007123100.GG12712@quack2.suse.cz>
+ <615FA55B.5070404@huawei.com>
+ <615FAF27.8070000@huawei.com>
+ <20211012084727.GF9697@quack2.suse.cz>
+ <61657590.2050407@huawei.com>
+ <20211013093847.GB19200@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YWaJfofs8QAtBnVu@hovoldconsulting.com>
+In-Reply-To: <20211013093847.GB19200@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 09:23:42AM +0200, Johan Hovold wrote:
-> On Tue, Oct 12, 2021 at 12:13:12PM -0700, Drew Fustini wrote:
-> > From: Keerthy <j-keerthy@ti.com>
-> > 
-> > PMIC_PWR_EN pin of RTC on am335x-evm, bone, and boneblack is connected to
-> > PMIC on board, so flag rtc node as system-power-controller to allow
-> > software to poweroff boards.
+On Wed, Oct 13, 2021 at 11:38:47AM +0200, Jan Kara wrote:
 > 
-> The "system-power-controller" property is already set in
-> bone-common.dtsi since
+> OK, I see. So the race in ext4_multi_mount_protect() goes like:
 > 
-> 	2876cc4a773c ("ARM: dts: Move most of am335x-boneblack.dts to am335x-boneblack-common.dtsi")
+> hostA				hostB
 > 
-> so this probably only affects am335x-evm and that should be reflected in
-> the commit message.
+> read_mmp_block()		read_mmp_block()
+> - sees EXT4_MMP_SEQ_CLEAN	- sees EXT4_MMP_SEQ_CLEAN
+> write_mmp_block()
+> wait_time == 0 -> no wait
+> read_mmp_block()
+>   - all OK, mount
+> 				write_mmp_block()
+> 				wait_time == 0 -> no wait
+> 				read_mmp_block()
+> 				  - all OK, mount
 > 
-> Also, should you now remove the property from boneblack-common? Or just
-> add it to am335x-evm instead?
+> Do I get it right? Actually, if we passed seq we wrote in
+> ext4_multi_mount_protect() to kmmpd (probably in sb), then kmmpd would
+> notice the conflict on its first invocation but still that would be a bit
+> late because there would be a time window where hostA and hostB would be
+> both using the fs.
+> 
+> We could reduce the likelyhood of this race by always waiting in
+> ext4_multi_mount_protect() between write & read but I guess that is
+> undesirable as it would slow down all clean mounts. Ted?
 
-Thank you for reviewing. Yes, I should improve the commit message as the
-BeagleBone Black is already covered for the rtc system-power-controller
-in am335x-boneblack-common.dtsi.  
+I'd like Andreas to comment here.  My understanding is that MMP
+originally intended as a safety mechanism which would be used as part
+of a primary/backup high availability system, but not as the *primary*
+system where you might try to have two servers simultaneously try to
+mount the file system and use MMP as the "election" mechanism to
+decide which server is going to be the primary system, and which would
+be the backup system.
 
-I believe it would be ok to remove system-power-controller from 
-am335x-boneblack-common.dtsi and have it in am335x-bone-common.dtsi.
+The cost of being able to handle this particular race is it would slow
+down the mounts of cleanly unmounted systems.
 
-These are the files that include am335x-boneblack-common.dtsi:
-arch/arm/boot/dts/am335x-boneblack-wireless.dts
-arch/arm/boot/dts/am335x-boneblack.dts
-arch/arm/boot/dts/am335x-sancloud-bbe-lite.dts
-arch/arm/boot/dts/am335x-sancloud-bbe.dts
+There *are* better systems to implement leader elections[1] than using
+MMP.  Most of these more efficient leader elections assume that you
+have a working IP network, and so if you have a separate storage
+network (including a shared SCSI bus) from your standard IP network,
+then MMP is a useful failsafe in the face of a network partition of
+your IP network.  The question is whether MMP should be useful for
+more than that.  And if it isn't, then we should probably document
+what MMP is and isn't good for, and give advice in the form of an
+application note for how MMP should be used in the context of a larger
+system.
 
-But they all also include am335x-bone-common.dtsi.
+[1] https://en.wikipedia.org/wiki/Leader_election
 
-However, I just noticed that am335x-evm.dts does not include either
-am335x-boneblack-common.dtsi or am335x-boneblack-common.dtsi. Thus
-rtc system-power-controller should be directly inserted into
-am335x-evm.dts.
-
-I considered just moving system-power-controller to the rtc node in
-am33xx-l4.dtsi but I don't think that would be correct as this would not
-be valid for all am33xx devices.
-
-Does that seem correct to you?
-
-Thank you,
-Drew
+						- Ted
