@@ -2,198 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F3442C6F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3776D42C703
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237830AbhJMQ6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:58:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51399 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237916AbhJMQ6c (ORCPT
+        id S238185AbhJMQ7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238191AbhJMQ6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:58:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634144188;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OQc5t39oYfKEqQbzvm+Biugqq6bcM4boL4RoaIoHD1Y=;
-        b=PeIITYqcVPSbsV8xiT14ECiJsZwqAMJVKAAORNcX558L0mHvf+kVk2F/4ybu4iINqkpvXU
-        wHSKEGhncmJAqkk2S1JbrlWpHaEsZ9pMwo/W/YI+XkLC4EvCT2Ad9YVhrjKFjhr4aWROVC
-        g7pgdN3pmaxe5DIjRdQbDIH76i+Zk2s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-u2ouWplOOjK_H_t0WEoH1w-1; Wed, 13 Oct 2021 12:56:23 -0400
-X-MC-Unique: u2ouWplOOjK_H_t0WEoH1w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75263801AA7;
-        Wed, 13 Oct 2021 16:56:22 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EBAC95DA60;
-        Wed, 13 Oct 2021 16:56:21 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     fwilhelm@google.com, seanjc@google.com, oupton@google.com,
-        stable@vger.kernel.org
-Subject: [PATCH 8/8] KVM: SEV-ES: go over the sev_pio_data buffer in multiple passes if needed
-Date:   Wed, 13 Oct 2021 12:56:16 -0400
-Message-Id: <20211013165616.19846-9-pbonzini@redhat.com>
-In-Reply-To: <20211013165616.19846-1-pbonzini@redhat.com>
-References: <20211013165616.19846-1-pbonzini@redhat.com>
+        Wed, 13 Oct 2021 12:58:51 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89A7C06176F;
+        Wed, 13 Oct 2021 09:56:43 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so2738975pjb.4;
+        Wed, 13 Oct 2021 09:56:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8cbGKp/2SKCzI/7d16DE4Ims0SpFBLwu8hl8mlZLlOo=;
+        b=oFOn0Tq6sOCCa7oR6RuKde4xQw/hwbwVhtwaptJIyoz2QA0GkZ9SKG3SAlsSoD+BMa
+         gEVYT4q9hXHpebwTNziXfq1juVpttO+VHUMgvGPN4wfIIEFWO6Oshc+V0lsU2MEnKRwk
+         gd6zgi2n9+xCksbFjiA2pyYJLXIYgmcK5Y87Fj/1PfYaFN8i1pnw8hLDQJCyPxu3cYqd
+         jnm5ImJZzukIJcSrdtu0tw7QzD0ocFZ38OzE9YX6s9whTQ31snbu/eoH3Gfd8ShIGRnN
+         0//WyRX584GCgmRxwVTl8z6kqvkPzMFQaHq33lBjtLn9BlUwQGkfvv0zZ8Hvzb7voIds
+         nwwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8cbGKp/2SKCzI/7d16DE4Ims0SpFBLwu8hl8mlZLlOo=;
+        b=c3OttgWwuiCVza8WbYrWmuOL6SDQ6ugJowdBcsyfZOd/8qI9GU0jIeKrsKuObMlYg6
+         3Dd3Q545+8zq+5GRX5fhB0fveT0aRW8uYgFMeNNqhqaGpyRvqPVCJrcszlXZprFip/0C
+         hEeKuFBtCOFhg1eXvGcu2fBrO1DiQgmnLrK9KwfSHPkyQQMPRkid/qERzbF11j77uf4B
+         YJFzK0RRPxRG74h741MkZiQeFIlBhYAHdlKJRSJuLd1ZAE5yySYZhNPa0oaO1yfaRSRY
+         0rOXXNCzLvWIRPUuidWHgmjUwyrNTDEkrVzctoGGO6cfkFcEHz4T9XTo47/WkQmKKKj/
+         9cUw==
+X-Gm-Message-State: AOAM532EBuE/gGjjAGIHFvretA8UxctPI6agNVZR2mwGF0kWmN5JouP5
+        xzMc8MGuwWiwqO187lD0+Qg=
+X-Google-Smtp-Source: ABdhPJyPTTN4ICW/JsbxaYnIm7r4sYNqOFBOw14o7XVRCfZKdqH5y/kW1VzGq0CitYgns0ZYFAz8Xw==
+X-Received: by 2002:a17:90b:17c9:: with SMTP id me9mr404934pjb.197.1634144203230;
+        Wed, 13 Oct 2021 09:56:43 -0700 (PDT)
+Received: from nuc10 (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
+        by smtp.gmail.com with ESMTPSA id x13sm84916pge.37.2021.10.13.09.56.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 09:56:42 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 09:56:41 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, gregkh@linuxfoundation.org,
+        Al Viro <viro@zeniv.linux.org.uk>, dvyukov@google.com
+Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
+Message-ID: <YWcPyYk0Rlyvl9a9@nuc10>
+References: <17f537b3-e2eb-5d0a-1465-20f3d3c960e2@suse.cz>
+ <YVYGcLbu/aDKXkag@nuc10>
+ <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz>
+ <YVZXF3mbaW+Pe+Ji@nuc10>
+ <1e0df91-556e-cee5-76f7-285d28fe31@google.com>
+ <20211012204320.GP24307@magnolia>
+ <20211012204345.GQ24307@magnolia>
+ <9db5d16a-2999-07a4-c49d-7417601f834f@suse.cz>
+ <20211012232255.GS24307@magnolia>
+ <3928ef69-eaac-241c-eb32-d2dd2eab9384@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3928ef69-eaac-241c-eb32-d2dd2eab9384@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PIO scratch buffer is larger than a single page, and therefore
-it is not possible to copy it in a single step to vcpu->arch/pio_data.
-Bound each call to emulator_pio_in/out to a single page; keep
-track of how many I/O operations are left in vcpu->arch.sev_pio_count,
-so that the operation can be restarted in the complete_userspace_io
-callback.
+On Wed, Oct 13, 2021 at 09:38:31AM +0200, Vlastimil Babka wrote:
+> On 10/13/21 01:22, Darrick J. Wong wrote:
+> > On Tue, Oct 12, 2021 at 11:32:25PM +0200, Vlastimil Babka wrote:
+> >> On 10/12/2021 10:43 PM, Darrick J. Wong wrote:
+> >> > On Tue, Oct 12, 2021 at 01:43:20PM -0700, Darrick J. Wong wrote:
+> >> >> On Sun, Oct 03, 2021 at 06:07:20PM -0700, David Rientjes wrote:
+> >> >>
+> >> >> I audited the entire xfs (kernel) codebase and didn't find any other
+> >> >> usage errors.  Thanks for the patch; I'll apply it to for-next.
+> >> 
+> >> Which patch, the one that started this thread and uses kmem_cache_free() instead
+> >> of kfree()? I thought we said it's not the best way?
+> > 
+> > It's probably better to fix slob to be able to tell that a kmem_free'd
+> > object actually belongs to a cache and should get freed that way, just
+> > like its larger sl[ua]b cousins.
+> 
+> Agreed. Rustam, do you still plan to do that?
 
-For OUT, this means that the previous kvm_sev_es_outs implementation
-becomes an iterator of the loop, and we can consume the sev_pio_data
-buffer before leaving to userspace.
+Yes, I do, thank you.
 
-For IN, instead, consuming the buffer and decreasing sev_pio_count
-is always done in the complete_userspace_io callback, because that
-is when the memcpy is done into sev_pio_data.
-
-Cc: stable@vger.kernel.org
-Fixes: 7ed9abfe8e9f ("KVM: SVM: Support string IO operations for an SEV-ES guest")
-Reported-by: Felix Wilhelm <fwilhelm@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/x86.c              | 73 +++++++++++++++++++++++++--------
- 2 files changed, 57 insertions(+), 17 deletions(-)
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 6bed6c416c6c..5a0298aa56ba 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -703,6 +703,7 @@ struct kvm_vcpu_arch {
- 	struct kvm_pio_request pio;
- 	void *pio_data;
- 	void *sev_pio_data;
-+	unsigned sev_pio_count;
- 
- 	u8 event_exit_inst_len;
- 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index a485e185ad00..09c1e64495d3 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -12378,38 +12378,76 @@ int kvm_sev_es_mmio_read(struct kvm_vcpu *vcpu, gpa_t gpa, unsigned int bytes,
- EXPORT_SYMBOL_GPL(kvm_sev_es_mmio_read);
- 
- static int kvm_sev_es_outs(struct kvm_vcpu *vcpu, unsigned int size,
--			   unsigned int port, unsigned int count)
-+			   unsigned int port);
-+
-+static int complete_sev_es_emulated_outs(struct kvm_vcpu *vcpu)
- {
--	int ret = emulator_pio_out(vcpu, size, port,
--				   vcpu->arch.sev_pio_data, count);
-+	vcpu->arch.pio.count = 0;
-+	if (vcpu->arch.sev_pio_count)
-+		return kvm_sev_es_outs(vcpu,
-+				       vcpu->arch.pio.size,
-+				       vcpu->arch.pio.port);
-+	return 1;
-+}
-+
-+static int kvm_sev_es_outs(struct kvm_vcpu *vcpu, unsigned int size,
-+			   unsigned int port)
-+{
-+	for (;;) {
-+		unsigned int count =
-+			min_t(unsigned int, PAGE_SIZE / size, vcpu->arch.sev_pio_count);
-+		int ret = emulator_pio_out(vcpu, size, port, vcpu->arch.sev_pio_data, count);
-+
-+		/* memcpy done already by emulator_pio_out.  */
-+		vcpu->arch.sev_pio_count -= count;
-+		vcpu->arch.sev_pio_data += count * vcpu->arch.pio.size;
-+		if (!ret)
-+			break;
- 
--	if (ret) {
- 		/* Emulation done by the kernel.  */
--		return ret;
-+		vcpu->arch.pio.count = 0;
-+		if (!vcpu->arch.sev_pio_count)
-+			return 1;
- 	}
- 
--	vcpu->arch.pio.count = 0;
-+	vcpu->arch.complete_userspace_io = complete_sev_es_emulated_outs;
- 	return 0;
- }
- 
--static int complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
-+static int kvm_sev_es_ins(struct kvm_vcpu *vcpu, unsigned int size,
-+			  unsigned int port);
-+
-+static void __complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
- {
--	memcpy(vcpu->arch.sev_pio_data, vcpu->arch.pio_data,
--	       vcpu->arch.pio.count * vcpu->arch.pio.size);
--	vcpu->arch.pio.count = 0;
-+	unsigned count = vcpu->arch.pio.count;
-+	complete_emulator_pio_in(vcpu, vcpu->arch.sev_pio_data);
-+	vcpu->arch.sev_pio_count -= count;
-+	vcpu->arch.sev_pio_data += count * vcpu->arch.pio.size;
-+}
- 
-+static int complete_sev_es_emulated_ins(struct kvm_vcpu *vcpu)
-+{
-+	__complete_sev_es_emulated_ins(vcpu);
-+	if (vcpu->arch.sev_pio_count)
-+		return kvm_sev_es_ins(vcpu,
-+				      vcpu->arch.pio.size,
-+				      vcpu->arch.pio.port);
- 	return 1;
- }
- 
- static int kvm_sev_es_ins(struct kvm_vcpu *vcpu, unsigned int size,
--			  unsigned int port, unsigned int count)
-+			  unsigned int port)
- {
--	int ret = emulator_pio_in(vcpu, size, port,
--				  vcpu->arch.sev_pio_data, count);
-+	for (;;) {
-+		unsigned int count =
-+			min_t(unsigned int, PAGE_SIZE / size, vcpu->arch.sev_pio_count);
-+		if (!__emulator_pio_in(vcpu, size, port, count))
-+			break;
- 
--	if (ret) {
- 		/* Emulation done by the kernel.  */
--		return ret;
-+		__complete_sev_es_emulated_ins(vcpu);
-+		if (!vcpu->arch.sev_pio_count)
-+			return 1;
- 	}
- 
- 	vcpu->arch.complete_userspace_io = complete_sev_es_emulated_ins;
-@@ -12421,8 +12459,9 @@ int kvm_sev_es_string_io(struct kvm_vcpu *vcpu, unsigned int size,
- 			 int in)
- {
- 	vcpu->arch.sev_pio_data = data;
--	return in ? kvm_sev_es_ins(vcpu, size, port, count)
--		  : kvm_sev_es_outs(vcpu, size, port, count);
-+	vcpu->arch.sev_pio_count = count;
-+	return in ? kvm_sev_es_ins(vcpu, size, port)
-+		  : kvm_sev_es_outs(vcpu, size, port);
- }
- EXPORT_SYMBOL_GPL(kvm_sev_es_string_io);
- 
--- 
-2.27.0
-
+> 
+> > However, even if that does come to pass, anybody /else/ who wants to
+> > start(?) using XFS on a SLOB system will need this patch to fix the
+> > minor papercut.  Now that I've checked the rest of the codebase, I don't
+> > find it reasonable to make XFS mutually exclusive with SLOB over two
+> > instances of slab cache misuse.  Hence the RVB. :)
+> 
+> Ok. I was just wondering because Dave's first reply was that actually you'll
+> need to expand the use of kfree() instead of kmem_cache_free().
+> 
