@@ -2,113 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E16542BFF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2FE42BFF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhJMM3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
+        id S233058AbhJMM3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233251AbhJMM3h (ORCPT
+        with ESMTP id S230196AbhJMM3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:29:37 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08632C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:27:34 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id r10so7690393wra.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:27:33 -0700 (PDT)
+        Wed, 13 Oct 2021 08:29:31 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885AEC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:27:28 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id k7so7670923wrd.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:27:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9awpcXt/Fdpp4EJHkJMGWZwyEPn4Abz4go+4w/OnuM8=;
-        b=ZfWNceE3G/TTRQBOuhiGQdi4K0oUr0UsdhkU2cLqStFePRwF9n7hZK6c9ovz6xTUiL
-         fIPyr8dH0U8uEpMQZ8W3fZoktL1OO5CjH/QBlursUbALa9t0Hkhsd04xKxNKk1f3B3q+
-         PLzYHeUQ78cWs2HuDNXyc6RhQjVr+qraq1z1gA/k6fKHmcdYXC9FOmSywiUMw4OF1O/T
-         kmQJ3xnOcQ0/aPUK08LDlpHF4aCY6icO6urjHWrDwFuk9Zgdy9CJMm/tTcQBXUg+seoQ
-         OAJqlZ6yTaRiwWpBh/v9HLvIxSl4cJ2wWVtUFUkGEMA8VDaexmLPcCH19I2aDm2migMl
-         3VIA==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Z4fOeWoNGe7oIdEUiKQM52q9RkPtgbU73XW1me6uvfI=;
+        b=cFlFkDQVisrjJ0gmIjial9F8G9xdYVR6VW7z23cXGkeQaIRZ7DDJCUozWDnHhwTgdq
+         VaoSyyj+mBWC1vX1pq2dpOK57tJuyKAv4pECsQh2WDNu+KOxVjM/B4KL47tg+yIkME+S
+         vX79oyE/SpY15pAPmYiHT3nvGZhTuPB+dMvq4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9awpcXt/Fdpp4EJHkJMGWZwyEPn4Abz4go+4w/OnuM8=;
-        b=saAYZe5heW9ElVLe1UzqPwsHolIZYuBVjJwg7RkiIIEkhekM9OUVmwkJWAZuceE1x1
-         jfwGLx5lDgxVKS5DMs6CBvA6IoFNelnFlfkgVnpmWDCWGEOwws9szsyWd5KD4vJK4rRC
-         hPKPsQ8/kRbvf+Vzavl/6MPESM4PG2csflDwFTnLnudVYHFmZuOwo9qjDTkkfd340PPy
-         KBzgrx1Zp7iS2iMSPqvQiMSfCAebQkEmbbwd6itfrx/5asF4wuvhDYOyJAurSQzVULpe
-         ma6Cz12WeTsf+e0uEdOUqwqQsUbcbgoIH64rw+vQnFC8h0xbEtncKZaoKzTWluKy2NMw
-         9M4Q==
-X-Gm-Message-State: AOAM531W3CU6KMNh2RLWRc2xaQ9lFUouw9GLfq9x56N0Y9jXZg5YglPy
-        cVj/SiRT4M00W+wcoXF0nozsSLC/IcOUhaF87Q2lVw==
-X-Google-Smtp-Source: ABdhPJx3DoA2nVDxuZtgL5KQn742hz/AF3AE8knSm7WsPWONEB9itvODbFeaF63zXup9GS2noIWIvuVZ7ovgy/sUbnA=
-X-Received: by 2002:a5d:6d86:: with SMTP id l6mr3806329wrs.96.1634128052539;
- Wed, 13 Oct 2021 05:27:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=Z4fOeWoNGe7oIdEUiKQM52q9RkPtgbU73XW1me6uvfI=;
+        b=cE+h/mEkyfg89CaYJFtjxw6Xu8hpw6nm2FmTiHzuJspMbQcgZBI59KYJofk+J5o7An
+         JQw4cK0KU+geY6oP0qz4kh1xsgC0/RKhYnIaQBjB/7x/J5//dSbfiV10TUMdp8eqQ6l3
+         vjDV0ws8ozAaw3+gaB31FJO99YhGGhgZXtb9TmgvGj6Ly8lEByiysi/3in3G7qPdJdxe
+         PKDNWXfOVOYiZJmc83+RfG6pvPlwt27+9lcJPepBDdDAJB2wCv+tyT0bWDVdB9HL0F2V
+         stRBLuYBKuDzwkMipRcxkR3iCxhtSj8yZ0sb7PRJ9ZQCi0W79IYGlkPjNV5cA122mUuZ
+         9ybw==
+X-Gm-Message-State: AOAM532/qaOq8Ej9HR3E9WWD4Df5PQKsDwzyZXZx+De9nRbOEXjE9D25
+        /lwUFV+x4+k3c4tlPpBaUPrmeg==
+X-Google-Smtp-Source: ABdhPJxLUAeVYVXqPDEDTDBfMn5AXMi7rqYAet0Wff3glrqg6tTfr+eDMzXKMGLBamxjUg3QJ4nQhQ==
+X-Received: by 2002:adf:ae1a:: with SMTP id x26mr38590051wrc.30.1634128046809;
+        Wed, 13 Oct 2021 05:27:26 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id e9sm5223682wme.37.2021.10.13.05.27.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 05:27:26 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 14:27:24 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org, Johannes Stezenbach <js@sig21.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        nouveau@lists.freedesktop.org
+Subject: Re: [PATCH] Revert "drm/fb-helper: improve DRM fbdev emulation
+ device names"
+Message-ID: <YWbQrP9blDndQV2F@phenom.ffwll.local>
+Mail-Followup-To: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org, Johannes Stezenbach <js@sig21.net>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        nouveau@lists.freedesktop.org
+References: <20211008071708.1954041-1-javierm@redhat.com>
+ <YWAlUBoMlerOGJEV@intel.com>
 MIME-Version: 1.0
-References: <20211012073116.4156054-1-sumit.garg@linaro.org>
- <20211012180348.zalanzdw3ykqg4db@bogus> <CAFA6WYNqzmEe23RQ2Wrq2oeaxAxxwg+e3sW0=7PmgZni5Sd2eQ@mail.gmail.com>
-In-Reply-To: <CAFA6WYNqzmEe23RQ2Wrq2oeaxAxxwg+e3sW0=7PmgZni5Sd2eQ@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Wed, 13 Oct 2021 14:27:21 +0200
-Message-ID: <CAHUa44HFGWeF5x6rUqWY2vE2ia8MFZtxHXKGJc5JqBRScPOuYw@mail.gmail.com>
-Subject: Re: [PATCH] tee: optee: Fix missing devices unregister during optee_remove
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Jerome Forissier <jerome@forissier.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWAlUBoMlerOGJEV@intel.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 8:00 AM Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> On Tue, 12 Oct 2021 at 23:33, Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Tue, Oct 12, 2021 at 01:01:16PM +0530, Sumit Garg wrote:
-> > > When OP-TEE driver is built as a module, OP-TEE client devices
-> > > registered on TEE bus during probe should be unregistered during
-> > > optee_remove. So implement optee_unregister_devices() accordingly.
-> > >
-> > > Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
-> > > Reported-by: Sudeep Holla <sudeep.holla@arm.com>
-> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > ---
-> > >  drivers/tee/optee/core.c          |  3 +++
-> > >  drivers/tee/optee/device.c        | 22 ++++++++++++++++++++++
-> > >  drivers/tee/optee/optee_private.h |  1 +
-> > >  3 files changed, 26 insertions(+)
-> > >
-> > > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> > > index ccad3c7c8f6d..3915dc574503 100644
-> > > --- a/drivers/tee/optee/core.c
-> > > +++ b/drivers/tee/optee/core.c
-> > > @@ -586,6 +586,9 @@ static int optee_remove(struct platform_device *pdev)
-> > >  {
-> > >       struct optee *optee = platform_get_drvdata(pdev);
-> > >
-> > > +     /* Unregister OP-TEE specific client devices on TEE bus */
-> > > +     optee_unregister_devices();
-> > > +
-> >
-> > This is not based on FF-A support series by Jens I assume.
->
-> Yeah as it fixes an existing problem and for stable backport reasons I
-> would suggest rebasing FF-A support series on top of it.
->
-> > I added
-> > optee_unregister_devices to optee_remove_common and that fixes the issue
-> > I reported. I haven't followed the comments by Jens on the approach yet.
-> >
->
-> Thanks for testing this fix.
+On Fri, Oct 08, 2021 at 02:02:40PM +0300, Ville Syrjälä wrote:
+> On Fri, Oct 08, 2021 at 09:17:08AM +0200, Javier Martinez Canillas wrote:
+> > This reverts commit b3484d2b03e4c940a9598aa841a52d69729c582a.
+> > 
+> > That change attempted to improve the DRM drivers fbdev emulation device
+> > names to avoid having confusing names like "simpledrmdrmfb" in /proc/fb.
+> > 
+> > But unfortunately there are user-space programs, such as pm-utils that
+> > query that information and so broke after the mentioned commit. Since
+> > the names in /proc/fb are used programs that consider it an ABI, let's
+> > restore the old names even when this lead to silly naming like the one
+> > mentioned above as an example.
+> 
+> The usage Johannes listed was this specificially:
+>  using_kms() { grep -q -E '(nouveau|drm)fb' /proc/fb; }                                                        
+> 
+> So it actually looks like  Daniel's
+> commit f243dd06180a ("drm/nouveau: Use drm_fb_helper_fill_info")
+> also broke the abi. But for the pm-utils use case at least
+> just having the "drmfb" in there should cover even nouveau.
+> 
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+> 
+> > 
+> > Reported-by: Johannes Stezenbach <js@sig21.net>
+> > Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> > ---
+> > 
+> >  drivers/gpu/drm/drm_fb_helper.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
+> > index 3ab07832104..8993b02e783 100644
+> > --- a/drivers/gpu/drm/drm_fb_helper.c
+> > +++ b/drivers/gpu/drm/drm_fb_helper.c
+> > @@ -1737,7 +1737,7 @@ void drm_fb_helper_fill_info(struct fb_info *info,
+> >  			       sizes->fb_width, sizes->fb_height);
+> >  
+> >  	info->par = fb_helper;
+> > -	snprintf(info->fix.id, sizeof(info->fix.id), "%s",
 
+Please add a comment here that drmfb is uapi because pm-utils matches
+against it ...
 
-I'll rebase the next version of the FF-A patchset on this patch.
+Otherwise this will be lost in time again :-(
+-Daniel
+> > +	snprintf(info->fix.id, sizeof(info->fix.id), "%sdrmfb",
+> >  		 fb_helper->dev->driver->name);
+> >  
+> >  }
+> > -- 
+> > 2.31.1
+> 
+> -- 
+> Ville Syrjälä
+> Intel
 
-Cheers,
-Jens
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
