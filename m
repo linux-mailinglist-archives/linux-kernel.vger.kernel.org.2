@@ -2,119 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A88042BF2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3135F42BF35
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhJMLtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 07:49:31 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:25182 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbhJMLta (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:49:30 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HTrMs4sSqz8tdj;
-        Wed, 13 Oct 2021 19:46:17 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 13 Oct 2021 19:47:24 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 13 Oct 2021 19:47:24 +0800
-Subject: Re: [PATCH] blk-cgroup: check blkcg policy is enabled in
- blkg_create()
-From:   "yukuai (C)" <yukuai3@huawei.com>
-To:     Tejun Heo <tj@kernel.org>
-CC:     <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20211008072720.797814-1-yukuai3@huawei.com>
- <YWRxi2OaIHhG9rOc@slm.duckdns.org>
- <9d9ac88b-43e6-5b50-bc0b-98ad4704eca5@huawei.com>
-Message-ID: <68bd1b2c-f4a6-664c-0812-30cb458d0f15@huawei.com>
-Date:   Wed, 13 Oct 2021 19:47:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S231998AbhJMLvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 07:51:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229535AbhJMLvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 07:51:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 481956113E;
+        Wed, 13 Oct 2021 11:49:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634125750;
+        bh=08cmMCW6GG9gWIOhjxYfXSFIYClklm6HhvdpGKvi16g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=a8/bDma6IeOw47+CVOZM0/AVmVmBWj1bzuEKec7UQcITca/iyIJH9GPAJIvAVnR2H
+         gIj1lAPQWNgzGnxnDjDyDaF32C+R5o6fUz/YUAp3c1YZe/9hIP383TAgZJNW4BPXEl
+         xYD+h/4uCsU8H8vRNmQD46ZYx8EtXiEsgIDmEbcLam7Kgy7p0D1CEyyWBZc8Oo5s4s
+         mKx9gm2Et/G27qN8h5upJOFFpTZWaLQUyDXCOPY+Lk6JU5Ixx50zk5XTqJg6j3RoFm
+         M2wBcpLSkUUaqE3EQb6QT7vjrO8+tWKwpsFH21EvMrrffZtKhX7xSJj6hkqXb9k04J
+         n/uD/fERi9WNA==
+Received: by mail-wr1-f47.google.com with SMTP id u18so7454311wrg.5;
+        Wed, 13 Oct 2021 04:49:10 -0700 (PDT)
+X-Gm-Message-State: AOAM5336sVVSTv4GlHgyv6EXioK/K2NL0aV6Jg7okZrRAzM61oFdCg9f
+        1ZjYZgvJn6hw+C66/MlVwogV4enydqLgkjA86v0=
+X-Google-Smtp-Source: ABdhPJxAPtyVc3G/tOtzJ7z3+RdpcFSsTVHBBrdmAoAeaOD1MZ0LF/ObKmsWMXdtxVVGB9gwLelX+Cl/3S/Jhom+ziQ=
+X-Received: by 2002:a1c:2358:: with SMTP id j85mr12179996wmj.1.1634125748613;
+ Wed, 13 Oct 2021 04:49:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9d9ac88b-43e6-5b50-bc0b-98ad4704eca5@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+References: <20211006025350.a5PczFZP4%akpm@linux-foundation.org>
+ <58fbf2ff-b367-2137-aa77-fcde6c46bbb7@infradead.org> <20211006182052.6ecc17cf@canb.auug.org.au>
+ <f877a1c9-1898-23f3-bba3-3442dc1f3979@amd.com> <CAMuHMdV3eMchpgUasU6BBHrDQyjCc2TrqJ+zJgFhgAySpqVGfw@mail.gmail.com>
+ <CAK8P3a1LLABstZ2rPYpsXRTxMdbSTrh0y753vrfGbRovv9fS8A@mail.gmail.com>
+In-Reply-To: <CAK8P3a1LLABstZ2rPYpsXRTxMdbSTrh0y753vrfGbRovv9fS8A@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 13 Oct 2021 13:48:52 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1PoL4KMJfRyOB59tNYR6-cn3rWqDfqXeeW5ggMVGaeVg@mail.gmail.com>
+Message-ID: <CAK8P3a1PoL4KMJfRyOB59tNYR6-cn3rWqDfqXeeW5ggMVGaeVg@mail.gmail.com>
+Subject: Re: mmotm 2021-10-05-19-53 uploaded (drivers/gpu/drm/msm/hdmi/hdmi_phy.o)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux-Next <linux-next@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.cz>, mm-commits@vger.kernel.org,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/12 9:39, yukuai (C) wrote:
-> On 2021/10/12 1:16, Tejun Heo wrote:
->> On Fri, Oct 08, 2021 at 03:27:20PM +0800, Yu Kuai wrote:
->>> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
->>> index eb48090eefce..00e1d97621ea 100644
->>> --- a/block/blk-cgroup.c
->>> +++ b/block/blk-cgroup.c
->>> @@ -226,6 +226,20 @@ struct blkcg_gq *blkg_lookup_slowpath(struct 
->>> blkcg *blkcg,
->>>   }
->>>   EXPORT_SYMBOL_GPL(blkg_lookup_slowpath);
->>> +static void blkg_check_pd(struct request_queue *q, struct blkcg_gq 
->>> *blkg)
->>> +{
->>> +    int i;
->>> +
->>> +    for (i = 0; i < BLKCG_MAX_POLS; i++) {
->>> +        struct blkcg_policy *pol = blkcg_policy[i];
->>> +
->>> +        if (blkg->pd[i] && !blkcg_policy_enabled(q, pol)) {
->>> +            pol->pd_free_fn(blkg->pd[i]);
->>> +            blkg->pd[i] = NULL;
->>> +        }
->>> +    }
->>> +}
->>> +
->>>   /*
->>>    * If @new_blkg is %NULL, this function tries to allocate a new one as
->>>    * necessary using %GFP_NOWAIT.  @new_blkg is always consumed on 
->>> return.
->>> @@ -252,6 +266,9 @@ static struct blkcg_gq *blkg_create(struct blkcg 
->>> *blkcg,
->>>           goto err_free_blkg;
->>>       }
->>> +    if (new_blkg)
->>> +        blkg_check_pd(q, new_blkg);
->>> +
->>
->> Can't this happen the other way around too? ie. Linking a pd which 
->> doesn't
->> have an entry for a policy which got enabled inbetween? And what if an
->> existing policy was de-registered and another policy got the policy id
->> inbetween? I think the correct solution here would be synchronizing 
->> alloc -
->> create blocks against policy deactivation rather than trying to patch an
->> allocated blkg later. Deactivation being a really slow path, there are
->> plenty of options. The main challenge would making it difficult to make
->> mistakes with, I guess.
-> 
-> For the case policy was de-registered, I think there won't be a problem
-> because pd_init_fn() is not called yet, and the blkg is not at
-> blkg_list, it's fine to use this blkg for the new policy.
-> 
-> For the case policy got enabled inbetween, the problem is that the pd
-> still doesn't have an entry for the policy, perhaps we can call
-> pd_alloc_fn() additionally in blkg_create?
-> 
-> If checking the blkg in blkg_create() is not a good solution, and we
-> decide to synchronize alloc-create blkg against policy deactivation.
-> Since only bfq policy can be deactivated or activated while queue is
-> not dying, and queue is freezed during activation and deactivation,
-> can we get a q->q_usage_counter and put it after blkg_create() is done
-> to prevent concurrent bfq policy activation and deactivation?
+On Wed, Oct 13, 2021 at 12:54 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> On Thu, Oct 7, 2021 at 11:51 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> -msm-$(CONFIG_DRM_FBDEV_EMULATION) += msm_fbdev.o
+> -msm-$(CONFIG_COMMON_CLK) += disp/mdp4/mdp4_lvds_pll.o
+> -msm-$(CONFIG_COMMON_CLK) += hdmi/hdmi_pll_8960.o
+> -msm-$(CONFIG_COMMON_CLK) += hdmi/hdmi_phy_8996.o
+> +msm-$(CONFIG_DRM_FBDEV_EMULATION) += msm_fbdev.o \
+> + disp/mdp4/mdp4_lvds_pll.o \
+> + hdmi/hdmi_pll_8960.o \
+> + hdmi/hdmi_phy_8996.o
+>
+>  msm-$(CONFIG_DRM_MSM_HDMI_HDCP) += hdmi/hdmi_hdcp.o
 
-Just found that blkcg_deactivate_policy() will call
-blk_mq_freeze_queue(), thus get q->q_usage_counter is wrong...
+I fixed my local copy now after noticing that these should not go
+after CONFIG_DRM_FBDEV_EMULATION but the top-level option:
 
-Thanks,
-Kuai
+@@ -23,8 +23,10 @@ msm-y := \
+        hdmi/hdmi_i2c.o \
+        hdmi/hdmi_phy.o \
+        hdmi/hdmi_phy_8960.o \
++       hdmi/hdmi_phy_8996.o
+        hdmi/hdmi_phy_8x60.o \
+        hdmi/hdmi_phy_8x74.o \
++       hdmi/hdmi_pll_8960.o \
+        edp/edp.o \
+        edp/edp_aux.o \
+        edp/edp_bridge.o \
+@@ -37,6 +39,7 @@ msm-y := \
+        disp/mdp4/mdp4_dtv_encoder.o \
+        disp/mdp4/mdp4_lcdc_encoder.o \
+        disp/mdp4/mdp4_lvds_connector.o \
++       disp/mdp4/mdp4_lvds_pll.o \
+        disp/mdp4/mdp4_irq.o \
+        disp/mdp4/mdp4_kms.o \
+        disp/mdp4/mdp4_plane.o \
+
+           Arnd
