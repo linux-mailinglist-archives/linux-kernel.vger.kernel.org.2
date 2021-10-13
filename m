@@ -2,294 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FF342B63B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98E242B641
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237683AbhJMF7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 01:59:48 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:32446 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhJMF7q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 01:59:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634104663; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Y6MuEkFWMZzpiZUPCXnITkJfBeJ/Gw9/X6rwCCsPAvk=; b=CAYCAQpotOFF+JsD7Mo+os3X3uNKmnuZ6fTSY+7o/du9i3HFclSJlxGfhsd/0aLveUG5o6f1
- NtT+HrsdFSI7VOJuaXRnWxKy5XlywKQufdz0nlWpVwy3jx28aqksQv1emUBiS/Ykk769W/U6
- FA/AVC4eqxbJCWQI7WfqXojOLus=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 616675544ccc4cf2c75afdd6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Oct 2021 05:57:40
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 05B33C4360C; Wed, 13 Oct 2021 05:57:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.81.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BF8C9C4338F;
-        Wed, 13 Oct 2021 05:57:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org BF8C9C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v11 1/5] dt-bindings: Introduce QCOM Sleep stats bindings
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
-        lsrao@codeaurora.org, devicetree@vger.kernel.org
-References: <1633600649-7164-1-git-send-email-mkshah@codeaurora.org>
- <1633600649-7164-2-git-send-email-mkshah@codeaurora.org>
- <YV9PN1JNPhVQb8jN@gerhold.net>
- <b4c26217-67b1-516a-325f-a58e321c4e09@codeaurora.org>
- <YWAkgdViDtv60PCM@gerhold.net>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <c22d57cc-025b-5a8c-91d5-5385292da49f@codeaurora.org>
-Date:   Wed, 13 Oct 2021 11:27:30 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S237786AbhJMGBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 02:01:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229665AbhJMGBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 02:01:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2F5760C4A;
+        Wed, 13 Oct 2021 05:59:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634104743;
+        bh=/qus41ilY6w21Ca2R+0Q6xIAZtlILxDno5T19N3Hbh0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SpDIVM2VGBPZsKjcC97qrSMhyUjATK0iwjm1dmQcPw52HWoSMTiTYciSLUQ/Ss92d
+         h/EQyXwbDzuXxR5uHYtTdFICsob4rzONLe6Tgq0VLdp50etPD0ZuBDSRx3eRhtpxfH
+         FWtL2YaYFXH1YFJzanaKq6d4doBz3WR0T9JnQV5I=
+Date:   Wed, 13 Oct 2021 07:58:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Michael Ellerman <mpe@ellerman.id.au>, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, tsbogend@alpha.franken.de,
+        James.Bottomley@hansenpartnership.com, deller@gmx.de,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, linus.walleij@linaro.org,
+        geert+renesas@glider.be, rmk+kernel@armlinux.org.uk,
+        akpm@linux-foundation.org, anshuman.khandual@arm.com,
+        mark.rutland@arm.com, ardb@kernel.org,
+        u.kleine-koenig@pengutronix.de, rppt@kernel.org,
+        lukas.bulwahn@gmail.com, wangkefeng.wang@huawei.com,
+        slyfox@gentoo.org, axboe@kernel.dk, ben.widawsky@intel.com,
+        dan.j.williams@intel.com, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH AUTOSEL 5.10 11/11] firmware: include
+ drivers/firmware/Kconfig unconditionally
+Message-ID: <YWZ1om+pLmV3atTd@kroah.com>
+References: <20211013005532.700190-1-sashal@kernel.org>
+ <20211013005532.700190-11-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YWAkgdViDtv60PCM@gerhold.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013005532.700190-11-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephan,
-
-On 10/8/2021 4:29 PM, Stephan Gerhold wrote:
-> On Fri, Oct 08, 2021 at 02:20:24PM +0530, Maulik Shah wrote:
->> On 10/8/2021 1:20 AM, Stephan Gerhold wrote:
->>> On Thu, Oct 07, 2021 at 03:27:25PM +0530, Maulik Shah wrote:
->>>> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
->>>>
->>>> Add device binding documentation for Qualcomm Technologies, Inc. (QTI)
->>>> Sleep stats driver. The driver is used for displaying Sleep statistic maintained
->>>> by Always On Processor or Resource Power Manager.
->>>>
->>>> Cc: devicetree@vger.kernel.org
->>>> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
->>>> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
->>>> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
->>>> Reviewed-by: Rob Herring <robh@kernel.org>
->>>> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->>>> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
->>>> ---
->>>>    .../bindings/soc/qcom/qcom-sleep-stats.yaml        | 47 ++++++++++++++++++++++
->>>>    1 file changed, 47 insertions(+)
->>>>    create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom-sleep-stats.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom-sleep-stats.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom-sleep-stats.yaml
->>>> new file mode 100644
->>>> index 0000000..5213daf
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom-sleep-stats.yaml
->>>> @@ -0,0 +1,47 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/soc/qcom/qcom-sleep-stats.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Qualcomm Technologies, Inc. (QTI) Sleep stats bindings
->>>> +
->>>> +maintainers:
->>>> +  - Maulik Shah <mkshah@codeaurora.org>
->>>> +
->>>> +description:
->>>> +  Always On Processor/Resource Power Manager maintains statistics of the SoC
->>>> +  sleep modes involving powering down of the rails and oscillator clock.
->>>> +
->>>> +  Statistics includes SoC sleep mode type, number of times low power mode were
->>>> +  entered, time of last entry, time of last exit and accumulated sleep duration.
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    enum:
->>>> +      - qcom,rpmh-sleep-stats
->>>> +      - qcom,rpm-sleep-stats
->>>> +
->>>> +  reg:
->>>> +    maxItems: 1
->>>> +
->>>> +required:
->>>> +  - compatible
->>>> +  - reg
->>>> +
->>>> +additionalProperties: false
->>>> +
->>>> +examples:
->>>> +  # Example of rpmh sleep stats
->>>> +  - |
->>>> +    sram@c3f0000 {
->>>> +      compatible = "qcom,rpmh-sleep-stats";
->>>> +      reg = <0x0c3f0000 0x400>;
->>>> +    };
->>>> +  # Example of rpm sleep stats
->>>> +  - |
->>>> +    sram@4690000 {
->>>> +      compatible = "qcom,rpm-sleep-stats";
->>>> +      reg = <0x04690000 0x400>;
->>>> +    };
->>>
->>> Does this region really only contain "rpm-*sleep*-stats"? AFAICT this is
->>> really a more generic memory region where various offsets are read from.
->>
->> Right the area contains all kind of sleep stats/logs.
->>
->>>
->>> These are all the offsets in msm8998-pm.dtsi downstream [1]:
->>>     ...9000c: rpm-rail-stats offset
->>>     ...90014: rpm-sleep-stats offset (RPM_DYNAMIC_ADDR in your driver)
->>>     ...90018: rpm-log offset
->>>     ...9001c: "RPM FREE HEAP SPACE"
->>>
->>> How would you set up any of the other drivers if the entire region
->>> is declared as "rpm-sleep-stats"?
->>
->> We don't need to setup other drivers.
->> The idea is to have single stats driver (qcom_sleep_stats) that can be
->> enahanced to to read other stats also on both RPM/ PRMH targets.
->>
->> Today this driver reads only sleep stats from offset 0x90014.
->> if in future say, we want to read rpm-rail-stats from offset 0x9000c then it
->> can be added in the existing driver.
->>
->> In the rpm data, add one more entry to indicate reading rpm-rail-stats,
->> something like below and add new compatible flag for the target, may be
->> "qcom,rpm-sleep-stats-legacy" and should work like,
->>
->> #define RPM_RAIL_STATS_ADDR 0xc
->>
->> static const struct stats_config rpm_data = {
->>          .stats_offset = 0,
->>          .num_records = 2,
->>          .appended_stats_avail = true,
->>          .dynamic_offset = true,
->>          .rpm_rail_stats = true,
->> };
->>
->> and check in driver probe like
->>
->>          if (config->rpm_rail_stats) {
->> 	//create rpm rail stats related files.
->>          }
->>
->> Similarly for other rpm-logs / any other stats can be added in same driver.
->>
->> Hope this clarifies.
->>
+On Tue, Oct 12, 2021 at 08:55:31PM -0400, Sasha Levin wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Having the same driver for all this sounds good, thanks for clarifying!
+> [ Upstream commit 951cd3a0866d29cb9c01ebc1d9c17590e598226e ]
 > 
->>>
->>> Perhaps this region should have a more generic name that represents what
->>> it actually is and not only one of the information it contains, similar
->>> to "qcom,rpm-msg-ram"?
->>
->> sram looks good to me. Actually on RPM targets its RPM data ram and RPMH
->> targets its msgram. To keep the name common sram is used here.
->>
+> Compile-testing drivers that require access to a firmware layer
+> fails when that firmware symbol is unavailable. This happened
+> twice this week:
 > 
-> The node name (sram@...) is fine. I was actually referring to the
-> "compatible". Given what you have written above there is more in that
-> region than just "qcom,rpm-*sleep*-stats". There are also logs and other
-> stats there. Perhaps "qcom,rpm(h)-stats" (without -sleep-) would already
-> be more clear.
-
-ok updated in v12 to name it qcom,rpm(h)-stats. similarly driver name 
-also updated from qcom_sleep_stats to qcom_stats.
-
+>  - My proposed to change to rework the QCOM_SCM firmware symbol
+>    broke on ppc64 and others.
 > 
-> Or, my other suggestion was to not make any assumption about particular
-> contents of the data RAM in the device tree. The compatible could also
-> be called simply "qcom,rpm-data-ram" (just like "qcom,rpm-msg-ram") and
-> the assumption what it contains (e.g. sleep stats) could be made in your
-> existing driver.
+>  - The cs_dsp firmware patch added device specific firmware loader
+>    into drivers/firmware, which broke on the same set of
+>    architectures.
 > 
-> This is probably a matter of preference at the end and won't make a big
-> difference but I just wanted to mention it.
+> We should probably do the same thing for other subsystems as well,
+> but fix this one first as this is a dependency for other patches
+> getting merged.
 > 
-> For example, to make your driver work on MSM8916 I had to declare a much
-> larger memory region (e.g. 0x10000 vs 0x400):
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Acked-by: Will Deacon <will@kernel.org>
+> Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Cc: Simon Trimmer <simont@opensource.cirrus.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  arch/arm/Kconfig    | 2 --
+>  arch/arm64/Kconfig  | 2 --
+>  arch/ia64/Kconfig   | 2 --
+>  arch/mips/Kconfig   | 2 --
+>  arch/parisc/Kconfig | 2 --
+>  arch/riscv/Kconfig  | 2 --
+>  arch/x86/Kconfig    | 2 --
+>  drivers/Kconfig     | 2 ++
+>  8 files changed, 2 insertions(+), 14 deletions(-)
 > 
-> 		sram@290000 {
-> 			compatible = "qcom,rpm-sleep-stats";
-> 			reg = <0x00290000 0x10000>;
-> 		};
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index 002e0cf025f5..d4c6b95b24d7 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -2043,8 +2043,6 @@ config ARCH_HIBERNATION_POSSIBLE
+>  
+>  endmenu
+>  
+> -source "drivers/firmware/Kconfig"
+> -
+>  if CRYPTO
+>  source "arch/arm/crypto/Kconfig"
+>  endif
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 5e5cf3af6351..f4809760a806 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1933,8 +1933,6 @@ source "drivers/cpufreq/Kconfig"
+>  
+>  endmenu
+>  
+> -source "drivers/firmware/Kconfig"
+> -
+>  source "drivers/acpi/Kconfig"
+>  
+>  source "arch/arm64/kvm/Kconfig"
+> diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+> index 39b25a5a591b..e8014d2e36c0 100644
+> --- a/arch/ia64/Kconfig
+> +++ b/arch/ia64/Kconfig
+> @@ -426,8 +426,6 @@ config CRASH_DUMP
+>  	  help
+>  	    Generate crash dump after being started by kexec.
+>  
+> -source "drivers/firmware/Kconfig"
+> -
+>  endmenu
+>  
+>  menu "Power management and ACPI options"
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 1a63f592034e..3bd3a01a2a2b 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -3328,8 +3328,6 @@ source "drivers/cpuidle/Kconfig"
+>  
+>  endmenu
+>  
+> -source "drivers/firmware/Kconfig"
+> -
+>  source "arch/mips/kvm/Kconfig"
+>  
+>  source "arch/mips/vdso/Kconfig"
+> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+> index 14f3252f2da0..ad13477fb40c 100644
+> --- a/arch/parisc/Kconfig
+> +++ b/arch/parisc/Kconfig
+> @@ -378,6 +378,4 @@ config KEXEC_FILE
+>  
+>  endmenu
+>  
+> -source "drivers/firmware/Kconfig"
+> -
+>  source "drivers/parisc/Kconfig"
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index f7abd118d23d..fcb8e5da148e 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -428,5 +428,3 @@ menu "Power management options"
+>  source "kernel/power/Kconfig"
+>  
+>  endmenu
+> -
+> -source "drivers/firmware/Kconfig"
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index f3c8a8110f60..499f3cc1e62f 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -2899,8 +2899,6 @@ config HAVE_ATOMIC_IOMAP
+>  	def_bool y
+>  	depends on X86_32
+>  
+> -source "drivers/firmware/Kconfig"
+> -
+>  source "arch/x86/kvm/Kconfig"
+>  
+>  source "arch/x86/Kconfig.assembler"
+> diff --git a/drivers/Kconfig b/drivers/Kconfig
+> index dcecc9f6e33f..493ac7ffd8d0 100644
+> --- a/drivers/Kconfig
+> +++ b/drivers/Kconfig
+> @@ -16,6 +16,8 @@ source "drivers/bus/Kconfig"
+>  
+>  source "drivers/connector/Kconfig"
+>  
+> +source "drivers/firmware/Kconfig"
+> +
+>  source "drivers/gnss/Kconfig"
+>  
+>  source "drivers/mtd/Kconfig"
+> -- 
+> 2.33.0
 > 
 
-the driver can not be as is enabled for MSM8916. Actually on MSM8916 
-(even though its RPM target) it uses fixed offset 0xdba0 from the base 
-address in the devicetree.
+This isn't for stable kernels, it should be dropped from all of your
+AUTOSEL queues.
 
-> This is because RPM_DYNAMIC_ADDR contains the offset 0xdba0 instead of
-> e.g. 0x020c on newer SoCs and the memory region must be large enough to
-> cover the offset.
+thanks,
 
-On all other RPM targets followed by MSM8916 the address for soc sleep 
-stats is present at offset 0x14 (RPM_DYNAMIC_ADDR ) from the base 
-address but not on MSM8916. so MSM8916 is a special case to enable for 
-for RPM stats
-
-To enable this for MSM8916, dynamic_offset need to be false and 
-stats_offset need to be given directly as 0xdba0, something similar as 
-RPMH targets.
-
-static const struct stats_config rpm_legacy_data = {
-         .stats_offset = 0xdba0,
-         .num_records = 2,
-         .appended_stats_avail = true,
-         .dynamic_offset = false,
-         .subsystem_stats_in_smem = false,
-};
-
-{ .compatible = "qcom,rpm-legacy-stats", .data = &rpm_legacy_data },
-
-and then add
-
-                 sram@290000 {
-                         compatible = "qcom,rpm-legacy-stats";
-                         reg = <0x00290000 0x10000>;
-                 };
-
-which should work fine.
-
-I donot have MSM8916 to validate this but when this driver boots up it 
-should create "vlow" and "vmin" files at /sys/kernel/debug/qcom_sleep_stats/
-if that is done, it means you are reading stats from correct address 
-since the file name is read from the memory itself.
-
-Thanks,
-Maulik
-
-> 
-> It just feels a bit weird for me to describe such a large region as only
-> containing "qcom,rpm-*sleep*-stats". "qcom,rpm-data-ram" might better
-> describe it what it really is and then your driver can decide what to do
-> with it.
-> 
-> But, as I said, this is just naming which is always subjective. :)
-> 
-> Thanks!
-> Stephan
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of Code Aurora Forum, hosted by The Linux Foundation
+greg k-h
