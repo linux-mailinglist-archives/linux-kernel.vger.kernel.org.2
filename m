@@ -2,118 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F49242B4F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F9F42B54C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237530AbhJMF0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 01:26:43 -0400
-Received: from mga09.intel.com ([134.134.136.24]:38126 "EHLO mga09.intel.com"
+        id S237693AbhJMFdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 01:33:11 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:14512 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229514AbhJMF0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 01:26:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="227247725"
-X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
-   d="scan'208";a="227247725"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 22:24:39 -0700
-X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
-   d="scan'208";a="480649979"
-Received: from hli101-mobl1.ccr.corp.intel.com (HELO [10.255.28.104]) ([10.255.28.104])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 22:24:36 -0700
-Subject: Re: [kbuild-all] Re: [axboe-block:nvme-passthru-wip 10/19]
- drivers/nvme/host/ioctl.c:47:19: error: cast to pointer from integer of
- different size
-To:     Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     Kanchan Joshi <joshi.k@samsung.com>, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anuj Gupta <anuj20.g@samsung.com>
-References: <202110080434.YH6r4WZv-lkp@intel.com>
- <CAMuHMdUoh0PbLDU1_Drce=cQorv6M47i4pLDE9DtSOmsYOD9AQ@mail.gmail.com>
- <c2115b49-f0ae-3c38-464b-5f99a572e681@kernel.dk>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <c7d7164b-cac8-a752-3cdc-f48cd4197f99@intel.com>
-Date:   Wed, 13 Oct 2021 13:24:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S229514AbhJMFdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 01:33:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634103067; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Knclx6wR1kvoxnA2zY3oGlpVlJCs7kumqLTKNns8fg0=;
+ b=OMi82HdB4UDcznD8Jv5L+GMKb0YIOxhB6eZgnDJvkQxVIYY4Z9DMCsHjBMI1Zp0mj2+yfSaB
+ DXYCdFDT4FZfwd7/DyHiB7ztqrENOglX2RK26EJ8+r0LIp8+Fu3YHVqdqYmBz8V41p5yWtff
+ ZC11S8B2Giq+2T8cVNR5PXgeLkE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 61666f0ca45ca7530706e46f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Oct 2021 05:30:52
+ GMT
+Sender: bgodavar=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4EB1CC43617; Wed, 13 Oct 2021 05:30:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bgodavar)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 938D0C4338F;
+        Wed, 13 Oct 2021 05:30:50 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <c2115b49-f0ae-3c38-464b-5f99a572e681@kernel.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 13 Oct 2021 11:00:50 +0530
+From:   bgodavar@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     bjorn.andersson@linaro.org, johan.hedberg@gmail.com,
+        marcel@holtmann.org, mka@chromium.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        pharish@codeaurora.org, rjliao@codeaurora.org,
+        hbandi@codeaurora.org, saluvala@codeaurora.org,
+        abhishekpandit@chromium.org
+Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Add bluetooth node on SC7280
+In-Reply-To: <CAE-0n52uUh5TrKpJq9-qkJTdWWU_EZFvoROWFeGEjuc1Ebc8xg@mail.gmail.com>
+References: <1634043698-20256-1-git-send-email-bgodavar@codeaurora.org>
+ <CAE-0n52uUh5TrKpJq9-qkJTdWWU_EZFvoROWFeGEjuc1Ebc8xg@mail.gmail.com>
+Message-ID: <46cc793cf651822ef90c448682598a02@codeaurora.org>
+X-Sender: bgodavar@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Stephen Boyd,
 
-
-On 10/8/2021 8:35 PM, Jens Axboe wrote:
-> On 10/8/21 2:19 AM, Geert Uytterhoeven wrote:
->> On Fri, Oct 8, 2021 at 12:12 AM kernel test robot <lkp@intel.com> wrote:
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git nvme-passthru-wip
->>> head:   9c18980ac90053bcdb21594eae48935d89bf389c
->>> commit: 5cc445dd8df6e06f3482711aa590170450364393 [10/19] nvme: wire-up support for async-passthru on char-device.
->>> config: m68k-allmodconfig (attached as .config)
->>> compiler: m68k-linux-gcc (GCC) 11.2.0
->>> reproduce (this is a W=1 build):
->>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>          chmod +x ~/bin/make.cross
->>>          # https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?id=5cc445dd8df6e06f3482711aa590170450364393
->>>          git remote add axboe-block https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
->>>          git fetch --no-tags axboe-block nvme-passthru-wip
->>>          git checkout 5cc445dd8df6e06f3482711aa590170450364393
->>>          # save the attached .config to linux build tree
->>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=m68k
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>     drivers/nvme/host/ioctl.c: In function 'nvme_pt_task_cb':
->>>>> drivers/nvme/host/ioctl.c:47:19: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
->>>        47 |         ptcmd64 = (void __user *) bcmd->unused2[0];
->>>           |                   ^
->>>     drivers/nvme/host/ioctl.c:62:58: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
->>>        62 |                 struct nvme_passthru_cmd __user *ptcmd = (void *)bcmd->unused2[0];
->>>           |                                                          ^
->>>     drivers/nvme/host/ioctl.c: In function 'nvme_ns_async_ioctl':
->>>     drivers/nvme/host/ioctl.c:472:29: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
->>>       472 |         void __user *argp = (void __user *) bcmd->unused2[0];
->>>           |                             ^
->>>     cc1: all warnings being treated as errors
->>>
->>>
->>> vim +47 drivers/nvme/host/ioctl.c
->>>
->>>      39
->>>      40  static void nvme_pt_task_cb(struct io_uring_cmd *ioucmd)
->>>      41  {
->>>      42          struct uring_cmd_data *ucd;
->>>      43          struct nvme_passthru_cmd64 __user *ptcmd64 = NULL;
->>>      44          struct block_uring_cmd *bcmd;
->>>      45
->>>      46          bcmd = (struct block_uring_cmd *) &ioucmd->pdu;
->>>    > 47          ptcmd64 = (void __user *) bcmd->unused2[0];
->>
->> Casts from u64 to a pointer on 32-bit need an intermediate cast to uintptr_t:
->>
->>      ptcmd64 = (void __user *)(uintptr_t)bcmd->unused2[0];
->>
->> Note that you can improve on the naming, as people may be surprised
->> discovering "unused2" is actually used ;-)
+On 2021-10-12 22:54, Stephen Boyd wrote:
+> Quoting Balakrishna Godavarthi (2021-10-12 06:01:38)
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> index 272d5ca..09adc802 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> @@ -393,6 +393,23 @@
+>>                                 <&tlmm 31 IRQ_TYPE_EDGE_FALLING>;
+>>         pinctrl-names = "default", "sleep";
+>>         pinctrl-1 = <&qup_uart7_sleep_cts>, <&qup_uart7_sleep_rts>, 
+>> <&qup_uart7_sleep_tx>, <&qup_uart7_sleep_rx>;
+>> +
+>> +       bluetooth: wcn6750-bt {
 > 
-> There's a reason the branch is called -wip, it's just a hodge podge of
-> stuff. Not sure why the kernel test robot bothers reporting failures
-> publicly for that...
+> bluetooth: bluetooth {
+> 
+> Node names should be generic.
 > 
 
-Hi Jens,
+[Bala]: will update in next patch.
 
-We have changed the rule to not report the wip branches to public:
+>> +               compatible = "qcom,wcn6750-bt";
+>> +               pinctrl-names = "default";
+>> +               pinctrl-0 = <&bt_en_default>;
+>> +               enable-gpios = <&tlmm 85 GPIO_ACTIVE_HIGH>;
+>> +               swctrl-gpios = <&tlmm 86 GPIO_ACTIVE_HIGH>;
+> 
+> Is there any pinctrl config for gpio 86?
+> 
+[Bala]: This is input GPIO to apps, BT SOC will handle configurations.
 
-https://github.com/intel/lkp-tests/commit/f5f8d52830e342d51a200d5688b931faa0b786ea
+>> +               vddaon-supply = <&vreg_s7b_0p9>;
+>> +               vddbtcxmx-supply = <&vreg_s7b_0p9>;
+>> +               vddrfacmn-supply = <&vreg_s7b_0p9>;
+>> +               vddrfa0p8-supply = <&vreg_s7b_0p9>;
+>> +               vddrfa1p7-supply = <&vreg_s1b_1p8>;
+>> +               vddrfa1p2-supply = <&vreg_s8b_1p2>;
+>> +               vddrfa2p2-supply = <&vreg_s1c_2p2>;
+>> +               vddasd-supply = <&vreg_l11c_2p8>;
+>> +               max-speed = <3200000>;
+>> +       };
+>>  };
+>> 
+>>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
+>> @@ -504,6 +521,14 @@
+>>                  */
+>>                 bias-pull-up;
+>>         };
+>> +
+>> +       bt_en_default: bt_en_default {
+> 
+> bt_en: bt-en {
+> 
+> Node names shouldn't have underscores and 'default' is redundant.
+> 
+[Bala]: will update in next patch.
 
-Best Regards,
-Rong Chen
+>> +               pins = "gpio85";
+>> +               function = "gpio";
+>> +               drive-strength = <2>;
+>> +               output-low;
+>> +               bias-pull-down;
+> 
+> Why is there a pull down on an output gpio? Shouldn't this be
+> bias-disable?
+> 
+
+[Bala]: BT_EN pin is OP of apps and input to BT SoC.
+by default we want the state of BT_EN to be low. so used pull down 
+instead of bias-disable
+as AFAIK bias-disable may trigger a tristate on BT_EN pin, which may 
+trigger BT SoC enable
+if it is not actually triggered.
+
+>> +       };
+>>  };
+>> 
+>>  &sdc1_on {
