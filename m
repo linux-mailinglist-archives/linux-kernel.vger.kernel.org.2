@@ -2,90 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5E942BF91
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3840C42BF99
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbhJMMPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:15:16 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:39449 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhJMMPO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:15:14 -0400
-Received: by mail-ot1-f54.google.com with SMTP id k2-20020a056830168200b0054e523d242aso3379522otr.6;
-        Wed, 13 Oct 2021 05:13:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tfe2N7rj5j3n+ftOPGZJE3vZ01hZsrDbPoprLIjlnLs=;
-        b=d9Jun4rmsIXccI3udHg5SMG4eEGfgdSI9+YL9g6k/odKfb01pJ+x6DOtZrFPCvGC2H
-         /ul+kZPqRlOZbu4PvWmwxu4x7Ztlivt/SrjPhwhCzI9BOijB+JTRXeE5jmnVamalsoBK
-         BqvbzzDvicTkv30AsnSsxUnnxA1P0NCvNFHtdhs/Ef2XsvVhFOJEr9WqJvASJqYlzKkD
-         s08/EBzk5FehUl7mI8hFLCbgFYOnnwZ6FRNnuGhwgW/oJxVUXiO7LUzcokqsG2aSmG0c
-         9v5wc8CaTW5zVBKag/W9a2mxak4zBWW1SHlEKgGkUDvubfaddh2/12IJ/NvdhBVMi6wl
-         h6LQ==
-X-Gm-Message-State: AOAM532RHcEHpVvP3QDdjLWov5TrKe12BQbsBbbY48X2qTHcfUPrvtxQ
-        pRO/VfeQFB+O0HklX9jttQ==
-X-Google-Smtp-Source: ABdhPJzFOBhZFAsfOWqs1w4jktLjtdmNcDllxLmZYKERPT8tfehw3S1S9Td/QzIYNylxaIz1UngLzQ==
-X-Received: by 2002:a05:6830:349:: with SMTP id h9mr15633550ote.349.1634127190546;
-        Wed, 13 Oct 2021 05:13:10 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id bb39sm2956661oib.28.2021.10.13.05.13.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 05:13:10 -0700 (PDT)
-Received: (nullmailer pid 783942 invoked by uid 1000);
-        Wed, 13 Oct 2021 12:13:09 -0000
-Date:   Wed, 13 Oct 2021 07:13:09 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Corey Minyard <minyard@acm.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Tree for Oct 13
-Message-ID: <YWbNVXemcnxO8wsG@robh.at.kernel.org>
-References: <20211013170522.4c6e21a1@canb.auug.org.au>
+        id S232454AbhJMMQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:16:43 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:59260 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229535AbhJMMQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 08:16:40 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id DA090FB03;
+        Wed, 13 Oct 2021 14:14:34 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id tODvGRgMKZMh; Wed, 13 Oct 2021 14:14:33 +0200 (CEST)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Andrzej Hajda <andrzej.hajda@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/bridge: nwl-dsi: Move bridge add/remove to dsi callbacks
+Date:   Wed, 13 Oct 2021 14:14:25 +0200
+Message-Id: <4d0ec577fdeb01fa232ffa743fde06129353396a.1634126587.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013170522.4c6e21a1@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 05:05:22PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> News: there will be no linux-next release tomorrow.
-> 
-> Changes since 20211012:
-> 
-> The arm-soc tree lost its build failure.
-> 
-> The net-next tree gained a conflict against the net tree.
-> 
-> The drm-misc tree lost its build failure.
-> 
-> The amdgpu tree lost its build failure.
-> 
-> Non-merge commits (relative to Linus' tree): 7055
->  6867 files changed, 394074 insertions(+), 162696 deletions(-)
+Move the panel and bridge_{add,remove} from the bridge callbacks to the
+DSI callbacks to make sure we don't indicate readiness to participate in
+the display pipeline before the panel is attached.
 
-The commit 9cc6726f68af ("ipmi:ipmb: Add OF support") was added and has 
-warnings for 'make dt_binding_check'. I'm replying here because the 
-commit hasn't been sent to any list in lore.
+This was prompted by commit fb8d617f8fd6 ("drm/bridge: Centralize error
+message when bridge attach fails") which triggered
 
-Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dts:22.13-26: Warning (reg_format): /example-0/ipmi-ipmb@0x40:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
-Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dts:19.24-26.11: Warning (unit_address_format): /example-0/ipmi-ipmb@0x40: unit name should not have leading "0x"
-Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-/builds/robherring/linux-dt/Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: example-0: ipmi-ipmb@0x40:reg:0: [64] is too short
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-/builds/robherring/linux-dt/Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: example-0: 'ipmi-ipmb@0x40' does not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/dt-core.yaml
+  [drm:drm_bridge_attach] *ERROR* failed to attach bridge /soc@0/bus@30800000/mipi-dsi@30a0 0000 to encoder None-34: -517
 
+during boot.
 
-Rob
+Signed-off-by: Guido Günther <agx@sigxcpu.org>
+---
+This was prompted by the discussion at
+https://lore.kernel.org/dri-devel/00493cc61d1443dab1c131c46c5890f95f6f9b25.1634068657.git.agx@sigxcpu.org/
+
+ drivers/gpu/drm/bridge/nwl-dsi.c | 64 ++++++++++++++++++--------------
+ 1 file changed, 37 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
+index a7389a0facfb..77aa6f13afef 100644
+--- a/drivers/gpu/drm/bridge/nwl-dsi.c
++++ b/drivers/gpu/drm/bridge/nwl-dsi.c
+@@ -355,6 +355,9 @@ static int nwl_dsi_host_attach(struct mipi_dsi_host *dsi_host,
+ {
+ 	struct nwl_dsi *dsi = container_of(dsi_host, struct nwl_dsi, dsi_host);
+ 	struct device *dev = dsi->dev;
++	struct drm_bridge *panel_bridge;
++	struct drm_panel *panel;
++	int ret;
+ 
+ 	DRM_DEV_INFO(dev, "lanes=%u, format=0x%x flags=0x%lx\n", device->lanes,
+ 		     device->format, device->mode_flags);
+@@ -362,10 +365,43 @@ static int nwl_dsi_host_attach(struct mipi_dsi_host *dsi_host,
+ 	if (device->lanes < 1 || device->lanes > 4)
+ 		return -EINVAL;
+ 
++	ret = drm_of_find_panel_or_bridge(dsi->dev->of_node, 1, 0, &panel,
++					  &panel_bridge);
++	if (ret)
++		return ret;
++
++	if (panel) {
++		panel_bridge = drm_panel_bridge_add(panel);
++		if (IS_ERR(panel_bridge))
++			return PTR_ERR(panel_bridge);
++	}
++	if (!panel_bridge)
++		return -EPROBE_DEFER;
++
++	dsi->panel_bridge = panel_bridge;
+ 	dsi->lanes = device->lanes;
+ 	dsi->format = device->format;
+ 	dsi->dsi_mode_flags = device->mode_flags;
+ 
++	/*
++	 * The DSI output has been properly configured, we can now safely
++	 * register the input to the bridge framework so that it can take place
++	 * in a display pipeline.
++	 */
++	drm_bridge_add(&dsi->bridge);
++
++	return 0;
++}
++
++static int nwl_dsi_host_detach(struct mipi_dsi_host *dsi_host,
++			       struct mipi_dsi_device *dev)
++{
++	struct nwl_dsi *dsi = container_of(dsi_host, struct nwl_dsi, dsi_host);
++
++	drm_bridge_remove(&dsi->bridge);
++	if (dsi->panel_bridge)
++		drm_panel_bridge_remove(dsi->panel_bridge);
++
+ 	return 0;
+ }
+ 
+@@ -632,6 +668,7 @@ static ssize_t nwl_dsi_host_transfer(struct mipi_dsi_host *dsi_host,
+ 
+ static const struct mipi_dsi_host_ops nwl_dsi_host_ops = {
+ 	.attach = nwl_dsi_host_attach,
++	.detach = nwl_dsi_host_detach,
+ 	.transfer = nwl_dsi_host_transfer,
+ };
+ 
+@@ -910,35 +947,11 @@ static int nwl_dsi_bridge_attach(struct drm_bridge *bridge,
+ 				 enum drm_bridge_attach_flags flags)
+ {
+ 	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
+-	struct drm_bridge *panel_bridge;
+-	struct drm_panel *panel;
+-	int ret;
+-
+-	ret = drm_of_find_panel_or_bridge(dsi->dev->of_node, 1, 0, &panel,
+-					  &panel_bridge);
+-	if (ret)
+-		return ret;
+-
+-	if (panel) {
+-		panel_bridge = drm_panel_bridge_add(panel);
+-		if (IS_ERR(panel_bridge))
+-			return PTR_ERR(panel_bridge);
+-	}
+-	dsi->panel_bridge = panel_bridge;
+-
+-	if (!dsi->panel_bridge)
+-		return -EPROBE_DEFER;
+ 
+ 	return drm_bridge_attach(bridge->encoder, dsi->panel_bridge, bridge,
+ 				 flags);
+ }
+ 
+-static void nwl_dsi_bridge_detach(struct drm_bridge *bridge)
+-{	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
+-
+-	drm_of_panel_bridge_remove(dsi->dev->of_node, 1, 0);
+-}
+-
+ static u32 *nwl_bridge_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
+ 						 struct drm_bridge_state *bridge_state,
+ 						 struct drm_crtc_state *crtc_state,
+@@ -984,7 +997,6 @@ static const struct drm_bridge_funcs nwl_dsi_bridge_funcs = {
+ 	.mode_set		= nwl_dsi_bridge_mode_set,
+ 	.mode_valid		= nwl_dsi_bridge_mode_valid,
+ 	.attach			= nwl_dsi_bridge_attach,
+-	.detach			= nwl_dsi_bridge_detach,
+ };
+ 
+ static int nwl_dsi_parse_dt(struct nwl_dsi *dsi)
+@@ -1210,7 +1222,6 @@ static int nwl_dsi_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	drm_bridge_add(&dsi->bridge);
+ 	return 0;
+ }
+ 
+@@ -1220,7 +1231,6 @@ static int nwl_dsi_remove(struct platform_device *pdev)
+ 
+ 	nwl_dsi_deselect_input(dsi);
+ 	mipi_dsi_host_unregister(&dsi->dsi_host);
+-	drm_bridge_remove(&dsi->bridge);
+ 	pm_runtime_disable(&pdev->dev);
+ 	return 0;
+ }
+-- 
+2.33.0
+
