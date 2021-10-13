@@ -2,57 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A3042C4D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E68E42C4D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhJMPem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 11:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36710 "EHLO
+        id S232692AbhJMPfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 11:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhJMPel (ORCPT
+        with ESMTP id S229653AbhJMPfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:34:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA3BC061570;
-        Wed, 13 Oct 2021 08:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+yfyEGem+HIxX7wO22gQfWzAOaAv2ZtPBrOstpcn55A=; b=qYWdUGEAYrNKdnbZ/WnTtFJJQt
-        vjAzCcGsvHtgKLqb9Ej0elHxUr01TX9gIfejER91GLvbUN0Rd2+uWgXP59TV/MrpH/fJ+/2kyPn1A
-        OfITO2xAz9vUO8G572jYaw8Rkc7eMfMwl2J32JdTCG0nMz+d4gaYBQkdcmxTscgmHUAzEfbpQbN7e
-        SEfaA1+hSdRclkEHqHkBjaSREA7Mu1jivpl/NjvSnhqiWl1U6khDQNYPxtd+q9+eL5k9/6T38htId
-        CetSvZk1xWO+Dc9jbIh2oYb4h2bx86jNtMSd23Lm4cxtPQgDZpiXcMegK7z12WwywIBc/iWJ4q778
-        XaK66dTw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1magCw-007Yky-C1; Wed, 13 Oct 2021 15:30:38 +0000
-Date:   Wed, 13 Oct 2021 16:30:18 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 3/3] blk-mq: optimise *end_request non-stat path
-Message-ID: <YWb7ikSx6vz03u6B@infradead.org>
-References: <cover.1634115360.git.asml.silence@gmail.com>
- <e0f2ea812e93a8adcd07101212e7d7e70ca304e7.1634115360.git.asml.silence@gmail.com>
+        Wed, 13 Oct 2021 11:35:53 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6B8C061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:33:50 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id 21so2056304plo.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w0OXKQO+EQQ/M5woV3NPH/hGk7JVf61CPOh6HhRk/m8=;
+        b=sk1tTuqj/MCxcwKyXEpXPEoUQXTOIfjFXKFpcEO7e7km7L0f2uVxpAarDVbOFcPfZj
+         AaOMeRbp4pC54f9RoxLmNi9V7CBYoBY1iyg9go/NhpUX6rxl/Bs7DQywRj7z7CNV4Icw
+         phkGQth0VbP/e+oGfy5k2wyLOkQ9uo0cMwFuFcLpp+k+5Vt7Gp8qhcspnfT7fKxbSBfc
+         yBkDFK92khyeeiGtbaLySGhojmyIoZHyBZz+pNPbLCghA75QCxHiZCuPcWG8zASdpSLp
+         wkXrG5gjIQ8mY7pZDUe6GW6iu8tNFQyciIXy/X8jRSaEZUUlBRse1lVXJXHUtz1AIKN8
+         gdzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w0OXKQO+EQQ/M5woV3NPH/hGk7JVf61CPOh6HhRk/m8=;
+        b=raiR+EOhCibFR5i+LdMRQ1VIQpQ1zRIL74sTR0pRNR9GdqiWh7XeMn5+ceRjbQ8HbH
+         eEoaYlukTgEt4y78+1wzLu4ClxHVehUIQELu9bW4udjqfRmogcBPN5ahtoEo3BrEwIxj
+         E2bEGAo7PjBpNK+UCBuT6ytGmWXVDFr3djmbhStse5lrrQBpfmwCQ8FeKPunAs29b2Rr
+         EMJjcLJ8cXcbJmfpMM4XOM5FG3Wtg/XGCkN70wKENX9RD0f4BwQkHoy95TLZYYlwJFtQ
+         C22S9BKi3SPLRipAk4OFNY2h9mjLs6dKUTelkzcDWeph0ki5+OgtsZ7KNwXJRpUbmWAL
+         UF1w==
+X-Gm-Message-State: AOAM532+oXdUeFK6l5YfRi++43QZut+wZ9gzqoSrnae2ZRvzezgYBp8L
+        FvzNuOs7W7MmWjA6FIbQwscuqA==
+X-Google-Smtp-Source: ABdhPJyIpI8yklVSJGPLmwLeEm7VlfgHbKcdMxX12nXi3LKT7tczNU8dmkCQdhnCU2lfWOgycwTuYQ==
+X-Received: by 2002:a17:90b:4f4b:: with SMTP id pj11mr98367pjb.4.1634139229516;
+        Wed, 13 Oct 2021 08:33:49 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id x35sm17301351pfh.52.2021.10.13.08.33.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 08:33:48 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 15:33:44 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 26/45] KVM: SVM: Mark the private vma unmerable
+ for SEV-SNP guests
+Message-ID: <YWb8WG6Ravbs1nbx@google.com>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-27-brijesh.singh@amd.com>
+ <YWXYIWuK2T8Kejng@google.com>
+ <2a8bf18e-1413-f884-15c4-0927f34ee3b9@amd.com>
+ <YWbufTl2CKwJ2uzw@google.com>
+ <5eb61b30-e889-2299-678f-4edeada46c2d@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e0f2ea812e93a8adcd07101212e7d7e70ca304e7.1634115360.git.asml.silence@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <5eb61b30-e889-2299-678f-4edeada46c2d@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 09:57:13AM +0100, Pavel Begunkov wrote:
-> We already have a blk_mq_need_time_stamp() check in
-> __blk_mq_end_request() to get a timestamp, hide all the statistics
-> accounting under it. It cuts some cycles for requests that don't need
-> stats, and is free otherwise.
+On Wed, Oct 13, 2021, Brijesh Singh wrote:
+> 
+> On 10/13/21 7:34 AM, Sean Christopherson wrote:
+> > On Wed, Oct 13, 2021, Brijesh Singh wrote:
+> >> On 10/12/21 11:46 AM, Sean Christopherson wrote:
+> >>> On Fri, Aug 20, 2021, Brijesh Singh wrote:
+> >>>> When SEV-SNP is enabled, the guest private pages are added in the RMP
+> >>>> table; while adding the pages, the rmp_make_private() unmaps the pages
+> >>>> from the direct map. If KSM attempts to access those unmapped pages then
+> >>>> it will trigger #PF (page-not-present).
+> >>>>
+> >>>> Encrypted guest pages cannot be shared between the process, so an
+> >>>> userspace should not mark the region mergeable but to be safe, mark the
+> >>>> process vma unmerable before adding the pages in the RMP table.
+> >>> To be safe from what?  Does the !PRESENT #PF crash the kernel?
+> >> Yes, kernel crashes when KSM attempts to access to an unmaped pfn.
+> > Is this problem unique to nuking the direct map (patch 05), 
+> 
+> Yes. This problem didn't exist in previous series because we were not
+> nuking the page from direct map and KSM was able to read the memory just
+> fine. Now with the page removed from the direct map causes #PF
+> (not-present).
 
-The transformation is a little non-obvious due to the checks hidden
-inblk_mq_need_time_stamp, but after following all the spaghetti it does
-looks like a correct transformation:
+Hrm, so regardless of what manipulations are done to the direct map, any errant
+write to guest private memory via the direct map would be fatal to the kernel.
+That's both mildly terrifying and oddly encouraging, as it means silent guest data
+corruption is no longer a thing, at least for private memory.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+One concrete takeaway for me is that "silently" nuking the direct map on RMP
+assignment is not an option.  Nuking the direct map if the kernel has a way to
+determine that the backing store is for guest private memory is perfectly ok,
+but pulling the rug out so to speak is setting us up for maintenance hell.
+
+> > or would it also be a problem (in the form of an RMP violation) if the
+> > direct map were demoted to 4k pages?
+> >  
+> 
+> No, this problem does happen due to the demotion. In previous series, we
+> were demoting the pages to 4k and everyone was happy (including ksm). In
+> the case of ksm, the page will *never* be merged because ciphertext for
+> two private pages will never be the same. Removing the pages from direct
+> map certainly brings additional complexity in the KVM and other places
+> in the kernel. From architecture point of view, there is actually no
+> need to mark the page *not present* in the direct map. I believe in TDX
+> that is must but for the SEV-SNP its not required at all.
+
+Nuking the direct map is not strictly required for TDX either, as reads do not
+compromise the integrity of the memory, i.e. don't poison memory and lead to
+#MC.  Like SNP, writes via the direct map would be fatal.
+
+The issue with TDX that is not shared by SNP is that writes through _user_ mappings
+can be fatal the system.  With SNP, those generate RMP violations, but because they
+are "just" page faults, the normal uaccess machinery happily eats them and SIGBUSes
+the VMM.
+
+> A hypervisor can read the guest private pages just fine, only the write will
+> cause an RMP fault.
+
+Well, for some definitions of "read".  I'm kinda joking, kinda serious.  KSM may
+"work" when it reads garbage, but the same is likely not true for other kernel
+code that wanders into guest private memory.  Ideally, the kernel would provide
+a mechanism to _prevent_ any such reads/writes, and violations would be treated
+as kernel bugs.  Given that SEV has been successfully deployed, the probability
+of lurking bugs is quite low, but I still dislike the idea of latent bugs going
+unnoticed or manifesting in weird ways.
