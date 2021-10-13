@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B4D42CA85
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF24442CA86
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239023AbhJMUCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:02:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40626 "EHLO mail.kernel.org"
+        id S239068AbhJMUCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:02:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhJMUCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:02:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73408611CE;
-        Wed, 13 Oct 2021 20:00:02 +0000 (UTC)
+        id S238928AbhJMUCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 16:02:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9393611EE;
+        Wed, 13 Oct 2021 20:00:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634155203;
-        bh=jmVwh+T/mutRZz2FVI0rl1qHyvtCc3KRdOQRY4odTIY=;
+        s=k20201202; t=1634155206;
+        bh=om0HazlAjz/5nUCLR5kLqslvvq5C7vKYnMkWeQTOsBs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lEkYq9OoSjf2rSukpc2hBpQBFiVMjK1+CXOVWSQdi6YKjcDGx7eODGQLm6Zj6KkNu
-         iOkX9rif4sgrUiWvbEp29ow2famwKmngOw1qUzOIRAXAPnRqQYElLV+o8kqyqKsAZz
-         E5df+Lqn7OdH97l5mZK4P2gajdm5W9agELvTw8OmeuhOjrNgumorxGr95GQv2fRzgj
-         i7nlhbovQEmdTBthXxCL44Y4COcLqE6v0lO4WhYAFNULGZOUc/mExw+70VWL9P6QTx
-         mIoJ9jZc+LUHqd7Xxu7vRTbgYqYZHMdvxlX0aMfCqwpk3U4XpNLJGuWrRKqN1c6sI8
-         LeZBdPQbAcT+A==
+        b=EmI2cldZLk7dXlFCA6+ucpCFWa7lvxlNiJZYbWmw92AuUSrCbPFjjkciTpiDcIi2x
+         4w17i9RqXDo6Ai1crmQVnvy0WmPbTGahMUV03YqK1H3ifwtkIpkFARIPGyxFkNBwKp
+         y2VLt3mCy6NIy3eWKcMda9HgSEWEiRIqGbH/raO1kqGAD3L2GjVFJOJ2GuIogxquv0
+         Qsac8OJXZLPOOFrOuq4d7EnQjbzuBLZzTe5UV/vf7fm0x9lP8vf+EzRHtc+fN1FdlU
+         gxt4hqqYJ0eYO7Hsl90fSO52bLW1Y0n3RvXZxCDxGaeMyBfAc4kytdA2g3cH7S5RwW
+         Ada7zRIhVddFA==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Yang Yingliang <yangyingliang@huawei.com>
-Cc:     Mark Brown <broonie@kernel.org>, gregkh@linuxfoundation.org,
-        rafael@kernel.org
-Subject: Re: [PATCH v2] regmap: Fix possible double-free in regcache_rbtree_exit()
-Date:   Wed, 13 Oct 2021 20:59:47 +0100
-Message-Id: <163415517144.1358368.8910883040162576428.b4-ty@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-mediatek@lists.infradead.org,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: mediatek: Constify static snd_soc_ops
+Date:   Wed, 13 Oct 2021 20:59:48 +0100
+Message-Id: <163415517073.1358186.16264637881632852203.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211012023735.1632786-1-yangyingliang@huawei.com>
-References: <20211012023735.1632786-1-yangyingliang@huawei.com>
+In-Reply-To: <20211012205521.14098-1-rikard.falkeborn@gmail.com>
+References: <20211012205521.14098-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,36 +48,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 10:37:35 +0800, Yang Yingliang wrote:
-> In regcache_rbtree_insert_to_block(), when 'present' realloc failed,
-> the 'blk' which is supposed to assign to 'rbnode->block' will be freed,
-> so 'rbnode->block' points a freed memory, in the error handling path of
-> regcache_rbtree_init(), 'rbnode->block' will be freed again in
-> regcache_rbtree_exit(), KASAN will report double-free as follows:
+On Tue, 12 Oct 2021 22:55:21 +0200, Rikard Falkeborn wrote:
+> These are only assigned to the ops field in the snd_soc_dai_link struct
+> which is a pointer to const struct snd_soc_ops. Make them const to allow
+> the compiler to put them in read-only memory.
 > 
-> BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
-> Call Trace:
->  slab_free_freelist_hook+0x10d/0x240
->  kfree+0xce/0x390
->  regcache_rbtree_exit+0x15d/0x1a0
->  regcache_rbtree_init+0x224/0x2c0
->  regcache_init+0x88d/0x1310
->  __regmap_init+0x3151/0x4a80
->  __devm_regmap_init+0x7d/0x100
->  madera_spi_probe+0x10f/0x333 [madera_spi]
->  spi_probe+0x183/0x210
->  really_probe+0x285/0xc30
 > 
-> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] regmap: Fix possible double-free in regcache_rbtree_exit()
-      commit: 55e6d8037805b3400096d621091dfbf713f97e83
+[1/1] ASoC: mediatek: Constify static snd_soc_ops
+      commit: abed054f039a69579a21099dbb53aa008ea66d03
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
