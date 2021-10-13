@@ -2,78 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4018542B260
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D3942B26D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236665AbhJMBtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 21:49:31 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:33562 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234119AbhJMBta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 21:49:30 -0400
-Received: from BC-Mail-EX04.internal.baidu.com (unknown [172.31.51.44])
-        by Forcepoint Email with ESMTPS id 7B05BA3DD4FE3D051073;
-        Wed, 13 Oct 2021 09:47:21 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-EX04.internal.baidu.com (172.31.51.44) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Wed, 13 Oct 2021 09:47:21 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Wed, 13 Oct 2021 09:47:20 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <rdunlap@infradead.org>, <jic23@kernel.org>, <lars@metafoo.de>,
-        <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
-        <kernel@pengutronix.de>, <festevam@gmail.com>
-CC:     <linux-imx@nxp.com>, <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Cai Huoqing" <caihuoqing@baidu.com>
-Subject: [PATCH] iio: imx8qxp-adc: Fix the error - defined but not used for runtime pm API
-Date:   Wed, 13 Oct 2021 09:46:58 +0800
-Message-ID: <20211013014658.2798-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S236613AbhJMBxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 21:53:13 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:37326 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236573AbhJMBxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 21:53:11 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0UrdGa9a_1634089862;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UrdGa9a_1634089862)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 13 Oct 2021 09:51:03 +0800
+Subject: Re: [PATCH 1/2] ftrace: disable preemption on the testing of
+ recursion
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com>
+ <a8756482-024c-c858-b3d1-1ffa9a5eb3f7@linux.alibaba.com>
+ <alpine.LSU.2.21.2110121421260.3394@pobox.suse.cz>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <74090798-7d93-0713-982c-6f0247118d20@linux.alibaba.com>
+Date:   Wed, 13 Oct 2021 09:50:17 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex14.internal.baidu.com (172.31.51.54) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+In-Reply-To: <alpine.LSU.2.21.2110121421260.3394@pobox.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the prefix '__maybe_unused' to imx8qxp_adc_runtime_suspend/resume()
-to avoid the compiler complain without setting CONFIG_SUSPEND,
-CONFIG_HIBERNATION and CONFIG_PM.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/iio/adc/imx8qxp-adc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/adc/imx8qxp-adc.c b/drivers/iio/adc/imx8qxp-adc.c
-index 5030e0d8318d..011bef4b5dda 100644
---- a/drivers/iio/adc/imx8qxp-adc.c
-+++ b/drivers/iio/adc/imx8qxp-adc.c
-@@ -416,7 +416,7 @@ static int imx8qxp_adc_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int imx8qxp_adc_runtime_suspend(struct device *dev)
-+static int __maybe_unused imx8qxp_adc_runtime_suspend(struct device *dev)
- {
- 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
- 	struct imx8qxp_adc *adc = iio_priv(indio_dev);
-@@ -430,7 +430,7 @@ static int imx8qxp_adc_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int imx8qxp_adc_runtime_resume(struct device *dev)
-+static int __maybe_unused imx8qxp_adc_runtime_resume(struct device *dev)
- {
- 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
- 	struct imx8qxp_adc *adc = iio_priv(indio_dev);
--- 
-2.25.1
+On 2021/10/12 下午8:24, Miroslav Benes wrote:
+[snip]
+>>
+>>  	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
+>>  				      stack_node);
+>> @@ -120,7 +115,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+>>  	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
+>>
+>>  unlock:
+>> -	preempt_enable_notrace();
+>>  	ftrace_test_recursion_unlock(bit);
+>>  }
+> 
+> I don't like this change much. We have preempt_disable there not because 
+> of ftrace_test_recursion, but because of RCU. ftrace_test_recursion was 
+> added later. Yes, it would work with the change, but it would also hide 
+> things which should not be hidden in my opinion.
 
+Not very sure about the backgroup stories, but just found this in
+'Documentation/trace/ftrace-uses.rst':
+
+  Note, on success,
+  ftrace_test_recursion_trylock() will disable preemption, and the
+  ftrace_test_recursion_unlock() will enable it again (if it was previously
+  enabled).
+
+Seems like this lock pair was supposed to take care the preemtion itself?
+
+Regards,
+Michael Wang
+
+> 
+> Miroslav
+> 
