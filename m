@@ -2,166 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82B042B30A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A67A42B30C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237010AbhJMDDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:03:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46085 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229980AbhJMDDr (ORCPT
+        id S236953AbhJMDFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:05:11 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:65204 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhJMDFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:03:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634094104;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qAK7ZtyLejfkOrKCroLEuyBtwqTtOLSVz4puxzj6usQ=;
-        b=T+cpt8QWNnL4ZfodoggsyipXB6iPu2yGt5rcReBb+DVCN76uqUduOMZNvPBEHfoxgJWMfd
-        g4xtKKVO2AgaK5gnTiypK/1D8POMSKYiL0xyexvj5q57COp21swbNAERI8rTMpRNCJdPeY
-        HeuCLnfgHqNFljKlSgO8QrPI2+tZ2Ks=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-UB0ebTrgMRifbd23g8mhDA-1; Tue, 12 Oct 2021 23:01:43 -0400
-X-MC-Unique: UB0ebTrgMRifbd23g8mhDA-1
-Received: by mail-pg1-f198.google.com with SMTP id d5-20020a63ed05000000b002688d3aff8aso662928pgi.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 20:01:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qAK7ZtyLejfkOrKCroLEuyBtwqTtOLSVz4puxzj6usQ=;
-        b=Vqqi3calW2TSaB2CEyCefmuGZZblumgoL+B5xW+vapPrfcAznjP32JkFbDfjeT6dAb
-         QX+QqbH1JRSJPMnqP/ZmDxyKlsMs2ax/c8kmiG+/1EIxNSIe+4lO47RAxr8hWgLmp0kR
-         oWWycon2QDD/d+n6mfSjxWiD8mBg3CtIBX+srxcoBw6a8cv/4BwZeA0MiGYu9yu6FSrw
-         8j9WgEVuB7vz0QcT2LjmedEEOag5MYmy7eQAwgVUNUIUABpQmnX5RMgZEuaksuilZkBw
-         Qw2Pvr/Y6y5IRuVzFjqxcgfESdmNDU8IIc1nzJP8FTtOJ1MlpbMf/dsY5erm791eGCzP
-         9Qxg==
-X-Gm-Message-State: AOAM532PvuBvJLnHsFlUst3MuJx9clFz5G0POXLj+0rFfpJz4nhJlfvT
-        +nVo6UkubdQgZwy6zxvscL9GXyTadFD9CsU7cUOH4YWkWrlV2xEf/NS0VDiMwHLhXlt3JLHohz7
-        ndlSMwoqeVKCHmblqd8Qtcip2
-X-Received: by 2002:a17:902:b18a:b0:13e:e5f3:1b25 with SMTP id s10-20020a170902b18a00b0013ee5f31b25mr33374302plr.78.1634094101808;
-        Tue, 12 Oct 2021 20:01:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypNI1X8unmkUC5RrbJrw/a546NZtB/kQO1FWilxGsO15l6uPTi+8w4knAmVYrQr7I3dSjsNQ==
-X-Received: by 2002:a17:902:b18a:b0:13e:e5f3:1b25 with SMTP id s10-20020a170902b18a00b0013ee5f31b25mr33374264plr.78.1634094101392;
-        Tue, 12 Oct 2021 20:01:41 -0700 (PDT)
-Received: from t490s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id p189sm12224275pfp.167.2021.10.12.20.01.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 20:01:40 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 11:01:33 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-Message-ID: <YWZMDTwCCZWX5/sQ@t490s>
-References: <20210930215311.240774-1-shy828301@gmail.com>
- <20210930215311.240774-3-shy828301@gmail.com>
- <YV4Dz3y4NXhtqd6V@t490s>
- <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
- <CAHbLzkqm_Os8TLXgbkL-oxQVsQqRbtmjdMdx0KxNke8mUF1mWA@mail.gmail.com>
- <YWTc/n4r6CJdvPpt@t490s>
- <YWTobPkBc3TDtMGd@t490s>
- <CAHbLzkrOsNygu5x8vbMHedv+P3dEqOxOC6=O6ACSm1qKzmoCng@mail.gmail.com>
- <YWYHukJIo8Ol2sHN@t490s>
- <CAHbLzkp3UXKs_NP9XD_ws=CSSFzUPk7jRxj0K=gvOqoi+GotmA@mail.gmail.com>
+        Tue, 12 Oct 2021 23:05:10 -0400
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 19D32s1k013593
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:02:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 19D32s1k013593
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1634094174;
+        bh=tNlDnh3wV/mofN17CR9XUn/PjqpItz5YDbO4h+r0dIU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KkBZPPxtge3npCKyRpwGBeqURAumSl1E5HNdxYSRWJvSFMYTSGTBwL9cZXiA37efI
+         s/ULWHY1LMAUw7syieFs5qjSEgUhf4YhzfVP8Q+3G9N2MG929WGXIhxMQ9NHPocJUU
+         Qmkc22VTV029by29N08Nk0zNcvVHLTGsmzysHWTWvC+FIDwimZcjFXDFCr0rZZcwAS
+         Kyv/92c45+lp3+YKf0k8oeY/yU3WmdqgqRYCLyCGCDpgJMQiM5DEaXDLrkG+vRa1nr
+         I6sd5a3StNb7YFoB51rsbo5WZbAe890p9x3LkzVr72Vtw7wjVw6jaqyzLcpnT9RRZB
+         hw+IJIonCnYcQ==
+X-Nifty-SrcIP: [209.85.216.51]
+Received: by mail-pj1-f51.google.com with SMTP id k23-20020a17090a591700b001976d2db364so1162761pji.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 20:02:54 -0700 (PDT)
+X-Gm-Message-State: AOAM532/wfU+DbWcwTm/+6jxB4DV3sdonBAQipKghOhtZ80u1pv753xQ
+        l0qIQDC10XZ9Q47HagMjGoM3pmWSM5AFH8H+apU=
+X-Google-Smtp-Source: ABdhPJxU7LZNiD0CqnvHudknEPsQ2Waww+h2Z0Ej9EfhwBvI6wfB6dY2unbVVMrquQxV+Syc5ZF0AH2ALN/h8KSS4iU=
+X-Received: by 2002:a17:902:f703:b029:12c:982:c9ae with SMTP id
+ h3-20020a170902f703b029012c0982c9aemr33656832plo.20.1634094173755; Tue, 12
+ Oct 2021 20:02:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHbLzkp3UXKs_NP9XD_ws=CSSFzUPk7jRxj0K=gvOqoi+GotmA@mail.gmail.com>
+References: <20211012234606.91717-1-ndesaulniers@google.com> <20211012234606.91717-3-ndesaulniers@google.com>
+In-Reply-To: <20211012234606.91717-3-ndesaulniers@google.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 13 Oct 2021 12:02:16 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASGRQqL4Qu7ZVOcrW8-oXm7xvB-m7yoMJHnCDR5-_jrDQ@mail.gmail.com>
+Message-ID: <CAK7LNASGRQqL4Qu7ZVOcrW8-oXm7xvB-m7yoMJHnCDR5-_jrDQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: vdso32: lazily invoke COMPAT_CC
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, llvm@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Lucas Henneman <henneman@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 07:48:39PM -0700, Yang Shi wrote:
-> On Tue, Oct 12, 2021 at 3:10 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > On Tue, Oct 12, 2021 at 11:02:09AM -0700, Yang Shi wrote:
-> > > On Mon, Oct 11, 2021 at 6:44 PM Peter Xu <peterx@redhat.com> wrote:
-> > > >
-> > > > On Mon, Oct 11, 2021 at 08:55:26PM -0400, Peter Xu wrote:
-> > > > > Another thing is I noticed soft_offline_in_use_page() will still ignore file
-> > > > > backed split.  I'm not sure whether it means we'd better also handle that case
-> > > > > as well, so shmem thp can be split there too?
-> > > >
-> > > > Please ignore this paragraph - I somehow read "!PageHuge(page)" as
-> > > > "PageAnon(page)"...  So I think patch 5 handles soft offline too.
-> > >
-> > > Yes, exactly. And even though the split is failed (or file THP didn't
-> > > get split before patch 5/5), soft offline would just return -EBUSY
-> > > instead of calling __soft_offline_page->page_handle_poison(). So
-> > > page_handle_poison() should not see THP at all.
-> >
-> > I see, so I'm trying to summarize myself on what I see now with the new logic..
-> >
-> > I think the offline code handles hwpoison differently as it sets PageHWPoison
-> > at the end of the process, IOW if anything failed during the offline process
-> > the hwpoison bit is not set.
-> >
-> > That's different from how the memory failure path is handling this, as in that
-> > case the hwpoison bit on the subpage is set firstly, e.g. before split thp.  I
-> > believe that's also why memory failure requires the extra sub-page-hwpoison bit
-> > while offline code shouldn't need to: because for soft offline split happens
-> > before setting hwpoison so we just won't ever see a "poisoned file thp", while
-> > for memory failure it could happen, and the sub-page-hwpoison will be a temp
-> > bit anyway only exist for a very short period right after we set hwpoison on
-> > the small page but before we split the thp.
-> >
-> > Am I right above?
-> 
-> Yeah, you are right. I noticed this too, only successfully migrated
-> page is marked as hwpoison. But TBH I'm not sure why it does this way.
+On Wed, Oct 13, 2021 at 8:46 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> When running the following command without arm-linux-gnueabi-gcc in
+> one's $PATH, the following warning is observed:
+>
+> $ ARCH=arm64 CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make -j72 LLVM=1 mrproper
+> make[1]: arm-linux-gnueabi-gcc: No such file or directory
+>
+> This is because KCONFIG is not run for mrproper, so CONFIG_CC_IS_CLANG
+> is not set, and we end up eagerly evaluating various variables that try
+> to invoke CC_COMPAT.
+>
+> This is a similar problem to what was observed in
+> commit 3ec8a5b33dea ("kbuild: do not export LDFLAGS_vmlinux")
+>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Reported-by: Lucas Henneman <henneman@google.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-My wild guess is that unlike memory failures, soft offline is best-effort. Say,
-the data on the page is still consistent, so even if offline failed for some
-reason we shouldn't stop the program from execution.  That's not true for
-memory failures via MCEs, afaict, as the execution could read/write wrong data
-and that'll be a serious mistake, so we set hwpoison 1st there first before
-doing anything else, making sure "this page is broken" message delivered and
-user app won't run with risk.
 
-But yeah it'll be great if Naoya could help confirm that.
+There are two ways to fix it:
 
-> Naoya may know. Anyway, THP doesn't get migrated if it can't be split,
-> so PageHasHWPoisoned doesn't apply, right?
+  [1]: sink the error message to /dev/null
+        (as in commit dc960bfeedb01cf832c5632ed1f3daed4416b142)
+  [2]: use a recursively-expanded variable as you did.
 
-Right, that matches my current understanding of the code, so the extra bit is
-perhaps not useful for soft offline case.
 
-But this also reminded me that shouldn't we be with the page lock already
-during the process of "setting hwpoison-subpage bit, split thp, clear
-hwpoison-subpage bit"?  If it's only the small window that needs protection,
-while when looking up the shmem pagecache we always need to take the page lock
-too, then it seems already safe even without the extra bit?  Hmm?
+"Simple variable (:=) vs recursive variable (=)" is a trade-off.
 
-> 
-> >
-> > I feel like __soft_offline_page() still has some code that assumes "thp can be
-> > there", e.g. iiuc after your change to allow file thp split, "hpage" will
-> > always be the same as "page" then in that function, and isolate_page() does not
-> > need to pass in a pagelist pointer too as it'll always be handling a small page
-> > anyway.  But maybe they're fine to be there for now as they'll just work as
-> > before, I think, so just raise it up.
-> 
-> That compound_head() call seems to be for hugetlb since isolating
-> hugetlb needs to pass in the head page IIUC. For the pagelist, I think
-> it is just because migrate_pages() requires a list as the second
-> parameter.
+Please be careful about the cost when you try the [2] approach.
 
-Fair enough.
 
-Thanks,
 
--- 
-Peter Xu
+Simple variables are immediately expanded while parsing Makefile.
+There are 7 call-sites for cc32-option, hence
+the compiler is invoked 7 times for building vdso32,
+0 times for cleaning.
+(Since 57fd251c789647552d32d2fc51bedd4f90d70f9f,
+try-run is no-op for 'make clean').
 
+
+
+
+Recursive variables are expanded every time they are used.
+
+IIUC, if_changed expands the command line 3 times.
+There are 2 objects (note.o and vgettimeofday.o)
+There are 7 call-sites for cc32-option.
+
+So, the compiler is invoked 42 (3 * 2 * 7) times
+for building vdso32.
+
+
+
+
+
+
+
+> ---
+>  arch/arm64/kernel/vdso32/Makefile | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+> index 89299a26638b..d24b12318f4c 100644
+> --- a/arch/arm64/kernel/vdso32/Makefile
+> +++ b/arch/arm64/kernel/vdso32/Makefile
+> @@ -38,12 +38,12 @@ cc32-disable-warning = $(call try-run,\
+>  # As a result we set our own flags here.
+>
+>  # KBUILD_CPPFLAGS and NOSTDINC_FLAGS from top-level Makefile
+> -VDSO_CPPFLAGS := -DBUILD_VDSO -D__KERNEL__ -nostdinc -isystem $(shell $(CC_COMPAT) -print-file-name=include)
+> +VDSO_CPPFLAGS = -DBUILD_VDSO -D__KERNEL__ -nostdinc -isystem $(shell $(CC_COMPAT) -print-file-name=include)
+>  VDSO_CPPFLAGS += $(LINUXINCLUDE)
+>
+>  # Common C and assembly flags
+>  # From top-level Makefile
+> -VDSO_CAFLAGS := $(VDSO_CPPFLAGS)
+> +VDSO_CAFLAGS = $(VDSO_CPPFLAGS)
+>  ifneq ($(shell $(CC_COMPAT) --version 2>&1 | head -n 1 | grep clang),)
+>  VDSO_CAFLAGS += --target=$(notdir $(CROSS_COMPILE_COMPAT:%-=%))
+>  endif
+> @@ -73,7 +73,7 @@ VDSO_CAFLAGS += -DDISABLE_BRANCH_PROFILING
+>  VDSO_CAFLAGS += $(call cc32-option,-march=armv8-a -D__LINUX_ARM_ARCH__=8,\
+>                                     -march=armv7-a -D__LINUX_ARM_ARCH__=7)
+>
+> -VDSO_CFLAGS := $(VDSO_CAFLAGS)
+> +VDSO_CFLAGS = $(VDSO_CAFLAGS)
+>  VDSO_CFLAGS += -DENABLE_COMPAT_VDSO=1
+>  # KBUILD_CFLAGS from top-level Makefile
+>  VDSO_CFLAGS += -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+> @@ -108,7 +108,7 @@ else
+>  VDSO_CFLAGS += -marm
+>  endif
+>
+> -VDSO_AFLAGS := $(VDSO_CAFLAGS)
+> +VDSO_AFLAGS = $(VDSO_CAFLAGS)
+>  VDSO_AFLAGS += -D__ASSEMBLY__
+>
+>  # From arm vDSO Makefile
+> --
+> 2.33.0.882.g93a45727a2-goog
+>
+
+
+--
+Best Regards
+Masahiro Yamada
