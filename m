@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4858942C946
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE35B42C93D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238972AbhJMTCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 15:02:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231246AbhJMTCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 15:02:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EE06610E8;
-        Wed, 13 Oct 2021 19:00:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634151616;
-        bh=vu0O+pfV+sCyaPdC66uaJw0vVQuREbc9+nyIuESVaQw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=t08h/jItfp6nbs6PYAEQyke8nuQTkSs0EEEmdggCQQ0dRzR0PuFh8jgsf4zelvM5V
-         7sWRUEBc3w9k1sLQ5KmMfuhVaNPWoYPyBZUyqtAo0D7iVSBklrXA9o3yxmhFjWwaB2
-         9XNWwZdaK1k5JSwcDnWOmrqnDycU2C6AzPqO7a3iKsv6tk6bRZUoqjGEWaBxf2Fv56
-         CNv5IPAFtoRhAy3jEJ1i6p5Mhn0OxQLmqAqPz2p0e3sLBFq/LC0L2Zhlsdx38CNd0r
-         pPPpTXiBCiHHI5UeA38KXbHgNqN3qKS9nBmhB9o9eTXKeHVVu2w+5KVF/mnKu1gxD1
-         nmlruchHZZCBA==
-Date:   Wed, 13 Oct 2021 14:00:14 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     menglong8.dong@gmail.com
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
-Subject: Re: [PATCH] pci: call _cond_resched() after pci_bus_write_config
-Message-ID: <20211013190014.GA1909934@bhelgaas>
+        id S238911AbhJMTCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 15:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238881AbhJMTCn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 15:02:43 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3FBC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:00:40 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id k23-20020a17090a591700b001976d2db364so3010649pji.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:00:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vSdCvbsYkIt0Z0Dq92fR0cKB12M68Rwm2Rm4i81p0qg=;
+        b=S83D+KnjIrnVXCEAw6xUqC54LMfAZq7UxSajP3TNsE7IodzP4qkKJODPxsupKv1JV7
+         RBHwwjdxYBt1aj+Mkj3eJPnrmP1k1AKIcAcGx330nxxQuYr/bf9o91eAAqWtvyWUx/PU
+         zrQk7dFVKsoXP9j7/aU62ewAhhYuReCo8f4j0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vSdCvbsYkIt0Z0Dq92fR0cKB12M68Rwm2Rm4i81p0qg=;
+        b=tSwC4eVGdqv7XsYDKrZ0gMcilqLOBfLc2Os4wEBQ9vrwdzrr2AkQkxSMwNwEcmHIPz
+         ltJhqcLTEXgdlS9xwHFu+1jk1VNZAPFxwFzL6M3TL/81rUhDLHIgL2WUI7Ovwil3nXOY
+         P1nCc+a5vkJ37qW9a1Tcvk24zkpT3+gGCyhOXDS/3fVmTKxHLTbhqjkNesK6sznXAwYZ
+         z6nlyMEAJTZjQFrFvfICtmF8507f6wyqXfeBQZBHQfnf0nX6OOSC+9jr609R/Li+qgMM
+         7QEWAOGxfEmUcukbH6JcLBQCs8+Gl9OCb31NBCj9xd4A4lZSZrBNodUDDeXj796xXJ6U
+         6a6Q==
+X-Gm-Message-State: AOAM532NF/vIdbn33xUR6LTz+b4dtTFxZN5VHL/mqDoXUVjtvCrmDVXI
+        E9gUCeOJCvJaxajFtZFDHkkdVw==
+X-Google-Smtp-Source: ABdhPJy7uZ/FwGtvkefI9YhZchrZQeeAa710u9Jhh7h46fIGalxym08H/KMiNgWsnZRij3s2r/9+RQ==
+X-Received: by 2002:a17:90b:4d8e:: with SMTP id oj14mr6818560pjb.237.1634151639646;
+        Wed, 13 Oct 2021 12:00:39 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f15sm224820pfq.193.2021.10.13.12.00.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 12:00:39 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 12:00:38 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 03/15] linkage: Add DECLARE_NOT_CALLED_FROM_C
+Message-ID: <202110131200.1CAF319F@keescook>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-4-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211013125542.759696-1-imagedong@tencent.com>
+In-Reply-To: <20211013181658.1020262-4-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Match previous subject lines (use "git log --oneline
-drivers/pci/access.c" to see them).
-
-On Wed, Oct 13, 2021 at 08:55:42PM +0800, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <imagedong@tencent.com>
+On Wed, Oct 13, 2021 at 11:16:46AM -0700, Sami Tolvanen wrote:
+> The kernel has several assembly functions, which are not directly
+> callable from C but need to be referred to from C code. This change adds
+> the DECLARE_NOT_CALLED_FROM_C macro, which allows us to declare these
+> symbols using an opaque type, which makes misuse harder, and avoids the
+> need to annotate references to the functions for Clang's Control-Flow
+> Integrity (CFI).
 > 
-> While the system is running in KVM, pci config writing for virtio devices
-> may cost long time(about 1-2ms), as it causes VM-exit. During
-> __pci_bus_assign_resources(), pci_setup_bridge, which can do pci config
-> writing up to 10 times, can be called many times without any
-> _cond_resched(). So __pci_bus_assign_resources can cause 25+ms scheduling
-> latency with !CONFIG_PREEMPT.
-> 
-> To solve this problem, call _cond_resched() after pci config writing.
+> Suggested-by: Andy Lutomirski <luto@amacapital.net>
+> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-s/pci/PCI/ above.
-Add space before "(".
-Add "()" after function names consistently (some have it, some don't).
+I like this; I have a sense CFI won't stay the only user of this
+annotation.
 
-What exactly is the problem?  I expect __pci_bus_assign_resources() to
-be used mostly during boot-time enumeration.  How much of a problem is
-the latency at that point?  Why is this particularly a problem in the
-KVM environment?  Or is it also a problem on bare metal?
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Are there other config write paths that should have a similar change?
-
-_cond_resched() only appears here:
-
-  $ git grep "\<_cond_resched\>"
-  include/linux/sched.h:static __always_inline int _cond_resched(void)
-  include/linux/sched.h:static inline int _cond_resched(void)
-  include/linux/sched.h:static inline int _cond_resched(void) { return 0; }
-  include/linux/sched.h:  _cond_resched();
-
-so I don't believe PCI is so special that this needs to be the only
-other use.  Maybe a different resched interface is more appropriate?
-
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> ---
->  drivers/pci/access.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-> index 46935695cfb9..babed43702df 100644
-> --- a/drivers/pci/access.c
-> +++ b/drivers/pci/access.c
-> @@ -57,6 +57,7 @@ int noinline pci_bus_write_config_##size \
->  	pci_lock_config(flags);						\
->  	res = bus->ops->write(bus, devfn, pos, len, value);		\
->  	pci_unlock_config(flags);					\
-> +	_cond_resched();						\
->  	return res;							\
->  }
->  
-> -- 
-> 2.27.0
-> 
+-- 
+Kees Cook
