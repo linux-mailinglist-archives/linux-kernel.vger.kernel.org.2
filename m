@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FF142CAD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98CF42CACE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhJMUTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:19:34 -0400
-Received: from mga06.intel.com ([134.134.136.31]:11509 "EHLO mga06.intel.com"
+        id S229961AbhJMUTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:19:32 -0400
+Received: from mga12.intel.com ([192.55.52.136]:37325 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229698AbhJMUT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229706AbhJMUT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Oct 2021 16:19:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="288394614"
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="207637833"
 X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="288394614"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 13:17:23 -0700
+   d="scan'208";a="207637833"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 13:17:23 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="527223151"
+   d="scan'208";a="592309558"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Oct 2021 13:17:21 -0700
+  by orsmga004.jf.intel.com with ESMTP; 13 Oct 2021 13:17:21 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 311EAB7; Wed, 13 Oct 2021 23:17:29 +0300 (EEST)
+        id 373CE2E4; Wed, 13 Oct 2021 23:17:29 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Eric Biggers <ebiggers@google.com>,
@@ -30,9 +30,9 @@ To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-Subject: [PATCH v2 1/6] mmc: sdhci-pci: Read card detect from ACPI for Intel Merrifield
-Date:   Wed, 13 Oct 2021 23:17:18 +0300
-Message-Id: <20211013201723.52212-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 2/6] mmc: sdhci: Deduplicate sdhci_get_cd_nogpio()
+Date:   Wed, 13 Oct 2021 23:17:19 +0300
+Message-Id: <20211013201723.52212-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211013201723.52212-1-andriy.shevchenko@linux.intel.com>
 References: <20211013201723.52212-1-andriy.shevchenko@linux.intel.com>
@@ -42,81 +42,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel Merrifield platform had been converted to use ACPI enumeration.
-However, the driver missed an update to retrieve card detect GPIO.
-Fix it here.
+The analogue of the sdhci_get_cd_nogpio() is used in the sdhci-pci-core
+and sdhci-acpi modules. Deduplicate it by moving to sdhci and exporting.
 
-Unfortunately we can't rely on CD GPIO state because there are two
-different PCB designs in the wild that are using the opposite card
-detection sense and there is no way to distinguish those platforms,
-that's why ignore CD GPIO completely and use it only as an event.
-
-Fixes: 4590d98f5a4f ("sfi: Remove framework for deprecated firmware")
-BugLink: https://github.com/edison-fw/meta-intel-edison/issues/135
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/mmc/host/sdhci-pci-core.c | 29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
+ drivers/mmc/host/sdhci-acpi.c     | 14 +-------------
+ drivers/mmc/host/sdhci-pci-core.c | 18 ------------------
+ drivers/mmc/host/sdhci.c          | 19 +++++++++++++++++++
+ drivers/mmc/host/sdhci.h          |  1 +
+ 4 files changed, 21 insertions(+), 31 deletions(-)
 
+diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
+index 8fe65f172a61..f1ef0d28b0dd 100644
+--- a/drivers/mmc/host/sdhci-acpi.c
++++ b/drivers/mmc/host/sdhci-acpi.c
+@@ -362,23 +362,11 @@ static inline bool sdhci_acpi_no_fixup_child_power(struct acpi_device *adev)
+ static int bxt_get_cd(struct mmc_host *mmc)
+ {
+ 	int gpio_cd = mmc_gpio_get_cd(mmc);
+-	struct sdhci_host *host = mmc_priv(mmc);
+-	unsigned long flags;
+-	int ret = 0;
+ 
+ 	if (!gpio_cd)
+ 		return 0;
+ 
+-	spin_lock_irqsave(&host->lock, flags);
+-
+-	if (host->flags & SDHCI_DEVICE_DEAD)
+-		goto out;
+-
+-	ret = !!(sdhci_readl(host, SDHCI_PRESENT_STATE) & SDHCI_CARD_PRESENT);
+-out:
+-	spin_unlock_irqrestore(&host->lock, flags);
+-
+-	return ret;
++	return sdhci_get_cd_nogpio(mmc);
+ }
+ 
+ static int intel_probe_slot(struct platform_device *pdev, struct acpi_device *adev)
 diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-index be19785227fe..d0f2edfe296c 100644
+index d0f2edfe296c..19e13dfae593 100644
 --- a/drivers/mmc/host/sdhci-pci-core.c
 +++ b/drivers/mmc/host/sdhci-pci-core.c
-@@ -616,16 +616,12 @@ static int intel_select_drive_strength(struct mmc_card *card,
+@@ -616,24 +616,6 @@ static int intel_select_drive_strength(struct mmc_card *card,
  	return intel_host->drv_strength;
  }
  
--static int bxt_get_cd(struct mmc_host *mmc)
-+static int sdhci_get_cd_nogpio(struct mmc_host *mmc)
- {
--	int gpio_cd = mmc_gpio_get_cd(mmc);
- 	struct sdhci_host *host = mmc_priv(mmc);
- 	unsigned long flags;
- 	int ret = 0;
- 
--	if (!gpio_cd)
--		return 0;
+-static int sdhci_get_cd_nogpio(struct mmc_host *mmc)
+-{
+-	struct sdhci_host *host = mmc_priv(mmc);
+-	unsigned long flags;
+-	int ret = 0;
 -
- 	spin_lock_irqsave(&host->lock, flags);
- 
- 	if (host->flags & SDHCI_DEVICE_DEAD)
-@@ -638,6 +634,21 @@ static int bxt_get_cd(struct mmc_host *mmc)
- 	return ret;
+-	spin_lock_irqsave(&host->lock, flags);
+-
+-	if (host->flags & SDHCI_DEVICE_DEAD)
+-		goto out;
+-
+-	ret = !!(sdhci_readl(host, SDHCI_PRESENT_STATE) & SDHCI_CARD_PRESENT);
+-out:
+-	spin_unlock_irqrestore(&host->lock, flags);
+-
+-	return ret;
+-}
+-
+ static int bxt_get_cd(struct mmc_host *mmc)
+ {
+ 	int gpio_cd = mmc_gpio_get_cd(mmc);
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index 357b365bf0ec..1f4b052f6f27 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -2419,6 +2419,25 @@ static int sdhci_get_cd(struct mmc_host *mmc)
+ 	return !!(sdhci_readl(host, SDHCI_PRESENT_STATE) & SDHCI_CARD_PRESENT);
  }
  
-+static int bxt_get_cd(struct mmc_host *mmc)
++int sdhci_get_cd_nogpio(struct mmc_host *mmc)
 +{
-+	int gpio_cd = mmc_gpio_get_cd(mmc);
++	struct sdhci_host *host = mmc_priv(mmc);
++	unsigned long flags;
++	int ret = 0;
 +
-+	if (!gpio_cd)
-+		return 0;
++	spin_lock_irqsave(&host->lock, flags);
 +
-+	return sdhci_get_cd_nogpio(mmc);
++	if (host->flags & SDHCI_DEVICE_DEAD)
++		goto out;
++
++	ret = !!(sdhci_readl(host, SDHCI_PRESENT_STATE) & SDHCI_CARD_PRESENT);
++out:
++	spin_unlock_irqrestore(&host->lock, flags);
++
++	return ret;
 +}
++EXPORT_SYMBOL_GPL(sdhci_get_cd_nogpio);
 +
-+static int mrfld_get_cd(struct mmc_host *mmc)
-+{
-+	return sdhci_get_cd_nogpio(mmc);
-+}
-+
- #define SDHCI_INTEL_PWR_TIMEOUT_CNT	20
- #define SDHCI_INTEL_PWR_TIMEOUT_UDELAY	100
- 
-@@ -1341,6 +1352,14 @@ static int intel_mrfld_mmc_probe_slot(struct sdhci_pci_slot *slot)
- 					 MMC_CAP_1_8V_DDR;
- 		break;
- 	case INTEL_MRFLD_SD:
-+		slot->cd_idx = 0;
-+		slot->cd_override_level = true;
-+		/*
-+		 * There are two PCB designs of SD card slot with the opposite
-+		 * card detection sense. Quirk this out by ignoring GPIO state
-+		 * completely in the custom ->get_cd() callback.
-+		 */
-+		slot->host->mmc_host_ops.get_cd = mrfld_get_cd;
- 		slot->host->quirks2 |= SDHCI_QUIRK2_NO_1_8_V;
- 		break;
- 	case INTEL_MRFLD_SDIO:
+ static int sdhci_check_ro(struct sdhci_host *host)
+ {
+ 	unsigned long flags;
+diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+index e8d04e42a5af..c593af479832 100644
+--- a/drivers/mmc/host/sdhci.h
++++ b/drivers/mmc/host/sdhci.h
+@@ -775,6 +775,7 @@ void sdhci_set_power_and_bus_voltage(struct sdhci_host *host,
+ 				     unsigned short vdd);
+ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
+ 			   unsigned short vdd);
++int sdhci_get_cd_nogpio(struct mmc_host *mmc);
+ void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq);
+ int sdhci_request_atomic(struct mmc_host *mmc, struct mmc_request *mrq);
+ void sdhci_set_bus_width(struct sdhci_host *host, int width);
 -- 
 2.33.0
 
