@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2745A42BDC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0BD42BDCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbhJMKvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:51:14 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:24308 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhJMKvM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:51:12 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HTq0m0Y1BzYff7;
-        Wed, 13 Oct 2021 18:44:40 +0800 (CST)
-Received: from kwepemm600015.china.huawei.com (7.193.23.52) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 13 Oct 2021 18:49:08 +0800
-Received: from [10.174.176.52] (10.174.176.52) by
- kwepemm600015.china.huawei.com (7.193.23.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 13 Oct 2021 18:49:07 +0800
-Subject: Re: [PATCH 4.19,v2] VFS: Fix fuseblk memory leak caused by mount
- concurrency
-From:   "chenxiaosong (A)" <chenxiaosong2@huawei.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <viro@zeniv.linux.org.uk>, <stable@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dhowells@redhat.com>, <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
-        <zhangxiaoxu5@huawei.com>
-References: <20211013095101.641329-1-chenxiaosong2@huawei.com>
- <YWawy0J9JfStEku0@kroah.com>
- <429d87b0-3a53-052a-a304-0afa8d51900d@huawei.com>
-Message-ID: <860c36c4-3668-1388-66d1-a07d463c2ad9@huawei.com>
-Date:   Wed, 13 Oct 2021 18:49:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229920AbhJMKvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:51:39 -0400
+Received: from mout.gmx.net ([212.227.15.19]:35263 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229664AbhJMKvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 06:51:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634122159;
+        bh=3y1Ax8ewSDNoGoLvir72to9z/znLvie6bI0c75IcE40=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=f6Z26b0GJPuSfXqwsu3+ZE3YwXZI4TWWjZudaAlYH2k/c4WnGIhtysaeWeh3kXn/o
+         WafeyWMnstaLvSWr0ZeWn4NkuPVPUN6rnNK6QDUhrESVVWQd8/Yqk1gus1NCMAsLAX
+         3iRdB8nAGix1BR2TtJ3FXASKPPuc3Qdmcu4tYVC4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MFKKh-1mYcg33vA1-00Fmrr; Wed, 13
+ Oct 2021 12:49:19 +0200
+Message-ID: <39a70849-3550-8757-ea0a-3d641d4137f4@gmx.com>
+Date:   Wed, 13 Oct 2021 18:49:12 +0800
 MIME-Version: 1.0
-In-Reply-To: <429d87b0-3a53-052a-a304-0afa8d51900d@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.52]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600015.china.huawei.com (7.193.23.52)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Content-Language: en-US
+To:     dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        Qing Wang <wangqing@vivo.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1634095717-4480-1-git-send-email-wangqing@vivo.com>
+ <6f03e790-6f21-703f-c761-a034575f465e@oracle.com>
+ <20211013103642.GC9286@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH] btrfs: replace snprintf in show functions with sysfs_emit
+In-Reply-To: <20211013103642.GC9286@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tlyABHuiyXrsoReSwr9sfmb6Pq9RbDFi9hceUdlTr36n5U7Afm3
+ 8AFgw/UHCmfcaVFUARhhWse/sxxPHhdyo7e8nq+9J+cX5SZ23EWLTBQRcoQwLJlic9eFqQz
+ eN/s6Xdd3Po9LUa96amnHd3k6cnPfls+yFWtDtnwbeY1WRzx+a0mpEPwYMlPHH5Rcc1+6hL
+ u7gAP08q7O36GmwYL4R2g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JpPk9/HRbQg=:tmCyRzEu8J5U5Q4QpdTvqw
+ r3IE4fAd+LprxMynNCfvpgi3sNvgsBjjJOQuHF4swmbM2bFWHBpGF9WTlfuOg7wRwFZTmmtMt
+ kZSyFhoI4poyrg1Jho9qsHdnoSumzZfBLSAirbiTs38uB60E6fGjq3SphQuS7eQAkaQLDwtVd
+ FEZ6zsYLPPK8zONIywZnOl2wmSRSA0o0lDNKb6OJwML1/obZG856p8j1tPM6D2VHR7qCgHo3x
+ HXlT5S9H6xyGtfMO/ZgZrZ36pUhaNkyOYh6IVi0qJ0mnGE0sshTLNilQyRG+7FZSYdd2SSWMC
+ S26Y+dX4lVUhAZKx3y0LEcdLKrVb759dKz8BwD2cQDJ3jXHqC+7SCbeiciHBVrxipayp/Lllu
+ C4/OXgiDNPjQunCtYDjbHXJaSPLaPl35Ds0mpWtiwtbXgTy+NPwvWJdp8iiE/9XGHavwb5Q3v
+ S166LA5hc+DwCVin+9z3KnZm0/p3ahDwUeP2uK3qGfRTQuLenw7eT+UVWs4bAGNDs6T/7yzfI
+ +EOVrccx4UcHF9xIBcp4+7mCBKDtrzAiEed8QLuejDIE3PbhXNNLgQ1yonMC+hg6W2uRJsJl6
+ 2V2lTjzkIz2g6/jlHhLU0qOo4Py6DTDbNqgRq3o68JUuRYCVGObDqTrV0WCXN3OF+o0RxJ0rr
+ RFMU66pCF0Ajy70wsO4OKa96DRzLEcgFUlVgQzxELkDkGeCkJQ9tXqAfoeBBSDlQqPpZXi7Eo
+ bVuWDoir2KMVhFhZfuBzrbpwbPjByjVmxWPGcEBInjB40dj8UylIKfFgSeBdHwOUmGKR3/zB4
+ /FCjyNSVeExi9F3DD50uGMC9Gmodn8yMgrcpgGzAS7tn6lz+amL9ljp5prJKwZO2ntfNY5OUj
+ IenmJD8jG6kZVI5eWUgJMRqW9psUGZBxBu0x/rmw6hq6k9w1EipliRYsBFb6icraxXDEQrTLK
+ tMADt0eGocSG80KHYQvpQS7rAnwq5lMZd/lI5UbnhWwwC9qKB+JN88C1SPNWELuBSqT6iT/bt
+ JLCgglNvd0KoZGFkqIBalZBp+F/PFkIMedFWiX0CS658rGsxLuQ6SlonpYIpI8y7nIfIXsuxF
+ EfxUmSU6hoyUy0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/10/13 18:38, chenxiaosong (A) 写道:
-> 在 2021/10/13 18:11, Greg KH 写道:
->> On Wed, Oct 13, 2021 at 05:51:01PM +0800, ChenXiaoSong wrote:
->>> If two processes mount same superblock, memory leak occurs:
->>>
->>> CPU0               |  CPU1
->>> do_new_mount       |  do_new_mount
->>>    fs_set_subtype   |    fs_set_subtype
->>>      kstrdup        |
->>>                     |      kstrdup
->>>      memrory leak   |
->>>
->>> Fix this by adding a write lock while calling fs_set_subtype.
->>>
->>> Linus's tree already have refactoring patchset [1], one of them can 
->>> fix this bug:
->>>          c30da2e981a7 (fuse: convert to use the new mount API)
->>>
->>> Since we did not merge the refactoring patchset in this branch, I 
->>> create this patch.
->>>
->>> [1] 
->>> https://patchwork.kernel.org/project/linux-fsdevel/patch/20190903113640.7984-3-mszeredi@redhat.com/ 
->>>
->>>
->>> Fixes: 79c0b2df79eb (add filesystem subtype support)
->>> Cc: David Howells <dhowells@redhat.com>
->>> Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
->>> ---
->>> v1: Can not mount sshfs ([PATCH linux-4.19.y] VFS: Fix fuseblk memory 
->>> leak caused by mount concurrency)
->>> v2: Use write lock while writing superblock
->>>
->>>   fs/namespace.c | 9 ++++++---
->>>   1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> As you are referring to a fuse-only patch above, why are you trying to
->> resolve this issue in the core namespace code instead?
->>
->> How does fuse have anything to do with this?
->>
->> confused,
->>
->> greg k-h
->> .
->>
-> 
-> Now, only `fuse_fs_type` and `fuseblk_fs_type` has `FS_HAS_SUBTYPE` flag 
-> in kernel code, but maybe there is a filesystem module(`struct 
-> file_system_type` has `FS_HAS_SUBTYPE` flag). And only mounting fuseblk 
-> filesystem(e.g. ntfs) will occur memory leak now.
 
-How about updating the subject as: VFS: Fix memory leak caused by 
-mounting fs with subtype concurrency?
+
+On 2021/10/13 18:36, David Sterba wrote:
+> On Wed, Oct 13, 2021 at 03:51:33PM +0800, Anand Jain wrote:
+>> On 13/10/2021 11:28, Qing Wang wrote:
+>>> coccicheck complains about the use of snprintf() in sysfs show functio=
+ns.
+>>
+>> It looks like the reason is snprintf() unaware of the PAGE_SIZE
+>> max_limit of the buf.
+>>
+>>> Fix the following coccicheck warning:
+>>> fs/btrfs/sysfs.c:335:8-16: WARNING: use scnprintf or sprintf.
+
+IIRC sprintf() is less safe than snprintf().
+Is the check really correct to mention sprintf()?
+
+>>
+>> Hm. We use snprintf() at quite a lot more places in sysfs.c and, I don'=
+t
+>> see them getting this fix. Why?
+>
+> I guess the patch is only addressing the warning for snprintf, reading
+> the sources would show how many more conversions could have been done of
+> scnprintf calls.
+>
+>>> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+>>
+>> Below commit has added it. Nice.
+>>
+>> commit 2efc459d06f1630001e3984854848a5647086232
+>> Date:   Wed Sep 16 13:40:38 2020 -0700
+>>
+>>       sysfs: Add sysfs_emit and sysfs_emit_at to format sysfs out
+>
+> The conversion to the standard helper is good, but should be done
+> in the entire file.
+>
+
+Yeah, the same idea, all sysfs interface should convert to the new
+interface, not only the snprintf().
+
+Thanks,
+Qu
