@@ -2,108 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78E742C0B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC5142C0BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhJMM6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:58:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22503 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234452AbhJMM6u (ORCPT
+        id S235038AbhJMM7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232949AbhJMM7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:58:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634129807;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CkJpH3DgOJL3jwDbLBu0PEHYw2VVuRmqEfiPi5X44AA=;
-        b=DVqa1jFVPrWhrwbHIGq92pN/h7wfplrE5zjj5RyNS8BenPOYDgyYKo4N4PoyC9vQgAm48A
-        XRRWAifkNxh0VgbQo+6A8/lLkVzQ6VyBWjeIrA+lpHi19QYfkW9/3D7gMnnAsc8402uhOs
-        22wD40qvZfgaC085b0+8+AC7Lfa6/Pw=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-Df_uBI5ePjWQTCX74WeCkg-1; Wed, 13 Oct 2021 08:56:46 -0400
-X-MC-Unique: Df_uBI5ePjWQTCX74WeCkg-1
-Received: by mail-il1-f197.google.com with SMTP id s8-20020a056e02216800b002593ad87094so1506416ilv.15
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:56:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CkJpH3DgOJL3jwDbLBu0PEHYw2VVuRmqEfiPi5X44AA=;
-        b=KViwyzvfen7JaMpIYmyfgmT74lJ7Htarrd16TjMoylDrl2UHiFMmo8X7RQrxIF/16U
-         0Q5DSbX9fBzP05f6wqtDiG90pHY5w/JPPKjIjXhPbE3zCaP9exziC8o3DMa7Cfc2ekCY
-         8AP3BI4OEa4qpptFbJlUmkkGHkS6ZgbUd7lH5yCYuW/vllYymRYBAO5XY4yJwH6wzHeX
-         mIcmrSOOzmG/kmiGLi0SXzdHB9N5HghV0Hnra+T8CW07CtrwmOcoyET8THowJ0iwGerA
-         bCvKlDK/Zg7zATEILjA65/mM2KUyvuKsUrE5jSVlZFDWASVA/d1z6QnwoKohTctDSyVp
-         YX9Q==
-X-Gm-Message-State: AOAM531o3bv5O6qBBouCUJCE1FE6MBVjAYE1LzAueJAq6C49V1ML+QR6
-        /k90fVd8H7kiRHHEzxbYBWXxiQholVTEvdDd9O1XWW+/cekmbncKCNi91cZLFlZU6Rv0mpQ8ciF
-        T6FDcIu7bMJGoYURrrYE1Aiao
-X-Received: by 2002:a05:6e02:1909:: with SMTP id w9mr30332824ilu.34.1634129805435;
-        Wed, 13 Oct 2021 05:56:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwamTB8fvGG9rXJbVv2Ztg+M9X2Z1B0WdlXpPI7aycJycLAGn4sy/delupn/k2w5vVY/HbAAw==
-X-Received: by 2002:a05:6e02:1909:: with SMTP id w9mr30332809ilu.34.1634129805239;
-        Wed, 13 Oct 2021 05:56:45 -0700 (PDT)
-Received: from halaneylaptop (068-184-200-203.res.spectrum.com. [68.184.200.203])
-        by smtp.gmail.com with ESMTPSA id z5sm6760050ile.42.2021.10.13.05.56.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 05:56:40 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 07:56:38 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, akpm@linux-foundation.org,
-        bp@suse.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] init: Make unknown command line param message clearer
-Message-ID: <20211013125638.4nc4bnbzbeixfrii@halaneylaptop>
-References: <20211012213523.39801-1-ahalaney@redhat.com>
- <20211012200106.1afdbb0b@gandalf.local.home>
- <87853d4f-d6f8-1d58-1a07-c8232dae87fd@infradead.org>
+        Wed, 13 Oct 2021 08:59:00 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD81DC061762
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:56:56 -0700 (PDT)
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1madoU-0004Lp-PF; Wed, 13 Oct 2021 14:56:54 +0200
+Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1madoU-00F0tt-2i; Wed, 13 Oct 2021 14:56:54 +0200
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     ecryptfs@vger.kernel.org
+Cc:     Tyler Hicks <code@tyhicks.com>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH v2] eCryptfs: fix setattr on empty lower file
+Date:   Wed, 13 Oct 2021 14:56:52 +0200
+Message-Id: <20211013125652.3578336-1-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87853d4f-d6f8-1d58-1a07-c8232dae87fd@infradead.org>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 05:18:32PM -0700, Randy Dunlap wrote:
-> On 10/12/21 5:01 PM, Steven Rostedt wrote:
-> > On Tue, 12 Oct 2021 16:35:23 -0500
-> > Andrew Halaney <ahalaney@redhat.com> wrote:
-> > 
-> > > --- a/init/main.c
-> > > +++ b/init/main.c
-> > > @@ -925,6 +925,10 @@ static void __init print_unknown_bootoptions(void)
-> > >   	for (p = &envp_init[2]; *p; p++)
-> > >   		end += sprintf(end, " %s", *p);
-> > > +	pr_notice("The kernel command line has unknown parameters. They are either\n");
-> > > +	pr_notice("misspelled, not valid for the current kernel configuration,\n");
-> > > +	pr_notice("or are meant for init but are not after the '--' delineator. They will\n");
-> > > +	pr_notice("be passed to init along with those after '--' on the command line.\n");
-> > >   	pr_notice("Unknown command line parameters:%s\n", unknown_options);
-> > >   	memblock_free(unknown_options, len);
-> > 
-> > What about just changing it to simply say:
-> > 
-> > 	pr_notice("Unknown kernel command line parameters "%s", will be	passed to user space.\n",
-> > 		  unknown_options);
-> > 
-> 
-> Yes, that's much more palatable.
-> 
-> thanks.
-> -- 
-> ~Randy
-> 
+Depending on the synchronization state of the lower filesystem during a
+power cut it can happen that a lower file is empty after that power cut.
 
-Heh, that's basically what the users suggested too but I wasn't the
-biggest fan since I didn't think it highlighted the points I tried to
-make. I guess I'm just too verbose :P
+An inode_operations::setattr operation fails with -EIO on such files,
+because ecryptfs_read_metadata() fails. In e3ccaa976120 ("eCryptfs:
+Initialize empty lower files when opening them") a similar problem was
+solved in the open() path:
 
-I'll spin a v2 with that considering everyone likes that form more.
+| To transparently solve this problem, this patch initializes empty lower
+| files in the ecryptfs_open() error path. If the metadata is unreadable
+| due to the lower inode size being 0, plaintext passthrough support is
+| not in use, and the metadata is stored in the header of the file (as
+| opposed to the user.ecryptfs extended attribute), the lower file will be
+| initialized.
 
-Thanks,
-Andrew
+Do the same in inode_operations::setattr to allow setattr on empty lower
+files.
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+
+Changes since v1 (https://www.spinics.net/lists/ecryptfs/msg01397.html):
+- In ecryptfs_setattr() ecryptfs_read_or_initialize_metadata() can't be
+  called directly as &crypt_stat->cs_mutex would be locked, but in
+  ecryptfs_settattr() that mutex is already locked. Create a
+  locked/unlocked version of ecryptfs_read_or_initialize_metadata() and
+  use the latter one in ecryptfs_setattr().
+
+ fs/ecryptfs/crypto.c          | 61 +++++++++++++++++++++++++++++++++--
+ fs/ecryptfs/ecryptfs_kernel.h |  3 +-
+ fs/ecryptfs/file.c            | 44 +------------------------
+ fs/ecryptfs/inode.c           |  2 +-
+ 4 files changed, 63 insertions(+), 47 deletions(-)
+
+diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
+index e3f5d7f3c8a0a..a14d3ef40259f 100644
+--- a/fs/ecryptfs/crypto.c
++++ b/fs/ecryptfs/crypto.c
+@@ -1377,7 +1377,7 @@ int ecryptfs_read_and_validate_xattr_region(struct dentry *dentry,
+  *
+  * Returns zero if valid headers found and parsed; non-zero otherwise
+  */
+-int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry)
++static int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry)
+ {
+ 	int rc;
+ 	char *page_virt;
+@@ -1443,7 +1443,64 @@ int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry)
+ 	return rc;
+ }
+ 
+-/*
++int ecryptfs_read_or_initialize_metadata_locked(struct dentry *dentry)
++{
++	struct inode *inode = d_inode(dentry);
++	struct ecryptfs_mount_crypt_stat *mount_crypt_stat;
++	struct ecryptfs_crypt_stat *crypt_stat;
++	int rc;
++
++	crypt_stat = &ecryptfs_inode_to_private(inode)->crypt_stat;
++	mount_crypt_stat = &ecryptfs_superblock_to_private(
++						inode->i_sb)->mount_crypt_stat;
++
++	if (crypt_stat->flags & ECRYPTFS_POLICY_APPLIED &&
++	    crypt_stat->flags & ECRYPTFS_KEY_VALID) {
++		rc = 0;
++		goto out;
++	}
++
++	rc = ecryptfs_read_metadata(dentry);
++	if (!rc)
++		goto out;
++
++	if (mount_crypt_stat->flags & ECRYPTFS_PLAINTEXT_PASSTHROUGH_ENABLED) {
++		crypt_stat->flags &= ~(ECRYPTFS_I_SIZE_INITIALIZED
++				       | ECRYPTFS_ENCRYPTED);
++		rc = 0;
++		goto out;
++	}
++
++	if (!(mount_crypt_stat->flags & ECRYPTFS_XATTR_METADATA_ENABLED) &&
++	    !i_size_read(ecryptfs_inode_to_lower(inode))) {
++		rc = ecryptfs_initialize_file(dentry, inode);
++		if (!rc)
++			goto out;
++	}
++
++	rc = -EIO;
++out:
++	return rc;
++}
++
++int ecryptfs_read_or_initialize_metadata(struct dentry *dentry)
++{
++	struct inode *inode = d_inode(dentry);
++	struct ecryptfs_crypt_stat *crypt_stat;
++	int rc;
++
++	crypt_stat = &ecryptfs_inode_to_private(inode)->crypt_stat;
++
++	mutex_lock(&crypt_stat->cs_mutex);
++
++	rc = ecryptfs_read_or_initialize_metadata_locked(dentry);
++
++	mutex_unlock(&crypt_stat->cs_mutex);
++
++	return rc;
++}
++
++/**
+  * ecryptfs_encrypt_filename - encrypt filename
+  *
+  * CBC-encrypts the filename. We do not want to encrypt the same
+diff --git a/fs/ecryptfs/ecryptfs_kernel.h b/fs/ecryptfs/ecryptfs_kernel.h
+index 5f2b49e13731a..af71d6f7da91d 100644
+--- a/fs/ecryptfs/ecryptfs_kernel.h
++++ b/fs/ecryptfs/ecryptfs_kernel.h
+@@ -573,7 +573,8 @@ int ecryptfs_encrypt_page(struct page *page);
+ int ecryptfs_decrypt_page(struct page *page);
+ int ecryptfs_write_metadata(struct dentry *ecryptfs_dentry,
+ 			    struct inode *ecryptfs_inode);
+-int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry);
++int ecryptfs_read_or_initialize_metadata(struct dentry *dentry);
++int ecryptfs_read_or_initialize_metadata_locked(struct dentry *dentry);
+ int ecryptfs_new_file_context(struct inode *ecryptfs_inode);
+ void ecryptfs_write_crypt_stat_flags(char *page_virt,
+ 				     struct ecryptfs_crypt_stat *crypt_stat,
+diff --git a/fs/ecryptfs/file.c b/fs/ecryptfs/file.c
+index 18d5b91cb573e..4721aba376784 100644
+--- a/fs/ecryptfs/file.c
++++ b/fs/ecryptfs/file.c
+@@ -124,48 +124,6 @@ static int ecryptfs_readdir(struct file *file, struct dir_context *ctx)
+ 
+ struct kmem_cache *ecryptfs_file_info_cache;
+ 
+-static int read_or_initialize_metadata(struct dentry *dentry)
+-{
+-	struct inode *inode = d_inode(dentry);
+-	struct ecryptfs_mount_crypt_stat *mount_crypt_stat;
+-	struct ecryptfs_crypt_stat *crypt_stat;
+-	int rc;
+-
+-	crypt_stat = &ecryptfs_inode_to_private(inode)->crypt_stat;
+-	mount_crypt_stat = &ecryptfs_superblock_to_private(
+-						inode->i_sb)->mount_crypt_stat;
+-	mutex_lock(&crypt_stat->cs_mutex);
+-
+-	if (crypt_stat->flags & ECRYPTFS_POLICY_APPLIED &&
+-	    crypt_stat->flags & ECRYPTFS_KEY_VALID) {
+-		rc = 0;
+-		goto out;
+-	}
+-
+-	rc = ecryptfs_read_metadata(dentry);
+-	if (!rc)
+-		goto out;
+-
+-	if (mount_crypt_stat->flags & ECRYPTFS_PLAINTEXT_PASSTHROUGH_ENABLED) {
+-		crypt_stat->flags &= ~(ECRYPTFS_I_SIZE_INITIALIZED
+-				       | ECRYPTFS_ENCRYPTED);
+-		rc = 0;
+-		goto out;
+-	}
+-
+-	if (!(mount_crypt_stat->flags & ECRYPTFS_XATTR_METADATA_ENABLED) &&
+-	    !i_size_read(ecryptfs_inode_to_lower(inode))) {
+-		rc = ecryptfs_initialize_file(dentry, inode);
+-		if (!rc)
+-			goto out;
+-	}
+-
+-	rc = -EIO;
+-out:
+-	mutex_unlock(&crypt_stat->cs_mutex);
+-	return rc;
+-}
+-
+ static int ecryptfs_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+ 	struct file *lower_file = ecryptfs_file_to_lower(file);
+@@ -232,7 +190,7 @@ static int ecryptfs_open(struct inode *inode, struct file *file)
+ 	}
+ 	ecryptfs_set_file_lower(
+ 		file, ecryptfs_inode_to_private(inode)->lower_file);
+-	rc = read_or_initialize_metadata(ecryptfs_dentry);
++	rc = ecryptfs_read_or_initialize_metadata(ecryptfs_dentry);
+ 	if (rc)
+ 		goto out_put;
+ 	ecryptfs_printk(KERN_DEBUG, "inode w/ addr = [0x%p], i_ino = "
+diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
+index 16d50dface59a..bdeeb89d1dc95 100644
+--- a/fs/ecryptfs/inode.c
++++ b/fs/ecryptfs/inode.c
+@@ -916,7 +916,7 @@ static int ecryptfs_setattr(struct user_namespace *mnt_userns,
+ 			mutex_unlock(&crypt_stat->cs_mutex);
+ 			goto out;
+ 		}
+-		rc = ecryptfs_read_metadata(dentry);
++		rc = ecryptfs_read_or_initialize_metadata_locked(dentry);
+ 		ecryptfs_put_lower_file(inode);
+ 		if (rc) {
+ 			if (!(mount_crypt_stat->flags
+-- 
+2.30.2
 
