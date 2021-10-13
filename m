@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4B942B315
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9132142B2FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237033AbhJMDHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:07:20 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:57482 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229571AbhJMDHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:07:14 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-03 (Coremail) with SMTP id rQCowAC3v6vFTGZhRuViAw--.13004S2;
-        Wed, 13 Oct 2021 11:04:37 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] hv_netvsc: Fix potentionally overflow in netvsc_xdp_xmit()
-Date:   Wed, 13 Oct 2021 03:04:35 +0000
-Message-Id: <1634094275-1773464-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: rQCowAC3v6vFTGZhRuViAw--.13004S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jr4DGFWktr1fGr4xtr17GFg_yoWfAFX_Cr
-        18GF17Ww4UC3WkKr4kGa1rZFy8tw1vqFWfAFWIq39xX347Ary5Xw1Fvr9xGrWrW3yUCr9x
-        Gws7WaykZr9rWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCY02Avz4vE14v_Gr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JU3kucUUUUU=
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S237001AbhJMDAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:00:08 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14340 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233852AbhJMDAH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 23:00:07 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HTcXn0JR6z8yhK;
+        Wed, 13 Oct 2021 10:53:13 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 10:57:51 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 13 Oct
+ 2021 10:57:51 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <jic23@kernel.org>,
+        <alexandru.ardelean@analog.com>, <andy.shevchenko@gmail.com>
+Subject: [PATCH v3] iio: core: fix double free in iio_device_unregister_sysfs()
+Date:   Wed, 13 Oct 2021 11:05:32 +0800
+Message-ID: <20211013030532.956133-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding skb_rx_queue_recorded() to avoid the value of skb->queue_mapping
-to be 0. Otherwise the return value of skb_get_rx_queue() could be MAX_U16
-cause by overflow.
+I got the double free report:
 
-Fixes: 351e158 ("hv_netvsc: Add XDP support")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
+ kfree+0xce/0x390
+ iio_device_unregister_sysfs+0x108/0x13b [industrialio]
+ iio_dev_release+0x9e/0x10e [industrialio]
+ device_release+0xa5/0x240
+ kobject_put+0x1e5/0x540
+ put_device+0x20/0x30
+ devm_iio_device_release+0x21/0x30 [industrialio]
+
+If __iio_device_register() fails, iio_dev_opaque->groups will be freed
+in error path in iio_device_unregister_sysfs(), then iio_dev_release()
+will call iio_device_unregister_sysfs() again, it causes double free.
+Set iio_dev_opaque->groups to NULL when it's freed to fix this double free.
+
+Fixes: 32f171724e5c ("iio: core: rework iio device group creation")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/net/hyperv/netvsc_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v1 -> v3:
+  reduce some backtrace in commit message
+---
+ drivers/iio/industrialio-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index f682a55..e51201e 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -807,7 +807,7 @@ static void netvsc_xdp_xmit(struct sk_buff *skb, struct net_device *ndev)
- {
- 	int rc;
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index 2dbb37e09b8c..2dc837db50f7 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -1600,6 +1600,7 @@ static void iio_device_unregister_sysfs(struct iio_dev *indio_dev)
+ 	kfree(iio_dev_opaque->chan_attr_group.attrs);
+ 	iio_dev_opaque->chan_attr_group.attrs = NULL;
+ 	kfree(iio_dev_opaque->groups);
++	iio_dev_opaque->groups = NULL;
+ }
  
--	skb->queue_mapping = skb_get_rx_queue(skb);
-+	skb->queue_mapping = skb_rx_queue_recorded(skb) ? skb_get_rx_queue(skb) : 0;
- 	__skb_push(skb, ETH_HLEN);
- 
- 	rc = netvsc_xmit(skb, ndev, true);
+ static void iio_dev_release(struct device *device)
 -- 
-2.7.4
+2.25.1
 
