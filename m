@@ -2,79 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABA842C3B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584B642C370
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236692AbhJMOor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:44:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230385AbhJMOom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:44:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 563DD61165;
-        Wed, 13 Oct 2021 14:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634136159;
-        bh=qtuN71F2mOeUcWHCNSmjSBO9j7CrGEvPuhdVjbtcEXM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PppLkcWhmQMcUsDDMZNYA8XJrYgHKJLduHy/K88ME/Rl7/Oy6OzjH1AXPu8ZGw1rx
-         U/K90vZksfK4Vr7V+9fO7RiAAIRIYIPBg/7OwnQdtoT/vv1r+u7CnY1zngjfUdmUoh
-         LvJpTK6Ho9VhFrlRg8RlPQ6XUQzfnH62rEFbAemXw4Oao2Ai1Jlpj5qigFo/2/95Eq
-         7dIm4kCpSm4wSG/08bDTshWYW1H7En6dS/Yj0m7IlA/Phwlc/K5NtPnaGz/H2/97ku
-         Il7tXcn4HoL6PpUHaxfVPp0bnviOI26xIfuNQf5Obak5VhxTZuYyFbFEm+W1W4TW6K
-         e6JAOmADkm6Vg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
-        Jaehyun Chung <jaehyun.chung@amd.com>,
-        Mikita Lipski <mikita.lipski@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Felipe <Felipe.Clark@amd.com>, Felipe Clark <felclark@amd.com>,
-        Derek Lai <Derek.Lai@amd.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/display: fix apply_degamma_for_user_regamma() warning
-Date:   Wed, 13 Oct 2021 16:42:07 +0200
-Message-Id: <20211013144234.2224358-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S236721AbhJMOh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:37:26 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:25133 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234988AbhJMOhZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:37:25 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HTw522xvyz1DHR6;
+        Wed, 13 Oct 2021 22:33:42 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 22:35:19 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 13 Oct
+ 2021 22:35:19 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <jic23@kernel.org>, <ardeleanalex@gmail.com>
+Subject: [PATCH] iio: buffer: Fix memory leak in iio_buffer_register_legacy_sysfs_groups()
+Date:   Wed, 13 Oct 2021 22:42:42 +0800
+Message-ID: <20211013144242.1685060-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+If the second iio_device_register_sysfs_group() fails,
+'legacy_buffer_group.attrs' need be freed too or it will
+cause memory leak:
 
-It appears that the wrong argument was removed in this call:
+unreferenced object 0xffff888003618280 (size 64):
+  comm "xrun", pid 357, jiffies 4294907259 (age 22.296s)
+  hex dump (first 32 bytes):
+    80 f6 8c 03 80 88 ff ff 80 fb 8c 03 80 88 ff ff  ................
+    00 f9 8c 03 80 88 ff ff 80 fc 8c 03 80 88 ff ff  ................
+  backtrace:
+    [<00000000076bfd43>] __kmalloc+0x1a3/0x2f0
+    [<00000000c32e4886>] iio_buffers_alloc_sysfs_and_mask+0xc31/0x1290 [industrialio]
+    [<000000002fcd0bb8>] __iio_device_register+0x52e/0x1b40 [industrialio]
+    [<000000008116530c>] __devm_iio_device_register+0x22/0x80 [industrialio]
+    [<000000008a47327c>] adjd_s311_probe+0x195/0x200 [adjd_s311]
+    [<00000000f8eeb456>] i2c_device_probe+0xa07/0xbb0
+    [<000000000e86686c>] really_probe+0x285/0xc30
+    [<00000000a49db55c>] __driver_probe_device+0x35f/0x4f0
+    [<00000000d1fd43a1>] driver_probe_device+0x4f/0x140
+    [<000000008cdafdfa>] __device_attach_driver+0x24c/0x330
+    [<000000006466e92e>] bus_for_each_drv+0x15d/0x1e0
+    [<00000000154fbb1c>] __device_attach+0x267/0x410
+    [<000000007c84d5d1>] bus_probe_device+0x1ec/0x2a0
+    [<0000000019967467>] device_add+0xc3d/0x2020
+    [<00000000a16d2d51>] i2c_new_client_device+0x614/0xb00
+    [<00000000a56a901d>] new_device_store+0x1f4/0x410
 
-drivers/gpu/drm/amd/amdgpu/../display/modules/color/color_gamma.c: In function 'apply_degamma_for_user_regamma':
-drivers/gpu/drm/amd/amdgpu/../display/modules/color/color_gamma.c:1694:36: error: implicit conversion from 'enum <anonymous>' to 'enum dc_transfer_func_predefined' [-Werror=enum-conversion]
- 1694 |         build_coefficients(&coeff, true);
-
-Fixes: 9b3d76527f6e ("drm/amd/display: Revert adding degamma coefficients")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: d9a625744ed0 ("iio: core: merge buffer/ & scan_elements/ attributes")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/gpu/drm/amd/display/modules/color/color_gamma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/industrialio-buffer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/modules/color/color_gamma.c b/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
-index 64a38f08f497..4cb6617059ae 100644
---- a/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
-+++ b/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
-@@ -1691,7 +1691,7 @@ static void apply_degamma_for_user_regamma(struct pwl_float_data_ex *rgb_regamma
- 	struct pwl_float_data_ex *rgb = rgb_regamma;
- 	const struct hw_x_point *coord_x = coordinates_x;
+diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+index ba1c5c898e53..88741385764e 100644
+--- a/drivers/iio/industrialio-buffer.c
++++ b/drivers/iio/industrialio-buffer.c
+@@ -1367,10 +1367,10 @@ static int iio_buffer_register_legacy_sysfs_groups(struct iio_dev *indio_dev,
  
--	build_coefficients(&coeff, true);
-+	build_coefficients(&coeff, TRANSFER_FUNCTION_SRGB);
+ 	return 0;
  
- 	i = 0;
- 	while (i != hw_points_num + 1) {
+-error_free_buffer_attrs:
+-	kfree(iio_dev_opaque->legacy_buffer_group.attrs);
+ error_free_scan_el_attrs:
+ 	kfree(iio_dev_opaque->legacy_scan_el_group.attrs);
++error_free_buffer_attrs:
++	kfree(iio_dev_opaque->legacy_buffer_group.attrs);
+ 
+ 	return ret;
+ }
 -- 
-2.29.2
+2.25.1
 
