@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BACF742C039
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C0642C044
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233559AbhJMMmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:42:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230219AbhJMMmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:42:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BB0860EBB;
-        Wed, 13 Oct 2021 12:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634128819;
-        bh=b/pPEx0ey4x7fKozl7x8vGohle8yRo4JKIaeZWIr5OI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GGuVbv+UqZlipVY+rZPFc2XQ0sGnb3USQrXkLAcFYDgAM5zQvyumMDbFusfj3511M
-         Bf1GYXxRKvSsPFcL1oESeb3n5NtaSgRRFvFuHUl1Eyg1gwNQYAAFAZ3cPeQo3FVsqI
-         yvkBZ/hexRFL2Zocp10MKPV0cYIege8W/OtfRHa4=
-Date:   Wed, 13 Oct 2021 14:40:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jim Cromie <jim.cromie@gmail.com>
-Cc:     jbaron@akamai.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] dyndbg: refine verbosity 1-4 summary-detail
-Message-ID: <YWbTsfXB7mq/z7qq@kroah.com>
-References: <20211012183310.1016678-1-jim.cromie@gmail.com>
- <20211012183310.1016678-3-jim.cromie@gmail.com>
+        id S233621AbhJMMoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230197AbhJMMoG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 08:44:06 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F66C061570;
+        Wed, 13 Oct 2021 05:42:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZOJVOG5TPmwro9XVUCu0WLliPWZ0LeekD1uGNl5wZzs=; b=i37otEyCeSc+Ed6QP63HmDUoeK
+        nyEGtCVCdea+zOQT3MR2vMjX2N3nEbH6VeajvaqJCNsy2JKhrs2y7pEZ6SnXyi0QVj23aRsJm6PVa
+        FFIw6hc6ynV2EdXjiuKjytahoIVKcLkHtM9zf6rTdMwn1ujChgk8BK98xOHLJlU791WlJaBfkX35w
+        QxDIXQ3KnNEoAiP4hLSrp68oE1SGAt8phequyiaYWDLk0w3FbCbiOfkLJWj+Nxt8/wQxqec558jly
+        NLNdHzyapNsqVZEXn+FxmyOwcMsL8R55I5P/W4dVtbvPSAjDAcaAsQ8RPgbSUn1QwKImLleH3Ysyd
+        ucatYAkQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mada2-00GdSy-Jx; Wed, 13 Oct 2021 12:41:58 +0000
+Date:   Wed, 13 Oct 2021 05:41:58 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, rostedt@goodmis.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 09/12] sysfs: fix deadlock race with module removal
+Message-ID: <YWbUFnway11HwuZl@bombadil.infradead.org>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-10-mcgrof@kernel.org>
+ <202110051315.B2165F455@keescook>
+ <YWS5+uyDQ4qklTcT@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211012183310.1016678-3-jim.cromie@gmail.com>
+In-Reply-To: <YWS5+uyDQ4qklTcT@bombadil.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 12:33:07PM -0600, Jim Cromie wrote:
-> adjust current v*pr_info() calls to fit an overview..detail scheme:
+On Mon, Oct 11, 2021 at 03:26:02PM -0700, Luis Chamberlain wrote:
+> On Tue, Oct 05, 2021 at 01:50:31PM -0700, Kees Cook wrote:
+> > For example, why does this not work?
 > 
-> -1 module level activity: add/remove, etc
-> -2 command ingest, splitting, summary of effects.
->    per >control write
-> -3 command parsing, 6 vpr-infos changed to this.
-> -4 per-site change - was v2, too noisy there.
->    can yield 3k logs per command.
-> 
-> -2 is new, to isolate a problem where a stress-test script (which
-> feeds large multi-command strings) would produce short writes,
-> truncating last command and causing parsing errors, which confused
-> test results.  The 1st fix was to use syswrite in the script, to
-> deliver full proper commands.
-> 
-> -4 gets per-callsite "changed:" pr-infos, which are very noisy during
-> stress tests, and formerly obscured v1-3 messages, and dominated the
-> static-key workload being tested.
-> 
-> The verbose parameter has previously seen adjustment:
-> commit 481c0e33f1e7 ("dyndbg: refine debug verbosity; 1 is basic, 2 more chatty")
-> 
-> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> It does for the write case for sure,
 
-Where is this being documented?  How do we know what these different
-"levels" mean?
+I mispoke, just for the record, the changes you mentioned actually don't
+suffice for the test cases in question for test_sysfs, the deadlock
+still occurs with those changes. At first I thought it did but I had failed
+to remove my own fix first on fs/kernfs/dir.c. After removing that and
+just trying the proposed changes I confirm it does not fix the deadlock.
 
-thanks,
-
-greg k-h
+  Luis
