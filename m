@@ -2,148 +2,597 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126B842B897
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F04942B89D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238178AbhJMHMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238371AbhJMHMH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:12:07 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8598DC061749
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:10:04 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id u21so4207118lff.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:10:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ogqZy3TAy6+qEHHl5cPKz54lxH4LD6O0Wc/FhOwWDsM=;
-        b=CzXcO5tKFJUXWn4Q/+y2U8lDHv+2ksgjTxS0YhMwS18A8SagcBSfSzyDxu8luezXnR
-         f4HGyqKMJiunW2SOGnVjO8Y0MFVpRzZzUCIAzdKgemhd6cKMaiQnwBCtSX0irmCCVbyO
-         MJK4FWv3Qt1anRb3JTqnJRyK6gJX9w+J3CN+a8X6KXThrRONCAJ255acu5EYgxin2tYR
-         U9CbjHag6jGRHfb32SZ4+lk/vaV3N/ckSvHWy/FSNnMy/Iu40zCE/0tx3rhBfIFLN6Xs
-         lkdx1XMDPj3veTwSq4hmxx18NFewaTa10VxfikTAhZJts+0vU2XrZBlxBig3eB7U3nnu
-         6iNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ogqZy3TAy6+qEHHl5cPKz54lxH4LD6O0Wc/FhOwWDsM=;
-        b=do+q5HY415MVDswyfZNNq3k8hanXhKERZ+6zCIv+d43pq5EZyN3cmVQ8UfQ0du0Bx2
-         hIsd+niIzHFoPlooiUX+JD700x2fWxLMvKZuc0XZ3dXtjl+R9PBGNQGj8kMFj4A8zDDj
-         Le9S6NbVLjPYja/vRCUDT0qwR23yNheAGlD4niQlv/ljNrQezeTbXjWahaKN8Vh3/e3G
-         RqQOwwDSZm8m7IUcXCdQ5uQfswPjqbDTAC9q1JR2GPmakHQcXIfyg+qfPZUn0kk7UeF+
-         QuH73gsnSW8tSfSOywVQkudRjP9+NLMgdmSxMEKCPJwYev20wB/64P7uC+41Mb7awljM
-         wm3w==
-X-Gm-Message-State: AOAM530wMZPZQWeyZPshJzfkWYdfK5wqnKaMMdE5TGkoapeUsR6tOPF7
-        E2jRz7h6xWJldjO/zov9U02bAqSCQdZXFtQp0+3k7w==
-X-Google-Smtp-Source: ABdhPJzvXXAHtBA7ebI/i+rhF0WnBhxKgLdOphK36gqOInuyLSlVAJfRZbbODuQKKsAd+la0o9tvW3AmYpYVWwgjsOs=
-X-Received: by 2002:a2e:bd0b:: with SMTP id n11mr33501152ljq.71.1634109002881;
- Wed, 13 Oct 2021 00:10:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211006071546.2540920-1-jens.wiklander@linaro.org> <20211006071546.2540920-5-jens.wiklander@linaro.org>
-In-Reply-To: <20211006071546.2540920-5-jens.wiklander@linaro.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 13 Oct 2021 12:39:51 +0530
-Message-ID: <CAFA6WYOZ4Ux4XvMa_tZgR+mZbuNb0ypABvyUeMKc1ngAYR8zVA@mail.gmail.com>
-Subject: Re: [PATCH v6 4/6] tee: export teedev_open() and teedev_close_context()
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jerome Forissier <jerome@forissier.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        id S238250AbhJMHNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:13:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232006AbhJMHNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 03:13:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 726D761027;
+        Wed, 13 Oct 2021 07:11:43 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
         Jonathan Corbet <corbet@lwn.net>,
-        Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH V5 14/22] LoongArch: Add signal handling support
+Date:   Wed, 13 Oct 2021 15:11:09 +0800
+Message-Id: <20211013071117.3097969-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211013063656.3084555-1-chenhuacai@loongson.cn>
+References: <20211013063656.3084555-1-chenhuacai@loongson.cn>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 at 12:46, Jens Wiklander <jens.wiklander@linaro.org> wrote:
->
-> Exports the two functions teedev_open() and teedev_close_context() in
-> order to make it easier to create a driver internal struct tee_context.
->
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> ---
->  drivers/tee/tee_core.c  |  6 ++++--
->  include/linux/tee_drv.h | 14 ++++++++++++++
->  2 files changed, 18 insertions(+), 2 deletions(-)
->
+This patch adds signal handling support for LoongArch.
 
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+ arch/loongarch/include/uapi/asm/sigcontext.h |  30 ++
+ arch/loongarch/include/uapi/asm/ucontext.h   |  35 ++
+ arch/loongarch/kernel/signal.c               | 455 +++++++++++++++++++
+ 3 files changed, 520 insertions(+)
+ create mode 100644 arch/loongarch/include/uapi/asm/sigcontext.h
+ create mode 100644 arch/loongarch/include/uapi/asm/ucontext.h
+ create mode 100644 arch/loongarch/kernel/signal.c
 
--Sumit
+diff --git a/arch/loongarch/include/uapi/asm/sigcontext.h b/arch/loongarch/include/uapi/asm/sigcontext.h
+new file mode 100644
+index 000000000000..5d55f61c40af
+--- /dev/null
++++ b/arch/loongarch/include/uapi/asm/sigcontext.h
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
++/*
++ * Author: Hanlu Li <lihanlu@loongson.cn>
++ *         Huacai Chen <chenhuacai@loongson.cn>
++ *
++ * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
++ */
++#ifndef _UAPI_ASM_SIGCONTEXT_H
++#define _UAPI_ASM_SIGCONTEXT_H
++
++#include <linux/types.h>
++#include <linux/posix_types.h>
++#include <asm/processor.h>
++
++/* FP context was used */
++#define USED_FP			(1 << 0)
++
++struct sigcontext {
++	__u64	sc_pc;
++	__u64	sc_regs[32];
++	__u32	sc_flags;
++	__u32	sc_fcsr;
++	__u32	sc_vcsr;
++	__u64	sc_fcc;
++	__u64	sc_scr[4];
++	union fpureg sc_fpregs[32] FPU_ALIGN;
++	__u8	sc_reserved[4096] __attribute__((__aligned__(16)));
++};
++
++#endif /* _UAPI_ASM_SIGCONTEXT_H */
+diff --git a/arch/loongarch/include/uapi/asm/ucontext.h b/arch/loongarch/include/uapi/asm/ucontext.h
+new file mode 100644
+index 000000000000..12577e22b1c7
+--- /dev/null
++++ b/arch/loongarch/include/uapi/asm/ucontext.h
+@@ -0,0 +1,35 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef __LOONGARCH_UAPI_ASM_UCONTEXT_H
++#define __LOONGARCH_UAPI_ASM_UCONTEXT_H
++
++/**
++ * struct ucontext - user context structure
++ * @uc_flags:
++ * @uc_link:
++ * @uc_stack:
++ * @uc_mcontext:	holds basic processor state
++ * @uc_sigmask:
++ * @uc_extcontext:	holds extended processor state
++ */
++struct ucontext {
++	unsigned long		uc_flags;
++	struct ucontext		*uc_link;
++	stack_t			uc_stack;
++	sigset_t		uc_sigmask;
++	/* There's some padding here to allow sigset_t to be expanded in the
++	 * future.  Though this is unlikely, other architectures put uc_sigmask
++	 * at the end of this structure and explicitly state it can be
++	 * expanded, so we didn't want to box ourselves in here. */
++	__u8		  __unused[1024 / 8 - sizeof(sigset_t)];
++	/* We can't put uc_sigmask at the end of this structure because we need
++	 * to be able to expand sigcontext in the future.  For example, the
++	 * vector ISA extension will almost certainly add ISA state.  We want
++	 * to ensure all user-visible ISA state can be saved and restored via a
++	 * ucontext, so we're putting this at the end in order to allow for
++	 * infinite extensibility.  Since we know this will be extended and we
++	 * assume sigset_t won't be extended an extreme amount, we're
++	 * prioritizing this. */
++	struct sigcontext	uc_mcontext;
++};
++
++#endif /* __LOONGARCH_UAPI_ASM_UCONTEXT_H */
+diff --git a/arch/loongarch/kernel/signal.c b/arch/loongarch/kernel/signal.c
+new file mode 100644
+index 000000000000..c71e0026fe2c
+--- /dev/null
++++ b/arch/loongarch/kernel/signal.c
+@@ -0,0 +1,455 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Author: Hanlu Li <lihanlu@loongson.cn>
++ *         Huacai Chen <chenhuacai@loongson.cn>
++ * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
++ *
++ * Derived from MIPS:
++ * Copyright (C) 1991, 1992  Linus Torvalds
++ * Copyright (C) 1994 - 2000  Ralf Baechle
++ * Copyright (C) 1999, 2000 Silicon Graphics, Inc.
++ * Copyright (C) 2014, Imagination Technologies Ltd.
++ */
++#include <linux/audit.h>
++#include <linux/cache.h>
++#include <linux/context_tracking.h>
++#include <linux/irqflags.h>
++#include <linux/sched.h>
++#include <linux/mm.h>
++#include <linux/personality.h>
++#include <linux/smp.h>
++#include <linux/kernel.h>
++#include <linux/signal.h>
++#include <linux/errno.h>
++#include <linux/wait.h>
++#include <linux/ptrace.h>
++#include <linux/unistd.h>
++#include <linux/compiler.h>
++#include <linux/syscalls.h>
++#include <linux/uaccess.h>
++#include <linux/tracehook.h>
++
++#include <asm/asm.h>
++#include <asm/cacheflush.h>
++#include <asm/cpu-features.h>
++#include <asm/fpu.h>
++#include <asm/ucontext.h>
++#include <asm/vdso.h>
++
++#ifdef DEBUG_SIG
++#  define DEBUGP(fmt, args...) printk("%s: " fmt, __func__, ##args)
++#else
++#  define DEBUGP(fmt, args...)
++#endif
++
++/* Make sure we will not lose FPU ownership */
++#define lock_fpu_owner()	({ preempt_disable(); pagefault_disable(); })
++#define unlock_fpu_owner()	({ pagefault_enable(); preempt_enable(); })
++
++/* Assembly functions to move context to/from the FPU */
++extern asmlinkage int
++_save_fp_context(void __user *fpregs, void __user *fcc, void __user *csr);
++extern asmlinkage int
++_restore_fp_context(void __user *fpregs, void __user *fcc, void __user *csr);
++
++static int (*save_fp_context)(struct sigcontext __user *sc);
++static int (*restore_fp_context)(struct sigcontext __user *sc);
++
++struct rt_sigframe {
++	struct siginfo rs_info;
++	struct ucontext rs_uctx;
++};
++
++/*
++ * Thread saved context copy to/from a signal context presumed to be on the
++ * user stack, and therefore accessed with appropriate macros from uaccess.h.
++ */
++static int copy_fp_to_sigcontext(struct sigcontext __user *sc)
++{
++	int i;
++	int err = 0;
++	int inc = 1;
++	uint64_t __user *fcc = &sc->sc_fcc;
++	uint32_t __user *csr = &sc->sc_fcsr;
++	uint64_t __user *fpregs = (uint64_t *)&sc->sc_fpregs;
++
++	for (i = 0; i < NUM_FPU_REGS; i += inc) {
++		err |=
++		    __put_user(get_fpr64(&current->thread.fpu.fpr[i], 0),
++			       &fpregs[4*i]);
++	}
++	err |= __put_user(current->thread.fpu.fcsr, csr);
++	err |= __put_user(current->thread.fpu.fcc, fcc);
++
++	return err;
++}
++
++static int copy_fp_from_sigcontext(struct sigcontext __user *sc)
++{
++	int i;
++	int err = 0;
++	int inc = 1;
++	u64 fpr_val;
++	uint64_t __user *fcc = &sc->sc_fcc;
++	uint32_t __user *csr = &sc->sc_fcsr;
++	uint64_t __user *fpregs = (uint64_t *)&sc->sc_fpregs;
++
++	for (i = 0; i < NUM_FPU_REGS; i += inc) {
++		err |= __get_user(fpr_val, &fpregs[4*i]);
++		set_fpr64(&current->thread.fpu.fpr[i], 0, fpr_val);
++	}
++	err |= __get_user(current->thread.fpu.fcsr, csr);
++	err |= __get_user(current->thread.fpu.fcc, fcc);
++
++	return err;
++}
++
++/*
++ * Wrappers for the assembly _{save,restore}_fp_context functions.
++ */
++static int save_hw_fp_context(struct sigcontext __user *sc)
++{
++	uint64_t __user *fcc = &sc->sc_fcc;
++	uint32_t __user *fcsr = &sc->sc_fcsr;
++	uint64_t __user *fpregs = (uint64_t *)&sc->sc_fpregs;
++
++	return _save_fp_context(fpregs, fcc, fcsr);
++}
++
++static int restore_hw_fp_context(struct sigcontext __user *sc)
++{
++	uint64_t __user *fcc = &sc->sc_fcc;
++	uint32_t __user *csr = &sc->sc_fcsr;
++	uint64_t __user *fpregs = (uint64_t *)&sc->sc_fpregs;
++
++	return _restore_fp_context(fpregs, fcc, csr);
++}
++
++int fpcsr_pending(unsigned int __user *fpcsr)
++{
++	int err, sig = 0;
++	unsigned int csr, enabled;
++
++	err = __get_user(csr, fpcsr);
++	enabled = ((csr & FPU_CSR_ALL_E) << 24);
++	/*
++	 * If the signal handler set some FPU exceptions, clear it and
++	 * send SIGFPE.
++	 */
++	if (csr & enabled) {
++		csr &= ~enabled;
++		err |= __put_user(csr, fpcsr);
++		sig = SIGFPE;
++	}
++	return err ?: sig;
++}
++
++/*
++ * Helper routines
++ */
++static int protected_save_fp_context(struct sigcontext __user *sc)
++{
++	int err = 0;
++	unsigned int used;
++	uint32_t __user *fcc = &sc->sc_fcsr;
++	uint32_t __user *fcsr = &sc->sc_fcsr;
++	uint32_t __user *vcsr = &sc->sc_vcsr;
++	uint32_t __user *flags = &sc->sc_flags;
++	uint64_t __user *fpregs = (uint64_t *)&sc->sc_fpregs;
++
++	used = used_math() ? USED_FP : 0;
++	if (!used)
++		goto fp_done;
++
++	while (1) {
++		lock_fpu_owner();
++		if (is_fpu_owner())
++			err = save_fp_context(sc);
++		else
++			err |= copy_fp_to_sigcontext(sc);
++		unlock_fpu_owner();
++		if (likely(!err))
++			break;
++		/* touch the sigcontext and try again */
++		err = __put_user(0, &fpregs[0]) |
++			__put_user(0, &fpregs[32*4 - 1]) |
++			__put_user(0, fcc) |
++			__put_user(0, fcsr) |
++			__put_user(0, vcsr);
++		if (err)
++			return err;	/* really bad sigcontext */
++	}
++
++fp_done:
++	return __put_user(used, flags);
++}
++
++static int protected_restore_fp_context(struct sigcontext __user *sc)
++{
++	unsigned int used;
++	int err = 0, sig = 0, tmp __maybe_unused;
++	uint32_t __user *fcc = &sc->sc_fcsr;
++	uint32_t __user *fcsr = &sc->sc_fcsr;
++	uint32_t __user *vcsr = &sc->sc_vcsr;
++	uint32_t __user *flags = &sc->sc_flags;
++	uint64_t __user *fpregs = (uint64_t *)&sc->sc_fpregs;
++
++	err = __get_user(used, flags);
++	conditional_used_math(used & USED_FP);
++
++	/*
++	 * The signal handler may have used FPU; give it up if the program
++	 * doesn't want it following sigreturn.
++	 */
++	if (err || !(used & USED_FP))
++		lose_fpu(0);
++
++	if (err)
++		return err;
++
++	if (!(used & USED_FP))
++		goto fp_done;
++
++	err = sig = fpcsr_pending(fcsr);
++	if (err < 0)
++		return err;
++
++	while (1) {
++		lock_fpu_owner();
++		if (is_fpu_owner())
++			err = restore_fp_context(sc);
++		else
++			err |= copy_fp_from_sigcontext(sc);
++		unlock_fpu_owner();
++		if (likely(!err))
++			break;
++		/* touch the sigcontext and try again */
++		err = __get_user(tmp, &fpregs[0]) |
++			__get_user(tmp, &fpregs[32*4 - 1]) |
++			__get_user(tmp, fcc) |
++			__get_user(tmp, fcsr) |
++			__get_user(tmp, vcsr);
++		if (err)
++			break;	/* really bad sigcontext */
++	}
++
++fp_done:
++	return err ?: sig;
++}
++
++static int setup_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
++{
++	int i, err = 0;
++
++	err |= __put_user(regs->csr_epc, &sc->sc_pc);
++
++	err |= __put_user(0, &sc->sc_regs[0]);
++	for (i = 1; i < 32; i++)
++		err |= __put_user(regs->regs[i], &sc->sc_regs[i]);
++
++	/*
++	 * Save FPU state to signal context. Signal handler
++	 * will "inherit" current FPU state.
++	 */
++	err |= protected_save_fp_context(sc);
++
++	return err;
++}
++
++static int restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *sc)
++{
++	int i, err = 0;
++
++	/* Always make any pending restarted system calls return -EINTR */
++	current->restart_block.fn = do_no_restart_syscall;
++
++	err |= __get_user(regs->csr_epc, &sc->sc_pc);
++
++	for (i = 1; i < 32; i++)
++		err |= __get_user(regs->regs[i], &sc->sc_regs[i]);
++
++	return err ?: protected_restore_fp_context(sc);
++}
++
++void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
++			  size_t frame_size)
++{
++	unsigned long sp;
++
++	/* Default to using normal stack */
++	sp = regs->regs[3];
++	sp -= 32;   /* Reserve 32-bytes. */
++
++	sp = sigsp(sp, ksig);
++
++	return (void __user *)((sp - frame_size) & ALMASK);
++}
++
++/*
++ * Atomically swap in the new signal mask, and wait for a signal.
++ */
++
++asmlinkage long sys_rt_sigreturn(void)
++{
++	int sig;
++	sigset_t set;
++	struct pt_regs *regs;
++	struct rt_sigframe __user *frame;
++
++	regs = current_pt_regs();
++	frame = (struct rt_sigframe __user *)regs->regs[3];
++	if (!access_ok(frame, sizeof(*frame)))
++		goto badframe;
++	if (__copy_from_user(&set, &frame->rs_uctx.uc_sigmask, sizeof(set)))
++		goto badframe;
++
++	set_current_blocked(&set);
++
++	sig = restore_sigcontext(regs, &frame->rs_uctx.uc_mcontext);
++	if (sig < 0)
++		goto badframe;
++	else if (sig)
++		force_sig(sig);
++
++	regs->regs[0] = 0; /* No syscall restarting */
++	if (restore_altstack(&frame->rs_uctx.uc_stack))
++		goto badframe;
++
++	return regs->regs[4];
++
++badframe:
++	force_sig(SIGSEGV);
++	return 0;
++}
++
++static int setup_rt_frame(void *sig_return, struct ksignal *ksig,
++			  struct pt_regs *regs, sigset_t *set)
++{
++	int err = 0;
++	struct rt_sigframe __user *frame;
++
++	frame = get_sigframe(ksig, regs, sizeof(*frame));
++	if (!access_ok(frame, sizeof(*frame)))
++		return -EFAULT;
++
++	/* Create siginfo.  */
++	err |= copy_siginfo_to_user(&frame->rs_info, &ksig->info);
++
++	/* Create the ucontext.	 */
++	err |= __put_user(0, &frame->rs_uctx.uc_flags);
++	err |= __put_user(NULL, &frame->rs_uctx.uc_link);
++	err |= __save_altstack(&frame->rs_uctx.uc_stack, regs->regs[3]);
++	err |= setup_sigcontext(regs, &frame->rs_uctx.uc_mcontext);
++	err |= __copy_to_user(&frame->rs_uctx.uc_sigmask, set, sizeof(*set));
++
++	if (err)
++		return -EFAULT;
++
++	/*
++	 * Arguments to signal handler:
++	 *
++	 *   a0 = signal number
++	 *   a1 = 0 (should be cause)
++	 *   a2 = pointer to ucontext
++	 *
++	 * $25 and c0_epc point to the signal handler, $29 points to
++	 * the struct rt_sigframe.
++	 */
++	regs->regs[4] = ksig->sig;
++	regs->regs[5] = (unsigned long) &frame->rs_info;
++	regs->regs[6] = (unsigned long) &frame->rs_uctx;
++	regs->regs[3] = (unsigned long) frame;
++	regs->regs[1] = (unsigned long) sig_return;
++	regs->csr_epc = (unsigned long) ksig->ka.sa.sa_handler;
++
++	DEBUGP("SIG deliver (%s:%d): sp=0x%p pc=0x%lx ra=0x%lx\n",
++	       current->comm, current->pid,
++	       frame, regs->csr_epc, regs->regs[1]);
++
++	return 0;
++}
++
++static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
++{
++	int ret;
++	sigset_t *oldset = sigmask_to_save();
++	void *vdso = current->mm->context.vdso;
++
++	/* Are we from a system call? */
++	if (regs->regs[0]) {
++		switch (regs->regs[4]) {
++		case -ERESTART_RESTARTBLOCK:
++		case -ERESTARTNOHAND:
++			regs->regs[4] = -EINTR;
++			break;
++		case -ERESTARTSYS:
++			if (!(ksig->ka.sa.sa_flags & SA_RESTART)) {
++				regs->regs[4] = -EINTR;
++				break;
++			}
++			fallthrough;
++		case -ERESTARTNOINTR:
++			regs->regs[4] = regs->orig_a0;
++			regs->csr_epc -= 4;
++		}
++
++		regs->regs[0] = 0;	/* Don't deal with this again.	*/
++	}
++
++	rseq_signal_deliver(ksig, regs);
++
++	ret = setup_rt_frame(vdso + current->thread.vdso->offset_sigreturn, ksig, regs, oldset);
++
++	signal_setup_done(ret, ksig, 0);
++}
++
++void arch_do_signal_or_restart(struct pt_regs *regs, bool has_signal)
++{
++	struct ksignal ksig;
++
++	if (has_signal && get_signal(&ksig)) {
++		/* Whee!  Actually deliver the signal.	*/
++		handle_signal(&ksig, regs);
++		return;
++	}
++
++	/* Are we from a system call? */
++	if (regs->regs[0]) {
++		switch (regs->regs[4]) {
++		case -ERESTARTNOHAND:
++		case -ERESTARTSYS:
++		case -ERESTARTNOINTR:
++			regs->regs[4] = regs->orig_a0;
++			regs->csr_epc -= 4;
++			break;
++
++		case -ERESTART_RESTARTBLOCK:
++			regs->regs[4] = regs->orig_a0;
++			regs->regs[11] = __NR_restart_syscall;
++			regs->csr_epc -= 4;
++			break;
++		}
++		regs->regs[0] = 0;	/* Don't deal with this again.	*/
++	}
++
++	/*
++	 * If there's no signal to deliver, we just put the saved sigmask
++	 * back
++	 */
++	restore_saved_sigmask();
++}
++
++static int signal_setup(void)
++{
++	if (cpu_has_fpu) {
++		save_fp_context = save_hw_fp_context;
++		restore_fp_context = restore_hw_fp_context;
++	} else {
++		save_fp_context = copy_fp_to_sigcontext;
++		restore_fp_context = copy_fp_from_sigcontext;
++	}
++
++	return 0;
++}
++
++arch_initcall(signal_setup);
+-- 
+2.27.0
 
-> diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-> index 85102d12d716..3fc426dad2df 100644
-> --- a/drivers/tee/tee_core.c
-> +++ b/drivers/tee/tee_core.c
-> @@ -43,7 +43,7 @@ static DEFINE_SPINLOCK(driver_lock);
->  static struct class *tee_class;
->  static dev_t tee_devt;
->
-> -static struct tee_context *teedev_open(struct tee_device *teedev)
-> +struct tee_context *teedev_open(struct tee_device *teedev)
->  {
->         int rc;
->         struct tee_context *ctx;
-> @@ -70,6 +70,7 @@ static struct tee_context *teedev_open(struct tee_device *teedev)
->         return ERR_PTR(rc);
->
->  }
-> +EXPORT_SYMBOL_GPL(teedev_open);
->
->  void teedev_ctx_get(struct tee_context *ctx)
->  {
-> @@ -96,13 +97,14 @@ void teedev_ctx_put(struct tee_context *ctx)
->         kref_put(&ctx->refcount, teedev_ctx_release);
->  }
->
-> -static void teedev_close_context(struct tee_context *ctx)
-> +void teedev_close_context(struct tee_context *ctx)
->  {
->         struct tee_device *teedev = ctx->teedev;
->
->         teedev_ctx_put(ctx);
->         tee_device_put(teedev);
->  }
-> +EXPORT_SYMBOL_GPL(teedev_close_context);
->
->  static int tee_open(struct inode *inode, struct file *filp)
->  {
-> diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-> index 3ebfea0781f1..26f42c4cd7a1 100644
-> --- a/include/linux/tee_drv.h
-> +++ b/include/linux/tee_drv.h
-> @@ -582,4 +582,18 @@ struct tee_client_driver {
->  #define to_tee_client_driver(d) \
->                 container_of(d, struct tee_client_driver, driver)
->
-> +/**
-> + * teedev_open() - Open a struct tee_device
-> + * @teedev:    Device to open
-> + *
-> + * @return a pointer to struct tee_context on success or an ERR_PTR on failure.
-> + */
-> +struct tee_context *teedev_open(struct tee_device *teedev);
-> +
-> +/**
-> + * teedev_close_context() - closes a struct tee_context
-> + * @ctx:       The struct tee_context to close
-> + */
-> +void teedev_close_context(struct tee_context *ctx);
-> +
->  #endif /*__TEE_DRV_H*/
-> --
-> 2.31.1
->
