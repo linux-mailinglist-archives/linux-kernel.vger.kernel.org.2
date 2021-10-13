@@ -2,135 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7AC42BB42
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2274242BB4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239033AbhJMJQu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Oct 2021 05:16:50 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:43518 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238960AbhJMJQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:16:49 -0400
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1maaLU-0003mB-I0; Wed, 13 Oct 2021 11:14:44 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Guo Ren <guoren@kernel.org>, Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Rob Herring <robh@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH V3 1/2] dt-bindings: update riscv plic compatible string
-Date:   Wed, 13 Oct 2021 11:14:43 +0200
-Message-ID: <4245323.jvX0RauA9x@diego>
-In-Reply-To: <CAAhSdy3j2Co2ckxn4vDtOxL=Ym3hgb66vkmnTbUjec+x7bRRDA@mail.gmail.com>
-References: <20211013012149.2834212-1-guoren@kernel.org> <4039032.XOxOlHldtI@diego> <CAAhSdy3j2Co2ckxn4vDtOxL=Ym3hgb66vkmnTbUjec+x7bRRDA@mail.gmail.com>
+        id S238960AbhJMJSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230045AbhJMJSW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 05:18:22 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07768C061570;
+        Wed, 13 Oct 2021 02:16:19 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id k7so5876700wrd.13;
+        Wed, 13 Oct 2021 02:16:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=zyEmz/tB0Rrdz8IwvSoIaxMjG4aLpVCV8hROcWXqRMk=;
+        b=F6rCYzxaQTTyTOj6ZsMzyD9QZkWGNPI8jg2TFOpxZ6Zyk8gyCFQrYq+u1Qr3hqLw10
+         uMDZytBQ4Sw2JrreurmbF4HquFjWcx3Lc4g87eeZx22BkP8oKSMa1WgDvQvpQY1UeUMW
+         VjQNnYxtIXj40FLdFlu3JaR23UQpMnsBzK6vYDQLkfbkrwOgHS2XvkJk5aS/1IIl/rEb
+         JnKEemZlTnSrBwTLhIP+MhgdLUfxZfJf9HYLuYTZr51H5kEOclCd4Rk/URid+2Sbx6J5
+         svC2cHhJ6pwfL9ngVL4kAR6a2BlCtjG27eBpoVIGOrhKYszPGKtF6M5P+R2jwMqLjlkY
+         TkgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=zyEmz/tB0Rrdz8IwvSoIaxMjG4aLpVCV8hROcWXqRMk=;
+        b=aDnFkmfj7ulVNYIpOebCvv9Y7Gdv1+P+CETOO0pGCfBG8uxfQOXvnVedhwKleF0WDV
+         Sf6drq/ip63qpx9zZg5YKRSNlltT/4X/H60TwKaX6vdsVPpJZgl0cmq0FFxFmvRRG6kY
+         Sa4LOKwtaBCpkWs9+iPnSWk+RhAvf2NYx6yRMe47jiEIlnIqLF2NmpCmnsHXbsJr4V5S
+         sDX7j+ILdOKCTEcJ4EUGGJNR0pWoAEHENYO4FYJqYRCnzToEGlnS5uDz/bAPUfFoX2T/
+         CeEZeAYmGr/Gls1owY4SRzlEcejX4OW1LBE10L1rfGoT0L1bpGR1yV3njEJ9KGRBPpVS
+         twHg==
+X-Gm-Message-State: AOAM532UYhg/Jx0ScWd00/bCmEocLsCRWnYnjGX7/HzeDz295ekcRSVF
+        9Z/ea/sPSMYqNcBYVQouvuY=
+X-Google-Smtp-Source: ABdhPJwGRaxSvIX5NpEHodd5tbp9peXVTaepz5YYcWXmrqI73fH1uiFPuaCmA/7KHvwLTV3vJqKC4Q==
+X-Received: by 2002:a5d:47ae:: with SMTP id 14mr4043351wrb.120.1634116577652;
+        Wed, 13 Oct 2021 02:16:17 -0700 (PDT)
+Received: from [192.168.8.197] ([185.69.145.208])
+        by smtp.gmail.com with ESMTPSA id z2sm11824327wrh.44.2021.10.13.02.16.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 02:16:17 -0700 (PDT)
+Message-ID: <e52033e5-bff6-c2a3-9e23-ccfa505b064d@gmail.com>
+Date:   Wed, 13 Oct 2021 10:15:37 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH v2 0/3] on top of for-5.16/block
+Content-Language: en-US
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@infradead.org>
+References: <cover.1634115360.git.asml.silence@gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <cover.1634115360.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 13. Oktober 2021, 11:11:26 CEST schrieb Anup Patel:
-> On Wed, Oct 13, 2021 at 2:27 PM Heiko Stübner <heiko@sntech.de> wrote:
-> >
-> > Hi Anup,
-> >
-> > Am Mittwoch, 13. Oktober 2021, 07:11:46 CEST schrieb Anup Patel:
-> > > On Wed, Oct 13, 2021 at 6:52 AM <guoren@kernel.org> wrote:
-> > > >
-> > > > From: Guo Ren <guoren@linux.alibaba.com>
-> > > >
-> > > > Add the compatible string "thead,c900-plic" to the riscv plic
-> > > > bindings to support SOCs with thead,c9xx processor cores.
-> > > >
-> > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > > Cc: Rob Herring <robh@kernel.org>
-> > > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > > > Cc: Anup Patel <anup@brainfault.org>
-> > > > Cc: Atish Patra <atish.patra@wdc.com>
-> > > >
-> > > > ---
-> > > >
-> > > > Changes since V3:
-> > > >  - Rename "c9xx" to "c900"
-> > > >  - Add thead,c900-plic in the description section
-> > > > ---
-> > > >  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml    | 6 ++++++
-> > > >  1 file changed, 6 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> > > > index 08d5a57ce00f..82629832e5a5 100644
-> > > > --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> > > > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> > > > @@ -35,6 +35,11 @@ description:
-> > > >    contains a specific memory layout, which is documented in chapter 8 of the
-> > > >    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
-> > > >
-> > > > +  While the "thead,c900-plic" would mask IRQ with readl(claim), so it needn't
-> > > > +  mask/unmask which needed in RISC-V PLIC. When in IRQS_ONESHOT & IRQCHIP_EOI_THREADED
-> > > > +  path, unnecessary mask operation would cause a blocking irq bug in thead,c900-plic.
-> > > > +  Because when IRQ is disabled in c900, writel(hwirq, claim) would be invalid.
-> > >
-> > > This is a totally incorrect description of the errata required for C9xx PLIC.
-> > >
-> > > Please don't project non-compliance as a feature of C9xx PLIC.
-> > >
-> > > > +
-> > > >  maintainers:
-> > > >    - Sagar Kadam <sagar.kadam@sifive.com>
-> > > >    - Paul Walmsley  <paul.walmsley@sifive.com>
-> > > > @@ -46,6 +51,7 @@ properties:
-> > > >        - enum:
-> > > >            - sifive,fu540-c000-plic
-> > > >            - canaan,k210-plic
-> > > > +          - thead,c900-plic
-> >
-> > we still want specific SoC names in the compatible, the "c900"
-> > is still a sort-of placeholder.
+On 10/13/21 09:57, Pavel Begunkov wrote:
+
+Bodged subject, should've been block optimisation or so.
+
+> ./io_uring -d32 -s32 -c32 -b512 -p1 /dev/nullb0
+> ~3.3 MIOPS vs 3.5 MIOPS, so gives around extra ~4-5%.
 > 
-> Yes, we need "c900" compatible string as well. The "c9xx"
-> compatible string is for the custom PLIC spec followed by T-HEAD.
-
-What I meant was that the soc-specific string should name the
-actual SoC (c906, c910) and not some imaginary chip ;-)
-
-See for example mali gpu bindings for a similar reference
-in devicetree/bindings/gpu/arm,mali-bifrost.yaml .
-
-
-
-
+> The main part is caching struct block_device + some inlining.
 > 
-> >
-> >
-> > > >        - const: sifive,plic-1.0.0
-> > >
-> > > The PLIC DT node requires two compatible string:
-> > > <implementation_compat>, <spec_compat>
-> > >
-> > > The C9xx PLIC is not RISC-V PLIC so, the DT node should
-> > > be: "thead,c900-plic", "thead,c9xx-plic"
-> > >
-> > > You need to change "- const: sifive,plic-1.0.0" to
-> > > - enum:
-> > >     - sifive,plic-1.0.0
-> > >     - thead,c9xx-plic
-> >
-> >
+> v2: without applied patches, merge previous 6/6 into the second patch
+>      get rid of helpers (Jens, Christoph)
+>      kill bdev_inode and move inode into bdev (Christoph)
 > 
-> Regards,
-> Anup
+> Pavel Begunkov (3):
+>    block: cache bdev in struct file for raw bdev IO
+>    block: don't hide inode from block_device users
+>    blk-mq: optimise *end_request non-stat path
+> 
+>   block/bdev.c              | 44 ++++++++++-----------------------------
+>   block/blk-mq.c            | 18 +++++++---------
+>   block/fops.c              | 43 ++++++++++++++++----------------------
+>   include/linux/blk_types.h |  1 +
+>   include/linux/blkdev.h    |  8 +++++--
+>   5 files changed, 44 insertions(+), 70 deletions(-)
 > 
 
-
-
-
+-- 
+Pavel Begunkov
