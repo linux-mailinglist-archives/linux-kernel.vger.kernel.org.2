@@ -2,174 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39E342BF27
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A88042BF2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhJMLs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 07:48:56 -0400
-Received: from mail-mw2nam10on2085.outbound.protection.outlook.com ([40.107.94.85]:35169
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232486AbhJMLsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:48:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BTpchfUGV1UaEAJyLLLtSRozmCAaMcdFokFWSlnYGHAmeN86IuY3mbPsUNYTkgk0HD0Hj54nLSPhaiZDjNWz/jjzvR4aIXmM/xXcc3py2wCLaDWOXgYUGvyiinARtWePZIysbQ/EbHJOtjRIae/2QsbEpjnebYPeBcJPziJRemfHcwKn8AMbr/RO6SLVbL56ofzBiIvECxdZ8LRqcMdyxhq5M0+hGwMqZ+v5V+yMAjQxVwb5cCq1ljS5hNTiRQQMyTKNwyiWe8NonssqY+pKUKlIlcCubPBPp2pBVGUTzk8+o/ll8HH0w/eZrofXyYH/eKuCZ7a/Jjmqmim2CAwLag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zlL4hUkF7PF0UWQnOh7LuyYVPo/v6vZ5Vc1exUBkw3E=;
- b=XIwFkXqAqVeFmdKi+ESqRkVuJD4lfbkLJKgVkEre8lXDq/imwtnabn1s/LhTECN9SrvtP/0UUDaC4yjm4KEh8Wd2x+ZkSarxzAiT2cm1r2E1R6AFt9jxXBmSo2KfYuENzzzKtsHxZtKoSgbuT8la6gQFLBKhWmfuJbnVxmoY0V8F1Qwxh+hM/QQET6H+kKTPUx11Y8VgJIrA4TZOIGxHyBAapzHC/xXWu08GNq9JTvbzXYeZ7zI+pMVYCZXjXGZgT8O20qEbFN2V7r2QSSob7ltsS3ZaAG5OvR0BdP2wo9QC5+S6cWnKq8lk3jBo8jecoR4FgyX1yknfvyYxi0JGrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zlL4hUkF7PF0UWQnOh7LuyYVPo/v6vZ5Vc1exUBkw3E=;
- b=E59xqah+u9Oho9cldUCeddnUj5ID3/T4yiHfvz3AbiPC2gxj9rpjH1YRm+otOq2qf1Y3PuO2oRcSFg6/L4DpfUIfTRYoLcLrsVZZShtBeNEMntvNu/Heva7yNT4y5HJcxgkBhtq5VuCwon9Rl/cduvcT/WVPBu2a8sKUT+9gmds=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN6PR12MB2782.namprd12.prod.outlook.com (2603:10b6:805:73::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.19; Wed, 13 Oct
- 2021 11:46:42 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::78b7:7336:d363:9be3]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::78b7:7336:d363:9be3%6]) with mapi id 15.20.4587.026; Wed, 13 Oct 2021
- 11:46:42 +0000
-Cc:     brijesh.singh@amd.com,
-        "Lendacky, Thomas" <thomas.lendacky@amd.com>,
-        Marc Orr <marcorr@google.com>, Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Rientjes <rientjes@google.com>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] crypto: ccp - Consolidate sev INIT logic
-To:     Peter Gonda <pgonda@google.com>
-References: <20211005195213.2905030-1-pgonda@google.com>
- <fdf0c263-38e9-7780-d0ac-943b6d2dd3a3@amd.com>
- <CAMkAt6piNiJdHDMzSqgm-aQ0o-xxM=ax4qMgn81fKzVuaNukPg@mail.gmail.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <54f66e72-a33a-2f07-fe51-992ba0c7444c@amd.com>
-Date:   Wed, 13 Oct 2021 06:46:39 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-In-Reply-To: <CAMkAt6piNiJdHDMzSqgm-aQ0o-xxM=ax4qMgn81fKzVuaNukPg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: SA0PR13CA0023.namprd13.prod.outlook.com
- (2603:10b6:806:130::28) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+        id S231388AbhJMLtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 07:49:31 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:25182 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhJMLta (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 07:49:30 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HTrMs4sSqz8tdj;
+        Wed, 13 Oct 2021 19:46:17 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 19:47:24 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 19:47:24 +0800
+Subject: Re: [PATCH] blk-cgroup: check blkcg policy is enabled in
+ blkg_create()
+From:   "yukuai (C)" <yukuai3@huawei.com>
+To:     Tejun Heo <tj@kernel.org>
+CC:     <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20211008072720.797814-1-yukuai3@huawei.com>
+ <YWRxi2OaIHhG9rOc@slm.duckdns.org>
+ <9d9ac88b-43e6-5b50-bc0b-98ad4704eca5@huawei.com>
+Message-ID: <68bd1b2c-f4a6-664c-0812-30cb458d0f15@huawei.com>
+Date:   Wed, 13 Oct 2021 19:47:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Received: from Brijeshs-MacBook-Pro.local (165.204.77.11) by SA0PR13CA0023.namprd13.prod.outlook.com (2603:10b6:806:130::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Wed, 13 Oct 2021 11:46:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 225d53de-37b4-46f4-5cb5-08d98e3f2003
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2782:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB2782B12A1FBFF430FC23BD3AE5B79@SN6PR12MB2782.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oi3FSY9ywUCnnBvJOpMrMnsDzyUEjVvcWSrY5xgUfjEwv3+OVqEGkIL2y46LCBQkL9/83uv+zzPMDurmnki1Pt1yqyfucJkSESgPAIYOnfv72/orPNK1IWB67ECeT6j8X91dGMXakvSPvufBYroTNd3uxybudFbOlDR/6tl9TN+NOX5/tklNqcyTJnhWqgFXXStw5/1n/GzmOGm8YZkvc5aF5UaGcYgyl+7KaYzoco4fnLAZGuraaoGanpdZ6bXoUhge3OROToj+bfBmApXa+cjUSyv+0PiNvwsbimtaSc4iDJ/yzEtGGqq51wT3Jzb1XNbMcchwO6TLdM8xVJFNAs5GrFmVlnjnA4LAVIJ98W2cRMsLCc0dJPR90K0BVdITMTrhBZhHkoefU5Sf/vS4r2Mwo9KS3VHft2b3Yk0Z5Llip1alCw9jAhmAN6vBtr8VdB97GqsrGfCz3NJMM7Lg//L++V0V76Nuo3pm/t37/XQZiWPVL/QekgWHVoVPvlp323ci8AWrQdVKJH3RzZ0dQfsQ8JU1GEWh8yjHRv3894O1potrdcwDT03h4xFlQdTaPncUtpc0cEYZa6VCHSV40Gni8PSepsZBUX7KpG9LKZQcLV2Y8kBiWsIERI0qJZB/RR1j8s7EvQxNEKxkI2nfyxWxqFOqx5Fu8mJGCSIzux+DviJJzhpLzlrpp+MUNwUiRSWViLOmg2kx7KJtPK8DfYuqaCi797doRhuYZwAthnB0MQiEtW4r7v0aVK8SX542
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(31686004)(508600001)(38100700002)(31696002)(316002)(26005)(54906003)(2616005)(44832011)(8936002)(956004)(83380400001)(86362001)(2906002)(8676002)(66556008)(66946007)(6506007)(6486002)(66476007)(4326008)(6512007)(36756003)(53546011)(6916009)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OXE2bHZwcmwvWktiNmtVWnhGWHNRQXBScWhqZ1kvUHZsc1NaejhDQy9jYVdn?=
- =?utf-8?B?bk1WT3pxMS9ZZGxRS1BJNkhOT3RZNlRxL0p4clFsUUZteXlOSm4vZmQ5ekRX?=
- =?utf-8?B?NHFoUVgwbnVpTEkxM2hvdXdxMi9MTk9NaFB2UzBTbmRkbEI0ZFFleGF2Kzlv?=
- =?utf-8?B?bjFTNk9POWgxQk9hSktndmpJY2V3Mmk2amtURnVHajhPSGdTbHprVTU2aVVH?=
- =?utf-8?B?V01KSEVZYnNMZ0VNV1dwZzZmcldNSDhIM0krTm51YXB4Q0F1czNObW02WHl5?=
- =?utf-8?B?cnF5Nmpad0VoZEtibmJ4UVpuOVN0cTlLQWpLV1NjVUp3TnRSbmNzakg1cXgz?=
- =?utf-8?B?SDVUQWUxeFNyZElZYmpaTVZOOS9WM0J4SjhHZHgxUHFOR2ozTEF5UXdqUDBz?=
- =?utf-8?B?bDYxakFWVFp4MFNjd01sUFFWQk5iN0ZhNEhDTEZaaVZWYlVneXVmWWlDM29n?=
- =?utf-8?B?RnZuRDEyUXkzZys3OGlMWER3NW5wS1RrWXJQSWR4Mm42NTZjMVlBd1kvT3JU?=
- =?utf-8?B?SUZ5Z1JoTkpxUGMySE9VNGJQUzBrc1U5WVcxd0RhbmpvUGdYUTM4SEx1dHlF?=
- =?utf-8?B?MEpZZ3lVTkRMbFBRZjlLaUpvVkpnNDFpUnN1MHdTVGMrSDYrVVNIUi9DSUpw?=
- =?utf-8?B?cU54UGZRdU0xYXdSaVcyQlRYdXZTODk0eEY3Sml1bW00cm03NkVVWmc4Mitm?=
- =?utf-8?B?UEtzYlZ2TFpJUithbHRSMTBjaFpZTTFPait5YXhTZ2x1TkNRL1pBdC9UV3Y0?=
- =?utf-8?B?MHY2aHR2TXJxMldQcFd0T1FsTmRZV0taVGIzdC9PNy9rUzZ6Tkp0S0RNKytk?=
- =?utf-8?B?eVRVcUp5TERvTDByZGoxMnpVei9lTkJhaGZwRENxMkxqbitsOTdJQ29mQURz?=
- =?utf-8?B?L0ZGdHRkK1pnMTducWRNV1pxTWVDMTJTa3Nwb3lMR28rUlBPTklKQzlTS2Nu?=
- =?utf-8?B?WDBYZ3gvKy83NWRpQld1dkpwc05QbjBzOVM0eXRvOGZ4NVJHZ3BYMnpOajVI?=
- =?utf-8?B?MFNmTU1oYTh3ME1kempxeVQ1UEtjSm56RktGdUJzUk5OY00ycGQ1RFBBekZW?=
- =?utf-8?B?RjJFaDBZMHRrVWFzUGY0QnFoNHI4a21PaE44c0pNQ29RQWl0VUFNUDB4emY3?=
- =?utf-8?B?TEdsZGhWVnBacU1zbzhkNytpdjVVY245MTNOVUsyVnROZWxzR2RvVzJ3b29F?=
- =?utf-8?B?WkhjRmJmRzhFWjYrcXY2dXM1QmtCek5icTI2KzNyMWlBQzh1d1MxK1Y5bFZP?=
- =?utf-8?B?Y1FTQnBtSU5hOW04M3RQTU1HRjB3UHptZkpMVDdDMXdxUzJMRmQxYnlVc0pt?=
- =?utf-8?B?NmZha0RTODhLR3BNQU9OSUVGSnZkRlltSXVWWVQrODk2YXhkam5ZY2ZUMm56?=
- =?utf-8?B?cWNPVUhkU0JwaUFaNmdGWHFZdzlML3JxZmIva0ZOYVZvQVZjbVpaVExQZllT?=
- =?utf-8?B?NDdCdVdGam9hVXdBVEIvR1hQSWxPWGkxL1hWY1pNU0N3NktmVnhkWU5tZkNk?=
- =?utf-8?B?QXpKY3VEeGcxclZ6TkwyRy80QlB0SzRpSWhDYlJ3SkxNNXQ0YUM0L1A0ZUJ1?=
- =?utf-8?B?Uzg3TTZWNGdDSXM0d3hlQm9wS1NzVGJsVXZPcFhjR3VzT2dyQ1ZNYk1TeHcx?=
- =?utf-8?B?QWtUbEx4OWROSHRSc1FUNThpTUN2YWEvNzNIYUl6U0ZSZW1aazU4bS9tNWlh?=
- =?utf-8?B?RXplRzE5S2tHVEpYTWNrdDVnWmpIbzZCdlJlN09TNUVqMS8yUTFpcG5GNGxQ?=
- =?utf-8?Q?nhr3WrdsFD7HG+hzdMLP288sfrszUdAIdPtYWNB?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 225d53de-37b4-46f4-5cb5-08d98e3f2003
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 11:46:42.1750
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a6W6pgi+nbBi8zaypZOn7FtvqAneRnojkGqp0T5yHXpCKVtqKxhTxUQRHP6/92Q6EHhf/OFORpjPJtXyzr4/Cg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2782
+In-Reply-To: <9d9ac88b-43e6-5b50-bc0b-98ad4704eca5@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/12/21 7:34 AM, Peter Gonda wrote:
-> On Fri, Oct 8, 2021 at 9:52 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
->>
->> On 10/5/21 12:52 PM, Peter Gonda wrote:
->>> +static int sev_init_if_required(int cmd_id, bool writable,
->>> +                             struct sev_issue_cmd *argp)
+On 2021/10/12 9:39, yukuai (C) wrote:
+> On 2021/10/12 1:16, Tejun Heo wrote:
+>> On Fri, Oct 08, 2021 at 03:27:20PM +0800, Yu Kuai wrote:
+>>> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+>>> index eb48090eefce..00e1d97621ea 100644
+>>> --- a/block/blk-cgroup.c
+>>> +++ b/block/blk-cgroup.c
+>>> @@ -226,6 +226,20 @@ struct blkcg_gq *blkg_lookup_slowpath(struct 
+>>> blkcg *blkcg,
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(blkg_lookup_slowpath);
+>>> +static void blkg_check_pd(struct request_queue *q, struct blkcg_gq 
+>>> *blkg)
 >>> +{
->>> +     struct sev_device *sev = psp_master->sev_data;
+>>> +    int i;
 >>> +
->>> +     lockdep_assert_held(&sev_cmd_mutex);
+>>> +    for (i = 0; i < BLKCG_MAX_POLS; i++) {
+>>> +        struct blkcg_policy *pol = blkcg_policy[i];
 >>> +
->>> +     if (!writable)
->>> +             return -EPERM;
->>> +
->>> +     if (cmd_id == SEV_FACTORY_RESET || cmd_id == SEV_PLATFORM_STATUS ||
->>> +         cmd_id == SEV_GET_ID || cmd_id == SEV_GET_ID2)
->>> +             return 0;
->>> +
->>> +     if (sev->state == SEV_STATE_UNINIT)
->>> +             return __sev_platform_init_locked(&argp->error);
->>> +
->>> +     return 0;
+>>> +        if (blkg->pd[i] && !blkcg_policy_enabled(q, pol)) {
+>>> +            pol->pd_free_fn(blkg->pd[i]);
+>>> +            blkg->pd[i] = NULL;
+>>> +        }
+>>> +    }
 >>> +}
 >>> +
->>>  static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
->>>  {
->>>       void __user *argp = (void __user *)arg;
->>> @@ -840,8 +825,11 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
->>>
->>>       mutex_lock(&sev_cmd_mutex);
->>>
->>> -     switch (input.cmd) {
->>> +     ret = sev_init_if_required(input.cmd, writable, &input);
->>> +     if (ret)
->>> +             goto copy_out;
->> We need to call this function only for the SEV commands (i.e input.cmd
->>> =0 && input.cmd <= SEV_GET_ID2). Otherwise a invalid command may
->> trigger SEV_INIT. e.g below sequence:
+>>>   /*
+>>>    * If @new_blkg is %NULL, this function tries to allocate a new one as
+>>>    * necessary using %GFP_NOWAIT.  @new_blkg is always consumed on 
+>>> return.
+>>> @@ -252,6 +266,9 @@ static struct blkcg_gq *blkg_create(struct blkcg 
+>>> *blkcg,
+>>>           goto err_free_blkg;
+>>>       }
+>>> +    if (new_blkg)
+>>> +        blkg_check_pd(q, new_blkg);
+>>> +
 >>
->> 1) SEV_FACTORY_RESET   // this will transition the fw to UNINIT state.
->>
->> 2) <INVALID_CMD_ID>   // since fw was in uninit this invalid command
->> will initialize the fw and then later switch will fail.
-> Good catch, I took Marc's suggested approach for a V2. Does that sound
-> reasonable?
+>> Can't this happen the other way around too? ie. Linking a pd which 
+>> doesn't
+>> have an entry for a policy which got enabled inbetween? And what if an
+>> existing policy was de-registered and another policy got the policy id
+>> inbetween? I think the correct solution here would be synchronizing 
+>> alloc -
+>> create blocks against policy deactivation rather than trying to patch an
+>> allocated blkg later. Deactivation being a really slow path, there are
+>> plenty of options. The main challenge would making it difficult to make
+>> mistakes with, I guess.
+> 
+> For the case policy was de-registered, I think there won't be a problem
+> because pd_init_fn() is not called yet, and the blkg is not at
+> blkg_list, it's fine to use this blkg for the new policy.
+> 
+> For the case policy got enabled inbetween, the problem is that the pd
+> still doesn't have an entry for the policy, perhaps we can call
+> pd_alloc_fn() additionally in blkg_create?
+> 
+> If checking the blkg in blkg_create() is not a good solution, and we
+> decide to synchronize alloc-create blkg against policy deactivation.
+> Since only bfq policy can be deactivated or activated while queue is
+> not dying, and queue is freezed during activation and deactivation,
+> can we get a q->q_usage_counter and put it after blkg_create() is done
+> to prevent concurrent bfq policy activation and deactivation?
 
-Yes, that works.
+Just found that blkcg_deactivate_policy() will call
+blk_mq_freeze_queue(), thus get q->q_usage_counter is wrong...
 
-thanks
-
-
+Thanks,
+Kuai
