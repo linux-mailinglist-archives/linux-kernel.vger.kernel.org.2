@@ -2,106 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FE642CC14
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CF642CB77
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhJMUwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:52:18 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:52351 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229960AbhJMUv4 (ORCPT
+        id S229526AbhJMUvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:51:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230017AbhJMUvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:51:56 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 848C558117C;
-        Wed, 13 Oct 2021 16:49:52 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 13 Oct 2021 16:49:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=JGdyj4Z1k00E3
-        EhPZP8xNXDzAW/iLqk7RYYsaxdxC2o=; b=KPyTnTKaEsZhOEudKbTkuUljaIWgO
-        O0Oa7fj8+ywr6UaGaemCQ2WG+4qvmID+see8zbU7B+DpPIp1JYueUaY/G3u4Oxw/
-        XC2t3RxCoEyCggNXgTy0dJaWOSyVlrfViTwIcP+KewBAVQTTxOTdZZ2FTMFrShEn
-        8HjtO43NRDxq63+Z9Fp2Aw1DQrVEytvKWuAAZ28XoxRTPXuPHsn98TPkA565E1JY
-        s/d+B3XRMrrd68IMM4fy5ZztTGyqs+9SYvyWKfJeWS6tehFJIA6WPIjillwi27UM
-        3tl8I/lPjXZCOI1pn3vVgzuVGNLtSV2sXyGZqphaNprcf0ixkWxXzySzA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=JGdyj4Z1k00E3EhPZP8xNXDzAW/iLqk7RYYsaxdxC2o=; b=YRfILJKC
-        LDWnMXe/4TWYmCm9/M0y22ljaVUTMTiCiNUvQyjK8JIPRKnNsaoSHTC++1N1uVCL
-        qwrCA/Lz+TML+vY3LrkPSVfSnE6RxAPSkW9xZSHgoKxX1r6bCvnYvbpulct6xLWz
-        RRkzNO8TYZtbrBbdsb9HqfDK0hU7+61U2/I2kvfDajXo043XJhSBIkgbHwmqEGVT
-        GOikMq+d9/sdYQhdQVnMduASmTvDuZtYpAsx/NwRz55MuxaE3mm4CrbHedK8Uo08
-        iWsaJTqcCzhEvcm1NhQTbsYpT2PtfjlT+xmCPmI1Ix0s6wJDflB6fKCumENhPgy/
-        cAbVPSUNtlyTDQ==
-X-ME-Sender: <xms:cEZnYR166C4MQSmAee2PA1YjygVvJjL6d_aN_obPV62asFyx17i2Eg>
-    <xme:cEZnYYEoZNe8M_sdSedOrNENN-BIH5UuWKuvRZg76En-4WUWRkyScA5ukZon5ZvFa
-    2psQp114SzdQq7ueQ>
-X-ME-Received: <xmr:cEZnYR59Vd6hWXOlt9NoJvlACJ0gXvHyoiOF4gW8QHCQSwbLTOcqcfMi60MJEY-njYtW>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddutddgudehvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefhvghrnhgrnhguohcutfgrmhhoshcuoehgrhgvvghnfhho
-    ohesuhelvddrvghuqeenucggtffrrghtthgvrhhnpeekleekjedtheejheekfefggeevvd
-    fgueegffeuveduhfehueegkeeijedvvdejfeenucevlhhushhtvghrufhiiigvpeefnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvvghnfhhoohesuhelvddrvghu
-X-ME-Proxy: <xmx:cEZnYe2lWhmq3IeFM27MzHEdXmJtPLMuakjjxCQL-YEJRjIjv1G-3A>
-    <xmx:cEZnYUFYa_V__LJt_aN0kmR2ugY7hNnq1pnKAIcTG6rcxsrPf2bOHA>
-    <xmx:cEZnYf-V0SrtyQvuJknidImeO97gMyRQianffFDYJIsbtXPtZ3eKyg>
-    <xmx:cEZnYfAbyVH5EYiFEXKlBHx7-qqCUzIykJXZDiQg46iJ6vXLPRX6Qw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 Oct 2021 16:49:49 -0400 (EDT)
-From:   Fernando Ramos <greenfoo@u92.eu>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, sean@poorly.run,
-        linux-doc@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v4 20/20] drm: cleanup: remove acquire_ctx from drm_mode_config
-Date:   Wed, 13 Oct 2021 22:48:46 +0200
-Message-Id: <20211013204846.90026-21-greenfoo@u92.eu>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211013204846.90026-1-greenfoo@u92.eu>
-References: <20211013204846.90026-1-greenfoo@u92.eu>
+        Wed, 13 Oct 2021 16:51:11 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A100C061749;
+        Wed, 13 Oct 2021 13:49:07 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id y26so17339537lfa.11;
+        Wed, 13 Oct 2021 13:49:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HYOHGxf2r6rYeOUDd6Yc620BvdGiAPSc5bWMT6QlQfI=;
+        b=DZlMgnMbolCpO3CS7e36G9Q9EbeQwtLsgWDaj2Tqn94OPUqOYas4ZsbnnPvyOcCmpS
+         AB6ioepXDuA/R8K5Ahwy+VDCa3J9jus1mQXvzQ00zpc0i88IPfK4cVtzVLb4NYN3x+VW
+         s0keCoeQ0WrbkBMwriPSBSc8tKAOSs2jv4itxdPvVtjwcS0SfuNU2JshN4HY0yKGgHgR
+         huIdV/YfL01wogWi7V0t+MeTEPUsxNb8UgPz0NnqVeQgET+nTgs1ezc1KZidzuxhFoxN
+         o/bkmYKlP2ztZDAsvY3T6PNesoT5NksPdFX4sqGFVzO6RVwf4onUHNcqS0Hs4IMa5uzz
+         xgfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HYOHGxf2r6rYeOUDd6Yc620BvdGiAPSc5bWMT6QlQfI=;
+        b=30KlRl/NDmJGaAguFdYNU3hLHp6PQEnfQf/gGb/dlwaC3G6bXasZyNsdqh1UtoWLqf
+         WByzSxsv1vjIjJTnrSob2wnp7QZalxIDmfiKQeTD+4ib/EcDVIiVRAGA21KwfnRxYBCS
+         CxAQLhovBdOl4YLCKm+p7lSeFq1UGb3bGlxNlYb4MiZ/If3qGd2dFnAly5V+4bOwLk0s
+         zPTtDDGjfkW2ZBjvW9kyPf7ht1da4jVeyIJ41yUWMwU8/l3FITc8MFOh9WlokW5EI2Qd
+         4yJJpP7MY8sldhy4sYguRjauwAPL0jJielXjMCreEK+SpPBYiq00cVsgfIUqSFUyvlVi
+         cmAA==
+X-Gm-Message-State: AOAM532E/GjHIOzRtHJcoVF9sXIXxcbUoWFXRjBHLrqs4XVQlOvOqeEa
+        jC9zH5tWAf1dBYZBXO01FLA/ty3Rfsw=
+X-Google-Smtp-Source: ABdhPJy8c7eUvo1G6CLigC0dGKZ1+WPSJX5yuDQsyq9W1CY+Z2D9y06lq5MdpNVghANUK2+WLIhSSQ==
+X-Received: by 2002:a2e:a274:: with SMTP id k20mr1699804ljm.479.1634158145709;
+        Wed, 13 Oct 2021 13:49:05 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-10-181.dynamic.spd-mgts.ru. [94.29.10.181])
+        by smtp.googlemail.com with ESMTPSA id c14sm60499ljj.32.2021.10.13.13.49.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 13:49:05 -0700 (PDT)
+Subject: Re: [PATCH] cpuidle: tegra: add ARCH_SUSPEND_POSSIBLE dependency
+To:     Arnd Bergmann <arnd@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thierry Reding <treding@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        He Ying <heying24@huawei.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211013160125.772873-1-arnd@kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <7b4c1c31-3ef6-db9b-dc98-8a6f7a3d6243@gmail.com>
+Date:   Wed, 13 Oct 2021 23:49:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20211013160125.772873-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous patch removed drm_modeset_{lock,unlock}_all, which were the
-only users of this field inside the drm_mode_config structure.
+13.10.2021 19:01, Arnd Bergmann пишет:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Some StrongARM processors don't support suspend, which leads
+> to a build failure with the tegra cpuidle driver:
+> 
+> WARNING: unmet direct dependencies detected for ARM_CPU_SUSPEND
+>   Depends on [n]: ARCH_SUSPEND_POSSIBLE [=n]
+>   Selected by [y]:
+>   - ARM_TEGRA_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_TEGRA [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
+> 
+> arch/arm/kernel/sleep.o: in function `__cpu_suspend':
+> (.text+0x68): undefined reference to `cpu_sa110_suspend_size'
+> 
+> Add an explicit dependency to make randconfig builds avoid
+> this combination.
+> 
+> Fixes: faae6c9f2e68 ("cpuidle: tegra: Enable compile testing")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/cpuidle/Kconfig.arm | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
+> index 2cc3c208a180..af97992eaa82 100644
+> --- a/drivers/cpuidle/Kconfig.arm
+> +++ b/drivers/cpuidle/Kconfig.arm
+> @@ -100,6 +100,7 @@ config ARM_MVEBU_V7_CPUIDLE
+>  config ARM_TEGRA_CPUIDLE
+>  	bool "CPU Idle Driver for NVIDIA Tegra SoCs"
+>  	depends on (ARCH_TEGRA || COMPILE_TEST) && !ARM64 && MMU
+> +	depends on ARCH_SUSPEND_POSSIBLE
+>  	select ARCH_NEEDS_CPU_IDLE_COUPLED if SMP
+>  	select ARM_CPU_SUSPEND
+>  	help
+> 
 
-Signed-off-by: Fernando Ramos <greenfoo@u92.eu>
----
- include/drm/drm_mode_config.h | 10 ----------
- 1 file changed, 10 deletions(-)
+Arnd, thank you for the patch!
 
-diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
-index 48b7de80daf5..b214b07157f2 100644
---- a/include/drm/drm_mode_config.h
-+++ b/include/drm/drm_mode_config.h
-@@ -383,16 +383,6 @@ struct drm_mode_config {
- 	 */
- 	struct drm_modeset_lock connection_mutex;
- 
--	/**
--	 * @acquire_ctx:
--	 *
--	 * Global implicit acquire context used by atomic drivers for legacy
--	 * IOCTLs. Deprecated, since implicit locking contexts make it
--	 * impossible to use driver-private &struct drm_modeset_lock. Users of
--	 * this must hold @mutex.
--	 */
--	struct drm_modeset_acquire_ctx *acquire_ctx;
--
- 	/**
- 	 * @idr_mutex:
- 	 *
--- 
-2.33.0
+Apparently ARM_QCOM_SPM_CPUIDLE doesn't have that problem visible
+because it selects QCOM_SPM, which depends on ARCH_QCOM, and thus
+ARCH_QCOM should be auto-selected(?). I'm curious whether this needs to
+be corrected, otherwise (ARCH_QCOM || COMPILE_TEST) doesn't make much
+sense for that driver. And then it will need the same Kconfig fix as well.
 
+I assume this problem wasn't caught by regular kernel build bots because
+they don't test randconfig, don't they?
