@@ -2,81 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130DC42C6A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4584F42C6AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236790AbhJMQqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:46:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48200 "EHLO mail.kernel.org"
+        id S230476AbhJMQsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:48:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230216AbhJMQq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:46:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF8F460C41;
-        Wed, 13 Oct 2021 16:44:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634143464;
-        bh=nb+sp5ClcMQ4pk4Ln34K7Xw8zsyPZG2MvygL0U+P4pE=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=djWf7Fv85noHdnX31z0rQeMU567e3L9U4JkP4B6HcJ/RrmHgVR1bz7yBtLk4rC6GK
-         nZUhhA5FFuU2zT1+DkSAoVEnIPNeXbnBEZMChs3LPh9by6bPGF8UEwYQDBjAaBgaU+
-         MkuA0H6pOA90niCxm4ilYXiJEEoXa1EqaQb2q5qG7twunxz6SVUcidqxdHmuc6WT4w
-         0IOon0IZBCnrXWehVpTNdKoNiWmI10fhs9USWoJ8m+v4giZDDZi23sreyKusMtOxB8
-         tC1RzHIDuUILlGm4R3n4PgFCNY1rKfYJGsovwcwkqo9Oe2uH6OWvDOOZW1nwETRq3X
-         xo+vte9mL3n/A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B0ACC5C0687; Wed, 13 Oct 2021 09:44:24 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 09:44:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     mingo@kernel.org
-Cc:     elver@google.com, tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, kernel-team@fb.com
-Subject: [GIT PULL kcsan] KCSAN commits for v5.16
-Message-ID: <20211013164424.GA2842388@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        id S230118AbhJMQsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 12:48:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA9E760E54;
+        Wed, 13 Oct 2021 16:46:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634143592;
+        bh=gZxxSZNJVcGCly4XUFrQovq9UG2RxCIqbq1MKEQS/DU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O8z+AEdyWQ6c+sX1kouv5fa84k9VD/agQAO02nF8IUy8VyqZP+619NH/GUhVr9GDQ
+         w0/ECZ7foV62zyo40t7ZDAgGpP5JgaaC2KMP68dtGYFwLqMOFk/+/NG92Y64F9N29q
+         nWBiqWDgNaxD3BR0vE7hT1+oDbMWWrlZrxljB8lQ=
+Date:   Wed, 13 Oct 2021 18:46:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jane Malalane <jane.malalane@citrix.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Pu Wen <puwen@hygon.cn>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kim Phillips <kim.phillips@amd.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
+Message-ID: <YWcNZdyULbJG5xVA@kroah.com>
+References: <20211013142230.10129-1-jane.malalane@citrix.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20211013142230.10129-1-jane.malalane@citrix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Ingo,
+On Wed, Oct 13, 2021 at 03:22:30PM +0100, Jane Malalane wrote:
+> Currently, Linux probes for X86_BUG_NULL_SEL unconditionally which
+> makes it unsafe to migrate in a virtualised environment as the
+> properties across the migration pool might differ.
+> 
+> To be specific, the case which goes wrong is:
+> 
+> 1. Zen1 (or earlier) and Zen2 (or later) in a migration pool
+> 2. Linux boots on Zen2, probes and finds the absence of X86_BUG_NULL_SEL
+> 3. Linux is then migrated to Zen1
+> 
+> Linux is now running on a X86_BUG_NULL_SEL-impacted CPU while believing
+> that the bug is fixed.
+> 
+> The only way to address the problem is to fully trust the "no longer
+> affected" CPUID bit when virtualised, because in the above case it would
+> be clear deliberately to indicate the fact "you might migrate to
+> somewhere which has this behaviour".
+> 
+> Zen3 adds the NullSelectorClearsBase bit to indicate that loading
+> a NULL segment selector zeroes the base and limit fields, as well as
+> just attributes. Zen2 also has this behaviour but doesn't have the
+> NSCB bit.
+> 
+> Signed-off-by: Jane Malalane <jane.malalane@citrix.com>
+> ---
+> CC: <x86@kernel.org>
+> CC: Thomas Gleixner <tglx@linutronix.de>
+> CC: Ingo Molnar <mingo@redhat.com>
+> CC: Borislav Petkov <bp@alien8.de>
+> CC: "H. Peter Anvin" <hpa@zytor.com>
+> CC: Pu Wen <puwen@hygon.cn>
+> CC: Paolo Bonzini <pbonzini@redhat.com>
+> CC: Sean Christopherson <seanjc@google.com>
+> CC: Peter Zijlstra <peterz@infradead.org>
+> CC: Andrew Cooper <andrew.cooper3@citrix.com>
+> CC: Yazen Ghannam <Yazen.Ghannam@amd.com>
+> CC: Brijesh Singh <brijesh.singh@amd.com>
+> CC: Huang Rui <ray.huang@amd.com>
+> CC: Andy Lutomirski <luto@kernel.org>
+> CC: Kim Phillips <kim.phillips@amd.com>
+> CC: <stable@vger.kernel.org>
 
-This pull request contains updates for the Kernel concurrency sanitizer
-(KCSAN).
+These need to go above the --- line, otherwise they are cut off when
+the patch is applied and you will loose the cc: stable@ tag.
 
-These updates fix an initialization issue, update tests, improve reporting,
-and provide support for scoped accesses.
+thanks,
 
-These updates have been posted on LKML:
-
-https://lore.kernel.org/all/20210916003126.GA3910257@paulmck-ThinkPad-P17-Gen-1/
-
-These changes are based on v5.15-rc1, have been exposed to -next and to
-kbuild test robot, and are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git kcsan
-
-for you to fetch changes up to ac20e39e8d254da3f82b5ed2afc7bb1e804d32c9:
-
-  kcsan: selftest: Cleanup and add missing __init (2021-09-13 16:41:20 -0700)
-
-----------------------------------------------------------------
-Marco Elver (9):
-      kcsan: test: Defer kcsan_test_init() after kunit initialization
-      kcsan: test: Use kunit_skip() to skip tests
-      kcsan: test: Fix flaky test case
-      kcsan: Add ability to pass instruction pointer of access to reporting
-      kcsan: Save instruction pointer for scoped accesses
-      kcsan: Start stack trace with explicit location if provided
-      kcsan: Support reporting scoped read-write access type
-      kcsan: Move ctx to start of argument list
-      kcsan: selftest: Cleanup and add missing __init
-
- include/linux/kcsan-checks.h |  3 ++
- kernel/kcsan/core.c          | 75 ++++++++++++++++++++++++------------------
- kernel/kcsan/kcsan.h         |  8 ++---
- kernel/kcsan/kcsan_test.c    | 62 +++++++++++++++++++++++------------
- kernel/kcsan/report.c        | 77 ++++++++++++++++++++++++++++++++++++--------
- kernel/kcsan/selftest.c      | 72 +++++++++++++++++------------------------
- 6 files changed, 186 insertions(+), 111 deletions(-)
+greg k-h
