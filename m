@@ -2,97 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C83942BC75
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8051D42BC79
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238661AbhJMKLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:11:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59044 "EHLO
+        id S239233AbhJMKMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:12:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52269 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229853AbhJMKLN (ORCPT
+        by vger.kernel.org with ESMTP id S229853AbhJMKMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:11:13 -0400
+        Wed, 13 Oct 2021 06:12:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634119750;
+        s=mimecast20190719; t=1634119816;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+H2CcqHQa3aHsMSE5edugMU+61s5pxwJjosotJGK2ew=;
-        b=b9vNQPGdEUh7h8/NeWcZhitH0hQbKQ+3/LzZtzVSAqQSqoM1kB7FDO2N65rGH/23sd9qki
-        iKqcVz7BoGgYouWP19vFHKHjrNjwovk9oiH806H+CnoU3l7TeORa1hf4zwmdPKabv8DmQl
-        MXHf3FmTJkMixUCPXFtn3qoqGALjA0s=
+        bh=XIV6EWlf8IYh7mOxA5NB+uuQJyLxn6kGVxkuMI5GYog=;
+        b=bsGly8ZB84YYvX2eeaAnMpAK+4QdXYnJ6Yq9s9K8I2nvyQBa5fu16RHLd4OGAEAfmEaFAF
+        cVHVBEQBwijOqKjvlTd51weOsrFi8T3rBWl5JuXAjF8pMV+n3cYcQPFcnDQF96xjKow792
+        B/J+A7JltqQ2C2qwxBVVxOvjYpqdrGs=
 Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
  [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-515-tjsIowIfPYS2ysxESYz2dw-1; Wed, 13 Oct 2021 06:09:08 -0400
-X-MC-Unique: tjsIowIfPYS2ysxESYz2dw-1
-Received: by mail-wr1-f71.google.com with SMTP id d13-20020adfa34d000000b00160aa1cc5f1so1553998wrb.14
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:09:08 -0700 (PDT)
+ us-mta-444-bLts38bLMlK6FLgrrKT4eQ-1; Wed, 13 Oct 2021 06:10:15 -0400
+X-MC-Unique: bLts38bLMlK6FLgrrKT4eQ-1
+Received: by mail-wr1-f71.google.com with SMTP id d13-20020adf9b8d000000b00160a94c235aso1595085wrc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:10:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=+H2CcqHQa3aHsMSE5edugMU+61s5pxwJjosotJGK2ew=;
-        b=qpYjJckR/w5fN8Rbk7dfrodldsX2eY5xDh4VsaGuLAcS6rz9tdybwB6/OcjBeAAq0f
-         r5yabgzIILKtAY9Bbhi/1gvfPlTNx7E5QMboshHbvQEofQ/wXD1IahMqjRc+sRMcdt+T
-         2RmCqI0oNAZziGyBCYLrpleczwDHkue/gg2XuePb+cVjlUwXv4D+e8dp9ynOo6wuKmSJ
-         RsTPeRPdvXOfFH+0hCAlDFKfvipQ0hz2Kr1/vF+qJzkRpSRWF8gZhERPYMj9nx+C3JmY
-         rPn53pKket9q/jlX0nkFIXTkWpVOgEIOTlzZiDg3NW+kTGPB0RYcBVjvRUQXfLKaG3Rw
-         rrPg==
-X-Gm-Message-State: AOAM530ux+SLLrHyRmeZVIRzdI/8Ar1as+SoMbxFzTzQuDz84y7RAi3f
-        yVTTjlIn3pLAXORjhvGxGsIB5CUlCxOvNYgxpfHUwna2R83X+kaJyXu18uuE7XWizBOy1TbFBlu
-        +MIa8cmXAwI2gPWNtpA6mlYL6
-X-Received: by 2002:a1c:7212:: with SMTP id n18mr11952921wmc.87.1634119747523;
-        Wed, 13 Oct 2021 03:09:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwAG6+SiB0W+JEraq7KKny4L51lvdAdz9tBqTVTomwWEDTigwLRxfDFPNdqwRmIp2zegjsS7Q==
-X-Received: by 2002:a1c:7212:: with SMTP id n18mr11952906wmc.87.1634119747323;
-        Wed, 13 Oct 2021 03:09:07 -0700 (PDT)
+        bh=XIV6EWlf8IYh7mOxA5NB+uuQJyLxn6kGVxkuMI5GYog=;
+        b=qGbUVtWzLiU6Zz+vtPaJYYF7taF9pX18wC8tKTtCiJa0cnmfQDUD7v0Iv0zUtdCUe+
+         UjJ+DWFJ8/yycZkkvPSYrNGOqG0VUvTAJnZPSmJGqksSMy/95q6apVQT+kusFPEXuPkp
+         V+ir5TJd+RDHmUFsunFBWmkSlZ+qESz1u9BMQuavCT92jI/I6nPIlqFpFOve3VIKYVzi
+         8c1TfMq3nvoAimXVY3pN3EdnpLfQoxBv7Y5lZ6ovKeTpKcd8lP/koFXYQeRaA5P30e4i
+         PHYTUfXPPgjquOvs4l1UWc9Epv+/9J1wzyyiOdUgoawHqJ+2uWG+7e73jJfwmyfe+Vus
+         RtTQ==
+X-Gm-Message-State: AOAM530Ymf+uzBW4AlnPfYmS9HiKczKOQmuDShjV6FyQ2F9KmEf3SOy3
+        IqADD/Wbo+J1iEdQHFnXK5rNaOuxEhYUFVjQZOeOM5zBkjepHrlxSOD1Sg+6YYHYDmDws0zb20/
+        AJynp51wvFMPTDSP9XoYwSrkC
+X-Received: by 2002:a5d:6c65:: with SMTP id r5mr38598494wrz.26.1634119814027;
+        Wed, 13 Oct 2021 03:10:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwdzEUsRMSd5Z6w3cXq4dmtWNY5MNbht2wMdWdZK2XnSLKoIDFYiOilvxVG3omeTmm8H874VQ==
+X-Received: by 2002:a5d:6c65:: with SMTP id r5mr38598465wrz.26.1634119813789;
+        Wed, 13 Oct 2021 03:10:13 -0700 (PDT)
 Received: from redhat.com ([2.55.30.112])
-        by smtp.gmail.com with ESMTPSA id i24sm4502602wml.26.2021.10.13.03.09.05
+        by smtp.gmail.com with ESMTPSA id p25sm4782688wma.2.2021.10.13.03.10.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 03:09:06 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 06:09:03 -0400
+        Wed, 13 Oct 2021 03:10:13 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 06:10:09 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
-        david.kaplan@amd.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH V2 02/12] virtio: add doc for validate() method
-Message-ID: <20211013060808-mutt-send-email-mst@kernel.org>
-References: <20211012065227.9953-1-jasowang@redhat.com>
- <20211012065227.9953-3-jasowang@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        markver@us.ibm.com, Cornelia Huck <cohuck@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, stefanha@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        qemu-devel@nongnu.org
+Subject: Re: [PATCH v3 1/1] virtio: write back F_VERSION_1 before validate
+Message-ID: <20211013060923-mutt-send-email-mst@kernel.org>
+References: <20211011053921.1198936-1-pasic@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211012065227.9953-3-jasowang@redhat.com>
+In-Reply-To: <20211011053921.1198936-1-pasic@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 02:52:17PM +0800, Jason Wang wrote:
-> This patch adds doc for validate() method.
+On Mon, Oct 11, 2021 at 07:39:21AM +0200, Halil Pasic wrote:
+> The virtio specification virtio-v1.1-cs01 states: "Transitional devices
+> MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
+> been acknowledged by the driver."  This is exactly what QEMU as of 6.1
+> has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
 > 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> However, the specification also says: "... the driver MAY read (but MUST
+> NOT write) the device-specific configuration fields to check that it can
+> support the device ..." before setting FEATURES_OK.
+> 
+> In that case, any transitional device relying solely on
+> VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
+> legacy format.  In particular, this implies that it is in big endian
+> format for big endian guests. This naturally confuses the driver which
+> expects little endian in the modern mode.
+> 
+> It is probably a good idea to amend the spec to clarify that
+> VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
+> is complete. Before validate callback existed, config space was only
+> read after FEATURES_OK. However, we already have two regressions, so
+> let's address this here as well.
+> 
+> The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and
+> the VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when
+> virtio 1.0 is used on both sides. The latter renders virtio-blk unusable
+> with DASD backing, because things simply don't work with the default.
+> See Fixes tags for relevant commits.
+> 
+> For QEMU, we can work around the issue by writing out the feature bits
+> with VIRTIO_F_VERSION_1 bit set.  We (ab)use the finalize_features
+> config op for this. This isn't enough to address all vhost devices since
+> these do not get the features until FEATURES_OK, however it looks like
+> the affected devices actually never handled the endianness for legacy
+> mode correctly, so at least that's not a regression.
+> 
+> No devices except virtio net and virtio blk seem to be affected.
+> 
+> Long term the right thing to do is to fix the hypervisors.
+> 
+> Cc: <stable@vger.kernel.org> #v4.11
+> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+> Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
+> Reported-by: markver@us.ibm.com
+> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
-And maybe document __virtio_clear_bit : it says
-"for use by transports" and now it's also legal in the
-validate callback.
+OK this looks good! How about a QEMU patch to make it spec compliant on
+BE?
 
 > ---
->  include/linux/virtio.h | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-> index 41edbc01ffa4..0cd8685aeba4 100644
-> --- a/include/linux/virtio.h
-> +++ b/include/linux/virtio.h
-> @@ -152,6 +152,7 @@ size_t virtio_max_dma_size(struct virtio_device *vdev);
->   * @feature_table_size: number of entries in the feature table array.
->   * @feature_table_legacy: same as feature_table but when working in legacy mode.
->   * @feature_table_size_legacy: number of entries in feature table legacy array.
-> + * @validate: optional function to do early checks
->   * @probe: the function to call when a device is found.  Returns 0 or -errno.
->   * @scan: optional function to call after successful probe; intended
->   *    for virtio-scsi to invoke a scan.
+> @Connie: I made some more commit message changes to accommodate Michael's
+> requests. I just assumed these will work or you as well and kept your
+> r-b. Please shout at me if it needs to be dropped :)
+> ---
+>  drivers/virtio/virtio.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> index 0a5b54034d4b..236081afe9a2 100644
+> --- a/drivers/virtio/virtio.c
+> +++ b/drivers/virtio/virtio.c
+> @@ -239,6 +239,17 @@ static int virtio_dev_probe(struct device *_d)
+>  		driver_features_legacy = driver_features;
+>  	}
+>  
+> +	/*
+> +	 * Some devices detect legacy solely via F_VERSION_1. Write
+> +	 * F_VERSION_1 to force LE config space accesses before FEATURES_OK for
+> +	 * these when needed.
+> +	 */
+> +	if (drv->validate && !virtio_legacy_is_little_endian()
+> +			  && device_features & BIT_ULL(VIRTIO_F_VERSION_1)) {
+> +		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
+> +		dev->config->finalize_features(dev);
+> +	}
+> +
+>  	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+>  		dev->features = driver_features & device_features;
+>  	else
+> 
+> base-commit: 60a9483534ed0d99090a2ee1d4bb0b8179195f51
 > -- 
 > 2.25.1
 
