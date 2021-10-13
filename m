@@ -2,85 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6E642B8ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E540F42B988
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238356AbhJMHZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:25:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhJMHZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:25:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57620604DA;
-        Wed, 13 Oct 2021 07:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634109832;
-        bh=8tW3jrUtGh8D9IU8h+F9Q4KrLn2sM5xgpjJKt7sTuJU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ajPZjsQOgWjU9UI0nm93R3TbZ3+CwaymKKRi5sOwoCNnFUE6AiOPWN9C1kk/PBjNp
-         z8Rz7KnYTpREYRz7yeV2viNAYvG02to5NL46z9RFaCnfseCNL7nC5qh02lVDV7yzI6
-         tGgXvlSXX6UND33vElSheIYmPKBHXkZFe4ktHNmXHjkJd2i0zjx1aHZmsI01nPFsR3
-         v2qrrd0tKpfCigGK8phCGe5w73CB1thoE0vy4bTspR+Jq5Fmg7/9F2yR+rHr7P2k7D
-         B7diX5icAa4X1btgKmRvKNiZAyphCNaZx335rQaJ/pQeJOC/Jn8+LE8RtOWSC9JfxE
-         /BZdA79qSTX5Q==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1maYc2-0005xc-SY; Wed, 13 Oct 2021 09:23:43 +0200
-Date:   Wed, 13 Oct 2021 09:23:42 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Drew Fustini <dfustini@baylibre.com>
-Cc:     Benoit Cousson <bcousson@baylibre.com>,
-        Dave Gerlach <d-gerlach@ti.com>, Keerthy <j-keerthy@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: am335x: Add rtc node as system-power-controller
-Message-ID: <YWaJfofs8QAtBnVu@hovoldconsulting.com>
-References: <20211012191311.879838-1-dfustini@baylibre.com>
+        id S238662AbhJMHvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:51:44 -0400
+Received: from twhmllg3.macronix.com ([122.147.135.201]:59881 "EHLO
+        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238634AbhJMHvn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 03:51:43 -0400
+Received: from TWHMLLG3.macronix.com (localhost [127.0.0.2] (may be forged))
+        by TWHMLLG3.macronix.com with ESMTP id 19D7NsIO019283
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:23:54 +0800 (GMT-8)
+        (envelope-from zhengxunli@mxic.com.tw)
+Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
+        by TWHMLLG3.macronix.com with ESMTP id 19D7NkaN019186;
+        Wed, 13 Oct 2021 15:23:46 +0800 (GMT-8)
+        (envelope-from zhengxunli@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
+        by Forcepoint Email with ESMTP id 4B960207F6AF699EF3AD;
+        Wed, 13 Oct 2021 15:23:47 +0800 (CST)
+In-Reply-To: <OF86339F0C.88E145E3-ON4825876D.002567AA-4825876D.002569D9@LocalDomain>
+References: <20211008162228.1753083-1-miquel.raynal@bootlin.com> <20211008162228.1753083-10-miquel.raynal@bootlin.com> <OF86339F0C.88E145E3-ON4825876D.002567AA-4825876D.002569D9@LocalDomain>
+To:     "Miquel Raynal" <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        <linux-mtd@lists.infradead.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Mark Brown" <broonie@kernel.org>,
+        "Xiangsheng Hou" <Xiangsheng.Hou@mediatek.com>,
+        "Boris Brezillon" <bbrezillon@kernel.org>,
+        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jaimeliao@mxic.com.tw,
+        juliensu@mxic.com.tw,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+        "Miquel Raynal" <miquel.raynal@bootlin.com>
+Subject: =?Big5?B?UmU6IKZeq0g6IFtSRkMgUEFUQ0ggMDkvMTBdIHNwaTogbXhpYzogQWRk?=
+ =?Big5?B?IHN1cHBvcnQgZm9yIGRpcmVjdCBtYXBwaW5n?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012191311.879838-1-dfustini@baylibre.com>
+X-KeepSent: 2120B7BA:FA9EA9F2-4825876D:002705BD;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
+Message-ID: <OF2120B7BA.FA9EA9F2-ON4825876D.002705BD-4825876D.0028A142@mxic.com.tw>
+From:   zhengxunli@mxic.com.tw
+Date:   Wed, 13 Oct 2021 15:23:47 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
+ 2021/10/13 PM 03:23:47,
+        Serialize complete at 2021/10/13 PM 03:23:47
+Content-Type: text/plain; charset="US-ASCII"
+X-MAIL: TWHMLLG3.macronix.com 19D7NkaN019186
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 12:13:12PM -0700, Drew Fustini wrote:
-> From: Keerthy <j-keerthy@ti.com>
+
+> Implement the ->dirmap_create() and ->dirmap_read/write() hooks to
+> provide a fast path for read and write accesses.
 > 
-> PMIC_PWR_EN pin of RTC on am335x-evm, bone, and boneblack is connected to
-> PMIC on board, so flag rtc node as system-power-controller to allow
-> software to poweroff boards.
-
-The "system-power-controller" property is already set in
-bone-common.dtsi since
-
-	2876cc4a773c ("ARM: dts: Move most of am335x-boneblack.dts to am335x-boneblack-common.dtsi")
-
-so this probably only affects am335x-evm and that should be reflected in
-the commit message.
-
-Also, should you now remove the property from boneblack-common? Or just
-add it to am335x-evm instead?
-
-> Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
-> Signed-off-by: Keerthy <j-keerthy@ti.com>
-> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  arch/arm/boot/dts/am335x-bone-common.dtsi | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
-> index 0ccdc7cd463b..56ae5095a5b8 100644
-> --- a/arch/arm/boot/dts/am335x-bone-common.dtsi
-> +++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
-> @@ -399,6 +399,7 @@ &sham {
->  &rtc {
->  	clocks = <&clk_32768_ck>, <&clk_24mhz_clkctrl AM3_CLK_24MHZ_CLKDIV32K_CLKCTRL 0>;
->  	clock-names = "ext-clk", "int-clk";
-> +	system-power-controller;
->  };
->  
->  &pruss_tm {
+>  drivers/spi/spi-mxic.c | 171 ++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 144 insertions(+), 27 deletions(-)
 
-Johan
+Hi Miquel,
+
+I verified it by reading, writing, and erasing through normal and quad 
+modes
+on the Xilinx Zynq PicoZed FPGA board. Except for the need to update the 
+SPI
+MXIC driver version, it looks good.
+
+Tested-by: Zhengxun Li <zhengxunli@mxic.com.tw>
+Reviewed-by: Zhengxun Li <zhengxunli@mxic.com.tw>
+
+
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
