@@ -2,63 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159F042CF02
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 01:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F1742CF05
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 01:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhJMXPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 19:15:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229668AbhJMXPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 19:15:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C0E860C4D;
-        Wed, 13 Oct 2021 23:13:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1634166781;
-        bh=ff/h9KDJlUBI6feY+QII5BtvbX/wkx8OS2q5HtuB0oY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=2hcz8RgKEaU2Ilmff0+KI4DGBARFO3FxpK9sn4jtertw3hPf7ewCKH54jH8HmZj7F
-         HO30FO9+MYZw1x07lR3DmOklSDfsaQB2LW3guADGVbAew503XD+CzyLqsSWLBYxLcD
-         i7+q/lV0eR6nw95p3R5SnZML8NZSSujz3CPHCdwE=
-Date:   Wed, 13 Oct 2021 16:12:59 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     rostedt@goodmis.org, bp@suse.de, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] init: Make unknown command line param message clearer
-Message-Id: <20211013161259.39e88182200b7a582c0cf632@linux-foundation.org>
-In-Reply-To: <20211013223502.96756-1-ahalaney@redhat.com>
-References: <20211013223502.96756-1-ahalaney@redhat.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229852AbhJMXPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 19:15:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47054 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229710AbhJMXPd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 19:15:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634166808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vHKHqM6joTjLTO+LAIK0a1VhLnO657jhFhkTCdfnQy4=;
+        b=dDyCpTDo6h/3LhFaFxjWIF3jehTC8YmTTsV8mLMm3MmfIQJuujVpJ/Ior1zAaybZa4mYGT
+        XwMN4g5za+DbepyXXFLdiYy5FYLwGeV6CfUnLgb8+hbyKfSoPOLTqxumBLRvT/Xe0AqRbB
+        PtbmgZIAnJGeXKoGKlNWBSr+O4mLvHM=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98-rOs0gM8iOse86LQy1VQv-w-1; Wed, 13 Oct 2021 19:13:27 -0400
+X-MC-Unique: rOs0gM8iOse86LQy1VQv-w-1
+Received: by mail-pg1-f198.google.com with SMTP id n9-20020a63f809000000b0026930ed1b24so2294064pgh.23
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 16:13:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vHKHqM6joTjLTO+LAIK0a1VhLnO657jhFhkTCdfnQy4=;
+        b=wHP5UmeVMj+KaZ1g/KiyfkJ3DOytREgLiZVb/IZX9AA1I4v6gnjTmcUQQdS9RkwOD9
+         xIw/kdY/xPjlhJ+R+T167GQLe9BLElTB/+meTB/EXCSSX/ZazbSKIB80FFYfYaggh/WC
+         IXva3c4EsYl52dUAYUIITncWhjS6Z+/GUvbaZuEkCd48NwsgyfxgQWBZYnwcGDIJGZJO
+         fohaHdx2wOuFCq2GapTfiLr+cgRPxcWxSrLU0SEs7C8ZI5MECjFClVxKQxkfDIFB6oh1
+         YUg7L8N9dU+6dneNXCweI4qvLVXrH9G0v8J1hSHn1DeBOQWFanZ6EJlp2vIfCsZ1WHmA
+         3q3Q==
+X-Gm-Message-State: AOAM531mjgiGNH/BREG4++RB33EmL1yCsCPUyQ5TFtgszbk2zexYC4sS
+        4Oe8XC26RbRRz0Zmep9cChDXgiaryPFGoJ/d8uSQDgDZLXfayvecscl6aoxtFOm3QhbzJzzPGVg
+        VWhizbxzSvDdZ4a25dWYKrz53
+X-Received: by 2002:a05:6a00:ac6:b029:374:a33b:a74 with SMTP id c6-20020a056a000ac6b0290374a33b0a74mr2157866pfl.51.1634166806289;
+        Wed, 13 Oct 2021 16:13:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyosAo3Rd7PHBy+R/128zfAHbsbgJfHLUuFFIbmXdGJzX054smRXN6zXt9Qeh9AnGI+ZzVpBQ==
+X-Received: by 2002:a05:6a00:ac6:b029:374:a33b:a74 with SMTP id c6-20020a056a000ac6b0290374a33b0a74mr2157843pfl.51.1634166805966;
+        Wed, 13 Oct 2021 16:13:25 -0700 (PDT)
+Received: from t490s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id t28sm487986pfq.158.2021.10.13.16.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 16:13:25 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 07:13:18 +0800
+From:   Peter Xu <peterx@redhat.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+Message-ID: <YWdoDn4uEYG8jpXH@t490s>
+References: <CAHbLzkqm_Os8TLXgbkL-oxQVsQqRbtmjdMdx0KxNke8mUF1mWA@mail.gmail.com>
+ <YWTc/n4r6CJdvPpt@t490s>
+ <YWTobPkBc3TDtMGd@t490s>
+ <CAHbLzkrOsNygu5x8vbMHedv+P3dEqOxOC6=O6ACSm1qKzmoCng@mail.gmail.com>
+ <YWYHukJIo8Ol2sHN@t490s>
+ <CAHbLzkp3UXKs_NP9XD_ws=CSSFzUPk7jRxj0K=gvOqoi+GotmA@mail.gmail.com>
+ <YWZMDTwCCZWX5/sQ@t490s>
+ <CAHbLzkp8QkORXK_y8hnrg=2kTRFyoZpJcXbkyj6eyCdcYSbZTw@mail.gmail.com>
+ <YWZVdDSS/4rnFbqK@t490s>
+ <CAHbLzkrcOpG5AHk934hDJb2d+FocYjUc6nhBRofhTbTxLVWtYA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkrcOpG5AHk934hDJb2d+FocYjUc6nhBRofhTbTxLVWtYA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 17:35:02 -0500 Andrew Halaney <ahalaney@redhat.com> wrote:
-
-> The prior message is confusing users, which is the exact opposite of the
-> goal. If the message is being seen, one of the following situations is
-> happening:
+On Wed, Oct 13, 2021 at 02:42:42PM -0700, Yang Shi wrote:
+> On Tue, Oct 12, 2021 at 8:41 PM Peter Xu <peterx@redhat.com> wrote:
+> >
+> > On Tue, Oct 12, 2021 at 08:27:06PM -0700, Yang Shi wrote:
+> > > > But this also reminded me that shouldn't we be with the page lock already
+> > > > during the process of "setting hwpoison-subpage bit, split thp, clear
+> > > > hwpoison-subpage bit"?  If it's only the small window that needs protection,
+> > > > while when looking up the shmem pagecache we always need to take the page lock
+> > > > too, then it seems already safe even without the extra bit?  Hmm?
+> > >
+> > > I don't quite get your point. Do you mean memory_failure()? If so the
+> > > answer is no, outside the page lock. And the window may be indefinite
+> > > since file THP doesn't get split before this series and the split may
+> > > fail even after this series.
+> >
+> > What I meant is that we could extend the page_lock in try_to_split_thp_page()
+> > to cover setting hwpoison-subpage too (and it of course covers the clearing if
+> > thp split succeeded, as that's part of the split process).  But yeah it's a
+> > good point that the split may fail, so the extra bit seems still necessary.
+> >
+> > Maybe that'll be something worth mentioning in the commit message too?  The
+> > commit message described very well on the overhead of looping over 512 pages,
+> > however the reader can easily overlook the real reason for needing this bit -
+> > IMHO it's really for the thp split failure case, as we could also mention that
+> > if thp split won't fail, page lock should be suffice (imho).  We could also
 > 
->  1. the param is misspelled
->  2. the param is not valid due to the kernel configuration
->  3. the param is intended for init but isn't after the '--'
->     delineator on the command line
-> 
-> To make that more clear to the user, explicitly mention "kernel command
-> line" and also note that the params are still passed to user space to
-> avoid causing any alarm over params intended for init.
-> 
-> Fixes: 86d1919a4fb0 ("init: print out unknown kernel parameters")
-> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> Not only for THP split failure case. Before this series, shmem THP
+> does't get split at all. And this commit is supposed to be backported
+> to the older versions, so saying "page lock is sufficient" is not
+> precise and confusing.
 
-Thanks.
+Sure, please feel free to use any wording you prefer as long as the other side
+of the lock besides the performance impact could be mentioned.  Thanks,
 
-BTW, I'm still sitting on your "init/main.c: silence some
--Wunused-parameter warnings", awaiting a response to Rasmus's
-suggestion:
-https://lkml.kernel.org/r/f06b8308-645b-031b-f9c6-b92400a269aa@rasmusvillemoes.dk
+-- 
+Peter Xu
+
