@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379C042B320
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFBE42B323
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237093AbhJMDKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:10:55 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:39869 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbhJMDKy (ORCPT
+        id S237108AbhJMDLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230054AbhJMDLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:10:54 -0400
-Received: by mail-ot1-f50.google.com with SMTP id k2-20020a056830168200b0054e523d242aso1850687otr.6;
-        Tue, 12 Oct 2021 20:08:51 -0700 (PDT)
+        Tue, 12 Oct 2021 23:11:40 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AFBC061570;
+        Tue, 12 Oct 2021 20:09:38 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id a25so3975885edx.8;
+        Tue, 12 Oct 2021 20:09:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HCj1lkjwgbEmXu7cDtw3vmGVDAughdgaboyPo11IbyY=;
+        b=gPg+9TXyXNbceMu0iZnHpqvcf/Dh8NUumwo5xVdgEzqQSBBRrM3O5An820DO8O/oPE
+         I27gQ4e6omZrGCP9BZKNEqMjuoWXuqHfvmT0BtkdvKlX/afPEiihw0hOvsyQwbipoM6r
+         JIt3oC8nckpl0NKL/Le5xeyZdnSSCJm334CwpRGYrfVd7Xcz648acE1gi5+TSB30kLED
+         a5RPKNXRr2rQmmtNT+veO7ICttJac/qsZ64t/77ef+7mWbzWXMdDwMpMm3m0h/BlbRY4
+         0GtqwLaEtL6a0vaOjGmktsJtnhMEwnhCGS+dO4I/zdKegxFqBncJ4lwyb+s3qBO2OClB
+         7ybg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=dG7YKVkdDHgU/EVdP5rWldt/Wd4xuXVEeGYHHbyU6pY=;
-        b=WglxSxVgt/9zWvhHSfPuH2OAOHpAGX+Khs0OhpMn7pjFzANsTtnQuP0Mt9UxR/8kWb
-         NHuq0FurjW8AW7hlgZRQ4DfJaVOI4QUWofTQQvS4iudEKhz5ZMIJXe3GQWXYn0bt8E0+
-         PBqz1v4YPNS+P8BBfqvI2g4GlS3yWG0gdqe705pTE+YakxJxgvT6iSBiJaIp1wCmk8nO
-         cpzIujo7yi2bjoh0eRCh6nSfgoqr6kqxa9Aa/amZxxu4g0NxoQD54HCQYPPd75GqA1J1
-         nDAolp2DYMe2xHX89SClcXpeex7qr58sTpR1aAKPdE3vxJfZkKSduu9qWxSLjuyYK7ht
-         ZivQ==
-X-Gm-Message-State: AOAM5329g1lE8Hqre5lBK0OJdYrvOq/wqNbvPAVZTIGXQbATlfz5nH27
-        zhBoaIgVSktRpNC/v377r+C1Ix+LkA==
-X-Google-Smtp-Source: ABdhPJwxbanwesgn/W1Wk639iMVs3dz+D5GBhnB2Y0dX/VfTkAYTB4EguI+MLsLJdXY/BZM8w0/ILA==
-X-Received: by 2002:a9d:61c7:: with SMTP id h7mr4857303otk.21.1634094531056;
-        Tue, 12 Oct 2021 20:08:51 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l45sm2488680ooi.30.2021.10.12.20.08.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 20:08:50 -0700 (PDT)
-Received: (nullmailer pid 3858823 invoked by uid 1000);
-        Wed, 13 Oct 2021 03:08:49 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        netdev@vger.kernel.org, Matthew Hagan <mnhagan88@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Russell King <linux@armlinux.org.uk>
-In-Reply-To: <20211013011622.10537-16-ansuelsmth@gmail.com>
-References: <20211013011622.10537-1-ansuelsmth@gmail.com> <20211013011622.10537-16-ansuelsmth@gmail.com>
-Subject: Re: [net-next PATCH v6 15/16] dt-bindings: net: dsa: qca8k: convert to YAML schema
-Date:   Tue, 12 Oct 2021 22:08:49 -0500
-Message-Id: <1634094529.487895.3858822.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HCj1lkjwgbEmXu7cDtw3vmGVDAughdgaboyPo11IbyY=;
+        b=0Ic+9Ft3hzWGYJ1ABOy1uDs91msTZu5eMCTjwwAEq8x3LNCLkdrmEz7dX/m+a8hCD/
+         qANfKjmHf+1gnIw0hVlNIqTVgOvRYwaYgKOd3NVx/Wc4RYjXjZGPCrTxsZvjMnEf/tw1
+         SGRizrXNsTaKYOKpnFOrO/T1qbJcgYSrtOwYQiLnHtMACMXaE2dW5nIngiQdjq0V6B/T
+         Nwqeelapcv7QGdKM/GSRxk538AOZnrZWaoBWvfIOjQv7bNKMkT4LLUQw32B9+v63q2gj
+         riVs9Mwmsg8nU66A9YR0upQuoxgBU0Jz0ji4JvoxXVeyRX2++2OxVR/3XwcJOfNHrKUw
+         ZkVQ==
+X-Gm-Message-State: AOAM530FJTXuGjIFjzHRXrKWylB4/8oa9upvFU6vavB1LomwHRipsoGH
+        4gfc6jem71srNU4Kfa9fHOkrCamZN3sblPPQ6X0=
+X-Google-Smtp-Source: ABdhPJyuYJsTNqDNqpkO4cOocgXz+Ee+xNW+iBResKEZMLhch/S4NGvSvXFfukNYWy8lXyaKHbkK9TaixmdPHneWpoA=
+X-Received: by 2002:a05:6402:1e8c:: with SMTP id f12mr5508316edf.71.1634094576961;
+ Tue, 12 Oct 2021 20:09:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210930215311.240774-1-shy828301@gmail.com> <YWZHOYgFrMYbmNA/@t490s>
+In-Reply-To: <YWZHOYgFrMYbmNA/@t490s>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 12 Oct 2021 20:09:24 -0700
+Message-ID: <CAHbLzkoz6Gm31Qz-u_ohR6NK2RRE5OdEkSq_3t9Cjwkqf1+a7w@mail.gmail.com>
+Subject: Re: [RFC v3 PATCH 0/5] Solve silent data loss caused by poisoned page
+ cache (shmem/tmpfs)
+To:     Peter Xu <peterx@redhat.com>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 03:16:21 +0200, Ansuel Smith wrote:
-> From: Matthew Hagan <mnhagan88@gmail.com>
-> 
-> Convert the qca8k bindings to YAML format.
-> 
-> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-> Co-developed-by: Ansuel Smith <ansuelsmth@gmail.com>
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  .../devicetree/bindings/net/dsa/qca8k.txt     | 245 ------------
->  .../devicetree/bindings/net/dsa/qca8k.yaml    | 362 ++++++++++++++++++
->  2 files changed, 362 insertions(+), 245 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/net/dsa/qca8k.txt
->  create mode 100644 Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-> 
+On Tue, Oct 12, 2021 at 7:41 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Thu, Sep 30, 2021 at 02:53:06PM -0700, Yang Shi wrote:
+> > Yang Shi (5):
+> >       mm: hwpoison: remove the unnecessary THP check
+> >       mm: filemap: check if THP has hwpoisoned subpage for PMD page fault
+> >       mm: hwpoison: refactor refcount check handling
+> >       mm: shmem: don't truncate page if memory failure happens
+> >       mm: hwpoison: handle non-anonymous THP correctly
+>
+> Today I just noticed one more thing: unpoison path has (unpoison_memory):
+>
+>         if (page_mapping(page)) {
+>                 unpoison_pr_info("Unpoison: the hwpoison page has non-NULL mapping %#lx\n",
+>                                  pfn, &unpoison_rs);
+>                 return 0;
+>         }
+>
+> I _think_ it was used to make sure we ignore page that was not successfully
+> poisoned/offlined before (for anonymous), so raising this question up on
+> whether we should make sure e.g. shmem hwpoisoned pages still can be unpoisoned
+> for debugging purposes.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Yes, not only mapping, the refcount check is not right if page cache
+page is kept in page cache instead of being truncated after this
+series. But actually unpoison has been broken since commit
+0ed950d1f28142ccd9a9453c60df87853530d778 ("mm,hwpoison: make
+get_hwpoison_page() call get_any_page()"). And Naoya said in the
+commit "unpoison_memory() is also unchanged because it's broken and
+need thorough fixes (will be done later)."
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/net/dsa/qca8k.yaml:362:7: [error] no new line character at the end of file (new-line-at-end-of-file)
+I do have some fixes in my tree to unblock tests and fix unpoison for
+this series (just make it work for testing). Naoya may have some ideas
+in mind and it is just a debugging feature so I don't think it must be
+fixed in this series. It could be done later. I could add a TODO
+section in the cover letter to make this more clear.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/qcom,ipq8064-mdio.example.dt.yaml: switch@10: 'oneOf' conditional failed, one must be fixed:
-	'ports' is a required property
-	'ethernet-ports' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1540096
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+>
+> --
+> Peter Xu
+>
