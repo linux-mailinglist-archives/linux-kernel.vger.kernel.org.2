@@ -2,86 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153A442B3A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9956D42B3A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237241AbhJMDe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:34:27 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:37160 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234170AbhJMDe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:34:26 -0400
-Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD2s6U2Zhew0ZAA--.23799S2;
-        Wed, 13 Oct 2021 11:32:14 +0800 (CST)
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Patchwork Bot <patchwork-bot@kernel.org>
-Cc:     zhuyinbo@loongson.cn
-Subject: [PATCH v6] usb: ohci: disable start-of-frame interrupt in ohci_rh_suspend
-Date:   Wed, 13 Oct 2021 11:32:08 +0800
-Message-Id: <1634095928-29639-1-git-send-email-zhuyinbo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9DxD2s6U2Zhew0ZAA--.23799S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ar4DXrykKFWDZrWfGryUJrb_yoW8GFWfpF
-        W5Ar42yrs8Ka1Yv3WUKF4xuw4Fkwn8GrW7Ca97Kw1UW39Iqw1rXry7tFW5KF9rWryfKw4j
-        qF4Fka45Wa4UCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUka14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK6svPMxAI
-        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+        id S237283AbhJMDfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:35:38 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:56708 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233169AbhJMDfh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 23:35:37 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0Ure8YWn_1634096007;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Ure8YWn_1634096007)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 13 Oct 2021 11:33:29 +0800
+Subject: Re: [PATCH v2 0/2] fix & prevent the missing preemption disabling
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com>
+ <1a8e8d73-b508-f90b-0d82-eb2da45a720e@linux.alibaba.com>
+ <20211012232658.7dac3f43@oasis.local.home>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <69e9cf98-883c-0016-4b07-12afbf138094@linux.alibaba.com>
+Date:   Wed, 13 Oct 2021 11:33:27 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20211012232658.7dac3f43@oasis.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While going into S3 or S4 suspend, an OHCI host controller can
-generate interrupt requests if the INTR_SF enable flag is set.  The
-interrupt handler routine isn't prepared for this and it doesn't turn
-off the flag, causing an interrupt storm.
-
-To fix this problem, make ohci_rh_suspend() always disable INTR_SF
-interrupts after processing the done list and the ED unlinks but
-before the controller goes into the suspended (non-UsbOperational)
-state.  There's no reason to leave the flag enabled, since a
-suspended controller doesn't generate Start-of-Frame packets.
-
-Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
----
-Change in v6:
-		1. Rework the commit log information.
-		2. Move the key change code after ohci_work in 
-		   ohci_rh_suspend.
 
 
- drivers/usb/host/ohci-hub.c | 3 +++
- 1 file changed, 3 insertions(+)
+On 2021/10/13 上午11:26, Steven Rostedt wrote:
+> Please start a new thread when sending new versions. v2 should not be a
+> reply to v1. If you want to reference v1, just add it to the cover
+> letter with a link tag:
+> 
+> Link: https://lore.kernel.org/all/8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com/
 
-diff --git a/drivers/usb/host/ohci-hub.c b/drivers/usb/host/ohci-hub.c
-index f474f2f..90cee19 100644
---- a/drivers/usb/host/ohci-hub.c
-+++ b/drivers/usb/host/ohci-hub.c
-@@ -91,6 +91,9 @@ static int ohci_rh_suspend (struct ohci_hcd *ohci, int autostop)
- 	update_done_list(ohci);
- 	ohci_work(ohci);
- 
-+	/* All ED unlinks should be finished, no need for SOF interrupts */
-+	ohci_writel(ohci, OHCI_INTR_SF, &ohci->regs->intrdisable);
-+
- 	/*
- 	 * Some controllers don't handle "global" suspend properly if
- 	 * there are unsuspended ports.  For these controllers, put all
--- 
-1.8.3.1
+Ok, I'll resend it with link then.
 
+Regards,
+Michael Wang
+
+
+> 
+> -- Steve
+> 
+> 
+> On Wed, 13 Oct 2021 11:16:56 +0800
+> 王贇 <yun.wang@linux.alibaba.com> wrote:
+> 
+>> The testing show that perf_ftrace_function_call() are using smp_processor_id()
+>> with preemption enabled, all the checking on CPU could be wrong after preemption.
+>>
+>> As Peter point out, the section between ftrace_test_recursion_trylock/unlock()
+>> pair require the preemption to be disabled as 'Documentation/trace/ftrace-uses.rst'
+>> explained, but currently the work is done outside of the helpers.
+>>
+>> Patch 1/2 will make sure preemption disabled after trylock() succeed,
+>> patch 2/2 will do smp_processor_id() checking after trylock to address the
+>> issue.
+>>
+>> Michael Wang (2):
+>>   ftrace: disable preemption between ftrace_test_recursion_trylock/unlock()
+>>   ftrace: do CPU checking after preemption disabled
+>>
+>>  arch/csky/kernel/probes/ftrace.c     |  2 --
+>>  arch/parisc/kernel/ftrace.c          |  2 --
+>>  arch/powerpc/kernel/kprobes-ftrace.c |  2 --
+>>  arch/riscv/kernel/probes/ftrace.c    |  2 --
+>>  arch/x86/kernel/kprobes/ftrace.c     |  2 --
+>>  include/linux/trace_recursion.h      | 22 +++++++++++++++++++++-
+>>  kernel/livepatch/patch.c             |  6 ------
+>>  kernel/trace/trace_event_perf.c      |  6 +++---
+>>  kernel/trace/trace_functions.c       |  5 -----
+>>  9 files changed, 24 insertions(+), 25 deletions(-)
+>>
