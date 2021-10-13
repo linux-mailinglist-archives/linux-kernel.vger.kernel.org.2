@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DC042BA10
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D5F42BA14
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237956AbhJMIUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233343AbhJMIU1 (ORCPT
+        id S238852AbhJMIVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:21:16 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:25126 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238139AbhJMIVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:20:27 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE324C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 01:18:20 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ce200e42a3e901495df36.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:e200:e42a:3e90:1495:df36])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 311391EC0295;
-        Wed, 13 Oct 2021 10:18:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634113099;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=MaxWKFgeGl9ViNtma+2LibnXupM6dcTqky8zQxSSmI0=;
-        b=btNVSxnqrsp5FlBYJIRjdSvrFUitheODBtuCN/GMK2cRxkL9uwOW7Brs1rAtoFjT8EDeiA
-        XapajUmwoCtaNKpF/qlu9I77fPy7fQlSzccdGvxQcBrVoUDp1QFosKNF4cppZYntC20d9Z
-        /YIIqpT7RvfmWfc+hhVZMiLzmTPhtC4=
-Date:   Wed, 13 Oct 2021 10:18:18 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 03/11] x86/cpufeatures: Add TDX Guest CPU feature
-Message-ID: <YWaWSmWn6AZ6OLx+@zn.tnic>
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+        Wed, 13 Oct 2021 04:21:00 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HTlkk6xQmz1DHQk;
+        Wed, 13 Oct 2021 16:17:18 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 16:18:55 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 16:18:54 +0800
+Subject: Re: [PATCH 5.4 00/51] 5.4.153-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20211012093344.002301190@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <5faccbb8-50c0-265e-cb33-dfb2a7d56b2f@huawei.com>
+Date:   Wed, 13 Oct 2021 16:18:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211009053747.1694419-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20211012093344.002301190@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 10:37:39PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> @@ -500,6 +501,14 @@ asmlinkage __visible void __init x86_64_start_kernel(char * real_mode_data)
->  
->  	copy_bootdata(__va(real_mode_data));
->  
-> +	/*
-> +	 * A future dependency on cmdline parameters is expected (for
-> +	 * adding debug options). So the order of calling it should be
-> +	 * after copy_bootdata() (in which command line parameter is
-> +	 * initialized).
-> +	 */
-
-Plain and simple:
-
-        /*
-         * Keep this after copy_bootdata() so that TDX cmdline options can take
-         * effect.
-         */
 
 
-> +	tdx_early_init();
-> +
->  	/*
->  	 * Load microcode early on BSP.
->  	 */
-> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-> new file mode 100644
-> index 000000000000..88bf12788684
-> --- /dev/null
-> +++ b/arch/x86/kernel/tdx.c
-> @@ -0,0 +1,38 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (C) 2020 Intel Corporation */
-> +
-> +#undef pr_fmt
-> +#define pr_fmt(fmt)     "tdx: " fmt
-> +
-> +#include <asm/tdx.h>
-> +
-> +bool is_tdx_guest(void)
-> +{
-> +	static int tdx_guest = -1;
+On 2021/10/12 17:37, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.153 release.
+> There are 51 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 14 Oct 2021 09:33:32 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Put that one at the top of the file because such static variables do not
-belong among the automatic function vars.
+Tested on arm64 and x86 for 5.4.153-rc3,
 
-Thx.
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.153-rc3
+Commit: c20820e7fdeabc34e2ebe5e74d37c8dfefe6ce27
+Compiler: gcc version 7.3.0 (GCC)
 
--- 
-Regards/Gruss,
-    Boris.
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-https://people.kernel.org/tglx/notes-about-netiquette
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
