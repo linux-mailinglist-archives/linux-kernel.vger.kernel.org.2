@@ -2,164 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E66B42CAB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2DC42CAB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239096AbhJMUOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
+        id S239141AbhJMUOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236302AbhJMUOC (ORCPT
+        with ESMTP id S231654AbhJMUOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:14:02 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFADC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:11:58 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id x27so17099460lfu.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:11:58 -0700 (PDT)
+        Wed, 13 Oct 2021 16:14:23 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE147C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:12:19 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id c28so3753902qtv.11
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:12:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eTnL5kNpHunSoH20hdsr5IOYGrMPB41KKgAoQoY3zuI=;
-        b=MQhlfteEnWjVjWjOHOuy0NnGGHr6nufVPwI24OBAERHQITRaLKGcAua02cSG8Te9+i
-         qUxWvDNiMl1Fl8afGUmOu63cf0DlJBCUqBoFrmrkAAQ6x22QLrXn5rby8g+mZKNbkKIq
-         0ryWAAfhcsRE+9zo2niQbNt2063xntPcOZNWtwa60v+U9/AiMbcCwD9BqGUzsA/4xgYi
-         dUJqpkpjSF0Jbk/RQ6cl9iwenNxiIniHMHni1lAj3TVz+NjkVXgmWRRHsOgrrkkUtaFv
-         ZkkkIXTSyILah5NaLqYqYvsIUpoyJ+Sv6jfEkxRuDhsanCXMuUBwdhzMzBnVfmed7qkh
-         EZ8A==
+        d=landley-net.20210112.gappssmtp.com; s=20210112;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=2Aa4y4Us+FR2jyMccX84KTkQsvr7Mr0uoXoatsk4aIU=;
+        b=oY++jyBrNzEdT1LlYyI5ambjGnFGPKL/BS9hKAHoYT2QVdBtKYcUt4dkhXLNiGgV8c
+         QWCe/D1tL6HAFm5xNw9hm4UfDF7SbOJj8S7HBBrUCTlrSWa3CJyMBEPso8/Rlm5zJX2x
+         N6ZU+Xd4fxl6lD5YqSEPqMlKyp+L/d9vweQaoi6FciU/izUTjZz2IbvlG4vnz/2fw/5W
+         oknr1QZmUQHNQyRIMdB1eWK9j7WtBCSSgGRkgyK0dZ0JhTowcpY+gm0OkN4/Uh+4IGvA
+         JIk1yyxLtMUNf7GZFjUaSY7qj0JWClp+0iHymZ3LBna8MExS4qMw9+2CpgJoL1F2vcMz
+         UbtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eTnL5kNpHunSoH20hdsr5IOYGrMPB41KKgAoQoY3zuI=;
-        b=SpVqsmgsIGdMV10YwuutOLx2vzbcdA6m5CqfxiB8NTnDAijYabHSn0oh6SByNO1dbj
-         ApjKkL7qgO9KCKq7np09kePwKw4ZVa9qkuTVXJiV++nvNykeIRgnHe9oZPx07LJ20JJX
-         13mAHQAa0YB3eFWDd6dFhXTNvq+eaeIVjhBzo91zMzWuA+keu6Qd9lGH+HsSeTtXQy8D
-         WpcEMDssxm+Qi6cd14Wvo2f1bFtSy/Rway+so9aa/tPlbUpKmKtWEYDT4/7PdyIHdCtM
-         ex2jRtXfNxXnzHtj1NPYQ3DuBMi40CQ0bCtxfXtdbXyYCCce+wavhFdNxBbq2WIvoN2r
-         WHXg==
-X-Gm-Message-State: AOAM530Kybox6AWOOptkmF1zJP9De/W9AptFjWq/gQQ0GMu/CyG2mtfO
-        S/sDC4p7WBZlv4IcNHbnumdT/CwHVs6f2nEZUwRSKLFMww90eg==
-X-Google-Smtp-Source: ABdhPJw5KzKgdLCPfSyjlf4rWFXZ4VuxWJfrG5u3EefAaZAL6aFkHAR2YfTWw9wo9nTJLw9ngVCyTGDCQj9rL+Gcr0k=
-X-Received: by 2002:a05:651c:1108:: with SMTP id d8mr1554950ljo.220.1634155916648;
- Wed, 13 Oct 2021 13:11:56 -0700 (PDT)
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=2Aa4y4Us+FR2jyMccX84KTkQsvr7Mr0uoXoatsk4aIU=;
+        b=Q7HYIbxDzyKOxc6Apy4MDJP3G/SA3LAHNkuWXgEIK11nub9m8beep/OICWUewfY/Rl
+         otKykaVBRbIRPYoqoODt3elpnobdAEYsOovUZ8r7QPNJRttd9iSXU6Gpf0sK3ZmMqVPY
+         N6+9M5QcVy+BU4RTdC3n0hzzld6psMU11o3hK+DYkMMU7LXNlQaqnWQSxOU0noO4IN3J
+         ZraMEMMeTCAtWEQxNns33Bbw8/IyxbURlIXC8/fJZwcrbefbwBL+w4Aja2Lzxlukd9wt
+         +apCWYzakHUy2hmCh3e7h763opTXjrNMIjZJ9ga4VMQHH5uW8OTFHL7wm8wWHgO+dhjI
+         x9qA==
+X-Gm-Message-State: AOAM533hZfwHgTM9TH6/S8EP/bw3o8OTrdegBjiy2AQ+2TaBUa/DsH+K
+        k/Ey4nZGEBC9n0IWmF7F5z8cWQLUNCdHjQ==
+X-Google-Smtp-Source: ABdhPJx4zdxYJSt0EevBomv3rQbbQ4b37KN/6V2YFRu2hE3Q4HWDzRT5ObF4KPkBzDyL37PZoHpsLQ==
+X-Received: by 2002:a05:622a:1444:: with SMTP id v4mr1676745qtx.298.1634155938909;
+        Wed, 13 Oct 2021 13:12:18 -0700 (PDT)
+Received: from [192.168.39.11] ([172.58.87.41])
+        by smtp.gmail.com with ESMTPSA id 101sm358957qta.17.2021.10.13.13.12.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 13:12:18 -0700 (PDT)
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+From:   Rob Landley <rob@landley.net>
+Subject: The one and only "permission denied" in find /sys
+Message-ID: <cd81a57e-e2c1-03c5-d0da-f898babf92e7@landley.net>
+Date:   Wed, 13 Oct 2021 15:12:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20211013122217.304265366@infradead.org> <20211013123645.119101107@infradead.org>
-In-Reply-To: <20211013123645.119101107@infradead.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 13 Oct 2021 13:11:45 -0700
-Message-ID: <CAKwvOd=4s70S9irWGV94u2AoyQyo67XZ9tU12cdhf=6879gA+w@mail.gmail.com>
-Subject: Re: [PATCH 5/9] x86/alternative: Handle Jcc __x86_indirect_thunk_\reg
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 5:41 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> Handle the rare cases where the compiler (clang) does an indirect
-> conditional tail-call using:
->
->   Jcc __x86_indirect_thunk_\reg
+There is exactly one directory in the whole of sysfs that a normal user can't
+read (at least on my stock devuan laptop):
 
-`Jcc.d32 __x86_indirect_thunk_\reg` might be clearer; otherwise
-putting that in an assembler and assembling/disassembling produces the
-2B instructions, which makes the below patch confusing. Ah, it is
-stated in the comment added below.
+  $ find /sys -name potato
+  find: ‘/sys/fs/pstore’: Permission denied
 
->
-> For the !RETPOLINE case this can be rewritten to fit the original (6
-> byte) instruction like:
->
->   Jncc.d8       1f
->   JMP           *%\reg
->   NOP
-> 1:
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/kernel/alternative.c |   38 ++++++++++++++++++++++++++++++++++----
->  1 file changed, 34 insertions(+), 4 deletions(-)
->
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -378,7 +378,8 @@ static int emit_indirect(int op, int reg
->  static int patch_retpoline(void *addr, struct insn *insn, u8 *bytes)
->  {
->         void (*target)(void);
-> -       int reg, i = 0;
-> +       int reg, ret, i = 0;
-> +       u8 op, cc;
->
->         if (cpu_feature_enabled(X86_FEATURE_RETPOLINE))
->                 return -1;
-> @@ -390,9 +391,34 @@ static int patch_retpoline(void *addr, s
->         if (WARN_ON_ONCE(reg & ~0xf))
->                 return -1;
->
-> -       i = emit_indirect(insn->opcode.bytes[0], reg, bytes);
-> -       if (i < 0)
-> -               return i;
-> +       op = insn->opcode.bytes[0];
-> +
-> +       /*
-> +        * Convert:
-> +        *
-> +        *   Jcc.d32 __x86_indirect_thunk_\reg
-> +        *
-> +        * into:
-> +        *
-> +        *   Jncc.d8 1f
-> +        *   jmp *%\reg
-> +        *   nop
-> +        * 1:
-> +        */
-> +       if (op == 0x0f && (insn->opcode.bytes[1] & 0xf0) == 0x80) {
-> +               cc = insn->opcode.bytes[1] & 0xf;
-> +               cc ^= 1; /* invert condition */
-> +
-> +               bytes[i++] = 0x70 + cc; /* Jcc.d8 */
-> +               bytes[i++] = insn->length - 2;
+It's the "pstore" filesystem, it was explicitly broken by commit d7caa33687ce,
+and the commit seems to say this was to fix an issue that didn't exist yet but
+might someday.
 
-Isn't `insn->length - 2` always 4 (in this case)? We could avoid
-computing that at runtime I suspect if we just hardcoded it.
+Did whatever issue it was concerned about ever actually start happening? Why did
+you not change the permissions on the files _in_ the directory so they weren't
+world readable instead? Should /dev/shm stop being world ls-able as well?
 
-Either way, I've looked at the disassembly enough that this LGTM.
-Thanks for the patch.
+Confused,
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> +
-> +               op = JMP32_INSN_OPCODE;
-> +       }
-> +
-> +       ret = emit_indirect(op, reg, bytes + i);
-> +       if (ret < 0)
-> +               return ret;
-> +       i += ret;
->
->         for (; i < insn->length;)
->                 bytes[i++] = BYTES_NOP1;
-> @@ -423,6 +449,10 @@ void __init_or_module noinline apply_ret
->                 case JMP32_INSN_OPCODE:
->                         break;
->
-> +               case 0x0f: /* escape */
-> +                       if (op2 >= 0x80 && op2 <= 0x8f)
-> +                               break;
-> +                       fallthrough;
->                 default:
->                         WARN_ON_ONCE(1);
->                         continue;
->
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+Rob
