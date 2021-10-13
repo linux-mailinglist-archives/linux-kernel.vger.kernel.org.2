@@ -2,741 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4F742C2BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED93C42C2B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235820AbhJMOTw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Oct 2021 10:19:52 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:38173 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhJMOTv (ORCPT
+        id S234001AbhJMOSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:18:37 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:59829 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229562AbhJMOSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:19:51 -0400
-Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 4CBA2D22C8;
-        Wed, 13 Oct 2021 14:16:41 +0000 (UTC)
-Received: (Authenticated sender: gregory.clement@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 8E986FF816;
-        Wed, 13 Oct 2021 14:16:16 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>,
-        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 2/6] serial: mvebu-uart: implement UART clock driver
- for configuring UART base clock
-In-Reply-To: <20210930095838.28145-3-pali@kernel.org>
-References: <20210930095838.28145-1-pali@kernel.org>
- <20210930095838.28145-3-pali@kernel.org>
-Date:   Wed, 13 Oct 2021 16:16:10 +0200
-Message-ID: <87o87tdn85.fsf@BL-laptop>
+        Wed, 13 Oct 2021 10:18:36 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 7EFE4580693;
+        Wed, 13 Oct 2021 10:16:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 13 Oct 2021 10:16:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=rGNU8kUNWf7tAnmnlNM2GITTDVA
+        GlhsbYEpSWnytylk=; b=BVPqeKTkvAtWIQoRe2eSalP7zJRo/c68m9s3z16Zfqc
+        nn2Rnfo+w+6k3PzVho1ftDBv2ds4RFbIglm3+t47r7J90w11TqUk/OxGLYNm85Gg
+        BdLq1lZlJTSYGuG9BFNRUOdUbfCai9/BZhlBjPqVblqKAEpN60WSWmwSK8t+s3lh
+        riPJRLwYBkKw+j8cEFAmUbjwoIf3FWhDEYFAvJ0xl04gZvrPwqH0lrOF+0LbWj8F
+        Xm2kSIA1sPHQGF+H0Cgo/quR0FpcOGN/cnb3KKIjorI9WbBeXoviFs65d7dbcDq9
+        LSyCVR2m4/hubErBvPhk5Fn9/cRxzT+UXMl6/oSm6Xw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=rGNU8k
+        UNWf7tAnmnlNM2GITTDVAGlhsbYEpSWnytylk=; b=LuQ5gvEGAGY9AFPS1OJ8R8
+        6PH5lRPtp7oFk21QzE/+4qPUqskShFmaJxlabtL8IKUGyxjkxkllcIhBs6nuiMZs
+        2RoJf/akIMmKZ5kcTXXGVnWoHjKm1bxiI4yNdFa1zxE5zzgCrTp2utAy2BqsiX0N
+        zNW1j53byqhxa/yrbVliTVahpFcOqMrT/4a5l8VGLo3MWcVl1cHfuq4O4Q5+qfqj
+        P8ycTu5tpv/fGw8yAylyJ+OKk+bn4kJ2dwXnVKS8wwcJYTBaV6VH34Z8aJVLFcHc
+        YDMLDg7jz9UHuE5fAqg+vc2buz3FIfs+aUNjZ8685IGiFAo2GN49xiSW4A7yCCSg
+        ==
+X-ME-Sender: <xms:P-pmYdns-rWvS-4r6xyklkIGU14AVU2a8X46PWxo5g6i8UVbaid1Og>
+    <xme:P-pmYY3qo7or-LaQDNj3r0Ky1em9nALLkqD06phYlYjJWX-C6z0qu4JYoQQMsTBre
+    jObXWOhODy1pYvVjWQ>
+X-ME-Received: <xmr:P-pmYTrk4TPDWI52t0Cqc8mIS_4BvPQJ2WYKpRdyfYvtKVIf4e3TUSllNy3g0wyREPaFmF1pVwEn5tBUjknHO2zWz8u3HlvsYCfHgLvs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddutddgjedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepkefgffekffelgfeukedvhffggeehtedugfekgeeihfefhfehieeukeevffev
+    hfefnecuffhomhgrihhnpehfrhgvvgguvghskhhtohhprdhorhhgpdgtrghlvggsshdrug
+    gvvhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
+    rgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:P-pmYdm0lQBxSkcxsDnGJq7LCQdLAuBnaJgtAAK_4Fvyv0PhjW42bg>
+    <xmx:P-pmYb26iOIzYfale8JdDrWm9VKEfeNVRnzXgLcWxM0dG8YxgeZZSQ>
+    <xmx:P-pmYcvsH9lWxXJjCtMV0ppzt9f5o2_TNeqbfNrdfxmLTc1MVTHd7g>
+    <xmx:QOpmYaBNUIPJQ_ZlRoLIc31Ei5BVLrlUt7xRfhbvD4fNU7nWbYnKVw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 13 Oct 2021 10:16:30 -0400 (EDT)
+Date:   Wed, 13 Oct 2021 16:16:29 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Rob Clark <robdclark@gmail.com>,
+        Caleb Connolly <caleb.connolly@linaro.org>
+Cc:     Amit Pundir <amit.pundir@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: [PATCH v4 00/24] drm/bridge: Make panel and bridge probe order
+ consistent
+Message-ID: <20211013141629.qfeqwsyi5yobzjca@gilmour>
+References: <20210910101218.1632297-1-maxime@cerno.tech>
+ <CALAqxLUqdkxXogmPhPgHv4Bgx-4b3mxe12LzzvWb07pLSnb2kA@mail.gmail.com>
+ <CALAqxLUYb=ge4AZZzmk71Qr-92vnnE6sJxwCNUdEz4=VDKr1kg@mail.gmail.com>
+ <CALAqxLX7oK6DeoCPZhMTpHKCihSYq7KZDrt5UKb46=ZBbJd9fA@mail.gmail.com>
+ <CAF6AEGuJgrYrg7FXpVj8P_qf73CXb4=0KysSYQaobJuheDeUSA@mail.gmail.com>
+ <YXiZIuao6wNch7j-D3ZktdSR3_IRAQ3oSeL8sLCCX8lEhwsoWaouE6_eV6C2Zv9r2_dww_Mtal18UBJfc4fz4g==@protonmail.internalid>
+ <CAMi1Hd0sUUFvNzYwt29af9d99o1-x+LiXBPCrQ8=9H0tHvxVHg@mail.gmail.com>
+ <b57fbc24-9ef3-a57b-17d4-2cb33fb409d4@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bigl5w3rjallwyk4"
+Content-Disposition: inline
+In-Reply-To: <b57fbc24-9ef3-a57b-17d4-2cb33fb409d4@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pali,
 
-> This patch implements a new device driver for controlling UART clocks on
-> Marvell Armada 3700 SoC. This device driver is loaded for devices which
-> match compatible string "marvell,armada-3700-uart-clock".
->
-> There are more pitfalls related to UART clocks. Both UARTs use same base
-> clock source. Also divisors for TBG base clock are shared between both
-> UARTs and are configured only from UART1 address space. Clocks can be
-> enabled / disabled separately for UART1 and UART2, but they are controlled
-> only from UART1 address space. Moreover Marvell Armada 3700 Functional
-> Specifications has swapped bits for enabling/disabling UART1 and UART2
-> clocks.
->
-> So driver for controlling UART2 needs to have access to UART1 address space
-> as UART1 address space contains some bits exclusively used by UART2 and
-> also bits which are shared for both UART1 and UART2.
->
-> For changing UART base clock (which controls both UARTs) during boot when
-> UART driver is not ready and only early console is active, is not simple
-> operation as it is required to also recalculate divisors to not change UART
-> baudrate used by early console. So for this operation UART1 clock driver
-> needs to access also into address space of UART2 where are registers for
-> UART2 divisors.
->
-> For these reasons, this new device driver for UART clocks does not use
-> ioremap_resource(), but only ioremap() to prevent resource conflicts
-> between UART clock driver and UART driver.
->
-> Shared between drivers are only two 4-bytes registers: UART Clock Control
-> and UART 2 Baud Rate Divisor. Access to these two registers are protected
-> by one spinlock to prevent any conflicts. Access is required only during
-> probe time, changing baudrate and during suspend/resume.
->
-> Hardware can be configured to use one of following clocks as UART base
-> clock: TBG-A-P, TBG-B-P, TBG-A-S, TBG-B-S, xtal. Not every clock is usable
-> for higher buadrates. In DT node can be specified any subset and kernel
-> choose the best one, which still supports required baudrate 9600. For
-> smooth boot log output it is needed to specify clock used by early console
-> otherwise garbage would be put on UART during probing for UART clock driver
-> and transitioning from early console to normal console.
->
-> This change is required to enable and configure TBG clock as a base clock
-> for UART. TBG clock is required to achieve higher baudrates than
-> 230400.
+--bigl5w3rjallwyk4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Did you have a review from the clock maintainer for this driver ?
+Hi Caleb,
 
-I found it very unusual to have the implementation of a clok driver
-inside an uart driver.
+On Thu, Sep 30, 2021 at 09:20:52PM +0100, Caleb Connolly wrote:
+> Hi,
+>=20
+> On 30/09/2021 20:49, Amit Pundir wrote:
+> > On Thu, 30 Sept 2021 at 04:50, Rob Clark <robdclark@gmail.com> wrote:
+> > >=20
+> > > On Wed, Sep 29, 2021 at 2:51 PM John Stultz <john.stultz@linaro.org> =
+wrote:
+> > > >=20
+> > > > On Wed, Sep 29, 2021 at 2:32 PM John Stultz <john.stultz@linaro.org=
+> wrote:
+> > > > > On Wed, Sep 29, 2021 at 2:27 PM John Stultz <john.stultz@linaro.o=
+rg> wrote:
+> > > > > > On Fri, Sep 10, 2021 at 3:12 AM Maxime Ripard <maxime@cerno.tec=
+h> wrote:
+> > > > > > > The best practice to avoid those issues is to register its fu=
+nctions only after
+> > > > > > > all its dependencies are live. We also shouldn't wait any lon=
+ger than we should
+> > > > > > > to play nice with the other components that are waiting for u=
+s, so in our case
+> > > > > > > that would mean moving the DSI device registration to the bri=
+dge probe.
+> > > > > > >=20
+> > > > > > > I also had a look at all the DSI hosts, and it seems that exy=
+nos, kirin and msm
+> > > > > > > would be affected by this and wouldn't probe anymore after th=
+ose changes.
+> > > > > > > Exynos and kirin seems to be simple enough for a mechanical c=
+hange (that still
+> > > > > > > requires to be tested), but the changes in msm seemed to be f=
+ar more important
+> > > > > > > and I wasn't confortable doing them.
+> > > > > >=20
+> > > > > >=20
+> > > > > > Hey Maxime,
+> > > > > >    Sorry for taking so long to get to this, but now that plumbe=
+rs is
+> > > > > > over I've had a chance to check it out on kirin
+> > > > > >=20
+> > > > > > Rob Clark pointed me to his branch with some fixups here:
+> > > > > >     https://gitlab.freedesktop.org/robclark/msm/-/commits/for-m=
+ripard/bridge-rework
+> > > > > >=20
+> > > > > > But trying to boot hikey with that, I see the following loop in=
+definitely:
+> > > > > > [    4.632132] adv7511 2-0039: supply avdd not found, using dum=
+my regulator
+> > > > > > [    4.638961] adv7511 2-0039: supply dvdd not found, using dum=
+my regulator
+> > > > > > [    4.645741] adv7511 2-0039: supply pvdd not found, using dum=
+my regulator
+> > > > > > [    4.652483] adv7511 2-0039: supply a2vdd not found, using du=
+mmy regulator
+> > > > > > [    4.659342] adv7511 2-0039: supply v3p3 not found, using dum=
+my regulator
+> > > > > > [    4.666086] adv7511 2-0039: supply v1p2 not found, using dum=
+my regulator
+> > > > > > [    4.681898] adv7511 2-0039: failed to find dsi host
+> > > > >=20
+> > > > > I just realized Rob's tree is missing the kirin patch. My apologi=
+es!
+> > > > > I'll retest and let you know.
+> > > >=20
+> > > > Ok, just retested including the kirin patch and unfortunately I'm
+> > > > still seeing the same thing.  :(
+> > > >=20
+> > > > Will dig a bit and let you know when I find more.
+> > >=20
+> > > Did you have a chance to test it on anything using drm/msm with DSI
+> > > panels?  That would at least confirm that I didn't miss anything in
+> > > the drm/msm patch to swap the dsi-host vs bridge ordering..
+> >=20
+> > Hi, smoke tested
+> > https://gitlab.freedesktop.org/robclark/msm/-/commits/for-mripard/bridg=
+e-rework
+> > on Pocophone F1 (sdm845 / A630) with v5.15-rc3. I see no obvious
+> > regressions in my limited testing so far including video (youtube)
+> > playback.
+> Tested on the OnePlus 6 too booting AOSP, works fine. This *fixes*
+> FBDEV_EMULATION (so we can get a working framebuffer console) which was
+> otherwise broken on 5.15.
+>=20
+> However it spits out some warnings during boot: https://p.calebs.dev/gucy=
+sowyna.yaml
 
-Gregory
+Thanks for testing. It looks like the runtime_pm ordering between the
+msm devices changed a bit with the conversion Rob did.
 
->
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> ---
->  drivers/tty/serial/Kconfig      |   1 +
->  drivers/tty/serial/mvebu-uart.c | 519 +++++++++++++++++++++++++++++++-
->  2 files changed, 518 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> index 131a6a587acd..fe1a54231b19 100644
-> --- a/drivers/tty/serial/Kconfig
-> +++ b/drivers/tty/serial/Kconfig
-> @@ -1444,6 +1444,7 @@ config SERIAL_STM32_CONSOLE
->  config SERIAL_MVEBU_UART
->  	bool "Marvell EBU serial port support"
->  	depends on ARCH_MVEBU || COMPILE_TEST
-> +	depends on COMMON_CLK
->  	select SERIAL_CORE
->  	help
->  	  This driver is for Marvell EBU SoC's UART. If you have a machine
-> diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-> index 231de29a6452..f3fb1f3718f2 100644
-> --- a/drivers/tty/serial/mvebu-uart.c
-> +++ b/drivers/tty/serial/mvebu-uart.c
-> @@ -8,12 +8,14 @@
->  */
->  
->  #include <linux/clk.h>
-> +#include <linux/clk-provider.h>
->  #include <linux/console.h>
->  #include <linux/delay.h>
->  #include <linux/device.h>
->  #include <linux/init.h>
->  #include <linux/io.h>
->  #include <linux/iopoll.h>
-> +#include <linux/math64.h>
->  #include <linux/of.h>
->  #include <linux/of_address.h>
->  #include <linux/of_device.h>
-> @@ -68,8 +70,31 @@
->  #define  STAT_BRK_ERR		(STAT_BRK_DET | STAT_FRM_ERR \
->  				 | STAT_PAR_ERR | STAT_OVR_ERR)
->  
-> +/*
-> + * Marvell Armada 3700 Functional Specifications describes that bit 21 of UART
-> + * Clock Control register controls UART1 and bit 20 controls UART2. But in
-> + * reality bit 21 controls UART2 and bit 20 controls UART1. This seems to be a
-> + * bug in Marvell documentation. Hence following CLK_DIS macros are swapped.
-> + */
-> +
->  #define UART_BRDV		0x10
-> +/* These bits are located in UART1 address space and control UART2 */
-> +#define  UART2_CLK_DIS		BIT(21)
-> +/* These bits are located in UART1 address space and control UART1 */
-> +#define  UART1_CLK_DIS		BIT(20)
-> +/* These bits are located in UART1 address space and control both UARTs */
-> +#define  CLK_NO_XTAL		BIT(19)
-> +#define  CLK_TBG_DIV1_SHIFT	15
-> +#define  CLK_TBG_DIV1_MASK	0x7
-> +#define  CLK_TBG_DIV1_MAX	6
-> +#define  CLK_TBG_DIV2_SHIFT	12
-> +#define  CLK_TBG_DIV2_MASK	0x7
-> +#define  CLK_TBG_DIV2_MAX	6
-> +#define  CLK_TBG_SEL_SHIFT	10
-> +#define  CLK_TBG_SEL_MASK	0x3
-> +/* These bits are located in both UARTs address space */
->  #define  BRDV_BAUD_MASK         0x3FF
-> +#define  BRDV_BAUD_MAX		BRDV_BAUD_MASK
->  
->  #define UART_OSAMP		0x14
->  #define  OSAMP_DEFAULT_DIVISOR	16
-> @@ -153,6 +178,8 @@ static struct mvebu_uart *to_mvuart(struct uart_port *port)
->  
->  static struct uart_port mvebu_uart_ports[MVEBU_NR_UARTS];
->  
-> +static DEFINE_SPINLOCK(mvebu_uart_lock);
-> +
->  /* Core UART Driver Operations */
->  static unsigned int mvebu_uart_tx_empty(struct uart_port *port)
->  {
-> @@ -445,6 +472,7 @@ static void mvebu_uart_shutdown(struct uart_port *port)
->  static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
->  {
->  	unsigned int d_divisor, m_divisor;
-> +	unsigned long flags;
->  	u32 brdv, osamp;
->  
->  	if (!port->uartclk)
-> @@ -463,10 +491,12 @@ static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
->  	m_divisor = OSAMP_DEFAULT_DIVISOR;
->  	d_divisor = DIV_ROUND_CLOSEST(port->uartclk, baud * m_divisor);
->  
-> +	spin_lock_irqsave(&mvebu_uart_lock, flags);
->  	brdv = readl(port->membase + UART_BRDV);
->  	brdv &= ~BRDV_BAUD_MASK;
->  	brdv |= d_divisor;
->  	writel(brdv, port->membase + UART_BRDV);
-> +	spin_unlock_irqrestore(&mvebu_uart_lock, flags);
->  
->  	osamp = readl(port->membase + UART_OSAMP);
->  	osamp &= ~OSAMP_DIVISORS_MASK;
-> @@ -762,6 +792,7 @@ static int mvebu_uart_suspend(struct device *dev)
->  {
->  	struct mvebu_uart *mvuart = dev_get_drvdata(dev);
->  	struct uart_port *port = mvuart->port;
-> +	unsigned long flags;
->  
->  	uart_suspend_port(&mvebu_uart_driver, port);
->  
-> @@ -770,7 +801,9 @@ static int mvebu_uart_suspend(struct device *dev)
->  	mvuart->pm_regs.ctrl = readl(port->membase + UART_CTRL(port));
->  	mvuart->pm_regs.intr = readl(port->membase + UART_INTR(port));
->  	mvuart->pm_regs.stat = readl(port->membase + UART_STAT);
-> +	spin_lock_irqsave(&mvebu_uart_lock, flags);
->  	mvuart->pm_regs.brdv = readl(port->membase + UART_BRDV);
-> +	spin_unlock_irqrestore(&mvebu_uart_lock, flags);
->  	mvuart->pm_regs.osamp = readl(port->membase + UART_OSAMP);
->  
->  	device_set_wakeup_enable(dev, true);
-> @@ -782,13 +815,16 @@ static int mvebu_uart_resume(struct device *dev)
->  {
->  	struct mvebu_uart *mvuart = dev_get_drvdata(dev);
->  	struct uart_port *port = mvuart->port;
-> +	unsigned long flags;
->  
->  	writel(mvuart->pm_regs.rbr, port->membase + UART_RBR(port));
->  	writel(mvuart->pm_regs.tsh, port->membase + UART_TSH(port));
->  	writel(mvuart->pm_regs.ctrl, port->membase + UART_CTRL(port));
->  	writel(mvuart->pm_regs.intr, port->membase + UART_INTR(port));
->  	writel(mvuart->pm_regs.stat, port->membase + UART_STAT);
-> +	spin_lock_irqsave(&mvebu_uart_lock, flags);
->  	writel(mvuart->pm_regs.brdv, port->membase + UART_BRDV);
-> +	spin_unlock_irqrestore(&mvebu_uart_lock, flags);
->  	writel(mvuart->pm_regs.osamp, port->membase + UART_OSAMP);
->  
->  	uart_resume_port(&mvebu_uart_driver, port);
-> @@ -972,6 +1008,476 @@ static struct platform_driver mvebu_uart_platform_driver = {
->  	},
->  };
->  
-> +/* This code is based on clk-fixed-factor.c driver and modified. */
-> +
-> +struct mvebu_uart_clock {
-> +	struct clk_hw clk_hw;
-> +	int clock_idx;
-> +	u32 pm_context_reg1;
-> +	u32 pm_context_reg2;
-> +};
-> +
-> +struct mvebu_uart_clock_base {
-> +	struct mvebu_uart_clock clocks[2];
-> +	unsigned int parent_rates[5];
-> +	int parent_idx;
-> +	unsigned int div;
-> +	void __iomem *reg1;
-> +	void __iomem *reg2;
-> +	bool configured;
-> +};
-> +
-> +#define PARENT_CLOCK_XTAL 4
-> +
-> +#define to_uart_clock(hw) container_of(hw, struct mvebu_uart_clock, clk_hw)
-> +#define to_uart_clock_base(uart_clock) container_of(uart_clock, \
-> +	struct mvebu_uart_clock_base, clocks[uart_clock->clock_idx])
-> +
-> +static int mvebu_uart_clock_prepare(struct clk_hw *hw)
-> +{
-> +	struct mvebu_uart_clock *uart_clock = to_uart_clock(hw);
-> +	struct mvebu_uart_clock_base *uart_clock_base =
-> +						to_uart_clock_base(uart_clock);
-> +	unsigned int prev_clock_idx, prev_clock_rate, prev_d1d2;
-> +	unsigned int parent_clock_idx, parent_clock_rate;
-> +	unsigned long flags;
-> +	unsigned int d1, d2;
-> +	u64 divisor;
-> +	u32 val;
-> +
-> +	/*
-> +	 * This function just reconfigures UART Clock Control register (located
-> +	 * in UART1 address space which controls both UART1 and UART2) to
-> +	 * selected UART base clock and recalculate current UART1/UART2 divisors
-> +	 * in their address spaces, so final baudrate will not be changed by
-> +	 * switching UART base clock. This is required otherwise kernel boot log
-> +	 * stops working. It is needed to ensure that UART baudrate does not
-> +	 * change during this setup. It is one time operation, so based on
-> +	 * "configured" member this function is skipped on second call. Because
-> +	 * this UART Clock Control register (UART_BRDV) is shared between UART1
-> +	 * baudrate function, UART1 clock selector and UART2 clock selector,
-> +	 * every access to UART_BRDV (reg1) needs to be protected by lock.
-> +	 */
-> +
-> +	spin_lock_irqsave(&mvebu_uart_lock, flags);
-> +
-> +	if (uart_clock_base->configured) {
-> +		spin_unlock_irqrestore(&mvebu_uart_lock, flags);
-> +		return 0;
-> +	}
-> +
-> +	parent_clock_idx = uart_clock_base->parent_idx;
-> +	parent_clock_rate = uart_clock_base->parent_rates[parent_clock_idx];
-> +
-> +	val = readl(uart_clock_base->reg1);
-> +
-> +	if (uart_clock_base->div > CLK_TBG_DIV1_MAX) {
-> +		d1 = CLK_TBG_DIV1_MAX;
-> +		d2 = uart_clock_base->div / CLK_TBG_DIV1_MAX;
-> +	} else {
-> +		d1 = uart_clock_base->div;
-> +		d2 = 1;
-> +	}
-> +
-> +	if (val & CLK_NO_XTAL) {
-> +		prev_clock_idx = (val >> CLK_TBG_SEL_SHIFT) & CLK_TBG_SEL_MASK;
-> +		prev_d1d2 = ((val >> CLK_TBG_DIV1_SHIFT) & CLK_TBG_DIV1_MASK)
-> +			  * ((val >> CLK_TBG_DIV2_SHIFT) & CLK_TBG_DIV2_MASK);
-> +	} else {
-> +		prev_clock_idx = PARENT_CLOCK_XTAL;
-> +		prev_d1d2 = 1;
-> +	}
-> +
-> +	/* Note that uart_clock_base->parent_rates[i] may not be available */
-> +	prev_clock_rate = uart_clock_base->parent_rates[prev_clock_idx];
-> +
-> +	/* Recalculate UART1 divisor so UART1 baudrate does not change */
-> +	if (prev_clock_rate) {
-> +		divisor = DIV_U64_ROUND_CLOSEST((u64)(val & BRDV_BAUD_MASK) *
-> +						parent_clock_rate * prev_d1d2,
-> +						prev_clock_rate * d1 * d2);
-> +		if (divisor < 1)
-> +			divisor = 1;
-> +		else if (divisor > BRDV_BAUD_MAX)
-> +			divisor = BRDV_BAUD_MAX;
-> +		val = (val & ~BRDV_BAUD_MASK) | divisor;
-> +	}
-> +
-> +	if (parent_clock_idx != PARENT_CLOCK_XTAL) {
-> +		/* Do not use XTAL, select TBG clock and TBG d1 * d2 divisors */
-> +		val |= CLK_NO_XTAL;
-> +		val &= ~(CLK_TBG_DIV1_MASK << CLK_TBG_DIV1_SHIFT);
-> +		val |= d1 << CLK_TBG_DIV1_SHIFT;
-> +		val &= ~(CLK_TBG_DIV2_MASK << CLK_TBG_DIV2_SHIFT);
-> +		val |= d2 << CLK_TBG_DIV2_SHIFT;
-> +		val &= ~(CLK_TBG_SEL_MASK << CLK_TBG_SEL_SHIFT);
-> +		val |= parent_clock_idx << CLK_TBG_SEL_SHIFT;
-> +	} else {
-> +		/* Use XTAL, TBG bits are then ignored */
-> +		val &= ~CLK_NO_XTAL;
-> +	}
-> +
-> +	writel(val, uart_clock_base->reg1);
-> +
-> +	/* Recalculate UART2 divisor so UART2 baudrate does not change */
-> +	if (prev_clock_rate) {
-> +		val = readl(uart_clock_base->reg2);
-> +		divisor = DIV_U64_ROUND_CLOSEST((u64)(val & BRDV_BAUD_MASK) *
-> +						parent_clock_rate * prev_d1d2,
-> +						prev_clock_rate * d1 * d2);
-> +		if (divisor < 1)
-> +			divisor = 1;
-> +		else if (divisor > BRDV_BAUD_MAX)
-> +			divisor = BRDV_BAUD_MAX;
-> +		val = (val & ~BRDV_BAUD_MASK) | divisor;
-> +		writel(val, uart_clock_base->reg2);
-> +	}
-> +
-> +	uart_clock_base->configured = true;
-> +
-> +	spin_unlock_irqrestore(&mvebu_uart_lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static int mvebu_uart_clock_enable(struct clk_hw *hw)
-> +{
-> +	struct mvebu_uart_clock *uart_clock = to_uart_clock(hw);
-> +	struct mvebu_uart_clock_base *uart_clock_base =
-> +						to_uart_clock_base(uart_clock);
-> +	unsigned long flags;
-> +	u32 val;
-> +
-> +	spin_lock_irqsave(&mvebu_uart_lock, flags);
-> +
-> +	val = readl(uart_clock_base->reg1);
-> +
-> +	if (uart_clock->clock_idx == 0)
-> +		val &= ~UART1_CLK_DIS;
-> +	else
-> +		val &= ~UART2_CLK_DIS;
-> +
-> +	writel(val, uart_clock_base->reg1);
-> +
-> +	spin_unlock_irqrestore(&mvebu_uart_lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static void mvebu_uart_clock_disable(struct clk_hw *hw)
-> +{
-> +	struct mvebu_uart_clock *uart_clock = to_uart_clock(hw);
-> +	struct mvebu_uart_clock_base *uart_clock_base =
-> +						to_uart_clock_base(uart_clock);
-> +	unsigned long flags;
-> +	u32 val;
-> +
-> +	spin_lock_irqsave(&mvebu_uart_lock, flags);
-> +
-> +	val = readl(uart_clock_base->reg1);
-> +
-> +	if (uart_clock->clock_idx == 0)
-> +		val |= UART1_CLK_DIS;
-> +	else
-> +		val |= UART2_CLK_DIS;
-> +
-> +	writel(val, uart_clock_base->reg1);
-> +
-> +	spin_unlock_irqrestore(&mvebu_uart_lock, flags);
-> +}
-> +
-> +static int mvebu_uart_clock_is_enabled(struct clk_hw *hw)
-> +{
-> +	struct mvebu_uart_clock *uart_clock = to_uart_clock(hw);
-> +	struct mvebu_uart_clock_base *uart_clock_base =
-> +						to_uart_clock_base(uart_clock);
-> +	u32 val;
-> +
-> +	val = readl(uart_clock_base->reg1);
-> +
-> +	if (uart_clock->clock_idx == 0)
-> +		return !(val & UART1_CLK_DIS);
-> +	else
-> +		return !(val & UART2_CLK_DIS);
-> +}
-> +
-> +static int mvebu_uart_clock_save_context(struct clk_hw *hw)
-> +{
-> +	struct mvebu_uart_clock *uart_clock = to_uart_clock(hw);
-> +	struct mvebu_uart_clock_base *uart_clock_base =
-> +						to_uart_clock_base(uart_clock);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&mvebu_uart_lock, flags);
-> +	uart_clock->pm_context_reg1 = readl(uart_clock_base->reg1);
-> +	uart_clock->pm_context_reg2 = readl(uart_clock_base->reg2);
-> +	spin_unlock_irqrestore(&mvebu_uart_lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static void mvebu_uart_clock_restore_context(struct clk_hw *hw)
-> +{
-> +	struct mvebu_uart_clock *uart_clock = to_uart_clock(hw);
-> +	struct mvebu_uart_clock_base *uart_clock_base =
-> +						to_uart_clock_base(uart_clock);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&mvebu_uart_lock, flags);
-> +	writel(uart_clock->pm_context_reg1, uart_clock_base->reg1);
-> +	writel(uart_clock->pm_context_reg2, uart_clock_base->reg2);
-> +	spin_unlock_irqrestore(&mvebu_uart_lock, flags);
-> +}
-> +
-> +static unsigned long mvebu_uart_clock_recalc_rate(struct clk_hw *hw,
-> +						  unsigned long parent_rate)
-> +{
-> +	struct mvebu_uart_clock *uart_clock = to_uart_clock(hw);
-> +	struct mvebu_uart_clock_base *uart_clock_base =
-> +						to_uart_clock_base(uart_clock);
-> +
-> +	return parent_rate / uart_clock_base->div;
-> +}
-> +
-> +static long mvebu_uart_clock_round_rate(struct clk_hw *hw, unsigned long rate,
-> +					unsigned long *parent_rate)
-> +{
-> +	struct mvebu_uart_clock *uart_clock = to_uart_clock(hw);
-> +	struct mvebu_uart_clock_base *uart_clock_base =
-> +						to_uart_clock_base(uart_clock);
-> +
-> +	return *parent_rate / uart_clock_base->div;
-> +}
-> +
-> +static int mvebu_uart_clock_set_rate(struct clk_hw *hw, unsigned long rate,
-> +				     unsigned long parent_rate)
-> +{
-> +	/*
-> +	 * We must report success but we can do so unconditionally because
-> +	 * mvebu_uart_clock_round_rate returns values that ensure this call is a
-> +	 * nop.
-> +	 */
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct clk_ops mvebu_uart_clock_ops = {
-> +	.prepare = mvebu_uart_clock_prepare,
-> +	.enable = mvebu_uart_clock_enable,
-> +	.disable = mvebu_uart_clock_disable,
-> +	.is_enabled = mvebu_uart_clock_is_enabled,
-> +	.save_context = mvebu_uart_clock_save_context,
-> +	.restore_context = mvebu_uart_clock_restore_context,
-> +	.round_rate = mvebu_uart_clock_round_rate,
-> +	.set_rate = mvebu_uart_clock_set_rate,
-> +	.recalc_rate = mvebu_uart_clock_recalc_rate,
-> +};
-> +
-> +static int mvebu_uart_clock_register(struct device *dev,
-> +				     struct mvebu_uart_clock *uart_clock,
-> +				     const char *name,
-> +				     const char *parent_name)
-> +{
-> +	struct clk_init_data init = { };
-> +
-> +	uart_clock->clk_hw.init = &init;
-> +
-> +	init.name = name;
-> +	init.ops = &mvebu_uart_clock_ops;
-> +	init.flags = 0;
-> +	init.num_parents = 1;
-> +	init.parent_names = &parent_name;
-> +
-> +	return devm_clk_hw_register(dev, &uart_clock->clk_hw);
-> +}
-> +
-> +static int mvebu_uart_clock_probe(struct platform_device *pdev)
-> +{
-> +	static const char *const uart_clk_names[] = { "uart_1", "uart_2" };
-> +	static const char *const parent_clk_names[] = { "TBG-A-P", "TBG-B-P",
-> +							"TBG-A-S", "TBG-B-S",
-> +							"xtal" };
-> +	struct clk *parent_clks[ARRAY_SIZE(parent_clk_names)];
-> +	struct mvebu_uart_clock_base *uart_clock_base;
-> +	struct clk_hw_onecell_data *hw_clk_data;
-> +	struct device *dev = &pdev->dev;
-> +	int i, parent_clk_idx, ret;
-> +	unsigned long div, rate;
-> +	struct resource *res;
-> +	unsigned int d1, d2;
-> +
-> +	BUILD_BUG_ON(ARRAY_SIZE(uart_clk_names) !=
-> +		     ARRAY_SIZE(uart_clock_base->clocks));
-> +	BUILD_BUG_ON(ARRAY_SIZE(parent_clk_names) !=
-> +		     ARRAY_SIZE(uart_clock_base->parent_rates));
-> +
-> +	uart_clock_base = devm_kzalloc(dev,
-> +				       sizeof(*uart_clock_base),
-> +				       GFP_KERNEL);
-> +	if (!uart_clock_base)
-> +		return -ENOMEM;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(dev, "Couldn't get first register\n");
-> +		return -ENOENT;
-> +	}
-> +
-> +	/*
-> +	 * UART Clock Control register (reg1 / UART_BRDV) is in address range
-> +	 * of UART1 (standard UART variant), controls clock source and dividers
-> +	 * for both UART1 and UART2 and is supplied via DT as first resource.
-> +	 * Therefore use ioremap() function rather than ioremap_resource() to
-> +	 * avoid conflicts with UART1 driver. Access to UART_BRDV is protected
-> +	 * by lock shared between clock and UART driver.
-> +	 */
-> +	uart_clock_base->reg1 = devm_ioremap(dev, res->start,
-> +					     resource_size(res));
-> +	if (IS_ERR(uart_clock_base->reg1))
-> +		return PTR_ERR(uart_clock_base->reg1);
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> +	if (!res) {
-> +		dev_err(dev, "Couldn't get second register\n");
-> +		return -ENOENT;
-> +	}
-> +
-> +	/*
-> +	 * UART 2 Baud Rate Divisor register (reg2 / UART_BRDV) is in address
-> +	 * range of UART2 (extended UART variant), controls only one UART2
-> +	 * specific divider and is supplied via DT as second resource.
-> +	 * Therefore use ioremap() function rather than ioremap_resource() to
-> +	 * avoid conflicts with UART2 driver. Access to UART_BRDV is protected
-> +	 * by lock shared between clock and UART driver.
-> +	 */
-> +	uart_clock_base->reg2 = devm_ioremap(dev, res->start,
-> +					     resource_size(res));
-> +	if (IS_ERR(uart_clock_base->reg2))
-> +		return PTR_ERR(uart_clock_base->reg2);
-> +
-> +	hw_clk_data = devm_kzalloc(dev,
-> +				   struct_size(hw_clk_data, hws,
-> +					       ARRAY_SIZE(uart_clk_names)),
-> +				   GFP_KERNEL);
-> +	if (!hw_clk_data)
-> +		return -ENOMEM;
-> +
-> +	hw_clk_data->num = ARRAY_SIZE(uart_clk_names);
-> +	for (i = 0; i < ARRAY_SIZE(uart_clk_names); i++) {
-> +		hw_clk_data->hws[i] = &uart_clock_base->clocks[i].clk_hw;
-> +		uart_clock_base->clocks[i].clock_idx = i;
-> +	}
-> +
-> +	parent_clk_idx = -1;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(parent_clk_names); i++) {
-> +		parent_clks[i] = devm_clk_get(dev, parent_clk_names[i]);
-> +		if (IS_ERR(parent_clks[i])) {
-> +			if (PTR_ERR(parent_clks[i]) == -EPROBE_DEFER)
-> +				return -EPROBE_DEFER;
-> +			dev_warn(dev, "Couldn't get the parent clock %s: %ld\n",
-> +				parent_clk_names[i], PTR_ERR(parent_clks[i]));
-> +			continue;
-> +		}
-> +
-> +		ret = clk_prepare_enable(parent_clks[i]);
-> +		if (ret) {
-> +			dev_warn(dev, "Couldn't enable parent clock %s: %d\n",
-> +				parent_clk_names[i], ret);
-> +			continue;
-> +		}
-> +		rate = clk_get_rate(parent_clks[i]);
-> +		uart_clock_base->parent_rates[i] = rate;
-> +
-> +		if (i != PARENT_CLOCK_XTAL) {
-> +			/*
-> +			 * Calculate the smallest TBG d1 and d2 divisors that
-> +			 * still can provide 9600 baudrate.
-> +			 */
-> +			d1 = DIV_ROUND_UP(rate, 9600 * OSAMP_DEFAULT_DIVISOR *
-> +						BRDV_BAUD_MAX);
-> +			if (d1 < 1)
-> +				d1 = 1;
-> +			else if (d1 > CLK_TBG_DIV1_MAX)
-> +				d1 = CLK_TBG_DIV1_MAX;
-> +
-> +			d2 = DIV_ROUND_UP(rate, 9600 * OSAMP_DEFAULT_DIVISOR *
-> +						BRDV_BAUD_MAX * d1);
-> +			if (d2 < 1)
-> +				d2 = 1;
-> +			else if (d2 > CLK_TBG_DIV2_MAX)
-> +				d2 = CLK_TBG_DIV2_MAX;
-> +		} else {
-> +			/*
-> +			 * When UART clock uses XTAL clock as a source then it
-> +			 * is not possible to use d1 and d2 divisors.
-> +			 */
-> +			d1 = d2 = 1;
-> +		}
-> +
-> +		/* Skip clock source which cannot provide 9600 baudrate */
-> +		if (rate > 9600 * OSAMP_DEFAULT_DIVISOR * BRDV_BAUD_MAX * d1 * d2)
-> +			continue;
-> +
-> +		/*
-> +		 * Choose TBG clock source with the smallest divisors. Use XTAL
-> +		 * clock source only in case TBG is not available as XTAL cannot
-> +		 * be used for baudrates higher than 230400.
-> +		 */
-> +		if (parent_clk_idx == -1 ||
-> +		    (i != PARENT_CLOCK_XTAL && div > d1 * d2)) {
-> +			parent_clk_idx = i;
-> +			div = d1 * d2;
-> +		}
-> +	}
-> +
-> +	for (i = 0; i < ARRAY_SIZE(parent_clk_names); i++) {
-> +		if (i == parent_clk_idx || IS_ERR(parent_clks[i]))
-> +			continue;
-> +		clk_disable_unprepare(parent_clks[i]);
-> +		devm_clk_put(dev, parent_clks[i]);
-> +	}
-> +
-> +	if (parent_clk_idx == -1) {
-> +		dev_err(dev, "No usable parent clock\n");
-> +		return -ENOENT;
-> +	}
-> +
-> +	uart_clock_base->parent_idx = parent_clk_idx;
-> +	uart_clock_base->div = div;
-> +
-> +	dev_notice(dev, "Using parent clock %s as base UART clock\n",
-> +		   __clk_get_name(parent_clks[parent_clk_idx]));
-> +
-> +	for (i = 0; i < ARRAY_SIZE(uart_clk_names); i++) {
-> +		ret = mvebu_uart_clock_register(dev,
-> +				&uart_clock_base->clocks[i],
-> +				uart_clk_names[i],
-> +				__clk_get_name(parent_clks[parent_clk_idx]));
-> +		if (ret) {
-> +			dev_err(dev, "Can't register UART clock %d: %d\n",
-> +				i, ret);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
-> +					   hw_clk_data);
-> +}
-> +
-> +static const struct of_device_id mvebu_uart_clock_of_match[] = {
-> +	{ .compatible = "marvell,armada-3700-uart-clock", },
-> +	{ }
-> +};
-> +
-> +static struct platform_driver mvebu_uart_clock_platform_driver = {
-> +	.probe = mvebu_uart_clock_probe,
-> +	.driver		= {
-> +		.name	= "mvebu-uart-clock",
-> +		.of_match_table = mvebu_uart_clock_of_match,
-> +	},
-> +};
-> +
->  static int __init mvebu_uart_init(void)
->  {
->  	int ret;
-> @@ -980,10 +1486,19 @@ static int __init mvebu_uart_init(void)
->  	if (ret)
->  		return ret;
->  
-> +	ret = platform_driver_register(&mvebu_uart_clock_platform_driver);
-> +	if (ret) {
-> +		uart_unregister_driver(&mvebu_uart_driver);
-> +		return ret;
-> +	}
-> +
->  	ret = platform_driver_register(&mvebu_uart_platform_driver);
-> -	if (ret)
-> +	if (ret) {
-> +		platform_driver_unregister(&mvebu_uart_clock_platform_driver);
->  		uart_unregister_driver(&mvebu_uart_driver);
-> +		return ret;
-> +	}
->  
-> -	return ret;
-> +	return 0;
->  }
->  arch_initcall(mvebu_uart_init);
-> -- 
-> 2.20.1
->
+Rob, do you know what could be going on?
 
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Thanks!
+Maxime
+
+--bigl5w3rjallwyk4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYWbqPQAKCRDj7w1vZxhR
+xdOTAQDjb3huzaE7pHvCyz07hJC57832ndc9T6cZOvvFbklnIQD7BQXSVG/1e0Hb
+rq4X+WgysJ3GbuqAFdQEOjb839HmzAE=
+=KNRT
+-----END PGP SIGNATURE-----
+
+--bigl5w3rjallwyk4--
