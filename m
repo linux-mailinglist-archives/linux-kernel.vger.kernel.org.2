@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E3A42B2E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E5142B2EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236720AbhJMCvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 22:51:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46220 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236878AbhJMCvQ (ORCPT
+        id S235988AbhJMC4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 22:56:46 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28922 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229980AbhJMC4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 22:51:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634093353;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R+0oNJdHTqOxAaH5moaEK3403j+y86OhqVlmztOpaVo=;
-        b=CMr8NtvsjpCOYHMilfxJMdS90e4Dq5+twxeiTqf1Ot4/gzeTotWhA6xnSXLMAHGbmCgrYs
-        9y02LUwWcMNdCV2ZBWvF+A7h+F95rSZyVgOOjgXdKvspfFx25M9EtbC1vkR8qobz5u+60E
-        S3RDiO3MQBm86pj+qZBvIw5rl9lRwl8=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-DpBUk7m8MEqCuIBkEtIsyQ-1; Tue, 12 Oct 2021 22:49:12 -0400
-X-MC-Unique: DpBUk7m8MEqCuIBkEtIsyQ-1
-Received: by mail-pg1-f197.google.com with SMTP id g26-20020a63521a000000b0029524f04f5aso640325pgb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 19:49:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R+0oNJdHTqOxAaH5moaEK3403j+y86OhqVlmztOpaVo=;
-        b=wlogmBNWppLt8YFXNJ8mT9+QT2IfrIm7sbEA92GBBbnx68TudlMb6fsD0HE1iWMXxG
-         UmEbRhWqP7h6XdzMmxVOO/8eCi4RCJxwPNU1CoEh1jQMs74bxKrTzTX74q4+NGDiWaBn
-         2p/72Ypfa6LczZvOsE1okVZNJC3cfZguIXPabnmN8DCyHRzM/5CC5w8j57cZRq97noc7
-         CWODh1S5ePudpjXIgpnz4rZY9eIx3VT9K/Jznj9Z8h1tkThfvpHd2bIcq3hi5s4e8x9/
-         zxZPDpyGg63aDJoufGJRYkYMNN0+ivNjSzBCp7A0a6WdzQhHy5FD8rkhPM9Y5RPn50re
-         ypww==
-X-Gm-Message-State: AOAM530pd2CVAxWHx1e8k9TLWsi8IQv6RHPzLkNqfWAo3McrE7Ywr2VY
-        9Eo2/Jtwx3eepieHDae3mkClGywDDZ4zrfsHuhCXiqJkJiR9HQl3nyrReTL4JJra9HrqNasC1Gx
-        txInTVyTU3F8tnQCP/7zP5Mp7
-X-Received: by 2002:a05:6a00:a0a:b0:44c:52c9:bf25 with SMTP id p10-20020a056a000a0a00b0044c52c9bf25mr35654797pfh.24.1634093351142;
-        Tue, 12 Oct 2021 19:49:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyMViZ0sgxMYWlr6yHux2NLvCKNqAhqb/tfqmxDDtN6oX4y3JX1XVULHqOH0ScmrQtPFfn4hA==
-X-Received: by 2002:a05:6a00:a0a:b0:44c:52c9:bf25 with SMTP id p10-20020a056a000a0a00b0044c52c9bf25mr35654777pfh.24.1634093350788;
-        Tue, 12 Oct 2021 19:49:10 -0700 (PDT)
-Received: from t490s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id s8sm4017477pjm.32.2021.10.12.19.49.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 19:49:10 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 10:49:04 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Bin Wang <wangbin224@huawei.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mm, pagemap: expose hwpoison entry
-Message-ID: <YWZJIKsn6Sry5P6k@t490s>
-References: <20211004115001.1544259-1-naoya.horiguchi@linux.dev>
+        Tue, 12 Oct 2021 22:56:44 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HTcTJ4b8lzbn6b;
+        Wed, 13 Oct 2021 10:50:12 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 10:54:37 +0800
+Received: from [10.174.178.174] (10.174.178.174) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 10:54:37 +0800
+Subject: Re: [PATCH] iio: buffer: Fix double-free in
+ iio_buffers_alloc_sysfs_and_mask()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Jonathan Cameron" <jic23@kernel.org>
+References: <20211012092513.1349295-1-yangyingliang@huawei.com>
+ <CA+U=DsrHSwaiS7mT4rcHT_ZQwfPg+-Hwm-jkib11+m7W-VA_FQ@mail.gmail.com>
+ <CAHp75Vf+DHNxiP5HzsKzzh5hFmr20P8SzOTnLXAvhC5Vb6hzMA@mail.gmail.com>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <b0d08d06-31c2-934f-6279-f73df39c39b4@huawei.com>
+Date:   Wed, 13 Oct 2021 10:54:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211004115001.1544259-1-naoya.horiguchi@linux.dev>
+In-Reply-To: <CAHp75Vf+DHNxiP5HzsKzzh5hFmr20P8SzOTnLXAvhC5Vb6hzMA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Naoya,
+Hi,
 
-On Mon, Oct 04, 2021 at 08:50:01PM +0900, Naoya Horiguchi wrote:
-> +static inline struct page *hwpoison_entry_to_page(swp_entry_t entry)
-> +{
-> +	struct page *p = pfn_to_page(swp_offset(entry));
-> +
-> +	WARN_ON(!PageHWPoison(p));
-> +	return p;
-> +}
-
-This is more a pure question..
-
-I'm wondering whether that WARN_ON() could trigger.
-
-IOW, what if we poison an anonymous page and then unpoison it?  Will there be a
-hwpoison swap entry leftover in the ptes that it used to map?  Will it crash
-the program when the page is accessed?
-
-I had a feeling that when handling the page fault in do_swap_page before we
-SIGBUS the program, we should double-check the PageHWPoison on the pfn page,
-but I could be missing something..
+On 2021/10/13 4:30, Andy Shevchenko wrote:
+> On Tue, Oct 12, 2021 at 2:37 PM Alexandru Ardelean
+> <ardeleanalex@gmail.com> wrote:
+>> On Tue, Oct 12, 2021 at 12:18 PM Yang Yingliang
+>> <yangyingliang@huawei.com> wrote:
+>>> When __iio_buffer_alloc_sysfs_and_mask() failed, 'unwind_idx' should be
+>>> set to 'i - 1' to prevent double-free when cleanup resources.
+>>>
+>>> BUG: KASAN: double-free or invalid-free in __iio_buffer_free_sysfs_and_mask+0x32/0xb0 [industrialio]
+>>> Call Trace:
+>>>   kfree+0x117/0x4c0
+>>>   __iio_buffer_free_sysfs_and_mask+0x32/0xb0 [industrialio]
+>>>   iio_buffers_alloc_sysfs_and_mask+0x60d/0x1570 [industrialio]
+>>>   __iio_device_register+0x483/0x1a30 [industrialio]
+>>>   ina2xx_probe+0x625/0x980 [ina2xx_adc]
+>>>
+>> Makes sense.
+>> Thanks for the catch.
+>>
+>> Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+> ...
+>
+>>>                  ret = __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev, i);
+>>>                  if (ret) {
+>>> -                       unwind_idx = i;
+>>> +                       unwind_idx = i - 1;
+>>>                          goto error_unwind_sysfs_and_mask;
+> I prefer to see
+>
+> - for (; unwind_idx >= 0; unwind_idx--) {
+> + while (unwind_idx--)
+>
+> instead.
+With using while loop, 'unwind_idx = 
+iio_dev_opaque->attached_buffers_cnt - 1;' need
+be changed.
+I think my change is clear and simple, do I need resend a new version 
+with using while loop ?
 
 Thanks,
-
--- 
-Peter Xu
-
+Yang
+>
+>>>                  }
+>>>          }
