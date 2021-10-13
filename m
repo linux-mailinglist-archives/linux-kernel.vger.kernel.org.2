@@ -2,159 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FDD42C843
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDAE42C847
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238329AbhJMSFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 14:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbhJMSFC (ORCPT
+        id S238397AbhJMSFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 14:05:07 -0400
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:34493 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238258AbhJMSFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 14:05:02 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3364C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:02:58 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id a7so8451974yba.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AmvXcYMzdSDz7TFRGUZQZv1hDpV4qXcA0OVZWq94CrY=;
-        b=hWwHez8pxhnQbl9RbSKH5ubLoy0ruwVkpbVpXohvouwCiH0akNhqJuTARv23f8T2F6
-         dJVSJTMuvB2ib7TdpQ5hUea1dVcylLcbVa6ZC76d++PDuzKlU6DTQTbyOHybyDGF9ZDA
-         QXhNETaAVga73vS97J2AvD/qCV1o/F8CYVeuQ5N/J7neLgeX0a6GVufj0yW+qElLWmtW
-         hN4ZsSXeGSEs9br/Rgz23Mb105lF2xSntVezElxtMkDJ09p0oFh3ve9MVogRqGraqz/b
-         ujRPeydUfpsUU1v0KVWRcs2SShmSGy8CVQ0E/ujm34XyBK4KaptliApwqa6qJHYU6n2f
-         J2Jg==
+        Wed, 13 Oct 2021 14:05:05 -0400
+Received: by mail-ua1-f46.google.com with SMTP id h4so6306471uaw.1;
+        Wed, 13 Oct 2021 11:03:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AmvXcYMzdSDz7TFRGUZQZv1hDpV4qXcA0OVZWq94CrY=;
-        b=2RsJOGDbazMssrHS8gDT5ZeKADT/BrJ1UQvjJjky5J3EQivafZamdbXLCzgiRDpvVD
-         RUJAE1FYSI7W/I3H8pcDOiOjHGxlSFPGmhEX2p2YGVoRPgDETbHJB+T6KwLdWyPn7Adv
-         q7Ao3VSUA9KJiG3gziNTom1G0hqhZEXFJpvrrqSMoYL9i8UC8+KvWFrCmxkN79LgIhym
-         XExFwUNWxB3Hdw7BnuqH2AC0oxGIEOzlLnT4sA0lek899pPS2q3SFD4Wi8EQjGgnhG2K
-         uz3PIWG9UWA7DgzgialOt0KfGljZk8ELG37eX7PPnrNTY+Gkys+FW2qgGZ98cN5+ggzy
-         HQCg==
-X-Gm-Message-State: AOAM531AMehGBlGVs0kpucaUY0QxvWv4Hg4vH8YZNTFtOXxtletp8m8T
-        O802r+w9YXhsAikkiZ8pspsFcsRKloiX+slG9TBoauWAicwo4g==
-X-Google-Smtp-Source: ABdhPJyrbDM7N0hs+1pUKm7Mjmnx5U+Rzf9i4SVFmamFZYXIPBXGxFhj+hL1SHSMyBb/fpkhXeinKCHWoF5QR7Te8AU=
-X-Received: by 2002:a25:bd08:: with SMTP id f8mr910512ybk.89.1634148177510;
- Wed, 13 Oct 2021 11:02:57 -0700 (PDT)
+        bh=T1C46/jpqxsz6tI+W9Ak1jYU3EAHgNQuUCSEWH/baCg=;
+        b=o3eR/nuf/QOUa+P5Zohqh13O2y7fM44EmaducPjlPlpJl0PxWEgjobRXYnTL4ufWIU
+         fsrzOnYQRtwOemvOQdl6l8Zv+kW5eHdElavtPrw+PN1Bfe1LFvPZpZDEDHzrN/idcEEX
+         ZlVltthBjj5W5RFeYPDviXqq9ounuCyoJeJyJt9JsvKQUgF2o3/fY05RA5N4Isw7gbtp
+         X4YjjT/Vx5W0wbn2gsPmglTWYX++SrhT7UXINaUPqkNyr+8Fn8XkZ1aZemEeQZgWDw4g
+         vhUu/NM7w0/WrqK/Tw8vklqW5KLxU4JefpK7fckVCIPSeVGMjy6yFgMfOIW9ZxVufhJC
+         gYvw==
+X-Gm-Message-State: AOAM5305SS3P3dSozrUhQU8jVLD0e/YL9tLrNDGEJcQEFRkPQj5yLl2A
+        0HofuVAU67E0feMZa7L5QhrYHV9BF3BHAClNj2o=
+X-Google-Smtp-Source: ABdhPJzWe6D7GpmHL+uu9iSk9ZLP4zKoa4o6l86DroGgxk7GjStl2R3PiVqSWJKWWCbyRLA3ar1NMSHf1zJJNcPf5Fo=
+X-Received: by 2002:a67:ac04:: with SMTP id v4mr772084vse.50.1634148180292;
+ Wed, 13 Oct 2021 11:03:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211007031756.345269-1-eric.dumazet@gmail.com>
- <20211007072917.GN174703@worktop.programming.kicks-ass.net>
- <CANn89iKOa+tqerm80vHvHEurc2UxTq_heQuOUE0KnVuJht8AKA@mail.gmail.com>
- <YV7+/0+Q1n67wCF8@hirez.programming.kicks-ass.net> <CANn89iLEz5POFii_=wU=2J0A9CE3H5JPq3sQFUQ8E400YumUpw@mail.gmail.com>
- <CANn89iKg2Te8if2t_8oaAo6wL2BFNr2cP3D2w+jDePkFO5xREg@mail.gmail.com> <YWWDbIU+Cpppc7PV@hirez.programming.kicks-ass.net>
-In-Reply-To: <YWWDbIU+Cpppc7PV@hirez.programming.kicks-ass.net>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 13 Oct 2021 11:02:46 -0700
-Message-ID: <CANn89iL5mmbVojrUC4GHKC+0WSxzs_obqbt=rn2S_cmkddAriQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/apic: reduce cache line misses in __x2apic_send_IPI_mask()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Borislav Petkov <bp@suse.de>
+References: <20210913170436.243-1-alexander.helms.jy@renesas.com> <20210913170436.243-2-alexander.helms.jy@renesas.com>
+In-Reply-To: <20210913170436.243-2-alexander.helms.jy@renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 Oct 2021 20:02:49 +0200
+Message-ID: <CAMuHMdWZp=7sR+dTL0F8o61weLqqC3k1kkemm_PktvyK8+ONmw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: Add binding for Renesas 8T49N241
+To:     Alex Helms <alexander.helms.jy@renesas.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        david.cater.jc@renesas.com, Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 5:46 AM Peter Zijlstra <peterz@infradead.org> wrote:
+Hi Alex,
 
-> I'm really conflicted about this. On the one hand, yes absolutely. On
-> the other hand, urgh, code ugly :-)
+On Mon, Sep 13, 2021 at 7:05 PM Alex Helms
+<alexander.helms.jy@renesas.com> wrote:
+> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
+> The 8T49N241 accepts up to two differential or single-ended input clocks
+> and a fundamental-mode crystal input. The internal PLL can lock to either
+> of the input reference clocks or to the crystal to behave as a frequency
+> synthesizer.
+>
+> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-That was indeed some ugly hack.
+Thanks for your patch!
 
-I cooked this more generic patch instead, I am currently testing it.
-(generic as : we no longer disable hard irqs, regardless of some CONFIG option )
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
 
-diff --git a/arch/x86/kernel/apic/x2apic_cluster.c
-b/arch/x86/kernel/apic/x2apic_cluster.c
-index e696e22d0531976f7cba72ed17443592eac72c13..7ad81467ce33349dee1ceaf0cefc8375d60213f6
-100644
---- a/arch/x86/kernel/apic/x2apic_cluster.c
-+++ b/arch/x86/kernel/apic/x2apic_cluster.c
-@@ -22,7 +22,10 @@ struct cluster_mask {
-  */
- static u32 *x86_cpu_to_logical_apicid __read_mostly;
+> +  reg:
+> +    description: I2C device address
+> +    enum: [ 0x7c, 0x6c, 0x7d, 0x6d, 0x7e, 0x6e, 0x7f, 0x6f ]
 
--static DEFINE_PER_CPU(cpumask_var_t, ipi_mask);
-+#define IPI_NEST_MAX 3
-+static DEFINE_PER_CPU(cpumask_var_t, ipi_mask[IPI_NEST_MAX]);
-+static DEFINE_PER_CPU(int, ipi_nest_level);
-+
- static DEFINE_PER_CPU_READ_MOSTLY(struct cluster_mask *, cluster_masks);
- static struct cluster_mask *cluster_hotplug_mask;
+I think this is too strict: according to the datasheet, the full
+device address can be customized when ordering.
 
-@@ -45,14 +48,18 @@ __x2apic_send_IPI_mask(const struct cpumask *mask,
-int vector, int apic_dest)
- {
-        unsigned int cpu, clustercpu;
-        struct cpumask *tmpmsk;
--       unsigned long flags;
-+       int nest_level;
-        u32 dest;
+> +examples:
 
-        /* x2apic MSRs are special and need a special fence: */
-        weak_wrmsr_fence();
--       local_irq_save(flags);
+> +    i2c@0 {
+> +        reg = <0x0 0x100>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        renesas8t49n241_2: clock-generator@6c {
+> +            compatible = "renesas,8t49n241";
+> +            reg = <0x6c>;
+> +            #clock-cells = <1>;
+> +
+> +            clocks = <&xtal>;
+> +            clock-names = "xtal";
+> +
+> +            renesas,settings=[
 
--       tmpmsk = this_cpu_cpumask_var_ptr(ipi_mask);
-+       preempt_disable();
-+       nest_level = this_cpu_inc_return(ipi_nest_level) - 1;
-+       if (WARN_ON_ONCE(nest_level >= IPI_NEST_MAX))
-+               goto end;
-+
-+       tmpmsk = this_cpu_cpumask_var_ptr(ipi_mask[nest_level]);
-        cpumask_copy(tmpmsk, mask);
-        /* If IPI should not be sent to self, clear current CPU */
-        if (apic_dest != APIC_DEST_ALLINC)
-@@ -74,7 +81,9 @@ __x2apic_send_IPI_mask(const struct cpumask *mask,
-int vector, int apic_dest)
-                cpumask_andnot(tmpmsk, tmpmsk, &cmsk->mask);
-        }
+Missing spaces around equal sign.
 
--       local_irq_restore(flags);
-+end:
-+       this_cpu_dec(ipi_nest_level);
-+       preempt_enable();
- }
+> +                09 50 00 60 67 C5 6C FF 03 00 30 00 00 01 00 00
 
- static void x2apic_send_IPI_mask(const struct cpumask *mask, int vector)
-@@ -153,20 +162,26 @@ static int alloc_clustermask(unsigned int cpu, int node)
+[...]
 
- static int x2apic_prepare_cpu(unsigned int cpu)
- {
-+       int i;
-+
-        if (alloc_clustermask(cpu, cpu_to_node(cpu)) < 0)
-                return -ENOMEM;
--       if (!zalloc_cpumask_var(&per_cpu(ipi_mask, cpu), GFP_KERNEL))
--               return -ENOMEM;
-+       for (i = 0 ; i < IPI_NEST_MAX; i++) {
-+               if (!zalloc_cpumask_var(&per_cpu(ipi_mask[i], cpu), GFP_KERNEL))
-+                       return -ENOMEM;
-+       }
-        return 0;
- }
+> +            ];
 
- static int x2apic_dead_cpu(unsigned int dead_cpu)
- {
-        struct cluster_mask *cmsk = per_cpu(cluster_masks, dead_cpu);
-+       int i;
+With the above fixed:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-        if (cmsk)
-                cpumask_clear_cpu(dead_cpu, &cmsk->mask);
--       free_cpumask_var(per_cpu(ipi_mask, dead_cpu));
-+       for (i = 0; i < IPI_NEST_MAX; i++)
-+               free_cpumask_var(per_cpu(ipi_mask[i], dead_cpu));
-        return 0;
- }
+BTW, do you plan to add interrupt and/or GPIO support later?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
