@@ -2,119 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD1142B4D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACF242B4F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhJMFXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 01:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237600AbhJMFXk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 01:23:40 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9440C061570;
-        Tue, 12 Oct 2021 22:21:36 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id r18so4865856edv.12;
-        Tue, 12 Oct 2021 22:21:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O0bpNeV5H2tlTKXse90QMUfiIV8csT1Ar0RjDFkM7MQ=;
-        b=bHtADcOHkeHQOEJQ1DFKGZXoEe2uR67R4MGx+Xt53CiQdjgqW6piJV4beISkN7L9bf
-         5X4DrXk4/GfkKHDaVWmulp8diX6xqXZeVbqpttUR389XmHXP9cppPbcuO8r/w8fOQDnU
-         OpBQyyPVtVK0wwq+ZX4iwXZMA2p3FmvqOkJr/2CEIK5zD93vWMmwqrfICD8+Bq+mjNNr
-         HScRHcVpXt/0T4+m9fUVvPGtWS+OMJsHDUre/ddB2wxJQxxrvDKptbqx1Cs+E3glqi37
-         U1NIt9vR6pvQskNa6AFdBi7qJvWW4u5WCckhycVb1Lw+HkuPYny/rxZmpB9nW5Qu5W0s
-         +xdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O0bpNeV5H2tlTKXse90QMUfiIV8csT1Ar0RjDFkM7MQ=;
-        b=NXAym8+EnADfxHGlJhsASyESAlSAhT7D9MtSyK5BThHjdu0jst13rKtLfQr+g166V5
-         vNXhp6O1V/U1G6DMkztm53b1fs2wxTVQUFwg4bIqbWPnwuZzaRebStXWNFXoaeJ73CS/
-         sR02G62NZFeH7xbMMZnC1InpmJ/Eb1A1Nu0xVk3wHOw0aCJEC9qsskF0W87ZB/F9uDLU
-         a1iDlHyGgizrR2oudRRNWOZoo8iYGfx9v8xDchvRRhfFBc2QYmX8Q2qU+pzAGyM9Ioy8
-         +UX2h1TNbdCFfWkN9oME1EeEuX4c4eCZPBTELZpRCftCAvig8HrGR45DBDwtsZM25xDe
-         s5CQ==
-X-Gm-Message-State: AOAM530Dt6ZUrtaSwNJnVPCGTCtK8PKRedfOEB+fXvsC2gsxQxlsKEq5
-        zXo++wxRn2+RIyp/YDgNSElVvf8qHWvQlWMYrjZx7FzVDKHXAtfwJvI=
-X-Google-Smtp-Source: ABdhPJycgoRsBj6dI+FOHWjkdXIyhPmcwUwXpL4QMgQODvoGZJExgG7CIgbT9UWGiYlQufM4N3L8Eec0wMeqHjsqjQI=
-X-Received: by 2002:a17:906:f6cd:: with SMTP id jo13mr37508004ejb.563.1634102495447;
- Tue, 12 Oct 2021 22:21:35 -0700 (PDT)
+        id S234624AbhJMF02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 01:26:28 -0400
+Received: from mail-eopbgr40071.outbound.protection.outlook.com ([40.107.4.71]:33705
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229514AbhJMF01 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 01:26:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A5XQwqGLpEbB/ZPV3hjhUAYILUaLDHMG6rdC+dkPzPtKS6VBmqoNrWrjw9fR9+oLx9yNFSeoHPJ1G0hjclP7UxOZu+7aXfNW99PqjOjoJcs1VrygB0hexkDO0ps8rcB4jtnaaqn35OrKMVTr8mlvI1RjEyyATfrYXCql49WPdFbaD9SxRPDtbNnUYSwIAlP3VeWidBfoYOQA+FH3812OTH47JoH4byzntMepMjRTTUyam//tfa9npJ5w+ZLX4Vmsa49fVNp+CiOUSqp3lEQj88EkLHW+6q47fTlHlDoWyKR1VJU+dZrqOz7zLYIIUXWVJyO+Gz5nXisZdV6bcOOIfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VDuWio1L4h3+yxjujMhcDUAO+Hp+o076ELyoDo1UHfg=;
+ b=XDEiobjIdVX5zuWtI7iekbIrSiRkB8PnRygm0T97h8sgoTPv6vtfhju397YTgN//SIB+FZvx9e9T3v1g9wq3NkZrr9k7tSxQaq7yv7xP2CzPyMnk5zJ6nEcJADfixsLzWeP0kU8QUjk1ws+08KgrEunAveijHskluQGagXY14BSnUAeKSisVzJoi0HibLgMnCi9aP1eOKAT9E8kRlXl2yNVo+qWAaFJ0jVzbQibzfmtS/6NH6i26X7WHQ+dKmkpF1UyRrgLXToG+GvHrQlyl/zJLOf/FaeGDSb/JEBAjhPfAXANmP3atz36O73wy07I+rbv1u0CvXkmMl4FPTMIjjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VDuWio1L4h3+yxjujMhcDUAO+Hp+o076ELyoDo1UHfg=;
+ b=D9k6rnUob0To2JmF2WillColg1TKhH8lC2iGgCHTSzgxBgmUgbBih9PboxM5DR47aAPfdWNHy6Kpk611NgbrY4saY72jDwkwYUWB/VOg8N+zjEvren5o3wDhM8PCwu+J2hDTgMVw+YVjOb1/18E0thV7qeuSlcuZE2biOPx0VA0=
+Received: from PAXPR04MB8476.eurprd04.prod.outlook.com (2603:10a6:102:1df::13)
+ by PAXPR04MB9139.eurprd04.prod.outlook.com (2603:10a6:102:22e::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.19; Wed, 13 Oct
+ 2021 05:24:22 +0000
+Received: from PAXPR04MB8476.eurprd04.prod.outlook.com
+ ([fe80::bdda:a926:ddd:7d6c]) by PAXPR04MB8476.eurprd04.prod.outlook.com
+ ([fe80::bdda:a926:ddd:7d6c%5]) with mapi id 15.20.4587.026; Wed, 13 Oct 2021
+ 05:24:22 +0000
+From:   "S.j. Wang" <shengjiu.wang@nxp.com>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>,
+        "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: wm8960: Fix clock configuration on slave mode
+Thread-Topic: [PATCH] ASoC: wm8960: Fix clock configuration on slave mode
+Thread-Index: Ade/8l8YtsfbNm3JQKGBs4KZNAV6Ig==
+Date:   Wed, 13 Oct 2021 05:24:22 +0000
+Message-ID: <PAXPR04MB847688DF669A1CC5243F761BE3B79@PAXPR04MB8476.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: opensource.cirrus.com; dkim=none (message not signed)
+ header.d=none;opensource.cirrus.com; dmarc=none action=none
+ header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a9cca2af-57d7-424b-f020-08d98e09b722
+x-ms-traffictypediagnostic: PAXPR04MB9139:
+x-microsoft-antispam-prvs: <PAXPR04MB9139074D7174778ADCB0B5ADE3B79@PAXPR04MB9139.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ygMluaVGtkjk7EW2FmHv2uITmxdlCMXX6hmf3hoFTY+zwz3i9wNaviaO8SMOgCu3YqOtX9x/E/i+E2pabar6qI24a43Omvb+jp+77VE9BhtFQALp2/ULY6NTOrFzMHKrMVErYpk1sjgQt4b+fBmSoaVwWyLjXy01ERQ6S1Bb7AeWSKNIR7agMRO2rnHWXM5PdJBaECmCYNsZ3mwlb6VWaflGKIAudSiMVm84QA6L6TdzIMdxKjJxooXnKv+QC1/c0E2wIiF6ZXMekZtyhFpFdLAHuTlSIH356MjRYRmkRu6+Rvh7QtynsAA2kQzWxxRoJ6K8SrkhfSGd9EVq47x+pCEnFk9oIYkbcxwYvu4ymsLbfe3qqRL+0rIzzSt/MDmu3kp9CFWQaQjL1CjM2g+tHC0HRkTKHU7YZjvuFQ/+sV+UM/VU3Qwx0VIBzyUhLU2BGoz4eCw4T14UmtZ1F2h17uIQW5Cy095DZd3IfeFZv7/1C8SkFDgH9woPOmIACDQjnPn+NA/SA6onXAmsDq5iyJ0S2u4HoVdjg171ei6sH9h89WIhaprToWb12r0hvkGYKPaRQyNhyl2U95epfqhst/zhj6NKUQHymbbf84PqM29gDR+YOHbkn/TX1fkjzRsxpuKzolbSWQg8zNNeFdO5ZLQCrKL6JOhfFxWV/pjNElpYOjRodNuxLt5Utcwau5JWjrg6Ec+gkt/uXz4l9+TOiA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8476.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(508600001)(7696005)(76116006)(66556008)(64756008)(5660300002)(66476007)(4326008)(83380400001)(52536014)(86362001)(8676002)(55016002)(54906003)(9686003)(316002)(66446008)(6506007)(2906002)(186003)(122000001)(33656002)(71200400001)(38100700002)(6916009)(26005)(8936002)(38070700005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?cydBPt3fExJm0fxMgIvZMN82h+qFQqap8T3bbGWw5SIorFQNS+CtXqWY1K63?=
+ =?us-ascii?Q?+Jr2Pm4KEtN4cM465mpwnX80b/4mKeV8Bh5bL5lHDOwEcz70aIevnv+wH76t?=
+ =?us-ascii?Q?WXUfz7lv8soboPi96MizFD2A12P1ODtUXfJ4EVNgaf7VpPU5DgzS1frV/w1F?=
+ =?us-ascii?Q?6ju+P5wGWkE9QLE503RLjkm5uDHKS9vS8wi2klAiHAzf62CfDQmIeP00PAs9?=
+ =?us-ascii?Q?HlowrvT1L2VeOoDRLKvozTSm/nEdr8SVHJaom1kPgw3PQCiszJ+/ynvjQIvW?=
+ =?us-ascii?Q?oUGfcY9S/Qum3sAllktYi8sM02DI+8H9loM6F7myMpzlUWp8wr+tK3J0JuFq?=
+ =?us-ascii?Q?F67leBYVJARvLbdGYjnqoiS5BhDVh336n157xgnD4WfRpk+M2DPUIV+pIjqd?=
+ =?us-ascii?Q?1no9yT+eR5v7D1ktJWk009mOG5HtcScpJG0lIkRsIQhmuzE9cBpHInHH3Drp?=
+ =?us-ascii?Q?mvHlGWmlQm8St2WjPa/ipwYiavdzT5Xdnx4N4OjbWCohtT2aYhneNVqEW73n?=
+ =?us-ascii?Q?tgLxMznLIppoTMhTSfcaH7Tqn+BqxyYuZUi+4mGC7hqV7jfHp6Jbk0ZmaFrH?=
+ =?us-ascii?Q?U9yYDWMnOLF7ekWuCutG7e9P0n2W3IIZC6ryVYtWdTcHZdaG4Q1gzkPL2ha7?=
+ =?us-ascii?Q?4l4kEWsD5EkeHSVsvjWrCQ2wfCl27LdxL600Ge+jihsHB1KjgL1hwbvJ/bPB?=
+ =?us-ascii?Q?mDYhPKDo7g58wMFsv9UTBL2bwLVg3zbhx+lwjS4WzrEnYzxQfgIqCu3cUoCH?=
+ =?us-ascii?Q?/Fc0iWymFCINELCj87tKBa4wO6V9IVhSsKenDb1de7j6u+BmWk9YUCGZGUc2?=
+ =?us-ascii?Q?dtYC4//7FmaO3LkFMTNTVhXa27e86HYCCjDwN9HrSoV+6df0bd38r4P2wfxL?=
+ =?us-ascii?Q?vWaUvmijA2xAXMBnT1x+YYtJiKQi22w1S93+xp65GkqTspPwP3sQx8w+kaE7?=
+ =?us-ascii?Q?1NPcedMrnOedHcs2QS0HVw2tOT3SGGYAHXetSE6eN7lsMAI3gtsKF4ELqOEV?=
+ =?us-ascii?Q?uU4QELcuw31/Qoud4moX9VBkuEoM3o1qITru4xmRsDO70pPGa6i+oQBe9FFn?=
+ =?us-ascii?Q?XWV5YzjztC1W+aIv2zengY39RY5poHeazMdeNa5g1WGhUifAmPI/eJCvOTpC?=
+ =?us-ascii?Q?nepiblNV3zTfG5196xYIca1C44aWA6qaz25PpZ4ajexWSJBn6LTflCJMfHS1?=
+ =?us-ascii?Q?sqUiCiatk+ZPCyPlxhy+E9HAXvC1mrdwMr+0T9MHfrQ9ySEgCbIcJ3Aw4ali?=
+ =?us-ascii?Q?RKdDX21OrFID/kr2BkqFizNN4IHZEhmuDT3lZGrKjpFqFHVK6BNXq5s/BGU9?=
+ =?us-ascii?Q?Wuo=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20211013040349.2858773-1-mudongliangabcd@gmail.com>
-In-Reply-To: <20211013040349.2858773-1-mudongliangabcd@gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Wed, 13 Oct 2021 13:21:09 +0800
-Message-ID: <CAD-N9QWTP8DLtAN70Xxap+WhNUfh9ixfeDMuNaB2NnpFhuAN8A@mail.gmail.com>
-Subject: Re: [PATCH] driver: net: can: delete napi if register_candev fails
-To:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-can@vger.kernel.org,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8476.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9cca2af-57d7-424b-f020-08d98e09b722
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2021 05:24:22.7408
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Rh1YcE0Q1SxMDoXfG6z0ICnSDWKwzZ42olILQbeb1o0gDKKWRE1+BBpiVb+sHbGjIi3Etp+8sQ+nMuvqBFiGKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9139
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 12:04 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> If register_candev fails, xcan_probe does not clean the napi
-> created by netif_napi_add.
->
+> On Tue, Sep 07, 2021 at 05:11:09PM +0800, Shengjiu Wang wrote:
+> > There is a noise issue for 8kHz sample rate on slave mode.
+> > Compared with master mode, the difference is the DACDIV setting, after
+> > correcting the DACDIV, the noise is gone.
+> >
+> > There is no noise issue for 48kHz sample rate, because the default
+> > value of DACDIV is correct for 48kHz.
+> >
+> > So wm8960_configure_clocking() should be functional for ADC and DAC
+> > function even if it is slave mode.
+> >
+> > In order to be compatible for old use case, just add condition for
+> > checking that sysclk is zero with slave mode.
+> >
+> > Fixes: 0e50b51aa22f ("ASoC: wm8960: Let wm8960 driver configure its
+> > bit clock and frame clock")
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  sound/soc/codecs/wm8960.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+> > index 9e621a254392..9c6af76a60fd 100644
+> > --- a/sound/soc/codecs/wm8960.c
+> > +++ b/sound/soc/codecs/wm8960.c
+> > @@ -742,7 +742,7 @@ static int wm8960_configure_clocking(struct
+> snd_soc_component *component)
+> >       int i, j, k;
+> >       int ret;
+> >
+> > -     if (!(iface1 & (1<<6))) {
+> > +     if (!(iface1 & (1 << 6)) && !wm8960->sysclk) {
+> >               dev_dbg(component->dev,
+> >                       "Codec is slave mode, no need to configure
+> > clock\n");
+>=20
+> Looking through the datasheet it just looks like this if statement has al=
+ways
+> been non-sense, it looks pretty clear the clocking should still be config=
+ured in
+> slave mode (apart from BCLKDIV which is presumably ignored in slave mode)=
+.
+>=20
+> I would be slightly inclined to suggest it would be better to just fixup =
+any
+> systems not setting sysclk for slave mode, but I am assuming you are talk=
+ing
+> primarily about out of tree systems. So I think we need to at least updat=
+e the
+> message here as well, it should probably change to a warning and state th=
+at
+> the we are proceeding with no clock configuration, rather than erroneousl=
+y
+> saying it doesn't need one.
+>=20
+> Thanks,
+> Charles
 
-It seems the netif_napi_del operation is done in the free_candev
-(free_netdev precisely).
+Sorry for missing your email. I will update it in v2.
+Thanks.
 
-list_for_each_entry_safe(p, n, &dev->napi_list, dev_list)
-          netif_napi_del(p);
-
-And list_add_rcu(&napi->dev_list, &dev->napi_list) is done in the
-netif_napi_add.
-
-Therefore, I suggest removing "netif_napi_del" operation in the
-xcan_remove to match probe and remove function.
-
-> Fix this by adding error handling code to clean napi when
-> register_candev fails.
->
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->  drivers/net/can/xilinx_can.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-> index 3b883e607d8b..6ee0b5a8cdfc 100644
-> --- a/drivers/net/can/xilinx_can.c
-> +++ b/drivers/net/can/xilinx_can.c
-> @@ -1807,7 +1807,7 @@ static int xcan_probe(struct platform_device *pdev)
->         ret = register_candev(ndev);
->         if (ret) {
->                 dev_err(&pdev->dev, "fail to register failed (err=%d)\n", ret);
-> -               goto err_disableclks;
-> +               goto err_del_napi;
->         }
->
->         devm_can_led_init(ndev);
-> @@ -1825,6 +1825,8 @@ static int xcan_probe(struct platform_device *pdev)
->
->         return 0;
->
-> +err_del_napi:
-> +       netif_napi_del(&priv->napi);
->  err_disableclks:
->         pm_runtime_put(priv->dev);
->         pm_runtime_disable(&pdev->dev);
-> --
-> 2.25.1
->
+Best regards
+Wang Shengjiu
