@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC71142CC87
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C980842CC8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhJMVKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 17:10:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32112 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229771AbhJMVKL (ORCPT
+        id S230099AbhJMVMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 17:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229882AbhJMVMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 17:10:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634159287;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3WNwfE3UA1GE1htBdimBENBrvRnFUAVO3nMv6ljsFsk=;
-        b=RrP4OVGHsi/JRwv8CiI+5pdReU4TPp5QcPYdEb/rWTBBtlGhVVJe1ovtHdTI1E0ZQ15iAv
-        P1beYHLtymG5xDt/VDKdOrfRPL02OiCH8x4ctb2z3YM6FDPoizzidF4vWtYn8SQtoBWyqs
-        uqnPeR3rThDUCjcLiEaNyrD/dqlsQFU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-njfqCk-OP0ixNwcKJ9spsw-1; Wed, 13 Oct 2021 17:08:04 -0400
-X-MC-Unique: njfqCk-OP0ixNwcKJ9spsw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3566802C87;
-        Wed, 13 Oct 2021 21:08:02 +0000 (UTC)
-Received: from llong.remote.csb (unknown [10.22.33.183])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4AFA3694B5;
-        Wed, 13 Oct 2021 21:08:02 +0000 (UTC)
-Subject: Re: [PATCH V2 0/3] misc patches for mutex and rwsem
-To:     Yanfei Xu <yanfei.xu@windriver.com>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-References: <20211013134154.1085649-1-yanfei.xu@windriver.com>
-From:   Waiman Long <longman@redhat.com>
-Message-ID: <9484e09b-4fba-2b8d-5922-75a830531b48@redhat.com>
-Date:   Wed, 13 Oct 2021 17:08:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 13 Oct 2021 17:12:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8ED7C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nOoPk2cAolMDPwIBVs+JEzAUAlzUwXEINvXNt3/AeBY=; b=o6wHonNXZ0IwplN4hFRx8wgu7C
+        95VW/N5iaODhWGDM3F4QB6eAt/P2zrl/dbBjluG7zcsg627yv6eXN80rPHp/9tRuctLXI+mTNEJi+
+        jSxfqxJiqEOs5f3fTi6wDT76yYqoXB5Fnf48boellZaKRxDK+RRMDH+oQu/5KpNkUyzW8QY/4R+A9
+        J8ICkcwVIXRSsmJNayAp0l0YjZI82SICJDwPrwAeb9ZM0UP9Mq65b87GsjriG/cpPovW1hF5IoMVq
+        GS9/RpDMfSdZJd+r2D8Vjcq2OQCQUfriNUPMF3Dmsp2XPm4mSNn7UowJ51fFLBAcoFKdl0D13ua04
+        FQ/WaVzQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1malUI-007o2g-0z; Wed, 13 Oct 2021 21:08:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2138F30030B;
+        Wed, 13 Oct 2021 23:08:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0A93E2D2782EA; Wed, 13 Oct 2021 23:08:34 +0200 (CEST)
+Date:   Wed, 13 Oct 2021 23:08:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH 5/9] x86/alternative: Handle Jcc __x86_indirect_thunk_\reg
+Message-ID: <YWdK0nOWsj+At8IJ@hirez.programming.kicks-ass.net>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123645.119101107@infradead.org>
+ <CAKwvOd=4s70S9irWGV94u2AoyQyo67XZ9tU12cdhf=6879gA+w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211013134154.1085649-1-yanfei.xu@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=4s70S9irWGV94u2AoyQyo67XZ9tU12cdhf=6879gA+w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 13, 2021 at 01:11:45PM -0700, Nick Desaulniers wrote:
 
-On 10/13/21 9:41 AM, Yanfei Xu wrote:
-> [patch1] locking:remove rcu_read_lock/unlock as we already disabled preemption
-> v1->2: also remove the unnecessary rcu_read_lock/unlock in rwsem
->
-> [patch2] locking/rwsem: disable preemption for spinning region
-> [patch3] locking/rwsem: fix comments about reader optimistic lock stealing conditions
-> These two patches were sent to mailing list some weeks ago, but it seemed
-> to be missed, so send them again.
->
-> Yanfei Xu (3):
->    locking: remove rcu_read_lock/unlock as we already disabled preemption
->    locking/rwsem: disable preemption for spinning region
->    locking/rwsem: fix comments about reader optimistic lock stealing
->      conditions
->
->   kernel/locking/mutex.c | 22 +++++++++++++++-------
->   kernel/locking/rwsem.c | 28 ++++++++++++++++++----------
->   2 files changed, 33 insertions(+), 17 deletions(-)
->
-The patches look good to me. Thanks!
+> > +       /*
+> > +        * Convert:
+> > +        *
+> > +        *   Jcc.d32 __x86_indirect_thunk_\reg
+> > +        *
+> > +        * into:
+> > +        *
+> > +        *   Jncc.d8 1f
+> > +        *   jmp *%\reg
+> > +        *   nop
+> > +        * 1:
+> > +        */
+> > +       if (op == 0x0f && (insn->opcode.bytes[1] & 0xf0) == 0x80) {
+> > +               cc = insn->opcode.bytes[1] & 0xf;
+> > +               cc ^= 1; /* invert condition */
+> > +
+> > +               bytes[i++] = 0x70 + cc; /* Jcc.d8 */
+> > +               bytes[i++] = insn->length - 2;
+> 
+> Isn't `insn->length - 2` always 4 (in this case)? We could avoid
+> computing that at runtime I suspect if we just hardcoded it.
 
-For the series,
+Yeah, but I found this to be more expressive. The purpose is getting to
+the next instruction.
 
-Acked-by: Waiman Long <longman@redhat.com>
+Also, if clang ever does instruction stuffing to hit alignment targets
+without extra nops (ISTR reading about such passes) this logic still
+works.
 
+That is, I think you can prefix this with REX.W just to make a longer
+instruction.
+
+> Either way, I've looked at the disassembly enough that this LGTM.
+> Thanks for the patch.
+> 
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Thanks!
