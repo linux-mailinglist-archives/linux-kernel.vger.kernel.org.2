@@ -2,83 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B918E42CEDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA7342CEE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhJMWxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 18:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54038 "EHLO
+        id S230357AbhJMWzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 18:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbhJMWxg (ORCPT
+        with ESMTP id S229999AbhJMWzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 18:53:36 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA14BC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:51:32 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so3397143pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:51:32 -0700 (PDT)
+        Wed, 13 Oct 2021 18:55:36 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38627C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:53:32 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id y7so3782918pfg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:53:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=XYCO9K2z20trHg1Tdi9Bnb5Asig2IkwBEdxVkkKkXMU=;
-        b=qLCAebxXpkqnV8LZjbKBGUNFz5UxVk5AeDeK/NEjbjS1WfSqyFw/IkTcz+LDb9a9e7
-         fL+qrniIL14msXxDRSaLt6XTK5Nu10HAXVNTPp9LGpl08g3vF672TVG0f0RinHCA206K
-         H10D2PDK2hrofwFjDHiQUGNsG14Tr663fLzxFd1LxMJmY+gcw4jYGuhCSIHktX8r1Sx8
-         noc077eFafLhouqYUIanKxwqfmPWMrCfFr8S59Cdcy8fMKPoTl4e+RT5STG6z/NZ4FQK
-         xneqQAIcbQPRFUKsmCP2aV9u8bprCtTBWFgVZ3+y/4KTKIup+ttZ2pLdMPTqC+CuKMcS
-         YBuA==
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mD52ke93bZgMN8C2a9gCtqv/RSz+k+TH8msNFSfXTEI=;
+        b=111IYqB5RWpR47n+J9LBNzUiwKITM04Su9x8IakTob8UD0Fpo6EPKusY5AgXimwuXb
+         377AkSssdJvml0TXvPV9uVNumAo5IC2LMqp7eZ1Xeav/DRvwkTDvkyyTFv+h1tEMp9CC
+         De5w7Hi6Y/tPn8BLywbkiorQH3J85/Kq6POg32i6PB4ok63I4v/qWQw1LfGjTeB9ogvY
+         PB/HqYOIkMHNUwg5m8gb/6YVP/9LI7I2MdiilPE2t17kf4EuQngM7hSWYHbpa0hBiLJs
+         U1rJE4STnZmdmNaj8Wwj6D9PXEQU3peVnr+P/0qnhlMNVYhux01Zo507yBcOgU8hDQb1
+         FiUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=XYCO9K2z20trHg1Tdi9Bnb5Asig2IkwBEdxVkkKkXMU=;
-        b=V92+Lenl3kKN07bU1hsP6vmx+AZy3nZyAf4B4PJQvspjujGCgKdHIzmvRatcxuEfIZ
-         xV6EXNwtxyDtcuW8pql4KLiIsMLFhdrgE8yq8F3weizr8ymVfP8HWh0Iskaw35wAePxK
-         SacJgQE7fj5KkfQqqIySGPNzgadqhdl2k2tCBUOb4d7UwPqgQ8mcw61ctqzl8GCqNAXv
-         8mgBnMufj4Rj+1bRE8BDOw0+8Ms4cLjU0dbRyPhYEnRpTM10zL0C3ShXDm81yqAD7l4z
-         aIGGq5R1OoRIReWExxQZb5M0jQY0Cz4Z8s20Da0QceAj0Sg2lGIaA0RzAM+otG4SQmSG
-         I1KQ==
-X-Gm-Message-State: AOAM531sodApWDLbmRYbF2sAW1WBXdEJ/JiTVnGo+OcwmiIT6uNRFSl5
-        PKYfnN222adpwEZJIIor1YBsOCl+W/N8Y2pZ/rU=
-X-Google-Smtp-Source: ABdhPJzruduEaxT34qdIN9HmDI4NWF4hXlO4TZebjSqrMau2qRYaGwQqyX1NzK5PMpTgtF5vvoENn0LIQEh9oBKeGfQ=
-X-Received: by 2002:a17:902:a604:b029:12c:dda2:30c4 with SMTP id
- u4-20020a170902a604b029012cdda230c4mr1770468plq.73.1634165492181; Wed, 13 Oct
- 2021 15:51:32 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mD52ke93bZgMN8C2a9gCtqv/RSz+k+TH8msNFSfXTEI=;
+        b=HJgSnBAvNT3uw1q6RV9Vws0lZvSOxD9nidDtgPnrlu8uQbAW+6d1qX3SFHLBgmhk8j
+         b2m4C5YsrExSRebzTNXRhSzyPgI8CrVZxcjMHBpUwvQOBtrSKNVsB5pmWC8W03apPgpg
+         AdbXGnX0KC/xXgAF0GdGqYh7n20E4477JwRfIg2PC+pLoB8Rpv56KP2/U9O6KcddPee2
+         WHfwSSSBXf/xfMvJx8qTcMnFOU45Uymio+myM8wlpaZHgy7pF8nMi74rR4kalPb2YH6s
+         u4S9omZKLgSUbYSRQRMp9E0u4jEoPUX+A8BnHOLWBxz3dvfjSN7/kv6o5N49eOKUSXEH
+         iA4Q==
+X-Gm-Message-State: AOAM5331WmwcsXcoaZlmmBSTaJeBUnAwoUKEJx4QaJRkNryih8aFTyoD
+        QW2Pd5dWikm4d1jYqSlK3/3VZ0VlVShM8kPaC0vtfecSRjk=
+X-Google-Smtp-Source: ABdhPJzUs+C9Y/nPSblGHzVkRKNZwUBEduOOiELpNCPsaOpR5gHLldCoGaAsU4ZIsdGNciujcHSWWgt+DEurN/y2eTo=
+X-Received: by 2002:a05:6a00:140e:b0:444:b077:51ef with SMTP id
+ l14-20020a056a00140e00b00444b07751efmr1680391pfu.61.1634165611611; Wed, 13
+ Oct 2021 15:53:31 -0700 (PDT)
 MIME-Version: 1.0
-Sender: bra427679@gmail.com
-Received: by 2002:a05:6a11:4d0c:0:0:0:0 with HTTP; Wed, 13 Oct 2021 15:51:31
- -0700 (PDT)
-From:   "Mrs. Rita Hassan" <ritahassan02@gmail.com>
-Date:   Wed, 13 Oct 2021 22:51:31 +0000
-X-Google-Sender-Auth: LDET7GCpRr2-XKTGx6Ulmp8uu1c
-Message-ID: <CALJduGefsk_g8qeDXp2CY-3zRNMT8AcdG3PDQtSHvMFuJ8YMsw@mail.gmail.com>
-Subject: Very Urgent.
-To:     undisclosed-recipients:;
+References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <163379786922.692348.2318044990911111834.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20211010042056.GJ3114988@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20211010042056.GJ3114988@iweiny-DESK2.sc.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 13 Oct 2021 15:53:20 -0700
+Message-ID: <CAPcyv4hP5ohs10-xC+h=QOH7yiUXji55ubwVG1XfMA006tjR8A@mail.gmail.com>
+Subject: Re: [PATCH v3 06/10] cxl/pci: Add @base to cxl_register_map
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please forgive me for stressing you with my predicaments as I know
-that this letter may come to you as big surprise. Actually, I came
-across your E-mail from my personal search afterward I decided to
-email you directly believing that you will be honest to fulfill my
-final wish before i die.
+On Sat, Oct 9, 2021 at 9:21 PM Ira Weiny <ira.weiny@intel.com> wrote:
+>
+> On Sat, Oct 09, 2021 at 09:44:29AM -0700, Dan Williams wrote:
+> > In addition to carrying @barno, @block_offset, and @reg_type, add @base
+> > to keep all map/unmap parameters in one object. The helpers
+> > cxl_{map,unmap}_regblock() handle adjusting @base to the @block_offset
+> > at map and unmap time.
+> >
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> >  drivers/cxl/cxl.h |    1 +
+> >  drivers/cxl/pci.c |   31 ++++++++++++++++---------------
+> >  2 files changed, 17 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> > index a6687e7fd598..7cd16ef144dd 100644
+> > --- a/drivers/cxl/cxl.h
+> > +++ b/drivers/cxl/cxl.h
+> > @@ -140,6 +140,7 @@ struct cxl_device_reg_map {
+> >  };
+> >
+> >  struct cxl_register_map {
+> > +     void __iomem *base;
+> >       u64 block_offset;
+> >       u8 reg_type;
+> >       u8 barno;
+> > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> > index 9f006299a0e3..b42407d067ac 100644
+> > --- a/drivers/cxl/pci.c
+> > +++ b/drivers/cxl/pci.c
+> > @@ -306,8 +306,7 @@ static int cxl_pci_setup_mailbox(struct cxl_mem *cxlm)
+> >       return 0;
+> >  }
+> >
+> > -static void __iomem *cxl_pci_map_regblock(struct pci_dev *pdev,
+> > -                                       struct cxl_register_map *map)
+> > +static int cxl_map_regblock(struct pci_dev *pdev, struct cxl_register_map *map)
+> >  {
+> >       void __iomem *addr;
+> >       int bar = map->barno;
+> > @@ -318,24 +317,27 @@ static void __iomem *cxl_pci_map_regblock(struct pci_dev *pdev,
+> >       if (pci_resource_len(pdev, bar) < offset) {
+> >               dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
+> >                       &pdev->resource[bar], (unsigned long long)offset);
+> > -             return NULL;
+> > +             return -ENXIO;
+> >       }
+> >
+> >       addr = pci_iomap(pdev, bar, 0);
+> >       if (!addr) {
+> >               dev_err(dev, "failed to map registers\n");
+> > -             return addr;
+> > +             return -ENOMEM;
+> >       }
+> >
+> >       dev_dbg(dev, "Mapped CXL Memory Device resource bar %u @ %#llx\n",
+> >               bar, offset);
+> >
+> > -     return addr;
+> > +     map->base = addr + map->block_offset;
+> > +     return 0;
+> >  }
+> >
+> > -static void cxl_pci_unmap_regblock(struct pci_dev *pdev, void __iomem *base)
+> > +static void cxl_unmap_regblock(struct pci_dev *pdev,
+> > +                            struct cxl_register_map *map)
+> >  {
+> > -     pci_iounmap(pdev, base);
+> > +     pci_iounmap(pdev, map->base - map->block_offset);
+>
+> I know we need to get these in soon.  But I think map->base should be 'base'
+> and map->block_offset should be handled in cxl_probe_regs() rather than
+> subtract it here..
 
-Meanwhile, I am Mrs. Rita Hassan,  62 years old,I am suffering from a
-long time cancer and from all indication my condition is really
-deteriorating As a matter of fact, registered nurse by profession
-while my husband was dealing on Gold Dust and Gold Dory Bars till his
-sudden death the year 2019 then I took over his business till date. In
-fact,at this moment I have a deposit sum of $5.5million dollars with
-one of the leading bank.
+But why? The goal of the cxl_register_map cleanups is to reduce the
+open-coding for details that can just be passed around in a @map
+instance. Once cxl_map_regblock() sets up @base there's little reason
+to consider the hardware regblock details.
 
-Therefore, I want you to receive the money and take 30% to take care
-of yourself and family while 70% should be use basically on
-humanitarian purposes mostly to orphanages home, Motherless babies
-home,contact me for more details on this email.
-(ritahassan02@gmail.com )
+> Either way this is cleaner than what it was.
+>
+> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-Yours Faithfully
-
-Mrs. Rita Hassan.
+Thanks!
