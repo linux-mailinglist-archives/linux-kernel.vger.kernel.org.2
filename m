@@ -2,65 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D539A42C21F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53CF42C303
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbhJMOJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:09:12 -0400
-Received: from mga11.intel.com ([192.55.52.93]:4860 "EHLO mga11.intel.com"
+        id S236332AbhJMO0Z convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Oct 2021 10:26:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235828AbhJMOHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:07:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="224875991"
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="224875991"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 07:04:14 -0700
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="491477111"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.41])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 07:04:12 -0700
-Date:   Wed, 13 Oct 2021 22:24:09 +0800
-From:   Oliver Sang <oliver.sang@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Oliver Urbann <oliver.urbann@gmail.com>,
-        linux-kernel@vger.kernel.org, lkp@intel.com, lkp@lists.01.org,
-        vkoul@kernel.org
-Subject: Re: [dmaengine] fe364a7d95:
- UBSAN:array-index-out-of-bounds_in_drivers/acpi/acpica/dswexec.c
-Message-ID: <20211013142409.GA9406@xsang-OptiPlex-9020>
-References: <20210918150130.GA30982@xsang-OptiPlex-9020>
- <246a5a73-6b85-98b3-3830-cfc46030c044@gmail.com>
- <YWXZOdYYuQA/Ddq4@smile.fi.intel.com>
+        id S236942AbhJMO0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:26:23 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C6F26101D;
+        Wed, 13 Oct 2021 14:24:17 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 10:24:15 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Miroslav Benes <mbenes@suse.cz>, Guo Ren <guoren@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [RESEND PATCH v2 1/2] ftrace: disable preemption between
+ ftrace_test_recursion_trylock/unlock()
+Message-ID: <20211013102415.10788200@gandalf.local.home>
+In-Reply-To: <861d81d6-e202-09f3-f0be-6c77205f9d34@linux.alibaba.com>
+References: <b1d7fe43-ce84-0ed7-32f7-ea1d12d0b716@linux.alibaba.com>
+        <75ee86ac-02f2-d687-ab1e-9c8c33032495@linux.alibaba.com>
+        <alpine.LSU.2.21.2110130948120.5647@pobox.suse.cz>
+        <d5fbd49a-55c5-a9f5-6600-707c8d749312@linux.alibaba.com>
+        <alpine.LSU.2.21.2110131022590.5647@pobox.suse.cz>
+        <861d81d6-e202-09f3-f0be-6c77205f9d34@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWXZOdYYuQA/Ddq4@smile.fi.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi All,
+On Wed, 13 Oct 2021 16:34:53 +0800
+王贇 <yun.wang@linux.alibaba.com> wrote:
 
-
-On Tue, Oct 12, 2021 at 09:51:37PM +0300, Andy Shevchenko wrote:
-> On Sat, Oct 09, 2021 at 11:56:20PM +0200, Oliver Urbann wrote:
-> > Hi all,
+> On 2021/10/13 下午4:25, Miroslav Benes wrote:
+> >>> Side note... the comment will eventually conflict with peterz's 
+> >>> https://lore.kernel.org/all/20210929152429.125997206@infradead.org/.  
+> >>
+> >> Steven, would you like to share your opinion on this patch?
+> >>
+> >> If klp_synchronize_transition() will be removed anyway, the comments
+> >> will be meaningless and we can just drop it :-P  
 > > 
-> > this actually crashes s2idle e.g. on Surface Book 1 and Surface Pro 4:
+> > The comment will still be needed in some form. We will handle it depending 
+> > on what gets merged first. peterz's patches are not ready yet.  
 > 
-> You mean the mentioned patch?
-> 
-> It's impossible. Surface Book 1 (at least) has no such devices, which that
-> patch touches, at all!
+> Ok, then I'll move it before trylock() inside klp_ftrace_handler() anyway.
 
-sorry about this, seems a bad bisection maybe due to our test env issues.
++1
 
-but rerun test, we cannot reproduce the issue now.
-
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+-- Steve
