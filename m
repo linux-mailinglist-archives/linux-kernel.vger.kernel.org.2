@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0BD42BDCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D7742BDD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhJMKvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:51:39 -0400
-Received: from mout.gmx.net ([212.227.15.19]:35263 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229664AbhJMKvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:51:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634122159;
-        bh=3y1Ax8ewSDNoGoLvir72to9z/znLvie6bI0c75IcE40=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=f6Z26b0GJPuSfXqwsu3+ZE3YwXZI4TWWjZudaAlYH2k/c4WnGIhtysaeWeh3kXn/o
-         WafeyWMnstaLvSWr0ZeWn4NkuPVPUN6rnNK6QDUhrESVVWQd8/Yqk1gus1NCMAsLAX
-         3iRdB8nAGix1BR2TtJ3FXASKPPuc3Qdmcu4tYVC4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MFKKh-1mYcg33vA1-00Fmrr; Wed, 13
- Oct 2021 12:49:19 +0200
-Message-ID: <39a70849-3550-8757-ea0a-3d641d4137f4@gmx.com>
-Date:   Wed, 13 Oct 2021 18:49:12 +0800
+        id S229993AbhJMKxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230359AbhJMKxN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 06:53:13 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE6DC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:51:10 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id c16so10000388lfb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=rKfrG5HHh3oByuKlWlvIaOLx1lvfyWUDrGma858qYu4=;
+        b=PM4nQ3HIhjJ2Pk5nkf2WdoHIipWVFAbxEGjfZadAqybQ4lcctoKu6oL9ozmu4+CRTZ
+         uYIVnj/KasRu8P5C8j4KeWBZdHkmqWbcg7FZJjB+IlCLrSuPl9oyPQNc/6z5IY0xtYk7
+         iea0guujK7W4loKN/Bdg1IGrCMUqIZBnVFNemU99yxwV+YBihHQBEb1VKi1cfodpIegh
+         CqhZR3NK8QqpiewaxmZ4tx9ILWzWKuWea8Qx64M/DM4EjYcwY7FVTJLLeQKSwvVgOxFh
+         fwXO2hJYhvFlED8pENWDK/HoSvWXn+/0A/nSz63cQ16tnLAP5Vss6BNjbr+lMjQOKMFG
+         T5mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rKfrG5HHh3oByuKlWlvIaOLx1lvfyWUDrGma858qYu4=;
+        b=0nJ2ywZHFBbvN/4rszsCtTXYB3ryQ+C6XpvUOF/bvSb3ssvmuSgDuueN1bN/qpPaPg
+         ZeYYyqGoGgiWX6TWMmNGBJgzrT32jK9E8w5EvimJShLlIY3fh8KfaoelwF+npzBUCav7
+         +lHVNzk3CP7C4RIORwY7qOYjDcUPFbz8/eM8NRzOynH2ovWynM28q6Ko+wNJD1bLYyq0
+         WIZoi9znq1PY9QAtL7bF6EwEMHIhEiA+auHdoRtjCf/gb2ko3hfkPIPASfMEBnr9NT+G
+         jveX2/XkLimtWCULWiwO/xG+3don4wQERzzj/3vwutnJNiiu1AIoDkN6bt4YdEwpbQxB
+         Gp8w==
+X-Gm-Message-State: AOAM531YhXoLwjiE3hIFQ8yFqJCpyXGPYqhbraeFusGyZgb8OcjNMX1x
+        dSkhpIfEFNCH5Yat+rgc0fmL7YDPOzJG3xEd/n6Uqw==
+X-Google-Smtp-Source: ABdhPJzSXmuXGLBC0odLomW50c6wMRcojgUpr4C5z0oUp4TqIelvRRd22KJdLKLOYhRHwdIro3XxaIq1Ttl1rW8y4uE=
+X-Received: by 2002:a05:651c:4d2:: with SMTP id e18mr35521797lji.432.1634122268377;
+ Wed, 13 Oct 2021 03:51:08 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Content-Language: en-US
-To:     dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        Qing Wang <wangqing@vivo.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1634095717-4480-1-git-send-email-wangqing@vivo.com>
- <6f03e790-6f21-703f-c761-a034575f465e@oracle.com>
- <20211013103642.GC9286@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH] btrfs: replace snprintf in show functions with sysfs_emit
-In-Reply-To: <20211013103642.GC9286@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20211012123557.3547280-1-alvin@pqrs.dk> <20211012123557.3547280-3-alvin@pqrs.dk>
+In-Reply-To: <20211012123557.3547280-3-alvin@pqrs.dk>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 13 Oct 2021 12:50:56 +0200
+Message-ID: <CACRpkdaTZYgW8PWabUoKA97B6yOUUGaNsnXOrrxtHc38fU8Qnw@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/6] net: dsa: move NET_DSA_TAG_RTL4_A to right
+ place in Kconfig/Makefile
+To:     =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tlyABHuiyXrsoReSwr9sfmb6Pq9RbDFi9hceUdlTr36n5U7Afm3
- 8AFgw/UHCmfcaVFUARhhWse/sxxPHhdyo7e8nq+9J+cX5SZ23EWLTBQRcoQwLJlic9eFqQz
- eN/s6Xdd3Po9LUa96amnHd3k6cnPfls+yFWtDtnwbeY1WRzx+a0mpEPwYMlPHH5Rcc1+6hL
- u7gAP08q7O36GmwYL4R2g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JpPk9/HRbQg=:tmCyRzEu8J5U5Q4QpdTvqw
- r3IE4fAd+LprxMynNCfvpgi3sNvgsBjjJOQuHF4swmbM2bFWHBpGF9WTlfuOg7wRwFZTmmtMt
- kZSyFhoI4poyrg1Jho9qsHdnoSumzZfBLSAirbiTs38uB60E6fGjq3SphQuS7eQAkaQLDwtVd
- FEZ6zsYLPPK8zONIywZnOl2wmSRSA0o0lDNKb6OJwML1/obZG856p8j1tPM6D2VHR7qCgHo3x
- HXlT5S9H6xyGtfMO/ZgZrZ36pUhaNkyOYh6IVi0qJ0mnGE0sshTLNilQyRG+7FZSYdd2SSWMC
- S26Y+dX4lVUhAZKx3y0LEcdLKrVb759dKz8BwD2cQDJ3jXHqC+7SCbeiciHBVrxipayp/Lllu
- C4/OXgiDNPjQunCtYDjbHXJaSPLaPl35Ds0mpWtiwtbXgTy+NPwvWJdp8iiE/9XGHavwb5Q3v
- S166LA5hc+DwCVin+9z3KnZm0/p3ahDwUeP2uK3qGfRTQuLenw7eT+UVWs4bAGNDs6T/7yzfI
- +EOVrccx4UcHF9xIBcp4+7mCBKDtrzAiEed8QLuejDIE3PbhXNNLgQ1yonMC+hg6W2uRJsJl6
- 2V2lTjzkIz2g6/jlHhLU0qOo4Py6DTDbNqgRq3o68JUuRYCVGObDqTrV0WCXN3OF+o0RxJ0rr
- RFMU66pCF0Ajy70wsO4OKa96DRzLEcgFUlVgQzxELkDkGeCkJQ9tXqAfoeBBSDlQqPpZXi7Eo
- bVuWDoir2KMVhFhZfuBzrbpwbPjByjVmxWPGcEBInjB40dj8UylIKfFgSeBdHwOUmGKR3/zB4
- /FCjyNSVeExi9F3DD50uGMC9Gmodn8yMgrcpgGzAS7tn6lz+amL9ljp5prJKwZO2ntfNY5OUj
- IenmJD8jG6kZVI5eWUgJMRqW9psUGZBxBu0x/rmw6hq6k9w1EipliRYsBFb6icraxXDEQrTLK
- tMADt0eGocSG80KHYQvpQS7rAnwq5lMZd/lI5UbnhWwwC9qKB+JN88C1SPNWELuBSqT6iT/bt
- JLCgglNvd0KoZGFkqIBalZBp+F/PFkIMedFWiX0CS658rGsxLuQ6SlonpYIpI8y7nIfIXsuxF
- EfxUmSU6hoyUy0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 12, 2021 at 2:37 PM Alvin =C5=A0ipraga <alvin@pqrs.dk> wrote:
 
-
-On 2021/10/13 18:36, David Sterba wrote:
-> On Wed, Oct 13, 2021 at 03:51:33PM +0800, Anand Jain wrote:
->> On 13/10/2021 11:28, Qing Wang wrote:
->>> coccicheck complains about the use of snprintf() in sysfs show functio=
-ns.
->>
->> It looks like the reason is snprintf() unaware of the PAGE_SIZE
->> max_limit of the buf.
->>
->>> Fix the following coccicheck warning:
->>> fs/btrfs/sysfs.c:335:8-16: WARNING: use scnprintf or sprintf.
-
-IIRC sprintf() is less safe than snprintf().
-Is the check really correct to mention sprintf()?
-
->>
->> Hm. We use snprintf() at quite a lot more places in sysfs.c and, I don'=
-t
->> see them getting this fix. Why?
+> From: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
 >
-> I guess the patch is only addressing the warning for snprintf, reading
-> the sources would show how many more conversions could have been done of
-> scnprintf calls.
+> Move things around a little so that this tag driver is alphabetically
+> ordered. The Kconfig file is sorted based on the tristate text.
 >
->>> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
->>
->> Below commit has added it. Nice.
->>
->> commit 2efc459d06f1630001e3984854848a5647086232
->> Date:   Wed Sep 16 13:40:38 2020 -0700
->>
->>       sysfs: Add sysfs_emit and sysfs_emit_at to format sysfs out
->
-> The conversion to the standard helper is good, but should be done
-> in the entire file.
->
+> Suggested-by: Andrew Lunn <andrew@lunn.ch>
+> Signed-off-by: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
 
-Yeah, the same idea, all sysfs interface should convert to the new
-interface, not only the snprintf().
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Thanks,
-Qu
+Yours,
+Linus Walleij
