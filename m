@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0384542B2B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E3F42B2BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236781AbhJMCge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 22:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235120AbhJMCgd (ORCPT
+        id S236937AbhJMCih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 22:38:37 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:48027 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235912AbhJMCig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 22:36:33 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E723C061570;
-        Tue, 12 Oct 2021 19:34:31 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so3296662pjb.1;
-        Tue, 12 Oct 2021 19:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=3bzp+5l6WTo7PbKHNMv1iXseFfgQgASCADLi09sp0dQ=;
-        b=GIuH+ViP8uIA0KOO0J2nG+UiPKqlt73g90hiO/rMDvzQ98GdLoPx+wqsc+cIHJ+VWa
-         oYfVrjHcclVyuX9iemPl+eZYkkujpz9bbTFgtfioVbE3FmRDzTWR7zeIqLrf9AEHx23k
-         djcGczXtv4+GyboTFbzCrREN574E0lEEjn0p0AQljE9qOc0br29L9tNNUF2CwPUneiF5
-         jPZFpK2/LeqYtDvrNH6JgF962ph4PL+8AuoSKpB/bvCMoD7IQIJr05CzuBtYeIQoIIXz
-         8mg0Dbua33x0rOgPUJmF9I/5Y48gqZzp5DoDQFKp5xw+w9CsHsCgZX5m5Q52SA6etYnk
-         VE6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=3bzp+5l6WTo7PbKHNMv1iXseFfgQgASCADLi09sp0dQ=;
-        b=qZKmxnr6PTiNFbbNn6pjRN9g2i8V8DRdWDoY/AdAqagRk2QV5BuN6lAESoLNoY1zH1
-         c29ATpYCnSjmz3rX/Bl1ayNsNvKyYfQ2gOOdMYqrIjCUxJAdeagBA3GjOrMH5ZWHEHH9
-         UhQkUyd3a5FGsxsohRNb7hl7KUD0yafoSNXDr7PB6YDfl5zWXy0w5dkDHjdRRwSXz/8i
-         Js4cbzx1WpjvaEUnDBY3xk9l+xccI+Q7UDxZBdx1MUnREjdd8GbwopJciGAgOqYu8ZW7
-         u91QPF3i82bTVzR2uxfvcsPf32J+vK29Fisvfitx/bpCjsenvlvbDJJbkBUxatFD0Xjb
-         Bs3w==
-X-Gm-Message-State: AOAM533wzIbF3rSVEDTwzD1fxlSZiXV2cO+bVOQs5JSh5KplzcvIgMKL
-        CZ2oTGa+ud+bF67Xj5ktdmnSt58j80I=
-X-Google-Smtp-Source: ABdhPJzQzrQt/6fZFgN/n9w1ndxWQ90bbBRDQhIAvSRQGig+pCBms0ZbmTYtv6KWThx/p5UBnV5e6g==
-X-Received: by 2002:a17:902:d70b:b0:13d:f465:9ef1 with SMTP id w11-20020a170902d70b00b0013df4659ef1mr33031187ply.44.1634092469233;
-        Tue, 12 Oct 2021 19:34:29 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:618d:87ca:8f95:87c0])
-        by smtp.gmail.com with ESMTPSA id j4sm13290471pfu.94.2021.10.12.19.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 19:34:28 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 19:34:25 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] Input: ep93xx_keypad - switch to using managed
- resources
-Message-ID: <YWZFsZmPBp6Hj2Yf@google.com>
-References: <20211012013735.3523140-1-dmitry.torokhov@gmail.com>
- <20211012013735.3523140-4-dmitry.torokhov@gmail.com>
- <d1d1a1028c5db26d0b0eed2a5a9626124451fcf9.camel@gmail.com>
+        Tue, 12 Oct 2021 22:38:36 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0Urdkedq_1634092576;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Urdkedq_1634092576)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 13 Oct 2021 10:36:18 +0800
+Subject: Re: [PATCH 1/2] ftrace: disable preemption on the testing of
+ recursion
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Miroslav Benes <mbenes@suse.cz>, Guo Ren <guoren@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com>
+ <a8756482-024c-c858-b3d1-1ffa9a5eb3f7@linux.alibaba.com>
+ <alpine.LSU.2.21.2110121421260.3394@pobox.suse.cz>
+ <74090798-7d93-0713-982c-6f0247118d20@linux.alibaba.com>
+ <20211012222758.1a029157@oasis.local.home>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <4b4be164-0095-90bc-a193-faa7100558d2@linux.alibaba.com>
+Date:   Wed, 13 Oct 2021 10:36:16 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20211012222758.1a029157@oasis.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d1d1a1028c5db26d0b0eed2a5a9626124451fcf9.camel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 09:54:32AM +0200, Alexander Sverdlin wrote:
-> Hello Dmitry,
-> 
-> just one question below:
-> 
-> On Mon, 2021-10-11 at 18:37 -0700, Dmitry Torokhov wrote:
-> > +               return err;
-> > +
-> > +       err = devm_add_action_or_reset(&pdev->dev,
-> > +                                      ep93xx_keypad_release_gpio_action, pdev);
-> > +       if (err)
-> > +               return err;
-> >  
-> >         keypad->clk = clk_get(&pdev->dev, NULL);
-> 
-> Isn't the conversion to devm_clk_get() missing here?
 
-Indeed it is. I'll post an updated patch in a sec.
+
+On 2021/10/13 ä¸Šåˆ10:27, Steven Rostedt wrote:
+> On Wed, 13 Oct 2021 09:50:17 +0800
+> çŽ‹è´‡ <yun.wang@linux.alibaba.com> wrote:
+> 
+>>>> -	preempt_enable_notrace();
+>>>>  	ftrace_test_recursion_unlock(bit);
+>>>>  }  
+>>>
+>>> I don't like this change much. We have preempt_disable there not because 
+>>> of ftrace_test_recursion, but because of RCU. ftrace_test_recursion was 
+>>> added later. Yes, it would work with the change, but it would also hide 
+>>> things which should not be hidden in my opinion.  
+>>
+>> Not very sure about the backgroup stories, but just found this in
+>> 'Documentation/trace/ftrace-uses.rst':
+>>
+>>   Note, on success,
+>>   ftrace_test_recursion_trylock() will disable preemption, and the
+>>   ftrace_test_recursion_unlock() will enable it again (if it was previously
+>>   enabled).
+> 
+> Right that part is to be fixed by what you are adding here.
+> 
+> The point that Miroslav is complaining about is that the preemption
+> disabling is special in this case, and not just from the recursion
+> point of view, which is why the comment is still required.
+
+My bad... the title do confusing people, will rewrite it.
+
+Regards,
+Michael Wang
 
 > 
-> > -       if (IS_ERR(keypad->clk)) {
-> > -               err = PTR_ERR(keypad->clk);
-> > -               goto failed_free_gpio;
-> > -       }
-> > +       if (IS_ERR(keypad->clk))
-> > +               return PTR_ERR(keypad->clk);
-
-Thanks.
-
--- 
-Dmitry
+> -- Steve
+> 
+> 
+>>
+>> Seems like this lock pair was supposed to take care the preemtion itself?
