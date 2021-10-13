@@ -2,141 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FD042B9B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC57842B9BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbhJMH5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:57:14 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:55620 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229902AbhJMH5M (ORCPT
+        id S238724AbhJMH5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:57:36 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:42945 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238722AbhJMH5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:57:12 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UrfU4fI_1634111706;
-Received: from 30.240.98.1(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UrfU4fI_1634111706)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 13 Oct 2021 15:55:07 +0800
-Message-ID: <60de628a-82dd-24d6-4f89-00a2d61ce628@linux.alibaba.com>
-Date:   Wed, 13 Oct 2021 15:55:05 +0800
+        Wed, 13 Oct 2021 03:57:35 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N63NQ-1mpv7j0IB6-016Pg7 for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021
+ 09:55:31 +0200
+Received: by mail-wr1-f47.google.com with SMTP id y3so5307652wrl.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:55:31 -0700 (PDT)
+X-Gm-Message-State: AOAM531XBqxaCqlQ8Gr2WWaJyPDCtNWMWkdtRaoLvgUSRyM8+3nxZKzo
+        HxkZhQZb2uEZeT5+GTUZp4QSEVh6/KCEd+OrsGs=
+X-Google-Smtp-Source: ABdhPJyiEJBpgNDpB6GmM5rJOFTTTfiFTaFUlnEWP59JJxhNZAk4i37kRw3Rf+g9OE/qnJqBSX5RUghnoccWBlIuMYo=
+X-Received: by 2002:a1c:2358:: with SMTP id j85mr11030180wmj.1.1634111730691;
+ Wed, 13 Oct 2021 00:55:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
- Gecko/20100101 Thunderbird/93.0
-Subject: Re: [PATCH v4 1/2] mm, thp: lock filemap when truncating page cache
-Content-Language: en-US
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-To:     willy@infradead.org, hughd@google.com, song@kernel.org,
-        shy828301@gmail.com
-Cc:     akpm@linux-foundation.org, william.kucharski@oracle.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
- <20211011022241.97072-1-rongwei.wang@linux.alibaba.com>
- <20211011022241.97072-2-rongwei.wang@linux.alibaba.com>
-In-Reply-To: <20211011022241.97072-2-rongwei.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211012234606.91717-1-ndesaulniers@google.com> <20211012234606.91717-2-ndesaulniers@google.com>
+In-Reply-To: <20211012234606.91717-2-ndesaulniers@google.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 13 Oct 2021 09:55:14 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3UBEJ0Py2ycz=rHfgog8g3mCOeQOwO0Gmp-iz6Uxkapg@mail.gmail.com>
+Message-ID: <CAK8P3a3UBEJ0Py2ycz=rHfgog8g3mCOeQOwO0Gmp-iz6Uxkapg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] arm64: vdso32: drop the test for dmb ishld
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, llvm@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Christian Biesinger <cbiesinger@google.com>,
+        Simon Marchi <simon.marchi@polymtl.ca>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:npAKHHmy7bOHdeDloam/+UPWm73dwd3it0I4/b1SHn/eOt0goGq
+ mDx6C6x5Woseo6ocOE830/63W1Ew4LKawT0R/bZ4CJJ/Wu66TxqHlOZl3XxGQALJA2FY3+i
+ INI5iHZw627IDCRCXbs56GHPQiWyASoQD0txQ80qZ60xYT3BQJOMPdpsasinhHl6Roftsxl
+ MfUEru/tBQ4lmnjtQwAzw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3gMqScMmDwI=:ORNUdJU1H3UEuFK2BmB0Ht
+ DTUvcZEfD5IRNkr45JzFwuPqAShvgDN3Nt9Mo/H6hE5ruOvAGPe7DxEENvAIo1b/t67XtH3iN
+ gUocGAWQ+us6Bg9mpftI8Tc1cIeuSTY9RE0GV+Aa6oa3mlL03uXg8pEEz8BOkSOF6bgdQYi0o
+ 8fm/yzaMOHGp3PGdUhKgotbWPhI6QL23rAzG1oKcYZQ5PyZQjbflGm8GB3iYprxUhAF3RCN/O
+ jfEy7VSOAoC5EYiw7BzcX81LmhSIa7veZYHnwPfqiFeMCH8Q6VFvX2w3o7dqY4IQgfgtdKBdZ
+ NxcnMPww2tkWRUebeO6DfVXp4WFuep2zJKM9RQlJXpRfYDfw9vQL0ZxaQ+es81fVmwp9R8mMO
+ gENN95IcvCgSFpnd2Apgi8WxKYVFd0j8tbElMtJC7/rI3VjjlhSfe1QNHITyPtlxWq4WdzeGH
+ WJRIFDN8ez/Bdid5waZQqdV3OVJJvN4yALIZQJQ4T8X9Yl4iAniudcYBgZ2Sr37YaBaXSqfb0
+ Rq8jzkkaq2uOXfOEHmXcOT7iUVF5A3FGMejml8Sn8F9QvNjaeRhRMTuSQANxcypm2qZyDxcvx
+ tkMKxi9RVwnCFTZbFJ4r2GI79UJQaLm2LzK5qxZS9RttaINf/C49nKyqPxgS1Iw+o+dXDeEO4
+ NzDqlseC1PhoVGSYyZsQuEt6+2R48ILbxscrOyyiecGUn/SLAsv+pt8sYv1ksUubdE6/qnE/p
+ rKFVCUytvcieW69dUp2Pzarr7nA9y02oYLv05UaC8PYLN1BCMJhLiNmIlTFOf6hs56vBLijQz
+ Pvdvzz3JkVrS9eVZ8yIdyrsBVV0QbtJUFHudyqU4UNE/ZYBHUhu9UGcTVMppkRtGkGtxKdwoW
+ GPXOSIsiGdUo4LmdrDFQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On Wed, Oct 13, 2021 at 1:46 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Binutils added support for this instruction in commit
+> e797f7e0b2bedc9328d4a9a0ebc63ca7a2dbbebc which shipped in 2.34 (just
+> missing the 2.33 release) but was cherry-picked into 2.33 in commit
+> 27a50d6755bae906bc73b4ec1a8b448467f0bea1. Thanks to Christian and Simon
+> for helping me with the patch archaeology.
+>
+> According to Documentation/process/changes.rst, the minimum supported
+> version of binutils is 2.33. Since all supported versions of GAS support
+> this instruction, drop the assembler invocation, preprocessor
+> flags/guards, and the cross assembler macro that's now unused.
+>
+> This also avoids a recursive self reference in a follow up cleanup
+> patch.
+>
+> Cc: Christian Biesinger <cbiesinger@google.com>
+> Cc: Simon Marchi <simon.marchi@polymtl.ca>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-I see this patch has not been replied by all. I'm not sure whether this 
-patch has passed review or the status needs to be modified.
+This change looks good, but I think we should do the same for the gcc
+version check:
 
-Thanks!
+> -#if __LINUX_ARM_ARCH__ >= 8 && defined(CONFIG_AS_DMB_ISHLD)
+> +#if __LINUX_ARM_ARCH__ >= 8
+>  #define aarch32_smp_mb()       dmb(ish)
+>  #define aarch32_smp_rmb()      dmb(ishld)
+>  #define aarch32_smp_wmb()      dmb(ishst)
 
-On 10/11/21 10:22 AM, Rongwei Wang wrote:
-> Transparent huge page has supported read-only non-shmem files. The file-
-> backed THP is collapsed by khugepaged and truncated when written (for
-> shared libraries).
-> 
-> However, there is a race when multiple writers truncate the same page
-> cache concurrently.
-> 
-> In that case, subpage(s) of file THP can be revealed by find_get_entry
-> in truncate_inode_pages_range, which will trigger PageTail BUG_ON in
-> truncate_inode_page, as follows.
-> 
-> page:000000009e420ff2 refcount:1 mapcount:0 mapping:0000000000000000 index:0x7ff pfn:0x50c3ff
-> head:0000000075ff816d order:9 compound_mapcount:0 compound_pincount:0
-> flags: 0x37fffe0000010815(locked|uptodate|lru|arch_1|head)
-> raw: 37fffe0000000000 fffffe0013108001 dead000000000122 dead000000000400
-> raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-> head: 37fffe0000010815 fffffe001066bd48 ffff000404183c20 0000000000000000
-> head: 0000000000000600 0000000000000000 00000001ffffffff ffff000c0345a000
-> page dumped because: VM_BUG_ON_PAGE(PageTail(page))
-> ------------[ cut here ]------------
-> kernel BUG at mm/truncate.c:213!
-> Internal error: Oops - BUG: 0 [#1] SMP
-> Modules linked in: xfs(E) libcrc32c(E) rfkill(E) ...
-> CPU: 14 PID: 11394 Comm: check_madvise_d Kdump: ...
-> Hardware name: ECS, BIOS 0.0.0 02/06/2015
-> pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-> pc : truncate_inode_page+0x64/0x70
-> lr : truncate_inode_page+0x64/0x70
-> sp : ffff80001b60b900
-> x29: ffff80001b60b900 x28: 00000000000007ff
-> x27: ffff80001b60b9a0 x26: 0000000000000000
-> x25: 000000000000000f x24: ffff80001b60b9a0
-> x23: ffff80001b60ba18 x22: ffff0001e0999ea8
-> x21: ffff0000c21db300 x20: ffffffffffffffff
-> x19: fffffe001310ffc0 x18: 0000000000000020
-> x17: 0000000000000000 x16: 0000000000000000
-> x15: ffff0000c21db960 x14: 3030306666666620
-> x13: 6666666666666666 x12: 3130303030303030
-> x11: ffff8000117b69b8 x10: 00000000ffff8000
-> x9 : ffff80001012690c x8 : 0000000000000000
-> x7 : ffff8000114f69b8 x6 : 0000000000017ffd
-> x5 : ffff0007fffbcbc8 x4 : ffff80001b60b5c0
-> x3 : 0000000000000001 x2 : 0000000000000000
-> x1 : 0000000000000000 x0 : 0000000000000000
-> Call trace:
->   truncate_inode_page+0x64/0x70
->   truncate_inode_pages_range+0x550/0x7e4
->   truncate_pagecache+0x58/0x80
->   do_dentry_open+0x1e4/0x3c0
->   vfs_open+0x38/0x44
->   do_open+0x1f0/0x310
->   path_openat+0x114/0x1dc
->   do_filp_open+0x84/0x134
->   do_sys_openat2+0xbc/0x164
->   __arm64_sys_openat+0x74/0xc0
->   el0_svc_common.constprop.0+0x88/0x220
->   do_el0_svc+0x30/0xa0
->   el0_svc+0x20/0x30
->   el0_sync_handler+0x1a4/0x1b0
->   el0_sync+0x180/0x1c0
-> Code: aa0103e0 900061e1 910ec021 9400d300 (d4210000)
-> ---[ end trace f70cdb42cb7c2d42 ]---
-> Kernel panic - not syncing: Oops - BUG: Fatal exception
-> 
-> This patch mainly to lock filemap when one enter truncate_pagecache(),
-> avoiding truncating the same page cache concurrently.
-> 
-> Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
-> Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Tested-by: Song Liu <song@kernel.org>
-> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
-> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
-> ---
->   fs/open.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/open.c b/fs/open.c
-> index daa324606a41..9ec3cfca3b1a 100644
-> --- a/fs/open.c
-> +++ b/fs/open.c
-> @@ -856,8 +856,11 @@ static int do_dentry_open(struct file *f,
->   		 * of THPs into the page cache will fail.
->   		 */
->   		smp_mb();
-> -		if (filemap_nr_thps(inode->i_mapping))
-> +		if (filemap_nr_thps(inode->i_mapping)) {
-> +			filemap_invalidate_lock(inode->i_mapping);
->   			truncate_pagecache(inode, 0);
-> +			filemap_invalidate_unlock(inode->i_mapping);
-> +		}
->   	}
->   
->   	return 0;
-> 
+gcc-4.8 already supported -march=armv8, and we require gcc-5.1 now, so both
+this #if/#else construct and the corresponding "cc32-option,-march=armv8-a"
+check should be obsolete now.
+
+       Arnd
