@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE8D42BEC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A9942BED2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhJMLSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 07:18:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39994 "EHLO mail.kernel.org"
+        id S229912AbhJMLWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 07:22:41 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:33735 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhJMLSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:18:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7452F61027;
-        Wed, 13 Oct 2021 11:16:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634123807;
-        bh=DVdgBtdPRXpir9rR8KgPam2ARjHEMD012OTknqLNbjw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rnXG8Z9k/uF0L6NF73nRzeQsFcHjBgaZOzOdJneY7E0pQbUpG5/pnT1PjUOeK4Xqe
-         yfl+INzevN80njuoRYY13XKkX807gQwP6dEhYtOB2a85bAmR9Eiab3pZJ++4GQokL2
-         +OaiITlSFd+p/mVgYV+BlzcXaJ9uMM6wrd63aBe+FD8tTzrfwt0DpzNiTnBnP/tUZN
-         T1ON3PoIJUX+aNA5WG7qSbER2LOllGHlaTUuIqXGk3Sv94IR9eKKM5JDO82rq3NAVz
-         L0PHWRf2/bnDp5h022hCMvk6DzRrbswTMPbSrIRkSBhBY7xgrh9+REuFqGRTUTExBS
-         Vk/0EWOQe4pmQ==
-Date:   Wed, 13 Oct 2021 12:16:44 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        id S229535AbhJMLWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 07:22:40 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HTqpC28Spz9sSP;
+        Wed, 13 Oct 2021 13:20:35 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id kZcpVFyhFd8g; Wed, 13 Oct 2021 13:20:35 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HTqpC0fNwz9sSN;
+        Wed, 13 Oct 2021 13:20:35 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EE53D8B77E;
+        Wed, 13 Oct 2021 13:20:34 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 3nizRho4O5jm; Wed, 13 Oct 2021 13:20:34 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B49778B763;
+        Wed, 13 Oct 2021 13:20:34 +0200 (CEST)
+Subject: Re: [PATCH v1 06/10] asm-generic: Refactor
+ dereference_[kernel]_function_descriptor()
+To:     Kees Cook <keescook@chromium.org>, Helge Deller <deller@gmx.de>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Will Deacon <will@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Michael Ellerman <mpe@ellerman.id.au>, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, tsbogend@alpha.franken.de,
-        James.Bottomley@hansenpartnership.com, deller@gmx.de,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, geert+renesas@glider.be,
-        linus.walleij@linaro.org, rmk+kernel@armlinux.org.uk,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        rppt@kernel.org, ardb@kernel.org, u.kleine-koenig@pengutronix.de,
-        lukas.bulwahn@gmail.com, mark.rutland@arm.com,
-        wangkefeng.wang@huawei.com, slyfox@gentoo.org, axboe@kernel.dk,
-        rientjes@google.com, dan.j.williams@intel.com,
-        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH AUTOSEL 5.14 17/17] firmware: include
- drivers/firmware/Kconfig unconditionally
-Message-ID: <YWbAHCYS/IsGyeEw@sirena.org.uk>
-References: <20211013005441.699846-1-sashal@kernel.org>
- <20211013005441.699846-17-sashal@kernel.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
+ <c215b244a19a07327ec81bf99f3c5f89c68af7b4.1633964380.git.christophe.leroy@csgroup.eu>
+ <202110130002.A7C0A86@keescook>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <c2904a2e-c112-f2bc-04a0-52b08b46c1ce@csgroup.eu>
+Date:   Wed, 13 Oct 2021 13:20:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Hzj7Ij7mixgewbmh"
-Content-Disposition: inline
-In-Reply-To: <20211013005441.699846-17-sashal@kernel.org>
-X-Cookie: Where do you think you're going today?
+In-Reply-To: <202110130002.A7C0A86@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Hzj7Ij7mixgewbmh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 12, 2021 at 08:54:41PM -0400, Sasha Levin wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> [ Upstream commit 951cd3a0866d29cb9c01ebc1d9c17590e598226e ]
->=20
-> Compile-testing drivers that require access to a firmware layer
-> fails when that firmware symbol is unavailable. This happened
-> twice this week:
+Le 13/10/2021 à 09:02, Kees Cook a écrit :
+> On Mon, Oct 11, 2021 at 05:25:33PM +0200, Christophe Leroy wrote:
+>> dereference_function_descriptor() and
+>> dereference_kernel_function_descriptor() are identical on the
+>> three architectures implementing them.
+>>
+>> Make it common.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/ia64/include/asm/sections.h    | 19 -------------------
+>>   arch/parisc/include/asm/sections.h  |  9 ---------
+>>   arch/parisc/kernel/process.c        | 21 ---------------------
+>>   arch/powerpc/include/asm/sections.h | 23 -----------------------
+>>   include/asm-generic/sections.h      | 18 ++++++++++++++++++
+>>   5 files changed, 18 insertions(+), 72 deletions(-)
+> 
+> A diffstat to love. :)
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-This seems *way* too invasive a change for stable.  It exposes code to
-building on entire new architectures.
+Unless somebody minds, I will make them out of line as
+suggested by Helge in he's comment to patch 4.
 
---Hzj7Ij7mixgewbmh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFmwBsACgkQJNaLcl1U
-h9AFjgf9HNz1iDlvraGZuINQkg4b76glybMJpIJI9Q9/fCTbm75p34EctvP3YnrO
-TCUYnuynKAfFn6bLAoHN4AO5JLYPELiK1jd3olKo4QbWgHL449nF7NwkBR/bjHNZ
-jwefNQMINnMo7bhrsdhmvYjoC9GuSHPSrHkHLKZRBsiCdc1SopabE67oBmTQ06+4
-6JOnbKmjExje2UT0JyJwgp59/YVbDOd06QLxA6gLuCPRmCTgYGqXS3/V1e89VwH1
-tK4vtT5ICEUVeBinsBUb2MMEAY41vB410JxWhNL9HFVg30fvQw/YDW7mQSdvCL0G
-Gf+lxOl5vhEl0xrMPE8gIqtfQ4Kyyw==
-=dgIM
------END PGP SIGNATURE-----
-
---Hzj7Ij7mixgewbmh--
+Allthough there is no spectacular size reduction, the functions
+are not worth being inlined as they are not used in critical pathes.
