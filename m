@@ -2,201 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5037A42C05C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2C642C012
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234244AbhJMMqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:46:21 -0400
-Received: from mail-oln040093003013.outbound.protection.outlook.com ([40.93.3.13]:54991
-        "EHLO na01-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231330AbhJMMqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:46:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AaQPr+mV1N8qHczOlAo2XCBsccgdZO6AvLgbJ3RqbIiX0mwbzp+Mfd46q9lzAyG27Fmgy4iqrFKnQOaxe1W/ePBt9Lya6/PmQYdWK7aVEwntah+VOFn48tbLIrdwkmo40Q6T0v24HaCHkwFR4XGKtdhfdebxwO8mW2Kf8E8zhiOo4bBylPeK4Di/ou9r3meK7Gyt4i18jZXsfqZucMAvxK8wH12oAso2h+c2vxR2g6luJzrNBS19iEFwZB0mL5IiMJAAJm3xuIHfTbav/kGRCnG4+f0lkBW3OwZWYCVvCPauOqP60EE73dAJxg8CRZXYKhaNaSIBMHkE04k0JeDPzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CSZlphN2Ou1yqM3oJB+jK4FtQv0kEt+ihgkxNDdv9dw=;
- b=mOEJmkhh5W3i6DoshTPIWWkQUiICZvDBd+D8apFtI4DcYf+apScH6v3oYjKOwIRNTIsPvP/Qt38vAT1zUPnWWGZ7K8iKPQfxmbazvvzs/fy0vspqPlQMomK9YcIYggMb/0FAmACuyWxtz4Mi0gwFdBdekmC6pZWbrracCltdExt0db8F1PPATeMfrY7MG4Bl4g4Mq7G9Fyv69LctRHpjnKlc+39Y3cqqCoK+7m6oXJjWJSmEBD154+42FE+mITrVCVFxbPhkiu3PL/OpiVS8wcs0srewfS/dV+t4Ss7qzUjvK9eTDcNCubZ/qkscQwflPqOZErQol8WOwCl5dtSqkA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CSZlphN2Ou1yqM3oJB+jK4FtQv0kEt+ihgkxNDdv9dw=;
- b=Qms+slOU01t0bFYaIPZLvIY9CR4eN9Fr27WxRdf9uYaigyBqP8D54fBMU8Leb+EgNDWtlULgnY/T1JpRRAHb/bOfCehIrTs2tUsuS8LcJV0tdZOarsqXtq9hS4gI4v/9pawaLFNrPrzA3qd+RPMjOkbSOGd4N58ADHz8+7xTtpM=
-Received: from MW2SPR01MB07.namprd21.prod.outlook.com (2603:10b6:302:a::17) by
- MN2PR21MB1232.namprd21.prod.outlook.com (2603:10b6:208:3b::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4628.3; Wed, 13 Oct 2021 12:44:12 +0000
-Received: from MW2SPR01MB07.namprd21.prod.outlook.com
- ([fe80::c8ac:aa63:8f5e:cf1c]) by MW2SPR01MB07.namprd21.prod.outlook.com
- ([fe80::c8ac:aa63:8f5e:cf1c%3]) with mapi id 15.20.4628.008; Wed, 13 Oct 2021
- 12:44:11 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH] hv_netvsc: Fix potentionally overflow in
- netvsc_xdp_xmit()
-Thread-Topic: [PATCH] hv_netvsc: Fix potentionally overflow in
- netvsc_xdp_xmit()
-Thread-Index: AQHXv98bUqltCWSfmk+wm+1khQrFQqvQ3c7w
-Date:   Wed, 13 Oct 2021 12:44:11 +0000
-Message-ID: <MW2SPR01MB07B9C0C7ABCE2F81950BAACAB79@MW2SPR01MB07.namprd21.prod.outlook.com>
-References: <1634094275-1773464-1-git-send-email-jiasheng@iscas.ac.cn>
-In-Reply-To: <1634094275-1773464-1-git-send-email-jiasheng@iscas.ac.cn>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=d5802a60-9755-4f0f-b69f-5c2aa1d6c3a9;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-10-13T12:35:16Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 235b5505-9e76-4239-a15b-08d98e472845
-x-ms-traffictypediagnostic: MN2PR21MB1232:
-x-microsoft-antispam-prvs: <MN2PR21MB1232AA1161A8EEC868940CCDCAB79@MN2PR21MB1232.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7nK9U5kPhfbYyA6cIGt8lcPtbZICfNguE43k3PBPfgaUhNgSaYY7jjJcG2AGVECnu4OrwzTlODQuKfU6wSNb763LQ5p2Iq18nDpsaqdltDHCVIIZOH6LQEiemdMzwmVkpTznq2ctouE9tMOF6OI6jh8sRtEmSDnw4U3m79HLxjJto8Tpf0cqeWZKmiqWI0Yd1V9lViyZQrDblAJ/EcZnf3JxG9BY/8+xQsMugtOutYvKHayCpqMisHbryFEOo+1cO+WXeBjwC769GteCe1Yj5NfPE8BrR+a/ERsSdaya1r72gi9wFSkM5ZFAuRsLiTLJHE9z/qBna915Z11URwN08oj8qiDOYDyoLMWETofaSWwgNRsRrN7ilt5v7vb7xVnYMeaQLH7MiR4zjFXN96gjG5x+hf6jl4Vc6lp+NMN/caASNEHiFqL/nmMye9i6MugsgN9+tPnj7YGfT+wmP+RQMhwuqnxTkdClN9kgErEdHYPyLU1ilDd1fTAk5nS4BqEiCWJj/CrX2gh2tkZ2A6a6wwl/jhXfOXCemTX4BtTh98ufzp5l8leuEpSrQmgbBIhgTEkC5lswbeVWL4YyvVtEIwUzsfNUXQ54XdrInS+hE/dKRetwZAbchrv2NUlIQxw/S9DUKP357mHb19+tHGAWUBsQTySKt2t5YDVmrtmnOHQM9mLLf9uLSCMaKWSBsdedjCnx708HV5rdOk8zFoaw9MKeP5n+iWlClCXxkWHNMGcVgCmB1ziCXpzIFaF2DJucqQM4lFxOJoNOtUyeByyoxQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2SPR01MB07.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(921005)(9686003)(38100700002)(82950400001)(2906002)(186003)(66556008)(7416002)(4326008)(83380400001)(52536014)(82960400001)(54906003)(110136005)(33656002)(55016002)(122000001)(6506007)(8676002)(66946007)(64756008)(53546011)(316002)(8990500004)(10290500003)(71200400001)(66446008)(966005)(26005)(38070700005)(8936002)(76116006)(86362001)(7696005)(5660300002)(66476007)(10090945008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Rmt8Gx4JFP0E4tl2K99oMkPl4peD7EY1FgRdzt9DHC2fkD+4iBGG4W4/3Zez?=
- =?us-ascii?Q?MxbM/ybXZCUzm8DTfz8Sh5GH8e13GiiSvLsyvvFI6iFq9pGmfzKRh3ivXzST?=
- =?us-ascii?Q?5Zt1ls2aOS3I+5jFNjvVzgj+8/K7VJbZgWkDOGptFPEEyx5i4CqvAYcbJ+KJ?=
- =?us-ascii?Q?KNJXl7Vq14mYUeVKV0dK8UaupYZnEuBOjs+a85drhUYlnzkuCu8hDfXfWtGT?=
- =?us-ascii?Q?/bZbv2vKXQWYZ3piS9jTglc/CgRcUfDiSXLnPYuf470i628fcnE28aDEui0T?=
- =?us-ascii?Q?hZmAejbr61Gg1SJ4mnA6rFhamN3r+R2d93GfembQVfKfcsjqEms3ZrlmV6KK?=
- =?us-ascii?Q?i5GsQ/U/E5DVU8uMbZawZJS25aNwZBhQ5vLlACM3nHdAOd0G/jnPBMbJFi9Y?=
- =?us-ascii?Q?OPZzdjD6RhYR80NfBP4u4cqIuceBBuNXxxh5I30FHlshyaZgz/r2S6Veh7Xr?=
- =?us-ascii?Q?GbjkxTRtXdjsxcZPAThz3c83W1U2cm78IQfn2wkgn9Ue/Nr9gIqsHG/jZp4h?=
- =?us-ascii?Q?R7X2m6YZqhxtyQ+BY4+t5jK/gOmjOUYbX8sW+lx986u5KgxuJ3POnyLHmPgF?=
- =?us-ascii?Q?RN5kbj8TrUNOu0H+8brixO9qKr8iPdWckPQt5lg6whtZbs8712uuSkPX+sfW?=
- =?us-ascii?Q?3pIIYf7kHq7kHlserdf3fSpWN6SVZ+BPOUPuM+puMzL1bZUpe1JJYPMN8e9g?=
- =?us-ascii?Q?OW+J0pBXPp4e247Tf71BzkVWDns6tlyRXSvfFj94C4WoaHnSaUd5PDfZFrjV?=
- =?us-ascii?Q?pxwAWeWk60povg2Y56/hE7/5UEzeYFx2QY3N00v7JNZ+Nfng0ba0YBt0k5j+?=
- =?us-ascii?Q?7fzu0h0eij+SwwuiLovxHlmSkty2dgcE1kcD/JXKinT8z2R1Xy1hm6WZytqT?=
- =?us-ascii?Q?Axp0FG01x+eyc/ZU0y16dKasb/UOapxdZMpu/0Y2m/00VkQtQ19TAY4sxKix?=
- =?us-ascii?Q?BswFC93NHoV7hR/TF7W4d1+rWPPQd5s7aPZiMvE5SQAjQo6osidiPyFQDLs9?=
- =?us-ascii?Q?rsSHtw+DYJwRFQsocUJVRqYjKjYAn3sJmx4mKyFkvHOivExjz0/kIOYyGFQ/?=
- =?us-ascii?Q?69R0GWjAvtgC+QZgWc/YPluugGOppw1941WLSgu2pvsjzg75WIJwuNDCMqM7?=
- =?us-ascii?Q?EjzlDwHIf9AKItmbctuTceXaBcJO1tZcqlQ3qbzaC8AJvgF3Fe6LGjq+hTgV?=
- =?us-ascii?Q?cV34V44eRWbJ6gRxyya9R/qRO+EQAMVwX3ND54+voskQmTrphtbD5NkZJb94?=
- =?us-ascii?Q?zjBPce5n07qtsgjBvbj9YuiF+tve5aUerSshQbrT5shPysB3MawncjbWOmqI?=
- =?us-ascii?Q?+lRjmYwG/YZuz8zbAPiEw/bIEntUiGKUp9yzq+WKQmUYSwVfIj7GkzyYayij?=
- =?us-ascii?Q?tmaDUYMLG8b0ul4iTIMFVOKWoOp6tQFHnnQJkjNCB+wbPQ9BIEYmUY7zQvwR?=
- =?us-ascii?Q?Jjt0FWCdIhSvHazcnaeOvMtnFR0UrGuGyUp7b7k2kPnmluC7/+V6pg+843K3?=
- =?us-ascii?Q?W5CgsY9M29/Y2G5hG7C4EF0eW4WCdmsmA4pBHZ/33ulj7HMLrbb4GDybrB8/?=
- =?us-ascii?Q?i14l3viKYv2iFgV+0BcEGQZ1wBaKCEwRErvhXTkiKeszo/GFk+69zi2vWatU?=
- =?us-ascii?Q?XA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232897AbhJMMeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:34:21 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14346 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhJMMeS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 08:34:18 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HTsHH2DHWz8xJP;
+        Wed, 13 Oct 2021 20:27:23 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 20:32:13 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 13
+ Oct 2021 20:32:12 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
+        <fchecconi@gmail.com>, <avanzini.arianna@gmail.com>,
+        <mkoutny@suse.com>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH v2 -next] blk-cgroup: synchoronize blkg creation against policy deactivation
+Date:   Wed, 13 Oct 2021 20:44:56 +0800
+Message-ID: <20211013124456.3186005-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2SPR01MB07.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 235b5505-9e76-4239-a15b-08d98e472845
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2021 12:44:11.6651
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9S4TqOslIdNp5LsFO+a5cBbSKt1WaqG9Sz+N5WY4IdSM1YRnjDCdipho2F0Mmm0olDMEWbzvfc72IAGbeRcfCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR21MB1232
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Out test report a null pointer dereference:
 
+[  168.534653] ==================================================================
+[  168.535614] Disabling lock debugging due to kernel taint
+[  168.536346] BUG: kernel NULL pointer dereference, address: 0000000000000008
+[  168.537274] #PF: supervisor read access in kernel mode
+[  168.537964] #PF: error_code(0x0000) - not-present page
+[  168.538667] PGD 0 P4D 0
+[  168.539025] Oops: 0000 [#1] PREEMPT SMP KASAN
+[  168.539656] CPU: 13 PID: 759 Comm: bash Tainted: G    B             5.15.0-rc2-next-202100
+[  168.540954] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_0738364
+[  168.542736] RIP: 0010:bfq_pd_init+0x88/0x1e0
+[  168.543318] Code: 98 00 00 00 e8 c9 e4 5b ff 4c 8b 65 00 49 8d 7c 24 08 e8 bb e4 5b ff 4d0
+[  168.545803] RSP: 0018:ffff88817095f9c0 EFLAGS: 00010002
+[  168.546497] RAX: 0000000000000001 RBX: ffff888101a1c000 RCX: 0000000000000000
+[  168.547438] RDX: 0000000000000003 RSI: 0000000000000002 RDI: ffff888106553428
+[  168.548402] RBP: ffff888106553400 R08: ffffffff961bcaf4 R09: 0000000000000001
+[  168.549365] R10: ffffffffa2e16c27 R11: fffffbfff45c2d84 R12: 0000000000000000
+[  168.550291] R13: ffff888101a1c098 R14: ffff88810c7a08c8 R15: ffffffffa55541a0
+[  168.551221] FS:  00007fac75227700(0000) GS:ffff88839ba80000(0000) knlGS:0000000000000000
+[  168.552278] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  168.553040] CR2: 0000000000000008 CR3: 0000000165ce7000 CR4: 00000000000006e0
+[  168.554000] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  168.554929] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  168.555888] Call Trace:
+[  168.556221]  <TASK>
+[  168.556510]  blkg_create+0x1c0/0x8c0
+[  168.556989]  blkg_conf_prep+0x574/0x650
+[  168.557502]  ? stack_trace_save+0x99/0xd0
+[  168.558033]  ? blkcg_conf_open_bdev+0x1b0/0x1b0
+[  168.558629]  tg_set_conf.constprop.0+0xb9/0x280
+[  168.559231]  ? kasan_set_track+0x29/0x40
+[  168.559758]  ? kasan_set_free_info+0x30/0x60
+[  168.560344]  ? tg_set_limit+0xae0/0xae0
+[  168.560853]  ? do_sys_openat2+0x33b/0x640
+[  168.561383]  ? do_sys_open+0xa2/0x100
+[  168.561877]  ? __x64_sys_open+0x4e/0x60
+[  168.562383]  ? __kasan_check_write+0x20/0x30
+[  168.562951]  ? copyin+0x48/0x70
+[  168.563390]  ? _copy_from_iter+0x234/0x9e0
+[  168.563948]  tg_set_conf_u64+0x17/0x20
+[  168.564467]  cgroup_file_write+0x1ad/0x380
+[  168.565014]  ? cgroup_file_poll+0x80/0x80
+[  168.565568]  ? __mutex_lock_slowpath+0x30/0x30
+[  168.566165]  ? pgd_free+0x100/0x160
+[  168.566649]  kernfs_fop_write_iter+0x21d/0x340
+[  168.567246]  ? cgroup_file_poll+0x80/0x80
+[  168.567796]  new_sync_write+0x29f/0x3c0
+[  168.568314]  ? new_sync_read+0x410/0x410
+[  168.568840]  ? __handle_mm_fault+0x1c97/0x2d80
+[  168.569425]  ? copy_page_range+0x2b10/0x2b10
+[  168.570007]  ? _raw_read_lock_bh+0xa0/0xa0
+[  168.570622]  vfs_write+0x46e/0x630
+[  168.571091]  ksys_write+0xcd/0x1e0
+[  168.571563]  ? __x64_sys_read+0x60/0x60
+[  168.572081]  ? __kasan_check_write+0x20/0x30
+[  168.572659]  ? do_user_addr_fault+0x446/0xff0
+[  168.573264]  __x64_sys_write+0x46/0x60
+[  168.573774]  do_syscall_64+0x35/0x80
+[  168.574264]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  168.574960] RIP: 0033:0x7fac74915130
+[  168.575456] Code: 73 01 c3 48 8b 0d 58 ed 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 444
+[  168.577969] RSP: 002b:00007ffc3080e288 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[  168.578986] RAX: ffffffffffffffda RBX: 0000000000000009 RCX: 00007fac74915130
+[  168.579937] RDX: 0000000000000009 RSI: 000056007669f080 RDI: 0000000000000001
+[  168.580884] RBP: 000056007669f080 R08: 000000000000000a R09: 00007fac75227700
+[  168.581841] R10: 000056007655c8f0 R11: 0000000000000246 R12: 0000000000000009
+[  168.582796] R13: 0000000000000001 R14: 00007fac74be55e0 R15: 00007fac74be08c0
+[  168.583757]  </TASK>
+[  168.584063] Modules linked in:
+[  168.584494] CR2: 0000000000000008
+[  168.584964] ---[ end trace 2475611ad0f77a1a ]---
 
-> -----Original Message-----
-> From: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-> Sent: Tuesday, October 12, 2021 11:05 PM
-> To: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> <haiyangz@microsoft.com>; Stephen Hemminger <sthemmin@microsoft.com>;
-> wei.liu@kernel.org; Dexuan Cui <decui@microsoft.com>;
-> davem@davemloft.net; kuba@kernel.org; ast@kernel.org;
-> daniel@iogearbox.net; hawk@kernel.org; john.fastabend@gmail.com;
-> andrii@kernel.org; kafai@fb.com; songliubraving@fb.com; yhs@fb.com;
-> kpsingh@kernel.org
-> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
-> kernel@vger.kernel.org; bpf@vger.kernel.org; Jiasheng Jiang
-> <jiasheng@iscas.ac.cn>
-> Subject: [PATCH] hv_netvsc: Fix potentionally overflow in
-> netvsc_xdp_xmit()
->=20
-> [Some people who received this message don't often get email from
-> jiasheng@iscas.ac.cn. Learn why this is important at
-> http://aka.ms/LearnAboutSenderIdentification.]
->=20
-> Adding skb_rx_queue_recorded() to avoid the value of skb->queue_mapping
-> to be 0. Otherwise the return value of skb_get_rx_queue() could be
-> MAX_U16
-> cause by overflow.
->=20
-> Fixes: 351e158 ("hv_netvsc: Add XDP support")
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
-> ---
->  drivers/net/hyperv/netvsc_drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/hyperv/netvsc_drv.c
-> b/drivers/net/hyperv/netvsc_drv.c
-> index f682a55..e51201e 100644
-> --- a/drivers/net/hyperv/netvsc_drv.c
-> +++ b/drivers/net/hyperv/netvsc_drv.c
-> @@ -807,7 +807,7 @@ static void netvsc_xdp_xmit(struct sk_buff *skb,
-> struct net_device *ndev)
->  {
->         int rc;
->=20
-> -       skb->queue_mapping =3D skb_get_rx_queue(skb);
-> +       skb->queue_mapping =3D skb_rx_queue_recorded(skb) ?
-> skb_get_rx_queue(skb) : 0;
->         __skb_push(skb, ETH_HLEN);
->=20
+This is because blkg_alloc() is called from blkg_conf_prep() without
+holding 'q->queue_lock', and elevator is exited before blkg_create():
 
-netvsc_xdp_xmit() is only called from netvsc_recv_callback()=20
-and after skb_record_rx_queue(skb, q_idx) is called:
+thread 1                            thread 2
+blkg_conf_prep
+ spin_lock_irq(&q->queue_lock);
+ blkg_lookup_check -> return NULL
+ spin_unlock_irq(&q->queue_lock);
 
-        skb_record_rx_queue(skb, q_idx);
+ blkg_alloc
+  blkcg_policy_enabled -> true
+  pd = ->pd_alloc_fn
+  blkg->pd[i] = pd
+                                   blk_mq_exit_sched
+                                    bfq_exit_queue
+                                     blkcg_deactivate_policy
+                                      spin_lock_irq(&q->queue_lock);
+                                      __clear_bit(pol->plid, q->blkcg_pols);
+                                      spin_unlock_irq(&q->queue_lock);
+                                    q->elevator = NULL;
+  spin_lock_irq(&q->queue_lock);
+   blkg_create
+    if (blkg->pd[i])
+     ->pd_init_fn -> q->elevator is NULL
+  spin_unlock_irq(&q->queue_lock);
 
-	  ......
+Because blkcg_deactivate_policy() can take a long time if there are too
+many blkgs in q->blkg_list, fix the problem by adding a mutex in q
+and using it to synchoronize blkg creation against policy deactivation.
 
-        if (act =3D=3D XDP_TX) {
-                netvsc_xdp_xmit(skb, net);
-                return NVSP_STAT_SUCCESS;
-        }
+Fixes: e21b7a0b9887 ("block, bfq: add full hierarchical scheduling and cgroups support")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+Changes in V2:
+ - rename the patch title
+ - instead of checking policy in blkg_create(), using a new solution.
 
-So the existing code doesn't need this patch.
+ block/blk-cgroup.c     | 7 +++++++
+ block/blk-core.c       | 1 +
+ include/linux/blkdev.h | 5 +++++
+ 3 files changed, 13 insertions(+)
 
-To avoid future misusing of netvsc_xdp_xmit() in other places, you
-may just add a comment -- "This function should only be called=20
-after skb_record_rx_queue()".
-
-Thanks,
-
-- Haiyang
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index eb48090eefce..043f85a1e05e 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -621,6 +621,7 @@ struct block_device *blkcg_conf_open_bdev(char **inputp)
+  */
+ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 		   char *input, struct blkg_conf_ctx *ctx)
++	__acquires(&bdev->bd_disk->queue->blkg_lock)
+ 	__acquires(rcu) __acquires(&bdev->bd_disk->queue->queue_lock)
+ {
+ 	struct block_device *bdev;
+@@ -634,6 +635,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 
+ 	q = bdev->bd_disk->queue;
+ 
++	mutex_lock(&q->blkg_lock);
+ 	rcu_read_lock();
+ 	spin_lock_irq(&q->queue_lock);
+ 
+@@ -713,6 +715,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ fail_unlock:
+ 	spin_unlock_irq(&q->queue_lock);
+ 	rcu_read_unlock();
++	mutex_unlock(&q->blkg_lock);
+ fail:
+ 	blkdev_put_no_open(bdev);
+ 	/*
+@@ -738,9 +741,11 @@ EXPORT_SYMBOL_GPL(blkg_conf_prep);
+  */
+ void blkg_conf_finish(struct blkg_conf_ctx *ctx)
+ 	__releases(&ctx->bdev->bd_disk->queue->queue_lock) __releases(rcu)
++	__releases(&ctx->bdev->bd_disk->queue->blkg_lock)
+ {
+ 	spin_unlock_irq(&ctx->bdev->bd_disk->queue->queue_lock);
+ 	rcu_read_unlock();
++	mutex_unlock(&ctx->bdev->bd_disk->queue->blkg_lock);
+ 	blkdev_put_no_open(ctx->bdev);
+ }
+ EXPORT_SYMBOL_GPL(blkg_conf_finish);
+@@ -1401,6 +1406,7 @@ void blkcg_deactivate_policy(struct request_queue *q,
+ 	if (queue_is_mq(q))
+ 		blk_mq_freeze_queue(q);
+ 
++	mutex_lock(&q->blkg_lock);
+ 	spin_lock_irq(&q->queue_lock);
+ 
+ 	__clear_bit(pol->plid, q->blkcg_pols);
+@@ -1419,6 +1425,7 @@ void blkcg_deactivate_policy(struct request_queue *q,
+ 	}
+ 
+ 	spin_unlock_irq(&q->queue_lock);
++	mutex_unlock(&q->blkg_lock);
+ 
+ 	if (queue_is_mq(q))
+ 		blk_mq_unfreeze_queue(q);
+diff --git a/block/blk-core.c b/block/blk-core.c
+index d83e56b2f64e..f37fc03b1113 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -544,6 +544,7 @@ struct request_queue *blk_alloc_queue(int node_id)
+ 	INIT_LIST_HEAD(&q->icq_list);
+ #ifdef CONFIG_BLK_CGROUP
+ 	INIT_LIST_HEAD(&q->blkg_list);
++	mutex_init(&q->blkg_lock);
+ #endif
+ 
+ 	kobject_init(&q->kobj, &blk_queue_ktype);
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index b19172db7eef..c2d5be0f5f37 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -245,6 +245,11 @@ struct request_queue {
+ 	DECLARE_BITMAP		(blkcg_pols, BLKCG_MAX_POLS);
+ 	struct blkcg_gq		*root_blkg;
+ 	struct list_head	blkg_list;
++	/*
++	 * used to synchronize blkg allocation and initialization against
++	 * policy deactivation.
++	 */
++	struct mutex		blkg_lock;
+ #endif
+ 
+ 	struct queue_limits	limits;
+-- 
+2.31.1
 
