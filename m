@@ -2,73 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7392242B0EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D79C42B0F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhJMAY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 20:24:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233128AbhJMAYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 20:24:54 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B37560BD3;
-        Wed, 13 Oct 2021 00:22:51 +0000 (UTC)
-Date:   Tue, 12 Oct 2021 20:22:50 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Andrew Halaney <ahalaney@redhat.com>, akpm@linux-foundation.org,
-        bp@suse.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] init: Make unknown command line param message clearer
-Message-ID: <20211012202250.54a8db49@gandalf.local.home>
-In-Reply-To: <87853d4f-d6f8-1d58-1a07-c8232dae87fd@infradead.org>
-References: <20211012213523.39801-1-ahalaney@redhat.com>
-        <20211012200106.1afdbb0b@gandalf.local.home>
-        <87853d4f-d6f8-1d58-1a07-c8232dae87fd@infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234483AbhJMAZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 20:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235064AbhJMAZc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 20:25:32 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C2EC061749
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:23:30 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id 21so605496plo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:23:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nNn+UC9/cpHxaqXZcUQl1BrWnaOK7ya+9AekxpxnqsI=;
+        b=bdidJxg0jUARvsCBaeu3CeAv/AxMHtqGox7Vw3htO3XcEp8pH0N4F01G7pgZ2yNGrY
+         3jkTn1wx6FkK4CeEv2VpIKlIrocztMIS4vjxog0azQviZFmOhBMjWzF2I6AYgut4P+Jq
+         wGKSniQfk/e7V5M7x0ZQv+XWg6Ao/WbjQg6pdrBkqDEUXcaoo3l/mHISseVJgDz4JiQj
+         GZPyJUhqrlmf8EvlBE8hMZHu1I19WJ+fQ4uJL/m71vriEf9TRgf2pen9yYTC95UHd20x
+         jxgw5qZuFGKwx4l6ccUt+rcFrIyMJugk8Q5Q7Tr/f/qRPad5wL6xqsjN0WNsDMJ2yRYc
+         YuaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nNn+UC9/cpHxaqXZcUQl1BrWnaOK7ya+9AekxpxnqsI=;
+        b=iAtSVFGeZE5JeolMHT1PBAY11xQMQORIe8wlwgQXsj+n3wrux9bFFxXnhqbcbZfMhE
+         3ibi5KgjtpT5TA7PC325Kpoao+ZaAiwE/J2I1MTT3UxnYha8FjYrYDXQ9YXZjh8WsNd8
+         Q16uNyDmJZmbN9YFMWUKMZe9U6l5ST5eZsj3Ttjz4HaZCxLcnXg+uryogv6wttgDbPQj
+         VgLftgkizmNNbWH5xe7bZXOiWvkcbuOOP3d8VqCE/mXBIuuKP5B5tbs4FEWYiouMTEAH
+         h/GLMMDE8Zxq+PZ8aNn/eZWcObdOLphgzLXD1Z61l4Uq9Dym803uVonKholP1FNJGKBk
+         IWmw==
+X-Gm-Message-State: AOAM531IfS0t82ctIR90GokrcFElbZmAKOAwQOqiug3nyi6Tv9K213/j
+        Wbhy+TlkcYrU4iMezdONJ7SGro2YbXM=
+X-Google-Smtp-Source: ABdhPJxaRLNJrBS6tXom7VBegOlMNlwQPmcEbezV0bmx1DzR9C9l5P18IIb0pLw5I26UbkJ7cmzQoA==
+X-Received: by 2002:a17:90a:9f44:: with SMTP id q4mr9553649pjv.136.1634084609231;
+        Tue, 12 Oct 2021 17:23:29 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id oa4sm314443pjb.13.2021.10.12.17.23.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 17:23:28 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 00:23:24 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 39/45] KVM: SVM: Introduce ops for the post gfn
+ map and unmap
+Message-ID: <YWYm/Gw8PbaAKBF0@google.com>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-40-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820155918.7518-40-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 17:18:32 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> On 10/12/21 5:01 PM, Steven Rostedt wrote:
-> > On Tue, 12 Oct 2021 16:35:23 -0500
-> > Andrew Halaney <ahalaney@redhat.com> wrote:
-> >   
-> >> --- a/init/main.c
-> >> +++ b/init/main.c
-> >> @@ -925,6 +925,10 @@ static void __init print_unknown_bootoptions(void)
-> >>   	for (p = &envp_init[2]; *p; p++)
-> >>   		end += sprintf(end, " %s", *p);
-> >>   
-> >> +	pr_notice("The kernel command line has unknown parameters. They are either\n");
-> >> +	pr_notice("misspelled, not valid for the current kernel configuration,\n");
-> >> +	pr_notice("or are meant for init but are not after the '--' delineator. They will\n");
-> >> +	pr_notice("be passed to init along with those after '--' on the command line.\n");
-> >>   	pr_notice("Unknown command line parameters:%s\n", unknown_options);
-> >>   	memblock_free(unknown_options, len);  
-> > 
-> > What about just changing it to simply say:
-> > 
-> > 	pr_notice("Unknown kernel command line parameters "%s", will be	passed to user space.\n",
-> > 		  unknown_options);
-> >   
+On Fri, Aug 20, 2021, Brijesh Singh wrote:
+> When SEV-SNP is enabled in the guest VM, the guest memory pages can
+> either be a private or shared. A write from the hypervisor goes through
+> the RMP checks. If hardware sees that hypervisor is attempting to write
+> to a guest private page, then it triggers an RMP violation #PF.
 > 
-> Yes, that's much more palatable.
+> To avoid the RMP violation, add post_{map,unmap}_gfn() ops that can be
+> used to verify that its safe to map a given guest page. Use the SRCU to
+> protect against the page state change for existing mapped pages.
 
-Thanks.
+SRCU isn't protecting anything.  The synchronize_srcu_expedited() in the PSC code
+forces it to wait for existing maps to go away, but it doesn't prevent new maps
+from being created while the actual RMP updates are in-flight.  Most telling is
+that the RMP updates happen _after_ the synchronize_srcu_expedited() call.
 
-Andrew (Halaney, not Morton),
+This also doesn't handle kvm_{read,write}_guest_cached().
 
-Feel free to send a v2 with the above text, and just add:
+I can't help but note that the private memslots idea[*] would handle this gracefully,
+e.g. the memslot lookup would fail, and any change in private memslots would
+invalidate the cache due to a generation mismatch.
 
-Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+KSM is another mess that would Just Work.
 
--- Steve
+I'm not saying that SNP should be blocked on support for unmapping guest private
+memory, but I do think we should strongly consider focusing on that effort rather
+than trying to fix things piecemeal throughout KVM.  I don't think it's too absurd
+to say that it might actually be faster overall.  And I 100% think that having a
+cohesive design and uABI for SNP and TDX would be hugely beneficial to KVM.
+
+[*] https://lkml.kernel.org/r/20210824005248.200037-1-seanjc@google.com
+
+> +int sev_post_map_gfn(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn, int *token)
+> +{
+> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +	int level;
+> +
+> +	if (!sev_snp_guest(kvm))
+> +		return 0;
+> +
+> +	*token = srcu_read_lock(&sev->psc_srcu);
+> +
+> +	/* If pfn is not added as private then fail */
+
+This comment and the pr_err() are backwards, and confused the heck out of me.
+snp_lookup_rmpentry() returns '1' if the pfn is assigned, a.k.a. private.  That
+means this code throws an error if the page is private, i.e. requires the page
+to be shared.  Which makes sense given the use cases, it's just incredibly
+confusing.
+
+> +	if (snp_lookup_rmpentry(pfn, &level) == 1) {
+
+Any reason not to provide e.g. rmp_is_shared() and rmp_is_private() so that
+callers don't have to care as much about the return values?  The -errno/0/1
+semantics are all but guarantee to bite us in the rear at some point.
+
+Actually, peeking at other patches, I think it already has.  This usage in
+__unregister_enc_region_locked() is wrong:
+
+	/*
+	 * The guest memory pages are assigned in the RMP table. Unassign it
+	 * before releasing the memory.
+	 */
+	if (sev_snp_guest(kvm)) {
+		for (i = 0; i < region->npages; i++) {
+			pfn = page_to_pfn(region->pages[i]);
+
+			if (!snp_lookup_rmpentry(pfn, &level))  <-- attempts make_shared() on non-existent entry
+				continue;
+
+			cond_resched();
+
+			if (level > PG_LEVEL_4K)
+				pfn &= ~(KVM_PAGES_PER_HPAGE(PG_LEVEL_2M) - 1);
+
+			host_rmp_make_shared(pfn, level, true);
+		}
+	}
+
+
+> +		srcu_read_unlock(&sev->psc_srcu, *token);
+> +		pr_err_ratelimited("failed to map private gfn 0x%llx pfn 0x%llx\n", gfn, pfn);
+> +		return -EBUSY;
+> +	}
+> +
+> +	return 0;
+> +}
+>  static struct kvm_x86_init_ops svm_init_ops __initdata = {
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index d10f7166b39d..ff91184f9b4a 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -76,16 +76,22 @@ struct kvm_sev_info {
+>  	bool active;		/* SEV enabled guest */
+>  	bool es_active;		/* SEV-ES enabled guest */
+>  	bool snp_active;	/* SEV-SNP enabled guest */
+> +
+>  	unsigned int asid;	/* ASID used for this guest */
+>  	unsigned int handle;	/* SEV firmware handle */
+>  	int fd;			/* SEV device fd */
+> +
+>  	unsigned long pages_locked; /* Number of pages locked */
+>  	struct list_head regions_list;  /* List of registered regions */
+> +
+>  	u64 ap_jump_table;	/* SEV-ES AP Jump Table address */
+> +
+>  	struct kvm *enc_context_owner; /* Owner of copied encryption context */
+>  	struct misc_cg *misc_cg; /* For misc cgroup accounting */
+> +
+
+Unrelated whitespace changes.
+
+>  	u64 snp_init_flags;
+>  	void *snp_context;      /* SNP guest context page */
+> +	struct srcu_struct psc_srcu;
+>  };
