@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A494C42C704
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF3C42C709
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238026AbhJMQ7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:59:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53362 "EHLO mail.kernel.org"
+        id S238209AbhJMQ7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:59:52 -0400
+Received: from mout.gmx.net ([212.227.17.21]:50943 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238067AbhJMQ7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:59:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 907616109E;
-        Wed, 13 Oct 2021 16:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634144235;
-        bh=Tk/bVs+ZbsdhSuYNIdd8Gg0DOirgfShoPLVvseKnS3I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZtRLth7FeOp51ALRIZxWWZpisGaIHr3hYq+0X5tRYZCV7bLA2hXopvGPf4ulvqiDd
-         HuuZYmYTVXdVm5CUOyIJnSGxzWphgkCUW4EBJ5IJd15wy1IfZBq3OP4KEPyQE5dWr3
-         JmXBuo3hGUnppXRAs6cM3zvxAW3V5DWA99xGAX7WMr2mFOIlaJrZr5rx44b0tNvgYl
-         L1attCACr3UTjHBWNgr+oEhlcasmAh+kgtxlaKpa1/bRLaEh/B9gR0XzrnmlO8wU89
-         S2qsQrrUbOpfCg9YCgg0OI80LaU0gytZpjeFZduaw+tFlokugznkgcMtiP9R0OYSKv
-         tMg6diPY7gNiA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 69CBC410A1; Wed, 13 Oct 2021 13:57:12 -0300 (-03)
-Date:   Wed, 13 Oct 2021 13:57:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     kajoljain <kjain@linux.ibm.com>, john.garry@huawei.com,
-        ak@linux.intel.com, linux-perf-users@vger.kernel.org,
-        Nick.Forrington@arm.com, Andrew.Kilroy@arm.com,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] perf tools: Enable strict JSON parsing
-Message-ID: <YWcP6EZ6Ors5/CGh@kernel.org>
-References: <20211007110543.564963-1-james.clark@arm.com>
- <c15fd2bf-104e-6ab0-6496-7e5cf77a218f@linux.ibm.com>
- <e8752b2d-65a7-1ed8-3c68-30d9006261ba@arm.com>
- <5947c093-cff9-f70e-af20-75bc053edf5f@linux.ibm.com>
- <YWCVTnOUM2P4FRPi@kernel.org>
- <0d73d04f-925c-4c97-9a07-18cc64a9c68b@arm.com>
+        id S238047AbhJMQ7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 12:59:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634144237;
+        bh=H0NVNpK0fftAT3BEIq4Q/VjiBME4Ggj1xdbyrhLlOkQ=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=LRr+HyzCtbWESFIv+4bu0tz/iCA4pq+eCcWDI9UNt9Akm+V7syl/N3UokJTupbtIc
+         rQA2NyPnekrF6/jqJ7jUySP/9p8iauTKt6d4EAQyAvhtTUqvnp8MIgyP6X+FLuI9jO
+         oxGvL7pHRBKIQk/nT2YDu295bG/o4V+wMHemL6Tc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.148.85]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MLQxX-1mILKo2zDv-00ITjh; Wed, 13
+ Oct 2021 18:57:17 +0200
+Message-ID: <16b0ac0a69615ecd3ae59b0c32161a0b26b8b3ca.camel@gmx.de>
+Subject: Re: [tip: locking/core] futex: Split out requeue
+From:   Mike Galbraith <efault@gmx.de>
+To:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        andrealmeid@collabora.com, x86@kernel.org
+Date:   Wed, 13 Oct 2021 18:57:15 +0200
+In-Reply-To: <163377402732.25758.10591795748827044017.tip-bot2@tip-bot2>
+References: <20210923171111.300673-14-andrealmeid@collabora.com>
+         <163377402732.25758.10591795748827044017.tip-bot2@tip-bot2>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d73d04f-925c-4c97-9a07-18cc64a9c68b@arm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Cza89XcjD9J4b/9j4noVjjK/fGwDE7SUc2IiAqxLAFgFrUiw9WW
+ dqqJqmfyn5fLoDCmTcSAtjclacxTviWpmawRPfRZ/shiFM5gljWzNokShC/1ra4q9Fai6pq
+ tcKPufTOX5EEnhWhjGijM2k1aY5Yk3EudcdN59YQ+aAMWcvTcSvBpS+OvxzSTLS64UcLB5a
+ 4MgKT4SJcqYk7FiT32kGQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kAdNmo8vxGU=:G3gVttsKAvscRBZ8iyZ//M
+ xqnl1WFlt5RGhf+dTA2q1YmiKZT2XAbzNpl852gE2Ej+WxznhVDryjgkf0wpxGdXP0qVQa7By
+ sAac/TSmQgtWbWv6uSg6ejM7VhpckqVCfbubyx7jk0emYpwZzkZbUgmCzMe17ZZds72lZ8iDV
+ BOzc1ctl/9ntQGEzxHKBcymbe1D9IgvFXQ4P7ayueFBqOdpRv1IBW2ng5WpTkKxz518GgqD7B
+ +2hI4COI6Wx9CMEDQKcpMKjhN8XwxXSizjWtQW7p2DcpzbIWsJRHuF4Cewr7RqmYiSo6BEThY
+ 66yNbBLIYutHpCPJxJGOqSBzK/SrpGYV4woBLHJP0XuCzNNZWra8HjBUYAeOLnCctJYwmuCqE
+ 36TlHKW9P8LTycRj2nKtbk3r6jOIVdK4AnZAPR282njWwgjsoa5AM9MeY1eZ3P0E74CJia8u5
+ 4mgFQAN7EtcXLkGzG0bbPKLj3qrpWHAnZbh6PZ9ORT0v2MjZ4q6QHQTk2vVUkd+9EVAS+EfSc
+ vZna7/JQTXrFF6A7ZbeBW5AgQBVRsjDP6oyk8MxSBzty+P3+8uFRxQv//7ZoVRFgIKwP7NbBj
+ r4W56SxDvu6vlxfYzsRD0b5o3vWefDeEL+WMymkDo+sILxFJYRP1yDQIp7IulGcmO3qmvTU16
+ HlkLk3BUG+N67iG/w4YMgJsUlyZjLb8VYYeRLkTTZdOY8evjHEcC+RShH/3SHQ0Vzb1H9Tan+
+ jdDuYGgL5Bmc97TI5TSAmQU+NagVoz75eLzd5rpdCu7aP2ttJtTItEJHx4xtYYjvJPoYmLeds
+ Uq1ju5QZ1j7tdXnO7FO/03wlhFV2LNfJJ4urOPpmDkEC8GoMsz5qW1eJKHwXpJyL1ucCSdA4w
+ xod646pnKIWOa4lvINUUr5eoGW07TmwiZuKv3x8NBSEZgvmtuphJ2UqA0jBfmziTCPClV8js6
+ FCWaaXEGNurqBg5LwijbNtZaXTCCIJDiFnjVVdqu0amIkq14avLtbWjvM4OIrgpXj6v8lC6e8
+ P7clCUfo8f0JyOz+VGKFt7FrNCNqFi4Ly4P+DdgPqtqoe+UO34NMiG/RzARa5suZq7iFewJck
+ GmbUuqLBt4lhQY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Oct 12, 2021 at 02:30:51PM +0100, James Clark escreveu:
-> On 08/10/2021 20:00, Arnaldo Carvalho de Melo wrote:
-> > Em Fri, Oct 08, 2021 at 04:56:55PM +0530, kajoljain escreveu:
-> >> On 10/8/21 3:32 PM, James Clark wrote:
-> >>> On 08/10/2021 08:43, kajoljain wrote:
-> >> Sure. I think then we can skip this change. Not sure if character
-> >> number will be helpful.
+On Sat, 2021-10-09 at 10:07 +0000, tip-bot2 for Peter Zijlstra wrote:
+>
+> diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
+> index 4969e96..840302a 100644
+> --- a/kernel/futex/futex.h
+> +++ b/kernel/futex/futex.h
+> @@ -3,6 +3,8 @@
+> =C2=A0#define _FUTEX_H
+> =C2=A0
+> =C2=A0#include <linux/futex.h>
+> +#include <linux/sched/wake_q.h>
 
-> >> Patch-set looks good to me.
++#ifdef CONFIG_PREEMPT_RT
++#include <linux/rcuwait.h>
++#endif
 
-> >> Reviewed-by Kajol Jain<kjain@linux.ibm.com>
+?
 
-> > Applied ok as-is to my perf/core branch, applied and added your
-> > Reviewed-by, thanks.
+I needed that for tip-rt to build. It also boots, and futextests are
+happy (whew, futexes hard).
 
-> Thanks Arnaldo. This does mean that the arm64 build will fail until
-> "[PATCH v2 1/3] perf vendor events: Syntax corrections in Neoverse N1 json" is
-> applied. I think there is also an arm64 build issue with "[PATCH 02/21] perf
-> pmu: Add const to pmu_events_map." which Andrew Kilroy has replied to.
-
-Its all in:
-
-19f8408a634c9515 (HEAD -> perf/core) perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
-69125e749c006b4f perf tools: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
-1b1d9560a61f1e4e perf vendor events arm64: Categorise the Neoverse V1 counters
-abe8733bc3575869 perf vendor events arm64: Add new armv8 pmu events
-d211e9e76a466cce perf vendor events: Syntax corrections in Neoverse N1 json
-c067335fcbfc67c3 (quaco/perf/core, acme/tmp.perf/core) perf metric: Allow modifiers on metrics.
-acf2cb9cf242e9ab perf parse-events: Identify broken modifiers
-fb193eca0ae8ddae perf metric: Switch fprintf() to pr_err()
-fb8c3a06943cc3c7 perf metrics: Modify setup and deduplication
-4965bb2e71371d5f perf expr: Add subset utility
-c1d7cd1b36fce16b perf metric: Encode and use metric-id as qualifier
-3743f880b3856971 perf parse-events: Allow config on kernel PMU events
-844f07a5ddcd46c5 perf parse-events: Add new "metric-id" term
-e68f07424b8b3f00 perf parse-events: Add const to evsel name
-ace154d9f5dc3331 perf metric: Simplify metric_refs calculation
-eeffd53b41dc7077 perf metric: Document the internal 'struct metric'
-9aa64400defa07fb perf metric: Comment data structures
-353ce4ed869635c7 perf metric: Modify resolution and recursion check
-0bffecb0ac304bb2 perf metric: Only add a referenced metric once
-937323c22db4cb1e perf metric: Add metric new and free
-176b9da84871449d perf metric: Add documentation and rename a variable.
-cc6803c12cef80f1 perf metric: Move runtime value to the expr context
-9610bca8f117d963 perf pmu: Make pmu_event tables const
-95ed79343835656d perf pmu: Make pmu_sys_event_tables const
-05335f28549c7cc5 perf pmu: Add const to pmu_events_map.
-cac98c8aca3c7dd2 tools lib: Adopt list_sort from the kernel sources
-f792cf8a094eac29 perf kmem: Improve man page for record options
-eda1a84cb4e93759 perf tools: Enable strict JSON parsing
-21813684e46df1c9 perf tools: Make the JSON parser more conformant when in strict mode
-08f3e0873ac20344 perf vendor-events: Fix all remaining invalid JSON files
-
-- Arnaldo
+	-Mike
