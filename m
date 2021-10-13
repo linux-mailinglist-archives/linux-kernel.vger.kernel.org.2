@@ -2,97 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A17B42B7BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE7342B7D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238068AbhJMGoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 02:44:15 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:49050 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231597AbhJMGoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 02:44:13 -0400
-Received: from zn.tnic (p200300ec2f0ce200d6cfbc8b4a6526d3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:e200:d6cf:bc8b:4a65:26d3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 076361EC01A9;
-        Wed, 13 Oct 2021 08:42:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634107329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=RJHwoQ0GRj7G38aIyE/+JmuKk5oLW3/IXloYTjGdLPM=;
-        b=VlLM3hqiRjov/ZUPpeKCNRCnjNajATN4ZcYXc7ZzMcDIFNKZhMuLyvbwbTV4hNSh7eWHn8
-        fPCgRIXxmKE32JTk43eOePcvO+B1Oj286a3oFYZbzrSJQIMJqxSZjpWKlE/Z9g/IFEvVXX
-        VMGzYr69ythLmV1z4a+M8jVC9oRwEZg=
-Date:   Wed, 13 Oct 2021 08:42:06 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Winiarska, Iwona" <iwona.winiarska@intel.com>
-Cc:     "corbet@lwn.net" <corbet@lwn.net>,
-        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "olof@lixom.net" <olof@lixom.net>, "arnd@arndb.de" <arnd@arndb.de>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "zweiss@equinix.com" <zweiss@equinix.com>,
-        "d.mueller@elsoft.ch" <d.mueller@elsoft.ch>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: [PATCH v2 01/15] x86/cpu: Move intel-family to arch-independent
- headers
-Message-ID: <YWZ/vqHXibwOWtDu@zn.tnic>
-References: <20210803113134.2262882-1-iwona.winiarska@intel.com>
- <20210803113134.2262882-2-iwona.winiarska@intel.com>
- <YVtQG+idmwKn0qLe@zn.tnic>
- <58ef4107e9b2c60a2605aac0d2fb6670a95bc9e0.camel@intel.com>
- <YWSZTq8NWWcCMXtA@zn.tnic>
- <337b6332312ea63862aedd09279417c9e1c7e11f.camel@intel.com>
- <YWStQSrRJQ09KXVY@zn.tnic>
- <15d81463b631e03b00a7031510304d5598fc246c.camel@intel.com>
+        id S238105AbhJMGr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 02:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238095AbhJMGrw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 02:47:52 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55015C061765
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:45:49 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 133so1399873pgb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:45:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w0j2Ihdi/0685L8FT6WteZp6O1hKULY2lNZfHOgIHSc=;
+        b=ZVG9fseiMJi5y7uNc0U//uB9qmTc4gJH0ueiRXhntI+xclAF1mY0ZabBN0HENHjmuQ
+         Wd2tZE7h7XcVk1DbOBPcKKRzFh73LE1iY97UMVdM/LDFC8CDxtoZ3SUXBlDw8iyhvu6V
+         muglMpS8KRkUeK+EwwJZIYurw/HXNEkgWVJds=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w0j2Ihdi/0685L8FT6WteZp6O1hKULY2lNZfHOgIHSc=;
+        b=41xf/n/dwcCzWsJpMCosC/saEdBiQNn2w1VefYBvdDJG9RXXpC1AWMtiz3DtuzCgme
+         SrfOnB3h2isoruYN1B37AXBJnX2Y34/i06FnpQ1GBQvFcZBzqIIwhFi1ROoTYT4WnKvN
+         AS1RHx65hBmRQjA93HKipntov5EYiE7shD5N96vtWw4mURkx/PTxaJ7Y0ntVe/uBUSpO
+         x+PiQLs1HYYNpkK+izxW6Iv406F+4Mp8iaDtDAvCdQ9J6zIP+AmnsT/S6M162de2HErY
+         2V+sejYyF1oKh2n4di3y3XVtmwfbAcCYPVgQ0wFF9MWoBuk8N05zR3tdA83C0X8/RFZM
+         +Eag==
+X-Gm-Message-State: AOAM533fwsRXkUWZFP/Ol4DbaGV2J6L2FOTLm9vT8rmOK+5uVQSwgyjL
+        Ghhk673YypmVlq0Y09do92/VPQ==
+X-Google-Smtp-Source: ABdhPJyYGTFNE7wYL1tDchWsW1G14X62AMTEsDTHRuseDYe9oXvmyOMHWZK2W0kP1Mxrbkw9HEw8fw==
+X-Received: by 2002:a05:6a00:140e:b0:444:b077:51ef with SMTP id l14-20020a056a00140e00b00444b07751efmr31628811pfu.61.1634107548651;
+        Tue, 12 Oct 2021 23:45:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g11sm13397260pgn.41.2021.10.12.23.45.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 23:45:48 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 23:45:47 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chris Zankel <chris@zankel.net>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greentime Hu <green.hu@gmail.com>, Guo Ren <guoren@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Julien Thierry <jthierry@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Michal Simek <monstr@monstr.eu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Hu <nickhu@andestech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rich Felker <dalias@libc.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Rob Herring <robh@kernel.org>,
+        Robert Richter <rric@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        William Cohen <wcohen@redhat.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org,
+        sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp,
+        x86@kernel.org
+Subject: Re: [PATCH 2/2] kbuild: use more subdir- for visiting subdirectories
+ while cleaning
+Message-ID: <202110122345.4B8FE35AED@keescook>
+References: <20211013063622.548590-1-masahiroy@kernel.org>
+ <20211013063622.548590-2-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <15d81463b631e03b00a7031510304d5598fc246c.camel@intel.com>
+In-Reply-To: <20211013063622.548590-2-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 11:15:00PM +0000, Winiarska, Iwona wrote:
-> We (OpenBMC) do have PECI HW, so that shouldn't be a problem.
+On Wed, Oct 13, 2021 at 03:36:22PM +0900, Masahiro Yamada wrote:
+> Documentation/kbuild/makefiles.rst suggests to use "archclean" for
+> cleaning arch/$(SRCARCH)/boot/.
+> 
+> Since commit d92cc4d51643 ("kbuild: require all architectures to have
+> arch/$(SRCARCH)/Kbuild"), we can use the "subdir- += boot" trick for
+> all architectures. This can take advantage of the parallel option (-j)
+> for "make clean".
+> 
+> I also cleaned up the comments. The "archdep" target does not exist.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Yeah, don't take it personally, but asking people to test stuff for you
-doesn't really work, in practice.
+I like the clean-up!
 
-> Both CPUID.EAX=1 decoding and definitions in intel-family are pretty "well-
-> defined".
-
-Sure, they are "well-defined" until we change them for whatever reason.
-Then they will be "well-defined" again. But different.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Kees Cook
