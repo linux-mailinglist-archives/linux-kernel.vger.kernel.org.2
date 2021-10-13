@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AC942C48B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C438942C491
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhJMPNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 11:13:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29890 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229514AbhJMPNu (ORCPT
+        id S232284AbhJMPO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 11:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhJMPOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:13:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634137906;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0g1uQp5+rGbXrxfLTXwqievrvV6EIKzK3sIM3pZ9TKs=;
-        b=QRUoAlJ1/zRpfUmBYFutE/SCd7AQOiUKQrIsSjriYn94ek2rfDrPKAeuc7CmLvIIb0iv+t
-        L7GHw5Xh9VrVD75X2m1XQKDIpPRA6ALtd64dvqdRErLPsiB9JhNK2jA4G3LtUd00OK8hbI
-        RR/V8ngdh+SLIFBH7Ol5s9lHcKLkcjI=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-209--wots0E0OjiS1JxBLzdHNg-1; Wed, 13 Oct 2021 11:11:43 -0400
-X-MC-Unique: -wots0E0OjiS1JxBLzdHNg-1
-Received: by mail-ed1-f71.google.com with SMTP id i7-20020a50d747000000b003db0225d219so2595018edj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:11:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=0g1uQp5+rGbXrxfLTXwqievrvV6EIKzK3sIM3pZ9TKs=;
-        b=Fcb431sEdzz1rFzvorACoyJXNwojfLJmbN/OyWX6Ds9HFROIIMNFInY5VkhHpj1KDG
-         Vr695ilD3RJeJltEZUVPXBu0vJhoHY5bdCQI7He9u2Yo/jV456+P52dOclwZYoGu5r6b
-         2iwK4Dr5cRyNl2lJmIvSQ/6A895MdzkXqCIHR4dYrnulwtFRihiQfznRcr6E4415kDeZ
-         fQLtWOFTuoQrXuh7+Ld8ABj04xvQ5M88XI0rtviYiGVT+LhpVAh2woQnhjPEuXrrREva
-         PzVUoc4TMtZlg6IZ9foO53eBhAZM4ZfSUPScT0WhurS7yMsfhHG2SmiYGguIMhmidR0h
-         lVhg==
-X-Gm-Message-State: AOAM531PIUfInXfBHhgspHltmhwuh3ASDEuOiT5DHdeQ/3qBoHSrBJc0
-        kZcj3HSsxX8sLp3Yri7hGNRqoMw1a1XLQO3h6SE4K9y+gczX99XUzeI1SgeE9woMMELqfZMt8i2
-        J4GTGNpLyaqOnLHjCIWWfohRM
-X-Received: by 2002:a17:906:180a:: with SMTP id v10mr114750eje.112.1634137902453;
-        Wed, 13 Oct 2021 08:11:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzeiL2TAH+e1mlhR/iCAxD+5eZ5rlY38mxxrsDti8Miyy0J3ItGSWnn0mUU/TFTkQ1bkHw1Ug==
-X-Received: by 2002:a17:906:180a:: with SMTP id v10mr114718eje.112.1634137902217;
-        Wed, 13 Oct 2021 08:11:42 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r19sm8234847edt.54.2021.10.13.08.11.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 08:11:41 -0700 (PDT)
-Message-ID: <d405824e-66d3-a1ec-6bcb-f560687b758d@redhat.com>
-Date:   Wed, 13 Oct 2021 17:11:27 +0200
+        Wed, 13 Oct 2021 11:14:25 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28042C061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:12:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rrv5JZn1uLPYidbThlkuK/7xoe7HZCMyhAzWQgfjz1c=; b=Mnu0SSiCXmIgDP94Mi2O/A3dNm
+        NKCPXU+y0EbZQFaeQGbos6zteTNVz9VMow0keOHMeNZljVgRCeSzvknLjfYMhc35YCb034VDoLAhv
+        lM5iP3HzK0ThQ69Pb6hmR3+BaAtmxcOEDspzRwryNTMMoesw8ON1lFJ2zMh9SA07n4hkcboe2NG1a
+        ZiEdw1Z3JfcWjN9JN7wB11ebGq2vyFCDapdtns+uFqNVqidxKuv1fmR509vXNNJG7wMLGb42Bb8M5
+        bPR1scsyxtUuFC+rERwqbVYAEaFe62bymxqxL+uEck3R8ljXx7zAe9Fo+XNOKu03QZa0T905TOHH8
+        pCSutb6A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mafvS-009d7o-3k; Wed, 13 Oct 2021 15:12:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5612730026A;
+        Wed, 13 Oct 2021 17:12:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 43586207EF0DE; Wed, 13 Oct 2021 17:12:13 +0200 (CEST)
+Date:   Wed, 13 Oct 2021 17:12:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     x86@kernel.org, jpoimboe@redhat.com, linux-kernel@vger.kernel.org,
+        alexei.starovoitov@gmail.com, ndesaulniers@google.com
+Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
+Message-ID: <YWb3TdmyPK7GwBP4@hirez.programming.kicks-ass.net>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123645.002402102@infradead.org>
+ <98fdd068-d1c3-1f8c-18b7-13c3909ed9ca@citrix.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [patch 05/21] x86/KVM: Convert to fpstate
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org
-References: <20211013142847.120153383@linutronix.de>
- <20211013145322.451439983@linutronix.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211013145322.451439983@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <98fdd068-d1c3-1f8c-18b7-13c3909ed9ca@citrix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/21 16:55, Thomas Gleixner wrote:
-> Convert KVM code to the new register storage mechanism in preparation for
-> dynamically sized buffers.
+On Wed, Oct 13, 2021 at 03:38:27PM +0100, Andrew Cooper wrote:
+> On 13/10/2021 13:22, Peter Zijlstra wrote:
+> > +/*
+> > + * Rewrite the compiler generated retpoline thunk calls.
+> > + *
+> > + * For spectre_v2=off (!X86_FEATURE_RETPOLINE), rewrite them into immediate
+> > + * indirect instructions, avoiding the extra indirection.
+> > + *
+> > + * For example, convert:
+> > + *
+> > + *   CALL __x86_indirect_thunk_\reg
+> > + *
+> > + * into:
+> > + *
+> > + *   CALL *%\reg
+> > + *
+> > + */
+> > +static int patch_retpoline(void *addr, struct insn *insn, u8 *bytes)
+> > +{
+> > +	void (*target)(void);
+> > +	int reg, i = 0;
+> > +
+> > +	if (cpu_feature_enabled(X86_FEATURE_RETPOLINE))
+> > +		return -1;
+> > +
+> > +	target = addr + insn->length + insn->immediate.value;
+> > +	reg = (target - &__x86_indirect_thunk_rax) /
+> > +	      (&__x86_indirect_thunk_rcx - &__x86_indirect_thunk_rax);
 > 
-> No functional change.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: kvm@vger.kernel.org
-> ---
->   arch/x86/kvm/x86.c |    4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10389,7 +10389,7 @@ int kvm_arch_vcpu_ioctl_get_fpu(struct k
->   
->   	vcpu_load(vcpu);
->   
-> -	fxsave = &vcpu->arch.guest_fpu->state.fxsave;
-> +	fxsave = &vcpu->arch.guest_fpu->fpstate->regs.fxsave;
->   	memcpy(fpu->fpr, fxsave->st_space, 128);
->   	fpu->fcw = fxsave->cwd;
->   	fpu->fsw = fxsave->swd;
-> @@ -10412,7 +10412,7 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct k
->   
->   	vcpu_load(vcpu);
->   
-> -	fxsave = &vcpu->arch.guest_fpu->state.fxsave;
-> +	fxsave = &vcpu->arch.guest_fpu->fpstate->regs.fxsave;
->   
->   	memcpy(fxsave->st_space, fpu->fpr, 128);
->   	fxsave->cwd = fpu->fcw;
-> 
+> This is equal measures beautiful and terrifying.
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Thanks! :-)
 
+> Something around here really wants to BUG_ON(reg == 4), because
+> literally nothing good can come from selecting %rsp.
+
+Ack, I had to add rsp to get the offsets right, but indeed, if anything
+ever selects that we're in trouble.
+
+> Also, it might be a good idea (previous patch perhaps) to have some
+> linker assertions to confirm that the symbols are laid out safely to do
+> this calculation.
+
+I was hoping that since all this is in .S it would be immune from crazy
+things like a compiler and do as told. But I suppose carzy stuff like
+LTO (or worse BOLT) can totaly wreck this still (then BOLT won't care
+about linker script assertions either).
+
+I'll see if I can come up with something.
