@@ -2,114 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F58C42B348
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17DF42B352
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237138AbhJMDUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:20:11 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:12222 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229526AbhJMDUK (ORCPT
+        id S233511AbhJMDYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhJMDYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:20:10 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0Ure8VYX_1634095080;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Ure8VYX_1634095080)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 13 Oct 2021 11:18:01 +0800
-Subject: [PATCH v2 2/2] ftrace: do CPU checking after preemption disabled
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-To:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com>
- <1a8e8d73-b508-f90b-0d82-eb2da45a720e@linux.alibaba.com>
-Message-ID: <44c07848-c1e1-79f1-8356-4310c1bae037@linux.alibaba.com>
-Date:   Wed, 13 Oct 2021 11:18:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Tue, 12 Oct 2021 23:24:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C082C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 20:22:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ViMm/859aC8dLfS6AYr0d45i12kvtwVyppaDPD+X7Jk=; b=pmfqjBvbo5YxzbM3VitRV/j/f3
+        S843IlLpMWPQg7D9r15hU1uXn7qWI1pNZ2gtHaiS0hhX4DsQHwM2KizmyZJbH2aiJmSTqpOTSeDEc
+        yfdpWXHobIcYQSum1lHsStErkpgueE4sJOaUUYdfzOTcQhxEU4FoierChR4uHFMzC0yi0PJre3CmH
+        lfOEzOL4SPSD45uFwcpA+muLw3nXGxYNJAjoSzjSgej5DNGJkqRRzG11ppSYN7GQy8mxIFAy3tGY5
+        rFp65NsTrylX8yvyd3iAYQH0LC85bm88q/2BAFsux3rynt0mpVRvk3OWZM/mxLZIFewSg5Z9kcJnZ
+        x4uvoy7Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1maUnW-0072Hd-1q; Wed, 13 Oct 2021 03:19:51 +0000
+Date:   Wed, 13 Oct 2021 04:19:18 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     linux-mm@kvack.org, Kent Overstreet <kent.overstreet@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 00/11] PageSlab: eliminate unnecessary compound_head()
+ calls
+Message-ID: <YWZQNj+axlIQrD5C@casper.infradead.org>
+References: <20211012180148.1669685-1-hannes@cmpxchg.org>
+ <YWXgrhRDIxcoBhA1@casper.infradead.org>
+ <YWXwXINogE0Qb0Ip@cmpxchg.org>
 MIME-Version: 1.0
-In-Reply-To: <1a8e8d73-b508-f90b-0d82-eb2da45a720e@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWXwXINogE0Qb0Ip@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_DEBUG_PREEMPT we observed reports like:
+On Tue, Oct 12, 2021 at 04:30:20PM -0400, Johannes Weiner wrote:
+> On Tue, Oct 12, 2021 at 08:23:26PM +0100, Matthew Wilcox wrote:
+> > On Tue, Oct 12, 2021 at 02:01:37PM -0400, Johannes Weiner wrote:
+> > > PageSlab() currently imposes a compound_head() call on all callsites
+> > > even though only very few situations encounter tailpages. This short
+> > > series bubbles tailpage resolution up to the few sites that need it,
+> > > and eliminates it everywhere else.
+> > > 
+> > > This is a stand-alone improvement. However, it's inspired by Willy's
+> > > patches to split struct slab from struct page. Those patches currently
+> > > resolve a slab object pointer to its struct slab as follows:
+> > > 
+> > > 	slab = virt_to_slab(p);		/* tailpage resolution */
+> > > 	if (slab_test_cache(slab)) {	/* slab or page alloc bypass? */
+> > > 		do_slab_stuff(slab);
+> > > 	} else {
+> > > 		page = (struct page *)slab;
+> > > 		do_page_stuff(page);
+> > > 	}
+> > > 
+> > > which makes struct slab an ambiguous type that needs to self-identify
+> > > with the slab_test_cache() test (which in turn relies on PG_slab in
+> > > the flags field shared between page and slab).
+> > > 
+> > > It would be preferable to do:
+> > > 
+> > > 	page = virt_to_head_page(p);	/* tailpage resolution */
+> > > 	if (PageSlab(page)) {		/* slab or page alloc bypass? */
+> > > 		slab = page_slab(page);
+> > > 		do_slab_stuff(slab);
+> > > 	} else {
+> > > 		do_page_stuff(page);
+> > > 	}
+> > > 
+> > > and leave the ambiguity and the need to self-identify with struct
+> > > page, so that struct slab is a strong and unambiguous type, and a
+> > > non-NULL struct slab encountered in the wild is always a valid object
+> > > without the need to check another dedicated flag for validity first.
+> > > 
+> > > However, because PageSlab() currently implies tailpage resolution,
+> > > writing the virt->slab lookup in the preferred way would add yet more
+> > > unnecessary compound_head() call to the hottest MM paths.
+> > > 
+> > > The page flag helpers should eventually all be weaned off of those
+> > > compound_head() calls for their unnecessary overhead alone. But this
+> > > one in particular is now getting in the way of writing code in the
+> > > preferred manner, and bleeding page ambiguity into the new types that
+> > > are supposed to eliminate specifically that. It's ripe for a cleanup.
+> > 
+> > So what I had in mind was more the patch at the end (which I now realise
+> > is missing the corresponding changes to __ClearPageSlab()).  There is,
+> > however, some weirdness with kfence, which appears to be abusing PageSlab
+> > by setting it on pages which are not slab pages???
+> > 
+> > 	page = virt_to_page(p);
+> > 	if (PageSlab(page)) {		/* slab or page alloc bypass? */
+> > 		slab = page_slab(page);	/* tail page resolution */
+> > 		do_slab_stuff(slab);
+> > 	} else {
+> > 		do_page_stuff(page); /* or possibly compound_head(page) */
+> > 	}
+> 
+> Can you elaborate why you think this would be better?
+> 
+> If the object is sitting in a tailpage, the flag test itself could
+> avoid the compound_head(), but at the end of the day it's the slab or
+> the headpage that needs to be operated on in the fastpaths, and we
+> need to do the compound_head() whether the flag is set or not.
+> 
+> I suppose it could make some debugging checks marginally cheaper?
+> 
+> But OTOH it comes at the cost of the flag setting and clearing loops
+> in the slab allocation path, even when debugging checks are disabled.
+> 
+> And it would further complicate the compound page model by introducing
+> another distinct flag handling scheme (would there be other users for
+> it?). The open-coded loops as a means to ensure flag integrity seem
+> error prone; but creating Set and Clear variants that encapsulate the
+> loops sounds like a move in the wrong direction, given the pain the
+> compound_head() alone in them has already created.
 
-  BUG: using smp_processor_id() in preemptible
-  caller is perf_ftrace_function_call+0x6f/0x2e0
-  CPU: 1 PID: 680 Comm: a.out Not tainted
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x8d/0xcf
-   check_preemption_disabled+0x104/0x110
-   ? optimize_nops.isra.7+0x230/0x230
-   ? text_poke_bp_batch+0x9f/0x310
-   perf_ftrace_function_call+0x6f/0x2e0
-   ...
-   __text_poke+0x5/0x620
-   text_poke_bp_batch+0x9f/0x310
+I see this as a move towards the dynamically allocated future.
+In that future, I think we'll do something like:
 
-This telling us the CPU could be changed after task is preempted, and
-the checking on CPU before preemption will be invalid.
+static inline struct slab *alloc_slab_pages(...)
+{
+	struct page *page;
+	struct slab *slab = kmalloc(sizeof(struct slab), gfp);
+	if (!slab)
+		return -ENOMEM;
+	... init slab ...
+	page = palloc(slab, MEM_TYPE_SLAB, node, gfp, order);
+	if (!page) {
+		kfree(slab);
+		return -ENOMEM;
+	}
+	slab->virt = page_address(page);
 
-Since now ftrace_test_recursion_trylock() will help to disable the
-preemption, this patch just do the checking after trylock() to address
-the issue.
+	return slab;
+}
 
-CC: Steven Rostedt <rostedt@goodmis.org>
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
----
- kernel/trace/trace_event_perf.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+where palloc() does something like:
 
-diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-index 6aed10e..fba8cb7 100644
---- a/kernel/trace/trace_event_perf.c
-+++ b/kernel/trace/trace_event_perf.c
-@@ -441,13 +441,13 @@ void perf_trace_buf_update(void *record, u16 type)
- 	if (!rcu_is_watching())
- 		return;
+	unsigned long page_desc = mem_type | (unsigned long)mem_desc;
 
--	if ((unsigned long)ops->private != smp_processor_id())
--		return;
--
- 	bit = ftrace_test_recursion_trylock(ip, parent_ip);
- 	if (bit < 0)
- 		return;
+	... allocates the struct pages ...
 
-+	if ((unsigned long)ops->private != smp_processor_id())
-+		goto out;
-+
- 	event = container_of(ops, struct perf_event, ftrace_ops);
+	for (i = 0; i < (1 << order); i++)
+		page[i] = page_desc;
+	
+	return page;
+}
 
- 	/*
--- 
-1.8.3.1
 
+For today, testing PageSlab on the tail page helps the test proceed
+in parallel with the action.  Looking at slub's kfree() for an example:
+
+        page = virt_to_head_page(x);
+        if (unlikely(!PageSlab(page))) {
+                free_nonslab_page(page, object);
+                return;
+        }
+        slab_free(page->slab_cache, page, object, NULL, 1, _RET_IP_);
+
+Your proposal is certainly an improvement (since gcc doesn't know
+that compound_head(compound_head(x)) == compound_head(x)), but I
+think checking on the tail page is even better:
+
+	page = virt_to_page(x);
+	if (unlikely(!PageSlab(page))) {
+		free_nonslab_page(compound_head(page), object);
+		return;
+	}
+	slab = page_slab(page);
+	slab_free(slab->slab_cache, slab, object, NULL, 1, _RET_IP_);
+
+The compound_head() parts can proceed in parallel with the check of
+PageSlab().
+
+As far as the cost of setting PageSlab, those cachelines are already
+dirty because we set compound_head on each of those pages already
+(or in the case of freeing, we're about to clear compound_head on
+each of those pages).
+
+> > There could also be a PageTail check in there for some of the cases --
+> > catch people doing something like:
+> > 	kfree(kmalloc(65536, GFP_KERNEL) + 16384);
+> > which happens to work today, but should probably not.
+> 
+> I actually wondered about that when looking at the slob code. Its
+> kfree does this:
+> 
+> 	sp = virt_to_page(block);
+> 	if (PageSlab(compound_head(sp))) {
+> 		int align = max_t(size_t, ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN);
+> 		unsigned int *m = (unsigned int *)(block - align);
+> 		slob_free(m, *m + align);
+> 	} else {
+> 		unsigned int order = compound_order(sp);
+> 		mod_node_page_state(page_pgdat(sp), NR_SLAB_UNRECLAIMABLE_B,
+> 				    -(PAGE_SIZE << order));
+> 		__free_pages(sp, order);
+> 
+> 	}
+> 
+> Note the virt_to_page(), instead of virt_to_head_page(). It does test
+> PG_slab correctly, but if this is a bypass page, it operates on
+> whatever tail page the kfree() argument points into. If you did what
+> you write above, it would leak the pages before the object.
+
+slob doesn't have to be as careful because it falls back to the page
+allocator for all allocations > PAGE_SIZE (see calls to
+slob_new_pages())
