@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C4842B0E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6004D42B0E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234787AbhJMARI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 20:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233546AbhJMARH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 20:17:07 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E798C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:15:05 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id y12so2782335eda.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:15:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k45RlmlAaGBhyanz62XVynKsrYMLkebENznbPDj5sVg=;
-        b=PABXwIUguT5icS4wpRPu1JHzn9c0/tkhD/v57MEsnBL9F+9RgkYhRB/LS0h4zV5hsY
-         8XYk5eOXwIQLYSoFc5XRn1CSuCzYDgsAcALBOQY70Ogy8leYEti4oUaZ8F79y8QfaUJB
-         xmxiLlRDfq+WQgZ1rN4a8toZeh8JF9XVftR1lrIpl9Q1/qRl4KAuZIouWPgd07oUltP4
-         iWU117MuoloJiuoIsDgxUUrM06h0+0xJWmPkfQTPRnH+X2d4uPmaveo6x+jLgdq/lLHf
-         iT4f0dTtSchAWk3BajNapLVGMoLfJq3/WZkf/rqeT5sRszXV9rIK/eg03BZ1Ke3RESom
-         LRVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k45RlmlAaGBhyanz62XVynKsrYMLkebENznbPDj5sVg=;
-        b=zBrrGgdMvVFVu8WsDSYJPdCz/7DC/59eNHa/95uxK6wmjJqgXBA8AQPnSpT4yJ0VVA
-         DZllsKCurdVUNQCjU9EJzg47CSI03dENLq1bB2euU7IHFqNJ0hT0Vd+c/uPwgWqCvo0E
-         y2sw2wW1hoidns7oVToa9kI13Q/dWqBzOHvBxS/GpAZZbDp9OAwGQlQlTKEHTBOQp9IX
-         kKFawyh41JMQ2NHQId3/xjdEM8LBwYE6j26qKZ7k4zt8pxtsvuC/Do1Cw1SYbx3ccDEE
-         c3+v8m4flnSXh0JZ9PJDXzm5CtX/kzYoaSfVOdy2vow68t9s6T4CVcDBR4PAiqJEZZBn
-         DDFw==
-X-Gm-Message-State: AOAM5333meqoeH8X3rKvDZXe3gCSwI/cRmGRY2V7uFsjwhBcqCNcANQ2
-        rYrMnsffZcjcpwbLTz/U3BxkAucJfnXqxr6Usl4eaA58
-X-Google-Smtp-Source: ABdhPJzXVKj8PQPYA7eRKaS1ZaXZbhjLzQsPW54s2aDQgexslT0oigZ3wST7XX/ySt1Uj33jnHu/e63NrYh8VqYYAiU=
-X-Received: by 2002:a17:906:540f:: with SMTP id q15mr36921869ejo.189.1634084103683;
- Tue, 12 Oct 2021 17:15:03 -0700 (PDT)
+        id S234350AbhJMASH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 20:18:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233128AbhJMASE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 20:18:04 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80DF1604DA;
+        Wed, 13 Oct 2021 00:16:01 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 20:15:59 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Yordan Karadzhov <y.karadz@gmail.com>
+Subject: Re: [PATCH v2] tracing: Fix event probe removal from dynamic events
+Message-ID: <20211012201559.5f0ad249@gandalf.local.home>
+In-Reply-To: <20211013074611.ea157d4ed04d3c33290361f5@kernel.org>
+References: <20211012081925.0e19cc4f@gandalf.local.home>
+        <20211013074611.ea157d4ed04d3c33290361f5@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <1633518606-8298-1-git-send-email-hayashi.kunihiko@socionext.com>
-In-Reply-To: <1633518606-8298-1-git-send-email-hayashi.kunihiko@socionext.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 13 Oct 2021 02:14:52 +0200
-Message-ID: <CACRpkdZuJDPTi8dL-PpkTVe9VHVjvHGO_f_x5CbBCoTjN_wwBQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] pinctrl: uniphier: Introduce some features and NX1 support
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 1:10 PM Kunihiko Hayashi
-<hayashi.kunihiko@socionext.com> wrote:
+On Wed, 13 Oct 2021 07:46:11 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-> This series includes the patches to add audio pinmux settings for LD11/LD20/PXs3
-> SoCs and basic pinmux settings for new UniPhier NX1 SoC. NX1 SoC also has
-> the same kinds of pinmux settings as the other UniPhier SoCs.
->
-> ---
-> Change since v1:
-> - Remove non-existent groups "usb2" and "usb3" in NX1 patch
+> The first argument check should be optional. If the event name matches and
+> the system name is NULL but argc == 0, it should return true.
+> (please consider it is a wild card like "-:*/EVENT *")
+> So if the argc == 0 please skip below and check the event name and
+> the system name.
 
-This v2 patch set applied.
+OK, so I'll make them all optional, but at least, if they are supplied,
+they will be checked.
 
-Rob's checker is complaining on patch 2 but that patch just adds
-a compatible so the warnings must be old? Please look into them
-anyways.
+That is, you can't add the options if you don't add the event as well. But
+if you do add the event, then it should work.
 
-Yours,
-Linus Walleij
+Basically, we have the following:
+
+ # echo 'e:hrstate timer/hrtimer_cancel state=+0x38($hrtimer):u8' >> dynamic_events
+ # cat dynamic_events
+eprobes/hrstate timer.hrtimer_cancel state=+0x38($hrtimer):u8
+
+Then the following should work:
+
+  # echo '-:hrstate timer/hrtimer_cancel state=+0x38($hrtimer):u8' >> dynamic_events
+  # echo '-:eprobes/hrstate timer.hrtimer_cancel state=+0x38($hrtimer):u8' >> dynamic_events
+  # echo '-:eprobes/hrstate timer.hrtimer_cancel' >> dynamic_events
+  # echo '-:eprobes/hrstate' >> dynamic_events
+
+But the following will not work:
+
+  # echo '-:hrstate state=+0x38($hrtimer):u8' >> dynamic_events
+  # echo '-:hrstate timer.hrtimer_cancel state=+0x38($hrtimer):u8' >> dynamic_events
+  # echo '-:hrstate timer.hrtimer_cancel' >> dynamic_events
+
+
+Should this work?
+
+  # echo '-:hrstate' >> dynamic_events
+
+-- Steve
