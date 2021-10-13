@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F1F42C8C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D1342C8C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238022AbhJMShW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 14:37:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229814AbhJMShV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 14:37:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D17E560F21;
-        Wed, 13 Oct 2021 18:35:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634150117;
-        bh=9Otllm2GC3gVjaVzNTWWyjCLCOdkUBQMvbyes4AWr7A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=TZ1hgMEieNxKVh5cK/xTkyTn161II9RBtSuwzvap2XAIWDC5IRQ+XIIj9OXuRjXU1
-         kOw8PX0y7ksY77hGOZHf4CvA4YMAYkbrw5Bm6fBs6hEJim5geLBFf0HqfiM5XGVC87
-         5gcaLEKynNJ9osbadNfjvDFDOJJWcxxepQY/jKygG7kBFHwdXqaxLdIPL21fmy3ew4
-         WEdeJ+DfeDfyGJSvznhCur9Mlnmhwcvtv8d5PF8oQ+1dW+1ljZlSJDBVQq321AXfVX
-         DRbYBQKSXydmYylkx3ZKuEurnwWnm9bTC8Ghh2DVZkU650OWxEDcoIZlPJVKH8Wtoi
-         M3SeiMcHbty4g==
-Date:   Wed, 13 Oct 2021 13:35:15 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        qizhong.cheng@mediatek.com, Ryan-JH.Yu@mediatek.com,
-        Tzung-Bi Shih <tzungbi@google.com>
-Subject: Re: [PATCH v2] PCI: mediatek-gen3: Disable DVFSRC voltage request
-Message-ID: <20211013183515.GA1907868@bhelgaas>
+        id S238590AbhJMSh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 14:37:27 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:46918 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238512AbhJMSh0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 14:37:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=HeNDgHWk/8ZTSHjpjWzNLsUIY0eWVZy3+9yFS87Uc4c=; b=ky5zsJ7h+Ld5fKmnS3LGc4Byxh
+        lhUhXulLLFEn2PBmzNv3daGsQhH2Ng6OSmjY52MzQClmgJteFWzjPY3kFehZq+oZSRJOoiGro8Sim
+        R+zm9WYNG2VR5ElCvp1UenmkPNBaje7nHXrxaXKolRQik6WEQTVaxnMjXyYPsRndx2dpxXaekZ+KU
+        mxS8dkCovzAWrDfAR8DxqR2s6gXVdB4pzxTd6zLaOWg01M5TywK4X/QM1o2b4xoaryEjFy71BCB9b
+        AtWY6cCq7+bD8oDo5SME9GECrWSTymCMDcJfmppDmJCLu4nzJFj9bjh2rzBD1mZUnGCObuhoSFk7d
+        sEBoefqA==;
+Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1maj60-0002uF-2Q; Wed, 13 Oct 2021 12:35:20 -0600
+To:     Bart Van Assche <bvanassche@acm.org>, linux-rdma@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+References: <20211013165942.89806-1-logang@deltatee.com>
+ <5eec6b1b-726e-b26d-bd82-f03fd5462b8f@acm.org>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <d32f9bc4-78a8-45ab-04e6-69aa6f1952e5@deltatee.com>
+Date:   Wed, 13 Oct 2021 12:35:19 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013075328.12273-1-jianjun.wang@mediatek.com>
+In-Reply-To: <5eec6b1b-726e-b26d-bd82-f03fd5462b8f@acm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.144.200
+X-SA-Exim-Rcpt-To: dledford@redhat.com, linux-kernel@vger.kernel.org, jgg@ziepe.ca, linux-rdma@vger.kernel.org, bvanassche@acm.org
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH] RDMA/core: Set sgtable nents when using
+ ib_dma_virt_map_sg()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 03:53:28PM +0800, Jianjun Wang wrote:
-> When the DVFSRC feature is not implemented, the MAC layer will
-> assert a voltage request signal when exit from the L1ss state,
-> but cannot receive the voltage ready signal, which will cause
-> the link to fail to exit the L1ss state correctly.
+
+
+
+On 2021-10-13 12:33 p.m., Bart Van Assche wrote:
+> On 10/13/21 9:59 AM, Logan Gunthorpe wrote:
+>> ib_dma_map_sgtable_attrs() should be mapping the sgls and setting nents
+>> but the ib_uses_virt_dma() path falls back to ib_dma_virt_map_sg()
+>> which will not set the nents in the sgtable.
+>>
+>> Check the return value (per the map_sg calling convention) and set
+>> sgt->nents appropriately on success.
+>>
+>> Link:
+>> https://lore.kernel.org/all/996fa723-18ef-d35b-c565-c9cb9dc2d5e1@acm.org/T/#u
+>>
+>> Reported-by: Bart Van Assche <bvanassche@acm.org>
+>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>> Tested-by: Bart Van Assche <bvanassche@acm.org>
 > 
-> Disable DVFSRC voltage request by default, we need to find
-> a common way to enable it in the future.
+> Does this patch need a "Fixes:" tag?
 
-Rewrap commit log to fill 75 columns.
+Right, yeah:
 
-Does "L1ss" above refer to L1.1 and L1.2?  If so, please say that
-explicitly or say something like "L1 PM Substates" (the term used in
-the PCIe spec) so it's clear.
+Fixes: 79fbd3e1241c ("RDMA: Use the sg_table directly and remove the
+opencoded version from umem")
 
-This seems on the boundary of PCIe-specified things and Mediatek
-implementation details, so I'm not sure what "DVFSRC," "MAC," and
-"voltage request signal" mean.  Since I don't recognize those terms,
-I'm guessing they are Mediatek-specific things.
-
-But if they are things specified by the PCIe spec, please use the
-exact names used in the spec.
-
-> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
-> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
-> Tested-by: Qizhong Cheng <qizhong.cheng@mediatek.com>
-> ---
->  drivers/pci/controller/pcie-mediatek-gen3.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
-> index f3aeb8d4eaca..79fb12fca6a9 100644
-> --- a/drivers/pci/controller/pcie-mediatek-gen3.c
-> +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
-> @@ -79,6 +79,9 @@
->  #define PCIE_ICMD_PM_REG		0x198
->  #define PCIE_TURN_OFF_LINK		BIT(4)
->  
-> +#define PCIE_MISC_CTRL_REG		0x348
-> +#define PCIE_DISABLE_DVFSRC_VLT_REQ	BIT(1)
-> +
->  #define PCIE_TRANS_TABLE_BASE_REG	0x800
->  #define PCIE_ATR_SRC_ADDR_MSB_OFFSET	0x4
->  #define PCIE_ATR_TRSL_ADDR_LSB_OFFSET	0x8
-> @@ -297,6 +300,11 @@ static int mtk_pcie_startup_port(struct mtk_pcie_port *port)
->  	val &= ~PCIE_INTX_ENABLE;
->  	writel_relaxed(val, port->base + PCIE_INT_ENABLE_REG);
->  
-> +	/* Disable DVFSRC voltage request */
-> +	val = readl_relaxed(port->base + PCIE_MISC_CTRL_REG);
-> +	val |= PCIE_DISABLE_DVFSRC_VLT_REQ;
-> +	writel_relaxed(val, port->base + PCIE_MISC_CTRL_REG);
-> +
->  	/* Assert all reset signals */
->  	val = readl_relaxed(port->base + PCIE_RST_CTRL_REG);
->  	val |= PCIE_MAC_RSTB | PCIE_PHY_RSTB | PCIE_BRG_RSTB | PCIE_PE_RSTB;
-> -- 
-> 2.25.1
-> 
+Logan
