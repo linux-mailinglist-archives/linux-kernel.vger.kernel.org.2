@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CC242BE2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899F142BE33
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhJMK7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
+        id S233854AbhJMK7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232498AbhJMK6a (ORCPT
+        with ESMTP id S233228AbhJMK6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:58:30 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FDCC061771
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:56:24 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso1959343pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:56:24 -0700 (PDT)
+        Wed, 13 Oct 2021 06:58:47 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EED7C061779
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:56:28 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id o133so2087308pfg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:56:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=z2sBrvxA3Mihi2vqUGXbJq+xZIOpCjvkxgHKQyKWO9M=;
-        b=dLxvEsOxnAJ/yiZvhLJAWdzUsjZx4F/hO8SG55sjqC0uoMeR5cKq8CRX6rctKV7T67
-         Jnys6dAYsj5lAOLQp7uBRdoyWZsJvcC9PIimn/onluhCZRb2JuuEotwod62vfk2svJN0
-         FYD3mJgXEgaXBT/qqliSdkQDC73Kr5MPVt02l+0OE1aVwSdKU80Nrd9auYlbcoMlWXPg
-         dW+FpGdBF+SjX9kHvmUMPAfpOKCkKP41ROJmArpxZ/8LzolH0WeLVXrdQXVQ50Mhx311
-         fCDBbsAvrNH63RX3hSSaPtxGTzzdqYWlskRYVOe+Pe3rxCTPoONuN/u0ax2AgjASAjCG
-         5z9Q==
+        bh=yw+NaHmS2OviUEGIWWfNtsmzD5nYySB6AIlogP5a/cQ=;
+        b=NHZlgl1GO0cd+Qmy2aII0kIzz8l5igxZ/oBSCb8LIlRTi4oglpg2DHBYrw7iJd6wfj
+         uHiagAUBP7IZCEQPqhL/EfyQtq5igzIaa3ULO8k4gCzyxoQ4dALhJ95/48z2Cyx14+WQ
+         m0GA1f670VwFJju8RMabpf7IKbitlkrWmQgifeFViFFK7MtPKD2gFeZEeUkQOF4GEGGQ
+         DyVWW1B2tlkKzr8Rtoj+04ThkYU95WXfjm1fVVtD9Obw+d/cFcpq/TguTIX1G1jGBRFn
+         WSH7GQ981etr9pv3klieXiMzITqXlpISAleuWF/fTMoP9C3t1bV8i9FMJ/nJTQ5ya/Dj
+         9scw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=z2sBrvxA3Mihi2vqUGXbJq+xZIOpCjvkxgHKQyKWO9M=;
-        b=rKFw9JfNBQqC+G8ToFKwf0+CbT3V4xEu9lifn7IDoeTPoW4HCHNv57pmrPEisJ9ksI
-         37zbgMWFraGLAcwJF6ru0lbP5gFIvw11OnXSvasenCG8nzSWctjADRsEpXJ2hlbh1Zhs
-         bFgN1Be1gOobiqjUW5CINqtmKBw5XsdN/5WKKByVs1V1C8PhCbif3i6BadVurFyD04dC
-         g+KWEY9GaUWQaMoIoUdCg7FiA2ofnQfvSWkxvHYv9Nh+XZ8y56vreVB8blbpViajlI/8
-         vYi4gcH5OxlJaeR72hec6J46CjOLJHqkobM0CmlRZNf2+tTiRpTJ3HQluKxFHXIxPX4p
-         uvSw==
-X-Gm-Message-State: AOAM53314LA7N5K1j7AH1Qrfc/juZ7wyXt65VlmmLWV0sA2DWhWO806L
-        BD8xxA38u0jOMJ5sfBYwaz9SRw==
-X-Google-Smtp-Source: ABdhPJzS5MsQJ5G6pY/x5ilWe9j0Ca4cdetOxPcEMbiTwTVvfiYrezOs7OgcrbQRhYkzYJDvZNyTdw==
-X-Received: by 2002:a17:90b:4d8e:: with SMTP id oj14mr12663660pjb.160.1634122583633;
-        Wed, 13 Oct 2021 03:56:23 -0700 (PDT)
+        bh=yw+NaHmS2OviUEGIWWfNtsmzD5nYySB6AIlogP5a/cQ=;
+        b=Ce6xgPhcqu6Wg6C/96/20/5vnFbikxxmIjp7vN4ObSno+aIQ2vOobbtdHzTj38WrzO
+         Hzf6zCIvFNq6VFne7BlM8lHOS2hDzkH/qUie0uI42afSCaXeqFqQp02xBLvdtzOwoNRY
+         d+a18HGkRk1Exao3kvIAWeCFgSjPKoUY5QqWVnnsQTn2oRN5hqiTCRSIzYf6vcuEZfrD
+         VmZxXzgc9WtmIcgqDfHiWIkPPA6JFulcYOaL0WJhKspCmGtKLEtbPpKYuqaVAQlnooYd
+         WO01ApJVV+l5j4JP4zZBCetGQZvD+Yx4M/dk9jT0CT3Q+641TiDok7JSb4NaB6NPweOi
+         /QxA==
+X-Gm-Message-State: AOAM533uD8PCefwwkM8kTqt8zERIRgGzQ6wDoTObluYSmwP0O9zB7rr0
+        YNVK3Op5v0mvSSq2fdg81Ojjmg==
+X-Google-Smtp-Source: ABdhPJxzqL4Oa7ZbmxyxpW5LGLwTGJW1GLlz9jUKbAzBuQsfjVU/qIuo1CoqarWf7dm+D5vG1hzdSA==
+X-Received: by 2002:a63:f313:: with SMTP id l19mr27316800pgh.40.1634122588092;
+        Wed, 13 Oct 2021 03:56:28 -0700 (PDT)
 Received: from localhost.name ([122.161.48.68])
-        by smtp.gmail.com with ESMTPSA id b13sm6155351pjl.15.2021.10.13.03.56.19
+        by smtp.gmail.com with ESMTPSA id b13sm6155351pjl.15.2021.10.13.03.56.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 03:56:23 -0700 (PDT)
+        Wed, 13 Oct 2021 03:56:27 -0700 (PDT)
 From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
 To:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
 Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         robh+dt@kernel.org, agross@kernel.org, herbert@gondor.apana.org.au,
         davem@davemloft.net, Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH v4 06/20] dt-bindings: qcom-bam: Add 'iommus' to optional properties
-Date:   Wed, 13 Oct 2021 16:25:27 +0530
-Message-Id: <20211013105541.68045-7-bhupesh.sharma@linaro.org>
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v4 07/20] dt-bindings: qcom-qce: Convert bindings to yaml
+Date:   Wed, 13 Oct 2021 16:25:28 +0530
+Message-Id: <20211013105541.68045-8-bhupesh.sharma@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
 References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
@@ -67,46 +68,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 'optional' property - 'iommus' to the
-device-tree binding documentation for qcom-bam DMA IP.
-
-This property describes the phandle(s) to apps_smmu node
-with sid mask.
+Convert Qualcomm QCE crypto devicetree binding to YAML.
 
 Cc: Thara Gopinath <thara.gopinath@linaro.org>
 Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 ---
- .../devicetree/bindings/dma/qcom_bam_dma.yaml          | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../devicetree/bindings/crypto/qcom-qce.yaml  | 67 +++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/crypto/qcom-qce.yaml
 
-diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-index 602e68df971f..7c046a281fcd 100644
---- a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-+++ b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-@@ -53,6 +53,12 @@ properties:
-   interconnect-names:
-     const: memory
- 
-+  iommus:
-+    minItems: 1
-+    maxItems: 8
-+    description: |
-+      phandle(s) to apps_smmu node with sid mask.
+diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+new file mode 100644
+index 000000000000..b7ae873dc943
+--- /dev/null
++++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+@@ -0,0 +1,67 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/crypto/qcom-qce.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-   qcom,ee:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description:
-@@ -94,4 +100,8 @@ examples:
-         clock-names = "bam_clk";
-         #dma-cells = <1>;
-         qcom,ee = <0>;
-+        iommus = <&apps_smmu 0x584 0x0011>,
-+                 <&apps_smmu 0x586 0x0011>,
-+                 <&apps_smmu 0x594 0x0011>,
-+                 <&apps_smmu 0x596 0x0011>;
-     };
++title: Qualcomm crypto engine driver
++
++maintainers:
++  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
++
++description: |
++  This document defines the binding for the QCE crypto
++  controller found on Qualcomm parts.
++
++properties:
++  compatible:
++    const: qcom,crypto-v5.1
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: iface clocks register interface.
++      - description: bus clocks data transfer interface.
++      - description: core clocks rest of the crypto block.
++
++  clock-names:
++    items:
++      - const: iface
++      - const: bus
++      - const: core
++
++  dmas:
++    items:
++      - description: DMA specifiers for tx dma channel.
++      - description: DMA specifiers for rx dma channel.
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - dmas
++  - dma-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,gcc-apq8084.h>
++    crypto-engine@fd45a000 {
++        compatible = "qcom,crypto-v5.1";
++        reg = <0xfd45a000 0x6000>;
++        clocks = <&gcc GCC_CE2_AHB_CLK>,
++                 <&gcc GCC_CE2_AXI_CLK>,
++                 <&gcc GCC_CE2_CLK>;
++        clock-names = "iface", "bus", "core";
++        dmas = <&cryptobam 2>, <&cryptobam 3>;
++        dma-names = "rx", "tx";
++    };
 -- 
 2.31.1
 
