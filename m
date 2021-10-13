@@ -2,133 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8A242BCD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0EA42BCD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239375AbhJMKcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
+        id S239378AbhJMKcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239036AbhJMKcM (ORCPT
+        with ESMTP id S239036AbhJMKcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:32:12 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615ACC061570;
-        Wed, 13 Oct 2021 03:30:08 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id y12so8221644eda.4;
-        Wed, 13 Oct 2021 03:30:08 -0700 (PDT)
+        Wed, 13 Oct 2021 06:32:52 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50534C061570;
+        Wed, 13 Oct 2021 03:30:49 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id v17so6611306wrv.9;
+        Wed, 13 Oct 2021 03:30:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=y/rnqiiRDqzhToYNQ2Zuvuqbkbv5/WaDX5sqgB4Xrno=;
-        b=Jj86qHBhhjlKiPDP7CjiDwa3rXVoGd38psAEjP9nnnGjHqsZ6KyPzsMvLr/y1ZtBq3
-         SPap+O09GBgNCsF4KtMo0HDfjtGGHrhiIEJLH2OM+fpeNCtWsyRkenG/CNcEBgC9I5QJ
-         pF3w4/RvuVplPCiEjB2l3haCyBtqmyjEymOwsYjzj2WDzo8csLhW8WPmlpnM7Te6tFpu
-         Bf0c+bR1FkgM8wa4pMLgZa6W9RRE1HqpEm3rpZ7jmF9teFL82zYEP4IGOmjh7bhfpxFA
-         EBzuXPgODZGqfoeebSIEnlR38UhDlWimz5u2A2BCpphsOu9wsHm4FfijGEvswqMLkPxQ
-         nu2g==
+        bh=zGInbL+PJQYpMOr1raJ7pJXi1nSy8DXAxDMHDzmS0O0=;
+        b=DKFNzwr1Lo5R4tVSGHvmocdC2aoh8sgC9FiaMRgKEVcZfYoqAtcb/gGRZemltj/AhW
+         w9K/wBsx3d1ex447aHR57z8USrwU8xJk/7ymQ1OF8YM7MiwgfSXqkIel9Jd6oujiWe9z
+         C7kS19BYfweD4npCMLm+N7ydadMlFu/ugYCrFr6zEBndhxKNF48yMjNmNQw7HgQHET+i
+         LVIq6TiGaI6gQr7iMiZRoNKk4K6oJ0+5yXsjaMq1fkzBdDbaN5UQqcQ+3q6EKDnJF7hA
+         gRF0Nb7gAHKcea0aX14zDY/h7RnJ819lgNAuxXNPwnE5R6gru+BNPktJf8ZA4FZAsFLL
+         AmbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=y/rnqiiRDqzhToYNQ2Zuvuqbkbv5/WaDX5sqgB4Xrno=;
-        b=zwqCwqw1E6hYEZpUjSVTU7uZqo/1Tfa6aXzehw/G32lYAv6XrwS0KiUI7AabLdv/AZ
-         lTc/kmMFhACzLxjGats0755rgZu4jmcsySRx2WCvpAT8sdd/wjx1W592TwVMw/2ZBgwI
-         p2unMd1BZupKCNle5uVhjohLkFfaBwaadFodUCgsC2aOE+WqORbXgm9NX41d0h0qjEIp
-         Kn9apkqN8Mip9ajzNCTiFd/HhwdQg2ai19p2thoidSFzOvEWy+FuHeAnDdM52FmBGjcL
-         UST11J8wgHFvBlup3rCKGznExWcI1h8KKbnqyJzxYk4xSFdyUmkek8Vs6H9RCmIqc37h
-         aojQ==
-X-Gm-Message-State: AOAM533tRNa/+J/mus+4tXqyM62U0/vpIts4+ggqy9Iw6octpHxNOJ2o
-        3XUCrbIh24i1+8Z3erw7pDg=
-X-Google-Smtp-Source: ABdhPJyz3L+DI2qSA77Phw1w3Asc0E2qWte8XGDO3iCC/qA5s5ah4fZ6hEl79BhG1vwc6Lx7oII4iw==
-X-Received: by 2002:a17:906:1707:: with SMTP id c7mr37987499eje.377.1634121006829;
-        Wed, 13 Oct 2021 03:30:06 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id h18sm6430351ejt.29.2021.10.13.03.30.05
+        bh=zGInbL+PJQYpMOr1raJ7pJXi1nSy8DXAxDMHDzmS0O0=;
+        b=sDxF0pqrxdip8JGRu6Fs0qZ8UShcvqbjg6inJxC+PRqhZ0TKxDoMrwwu3xLLBaufHe
+         DHADNGVki0f12tXt+luFi8EhvJRPQT1uaIccTH/hf6EuOc/E7fwLacIYQlPa1Ou0pbXS
+         dFGhnlNCJFHgdSFv0oTzSbT8G8/jA9o/5nNZjIt7sXUsgIVU+6CXSPsH5piNjZLxluS4
+         qDLDjCycu+m6M34q87f4aTEqoILn88M5OM52j21ZXMyJEMTQfXLZ0edCfOBxO/FvXwRf
+         5fLUJNkSrxNF9Kg11TozVTDIBm9WjRvefgtqw+pGkPFd50VkX0mixSyylfn/LyNExGs9
+         MopQ==
+X-Gm-Message-State: AOAM531ry925H3lZRFmc9kbnSofyILEMdnxdw0tWprjm0vxTZxyY9oem
+        uwkYwGzFIT1c01jX0h/1tXM=
+X-Google-Smtp-Source: ABdhPJw78G3tKjNnagGB2A04xXOmjJyJpJiq7bSBjovXQCwYfDfDJ7ykZSywcE3JmjM0XDrZbavkJA==
+X-Received: by 2002:a5d:6d51:: with SMTP id k17mr28923969wri.233.1634121047691;
+        Wed, 13 Oct 2021 03:30:47 -0700 (PDT)
+Received: from debian ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id u5sm13545527wrg.57.2021.10.13.03.30.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 03:30:06 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 12:30:03 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        netdev@vger.kernel.org, Matthew Hagan <mnhagan88@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [net-next PATCH v6 15/16] dt-bindings: net: dsa: qca8k: convert
- to YAML schema
-Message-ID: <YWa1KwlM2SFP5jM0@Ansuel-xps.localdomain>
-References: <20211013011622.10537-1-ansuelsmth@gmail.com>
- <20211013011622.10537-16-ansuelsmth@gmail.com>
- <1634094529.487895.3858822.nullmailer@robh.at.kernel.org>
+        Wed, 13 Oct 2021 03:30:47 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 11:30:45 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/27] 4.19.211-rc3 review
+Message-ID: <YWa1VYf/wxJsKFbz@debian>
+References: <20211012093340.313468813@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1634094529.487895.3858822.nullmailer@robh.at.kernel.org>
+In-Reply-To: <20211012093340.313468813@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 10:08:49PM -0500, Rob Herring wrote:
-> On Wed, 13 Oct 2021 03:16:21 +0200, Ansuel Smith wrote:
-> > From: Matthew Hagan <mnhagan88@gmail.com>
-> > 
-> > Convert the qca8k bindings to YAML format.
-> > 
-> > Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-> > Co-developed-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >  .../devicetree/bindings/net/dsa/qca8k.txt     | 245 ------------
-> >  .../devicetree/bindings/net/dsa/qca8k.yaml    | 362 ++++++++++++++++++
-> >  2 files changed, 362 insertions(+), 245 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> >  create mode 100644 Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-> > 
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> ./Documentation/devicetree/bindings/net/dsa/qca8k.yaml:362:7: [error] no new line character at the end of file (new-line-at-end-of-file)
->
+Hi Greg,
 
-Stupid me will fix that...
+On Tue, Oct 12, 2021 at 11:36:57AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.211 release.
+> There are 27 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 14 Oct 2021 09:33:32 +0000.
+> Anything received after that time might be too late.
 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/qcom,ipq8064-mdio.example.dt.yaml: switch@10: 'oneOf' conditional failed, one must be fixed:
-> 	'ports' is a required property
-> 	'ethernet-ports' is a required property
-> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
-> 
+Build test:
+mips (gcc version 11.2.1 20211012): 63 configs -> no failure
+arm (gcc version 11.2.1 20211012): 116 configs -> no new failure
+arm64 (gcc version 11.2.1 20211012): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
 
-About this i fixed with the next patch. Should I include that in this
-patch? Or i can ignore this error?
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
 
-> doc reference errors (make refcheckdocs):
-> 
-> See https://patchwork.ozlabs.org/patch/1540096
-> 
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
-> 
+[1]. https://openqa.qa.codethink.co.uk/tests/252
 
--- 
-	Ansuel
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
+
