@@ -2,190 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51ADE42CD0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC7942CD11
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhJMVsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 17:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhJMVsT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 17:48:19 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A9DC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:46:13 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id y15so17942641lfk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rUPiHKYI3IiGHt/c4QX+xoO8xtC6xojKkJlCXULl4So=;
-        b=oAT8fjoxBlZc8GrTTmtA1uwkBPdy+udSVS2eT4Dy8Y4EZ9ys1gwAsfS1a90rPCHz7l
-         c3bGuhJFzXZ9YrtwsQcHSmvFjQ5aY22W0l04mAwbWtv5wWpgRDwAkajRti9AdoeMULgi
-         6LcTe5nVpC5XaxUb59ZLTlMOC7X5LitH11Exs5NI7OOeGyxxCasLXeggEA/uT7YWQeNp
-         yCFfyFi6BjRH8g2vIa/7r7oY0qefqTCNABotM1SFV429zk7bXpYoglX1CXaxZSODHHa4
-         hJs/DwEYxQG+DJO8Y0G70oN3P96WQgD4dMonc+lspAGUJucUhsf5+7+6DXwE/h+lY66i
-         dWFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rUPiHKYI3IiGHt/c4QX+xoO8xtC6xojKkJlCXULl4So=;
-        b=4LlTPy99S7/r/5cxu92VHIcJlqlq6WpiaDz7d8ZJust70mPXYQObuqas3gpPy2XP5U
-         JkgGJFJTSXErnNATmIoUxIiGzjbQX49oowUQr9CJvCiveFmnaX5m5M39EOd8tEF/2sWD
-         8wNvfpNcCGRqPHjyE9iooU6BA0twLYtFtZVy+h7/hF13BqAjwg+tf7WMK6fCjNynKqZn
-         4zqUgZuclie7xNxUE/3K/wGArCBV7BXv96OrYzDgktYB2Ws5OzXYY+SPyY9MwDNlzXzK
-         EbgCXDVT6CIkzq9yBXcecAyCYg+MXa5vseKpGrCsfSSqJzHjKf+6NXILJ6VhBmJZGZPO
-         6NjQ==
-X-Gm-Message-State: AOAM53160HP3FppTVfLGv8FOM0Oz6rIURmS2fhba5KKU5+dukDb+V4+j
-        pR6ggMtmLk05WMchEAerwjgMB+IRp2FTWnJsMOfUlA==
-X-Google-Smtp-Source: ABdhPJzYms6VDxNHTH25y6Ve9ZEiVkyoTDg2NOKHPGX4etB6OuHBPtqSDrppQ/lQsLO+qDJnBVmyTJSatPF1JNA1FcU=
-X-Received: by 2002:a05:6512:3b0a:: with SMTP id f10mr1512755lfv.8.1634161571450;
- Wed, 13 Oct 2021 14:46:11 -0700 (PDT)
+        id S230176AbhJMVuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 17:50:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229702AbhJMVuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 17:50:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD34061181;
+        Wed, 13 Oct 2021 21:47:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634161677;
+        bh=cPY8ryDhLA2mu3sMc9RHB2Q8pgUZLXNuVxNhYKTPEk0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Nio1CztCHhWTi0BI5AR5CBt1wFq+qAjZVsFNrlIjgGXhyI8WHbk0EpVJmWGDKCAZf
+         IinbvKZbu4f4dheNeXCrTFx+QPhASMpsqsdeI5V3wA2b7EIMk3rnpC77Xo0F2XyqO2
+         GA3Wa8hwAv2h3UKpv3t8poqhlOwamHAqtVzXY5o9XheG7ej8i3WR3a1bC17M3K7014
+         zRVH6qCoB26M8vkXvDfTaV/ZBV6/ttEl2VO12jJk7HkreWJSeTt+E/diNdAMrDzVCD
+         hPn7onSyFeBII68ENIuO+TwfMJx7rba6SOC/aSn69/hkFAgIzRKgIFvFwpxJEMBoCe
+         rY1EP5xH/jjtw==
+Received: by mail-ed1-f43.google.com with SMTP id p13so16251799edw.0;
+        Wed, 13 Oct 2021 14:47:57 -0700 (PDT)
+X-Gm-Message-State: AOAM533komsgYqulm5dI2yr3JaFpgFyhmObqi4HDTLX+OrR6tptakxSY
+        nuBCHh+af08pZE2JbefI2fAv7q8R+bmBz566wQ==
+X-Google-Smtp-Source: ABdhPJwiBpU9yR4Vs0CAGCioOsvMBU7iOl6cYtpWf3W8rRu5D2a/sa79oRT0vzePLOZp1n7ArGD0YMYncTJqW+EN28I=
+X-Received: by 2002:a05:6402:27d3:: with SMTP id c19mr2848152ede.70.1634161676053;
+ Wed, 13 Oct 2021 14:47:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210928121040.2547407-1-chenwandun@huawei.com>
-In-Reply-To: <20210928121040.2547407-1-chenwandun@huawei.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 13 Oct 2021 14:46:00 -0700
-Message-ID: <CALvZod4G3SzP3kWxQYn0fj+VgG-G3yWXz=gz17+3N57ru1iajw@mail.gmail.com>
-Subject: Re: [PATCH] mm/vmalloc: fix numa spreading for large hash tables
-To:     Chen Wandun <chenwandun@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, guohanjun@huawei.com
+References: <YWS1QtNJh7vPCftH@robh.at.kernel.org> <20211013024355.GA1865721@bhelgaas>
+ <CAL_JsqLobP9MM0EFnof_nDOBrox=gKH3xe3EQbqPceq8pRRgyA@mail.gmail.com> <20211013171653.zx4sxdzhvy2ujytd@theprophet>
+In-Reply-To: <20211013171653.zx4sxdzhvy2ujytd@theprophet>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 13 Oct 2021 16:47:43 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL0d4qOR+wsnpdRUc+EQ6_diUzPbMj3Tv-Ly29or6Asvw@mail.gmail.com>
+Message-ID: <CAL_JsqL0d4qOR+wsnpdRUc+EQ6_diUzPbMj3Tv-Ly29or6Asvw@mail.gmail.com>
+Subject: Re: [PATCH 02/22] PCI: Unify PCI error response checking
+To:     Naveen Naidu <naveennaidu479@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 5:03 AM Chen Wandun <chenwandun@huawei.com> wrote:
+On Wed, Oct 13, 2021 at 12:17 PM Naveen Naidu <naveennaidu479@gmail.com> wrote:
 >
-> Eric Dumazet reported a strange numa spreading info in [1], and found
-> commit 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings") introduced
-> this issue [2].
+> On 13/10, Rob Herring wrote:
+> > On Tue, Oct 12, 2021 at 9:43 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > >
+> > > [+cc Pali]
+> > >
+> > > On Mon, Oct 11, 2021 at 05:05:54PM -0500, Rob Herring wrote:
+> > > > On Mon, Oct 11, 2021 at 11:08:32PM +0530, Naveen Naidu wrote:
+> > > > > An MMIO read from a PCI device that doesn't exist or doesn't respond
+> > > > > causes a PCI error.  There's no real data to return to satisfy the
+> > > > > CPU read, so most hardware fabricates ~0 data.
+> > > > >
+> > > > > Use SET_PCI_ERROR_RESPONSE() to set the error response and
+> > > > > RESPONSE_IS_PCI_ERROR() to check the error response during hardware
+> > > > > read.
+> > > > >
+> > > > > These definitions make error checks consistent and easier to find.
+> > > > >
+> > > > > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> > > > > ---
+> > > > >  drivers/pci/access.c | 22 +++++++++++-----------
+> > > > >  1 file changed, 11 insertions(+), 11 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/pci/access.c b/drivers/pci/access.c
+> > > > > index 46935695cfb9..e1954bbbd137 100644
+> > > > > --- a/drivers/pci/access.c
+> > > > > +++ b/drivers/pci/access.c
+> > > > > @@ -81,7 +81,7 @@ int pci_generic_config_read(struct pci_bus *bus, unsigned int devfn,
+> > > > >
+> > > > >     addr = bus->ops->map_bus(bus, devfn, where);
+> > > > >     if (!addr) {
+> > > > > -           *val = ~0;
+> > > > > +           SET_PCI_ERROR_RESPONSE(val);
+> > > >
+> > > > This to me doesn't look like kernel style. I'd rather see a define
+> > > > replace just '~0', but I defer to Bjorn.
+> > > >
+> > > > >             return PCIBIOS_DEVICE_NOT_FOUND;
+> > > >
+> > > > Neither does this using custom error codes rather than standard Linux
+> > > > errno. I point this out as I that's were I'd start with the config
+> > > > accessors. Though there are lots of occurrences so we'd need a way to do
+> > > > this in manageable steps.
+> > >
+> > > I would love to see PCIBIOS_* confined to arch/x86 and everywhere else
+> > > using standard Linux error codes.
+> >
 >
-> Dig into the difference before and after this patch, page allocation has
-> some difference:
->
-> before:
-> alloc_large_system_hash
->     __vmalloc
->         __vmalloc_node(..., NUMA_NO_NODE, ...)
->             __vmalloc_node_range
->                 __vmalloc_area_node
->                     alloc_page /* because NUMA_NO_NODE, so choose alloc_page branch */
->                         alloc_pages_current
->                             alloc_page_interleave /* can be proved by print policy mode */
->
-> after:
-> alloc_large_system_hash
->     __vmalloc
->         __vmalloc_node(..., NUMA_NO_NODE, ...)
->             __vmalloc_node_range
->                 __vmalloc_area_node
->                     alloc_pages_node /* choose nid by nuam_mem_id() */
->                         __alloc_pages_node(nid, ....)
->
-> So after commit 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings"),
-> it will allocate memory in current node instead of interleaving allocate
-> memory.
->
-> [1]
-> https://lore.kernel.org/linux-mm/CANn89iL6AAyWhfxdHO+jaT075iOa3XcYn9k6JJc7JR2XYn6k_Q@mail.gmail.com/
->
-> [2]
-> https://lore.kernel.org/linux-mm/CANn89iLofTR=AK-QOZY87RdUZENCZUT4O6a0hvhu3_EwRMerOg@mail.gmail.com/
->
-> Fixes: 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings")
-> Reported-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
-> ---
->  mm/vmalloc.c | 33 ++++++++++++++++++++++++++-------
->  1 file changed, 26 insertions(+), 7 deletions(-)
->
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index f884706c5280..48e717626e94 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2823,6 +2823,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->                 unsigned int order, unsigned int nr_pages, struct page **pages)
->  {
->         unsigned int nr_allocated = 0;
-> +       struct page *page;
-> +       int i;
->
->         /*
->          * For order-0 pages we make use of bulk allocator, if
-> @@ -2833,6 +2835,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->         if (!order) {
+> Digging through the mailing list, I see that something similar was
+> attempted here
+> https://lists.ozlabs.org/pipermail/linuxppc-dev/2020-July/214437.html
+> which did not move forward because there were a lot of moving parts (I
+> guess). But reading through the thread did give me an overview of what
+> we might wanna do.
 
-Can you please replace the above with if (!order && nid != NUMA_NO_NODE)?
+Skimming it, looks like good advice from Arnd on what to do or not do.
 
->                 while (nr_allocated < nr_pages) {
->                         unsigned int nr, nr_pages_request;
-> +                       page = NULL;
+> The thread does bring up a good point, about not returning any error
+> values in pci_read_config_*() and converting the function definition to
+> something like
 >
->                         /*
->                          * A maximum allowed request is hard-coded and is 100
-> @@ -2842,9 +2845,23 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->                          */
->                         nr_pages_request = min(100U, nr_pages - nr_allocated);
+>   void pci_read_config_word(struct pci_dev *dev, int where, u16 *val)
 >
+> The reason stated in the thread was that, the error values returned from
+> these functions are either ignored or are not used properly. And
+> whenever an error occurs, the error value ~0 is anyway stored in val, we
+> could use that to test errors.
 
-Undo the following change in this if block.
+Presumably, there could be some register somewhere where all 1s is
+valid? So I think we need the error values.
 
-> -                       nr = alloc_pages_bulk_array_node(gfp, nid,
-> -                               nr_pages_request, pages + nr_allocated);
-> -
-> +                       if (nid == NUMA_NO_NODE) {
-> +                               for (i = 0; i < nr_pages_request; i++) {
-> +                                       page = alloc_page(gfp);
-> +                                       if (page)
-> +                                               pages[nr_allocated + i] = page;
-> +                                       else {
-> +                                               nr = i;
-> +                                               break;
-> +                                       }
-> +                               }
-> +                               if (i >= nr_pages_request)
-> +                                       nr = nr_pages_request;
-> +                       } else {
-> +                               nr = alloc_pages_bulk_array_node(gfp, nid,
-> +                                                       nr_pages_request,
-> +                                                       pages + nr_allocated);
-> +                       }
->                         nr_allocated += nr;
->                         cond_resched();
->
-> @@ -2863,11 +2880,13 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+Also, I seem to recall only the vendor/device IDs are defined to be
+all 1s for non-existent devices. Other errors are undefined?
 
-Put the following line under "else if (order)"
+> Ref:
+> https://lists.ozlabs.org/pipermail/linuxppc-dev/2020-July/214562.html
+>
+> I bring this point because Pali mentioned that config read function can
+> return only PCIBIOS_SUCCESSFUL value.
+>
+> Maybe instead of us trying to change pci_read_config_word, we might
+> wanna start small with changing PCI_OP_READ and PCI_USER_READ_CONFIG
+> such that they would only ever return PCI_SUCCESFUL and if any these
+> config accessor defines detect any error they can fabricate the value ~0
+> for "val" argument.
+>
+> And at the caller site, instead of checking the return value of
+> PCI_OP_READ to detect errors, we could check the "val" for ~0 value.
+>
+> But I am unable to gauge, if we should take this task before we begin
+> the project of removing PCIBIOS_* OR if this should be done after we
+> compelete with PCIBIOS_* work.
+>
+> I guess the better question would be, if making PCI_OP_READ return only
+> PCI_SUCCESSFULL or converting it to a void, help the PCIBIOS_* work
+> easier?
+>
+> > Based on Pali's and your replies, I take it that these values
+> > originate in x86 firmware, so the x86 code needs to convert to Linux
+> > error codes and everywhere else can use Linux error codes everywhere.
+> >
+> > > That's probably a lot of work, but
+> > > Naveen has a lot of energy :)
+> >
+> > There's 210 in drivers/pci/, 62 in the rest of drivers/ and 437 in
+> > arch/. 332 are PCIBIOS_SUCCESSFUL which won't change values. Most of
+> > drivers/pci/ and arch/ returning the value while the rest of drivers/
+> > is comparing the returned value (mostly to PCIBIOS_SUCCESSFUL). There
+> > could be checks such as 'if (ret > 0)' which are harder to find. A
+> > coccinelle patch might be helpful here.
+> >
+> > I think we want to do things in the following order:
+> > - Rework any callers expecting a positive return value
+> > - Make the config accessor defines convert positive error codes to
+> > Linux error codes
+> > - Convert pci_ops implementations to Linux error codes one by one.
+> >
+>
+> Thank you very much for this list, this really helps me. I have been
+> starting at the screen since morning to come up with something like
+> this. IIUC, you mean:
+>
+> 1. When you mean "PCIBIOS_SUCCESSFUL which won't change values", did you
+>    mean to say, that we would keep "PCIBIOS_SUCCESSFUL" define as it is
+>    and not bother replacing it with "0"? (Atleast for the first version
+>    of patch, and can be done in a later series)
 
->                 gfp |= __GFP_COMP;
->
->         /* High-order pages or fallback path if "bulk" fails. */
-> -       while (nr_allocated < nr_pages) {
+Yes, removal of PCIBIOS_SUCCESSFUL can be done after/separately. That
+greatly reduces the number of callers to touch.
 
-Keep the following declarations inside the while loop.
+> 2. "Rework any callers expecting a positive return value"
+>
+>    This means, find out the places where we have something like
+>
+>      err = pci_read_config_dword();
+>         if (err > 0)
+>
+>    Then change it to:
+>
+>      err = pci_read_config_dword(pdev, PCI_REG_NPKDSC, &npkdsc);
+>         if (err != PCIBIOS_SUCCESSFUL)
 
-> -               struct page *page;
-> -               int i;
+As Bjorn said, don't add more!
+
+Just:
+
+if (err)
+
+Because that works whether we change the error codes or not.
+
+>    Is there any easy way to search for these patterns, or should I look
+>    for each instance of pci_read_config_* and other such variants and
+>    see if such an case exists?
+
+Besides grep and/or coccigrep, change the function definitions to
+return void (or a ptr) and do allyesconfig builds (with 'make -k') .
+
+Using coccinelle directly would make the changes for you. It's fairly
+hard to understand and use in my limited experience.
+
+Also keep in mind the error could get passed out of a function and
+then checked elsewhere. That you can't really automate checking.
+Searching, that seems to be fairly common, but I would guess most
+cases are just comparing to 0 if they check. This is what I used:
+
+git grep -W '=\spci_read_config_'
+
+You could then grep/sed the result of this to get the functions, and
+then grep using those functions to check the callers.
+
+I also see several cases checking for < 0 already, so we'd actually be
+fixing those. :)
+
 >
-> -               page = alloc_pages_node(nid, gfp, order);
-> +       page = NULL;
-> +       while (nr_allocated < nr_pages) {
-> +               if (nid == NUMA_NO_NODE)
-> +                       page = alloc_pages(gfp, order);
-> +               else
-> +                       page = alloc_pages_node(nid, gfp, order);
->                 if (unlikely(!page))
->                         break;
+> 3. "Make the config accessor defines convert positive error codes to Linux error codes"
 >
-> --
-> 2.25.1
+>     Do you mean something like:
 >
+>       #define PCI_OP_READ(size, type, len) \
+>       int noinline pci_bus_read_config_##size \
+>         (struct pci_bus *bus, unsigned int devfn, int pos, type *value)
+>         \
+>         {
+>            if (PCI_##size##_BAD) return pcibios_err_to_errno(PCIBIOS_BAD_REGISTER_NUMBER);
+>            ...
+>            ...
+>            return pcibios_err_to_errno(res);
+
+Right.
+
+>
+> 4. "Convert pci_ops implementations to Linux error codes one by one"
+>
+>     Finally, remove all the PCIBIOS_* references from the pci_ops
+>     implementation of various drivers.
+
+Right.
+
+>
+> > I also considered we could make the accessors convert negative error
+> > codes back to positive PCIBIOS_ values, then no callers have to be
+> > checked/fixed first.
+> >
+> > > > Can't we make PCI_OP_READ and PCI_USER_READ_CONFIG set the data value
+>
+> Rob, When you say this do you mean - we have something like:
+>
+>   #define PCI_OPS_READ()
+>     res = bus->ops->read();
+>     if (res != PCIBIOS_SUCCESSFUL)
+
+if (res)
+
+>         SET_PCI_ERROR_RESPONSE(val);
+
+I still don't like that style, but when there's only 2 occurrences, I
+don't really care.
+
+> And the pci_ops implementation would look like:
+>
+>   pci_generic_config_read()
+>   {
+>      addr = bus->ops->map_bus();
+>      if (!addr)
+>         return PCIBIOS_DEVICE_NOT_FOUND;
+>   }
+>
+> This way the controller/drivers does not have to bother fabricating the
+> ~0 value, all they have to do when they detect any error is return the
+> error. And the PCI_OP_READ and PCI_USER_READ_CONFIG will set the ~0
+> value for "val".
+
+Right.
+
+>
+> Pali, would you have concerns with the above design?
+>
+> > > > and delete the drivers all doing this? Then we have 2 copies (in source)
+> > > > rather than the many this series modifies. Though I'm not sure if there
+> > > > are other cases of calling pci_bus.ops.read() which expect to get ~0.
+> > >
+> > > That does seem like a really good idea.
+> >
+> > I don't it matters what order we do these, so this can happen first.
+> >
+>
+> Yes, this makes sense. I can send a patch for this first and then start
+> working on the PCIBIOS_* project. If anybody has any objection please do
+> let me know.
+>
+> Thanks for the comment, it cleared up a lot of my doubts ^^
+
+Sure, thanks for working on this.
+
+Rob
