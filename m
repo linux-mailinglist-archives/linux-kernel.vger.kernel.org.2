@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2596442CC66
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABE142CC7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhJMU7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55774 "EHLO
+        id S229998AbhJMVFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 17:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhJMU7O (ORCPT
+        with ESMTP id S230020AbhJMVFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:59:14 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A4EC061570;
-        Wed, 13 Oct 2021 13:57:09 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id u5-20020a4ab5c5000000b002b6a2a05065so1228174ooo.0;
-        Wed, 13 Oct 2021 13:57:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qlyS/cvj8WUS5oNYSnjL6ZoAUF8yWfmcdbUL5rAb7pU=;
-        b=h8RaLrAx3MYqU050Dfmajj2hUL896Qqs957Y0NVDT+ofYVFEiDgpME3xH2CBUpp7jh
-         yIy61gUJ3SiZENyeoNHRiUbLDVSkPckoymLQQ/04Ns7RCu0OW+vHTOfmbyUEdvDdOnN4
-         ysR67yiaadIc09PSjDjHEB8YKyuUzaoUOYsOPjCdIWtbGirl48uXRx2pQys9Ux1KE9W2
-         ltfIR98kxcakpUe6Q6rKx9mpSET5rNvfkrttJOXmPRxH8Y6yB1dCvYqszPFKkdy5ECIn
-         FbJbr2aBvKCl3oUOh9ZYXSxoxjbQFSyFdWQfpqdv0F9Y2it4TUZdXWsvat8kMRUBjVFh
-         ERdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qlyS/cvj8WUS5oNYSnjL6ZoAUF8yWfmcdbUL5rAb7pU=;
-        b=dS3Pdnge/SClJPIBCcFA6kHHt7p5ciorLE5Oc0+aegLbxIIIko82oKzZv7HxJ5ton+
-         HH+IdkKY9NbHznmlO7ah3eG7Yb27faGUgbWnjb18OTYp7ckt7VVCsHemyoZjb9fljr04
-         4gdo+/0ZnHa+JF+ap2beXtqAf48+9JDzdyBn2uZ41YCApr82uudal48jLTtW4/OcQzYx
-         SaXN8bs/q5czSRv7kDsV8tsCGwbEV5OWNNj0pJElp5dtYdRSrOCsg2Owa976faKcr+wE
-         qXeZZtF5rZqo8dqjFsL6Ki5gMPqbcno2jEMYi1J4WKB+Oij2AmNxG8XDtvkxuD1MBopR
-         9hRQ==
-X-Gm-Message-State: AOAM533rwLc5S+X0XEDc3XUjq4zBS/HeBJ5X69H2tzXAR8t5aK6QVnwB
-        J6ZQw791NJBV0RUfavpbYeYTlZQnowU=
-X-Google-Smtp-Source: ABdhPJw7RpzwuAtqd2CW7HXZew58+3Eo/FPoGUPvSNAcMxgXEoqy7n69du8xFq/jZxaZYOJwY5X8IA==
-X-Received: by 2002:a4a:de10:: with SMTP id y16mr1127123oot.4.1634158628340;
-        Wed, 13 Oct 2021 13:57:08 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w93sm139765otb.78.2021.10.13.13.57.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 13:57:07 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v6 2/4] usb: Link the ports to the connectors they are
- attached to
-To:     Prashant Malani <pmalani@chromium.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210407065555.88110-1-heikki.krogerus@linux.intel.com>
- <20210407065555.88110-3-heikki.krogerus@linux.intel.com>
- <YWdBZY7vSWO7DN54@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <d82e9972-0d30-f9f4-9333-de57146d5543@roeck-us.net>
-Date:   Wed, 13 Oct 2021 13:57:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 13 Oct 2021 17:05:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AAB1C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:03:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LRqwGSwuKXO3H+yVf+j+z5vryNIn+pjozeW1SKMDOdQ=; b=vwosMkHu6LECB+q5x6QBh4OKTd
+        Kne2UFVm7lVemdIM74XhWZLMjBpCB4f3DM58moaudiXpQ7ChC4Zvz9ktYSFYuScFHgPO8dHdq86dX
+        o+H1Q4BVscJdHupZKI8NVF24dcuv3mzZRd08OdwpDDMjiStrTpbSAWb4bzMNFWwWK6c/uhxYa5480
+        rlhduDNBdMO140tDhuVVDFpsLk6rwoUj0uSxZX8lvalpjNE16XixC9OUqcVQgb2T8lkOYquRXl3G/
+        KSawRF9rxnG+g+KKBcFnV6jQe9qyOQ13aRSDvEdgtU8rEyCf82dl29yvZYap4pFtNf3TaYf7BY9yd
+        eksYeW+g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1malMJ-007nmA-2s; Wed, 13 Oct 2021 21:01:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9984830030B;
+        Wed, 13 Oct 2021 23:00:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7562920193AF4; Wed, 13 Oct 2021 23:00:15 +0200 (CEST)
+Date:   Wed, 13 Oct 2021 23:00:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
+Message-ID: <YWdI31noOUQVSA6w@hirez.programming.kicks-ass.net>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123645.002402102@infradead.org>
+ <20211013205259.44cvvaxiexiff5w5@treble>
 MIME-Version: 1.0
-In-Reply-To: <YWdBZY7vSWO7DN54@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013205259.44cvvaxiexiff5w5@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 1:28 PM, Prashant Malani wrote:
-> Hi,
+On Wed, Oct 13, 2021 at 01:52:59PM -0700, Josh Poimboeuf wrote:
+> On Wed, Oct 13, 2021 at 02:22:21PM +0200, Peter Zijlstra wrote:
+> >  	/*
+> > +	 * Rewrite the retpolines, must be done before alternatives since
+> > +	 * those can rewrite the retpoline thunks.
+> > +	 */
 > 
-> On Wed, Apr 07, 2021 at 09:55:53AM +0300, Heikki Krogerus wrote:
->> Creating link to the USB Type-C connector for every new port
->> that is added when possible.
->>
->> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> 
-> Did this patch eventually get merged?
-> I somehow don't see it in the "master" kernel branch [1], although I do
-> see the commit in that repo [2].
-> 
+> Why exactly is that a problem?  This code doesn't read the thunks.
 
-It was applied but later reverted with commit 5bdb080f9603 because
-it created a module dependency cycle.
+The below problem :-) I didn't include it in the series, but I'm
+thinking that's where I wants to go eventually.
 
-Guenter
+---
+Subject: x86,retpoline: Poison retpoline thunks for !X86_FEATURE_RETPOLINE
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Tue Oct 12 10:30:56 CEST 2021
+
+Now that objtool will out-of-line all retpoline thunk calls for
+!RETPOLINE, poison them.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/lib/retpoline.S |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -32,9 +32,19 @@
+ 
+ SYM_FUNC_START(__x86_indirect_thunk_\reg)
+ 
++#ifdef CONFIG_STACK_VALIDATION
++/*
++ * When objtool runs, there should not be any __x86_indirect_thunk_* calls
++ * left after alternatives, ensure this by patching it to UD2.
++ */
++	ALTERNATIVE_2 __stringify(RETPOLINE \reg), \
++		      __stringify(ud2), ALT_NOT(X86_FEATURE_RETPOLINE), \
++		      __stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), X86_FEATURE_RETPOLINE_AMD
++#else
+ 	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), \
+ 		      __stringify(RETPOLINE \reg), X86_FEATURE_RETPOLINE, \
+ 		      __stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), X86_FEATURE_RETPOLINE_AMD
++#endif
+ 
+ SYM_FUNC_END(__x86_indirect_thunk_\reg)
+ 
