@@ -2,70 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4879F42BB0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F8842BB13
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238953AbhJMJFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:05:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:57444 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234117AbhJMJFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:05:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34C2BED1;
-        Wed, 13 Oct 2021 02:03:01 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC43E3F70D;
-        Wed, 13 Oct 2021 02:02:59 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 10:02:54 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Hanjun Guo <guohanjun@huawei.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] acpi: arm64: fix section mismatch warning
-Message-ID: <20211013090254.GA9901@lpieralisi>
-References: <20210927141921.1760209-1-arnd@kernel.org>
- <988fa24c-76d2-1c9d-9761-b356efb0576c@huawei.com>
+        id S238899AbhJMJGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233648AbhJMJGi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 05:06:38 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC46AC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 02:04:35 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id g9so1340547plo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 02:04:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amikom.ac.id; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wRJyjMbHCgQfCydYa9b9XINbxvLmCOLBFOTVv3bYbiw=;
+        b=S+OE3k8iD1TEv99BMHbW8qphZ6+E8h/sXlJWPSIBpzAS+WkX9yQCOPEjtJNELNQ+4f
+         O7qsjR0ogs8d1NodZ62VpOfJLmMK2awFUJJpepyw+LiTBP6RvaRwgm7j8guwplOVPEs1
+         ufRLesAwcw0f3TmSYgj5+48Q1Mgux4ADUbm4e9sosoSodWoO4Fu5eXbINrvrgaksKiFy
+         WPMFM5QHQZIqYzRT4VzDt8WjD7l1/AvooUqxapRDPkosRZjnKIJGmfA4yVj5uB91q8Da
+         c/aQWkYwrR/yir54+LdIklQ09Y7MnKAhMURVwx1hFPyjCuaeH+MCBs9HpP1NcF9N5O4U
+         7NuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wRJyjMbHCgQfCydYa9b9XINbxvLmCOLBFOTVv3bYbiw=;
+        b=0zb4k0E9GlUIKxjLQO2Hm8QNX6Xi1kf8vbhDOVB1N7/RUIXS3xqo7V4+2RMiJpL1Di
+         adsogQq22d7/t+WG29sGyKIC3yKSxBYjwByCMkzQ1CMd4g1wfv/ud5k/aIm9zVRAMbxF
+         p9jQwzQiEkuZzSwDs6jO9tmQCN6RBiuv3P/CeWLqJ9Bo55GLHYi23tblq1jp/yV032/l
+         ss2L+pfbzUZFGk5+x45aNmovh+rW+Q7xDg64f29paeHbN6Chzi3NLzOZ97XRTWf9rVAq
+         ZQMmLwYOPZVZKkdAvyBHFbDA95hLdngkwhEIqsAhWL5TFcL2zFTxanxo1B3UWNWGl+LK
+         K2KA==
+X-Gm-Message-State: AOAM531MBjg5MNQNOXEffhXoBkI03dNRQ5RvUUrL/60omp06ye0yS7l9
+        ZWtruFYMQh9QcH6Dq/SGysaZ9w==
+X-Google-Smtp-Source: ABdhPJzAM+bvSj/dJ4Nhs/gvK8DeGeIE94mK5K3iucpfvlIv7nQR1zz07nT08OP3uIDrTugfzBGP0w==
+X-Received: by 2002:a17:90a:de0b:: with SMTP id m11mr11979433pjv.39.1634115875270;
+        Wed, 13 Oct 2021 02:04:35 -0700 (PDT)
+Received: from integral.. ([182.2.72.162])
+        by smtp.gmail.com with ESMTPSA id k14sm5483334pji.45.2021.10.13.02.04.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 02:04:34 -0700 (PDT)
+From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+Subject: [PATCH v2] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the clobber list
+Date:   Wed, 13 Oct 2021 16:03:39 +0700
+Message-Id: <20211013090339.622070-1-ammar.faizi@students.amikom.ac.id>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211011040344.437264-1-ammar.faizi@students.amikom.ac.id>
+References: <20211011040344.437264-1-ammar.faizi@students.amikom.ac.id>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <988fa24c-76d2-1c9d-9761-b356efb0576c@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 03:03:29PM +0800, Hanjun Guo wrote:
-> Hi Arnd,
-> 
-> On 2021/9/27 22:19, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > In a gcc-11 randconfig build I came across this warning:
-> > 
-> > WARNING: modpost: vmlinux.o(.text.unlikely+0x2c084): Section mismatch in reference from the function next_platform_timer() to the variable .init.data:acpi_gtdt_desc
-> > The function next_platform_timer() references
-> > the variable __initdata acpi_gtdt_desc.
-> > This is often because next_platform_timer lacks a __initdata
-> > annotation or the annotation of acpi_gtdt_desc is wrong.
-> > 
-> > This happens when next_platform_timer() fails to get inlined
-> > despite the inline annotation. Adding '__init' solves the issue,
-> > and it seems best to remove the 'inline' in the process seems
-> > better anyway.
-> 
-> There was a patch to fix this issue as well [1],
-> but not merged yet.
-> 
-> [1]: https://lore.kernel.org/linux-acpi/7f29a149-e005-f13f-2cc4-a9eb737107e1@huawei.com/T/
+Linux x86-64 syscall only clobbers rax, rcx and r11 (and "memory").
 
-My bad, we did not coordinate well - I noticed your Acked-by but as a
-rule we should also CC LAKML and Catalin/Will (if they aren't CCed) on
-the reply to make sure they can actually see it.
+  - rax for the return value.
+  - rcx to save the return address.
+  - r11 to save the rflags.
 
-Lorenzo
+Other registers are preserved.
+
+Having r8, r9 and r10 in the syscall clobber list is harmless, but this
+results in a missed-optimization.
+
+As the syscall doesn't clobber r8-r10, GCC should be allowed to reuse
+their value after the syscall returns to userspace. But since they are
+in the clobber list, GCC will always miss this opportunity.
+
+Remove them from the x86-64 syscall clobber list to help GCC generate
+better code and fix the comment.
+
+See also the x86-64 ABI, section A.2 AMD64 Linux Kernel Conventions,
+A.2.1 Calling Conventions [1].
+
+Extra note:
+Some people may think it does not really give a benefit to remove r8,
+r9 and r10 from the syscall clobber list because the impression of
+syscall is a C function call, and function call always clobbers those 3.
+
+However, that is not the case for nolibc.h, because we have a potential
+to inline the "syscall" instruction (which its opcode is "0f 05") to the
+user functions.
+
+All syscalls in the nolibc.h are written as a static function with inline
+ASM and are likely always inline if we use optimization flag, so this is
+a profit not to have r8, r9 and r10 in the clobber list.
+
+Here is the example where this matters.
+
+Consider the following C code:
+```
+  #include "tools/include/nolibc/nolibc.h"
+  #define read_abc(a, b, c) __asm__ volatile("nop"::"r"(a),"r"(b),"r"(c))
+
+  int main(void)
+  {
+  	int a = 0xaa;
+  	int b = 0xbb;
+  	int c = 0xcc;
+
+  	read_abc(a, b, c);
+  	write(1, "test\n", 5);
+  	read_abc(a, b, c);
+
+  	return 0;
+  }
+```
+
+Compile with:
+    gcc -Os test.c -o test -nostdlib
+
+With r8, r9, r10 in the clobber list, GCC generates this:
+
+0000000000001000 <main>:
+    1000:	f3 0f 1e fa          	endbr64
+    1004:	41 54                	push   %r12
+    1006:	41 bc cc 00 00 00    	mov    $0xcc,%r12d
+    100c:	55                   	push   %rbp
+    100d:	bd bb 00 00 00       	mov    $0xbb,%ebp
+    1012:	53                   	push   %rbx
+    1013:	bb aa 00 00 00       	mov    $0xaa,%ebx
+    1018:	90                   	nop
+    1019:	b8 01 00 00 00       	mov    $0x1,%eax
+    101e:	bf 01 00 00 00       	mov    $0x1,%edi
+    1023:	ba 05 00 00 00       	mov    $0x5,%edx
+    1028:	48 8d 35 d1 0f 00 00 	lea    0xfd1(%rip),%rsi
+    102f:	0f 05                	syscall
+    1031:	90                   	nop
+    1032:	31 c0                	xor    %eax,%eax
+    1034:	5b                   	pop    %rbx
+    1035:	5d                   	pop    %rbp
+    1036:	41 5c                	pop    %r12
+    1038:	c3                   	ret
+
+GCC thinks that syscall will clobber r8, r9, r10. So it spills 0xaa,
+0xbb and 0xcc to callee saved registers (r12, rbp and rbx). This is
+clearly extra memory access and extra stack size for preserving them.
+
+But syscall does not actually clobber them, so this is a missed
+optimization.
+
+Now without r8, r9, r10 in the clobber list, GCC generates better code:
+
+0000000000001000 <main>:
+    1000:	f3 0f 1e fa          	endbr64
+    1004:	41 b8 aa 00 00 00    	mov    $0xaa,%r8d
+    100a:	41 b9 bb 00 00 00    	mov    $0xbb,%r9d
+    1010:	41 ba cc 00 00 00    	mov    $0xcc,%r10d
+    1016:	90                   	nop
+    1017:	b8 01 00 00 00       	mov    $0x1,%eax
+    101c:	bf 01 00 00 00       	mov    $0x1,%edi
+    1021:	ba 05 00 00 00       	mov    $0x5,%edx
+    1026:	48 8d 35 d3 0f 00 00 	lea    0xfd3(%rip),%rsi
+    102d:	0f 05                	syscall
+    102f:	90                   	nop
+    1030:	31 c0                	xor    %eax,%eax
+    1032:	c3                   	ret
+
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: David Laight <David.Laight@ACULAB.COM>
+Signed-off-by: Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+Link: https://gitlab.com/x86-psABIs/x86-64-ABI/-/wikis/x86-64-psABI [1]
+---
+
+v2: Add more detailed information and link to x86-64 ABI.
+
+Link to v1: https://lore.kernel.org/lkml/20211011040344.437264-1-ammar.faizi@students.amikom.ac.id/
+
+ tools/include/nolibc/nolibc.h | 33 +++++++++++++++++++--------------
+ 1 file changed, 19 insertions(+), 14 deletions(-)
+
+diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
+index 3430667b0d24..1483d95c8330 100644
+--- a/tools/include/nolibc/nolibc.h
++++ b/tools/include/nolibc/nolibc.h
+@@ -265,12 +265,17 @@ struct stat {
+  *   - arguments are in rdi, rsi, rdx, r10, r8, r9 respectively
+  *   - the system call is performed by calling the syscall instruction
+  *   - syscall return comes in rax
+- *   - rcx and r8..r11 may be clobbered, others are preserved.
++ *   - rcx and r11 are clobbered, others are preserved.
+  *   - the arguments are cast to long and assigned into the target registers
+  *     which are then simply passed as registers to the asm code, so that we
+  *     don't have to experience issues with register constraints.
+  *   - the syscall number is always specified last in order to allow to force
+  *     some registers before (gcc refuses a %-register at the last position).
++ *   - see also x86-64 ABI section A.2 AMD64 Linux Kernel Conventions, A.2.1
++ *     Calling Conventions.
++ *
++ * Link x86-64 ABI: https://gitlab.com/x86-psABIs/x86-64-ABI/-/wikis/x86-64-psABI
++ *
+  */
+ 
+ #define my_syscall0(num)                                                      \
+@@ -280,9 +285,9 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret)                                                 \
++		: "=a"(_ret)                                                  \
+ 		: "0"(_num)                                                   \
+-		: "rcx", "r8", "r9", "r10", "r11", "memory", "cc"             \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -295,10 +300,10 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret)                                                 \
++		: "=a"(_ret)                                                  \
+ 		: "r"(_arg1),                                                 \
+ 		  "0"(_num)                                                   \
+-		: "rcx", "r8", "r9", "r10", "r11", "memory", "cc"             \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -312,10 +317,10 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret)                                                 \
++		: "=a"(_ret)                                                  \
+ 		: "r"(_arg1), "r"(_arg2),                                     \
+ 		  "0"(_num)                                                   \
+-		: "rcx", "r8", "r9", "r10", "r11", "memory", "cc"             \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -330,10 +335,10 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret)                                                 \
++		: "=a"(_ret)                                                  \
+ 		: "r"(_arg1), "r"(_arg2), "r"(_arg3),                         \
+ 		  "0"(_num)                                                   \
+-		: "rcx", "r8", "r9", "r10", "r11", "memory", "cc"             \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -349,10 +354,10 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret), "=r"(_arg4)                                    \
++		: "=a"(_ret)                                                  \
+ 		: "r"(_arg1), "r"(_arg2), "r"(_arg3), "r"(_arg4),             \
+ 		  "0"(_num)                                                   \
+-		: "rcx", "r8", "r9", "r11", "memory", "cc"                    \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -369,10 +374,10 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret), "=r"(_arg4), "=r"(_arg5)                       \
++		: "=a"(_ret)                                                  \
+ 		: "r"(_arg1), "r"(_arg2), "r"(_arg3), "r"(_arg4), "r"(_arg5), \
+ 		  "0"(_num)                                                   \
+-		: "rcx", "r9", "r11", "memory", "cc"                          \
++		: "rcx", "r11", "memory", "cc"                                \
+ 	);                                                                    \
+ 	_ret;                                                                 \
+ })
+@@ -390,7 +395,7 @@ struct stat {
+ 									      \
+ 	asm volatile (                                                        \
+ 		"syscall\n"                                                   \
+-		: "=a" (_ret), "=r"(_arg4), "=r"(_arg5)                       \
++		: "=a"(_ret)                                                  \
+ 		: "r"(_arg1), "r"(_arg2), "r"(_arg3), "r"(_arg4), "r"(_arg5), \
+ 		  "r"(_arg6), "0"(_num)                                       \
+ 		: "rcx", "r11", "memory", "cc"                                \
+-- 
+2.27.0
+
