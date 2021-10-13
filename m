@@ -2,163 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8C642C58C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE4242C5A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237060AbhJMQBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237246AbhJMQBL (ORCPT
+        id S236694AbhJMQCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:02:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49225 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236277AbhJMQCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:01:11 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85739C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:59:08 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id x4so2137911pln.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:59:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=NlebU/Dona3za1z6+SiD/1Xj/DgJ6yfzkx+M783le8c=;
-        b=J76yMOSazJaFm39w8/8dmmyH3vr4svRzfCoZwCfINqEK/oLUPvBy9PcjhsUuxbyOK4
-         3INnshf9A2ItYXXWRGyCh4htsNEigX96ImIb8XDUDC19WlZu3g2+kkMBL1HKvWgB+7/t
-         8ceH5I7hyXR0ftFFRcEDy/O5zYJr8Y9yXNZFtzvIcfnTNTqo5TJF93iPplA+Z4qGZxVW
-         orK8ioucIIgMe+iv5g9+sbHurtFbDZQ0gHmKI2HjRiB7oV0u9ranOkxFjYCP6L7UAAcS
-         PKH7QZ7LjkIA961jHb9EqU4zCVUqUQ9D1RmUDSesBozlikcKMwGz3bhZihvOAN/V4RiH
-         KVWQ==
+        Wed, 13 Oct 2021 12:02:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634140808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QCm5dOclxo0psHU4qKEkJZZeOXU3321uNZD2ahb33xs=;
+        b=BHjATy6fZP8ji4IGupauqNl0WwuhtgEHJ5Uvo41N7C5M7N8Uj7jryss0bo6TNq4OIi4Q4l
+        gDnny4txN/4x+z2INOe6gluUHretukxeipr9wZKzZ3Z2N2Geayq8RKiR7CmF6nQOUFkNta
+        Sqk16wgXDGlTSh4T0aJeS8g4mhBWmaI=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-127-korpYkJ-P9yacSCEviuYow-1; Wed, 13 Oct 2021 12:00:06 -0400
+X-MC-Unique: korpYkJ-P9yacSCEviuYow-1
+Received: by mail-wr1-f71.google.com with SMTP id v15-20020adfa1cf000000b00160940b17a2so2329449wrv.19
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 09:00:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=NlebU/Dona3za1z6+SiD/1Xj/DgJ6yfzkx+M783le8c=;
-        b=qanAUhSs9W9ARZqy4q5+6O5e/jDBK1YqBMvo6WugONlrc6gJtuBsNK3ifwHUgjgUU5
-         TOz2/bMikmaMJg6AxqC+YSHftgqaDaJgUE73gp6W0VZY+fO9LUrF9UwqeWxrHzJzQsFP
-         9NR4c/CWsRLMXb+FL2SqljL49VyZ2qqfhETqtQTNzUzleymMCYI2UXC1CHLuKtnfP99I
-         KAMu4DKkZJOEIWfdtGzpeRYIQ4O35O8c575GJtziEbkDXGgwbfmunSqhXMmHy5iIa5Xj
-         Ob3I8quKm8uIvL/G64LM0WMRxJqEGLw8TO+H38oczOFVKq6a313ZZkU/LMG64y0dUj9L
-         cIMQ==
-X-Gm-Message-State: AOAM531+smpHaHE7rlNUtvhbPQ6Y+7XY8kwJ6G3EvO9KAAHht+p1MnGy
-        Z8NSpyrc+W0QDELiHxWg/SLsUjtLIDw=
-X-Google-Smtp-Source: ABdhPJyGQPdam3RnOhNb88m7z9uDayTrs7w54eCyz0HzsFMebeTGAwanx7d7N/bm/4SyxqBsKugvAA==
-X-Received: by 2002:a17:90a:11:: with SMTP id 17mr91971pja.238.1634140747745;
-        Wed, 13 Oct 2021 08:59:07 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id p17sm6433141pju.34.2021.10.13.08.59.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Oct 2021 08:59:06 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH 1/2] mm/mprotect: use mmu_gather
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <YWYYUOy0W8z5SVKh@t490s>
-Date:   Wed, 13 Oct 2021 08:59:04 -0700
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <09F31D01-E818-4538-A6E9-3E4779FC4B53@gmail.com>
-References: <20210925205423.168858-1-namit@vmware.com>
- <20210925205423.168858-2-namit@vmware.com> <YWVgdmKIFnZcgjeY@t490s>
- <2CED2F72-4D1C-4DBC-AC03-4B246E1673C2@gmail.com> <YWYYUOy0W8z5SVKh@t490s>
-To:     Peter Xu <peterx@redhat.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=QCm5dOclxo0psHU4qKEkJZZeOXU3321uNZD2ahb33xs=;
+        b=erhXB4w1o6dnF5euEeLGCr/dIAWTNY1OjIQjyRrUTpuIr0CKcxI6u7qEcjoDdqrVif
+         W0LS8AqbypFkSormo8gp8vWrUC/RLBHjzXO3K4uNcZIMosRwvepmevymNzjOckSbt9xL
+         VgSJPQoM62R7Jy5Smk5QQNR3m8IlQTiW1hnY2JCEV7l/cmaa5n3YYxXsumpeYeg9mvD5
+         7qU//iaDccMPf9V07A3/XeBWI86e8VYbloyh/6Px68vB2SPQckTGOIYLilxX4eWtLBlS
+         8VJ110ivbwp59aqLa7jV0QUwg+qIDJvkMGH1lm3n7b4w4mzYeId+Tg66lhhsfbr5fNLo
+         hsoA==
+X-Gm-Message-State: AOAM532U0NdzzeTOPzVz2c4NtjEW02eiZAwkRFRfn+LvnDpp243/k03e
+        PiHegRgxqBzA+d2OzqL8jqLGPhLljDBOrXhRXrFE60nTGOdsQwcoKbzfF3z8/dYS5lXGeZ0Hj4M
+        cCxKB1ZnJedH66mFysGGoGxpP
+X-Received: by 2002:adf:dc0d:: with SMTP id t13mr9658wri.158.1634140805531;
+        Wed, 13 Oct 2021 09:00:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyItkbAA3kGIqmmHgTgrrpf9fCG54WlJV2+wdefB9WU28Q546eZydpGXWHl2Ou3h6lUqYc/hA==
+X-Received: by 2002:adf:dc0d:: with SMTP id t13mr9603wri.158.1634140805309;
+        Wed, 13 Oct 2021 09:00:05 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6774.dip0.t-ipconnect.de. [91.12.103.116])
+        by smtp.gmail.com with ESMTPSA id n17sm6521wrq.11.2021.10.13.09.00.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 09:00:04 -0700 (PDT)
+Message-ID: <cf511a7f-531f-4555-d7b4-cb171a615fdd@redhat.com>
+Date:   Wed, 13 Oct 2021 18:00:01 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
+Content-Language: en-US
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gonglei <arei.gonglei@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        David Airlie <airlied@linux.ie>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Jie Deng <jie.deng@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-um@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-i2c@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net, kvm@vger.kernel.org,
+        alsa-devel@alsa-project.org
+References: <20211013105226.20225-1-mst@redhat.com>
+ <2060bd96-5884-a1b5-9f29-7fe670dc088d@redhat.com>
+ <20211013081632-mutt-send-email-mst@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20211013081632-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13.10.21 14:17, Michael S. Tsirkin wrote:
+> On Wed, Oct 13, 2021 at 01:03:46PM +0200, David Hildenbrand wrote:
+>> On 13.10.21 12:55, Michael S. Tsirkin wrote:
+>>> This will enable cleanups down the road.
+>>> The idea is to disable cbs, then add "flush_queued_cbs" callback
+>>> as a parameter, this way drivers can flush any work
+>>> queued after callbacks have been disabled.
+>>>
+>>> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+>>> ---
+>>>   arch/um/drivers/virt-pci.c                 | 2 +-
+>>>   drivers/block/virtio_blk.c                 | 4 ++--
+>>>   drivers/bluetooth/virtio_bt.c              | 2 +-
+>>>   drivers/char/hw_random/virtio-rng.c        | 2 +-
+>>>   drivers/char/virtio_console.c              | 4 ++--
+>>>   drivers/crypto/virtio/virtio_crypto_core.c | 8 ++++----
+>>>   drivers/firmware/arm_scmi/virtio.c         | 2 +-
+>>>   drivers/gpio/gpio-virtio.c                 | 2 +-
+>>>   drivers/gpu/drm/virtio/virtgpu_kms.c       | 2 +-
+>>>   drivers/i2c/busses/i2c-virtio.c            | 2 +-
+>>>   drivers/iommu/virtio-iommu.c               | 2 +-
+>>>   drivers/net/caif/caif_virtio.c             | 2 +-
+>>>   drivers/net/virtio_net.c                   | 4 ++--
+>>>   drivers/net/wireless/mac80211_hwsim.c      | 2 +-
+>>>   drivers/nvdimm/virtio_pmem.c               | 2 +-
+>>>   drivers/rpmsg/virtio_rpmsg_bus.c           | 2 +-
+>>>   drivers/scsi/virtio_scsi.c                 | 2 +-
+>>>   drivers/virtio/virtio.c                    | 5 +++++
+>>>   drivers/virtio/virtio_balloon.c            | 2 +-
+>>>   drivers/virtio/virtio_input.c              | 2 +-
+>>>   drivers/virtio/virtio_mem.c                | 2 +-
+>>>   fs/fuse/virtio_fs.c                        | 4 ++--
+>>>   include/linux/virtio.h                     | 1 +
+>>>   net/9p/trans_virtio.c                      | 2 +-
+>>>   net/vmw_vsock/virtio_transport.c           | 4 ++--
+>>>   sound/virtio/virtio_card.c                 | 4 ++--
+>>>   26 files changed, 39 insertions(+), 33 deletions(-)
+>>>
+>>> diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+>>> index c08066633023..22c4d87c9c15 100644
+>>> --- a/arch/um/drivers/virt-pci.c
+>>> +++ b/arch/um/drivers/virt-pci.c
+>>> @@ -616,7 +616,7 @@ static void um_pci_virtio_remove(struct virtio_device *vdev)
+>>>   	int i;
+>>>           /* Stop all virtqueues */
+>>> -        vdev->config->reset(vdev);
+>>> +        virtio_reset_device(vdev);
+>>>           vdev->config->del_vqs(vdev);
+>>
+>> Nit: virtio_device_reset()?
+>>
+>> Because I see:
+>>
+>> int virtio_device_freeze(struct virtio_device *dev);
+>> int virtio_device_restore(struct virtio_device *dev);
+>> void virtio_device_ready(struct virtio_device *dev)
+>>
+>> But well, there is:
+>> void virtio_break_device(struct virtio_device *dev);
+> 
+> Exactly. I don't know what's best, so I opted for plain english :)
+
+Fair enough, LGTM
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 
-> On Oct 12, 2021, at 4:20 PM, Peter Xu <peterx@redhat.com> wrote:
->=20
-> On Tue, Oct 12, 2021 at 10:31:45AM -0700, Nadav Amit wrote:
->>=20
->>=20
->>> On Oct 12, 2021, at 3:16 AM, Peter Xu <peterx@redhat.com> wrote:
->>>=20
->>> On Sat, Sep 25, 2021 at 01:54:22PM -0700, Nadav Amit wrote:
->>>> @@ -338,25 +344,25 @@ static unsigned long =
-change_protection_range(struct vm_area_struct *vma,
->>>> 	struct mm_struct *mm =3D vma->vm_mm;
->>>> 	pgd_t *pgd;
->>>> 	unsigned long next;
->>>> -	unsigned long start =3D addr;
->>>> 	unsigned long pages =3D 0;
->>>> +	struct mmu_gather tlb;
->>>>=20
->>>> 	BUG_ON(addr >=3D end);
->>>> 	pgd =3D pgd_offset(mm, addr);
->>>> 	flush_cache_range(vma, addr, end);
->>>> 	inc_tlb_flush_pending(mm);
->>>> +	tlb_gather_mmu(&tlb, mm);
->>>> +	tlb_start_vma(&tlb, vma);
->>>=20
->>> Pure question:
->>>=20
->>> I actually have no idea why tlb_start_vma() is needed here, as =
-protection range
->>> can be just a single page, but anyway.. I do see that =
-tlb_start_vma() contains
->>> a whole-vma flush_cache_range() when the arch needs it, then does it =
-mean that
->>> besides the inc_tlb_flush_pending() to be dropped, so as to the =
-other call to
->>> flush_cache_range() above?
->>=20
->> Good point.
->>=20
->> tlb_start_vma() and tlb_end_vma() are required since some archs do =
-not
->> batch TLB flushes across VMAs (e.g., ARM).
->=20
-> Sorry I didn't follow here - as change_protection() is per-vma anyway, =
-so I
-> don't see why it needs to consider vma crossing.
->=20
-> In all cases, it'll be great if you could add some explanation into =
-commit
-> message on why we need tlb_{start|end}_vma(), as I think it could not =
-be
-> obvious to all people.
+-- 
+Thanks,
 
-tlb_start_vma() is required when we switch from flush_tlb_range() =
-because
-certain properties of the VMA (e.g., executable) are needed on certain
-arch. That=E2=80=99s the reason flush_tlb_range() requires the VMA that =
-is
-invalidated to be provided.
+David / dhildenb
 
-Regardless, there is an interface and that is the way it is used. I am =
-not
-inclined to break it, even if it was possible, for unclear performance
-benefits.
-
-As I discussed offline with Andrea and David, switching to =
-tlb_gather_mmu()
-interface has additional advantages than batching and avoiding =
-unnecessary
-flushes on PTE permission promotion (as done in patch 2). If a single =
-PTE
-is updated out of a bigger range, currently flush_tlb_range() would =
-flush
-the whole range instead of the single page. In addition, once I fix this
-patch-set, if you update a THP, you would (at least on x86) be able to
-flush a single PTE instead of flushing 512 entries (which would actually
-be done using a full TLB flush).
-
-I would say that as I mentioned in a different thread, and was not
-upfront about before, one of the motivations of mine behind this patch
-is that I need a vectored UFFDIO_WRITEPROTECTV interface for =
-performance.
-Nevertheless, I think these two patches stand by themselves and have
-independent value.=
