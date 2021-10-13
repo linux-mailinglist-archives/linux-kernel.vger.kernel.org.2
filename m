@@ -2,122 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA5C42C81B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB05242C81D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238224AbhJMRzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
+        id S238246AbhJMR4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238202AbhJMRzn (ORCPT
+        with ESMTP id S229967AbhJMR4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:55:43 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E86C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:53:39 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id g8so13600532edt.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:53:39 -0700 (PDT)
+        Wed, 13 Oct 2021 13:56:12 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4A2C061570;
+        Wed, 13 Oct 2021 10:54:08 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id t11so2347203plq.11;
+        Wed, 13 Oct 2021 10:54:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aLaYS9RXqNt7+hFwlO6gsKYZWSmRQqVaqX+hEJqB9LM=;
-        b=xKey7FWoKrUCv8IvtxRentW1ZmNn3JSpGsLpA2udEtATxoIGbSXEjH+SSpjwExDslC
-         d+h4PmQCK2gG3F9s49Cfwd/Hyp/+uGQiyhKkvstRVmfUjpCLXom6QKI6qYkOmSSRm1an
-         5MPW67g9kXLDgFZ+fw3p5THkh8wGt3zKPpLHASmMfIpUXMEzwzij8u4es9Bh+PITik1a
-         94mEzYi/57g6QtmHRg4CQNgkqCLIfUl21ck/+j+Ek7i82MeG0pX2vdRqJilrqmYh5f4j
-         UyTT+JRJjjtRNWDFC43CwLfVCddlKhuEOjZRwsgE/1+69lbzCJuGtSMf3AA/SS/cKzF2
-         f/sQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3iTUUJhLly6k9XqLDlZXpNA+psd6TBjuOvHbBbNFnmI=;
+        b=UXl0/0+efMnCEbjRvxKazXEpMNlKZyVGipOuZdhvO6p517UTZwIIO7c4n09w2a7hwi
+         jhfYAZhLQLwTjHN6/T01lB4TIZcDmv2pzMIUVD0TJyIeV6A2+3JzZtUYkL88GUD21qdB
+         56QXIxyUAY+ehJxEGgvWpwFLmG25kYy8L87r5p8DCQE9gMvwZzW1wBrTPsl1ElWVxMln
+         iuvDLUTzVNFk2xDJCpp1gAiypPYUm5t7sQsSsJzkLS4EOsaFO7ZHEBzdCAko/59h6ef1
+         jaL1weh0pypQuaKQVj48BjCc72DQ4/Wi4IWpy40SrkvTM13CIecNF+hiTa5SIKLqH05h
+         d2iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aLaYS9RXqNt7+hFwlO6gsKYZWSmRQqVaqX+hEJqB9LM=;
-        b=iQ5lu2IOmyyMSPWfV7tWv78sV17awTCEw3XAdlDk0dpYVD0Kz0axd5EYoaeaUTvXbZ
-         MToNYQPnw17aazxn2RMVL5V2A0zXRynplOqnDFPSqCriMEkM5g8aBVblIt3YLF/LnVNq
-         Q8FLU50YBdPkKPFnRWuZHhs8v9inM9hQ7A6zt5QsnHtr054hERlSS2UsOvfaUwxc79yG
-         aR8juOwT1EAx5qXJBIBm9PXuQA3bFjNT1iLJrCoJW2uUkhVsJIR/7585xMruA+O0+ghE
-         MGUAkfyaqFCANpO9T2JeF+4sA8CSQW55k2h65hfNliwdWec35ho2Ll5nBdvzWsXUke1U
-         C0Zg==
-X-Gm-Message-State: AOAM532C14vA379cXjLbrcL/RrZKFD022UsbqRkt/2OZdX8ZXM7z0/Gb
-        4TMFqxFVZ6qtNPSuPgT3OQeMjigFn8mE5V8/KuMN
-X-Google-Smtp-Source: ABdhPJzxdv34rnUgFkzMsE+FKKRO+1gOHd0i8Ivdq0iHCNJpeRU70lMiFr2rZbn/NVPSyCVuYwZUPN/FflUsOTUSvek=
-X-Received: by 2002:a05:6402:22d6:: with SMTP id dm22mr1120550edb.209.1634147618378;
- Wed, 13 Oct 2021 10:53:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3iTUUJhLly6k9XqLDlZXpNA+psd6TBjuOvHbBbNFnmI=;
+        b=EAMQZ/uAetdHrHneKOhvnH2h8hHmzuwnuUqRByDY9zVWqi6FQnN3EIS782CnV2DdFR
+         ceL83aFRad539YcDXGSdjJQNc38vvyF40wOl/xIDxtqKnF/vBtbrlceL158tUwL4RPgy
+         bogbe8AKiDS2dz1rvWo2IBVEW2D088wbxz1cCJ5UOUMIykew8vIi3p3G0imEb0zkhW2q
+         nrIxfU6mVS1upCeCjylMaLqgeRYrbohMJ+ZI8Jq60K9C5QrFlVvbMz2Dxw+yTArqQMSB
+         EBVWGOQnG+OuOkVgbm/w8SVIPR3srxL9ocWzJ1PJ74xX+KeCb3vzx2l0Y3d7NZQksMUT
+         eG3w==
+X-Gm-Message-State: AOAM531VPP6FZwS68Y2oJvwCQet7Nw0vH0w5wENF43MpdGoRZaWrvQaH
+        cpeenzqfVIj4mWTN9zx843GIStNL4+0=
+X-Google-Smtp-Source: ABdhPJwUj2pRK3kUWWmi7TFWKS0IC/u+4HG4VDLAMizNq2FFW0hlXo7WA8KeuohleQLYdnAgdWxIyQ==
+X-Received: by 2002:a17:902:e74a:b0:13f:3538:fca0 with SMTP id p10-20020a170902e74a00b0013f3538fca0mr621780plf.22.1634147648070;
+        Wed, 13 Oct 2021 10:54:08 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id j6sm181590pgq.0.2021.10.13.10.54.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 10:54:07 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 10:54:05 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Sebastien Laveze <sebastien.laveze@oss.nxp.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yangbo.lu@nxp.com, yannick.vignon@oss.nxp.com,
+        rui.sousa@oss.nxp.com
+Subject: Re: [PATCH net-next] ptp: add vclock timestamp conversion IOCTL
+Message-ID: <20211013175405.GB24542@hoboy.vegasvil.org>
+References: <20210928133100.GB28632@hoboy.vegasvil.org>
+ <0941a4ea73c496ab68b24df929dcdef07637c2cd.camel@oss.nxp.com>
+ <20210930143527.GA14158@hoboy.vegasvil.org>
+ <fea51ae9423c07e674402047851dd712ff1733bb.camel@oss.nxp.com>
+ <20211007201927.GA9326@hoboy.vegasvil.org>
+ <768227b1f347cb1573efb1b5f6c642e2654666ba.camel@oss.nxp.com>
+ <20211011125815.GC14317@hoboy.vegasvil.org>
+ <ca7dd5d4143537cfb2028d96d1c266f326e43b08.camel@oss.nxp.com>
+ <20211013131017.GA20400@hoboy.vegasvil.org>
+ <646d27a57e72c88bcba7f4f1362d998bbb742315.camel@oss.nxp.com>
 MIME-Version: 1.0
-References: <20211013172847.1196305-1-keescook@chromium.org>
-In-Reply-To: <20211013172847.1196305-1-keescook@chromium.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 13 Oct 2021 13:53:27 -0400
-Message-ID: <CAHC9VhT0+omwDjqrJ2BtnRfa8SSGAkyUvB6WX95E=ntf9gUbmQ@mail.gmail.com>
-Subject: Re: [PATCH] LSM: Avoid warnings about potentially unused hook variables
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        KP Singh <kpsingh@chromium.org>,
-        linux-security-module@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <646d27a57e72c88bcba7f4f1362d998bbb742315.camel@oss.nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 1:31 PM Kees Cook <keescook@chromium.org> wrote:
->
-> Building with W=1 shows many unused const variable warnings. These can
-> be silenced, as we're well aware of their being potentially unused:
->
-> ./include/linux/lsm_hook_defs.h:36:18: error: 'ptrace_access_check_default' defined but not used [-Werror=unused-const-variable=]
->    36 | LSM_HOOK(int, 0, ptrace_access_check, struct task_struct *child,
->       |                  ^~~~~~~~~~~~~~~~~~~
-> security/security.c:706:32: note: in definition of macro 'LSM_RET_DEFAULT'
->   706 | #define LSM_RET_DEFAULT(NAME) (NAME##_default)
->       |                                ^~~~
-> security/security.c:711:9: note: in expansion of macro 'DECLARE_LSM_RET_DEFAULT_int'
->   711 |         DECLARE_LSM_RET_DEFAULT_##RET(DEFAULT, NAME)
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~
-> ./include/linux/lsm_hook_defs.h:36:1: note: in expansion of macro 'LSM_HOOK'
->    36 | LSM_HOOK(int, 0, ptrace_access_check, struct task_struct *child,
->       | ^~~~~~~~
->
-> Cc: James Morris <jmorris@namei.org>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> Cc: Paul Moore <paul@paul-moore.com>
-> Cc: Casey Schaufler <casey@schaufler-ca.com>
-> Cc: KP Singh <kpsingh@chromium.org>
-> Cc: linux-security-module@vger.kernel.org
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/linux-mm/202110131608.zms53FPR-lkp@intel.com/
-> Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  security/security.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Oct 13, 2021 at 03:28:12PM +0200, Sebastien Laveze wrote:
+> On Wed, 2021-10-13 at 06:10 -0700, Richard Cochran wrote:
+> > That means no control over the phase of the output signals.  Super.
+> 
+> You have. There's just a small conversion to go from and to the low-
+> level hardware counter. (Which also needs to be done for rx/tx
+> timestamps btw) 
+> When programming an output signal you use this offset to have the right
+> phase.
 
-Looks reasonable to me, thanks Kees.  Unless James wants to pick this
-up for the security tree, I can pull this into the SElinux tree with
-the io_uring change which is causing the testing robot to complain.
+I have an i210 with 2 periodic output channels.  How am I supposed to
+generate signals from two different virtual PTP clocks?
 
-Acked-by: Paul Moore <paul@paul-moore.com>
-
-> diff --git a/security/security.c b/security/security.c
-> index 9ffa9e9c5c55..462f14354c2c 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -706,7 +706,7 @@ static int lsm_superblock_alloc(struct super_block *sb)
->  #define LSM_RET_DEFAULT(NAME) (NAME##_default)
->  #define DECLARE_LSM_RET_DEFAULT_void(DEFAULT, NAME)
->  #define DECLARE_LSM_RET_DEFAULT_int(DEFAULT, NAME) \
-> -       static const int LSM_RET_DEFAULT(NAME) = (DEFAULT);
-> +       static const int __maybe_unused LSM_RET_DEFAULT(NAME) = (DEFAULT);
->  #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
->         DECLARE_LSM_RET_DEFAULT_##RET(DEFAULT, NAME)
->
-> --
-> 2.30.2
-
---
-paul moore
-www.paul-moore.com
+Thanks,
+Richard
