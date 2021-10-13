@@ -2,208 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC03842C752
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F0042C758
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235969AbhJMRPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60510 "EHLO
+        id S237335AbhJMRQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbhJMRP2 (ORCPT
+        with ESMTP id S236309AbhJMRQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:15:28 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E4EC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:13:24 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id u5so5869266uao.13
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:13:24 -0700 (PDT)
+        Wed, 13 Oct 2021 13:16:11 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCB1C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:14:08 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id o83so4782836oif.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:14:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FqK/jWK79PuifDKA1/UfvqVKqumXLq/7p6XMlR8ggyA=;
-        b=MAEKzS3+RMUT1I7/97OKNNhT+hVWFG4OM53Pe/WUzd4eT3GOMZcPsQQmJCR8aFQSRy
-         /f8Z9lVDXi9aEnkr/x3Tm+QYLfyW1fKkcXRHbOrrH6G9NXQgkrm3ZlL3gi5jBIXGnT/5
-         4xFYj9egElMU7OI4G1UeAFz/Hpd3WKNUz3LHQ4QmqkYrfqbB5vUs1ao5sYkEUdVVx790
-         xrNFHyqMCq2ICTlkh+X7wYGzIXl5d0AHPHq+02HIfKczyllEdjFF2Y1hdLi/aX8Dph+a
-         CvKKxuW753lK6huHPr9YTFJpD4DE47bn+3PDoUVfyhzVxiv8Ggc+3wlN/gJxeHs8GrKt
-         jw5g==
+        bh=+LSoIBe2LzP0UwOBCcPVd1fUoIWgL1sW4RPSfZpM9q8=;
+        b=WFKXUDZ8jBh2gD74dPcpCF63O6JDnnCvmjZF0+jubnKuHXNOu8TUtAJ5fO9ZKFYeU5
+         9bNHFuM36EHiFDmcT2A37/U0Ssd+rbb7+cOLDLi1LXKVKlyTm/I1JXr2sv4PbYO6JyI/
+         eLxvhKOZlsrauTsh8zdNGmY1YuzXKldkUezjBExRRCRv/ZGZHQAsIi0c6zPVA6WP8dRu
+         SdluVqNv1OHeTwhH+99yCLyDgzXVp4I8hKxEeeefXxIXJGKZsRFFgJgXaIsSvpj4/INm
+         qa6lkpTtLC/Ur/RtUAPGafb/its3Tm96hHI5pazmSbpra5XLSDzUr7UIELX1nSp/Q3ZZ
+         /eEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FqK/jWK79PuifDKA1/UfvqVKqumXLq/7p6XMlR8ggyA=;
-        b=4JiXNwMTUDLcE0PKor4hokngmT98AohI4tAaj+Rzd/X2V1NVVSwBxjM1FriuLDgksJ
-         81/xs8OBnNGCqRl8NqWMki4AG7/j6OAMiNDqAqKbRT+Oa8XN4D/lzxyGhuDYgu4CNgB6
-         2wEMQk+2cQazMPE7J1KqC7xQELzATg/UyT8XQMrVGjskxfy2/wUCBY5XtPLoDZVvqP2C
-         FkbWzDenxWu96NWPY+swJeJL+HbbHIIIHC1RLgLP5N0vFC8em5gwRisDB0RRBLvafwyH
-         BVoTe/ZMR/uSN15arxploXc2EptcwDdbkT7A6HHEN7PUs/R+oQ3M+w5qqrkt+NmW7D/V
-         ydDw==
-X-Gm-Message-State: AOAM5334wa5l4T15UNy654rP6r5mQr0zuM2CD/LpSKXmQkSybOlITbak
-        NIGIJD5CEfka9YQWR6TdW1bmh+r3KawHMPAJKkw10Q==
-X-Google-Smtp-Source: ABdhPJzvE1QVPK3BjPqCjduwVBx7y3jvdvgME1PG0alC7Qswg1nyX8kkTyqACtDHadH5YqzcixhuWS8DfQTSd+fVD8A=
-X-Received: by 2002:a67:d289:: with SMTP id z9mr308540vsi.39.1634145203777;
- Wed, 13 Oct 2021 10:13:23 -0700 (PDT)
+        bh=+LSoIBe2LzP0UwOBCcPVd1fUoIWgL1sW4RPSfZpM9q8=;
+        b=XrHvMeOkshLC2zHph8snNdRwR2i+6chxIPnvtZ+MmCp1GOwqC+9gKilE9Jasai3DHK
+         TBEAipRdXKIYRVkmr4gaUg6MdnuTf53XMnXBVqd5aWBKUTmFzsr0iIdf4NjI7l8xQmpC
+         qd8Q+Wl6mpvy23bOzqCdzs12Z+VaNDYN/mHbsRIY/U7X+xNutBKDkD33OsD9Gg2sN6Wd
+         2MirhEO8upj4LBftGHS5WgaYUFbjHA/GH20lruQfFTV7nWgs6NPJz7JwR0H3WCVHp3xm
+         pNhWxoTpzkeqNgNoYqhGkh+cNyZz8IyEamNjF8Po36hGMWNvMCrmM6P5NfoBaEtlPYL7
+         J3lg==
+X-Gm-Message-State: AOAM533RSBDkhSI+u61PPH88/KKCDIzk7WNhEGSk+wDVa3jtYlU8tXNc
+        gel04XG1iIIi6bSaX9ghcXRt9WOw6fkmf4zXNxXncQ==
+X-Google-Smtp-Source: ABdhPJzptIma6qxp1r8w4g+Oz1v1vi23o/wdCIXMarxIt3ectQcRK7CuFatBRslmuBnBbW9vmoV0Qs68tD+Dl/2lhEo=
+X-Received: by 2002:a05:6808:1686:: with SMTP id bb6mr240224oib.40.1634145247377;
+ Wed, 13 Oct 2021 10:14:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211007182158.7490-1-semen.protsenko@linaro.org>
- <YWXaKevf8D0kKYXo@smile.fi.intel.com> <CAPLW+4==u6Lpi-tRpGCFjuCBUARsarJx=Lg2QVAbvXX7hOyRVg@mail.gmail.com>
- <CAMuHMdXmp5qngW9XKSzFwBGMQs4YduQbw3zxDfSAjho_deMjaQ@mail.gmail.com> <CAPLW+4muEHPijg2yZJ-gu--6Sbg9DvTeSz5QcwOR+eAVniczyA@mail.gmail.com>
-In-Reply-To: <CAPLW+4muEHPijg2yZJ-gu--6Sbg9DvTeSz5QcwOR+eAVniczyA@mail.gmail.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Wed, 13 Oct 2021 20:13:11 +0300
-Message-ID: <CAPLW+4=dK400WSFaBS_TGOTypCY9oWnDWS3xBp22b5n-ae=R-w@mail.gmail.com>
-Subject: Re: [PATCH v5] clk: Add write operation for clk_parent debugfs node
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mike Tipton <mdtipton@codeaurora.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+ <20211013105541.68045-5-bhupesh.sharma@linaro.org> <b41ba845-5f28-8405-0cd0-2342e4b6b372@linaro.org>
+In-Reply-To: <b41ba845-5f28-8405-0cd0-2342e4b6b372@linaro.org>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Wed, 13 Oct 2021 22:43:56 +0530
+Message-ID: <CAH=2NtzVvUVYCTpyzj65=aPYRnQQvhd5xG1pCbFwbsXpCfGRzw@mail.gmail.com>
+Subject: Re: [PATCH v4 04/20] dt-bindings: qcom-bam: Convert binding to YAML
+To:     Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>, linux-crypto@vger.kernel.org,
+        bhupesh.linux@gmail.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 at 19:30, Sam Protsenko <semen.protsenko@linaro.org> wrote:
->
-> On Wed, 13 Oct 2021 at 16:08, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >
-> >   Hi Sam,
-> >
-> > On Wed, Oct 13, 2021 at 1:36 PM Sam Protsenko
-> > <semen.protsenko@linaro.org> wrote:
-> > > On Tue, 12 Oct 2021 at 21:55, Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Thu, Oct 07, 2021 at 09:21:58PM +0300, Sam Protsenko wrote:
-> > > > > Useful for testing mux clocks. One can write the index of the parent to
-> > > > > be set into clk_parent node, starting from 0. Example
-> > > > >
-> > > > >     # cd /sys/kernel/debug/clk/mout_peri_bus
-> > > > >     # cat clk_possible_parents
-> > > > >       dout_shared0_div4 dout_shared1_div4
-> > > > >     # cat clk_parent
-> > > > >       dout_shared0_div4
-> > > > >     # echo 1 > clk_parent
-> > > > >     # cat clk_parent
-> > > > >       dout_shared1_div4
-> > > > >
-> > > > > CLOCK_ALLOW_WRITE_DEBUGFS has to be defined in drivers/clk/clk.c in
-> > > > > order to use this feature.
-> > > >
-> > > > ...
-> > > >
-> > > > > +#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-> > > > > +     if (core->num_parents > 1)
-> > > > > +             debugfs_create_file("clk_parent", 0644, root, core,
-> > > > > +                                 &current_parent_rw_fops);
-> > > > > +     else
-> > > > > +#endif
-> > > >
-> > > > > +     {
-> > > > > +             if (core->num_parents > 0)
-> > > > > +                     debugfs_create_file("clk_parent", 0444, root, core,
-> > > > > +                                         &current_parent_fops);
-> > > > > +     }
-> > > >
-> > > > Currently there is no need to add the {} along with increased indentation
-> > > > level. I.o.w. the 'else if' is valid in C.
-> > >
-> > > Without those {} we have two bad options:
-> > >
-> > >   1. When putting subsequent 'if' block on the same indentation level
-> > > as 'else': looks ok-ish for my taste (though inconsistent with #ifdef
-> > > code) and checkpatch swears:
-> > >
-> > >         WARNING: suspect code indent for conditional statements (8, 8)
-> > >         #82: FILE: drivers/clk/clk.c:3334:
-> > >         +    else
-> > >         [...]
-> > >              if (core->num_parents > 0)
-> > >
-> > >   2. When adding 1 additional indentation level for subsequent 'if'
-> > > block: looks plain ugly to me, inconsistent for the case when
-> > > CLOCK_ALLOW_WRITE_DEBUGFS is not defined, but checkpatch is happy
-> > >
-> > > I still think that the way I did that (with curly braces) is better
-> > > one: it's consistent for all cases, looking ok, checkpatch is happy
-> > > too. But isn't it hairsplitting? This particular case is not described
-> > > in kernel coding style doc, so it's about personal preferences.
-> > >
-> > > If it's still important to you -- please provide exact code snippet
-> > > here (with indentations) for what you desire, I'll send v6. But
-> > > frankly I'd rather spend my time on something more useful. This is
-> > > minor patch, and I don't see any maintainers wishing to pull it yet.
-> >
-> > Note that checkpatch is just a tool, providing advice. It is not perfect,
-> > and if there is a good reason to ignore it, I'm all for that.
-> >
->
-> Agreed. Actually I did the same grepping as Andy mentioned in previous
-> mails, and used that style because that's what other people often do.
-> checkpatch is more like excuse for me in this case :)
->
-> > Personally, I would write:
-> >
-> >     #ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-> >             if (core->num_parents > 1)
-> >                     debugfs_create_file("clk_parent", 0644, root, core,
-> >                                         &current_parent_rw_fops);
-> >             else
-> >     #endif
-> >             if (core->num_parents > 0)
-> >                     debugfs_create_file("clk_parent", 0444, root, core,
-> >                                         &current_parent_fops);
-> >             }
-> >
->
+Hi Vladimir,
 
-Actually... After considering all options and looking at actual diff,
-I'll go with that option: looks least cluttered, and the delta is
-really minimal.
+Thanks for your review.
+Please see my replies inline:
 
-> That looks good to me. But I'd keep it as is, if you don't have a
-> strong opinion about this: looks better with braces, because it's
-> multi-line blocks (although physically and not semantically).
+On Wed, 13 Oct 2021 at 18:26, Vladimir Zapolskiy
+<vladimir.zapolskiy@linaro.org> wrote:
 >
-> > Then, I'm wondering if it really is worth it to have separate cases for
-> > "num_parents> 1" and "num_parents > 0".  If there's a single parent,
-> > current_parent_write() should still work fine with "0", wouldn't it?
-> > Then the only differences are the file mode and the fops.
-> > You could handle that with #defines above, like is currently done for
-> > clk_rate_mode.  And the checkpatch issue is gone ;-)
+> Hi Bhupesh,
+>
+> On 10/13/21 1:55 PM, Bhupesh Sharma wrote:
+> > Convert Qualcomm BAM DMA devicetree binding to YAML.
+> >
+> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >   .../devicetree/bindings/dma/qcom_bam_dma.txt  | 50 -----------
+> >   .../devicetree/bindings/dma/qcom_bam_dma.yaml | 89 +++++++++++++++++++
+> >   2 files changed, 89 insertions(+), 50 deletions(-)
+> >   delete mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+> >   create mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt b/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+> > deleted file mode 100644
+> > index cf5b9e44432c..000000000000
+> > --- a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+> > +++ /dev/null
+> > @@ -1,50 +0,0 @@
+> > -QCOM BAM DMA controller
+> > -
+> > -Required properties:
+> > -- compatible: must be one of the following:
+> > - * "qcom,bam-v1.4.0" for MSM8974, APQ8074 and APQ8084
+> > - * "qcom,bam-v1.3.0" for APQ8064, IPQ8064 and MSM8960
+> > - * "qcom,bam-v1.7.0" for MSM8916
+> > -- reg: Address range for DMA registers
+> > -- interrupts: Should contain the one interrupt shared by all channels
+> > -- #dma-cells: must be <1>, the cell in the dmas property of the client device
+> > -  represents the channel number
+> > -- clocks: required clock
+> > -- clock-names: must contain "bam_clk" entry
+> > -- qcom,ee : indicates the active Execution Environment identifier (0-7) used in
+> > -  the secure world.
+> > -- qcom,controlled-remotely : optional, indicates that the bam is controlled by
+> > -  remote proccessor i.e. execution environment.
+> > -- num-channels : optional, indicates supported number of DMA channels in a
+> > -  remotely controlled bam.
+> > -- qcom,num-ees : optional, indicates supported number of Execution Environments
+> > -  in a remotely controlled bam.
+> > -
+> > -Example:
+> > -
+> > -     uart-bam: dma@f9984000 = {
+> > -             compatible = "qcom,bam-v1.4.0";
+> > -             reg = <0xf9984000 0x15000>;
+> > -             interrupts = <0 94 0>;
+> > -             clocks = <&gcc GCC_BAM_DMA_AHB_CLK>;
+> > -             clock-names = "bam_clk";
+> > -             #dma-cells = <1>;
+> > -             qcom,ee = <0>;
+> > -     };
+> > -
+> > -DMA clients must use the format described in the dma.txt file, using a two cell
+> > -specifier for each channel.
+> > -
+> > -Example:
+> > -     serial@f991e000 {
+> > -             compatible = "qcom,msm-uart";
+> > -             reg = <0xf991e000 0x1000>
+> > -                     <0xf9944000 0x19000>;
+> > -             interrupts = <0 108 0>;
+> > -             clocks = <&gcc GCC_BLSP1_UART2_APPS_CLK>,
+> > -                     <&gcc GCC_BLSP1_AHB_CLK>;
+> > -             clock-names = "core", "iface";
+> > -
+> > -             dmas = <&uart-bam 0>, <&uart-bam 1>;
+> > -             dma-names = "rx", "tx";
+> > -     };
+> > diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+> > new file mode 100644
+> > index 000000000000..32b47e3b7769
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+> > @@ -0,0 +1,89 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/dma/qcom_bam_dma.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: QCOM BAM DMA controller binding
+> > +
+> > +maintainers:
+> > +  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > +
+> > +description: |
+> > +  This document defines the binding for the BAM DMA controller
+> > +  found on Qualcomm parts.
+> > +
+> > +allOf:
+> > +  - $ref: "dma-controller.yaml#"
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - qcom,bam-v1.4.0 # for MSM8974, APQ8074 and APQ8084
+> > +      - qcom,bam-v1.3.0 # for APQ8064, IPQ8064 and MSM8960
+> > +      - qcom,bam-v1.7.0 # for MSM8916
+>
+> would it be better to sort the list above by IP version?
+
+Sure, I did not want to alter the ordering kept in the .txt version of
+the device-tree bindings, but I have no strong objection to changing
+and keeping the above sorted as per IP version  as well.
+
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    maxItems: 1
+> > +
+> > +  clock-names:
+> > +    const: bam_clk
+> > +
+> > +  interrupts:
+> > +    minItems: 1
+> > +    maxItems: 31
+> > +
+> > +  num-channels:
+> > +    maximum: 31
+> > +    description: |
+> > +      Indicates supported number of DMA channels in a remotely controlled bam.
+>
+> A comment about YAML specifics, I'm not sure, if it makes sense to set a control
+> to enable literal style of the given multiline description, since it is a one-liner.
+>
+> My main observation though is that all actually multi-line descriptions in the
+> schema are different and of the folded style ("pipe" symbol is not set).
+>
+> Probably it's good enough just to remove the "pipe" above.
+
+Ok.
+
+> > +
+> > +  "#dma-cells":
+> > +    const: 1
+> > +    description: The single cell represents the channel index.
+> > +
+> > +  qcom,ee:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      Indicates the active Execution Environment identifier (0-7)
+> > +      used in the secure world.
+>
+> Would it make sense to add here
+>
+>    minimum: 0
+>    maximum: 7
+
+Ok, will try and if it passes 'make dtbs_check', will fix in v5.
+
+Regards,
+Bhupesh
+
+> > +
+> > +  qcom,controlled-remotely:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description:
+> > +      Indicates that the bam is controlled by remote proccessor i.e.
+> > +      execution environment.
+> > +
+> > +  qcom,num-ees:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    minimum: 0
+> > +    maximum: 31
+> > +    default: 2
+> > +    description:
+> > +      Indicates supported number of Execution Environments in a
+> > +      remotely controlled bam.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +  - "#dma-cells"
+> > +  - qcom,ee
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/qcom,gcc-msm8974.h>
+> > +    dma-controller@f9984000 {
+> > +        compatible = "qcom,bam-v1.4.0";
+> > +        reg = <0xf9984000 0x15000>;
+> > +        interrupts = <0 94 0>;
+> > +        clocks = <&gcc GCC_BAM_DMA_AHB_CLK>;
+> > +        clock-names = "bam_clk";
+> > +        #dma-cells = <1>;
+> > +        qcom,ee = <0>;
+> > +    };
 > >
 >
-> I considered such case. But it would be inconsistent with this already
-> existing code:
->
->     if (core->num_parents > 1)
->         debugfs_create_file("clk_possible_parents", 0444, root, core,
->                     &possible_parents_fops);
->
-> Because user would probably want to use both 'clk_parent' and
-> 'clk_possible_parents' together (e.g. see my example in commit
-> message). From logical point of view, I designed that code for testing
-> MUX clocks, and I doubt there are any MUXes with only one parent
-> (input signal). So I'd like to keep this logic as is, if you don't
-> mind, even though it might appear bulky.
->
-> So for v6 I'm going to go exactly with what Andy suggested, hope it's
-> fine with you?
->
-> > Gr{oetje,eeting}s,
-> >
-> >                         Geert
-> >
-> > --
-> > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> >
-> > In personal conversations with technical people, I call myself a hacker. But
-> > when I'm talking to journalists I just say "programmer" or something like that.
-> >                                 -- Linus Torvalds
+> --
+> Best wishes,
+> Vladimir
