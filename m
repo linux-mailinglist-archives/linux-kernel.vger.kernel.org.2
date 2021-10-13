@@ -2,118 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E6942B785
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311CB42B791
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238033AbhJMGkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 02:40:19 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:40835 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238003AbhJMGkP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 02:40:15 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S238082AbhJMGk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 02:40:56 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:54583 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238056AbhJMGkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 02:40:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634107131; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=2Sxn7nxNPV/y1dKCj++t5AuVa7wh8FXygB4uFbt6r4U=; b=eLAotXIPZF3qGRw31X5iWCZ3+L1Ztb+eYJdsLfPDy+yqRQEJ8XsxilhzKVI7ocNLnd0/UXYR
+ C/2VVE6R5ilOPeGnX8Eal5a2glbu03gT3n8ccC4vwJd7iqZWL5DfOruDx/7ULVeSF5DTYHYt
+ Yp5Z2dV0eiaQqp52JeMfBM7Ene0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 61667ef2a45ca75307287002 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Oct 2021 06:38:42
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B277AC43617; Wed, 13 Oct 2021 06:38:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HTjXK2t0qz4xbG;
-        Wed, 13 Oct 2021 17:38:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634107091;
-        bh=vG5wu8rK/bYN0SCJfvAhVNcO15ZTCrwihNZzPlGYioU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tjArxxtiWKW8QOQvHragrEHJbtBkAH6yvJiBrlCtpKo/Jvxv34mapJ9Bk9B7iT5Xu
-         gHv9bYuIQ0YQpAYePJAC42B3GQEACJrC0vFeeJ9jUlGYXru4RHoODwhA6tNYJ1QsE4
-         qIqSxq6Gbx0cjLzqskoflQpITzbv8NeKPLpb1UPueCrm6TM9mVdmJDeKwnMTWLcJ6t
-         8cOA5cuh+NmKK3Jl2D7VAA5VEi0rwAIwx5rTMDnqb8ujb/NjkN2dFC8/TCgJkM6vHJ
-         hDkGDeVBrlYYIEsfAPr1kjfKBJ5KwiGiKyDFlhCIJzNlY5ebt8QmgzkosjPGKGz30m
-         M7qszNN/ZDtXw==
-Date:   Wed, 13 Oct 2021 17:38:08 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Anatolij Gustschin <agust@denx.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [RFC PATCH] powerpc: dts: Remove MPC5xxx platforms
-Message-ID: <20211013173808.7ab92035@canb.auug.org.au>
-In-Reply-To: <20211012153456.2844193-1-robh@kernel.org>
-References: <20211012153456.2844193-1-robh@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hNT9L3ZDbI5k34wFOdCx2dr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AB511C43617;
+        Wed, 13 Oct 2021 06:38:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org AB511C43617
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
+        rnayak@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: [PATCH v12 0/5] Introduce SoC sleep stats driver
+Date:   Wed, 13 Oct 2021 12:08:19 +0530
+Message-Id: <1634107104-22197-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hNT9L3ZDbI5k34wFOdCx2dr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Changes in v12:
+- Address Stephan's comments from v11
+- Rename driver and compatible to qcom,rpm(h)-stats
+- Skip reading SMEM for RPM targets
+- Make driver register in late_init to avoid -EPROBE_DEFER from smem.
+- Change size to 0x10000 for RPM targets since area contains many others stats.
 
-Hi Rob,
+Changes in v11:
+- Address Bjorn's comments from v10
+- Add a case for RPM based targets dynamic offset in driver
+- Update commit messages to use qcom sleep stats instead of soc sleep stats
+- Drop individual target dtsi changes for sc7180 and sc7280
+- Add single change to enable sleep stats for RPMh based targets
+- Add single change to enable sleep stats for RPM based targets
 
-On Tue, 12 Oct 2021 10:34:56 -0500 Rob Herring <robh@kernel.org> wrote:
->
-> The mpc5xxx platforms have had dts warnings for some time which no one
-> seems to care to fix, so let's just remove the dts files.
->=20
-> According to Arnd:
-> "Specifically, MPC5200B has a 15 year lifetime, which ends in
-> 11 months from now. The original bplan/Genesi Efika 5K2 was
-> quite popular at the time it came out, and there are probably
-> still some of those hanging around, but they came with Open
-> Firmware rather than relying on the dts files that ship with the
-> kernel.
->=20
-> Grant Likely was the original maintainer for MPC52xx until 2011,
-> Anatolij Gustschin is still listed as maintainer since then but hasn't
-> been active in it for a while either. Anatolij can probably best judge
-> which of these boards are still in going to be used with future kernels,
-> but I suspect once you start removing bits from 52xx, the newer
-> but less common 512x platform can go away as well."
->=20
-> Cc: Anatolij Gustschin <agust@denx.de>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> Sending this out as a feeler to see if anyone cares. If anyone does,=20
-> please fix the warnings.
+Changes in v10:
+- Updated device node name to use memory instead of aop_msgram
+- Remove Lina's email from maintainers 
+- Rename driver to qcom_sleep_stats. Update makefile, Kconfig accordingly
+- Address Bjorn's comments from v9
 
-Thanks.  However .. :-)
+Changes in v9:
+- Remove soft dependency on smem module
+- Return -EIO to userspace in case of error
+- Make struct sleep_stats *stat a const pointer
+- Remove the driver from soc_sleep_stats_driver name
+- Remove offset address and directly mention the msgram address in dtsi
+- Use devm_platform_get_and_ioremap_resource() to ioremap dtsi address
+- Update device node name to mention aop_msgram instead rpmh-sleep-stats
+- Update dtsi and documentation accordingly but retain the reviews
 
-FATAL ERROR: Couldn't open "mpc5200b.dtsi": No such file or directory
-make[2]: *** [/home/sfr/next/next/scripts/Makefile.lib:358: arch/powerpc/bo=
-ot/dts/digsy_mtc.dtb] Error 1
+Changes in v8:
+- Addressed bjorn's comments in driver from v7
+- Update aoss_qmp device node reg size for sc7280
 
-$ grep -wrl mpc5200b.dtsi
-arch/powerpc/boot/dts/digsy_mtc.dts
+Changes in v7:
+- Fix example in bindings documentation as per #address/size-cells = <1>.
+- Add comment in driver from where 'ddr' subsystems name is read.
+- Update comment in driver to s/beside/besides and others from v6.
+- Rename debugfs_create_entries() from v6.
+- Drop use of memcpy_fromio() to find the name.
+- Use sizeof(*prv_data) in devm_kzalloc().
+- Add change to define readq() if its not yet defined for compile support.
+- Add wpss subsystem in the list of subsystems.
+- Add module soft dependency on smem module.
+- Add new change to add device node for sc7280.
 
-missed one :-)
---=20
-Cheers,
-Stephen Rothwell
+Changes in v6:
+- Address stephen's comments from v5 which includes below
+- Pad 0 in documentation example to make address 8 digit
+- define macro to calculate offset in driver
+- Add appended_stats_avail to prv_data instead of using entire stats_config
+- make array subsystems[] as const
+- Add comment for SSR case
+- Use memcpy_fromio() and devm_kcalloc() during probe
+- Change file permission mode from 444 to 400 
 
---Sig_/hNT9L3ZDbI5k34wFOdCx2dr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+- Address guenter's comments to add depends on QCOM_SMEM
 
------BEGIN PGP SIGNATURE-----
+- Add adsp_island and cdsp_island subsystems
+- Use strim() to remove whitespace in stat name
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFmftAACgkQAVBC80lX
-0GySTgf/SwHWqYw3xEIGHbUBCpLmTzIJWw0cXaAN8VFo6Lpsb/H7xKz/Cu3fUYyX
-Z7veE1EKdxvZfcnE4rwSHEL8TvtLp3U3yAls5foblypO301bXEISgNaYxAHKSKeV
-S7D0KIY0U8fcSaM0HrBhwxTECEBGJtSwf2K/I81GlIKO8h+dt6ajec974Ku8mMMc
-LWukJfatx9F0Ex7prCIlJA1S/gnw8RO7x0GTaF8mM4ULay59UQbn2W+5W0MEs58g
-zyQFj8yL5OqaV6ZlzPhGIKQc1DLTPlQLvI7iuF2CxDKomoHvTPSiGqRtd/p3qnrt
-KR+wol1v6zuUZu7DClfczJuiGJ3vnw==
-=oWcO
------END PGP SIGNATURE-----
+Changes in v5:
+- Remove underscore from node name in Documentation and DTSI change
+- Remove global config from driver change
 
---Sig_/hNT9L3ZDbI5k34wFOdCx2dr--
+Changes in v4:
+- Address bjorn's comments from v3 on change 2.
+- Add bjorn's Reviewed-by on change 3 and 4.
+
+Changes in v3:
+- Address stephen's comments from v2 in change 1 and 2.
+- Address bjorn's comments from v2 in change 3 and 4.
+- Add Rob and bjorn's Reviewed-by on YAML change.
+
+Changes in v2:
+- Convert Documentation to YAML.
+- Address stephen's comments from v1.
+- Use debugfs instead of sysfs.
+- Add sc7180 dts changes for sleep stats
+- Add defconfig changes to enable driver
+- Include subsystem stats from [1] in this single stats driver.
+- Address stephen's comments from [1]
+- Update cover letter inline to mention [1]
+
+Qualcomm Technologies, Inc. (QTI)'s chipsets support SoC level low power
+modes. SoCs Always On Processor/Resource Power Manager produces statistics
+of the SoC sleep modes involving lowering or powering down of the rails and
+the oscillator clock.
+
+Additionally multiple subsystems present on SoC like modem, spss, adsp,
+cdsp maintains their low power mode statistics in shared memory (SMEM).
+
+Statistics includes SoC sleep mode type, number of times LPM entered, time
+of last entry, exit, and accumulated sleep duration in seconds.
+
+This series adds a driver to read the stats and export to debugfs.
+
+[1] https://lore.kernel.org/patchwork/patch/1149381/
+
+Mahesh Sivasubramanian (2):
+  dt-bindings: Introduce QCOM Sleep stats bindings
+  soc: qcom: Add Sleep stats driver
+
+Maulik Shah (3):
+  arm64: defconfig: Enable Sleep stats driver
+  arm64: dts: qcom: Enable RPMh Sleep stats
+  arm64: dts: qcom: Enable RPM Sleep stats
+
+ .../devicetree/bindings/soc/qcom/qcom-stats.yaml   |  47 ++++
+ arch/arm64/boot/dts/qcom/msm8996.dtsi              |   5 +
+ arch/arm64/boot/dts/qcom/msm8998.dtsi              |   5 +
+ arch/arm64/boot/dts/qcom/qcs404.dtsi               |   5 +
+ arch/arm64/boot/dts/qcom/sc7180.dtsi               |   7 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |   7 +-
+ arch/arm64/boot/dts/qcom/sdm630.dtsi               |   5 +
+ arch/arm64/boot/dts/qcom/sm6125.dtsi               |   5 +
+ arch/arm64/boot/dts/qcom/sm8150.dtsi               |   7 +-
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               |   7 +-
+ arch/arm64/boot/dts/qcom/sm8350.dtsi               |   7 +-
+ arch/arm64/configs/defconfig                       |   1 +
+ drivers/soc/qcom/Kconfig                           |  10 +
+ drivers/soc/qcom/Makefile                          |   1 +
+ drivers/soc/qcom/qcom_stats.c                      | 277 +++++++++++++++++++++
+ 15 files changed, 391 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom-stats.yaml
+ create mode 100644 drivers/soc/qcom/qcom_stats.c
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
