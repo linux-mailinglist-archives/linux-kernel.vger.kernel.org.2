@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7F542C3B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C8842C3B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237387AbhJMOn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:43:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235592AbhJMOn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:43:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E372561164;
-        Wed, 13 Oct 2021 14:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634136112;
-        bh=FnygDVALxuB6jzfdbNL9ETJk+t+tvoto1moRUkWnoa4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=blmtjwVQ44gx2yksClstXIIuCIKlj42Zg4rAXRmJbWq1jWfUHvwsNV1usBK/b+KoS
-         Xm36wyw7WogQiiIK6XZ3PSBLcsC6rl2DfzWsRzVWIRIiRieZCKVYoaKWoUnbYuZqx8
-         OSiXJX+jGfaR7L1jX+NVL8tSkNGzDw1DblD4lQS1hBjUJbddYpxZnbdkcxBOW2IgaD
-         OL3yWPnPjCDviqhkN9915JLQQz5mvcmrlY0VKF42opvMg9WPw6YDtydX+gZDAMQi5X
-         thyDojZd++nO5AzUbPbN45fdvirIKUdNGrOwWyGemtIA2OmLTfV/u6h1S9VjBiCon2
-         59jTZa2hxWBuw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/tegra: mark nvdec PM functions as __maybe_unused
-Date:   Wed, 13 Oct 2021 16:41:36 +0200
-Message-Id: <20211013144148.2208472-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S236515AbhJMOnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235592AbhJMOnt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:43:49 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B95C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:41:45 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id u18so9260140wrg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:41:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=szeolAqmJqd0hJn5d47PHeNOyZWuU1CeFrejo0YAi2g=;
+        b=gl3VZVP1TqNkHsgFq0ACejnEoaUglc0W3z7d1po11LFGQf7s90pMcfrlQHwAoS3Rr8
+         h8IgwfnvH+XzjqGY2PXrU7/45m+AT/eH3cGwqU1EHay+5bR72teET8XlFIbJxGvbHU4s
+         Rp5sxnmIuHYpSSc/e+kT6L1zFAWHjzeFsampg2z5rwI0OGFjPtW0Ux2AdznYO1cVmmfJ
+         g+FB7GZgo6PdNSubqLpqeWUt7fDeBnpGECKuV1DsP0sJ3sYuoTa07tbIrnCDmnTMUOeL
+         ft1lDTDwtl/QHQUBCE0t2BreR5qrpPc/KXpEyrXOa5x9W1hmukQt7jaqYx8YIe6SunJZ
+         d1dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=szeolAqmJqd0hJn5d47PHeNOyZWuU1CeFrejo0YAi2g=;
+        b=rN0aKOqALIshA+X+esBRmLJ9HQsmbiYGujCBHgO+f4MjPSK5EI3MXLn4PD1tW+30PP
+         8+77WxK64ottzQH7x89vQjKIi56X6mZ/PR6S1Y177SxpLpyGIpeG8nO8QmGebxOVWhW/
+         ud2RC8oQNfLDETVnKg7ndUfvbned8DO0A0mBvW1Xc4egdmBR70mODFECpQyZyYwskr+O
+         1b+QZjmRL85LsgMvjW7fNIAgWLlCwZpGH4KBEbvvObe4wPCvs4SK5xm3m21CP7PAMzWq
+         KjcUkBznBhfthDrMDv0J4zMk9Vm+94DOAITVXrPs+jXQeIpRHOHy1C+xSb/z/xfw9fdE
+         9nOw==
+X-Gm-Message-State: AOAM532xDhm7/phV97AKc+2nehcySwi6ZFnQPvCFXkQ+tyxV456m3jWM
+        EcCM1iUf9sHb76PqIB2KsORazSBnm/GrYnmDxjsQZqh7wtQ=
+X-Google-Smtp-Source: ABdhPJyCvyq/9C6wna728xWxFAGllf0V5EJrzGiocYtunJSd7tQ3YDO5D6KjmYh9kOoO6r8wNhQIM8CAr0Sg1XhvGak=
+X-Received: by 2002:adf:aa96:: with SMTP id h22mr40916603wrc.405.1634136104284;
+ Wed, 13 Oct 2021 07:41:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6000:1146:0:0:0:0 with HTTP; Wed, 13 Oct 2021 07:41:43
+ -0700 (PDT)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mrsaishag31@gmail.com>
+Date:   Wed, 13 Oct 2021 07:41:43 -0700
+Message-ID: <CANoeRo4SZ8P6brVT1fZB8X001bdSyBsU9+92dqKnbkTL5LXu4Q@mail.gmail.com>
+Subject: Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Dear Friend,
 
-The resume helper is called conditionally and causes a harmless
-warning when stubbed out:
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
-drivers/gpu/drm/tegra/nvdec.c:240:12: error: 'nvdec_runtime_resume' defined but not used [-Werror=unused-function]
-  240 | static int nvdec_runtime_resume(struct device *dev)
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
 
-Mark both suspend and resume as __maybe_unused for consistency
-to avoid this warning.
-
-Fixes: e76599df354d ("drm/tegra: Add NVDEC driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/gpu/drm/tegra/nvdec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/tegra/nvdec.c b/drivers/gpu/drm/tegra/nvdec.c
-index 30105a93de9f..791bf1acf5f0 100644
---- a/drivers/gpu/drm/tegra/nvdec.c
-+++ b/drivers/gpu/drm/tegra/nvdec.c
-@@ -238,7 +238,7 @@ static int nvdec_load_firmware(struct nvdec *nvdec)
- }
- 
- 
--static int nvdec_runtime_resume(struct device *dev)
-+static __maybe_unused int nvdec_runtime_resume(struct device *dev)
- {
- 	struct nvdec *nvdec = dev_get_drvdata(dev);
- 	int err;
-@@ -264,7 +264,7 @@ static int nvdec_runtime_resume(struct device *dev)
- 	return err;
- }
- 
--static int nvdec_runtime_suspend(struct device *dev)
-+static __maybe_unused int nvdec_runtime_suspend(struct device *dev)
- {
- 	struct nvdec *nvdec = dev_get_drvdata(dev);
- 
--- 
-2.29.2
-
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
+Best Regards
+Mrs Aisha Al-Qaddafi
