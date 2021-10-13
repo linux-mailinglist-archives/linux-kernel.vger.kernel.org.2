@@ -2,96 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CB742C660
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6940842C661
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237573AbhJMQ3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:29:22 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:59368 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236782AbhJMQ3O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:29:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Uri79JY_1634142428;
-Received: from 30.30.71.190(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0Uri79JY_1634142428)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 14 Oct 2021 00:27:09 +0800
-Message-ID: <b503abb8-90dc-fe38-909b-5a4156c170d9@linux.alibaba.com>
-Date:   Thu, 14 Oct 2021 00:27:08 +0800
+        id S229903AbhJMQ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:29:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237782AbhJMQ3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 12:29:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D48D60D42;
+        Wed, 13 Oct 2021 16:27:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634142453;
+        bh=jP0eqxF1igtQ3ufSDFjm8C/4Rcpfx8W2dx1pWBhPigg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HPwpCP0y6vDRDhO/IYa9jmvJqkjIU6ObWhymvSqEDOIanIque9ZhA/wAi+LpKydTS
+         DaI2xuCX3+K2OBhq1BaJeVWqTvp2Ta70o32OI9TibjE+nUKSgMttgyc0GrKhSIlQT3
+         XXaMATDvKw/stWgSnOg+pOVx19PqwF1SbiV14kbQm5+FX62G5mvisRCOQnRml5ebJ7
+         BISVQj5DcLT+ga56f3hoH54KsjgZc6lihe+RDvLflZxBE+VINCatGADKdXfaIebTDF
+         YyM1XhUNxkqFcmARzgMlWtCqLWD+tnv1TJfZS+uA3Jx0kTECXdIE9S+fGumIlqXHtb
+         Hj/LtNExzfsfQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 31AC95C0687; Wed, 13 Oct 2021 09:27:33 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 09:27:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB
+ + a few other fixes v2
+Message-ID: <20211013162733.GS880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211011145140.359412-1-frederic@kernel.org>
+ <20211013003215.GP880162@paulmck-ThinkPad-P17-Gen-1>
+ <20211013032832.GQ880162@paulmck-ThinkPad-P17-Gen-1>
+ <20211013114335.GB377556@lothringen>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
- Gecko/20100101 Thunderbird/93.0
-Subject: Re: [PATCH] mm/damon/dbgfs: remove unnecessary variables
-Content-Language: en-US
-To:     SeongJae Park <sj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-References: <20211013150413.23027-1-sj@kernel.org>
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-In-Reply-To: <20211013150413.23027-1-sj@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013114335.GB377556@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 13, 2021 at 01:43:35PM +0200, Frederic Weisbecker wrote:
+> On Tue, Oct 12, 2021 at 08:28:32PM -0700, Paul E. McKenney wrote:
+> > On Tue, Oct 12, 2021 at 05:32:15PM -0700, Paul E. McKenney wrote:
+> > > On Mon, Oct 11, 2021 at 04:51:29PM +0200, Frederic Weisbecker wrote:
+> > > > Hi,
+> > > > 
+> > > > No code change in this v2, only changelogs:
+> > > > 
+> > > > * Add tags from Valentin and Sebastian
+> > > > 
+> > > > * Remove last reference to SEGCBLIST_SOFTIRQ_ONLY (thanks Valentin)
+> > > > 
+> > > > * Rewrite changelog for "rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check"
+> > > >   after off-list debates with Paul.
+> > > > 
+> > > > * Remove the scenario with softirq interrupting rcuc on
+> > > >   "rcu/nocb: Limit number of softirq callbacks only on softirq" as it's
+> > > >   probably not possible (thanks Valentin).
+> > > > 
+> > > > * Remove the scenario with task spent scheduling out accounted on tlimit
+> > > >   as it's not possible (thanks Valentin)
+> > > >   (see "rcu: Apply callbacks processing time limit only on softirq")
+> > > > 
+> > > > * Fixed changelog of
+> > > >   "rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread"
+> > > >   (thanks Sebastian).
+> > > > 
+> > > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > > > 	rcu/rt-v2
+> > > > 
+> > > > HEAD: 2c9349986d5f70a555195139665841cd98e9aba4
+> > > > 
+> > > > Thanks,
+> > > > 	Frederic
+> > > 
+> > > Nice!
+> > > 
+> > > I queued these for further review and testing.  I reworked the commit log
+> > > of 6/11 to give my idea of the reason, though I freely admit that this
+> > > reason is not as compelling as it no doubt seemed when I wrote that code.
+> > 
+> > But in initial tests TREE04.5, TREE04.6, and TREE04.9 all hit the
+> > WARN_ON(1) in rcu_torture_barrier(), which indicates rcu_barrier()
+> > breakage.  My best (but not so good) guess is a five-hour MTBF on a
+> > dual-socket system.
+> > 
+> > I started an automated "git bisect" with each step running 100 hours
+> > of TREE04, but I would be surprised if anything useful comes of it.
+> > Pleased, mind you, but surprised.
+> 
+> Ok I can reproduce.
+> 
+> I'm launching a bisect from my side as well.
 
+Mine converged on 2a4200944750 ("rcu/nocb: Prepare state machine for
+a new step").  The surprise is that I was running "git bisect run"
+on a script wrappering kvm-remote.sh, which means that it managed to
+repeatedly request 10 systems, download to them, run the test, collect
+the results, and finally return the systems.
 
-On 10/13/21 11:04 PM, SeongJae Park wrote:
-> Hi Rongwei,
-> 
-> 
-> Thank you for this patch!  Looks good to me overall.  I left a couple of
-> nitpicks below, though.
-> 
-> On Wed, 13 Oct 2021 21:09:01 +0800 Rongwei Wang <rongwei.wang@linux.alibaba.com> wrote:
-> 
-> [...]
->> @@ -352,7 +350,7 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
->>   
->>   	nrs = kbuf;
->>   
->> -	targets = str_to_target_ids(nrs, ret, &nr_targets);
->> +	targets = str_to_target_ids(nrs, count, &nr_targets);
->>   	if (!targets) {
->>   		ret = -ENOMEM;
->>   		goto out;
->> @@ -378,12 +376,12 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
->>   		goto unlock_out;
->>   	}
->>   
->> -	err = damon_set_targets(ctx, targets, nr_targets);
->> -	if (err) {
->> +	ret = damon_set_targets(ctx, targets, nr_targets);
->> +	if (ret < 0) {
-> 
-> I'd prefer 'if (ret) {', to be consistent with other part.
-Hi
+Huh.  I should probably refactor my local script to avoid the pointless
+repeated request/return work.
 
-In fact, explicit style, such as 'if (ret < 0)', may be more 
-understandable. But I agree with your advice that to be consistent
-with other part. And I will update it like your said.
-> 
->>   		if (targetid_is_pid(ctx))
->>   			dbgfs_put_pids(targets, nr_targets);
->> -		ret = err;
->> -	}
->> +	} else
->> +		ret = count;
-> 
-> I'd prefer this to have braces:
-> https://docs.kernel.org/process/coding-style.html#placing-braces-and-spaces
-Agree! I will update here.
+But which commit did your bisect find?  ;-)
 
-Thanks!
-> 
->>   
->>   unlock_out:
->>   	mutex_unlock(&ctx->kdamond_lock);
->> @@ -548,8 +546,7 @@ static ssize_t dbgfs_mk_context_write(struct file *file,
-> [...]
-> 
-> 
-> Thanks,
-> SJ
-> 
+Anyway, I am keeping the first commit 4b246eab4750 ("rcu/nocb: Make
+local rcu_nocb_lock_irqsave() safe against concurrent deoffloading"),
+but dropping the others for the time being.
+
+							Thanx, Paul
