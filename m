@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A8242C3F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F18142C402
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237728AbhJMOxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        id S237925AbhJMOx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236626AbhJMOwy (ORCPT
+        with ESMTP id S236961AbhJMOw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:52:54 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D3DC061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:50:50 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id r18so11179753edv.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:50:50 -0700 (PDT)
+        Wed, 13 Oct 2021 10:52:59 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C6BC061762
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:50:54 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id g10so11429368edj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:50:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=pqrs.dk; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Nf83J1G4eVCARqMFa6zkKQ6aKu2xkOANkKzZx/058z0=;
-        b=cDKwZv5QJ3E2LdK8ZqxSt7nHeShCLZKzQbHBFbMqGt1J9pchxflQflh/jtsjBAvq2/
-         ImrnoVkoENXVNa8h5BpN6HHPDT36GDQWpB1GSSTo+XqJHZ13FsZyuLRz17ZqOwm47//X
-         t5SSYkqFNpE7rzaieCoqnXhP7GEW06OP6lki4=
+        bh=FpjertO2BPyqSfuWgO3BNw0nSj6qKavYY6QdzhU8p2I=;
+        b=ILAU0+46XWYxNdy9TQfzF6rFidPJNCX1fB43rPTp1M7vLe3vPK94rEDSwzHcJSsfdW
+         o15qDL4/LBTeuEhXak4/6bGWeeP2dj5y2t29NQtBGi3B3c3U1svgYpEQT0p5E1hPq4Lw
+         ztilTYz+O2Lxqn5h315XukFQDn7D+rosSeowc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Nf83J1G4eVCARqMFa6zkKQ6aKu2xkOANkKzZx/058z0=;
-        b=Zjpkp5B6HI7Xxrgq08Nxdq9Zp3pqdXDonzUIR1iBlX2qF+GojUNfFkyJtWHMIRSXv+
-         CdpSPNUa9ST4Dtm8hJdFt/OjnX5K9gwcwmaXXU7T7MIYnyKGXMboXvQ7RuWdtuuVU9R0
-         rQBZsOZyeVp262q96vka4s6Wk37oPd1BzuZXospNbD+6jwCb9+8wm9GVbqCaifKUg1NE
-         vTKJ7JfwEBeTzQFgNc2IhvRmvk+KPU3bD1ZN4uQ4SQUlPvZuTdCIuNQspgDAlSrfwRId
-         R6VrPX//N7rm1rJ0zBrjmbBZu8jZaDQuMRrt65XSTyhI/iZISPNUp0tp6jvK5lluFc3v
-         CNJg==
-X-Gm-Message-State: AOAM530CjhvVsF7hcfxvlkRl8WrdFeuObIMGEDKb/eHFfTbe0zsIF2FI
-        hmwDufHS/4pcuMpKUuTs858jyw==
-X-Google-Smtp-Source: ABdhPJxuc7MXpenFNuj7PzZE6h84Z4WbIqVVcnPZdsomQsWWGyjvfzawcTk4S/G2dJR2SByzyGu+Gw==
-X-Received: by 2002:a50:e004:: with SMTP id e4mr10346425edl.246.1634136649524;
-        Wed, 13 Oct 2021 07:50:49 -0700 (PDT)
+        bh=FpjertO2BPyqSfuWgO3BNw0nSj6qKavYY6QdzhU8p2I=;
+        b=fQkTCW7AnNWzkYKIa+yd6vJfo6bi/81E9OoqwI9YPyhFOe9PLnPu9D/LlbX7ZYuqGT
+         aBHLISt8OJDBqzP4NLpjWdHQ2Ln+CqC6kQkGDlEZQsYWuVluhzrBnUa4NfSPcVrP51kW
+         8BaBP4B2pqzNIKuMHs0y08qFlh6Vl8o7VPsevVV+o2acbX/00byPE+d2TTrSqjr18kRZ
+         vfv1eVoz+FIrrSZyHeULzvtMNMTfArigjnx00qZw/WfkvpBGOvnm49Q2/6gyggkeGGRl
+         djcS2udRw8+N+1o/DHIZ0/F75859olouMNkc1U5S7dd2KagYHHmEwKY8SPr7rwNBb336
+         PNqg==
+X-Gm-Message-State: AOAM530KxdA4NSDGfAp3btMUg9/vBC5vxIl6ozk7DcAo0w6dwNqo6S98
+        BS6XaVfkhODuqGOAU6v7xLy2Tw==
+X-Google-Smtp-Source: ABdhPJwMsf8aNlQP82hrVxPSoU5V2krZR+BukbA7Crtk7KsNj0DVNiZ1GjeYGhOyquDypWvcHDalaA==
+X-Received: by 2002:a50:e08c:: with SMTP id f12mr10360008edl.178.1634136653126;
+        Wed, 13 Oct 2021 07:50:53 -0700 (PDT)
 Received: from capella.. (27-reverse.bang-olufsen.dk. [193.89.194.27])
-        by smtp.gmail.com with ESMTPSA id nd22sm7535098ejc.98.2021.10.13.07.50.48
+        by smtp.gmail.com with ESMTPSA id nd22sm7535098ejc.98.2021.10.13.07.50.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 07:50:49 -0700 (PDT)
+        Wed, 13 Oct 2021 07:50:52 -0700 (PDT)
 From:   =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alvin@pqrs.dk>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Andrew Lunn <andrew@lunn.ch>,
@@ -59,9 +59,9 @@ To:     Linus Walleij <linus.walleij@linaro.org>,
 Cc:     =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net-next 1/6] ether: add EtherType for proprietary Realtek protocols
-Date:   Wed, 13 Oct 2021 16:50:33 +0200
-Message-Id: <20211013145040.886956-2-alvin@pqrs.dk>
+Subject: [PATCH v2 net-next 2/6] net: dsa: move NET_DSA_TAG_RTL4_A to right place in Kconfig/Makefile
+Date:   Wed, 13 Oct 2021 16:50:34 +0200
+Message-Id: <20211013145040.886956-3-alvin@pqrs.dk>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211013145040.886956-1-alvin@pqrs.dk>
 References: <20211013145040.886956-1-alvin@pqrs.dk>
@@ -74,47 +74,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alvin Šipraga <alsi@bang-olufsen.dk>
 
-Add a new EtherType ETH_P_REALTEK to the if_ether.h uapi header. The
-EtherType 0x8899 is used in a number of different protocols from Realtek
-Semiconductor Corp [1], so no general assumptions should be made when
-trying to decode such packets. Observed protocols include:
-
-  0x1 - Realtek Remote Control protocol [2]
-  0x2 - Echo protocol [2]
-  0x3 - Loop detection protocol [2]
-  0x4 - RTL8365MB 4- and 8-byte switch CPU tag protocols [3]
-  0x9 - RTL8306 switch CPU tag protocol [4]
-  0xA - RTL8366RB switch CPU tag protocol [4]
-
-[1] https://lore.kernel.org/netdev/CACRpkdYQthFgjwVzHyK3DeYUOdcYyWmdjDPG=Rf9B3VrJ12Rzg@mail.gmail.com/
-[2] https://www.wireshark.org/lists/ethereal-dev/200409/msg00090.html
-[3] https://lore.kernel.org/netdev/20210822193145.1312668-4-alvin@pqrs.dk/
-[4] https://lore.kernel.org/netdev/20200708122537.1341307-2-linus.walleij@linaro.org/
+Move things around a little so that this tag driver is alphabetically
+ordered. The Kconfig file is sorted based on the tristate text.
 
 Suggested-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
 Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
 
-v1 -> v2: no change; collect Reviewed-by from Vladimir
+v1 -> v2: no change; collect Reviewed-by from Vladimir and Linus
 
 RFC -> v1: this patch is new
 
- include/uapi/linux/if_ether.h | 1 +
- 1 file changed, 1 insertion(+)
+ net/dsa/Kconfig  | 14 +++++++-------
+ net/dsa/Makefile |  2 +-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/include/uapi/linux/if_ether.h b/include/uapi/linux/if_ether.h
-index 5f589c7a8382..5da4ee234e0b 100644
---- a/include/uapi/linux/if_ether.h
-+++ b/include/uapi/linux/if_ether.h
-@@ -86,6 +86,7 @@
- 					 * over Ethernet
- 					 */
- #define ETH_P_PAE	0x888E		/* Port Access Entity (IEEE 802.1X) */
-+#define ETH_P_REALTEK	0x8899          /* Multiple proprietary protocols */
- #define ETH_P_AOE	0x88A2		/* ATA over Ethernet		*/
- #define ETH_P_8021AD	0x88A8          /* 802.1ad Service VLAN		*/
- #define ETH_P_802_EX1	0x88B5		/* 802.1 Local Experimental 1.  */
+diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
+index bca1b5d66df2..6c7f79e45886 100644
+--- a/net/dsa/Kconfig
++++ b/net/dsa/Kconfig
+@@ -92,13 +92,6 @@ config NET_DSA_TAG_KSZ
+ 	  Say Y if you want to enable support for tagging frames for the
+ 	  Microchip 8795/9477/9893 families of switches.
+ 
+-config NET_DSA_TAG_RTL4_A
+-	tristate "Tag driver for Realtek 4 byte protocol A tags"
+-	help
+-	  Say Y or M if you want to enable support for tagging frames for the
+-	  Realtek switches with 4 byte protocol A tags, sich as found in
+-	  the Realtek RTL8366RB.
+-
+ config NET_DSA_TAG_OCELOT
+ 	tristate "Tag driver for Ocelot family of switches, using NPI port"
+ 	depends on MSCC_OCELOT_SWITCH_LIB || \
+@@ -130,6 +123,13 @@ config NET_DSA_TAG_QCA
+ 	  Say Y or M if you want to enable support for tagging frames for
+ 	  the Qualcomm Atheros QCA8K switches.
+ 
++config NET_DSA_TAG_RTL4_A
++	tristate "Tag driver for Realtek 4 byte protocol A tags"
++	help
++	  Say Y or M if you want to enable support for tagging frames for the
++	  Realtek switches with 4 byte protocol A tags, sich as found in
++	  the Realtek RTL8366RB.
++
+ config NET_DSA_TAG_LAN9303
+ 	tristate "Tag driver for SMSC/Microchip LAN9303 family of switches"
+ 	help
+diff --git a/net/dsa/Makefile b/net/dsa/Makefile
+index 67ea009f242c..f78d537044db 100644
+--- a/net/dsa/Makefile
++++ b/net/dsa/Makefile
+@@ -10,12 +10,12 @@ obj-$(CONFIG_NET_DSA_TAG_DSA_COMMON) += tag_dsa.o
+ obj-$(CONFIG_NET_DSA_TAG_GSWIP) += tag_gswip.o
+ obj-$(CONFIG_NET_DSA_TAG_HELLCREEK) += tag_hellcreek.o
+ obj-$(CONFIG_NET_DSA_TAG_KSZ) += tag_ksz.o
+-obj-$(CONFIG_NET_DSA_TAG_RTL4_A) += tag_rtl4_a.o
+ obj-$(CONFIG_NET_DSA_TAG_LAN9303) += tag_lan9303.o
+ obj-$(CONFIG_NET_DSA_TAG_MTK) += tag_mtk.o
+ obj-$(CONFIG_NET_DSA_TAG_OCELOT) += tag_ocelot.o
+ obj-$(CONFIG_NET_DSA_TAG_OCELOT_8021Q) += tag_ocelot_8021q.o
+ obj-$(CONFIG_NET_DSA_TAG_QCA) += tag_qca.o
++obj-$(CONFIG_NET_DSA_TAG_RTL4_A) += tag_rtl4_a.o
+ obj-$(CONFIG_NET_DSA_TAG_SJA1105) += tag_sja1105.o
+ obj-$(CONFIG_NET_DSA_TAG_TRAILER) += tag_trailer.o
+ obj-$(CONFIG_NET_DSA_TAG_XRS700X) += tag_xrs700x.o
 -- 
 2.32.0
 
