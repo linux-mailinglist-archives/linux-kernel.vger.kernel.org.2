@@ -2,99 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395B342C9FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715B842C9FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhJMT0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 15:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
+        id S238777AbhJMT05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 15:26:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbhJMT0s (ORCPT
+        with ESMTP id S236537AbhJMT0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Oct 2021 15:26:48 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A81C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:24:44 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id x27so16579195lfu.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:24:44 -0700 (PDT)
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC7FC061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:24:45 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id q5so3277323pgr.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:24:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OcVw8ovBCZVOoCHV49LU9UJr7n1pv24bvXfSbF9CliM=;
-        b=spTehBDgwgxtAT5s4zEyEzdavxm/I/DtmCIdVIVhZeouKvynu2a3SSRGv2kSQLqT1K
-         I39IIC9a59bpOtvUMiPw5D8FnlNU8xvsp+JppFy07dv5mRlOnsqU87Al5n8LybTZHcDD
-         vSFYTHwK5kNMRUcSvts5fuPzG2AUMWSuCMG52e8mGTwyYBDx1rAJi+kZhIu0AS20m4mW
-         EHLfDzWt2InVuusPhroF1IGYYVVqy1VJrL4walMelIL/ih2NPNGT9u5/BNXIJFWDYwiH
-         V6z0GrBuZYx+hHxo+7M84CzO9P9HEU79eMisNKW6ORHFm9Biu8v/RlbVgm+ODvHFINk+
-         rN1Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5MB0GMvdbcH76JCV+SPCf4M7TZGdYon4av7QhoIqffo=;
+        b=VII4BHgbMS5R4WVLU+RCIbAJwVooH3iRzjKMsNbhCGpnRSLcVbNZjwGKAlkIK2H6EZ
+         1BGTbOqi9B3MNPN8OB7PEo8lYbknF1w4pjP4QuqNd2yUVQMJfBUWUJp2sIqkSGejQ7dE
+         mF4gJ5EaMWduZLjBjMYt86tARVCOeOGQUkR/5fxehJPxcMexBUgMJFFWekFWdp5ePPQ7
+         59ELZsv4E+YFcR2qxxWUYF5xM2m2nUtC87JiFna+M4X5iOKAvFyBPYTh2KfH7eOQsWsy
+         ZeucfAVcXkGeUlJBuLHQR2xzALPOvRwMaG5Hy5r3sXUTsW0g8XW9hisRCmDAsh4Ytui7
+         Tfew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OcVw8ovBCZVOoCHV49LU9UJr7n1pv24bvXfSbF9CliM=;
-        b=R6Ly9P7sNuGOKVog3gevohWx3uqVayy0dhAU4k+BB7gtUeiH0HdpYgAj55+P7BqwJJ
-         kuJscvtSvF8gn4oNqwpXmjOmFv7cLRmBR3wJQng8PHRNrP4dTED88/cok2yT78RAncCy
-         YrFxscKbkn3RwbG4Y+3dt5p7D0lLPTnFKRNQ+J3N+k1QpOW8f4thvhLiRfX5oi53F+hN
-         UkiI6DPHLXok015YehbO5Mq6P+ItLKYOvQZgxtL1Hw+Wv1Yv8U8jLqQYD42smk/P/oVX
-         N1EZWb0xyj8S70ZIAhw46k42w7ZbpzpAsmD+qJnl2nIRvIaSVzgohvXbNiGDb1nW3iiK
-         PyRA==
-X-Gm-Message-State: AOAM532UP0XnoOS7X4SOlRvFQfow+ydt7Mwyjyml++QcPJ65V0rAZfId
-        QEVGsaV92GI3aw/hPkWqBeDL/OsEzkObwQ6wP1Ze9Q==
-X-Google-Smtp-Source: ABdhPJxHS51cV0uhO42k3Hh0LtZ1R7GCobDDAlublLaFoZOcD9wkHJnk8ZUeFVAgfhmgNRh0GzhaEgTs2Qw7kDxahQk=
-X-Received: by 2002:a05:6512:131b:: with SMTP id x27mr807634lfu.210.1634153082922;
- Wed, 13 Oct 2021 12:24:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5MB0GMvdbcH76JCV+SPCf4M7TZGdYon4av7QhoIqffo=;
+        b=AaoWbinsuxncc4XMxJa0XC2RAH9rnGxmOOOcJqm7MyefbupRF1DyfSXYXMq5eCCteI
+         +ST5a+0CA/m+CLJZIxxNHndE2mZiFKkb5v67CztolhcNbuzcXJvXD98m94SJV6YyJSgE
+         LTU9zSS0eZ7YdDs7vkzcwT3af5HKm20wTiVu6TeQ5qAbG3FEgncgw+m3+Gu3soMQDDF8
+         rpVuCDLQf7KAMef8RRq3SvfAw4srnKVcrkEO0GucDXvLPaQ5lHDy7HtsSDjmydtJCyCZ
+         kH4F47hjsrEl+s2Vgtvd7n5Z4FzLIy6df+teFQ8cxvM5m8wQRW5XCWZlUq91Xoa57Py3
+         c8Tg==
+X-Gm-Message-State: AOAM53306trGb+NeLzLQDDZqcJLNNJQtaPz0CQSGCo4yotiD13nY2s9e
+        nL94ttNCoouCrp4u/xPPUhqCYA==
+X-Google-Smtp-Source: ABdhPJx7Iq1hOdesmUtnVxB8KV2g8XExaAbXqTu+Xd7qWgMcTLk1oV7xcUsL3ap/4bU8SwHXLAbTqw==
+X-Received: by 2002:a62:ea04:0:b0:44c:7370:e6d8 with SMTP id t4-20020a62ea04000000b0044c7370e6d8mr1225630pfh.18.1634153084358;
+        Wed, 13 Oct 2021 12:24:44 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id e2sm255618pfd.137.2021.10.13.12.24.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 12:24:43 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 19:24:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH] KVM: x86: Improve exception safe wrappers in emulate.c
+Message-ID: <YWcyeGk7vOSoQWW4@google.com>
+References: <20210917135152.5111-1-ubizjak@gmail.com>
 MIME-Version: 1.0
-References: <20211001190040.48086-1-shakeelb@google.com> <20211001190040.48086-2-shakeelb@google.com>
- <20211013180122.GA1007@blackbody.suse.cz>
-In-Reply-To: <20211013180122.GA1007@blackbody.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 13 Oct 2021 12:24:31 -0700
-Message-ID: <CALvZod6dN5Ub-r9+evXYCaeNuzrDs1byPLY1DAyn=R7rqHoqKg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] memcg: unify memcg stat flushing
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917135152.5111-1-ubizjak@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:01 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrot=
-e:
->
-> Hello Shakeel.
->
-> (Sorry for taking so long getting down to this.)
->
-> On Fri, Oct 01, 2021 at 12:00:40PM -0700, Shakeel Butt <shakeelb@google.c=
-om> wrote:
-> > There is no need for that.  We just need one flusher and everyone else
-> > can benefit.
->
-> I imagine a cgroup with an intricate deep hiearchy with many updates and
-> a separate (simpler) sibling/independent cgroup that would need to pay
-> the costs of the first hierarchy updates [1] when it asks just for its
-> own stats (bound by the amount that's leftover from the periodic
-> updates).
->
-> The stats files (or wb stats) are likely not that time sensitive and the
-> reclaim (that can be local only but is slow path anyway) already uses
-> the global flushing.
->
-> I wonder whether the bigger benefit would be to retain the global
-> stats_flush_threshold counter but flush only local subtree.
+On Fri, Sep 17, 2021, Uros Bizjak wrote:
+> Improve exception safe wrappers in emulate.c by converting them to
+> ASM GOTO (and ASM GOTO OUTPUT when supported) statements.  Also, convert
+> wrappers to inline functions to avoid statement as expression
+> GNU extension and to remove weird requirement where user must know
+> where the asm argument is being expanded.
+> 
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson  <seanjc@google.com>
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> ---
+>  arch/x86/kvm/emulate.c | 80 ++++++++++++++++++++++++++++++------------
+>  1 file changed, 57 insertions(+), 23 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+> index 2837110e66ed..2197a3ecc55b 100644
+> --- a/arch/x86/kvm/emulate.c
+> +++ b/arch/x86/kvm/emulate.c
+> @@ -464,25 +464,59 @@ FOP_FUNC(salc)
+>  FOP_RET(salc)
+>  FOP_END;
+>  
+> -/*
+> - * XXX: inoutclob user must know where the argument is being expanded.
 
-I did contemplate on this (i.e. a stat read paying the flushing price
-for everyone else) but decided to keep as is based on:
+I 100% agree that this is a weird requirement, but I actually like the side
+effect of forcing the caller to define a name for the input/output.
 
-1) The periodic async flush will keep the update tree small and will
-keep infrequent readers cheap.
-2) Keep things simple for now and come back if someone complains for
-very frequent stats readers.
+> - *      Relying on CONFIG_CC_HAS_ASM_GOTO would allow us to remove _fault.
+> - */
+> -#define asm_safe(insn, inoutclob...) \
+> -({ \
+> -	int _fault = 0; \
+> - \
+> -	asm volatile("1:" insn "\n" \
+> -	             "2:\n" \
+> -	             ".pushsection .fixup, \"ax\"\n" \
+> -	             "3: movl $1, %[_fault]\n" \
+> -	             "   jmp  2b\n" \
+> -	             ".popsection\n" \
+> -	             _ASM_EXTABLE(1b, 3b) \
+> -	             : [_fault] "+qm"(_fault) inoutclob ); \
+> - \
+> -	_fault ? X86EMUL_UNHANDLEABLE : X86EMUL_CONTINUE; \
+> -})
+> +static __always_inline int safe_fwait(void)
+> +{
+> +	asm_volatile_goto("1: fwait\n\t"
+> +			  _ASM_EXTABLE(1b, %l[fault])
+> +			  : : : : fault);
+> +	return X86EMUL_CONTINUE;
+> + fault:
+> +	return X86EMUL_UNHANDLEABLE;
+> +}
 
-Shakeel
+Rather than defining a bunch of safe_() variants, what about providing a generic
+helper/macro similar to the existing asm_safe()?  Not just for KVM, but for the
+kernel at large.  Asm with output is problematic due to the CONFIG_CC_HAS_ASM_GOTO
+dependency, but it wouldn't be the end of the world to state that simply isn't
+supported until the min compiler version is raised.
+
+__wrmsr(), native_write_msr_safe(), cpu_vmxoff(), kvm_cpu_vmxon(), and probably
+others could use a generic generic asm_safe().  I wouldn't be surprised if there
+are other places in the kernel that could take advantage of such a helper, e.g.
+kvm_load_ldt() could use a "safe" variant instead of crashing if the sel is bad.
