@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D85642C944
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7572F42C948
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239093AbhJMTC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 15:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
+        id S238836AbhJMTEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 15:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238997AbhJMTCx (ORCPT
+        with ESMTP id S234061AbhJMTET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 15:02:53 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1C8C061764;
-        Wed, 13 Oct 2021 12:00:48 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id r18so11638810wrg.6;
-        Wed, 13 Oct 2021 12:00:48 -0700 (PDT)
+        Wed, 13 Oct 2021 15:04:19 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D568C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:02:16 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id g5so2491816plg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:02:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=tZ0DTHwbOklA/q8ADpPUERCncvmwsxaymoMbHXl9IcQ=;
-        b=lN+J43KGo0zUaPFO850xZAG/ULwXxvlMdNWRUPoKoxTcZPFTw2hGwNraEYLIfBpwIy
-         34t+n19+zMswNCDzVn+UrICgn+NwFsebdGUqYoL6fAFJDaMZ19TQVy35WMi0exwkRsSi
-         XXDx7bc9W9I8WFALhD0SfmuWWLF9ETuyyXgZY+SO1bkCdviV/cIddJGur0obC5f9Nnue
-         rdgO84+KgmEGQKcbxStnvFa0YuQ7wvtqJpJ7/gc6Ajcx4MWVJ2XmCLzuKb5AQ7ZcHj+6
-         PnbavqqyYXvwB6NZwqcK7WBL1PngTsYFMRS/wCbnKDHBcnkZrR4aL/2Qz6DIjrUXaRoZ
-         1Iag==
+        bh=XYUZdSbtY3yILKq30armlw/nLFSTpxD7xzR0LPRYz80=;
+        b=gpYKK9FHVxBdFJtwWQViBwA6f8A8yxtHj5zqNEzFZ+S0843PtoWAyD5MADhc+CKcZ4
+         5ngK1kdS6dIScpdJWiiYbns6hn+I0/aa3zc8aYsrcaVwjDK/PyNeqgmgGZSw1ruKlLVJ
+         KmTGnrOq0PccZ2Svs/+X9fiN4LSaKncO8PW8U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=tZ0DTHwbOklA/q8ADpPUERCncvmwsxaymoMbHXl9IcQ=;
-        b=0JFfEiW+nnCjXjfq2ws8xmyuUbsBn7CHAD+beEh4ZSgkfK3YWQ63G/NUwTv/ytiFMs
-         TFnOUe9a0EyOjr0vcAckD3bP9btxHwRMp3M3DkTwjxqZoet+D9mMC+NQJS7Q4Doqo3JN
-         h81/9WG4TCd9BQz5DwTWO3AgJYupwTHkz5/CeR1j/0hKNfdImrDzcaDn7GyVIBVo9rDx
-         664fjRGEmfEw24CmQSeA8Cm4XtKcjvdrvE20tS8csB8TONsYCLcjoXLLHSDwRDxqUEkj
-         vBRu7Xw07iFbLYJE0aPMw9aKZHRlH0BHDCoetVEEPInLZDUlDH4EUOOHbgYhsfhzgWie
-         d4rg==
-X-Gm-Message-State: AOAM533rODAdhilVWoQDdxZqQJ5Qxrk2ka9vXMzU4IixZ1TkRbUPxfEi
-        jdJXKc/oUigKos6pxfIwoN0=
-X-Google-Smtp-Source: ABdhPJygIHrAS8lyrk9ykp9uvwEXxHci5Csm+H/Cluuc0t6nT+hNvSeCQjNVUcjNoQPOPxnn/yCKmA==
-X-Received: by 2002:a5d:4344:: with SMTP id u4mr1123536wrr.106.1634151647044;
-        Wed, 13 Oct 2021 12:00:47 -0700 (PDT)
-Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id n17sm374014wrq.11.2021.10.13.12.00.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XYUZdSbtY3yILKq30armlw/nLFSTpxD7xzR0LPRYz80=;
+        b=AyhpZKH7AHM+1U1zgVbiwSuRcNRIWHFmhedSzv8quA1+L/ukW3QV4/AxDi8QNoe2U8
+         2Aw3zTmR7EB+C3eBMmtF8Q2uDUsBWdiCv5lkpYvW+wbEgt1t5nPVrmXvuH4EETCPqh1r
+         vtrUs+AES4fanEFov/69ynV/GtaO+H0+EAsGw+WF5bxmHqG+u65KAsLjTBnmlrVEIILe
+         8PiMGOnbD1MzblVlR09TaJI9SaM4vpgMXMRCWurBJeuGhF96RTXKGer0G4H5WZNJ38cJ
+         CDYnvd7qPDm+frqlu6/pbTLZch7l+80MrrA5LVD/065t+YI1ipwYA+b08HVc8d40AGbe
+         fxyA==
+X-Gm-Message-State: AOAM532S4qG6hDOPI+AHXedArvx9y7G30blspWMxg0fvzAyPQrN3JT2P
+        dMHYsq8cToJI5j7sX/Hmkn/bsBuTCCCcLw==
+X-Google-Smtp-Source: ABdhPJzr8pB5JKBpq4Ks8L5I/+V7O+fqmjtmqNIRDwvNRhToQtzGptsraxsDs7uoU+If38Zs1gAazQ==
+X-Received: by 2002:a17:90a:1548:: with SMTP id y8mr15961214pja.151.1634151735724;
+        Wed, 13 Oct 2021 12:02:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d138sm251374pfd.74.2021.10.13.12.02.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 12:00:46 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Wed, 13 Oct 2021 21:00:45 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Stephen <stephenackerman16@gmail.com>
-Cc:     djwong@kernel.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, seanjc@google.com, rppt@kernel.org,
-        James.Bottomley@hansenpartnership.com, akpm@linux-foundation.org,
-        david@redhat.com, hagen@jauu.net, pbonzini@redhat.com
-Subject: Re: kvm crash in 5.14.1?
-Message-ID: <YWcs3XRLdrvyRz31@eldamar.lan>
-References: <85e40141-3c17-1dff-1ed0-b016c5d778b6@gmail.com>
- <2cd8af17-8631-44b5-8580-371527beeb38@gmail.com>
+        Wed, 13 Oct 2021 12:02:15 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 12:02:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 04/15] cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
+Message-ID: <202110131200.5D551C2D@keescook>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-5-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2cd8af17-8631-44b5-8580-371527beeb38@gmail.com>
+In-Reply-To: <20211013181658.1020262-5-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sat, Oct 09, 2021 at 12:00:39PM -0700, Stephen wrote:
-> > I'll try to report back if I see a crash; or in roughly a week if the
-> system seems to have stabilized.
+On Wed, Oct 13, 2021 at 11:16:47AM -0700, Sami Tolvanen wrote:
+> This change introduces the DEFINE_CFI_IMMEDIATE_RETURN_STUB macro,
+> which defines a stub function that immediately returns and when
+> defined in the core kernel, always passes indirect call checking
+> with CONFIG_CFI_CLANG. Note that this macro should only be used when
+> a stub cannot be called using the correct function type.
 > 
-> Just wanted to provide a follow-up here and say that I've run on both
-> v5.14.8 and v5.14.9 with this patch and everything seems to be good; no
-> further crashes or problems.
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-In Debian we got a report as well related to this issue (cf.
-https://bugs.debian.org/996175). Do you know did the patch felt
-through the cracks?
+I remain a bit worried about this exception infrastructure, but it's the
+best way forward right now.
 
-Regards,
-Salvatore
+One thought: add DEFINE_CFI_IMMEDIATE_RETURN_STUB (and maybe other
+things to watch closely) to MAINTAINERS:
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index abdcbcfef73d..2c9a24fd6a3c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4553,6 +4553,7 @@ B:	https://github.com/ClangBuiltLinux/linux/issues
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/clang/features
+ F:	include/linux/cfi.h
+ F:	kernel/cfi.c
++K:	\bDEFINE_CFI_IMMEDIATE_RETURN_STUB\b
+ 
+ CLEANCACHE API
+ M:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
