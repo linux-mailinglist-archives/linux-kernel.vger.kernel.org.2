@@ -2,202 +2,515 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3258B42B8AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F034242B8B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238316AbhJMHRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:17:07 -0400
-Received: from mga09.intel.com ([134.134.136.24]:45882 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230354AbhJMHRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:17:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="227263332"
-X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
-   d="scan'208";a="227263332"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 00:15:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
-   d="scan'208";a="715467995"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga006.fm.intel.com with ESMTP; 13 Oct 2021 00:14:59 -0700
-Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 13 Oct 2021 00:14:58 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 13 Oct 2021 00:14:58 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Wed, 13 Oct 2021 00:14:58 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Wed, 13 Oct 2021 00:14:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kADTAgs9eHgfHccwrXkLO43UbQ5YsuJL46nkk7YJk1wIwenhsh0kRHtEnI4DBKEWSICHeEe2bRUXriTwKhJJJ2HYdW/HZDVvyScjKkJoCPXxy1KOPqMgtSj9GVkLJuBPsVlW3HtMF3Zo8+dGoTbRIGsEWo6SZJwH9LIFnK1sM/FYZMguMw/ADsC5jvhGT4noTfI93PlXhetVSYKwUMZ0AKDb4UfsnfDFaHkeUNkVxKguufpcVTFBLXS2CURKk6PesRn2uAB4L0b05gcocpB7zG5G/ZTQW+332OpyIJKqHnaIH+iCH65fyhd10d8t8EvHOOo1spkNOKkfS7U/ayy/Lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2a1YuFccPDuGmCBrG2gmTcDOxxiL8TzfYmyNT8564zA=;
- b=W9TspkZBSNgTGskWfT+FmidYweBNNnTa8B0PEUPQzfJa8Si27JcAP0ed2gwtBKbulSMP5AomMPLDkSrWqW3oHHCFRupoBqJP0BYXC9RN/b5OM5bvX4k8ixEnHthuQUUbYpGBXprjC6cdfb59Vitx7Cl8eddV2icmq7iv0wlZQKbOO92ut11LHIm1oDvA/1mZWY1MA7mjmKDcZqFSkvRNZA0Et0q5XKCGR7HOK3U5iMnQcTTuwLvmNmQXU7v+RcTGwdA4Olufdex5/IMC/ONAuorUwp6CwduXyjoQFLIoRwVRELU9yNhImGtVb9C6QrRIvWKf159MsinrvHon+g/bDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2a1YuFccPDuGmCBrG2gmTcDOxxiL8TzfYmyNT8564zA=;
- b=ZCTznsNvyXx2Hg8g8r0oT4AXpOlAMvii18lG+OcWVXtRNvWBlNj7gS4xuV5MG2GitV8y0ATUbtGMt/bq3fIbxgDtIrdE429idFlq1P2GD+btfZkxnCs45dnhXkbP+7pl/CsNJt4hglV3/aZnS5wjwvz0IqdJcPdM6XRsgacJ2zI=
-Received: from BN9PR11MB5433.namprd11.prod.outlook.com (2603:10b6:408:11e::13)
- by BN8PR11MB3842.namprd11.prod.outlook.com (2603:10b6:408:82::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15; Wed, 13 Oct
- 2021 07:14:54 +0000
-Received: from BN9PR11MB5433.namprd11.prod.outlook.com
- ([fe80::ddb7:fa7f:2cc:45df]) by BN9PR11MB5433.namprd11.prod.outlook.com
- ([fe80::ddb7:fa7f:2cc:45df%9]) with mapi id 15.20.4587.026; Wed, 13 Oct 2021
- 07:14:54 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-CC:     David Gibson <david@gibson.dropbear.id.au>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: RE: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
-Thread-Topic: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
-Thread-Index: AQHXrSGPLoYXtOF3o0iA7Cse+/LM66uuxm8AgA72WACAAGbxgIAPTQiAgAAu7ICAAPgygIAAlZ0AgAF6T2A=
-Date:   Wed, 13 Oct 2021 07:14:54 +0000
-Message-ID: <BN9PR11MB5433C0D532DA55D4584216A08CB79@BN9PR11MB5433.namprd11.prod.outlook.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-12-yi.l.liu@intel.com>
- <20210921174438.GW327412@nvidia.com> <YVanJqG2pt6g+ROL@yekko>
- <20211001122225.GK964074@nvidia.com> <YWPTWdHhoI4k0Ksc@yekko>
- <YWP6tblC2+/2RQtN@myrica> <20211011233817.GS2744544@nvidia.com>
- <YWVIagFiOtXTGMQ+@myrica>
-In-Reply-To: <YWVIagFiOtXTGMQ+@myrica>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6e8011f1-f3ba-4428-7982-08d98e1927f5
-x-ms-traffictypediagnostic: BN8PR11MB3842:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN8PR11MB38428E39A8183C15F6592B908CB79@BN8PR11MB3842.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lmSQvsOw5VP8PWZACp/Z2XQEEAEvymxhxsDWgq8PhWpaKcZUN87BdpmsZy0Hh+tOLcDuVZxqr1ili+yDq/+q220GdbHyoWs0qqf/nj+xOEJYv9iCAsNgtoSym5Ux4xCH7NcJQrijIIg+RPRX6xKk+tf6iJXlNrEVfBP1oyw0n6wId1dgKESUspb6EABDmw6WcnhIj5Y+hhsEzjVkbUMaL3SCAAzwmoO4k20G8bUA78PwrOrA9+t6BdJiktxTKervLEJejHrEPz+5wjTD4NAib6rZrz21WSULVvCf7nNQcDg2DOp/MOOBkbkZ9HergAncrqebDTTPpfrF7vOYIWKtBl1XwLDRWGDK5oups4yrCb5B6uenK2dP4VJdZ6BSI+sl8NJQRGbPBld6cbrqM0yXGjowul7o8sOVh3ObOtIdj3JbOToxjTkIGowx4bcbv8BMK+nLkBJs2n1/VrWKNs2uv47AOxzJYFYqqVecCoBPABDuqbsgHbDa46HIsb6lEtiOBabc/OBErRMRkNUthmRE45LHpa2FU2N/ZbsUKaR/ndeP3bosNQSkRV4NcGiBN3mOQ2pz4YgOd3K4r17Ovf6muFVlBumImjuRLk9Yk0kz93U3umqaDD/evZskwrMYQphdSvAvIw/0hV/rEpN6a3skI1ylNFt5kICQJluiPCi93zdzamwMLGMj5TuZQQ3paZqm8FIW4gpjkYo5l3bCE2I96Lh9p1Mi7lGvnMg3P3+MWQ8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5433.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(71200400001)(52536014)(9686003)(8936002)(5660300002)(4326008)(82960400001)(26005)(7696005)(186003)(110136005)(54906003)(55016002)(83380400001)(7416002)(76116006)(508600001)(64756008)(8676002)(38100700002)(122000001)(33656002)(6506007)(2906002)(38070700005)(86362001)(66476007)(66446008)(66556008)(66946007)(84603001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?whm1gUAE2WbytMwW/qR0lNMjxIiKb60GJULJaWoKKmvQT5EgMiHD5trQWqQm?=
- =?us-ascii?Q?lSPhrAUrtWuJIXDmEZvj2cNiV3Rndfjn97GK0AtoSGIzP5fCmzMUmeL6I9Do?=
- =?us-ascii?Q?LSIk9UIDg6lelceDYOER3qJxmK9woCJMrp0epScrGJfPMrX7oY7hr5RS12Dc?=
- =?us-ascii?Q?j5fjfPCJX0MpxDjYeGbACADaYbgyfN0M9XKGO+PpHdCD/xc3N5yn2SczSC50?=
- =?us-ascii?Q?57+OMSmHRW29YiKXGJXUrgnYlqmeG7Zw2fAHytXBLSW8pqMH19fFQvruRm5h?=
- =?us-ascii?Q?eiA5T8ceVyyofsYHgf9WtYK1CUxUkKZCyMU97S/M4eS+ko4mjE0vr7CUOkvB?=
- =?us-ascii?Q?avSbZyACcbA5iaXZrSv7LJZtitx1pVAk/rZZhO0R5HQzCiHOX0Ah8LZntTC0?=
- =?us-ascii?Q?gL2WhHs54nXG+sNk9qAOkwoqtpiY3fz7OwfM3z6PcTdt74MX6hDVbkBwSz8d?=
- =?us-ascii?Q?oDSleb0kPB8cSnIkSTFAWN8jUZ8x7Dp3IkgZbvb8t+JnS7fimrzx8S66YMS6?=
- =?us-ascii?Q?0COyZv80NQWrKGUJuTublGb8bkzia4lpfp5ylLYe232jEoOx4cUGnakYX/BR?=
- =?us-ascii?Q?66zs7wZB5gUAkG4/nWBEPT7gRjG0cb5ZRXDteXBw7X4buLUeTZc8sCF1RPxk?=
- =?us-ascii?Q?qQuLSQGa2Tsk3VsC0nttD+jg9L+AOqZxNOhKHHSJ5pGOm/dvfoFdYXr3rdZN?=
- =?us-ascii?Q?lm1WhkUFwEnfdOxoxNRGxTf+sNOeNTRPaHhUHyEZwBBPTgJ1XfSsz2XcAyM7?=
- =?us-ascii?Q?4UhO202j4W3Wi4nRJwr/pWajDt/kHXm4ZhUgoJQ0NyVyncrO2HhXxYucTbb8?=
- =?us-ascii?Q?dr6o9PYhv6hnSqX1LmLSpYQXN4Zk0DFn35pd0CizqfQFJsMDKXzEgExWIGtK?=
- =?us-ascii?Q?RXT1bLyr8P/Zs3LkdO7L12iCY+80sLoOtCEuVRj2EqHCExR6z3Dt3fl1cYJG?=
- =?us-ascii?Q?CWLbsEoRykiOQHSqQ4g3KP36h6XzeKt8GlfI+cxtDDNmfeyqsfHLF3Avvghz?=
- =?us-ascii?Q?bviiZcdS8T/HHtOc7klTv7emDnS7oSVUDEUXT1KZM0pi5MIP5g4OL2o+z0Vm?=
- =?us-ascii?Q?IsUf6IsG+2YlbWv9z26gUgMjtGV+R/rcRazfKIpu6RP6ZqvmhJrhEkEQ4sFu?=
- =?us-ascii?Q?g1leNTjmaHm6Pf/LEsIl/vugDY80lqpPEMq4TAYPuUcbwmUJZaCqqBIEyCKE?=
- =?us-ascii?Q?aRFMf96nddRCdrA6b7cyXX4qjkoGmm3fVFwe0akcWK+SUq2lJKov+Q/q+sx0?=
- =?us-ascii?Q?6JIwbVvi+g1mdZ6lWHecoj34/a7Xj9QKLONjKos1C7LRrb1ZpbMbETp3heUZ?=
- =?us-ascii?Q?nOmvR7MU5cSKHk/3oVxzAyp6?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S238336AbhJMHR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238328AbhJMHRY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 03:17:24 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12D4C061762
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:15:21 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id r19so7410898lfe.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:15:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1mRu3r6Qc3uUoeu3SdPEjmroiMDsLF1jPWRmtXaNPAA=;
+        b=al1Hrn9n9NyPydAhRSyu6i9JjnSJvw2qYFkFfkq60Y6RdpdaMBeE4eTxkEOh5B5C4Q
+         9CafVsugwLBpHn2ZmG1M8lEbMNoXUt0a3k2/ITrS1GvPM8X8+zN40jzSywmamGo3yZij
+         cKXnJ5mysfsocsiXFwZCrhrjQUI6LhiRHhTbXqu1isilviPXv9liKuSCBNhe8YlMF3cv
+         E5oxDVrtc3aD1Qc0p4jEmI8tJBKQEm0yL850kxsyMlVfqYQUxl+uDUXoRK/I5xsbbYUV
+         vzlMLgNe6SU96GdvxIanh3FTDOiJckpcnhHD9d6zOitAt+K7gcxT5T1pBAm6djfGyJ7g
+         b4Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1mRu3r6Qc3uUoeu3SdPEjmroiMDsLF1jPWRmtXaNPAA=;
+        b=BxoLLvUT9ybs+CG9hRN7hqBazptuxJaiEDOPVIh5yLphI4BUSZymonbgH3HCDgALit
+         OQyPHuU1uuXpaCe0W42FhgKGjAU1j0Cm/9qqnz4j+c1zrrXDcs8NJo7ccbAKZV085unH
+         1ffIG6vTVj99Lgi6MaRV9Aal9XMuCYJn2xkAHljbJXqadUR2M3VwD0rapOz0ZM4z6MxA
+         ZuLStqOlMiwSVcH55QRv3rH7y3YNgwYVM9FInHaUxqMvtBARCVdF53lQqM3hzHfIYa8O
+         N80A590iKf73oERt2XTY1lLn4mtw3ypmO0KZ7TXULv+CxkBzP9UGDtdzHCgdupJum2D8
+         qvlA==
+X-Gm-Message-State: AOAM530QXyNF9Tqg+I2LFLTyChRzWH2TjZMbXWJi441tO3mJTosmF5iD
+        qkkhNDUph2Yot4Enh1h51YonZivVN98PFBEMjfXxyg==
+X-Google-Smtp-Source: ABdhPJyb8WUCpaMMu5Yv2FN9p2LzQERvURaBz9kbHlydnIFUCkQJy5f8G3OaGBJC8ZKPaQcaWNS7MrkQbWn2LlZnPIs=
+X-Received: by 2002:a05:651c:1304:: with SMTP id u4mr33573336lja.136.1634109320000;
+ Wed, 13 Oct 2021 00:15:20 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5433.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e8011f1-f3ba-4428-7982-08d98e1927f5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2021 07:14:54.4744
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Mhnui/T1d8E4rWegezub3UQQQVmc1/ElVYjIjXCZF4DJDFVmWIo0y0gFRm8Rxewgixf3bO1L9GcOvuSJF21/+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR11MB3842
-X-OriginatorOrg: intel.com
+References: <20211006071546.2540920-1-jens.wiklander@linaro.org> <20211006071546.2540920-6-jens.wiklander@linaro.org>
+In-Reply-To: <20211006071546.2540920-6-jens.wiklander@linaro.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 13 Oct 2021 12:45:08 +0530
+Message-ID: <CAFA6WYNdebJKoWZdQRPc=OdmaA=_jiguz12gfyHsdozbdx45vQ@mail.gmail.com>
+Subject: Re: [PATCH v6 5/6] optee: separate notification functions
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jerome Forissier <jerome@forissier.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Sent: Tuesday, October 12, 2021 4:34 PM
->=20
-> On Mon, Oct 11, 2021 at 08:38:17PM -0300, Jason Gunthorpe wrote:
-> > On Mon, Oct 11, 2021 at 09:49:57AM +0100, Jean-Philippe Brucker wrote:
-> >
-> > > Seems like we don't need the negotiation part?  The host kernel
-> > > communicates available IOVA ranges to userspace including holes (patc=
-h
-> > > 17), and userspace can check that the ranges it needs are within the =
-IOVA
-> > > space boundaries. That part is necessary for DPDK as well since it ne=
-eds
-> > > to know about holes in the IOVA space where DMA wouldn't work as
-> expected
-> > > (MSI doorbells for example).
-> >
-> > I haven't looked super closely at DPDK, but the other simple VFIO app
-> > I am aware of struggled to properly implement this semantic (Indeed it
-> > wasn't even clear to the author this was even needed).
-> >
-> > It requires interval tree logic inside the application which is not a
-> > trivial algorithm to implement in C.
-> >
-> > I do wonder if the "simple" interface should have an option more like
-> > the DMA API where userspace just asks to DMA map some user memory
-> and
-> > gets back the dma_addr_t to use. Kernel manages the allocation
-> > space/etc.
->=20
-> Agreed, it's tempting to use IOVA =3D VA but the two spaces aren't
-> necessarily compatible. An extension that plugs into the IOVA allocator
-> could be useful to userspace drivers.
->=20
+On Wed, 6 Oct 2021 at 12:46, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>
+> Renames struct optee_wait_queue to struct optee_notif and all related
+> functions to optee_notif_*().
+>
+> The implementation is changed to allow sending a notification from an
+> atomic state, that is from the top half of an interrupt handler.
+>
+> Waiting for keys is currently only used when secure world is waiting for
+> a mutex or condition variable. The old implementation could handle any
+> 32-bit key while this new implementation is restricted to only 8 bits or
+> the maximum value 255. A upper value is needed since a bitmap is
+> allocated to allow an interrupt handler to only set a bit in case the
+> waiter hasn't had the time yet to allocate and register a completion.
+>
+> The keys are currently only representing secure world threads which
+> number usually are never even close to 255 so it should be safe for now.
+> In future ABI updates the maximum value of the key will be communicated
+> while the driver is initializing.
+>
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> ---
+>  drivers/tee/optee/Makefile        |   1 +
+>  drivers/tee/optee/core.c          |  12 ++-
+>  drivers/tee/optee/notif.c         | 125 ++++++++++++++++++++++++++++++
+>  drivers/tee/optee/optee_private.h |  19 +++--
+>  drivers/tee/optee/optee_rpc_cmd.h |  31 ++++----
+>  drivers/tee/optee/rpc.c           |  73 ++---------------
+>  6 files changed, 170 insertions(+), 91 deletions(-)
+>  create mode 100644 drivers/tee/optee/notif.c
+>
 
-Make sense. We can have a flag in IOMMUFD_MAP_DMA to tell whether
-the user provides vaddr or expects the kernel to allocate and return.
+Apart from minor nit below:
 
-Thanks
-Kevin
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+
+> diff --git a/drivers/tee/optee/Makefile b/drivers/tee/optee/Makefile
+> index 3aa33ea9e6a6..df55e4ad5370 100644
+> --- a/drivers/tee/optee/Makefile
+> +++ b/drivers/tee/optee/Makefile
+> @@ -2,6 +2,7 @@
+>  obj-$(CONFIG_OPTEE) += optee.o
+>  optee-objs += core.o
+>  optee-objs += call.o
+> +optee-objs += notif.o
+>  optee-objs += rpc.o
+>  optee-objs += supp.o
+>  optee-objs += shm_pool.o
+> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> index 5ce13b099d7d..8531184f98f4 100644
+> --- a/drivers/tee/optee/core.c
+> +++ b/drivers/tee/optee/core.c
+> @@ -592,6 +592,7 @@ static int optee_remove(struct platform_device *pdev)
+>          */
+>         optee_disable_shm_cache(optee);
+>
+> +       optee_notif_uninit(optee);
+>         /*
+>          * The two devices have to be unregistered before we can free the
+>          * other resources.
+> @@ -602,7 +603,6 @@ static int optee_remove(struct platform_device *pdev)
+>         tee_shm_pool_free(optee->pool);
+>         if (optee->memremaped_shm)
+>                 memunmap(optee->memremaped_shm);
+> -       optee_wait_queue_exit(&optee->wait_queue);
+>         optee_supp_uninit(&optee->supp);
+>         mutex_destroy(&optee->call_queue.mutex);
+>
+> @@ -712,11 +712,17 @@ static int optee_probe(struct platform_device *pdev)
+>
+>         mutex_init(&optee->call_queue.mutex);
+>         INIT_LIST_HEAD(&optee->call_queue.waiters);
+> -       optee_wait_queue_init(&optee->wait_queue);
+>         optee_supp_init(&optee->supp);
+>         optee->memremaped_shm = memremaped_shm;
+>         optee->pool = pool;
+>
+> +       platform_set_drvdata(pdev, optee);
+> +       rc = optee_notif_init(optee, 255);
+
+nit: Can you use a macro here instead of a constant with a proper
+comment similar to the one in commit description?
+
+-Sumit
+
+> +       if (rc) {
+> +               optee_remove(pdev);
+> +               return rc;
+> +       }
+> +
+>         /*
+>          * Ensure that there are no pre-existing shm objects before enabling
+>          * the shm cache so that there's no chance of receiving an invalid
+> @@ -731,8 +737,6 @@ static int optee_probe(struct platform_device *pdev)
+>         if (optee->sec_caps & OPTEE_SMC_SEC_CAP_DYNAMIC_SHM)
+>                 pr_info("dynamic shared memory is enabled\n");
+>
+> -       platform_set_drvdata(pdev, optee);
+> -
+>         rc = optee_enumerate_devices(PTA_CMD_GET_DEVICES);
+>         if (rc) {
+>                 optee_remove(pdev);
+> diff --git a/drivers/tee/optee/notif.c b/drivers/tee/optee/notif.c
+> new file mode 100644
+> index 000000000000..a28fa03dcd0e
+> --- /dev/null
+> +++ b/drivers/tee/optee/notif.c
+> @@ -0,0 +1,125 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2015-2021, Linaro Limited
+> + */
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+> +#include <linux/arm-smccc.h>
+> +#include <linux/errno.h>
+> +#include <linux/slab.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/tee_drv.h>
+> +#include "optee_private.h"
+> +
+> +struct notif_entry {
+> +       struct list_head link;
+> +       struct completion c;
+> +       u_int key;
+> +};
+> +
+> +static bool have_key(struct optee *optee, u_int key)
+> +{
+> +       struct notif_entry *entry;
+> +
+> +       list_for_each_entry(entry, &optee->notif.db, link)
+> +               if (entry->key == key)
+> +                       return true;
+> +
+> +       return false;
+> +}
+> +
+> +int optee_notif_wait(struct optee *optee, u_int key)
+> +{
+> +       unsigned long flags;
+> +       struct notif_entry *entry;
+> +       int rc = 0;
+> +
+> +       if (key > optee->notif.max_key)
+> +               return -EINVAL;
+> +
+> +       entry = kmalloc(sizeof(*entry), GFP_KERNEL);
+> +       if (!entry)
+> +               return -ENOMEM;
+> +       init_completion(&entry->c);
+> +       entry->key = key;
+> +
+> +       spin_lock_irqsave(&optee->notif.lock, flags);
+> +
+> +       /*
+> +        * If the bit is already set it means that the key has already
+> +        * been posted and we must not wait.
+> +        */
+> +       if (test_bit(key, optee->notif.bitmap)) {
+> +               clear_bit(key, optee->notif.bitmap);
+> +               goto out;
+> +       }
+> +
+> +       /*
+> +        * Check if someone is already waiting for this key. If there is
+> +        * it's a programming error.
+> +        */
+> +       if (have_key(optee, key)) {
+> +               rc = -EBUSY;
+> +               goto out;
+> +       }
+> +
+> +       list_add_tail(&entry->link, &optee->notif.db);
+> +
+> +       /*
+> +        * Unlock temporarily and wait for completion.
+> +        */
+> +       spin_unlock_irqrestore(&optee->notif.lock, flags);
+> +       wait_for_completion(&entry->c);
+> +       spin_lock_irqsave(&optee->notif.lock, flags);
+> +
+> +       list_del(&entry->link);
+> +out:
+> +       spin_unlock_irqrestore(&optee->notif.lock, flags);
+> +
+> +       kfree(entry);
+> +
+> +       return rc;
+> +}
+> +
+> +int optee_notif_send(struct optee *optee, u_int key)
+> +{
+> +       unsigned long flags;
+> +       struct notif_entry *entry;
+> +
+> +       if (key > optee->notif.max_key)
+> +               return -EINVAL;
+> +
+> +       spin_lock_irqsave(&optee->notif.lock, flags);
+> +
+> +       list_for_each_entry(entry, &optee->notif.db, link)
+> +               if (entry->key == key) {
+> +                       complete(&entry->c);
+> +                       goto out;
+> +               }
+> +
+> +       /* Only set the bit in case there where nobody waiting */
+> +       set_bit(key, optee->notif.bitmap);
+> +out:
+> +       spin_unlock_irqrestore(&optee->notif.lock, flags);
+> +
+> +       return 0;
+> +}
+> +
+> +int optee_notif_init(struct optee *optee, u_int max_key)
+> +{
+> +       spin_lock_init(&optee->notif.lock);
+> +       INIT_LIST_HEAD(&optee->notif.db);
+> +       optee->notif.bitmap = bitmap_zalloc(max_key, GFP_KERNEL);
+> +       if (!optee->notif.bitmap)
+> +               return -ENOMEM;
+> +
+> +       optee->notif.max_key = max_key;
+> +
+> +       return 0;
+> +}
+> +
+> +void optee_notif_uninit(struct optee *optee)
+> +{
+> +       kfree(optee->notif.bitmap);
+> +}
+> diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
+> index dbdd367be156..76a16d9b6cf4 100644
+> --- a/drivers/tee/optee/optee_private.h
+> +++ b/drivers/tee/optee/optee_private.h
+> @@ -35,10 +35,12 @@ struct optee_call_queue {
+>         struct list_head waiters;
+>  };
+>
+> -struct optee_wait_queue {
+> -       /* Serializes access to this struct */
+> -       struct mutex mu;
+> +struct optee_notif {
+> +       u_int max_key;
+> +       /* Serializes access to the elements below in this struct */
+> +       spinlock_t lock;
+>         struct list_head db;
+> +       u_long *bitmap;
+>  };
+>
+>  /**
+> @@ -72,8 +74,7 @@ struct optee_supp {
+>   * @teedev:            client device
+>   * @invoke_fn:         function to issue smc or hvc
+>   * @call_queue:                queue of threads waiting to call @invoke_fn
+> - * @wait_queue:                queue of threads from secure world waiting for a
+> - *                     secure world sync object
+> + * @notif:             notification synchronization struct
+>   * @supp:              supplicant synchronization struct for RPC to supplicant
+>   * @pool:              shared memory pool
+>   * @memremaped_shm     virtual address of memory in shared memory pool
+> @@ -88,7 +89,7 @@ struct optee {
+>         struct tee_device *teedev;
+>         optee_invoke_fn *invoke_fn;
+>         struct optee_call_queue call_queue;
+> -       struct optee_wait_queue wait_queue;
+> +       struct optee_notif notif;
+>         struct optee_supp supp;
+>         struct tee_shm_pool *pool;
+>         void *memremaped_shm;
+> @@ -131,8 +132,10 @@ void optee_handle_rpc(struct tee_context *ctx, struct optee_rpc_param *param,
+>                       struct optee_call_ctx *call_ctx);
+>  void optee_rpc_finalize_call(struct optee_call_ctx *call_ctx);
+>
+> -void optee_wait_queue_init(struct optee_wait_queue *wq);
+> -void optee_wait_queue_exit(struct optee_wait_queue *wq);
+> +int optee_notif_init(struct optee *optee, u_int max_key);
+> +void optee_notif_uninit(struct optee *optee);
+> +int optee_notif_wait(struct optee *optee, u_int key);
+> +int optee_notif_send(struct optee *optee, u_int key);
+>
+>  u32 optee_supp_thrd_req(struct tee_context *ctx, u32 func, size_t num_params,
+>                         struct tee_param *param);
+> diff --git a/drivers/tee/optee/optee_rpc_cmd.h b/drivers/tee/optee/optee_rpc_cmd.h
+> index b8275140cef8..f3f06e0994a7 100644
+> --- a/drivers/tee/optee/optee_rpc_cmd.h
+> +++ b/drivers/tee/optee/optee_rpc_cmd.h
+> @@ -28,24 +28,27 @@
+>  #define OPTEE_RPC_CMD_GET_TIME         3
+>
+>  /*
+> - * Wait queue primitive, helper for secure world to implement a wait queue.
+> + * Notification from/to secure world.
+>   *
+> - * If secure world needs to wait for a secure world mutex it issues a sleep
+> - * request instead of spinning in secure world. Conversely is a wakeup
+> - * request issued when a secure world mutex with a thread waiting thread is
+> - * unlocked.
+> + * If secure world needs to wait for something, for instance a mutex, it
+> + * does a notification wait request instead of spinning in secure world.
+> + * Conversely can a synchronous notification can be sent when a secure
+> + * world mutex with a thread waiting thread is unlocked.
+>   *
+> - * Waiting on a key
+> - * [in]    value[0].a      OPTEE_RPC_WAIT_QUEUE_SLEEP
+> - * [in]    value[0].b      Wait key
+> + * This interface can also be used to wait for a asynchronous notification
+> + * which instead is sent via a non-secure interrupt.
+>   *
+> - * Waking up a key
+> - * [in]    value[0].a      OPTEE_RPC_WAIT_QUEUE_WAKEUP
+> - * [in]    value[0].b      Wakeup key
+> + * Waiting on notification
+> + * [in]    value[0].a      OPTEE_RPC_NOTIFICATION_WAIT
+> + * [in]    value[0].b      notification value
+> + *
+> + * Sending a synchronous notification
+> + * [in]    value[0].a      OPTEE_RPC_NOTIFICATION_SEND
+> + * [in]    value[0].b      notification value
+>   */
+> -#define OPTEE_RPC_CMD_WAIT_QUEUE       4
+> -#define OPTEE_RPC_WAIT_QUEUE_SLEEP     0
+> -#define OPTEE_RPC_WAIT_QUEUE_WAKEUP    1
+> +#define OPTEE_RPC_CMD_NOTIFICATION     4
+> +#define OPTEE_RPC_NOTIFICATION_WAIT    0
+> +#define OPTEE_RPC_NOTIFICATION_SEND    1
+>
+>  /*
+>   * Suspend execution
+> diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+> index efbaff7ad7e5..fa492655843a 100644
+> --- a/drivers/tee/optee/rpc.c
+> +++ b/drivers/tee/optee/rpc.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+>  /*
+> - * Copyright (c) 2015-2016, Linaro Limited
+> + * Copyright (c) 2015-2021, Linaro Limited
+>   */
+>
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> @@ -14,23 +14,6 @@
+>  #include "optee_smc.h"
+>  #include "optee_rpc_cmd.h"
+>
+> -struct wq_entry {
+> -       struct list_head link;
+> -       struct completion c;
+> -       u32 key;
+> -};
+> -
+> -void optee_wait_queue_init(struct optee_wait_queue *priv)
+> -{
+> -       mutex_init(&priv->mu);
+> -       INIT_LIST_HEAD(&priv->db);
+> -}
+> -
+> -void optee_wait_queue_exit(struct optee_wait_queue *priv)
+> -{
+> -       mutex_destroy(&priv->mu);
+> -}
+> -
+>  static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
+>  {
+>         struct timespec64 ts;
+> @@ -143,48 +126,6 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+>  }
+>  #endif
+>
+> -static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
+> -{
+> -       struct wq_entry *w;
+> -
+> -       mutex_lock(&wq->mu);
+> -
+> -       list_for_each_entry(w, &wq->db, link)
+> -               if (w->key == key)
+> -                       goto out;
+> -
+> -       w = kmalloc(sizeof(*w), GFP_KERNEL);
+> -       if (w) {
+> -               init_completion(&w->c);
+> -               w->key = key;
+> -               list_add_tail(&w->link, &wq->db);
+> -       }
+> -out:
+> -       mutex_unlock(&wq->mu);
+> -       return w;
+> -}
+> -
+> -static void wq_sleep(struct optee_wait_queue *wq, u32 key)
+> -{
+> -       struct wq_entry *w = wq_entry_get(wq, key);
+> -
+> -       if (w) {
+> -               wait_for_completion(&w->c);
+> -               mutex_lock(&wq->mu);
+> -               list_del(&w->link);
+> -               mutex_unlock(&wq->mu);
+> -               kfree(w);
+> -       }
+> -}
+> -
+> -static void wq_wakeup(struct optee_wait_queue *wq, u32 key)
+> -{
+> -       struct wq_entry *w = wq_entry_get(wq, key);
+> -
+> -       if (w)
+> -               complete(&w->c);
+> -}
+> -
+>  static void handle_rpc_func_cmd_wq(struct optee *optee,
+>                                    struct optee_msg_arg *arg)
+>  {
+> @@ -196,11 +137,13 @@ static void handle_rpc_func_cmd_wq(struct optee *optee,
+>                 goto bad;
+>
+>         switch (arg->params[0].u.value.a) {
+> -       case OPTEE_RPC_WAIT_QUEUE_SLEEP:
+> -               wq_sleep(&optee->wait_queue, arg->params[0].u.value.b);
+> +       case OPTEE_RPC_NOTIFICATION_WAIT:
+> +               if (optee_notif_wait(optee, arg->params[0].u.value.b))
+> +                       goto bad;
+>                 break;
+> -       case OPTEE_RPC_WAIT_QUEUE_WAKEUP:
+> -               wq_wakeup(&optee->wait_queue, arg->params[0].u.value.b);
+> +       case OPTEE_RPC_NOTIFICATION_SEND:
+> +               if (optee_notif_send(optee, arg->params[0].u.value.b))
+> +                       goto bad;
+>                 break;
+>         default:
+>                 goto bad;
+> @@ -463,7 +406,7 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
+>         case OPTEE_RPC_CMD_GET_TIME:
+>                 handle_rpc_func_cmd_get_time(arg);
+>                 break;
+> -       case OPTEE_RPC_CMD_WAIT_QUEUE:
+> +       case OPTEE_RPC_CMD_NOTIFICATION:
+>                 handle_rpc_func_cmd_wq(optee, arg);
+>                 break;
+>         case OPTEE_RPC_CMD_SUSPEND:
+> --
+> 2.31.1
+>
