@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2274242BB4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502B642BB4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238960AbhJMJSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbhJMJSW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:18:22 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07768C061570;
-        Wed, 13 Oct 2021 02:16:19 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id k7so5876700wrd.13;
-        Wed, 13 Oct 2021 02:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=zyEmz/tB0Rrdz8IwvSoIaxMjG4aLpVCV8hROcWXqRMk=;
-        b=F6rCYzxaQTTyTOj6ZsMzyD9QZkWGNPI8jg2TFOpxZ6Zyk8gyCFQrYq+u1Qr3hqLw10
-         uMDZytBQ4Sw2JrreurmbF4HquFjWcx3Lc4g87eeZx22BkP8oKSMa1WgDvQvpQY1UeUMW
-         VjQNnYxtIXj40FLdFlu3JaR23UQpMnsBzK6vYDQLkfbkrwOgHS2XvkJk5aS/1IIl/rEb
-         JnKEemZlTnSrBwTLhIP+MhgdLUfxZfJf9HYLuYTZr51H5kEOclCd4Rk/URid+2Sbx6J5
-         svC2cHhJ6pwfL9ngVL4kAR6a2BlCtjG27eBpoVIGOrhKYszPGKtF6M5P+R2jwMqLjlkY
-         TkgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=zyEmz/tB0Rrdz8IwvSoIaxMjG4aLpVCV8hROcWXqRMk=;
-        b=aDnFkmfj7ulVNYIpOebCvv9Y7Gdv1+P+CETOO0pGCfBG8uxfQOXvnVedhwKleF0WDV
-         Sf6drq/ip63qpx9zZg5YKRSNlltT/4X/H60TwKaX6vdsVPpJZgl0cmq0FFxFmvRRG6kY
-         Sa4LOKwtaBCpkWs9+iPnSWk+RhAvf2NYx6yRMe47jiEIlnIqLF2NmpCmnsHXbsJr4V5S
-         sDX7j+ILdOKCTEcJ4EUGGJNR0pWoAEHENYO4FYJqYRCnzToEGlnS5uDz/bAPUfFoX2T/
-         CeEZeAYmGr/Gls1owY4SRzlEcejX4OW1LBE10L1rfGoT0L1bpGR1yV3njEJ9KGRBPpVS
-         twHg==
-X-Gm-Message-State: AOAM532UYhg/Jx0ScWd00/bCmEocLsCRWnYnjGX7/HzeDz295ekcRSVF
-        9Z/ea/sPSMYqNcBYVQouvuY=
-X-Google-Smtp-Source: ABdhPJwGRaxSvIX5NpEHodd5tbp9peXVTaepz5YYcWXmrqI73fH1uiFPuaCmA/7KHvwLTV3vJqKC4Q==
-X-Received: by 2002:a5d:47ae:: with SMTP id 14mr4043351wrb.120.1634116577652;
-        Wed, 13 Oct 2021 02:16:17 -0700 (PDT)
-Received: from [192.168.8.197] ([185.69.145.208])
-        by smtp.gmail.com with ESMTPSA id z2sm11824327wrh.44.2021.10.13.02.16.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 02:16:17 -0700 (PDT)
-Message-ID: <e52033e5-bff6-c2a3-9e23-ccfa505b064d@gmail.com>
-Date:   Wed, 13 Oct 2021 10:15:37 +0100
+        id S239044AbhJMJSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:18:33 -0400
+Received: from mga06.intel.com ([134.134.136.31]:21450 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239062AbhJMJS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 05:18:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="288258870"
+X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
+   d="scan'208";a="288258870"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 02:16:25 -0700
+X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
+   d="scan'208";a="491378550"
+Received: from rli9-dbox.sh.intel.com (HELO rli9-dbox) ([10.239.159.115])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 02:16:22 -0700
+Date:   Wed, 13 Oct 2021 17:16:57 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Barry Song <baohua@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [kbuild-all] Re: [tip:sched/core 45/47]
+ kernel/sched/topology.c:23:20: error: unused function 'sched_debug'
+Message-ID: <YWakCfUA+MZULt2w@rli9-dbox>
+References: <202110130209.1XL2cTpW-lkp@intel.com>
+ <0538ccac-19eb-a184-6aef-1d11eefbae17@hisilicon.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH v2 0/3] on top of for-5.16/block
-Content-Language: en-US
-To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Christoph Hellwig <hch@infradead.org>
-References: <cover.1634115360.git.asml.silence@gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <cover.1634115360.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0538ccac-19eb-a184-6aef-1d11eefbae17@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 09:57, Pavel Begunkov wrote:
+On Wed, Oct 13, 2021 at 05:02:42PM +0800, Yicong Yang wrote:
+> Hi,
+> 
+> On 2021/10/13 2:30, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+> > head:   b2d5b9cec60fecc72a13191c2c6c05acf60975a5
+> > commit: f43df9225fcad9b07a4ef4d0fe4c3ad2fb4ce82d [45/47] sched/topology: Remove unused numa_distance in cpu_attach_domain()
+> > config: hexagon-buildonly-randconfig-r004-20211012 (attached as .config)
+> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c3dcf39554dbea780d6cb7e12239451ba47a2668)
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=f43df9225fcad9b07a4ef4d0fe4c3ad2fb4ce82d
+> >         git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+> >         git fetch --no-tags tip sched/core
+> >         git checkout f43df9225fcad9b07a4ef4d0fe4c3ad2fb4ce82d
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=hexagon 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All errors (new ones prefixed by >>):
+> > 
+> >>> kernel/sched/topology.c:23:20: error: unused function 'sched_debug' [-Werror,-Wunused-function]
+> >    static inline bool sched_debug(void)
+> >                       ^
+> >    1 error generated.
+> > 
+> 
+> sched_debug() is unused if CONFIG_ENERGY_MODEL=n || CONFIG_CPU_FREQ_GOV_SCHEDUTIL=n and CONFIG_NUMA=n,
+> which is the case in the report. This is not introduced by this patch.
+> 
+> A __maybe_unused qualify for sched_debug() may fix this. Not sure we intends to do so.
+Hi Yicong, you may wait for Peter's input. 0-day CI is consulting Peter what the appropriate
+scope is to ignore the W=1 related warnings at
+https://lore.kernel.org/llvm/CALOAHbDkBn3LDsNvSXujMiQXrLHdRsfvJUqJv_eTh4s63osuTw@mail.gmail.com/T/#m516619d3b8b632e457522ef7827694f9b47c574c
 
-Bodged subject, should've been block optimisation or so.
+We will not reporting out such un-interested issues anymore per the input.
 
-> ./io_uring -d32 -s32 -c32 -b512 -p1 /dev/nullb0
-> ~3.3 MIOPS vs 3.5 MIOPS, so gives around extra ~4-5%.
 > 
-> The main part is caching struct block_device + some inlining.
-> 
-> v2: without applied patches, merge previous 6/6 into the second patch
->      get rid of helpers (Jens, Christoph)
->      kill bdev_inode and move inode into bdev (Christoph)
-> 
-> Pavel Begunkov (3):
->    block: cache bdev in struct file for raw bdev IO
->    block: don't hide inode from block_device users
->    blk-mq: optimise *end_request non-stat path
-> 
->   block/bdev.c              | 44 ++++++++++-----------------------------
->   block/blk-mq.c            | 18 +++++++---------
->   block/fops.c              | 43 ++++++++++++++++----------------------
->   include/linux/blk_types.h |  1 +
->   include/linux/blkdev.h    |  8 +++++--
->   5 files changed, 44 insertions(+), 70 deletions(-)
-> 
-
--- 
-Pavel Begunkov
+> > 
+> > vim +/sched_debug +23 kernel/sched/topology.c
+> > 
+> > f2cb13609d5397 Ingo Molnar    2017-02-01  22  
+> > f2cb13609d5397 Ingo Molnar    2017-02-01 @23  static inline bool sched_debug(void)
+> > f2cb13609d5397 Ingo Molnar    2017-02-01  24  {
+> > 9406415f46f612 Peter Zijlstra 2021-04-15  25  	return sched_debug_verbose;
+> > f2cb13609d5397 Ingo Molnar    2017-02-01  26  }
+> > f2cb13609d5397 Ingo Molnar    2017-02-01  27  
+> > 
+> > :::::: The code at line 23 was first introduced by commit
+> > :::::: f2cb13609d5397cdd747f3ed6fb651233851717d sched/topology: Split out scheduler topology code from core.c into topology.c
+> > 
+> > :::::: TO: Ingo Molnar <mingo@kernel.org>
+> > :::::: CC: Ingo Molnar <mingo@kernel.org>
+> > 
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > 
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
