@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA84A42BE2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F9042BE35
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232434AbhJMK7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbhJMK60 (ORCPT
+        id S234853AbhJMK7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:59:45 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35360 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231787AbhJMK6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:58:26 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58F6C06176E;
-        Wed, 13 Oct 2021 03:56:23 -0700 (PDT)
-Received: from guri.fritz.box (unknown [IPv6:2a02:810a:880:f54:2d05:985b:ed8c:969a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id EEA8A1F4416B;
-        Wed, 13 Oct 2021 11:56:21 +0100 (BST)
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     linux-media@vger.kernel.org
-Cc:     Robert Beckett <bob.beckett@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev (open list:STAGING SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list),
-        laurent.pinchart@ideasonboard.com, hverkuil@xs4all.nl,
-        kernel@collabora.com, dafna3@gmail.com,
-        kiril.bicevski@collabora.com,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        lafley.kim@chipsnmedia.com, scott.woo@chipsnmedia.com,
-        olivier.crete@collabora.com
-Subject: [PATCH v2 6/6] media: wave5: Add wave5 driver to maintainers file
-Date:   Wed, 13 Oct 2021 12:56:09 +0200
-Message-Id: <20211013105609.21457-7-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211013105609.21457-1-dafna.hirschfeld@collabora.com>
-References: <20211013105609.21457-1-dafna.hirschfeld@collabora.com>
+        Wed, 13 Oct 2021 06:58:51 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id D60D91F4415E
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, shawnguo@kernel.org,
+        bjorn.andersson@linaro.org, krzk@kernel.org,
+        geert+renesas@glider.be, vkoul@kernel.org,
+        jagan@amarulasolutions.com, agx@sigxcpu.org,
+        biju.das.jz@bp.renesas.com, enric.balletbo@collabora.com,
+        aford173@gmail.com, nm@ti.com,
+        andrey.zhizhikin@leica-geosystems.com, saravanak@google.com,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH 0/2] arm64: defconfig: Enable multimedia clocks on SC7180
+Date:   Wed, 13 Oct 2021 12:56:11 +0200
+Message-Id: <20211013105613.250450-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Beckett <bob.beckett@collabora.com>
+Device trees for SC7180 Trogdor machines are enabling DPU1 and Venus, but
+these are never getting up due to missing clock drivers; after a test, it
+was discovered that both of them are fairly ok, except for the Venus
+encoder, which doesn't seem to work fine, but it's anyway not introducing
+any unstability (the device won't crash), so there is no reason to keep
+them out of the game.
 
-Add the Chips&Media wave5 encoder/decoder driver
-to the maintainers file
+Since both of these clock drivers aren't boot-critical and can be inserted
+later, it's proposed to enable them as module: this will avoid increasing
+the kernel image size, which is especially important to keep lower loading
+times (from the bootloader).
 
-Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+AngeloGioacchino Del Regno (2):
+  arm64: defconfig: Add SC7180 GPUCC and DISPCC as module
+  arm64: defconfig: Add SC7180 VIDEOCC as module
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ee91c5472bc1..3538e1a9b492 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20190,6 +20190,15 @@ F:	drivers/watchdog/
- F:	include/linux/watchdog.h
- F:	include/uapi/linux/watchdog.h
- 
-+WAVE5 VPU CODEC DRIVER
-+M:	Nas Chung <nas.chung@chipsnmedia.com>
-+M:	Robert Beckett <bob.beckett@collabora.com>
-+M:	Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-+L:	linux-media@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/staging/media/cnm,wave.yaml
-+F:	drivers/staging/media/wave5/
-+
- WHISKEYCOVE PMIC GPIO DRIVER
- M:	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
- L:	linux-gpio@vger.kernel.org
+ arch/arm64/configs/defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
 -- 
-2.17.1
+2.33.0
 
