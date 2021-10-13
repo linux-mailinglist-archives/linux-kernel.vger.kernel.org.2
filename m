@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8D342BCB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3184F42BCB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239331AbhJMK0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
+        id S239351AbhJMK0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239282AbhJMK0A (ORCPT
+        with ESMTP id S239259AbhJMK0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:26:00 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4C5C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:23:57 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id kk10so1853342pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:23:57 -0700 (PDT)
+        Wed, 13 Oct 2021 06:26:01 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D77C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:23:58 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so1868728pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:23:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cXGU1FgivtpbQOCuG+kADAWoAeGXN23a0S+JAEkjpg4=;
-        b=cJZZYtf+ukMuwUhDeGIfx/8qAtStq8C9IyUqSfnwgxntj2iivjIM/0IbPolL0KaJ6A
-         5dEL96Kc8/XXqRCrk2AGfxH66cNsvSVvc0cxSr9JCXr9LTnrh3TZmaT+XB/m/OyDSzwm
-         /cDYmEJRehL1Fj4YFvLYYD1UL0fnS9Y3+B6lyvGG+kc4jZGrbNzab61AtchgQc775uP5
-         Kuvrz02m8YVxHa391dv1LNthjcF3QXJHJY0GMlBLNIqbGJxSRUzlkM81CZcQypTQDP1/
-         eua+QUDkc0aomkEGl17WyIPUpiYujUWhhB+LM40HkK+Z15wiX9LJcMrEZb0EWVOg0ZT/
-         uFMg==
+        bh=62koRudqWjPa+m03K1wbJbIYHG/dmXgg8brtixS11/M=;
+        b=H3NfAjSzIFM0P3H1aWToJhFhDjuQ5NuXSy4dN4qMq9uH6COmVVdaQePfW1HYhfCkVs
+         tO6Nnjg7WVVwoaZMY+/efc93Ur/zfXiQcslsqBR/2fLL2ubquzpLsJ3abU0DfVHdBXQu
+         izoT26lwOKVKc7868f80MuswJ3v+zvVam02nm+DBuEv09OeCB7DC3SZJ1X29KfOsAmq1
+         MKocK74z0o3byMC7jcPkAmxP0diFRT2bktru0KJum3B+tVbOByNYEg/Ct2lyplTP7SDq
+         fqClnYPh6fghCStuAPdgomdsHH7A01GGpky6VWhDGxJoziCZF0kyNhMftdpFx+TxTJSt
+         k23g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cXGU1FgivtpbQOCuG+kADAWoAeGXN23a0S+JAEkjpg4=;
-        b=GBFGnL61NXnKQtEYgsYN3xi+o6DDZnT+Q92SzI9hIskfM/SGJu4vQN4JYuS0+gpXDo
-         rSlMsrjjvvpEZe0D+Xjd1RDbSsRLmW2/CuUpr9qNBFoBdJjZ5oCUfkoL2rFELJQrbSfY
-         HfLMAVvXbm0pLTnY3J1iKNaI1Sa1QARX2W5IXVsfZoyPC6EsZl/MUSqefHrKoxPbJY0Q
-         LzYwGFtGRkP8pvricNF3AK4Ho3RBw0s1MuJbJQtm7FWB8Az51OTTmeeQ/jnN6ihhz6pU
-         DJfG3XQ3GApDozjhaV6QUzIsmFDvKIKjBuu3t/sTic0jr0hMYN6cvA9xzYvVTGjc1ZOL
-         b4Ag==
-X-Gm-Message-State: AOAM531FkvOFtK+OeWNAyEEg9puTOgFsqOZDVYUqEghgbR/f0dhRu4lV
-        dLLyDPZgMRGF23iFTwk2R1Y=
-X-Google-Smtp-Source: ABdhPJzGKNspjxR8A8B7b44R+2o7lZ4ENaSPHVk9rrp3R4zCLs93/pe5c56/czCE8+OXMznekQZVYw==
-X-Received: by 2002:a17:902:b492:b0:13f:4f30:88de with SMTP id y18-20020a170902b49200b0013f4f3088demr9676650plr.35.1634120636892;
-        Wed, 13 Oct 2021 03:23:56 -0700 (PDT)
+        bh=62koRudqWjPa+m03K1wbJbIYHG/dmXgg8brtixS11/M=;
+        b=7cQaEb88HSnfV3PqqsLWSGp4fQxVwRTIDmTmxQNsJeF2r9h6ndbeppaola03dEwGrW
+         ArTBM1Ng7GcDf4qt7oViWaZ7TtXA74BKkuRV4MA2h91Vx0gBLlu40+gs/NahOl1KydnA
+         k+0SGFoHyFDjmQFaHMnlgkvAOKdYJaZq+9BoMT+04E04hIMD+gNAhSQCgbEFqwAsx8NI
+         izmY/kQrMlohUFr/4jxIYSZkRlmb2FCa8mj8jMN/yhRpvGOVk2rYLyAxVeGbkaNo970V
+         uWGsNKfFa0aszX1ks1YoI6IdeOQNIqMgKl/x946N1As52wTNM4ZEygRQ6X6qEddqJco6
+         qscg==
+X-Gm-Message-State: AOAM533vtWkrHrWXyJUgHl0q0NFYRYVTwxlxnpLS8X1EaxUlqsQ/d5KH
+        nWJSBs6T/le9a07kO67pLDw=
+X-Google-Smtp-Source: ABdhPJyuhvxNZ/vFbSnjujiW++PlTq/QXBGZ6TlMOMltdSMhUvDnLjbrV7xznWZC1cnkM66P43loTg==
+X-Received: by 2002:a17:90b:1101:: with SMTP id gi1mr12296100pjb.11.1634120638367;
+        Wed, 13 Oct 2021 03:23:58 -0700 (PDT)
 Received: from vultr.guest ([144.202.123.152])
-        by smtp.gmail.com with ESMTPSA id 184sm13900994pfw.49.2021.10.13.03.23.55
+        by smtp.gmail.com with ESMTPSA id 184sm13900994pfw.49.2021.10.13.03.23.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 03:23:56 -0700 (PDT)
+        Wed, 13 Oct 2021 03:23:58 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     keescook@chromium.org, rostedt@goodmis.org, peterz@infradead.org,
         pmladek@suse.com, viro@zeniv.linux.org.uk,
@@ -58,10 +58,11 @@ To:     keescook@chromium.org, rostedt@goodmis.org, peterz@infradead.org,
         vincent.guittot@linaro.org, bsegall@google.com, mgorman@suse.de,
         bristot@redhat.com, davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v4 1/5] elfcore: use TASK_COMM_LEN instead of 16 in prpsinfo
-Date:   Wed, 13 Oct 2021 10:23:42 +0000
-Message-Id: <20211013102346.179642-2-laoar.shao@gmail.com>
+        Vladimir Zapolskiy <vzapolskiy@gmail.com>,
+        David Howells <dhowells@redhat.com>
+Subject: [PATCH v4 2/5] connector: use __get_task_comm in proc_comm_connector
+Date:   Wed, 13 Oct 2021 10:23:43 +0000
+Message-Id: <20211013102346.179642-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211013102346.179642-1-laoar.shao@gmail.com>
 References: <20211013102346.179642-1-laoar.shao@gmail.com>
@@ -71,87 +72,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot reported a -Wstringop-truncation warning after I
-extend task comm from 16 to 24. Below is the detailed warning:
+connector comm was introduced in commit
+f786ecba4158 ("connector: add comm change event report to proc connector").
+struct comm_proc_event was defined in include/linux/cn_proc.h first and
+then been moved into file include/uapi/linux/cn_proc.h in commit
+607ca46e97a1 ("UAPI: (Scripted) Disintegrate include/linux").
 
-   fs/binfmt_elf.c: In function 'fill_psinfo.isra':
->> fs/binfmt_elf.c:1575:9: warning: 'strncpy' output may be truncated copying 16 bytes from a string of length 23 [-Wstringop-truncation]
-    1575 |         strncpy(psinfo->pr_fname, p->comm, sizeof(psinfo->pr_fname));
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+As this is the UAPI code, we can't change it without potentially breaking
+things (i.e. userspace binaries have this size built in, so we can't just
+change the size). To prepare for the followup change - extending task
+comm, we have to use __get_task_comm() to avoid the BUILD_BUG_ON() in
+proc_comm_connector().
 
-This patch can fix this warning.
-
-struct elf_prpsinfo was moved from include/uapi/linux/elfcore.h into
-include/linux/elfcore.h in commit
-1e6b57d6421f ("unexport linux/elfcore.h")
-
-As it is not UAPI code, we can replace 16 with TASK_COMM_LEN without
-worrying about breaking userspace things.
-
-struct elf_prpsinfo is used to dump the task information in userspace
-coredump or kernel vmcore. So I verified what will happen to vmcore if
-I extend the size of TASK_COMM_LEN to 24. The result is that the vmcore
-still work fine as expected, for example:
-
-crash> ps
-   PID    PPID  CPU       TASK        ST  %MEM     VSZ    RSS  COMM
->     0      0   0  ffffffff8501a940  RU   0.0       0      0  [swapper/0]
->     0      0   1  ffff996e00f81f80  RU   0.0       0      0  [swapper/1]
->     0      0   2  ffff996e00f80000  RU   0.0       0      0  [swapper/2]
->     0      0   3  ffff996e00f85e80  RU   0.0       0      0  [swapper/3]
->     0      0   4  ffff996e00f83f00  RU   0.0       0      0  [swapper/4]
-      0      0   5  ffff996e00f8de80  RU   0.0       0      0  [swapper/5]
->     0      0   6  ffff996e00f8bf00  RU   0.0       0      0  [swapper/6]
->     0      0   7  ffff996e00f89f80  RU   0.0       0      0  [swapper/7]
->     0      0   8  ffff996e00f88000  RU   0.0       0      0  [swapper/8]
->     0      0   9  ffff996e00f93f00  RU   0.0       0      0  [swapper/9]
->     0      0  10  ffff996e00f91f80  RU   0.0       0      0  [swapper/10]
->     0      0  11  ffff996e00f90000  RU   0.0       0      0  [swapper/11]
->     0      0  12  ffff996e00f95e80  RU   0.0       0      0  [swapper/12]
->     0      0  13  ffff996e00f98000  RU   0.0       0      0  [swapper/13]
->     0      0  14  ffff996e00f9de80  RU   0.0       0      0  [swapper/14]
->     0      0  15  ffff996e00f9bf00  RU   0.0       0      0  [swapper/15]
-
-Reported-by: kernel test robot <lkp@intel.com>
+Suggested-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Vladimir Zapolskiy <vzapolskiy@gmail.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: David Howells <dhowells@redhat.com>
 Cc: Kees Cook <keescook@chromium.org>
 Cc: Al Viro <viro@zeniv.linux.org.uk>
 Cc: Petr Mladek <pmladek@suse.com>
 ---
- include/linux/elfcore-compat.h | 2 +-
- include/linux/elfcore.h        | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/connector/cn_proc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/elfcore-compat.h b/include/linux/elfcore-compat.h
-index e272c3d452ce..8a52a782161d 100644
---- a/include/linux/elfcore-compat.h
-+++ b/include/linux/elfcore-compat.h
-@@ -43,7 +43,7 @@ struct compat_elf_prpsinfo
- 	__compat_uid_t			pr_uid;
- 	__compat_gid_t			pr_gid;
- 	compat_pid_t			pr_pid, pr_ppid, pr_pgrp, pr_sid;
--	char				pr_fname[16];
-+	char				pr_fname[TASK_COMM_LEN];
- 	char				pr_psargs[ELF_PRARGSZ];
- };
+diff --git a/drivers/connector/cn_proc.c b/drivers/connector/cn_proc.c
+index 646ad385e490..c88ba2dc1eae 100644
+--- a/drivers/connector/cn_proc.c
++++ b/drivers/connector/cn_proc.c
+@@ -230,7 +230,10 @@ void proc_comm_connector(struct task_struct *task)
+ 	ev->what = PROC_EVENT_COMM;
+ 	ev->event_data.comm.process_pid  = task->pid;
+ 	ev->event_data.comm.process_tgid = task->tgid;
+-	get_task_comm(ev->event_data.comm.comm, task);
++
++	/* This may get truncated. */
++	__get_task_comm(ev->event_data.comm.comm,
++			sizeof(ev->event_data.comm.comm), task);
  
-diff --git a/include/linux/elfcore.h b/include/linux/elfcore.h
-index 2aaa15779d50..ff4e4e455160 100644
---- a/include/linux/elfcore.h
-+++ b/include/linux/elfcore.h
-@@ -65,8 +65,8 @@ struct elf_prpsinfo
- 	__kernel_gid_t	pr_gid;
- 	pid_t	pr_pid, pr_ppid, pr_pgrp, pr_sid;
- 	/* Lots missing */
--	char	pr_fname[16];	/* filename of executable */
--	char	pr_psargs[ELF_PRARGSZ];	/* initial part of arg list */
-+	char	pr_fname[TASK_COMM_LEN]; /* filename of executable */
-+	char	pr_psargs[ELF_PRARGSZ];	 /* initial part of arg list */
- };
- 
- static inline void elf_core_copy_regs(elf_gregset_t *elfregs, struct pt_regs *regs)
+ 	memcpy(&msg->id, &cn_proc_event_id, sizeof(msg->id));
+ 	msg->ack = 0; /* not used */
 -- 
 2.17.1
 
