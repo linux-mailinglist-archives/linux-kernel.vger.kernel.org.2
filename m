@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A9F42C37C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16EBC42C37E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235396AbhJMOjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:39:08 -0400
-Received: from rosenzweig.io ([138.197.143.207]:46962 "EHLO rosenzweig.io"
+        id S233699AbhJMOjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:39:14 -0400
+Received: from mga02.intel.com ([134.134.136.20]:58928 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230171AbhJMOjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:39:07 -0400
-From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Subject: [PATCH v2] drm/cma-helper: Set VM_DONTEXPAND for mmap
-Date:   Wed, 13 Oct 2021 10:36:54 -0400
-Message-Id: <20211013143654.39031-1-alyssa@rosenzweig.io>
-X-Mailer: git-send-email 2.30.2
+        id S236309AbhJMOjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:39:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="214592952"
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="214592952"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 07:37:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="592198916"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 13 Oct 2021 07:37:06 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 9828E361; Wed, 13 Oct 2021 17:37:13 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] device property: Add missed header in fwnode.h
+Date:   Wed, 13 Oct 2021 17:37:07 +0300
+Message-Id: <20211013143707.80222-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Murphy <robin.murphy@arm.com>
+When adding some stuff to the header file we must not rely on
+implicit dependencies that are happen by luck or bugs in other
+headers. Hence fwnode.h needs to use bits.h directly.
 
-drm_gem_cma_mmap() cannot assume every implementation of dma_mmap_wc()
-will end up calling remap_pfn_range() (which happens to set the relevant
-vma flag, among others), so in order to make sure expectations around
-VM_DONTEXPAND are met, let it explicitly set the flag like most other
-GEM mmap implementations do.
-
-This avoids repeated warnings on a small minority of systems where the
-display is behind an IOMMU, and has a simple driver which does not
-override drm_gem_cma_default_funcs. Arm hdlcd is an in-tree affected
-driver. Out-of-tree, the Apple DCP driver is affected; this fix is
-required for DCP to be mainlined.
-
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Reviewed-and-tested-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Fixes: c2c724c868c4 ("driver core: Add fw_devlink_parse_fwtree()")
+Cc: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/gpu/drm/drm_gem_cma_helper.c | 1 +
+ include/linux/fwnode.h | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
-index d53388199f34..63e48d98263d 100644
---- a/drivers/gpu/drm/drm_gem_cma_helper.c
-+++ b/drivers/gpu/drm/drm_gem_cma_helper.c
-@@ -510,6 +510,7 @@ int drm_gem_cma_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma)
- 	 */
- 	vma->vm_pgoff -= drm_vma_node_start(&obj->vma_node);
- 	vma->vm_flags &= ~VM_PFNMAP;
-+	vma->vm_flags |= VM_DONTEXPAND;
+diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+index 9f4ad719bfe3..3a532ba66f6c 100644
+--- a/include/linux/fwnode.h
++++ b/include/linux/fwnode.h
+@@ -11,6 +11,7 @@
  
- 	cma_obj = to_drm_gem_cma_obj(obj);
+ #include <linux/types.h>
+ #include <linux/list.h>
++#include <linux/bits.h>
+ #include <linux/err.h>
  
+ struct fwnode_operations;
 -- 
-2.30.2
+2.33.0
 
