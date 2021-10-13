@@ -2,144 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE7342B7D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3346E42B7E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238105AbhJMGr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 02:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54948 "EHLO
+        id S229615AbhJMGul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 02:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238095AbhJMGrw (ORCPT
+        with ESMTP id S231171AbhJMGuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 02:47:52 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55015C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:45:49 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 133so1399873pgb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:45:49 -0700 (PDT)
+        Wed, 13 Oct 2021 02:50:39 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C484EC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:48:35 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id p16so7294400lfa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:48:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w0j2Ihdi/0685L8FT6WteZp6O1hKULY2lNZfHOgIHSc=;
-        b=ZVG9fseiMJi5y7uNc0U//uB9qmTc4gJH0ueiRXhntI+xclAF1mY0ZabBN0HENHjmuQ
-         Wd2tZE7h7XcVk1DbOBPcKKRzFh73LE1iY97UMVdM/LDFC8CDxtoZ3SUXBlDw8iyhvu6V
-         muglMpS8KRkUeK+EwwJZIYurw/HXNEkgWVJds=
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QjB1BdoR7ZGictHvD5ULpvTOZqW0I38odTyCHuq79oQ=;
+        b=Mvh1c/bdTcW3v5TtlUWklGjNkvno75zxoWuQgrbMlergLlKkEr8XUkKo7qt68FrBMQ
+         PPOMi4jN+RbtsRSMMZmCG5EnGf9tdN6xK+zr1Yl6OpFnR+Fx1EO3zBin/OPsCJkmhAG0
+         3t582FErPmUh0rfNidrCNZyRJS+SkQciCOX7VkOffxmCYZg5i+yskxp0p6Mftpe6GDug
+         1wuJGCC+9rQtPnksH8jtpsBxgBOky+z6uZ+kqxJlmFTbXDrtgWisAe0J9F8RGS7GlWHd
+         jQYZI8k4YLtK4zopBXiRdxrIPL17rMY723iWzJC/UzfIMvp5MD0c4vPjArQKKlEPczvf
+         yDbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w0j2Ihdi/0685L8FT6WteZp6O1hKULY2lNZfHOgIHSc=;
-        b=41xf/n/dwcCzWsJpMCosC/saEdBiQNn2w1VefYBvdDJG9RXXpC1AWMtiz3DtuzCgme
-         SrfOnB3h2isoruYN1B37AXBJnX2Y34/i06FnpQ1GBQvFcZBzqIIwhFi1ROoTYT4WnKvN
-         AS1RHx65hBmRQjA93HKipntov5EYiE7shD5N96vtWw4mURkx/PTxaJ7Y0ntVe/uBUSpO
-         x+PiQLs1HYYNpkK+izxW6Iv406F+4Mp8iaDtDAvCdQ9J6zIP+AmnsT/S6M162de2HErY
-         2V+sejYyF1oKh2n4di3y3XVtmwfbAcCYPVgQ0wFF9MWoBuk8N05zR3tdA83C0X8/RFZM
-         +Eag==
-X-Gm-Message-State: AOAM533fwsRXkUWZFP/Ol4DbaGV2J6L2FOTLm9vT8rmOK+5uVQSwgyjL
-        Ghhk673YypmVlq0Y09do92/VPQ==
-X-Google-Smtp-Source: ABdhPJyYGTFNE7wYL1tDchWsW1G14X62AMTEsDTHRuseDYe9oXvmyOMHWZK2W0kP1Mxrbkw9HEw8fw==
-X-Received: by 2002:a05:6a00:140e:b0:444:b077:51ef with SMTP id l14-20020a056a00140e00b00444b07751efmr31628811pfu.61.1634107548651;
-        Tue, 12 Oct 2021 23:45:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g11sm13397260pgn.41.2021.10.12.23.45.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 23:45:48 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 23:45:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chris Zankel <chris@zankel.net>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greentime Hu <green.hu@gmail.com>, Guo Ren <guoren@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Julien Thierry <jthierry@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Michal Simek <monstr@monstr.eu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rich Felker <dalias@libc.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Rob Herring <robh@kernel.org>,
-        Robert Richter <rric@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        William Cohen <wcohen@redhat.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org,
-        sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp,
-        x86@kernel.org
-Subject: Re: [PATCH 2/2] kbuild: use more subdir- for visiting subdirectories
- while cleaning
-Message-ID: <202110122345.4B8FE35AED@keescook>
-References: <20211013063622.548590-1-masahiroy@kernel.org>
- <20211013063622.548590-2-masahiroy@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QjB1BdoR7ZGictHvD5ULpvTOZqW0I38odTyCHuq79oQ=;
+        b=1xjL/6Ppvf2j9h7aqXEJmUDGDfSkog7umAG/q58pADOJuMCB/80/sE9rrF4whcLquc
+         GIZSbdiJD48pLe3iqfB5gjRuYlptic7t8ERnF6PxLPTOqlHXTzce/IAF202TGS77N4Fi
+         kx1AbVvN7Gz2jhcGsVsLhhVYrdxe7CijC64XnJbqoSMSS/Y4YzK9za+4Fz/yNz53Oa6V
+         1ZEq4jt1ez/ENRi8UVRhqkWZaO196Age3TFQ6rQIdiEluWbefTMwK/v6oJL42xu5qHgA
+         49O5PLIbHln2uuGn18ry9gOzqT5WJucDOzGsvO1+dqJwtRa89Ckw7zq+ZCTxEjEHJov0
+         +PFg==
+X-Gm-Message-State: AOAM5307UjIJHIX1iIJloaohe3Rp1q/SCM275AkfIDY/JNhO4S+U6HwK
+        eDbvaZryqXQ4X5E3+bOEJAE2YACf9/2MlUumsh8=
+X-Google-Smtp-Source: ABdhPJwdATS8P94EYvYkeNxeLQFIBnHOI838/Rw4VZAxZCsvqm8GAzbLvCqk//EcAyUrra3WfGGSIQ==
+X-Received: by 2002:ac2:5dfc:: with SMTP id z28mr22823533lfq.79.1634107714098;
+        Tue, 12 Oct 2021 23:48:34 -0700 (PDT)
+Received: from [192.168.0.14] (095160158079.dynamic-2-waw-k-4-2-0.vectranet.pl. [95.160.158.79])
+        by smtp.gmail.com with ESMTPSA id p23sm1236840lfd.127.2021.10.12.23.48.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 23:48:33 -0700 (PDT)
+Subject: Re: [PATCH] drm/bridge: Ignore -EPROBE_DEFER when bridge attach fails
+To:     =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <00493cc61d1443dab1c131c46c5890f95f6f9b25.1634068657.git.agx@sigxcpu.org>
+ <YWXtQ778N/rn+Jnu@pendragon.ideasonboard.com>
+ <YWX0UPyw+5OBsBA6@qwark.sigxcpu.org>
+From:   Andrzej Hajda <andrzej.hajda@gmail.com>
+Message-ID: <78425826-1c28-4cb5-ba1f-23c6492a3810@gmail.com>
+Date:   Wed, 13 Oct 2021 08:48:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013063622.548590-2-masahiroy@kernel.org>
+In-Reply-To: <YWX0UPyw+5OBsBA6@qwark.sigxcpu.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 03:36:22PM +0900, Masahiro Yamada wrote:
-> Documentation/kbuild/makefiles.rst suggests to use "archclean" for
-> cleaning arch/$(SRCARCH)/boot/.
+On 12.10.2021 22:47, Guido Günther wrote:
+> Hi Laurent,
+> On Tue, Oct 12, 2021 at 11:17:07PM +0300, Laurent Pinchart wrote:
+>> Hi Guido,
+>>
+>> Thank you for the patch.
+>>
+>> On Tue, Oct 12, 2021 at 09:58:58PM +0200, Guido Günther wrote:
+>>> Otherwise logs are filled with
+>>>
+>>>    [drm:drm_bridge_attach] *ERROR* failed to attach bridge /soc@0/bus@30800000/mipi-dsi@30a0 0000 to encoder None-34: -517
+>>>
+>>> when the bridge isn't ready yet.
+>>>
+>>> Fixes: fb8d617f8fd6 ("drm/bridge: Centralize error message when bridge attach fails")
+>>> Signed-off-by: Guido Günther <agx@sigxcpu.org>
+>>> ---
+>>>   drivers/gpu/drm/drm_bridge.c | 11 ++++++-----
+>>>   1 file changed, 6 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+>>> index a8ed66751c2d..f0508e85ae98 100644
+>>> --- a/drivers/gpu/drm/drm_bridge.c
+>>> +++ b/drivers/gpu/drm/drm_bridge.c
+>>> @@ -227,14 +227,15 @@ int drm_bridge_attach(struct drm_encoder *encoder, struct drm_bridge *bridge,
+>>>   	bridge->encoder = NULL;
+>>>   	list_del(&bridge->chain_node);
+>>>   
+>>> +	if (ret != -EPROBE_DEFER) {
+>>>   #ifdef CONFIG_OF
+>>> -	DRM_ERROR("failed to attach bridge %pOF to encoder %s: %d\n",
+>>> -		  bridge->of_node, encoder->name, ret);
+>>> +		DRM_ERROR("failed to attach bridge %pOF to encoder %s: %d\n",
+>>> +			  bridge->of_node, encoder->name, ret);
+>>>   #else
+>>> -	DRM_ERROR("failed to attach bridge to encoder %s: %d\n",
+>>> -		  encoder->name, ret);
+>>> +		DRM_ERROR("failed to attach bridge to encoder %s: %d\n",
+>>> +			  encoder->name, ret);
+>>>   #endif
+>>> -
+>>> +	}
+>>
+>> This looks fine as such, but I'm concerned about the direction it's
+>> taking. Ideally, probe deferral should happen at probe time, way before
+>> the bridge is attached. Doing otherwise is a step in the wrong direction
+>> in my opinion, and something we'll end up regretting when we'll feel the
+>> pain it inflicts.
 > 
-> Since commit d92cc4d51643 ("kbuild: require all architectures to have
-> arch/$(SRCARCH)/Kbuild"), we can use the "subdir- += boot" trick for
-> all architectures. This can take advantage of the parallel option (-j)
-> for "make clean".
+> The particular case I'm seeing this is the nwl driver probe deferrals if
+> the panel bridge isn't ready (which needs a bunch of components
+> (dsi, panel, backlight wrapped led, ...) and it probes fine later on so I
+> wonder where you see the actual error cause? That downstream of the
+> bridge isn't ready or that the display controller is already attaching
+> the bridge?
+
+So it is something wrong there, nwl should not publish bridge interface 
+until it gather its resources (the panel in this case).
+
+Regards
+Andrzej
+
+
 > 
-> I also cleaned up the comments. The "archdep" target does not exist.
+> Cheers,
+>   -- Guido
 > 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>>
+>>>   	return ret;
+>>>   }
+>>>   EXPORT_SYMBOL(drm_bridge_attach);
+>>
+>> -- 
+>> Regards,
+>>
+>> Laurent Pinchart
+>>
 
-I like the clean-up!
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
