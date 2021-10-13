@@ -2,54 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C15742CDE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414B442CDE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhJMW1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 18:27:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231474AbhJMW0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 18:26:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CF91610D0;
-        Wed, 13 Oct 2021 22:24:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634163882;
-        bh=iSkwlRSRUWxKgv/2zZ5IoJVxhehEVym6q1lNDUtMr9k=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=pFKUopZKh08yrj61vatpQGXCh02umwADgnzkpoHciLXSSegAAeuBhXdbI2R8u1IFG
-         Vk8Pk6t2eZTrn34gpLZZ96hp9UDV/sNyMe2F1xnaMeMWuIQG5Yhu390nMVenM2qaHf
-         ovkIzWC2X4Fzp9gPhL/+Wsqws2r7Zfwk4ggEHP2TLvyyar58z7QqlgDkzYL2fr6Q9Q
-         c4trSzNyl9gPoIcmTQxaUZQ5JbR370uoHACyFbUOALNnNcUeYtjozcQz4GClqSJXoc
-         SeZ0qbdMYcetqxLwxakPGzQsm7zLRy9Zf5d3hFn5x6WYqk6kv16ojvmalunMzygtQe
-         KqfNwlSztvkFA==
-Content-Type: text/plain; charset="utf-8"
+        id S231271AbhJMW1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 18:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231474AbhJMW1Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 18:27:16 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1A8C061753;
+        Wed, 13 Oct 2021 15:25:12 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id p16so18440688lfa.2;
+        Wed, 13 Oct 2021 15:25:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fAFM39F4OtwPo955+QYoKUKyjFO0/+s1I0jzyMsYoaM=;
+        b=Ye/F4t82fRq9hE5UpPDLXL4Ugs2fkr3fSVTvglgFABcDT8wFVPcglXb326T25pMkz1
+         SZefKfMX7YAlBb3KZizunAUzK2k5NFBUYZEZ8KkazEoB1opi/UErOdQcrTlJNHPta3z3
+         jBltCmDx5C0cXHLd0Gf3kC/pnsUoEvzkAYJ8RtCbEfKy7D3//BXSSYpUevc16s67Yl7h
+         eUez0KlyWHB00Kh4w1fcO0vcTyO54QO8I8fT3KrrOUKAlMbiIzzIkcHig6zQ8J9aL7xp
+         Fu7LGW5s4HoAJz4mGowvRSDDsDcRmYjYAv+IACI3EMv1rJH2qGwzwOBG2m4N9mMKjwlO
+         6f5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fAFM39F4OtwPo955+QYoKUKyjFO0/+s1I0jzyMsYoaM=;
+        b=0mnFeAq+FmoCGos25CydEtX9z+PVOrrTnjubC/ZsJHZfOm44hsqw1xL4H/+DgXm2iM
+         Txuv9tMwpNyqYmnaB0TRkX+A0to7TH2n4FGs0FcOJzUl9Uf/GHGwuPMsJMzngAKpqYeM
+         v/l1ZZKclb6l3J5tnecRB8r25NptziTXAgz+8YPIdfmBDGIQRHvAMPbSjPGVbnhfQTig
+         UpvLknEThbtk/l0LeuPb5EURWG8H0tEcadB6l3fIbVpGXa2OjhpsWUmPn1oslAxlLMF/
+         CO1UAs1DHA02KlbH+XfgqtjE4jYrez9+n6iaJNMvk+JCfJME6XdtAFCw/sNAzAo3rj70
+         dKRQ==
+X-Gm-Message-State: AOAM5306mN52CWmFgPxBkA783+XwVEmSSfIypISyORNCtCusG4mNGoqO
+        IFQhqjnAxiVfQf/gQYwBUHwshrOFXwc=
+X-Google-Smtp-Source: ABdhPJxQeRUAFF7qtNBes2ye20CPQgrNe3xjiDBfonpUEPTpKAnP5XiBICdAv6vqSUOZEibQXfY86w==
+X-Received: by 2002:a2e:530b:: with SMTP id h11mr2191203ljb.372.1634163910933;
+        Wed, 13 Oct 2021 15:25:10 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-174-234.dynamic.spd-mgts.ru. [79.139.174.234])
+        by smtp.googlemail.com with ESMTPSA id k14sm78185ljh.125.2021.10.13.15.25.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 15:25:10 -0700 (PDT)
+Subject: Re: [PATCH] cpuidle: tegra: add ARCH_SUSPEND_POSSIBLE dependency
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        He Ying <heying24@huawei.com>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211013160125.772873-1-arnd@kernel.org>
+ <7b4c1c31-3ef6-db9b-dc98-8a6f7a3d6243@gmail.com>
+ <CAK8P3a0KKpfxfh=qZM8pQs51qxqLZMcn_RLC99mpR5eC4tX+4A@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <e2ac7fc0-bd81-5e4f-c1a9-75af503c2cc5@gmail.com>
+Date:   Thu, 14 Oct 2021 01:25:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1633484416-27852-3-git-send-email-tdas@codeaurora.org>
-References: <1633484416-27852-1-git-send-email-tdas@codeaurora.org> <1633484416-27852-3-git-send-email-tdas@codeaurora.org>
-Subject: Re: [PATCH 3/3] clk: qcom: Add lpass clock controller driver for SC7280
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Wed, 13 Oct 2021 15:24:40 -0700
-Message-ID: <163416388091.936110.10584826404239603287@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <CAK8P3a0KKpfxfh=qZM8pQs51qxqLZMcn_RLC99mpR5eC4tX+4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Taniya Das (2021-10-05 18:40:16)
-> Add support for the lpass clock controller found on SC7280 based devices.
-> This would allow lpass peripheral loader drivers to control the clocks to
-> bring the subsystem out of reset.
->=20
-> Signed-off-by: Taniya Das <tdas@codeaurora.org>
-> ---
+14.10.2021 00:55, Arnd Bergmann пишет:
+> On Wed, Oct 13, 2021 at 10:49 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>> diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
+>>> index 2cc3c208a180..af97992eaa82 100644
+>>> --- a/drivers/cpuidle/Kconfig.arm
+>>> +++ b/drivers/cpuidle/Kconfig.arm
+>>> @@ -100,6 +100,7 @@ config ARM_MVEBU_V7_CPUIDLE
+>>>  config ARM_TEGRA_CPUIDLE
+>>>       bool "CPU Idle Driver for NVIDIA Tegra SoCs"
+>>>       depends on (ARCH_TEGRA || COMPILE_TEST) && !ARM64 && MMU
+>>> +     depends on ARCH_SUSPEND_POSSIBLE
+>>>       select ARCH_NEEDS_CPU_IDLE_COUPLED if SMP
+>>>       select ARM_CPU_SUSPEND
+>>>       help
+>>>
+>>
+>> Arnd, thank you for the patch!
+>>
+>> Apparently ARM_QCOM_SPM_CPUIDLE doesn't have that problem visible
+>> because it selects QCOM_SPM, which depends on ARCH_QCOM, and thus
+>> ARCH_QCOM should be auto-selected(?).
+> 
+> No, that's not how it works. In fact ARM_QCOM_SPM_CPUIDLE has the
+> exact same problem. I tried to check if there are other drivers affected
+> by this problem before I sent my patch, but I did something wrong and
+> missed this one.
+> 
+>> I'm curious whether this needs to
+>> be corrected, otherwise (ARCH_QCOM || COMPILE_TEST) doesn't make much
+>> sense for that driver. And then it will need the same Kconfig fix as well.
+>>
+>> I assume this problem wasn't caught by regular kernel build bots because
+>> they don't test randconfig, don't they?
+> 
+> They do test randconfig builds, but only a few of them. This one is
+> rather hard to hit, it probably took me 100 builds before I hit the first
+> one and I haven't run into the QCOM one yet, though I did see a
+> different issue for ARM_QCOM_SPM_CPUIDLE:
+> 
+> WARNING: unmet direct dependencies detected for QCOM_SPM
+>   Depends on [n]: ARCH_QCOM [=n]
+>   Selected by [y]:
+>   - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64)
+> && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
 
-Applied to clk-next
+This is exactly what I expected, thank you for fixing all this!
