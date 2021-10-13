@@ -2,105 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439E942B952
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE0F42B954
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238578AbhJMHkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:40:37 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52548 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238565AbhJMHkg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:40:36 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S238585AbhJMHku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:40:50 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:60854 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238584AbhJMHko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 03:40:44 -0400
+Received: from zn.tnic (p200300ec2f0ce200d6cfbc8b4a6526d3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:e200:d6cf:bc8b:4a65:26d3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B9FD9222C0;
-        Wed, 13 Oct 2021 07:38:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634110711; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m2/5m4EyNl7HialOD6IWobME8joFWhALPD0XeJqljVQ=;
-        b=d/Y5iKa4s2ThoqvqoYb8etqWtevCqOBHYZ1DF1p+oWm4BNq5proRG8XQwacGegyAqB75Ek
-        j8WQTrGXsr/qzoT8mGcjl1Hdzk1hMBiQZTncNkiAKcJfCIdLsoQj+f5aCOhretdrLKNNpA
-        cIyKJdpDYlB65nkVFopzCYv4umGIE0Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634110711;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m2/5m4EyNl7HialOD6IWobME8joFWhALPD0XeJqljVQ=;
-        b=fbLc4QJpjAioNpDXuQMoQ2cfpcSZhuuFzmAs/0lsu085RIwJJatBvU7POTVHCmbF8Sk8BH
-        TogvOXMpdLYrLMDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 858EB13CBE;
-        Wed, 13 Oct 2021 07:38:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +E26H/eMZmHgeAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 13 Oct 2021 07:38:31 +0000
-Message-ID: <3928ef69-eaac-241c-eb32-d2dd2eab9384@suse.cz>
-Date:   Wed, 13 Oct 2021 09:38:31 +0200
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3A1D81EC0295;
+        Wed, 13 Oct 2021 09:38:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634110720;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=njSyXwVusHuX6wt5kubdslRQRkmoPZmU+9aLX9g4MD8=;
+        b=kv62qMJSQ8hV2x+h4AxvtOmwSureaRDEPZs5rzaVcdZYkQCCGSRGjCx4EEyC05wdwfEmoi
+        h1e7aKGibHzNv25tsqUJ20qjC0/EFO+Qg4bLPWY7g0y5cwi4inknvvD0jIZNvi5+F9WnV9
+        WauHkvTNsBJz5m3094l6bcWJlU6DoSc=
+Date:   Wed, 13 Oct 2021 09:38:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        dave.hansen@linux.intel.com, seanjc@google.com, x86@kernel.org,
+        yang.zhong@intel.com, jarkko@kernel.org
+Subject: Re: [PATCH v2 0/2] x86: sgx_vepc: implement ioctl to EREMOVE all
+ pages
+Message-ID: <YWaM/nwTemct0zVJ@zn.tnic>
+References: <20211012105708.2070480-1-pbonzini@redhat.com>
+ <YWaCu2Us+H+BSbYW@zn.tnic>
+ <a99ed8a3-249d-5cf5-1567-56c4014678f1@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
-Content-Language: en-US
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     David Rientjes <rientjes@google.com>,
-        Rustam Kovhaev <rkovhaev@gmail.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, gregkh@linuxfoundation.org,
-        Al Viro <viro@zeniv.linux.org.uk>, dvyukov@google.com
-References: <20210929212347.1139666-1-rkovhaev@gmail.com>
- <20210930044202.GP2361455@dread.disaster.area>
- <17f537b3-e2eb-5d0a-1465-20f3d3c960e2@suse.cz> <YVYGcLbu/aDKXkag@nuc10>
- <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz> <YVZXF3mbaW+Pe+Ji@nuc10>
- <1e0df91-556e-cee5-76f7-285d28fe31@google.com>
- <20211012204320.GP24307@magnolia> <20211012204345.GQ24307@magnolia>
- <9db5d16a-2999-07a4-c49d-7417601f834f@suse.cz>
- <20211012232255.GS24307@magnolia>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20211012232255.GS24307@magnolia>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a99ed8a3-249d-5cf5-1567-56c4014678f1@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 01:22, Darrick J. Wong wrote:
-> On Tue, Oct 12, 2021 at 11:32:25PM +0200, Vlastimil Babka wrote:
->> On 10/12/2021 10:43 PM, Darrick J. Wong wrote:
->> > On Tue, Oct 12, 2021 at 01:43:20PM -0700, Darrick J. Wong wrote:
->> >> On Sun, Oct 03, 2021 at 06:07:20PM -0700, David Rientjes wrote:
->> >>
->> >> I audited the entire xfs (kernel) codebase and didn't find any other
->> >> usage errors.  Thanks for the patch; I'll apply it to for-next.
->> 
->> Which patch, the one that started this thread and uses kmem_cache_free() instead
->> of kfree()? I thought we said it's not the best way?
-> 
-> It's probably better to fix slob to be able to tell that a kmem_free'd
-> object actually belongs to a cache and should get freed that way, just
-> like its larger sl[ua]b cousins.
+On Wed, Oct 13, 2021 at 09:15:27AM +0200, Paolo Bonzini wrote:
+> No, I mean 5.15 because it literally cannot break anything that was working
+> previously and the functionality provided by the ioctl (resetting VMs) is
+> important.  But it wouldn't be a big issue if it was 5.16 only.
 
-Agreed. Rustam, do you still plan to do that?
+Ok, lemme queue it for 5.16 then.
 
-> However, even if that does come to pass, anybody /else/ who wants to
-> start(?) using XFS on a SLOB system will need this patch to fix the
-> minor papercut.  Now that I've checked the rest of the codebase, I don't
-> find it reasonable to make XFS mutually exclusive with SLOB over two
-> instances of slab cache misuse.  Hence the RVB. :)
+Thx.
 
-Ok. I was just wondering because Dave's first reply was that actually you'll
-need to expand the use of kfree() instead of kmem_cache_free().
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
