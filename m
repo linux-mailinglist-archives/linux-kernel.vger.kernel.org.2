@@ -2,90 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A94B42C8BC
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD4B42C8BD
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbhJMSfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 14:35:46 -0400
-Received: from mail-oo1-f49.google.com ([209.85.161.49]:35754 "EHLO
-        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhJMSfa (ORCPT
+        id S238301AbhJMSft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 14:35:49 -0400
+Received: from mail-pj1-f45.google.com ([209.85.216.45]:56210 "EHLO
+        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231234AbhJMSfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 14:35:30 -0400
-Received: by mail-oo1-f49.google.com with SMTP id s2-20020a4ac102000000b002b722c09046so1095850oop.2;
-        Wed, 13 Oct 2021 11:33:26 -0700 (PDT)
+        Wed, 13 Oct 2021 14:35:43 -0400
+Received: by mail-pj1-f45.google.com with SMTP id om14so2894555pjb.5;
+        Wed, 13 Oct 2021 11:33:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yO2lRzHz1XznOaQgSh56Qip33pmg0mdBpDv3MKgiWAw=;
-        b=kTv4rI7KLwNElDct+Vm/0Y8pLnF39hru+m7UrkFgIqv8yCCpw0wpVsRqafGDlbq/SP
-         9YrU4yX/FtfACqFZNyqr+ouPAwBMGZTYtxItrsQbtKcDJHbypIYpGFJzCNJ3DtYrxviG
-         xruoiv+QgD6CPhZyqNiNAbofx6DjtGcbEzZoJ3TKVSx0GtauTFDJbuCcYDdoLTuhngO4
-         mGZOXRYGM/b6cTUanIo9oeUOBqQvl43GIIXqzrBQYnlCboGKydnKUQOKxHHomWIQv5IO
-         YTWZH+b13K8PuMCNjZ0NOQ2NAfuC5pyCJwMeSgPn8K7iq1FjCbh/ic3WkS0JHfhhcz/F
-         eXwQ==
-X-Gm-Message-State: AOAM530Sydtm62VLKRuJg/cEr51jSAHZxLtRiznK5JQ9QvJr6wImzlIK
-        103b2y2lBdC1SBggRQKFJcT9rrldw+qLgKx50cY=
-X-Google-Smtp-Source: ABdhPJxgIxFfg7dyINeTZVT41AYYgJtQWUmQamXrzTMvodXp6glxHyKBXcN4RB7zFn58WDKDC40G9VwcpfHxmscuqio=
-X-Received: by 2002:a4a:a9ce:: with SMTP id h14mr533891oon.89.1634150005612;
- Wed, 13 Oct 2021 11:33:25 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4XmJ1jC9DPXCMuf8a+fhehsw5ASjCFlKX2CL8Hazd58=;
+        b=lSvBR0WCHxZ+4vaWxQSwOO+ehKuzawMWIXlhqMi5SDp095XMPLQvxWBdd4DbxwXsqX
+         U1qkP0zu/floAT8r8ErVB1BV0Z2pvAWv1FDjgKCKrvaTYMdCEdpKPuecv+hHOOJIlPpZ
+         hw9Ri0nzUlkZpPCojvxgOsVAgS9F7Y0Bry864l1EF40Eo3AwU9/LDWK6SuZJu1uEgg6+
+         TSCuIhnzrhu7wUEndineBcyTytajVrp0w1OxB+dTJaaLfyQqkD4kCkSTAkyWLzfzvIVC
+         +pMVtr9X385pLdRJD0X8N/4DuwsHLQBsaW6Cg2UBaCHk39vUvAHmux9C/kKWuVN2fAu4
+         zPDg==
+X-Gm-Message-State: AOAM533HYabEDZ05EOsyQYftRvIfBGFHJUzAadsZ2VJrYQfja8+oSuVH
+        if7ymVZm/tZTD0vDJRlspYM=
+X-Google-Smtp-Source: ABdhPJz9+PJn+XMP/2yVysc274MYh3vDJSSYXwrBfoOu9RYy9tqyuIvTbIcEuiqgsU9EfeJWlk9gOA==
+X-Received: by 2002:a17:90b:1c82:: with SMTP id oo2mr1003840pjb.53.1634150018223;
+        Wed, 13 Oct 2021 11:33:38 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:ae3:1dc1:f2a3:9c06])
+        by smtp.gmail.com with ESMTPSA id u24sm223779pfm.27.2021.10.13.11.33.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 11:33:37 -0700 (PDT)
+Subject: Re: [PATCH] RDMA/core: Set sgtable nents when using
+ ib_dma_virt_map_sg()
+To:     Logan Gunthorpe <logang@deltatee.com>, linux-rdma@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+References: <20211013165942.89806-1-logang@deltatee.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <5eec6b1b-726e-b26d-bd82-f03fd5462b8f@acm.org>
+Date:   Wed, 13 Oct 2021 11:33:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211007171815.28336-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0h2=LZ8YX9MP6_dcyyybRQC6rii-r1Lc_Ss1XFFBUiSGQ@mail.gmail.com> <YWdOilxGqREXPBAm@smile.fi.intel.com>
-In-Reply-To: <YWdOilxGqREXPBAm@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 13 Oct 2021 20:33:14 +0200
-Message-ID: <CAJZ5v0gcmsMwB45k-+ca1G14zhtpChcdtB=dWMC1Wyj8j3WfFg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] driver core: Provide device_match_acpi_handle() helper
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Wolfram Sang <wsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211013165942.89806-1-logang@deltatee.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 8:24 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Oct 13, 2021 at 07:47:37PM +0200, Rafael J. Wysocki wrote:
-> > On Thu, Oct 7, 2021 at 7:18 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > We have couple of users of this helper, make it available for them.
-> >
-> > "a couple"?
->
-> Yep.
->
-> > >  EXPORT_SYMBOL(device_match_acpi_dev);
-> > >
-> > > +int device_match_acpi_handle(struct device *dev, const void *handle)
-> >
-> > Hmmm.  Should the second arg be of type acpi_handle?
->
-> acpi_handle is not defined as struct and it means the header, where the
-> prototype is declared, will require acpi.h to be included. Besides that the
-> whole set of device_match_*() is done by the same prototype, so it can be used
-> in bus_find_device() calls.
+On 10/13/21 9:59 AM, Logan Gunthorpe wrote:
+> ib_dma_map_sgtable_attrs() should be mapping the sgls and setting nents
+> but the ib_uses_virt_dma() path falls back to ib_dma_virt_map_sg()
+> which will not set the nents in the sgtable.
+> 
+> Check the return value (per the map_sg calling convention) and set
+> sgt->nents appropriately on success.
+> 
+> Link: https://lore.kernel.org/all/996fa723-18ef-d35b-c565-c9cb9dc2d5e1@acm.org/T/#u
+> Reported-by: Bart Van Assche <bvanassche@acm.org>
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> Tested-by: Bart Van Assche <bvanassche@acm.org>
 
-Ah, OK, it's for bus_find_device().
+Does this patch need a "Fixes:" tag?
 
-> > And doesn't this function belong to the ACPI core?  It is related to
-> > acpi_bus_get_device() and such which are located there.
->
-> Same as above. I don't think so.
+Thanks,
 
-I see, but any chance to improve the changelog?
+Bart.
