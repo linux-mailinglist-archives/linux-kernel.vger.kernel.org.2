@@ -2,117 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0C742C643
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112CF42C644
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236109AbhJMQ0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:26:38 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35432
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229938AbhJMQ0b (ORCPT
+        id S236821AbhJMQ0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:26:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37596 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230312AbhJMQ0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:26:31 -0400
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Wed, 13 Oct 2021 12:26:32 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 982A821A23;
+        Wed, 13 Oct 2021 16:24:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634142268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lx+5wzFLRZqiTb+Uhg/iGQ2TCpoSNAvjoBnIgV2vO3M=;
+        b=GeQRnnufRM9AV36kt5B0pHuaYeCHNLzKT1FxhEsHTOGiESfqfFCZM49yZEaylWxZVDRJDy
+        3jCDlmqaqNcRGtFUt5SYyeEWh4dP7fE0GHBlh7/FopROz7JXenw7liIJDhgMtzGKm+Zo/o
+        aGuSFbxwFezOwCTKQy5ZQTNuTrK7tQ8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634142268;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lx+5wzFLRZqiTb+Uhg/iGQ2TCpoSNAvjoBnIgV2vO3M=;
+        b=78WoZBrHk++fou7WWCKvkqM/mM1ROfej2zhFnWy25WOfar+xQg8eMcSF+kpTOZ++OISK2V
+        IROGd27+EU/dbnAw==
+Received: from wotan.suse.de (wotan.suse.de [10.160.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 28C7F3FFF4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 16:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634142264;
-        bh=8hqDFlw7QAqCClE2bspMVwGa558c3XYDAHMGeAZ8O74=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=as71Kdc64OWRd5Ec7u2lh83K7h011+DHoW5BiFkGQ2lxDt8AcFCUIpOoI8ZkVmthb
-         n2MJp5VFdtQkwHDKu+h0i7QWK1WZ59PVTOJmn29NKF+2fx6n+6Z+AOlanXzNSZV41V
-         V/342G9UHqitRFb9HPrRa/iax63OEZVNFWbxcROdAaorG2/9G4+/rWgRq7bVa5zO5y
-         frg/B06/FogZaBNJSWKvF3v/PJrKZWQjVUiO67CvBE6coDQ78MK0o0beWw66sbPsjs
-         ACHBe4qbhvb2GOb9sWaIeRXcD6LrnmpaSWSzN0AgCzimsARHaNHZwypmNT5kE0m79S
-         hro00Tk715idA==
-Received: by mail-lf1-f70.google.com with SMTP id bt36-20020a056512262400b003fd7e6a96e8so2355191lfb.19
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 09:24:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8hqDFlw7QAqCClE2bspMVwGa558c3XYDAHMGeAZ8O74=;
-        b=qIplZO2puvSv6R8CxEYiw6VITQwxZZSVGUMt9pIB3g35Bl1XQwd/DoAeD1QwMxPohj
-         fSgfpcL0NPnHa64T69jtudoXVkQXpwM1V5SN8d2w/aR2zywW1+Nhn2AwNL45LGu46rps
-         9jWDvEPOAsVknzCyAFh23VXBnWS7o/subOfIe3WzutfBohgvvpWP8KyRQbfqyyUKGNnm
-         Sef++uYIcp6azKPSL5jvHGJZhkgtU/VcoURU9nerUohieJC87wd1VitOdOsr3CM+BHMz
-         9RQSc1GRPKQ6c/Hv70xrF9DABWRE/vPsMSRPRGyfZAayJse1FS8zCqZRuo6Qv1yY9zyW
-         fOdQ==
-X-Gm-Message-State: AOAM530CAUasQvmuPACfxAL0lS3wtr7si8xnabWfdjpqWXBdM+m60vdz
-        8OI6EGIKvt4Bzzg9xLXvDQcfpKSVm6dhVEo5jGxo+jvgZ/6eWjjdFVX7SoLFUSGBeEqlOhmgaN2
-        Kb+HmOP7Kq9vpgx6zVc3NaiVAdYRGdCd3iNUGs4F0Nw==
-X-Received: by 2002:a05:6512:3e11:: with SMTP id i17mr42098286lfv.613.1634142263623;
-        Wed, 13 Oct 2021 09:24:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyHolWBkWOXzX0f51ubgW0eqGFbNEBJQRBguxvNwraBslq04UV0jSTXrux+0AdM94v1s4Wm+w==
-X-Received: by 2002:a05:6512:3e11:: with SMTP id i17mr42098266lfv.613.1634142263460;
-        Wed, 13 Oct 2021 09:24:23 -0700 (PDT)
-Received: from kozik-lap.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id r3sm1372281lfc.169.2021.10.13.09.24.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 09:24:22 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm@kernel.org, soc@kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [GIT PULL 2/2] arm64: dts: samsung: dts64 for v5.16
-Date:   Wed, 13 Oct 2021 18:24:18 +0200
-Message-Id: <20211013162418.43072-2-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211013162418.43072-1-krzysztof.kozlowski@canonical.com>
-References: <20211013162418.43072-1-krzysztof.kozlowski@canonical.com>
+        by relay2.suse.de (Postfix) with ESMTPS id 2DBA6A3B85;
+        Wed, 13 Oct 2021 16:24:28 +0000 (UTC)
+Received: by wotan.suse.de (Postfix, from userid 10510)
+        id 230006443; Wed, 13 Oct 2021 16:24:28 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by wotan.suse.de (Postfix) with ESMTP id 2118F6349;
+        Wed, 13 Oct 2021 16:24:28 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 16:24:28 +0000 (UTC)
+From:   Michael Matz <matz@suse.de>
+To:     Willy Tarreau <w@1wt.eu>
+cc:     Borislav Petkov <bp@alien8.de>,
+        Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the
+ clobber list
+In-Reply-To: <20211013142433.GB8557@1wt.eu>
+Message-ID: <alpine.LSU.2.20.2110131601000.26294@wotan.suse.de>
+References: <YWXwQ2P0M0uzHo0o@zn.tnic> <20211012222311.578581-1-ammar.faizi@students.amikom.ac.id> <YWbUbSUVLy/tx7Zu@zn.tnic> <20211013125142.GD5485@1wt.eu> <YWbZz7gHBV18QJC3@zn.tnic> <20211013140723.GE5485@1wt.eu> <YWbrR1BqI1CxneN/@zn.tnic>
+ <20211013142433.GB8557@1wt.eu>
+User-Agent: Alpine 2.20 (LSU 67 2015-01-07)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+Hello,
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+On Wed, 13 Oct 2021, Willy Tarreau wrote:
 
-are available in the Git repository at:
+> On Wed, Oct 13, 2021 at 04:20:55PM +0200, Borislav Petkov wrote:
+> > On Wed, Oct 13, 2021 at 04:07:23PM +0200, Willy Tarreau wrote:
+> > > Yes I agree with the "potentially" here. If it can potentially be (i.e.
+> > > the kernel is allowed by contract to later change the way it's currently
+> > > done) then we have to save them even if it means lower code efficiency.
+> > >
+> > > If, however, the kernel performs such savings on purpose because it is
+> > > willing to observe a stricter saving than the AMD64 ABI, we can follow
+> > > it but only once it's written down somewhere that it is by contract and
+> > > will not change.
+> > 
+> > Right, and Micha noted that such a change to the document can be done.
+> 
+> great.
+> 
+> > And we're basically doing that registers restoring anyway, in POP_REGS.
+> 
+> That's what I based my analysis on when I wanted to verify Ammar's
+> finding. I would tend to think that if we're burning cycles popping
+> plenty of registers it's probably for a reason, maybe at least a good
+> one, which is that it's the only way to make sure we're not leaking
+> internal kernel data! This is not a concern for kernel->kernel nor
+> user->user calls but for user->kernel calls it definitely is one, and
+> I don't think we could relax that series of pop without causing leaks
+> anyway.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-dt64-5.16
+It might also be interesting to know that while the wording of the psABI 
+was indeed intended to imply that all argument registers are potentially 
+clobbered (like with normal calls) glibc's inline assembler to call 
+syscalls relies on most registers to actually be preserved:
 
-for you to fetch changes up to 2b663ae7152f785732d35ce38ad20ad10aca3116:
+# define REGISTERS_CLOBBERED_BY_SYSCALL "cc", "r11", "cx"
+...
+#define internal_syscall6(number, arg1, arg2, arg3, arg4, arg5, arg6) \
+({                                                                      \
+    unsigned long int resultvar;                                        \
+    TYPEFY (arg6, __arg6) = ARGIFY (arg6);                              \
+    TYPEFY (arg5, __arg5) = ARGIFY (arg5);                              \
+    TYPEFY (arg4, __arg4) = ARGIFY (arg4);                              \
+    TYPEFY (arg3, __arg3) = ARGIFY (arg3);                              \
+    TYPEFY (arg2, __arg2) = ARGIFY (arg2);                              \
+    TYPEFY (arg1, __arg1) = ARGIFY (arg1);                              \
+    register TYPEFY (arg6, _a6) asm ("r9") = __arg6;                    \
+    register TYPEFY (arg5, _a5) asm ("r8") = __arg5;                    \
+    register TYPEFY (arg4, _a4) asm ("r10") = __arg4;                   \
+    register TYPEFY (arg3, _a3) asm ("rdx") = __arg3;                   \
+    register TYPEFY (arg2, _a2) asm ("rsi") = __arg2;                   \
+    register TYPEFY (arg1, _a1) asm ("rdi") = __arg1;                   \
+    asm volatile (                                                      \
+    "syscall\n\t"                                                       \
+    : "=a" (resultvar)                                                  \
+    : "0" (number), "r" (_a1), "r" (_a2), "r" (_a3), "r" (_a4),         \
+      "r" (_a5), "r" (_a6)                                              \
+    : "memory", REGISTERS_CLOBBERED_BY_SYSCALL);                        \
+    (long int) resultvar;                                               \
+})
 
-  arm64: dts: exynos: add minimal support for exynosautov9 sadk board (2021-10-12 14:20:57 +0200)
 
-----------------------------------------------------------------
-Samsung DTS ARM64 changes for v5.16
+Note in particular the missing clobbers or outputs of any of the argument 
+regs.
 
-1. Match Exynos5433 DTS with dtschema.
-2. Add an Exynos Auto v9 SoC and SADK board. The Exynos Auto v9 is a
-   design for automotive for In-vehicle Infotainments (IVI) and Advanced
-   Driver-Assistance Systems (ADAS).
-   This pull request brings very basic support (pinctrl, UART and UFS
-   storage) with a development SADK (Samsung Automotive Development Kit)
-   board.
+So, even though the psABI (might have) meant something else, as glibc is 
+doing the above we in fact have a de-facto standard that the kernel can't 
+clobber any of the argument regs.  The wording and the linux x86-64 
+syscall implementation (and use in glibc) all come from the same time in 
+2001, so there never was a time when the kernel was not saving/restoring 
+the arg registers, so it can't stop now.
 
-----------------------------------------------------------------
-Chanho Park (2):
-      arm64: dts: exynos: add initial support for exynosautov9 SoC
-      arm64: dts: exynos: add minimal support for exynosautov9 sadk board
+In effect this means the psABI should be clarified to explicitely say the 
+the arg registers aren't clobbered, i.e. that the mentioned list of 
+clobbered regs isn't inclusive but exclusive.  I will do that.
 
-Krzysztof Kozlowski (2):
-      arm64: dts: exynos: align operating-points table name with dtschema in Exynos5433
-      arm64: dts: exynos: add proper comaptible FSYS syscon in Exynos5433
+When I was discussing this with Boris earlier I hadn't yet looked at glibc 
+use but only gave my interpretation from memory and reading.  Obviously 
+reality trumps anything like that :-)
 
- .../bindings/arm/samsung/samsung-boards.yaml       |    6 +
- arch/arm64/boot/dts/exynos/Makefile                |    3 +-
- arch/arm64/boot/dts/exynos/exynos5433-bus.dtsi     |   10 +-
- arch/arm64/boot/dts/exynos/exynos5433.dtsi         |    6 +-
- .../boot/dts/exynos/exynosautov9-pinctrl.dtsi      | 1189 ++++++++++++++++++++
- arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts   |   56 +
- arch/arm64/boot/dts/exynos/exynosautov9.dtsi       |  301 +++++
- 7 files changed, 1562 insertions(+), 9 deletions(-)
- create mode 100644 arch/arm64/boot/dts/exynos/exynosautov9-pinctrl.dtsi
- create mode 100644 arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
- create mode 100644 arch/arm64/boot/dts/exynos/exynosautov9.dtsi
+In short:  Ammars initial claim:
+
+> Linux x86-64 syscall only clobbers rax, rcx and r11 (and "memory").
+> 
+>   - rax for the return value.
+>   - rcx to save the return address.
+>   - r11 to save the rflags.
+> 
+> Other registers are preserved.
+
+is accurate and I will clarify the psABI to make that explicit.
+
+
+Ciao,
+Michael.
