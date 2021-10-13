@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E618442C368
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A9242C36E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235584AbhJMOg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235247AbhJMOgt (ORCPT
+        id S236355AbhJMOhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:37:23 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56104 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234988AbhJMOhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:36:49 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E2AC061764
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:34:42 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so4593234pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NtWwj0vH7UOJ5LLhXdT42vgomo2Iy/QVg4NPh0ov+mc=;
-        b=i4jHCEDMgA0MeyPQyBueIE183Ak+qcCdarKYGWRPkUbsoFRpR/IIG8+yyWU35jZA8N
-         qt9Gsc06jQoaDSjLFsLCun/odI+PcXwZjX3t/l0tvyRGsZy5eJkHGIaoOYzvlDuYFFlN
-         MIdgOfHGuvy0SL810seRJWQ7DYQjta/zNTMMSmK6c8FQ7aCskR3S+wHNOnfHwVBmn4nC
-         fcO+YFvOPF2nSgSjlcYflMzl45jRp0Mnd8pwsT1TKR4l5J/m6KwuTUFFu8v1BBHaqVgS
-         gJwIcf16TQtrx/rQbdxOOhHx35TR6YwE9FsnuZ0PLGlfrmNm1jT4+585xBMNJDVcMI2F
-         1Q0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NtWwj0vH7UOJ5LLhXdT42vgomo2Iy/QVg4NPh0ov+mc=;
-        b=by88MaqUSeHWQMX3Cdpi9xGxXDTrU3Z2gAvcY+vHPt/Fo4FqSyX6LxMX0wvrmYPNE+
-         tk4rZFHvA7Xu78aOo2Pp/7AwJvyYXMEibUhwlh93x0Jf2f6Ywp+zVT70xIXEYAavVsSG
-         qRQL8vECG8EU8dMClbIEPvdXtHQxVagTt5p+Wuca6DljH/1zRI+H5OIkWHDTytvpa7Hh
-         KbZ0kklYjBaB8TpP/HcusTDl9ReiDBYssTztI95hjwDdDZ7ihvFtNjy+znRZTkURJlRD
-         l3rGyZVCGdMzBbxJtA+HPVmnOwAFxY3028Hg4BFYcKdqI/NKuZMEE6zrdkFJz1B63znY
-         OxmQ==
-X-Gm-Message-State: AOAM533HjRtYLG85al5YLX6MwoDmUY30Lfl8w/r3Puofa++qZmOmsvf9
-        +rXVsPEaal95WalVaoUQ+KQmIQ==
-X-Google-Smtp-Source: ABdhPJzXquuTdstXVSZvIV0M6MqLZDQyiQjbvZJVMnoSimk+WNvLh/HqKlBXlRLoKggQChsXsNnzHg==
-X-Received: by 2002:a17:902:8d8c:b0:13d:be20:e279 with SMTP id v12-20020a1709028d8c00b0013dbe20e279mr36053185plo.5.1634135681790;
-        Wed, 13 Oct 2021 07:34:41 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id d60sm6114241pjk.49.2021.10.13.07.34.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 07:34:41 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 14:34:37 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 26/45] KVM: SVM: Mark the private vma unmerable
- for SEV-SNP guests
-Message-ID: <YWbufTl2CKwJ2uzw@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-27-brijesh.singh@amd.com>
- <YWXYIWuK2T8Kejng@google.com>
- <2a8bf18e-1413-f884-15c4-0927f34ee3b9@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2a8bf18e-1413-f884-15c4-0927f34ee3b9@amd.com>
+        Wed, 13 Oct 2021 10:37:18 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19DCFwQg024558;
+        Wed, 13 Oct 2021 10:35:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=QGlHDHPVRiAwMf25YnI3tDKg0d58JIxd71RdPlTkpvc=;
+ b=HmJYM+cPlGWI+72Y86hNlUhoBhEQCw7jeh55kdHsS7Tq4gmnmhOrAsa+KAeOb66gP1ok
+ O6+aVjH302Vck6Eb4L9kx5ikAhPWdkyXi991ub5buHTk0P3zJY3pT2nhZZ3c9CuXIANA
+ MrbQvPuYXtcyrIT6Dw2sT7A4Q67ZJ5B3xX5WW7uJvHpGvhy8BUGdOgT1KBuHuhNcJRq5
+ mG7HGlAmoocdLbJWYlvE10/ZqmCQhY6nAm2qezDSRmvHS1EDWNQ46NxUi4J0Ks4yxQdJ
+ hvNWSwae5l+Jeys9+N5hs5xJtzAo48A2GAc/rElm2HkfTdGTOXAwgH4VOyCOYvhrJKQQ kw== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bnpw7660u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 10:35:11 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19DETd57000629;
+        Wed, 13 Oct 2021 14:35:08 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 3bk2qa1cjq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 14:35:08 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19DEYuxZ64553380
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Oct 2021 14:34:56 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A3161AE061;
+        Wed, 13 Oct 2021 14:34:56 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45ACDAE045;
+        Wed, 13 Oct 2021 14:34:52 +0000 (GMT)
+Received: from sig-9-65-208-89.ibm.com (unknown [9.65.208.89])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 13 Oct 2021 14:34:51 +0000 (GMT)
+Message-ID: <922a8f6f8cc85b04be574c4dcb5430559af67618.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/2] ima: define ima_trusted_for hook
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Date:   Wed, 13 Oct 2021 10:34:49 -0400
+In-Reply-To: <20211013110113.13239-1-zohar@linux.ibm.com>
+References: <20211013110113.13239-1-zohar@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: XjItlPWt1DCCexpaDCejeb0Bf7mXrTnD
+X-Proofpoint-GUID: XjItlPWt1DCCexpaDCejeb0Bf7mXrTnD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-13_05,2021-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=631 clxscore=1015 phishscore=0 suspectscore=0
+ bulkscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110130098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021, Brijesh Singh wrote:
+On Wed, 2021-10-13 at 07:01 -0400, Mimi Zohar wrote:
+> A major interpreter integrity gap exists which allows files read by
+> the interpreter to be executed without measuring the file or verifying
+> the file's signature.
 > 
-> On 10/12/21 11:46 AM, Sean Christopherson wrote:
-> > On Fri, Aug 20, 2021, Brijesh Singh wrote:
-> >> When SEV-SNP is enabled, the guest private pages are added in the RMP
-> >> table; while adding the pages, the rmp_make_private() unmaps the pages
-> >> from the direct map. If KSM attempts to access those unmapped pages then
-> >> it will trigger #PF (page-not-present).
-> >>
-> >> Encrypted guest pages cannot be shared between the process, so an
-> >> userspace should not mark the region mergeable but to be safe, mark the
-> >> process vma unmerable before adding the pages in the RMP table.
-> > To be safe from what?  Does the !PRESENT #PF crash the kernel?
+> The kernel has no knowledge about the file being read by the interpreter.
+> Only the interpreter knows the context(eg. data, execute) and must be
+> trusted to provide that information accurately.
 > 
-> Yes, kernel crashes when KSM attempts to access to an unmaped pfn.
+> To close this integrity gap, define an ima_trusted_for hook to allow
+> IMA to measure the file and verify the file's signature based on policy.
+> 
+> Sample policy rules:
+> 	measure func=TRUSTED_FOR_CHECK
+> 	appraise func=TRUSTED_FOR_CHECK
 
-Is this problem unique to nuking the direct map (patch 05), or would it also be
-a problem (in the form of an RMP violation) if the direct map were demoted to 4k
-pages?
- 
-> [...]
-> >> +	mmap_write_lock(kvm->mm);
-> >> +	ret = snp_mark_unmergable(kvm, params.uaddr, params.len);
-> >> +	mmap_write_unlock(kvm->mm);
-> > This does not, and practically speaking cannot, work.  There are multiple TOCTOU
-> > bugs, here and in __snp_handle_page_state_change().  Userspace can madvise() the
-> > range at any later point, munmap()/mmap() the entire range, mess with the memslots
-> > in the PSC case, and so on and so forth.  Relying on MADV_UNMERGEABLE for functional
-> > correctness simply cannot work in KVM, barring mmu_notifier and a big pile of code.
+To require file signatures, the policy rule should be:
+	appraise func=TRUSTED_FOR_CHECK appraise_type=imasig
 > 
-> AFAICT, ksm does not exclude the unmapped pfn from its scan list. We
-> need to tell ksm somehow to exclude the unmapped pfn from its scan list.
-> I understand that if userspace is messing with us, we have an issue, but
-> it's a userspace bug ;) To fix it right, we need to enhance ksm to
-> exclude the pfn when it is getting unmapped from the direct map. I
-> believe that work can be done outside of the SNP series. I am okay to
-> drop snp_mark_unmerable(), and until then, we just run with KSM
-> disabled. Thoughts?
-> 
-> thanks
+> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+
