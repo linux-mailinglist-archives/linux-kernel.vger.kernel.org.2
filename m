@@ -2,174 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8F742BFEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C817942BFFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbhJMM2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232366AbhJMM2u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:28:50 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68037C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:26:47 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id e12so7801104wra.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JYtAK9JsU8NvsfUzIORFj1zJZ80/FDtM2MJGuqYB5Gs=;
-        b=husI3LlK08X5sKhBbabI5pB4IpPI+u7fc1CKTqglmgCM4ZVgvL3Kz74/kgOmH7pl97
-         F1ex9/w0+MtoIyhBMLK5syu7pz2OqPjqT9/mYWQJJyZbCvTB9fwY2fVWDoaQJvUfH7Yg
-         dNtOYdE/7dwoJ9EHvRlfGZKiyjXso40rtlhJtJYHSLNC4lFuhdUJZhK3vZLF4elFQUss
-         P25udwEIqPpLP/l5DHcmfLJQYtmx6QnX/FHFqxPA6cRXm9iERHV8OsET7IuqiBUV/jRt
-         qlD31/3ysKuvN1+LBW7/EblGsFMYNDR6TLSVHHHnKCgV4ZczCRwvMDg/vV2C6UdYjqdY
-         h0pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JYtAK9JsU8NvsfUzIORFj1zJZ80/FDtM2MJGuqYB5Gs=;
-        b=nWLwq7/B5u6AugGAtxmW9JsKj4mnR5RDkahno/oZ4Yo5qtghfLCvB1sBmtY55RPddh
-         IN5ElympiOouv66S2j/k1Cb0Z4eTXLeWtxvy1j+b2uKFWHCzVR4hOrcKLTO+i43LuuML
-         FlRr9nMlM9xhT/IwY0iF9k6FCr//KENYnxxQBRoSkckokAM/NzKSexAAhYlvdeBQ0R8o
-         rIYh5A9ChwApsmtg1ThHgLCh9S9oVPZE+Ni4MFIb7Xtxz9+yg9kWIuahCpiCxnhIK+WL
-         MqhbUX2aSqJ35BuN6hvmPnfjrLRzoimowqrkxZpHVOtO4su2s3ZqmugWyNywuNdceVvf
-         9BzA==
-X-Gm-Message-State: AOAM530Pg5nNaE707JYLhHrvQzQSWDqITZh7vnAZVhmupHS1F1wV8XoM
-        xj8+1oRSMYKjQ7b4KxrM0X/bu/CY2rM8VFrkGAkTXg==
-X-Google-Smtp-Source: ABdhPJy5ywX7TM9Mqw9cGWWYTS8Ma5+SQ2Q0j7ikuyatRNUe4IuK6xzO47WwQHlwYNjICAgwGmKehD8gD7KwIdjvSWQ=
-X-Received: by 2002:adf:9bce:: with SMTP id e14mr39433777wrc.353.1634128005905;
- Wed, 13 Oct 2021 05:26:45 -0700 (PDT)
+        id S233422AbhJMMbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:31:12 -0400
+Received: from mail-eopbgr130081.outbound.protection.outlook.com ([40.107.13.81]:34500
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233368AbhJMMbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 08:31:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jEog+YjDElGAzTFs0//1TNL60mJvwviEvnMXA4slaBh1FUu90/2tgvYqyg9J15FHe11ViPs6Be48CnEK4Mw7BxqAEvjwh9+8Gj4/qadChDIUYIeU0erH2HHJtfiaeBirlhbc6SWb2IFgcPeji8kAQgLSLaeh3bzmSIO03AZ/Wv1YD/vLrVS0QfC1MUTOBkBWNy3vLJCwtiQi/0pygY7Y1D1PMYjzRYteivLQhYcznD0CBoM8rnf9XrrkCaq9pTU5TBW6E6azzO6uXGqQ6gTvaKSWpmJpp6NOI/JdZon2dQOGV8g4TNqgXkPHxCQAkzWLnHSdl4NWbRCAOX3qPRmbvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FbUTW+Txltp/cb/9tBvfra3CthFdNhyBuRTj7I0ShKA=;
+ b=bPGt034DkkXLdjg5kKaH78y6ECxZgHskPEH3NgwEZk3DcxJ9XMMWPu80IylU+y9PDInl1sRmQZqdUHyxynuH6Ow6jNmaJI3OKd+xXCaybqjtDY27qkeAFEFENL8TAepLGiXyMXPNN/lf2YaJ4k8uxmnGyorc/DLiPB1KPGuby6Svn/dMy7Xf2+nqDa1uH+OxnrZvp0izO3xNEq1ZmEf16Qor+hXD8wujlWYq5PwXSYlRisnyVyGaBUsjw25eQN4P3PsiWTX+9G7YXrWaTb4nJ4tkSwuTxvgTwPdGNag4t9NxmE4V1smCFmd5ooPTJuGbRcZIZED0EbcYz4+ktU3Wig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=permerror (sender ip
+ is 151.1.184.193) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=asem.it;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=asem.it;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FbUTW+Txltp/cb/9tBvfra3CthFdNhyBuRTj7I0ShKA=;
+ b=cHj6h+Z1YbdIqwPePLQS/qYnV1LKWcYDz910ihoKgIuusvfVytpkSeD4TTdY+FAJz9/LQgQpVxDST19Q0hZhyCgEMJzmjcRVN7UJ/TqnGl7Y0wirWDHuyghlOdCy6Jauco+nV0MjkJC2e/R2kuJZktp7arZUx02gUNXgZIBhM6o=
+Received: from SV0P279CA0071.NORP279.PROD.OUTLOOK.COM (2603:10a6:f10:14::22)
+ by AM0PR0102MB3570.eurprd01.prod.exchangelabs.com (2603:10a6:208:10::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Wed, 13 Oct
+ 2021 12:29:05 +0000
+Received: from HE1EUR01FT060.eop-EUR01.prod.protection.outlook.com
+ (2603:10a6:f10:14:cafe::1b) by SV0P279CA0071.outlook.office365.com
+ (2603:10a6:f10:14::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14 via Frontend
+ Transport; Wed, 13 Oct 2021 12:29:05 +0000
+X-MS-Exchange-Authentication-Results: spf=permerror (sender IP is
+ 151.1.184.193) smtp.mailfrom=asem.it; vger.kernel.org; dkim=none (message not
+ signed) header.d=none;vger.kernel.org; dmarc=fail action=none
+ header.from=asem.it;
+Received-SPF: PermError (protection.outlook.com: domain of asem.it used an
+ invalid SPF mechanism)
+Received: from asas054.asem.intra (151.1.184.193) by
+ HE1EUR01FT060.mail.protection.outlook.com (10.152.0.249) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4587.18 via Frontend Transport; Wed, 13 Oct 2021 12:29:04 +0000
+Received: from flavio-x.asem.intra ([172.16.17.208]) by asas054.asem.intra with Microsoft SMTPSVC(10.0.14393.0);
+         Wed, 13 Oct 2021 14:28:15 +0200
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Rajat Jain <rajatja@google.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH v2] usb: core: hub: improve port over-current alert msg
+Date:   Wed, 13 Oct 2021 14:27:15 +0200
+Message-Id: <20211013122715.883365-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211012073116.4156054-1-sumit.garg@linaro.org>
- <CAHUa44HW=7GhvWSd7LwG3wc+47bQWHHiFq+qA-8qMnDV1C0yBQ@mail.gmail.com> <CAFA6WYMcKLPj-ZHSBHPeg4TPmzutf-7VTffMyMbv+7ax+uJf1w@mail.gmail.com>
-In-Reply-To: <CAFA6WYMcKLPj-ZHSBHPeg4TPmzutf-7VTffMyMbv+7ax+uJf1w@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Wed, 13 Oct 2021 14:26:35 +0200
-Message-ID: <CAHUa44FO1WWpDEad=+C-OEQa1yLktChFkXgrTz5==NvYD4uTVA@mail.gmail.com>
-Subject: Re: [PATCH] tee: optee: Fix missing devices unregister during optee_remove
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Jerome Forissier <jerome@forissier.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-OriginalArrivalTime: 13 Oct 2021 12:28:15.0131 (UTC) FILETIME=[CB8596B0:01D7C02D]
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 20ba3840-aa14-4be5-45f7-08d98e450bb3
+X-MS-TrafficTypeDiagnostic: AM0PR0102MB3570:
+X-Microsoft-Antispam-PRVS: <AM0PR0102MB3570EAF7C4B7DB71A9B972FFF9B79@AM0PR0102MB3570.eurprd01.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7Zf7xP7MFr1zTKC9wRyNPfxOCFR7Ah4IwyMzDh7P9XljFyu9qzOJT2jnPHrgsgZoWIa8x7iCyBjnjoOW4PXxNJaPvFbXKKKyyaAMeCJuy2k8mYX81lCyyV/EzSib7meWrs8WY8CAsvCnfgh0Adv2Wj/8VDgvWdpbg1uQvM7KVUy9/ttYCF9RhLBKeq+uR+OSXE3hPpYSq2e3U3u5jMivU/vnDIFI0uEOeYu+J9WSCML6oFDG5RttUUOujBVByw7ZicETO66a6uVSH78st0ikvGKb9EYkGyl/7t2lj3XRLkOjsZQRCOJwUT5Wh9lGKmvmbe0MG0dmAO61RHlzti+2xB9mx51E3xpEFrdOAyW5uZ1gVwCvQ1Er809wbjVVx6ihxhfkh94o4ljvlZB/t8bPBPNIgtGWJQAzL1BjlsjWWPKn3yf3CGAYSVvff2YzFpekJZvKhLFZxP/oA7vwH3VO4UaRR7HLZmTAjZNIQC7732Rj5VPt90OD5SwnpI6JGmULX/n5LfpIKKT2Vc5Q7avAQKfP27lrZswNRrawJJbbdv4AlUMJUKLg8ixudnXunuvUhJUDhFQ6FZuRIfEXRH7JwWjpqnW33V30ft5WuEeBRHkAfMJaicXLoyaU6EHYt6NZNDvfc581bhCK3hWc8g9VoXyx4XfS1WVdlPIV+4LTT1a8In4V9dtUaX/OeVoeSJ72Nq0hvKSTBt32c3cVJVh3KT4t71zvKGs05Kup5C2hYO8=
+X-Forefront-Antispam-Report: CIP:151.1.184.193;CTRY:IT;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:asas054.asem.intra;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(36840700001)(46966006)(86362001)(8936002)(450100002)(110136005)(82310400003)(186003)(70586007)(2616005)(47076005)(81166007)(316002)(5660300002)(83380400001)(15650500001)(36860700001)(70206006)(336012)(1076003)(508600001)(356005)(36756003)(4326008)(8676002)(107886003)(2906002)(26005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 12:29:04.8312
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20ba3840-aa14-4be5-45f7-08d98e450bb3
+X-MS-Exchange-CrossTenant-Id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d0a766c6-7992-4344-a4a2-a467a7bb1ed2;Ip=[151.1.184.193];Helo=[asas054.asem.intra]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR01FT060.eop-EUR01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0102MB3570
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 10:27 AM Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> Hi Jens,
->
-> On Tue, 12 Oct 2021 at 13:29, Jens Wiklander <jens.wiklander@linaro.org> wrote:
-> >
-> > Hi Sumit,
-> >
-> > On Tue, Oct 12, 2021 at 9:31 AM Sumit Garg <sumit.garg@linaro.org> wrote:
-> > >
-> > > When OP-TEE driver is built as a module, OP-TEE client devices
-> > > registered on TEE bus during probe should be unregistered during
-> > > optee_remove. So implement optee_unregister_devices() accordingly.
-> > >
-> > > Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
-> > > Reported-by: Sudeep Holla <sudeep.holla@arm.com>
-> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > ---
-> > >  drivers/tee/optee/core.c          |  3 +++
-> > >  drivers/tee/optee/device.c        | 22 ++++++++++++++++++++++
-> > >  drivers/tee/optee/optee_private.h |  1 +
-> > >  3 files changed, 26 insertions(+)
-> > >
-> > > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> > > index ccad3c7c8f6d..3915dc574503 100644
-> > > --- a/drivers/tee/optee/core.c
-> > > +++ b/drivers/tee/optee/core.c
-> > > @@ -586,6 +586,9 @@ static int optee_remove(struct platform_device *pdev)
-> > >  {
-> > >         struct optee *optee = platform_get_drvdata(pdev);
-> > >
-> > > +       /* Unregister OP-TEE specific client devices on TEE bus */
-> > > +       optee_unregister_devices();
-> > > +
-> > >         /*
-> > >          * Ask OP-TEE to free all cached shared memory objects to decrease
-> > >          * reference counters and also avoid wild pointers in secure world
-> > > diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-> > > index ec1d24693eba..128a2d2a50a1 100644
-> > > --- a/drivers/tee/optee/device.c
-> > > +++ b/drivers/tee/optee/device.c
-> > > @@ -53,6 +53,13 @@ static int get_devices(struct tee_context *ctx, u32 session,
-> > >         return 0;
-> > >  }
-> > >
-> > > +static void optee_release_device(struct device *dev)
-> > > +{
-> > > +       struct tee_client_device *optee_device = to_tee_client_device(dev);
-> > > +
-> > > +       kfree(optee_device);
-> > > +}
-> > > +
-> > >  static int optee_register_device(const uuid_t *device_uuid)
-> > >  {
-> > >         struct tee_client_device *optee_device = NULL;
-> > > @@ -63,6 +70,7 @@ static int optee_register_device(const uuid_t *device_uuid)
-> > >                 return -ENOMEM;
-> > >
-> > >         optee_device->dev.bus = &tee_bus_type;
-> > > +       optee_device->dev.release = optee_release_device;
-> > >         if (dev_set_name(&optee_device->dev, "optee-ta-%pUb", device_uuid)) {
-> > >                 kfree(optee_device);
-> > >                 return -ENOMEM;
-> > > @@ -154,3 +162,17 @@ int optee_enumerate_devices(u32 func)
-> > >  {
-> > >         return  __optee_enumerate_devices(func);
-> > >  }
-> > > +
-> > > +static int __optee_unregister_device(struct device *dev, void *data)
-> > > +{
-> > > +       if (!strncmp(dev_name(dev), "optee-ta", strlen("optee-ta")))
->
-> The issue you described below should be handled by this check as we
-> would register TAs with unique name corresponding to each OP-TEE
-> driver.
->
-> > > +               device_unregister(dev);
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +void optee_unregister_devices(void)
-> > > +{
-> > > +       bus_for_each_dev(&tee_bus_type, NULL, NULL,
-> > > +                        __optee_unregister_device);
-> >
-> > I had something like this in mind too, but there's one potential
-> > problem with this approach. What if there's more than one OP-TEE
-> > driver with TAs here? It seems that we'll remove TAs from other
-> > drivers too then.
->
-> We should be able to easily differentiate among TAs associated with
-> any of multiple OP-TEE drivers based on their unique device name.
->
-> >
-> > This is not likely to be a problem at upstream for the moment so I
-> > might be enough just to keep this in mind if/when the OP-TEE driver is
-> > extended in a way that there can be multiple OP-TEEs handled.
-> >
->
-> Given above comments, I think it should be easily handled.
+At the moment the port over-current message is displayed only if the
+over-current condition is permanent.
 
-OK, thanks. The patch looks good and it works when testing it on the
-upstream kernel and also with the FF-A patch set.
-I'm picking up this now.
+But in case of permanent short-circuit or over-current, some USB
+power-distribution switches (such as the TPS20xx, etc.), after the
+over-current detection and the consequent shutdown, return in the
+normal state.
 
-Cheers,
-Jens
+So, in these cases, the over-current error message never appears.
+
+To overcome this problem, the "over-current condition" message is
+displayed even after a series of some over-current events.
+
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+---
+ drivers/usb/core/hub.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index 86658a81d284..24ef09ad208b 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -50,6 +50,9 @@
+ #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
+ #define USB_PING_RESPONSE_TIME		400	/* ns */
+ 
++#define USB_OC_COOL_DOWN_TIME		100	/* ms */
++#define USB_OC_REPEATED_MSG_DELAY	2000	/* ms */
++
+ /* Protect struct usb_device->state and ->children members
+  * Note: Both are also protected by ->dev.sem, except that ->state can
+  * change to USB_STATE_NOTATTACHED even when the semaphore isn't held. */
+@@ -5565,6 +5568,11 @@ static void port_event(struct usb_hub *hub, int port1)
+ 		}
+ 	}
+ 
++	/*
++	 * The over-current events can be continuous or intermittent (sometimes
++	 * the event disappears after the cooling-down time); in both cases
++	 * display an error message.
++	 */
+ 	if (portchange & USB_PORT_STAT_C_OVERCURRENT) {
+ 		u16 status = 0, unused;
+ 		port_dev->over_current_count++;
+@@ -5574,10 +5582,12 @@ static void port_event(struct usb_hub *hub, int port1)
+ 			port_dev->over_current_count);
+ 		usb_clear_port_feature(hdev, port1,
+ 				USB_PORT_FEAT_C_OVER_CURRENT);
+-		msleep(100);	/* Cool down */
++		msleep(USB_OC_COOL_DOWN_TIME); /* Cool down */
+ 		hub_power_on(hub, true);
+ 		hub_port_status(hub, port1, &status, &unused);
+-		if (status & USB_PORT_STAT_OVERCURRENT)
++		if ((status & USB_PORT_STAT_OVERCURRENT) ||
++		    !(port_dev->over_current_count %
++		      (USB_OC_REPEATED_MSG_DELAY / USB_OC_COOL_DOWN_TIME)))
+ 			dev_err(&port_dev->dev, "over-current condition\n");
+ 	}
+ 
+-- 
+2.25.1
+
