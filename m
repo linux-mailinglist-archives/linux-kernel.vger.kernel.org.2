@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E5C42C084
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6287D42C08C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbhJMMtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:49:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53485 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232772AbhJMMtJ (ORCPT
+        id S233102AbhJMMvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:51:42 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:56301 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231294AbhJMMvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:49:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634129226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wp+/d0F+qzlGdrrSoGXSKcXwbRm7uRB50CWJ1pV00sA=;
-        b=QTfNvJnvYCHpzqE66sRusuz1zu12vlFMJtnztwxJHUwYBkzKknvA73NKrPHeLAR6PxCJTg
-        2fxmvvWIR5fhtgBlTzAE95BoM6uDoBfkrPptCOyftCexUSTcji9m2zSfP/5ina8dZ921fx
-        r/UCLKppOJOSg2SEdosYUbsOHpEX+W0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-398-ZdFkUILBMeWVCeZNhw2YPg-1; Wed, 13 Oct 2021 08:47:05 -0400
-X-MC-Unique: ZdFkUILBMeWVCeZNhw2YPg-1
-Received: by mail-wr1-f71.google.com with SMTP id r21-20020adfa155000000b001608162e16dso1863593wrr.15
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:47:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wp+/d0F+qzlGdrrSoGXSKcXwbRm7uRB50CWJ1pV00sA=;
-        b=urjxiPDCg1EnfF29M7A7l5l0CDsRCbqvhbBVIUa7XmgxhOsvpcsCMR4Gk1xjcZTUeO
-         sfEs+/nesAeQg3pzYCtWVcYatOsKs80/zyVa3X0fEQ0eLDk2PHf7ITkyhu1eDw0Dq+Mg
-         MlD7VzrD+3zmL6ikZy0t+GRnOfVdM1BXTxLCXOzafHt5uIyCYk1aPz9zSavJUpg0tg8t
-         p6zLKg+oa+WmNRw2HWG7+P8AYWVGGNQhv6MPqIH8MA4geOAdz+D2b7y4yhFqr8ybfCqp
-         qOnIK235JGOYdBc7jFb76yzX7ZMmfIi4+nX0qJ5Ys7CdT0dJYf95LPnQI7XsRfkyrALu
-         niXw==
-X-Gm-Message-State: AOAM530AcdCSjMDkioh4vb5q1vuIQ97SQAa9fwmxw+Y1Yz7oR/p32EwQ
-        c9DQ4FZ34zoKDGGAKldiLAos7QeAjT3msYpw2Zm3SIpKq6N/1HY+KehOPqrz9rfLmrarg5D6VIl
-        Q+maw8FtXEc54GdSoFNo29XND
-X-Received: by 2002:a7b:c258:: with SMTP id b24mr12306404wmj.160.1634129224183;
-        Wed, 13 Oct 2021 05:47:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw3bu0Nu2sTQ0+QNSDdqXyjCUIauFl76JolUN+8aoRczJi/YTb07iDFPZNwrmi/5HPNNvtB6A==
-X-Received: by 2002:a7b:c258:: with SMTP id b24mr12306384wmj.160.1634129223978;
-        Wed, 13 Oct 2021 05:47:03 -0700 (PDT)
-Received: from redhat.com ([2.55.30.112])
-        by smtp.gmail.com with ESMTPSA id b190sm5299164wmd.25.2021.10.13.05.47.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 05:47:03 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 08:46:59 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        markver@us.ibm.com, Cornelia Huck <cohuck@redhat.com>,
-        linux-s390@vger.kernel.org, stefanha@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        qemu-devel@nongnu.org
-Subject: Re: [PATCH v3 1/1] virtio: write back F_VERSION_1 before validate
-Message-ID: <20211013084640-mutt-send-email-mst@kernel.org>
-References: <20211011053921.1198936-1-pasic@linux.ibm.com>
- <20211013060923-mutt-send-email-mst@kernel.org>
- <96561e29-e0d6-9a4d-3657-999bad59914e@de.ibm.com>
- <20211013081836-mutt-send-email-mst@kernel.org>
- <20211013144408.2812d9bd.pasic@linux.ibm.com>
+        Wed, 13 Oct 2021 08:51:41 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 864845C01FE;
+        Wed, 13 Oct 2021 08:49:37 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 13 Oct 2021 08:49:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
+        Nezv3xX9C+NZ3LE8aAUySU2l+Ulj3A/5fhcFrlbpAkA=; b=IQlOZL6hhDVF+Sfj
+        b5SD7OxXBACGfPkmchisG25DHwxpjtbisDRlLJlUm8m69Vu7oAliOLmgMApubyAJ
+        gUyoF3nIVZVfRDgjizoA7VKzWJOEwus06uaUNlBTSTHmO5cbK6yE5O0fnBwgUPB5
+        XC2N+NMhKcYDmIjze9dXXD+YfyNAe7ZhaIUFBygcCm6V6QlhnLVYe9oxleoYfosZ
+        GeQtzN4rfAWGCGYrINC0vH+0sdZsGIlTbEXgFefuXj+jdU5NPjmecJuY7p6wfZTm
+        dqy2skZkRxPYAITD3r4szmS7/aybY92Bat6oXda+T3W7vSt+naBgcOmWSs94IkMq
+        sA2a5g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=Nezv3xX9C+NZ3LE8aAUySU2l+Ulj3A/5fhcFrlbpA
+        kA=; b=SW7QpByU2qd7Y+kokRmuk8uyTjRhevFld6UF/vcxtI4ml/5M95wBW6rSJ
+        PDHh+OOH2mcMwO/Osnqd0N4UxlMb3Zpif8on9FGsUn7yzMFUKj0i4rP02ftgxZ7I
+        wxfWmcith79pZa7HBRfJ3ZSEXc5nQjfzsC5Fo0KKEHarfFyJYspwo7facUjLg2Ln
+        20WRghoRfzgX+pQDpFZNzMxiiigh7i66h92rT52G1YmH4c2dz9sTfBZrcty9rtLU
+        0b74Z9KH/RFWBNcQgzJtijhx1SZ5qPbeDRBrf47fEh7b+j8hNZtCpGXZz2xIhnAj
+        xvVvA0AKkQEIUPXTtiqjac7kQ76PA==
+X-ME-Sender: <xms:4NVmYf70s91LlOf0NTVzdG27gPJskaNC0XRZQlkGjLTakoUuSMSBzw>
+    <xme:4NVmYU6g2XkvKA6LzSb-Tb1lEsBte_GyahvbkQxE1CpjI26kd5nC5LHwZjWXbfs_j
+    22CBYCNPlZEo3F_7Jo>
+X-ME-Received: <xmr:4NVmYWet98qPYshPq0vUzPb9Cpwy0tr_gKT_3VDxfI67-SlOWXRmj2HTNmIYZVv42oPv7Kj3GUZKdx41k4Vll7lSm_PthdAHIiG7z-TZ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddutddgheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfgggtgfesthekredtredtjeenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeejuefggeekfffgueevtddvudffhfejffejjedvvdduudethefhfefhfeeg
+    ieekkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:4NVmYQLLFmPd0BZaG7KqQ-yQeo0cjh0bDT_crWesPnQ-kfJL-WRvNg>
+    <xmx:4NVmYTIANMlVT6A11gQcLVZ_hgTQ95rRqET2qTWbu9dRImYJpWl6Ww>
+    <xmx:4NVmYZydT269C8DTez7242PBkk1m0FzqlBZMi366htxiJ5yuJmsTrA>
+    <xmx:4dVmYZjsVU5FsflMMV-sl9GL_1nh791MoAbm0vDGWW0cyLK_f5h2og>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 13 Oct 2021 08:49:36 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     mripard@kernel.org, wens@csie.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH] bus: sun50i-de2: Adjust printing error message
+Date:   Wed, 13 Oct 2021 14:49:28 +0200
+Message-Id: <163412936102.160436.18173629691350762862.b4-ty@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211010071812.145178-1-jernej.skrabec@gmail.com>
+References: <20211010071812.145178-1-jernej.skrabec@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013144408.2812d9bd.pasic@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 02:44:08PM +0200, Halil Pasic wrote:
-> On Wed, 13 Oct 2021 08:24:53 -0400
-> "Michael S. Tsirkin" <mst@redhat.com> wrote:
+On Sun, 10 Oct 2021 09:18:12 +0200, Jernej Skrabec wrote:
+> SRAM driver often returns -EPROBE_DEFER and thus this bus driver often
+> prints error message, even if it probes successfully later. This is
+> confusing for users and they often think that something is wrong.
 > 
-> > > > OK this looks good! How about a QEMU patch to make it spec compliant on
-> > > > BE?  
-> > > 
-> > > Who is going to do that? Halil? you? Conny?  
-> > 
-> > Halil said he'll do it... Right, Halil?
+> Use dev_err_probe() helper for printing error message. It handles
+> -EPROBE_DEFER automatically.
 > 
-> I can do it but not right away. Maybe in a couple of weeks. I have some
-> other bugs to hunt down, before proceeding to this. If somebody else
-> wants to do it, I'm fine with that as well.
-> 
-> Regards,
-> Halil
+> [...]
 
-Couple of weeks is ok I think.
+Applied to local tree (sunxi/drivers-for-5.16).
 
--- 
-MST
-
+Thanks!
+Maxime
