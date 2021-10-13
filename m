@@ -2,89 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B04842BAC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C2142BAC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238550AbhJMIsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
+        id S229902AbhJMItI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232634AbhJMIsN (ORCPT
+        with ESMTP id S232692AbhJMItH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:48:13 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F79C061570;
-        Wed, 13 Oct 2021 01:46:10 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id v17so5647174wrv.9;
-        Wed, 13 Oct 2021 01:46:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=0VFk+51xpem3lCydw/SgtpoptzvnLBUdv9gVbfKWlsk=;
-        b=YakdbvDfmfTCQIawnG+GvuHAgeNp9iJjT37y8gV9UfBA70dnb76Ni6Rx4lt7dHYx2E
-         4iU4s4rZ8mP80TXfSpvSutWrATUzX/gBK8e39lryQHOpXRte0YSyDwm4KngCAssMz20O
-         wuohbQFSoSJH0cCVFQcERAiTnhFkJxhPc5bAMLeTRqncX+r5woDE6tvrVmeG87rM254z
-         UJWxWsEuol6jQ2OTG5qZbrZSD03CF8fk9zS1dA72OXMn7V/ETr/eY3EYSAUiBca+d31Y
-         8Utfbu9mq0GgLebvlpscoijg+2Ph9ayOwO28r8ltfx5nLpFzwUTt9ArTpK1hJe3syseN
-         xqcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=0VFk+51xpem3lCydw/SgtpoptzvnLBUdv9gVbfKWlsk=;
-        b=yvs9FD+B56qhJ6LW2gxVIxCf3yxa+5qVUcbCn1jvM1/azM14F0AKYrtm1an4E8QBaw
-         QQbYspkgIVm+5HJ84jiTTNVzwuR8/CdwmQnHzlQF8DbWF39FPF1vMSDy1movHdKiL/h8
-         kAlu1+5ozaIZJ39/Wqa4v35g0GZ9vtVSwdt/qhvqBtqHeDz6WapmzfDko0x7Yfl1VL83
-         2hEPo/43bK+e7gr5eNgWV5zZHlb223ftSRs5GBr6y64h9aoduwdNg2Hu37ClNIH9Y5pK
-         xbcFLu3vTsARnuzGiTNG1WeKe6i5p/Q5Ua3VDlJ4a8E9qpZOsJpMM+JXpxdlKE/CQUIN
-         HDvQ==
-X-Gm-Message-State: AOAM53266hKufuABhBSFDquP85k0X+xdr+pBEfYL43gt2ixhIXP5FG0k
-        qlZDYHJbR3VlIBNeGKlV5is9PYRVfPE=
-X-Google-Smtp-Source: ABdhPJz80981iNu6IqqdZZObheAZBa5PEI4JGMetk0qMIF11oyltoWcBD1w7pgNLsu9gGf9sQtZ+iA==
-X-Received: by 2002:adf:9c02:: with SMTP id f2mr38714628wrc.329.1634114769354;
-        Wed, 13 Oct 2021 01:46:09 -0700 (PDT)
-Received: from [192.168.8.197] ([185.69.145.208])
-        by smtp.gmail.com with ESMTPSA id t18sm13047322wrm.81.2021.10.13.01.46.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 01:46:09 -0700 (PDT)
-Message-ID: <85028200-1dc4-c012-8f84-9ef582cb66e6@gmail.com>
-Date:   Wed, 13 Oct 2021 09:45:29 +0100
+        Wed, 13 Oct 2021 04:49:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E7CC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 01:47:04 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1maZtW-0006Qy-0W; Wed, 13 Oct 2021 10:45:50 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1maZtK-0005Ho-C7; Wed, 13 Oct 2021 10:45:38 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1maZtK-0006xh-90; Wed, 13 Oct 2021 10:45:38 +0200
+Date:   Wed, 13 Oct 2021 10:45:38 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Jens Axboe <axboe@kernel.dk>, ben.widawsky@intel.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-ia64@vger.kernel.org,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH AUTOSEL 5.10 11/11] firmware: include
+ drivers/firmware/Kconfig unconditionally
+Message-ID: <20211013084538.vitv6u5ahds7arpw@pengutronix.de>
+References: <20211013005532.700190-1-sashal@kernel.org>
+ <20211013005532.700190-11-sashal@kernel.org>
+ <YWZ1om+pLmV3atTd@kroah.com>
+ <CAK8P3a2AC9-ogoxi1q+NQyBqMwrFqSZtHvZVdJ9HF+OLB3O62g@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 1/6] block: cache bdev in struct file for raw bdev IO
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1633781740.git.asml.silence@gmail.com>
- <cfc66d9946422fa1778504f976621c91be2befb5.1633781740.git.asml.silence@gmail.com>
- <0785c707-ba82-1e46-5d4d-63ccacdb471f@kernel.dk>
- <YWP1O+oZmsovShoR@infradead.org>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <YWP1O+oZmsovShoR@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gkwcmkxhwgtfgtae"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2AC9-ogoxi1q+NQyBqMwrFqSZtHvZVdJ9HF+OLB3O62g@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/21 09:26, Christoph Hellwig wrote:
-> On Sat, Oct 09, 2021 at 10:33:17AM -0600, Jens Axboe wrote:
->>> +static inline struct block_device *blkdev_get_bdev(struct file *file)
->>> +{
->>> +	return file->private_data;
->>> +}
->>
->> Get rid of this and just use bdev = file->private_data where
->> appropriate. Easier to read, we don't need to hide this in a function.
-> 
-> 100% agreed.
 
-The reasoning is as always, it's much easier to change if we change
-what we store there. I don't agree, but don't care enough to stay
-on the point, will resend with the change
+--gkwcmkxhwgtfgtae
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Pavel Begunkov
+On Wed, Oct 13, 2021 at 10:38:01AM +0200, Arnd Bergmann wrote:
+> On Wed, Oct 13, 2021 at 7:58 AM Greg KH <gregkh@linuxfoundation.org> wrot=
+e:
+> > On Tue, Oct 12, 2021 at 08:55:31PM -0400, Sasha Levin wrote:
+> >
+> > This isn't for stable kernels, it should be dropped from all of your
+> > AUTOSEL queues.
+>=20
+> Agreed. The second patch that depends on this does fix a (randconfig)
+> build issue in stable kernels as well, but that patch is currently broken,
+
+Fixing randconfig issues isn't important for stable, is it? The target
+audience for 5.10.74 are people running a kernel between 5.10 and
+5.10.73, and those don't suffer from this type of build problem, right?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--gkwcmkxhwgtfgtae
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFmnK8ACgkQwfwUeK3K
+7And8Af+K7OLJ/QFBmWZbDMcrq5QGKfPWOm0ntnqP00EF6M9WuzDhXwYSRnkxrUL
+gB8rnQzNTAremhUgxxWWYf1b+jcy9McUcKiFrZFcFzI+Msu/lFoJs954A1A/LIwC
+gv2Yr2yfkJwro0nmnPonuaG6aBdO7hhuGbPcksgfQ822GDrckbS3WluAZcC3/j0O
+DzTBgBmlZEv7CdvM/DJbfxqV01oRg3C3zcn3tFY7c+3PUJs2oumNQRW6zfvUW1Bx
+NrWKG1K6REFzfJ1RJO8BBaK2qT7oEDecgCOrpsXClHm+08bxJ06CbZ3pcA2Qd9Kt
+40Yg+5KjHWr8vqioHLbH+w7bwi4d1w==
+=e2xG
+-----END PGP SIGNATURE-----
+
+--gkwcmkxhwgtfgtae--
