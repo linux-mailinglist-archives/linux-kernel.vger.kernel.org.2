@@ -2,192 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE6242BE97
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F8A42BEC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhJMLF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 07:05:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25431 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229757AbhJMLF4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:05:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634123032;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pm2HFBolkPmIutQKtnGVo/TAfScR5edRGy4d25/SdeA=;
-        b=KD+D5y+PkswhupKI4VOQaOnKEuL0aMqNbVXb4jdTD/yk8hDkQZlx+7FHmnoJ+lbV37WTzE
-        xEQc2FfXE1X0Q4auQ9u3G4Ba2FfjdP8q0Z5E22PxfYNzjaF8ppbeZkvzCaDBUfyJhJGVZH
-        yfr9txkvaxa/rd4zUSbTP5m+ZyV9MCw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-mqznm_CrMZ2P3LVa4udZhw-1; Wed, 13 Oct 2021 07:03:51 -0400
-X-MC-Unique: mqznm_CrMZ2P3LVa4udZhw-1
-Received: by mail-wr1-f72.google.com with SMTP id r16-20020adfbb10000000b00160958ed8acso1650653wrg.16
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 04:03:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=pm2HFBolkPmIutQKtnGVo/TAfScR5edRGy4d25/SdeA=;
-        b=lZkTOeiTX0OtNIsxBsvrYpvPUb5tau0MSmHnLDCL7Izoow7PcTpS1GyxaZW/uWL5Ms
-         VxG8Kk1SocCnf9EFz16RGbI0GayzgExePrBJWKUYbzmIbkB3P1BD+K5Vfm1GygaNO7Jm
-         kPhpPvF+0bZaNM8gm8P1Hzs9DQIqnzPsmx5OHsY6VZj4m0n8kUZdh3vtSL81vqj2a7IX
-         Sx0S+fQJDaSNYdJLNENRb3u67nyb1SIwvzbZp9oH8V9FGTYtceMX9OOuMqE4WLPBK7kc
-         8YkQBVj5YJG5MH++doSQVmFGMsRf0ld8U1x6SeDTIrdjwuYixBR0rNenKNlY3HRdRgq/
-         9i0A==
-X-Gm-Message-State: AOAM530tFpLB03g8MS7qSAPn4WAWMnprxQPa0NWPrWe42i+Y6EG/2vCT
-        o7fpgq6rTp6YRQ2onxAwEOu8aHo4PiqR4/RWjUvO/DqAnXUz9MscW/SVs8LGu2tzF0eWorecnej
-        +s09Oz2biAAXIdgob4GUqqa+5
-X-Received: by 2002:adf:a194:: with SMTP id u20mr39899241wru.275.1634123030417;
-        Wed, 13 Oct 2021 04:03:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypxsxhU5d6LZPZIfUUDegUVRR2UQLEo64TMqEnAh5Ix5FGAFA1VDGCfrTQu99KLNCm64Sq/Q==
-X-Received: by 2002:adf:a194:: with SMTP id u20mr39899137wru.275.1634123030054;
-        Wed, 13 Oct 2021 04:03:50 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6774.dip0.t-ipconnect.de. [91.12.103.116])
-        by smtp.gmail.com with ESMTPSA id m4sm5183560wrz.45.2021.10.13.04.03.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 04:03:49 -0700 (PDT)
-Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
-To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gonglei <arei.gonglei@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Jie Deng <jie.deng@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-um@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-i2c@vger.kernel.org, iommu@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, kvm@vger.kernel.org,
-        alsa-devel@alsa-project.org
-References: <20211013105226.20225-1-mst@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <2060bd96-5884-a1b5-9f29-7fe670dc088d@redhat.com>
-Date:   Wed, 13 Oct 2021 13:03:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231827AbhJMLP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 07:15:57 -0400
+Received: from mout.gmx.net ([212.227.17.20]:37519 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229750AbhJMLPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 07:15:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634123318;
+        bh=DvCFP7mGlO1RR++LFi/30Dh5LlgcAdLHxDufTPhSYGY=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=k22y/QpYcjQsmDrUImobjEtvx4vGbeHo8uBpLicRBvfmuDVPvbbHQRbxUOmwpERkP
+         yGC10bSpckapggSPL87UaSKL3UERrW4htiCsIv2UnRs2g3hFs9NIiOgYU/AqosgR+U
+         sSETtLecKsUKJx6Yk0wYouhAtFnECUt4Q7fpqtfw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5VD8-1mpKgB36b4-016zQw; Wed, 13
+ Oct 2021 13:08:38 +0200
+Message-ID: <21e6d12b-66e7-f62a-ed5a-85545b67240e@gmx.com>
+Date:   Wed, 13 Oct 2021 19:08:32 +0800
 MIME-Version: 1.0
-In-Reply-To: <20211013105226.20225-1-mst@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH] btrfs: replace snprintf in show functions with sysfs_emit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        Anand Jain <anand.jain@oracle.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1634095717-4480-1-git-send-email-wangqing@vivo.com>
+ <6f03e790-6f21-703f-c761-a034575f465e@oracle.com>
+ <20211013103642.GC9286@twin.jikos.cz>
+ <ADsAzABEEmLRWHzgUOl4Sqr5.9.1634122164687.Hmail.wangqing@vivo.com>
+ <SL2PR06MB3082B71AFE2C42CABDD5E6D6BDB79@SL2PR06MB3082.apcprd06.prod.outlook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <SL2PR06MB3082B71AFE2C42CABDD5E6D6BDB79@SL2PR06MB3082.apcprd06.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:hDBsCcL+tLSbf4UqfyT1cTsKG08lOZUe2f2oQRUUmbKisvlZogE
+ agZbhl+iyHmcrpeWwDSibUdipSOjxNrXDhnXxoE5jpgPQvTiK2fo28Wk4omNr80/TNmNcVM
+ ThvPyI5NpiSJ5Dbi7iFEuMNAQBA4/TICaSvoqD3Wm4NwShSH9FWioEaNvFGtKx+DHJpyDNc
+ kb201wMm0wiMzVBijVpFA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BX04yarxIoY=:TOl6rFpfFWbJe5PVyqFlQ9
+ ZGcdMvLSHCNWArfHRzEbUnMqNmdoHQQPEkVfNKYbLND4PZaonZiZirI8QnG2awohvf0CTNAyL
+ TRIOoisgPXWNzsbpHckjwVhFFGZQmAEqQA3+kjwaHYwTgm4oP4AGjvJq4vtVQyq5ALwvXkLr0
+ 5zFrPqXNpe6enNMv8ihewzkUs9aFG65BXUBYKst2TMFydfIl3zmrClcs/HjcvMa10jkMYn8Ld
+ gzG+BLmVR919MVPB51MJZJQcqag6qgJbVYCBeLUFK8PnzEwvZNyxrdSc0cbjOYPnZ3KCAZWYo
+ WVqErfo7mAZ8AckWu1PL2kiG3llvy0fDUpPyytWy+VxQnyMV7n1z95JXDi52zhPs4Ayw6h6J8
+ i82M/x2paeaqYZktgNbNLALiDQ9wvKRIR3RDwIieeBstJd8bZY5DnrU+H6ywuaxWa7uw+jJXx
+ +22agwzVJYgAA2Z16dEqUcg4+Qh1cIz+gsOeznyFSPbRqakt81HvcfRI1JlTLlePNuvPrH5gd
+ 9o/skSGGbxMssosuZrBSo4LCRSK8T/Y/xyu91dTsnOjPgJ9G+B2gcerK+YJlQFHmqENI5B0Jz
+ hlnOYMdSYZcPN0xlgRE3x0JTkC1HHvFCHFP4EUfjuRnTwYMV5ZiqSx/aDQyKYTR026LtXCPup
+ OiKXgoCwPIF187zklivJnOulPfB9Y3SAvKrHXWrFhMjyIm3hwxjNyoOi+3HSBhpyBLk4UN+cp
+ owQeTNGE8CDhn1Myct23vzIegYyt4RVW53GEtAvdsmHS85Sn1k0PV6MgYgLfXJct3RxAYY0cw
+ ANwEliza1SkA0Mgw9KDDNyFkWFAYUoGlPxWvGDW0A4sFMvprI+z3yEaP5IVCImjTR2qm+6ZVG
+ 0TWWAp9wfUy5e/3Nmwnx5zEPCCAlDDRLE7L5cImK3qhlewq80q2kJOk4g4vQ8CF0x+fmuz4ob
+ SVv41JoGNJJc1Mcc79oO55wvV2XSJr0XqaQ2xTHB49efAj02pBbxtdrqbzY0DkVMLD/d/b05e
+ /C5CEtojIliQjC4ZxEJZEWt3otS0RhJAQ+yT4/LISRXFGP7MDqeV3GXMyjppVCeIf2qOwqHah
+ TfTPRTsfjaNQpc=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.10.21 12:55, Michael S. Tsirkin wrote:
-> This will enable cleanups down the road.
-> The idea is to disable cbs, then add "flush_queued_cbs" callback
-> as a parameter, this way drivers can flush any work
-> queued after callbacks have been disabled.
-> 
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->   arch/um/drivers/virt-pci.c                 | 2 +-
->   drivers/block/virtio_blk.c                 | 4 ++--
->   drivers/bluetooth/virtio_bt.c              | 2 +-
->   drivers/char/hw_random/virtio-rng.c        | 2 +-
->   drivers/char/virtio_console.c              | 4 ++--
->   drivers/crypto/virtio/virtio_crypto_core.c | 8 ++++----
->   drivers/firmware/arm_scmi/virtio.c         | 2 +-
->   drivers/gpio/gpio-virtio.c                 | 2 +-
->   drivers/gpu/drm/virtio/virtgpu_kms.c       | 2 +-
->   drivers/i2c/busses/i2c-virtio.c            | 2 +-
->   drivers/iommu/virtio-iommu.c               | 2 +-
->   drivers/net/caif/caif_virtio.c             | 2 +-
->   drivers/net/virtio_net.c                   | 4 ++--
->   drivers/net/wireless/mac80211_hwsim.c      | 2 +-
->   drivers/nvdimm/virtio_pmem.c               | 2 +-
->   drivers/rpmsg/virtio_rpmsg_bus.c           | 2 +-
->   drivers/scsi/virtio_scsi.c                 | 2 +-
->   drivers/virtio/virtio.c                    | 5 +++++
->   drivers/virtio/virtio_balloon.c            | 2 +-
->   drivers/virtio/virtio_input.c              | 2 +-
->   drivers/virtio/virtio_mem.c                | 2 +-
->   fs/fuse/virtio_fs.c                        | 4 ++--
->   include/linux/virtio.h                     | 1 +
->   net/9p/trans_virtio.c                      | 2 +-
->   net/vmw_vsock/virtio_transport.c           | 4 ++--
->   sound/virtio/virtio_card.c                 | 4 ++--
->   26 files changed, 39 insertions(+), 33 deletions(-)
-> 
-> diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-> index c08066633023..22c4d87c9c15 100644
-> --- a/arch/um/drivers/virt-pci.c
-> +++ b/arch/um/drivers/virt-pci.c
-> @@ -616,7 +616,7 @@ static void um_pci_virtio_remove(struct virtio_device *vdev)
->   	int i;
->   
->           /* Stop all virtqueues */
-> -        vdev->config->reset(vdev);
-> +        virtio_reset_device(vdev);
->           vdev->config->del_vqs(vdev);
 
-Nit: virtio_device_reset()?
 
-Because I see:
+On 2021/10/13 19:01, =E7=8E=8B=E6=93=8E wrote:
+>
+>>> On Wed, Oct 13, 2021 at 03:51:33PM +0800, Anand Jain wrote:
+>>>> On 13/10/2021 11:28, Qing Wang wrote:
+>>>>> coccicheck complains about the use of snprintf() in sysfs show funct=
+ions.
+>>>>
+>>>> It looks like the reason is snprintf() unaware of the PAGE_SIZE
+>>>> max_limit of the buf.
+>>>>
+>>>>> Fix the following coccicheck warning:
+>>>>> fs/btrfs/sysfs.c:335:8-16: WARNING: use scnprintf or sprintf.
+>>
+>> IIRC sprintf() is less safe than snprintf().
+>> Is the check really correct to mention sprintf()?
+>
+> device_attr_show.cocci metions show() must not use snprintf()
+> when formatting the value to be returned to user space.
+> If you can guarantee that an overflow will never happen you
+> can use sprintf() otherwise you must use scnprintf().
 
-int virtio_device_freeze(struct virtio_device *dev);
-int virtio_device_restore(struct virtio_device *dev);
-void virtio_device_ready(struct virtio_device *dev)
+I totally understand snprintf() has its problem for not returning the
+real written size, thus not safe.
 
-But well, there is:
-void virtio_break_device(struct virtio_device *dev);
+But sprintf() is worse, it doesn't even prevent overflow from the beginnin=
+g.
 
--- 
+In fact, for case that could overflow, snprintf() would only overflow if
+we have extra bytes to output and doesn't check if the offset is beyond
+PAGE_SIZE at snprintf() call.
+
+But for sprintf(), it would cause overflow immediately.
+
+Thus mentioning sprintf() is more problematic.
+Only scnprintf() is safe.
+
+
+But sure, sysfs_emit() and sysfs_emit_at() would be a better solution.
+
 Thanks,
+Qu
 
-David / dhildenb
-
+>
+> My understanding is this is not only to solve the possible
+> overflow issue, snprintf() returns the length of the string, not
+> the length actually written. We can directly use sysfs_emit() here.
+>
+> Thanks,
+>
+> Qing
+>
+>>>>
+>>>> Hm. We use snprintf() at quite a lot more places in sysfs.c and, I do=
+n't
+>>>> see them getting this fix. Why?
+>>>
+>>> I guess the patch is only addressing the warning for snprintf, reading
+>>> the sources would show how many more conversions could have been done =
+of
+>>> scnprintf calls.
+>>>
+>>>>> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+>>>>
+>>>> Below commit has added it. Nice.
+>>>>
+>>>> commit 2efc459d06f1630001e3984854848a5647086232
+>>>> Date:=C2=A0=C2=A0 Wed Sep 16 13:40:38 2020 -0700
+>>>>
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sysfs: Add sysfs_emit and sysfs=
+_emit_at to format sysfs out
+>>>
+>>> The conversion to the standard helper is good, but should be done
+>>> in the entire file.
+>>>
+>>
+>> Yeah, the same idea, all sysfs interface should convert to the new
+>> interface, not only the snprintf().
+>>
+>> Thanks,
+>> Qu
