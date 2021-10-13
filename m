@@ -2,200 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08D642C08E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3E742C08F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbhJMMwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233690AbhJMMwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:52:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31174 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233468AbhJMMwP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Oct 2021 08:52:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233204AbhJMMwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:52:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65E1F61108
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634129409;
-        bh=J8g0tilzDKDby65Hj+Esonf9qYC68SF2NllkOVPodHI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ounni1CZ7mb3RKxYgPL+4J3upP35LrQNOjvT/tm80YmXedHoZ/RJV01CDPMnsITHx
-         XZuOBDU5e+LCCvDF8pGLtaBV5PNoxLN3dXzIU5HEsZfOVAPxI1c0NXUS/Y1ylvBXMR
-         cg4upO5gjW8dB/F/q/PftevcjyYCAmhdNgCLKOVKoiVCiEcS0993yV+5mTpW46J2fm
-         BhBne/YZNbkrDZ854ZiHPS9280uG9aZz0TLU1fCpMNdwe+u4kAITjZv23tv2aKwXw1
-         JnpEXHrrjcs+/QN99rokkFO3dV94qmM7l6Pz8Cfq5XQQNaRrCREAVVKP78HCuuuM/P
-         8ciu1R8j/JwNA==
-Received: by mail-ua1-f52.google.com with SMTP id h19so4197800uax.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:50:09 -0700 (PDT)
-X-Gm-Message-State: AOAM530jZ+FK6Eu97xZ5tU+yz2uwuR1MhviemPzEeEqmMayRnq1SA6Zo
-        04rh4xIw2CjNU7XkBApJ50B9bZa6VFK4zYMXtpQ=
-X-Google-Smtp-Source: ABdhPJz42HJibxAywzH9SAbeD10S23rM8343rvOoO185Tk+OBWh2re//oqTnchMStnNcSzdI/PN6HjF7Apo3TozB8cs=
-X-Received: by 2002:a05:6102:537:: with SMTP id m23mr1535407vsa.43.1634129408301;
- Wed, 13 Oct 2021 05:50:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211013012149.2834212-1-guoren@kernel.org> <4245323.jvX0RauA9x@diego>
- <CAAhSdy29WAXfBz6Ag-kAjNo_uhJO+AuC0e-UyWhwhaCmrw7pjw@mail.gmail.com> <4027415.QZv1u5a1DM@diego>
-In-Reply-To: <4027415.QZv1u5a1DM@diego>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 13 Oct 2021 20:49:57 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTDZ0QjY9JL=U61=ubWrGWVOe2VBbW6hgzsHqsePgN0Ww@mail.gmail.com>
-Message-ID: <CAJF2gTTDZ0QjY9JL=U61=ubWrGWVOe2VBbW6hgzsHqsePgN0Ww@mail.gmail.com>
-Subject: Re: [PATCH V3 1/2] dt-bindings: update riscv plic compatible string
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Rob Herring <robh@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634129412;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NFAd5GBKs8q6sU3jv4SolgYmzJ1yPIC9mmOhNrvbsAE=;
+        b=Hq2HKy/IULP1HbkNxiBo22FWGXIpguCarn8tR+qwBH2k5f+YItluPkRLXop0ErOvohYpC1
+        cgT/lA3K4qO1FRWxYNlNoc1J561V6hC56tt3a4LcDknKHXKoSUnQyDWkC8wv8XSVI+FZr6
+        C8MrVfmmVEQIeR5LLqPOlw/Aq/uYIyc=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-5GaHnd-0MxC--wBvsqhO1Q-1; Wed, 13 Oct 2021 08:50:10 -0400
+X-MC-Unique: 5GaHnd-0MxC--wBvsqhO1Q-1
+Received: by mail-ed1-f70.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso2136687edn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:50:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=NFAd5GBKs8q6sU3jv4SolgYmzJ1yPIC9mmOhNrvbsAE=;
+        b=fwVJhYNJ6zl7NHACBAOa8qLVivhH/d5zgclxFA817AkJEzCTzny/RjA1g720OKWFWC
+         0IjDnSfMxwu+Jwk+7kusAKGyhMnRRtwgQ6xRdYVpcsHxYTf+5KlWFAiQ4cl3eFMtj72K
+         P6U2CZhvgyaNjUVcJ4ol7HBt8mhrttzy6Sk9TrS2f1Qdr+Bw60mvgQWTvJkp6qBzXjiV
+         3s7RH3x2dnvib4JDGHc2nHTOUPiXWu1z6tPsYKzDWnzKImhLCWTdVj7jvCUNUSsFV3Ja
+         eOrnd4vtXCUnr6QxRv2Ro6xM2h1tK2RoU5GrvF3mx9B+s6CClbjKdfCFIm4cOqNUo5wQ
+         EtoA==
+X-Gm-Message-State: AOAM533oJXF4uEBj00OmdRgGTJ/G/oxe9vg78syCjvM9eJlGEwiu0ltp
+        P5GRbBdAQaY2LMATGNQsnBCBIUfu3WRu95qf+0Q57u7LdnyyNQNa3yd5t3DkNM90EV9ziyFfMj5
+        EIW85DJGBbH0Aojy9ntl7B6nA
+X-Received: by 2002:a17:907:1627:: with SMTP id hb39mr3810180ejc.161.1634129409633;
+        Wed, 13 Oct 2021 05:50:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzs0aW4WYbvyFArq9cSZU/vgva9AhCirnuFEKBRpJW/Xedns5cO6PNZ7V/VX+SAfUa1gJdiEg==
+X-Received: by 2002:a17:907:1627:: with SMTP id hb39mr3810158ejc.161.1634129409398;
+        Wed, 13 Oct 2021 05:50:09 -0700 (PDT)
+Received: from ?IPv6:2a0c:5a80:1d03:b900:c3d1:5974:ce92:3123? ([2a0c:5a80:1d03:b900:c3d1:5974:ce92:3123])
+        by smtp.gmail.com with ESMTPSA id ck9sm6638092ejb.56.2021.10.13.05.50.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 05:50:09 -0700 (PDT)
+Message-ID: <06e96819a964ca4b4ba504d0da71e81d79f3a87b.camel@redhat.com>
+Subject: Re: [RFC 0/3] mm/page_alloc: Remote per-cpu lists drain support
+From:   nsaenzju@redhat.com
+To:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        frederic@kernel.org, tglx@linutronix.de, peterz@infradead.org,
+        mtosatti@redhat.com, nilal@redhat.com, mgorman@suse.de,
+        linux-rt-users@vger.kernel.org, cl@linux.com, paulmck@kernel.org,
+        ppandit@redhat.com
+Date:   Wed, 13 Oct 2021 14:50:08 +0200
+In-Reply-To: <38d28332-6b15-b353-5bcb-f691455c6495@suse.cz>
+References: <20211008161922.942459-1-nsaenzju@redhat.com>
+         <38d28332-6b15-b353-5bcb-f691455c6495@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 5:43 PM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
->
-> Am Mittwoch, 13. Oktober 2021, 11:19:53 CEST schrieb Anup Patel:
-> > On Wed, Oct 13, 2021 at 2:44 PM Heiko St=C3=BCbner <heiko@sntech.de> wr=
-ote:
-> > >
-> > > Am Mittwoch, 13. Oktober 2021, 11:11:26 CEST schrieb Anup Patel:
-> > > > On Wed, Oct 13, 2021 at 2:27 PM Heiko St=C3=BCbner <heiko@sntech.de=
-> wrote:
-> > > > >
-> > > > > Hi Anup,
-> > > > >
-> > > > > Am Mittwoch, 13. Oktober 2021, 07:11:46 CEST schrieb Anup Patel:
-> > > > > > On Wed, Oct 13, 2021 at 6:52 AM <guoren@kernel.org> wrote:
-> > > > > > >
-> > > > > > > From: Guo Ren <guoren@linux.alibaba.com>
-> > > > > > >
-> > > > > > > Add the compatible string "thead,c900-plic" to the riscv plic
-> > > > > > > bindings to support SOCs with thead,c9xx processor cores.
-> > > > > > >
-> > > > > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > > > > > Cc: Rob Herring <robh@kernel.org>
-> > > > > > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > > > > > > Cc: Anup Patel <anup@brainfault.org>
-> > > > > > > Cc: Atish Patra <atish.patra@wdc.com>
-> > > > > > >
-> > > > > > > ---
-> > > > > > >
-> > > > > > > Changes since V3:
-> > > > > > >  - Rename "c9xx" to "c900"
-> > > > > > >  - Add thead,c900-plic in the description section
-> > > > > > > ---
-> > > > > > >  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml    =
-| 6 ++++++
-> > > > > > >  1 file changed, 6 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/Documentation/devicetree/bindings/interrupt-cont=
-roller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt=
--controller/sifive,plic-1.0.0.yaml
-> > > > > > > index 08d5a57ce00f..82629832e5a5 100644
-> > > > > > > --- a/Documentation/devicetree/bindings/interrupt-controller/=
-sifive,plic-1.0.0.yaml
-> > > > > > > +++ b/Documentation/devicetree/bindings/interrupt-controller/=
-sifive,plic-1.0.0.yaml
-> > > > > > > @@ -35,6 +35,11 @@ description:
-> > > > > > >    contains a specific memory layout, which is documented in =
-chapter 8 of the
-> > > > > > >    SiFive U5 Coreplex Series Manual <https://static.dev.sifiv=
-e.com/U54-MC-RVCoreIP.pdf>.
-> > > > > > >
-> > > > > > > +  While the "thead,c900-plic" would mask IRQ with readl(clai=
-m), so it needn't
-> > > > > > > +  mask/unmask which needed in RISC-V PLIC. When in IRQS_ONES=
-HOT & IRQCHIP_EOI_THREADED
-> > > > > > > +  path, unnecessary mask operation would cause a blocking ir=
-q bug in thead,c900-plic.
-> > > > > > > +  Because when IRQ is disabled in c900, writel(hwirq, claim)=
- would be invalid.
-> > > > > >
-> > > > > > This is a totally incorrect description of the errata required =
-for C9xx PLIC.
-> > > > > >
-> > > > > > Please don't project non-compliance as a feature of C9xx PLIC.
-> > > > > >
-> > > > > > > +
-> > > > > > >  maintainers:
-> > > > > > >    - Sagar Kadam <sagar.kadam@sifive.com>
-> > > > > > >    - Paul Walmsley  <paul.walmsley@sifive.com>
-> > > > > > > @@ -46,6 +51,7 @@ properties:
-> > > > > > >        - enum:
-> > > > > > >            - sifive,fu540-c000-plic
-> > > > > > >            - canaan,k210-plic
-> > > > > > > +          - thead,c900-plic
-> > > > >
-> > > > > we still want specific SoC names in the compatible, the "c900"
-> > > > > is still a sort-of placeholder.
-> > > >
-> > > > Yes, we need "c900" compatible string as well. The "c9xx"
-> > > > compatible string is for the custom PLIC spec followed by T-HEAD.
-> > >
-> > > What I meant was that the soc-specific string should name the
-> > > actual SoC (c906, c910) and not some imaginary chip ;-)
-> >
-> > Ahh, yes. It should be an actual soc name in the compatible
-> > string.
-> >
-> > For example, SiFive uses "fu540" string to identify some of the
-> > devices on both SiFive unleashed and SiFive unmatched boards.
-> >
-> > I was under the impression that "c900" is an actual SoC name.
-> >
-> > Regards,
-> > Anup
-> >
-> > >
-> > > See for example mali gpu bindings for a similar reference
-> > > in devicetree/bindings/gpu/arm,mali-bifrost.yaml .
-> > >
-> > >
-> > >
-> > >
-> > > >
-> > > > >
-> > > > >
-> > > > > > >        - const: sifive,plic-1.0.0
-> > > > > >
-> > > > > > The PLIC DT node requires two compatible string:
-> > > > > > <implementation_compat>, <spec_compat>
-> > > > > >
-> > > > > > The C9xx PLIC is not RISC-V PLIC so, the DT node should
-> > > > > > be: "thead,c900-plic", "thead,c9xx-plic"
-> > > > > >
-> > > > > > You need to change "- const: sifive,plic-1.0.0" to
-> > > > > > - enum:
-> > > > > >     - sifive,plic-1.0.0
-> > > > > >     - thead,c9xx-plic
->
-> isn't XuanTie the series containing the c906 and c910?
-XuanTie contain two CPU series:
-riscv: c906, c910
-csky: c807, c810, c860
+Hi Vlastimil, thanks for spending time on this.
+Also, excuse me if I over explain things.
 
-> So maybe
->         thead,xuantie-plic
-> for the spec compatible.
->
-> So doing in full
->         compatible =3D "thead,c906-plic", "thead,xuantie-plic"
-How about:
-compatible =3D "allwinner,d1-plic", "thead,c900-plic"
+On Tue, 2021-10-12 at 17:45 +0200, Vlastimil Babka wrote:
+> On 10/8/21 18:19, Nicolas Saenz Julienne wrote:
+> > This series replaces mm/page_alloc's per-cpu lists drain mechanism in order for
+> > it to be able to be run remotely. Currently, only a local CPU is permitted to
+> > change its per-cpu lists, and it's expected to do so, on-demand, whenever a
+> > process demands it (by means of queueing a drain task on the local CPU). Most
+> > systems will handle this promptly, but it'll cause problems for NOHZ_FULL CPUs
+> > that can't take any sort of interruption without breaking their functional
+> > guarantees (latency, bandwidth, etc...). Having a way for these processes to
+> > remotely drain the lists themselves will make co-existing with isolated CPUs
+> > possible, and comes with minimal performance[1]/memory cost to other users.
+> > 
+> > The new algorithm will atomically switch the pointer to the per-cpu lists and
+> > use RCU to make sure it's not being used before draining them. 
+> > 
+> > I'm interested in an sort of feedback, but especially validating that the
+> > approach is acceptable, and any tests/benchmarks you'd like to see run against
+> 
+> So let's consider the added alloc/free fast paths overhead:
+> - Patch 1 - __alloc_pages_bulk() used to determine pcp_list once, now it's
+> determined for each allocated page in __rmqueue_pcplist().
 
->
->
-> Heiko
->
->
+This one I can avoid, I missed the performance aspect of it. I was aiming at
+making the code bearable.
 
+> - Patch 2 - adds indirection from pcp->$foo to pcp->lp->$foo in each operation
+> - Patch 3
+>   - extra irqsave/irqrestore in free_pcppages_bulk (amortized)
+>   - rcu_dereference_check() in free_unref_page_commit() and __rmqueue_pcplist()
 
---=20
-Best Regards
- Guo Ren
+Yes.
 
-ML: https://lore.kernel.org/linux-csky/
+> BTW - I'm not sure if the RCU usage is valid here.
+>
+> The "read side" (normal operations) is using:
+> rcu_dereference_check(pcp->lp,
+> 		lockdep_is_held(this_cpu_ptr(&pagesets.lock)));
+> 
+> where the lockdep parameter according to the comments for
+> rcu_dereference_check() means
+> 
+> "indicate to lockdep that foo->bar may only be dereferenced if either
+> rcu_read_lock() is held, or that the lock required to replace the bar struct
+> at foo->bar is held."
+
+You missed the "Could be used to" at the beginning of the sentence :). That
+said, I believe this is similar to what I'm doing, only that the situation is
+more complex.
+
+> but you are not taking rcu_read_lock() 
+
+I am taking the rcu_read_lock() implicitly, it's explained in 'struct
+per_cpu_pages', and in more depth below.
+
+> and the "write side" (remote draining) actually doesn't take pagesets.lock,
+> so it's not true that the "lock required to replace ... is held"? The write
+> side uses rcu_replace_pointer(..., mutex_is_locked(&pcpu_drain_mutex))
+> which is a different lock.
+
+The thing 'pagesets.lock' protects against is concurrent access to pcp->lp's
+content, as opposed to its address. pcp->lp is dereferenced atomically, so no
+need for locking on that operation.
+
+The drain side never accesses pcp->lp's contents concurrently, it changes
+pcp->lp's address and makes sure all CPUs are in sync with the new address
+before clearing the stale data.
+
+Just for the record, I think a better representation of what 'check' in
+rcu_dereference means is:
+
+ * Do an rcu_dereference(), but check that the conditions under which the
+ * dereference will take place are correct.  Typically the conditions
+ * indicate the various locking conditions that should be held at that
+ * point. The check should return true if the conditions are satisfied.
+ * An implicit check for being in an RCU read-side critical section
+ * (rcu_read_lock()) is included.
+
+So for the read side, that is, code reading pcp->lp's address and its contents,
+the conditions to be met are: being in a RCU critical section, to make sure RCU
+is keeping track of it, and holding 'pagesets.lock', to avoid concurrently
+accessing pcp->lp's contents. The later is achieved either by disabling local
+irqs or disabling migration and getting a per-cpu rt_spinlock. Conveniently
+these are actions that implicitly delimit an RCU critical section (see [1] and
+[2]). So the 'pagesets.lock' check fully covers the read side locking/RCU
+concerns.
+
+On the write side, the drain has to make sure pcp->lp address change is atomic
+(this is achieved through rcu_replace_pointer()) and that lp->drain is emptied
+before a happens. So checking for pcpu_drain_mutex being held is good enough.
+
+> IOW, synchronize_rcu_expedited() AFAICS has nothing (no rcu_read_lock() to
+> synchronize against? Might accidentally work on !RT thanks to disabled irqs,
+> but not sure about with RT lock semantics of the local_lock...
+>
+> So back to overhead, if I'm correct above we can assume that there would be
+> also rcu_read_lock() in the fast paths.
+
+As I explained above, no need.
+
+> The alternative proposed by tglx was IIRC that there would be a spinlock on
+> each cpu, which would be mostly uncontended except when draining. Maybe an
+> uncontended spin lock/unlock would have lower overhead than all of the
+> above? It would be certainly simpler, so I would probably try that first and
+> see if it's acceptable?
+
+You have a point here. I'll provide a performance rundown of both solutions.
+This one is a bit more complex that's for sure.
+
+Thanks!
+
+[1] See rcu_read_lock()'s description: "synchronize_rcu() wait for regions of
+    code with preemption disabled, including regions of code with interrupts or
+    softirqs disabled."
+
+[2] See kernel/locking/spinlock_rt.c: "The RT [spinlock] substitutions
+    explicitly disable migration and take rcu_read_lock() across the lock held
+    section."
+
+-- 
+Nicolás Sáenz
+
