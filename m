@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B10042BC5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8B342BC5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239270AbhJMKDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:03:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58600 "EHLO mail.kernel.org"
+        id S239276AbhJMKD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:03:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:59792 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229853AbhJMKDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:03:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1727E60E74;
-        Wed, 13 Oct 2021 10:01:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634119291;
-        bh=VexVs8YcPOAfCyHkd1Wd9WYaHCuP7W/gGp8boKTDsL8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NTuGhUXMT2UASStrRSKBBoTRjqq2rO8TAtY4dm4od93Vg8fvxmxUk2t7/JEB5YWTg
-         OVFyW/T7K1bsxbK1rbyNiDJEXx/cAvCXF6HLhPQYG9gfFB1lSqwistN4nsWyBJoXzs
-         +ndUZQ75jI1Mtejo9PGedHM3XfUEvarDTeQCpEh5cN6yBggxJ4hScBrk3UeZL0yRSh
-         7Ei6DOt7d354vdRsqYDiOt1eyz9Q3sgt85XKXVf9DjPKGPXmeJTjvExeUxjhXHi1p5
-         ZVnhNRu9lfDmdt0MWAKhNSqT0gxpCINsSSy0spY86EwbW+77K6Q6LkilOHSIO5MBZu
-         aWugk/U8lB3kw==
-Date:   Wed, 13 Oct 2021 12:01:29 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB
- + a few other fixes v2
-Message-ID: <20211013100129.GA377556@lothringen>
-References: <20211011145140.359412-1-frederic@kernel.org>
- <20211013003215.GP880162@paulmck-ThinkPad-P17-Gen-1>
- <20211013032832.GQ880162@paulmck-ThinkPad-P17-Gen-1>
+        id S239238AbhJMKDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 06:03:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 073791063;
+        Wed, 13 Oct 2021 03:01:52 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.73.189])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C3DB3F70D;
+        Wed, 13 Oct 2021 03:01:49 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 11:01:39 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 3/8] arm64: kprobes: Record frame pointer with kretprobe
+ instance
+Message-ID: <20211013100126.GA3187@C02TD0UTHF1T.local>
+References: <163369609308.636038.15295764725220907794.stgit@devnote2>
+ <163369611948.636038.11552166777773804729.stgit@devnote2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211013032832.GQ880162@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <163369611948.636038.11552166777773804729.stgit@devnote2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 08:28:32PM -0700, Paul E. McKenney wrote:
-> On Tue, Oct 12, 2021 at 05:32:15PM -0700, Paul E. McKenney wrote:
-> > On Mon, Oct 11, 2021 at 04:51:29PM +0200, Frederic Weisbecker wrote:
-> > > Hi,
-> > > 
-> > > No code change in this v2, only changelogs:
-> > > 
-> > > * Add tags from Valentin and Sebastian
-> > > 
-> > > * Remove last reference to SEGCBLIST_SOFTIRQ_ONLY (thanks Valentin)
-> > > 
-> > > * Rewrite changelog for "rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check"
-> > >   after off-list debates with Paul.
-> > > 
-> > > * Remove the scenario with softirq interrupting rcuc on
-> > >   "rcu/nocb: Limit number of softirq callbacks only on softirq" as it's
-> > >   probably not possible (thanks Valentin).
-> > > 
-> > > * Remove the scenario with task spent scheduling out accounted on tlimit
-> > >   as it's not possible (thanks Valentin)
-> > >   (see "rcu: Apply callbacks processing time limit only on softirq")
-> > > 
-> > > * Fixed changelog of
-> > >   "rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread"
-> > >   (thanks Sebastian).
-> > > 
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> > > 	rcu/rt-v2
-> > > 
-> > > HEAD: 2c9349986d5f70a555195139665841cd98e9aba4
-> > > 
-> > > Thanks,
-> > > 	Frederic
-> > 
-> > Nice!
-> > 
-> > I queued these for further review and testing.  I reworked the commit log
-> > of 6/11 to give my idea of the reason, though I freely admit that this
-> > reason is not as compelling as it no doubt seemed when I wrote that code.
-> 
-> But in initial tests TREE04.5, TREE04.6, and TREE04.9 all hit the
-> WARN_ON(1) in rcu_torture_barrier(), which indicates rcu_barrier()
-> breakage.  My best (but not so good) guess is a five-hour MTBF on a
-> dual-socket system.
-> 
-> I started an automated "git bisect" with each step running 100 hours
-> of TREE04, but I would be surprised if anything useful comes of it.
-> Pleased, mind you, but surprised.
+On Fri, Oct 08, 2021 at 09:28:39PM +0900, Masami Hiramatsu wrote:
+> Record the frame pointer instead of stack address with kretprobe
+> instance as the identifier on the instance list.
+> Since arm64 always enable CONFIG_FRAME_POINTER, we can use the
+> actual frame pointer (x29).
 
-Oops, trying those scenario on my side as well.
+Just to check, why do we need to use the FP rather than SP? It wasn't
+clear to me if that's necessary later in the series, or if I'm missing
+something here.
 
-Thanks!
+FWIW, I plan to rework arm64's ftrace bits to use FP for
+HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, so I'm happy to do likewise here.
+
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Regardless of the above:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
+> ---
+>  arch/arm64/kernel/probes/kprobes.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+> index e7ad6da980e8..d9dfa82c1f18 100644
+> --- a/arch/arm64/kernel/probes/kprobes.c
+> +++ b/arch/arm64/kernel/probes/kprobes.c
+> @@ -401,14 +401,14 @@ int __init arch_populate_kprobe_blacklist(void)
+>  
+>  void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
+>  {
+> -	return (void *)kretprobe_trampoline_handler(regs, (void *)kernel_stack_pointer(regs));
+> +	return (void *)kretprobe_trampoline_handler(regs, (void *)regs->regs[29]);
+>  }
+>  
+>  void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+>  				      struct pt_regs *regs)
+>  {
+>  	ri->ret_addr = (kprobe_opcode_t *)regs->regs[30];
+> -	ri->fp = (void *)kernel_stack_pointer(regs);
+> +	ri->fp = (void *)regs->regs[29];
+>  
+>  	/* replace return addr (x30) with trampoline */
+>  	regs->regs[30] = (long)&__kretprobe_trampoline;
+> 
