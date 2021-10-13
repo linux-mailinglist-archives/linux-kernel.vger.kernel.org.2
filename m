@@ -2,493 +2,451 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C5142CA9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 078AA42CAA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236792AbhJMUGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhJMUGD (ORCPT
+        id S238877AbhJMUGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:06:43 -0400
+Received: from sonic306-27.consmr.mail.ne1.yahoo.com ([66.163.189.89]:44674
+        "EHLO sonic306-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231308AbhJMUGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:06:03 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54ADC061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:03:59 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id y7so3439199pfg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:03:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VgFjKX8reFAQlRSI6+C/M2san2NuQ9pZKH4qq5N0ORA=;
-        b=VSlXGsF/QMUDk6H4I7Q1RWMoyhO5vruH8JUPowXPpz+Lf78eJA6NU12tOBGg/ReWK4
-         oJEKUqc8CM3T5T7KXWRoG6GqvJgroYfgINnL5GkN+cvzIdeZ3Q7KHhIY7rwzdol9+tQd
-         kOcebwGU/Riv3idwvSaoPOZudKcuFZ/++qQM1Zd/LHoPfG/QzVQyOiHVrgth8fd+PaQp
-         t/0eghqJ12oUofvBWIsVWbXIeJau6OcJCRVSupfjxrAOXRGX+h6c5HxLKyIt3zMdZxYx
-         iZxzYpQGhVFJgT1uMjtHr/O3d+ZXYXiTQja1GvyChQ8AskPxKrgun6hMWCwTRAnlHzPE
-         y5yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VgFjKX8reFAQlRSI6+C/M2san2NuQ9pZKH4qq5N0ORA=;
-        b=12ibhKBWtu6pf3ngvS8ixuQyDjR2kJLWPJCi+7/ZnfsL4jUtjT+OiqfN0zFShjeIQc
-         aITikPlzOssJVBXrp97UbrkVspQStRJFigZIDugvNXoLK7sj5n1+FD81Ugx5Xtdd4vhH
-         xOKMqA3IrOR9zEfmzF2OduxmDpaEBfhnTQjS5dytckI9ywYOs+y+B0egVWc/3nbuMNOS
-         kps0Srk4zc95Kw0rQRRrucbmk3eC39PwSI2rRzSEmpcGRwU7Z6yxLyF/EgVq6YRTEvTj
-         BW5kNxVcInkG6yiky4rFZwRm8wrFlLnJ3kGIyjYOTW2ZBtwKBQqYDG9vlcoTz0pxNXkZ
-         I2JQ==
-X-Gm-Message-State: AOAM532pAk+1ys+5JYe4f8U5NgYXgaJH239433BgSSnDDRgbfJt9FuGv
-        BHZ6dptMbw/VmCkIKhoh8gN0ZApoGOFPe1GmLCP2qw==
-X-Google-Smtp-Source: ABdhPJxaklLKuAvk/2LwKr/YyGs7XJ3x3gvFsjDPPl88WU44cszIowMay7HiETIklEYo3qMMmB8dz0ZCpJovkblYKGE=
-X-Received: by 2002:a62:1b92:0:b0:3eb:3f92:724 with SMTP id
- b140-20020a621b92000000b003eb3f920724mr1029294pfb.3.1634155438515; Wed, 13
- Oct 2021 13:03:58 -0700 (PDT)
+        Wed, 13 Oct 2021 16:06:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1634155473; bh=vy0ySlKJ420+1oXXRPTErtsd+r99aCxGcq2kEwHLezk=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=nInaZrn7E1jYvxIQGJIIL5R2ygg35zkozwc1QqhVa8bmasqEELK8NGcaQb8agJkAJpP1dGGyaHpoQAEJ0VL8jJu+VpuB/W8la4Pa1zMg5k/9/ONW7f4pDhsb1i7iDc/vXMreSRAI/fkSMeU+yz24PyA9uJtEKeF7GX0lXL/vFPPX8JO+AS8eA6kZlBntjf3fB3J6gA0x9jK4xyegtgwpH8jeB45B3AW4JgghCdE/j+hBJzknMjlBBXcWi9dbxGs2GYoaT9IBY3j0AnP2tZY3tR0IHfIQ9PObG9HQMCWOre/jMLY+vTG9L16zAljB7bRY9XmI3rcpu3k6oAFfNQDaMw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1634155473; bh=GEEBjmJGEQxfcyFnIEv3fggIaOqXHNf1pk/YosIFj4c=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=e3itMHeCDpMr45c9F7mBUhqMA+IMj+anA5dtZGkTgDkdRUbr2ejfi4HSUKaq3qmpvoJLzHcYl1wM3TLZwl8v9aXk9mSwcl20I4AcOJh0M3nPZYGpO+VXCgA4wu0KWVJAjeoGm5ddvo7yMCEIjjGjUXHF+lBwPFiu6gRzTcaDCNo3o9qq9MDcssMNnpWv+J2rxLOxiEe9JkMTwCOO2CsMfHj6VFiMPP4GZO0z4OhU4G2KOw8hEFmHMsdVSu3cQHXo/FemW+5pmkz+G8fv5xZwLLlHE7N9UKdpWqW7w1R087PgdLNeBCoarpraL6R3OIED9/MfrqKOi5OmN21+WwhQ7g==
+X-YMail-OSG: kn2xUMIVM1ljcldJdbo_xnkqUuNbDqiYOz6Jvm2Kl9F.VON6OW4LCcMFdCT9Fwn
+ uzldctGGMlW52a8qUqSj6WP1HGnUZTE_AyKWwRoUd1xa9VzKtdGcOih4yhOrjtlmsNomokEP0wmI
+ c699IFR2LHW4Ik0FKOH33riSUAYAJkFGg4_DhgYLr9p7sY2P4Mya_cgFHyq7_zd0bno7qlvgJbAp
+ kKy9Cgl12uTbUpEdtR1Lk8NXapLp5W1xoTEowVep4Mj8Io72Nt08D99Bv1MO13aJS3AM3_0L8NMy
+ .SHIp9yoIDhFawdlNNVp5Off36cm2mxcxvJjFp7fQf9fwss2zEPcKAjoo3r30xWOZa3M7CMqVjmi
+ oXVAN6NgWBHetc44JmLzRBAcCvcmDWWducM0_cnrDsQs.h6cSY94ZItvorsVi8Rjw3w2h3Efxw1o
+ PpyxdYqGsepYyiKN8TqSr8cdLx71s9bmJYaXeMzYVIljyuyX3ZQKA2c1.xLZV493SNxObTe9uyZo
+ pUKZwxdNcFmqjKkPP_2H7q81rPGcIF4.1jwLtxqsYJH1LYErC178Cft84EOgZveJU0l2_5tXviaj
+ CpKx35eaFuk8Hauhs6eEq7GhmUN2_OmswvjS0IE8yRiz2DA3OY2dOzIpeaPy9dcy27HfLKeKnXwN
+ .RPoJaIGD.eJgRn6a5VhX8nQa1uzeh4CILgyXLqN2aPdqDwVE1NTNZrQc49o9m_Rdyosd.MllIWa
+ roSQGBJSXqzGF8SDg3PxeOlEgKxF3wKRoQFjq7gn2WBctNLqdk1Fv4wjFFP.Uulqd767ZLce0nGM
+ JtFt7Mfy0QZxeYt31NIPBdUA1zvtQ6ymvfZDNPJPu.T9dsAzi.QNXYBRcAHFxoTbLOLRBItKJxrt
+ dyHpYUkU2SkMv_K4i6kR8nwof9Fe1ddP53ZOHey0W2yzsJR2MupHl2dMe0moFZ2YSraQV4rPU7Zl
+ oYFQqip9TSUREY6YLltTOwEDEEd0DpHV5DVUo7tGgmS.imdVaB9_yaTWkbrVEALa_PwEuA8hxzAQ
+ v.XveYILv.ky80TD7ePE0lFGk5WV_dzeyJjtn227FihLSYxTB1lWg02W5HZYdlIWpLFtYwNP4pzA
+ vR_EEr0QZF6vSc_eyXXYFJXU43hsiLkGs_Z.QIHtl7NjP7C2pSeGpHjqMZ2wkXoIh5vdZyQMEu4s
+ .Obb31LicwYVWpfRU8FSoWOhcWzW46kj4L4U9KKYO.AU7oNqQAl_Ru9h8Slbb.wOXk0_NYXVpmiW
+ _j7DUOFmuDk2K2i_rfCSLCfJPUZRUuqDi3H9rptm4pW_eMpqzTqc6vM8pL8y_SSfTsvbHLMW8ILn
+ GGUbyHO8rnfabappvy_21dSwfrL8P2jfTQuI6FSC_NqHWBk_efbBROzZ6d9GZBd4d3b4GxwIhDUg
+ pi3yejHHY_T89ImnSYgkbuiT4fVJb2WNxVluWVFIHOSRo5kyk6bEfffUW4ClPvmbX9xEiMDKOiVQ
+ lFVxCpgDB6ost0uaWpZU.EXKWX1DxG7S3eOkFh1DvRySIVRiBtlXEYLgBMbK36ORyWCbZYCu4ut8
+ JdwJe77Y8_hEJ7eO38.55.ngwSsKl5sgg3P1YHIgsRfjCX9L_bnsSFvX3NbPrH5qUGChgVMoV.8d
+ V3nd4CIZOrS.dmq1T0zOzmbUZwvMUsq0xMkDVWNgJwfSPfPVzy.vVbgCL8Es8JT1fSrmtiHjAVgg
+ Bt0WEhP_lB9ZBNBOvXb8OIVR0ZWwyfXUkTYIGo0.JcGv_RldoEjG.0Ua1nRVg_yFUF7SUpM4rinf
+ _rD3KMuTuGlRwXLtDDB2NxhLOCLKmiR1w7aoQwYgC8tOacfe9Xi1thBkECVFaXsLnTJIulFF29YL
+ u85rP3TpCIx0sxdZ5tn1T7Rs2iwlust2EcNDketERPaHEUTXJVqjLyAVcOwHkRw.C08.aQMHx7kd
+ f2fiJOLFggYVc2mIJfP3yK_R1tEGN0po6rV9dMZiM.IR_s_hpzegOtqZVzOZpjM7cqRBWI1T9iuS
+ prh9dYMzf5snUBPsxjIfDsFx93VDfsx_eb99FM9Vkq066.zto1VYpYEOGPh5O6cDFBu7yr8N6rV5
+ 05LP1.aEJ4NnfDLBiqsRgQiScbjVgwymfmWTjxX_Pj5sBuz3n6XT.uVnZrXA2FeytSBk6CTs0UGN
+ XX732ySAljKmh4DUZI1z86zuqraFfBQzfVdlMTwg3j3WBqQC.iydYEBMMjzSx5iW4Hm6tSSd5Eh1
+ uueHK5yAGypMnqKiA23RFrmDIxeKz8Xg6rQX6SEg6wND4HcEmrlIkCZI-
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Wed, 13 Oct 2021 20:04:33 +0000
+Received: by kubenode504.mail-prod1.omega.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID d8008b9a833b5ea326972ffc61c3990e;
+          Wed, 13 Oct 2021 20:04:32 +0000 (UTC)
+Subject: Re: [RFC PATCH v7 05/16] ipe: add LSM hooks on execution and kernel
+ read
+To:     deven.desai@linux.microsoft.com, corbet@lwn.net, axboe@kernel.dk,
+        agk@redhat.com, snitzer@redhat.com, ebiggers@kernel.org,
+        tytso@mit.edu, paul@paul-moore.com, eparis@redhat.com,
+        jmorris@namei.org, serge@hallyn.com
+Cc:     linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        jannh@google.com, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, linux-audit@redhat.com,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com>
+ <1634151995-16266-6-git-send-email-deven.desai@linux.microsoft.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <a358e0b0-2fc0-8b03-4bee-141675fdc73e@schaufler-ca.com>
+Date:   Wed, 13 Oct 2021 13:04:31 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211013191320.2490913-1-dlatypov@google.com>
-In-Reply-To: <20211013191320.2490913-1-dlatypov@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 13 Oct 2021 13:03:46 -0700
-Message-ID: <CAFd5g47=aO3e8d4_GGcgY9BK43Z0Oo6SGD-2e5rJDp5r3k4XXQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] kunit: flatten kunit_suite*** to kunit_suite** in executor
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, Jeremy Kerr <jk@codeconstruct.com.au>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1634151995-16266-6-git-send-email-deven.desai@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.19116 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 12:13 PM Daniel Latypov <dlatypov@google.com> wrote:
+On 10/13/2021 12:06 PM, deven.desai@linux.microsoft.com wrote:
+> From: Deven Bowers <deven.desai@linux.microsoft.com>
 >
-> Per [1], we might not need the array-of-array of kunit_suite's.
+> IPE's initial goal is to control both execution and the loading of
+> kernel modules based on the system's definition of trust. It
+> accomplishes this by plugging into the security hooks for execve,
+> mprotect, mmap, kernel_load_data and kernel_read_data.
 >
-> This RFC patch previews the changes we'd make to the executor to
-> accommodate that by making the executor automatically flatten the
-> kunit_suite*** into a kunit_suite**.
->
-> The test filtering support [2] added the largest dependency on the
-> current kunit_suite*** layout, so this patch is based on that.
->
-> It actually drastically simplifies the code, so it might be useful to
-> keep the auto-flattening step until we actually make the change.
->
-> [1] https://lore.kernel.org/linux-kselftest/101d12fc9250b7a445ff50a9e7a25cd74d0e16eb.camel@codeconstruct.com.au/
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit&id=3b29021ddd10cfb6b2565c623595bd3b02036f33
->
-> Cc: Jeremy Kerr <jk@codeconstruct.com.au>
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-
-I like it! This seems to make a lot of logic simpler (and from the
-sounds makes Jeremy's proposed module patch easier?).
-
+> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
 > ---
->  lib/kunit/executor.c      | 132 +++++++++++++++-----------------------
->  lib/kunit/executor_test.c | 131 ++++++++++---------------------------
->  2 files changed, 85 insertions(+), 178 deletions(-)
 >
-> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-> index 22640c9ee819..3a7246336625 100644
-> --- a/lib/kunit/executor.c
-> +++ b/lib/kunit/executor.c
-> @@ -88,60 +88,18 @@ kunit_filter_tests(struct kunit_suite *const suite, const char *test_glob)
->  static char *kunit_shutdown;
->  core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
+> Relevant changes since v6:
+>   * Split up patch 02/12 into four parts:
+>       1. context creation [01/16]
+>       2. audit [07/16]
+>       3. evaluation loop [03/16]
+>       4. access control hooks [05/16] (this patch)
 >
-> -static struct kunit_suite * const *
-> -kunit_filter_subsuite(struct kunit_suite * const * const subsuite,
-> -                     struct kunit_test_filter *filter)
-> -{
-> -       int i, n = 0;
-> -       struct kunit_suite **filtered, *filtered_suite;
-> -
-> -       n = 0;
-> -       for (i = 0; subsuite[i]; ++i) {
-> -               if (glob_match(filter->suite_glob, subsuite[i]->name))
-> -                       ++n;
-> -       }
-> -
-> -       if (n == 0)
-> -               return NULL;
-> -
-> -       filtered = kmalloc_array(n + 1, sizeof(*filtered), GFP_KERNEL);
-> -       if (!filtered)
-> -               return NULL;
-> -
-> -       n = 0;
-> -       for (i = 0; subsuite[i] != NULL; ++i) {
-> -               if (!glob_match(filter->suite_glob, subsuite[i]->name))
-> -                       continue;
-> -               filtered_suite = kunit_filter_tests(subsuite[i], filter->test_glob);
-> -               if (filtered_suite)
-> -                       filtered[n++] = filtered_suite;
-> -       }
-> -       filtered[n] = NULL;
-> -
-> -       return filtered;
-> -}
-> -
-> +/* Stores a NULL-terminated array of suites. */
->  struct suite_set {
-> -       struct kunit_suite * const * const *start;
-> -       struct kunit_suite * const * const *end;
-> +       struct kunit_suite * const *start;
-> +       struct kunit_suite * const *end;
->  };
+> ---
+>  security/ipe/hooks.c  | 149 ++++++++++++++++++++++++++++++++++++++++++=
+
+>  security/ipe/hooks.h  |  23 ++++++-
+>  security/ipe/ipe.c    |   5 ++
+>  security/ipe/policy.c |  23 +++++++
+>  security/ipe/policy.h |  12 +++-
+>  5 files changed, 209 insertions(+), 3 deletions(-)
 >
-> -static void kunit_free_subsuite(struct kunit_suite * const *subsuite)
-> -{
-> -       unsigned int i;
-> -
-> -       for (i = 0; subsuite[i]; i++)
-> -               kfree(subsuite[i]);
-> -
-> -       kfree(subsuite);
-> -}
-> -
->  static void kunit_free_suite_set(struct suite_set suite_set)
->  {
-> -       struct kunit_suite * const * const *suites;
-> +       struct kunit_suite * const *suites;
->
->         for (suites = suite_set.start; suites < suite_set.end; suites++)
-> -               kunit_free_subsuite(*suites);
-> +               kfree(*suites);
->         kfree(suite_set.start);
+> diff --git a/security/ipe/hooks.c b/security/ipe/hooks.c
+> index ed0c886eaa5a..216242408a80 100644
+> --- a/security/ipe/hooks.c
+> +++ b/security/ipe/hooks.c
+> @@ -6,11 +6,15 @@
+>  #include "ipe.h"
+>  #include "ctx.h"
+>  #include "hooks.h"
+> +#include "eval.h"
+> =20
+> +#include <linux/fs.h>
+>  #include <linux/sched.h>
+>  #include <linux/types.h>
+>  #include <linux/refcount.h>
+>  #include <linux/rcupdate.h>
+> +#include <linux/binfmts.h>
+> +#include <linux/mman.h>
+> =20
+>  /**
+>   * ipe_task_alloc: Assign a new context for an associated task structu=
+re.
+> @@ -56,3 +60,148 @@ void ipe_task_free(struct task_struct *task)
+>  	ipe_put_ctx(ctx);
+>  	rcu_read_unlock();
 >  }
->
-> @@ -149,10 +107,11 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
->                                             const char *filter_glob)
->  {
->         int i;
-> -       struct kunit_suite * const **copy, * const *filtered_subsuite;
-> +       struct kunit_suite **copy, *filtered_suite;
->         struct suite_set filtered;
->         struct kunit_test_filter filter;
->
-> +       /* Note: this includes space for the terminating NULL. */
->         const size_t max = suite_set->end - suite_set->start;
->
->         copy = kmalloc_array(max, sizeof(*filtered.start), GFP_KERNEL);
-> @@ -164,11 +123,17 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
->
->         kunit_parse_filter_glob(&filter, filter_glob);
->
-> -       for (i = 0; i < max; ++i) {
-> -               filtered_subsuite = kunit_filter_subsuite(suite_set->start[i], &filter);
-> -               if (filtered_subsuite)
-> -                       *copy++ = filtered_subsuite;
-> +       for (i = 0; suite_set->start[i] != NULL; i++) {
-> +               if (!glob_match(filter.suite_glob, suite_set->start[i]->name))
-> +                       continue;
 > +
-> +               filtered_suite = kunit_filter_tests(suite_set->start[i], filter.test_glob);
-> +               if (!filtered_suite)
-> +                       continue;
-> +
-> +               *copy++ = filtered_suite;
->         }
-> +       *copy = NULL;
->         filtered.end = copy;
->
->         kfree(filter.suite_glob);
-> @@ -190,52 +155,56 @@ static void kunit_handle_shutdown(void)
->
->  }
->
-> -static void kunit_print_tap_header(struct suite_set *suite_set)
-> -{
-> -       struct kunit_suite * const * const *suites, * const *subsuite;
-> -       int num_of_suites = 0;
-> -
-> -       for (suites = suite_set->start; suites < suite_set->end; suites++)
-> -               for (subsuite = *suites; *subsuite != NULL; subsuite++)
-> -                       num_of_suites++;
-> -
-> -       pr_info("TAP version 14\n");
-> -       pr_info("1..%d\n", num_of_suites);
-> -}
-> -
->  static void kunit_exec_run_tests(struct suite_set *suite_set)
->  {
-> -       struct kunit_suite * const * const *suites;
-> -
-> -       kunit_print_tap_header(suite_set);
-> +       pr_info("TAP version 14\n");
-> +       pr_info("1..%zu\n", suite_set->end - suite_set->start);
->
-> -       for (suites = suite_set->start; suites < suite_set->end; suites++)
-> -               __kunit_test_suites_init(*suites);
-> +       __kunit_test_suites_init(suite_set->start);
->  }
->
->  static void kunit_exec_list_tests(struct suite_set *suite_set)
->  {
-> -       unsigned int i;
-> -       struct kunit_suite * const * const *suites;
-> +       struct kunit_suite * const *suites;
->         struct kunit_case *test_case;
->
->         /* Hack: print a tap header so kunit.py can find the start of KUnit output. */
->         pr_info("TAP version 14\n");
->
->         for (suites = suite_set->start; suites < suite_set->end; suites++)
-> -               for (i = 0; (*suites)[i] != NULL; i++) {
-> -                       kunit_suite_for_each_test_case((*suites)[i], test_case) {
-> -                               pr_info("%s.%s\n", (*suites)[i]->name, test_case->name);
-> -                       }
-> +               kunit_suite_for_each_test_case((*suites), test_case) {
-> +                       pr_info("%s.%s\n", (*suites)->name, test_case->name);
->                 }
->  }
->
-> +// TODO(dlatypov@google.com): delete this when we store suites in a single array.
-> +static struct suite_set make_suite_set(void)
+> +/**
+> + * ipe_on_exec: LSM hook called when a process is loaded through the e=
+xec
+> + *		family of system calls.
+> + * @bprm: Supplies a pointer to a linux_binprm structure to source the=
+ file
+> + *	  being evaluated.
+> + *
+> + * Return:
+> + * 0 - OK
+> + * !0 - Error
+> + */
+> +int ipe_on_exec(struct linux_binprm *bprm)
 > +{
-> +       struct suite_set flattened;
-> +       size_t num_of_suites = 0;
-> +
-> +       struct kunit_suite * const * const *suites, * const *subsuite;
-> +       struct kunit_suite **end;
-> +
-> +       for (suites = __kunit_suites_start; suites < __kunit_suites_end; suites++)
-> +               for (subsuite = *suites; *subsuite != NULL; subsuite++)
-> +                       num_of_suites++;
-> +
-> +       end = kcalloc(num_of_suites + 1, sizeof(*flattened.start), GFP_KERNEL);
-> +       flattened.start = end;
-> +
-> +       for (suites = __kunit_suites_start; suites < __kunit_suites_end; suites++)
-> +               for (subsuite = *suites; *subsuite != NULL; subsuite++)
-> +                       *end++ = *subsuite;
-> +       *end = NULL;
-> +       flattened.end = end;
-> +       return flattened;
+> +	return ipe_process_event(bprm->file, ipe_operation_exec, ipe_hook_exe=
+c);
 > +}
 > +
->  int kunit_run_all_tests(void)
->  {
-> -       struct suite_set suite_set = {
-> -               .start = __kunit_suites_start,
-> -               .end = __kunit_suites_end,
-> -       };
-> +       struct suite_set suite_set = make_suite_set();
-> +       struct kunit_suite * const *unfiltered = suite_set.start; /* need to free at end */
->
->         if (filter_glob_param)
->                 suite_set = kunit_filter_suites(&suite_set, filter_glob_param);
-> @@ -247,9 +216,10 @@ int kunit_run_all_tests(void)
->         else
->                 pr_err("kunit executor: unknown action '%s'\n", action_param);
->
-> -       if (filter_glob_param) { /* a copy was made of each array */
-> +       if (filter_glob_param) { /* a copy was made of each suite */
->                 kunit_free_suite_set(suite_set);
->         }
-> +       kfree(unfiltered);
->
->         kunit_handle_shutdown();
->
-> diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-> index 7d2b8dc668b1..d9fce637eb56 100644
-> --- a/lib/kunit/executor_test.c
-> +++ b/lib/kunit/executor_test.c
-> @@ -9,8 +9,6 @@
->  #include <kunit/test.h>
->
->  static void kfree_at_end(struct kunit *test, const void *to_free);
-> -static void free_subsuite_at_end(struct kunit *test,
-> -                                struct kunit_suite *const *to_free);
->  static struct kunit_suite *alloc_fake_suite(struct kunit *test,
->                                             const char *suite_name,
->                                             struct kunit_case *test_cases);
-> @@ -41,124 +39,77 @@ static void parse_filter_test(struct kunit *test)
->         kfree(filter.test_glob);
->  }
->
-> -static void filter_subsuite_test(struct kunit *test)
-> +static void filter_suites_test(struct kunit *test)
->  {
->         struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
-> -       struct kunit_suite * const *filtered;
-> -       struct kunit_test_filter filter = {
-> -               .suite_glob = "suite2",
-> -               .test_glob = NULL,
-> -       };
-> +       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-> +       struct suite_set got;
->
->         subsuite[0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
->         subsuite[1] = alloc_fake_suite(test, "suite2", dummy_test_cases);
->
->         /* Want: suite1, suite2, NULL -> suite2, NULL */
-> -       filtered = kunit_filter_subsuite(subsuite, &filter);
-> -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered);
-> -       free_subsuite_at_end(test, filtered);
-> +       got = kunit_filter_suites(&suite_set, "suite2");
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
-> +       kfree_at_end(test, got.start);
->
->         /* Validate we just have suite2 */
-> -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered[0]);
-> -       KUNIT_EXPECT_STREQ(test, (const char *)filtered[0]->name, "suite2");
-> -       KUNIT_EXPECT_FALSE(test, filtered[1]);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]);
-> +       KUNIT_EXPECT_STREQ(test, (const char *)got.start[0]->name, "suite2");
-> +       // DO NOT SUBMIT: null-terminated for now.
+> +/**
+> + * ipe_on_mmap: LSM hook called when a file is loaded through the mmap=
 
-Can you elaborate what you mean here?
+> + *		family of system calls.
+> + * @f: File being mmap'd. Can be NULL in the case of anonymous memory.=
 
-> +       KUNIT_ASSERT_EQ(test, got.end - got.start, 1);
-> +       KUNIT_EXPECT_FALSE(test, *got.end);
->  }
->
-> -static void filter_subsuite_test_glob_test(struct kunit *test)
-> +static void filter_suites_test_glob_test(struct kunit *test)
->  {
->         struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
-> -       struct kunit_suite * const *filtered;
-> -       struct kunit_test_filter filter = {
-> -               .suite_glob = "suite2",
-> -               .test_glob = "test2",
-> -       };
-> +       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-> +       struct suite_set got;
->
->         subsuite[0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
->         subsuite[1] = alloc_fake_suite(test, "suite2", dummy_test_cases);
->
->         /* Want: suite1, suite2, NULL -> suite2 (just test1), NULL */
-> -       filtered = kunit_filter_subsuite(subsuite, &filter);
-> -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered);
-> -       free_subsuite_at_end(test, filtered);
-> +       got = kunit_filter_suites(&suite_set, "suite2.test2");
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
-> +       kfree_at_end(test, got.start);
->
->         /* Validate we just have suite2 */
-> -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered[0]);
-> -       KUNIT_EXPECT_STREQ(test, (const char *)filtered[0]->name, "suite2");
-> -       KUNIT_EXPECT_FALSE(test, filtered[1]);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]);
-> +       KUNIT_EXPECT_STREQ(test, (const char *)got.start[0]->name, "suite2");
-> +       // DO NOT SUBMIT: null-terminated for now.
-> +       KUNIT_ASSERT_EQ(test, got.end - got.start, 1);
-> +       KUNIT_EXPECT_FALSE(test, *got.end);
->
->         /* Now validate we just have test2 */
-> -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered[0]->test_cases);
-> -       KUNIT_EXPECT_STREQ(test, (const char *)filtered[0]->test_cases[0].name, "test2");
-> -       KUNIT_EXPECT_FALSE(test, filtered[0]->test_cases[1].name);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]->test_cases);
-> +       KUNIT_EXPECT_STREQ(test, (const char *)got.start[0]->test_cases[0].name, "test2");
-> +       KUNIT_EXPECT_FALSE(test, got.start[0]->test_cases[1].name);
->  }
->
-> -static void filter_subsuite_to_empty_test(struct kunit *test)
-> +static void filter_suites_to_empty_test(struct kunit *test)
->  {
->         struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
-> -       struct kunit_suite * const *filtered;
-> -       struct kunit_test_filter filter = {
-> -               .suite_glob = "not_found",
-> -               .test_glob = NULL,
-> -       };
-> +       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-> +       struct suite_set got;
->
->         subsuite[0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
->         subsuite[1] = alloc_fake_suite(test, "suite2", dummy_test_cases);
->
-> -       filtered = kunit_filter_subsuite(subsuite, &filter);
-> -       free_subsuite_at_end(test, filtered); /* just in case */
-> -
-> -       KUNIT_EXPECT_FALSE_MSG(test, filtered,
-> -                              "should be NULL to indicate no match");
-> -}
-> -
-> -static void kfree_subsuites_at_end(struct kunit *test, struct suite_set *suite_set)
-> -{
-> -       struct kunit_suite * const * const *suites;
-> +       got = kunit_filter_suites(&suite_set, "not_found");
-> +       kfree_at_end(test, got.start); /* just in case */
->
-> -       kfree_at_end(test, suite_set->start);
-> -       for (suites = suite_set->start; suites < suite_set->end; suites++)
-> -               free_subsuite_at_end(test, *suites);
-> +       KUNIT_EXPECT_PTR_EQ_MSG(test, got.start, got.end,
-> +                               "should be empty to indicate no match");
->  }
->
-> -static void filter_suites_test(struct kunit *test)
-> -{
-> -       /* Suites per-file are stored as a NULL terminated array */
-> -       struct kunit_suite *subsuites[2][2] = {
-> -               {NULL, NULL},
-> -               {NULL, NULL},
-> -       };
-> -       /* Match the memory layout of suite_set */
-> -       struct kunit_suite * const * const suites[2] = {
-> -               subsuites[0], subsuites[1],
-> -       };
-> -
-> -       const struct suite_set suite_set = {
-> -               .start = suites,
-> -               .end = suites + 2,
-> -       };
-> -       struct suite_set filtered = {.start = NULL, .end = NULL};
-> -
-> -       /* Emulate two files, each having one suite */
-> -       subsuites[0][0] = alloc_fake_suite(test, "suite0", dummy_test_cases);
-> -       subsuites[1][0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
-> -
-> -       /* Filter out suite1 */
-> -       filtered = kunit_filter_suites(&suite_set, "suite0");
-> -       kfree_subsuites_at_end(test, &filtered); /* let us use ASSERTs without leaking */
-> -       KUNIT_ASSERT_EQ(test, filtered.end - filtered.start, (ptrdiff_t)1);
-> -
-> -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start);
-> -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start[0]);
-> -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start[0][0]);
-> -       KUNIT_EXPECT_STREQ(test, (const char *)filtered.start[0][0]->name, "suite0");
-> -}
->
->  static struct kunit_case executor_test_cases[] = {
->         KUNIT_CASE(parse_filter_test),
-> -       KUNIT_CASE(filter_subsuite_test),
-> -       KUNIT_CASE(filter_subsuite_test_glob_test),
-> -       KUNIT_CASE(filter_subsuite_to_empty_test),
->         KUNIT_CASE(filter_suites_test),
-> +       KUNIT_CASE(filter_suites_test_glob_test),
-> +       KUNIT_CASE(filter_suites_to_empty_test),
->         {}
+> + * @reqprot: The requested protection on the mmap, passed from usermod=
+e.
+> + * @prot: The effective protection on the mmap, resolved from reqprot =
+and
+> + *	  system configuration.
+> + * @flags: Unused.
+> + *
+> + * Return:
+> + * 0 - OK
+> + * !0 - Error
+> + */
+> +int ipe_on_mmap(struct file *f, unsigned long reqprot, unsigned long p=
+rot,
+> +		unsigned long flags)
+> +{
+> +	if (prot & PROT_EXEC || reqprot & PROT_EXEC)
+> +		return ipe_process_event(f, ipe_operation_exec, ipe_hook_mmap);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * ipe_on_mprotect: LSM hook called when a mmap'd region of memory is =
+changing
+> + *		    its protections via mprotect.
+> + * @vma: Existing virtual memory area created by mmap or similar
+> + * @reqprot: The requested protection on the mmap, passed from usermod=
+e.
+> + * @prot: The effective protection on the mmap, resolved from reqprot =
+and
+> + *	  system configuration.
+> + *
+> + * Return:
+> + * 0 - OK
+> + * !0 - Error
+> + */
+> +int ipe_on_mprotect(struct vm_area_struct *vma, unsigned long reqprot,=
+
+> +		    unsigned long prot)
+> +{
+> +	/* Already Executable */
+> +	if (vma->vm_flags & VM_EXEC)
+> +		return 0;
+> +
+> +	if (((prot & PROT_EXEC) || reqprot & PROT_EXEC))
+> +		return ipe_process_event(vma->vm_file, ipe_operation_exec,
+> +					 ipe_hook_mprotect);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * ipe_on_kernel_read: LSM hook called when a file is being read in fr=
+om
+> + *		       disk.
+> + * @file: Supplies a pointer to the file structure being read in from =
+disk
+> + * @id: Supplies the enumeration identifying the purpose of the read.
+> + * @contents: Unused.
+> + *
+> + * Return:
+> + * 0 - OK
+> + * !0 - Error
+> + */
+> +int ipe_on_kernel_read(struct file *file, enum kernel_read_file_id id,=
+
+> +		       bool contents)
+> +{
+> +	enum ipe_operation op;
+> +
+> +	switch (id) {
+> +	case READING_FIRMWARE:
+> +		op =3D ipe_operation_firmware;
+> +		break;
+> +	case READING_MODULE:
+> +		op =3D ipe_operation_kernel_module;
+> +		break;
+> +	case READING_KEXEC_INITRAMFS:
+> +		op =3D ipe_operation_kexec_initramfs;
+> +		break;
+> +	case READING_KEXEC_IMAGE:
+> +		op =3D ipe_operation_kexec_image;
+> +		break;
+> +	case READING_POLICY:
+> +		op =3D ipe_operation_ima_policy;
+> +		break;
+> +	case READING_X509_CERTIFICATE:
+> +		op =3D ipe_operation_ima_x509;
+> +		break;
+> +	default:
+> +		op =3D ipe_operation_max;
+> +	}
+> +
+> +	return ipe_process_event(file, op, ipe_hook_kernel_read);
+> +}
+> +
+> +/**
+> + * ipe_on_kernel_load_data: LSM hook called when a buffer is being rea=
+d in from
+> + *			    disk.
+> + * @id: Supplies the enumeration identifying the purpose of the read.
+> + * @contents: Unused.
+> + *
+> + * Return:
+> + * 0 - OK
+> + * !0 - Error
+> + */
+> +int ipe_on_kernel_load_data(enum kernel_load_data_id id, bool contents=
+)
+> +{
+> +	enum ipe_operation op;
+> +
+> +	switch (id) {
+> +	case LOADING_FIRMWARE:
+> +		op =3D ipe_operation_firmware;
+> +		break;
+> +	case LOADING_MODULE:
+> +		op =3D ipe_operation_kernel_module;
+> +		break;
+> +	case LOADING_KEXEC_INITRAMFS:
+> +		op =3D ipe_operation_kexec_initramfs;
+> +		break;
+> +	case LOADING_KEXEC_IMAGE:
+> +		op =3D ipe_operation_kexec_image;
+> +		break;
+> +	case LOADING_POLICY:
+> +		op =3D ipe_operation_ima_policy;
+> +		break;
+> +	case LOADING_X509_CERTIFICATE:
+> +		op =3D ipe_operation_ima_x509;
+> +		break;
+> +	default:
+> +		op =3D ipe_operation_max;
+> +	}
+> +
+> +	return ipe_process_event(NULL, op, ipe_hook_kernel_load);
+> +}
+> diff --git a/security/ipe/hooks.h b/security/ipe/hooks.h
+> index 58ed4a612e26..c99a0b7f45f7 100644
+> --- a/security/ipe/hooks.h
+> +++ b/security/ipe/hooks.h
+> @@ -5,11 +5,19 @@
+>  #ifndef IPE_HOOKS_H
+>  #define IPE_HOOKS_H
+> =20
+> +#include <linux/fs.h>
+>  #include <linux/types.h>
+>  #include <linux/sched.h>
+> +#include <linux/binfmts.h>
+> +#include <linux/security.h>
+> =20
+>  enum ipe_hook {
+> -	ipe_hook_max =3D 0
+> +	ipe_hook_exec =3D 0,
+> +	ipe_hook_mmap,
+> +	ipe_hook_mprotect,
+> +	ipe_hook_kernel_read,
+> +	ipe_hook_kernel_load,
+> +	ipe_hook_max
 >  };
->
-> @@ -188,20 +139,6 @@ static void kfree_at_end(struct kunit *test, const void *to_free)
->                                      (void *)to_free);
+> =20
+>  int ipe_task_alloc(struct task_struct *task,
+> @@ -17,4 +25,17 @@ int ipe_task_alloc(struct task_struct *task,
+> =20
+>  void ipe_task_free(struct task_struct *task);
+> =20
+> +int ipe_on_exec(struct linux_binprm *bprm);
+> +
+> +int ipe_on_mmap(struct file *f, unsigned long reqprot, unsigned long p=
+rot,
+> +		unsigned long flags);
+> +
+> +int ipe_on_mprotect(struct vm_area_struct *vma, unsigned long reqprot,=
+
+> +		    unsigned long prot);
+> +
+> +int ipe_on_kernel_read(struct file *file, enum kernel_read_file_id id,=
+
+> +		       bool contents);
+> +
+> +int ipe_on_kernel_load_data(enum kernel_load_data_id id, bool contents=
+);
+> +
+>  #endif /* IPE_HOOKS_H */
+> diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
+> index b58b372327a1..3f9d43783293 100644
+> --- a/security/ipe/ipe.c
+> +++ b/security/ipe/ipe.c
+> @@ -25,6 +25,11 @@ struct lsm_blob_sizes ipe_blobs __lsm_ro_after_init =
+=3D {
+>  static struct security_hook_list ipe_hooks[] __lsm_ro_after_init =3D {=
+
+>  	LSM_HOOK_INIT(task_alloc, ipe_task_alloc),
+>  	LSM_HOOK_INIT(task_free, ipe_task_free),
+> +	LSM_HOOK_INIT(bprm_check_security, ipe_on_exec),
+> +	LSM_HOOK_INIT(mmap_file, ipe_on_mmap),
+> +	LSM_HOOK_INIT(file_mprotect, ipe_on_mprotect),
+> +	LSM_HOOK_INIT(kernel_read_file, ipe_on_kernel_read),
+> +	LSM_HOOK_INIT(kernel_load_data, ipe_on_kernel_load_data),
+
+Please stick with the lsmname_hook_name convention, as you did
+with ipe_task_alloc and ipe_task_free. Anyone who is looking at
+more than one LSM is going to have a much harder time working
+with your code the way you have it. Think
+
+	% find security | xargs grep '_bprm_check_security('
+
+>  };
+> =20
+>  /**
+> diff --git a/security/ipe/policy.c b/security/ipe/policy.c
+> index b766824cc08f..048500229365 100644
+> --- a/security/ipe/policy.c
+> +++ b/security/ipe/policy.c
+> @@ -483,6 +483,14 @@ int ipe_parse_op(const struct ipe_policy_token *to=
+k,
+>  {
+>  	substring_t match[MAX_OPT_ARGS] =3D { 0 };
+>  	const match_table_t ops =3D {
+> +		{ ipe_operation_exec,		 "EXECUTE" },
+> +		{ ipe_operation_firmware,	 "FIRMWARE" },
+> +		{ ipe_operation_kernel_module,	 "KMODULE" },
+> +		{ ipe_operation_kexec_image,	 "KEXEC_IMAGE" },
+> +		{ ipe_operation_kexec_initramfs, "KEXEC_INITRAMFS"},
+> +		{ ipe_operation_ima_policy,	 "IMA_POLICY" },
+> +		{ ipe_operation_ima_x509,	 "IMA_X509_CERT" },
+> +		{ ipe_op_alias_kernel_read,	 "KERNEL_READ" },
+>  		{ ipe_op_alias_max, NULL },
+>  	};
+> =20
+> @@ -838,6 +846,15 @@ static int parse_policy(struct ipe_policy *p)
+>  	return rc;
 >  }
->
-> -static void free_subsuite_res_free(struct kunit_resource *res)
-> -{
-> -       kunit_free_subsuite(res->data);
-> -}
-> -
-> -static void free_subsuite_at_end(struct kunit *test,
-> -                                struct kunit_suite *const *to_free)
-> -{
-> -       if (IS_ERR_OR_NULL(to_free))
-> -               return;
-> -       kunit_alloc_resource(test, NULL, free_subsuite_res_free,
-> -                            GFP_KERNEL, (void *)to_free);
-> -}
-> -
->  static struct kunit_suite *alloc_fake_suite(struct kunit *test,
->                                             const char *suite_name,
->                                             struct kunit_case *test_cases)
->
-> base-commit: e7198adb84dcad671ad4f0e90aaa7e9fabf258dc
-> --
-> 2.33.0.882.g93a45727a2-goog
->
+> =20
+> +static const enum ipe_operation alias_kread[] =3D {
+> +	ipe_operation_firmware,
+> +	ipe_operation_kernel_module,
+> +	ipe_operation_ima_policy,
+> +	ipe_operation_ima_x509,
+> +	ipe_operation_kexec_image,
+> +	ipe_operation_kexec_initramfs,
+> +};
+> +
+>  /**
+>   * ipe_is_op_alias: Determine if @op is an alias for one or more opera=
+tions
+>   * @op: Supplies the operation to check. Should be either ipe_operatio=
+n or
+> @@ -852,9 +869,15 @@ static int parse_policy(struct ipe_policy *p)
+>  bool ipe_is_op_alias(int op, const enum ipe_operation **map, size_t *s=
+ize)
+>  {
+>  	switch (op) {
+> +	case ipe_op_alias_kernel_read:
+> +		*map =3D alias_kread;
+> +		*size =3D ARRAY_SIZE(alias_kread);
+> +		break;
+>  	default:
+>  		return false;
+>  	}
+> +
+> +	return true;
+>  }
+> =20
+>  /**
+> diff --git a/security/ipe/policy.h b/security/ipe/policy.h
+> index 6818f6405dd0..ca37af46e5af 100644
+> --- a/security/ipe/policy.h
+> +++ b/security/ipe/policy.h
+> @@ -26,7 +26,14 @@ struct ipe_policy_line {
+>  struct ipe_module;
+> =20
+>  enum ipe_operation {
+> -	ipe_operation_max =3D 0,
+> +	ipe_operation_exec =3D 0,
+> +	ipe_operation_firmware,
+> +	ipe_operation_kernel_module,
+> +	ipe_operation_kexec_image,
+> +	ipe_operation_kexec_initramfs,
+> +	ipe_operation_ima_policy,
+> +	ipe_operation_ima_x509,
+> +	ipe_operation_max
+>  };
+> =20
+>  /*
+> @@ -34,7 +41,8 @@ enum ipe_operation {
+>   * that are just one or more operations under the hood
+>   */
+>  enum ipe_op_alias {
+> -	ipe_op_alias_max =3D ipe_operation_max,
+> +	ipe_op_alias_kernel_read =3D ipe_operation_max,
+> +	ipe_op_alias_max,
+>  };
+> =20
+>  enum ipe_action {
+
