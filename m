@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B148542C7FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C4142C7FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238191AbhJMRuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
+        id S238308AbhJMRus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238424AbhJMRuN (ORCPT
+        with ESMTP id S238461AbhJMRuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:50:13 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D115C0613E9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:47:05 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id i83-20020a256d56000000b005b706d1417bso3982188ybc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:47:05 -0700 (PDT)
+        Wed, 13 Oct 2021 13:50:23 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AF0C0613EF
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:47:08 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id h185-20020a256cc2000000b005bdce4db0easo3944570ybc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:47:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=REGzgN8X9fN5ply/7E9LzsjfVW7yuXTByGhaPBFWXJ8=;
-        b=ZqQS2v6Gvj7W6vqT+l6CnXf0/429EV/FmKYWJoQk3z/OJjNs8yYDXelfCmR8gyGBHf
-         5eARzKnRe3ifVPaKze8MgTqnfewQMF+VOTysTM84BOOsVJpLq5OCaqgmZoQUZW85zLEB
-         G2y60+XlSwTBEbG2Vk9abyiZwrminvwZfdEFjFX/V6fYat3Xiu7qiq1nKt9VPBmQcN8F
-         RuPeAUANgyM3EgpjRduUdf1F12oLNDSS7xjptGXT4o6L5cfYej06J7EL0Kl4vSFpeVaQ
-         mKviXpYGsdTd1VYI/qPxKXctWSwf7r138Ve5REaledWO4M/Nzl3Rr9CIVnyUhTnxHVBh
-         TP2w==
+        bh=qd8yfvf1tsu8pyYgjgw0dwDMJ8bNdB+xGQEacBsai/o=;
+        b=enY+7wo79cNAfEy8DpQDTnsQhGMZ7AgPnHn3gejKwqwMajmLenk78uty8hCTY4ZCfz
+         SlXMIc0MfZ2Tq7ozQ06zCq8nyre8pU2432hFZ6gMvS7Qfmwuz3oCp5kcESIaoX2Z4dYF
+         2BW7KN1ig5P7dIyuW98nJq8gT9WoSf0I+/+d7js2TwbPTohjMsDk7pcJ0u0E+Ds0Ic6F
+         aSjc4o1xRibMLykEZR0nbe1f4M4SAV1sTgT5/uv4n/8GZTIO/tnbTo5vIA7AJ1s5qw4T
+         6XlphhiRQS6JKsSZqblRTIMppNZtRjDLSrln7995kpRj5rL8uiqp32bt+Gqzy43gR2QA
+         /quA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=REGzgN8X9fN5ply/7E9LzsjfVW7yuXTByGhaPBFWXJ8=;
-        b=R1U3LnVqLgKcOqfKBS9yzG1QAvg1KE9H9mJtoe4eRtsmhqGXU33eo/rRH7jSqqBqiF
-         gvrrLgX+C4mhkZ0v1T4kz807T2/pVqPcPr6lMMFkcf9JCj+HuT4W8iYOEvwLoy9N6SHZ
-         0eXoOp0pe42VyTfNxC0nwBh24P7y1X8878Yvyc8gcB62gMB8+HC57x+H09IU3DaLu2oG
-         U7A6XvWRG+qIzLp+aE8O0ST6S6qS8J0z0f7Nr6KLd7Jcj+sY/hmufYXGE9riqVpVIAWK
-         AJqhniWqeJhX18jmD/gkrvn142Wy1LqkPVSLPtRT+YQ1/jybEbGdgtgkEB8D7f546CBk
-         FaVw==
-X-Gm-Message-State: AOAM5329o108RlXgfzXmd9h1y6cwTbN/4SSQI8GbdnXTi04gTmPx8bBz
-        z6YqbW7/oiQLplZ28fmpWb/2FpMuQ/6S
-X-Google-Smtp-Source: ABdhPJxNrLzJkPIGwA+4X/MvjvvKSL77JIKLUZKEBVpGLqExQRgP3F6yQoa/WWJseRM1ayX1zW92qcEBQgAK
+        bh=qd8yfvf1tsu8pyYgjgw0dwDMJ8bNdB+xGQEacBsai/o=;
+        b=Ig1iFixTbXewKyM2+07sIW2usjZevfRhPSSz3IaFQGajXyciD6rleqHIAK12mQ7yDD
+         /uAvCMNdLIOtcb9EblIFPYPCenbPmQEAmMKxtmIpXugBkh6ZdtqA+J2dhHPHrKfbglCq
+         ocftLbbkU2Jj8ltTfRxAhhVd3mqSWYykMobB/f0jeQ9eeNOrKbKxMbD4Yy1f+9tz4p7y
+         Rzn0c7xj6Bisqoumbtyju60hNarotBZURUB8Qy8/xlXNppBGtv+GTmTT+Y18T4GrJbUk
+         NJx41Bo4CqbaVZBre6YWlPDnjxxqlvKWsk2XWYobJNM8gfOtVH0zX44gpb59fOyxxHlM
+         H+Ow==
+X-Gm-Message-State: AOAM531BrvpqkBDk9+WTymuJtRuB7TjYJ3X+DckMOaZxOaw8Y/sn59PG
+        t2d5Zc6o5t2xhssa6hyJbOUNor76lcMg
+X-Google-Smtp-Source: ABdhPJwniRM3H/bw+qTNvCxBfmzQkI5bnpfy/c5ptf3TRbO8NSt09jY3XBix9TfMWyH2EESWHAt9sk2wl1An
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:aeaf:8e9e:3df2:aad9])
- (user=irogers job=sendgmr) by 2002:a25:ab61:: with SMTP id
- u88mr738884ybi.241.1634147224865; Wed, 13 Oct 2021 10:47:04 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 10:46:00 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:154b:: with SMTP id
+ r11mr981686ybu.208.1634147227488; Wed, 13 Oct 2021 10:47:07 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 10:46:01 -0700
 In-Reply-To: <20211013174604.747276-1-irogers@google.com>
-Message-Id: <20211013174604.747276-19-irogers@google.com>
+Message-Id: <20211013174604.747276-20-irogers@google.com>
 Mime-Version: 1.0
 References: <20211013174604.747276-1-irogers@google.com>
 X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH v2 18/22] perf test: Remove non test case style support.
+Subject: [PATCH v2 19/22] perf test: BP tests, remove is_supported use
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -73,81 +73,205 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert shell tests to also run using test case style.
+Migrate the is_supported functionality to returning TEST_SKIP.
+Motivation is kunit has no is_supported function.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/builtin-test.c | 25 ++++++++++++++++---------
- tools/perf/tests/tests.h        |  1 -
- 2 files changed, 16 insertions(+), 10 deletions(-)
+ tools/perf/tests/bp_account.c         | 45 +++++++++++----------------
+ tools/perf/tests/bp_signal.c          | 43 ++++---------------------
+ tools/perf/tests/bp_signal_overflow.c | 16 ++++------
+ tools/perf/tests/tests.h              | 21 ++++++++++++-
+ 4 files changed, 51 insertions(+), 74 deletions(-)
 
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index c98c7134b552..966948cacba3 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -157,9 +157,6 @@ static bool is_supported(const struct test_suite *t)
+diff --git a/tools/perf/tests/bp_account.c b/tools/perf/tests/bp_account.c
+index e4f7b635ffef..d1ebb5561e5b 100644
+--- a/tools/perf/tests/bp_account.c
++++ b/tools/perf/tests/bp_account.c
+@@ -19,6 +19,19 @@
+ #include "../perf-sys.h"
+ #include "cloexec.h"
  
- static test_fnptr test_function(const struct test_suite *t, int subtest)
- {
--	if (t->func)
--		return t->func;
++/*
++ * PowerPC and S390 do not support creation of instruction breakpoints using the
++ * perf_event interface.
++ *
++ * Just disable the test for these architectures until these issues are
++ * resolved.
++ */
++#if defined(__powerpc__) || defined(__s390x__)
++#define BP_ACCOUNT_IS_SUPPORTED 0
++#else
++#define BP_ACCOUNT_IS_SUPPORTED 1
++#endif
++
+ static volatile long the_var;
+ 
+ static noinline int test_function(void)
+@@ -180,6 +193,11 @@ static int test__bp_accounting(struct test_suite *test __maybe_unused, int subte
+ 	int bp_cnt = detect_cnt(true);
+ 	int share  = detect_share(wp_cnt, bp_cnt);
+ 
++	if (!BP_ACCOUNT_IS_SUPPORTED) {
++		pr_debug("Test not supported on this architecture");
++		return TEST_SKIP;
++	}
++
+ 	pr_debug("watchpoints count %d, breakpoints count %d, has_ioctl %d, share %d\n",
+ 		 wp_cnt, bp_cnt, has_ioctl, share);
+ 
+@@ -189,29 +207,4 @@ static int test__bp_accounting(struct test_suite *test __maybe_unused, int subte
+ 	return bp_accounting(wp_cnt, share);
+ }
+ 
+-static bool test__bp_account_is_supported(void)
+-{
+-	/*
+-	 * PowerPC and S390 do not support creation of instruction
+-	 * breakpoints using the perf_event interface.
+-	 *
+-	 * Just disable the test for these architectures until these
+-	 * issues are resolved.
+-	 */
+-#if defined(__powerpc__) || defined(__s390x__)
+-	return false;
+-#else
+-	return true;
+-#endif
+-}
 -
- 	if (subtest <= 0)
- 		return t->test_cases[0].run_case;
+-static struct test_case bp_accounting_tests[] = {
+-	TEST_CASE("Breakpoint accounting", bp_accounting),
+-	{ .name = NULL, }
+-};
+-
+-struct test_suite suite__bp_accounting = {
+-	.desc = "Breakpoint accounting",
+-	.test_cases = bp_accounting_tests,
+-	.is_supported = test__bp_account_is_supported,
+-};
++DEFINE_SUITE("Breakpoint accounting", bp_accounting);
+diff --git a/tools/perf/tests/bp_signal.c b/tools/perf/tests/bp_signal.c
+index 1676e3a11906..1f2908f02389 100644
+--- a/tools/perf/tests/bp_signal.c
++++ b/tools/perf/tests/bp_signal.c
+@@ -166,6 +166,11 @@ static int test__bp_signal(struct test_suite *test __maybe_unused, int subtest _
+ 	struct sigaction sa;
+ 	long long count1, count2, count3;
  
-@@ -413,24 +410,34 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width,
- 	for_each_shell_test(entlist, n_dirs, st.dir, ent) {
- 		int curr = i++;
- 		char desc[256];
--		struct test_suite test = {
--			.desc = shell_test__description(desc, sizeof(desc), st.dir, ent->d_name),
--			.func = shell_test__run,
-+		struct test_case test_cases[] = {
-+			{
-+				.desc = shell_test__description(desc,
-+								sizeof(desc),
-+								st.dir,
-+								ent->d_name),
-+				.run_case = shell_test__run,
-+			},
-+			{ .name = NULL, }
-+		};
-+		struct test_suite test_suite = {
-+			.desc = test_cases[0].desc,
-+			.test_cases = test_cases,
- 			.priv = &st,
- 		};
++	if (!BP_SIGNAL_IS_SUPPORTED) {
++		pr_debug("Test not supported on this architecture");
++		return TEST_SKIP;
++	}
++
+ 	/* setup SIGIO signal handler */
+ 	memset(&sa, 0, sizeof(struct sigaction));
+ 	sa.sa_sigaction = (void *) sig_handler;
+@@ -285,40 +290,4 @@ static int test__bp_signal(struct test_suite *test __maybe_unused, int subtest _
+ 		TEST_OK : TEST_FAIL;
+ }
  
--		if (!perf_test__matches(test.desc, curr, argc, argv))
-+		if (!perf_test__matches(test_suite.desc, curr, argc, argv))
- 			continue;
+-bool test__bp_signal_is_supported(void)
+-{
+-	/*
+-	 * PowerPC and S390 do not support creation of instruction
+-	 * breakpoints using the perf_event interface.
+-	 *
+-	 * ARM requires explicit rounding down of the instruction
+-	 * pointer in Thumb mode, and then requires the single-step
+-	 * to be handled explicitly in the overflow handler to avoid
+-	 * stepping into the SIGIO handler and getting stuck on the
+-	 * breakpointed instruction.
+-	 *
+-	 * Since arm64 has the same issue with arm for the single-step
+-	 * handling, this case also gets stuck on the breakpointed
+-	 * instruction.
+-	 *
+-	 * Just disable the test for these architectures until these
+-	 * issues are resolved.
+-	 */
+-#if defined(__powerpc__) || defined(__s390x__) || defined(__arm__) || \
+-    defined(__aarch64__)
+-	return false;
+-#else
+-	return true;
+-#endif
+-}
+-
+-static struct test_case bp_signal_tests[] = {
+-	TEST_CASE("Breakpoint overflow signal handler", bp_signal),
+-	{ .name = NULL, }
+-};
+-
+-struct test_suite suite__bp_signal = {
+-	.desc = "Breakpoint overflow signal handler",
+-	.test_cases = bp_signal_tests,
+-	.is_supported = test__bp_signal_is_supported,
+-};
++DEFINE_SUITE("Breakpoint overflow signal handler", bp_signal);
+diff --git a/tools/perf/tests/bp_signal_overflow.c b/tools/perf/tests/bp_signal_overflow.c
+index bc1f13851750..4e897c2cf26b 100644
+--- a/tools/perf/tests/bp_signal_overflow.c
++++ b/tools/perf/tests/bp_signal_overflow.c
+@@ -66,6 +66,11 @@ static int test__bp_signal_overflow(struct test_suite *test __maybe_unused, int
+ 	long long count;
+ 	int fd, i, fails = 0;
  
- 		st.file = ent->d_name;
--		pr_info("%2d: %-*s:", i, width, test.desc);
-+		pr_info("%2d: %-*s:", i, width, test_suite.desc);
++	if (!BP_SIGNAL_IS_SUPPORTED) {
++		pr_debug("Test not supported on this architecture");
++		return TEST_SKIP;
++	}
++
+ 	/* setup SIGIO signal handler */
+ 	memset(&sa, 0, sizeof(struct sigaction));
+ 	sa.sa_sigaction = (void *) sig_handler;
+@@ -134,13 +139,4 @@ static int test__bp_signal_overflow(struct test_suite *test __maybe_unused, int
+ 	return fails ? TEST_FAIL : TEST_OK;
+ }
  
- 		if (intlist__find(skiplist, i)) {
- 			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (user override)\n");
- 			continue;
- 		}
- 
--		test_and_print(&test, false, -1);
-+		test_and_print(&test_suite, false, 0);
- 	}
- 
- 	for (e = 0; e < n_dirs; e++)
+-static struct test_case bp_signal_overflow_tests[] = {
+-	TEST_CASE("Breakpoint overflow sampling", bp_signal_overflow),
+-	{ .name = NULL, }
+-};
+-
+-struct test_suite suite__bp_signal_overflow = {
+-	.desc = "Breakpoint overflow sampling",
+-	.test_cases = bp_signal_overflow_tests,
+-	.is_supported = test__bp_signal_is_supported,
+-};
++DEFINE_SUITE("Breakpoint overflow sampling", bp_signal_overflow);
 diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index 9bf448f7429a..cae33c375d55 100644
+index cae33c375d55..958f94dcc94c 100644
 --- a/tools/perf/tests/tests.h
 +++ b/tools/perf/tests/tests.h
-@@ -40,7 +40,6 @@ struct test_case {
+@@ -151,7 +151,26 @@ DECLARE_SUITE(expand_cgroup_events);
+ DECLARE_SUITE(perf_time_to_tsc);
+ DECLARE_SUITE(dlfilter);
  
- struct test_suite {
- 	const char *desc;
--	test_fnptr func;
- 	struct {
- 		bool skip_if_fail;
- 	} subtest;
+-bool test__bp_signal_is_supported(void);
++/*
++ * PowerPC and S390 do not support creation of instruction breakpoints using the
++ * perf_event interface.
++ *
++ * ARM requires explicit rounding down of the instruction pointer in Thumb mode,
++ * and then requires the single-step to be handled explicitly in the overflow
++ * handler to avoid stepping into the SIGIO handler and getting stuck on the
++ * breakpointed instruction.
++ *
++ * Since arm64 has the same issue with arm for the single-step handling, this
++ * case also gets stuck on the breakpointed instruction.
++ *
++ * Just disable the test for these architectures until these issues are
++ * resolved.
++ */
++#if defined(__powerpc__) || defined(__s390x__) || defined(__arm__) || defined(__aarch64__)
++#define BP_SIGNAL_IS_SUPPORTED 0
++#else
++#define BP_SIGNAL_IS_SUPPORTED 1
++#endif
+ 
+ #ifdef HAVE_DWARF_UNWIND_SUPPORT
+ struct thread;
 -- 
 2.33.0.882.g93a45727a2-goog
 
