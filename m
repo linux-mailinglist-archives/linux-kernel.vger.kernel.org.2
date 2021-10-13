@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C067D42B2E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E3A42B2E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236798AbhJMCu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 22:50:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233544AbhJMCuz (ORCPT
+        id S236720AbhJMCvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 22:51:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46220 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236878AbhJMCvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 22:50:55 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BCEC061570;
-        Tue, 12 Oct 2021 19:48:53 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id g8so3842800edt.7;
-        Tue, 12 Oct 2021 19:48:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JUR/mGvYPsKPEVw6jC+FILMezuz/OqDM8KSj68qp0LY=;
-        b=Yd7IDzDBhs1jYzqUmRgWTj0v0Cnn8J7FLaaZ2l6VmBUNzCK8QG1NW4v9hK40WDpe00
-         saC8+xJ1jSYUK5r0CY4FFwbvodFXwfYR8/Bms20ZkJDcmI3gwQNyvsuxqWQxQoSfIF8K
-         BdI6g/y1ttyMHQWTL+xpRnrTeR26bZF116KpKf1vFwYvDSS0dWcOr111q34shL817go/
-         beFOxa0TXvsVHQqecyLXW1ZTUNRlhDj52ZYeyvwLyzHW8ATTtOlhZ4DX0S+HNmVjXm9V
-         OtzZ2rnbqSoGm+qffj80VdSlCvIOMOP6l3+53d4c/gDekgXWfLTUS9uHjGyUNxa2ylO1
-         8DOA==
+        Tue, 12 Oct 2021 22:51:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634093353;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R+0oNJdHTqOxAaH5moaEK3403j+y86OhqVlmztOpaVo=;
+        b=CMr8NtvsjpCOYHMilfxJMdS90e4Dq5+twxeiTqf1Ot4/gzeTotWhA6xnSXLMAHGbmCgrYs
+        9y02LUwWcMNdCV2ZBWvF+A7h+F95rSZyVgOOjgXdKvspfFx25M9EtbC1vkR8qobz5u+60E
+        S3RDiO3MQBm86pj+qZBvIw5rl9lRwl8=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-DpBUk7m8MEqCuIBkEtIsyQ-1; Tue, 12 Oct 2021 22:49:12 -0400
+X-MC-Unique: DpBUk7m8MEqCuIBkEtIsyQ-1
+Received: by mail-pg1-f197.google.com with SMTP id g26-20020a63521a000000b0029524f04f5aso640325pgb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 19:49:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JUR/mGvYPsKPEVw6jC+FILMezuz/OqDM8KSj68qp0LY=;
-        b=uEVZtY7ivV1hLv87MdrKAQBl4hhh/lIuUrv/pagwa7gvYx565jw8r0vyDd+OaaEbnN
-         n0JiG1FuxjBNrneeNVBHNCbPc8oU+JU2ZyHuwbkJuXI4URA+LGl4guJ2DDJlB1hPlfPW
-         bQiDBO0Xgw3RbdgiLQLsar4gBBnu7ObBK2Mrvz1c5MApTY9SWXfObQzeMUgssOhadEf6
-         eE4wyJYr54DJbkviCn/kcIVHQklzeO/3DDCLG7cWaH2tWFZpW/LU1zDoyf+ariCI4mmc
-         6n8Q5zf+z16ebqqXT0Vn/ILL3j1ihDqfqRWl44WFGrDU702wgmw/5J4jN2P18t6/3GUm
-         h2Hg==
-X-Gm-Message-State: AOAM531hBvLeWHWcvESnx7d74Mt7V7FazUa0k3AWMq/nM+LVvw3wUMkt
-        iqANBZayJHbKVLNK8uJUivs8YrJmgYpDdxgUa4TIpQgU
-X-Google-Smtp-Source: ABdhPJx0ADpL3IeCPgiQs+btp6hskCDISm/c40aR79xLjBbigm8sdFG+AmdFBaN76EVqmlE6VUa2c///RnYPJ92xsEs=
-X-Received: by 2002:a05:6402:16d2:: with SMTP id r18mr5591511edx.363.1634093331672;
- Tue, 12 Oct 2021 19:48:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R+0oNJdHTqOxAaH5moaEK3403j+y86OhqVlmztOpaVo=;
+        b=wlogmBNWppLt8YFXNJ8mT9+QT2IfrIm7sbEA92GBBbnx68TudlMb6fsD0HE1iWMXxG
+         UmEbRhWqP7h6XdzMmxVOO/8eCi4RCJxwPNU1CoEh1jQMs74bxKrTzTX74q4+NGDiWaBn
+         2p/72Ypfa6LczZvOsE1okVZNJC3cfZguIXPabnmN8DCyHRzM/5CC5w8j57cZRq97noc7
+         CWODh1S5ePudpjXIgpnz4rZY9eIx3VT9K/Jznj9Z8h1tkThfvpHd2bIcq3hi5s4e8x9/
+         zxZPDpyGg63aDJoufGJRYkYMNN0+ivNjSzBCp7A0a6WdzQhHy5FD8rkhPM9Y5RPn50re
+         ypww==
+X-Gm-Message-State: AOAM530pd2CVAxWHx1e8k9TLWsi8IQv6RHPzLkNqfWAo3McrE7Ywr2VY
+        9Eo2/Jtwx3eepieHDae3mkClGywDDZ4zrfsHuhCXiqJkJiR9HQl3nyrReTL4JJra9HrqNasC1Gx
+        txInTVyTU3F8tnQCP/7zP5Mp7
+X-Received: by 2002:a05:6a00:a0a:b0:44c:52c9:bf25 with SMTP id p10-20020a056a000a0a00b0044c52c9bf25mr35654797pfh.24.1634093351142;
+        Tue, 12 Oct 2021 19:49:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyMViZ0sgxMYWlr6yHux2NLvCKNqAhqb/tfqmxDDtN6oX4y3JX1XVULHqOH0ScmrQtPFfn4hA==
+X-Received: by 2002:a05:6a00:a0a:b0:44c:52c9:bf25 with SMTP id p10-20020a056a000a0a00b0044c52c9bf25mr35654777pfh.24.1634093350788;
+        Tue, 12 Oct 2021 19:49:10 -0700 (PDT)
+Received: from t490s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id s8sm4017477pjm.32.2021.10.12.19.49.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 19:49:10 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 10:49:04 +0800
+From:   Peter Xu <peterx@redhat.com>
+To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Bin Wang <wangbin224@huawei.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] mm, pagemap: expose hwpoison entry
+Message-ID: <YWZJIKsn6Sry5P6k@t490s>
+References: <20211004115001.1544259-1-naoya.horiguchi@linux.dev>
 MIME-Version: 1.0
-References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-3-shy828301@gmail.com>
- <YV4Dz3y4NXhtqd6V@t490s> <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
- <CAHbLzkqm_Os8TLXgbkL-oxQVsQqRbtmjdMdx0KxNke8mUF1mWA@mail.gmail.com>
- <YWTc/n4r6CJdvPpt@t490s> <YWTobPkBc3TDtMGd@t490s> <CAHbLzkrOsNygu5x8vbMHedv+P3dEqOxOC6=O6ACSm1qKzmoCng@mail.gmail.com>
- <YWYHukJIo8Ol2sHN@t490s>
-In-Reply-To: <YWYHukJIo8Ol2sHN@t490s>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 12 Oct 2021 19:48:39 -0700
-Message-ID: <CAHbLzkp3UXKs_NP9XD_ws=CSSFzUPk7jRxj0K=gvOqoi+GotmA@mail.gmail.com>
-Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-To:     Peter Xu <peterx@redhat.com>
-Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211004115001.1544259-1-naoya.horiguchi@linux.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 3:10 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Tue, Oct 12, 2021 at 11:02:09AM -0700, Yang Shi wrote:
-> > On Mon, Oct 11, 2021 at 6:44 PM Peter Xu <peterx@redhat.com> wrote:
-> > >
-> > > On Mon, Oct 11, 2021 at 08:55:26PM -0400, Peter Xu wrote:
-> > > > Another thing is I noticed soft_offline_in_use_page() will still ignore file
-> > > > backed split.  I'm not sure whether it means we'd better also handle that case
-> > > > as well, so shmem thp can be split there too?
-> > >
-> > > Please ignore this paragraph - I somehow read "!PageHuge(page)" as
-> > > "PageAnon(page)"...  So I think patch 5 handles soft offline too.
-> >
-> > Yes, exactly. And even though the split is failed (or file THP didn't
-> > get split before patch 5/5), soft offline would just return -EBUSY
-> > instead of calling __soft_offline_page->page_handle_poison(). So
-> > page_handle_poison() should not see THP at all.
->
-> I see, so I'm trying to summarize myself on what I see now with the new logic..
->
-> I think the offline code handles hwpoison differently as it sets PageHWPoison
-> at the end of the process, IOW if anything failed during the offline process
-> the hwpoison bit is not set.
->
-> That's different from how the memory failure path is handling this, as in that
-> case the hwpoison bit on the subpage is set firstly, e.g. before split thp.  I
-> believe that's also why memory failure requires the extra sub-page-hwpoison bit
-> while offline code shouldn't need to: because for soft offline split happens
-> before setting hwpoison so we just won't ever see a "poisoned file thp", while
-> for memory failure it could happen, and the sub-page-hwpoison will be a temp
-> bit anyway only exist for a very short period right after we set hwpoison on
-> the small page but before we split the thp.
->
-> Am I right above?
+Hi, Naoya,
 
-Yeah, you are right. I noticed this too, only successfully migrated
-page is marked as hwpoison. But TBH I'm not sure why it does this way.
-Naoya may know. Anyway, THP doesn't get migrated if it can't be split,
-so PageHasHWPoisoned doesn't apply, right?
+On Mon, Oct 04, 2021 at 08:50:01PM +0900, Naoya Horiguchi wrote:
+> +static inline struct page *hwpoison_entry_to_page(swp_entry_t entry)
+> +{
+> +	struct page *p = pfn_to_page(swp_offset(entry));
+> +
+> +	WARN_ON(!PageHWPoison(p));
+> +	return p;
+> +}
 
->
-> I feel like __soft_offline_page() still has some code that assumes "thp can be
-> there", e.g. iiuc after your change to allow file thp split, "hpage" will
-> always be the same as "page" then in that function, and isolate_page() does not
-> need to pass in a pagelist pointer too as it'll always be handling a small page
-> anyway.  But maybe they're fine to be there for now as they'll just work as
-> before, I think, so just raise it up.
+This is more a pure question..
 
-That compound_head() call seems to be for hugetlb since isolating
-hugetlb needs to pass in the head page IIUC. For the pagelist, I think
-it is just because migrate_pages() requires a list as the second
-parameter.
+I'm wondering whether that WARN_ON() could trigger.
 
->
-> --
-> Peter Xu
->
+IOW, what if we poison an anonymous page and then unpoison it?  Will there be a
+hwpoison swap entry leftover in the ptes that it used to map?  Will it crash
+the program when the page is accessed?
+
+I had a feeling that when handling the page fault in do_swap_page before we
+SIGBUS the program, we should double-check the PageHWPoison on the pfn page,
+but I could be missing something..
+
+Thanks,
+
+-- 
+Peter Xu
+
