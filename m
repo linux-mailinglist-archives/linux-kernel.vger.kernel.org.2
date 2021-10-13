@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D24942C7EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C3A42C7EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238436AbhJMRtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:49:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
+        id S238146AbhJMRta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238273AbhJMRso (ORCPT
+        with ESMTP id S238203AbhJMRsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:48:44 -0400
+        Wed, 13 Oct 2021 13:48:46 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E8DC061769
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:46:36 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id s66-20020a252c45000000b005ba35261459so3991831ybs.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:46:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1966EC06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:46:39 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id f8-20020a2585480000b02905937897e3daso4005406ybn.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:46:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=7wLqlWDZbW5oipoVcyWSenEA08zzZFnq0mGcKK8u4gU=;
-        b=eCgLADXSze3WX6HdUXPltfcrHeXDlucCkJKKBvRfewOAobU8y3ou4ZHm3IRRk0qilM
-         aQADpyZ5TYdZX2PaZpeW4jwD1NZzFR5uwg1w7ooD6CF7JCtXVQJETkHNCTsK0dS7rGQg
-         EPBbnFJAe3tMCCe3ZKW3Mqvf20fJnf4huYNn52Pz4OAFbfY6KD9crCoUJC/QzfikHK4o
-         7hWloL4BxmqSBXV9ZxTe8G7bUeXaZOZqdPLamHe7gz8KnHYedW69bI1Sk/T/dg+AmxNn
-         9IbaomqfyZRSxqZ0fXHFHk5ataStRLFqU2Z1sDk0cfvl5ijs3DfTH2XxJKlxA0vOyRa2
-         CyKg==
+        bh=C89KxJXK2AmfC41UKgGo8vF4MhXi7J9MAY9rM2xkdyE=;
+        b=V0Z/L1CaFQ+Z9lO9MhkZJlid8IqMjTmndnLxS8iY9dm8uNOzzLjWFeaf8yGsQoKsuL
+         g33GE97zKHXXi0Cz9W8C2q6+ZmSJH8vJnt7nvVaf6c6VVsof2/NPCXrCe6ITlU3egAju
+         7gi1GNUi4R2CfX6Z5Hj2tgW7e0oo+MXz87WryrwxgEcsPH+79s74a8VbNzHZNBZQloFs
+         a2zghpoJHYqhPxKC+d4lYsuuyXgwdfkmDxLx7pxiH8xqG9vvs9n/SAM1rHRIOtP4b6GT
+         iavelPHfv/ocX3mW3N87ehsr8CDj3HZWKbmB3Yb3Zt35aIPrV+i1p5DGBaFI/UBa+2b9
+         +orA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=7wLqlWDZbW5oipoVcyWSenEA08zzZFnq0mGcKK8u4gU=;
-        b=R9ZSQ+MuX0mNmX1JZHAE6CzqXMM8YG7hsjyrNseTMQss4zKg+vcQU4cNUmZ3Ct3VHy
-         ulAtnN2L6Y3uE0pwVhHDjjWoGjAMO57Z9YgEzHOhUFMG4yCB3RqcJsSF6LOPlB+wJfnh
-         Ty2U36Piq3AxmP2VkiUeUHSO2ANqDAtKnJVHPc8YI5xs/VXAuRdBLj6M6ejnqpqWlCtr
-         X9gWhco0uo+vM+50NEg2I9gxZsYmXMlMvaLX/NnZzlPBOn/u7s+7M/AOYF3Vn0wocsaR
-         Hv8hFuvxXrwX6Mrn02vJKgJQgvrmi/4PbtT+ttyTGse5KkK411Ww+k5LPDoHB5+hNLcI
-         O/DQ==
-X-Gm-Message-State: AOAM533uvVQoc6T4Ul9JFseYc0hNY7TtZAE0OVRPV8gPeIjzMW6AojSP
-        RQuXQsEm/nQ5eAGPVFgyj5sYWxKitEeF
-X-Google-Smtp-Source: ABdhPJxZGkoBQdfGYAaGdgWcVewqA1yVopyq1zMewGRWglvXvObOMP6POwDMsOE4bzhYnIO6N/GhHvlGQGzm
+        bh=C89KxJXK2AmfC41UKgGo8vF4MhXi7J9MAY9rM2xkdyE=;
+        b=JTa3Cc/eETDJ6wjlTSF+bcA2UfZHP745hllWRxEDIw7q7iTZMF017mAdLBTwsCOAwY
+         pRGuRJVVWWXy0zluHaiWGYCbVM0mMYOnMDq5Bm72FfRvrcHbMM/TBuXTMFgex5UQOb5I
+         3cJVDsBJ93Ki30hOcJ32zGnpUL6Kw+IAYpvGzISdUYThsM3CYNkPwzgy/aG7AmUJAbry
+         DBPRM+dZBTGSFsh0GDl7RkQAFjhbHbmoVdCB2o3B3nXJSMF1LMgAm/qGDlGIYJndVbP/
+         EKi+Fhpv6PHlYNtXWtLChTKxncZxBP4QnI0YhUb7tNMgHW0L/yB5Ld5bjjKBKqk60ObX
+         NYKQ==
+X-Gm-Message-State: AOAM530/9NJ4hL2sKL1tCkm1sQPH2/9p2Uv3uapUqKN80LCuC+2kOvNd
+        LOsF/6yUZW3DXPs2kugpN7D9b/xgpZ06
+X-Google-Smtp-Source: ABdhPJwOf9IMke9cKQ5Vp83R+oNhjfapQ+6q+MPZmx6pAvoK5alRGMdUUO9gx/UDC3WRwJeR4rSEMVkw2srd
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:aeaf:8e9e:3df2:aad9])
- (user=irogers job=sendgmr) by 2002:a25:d3d2:: with SMTP id
- e201mr854321ybf.260.1634147195842; Wed, 13 Oct 2021 10:46:35 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 10:45:48 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:709:: with SMTP id
+ k9mr914170ybt.317.1634147198268; Wed, 13 Oct 2021 10:46:38 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 10:45:49 -0700
 In-Reply-To: <20211013174604.747276-1-irogers@google.com>
-Message-Id: <20211013174604.747276-7-irogers@google.com>
+Message-Id: <20211013174604.747276-8-irogers@google.com>
 Mime-Version: 1.0
 References: <20211013174604.747276-1-irogers@google.com>
 X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH v2 06/22] perf test: Add helper functions for abstraction.
+Subject: [PATCH v2 07/22] perf test: Add test case struct.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -73,227 +73,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Abstract certain test features so that they can be refactored in later
-changes. No functional change.
+Add a test case struct mirroring the 'struct kunit_case'. Use the struct
+with the DEFINE_SUITE macro, where the single test is turned into a test
+case. Update the helpers in builtin-test to handle test cases.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/builtin-test.c | 94 +++++++++++++++++++++++----------
- tools/perf/tests/tests.h        |  6 ++-
- 2 files changed, 71 insertions(+), 29 deletions(-)
+ tools/perf/tests/builtin-test.c | 30 ++++++++++++++++++++++++------
+ tools/perf/tests/tests.h        | 26 ++++++++++++++++++++++----
+ 2 files changed, 46 insertions(+), 10 deletions(-)
 
 diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index 7d52e2eb8147..96eb486ffbc9 100644
+index 96eb486ffbc9..a6d84feba483 100644
 --- a/tools/perf/tests/builtin-test.c
 +++ b/tools/perf/tests/builtin-test.c
-@@ -115,6 +115,45 @@ static struct test_suite **tests[] = {
- 	arch_tests,
- };
+@@ -117,10 +117,19 @@ static struct test_suite **tests[] = {
  
-+static int num_subtests(const struct test_suite *t)
-+{
-+	if (t->subtest.get_nr)
-+		return t->subtest.get_nr();
-+
-+	return 0;
-+}
-+
-+static bool has_subtests(const struct test_suite *t)
-+{
-+	return t->subtest.get_nr || num_subtests(t) > 1;
-+}
-+
-+static const char *skip_reason(const struct test_suite *t, int subtest)
-+{
-+	if (t->subtest.skip_reason)
-+		return t->subtest.skip_reason(subtest);
-+
-+	return NULL;
-+}
-+
-+static const char *test_description(const struct test_suite *t, int subtest)
-+{
-+	if (subtest < 0 || !t->subtest.get_desc)
-+		return t->desc;
-+
-+	return t->subtest.get_desc(subtest);
-+}
-+
-+static bool is_supported(const struct test_suite *t)
-+{
-+	return !t->is_supported || t->is_supported();
-+}
-+
-+static test_fnptr test_function(const struct test_suite *t, int subtest __maybe_unused)
-+{
-+	return t->func;
-+}
-+
- static bool perf_test__matches(const char *desc, int curr, int argc, const char *argv[])
+ static int num_subtests(const struct test_suite *t)
  {
- 	int i;
-@@ -171,7 +210,7 @@ static int run_test(struct test_suite *test, int subtest)
- 			}
- 		}
- 
--		err = test->func(test, subtest);
-+		err = test_function(test, subtest)(test, subtest);
- 		if (!dont_fork)
- 			exit(err);
- 	}
-@@ -208,7 +247,7 @@ static int test_and_print(struct test_suite *t, bool force_skip, int subtest)
- 		err = TEST_SKIP;
- 	}
- 
--	if (!t->subtest.get_nr)
-+	if (!has_subtests(t))
- 		pr_debug("%s:", t->desc);
- 	else
- 		pr_debug("%s subtest %d:", t->desc, subtest + 1);
-@@ -218,11 +257,10 @@ static int test_and_print(struct test_suite *t, bool force_skip, int subtest)
- 		pr_info(" Ok\n");
- 		break;
- 	case TEST_SKIP: {
--		const char *skip_reason = NULL;
--		if (t->subtest.skip_reason)
--			skip_reason = t->subtest.skip_reason(subtest);
--		if (skip_reason)
--			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (%s)\n", skip_reason);
-+		const char *reason = skip_reason(t, subtest);
++	int num;
 +
-+		if (reason)
-+			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (%s)\n", reason);
- 		else
- 			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip\n");
- 	}
-@@ -397,7 +435,7 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
- 	int width = shell_tests__max_desc_width();
+ 	if (t->subtest.get_nr)
+ 		return t->subtest.get_nr();
  
- 	for_each_test(j, k, t) {
--		int len = strlen(t->desc);
-+		int len = strlen(test_description(t, -1));
+-	return 0;
++	if (!t->test_cases)
++		return 0;
++
++	num = 0;
++	while (t->test_cases[num].name)
++		num++;
++
++	return num;
+ }
  
- 		if (width < len)
- 			width = len;
-@@ -407,17 +445,15 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
- 		int curr = i++, err;
- 		int subi;
+ static bool has_subtests(const struct test_suite *t)
+@@ -138,10 +147,13 @@ static const char *skip_reason(const struct test_suite *t, int subtest)
  
--		if (!perf_test__matches(t->desc, curr, argc, argv)) {
-+		if (!perf_test__matches(test_description(t, -1), curr, argc, argv)) {
- 			bool skip = true;
- 			int subn;
+ static const char *test_description(const struct test_suite *t, int subtest)
+ {
+-	if (subtest < 0 || !t->subtest.get_desc)
+-		return t->desc;
++	if (t->test_cases && subtest >= 0)
++		return t->test_cases[subtest].desc;
  
--			if (!t->subtest.get_nr)
--				continue;
--
--			subn = t->subtest.get_nr();
-+			subn = num_subtests(t);
+-	return t->subtest.get_desc(subtest);
++	if (t->subtest.get_desc && subtest >= 0)
++		return t->subtest.get_desc(subtest);
++
++	return t->desc;
+ }
  
- 			for (subi = 0; subi < subn; subi++) {
--				if (perf_test__matches(t->subtest.get_desc(subi), curr, argc, argv))
-+				if (perf_test__matches(test_description(t, subi),
-+							curr, argc, argv))
- 					skip = false;
- 			}
+ static bool is_supported(const struct test_suite *t)
+@@ -149,9 +161,15 @@ static bool is_supported(const struct test_suite *t)
+ 	return !t->is_supported || t->is_supported();
+ }
  
-@@ -425,22 +461,23 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
- 				continue;
- 		}
+-static test_fnptr test_function(const struct test_suite *t, int subtest __maybe_unused)
++static test_fnptr test_function(const struct test_suite *t, int subtest)
+ {
+-	return t->func;
++	if (t->func)
++		return t->func;
++
++	if (subtest <= 0)
++		return t->test_cases[0].run_case;
++
++	return t->test_cases[subtest].run_case;
+ }
  
--		if (t->is_supported && !t->is_supported()) {
--			pr_debug("%2d: %-*s: Disabled\n", i, width, t->desc);
-+		if (!is_supported(t)) {
-+			pr_debug("%2d: %-*s: Disabled\n", i, width,
-+				 test_description(t, -1));
- 			continue;
- 		}
- 
--		pr_info("%2d: %-*s:", i, width, t->desc);
-+		pr_info("%2d: %-*s:", i, width, test_description(t, -1));
- 
- 		if (intlist__find(skiplist, i)) {
- 			color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (user override)\n");
- 			continue;
- 		}
- 
--		if (!t->subtest.get_nr) {
-+		if (!has_subtests(t)) {
- 			test_and_print(t, false, -1);
- 		} else {
--			int subn = t->subtest.get_nr();
-+			int subn = num_subtests(t);
- 			/*
- 			 * minus 2 to align with normal testcases.
- 			 * For subtest we print additional '.x' in number.
-@@ -460,18 +497,19 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
- 			pr_info("\n");
- 
- 			for (subi = 0; subi < subn; subi++) {
--				int len = strlen(t->subtest.get_desc(subi));
-+				int len = strlen(test_description(t, subi));
- 
- 				if (subw < len)
- 					subw = len;
- 			}
- 
- 			for (subi = 0; subi < subn; subi++) {
--				if (!perf_test__matches(t->subtest.get_desc(subi), curr, argc, argv))
-+				if (!perf_test__matches(test_description(t, subi),
-+							curr, argc, argv))
- 					continue;
- 
- 				pr_info("%2d.%1d: %-*s:", i, subi + 1, subw,
--					t->subtest.get_desc(subi));
-+					test_description(t, subi));
- 				err = test_and_print(t, skip, subi);
- 				if (err != TEST_OK && t->subtest.skip_if_fail)
- 					skip = true;
-@@ -526,19 +564,19 @@ static int perf_test__list(int argc, const char **argv)
- 	for_each_test(j, k, t) {
- 		int curr = i++;
- 
--		if (!perf_test__matches(t->desc, curr, argc, argv) ||
--		    (t->is_supported && !t->is_supported()))
-+		if (!perf_test__matches(test_description(t, -1), curr, argc, argv) ||
-+		    !is_supported(t))
- 			continue;
- 
--		pr_info("%2d: %s\n", i, t->desc);
-+		pr_info("%2d: %s\n", i, test_description(t, -1));
- 
--		if (t->subtest.get_nr) {
--			int subn = t->subtest.get_nr();
-+		if (has_subtests(t)) {
-+			int subn = num_subtests(t);
- 			int subi;
- 
- 			for (subi = 0; subi < subn; subi++)
- 				pr_info("%2d:%1d: %s\n", i, subi + 1,
--					t->subtest.get_desc(subi));
-+					test_description(t, subi));
- 		}
- 	}
- 
+ static bool perf_test__matches(const char *desc, int curr, int argc, const char *argv[])
 diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index c95b0de9f822..5139e24973cc 100644
+index 5139e24973cc..71b8d2c88e5c 100644
 --- a/tools/perf/tests/tests.h
 +++ b/tools/perf/tests/tests.h
-@@ -27,9 +27,13 @@ enum {
- 	TEST_SKIP = -2,
- };
+@@ -31,6 +31,12 @@ struct test_suite;
  
-+struct test_suite;
-+
-+typedef int (*test_fnptr)(struct test_suite *, int);
+ typedef int (*test_fnptr)(struct test_suite *, int);
+ 
++struct test_case {
++	const char *name;
++	const char *desc;
++	test_fnptr run_case;
++};
 +
  struct test_suite {
  	const char *desc;
--	int (*func)(struct test_suite *test, int subtest);
-+	test_fnptr func;
- 	struct {
- 		bool skip_if_fail;
- 		int (*get_nr)(void);
+ 	test_fnptr func;
+@@ -40,6 +46,7 @@ struct test_suite {
+ 		const char *(*get_desc)(int subtest);
+ 		const char *(*skip_reason)(int subtest);
+ 	} subtest;
++	struct test_case *test_cases;
+ 	bool (*is_supported)(void);
+ 	void *priv;
+ };
+@@ -47,10 +54,21 @@ struct test_suite {
+ #define DECLARE_SUITE(name) \
+ 	extern struct test_suite suite__##name;
+ 
+-#define DEFINE_SUITE(description, name)		\
+-	struct test_suite suite__##name = {		\
+-		.desc = description,		\
+-		.func = test__##name,		\
++#define TEST_CASE(description, _name)			\
++	{						\
++		.name = #_name,				\
++		.desc = description,			\
++		.run_case = test__##_name,		\
++	}
++
++#define DEFINE_SUITE(description, _name)			\
++	struct test_case tests__##_name[] = {           \
++		TEST_CASE(description, _name),		\
++		{	.name = NULL, }			\
++	};						\
++	struct test_suite suite__##_name = {		\
++		.desc = description,			\
++		.test_cases = tests__##_name,		\
+ 	}
+ 
+ /* Tests */
 -- 
 2.33.0.882.g93a45727a2-goog
 
