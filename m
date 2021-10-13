@@ -2,110 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3776D42C703
+	by mail.lfdr.de (Postfix) with ESMTP id A494C42C704
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238185AbhJMQ7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238191AbhJMQ6v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:58:51 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89A7C06176F;
-        Wed, 13 Oct 2021 09:56:43 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so2738975pjb.4;
-        Wed, 13 Oct 2021 09:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8cbGKp/2SKCzI/7d16DE4Ims0SpFBLwu8hl8mlZLlOo=;
-        b=oFOn0Tq6sOCCa7oR6RuKde4xQw/hwbwVhtwaptJIyoz2QA0GkZ9SKG3SAlsSoD+BMa
-         gEVYT4q9hXHpebwTNziXfq1juVpttO+VHUMgvGPN4wfIIEFWO6Oshc+V0lsU2MEnKRwk
-         gd6zgi2n9+xCksbFjiA2pyYJLXIYgmcK5Y87Fj/1PfYaFN8i1pnw8hLDQJCyPxu3cYqd
-         jnm5ImJZzukIJcSrdtu0tw7QzD0ocFZ38OzE9YX6s9whTQ31snbu/eoH3Gfd8ShIGRnN
-         0//WyRX584GCgmRxwVTl8z6kqvkPzMFQaHq33lBjtLn9BlUwQGkfvv0zZ8Hvzb7voIds
-         nwwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8cbGKp/2SKCzI/7d16DE4Ims0SpFBLwu8hl8mlZLlOo=;
-        b=c3OttgWwuiCVza8WbYrWmuOL6SDQ6ugJowdBcsyfZOd/8qI9GU0jIeKrsKuObMlYg6
-         3Dd3Q545+8zq+5GRX5fhB0fveT0aRW8uYgFMeNNqhqaGpyRvqPVCJrcszlXZprFip/0C
-         hEeKuFBtCOFhg1eXvGcu2fBrO1DiQgmnLrK9KwfSHPkyQQMPRkid/qERzbF11j77uf4B
-         YJFzK0RRPxRG74h741MkZiQeFIlBhYAHdlKJRSJuLd1ZAE5yySYZhNPa0oaO1yfaRSRY
-         0rOXXNCzLvWIRPUuidWHgmjUwyrNTDEkrVzctoGGO6cfkFcEHz4T9XTo47/WkQmKKKj/
-         9cUw==
-X-Gm-Message-State: AOAM532EBuE/gGjjAGIHFvretA8UxctPI6agNVZR2mwGF0kWmN5JouP5
-        xzMc8MGuwWiwqO187lD0+Qg=
-X-Google-Smtp-Source: ABdhPJyPTTN4ICW/JsbxaYnIm7r4sYNqOFBOw14o7XVRCfZKdqH5y/kW1VzGq0CitYgns0ZYFAz8Xw==
-X-Received: by 2002:a17:90b:17c9:: with SMTP id me9mr404934pjb.197.1634144203230;
-        Wed, 13 Oct 2021 09:56:43 -0700 (PDT)
-Received: from nuc10 (d50-92-229-34.bchsia.telus.net. [50.92.229.34])
-        by smtp.gmail.com with ESMTPSA id x13sm84916pge.37.2021.10.13.09.56.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 09:56:42 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 09:56:41 -0700
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, gregkh@linuxfoundation.org,
-        Al Viro <viro@zeniv.linux.org.uk>, dvyukov@google.com
-Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
-Message-ID: <YWcPyYk0Rlyvl9a9@nuc10>
-References: <17f537b3-e2eb-5d0a-1465-20f3d3c960e2@suse.cz>
- <YVYGcLbu/aDKXkag@nuc10>
- <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz>
- <YVZXF3mbaW+Pe+Ji@nuc10>
- <1e0df91-556e-cee5-76f7-285d28fe31@google.com>
- <20211012204320.GP24307@magnolia>
- <20211012204345.GQ24307@magnolia>
- <9db5d16a-2999-07a4-c49d-7417601f834f@suse.cz>
- <20211012232255.GS24307@magnolia>
- <3928ef69-eaac-241c-eb32-d2dd2eab9384@suse.cz>
+        id S238026AbhJMQ7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:59:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238067AbhJMQ7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 12:59:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 907616109E;
+        Wed, 13 Oct 2021 16:57:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634144235;
+        bh=Tk/bVs+ZbsdhSuYNIdd8Gg0DOirgfShoPLVvseKnS3I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZtRLth7FeOp51ALRIZxWWZpisGaIHr3hYq+0X5tRYZCV7bLA2hXopvGPf4ulvqiDd
+         HuuZYmYTVXdVm5CUOyIJnSGxzWphgkCUW4EBJ5IJd15wy1IfZBq3OP4KEPyQE5dWr3
+         JmXBuo3hGUnppXRAs6cM3zvxAW3V5DWA99xGAX7WMr2mFOIlaJrZr5rx44b0tNvgYl
+         L1attCACr3UTjHBWNgr+oEhlcasmAh+kgtxlaKpa1/bRLaEh/B9gR0XzrnmlO8wU89
+         S2qsQrrUbOpfCg9YCgg0OI80LaU0gytZpjeFZduaw+tFlokugznkgcMtiP9R0OYSKv
+         tMg6diPY7gNiA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 69CBC410A1; Wed, 13 Oct 2021 13:57:12 -0300 (-03)
+Date:   Wed, 13 Oct 2021 13:57:12 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     kajoljain <kjain@linux.ibm.com>, john.garry@huawei.com,
+        ak@linux.intel.com, linux-perf-users@vger.kernel.org,
+        Nick.Forrington@arm.com, Andrew.Kilroy@arm.com,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] perf tools: Enable strict JSON parsing
+Message-ID: <YWcP6EZ6Ors5/CGh@kernel.org>
+References: <20211007110543.564963-1-james.clark@arm.com>
+ <c15fd2bf-104e-6ab0-6496-7e5cf77a218f@linux.ibm.com>
+ <e8752b2d-65a7-1ed8-3c68-30d9006261ba@arm.com>
+ <5947c093-cff9-f70e-af20-75bc053edf5f@linux.ibm.com>
+ <YWCVTnOUM2P4FRPi@kernel.org>
+ <0d73d04f-925c-4c97-9a07-18cc64a9c68b@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3928ef69-eaac-241c-eb32-d2dd2eab9384@suse.cz>
+In-Reply-To: <0d73d04f-925c-4c97-9a07-18cc64a9c68b@arm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 09:38:31AM +0200, Vlastimil Babka wrote:
-> On 10/13/21 01:22, Darrick J. Wong wrote:
-> > On Tue, Oct 12, 2021 at 11:32:25PM +0200, Vlastimil Babka wrote:
-> >> On 10/12/2021 10:43 PM, Darrick J. Wong wrote:
-> >> > On Tue, Oct 12, 2021 at 01:43:20PM -0700, Darrick J. Wong wrote:
-> >> >> On Sun, Oct 03, 2021 at 06:07:20PM -0700, David Rientjes wrote:
-> >> >>
-> >> >> I audited the entire xfs (kernel) codebase and didn't find any other
-> >> >> usage errors.  Thanks for the patch; I'll apply it to for-next.
-> >> 
-> >> Which patch, the one that started this thread and uses kmem_cache_free() instead
-> >> of kfree()? I thought we said it's not the best way?
-> > 
-> > It's probably better to fix slob to be able to tell that a kmem_free'd
-> > object actually belongs to a cache and should get freed that way, just
-> > like its larger sl[ua]b cousins.
-> 
-> Agreed. Rustam, do you still plan to do that?
+Em Tue, Oct 12, 2021 at 02:30:51PM +0100, James Clark escreveu:
+> On 08/10/2021 20:00, Arnaldo Carvalho de Melo wrote:
+> > Em Fri, Oct 08, 2021 at 04:56:55PM +0530, kajoljain escreveu:
+> >> On 10/8/21 3:32 PM, James Clark wrote:
+> >>> On 08/10/2021 08:43, kajoljain wrote:
+> >> Sure. I think then we can skip this change. Not sure if character
+> >> number will be helpful.
 
-Yes, I do, thank you.
+> >> Patch-set looks good to me.
 
-> 
-> > However, even if that does come to pass, anybody /else/ who wants to
-> > start(?) using XFS on a SLOB system will need this patch to fix the
-> > minor papercut.  Now that I've checked the rest of the codebase, I don't
-> > find it reasonable to make XFS mutually exclusive with SLOB over two
-> > instances of slab cache misuse.  Hence the RVB. :)
-> 
-> Ok. I was just wondering because Dave's first reply was that actually you'll
-> need to expand the use of kfree() instead of kmem_cache_free().
-> 
+> >> Reviewed-by Kajol Jain<kjain@linux.ibm.com>
+
+> > Applied ok as-is to my perf/core branch, applied and added your
+> > Reviewed-by, thanks.
+
+> Thanks Arnaldo. This does mean that the arm64 build will fail until
+> "[PATCH v2 1/3] perf vendor events: Syntax corrections in Neoverse N1 json" is
+> applied. I think there is also an arm64 build issue with "[PATCH 02/21] perf
+> pmu: Add const to pmu_events_map." which Andrew Kilroy has replied to.
+
+Its all in:
+
+19f8408a634c9515 (HEAD -> perf/core) perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
+69125e749c006b4f perf tools: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
+1b1d9560a61f1e4e perf vendor events arm64: Categorise the Neoverse V1 counters
+abe8733bc3575869 perf vendor events arm64: Add new armv8 pmu events
+d211e9e76a466cce perf vendor events: Syntax corrections in Neoverse N1 json
+c067335fcbfc67c3 (quaco/perf/core, acme/tmp.perf/core) perf metric: Allow modifiers on metrics.
+acf2cb9cf242e9ab perf parse-events: Identify broken modifiers
+fb193eca0ae8ddae perf metric: Switch fprintf() to pr_err()
+fb8c3a06943cc3c7 perf metrics: Modify setup and deduplication
+4965bb2e71371d5f perf expr: Add subset utility
+c1d7cd1b36fce16b perf metric: Encode and use metric-id as qualifier
+3743f880b3856971 perf parse-events: Allow config on kernel PMU events
+844f07a5ddcd46c5 perf parse-events: Add new "metric-id" term
+e68f07424b8b3f00 perf parse-events: Add const to evsel name
+ace154d9f5dc3331 perf metric: Simplify metric_refs calculation
+eeffd53b41dc7077 perf metric: Document the internal 'struct metric'
+9aa64400defa07fb perf metric: Comment data structures
+353ce4ed869635c7 perf metric: Modify resolution and recursion check
+0bffecb0ac304bb2 perf metric: Only add a referenced metric once
+937323c22db4cb1e perf metric: Add metric new and free
+176b9da84871449d perf metric: Add documentation and rename a variable.
+cc6803c12cef80f1 perf metric: Move runtime value to the expr context
+9610bca8f117d963 perf pmu: Make pmu_event tables const
+95ed79343835656d perf pmu: Make pmu_sys_event_tables const
+05335f28549c7cc5 perf pmu: Add const to pmu_events_map.
+cac98c8aca3c7dd2 tools lib: Adopt list_sort from the kernel sources
+f792cf8a094eac29 perf kmem: Improve man page for record options
+eda1a84cb4e93759 perf tools: Enable strict JSON parsing
+21813684e46df1c9 perf tools: Make the JSON parser more conformant when in strict mode
+08f3e0873ac20344 perf vendor-events: Fix all remaining invalid JSON files
+
+- Arnaldo
