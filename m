@@ -2,111 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432F942CAE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E591642CAEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhJMUXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
+        id S229632AbhJMU36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhJMUXU (ORCPT
+        with ESMTP id S229462AbhJMU35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:23:20 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225EAC061749
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:21:17 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id g36so166137lfv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:21:17 -0700 (PDT)
+        Wed, 13 Oct 2021 16:29:57 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DEAC061570;
+        Wed, 13 Oct 2021 13:27:53 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id e7so7029719ual.11;
+        Wed, 13 Oct 2021 13:27:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=r9r/KMUuJs+tkad/0K0bK5fHd+5ogWwdHmJs3FLaKFo=;
-        b=d86rz1z4KPsaLxI85KfGLAzHXqqb+1+dpWFfqDeF6ebHeASc59TzpECWY+ZHRQcblF
-         RNE3AbgHHjvqSmBewAUCZ7TqVQgWmqt/axbFdU6Xt7OurTdqa03oiD99bg1WY1x0K31s
-         r6R14qJrjoCtb3wRp3tHd0KKUs0jOqFmRLO8wl0t84/hVD0AYlB8jz9IEWfQPDvFOvq4
-         2eo2+Mshh3GoPvzWnnRO06onYOlX0oBrEEK7WZ00OJTE1l/o0+hncglPM6MRSHr7lyWC
-         bAD7tSFysxVm/liB0xE3dEVacLpmcqtMXRVmgrC/WlGRGpgDbD4oIp5ZN5NTCfVEhCIX
-         t0cA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q47BvSJtkRI/JggIs8wb9lC6FIacendAi7fQN+euAl8=;
+        b=RYpaBgQRBhyRDk46fNW1HgiqJe8r+zZFcT854hi7zxv13gve4CUH08sOCTplvlWTs8
+         t6nWeGbDs9GZXLzBBxuyq6iPeKUun1Ra0KpA51Za/uV8QDdLfpAEaOFbV5UMH0ErUrXk
+         1nyyy8gOMrcbW55wB+yV9WpKeTS3tjg6pbUkV+HZ5DY4J1D8KApiGOXTBk3h0C18J0sd
+         PAw4qKof/HVks3uFZk+hZRVM6bKO52bA920coI9gt6Vv+TfMmnNXIBPE4tZqCYEZO1/s
+         iiL+5wY9J8uDMnunl00NyANqO9ebKRw8MNX1YvwuS8N4MfFUXAbrwlCpSIWQeGG37Rxx
+         vwDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=r9r/KMUuJs+tkad/0K0bK5fHd+5ogWwdHmJs3FLaKFo=;
-        b=bnc0EVI7lnI38RXx7SNoSrpTxCHegRqaUAmv8k+7yIQPzeyDHfypsWwzNpVGyXLbhN
-         4HNHqrvUxv8Cof8CWgYlxgkjmwY1TS3E0Q4wNTVQQ5JLxRYdYGozBPNC+E/4BDmetg1Z
-         dMSUTfDQzy0sAbOSQ9gWNeUQ9/AOjdy/qd/t1g4yiiITarImpg/AiR1DNOFHsAAZg3K0
-         u0BaR+XcVOdG/G5kxQ7K/KvxHUCcsBAx8OKOXSe3SWlaNaBB+R/45eJWz7Us0VMhOQiP
-         3PyJFJjqxs2akxlTIKQdZkRjodHuphKZvt/NPPLm2p2GPf2lzqBHtWjLDN66Kb3tEVR0
-         9Fqg==
-X-Gm-Message-State: AOAM5300/Wrd6NFcBzwnKBkSoukpydwjDYWw9YOFGlhYOfv1dp/UnLHy
-        9fFWp7OYBvquUdUeKqtz6nrfkA==
-X-Google-Smtp-Source: ABdhPJwn4I2M+h6lNkEmLGc6VzjoOLwPopEPgz+gS5pdVdMhyHPsqeSZtcv6Nat0nOrfoi4XzpdUfQ==
-X-Received: by 2002:a2e:4a0a:: with SMTP id x10mr1589324lja.146.1634156475002;
-        Wed, 13 Oct 2021 13:21:15 -0700 (PDT)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id b30sm44665lfc.110.2021.10.13.13.21.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q47BvSJtkRI/JggIs8wb9lC6FIacendAi7fQN+euAl8=;
+        b=oe/DWW4o9gAEez5QPbsKvCZ4pjXhlgt/renY3eMByLGXkMv6F3r3e9xGa9yexOuGUz
+         hOEABu5p8W+bSnJSEJFyn/NXJdIkdo+nEkGZqtj+E0Cwkbx3XpBNZeRrDtmASES4i4Pr
+         PMPo9JDxaf1j6eypQ5t7/Hmq3kwMwLCWF4ZJNw5TQwAJR6CDUnN5dWFfWAacSt3/h7QF
+         ptr1WsKCPho2uNjIDSDYJ3rKlLswLPyrrguTh7sf9diF8UbhmZmg5XenOMpnTucYhhX3
+         i1F7Ctc6Cd9NBEaxh+8dElpJJntvwsWUOuir/lGMyy8Rh5XEoXsVm1WvvBQkBbB6ZpuN
+         Ac2g==
+X-Gm-Message-State: AOAM531JSGLvp4mqNzF+drvnANQoRaMa1OkjCOGpNL5nuygxN12jaHKF
+        +vN5eP7KTisrlv1Sj+fEWgYZC9X1Y50=
+X-Google-Smtp-Source: ABdhPJzjOkBp3rCuqBYH7jT5Y9X98aRXO0XVZmzMA9aNco9Amre3PTrCoOYVZdqMwDAsvlHHpjVsOQ==
+X-Received: by 2002:a67:e28a:: with SMTP id g10mr1771403vsf.5.1634156872562;
+        Wed, 13 Oct 2021 13:27:52 -0700 (PDT)
+Received: from t14s.localdomain ([2001:1284:f013:bd65:5bf1:4dff:e077:f96c])
+        by smtp.gmail.com with ESMTPSA id t76sm439691vkt.0.2021.10.13.13.27.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 13:21:14 -0700 (PDT)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] soc: samsung: exynos-chipid: Add Exynos850 support
-Date:   Wed, 13 Oct 2021 23:21:10 +0300
-Message-Id: <20211013202110.31701-3-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211013202110.31701-1-semen.protsenko@linaro.org>
-References: <20211013202110.31701-1-semen.protsenko@linaro.org>
+        Wed, 13 Oct 2021 13:27:51 -0700 (PDT)
+Received: by t14s.localdomain (Postfix, from userid 1000)
+        id 0BBA888713; Wed, 13 Oct 2021 17:27:50 -0300 (-03)
+From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+To:     netdev@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Xin Long <lucien.xin@gmail.com>
+Subject: [PATCH net] sctp: account stream padding length for reconf chunk
+Date:   Wed, 13 Oct 2021 17:27:29 -0300
+Message-Id: <b97c1f8b0c7ff79ac4ed206fc2c49d3612e0850c.1634156849.git.mleitner@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add chip-id support for Exynos850 SoC. Despite its "E3830" ID, the
-actual SoC name is Exynos850 (Exynos3830 name is internal and outdated).
+From: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+sctp_make_strreset_req() makes repeated calls to sctp_addto_chunk()
+which will automatically account for padding on each call. inreq and
+outreq are already 4 bytes aligned, but the payload is not and doing
+SCTP_PAD4(a + b) (which _sctp_make_chunk() did implicitly here) is
+different from SCTP_PAD4(a) + SCTP_PAD4(b) and not enough. It led to
+possible attempt to use more buffer than it was allocated and triggered
+a BUG_ON.
+
+Cc: Vlad Yasevich <vyasevich@gmail.com>
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-sctp@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Greg KH <gregkh@linuxfoundation.org>
+Fixes: cc16f00f6529 ("sctp: add support for generating stream reconf ssn reset request chunk")
+Reported-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Marcelo Ricardo Leitner <mleitner@redhat.com>
 ---
- drivers/soc/samsung/exynos-chipid.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ net/sctp/sm_make_chunk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
-index 7837331fb753..fdf806e4b6ed 100644
---- a/drivers/soc/samsung/exynos-chipid.c
-+++ b/drivers/soc/samsung/exynos-chipid.c
-@@ -54,6 +54,7 @@ static const struct exynos_soc_id {
- 	{ "EXYNOS5440", 0xE5440000 },
- 	{ "EXYNOS5800", 0xE5422000 },
- 	{ "EXYNOS7420", 0xE7420000 },
-+	{ "EXYNOS850", 0xE3830000 },
- };
+diff --git a/net/sctp/sm_make_chunk.c b/net/sctp/sm_make_chunk.c
+index b8fa8f1a7277..c7503fd64915 100644
+--- a/net/sctp/sm_make_chunk.c
++++ b/net/sctp/sm_make_chunk.c
+@@ -3697,7 +3697,7 @@ struct sctp_chunk *sctp_make_strreset_req(
+ 	outlen = (sizeof(outreq) + stream_len) * out;
+ 	inlen = (sizeof(inreq) + stream_len) * in;
  
- static const char *product_id_to_soc_id(unsigned int product_id)
-@@ -167,10 +168,19 @@ static const struct exynos_chipid_variant exynos4210_chipid_drv_data = {
- 	.sub_rev_shift	= 4,
- };
+-	retval = sctp_make_reconf(asoc, outlen + inlen);
++	retval = sctp_make_reconf(asoc, SCTP_PAD4(outlen) + SCTP_PAD4(inlen));
+ 	if (!retval)
+ 		return NULL;
  
-+static const struct exynos_chipid_variant exynos850_chipid_drv_data = {
-+	.rev_reg	= 0x10,
-+	.main_rev_shift	= 20,
-+	.sub_rev_shift	= 16,
-+};
-+
- static const struct of_device_id exynos_chipid_of_device_ids[] = {
- 	{
- 		.compatible	= "samsung,exynos4210-chipid",
- 		.data		= &exynos4210_chipid_drv_data,
-+	}, {
-+		.compatible	= "samsung,exynos850-chipid",
-+		.data		= &exynos850_chipid_drv_data,
- 	},
- 	{ }
- };
 -- 
-2.30.2
+2.31.1
 
