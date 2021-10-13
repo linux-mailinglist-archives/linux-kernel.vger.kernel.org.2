@@ -2,179 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964E142BCBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A69242BCAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239352AbhJMK2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:28:07 -0400
-Received: from lucky1.263xmail.com ([211.157.147.133]:42878 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239285AbhJMK2G (ORCPT
+        id S239332AbhJMKXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:23:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45268 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230005AbhJMKXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:28:06 -0400
-X-Greylist: delayed 370 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Oct 2021 06:28:05 EDT
-Received: from localhost (unknown [192.168.167.225])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 86DAAD6FAC;
-        Wed, 13 Oct 2021 18:19:50 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P26701T140614792369920S1634120379732571_;
-        Wed, 13 Oct 2021 18:19:49 +0800 (CST)
-X-IP-DOMAINF: 1
-X-RL-SENDER: zyf@rock-chips.com
-X-SENDER: zyf@rock-chips.com
-X-LOGIN-NAME: zyf@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 12
-X-LOCAL-RCPT-COUNT: 1
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-UNIQUE-TAG: <9ff736094915ea880529a8f6649e4dc5>
-X-System-Flag: 0
-From:   Yifeng Zhao <yifeng.zhao@rock-chips.com>
-To:     heiko@sntech.de, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, vkoul@kernel.org,
-        michael.riesch@wolfvision.net, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, kishon@ti.com,
-        p.zabel@pengutronix.de, Yifeng Zhao <yifeng.zhao@rock-chips.com>
-Subject: [PATCH v2 3/3] arm64: dts: rockchip: add naneng combo phy nodes for rk3568
-Date:   Wed, 13 Oct 2021 18:19:38 +0800
-Message-Id: <20211013101938.28061-4-yifeng.zhao@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211013101938.28061-1-yifeng.zhao@rock-chips.com>
-References: <20211013101938.28061-1-yifeng.zhao@rock-chips.com>
+        Wed, 13 Oct 2021 06:23:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634120461;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YSYWHpq2MR9akUHQCfV2yM1cAtmp2ZHpGTTEYqlRXUw=;
+        b=g/gjsq5rANp8669jrPqUEBzMI+2AgaAXtojkLjXtfOCwrhLeehq6nKBqoAdGXKmI3h637X
+        MqNudD+Tm7undXsrnUhqDQsNFtGC7bOJIbd++E3TwC0tEqNU9yWh7tFQiy7Mbn0GSpy/75
+        VlmTHOQLjVP/WyPybRMzOM1r7KxBrQ8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-201-EAyJOMnBNpG7n0YyBk0cFg-1; Wed, 13 Oct 2021 06:20:56 -0400
+X-MC-Unique: EAyJOMnBNpG7n0YyBk0cFg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E92C8362F8;
+        Wed, 13 Oct 2021 10:20:54 +0000 (UTC)
+Received: from T590 (ovpn-8-39.pek2.redhat.com [10.72.8.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AE57E60C5F;
+        Wed, 13 Oct 2021 10:20:51 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 18:20:46 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kashyap.desai@broadcom.com,
+        hare@suse.de
+Subject: Re: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
+Message-ID: <YWay/n+BJTLm1Alb@T590>
+References: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
+ <YWalYoOZmpkmAZNK@T590>
+ <79266509-f327-9de3-d22e-0e9fe00387ee@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <79266509-f327-9de3-d22e-0e9fe00387ee@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the core dt-node for the rk3568's naneng combo phys.
+On Wed, Oct 13, 2021 at 11:01:11AM +0100, John Garry wrote:
+> On 13/10/2021 10:22, Ming Lei wrote:
+> > On Wed, Oct 13, 2021 at 04:40:59PM +0800, John Garry wrote:
+> > > Since it is now possible for a tagset to share a single set of tags, the
+> > > iter function should not re-iter the tags for the count of #hw queues in
+> > > that case. Rather it should just iter once.
+> > > 
+> > > Fixes: e0fdf846c7bb ("blk-mq: Use shared tags for shared sbitmap support")
+> > > Reported-by: Kashyap Desai<kashyap.desai@broadcom.com>
+> > > Signed-off-by: John Garry<john.garry@huawei.com>
+> > > 
+> > > diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> > > index 72a2724a4eee..c943b6529619 100644
+> > > --- a/block/blk-mq-tag.c
+> > > +++ b/block/blk-mq-tag.c
+> > > @@ -378,9 +378,12 @@ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
+> > >   void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
+> > >   		busy_tag_iter_fn *fn, void *priv)
+> > >   {
+> > > -	int i;
+> > > +	unsigned int flags = tagset->flags;
+> > > +	int i, nr_tags;
+> > > +
+> > > +	nr_tags = blk_mq_is_shared_tags(flags) ? 1 : tagset->nr_hw_queues;
+> > > -	for (i = 0; i < tagset->nr_hw_queues; i++) {
+> > > +	for (i = 0; i < nr_tags; i++) {
+> > >   		if (tagset->tags && tagset->tags[i])
+> > >   			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
+> > >   					      BT_TAG_ITER_STARTED);
+> > blk_mq_queue_tag_busy_iter() needn't such change?
+> 
+> I didn't think so.
+> 
+> blk_mq_queue_tag_busy_iter() will indeed re-iter the tags per hctx. However
+> in bt_iter(), we check rq->mq_hctx == hctx for calling the iter callback:
+> 
+> static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+> {
+> 	...
+> 
+> 	if (rq->q == hctx->queue && rq->mq_hctx == hctx)
+> 		ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
+> 
+> And this would only pass for the correct hctx which we're iter'ing for.
 
-Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
----
+It is true for both shared and non-shared sbitmap since we don't share
+hctx, so what does matter? With single shared tags, you can iterate over
+all requests originated from all hw queues, right?
 
-Changes in v2:
-- Move phy0 to rk3568.dtsi
+> Indeed, it would be nice not to iter excessive times, but I didn't see a
+> straightforward way to change that.
 
- arch/arm64/boot/dts/rockchip/rk3568.dtsi | 21 +++++++++++
- arch/arm64/boot/dts/rockchip/rk356x.dtsi | 47 ++++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
+In Kashyap's report, the lock contention is actually from
+blk_mq_queue_tag_busy_iter(), see:
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-index 2fd313a295f8..4db5d3c2a04e 100644
---- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
-@@ -8,6 +8,11 @@
- / {
- 	compatible = "rockchip,rk3568";
- 
-+	pipe_phy_grf0: syscon@fdc70000 {
-+		compatible = "rockchip,pipe-phy-grf", "syscon";
-+		reg = <0x0 0xfdc70000 0x0 0x1000>;
-+	};
-+
- 	qos_pcie3x1: qos@fe190080 {
- 		compatible = "rockchip,rk3568-qos", "syscon";
- 		reg = <0x0 0xfe190080 0x0 0x20>;
-@@ -71,6 +76,22 @@
- 			queue0 {};
- 		};
- 	};
-+
-+	combphy0_us: phy@fe820000 {
-+		compatible = "rockchip,rk3568-naneng-combphy";
-+		reg = <0x0 0xfe820000 0x0 0x100>;
-+		#phy-cells = <1>;
-+		clocks = <&pmucru CLK_PCIEPHY0_REF>, <&cru PCLK_PIPEPHY0>,
-+			 <&cru PCLK_PIPE>;
-+		clock-names = "ref", "apb", "pipe";
-+		assigned-clocks = <&pmucru CLK_PCIEPHY0_REF>;
-+		assigned-clock-rates = <100000000>;
-+		resets = <&cru SRST_P_PIPEPHY0>, <&cru SRST_PIPEPHY0>;
-+		reset-names = "combphy-apb", "combphy";
-+		rockchip,pipe-grf = <&pipegrf>;
-+		rockchip,pipe-phy-grf = <&pipe_phy_grf0>;
-+		status = "disabled";
-+	};
- };
- 
- &cpu0_opp_table {
-diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-index b721a34ffa8c..2397daf46385 100644
---- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-@@ -214,11 +214,26 @@
- 		};
- 	};
- 
-+	pipegrf: syscon@fdc50000 {
-+		compatible = "rockchip,rk3568-pipegrf", "syscon";
-+		reg = <0x0 0xfdc50000 0x0 0x1000>;
-+	};
-+
- 	grf: syscon@fdc60000 {
- 		compatible = "rockchip,rk3568-grf", "syscon", "simple-mfd";
- 		reg = <0x0 0xfdc60000 0x0 0x10000>;
- 	};
- 
-+	pipe_phy_grf1: syscon@fdc80000 {
-+		compatible = "rockchip,pipe-phy-grf", "syscon";
-+		reg = <0x0 0xfdc80000 0x0 0x1000>;
-+	};
-+
-+	pipe_phy_grf2: syscon@fdc90000 {
-+		compatible = "rockchip,pipe-phy-grf", "syscon";
-+		reg = <0x0 0xfdc90000 0x0 0x1000>;
-+	};
-+
- 	pmucru: clock-controller@fdd00000 {
- 		compatible = "rockchip,rk3568-pmucru";
- 		reg = <0x0 0xfdd00000 0x0 0x1000>;
-@@ -1039,6 +1054,38 @@
- 		status = "disabled";
- 	};
- 
-+	combphy1_usq: phy@fe830000 {
-+		compatible = "rockchip,rk3568-naneng-combphy";
-+		reg = <0x0 0xfe830000 0x0 0x100>;
-+		#phy-cells = <1>;
-+		clocks = <&pmucru CLK_PCIEPHY1_REF>, <&cru PCLK_PIPEPHY1>,
-+			 <&cru PCLK_PIPE>;
-+		clock-names = "ref", "apb", "pipe";
-+		assigned-clocks = <&pmucru CLK_PCIEPHY1_REF>;
-+		assigned-clock-rates = <100000000>;
-+		resets = <&cru SRST_P_PIPEPHY1>, <&cru SRST_PIPEPHY1>;
-+		reset-names = "combphy-apb", "combphy";
-+		rockchip,pipe-grf = <&pipegrf>;
-+		rockchip,pipe-phy-grf = <&pipe_phy_grf1>;
-+		status = "disabled";
-+	};
-+
-+	combphy2_psq: phy@fe840000 {
-+		compatible = "rockchip,rk3568-naneng-combphy";
-+		reg = <0x0 0xfe840000 0x0 0x100>;
-+		#phy-cells = <1>;
-+		clocks = <&pmucru CLK_PCIEPHY2_REF>, <&cru PCLK_PIPEPHY2>,
-+			 <&cru PCLK_PIPE>;
-+		clock-names = "ref", "apb", "pipe";
-+		assigned-clocks = <&pmucru CLK_PCIEPHY2_REF>;
-+		assigned-clock-rates = <100000000>;
-+		resets = <&cru SRST_P_PIPEPHY2>, <&cru SRST_PIPEPHY2>;
-+		reset-names = "combphy-apb", "combphy";
-+		rockchip,pipe-grf = <&pipegrf>;
-+		rockchip,pipe-phy-grf = <&pipe_phy_grf2>;
-+		status = "disabled";
-+	};
-+
- 	pinctrl: pinctrl {
- 		compatible = "rockchip,rk3568-pinctrl";
- 		rockchip,grf = <&grf>;
--- 
-2.17.1
+https://lore.kernel.org/linux-block/8867352d-2107-1f8a-0f1c-ef73450bf256@huawei.com/
+
+> 
+> There is also blk_mq_all_tag_iter():
+> 
+> void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
+> 		void *priv)
+> {
+> 	__blk_mq_all_tag_iter(tags, fn, priv, BT_TAG_ITER_STATIC_RQS);
+> }
+> 
+> But then the only user is blk_mq_hctx_has_requests():
+> 
+> static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
+> {
+> 	struct blk_mq_tags *tags = hctx->sched_tags ?
+> 			hctx->sched_tags : hctx->tags;
+> 	struct rq_iter_data data = {
+> 		.hctx	= hctx,
+> 	};
+> 
+> 	blk_mq_all_tag_iter(tags, blk_mq_has_request, &data);
+> 	return data.has_rq;
+> }
+
+This above one only iterates over the specified hctx/tags, it won't be
+affected.
+
+> 
+> But, again like bt_iter(), blk_mq_has_request() will check the hctx matches:
+
+Not see what matters wrt. checking hctx.
 
 
+
+Thanks,
+Ming
 
