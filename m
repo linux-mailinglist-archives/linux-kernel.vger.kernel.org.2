@@ -2,111 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B664242CDA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BC242CD5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhJMWRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 18:17:35 -0400
-Received: from aposti.net ([89.234.176.197]:39994 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230228AbhJMWRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 18:17:33 -0400
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     list@opendingux.net, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 2/2] clk: ingenic: Add MDMA and BDMA clocks
-Date:   Wed, 13 Oct 2021 23:08:15 +0100
-Message-Id: <20211013220815.38692-2-paul@crapouillou.net>
-In-Reply-To: <20211013220815.38692-1-paul@crapouillou.net>
-References: <20211013220815.38692-1-paul@crapouillou.net>
+        id S230473AbhJMWKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 18:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230414AbhJMWKw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 18:10:52 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF2EC061570;
+        Wed, 13 Oct 2021 15:08:48 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4HV6B02yKzzQjmX;
+        Thu, 14 Oct 2021 00:08:40 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Message-ID: <e7983fec-f4f1-6d31-5e46-f5a427fe55cc@v0yd.nl>
+Date:   Thu, 14 Oct 2021 00:08:31 +0200
 MIME-Version: 1.0
+Subject: Re: [PATCH] mwifiex: Add quirk resetting the PCI bridge on MS Surface
+ devices
+Content-Language: en-US
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Brian Norris <briannorris@chromium.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Victor Ding <victording@google.com>
+References: <20211012153921.GA1754629@bhelgaas>
+From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
+In-Reply-To: <20211012153921.GA1754629@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4CD6117FC
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Ingenic JZ4760 and JZ4770 both have an extra DMA core named BDMA
-dedicated to the NAND and BCH controller, but which can also do
-memory-to-memory transfers. The JZ4760 additionally has a DMA core named
-MDMA dedicated to memory-to-memory transfers. The programming manual for
-the JZ4770 does have a bit for a MDMA clock, but does not seem to have
-the hardware wired in.
+On 10/12/21 17:39, Bjorn Helgaas wrote:
+> [+cc Vidya, Victor, ASPM L1.2 config issue; beginning of thread:
+> https://lore.kernel.org/all/20211011134238.16551-1-verdre@v0yd.nl/]
+> 
+> On Tue, Oct 12, 2021 at 10:55:03AM +0200, Jonas Dreßler wrote:
+>> On 10/11/21 19:02, Pali Rohár wrote:
+>>> On Monday 11 October 2021 15:42:38 Jonas Dreßler wrote:
+>>>> The most recent firmware (15.68.19.p21) of the 88W8897 PCIe+USB card
+>>>> reports a hardcoded LTR value to the system during initialization,
+>>>> probably as an (unsuccessful) attempt of the developers to fix firmware
+>>>> crashes. This LTR value prevents most of the Microsoft Surface devices
+>>>> from entering deep powersaving states (either platform C-State 10 or
+>>>> S0ix state), because the exit latency of that state would be higher than
+>>>> what the card can tolerate.
+>>>
+>>> This description looks like a generic issue in 88W8897 chip or its
+>>> firmware and not something to Surface PCIe controller or Surface HW. But
+>>> please correct me if I'm wrong here.
+>>>
+>>> Has somebody 88W8897-based PCIe card in non-Surface device and can check
+>>> or verify if this issue happens also outside of the Surface device?
+>>>
+>>> It would be really nice to know if this is issue in Surface or in 8897.
+>>
+>> Fairly sure the LTR value is something that's reported by the firmware
+>> and will be the same on all 8897 devices (as mentioned in my reply to Bjorn
+>> the second-latest firmware doesn't report that fixed LTR value).
+> 
+> I suggested earlier that the LTR values reported by the device might
+> depend on the electrical characteristics of the link and hence be
+> platform-dependent, but I think that might be wrong.
+> 
+> The spec (PCIe r5.0, sec 5.5.4) does say that some of the *other*
+> parameters related to L1.2 entry are platform-dependent:
+> 
+>    Prior to setting either or both of the enable bits for L1.2, the
+>    values for TPOWER_ON, Common_Mode_Restore_Time, and, if the ASPM
+>    L1.2 Enable bit is to be Set, the LTR_L1.2_THRESHOLD (both Value
+>    and Scale fields) must be programmed.  The TPOWER_ON and
+>    Common_Mode_Restore_Time fields must be programmed to the
+>    appropriate values based on the components and AC coupling
+>    capacitors used in the connection linking the two components. The
+>    determination of these values is design implementation specific.
+> 
+> These T_POWER_ON, Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD
+> values are in the L1 PM Substates Control registers.
+> 
+> I don't know of a way for the kernel or the device firmware to learn
+> these circuit characteristics or the appropriate values, so I think
+> only system firmware can program the L1 PM Substates Control registers
+> (a corollary of this is that I don't see a way for hot-plugged devices
+> to *ever* use L1.2).
+> 
+> I wonder if this reset quirk works because pci_reset_function() saves
+> and restores much of config space, but it currently does *not* restore
+> the L1 PM Substates capability, so those T_POWER_ON,
+> Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD values probably get
+> cleared out by the reset.  We did briefly save/restore it [1], but we
+> had to revert that because of a regression that AFAIK was never
+> resolved [2].  I expect we will eventually save/restore this, so if
+> the quirk depends on it *not* being restored, that would be a problem.
+> 
+> You should be able to test whether this is the critical thing by
+> clearing those registers with setpci instead of doing the reset.  Per
+> spec, they can only be modified when L1.2 is disabled, so you would
+> have to disable it via sysfs (for the endpoint, I think)
+> /sys/.../l1_2_aspm and /sys/.../l1_2_pcipm, do the setpci on the root
+> port, then re-enable L1.2.
+> 
+> [1] https://git.kernel.org/linus/4257f7e008ea
+> [2] https://lore.kernel.org/all/20210127160449.2990506-1-helgaas@kernel.org/
+> 
 
-Add the BDMA and MDMA clocks to the JZ4760 CGU code, and the BDMA clock
-to the JZ4770 code, so that the BDMA and MDMA controllers can be used.
+Hmm, interesting, thanks for those links.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/clk/ingenic/jz4760-cgu.c               | 10 ++++++++++
- drivers/clk/ingenic/jz4770-cgu.c               |  5 +++++
- include/dt-bindings/clock/ingenic,jz4760-cgu.h |  2 ++
- include/dt-bindings/clock/ingenic,jz4770-cgu.h |  1 +
- 4 files changed, 18 insertions(+)
+Are you sure the config values will get lost on the reset? If we only reset
+the port by going into D3hot and back into D0, the device will remain powered
+and won't lose the config space, will it?
 
-diff --git a/drivers/clk/ingenic/jz4760-cgu.c b/drivers/clk/ingenic/jz4760-cgu.c
-index 080d492ac95c..8fdd383560fb 100644
---- a/drivers/clk/ingenic/jz4760-cgu.c
-+++ b/drivers/clk/ingenic/jz4760-cgu.c
-@@ -313,6 +313,16 @@ static const struct ingenic_cgu_clk_info jz4760_cgu_clocks[] = {
- 		.parents = { JZ4760_CLK_H2CLK, },
- 		.gate = { CGU_REG_CLKGR0, 21 },
- 	},
-+	[JZ4760_CLK_MDMA] = {
-+		"mdma", CGU_CLK_GATE,
-+		.parents = { JZ4760_CLK_HCLK, },
-+		.gate = { CGU_REG_CLKGR0, 25 },
-+	},
-+	[JZ4760_CLK_BDMA] = {
-+		"bdma", CGU_CLK_GATE,
-+		.parents = { JZ4760_CLK_HCLK, },
-+		.gate = { CGU_REG_CLKGR1, 0 },
-+	},
- 	[JZ4760_CLK_I2C0] = {
- 		"i2c0", CGU_CLK_GATE,
- 		.parents = { JZ4760_CLK_EXT, },
-diff --git a/drivers/clk/ingenic/jz4770-cgu.c b/drivers/clk/ingenic/jz4770-cgu.c
-index 8c6c1208f462..7ef91257630e 100644
---- a/drivers/clk/ingenic/jz4770-cgu.c
-+++ b/drivers/clk/ingenic/jz4770-cgu.c
-@@ -329,6 +329,11 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
- 		.parents = { JZ4770_CLK_H2CLK, },
- 		.gate = { CGU_REG_CLKGR0, 21 },
- 	},
-+	[JZ4770_CLK_BDMA] = {
-+		"bdma", CGU_CLK_GATE,
-+		.parents = { JZ4770_CLK_H2CLK, },
-+		.gate = { CGU_REG_CLKGR1, 0 },
-+	},
- 	[JZ4770_CLK_I2C0] = {
- 		"i2c0", CGU_CLK_GATE,
- 		.parents = { JZ4770_CLK_EXT, },
-diff --git a/include/dt-bindings/clock/ingenic,jz4760-cgu.h b/include/dt-bindings/clock/ingenic,jz4760-cgu.h
-index 4bb2e19c4743..9fb04ebac6de 100644
---- a/include/dt-bindings/clock/ingenic,jz4760-cgu.h
-+++ b/include/dt-bindings/clock/ingenic,jz4760-cgu.h
-@@ -50,5 +50,7 @@
- #define JZ4760_CLK_LPCLK_DIV	41
- #define JZ4760_CLK_TVE		42
- #define JZ4760_CLK_LPCLK	43
-+#define JZ4760_CLK_MDMA		44
-+#define JZ4760_CLK_BDMA		45
- 
- #endif /* __DT_BINDINGS_CLOCK_JZ4760_CGU_H__ */
-diff --git a/include/dt-bindings/clock/ingenic,jz4770-cgu.h b/include/dt-bindings/clock/ingenic,jz4770-cgu.h
-index d68a7695a1f8..0b475e8ae321 100644
---- a/include/dt-bindings/clock/ingenic,jz4770-cgu.h
-+++ b/include/dt-bindings/clock/ingenic,jz4770-cgu.h
-@@ -54,5 +54,6 @@
- #define JZ4770_CLK_OTG_PHY	45
- #define JZ4770_CLK_EXT512	46
- #define JZ4770_CLK_RTC		47
-+#define JZ4770_CLK_BDMA		48
- 
- #endif /* __DT_BINDINGS_CLOCK_JZ4770_CGU_H__ */
--- 
-2.33.0
+Because when I reset the bridge using pci_reset_function() (ie. pci_pm_reset())
+or when I suspend and resume the laptop, all the L1 PM Substates registers are
+still the same as before, nothing is lost.
 
+That said, our new mwifiex_pcie_reset_d3cold_quirk() puts *both the card and
+the bridge* into D3cold, so I gave that a try, and indeed the cards L1 Substate
+Ctl registers are cleared out (so T_CommonMode, LTR1.2_Threshold and T_PwrOn),
+but the bridge still has its values, no clue why that's the case.
