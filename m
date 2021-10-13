@@ -2,225 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C5D42B94C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 439E942B952
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238566AbhJMHiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:38:51 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:3106 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238555AbhJMHis (ORCPT
+        id S238578AbhJMHkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:40:37 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52548 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238565AbhJMHkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:38:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634110607; x=1665646607;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=cCT4fzrTtwp6irb/rWugaiZG5AFjFhTJLNHPlqgsV0U=;
-  b=SLw08HzNtaXXyViFsgDqpXiql8dt63TM/fVsu/4pBkqj3DMqMKnr0g9C
-   OkYojhbBRdmL1WQEd/Eubpd/vumQpUN7uDO2l7WBpQYaFlxOMrByf7LnH
-   WkpuylhhbuBDKn0BzFTjM+MY1sOM2YRcws/sbv9gbJUk/JHx93pfMGHRQ
-   +jWXPd1fdhPgDo+jxaBdLEwT9Q6tQHl6iMzaZjJXdTtgf0ZW6jyhzVQE5
-   f90yiC/kBaXel0BbIwMs9xYLpiRtF6tHne61SAP5A4us3S27dtDFiMPPk
-   rr0u9zRwb4+vmGyAMOm0RCq0KkrDOHh6tFUf20lH0Jx4amOVVTa/lcp6x
-   g==;
-IronPort-SDR: 5pSpjh9AFsmfNc6Rouv3P2MJuFuAWorgDcQyffvfen6bHF+vEgK/p/q5W352NyY9qefZ/X88AQ
- Bn+A1qYlOwL7dktPgeUAUNWFx0JIClTqpd7y1hx9byYhlMt3DBoxQy+vpPuLnxBr9bJJ3RvHwS
- 4sBMQaC5/tNKrz+7UVzW/wRXpSUniIqaOC0b1T/O7MgPIbgGpww2h2SamJ5q+izo72ehv6VQ2S
- gemuvctX12etFFJs3/HuwyaoZRycZ0S6loYTA49dIdzVJ/DTWS9nSllPQlGXOZJlTExjBaxgvA
- DYrqW8vVnHtHduCZhEX6fnXW
-X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
-   d="scan'208";a="139534707"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Oct 2021 00:36:46 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 13 Oct 2021 00:36:44 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Wed, 13 Oct 2021 00:36:43 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <p.zabel@pengutronix.de>, <robh+dt@kernel.org>, <andrew@lunn.ch>,
-        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH v3 2/2] reset: mchp: sparx5: Extend support for lan966x
-Date:   Wed, 13 Oct 2021 09:38:07 +0200
-Message-ID: <20211013073807.2282230-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211013073807.2282230-1-horatiu.vultur@microchip.com>
-References: <20211013073807.2282230-1-horatiu.vultur@microchip.com>
+        Wed, 13 Oct 2021 03:40:36 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B9FD9222C0;
+        Wed, 13 Oct 2021 07:38:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634110711; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m2/5m4EyNl7HialOD6IWobME8joFWhALPD0XeJqljVQ=;
+        b=d/Y5iKa4s2ThoqvqoYb8etqWtevCqOBHYZ1DF1p+oWm4BNq5proRG8XQwacGegyAqB75Ek
+        j8WQTrGXsr/qzoT8mGcjl1Hdzk1hMBiQZTncNkiAKcJfCIdLsoQj+f5aCOhretdrLKNNpA
+        cIyKJdpDYlB65nkVFopzCYv4umGIE0Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634110711;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m2/5m4EyNl7HialOD6IWobME8joFWhALPD0XeJqljVQ=;
+        b=fbLc4QJpjAioNpDXuQMoQ2cfpcSZhuuFzmAs/0lsu085RIwJJatBvU7POTVHCmbF8Sk8BH
+        TogvOXMpdLYrLMDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 858EB13CBE;
+        Wed, 13 Oct 2021 07:38:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +E26H/eMZmHgeAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 13 Oct 2021 07:38:31 +0000
+Message-ID: <3928ef69-eaac-241c-eb32-d2dd2eab9384@suse.cz>
+Date:   Wed, 13 Oct 2021 09:38:31 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] xfs: use kmem_cache_free() for kmem_cache objects
+Content-Language: en-US
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     David Rientjes <rientjes@google.com>,
+        Rustam Kovhaev <rkovhaev@gmail.com>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, gregkh@linuxfoundation.org,
+        Al Viro <viro@zeniv.linux.org.uk>, dvyukov@google.com
+References: <20210929212347.1139666-1-rkovhaev@gmail.com>
+ <20210930044202.GP2361455@dread.disaster.area>
+ <17f537b3-e2eb-5d0a-1465-20f3d3c960e2@suse.cz> <YVYGcLbu/aDKXkag@nuc10>
+ <a9b3cd91-8ee6-a654-b2a8-00c3efb69559@suse.cz> <YVZXF3mbaW+Pe+Ji@nuc10>
+ <1e0df91-556e-cee5-76f7-285d28fe31@google.com>
+ <20211012204320.GP24307@magnolia> <20211012204345.GQ24307@magnolia>
+ <9db5d16a-2999-07a4-c49d-7417601f834f@suse.cz>
+ <20211012232255.GS24307@magnolia>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211012232255.GS24307@magnolia>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends sparx5 driver to support also the lan966x. The
-process to reset the switch is the same only it has different offsets.
-Therefore make the driver more generic and add support for lan966x.
+On 10/13/21 01:22, Darrick J. Wong wrote:
+> On Tue, Oct 12, 2021 at 11:32:25PM +0200, Vlastimil Babka wrote:
+>> On 10/12/2021 10:43 PM, Darrick J. Wong wrote:
+>> > On Tue, Oct 12, 2021 at 01:43:20PM -0700, Darrick J. Wong wrote:
+>> >> On Sun, Oct 03, 2021 at 06:07:20PM -0700, David Rientjes wrote:
+>> >>
+>> >> I audited the entire xfs (kernel) codebase and didn't find any other
+>> >> usage errors.  Thanks for the patch; I'll apply it to for-next.
+>> 
+>> Which patch, the one that started this thread and uses kmem_cache_free() instead
+>> of kfree()? I thought we said it's not the best way?
+> 
+> It's probably better to fix slob to be able to tell that a kmem_free'd
+> object actually belongs to a cache and should get freed that way, just
+> like its larger sl[ua]b cousins.
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
- drivers/reset/Kconfig                  |  2 +-
- drivers/reset/reset-microchip-sparx5.c | 81 +++++++++++++++++++++++---
- 2 files changed, 74 insertions(+), 9 deletions(-)
+Agreed. Rustam, do you still plan to do that?
 
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index be799a5abf8a..36ce6c8bcf1e 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -116,7 +116,7 @@ config RESET_LPC18XX
- 
- config RESET_MCHP_SPARX5
- 	bool "Microchip Sparx5 reset driver"
--	depends on ARCH_SPARX5 || COMPILE_TEST
-+	depends on ARCH_SPARX5 || SOC_LAN966 || COMPILE_TEST
- 	default y if SPARX5_SWITCH
- 	select MFD_SYSCON
- 	help
-diff --git a/drivers/reset/reset-microchip-sparx5.c b/drivers/reset/reset-microchip-sparx5.c
-index f01e7db8e83b..211ee338e4b6 100644
---- a/drivers/reset/reset-microchip-sparx5.c
-+++ b/drivers/reset/reset-microchip-sparx5.c
-@@ -6,6 +6,7 @@
-  * The Sparx5 Chip Register Model can be browsed at this location:
-  * https://github.com/microchip-ung/sparx-5_reginfo
-  */
-+#include <linux/gpio/consumer.h>
- #include <linux/mfd/syscon.h>
- #include <linux/of_device.h>
- #include <linux/module.h>
-@@ -13,15 +14,22 @@
- #include <linux/regmap.h>
- #include <linux/reset-controller.h>
- 
--#define PROTECT_REG    0x84
--#define PROTECT_BIT    BIT(10)
--#define SOFT_RESET_REG 0x00
--#define SOFT_RESET_BIT BIT(1)
-+struct reset_props {
-+	u32 protect_reg;
-+	u32 protect_bit;
-+	u32 reset_reg;
-+	u32 reset_bit;
-+	u32 cuphy_reg;
-+	u32 cuphy_bit;
-+};
- 
- struct mchp_reset_context {
- 	struct regmap *cpu_ctrl;
- 	struct regmap *gcb_ctrl;
-+	struct regmap *cuphy_ctrl;
- 	struct reset_controller_dev rcdev;
-+	const struct reset_props *props;
-+	struct gpio_desc *phy_reset_gpio;
- };
- 
- static struct regmap_config sparx5_reset_regmap_config = {
-@@ -36,17 +44,39 @@ static int sparx5_switch_reset(struct reset_controller_dev *rcdev,
- 	struct mchp_reset_context *ctx =
- 		container_of(rcdev, struct mchp_reset_context, rcdev);
- 	u32 val;
-+	int err;
- 
- 	/* Make sure the core is PROTECTED from reset */
--	regmap_update_bits(ctx->cpu_ctrl, PROTECT_REG, PROTECT_BIT, PROTECT_BIT);
-+	regmap_update_bits(ctx->cpu_ctrl, ctx->props->protect_reg,
-+			   ctx->props->protect_bit, ctx->props->protect_bit);
- 
- 	/* Start soft reset */
--	regmap_write(ctx->gcb_ctrl, SOFT_RESET_REG, SOFT_RESET_BIT);
-+	regmap_write(ctx->gcb_ctrl, ctx->props->reset_reg,
-+		     ctx->props->reset_bit);
- 
- 	/* Wait for soft reset done */
--	return regmap_read_poll_timeout(ctx->gcb_ctrl, SOFT_RESET_REG, val,
--					(val & SOFT_RESET_BIT) == 0,
-+	err = regmap_read_poll_timeout(ctx->gcb_ctrl, ctx->props->reset_reg, val,
-+					(val & ctx->props->reset_bit) == 0,
- 					1, 100);
-+	if (err)
-+		return err;
-+
-+	if (!ctx->cuphy_ctrl)
-+		return 0;
-+
-+	/* In case there are external PHYs toggle the GPIO to release the reset
-+	 * of the PHYs
-+	 */
-+	if (ctx->phy_reset_gpio) {
-+		gpiod_direction_output(ctx->phy_reset_gpio, 1);
-+		gpiod_set_value(ctx->phy_reset_gpio, 0);
-+		gpiod_set_value(ctx->phy_reset_gpio, 1);
-+		gpiod_set_value(ctx->phy_reset_gpio, 0);
-+	}
-+
-+	/* Release the reset of internal PHY */
-+	return regmap_update_bits(ctx->cuphy_ctrl, ctx->props->cuphy_reg,
-+				  ctx->props->cuphy_bit, ctx->props->cuphy_bit);
- }
- 
- static const struct reset_control_ops sparx5_reset_ops = {
-@@ -111,17 +141,52 @@ static int mchp_sparx5_reset_probe(struct platform_device *pdev)
- 	if (err)
- 		return err;
- 
-+	/* This resource is required on lan966x, to take the internal PHYs out
-+	 * of reset
-+	 */
-+	err = mchp_sparx5_map_syscon(pdev, "cuphy-syscon", &ctx->cuphy_ctrl);
-+	if (err && err != -ENODEV)
-+		return err;
-+
- 	ctx->rcdev.owner = THIS_MODULE;
- 	ctx->rcdev.nr_resets = 1;
- 	ctx->rcdev.ops = &sparx5_reset_ops;
- 	ctx->rcdev.of_node = dn;
-+	ctx->props = device_get_match_data(&pdev->dev);
-+
-+	ctx->phy_reset_gpio = devm_gpiod_get_optional(&pdev->dev, "phy-reset",
-+						      GPIOD_OUT_LOW);
-+	if (IS_ERR(ctx->phy_reset_gpio)) {
-+		dev_err(&pdev->dev, "Could not get reset GPIO\n");
-+		return PTR_ERR(ctx->phy_reset_gpio);
-+	}
- 
- 	return devm_reset_controller_register(&pdev->dev, &ctx->rcdev);
- }
- 
-+static const struct reset_props reset_props_sparx5 = {
-+	.protect_reg    = 0x84,
-+	.protect_bit    = BIT(10),
-+	.reset_reg      = 0x0,
-+	.reset_bit      = BIT(1),
-+};
-+
-+static const struct reset_props reset_props_lan966x = {
-+	.protect_reg    = 0x88,
-+	.protect_bit    = BIT(5),
-+	.reset_reg      = 0x0,
-+	.reset_bit      = BIT(1),
-+	.cuphy_reg       = 0x10,
-+	.cuphy_bit       = BIT(0),
-+};
-+
- static const struct of_device_id mchp_sparx5_reset_of_match[] = {
- 	{
- 		.compatible = "microchip,sparx5-switch-reset",
-+		.data = &reset_props_sparx5,
-+	}, {
-+		.compatible = "microchip,lan966x-switch-reset",
-+		.data = &reset_props_lan966x,
- 	},
- 	{ }
- };
--- 
-2.33.0
+> However, even if that does come to pass, anybody /else/ who wants to
+> start(?) using XFS on a SLOB system will need this patch to fix the
+> minor papercut.  Now that I've checked the rest of the codebase, I don't
+> find it reasonable to make XFS mutually exclusive with SLOB over two
+> instances of slab cache misuse.  Hence the RVB. :)
+
+Ok. I was just wondering because Dave's first reply was that actually you'll
+need to expand the use of kfree() instead of kmem_cache_free().
 
