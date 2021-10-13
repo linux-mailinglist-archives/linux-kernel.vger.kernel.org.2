@@ -2,94 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E5842B264
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4018542B260
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234119AbhJMBti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 21:49:38 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:56803 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236699AbhJMBtg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 21:49:36 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0UrdGZW4_1634089648;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UrdGZW4_1634089648)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 13 Oct 2021 09:47:29 +0800
-Subject: Re: [PATCH 1/2] ftrace: disable preemption on the testing of
- recursion
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com>
- <a8756482-024c-c858-b3d1-1ffa9a5eb3f7@linux.alibaba.com>
- <20211012081728.5d357d6c@gandalf.local.home>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <d079d249-b603-230a-a905-3f0df55056ae@linux.alibaba.com>
-Date:   Wed, 13 Oct 2021 09:46:42 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S236665AbhJMBtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 21:49:31 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:33562 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234119AbhJMBta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 21:49:30 -0400
+Received: from BC-Mail-EX04.internal.baidu.com (unknown [172.31.51.44])
+        by Forcepoint Email with ESMTPS id 7B05BA3DD4FE3D051073;
+        Wed, 13 Oct 2021 09:47:21 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-EX04.internal.baidu.com (172.31.51.44) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Wed, 13 Oct 2021 09:47:21 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Wed, 13 Oct 2021 09:47:20 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <rdunlap@infradead.org>, <jic23@kernel.org>, <lars@metafoo.de>,
+        <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
+        <kernel@pengutronix.de>, <festevam@gmail.com>
+CC:     <linux-imx@nxp.com>, <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Cai Huoqing" <caihuoqing@baidu.com>
+Subject: [PATCH] iio: imx8qxp-adc: Fix the error - defined but not used for runtime pm API
+Date:   Wed, 13 Oct 2021 09:46:58 +0800
+Message-ID: <20211013014658.2798-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20211012081728.5d357d6c@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex14.internal.baidu.com (172.31.51.54) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add the prefix '__maybe_unused' to imx8qxp_adc_runtime_suspend/resume()
+to avoid the compiler complain without setting CONFIG_SUSPEND,
+CONFIG_HIBERNATION and CONFIG_PM.
 
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/iio/adc/imx8qxp-adc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On 2021/10/12 下午8:17, Steven Rostedt wrote:
-> On Tue, 12 Oct 2021 13:40:08 +0800
-> 王贇 <yun.wang@linux.alibaba.com> wrote:
-> 
->> @@ -52,11 +52,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
->>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
->>  	if (WARN_ON_ONCE(bit < 0))
->>  		return;
->> -	/*
->> -	 * A variant of synchronize_rcu() is used to allow patching functions
->> -	 * where RCU is not watching, see klp_synchronize_transition().
->> -	 */
-> 
-> I have to take a deeper look at this patch set, but do not remove this
-> comment, as it explains the protection here, that is not obvious with the
-> changes you made.
+diff --git a/drivers/iio/adc/imx8qxp-adc.c b/drivers/iio/adc/imx8qxp-adc.c
+index 5030e0d8318d..011bef4b5dda 100644
+--- a/drivers/iio/adc/imx8qxp-adc.c
++++ b/drivers/iio/adc/imx8qxp-adc.c
+@@ -416,7 +416,7 @@ static int imx8qxp_adc_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int imx8qxp_adc_runtime_suspend(struct device *dev)
++static int __maybe_unused imx8qxp_adc_runtime_suspend(struct device *dev)
+ {
+ 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+ 	struct imx8qxp_adc *adc = iio_priv(indio_dev);
+@@ -430,7 +430,7 @@ static int imx8qxp_adc_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int imx8qxp_adc_runtime_resume(struct device *dev)
++static int __maybe_unused imx8qxp_adc_runtime_resume(struct device *dev)
+ {
+ 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+ 	struct imx8qxp_adc *adc = iio_priv(indio_dev);
+-- 
+2.25.1
 
-Will keep that in v2.
-
-Regards,
-Michael Wang
-
-> 
-> -- Steve
-> 
-> 
->> -	preempt_disable_notrace();
->>
->>  	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
->>  				      stack_node);
