@@ -2,179 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E22342C320
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE7E42C32C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235662AbhJMO3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235412AbhJMO3y (ORCPT
+        id S235781AbhJMObu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:31:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35168 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230324AbhJMObt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:29:54 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDDFC061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:27:50 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id e10so243755uab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Bj1qNEG+5FP9GKXBmM4kufW+uVF44PKuB8CVz9DjaKc=;
-        b=gRlcFYjDdxION0Qyby/akwGm75WSXINStyTQHZZuBBF2RIGoipgwpbONDCZzUuhSr+
-         1CtJI5NfddIfHkuRkTJ3QSLnJFns92TUxaOOXLQRCrS8PCV/mAopiiz1ktRZN4hiMhHL
-         ONOGYv4jqBzR9hcQiavr5d1cIRmjA/7PfIKjm84KYRf8FgXSwuuGS/J/UNfs9bbDoeI1
-         9c5cEUkU+uYHFms0MChAkU9AMdC8bbSkYsLM30Empx/KBSV9vdpQSDGxK9mI8n0YeSfB
-         gqi7v/FIqH0F3J7NkhSw2VpGE2QAAVTPg41ty5iHRUfQbYMqFzQeM6LXfO3d/zjG7mK8
-         getA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Bj1qNEG+5FP9GKXBmM4kufW+uVF44PKuB8CVz9DjaKc=;
-        b=iiYE6HUYa4IqriMck9+pOZ4nT36kZYL1/ZKnGwcr0Ry5s++/2QmkE7c1tKK3W+EWBu
-         xjOVb3jBxS/TsjBJftx2Toj5+Ze94Ww5cjEc4yT5EX7peeZdPJLKiQqSJdjmUN8mPCmu
-         G/jv+n9ZeJyidg/sqnfCEJ4wtxSUtLYZzAm1k+DSW+WNMehoNRR/vvx0JR/FUQxwTlWT
-         LzeleeSdPtq1vuH+v9EEjtiIrdoHdmh/X1JK3ngh0vbGF+fSrd00W7Sm1dx0FkUcFLpc
-         TLkMyB0ydqNlp8VA+skARcQBsyrJEs190v9FQiEu6Rjj9ybE3VB5UiLPQcbRjkj6+xKS
-         xfjA==
-X-Gm-Message-State: AOAM533+tymzTx+xV4A6qkHiLB87NS8BrEbJNlzCNfLdLCv5SoG8oCiG
-        7nl73GD7Qo4MSeqfdWcoZ903YQ==
-X-Google-Smtp-Source: ABdhPJyeFIGcjygyszMEknoRPsLumSj93t/Zso1VLa1Hm6InMKEqO7C3740GLJxdppAFCA5swk/HJg==
-X-Received: by 2002:ab0:7a50:: with SMTP id a16mr29932206uat.92.1634135270072;
-        Wed, 13 Oct 2021 07:27:50 -0700 (PDT)
-Received: from fedora ([196.32.91.248])
-        by smtp.gmail.com with ESMTPSA id j11sm5825138uaa.6.2021.10.13.07.27.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 07:27:49 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 11:27:44 -0300
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] media: rkvdec: Support dynamic resolution changes
-Message-ID: <YWbs4Ng/mDQpIoiK@fedora>
-References: <20211008100423.739462-1-wenst@chromium.org>
- <20211008100423.739462-3-wenst@chromium.org>
+        Wed, 13 Oct 2021 10:31:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634135385;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TvDOG3/TIKu7XYQ57oonwZXIqqIxlTxJBy8V8rPfz/o=;
+        b=cSjN6LPUkvQit5Hm4RVVbomVAyI3UKT4q4n99ksOwnqAh7gwN7eY16gcjaC5wHN8pAWYXg
+        lLkJETHlzobkDXZs70/atraVvi7vY8ohdPMFGMADdfxU/6tPV0XIOQhpJUoqlyohJkMCRE
+        GWNVB5Db+8baDB/6pICC3e9tBH6fkbI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-161-__f4wOWDN_qlX_ChorH5nw-1; Wed, 13 Oct 2021 10:29:42 -0400
+X-MC-Unique: __f4wOWDN_qlX_ChorH5nw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46E921006AAE;
+        Wed, 13 Oct 2021 14:29:41 +0000 (UTC)
+Received: from T590 (ovpn-8-39.pek2.redhat.com [10.72.8.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 84AE0380;
+        Wed, 13 Oct 2021 14:29:31 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 22:29:26 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kashyap.desai@broadcom.com,
+        hare@suse.de, ming.lei@redhat.com
+Subject: Re: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
+Message-ID: <YWbtRm22vohvY0Ca@T590>
+References: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
+ <YWalYoOZmpkmAZNK@T590>
+ <79266509-f327-9de3-d22e-0e9fe00387ee@huawei.com>
+ <YWay/n+BJTLm1Alb@T590>
+ <9f3c4d57-6b77-5345-0d4c-275962214b2a@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211008100423.739462-3-wenst@chromium.org>
+In-Reply-To: <9f3c4d57-6b77-5345-0d4c-275962214b2a@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chen-Yu,
-
-On Fri, Oct 08, 2021 at 06:04:23PM +0800, Chen-Yu Tsai wrote:
-> The mem-to-mem stateless decoder API specifies support for dynamic
-> resolution changes. In particular, the decoder should accept format
-> changes on the OUTPUT queue even when buffers have been allocated,
-> as long as it is not streaming.
+On Wed, Oct 13, 2021 at 12:11:12PM +0100, John Garry wrote:
+> > > > blk_mq_queue_tag_busy_iter() needn't such change? >> I didn't
+> > > > think so.>>>> blk_mq_queue_tag_busy_iter() will indeed
+> re-iter the tags per hctx. However
+> > > in bt_iter(), we check rq->mq_hctx == hctx for calling the iter callback:
+> > > 
+> > > static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+> > > {
+> > > 	...
+> > > 
+> > > 	if (rq->q == hctx->queue && rq->mq_hctx == hctx)
+> > > 		ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
+> > > 
+> > > And this would only pass for the correct hctx which we're iter'ing for.
+> > It is true for both shared and non-shared sbitmap since we don't share
+> > hctx, so what does matter?
 > 
-> Relax restrictions for S_FMT as described in the previous paragraph,
-> and as long as the codec format remains the same. This aligns it with
-> the Hantro and Cedrus decoders. This change was mostly based on commit
-> ae02d49493b5 ("media: hantro: Fix s_fmt for dynamic resolution changes").
+> It matters that we are doing the right thing for shared tags. My point is we
+> iter but don't call the callback unless the correct hctx.
 > 
-> Since rkvdec_s_fmt() is now just a wrapper around the output/capture
-> variants without any additional shared functionality, drop the wrapper
-> and call the respective functions directly.
+> As I see, this has not changed in transitioning from shared sbitmap to
+> shared tags.
 > 
-> Fixes: cd33c830448b ("media: rkvdec: Add the rkvdec driver")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-
-Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-
-Seems we forgot to port Hantro changes over here, so thanks a lot
-for picking this up.
-
-Ezequiel
-
-> ---
->  drivers/staging/media/rkvdec/rkvdec.c | 40 +++++++++++++--------------
->  1 file changed, 20 insertions(+), 20 deletions(-)
+> > With single shared tags, you can iterate over
+> > all requests originated from all hw queues, right?
+> > 
+> Right, for the same request queue, we should do that.
 > 
-> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-> index 7131156c1f2c..3f3f96488d74 100644
-> --- a/drivers/staging/media/rkvdec/rkvdec.c
-> +++ b/drivers/staging/media/rkvdec/rkvdec.c
-> @@ -280,31 +280,20 @@ static int rkvdec_try_output_fmt(struct file *file, void *priv,
->  	return 0;
->  }
->  
-> -static int rkvdec_s_fmt(struct file *file, void *priv,
-> -			struct v4l2_format *f,
-> -			int (*try_fmt)(struct file *, void *,
-> -				       struct v4l2_format *))
-> +static int rkvdec_s_capture_fmt(struct file *file, void *priv,
-> +				struct v4l2_format *f)
->  {
->  	struct rkvdec_ctx *ctx = fh_to_rkvdec_ctx(priv);
->  	struct vb2_queue *vq;
-> +	int ret;
->  
-> -	if (!try_fmt)
-> -		return -EINVAL;
-> -
-> -	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
-> +	/* Change not allowed if queue is busy */
-> +	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx,
-> +			     V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE);
->  	if (vb2_is_busy(vq))
->  		return -EBUSY;
->  
-> -	return try_fmt(file, priv, f);
-> -}
-> -
-> -static int rkvdec_s_capture_fmt(struct file *file, void *priv,
-> -				struct v4l2_format *f)
-> -{
-> -	struct rkvdec_ctx *ctx = fh_to_rkvdec_ctx(priv);
-> -	int ret;
-> -
-> -	ret = rkvdec_s_fmt(file, priv, f, rkvdec_try_capture_fmt);
-> +	ret = rkvdec_try_capture_fmt(file, priv, f);
->  	if (ret)
->  		return ret;
->  
-> @@ -319,9 +308,20 @@ static int rkvdec_s_output_fmt(struct file *file, void *priv,
->  	struct v4l2_m2m_ctx *m2m_ctx = ctx->fh.m2m_ctx;
->  	const struct rkvdec_coded_fmt_desc *desc;
->  	struct v4l2_format *cap_fmt;
-> -	struct vb2_queue *peer_vq;
-> +	struct vb2_queue *peer_vq, *vq;
->  	int ret;
->  
-> +	/*
-> +	 * In order to support dynamic resolution change, the decoder admits
-> +	 * a resolution change, as long as the pixelformat remains. Can't be
-> +	 * done if streaming.
-> +	 */
-> +	vq = v4l2_m2m_get_vq(m2m_ctx, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE);
-> +	if (vb2_is_streaming(vq) ||
-> +	    (vb2_is_busy(vq) &&
-> +	     f->fmt.pix_mp.pixelformat != ctx->coded_fmt.fmt.pix_mp.pixelformat))
-> +		return -EBUSY;
-> +
->  	/*
->  	 * Since format change on the OUTPUT queue will reset the CAPTURE
->  	 * queue, we can't allow doing so when the CAPTURE queue has buffers
-> @@ -331,7 +331,7 @@ static int rkvdec_s_output_fmt(struct file *file, void *priv,
->  	if (vb2_is_busy(peer_vq))
->  		return -EBUSY;
->  
-> -	ret = rkvdec_s_fmt(file, priv, f, rkvdec_try_output_fmt);
-> +	ret = rkvdec_try_output_fmt(file, priv, f);
->  	if (ret)
->  		return ret;
->  
-> -- 
-> 2.33.0.882.g93a45727a2-goog
+> > > Indeed, it would be nice not to iter excessive times, but I didn't see a
+> > > straightforward way to change that.
 > 
+> 
+> > In Kashyap's report, the lock contention is actually from
+> > blk_mq_queue_tag_busy_iter(), see:
+> > 
+> > https://lore.kernel.org/linux-block/8867352d-2107-1f8a-0f1c-ef73450bf256@huawei.com/
+> > 
+> 
+> As I understand, Kashyap mentioned no throughput regression with my series,
+> but just higher cpu usage in blk_mq_find_and_get_req().
+> 
+> I'll see if I can see such a thing in my setup.
+> 
+> But could it be that since we only have a single sets of requests per
+> tagset, and not a set of requests per HW queue, there is more contention on
+> the common set of requests in the refcount_inc_not_zero() call ***, below:
+> 
+> static struct request *blk_mq_find_and_get_req(struct blk_mq_tags *tags,
+> unsigned int bitnr)
+> {
+> 	...
+> 
+> 	rq = tags->rqs[bitnr];
+> 	if (... || !refcount_inc_not_zero(&rq->ref)) ***
+> 	...
+> }
+
+Kashyap's log shows that contention on tags->lock is increased, that
+should be caused by nr_hw_queues iterating. blk_mq_find_and_get_req()
+will be run nr_hw_queue times compared with pre-shared-sbitmap, since it
+is done before checking rq->mq_hctx.
+
+> 
+> But I wonder why this function is even called often...
+> 
+> > > There is also blk_mq_all_tag_iter():
+> > > 
+> > > void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
+> > > 		void *priv)
+> > > {
+> > > 	__blk_mq_all_tag_iter(tags, fn, priv, BT_TAG_ITER_STATIC_RQS);
+> > > }
+> > > 
+> > > But then the only user is blk_mq_hctx_has_requests():
+> > > 
+> > > static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
+> > > {
+> > > 	struct blk_mq_tags *tags = hctx->sched_tags ?
+> > > 			hctx->sched_tags : hctx->tags;
+> > > 	struct rq_iter_data data = {
+> > > 		.hctx	= hctx,
+> > > 	};
+> > > 
+> > > 	blk_mq_all_tag_iter(tags, blk_mq_has_request, &data);
+> > > 	return data.has_rq;
+> > > }
+> > This above one only iterates over the specified hctx/tags, it won't be
+> > affected.
+> > 
+> > > But, again like bt_iter(), blk_mq_has_request() will check the hctx matches:
+> > Not see what matters wrt. checking hctx.
+> 
+> I'm just saying that something like the following would be broken for shared
+> tags:
+> 
+> static bool blk_mq_has_request(struct request *rq, void *data, bool
+> reserved)
+> {
+> 	struct rq_iter_data *iter_data = data;
+> 
+> 	iter_data->has_rq = true;
+> 	return true;
+> }
+> 
+> static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
+> {
+> 	struct rq_iter_data data = {
+> 	};
+> 
+> 	blk_mq_all_tag_iter(tags, blk_mq_has_request, &data);
+> 	return data.has_rq;
+> }
+> 
+> As it ignores that we want to check for a specific hctx.
+
+No, that isn't what I meant, follows the change I suggested:
+
+
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 72a2724a4eee..2a2ad6dfcc33 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -232,8 +232,9 @@ static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+ 	if (!rq)
+ 		return true;
+ 
+-	if (rq->q == hctx->queue && rq->mq_hctx == hctx)
+-		ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
++	if (rq->q == hctx->queue && (rq->mq_hctx == hctx ||
++				blk_mq_is_shared_tags(hctx->flags)))
++		ret = iter_data->fn(rq->mq_hctx, rq, iter_data->data, reserved);
+ 	blk_mq_put_rq_ref(rq);
+ 	return ret;
+ }
+@@ -460,6 +461,9 @@ void blk_mq_queue_tag_busy_iter(struct request_queue *q, busy_iter_fn *fn,
+ 		if (tags->nr_reserved_tags)
+ 			bt_for_each(hctx, &tags->breserved_tags, fn, priv, true);
+ 		bt_for_each(hctx, &tags->bitmap_tags, fn, priv, false);
++
++		if (blk_mq_is_shared_tags(hctx->flags))
++			break;
+ 	}
+ 	blk_queue_exit(q);
+ }
+
+
+Thanks,
+Ming
+
