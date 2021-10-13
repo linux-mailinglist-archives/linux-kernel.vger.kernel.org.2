@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EF042CD9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1DD42CDA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhJMWPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 18:15:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44054 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhJMWPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 18:15:13 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A938A61151;
-        Wed, 13 Oct 2021 22:13:08 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 18:13:06 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S231124AbhJMWQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 18:16:05 -0400
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:44884 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhJMWQE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 18:16:04 -0400
+Received: by mail-lf1-f50.google.com with SMTP id y26so18189145lfa.11;
+        Wed, 13 Oct 2021 15:14:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IhzvudXW7TBy3eiI9ls677r5nxPvZKx6UxcRBg2zP5M=;
+        b=n5O6Si+s+Lu953h9xV1LacYHxtPcA20bm6KZEO7nwgJCsrloQvIJKGt0HeLdfkL73A
+         LCaOmHNiGJVUK35wWrpkNvOPOa7kmAxxLtKsP7GzjxHA44WSFJvwzbYg1Kw3Xe+oyIvl
+         xjm5CGKPAlsCq3h5pN/Sl5sOR6XY9AtlskIKX9hyYxa9IvqrKfdxO5V9OgOkoADuXs7n
+         G4XvWpLR7o7uyPazQ+Wq2CppDRaO1Rj0bvFnXR54VBVR46djLgFqMz/e8VnjJ6AOkBo2
+         99mdSgFx0B1FH6UZ4Hs9sr7OCCVy4AVpY8VnkCoBnpWEQQj2YIIprsmyKY530xKY32Ix
+         Q+SQ==
+X-Gm-Message-State: AOAM532jgeXSrEv8Ydk23Jm0J61CgHdq6MrkNiGd6fx1r3v3EQGmeu0S
+        sCupaQ7evJrT32XvhyAOUBQ=
+X-Google-Smtp-Source: ABdhPJwR53UWXD3XZWJEAjTkJ1ymjQWppGHRZ//U1wUZ9WwC/w23Aq3uhihef5g8OMq5CIkezmcqTg==
+X-Received: by 2002:a05:6512:555:: with SMTP id h21mr1482911lfl.408.1634163239781;
+        Wed, 13 Oct 2021 15:13:59 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id t18sm57656lfl.289.2021.10.13.15.13.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 15:13:59 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 00:13:57 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v2 1/4] sched/rt: Annotate the RT balancing logic
- irqwork as IRQ_WORK_HARD_IRQ
-Message-ID: <20211013181306.004c4bc6@gandalf.local.home>
-In-Reply-To: <20211006111852.1514359-2-bigeasy@linutronix.de>
-References: <20211006111852.1514359-1-bigeasy@linutronix.de>
-        <20211006111852.1514359-2-bigeasy@linutronix.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-pci@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Benoit =?utf-8?B?R3LDqWdvaXJl?= <benoitg@coeus.ca>,
+        Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH v2] x86/PCI: Ignore E820 reservations for bridge windows
+ on newer systems
+Message-ID: <YWdaJVhoPDrg3Tsd@rocinante>
+References: <20211011090531.244762-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211011090531.244762-1-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  6 Oct 2021 13:18:49 +0200
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+Hi Hans,
 
-> The push-IPI logic for RT tasks expects to be invoked from hardirq
-> context. One reason is that a RT task on the remote CPU would block the
-> softirq processing on PREEMPT_RT and so avoid pulling / balancing the RT
-> tasks as intended.
-> 
-> Annotate root_domain::rto_push_work as IRQ_WORK_HARD_IRQ.
-> 
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  kernel/sched/topology.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 4e8698e62f075..3d0157bd4e144 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -526,7 +526,7 @@ static int init_rootdomain(struct root_domain *rd)
->  #ifdef HAVE_RT_PUSH_IPI
->  	rd->rto_cpu = -1;
->  	raw_spin_lock_init(&rd->rto_lock);
-> -	init_irq_work(&rd->rto_push_work, rto_push_irq_work_func);
-> +	rd->rto_push_work = IRQ_WORK_INIT_HARD(rto_push_irq_work_func);
+Thank you for sending the patch over!
 
-Should we not make an "init_irq_work_hard()" helper?
+[...]
+> [    0.000000] BIOS-e820: [mem 0x000000004bc50000-0x00000000cfffffff] reserved
+> [    0.557473] pci_bus 0000:00: root bus resource [mem 0x65400000-0xbfffffff window]
 
--- Steve
+A very small nitpick: we usually remove time/date stamps from kernel ring
+buffer outputs keeping only the relevant message parts left.
 
+[...]
+> Old systems are defined here as BIOS year < 2018, this was chosen to
+> make sure that pci_use_e820 will not be set on the currently affected
+> systems, while at the same time also taking into account that the
+> systems for which the E820 checking was orignally added may have
+
+A tiny typo of "originally" in the sentence above.
+
+[...]
+> @@ -232,3 +236,9 @@ static inline void mmio_config_writel(void __iomem *pos, u32 val)
+>  # define x86_default_pci_init_irq	NULL
+>  # define x86_default_pci_fixup_irqs	NULL
 >  #endif
->  
->  	rd->visit_gen = 0;
+> +
+> +#if defined CONFIG_PCI && defined CONFIG_ACPI
 
+I know that Mika already asked about this, and you responded, so I can only
+added: brackets, let's add brackets, most definitely. :)
+
+[...]
+> +/* Consumed in arch/x86/kernel/resource.c */
+> +bool pci_use_e820 = false;
+
+A small nitpick: not sure if this comment is needed as probably most people
+working with this code would use "git grep" and likes to list occurrences
+where the variables is used.  But, this is highly subjective, thus there is
+probably nothing to change here.
+
+> +	printk(KERN_INFO "PCI: %s E820 reservations for host bridge windows\n",
+> +	       pci_use_e820 ? "Honoring" : "Ignoring");
+
+I know you followed the existing style, which is very much appreciated, but
+if and where possible, we should move to newer API/style and replace the
+printk() above with pr_info().  New code should not be adding old style if
+it can be helped (checkpatch.pl would warn about this too).  What do yo you
+think?
+
+	Krzysztof
