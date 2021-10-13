@@ -2,129 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E90F42B854
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C8242B852
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238184AbhJMHE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
+        id S238274AbhJMHEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:04:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238256AbhJMHEV (ORCPT
+        with ESMTP id S238138AbhJMHES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:04:21 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC36CC061764
+        Wed, 13 Oct 2021 03:04:18 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71603C06174E
         for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:02:14 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id n8so7376382lfk.6
+Received: by mail-pg1-x52e.google.com with SMTP id a73so1459905pge.0
         for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o94EXo+tToRKdwVEcwPQeGsy4jlHYaEW0KchhMFyAwo=;
-        b=d4Z6s1mE9nV3QOSP2xgd/oC/dsl5gqCmcONZKoSsb+tfzeAOWd2vinDrYbTNqVcxqC
-         zXithLyE7imAFDglSwSATMMQgJuafegmIEBD0V3kt+acLXkRceuFixFg0rBUlO2ZeLJw
-         yo4IeiE/nn78D8FoyMF8FazhsTSBF+IVTsmr4pbiTcT4qssDIdTKWQUcFc8qczMAz5na
-         EYeLuL56rN3Kb9ZkeIZCbNS8++9ZV1kbqgWexNEQ71M9ze4NWLTYs+0QDSk7YoGjK1Kb
-         chMHk+b6lHpjERFXSuZPbjkOV/gbLrcmUYmRb+bN2zfwtrrM5GFr917dn5GMx+Mp18uh
-         SPxA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QziJyzXzUKzLt0mT/rAcGmhri2bByqLuVs1mVf2Iq0g=;
+        b=NwHbNYolt/EJuuhUNh3gFlhBeQ9ofBjeVTMrGlBvl7Dpq4nY5SGQ+7bZVHVSCPSCvz
+         N4ue7iEr/SejEm3Z7dmljFY3Ydw+WZXeuot6L8HdKKtMDeoRppIKuFuYaENN6G0icj3X
+         75yWvw4ksMlAy3h2kzjPtg6nuTPvWkdSEorqM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o94EXo+tToRKdwVEcwPQeGsy4jlHYaEW0KchhMFyAwo=;
-        b=0N014rNlfxd9zH7JVvkgv10Da6y0xLhATR0HOhbAYNCN9P9e/uH7njsZto0lpOOdQn
-         LfH5Ip+pKEBBUGLMgrbkpzDVe4PRjuSze+nTZ7zq+xb9NgWu6LIq4/uFGZCjFpg3eKWh
-         Jrn8/Yt6dxphpMyIFTTjRTSweMBMOWBD5luIFm9r/42wK6gPtt+mKbLQpq2liIIAx6af
-         0npkBrZGP6M4CKgMuezZ6P3HGhIQa0/nCOcOAl9mFWlitTpt5yf3nfDSsNG/FfUT3YQI
-         4oXEddVfpnS8TfD3+k+qMJHMUFzhNQF8XOnh9E7+fyZBKcCfz6IBYURjYeFEaOfxL7ho
-         RLVg==
-X-Gm-Message-State: AOAM530mwapMDcl2e8+3ZEBpopC4reeYefIydo3ZnF14rfoWyoP2npkQ
-        3Qi/lkS+2Mc5CCiNhPIsH0lZV1VtnZ709jWufppBJ4imWKXe407V
-X-Google-Smtp-Source: ABdhPJycxtfdhS8rLs6pHYukexW2sy/Bbc9quhCsIqztVJ/7NiBvbr5IASEZ6NZIs1+ZcsxlSZW9Bt7u/4B2Gr0Aug8=
-X-Received: by 2002:a2e:8756:: with SMTP id q22mr27140863ljj.271.1634108532602;
- Wed, 13 Oct 2021 00:02:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QziJyzXzUKzLt0mT/rAcGmhri2bByqLuVs1mVf2Iq0g=;
+        b=LFRhDc2zb6ygz0gfds1nRewEF8qKikLahOroF/Kd8IqUjIn2YbsuHRBux7aVFt7Dn1
+         W+IciFZ/oN1BfEGrdrPvb8zepVhIB6jwRfD0be5aOlEFPvOQs7RxKbLkqajsno38utn3
+         6fNjpKWp9SqmQETbd/xloQp1u9C8RNouj9jkZBlz0IRpJbusLIWnQ8sixN2e8RfzcPmW
+         qVGQlh+Rj/D7FO97SAamZ9cjXjdwXM6S/r6M3kLXrm7zc+qhbbPGzYV45kKGJZhYktyW
+         nkokhhHR83ZVfr0diKA3BaSBsUldKMPBvPNfTZU47RLGCYcxpYO59hwdJAcfOV6h+ZnP
+         7LdA==
+X-Gm-Message-State: AOAM533rtpZQKZjgDf35xdUPVcdM0HfKdTNM56MXMw5IDVavFnbDTP0+
+        a34tBsJw5J1Su+x7gKfFIvGtxg==
+X-Google-Smtp-Source: ABdhPJyWYEWyfQBfcC/0yIP+D80JqXxmyV0v/CWpa3mlnRn6oeLJSgdmS6Po11cAfGz1rlakmHlfMA==
+X-Received: by 2002:a63:ed13:: with SMTP id d19mr26247213pgi.430.1634108533970;
+        Wed, 13 Oct 2021 00:02:13 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k14sm7556115pgt.8.2021.10.13.00.02.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 00:02:13 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 00:02:12 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 06/10] asm-generic: Refactor
+ dereference_[kernel]_function_descriptor()
+Message-ID: <202110130002.A7C0A86@keescook>
+References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
+ <c215b244a19a07327ec81bf99f3c5f89c68af7b4.1633964380.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-References: <20211006071546.2540920-1-jens.wiklander@linaro.org> <20211006071546.2540920-2-jens.wiklander@linaro.org>
-In-Reply-To: <20211006071546.2540920-2-jens.wiklander@linaro.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 13 Oct 2021 12:32:01 +0530
-Message-ID: <CAFA6WYPLCLmYhSa_-vJPvhy9fFpdD3u39YZenYgij4fSM-+JCw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/6] docs: staging/tee.rst: add a section on OP-TEE notifications
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jerome Forissier <jerome@forissier.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c215b244a19a07327ec81bf99f3c5f89c68af7b4.1633964380.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 at 12:45, Jens Wiklander <jens.wiklander@linaro.org> wrote:
->
-> Adds a section on notifications used by OP-TEE, synchronous and
-> asynchronous.
->
-> Acked-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+On Mon, Oct 11, 2021 at 05:25:33PM +0200, Christophe Leroy wrote:
+> dereference_function_descriptor() and
+> dereference_kernel_function_descriptor() are identical on the
+> three architectures implementing them.
+> 
+> Make it common.
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 > ---
->  Documentation/staging/tee.rst | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
->
+>  arch/ia64/include/asm/sections.h    | 19 -------------------
+>  arch/parisc/include/asm/sections.h  |  9 ---------
+>  arch/parisc/kernel/process.c        | 21 ---------------------
+>  arch/powerpc/include/asm/sections.h | 23 -----------------------
+>  include/asm-generic/sections.h      | 18 ++++++++++++++++++
+>  5 files changed, 18 insertions(+), 72 deletions(-)
 
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+A diffstat to love. :)
 
--Sumit
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-> diff --git a/Documentation/staging/tee.rst b/Documentation/staging/tee.rst
-> index 4d4b5f889603..3c63d8dcd61e 100644
-> --- a/Documentation/staging/tee.rst
-> +++ b/Documentation/staging/tee.rst
-> @@ -184,6 +184,36 @@ order to support device enumeration. In other words, OP-TEE driver invokes this
->  application to retrieve a list of Trusted Applications which can be registered
->  as devices on the TEE bus.
->
-> +OP-TEE notifications
-> +--------------------
+
+> 
+> diff --git a/arch/ia64/include/asm/sections.h b/arch/ia64/include/asm/sections.h
+> index 929b5c535620..d9addaea8339 100644
+> --- a/arch/ia64/include/asm/sections.h
+> +++ b/arch/ia64/include/asm/sections.h
+> @@ -30,23 +30,4 @@ extern char __start_gate_brl_fsys_bubble_down_patchlist[], __end_gate_brl_fsys_b
+>  extern char __start_unwind[], __end_unwind[];
+>  extern char __start_ivt_text[], __end_ivt_text[];
+>  
+> -#undef dereference_function_descriptor
+> -static inline void *dereference_function_descriptor(void *ptr)
+> -{
+> -	struct fdesc *desc = ptr;
+> -	void *p;
+> -
+> -	if (!get_kernel_nofault(p, (void *)&desc->addr))
+> -		ptr = p;
+> -	return ptr;
+> -}
+> -
+> -#undef dereference_kernel_function_descriptor
+> -static inline void *dereference_kernel_function_descriptor(void *ptr)
+> -{
+> -	if (ptr < (void *)__start_opd || ptr >= (void *)__end_opd)
+> -		return ptr;
+> -	return dereference_function_descriptor(ptr);
+> -}
+> -
+>  #endif /* _ASM_IA64_SECTIONS_H */
+> diff --git a/arch/parisc/include/asm/sections.h b/arch/parisc/include/asm/sections.h
+> index 329e80f7af0a..b041fb32a300 100644
+> --- a/arch/parisc/include/asm/sections.h
+> +++ b/arch/parisc/include/asm/sections.h
+> @@ -12,13 +12,4 @@ typedef Elf64_Fdesc funct_descr_t;
+>  
+>  extern char __alt_instructions[], __alt_instructions_end[];
+>  
+> -#ifdef CONFIG_64BIT
+> -
+> -#undef dereference_function_descriptor
+> -void *dereference_function_descriptor(void *);
+> -
+> -#undef dereference_kernel_function_descriptor
+> -void *dereference_kernel_function_descriptor(void *);
+> -#endif
+> -
+>  #endif
+> diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+> index 38ec4ae81239..7382576b52a8 100644
+> --- a/arch/parisc/kernel/process.c
+> +++ b/arch/parisc/kernel/process.c
+> @@ -266,27 +266,6 @@ get_wchan(struct task_struct *p)
+>  	return 0;
+>  }
+>  
+> -#ifdef CONFIG_64BIT
+> -void *dereference_function_descriptor(void *ptr)
+> -{
+> -	Elf64_Fdesc *desc = ptr;
+> -	void *p;
+> -
+> -	if (!get_kernel_nofault(p, (void *)&desc->addr))
+> -		ptr = p;
+> -	return ptr;
+> -}
+> -
+> -void *dereference_kernel_function_descriptor(void *ptr)
+> -{
+> -	if (ptr < (void *)__start_opd ||
+> -			ptr >= (void *)__end_opd)
+> -		return ptr;
+> -
+> -	return dereference_function_descriptor(ptr);
+> -}
+> -#endif
+> -
+>  static inline unsigned long brk_rnd(void)
+>  {
+>  	return (get_random_int() & BRK_RND_MASK) << PAGE_SHIFT;
+> diff --git a/arch/powerpc/include/asm/sections.h b/arch/powerpc/include/asm/sections.h
+> index d0d5287fa568..8f8e95f234e2 100644
+> --- a/arch/powerpc/include/asm/sections.h
+> +++ b/arch/powerpc/include/asm/sections.h
+> @@ -72,29 +72,6 @@ static inline int overlaps_kernel_text(unsigned long start, unsigned long end)
+>  		(unsigned long)_stext < end;
+>  }
+>  
+> -#ifdef PPC64_ELF_ABI_v1
+> -
+> -#undef dereference_function_descriptor
+> -static inline void *dereference_function_descriptor(void *ptr)
+> -{
+> -	struct ppc64_opd_entry *desc = ptr;
+> -	void *p;
+> -
+> -	if (!get_kernel_nofault(p, (void *)&desc->addr))
+> -		ptr = p;
+> -	return ptr;
+> -}
+> -
+> -#undef dereference_kernel_function_descriptor
+> -static inline void *dereference_kernel_function_descriptor(void *ptr)
+> -{
+> -	if (ptr < (void *)__start_opd || ptr >= (void *)__end_opd)
+> -		return ptr;
+> -
+> -	return dereference_function_descriptor(ptr);
+> -}
+> -#endif /* PPC64_ELF_ABI_v1 */
+> -
+>  #endif
+>  
+>  #endif /* __KERNEL__ */
+> diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
+> index 436412d94054..5baaf9d7c671 100644
+> --- a/include/asm-generic/sections.h
+> +++ b/include/asm-generic/sections.h
+> @@ -60,6 +60,24 @@ extern __visible const void __nosave_begin, __nosave_end;
+>  
+>  /* Function descriptor handling (if any).  Override in asm/sections.h */
+>  #ifdef HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR
+> +static inline void *dereference_function_descriptor(void *ptr)
+> +{
+> +	funct_descr_t *desc = ptr;
+> +	void *p;
 > +
-> +There are two kinds of notifications that secure world can use to make
-> +normal world aware of some event.
+> +	if (!get_kernel_nofault(p, (void *)&desc->addr))
+> +		ptr = p;
+> +	return ptr;
+> +}
 > +
-> +1. Synchronous notifications delivered with ``OPTEE_RPC_CMD_NOTIFICATION``
-> +   using the ``OPTEE_RPC_NOTIFICATION_SEND`` parameter.
-> +2. Asynchronous notifications delivered with a combination of a non-secure
-> +   edge-triggered interrupt and a fast call from the non-secure interrupt
-> +   handler.
+> +static inline void *dereference_kernel_function_descriptor(void *ptr)
+> +{
+> +	if (ptr < (void *)__start_opd || ptr >= (void *)__end_opd)
+> +		return ptr;
 > +
-> +Synchronous notifications are limited by depending on RPC for delivery,
-> +this is only usable when secure world is entered with a yielding call via
-> +``OPTEE_SMC_CALL_WITH_ARG``. This excludes such notifications from secure
-> +world interrupt handlers.
+> +	return dereference_function_descriptor(ptr);
+> +}
 > +
-> +An asynchronous notification is delivered via a non-secure edge-triggered
-> +interrupt to an interrupt handler registered in the OP-TEE driver. The
-> +actual notification value are retrieved with the fast call
-> +``OPTEE_SMC_GET_ASYNC_NOTIF_VALUE``. Note that one interrupt can represent
-> +multiple notifications.
-> +
-> +One notification value ``OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_BOTTOM_HALF`` has a
-> +special meaning. When this value is received it means that normal world is
-> +supposed to make a yielding call ``OPTEE_MSG_CMD_DO_BOTTOM_HALF``. This
-> +call is done from the thread assisting the interrupt handler. This is a
-> +building block for OP-TEE OS in secure world to implement the top half and
-> +bottom half style of device drivers.
-> +
->  AMD-TEE driver
->  ==============
->
-> --
+>  #else
+>  #define dereference_function_descriptor(p) ((void *)(p))
+>  #define dereference_kernel_function_descriptor(p) ((void *)(p))
+> -- 
 > 2.31.1
->
+> 
+
+-- 
+Kees Cook
