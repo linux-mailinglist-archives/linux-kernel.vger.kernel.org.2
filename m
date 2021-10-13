@@ -2,151 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1EF42B379
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB2D42B37B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237494AbhJMD3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:29:13 -0400
-Received: from mail-eopbgr1300111.outbound.protection.outlook.com ([40.107.130.111]:36864
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237477AbhJMD3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:29:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dUOnmfW5lp+mUZg4NQ3p0Q0I2M54Mte9lTPCw1j8XzBhrMBAHYPjHecLu3F2jfI/ANiR6xClHN0W2rc6io8mO2jNuMPla9fzUYQBMJXegJYKtN4CLweCshYejbSHI099A3h2GfRgy4B5+8Q3rkuiXA7lFJaWVBuZEwsL+pHhbLdviPNCVNlVpEFCytvXO2fMqum3rmMzFINlqOGTq7nM7ozIbojehwkWyRnG3Z8mQ2SxpKpvOCyhhMEzsvmJ3/bKWqzLiUXec+qygBbX8C5vyd483brV41gYBzxBRSKClKP8hGlGHIDBYJ6YoHhcMJnKq/63QpKVL7A44Jjkx9EEcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GenKSiIsPYbxQtkO6HJUWv8A4R7OdeoZUusW9bW8gQE=;
- b=jKH05/52+dIkqCqCAvGaY/d19M+HNGpPniqmM8lvQmvBuf40iqjwyQE2aRKsRlajWM/FY7OQlkZLetTXSIrqbLsAJbUl79DClKQE3PVw+RgwLuO85benMFxNY/2QDuIVETMg+EITTG85ngif58BWkDU9+ljBLLNwW7CRxNpucPVR3JGcrp/1JtSPMWiYOs7wo9GEOIwFGaiVYFBN+2/UAf6asQubQPJc4klQXRuCUyFen20puEa4Vp09dUjFBoWq9Kp/ArPmhetK5nxV+d0bgC/nJi6lFBPgGcMB7s5nSItjCgNkWZH3L1Vs2urKKwWxJs5XJMaoRv+egXb2TPSqOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GenKSiIsPYbxQtkO6HJUWv8A4R7OdeoZUusW9bW8gQE=;
- b=VdjgPjgQwMqZArCD3XR5MC73bg42rxRmoE4AS446j/LSxS9ltyP33oWsvzqPy6jGi1SaEdeOe1cbEQrSsPY76BBBCnAN4KJoEYAFRHxxZU6At4K4TCKJ6lWPtbQz74dso3VVxOtTYcxeqL0/Ka0vd5vEpjvXCM4huCOsv05Uquk=
-Authentication-Results: foss.st.com; dkim=none (message not signed)
- header.d=none;foss.st.com; dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
- by SL2PR06MB3243.apcprd06.prod.outlook.com (2603:1096:100:35::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Wed, 13 Oct
- 2021 03:27:07 +0000
-Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
- ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4587.024; Wed, 13 Oct 2021
- 03:27:07 +0000
-From:   Qing Wang <wangqing@vivo.com>
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH] counter: replace snprintf in show functions with sysfs_emit
-Date:   Tue, 12 Oct 2021 20:26:59 -0700
-Message-Id: <1634095619-4174-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: HKAPR03CA0032.apcprd03.prod.outlook.com
- (2603:1096:203:c9::19) To SL2PR06MB3082.apcprd06.prod.outlook.com
- (2603:1096:100:37::17)
+        id S237522AbhJMD33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237519AbhJMD3X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 23:29:23 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99009C061762;
+        Tue, 12 Oct 2021 20:27:20 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id d3so4188918edp.3;
+        Tue, 12 Oct 2021 20:27:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YZPCHO08AgD6KyH1rx1SWGoXCYetQowI2VzSUfaOOSc=;
+        b=lKR0XBaIHxm83dVSXfHQCA70xM/6/2WQeaJToudLFNEHzMNhDzxVWeSuWXzqlBkD8B
+         clSTpJwTxH4kaZQfOVcH0uRuszz+5GvOUBn/XuBvdl6htLLtC8U5L7iTsroKsojrfKGX
+         VkJ2EfTR43GZvXaGJ+TQK0F4h7NrsoW4muZNnvpuP0ifJzdw0HewwDwIWXSDxXjegU98
+         DBU/6q4g6SUClgZOrN11FuSm4kNhzlOhaNwigmKnvLM2eoE0gowQYtfzK7UcoVUI7F9X
+         6W8USiDUPgauhb13SsV0+m3V2NI4ZPQzrAbfz22sStFF5satXBYcTYwDL3e2zWVCMntU
+         MMyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YZPCHO08AgD6KyH1rx1SWGoXCYetQowI2VzSUfaOOSc=;
+        b=xAGXjNSmmcxA52pxSCnHMvJbJPprb/4TPh01T7u8kJdOhScOboeHFq8ocjscdnkt3I
+         nAAuCdfji/nTetNnq+6mu5kSl02z9DyZHVFWDxX3BiPzIIk4pByO5IrXNB9kfNCeoXIn
+         CYqq9cfrWNXYysyfRladqcDt8PAXWw57MDmyxp4yWFpu7eyN4nHcHllblci+sgIxwOru
+         tDg+KnwSDaErhrL+CKz87pmTl9Bqx0aunICRaSn2UO2mmeJWFW3gNJ8T+IMUUP1rnkc3
+         z44GJBQpEyoh8PwLJS2SNZ8s1KoRZe1aSsTWBWkFTM86DV8FYoGpRwRApk/pjaNU6qlt
+         KemA==
+X-Gm-Message-State: AOAM532cYsl1+SSjR87N0t/j8B1G9AmeDmshLpgr+mG2KXXxZV+rBGRg
+        lczkEG7ZZ/VyNH6zIbXYAfmeCgR6bVtaJJmc0Nk=
+X-Google-Smtp-Source: ABdhPJwS2I4xw4R+aJkqSQJ6ILBD1QJdX4FaKxy0F3AcXfxmln2prvB5TFVbaSR3E8T6ogUVsn8dWurShg+Y2jaC1MU=
+X-Received: by 2002:a05:6402:10da:: with SMTP id p26mr5733821edu.283.1634095638697;
+ Tue, 12 Oct 2021 20:27:18 -0700 (PDT)
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (103.220.76.181) by HKAPR03CA0032.apcprd03.prod.outlook.com (2603:1096:203:c9::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.4 via Frontend Transport; Wed, 13 Oct 2021 03:27:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 72721946-a903-4ae6-6942-08d98df95592
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3243:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB324365A18452128DE284034BBDB79@SL2PR06MB3243.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OLuurFMi7K2z3qM61jL3QF2mLpoyjNTATrirETwX/2pXAuvRIXwPFP+Q2/asvDXdsARiMlkEYVj88LMDuJK2IAsPXXUsmsLcj/9oj5IOxgsDVcan8p6Kia8Rrjs4QzX7+a3rajj4B89o+A3KtsE8Of+nrM5EranO4P8i2Z1mWjNy7Tup2JsnxM5wzkhoSqeuBMzrrDOpkhZg6gnJmtgfMwq6bI74K+hADn/FQSJrK/2dIl1d16uGFvAicrfqes/JeLTRDBDtpZMfs95/ZK5qq6SGvjOvOYPRhc7VWuDLTU4Hv3PNPt7NkB3tzu8dhNceTt6goMpXWIWX/6xKBLTRfcz7WQH1PhFjUTX5PFGS6rOIUhC9lKhlGvdjrTcEIzHufVrIRUbiIhw2mC6R03LJu7WFnxXJCGNn1gG7vJ+Wg1g8tLbRsVDBH9e5C2PEI9FeiCft9Swb7T8rLlgUbaQfVdt7LuPJoP/uAGzKcgWA4T4RWhOSAx5ZC+up3V1OJFBgUFyACblih+1Z+XVLx81f4AuE1q9l0eS63s6X7qviWzFRKSXJmcOM4e0oG325WvftBd//W9LqXLtXycgza01pJIzk3bhHQ1zNMK30UUsAhNrdIpNUiilfs2rcY0dx4M/IEHbXxHPZWiXGHbxE30Ffwm6EhcXyBUqp6XapsTPLow61N1eeuIsroUAqxj7yDNEUQHlY5fetS//Q+yi54GPoiw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(2906002)(26005)(6512007)(4326008)(66946007)(8676002)(36756003)(66476007)(83380400001)(38100700002)(6666004)(66556008)(38350700002)(107886003)(316002)(52116002)(186003)(8936002)(6486002)(5660300002)(6506007)(110136005)(956004)(2616005)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kFH0Wp4cSJcSDaT519U5cKm607ItOJzBSlMK2WBEyrfh2FhLETlHlJdh48BA?=
- =?us-ascii?Q?4ub+6azGjC0CpxVFCc042BIbnjwGQ2AQEEwUd1sTwvGjyX+jzU/Nql98K/ZT?=
- =?us-ascii?Q?wYSrRxaxpXZtLqbtqQqZyv+0eppPetWKPAOmFLA7eG4RYY3IswN0Bqdti7HB?=
- =?us-ascii?Q?SHKfdm5EnzCVZiorc33Pe37wgR9UJ7lHbJllc78oiAOgIWHi+yWDhEssBZRr?=
- =?us-ascii?Q?7bMrkWujehazpZ7N5eGt36ceXlzIoXtv0EkVVa5YPXmyh3M4a4ncmH/hY1ln?=
- =?us-ascii?Q?EPBrutaaeX6QX/8gAb6GNPWbbVAhfPnVaCVttHcFyNFppv8xAdU6G+meJjNM?=
- =?us-ascii?Q?U4/UUXh4qTGLY0/UKGKXeyIN8FqnF15nU5iubTNAFqRNdEvCoJuwboSVg4+O?=
- =?us-ascii?Q?n+oeXjhB7sYSbPEsDlJDdDVWm/KmFr1CFHPwJw1pYTk6EZzCSyGPqIGimnRM?=
- =?us-ascii?Q?KM8eJDjRjAJ3b9EoUCpyc6Rg2ATMfLJcq0AzgGKEf8hjAq05q9l9Vo88HdAU?=
- =?us-ascii?Q?Nkkev2Obx9wK9sfiZGw1OXeek94ekmgWGlunqdIkCse055Hy2P/yTl4fupSA?=
- =?us-ascii?Q?sGZpnKul/v5Yg6cmXJQtaRqCm45rhx324IYWPpdyPKYgV9SSn4sORGgWbgJ5?=
- =?us-ascii?Q?FJqcYKW0TsXFbO82S6VYrUEmcOGw5OySjvt0mdXTcRKxOfC39I41QjInE6+v?=
- =?us-ascii?Q?7ATc6iwHbY0B/eftBPq8g5WYFivMFlR3iwDZFgQilSAG7ZfnUYAoMY6jJQ8A?=
- =?us-ascii?Q?ToFcs4EZ0aor3oxsr2QFpyT1r0HNlWraILwxgNPq5QmbEMCWTuMhbxJEdVlL?=
- =?us-ascii?Q?pUlQ9ORC+yQDvgZP8R1DejU+dh3kF4+ZD/m1R7NjTTyzURxwSCo0edCMYE7M?=
- =?us-ascii?Q?/V6Lj1Y2aICrjhxg0Ui8HUcDys1opwH8yH/1JmX6pufbIyKH4z3DJvzUuhPv?=
- =?us-ascii?Q?IsUN4WO1PYPe19miOzqmzXhnGsNwJzvdvGf3ErFyTJH6sYx+JsWS+Q7HkoUt?=
- =?us-ascii?Q?L2I7ax+RbYnTXawOFCo/SNRb5Cwe/l9q/+aAiyMzafKQval4PuEv/PzxK5MY?=
- =?us-ascii?Q?n5E4H3R0kpSXxjWwqh84kdU88pw5rwqvEZlfEOv9bigjHUAQQ2yhg6cDHS5D?=
- =?us-ascii?Q?u9f8fbZovk8PGqL3ijRHecHevBlPd+huHU/NDuo5gAa2ZcJU2nazrU1XgGaK?=
- =?us-ascii?Q?+NmEDVW7rgxj1RueA3ivkwGyrR5VGdsbpmf/IRREJDcsD97uvL/e+UTMmq6S?=
- =?us-ascii?Q?4u1/r49th0IbXrCzHWQPXxoYFrRCmMvsvCKzI0zQ09WlvDIfZl8K3KR2HJ4D?=
- =?us-ascii?Q?AaemjOuzNuHPvkUoMLPonvBI?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72721946-a903-4ae6-6942-08d98df95592
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 03:27:07.3236
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mLhohVsJOuEUQilbrIRgbSe3HhqHD6Lfc/2H061VC1rQcKGmTzQo2VRLu2kDONcCieNzf/l8RtKZXlAc2Bl6mQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3243
+References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-3-shy828301@gmail.com>
+ <YV4Dz3y4NXhtqd6V@t490s> <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
+ <CAHbLzkqm_Os8TLXgbkL-oxQVsQqRbtmjdMdx0KxNke8mUF1mWA@mail.gmail.com>
+ <YWTc/n4r6CJdvPpt@t490s> <YWTobPkBc3TDtMGd@t490s> <CAHbLzkrOsNygu5x8vbMHedv+P3dEqOxOC6=O6ACSm1qKzmoCng@mail.gmail.com>
+ <YWYHukJIo8Ol2sHN@t490s> <CAHbLzkp3UXKs_NP9XD_ws=CSSFzUPk7jRxj0K=gvOqoi+GotmA@mail.gmail.com>
+ <YWZMDTwCCZWX5/sQ@t490s>
+In-Reply-To: <YWZMDTwCCZWX5/sQ@t490s>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 12 Oct 2021 20:27:06 -0700
+Message-ID: <CAHbLzkp8QkORXK_y8hnrg=2kTRFyoZpJcXbkyj6eyCdcYSbZTw@mail.gmail.com>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+To:     Peter Xu <peterx@redhat.com>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-coccicheck complains about the use of snprintf() in sysfs show functions.
+On Tue, Oct 12, 2021 at 8:01 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Tue, Oct 12, 2021 at 07:48:39PM -0700, Yang Shi wrote:
+> > On Tue, Oct 12, 2021 at 3:10 PM Peter Xu <peterx@redhat.com> wrote:
+> > >
+> > > On Tue, Oct 12, 2021 at 11:02:09AM -0700, Yang Shi wrote:
+> > > > On Mon, Oct 11, 2021 at 6:44 PM Peter Xu <peterx@redhat.com> wrote:
+> > > > >
+> > > > > On Mon, Oct 11, 2021 at 08:55:26PM -0400, Peter Xu wrote:
+> > > > > > Another thing is I noticed soft_offline_in_use_page() will still ignore file
+> > > > > > backed split.  I'm not sure whether it means we'd better also handle that case
+> > > > > > as well, so shmem thp can be split there too?
+> > > > >
+> > > > > Please ignore this paragraph - I somehow read "!PageHuge(page)" as
+> > > > > "PageAnon(page)"...  So I think patch 5 handles soft offline too.
+> > > >
+> > > > Yes, exactly. And even though the split is failed (or file THP didn't
+> > > > get split before patch 5/5), soft offline would just return -EBUSY
+> > > > instead of calling __soft_offline_page->page_handle_poison(). So
+> > > > page_handle_poison() should not see THP at all.
+> > >
+> > > I see, so I'm trying to summarize myself on what I see now with the new logic..
+> > >
+> > > I think the offline code handles hwpoison differently as it sets PageHWPoison
+> > > at the end of the process, IOW if anything failed during the offline process
+> > > the hwpoison bit is not set.
+> > >
+> > > That's different from how the memory failure path is handling this, as in that
+> > > case the hwpoison bit on the subpage is set firstly, e.g. before split thp.  I
+> > > believe that's also why memory failure requires the extra sub-page-hwpoison bit
+> > > while offline code shouldn't need to: because for soft offline split happens
+> > > before setting hwpoison so we just won't ever see a "poisoned file thp", while
+> > > for memory failure it could happen, and the sub-page-hwpoison will be a temp
+> > > bit anyway only exist for a very short period right after we set hwpoison on
+> > > the small page but before we split the thp.
+> > >
+> > > Am I right above?
+> >
+> > Yeah, you are right. I noticed this too, only successfully migrated
+> > page is marked as hwpoison. But TBH I'm not sure why it does this way.
+>
+> My wild guess is that unlike memory failures, soft offline is best-effort. Say,
+> the data on the page is still consistent, so even if offline failed for some
+> reason we shouldn't stop the program from execution.  That's not true for
+> memory failures via MCEs, afaict, as the execution could read/write wrong data
+> and that'll be a serious mistake, so we set hwpoison 1st there first before
+> doing anything else, making sure "this page is broken" message delivered and
+> user app won't run with risk.
 
-Fix the following coccicheck warning:
-drivers/counter/stm32-lptimer-cnt.c:265:8-16: WARNING: use scnprintf or sprintf.
-drivers/counter/stm32-lptimer-cnt.c:176:8-16: WARNING: use scnprintf or sprintf.
+Makes sense to me.
 
-Use sysfs_emit instead of scnprintf or sprintf makes more sense.
+>
+> But yeah it'll be great if Naoya could help confirm that.
+>
+> > Naoya may know. Anyway, THP doesn't get migrated if it can't be split,
+> > so PageHasHWPoisoned doesn't apply, right?
+>
+> Right, that matches my current understanding of the code, so the extra bit is
+> perhaps not useful for soft offline case.
+>
+> But this also reminded me that shouldn't we be with the page lock already
+> during the process of "setting hwpoison-subpage bit, split thp, clear
+> hwpoison-subpage bit"?  If it's only the small window that needs protection,
+> while when looking up the shmem pagecache we always need to take the page lock
+> too, then it seems already safe even without the extra bit?  Hmm?
 
-Signed-off-by: Qing Wang <wangqing@vivo.com>
----
- drivers/counter/stm32-lptimer-cnt.c | 2 +-
- drivers/counter/stm32-timer-cnt.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+I don't quite get your point. Do you mean memory_failure()? If so the
+answer is no, outside the page lock. And the window may be indefinite
+since file THP doesn't get split before this series and the split may
+fail even after this series.
 
-diff --git a/drivers/counter/stm32-lptimer-cnt.c b/drivers/counter/stm32-lptimer-cnt.c
-index c19d998..6f1113a 100644
---- a/drivers/counter/stm32-lptimer-cnt.c
-+++ b/drivers/counter/stm32-lptimer-cnt.c
-@@ -262,7 +262,7 @@ static ssize_t stm32_lptim_cnt_ceiling_read(struct counter_device *counter,
- {
- 	struct stm32_lptim_cnt *const priv = counter->priv;
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", priv->ceiling);
-+	return sysfs_emit(buf, "%u\n", priv->ceiling);
- }
- 
- static ssize_t stm32_lptim_cnt_ceiling_write(struct counter_device *counter,
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index 603b30a..e772586 100644
---- a/drivers/counter/stm32-timer-cnt.c
-+++ b/drivers/counter/stm32-timer-cnt.c
-@@ -173,7 +173,7 @@ static ssize_t stm32_count_ceiling_read(struct counter_device *counter,
- 
- 	regmap_read(priv->regmap, TIM_ARR, &arr);
- 
--	return snprintf(buf, PAGE_SIZE, "%u\n", arr);
-+	return sysfs_emit(buf, "%u\n", arr);
- }
- 
- static ssize_t stm32_count_ceiling_write(struct counter_device *counter,
--- 
-2.7.4
-
+>
+> >
+> > >
+> > > I feel like __soft_offline_page() still has some code that assumes "thp can be
+> > > there", e.g. iiuc after your change to allow file thp split, "hpage" will
+> > > always be the same as "page" then in that function, and isolate_page() does not
+> > > need to pass in a pagelist pointer too as it'll always be handling a small page
+> > > anyway.  But maybe they're fine to be there for now as they'll just work as
+> > > before, I think, so just raise it up.
+> >
+> > That compound_head() call seems to be for hugetlb since isolating
+> > hugetlb needs to pass in the head page IIUC. For the pagelist, I think
+> > it is just because migrate_pages() requires a list as the second
+> > parameter.
+>
+> Fair enough.
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
