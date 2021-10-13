@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6A542C6FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDB642C6E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238168AbhJMQ6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:58:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59633 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237893AbhJMQ6b (ORCPT
+        id S236645AbhJMQ6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:58:21 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:34404 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhJMQ6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:58:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634144187;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H1uFuI95xCbXZqroGKfU5sZPjH+dwkNh8g0Jei6O968=;
-        b=d32RY2Q+1my3/851i3qXTe46p9CtuMivr3JMrJuN4f9sJ+xPwXTSFbrPeABNZRDOfisAmo
-        ryUBwzCPcz4XrCuCsPJEXYI2HwgyDyP6mAVgSACgHXO/cCYetxZXss5J+7+TXh5LqDtNuY
-        SahQ1BVgCG9/kCADienLyM7KPMoRtBg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-14-D6l_WEy4O0KOr3iDjXSYLQ-1; Wed, 13 Oct 2021 12:56:22 -0400
-X-MC-Unique: D6l_WEy4O0KOr3iDjXSYLQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A73D80365C;
-        Wed, 13 Oct 2021 16:56:21 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B19B15DA60;
-        Wed, 13 Oct 2021 16:56:20 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     fwilhelm@google.com, seanjc@google.com, oupton@google.com,
-        stable@vger.kernel.org
-Subject: [PATCH 6/8] KVM: x86: remove unnecessary arguments from complete_emulator_pio_in
-Date:   Wed, 13 Oct 2021 12:56:14 -0400
-Message-Id: <20211013165616.19846-7-pbonzini@redhat.com>
-In-Reply-To: <20211013165616.19846-1-pbonzini@redhat.com>
-References: <20211013165616.19846-1-pbonzini@redhat.com>
+        Wed, 13 Oct 2021 12:58:20 -0400
+Received: from kbox (unknown [24.17.193.74])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7C33A20B9CF8;
+        Wed, 13 Oct 2021 09:56:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7C33A20B9CF8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1634144176;
+        bh=xS5AQ3mYRCJttgJrPt4KreqAtK6W6Oaj4v/1pQxb0Mc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZqJ6Y07jorOGbn40EXt/y4kZlmbL3Gy7n5N4zVHRX2Y0qjQUruSeVnEc5nAuDXo7I
+         1oFTN/Ma3cXLbWRp35+v/XasNuuYr+AhJNOO8UbQBnQunqMbaMtTN7RlOTOBprMGjZ
+         wL5B16eEsUO3c8qvqievA1ETvf2MmM+NQAXX+h+8=
+Date:   Wed, 13 Oct 2021 09:56:14 -0700
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] user_events: Enable user processes to create and write
+ to trace events
+Message-ID: <20211013165614.GB1427@kbox>
+References: <20211005224428.2551-1-beaub@linux.microsoft.com>
+ <20211007012827.99cd5795140cbb0c932e1b5a@kernel.org>
+ <20211006175611.GA2995@kbox>
+ <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
+ <20211007162204.GA30947@kbox>
+ <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
+ <20211008000540.GA31220@kbox>
+ <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
+ <20211011162523.GA1542@kbox>
+ <20211014002132.ee7668a4790ea75b0f7a9ceb@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014002132.ee7668a4790ea75b0f7a9ceb@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-complete_emulator_pio_in can expect that vcpu->arch.pio has been filled in,
-and therefore does not need the size and count arguments.  This makes things
-nicer when the function is called directly from a complete_userspace_io
-callback.
+On Thu, Oct 14, 2021 at 12:21:32AM +0900, Masami Hiramatsu wrote:
+> On Mon, 11 Oct 2021 09:25:23 -0700
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> 
+> > On Fri, Oct 08, 2021 at 06:22:58PM +0900, Masami Hiramatsu wrote:
+> > > > > I'm not sure this point, you mean 1 fd == 1 event model?
+> > > > > 
+> > > > Yeah, I like the idea of not having an fd per event.
+> > > 
+> > > Ah, OK. I misunderstood the idea.
+> > > per-FD model sounds like having events/user-events/*/marker file.
+> > > 
+> > 2.
+> > We have a anon_inode FD that gets installed into the user process and
+> > returned via the ioctl from user_events tracefs file. The file struct
+> > backing the FD is shared by all user mode processes for that event. Like
+> > having an inject/marker file per-event in the user_events subsystem.
+> 
+> Is it safe to share the same file structure among all processes?
+> (sharing FD via ipc may do same thing?)
+> 
+I believe so, perf_event_open syscall uses this approach. I think
+sharing among processes would only be a problem if the file_operations
+methods assumed some synchronization. I don't see how this would be
+different than a fork inheriting a pre-existing FD.
+> > > > I want to make
+> > > > sure the complexity is worth it. Is the overhead of an FD per event in
+> > > > user space too much?
+> > > 
+> > > It depends on the use case, how much events you wants to use with
+> > > the user-events. If there are hundreds of the evets, that will consume
+> > > kernel resources and /proc/*/fd/ will be filled with the event's fds.
+> > > But if there is a few events, I think no problem.
+> > > 
+> > In our own use case this will be low due to the way we plan to use the
+> > events. However, I am not sure others will follow that :)
+> 
+> I just concerned if qemu consider to use this interface for their event
+> log :) 
+> 
+Yep, agree. It sounds like taking an index'd approach as you first
+suggested is worth the complexity. I want to make sure you and Steven
+agree before attempting.
 
-No functional change intended.
-
-Cc: stable@vger.kernel.org
-Fixes: 7ed9abfe8e9f ("KVM: SVM: Support string IO operations for an SEV-ES guest")
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 07d9533b471d..ef4d6a0de4d8 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -6935,11 +6935,12 @@ static int __emulator_pio_in(struct kvm_vcpu *vcpu, int size,
- 	return emulator_pio_in_out(vcpu, size, port, count, true);
- }
- 
--static void complete_emulator_pio_in(struct kvm_vcpu *vcpu, int size,
--				    unsigned short port, void *val)
-+static void complete_emulator_pio_in(struct kvm_vcpu *vcpu, void *val)
- {
-+	int size = vcpu->arch.pio.size;
- 	memcpy(val, vcpu->arch.pio_data, size * vcpu->arch.pio.count);
--	trace_kvm_pio(KVM_PIO_IN, port, size, vcpu->arch.pio.count, vcpu->arch.pio_data);
-+	trace_kvm_pio(KVM_PIO_IN, vcpu->arch.pio.port, size,
-+		      vcpu->arch.pio.count, vcpu->arch.pio_data);
- 	vcpu->arch.pio.count = 0;
- }
- 
-@@ -6950,7 +6951,7 @@ static int emulator_pio_in(struct kvm_vcpu *vcpu, int size,
- 		return 0;
- 
- 	WARN_ON(count != vcpu->arch.pio.count);
--	complete_emulator_pio_in(vcpu, size, port, val);
-+	complete_emulator_pio_in(vcpu, val);
- 	return 1;
- }
- 
--- 
-2.27.0
-
-
+Thanks,
+-Beau
