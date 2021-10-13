@@ -2,127 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB0B42C66E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE3D42C670
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236126AbhJMQeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:34:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhJMQd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:33:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53F1760E0C;
-        Wed, 13 Oct 2021 16:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634142714;
-        bh=DH5W/Ysbb6J1n1ZMKbfCrC0jB4YSKweOWD+96M39Xv4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NYGBmdhZYYVI3+xWKJX4aox6mQpokWS/E+Q8job7hlrMLPJFgeXjTDV8l0blHNMF/
-         hbgDbIk788eRNh71j14zSFMmkLA09ZAS8IdG2z4RN31AWcZD0ERxwrm6hLPouNj8uc
-         pyv3ZsBvjyiL2miFoDVtH+JYXwDZh1AIdVXvnGnGIp0p/4oG2izyuI4KQrJ+990CaX
-         yOGxrPCjIfagNOiGq9Mq2MMLuNylbBfCXwy/NwZvF8NMMoPdgBVarkCFy9OCj/zduG
-         P9TiW/vqbtzR0TrfAsISrCpdF8w+m5jn7NJSlSNC7T+vt2I5zmQlzfTnFk+SCrTgP+
-         5hzY/dO8RaltA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 178B05C0687; Wed, 13 Oct 2021 09:31:54 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 09:31:54 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the rcu tree with the tip tree
-Message-ID: <20211013163154.GT880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211012154828.312f870f@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012154828.312f870f@canb.auug.org.au>
+        id S237000AbhJMQeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:34:37 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:52955 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhJMQeg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 12:34:36 -0400
+Received: from smtpclient.apple (p4ff9f2d2.dip0.t-ipconnect.de [79.249.242.210])
+        by mail.holtmann.org (Postfix) with ESMTPSA id C9108CECFA;
+        Wed, 13 Oct 2021 18:32:30 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH] Bluetooth: btusb: fix memory leak in
+ btusb_mtk_submit_wmt_recv_urb()
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211013162204.13919-1-mark-yw.chen@mediatek.com>
+Date:   Wed, 13 Oct 2021 18:32:30 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>, will-cy.lee@mediatek.com,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <75730B1E-4A50-4DC5-8D1A-84CE58C04E72@holtmann.org>
+References: <20211013162204.13919-1-mark-yw.chen@mediatek.com>
+To:     mark-yw.chen@mediatek.com
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 03:48:28PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the rcu tree got a conflict in:
-> 
->   kernel/rcu/tasks.h
-> 
-> between commit:
-> 
->   9b3c4ab3045e ("sched,rcu: Rework try_invoke_on_locked_down_task()")
-> 
-> from the tip tree and commit:
-> 
->   18f08e758f34 ("rcu-tasks: Add trc_inspect_reader() checks for exiting critical section")
-> 
-> from the rcu tree.
-> 
-> I fixed it up (I hope - see below) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
+Hi Mark,
 
-Thank you for catching this!  I have it down for my upcoming pull
-request.
-
-							Thanx, Paul
-
-> -- 
-> Cheers,
-> Stephen Rothwell
+> Driver should free `usb->setup_packet` to avoid the leak.
 > 
-> diff --cc kernel/rcu/tasks.h
-> index 171bc848e8e3,e4a32db9f712..000000000000
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@@ -928,10 -919,10 +919,10 @@@ reset_ipi
->   }
->   
->   /* Callback function for scheduler to check locked-down task.  */
->  -static bool trc_inspect_reader(struct task_struct *t, void *arg)
->  +static int trc_inspect_reader(struct task_struct *t, void *arg)
->   {
->   	int cpu = task_cpu(t);
-> - 	bool in_qs = false;
-> + 	int nesting;
->   	bool ofl = cpu_is_offline(cpu);
->   
->   	if (task_curr(t)) {
-> @@@ -951,18 -942,18 +942,18 @@@
->   		n_heavy_reader_updates++;
->   		if (ofl)
->   			n_heavy_reader_ofl_updates++;
-> - 		in_qs = true;
-> + 		nesting = 0;
->   	} else {
->   		// The task is not running, so C-language access is safe.
-> - 		in_qs = likely(!t->trc_reader_nesting);
-> + 		nesting = t->trc_reader_nesting;
->   	}
->   
-> - 	// Mark as checked so that the grace-period kthread will
-> - 	// remove it from the holdout list.
-> - 	t->trc_reader_checked = true;
-> - 
-> - 	if (in_qs)
-> - 		return 0;  // Already in quiescent state, done!!!
-> + 	// If not exiting a read-side critical section, mark as checked
-> + 	// so that the grace-period kthread will remove it from the
-> + 	// holdout list.
-> + 	t->trc_reader_checked = nesting >= 0;
-> + 	if (nesting <= 0)
->  -		return !nesting;  // If in QS, done, otherwise try again later.
-> ++		return (!nesting) ? 0 : -EINVAL;  // If in QS, done, otherwise try again later.
->   
->   	// The task is in a read-side critical section, so set up its
->   	// state so that it will awaken the grace-period kthread upon exit
+> $ cat /sys/kernel/debug/kmemleak
+> unreferenced object 0xffffffa564a58080 (size 128):
+>    backtrace:
+>        [<000000007eb8dd70>] kmem_cache_alloc_trace+0x22c/0x384
+>        [<000000008a44191d>] btusb_mtk_hci_wmt_sync+0x1ec/0x994
+>    [btusb]
+>        [<00000000ca7189a3>] btusb_mtk_setup+0x6b8/0x13cc
+>    [btusb]
+>        [<00000000c6105069>] hci_dev_do_open+0x290/0x974
+>    [bluetooth]
+>        [<00000000a583f8b8>] hci_power_on+0xdc/0x3cc [bluetooth]
+>        [<000000005d80e687>] process_one_work+0x514/0xc80
+>        [<00000000f4d57637>] worker_thread+0x818/0xd0c
+>        [<00000000dc7bdb55>] kthread+0x2f8/0x3b8
+>        [<00000000f9999513>] ret_from_fork+0x10/0x30
+> 
+> Signed-off-by: Mark-YW.Chen <mark-yw.chen@mediatek.com>
+> ---
+> drivers/bluetooth/btusb.c | 5 +++++
+> 1 file changed, 5 insertions(+)
 
+patch has been applied to bluetooth-next tree.
+
+Regards
+
+Marcel
 
