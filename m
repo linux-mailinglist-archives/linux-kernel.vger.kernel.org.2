@@ -2,91 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE53042C04C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C67342BFD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234149AbhJMMov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
+        id S232460AbhJMM0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233564AbhJMMom (ORCPT
+        with ESMTP id S230196AbhJMM0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:44:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FCF7C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:42:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=BHufXlydcA+e/J1i+oz2BTUx2pH1zGwuIbU9laghguk=; b=TqVlZWcTlsj5iL1KgalNSCg1OG
-        8rwY66qZA4Gu0lX5Mp9LYF97qAasN8MJ8sgxBy1E8JyG8/f/wT7Pk/9N73vvhvKDksHcOGerO74QG
-        0s2kmfgUVij1TMv8yuBM3XFBTwoYmiEod16ja2ko5m/NWDrqc9h8AVkd2bkhPlQBfWHSrDRwWRkyh
-        ZaQEZIB2n2k12mtqq8ihEHQpVJFpuvw+4QaJl5un4AOk42f1M4g/g3WlUpLXo0zX7wSjtUAZCnkLr
-        QLyA4yNYk+vOUDoWpJBF7U/fs9MqPSpICyR2Gmb56nVRQdnSQhEJB5K6c5JAoQTwYLEt0AWmaWHHM
-        rrAA8Hng==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1madYM-007QZU-I6; Wed, 13 Oct 2021 12:40:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2176130077A;
-        Wed, 13 Oct 2021 14:40:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id D305E20D89521; Wed, 13 Oct 2021 14:40:13 +0200 (CEST)
-Message-ID: <20211013123645.706163435@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 13 Oct 2021 14:22:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        alexei.starovoitov@gmail.com, ndesaulniers@google.com
-Subject: [PATCH 9/9] bpf,x86: Respect X86_FEATURE_RETPOLINE*
-References: <20211013122217.304265366@infradead.org>
+        Wed, 13 Oct 2021 08:26:52 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E16C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:24:49 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id i20so9289548edj.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:24:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=E7777Rn8WZgRU94sV32PJhBQtU2jViEmeE5HVty2A3Q=;
+        b=gkLU0xHe7v0sco0mH4atHD5gjqLvOiBEbTDTg8eVphxQ0fKpOFzX/5f/Uh8ikJsd65
+         UmR5u3u7El5K9JLvt9ZUpp8rhAd07E/8Kbq4XBmyMBOL8Su29vmz55E/5wB8sL6LQEXs
+         CciWtkOSW0TC91Mypxj+6p8P2+elUKAiRlcHA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=E7777Rn8WZgRU94sV32PJhBQtU2jViEmeE5HVty2A3Q=;
+        b=hyZzuQAP++CYSunhREY93t+v9QTJjCYcQ4J34V9Ns+ZPzu2zaheSADOU0IH//IoptM
+         t5gsVZvkfzcvmvZMvhFdCeNpLRrplKmlCdJjKyTsrSuJi8vgvD1w2QRjgo10OP1C6YXS
+         6cwZmct19xZdp+7O7JLibSFEmTchkusNqeMIpHBGjqPGGm/xYYTXhF15ICcGiPq5Tb/s
+         V78FpcKtv6SriAit+W+VE1d5drxILVZ08OToYNnPixJtKLeXWhQf1tJdcLKAVHcUCni0
+         SyFWIxsKrB6PsUuRaaaZUZbLL7ML/WqHB321eAtpxSswcivCOaKoiVGnssPjnOEmj6e5
+         hglg==
+X-Gm-Message-State: AOAM5328fK2X75R7QBM5fn0XFpOpr8gOSyTSQqTRGpj3tNs8t12MNzBz
+        5mzQ5xU4aygeQp5jfUMaNCq+1OtTm7iwH6bVsC7R/A==
+X-Google-Smtp-Source: ABdhPJx6ALfWBqZoheRlbNO87piva2MSM95Nsp4fqABwfziY3aBtUdnH+lJgFZNdgfuDRZRUXL7I4FtxcYqcuz4J1N4=
+X-Received: by 2002:aa7:cb8a:: with SMTP id r10mr9146051edt.237.1634127887450;
+ Wed, 13 Oct 2021 05:24:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <4d0ec577fdeb01fa232ffa743fde06129353396a.1634126587.git.agx@sigxcpu.org>
+In-Reply-To: <4d0ec577fdeb01fa232ffa743fde06129353396a.1634126587.git.agx@sigxcpu.org>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Wed, 13 Oct 2021 17:54:36 +0530
+Message-ID: <CAMty3ZAsn4K0WFRC_FNN2Mina0gSu4Nc1y1zVsoZ8GuSqcQFsA@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: nwl-dsi: Move bridge add/remove to dsi callbacks
+To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
+Cc:     Andrzej Hajda <andrzej.hajda@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current BPF codegen doesn't respect X86_FEATURE_RETPOLINE* flags and
-unconditionally emits a thunk call, this is sub-optimal and doesn't
-match the regular, compiler generated, code.
+On Wed, Oct 13, 2021 at 5:44 PM Guido G=C3=BCnther <agx@sigxcpu.org> wrote:
+>
+> Move the panel and bridge_{add,remove} from the bridge callbacks to the
+> DSI callbacks to make sure we don't indicate readiness to participate in
+> the display pipeline before the panel is attached.
+>
+> This was prompted by commit fb8d617f8fd6 ("drm/bridge: Centralize error
+> message when bridge attach fails") which triggered
+>
+>   [drm:drm_bridge_attach] *ERROR* failed to attach bridge /soc@0/bus@3080=
+0000/mipi-dsi@30a0 0000 to encoder None-34: -517
+>
+> during boot.
+>
+> Signed-off-by: Guido G=C3=BCnther <agx@sigxcpu.org>
+> ---
+> This was prompted by the discussion at
+> https://lore.kernel.org/dri-devel/00493cc61d1443dab1c131c46c5890f95f6f9b2=
+5.1634068657.git.agx@sigxcpu.org/
+>
+>  drivers/gpu/drm/bridge/nwl-dsi.c | 64 ++++++++++++++++++--------------
+>  1 file changed, 37 insertions(+), 27 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nw=
+l-dsi.c
+> index a7389a0facfb..77aa6f13afef 100644
+> --- a/drivers/gpu/drm/bridge/nwl-dsi.c
+> +++ b/drivers/gpu/drm/bridge/nwl-dsi.c
+> @@ -355,6 +355,9 @@ static int nwl_dsi_host_attach(struct mipi_dsi_host *=
+dsi_host,
+>  {
+>         struct nwl_dsi *dsi =3D container_of(dsi_host, struct nwl_dsi, ds=
+i_host);
+>         struct device *dev =3D dsi->dev;
+> +       struct drm_bridge *panel_bridge;
+> +       struct drm_panel *panel;
+> +       int ret;
+>
+>         DRM_DEV_INFO(dev, "lanes=3D%u, format=3D0x%x flags=3D0x%lx\n", de=
+vice->lanes,
+>                      device->format, device->mode_flags);
+> @@ -362,10 +365,43 @@ static int nwl_dsi_host_attach(struct mipi_dsi_host=
+ *dsi_host,
+>         if (device->lanes < 1 || device->lanes > 4)
+>                 return -EINVAL;
+>
+> +       ret =3D drm_of_find_panel_or_bridge(dsi->dev->of_node, 1, 0, &pan=
+el,
+> +                                         &panel_bridge);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (panel) {
+> +               panel_bridge =3D drm_panel_bridge_add(panel);
+> +               if (IS_ERR(panel_bridge))
+> +                       return PTR_ERR(panel_bridge);
+> +       }
+> +       if (!panel_bridge)
+> +               return -EPROBE_DEFER;
+> +
+> +       dsi->panel_bridge =3D panel_bridge;
+>         dsi->lanes =3D device->lanes;
+>         dsi->format =3D device->format;
+>         dsi->dsi_mode_flags =3D device->mode_flags;
+>
+> +       /*
+> +        * The DSI output has been properly configured, we can now safely
+> +        * register the input to the bridge framework so that it can take=
+ place
+> +        * in a display pipeline.
+> +        */
+> +       drm_bridge_add(&dsi->bridge);
+> +
+> +       return 0;
+> +}
+> +
+> +static int nwl_dsi_host_detach(struct mipi_dsi_host *dsi_host,
+> +                              struct mipi_dsi_device *dev)
+> +{
+> +       struct nwl_dsi *dsi =3D container_of(dsi_host, struct nwl_dsi, ds=
+i_host);
+> +
+> +       drm_bridge_remove(&dsi->bridge);
+> +       if (dsi->panel_bridge)
+> +               drm_panel_bridge_remove(dsi->panel_bridge);
+> +
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/net/bpf_jit_comp.c |   18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+If I'm correct this logic will failed to find the direct and I2C based
+bridges. As these peripheral bridges are trying to find the bridge
+device from bridge_attach unlike DSI panels are trying to find the
+panel via host attach directly from probe.
 
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2123,14 +2123,18 @@ static int emit_fallback_jump(u8 **pprog
- 	int err = 0;
- 
- #ifdef CONFIG_RETPOLINE
--	/* Note that this assumes the the compiler uses external
--	 * thunks for indirect calls. Both clang and GCC use the same
--	 * naming convention for external thunks.
--	 */
--	err = emit_jump(&prog, __x86_indirect_thunk_rdx, prog);
--#else
--	EMIT2(0xFF, 0xE2);	/* jmp rdx */
-+	if (cpu_feature_enabled(X86_FEATURE_RETPOLINE)) {
-+		if (cpu_feature_enabled(X86_FEATURE_RETPOLINE_AMD)) {
-+			/* The AMD retpoline can be easily emitted inline. */
-+			EMIT3(0x0F, 0xAE, 0xE8);	/* lfence */
-+			EMIT2(0xFF, 0xE2);		/* jmp rdx */
-+		} else {
-+			/* Call the retpoline thunk */
-+			err = emit_jump(&prog, __x86_indirect_thunk_rdx, prog);
-+		}
-+	} else
- #endif
-+	EMIT2(0xFF, 0xE2);	/* jmp rdx */
- 	*pprog = prog;
- 	return err;
- }
+Similar issue we have encounters with dw-mipi-dsi bridge.
+c206c7faeb3263a7cc7b4de443a3877cd7a5e74b
 
-
+Jagan.
