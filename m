@@ -2,544 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627C642C17C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677C242C16B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235208AbhJMNgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:36:47 -0400
-Received: from polaris.svanheule.net ([84.16.241.116]:38020 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233281AbhJMNgk (ORCPT
+        id S234523AbhJMNbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:31:35 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:37072 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhJMNbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:36:40 -0400
-Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eafe:c901:ca:6d5e:c3e3:69a5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 48263260DB7;
-        Wed, 13 Oct 2021 15:29:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1634131751;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rM1yTvVNViaTBRhoNvpKGahU6TWfNaKKOTUMfYrLGzU=;
-        b=SahTj2C84ZZ4HyyS+x9LRIMgKQOE4OKmiCderGhoD8ac/WrcFMNWmPobvJuBdVg7H2smQO
-        WgiEUNSDLkUHMIuwU21II13rJ65wbGTm6o9dgtvGcBopcvASP1rgOn2KaEKkAPPuKmN/Jj
-        2W76md7d+f7GA79Hq88zqFVmxuYc1lDwblQNdUHSxBIL1OcqcOsGF50B0u71dNODhQ4KDt
-        MohWg56yFwglJosYUM9CIpAsDjaw/m/3zUGjfKg5UqiQmjxRCEUJhCXNumj+ChpPbgLrO/
-        2XziOlyV/3adc1gvDUib5okUle645zPu7DqkfPl4+PqCHlBUx8G/KX7gYS1thg==
-From:   Sander Vanheule <sander@svanheule.net>
-To:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Sander Vanheule <sander@svanheule.net>
-Subject: [PATCH 2/2] watchdog: Add Realtek Otto watchdog timer
-Date:   Wed, 13 Oct 2021 15:29:00 +0200
-Message-Id: <7eb1e3d8a5bd3b221be0408bd6f0272e6d435ade.1634131707.git.sander@svanheule.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1634131707.git.sander@svanheule.net>
-References: <cover.1634131707.git.sander@svanheule.net>
+        Wed, 13 Oct 2021 09:31:33 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id EC87F1F445B5
+Subject: Re: [PATCH v7 1/5] soc: mediatek: mutex: add support for MDP
+To:     Moudy Ho <moudy.ho@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Maoguang Meng <maoguang.meng@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Landley <rob@landley.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org, drinkcat@chromium.org, acourbot@chromium.org,
+        pihsun@chromium.org, menghui.lin@mediatek.com,
+        sj.huang@mediatek.com, ben.lok@mediatek.com, randy.wu@mediatek.com,
+        srv_heupstream@mediatek.com, hsinyi@google.com,
+        benjamin.gaignard@collabora.com
+References: <20210824100027.25989-1-moudy.ho@mediatek.com>
+ <20210824100027.25989-2-moudy.ho@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <ee3668b3-f84c-fe8d-05bc-40e65c60e24f@collabora.com>
+Date:   Wed, 13 Oct 2021 15:29:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210824100027.25989-2-moudy.ho@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Realtek MIPS SoCs (platform name Otto) have a watchdog timer with
-pretimeout notifitication support. The WDT can (partially) hard reset,
-or soft reset the SoC.
+Hello Moudy,
 
-This driver implements all features as described in the devicetree
-binding, and also functions as a restart handler. The cpu reset mode is
-considered to be a "warm" restart, since this mode does not reset all
-peripherals. Being an embedded system though, the "cpu" and "software"
-modes will still cause the bootloader to run on restart.
+thanks for the patch! Though, there are a few things to improve.
 
-Signed-off-by: Sander Vanheule <sander@svanheule.net>
----
- MAINTAINERS                         |   7 +
- drivers/watchdog/Kconfig            |  13 +
- drivers/watchdog/Makefile           |   1 +
- drivers/watchdog/realtek_otto_wdt.c | 411 ++++++++++++++++++++++++++++
- 4 files changed, 432 insertions(+)
- create mode 100644 drivers/watchdog/realtek_otto_wdt.c
+> Add functions to support MDP:
+>    1. Get mutex function
+>    2. Enable/disable mutex
+>    3. Enable MDP's modules
+>    4. Write register via CMDQ
+> 
+> Add MDP related settings for 8183 SoC
+>    1. Register settings
+> 
+> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+> ---
+>   drivers/soc/mediatek/mtk-mutex.c       | 106 +++++++++++++++++++++++--
+>   include/linux/soc/mediatek/mtk-mutex.h |   8 ++
+>   2 files changed, 108 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-mutex.c b/drivers/soc/mediatek/mtk-mutex.c
+> index 2e4bcc300576..935f2849a094 100644
+> --- a/drivers/soc/mediatek/mtk-mutex.c
+> +++ b/drivers/soc/mediatek/mtk-mutex.c
+> @@ -7,9 +7,11 @@
+>   #include <linux/iopoll.h>
+>   #include <linux/module.h>
+>   #include <linux/of_device.h>
+> +#include <linux/of_address.h>
+>   #include <linux/platform_device.h>
+>   #include <linux/regmap.h>
+>   #include <linux/soc/mediatek/mtk-mmsys.h>
+> +#include <linux/soc/mediatek/mtk-cmdq.h>
+>   #include <linux/soc/mediatek/mtk-mutex.h>
+>   
+>   #define MT2701_MUTEX0_MOD0			0x2c
+> @@ -107,6 +109,10 @@
+>   #define MT8183_MUTEX_EOF_DSI0			(MT8183_MUTEX_SOF_DSI0 << 6)
+>   #define MT8183_MUTEX_EOF_DPI0			(MT8183_MUTEX_SOF_DPI0 << 6)
+>   
+> +#define MT8183_MUTEX_MDP_START			5
+> +#define MT8183_MUTEX_MDP_MOD_MASK		0x07FFFFFF
+> +#define MT8183_MUTEX_MDP_SOF_MASK		0x00000007
+> +
+>   struct mtk_mutex {
+>   	int id;
+>   	bool claimed;
+> @@ -123,11 +129,14 @@ enum mtk_mutex_sof_id {
+>   };
+>   
+>   struct mtk_mutex_data {
+> -	const unsigned int *mutex_mod;
+> -	const unsigned int *mutex_sof;
+> -	const unsigned int mutex_mod_reg;
+> -	const unsigned int mutex_sof_reg;
+> -	const bool no_clk;
+> +	const unsigned int	*mutex_mod;
+> +	const unsigned int	*mutex_sof;
+> +	const unsigned int	mutex_mod_reg;
+> +	const unsigned int	mutex_sof_reg;
+> +	const unsigned int	*mutex_mdp_offset;
+> +	const unsigned int	mutex_mdp_mod_mask;
+> +	const unsigned int	mutex_mdp_sof_mask;
+> +	const bool		no_clk;
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 62257ffca56a..e2a036c1a64b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15858,6 +15858,13 @@ S:	Maintained
- F:	include/sound/rt*.h
- F:	sound/soc/codecs/rt*
- 
-+REALTEK OTTO WATCHDOG
-+M:	Sander Vanheule <sander@svanheule.net>
-+L:	linux-watchdog@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/watchdog/realtek,otto-wdt.yaml
-+F:	driver/watchdog/realtek_otto_wdt.c
-+
- REALTEK RTL83xx SMI DSA ROUTER CHIPS
- M:	Linus Walleij <linus.walleij@linaro.org>
- S:	Maintained
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index bf59faeb3de1..799dbc14b347 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -954,6 +954,19 @@ config RTD119X_WATCHDOG
- 	  Say Y here to include support for the watchdog timer in
- 	  Realtek RTD1295 SoCs.
- 
-+config REALTEK_OTTO_WDT
-+	tristate "Realtek Otto MIPS watchdog support"
-+	depends on MACH_REALTEK_RTL || COMPILE_TEST
-+	select COMMON_CLK
-+	select WATCHDOG_CORE
-+	default MACH_REALTEK_RTL
-+	help
-+	  Say Y here to include support for the watchdog timer on
-+	  Realtek RTL838x, RTL839x SoCs. On timeout this watchdog
-+	  will restart the system.
-+
-+	  When built as a module this will be called realtek_otto_wdt.
-+
- config SPRD_WATCHDOG
- 	tristate "Spreadtrum watchdog support"
- 	depends on ARCH_SPRD || COMPILE_TEST
-diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-index 1bd2d6f37c53..a8dccf819163 100644
---- a/drivers/watchdog/Makefile
-+++ b/drivers/watchdog/Makefile
-@@ -171,6 +171,7 @@ obj-$(CONFIG_IMGPDC_WDT) += imgpdc_wdt.o
- obj-$(CONFIG_MT7621_WDT) += mt7621_wdt.o
- obj-$(CONFIG_PIC32_WDT) += pic32-wdt.o
- obj-$(CONFIG_PIC32_DMT) += pic32-dmt.o
-+obj-$(CONFIG_REALTEK_OTTO_WDT) += realtek_otto_wdt.o
- 
- # PARISC Architecture
- 
-diff --git a/drivers/watchdog/realtek_otto_wdt.c b/drivers/watchdog/realtek_otto_wdt.c
-new file mode 100644
-index 000000000000..64c9cba6b0b1
---- /dev/null
-+++ b/drivers/watchdog/realtek_otto_wdt.c
-@@ -0,0 +1,411 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/*
-+ * Realtek Otto MIPS platform watchdog
-+ *
-+ * Watchdog timer that will reset the system after timeout, using the selected
-+ * reset mode.
-+ *
-+ * Counter scaling and timeouts:
-+ * - Base prescale of (2 << 25), providing tick duration T_0: 168ms @ 200MHz
-+ * - PRESCALE: logarithmic prescaler adding a factor of {1, 2, 4, 8}
-+ * - Phase 1: Times out after (PHASE1 + 1) × PRESCALE × T_0
-+ *   Generates an interrupt, WDT cannot be stopped after phase 1
-+ * - Phase 2: starts after phase 1, times out after (PHASE2 + 1) × PRESCALE × T_0
-+ *   Resets the system according to RST_MODE
-+ */
-+
-+#include <linux/bits.h>
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/math.h>
-+#include <linux/minmax.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+#include <linux/reboot.h>
-+#include <linux/watchdog.h>
-+
-+#define OTTO_WDT_REG_CNTR		0x0
-+#define OTTO_WDT_CNTR_PING		BIT(31)
-+
-+#define OTTO_WDT_REG_INTR		0x4
-+#define OTTO_WDT_INTR_PHASE_1		BIT(31)
-+#define OTTO_WDT_INTR_PHASE_2		BIT(30)
-+
-+#define OTTO_WDT_REG_CTRL		0x8
-+#define OTTO_WDT_CTRL_ENABLE		BIT(31)
-+#define OTTO_WDT_CTRL_PRESCALE		GENMASK(30, 29)
-+#define OTTO_WDT_CTRL_PHASE1		GENMASK(26, 22)
-+#define OTTO_WDT_CTRL_PHASE2		GENMASK(19, 15)
-+#define OTTO_WDT_CTRL_RST_MODE		GENMASK(1, 0)
-+#define OTTO_WDT_MODE_SOC		0
-+#define OTTO_WDT_MODE_CPU		1
-+#define OTTO_WDT_MODE_SOFTWARE		2
-+#define OTTO_WDT_CTRL_DEFAULT		OTTO_WDT_MODE_CPU
-+
-+#define OTTO_WDT_PRESCALE_MAX		3
-+
-+/*
-+ * One higher than the max values contained in PHASE{1,2}, since a value of 0
-+ * corresponds to one tick.
-+ */
-+#define OTTO_WDT_PHASE_TICKS_MAX	32
-+
-+/*
-+ * The maximum reset delay is actually 2×32 ticks, but that would require large
-+ * pretimout values for timeouts longer than 32 ticks. Limit the maximum timeout
-+ * to 32 + 1 to ensure small pretimeout values can be configured as expected.
-+ */
-+#define OTTO_WDT_TIMEOUT_TICKS_MAX	(OTTO_WDT_PHASE_TICKS_MAX + 1)
-+
-+struct otto_wdt_ctrl {
-+	struct watchdog_device wdev;
-+	struct device *dev;
-+	raw_spinlock_t lock;
-+	void __iomem *base;
-+	struct clk *clk;
-+	int irq_phase1;
-+	int irq_phase2;
-+};
-+
-+static int otto_wdt_start(struct watchdog_device *wdev)
-+{
-+	struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-+	unsigned long flags;
-+	u32 v;
-+
-+	raw_spin_lock_irqsave(&ctrl->lock, flags);
-+	v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-+	v |= OTTO_WDT_CTRL_ENABLE;
-+	iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-+	raw_spin_unlock_irqrestore(&ctrl->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int otto_wdt_stop(struct watchdog_device *wdev)
-+{
-+	struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-+	unsigned long flags;
-+	u32 v;
-+
-+	raw_spin_lock_irqsave(&ctrl->lock, flags);
-+	v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-+	v &= ~OTTO_WDT_CTRL_ENABLE;
-+	iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-+	raw_spin_unlock_irqrestore(&ctrl->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int otto_wdt_ping(struct watchdog_device *wdev)
-+{
-+	struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-+
-+	iowrite32(OTTO_WDT_CNTR_PING, ctrl->base + OTTO_WDT_REG_CNTR);
-+
-+	return 0;
-+}
-+
-+static int otto_wdt_tick_ms(struct otto_wdt_ctrl *ctrl, int prescale)
-+{
-+	unsigned int rate_khz = clk_get_rate(ctrl->clk) / 1000;
-+
-+	if (!rate_khz)
-+		return 0;
-+
-+	return DIV_ROUND_CLOSEST(1 << (25 + prescale), rate_khz);
-+}
-+
-+/*
-+ * The timer asserts the PHASE1/PHASE2 IRQs when the number of ticks exceeds
-+ * the value stored in those fields. This means the timer will run for at least
-+ * one tick, so small values need to be clamped to correctly reflect the timeout.
-+ */
-+static inline unsigned int div_round_ticks(unsigned int val, unsigned int tick_duration,
-+		unsigned int min_ticks)
-+{
-+	return max(min_ticks, DIV_ROUND_CLOSEST(val, tick_duration));
-+}
-+
-+static int otto_wdt_determine_timeouts(struct otto_wdt_ctrl *ctrl, unsigned int timeout,
-+		unsigned int pretimeout)
-+{
-+	unsigned int pretimeout_ms = pretimeout * 1000;
-+	unsigned int timeout_ms = timeout * 1000;
-+	unsigned int prescale_next = 0;
-+	unsigned int phase1_ticks;
-+	unsigned int phase2_ticks;
-+	unsigned int total_ticks;
-+	unsigned int prescale;
-+	unsigned int tick_ms;
-+	u32 v;
-+
-+	do {
-+		prescale = prescale_next;
-+		if (prescale > OTTO_WDT_PRESCALE_MAX)
-+			return -EINVAL;
-+
-+		tick_ms = otto_wdt_tick_ms(ctrl, prescale);
-+		total_ticks = div_round_ticks(timeout_ms, tick_ms, 2);
-+		phase2_ticks = div_round_ticks(pretimeout_ms, tick_ms, 1);
-+		phase1_ticks = total_ticks - phase2_ticks;
-+
-+		prescale_next++;
-+	} while (phase1_ticks > OTTO_WDT_PHASE_TICKS_MAX
-+		|| phase2_ticks > OTTO_WDT_PHASE_TICKS_MAX);
-+
-+	v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	v &= ~(OTTO_WDT_CTRL_PRESCALE | OTTO_WDT_CTRL_PHASE1 | OTTO_WDT_CTRL_PHASE2);
-+	v |= FIELD_PREP(OTTO_WDT_CTRL_PHASE1, phase1_ticks - 1);
-+	v |= FIELD_PREP(OTTO_WDT_CTRL_PHASE2, phase2_ticks - 1);
-+	v |= FIELD_PREP(OTTO_WDT_CTRL_PRESCALE, prescale);
-+
-+	iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	timeout_ms = total_ticks * tick_ms;
-+	ctrl->wdev.timeout = DIV_ROUND_CLOSEST(timeout_ms, 1000);
-+
-+	pretimeout_ms = phase2_ticks * tick_ms;
-+	ctrl->wdev.pretimeout = DIV_ROUND_CLOSEST(pretimeout_ms, 1000);
-+
-+	return 0;
-+}
-+
-+static int otto_wdt_set_timeout(struct watchdog_device *wdev, unsigned int val)
-+{
-+	struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-+	unsigned long flags;
-+	unsigned int ret;
-+
-+	if (watchdog_timeout_invalid(wdev, val))
-+		return -EINVAL;
-+
-+	raw_spin_lock_irqsave(&ctrl->lock, flags);
-+	ret = otto_wdt_determine_timeouts(ctrl, val, min(wdev->pretimeout, val - 1));
-+	raw_spin_unlock_irqrestore(&ctrl->lock, flags);
-+
-+	return ret;
-+}
-+
-+static int otto_wdt_set_pretimeout(struct watchdog_device *wdev, unsigned int val)
-+{
-+	struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-+	unsigned long flags;
-+	unsigned int ret;
-+
-+	if (watchdog_pretimeout_invalid(wdev, val))
-+		return -EINVAL;
-+
-+	raw_spin_lock_irqsave(&ctrl->lock, flags);
-+	ret = otto_wdt_determine_timeouts(ctrl, wdev->timeout, val);
-+	raw_spin_unlock_irqrestore(&ctrl->lock, flags);
-+
-+	return ret;
-+}
-+
-+static int otto_wdt_restart(struct watchdog_device *wdev, unsigned long reboot_mode,
-+		void *data)
-+{
-+	struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-+	u32 reset_mode;
-+	u32 v;
-+
-+	devm_free_irq(ctrl->dev, ctrl->irq_phase1, ctrl);
-+
-+	switch (reboot_mode) {
-+	case REBOOT_SOFT:
-+		reset_mode = OTTO_WDT_MODE_SOFTWARE;
-+		break;
-+	case REBOOT_WARM:
-+		reset_mode = OTTO_WDT_MODE_CPU;
-+		break;
-+	default:
-+		reset_mode = OTTO_WDT_MODE_SOC;
-+		break;
-+	}
-+
-+	/* Configure for shortest timeout and wait for reset to occur */
-+	v = FIELD_PREP(OTTO_WDT_CTRL_RST_MODE, reset_mode) | OTTO_WDT_CTRL_ENABLE;
-+	iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	mdelay(3 * otto_wdt_tick_ms(ctrl, 0));
-+
-+	return 0;
-+}
-+
-+static irqreturn_t otto_wdt_phase1_isr(int irq, void *dev_id)
-+{
-+	struct otto_wdt_ctrl *ctrl = dev_id;
-+
-+	iowrite32(OTTO_WDT_INTR_PHASE_1, ctrl->base + OTTO_WDT_REG_INTR);
-+	dev_crit(ctrl->dev, "phase 1 timeout\n");
-+	watchdog_notify_pretimeout(&ctrl->wdev);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t otto_wdt_phase2_isr(int irq, void *dev_id)
-+{
-+	struct otto_wdt_ctrl *ctrl = dev_id;
-+
-+	iowrite32(OTTO_WDT_INTR_PHASE_2, ctrl->base + OTTO_WDT_REG_INTR);
-+	dev_crit(ctrl->dev, "phase 2 timeout\n");
-+	emergency_restart();
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static const struct watchdog_ops otto_wdt_ops = {
-+	.owner = THIS_MODULE,
-+	.start = otto_wdt_start,
-+	.stop = otto_wdt_stop,
-+	.ping = otto_wdt_ping,
-+	.set_timeout = otto_wdt_set_timeout,
-+	.set_pretimeout = otto_wdt_set_pretimeout,
-+	.restart = otto_wdt_restart,
-+};
-+
-+static const struct watchdog_info otto_wdt_info = {
-+	.identity = "Realtek Otto watchdog timer",
-+	.options = WDIOF_KEEPALIVEPING |
-+		WDIOF_MAGICCLOSE |
-+		WDIOF_SETTIMEOUT |
-+		WDIOF_PRETIMEOUT,
-+};
-+
-+static int otto_wdt_probe_reset_mode(struct otto_wdt_ctrl *ctrl)
-+{
-+	static const char *mode_property = "realtek,reset-mode";
-+	const struct fwnode_handle *node = ctrl->dev->fwnode;
-+	int mode_count;
-+	u32 mode;
-+	u32 v;
-+
-+	if (!node)
-+		return -ENXIO;
-+
-+	mode_count = fwnode_property_string_array_count(node, mode_property);
-+	if (mode_count < 0)
-+		return mode_count;
-+	else if (mode_count == 0)
-+		return 0;
-+	else if (mode_count != 1)
-+		return -EINVAL;
-+
-+	if (fwnode_property_match_string(node, mode_property, "soc") == 0)
-+		mode = OTTO_WDT_MODE_SOC;
-+	else if (fwnode_property_match_string(node, mode_property, "cpu") == 0)
-+		mode = OTTO_WDT_MODE_CPU;
-+	else if (fwnode_property_match_string(node, mode_property, "software") == 0)
-+		mode = OTTO_WDT_MODE_SOFTWARE;
-+	else
-+		return -EINVAL;
-+
-+	v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-+	v &= ~OTTO_WDT_CTRL_RST_MODE;
-+	v |= FIELD_PREP(OTTO_WDT_CTRL_RST_MODE, mode);
-+	iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	return 0;
-+}
-+
-+static int otto_wdt_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct otto_wdt_ctrl *ctrl;
-+	unsigned int max_tick_ms;
-+	int ret;
-+
-+	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
-+	if (!ctrl)
-+		return -ENOMEM;
-+
-+	ctrl->dev = dev;
-+	ctrl->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(ctrl->base))
-+		return PTR_ERR(ctrl->base);
-+
-+	raw_spin_lock_init(&ctrl->lock);
-+
-+	/* Clear any old interrupts and reset initial state */
-+	iowrite32(OTTO_WDT_INTR_PHASE_1 | OTTO_WDT_INTR_PHASE_2,
-+			ctrl->base + OTTO_WDT_REG_INTR);
-+	iowrite32(OTTO_WDT_CTRL_DEFAULT, ctrl->base + OTTO_WDT_REG_CTRL);
-+
-+	ctrl->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(ctrl->clk))
-+		return dev_err_probe(dev, PTR_ERR(ctrl->clk), "Failed to get clock\n");
-+
-+	ctrl->irq_phase1 = platform_get_irq_byname(pdev, "phase1");
-+	if (ctrl->irq_phase1 < 0)
-+		return dev_err_probe(dev, ctrl->irq_phase1, "phase1 IRQ not found\n");
-+
-+	ret = devm_request_irq(dev, ctrl->irq_phase1, otto_wdt_phase1_isr, 0,
-+			"realtek-otto-wdt", ctrl);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to get IRQ for phase1\n");
-+
-+	ctrl->irq_phase2 = platform_get_irq_byname(pdev, "phase2");
-+	if (ctrl->irq_phase2 < 0)
-+		return dev_err_probe(dev, ctrl->irq_phase2, "phase2 IRQ not found\n");
-+
-+	ret = devm_request_irq(dev, ctrl->irq_phase2, otto_wdt_phase2_isr, 0,
-+			"realtek-otto-wdt", ctrl);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to get IRQ for phase2\n");
-+
-+	ret = otto_wdt_probe_reset_mode(ctrl);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Invalid reset mode specified\n");
-+
-+	ctrl->wdev.parent = dev;
-+	ctrl->wdev.info = &otto_wdt_info;
-+	ctrl->wdev.ops = &otto_wdt_ops;
-+
-+	/*
-+	 * Since pretimeout cannot be disabled, min_timeout is twice the
-+	 * subsystem resolution. max_timeout is 44s at a bus clock of 200MHz.
-+	 */
-+	ctrl->wdev.min_timeout = 2;
-+	max_tick_ms = otto_wdt_tick_ms(ctrl, OTTO_WDT_PRESCALE_MAX);
-+	ctrl->wdev.max_timeout =
-+		DIV_ROUND_CLOSEST(max_tick_ms * OTTO_WDT_TIMEOUT_TICKS_MAX, 1000);
-+	ctrl->wdev.timeout = min(30U, ctrl->wdev.max_timeout);
-+
-+	watchdog_set_drvdata(&ctrl->wdev, ctrl);
-+	watchdog_init_timeout(&ctrl->wdev, 0, dev);
-+	watchdog_stop_on_reboot(&ctrl->wdev);
-+	watchdog_set_restart_priority(&ctrl->wdev, 128);
-+
-+	ret = otto_wdt_determine_timeouts(ctrl, ctrl->wdev.timeout, 1);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to set timeout\n");
-+
-+	return devm_watchdog_register_device(dev, &ctrl->wdev);
-+}
-+
-+static const struct of_device_id otto_wdt_ids[] = {
-+	{ .compatible = "realtek,rtl8380-wdt" },
-+	{ .compatible = "realtek,rtl8390-wdt" },
-+	{ }
-+};
-+
-+static struct platform_driver otto_wdt_driver = {
-+	.probe = otto_wdt_probe,
-+	.driver = {
-+		.name = "realtek-otto-watchdog",
-+		.of_match_table	= otto_wdt_ids,
-+	},
-+};
-+module_platform_driver(otto_wdt_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Sander Vanheule <sander@svanheule.net>");
-+MODULE_DESCRIPTION("Realtek Otto watchdog timer driver");
--- 
-2.31.1
+As a rule of thumb, if you're changing any formatting, not only you should have
+a good reason, but also it's something that shall be done in a different commit,
+so, one for functional changes, one for cosmetic changes (not necessarily in this
+order).
+
+This will make it easier for everyone to review your patches.
+
+>   };
+>   
+>   struct mtk_mutex_ctx {
+> @@ -136,6 +145,8 @@ struct mtk_mutex_ctx {
+>   	void __iomem			*regs;
+>   	struct mtk_mutex		mutex[10];
+>   	const struct mtk_mutex_data	*data;
+> +	phys_addr_t			addr;
+> +	u8				subsys_id;
+>   };
+>   
+>   static const unsigned int mt2701_mutex_mod[DDP_COMPONENT_ID_MAX] = {
+> @@ -238,6 +249,14 @@ static const unsigned int mt8183_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
+>   	[MUTEX_SOF_DPI0] = MT8183_MUTEX_SOF_DPI0 | MT8183_MUTEX_EOF_DPI0,
+>   };
+>   
+> +/* indicate which mutex is used by each pipepline */
+> +static const unsigned int mt8183_mutex_mdp_offset[MDP_PIPE_MAX] = {
+> +	[MDP_PIPE_IMGI] = MT8183_MUTEX_MDP_START,
+> +	[MDP_PIPE_RDMA0] = MT8183_MUTEX_MDP_START + 1,
+> +	[MDP_PIPE_WPEI] = MT8183_MUTEX_MDP_START + 2,
+> +	[MDP_PIPE_WPEI2] = MT8183_MUTEX_MDP_START + 3
+> +};
+> +
+>   static const struct mtk_mutex_data mt2701_mutex_driver_data = {
+>   	.mutex_mod = mt2701_mutex_mod,
+>   	.mutex_sof = mt2712_mutex_sof,
+> @@ -272,6 +291,9 @@ static const struct mtk_mutex_data mt8183_mutex_driver_data = {
+>   	.mutex_sof = mt8183_mutex_sof,
+>   	.mutex_mod_reg = MT8183_MUTEX0_MOD0,
+>   	.mutex_sof_reg = MT8183_MUTEX0_SOF0,
+> +	.mutex_mdp_offset = mt8183_mutex_mdp_offset,
+> +	.mutex_mdp_mod_mask = MT8183_MUTEX_MDP_MOD_MASK,
+> +	.mutex_mdp_sof_mask = MT8183_MUTEX_MDP_SOF_MASK,
+>   	.no_clk = true,
+>   };
+>   
+> @@ -290,6 +312,21 @@ struct mtk_mutex *mtk_mutex_get(struct device *dev)
+>   }
+>   EXPORT_SYMBOL_GPL(mtk_mutex_get);
+>   
+> +struct mtk_mutex *mtk_mutex_mdp_get(struct device *dev,
+> +				    enum mtk_mdp_pipe_id id)
+> +{
+> +	struct mtk_mutex_ctx *mtx = dev_get_drvdata(dev);
+> +	int i = mtx->data->mutex_mdp_offset[id];
+> +
+> +	if (!mtx->mutex[i].claimed) {
+
+I'm not sure that tracking the usage of this mutex here is the right thing
+to do: from what I understand, this is being acquired by the MDP driver, at
+mdp_probe(), and only once... so this check may be mostly useless, if not
+in order to avoid possible race conditions due to really bad code.
+
+Can anyone else give an opinion on that?
+
+> +		mtx->mutex[i].claimed = true;
+> +		return &mtx->mutex[i];
+> +	}
+> +
+> +	return ERR_PTR(-EBUSY);
+> +}
+> +EXPORT_SYMBOL_GPL(mtk_mutex_mdp_get);
+> +
+>   void mtk_mutex_put(struct mtk_mutex *mutex)
+>   {
+>   	struct mtk_mutex_ctx *mtx = container_of(mutex, struct mtk_mutex_ctx,
+> @@ -369,6 +406,25 @@ void mtk_mutex_add_comp(struct mtk_mutex *mutex,
+>   }
+>   EXPORT_SYMBOL_GPL(mtk_mutex_add_comp);
+>   
+> +void mtk_mutex_add_mdp_mod(struct mtk_mutex *mutex, u32 mod,
+> +			   struct mmsys_cmdq_cmd *cmd)
+> +{
+> +	struct mtk_mutex_ctx *mtx = container_of(mutex, struct mtk_mutex_ctx,
+> +						 mutex[mutex->id]);
+> +	unsigned int offset;
+> +
+> +	WARN_ON(&mtx->mutex[mutex->id] != mutex);
+> +
+> +	offset = DISP_REG_MUTEX_MOD(mtx->data->mutex_mod_reg, mutex->id);
+> +	cmdq_pkt_write_mask(cmd->pkt, mtx->subsys_id, mtx->addr + offset,
+> +			    mod, mtx->data->mutex_mdp_mod_mask);
+> +
+
+Calls to this function makes this driver to depend on CONFIG_MTK_CMDQ.
+Failing to meet this requirement will make the build to fail with:
+drivers/soc/mediatek/mtk-mutex.c:545: undefined reference to `cmdq_pkt_write_mask'
+
+> +	offset = DISP_REG_MUTEX_SOF(mtx->data->mutex_sof_reg, mutex->id);
+> +	cmdq_pkt_write_mask(cmd->pkt, mtx->subsys_id, mtx->addr + offset,
+> +			    0, mtx->data->mutex_mdp_sof_mask);
+> +}
+> +EXPORT_SYMBOL_GPL(mtk_mutex_add_mdp_mod);
+> +
+>   void mtk_mutex_remove_comp(struct mtk_mutex *mutex,
+>   			   enum mtk_ddp_comp_id id)
+>   {
+> @@ -420,6 +476,20 @@ void mtk_mutex_enable(struct mtk_mutex *mutex)
+>   }
+>   EXPORT_SYMBOL_GPL(mtk_mutex_enable);
+>   
+> +void mtk_mutex_enable_by_cmdq(struct mtk_mutex *mutex,
+> +			      struct mmsys_cmdq_cmd *cmd)
+> +{
+> +	struct mtk_mutex_ctx *mtx = container_of(mutex, struct mtk_mutex_ctx,
+> +						 mutex[mutex->id]);
+> +
+> +	WARN_ON(&mtx->mutex[mutex->id] != mutex);
+> +
+> +	cmdq_pkt_write_mask(cmd->pkt, mtx->subsys_id,
+> +			    mtx->addr + DISP_REG_MUTEX_EN(mutex->id),
+> +			    0x1, 0x00000001);
+> +}
+> +EXPORT_SYMBOL_GPL(mtk_mutex_enable_by_cmdq);
+> +
+>   void mtk_mutex_disable(struct mtk_mutex *mutex)
+>   {
+>   	struct mtk_mutex_ctx *mtx = container_of(mutex, struct mtk_mutex_ctx,
+> @@ -431,6 +501,20 @@ void mtk_mutex_disable(struct mtk_mutex *mutex)
+>   }
+>   EXPORT_SYMBOL_GPL(mtk_mutex_disable);
+>   
+> +void mtk_mutex_disable_by_cmdq(struct mtk_mutex *mutex,
+> +			       struct mmsys_cmdq_cmd *cmd)
+> +{
+> +	struct mtk_mutex_ctx *mtx = container_of(mutex, struct mtk_mutex_ctx,
+> +						 mutex[mutex->id]);
+> +
+> +	WARN_ON(&mtx->mutex[mutex->id] != mutex);
+> +
+> +	cmdq_pkt_write_mask(cmd->pkt, mtx->subsys_id,
+> +			    mtx->addr + DISP_REG_MUTEX_EN(mutex->id),
+> +			    0x0, 0x00000001);
+> +}
+> +EXPORT_SYMBOL_GPL(mtk_mutex_disable_by_cmdq);
+> +
+>   void mtk_mutex_acquire(struct mtk_mutex *mutex)
+>   {
+>   	struct mtk_mutex_ctx *mtx = container_of(mutex, struct mtk_mutex_ctx,
+> @@ -458,7 +542,8 @@ static int mtk_mutex_probe(struct platform_device *pdev)
+>   {
+>   	struct device *dev = &pdev->dev;
+>   	struct mtk_mutex_ctx *mtx;
+> -	struct resource *regs;
+> +	struct cmdq_client_reg cmdq_reg;
+> +	struct resource *regs, addr;
+>   	int i;
+>   
+>   	mtx = devm_kzalloc(dev, sizeof(*mtx), GFP_KERNEL);
+> @@ -479,6 +564,15 @@ static int mtk_mutex_probe(struct platform_device *pdev)
+>   		}
+>   	}
+>   
+> +	if (of_address_to_resource(dev->of_node, 0, &addr) < 0)
+> +		mtx->addr = 0L;
+> +	else
+> +		mtx->addr = addr.start;
+> +
+> +	if (cmdq_dev_get_client_reg(dev, &cmdq_reg, 0) != 0)
+
+... And it's the same here:
+drivers/soc/mediatek/mtk-mutex.c:605: undefined reference to `cmdq_dev_get_client_reg'
+
+Please add the required dependency/select in Kconfig.
+
+Regards,
+- Angelo
+
 
