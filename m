@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A140342C566
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0621E42C568
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233969AbhJMQAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
+        id S235047AbhJMQAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231414AbhJMQAF (ORCPT
+        with ESMTP id S234266AbhJMQAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:00:05 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0DAC061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:58:01 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id g125so4412072oif.9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:58:01 -0700 (PDT)
+        Wed, 13 Oct 2021 12:00:11 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EEC2C061570;
+        Wed, 13 Oct 2021 08:58:08 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id c20so2990268qtb.2;
+        Wed, 13 Oct 2021 08:58:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xCJp57jNMOnyj4DLcTosLHG2ISZNxkYQUmY+8tgKxKg=;
-        b=SHIqroMqBP2YjQev++CFKxcm3UVfC3vc5kWMPDMUfxGHziM0GeoVgiB/43mb2FYyqN
-         CoAPTeaZbATeR2XY1XQVWm2Nd2WmbJTXBMbvhRtA04oPL3zRhlJGdLF0dODkc2oc2Ln2
-         Gh2YW56WuI7kzog4BP/bHCYmFgJ1NsbvyKAiw=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QRCQWTldVH+OZHyOa69RDIQGz1tL+bbpmwzuPKAYPxw=;
+        b=LCbFYikTD5PzbFfZnNoaU71X9aBqMyv+Oj6vxAprqwI64fSHD/tLdFOzvSMjTp8OuN
+         mXi9nVR+rBk0Feyf+o/G4ubwH/l+7VV0dvuMAFPsp+pNBszRWtKFt+GfQyOQiO6XjBxG
+         LxVDFEDdWu3SdyY9WJ3ulnfqbrKIu2YlLwcVPeEXOlByV67hWwjMUOaiwferSKqP3WAF
+         8KRO8y813uJKVOSsojpa3qOIoXRSxzdGMFj5Dwvt1BCsoKh6zW9T5b4SjMxmb9j6ZszQ
+         nHlZ3tsfw2pbtAiOTAqlV/AbKrmFO7X1h7lPHhAZkfZDocWqptFMeNXaSYKph8g50njI
+         +rGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xCJp57jNMOnyj4DLcTosLHG2ISZNxkYQUmY+8tgKxKg=;
-        b=6PvFoelurXRj0d4dO8FIrw7UiyoYNWyr/gTFecB9EBExO/BYcVEPpKcz8yDN/LVgIc
-         9UxIxmEwuZ/aoZwnXdIkr2Ay8QbAlpaYx5DJ8gOxic1PHIbShWCOSjSe0XySsJcxAYSs
-         SXEvzGKimXMljCh+ulZnvUt9sgRTGY0/d0ghgUcgjn3ryZToIr5VFFKbaNbBoT9ipx/D
-         ofFXGxGLTXTNxGjo6wQb6dLtc39O1fF5ak6TIh9vpPknFkkcZXR/FaItx4Xr3fp8x8C4
-         DZiS61vkStBfcDgn9YR5PspQC9t6yajbZ5oU3WGYcIKOpkfB0FiMSfIaT0eNFHDOqiM3
-         VzGw==
-X-Gm-Message-State: AOAM533H9zRelupq+lqAehUezI1j1TN99ndsVySMOnxTblHl5yTqGEsw
-        zA/kZqu5vlObzlBAJLRmVZ8PwA==
-X-Google-Smtp-Source: ABdhPJzke8L96NKcvX4M1awJBUAYsQux4GxSw1lEubPV8lGyaoSDSauqfFuO6xURklVpg/j1aEoGAw==
-X-Received: by 2002:a05:6808:1aa9:: with SMTP id bm41mr8703077oib.55.1634140681136;
-        Wed, 13 Oct 2021 08:58:01 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id n13sm3101356otf.3.2021.10.13.08.58.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 08:58:00 -0700 (PDT)
-Subject: Re: [PATCH] usbip: tools: usbipd: fix duplicate option definition
-To:     Alyssa Ross <hi@alyssa.is>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Dominik Paulus <dominik.paulus@fau.de>,
-        "open list:USB OVER IP DRIVER" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211013145741.2597290-1-hi@alyssa.is>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <178457ee-4f66-07fd-e7bd-cee353414810@linuxfoundation.org>
-Date:   Wed, 13 Oct 2021 09:57:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QRCQWTldVH+OZHyOa69RDIQGz1tL+bbpmwzuPKAYPxw=;
+        b=5JoR/mw8Um8ZF/Lhpw5myg0veHTbjSP17nZgj3qHjADrGUF52EJsv9Yp1igil26t+W
+         U97sUIZXHSVMvGqBISDeUCYzeaEjhrooPvXUi0aM8xB9GrYoqxfUIqJYSa9PRMubEpyr
+         C5944HSV589WM+1kKwriUdYVd/towXFHbffDrJ69k/aItuMvgs4JA43cD2VE3HePCY12
+         C7gPTN0z8LoQmy7nKjqVXCaU8vXI5CZm12Xcn5PJxG3wsouub7+rjCh8xUeUmSm3sLP9
+         ehcEs67j8JNRfXVvhEo7/g8uGOb2+wcGaiA4ajwUKD3IVagJToR7IlGZaoZ+q8MwEaZs
+         Ldpg==
+X-Gm-Message-State: AOAM533AM+qBxGQNehQoI+Gf1PnjphalH9I/HEMjBUkLBticGeLU+DoC
+        448+N55SaCeJKXWzJ6YyDw==
+X-Google-Smtp-Source: ABdhPJzm3GPLkpM6fcr61oXHPUjNPaXCfY36KcT8EufJCKoDx1csvg98Vq2gSuHVE0/ONPg6MlP1QA==
+X-Received: by 2002:ac8:5705:: with SMTP id 5mr111650qtw.184.1634140687458;
+        Wed, 13 Oct 2021 08:58:07 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id m6sm4908913qkh.69.2021.10.13.08.58.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 08:58:06 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 11:58:04 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     willy@infradead.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mm: Stop filemap_read() from grabbing a superfluous
+ page
+Message-ID: <YWcCDE6rz1xgh9vD@moria.home.lan>
+References: <163360810881.1636291.17477809397516812670.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20211013145741.2597290-1-hi@alyssa.is>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163360810881.1636291.17477809397516812670.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 8:57 AM, Alyssa Ross wrote:
-> This seems to have been introduced by mistake in
-> f49ad35cd124 ("staging: usbip: Fix IPv6 support in usbipd").
+On Thu, Oct 07, 2021 at 01:01:48PM +0100, David Howells wrote:
+> Under some circumstances, filemap_read() will allocate sufficient pages to
+> read to the end of the file, call readahead/readpages on them and copy the
+> data over - and then it will allocate another page at the EOF and call
+> readpage on that and then ignore it.  This is unnecessary and a waste of
+> time and resources.
 > 
-
-Thanks for the patch.
-
-Add a sentence or two to say what is being fixed and use Fixes tag
-for the commit.
-
-> Signed-off-by: Alyssa Ross <hi@alyssa.is>
-> ---
->   tools/usb/usbip/src/usbipd.c | 1 -
->   1 file changed, 1 deletion(-)
+> filemap_read() *does* check for this, but only after it has already done
+> the allocation and I/O.  Fix this by checking before calling
+> filemap_get_pages() also.
 > 
-> diff --git a/tools/usb/usbip/src/usbipd.c b/tools/usb/usbip/src/usbipd.c
-> index 48398a78e88a..33e8512de7c4 100644
-> --- a/tools/usb/usbip/src/usbipd.c
-> +++ b/tools/usb/usbip/src/usbipd.c
-> @@ -589,7 +589,6 @@ int main(int argc, char *argv[])
->   		{ "ipv4",     no_argument,       NULL, '4' },
->   		{ "ipv6",     no_argument,       NULL, '6' },
->   		{ "daemon",   no_argument,       NULL, 'D' },
-> -		{ "daemon",   no_argument,       NULL, 'D' },
->   		{ "debug",    no_argument,       NULL, 'd' },
->   		{ "device",   no_argument,       NULL, 'e' },
->   		{ "pid",      optional_argument, NULL, 'P' },
-> 
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Kent Overstreet <kent.overstreet@gmail.com>
+> cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+> cc: linux-mm@kvack.org
+> cc: linux-fsdevel@vger.kernel.org
+> Link: https://lore.kernel.org/r/160588481358.3465195.16552616179674485179.stgit@warthog.procyon.org.uk/
 
-thanks,
--- Shuah
+Acked-by: Kent Overstreet <kent.overstreet@gmail.com>
