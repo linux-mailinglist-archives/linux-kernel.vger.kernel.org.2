@@ -2,139 +2,537 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B0942CABC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8035D42CAC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239119AbhJMUQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        id S239135AbhJMURY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbhJMUQZ (ORCPT
+        with ESMTP id S238375AbhJMURW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:16:25 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B05C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:14:21 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso3510118otl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:14:21 -0700 (PDT)
+        Wed, 13 Oct 2021 16:17:22 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AEBC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:15:19 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id n7so1212617iod.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=QyTd56Yy55oJcpmoXXse3UQ4TanL7tsHe7pndupRnAM=;
-        b=UkgUzXgrhkocHJb5SORkvSsGhkAluE52o5vGR5B/f7J0XVrXZDQnrqJ2kt91A1un3H
-         h3tpGowokJymNG3IgJkju/eTuWrTzHaUEgIXfvWKsfKj8hUwi0p6VZwPd58V/kBk/TeH
-         W+xJEtq6ROaCfFT7KZndQGTvZJm1CLF9y8pMM=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BnZ39XmjyGYvN4WybsHC/7SGpCn3pfYS/j51w7Lf+CA=;
+        b=QPXajJSy6vjLQDmNbMn2XvUHZbOCLnFtmICysS2ebig3cPN430QtfqU/xzLwp4F3OY
+         ZMOAvBc5JTMHKkpbhLbQpnKN33x++N4E60CKEdSSkPAsHfgRZEpe91JYyeAB8iXz+xB1
+         w30jb+9bDwV0Fd7QmCYvv4PqMnip/Ezs/PgtWfAIofidGysrMtTCFITcdB9xDBbg0qEX
+         sZrQwaM1hDigvZGdvCtTBk+0UktxhMPFLgtnV4f57M/c9pfUCUHfMur7n8+QixisRPMU
+         o52+L+TbGh66pM3HQoL9nkqb61YVpclw+2j7jqYl8TYeTKGAWxmVzQ40sPlcp8IIn+IB
+         v+rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=QyTd56Yy55oJcpmoXXse3UQ4TanL7tsHe7pndupRnAM=;
-        b=y1FgmMHSrCvSIBEXo2xth4DGjXB/Vh/th+OFAo33jJBXueoKapHqoJNyiA3q3EPRrV
-         o7P2KzbhtERlPi/iaHlemaFcXnVDRxDm6L9j5T6CzvuWBVfe35OT/975Ok4lq1EzVi6d
-         47//4WYglqSfp6x93VcPP9NA/wIGrwZURWhyJAuYQav6W7qPEHaZz/SRNxIkvVP78Pq5
-         UhUCUldUZJc3LemlfKCuDS5OL3boOsVxeO4o1yJvqygivcjFqJq8urvpXV5jQLN3u6rb
-         e1hFdcqjSFRbgazUUHdocerQ2/1wl/pDgVG550i25XegZthGe72h6aZerIstOw6hw/RY
-         qxkw==
-X-Gm-Message-State: AOAM533T05D9Sl1oZ7Et3R5uN6K/3ZIEBtGm5HM0XWNy85cIy4IaqmjA
-        Y0tENjkWsTozPRQIvWVkOerjmqBG3edVYYFVjJqxow==
-X-Google-Smtp-Source: ABdhPJytWQESFwO9jS9EtdyTNqqN92VtGeoE9cEZU0Mp7ZYuw/Y5egTeTQdvmNfwErFI0oZQLfUa5L7oHbKH+PA2/rM=
-X-Received: by 2002:a9d:12f4:: with SMTP id g107mr1096988otg.77.1634156061042;
- Wed, 13 Oct 2021 13:14:21 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 13 Oct 2021 15:14:20 -0500
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BnZ39XmjyGYvN4WybsHC/7SGpCn3pfYS/j51w7Lf+CA=;
+        b=aN+GVO332g13Xppa1gvvs/s6rb240XIFuH0kutNUrQcLLl9L9MflWYy1ViiuO7Z5Qj
+         yOiy5abOuxntdfbkpVp3B+jl8WKE9sX7u6POXiUuX640Q5nT0s8NWrWFApYngUxof+XG
+         Wm6BiePCAFdzPVRMThuzLfD+y+3o1YFFHBu5x1mIkQe9mvHq61JU58uOr11JdZye8V9E
+         cHLBXsf9aug1BViucT/AAynp75xOW0DIhU/nTM2Y2it5B8v4TPRrR1FC8GhJuf167mIp
+         zpjtuPShnUzwh9v5trPssF+FRNruXWgPwq9wuI0dfVEwGtbXGlobIuIQNWOdnCOkUNwl
+         havw==
+X-Gm-Message-State: AOAM532drfyUwhPuVulAXrp5cm4T0gDvUdxszIaQiuVRUx6I2zLfGd+S
+        aMlX1CRqFPlN4D1ZGZA+w7MZB19Yx8z1oqv6oK4MX+nMiFBs0Q==
+X-Google-Smtp-Source: ABdhPJy91f9Blf4xSH/zPoYa8moCcMXMaZDyEXUhKBFKT91yg1WQRuKDSp8JkskzREEQbvItOotZ5Y/1RGQVTY10rQM=
+X-Received: by 2002:a05:6602:1342:: with SMTP id i2mr1097573iov.153.1634156118328;
+ Wed, 13 Oct 2021 13:15:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <46cc793cf651822ef90c448682598a02@codeaurora.org>
-References: <1634043698-20256-1-git-send-email-bgodavar@codeaurora.org>
- <CAE-0n52uUh5TrKpJq9-qkJTdWWU_EZFvoROWFeGEjuc1Ebc8xg@mail.gmail.com> <46cc793cf651822ef90c448682598a02@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 13 Oct 2021 15:14:20 -0500
-Message-ID: <CAE-0n52+ONDV7YVWcUL1WYEyPhCyxh994613BWKAibsuDwDw6w@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Add bluetooth node on SC7280
-To:     bgodavar@codeaurora.org
-Cc:     bjorn.andersson@linaro.org, johan.hedberg@gmail.com,
-        marcel@holtmann.org, mka@chromium.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        pharish@codeaurora.org, rjliao@codeaurora.org,
-        hbandi@codeaurora.org, saluvala@codeaurora.org,
-        abhishekpandit@chromium.org
+References: <20211013191320.2490913-1-dlatypov@google.com> <CAFd5g47=aO3e8d4_GGcgY9BK43Z0Oo6SGD-2e5rJDp5r3k4XXQ@mail.gmail.com>
+In-Reply-To: <CAFd5g47=aO3e8d4_GGcgY9BK43Z0Oo6SGD-2e5rJDp5r3k4XXQ@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Wed, 13 Oct 2021 13:15:06 -0700
+Message-ID: <CAGS_qxoziNGNVpsUfvUfOReADY0PdriV2gJJ7+LUzzd+7BU-Ow@mail.gmail.com>
+Subject: Re: [RFC PATCH] kunit: flatten kunit_suite*** to kunit_suite** in executor
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org, Jeremy Kerr <jk@codeconstruct.com.au>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting bgodavar@codeaurora.org (2021-10-12 22:30:50)
-> On 2021-10-12 22:54, Stephen Boyd wrote:
-> > Quoting Balakrishna Godavarthi (2021-10-12 06:01:38)
-> >> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> >> b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> >> index 272d5ca..09adc802 100644
-> >> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> >> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> >> +               compatible = "qcom,wcn6750-bt";
-> >> +               pinctrl-names = "default";
-> >> +               pinctrl-0 = <&bt_en_default>;
-> >> +               enable-gpios = <&tlmm 85 GPIO_ACTIVE_HIGH>;
-> >> +               swctrl-gpios = <&tlmm 86 GPIO_ACTIVE_HIGH>;
+On Wed, Oct 13, 2021 at 1:04 PM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+>
+> On Wed, Oct 13, 2021 at 12:13 PM Daniel Latypov <dlatypov@google.com> wrote:
 > >
-> > Is there any pinctrl config for gpio 86?
+> > Per [1], we might not need the array-of-array of kunit_suite's.
 > >
-> [Bala]: This is input GPIO to apps, BT SOC will handle configurations.
+> > This RFC patch previews the changes we'd make to the executor to
+> > accommodate that by making the executor automatically flatten the
+> > kunit_suite*** into a kunit_suite**.
+> >
+> > The test filtering support [2] added the largest dependency on the
+> > current kunit_suite*** layout, so this patch is based on that.
+> >
+> > It actually drastically simplifies the code, so it might be useful to
+> > keep the auto-flattening step until we actually make the change.
+> >
+> > [1] https://lore.kernel.org/linux-kselftest/101d12fc9250b7a445ff50a9e7a25cd74d0e16eb.camel@codeconstruct.com.au/
+> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit&id=3b29021ddd10cfb6b2565c623595bd3b02036f33
+> >
+> > Cc: Jeremy Kerr <jk@codeconstruct.com.au>
+> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+>
+> I like it! This seems to make a lot of logic simpler (and from the
+> sounds makes Jeremy's proposed module patch easier?).
 
-Ok. So there should be some pinctrl stating that the function is "gpio"
-and the biasing is probably bias-disable. The BT SOC will handle setting
-any pull, either up or down?
+This would make the subsequent cleanup easier.
+
+Jemery, correct me if I misread, but it sounded like you were thinking
+of leaving the current kunit_suite*** layout until afterwards.
+Then we'd flatten it as a cleanup.
+
+This patch contains the changes necessary to fix compilation and the
+executor unit test for that new layout.
 
 >
-> >> +               vddaon-supply = <&vreg_s7b_0p9>;
-> >> +               vddbtcxmx-supply = <&vreg_s7b_0p9>;
-> >> +               vddrfacmn-supply = <&vreg_s7b_0p9>;
-> >> +               vddrfa0p8-supply = <&vreg_s7b_0p9>;
-> >> +               vddrfa1p7-supply = <&vreg_s1b_1p8>;
-> >> +               vddrfa1p2-supply = <&vreg_s8b_1p2>;
-> >> +               vddrfa2p2-supply = <&vreg_s1c_2p2>;
-> >> +               vddasd-supply = <&vreg_l11c_2p8>;
-> >> +               max-speed = <3200000>;
-> >> +       };
-> >>  };
-> >>
-> >>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
-> >> @@ -504,6 +521,14 @@
-> >>                  */
-> >>                 bias-pull-up;
-> >>         };
-> >> +
-> >> +       bt_en_default: bt_en_default {
+> > ---
+> >  lib/kunit/executor.c      | 132 +++++++++++++++-----------------------
+> >  lib/kunit/executor_test.c | 131 ++++++++++---------------------------
+> >  2 files changed, 85 insertions(+), 178 deletions(-)
 > >
-> > bt_en: bt-en {
+> > diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> > index 22640c9ee819..3a7246336625 100644
+> > --- a/lib/kunit/executor.c
+> > +++ b/lib/kunit/executor.c
+> > @@ -88,60 +88,18 @@ kunit_filter_tests(struct kunit_suite *const suite, const char *test_glob)
+> >  static char *kunit_shutdown;
+> >  core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
 > >
-> > Node names shouldn't have underscores and 'default' is redundant.
+> > -static struct kunit_suite * const *
+> > -kunit_filter_subsuite(struct kunit_suite * const * const subsuite,
+> > -                     struct kunit_test_filter *filter)
+> > -{
+> > -       int i, n = 0;
+> > -       struct kunit_suite **filtered, *filtered_suite;
+> > -
+> > -       n = 0;
+> > -       for (i = 0; subsuite[i]; ++i) {
+> > -               if (glob_match(filter->suite_glob, subsuite[i]->name))
+> > -                       ++n;
+> > -       }
+> > -
+> > -       if (n == 0)
+> > -               return NULL;
+> > -
+> > -       filtered = kmalloc_array(n + 1, sizeof(*filtered), GFP_KERNEL);
+> > -       if (!filtered)
+> > -               return NULL;
+> > -
+> > -       n = 0;
+> > -       for (i = 0; subsuite[i] != NULL; ++i) {
+> > -               if (!glob_match(filter->suite_glob, subsuite[i]->name))
+> > -                       continue;
+> > -               filtered_suite = kunit_filter_tests(subsuite[i], filter->test_glob);
+> > -               if (filtered_suite)
+> > -                       filtered[n++] = filtered_suite;
+> > -       }
+> > -       filtered[n] = NULL;
+> > -
+> > -       return filtered;
+> > -}
+> > -
+> > +/* Stores a NULL-terminated array of suites. */
+> >  struct suite_set {
+> > -       struct kunit_suite * const * const *start;
+> > -       struct kunit_suite * const * const *end;
+> > +       struct kunit_suite * const *start;
+> > +       struct kunit_suite * const *end;
+> >  };
 > >
-> [Bala]: will update in next patch.
+> > -static void kunit_free_subsuite(struct kunit_suite * const *subsuite)
+> > -{
+> > -       unsigned int i;
+> > -
+> > -       for (i = 0; subsuite[i]; i++)
+> > -               kfree(subsuite[i]);
+> > -
+> > -       kfree(subsuite);
+> > -}
+> > -
+> >  static void kunit_free_suite_set(struct suite_set suite_set)
+> >  {
+> > -       struct kunit_suite * const * const *suites;
+> > +       struct kunit_suite * const *suites;
+> >
+> >         for (suites = suite_set.start; suites < suite_set.end; suites++)
+> > -               kunit_free_subsuite(*suites);
+> > +               kfree(*suites);
+> >         kfree(suite_set.start);
+> >  }
+> >
+> > @@ -149,10 +107,11 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+> >                                             const char *filter_glob)
+> >  {
+> >         int i;
+> > -       struct kunit_suite * const **copy, * const *filtered_subsuite;
+> > +       struct kunit_suite **copy, *filtered_suite;
+> >         struct suite_set filtered;
+> >         struct kunit_test_filter filter;
+> >
+> > +       /* Note: this includes space for the terminating NULL. */
+> >         const size_t max = suite_set->end - suite_set->start;
+> >
+> >         copy = kmalloc_array(max, sizeof(*filtered.start), GFP_KERNEL);
+> > @@ -164,11 +123,17 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+> >
+> >         kunit_parse_filter_glob(&filter, filter_glob);
+> >
+> > -       for (i = 0; i < max; ++i) {
+> > -               filtered_subsuite = kunit_filter_subsuite(suite_set->start[i], &filter);
+> > -               if (filtered_subsuite)
+> > -                       *copy++ = filtered_subsuite;
+> > +       for (i = 0; suite_set->start[i] != NULL; i++) {
+> > +               if (!glob_match(filter.suite_glob, suite_set->start[i]->name))
+> > +                       continue;
+> > +
+> > +               filtered_suite = kunit_filter_tests(suite_set->start[i], filter.test_glob);
+> > +               if (!filtered_suite)
+> > +                       continue;
+> > +
+> > +               *copy++ = filtered_suite;
+> >         }
+> > +       *copy = NULL;
+> >         filtered.end = copy;
+> >
+> >         kfree(filter.suite_glob);
+> > @@ -190,52 +155,56 @@ static void kunit_handle_shutdown(void)
+> >
+> >  }
+> >
+> > -static void kunit_print_tap_header(struct suite_set *suite_set)
+> > -{
+> > -       struct kunit_suite * const * const *suites, * const *subsuite;
+> > -       int num_of_suites = 0;
+> > -
+> > -       for (suites = suite_set->start; suites < suite_set->end; suites++)
+> > -               for (subsuite = *suites; *subsuite != NULL; subsuite++)
+> > -                       num_of_suites++;
+> > -
+> > -       pr_info("TAP version 14\n");
+> > -       pr_info("1..%d\n", num_of_suites);
+> > -}
+> > -
+> >  static void kunit_exec_run_tests(struct suite_set *suite_set)
+> >  {
+> > -       struct kunit_suite * const * const *suites;
+> > -
+> > -       kunit_print_tap_header(suite_set);
+> > +       pr_info("TAP version 14\n");
+> > +       pr_info("1..%zu\n", suite_set->end - suite_set->start);
+> >
+> > -       for (suites = suite_set->start; suites < suite_set->end; suites++)
+> > -               __kunit_test_suites_init(*suites);
+> > +       __kunit_test_suites_init(suite_set->start);
+> >  }
+> >
+> >  static void kunit_exec_list_tests(struct suite_set *suite_set)
+> >  {
+> > -       unsigned int i;
+> > -       struct kunit_suite * const * const *suites;
+> > +       struct kunit_suite * const *suites;
+> >         struct kunit_case *test_case;
+> >
+> >         /* Hack: print a tap header so kunit.py can find the start of KUnit output. */
+> >         pr_info("TAP version 14\n");
+> >
+> >         for (suites = suite_set->start; suites < suite_set->end; suites++)
+> > -               for (i = 0; (*suites)[i] != NULL; i++) {
+> > -                       kunit_suite_for_each_test_case((*suites)[i], test_case) {
+> > -                               pr_info("%s.%s\n", (*suites)[i]->name, test_case->name);
+> > -                       }
+> > +               kunit_suite_for_each_test_case((*suites), test_case) {
+> > +                       pr_info("%s.%s\n", (*suites)->name, test_case->name);
+> >                 }
+> >  }
+> >
+> > +// TODO(dlatypov@google.com): delete this when we store suites in a single array.
+> > +static struct suite_set make_suite_set(void)
+> > +{
+> > +       struct suite_set flattened;
+> > +       size_t num_of_suites = 0;
+> > +
+> > +       struct kunit_suite * const * const *suites, * const *subsuite;
+> > +       struct kunit_suite **end;
+> > +
+> > +       for (suites = __kunit_suites_start; suites < __kunit_suites_end; suites++)
+> > +               for (subsuite = *suites; *subsuite != NULL; subsuite++)
+> > +                       num_of_suites++;
+> > +
+> > +       end = kcalloc(num_of_suites + 1, sizeof(*flattened.start), GFP_KERNEL);
+> > +       flattened.start = end;
+> > +
+> > +       for (suites = __kunit_suites_start; suites < __kunit_suites_end; suites++)
+> > +               for (subsuite = *suites; *subsuite != NULL; subsuite++)
+> > +                       *end++ = *subsuite;
+> > +       *end = NULL;
+> > +       flattened.end = end;
+> > +       return flattened;
+> > +}
+> > +
+> >  int kunit_run_all_tests(void)
+> >  {
+> > -       struct suite_set suite_set = {
+> > -               .start = __kunit_suites_start,
+> > -               .end = __kunit_suites_end,
+> > -       };
+> > +       struct suite_set suite_set = make_suite_set();
+> > +       struct kunit_suite * const *unfiltered = suite_set.start; /* need to free at end */
+> >
+> >         if (filter_glob_param)
+> >                 suite_set = kunit_filter_suites(&suite_set, filter_glob_param);
+> > @@ -247,9 +216,10 @@ int kunit_run_all_tests(void)
+> >         else
+> >                 pr_err("kunit executor: unknown action '%s'\n", action_param);
+> >
+> > -       if (filter_glob_param) { /* a copy was made of each array */
+> > +       if (filter_glob_param) { /* a copy was made of each suite */
+> >                 kunit_free_suite_set(suite_set);
+> >         }
+> > +       kfree(unfiltered);
+> >
+> >         kunit_handle_shutdown();
+> >
+> > diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+> > index 7d2b8dc668b1..d9fce637eb56 100644
+> > --- a/lib/kunit/executor_test.c
+> > +++ b/lib/kunit/executor_test.c
+> > @@ -9,8 +9,6 @@
+> >  #include <kunit/test.h>
+> >
+> >  static void kfree_at_end(struct kunit *test, const void *to_free);
+> > -static void free_subsuite_at_end(struct kunit *test,
+> > -                                struct kunit_suite *const *to_free);
+> >  static struct kunit_suite *alloc_fake_suite(struct kunit *test,
+> >                                             const char *suite_name,
+> >                                             struct kunit_case *test_cases);
+> > @@ -41,124 +39,77 @@ static void parse_filter_test(struct kunit *test)
+> >         kfree(filter.test_glob);
+> >  }
+> >
+> > -static void filter_subsuite_test(struct kunit *test)
+> > +static void filter_suites_test(struct kunit *test)
+> >  {
+> >         struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
+> > -       struct kunit_suite * const *filtered;
+> > -       struct kunit_test_filter filter = {
+> > -               .suite_glob = "suite2",
+> > -               .test_glob = NULL,
+> > -       };
+> > +       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
+> > +       struct suite_set got;
+> >
+> >         subsuite[0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
+> >         subsuite[1] = alloc_fake_suite(test, "suite2", dummy_test_cases);
+> >
+> >         /* Want: suite1, suite2, NULL -> suite2, NULL */
+> > -       filtered = kunit_filter_subsuite(subsuite, &filter);
+> > -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered);
+> > -       free_subsuite_at_end(test, filtered);
+> > +       got = kunit_filter_suites(&suite_set, "suite2");
+> > +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
+> > +       kfree_at_end(test, got.start);
+> >
+> >         /* Validate we just have suite2 */
+> > -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered[0]);
+> > -       KUNIT_EXPECT_STREQ(test, (const char *)filtered[0]->name, "suite2");
+> > -       KUNIT_EXPECT_FALSE(test, filtered[1]);
+> > +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]);
+> > +       KUNIT_EXPECT_STREQ(test, (const char *)got.start[0]->name, "suite2");
+> > +       // DO NOT SUBMIT: null-terminated for now.
 >
-> >> +               pins = "gpio85";
-> >> +               function = "gpio";
-> >> +               drive-strength = <2>;
-> >> +               output-low;
-> >> +               bias-pull-down;
-> >
-> > Why is there a pull down on an output gpio? Shouldn't this be
-> > bias-disable?
-> >
+> Can you elaborate what you mean here?
+
+This change makes the array null-terminated for
+__kunit_test_suites_init to work.
+
+E.g. we allocate one more element in the suite_set's array and have to
+remember to allocate one extra element and write NULL to it
+$ git show HEAD | grep -P '^\+\s+\*.*= NULL;'
++       *copy = NULL;
++       *end = NULL;
+
+But since we'd always be tracking how long our array is, we don't
+actually need that.
+We could theoretically pass a start/end (or a suite_set) into
+__kunit_test_suites_init() instead.
+
+It's currently
+          unsigned int i;
+
+          for (i = 0; suites[i] != NULL; i++) {
+                  kunit_init_suite(suites[i]);
+                  kunit_run_tests(suites[i]);
+          }
+
+It could just become
+          // pass in `end` somehow
+          for (; suites < end; ++suites) {
+                  kunit_init_suite(*suites);
+                  kunit_run_tests(*suites);
+          }
+Dropping the null-termination would just make the logic for making a
+filtered copy a bit less subtle.
+
 >
-> [Bala]: BT_EN pin is OP of apps and input to BT SoC.
-> by default we want the state of BT_EN to be low. so used pull down
-> instead of bias-disable
-
-The pin state will be low because of the 'output-low' property.
-
-> as AFAIK bias-disable may trigger a tristate on BT_EN pin, which may
-> trigger BT SoC enable
-> if it is not actually triggered.
-
-Is the pin ever "turned around" and made an input? If not then it will
-be output and be driving low until the enable-gpios is set to output
-active. The pull down is probably wasting power when the pin is being
-driven either high or low.
+> > +       KUNIT_ASSERT_EQ(test, got.end - got.start, 1);
+> > +       KUNIT_EXPECT_FALSE(test, *got.end);
+> >  }
+> >
+> > -static void filter_subsuite_test_glob_test(struct kunit *test)
+> > +static void filter_suites_test_glob_test(struct kunit *test)
+> >  {
+> >         struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
+> > -       struct kunit_suite * const *filtered;
+> > -       struct kunit_test_filter filter = {
+> > -               .suite_glob = "suite2",
+> > -               .test_glob = "test2",
+> > -       };
+> > +       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
+> > +       struct suite_set got;
+> >
+> >         subsuite[0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
+> >         subsuite[1] = alloc_fake_suite(test, "suite2", dummy_test_cases);
+> >
+> >         /* Want: suite1, suite2, NULL -> suite2 (just test1), NULL */
+> > -       filtered = kunit_filter_subsuite(subsuite, &filter);
+> > -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered);
+> > -       free_subsuite_at_end(test, filtered);
+> > +       got = kunit_filter_suites(&suite_set, "suite2.test2");
+> > +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
+> > +       kfree_at_end(test, got.start);
+> >
+> >         /* Validate we just have suite2 */
+> > -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered[0]);
+> > -       KUNIT_EXPECT_STREQ(test, (const char *)filtered[0]->name, "suite2");
+> > -       KUNIT_EXPECT_FALSE(test, filtered[1]);
+> > +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]);
+> > +       KUNIT_EXPECT_STREQ(test, (const char *)got.start[0]->name, "suite2");
+> > +       // DO NOT SUBMIT: null-terminated for now.
+> > +       KUNIT_ASSERT_EQ(test, got.end - got.start, 1);
+> > +       KUNIT_EXPECT_FALSE(test, *got.end);
+> >
+> >         /* Now validate we just have test2 */
+> > -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered[0]->test_cases);
+> > -       KUNIT_EXPECT_STREQ(test, (const char *)filtered[0]->test_cases[0].name, "test2");
+> > -       KUNIT_EXPECT_FALSE(test, filtered[0]->test_cases[1].name);
+> > +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]->test_cases);
+> > +       KUNIT_EXPECT_STREQ(test, (const char *)got.start[0]->test_cases[0].name, "test2");
+> > +       KUNIT_EXPECT_FALSE(test, got.start[0]->test_cases[1].name);
+> >  }
+> >
+> > -static void filter_subsuite_to_empty_test(struct kunit *test)
+> > +static void filter_suites_to_empty_test(struct kunit *test)
+> >  {
+> >         struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
+> > -       struct kunit_suite * const *filtered;
+> > -       struct kunit_test_filter filter = {
+> > -               .suite_glob = "not_found",
+> > -               .test_glob = NULL,
+> > -       };
+> > +       struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
+> > +       struct suite_set got;
+> >
+> >         subsuite[0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
+> >         subsuite[1] = alloc_fake_suite(test, "suite2", dummy_test_cases);
+> >
+> > -       filtered = kunit_filter_subsuite(subsuite, &filter);
+> > -       free_subsuite_at_end(test, filtered); /* just in case */
+> > -
+> > -       KUNIT_EXPECT_FALSE_MSG(test, filtered,
+> > -                              "should be NULL to indicate no match");
+> > -}
+> > -
+> > -static void kfree_subsuites_at_end(struct kunit *test, struct suite_set *suite_set)
+> > -{
+> > -       struct kunit_suite * const * const *suites;
+> > +       got = kunit_filter_suites(&suite_set, "not_found");
+> > +       kfree_at_end(test, got.start); /* just in case */
+> >
+> > -       kfree_at_end(test, suite_set->start);
+> > -       for (suites = suite_set->start; suites < suite_set->end; suites++)
+> > -               free_subsuite_at_end(test, *suites);
+> > +       KUNIT_EXPECT_PTR_EQ_MSG(test, got.start, got.end,
+> > +                               "should be empty to indicate no match");
+> >  }
+> >
+> > -static void filter_suites_test(struct kunit *test)
+> > -{
+> > -       /* Suites per-file are stored as a NULL terminated array */
+> > -       struct kunit_suite *subsuites[2][2] = {
+> > -               {NULL, NULL},
+> > -               {NULL, NULL},
+> > -       };
+> > -       /* Match the memory layout of suite_set */
+> > -       struct kunit_suite * const * const suites[2] = {
+> > -               subsuites[0], subsuites[1],
+> > -       };
+> > -
+> > -       const struct suite_set suite_set = {
+> > -               .start = suites,
+> > -               .end = suites + 2,
+> > -       };
+> > -       struct suite_set filtered = {.start = NULL, .end = NULL};
+> > -
+> > -       /* Emulate two files, each having one suite */
+> > -       subsuites[0][0] = alloc_fake_suite(test, "suite0", dummy_test_cases);
+> > -       subsuites[1][0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
+> > -
+> > -       /* Filter out suite1 */
+> > -       filtered = kunit_filter_suites(&suite_set, "suite0");
+> > -       kfree_subsuites_at_end(test, &filtered); /* let us use ASSERTs without leaking */
+> > -       KUNIT_ASSERT_EQ(test, filtered.end - filtered.start, (ptrdiff_t)1);
+> > -
+> > -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start);
+> > -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start[0]);
+> > -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start[0][0]);
+> > -       KUNIT_EXPECT_STREQ(test, (const char *)filtered.start[0][0]->name, "suite0");
+> > -}
+> >
+> >  static struct kunit_case executor_test_cases[] = {
+> >         KUNIT_CASE(parse_filter_test),
+> > -       KUNIT_CASE(filter_subsuite_test),
+> > -       KUNIT_CASE(filter_subsuite_test_glob_test),
+> > -       KUNIT_CASE(filter_subsuite_to_empty_test),
+> >         KUNIT_CASE(filter_suites_test),
+> > +       KUNIT_CASE(filter_suites_test_glob_test),
+> > +       KUNIT_CASE(filter_suites_to_empty_test),
+> >         {}
+> >  };
+> >
+> > @@ -188,20 +139,6 @@ static void kfree_at_end(struct kunit *test, const void *to_free)
+> >                                      (void *)to_free);
+> >  }
+> >
+> > -static void free_subsuite_res_free(struct kunit_resource *res)
+> > -{
+> > -       kunit_free_subsuite(res->data);
+> > -}
+> > -
+> > -static void free_subsuite_at_end(struct kunit *test,
+> > -                                struct kunit_suite *const *to_free)
+> > -{
+> > -       if (IS_ERR_OR_NULL(to_free))
+> > -               return;
+> > -       kunit_alloc_resource(test, NULL, free_subsuite_res_free,
+> > -                            GFP_KERNEL, (void *)to_free);
+> > -}
+> > -
+> >  static struct kunit_suite *alloc_fake_suite(struct kunit *test,
+> >                                             const char *suite_name,
+> >                                             struct kunit_case *test_cases)
+> >
+> > base-commit: e7198adb84dcad671ad4f0e90aaa7e9fabf258dc
+> > --
+> > 2.33.0.882.g93a45727a2-goog
+> >
