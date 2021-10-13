@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A70C42BC5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888EE42BC5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239261AbhJMKC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:02:59 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:48084
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239184AbhJMKC5 (ORCPT
+        id S238945AbhJMKDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:03:24 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:56946
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237931AbhJMKDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:02:57 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        Wed, 13 Oct 2021 06:03:23 -0400
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id DB13C3F22D;
-        Wed, 13 Oct 2021 10:00:52 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 696A940010
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:01:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634119253;
-        bh=53e+MWtjbQBfgbBFwQcxGcPAOvJ+WyNsyNnEXHebVSM=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=sNLQoW4VhRCZ+zF1eaPQQxOL57SP/mBikjrcvf056hdAdjIKO1LSt1/eIeooj1z6D
-         M/8Flmw9R2ogDzx8K+cmH2QZnxOlkUKtA4+NFxanXi5llTBQcyx0sOukmh1sOHCdi1
-         EyccrKqeqR1zyB0R+fVDHOPRereNUJJ1l3KYWGX+H7mJ/gENxcuSdSTLlqAKXu867O
-         63tIUFm8j7hoCuantWdVuFGx/6EBooyg3808Z1Qp31BIPdmDJjIz67Wll1EFW5oEEm
-         fCJhyRqdTsYO4D0TtrbtvfrJ2VjtE5xyNMVCZd5X3WwTEQzX/LIJeWXCZjLW1kNYut
-         GqPtkO/dNbk0w==
-From:   Colin King <colin.king@canonical.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, linux-mmc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] mmc: moxart: Fix null pointer dereference on pointer host
-Date:   Wed, 13 Oct 2021 11:00:52 +0100
-Message-Id: <20211013100052.125461-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        s=20210705; t=1634119279;
+        bh=72qIwnXVGNrfKxhLObQPGF0RNQPHhrmziNaYX8Pmn6k=;
+        h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type;
+        b=W4+p2OYgCnWCzp8aAIalzoSBu4LQMSeusJYU5/m7shf8Au032jSENO/pDUEH0vPrN
+         zOzb2njlwuPQ1MdaGrmQqbxde40wkpz+IgWT5kZVurmGy6Sw2sOI0BiCludijQ1wr7
+         MVS5dLAg5dzagVNWzv9wpR1mQdR+UZ+RfnMaTJiEt5EEJn6Q6YK+iOXHB9He6FshSE
+         6/3KFxt4MpdrDcYFVchDcfwEeRtsFFf19w9SItEwNbqDX888UPFtbY5vpxK5PqsmGq
+         rLLBrkWeurvSRcq26GQlGyCzqusl1HytgKAXVZcPDSqV4OQ70WJ07FqhW5Ef3FVIzt
+         uNpaEW2ycZzlA==
+Received: by mail-oi1-f200.google.com with SMTP id m5-20020a05680806c500b00276dd287318so1392755oih.20
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:01:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=72qIwnXVGNrfKxhLObQPGF0RNQPHhrmziNaYX8Pmn6k=;
+        b=p89Ty8dqPwijhCdfJMLip04EdAgihNrBi90usS9MztOMLyKG+V3yq19qcIAwmya0FO
+         sS6Pz2K87JxHuTMRmd89V6OewotSWhPPTIUzhkxgmD/cVwPhe3bsyBCeM+D1wEUunCKd
+         BwAFY8fF/2C/ntlPezNx5JVMM4zBW7YnrV5P/x6dKjXqE2JrkWZDgilOyljW8Cnx3+qY
+         54lcPwz+BTnZWRIMEp5I7vOAQ+ncWw6cPwW9N/v7BV1rOZY/djSikk8hgikUHnyk0dbo
+         Uk6qJO5+rt0H3e5EfhpxMLsDwPSiyad71iEG0TUFeQsFfUG2SV8TWhETjLpuAhBjEeaY
+         oKug==
+X-Gm-Message-State: AOAM53010PHf4EpKNPi/0MI/K/jdeZBS85ENhyaWNIqGMXm+5RYJE13S
+        vpN0915oq8/9SN3M0ujFYvcXHhZIg2YprprM4zNOylrCNyjnOJVOwcirI6ojCJXtWMMCxNjvkr/
+        W1P/8XvIRBp/qTkZ1HQCYCODkBvRUJOYoFmQoOgFuxd5M06sYjZ8IOVjwzg==
+X-Received: by 2002:a9d:4586:: with SMTP id x6mr4832648ote.155.1634119278308;
+        Wed, 13 Oct 2021 03:01:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRbNoT+5vjBaO6avzuE4+i7alOLMD7HAQHPzEjaJby9bEFhDVvy6NozAELmsBiJGECEiNH0ZW4yOwsGiLBpew=
+X-Received: by 2002:a9d:4586:: with SMTP id x6mr4832615ote.155.1634119278015;
+ Wed, 13 Oct 2021 03:01:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+From:   Chris Chiu <chris.chiu@canonical.com>
+Date:   Wed, 13 Oct 2021 18:01:07 +0800
+Message-ID: <CABTNMG2ipP4m4T084QRrHMLL_cGfyVdb_dBNf_E8pruMSDRHJQ@mail.gmail.com>
+Subject: The default jack detection type overridden by sof_sdw_quirk
+To:     pierre-louis.bossart@linux.intel.com, broonie@kernel.org,
+        rander.wang@linux.intel.com, yung-chuan.liao@linux.intel.com,
+        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com
+Cc:     alsa-devel@alsa-project.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi,
+    I have an Intel AlderLake machine which uses the sof-soundwire
+driver for audio functions. When the headset is plugged in, it will
+incorrectly trigger the event KEY_PLAYPAUSE and never stops. To fix
+the problem, I used to apply the quirk RT711_JD2 proposed in
+sound/soc/intel/boards/sof_sdw.c and the jack detect function will
+work as expected.
+    However, when I look into the code of sound/soc/codecs/rt711.c and
+rt711-sdca.c, the default value for jd_src
+(https://github.com/torvalds/linux/blob/master/sound/soc/codecs/rt711.c#L1209)
+ is already RT711_JD2, which means it is overridden by other drivers.
+After digging deeper, the jd_src value is overridden by
+rt711_add_codec_device_props() with the value RT711_JD1 comes from
+sof_sdw_quirk.
+    Is there any reason why sof_sdw_quirk is assigned with RT711_JD1
+by default? Can I simply fix it by assigning the sof_sdw_quirk to
+RT711_JD_NULL as follows?
+-unsigned long sof_sdw_quirk = RT711_JD1;
++unsigned long sof_sdw_quirk = RT711_JD_NULL;
 
-There are several error return paths that dereference the null pointer
-host because the pointer has not yet been set to a valid value.
-Fix this by adding a new out_mmc label and exiting via this label
-to avoid the host clean up and hence the null pointer dereference.
+    Please let me know if there's any potential problem I didn't
+notice and suggest if there's any better solution. Thanks
 
-Addresses-Coverity: ("Explicit null dereference")
-Fixes: 8105c2abbf36 ("mmc: moxart: Fix reference count leaks in moxart_probe")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/mmc/host/moxart-mmc.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
-index 7b9fcef490de..16d1c7a43d33 100644
---- a/drivers/mmc/host/moxart-mmc.c
-+++ b/drivers/mmc/host/moxart-mmc.c
-@@ -566,37 +566,37 @@ static int moxart_probe(struct platform_device *pdev)
- 	if (!mmc) {
- 		dev_err(dev, "mmc_alloc_host failed\n");
- 		ret = -ENOMEM;
--		goto out;
-+		goto out_mmc;
- 	}
- 
- 	ret = of_address_to_resource(node, 0, &res_mmc);
- 	if (ret) {
- 		dev_err(dev, "of_address_to_resource failed\n");
--		goto out;
-+		goto out_mmc;
- 	}
- 
- 	irq = irq_of_parse_and_map(node, 0);
- 	if (irq <= 0) {
- 		dev_err(dev, "irq_of_parse_and_map failed\n");
- 		ret = -EINVAL;
--		goto out;
-+		goto out_mmc;
- 	}
- 
- 	clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(clk)) {
- 		ret = PTR_ERR(clk);
--		goto out;
-+		goto out_mmc;
- 	}
- 
- 	reg_mmc = devm_ioremap_resource(dev, &res_mmc);
- 	if (IS_ERR(reg_mmc)) {
- 		ret = PTR_ERR(reg_mmc);
--		goto out;
-+		goto out_mmc;
- 	}
- 
- 	ret = mmc_of_parse(mmc);
- 	if (ret)
--		goto out;
-+		goto out_mmc;
- 
- 	host = mmc_priv(mmc);
- 	host->mmc = mmc;
-@@ -687,6 +687,7 @@ static int moxart_probe(struct platform_device *pdev)
- 		dma_release_channel(host->dma_chan_tx);
- 	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
- 		dma_release_channel(host->dma_chan_rx);
-+out_mmc:
- 	if (mmc)
- 		mmc_free_host(mmc);
- 	return ret;
--- 
-2.32.0
-
+Chris
