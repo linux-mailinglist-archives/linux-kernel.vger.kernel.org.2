@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A008B42C2F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D01A42C2F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237520AbhJMOZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:25:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42470 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235884AbhJMOZW (ORCPT
+        id S237065AbhJMOZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235899AbhJMOZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Oct 2021 10:25:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634134994;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r38G9fXSz1gZxTBHa3haVyUnXwAZMkRJLctO7+C27Jo=;
-        b=JtUsD8Y0rBIseM9nNWgL3DYO9pkihxXyTmEQIyrfgXoUNFh7f/n3qzsXpG4baFkoz8v/Tl
-        aUKk2kvAp7I3+PunckcBNxJ2DlQUYikwmoj+Qg1Vu+CKSemlW7jpCo6HUuL/Ln5l7qbqRB
-        FylWbhmVgEVCVEcK8IUkr1AQq4bJ12Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-l_bcEE84M96PVx31HSpdrA-1; Wed, 13 Oct 2021 10:23:13 -0400
-X-MC-Unique: l_bcEE84M96PVx31HSpdrA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA14910A8E01;
-        Wed, 13 Oct 2021 14:23:11 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.193.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C526857CA5;
-        Wed, 13 Oct 2021 14:23:09 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] KVM: nVMX: Implement Enlightened MSR Bitmap feature
-Date:   Wed, 13 Oct 2021 16:22:58 +0200
-Message-Id: <20211013142258.1738415-5-vkuznets@redhat.com>
-In-Reply-To: <20211013142258.1738415-1-vkuznets@redhat.com>
-References: <20211013142258.1738415-1-vkuznets@redhat.com>
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270A4C061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:23:17 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id f3so4821355uap.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7w/SpwqUg1NtXlESs19PovhWHJiT5rNlJWgKAzuzlAE=;
+        b=NXN3/6opbxMONUbmwhMTGJ45Wx47wxNTSTy8tiZ9DEIwTDESJrVNdX3Ebsqu+YcY6M
+         D0gmdJ0nCNdGbmaNxXCMbvk3Kk1gkte52sQG2mM9czGZejuGOUgWpz60bd7Rs7OLIicG
+         a3I8ARXHglmgKNd+4AB/JAQi4+1GPYohAzugS953pzmSHoOKXqjbmsTHEenoc4XJr91J
+         cCPmlhJaFaMZD3T5b3CoV8/bu3jWISwQhGhRc5zi4dBudCBs+efvkphULFwtNhrgA2Jx
+         muPKfNAzyCGOmCyvzG0tTgYeBcMycflCLzXfCHRm9SsMsGbjvwLB7sFlDqJAZ6EdMk92
+         dAuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7w/SpwqUg1NtXlESs19PovhWHJiT5rNlJWgKAzuzlAE=;
+        b=gbVpIJKylup8WBP09aOrZrcRqFggNYHggr5Q39kBAQV/SznnQ18UvEO1IvvQ84jqpS
+         Vbgrs/oCoipUYorlH15VYgVTjm24J+GC7z1vR3lclD8soM/EAPogEV7qeA8nzxSATZSy
+         PuWLJQbHkjbuO6IudOfej4YrPODxJV2z3suaLeba4RnyWdkAfNTSLa2E4qWavWEtcFDk
+         vkGVc9Iua2nhlYpceRu3NsvvO3HkSqG46sSF5dSdoQ4eN5Z4o0Bf2zRJmYME6Dew4b42
+         90PhR2scRxM9a2RJdf6uGfmmFV+BGxXOa5gAuivcx4/6Kq8XedtxeZA62DXAeZNt5i3Q
+         d5Ew==
+X-Gm-Message-State: AOAM533uuOG9SzFH8h4QgnAYEgTCWPPrdo4R+AOyLCsm2XJNgFqNsAsF
+        lU10VbkEyx4Cb0QoJhdDcS/E9A==
+X-Google-Smtp-Source: ABdhPJwTqgTV9HIXGGN+anjhVzoBSubJf8so1ONfQF8nBDLgW3FrUf6as8wCjY9HYniJ1jC0Ebnrvw==
+X-Received: by 2002:a67:d189:: with SMTP id w9mr38724521vsi.55.1634134996280;
+        Wed, 13 Oct 2021 07:23:16 -0700 (PDT)
+Received: from fedora ([196.32.91.248])
+        by smtp.gmail.com with ESMTPSA id q26sm6243875vkn.40.2021.10.13.07.23.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 07:23:15 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 11:23:11 -0300
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] media: rkvdec: Do not override sizeimage for output
+ format
+Message-ID: <YWbrz/+gZE7z+Ab5@fedora>
+References: <20211008100423.739462-1-wenst@chromium.org>
+ <20211008100423.739462-2-wenst@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008100423.739462-2-wenst@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updating MSR bitmap for L2 is not cheap and rearly needed. TLFS for Hyper-V
-offers 'Enlightened MSR Bitmap' feature which allows L1 hypervisor to
-inform L0 when it changes MSR bitmap, this eliminates the need to examine
-L1's MSR bitmap for L2 every time when 'real' MSR bitmap for L2 gets
-constructed.
+Hi Chen-Yu,
 
-Use 'vmx->nested.msr_bitmap_changed' flag to implement the feature.
+On Fri, Oct 08, 2021 at 06:04:22PM +0800, Chen-Yu Tsai wrote:
+> The rkvdec H.264 decoder currently overrides sizeimage for the output
+> format. This causes issues when userspace requires and requests a larger
+> buffer, but ends up with one of insufficient size.
+> 
+> Instead, only provide a default size if none was requested. This fixes
+> the video_decode_accelerator_tests from Chromium failing on the first
+> frame due to insufficient buffer space. It also aligns the behavior
+> of the rkvdec driver with the Hantro and Cedrus drivers.
+> 
+> Fixes: cd33c830448b ("media: rkvdec: Add the rkvdec driver")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 
-Note, KVM already uses 'Enlightened MSR bitmap' feature when it runs as a
-nested hypervisor on top of Hyper-V. The newly introduced feature is going
-to be used by Hyper-V guests on KVM.
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 
-When the feature is enabled for Win10+WSL2, it shaves off around 700 CPU
-cycles from a nested vmexit cost (tight cpuid loop test).
+Thanks for taking care of this!
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/hyperv.c     |  2 ++
- arch/x86/kvm/vmx/nested.c | 20 ++++++++++++++++++--
- 2 files changed, 20 insertions(+), 2 deletions(-)
+Ezequiel
 
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 6f11cda2bfa4..a00de1dbec57 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -2516,6 +2516,8 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
- 
- 		case HYPERV_CPUID_NESTED_FEATURES:
- 			ent->eax = evmcs_ver;
-+			if (evmcs_ver)
-+				ent->eax |= HV_X64_NESTED_MSR_BITMAP;
- 
- 			break;
- 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index bf4fa63ed371..7cd0c20d4557 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -608,15 +608,30 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
- 						 struct vmcs12 *vmcs12)
- {
- 	int msr;
-+	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	unsigned long *msr_bitmap_l1;
--	unsigned long *msr_bitmap_l0 = to_vmx(vcpu)->nested.vmcs02.msr_bitmap;
--	struct kvm_host_map *map = &to_vmx(vcpu)->nested.msr_bitmap_map;
-+	unsigned long *msr_bitmap_l0 = vmx->nested.vmcs02.msr_bitmap;
-+	struct hv_enlightened_vmcs *evmcs = vmx->nested.hv_evmcs;
-+	struct kvm_host_map *map = &vmx->nested.msr_bitmap_map;
- 
- 	/* Nothing to do if the MSR bitmap is not in use.  */
- 	if (!cpu_has_vmx_msr_bitmap() ||
- 	    !nested_cpu_has(vmcs12, CPU_BASED_USE_MSR_BITMAPS))
- 		return false;
- 
-+	/*
-+	 * MSR bitmap update can be skipped when:
-+	 * - MSR bitmap for L1 hasn't changed.
-+	 * - Nested hypervisor (L1) is attempting to launch the same L2 as
-+	 *   before.
-+	 * - Nested hypervisor (L1) has enabled 'Enlightened MSR Bitmap' feature
-+	 *   and tells KVM (L0) there were no changes in MSR bitmap for L2.
-+	 */
-+	if (!vmx->nested.msr_bitmap_force_recalc && evmcs &&
-+	    evmcs->hv_enlightenments_control.msr_bitmap &&
-+	    evmcs->hv_clean_fields & HV_VMX_ENLIGHTENED_CLEAN_FIELD_MSR_BITMAP)
-+		goto out_clear_msr_bitmap_force_recalc;
-+
- 	if (kvm_vcpu_map(vcpu, gpa_to_gfn(vmcs12->msr_bitmap), map))
- 		return false;
- 
-@@ -700,6 +715,7 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
- 
- 	kvm_vcpu_unmap(vcpu, &to_vmx(vcpu)->nested.msr_bitmap_map, false);
- 
-+out_clear_msr_bitmap_force_recalc:
- 	vmx->nested.msr_bitmap_force_recalc = false;
- 
- 	return true;
--- 
-2.31.1
-
+> ---
+>  drivers/staging/media/rkvdec/rkvdec-h264.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
+> index 76e97cbe2512..951e19231da2 100644
+> --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
+> +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
+> @@ -1015,8 +1015,9 @@ static int rkvdec_h264_adjust_fmt(struct rkvdec_ctx *ctx,
+>  	struct v4l2_pix_format_mplane *fmt = &f->fmt.pix_mp;
+>  
+>  	fmt->num_planes = 1;
+> -	fmt->plane_fmt[0].sizeimage = fmt->width * fmt->height *
+> -				      RKVDEC_H264_MAX_DEPTH_IN_BYTES;
+> +	if (!fmt->plane_fmt[0].sizeimage)
+> +		fmt->plane_fmt[0].sizeimage = fmt->width * fmt->height *
+> +					      RKVDEC_H264_MAX_DEPTH_IN_BYTES;
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.33.0.882.g93a45727a2-goog
+> 
