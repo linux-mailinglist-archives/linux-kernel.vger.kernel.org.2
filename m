@@ -2,75 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C894142C38C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79AD42C386
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237054AbhJMOlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:41:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235971AbhJMOlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:41:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86B54610FB;
-        Wed, 13 Oct 2021 14:39:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634135959;
-        bh=9WB5lF54mgm3wn8vIZ5HCjqWjYU/IqSZYcUKAxAyLcI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=vDTPhA7stpqi/xYjk7VcyRPb6eCn0RHgaQUX1vdeUxKJ822zzPar4YwDIPE7leHG5
-         o1BGiGm9c1AbT64AdLwTv/gai8RixbjHFjkEEqImWpV2k1kJpOG8eOb5+S1Kn5hGZJ
-         gSMGw5VOMcKO4fWCMoQ05donAnQ01Nw+ns9aw9lEXcRrf1SZxlAe/HzoU+Q6pJEdtb
-         iw/yxtKADU5f4OieYFefuDheyofTCSHlEIrFkXtggvbwFfonwnGa/Fvznf/O48R77h
-         oPQmj66nuUs66jvYZapRJMdkfEyEgkaRZJZvHfXmz+SBnxq4GxAxaRHjiPrvJ0yUpd
-         OwdaomnxgCrYQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: apple: select CONFIG_PCI_HOST_COMMON
-Date:   Wed, 13 Oct 2021 16:38:50 +0200
-Message-Id: <20211013143914.2133428-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S235933AbhJMOlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:41:09 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48086 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230015AbhJMOlG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:41:06 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6F4E821983;
+        Wed, 13 Oct 2021 14:39:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634135942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hWjI5Tz5XS1VTE5npqHgDWB1ZpB318WTRerazdffcaQ=;
+        b=j51RubDuioGfP1sJScdghFAyWtCz3Be3evD8eHu71hqNwJdwBSxAulbL0eukekIjoSdV0V
+        uu+wiyfYvXDaTWnzfTtxJa1bzeD8Hc747OBQd2SNC6I9+izYUDk/MS8irMRJpH6mRShNi6
+        5twVUjN/LZJFDMTsVl5cBARoFqKxc2A=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3FE5613D04;
+        Wed, 13 Oct 2021 14:39:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id P/8ID4bvZmE1VgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 13 Oct 2021 14:39:02 +0000
+Date:   Wed, 13 Oct 2021 16:39:01 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Odin Ugedal <odin@uged.al>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH] sched/fair: Use rq->lock when checking cfs_rq list
+ presence
+Message-ID: <20211013143900.GB48428@blackbody.suse.cz>
+References: <20211011172236.11223-1-mkoutny@suse.com>
+ <CAFpoUr1KrXKdiCp-DVQLnu-c2YS91AszZB6RdZNVLBm9sGjMEw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFpoUr1KrXKdiCp-DVQLnu-c2YS91AszZB6RdZNVLBm9sGjMEw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Oct 11, 2021 at 08:12:08PM +0100, Odin Ugedal <odin@uged.al> wrote:
+> To be 100% clear, this can only happen when a control group is
+> throttled while it has load
+> (cfs_rq_is_decayed(cfs_rq) is false); and then its unthrottling race
+> with its deletion?
+> Is that a correct understanding Michal?
 
-If this symbol is not already selected by another driver, pci-apple.o
-fails to link:
+Yes, that's my working hypothesis but Vincent found a loophole in the
+proposed fix under this assumption.
 
-aarch64-linux-ld: drivers/pci/controller/pcie-apple.o: in function `apple_pcie_probe':
-pcie-apple.c:(.text+0xd28): undefined reference to `pci_host_common_probe'
 
-Add another 'select' statement here, the same that is used for the
-other drivers.
+> Do you agree that that will also solve the problem Michal,
+> or am I missing something obvious here?
 
-Fixes: a8bbe0366a3e ("PCI: apple: Add initial hardware bring-up")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/pci/controller/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+It's not easy for me to verify this with a reproducer and as suggested
+by your discomfort, let's dismiss this idea for the time being.
 
-diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-index cc1fcc89c58f..5af99701e1f6 100644
---- a/drivers/pci/controller/Kconfig
-+++ b/drivers/pci/controller/Kconfig
-@@ -322,6 +322,7 @@ config PCIE_APPLE
- 	depends on ARCH_APPLE || COMPILE_TEST
- 	depends on OF
- 	depends on PCI_MSI_IRQ_DOMAIN
-+	select PCI_HOST_COMMON
- 	help
- 	  Say Y here if you want to enable PCIe controller support on Apple
- 	  system-on-chips, like the Apple M1. This is required for the USB
--- 
-2.29.2
-
+Michal
