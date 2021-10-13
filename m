@@ -2,161 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B96842B848
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEC842B841
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238222AbhJMHDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:03:45 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:54890 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231346AbhJMHDo (ORCPT
+        id S238166AbhJMHDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232029AbhJMHDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:03:44 -0400
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 19D71OH4011797;
-        Wed, 13 Oct 2021 16:01:25 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 19D71OH4011797
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1634108485;
-        bh=dW44K0fonPJ8UjFfN6cGem0R0vP/XKyHNFnnWHXMbnc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Zncc5dLu2xeH+46pjkKIRt34hQ9VBLzBu0+5ZwmfuE7ESzeBVV6yspRIM4AyyFOUj
-         c0wqq5Hm1jQ8ZeIBw0QmkwKGJnu4NqN5E959fk/SBseKQaLG4beiRqBQ+HVuaWlXOi
-         1g8sbbp/R/nQXMYVCprnvrddL+PomMPfyDEGCNDgftVBsvpn2sg497LwvcEwgn/knQ
-         5us+qVTq6FExT/k98APkPL5uK87DR1/JrCYy0gOfk8punPH72iHbCLDYWLZNJ3MQS/
-         7jbbZEZQOu3sAgbPINfCLcDYfxEcjW1I3WqxnkYMk010ltdYSrO8wk94vGsegtut/N
-         tP2+A7FOxbGiw==
-X-Nifty-SrcIP: [209.85.214.170]
-Received: by mail-pl1-f170.google.com with SMTP id g9so1142626plo.12;
-        Wed, 13 Oct 2021 00:01:25 -0700 (PDT)
-X-Gm-Message-State: AOAM533yZTevl441fDPv4pwYRMt/FkKPwzosU5LfYgkSuwy1AAH/fzYZ
-        ZB/2Z0T8Z5YFWwyjEoiLz2gdu3wdy0nHPgTqx7A=
-X-Google-Smtp-Source: ABdhPJyg9Bv04HQDJ7uIQbpcQ+Bkz8Yt7hWnrXOix9Ihwb1fVIQEpqQA1RUaMRuT6GTBhmw2frKE51aJe+EWtiUVDxU=
-X-Received: by 2002:a17:90b:4ac1:: with SMTP id mh1mr11361427pjb.144.1634108483842;
- Wed, 13 Oct 2021 00:01:23 -0700 (PDT)
+        Wed, 13 Oct 2021 03:03:03 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376E9C061714
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:01:00 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id k23so1503229pji.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=InasTA07olrN5RKyUCQ2QLJqu4RTKKj+4k1NAdmmjBE=;
+        b=ZW1dzqTr/trhkOlzXVsWQL586M19ht5k71pAxPY8mwIv8HZ5vMO/WakCDu3Hq5RvP2
+         S4kwqQ46jwWgJmegTf1B7gmFx7ZY3FN7syR3QnvQaQXNPAkDoJZz1tg9c19yZdRE/ygR
+         QKkc9RMEzFZzxIH9XcekZAMGkMKRcOFulbggU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=InasTA07olrN5RKyUCQ2QLJqu4RTKKj+4k1NAdmmjBE=;
+        b=mU7OPnWy1xTs7yJHtI3qn20yfttbWq9tzrQr/bkbPdWMBe2125KOgV/+7jD/s4d5fX
+         hJTzV7mOZFpuqudbyRLZgInb3odzMpcxBAG5eglZ0R94SHX0l7JvZwm+PKehprYtfdn2
+         zxugktlDZ8S+x/BueJxo1xUHrSxX2x63uy2fX4tLQ0sIXUjFLyZr8MSHiMSITmg3odbC
+         Wcunn5/x4Pu3bLk9xO/hmNnYSUdqPGhujMcZKY83RvJzsFBj/5OV25Tgj2EYN5fHSTY5
+         NXbmTq3NAMoNNAXzAy0+WZmnE2amgM3yOqcw7WeuDgd0TIOB4EBz+ikonO1p8ynqbsmt
+         rQew==
+X-Gm-Message-State: AOAM531diJ9f7XmXbGRmv2UPvwmlkCU0c8uXQ20Ma7m8avvVej28f1ds
+        5/rWoMAtgKOZs/fSyKR9AY+cNw==
+X-Google-Smtp-Source: ABdhPJy2g6jssV8McfoxTEnq7XQUmrF0dkkPaUlbhWhS4b/L/PDtLrRFbojWVXZaR7ZIvk9TuZJ6mw==
+X-Received: by 2002:a17:90a:5d11:: with SMTP id s17mr11474193pji.230.1634108459798;
+        Wed, 13 Oct 2021 00:00:59 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m22sm13288608pfo.176.2021.10.13.00.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 00:00:59 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 00:00:58 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 04/10] asm-generic: Use
+ HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR to define associated stubs
+Message-ID: <202110122359.E59B90A@keescook>
+References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
+ <8db2a3ca2b26a8325c671baa3e0492914597f079.1633964380.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-References: <20211012170121.31549-1-vegard.nossum@oracle.com>
- <CAK7LNAT_0PnW0opWQoCiF5mWH4YEKxXHbdiTrSGqGFRv5nhY=w@mail.gmail.com> <68df3063-1dda-4736-27b4-8716321620c7@oracle.com>
-In-Reply-To: <68df3063-1dda-4736-27b4-8716321620c7@oracle.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 13 Oct 2021 16:00:46 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARsA8P=OmRzMqc9Xa3TWw=zk+Fi7WUGENdOCYaF6fYMrw@mail.gmail.com>
-Message-ID: <CAK7LNARsA8P=OmRzMqc9Xa3TWw=zk+Fi7WUGENdOCYaF6fYMrw@mail.gmail.com>
-Subject: Re: [RFC PATCH] kbuild: only prompt for compressors that are actually usable
-To:     Vegard Nossum <vegard.nossum@oracle.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8db2a3ca2b26a8325c671baa3e0492914597f079.1633964380.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 2:39 PM Vegard Nossum <vegard.nossum@oracle.com> wrote:
->
->
-> On 10/13/21 3:34 AM, Masahiro Yamada wrote:
-> > On Wed, Oct 13, 2021 at 2:01 AM Vegard Nossum <vegard.nossum@oracle.com> wrote:
-> >>
-> >> If a given compression algorithm for the kernel image is not usable on
-> >> the host system, there is no point prompting for it.
-> >>
-> >> We can use the kconfig preprocessing feature to check if the command is
-> >> available or not. I've chosen to test this using "which", which exits
-> >> with success if the given command exists in PATH (or it is an absolute
-> >> path), which mimics exactly how it would be found in the kernel's
-> >> Makefiles.
-> >>
-> >> This uses the make variables that are set in Makefile and/or the
-> >> command line, so you can do e.g.
-> >>
-> >>   make KGZIP=pigz menuconfig
-> >>
-> >> and it will test for the correct program.
-> >>
-> >> I am intentionally adding these dependencies to e.g. KERNEL_LZ4, as
-> >> opposed to HAVE_KERNEL_LZ4, since the latter are "select"-ed
-> >> unconditionally by the architectures that use them, so they are not
-> >> suitable for depending on anything else.
-> >>
-> >> I've put RFC in the subject as maybe there are downsides to this that
-> >> I'm not aware of.
-> >>
-> >> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-> >> ---
-> >
-> >
-> > I think we should keep the host-tools dependency open in general.
-> > You can easily install necessary packages.
->
-> So just to be clear, you object to the patch because it hides the
-> possibility of using a different compression algorithm from the user and
-> doesn't give them a chance to know that it exists when it's not already
-> installed?
+On Mon, Oct 11, 2021 at 05:25:31PM +0200, Christophe Leroy wrote:
+> Use HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR instead of 'dereference_function_descriptor'
+> to know whether arch has function descriptors.
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Yes, I object to it.
+I'd mention the intentionally-empty #if/#else in the commit log, as I,
+like Helge, mentally tripped over it in the review. :)
 
-
-
-> I don't really think this is much different from any other choice block
-> in the config where the visibility of the choices have dependencies on
-> other config options.
-
-Kconfig checks some compiler features, otherwise we have no way
-to avoid build errors.
-
-
-> In my case, the reason for doing this patch was that I was seeing build
-> failures during randomized testing (satrandconfig) due to missing
-> programs, and these build failures appear only at the end of potentially
-> very time-consuming builds.
-
-I do not know Oracle's case, but
-I think other CI systems install all needed packages for randconfig.
-
-Similar discussions happened a couple of times in the past.
-We keep the tools dependency open since it is just a matter of
-"apt install" or "dnf install" basically.
-
-
-
-"and equally importantly, your build servers will actually do a better
-job of covering the different build options."  (Linus Torvalds) [1]
-
-[1]: https://lore.kernel.org/all/CAHk-=wjjiYjCp61gdAMpDOsUBU-A2hFFKJoVx5VAC7yV4K6WYg@mail.gmail.com/
-
-
-
-
-> Maybe we can introduce a new option similar to COMPILE_TEST (or
-> ADVANCED_OPTIONS) so that the options are showed by default, even when
-> the host program is not available?
-
-
-I do not think it is worth it.
-
-
-
-
-> +config UNAVAILABLE_COMPRESSORS
-> +       bool "Prompt for compressors that are not available"
-> +       help
-> +         Note: Enabling this option can lead to build failures if
-> +         the chosen compressor is not available on the host machine.
->
->  config KERNEL_GZIP
->         bool "Gzip"
->         depends on HAVE_KERNEL_GZIP
-> +       depends on UNAVAILABLE_COMPRESSORS || $(success,which $(KGZIP))
->         help
->           The old and tried gzip compression. It provides a good balance
->           between compression ratio and decompression speed.
->
->
-> Vegard
-
-
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-Best Regards
-Masahiro Yamada
+Kees Cook
