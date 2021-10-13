@@ -2,160 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F1542BB34
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D74042BB37
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239063AbhJMJNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239065AbhJMJNm (ORCPT
+        id S239069AbhJMJNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:13:51 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:42561 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239067AbhJMJNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:13:42 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54577C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 02:11:39 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id t2so5919074wrb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 02:11:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PV4TDA9Wg4a3/4+lvLr8uQ2IGR+/8BcN/iS1LNsPzfE=;
-        b=4cWkdw4CWnHs6G7XTSrFY0htwwCVCl8pqcD74gAXvrbpdAaxoIEYgALY2LK9WjZzJH
-         V+0gi186XUglWAfVoTSWZVZlGQiBhOJDJmvuKd/vl2gyWCMY7Mede+Nt0p1IG5ND9j2y
-         MA+rynIjYs1BP+4dsgA7GNVmvifaiB3O+6IFGdYV523C1GewdGkP1z0CrmjMuiJKv3uk
-         TPJMtDnORLiWkJb/wGgv9FB1n/13IYx3t7Q9V+XaMFIniQkYEKNf4tcKWoNKpZa+0+QC
-         Y+/eKYV5A/5T/Ye3+X3sWp5yVRxkR7G8dXtAi9fkxxZUY17hpwCZPPeLnF08baaJ0zeU
-         GTgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PV4TDA9Wg4a3/4+lvLr8uQ2IGR+/8BcN/iS1LNsPzfE=;
-        b=nkkpumfwDa5MGXaISTb/bJDMZuPVoL7R0mGn+WGCq5cu+izmsBGqPQT6CdoZjZcHJk
-         ZMzXKbHx79C0K64Y8uCwq5Qfg2Tr57JhMRsn+bjW3NydDJfYIt2+rW04c5pV3iSobdsk
-         qkenTSgAvowPNNX5wi0PpzzSA7j98IwfwBS113sJyIFXoXb14j3dgy9QUuKwaSI7YHAI
-         9PmlZPxQB4KT5cpeuF1cIdzewUHKd+eWLxwI8xHnhqUDVXQkp2gaVE3W04cVDKwNGdSK
-         oDDmTDSUpRDaZOg1Ch23OifoTsM7GRab5logcnuDOFlKm6xLsTVVfFyK+oVT0uINkz/Q
-         t/Gg==
-X-Gm-Message-State: AOAM5300m1F6FY9UOxDzYioBiaXmFOVkBIB/jMdFzFZzY1mlriO6Ed85
-        SccUAseq0303fAPOurl0XhdobodCYjd8I0Zd8yPN6w==
-X-Google-Smtp-Source: ABdhPJyCqFgQZJ7BVVPy5O3gqM1t6WzuFwPHsuGG7tJ+0UNwo2/ilMMITf9N/zNU2s2XOzmiaJxHmD8PludN+2F64gc=
-X-Received: by 2002:a7b:cc14:: with SMTP id f20mr11281690wmh.137.1634116297799;
- Wed, 13 Oct 2021 02:11:37 -0700 (PDT)
+        Wed, 13 Oct 2021 05:13:50 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id BB52F580BEA;
+        Wed, 13 Oct 2021 05:11:46 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 13 Oct 2021 05:11:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=ze/R6OhPdJBigyPk+ZDOG+YF/1b
+        XIPDQ8E8tmsolguo=; b=iP/C6xnZ9xiQKGdJctkYNWkK4Ki/6Akx62XU+q4QG08
+        keubdtX1CRNceI6n65Oy6G9A5/niusuUXtGxIEwfiJUMYU1DP0GDKcoxWA8QcMsM
+        0lOFsprdulHXwvu9tU+qf3sWTmmrySQ4W9MT7a42lmcmhianfsS0MyuHJiqMC5WE
+        GsGMQZvCxNmsYG+rZu0GSsIsKK1T5qYzDfFkhTVDZ4NpjrbQ8OzpYckG16B3R0cH
+        tN39dvCGhMQdeoiGQDaGYEIOj4ZH06wKN55RO6bU7oYGmHbbfBbOnaJGPQFiviH7
+        /dh+4CevIDC4q7RDblO2Hyg3b41EdurthYPpHNh5PKQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ze/R6O
+        hPdJBigyPk+ZDOG+YF/1bXIPDQ8E8tmsolguo=; b=DvS49/i5AHyPadhF6eguZu
+        ikQWhO2oSHEig4Yh0c86hdegFyqciLYwyTQXEYdvS26Ie7SP9nk5mLZiC/zlMLrP
+        BJGobZMwcJNpNgCn3kYE9jq1RjOt3LHgfXIOspUP4a+i9ZMJOFSIA8BqtQ/rDpaU
+        C+tRIBIasaPacUG3ZGWAXIVI4bT3qa+QIgQQPPeJtDzOcGGTuHUAfucFs5LKFjHR
+        FKbfxsF+ltAdveGI9aPLC/fd8NzKZvOVFGykIObPJg3+AQIfIR0lvANW93YbJu88
+        nil4H9VKHXz/gM/0oeSAT0mUYunoNZyvrI0Ll1BtVYyu3IZT36rSCvXJeCwNqTeQ
+        ==
+X-ME-Sender: <xms:0qJmYXD9fYJWOAczzazVG9Z47yTjEjSZcjPrVrozWpK1dr3C0-Npfw>
+    <xme:0qJmYdikjczUJd_Xpgete0Z4grMnSX6EFoUTODVs0axZaioc7D2HGNhO07yExLLrx
+    Qp5eWHMwrXInQ>
+X-ME-Received: <xmr:0qJmYSmY6ZiyOv4JngmKq-QYMLXNaYkpW3UvCeV-hguxnn5kUDxZ3UnjwkuaV8TtydiyflcxTllIStFK6Cgy0Qp47HpdIUlK>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddutddguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:0qJmYZwL2hLzilnOOn5f1m9yqmZjfNJS-M_ia-lFg_3yrBdrsaIvLw>
+    <xmx:0qJmYcTdWCU1d7DyG7bScELQ4uvewk6-9G1JfeQNZAGG0LoW5gC5BQ>
+    <xmx:0qJmYcYgq6cjLPgRJzS5nfK_wdfbNWO5zVizPjm2IK1414aBrT_UzQ>
+    <xmx:0qJmYRJpgrpXv9BN_f1M8OYTY2Lk4gfoUfwJ5Z_tKoat3_lJuNKO4g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 13 Oct 2021 05:11:45 -0400 (EDT)
+Date:   Wed, 13 Oct 2021 11:11:44 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "open list:ETHERNET PHY LIBRARY" <netdev@vger.kernel.org>
+Subject: Re: [PATCH stable 4.14] net: phy: bcm7xxx: Fixed indirect MMD
+ operations
+Message-ID: <YWai0CXJaI+sJaf8@kroah.com>
+References: <20211011181516.103835-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-References: <20211013012149.2834212-1-guoren@kernel.org> <CAAhSdy042JY_Vm2j_d5t4jweS3gf51h30j1O9LXDnE6KkB8AEg@mail.gmail.com>
- <4039032.XOxOlHldtI@diego>
-In-Reply-To: <4039032.XOxOlHldtI@diego>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 13 Oct 2021 14:41:26 +0530
-Message-ID: <CAAhSdy3j2Co2ckxn4vDtOxL=Ym3hgb66vkmnTbUjec+x7bRRDA@mail.gmail.com>
-Subject: Re: [PATCH V3 1/2] dt-bindings: update riscv plic compatible string
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Guo Ren <guoren@kernel.org>, Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Rob Herring <robh@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211011181516.103835-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 2:27 PM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
->
-> Hi Anup,
->
-> Am Mittwoch, 13. Oktober 2021, 07:11:46 CEST schrieb Anup Patel:
-> > On Wed, Oct 13, 2021 at 6:52 AM <guoren@kernel.org> wrote:
-> > >
-> > > From: Guo Ren <guoren@linux.alibaba.com>
-> > >
-> > > Add the compatible string "thead,c900-plic" to the riscv plic
-> > > bindings to support SOCs with thead,c9xx processor cores.
-> > >
-> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > Cc: Rob Herring <robh@kernel.org>
-> > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > > Cc: Anup Patel <anup@brainfault.org>
-> > > Cc: Atish Patra <atish.patra@wdc.com>
-> > >
-> > > ---
-> > >
-> > > Changes since V3:
-> > >  - Rename "c9xx" to "c900"
-> > >  - Add thead,c900-plic in the description section
-> > > ---
-> > >  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml    | 6 ++++=
-++
-> > >  1 file changed, 6 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/s=
-ifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-control=
-ler/sifive,plic-1.0.0.yaml
-> > > index 08d5a57ce00f..82629832e5a5 100644
-> > > --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,p=
-lic-1.0.0.yaml
-> > > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,p=
-lic-1.0.0.yaml
-> > > @@ -35,6 +35,11 @@ description:
-> > >    contains a specific memory layout, which is documented in chapter =
-8 of the
-> > >    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U5=
-4-MC-RVCoreIP.pdf>.
-> > >
-> > > +  While the "thead,c900-plic" would mask IRQ with readl(claim), so i=
-t needn't
-> > > +  mask/unmask which needed in RISC-V PLIC. When in IRQS_ONESHOT & IR=
-QCHIP_EOI_THREADED
-> > > +  path, unnecessary mask operation would cause a blocking irq bug in=
- thead,c900-plic.
-> > > +  Because when IRQ is disabled in c900, writel(hwirq, claim) would b=
-e invalid.
-> >
-> > This is a totally incorrect description of the errata required for C9xx=
- PLIC.
-> >
-> > Please don't project non-compliance as a feature of C9xx PLIC.
-> >
-> > > +
-> > >  maintainers:
-> > >    - Sagar Kadam <sagar.kadam@sifive.com>
-> > >    - Paul Walmsley  <paul.walmsley@sifive.com>
-> > > @@ -46,6 +51,7 @@ properties:
-> > >        - enum:
-> > >            - sifive,fu540-c000-plic
-> > >            - canaan,k210-plic
-> > > +          - thead,c900-plic
->
-> we still want specific SoC names in the compatible, the "c900"
-> is still a sort-of placeholder.
+On Mon, Oct 11, 2021 at 11:15:16AM -0700, Florian Fainelli wrote:
+> commit d88fd1b546ff19c8040cfaea76bf16aed1c5a0bb upstream
+> 
+> When EEE support was added to the 28nm EPHY it was assumed that it would
+> be able to support the standard clause 45 over clause 22 register access
+> method. It turns out that the PHY does not support that, which is the
+> very reason for using the indirect shadow mode 2 bank 3 access method.
+> 
+> Implement {read,write}_mmd to allow the standard PHY library routines
+> pertaining to EEE querying and configuration to work correctly on these
+> PHYs. This forces us to implement a __phy_set_clr_bits() function that
+> does not grab the MDIO bus lock since the PHY driver's {read,write}_mmd
+> functions are always called with that lock held.
+> 
+> Fixes: 83ee102a6998 ("net: phy: bcm7xxx: add support for 28nm EPHY")
+> [florian: adjust locking since phy_{read,write}_mmd are called with no
+> PHYLIB locks held]
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> ---
+>  drivers/net/phy/bcm7xxx.c | 94 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 94 insertions(+)
 
-Yes, we need "c900" compatible string as well. The "c9xx"
-compatible string is for the custom PLIC spec followed by T-HEAD.
+All 3 now queued up, thanks!
 
->
->
-> > >        - const: sifive,plic-1.0.0
-> >
-> > The PLIC DT node requires two compatible string:
-> > <implementation_compat>, <spec_compat>
-> >
-> > The C9xx PLIC is not RISC-V PLIC so, the DT node should
-> > be: "thead,c900-plic", "thead,c9xx-plic"
-> >
-> > You need to change "- const: sifive,plic-1.0.0" to
-> > - enum:
-> >     - sifive,plic-1.0.0
-> >     - thead,c9xx-plic
->
->
-
-Regards,
-Anup
+greg k-h
