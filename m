@@ -2,96 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A71E42B106
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A05042B10A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236323AbhJMAiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 20:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
+        id S235391AbhJMAld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 20:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236189AbhJMAiE (ORCPT
+        with ESMTP id S233128AbhJMAlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 20:38:04 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F1BC06174E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:36:01 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id j193-20020a2523ca000000b005b789d71d9aso1277267ybj.21
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:36:01 -0700 (PDT)
+        Tue, 12 Oct 2021 20:41:32 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08172C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:39:30 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so3115731pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:39:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=Ur67iQAkeqlRv9mxlrBpPoT3NcIyXRW0G2yRaXW02qI=;
-        b=YQb07mKwbr10fxF1UcmqI8DkNWqLkuUT8+dr7LjyhpZWTEOoHprPTHMmj3jOM12koF
-         MMZyob7gLPEMkHDhLf57f6ema1WkqYfzC21l1e43H0/BEZLBRBEZ97oNnm2dxMmGTO0f
-         xE6ueSmqND2eTuG8v6GCgcYtUaVlcV9RlU+//0H6XzYcfixD6/ucFB29reqLxtICxhfw
-         KdZCazoo0k6UpIcd8VAlphTXfN2vrejL9VN5iHtMSPtXEP98v3QZExK9QNvjSK3R1jv2
-         2Y9t8/0W+wodMYX13lUrJKl4Dj0f1YQ5HkNJSC+uud5kwU0yY7xClY4ymwhQnu+8ZnNZ
-         3D2w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IvTxsHSrT5WqhfqZ1UE7wrX/qNYGR7vcH+V9R3apHUE=;
+        b=hk3y0m7DD6ChpAKvbr8HTLJy54K/oijnpOuZ8Uf/H7NfVw8EqURfUAvIuuU7pcNhSx
+         BcSRKALnrbWuf0XJjsxEuB37ZqfdNSPFEgGBNEnphpx4QxMXPcG8HvduhqMhG88M6ylo
+         GAYiN6iIAX0cHm34LJ1QFpmwT4Dtb9thCKXvRW0sk1+SXLGWdaK2NLP1OjM/32gq7gnl
+         kHXzJeYFdSiTJiF2F5Z8ClprsMxEUoXFmQorqoSNWs37Mg4kO2uoGpM2h1ts1Vz1RiHr
+         31v1GtrhwR8H5ygUsU7xzO5XtEcUPANSvfH2zPwF3PbX4p3BFQpE+24eOOWNADDgS0dR
+         UiPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=Ur67iQAkeqlRv9mxlrBpPoT3NcIyXRW0G2yRaXW02qI=;
-        b=O09CHEajisIfKqxGN5oLG2PhxJRmHzoNV5lppXJl6RFajZaHX5xESRFxR9wZio2wI1
-         reVXk6+t4AOLCbWhKGBz68YgOnPD+oxYUWK4M3r5cSpfk72f0i5IYXvtkqWPyVt+oAZU
-         ap498ZxqZQsBUE7Yczx3b2vb+gHkpzT4IhnG4EcdX+mqGk87GpDmngtG7nzSIXT/oLKR
-         t0NEVwGPAxhP7aOtnvqBfaN87LjTLIMTllSbdLwUeKbh+Ez4I6m5q4JR4yHIGCCHuaFg
-         tb4m1xXsFMFFR3HI77w7IiPsmIgLe/A2hu5KdnVF0T3O1dw2Kd7R+23+Q34/FIzXbE5l
-         Y/QQ==
-X-Gm-Message-State: AOAM531fjzPxQCF4CCfe6Tksu9HuGSZRTh9O+69s8yEiUbW/cGsc9flf
-        8rcXMiYtr6uMLx3mgWI4qN8q0qlP2c0=
-X-Google-Smtp-Source: ABdhPJwyy6oF7ZIdto6mAUgPKZ9Rf90ti6UzVqI00XsbG6KKN2g13iSOxOmNQN3UqJRmHAtAxsNKnvp0LMY=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e55e:31ed:7b83:d4a6])
- (user=seanjc job=sendgmr) by 2002:a25:d3d2:: with SMTP id e201mr30426257ybf.260.1634085360999;
- Tue, 12 Oct 2021 17:36:00 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 12 Oct 2021 17:35:54 -0700
-In-Reply-To: <20211013003554.47705-1-seanjc@google.com>
-Message-Id: <20211013003554.47705-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20211013003554.47705-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH 2/2] KVM: x86: WARN if APIC HW/SW disable static keys are
- non-zero on unload
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+9fc046ab2b0cf295a063@syzkaller.appspotmail.com,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IvTxsHSrT5WqhfqZ1UE7wrX/qNYGR7vcH+V9R3apHUE=;
+        b=a70ioP3ma0/AoPgiDyrW86O+wnVML3N+gI/NrYznChIjfbI1SENLLqU7H8AY6MYEAn
+         Pcb492sQg57A27fuyzRkFAHebTqXJbYj1xjwXsgBvIMoto7iuU2EnxrCUIiexILVtSBD
+         PsQaXaXVg7DfK4KrZpqFrKuv6UMYdQIZcRfRpD5fWjnTCSRRhnUJcFasSLBZf1DO3uao
+         kj6DEWlvz41tUJElUapkNut+TkSYBN53t/s4tOTtN99nA7uBCD+VRVJnMZWIrpNEFitC
+         4Oo7THXe7TnLqhrCIy4QHXHvDqTcgj9/XsQcP4KZk1gyuxjjd4RBKmv+PFRyYC43oXBz
+         3HpA==
+X-Gm-Message-State: AOAM532mSWEho2uEdC3/MNOD2tD8Twv3kfAztl+WtQ0bEVONTjL9kBWI
+        OE3wZnTMPpGGh9mavruFDP4d908DRfh8jjqPE1i3Rw==
+X-Google-Smtp-Source: ABdhPJyg4Exz9Z6Gx6smVH1W8R9vd34HiFs5NJcTiRcVrY1KypmEb7e+ZI1F3OXhgxvm+XgL/I78Cw==
+X-Received: by 2002:a17:90a:384a:: with SMTP id l10mr9553625pjf.168.1634085569395;
+        Tue, 12 Oct 2021 17:39:29 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([134.195.101.46])
+        by smtp.gmail.com with ESMTPSA id 22sm12417786pgn.88.2021.10.12.17.39.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 17:39:28 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 08:39:16 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        James Clark <James.Clark@arm.com>
+Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
+Message-ID: <20211013003916.GA130842@leoy-ThinkPad-X240s>
+References: <20210916154635.1525-1-german.gomez@arm.com>
+ <20210916154635.1525-4-german.gomez@arm.com>
+ <20210923135016.GG400258@leoy-ThinkPad-X240s>
+ <20210923144048.GB603008@leoy-ThinkPad-X240s>
+ <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
+ <20211004122724.GC174271@leoy-ThinkPad-X240s>
+ <6b092f13-832f-5d1d-a504-aea96c81bf17@arm.com>
+ <20211006095124.GC14400@leoy-ThinkPad-X240s>
+ <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WARN if the static keys used to track if any vCPU has disabled its APIC
-are left elevated at module exit.  Unlike the underflow case, nothing in
-the static key infrastructure will complain if a key is left elevated,
-and because an elevated key only affects performance, nothing in KVM will
-fail if either ey is improperly incremented.
+Hi German,
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/lapic.c | 2 ++
- 1 file changed, 2 insertions(+)
+On Mon, Oct 11, 2021 at 04:55:37PM +0100, German Gomez wrote:
+> Hi Leo,
+> 
+> On 06/10/2021 10:51, Leo Yan wrote:
+> > On Wed, Oct 06, 2021 at 10:35:20AM +0100, German Gomez wrote:
+> >
+> > [...]
+> >
+> >>> So simply say, I think the head pointer monotonically increasing is
+> >>> the right thing to do in Arm SPE driver.
+> >> I will talk to James about how we can proceed on this.
+> > Thanks!
+> 
+> I took this offline with James and, though it looks possible to patch
+> the SPE driver to have a monotonically increasing head pointer in order
+> to simplify the handling in the perf tool, it could be a breaking change
+> for users of the perf_event_open syscall that currently rely on the way
+> it works now.
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 7af25304bda9..d6ac32f3f650 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -2946,5 +2946,7 @@ int kvm_apic_accept_events(struct kvm_vcpu *vcpu)
- void kvm_lapic_exit(void)
- {
- 	static_key_deferred_flush(&apic_hw_disabled);
-+	WARN_ON(static_branch_unlikely(&apic_hw_disabled.key));
- 	static_key_deferred_flush(&apic_sw_disabled);
-+	WARN_ON(static_branch_unlikely(&apic_sw_disabled.key));
- }
--- 
-2.33.0.1079.g6e70778dc9-goog
+Here I cannot create the connection between AUX head pointer and the
+breakage of calling perf_event_open().
 
+Could you elaborate what's the reason the monotonical increasing head
+pointer will lead to the breakage for perf_event_open()?
+
+> An alternative way we considered to simplify the patch is to change the
+> logic inside the find_snapshot callback so that it records the entire
+> contents of the aux buffer every time.
+> 
+> What do you think?
+
+We cannot do this way.  If we send USR2 signal with very small interval,
+then it's possible the hardware trace data cannot fill the full of AUX
+buffer.  You could use below commands for the testing and should can
+observe it produces small chunk trace data:
+  
+  perf record -e arm_spe_0// -S -a -- dd if=/dev/zero of=/dev/null &
+  PERFPID=$!
+  sleep 1
+  kill -USR2 $PERFPID
+  sleep .1
+  kill -USR2 $PERFPID
+
+Thanks,
+Leo
