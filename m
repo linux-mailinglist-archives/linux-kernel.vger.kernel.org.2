@@ -2,117 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09B342CCE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6E042CCEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhJMVjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 17:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhJMVjv (ORCPT
+        id S229903AbhJMVlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 17:41:42 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:49926 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229588AbhJMVlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 17:39:51 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E68C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:37:47 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f120800116c2285b64386c8.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:800:116c:2285:b643:86c8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 99EBF1EC04EE;
-        Wed, 13 Oct 2021 23:37:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634161065;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=XugKOBYqyZPfh5ia8uzqR/sDJjkLgZNVUGvPqAP3mwI=;
-        b=HV9I3tRRgS9KRjjQ2O5jOipcTkMy+Qyc1sIpu3QUk2fmVDeGP72PHsPuilcENxmV8xqiwN
-        Kjgi+dwDgSRCVDz27xAaUR6jt5mzjlb869GOBQZeB6d7VoL8qUv1GmzA1d8NtmdmSN+iAn
-        fUmFWq/XDHw1EmBrUm4jW9bNLyH49xs=
-Date:   Wed, 13 Oct 2021 23:37:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Wed, 13 Oct 2021 17:41:39 -0400
+Received: from [77.244.183.192] (port=64982 helo=[192.168.178.41])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1malyI-002DCh-Aq; Wed, 13 Oct 2021 23:39:34 +0200
+Subject: Re: [PATCH 6/8] mfd: max77714: Add driver for Maxim MAX77714 PMIC
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 03/11] x86/cpufeatures: Add TDX Guest CPU feature
-Message-ID: <YWdRqAqedkhVA2lD@zn.tnic>
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-4-sathyanarayanan.kuppuswamy@linux.intel.com>
- <87ee8o8xje.ffs@tglx>
- <YWdKlG0AzmjpjJKW@zn.tnic>
- <877deg8vn4.ffs@tglx>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>
+References: <20211011155615.257529-1-luca@lucaceresoli.net>
+ <20211011155615.257529-7-luca@lucaceresoli.net>
+ <b2355acf-94a5-1acf-122b-d661c6d9bb1b@canonical.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <5236720c-96b0-3e18-e08f-a5dde982eab5@lucaceresoli.net>
+Date:   Wed, 13 Oct 2021 23:39:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <b2355acf-94a5-1acf-122b-d661c6d9bb1b@canonical.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <877deg8vn4.ffs@tglx>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:25:35PM +0200, Thomas Gleixner wrote:
-> So this ends up in doing:
-> 
->    use();
->    init();
-> 
-> Can you spot what's wrong with that?
-> 
-> That's a clear violation of common sense and is simply not going to
-> happen. Why? If you think about deep defensive programming then use()
-> will look like this:
-> 
-> use()
-> {
->         assert(initialized);
-> }
-> 
-> which is not something made up. It's a fundamental principle of
-> programming and some languages enforce that for very good reasons.
-> 
-> Just because it can be done in C is no justification.
+Hi,
 
-Oh, I heartily agree.
- 
-> What's wrong with:
+On 12/10/21 10:32, Krzysztof Kozlowski wrote:
+> On 11/10/2021 17:56, Luca Ceresoli wrote:
+>> Add a simple driver for the Maxim MAX77714 PMIC, supporting RTC and
+>> watchdog only.
+>>
+>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+>> ---
+>>  MAINTAINERS                  |   2 +
+>>  drivers/mfd/Kconfig          |  14 ++++
+>>  drivers/mfd/Makefile         |   1 +
+>>  drivers/mfd/max77714.c       | 151 +++++++++++++++++++++++++++++++++++
+>>  include/linux/mfd/max77714.h |  68 ++++++++++++++++
+>>  5 files changed, 236 insertions(+)
+>>  create mode 100644 drivers/mfd/max77714.c
+>>  create mode 100644 include/linux/mfd/max77714.h
+>>
 > 
-> x86_64_start_kernel()
+> (...)
 > 
->     tdx_early_init();
+>> +
+>> +static const struct of_device_id max77714_dt_match[] = {
+>> +	{ .compatible = "maxim,max77714" },
+>> +	{},
+>> +};
 > 
->     copy_bootdata();
->     
->     tdx_late_init();
+> When converting to module - don't forget the MODULE_DEVICE_TABLE
 > 
-> Absolutely nothing. It's clear, simple and well defined.
+>> +
+>> +static struct i2c_driver max77714_driver = {
+>> +	.driver = {
+>> +		.name = "max77714",
+>> +		.of_match_table = of_match_ptr(max77714_dt_match),
+> 
+> Kbuild robot pointed it out - of_matc_ptr should not be needed, even for
+> compile testing without OF.
 
-I like simple more than anyone, so sure, I'd prefer that a lot more.
-
-And so the options parsing would need to happen early using, say,
-cmdline_find_option() or so, like sme_enable() does.
-
-Hmmm.
+I wonder whether it's better to add '#ifdef CONFIG_OF / #endif' around
+the struct of_device_id declaration. I think it's what most drivers do,
+even though I tend to prefer not adding #ifdefs making code less clean
+only for COMPILE_TESTING.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Luca
