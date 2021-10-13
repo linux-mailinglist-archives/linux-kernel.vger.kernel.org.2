@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C6742C3C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BCC42C3C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237259AbhJMOpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:45:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233744AbhJMOpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:45:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 946D961166;
-        Wed, 13 Oct 2021 14:43:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634136222;
-        bh=WCBEv0rVg1t8NxfLzQI5AyH0vU8FITaub6xBor05cRM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TMFnOOkiDEDoma4gTjm08HzOkvkQjdUBIAMShJ4T6WPnB4vBPpb8fZQ7jIkufUZjq
-         PbjPHPaSJQJkilsMcJ67ZvQwBBKg6mECMmyB8IDJw2TNHR4sTmDLIXat6Uf0y/sNaS
-         cCVb8/6Njh6t6vCShpII1DkfKGiJmO+sT0r/K9Ob91z9P3UIj5MLrl0G5H9xOG78CB
-         XQP4ylY36gUgm6f8OeFZ07tnzWFHdiiUoIJZ+e9uJrGvsJDc9W/Tam5QWTv3L6SoOM
-         nv2uTDdc6F3c8M+T3eUdURon0C+gbgPNlTOAQboL1fLABbIIUn6xqs1c45mC01lYtr
-         hJEIpDEa/PBpw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: imx8qxp-adc: mark PM functions as __maybe_unused
-Date:   Wed, 13 Oct 2021 16:43:26 +0200
-Message-Id: <20211013144338.2261316-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S237498AbhJMOpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:45:51 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:40699 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233744AbhJMOpu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:45:50 -0400
+Received: (Authenticated sender: gregory.clement@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 70C2D1BF205;
+        Wed, 13 Oct 2021 14:43:44 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Marcel Ziswiler <marcel@ziswiler.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Marcel Ziswiler <marcel@ziswiler.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        soc@kernel.org
+Subject: Re: [PATCH v3 0/3] ARM: prepare and add netgear gs110emx support
+In-Reply-To: <20211007205659.702842-1-marcel@ziswiler.com>
+References: <20211007205659.702842-1-marcel@ziswiler.com>
+Date:   Wed, 13 Oct 2021 16:43:38 +0200
+Message-ID: <87ily1dlyd.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hello Marcel Ziswiler,
 
-Without CONFIG_PM_SLEEP, the runtime suspend/resume functions
-are unused, producing a warning:
+> Cleanup mvebu_v7_defconfig and then add support for the Netgear
+> GS110EMX which is an 8 port Gigabit switch with two additional
+> Multi-Gig ports. An 88E6390X switch sits at its core connecting to two
+> 88X3310P 10G PHYs while the control plane is handled by an 88F6811
+> Armada 381 SoC.
+>
+> Changes in v3:
+> - Got rid of unused 3.3 volt regulator as suggested by Andrew.
+> - Got rid of partitioning comment.
+> - Added switch interrupt GPIO configuration.
+>
+> Changes in v2:
+> - Add Andrew's reviewed-by tag.
+> - Add Andrew's reviewed-by tag.
+> - Send previous first patch separately to netdev mailing list as
+>   suggested by Andrew.
+> - Fix numbering of the PHY labels as suggested by Andrew.
+>
+> Marcel Ziswiler (3):
+>   ARM: mvebu_v7_defconfig: enable mtd physmap
+>   ARM: mvebu_v7_defconfig: rebuild default configuration
 
-drivers/iio/adc/imx8qxp-adc.c:433:12: error: 'imx8qxp_adc_runtime_resume' defined but not used [-Werror=unused-function]
-  433 | static int imx8qxp_adc_runtime_resume(struct device *dev)
-      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/iio/adc/imx8qxp-adc.c:419:12: error: 'imx8qxp_adc_runtime_suspend' defined but not used [-Werror=unused-function]
-  419 | static int imx8qxp_adc_runtime_suspend(struct device *dev)
-      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+Both applied on mvebu/defconfig
 
-Mark them as __maybe_unused to shut up the compiler.
+>   ARM: dts: mvebu: add device tree for netgear gs110emx switch
 
-Fixes: 7bce634d02e6 ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/iio/adc/imx8qxp-adc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Applied on mvebu/dt
 
-diff --git a/drivers/iio/adc/imx8qxp-adc.c b/drivers/iio/adc/imx8qxp-adc.c
-index 5030e0d8318d..901dd8e1b32f 100644
---- a/drivers/iio/adc/imx8qxp-adc.c
-+++ b/drivers/iio/adc/imx8qxp-adc.c
-@@ -416,7 +416,7 @@ static int imx8qxp_adc_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int imx8qxp_adc_runtime_suspend(struct device *dev)
-+static __maybe_unused int imx8qxp_adc_runtime_suspend(struct device *dev)
- {
- 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
- 	struct imx8qxp_adc *adc = iio_priv(indio_dev);
-@@ -430,7 +430,7 @@ static int imx8qxp_adc_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int imx8qxp_adc_runtime_resume(struct device *dev)
-+static __maybe_unused int imx8qxp_adc_runtime_resume(struct device *dev)
- {
- 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
- 	struct imx8qxp_adc *adc = iio_priv(indio_dev);
+Thanks,
+
+Gregory
+
+>
+>  arch/arm/boot/dts/Makefile                    |   1 +
+>  .../boot/dts/armada-381-netgear-gs110emx.dts  | 295 ++++++++++++++++++
+>  arch/arm/configs/mvebu_v7_defconfig           |  18 +-
+>  3 files changed, 304 insertions(+), 10 deletions(-)
+>  create mode 100644 arch/arm/boot/dts/armada-381-netgear-gs110emx.dts
+>
+> -- 
+> 2.26.2
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
 -- 
-2.29.2
-
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
