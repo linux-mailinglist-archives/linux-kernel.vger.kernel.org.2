@@ -2,102 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D8D42B913
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DF842B916
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238390AbhJMHbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbhJMHbR (ORCPT
+        id S238434AbhJMHb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:31:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44070 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232357AbhJMHbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:31:17 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69EA1C061714
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:29:14 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id y4so1245407plb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:29:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NEgyZUFN9mCAx7pDvgyq+kMKO3cwGQI6y+zorr5H7P8=;
-        b=h2OqTMnGa1Kw3MRnVD9CW+oJPtCyFTTqmQeiBp7VN5vIPHfPzvppsZj/rPNZxoEnqi
-         jaGdWPTORcrMnR1PwMMiKRnW2yi6GvgLnp3/SHY5wIyxPpPPICXEjkQQ2vEi+M1eLWxM
-         SM5lnpcEh71IWJ9cqLpoIR3mcUezXOQLuccMw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NEgyZUFN9mCAx7pDvgyq+kMKO3cwGQI6y+zorr5H7P8=;
-        b=Tgxa0LLk7FKJ8DgmeD0Pm1OIJk8/AU3I8Vg8n6c50WISoIYHpOY1P+uWhM9RybuIQa
-         yjll8CJvRz178Kz6guYT8pGvaJG7qnq25UQR72EXyVFcYwp5pe60re+dxYOi+KE2x+vU
-         bfy9/Xiiy6YwAQ1hMWNV1ODQVIzFKoiSOR5jN0v/Yq57ClaKNRtLZLm1J6FublekMJD4
-         /cTjK1ofrdTEXQBrpgZi3nflvY4Ht+kI3HA/UpjtxqUkGTa5vjHK5WKUd1RCWJKiJHrz
-         0+MKnyt71J3R8L7wQ3UObzNWGWyg5oE1JpY09T+QAddr00VPGy2sA0HiBqiRPD8Zyv2W
-         6u+w==
-X-Gm-Message-State: AOAM530Pkb1qBiwedp6kPRofDErQIkL91MLyoD4OKUeBiaS9ROXdrw9z
-        szyWzlLAva9KINYNbAGW2/w26g==
-X-Google-Smtp-Source: ABdhPJx4VMQG7CaUzn9rFX6A7iMsnK+l8hYS5LxW6ErwsttKq8vu3mrouYZDtaw6jRBUCn8ue23ZcA==
-X-Received: by 2002:a17:90b:368a:: with SMTP id mj10mr2456037pjb.201.1634110154002;
-        Wed, 13 Oct 2021 00:29:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h24sm13393199pfn.180.2021.10.13.00.29.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 00:29:13 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 00:29:12 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Li Fei1 <fei1.li@intel.com>, gustavoars@kernel.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] virt: acrn: Prefer array_syze and struct_size over open
- coded arithmetic
-Message-ID: <202110130028.11D761B3@keescook>
-References: <20211011103902.15638-1-len.baker@gmx.com>
- <20211012013429.GA28284@louislifei-OptiPlex-7050>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012013429.GA28284@louislifei-OptiPlex-7050>
+        Wed, 13 Oct 2021 03:31:55 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19D5g4pN031343;
+        Wed, 13 Oct 2021 03:29:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=D+pfGUFddxTw+8giPKU/vhCwbLlh6G1uJNpbcjqOcok=;
+ b=gPKVADMLy+VNL6+kqZdHlk5y2FjqoJ1wHwmzjewoyp+/8ktFMiG16mhTuwEIxdaDXE07
+ on9kKPTlWd711T4siE7uT+AVVf6+Xx/KeTE1gGRw64LrmipsxQKMqOmW5ZqWIK+VBJPb
+ 9JI6NJXiEZynSrfwor1YKzuW9H1fqVYEElMDKuaIUMO9aoIEQHPZpzY50dwaJisUcCBG
+ WRvfmxCy1T7HfFxabyOX9kEt7pQZtRolwxpBBc3LRCCwfTa+Os6NzBSXGRjn4exACqiN
+ zF7ftBQ2gFRVQzipxrYR8y1EIcaBBysu1Rg4Wm7vR0I/Jn4ZTojVXrpMddFC1dwaXAtt OA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bnshha1cx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 03:29:51 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19D7CqNT018301;
+        Wed, 13 Oct 2021 03:29:51 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bnshha1ch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 03:29:51 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19D7RupJ001935;
+        Wed, 13 Oct 2021 07:29:49 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3bk2bjg4h1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 07:29:49 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19D7O8xt52953450
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Oct 2021 07:24:08 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B45FE11C066;
+        Wed, 13 Oct 2021 07:29:42 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 24BC411C064;
+        Wed, 13 Oct 2021 07:29:39 +0000 (GMT)
+Received: from li-748c07cc-28e5-11b2-a85c-e3822d7eceb3.ibm.com (unknown [9.171.76.4])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 13 Oct 2021 07:29:38 +0000 (GMT)
+Message-ID: <e0a2e8ae07d71eb86499ed37c8acf57f557987fe.camel@linux.ibm.com>
+Subject: Re: [RFC PATCH 1/1]  s390/cio: make ccw_device_dma_* more robust
+From:   Vineeth Vijayan <vneethv@linux.ibm.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, bfu@redhat.com
+Date:   Wed, 13 Oct 2021 09:29:37 +0200
+In-Reply-To: <20211012233247.63b7a22c.pasic@linux.ibm.com>
+References: <20211011115955.2504529-1-pasic@linux.ibm.com>
+         <13162b9e48402f306b3f50e6686d76a051138a75.camel@linux.ibm.com>
+         <20211012233247.63b7a22c.pasic@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: zd3C3dosJ_f7Y4RYrU58aTMKQb3Kv5YL
+X-Proofpoint-GUID: nmJzi-BiRPegQtOagcH-DxDaM6DxaAn9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-13_02,2021-10-13_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=914 adultscore=0 clxscore=1015 phishscore=0
+ impostorscore=0 suspectscore=0 malwarescore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110130047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 09:34:29AM +0800, Li Fei1 wrote:
-> On Mon, Oct 11, 2021 at 12:39:02PM +0200, Len Baker wrote:
-> > As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> > and Conventions" documentation [1], size calculations (especially
-> > multiplication) should not be performed in memory allocator (or similar)
-> > function arguments due to the risk of them overflowing. This could lead
-> > to values wrapping around and a smaller allocation being made than the
-> > caller was expecting. Using those allocations could lead to linear
-> > overflows of heap memory and other misbehaviors.
-> > 
-> > So, use the array_size() helper to do the arithmetic instead of the
-> > argument "count * size" in the vzalloc() function.
-> > 
-> > Also, take the opportunity to add a flexible array member of struct
-> > vm_memory_region_op to the vm_memory_region_batch structure. And then,
-> > change the code accordingly and use the struct_size() helper to do the
-> > arithmetic instead of the argument "size + size * count" in the kzalloc
-> > function.
-> > 
-> > This code was detected with the help of Coccinelle and audited and fixed
-> > manually.
-> > 
-> > [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
-> > 
-> > Signed-off-by: Len Baker <len.baker@gmx.com>
+On Tue, 2021-10-12 at 23:32 +0200, Halil Pasic wrote:
+> On Tue, 12 Oct 2021 15:36:36 +0200
+> Vineeth Vijayan <vneethv@linux.ibm.com> wrote:
 > 
-> Hi Baker
+> > Looks good. Thanks.
+> > Acked-by: Vineeth Vijayan <vneethv@linux.ibm.com>
 > 
-> Thanks for helping us to fix this issue. This patch looks good to me.
-> Please add Signed-off-by: Fei Li <fei1.li@intel.com>.
-> Only two minor comments.
+> Can I convince you to upgrade to Reviewed-by?
+You got it.
 
-For v2, please fix the Subject typo, too. :) "syze" -> "size".
+Reviewed-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+> 
+> > Some minor questions below.
+> > 
+> > On Mon, 2021-10-11 at 13:59 +0200, Halil Pasic wrote:
+> > > Since commit 48720ba56891 ("virtio/s390: use DMA memory for ccw
+> > > I/O
+> > > and
+> > > classic notifiers") we were supposed to make sure that
+> > > virtio_ccw_release_dev() completes before the ccw device and the
+> > > attached dma pool are torn down, but unfortunately we did
+> > > not.  Before
+> > > that commit it used to be OK to delay cleaning up the memory
+> > > allocated
+> > > by virtio-ccw indefinitely (which isn't really intuitive for guys
+> > > used
+> > > to destruction happens in reverse construction order), but now we
+> > > trigger a BUG_ON if the genpool is destroyed before all memory
+> > > allocated
+> > > form it.  
+> > allocated from it ?
+> 
+> Yes. And I think I should add "is deallocated." to the end as well,
+> because we don't destroy memory, we deallocate it ;)
 
--Kees
-
--- 
-Kees Cook
