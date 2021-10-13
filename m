@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC0E42B992
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4947342B99B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238698AbhJMHxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:53:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39294 "EHLO mail.kernel.org"
+        id S238784AbhJMHxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:53:42 -0400
+Received: from comms.puri.sm ([159.203.221.185]:47924 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238626AbhJMHxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:53:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA3DB60F94;
-        Wed, 13 Oct 2021 07:51:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634111460;
-        bh=OXCqkhh4wPeAYcArRqvAfGp3MlPsBVIOg7joR3nwwmI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nMCMOuPrDQuPbS+XQ0PC5jK7hV5MAY1+SYszB0z0L3g4lSapQXCtooKSLHzqfRbCA
-         uCMvyNLQN4q7rMULxd4s3/QgvyRETNssjKsgsMTIRhKymonkWkAGid8HXpq+W/lCzW
-         XWVARwXuGZzXsEmNhax2j7RD2SDGY/1qx3GNAIureFtSSoBEdoIdu9RoOVtSZQI9mN
-         JDcheFuwrGoQnxURMtjMLSAj0yTqaTFp3EL67ZzHG8PKLYPVbJeWAUVj0JRnVz2gyZ
-         vatgiMENXuuU+tr7jUcx+xEE/M8l+SvbFMKTXDo8+jGEek7+lx8Q4sdX434vEbPFMl
-         a6YTvLwpBwyLw==
-Received: by mail-ot1-f51.google.com with SMTP id w10-20020a056830280a00b0054e4e6c85a6so2586392otu.5;
-        Wed, 13 Oct 2021 00:51:00 -0700 (PDT)
-X-Gm-Message-State: AOAM531piHKYS/FT7H9U5fF136dgLVYlgF5ruvY4pNDDsZ9LW2Qo90h7
-        46GtcZ+mzOdlk9XsZDPr9nzPHqLVKdrR6rbqRo8=
-X-Google-Smtp-Source: ABdhPJyGECDlxM/1cIMBiZbjeplAKBVbiJLIuV2qyOa5uJNP+N0IfjjQq54Bet9dtKDzxCSdFURkpbSkD8XamyDr+Lg=
-X-Received: by 2002:a9d:7b48:: with SMTP id f8mr30224626oto.112.1634111459964;
- Wed, 13 Oct 2021 00:50:59 -0700 (PDT)
+        id S238733AbhJMHxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 03:53:37 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 1A652DFAC1;
+        Wed, 13 Oct 2021 00:51:04 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id evIA57ZQRvWE; Wed, 13 Oct 2021 00:51:03 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     martin.kepplinger@puri.sm
+Cc:     bvanassche@acm.org, dgilbert@interlog.com, jejb@linux.ibm.com,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com
+Subject: [PATCH] scsi: sd: print write through due to no caching mode page as warning
+Date:   Wed, 13 Oct 2021 09:50:50 +0200
+Message-Id: <20211013075050.3870354-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-References: <20211012082708.121931-1-iivanov@suse.de> <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
- <4eccf707f2553f0f66ae3789b5689231@suse.de>
-In-Reply-To: <4eccf707f2553f0f66ae3789b5689231@suse.de>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 13 Oct 2021 09:50:48 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE7FbEqxyBcPS6mx5wU82+H0WK67HU=S6hq=WAG5EBwyQ@mail.gmail.com>
-Message-ID: <CAMj1kXE7FbEqxyBcPS6mx5wU82+H0WK67HU=S6hq=WAG5EBwyQ@mail.gmail.com>
-Subject: Re: [RESEND] Re: [PATCH] Revert "efi/random: Treat EFI_RNG_PROTOCOL
- output as bootloader randomness"
-To:     "Ivan T. Ivanov" <iivanov@suse.de>
-Cc:     Dominik Brodowski <linux@dominikbrodowski.net>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 at 09:30, Ivan T. Ivanov <iivanov@suse.de> wrote:
->
-> Hi,
->
-> Quoting Dominik Brodowski (2021-10-12 11:40:34)
-> > Am Tue, Oct 12, 2021 at 11:27:08AM +0300 schrieb Ivan T. Ivanov:
-> > > This reverts commit 18b915ac6b0ac5ba7ded03156860f60a9f16df2b.
-> > >
-> > > When CONFIG_RANDOM_TRUST_BOOTLOADER is enabled add_bootloader_randomness()
-> > > calls add_hwgenerator_randomness() which might sleep,
-> >
-> > Wouldn't it be better to fix add_bootloader_randomness(), considering
-> > that
-> > calls to that function are likely to happen quite early during kernel
-> > initialization? Especially as it seems to have worked beforehand?
->
-> I have tried. I made wait_event_interruptible() optional, but then
-> crng_reseed() segfault badly. And I don't think crng_reseed() is
-> something that I could fix easily. Suggestions are welcomed ;-)
->
+For SD cardreaders it's extremely common not to find cache on disk.
+The following error messages are thus very common and don't point
+to a real error one could try to fix but rather describe how the disk
+works:
 
-How about
+sd 0:0:0:0: [sda] No Caching mode page found
+sd 0:0:0:0: [sda] Assuming drive cache: write through
 
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 605969ed0f96..1828dc691ebf 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -2297,9 +2297,8 @@ EXPORT_SYMBOL_GPL(add_hwgenerator_randomness);
-  */
- void add_bootloader_randomness(const void *buf, unsigned int size)
- {
-+       add_device_randomness(buf, size);
-        if (IS_ENABLED(CONFIG_RANDOM_TRUST_BOOTLOADER))
--               add_hwgenerator_randomness(buf, size, size * 8);
--       else
--               add_device_randomness(buf, size);
-+               credit_entropy(&input_pool, size * 8);
- }
- EXPORT_SYMBOL_GPL(add_bootloader_randomness);
+Print these messages as warnings instead of errors.
+
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+---
+
+hi Bart and all who it may concern,
+
+I only resending the same patch I sent in January before:
+https://lore.kernel.org/linux-scsi/20210122083000.32598-1-martin.kepplinger@puri.sm/
+
+I like it more when messages printed as errors point to real problems that
+need fixing.
+
+thanks,
+                         martin
+
+
+
+
+ drivers/scsi/sd.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index a646d27df681..33ea36b41136 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -2793,7 +2793,8 @@ sd_read_cache_type(struct scsi_disk *sdkp, unsigned char *buffer)
+ 			}
+ 		}
+ 
+-		sd_first_printk(KERN_ERR, sdkp, "No Caching mode page found\n");
++		sd_first_printk(KERN_WARNING, sdkp,
++				"No Caching mode page found\n");
+ 		goto defaults;
+ 
+ 	Page_found:
+@@ -2848,7 +2849,7 @@ sd_read_cache_type(struct scsi_disk *sdkp, unsigned char *buffer)
+ 				"Assuming drive cache: write back\n");
+ 		sdkp->WCE = 1;
+ 	} else {
+-		sd_first_printk(KERN_ERR, sdkp,
++		sd_first_printk(KERN_WARNING, sdkp,
+ 				"Assuming drive cache: write through\n");
+ 		sdkp->WCE = 0;
+ 	}
+-- 
+2.30.2
+
