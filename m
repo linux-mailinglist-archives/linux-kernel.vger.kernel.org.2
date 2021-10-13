@@ -2,175 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C8742C798
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AC042C7AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhJMRaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:30:13 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:62427 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234305AbhJMRaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:30:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634146088; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ERun4AHDJhqrVx5LJ7z0Nj9t6He9ywvd7O8GnyJvZW8=;
- b=TpxyKzuVUIcjG9cfPOEfNM/92LMAk90s37j16p9F//08ExQC3+dd8L0yZ7YTea/iQ9rf/Nn3
- kjtTqYHbnhRfLH3Wri1pfRtyKl2tVb+DFJMbSuGtGLv0S7/tmiWb2gV2rGwiNB7+Zq+ZETZF
- c8hdSMcYlP0XMllSHeNFVAdNWyY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 61671722060523968945b957 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Oct 2021 17:28:02
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9D964C4360D; Wed, 13 Oct 2021 17:28:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7161CC43460;
-        Wed, 13 Oct 2021 17:27:59 +0000 (UTC)
+        id S238019AbhJMRdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238203AbhJMRdT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 13:33:19 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A3FC061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:31:15 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id x8so2315370plv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:31:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=stHyXTiMOoD7piHsq5gSpAvQZs8ZLbpI4dQLsTzc/s8=;
+        b=DQyccFak9W+HHVS0jN3SNFAcP9nmOiYmmATMBRZTJ+JuzbOgEOcr1ttcYIBSAfRiqn
+         Lz4JUkAmI842pKVjUcAR65yzW1Q2Bqa7rMxpcuZWWK/deSzwtgD2ABIVN79sLsh1xrLY
+         L4N6hqUD1rBTVAYU9+wkk1BSrfKWne8+sim5g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=stHyXTiMOoD7piHsq5gSpAvQZs8ZLbpI4dQLsTzc/s8=;
+        b=gpRByPqJ6Ng7zEuyqr2WEqXhT1+ut8UNFDjz6icP/eOmdLJrGaCkLCJQwEg3lmJyYc
+         UW0gdQpcC4V5drUDIAVq431+qdVovQCnAwNeHah9MsrMuDfSGHoH5tSgFzwT0Qbj/Tq8
+         UMSwma5PC9QE0z+ARsLHy1x6vt46cAsPFnhzOTAiN580aNwgtHpO6CA3u1sGOjqsZkBi
+         NIBQG17yNFbEkIfY+sNUkTO8Uw58y2loUrLarLeOgymAFbTK+fO7VQuF2wz1gHBSSh8H
+         Q1xGuNouS7qjc+L5uVw2Vtnhpnm7Y8jWJVbHFNthoxCyOLOn75YcAo/gx47qsuCcwuWQ
+         jneg==
+X-Gm-Message-State: AOAM531C4F6v6hifDxqlBCYv0W+bhFfo3EF8YW4ROEMNOvxE8y3QUfCV
+        AY6T5pl6eJ2ZQJOxgBAIgvDKqQ==
+X-Google-Smtp-Source: ABdhPJxCmUitcOaunWwIz1uT+vrqsMZlpKkH4k1LFnoUcQVy6JXfNA+72u3QYh4Ml2B4Vnyvv0zalA==
+X-Received: by 2002:a17:90b:4d09:: with SMTP id mw9mr667890pjb.100.1634146275121;
+        Wed, 13 Oct 2021 10:31:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x35sm161664pfh.52.2021.10.13.10.31.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 10:31:14 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        KP Singh <kpsingh@chromium.org>,
+        linux-security-module@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] LSM: Avoid warnings about potentially unused hook variables
+Date:   Wed, 13 Oct 2021 10:28:48 -0700
+Message-Id: <20211013172847.1196305-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 13 Oct 2021 22:57:59 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
-        robh+dt@kernel.org, swboyd@chromium.org, svarbanov@mm-sol.com,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v12 0/5] Add DT bindings and DT nodes for PCIe and PHY in
- SC7280
-In-Reply-To: <20211013100005.GB9901@lpieralisi>
-References: <1633628923-25047-1-git-send-email-pmaliset@codeaurora.org>
- <20211013100005.GB9901@lpieralisi>
-Message-ID: <cabf9962444f4b3385a545a314408b46@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2126; h=from:subject; bh=LcQThCv4yG6dBsiN2R0V8pX78rE7KrdD224PvV6t8ac=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhZxfMASF8Im7S+/H7DmFA5FYXENvqZbCwPV4BosIK 3hO2hZyJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYWcXzAAKCRCJcvTf3G3AJtRcD/ 46Wah2rQa6Cz9vARcUj3izpenVsSBEaeuEyoKQZAGD8czXxlEtI8ovV46ySz2lD7T4/br/4QgtfLrh 4T8woNw3ybe6zKEQay2uI4IX2U58EBtnxkwygQpvq+ZN04ZcC9nsubw+RMAvSbkNOvMOqh/ttpS90P y7cRP5ZXSzZ7Vi+a3Cq2DGAiPCkbupTl/PcbpS73gj60T6mzLEajMez3ll+Ic3z3aB61Ivu1ASziWQ 5u/ZytW6WHTyOaNhnQ98hxjMgkeQPGjOy8KPwnUJF/qQXowvatt1HpydQXxz/4lNrESxWseW0pQk8n 5N5daJ35C6xe09ETUj7SaWrvBT7TyH/NnaTl4ZWZuknhZTZNURiS1QGf6DNtaupnLtVcVuLCjkrTL+ 5/u7xcsgQQwtY0qRNKtvb4m18WCyurYESc5Ih9S5BxFTla3tzPPLQwr+TXxg/JPtkuJXcqp/WULiXh /oHYuLJutOT4Zprn/MjieN4+hoXgOQg9OpuKQvMCqbY5ho06Glff2f364W0bYLiKj0H3q0EMymLaqU R/WMCi84e9KmmPQclpPwXLOD3qUsW95L1Q3lYDjZTLLCPgr8nH12UW4E/EhOp9MSOE6kbh40wnJgoU +HHb6nQfH4unwy1QeA54wlOGbYNAjI4NjtFCtTWAjgjU6h37OMc5t+YetnDg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-13 15:30, Lorenzo Pieralisi wrote:
-> On Thu, Oct 07, 2021 at 11:18:38PM +0530, Prasad Malisetty wrote:
->> Changes added in v12:
->> 
->> 	* Sorted pipe_clk muxing changes in patch 4 & 5 as per the commit 
->> log.
->> 	  -Suggested by Bjorn.
->> 
->> Changes added in v11:
->> 
->> 	* Modified nvme_pwren name as nvme_pwren.
->> 	* Removed bias-pullup option in nvme_pwren entry [v11 Patch 3/5].
->> 	* Changed pcie1_default_state name to pcie1_clkreq_n.
->> 	* Added NULL pointer check for pcie_cfg.
->> 
->> Changes added in v10:
->> 
->> 	* v9 [Patch 4/4/] has been split into two separate patches
->> 	* Addressed all comments in IDP [Patch 3/4] file.
->> 
->> Changes added in v9:
->>     * Added fixed regulator entry for nvme.suggested by Stephen Boyd
->>     * Added NULL pointer check before accessing ops in pcie probe
->>       Suggested by Stephen Boyd
->> 
->> Changes added in v8:
->> 
->>     * Added seperate pinctrl state for NVMe LDO enable pin [v8 P3/4]
->>     * Removed pointer initialization for pcie_cfg [v8 P4/4]
->>     * Replaced bool pcie_pipe_clk_src with unsigned int:1 [v8 P4/4]
->>     * Changed gcc_pcie_1_pipe_clk_src to pipe_clk_src
->> 
->> Changes added in v7:
->> 
->>         * Removed two fallbacks qcom,pcie-sm8250 and snps,dw-pcie.
->>         * Replaced compatible method in get_resources_2_7_0 with
->>             flag approach suggested by Bjorn Helgaas .
->>         * Setting gcc_pcie_1_clk_src as XO in init_2_7_0 for
->>           gdsc enable.
->>         * Added specific NVMe GPIO entries for SKU1 and SKU2 support
->>           in idp.dts and idp2.dts respectively.
->>         * Moved pcie_1 and pcie_1_phy board specific entries into 
->> common
->>           board file sc7280-idp.dtsi file.
->> 
->> Changes in v6:
->> 
->>     * Removed platform check while setting gcc_pcie_1_pipe_clk_src
->>           as clk_set_parent will return 0 with nop if platform doesn't
->>           need to switch pipe clk source.
->>         * Moved wake-n gpio to board specific file sc7280-idp.dtsi
->>         * Sorted gpio.h header entry in sc7280.dtsi file
->> 
->> Changes in v5:
->> 
->>         * Re ordered PCIe, PHY nodes in Soc and board specific dtsi 
->> files.
->>         * Removed ref_clk entry in current patch [PATCH v4 P4/4].
->>         * I will add ref clk entry in suspend/ resume commits.
->>         * Added boolean flag in Soc specific dtsi file to 
->> differentiate
->>           SM8250 and SC7280 platforms. based on boolean flag, 
->> platforms will handle
->>           the pipe clk handling.
->> 
->> Changes in v4 as suggested by Bjorn:
->> 
->>         * Changed pipe clk mux name as gcc_pcie_1_pipe_clk_src.
->>         * Changed pipe_ext_src as phy_pipe_clk.
->>         * Updated commit message for [PATCH v4 4/4].
->> 
->> Changes in v3:
->>         * Changed pipe clock names in dt bindings as pipe_mux and 
->> phy_pipe.
->>         * Moved reset and NVMe GPIO pin configs into board specific 
->> file.
->>         * Updated pipe clk mux commit message.
->> 
->> Changes in v2:
->>         * Moved pcie pin control settings into IDP file.
->>         * Replaced pipe_clk_src with pipe_clk_mux in pcie driver
->>         * Included pipe clk mux setting change set in this series
->> 
->> Prasad Malisetty (5):
->>   dt-bindings: pci: qcom: Document PCIe bindings for SC7280
->>   arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes
->>   arm64: dts: qcom: sc7280: Add PCIe nodes for IDP board
->>   PCI: qcom: Add a flag in match data along with ops
->>   PCI: qcom: Switch pcie_1_pipe_clk_src after PHY init in SC7280
->> 
->>  .../devicetree/bindings/pci/qcom,pcie.txt          |  17 +++
->>  arch/arm64/boot/dts/qcom/sc7280-idp.dts            |   8 ++
->>  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi           |  50 +++++++++
->>  arch/arm64/boot/dts/qcom/sc7280-idp2.dts           |   8 ++
->>  arch/arm64/boot/dts/qcom/sc7280.dtsi               | 118 
->> +++++++++++++++++++++
->>  drivers/pci/controller/dwc/pcie-qcom.c             |  95 
->> +++++++++++++++--
->>  6 files changed, 285 insertions(+), 11 deletions(-)
-> 
-> I applied patches [4-5] to pci/qcom for v5.16, thanks I expect other
-> patches to go via the relevant trees.
-> 
-> Lorenzo
+Building with W=1 shows many unused const variable warnings. These can
+be silenced, as we're well aware of their being potentially unused:
 
-Thanks a lot Lorenzo for the update.
+./include/linux/lsm_hook_defs.h:36:18: error: 'ptrace_access_check_default' defined but not used [-Werror=unused-const-variable=]
+   36 | LSM_HOOK(int, 0, ptrace_access_check, struct task_struct *child,
+      |                  ^~~~~~~~~~~~~~~~~~~
+security/security.c:706:32: note: in definition of macro 'LSM_RET_DEFAULT'
+  706 | #define LSM_RET_DEFAULT(NAME) (NAME##_default)
+      |                                ^~~~
+security/security.c:711:9: note: in expansion of macro 'DECLARE_LSM_RET_DEFAULT_int'
+  711 |         DECLARE_LSM_RET_DEFAULT_##RET(DEFAULT, NAME)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~
+./include/linux/lsm_hook_defs.h:36:1: note: in expansion of macro 'LSM_HOOK'
+   36 | LSM_HOOK(int, 0, ptrace_access_check, struct task_struct *child,
+      | ^~~~~~~~
 
--Prasad
+Cc: James Morris <jmorris@namei.org>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Paul Moore <paul@paul-moore.com>
+Cc: Casey Schaufler <casey@schaufler-ca.com>
+Cc: KP Singh <kpsingh@chromium.org>
+Cc: linux-security-module@vger.kernel.org
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/linux-mm/202110131608.zms53FPR-lkp@intel.com/
+Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ security/security.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/security/security.c b/security/security.c
+index 9ffa9e9c5c55..462f14354c2c 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -706,7 +706,7 @@ static int lsm_superblock_alloc(struct super_block *sb)
+ #define LSM_RET_DEFAULT(NAME) (NAME##_default)
+ #define DECLARE_LSM_RET_DEFAULT_void(DEFAULT, NAME)
+ #define DECLARE_LSM_RET_DEFAULT_int(DEFAULT, NAME) \
+-	static const int LSM_RET_DEFAULT(NAME) = (DEFAULT);
++	static const int __maybe_unused LSM_RET_DEFAULT(NAME) = (DEFAULT);
+ #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
+ 	DECLARE_LSM_RET_DEFAULT_##RET(DEFAULT, NAME)
+ 
+-- 
+2.30.2
+
