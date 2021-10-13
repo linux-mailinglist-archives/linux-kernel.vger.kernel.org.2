@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA1D42B0B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3646142B0D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233176AbhJMAE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 20:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49640 "EHLO
+        id S233980AbhJMAJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 20:09:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232243AbhJMAEy (ORCPT
+        with ESMTP id S236878AbhJMAJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 20:04:54 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD87C061745
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:02:52 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id l6so592969plh.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:02:52 -0700 (PDT)
+        Tue, 12 Oct 2021 20:09:23 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAB4C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:07:21 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id g10so2798023edj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:07:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=usOJyi3vWJ+B8xCJglaCM/0JQ+BQoeyBpYldNBu2X7A=;
-        b=D+7qhklJPAH83AmBCpAMyIvHcu0UZpGBjD3qo/SjZGhh+cbq/euskkcZ1cSTfJQBVn
-         /O1iVvf5S1EpmEm3eXdD+Iy1MRk9RXAc3Vsv2OmxsOGZOSZ8rnucKpDfyFfonUYD2tXH
-         yPvY1qAKvZm0T1UKwE9E+wGryzPZyFnkHWud+uqljuameF0Hjdgg7MOlmSINGw6Y4Mho
-         OzpQK4SqiaZj4+y+/QKrMA8iIIwFough5NTypRJia97qJLAztZNLFYqM+oiQAvKtziEi
-         dVg4rQre/vKbe/BJ7N0Yx20BzJbvvVB5pylKWHuw6JAjEndTlIULMwyNwqQ1psdhD2Iz
-         KUzw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JTWVNyhczFZinoqJ7kSsMVLCZQV46DfROw4WieDRZL0=;
+        b=C+jvuEDHNozuwvDiFT13ZmF9FghO3sCvBMryHwNXqttukFXiOG06ppcJDCCdy2wy28
+         U4TOfYlWTXHe98gqEq0f6rRVzif90/rYm8im8hRz3gNOQl+bNY2iajHWjfT4hNv1d8bR
+         tpUxFTkQRV47ixP9oqsoDTAmDQElWjtG9MZmMDO0i7G1eMN0M6tbWTdjmbaf/onh8giS
+         G0+SKvTrCgFy4TqDzhUus3OtVPOAqwyv685wrg4KXAV0wkzncdTdM/t+IXzMoyDg+5gX
+         DLtehrTWmwIDI/lDQE9jLq5AcRb/l+NEUbBXgNPTDds5VzfpySah0PPF/NHmyj9yjYby
+         j5DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=usOJyi3vWJ+B8xCJglaCM/0JQ+BQoeyBpYldNBu2X7A=;
-        b=lUHwCxiTUnCgmdWt1ZN93Nv0Z3xZp9+iKg344bunsfuQZj3PoKRHynZafIaNE6KQoF
-         4xvit7BlmiDpQFJYjjsluO8d7Lojxcd5yEl8Stx/KrJz3HkvavC4k1G+Y/lGmrhucyJI
-         vJQsTsTfsEGGDEGgagD8EdMjZsBo3aHwDi5R8vsUUyqgrdV0ZsoTtofIwCaAjLx3rLGS
-         VrBmttN7Gl31HE9KC+gYC+vng0e2nNEP8nKobHjEMMjpFVzn6EXs/cZmur51TOKYHBCa
-         yC0Y8besv7QwWxBxksKE2ry3oKWYWMmiidRFiR77rluRinuHnNWmyVd+loeoTnMiqeF8
-         54jA==
-X-Gm-Message-State: AOAM5315VVRxlhRvxntyfveRvwWKKSVctEmIFVF0pOU1wIlhxEdS1svS
-        3xJ7yKnzEPb8/5NNizfV3Rg8TA==
-X-Google-Smtp-Source: ABdhPJxo7HfGHeKdwK3WniLQ9W70SyBtE5TarYga88X1oCtTWRYloyybpHWXgxggwD5S0ICHu+k1DA==
-X-Received: by 2002:a17:90b:17c9:: with SMTP id me9mr9626717pjb.197.1634083371829;
-        Tue, 12 Oct 2021 17:02:51 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b130sm586106pfb.9.2021.10.12.17.02.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 17:02:51 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 00:02:47 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Stevens <stevensd@chromium.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] KVM: mmu: remove over-aggressive warnings
-Message-ID: <YWYiJy1Z7VZ0SxAd@google.com>
-References: <20210929042908.1313874-1-stevensd@google.com>
- <20210929042908.1313874-5-stevensd@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JTWVNyhczFZinoqJ7kSsMVLCZQV46DfROw4WieDRZL0=;
+        b=j63YrfnsVsTI+nwjDGdEV3qnV0Obbmv2lmjExuNFH3vcDyQBGXHFVOOAAIZjDI0wUw
+         6ZLe2aFZ/3SWOSzzLN0bLG35j2owasLtoiTwSogR4BL0ZXRQAcwkMIjcfDejVTrBjG3z
+         h8A+8ff/8H1alzVIFdLXGdx10J3KjNJnpdW3dBiyZfw9esgqbAwe7Wu7ST2NU7QHjk/k
+         nkhE5NknxZmBEfOIXhtR0oBPMlT/Q+rFTh9FuaBlgRcoMj68vSxRnaXTHOjeAl+ffdrU
+         kbxqK0CPyMUmdjTAJtUrqyJbpSG2C/EBwsRR14SjuukN64KTpV8A7YJJzTmo9r3zTzE6
+         ZSlQ==
+X-Gm-Message-State: AOAM532QeqPuwS1v2r2ktyGcvJ8LQIWGu4o5JrsYqJfLhWLNea5llJYg
+        VFV4Ln99oSg0sfQe/A613jdZdhLn3MRLhcspntJmRQ==
+X-Google-Smtp-Source: ABdhPJyfDYLRR6F/3juZtl20H7qFZacVtgfDH8pJMmKfRymkv5U3UjEddwOHxHDtXbJ0Au3F1L7uA8SrwAQMX+APApE=
+X-Received: by 2002:a05:6402:278a:: with SMTP id b10mr4463346ede.134.1634083640074;
+ Tue, 12 Oct 2021 17:07:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929042908.1313874-5-stevensd@google.com>
+References: <20210921193028.13099-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210921193028.13099-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CACRpkdaJk-G0YE63uvH9C=G3n7k2gZqf9QrwGfAZC2O4hhps=A@mail.gmail.com> <CAMuHMdUvThtOKrhTqW+U1qijW7dRc6GYg4_Owt_GnUxX4DrGog@mail.gmail.com>
+In-Reply-To: <CAMuHMdUvThtOKrhTqW+U1qijW7dRc6GYg4_Owt_GnUxX4DrGog@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 13 Oct 2021 02:07:09 +0200
+Message-ID: <CACRpkdaTWb4-m=9UzQUwQyUhT3PQ3YWreG+KNnhLdXGGmJLrBg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/4] pinctrl: renesas: pinctrl-rzg2l: Add IRQ
+ domain to handle GPIO interrupt
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021, David Stevens wrote:
-> From: David Stevens <stevensd@chromium.org>
-> 
-> Remove two warnings that require ref counts for pages to be non-zero, as
-> mapped pfns from follow_pfn may not have an initialized ref count.
-> 
-> Signed-off-by: David Stevens <stevensd@chromium.org>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 7 -------
->  virt/kvm/kvm_main.c    | 2 +-
->  2 files changed, 1 insertion(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 5a1adcc9cfbc..3b469df63bcf 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -617,13 +617,6 @@ static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
->  
->  	pfn = spte_to_pfn(old_spte);
->  
-> -	/*
-> -	 * KVM does not hold the refcount of the page used by
-> -	 * kvm mmu, before reclaiming the page, we should
-> -	 * unmap it from mmu first.
-> -	 */
-> -	WARN_ON(!kvm_is_reserved_pfn(pfn) && !page_count(pfn_to_page(pfn)));
+On Tue, Oct 5, 2021 at 11:56 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-Have you actually observed false positives with this WARN?  I would expect anything
-without a struct page to get filtered out by !kvm_is_reserved_pfn(pfn).
+> > Why can't you just use the hierarchical IRQ domain handling inside
+> > gpiolib?
+>
+> Out of interest (not related to this patch), does this support multiple
+> parent domains?
 
-If you have observed false positives, I would strongly prefer we find a way to
-keep the page_count() sanity check, it has proven very helpful in the past in
-finding/debugging bugs during MMU development.
+Not currently, but I might have seen a patch adding it?
+Now I can't find it...
 
-> -
->  	if (is_accessed_spte(old_spte))
->  		kvm_set_pfn_accessed(pfn);
->  
+Yours,
+Linus Walleij
