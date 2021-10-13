@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F93442B3F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 06:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B21542B3F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 06:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbhJMERq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 00:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhJMERp (ORCPT
+        id S229764AbhJMERu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 00:17:50 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:29638 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhJMERt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 00:17:45 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9319C061570;
-        Tue, 12 Oct 2021 21:15:42 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id np13so1177403pjb.4;
-        Tue, 12 Oct 2021 21:15:42 -0700 (PDT)
+        Wed, 13 Oct 2021 00:17:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OoNwDG0VaNCscP5oae7CbtI3WG7cND2vHYt3onq3SNY=;
-        b=EONSpaH4SsEm5+DwSQao2ztUky6nZqQ38/ui6H+/JNXaQ+/beQXMMxhvDax+gK31c5
-         w88TJPEYrMsBD7xjRDw7ePcJ024b6QIsmXXrFnOWtpPdmKPgCYqW827ztz7s1iJKDKQL
-         HoSNQxy8sF2V8Sc/NcGGNIpl6En9E9QCBZZY5caoUxpEbZctYjjEfDxACbbtuxAQcHFr
-         ama7qI5agLNNzOq5iQ+Gx7Lyo9cNU9rgYt9bLjHwFmhZTBWUY/ip7OJsgjH5gN3GPt+4
-         GGI7sn6+67kOoIBknxgZZj9Mnb/RrIvR21DLwbPsllS1gsuEEOx51I6m4PYplqyFyUFf
-         e2fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OoNwDG0VaNCscP5oae7CbtI3WG7cND2vHYt3onq3SNY=;
-        b=eVtQ63bZ0USev4WVPWq47IrGEhCMD1eq+6zOXrDatSaFxLTVAZ2p03NEhDgFM9a7H+
-         Ky2x6QPB5wBVHW3MYQ3GCmjKpHJ2urEQYUo55i4ZM3Q1ZU6zTF/vNBucFHnqTmJG6nKx
-         nGYrBN7e5SHHIkUpA2YGfD+OimR7N9GML9e6WJ/MnVunFA2eMza44F/nLgMY9K+lgVOp
-         H/8O8rm2uuVPMH1Pjgp2BmNeX8d4nACS39oDuDov1Y/b8lfE9DPCNbxop0/zTT3kX3Pj
-         AeINa0y41y9BO5D7N8SDvHesIzkJTZhDiNpOTza6n6QyOPmOxETU+UwLbBrNeEs57YM/
-         jYnQ==
-X-Gm-Message-State: AOAM531wyplD6MTMhoV6Ybab9dBP6YEAlCiRjKUrWDinkel1ClFMYTuw
-        Vd15Hd/cFOyBhhXXi/1i6aeoRPXWIil7aQyHmAI=
-X-Google-Smtp-Source: ABdhPJx/W4DMTjZDZyIWn8CLwfUJrNXINXnyIyLGTsU3+wcbAQD85flLv5PcZ62fQOwWo5qfuXahVA==
-X-Received: by 2002:a17:90b:1c8f:: with SMTP id oo15mr10582188pjb.169.1634098542104;
-        Tue, 12 Oct 2021 21:15:42 -0700 (PDT)
-Received: from localhost.localdomain ([94.177.118.45])
-        by smtp.gmail.com with ESMTPSA id i12sm13062356pgd.56.2021.10.12.21.15.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 21:15:41 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Fabien Dessenne <fabien.dessenne@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] driver: bdisp: add pm_runtime_disable in the error handling code
-Date:   Wed, 13 Oct 2021 12:15:27 +0800
-Message-Id: <20211013041527.2859626-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1634098547; x=1665634547;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=14DSdTniDqdncTmwpMPC/7a3w4g78QTRnhRuSB5a/4E=;
+  b=dMVvCvBwkdlB4jcKI4Xq5JxDCDv5YEowlMjOr+S+ViThUnsO5fhZsGsK
+   eiBQQlDv99s1e7CqPpFGmMKpwGa9ts1kzBeL+AP5zg2RGZLJql8dWNVY4
+   6asepGVPpBQd2yktbJBM65d85TJe4VK03ziqLzrOS97t1Z/AwMz7CKAOH
+   U=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 12 Oct 2021 21:15:46 -0700
+X-QCInternal: smtphost
+Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 21:15:46 -0700
+Received: from [10.231.205.174] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Tue, 12 Oct 2021
+ 21:15:44 -0700
+Subject: Re: [RESEND PATCH v1 1/9] spmi: pmic-arb: add a print in cleanup_irq
+To:     Stephen Boyd <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
+        Abhijeet Dharmapurikar <adharmap@codeaurora.org>
+References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com>
+ <1631860384-26608-2-git-send-email-quic_fenglinw@quicinc.com>
+ <163406078422.936959.12726677103787301939@swboyd.mtv.corp.google.com>
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+Message-ID: <6c91a6ad-0ff2-a431-138a-2ec83f2bfa74@quicinc.com>
+Date:   Wed, 13 Oct 2021 12:15:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <163406078422.936959.12726677103787301939@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the error handling code of bdisp_probe, it fails to invoke
-pm_runtime_disable in many error sites.
 
-Fix this by adding pm_runtime_disable after pm_runtime_put.
+On 10/13/2021 1:46 AM, Stephen Boyd wrote:
+> Quoting Fenglin Wu (2021-09-16 23:32:56)
+>> From: Abhijeet Dharmapurikar <adharmap@codeaurora.org>
+>>
+>> The cleanup_irq() was meant to clear and mask interrupts that were
+>> left enabled in the hardware but there was no interrupt handler
+>> registered for it. Add an error print when it gets invoked.
+> Why? Don't we get the genirq spurious irq message in this scenario?
 
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- drivers/media/platform/sti/bdisp/bdisp-v4l2.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks for reviewing the change.
 
-diff --git a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-index 6413cd279125..1f220f216b72 100644
---- a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-+++ b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
-@@ -1394,6 +1394,7 @@ static int bdisp_probe(struct platform_device *pdev)
- 	bdisp_hw_free_filters(bdisp->dev);
- err_pm:
- 	pm_runtime_put(dev);
-+	pm_runtime_disable(dev);
- err_remove:
- 	bdisp_debugfs_remove(bdisp);
- 	v4l2_device_unregister(&bdisp->v4l2_dev);
--- 
-2.25.1
+No, there is no existing message printed out in this special case ( IRQ 
+fired for not registered interrupt).
 
+>> Signed-off-by: Abhijeet Dharmapurikar <adharmap@codeaurora.org>
+>> Signed-off-by: David Collins <collinsd@codeaurora.org>
+>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
