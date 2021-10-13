@@ -2,263 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C96342C529
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57DF42C531
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbhJMPtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 11:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbhJMPtS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:49:18 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD74C061753
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:47:15 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id np13so2513573pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:47:15 -0700 (PDT)
+        id S230171AbhJMPvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 11:51:39 -0400
+Received: from mail-sn1anam02on2118.outbound.protection.outlook.com ([40.107.96.118]:55106
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230126AbhJMPvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 11:51:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FMWo2lMpL1FDdX5xJHAHhIEDzqMUD/lPWeSSVAs+hb1S1uEru4j8lfleGkuc5fVXJjRfSxDPTkp7Ke+Wmuj2lHUXUMW5N4xbnSm818Fj4pQsKIcPqCTDqUssyLNZz/4SpALQn5HyRTmlQFzVXZE8e2WYVI+alXaAvKjNncTzgX1ogrKrNR5PamaUtHn+L5rHBALA1cHzvz2RCCLMd6w464hNWOuAbRu/mz7uKdNEhGQeUxA12jFyK0NjbwZBFyl+IXCs5Jw8y3HG3p/t8A/RMmCf2ieAlNWEQoK0f9Zny/A8leoGL0dWGPX3Hw8gj9YQgtuRmligFf8HPRVrrPRQKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=La34/O3WvR6kvbyW8Goi0pHAyngN589Baa/sDidzzd4=;
+ b=AK52t1vzoYVRL1gpyy/J3ZeGR57pTdT/INuDdRJWBCieKi7Aut1rAgLcbwBdrlGZ6RRGtNcO6WX8R0sYbzQGChxdQEKiVkErmVFz/8NY67a98CuPidNGU3aqcOImBG8uEjroGxf0/T5yne0Ew5kUD9VG8KwtOP1tkHbyYKVTGtV9RsItBvQxZThbck2NW04UZ55UjrO/S41QZVlOIHZ0kuMREPExiUCqcoVfD3oVtcThojx7JAMUaUfnJKzHG17eVRYpBhyJ0ZUvD2PXuw6DDVwDKNSvrjobP7FuuQQtZ4H5S/FS+kDOPBX3BatPtWu7sCHD6s3THREl2XTxznNEMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
+ header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
+ arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=7tl0UrRgQJeUgfAjO37z3FAcAtBQoJqRFjVMGzCTvA8=;
-        b=DWcjK29rZL8qAwcVkgX4a3/MCud1JTap4CQQARYAYNmlL+x4UPK3v8TuG4hlbnlT7u
-         IVG7b9BRqAbMTX3u3JPDan7JbUgKHF2iNp2b1BR3UgUTDw3bwVj5qe930IRh6CSlOSuY
-         4OERN4rn+ZwBHzQbx4+yAWOj6ZXeSzxL24EP7p/y31qCPDpVRaJszBK9NE0lKbTMi3VH
-         vwKNxiLTCZJlzvjnTztAzuARXhpCchRAFhJhALtrUJ/N11LtrdVc8cx9qvrlZL9YVd23
-         aSVS+X87C5n+avtxcKaZb8IavjRITBaMO63uZ6U49qh8MPivlNXPcpPnwcgiH9wk5WM5
-         bSiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=7tl0UrRgQJeUgfAjO37z3FAcAtBQoJqRFjVMGzCTvA8=;
-        b=MHmwsbPyhLGSwL5DDUmyHXShxpsH27qoYQJ88IFjR2P5xDyGZWrjMtFUt0LieaX01V
-         lIPjUqBUep/mi24BTgWB7+OqBuSYdgtsNdAtYKjpWpZU8rMMESMo/thYWd+WPMwNPXCg
-         ShwxN5aaUabfR755Z2TECqz84UEH8jl/L70jEUrTz0DbL10RxiJIAqo+KkvplX4K5EYQ
-         TvCFrEdKioCBuMg7qc8ZGasLEDu/vkea5C0dKMJwaRgeSlTuHXFmaC8NqbkeR0+GSecS
-         pv69H6wnkhCw/l7HN6eqF12bK+nb+cZdRhC4NU4pqrHpqUJ+F5GgKd8VGRHxGJ6j879t
-         cjDg==
-X-Gm-Message-State: AOAM531PFWrEkUACgBoLCuAMg7kzSYocHvV6VbyY/oN2DJupB8kMUj5j
-        iZboMxigTZE1s22SH6obo3g=
-X-Google-Smtp-Source: ABdhPJwJ++Ty0dgnmWxqRt9ZvtCdWXTVUybNoygKj7+VjckXQk1A+ag8TPHabAN0ZVWcBwEz1iV9bQ==
-X-Received: by 2002:a17:902:9a91:b0:138:efd5:7302 with SMTP id w17-20020a1709029a9100b00138efd57302mr36507391plp.35.1634140034453;
-        Wed, 13 Oct 2021 08:47:14 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id o26sm10645342pfp.177.2021.10.13.08.47.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Oct 2021 08:47:13 -0700 (PDT)
-From:   Nadav Amit <nadav.amit@gmail.com>
-Message-Id: <595A6581-86CF-4372-98AF-532DF65186C6@gmail.com>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_F23DBACE-EAA8-4740-8FEA-C23F179D4E87";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [RFC PATCH 0/8] mm/madvise: support
- process_madvise(MADV_DONTNEED)
-Date:   Wed, 13 Oct 2021 08:47:11 -0700
-In-Reply-To: <YWYWyUMcgoAJqi3V@t490s>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Colin Cross <ccross@google.com>,
-        Suren Baghdasarya <surenb@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-To:     Peter Xu <peterx@redhat.com>
-References: <20210926161259.238054-1-namit@vmware.com>
- <7ce823c8-cfbf-cc59-9fc7-9aa3a79740c3@redhat.com>
- <6E8A03DD-175F-4A21-BCD7-383D61344521@gmail.com>
- <2753a311-4d5f-8bc5-ce6f-10063e3c6167@redhat.com>
- <AE756194-07D4-4467-92CA-9E986140D85D@gmail.com>
- <YVG2DJx9t6FGr4kX@dhcp22.suse.cz>
- <0FC3F99A-9F77-484A-899B-EDCBEFBFAC5D@gmail.com>
- <YVQbMREcRaCbUaUv@dhcp22.suse.cz>
- <E8456D5C-4FCD-46E4-B6F8-771076243D7E@gmail.com> <YWYWyUMcgoAJqi3V@t490s>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+ d=maximintegrated.onmicrosoft.com;
+ s=selector2-maximintegrated-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=La34/O3WvR6kvbyW8Goi0pHAyngN589Baa/sDidzzd4=;
+ b=QbepseX8VUSlP1t2WJ0WHjKW5uxbYBVCi8KWH/QJnQFR5GYAGFWdbm3ZlLAyo8LIOyzqtTibOj3ipnNRVWPkdgFzHAMchin81zF8dJSgblpXi2OWrXmFb5uroA+yg7yIWEs0mnjtkZKzwVzokznzyj0jkHfFHjRRHkjsmQzU0os=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none
+ header.from=maximintegrated.com;
+Received: from MN2PR11MB3678.namprd11.prod.outlook.com (2603:10b6:208:f8::11)
+ by BL1PR11MB5336.namprd11.prod.outlook.com (2603:10b6:208:316::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Wed, 13 Oct
+ 2021 15:49:31 +0000
+Received: from MN2PR11MB3678.namprd11.prod.outlook.com
+ ([fe80::fc11:3689:b9ad:4bfc]) by MN2PR11MB3678.namprd11.prod.outlook.com
+ ([fe80::fc11:3689:b9ad:4bfc%7]) with mapi id 15.20.4587.027; Wed, 13 Oct 2021
+ 15:49:31 +0000
+From:   George Song <george.song@maximintegrated.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, george.song@analog.com,
+        ryans.lee@analog.com, steves.lee@maximintegrated.com
+Subject: [PATCH 1/2] ASoC: dt-bindings: max98520: Add initial bindings
+Date:   Thu, 14 Oct 2021 00:49:15 +0900
+Message-Id: <20211013154916.1258-1-george.song@maximintegrated.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SLXP216CA0070.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:100:5::32) To MN2PR11MB3678.namprd11.prod.outlook.com
+ (2603:10b6:208:f8::11)
+MIME-Version: 1.0
+Received: from SEL-LT-028891.maxim-ic.internal (39.117.232.232) by SLXP216CA0070.KORP216.PROD.OUTLOOK.COM (2603:1096:100:5::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Wed, 13 Oct 2021 15:49:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3f6ab8af-7121-4226-463b-08d98e610bb2
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5336:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR11MB5336234302FEB89B4A455090F4B79@BL1PR11MB5336.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1dTEvWwCxDmOvgo/SbLU3FzINq0xincoN3+d8JGK5a3jmLkA3P8Ra3DCkcz3a2tXwcUnjaUZTLrX4aYYAxiJn3HT5QwOAgCjcktp5Pfdq1fmMbO6smuv5Z9116PtmuM3ulplVxMlaQFBzFXJSjC9QtMWOrDW8FeybFA4zTIH6LAWc2L+tfOIRNbm9PLXmb/uX23YehsvRBQQnRfFzLRtqEDHUp8QN/jt48q15zXBEFGV0yexJv/xCxgpUT81XBSTtwVM+RFQcbU9VOrMOonRjiRDFyJ8Uta7KvCNFToOiHfcYkbwr5OHUASNijoKkuZATCiHG5Xq939pnVXpZ+AIUQ5/rPqMpl3wxQg6ooS35ZJKoQ57edJoBX51gb2dpLbf2EriKS8oBCjmr6VW6EepUO7o+Ax4Q6eWA3nqkhfnmvlWboDCE8qGzXlbESlqb+1txZodSz4W6Bc1C5j/9Iq4YXNbyAxBsTGNpeOR30ZLfqWRvwWJfI569D2aJWLn4QI6aS000sD3igvbmqiKd4Kslyb74o7Kycc/C/Q1psYqlM0R0TjNCyLKgBvMuxiHQK5F9z7GMMA9agPNYmxkJwCaS0ynOFLdBp6f87PWl7qyi5zd4JMe4cEdteYAvBr4vjymjK6kN8mcW16r0G7w2N1ddK6nhmK2R2HgdstmwWuzb/gV3bFbq2L2Nx+WJMlTm27794+mwTgPFoieAUoWTmMnS4j5Ulnm0K/Dr9Zqu8yhKIEamgYggKvg99nZmIvWiK9YImVFqv2y3P5JfZ6lmD8kHcyj90YO+CaUwFKMsRJyPIw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR11MB3678.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(6666004)(6512007)(1076003)(26005)(2616005)(36756003)(8936002)(52116002)(8676002)(44832011)(38100700002)(38350700002)(4326008)(186003)(86362001)(316002)(107886003)(966005)(66476007)(66556008)(66946007)(508600001)(6506007)(6486002)(956004)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8y8j2brnbJngpl5uuU/ZbCY0P+N0++/x5dVqjMBRx5N1+dRlFXc/matZuln1?=
+ =?us-ascii?Q?kQE44luZV0UCzgqTBfy227X1qC7kxQZ4vgI8X3JC1adaUrapa3qd03rUjxQT?=
+ =?us-ascii?Q?6dZqTUVcUGfMFJWaxoYubGknRfXFwSUktqBIKE17z0x4VUBG2SIzQALjSYHn?=
+ =?us-ascii?Q?YXo0G4/sytVVGJPVxtcXT0GxVy3xBEvf7j10UDsaN0AwQROTHekxRaXvAY+g?=
+ =?us-ascii?Q?i+YfkNksJ05LnyC+atqiuDN0D2xYymGxGDPUq1pMUjDYDgA7FjVClgGTOOw2?=
+ =?us-ascii?Q?OiNhVpVeWQB1mCLgjhnZ8gY+MM9KqAVNEEX0n/O3CSpYIo92gJ3UqcBv4xRw?=
+ =?us-ascii?Q?uyo+RzhGmaQIflb78ll9lUU4FeDG3I4yqqiHCNEe17y6cIKm28h1JEQg+epO?=
+ =?us-ascii?Q?PTgqwNTe1kc8ldh9H2HTDMZU9PU2GC4xmvxPMiskn694Y7b4xUWw/VUZrwEc?=
+ =?us-ascii?Q?tTIfjtxURn4DcNQspmp8a4u6D5gL2porgVKYoGdslQBzt/2LYsF/wgsuUhB/?=
+ =?us-ascii?Q?v74zwwAowGTo4bmH86KqMWgD9PQuMCn5Dvfs2R4APYU9WJP3FXHdVXNbLpE8?=
+ =?us-ascii?Q?SSkeynEsT7+nEawQGeq9TmeNXbmFbARglzbDn/ORu2bjWubrMqspMTUbyhCi?=
+ =?us-ascii?Q?nraYwMta0EjVJUAV0fytmrL5HwScmklfI/7sLRQOcdolRy9N2i83UU1MsWfN?=
+ =?us-ascii?Q?/+sZwT8F+x+OneMbjEcPomvU8X3fbzP2TfCHiPvFiDaPkUCo8FsQp8Ej7r6w?=
+ =?us-ascii?Q?QVDGclrR+DOM711HJPnK/vAn082Urwwy5Ezp7aOanS1RgPUqj4FrI1dijrkz?=
+ =?us-ascii?Q?uflOdKEfdEJtrkU6BeT0WG7KbM7cg8UP4Ke7AywtdqgiFa4XFRrwbiQYbfzO?=
+ =?us-ascii?Q?T11GzJlP0whmqZTf7HP3DDAXggtZN9LEC4mt8dVxAhY3YyOMOlXQli2U2RDm?=
+ =?us-ascii?Q?9wKTbA8vP5XNaD7HQ/JYpogdV5YKfGxYSqfEvVf2NjjXh/mAxIITJ959sOMd?=
+ =?us-ascii?Q?s4I69ANZHT/RndTms5+jIB+0Ncm9AUOzjjTgxODuqfQCO9m2ZZaZ/t+rP1YE?=
+ =?us-ascii?Q?qU6MSpUj7rrodiL+ALgdzLQcGzT1gcBObkHqKCMEIlKTH+pEtbG55oUGABKe?=
+ =?us-ascii?Q?44eGuuuKZoSIpbw46zpWi9lXQLPj/z73hdyNKSkWayFE9BdfkTcwxdPdFB1R?=
+ =?us-ascii?Q?3+3LGlgufuD/1MlNWl+lPuyUWCdvnRBWWJbmaFJpuDPH5Do/inknPPzux31T?=
+ =?us-ascii?Q?GiiPJn/FNZFM3MIMQSw+0BIRBJ5IJk8umBVDV5h+pGnIkg7iuJd3R8sdf0fN?=
+ =?us-ascii?Q?nu1IF+omT/IjGXDF6j4Lese6?=
+X-OriginatorOrg: maximintegrated.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f6ab8af-7121-4226-463b-08d98e610bb2
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR11MB3678.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 15:49:31.2228
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd909df-ea69-4788-a554-f24b7854ad03
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zKLZzqLzF382uHihDl3c43xt9IvadK47MFCNw0qjck0qVF9X0CSS/6kLbubANOB5Aw1DiINQQpQNsegQdctoZBpbNHeU07+WR6Awf86gHI0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5336
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: George Song <george.song@analog.com>
 
---Apple-Mail=_F23DBACE-EAA8-4740-8FEA-C23F179D4E87
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
+Add initial bindings for max98520 audio amplifier
 
+Signed-off-by: George Song <george.song@analog.com>
+---
+ .../bindings/sound/maxim,max98520.yaml        | 35 +++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/maxim,max98520.yaml
 
+diff --git a/Documentation/devicetree/bindings/sound/maxim,max98520.yaml b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+new file mode 100644
+index 000000000000..d1f2b5ee775a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/maxim,max98520.yaml
+@@ -0,0 +1,35 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/maxim,max98520.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Maxim Integrated MAX98520 Speaker Amplifier Driver
++
++maintainers:
++  - George Song <George.song@analog.com>
++
++properties:
++  compatible:
++    const: maxim,max98520
++
++  reg:
++    maxItems: 1
++    description: I2C address of the device.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      max98520: amplifier@38 {
++        compatible = "maxim,max98520";
++        reg = <0x38>;
++      };
++    };
+-- 
+2.25.1
 
-> On Oct 12, 2021, at 4:14 PM, Peter Xu <peterx@redhat.com> wrote:
->=20
-> On Wed, Sep 29, 2021 at 11:31:25AM -0700, Nadav Amit wrote:
->>=20
->>=20
->>> On Sep 29, 2021, at 12:52 AM, Michal Hocko <mhocko@suse.com> wrote:
->>>=20
->>> On Mon 27-09-21 12:12:46, Nadav Amit wrote:
->>>>=20
->>>>> On Sep 27, 2021, at 5:16 AM, Michal Hocko <mhocko@suse.com> wrote:
->>>>>=20
->>>>> On Mon 27-09-21 05:00:11, Nadav Amit wrote:
->>>>> [...]
->>>>>> The manager is notified on memory regions that it should monitor
->>>>>> (through PTRACE/LD_PRELOAD/explicit-API). It then monitors these =
-regions
->>>>>> using the remote-userfaultfd that you saw on the second thread. =
-When it wants
->>>>>> to reclaim (anonymous) memory, it:
->>>>>>=20
->>>>>> 1. Uses UFFD-WP to protect that memory (and for this matter I got =
-a vectored
->>>>>> UFFD-WP to do so efficiently, a patch which I did not send yet).
->>>>>> 2. Calls process_vm_readv() to read that memory of that process.
->>>>>> 3. Write it back to =E2=80=9Cswap=E2=80=9D.
->>>>>> 4. Calls process_madvise(MADV_DONTNEED) to zap it.
->>>>>=20
->>>>> Why cannot you use MADV_PAGEOUT/MADV_COLD for this usecase?
->>>>=20
->>>> Providing hints to the kernel takes you so far to a certain extent.
->>>> The kernel does not want to (for a good reason) to be completely
->>>> configurable when it comes to reclaim and prefetch policies. Doing
->>>> so from userspace allows you to be fully configurable.
->>>=20
->>> I am sorry but I do not follow. Your scenario is describing a user
->>> space driven reclaim. Something that MADV_{COLD,PAGEOUT} have been
->>> designed for. What are you missing in the existing functionality?
->>=20
->> Using MADV_COLD/MADV_PAGEOUT does not allow userspace to control
->> many aspects of paging out memory:
->>=20
->> 1. Writeback: writeback ahead of time, dynamic clustering, etc.
->> 2. Batching (regardless, MADV_PAGEOUT does pretty bad batching job
->>  on non-contiguous memory).
->> 3. No guarantee the page is actually reclaimed (e.g., writeback)
->>  and the time it takes place.
->> 4. I/O stack for swapping - you must use kernel I/O stack (FUSE
->>  as non-performant as it is cannot be used for swap AFAIK).
->> 5. Other operations (e.g., locking, working set tracking) that
->>  might not be necessary or interfere.
->>=20
->> In addition, the use of MADV_COLD/MADV_PAGEOUT prevents the use
->> of userfaultfd to trap page-faults and react accordingly, so you
->> are also prevented from:
->>=20
->> 6. Having your own custom prefetching policy in response to #PF.
->>=20
->> There are additional use-cases I can try to formalize in which
->> MADV_COLD/MADV_PAGEOUT is insufficient. But the main difference
->> is pretty clear, I think: one is a hint that only applied to
->> page reclamation. The other enables the direct control of
->> userspace over (almost) all aspects of paging.
->>=20
->> As I suggested before, if it is preferred, this can be a UFFD
->> IOCTL instead of process_madvise() behavior, thereby lowering
->> the risk of a misuse.
->=20
-> (Sorry to join so late..)
->=20
-> Yeah I'm wondering whether that could add one extra layer of security. =
- But as
-> you mentioned, we've already have process_vm_writev(), then it's =
-indeed not
-> strong reason to reject process_madvise(DONTNEED) too, it seems.
->=20
-> Not sure whether you're aware of the umap project from LLNL:
->=20
-> https://github.com/LLNL/umap
->=20
-> =46rom what I can tell, that's really doing very similar thing as what =
-you
-> proposed here, but it's just a local version of things.  IOW in umap =
-the
-> DONTNEED can be done locally with madvise() already in the umap =
-maintained
-> threads.  That close the need to introduce the new process_madvise() =
-interface
-> and it's definitely safer as it's per-mm and per-task.
->=20
-> I think you mentioned above that the tracee program will need to =
-cooperate in
-> this case, I'm wondering whether some solution like umap would be fine =
-too as
-> that also requires cooperation of the tracee program, it's just that =
-the
-> cooperation may be slightly more than your solution but frankly I =
-think that's
-> still trivial and before I understand the details of your solution I =
-can't
-> really tell..
->=20
-> E.g. for a program to use umap, I think it needs to replace mmap() to =
-umap()
-> where we want the buffers to be managed by umap library rather than =
-the kernel,
-> then link against the umap library should work.  If the remote =
-solution you're
-> proposing requires similar (or even more complicated) cooperation, =
-then it'll
-> be controversial whether that can be done per-mm just like how umap =
-designed
-> and used.  So IMHO it'll be great to share more details on those parts =
-if umap
-> cannot satisfy the current need - IMHO it satisfies all the features =
-you
-> described on fully customized pageout and page faulting in, it's just =
-done in a
-> single mm.
-
-Thanks for you feedback, Peter.
-
-I am familiar with umap, perhaps not enough, but I am aware.
-
-=46rom my experience, the existing interfaces are not sufficient if you =
-look
-for high performance (low overhead) solution for multiple processes. The
-level of cooperation that I mentioned is something that I mentioned
-preemptively to avoid unnecessary discussion, but I believe they can be
-resolved (I have just deferred handling them).
-
-Specifically for performance, several new kernel features are needed, =
-for
-instance, support for iouring with async operations, a vectored
-UFFDIO_WRITEPROTECT(V) which batches TLB flushes across VMAs and a
-vectored madvise(). Even if we talk on the context of a single mm, I
-cannot see umap being performant for low latency devices without those
-facilities.
-
-Anyhow, I take your feedback and I will resend the patch for enabling
-MADV_DONTNEED with other patches once I am done. As for the TLB batching
-itself, I think it has an independent value - but I am not going to
-argue about it now if there is a pushback against it.
-
-
---Apple-Mail=_F23DBACE-EAA8-4740-8FEA-C23F179D4E87
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEESJL3osl5Ymx/w9I1HaAqSabaD1oFAmFm/38ACgkQHaAqSaba
-D1qiNw//Xbc4NezeBInOmRhP3eZALcE9fm09Xstn5YxQSevZ/tgfHqTfnm0DK4vp
-4prwPEWMeOjHK1yAJrrrVWGFYAgQQyLkFyAFqNyRRb3zzDTubSzNXtAu1p1ztHV4
-rK5TL0bV2HNciLaqZDfAXYFl7fIe5jAHrZRiSLLIlbLT0fY4UFU8f3A4q43OoKan
-um0L+Yv3e8KPhrgCeWOsTNJ6QexGgq7RvpG0lHWO3Al7tK8Fm6oqvGw9Zz840ZQl
-WDMjOQXGbVBKQktYc6IOiPBmhlOd0qsPxNYtcpg2OeWP4O6TZIrIFk8he1OaFZni
-wvK7vTmfkdQBtCapVjwk8JyTcHlpgV7pq5iz3rTDl3J91rVMgZzVBCVzWqg6minN
-tVGz8pHqKdpEiyU/72skRZ3P17XKvuFxCuPfhmOQn5iHKkiB6BNvop+IAvxGiGnD
-osh5Lea1fT2ZO9SCnw1nTWp0v/mpCfnPRpEhAEYEaa3jTQxJRjmockE8yrtAdNOZ
-p614N4eb6TT80VN7qV8KtWW0fJebbEgvzGiVwluhZM62uQedGYysjV7w43Ulk3bX
-06e7R2yF1PgaFUSVRFdp7oZW+4otCmuL5N/dqIM5fY8/xH9x7hgIoWMyymjmQx8K
-aCKxnX6wGWBMdYC5Nu5jh/c4bVPPyhNlKpvskctWf++vf254Tks=
-=PQA3
------END PGP SIGNATURE-----
-
---Apple-Mail=_F23DBACE-EAA8-4740-8FEA-C23F179D4E87--
