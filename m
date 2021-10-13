@@ -2,159 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8051D42BC79
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9259942BC7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239233AbhJMKMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:12:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52269 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229853AbhJMKMT (ORCPT
+        id S239260AbhJMKMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238640AbhJMKMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:12:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634119816;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XIV6EWlf8IYh7mOxA5NB+uuQJyLxn6kGVxkuMI5GYog=;
-        b=bsGly8ZB84YYvX2eeaAnMpAK+4QdXYnJ6Yq9s9K8I2nvyQBa5fu16RHLd4OGAEAfmEaFAF
-        cVHVBEQBwijOqKjvlTd51weOsrFi8T3rBWl5JuXAjF8pMV+n3cYcQPFcnDQF96xjKow792
-        B/J+A7JltqQ2C2qwxBVVxOvjYpqdrGs=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-bLts38bLMlK6FLgrrKT4eQ-1; Wed, 13 Oct 2021 06:10:15 -0400
-X-MC-Unique: bLts38bLMlK6FLgrrKT4eQ-1
-Received: by mail-wr1-f71.google.com with SMTP id d13-20020adf9b8d000000b00160a94c235aso1595085wrc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:10:15 -0700 (PDT)
+        Wed, 13 Oct 2021 06:12:52 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1F6C061570;
+        Wed, 13 Oct 2021 03:10:49 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id w19so8053876edd.2;
+        Wed, 13 Oct 2021 03:10:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wGwH11V3scWpf3iRrX4ldRZd2N04cx6BU4SUtoJap8Y=;
+        b=AEEukZ7tzjwYMFn79se//ZeR7tri2YbXmN+vH51MiOLLpeGKT2Kmm1r9aDtSGmEpBJ
+         81AV+HO01yDr/Tbs4iYfROAwZ39YAc0UoIFbijszg7pTCKVlwLiizmAiLkxEtHfrRnGs
+         mHaiWqS7vjrMcSug69O9IdG59kHTNiGfV9GeaMmGZkRPpE/BwPKW9R2aGjZHymj/O7Ws
+         Sx5yfPPtVRynRvv604+PIBOl1v9gdWtVXUhx4Ry9+xdMk3xnjHPzaAgbLqhecsEfX+fw
+         bdYhN1XY6pVR19hKV3z+s+A+B63HGxh4N/X+xZ1ge/4Q2nOzHKBYZ9jU/GSOsuYZmYBz
+         1+Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XIV6EWlf8IYh7mOxA5NB+uuQJyLxn6kGVxkuMI5GYog=;
-        b=qGbUVtWzLiU6Zz+vtPaJYYF7taF9pX18wC8tKTtCiJa0cnmfQDUD7v0Iv0zUtdCUe+
-         UjJ+DWFJ8/yycZkkvPSYrNGOqG0VUvTAJnZPSmJGqksSMy/95q6apVQT+kusFPEXuPkp
-         V+ir5TJd+RDHmUFsunFBWmkSlZ+qESz1u9BMQuavCT92jI/I6nPIlqFpFOve3VIKYVzi
-         8c1TfMq3nvoAimXVY3pN3EdnpLfQoxBv7Y5lZ6ovKeTpKcd8lP/koFXYQeRaA5P30e4i
-         PHYTUfXPPgjquOvs4l1UWc9Epv+/9J1wzyyiOdUgoawHqJ+2uWG+7e73jJfwmyfe+Vus
-         RtTQ==
-X-Gm-Message-State: AOAM530Ymf+uzBW4AlnPfYmS9HiKczKOQmuDShjV6FyQ2F9KmEf3SOy3
-        IqADD/Wbo+J1iEdQHFnXK5rNaOuxEhYUFVjQZOeOM5zBkjepHrlxSOD1Sg+6YYHYDmDws0zb20/
-        AJynp51wvFMPTDSP9XoYwSrkC
-X-Received: by 2002:a5d:6c65:: with SMTP id r5mr38598494wrz.26.1634119814027;
-        Wed, 13 Oct 2021 03:10:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwdzEUsRMSd5Z6w3cXq4dmtWNY5MNbht2wMdWdZK2XnSLKoIDFYiOilvxVG3omeTmm8H874VQ==
-X-Received: by 2002:a5d:6c65:: with SMTP id r5mr38598465wrz.26.1634119813789;
-        Wed, 13 Oct 2021 03:10:13 -0700 (PDT)
-Received: from redhat.com ([2.55.30.112])
-        by smtp.gmail.com with ESMTPSA id p25sm4782688wma.2.2021.10.13.03.10.11
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wGwH11V3scWpf3iRrX4ldRZd2N04cx6BU4SUtoJap8Y=;
+        b=R15XYW6/DY9CiBDl6dja/twG7plHfXDKEW40ieda0ATcTXvuBl6yAnyuG1Oed7tA8W
+         uPv5H/5t40XI5BieC2g57FA2WcQqhp2MdQH1U85J2LEp9Y0KMaqr7dnwbiyI0gQrBbGH
+         h5xOTSAfW5huo45v+LF+jzm0lo5DzkYkXs9tNamR9aPP98DlXExqXnZEgPlBk9A6QU91
+         NKLC5U+TYHlDBD3oWwRmV91Dj9tY4yi78rG7FgqcPT/PJ+IWs7dpIzXXRgcas7rnvncQ
+         TdSat7/JN5D0taDK0JJgNdzgnOZzkFsGLqJbvRGx0nccI0HXbeivR55xcLLhDnEeGLK6
+         LBbQ==
+X-Gm-Message-State: AOAM530ryEsRGpmobHcnH0iv2uEq6okVoruwTj/M9o7arlQpfj4eQGxm
+        Z3xqMfIaSv/fjgVDjfOcjFk=
+X-Google-Smtp-Source: ABdhPJyvWfAfnM1nVqXFVacTHcls/CPZVdtm1dxRPMmiM5xHl2crt5+QVOy4KI2aIIvOBmmwtlDKvQ==
+X-Received: by 2002:a50:da06:: with SMTP id z6mr8358492edj.355.1634119848255;
+        Wed, 13 Oct 2021 03:10:48 -0700 (PDT)
+Received: from skbuf ([188.26.53.217])
+        by smtp.gmail.com with ESMTPSA id x11sm7648901edj.62.2021.10.13.03.10.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 03:10:13 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 06:10:09 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        markver@us.ibm.com, Cornelia Huck <cohuck@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, stefanha@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        qemu-devel@nongnu.org
-Subject: Re: [PATCH v3 1/1] virtio: write back F_VERSION_1 before validate
-Message-ID: <20211013060923-mutt-send-email-mst@kernel.org>
-References: <20211011053921.1198936-1-pasic@linux.ibm.com>
+        Wed, 13 Oct 2021 03:10:47 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 13:10:46 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
+Cc:     DENG Qingfang <dqfext@gmail.com>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Rasmussen <MIR@bang-olufsen.dk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 5/6] net: dsa: realtek-smi: add rtl8365mb
+ subdriver for RTL8365MB-VC
+Message-ID: <20211013101046.ofmmyy2fuwjkkcia@skbuf>
+References: <20211012123557.3547280-1-alvin@pqrs.dk>
+ <20211012123557.3547280-6-alvin@pqrs.dk>
+ <20211013095505.55966-1-dqfext@gmail.com>
+ <32ffccb4-ff8b-5e60-ad29-e32bcb22969f@bang-olufsen.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211011053921.1198936-1-pasic@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <32ffccb4-ff8b-5e60-ad29-e32bcb22969f@bang-olufsen.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 07:39:21AM +0200, Halil Pasic wrote:
-> The virtio specification virtio-v1.1-cs01 states: "Transitional devices
-> MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
-> been acknowledged by the driver."  This is exactly what QEMU as of 6.1
-> has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
-> 
-> However, the specification also says: "... the driver MAY read (but MUST
-> NOT write) the device-specific configuration fields to check that it can
-> support the device ..." before setting FEATURES_OK.
-> 
-> In that case, any transitional device relying solely on
-> VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
-> legacy format.  In particular, this implies that it is in big endian
-> format for big endian guests. This naturally confuses the driver which
-> expects little endian in the modern mode.
-> 
-> It is probably a good idea to amend the spec to clarify that
-> VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
-> is complete. Before validate callback existed, config space was only
-> read after FEATURES_OK. However, we already have two regressions, so
-> let's address this here as well.
-> 
-> The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and
-> the VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when
-> virtio 1.0 is used on both sides. The latter renders virtio-blk unusable
-> with DASD backing, because things simply don't work with the default.
-> See Fixes tags for relevant commits.
-> 
-> For QEMU, we can work around the issue by writing out the feature bits
-> with VIRTIO_F_VERSION_1 bit set.  We (ab)use the finalize_features
-> config op for this. This isn't enough to address all vhost devices since
-> these do not get the features until FEATURES_OK, however it looks like
-> the affected devices actually never handled the endianness for legacy
-> mode correctly, so at least that's not a regression.
-> 
-> No devices except virtio net and virtio blk seem to be affected.
-> 
-> Long term the right thing to do is to fix the hypervisors.
-> 
-> Cc: <stable@vger.kernel.org> #v4.11
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-> Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
-> Reported-by: markver@us.ibm.com
-> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+On Wed, Oct 13, 2021 at 10:05:21AM +0000, Alvin Šipraga wrote:
+> On 10/13/21 11:55 AM, DENG Qingfang wrote:
+> > On Tue, Oct 12, 2021 at 02:35:54PM +0200, Alvin Šipraga wrote:
+> >> +/* Port mapping macros
+> >> + *
+> >> + * PORT_NUM_x2y: map a port number from domain x to domain y
+> >> + * PORT_MASK_x2y: map a port mask from domain x to domain y
+> >> + *
+> >> + * L = logical port domain, i.e. dsa_port.index
+> >> + * P = physical port domain, used by the Realtek ASIC for port indexing;
+> >> + *     for ports with internal PHYs, this is also the PHY index
+> >> + * E = extension port domain, used by the Realtek ASIC for managing EXT ports
+> >> + *
+> >> + * The terminology is borrowed from the vendor driver. The extension port domain
+> >> + * is mostly used to navigate the labyrinthine layout of EXT port configuration
+> >> + * registers and is not considered intuitive by the author.
+> >> + *
+> >> + * Unless a function is accessing chip registers, it should be using the logical
+> >> + * port domain. Moreover, function arguments for port numbers and port masks
+> >> + * must always be in the logical domain. The conversion must be done as close as
+> >> + * possible to the register access to avoid chaos.
+> >> + *
+> >> + * The mappings vary between chips in the family supported by this driver. Here
+> >> + * is an example of the mapping for the RTL8365MB-VC:
+> >> + *
+> >> + *    L | P | E | remark
+> >> + *   ---+---+---+--------
+> >> + *    0 | 0 |   | user port
+> >> + *    1 | 1 |   | user port
+> >> + *    2 | 2 |   | user port
+> >> + *    3 | 3 |   | user port
+> >> + *    4 | 6 | 1 | extension (CPU) port
+> >> + *
+> >> + * NOTE: Currently this is hardcoded for the RTL8365MB-VC. This will probably
+> >> + * require a rework when adding support for other chips.
+> >> + */
+> >> +#define CPU_PORT_LOGICAL_NUM	4
+> >> +#define CPU_PORT_LOGICAL_MASK	BIT(CPU_PORT_LOGICAL_NUM)
+> >> +#define CPU_PORT_PHYSICAL_NUM	6
+> >> +#define CPU_PORT_PHYSICAL_MASK	BIT(CPU_PORT_PHYSICAL_NUM)
+> >> +#define CPU_PORT_EXTENSION_NUM	1
+> >> +
+> >> +static u32 rtl8365mb_port_num_l2p(u32 port)
+> >> +{
+> >> +	return port == CPU_PORT_LOGICAL_NUM ? CPU_PORT_PHYSICAL_NUM : port;
+> >> +}
+> >> +
+> >> +static u32 rtl8365mb_port_mask_l2p(u32 mask)
+> >> +{
+> >> +	u32 phys_mask = mask & ~CPU_PORT_LOGICAL_MASK;
+> >> +
+> >> +	if (mask & CPU_PORT_LOGICAL_MASK)
+> >> +		phys_mask |= CPU_PORT_PHYSICAL_MASK;
+> >> +
+> >> +	return phys_mask;
+> >> +}
+> >> +
+> >> +static u32 rtl8365mb_port_mask_p2l(u32 phys_mask)
+> >> +{
+> >> +	u32 mask = phys_mask & ~CPU_PORT_PHYSICAL_MASK;
+> >> +
+> >> +	if (phys_mask & CPU_PORT_PHYSICAL_MASK)
+> >> +		mask |= CPU_PORT_LOGICAL_MASK;
+> >> +
+> >> +	return mask;
+> >> +}
+> >> +
+> >> +#define PORT_NUM_L2P(_p) (rtl8365mb_port_num_l2p(_p))
+> >> +#define PORT_NUM_L2E(_p) (CPU_PORT_EXTENSION_NUM)
+> >> +#define PORT_MASK_L2P(_m) (rtl8365mb_port_mask_l2p(_m))
+> >> +#define PORT_MASK_P2L(_m) (rtl8365mb_port_mask_p2l(_m))
+> >
+> > The whole port mapping thing can be avoided if you just use port 6 as the CPU
+> > port.
+>
+> Andrew also suggested this, but the discontinuity in port IDs seems to
+> be an invitation for trouble. Here is an example of a series of
+> functions from dsa.h:
+>
+> static inline struct dsa_port *dsa_to_port(struct dsa_switch *ds, int p)
+> {
+> 	struct dsa_switch_tree *dst = ds->dst;
+> 	struct dsa_port *dp;
+>
+> 	list_for_each_entry(dp, &dst->ports, list)
+> 		if (dp->ds == ds && dp->index == p)
+> 			return dp;
+>
+> 	return NULL;
+> }
+>
+> static inline bool dsa_is_user_port(struct dsa_switch *ds, int p)
+> {
+> 	return dsa_to_port(ds, p)->type == DSA_PORT_TYPE_USER;
+> }
+>
+> static inline u32 dsa_user_ports(struct dsa_switch *ds)
+> {
+> 	u32 mask = 0;
+> 	int p;
+>
+> 	for (p = 0; p < ds->num_ports; p++)
+> 		if (dsa_is_user_port(ds, p))
+> 			mask |= BIT(p);
+>
+> 	return mask;
+> }
+>
+> My reading of dsa_user_ports() is that the port IDs run from 0 to
+> (ds->num_ports - 1). If num_ports is 5 (4 user ports and 1 CPU port, as
+> in my case), but the CPU is port 6, will we not dereference NULL when
+> calling dsa_is_user_port(ds, 4)?
+>
+> >
+> >> +
+> >> +/* Chip-specific data and limits */
+>
 
-OK this looks good! How about a QEMU patch to make it spec compliant on
-BE?
-
-> ---
-> 
-> @Connie: I made some more commit message changes to accommodate Michael's
-> requests. I just assumed these will work or you as well and kept your
-> r-b. Please shout at me if it needs to be dropped :)
-> ---
->  drivers/virtio/virtio.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> index 0a5b54034d4b..236081afe9a2 100644
-> --- a/drivers/virtio/virtio.c
-> +++ b/drivers/virtio/virtio.c
-> @@ -239,6 +239,17 @@ static int virtio_dev_probe(struct device *_d)
->  		driver_features_legacy = driver_features;
->  	}
->  
-> +	/*
-> +	 * Some devices detect legacy solely via F_VERSION_1. Write
-> +	 * F_VERSION_1 to force LE config space accesses before FEATURES_OK for
-> +	 * these when needed.
-> +	 */
-> +	if (drv->validate && !virtio_legacy_is_little_endian()
-> +			  && device_features & BIT_ULL(VIRTIO_F_VERSION_1)) {
-> +		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
-> +		dev->config->finalize_features(dev);
-> +	}
-> +
->  	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
->  		dev->features = driver_features & device_features;
->  	else
-> 
-> base-commit: 60a9483534ed0d99090a2ee1d4bb0b8179195f51
-> -- 
-> 2.25.1
-
+No, have you actually tried it? Discontinuities should be absolutely
+fine, see dsa_switch_touch_ports(), a struct dsa_port is created for
+every port number up to ds->num_ports, the ones absent from DT will
+simply remain as DSA_PORT_TYPE_UNUSED.
