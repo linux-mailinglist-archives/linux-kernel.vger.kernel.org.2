@@ -2,194 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CAE42B252
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E8B42B24D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236268AbhJMBnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 21:43:43 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:47469 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhJMBnl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 21:43:41 -0400
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 19D1f2cT032406;
-        Wed, 13 Oct 2021 10:41:02 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 19D1f2cT032406
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1634089263;
-        bh=R7m4FOJaxwF5u6woKIjKGg6BVz0jl0+g2IHcSsMR7kM=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=IR7juhxMMMlPCHjJPP8bSlqp3i88p66RoD6KFVwDC5I5s0OhXzMpDYIh7iIoGEY5e
-         kDjpAEmA7NZkuzX12DDB6G+cv4ay4U06sAwtbKQ9gD+TUzHp/FqKdw1THYT9zl4spl
-         fy3FdeLxouegAbSOfzd/5g3+EaD3HywJBgAshvQvny/jnIJ9qjc4mmagSDs9L1BmWC
-         rH+6MmFINfVSSlRnQ48H2253usCkwW7YUMc30NiCacG45b7g2/E9eoXGnC1fhZPhw7
-         L+CZOY/kZ2aV1aI4q0sY+O3kGB8XNkAq+rxHChrASAsj8by6E7hOUfPysphV/IwT5U
-         GYwAZz45abieg==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id oa4so982727pjb.2;
-        Tue, 12 Oct 2021 18:41:02 -0700 (PDT)
-X-Gm-Message-State: AOAM532jYs8xfLimceD7WTR6TFdBA61hlffO76NsrnJZhpG48N522lY5
-        1IHrtuBJvfM1zlqaSCRgi3FEAh++yn6w54ghk3g=
-X-Google-Smtp-Source: ABdhPJy6mWJwsP++gd10Dm+UA5Xg8dGCwy4UaPvVicmimh/YjoUeAlqE9n2ux3BdEYnlB+0La6Pd/qMb5eyWBh5uwco=
-X-Received: by 2002:a17:90b:4c86:: with SMTP id my6mr10019901pjb.77.1634089261793;
- Tue, 12 Oct 2021 18:41:01 -0700 (PDT)
+        id S236437AbhJMBiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 21:38:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231200AbhJMBiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 21:38:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDD6860F21;
+        Wed, 13 Oct 2021 01:36:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634088982;
+        bh=ffNeVVT7MmQtCBKwP9CXNH+1zDuf7urK1ZbuwrqwlTQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fFyFhnwVvrTRnV8BtudZ1rp9Fx3NAKYDgkoa8M//JVNSVFH4qBuNZbMbdSfyLUb6P
+         OD1K8CWXddERdGZeb8L0vm0IT8m9N5KqdIaYd8Cb7+Xp9znx1HBDq8XyhhoFRX9zpK
+         ca42FTsmlgcz2kQTXWIQhGCN72Nt/24dN/ZAv/L2xyEObRmDXPnWRnfvara05pHUc1
+         z/VEgSYuikc2dGh3xQ8ZJf61/KvkVJGTd+4wvGS92AycF2EWZ1LvdUAixkJX8zUeac
+         aPrxTPlb+kcuxCQ2+E7CmNRxHwdBW0cKOk8HhZ59k1LQGnZ5jkS7QDxk+AWmVcBxoR
+         9qgZxS4lRNcdQ==
+Date:   Tue, 12 Oct 2021 20:40:42 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH][next] ftrace: Fix -Wcast-function-type warnings on
+ powerpc64
+Message-ID: <20211013014042.GA1089693@embeddedor>
+References: <20211005053922.GA702049@embeddedor>
+ <20211005111714.18ebea2b@gandalf.local.home>
+ <20211005161812.GA768055@embeddedor>
+ <20211005123522.244281e6@gandalf.local.home>
+ <20211005165027.GA797862@embeddedor>
+ <20211005150807.03da5e54@gandalf.local.home>
+ <20211005193557.GA881195@embeddedor>
+ <20211005200935.2429ec2c@rorschach.local.home>
+ <20211006211426.GA916113@embeddedor>
+ <20211006171443.4faecbe9@gandalf.local.home>
 MIME-Version: 1.0
-References: <20211007185900.2801788-1-nicolas@fjasle.eu> <CAK7LNASDu7RK0vLtx1991abx880DtQHK+U2FK3qKbH5Kcz3ipw@mail.gmail.com>
- <YWVHV8v3m+L+BH9s@fjasle.eu>
-In-Reply-To: <YWVHV8v3m+L+BH9s@fjasle.eu>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 13 Oct 2021 10:40:24 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQu6XeHRu-F2UT_uHYUVxGczp5x946wwrPDataPZPKXZA@mail.gmail.com>
-Message-ID: <CAK7LNAQu6XeHRu-F2UT_uHYUVxGczp5x946wwrPDataPZPKXZA@mail.gmail.com>
-Subject: Re: [PATCH] initramfs: Check timestamp to prevent broken cpio archive
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        =?UTF-8?Q?Thomas_K=C3=BChnel?= <thomas.kuehnel@avm.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211006171443.4faecbe9@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 5:29 PM Nicolas Schier <nicolas@fjasle.eu> wrote:
->
-> On Tue, Oct 12, 2021 at 11:02:33AM +0900, Masahiro Yamada wrote:
-> > Date: Tue, 12 Oct 2021 11:02:33 +0900
-> > From: Masahiro Yamada <masahiroy@kernel.org>
-> > To: Nicolas Schier <nicolas@fjasle.eu>
-> > Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Kbu=
-ild
-> >  mailing list <linux-kbuild@vger.kernel.org>, Thomas K=C3=BChnel
-> >  <thomas.kuehnel@avm.de>
-> > Subject: Re: [PATCH] initramfs: Check timestamp to prevent broken cpio
-> >  archive
-> > Message-ID: <CAK7LNASDu7RK0vLtx1991abx880DtQHK+U2FK3qKbH5Kcz3ipw@mail.g=
-mail.com>
-> >
-> > On Fri, Oct 8, 2021 at 3:59 AM Nicolas Schier <nicolas@fjasle.eu> wrote=
-:
-> > >
-> > > Cpio format reserves 8 bytes for an ASCII representation of a time_t =
-timestamp.
-> > > While 2106-02-07 06:28:15 (time_t =3D 0xffffffff) is still some years=
- in the
-> > > future, a poorly chosen date string for KBUILD_BUILD_TIMESTAMP, conve=
-rted into
-> > > seconds since the epoch, might lead to exceeded cpio timestamp limits=
- that
-> > > results in a broken cpio archive.  Add timestamp checks to prevent ov=
-errun of
-> > > the 8-byte cpio header field.
-> >
-> > Out of curiosity, how did you figure out
-> > "2106-02-07 06:28:15" was the overflow point?
-> > Is it affected by leap seconds?
-> >
-> >
-> > I got ffff816f
-> >
-> >
-> > $ printf "%x"  $(date -d'2106-02-07 06:28:15'  +%s)
-> > ffff816f
->
-> You have a local time zone offset of -9h?
-> I just did
->
-> $ TZ=3DUTC date -d@$((0xffffffff))
-> Sun Feb  7 06:28:15 UTC 2106
->
-> I should have mentioned the time zone info in the commit message.
->
+Steve,
 
+On Wed, Oct 06, 2021 at 05:14:43PM -0400, Steven Rostedt wrote:
+> On Wed, 6 Oct 2021 16:14:26 -0500
+> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+> 
+> > > Which I guess leaves us with either the linker trick, or having all
+> > > the archs get updated to support the latest ftrace features, and we can
+> > > remove the current #ifdefs.  
+> > 
+> > OK. Are you going to apply your patch any time soon? So, I can go and
+> > enable -Wcast-function-type in my -next tree. :)
+> 
+> Sure. I only did not add it because of the issue Jann brought up. But if it
+> is needed, and I do not want more #ifdef all over the code, I'll add it,
+> and perhaps even mark it for stable.
+> 
+> I'm working on some other fixes now anyway.
 
-Ah, time zone!
+Do you mind if, in the meantime, I add your patch to my -next tree?
+So, I can enable -Wcast-function-type in linux-next --I want to get
+ready for the next merge window.
 
-Right, my time zone is JST (+09:00).
-
-And, thanks for the update.
-
-
-
-
-
->
->
-> > > My colleague Thomas K=C3=BChnel discovered the behaviour, when we acc=
-identally fed
-> > > SOURCE_DATE_EPOCH to KBUILD_BUILD_TIMESTAMP as is: some timestamps (e=
-.g.
-> > > 1607420928 =3D 2021-12-08 10:48:48) will be interpreted by `date` as =
-a valid date
-> > > specification of science fictional times (here: year 160742).  Even t=
-hough this
-> > > is bad input for KBUILD_BUILD_TIMESTAMP, it should not break the init=
-ramfs
-> > > cpio format.
-> > >
-> > > Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
-> > > Cc: Thomas K=C3=BChnel <thomas.kuehnel@avm.de>
-> > > ---
-> > >  usr/gen_init_cpio.c | 17 +++++++++++++++++
-> > >  1 file changed, 17 insertions(+)
-> > >
-> > > diff --git a/usr/gen_init_cpio.c b/usr/gen_init_cpio.c
-> > > index 03b21189d58b..983dcdd35925 100644
-> > > --- a/usr/gen_init_cpio.c
-> > > +++ b/usr/gen_init_cpio.c
-> > > @@ -320,6 +320,12 @@ static int cpio_mkfile(const char *name, const c=
-har *location,
-> > >                 goto error;
-> > >         }
-> > >
-> > > +       if (buf.st_mtime > 0xffffffff) {
-> > > +               fprintf(stderr, "%s: Timestamp exceeds maximum cpio t=
-imestamp, clipping.\n",
-> > > +                       location);
-> > > +               buf.st_mtime =3D 0xffffffff;
-> > > +       }
-> > > +
-> > >         filebuf =3D malloc(buf.st_size);
-> > >         if (!filebuf) {
-> > >                 fprintf (stderr, "out of memory\n");
-> > > @@ -551,6 +557,17 @@ int main (int argc, char *argv[])
-> > >                 }
-> > >         }
-> > >
-> > > +       /*
-> > > +        * Timestamps after 2106-02-07 06:28:15 have an ascii hex tim=
-e_t
-> > > +        * representation that exceeds 8 chars and breaks the cpio he=
-ader
-> > > +        * specification.
-> > > +        */
-> > > +       if (default_mtime > 0xffffffff) {
-> > > +               fprintf(stderr, "ERROR: Timestamp 0x%08x too large fo=
-r cpio format\n",
-> > > +                       default_mtime);
-> > > +               exit(1);
-> > > +       }
-> > > +
-> > >         if (argc - optind !=3D 1) {
-> > >                 usage(argv[0]);
-> > >                 exit(1);
-> > > --
-> > > 2.30.1
-> > >
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
->
-> --
-> epost|xmpp: nicolas@fjasle.eu          irc://oftc.net/nsc
-> =E2=86=B3 gpg: 18ed 52db e34f 860e e9fb  c82b 7d97 0932 55a0 ce7f
->      -- frykten for herren er opphav til kunnskap --
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+Thanks
+--
+Gustavo
