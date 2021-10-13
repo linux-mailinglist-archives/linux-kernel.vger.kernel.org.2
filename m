@@ -2,227 +2,410 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2FC42CEF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 01:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207F942CEFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 01:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhJMXML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 19:12:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21840 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229575AbhJMXMK (ORCPT
+        id S229897AbhJMXMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 19:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhJMXMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 19:12:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634166606;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U3Zz1NdgJbuZO9PMLIHdfhxYur45mnDl/uZ4E3qmW6c=;
-        b=QIx5pKOca4ASbdXms4E1Ei7m9gmiCx/0pkc/Z3NiZFJDUqykvDD8fIDUKIsZnyaPBIcTBs
-        +EKCl1UtiLk2gxHrsxYT/gg8IMbr42u5syq2sMTbkgCwtgYCr0WHFfc35x1SG66muC/acI
-        h9mSBffOmO5aBM/QGwPAFSS+UiJXRek=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-485-h-IuqCHmPCS4kW28Y33m9g-1; Wed, 13 Oct 2021 19:10:04 -0400
-X-MC-Unique: h-IuqCHmPCS4kW28Y33m9g-1
-Received: by mail-pg1-f198.google.com with SMTP id w5-20020a654105000000b002692534afceso1266220pgp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 16:10:04 -0700 (PDT)
+        Wed, 13 Oct 2021 19:12:39 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88EBC061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 16:10:35 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i24so18099667lfj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 16:10:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Qan44gaKVp95l/9iJFC+LzKNkAC30U78FrBM+ZiMrrU=;
+        b=7piTNBSNTjA2ol5lFwaYf7ug6QtfCqjriJYrmkgKWWgsfc08kKXo7kRGfM8VhE612T
+         TTQxqwX38SbU81y7fDeS83IcIwQBu1o0pNwN52fh9UX735Gz6+MbkDRcyX8l3B/CkFlE
+         7jPSUiGtydhn5FfEXoKDuJWZsH4Alo4Q6WVtxv4NLWqzQrgxMc5r+RFwxPHN0vyqnEzM
+         +k6vnTqmgWEemsStU0Ug2wAv1WnxDn6t9cDV8mZsvbcx1SZYoQ0HHqijrSl8SSlqwAA1
+         CTE6qotMFNJjfWGe6G8DiIkIOx+mUoD0NSxFGOjnKmnV/AYes0Xi+UbCn3FputAdY313
+         Z9bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=U3Zz1NdgJbuZO9PMLIHdfhxYur45mnDl/uZ4E3qmW6c=;
-        b=wrMcnU8EtMKoB0rmGekx1DeQ4Rnew9t2HHeVmMp8o/3xl7tttAp5z7HqVMktgYL0NE
-         LTnV6WCOZaUSNO5RG35N95m5O+JjlatygtqjFjdA3D2vY7OG6WFbEHq8t4Gpgk2z5z4+
-         45HmneVnnITwS9zu4ERnIZTBxR6WAmR9lPYh+xoar0/SDdLR2xWVQPKigQ+Yl+3yfnTT
-         kbt05s+Xh8AyTzbBxZfveF74DFC37oN6yak/tCAxfrKfEkf51D94D9d1M0QIvY0PzUdW
-         CiJbAii7ROOVwNYHktWCyaCXQq9egjK6BMDgRmFnV/4DaL1b3liAgnvu9d4jw5ClL/WW
-         pwoA==
-X-Gm-Message-State: AOAM532CtfE3jOeayuAKECPYEHPoPw5IaksopXL5gdCAW/vVP/oACnjH
-        psWpYIExWKXKa6aQN5gnX1ik+O2sCfAPr/9ZMVNkLH0HHpFcs+BgZdDPNSLVHLVse20zhAKBtDl
-        3Zi0QGW/DCvQiY4pNtUW14vD2
-X-Received: by 2002:a63:3548:: with SMTP id c69mr1598463pga.111.1634166603645;
-        Wed, 13 Oct 2021 16:10:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwQwv2/BAw9goLcSL27J9xHo4b1sI1wMi4h7Z9mOjN0qKfNPkjPSjFHu2enqHTgE0pRpUDipA==
-X-Received: by 2002:a63:3548:: with SMTP id c69mr1598436pga.111.1634166603237;
-        Wed, 13 Oct 2021 16:10:03 -0700 (PDT)
-Received: from t490s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id nu16sm501375pjb.56.2021.10.13.16.09.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 16:10:02 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 07:09:54 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Colin Cross <ccross@google.com>,
-        Suren Baghdasarya <surenb@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [RFC PATCH 0/8] mm/madvise: support
- process_madvise(MADV_DONTNEED)
-Message-ID: <YWdnQmxGT51T1DMl@t490s>
-References: <7ce823c8-cfbf-cc59-9fc7-9aa3a79740c3@redhat.com>
- <6E8A03DD-175F-4A21-BCD7-383D61344521@gmail.com>
- <2753a311-4d5f-8bc5-ce6f-10063e3c6167@redhat.com>
- <AE756194-07D4-4467-92CA-9E986140D85D@gmail.com>
- <YVG2DJx9t6FGr4kX@dhcp22.suse.cz>
- <0FC3F99A-9F77-484A-899B-EDCBEFBFAC5D@gmail.com>
- <YVQbMREcRaCbUaUv@dhcp22.suse.cz>
- <E8456D5C-4FCD-46E4-B6F8-771076243D7E@gmail.com>
- <YWYWyUMcgoAJqi3V@t490s>
- <595A6581-86CF-4372-98AF-532DF65186C6@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Qan44gaKVp95l/9iJFC+LzKNkAC30U78FrBM+ZiMrrU=;
+        b=vnqW2oVnfmoyXA4bKOSymCDBdDR+EW3eUw7JTmKhVKIxV1UyMpswsgyt6GwEXsfFlE
+         lNOHs0MNYVlNeUwDDmwg2p0WjT+TxpgF4ckOMOF9ofC7Z3dK/s9Y3pOZ2QikyAWr5htO
+         Q1HzLKiTg7styu/ejc6TnmmJwJ9KK4JIzpBy6SAZFa5woprmhr+9sy37inj1qlV7uNPt
+         cymUwIYxCwcucSEzqF2R9cRNCkFYDyuIN+M8jaBkKugUfHHdRR/mHfcpxfMAIO/pwlKV
+         /Dn9dYNkafDkDf0FjwAbDgxT8Fp23UbqRsSJAF2X+2Y10SojGrDWrsfRbkhJVKwNUxHj
+         Q5Jw==
+X-Gm-Message-State: AOAM5305dAqsEI+1sNjF/NwAcurj8zP3p2Bcz1v+cClQiJO5V6CnHGA8
+        2IrCgoMPEpCvgW/ErwvTZG17sNGDNk06qCaO4igxGg==
+X-Google-Smtp-Source: ABdhPJwYyNB1JughgQdu2dMcMWEqOVJtkITltUfCjnBI9pRp+XszKtQdKVln2wetCF4ZjYgGLL2xLlWbJEpPvv5mY/E=
+X-Received: by 2002:a2e:7807:: with SMTP id t7mr2177891ljc.449.1634166633676;
+ Wed, 13 Oct 2021 16:10:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <595A6581-86CF-4372-98AF-532DF65186C6@gmail.com>
+References: <20210929041905.126454-1-mie@igel.co.jp> <20210929041905.126454-3-mie@igel.co.jp>
+ <YVXMkSDXybju88TU@phenom.ffwll.local> <CANXvt5rD82Lvvag_k9k+XE-Sj1S6Qwp5uf+-feUTvez1-t4xUA@mail.gmail.com>
+ <YWbGFkzkFRHmBcpa@phenom.ffwll.local>
+In-Reply-To: <YWbGFkzkFRHmBcpa@phenom.ffwll.local>
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Thu, 14 Oct 2021 08:10:22 +0900
+Message-ID: <CANXvt5p3Oo7VBq1DSDaPH8QexAus9+Q4DuzFo0JO583C7ZS9Gw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/2] RDMA/rxe: Add dma-buf support
+To:     Shunsuke Mie <mie@igel.co.jp>, Zhu Yanjun <zyjzyj2000@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 08:47:11AM -0700, Nadav Amit wrote:
-> 
-> 
-> > On Oct 12, 2021, at 4:14 PM, Peter Xu <peterx@redhat.com> wrote:
-> > 
-> > On Wed, Sep 29, 2021 at 11:31:25AM -0700, Nadav Amit wrote:
-> >> 
-> >> 
-> >>> On Sep 29, 2021, at 12:52 AM, Michal Hocko <mhocko@suse.com> wrote:
-> >>> 
-> >>> On Mon 27-09-21 12:12:46, Nadav Amit wrote:
-> >>>> 
-> >>>>> On Sep 27, 2021, at 5:16 AM, Michal Hocko <mhocko@suse.com> wrote:
-> >>>>> 
-> >>>>> On Mon 27-09-21 05:00:11, Nadav Amit wrote:
-> >>>>> [...]
-> >>>>>> The manager is notified on memory regions that it should monitor
-> >>>>>> (through PTRACE/LD_PRELOAD/explicit-API). It then monitors these regions
-> >>>>>> using the remote-userfaultfd that you saw on the second thread. When it wants
-> >>>>>> to reclaim (anonymous) memory, it:
-> >>>>>> 
-> >>>>>> 1. Uses UFFD-WP to protect that memory (and for this matter I got a vectored
-> >>>>>> UFFD-WP to do so efficiently, a patch which I did not send yet).
-> >>>>>> 2. Calls process_vm_readv() to read that memory of that process.
-> >>>>>> 3. Write it back to “swap”.
-> >>>>>> 4. Calls process_madvise(MADV_DONTNEED) to zap it.
-> >>>>> 
-> >>>>> Why cannot you use MADV_PAGEOUT/MADV_COLD for this usecase?
-> >>>> 
-> >>>> Providing hints to the kernel takes you so far to a certain extent.
-> >>>> The kernel does not want to (for a good reason) to be completely
-> >>>> configurable when it comes to reclaim and prefetch policies. Doing
-> >>>> so from userspace allows you to be fully configurable.
-> >>> 
-> >>> I am sorry but I do not follow. Your scenario is describing a user
-> >>> space driven reclaim. Something that MADV_{COLD,PAGEOUT} have been
-> >>> designed for. What are you missing in the existing functionality?
-> >> 
-> >> Using MADV_COLD/MADV_PAGEOUT does not allow userspace to control
-> >> many aspects of paging out memory:
-> >> 
-> >> 1. Writeback: writeback ahead of time, dynamic clustering, etc.
-> >> 2. Batching (regardless, MADV_PAGEOUT does pretty bad batching job
-> >>  on non-contiguous memory).
-> >> 3. No guarantee the page is actually reclaimed (e.g., writeback)
-> >>  and the time it takes place.
-> >> 4. I/O stack for swapping - you must use kernel I/O stack (FUSE
-> >>  as non-performant as it is cannot be used for swap AFAIK).
-> >> 5. Other operations (e.g., locking, working set tracking) that
-> >>  might not be necessary or interfere.
-> >> 
-> >> In addition, the use of MADV_COLD/MADV_PAGEOUT prevents the use
-> >> of userfaultfd to trap page-faults and react accordingly, so you
-> >> are also prevented from:
-> >> 
-> >> 6. Having your own custom prefetching policy in response to #PF.
-> >> 
-> >> There are additional use-cases I can try to formalize in which
-> >> MADV_COLD/MADV_PAGEOUT is insufficient. But the main difference
-> >> is pretty clear, I think: one is a hint that only applied to
-> >> page reclamation. The other enables the direct control of
-> >> userspace over (almost) all aspects of paging.
-> >> 
-> >> As I suggested before, if it is preferred, this can be a UFFD
-> >> IOCTL instead of process_madvise() behavior, thereby lowering
-> >> the risk of a misuse.
-> > 
-> > (Sorry to join so late..)
-> > 
-> > Yeah I'm wondering whether that could add one extra layer of security.  But as
-> > you mentioned, we've already have process_vm_writev(), then it's indeed not
-> > strong reason to reject process_madvise(DONTNEED) too, it seems.
-> > 
-> > Not sure whether you're aware of the umap project from LLNL:
-> > 
-> > https://github.com/LLNL/umap
-> > 
-> > From what I can tell, that's really doing very similar thing as what you
-> > proposed here, but it's just a local version of things.  IOW in umap the
-> > DONTNEED can be done locally with madvise() already in the umap maintained
-> > threads.  That close the need to introduce the new process_madvise() interface
-> > and it's definitely safer as it's per-mm and per-task.
-> > 
-> > I think you mentioned above that the tracee program will need to cooperate in
-> > this case, I'm wondering whether some solution like umap would be fine too as
-> > that also requires cooperation of the tracee program, it's just that the
-> > cooperation may be slightly more than your solution but frankly I think that's
-> > still trivial and before I understand the details of your solution I can't
-> > really tell..
-> > 
-> > E.g. for a program to use umap, I think it needs to replace mmap() to umap()
-> > where we want the buffers to be managed by umap library rather than the kernel,
-> > then link against the umap library should work.  If the remote solution you're
-> > proposing requires similar (or even more complicated) cooperation, then it'll
-> > be controversial whether that can be done per-mm just like how umap designed
-> > and used.  So IMHO it'll be great to share more details on those parts if umap
-> > cannot satisfy the current need - IMHO it satisfies all the features you
-> > described on fully customized pageout and page faulting in, it's just done in a
-> > single mm.
-> 
-> Thanks for you feedback, Peter.
-> 
-> I am familiar with umap, perhaps not enough, but I am aware.
-> 
-> From my experience, the existing interfaces are not sufficient if you look
-> for high performance (low overhead) solution for multiple processes. The
-> level of cooperation that I mentioned is something that I mentioned
-> preemptively to avoid unnecessary discussion, but I believe they can be
-> resolved (I have just deferred handling them).
-> 
-> Specifically for performance, several new kernel features are needed, for
-> instance, support for iouring with async operations, a vectored
-> UFFDIO_WRITEPROTECT(V) which batches TLB flushes across VMAs and a
-> vectored madvise(). Even if we talk on the context of a single mm, I
-> cannot see umap being performant for low latency devices without those
-> facilities.
-> 
-> Anyhow, I take your feedback and I will resend the patch for enabling
-> MADV_DONTNEED with other patches once I am done. As for the TLB batching
-> itself, I think it has an independent value - but I am not going to
-> argue about it now if there is a pushback against it.
+2021=E5=B9=B410=E6=9C=8813=E6=97=A5(=E6=B0=B4) 20:42 Daniel Vetter <daniel@=
+ffwll.ch>:
+>
+> On Fri, Oct 01, 2021 at 12:56:48PM +0900, Shunsuke Mie wrote:
+> > 2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 23:41 Daniel Vetter <dani=
+el@ffwll.ch>:
+> > >
+> > > On Wed, Sep 29, 2021 at 01:19:05PM +0900, Shunsuke Mie wrote:
+> > > > Implement a ib device operation =E2=80=98reg_user_mr_dmabuf=E2=80=
+=99. Generate a
+> > > > rxe_map from the memory space linked the passed dma-buf.
+> > > >
+> > > > Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+> > > > ---
+> > > >  drivers/infiniband/sw/rxe/rxe_loc.h   |   2 +
+> > > >  drivers/infiniband/sw/rxe/rxe_mr.c    | 118 ++++++++++++++++++++++=
+++++
+> > > >  drivers/infiniband/sw/rxe/rxe_verbs.c |  34 ++++++++
+> > > >  drivers/infiniband/sw/rxe/rxe_verbs.h |   2 +
+> > > >  4 files changed, 156 insertions(+)
+> > > >
+> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniba=
+nd/sw/rxe/rxe_loc.h
+> > > > index 1ca43b859d80..8bc19ea1a376 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> > > > @@ -75,6 +75,8 @@ u8 rxe_get_next_key(u32 last_key);
+> > > >  void rxe_mr_init_dma(struct rxe_pd *pd, int access, struct rxe_mr =
+*mr);
+> > > >  int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64=
+ iova,
+> > > >                    int access, struct rxe_mr *mr);
+> > > > +int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, =
+u64 length,
+> > > > +                         u64 iova, int access, struct rxe_mr *mr);
+> > > >  int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_=
+mr *mr);
+> > > >  int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int lengt=
+h,
+> > > >               enum rxe_mr_copy_dir dir);
+> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniban=
+d/sw/rxe/rxe_mr.c
+> > > > index 53271df10e47..af6ef671c3a5 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> > > > @@ -4,6 +4,7 @@
+> > > >   * Copyright (c) 2015 System Fabric Works, Inc. All rights reserve=
+d.
+> > > >   */
+> > > >
+> > > > +#include <linux/dma-buf.h>
+> > > >  #include "rxe.h"
+> > > >  #include "rxe_loc.h"
+> > > >
+> > > > @@ -245,6 +246,120 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 s=
+tart, u64 length, u64 iova,
+> > > >       return err;
+> > > >  }
+> > > >
+> > > > +static int rxe_map_dmabuf_mr(struct rxe_mr *mr,
+> > > > +                          struct ib_umem_dmabuf *umem_dmabuf)
+> > > > +{
+> > > > +     struct rxe_map_set *set;
+> > > > +     struct rxe_phys_buf *buf =3D NULL;
+> > > > +     struct rxe_map **map;
+> > > > +     void *vaddr, *vaddr_end;
+> > > > +     int num_buf =3D 0;
+> > > > +     int err;
+> > > > +     size_t remain;
+> > > > +
+> > > > +     mr->dmabuf_map =3D kzalloc(sizeof &mr->dmabuf_map, GFP_KERNEL=
+);
+> > >
+> > > dmabuf_maps are just tagged pointers (and we could shrink them to act=
+ually
+> > > just a tagged pointer if anyone cares about the overhead of the separ=
+ate
+> > > bool), allocating them seperately is overkill.
+> >
+> > I agree with you. However, I think it is needed to unmap by
+> > dma_buf_vunmap(). If there is another simple way to unmap it. It is not
+> > needed I think. What do you think about it?
+>
+> dma_buf_vunmap does not kfree the dma_buf_map argument, so that's no
+> reason to allocate it separately. Or I'm confused.
+I had a misunderstood. Yes, It is not needed to allocate an object.
+Actually some
+implementations don't alloc/free the argument.
+e.g. gpu/drm/drm_gem_cma_helper.c
+I'll fix it.
 
-Fair enough.
-
-Yes my comment was mostly about whether a remote interface is needed or can we
-still do it locally (frankly I always wanted to have some remote interface to
-manipulate uffd, but still anything like that should require some
-justifications for sure).
-
-I totally agree your rest works on either optimizing tlb (especially on the two
-points Andrea mentioned for either reducing tlb for huge pmd change protection,
-or pte promotions) and vectored interfaces sound reasonable, and they're
-definitely separate issues comparing to this one.
+> Also apologies, I'm way behind on mails.
+No problem. Thank you for your answer.
 
 Thanks,
+Shunsuke
 
--- 
-Peter Xu
-
+> -Daniel
+>
+> >
+> > > > +     if (!mr->dmabuf_map) {
+> > > > +             err =3D -ENOMEM;
+> > > > +             goto err_out;
+> > > > +     }
+> > > > +
+> > > > +     err =3D dma_buf_vmap(umem_dmabuf->dmabuf, mr->dmabuf_map);
+> > > > +     if (err)
+> > > > +             goto err_free_dmabuf_map;
+> > > > +
+> > > > +     set =3D mr->cur_map_set;
+> > > > +     set->page_shift =3D PAGE_SHIFT;
+> > > > +     set->page_mask =3D PAGE_SIZE - 1;
+> > > > +
+> > > > +     map =3D set->map;
+> > > > +     buf =3D map[0]->buf;
+> > > > +
+> > > > +     vaddr =3D mr->dmabuf_map->vaddr;
+> > >
+> > > dma_buf_map can be an __iomem too, you shouldn't dig around in this, =
+but
+> > > use the dma-buf-map.h helpers instead. On x86 (and I think also on mo=
+st
+> > > arm) it doesn't matter, but it's kinda not very nice in a pure softwa=
+re
+> > > driver.
+> > >
+> > > If anything is missing in dma-buf-map.h wrappers just add more.
+> > >
+> > > Or alternatively you need to fail the import if you can't handle __io=
+mem.
+> > >
+> > > Aside from these I think the dma-buf side here for cpu access looks
+> > > reasonable now.
+> > > -Daniel
+> > I'll see the dma-buf-map.h and consider the error handling that you sug=
+gested.
+> > I appreciate your support.
+> >
+> > Thanks a lot,
+> > Shunsuke.
+> >
+> > > > +     vaddr_end =3D vaddr + umem_dmabuf->dmabuf->size;
+> > > > +     remain =3D umem_dmabuf->dmabuf->size;
+> > > > +
+> > > > +     for (; remain; vaddr +=3D PAGE_SIZE) {
+> > > > +             if (num_buf >=3D RXE_BUF_PER_MAP) {
+> > > > +                     map++;
+> > > > +                     buf =3D map[0]->buf;
+> > > > +                     num_buf =3D 0;
+> > > > +             }
+> > > > +
+> > > > +             buf->addr =3D (uintptr_t)vaddr;
+> > > > +             if (remain >=3D PAGE_SIZE)
+> > > > +                     buf->size =3D PAGE_SIZE;
+> > > > +             else
+> > > > +                     buf->size =3D remain;
+> > > > +             remain -=3D buf->size;
+> > > > +
+> > > > +             num_buf++;
+> > > > +             buf++;
+> > > > +     }
+> > > > +
+> > > > +     return 0;
+> > > > +
+> > > > +err_free_dmabuf_map:
+> > > > +     kfree(mr->dmabuf_map);
+> > > > +err_out:
+> > > > +     return err;
+> > > > +}
+> > > > +
+> > > > +static void rxe_unmap_dmabuf_mr(struct rxe_mr *mr)
+> > > > +{
+> > > > +     struct ib_umem_dmabuf *umem_dmabuf =3D to_ib_umem_dmabuf(mr->=
+umem);
+> > > > +
+> > > > +     dma_buf_vunmap(umem_dmabuf->dmabuf, mr->dmabuf_map);
+> > > > +     kfree(mr->dmabuf_map);
+> > > > +}
+> > > > +
+> > > > +int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, =
+u64 length,
+> > > > +                         u64 iova, int access, struct rxe_mr *mr)
+> > > > +{
+> > > > +     struct ib_umem_dmabuf *umem_dmabuf;
+> > > > +     struct rxe_map_set *set;
+> > > > +     int err;
+> > > > +
+> > > > +     umem_dmabuf =3D ib_umem_dmabuf_get(pd->ibpd.device, start, le=
+ngth, fd,
+> > > > +                                      access, NULL);
+> > > > +     if (IS_ERR(umem_dmabuf)) {
+> > > > +             err =3D PTR_ERR(umem_dmabuf);
+> > > > +             goto err_out;
+> > > > +     }
+> > > > +
+> > > > +     rxe_mr_init(access, mr);
+> > > > +
+> > > > +     err =3D rxe_mr_alloc(mr, ib_umem_num_pages(&umem_dmabuf->umem=
+), 0);
+> > > > +     if (err) {
+> > > > +             pr_warn("%s: Unable to allocate memory for map\n", __=
+func__);
+> > > > +             goto err_release_umem;
+> > > > +     }
+> > > > +
+> > > > +     mr->ibmr.pd =3D &pd->ibpd;
+> > > > +     mr->umem =3D &umem_dmabuf->umem;
+> > > > +     mr->access =3D access;
+> > > > +     mr->state =3D RXE_MR_STATE_VALID;
+> > > > +     mr->type =3D IB_MR_TYPE_USER;
+> > > > +
+> > > > +     set =3D mr->cur_map_set;
+> > > > +     set->length =3D length;
+> > > > +     set->iova =3D iova;
+> > > > +     set->va =3D start;
+> > > > +     set->offset =3D ib_umem_offset(mr->umem);
+> > > > +
+> > > > +     err =3D rxe_map_dmabuf_mr(mr, umem_dmabuf);
+> > > > +     if (err)
+> > > > +             goto err_free_map_set;
+> > > > +
+> > > > +     return 0;
+> > > > +
+> > > > +err_free_map_set:
+> > > > +     rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
+> > > > +err_release_umem:
+> > > > +     ib_umem_release(&umem_dmabuf->umem);
+> > > > +err_out:
+> > > > +     return err;
+> > > > +}
+> > > > +
+> > > >  int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_=
+mr *mr)
+> > > >  {
+> > > >       int err;
+> > > > @@ -703,6 +818,9 @@ void rxe_mr_cleanup(struct rxe_pool_entry *arg)
+> > > >  {
+> > > >       struct rxe_mr *mr =3D container_of(arg, typeof(*mr), pelem);
+> > > >
+> > > > +     if (mr->umem && mr->umem->is_dmabuf)
+> > > > +             rxe_unmap_dmabuf_mr(mr);
+> > > > +
+> > > >       ib_umem_release(mr->umem);
+> > > >
+> > > >       if (mr->cur_map_set)
+> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infini=
+band/sw/rxe/rxe_verbs.c
+> > > > index 9d0bb9aa7514..6191bb4f434d 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> > > > @@ -916,6 +916,39 @@ static struct ib_mr *rxe_reg_user_mr(struct ib=
+_pd *ibpd,
+> > > >       return ERR_PTR(err);
+> > > >  }
+> > > >
+> > > > +static struct ib_mr *rxe_reg_user_mr_dmabuf(struct ib_pd *ibpd, u6=
+4 start,
+> > > > +                                         u64 length, u64 iova, int=
+ fd,
+> > > > +                                         int access, struct ib_uda=
+ta *udata)
+> > > > +{
+> > > > +     int err;
+> > > > +     struct rxe_dev *rxe =3D to_rdev(ibpd->device);
+> > > > +     struct rxe_pd *pd =3D to_rpd(ibpd);
+> > > > +     struct rxe_mr *mr;
+> > > > +
+> > > > +     mr =3D rxe_alloc(&rxe->mr_pool);
+> > > > +     if (!mr) {
+> > > > +             err =3D -ENOMEM;
+> > > > +             goto err2;
+> > > > +     }
+> > > > +
+> > > > +     rxe_add_index(mr);
+> > > > +
+> > > > +     rxe_add_ref(pd);
+> > > > +
+> > > > +     err =3D rxe_mr_dmabuf_init_user(pd, fd, start, length, iova, =
+access, mr);
+> > > > +     if (err)
+> > > > +             goto err3;
+> > > > +
+> > > > +     return &mr->ibmr;
+> > > > +
+> > > > +err3:
+> > > > +     rxe_drop_ref(pd);
+> > > > +     rxe_drop_index(mr);
+> > > > +     rxe_drop_ref(mr);
+> > > > +err2:
+> > > > +     return ERR_PTR(err);
+> > > > +}
+> > > > +
+> > > >  static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_t=
+ype mr_type,
+> > > >                                 u32 max_num_sg)
+> > > >  {
+> > > > @@ -1081,6 +1114,7 @@ static const struct ib_device_ops rxe_dev_ops=
+ =3D {
+> > > >       .query_qp =3D rxe_query_qp,
+> > > >       .query_srq =3D rxe_query_srq,
+> > > >       .reg_user_mr =3D rxe_reg_user_mr,
+> > > > +     .reg_user_mr_dmabuf =3D rxe_reg_user_mr_dmabuf,
+> > > >       .req_notify_cq =3D rxe_req_notify_cq,
+> > > >       .resize_cq =3D rxe_resize_cq,
+> > > >
+> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infini=
+band/sw/rxe/rxe_verbs.h
+> > > > index c807639435eb..0aa95ab06b6e 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > > > @@ -334,6 +334,8 @@ struct rxe_mr {
+> > > >
+> > > >       struct rxe_map_set      *cur_map_set;
+> > > >       struct rxe_map_set      *next_map_set;
+> > > > +
+> > > > +     struct dma_buf_map *dmabuf_map;
+> > > >  };
+> > > >
+> > > >  enum rxe_mw_state {
+> > > > --
+> > > > 2.17.1
+> > > >
+> > >
+> > > --
+> > > Daniel Vetter
+> > > Software Engineer, Intel Corporation
+> > > http://blog.ffwll.ch
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
