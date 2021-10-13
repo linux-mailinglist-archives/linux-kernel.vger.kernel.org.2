@@ -2,144 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F8142C78B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674E942C78D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237654AbhJMR0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:26:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbhJMR0w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:26:52 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECF5C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:24:48 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so4950842pjc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:24:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=znXxY8k0yLhwBo4efWALoeW3xXIEX4hKO/JqS3b4Dyg=;
-        b=Z6YEV8Cobp8BBjd4T6EW5woNqLhuBZaG7SxbSekXJNyXJWRkz1azJSTu3gOp4dXKdO
-         4FBHrg/Domvx507fqMSOgFtt/Xv69x+Y84bt8auhTLLYQhJZOlaTd3wQmym3OaJKgtH+
-         WqkA5fvqnwNY6A6nZAFtPRp/4kAM3o0TS0Dn9QUKQzIlVAX0UqpyATB3bzmxjBik9hFC
-         +KRZ3lxRKUFEnm2cWjd/yV1GyemnKu6e+fItC343CgRoKyestVhd5nxdLXR4grlSVLu4
-         l1EYljp0lpYLbg7qvECY8qrKHFYNObgOsbE8Hs5p/b6NJTjhEWVJ3wJT6EiFnMG5c2bo
-         vfUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=znXxY8k0yLhwBo4efWALoeW3xXIEX4hKO/JqS3b4Dyg=;
-        b=BvtPFsCgbaP1FBAVi/sl0cmHnjVuhBWhWPs/vLuFbdrdnI7YGq42T5IdiIYybeLhs3
-         bR2znZ0f4DNMQuFnHdbzCjYl2AgoiNetA7NX/qj1gB+ZlV/zZstidqA6SE5vmocXUA4X
-         TfeWlThjH/jMb3OPzr39WS8/MylwiO15s1MrAGHyujb3VA6Td7wJPIC6VfYVPg0C9Jh1
-         29vTyjwp0WqAPzToMVLRsORDbf3cMAKreLMLoOPRutAbHQys0GOPeLz8Dt09QQmvBHew
-         ju3sfkhBxau4TV2tibhNS5XO2opxzeTC25rlRkyApC46ATyIQXG1ZwPwQBzEzxWwvafV
-         Toxw==
-X-Gm-Message-State: AOAM532MY7wxVI1HhBT+7zHkbcq3DHHGaVKUIQc6NPXyqmfBDtgglO9E
-        TR/c9y0P5UlmP3EXGs0EPzRADw==
-X-Google-Smtp-Source: ABdhPJwaiA5rH696JEVs1LyaPKo4rf9o9kfJpWWgIN+FdZR7N051iOYsTHra9i4SBRSPNHgi4Pjmnw==
-X-Received: by 2002:a17:90b:782:: with SMTP id l2mr618878pjz.190.1634145887734;
-        Wed, 13 Oct 2021 10:24:47 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 14sm133224pfu.29.2021.10.13.10.24.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 10:24:47 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 17:24:43 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 37/45] KVM: SVM: Add support to handle MSR based
- Page State Change VMGEXIT
-Message-ID: <YWcWW7eikkWSmCkH@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-38-brijesh.singh@amd.com>
- <YWYCrQX4ZzwUVZCe@google.com>
- <a677423e-fa24-5b6a-785f-4cbdf0ebee37@amd.com>
+        id S237951AbhJMR2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:28:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:42792 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230404AbhJMR15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 13:27:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA6C01063;
+        Wed, 13 Oct 2021 10:25:52 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.73.189])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA6E43F694;
+        Wed, 13 Oct 2021 10:25:47 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 18:25:38 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Rob Herring <robh@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v10 1/5] x86: perf: Move RDPMC event flag to a common
+ definition
+Message-ID: <20211013172529.GA5400@C02TD0UTHF1T.local>
+References: <20210914204800.3945732-1-robh@kernel.org>
+ <20210914204800.3945732-2-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a677423e-fa24-5b6a-785f-4cbdf0ebee37@amd.com>
+In-Reply-To: <20210914204800.3945732-2-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021, Brijesh Singh wrote:
-> > The more I look at this, the more strongly I feel that private <=> shared conversions
-> > belong in the MMU, and that KVM's SPTEs should be the single source of truth for
-> > shared vs. private.  E.g. add a SPTE_TDP_PRIVATE_MASK in the software available bits.
-> > I believe the only hiccup is the snafu where not zapping _all_ SPTEs on memslot
-> > deletion breaks QEMU+VFIO+GPU, i.e. KVM would lose its canonical info on unrelated
-> > memslot deletion.
-> >
-> > But that is a solvable problem.  Ideally the bug, wherever it is, would be root
-> > caused and fixed.  I believe Peter (and Marc?) is going to work on reproducing
-> > the bug.
-> We have been also setting up VM with Qemu + VFIO + GPU usecase to repro
-> the bug on AMD HW and so far we no luck in reproducing it. Will continue
-> stressing the system to recreate it. Lets hope that Peter (and Marc) can
-> easily recreate on Intel HW so that we can work towards fixing it.
+Hi Rob,
 
-Are you trying on a modern kernel?  If so, double check that nx_huge_pages is off,
-turning that on caused the bug to disappear.  It should be off for AMD systems,
-but it's worth checking.
-
-> >> +		if (!rc) {
-> >> +			/*
-> >> +			 * This may happen if another vCPU unmapped the page
-> >> +			 * before we acquire the lock. Retry the PSC.
-> >> +			 */
-> >> +			write_unlock(&kvm->mmu_lock);
-> >> +			return 0;
-> > How will the caller (guest?) know to retry the PSC if KVM returns "success"?
+On Tue, Sep 14, 2021 at 03:47:56PM -0500, Rob Herring wrote:
+> In preparation to enable user counter access on arm64 and to move some
+> of the user access handling to perf core, create a common event flag for
+> user counter access and convert x86 to use it.
 > 
-> If a guest is adhering to the GHCB spec then it will see that hypervisor
-> has not processed all the entry and it should retry the PSC.
+> Since the architecture specific flags start at the LSB, starting at the
+> MSB for common flags.
 
-But AFAICT that information isn't passed to the guest.  Even in this single-page
-MSR-based case, the caller will say "all good" on a return of 0.
+Minor comments below (definition rename, and a comment block), but with
+those:
 
-The "full" path is more obvious, as the caller clearly continues to process
-entries unless there's an actual failure.
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
 
-+       for (; cur <= end; cur++) {
-+               entry = &info->entries[cur];
-+               gpa = gfn_to_gpa(entry->gfn);
-+               level = RMP_TO_X86_PG_LEVEL(entry->pagesize);
-+               op = entry->operation;
-+
-+               if (!IS_ALIGNED(gpa, page_level_size(level))) {
-+                       rc = PSC_INVALID_ENTRY;
-+                       goto out;
-+               }
-+
-+               rc = __snp_handle_page_state_change(vcpu, op, gpa, level);
-+               if (rc)
-+                       goto out;
-+       }
+Peter, are you happy with this from the x86 side?
+
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Kan Liang <kan.liang@linux.intel.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: linux-perf-users@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  arch/x86/events/core.c       | 10 +++++-----
+>  arch/x86/events/perf_event.h |  2 +-
+>  include/linux/perf_event.h   |  2 ++
+>  3 files changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 2a57dbed4894..2bd50fc061e1 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -2469,7 +2469,7 @@ static int x86_pmu_event_init(struct perf_event *event)
+>  
+>  	if (READ_ONCE(x86_pmu.attr_rdpmc) &&
+>  	    !(event->hw.flags & PERF_X86_EVENT_LARGE_PEBS))
+> -		event->hw.flags |= PERF_X86_EVENT_RDPMC_ALLOWED;
+> +		event->hw.flags |= PERF_EVENT_FLAG_USER_READ_CNT;
+>  
+>  	return err;
+>  }
+> @@ -2503,7 +2503,7 @@ void perf_clear_dirty_counters(void)
+>  
+>  static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+>  {
+> -	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+> +	if (!(event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT))
+>  		return;
+>  
+>  	/*
+> @@ -2524,7 +2524,7 @@ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+>  
+>  static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
+>  {
+> -	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+> +	if (!(event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT))
+>  		return;
+>  
+>  	if (atomic_dec_and_test(&mm->context.perf_rdpmc_allowed))
+> @@ -2535,7 +2535,7 @@ static int x86_pmu_event_idx(struct perf_event *event)
+>  {
+>  	struct hw_perf_event *hwc = &event->hw;
+>  
+> -	if (!(hwc->flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+> +	if (!(hwc->flags & PERF_EVENT_FLAG_USER_READ_CNT))
+>  		return 0;
+>  
+>  	if (is_metric_idx(hwc->idx))
+> @@ -2718,7 +2718,7 @@ void arch_perf_update_userpage(struct perf_event *event,
+>  	userpg->cap_user_time = 0;
+>  	userpg->cap_user_time_zero = 0;
+>  	userpg->cap_user_rdpmc =
+> -		!!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED);
+> +		!!(event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT);
+>  	userpg->pmc_width = x86_pmu.cntval_bits;
+>  
+>  	if (!using_native_sched_clock() || !sched_clock_stable())
+> diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+> index e3ac05c97b5e..49f68b15745f 100644
+> --- a/arch/x86/events/perf_event.h
+> +++ b/arch/x86/events/perf_event.h
+> @@ -73,7 +73,7 @@ static inline bool constraint_match(struct event_constraint *c, u64 ecode)
+>  #define PERF_X86_EVENT_PEBS_NA_HSW	0x0010 /* haswell style datala, unknown */
+>  #define PERF_X86_EVENT_EXCL		0x0020 /* HT exclusivity on counter */
+>  #define PERF_X86_EVENT_DYNAMIC		0x0040 /* dynamic alloc'd constraint */
+> -#define PERF_X86_EVENT_RDPMC_ALLOWED	0x0080 /* grant rdpmc permission */
+> +
+>  #define PERF_X86_EVENT_EXCL_ACCT	0x0100 /* accounted EXCL event */
+>  #define PERF_X86_EVENT_AUTO_RELOAD	0x0200 /* use PEBS auto-reload */
+>  #define PERF_X86_EVENT_LARGE_PEBS	0x0400 /* use large PEBS */
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index fe156a8170aa..12debf008d39 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -142,6 +142,8 @@ struct hw_perf_event {
+>  			int		event_base_rdpmc;
+>  			int		idx;
+>  			int		last_cpu;
+> +
+> +#define PERF_EVENT_FLAG_USER_READ_CNT	0x80000000
+
+I realise this matches the style of PERF_HES_* and PERF_EF_*. but could
+we please arrange this like the PERF_PMU_CAP_* definitions, and move
+this immediately before the struct hw_perf_event defintion, with a
+comment block, e.g.
+
+/*
+ * hw_perf_event::flag values
+ *
+ * PERF_EVENT_FLAG_ARCH bits are reserved for architecture-specific
+ * usage.
+ */
+#define PERF_EVENT_FLAG_ARCH			0x0000ffff
+#define PERF_EVENT_FLAG_USER_READ_CNT		0x80000000
+
+Thanks,
+Mark.
