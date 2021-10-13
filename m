@@ -2,628 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2D842B240
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818C342B249
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236592AbhJMBb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 21:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236401AbhJMBbZ (ORCPT
+        id S234055AbhJMBhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 21:37:06 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:54782 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231337AbhJMBhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 21:31:25 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E5AC061570;
-        Tue, 12 Oct 2021 18:29:23 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id x130so1020902pfd.6;
-        Tue, 12 Oct 2021 18:29:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=0iM2u6zX+bRhoClzLr262hnaXAUyjyumgwc0f0AIBNw=;
-        b=PkhP762D/oJwEtenjuSOTnQRDKbHGA1+a9waG8E1WsUrXqx5FaJTI+yfccLFIOWmWp
-         iT1QhVuBfmIvO1yziSKCvqH7xlEqd5oycgfok8OQ5cg+Cd0RAQWf+d1osNCy4KmoYVrt
-         RPuJziSkV22/fUReGXLbcRL2ekbi5eX/a7kEqGGKXVHVBwlWQ7JMtQ3KwI2VfA8csPRu
-         CI3UeZn/0g5+qsJHABoOVfB0WwnFqyqMk5ghmsis5GwvBu1ryxrcaL7N0wFH+jANv8kJ
-         cqtAKHToS4SqVs+FW+4btC8LeVrNsAQ42Ztd7p4j7yt43IP3ZjK5PidOAxnCSrEGjhdq
-         ABCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=0iM2u6zX+bRhoClzLr262hnaXAUyjyumgwc0f0AIBNw=;
-        b=oAzTP8QnGmA/Wf4I+XoY6jD6nqD00lHcXeI4qd4R1ya9bOoDNMW+k52TXrAwn0blSX
-         5FTW7+I3xy1KNRy6ttoyIAZ/roG8JSusv9SvWOp1UNWTZoHFuZcG340RNdWqQysMxL/s
-         i+ajzFnasP9jqGGokFWsHG/sAJdCYOpo+xlke2utkwfe/d3SMULGSj0Iw7Jm7i+Wkn10
-         RSekuRbrPrdzKAsMdYKP/0/xBLXGlwaN1kLqvcw5izhMz8lwIkIcdMxDqmQ05T60A13F
-         T2AY6VLPCJ6HNT5DdUAV2wa8cLQsgvDJz0OHXpYjeFtRJPVHgk4M6CO5VGnumKqE05Zj
-         /Hxw==
-X-Gm-Message-State: AOAM533yZDaxoOVYGShdVLY9lbWul40pG5tiKe54DRx3ABIkj19Tgy//
-        91c4sfZFQo8C4E45R9ROuws=
-X-Google-Smtp-Source: ABdhPJwk4Pi9nKxDBNGbatLlFGlVxQVkoQQNUKVmGocNncOblT9w4WEbU0Oq0h3/Tf1wmT1KBU/jew==
-X-Received: by 2002:a05:6a00:2385:b0:44d:efc:a6c7 with SMTP id f5-20020a056a00238500b0044d0efca6c7mr17112695pfc.26.1634088562654;
-        Tue, 12 Oct 2021 18:29:22 -0700 (PDT)
-Received: from localhost.localdomain ([2402:7500:578:7fd7:52a:ae77:5bec:efe9])
-        by smtp.gmail.com with ESMTPSA id b11sm12144788pge.57.2021.10.12.18.29.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Oct 2021 18:29:22 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     oder_chiou@realtek.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, robh+dt@kernel.org
-Cc:     lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, cy_huang@richtek.com,
-        devicetree@vger.kernel.org, allen_lin@richtek.com
-Subject: [PATCH v4 2/2] ASoC: rt9120: Add rt9210 audio amplifier support
-Date:   Wed, 13 Oct 2021 09:28:39 +0800
-Message-Id: <1634088519-995-3-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1634088519-995-1-git-send-email-u0084500@gmail.com>
-References: <1634088519-995-1-git-send-email-u0084500@gmail.com>
+        Tue, 12 Oct 2021 21:37:05 -0400
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 19D1YjgN010005;
+        Wed, 13 Oct 2021 10:34:45 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 19D1YjgN010005
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1634088885;
+        bh=Rum5tYvv5Fo1dRwnGCxHyKMZgx+WDyy9BHLvS2hSW2c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=b3tYroIrUf8xtVNAyrYAprxjm9+4krBIcXjGTza3sVk7r2PMCI0Dc183TARIT8dCx
+         lkOnnIGBXuYTGa6FYHHu4Z5Gay0rp2DgUIMGNG8XRICoYzwjH0kWxOD3KPN3/S/R5I
+         mYeOKVlEqMqAKkEAYEJX7ivJ4E+/lXn2QiWIRItMDgwTro1lEoqdxd9UuQ43OpfILi
+         0+CWXXwVfBlTcyseBIVKm05vrxZvfqDS0hUBl5W8Ew/dEft8q6nk59LFXAknnTS/Ck
+         tHFxAGNBDCl47Aufhv+mrmapYTz0sWbLwLq97uLAjfaCHwA6mN3cXtoosmJoxqeIgm
+         sTR97bM8uOE5Q==
+X-Nifty-SrcIP: [209.85.215.180]
+Received: by mail-pg1-f180.google.com with SMTP id e7so764387pgk.2;
+        Tue, 12 Oct 2021 18:34:45 -0700 (PDT)
+X-Gm-Message-State: AOAM533OYXo0nbH3fHWJqwk7hnNmY+Jr6dUPeLWBKeovLoU/kO0oux+A
+        cvOTAjDhq88z1YPEXQMv28IFVIp7cyCOX6wZj8k=
+X-Google-Smtp-Source: ABdhPJx74hz1HXrwV9KFueIsSEub6ZjaQ3PXlDu2yws3N9VLdQgcBUCbjABYJ7am6LjIUW4dReFUoKYAL+gC7pWhfi8=
+X-Received: by 2002:a63:3d8f:: with SMTP id k137mr25871214pga.21.1634088884658;
+ Tue, 12 Oct 2021 18:34:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211012170121.31549-1-vegard.nossum@oracle.com>
+In-Reply-To: <20211012170121.31549-1-vegard.nossum@oracle.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 13 Oct 2021 10:34:07 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT_0PnW0opWQoCiF5mWH4YEKxXHbdiTrSGqGFRv5nhY=w@mail.gmail.com>
+Message-ID: <CAK7LNAT_0PnW0opWQoCiF5mWH4YEKxXHbdiTrSGqGFRv5nhY=w@mail.gmail.com>
+Subject: Re: [RFC PATCH] kbuild: only prompt for compressors that are actually usable
+To:     Vegard Nossum <vegard.nossum@oracle.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On Wed, Oct 13, 2021 at 2:01 AM Vegard Nossum <vegard.nossum@oracle.com> wrote:
+>
+> If a given compression algorithm for the kernel image is not usable on
+> the host system, there is no point prompting for it.
+>
+> We can use the kconfig preprocessing feature to check if the command is
+> available or not. I've chosen to test this using "which", which exits
+> with success if the given command exists in PATH (or it is an absolute
+> path), which mimics exactly how it would be found in the kernel's
+> Makefiles.
+>
+> This uses the make variables that are set in Makefile and/or the
+> command line, so you can do e.g.
+>
+>   make KGZIP=pigz menuconfig
+>
+> and it will test for the correct program.
+>
+> I am intentionally adding these dependencies to e.g. KERNEL_LZ4, as
+> opposed to HAVE_KERNEL_LZ4, since the latter are "select"-ed
+> unconditionally by the architectures that use them, so they are not
+> suitable for depending on anything else.
+>
+> I've put RFC in the subject as maybe there are downsides to this that
+> I'm not aware of.
+>
+> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+> ---
 
-Add Richtek rt9120 audio amplifier support.
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
- sound/soc/codecs/Kconfig  |  10 +
- sound/soc/codecs/Makefile |   2 +
- sound/soc/codecs/rt9120.c | 495 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 507 insertions(+)
- create mode 100644 sound/soc/codecs/rt9120.c
+I think we should keep the host-tools dependency open in general.
+You can easily install necessary packages.
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 82ee233..155050d 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -187,6 +187,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_RT715_SDCA_SDW
- 	imply SND_SOC_RT1308_SDW
- 	imply SND_SOC_RT1316_SDW
-+	imply SND_SOC_RT9120
- 	imply SND_SOC_SDW_MOCKUP
- 	imply SND_SOC_SGTL5000
- 	imply SND_SOC_SI476X
-@@ -1288,6 +1289,15 @@ config SND_SOC_RT715_SDCA_SDW
- 	select REGMAP_SOUNDWIRE
- 	select REGMAP_SOUNDWIRE_MBQ
- 
-+config SND_SOC_RT9120
-+	tristate "Richtek RT9120 Stereo Class-D Amplifier"
-+	depends on I2C
-+	select REGMAP_I2C
-+	select GPIOLIB
-+	help
-+	  Enable support for Richtek RT9120 20W, stereo, inductor-less,
-+	  high-efficiency Class-D audio amplifier.
-+
- config SND_SOC_SDW_MOCKUP
- 	tristate "SoundWire mockup codec"
- 	depends on EXPERT
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 8dcea2c..5ba164d 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -203,6 +203,7 @@ snd-soc-rt711-objs := rt711.o rt711-sdw.o
- snd-soc-rt711-sdca-objs := rt711-sdca.o rt711-sdca-sdw.o
- snd-soc-rt715-objs := rt715.o rt715-sdw.o
- snd-soc-rt715-sdca-objs := rt715-sdca.o rt715-sdca-sdw.o
-+snd-soc-rt9120-objs := rt9120.o
- snd-soc-sdw-mockup-objs := sdw-mockup.o
- snd-soc-sgtl5000-objs := sgtl5000.o
- snd-soc-alc5623-objs := alc5623.o
-@@ -531,6 +532,7 @@ obj-$(CONFIG_SND_SOC_RT711)     += snd-soc-rt711.o
- obj-$(CONFIG_SND_SOC_RT711_SDCA_SDW)     += snd-soc-rt711-sdca.o
- obj-$(CONFIG_SND_SOC_RT715)     += snd-soc-rt715.o
- obj-$(CONFIG_SND_SOC_RT715_SDCA_SDW)     += snd-soc-rt715-sdca.o
-+obj-$(CONFIG_SND_SOC_RT9120)	+= snd-soc-rt9120.o
- obj-$(CONFIG_SND_SOC_SDW_MOCKUP)     += snd-soc-sdw-mockup.o
- obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
- obj-$(CONFIG_SND_SOC_SIGMADSP)	+= snd-soc-sigmadsp.o
-diff --git a/sound/soc/codecs/rt9120.c b/sound/soc/codecs/rt9120.c
-new file mode 100644
-index 00000000..f957498
---- /dev/null
-+++ b/sound/soc/codecs/rt9120.c
-@@ -0,0 +1,495 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bits.h>
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+
-+#define RT9120_REG_DEVID	0x00
-+#define RT9120_REG_I2SFMT	0x02
-+#define RT9120_REG_I2SWL	0x03
-+#define RT9120_REG_SDIOSEL	0x04
-+#define RT9120_REG_SYSCTL	0x05
-+#define RT9120_REG_SPKGAIN	0x07
-+#define RT9120_REG_VOLRAMP	0x0A
-+#define RT9120_REG_ERRRPT	0x10
-+#define RT9120_REG_MSVOL	0x20
-+#define RT9120_REG_SWRESET	0x40
-+#define RT9120_REG_INTERNAL0	0x65
-+#define RT9120_REG_INTERNAL1	0x69
-+#define RT9120_REG_UVPOPT	0x6C
-+
-+#define RT9120_VID_MASK		GENMASK(15, 8)
-+#define RT9120_SWRST_MASK	BIT(7)
-+#define RT9120_MUTE_MASK	GENMASK(5, 4)
-+#define RT9120_I2SFMT_MASK	GENMASK(4, 2)
-+#define RT9120_I2SFMT_SHIFT	2
-+#define RT9120_CFG_FMT_I2S	0
-+#define RT9120_CFG_FMT_LEFTJ	1
-+#define RT9120_CFG_FMT_RIGHTJ	2
-+#define RT9120_CFG_FMT_DSPA	3
-+#define RT9120_CFG_FMT_DSPB	7
-+#define RT9120_AUDBIT_MASK	GENMASK(1, 0)
-+#define RT9120_CFG_AUDBIT_16	0
-+#define RT9120_CFG_AUDBIT_20	1
-+#define RT9120_CFG_AUDBIT_24	2
-+#define RT9120_AUDWL_MASK	GENMASK(5, 0)
-+#define RT9120_CFG_WORDLEN_16	16
-+#define RT9120_CFG_WORDLEN_24	24
-+#define RT9120_CFG_WORDLEN_32	32
-+#define RT9120_DVDD_UVSEL_MASK	GENMASK(5, 4)
-+
-+#define RT9120_VENDOR_ID	0x4200
-+#define RT9120_RESET_WAITMS	20
-+#define RT9120_CHIPON_WAITMS	20
-+#define RT9120_AMPON_WAITMS	50
-+#define RT9120_AMPOFF_WAITMS	100
-+#define RT9120_LVAPP_THRESUV	2000000
-+
-+/* 8000 to 192000 supported , only 176400 not support */
-+#define RT9120_RATES_MASK	(SNDRV_PCM_RATE_8000_192000 &\
-+				 ~SNDRV_PCM_RATE_176400)
-+#define RT9120_FMTS_MASK	(SNDRV_PCM_FMTBIT_S16_LE |\
-+				 SNDRV_PCM_FMTBIT_S24_LE |\
-+				 SNDRV_PCM_FMTBIT_S32_LE)
-+
-+struct rt9120_data {
-+	struct device *dev;
-+	struct regmap *regmap;
-+};
-+
-+/* 11bit [min,max,step] = [-103.9375dB, 24dB, 0.0625dB] */
-+static const DECLARE_TLV_DB_SCALE(digital_tlv, -1039375, 625, 1);
-+
-+/* {6, 8, 10, 12, 13, 14, 15, 16}dB */
-+static const DECLARE_TLV_DB_RANGE(classd_tlv,
-+	0, 3, TLV_DB_SCALE_ITEM(600, 200, 0),
-+	4, 7, TLV_DB_SCALE_ITEM(1300, 100, 0)
-+);
-+
-+static const char * const sdo_select_text[] = {
-+	"None", "INTF", "Final", "RMS Detect"
-+};
-+
-+static const struct soc_enum sdo_select_enum =
-+	SOC_ENUM_SINGLE(RT9120_REG_SDIOSEL, 4, ARRAY_SIZE(sdo_select_text),
-+			sdo_select_text);
-+
-+static const struct snd_kcontrol_new rt9120_snd_controls[] = {
-+	SOC_SINGLE_TLV("MS Volume", RT9120_REG_MSVOL, 0, 2047, 1, digital_tlv),
-+	SOC_SINGLE_TLV("SPK Gain Volume", RT9120_REG_SPKGAIN, 0, 7, 0, classd_tlv),
-+	SOC_SINGLE("PBTL Switch", RT9120_REG_SYSCTL, 3, 1, 0),
-+	SOC_ENUM("SDO Select", sdo_select_enum),
-+};
-+
-+static int internal_power_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_component_write(comp, RT9120_REG_ERRRPT, 0);
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		msleep(RT9120_AMPON_WAITMS);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		msleep(RT9120_AMPOFF_WAITMS);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget rt9120_dapm_widgets[] = {
-+	SND_SOC_DAPM_MIXER("DMIX", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_DAC("LDAC", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("RDAC", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_SUPPLY("PWND", RT9120_REG_SYSCTL, 6, 1,
-+			    internal_power_event, SND_SOC_DAPM_PRE_PMU |
-+			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_PGA("SPKL PA", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("SPKR PA", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("SPKL"),
-+	SND_SOC_DAPM_OUTPUT("SPKR"),
-+};
-+
-+static const struct snd_soc_dapm_route rt9120_dapm_routes[] = {
-+	{ "DMIX", NULL, "AIF Playback" },
-+	/* SPKL */
-+	{ "LDAC", NULL, "PWND" },
-+	{ "LDAC", NULL, "DMIX" },
-+	{ "SPKL PA", NULL, "LDAC" },
-+	{ "SPKL", NULL, "SPKL PA" },
-+	/* SPKR */
-+	{ "RDAC", NULL, "PWND" },
-+	{ "RDAC", NULL, "DMIX" },
-+	{ "SPKR PA", NULL, "RDAC" },
-+	{ "SPKR", NULL, "SPKR PA" },
-+	/* Cap */
-+	{ "AIF Capture", NULL, "LDAC" },
-+	{ "AIF Capture", NULL, "RDAC" },
-+};
-+
-+static int rt9120_codec_probe(struct snd_soc_component *comp)
-+{
-+	struct rt9120_data *data = snd_soc_component_get_drvdata(comp);
-+
-+	snd_soc_component_init_regmap(comp, data->regmap);
-+
-+	/* Internal setting */
-+	snd_soc_component_write(comp, RT9120_REG_INTERNAL1, 0x03);
-+	snd_soc_component_write(comp, RT9120_REG_INTERNAL0, 0x69);
-+	return 0;
-+}
-+
-+static const struct snd_soc_component_driver rt9120_component_driver = {
-+	.probe = rt9120_codec_probe,
-+	.controls = rt9120_snd_controls,
-+	.num_controls = ARRAY_SIZE(rt9120_snd_controls),
-+	.dapm_widgets = rt9120_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(rt9120_dapm_widgets),
-+	.dapm_routes = rt9120_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(rt9120_dapm_routes),
-+};
-+
-+static int rt9120_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct snd_soc_component *comp = dai->component;
-+	unsigned int format;
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		format = RT9120_CFG_FMT_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		format = RT9120_CFG_FMT_LEFTJ;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		format = RT9120_CFG_FMT_RIGHTJ;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		format = RT9120_CFG_FMT_DSPA;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		format = RT9120_CFG_FMT_DSPB;
-+		break;
-+	default:
-+		dev_err(dai->dev, "Unknown dai format\n");
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_component_update_bits(comp, RT9120_REG_I2SFMT,
-+				      RT9120_I2SFMT_MASK,
-+				      format << RT9120_I2SFMT_SHIFT);
-+	return 0;
-+}
-+
-+static int rt9120_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *param,
-+			    struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *comp = dai->component;
-+	unsigned int param_width, param_slot_width;
-+	int width;
-+
-+	switch (width = params_width(param)) {
-+	case 16:
-+		param_width = RT9120_CFG_AUDBIT_16;
-+		break;
-+	case 20:
-+		param_width = RT9120_CFG_AUDBIT_20;
-+		break;
-+	case 24:
-+	case 32:
-+		param_width = RT9120_CFG_AUDBIT_24;
-+		break;
-+	default:
-+		dev_err(dai->dev, "Unsupported data width [%d]\n", width);
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_component_update_bits(comp, RT9120_REG_I2SFMT,
-+				      RT9120_AUDBIT_MASK, param_width);
-+
-+	switch (width = params_physical_width(param)) {
-+	case 16:
-+		param_slot_width = RT9120_CFG_WORDLEN_16;
-+		break;
-+	case 24:
-+		param_slot_width = RT9120_CFG_WORDLEN_24;
-+		break;
-+	case 32:
-+		param_slot_width = RT9120_CFG_WORDLEN_32;
-+		break;
-+	default:
-+		dev_err(dai->dev, "Unsupported slot width [%d]\n", width);
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_component_update_bits(comp, RT9120_REG_I2SWL,
-+				      RT9120_AUDWL_MASK, param_slot_width);
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops rt9120_dai_ops = {
-+	.set_fmt = rt9120_set_fmt,
-+	.hw_params = rt9120_hw_params,
-+};
-+
-+static struct snd_soc_dai_driver rt9120_dai = {
-+	.name = "rt9120_aif",
-+	.playback = {
-+		.stream_name = "AIF Playback",
-+		.rates = RT9120_RATES_MASK,
-+		.formats = RT9120_FMTS_MASK,
-+		.rate_max = 192000,
-+		.rate_min = 8000,
-+		.channels_min = 1,
-+		.channels_max = 2,
-+	},
-+	.capture = {
-+		.stream_name = "AIF Capture",
-+		.rates = RT9120_RATES_MASK,
-+		.formats = RT9120_FMTS_MASK,
-+		.rate_max = 192000,
-+		.rate_min = 8000,
-+		.channels_min = 1,
-+		.channels_max = 2,
-+	},
-+	.ops = &rt9120_dai_ops,
-+	.symmetric_rate = 1,
-+	.symmetric_sample_bits = 1,
-+};
-+
-+static const struct regmap_range rt9120_rd_yes_ranges[] = {
-+	regmap_reg_range(0x00, 0x0C),
-+	regmap_reg_range(0x10, 0x15),
-+	regmap_reg_range(0x20, 0x27),
-+	regmap_reg_range(0x30, 0x38),
-+	regmap_reg_range(0x3A, 0x40),
-+	regmap_reg_range(0x65, 0x65),
-+	regmap_reg_range(0x69, 0x69),
-+	regmap_reg_range(0x6C, 0x6C)
-+};
-+
-+static const struct regmap_access_table rt9120_rd_table = {
-+	.yes_ranges = rt9120_rd_yes_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(rt9120_rd_yes_ranges),
-+};
-+
-+static const struct regmap_range rt9120_wr_yes_ranges[] = {
-+	regmap_reg_range(0x00, 0x00),
-+	regmap_reg_range(0x02, 0x0A),
-+	regmap_reg_range(0x10, 0x15),
-+	regmap_reg_range(0x20, 0x27),
-+	regmap_reg_range(0x30, 0x38),
-+	regmap_reg_range(0x3A, 0x3D),
-+	regmap_reg_range(0x40, 0x40),
-+	regmap_reg_range(0x65, 0x65),
-+	regmap_reg_range(0x69, 0x69),
-+	regmap_reg_range(0x6C, 0x6C)
-+};
-+
-+static const struct regmap_access_table rt9120_wr_table = {
-+	.yes_ranges = rt9120_wr_yes_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(rt9120_wr_yes_ranges),
-+};
-+
-+static int rt9120_get_reg_size(unsigned int reg)
-+{
-+	switch (reg) {
-+	case 0x00:
-+	case 0x09:
-+	case 0x20 ... 0x27:
-+		return 2;
-+	case 0x30 ... 0x3D:
-+		return 3;
-+	case 0x3E ... 0x3F:
-+		return 4;
-+	default:
-+		return 1;
-+	}
-+}
-+
-+static int rt9120_reg_read(void *context, unsigned int reg, unsigned int *val)
-+{
-+	struct rt9120_data *data = context;
-+	struct i2c_client *i2c = to_i2c_client(data->dev);
-+	int size = rt9120_get_reg_size(reg);
-+	u8 raw[4] = {0};
-+	int ret;
-+
-+	ret = i2c_smbus_read_i2c_block_data(i2c, reg, size, raw);
-+	if (ret < 0)
-+		return ret;
-+	else if (ret != size)
-+		return -EIO;
-+
-+	switch (size) {
-+	case 4:
-+		*val = be32_to_cpup((__be32 *)raw);
-+		break;
-+	case 3:
-+		*val = raw[0] << 16 | raw[1] << 8 | raw[0];
-+		break;
-+	case 2:
-+		*val = be16_to_cpup((__be16 *)raw);
-+		break;
-+	default:
-+		*val = raw[0];
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt9120_reg_write(void *context, unsigned int reg, unsigned int val)
-+{
-+	struct rt9120_data *data = context;
-+	struct i2c_client *i2c = to_i2c_client(data->dev);
-+	int size = rt9120_get_reg_size(reg);
-+	__be32 be32_val;
-+	u8 *rawp = (u8 *)&be32_val;
-+	int offs = 4 - size;
-+
-+	be32_val = cpu_to_be32(val);
-+	return i2c_smbus_write_i2c_block_data(i2c, reg, size, rawp + offs);
-+}
-+
-+static const struct regmap_config rt9120_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 32,
-+	.max_register = RT9120_REG_UVPOPT,
-+
-+	.reg_read = rt9120_reg_read,
-+	.reg_write = rt9120_reg_write,
-+
-+	.wr_table = &rt9120_wr_table,
-+	.rd_table = &rt9120_rd_table,
-+};
-+
-+static int rt9120_check_vendor_info(struct rt9120_data *data)
-+{
-+	unsigned int devid;
-+	int ret;
-+
-+	ret = regmap_read(data->regmap, RT9120_REG_DEVID, &devid);
-+	if (ret)
-+		return ret;
-+
-+	if ((devid & RT9120_VID_MASK) != RT9120_VENDOR_ID) {
-+		dev_err(data->dev, "DEVID not correct [0x%04x]\n", devid);
-+		return -ENODEV;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt9120_do_register_reset(struct rt9120_data *data)
-+{
-+	int ret;
-+
-+	ret = regmap_write(data->regmap, RT9120_REG_SWRESET,
-+			   RT9120_SWRST_MASK);
-+	if (ret)
-+		return ret;
-+
-+	msleep(RT9120_RESET_WAITMS);
-+	return 0;
-+}
-+
-+static int rt9120_probe(struct i2c_client *i2c)
-+{
-+	struct rt9120_data *data;
-+	struct gpio_desc *pwdnn_gpio;
-+	struct regulator *dvdd_supply;
-+	int dvdd_supply_volt, ret;
-+
-+	data = devm_kzalloc(&i2c->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->dev = &i2c->dev;
-+	i2c_set_clientdata(i2c, data);
-+
-+	pwdnn_gpio = devm_gpiod_get_optional(&i2c->dev, "pwdnn",
-+					     GPIOD_OUT_HIGH);
-+	if (IS_ERR(pwdnn_gpio)) {
-+		dev_err(&i2c->dev, "Failed to initialize 'pwdnn' gpio\n");
-+		return PTR_ERR(pwdnn_gpio);
-+	} else if (pwdnn_gpio) {
-+		dev_dbg(&i2c->dev, "'pwdnn' from low to high, wait chip on\n");
-+		msleep(RT9120_CHIPON_WAITMS);
-+	}
-+
-+	data->regmap = devm_regmap_init(&i2c->dev, NULL, data,
-+					&rt9120_regmap_config);
-+	if (IS_ERR(data->regmap)) {
-+		ret = PTR_ERR(data->regmap);
-+		dev_err(&i2c->dev, "Failed to init regmap [%d]\n", ret);
-+		return ret;
-+	}
-+
-+	ret = rt9120_check_vendor_info(data);
-+	if (ret) {
-+		dev_err(&i2c->dev, "Failed to check vendor info\n");
-+		return ret;
-+	}
-+
-+	ret = rt9120_do_register_reset(data);
-+	if (ret) {
-+		dev_err(&i2c->dev, "Failed to do register reset\n");
-+		return ret;
-+	}
-+
-+	dvdd_supply = devm_regulator_get(&i2c->dev, "dvdd");
-+	if (IS_ERR(dvdd_supply)) {
-+		dev_err(&i2c->dev, "No dvdd regulator found\n");
-+		return PTR_ERR(dvdd_supply);
-+	}
-+
-+	dvdd_supply_volt = regulator_get_voltage(dvdd_supply);
-+	if (dvdd_supply_volt <= RT9120_LVAPP_THRESUV) {
-+		dev_dbg(&i2c->dev, "dvdd low voltage design\n");
-+		ret = regmap_update_bits(data->regmap, RT9120_REG_UVPOPT,
-+					 RT9120_DVDD_UVSEL_MASK, 0);
-+		if (ret) {
-+			dev_err(&i2c->dev, "Failed to config dvdd uvsel\n");
-+			return ret;
-+		}
-+	}
-+
-+	return devm_snd_soc_register_component(&i2c->dev,
-+					       &rt9120_component_driver,
-+					       &rt9120_dai, 1);
-+}
-+
-+static const struct of_device_id __maybe_unused rt9120_device_table[] = {
-+	{ .compatible = "richtek,rt9120", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, rt9120_device_table);
-+
-+static struct i2c_driver rt9120_driver = {
-+	.driver = {
-+		.name = "rt9120",
-+		.of_match_table = rt9120_device_table,
-+	},
-+	.probe_new = rt9120_probe,
-+};
-+module_i2c_driver(rt9120_driver);
-+
-+MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
-+MODULE_DESCRIPTION("RT9120 Audio Amplifier Driver");
-+MODULE_LICENSE("GPL");
+
+
+
+
+
+
+
+>  init/Kconfig | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 11f8a845f259d..f03f2b7962027 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -250,6 +250,7 @@ choice
+>  config KERNEL_GZIP
+>         bool "Gzip"
+>         depends on HAVE_KERNEL_GZIP
+> +       depends on $(success,which $(KGZIP))
+>         help
+>           The old and tried gzip compression. It provides a good balance
+>           between compression ratio and decompression speed.
+> @@ -257,6 +258,7 @@ config KERNEL_GZIP
+>  config KERNEL_BZIP2
+>         bool "Bzip2"
+>         depends on HAVE_KERNEL_BZIP2
+> +       depends on $(success,which $(KBZIP2))
+>         help
+>           Its compression ratio and speed is intermediate.
+>           Decompression speed is slowest among the choices.  The kernel
+> @@ -267,6 +269,7 @@ config KERNEL_BZIP2
+>  config KERNEL_LZMA
+>         bool "LZMA"
+>         depends on HAVE_KERNEL_LZMA
+> +       depends on $(success,which $(LZMA))
+>         help
+>           This compression algorithm's ratio is best.  Decompression speed
+>           is between gzip and bzip2.  Compression is slowest.
+> @@ -275,6 +278,7 @@ config KERNEL_LZMA
+>  config KERNEL_XZ
+>         bool "XZ"
+>         depends on HAVE_KERNEL_XZ
+> +       depends on $(success,which $(XZ))
+>         help
+>           XZ uses the LZMA2 algorithm and instruction set specific
+>           BCJ filters which can improve compression ratio of executable
+> @@ -290,6 +294,7 @@ config KERNEL_XZ
+>  config KERNEL_LZO
+>         bool "LZO"
+>         depends on HAVE_KERNEL_LZO
+> +       depends on $(success,which $(KLZOP))
+>         help
+>           Its compression ratio is the poorest among the choices. The kernel
+>           size is about 10% bigger than gzip; however its speed
+> @@ -298,6 +303,7 @@ config KERNEL_LZO
+>  config KERNEL_LZ4
+>         bool "LZ4"
+>         depends on HAVE_KERNEL_LZ4
+> +       depends on $(success,which $(LZ4))
+>         help
+>           LZ4 is an LZ77-type compressor with a fixed, byte-oriented encoding.
+>           A preliminary version of LZ4 de/compression tool is available at
+> @@ -310,6 +316,7 @@ config KERNEL_LZ4
+>  config KERNEL_ZSTD
+>         bool "ZSTD"
+>         depends on HAVE_KERNEL_ZSTD
+> +       depends on $(success,which $(ZSTD))
+>         help
+>           ZSTD is a compression algorithm targeting intermediate compression
+>           with fast decompression speed. It will compress better than GZIP and
+> --
+> 2.23.0.718.g5ad94255a8
+>
+
+
 -- 
-2.7.4
-
+Best Regards
+Masahiro Yamada
