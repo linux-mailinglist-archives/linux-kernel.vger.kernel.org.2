@@ -2,187 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0120F42C86F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D8842C874
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238339AbhJMSPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 14:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46098 "EHLO
+        id S237600AbhJMSTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 14:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238626AbhJMSOs (ORCPT
+        with ESMTP id S229967AbhJMSTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 14:14:48 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2686EC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:12:45 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id az39so3095122qkb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:12:45 -0700 (PDT)
+        Wed, 13 Oct 2021 14:19:05 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09734C061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:17:02 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id v203-20020a25c5d4000000b005bb21580411so3988958ybe.19
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3abP2WHjviZFuUihwWSZiOzZT2kMeD1KagMF6ysUSKs=;
-        b=hYhNJr0rvk4nDGkl+F9/YupWmWLryQ4tzG4IVbSmz3mnlbIcFQRr7H7j5Gl2QLRFCU
-         vZpapa9UQi8KTpVnjfeGylfVlfApkcmU1ZcrwcunKMNbnxlgo6Mr3nlA0nJeT73ZvC6m
-         giNl5V9+wqMKUFO8GTCykZ1VOK2EpqEGnDxDE=
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=priT/ItP89NRbp00FLsxjKJmgV32/krNE9+XEfqTXTY=;
+        b=qeACLMppwPHk2IrRVFy/J4vcJ5jF+NMg/4EXKWH+jw5Ud1qnHi5qD4UqYSql2krOzK
+         sxOYKu2KZ+zeGBAaiXtBX+jE8Lq3TxeD4rTp407vCRItN1jXkMU7Dz5xpJR1rZ5puVro
+         4VLnq1Ej0Zg56iIbPD/LArb3BEKN/RdMBfq+a7Dp3gwzZ47urAGsDvHl698L3B7vvUWS
+         xPEHwxbwHWuHGD3cWs9KXHvxu22jsHjppOHpuhMyZeGiYPbXMpfE4BX3j7X/Clia37Ar
+         BYAGUcOeXvIk5FBfgS8YUZqZzd1EwpfcV5iFcvGsCAVo4cg8nHK/Rqp+WLesJZJjGZno
+         pxOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3abP2WHjviZFuUihwWSZiOzZT2kMeD1KagMF6ysUSKs=;
-        b=Dt3Qz3ciUNup8FEQ3MTqICU5kxiefngJ711DAGreUIA/dQoCdLe2wqZCN/YNeE4gBq
-         Dpqdwc3TpGDJpizG3WPkHw4mB7Q9+A8BCWFPVyXJ11SfkRpuWlq4/+OdqeNnVcMhPmV1
-         Qa5ZUdfqL2Yvjtze/EWjT2ZEquIt1vyhrjcVytxdGb7D0GwfqZ1oovD9HgatOP7Vgkiu
-         W1bucf6VFP2NQw2149AQOWpKEp1pC47HYkBcoT0W6CD5QJqztreFKcIxeNHQjvBNNGeB
-         Cpaup2NgT1mlDpmN45exT2X4fWMxR5L5m7LqlC5IYk+EOz7bm2GzBl4Uhm5H8jKNT2GB
-         tzGA==
-X-Gm-Message-State: AOAM533c3DMpDi48J0mfTsKQcHfBPr4rakbtw+Agb7KokG1+j4vLs/xy
-        OCRFWgSA6ucwtLDYIyZMiu9gwA==
-X-Google-Smtp-Source: ABdhPJxjJoVuupK1VcQeYGveTJTbD7guaAk7qkcputfenEppSPOnvmvXtK4aSP7GM+La59cbyjVZ0A==
-X-Received: by 2002:ae9:dd83:: with SMTP id r125mr707257qkf.159.1634148764337;
-        Wed, 13 Oct 2021 11:12:44 -0700 (PDT)
-Received: from markyacoub.nyc.corp.google.com ([2620:15c:6c:200:61dd:96a:9268:3c4d])
-        by smtp.gmail.com with ESMTPSA id s203sm160130qke.21.2021.10.13.11.12.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 11:12:43 -0700 (PDT)
-From:   Mark Yacoub <markyacoub@chromium.org>
-To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org
-Cc:     seanpaul@chromium.org, harry.wentland@amd.com,
-        Mark Yacoub <markyacoub@google.com>,
-        Mark Yacoub <markyacoub@chromium.org>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] amd/amdgpu_dm: Verify Gamma and Degamma LUT sizes using DRM Core check
-Date:   Wed, 13 Oct 2021 14:12:21 -0400
-Message-Id: <20211013181228.1578201-2-markyacoub@chromium.org>
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-In-Reply-To: <20211013181228.1578201-1-markyacoub@chromium.org>
-References: <20210929194012.3433306-1-markyacoub@chromium.org>
- <20211013181228.1578201-1-markyacoub@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=priT/ItP89NRbp00FLsxjKJmgV32/krNE9+XEfqTXTY=;
+        b=XDdqX1Iosf+qgpvTWk4WVzn2EnqE8EkN8yKFH0uGRoPRE7uVBCsog+pEvZ0eQrfH6P
+         yvM4es6kAyoyXgCVfonk+4g47FlhtfBwAVhSgv+6Ez9yXya0QNY4eRaKNDWmYh5KjUJQ
+         OKoTaKBGsXbDc4vH+xbLuy18d67x2L2kXBIBHpuDsdrq6VvOXbAgaKD+9pMJWprjAr+9
+         d52yCTFroOBEqgCXXI4iWHKMMTS0nZB0pHhbiTh9cMi1IAiFp1YMVbk+c9Zh5G0OP7Mr
+         xoJ0v1o4bRirwoA94QYhYBQ9/VQAMJblSp6XP/6IQB7Qp1pNdXhrgx+ycrglvhs5jfP3
+         OETQ==
+X-Gm-Message-State: AOAM5305KGgj3pKRF14DXRDAQp77SQU/aT7K5r9v7NISIg/Zejon8c6q
+        OCYk6IU924LwfaVjozPv1I0SLbIz0xBUWJyMklw=
+X-Google-Smtp-Source: ABdhPJztd1f1MlyWBhYjjQnDUCD7svsyJmD3+ie8ZQzvJeHEd0pLrOjqhN6uwvnvtLbopLp2FVxjHTqikvN8GXgvvOY=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:9ea6:6c27:1876:926c])
+ (user=samitolvanen job=sendgmr) by 2002:a25:2bc1:: with SMTP id
+ r184mr1037082ybr.44.1634149021190; Wed, 13 Oct 2021 11:17:01 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 11:16:43 -0700
+Message-Id: <20211013181658.1020262-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5151; h=from:subject;
+ bh=W5OXSe3azui94+7ieiWfTshrba+W4CqrXrs6hnNYQWI=; b=owEB7QES/pANAwAKAUy19oSLvFbuAcsmYgBhZyKYrRgL6whgGGniqMexqPGkEgMj8XN0qVXylQFV
+ /gAJWduJAbMEAAEKAB0WIQQ1zPtjsoPW0663g5RMtfaEi7xW7gUCYWcimAAKCRBMtfaEi7xW7sfhC/
+ 9iYlgV1DRuFeCh2xA6Pek6394Tx/7ZHWgQ0j2OCyEl/ygZimK1+C5T17GgcpaDyelagN4+3/JG3MNo
+ d7H5AgbX7fNdz4BShCbpLylb5RZpE3bHdOmT47vq96AaAihVs7zd5ZsEj9DShuMPdA5VIHFBe6Wf43
+ q6bHtyC+ppzNqYFk5IJadxrJJuz+Co/LEalkECJ9YWeMCjEaaHKtkgxn0v+bBBolafa/HtTQTj1WZ+
+ iW9rTbr6r+o6QxERaMnsWUlZPuzZCjWe+IUdTzALvfrjs4GFc9uMAvMjjSNgEDsrTYFzt4C+Ybyyox
+ b5JKrb9hfS1NYW0aFudEnd12vYTk5eaWGIm19rzWYnDpS6v+dS+DzGcHnneNfTzau7tJzsvWzTaSd8
+ gmzK7cJ6Wnrdezzs5/vElt4RdYu+4QjCG4RKjmnvjvc1qGix8dN+yNfEkarEv2Eggjw77NjN9Sr6jS
+ YUlguJrSFn5Wa22KdWdm+KZn0XSQS0mX75sM2oguliu9Q=
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH v5 00/15] x86: Add support for Clang CFI
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     x86@kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Yacoub <markyacoub@google.com>
+This series adds support for Clang's Control-Flow Integrity (CFI)
+checking to x86_64. With CFI, the compiler injects a runtime
+check before each indirect function call to ensure the target is
+a valid function with the correct static type. This restricts
+possible call targets and makes it more difficult for an attacker
+to exploit bugs that allow the modification of stored function
+pointers. For more details, see:
 
-[Why]
-drm_atomic_helper_check_crtc now verifies both legacy and non-legacy LUT
-sizes. There is no need to check it within amdgpu_dm_atomic_check.
+  https://clang.llvm.org/docs/ControlFlowIntegrity.html
 
-[How]
-Remove the local call to verify LUT sizes and use DRM Core function
-instead.
+Note that v5 is based on tip/master. The first two patches contain
+objtool support for CFI, the remaining patches change function
+declarations to use opaque types, fix type mismatch issues that
+confuse the compiler, and disable CFI where it can't be used.
 
-Tested on ChromeOS Zork.
+You can also pull this series from
 
-v1:
-Remove amdgpu_dm_verify_lut_sizes everywhere.
+  https://github.com/samitolvanen/linux.git x86-cfi-v5
 
-Signed-off-by: Mark Yacoub <markyacoub@chromium.org>
 ---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  8 ++---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |  1 -
- .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 35 -------------------
- 3 files changed, 4 insertions(+), 40 deletions(-)
+Changes in v5:
+- Renamed DECLARE_ASM_FUNC_SYMBOL() to DECLARE_NOT_CALLED_FROM_C()
+  after some discussion about naming.
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index f74663b6b046e..47f8de1cfc3a5 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -10244,6 +10244,10 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
- 		}
- 	}
- #endif
-+	ret = drm_atomic_helper_check_crtcs(state);
-+	if (ret)
-+		return ret;
-+
- 	for_each_oldnew_crtc_in_state(state, crtc, old_crtc_state, new_crtc_state, i) {
- 		dm_old_crtc_state = to_dm_crtc_state(old_crtc_state);
- 
-@@ -10253,10 +10257,6 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
- 			dm_old_crtc_state->dsc_force_changed == false)
- 			continue;
- 
--		ret = amdgpu_dm_verify_lut_sizes(new_crtc_state);
--		if (ret)
--			goto fail;
--
- 		if (!new_crtc_state->enable)
- 			continue;
- 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-index fcb9c4a629c32..22730e5542092 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-@@ -617,7 +617,6 @@ void amdgpu_dm_trigger_timing_sync(struct drm_device *dev);
- #define MAX_COLOR_LEGACY_LUT_ENTRIES 256
- 
- void amdgpu_dm_init_color_mod(void);
--int amdgpu_dm_verify_lut_sizes(const struct drm_crtc_state *crtc_state);
- int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc);
- int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
- 				      struct dc_plane_state *dc_plane_state);
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-index a022e5bb30a5c..319f8a8a89835 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-@@ -284,37 +284,6 @@ static int __set_input_tf(struct dc_transfer_func *func,
- 	return res ? 0 : -ENOMEM;
- }
- 
--/**
-- * Verifies that the Degamma and Gamma LUTs attached to the |crtc_state| are of
-- * the expected size.
-- * Returns 0 on success.
-- */
--int amdgpu_dm_verify_lut_sizes(const struct drm_crtc_state *crtc_state)
--{
--	const struct drm_color_lut *lut = NULL;
--	uint32_t size = 0;
--
--	lut = __extract_blob_lut(crtc_state->degamma_lut, &size);
--	if (lut && size != MAX_COLOR_LUT_ENTRIES) {
--		DRM_DEBUG_DRIVER(
--			"Invalid Degamma LUT size. Should be %u but got %u.\n",
--			MAX_COLOR_LUT_ENTRIES, size);
--		return -EINVAL;
--	}
--
--	lut = __extract_blob_lut(crtc_state->gamma_lut, &size);
--	if (lut && size != MAX_COLOR_LUT_ENTRIES &&
--	    size != MAX_COLOR_LEGACY_LUT_ENTRIES) {
--		DRM_DEBUG_DRIVER(
--			"Invalid Gamma LUT size. Should be %u (or %u for legacy) but got %u.\n",
--			MAX_COLOR_LUT_ENTRIES, MAX_COLOR_LEGACY_LUT_ENTRIES,
--			size);
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
- /**
-  * amdgpu_dm_update_crtc_color_mgmt: Maps DRM color management to DC stream.
-  * @crtc: amdgpu_dm crtc state
-@@ -348,10 +317,6 @@ int amdgpu_dm_update_crtc_color_mgmt(struct dm_crtc_state *crtc)
- 	bool is_legacy;
- 	int r;
- 
--	r = amdgpu_dm_verify_lut_sizes(&crtc->base);
--	if (r)
--		return r;
--
- 	degamma_lut = __extract_blob_lut(crtc->base.degamma_lut, &degamma_size);
- 	regamma_lut = __extract_blob_lut(crtc->base.gamma_lut, &regamma_size);
- 
+- Added an explicit include for <linux/cfi.h> to tracepoint.c.
+
+- Updated commit messages based on feedback.
+
+Changes in v4:
+- Dropped the extable patch after the code was refactored in -tip.
+
+- Switched to __section() instead of open-coding the attribute.
+
+- Added an explicit ifdef for filtering out CC_FLAGS_CFI in
+  purgatory for readability.
+
+- Added a comment to arch_cfi_jump_reloc_offset() in objtool.
+
+Changes in v3:
+- Dropped Clang requirement to >= 13 after the missing compiler
+  fix was backported there.
+
+- Added DEFINE_CFI_IMMEDIATE_RETURN_STUB to address the issue
+  with tp_stub_func in kernel/tracepoint.c.
+
+- Renamed asm_func_t to asm_func_ptr.
+
+- Changed extable handlers to use __cficanonical instead of
+  disabling CFI for fixup_exception.
+
+Changes in v2:
+- Dropped the first objtool patch as the warnings were fixed in
+  separate patches.
+
+- Changed fix_cfi_relocs() in objtool to not rely on jump table
+  symbols, and to return an error if it can't find a relocation.
+
+- Fixed a build issue with ASM_STACK_FRAME_NON_STANDARD().
+
+- Dropped workarounds for inline assembly references to
+  address-taken static functions with CFI as this was fixed in
+  the compiler.
+
+- Changed the C declarations of non-callable functions to use
+  opaque types and dropped the function_nocfi() patches.
+
+- Changed ARCH_SUPPORTS_CFI_CLANG to depend on Clang >=14 for
+  the compiler fixes.
+
+
+Kees Cook (1):
+  x86, relocs: Ignore __typeid__ relocations
+
+Sami Tolvanen (14):
+  objtool: Add CONFIG_CFI_CLANG support
+  objtool: Add ASM_STACK_FRAME_NON_STANDARD
+  linkage: Add DECLARE_NOT_CALLED_FROM_C
+  cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
+  tracepoint: Exclude tp_stub_func from CFI checking
+  ftrace: Use an opaque type for functions not callable from C
+  lkdtm: Disable UNSET_SMEP with CFI
+  lkdtm: Use an opaque type for lkdtm_rodata_do_nothing
+  x86: Use an opaque type for functions not callable from C
+  x86/purgatory: Disable CFI
+  x86, module: Ignore __typeid__ relocations
+  x86, cpu: Use LTO for cpu.c with CFI
+  x86, kprobes: Fix optprobe_template_func type mismatch
+  x86, build: Allow CONFIG_CFI_CLANG to be selected
+
+ arch/x86/Kconfig                      |  1 +
+ arch/x86/include/asm/ftrace.h         |  2 +-
+ arch/x86/include/asm/idtentry.h       | 10 +++---
+ arch/x86/include/asm/page_64.h        |  7 ++--
+ arch/x86/include/asm/paravirt_types.h |  3 +-
+ arch/x86/include/asm/processor.h      |  2 +-
+ arch/x86/include/asm/proto.h          | 25 ++++++-------
+ arch/x86/include/asm/uaccess_64.h     |  9 ++---
+ arch/x86/kernel/alternative.c         |  2 +-
+ arch/x86/kernel/ftrace.c              |  2 +-
+ arch/x86/kernel/kprobes/opt.c         |  4 +--
+ arch/x86/kernel/module.c              |  4 +++
+ arch/x86/kernel/paravirt.c            |  4 +--
+ arch/x86/kvm/emulate.c                |  4 +--
+ arch/x86/kvm/kvm_emulate.h            |  9 ++---
+ arch/x86/power/Makefile               |  2 ++
+ arch/x86/purgatory/Makefile           |  4 +++
+ arch/x86/tools/relocs.c               |  7 ++++
+ arch/x86/xen/enlighten_pv.c           |  6 ++--
+ arch/x86/xen/xen-ops.h                | 10 +++---
+ drivers/misc/lkdtm/bugs.c             |  2 +-
+ drivers/misc/lkdtm/lkdtm.h            |  2 +-
+ drivers/misc/lkdtm/perms.c            |  2 +-
+ drivers/misc/lkdtm/rodata.c           |  2 +-
+ include/asm-generic/vmlinux.lds.h     | 11 ++++++
+ include/linux/cfi.h                   | 13 +++++++
+ include/linux/ftrace.h                |  7 ++--
+ include/linux/linkage.h               | 13 +++++++
+ include/linux/objtool.h               |  6 ++++
+ kernel/cfi.c                          | 24 ++++++++++++-
+ kernel/tracepoint.c                   |  6 ++--
+ tools/include/linux/objtool.h         |  6 ++++
+ tools/objtool/arch/x86/decode.c       | 17 +++++++++
+ tools/objtool/elf.c                   | 51 +++++++++++++++++++++++++++
+ tools/objtool/include/objtool/arch.h  |  3 ++
+ tools/objtool/include/objtool/elf.h   |  2 +-
+ 36 files changed, 218 insertions(+), 66 deletions(-)
+
+
+base-commit: 880e2b8e3151574b9e3419d1fbb06726ddee8b03
 -- 
-2.33.0.882.g93a45727a2-goog
+2.33.0.1079.g6e70778dc9-goog
 
