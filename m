@@ -2,138 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEAC42BC92
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A17742BC96
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239294AbhJMKRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:17:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238640AbhJMKRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:17:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91A3760EDF;
-        Wed, 13 Oct 2021 10:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634120107;
-        bh=Ruv5EW+NTge2yEnN27DKPqZq+pUFBaxgaE+3qXCReOE=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=Dl4jDaY6XtL74KsKzij7VxVaYeTzTWa0xaaYBJLJ4dTzA4xdHTMszpkQoampRxqlH
-         6j/+bsKWmJ0zcIu4OxuONETCVHfE7hLpAIBY79FKGEcWHCOtT+1ovkNsaIspucJLU1
-         vz5IClrfqVEMb+3+/efiBNCYFOQN8IJazKtLFTjX6b1DBEmrWwZ6cjcDm7N/FhMHRX
-         5B/G6MBYNgZfPprqdFD7rdxYDbo1SgTbT7sm1rt7EKzBPuGbDXOLoI5mrmdb5hfVw2
-         rFgG26yVK67U6NLW9kPZ/lrznuu9r3AZQrk97aE0miXT70vD2rnixV5IEN4Xc6JMGV
-         hnt8jfqPhJmeA==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id A3A0227C005B;
-        Wed, 13 Oct 2021 06:15:05 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute6.internal (MEProxy); Wed, 13 Oct 2021 06:15:05 -0400
-X-ME-Sender: <xms:qbFmYfhamHOOSqnWIa9NT4OT9ngOnGZqBSTdUyQp7JS1dh9sUIsMCg>
-    <xme:qbFmYcCnL07lS2N-aASPX4-9Y_A1bHp-Eoj-JtsPhNkCQT3NE_BDAKtCQWWI-OTAz
-    G9M2SpIdhqTgXIwsZ8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddutddgvdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedthfehtedtvdetvdetudfgueeuhfdtudegvdelveelfedvteelfffg
-    fedvkeegfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
-    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
-    drlhhuthhordhush
-X-ME-Proxy: <xmx:qbFmYfFEYTczkjJNZYMPziW1uRxaamlrKhoi2NnF9qXAPwW_AJbdVQ>
-    <xmx:qbFmYcRMasl17cOSS0jaELBTViJ0UTsIALfJv0zRQturZpVBc_2M2w>
-    <xmx:qbFmYcyLLjwcNrofGUIapE67DUkRF_cEoo55hWWR3754_AOguBRgVA>
-    <xmx:qbFmYYcmfF4PuVedAiZmHXsdm0cT3iJn5zpYkZoNyyyBwf1ifu2LX9-pnhc>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 40B8521E006C; Wed, 13 Oct 2021 06:15:05 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1345-g8441cd7852-fm-20211006.001-g8441cd78
-Mime-Version: 1.0
-Message-Id: <d673e736-0a72-4549-816d-b755227ea797@www.fastmail.com>
-In-Reply-To: <da47ba42-b61e-d236-2c1c-9c5504e48091@redhat.com>
-References: <20211011215813.558681373@linutronix.de>
- <20211011223611.069324121@linutronix.de>
- <8a5762ab-18d5-56f8-78a6-c722a2f387c5@redhat.com>
- <BYAPR11MB3256B39E2A34A09FF64ECC5BA9B79@BYAPR11MB3256.namprd11.prod.outlook.com>
- <0962c143-2ff9-f157-d258-d16659818e80@redhat.com>
- <BYAPR11MB325676AAA8A0785AF992A2B9A9B79@BYAPR11MB3256.namprd11.prod.outlook.com>
- <da47ba42-b61e-d236-2c1c-9c5504e48091@redhat.com>
-Date:   Wed, 13 Oct 2021 03:14:44 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Paolo Bonzini" <pbonzini@redhat.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>,
-        "Arjan van de Ven" <arjan@linux.intel.com>,
-        "kvm list" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        "Jing Liu" <jing2.liu@linux.intel.com>,
-        "Sean Christopherson" <seanjc@google.com>
-Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
-Content-Type: text/plain
+        id S239286AbhJMKS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:18:27 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2788 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239124AbhJMKS0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 06:18:26 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19DAArcs021580;
+        Wed, 13 Oct 2021 06:15:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=z2tQ+mWwWACtmx/l9uuunVaTh/+pU7Z8rwc0mPpXfKU=;
+ b=OtS+X/2w7KD7cCMmTUquol+ikNsrAfDjyR2yVeBO9fje77dX6ok6GVwJRuSc8+QTpENh
+ cYy/jL+lPG9QzI8ZNcBlLM67uCJHXiD4a2EsWn3N/kH4WrLA1bggWmd85Y1mdf5tRo00
+ AJegUrgo/3f0lsnAJ/rIHVrfB9JD4hXWuZ7j4bKTW/8g4Jkwtd49NwUuJPVgeXr6M/rE
+ +rQYbVtSEHS/NwRZKD2AE8NKBHBCFg8NsBc5OFTxKzDoEvMko7wUibeF8gJjsCzZTKQS
+ Qf6Jo+oVHcyTLgy//m5pBDiQ/foes3V9qdymnojG8xvRfYsR5Cw8V82Sq2RCzIS6A7Gp rA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bnr79ev4j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 06:15:45 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19DA7xxw012393;
+        Wed, 13 Oct 2021 10:15:42 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3bk2bjhp30-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 10:15:42 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19DAFU2460031438
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Oct 2021 10:15:30 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F1EA42061;
+        Wed, 13 Oct 2021 10:15:30 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 452364204F;
+        Wed, 13 Oct 2021 10:15:19 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.58.186])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 13 Oct 2021 10:15:18 +0000 (GMT)
+Subject: Re: [PATCH v5 0/4] Add perf interface to expose nvdimm
+To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, dan.j.williams@intel.com,
+        ira.weiny@intel.com, vishal.l.verma@intel.com
+Cc:     maddy@linux.ibm.com, santosh@fossix.org,
+        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
+        rnsastry@linux.ibm.com
+References: <20210928124200.146331-1-kjain@linux.ibm.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <b54072ad-4d71-ff6d-7c63-0c1395e1d8f8@linux.ibm.com>
+Date:   Wed, 13 Oct 2021 15:45:15 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <20210928124200.146331-1-kjain@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: lZK93NSGcp_ji9b4QDMhQ68IFa4Zh-Jb
+X-Proofpoint-ORIG-GUID: lZK93NSGcp_ji9b4QDMhQ68IFa4Zh-Jb
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-13_03,2021-10-13_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxscore=0
+ priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110130068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dan,
+   Any comments on this patch-set?
 
+Thanks,
+Kajol Jain
 
-On Wed, Oct 13, 2021, at 1:42 AM, Paolo Bonzini wrote:
-> On 13/10/21 09:46, Liu, Jing2 wrote:
->> 
->>> On 13/10/21 08:15, Liu, Jing2 wrote:
->>>> After KVM passthrough XFD to guest, when vmexit opening irq window and
->>>> KVM is interrupted, kernel softirq path can call
->>>> kernel_fpu_begin() to touch xsave state. This function does XSAVES. If
->>>> guest XFD[18] is 1, and with guest AMX state in register, then guest
->>>> AMX state is lost by XSAVES.
->>>
->>> Yes, the host value of XFD (which is zero) has to be restored after vmexit.
->>> See how KVM already handles SPEC_CTRL.
->> 
->> I'm trying to understand why qemu's XFD is zero after kernel supports AMX.
->
-> There are three copies of XFD:
->
-> - the guest value stored in vcpu->arch.
->
-> - the "QEMU" value attached to host_fpu.  This one only becomes zero if 
-> QEMU requires AMX (which shouldn't happen).
->
-> - the internal KVM value attached to guest_fpu.  When #NM happens, this 
-> one becomes zero.
->
->
-> The CPU value is:
->
-> - the host_fpu value before kvm_load_guest_fpu and after 
-> kvm_put_guest_fpu.  This ensures that QEMU context switch is as cheap as 
-> possible.
->
-> - the guest_fpu value between kvm_load_guest_fpu and kvm_put_guest_fpu. 
->   This ensures that no state is lost in the case you are describing.
->
-> - the OR of the guest value and the guest_fpu value while the guest runs 
-> (using either MSR load/save lists, or manual wrmsr like 
-> pt_guest_enter/pt_guest_exit).  This ensures that the host has the 
-> opportunity to get a #NM exception, and allocate AMX state in the 
-> guest_fpu and in current->thread.fpu.
->
->> Yes, passthrough is done by two cases: one is guest #NM trapped;
->> another is guest clearing XFD before it generates #NM (this is possible for
->> guest), then passthrough.
->> For the two cases, we passthrough and allocate buffer for guest_fpu, and
->> current->thread.fpu.
->
-> I think it's simpler to always wait for #NM, it will only happen once 
-> per vCPU.  In other words, even if the guest clears XFD before it 
-> generates #NM, the guest_fpu's XFD remains nonzero and an #NM vmexit is 
-> possible.  After #NM the guest_fpu's XFD is zero; then passthrough can 
-> happen and the #NM vmexit trap can be disabled.
-
-This will stop being at all optimal when Intel inevitably adds another feature that uses XFD.  In the potentially infinite window in which the guest manages XFD and #NM on behalf of its userspace and when the guest allocates the other hypothetical feature, all the #NMs will have to be trapped by KVM.
-
-Is it really worthwhile for KVM to use XFD at all instead of preallocating the state and being done with it?  KVM would still have to avoid data loss if the guest sets XFD with non-init state, but #NM could always pass through.
+On 9/28/21 6:11 PM, Kajol Jain wrote:
+> Patchset adds performance stats reporting support for nvdimm.
+> Added interface includes support for pmu register/unregister
+> functions. A structure is added called nvdimm_pmu to be used for
+> adding arch/platform specific data such as cpumask, nvdimm device
+> pointer and pmu event functions like event_init/add/read/del.
+> User could use the standard perf tool to access perf events
+> exposed via pmu.
+> 
+> Interface also defines supported event list, config fields for the
+> event attributes and their corresponding bit values which are exported
+> via sysfs. Patch 3 exposes IBM pseries platform nmem* device
+> performance stats using this interface.
+> 
+> Result from power9 pseries lpar with 2 nvdimm device:
+> 
+> Ex: List all event by perf list
+> 
+> command:# perf list nmem
+> 
+>   nmem0/cache_rh_cnt/                                [Kernel PMU event]
+>   nmem0/cache_wh_cnt/                                [Kernel PMU event]
+>   nmem0/cri_res_util/                                [Kernel PMU event]
+>   nmem0/ctl_res_cnt/                                 [Kernel PMU event]
+>   nmem0/ctl_res_tm/                                  [Kernel PMU event]
+>   nmem0/fast_w_cnt/                                  [Kernel PMU event]
+>   nmem0/host_l_cnt/                                  [Kernel PMU event]
+>   nmem0/host_l_dur/                                  [Kernel PMU event]
+>   nmem0/host_s_cnt/                                  [Kernel PMU event]
+>   nmem0/host_s_dur/                                  [Kernel PMU event]
+>   nmem0/med_r_cnt/                                   [Kernel PMU event]
+>   nmem0/med_r_dur/                                   [Kernel PMU event]
+>   nmem0/med_w_cnt/                                   [Kernel PMU event]
+>   nmem0/med_w_dur/                                   [Kernel PMU event]
+>   nmem0/mem_life/                                    [Kernel PMU event]
+>   nmem0/poweron_secs/                                [Kernel PMU event]
+>   ...
+>   nmem1/mem_life/                                    [Kernel PMU event]
+>   nmem1/poweron_secs/                                [Kernel PMU event]
+> 
+> Patch1:
+>         Introduces the nvdimm_pmu structure
+> Patch2:
+>         Adds common interface to add arch/platform specific data
+>         includes nvdimm device pointer, pmu data along with
+>         pmu event functions. It also defines supported event list
+>         and adds attribute groups for format, events and cpumask.
+>         It also adds code for cpu hotplug support.
+> Patch3:
+>         Add code in arch/powerpc/platform/pseries/papr_scm.c to expose
+>         nmem* pmu. It fills in the nvdimm_pmu structure with pmu name,
+>         capabilities, cpumask and event functions and then registers
+>         the pmu by adding callbacks to register_nvdimm_pmu.
+> Patch4:
+>         Sysfs documentation patch
+> 
+> Changelog
+> ---
+> v4 -> v5:
+> - Remove multiple variables defined in nvdimm_pmu structure include
+>   name and pmu functions(event_int/add/del/read) as they are just
+>   used to copy them again in pmu variable. Now we are directly doing
+>   this step in arch specific code as suggested by Dan Williams.
+> 
+> - Remove attribute group field from nvdimm pmu structure and
+>   defined these attribute groups in common interface which
+>   includes format, event list along with cpumask as suggested by
+>   Dan Williams.
+>   Since we added static defination for attrbute groups needed in
+>   common interface, removes corresponding code from papr.
+> 
+> - Add nvdimm pmu event list with event codes in the common interface.
+> 
+> - Remove Acked-by/Reviewed-by/Tested-by tags as code is refactored
+>   to handle review comments from Dan.
+> 
+> - Make nvdimm_pmu_free_hotplug_memory function static as reported
+>   by kernel test robot, also add corresponding Reported-by tag.
+> 
+> - Link to the patchset v4: https://lkml.org/lkml/2021/9/3/45
+> 
+> v3 -> v4
+> - Rebase code on top of current papr_scm code without any logical
+>   changes.
+> 
+> - Added Acked-by tag from Peter Zijlstra and Reviewed by tag
+>   from Madhavan Srinivasan.
+> 
+> - Link to the patchset v3: https://lkml.org/lkml/2021/6/17/605
+> 
+> v2 -> v3
+> - Added Tested-by tag.
+> 
+> - Fix nvdimm mailing list in the ABI Documentation.
+> 
+> - Link to the patchset v2: https://lkml.org/lkml/2021/6/14/25
+> 
+> v1 -> v2
+> - Fix hotplug code by adding pmu migration call
+>   incase current designated cpu got offline. As
+>   pointed by Peter Zijlstra.
+> 
+> - Removed the retun -1 part from cpu hotplug offline
+>   function.
+> 
+> - Link to the patchset v1: https://lkml.org/lkml/2021/6/8/500
+> 
+> Kajol Jain (4):
+>   drivers/nvdimm: Add nvdimm pmu structure
+>   drivers/nvdimm: Add perf interface to expose nvdimm performance stats
+>   powerpc/papr_scm: Add perf interface support
+>   docs: ABI: sysfs-bus-nvdimm: Document sysfs event format entries for
+>     nvdimm pmu
+> 
+>  Documentation/ABI/testing/sysfs-bus-nvdimm |  35 +++
+>  arch/powerpc/include/asm/device.h          |   5 +
+>  arch/powerpc/platforms/pseries/papr_scm.c  | 225 ++++++++++++++
+>  drivers/nvdimm/Makefile                    |   1 +
+>  drivers/nvdimm/nd_perf.c                   | 328 +++++++++++++++++++++
+>  include/linux/nd.h                         |  41 +++
+>  6 files changed, 635 insertions(+)
+>  create mode 100644 drivers/nvdimm/nd_perf.c
+> 
