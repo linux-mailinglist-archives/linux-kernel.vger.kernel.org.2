@@ -2,88 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888EE42BC5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC1742BC43
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238945AbhJMKDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:03:24 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:56946
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237931AbhJMKDX (ORCPT
+        id S239202AbhJMKAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:00:14 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3975 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236501AbhJMKAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:03:23 -0400
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 696A940010
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:01:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634119279;
-        bh=72qIwnXVGNrfKxhLObQPGF0RNQPHhrmziNaYX8Pmn6k=;
-        h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type;
-        b=W4+p2OYgCnWCzp8aAIalzoSBu4LQMSeusJYU5/m7shf8Au032jSENO/pDUEH0vPrN
-         zOzb2njlwuPQ1MdaGrmQqbxde40wkpz+IgWT5kZVurmGy6Sw2sOI0BiCludijQ1wr7
-         MVS5dLAg5dzagVNWzv9wpR1mQdR+UZ+RfnMaTJiEt5EEJn6Q6YK+iOXHB9He6FshSE
-         6/3KFxt4MpdrDcYFVchDcfwEeRtsFFf19w9SItEwNbqDX888UPFtbY5vpxK5PqsmGq
-         rLLBrkWeurvSRcq26GQlGyCzqusl1HytgKAXVZcPDSqV4OQ70WJ07FqhW5Ef3FVIzt
-         uNpaEW2ycZzlA==
-Received: by mail-oi1-f200.google.com with SMTP id m5-20020a05680806c500b00276dd287318so1392755oih.20
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:01:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=72qIwnXVGNrfKxhLObQPGF0RNQPHhrmziNaYX8Pmn6k=;
-        b=p89Ty8dqPwijhCdfJMLip04EdAgihNrBi90usS9MztOMLyKG+V3yq19qcIAwmya0FO
-         sS6Pz2K87JxHuTMRmd89V6OewotSWhPPTIUzhkxgmD/cVwPhe3bsyBCeM+D1wEUunCKd
-         BwAFY8fF/2C/ntlPezNx5JVMM4zBW7YnrV5P/x6dKjXqE2JrkWZDgilOyljW8Cnx3+qY
-         54lcPwz+BTnZWRIMEp5I7vOAQ+ncWw6cPwW9N/v7BV1rOZY/djSikk8hgikUHnyk0dbo
-         Uk6qJO5+rt0H3e5EfhpxMLsDwPSiyad71iEG0TUFeQsFfUG2SV8TWhETjLpuAhBjEeaY
-         oKug==
-X-Gm-Message-State: AOAM53010PHf4EpKNPi/0MI/K/jdeZBS85ENhyaWNIqGMXm+5RYJE13S
-        vpN0915oq8/9SN3M0ujFYvcXHhZIg2YprprM4zNOylrCNyjnOJVOwcirI6ojCJXtWMMCxNjvkr/
-        W1P/8XvIRBp/qTkZ1HQCYCODkBvRUJOYoFmQoOgFuxd5M06sYjZ8IOVjwzg==
-X-Received: by 2002:a9d:4586:: with SMTP id x6mr4832648ote.155.1634119278308;
-        Wed, 13 Oct 2021 03:01:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRbNoT+5vjBaO6avzuE4+i7alOLMD7HAQHPzEjaJby9bEFhDVvy6NozAELmsBiJGECEiNH0ZW4yOwsGiLBpew=
-X-Received: by 2002:a9d:4586:: with SMTP id x6mr4832615ote.155.1634119278015;
- Wed, 13 Oct 2021 03:01:18 -0700 (PDT)
+        Wed, 13 Oct 2021 06:00:13 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HTntc1Hhrz67wWV;
+        Wed, 13 Oct 2021 17:54:16 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 11:58:07 +0200
+Received: from [10.47.95.55] (10.47.95.55) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 13 Oct
+ 2021 10:58:06 +0100
+Subject: Re: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kashyap.desai@broadcom.com>,
+        <hare@suse.de>
+References: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
+ <YWalYoOZmpkmAZNK@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <79266509-f327-9de3-d22e-0e9fe00387ee@huawei.com>
+Date:   Wed, 13 Oct 2021 11:01:11 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-From:   Chris Chiu <chris.chiu@canonical.com>
-Date:   Wed, 13 Oct 2021 18:01:07 +0800
-Message-ID: <CABTNMG2ipP4m4T084QRrHMLL_cGfyVdb_dBNf_E8pruMSDRHJQ@mail.gmail.com>
-Subject: The default jack detection type overridden by sof_sdw_quirk
-To:     pierre-louis.bossart@linux.intel.com, broonie@kernel.org,
-        rander.wang@linux.intel.com, yung-chuan.liao@linux.intel.com,
-        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com
-Cc:     alsa-devel@alsa-project.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YWalYoOZmpkmAZNK@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.95.55]
+X-ClientProxiedBy: lhreml703-chm.china.huawei.com (10.201.108.52) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-    I have an Intel AlderLake machine which uses the sof-soundwire
-driver for audio functions. When the headset is plugged in, it will
-incorrectly trigger the event KEY_PLAYPAUSE and never stops. To fix
-the problem, I used to apply the quirk RT711_JD2 proposed in
-sound/soc/intel/boards/sof_sdw.c and the jack detect function will
-work as expected.
-    However, when I look into the code of sound/soc/codecs/rt711.c and
-rt711-sdca.c, the default value for jd_src
-(https://github.com/torvalds/linux/blob/master/sound/soc/codecs/rt711.c#L1209)
- is already RT711_JD2, which means it is overridden by other drivers.
-After digging deeper, the jd_src value is overridden by
-rt711_add_codec_device_props() with the value RT711_JD1 comes from
-sof_sdw_quirk.
-    Is there any reason why sof_sdw_quirk is assigned with RT711_JD1
-by default? Can I simply fix it by assigning the sof_sdw_quirk to
-RT711_JD_NULL as follows?
--unsigned long sof_sdw_quirk = RT711_JD1;
-+unsigned long sof_sdw_quirk = RT711_JD_NULL;
+On 13/10/2021 10:22, Ming Lei wrote:
+> On Wed, Oct 13, 2021 at 04:40:59PM +0800, John Garry wrote:
+>> Since it is now possible for a tagset to share a single set of tags, the
+>> iter function should not re-iter the tags for the count of #hw queues in
+>> that case. Rather it should just iter once.
+>>
+>> Fixes: e0fdf846c7bb ("blk-mq: Use shared tags for shared sbitmap support")
+>> Reported-by: Kashyap Desai<kashyap.desai@broadcom.com>
+>> Signed-off-by: John Garry<john.garry@huawei.com>
+>>
+>> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+>> index 72a2724a4eee..c943b6529619 100644
+>> --- a/block/blk-mq-tag.c
+>> +++ b/block/blk-mq-tag.c
+>> @@ -378,9 +378,12 @@ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
+>>   void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
+>>   		busy_tag_iter_fn *fn, void *priv)
+>>   {
+>> -	int i;
+>> +	unsigned int flags = tagset->flags;
+>> +	int i, nr_tags;
+>> +
+>> +	nr_tags = blk_mq_is_shared_tags(flags) ? 1 : tagset->nr_hw_queues;
+>>   
+>> -	for (i = 0; i < tagset->nr_hw_queues; i++) {
+>> +	for (i = 0; i < nr_tags; i++) {
+>>   		if (tagset->tags && tagset->tags[i])
+>>   			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
+>>   					      BT_TAG_ITER_STARTED);
+> blk_mq_queue_tag_busy_iter() needn't such change?
 
-    Please let me know if there's any potential problem I didn't
-notice and suggest if there's any better solution. Thanks
+I didn't think so.
 
-Chris
+blk_mq_queue_tag_busy_iter() will indeed re-iter the tags per hctx. 
+However in bt_iter(), we check rq->mq_hctx == hctx for calling the iter 
+callback:
+
+static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+{
+	...
+
+	if (rq->q == hctx->queue && rq->mq_hctx == hctx)
+		ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
+
+And this would only pass for the correct hctx which we're iter'ing for. 
+Indeed, it would be nice not to iter excessive times, but I didn't see a 
+straightforward way to change that.
+
+There is also blk_mq_all_tag_iter():
+
+void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
+		void *priv)
+{
+	__blk_mq_all_tag_iter(tags, fn, priv, BT_TAG_ITER_STATIC_RQS);
+}
+
+But then the only user is blk_mq_hctx_has_requests():
+
+static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
+{
+	struct blk_mq_tags *tags = hctx->sched_tags ?
+			hctx->sched_tags : hctx->tags;
+	struct rq_iter_data data = {
+		.hctx	= hctx,
+	};
+
+	blk_mq_all_tag_iter(tags, blk_mq_has_request, &data);
+	return data.has_rq;
+}
+
+But, again like bt_iter(), blk_mq_has_request() will check the hctx matches:
+
+static bool blk_mq_has_request(struct request *rq, void *data, bool 
+reserved)
+{
+	struct rq_iter_data *iter_data = data;
+
+	if (rq->mq_hctx != iter_data->hctx)
+		return true;
+	iter_data->has_rq = true;
+	return false;
+}
+
+Thanks,
+John
