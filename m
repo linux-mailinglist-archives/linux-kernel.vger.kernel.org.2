@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099E142BEFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBCC42BEFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232243AbhJMLgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 07:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhJMLgG (ORCPT
+        id S232363AbhJMLg5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Oct 2021 07:36:57 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:36919 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhJMLgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:36:06 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB9BC061570;
-        Wed, 13 Oct 2021 04:34:03 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 11BE11F4428B
-Received: by earth.universe (Postfix, from userid 1000)
-        id 4AC473C0CA8; Wed, 13 Oct 2021 13:33:59 +0200 (CEST)
-Date:   Wed, 13 Oct 2021 13:33:59 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>
-Cc:     rjw@rjwysocki.net, lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        krisman@collabora.com, pgriffais@valvesoftware.com,
-        hdegoede@redhat.com
-Subject: Re: [PATCH 1/1] acpi: battery: Accept charges over the design
- capacity as full
-Message-ID: <20211013113359.redeyos4bc4p5pen@earth.universe>
-References: <20211008030529.223682-1-andrealmeid@collabora.com>
- <20211008030529.223682-2-andrealmeid@collabora.com>
+        Wed, 13 Oct 2021 07:36:55 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N7zJj-1mnOSf2Yxn-0151eV; Wed, 13 Oct 2021 13:34:50 +0200
+Received: by mail-wr1-f43.google.com with SMTP id m22so7456196wrb.0;
+        Wed, 13 Oct 2021 04:34:50 -0700 (PDT)
+X-Gm-Message-State: AOAM530JJTnCoKXLzarJsfmUUmoC+kyDEkbwMGqLyNRbKq/H2oBVjcA+
+        mhT90RL6MaXQYKdsC0j2Mzqa9n7Iac0Z6xMPc6A=
+X-Google-Smtp-Source: ABdhPJz/tQxa5v4qhwFE3sQu9avl5eu7/EDdEmltQMqmVp+Zjg8+ZW0kGehN4p6hG6cHdJWighfCnt4BmNvUupzN+ls=
+X-Received: by 2002:adf:ab46:: with SMTP id r6mr38988320wrc.71.1634124890085;
+ Wed, 13 Oct 2021 04:34:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="l3zfvcjemxnaeug5"
-Content-Disposition: inline
-In-Reply-To: <20211008030529.223682-2-andrealmeid@collabora.com>
+References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
+ <c215b244a19a07327ec81bf99f3c5f89c68af7b4.1633964380.git.christophe.leroy@csgroup.eu>
+ <202110130002.A7C0A86@keescook> <c2904a2e-c112-f2bc-04a0-52b08b46c1ce@csgroup.eu>
+In-Reply-To: <c2904a2e-c112-f2bc-04a0-52b08b46c1ce@csgroup.eu>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 13 Oct 2021 13:34:33 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0G8zOD-DJVOxWWwHgGUWQC2yxgMMKYrBQTgVLAicC7pw@mail.gmail.com>
+Message-ID: <CAK8P3a0G8zOD-DJVOxWWwHgGUWQC2yxgMMKYrBQTgVLAicC7pw@mail.gmail.com>
+Subject: Re: [PATCH v1 06/10] asm-generic: Refactor dereference_[kernel]_function_descriptor()
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Kees Cook <keescook@chromium.org>, Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-ia64@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:aKXdFfQHHJqa+PGJd0D0CX4GFyeR8Gs2iyTgOMSiqKrrS5DRfiG
+ h1gsuMfiWWdOlkpHquK5Qmb3cl+a+79dUuZ0YE10HlcmyzTDdeY9V8vEW0zhYKirbm/FPoa
+ vTPHLU2iGWRwCJP4NneTP4mcVH6iEWDchEqQVY8EjB1oQY/RlcAIGgXJM3fdz5gCIUmTOD2
+ DgZoHBJ/HonekaByWqDxA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mpUpj2+QhgA=:5zFFMUKPYHCBOM9HzxsjX0
+ 4ra+DlLJPIeAxBP4Ofuch9YCuO8j3PJ175e/jrXzlIeF3IJPo6miW1KwiXvo1Aj0Min2s5htD
+ y5jRo41flZUbI7dqj+c/c310D+o2nlgQfiPQ+PEXbog25A1FW6ZaNT2wrsBZlBKRED9ji4xrs
+ 7gK/7+m1QRFq5rWUA6t9Mfk0CbKLyXBwoGhkPXb7cewHkmr6wkCbGNY30K/kSmbL6JhzrEAJf
+ ezIgqRFmPvVqRGGKbX9+xZrPgSHifDLmPzk9Nc4RV8oy0XKx9PCtqA+FzEM1IW4KkFxYzW3oS
+ DNWRWVRC65I+Cn2nQCUONwU4II6V7zDHU5n26r1K4lxlhdrbBgMDE8FjbEdOFVCKRpWltRbUa
+ 7CIFLJ46wmfHpSaxtJ0UX1orNU7pP9orF82mzPBPhCDHlQaY/PYMJDqp3olvTvj55buTQxmmA
+ ZXpoNaDQ7qntFF2yHu91Fr4tjYV/v3Z56BsYLKgu9Aaapr2nm47xafc5mPKA2/J5TPySHoHF9
+ dH4xkphaH2+VJ0to/FtYk4SmBKv4zPZOusKW0X07I1w9t3iikj2QudIK6lgkSqzfnB7MjK00E
+ UIfeoQgm65BfUYDnaLQBtZynM7tdQx9Ql/cMnXkIeC8AGrfed1dwHUhy4sCh89z84A076iKi5
+ QGdJMw9yyT37j9L95vWqEvEK2J7b+SDweRXrHgtdsNRi4luRdmz/w5AryzicjoGT2C3MWu2S1
+ r13c2HlNpMAb1eHdYRRo8Kqt8qIgmS4yplcrHLF3JOmnkWp7Ea6szXivrFB1syWgtoxoTalEF
+ zn5/nNM5jzSElRztbFDQsUrQNen91J3NrnhsZ8W5kPaDGegQFt2d6UXcj0Bscik7zXXVlyRao
+ pcRCyKhh0lEnA//ie7pQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 13, 2021 at 1:20 PM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+> Le 13/10/2021 à 09:02, Kees Cook a écrit :
+> > On Mon, Oct 11, 2021 at 05:25:33PM +0200, Christophe Leroy wrote:
+> >> dereference_function_descriptor() and
+> >> dereference_kernel_function_descriptor() are identical on the
+> >> three architectures implementing them.
+> >>
+> >> Make it common.
+> >>
+> >> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> >> ---
+> >>   arch/ia64/include/asm/sections.h    | 19 -------------------
+> >>   arch/parisc/include/asm/sections.h  |  9 ---------
+> >>   arch/parisc/kernel/process.c        | 21 ---------------------
+> >>   arch/powerpc/include/asm/sections.h | 23 -----------------------
+> >>   include/asm-generic/sections.h      | 18 ++++++++++++++++++
+> >>   5 files changed, 18 insertions(+), 72 deletions(-)
+> >
+> > A diffstat to love. :)
+> >
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
 
---l3zfvcjemxnaeug5
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-Hi,
+> Unless somebody minds, I will make them out of line as
+> suggested by Helge in he's comment to patch 4.
+>
+> Allthough there is no spectacular size reduction, the functions
+> are not worth being inlined as they are not used in critical pathes.
 
-On Fri, Oct 08, 2021 at 12:05:29AM -0300, Andr=E9 Almeida wrote:
-> Some buggy firmware and/or brand new batteries can support a charge that's
-> slightly over the reported design capacity. In such cases, the kernel will
-> report to userspace that the charging state of the battery is "Unknown",
-> when in reality the battery charge is "Full", at least from the design
-> capacity point of view. Make the fallback condition accepts capacities
-> over the designed capacity so userspace knows that is full.
->=20
-> Signed-off-by: Andr=E9 Almeida <andrealmeid@collabora.com>
-> ---
->  drivers/acpi/battery.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
-> index dae91f906cea..8afa85d6eb6a 100644
-> --- a/drivers/acpi/battery.c
-> +++ b/drivers/acpi/battery.c
-> @@ -169,7 +169,7 @@ static int acpi_battery_is_charged(struct acpi_batter=
-y *battery)
->  		return 1;
-> =20
->  	/* fallback to using design values for broken batteries */
-> -	if (battery->design_capacity =3D=3D battery->capacity_now)
-> +	if (battery->design_capacity <=3D battery->capacity_now)
->  		return 1;
-> =20
->  	/* we don't do any sort of metric based on percentages */
+Sounds good to me.
 
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-
--- Sebastian
-
---l3zfvcjemxnaeug5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmFmxCEACgkQ2O7X88g7
-+po9MA/8DG1oHhbWjKEt8+SGlUNplGL9I/lEEtFf/SvxzUeFo9SPoSZ5NIURuftr
-VQWRf47Loiz4KaTv9iSJvBixnw+TeS76hHj+AX/C0V1TYv2nHf3A9emP0Ux3liA8
-c75TlWWtNrtgxmnTSqkGcvhIAGNHgtZonvckwOb/oVMlO+xXg5o6qvvl31VkoxZe
-ZzSuwGJD8oqpEHpBoGbmPJSd7sl2ihdiDau379aQVX9r5fzQ1C+ta1rj5K/RuuQt
-hXOhRDv4aZtvsOIkJ8lp6KoVEh5Sl1SbxlSP1GxP6VaTrMzEodi+Tr8nW73cuzij
-93ED0RGUYZPzj+TNT+VNgNgbLFNBstzfghxDbQJFYD4kLJIaYDuKaqJ0o2/RSMqS
-JMRbRa4xf3opsShE+eW0byKxviWr8SpU9hxyWI33nEdt1n2yLZj7YtpEAG9G/KTC
-ovYxwLVO4Xnoe/0bUd1Ls1oQHHIM9EFLFjHKkkCQfUxhAhuJzoQ5FF4L5KMJcfAx
-5w/RFcfqDXWWeCanpL7zvHmXaqBCDCXqo4poZUnmdf8ZWk5hWawjwqN/BqdXPb/F
-j6JHQg9U6zN75UHhHHllO8oEpc4skXxDvXgteYvvoFEFIQmn5VbHoEsggV7uoHOq
-q/omd8xLtWHued0KP7kfEwvYCn1aF8MATbIxE0lk0Dq3xuhs6KI=
-=5+4P
------END PGP SIGNATURE-----
-
---l3zfvcjemxnaeug5--
+      Arnd
