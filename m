@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502B642BB4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93E142BB51
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239044AbhJMJSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:18:33 -0400
-Received: from mga06.intel.com ([134.134.136.31]:21450 "EHLO mga06.intel.com"
+        id S239080AbhJMJTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:19:17 -0400
+Received: from mga07.intel.com ([134.134.136.100]:48932 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239062AbhJMJS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:18:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="288258870"
+        id S230045AbhJMJTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 05:19:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="290878653"
 X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
-   d="scan'208";a="288258870"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 02:16:25 -0700
+   d="scan'208";a="290878653"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 02:17:13 -0700
 X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
-   d="scan'208";a="491378550"
-Received: from rli9-dbox.sh.intel.com (HELO rli9-dbox) ([10.239.159.115])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 02:16:22 -0700
-Date:   Wed, 13 Oct 2021 17:16:57 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Barry Song <baohua@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [kbuild-all] Re: [tip:sched/core 45/47]
- kernel/sched/topology.c:23:20: error: unused function 'sched_debug'
-Message-ID: <YWakCfUA+MZULt2w@rli9-dbox>
-References: <202110130209.1XL2cTpW-lkp@intel.com>
- <0538ccac-19eb-a184-6aef-1d11eefbae17@hisilicon.com>
+   d="scan'208";a="480721077"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.230.131]) ([10.249.230.131])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 02:17:08 -0700
+Subject: Re: [PATCH v3 0/8] perf session: Extend reader object to allow
+ multiple readers
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+References: <cover.1634113027.git.alexey.v.bayduraev@linux.intel.com>
+Organization: Intel Corporation
+Message-ID: <9365d01b-20a7-2ad2-2a50-b3661a47da9f@linux.intel.com>
+Date:   Wed, 13 Oct 2021 12:17:05 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0538ccac-19eb-a184-6aef-1d11eefbae17@hisilicon.com>
+In-Reply-To: <cover.1634113027.git.alexey.v.bayduraev@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 05:02:42PM +0800, Yicong Yang wrote:
-> Hi,
-> 
-> On 2021/10/13 2:30, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-> > head:   b2d5b9cec60fecc72a13191c2c6c05acf60975a5
-> > commit: f43df9225fcad9b07a4ef4d0fe4c3ad2fb4ce82d [45/47] sched/topology: Remove unused numa_distance in cpu_attach_domain()
-> > config: hexagon-buildonly-randconfig-r004-20211012 (attached as .config)
-> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c3dcf39554dbea780d6cb7e12239451ba47a2668)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=f43df9225fcad9b07a4ef4d0fe4c3ad2fb4ce82d
-> >         git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
-> >         git fetch --no-tags tip sched/core
-> >         git checkout f43df9225fcad9b07a4ef4d0fe4c3ad2fb4ce82d
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=hexagon 
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All errors (new ones prefixed by >>):
-> > 
-> >>> kernel/sched/topology.c:23:20: error: unused function 'sched_debug' [-Werror,-Wunused-function]
-> >    static inline bool sched_debug(void)
-> >                       ^
-> >    1 error generated.
-> > 
-> 
-> sched_debug() is unused if CONFIG_ENERGY_MODEL=n || CONFIG_CPU_FREQ_GOV_SCHEDUTIL=n and CONFIG_NUMA=n,
-> which is the case in the report. This is not introduced by this patch.
-> 
-> A __maybe_unused qualify for sched_debug() may fix this. Not sure we intends to do so.
-Hi Yicong, you may wait for Peter's input. 0-day CI is consulting Peter what the appropriate
-scope is to ignore the W=1 related warnings at
-https://lore.kernel.org/llvm/CALOAHbDkBn3LDsNvSXujMiQXrLHdRsfvJUqJv_eTh4s63osuTw@mail.gmail.com/T/#m516619d3b8b632e457522ef7827694f9b47c574c
+On 13.10.2021 12:06, Alexey Bayduraev wrote:> Changes in v4:> - set/unset active_decomp within reader__process_events
+Sorry, 
 
-We will not reporting out such un-interested issues anymore per the input.
+The subject should of course be [PATCH v4 0/8] ...
+
+Regards,
+Alexey
 
 > 
-> > 
-> > vim +/sched_debug +23 kernel/sched/topology.c
-> > 
-> > f2cb13609d5397 Ingo Molnar    2017-02-01  22  
-> > f2cb13609d5397 Ingo Molnar    2017-02-01 @23  static inline bool sched_debug(void)
-> > f2cb13609d5397 Ingo Molnar    2017-02-01  24  {
-> > 9406415f46f612 Peter Zijlstra 2021-04-15  25  	return sched_debug_verbose;
-> > f2cb13609d5397 Ingo Molnar    2017-02-01  26  }
-> > f2cb13609d5397 Ingo Molnar    2017-02-01  27  
-> > 
-> > :::::: The code at line 23 was first introduced by commit
-> > :::::: f2cb13609d5397cdd747f3ed6fb651233851717d sched/topology: Split out scheduler topology code from core.c into topology.c
-> > 
-> > :::::: TO: Ingo Molnar <mingo@kernel.org>
-> > :::::: CC: Ingo Molnar <mingo@kernel.org>
-> > 
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> > 
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+> Changes in v3:
+> - removed struct reader_state in [PATCH v3 1/8]
+> - fixed repeating code in [PATCH v3 2/8]
+> - split [PATCH v2 4/5] to [PATCH v3 4/8], [PATCH v3 5/8]
+> - split [PATCH v2 5/5] to [PATCH v3 6/8] - [PATCH v3 8/8]
+> 
+> Changes in v2:
+> - introduced struct decomp_data suggested by Jiri Olsa
+> - removed unnecessary [PATCH v1 1/6]
+> - removed unnecessary extra line in [PATCH v2 4/5]
+> - removed unnecessary reader_state.eof flag in [PATCH v2 5/5]
+> 
+> Patchset moves state info and decompressor object into reader object
+> that made possible to split reader__process_events function into three
+> logical parts: init, map/unmap and single event reader which are used
+> in events reader loop. This approach allows reading multiple trace
+> files at the same time. 
+> 
+> The design and implementation are based on the prototype [1], [2].
+> The patchset was separated from [3].
+> 
+> Tested:
+> 
+> tools/perf/perf record -o prof.data -- matrix.gcc.g.O3
+> tools/perf/perf record -o prof.data -z -- matrix.gcc.g.O3
+> tools/perf/perf report -i prof.data
+> tools/perf/perf report -i prof.data --call-graph=callee
+> tools/perf/perf report -i prof.data --stdio --header
+> tools/perf/perf report -i prof.data -D --header
+> 
+> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
+> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+> [3] https://lore.kernel.org/lkml/cover.1629186429.git.alexey.v.bayduraev@linux.intel.com/
+> 
+> Alexey Bayduraev (8):
+>   perf session: Move all state items to reader object
+>   perf session: Introduce decompressor in reader object
+>   perf session: Move init/release code to separate functions
+>   perf session: Move map code to separate function
+>   perf session: Move unmap code to reader__mmap
+>   perf session: Move event read code to separate function
+>   perf session: Introduce reader return codes
+>   perf session: Introduce reader EOF function
+> 
+>  tools/perf/util/session.c | 193 ++++++++++++++++++++++++++------------
+>  tools/perf/util/session.h |  10 +-
+>  2 files changed, 141 insertions(+), 62 deletions(-)
+> 
