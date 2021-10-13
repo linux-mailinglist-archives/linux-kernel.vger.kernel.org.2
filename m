@@ -2,151 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853C142C021
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E4142C02A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbhJMMgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:36:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231145AbhJMMgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:36:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B81860EBB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:34:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634128484;
-        bh=JlEDbRIR5mybHqyx6SQLCFaW8BoVnGveOk9R4ZFD7zM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=K9t6NAqdOEGZzMasWIlRt5fOEnzL+LmFFNeDVs21urg2VMs97F3D/NOu0l1x7Ohvl
-         cCgNe4QJYOEgIt5UTstaCvU1AYpln/4twGOILue/3NOT4rQ963KsfdYo4Ri1Zcge9T
-         4IfpGMouomb+OykZNrTZmL/kfHMk4vxc7zMt5k25f/Q30b7hUifeSGdjNEHkBGfapj
-         aWKo2p3fWPgJiilcOt+kW8ZwuSFYdo6jHhSjxLvQLIqrHpzcWP0tNp7hFuxtFkAUYe
-         eSlRF7GCD6guQIz8+kzxhYI/8GtKgWMIO2QF/urtCv/F0US8hjMd+5ozsJqx17fVhy
-         fAj0w4v6OmWaw==
-Received: by mail-vk1-f180.google.com with SMTP id 34so1713169vkl.13
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:34:44 -0700 (PDT)
-X-Gm-Message-State: AOAM532d/LXqx8LaqBMAOEsSUPEx4u4Ozph4LZYBbmvklqhN6/zx+C6r
-        PKUO/9upk6Idq7dg/ZSPq2idc63FO8hQQsTUQvg=
-X-Google-Smtp-Source: ABdhPJyG0CYAXgVJwI3HxRrhPFgUh8fz6ejBECHvxddZ69z75kh9bvDLh3hS92Kduf5pciR1hzt0XY9NvHv/yHjzIcA=
-X-Received: by 2002:a1f:1844:: with SMTP id 65mr32743708vky.3.1634128483719;
- Wed, 13 Oct 2021 05:34:43 -0700 (PDT)
+        id S233614AbhJMMho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231145AbhJMMhn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 08:37:43 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD63C061570;
+        Wed, 13 Oct 2021 05:35:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eMEXfomHe+Tl3sMKtQnjNMhVYCC3yttKmNX8r/7xFTY=; b=m1S8aLcRwPu/lHVCZXsGpjbKZn
+        H/jfFqw6Ddw2nkaWJYuacvjGIcAy7kv50lsFDQN6vDtgBIJrHd6+/VtI3GG5aVNAHmXdDuO+Iz3El
+        ohcKBqtlsogvHJlTPuc1tSRRgHWCuSsaMLx+6yC2Zcy+/0LVuhvbSxlspq00XYjwi7pDsBNisKRC4
+        moLCwrhlGdLLXir0ZkxLM7mbUx/xkceROdYWd4mm0/wMSglM7Q3nSL/Xi7obfULfcDshqoifqwwbo
+        Cri00mYnzZ1IErZDEddZhiDIaSQZptCRed0NmaquBclvDm+IgdQaByRvQzNpQzu7nGvwXp3sZV1TU
+        xvy1VHPA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1madTn-00GayY-Os; Wed, 13 Oct 2021 12:35:31 +0000
+Date:   Wed, 13 Oct 2021 05:35:31 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Ming Lei <ming.lei@redhat.com>, Miroslav Benes <mbenes@suse.cz>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 09/12] sysfs: fix deadlock race with module removal
+Message-ID: <YWbSk6p3bfXUPZ92@bombadil.infradead.org>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-10-mcgrof@kernel.org>
+ <YVwZwh7qDKfSM59h@T590>
+ <YWSr2trabEJflzlj@bombadil.infradead.org>
+ <YWTU3kTlJKONyFjZ@T590>
+ <YWX7pAn0YMaJeJBA@bombadil.infradead.org>
+ <YWYxN875B6rlmAjC@T590>
 MIME-Version: 1.0
-References: <20211013012149.2834212-1-guoren@kernel.org> <CAAhSdy042JY_Vm2j_d5t4jweS3gf51h30j1O9LXDnE6KkB8AEg@mail.gmail.com>
- <4039032.XOxOlHldtI@diego>
-In-Reply-To: <4039032.XOxOlHldtI@diego>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 13 Oct 2021 20:34:32 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSJaYqH-=QQgM+d6jMQh1i97Q2=O9MCu_8jS2w06q5fCg@mail.gmail.com>
-Message-ID: <CAJF2gTSJaYqH-=QQgM+d6jMQh1i97Q2=O9MCu_8jS2w06q5fCg@mail.gmail.com>
-Subject: Re: [PATCH V3 1/2] dt-bindings: update riscv plic compatible string
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Rob Herring <robh@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWYxN875B6rlmAjC@T590>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 4:57 PM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
->
-> Hi Anup,
->
-> Am Mittwoch, 13. Oktober 2021, 07:11:46 CEST schrieb Anup Patel:
-> > On Wed, Oct 13, 2021 at 6:52 AM <guoren@kernel.org> wrote:
-> > >
-> > > From: Guo Ren <guoren@linux.alibaba.com>
-> > >
-> > > Add the compatible string "thead,c900-plic" to the riscv plic
-> > > bindings to support SOCs with thead,c9xx processor cores.
-> > >
-> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > Cc: Rob Herring <robh@kernel.org>
-> > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > > Cc: Anup Patel <anup@brainfault.org>
-> > > Cc: Atish Patra <atish.patra@wdc.com>
-> > >
-> > > ---
-> > >
-> > > Changes since V3:
-> > >  - Rename "c9xx" to "c900"
-> > >  - Add thead,c900-plic in the description section
-> > > ---
-> > >  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml    | 6 ++++=
-++
-> > >  1 file changed, 6 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/s=
-ifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-control=
-ler/sifive,plic-1.0.0.yaml
-> > > index 08d5a57ce00f..82629832e5a5 100644
-> > > --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,p=
-lic-1.0.0.yaml
-> > > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,p=
-lic-1.0.0.yaml
-> > > @@ -35,6 +35,11 @@ description:
-> > >    contains a specific memory layout, which is documented in chapter =
-8 of the
-> > >    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U5=
-4-MC-RVCoreIP.pdf>.
-> > >
-> > > +  While the "thead,c900-plic" would mask IRQ with readl(claim), so i=
-t needn't
-> > > +  mask/unmask which needed in RISC-V PLIC. When in IRQS_ONESHOT & IR=
-QCHIP_EOI_THREADED
-> > > +  path, unnecessary mask operation would cause a blocking irq bug in=
- thead,c900-plic.
-> > > +  Because when IRQ is disabled in c900, writel(hwirq, claim) would b=
-e invalid.
-> >
-> > This is a totally incorrect description of the errata required for C9xx=
- PLIC.
-> >
-> > Please don't project non-compliance as a feature of C9xx PLIC.
-> >
-> > > +
-> > >  maintainers:
-> > >    - Sagar Kadam <sagar.kadam@sifive.com>
-> > >    - Paul Walmsley  <paul.walmsley@sifive.com>
-> > > @@ -46,6 +51,7 @@ properties:
-> > >        - enum:
-> > >            - sifive,fu540-c000-plic
-> > >            - canaan,k210-plic
-> > > +          - thead,c900-plic
->
-> we still want specific SoC names in the compatible, the "c900"
-> is still a sort-of placeholder.
-c900 is not a SOC name, but a CPU name. For soc name, it should be
-"allwinner,d1-plic".
+On Wed, Oct 13, 2021 at 09:07:03AM +0800, Ming Lei wrote:
+> On Tue, Oct 12, 2021 at 02:18:28PM -0700, Luis Chamberlain wrote:
+> > > Looks test_sysfs isn't in linus tree, where can I find it?
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20210927-sysfs-generic-deadlock-fix
+> > 
+> > To reproduce the deadlock revert the patch in this thread and then run
+> > either of these two tests as root:
+> > 
+> > ./tools/testing/selftests/sysfs/sysfs.sh -w 0027
+> > ./tools/testing/selftests/sysfs/sysfs.sh -w 0028
+> > 
+> > You will need to enable the test_sysfs driver.
+> > > Can you share the code which waits for the sysfs / kernfs files to be
+> > > stop being used?
+> > 
+> > How about a call trace of the two tasks which deadlock, here is one of
+> > running test 0027:
+> > 
+> > kdevops login: [  363.875459] INFO: task sysfs.sh:1271 blocked for more
+> > than 120 seconds.
 
->
->
-> > >        - const: sifive,plic-1.0.0
-> >
-> > The PLIC DT node requires two compatible string:
-> > <implementation_compat>, <spec_compat>
-> >
-> > The C9xx PLIC is not RISC-V PLIC so, the DT node should
-> > be: "thead,c900-plic", "thead,c9xx-plic"
-> >
-> > You need to change "- const: sifive,plic-1.0.0" to
-> > - enum:
-> >     - sifive,plic-1.0.0
-> >     - thead,c9xx-plic
->
->
+<-- snip -->
 
+> That doesn't show the deadlock is related with module_exit().
 
---=20
-Best Regards
- Guo Ren
+Not directly no.
 
-ML: https://lore.kernel.org/linux-csky/
+> It is clearly one AA deadlock, what I meant was that it isn't related with
+> module exit cause lock & device_del() isn't always done in module exit, so
+> I doubt your fix with grabbing module refcnt is good or generic enough.
+
+A device_del() *can* happen in other areas other than module exit sure,
+but the issue is if a shared lock is used *before* device_del() and also
+used on a sysfs op. Typically this can happen on module exit, and the
+other common use case in my experience is on sysfs ops, such is the case
+with the zram driver. Both cases are covered then by this fix.
+
+If there are other areas, that is still driver specific, but of the
+things we *can* generalize, definitely module exit is a common path.
+
+> Except for your cooked test_sys module, how many real drivers do suffer the
+> problem? What are they?
+
+I only really seriously considered trying to generalize this after it
+was hinted to me live patching was also affected, and so clearly
+something generic was desirable.
+
+There may be other drivers for sure, but a hunt for that with semantics
+would require a bit complex coccinelle patch with iteration support.
+
+> Why can't we fix the exact driver?
+
+You can try, the way the lock is used in zram is correct, specially
+after my other fix in this series which addresses another unrelated bug
+with cpu hotplug multistate support. So we then can proceed to either
+take the position to say: "Thou shalt not use a shared lock on module
+exit and a sysfs op" and try to fix all places, or we generalize a fix
+for this. A generic fix seems more desirable.
+
+  Luis
