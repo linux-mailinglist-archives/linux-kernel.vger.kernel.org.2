@@ -2,281 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E09942C904
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6B542C90B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238603AbhJMSuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 14:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhJMSt6 (ORCPT
+        id S238706AbhJMSuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 14:50:35 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:44928 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhJMSu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 14:49:58 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E950C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:47:55 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id q13so6548688uaq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:47:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BPdx51HLhI11HArGS1VOToC12vt9boCyZfmyE8AUMrY=;
-        b=mKsATYIxxTzZn/e9ngGNBe7FtahJOkf9YcbmoIiL5UCUn9tKU49eK6irgxYYCsvOuP
-         qDHksHiwtIA6gH2mpt7sSSlR36jEIHuOdHSPKPmvGseuC7PT+KfVf66lQzPs+VoBUu2y
-         fnLtaiTvpmzz7Zb35mVCb/5RGZI0M/POEfhwim+/QywZvOdNw5lZvVBaRrRq8bWkkjW5
-         tfJNveWzv7vi5FSOD/edJWxAqPoeOHXDFoWYk0PLvSNi78O3VVYfMBIOGfud2ICog+6x
-         HvNuegoTFGEb3NQGyutduaHc/MPeGeiv5pZbMpgOs/yuA7WR3ufaUFcmyXqhBYCaQlbv
-         6TTA==
+        Wed, 13 Oct 2021 14:50:28 -0400
+Received: by mail-oi1-f179.google.com with SMTP id y207so5090012oia.11;
+        Wed, 13 Oct 2021 11:48:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BPdx51HLhI11HArGS1VOToC12vt9boCyZfmyE8AUMrY=;
-        b=hkSwmNnEUvVesmjlmCDL+9+jSHFLoPmEkeWNHiRLpg5POI31IAps9mAE8XVu9lr0Ke
-         rJ3gvhIyORkibYXVHiRVxVAW4ShoFaKk2dyUIXDOjllY8ioZHu2HGIJXBFqzFTnxh1JX
-         IVa+bEOpqsO4EyczHF1QKtF/xkezKCOwws7qyKN2uHVUdQg6Xtx55D/+mMo4cLZWJesV
-         O8B0mu/T7uslCgcYa0M2jTcKzCd7m6ILp15wASoD4NGX+E6mkQ29CZ8LWOoSWzdjlhVK
-         s3ogB9JzAwLGXnIwXqxA7f4IBion614HZvaOGnTw3rUmBTLRZi1qKqW6nYimjbBu2LLn
-         Umgg==
-X-Gm-Message-State: AOAM533CR+AXAytT8MA1d7ZckZFBb4WkptmYClP/hXLjqVLlAczPz6Bw
-        SIpJ1rVrWA7cqtPtnZzvQ45MejiFgY9Me2aQVFMWbA==
-X-Google-Smtp-Source: ABdhPJyjftAWbjcnFvSUtye4sK5pBI7qz6TSUqJkXVUyAiOX4vkm4U0Mi4LdzkeaMgphkvsgGlM86z7voBl00H4U/Y8=
-X-Received: by 2002:a67:d91b:: with SMTP id t27mr1040145vsj.55.1634150874139;
- Wed, 13 Oct 2021 11:47:54 -0700 (PDT)
+        bh=Uncg0W16CORITgHLeGs36ZwvOKsR/HwFM8ah6F+jJlQ=;
+        b=RqgDcCKPzX9koOzqtPOeox624mOS21XkktkruA0b82vD3xZstb3U8RWSb3tZ2bzZ+T
+         ZFIO2dN7+GnNMVmdVuYPrvDhglOjcrrDXSfcpqYYKkrOVM7ARItXgBqOpQUk4pXOycHs
+         7iccC91Wtxe3SDUzihLcuLRvj1Je8x8I51z6M1lBY6ZQQPm+jfZBs69dlxn+PjabEBpD
+         0SS80jLURn2YLoI/4g521o20aSsRdRI/PNM0+Uf99RpvitCWvmpjFcof6THEL6Rvlhql
+         sI8hTCauNdwX9Mq524ZKpnETwYdY/P8c9+mVsbMlrMear/f8Hlk1kPaf3a7QbNRLtsKl
+         4Vew==
+X-Gm-Message-State: AOAM532hNuWnk+J6UVjGqMtmfIvfmXCqN7avk/hrtP9p8jPcQeQqEjUQ
+        uuI8qilg3kcd2zPpi2dGKGgeC0hRXqPfi8ob+HU=
+X-Google-Smtp-Source: ABdhPJyc7MCEzrZb0JPNJKLPL937j5cUNrmSmP5Ig/VgZB0YrpouR39aCejCEkHiM7ovjt1eLlLuQIJ/Wdr+e+vvlE8=
+X-Received: by 2002:aca:5c5:: with SMTP id 188mr587027oif.154.1634150904684;
+ Wed, 13 Oct 2021 11:48:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211012171624.14338-1-semen.protsenko@linaro.org> <677711d4-61d6-1bb8-f638-c4911ef5e1cb@canonical.com>
-In-Reply-To: <677711d4-61d6-1bb8-f638-c4911ef5e1cb@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Wed, 13 Oct 2021 21:47:42 +0300
-Message-ID: <CAPLW+4mX-YN=2BgW1F5HEUS79Y97WKPTX-uwkBF0NVwKfThzjQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] soc: samsung: exynos-chipid: Pass revision reg offsets
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211010185707.195883-1-hdegoede@redhat.com> <20211010185707.195883-2-hdegoede@redhat.com>
+ <CAJZ5v0i0NR8faABuZVe7V6sKgM4+1kOh-S56usj2WyeiDnfy9g@mail.gmail.com> <0c90d1dd-8e03-714a-1dbf-51b09241a23c@redhat.com>
+In-Reply-To: <0c90d1dd-8e03-714a-1dbf-51b09241a23c@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 13 Oct 2021 20:48:13 +0200
+Message-ID: <CAJZ5v0gN-o6O8daABdtD7ShnUkEgvknAa-VyzS7DG6jX2h8=uA@mail.gmail.com>
+Subject: Re: [PATCH v3 01/11] ACPI: delay enumeration of devices with a _DEP
+ pointing to an INT3472 device
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 at 19:04, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
+On Wed, Oct 13, 2021 at 8:23 PM Hans de Goede <hdegoede@redhat.com> wrote:
 >
-> On 12/10/2021 19:16, Sam Protsenko wrote:
-> > Old Exynos SoCs have both Product ID and Revision ID in one single
-> > register, while new SoCs tend to have two separate registers for those
-> > IDs. Implement handling of both cases by passing Revision ID register
-> > offsets in driver data.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  drivers/soc/samsung/exynos-chipid.c       | 67 +++++++++++++++++++----
-> >  include/linux/soc/samsung/exynos-chipid.h |  6 +-
-> >  2 files changed, 58 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
-> > index 5c1d0f97f766..1264a18aef97 100644
-> > --- a/drivers/soc/samsung/exynos-chipid.c
-> > +++ b/drivers/soc/samsung/exynos-chipid.c
-> > @@ -16,6 +16,7 @@
-> >  #include <linux/errno.h>
-> >  #include <linux/mfd/syscon.h>
-> >  #include <linux/of.h>
-> > +#include <linux/of_device.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/regmap.h>
-> >  #include <linux/slab.h>
-> > @@ -24,6 +25,17 @@
-> >
-> >  #include "exynos-asv.h"
-> >
-> > +struct exynos_chipid_variant {
-> > +     unsigned int rev_reg;           /* revision register offset */
-> > +     unsigned int main_rev_bit;      /* main revision offset */
+> Hi,
 >
-> I understand it is offset of a bit within register, so how about:
+> On 10/13/21 7:29 PM, Rafael J. Wysocki wrote:
+> > On Sun, Oct 10, 2021 at 8:57 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> >>
+> >> The clk and regulator frameworks expect clk/regulator consumer-devices
+> >> to have info about the consumed clks/regulators described in the device's
+> >> fw_node.
+> >>
+> >> To work around cases where this info is not present in the firmware tables,
+> >> which is often the case on x86/ACPI devices, both frameworks allow the
+> >> provider-driver to attach info about consumers to the clks/regulators
+> >> when registering these.
+> >>
+> >> This causes problems with the probe ordering wrt drivers for consumers
+> >> of these clks/regulators. Since the lookups are only registered when the
+> >> provider-driver binds, trying to get these clks/regulators before then
+> >> results in a -ENOENT error for clks and a dummy regulator for regulators.
+> >>
+> >> One case where we hit this issue is camera sensors such as e.g. the OV8865
+> >> sensor found on the Microsoft Surface Go. The sensor uses clks, regulators
+> >> and GPIOs provided by a TPS68470 PMIC which is described in an INT3472
+> >> ACPI device. There is special platform code handling this and setting
+> >> platform_data with the necessary consumer info on the MFD cells
+> >> instantiated for the PMIC under: drivers/platform/x86/intel/int3472.
+> >>
+> >> For this to work properly the ov8865 driver must not bind to the I2C-client
+> >> for the OV8865 sensor until after the TPS68470 PMIC gpio, regulator and
+> >> clk MFD cells have all been fully setup.
+> >>
+> >> The OV8865 on the Microsoft Surface Go is just one example, all X86
+> >> devices using the Intel IPU3 camera block found on recent Intel SoCs
+> >> have similar issues where there is an INT3472 HID ACPI-device, which
+> >> describes the clks and regulators, and the driver for this INT3472 device
+> >> must be fully initialized before the sensor driver (any sensor driver)
+> >> binds for things to work properly.
+> >>
+> >> On these devices the ACPI nodes describing the sensors all have a _DEP
+> >> dependency on the matching INT3472 ACPI device (there is one per sensor).
+> >>
+> >> This allows solving the probe-ordering problem by delaying the enumeration
+> >> (instantiation of the I2C-client in the ov8865 example) of ACPI-devices
+> >> which have a _DEP dependency on an INT3472 device.
+> >>
+> >> The new acpi_dev_ready_for_enumeration() helper used for this is also
+> >> exported because for devices, which have the enumeration_by_parent flag
+> >> set, the parent-driver will do its own scan of child ACPI devices and
+> >> it will try to enumerate those during its probe(). Code doing this such
+> >> as e.g. the i2c-core-acpi.c code must call this new helper to ensure
+> >> that it too delays the enumeration until all the _DEP dependencies are
+> >> met on devices which have the new honor_deps flag set.
+> >>
+> >> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> >> ---
+> >>  drivers/acpi/scan.c     | 36 ++++++++++++++++++++++++++++++++++--
+> >>  include/acpi/acpi_bus.h |  5 ++++-
+> >>  2 files changed, 38 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> >> index 5b54c80b9d32..efee6ee91c8f 100644
+> >> --- a/drivers/acpi/scan.c
+> >> +++ b/drivers/acpi/scan.c
+> >> @@ -796,6 +796,12 @@ static const char * const acpi_ignore_dep_ids[] = {
+> >>         NULL
+> >>  };
+> >>
+> >> +/* List of HIDs for which we honor deps of matching ACPI devs, when checking _DEP lists. */
+> >> +static const char * const acpi_honor_dep_ids[] = {
+> >> +       "INT3472", /* Camera sensor PMIC / clk and regulator info */
+> >> +       NULL
+> >> +};
+> >> +
+> >>  static struct acpi_device *acpi_bus_get_parent(acpi_handle handle)
+> >>  {
+> >>         struct acpi_device *device = NULL;
+> >> @@ -1757,8 +1763,12 @@ static void acpi_scan_dep_init(struct acpi_device *adev)
+> >>         struct acpi_dep_data *dep;
+> >>
+> >>         list_for_each_entry(dep, &acpi_dep_list, node) {
+> >> -               if (dep->consumer == adev->handle)
+> >> +               if (dep->consumer == adev->handle) {
+> >> +                       if (dep->honor_dep)
+> >> +                               adev->flags.honor_deps = 1;
+> >
+> > Any concerns about doing
+> >
+> > adev->flags.honor_deps = dep->honor_dep;
+> >
+> > here?
 >
-> unsigned int main_rev_shift;    /* main revision offset within rev_reg
-> unsigned int sub_rev_shift;     /* sub revision offset within rev_reg */
+> The idea is to set adev->flags.honor_deps even if the device has
+> multiple deps and only one of them has the honor_dep flag set.
 >
-> > +     unsigned int sub_rev_bit;       /* sub revision offset */
-> > +};
-> > +
-> > +struct exynos_chipid_info {
-> > +     u32 product_id;
-> > +     u32 revision;
-> > +};
-> > +
-> >  static const struct exynos_soc_id {
-> >       const char *name;
-> >       unsigned int id;
-> > @@ -49,31 +61,55 @@ static const char *product_id_to_soc_id(unsigned int product_id)
-> >       int i;
-> >
-> >       for (i = 0; i < ARRAY_SIZE(soc_ids); i++)
-> > -             if ((product_id & EXYNOS_MASK) == soc_ids[i].id)
-> > +             if (product_id == soc_ids[i].id)
-> >                       return soc_ids[i].name;
-> >       return NULL;
-> >  }
-> >
-> > +static int exynos_chipid_get_chipid_info(struct regmap *regmap,
-> > +             const struct exynos_chipid_variant *data,
-> > +             struct exynos_chipid_info *soc_info)
-> > +{
-> > +     int ret;
-> > +     unsigned int val, main_rev, sub_rev;
-> > +
-> > +     ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &val);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +     soc_info->product_id = val & EXYNOS_MASK;
-> > +
-> > +     ret = regmap_read(regmap, data->rev_reg, &val);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +     main_rev = (val >> data->main_rev_bit) & EXYNOS_REV_PART_LEN;
-> > +     sub_rev = (val >> data->sub_rev_bit) & EXYNOS_REV_PART_LEN;
-> > +     soc_info->revision = (main_rev << EXYNOS_REV_PART_OFF) | sub_rev;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >  static int exynos_chipid_probe(struct platform_device *pdev)
-> >  {
-> > +     const struct exynos_chipid_variant *drv_data;
-> > +     struct exynos_chipid_info soc_info;
-> >       struct soc_device_attribute *soc_dev_attr;
-> >       struct soc_device *soc_dev;
-> >       struct device_node *root;
-> >       struct regmap *regmap;
-> > -     u32 product_id;
-> > -     u32 revision;
-> >       int ret;
-> >
-> > +     drv_data = of_device_get_match_data(&pdev->dev);
-> > +     if (!drv_data)
-> > +             return -EINVAL;
-> > +
-> >       regmap = device_node_to_regmap(pdev->dev.of_node);
-> >       if (IS_ERR(regmap))
-> >               return PTR_ERR(regmap);
-> >
-> > -     ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &product_id);
-> > +     ret = exynos_chipid_get_chipid_info(regmap, drv_data, &soc_info);
-> >       if (ret < 0)
-> >               return ret;
-> >
-> > -     revision = product_id & EXYNOS_REV_MASK;
-> > -
-> >       soc_dev_attr = devm_kzalloc(&pdev->dev, sizeof(*soc_dev_attr),
-> >                                   GFP_KERNEL);
-> >       if (!soc_dev_attr)
-> > @@ -86,8 +122,8 @@ static int exynos_chipid_probe(struct platform_device *pdev)
-> >       of_node_put(root);
-> >
-> >       soc_dev_attr->revision = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> > -                                             "%x", revision);
-> > -     soc_dev_attr->soc_id = product_id_to_soc_id(product_id);
-> > +                                             "%x", soc_info.revision);
-> > +     soc_dev_attr->soc_id = product_id_to_soc_id(soc_info.product_id);
-> >       if (!soc_dev_attr->soc_id) {
-> >               pr_err("Unknown SoC\n");
-> >               return -ENODEV;
-> > @@ -106,7 +142,7 @@ static int exynos_chipid_probe(struct platform_device *pdev)
-> >
-> >       dev_info(soc_device_to_device(soc_dev),
-> >                "Exynos: CPU[%s] PRO_ID[0x%x] REV[0x%x] Detected\n",
-> > -              soc_dev_attr->soc_id, product_id, revision);
-> > +              soc_dev_attr->soc_id, soc_info.product_id, soc_info.revision);
-> >
-> >       return 0;
-> >
-> > @@ -125,9 +161,18 @@ static int exynos_chipid_remove(struct platform_device *pdev)
-> >       return 0;
-> >  }
-> >
-> > +static const struct exynos_chipid_variant exynos4210_chipid_drv_data = {
-> > +     .rev_reg        = 0x0,
-> > +     .main_rev_bit   = 0,
-> > +     .sub_rev_bit    = 4,
-> > +};
-> > +
-> >  static const struct of_device_id exynos_chipid_of_device_ids[] = {
-> > -     { .compatible = "samsung,exynos4210-chipid" },
-> > -     {}
-> > +     {
-> > +             .compatible     = "samsung,exynos4210-chipid",
-> > +             .data           = &exynos4210_chipid_drv_data,
-> > +     },
-> > +     { }
-> >  };
-> >
-> >  static struct platform_driver exynos_chipid_driver = {
-> > diff --git a/include/linux/soc/samsung/exynos-chipid.h b/include/linux/soc/samsung/exynos-chipid.h
-> > index 8bca6763f99c..5270725ba408 100644
-> > --- a/include/linux/soc/samsung/exynos-chipid.h
-> > +++ b/include/linux/soc/samsung/exynos-chipid.h
-> > @@ -9,10 +9,8 @@
-> >  #define __LINUX_SOC_EXYNOS_CHIPID_H
-> >
-> >  #define EXYNOS_CHIPID_REG_PRO_ID     0x00
-> > -#define EXYNOS_SUBREV_MASK           (0xf << 4)
-> > -#define EXYNOS_MAINREV_MASK          (0xf << 0)
-> > -#define EXYNOS_REV_MASK                      (EXYNOS_SUBREV_MASK | \
-> > -                                      EXYNOS_MAINREV_MASK)
-> > +#define EXYNOS_REV_PART_LEN          0xf
+> If we just do:
 >
-> EXYNOS_REV_PART_MASK
+>         adev->flags.honor_deps = dep->honor_dep;
 >
-> > +#define EXYNOS_REV_PART_OFF          4
->
-> define EXYNOS_REV_PART_SHIFT
->
+> Then adev->flags.honor_deps ends up having the honor_dep
+> flag of the last dependency checked.
 
-Thanks, I'll fix everything you mentioned in v2.
+OK, but in that case dep_unmet may be blocking the enumeration of the
+device even if the one in the acpi_honor_dep_ids[] list has probed
+successfully.
 
-Btw, I forgot to provide an explanation on user interface changes I
-made. Those are ok from my POV, but you might disagree:
+Isn't that a concern?
 
-1. EXYNOS_MASK is now applied to product_id when assigning it. The
-only side effect is that dev_info() in probe() will print a bit
-different info. Hope it's fine. The code looks better this way, as we
-clearly differentiate SoC ID and Revision ID from the very beginning.
-
-2. "revision" sysfs node will now show the revision in this form:
-"(main_rev << 4) | sub_rev". Before this patch it was "(sub_rev << 4)
-| main_rev". It has to do with internal register representation: on
-older Exynos SoCs it has the latter form, on newer SoCs -- the former.
-For consistency I want to keep it in the same form for all platforms.
-I decided to go with approach implemented in downstream Samsung
-kernel, though it of course changes the output on older SoCs. Possible
-design options are:
-
-    (a) Use "(sub_rev << 4) | main_rev" form instead for all SoCs. It
-would preserve "revision" node output on older SoCs. On newer SoCs it
-will be rotated form w.r.t. internal register representation, and it
-won't be consistent with downstream implementation (not that we should
-care about that much)
-    (b) Use "(sub_rev << 4) | main_rev" form for old SoCs and
-"(main_rev << 4) | sub_rev" for for new SoCs. That will clutter the
-logic for sure, making it not very elegant.
-    (c) Keep it as is (as I already implemented that in this patch).
-Changes "revision" node output, but I'm not sure if we should care
-about that, user space shouldn't probably rely on that data anyway
-
-Please let me know if you think the current design is ok, or you want
-me to change that.
-
-> >  #define EXYNOS_MASK                  0xfffff000
 > >
-> >  #define EXYNOS_CHIPID_REG_PKG_ID     0x04
+> >> +
+> >>                         adev->dep_unmet++;
+> >> +               }
+> >>         }
+> >>  }
+> >>
+> >> @@ -1962,7 +1972,7 @@ static u32 acpi_scan_check_dep(acpi_handle handle, bool check_dep)
+> >>         for (count = 0, i = 0; i < dep_devices.count; i++) {
+> >>                 struct acpi_device_info *info;
+> >>                 struct acpi_dep_data *dep;
+> >> -               bool skip;
+> >> +               bool skip, honor_dep;
+> >>
+> >>                 status = acpi_get_object_info(dep_devices.handles[i], &info);
+> >>                 if (ACPI_FAILURE(status)) {
+> >> @@ -1971,6 +1981,7 @@ static u32 acpi_scan_check_dep(acpi_handle handle, bool check_dep)
+> >>                 }
+> >>
+> >>                 skip = acpi_info_matches_ids(info, acpi_ignore_dep_ids);
+> >> +              honor_dep = acpi_info_matches_ids(info, acpi_honor_dep_ids);
+> >>                 kfree(info);
+> >>
+> >>                 if (skip)
+> >> @@ -1984,6 +1995,7 @@ static u32 acpi_scan_check_dep(acpi_handle handle, bool check_dep)
+> >>
+> >>                 dep->supplier = dep_devices.handles[i];
+> >>                 dep->consumer = handle;
+> >> +               dep->honor_dep = honor_dep;
+> >>
+> >>                 mutex_lock(&acpi_dep_list_lock);
+> >>                 list_add_tail(&dep->node , &acpi_dep_list);
+> >> @@ -2071,6 +2083,9 @@ static acpi_status acpi_bus_check_add_2(acpi_handle handle, u32 lvl_not_used,
+> >>
+> >>  static void acpi_default_enumeration(struct acpi_device *device)
+> >>  {
+> >> +       if (!acpi_dev_ready_for_enumeration(device))
+> >> +               return;
 > >
+> > I'm not sure about this.
+> >
+> > First of all, this adds an acpi_device_is_present() check here which
+> > potentially is a change in behavior and I'm not sure how it is related
+> > to the other changes in this patch (it is not mentioned in the
+> > changelog AFAICS).
+> >
+> > I'm saying "potentially", because if we get here at all,
+> > acpi_device_is_present() has been evaluated already by
+> > acpi_bus_attach().
 >
+> Right the idea was that for this code-path the extra
+> acpi_device_is_present() check is a no-op since the only
+> caller of acpi_default_enumeration() has already done
+> that check before calling acpi_default_enumeration(),
+> where as the is_present check is useful for users outside
+> of the ACPI core code, like e.g. the i2c ACPI enumeration
+> code.
 >
-> Best regards,
-> Krzysztof
+> Although I see this is also called from
+> acpi_generic_device_attach which comes into play when there
+> is devicetree info embedded inside the ACPI tables.
+
+That too, but generally speaking this change should at least be
+mentioned in the changelog.
+
+> > Now, IIUC, the new acpi_dev_ready_for_enumeration() is kind of an
+> > extension of acpi_device_is_present(), so shouldn't it be called by
+> > acpi_bus_attach() instead of the latter rather than from here?
+>
+> That is an interesting proposal. I assume you want this to replace
+> the current acpi_device_is_present() call in acpi_bus_attach()
+> then ?
+
+That seems consistent to me.
+
+> For the use-case at hand here that should work fine and it would also
+> make the honor_deps flag work for devices which bind to the actual
+> acpi_device (because we delay the device_attach()) or
+> use an acpi_scan_handler.
+>
+> This would mean though that we can now have acpi_device-s where
+> acpi_device_is_present() returns true, but which are not
+> initialized (do not have device->flags.initialized set)
+> that would be a new acpi_device state which we have not had
+> before. I do not immediately forsee this causing issues,
+> but still...
+>
+> If you want me to replace the current acpi_device_is_present() call
+> in acpi_bus_attach() with the new acpi_dev_ready_for_enumeration()
+> helper, let me know and I'll prepare a new version with this change
+> (and run some tests with that new version).
+
+I would prefer doing that to making acpi_default_enumeration() special
+with respect to the handling of dependencies.
