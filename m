@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4440842BF20
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A85E42BF21
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbhJMLpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 07:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhJMLpH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:45:07 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6ADC061570;
-        Wed, 13 Oct 2021 04:43:04 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id g10so9080275edj.1;
-        Wed, 13 Oct 2021 04:43:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g4MqVLa5ZdKDHdC47GKJaVvbOT1P86V23mMh7Evbnaw=;
-        b=gDkNW0jkBMTCnoK2VMT27fuLg3MaUrwNkO2Jz5dOa7Z0HfixcKOcefhlfYbOJRj5JJ
-         Z9fCw8eUetIpQQRw+o4woUV48LuDiqvkZsnsy+GlwDPDxVekf3X7ISxZc5ZsUhDsG/n6
-         3jIbIdjfXaNaR452utkvh/HoAWcnSEKzShaBjAvWFXImG3mj8dTcVQTdTOcO9NERQUKz
-         WxLec11ZXbqpJXrlrY3DECkpT17W006l2BUwzmtKz7S6y2D1uU6+KcM2cRmzi5OtuA5q
-         OzpFfQlxt8dml9auMHgbNEFbmFIbAWjjL9LJxRFX5S1Rg5VuDoJ2XrUCqkeivzhKLt7/
-         NCcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g4MqVLa5ZdKDHdC47GKJaVvbOT1P86V23mMh7Evbnaw=;
-        b=pLeFBAtAPqDDoqt/VrHqGfnXIcRvKmvdEVNda8WX+M91JfMq5sAzUBLuYnrphjO+dJ
-         JuzXy6YFSRHrVu9nXR50UMTgIDcN37KLdL7LM+mSYmakSze1JHtqEzTJZjhHpKwFy0gW
-         agX2u8ZcCKeC4771tEgIpyydaMENuHnplOGW6l/bh1ThxcwbSayBePNQWQJ4lfxKTgcS
-         ANuw/N6CRZuJfVl7HB7KmYQFlUjnLevAlxURAojzuHL7sVyElQ8hdYcVMjSvp6msqT70
-         5TzUEi3LQUdul9FfK1fSugotUcnK0vGyqpoQQREQrPKLnNzPddwoTPr2Kk2H/zhOMSoO
-         LsOQ==
-X-Gm-Message-State: AOAM533+GBDd9woJ/fXykS7JJL9R5MpTu1gZ/TXml6ZNv7B48+HVRG7Z
-        NMKRFZcLAe4h0eUi6pglbmY=
-X-Google-Smtp-Source: ABdhPJwGEVhhSaULnI8/ipATz3k4a58wtdnd+ardQs5w04p2XWY+cPRHNGeiDNnXkBACxyCL2ls6rA==
-X-Received: by 2002:a17:906:7c4:: with SMTP id m4mr40661799ejc.553.1634125382850;
-        Wed, 13 Oct 2021 04:43:02 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id se12sm6553144ejb.88.2021.10.13.04.43.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 04:43:02 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 13:42:59 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        John Crispin <john@phrozen.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [net-next PATCH v6 05/16] net: dsa: qca8k: add support for cpu
- port 6
-Message-ID: <YWbGQ4omD537ZBh1@Ansuel-xps.localdomain>
-References: <20211013011622.10537-1-ansuelsmth@gmail.com>
- <20211013011622.10537-6-ansuelsmth@gmail.com>
- <20211013041004.29805-1-dqfext@gmail.com>
+        id S232006AbhJMLpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 07:45:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229653AbhJMLpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 07:45:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF37060D43;
+        Wed, 13 Oct 2021 11:43:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634125418;
+        bh=09vWFfILMwEPDBCK32FQFM58AuRIt7f2AeIiDsrNZ2Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RMM+oVS2O/8H+2Z9UfXtrFSJkBjhqU/e3IdpkkCbv7jzJSyWvJS8VrBfmBLjdu9G6
+         lPE/jeHjDl/pY9tylEEhUw4UGWpb/Aj8AuAYYMbSzdzlO4mJAo0Z41mW6f6n6medFg
+         0skLXFR5hXrujqePLAf4SH6Zalq6KYo5xhrLA52L2CLbq6q6JjrTa+5k2rgWR9vwRw
+         2RIV1+zrs7mg1rET6YKBgA/Nm/t5o/KPlV8136D9E/99LYbk6y2NY/+DBKotnufBmx
+         HakhqjWLG7f8wMTaD6PT/onh8hPuAfSSLxpWa3XVUhTYQLsf0Kp2+vKa/8aJBtV4Z1
+         W0X9v+FMy+0/Q==
+Date:   Wed, 13 Oct 2021 13:43:35 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB
+ + a few other fixes v2
+Message-ID: <20211013114335.GB377556@lothringen>
+References: <20211011145140.359412-1-frederic@kernel.org>
+ <20211013003215.GP880162@paulmck-ThinkPad-P17-Gen-1>
+ <20211013032832.GQ880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211013041004.29805-1-dqfext@gmail.com>
+In-Reply-To: <20211013032832.GQ880162@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 12:10:04PM +0800, DENG Qingfang wrote:
-> On Wed, Oct 13, 2021 at 03:16:11AM +0200, Ansuel Smith wrote:
-> > @@ -1017,13 +1033,14 @@ static int
-> >  qca8k_setup(struct dsa_switch *ds)
-> >  {
-> >  	struct qca8k_priv *priv = (struct qca8k_priv *)ds->priv;
-> > +	u8 cpu_port;
-> >  	int ret, i;
-> >  	u32 mask;
-> >  
-> > -	/* Make sure that port 0 is the cpu port */
-> > -	if (!dsa_is_cpu_port(ds, 0)) {
-> > -		dev_err(priv->dev, "port 0 is not the CPU port");
-> > -		return -EINVAL;
-> > +	cpu_port = qca8k_find_cpu_port(ds);
-> > +	if (cpu_port < 0) {
+On Tue, Oct 12, 2021 at 08:28:32PM -0700, Paul E. McKenney wrote:
+> On Tue, Oct 12, 2021 at 05:32:15PM -0700, Paul E. McKenney wrote:
+> > On Mon, Oct 11, 2021 at 04:51:29PM +0200, Frederic Weisbecker wrote:
+> > > Hi,
+> > > 
+> > > No code change in this v2, only changelogs:
+> > > 
+> > > * Add tags from Valentin and Sebastian
+> > > 
+> > > * Remove last reference to SEGCBLIST_SOFTIRQ_ONLY (thanks Valentin)
+> > > 
+> > > * Rewrite changelog for "rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check"
+> > >   after off-list debates with Paul.
+> > > 
+> > > * Remove the scenario with softirq interrupting rcuc on
+> > >   "rcu/nocb: Limit number of softirq callbacks only on softirq" as it's
+> > >   probably not possible (thanks Valentin).
+> > > 
+> > > * Remove the scenario with task spent scheduling out accounted on tlimit
+> > >   as it's not possible (thanks Valentin)
+> > >   (see "rcu: Apply callbacks processing time limit only on softirq")
+> > > 
+> > > * Fixed changelog of
+> > >   "rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread"
+> > >   (thanks Sebastian).
+> > > 
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > > 	rcu/rt-v2
+> > > 
+> > > HEAD: 2c9349986d5f70a555195139665841cd98e9aba4
+> > > 
+> > > Thanks,
+> > > 	Frederic
+> > 
+> > Nice!
+> > 
+> > I queued these for further review and testing.  I reworked the commit log
+> > of 6/11 to give my idea of the reason, though I freely admit that this
+> > reason is not as compelling as it no doubt seemed when I wrote that code.
 > 
-> cpu_port should be of type int, otherwise this is always false.
->
+> But in initial tests TREE04.5, TREE04.6, and TREE04.9 all hit the
+> WARN_ON(1) in rcu_torture_barrier(), which indicates rcu_barrier()
+> breakage.  My best (but not so good) guess is a five-hour MTBF on a
+> dual-socket system.
+> 
+> I started an automated "git bisect" with each step running 100 hours
+> of TREE04, but I would be surprised if anything useful comes of it.
+> Pleased, mind you, but surprised.
 
-Sorry for ignoring the prev review. Now I see what you mean and you are
-totally right!
+Ok I can reproduce.
 
-> > +		dev_err(priv->dev, "No cpu port configured in both cpu port0 and port6");
-> > +		return cpu_port;
-> >  	}
+I'm launching a bisect from my side as well.
 
--- 
-	Ansuel
+Thanks.
