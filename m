@@ -2,179 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6304042C77D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED61742C780
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237528AbhJMRWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
+        id S233684AbhJMRYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbhJMRWt (ORCPT
+        with ESMTP id S230225AbhJMRYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:22:49 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A42C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:20:45 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id x27so15156661lfu.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:20:45 -0700 (PDT)
+        Wed, 13 Oct 2021 13:24:00 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B367FC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:21:56 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id a7so8170042yba.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:21:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4zZUExOF0hyjkUuayvESFrp0hpOC5bsezzAMG365TXc=;
-        b=jVHe5if0odQ3h3gs6Lq/533GPpFM71VvqJKxpmxEyuRr/I2s4Rvysokvg9L+KV3dn3
-         jRKt3VHl/ZpEYDkM/BH/iek34kzKyj4veqxzh8fQGB17xK/+O3hgNFd0wfiFi8GJFL8O
-         XGKIWscpPGckGAX2Xs2zotyUIBtmLVnQQZxEHyl7jUZCT2eoumnG9hdqBAbXwcV9VkC7
-         YVsKq97QPiDiZSw+I05pO7hVnS5lfOb4LpMGX3WBNKgTvYqcquezqMk82nwjo1T41Nwt
-         1fuMFta0MEDU+HsQuN1GGsxD+iaSbNXX+P38mduPvBswEpDmrnRsnBKN0spRJLnFFzf2
-         iqIg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yf2lvnswxZG12HrbiFNmFCi5hHNaSndx6XO9Nz3lj8c=;
+        b=V7nr+D7wCnJEBfynTZO0PhEqS6UapnKxJOJkguZY+vMmdaQ17lCEEmzCLFyxylxuyz
+         a20RweKYaPoaYuA1MMvZCOznohi1jI7zxG05ktw5kneqReGiFYT+e+yPHqWgjiT1o/qO
+         FRnLV+4XByB9YvRGvdjH2kuvJmcQpkcjXJR23BApUtB1KwqTIq4ANjMn3j4viFgdhNk7
+         Qsg6YxK3Bh2bx1T+lY8uhMoHhBr3K6XnHxjuTj6dimgkh+mDa3PPrunhZtNpP4iiM6e2
+         F668m0e0rC9v/2s4rulsoEJOa2XeS39UdYrilj15pL3DFtRi+2wuCZ0/85QNsmcfQKpe
+         apcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4zZUExOF0hyjkUuayvESFrp0hpOC5bsezzAMG365TXc=;
-        b=h8882qJHqOnbcc3OQE+arJfFxwqhTfnxC+8KzEui4UPZPXmVlCLD2zsFGkdDztIhaE
-         B7bkRYEonn4VKR181KyCF176tIYE9cGrBfnInjub4LHwfbqNkeYfGF8eOuEW8BHVQuod
-         PERXzowe4aT2OGIsKvJlnYm8Ex0U+VKTMN6tfOqgg5wDrE03pHrE6rAfGYTF3FSwudwS
-         xkZ4hcug64WnJLFUTm2JyX2B1ZvdBzms3EcDFK3vfFaLP8VUESFg4OubdZnQK/tsrVeH
-         NhKdLighh9+QCTYLXQE4vX+zIvTpMq3KbX8yTj7yMtlJiPulmLtm0ZF/F7DfD/nIJeYA
-         BqTg==
-X-Gm-Message-State: AOAM530tkWlz2xAhb1/pr943PTVLxKjIPtYLWsKvb6frBRBo/fJKRsnJ
-        A2XvGOYVIpFxm7OwvlWXv/Hqug==
-X-Google-Smtp-Source: ABdhPJwG8jkIxBjdv4FCfNEF54htx9eOR1dcNl/kyZV/O8USH10MekCsQswhdunIml07aX7jFJEXlA==
-X-Received: by 2002:a05:651c:1693:: with SMTP id bd19mr613631ljb.409.1634145643483;
-        Wed, 13 Oct 2021 10:20:43 -0700 (PDT)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id c3sm13525ljh.58.2021.10.13.10.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 10:20:43 -0700 (PDT)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mike Tipton <mdtipton@codeaurora.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6] clk: Add write operation for clk_parent debugfs node
-Date:   Wed, 13 Oct 2021 20:20:42 +0300
-Message-Id: <20211013172042.10884-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yf2lvnswxZG12HrbiFNmFCi5hHNaSndx6XO9Nz3lj8c=;
+        b=IYrnOntqnAwDxJSdXzOS7pp5DFYmbRHS17NUyelN1ONRdRCfX09fCS+iMqBXNGWtZ9
+         gTJXhdaG5A2xrUQyEkrOq52CRaD70eQxPHAPWdMGcmsIOnpBfE6JNfhY69XlYNaRtJx3
+         SGvfs9N+LFPMhsBsqEH5qTSSTdb+QUJcSdACisM3pQb3zT8+DibxsAra3hW7Zxgo72NW
+         lW23pKDZXpnrWMbl/+J4nj5l8w2ztVHyi1qk3p4FpT38ln7iOICKBmYn3X/9/uslomvG
+         EbnIXNIcnyi2lWVSaK7KnSotPDsi7rUSDaZgDj60AkfhIrI1i28lQfmD9bFxxlv5VWtg
+         gv3g==
+X-Gm-Message-State: AOAM532jKWjtcDDLbirsqwOIaJkKAQkMYbepdT97/bQS5UsVOfU5oMPH
+        XOWgfdDfdwW9YrsG7d+i2Jx0/CkXejSiwsXdlGOSX/l2NYa1eA==
+X-Google-Smtp-Source: ABdhPJwnnMUc+Wua5vM0/raYMLpof8dp6c0NLJvcYQJ3SrpJn+DquLRh0Sa9lrkrSBiQf7zwIZQ3o77FRAQ2JAVDhOg=
+X-Received: by 2002:a5b:783:: with SMTP id b3mr704817ybq.328.1634145715727;
+ Wed, 13 Oct 2021 10:21:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211013143707.80222-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211013143707.80222-1-andriy.shevchenko@linux.intel.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 13 Oct 2021 10:21:19 -0700
+Message-ID: <CAGETcx_mNWumqmYzytvKG+FvPLA=DWokbbtFv=EGet41G6cQeQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] device property: Add missed header in fwnode.h
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Useful for testing mux clocks. One can write the index of the parent to
-be set into clk_parent node, starting from 0. Example
+On Wed, Oct 13, 2021 at 7:37 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> When adding some stuff to the header file we must not rely on
+> implicit dependencies that are happen by luck or bugs in other
+> headers. Hence fwnode.h needs to use bits.h directly.
+>
+> Fixes: c2c724c868c4 ("driver core: Add fw_devlink_parse_fwtree()")
+> Cc: Saravana Kannan <saravanak@google.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-    # cd /sys/kernel/debug/clk/mout_peri_bus
-    # cat clk_possible_parents
-      dout_shared0_div4 dout_shared1_div4
-    # cat clk_parent
-      dout_shared0_div4
-    # echo 1 > clk_parent
-    # cat clk_parent
-      dout_shared1_div4
+Acked-by: Saravana Kannan <saravanak@google.com>
 
-CLOCK_ALLOW_WRITE_DEBUGFS has to be defined in drivers/clk/clk.c in
-order to use this feature.
+-Saravana
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Changes in v6:
-  - Added R-b tag by Geert Uytterhoeven
-  - Removed curly braces around 'else' block (now delta is minimal and
-    the code looks better)
-
-Changes in v5:
-  - Used kstrtou8_from_user() API
-  - Got rid of code duplication
-  - Fixed typo in commit message
-  - Added R-b tag by Andy Shevchenko
-
-Changes in v4:
-  - Fixed the commit title
-
-Changes in v3:
-  - Removed unwanted changes added by mistake
-
-Changes in v2:
-  - Merged write() function into existing 'clk_parent' file
-  - Removed 'if (val >= core->num_parents)' check
-  - Removed incorrect usage of IS_ERR_OR_NULL()
-
- drivers/clk/clk.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
-
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 65508eb89ec9..bf1eadfeaee0 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -3214,6 +3214,42 @@ static int current_parent_show(struct seq_file *s, void *data)
- }
- DEFINE_SHOW_ATTRIBUTE(current_parent);
- 
-+#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-+static ssize_t current_parent_write(struct file *file, const char __user *ubuf,
-+				    size_t count, loff_t *ppos)
-+{
-+	struct seq_file *s = file->private_data;
-+	struct clk_core *core = s->private;
-+	struct clk_core *parent;
-+	u8 idx;
-+	int err;
-+
-+	err = kstrtou8_from_user(ubuf, count, 0, &idx);
-+	if (err < 0)
-+		return err;
-+
-+	parent = clk_core_get_parent_by_index(core, idx);
-+	if (!parent)
-+		return -ENOENT;
-+
-+	clk_prepare_lock();
-+	err = clk_core_set_parent_nolock(core, parent);
-+	clk_prepare_unlock();
-+	if (err)
-+		return err;
-+
-+	return count;
-+}
-+
-+static const struct file_operations current_parent_rw_fops = {
-+	.open		= current_parent_open,
-+	.write		= current_parent_write,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+};
-+#endif
-+
- static int clk_duty_cycle_show(struct seq_file *s, void *data)
- {
- 	struct clk_core *core = s->private;
-@@ -3281,6 +3317,12 @@ static void clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
- 			    &clk_prepare_enable_fops);
- #endif
- 
-+#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-+	if (core->num_parents > 1)
-+		debugfs_create_file("clk_parent", 0644, root, core,
-+				    &current_parent_rw_fops);
-+	else
-+#endif
- 	if (core->num_parents > 0)
- 		debugfs_create_file("clk_parent", 0444, root, core,
- 				    &current_parent_fops);
--- 
-2.30.2
-
+> ---
+>  include/linux/fwnode.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+> index 9f4ad719bfe3..3a532ba66f6c 100644
+> --- a/include/linux/fwnode.h
+> +++ b/include/linux/fwnode.h
+> @@ -11,6 +11,7 @@
+>
+>  #include <linux/types.h>
+>  #include <linux/list.h>
+> +#include <linux/bits.h>
+>  #include <linux/err.h>
+>
+>  struct fwnode_operations;
+> --
+> 2.33.0
+>
