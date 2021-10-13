@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BD242B2B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0384542B2B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236704AbhJMCf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 22:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        id S236781AbhJMCge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 22:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhJMCfY (ORCPT
+        with ESMTP id S235120AbhJMCgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 22:35:24 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B21C061570;
-        Tue, 12 Oct 2021 19:33:22 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id k2-20020a056830168200b0054e523d242aso1763933otr.6;
-        Tue, 12 Oct 2021 19:33:22 -0700 (PDT)
+        Tue, 12 Oct 2021 22:36:33 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E723C061570;
+        Tue, 12 Oct 2021 19:34:31 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so3296662pjb.1;
+        Tue, 12 Oct 2021 19:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bcEsa+sI2EXkheHsoe75kuAxpaLmz4nDKnJI4rcst5U=;
-        b=bi99xq2xlfmX8gHx/JDCUhkBmUC7GwIBxwapVKoXIq1tsXuj6FwYqddmY7+khfnwAI
-         sVnOdrMGanHB/SULSC2lJ2lL4KxknKtWxqg9uLetI3mUNBvodbLRxANPvyvzE5nY8pKI
-         7ZlbxU87HKtpmd1oWXFfQ2EUEkCVKThLExmt6yGrkLA+tTZqHvRemZjtx0nb+uOknGcA
-         Ub7Kaidho8bZtQz5jlNwgsKhwnluGS3T18vnScvbWe0f1JGjUTy/GBdZLhhXSgOV0kFe
-         i4WT2qtbutQo1nUf5MxthMfryTL/Gq8xNwkL8MXZkujLIcRms1S/vyGNaS64ZPHxB4hK
-         wk/g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3bzp+5l6WTo7PbKHNMv1iXseFfgQgASCADLi09sp0dQ=;
+        b=GIuH+ViP8uIA0KOO0J2nG+UiPKqlt73g90hiO/rMDvzQ98GdLoPx+wqsc+cIHJ+VWa
+         oYfVrjHcclVyuX9iemPl+eZYkkujpz9bbTFgtfioVbE3FmRDzTWR7zeIqLrf9AEHx23k
+         djcGczXtv4+GyboTFbzCrREN574E0lEEjn0p0AQljE9qOc0br29L9tNNUF2CwPUneiF5
+         jPZFpK2/LeqYtDvrNH6JgF962ph4PL+8AuoSKpB/bvCMoD7IQIJr05CzuBtYeIQoIIXz
+         8mg0Dbua33x0rOgPUJmF9I/5Y48gqZzp5DoDQFKp5xw+w9CsHsCgZX5m5Q52SA6etYnk
+         VE6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bcEsa+sI2EXkheHsoe75kuAxpaLmz4nDKnJI4rcst5U=;
-        b=K7M1mjOky6TjD9ktZJT27GX6TaMf5UdzO9eG5TPHy+mmOyeBe22NM62GHeEYhPodpk
-         wQSX3xOlLe6pqDHZuC/yJvQziF+/6FfoO/jNN+vRsiPct64MNsScuuQh7QTZGK34RY3I
-         fdZeN8Pw0xrHMKSTnCrSBXOp0g907rldCdakHLAjiW2ncyK7ow2Xz+guRxuLWDX9HGw5
-         J6h1ErJMMZxonU3YVEXyVD94t0IVzBVP0qQfChHL6UDFkHvY37snPYV+NWU0ZEpjAdek
-         EmmG1Ext7TafRNJ/pgTrBPS7UaWVcZqqt4wJ6GzKjs+pMfQpVzD4QEkurcl7xrcxvZCq
-         xLdg==
-X-Gm-Message-State: AOAM533b64bkPju08+9VxeVnyDHuYr0/0OboCjD9RZziBYsNuEDPcU9A
-        xewPfcOk+lNmyUQLdmsd9rzqW6TQklu6bg==
-X-Google-Smtp-Source: ABdhPJzX37RvNA7zq9t0ndIWu6hytJ4TLNcvjoDNzoHj83iFIwy2kIetLJfplRBPzPnt0YawTJF3Bw==
-X-Received: by 2002:a05:6830:2486:: with SMTP id u6mr27916709ots.353.1634092401617;
-        Tue, 12 Oct 2021 19:33:21 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id k6sm2705768otf.80.2021.10.12.19.33.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 19:33:21 -0700 (PDT)
-Subject: Re: [PATCH] ipv4: only allow increasing fib_info_hash_size
-To:     =?UTF-8?B?5byg5Yev?= <zhangkaiheb@126.com>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211012110658.10166-1-zhangkaiheb@126.com>
- <23911752-3971-0230-cfd2-f8e30e8805db@gmail.com>
- <3bd88b51.6c7.17c77339c10.Coremail.zhangkaiheb@126.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <9404e2d8-0976-1726-5f08-c277cdc14945@gmail.com>
-Date:   Tue, 12 Oct 2021 20:33:19 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3bzp+5l6WTo7PbKHNMv1iXseFfgQgASCADLi09sp0dQ=;
+        b=qZKmxnr6PTiNFbbNn6pjRN9g2i8V8DRdWDoY/AdAqagRk2QV5BuN6lAESoLNoY1zH1
+         c29ATpYCnSjmz3rX/Bl1ayNsNvKyYfQ2gOOdMYqrIjCUxJAdeagBA3GjOrMH5ZWHEHH9
+         UhQkUyd3a5FGsxsohRNb7hl7KUD0yafoSNXDr7PB6YDfl5zWXy0w5dkDHjdRRwSXz/8i
+         Js4cbzx1WpjvaEUnDBY3xk9l+xccI+Q7UDxZBdx1MUnREjdd8GbwopJciGAgOqYu8ZW7
+         u91QPF3i82bTVzR2uxfvcsPf32J+vK29Fisvfitx/bpCjsenvlvbDJJbkBUxatFD0Xjb
+         Bs3w==
+X-Gm-Message-State: AOAM533wzIbF3rSVEDTwzD1fxlSZiXV2cO+bVOQs5JSh5KplzcvIgMKL
+        CZ2oTGa+ud+bF67Xj5ktdmnSt58j80I=
+X-Google-Smtp-Source: ABdhPJzQzrQt/6fZFgN/n9w1ndxWQ90bbBRDQhIAvSRQGig+pCBms0ZbmTYtv6KWThx/p5UBnV5e6g==
+X-Received: by 2002:a17:902:d70b:b0:13d:f465:9ef1 with SMTP id w11-20020a170902d70b00b0013df4659ef1mr33031187ply.44.1634092469233;
+        Tue, 12 Oct 2021 19:34:29 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:618d:87ca:8f95:87c0])
+        by smtp.gmail.com with ESMTPSA id j4sm13290471pfu.94.2021.10.12.19.34.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 19:34:28 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 19:34:25 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] Input: ep93xx_keypad - switch to using managed
+ resources
+Message-ID: <YWZFsZmPBp6Hj2Yf@google.com>
+References: <20211012013735.3523140-1-dmitry.torokhov@gmail.com>
+ <20211012013735.3523140-4-dmitry.torokhov@gmail.com>
+ <d1d1a1028c5db26d0b0eed2a5a9626124451fcf9.camel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <3bd88b51.6c7.17c77339c10.Coremail.zhangkaiheb@126.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <d1d1a1028c5db26d0b0eed2a5a9626124451fcf9.camel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 7:10 PM, å¼ å‡¯ wrote:
+On Tue, Oct 12, 2021 at 09:54:32AM +0200, Alexander Sverdlin wrote:
+> Hello Dmitry,
 > 
-> 1) Below shift operation will set fib_info_hash_size to zero if there
-> are so many routes:Â 
-> Â  unsigned int new_size = fib_info_hash_size << 1;
+> just one question below:
 > 
-> Â  Â  This will wrap value ofÂ fib_info_hash_size, and a lot of fib_info
-> will insert to a small hash bucket.
-> so this patch disables above wrap.
-> 2) Check whether fib_info_hash_size is zero only needed after allocation
-> failed:
-> if (!new_info_hash || !new_laddrhash) {
+> On Mon, 2021-10-11 at 18:37 -0700, Dmitry Torokhov wrote:
+> > +               return err;
+> > +
+> > +       err = devm_add_action_or_reset(&pdev->dev,
+> > +                                      ep93xx_keypad_release_gpio_action, pdev);
+> > +       if (err)
+> > +               return err;
+> >  
+> >         keypad->clk = clk_get(&pdev->dev, NULL);
 > 
+> Isn't the conversion to devm_clk_get() missing here?
+
+Indeed it is. I'll post an updated patch in a sec.
+
 > 
+> > -       if (IS_ERR(keypad->clk)) {
+> > -               err = PTR_ERR(keypad->clk);
+> > -               goto failed_free_gpio;
+> > -       }
+> > +       if (IS_ERR(keypad->clk))
+> > +               return PTR_ERR(keypad->clk);
 
-why not something simpler like this:
+Thanks.
 
-diff --git a/net/ipv4/fib_semantics.c b/net/ipv4/fib_semantics.c
-index 3364cb9c67e0..5c4bd1cebe0a 100644
---- a/net/ipv4/fib_semantics.c
-+++ b/net/ipv4/fib_semantics.c
-@@ -1401,6 +1401,10 @@ struct fib_info *fib_create_info(struct
-fib_config *cfg,
-
-                if (!new_size)
-                        new_size = 16;
-+
-+               if (new_size < fib_info_hash_size)
-+                       goto failure;
-+
-                bytes = new_size * sizeof(struct hlist_head *);
-                new_info_hash = fib_info_hash_alloc(bytes);
-                new_laddrhash = fib_info_hash_alloc(bytes);
-
-
+-- 
+Dmitry
