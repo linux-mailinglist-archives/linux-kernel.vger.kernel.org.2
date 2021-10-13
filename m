@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0844E42B6F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7890342B6FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237912AbhJMGVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 02:21:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237940AbhJMGVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 02:21:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E23AB60E74;
-        Wed, 13 Oct 2021 06:19:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634105948;
-        bh=JSjfMx0FtEzkD9nFNaix3VBaJvvP+0sPjIpxvGSeX30=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1LucEv/OC8nASne80gQb2J/oCFfy1K593axLCYRrQVpP9D9fEC9p9k5wmOHp1lc7l
-         ZYti/jgr4QvstKC4bzXQctHry7cR7aXA13Zm6uB8Fz2Q1YfY0s754XTe019xIhLvqk
-         e7qdCNLkHpQllzfMwt36XebHJyhziqVxWVMs4KUQ=
-Date:   Wed, 13 Oct 2021 08:19:05 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Qing Wang <wangqing@vivo.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: replace snprintf in show functions with sysfs_emit
-Message-ID: <YWZ6Wa/RmeBaGrWK@kroah.com>
-References: <1634095668-4319-1-git-send-email-wangqing@vivo.com>
+        id S237827AbhJMGWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 02:22:46 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:27949 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237837AbhJMGWo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 02:22:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634106042; h=Date: Message-ID: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=iivdz8uvh0Q4v6ZnaXHp24mx6wfadpzFCQZTylr6+4E=;
+ b=KFkThqIjGReNzb+3VB05K1EvoBOrTyWkEsXx0kRb48PxXs/YBP6bNY+Y2R9QO2XtoSvF9E5L
+ YcXd4s72pMWjgnVNy3wE/8XwtkjrxyuUoKR7vad9DdVjV+KR+00VF9LpKbFhuh/uOFpEP66d
+ ElJAgHmyNcH+LPo3MrqWBaxx01Q=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 61667ab98ea00a941f58bc62 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Oct 2021 06:20:41
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A9C45C4338F; Wed, 13 Oct 2021 06:20:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E0C90C4338F;
+        Wed, 13 Oct 2021 06:20:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E0C90C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634095668-4319-1-git-send-email-wangqing@vivo.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] rtlwifi: rtl8192ee: Remove redundant initialization of
+ variable version
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20211007163722.20165-1-colin.king@canonical.com>
+References: <20211007163722.20165-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Ping-Ke Shih <pkshih@realtek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <163410603706.12983.13781941035424986472.kvalo@codeaurora.org>
+Date:   Wed, 13 Oct 2021 06:20:41 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 08:27:47PM -0700, Qing Wang wrote:
-> coccicheck complains about the use of snprintf() in sysfs show functions.
-> 
-> Fix the following coccicheck warning:
-> drivers/usb/core/sysfs.c:730:8-16: WARNING: use scnprintf or sprintf.
-> drivers/usb/core/sysfs.c:921:8-16: WARNING: use scnprintf or sprintf.
-> 
-> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
-> 
-> Signed-off-by: Qing Wang <wangqing@vivo.com>
-> ---
->  drivers/usb/core/sysfs.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
-> index fa2e49d..6387c0d 100644
-> --- a/drivers/usb/core/sysfs.c
-> +++ b/drivers/usb/core/sysfs.c
-> @@ -727,7 +727,7 @@ static ssize_t authorized_show(struct device *dev,
->  			       struct device_attribute *attr, char *buf)
->  {
->  	struct usb_device *usb_dev = to_usb_device(dev);
-> -	return snprintf(buf, PAGE_SIZE, "%u\n", usb_dev->authorized);
-> +	return sysfs_emit(buf, "%u\n", usb_dev->authorized);
->  }
->  
->  /*
-> @@ -918,7 +918,7 @@ static ssize_t authorized_default_show(struct device *dev,
->  	struct usb_hcd *hcd;
->  
->  	hcd = bus_to_hcd(usb_bus);
-> -	return snprintf(buf, PAGE_SIZE, "%u\n", hcd->dev_policy);
-> +	return sysfs_emit(buf, "%u\n", hcd->dev_policy);
->  }
->  
->  static ssize_t authorized_default_store(struct device *dev,
-> -- 
-> 2.7.4
-> 
+Colin King <colin.king@canonical.com> wrote:
 
-If you are going to change this file, you should do this for all of the
-sysfs show functions in this file, not just 2 of them, right?  Please
-change this patch to do that.
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable version is being initialized with a value that is
+> never read, it is being updated afterwards in both branches of
+> an if statement. The assignment is redundant and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
 
-thanks,
+Patch applied to wireless-drivers-next.git, thanks.
 
-greg k-h
+51fd5c6417b9 rtlwifi: rtl8192ee: Remove redundant initialization of variable version
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20211007163722.20165-1-colin.king@canonical.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
