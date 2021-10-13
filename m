@@ -2,59 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28EAD42B96B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704DC42B96F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238561AbhJMHrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:47:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58522 "EHLO mail.kernel.org"
+        id S238584AbhJMHsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:48:15 -0400
+Received: from mga14.intel.com ([192.55.52.115]:21694 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238509AbhJMHrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:47:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1077660EDF;
-        Wed, 13 Oct 2021 07:45:43 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 08:45:40 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memblock: exclude NOMAP regions from kmemleak
-Message-ID: <YWaOpMhO6LoiiD+S@arm.com>
-References: <20211013054756.12177-1-rppt@kernel.org>
+        id S238509AbhJMHsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 03:48:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="227657473"
+X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
+   d="scan'208";a="227657473"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 00:46:04 -0700
+X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
+   d="scan'208";a="563016609"
+Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 00:46:02 -0700
+From:   Tomas Winkler <tomas.winkler@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
+        Vitaly Lubart <vitaly.lubart@intel.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Tomas Winkler <tomas.winkler@intel.com>
+Subject: [char-misc-next] mei: hbm: drop hbm responses on early shutdown
+Date:   Wed, 13 Oct 2021 10:45:52 +0300
+Message-Id: <20211013074552.2278419-1-tomas.winkler@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013054756.12177-1-rppt@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 08:47:56AM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Vladimir Zapolskiy reports:
-> 
-> commit a7259df76702 ("memblock: make memblock_find_in_range method private")
-> invokes a kernel panic while running kmemleak on OF platforms with nomaped
-> regions:
-> 
->   Unable to handle kernel paging request at virtual address fff000021e00000
->   [...]
->     scan_block+0x64/0x170
->     scan_gray_list+0xe8/0x17c
->     kmemleak_scan+0x270/0x514
->     kmemleak_write+0x34c/0x4ac
-> 
-> Indeed, NOMAP regions don't have linear map entries so an attempt to scan
-> these areas would fault.
-> 
-> Prevent such faults by excluding NOMAP regions from kmemleak.
-> 
-> Link: https://lore.kernel.org/all/8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org
-> Fixes: a7259df76702 ("memblock: make memblock_find_in_range method private")
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Tested-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Drop HBM responses also in the early shutdown phase where
+the usual traffic is allowed.
+Extend the rule that drop HBM responses received during the shutdown phase
+by also in MEI_DEV_POWERING_DOWN state.
+This resolves the stall if the driver is stopping in the middle
+of the link init or link reset.
+
+Fixes: da3eb47c90d4 ("mei: hbm: drop hbm responses on shutdown")
+Fixes: 36edb1407c3c ("mei: allow clients on bus to communicate in remove callback")
+Cc: <stable@vger.kernel.org> # v5.12+
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+---
+ drivers/misc/mei/hbm.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/misc/mei/hbm.c b/drivers/misc/mei/hbm.c
+index 99b5c1ecc444..be41843df75b 100644
+--- a/drivers/misc/mei/hbm.c
++++ b/drivers/misc/mei/hbm.c
+@@ -1298,7 +1298,8 @@ int mei_hbm_dispatch(struct mei_device *dev, struct mei_msg_hdr *hdr)
+ 
+ 		if (dev->dev_state != MEI_DEV_INIT_CLIENTS ||
+ 		    dev->hbm_state != MEI_HBM_STARTING) {
+-			if (dev->dev_state == MEI_DEV_POWER_DOWN) {
++			if (dev->dev_state == MEI_DEV_POWER_DOWN ||
++			    dev->dev_state == MEI_DEV_POWERING_DOWN) {
+ 				dev_dbg(dev->dev, "hbm: start: on shutdown, ignoring\n");
+ 				return 0;
+ 			}
+@@ -1381,7 +1382,8 @@ int mei_hbm_dispatch(struct mei_device *dev, struct mei_msg_hdr *hdr)
+ 
+ 		if (dev->dev_state != MEI_DEV_INIT_CLIENTS ||
+ 		    dev->hbm_state != MEI_HBM_DR_SETUP) {
+-			if (dev->dev_state == MEI_DEV_POWER_DOWN) {
++			if (dev->dev_state == MEI_DEV_POWER_DOWN ||
++			    dev->dev_state == MEI_DEV_POWERING_DOWN) {
+ 				dev_dbg(dev->dev, "hbm: dma setup response: on shutdown, ignoring\n");
+ 				return 0;
+ 			}
+@@ -1448,7 +1450,8 @@ int mei_hbm_dispatch(struct mei_device *dev, struct mei_msg_hdr *hdr)
+ 
+ 		if (dev->dev_state != MEI_DEV_INIT_CLIENTS ||
+ 		    dev->hbm_state != MEI_HBM_CLIENT_PROPERTIES) {
+-			if (dev->dev_state == MEI_DEV_POWER_DOWN) {
++			if (dev->dev_state == MEI_DEV_POWER_DOWN ||
++			    dev->dev_state == MEI_DEV_POWERING_DOWN) {
+ 				dev_dbg(dev->dev, "hbm: properties response: on shutdown, ignoring\n");
+ 				return 0;
+ 			}
+@@ -1490,7 +1493,8 @@ int mei_hbm_dispatch(struct mei_device *dev, struct mei_msg_hdr *hdr)
+ 
+ 		if (dev->dev_state != MEI_DEV_INIT_CLIENTS ||
+ 		    dev->hbm_state != MEI_HBM_ENUM_CLIENTS) {
+-			if (dev->dev_state == MEI_DEV_POWER_DOWN) {
++			if (dev->dev_state == MEI_DEV_POWER_DOWN ||
++			    dev->dev_state == MEI_DEV_POWERING_DOWN) {
+ 				dev_dbg(dev->dev, "hbm: enumeration response: on shutdown, ignoring\n");
+ 				return 0;
+ 			}
+-- 
+2.31.1
+
