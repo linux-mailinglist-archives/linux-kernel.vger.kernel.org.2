@@ -2,183 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA90242C842
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC2842C714
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238351AbhJMSEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 14:04:20 -0400
-Received: from mail-mw2nam08on2073.outbound.protection.outlook.com ([40.107.101.73]:9537
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229967AbhJMSES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 14:04:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=daOhCjwY9lil/B3nVqmilPmNqMGlcrn4yB68qbKHIGRdFdjDlza/wQsqvhgupgbknXqFvm07i82CdH+/YSMt/96KrlBzNt1LcL8tmdoBQasUhvg8vqiEzVxXJjU2js8ZzX6whaPRoGYV2CF4l5RiZb5Yb57QdO1VCXyjhZE/Mo9W2NCUbnFoeCQ13VLmcdHkkz7p1FZK3CffxiCfZN8eg2tqZU5m45A34A7kzO02P1uIWmkeqZuKRpw1URCQb2VchZspY4xEV6H/yz2Qx7Kwr1hVEaJKELXGmmYgLP52QmHEGXKc7M1lqZxn9buUcw4b+48Hu/6DuLkueOd1lDwOkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3IfhtIToSJYQsLenmsUyORadkXbuHCgrO41x4VC5PfM=;
- b=mdgXnM+pDFcI5MKE/tu+gePk6XuSVwKwk1NcuZqZXnSKTZpjqAc8ngPqLSeFn6Mtd4P91+DH2CS6bP5WubpQMNkfk7pntezWKuftl41NfsQ0AzTMBSzAl9TPQ/brqrfqCsFnCDhxGzKmQuieljEkvGt9Z4QXm6FL5BLFLHq269B2YM4tvzyXNdoxQhWjVXRL5gLDSB9vOT5KcRQmN8jRnh9vtkhlY7UhQHczmegZ5VVs2xJtmU/S5HQEf1rHiuy+cECn+yYxJ1sI+RuG7ywh2I6hnTi+ok3MfjXUkcXHc4HffLFKDdq7ZBSkoQrTjLmxzJwBS7/QWFjWsaa00J4fng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3IfhtIToSJYQsLenmsUyORadkXbuHCgrO41x4VC5PfM=;
- b=ALevIxI7Fpbh1aSMjTmU/IktIBcCva68ulLnOuyOyQNe/3ai9LwmS4VGu1NjNSv0iicj9UH4uUHJvczrkEAYBvYlNUp6iqXMLle3PCv0QMamhxBP2pz3i75VOk07Xl9/HoGI1R2Q2lIiKB1XwOOzUsc+yL/qki1LklYnGQWkg+vdz8wtaZjwscX/irNLP0frc91iSmUsgJI4VQQpTHShX/nMDGmLU2xVUZNp4nw9pYSeeKvkNEYBxFxyxySJjZfKq5drVER0yhT+NCJo3siOp8uB7OPeCi2+DrvkuwHtrG3MM6IkoZop3in7z343h/hJNumbydNkAshai8QPQ59vlw==
-Authentication-Results: fujitsu.com; dkim=none (message not signed)
- header.d=none;fujitsu.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5064.namprd12.prod.outlook.com (2603:10b6:208:30a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Wed, 13 Oct
- 2021 18:02:13 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%6]) with mapi id 15.20.4608.016; Wed, 13 Oct 2021
- 18:02:13 +0000
-Date:   Wed, 13 Oct 2021 15:02:12 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-Cc:     "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] IB/mlx5: unify return value to ENOENT
-Message-ID: <20211013180212.GL2744544@nvidia.com>
-References: <20210903084815.184320-1-lizhijian@cn.fujitsu.com>
- <20210928170846.GA1721590@nvidia.com>
- <a7e08316-221d-554b-b853-7f58a7fcdbd1@fujitsu.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a7e08316-221d-554b-b853-7f58a7fcdbd1@fujitsu.com>
-X-ClientProxiedBy: BL0PR02CA0074.namprd02.prod.outlook.com
- (2603:10b6:208:51::15) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S237977AbhJMRAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:00:38 -0400
+Received: from mga12.intel.com ([192.55.52.136]:20038 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230415AbhJMRAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 13:00:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="207594565"
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="207594565"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 09:58:31 -0700
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="547986866"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 09:58:23 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1makM2-0001gg-8h;
+        Wed, 13 Oct 2021 22:55:58 +0300
+Date:   Wed, 13 Oct 2021 22:55:58 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huan Feng <huan.feng@starfivetech.com>
+Subject: Re: [PATCH v1 12/16] pinctrl: starfive: Add pinctrl driver for
+ StarFive SoCs
+Message-ID: <YWc5zq0Moz3asWEa@smile.fi.intel.com>
+References: <20211012134027.684712-1-kernel@esmil.dk>
+ <20211012134027.684712-13-kernel@esmil.dk>
+ <CAHp75Vep+i+iyJi0LAOKuer-cUZoUoB_ZrWKcmT=EB_4hOgFGw@mail.gmail.com>
+ <CANBLGczDZh+kLWM017mPenY8WO5OovH2DFUSS-shRD-aZVKa0A@mail.gmail.com>
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR02CA0074.namprd02.prod.outlook.com (2603:10b6:208:51::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Wed, 13 Oct 2021 18:02:13 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1maiZw-00EcQX-MH; Wed, 13 Oct 2021 15:02:12 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 395663d7-dbcf-4c4c-b933-08d98e7395b0
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5064:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB50641BB13307F464BC9A5648C2B79@BL1PR12MB5064.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1417;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KNrKhvvsvqVcYeftx1Kp2c3sAiGiMU/SylVpWoCFF4/I/c5GgS19XjRE9gnCl5DLY+IBgGQTV8UlCBd4MpeoP+8E/9xZUcY2CvOEANaXXbI6WR7YmTCwABO9M0Rj8mJX9VZWimQrt9lID0ubZ8R0B9lEmW0Sxgzmq3NjffXVg0Xi19lxCAMxhUUEOA8rSi+jVyq7G9k2d7YHdT52i2xS5HH2853T5p/qTHE+RIPLuFbh2pdMIIeBbn/a0PG2xhNBfkOavMOtjyk7Z9yuA7z/HpBGdyD+KWJz0pm6IhIJHAMgY64CzYG2vIIcrhUBm5nefKPPUU7awxSicjZt1F4//6VYIexnJAwk0o2kFEZrkiLG9AOTBtFNFkwv1f+5GqX4ivE6xbRNBeUPCAIXdc8+p57+wbG990s8OK15phh7fluXXXF5xmmlgxTptJ8NDpoGARWZELzhS+QEiE7Yt0dblQVqktwNtpeV1yXIBEH7z2nUji4LXzNBe+jEWyeWVKo8ryexOyRxVyhqO1f80INyrq0NX+v/cTslhlOSxETGi2l2wSdB44KIh12sS/Oe7QC+j/PGGSkZdK7cHwbeUgVImDQI4ozCuGfdlFPrJOvA9dBZHrm7t6CHlwTwIVxzAOTk0ycarZHRS0ZFOD+nxcjdRw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(86362001)(8936002)(186003)(83380400001)(2906002)(38100700002)(66476007)(33656002)(66556008)(53546011)(8676002)(6916009)(66946007)(54906003)(26005)(9786002)(9746002)(426003)(4326008)(2616005)(36756003)(1076003)(508600001)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SzFGUWxtdDA5Ly92Y3lsaVNjMlhHNGFiM0RqbXJjODVCMXdaNmpvbjN0ZjVZ?=
- =?utf-8?B?QiszZGdqcnhoV2I3MDF6TStOVHRmZ0FOT01ubjVvT1ltb3pyTHBhU3hJWGRT?=
- =?utf-8?B?T3ZZVkUxd2M0aUY4UE16aHN0NXN6VmFlMmREU1BRK3F0Y0JpdUJIWElvYkdi?=
- =?utf-8?B?MWQ4dUZybzNZcHhFTTRVcUEyV1VheVVGMXdnR2UvMWNjNmlxTitHdFBoak9E?=
- =?utf-8?B?andyd3QrTE02UHNWV1FOSDhuNzNEZkdKNmNBNGkzTjV1c0didGhsQktUeDI5?=
- =?utf-8?B?Tkx5TU9NcHhMVkZkdWhtb0JUSFZGd2hvZVdrN0d0dWhoY2FFbDdMMVVOcTZm?=
- =?utf-8?B?UmJjOWszRGlGVWJpYVRVZndpMko1dE9XaWpNbzFya29FVW5TeHZZbTZsWnRG?=
- =?utf-8?B?MWJ6WWtQVW14dkhDdENyMnc1MnJ2MksxcUptdk5aU1YzNDEyWlVRWld4b1ZV?=
- =?utf-8?B?QXdYVTZaaFgzVGRya1phSklqWnRsNmduclhuQkxOTTBzZlM3UU9EUVY1NGxM?=
- =?utf-8?B?d09sZFR4cmdLb1hRMDZGbWRucjF5UDhWcDBqTE0wN055cXVjWUQ4bzJ1VUFv?=
- =?utf-8?B?ZjBEY1FoTTFZWWZqSDA0T2xaSWdlZ1o3MEwzMXBncWlRRHJHK3Fha3hOYTh0?=
- =?utf-8?B?NFBUL1BZRGQwNW4xajJaNTdUVzIrSUJBWjZmaktwK01pNDBoajBSak5aWmV4?=
- =?utf-8?B?MTJnN1ZjTlRXcjMxalhCQnBNcnZPcHpWQW51bmNCWXl6eG1MQ3VFMlBYb3JH?=
- =?utf-8?B?SzBCRmt4aWtydnlKUXJqbTg4dTRGUm5aaVhQb0xHeWZlTmlpc1E0OXdQNmZp?=
- =?utf-8?B?enpEN2RNNlIwY1RpNGxaQlJvSjQ3NFdkYURVczNiaFhDeStTK2RPclkvZ0xD?=
- =?utf-8?B?OHFHODB6ZGRDbStnYjRNT0ZhRWV4RmhpTStjdTdVS0s3Wm5qSEJmcFplcXNs?=
- =?utf-8?B?cm1nSkR2dXlnL2Q1SVp6alBKRzNnSzE0elB6S3o2K0lVb1phUzJ0eENxbTBL?=
- =?utf-8?B?dXBEbWFzUzd0Y2o2dTFuV2hhZkpicXhtbks4QW9vcDNadHhHTW9oMFdWUEJH?=
- =?utf-8?B?SE5CTEM4YXRWdXFNZXAwMzF0MnFzM20xaTNaMG40eTVHN3B3WjFCOEhsaEQr?=
- =?utf-8?B?M0xXcldQQjMwTXljeDg3blkwY0hDVm1SM1BnMGxPTDJKTjBPcWdHdmlqajBr?=
- =?utf-8?B?cUpoTWRQbmhqZlY3TXN6SFByRW5ZbG5hL2gzYzF4T0F6TnJYUUxxN0s5MVds?=
- =?utf-8?B?V21VYTNDd3VkblR2Qzc3RE9hQjdXcGlmdnpMVGhTMi9ybC9jMjBDd3dhaVds?=
- =?utf-8?B?NXlFZ3BBeFUvRmdMTDYrZU5TKzcvQzgxVFBSK0FKS2ZYRVNYWkU3d1U3NjZ3?=
- =?utf-8?B?S0RiUTJqWXZVMGVSUU5lSG1PUTdOTXIxOW1hSW1hSWJSNkF1Q245VUd4dHpm?=
- =?utf-8?B?TFNnNFEwNzZaVVZZNUhWZHRyU3JhOWVNN0pySStmSlcveHZ2R1pFbTR1T0dE?=
- =?utf-8?B?cy9ucG1kb1lTWFVPcUo2Mkg5UDB1UWx0b29kYmlCWGVQZVAxK1RlMjZuRk1r?=
- =?utf-8?B?Y2NqRVFiK3ltYzBiQ1BqVjAwb3VZOG81RzU2UjRtVEkxeUlWSFdNekpKbCtN?=
- =?utf-8?B?eVZhMk4weTR4c1piM2RDdkVNdTdDZHF5RUhsdlJrZFk3RlBlakdDcTRjWk5o?=
- =?utf-8?B?a2QvblY4S2JMWEJSdWtNclVzVEVJb1oxUG11M01VQXJUZzh6TFRQUWdzbEQr?=
- =?utf-8?B?L3VjZjA3d05nS1ZJZWs0bHcrOUlqNndMMlJvVE9GektYcmhRTkovRWVqeVBj?=
- =?utf-8?B?QmZEWitTTXF1M2d5U296UT09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 395663d7-dbcf-4c4c-b933-08d98e7395b0
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 18:02:13.5148
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CXC3hT3lsygf7r0txfo36k3NIY3mCF8RZX7X8nGzSrBZjig7CPxxZ6Slw8p/ajHL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5064
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANBLGczDZh+kLWM017mPenY8WO5OovH2DFUSS-shRD-aZVKa0A@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 07:26:49AM +0000, lizhijian@fujitsu.com wrote:
-> Hi Jason
-> 
-> When update the ibv_advise_mr man page, i have a few concerns:
-> 
-> 
-> On 29/09/2021 01:08, Jason Gunthorpe wrote:
-> > On Fri, Sep 03, 2021 at 04:48:15PM +0800, Li Zhijian wrote:
-> >> Previously, ENOENT or EINVAL will be returned by ibv_advise_mr() although
-> >> the errors all occur at get_prefetchable_mr().
-> > What do you think about this instead?
-> >
-> >  From b739920ed4869decb02a0dbc58256e6c72ec7061 Mon Sep 17 00:00:00 2001
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Date: Fri, 3 Sep 2021 16:48:15 +0800
-> > Subject: [PATCH] IB/mlx5: Flow through a more detailed return code from
-> >   get_prefetchable_mr()
-> >
-> > The error returns for various cases detected by get_prefetchable_mr() get
-> > confused as it flows back to userspace. Properly label each error path and
-> > flow the error code properly back to the system call.
-> >
-> > Suggested-by: Li Zhijian <lizhijian@cn.fujitsu.com>
-> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> >   drivers/infiniband/hw/mlx5/odp.c | 40 ++++++++++++++++++++------------
-> >   1 file changed, 25 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-> > index d0d98e584ebcc3..77890a85fc2dd3 100644
-> > +++ b/drivers/infiniband/hw/mlx5/odp.c
-> > @@ -1708,20 +1708,26 @@ get_prefetchable_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
-> >   
-> >   	xa_lock(&dev->odp_mkeys);
-> >   	mmkey = xa_load(&dev->odp_mkeys, mlx5_base_mkey(lkey));
-> > -	if (!mmkey || mmkey->key != lkey || mmkey->type != MLX5_MKEY_MR)
-> > +	if (!mmkey || mmkey->key != lkey) {
-> > +		mr = ERR_PTR(-ENOENT);
-> >   		goto end;
-> > +	}
-> > +	if (mmkey->type != MLX5_MKEY_MR) {
-> > +		mr = ERR_PTR(-EINVAL);
-> > +		goto end;
-> > +	}
-> 
-> 
-> Can we return EINVAL in both above 2 cases so that we can attribute
-> them to *lkey is invalid*  simply.  Otherwise it's hard to describe
-> 2nd case by man page since users/developers cannot link mmkey->type
-> to the parameters of ibv_advise_mr().
+On Wed, Oct 13, 2021 at 06:38:14PM +0200, Emil Renner Berthing wrote:
+> On Tue, 12 Oct 2021 at 19:03, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Tue, Oct 12, 2021 at 4:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
 
-kley is valid in the 2nd case, but points to the wrong kidn of object
-to prefetch, hence EIVNAL. Eg it is a MW or something.
+...
 
-> >   	mr = container_of(mmkey, struct mlx5_ib_mr, mmkey);
-> >   
-> >   	if (mr->ibmr.pd != pd) {
-> > -		mr = NULL;
-> > +		mr = ERR_PTR(-EPERM);
+> > > +free_pinmux:
+> > > +       devm_kfree(dev, pinmux);
+> > > +free_pins:
+> > > +       devm_kfree(dev, pins);
+> > > +free_grpname:
+> > > +       devm_kfree(dev, grpname);
+> >
+> > What the heck?!
 > 
-> EINVAL is better  for compatible ? since man page said EINVAL in this case before.
+> Just to be clear. You mean we don't need to explicitly free them
+> because they're tied to the device right? I don't think the device
+> will go away just because a single device tree entry can't be parsed,
+> so on such errors this garbage would be left behind. You can still
+> argue we shouldn't optimize for broken device trees, I just want to
+> make it at conscious decision.
 
-Referencing a valid lkey outside the caller's security scope should be
-EPERM.
+If you are using devm_kfree() it is quite likely shows either of the following
+issues:
 
-Jason
+* you mustn't use devm_*() in the first place due to object lifetime;
+* you shouldn't use devm_kfree() since this is the whole point of devm.
+
+> > > +free_pgnames:
+> > > +       devm_kfree(dev, pgnames);
+> >
+> > Ditto.
+
+...
+
+> > > +out:
+> >
+> > Useless label.
+> 
+> Hmm.. my compiler disagrees.
+
+The comment implies that you return directly instead of using `goto out;`.
+
+> > > +       return ret;
+
+...
+
+> > > +               v = pinmux[i];
+> > > +               dout = ((v & BIT(7)) << (31 - 7)) | ((v >> 24) & 0xffU);
+> > > +               doen = ((v & BIT(6)) << (31 - 6)) | ((v >> 16) & 0xffU);
+> > > +               din  = (v >> 8) & 0xffU;
+> >
+> > What is this voodoo for?
+> 
+> In order to do pinmux we need the following pieces of information from
+> the device tree for each pin ("GPIO" they call it):
+> 
+> output signal: 0-133 + 1bit reverse flag
+> output enable signal: 0-133 + 1bit reverse flag
+> optional input signal: 0-74 + special "none" value, right now 0xff
+> gpio number: 0-63
+> 
+> As the code is now all that info is packed into a u32 for each pin
+> using the GPIOMUX macro defined in the dt-binding header added in
+> patch 10. There is also a diagram for how this packing is done. The
+> above voodoo is for unpacking that.
+> 
+> I'd very much like to hear if you have a better solution for how to
+> convey that information from the device tree to here.
+
+At very least this code should have something like above in the comment.
+
+...
+
+> > > +               if (din != 0xff)
+> > > +                       reg_din = sfp->base + GPIO_IN_OFFSET + 4 * din;
+> > > +               else
+> > > +                       reg_din = NULL;
+> >
+> > This looks like you maybe use gpio-regmap instead?
+> 
+> This was discussed at length when Drew sent in the GPIO part of this code:
+> https://lore.kernel.org/linux-riscv/20210701002037.912625-1-drew@beagleboard.org/
+> The conclusion was that because pinmux and controlling the pins from
+> software in GPIO mode uses the same registers it is better to do a
+> combined driver like this that can share the lock among other things.
+
+And what does prevent exactly to base the GPIO part on gpio-regmap?
+
+...
+
+> > > +static const unsigned char starfive_drive_strength[] = {
+> > > +       14, 21, 28, 35, 42, 49, 56, 63,
+> >
+> > Why table? Can you simply use the formula?!
+> 
+> Heh, yeah. So these are rounded values from a table and I never
+> noticed that after rounding they follow a nice arithmetic progression.
+> It'll probably still be nice to have an explanation in the comments
+> about the formula then.
+
+Yup!
+
+> > > +};
+
+...
+
+> > > +               irq_set_handler_locked(d, handle_bad_irq);
+> >
+> > Why is this here? Move it to ->probe().
+> 
+> My thinking was that if something tries to set a an unsupported irq
+> type, we should make sure the caller doesn't get spurious interrupts
+> because we left the handler at its old value.
+
+You already assigned to this handler in the ->probe(), what's this then?
+
+...
+
+> > > +               if (value <= 6)
+> > > +                       writel(value, sfp->padctl + IO_PADSHARE_SEL);
+> > > +               else
+> >
+> > > +                       dev_err(dev, "invalid signal group %u\n", value);
+> >
+> > Why _err if you not bail out here?
+> 
+> My thinking was that if the device tree specifies an invalid signal
+> group we should just leave the setting alone and not break booting,
+> but still be loud about it. Maybe that's too lenient and it's better
+> to crash and burn immediately if someone does that.
+
+Here is inconsistency between level of the message and following action.
+There are (rare!) cases when it's justified, but I believe it's not the
+case here. You have two choices or justify why you have to use error
+level without stopping process.
+
+...
+
+All uncommented stuff you agreed on, correct?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
