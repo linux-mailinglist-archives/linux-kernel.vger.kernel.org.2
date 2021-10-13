@@ -2,138 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C0942C150
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FB242C157
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234325AbhJMNYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:24:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37688 "EHLO mail.kernel.org"
+        id S234793AbhJMNZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:25:33 -0400
+Received: from mga17.intel.com ([192.55.52.151]:29501 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231372AbhJMNYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:24:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B919860C40;
-        Wed, 13 Oct 2021 13:22:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634131361;
-        bh=YjHSmUH3vWx4UbmoS8XoCf1Q1iUtkT/FFwYDre9n7/o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UOtqi+GjGAjM8ekNIZsD5hq8oIFaItCF6cNQ4UP4DwyK1EcS+xQeSVchup8gyxeV2
-         amjvISBOrrCcVhqnAadA9tZMjkmeH1YB4oErxlvXixDdldcUt1zwP/P4KtvfxQ+aoT
-         qDJ+MrVAnHb2tHL4viOly9FkB7mu0qJwguzLCXAo=
-Date:   Wed, 13 Oct 2021 15:22:38 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jim Cromie <jim.cromie@gmail.com>
-Cc:     jbaron@akamai.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] dynamic debug for -next
-Message-ID: <YWbdnsUjHA4Mmss3@kroah.com>
-References: <20211012183310.1016678-1-jim.cromie@gmail.com>
+        id S233226AbhJMNZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:25:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="208223337"
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="208223337"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 06:23:29 -0700
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="626341116"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 06:23:15 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1maeDt-000LPO-Od;
+        Wed, 13 Oct 2021 16:23:09 +0300
+Date:   Wed, 13 Oct 2021 16:23:09 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ido Schimmel <idosch@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>, Jack Xu <jack.xu@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        Juergen Gross <jgross@suse.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Michael Buesch <m@bues.ch>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Russell Currey <ruscur@russell.cc>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-crypto <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>,
+        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
+        MPT-FusionLinux.pdl@broadcom.com, netdev <netdev@vger.kernel.org>,
+        oss-drivers@corigine.com, qat-linux@intel.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH v6 00/11] PCI: Drop duplicated tracking of a pci_dev's
+ bound driver
+Message-ID: <YWbdvc7EWEZLVTHM@smile.fi.intel.com>
+References: <CAHp75Vd0uYEdfB0XaQuUV34V91qJdHR5ARku1hX_TCJLJHEjxQ@mail.gmail.com>
+ <20211013113356.GA1891412@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20211012183310.1016678-1-jim.cromie@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211013113356.GA1891412@bhelgaas>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 12:33:05PM -0600, Jim Cromie wrote:
-> hi Greg, Jason, 
-> 
-> Please consider these "more selective verbose info" patches for your
-> -next tree:
-> 
-> - show module name in query from $module.dyndbg="...;..."
-> - don't log command input with quotes user might use, it only confuses.
-> - silence log of empty/tail query.
-> - refine verbosity: summary..detail: 1..4
-> 
-> While doing stress testing with (something like):
->   echo "+p; -p; +p; -p; +p; -p; +p; -p; +p; -p" > control
-> 
-> The existing v2pr_info("changed:") is called ~30k times (~3k
-> callsites, 10x) on my desktop kernel, and the syslog work completely
-> overwhelms and hides the static-key IPI overheads (using this
-> workload).
-> 
-> While verbose=1 silences this, it also stops most parsing vpr-infos,
-> as I found while submitting 4kb command buffers, and seeing short
-> writes and resulting bad commands kernel-side.  I needed to hide the
-> "changed" messages, but still see the parsing error (and submit
-> context), where the short write and resulting illegal command revealed
-> itself.
-> 
-> The script fix was to syswrite the prepared multi-command string,
-> avoiding perl's buffered io, but the kernel-side tweaks made it easier
-> to isolate and debug my userspace problem filling the 4kb command
-> buffer.
-> 
-> With these changes, the script elicits this log; with last of 96
-> queries logged at v=3, then benchmarked with v=0.
-> 
-> FWIW, the script runs 299k simple flag changes @ 125x/s.
-> For static-key changes, its MUCH slower, taking 4s each.
-> 500x cost is not unreasonable, considering systemwide IPI.
-> 
-> model name	: AMD Ryzen 7 5800H with Radeon Graphics (16 core)
-> 
-> v=3 messages, per query.
-> [  727.006884] dyndbg: query 95: <file "*" module "*" func "*"  -mf # off > mod:<*>
-> [  727.007268] dyndbg: split into words: <file> <*> <module> <*> <func> <*> <-mf>
-> [  727.007657] dyndbg: op=<->
-> [  727.007813] dyndbg: flags=0x6
-> [  727.007973] dyndbg: *flagsp=0x0 *maskp=0xfffffff9
-> [  727.008320] dyndbg: parsed: func=<*> file=<*> module=<*> format=<> lineno=0-0
-> [  727.009205] dyndbg: applied: func=<*> file=<*> module=<*> format=<> lineno=0-0
-> 
-> v=2 message, summarizing command buffer submission.
-> [  727.009584] dyndbg: processed 96 queries, with 299040 matches, 0 errs
-> 
-> benchmark 2 queries: 1- a wildcard in all terms, 2- baseline, no terms
-> 
-> qry: ct:48 x << 
->   file "*" module "*" func "*"  +mf # on ;  file "*" module "*" func "*"  -mf # off 
->  >>
-> len: 4080, 576
-> Benchmark: timing 10 iterations of no_search, wildcards...
->  no_search:  0 wallclock secs ( 0.00 usr +  0.08 sys =  0.08 CPU) @ 125.00/s (n=10)
->             (warning: too few iterations for a reliable count)
->  wildcards:  1 wallclock secs ( 0.00 usr +  0.16 sys =  0.16 CPU) @ 62.50/s (n=10)
->             (warning: too few iterations for a reliable count)
-> 
-> Conclusion: Wildcarding isn't terribly expensive, so it is fair game
-> for format matching, just like the other fields.
-> 
-> qry: ct:49 x << 
->   file "*" module "*" func "*"  +p # on ;  file "*" module "*" func "*"  -p # off 
->  >>
-> len: 4067, 490
-> Benchmark: timing 10 iterations of no_search, wildcards...
->  no_search: 40 wallclock secs ( 0.00 usr + 40.08 sys = 40.08 CPU) @  0.25/s (n=10)
->  wildcards: 40 wallclock secs ( 0.00 usr + 40.37 sys = 40.37 CPU) @  0.25/s (n=10)
-> bash-5.1# 
-> 
-> Here, +p -p static-key toggle dominates the workload, and is MUCH
-> slower than comparable simple-flag toggling above.
-> 
-> 
-> I do hope that verbose= is not frozen API.
-> It has always been an integer, not a boolean, implying range.
-> 
-> It has also seen refinement since its origin:
-> 
-> commit 74df138d508e ("dynamic_debug: change verbosity at runtime")
-> 
-> This made verbose usable as a knob, w/o requiring reboot, but also
-> (implicitly) made it API, because it got exposed to userspace ?
-> 
-> commit 481c0e33f1e7 ("dyndbg: refine debug verbosity; 1 is basic, 2 more chatty")
-> 
-> This altered the callsite "changed" info to verbose=2 (amongst others),
-> but that really wasn't enough selectivity to cope with the situation
-> described above.
+On Wed, Oct 13, 2021 at 06:33:56AM -0500, Bjorn Helgaas wrote:
+> On Wed, Oct 13, 2021 at 12:26:42PM +0300, Andy Shevchenko wrote:
+> > On Wed, Oct 13, 2021 at 2:33 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > On Mon, Oct 04, 2021 at 02:59:24PM +0200, Uwe Kleine-König wrote:
 
-I took the first patch here, I wanted to take patches 4 and 5 as well,
-but they did not apply because I didn't want to take 2 and 3 right now.
+...
 
-thanks,
+> > It's a bit unusual. Other to_*_dev() are not NULL-aware IIRC.
+> 
+> It is a little unusual.  I only found three of 77 that are NULL-aware:
+> 
+>   to_moxtet_driver()
+>   to_siox_driver()
+>   to_spi_driver()
+> 
+> It seems worthwhile to me because it makes the patch and the resulting
+> code significantly cleaner.
 
-greg k-h
+I'm not objecting the change, just a remark.
+
+...
+
+> > > +       for (id = drv ? drv->id_table : NULL; id && id->vendor; id++)
+> > > +               if (id->vendor == vendor && id->device == device)
+> > 
+> > > +                       break;
+> > 
+> > return true;
+> > 
+> > >         return id && id->vendor;
+> > 
+> > return false;
+> 
+> Good cleanup for a follow-up patch, but doesn't seem directly related
+> to the objective here.
+
+True. Maybe you can bake one while not forgotten?
+
+...
+
+> > > +       return drv && drv->resume ?
+> > > +                       drv->resume(pci_dev) : pci_pm_reenable_device(pci_dev);
+> > 
+> > One line?
+> 
+> I don't think I touched that line.
+
+Then why they are both in + section?
+
+...
+
+> > > +       struct pci_driver *drv = to_pci_driver(dev->dev.driver);
+> > >         const struct pci_error_handlers *err_handler =
+> > > -                       dev->dev.driver ? to_pci_driver(dev->dev.driver)->err_handler : NULL;
+> > > +                       drv ? drv->err_handler : NULL;
+> > 
+> > Isn't dev->driver == to_pci_driver(dev->dev.driver)?
+> 
+> Yes, I think so, but not sure what you're getting at here, can you
+> elaborate?
+
+Getting pointer from another pointer seems waste of resources, why we
+can't simply
+
+	struct pci_driver *drv = dev->driver;
+
+?
+
+...
+
+> > Stray change? Or is it in a separate patch in your tree?
+> 
+> Could be skipped.  The string now fits on one line so I combined it to
+> make it more greppable.
+
+This is inconsistency in your changes, in one case you are objecting of
+doing something close to the changed lines, in the other you are doing
+unrelated change.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
