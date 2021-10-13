@@ -2,216 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC2842C714
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FDD42C843
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237977AbhJMRAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:00:38 -0400
-Received: from mga12.intel.com ([192.55.52.136]:20038 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230415AbhJMRAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:00:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="207594565"
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="207594565"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 09:58:31 -0700
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="547986866"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 09:58:23 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1makM2-0001gg-8h;
-        Wed, 13 Oct 2021 22:55:58 +0300
-Date:   Wed, 13 Oct 2021 22:55:58 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Huan Feng <huan.feng@starfivetech.com>
-Subject: Re: [PATCH v1 12/16] pinctrl: starfive: Add pinctrl driver for
- StarFive SoCs
-Message-ID: <YWc5zq0Moz3asWEa@smile.fi.intel.com>
-References: <20211012134027.684712-1-kernel@esmil.dk>
- <20211012134027.684712-13-kernel@esmil.dk>
- <CAHp75Vep+i+iyJi0LAOKuer-cUZoUoB_ZrWKcmT=EB_4hOgFGw@mail.gmail.com>
- <CANBLGczDZh+kLWM017mPenY8WO5OovH2DFUSS-shRD-aZVKa0A@mail.gmail.com>
+        id S238329AbhJMSFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 14:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229967AbhJMSFC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 14:05:02 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3364C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:02:58 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id a7so8451974yba.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:02:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AmvXcYMzdSDz7TFRGUZQZv1hDpV4qXcA0OVZWq94CrY=;
+        b=hWwHez8pxhnQbl9RbSKH5ubLoy0ruwVkpbVpXohvouwCiH0akNhqJuTARv23f8T2F6
+         dJVSJTMuvB2ib7TdpQ5hUea1dVcylLcbVa6ZC76d++PDuzKlU6DTQTbyOHybyDGF9ZDA
+         QXhNETaAVga73vS97J2AvD/qCV1o/F8CYVeuQ5N/J7neLgeX0a6GVufj0yW+qElLWmtW
+         hN4ZsSXeGSEs9br/Rgz23Mb105lF2xSntVezElxtMkDJ09p0oFh3ve9MVogRqGraqz/b
+         ujRPeydUfpsUU1v0KVWRcs2SShmSGy8CVQ0E/ujm34XyBK4KaptliApwqa6qJHYU6n2f
+         J2Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AmvXcYMzdSDz7TFRGUZQZv1hDpV4qXcA0OVZWq94CrY=;
+        b=2RsJOGDbazMssrHS8gDT5ZeKADT/BrJ1UQvjJjky5J3EQivafZamdbXLCzgiRDpvVD
+         RUJAE1FYSI7W/I3H8pcDOiOjHGxlSFPGmhEX2p2YGVoRPgDETbHJB+T6KwLdWyPn7Adv
+         q7Ao3VSUA9KJiG3gziNTom1G0hqhZEXFJpvrrqSMoYL9i8UC8+KvWFrCmxkN79LgIhym
+         XExFwUNWxB3Hdw7BnuqH2AC0oxGIEOzlLnT4sA0lek899pPS2q3SFD4Wi8EQjGgnhG2K
+         uz3PIWG9UWA7DgzgialOt0KfGljZk8ELG37eX7PPnrNTY+Gkys+FW2qgGZ98cN5+ggzy
+         HQCg==
+X-Gm-Message-State: AOAM531AMehGBlGVs0kpucaUY0QxvWv4Hg4vH8YZNTFtOXxtletp8m8T
+        O802r+w9YXhsAikkiZ8pspsFcsRKloiX+slG9TBoauWAicwo4g==
+X-Google-Smtp-Source: ABdhPJyrbDM7N0hs+1pUKm7Mjmnx5U+Rzf9i4SVFmamFZYXIPBXGxFhj+hL1SHSMyBb/fpkhXeinKCHWoF5QR7Te8AU=
+X-Received: by 2002:a25:bd08:: with SMTP id f8mr910512ybk.89.1634148177510;
+ Wed, 13 Oct 2021 11:02:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANBLGczDZh+kLWM017mPenY8WO5OovH2DFUSS-shRD-aZVKa0A@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211007031756.345269-1-eric.dumazet@gmail.com>
+ <20211007072917.GN174703@worktop.programming.kicks-ass.net>
+ <CANn89iKOa+tqerm80vHvHEurc2UxTq_heQuOUE0KnVuJht8AKA@mail.gmail.com>
+ <YV7+/0+Q1n67wCF8@hirez.programming.kicks-ass.net> <CANn89iLEz5POFii_=wU=2J0A9CE3H5JPq3sQFUQ8E400YumUpw@mail.gmail.com>
+ <CANn89iKg2Te8if2t_8oaAo6wL2BFNr2cP3D2w+jDePkFO5xREg@mail.gmail.com> <YWWDbIU+Cpppc7PV@hirez.programming.kicks-ass.net>
+In-Reply-To: <YWWDbIU+Cpppc7PV@hirez.programming.kicks-ass.net>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 13 Oct 2021 11:02:46 -0700
+Message-ID: <CANn89iL5mmbVojrUC4GHKC+0WSxzs_obqbt=rn2S_cmkddAriQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/apic: reduce cache line misses in __x2apic_send_IPI_mask()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Borislav Petkov <bp@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 06:38:14PM +0200, Emil Renner Berthing wrote:
-> On Tue, 12 Oct 2021 at 19:03, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > On Tue, Oct 12, 2021 at 4:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+On Tue, Oct 12, 2021 at 5:46 AM Peter Zijlstra <peterz@infradead.org> wrote:
 
-...
+> I'm really conflicted about this. On the one hand, yes absolutely. On
+> the other hand, urgh, code ugly :-)
 
-> > > +free_pinmux:
-> > > +       devm_kfree(dev, pinmux);
-> > > +free_pins:
-> > > +       devm_kfree(dev, pins);
-> > > +free_grpname:
-> > > +       devm_kfree(dev, grpname);
-> >
-> > What the heck?!
-> 
-> Just to be clear. You mean we don't need to explicitly free them
-> because they're tied to the device right? I don't think the device
-> will go away just because a single device tree entry can't be parsed,
-> so on such errors this garbage would be left behind. You can still
-> argue we shouldn't optimize for broken device trees, I just want to
-> make it at conscious decision.
+That was indeed some ugly hack.
 
-If you are using devm_kfree() it is quite likely shows either of the following
-issues:
+I cooked this more generic patch instead, I am currently testing it.
+(generic as : we no longer disable hard irqs, regardless of some CONFIG option )
 
-* you mustn't use devm_*() in the first place due to object lifetime;
-* you shouldn't use devm_kfree() since this is the whole point of devm.
+diff --git a/arch/x86/kernel/apic/x2apic_cluster.c
+b/arch/x86/kernel/apic/x2apic_cluster.c
+index e696e22d0531976f7cba72ed17443592eac72c13..7ad81467ce33349dee1ceaf0cefc8375d60213f6
+100644
+--- a/arch/x86/kernel/apic/x2apic_cluster.c
++++ b/arch/x86/kernel/apic/x2apic_cluster.c
+@@ -22,7 +22,10 @@ struct cluster_mask {
+  */
+ static u32 *x86_cpu_to_logical_apicid __read_mostly;
 
-> > > +free_pgnames:
-> > > +       devm_kfree(dev, pgnames);
-> >
-> > Ditto.
+-static DEFINE_PER_CPU(cpumask_var_t, ipi_mask);
++#define IPI_NEST_MAX 3
++static DEFINE_PER_CPU(cpumask_var_t, ipi_mask[IPI_NEST_MAX]);
++static DEFINE_PER_CPU(int, ipi_nest_level);
++
+ static DEFINE_PER_CPU_READ_MOSTLY(struct cluster_mask *, cluster_masks);
+ static struct cluster_mask *cluster_hotplug_mask;
 
-...
+@@ -45,14 +48,18 @@ __x2apic_send_IPI_mask(const struct cpumask *mask,
+int vector, int apic_dest)
+ {
+        unsigned int cpu, clustercpu;
+        struct cpumask *tmpmsk;
+-       unsigned long flags;
++       int nest_level;
+        u32 dest;
 
-> > > +out:
-> >
-> > Useless label.
-> 
-> Hmm.. my compiler disagrees.
+        /* x2apic MSRs are special and need a special fence: */
+        weak_wrmsr_fence();
+-       local_irq_save(flags);
 
-The comment implies that you return directly instead of using `goto out;`.
+-       tmpmsk = this_cpu_cpumask_var_ptr(ipi_mask);
++       preempt_disable();
++       nest_level = this_cpu_inc_return(ipi_nest_level) - 1;
++       if (WARN_ON_ONCE(nest_level >= IPI_NEST_MAX))
++               goto end;
++
++       tmpmsk = this_cpu_cpumask_var_ptr(ipi_mask[nest_level]);
+        cpumask_copy(tmpmsk, mask);
+        /* If IPI should not be sent to self, clear current CPU */
+        if (apic_dest != APIC_DEST_ALLINC)
+@@ -74,7 +81,9 @@ __x2apic_send_IPI_mask(const struct cpumask *mask,
+int vector, int apic_dest)
+                cpumask_andnot(tmpmsk, tmpmsk, &cmsk->mask);
+        }
 
-> > > +       return ret;
+-       local_irq_restore(flags);
++end:
++       this_cpu_dec(ipi_nest_level);
++       preempt_enable();
+ }
 
-...
+ static void x2apic_send_IPI_mask(const struct cpumask *mask, int vector)
+@@ -153,20 +162,26 @@ static int alloc_clustermask(unsigned int cpu, int node)
 
-> > > +               v = pinmux[i];
-> > > +               dout = ((v & BIT(7)) << (31 - 7)) | ((v >> 24) & 0xffU);
-> > > +               doen = ((v & BIT(6)) << (31 - 6)) | ((v >> 16) & 0xffU);
-> > > +               din  = (v >> 8) & 0xffU;
-> >
-> > What is this voodoo for?
-> 
-> In order to do pinmux we need the following pieces of information from
-> the device tree for each pin ("GPIO" they call it):
-> 
-> output signal: 0-133 + 1bit reverse flag
-> output enable signal: 0-133 + 1bit reverse flag
-> optional input signal: 0-74 + special "none" value, right now 0xff
-> gpio number: 0-63
-> 
-> As the code is now all that info is packed into a u32 for each pin
-> using the GPIOMUX macro defined in the dt-binding header added in
-> patch 10. There is also a diagram for how this packing is done. The
-> above voodoo is for unpacking that.
-> 
-> I'd very much like to hear if you have a better solution for how to
-> convey that information from the device tree to here.
+ static int x2apic_prepare_cpu(unsigned int cpu)
+ {
++       int i;
++
+        if (alloc_clustermask(cpu, cpu_to_node(cpu)) < 0)
+                return -ENOMEM;
+-       if (!zalloc_cpumask_var(&per_cpu(ipi_mask, cpu), GFP_KERNEL))
+-               return -ENOMEM;
++       for (i = 0 ; i < IPI_NEST_MAX; i++) {
++               if (!zalloc_cpumask_var(&per_cpu(ipi_mask[i], cpu), GFP_KERNEL))
++                       return -ENOMEM;
++       }
+        return 0;
+ }
 
-At very least this code should have something like above in the comment.
+ static int x2apic_dead_cpu(unsigned int dead_cpu)
+ {
+        struct cluster_mask *cmsk = per_cpu(cluster_masks, dead_cpu);
++       int i;
 
-...
-
-> > > +               if (din != 0xff)
-> > > +                       reg_din = sfp->base + GPIO_IN_OFFSET + 4 * din;
-> > > +               else
-> > > +                       reg_din = NULL;
-> >
-> > This looks like you maybe use gpio-regmap instead?
-> 
-> This was discussed at length when Drew sent in the GPIO part of this code:
-> https://lore.kernel.org/linux-riscv/20210701002037.912625-1-drew@beagleboard.org/
-> The conclusion was that because pinmux and controlling the pins from
-> software in GPIO mode uses the same registers it is better to do a
-> combined driver like this that can share the lock among other things.
-
-And what does prevent exactly to base the GPIO part on gpio-regmap?
-
-...
-
-> > > +static const unsigned char starfive_drive_strength[] = {
-> > > +       14, 21, 28, 35, 42, 49, 56, 63,
-> >
-> > Why table? Can you simply use the formula?!
-> 
-> Heh, yeah. So these are rounded values from a table and I never
-> noticed that after rounding they follow a nice arithmetic progression.
-> It'll probably still be nice to have an explanation in the comments
-> about the formula then.
-
-Yup!
-
-> > > +};
-
-...
-
-> > > +               irq_set_handler_locked(d, handle_bad_irq);
-> >
-> > Why is this here? Move it to ->probe().
-> 
-> My thinking was that if something tries to set a an unsupported irq
-> type, we should make sure the caller doesn't get spurious interrupts
-> because we left the handler at its old value.
-
-You already assigned to this handler in the ->probe(), what's this then?
-
-...
-
-> > > +               if (value <= 6)
-> > > +                       writel(value, sfp->padctl + IO_PADSHARE_SEL);
-> > > +               else
-> >
-> > > +                       dev_err(dev, "invalid signal group %u\n", value);
-> >
-> > Why _err if you not bail out here?
-> 
-> My thinking was that if the device tree specifies an invalid signal
-> group we should just leave the setting alone and not break booting,
-> but still be loud about it. Maybe that's too lenient and it's better
-> to crash and burn immediately if someone does that.
-
-Here is inconsistency between level of the message and following action.
-There are (rare!) cases when it's justified, but I believe it's not the
-case here. You have two choices or justify why you have to use error
-level without stopping process.
-
-...
-
-All uncommented stuff you agreed on, correct?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+        if (cmsk)
+                cpumask_clear_cpu(dead_cpu, &cmsk->mask);
+-       free_cpumask_var(per_cpu(ipi_mask, dead_cpu));
++       for (i = 0; i < IPI_NEST_MAX; i++)
++               free_cpumask_var(per_cpu(ipi_mask[i], dead_cpu));
+        return 0;
+ }
