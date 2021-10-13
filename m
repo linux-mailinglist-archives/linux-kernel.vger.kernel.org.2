@@ -2,87 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3646142B0D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA48142B0DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233980AbhJMAJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 20:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236878AbhJMAJX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 20:09:23 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAB4C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:07:21 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id g10so2798023edj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:07:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JTWVNyhczFZinoqJ7kSsMVLCZQV46DfROw4WieDRZL0=;
-        b=C+jvuEDHNozuwvDiFT13ZmF9FghO3sCvBMryHwNXqttukFXiOG06ppcJDCCdy2wy28
-         U4TOfYlWTXHe98gqEq0f6rRVzif90/rYm8im8hRz3gNOQl+bNY2iajHWjfT4hNv1d8bR
-         tpUxFTkQRV47ixP9oqsoDTAmDQElWjtG9MZmMDO0i7G1eMN0M6tbWTdjmbaf/onh8giS
-         G0+SKvTrCgFy4TqDzhUus3OtVPOAqwyv685wrg4KXAV0wkzncdTdM/t+IXzMoyDg+5gX
-         DLtehrTWmwIDI/lDQE9jLq5AcRb/l+NEUbBXgNPTDds5VzfpySah0PPF/NHmyj9yjYby
-         j5DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JTWVNyhczFZinoqJ7kSsMVLCZQV46DfROw4WieDRZL0=;
-        b=j63YrfnsVsTI+nwjDGdEV3qnV0Obbmv2lmjExuNFH3vcDyQBGXHFVOOAAIZjDI0wUw
-         6ZLe2aFZ/3SWOSzzLN0bLG35j2owasLtoiTwSogR4BL0ZXRQAcwkMIjcfDejVTrBjG3z
-         h8A+8ff/8H1alzVIFdLXGdx10J3KjNJnpdW3dBiyZfw9esgqbAwe7Wu7ST2NU7QHjk/k
-         nkhE5NknxZmBEfOIXhtR0oBPMlT/Q+rFTh9FuaBlgRcoMj68vSxRnaXTHOjeAl+ffdrU
-         kbxqK0CPyMUmdjTAJtUrqyJbpSG2C/EBwsRR14SjuukN64KTpV8A7YJJzTmo9r3zTzE6
-         ZSlQ==
-X-Gm-Message-State: AOAM532QeqPuwS1v2r2ktyGcvJ8LQIWGu4o5JrsYqJfLhWLNea5llJYg
-        VFV4Ln99oSg0sfQe/A613jdZdhLn3MRLhcspntJmRQ==
-X-Google-Smtp-Source: ABdhPJyfDYLRR6F/3juZtl20H7qFZacVtgfDH8pJMmKfRymkv5U3UjEddwOHxHDtXbJ0Au3F1L7uA8SrwAQMX+APApE=
-X-Received: by 2002:a05:6402:278a:: with SMTP id b10mr4463346ede.134.1634083640074;
- Tue, 12 Oct 2021 17:07:20 -0700 (PDT)
+        id S235323AbhJMALB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 20:11:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234483AbhJMALA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 20:11:00 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF67D60041;
+        Wed, 13 Oct 2021 00:08:57 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 20:08:56 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Yordan Karadzhov <y.karadz@gmail.com>
+Subject: Re: [PATCH v2] tracing: Fix event probe removal from dynamic events
+Message-ID: <20211012200856.6e5b8f28@gandalf.local.home>
+In-Reply-To: <20211013074226.d521cf9ddf378db20f77f043@kernel.org>
+References: <20211012081925.0e19cc4f@gandalf.local.home>
+        <20211012233107.671725f6ec0316b3d0a9dd85@kernel.org>
+        <20211012120310.2f742adb@gandalf.local.home>
+        <20211013074226.d521cf9ddf378db20f77f043@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210921193028.13099-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210921193028.13099-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CACRpkdaJk-G0YE63uvH9C=G3n7k2gZqf9QrwGfAZC2O4hhps=A@mail.gmail.com> <CAMuHMdUvThtOKrhTqW+U1qijW7dRc6GYg4_Owt_GnUxX4DrGog@mail.gmail.com>
-In-Reply-To: <CAMuHMdUvThtOKrhTqW+U1qijW7dRc6GYg4_Owt_GnUxX4DrGog@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 13 Oct 2021 02:07:09 +0200
-Message-ID: <CACRpkdaTWb4-m=9UzQUwQyUhT3PQ3YWreG+KNnhLdXGGmJLrBg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 3/4] pinctrl: renesas: pinctrl-rzg2l: Add IRQ
- domain to handle GPIO interrupt
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 11:56 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Wed, 13 Oct 2021 07:42:26 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-> > Why can't you just use the hierarchical IRQ domain handling inside
-> > gpiolib?
->
-> Out of interest (not related to this patch), does this support multiple
-> parent domains?
+> On Tue, 12 Oct 2021 12:03:10 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > On Tue, 12 Oct 2021 23:31:07 +0900
+> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >   
+> > > Hmm, this seems something wrong. Via dynamic_events interface, all the
+> > > events must be parsed equaly. If you have to pass the attached "system/event"
+> > > that's something wrong. The dynamic_events interface will accept 
+> > > 
+> > > -:[GROUP/]EVENT [optional arguments]
+> > > 
+> > > Or
+> > > 
+> > > !e:[GROUP/]EVENT [optional arguments]
+> > > 
+> > > What did you expect other that these syntax?  
+> > 
+> > But there are non "optional arguments".
+> > 
+> > To create the event probe, we need to send:
+> > 
+> >   e:[GROUP/]EVENT system/event [optional arguments]
+> > 
+> > Where the "system/event" is what we attach to. Similar to adding a function
+> > or address to kprobes. Do you not need to add that for deleting a kprobe?  
+> 
+> No, since if the GROUP name is given, we can identify the event.
+> 
+> And sorry. I misunderstood your patch, simply I mixed the group/event is
+> the name of group/event or the attached group/event.
 
-Not currently, but I might have seen a patch adding it?
-Now I can't find it...
+The GROUP/EVENT is the name of the created eprobe, my "system/event" is the
+name of the probe being attached.
 
-Yours,
-Linus Walleij
+> 
+> Actually, the dynamic_events delete command is something like wildcard
+> unless you specify the options.
+
+OK, so we need to update this a little bit more. But currently, it fails if
+you do:
+
+ # echo 'e:hrstate timer/hrtimer_cancel state=+0x38($hrtimer):u8' >> dynamic_events
+ # cat dynamic_events
+eprobes/hrstate timer.hrtimer_cancel state=+0x38($hrtimer):u8
+ # echo '-:eprobes/hrstate timer.hrtimer_cancel state=+0x38($hrtimer):u8' >> dynamic_events
+
+It will error out with "-EBUSY".
+
+It would make sense if we echo in exactly what is in dynamic_events with
+"-:" in front of it it, that it will remove it. But currently, it expects:
+
+ # echo '-:eprobes/hrstate state=+0x38($hrtimer):u8' >> dynamic_events
+
+Which is completely wrong.
+
+
+> 
+> > 
+> > That is, if I create a kprobe with:
+> > 
+> >   p:myprobe schedule > dynamic_events
+> > 
+> > To remove it, don't we need to have:
+> > 
+> >   -:myprobe schedule >> dynamic_events  
+> 
+> Yes, it is possible. But you can also do
+> 
+>  -:kprobes/myprobe >> dynamic_events 
+> 
+> So, the "schedule" trace point is optional.
+> 
+> Anyway, let me comment on your patch again.
+
+OK, we can make it optional, but we need to fix it so that it also works.
+
+-- Steve
