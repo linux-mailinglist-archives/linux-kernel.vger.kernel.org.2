@@ -2,264 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5400B42B2B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BF842B2C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236586AbhJMCid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 22:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhJMCib (ORCPT
+        id S236696AbhJMCkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 22:40:40 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:43903 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229980AbhJMCkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 22:38:31 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5358FC061570;
-        Tue, 12 Oct 2021 19:36:29 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so3323878pjw.0;
-        Tue, 12 Oct 2021 19:36:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x4i8IiEv4ic090SAkWfaIFDP0K+rfVSXcLn4K4WZP5U=;
-        b=DznDTTM03wDhGg44FDqQQBBkryIq8ufFV/CoRhGU2z6WgGTbOJq/9mAYOXO8c1b9bb
-         45QUoELNqGtoxPkn+7G+N2p+rdy2CELEYoWSjvQSjfRBaiN+rvOkd5zPYsDf/pmVvBY+
-         wKn+ShI8d+uC+VjTJEqrmxzUKQOWnVRxhBiJ+hYkc0RFJkwKHq6beu5PonL/cFqav6By
-         6J8woIoFa2UHH8xu+9U8eWjDnFKFJNcBWSSd49Fxp6IQZQDEesPCQ1DR1mFJF6hYH4Zc
-         s5OiP0sTapEPjtr2H2FIWZqZMN10UVFGDxl8qXuuO5TUWaHK1z84vj+vs7tlfAxkQhGH
-         l1RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x4i8IiEv4ic090SAkWfaIFDP0K+rfVSXcLn4K4WZP5U=;
-        b=jn2EhdzORBszGuVhmHNDy29bDnCxX3UJL0PCa15fqYfe1y7iyptT1zXcX2ZC6f9Yng
-         O2PubYeDrSy7UJIAWtu95vQ39tjDeYpMW7ak7AjGCHKUlanlZ0MuEoQ9M5HubC6gZ7mf
-         ywaMVQfPfqKZ4UIHRwutia6vfPopENaDT9u2vo1vNojxC1zFx5q4qJ/GOUS+Ick+e6hh
-         xNydeEumztulbHdMUBrLI1cryJe6dSAdWd8UfeFz3V4m4SvQ2AtVGkhNDavj+3JvEkJ8
-         aTrIKqnMipa8Bln7Mg2atQSAJU3MX62CvM2NFFl8PLnAdCB+w8JvfoxtSpWM9hSfzHFS
-         s1gQ==
-X-Gm-Message-State: AOAM530rUFd0JJaRdu9aiiDT3hC6Dc03xL2j1MtRVhOf47LI02adruyE
-        mbVRWfO+Q+WuZwo4Bqo6gSjQtxnJO6g=
-X-Google-Smtp-Source: ABdhPJwR4Hc7AOow5qEwEpORLLd4EwR2pOa74IgkPvgbxjoKQI32xX0u5blYDmBjEVv7qgSFzJc8hQ==
-X-Received: by 2002:a17:90a:11:: with SMTP id 17mr10261536pja.238.1634092588250;
-        Tue, 12 Oct 2021 19:36:28 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:618d:87ca:8f95:87c0])
-        by smtp.gmail.com with ESMTPSA id p5sm12861831pfb.95.2021.10.12.19.36.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 19:36:27 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 19:36:25 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     linux-input@vger.kernel.org
-Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] Input: ep93xx_keypad - switch to using managed
- resources
-Message-ID: <YWZGKWgdarGtvtYA@google.com>
-References: <20211012013735.3523140-1-dmitry.torokhov@gmail.com>
- <20211012013735.3523140-4-dmitry.torokhov@gmail.com>
+        Tue, 12 Oct 2021 22:40:39 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0Urdkez0_1634092708;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Urdkez0_1634092708)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 13 Oct 2021 10:38:30 +0800
+Subject: Re: [PATCH 1/2] ftrace: disable preemption on the testing of
+ recursion
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+References: <8c7de46d-9869-aa5e-2bb9-5dbc2eda395e@linux.alibaba.com>
+ <a8756482-024c-c858-b3d1-1ffa9a5eb3f7@linux.alibaba.com>
+ <20211012084331.06b8dd23@gandalf.local.home>
+ <1eab20c1-d69b-f94b-92ff-4329d0aff6a2@linux.alibaba.com>
+ <20211012223039.78099c24@oasis.local.home>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <40a6e16f-6335-c271-c91b-622c8d7f6521@linux.alibaba.com>
+Date:   Wed, 13 Oct 2021 10:38:28 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012013735.3523140-4-dmitry.torokhov@gmail.com>
+In-Reply-To: <20211012223039.78099c24@oasis.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By using managed resources (devm) we are able to streamline error handling
-in probe and remove most of the custom remove method.
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/input/keyboard/ep93xx_keypad.c | 118 ++++++++-----------------
- 1 file changed, 37 insertions(+), 81 deletions(-)
 
-diff --git a/drivers/input/keyboard/ep93xx_keypad.c b/drivers/input/keyboard/ep93xx_keypad.c
-index a66cfeaf5b21..272a4f1c6e81 100644
---- a/drivers/input/keyboard/ep93xx_keypad.c
-+++ b/drivers/input/keyboard/ep93xx_keypad.c
-@@ -219,6 +219,13 @@ static int __maybe_unused ep93xx_keypad_resume(struct device *dev)
- static SIMPLE_DEV_PM_OPS(ep93xx_keypad_pm_ops,
- 			 ep93xx_keypad_suspend, ep93xx_keypad_resume);
- 
-+static void ep93xx_keypad_release_gpio_action(void *_pdev)
-+{
-+	struct platform_device *pdev = _pdev;
-+
-+	ep93xx_keypad_release_gpio(pdev);
-+}
-+
- static int ep93xx_keypad_probe(struct platform_device *pdev)
- {
- 	struct ep93xx_keypad *keypad;
-@@ -227,61 +234,46 @@ static int ep93xx_keypad_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	int err;
- 
--	keypad = kzalloc(sizeof(struct ep93xx_keypad), GFP_KERNEL);
-+	keypad = devm_kzalloc(&pdev->dev, sizeof(*keypad), GFP_KERNEL);
- 	if (!keypad)
- 		return -ENOMEM;
- 
- 	keypad->pdata = dev_get_platdata(&pdev->dev);
--	if (!keypad->pdata) {
--		err = -EINVAL;
--		goto failed_free;
--	}
-+	if (!keypad->pdata)
-+		return -EINVAL;
- 
- 	keymap_data = keypad->pdata->keymap_data;
--	if (!keymap_data) {
--		err = -EINVAL;
--		goto failed_free;
--	}
-+	if (!keymap_data)
-+		return -EINVAL;
- 
- 	keypad->irq = platform_get_irq(pdev, 0);
--	if (keypad->irq < 0) {
--		err = keypad->irq;
--		goto failed_free;
--	}
-+	if (keypad->irq < 0)
-+		return keypad->irq;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		err = -ENXIO;
--		goto failed_free;
--	}
--
--	res = request_mem_region(res->start, resource_size(res), pdev->name);
--	if (!res) {
--		err = -EBUSY;
--		goto failed_free;
--	}
-+	if (!res)
-+		return -ENXIO;
- 
--	keypad->mmio_base = ioremap(res->start, resource_size(res));
--	if (keypad->mmio_base == NULL) {
--		err = -ENXIO;
--		goto failed_free_mem;
--	}
-+	keypad->mmio_base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(keypad->mmio_base))
-+		return PTR_ERR(keypad->mmio_base);
- 
- 	err = ep93xx_keypad_acquire_gpio(pdev);
- 	if (err)
--		goto failed_free_io;
-+		return err;
- 
--	keypad->clk = clk_get(&pdev->dev, NULL);
--	if (IS_ERR(keypad->clk)) {
--		err = PTR_ERR(keypad->clk);
--		goto failed_free_gpio;
--	}
-+	err = devm_add_action_or_reset(&pdev->dev,
-+				       ep93xx_keypad_release_gpio_action, pdev);
-+	if (err)
-+		return err;
- 
--	input_dev = input_allocate_device();
--	if (!input_dev) {
--		err = -ENOMEM;
--		goto failed_put_clk;
--	}
-+	keypad->clk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(keypad->clk))
-+		return PTR_ERR(keypad->clk);
-+
-+	input_dev = devm_input_allocate_device(&pdev->dev);
-+	if (!input_dev)
-+		return -ENOMEM;
- 
- 	keypad->input_dev = input_dev;
- 
-@@ -289,26 +281,26 @@ static int ep93xx_keypad_probe(struct platform_device *pdev)
- 	input_dev->id.bustype = BUS_HOST;
- 	input_dev->open = ep93xx_keypad_open;
- 	input_dev->close = ep93xx_keypad_close;
--	input_dev->dev.parent = &pdev->dev;
- 
- 	err = matrix_keypad_build_keymap(keymap_data, NULL,
- 					 EP93XX_MATRIX_ROWS, EP93XX_MATRIX_COLS,
- 					 keypad->keycodes, input_dev);
- 	if (err)
--		goto failed_free_dev;
-+		return err;
- 
- 	if (keypad->pdata->flags & EP93XX_KEYPAD_AUTOREPEAT)
- 		__set_bit(EV_REP, input_dev->evbit);
- 	input_set_drvdata(input_dev, keypad);
- 
--	err = request_irq(keypad->irq, ep93xx_keypad_irq_handler,
--			  0, pdev->name, keypad);
-+	err = devm_request_irq(&pdev->dev, keypad->irq,
-+			       ep93xx_keypad_irq_handler,
-+			       0, pdev->name, keypad);
- 	if (err)
--		goto failed_free_dev;
-+		return err;
- 
- 	err = input_register_device(input_dev);
- 	if (err)
--		goto failed_free_irq;
-+		return err;
- 
- 	platform_set_drvdata(pdev, keypad);
- 
-@@ -318,48 +310,12 @@ static int ep93xx_keypad_probe(struct platform_device *pdev)
- 		dev_warn(&pdev->dev, "failed to set up wakeup irq: %d\n", err);
- 
- 	return 0;
--
--failed_free_irq:
--	free_irq(keypad->irq, keypad);
--failed_free_dev:
--	input_free_device(input_dev);
--failed_put_clk:
--	clk_put(keypad->clk);
--failed_free_gpio:
--	ep93xx_keypad_release_gpio(pdev);
--failed_free_io:
--	iounmap(keypad->mmio_base);
--failed_free_mem:
--	release_mem_region(res->start, resource_size(res));
--failed_free:
--	kfree(keypad);
--	return err;
- }
- 
- static int ep93xx_keypad_remove(struct platform_device *pdev)
- {
--	struct ep93xx_keypad *keypad = platform_get_drvdata(pdev);
--	struct resource *res;
--
- 	dev_pm_clear_wake_irq(&pdev->dev);
- 
--	free_irq(keypad->irq, keypad);
--
--	if (keypad->enabled)
--		clk_disable(keypad->clk);
--	clk_put(keypad->clk);
--
--	input_unregister_device(keypad->input_dev);
--
--	ep93xx_keypad_release_gpio(pdev);
--
--	iounmap(keypad->mmio_base);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(res->start, resource_size(res));
--
--	kfree(keypad);
--
- 	return 0;
- }
- 
--- 
-2.33.0.882.g93a45727a2-goog
+On 2021/10/13 上午10:30, Steven Rostedt wrote:
+> On Wed, 13 Oct 2021 10:04:52 +0800
+> 王贇 <yun.wang@linux.alibaba.com> wrote:
+> 
+>> I see, while the user can still check smp_processor_id() after trylock
+>> return bit 0...
+> 
+> But preemption would have already been disabled. That's because a bit 0
+> means that a recursion check has already been made by a previous
+> caller and this one is nested, thus preemption is already disabled.
+> If bit is 0, then preemption had better be disabled as well.
 
+Thanks for the explain, now I get your point :-)
+
+Let's make bit 0 an exemption then.
+
+Regards,
+Michael Wang
+
+> 
+> -- Steve
+> 
