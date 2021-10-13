@@ -2,117 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C1242C16E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6B142C16F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234152AbhJMNe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:34:28 -0400
-Received: from mga05.intel.com ([192.55.52.43]:6646 "EHLO mga05.intel.com"
+        id S234186AbhJMNfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:35:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:39328 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229535AbhJMNeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:34:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="313625336"
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="313625336"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 06:32:17 -0700
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="486907483"
-Received: from dravindr-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.11.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 06:32:16 -0700
-Subject: Re: [PATCH v10 03/11] x86/cpufeatures: Add TDX Guest CPU feature
-To:     Borislav Petkov <bp@alien8.de>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        id S229535AbhJMNfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:35:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F3B31FB;
+        Wed, 13 Oct 2021 06:32:58 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 222203F66F;
+        Wed, 13 Oct 2021 06:32:57 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Woody Lin <woodylin@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Ben Segall <bsegall@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
         linux-kernel@vger.kernel.org
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-4-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YWaWSmWn6AZ6OLx+@zn.tnic>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuwamy@linux.intel.com>
-Message-ID: <221e9a08-9380-5503-063c-897621757eb4@linux.intel.com>
-Date:   Wed, 13 Oct 2021 06:32:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+Subject: Re: [PATCH] sched/scs: Reset the shadow stack when idle_task_exit
+In-Reply-To: <CAHn4DedEV953QULZLAPOuXyHAw_mWRTdFj8bSm6zk3rNjFJj-A@mail.gmail.com>
+References: <20211012083521.973587-1-woodylin@google.com> <87zgrek1gl.mognet@arm.com> <CAHn4Dec0Jyc30vWMLAXwQ-ge4eS5S26hxfMky-e4f-TTtFrbEQ@mail.gmail.com> <87wnmijysj.mognet@arm.com> <CAHn4DedEV953QULZLAPOuXyHAw_mWRTdFj8bSm6zk3rNjFJj-A@mail.gmail.com>
+Date:   Wed, 13 Oct 2021 14:32:51 +0100
+Message-ID: <87tuhljbi4.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <YWaWSmWn6AZ6OLx+@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/10/21 09:22, Woody Lin wrote:
+> On Tue, Oct 12, 2021 at 6:57 PM Valentin Schneider <valentin.schneider@arm.com> wrote:
+>> On 12/10/21 18:35, Woody Lin wrote:
+>> > unpoison looks more like an one-time thing to me; the idle tasks will
+>> > reuse the same stack pages until system resets, so I think we don't need
+>> > to re-unpoison that during hotplugging as long as it's unpoisoned in
+>> > 'init_idle'.
+>> >
+>>
+>> I would tend to agree, but was bitten by s390 freeing some memory on
+>> hot-unplug and re-allocating it upon hotplug:
+>>
+>>   6a942f578054 ("s390: preempt: Fix preempt_count initialization")
+>>
+>> This makes me doubt whether we can assert the idle task stack pages are
+>> perennial vs hotplug on all architectures.
+>
+> I made a quick study on memory-hotplug and seems that only memory contains
+> nothing other than migratable pages can be unplugged. So process stack
+> pages should not be a concern for this, since which is an unmovable
+> memory.
+>
+> However I don't have a chance to work on a system that enables
+> memory-hotplug so far, so couldn't verify this assumption further. Guess
+> we can create a separate thread to clarify this more.
+>
 
-On 10/13/21 1:18 AM, Borislav Petkov wrote:
-> On Fri, Oct 08, 2021 at 10:37:39PM -0700, Kuppuswamy Sathyanarayanan wrote:
->> @@ -500,6 +501,14 @@ asmlinkage __visible void __init x86_64_start_kernel(char * real_mode_data)
->>   
->>   	copy_bootdata(__va(real_mode_data));
->>   
->> +	/*
->> +	 * A future dependency on cmdline parameters is expected (for
->> +	 * adding debug options). So the order of calling it should be
->> +	 * after copy_bootdata() (in which command line parameter is
->> +	 * initialized).
->> +	 */
-> Plain and simple:
->
->          /*
->           * Keep this after copy_bootdata() so that TDX cmdline options can take
->           * effect.
->           */
-ok. I will fix this in next version.
->
->
->> +	tdx_early_init();
->> +
->>   	/*
->>   	 * Load microcode early on BSP.
->>   	 */
->> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
->> new file mode 100644
->> index 000000000000..88bf12788684
->> --- /dev/null
->> +++ b/arch/x86/kernel/tdx.c
->> @@ -0,0 +1,38 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright (C) 2020 Intel Corporation */
->> +
->> +#undef pr_fmt
->> +#define pr_fmt(fmt)     "tdx: " fmt
->> +
->> +#include <asm/tdx.h>
->> +
->> +bool is_tdx_guest(void)
->> +{
->> +	static int tdx_guest = -1;
-> Put that one at the top of the file because such static variables do not
-> belong among the automatic function vars.
-ok. I will fix this in next version.
->
-> Thx.
->
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+That sounds sensible; I'll try to dig some more into this.
 
+As for the SCS change, someone might argue for placing this elsewhere in
+the hotplug path, but that looks fine to me:
+
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+
+> Regards,
+> Woody
+>
+>>
+>> >>
+>> >> >  }
+>> >> >
+>> >> > --
+>> >> > 2.33.0.882.g93a45727a2-goog
