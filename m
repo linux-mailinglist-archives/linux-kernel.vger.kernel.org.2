@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DD342BF60
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B338942BF69
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232287AbhJMMDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:03:40 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:33327 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229653AbhJMMDj (ORCPT
+        id S232029AbhJMMFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhJMMFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:03:39 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id 576D32B01147;
-        Wed, 13 Oct 2021 08:01:35 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 13 Oct 2021 08:01:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=rWSTPfUE7TPFJmRSRxhKh167/BF
-        9qamvvLkRCh+xraU=; b=BnSLwvl8etPnKDZMDCwGFruLeZkA4E0sTOIckHlIQcE
-        iHOFRIWF7hYdfjsHi6Cno+mPXAEHvaejeZXrhex5ZTKTrYPAe0+juEwn/3KqgU0c
-        2UxnIWfBiwMd4fV1w0dvuA+U3AW/lD+NWzcfpQ6SL5TCkbQgqRUBO/KgA8fa5M+E
-        DB8AQ40sQMusqn75Mpya7tFXp62c+G6twWvpXWfA8bZyllWYAF8oZ8c6/AF8vxLw
-        MaUqtQr4zPuy4bqifhli/0JLwDVZMV4yf3eShY8h/p/ro6w66yuYz+z+F0cSNXOy
-        tyQxngCkycA/UJ18RWUc5LdwbEXXE/QFeGrbhOy8nhg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=rWSTPf
-        UE7TPFJmRSRxhKh167/BF9qamvvLkRCh+xraU=; b=leJQVqYOo3MK1AKg8I93W9
-        poDakF5UaXQBBF2bHZWXF+os/St+iXLxvzMPssyxVES2wmBwPiSz75/y/1xLRtRb
-        WawJH0zPEjTvIDfiGTHlF+ef6DzPODmwIoT1QHiyD3uhOzzwqtci4nFgV+zR8Mb/
-        ypRbTHoT0/xTNGO+OTeJYIF055130iF6xceJNEwX9pnLXVd4cK7bJozZRu/nHVLO
-        QkJwXVs80hzb6mHbfEesObZ2DfQRsiV8322FZ4bkts+rDnjN6p1s5IZCliZe41/X
-        y8n6mNHXuORGbgj+jdySTGrKMHCx9W8a1+hpgkQ/gbjDJL4LFC0kYL/BVuwRUZyg
-        ==
-X-ME-Sender: <xms:nspmYVGYX69udfCGH8GMeoaBVhTzR-qQPyLl5uyX2BIOyOuhybvcIA>
-    <xme:nspmYaW8Ln-UPe5UVhb7JJ3w0lAV-ecJaDTjakLbE9CXXRPZnM0ki5XdQszyAXtiP
-    DFlTQfr_D1RgA>
-X-ME-Received: <xmr:nspmYXLo3hk2RSvPCnEtgPHi1fqREDQT7kXmz2jYIygKkau9nkd8pDc1z7TiiO84awA12_n_DaoUJPhJ_uE7FE7UrNr_aetz>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddutddggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:nspmYbHQurJsJju3UTcqVrn7HlgeoGN0KHK-VEWT273tWVLbQFkBbA>
-    <xmx:nspmYbWleQ4P5mlKqbAQhWNU66AAqX2bkVMsfgIyyhTmOrycQRVuPA>
-    <xmx:nspmYWPIbq72nnLU_PyUxHK9F_UYfqipSYRNXXmSikdMtb0zxFf2Dw>
-    <xmx:nspmYUMPmSZrp79yZ1_Yi3EqFcYq0HUkh_YVJQnbbqsQmR4r8WLBhOBiovY>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 Oct 2021 08:01:34 -0400 (EDT)
-Date:   Wed, 13 Oct 2021 14:01:32 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     linux-usb@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: Re: [PATCH v6 1/3] usb: Add Xen pvUSB protocol description
-Message-ID: <YWbKnEMvHGU/rv96@kroah.com>
-References: <20211013075207.13910-1-jgross@suse.com>
- <20211013075207.13910-2-jgross@suse.com>
+        Wed, 13 Oct 2021 08:05:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01027C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=02qcczvmiTPBk4ptDZ1neiPQwv8s8RqHEA5AhOmIAco=; b=HA3yRevrF7fYlWESRxE76oYSxF
+        4/lVeYUpyh7cDbMv1BrD9HmogKARDoPyuvC9scK2sApMEVu8jZLOr+AZ3PJldRoS2WFnesRw/7do7
+        SPZP79RwmvWse/QKhq+wng1vckyx57ljCD72JylKSBwqJge8e14HPxBW30K6nMx/8Dgd41harCx5P
+        7oxqcCpn58YCkpgVEpKZoo9qdndo8F+LnY34KzWjOAyt/cnH3I8h3reoPOwxg4UPWzHNsYKjUr9DG
+        D22qiqDW2NdrlVHt/RDm7holMhIrK64Agu7grYDKkiUddNmuKKkDFdY0qDfHd6kQdER8ybHG3t5yC
+        5TUo6WCw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1macx2-007OqE-Qg; Wed, 13 Oct 2021 12:02:10 +0000
+Date:   Wed, 13 Oct 2021 13:01:40 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?utf-8?B?6rmA7ISx7ZuI?= <sfoon.kim@samsung.com>,
+        Song Liu <songliubraving@fb.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>
+Subject: Re: [PATCH] mm/thp: decrease nr_thps in file's mapping on THP split
+Message-ID: <YWbKpH3vroAF7yw4@casper.infradead.org>
+References: <CGME20211012120247eucas1p1f66926c6fc334216cdbdd39285601aa8@eucas1p1.samsung.com>
+ <20211012120237.2600-1-m.szyprowski@samsung.com>
+ <YWWC9+93pHQ77Ir3@casper.infradead.org>
+ <5eafae55-f207-38a8-d6d3-8bda74ae9c60@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211013075207.13910-2-jgross@suse.com>
+In-Reply-To: <5eafae55-f207-38a8-d6d3-8bda74ae9c60@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 09:52:05AM +0200, Juergen Gross wrote:
-> Add the definition of pvUSB protocol used between the pvUSB frontend in
-> a Xen domU and the pvUSB backend in a Xen driver domain (usually Dom0).
+On Wed, Oct 13, 2021 at 12:47:03PM +0200, Marek Szyprowski wrote:
+> On 12.10.2021 14:43, Matthew Wilcox wrote:
+> > On Tue, Oct 12, 2021 at 02:02:37PM +0200, Marek Szyprowski wrote:
+> >> Decrease nr_thps counter in file's mapping to ensure that the page cache
+> >> won't be dropped excessively on file write access if page has been
+> >> already splitted.
+> >>
+> >> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> >> Fixes: 09d91cda0e82 ("mm,thp: avoid writes to file with THP in pagecache")
+> >> Fixes: 06d3eff62d9d ("mm/thp: fix node page state in split_huge_page_to_list()")
+> >> ---
+> >> I've analyzed the code a few times but either I missed something or the
+> >> nr_thps counter is not decremented during the THP split on non-shmem file
+> >> pages.
+> > This looks OK to me, but have you tested it?  If so, what workload did
+> > you use?  The way you wrote this changelog makes it sound like you only
+> > read the code and there have been rather too many bugs introduced recently
+> > that way :-(
 > 
-> This header was originally provided by Fujitsu for Xen based on Linux
-> 2.6.18.
-> 
-> Changes are:
-> - adapt to Linux kernel style guide
-> - use Xen namespace
-> - add lots of comments
-> - don't use kernel internal defines
-> 
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> ---
->  include/xen/interface/io/usbif.h | 421 +++++++++++++++++++++++++++++++
->  1 file changed, 421 insertions(+)
->  create mode 100644 include/xen/interface/io/usbif.h
-> 
-> diff --git a/include/xen/interface/io/usbif.h b/include/xen/interface/io/usbif.h
-> new file mode 100644
-> index 000000000000..9494b1c9be99
-> --- /dev/null
-> +++ b/include/xen/interface/io/usbif.h
-> @@ -0,0 +1,421 @@
-> +/*
-> + * usbif.h
-> + *
-> + * USB I/O interface for Xen guest OSes.
-> + *
-> + * Copyright (C) 2009, FUJITSU LABORATORIES LTD.
-> + * Author: Noboru Iwamatsu <n_iwamatsu@jp.fujitsu.com>
-> + *
-> + * Permission is hereby granted, free of charge, to any person obtaining a copy
-> + * of this software and associated documentation files (the "Software"), to
-> + * deal in the Software without restriction, including without limitation the
-> + * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-> + * sell copies of the Software, and to permit persons to whom the Software is
-> + * furnished to do so, subject to the following conditions:
-> + *
-> + * The above copyright notice and this permission notice shall be included in
-> + * all copies or substantial portions of the Software.
-> + *
-> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-> + * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-> + * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-> + * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-> + * DEALINGS IN THE SOFTWARE.
-> + */
+> Well, indeed I've found it while reading the code. However I've just 
+> tried a test scenario, where one runs a big binary, kernel remaps it 
+> with THPs, then one forces THP split with 
+> /sys/kernel/debug/split_huge_pages. During any further open of that 
+> binary with O_RDWR or O_WRITEONLY kernel drops page cache for it, 
+> because of non-zero thps counter.
 
-Please use a SPDX line and not license "boilerplate" text like this :(
+... and with this patch, it no longer happens?  Good enough for me!
 
-thanks,
-
-greg k-h
+Acked-by: Matthew Wilcox (Oracle) <willy@infradead.org>
