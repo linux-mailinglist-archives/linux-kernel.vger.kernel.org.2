@@ -2,239 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BE542B3FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 06:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E209942B437
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 06:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbhJMEXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 00:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhJMEXB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 00:23:01 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1479C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 21:20:58 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id t16so4453789eds.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 21:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MyPzgtbN2FRBRQB9+vczQucG7B5CsDm1YtOJZh2cUpY=;
-        b=aMnhcIkcj/2ZVv4MGK8CM87IvK5sbgWMHyq8a4MB0H44sqj0TcJn/Yd6n+4PPVA0oA
-         6mAqiEib4movIbqusc13qfpRpQ8yn8mpy24Q0O0RStRG9wwyWcZVdG0HCG6LVI5qjLNh
-         WEO5oR8KrGk6+/i1AtaNwth+f/EsVeqEDB3bH2QFHWnZtpB0C/HX+xxjFNocIILzGiqR
-         +/Lk7VveRsPRYFwzlfYeVOkM1W33906vDkRLc9E/1tIpCqD80G/79w6HbFAG7IkD63hs
-         Nx5/X/ajLyHj/3yHmwbphC9J4xV5PaU9pgvrueDtvAvHRPBSuo6MecxUUK3pqoaEnVhJ
-         b+ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MyPzgtbN2FRBRQB9+vczQucG7B5CsDm1YtOJZh2cUpY=;
-        b=ezrqQqdV9/mn9rE0Y1pufnffg3BOaqnvbzl4wqNcc7688UXO0e+eYfv4IRGMHhU+fp
-         riVdvrqLWU4vG7d0gFPYNhW63Hv1sxJiEFoqwZhS3VnYeSKQ4JoilrXP81V/Dtpe5z6W
-         ry5Xap7yXz5VagQ2zKE48QsDPXCIz2C3324lm0Sy+5Y1CVMnQ5LPkICqwdRwJaHakSbR
-         DHXnbpaoq5RM88/fZSQsjhHeUy7FlP0pwKPlnU1iQMicXIgCIONmixmPf2cFN07bWFyd
-         ftIfwj03HxqdEQm5+6DAfs9ZRPGs1pWVmQFEpE8tp+YeyR+Hc+cxrm8sjR7Cch/sMNzW
-         EpqQ==
-X-Gm-Message-State: AOAM532aWPHWs6mZdXiHqGdm1Y4aEihX3XXVb3dFW8JYn8eOEO1tN5UH
-        GaX8gzuRkQ3RwqZNT38t1Xm0BnN8tjjAefjpP5977A==
-X-Google-Smtp-Source: ABdhPJxfVwzl9WlQySbBO1qLYvXomRw3zNR2FI7w2vnGFOO+dpJaS61ip+TlmJveB7y83XfaV20uWDy8NEQL4x64KoY=
-X-Received: by 2002:a17:906:c7c1:: with SMTP id dc1mr39109688ejb.6.1634098857046;
- Tue, 12 Oct 2021 21:20:57 -0700 (PDT)
+        id S229692AbhJME3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 00:29:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229491AbhJME3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 00:29:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57A3E60D42;
+        Wed, 13 Oct 2021 04:27:25 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH V7 00/10] irqchip: Add LoongArch-related irqchip drivers
+Date:   Wed, 13 Oct 2021 12:27:02 +0800
+Message-Id: <20211013042712.3077468-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20211012093340.313468813@linuxfoundation.org>
-In-Reply-To: <20211012093340.313468813@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 13 Oct 2021 09:50:45 +0530
-Message-ID: <CA+G9fYsr9gzYqdr+yB42TPBsMUX-FTUE9a+xwsyJmf-NhhGOXw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/27] 4.19.211-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 at 15:07, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.211 release.
-> There are 27 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 14 Oct 2021 09:33:32 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.211-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+LoongArch is a new RISC ISA, which is a bit like MIPS or RISC-V.
+LoongArch includes a reduced 32-bit version (LA32R), a standard 32-bit
+version (LA32S) and a 64-bit version (LA64). LoongArch use ACPI as its
+boot protocol LoongArch-specific interrupt controllers (similar to APIC)
+are already added in the next revision of ACPI Specification (current
+revision is 6.4).
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Currently, LoongArch based processors (e.g. Loongson-3A5000) can only
+work together with LS7A chipsets. The irq chips in LoongArch computers
+include CPUINTC (CPU Core Interrupt Controller), LIOINTC (Legacy I/O
+Interrupt Controller), EIOINTC (Extended I/O Interrupt Controller),
+HTVECINTC (Hyper-Transport Vector Interrupt Controller), PCH-PIC (Main
+Interrupt Controller in LS7A chipset), PCH-LPC (LPC Interrupt Controller
+in LS7A chipset) and PCH-MSI (MSI Interrupt Controller).
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+CPUINTC is a per-core controller (in CPU), LIOINTC/EIOINTC/HTVECINTC are
+per-package controllers (in CPU), while PCH-PIC/PCH-LPC/PCH-MSI are all
+controllers out of CPU (i.e., in chipsets). These controllers (in other
+words, irqchips) are linked in a hierarchy, and there are two models of
+hierarchy (legacy model and extended model).
 
-## Build
-* kernel: 4.19.211-rc3
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.19.y
-* git commit: 9d7f82841498fc2d3a1dcaa988257501521dc37a
-* git describe: v4.19.210-28-g9d7f82841498
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.210-28-g9d7f82841498
+Legacy IRQ model:
 
-## No regressions (compared to v4.19.210-29-gdd0ad52a3bb0)
+In this model, the IPI (Inter-Processor Interrupt) and CPU Local Timer
+interrupt go to CPUINTC directly, CPU UARTS interrupts go to LIOINTC,
+while all other devices interrupts go to PCH-PIC/PCH-LPC/PCH-MSI and
+gathered by HTVECINTC, and then go to LIOINTC, and then CPUINTC.
 
-## No fixes (compared to v4.19.210-29-gdd0ad52a3bb0)
+ +---------------------------------------------+
+ |                                             |
+ |    +-----+     +---------+     +-------+    |
+ |    | IPI | --> | CPUINTC | <-- | Timer |    |
+ |    +-----+     +---------+     +-------+    |
+ |                     ^                       |
+ |                     |                       |
+ |                +---------+     +-------+    |
+ |                | LIOINTC | <-- | UARTs |    |
+ |                +---------+     +-------+    |
+ |                     ^                       |
+ |                     |                       |
+ |               +-----------+                 |
+ |               | HTVECINTC |                 |
+ |               +-----------+                 |
+ |                ^         ^                  |
+ |                |         |                  |
+ |          +---------+ +---------+            |
+ |          | PCH-PIC | | PCH-MSI |            |
+ |          +---------+ +---------+            |
+ |            ^     ^           ^              |
+ |            |     |           |              |
+ |    +---------+ +---------+ +---------+      |
+ |    | PCH-LPC | | Devices | | Devices |      |
+ |    +---------+ +---------+ +---------+      |
+ |         ^                                   |
+ |         |                                   |
+ |    +---------+                              |
+ |    | Devices |                              |
+ |    +---------+                              |
+ |                                             |
+ |                                             |
+ +---------------------------------------------+
 
-## Test result summary
-total: 82227, pass: 65751, fail: 811, skip: 13675, xfail: 1990
+Extended IRQ model:
 
-## Build Summary
-* arm: 129 total, 129 passed, 0 failed
-* arm64: 37 total, 37 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 18 total, 18 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 29 total, 29 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 21 total, 21 passed, 0 failed
+In this model, the IPI (Inter-Processor Interrupt) and CPU Local Timer
+interrupt go to CPUINTC directly, CPU UARTS interrupts go to LIOINTC,
+while all other devices interrupts go to PCH-PIC/PCH-LPC/PCH-MSI and
+gathered by EIOINTC, and then go to to CPUINTC directly.
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
+ +--------------------------------------------------------+
+ |                                                        |
+ |         +-----+     +---------+     +-------+          |
+ |         | IPI | --> | CPUINTC | <-- | Timer |          |
+ |         +-----+     +---------+     +-------+          |
+ |                      ^       ^                         |
+ |                      |       |                         |
+ |               +---------+ +---------+     +-------+    |
+ |               | EIOINTC | | LIOINTC | <-- | UARTs |    |
+ |               +---------+ +---------+     +-------+    |
+ |                ^       ^                               |
+ |                |       |                               |
+ |         +---------+ +---------+                        |
+ |         | PCH-PIC | | PCH-MSI |                        |
+ |         +---------+ +---------+                        |
+ |           ^     ^           ^                          |
+ |           |     |           |                          |
+ |   +---------+ +---------+ +---------+                  |
+ |   | PCH-LPC | | Devices | | Devices |                  |
+ |   +---------+ +---------+ +---------+                  |
+ |        ^                                               |
+ |        |                                               |
+ |   +---------+                                          |
+ |   | Devices |                                          |
+ |   +---------+                                          |
+ |                                                        |
+ |                                                        |
+ +--------------------------------------------------------+
 
+This patchset adds some irqchip drivers for LoongArch, it is preparing
+to add LoongArch support in mainline kernel, we can see a snapshot here:
+https://github.com/loongson/linux/tree/loongarch-next
+
+Cross-compile tool chain to build kernel:
+https://github.com/loongson/build-tools/releases
+
+Loongson and LoongArch documentations:
+https://github.com/loongson/LoongArch-Documentation
+
+LoongArch-specific interrupt controllers:
+https://mantis.uefi.org/mantis/view.php?id=2203
+
+LoongArch use ACPI, but ACPI tables cannot describe the hierarchy of
+irqchips, so we initilize the irqchip subsystem in this way (from arch
+code):
+
+ cpu_domain = loongarch_cpu_irq_init();
+ liointc_domain = liointc_acpi_init(cpu_domain, acpi_liointc);
+ eiointc_domain = eiointc_acpi_init(cpu_domain, acpi_eiointc);
+ pch_pic_domain = pch_pic_acpi_init(eiointc_domain, acpi_pchpic);
+ pch_msi_domain = pch_msi_acpi_init(eiointc_domain, acpi_pchmsi);
+
+Upstream irqchip init function return an irqdomain, and this domain
+will be used by downstream irqchips as their parent domains. For more
+infomation please refer:
+https://lore.kernel.org/linux-arch/20210927064300.624279-11-chenhuacai@loongson.cn/T/#u
+
+Attention: CPUINTC is CSR.ECFG/CSR.ESTAT and its interrupt controller
+described in Section 7.4 of "LoongArch Reference Manual, Vol 1"; LIOINTC
+is "Legacy I/O Interrupts" described in Section 11.1 of "Loongson 3A5000
+Processor Reference Manual"; EIOINTC is "Extended I/O Interrupts" described
+in Section 11.2 of "Loongson 3A5000 Processor Reference Manual"; HTVECINTC
+is "HyperTransport Interrupts" described in Section 14.3 of "Loongson 3A5000
+Processor Reference Manual"; PCH-PIC/PCH-MSI is "Interrupt Controller"
+described in Section 5 of "Loongson 7A1000 Bridge User Manual"; PCH-LPC
+is "LPC Interrupts" described in Section 24.3 of "Loongson 7A1000 Bridge
+User Manual".
+
+V1 -> V2:
+1, Remove queued patches;
+2, Move common logic of DT/ACPI probing to common functions;
+3, Split .suspend()/.resume() functions to separate patches.
+
+V2 -> V3:
+1, Fix a bug for loongson-pch-pic probe;
+2, Some minor improvements for LPC controller.
+
+V3 -> V4:
+1, Rework the CPU interrupt controller driver;
+2, Some minor improvements for other controllers.
+
+V4 -> V5:
+1, Add a description of LoonArch's IRQ model;
+2, Support multiple EIOINTCs in one system;
+3, Some minor improvements for other controllers.
+
+V5 -> V6:
+1, Attach a fwnode to CPUINTC irq domain;
+2, Use raw spinlock instead of generic spinlock;
+3, Improve the method of restoring EIOINTC state;
+4, Update documentation, comments and commit messages.
+
+V6 -> V7:
+1, Fix build warnings reported by kernel test robot;
+
+Huacai Chen:
+ irqchip: Adjust Kconfig for Loongson.
+ irqchip/loongson-pch-pic: Add ACPI init support.
+ irqchip/loongson-pch-pic: Add suspend/resume support.
+ irqchip/loongson-pch-msi: Add ACPI init support.
+ irqchip/loongson-htvec: Add ACPI init support.
+ irqchip/loongson-htvec: Add suspend/resume support.
+ irqchip/loongson-liointc: Add ACPI init support. 
+ irqchip: Add LoongArch CPU interrupt controller support.
+ irqchip: Add Loongson Extended I/O interrupt controller.
+ irqchip: Add Loongson PCH LPC controller support.
+
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+ drivers/irqchip/Kconfig                |  37 +++-
+ drivers/irqchip/Makefile               |   3 +
+ drivers/irqchip/irq-loongarch-cpu.c    |  89 +++++++++
+ drivers/irqchip/irq-loongson-eiointc.c | 331 +++++++++++++++++++++++++++++++++
+ drivers/irqchip/irq-loongson-htvec.c   | 142 ++++++++++----
+ drivers/irqchip/irq-loongson-liointc.c | 198 ++++++++++++--------
+ drivers/irqchip/irq-loongson-pch-lpc.c | 203 ++++++++++++++++++++
+ drivers/irqchip/irq-loongson-pch-msi.c | 119 +++++++-----
+ drivers/irqchip/irq-loongson-pch-pic.c | 152 ++++++++++++---
+ include/linux/cpuhotplug.h             |   1 +
+ 10 files changed, 1087 insertions(+), 188 deletions(-)
+ create mode 100644 drivers/irqchip/irq-loongarch-cpu.c
+ create mode 100644 drivers/irqchip/irq-loongson-eiointc.c
+ create mode 100644 drivers/irqchip/irq-loongson-pch-lpc.c
 --
-Linaro LKFT
-https://lkft.linaro.org
+2.27.0
+
