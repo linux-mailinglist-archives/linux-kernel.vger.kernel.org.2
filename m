@@ -2,62 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A054B42C0D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799EE42C0DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233976AbhJMNCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:02:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:38748 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233368AbhJMNCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:02:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F1451FB;
-        Wed, 13 Oct 2021 06:00:03 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 753CE3F66F;
-        Wed, 13 Oct 2021 06:00:01 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 13:59:56 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Mikko Perttunen <mperttunen@nvidia.com>, rafael@kernel.org,
-        viresh.kumar@linaro.org, jonathanh@nvidia.com,
-        krzysztof.kozlowski@canonical.com, robh@kernel.org, kw@linux.com,
-        p.zabel@pengutronix.de, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, amitk@kernel.org,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 5/5] PCI: tegra194: Handle errors in BPMP response
-Message-ID: <20211013125956.GA11036@lpieralisi>
-References: <20210915085517.1669675-1-mperttunen@nvidia.com>
- <20210915085517.1669675-5-mperttunen@nvidia.com>
- <YV86l4OhqKN0AkMN@orome.fritz.box>
+        id S233859AbhJMNC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:02:58 -0400
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:42552 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231145AbhJMNC5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:02:57 -0400
+Received: by mail-ua1-f53.google.com with SMTP id j8so4240925uak.9;
+        Wed, 13 Oct 2021 06:00:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6ROb25SRHrlctqcwYNmk5SZxRis47NqhPR1W/F6S4hc=;
+        b=E7QqFJl6uynC1r5yt8BlnCYLRTtscpLNDIY+txTEbs1exxAW0Ic5l+I0wQ3DoyylO8
+         uz0O2b44py0/a4713QSjMOd2l4Dxkdcw9pY5VoPcVAMgXgsGwl3UGWgwQMZpk8uX1m96
+         oKHQ8VD/MOt+SyaQhw70pq21EHvDF61arAMnFeSgP7S8rTC9jwRZSL0Scl4TjknIWccD
+         skRilaV7awLVSsutGOobSK4f/o6tfNrqz1Bs4J+F03x/kcRP4dVl4LnlcDfkgKgwHtOX
+         DzyILvJrjxJ5LiPzp+BwvgNnb2hRQPNrab6x3KTQUo6CiQPW4xHcCCREoAI1dOV6vWWN
+         cjAw==
+X-Gm-Message-State: AOAM531sphkuSGHxwaKPJx3BvUt30X0+p2py6THOHt3C688Y4+WIm/XF
+        PAo43CrJnBs1JKvD0j6qc+dZcSG31cJoJ7VfbPDYGw3V
+X-Google-Smtp-Source: ABdhPJxLkApOC7yMyBdbfgVEppF7bfWIBh7G+fA1a8AE2efhgNQ3zXaJXtAdx0jG9P3V77HkHsz1i+mp8XWK0KAeY4Q=
+X-Received: by 2002:a67:d111:: with SMTP id u17mr37472705vsi.37.1634130053857;
+ Wed, 13 Oct 2021 06:00:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YV86l4OhqKN0AkMN@orome.fritz.box>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20211007182158.7490-1-semen.protsenko@linaro.org>
+In-Reply-To: <20211007182158.7490-1-semen.protsenko@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 Oct 2021 15:00:42 +0200
+Message-ID: <CAMuHMdU+N071GCb6OepwBu_2fTununksguD26nxY3f-BqzjsQg@mail.gmail.com>
+Subject: Re: [PATCH v5] clk: Add write operation for clk_parent debugfs node
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mike Tipton <mdtipton@codeaurora.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 08:21:11PM +0200, Thierry Reding wrote:
-> On Wed, Sep 15, 2021 at 11:55:17AM +0300, Mikko Perttunen wrote:
-> > The return value from tegra_bpmp_transfer indicates the success or
-> > failure of the IPC transaction with BPMP. If the transaction
-> > succeeded, we also need to check the actual command's result code.
-> > Add code to do this.
-> > 
-> > Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-tegra194.c | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> Acked-by: Thierry Reding <treding@nvidia.com>
+On Thu, Oct 7, 2021 at 8:22 PM Sam Protsenko <semen.protsenko@linaro.org> wrote:
+> Useful for testing mux clocks. One can write the index of the parent to
+> be set into clk_parent node, starting from 0. Example
+>
+>     # cd /sys/kernel/debug/clk/mout_peri_bus
+>     # cat clk_possible_parents
+>       dout_shared0_div4 dout_shared1_div4
+>     # cat clk_parent
+>       dout_shared0_div4
+>     # echo 1 > clk_parent
+>     # cat clk_parent
+>       dout_shared1_div4
+>
+> CLOCK_ALLOW_WRITE_DEBUGFS has to be defined in drivers/clk/clk.c in
+> order to use this feature.
+>
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Hi Thierry,
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-can I pull this patch into the PCI tree ? Or if you want the series
-to go via another tree:
+Gr{oetje,eeting}s,
 
-Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
