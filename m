@@ -2,77 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C875742C218
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E9E42C21D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235589AbhJMOI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:08:27 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:54745 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230347AbhJMOI0 (ORCPT
+        id S236158AbhJMOIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:08:52 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35042 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230347AbhJMOIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:08:26 -0400
-Received: (qmail 893839 invoked by uid 1000); 13 Oct 2021 10:06:22 -0400
-Date:   Wed, 13 Oct 2021 10:06:22 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Yinbo Zhu <zhuyinbo@loongson.cn>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Patchwork Bot <patchwork-bot@kernel.org>
-Subject: Re: [PATCH v6] usb: ohci: disable start-of-frame interrupt in
- ohci_rh_suspend
-Message-ID: <20211013140622.GA893308@rowland.harvard.edu>
-References: <1634095928-29639-1-git-send-email-zhuyinbo@loongson.cn>
+        Wed, 13 Oct 2021 10:08:51 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634134006;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=xQN4atmrZ2amKkMdXRfONyAazMjs4Z44fmYDKeuNJXs=;
+        b=kGkDVL2wxnu2M0tBkqVDDnyWZ6Vkz3yloC6hlsg4CNKYr4UQNVQ2w6oM3KchnUp8L9vM0J
+        yu7Bqg6oeELaHhZgfmzvPEy7+XzSijdToWb1hs1QSX7vfpA11l3Wv3uC6jyCg0CzBCPvUT
+        o0irwxcIN29WgkD4ghTF8awnhDtNHvnXs3b/lidu4XxGj453OqgBw8QFm3ioQZh76KkoJo
+        UVReEUTdXGCFMuCfsuVVmIQnarCDIyQOme04yDndlO1nl7bb1kGt3B7fZeYvd6kPPXzkC3
+        ptb9avjP9Qymo1iQQzyQ8TOe7Lu1sUgLKYCyVLEyIlrSsMbeELT/WtEVK42K6A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634134006;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=xQN4atmrZ2amKkMdXRfONyAazMjs4Z44fmYDKeuNJXs=;
+        b=pbW7o2hDnIce0RuFNRcj2dvxe8p0Z5oMYzDDJP63ePpMB6IhvVZsofRqgzcYwFlS5igU2x
+        75T+lSrXI0AOJ3Dw==
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+In-Reply-To: <da47ba42-b61e-d236-2c1c-9c5504e48091@redhat.com>
+Date:   Wed, 13 Oct 2021 16:06:46 +0200
+Message-ID: <871r4p9fyh.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1634095928-29639-1-git-send-email-zhuyinbo@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:32:08AM +0800, Yinbo Zhu wrote:
-> While going into S3 or S4 suspend, an OHCI host controller can
-> generate interrupt requests if the INTR_SF enable flag is set.  The
-> interrupt handler routine isn't prepared for this and it doesn't turn
-> off the flag, causing an interrupt storm.
-> 
-> To fix this problem, make ohci_rh_suspend() always disable INTR_SF
-> interrupts after processing the done list and the ED unlinks but
-> before the controller goes into the suspended (non-UsbOperational)
-> state.  There's no reason to leave the flag enabled, since a
-> suspended controller doesn't generate Start-of-Frame packets.
-> 
-> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
-> ---
+Paolo,
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+On Wed, Oct 13 2021 at 10:42, Paolo Bonzini wrote:
+> On 13/10/21 09:46, Liu, Jing2 wrote:
+>>> Yes, the host value of XFD (which is zero) has to be restored after vmexit.
+>>> See how KVM already handles SPEC_CTRL.
+>> 
+>> I'm trying to understand why qemu's XFD is zero after kernel supports AMX.
+>
+> There are three copies of XFD:
+>
+> - the guest value stored in vcpu->arch.
+>
+> - the "QEMU" value attached to host_fpu.  This one only becomes zero if 
+> QEMU requires AMX (which shouldn't happen).
 
-> Change in v6:
-> 		1. Rework the commit log information.
-> 		2. Move the key change code after ohci_work in 
-> 		   ohci_rh_suspend.
-> 
-> 
->  drivers/usb/host/ohci-hub.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/usb/host/ohci-hub.c b/drivers/usb/host/ohci-hub.c
-> index f474f2f..90cee19 100644
-> --- a/drivers/usb/host/ohci-hub.c
-> +++ b/drivers/usb/host/ohci-hub.c
-> @@ -91,6 +91,9 @@ static int ohci_rh_suspend (struct ohci_hcd *ohci, int autostop)
->  	update_done_list(ohci);
->  	ohci_work(ohci);
->  
-> +	/* All ED unlinks should be finished, no need for SOF interrupts */
-> +	ohci_writel(ohci, OHCI_INTR_SF, &ohci->regs->intrdisable);
-> +
->  	/*
->  	 * Some controllers don't handle "global" suspend properly if
->  	 * there are unsuspended ports.  For these controllers, put all
-> -- 
-> 1.8.3.1
-> 
+I don't think that makes sense.
+
+First of all, if QEMU wants to expose AMX to guests, then it has to ask
+for permission to do so as any other user space process. We're not going
+to make that special just because.
+
+The guest configuration will have to have a 'needs AMX' flag set. So
+QEMU knows that it is required upfront.
+
+Which also means that a guest configuration which has it not set will
+never get AMX passed through.
+
+That tells me, that we should not bother at all with on demand buffer
+reallocations for that case and just keep things simple.
+
+The on demand buffer allocation from the general OS point of view makes
+sense because there it really matters whether we allocate $N kilobytes
+per thread or not.
+
+But does it matter for the QEMU process and its vCPU threads when the
+guest is allowed to use AMX? I don't think so. It's an academic exercise
+IMO and just makes the handling of this way more complex than required.
+
+So the logic should be:
+
+   qemu()
+     read_config()
+     if (dynamic_features_passthrough())
+     	request_permission(feature)
+
+     create_vcpu_threads()
+       ....
+
+       vcpu_thread()
+         kvm_ioctl(ENABLE_DYN_FEATURE, feature)
+           reallocate_buffers()
+             realloc(tsk->fpu.fpstate, feature)
+             realloc(guest_fpu.fpstate, feature)
+             realloc(host_fpu.fpstate, feature)
+
+             All of them will have
+
+             fpstate.xfd = default_xfd & ~feature
+
+That makes also resume and migration simple because that's going to use
+exactly the same mechanism.
+
+Yes, it _allows_ QEMU user space to use AMX, but that's not the end of
+the world, really and avoids a ton of special cases to worry about.
+
+Also the extra memory consumption per vCPU thread is probably just noise
+compared to the rest of the vCPU state.
+
+With that the only thing you have to take care of is in vmx_vcpu_run():
+
+   local_irq_disable();
+   ...
+   vmx_vcpu_run()
+     wrmsrl(XFD, guest->xfd)
+     vmenter()
+     guest->xfd = rdmsrl(XFD)
+     wrmsrl(XFD, host->xfd)
+
+It does not matter when at some day there is a XFD controlled bit 19 and
+you want to selectively allow access to guests because we have two
+mechanisms here:
+
+  1) XCR0
+
+    XSETBV in the guest is intercepted and checked against the allowed
+    bits. If it tries to set one which is not allowed, then this is
+    not any different from what KVM is doing today.
+
+    I.e. Guest1 is allowed to set bit 18, but not 19
+         Guest2 is allowed to set bit 19, but not 18
+         Guest3 is allowed to set both 18 and 19
+
+  2) XFD
+
+     Intercepting XFD is optional I think. It does not matter what the
+     guest writes into it, because if XCRO[i] = 0 then the state of
+     XFD[i] is irrelevant according to the ISE:
+
+     "(IA32_XFD[i] does not affect processor operations if XCR0[i] = 0.)"
+
+     The only thing different vs. bare metal is that when guest writes
+     XFD[i]=1 it wont get #GP despite the fact that virtualized CPUID
+     suggest that it should get one:
+     
+     "Bit i of either MSR can be set to 1 only if CPUID.(EAX=0DH,ECX=i):ECX[2]
+      is enumerated as 1.  An execution of WRMSR that attempts to set an
+      unsupported bit in either MSR causes a general-protection fault
+      (#GP)."
+
+     Does it matter?  Probably not, all it can figure out is that
+     component[i] is supported in hardware, but it can't do anything
+     with that information because the VMM will not allow it to set the
+     corresponding XCR0 bit...
+
+     Sure you can intercept XFD, check the write against the allowed
+     guest bits and inject #GP if not.
+
+     But keep in mind that the guest kernel will context switch it and
+     that will not be any better than context switching XCR0 in the
+     guest kernel...
+
+The thing we need to think about is the case where guest has XCR0[i] =
+XFD[i] = 1 and host has XFD[i] = 0, because setting XFD[i] = 1 does not
+bring the component[i] into init state.
+
+In that case we have the following situation after a vmexit:
+
+     guest->xfd = rdmsrl(XFD)         [i] = 1
+     wrmsrl(XFD, host->xfd)           [i] = 0
+
+If the component[i] is _not_ in init state then the next XSAVES on the
+host will save it and therefore have xsave.header.XSAVE_BV[i] = 1 in the
+buffer. A subsequent XRSTORS of that buffer on the host will restore the
+saved data into component[i].
+
+But the subsequent vmenter() will restore the guest XFD which will just
+bring the guest into the exactly same state as before the VMEXIT.
+
+Ergo it does not matter at all.
+
+That also makes #NM handling trivial. Any #NM generated in the guest is
+completely uninteresting for the host with that scheme and it's the
+guests problem to deal with it.
+
+But that brings me to another issue: XFD_ERR.
+
+Assume guest takes #NM and before the handler can run and read/clear
+XFD_ERR a VMEXIT happens which means XFD_ERR will have the guest error
+bit set and nothing will clear it. So XFD_ERR has to be handled properly
+otherwise a subsequent #NM on the host will see a stale bit from the
+guest.
+
+   vmx_vcpu_run()
+     wrmsrl(XFD, guest->xfd)
+     wrmsrl(XFD_ERR, guest->xfd_err)
+     vmenter()
+     guest->xfd_err = rdmsrl(XFD_ERR)
+     guest->xfd = rdmsrl(XFD)
+     wrmsrl(XFD_ERR, 0)
+     wrmsrl(XFD, host->xfd)
+
+Of course that want's to be conditional on the guest configuration and
+you probably want all of that to be in the auto-load/store area, but
+you get the idea.
+
+Anything else will just create more problems than it solves. Especially
+#NM handling (think nested guest) and the XFD_ERR additive behaviour
+will be a nasty playground and easy to get wrong.
+
+Not having that at all makes life way simpler, right?
+
+Thanks,
+
+        tglx
