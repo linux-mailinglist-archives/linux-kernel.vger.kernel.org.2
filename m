@@ -2,125 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C133A42B64A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CB642B650
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237838AbhJMGFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 02:05:03 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:50634 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229750AbhJMGFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 02:05:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id A9626FB03;
-        Wed, 13 Oct 2021 08:02:56 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 66EE4GbhLCIQ; Wed, 13 Oct 2021 08:02:55 +0200 (CEST)
-Date:   Wed, 13 Oct 2021 08:02:54 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/bridge: Ignore -EPROBE_DEFER when bridge attach fails
-Message-ID: <YWZ2jppbbdKwI2AW@qwark.sigxcpu.org>
-References: <00493cc61d1443dab1c131c46c5890f95f6f9b25.1634068657.git.agx@sigxcpu.org>
- <YWXtQ778N/rn+Jnu@pendragon.ideasonboard.com>
- <YWX0UPyw+5OBsBA6@qwark.sigxcpu.org>
+        id S237831AbhJMGGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 02:06:41 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:22682 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhJMGGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 02:06:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634105071; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=rsskN51nPXw3uRCca+Iu/WuAsufuqY9mT//iUX2s+FM=; b=n606eCicQvhYIhNvgIHf4UDfx+7jgwR6ULBLA14HAgr5S2Vi+iE/OpUmdmm1gzn6z1U8pAW9
+ OAaxv9RqS+F35YS1CvufGz4s0zkPauJ+CrHkpCjH8fxgSkvB37XgoD6679tn4PBan6ruMKtS
+ RR1gIPjxj6YwnWqx9+QVufApN6s=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 616676de8ea00a941f4d2371 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Oct 2021 06:04:14
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1E6E7C4360C; Wed, 13 Oct 2021 06:04:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.81.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E7C42C4338F;
+        Wed, 13 Oct 2021 06:04:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E7C42C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v11 2/5] soc: qcom: Add Sleep stats driver
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
+        lsrao@codeaurora.org,
+        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Yassine Oudjana <y.oudjana@protonmail.com>
+References: <1633600649-7164-1-git-send-email-mkshah@codeaurora.org>
+ <1633600649-7164-3-git-send-email-mkshah@codeaurora.org>
+ <YV88fNYF0i1Wkr73@gerhold.net>
+ <acaf7b6e-c5b7-ae27-c4ba-37f375f05f19@codeaurora.org>
+ <YWAeoIu3ndsg5erY@gerhold.net>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <aa7cc6ac-997c-dc65-aaf7-98b392994caa@codeaurora.org>
+Date:   Wed, 13 Oct 2021 11:34:05 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YWX0UPyw+5OBsBA6@qwark.sigxcpu.org>
+In-Reply-To: <YWAeoIu3ndsg5erY@gerhold.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Tue, Oct 12, 2021 at 10:47:14PM +0200, Guido Günther wrote:
-> Hi Laurent,
-> On Tue, Oct 12, 2021 at 11:17:07PM +0300, Laurent Pinchart wrote:
-> > Hi Guido,
-> > 
-> > Thank you for the patch.
-> > 
-> > On Tue, Oct 12, 2021 at 09:58:58PM +0200, Guido Günther wrote:
-> > > Otherwise logs are filled with
-> > > 
-> > >   [drm:drm_bridge_attach] *ERROR* failed to attach bridge /soc@0/bus@30800000/mipi-dsi@30a0 0000 to encoder None-34: -517
-> > > 
-> > > when the bridge isn't ready yet.
-> > > 
-> > > Fixes: fb8d617f8fd6 ("drm/bridge: Centralize error message when bridge attach fails")
-> > > Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> > > ---
-> > >  drivers/gpu/drm/drm_bridge.c | 11 ++++++-----
-> > >  1 file changed, 6 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> > > index a8ed66751c2d..f0508e85ae98 100644
-> > > --- a/drivers/gpu/drm/drm_bridge.c
-> > > +++ b/drivers/gpu/drm/drm_bridge.c
-> > > @@ -227,14 +227,15 @@ int drm_bridge_attach(struct drm_encoder *encoder, struct drm_bridge *bridge,
-> > >  	bridge->encoder = NULL;
-> > >  	list_del(&bridge->chain_node);
-> > >  
-> > > +	if (ret != -EPROBE_DEFER) {
-> > >  #ifdef CONFIG_OF
-> > > -	DRM_ERROR("failed to attach bridge %pOF to encoder %s: %d\n",
-> > > -		  bridge->of_node, encoder->name, ret);
-> > > +		DRM_ERROR("failed to attach bridge %pOF to encoder %s: %d\n",
-> > > +			  bridge->of_node, encoder->name, ret);
-> > >  #else
-> > > -	DRM_ERROR("failed to attach bridge to encoder %s: %d\n",
-> > > -		  encoder->name, ret);
-> > > +		DRM_ERROR("failed to attach bridge to encoder %s: %d\n",
-> > > +			  encoder->name, ret);
-> > >  #endif
-> > > -
-> > > +	}
-> > 
-> > This looks fine as such, but I'm concerned about the direction it's
-> > taking. Ideally, probe deferral should happen at probe time, way before
-> > the bridge is attached. Doing otherwise is a step in the wrong direction
-> > in my opinion, and something we'll end up regretting when we'll feel the
-> > pain it inflicts.
-> 
-> The particular case I'm seeing this is the nwl driver probe deferrals if
-> the panel bridge isn't ready (which needs a bunch of components
-> (dsi, panel, backlight wrapped led, ...) and it probes fine later on so I
-> wonder where you see the actual error cause? That downstream of the
-> bridge isn't ready or that the display controller is already attaching
-> the bridge?
+Hi Stephan,
 
-I should add that mxsfb does a `dev_err_probe()` already when checking
-the return value of `drm_bridge_attach()` so the error printed is
-triggered by the additional check added in the above function while the
-code path already ignored -EPROBE_DEFER before. This looks sensible to
-me since upper layers can't known when all the downstream bridges are
-done probing or am I missing something?
+On 10/8/2021 4:04 PM, Stephan Gerhold wrote:
+> On Fri, Oct 08, 2021 at 02:45:20PM +0530, Maulik Shah wrote:
+>> On 10/7/2021 11:59 PM, Stephan Gerhold wrote:
+>>> On Thu, Oct 07, 2021 at 03:27:26PM +0530, Maulik Shah wrote:
+>>>> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+>>>>
+>>>> Let's add a driver to read the stats from remote processor and
+>>>> export to debugfs.
+>>>>
+>>>> The driver creates "qcom_sleep_stats" directory in debugfs and
+>>>> adds files for various low power mode available. Below is sample
+>>>> output with command
+>>>>
+>>>> cat /sys/kernel/debug/qcom_sleep_stats/ddr
+>>>> count = 0
+>>>> Last Entered At = 0
+>>>> Last Exited At = 0
+>>>> Accumulated Duration = 0
+>>>>
+>>>> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+>>>> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+>>>> [mkshah: add subsystem sleep stats, create one file for each stat]
+>>>> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+>>>> ---
+>>>>    drivers/soc/qcom/Kconfig            |  10 ++
+>>>>    drivers/soc/qcom/Makefile           |   1 +
+>>>>    drivers/soc/qcom/qcom_sleep_stats.c | 259 ++++++++++++++++++++++++++++++++++++
+>>>>    3 files changed, 270 insertions(+)
+>>>>    create mode 100644 drivers/soc/qcom/qcom_sleep_stats.c
+>>>>
+>>>> [...]
+>>>> +
+>>>> +static int qcom_subsystem_sleep_stats_show(struct seq_file *s, void *unused)
+>>>> +{
+>>>> +	struct subsystem_data *subsystem = s->private;
+>>>> +	struct sleep_stats *stat;
+>>>> +
+>>>> +	/* Items are allocated lazily, so lookup pointer each time */
+>>>> +	stat = qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL);
+>>>> +	if (IS_ERR(stat))
+>>>> +		return -EIO;
+>>>> +
+>>>> [...]
+>>>> +
+>>>> +static void qcom_create_subsystem_stat_files(struct dentry *root)
+>>>> +{
+>>>> +	const struct sleep_stats *stat;
+>>>> +	int i;
+>>>> +
+>>>> +	for (i = 0; i < ARRAY_SIZE(subsystems); i++) {
+>>>> +		stat = qcom_smem_get(subsystems[i].pid, subsystems[i].smem_item, NULL);
+>>>> +		if (IS_ERR(stat))
+>>>> +			continue;
+>>>> +
+>>>> +		debugfs_create_file(subsystems[i].name, 0400, root, (void *)&subsystems[i],
+>>>> +				    &qcom_subsystem_sleep_stats_fops);
+>>>
+>>> This causes WARNINGs on MSM8996 and MSM8916:
+>>>
+>>> [    0.503054] ------------[ cut here ]------------
+>>> [    0.503100] WARNING: CPU: 1 PID: 1 at drivers/soc/qcom/smem.c:587 qcom_smem_get+0x184/0x1b0
+>>> [    0.503184] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc4+ #378
+>>> [    0.503218] Hardware name: Xiaomi Mi Note 2 (DT)
+>>> [    0.503278] pc : qcom_smem_get+0x184/0x1b0
+>>> [    0.503307] lr : qcom_sleep_stats_probe+0xfc/0x20
+>>> [    0.503875] Call trace:
+>>> [    0.503896]  qcom_smem_get+0x184/0x1b0
+>>> [    0.503925]  qcom_sleep_stats_probe+0xfc/0x270
+>>>
+>>> AFAICT from downstream the smem subsystem information is only read in
+>>> the rpmh_master_stat.c driver, should this be specific to RPMh?
+>>
+>> Thanks for checking this on MSM8996. Probably it doesnot have SMEM items
+>> allocated so causes WARNINGs.
+>>
+>> Keeping subsystem stats info in SMEM is not limited to only RPMH targets.
+>> Downstream has some RPM targets which also uses SMEM to store
+>> subsystem stats so the driver is kept generic.
+>>
+> 
+> Thanks for clarifying. To be honest, I'm not sure if the WARN_ON() in
+> smem is very useful since this isn't really fundamentally different as
+> if the entry is not allocated. But at the end all that matters is that
+> there are no warnings when loading this driver on older targets.
+> 
+>>>
+>>> There is a rpm_master_stat.c too but that looks quite different,
+>>> so I guess the approach is different with RPM?
+>>
+>> Right. on existing upstream RPM targets i can skip to create/get SMEM items
+>> since
+>> they are not guranteed to be present and one should continue to use
+>> rpm_master_stats.c to get subsystem stats. (this uses entirely different
+>> data structure for sleep stats and are not part of RPM data ram/SMEM and are
+>> deprecated in downstream).
+>>
+>>>
+>>> Two more (unrelated) issues here:
+>>>
+>>>     1. This will silently not register anything if SMEM probes after the
+>>>        qcom-sleep-stats driver (qcom_smem_get() will return -EPROBE_DEFER)
+>>>        and you will just skip registering the debugfs files.
+>>
+>> I think module loading internally takes care of this.
+>> we're making a direct function call into the qcom_smem driver, so we
+>> already have a hard dependency on qcom_smem.ko being loaded.
+>>
+> 
+> The driver can also be built-in and in this case this is not guaranteed.
+> This actually happened to me when I tried this on MSM8916: I did not get
+> the WARNINGs because all the qcom_smem_get() just returned -EPROBE_DEFER.
+> qcom_smem was then probed after qcom_sleep_stats. Of course, the smem
+> items are not present there anyway so it did not matter.
 
-Cheers,
- -- Guido
+
+I see SMEM is in arch init call, Updated in v12 to register driver in 
+late_init by the time SMEM would have probed already and should not need 
+to handle -EPROBE_DEFER.
+
 
 > 
-> Cheers,
->  -- Guido
+>>>
+>>>     2. In qcom_subsystem_sleep_stats_show() you say
+>>>        /* Items are allocated lazily, so lookup pointer each time */
+>>>
+>>>        But, if the lookup fails here you don't register the debugfs file
+>>>        at all. Does this work if the subsystem is started after this driver?
+>>
+>> Good catch. if the subsystem starts after this driver is loaded, the look up
+>> fails during probe and we don't create debugfs file for the subsystem.
+>>
+>> one need to unload/load the driver again after sometime in bootup so by that
+>> time all the subsytems (modem, adsp, cdsp, etc) are up and we create debugfs
+>> file for them.
+>>
+>> we have downstream fix for this to create the debugfs files irrespective of
+>> look up fails or not. i have plan to add it once the base driver gets
+>> merged.
+>>
 > 
-> > 
-> > >  	return ret;
-> > >  }
-> > >  EXPORT_SYMBOL(drm_bridge_attach);
-> > 
-> > -- 
-> > Regards,
-> > 
-> > Laurent Pinchart
-> > 
+> OK, I don't seem to have any recent Qualcomm platform that actually has
+> subsystem stats in SMEM so it doesn't bother me. I just wanted to
+> mention it for reference. :)
+
+Ok updated driver to not use SMEM for RPM based targets for existing 
+upstream targets (when such target goes upstream in future which uses 
+SMEM for subsystem stats we can enable back with new compatible say -v2).
+
+Thanks,
+Maulik
+
+> 
+> Thanks!
+> Stephan
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of Code Aurora Forum, hosted by The Linux Foundation
