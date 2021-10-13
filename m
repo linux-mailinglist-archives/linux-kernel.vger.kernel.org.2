@@ -2,134 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC1742BC43
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B10042BC5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239202AbhJMKAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:00:14 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3975 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236501AbhJMKAN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:00:13 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HTntc1Hhrz67wWV;
-        Wed, 13 Oct 2021 17:54:16 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 13 Oct 2021 11:58:07 +0200
-Received: from [10.47.95.55] (10.47.95.55) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 13 Oct
- 2021 10:58:06 +0100
-Subject: Re: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kashyap.desai@broadcom.com>,
-        <hare@suse.de>
-References: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
- <YWalYoOZmpkmAZNK@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <79266509-f327-9de3-d22e-0e9fe00387ee@huawei.com>
-Date:   Wed, 13 Oct 2021 11:01:11 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S239270AbhJMKDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:03:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229853AbhJMKDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 06:03:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1727E60E74;
+        Wed, 13 Oct 2021 10:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634119291;
+        bh=VexVs8YcPOAfCyHkd1Wd9WYaHCuP7W/gGp8boKTDsL8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NTuGhUXMT2UASStrRSKBBoTRjqq2rO8TAtY4dm4od93Vg8fvxmxUk2t7/JEB5YWTg
+         OVFyW/T7K1bsxbK1rbyNiDJEXx/cAvCXF6HLhPQYG9gfFB1lSqwistN4nsWyBJoXzs
+         +ndUZQ75jI1Mtejo9PGedHM3XfUEvarDTeQCpEh5cN6yBggxJ4hScBrk3UeZL0yRSh
+         7Ei6DOt7d354vdRsqYDiOt1eyz9Q3sgt85XKXVf9DjPKGPXmeJTjvExeUxjhXHi1p5
+         ZVnhNRu9lfDmdt0MWAKhNSqT0gxpCINsSSy0spY86EwbW+77K6Q6LkilOHSIO5MBZu
+         aWugk/U8lB3kw==
+Date:   Wed, 13 Oct 2021 12:01:29 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB
+ + a few other fixes v2
+Message-ID: <20211013100129.GA377556@lothringen>
+References: <20211011145140.359412-1-frederic@kernel.org>
+ <20211013003215.GP880162@paulmck-ThinkPad-P17-Gen-1>
+ <20211013032832.GQ880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-In-Reply-To: <YWalYoOZmpkmAZNK@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.95.55]
-X-ClientProxiedBy: lhreml703-chm.china.huawei.com (10.201.108.52) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013032832.GQ880162@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2021 10:22, Ming Lei wrote:
-> On Wed, Oct 13, 2021 at 04:40:59PM +0800, John Garry wrote:
->> Since it is now possible for a tagset to share a single set of tags, the
->> iter function should not re-iter the tags for the count of #hw queues in
->> that case. Rather it should just iter once.
->>
->> Fixes: e0fdf846c7bb ("blk-mq: Use shared tags for shared sbitmap support")
->> Reported-by: Kashyap Desai<kashyap.desai@broadcom.com>
->> Signed-off-by: John Garry<john.garry@huawei.com>
->>
->> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
->> index 72a2724a4eee..c943b6529619 100644
->> --- a/block/blk-mq-tag.c
->> +++ b/block/blk-mq-tag.c
->> @@ -378,9 +378,12 @@ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
->>   void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
->>   		busy_tag_iter_fn *fn, void *priv)
->>   {
->> -	int i;
->> +	unsigned int flags = tagset->flags;
->> +	int i, nr_tags;
->> +
->> +	nr_tags = blk_mq_is_shared_tags(flags) ? 1 : tagset->nr_hw_queues;
->>   
->> -	for (i = 0; i < tagset->nr_hw_queues; i++) {
->> +	for (i = 0; i < nr_tags; i++) {
->>   		if (tagset->tags && tagset->tags[i])
->>   			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
->>   					      BT_TAG_ITER_STARTED);
-> blk_mq_queue_tag_busy_iter() needn't such change?
+On Tue, Oct 12, 2021 at 08:28:32PM -0700, Paul E. McKenney wrote:
+> On Tue, Oct 12, 2021 at 05:32:15PM -0700, Paul E. McKenney wrote:
+> > On Mon, Oct 11, 2021 at 04:51:29PM +0200, Frederic Weisbecker wrote:
+> > > Hi,
+> > > 
+> > > No code change in this v2, only changelogs:
+> > > 
+> > > * Add tags from Valentin and Sebastian
+> > > 
+> > > * Remove last reference to SEGCBLIST_SOFTIRQ_ONLY (thanks Valentin)
+> > > 
+> > > * Rewrite changelog for "rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check"
+> > >   after off-list debates with Paul.
+> > > 
+> > > * Remove the scenario with softirq interrupting rcuc on
+> > >   "rcu/nocb: Limit number of softirq callbacks only on softirq" as it's
+> > >   probably not possible (thanks Valentin).
+> > > 
+> > > * Remove the scenario with task spent scheduling out accounted on tlimit
+> > >   as it's not possible (thanks Valentin)
+> > >   (see "rcu: Apply callbacks processing time limit only on softirq")
+> > > 
+> > > * Fixed changelog of
+> > >   "rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread"
+> > >   (thanks Sebastian).
+> > > 
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > > 	rcu/rt-v2
+> > > 
+> > > HEAD: 2c9349986d5f70a555195139665841cd98e9aba4
+> > > 
+> > > Thanks,
+> > > 	Frederic
+> > 
+> > Nice!
+> > 
+> > I queued these for further review and testing.  I reworked the commit log
+> > of 6/11 to give my idea of the reason, though I freely admit that this
+> > reason is not as compelling as it no doubt seemed when I wrote that code.
+> 
+> But in initial tests TREE04.5, TREE04.6, and TREE04.9 all hit the
+> WARN_ON(1) in rcu_torture_barrier(), which indicates rcu_barrier()
+> breakage.  My best (but not so good) guess is a five-hour MTBF on a
+> dual-socket system.
+> 
+> I started an automated "git bisect" with each step running 100 hours
+> of TREE04, but I would be surprised if anything useful comes of it.
+> Pleased, mind you, but surprised.
 
-I didn't think so.
+Oops, trying those scenario on my side as well.
 
-blk_mq_queue_tag_busy_iter() will indeed re-iter the tags per hctx. 
-However in bt_iter(), we check rq->mq_hctx == hctx for calling the iter 
-callback:
-
-static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
-{
-	...
-
-	if (rq->q == hctx->queue && rq->mq_hctx == hctx)
-		ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
-
-And this would only pass for the correct hctx which we're iter'ing for. 
-Indeed, it would be nice not to iter excessive times, but I didn't see a 
-straightforward way to change that.
-
-There is also blk_mq_all_tag_iter():
-
-void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
-		void *priv)
-{
-	__blk_mq_all_tag_iter(tags, fn, priv, BT_TAG_ITER_STATIC_RQS);
-}
-
-But then the only user is blk_mq_hctx_has_requests():
-
-static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
-{
-	struct blk_mq_tags *tags = hctx->sched_tags ?
-			hctx->sched_tags : hctx->tags;
-	struct rq_iter_data data = {
-		.hctx	= hctx,
-	};
-
-	blk_mq_all_tag_iter(tags, blk_mq_has_request, &data);
-	return data.has_rq;
-}
-
-But, again like bt_iter(), blk_mq_has_request() will check the hctx matches:
-
-static bool blk_mq_has_request(struct request *rq, void *data, bool 
-reserved)
-{
-	struct rq_iter_data *iter_data = data;
-
-	if (rq->mq_hctx != iter_data->hctx)
-		return true;
-	iter_data->has_rq = true;
-	return false;
-}
-
-Thanks,
-John
+Thanks!
