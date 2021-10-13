@@ -2,106 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642B642BEDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31ABB42BEB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhJML0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 07:26:18 -0400
-Received: from mga04.intel.com ([192.55.52.120]:46880 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229664AbhJML0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:26:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="226178099"
-X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
-   d="scan'208";a="226178099"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 04:24:13 -0700
-X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
-   d="scan'208";a="491417739"
-Received: from araghuw-mobl.gar.corp.intel.com (HELO localhost) ([10.251.208.234])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 04:24:08 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Len Baker <len.baker@gmx.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/i915: Prefer struct_size over open coded arithmetic
-In-Reply-To: <20211011092304.GA5790@titan>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20211003104258.18550-1-len.baker@gmx.com> <20211011092304.GA5790@titan>
-Date:   Wed, 13 Oct 2021 14:24:05 +0300
-Message-ID: <87k0ihxj56.fsf@intel.com>
+        id S229965AbhJMLPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 07:15:08 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:24309 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhJMLPF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 07:15:05 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HTqXJ6V8HzQj9m;
+        Wed, 13 Oct 2021 19:08:32 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 19:13:01 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 13
+ Oct 2021 19:13:00 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH v3 0/2] optimize the bfq queue idle judgment
+Date:   Wed, 13 Oct 2021 19:25:32 +0800
+Message-ID: <20211013112534.3073296-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021, Len Baker <len.baker@gmx.com> wrote:
-> Hi,
->
-> On Sun, Oct 03, 2021 at 12:42:58PM +0200, Len Baker wrote:
->> As noted in the "Deprecated Interfaces, Language Features, Attributes,
->> and Conventions" documentation [1], size calculations (especially
->> multiplication) should not be performed in memory allocator (or similar)
->> function arguments due to the risk of them overflowing. This could lead
->> to values wrapping around and a smaller allocation being made than the
->> caller was expecting. Using those allocations could lead to linear
->> overflows of heap memory and other misbehaviors.
->>
->> In this case these are not actually dynamic sizes: all the operands
->> involved in the calculation are constant values. However it is better to
->> refactor them anyway, just to keep the open-coded math idiom out of
->> code.
->>
->> So, add at the end of the struct i915_syncmap a union with two flexible
->> array members (these arrays share the same memory layout). This is
->> possible using the new DECLARE_FLEX_ARRAY macro. And then, use the
->> struct_size() helper to do the arithmetic instead of the argument
->> "size + count * size" in the kmalloc and kzalloc() functions.
->>
->> Also, take the opportunity to refactor the __sync_seqno and __sync_child
->> making them more readable.
->>
->> This code was detected with the help of Coccinelle and audited and fixed
->> manually.
->>
->> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
->>
->> Signed-off-by: Len Baker <len.baker@gmx.com>
->> ---
->>  drivers/gpu/drm/i915/i915_syncmap.c | 12 ++++++++----
->>  1 file changed, 8 insertions(+), 4 deletions(-)
->
-> I received a mail telling that this patch doesn't build:
->
-> == Series Details ==
->
-> Series: drm/i915: Prefer struct_size over open coded arithmetic
-> URL   : https://patchwork.freedesktop.org/series/95408/
-> State : failure
->
-> But it builds without error against linux-next (tag next-20211001). Against
-> which tree and branch do I need to build?
+Changes in V3:
+ - Instead of tracking each queue in root group, tracking root group
+ directly just like non-root group does.
+ - remove patch 3,4 from these series.
 
-drm-tip [1]. It's a sort of linux-next for graphics. I think there are
-still some branches that don't feed to linux-next.
+Chagnes in V2:
+ - as suggested by Paolo, add support to track if root_group have any
+ pending requests, and use that to handle the situation when only one
+ group is activated while root group doesn't have any pending requests.
+ - modify commit message in patch 2
 
-BR,
-Jani.
+Yu Kuai (2):
+  block, bfq: counted root group into 'num_groups_with_pending_reqs'
+  block, bfq: do not idle if only one cgroup is activated
 
-
-[1] https://cgit.freedesktop.org/drm/drm-tip
-
-
->
-> Regards,
-> Len
+ block/bfq-iosched.c | 40 ++++++++++++++++++++++++++++--------
+ block/bfq-wf2q.c    | 50 +++++++++++++++++++++++++++++++++------------
+ 2 files changed, 69 insertions(+), 21 deletions(-)
 
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.31.1
+
