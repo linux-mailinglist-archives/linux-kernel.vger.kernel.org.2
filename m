@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B226A42C1EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D048042C1F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236172AbhJMN7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:59:48 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:39244 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235496AbhJMN7j (ORCPT
+        id S236145AbhJMOAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236067AbhJMN7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:59:39 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19DCcwex013621;
-        Wed, 13 Oct 2021 15:57:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=c6EaOVGfb8Sa8HSlE1ms6Xot8j3nZXJs3bVkNF7A+D8=;
- b=pUqda/VnJg8+97jZZU/JDtAxf111B9t9AoWFu3I1uo49fgks6eJq3FR1tpn7AXkcqI1b
- 9e9lJppo0TR/qY91UK3YFU91O1DiovWI2mqFey8mew+mJgGhwtlNYahee6oeiT1n8xtm
- +dBbQH42Id6nYrhzPZ5oApOPOdIc+0T+e4fuVZ6+iDakDfkTyS4Bon9JebethxinoK14
- mf59++9Vvt0H3azZVkw4E1O/uzToKKgPo+AFsgI09FBvhFHWMw4g6CNPlpPgIoFU6CDi
- LtjHecohh3pvSGogzXkEVavgWON9lxOEtlFiSG7WJ6WsZW50qapwkxuK0A5XWEuDsdaY Vg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bnumjace8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Oct 2021 15:57:28 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7621D10002A;
-        Wed, 13 Oct 2021 15:57:28 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6E50B22F7CA;
-        Wed, 13 Oct 2021 15:57:28 +0200 (CEST)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 13 Oct 2021 15:57:27
- +0200
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-To:     <hminas@synopsys.com>, <gregkh@linuxfoundation.org>,
-        <robh+dt@kernel.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>, <amelie.delaunay@foss.st.com>,
-        <fabrice.gasnier@foss.st.com>, <alexandre.torgue@foss.st.com>
-Subject: [PATCH v3 4/4] usb: dwc2: stm32mp15: set otg_rev
-Date:   Wed, 13 Oct 2021 15:57:05 +0200
-Message-ID: <1634133425-25670-5-git-send-email-fabrice.gasnier@foss.st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1634133425-25670-1-git-send-email-fabrice.gasnier@foss.st.com>
-References: <1634133425-25670-1-git-send-email-fabrice.gasnier@foss.st.com>
+        Wed, 13 Oct 2021 09:59:55 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2044FC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:57:51 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id n8so12305378lfk.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:57:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oFsM9Ei6gS0+k7pOO8LFkCGjMbL5J05nWd842ORwlvo=;
+        b=bakgxwHfosywcDZp3vMHev/J4RM6bPLRo/dfXh/5UK2leDCo15AUTppvS+39yC7i2N
+         AiNw8D+GTPVeu57Vq9P3qRgiKvzqS9bFOZ2XaYRV8YOnvpiiKV8Io+D8CNGF6WVqOsiv
+         4QDlg156HdyP7ze2ZlmuEs8/yM1BIa2cpkREtlw2dPkrxxTSfId2PEAxbNo5grOAtc2t
+         zez0j6XDWKzYKJ62kpx06yhQ8FYrSCWxhVYKxTUyiJ4RLpgjtnFFBfp6TfsOKbQ3UIV2
+         1L7u5XIHOqf+QVhiJhMTJcDSmuF7dgDY2HfEtvpdZPKSVxLUKIc69qFjhJDjsHBN8FTW
+         olUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oFsM9Ei6gS0+k7pOO8LFkCGjMbL5J05nWd842ORwlvo=;
+        b=gmO5D5oc6ORjXEY+6iBOjyRpriAHFsqFjrSiZzlb1NvI9eR9PiWJabbJFxF2FmjSy1
+         omECchmC+uhqBuEIzT7Yo064rr+2MdFBXnqbvzSqSOzuaKrk1Dkbiz/+JZZawZoeQIvf
+         IK6vGJo2O73Con+eKB4TxbpYCkCXrXyqBnCelYJYqdN4e0l9zDiEbwlqtGsmWRCBYhYt
+         rjam5DScAitID+GZ5TLRCBE4DbsK7Q/vJ+nDIjMvIiwdpTpn2g89eA98Zy8NrXJRAkGK
+         QblfsUsbmnXTB1QQRLBZSGq8vYp7JP6wHWCdadyAOxEzo7IeYk6p3YBgC0uFPW8yLys1
+         uWig==
+X-Gm-Message-State: AOAM532ziFPOlB3psXlFu6WkanF1RTZLF125KtI+sOBCL8fJlymZkZcZ
+        l4BvVdd6XhcuXKEEryAVz0jhoFFuQB4Icg==
+X-Google-Smtp-Source: ABdhPJwZhc4AfAcz46mBH0bDMlI3rEw082MyBrgaexGv8eU7y2Cw/wy3lYVccAe+lZM0MMzv73xu4g==
+X-Received: by 2002:ac2:4f02:: with SMTP id k2mr39851314lfr.265.1634133467547;
+        Wed, 13 Oct 2021 06:57:47 -0700 (PDT)
+Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
+        by smtp.gmail.com with ESMTPSA id z20sm1336791lfh.306.2021.10.13.06.57.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 06:57:47 -0700 (PDT)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     bbrezillon@kernel.org, arno@natisbad.org, schalla@marvell.com,
+        sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com
+Cc:     linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH] include: marvell: octeontx2: build error: unknown type name 'u64'
+Date:   Wed, 13 Oct 2021 15:57:43 +0200
+Message-Id: <20211013135743.3826594-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-13_05,2021-10-13_02,2020-04-07_01
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-STM32MP15 complies with the OTG 2.0. Set OTG revision accordingly. It is
-useful for the of_usb_update_otg_caps() routine to check and update
-otg_rev to the lower value between DT and provided params.
+Building an allmodconfig kernel arm64 kernel, the following build error
+shows up:
 
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
----
-Changes in v2:
-- set otg_rev in otg_caps structure directly
----
- drivers/usb/dwc2/params.c | 2 ++
- 1 file changed, 2 insertions(+)
+In file included from drivers/crypto/marvell/octeontx2/cn10k_cpt.c:4:
+include/linux/soc/marvell/octeontx2/asm.h:38:15: error: unknown type name 'u64'
+   38 | static inline u64 otx2_atomic64_fetch_add(u64 incr, u64 *ptr)
+      |               ^~~
 
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index 99d3b62..d300ae3 100644
---- a/drivers/usb/dwc2/params.c
-+++ b/drivers/usb/dwc2/params.c
-@@ -176,6 +176,7 @@ static void dwc2_set_stm32mp15_fsotg_params(struct dwc2_hsotg *hsotg)
+Include linux/types.h in asm.h so the compiler knows what the type
+'u64' are.
+
+Fixes: af3826db74d1 ("octeontx2-pf: Use hardware register for CQE count")
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ include/linux/soc/marvell/octeontx2/asm.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/linux/soc/marvell/octeontx2/asm.h b/include/linux/soc/marvell/octeontx2/asm.h
+index 0f79fd7f81a1..d683251a0b40 100644
+--- a/include/linux/soc/marvell/octeontx2/asm.h
++++ b/include/linux/soc/marvell/octeontx2/asm.h
+@@ -5,6 +5,7 @@
+ #ifndef __SOC_OTX2_ASM_H
+ #define __SOC_OTX2_ASM_H
  
- 	p->otg_caps.hnp_support = false;
- 	p->otg_caps.srp_support = false;
-+	p->otg_caps.otg_rev = 0x200;
- 	p->speed = DWC2_SPEED_PARAM_FULL;
- 	p->host_rx_fifo_size = 128;
- 	p->host_nperio_tx_fifo_size = 96;
-@@ -197,6 +198,7 @@ static void dwc2_set_stm32mp15_hsotg_params(struct dwc2_hsotg *hsotg)
- 
- 	p->otg_caps.hnp_support = false;
- 	p->otg_caps.srp_support = false;
-+	p->otg_caps.otg_rev = 0x200;
- 	p->activate_stm_id_vb_detection = !device_property_read_bool(hsotg->dev, "usb-role-switch");
- 	p->host_rx_fifo_size = 440;
- 	p->host_nperio_tx_fifo_size = 256;
++#include <linux/types.h>
+ #if defined(CONFIG_ARM64)
+ /*
+  * otx2_lmt_flush is used for LMT store operation.
 -- 
-2.7.4
+2.33.0
 
