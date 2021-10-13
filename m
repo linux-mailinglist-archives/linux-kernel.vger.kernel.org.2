@@ -2,119 +2,598 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDAE42C847
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A7E42C84A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238397AbhJMSFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 14:05:07 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:34493 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238258AbhJMSFF (ORCPT
+        id S238406AbhJMSFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 14:05:30 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:56750 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229814AbhJMSF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 14:05:05 -0400
-Received: by mail-ua1-f46.google.com with SMTP id h4so6306471uaw.1;
-        Wed, 13 Oct 2021 11:03:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T1C46/jpqxsz6tI+W9Ak1jYU3EAHgNQuUCSEWH/baCg=;
-        b=o3eR/nuf/QOUa+P5Zohqh13O2y7fM44EmaducPjlPlpJl0PxWEgjobRXYnTL4ufWIU
-         fsrzOnYQRtwOemvOQdl6l8Zv+kW5eHdElavtPrw+PN1Bfe1LFvPZpZDEDHzrN/idcEEX
-         ZlVltthBjj5W5RFeYPDviXqq9ounuCyoJeJyJt9JsvKQUgF2o3/fY05RA5N4Isw7gbtp
-         X4YjjT/Vx5W0wbn2gsPmglTWYX++SrhT7UXINaUPqkNyr+8Fn8XkZ1aZemEeQZgWDw4g
-         vhUu/NM7w0/WrqK/Tw8vklqW5KLxU4JefpK7fckVCIPSeVGMjy6yFgMfOIW9ZxVufhJC
-         gYvw==
-X-Gm-Message-State: AOAM5305SS3P3dSozrUhQU8jVLD0e/YL9tLrNDGEJcQEFRkPQj5yLl2A
-        0HofuVAU67E0feMZa7L5QhrYHV9BF3BHAClNj2o=
-X-Google-Smtp-Source: ABdhPJzWe6D7GpmHL+uu9iSk9ZLP4zKoa4o6l86DroGgxk7GjStl2R3PiVqSWJKWWCbyRLA3ar1NMSHf1zJJNcPf5Fo=
-X-Received: by 2002:a67:ac04:: with SMTP id v4mr772084vse.50.1634148180292;
- Wed, 13 Oct 2021 11:03:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210913170436.243-1-alexander.helms.jy@renesas.com> <20210913170436.243-2-alexander.helms.jy@renesas.com>
-In-Reply-To: <20210913170436.243-2-alexander.helms.jy@renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 13 Oct 2021 20:02:49 +0200
-Message-ID: <CAMuHMdWZp=7sR+dTL0F8o61weLqqC3k1kkemm_PktvyK8+ONmw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] dt-bindings: Add binding for Renesas 8T49N241
-To:     Alex Helms <alexander.helms.jy@renesas.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        david.cater.jc@renesas.com, Michal Simek <michal.simek@xilinx.com>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 13 Oct 2021 14:05:29 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=ashimida@linux.alibaba.com;NM=1;PH=DS;RN=29;SR=0;TI=SMTPD_---0UrijWg1_1634148192;
+Received: from localhost(mailfrom:ashimida@linux.alibaba.com fp:SMTPD_---0UrijWg1_1634148192)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 14 Oct 2021 02:03:20 +0800
+From:   Dan Li <ashimida@linux.alibaba.com>
+To:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        catalin.marinas@arm.com, will@kernel.org, keescook@chromium.org,
+        nathan@kernel.org, ndesaulniers@google.com, tglx@linutronix.de,
+        akpm@linux-foundation.org, samitolvanen@google.com,
+        frederic@kernel.org, rppt@kernel.org, mark.rutland@arm.com,
+        yifeifz2@illinois.edu, rostedt@goodmis.org,
+        viresh.kumar@linaro.org, andreyknvl@gmail.com,
+        colin.king@canonical.com, ojeda@kernel.org,
+        luc.vanoostenryck@gmail.com, elver@google.com,
+        nivedita@alum.mit.edu, ardb@kernel.org
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Dan Li <ashimida@linux.alibaba.com>
+Subject: [PATCH] [PATCH V3]ARM64: SCS: Add gcc plugin to support Shadow Call Stack
+Date:   Thu, 14 Oct 2021 02:03:09 +0800
+Message-Id: <1634148189-29393-1-git-send-email-ashimida@linux.alibaba.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+This patch supports gcc-based SCS protection on ARM64 by adding a plugin.
 
-On Mon, Sep 13, 2021 at 7:05 PM Alex Helms
-<alexander.helms.jy@renesas.com> wrote:
-> Renesas 8T49N241 has 4 outputs, 1 integral and 3 fractional dividers.
-> The 8T49N241 accepts up to two differential or single-ended input clocks
-> and a fundamental-mode crystal input. The internal PLL can lock to either
-> of the input reference clocks or to the crystal to behave as a frequency
-> synthesizer.
->
-> Signed-off-by: Alex Helms <alexander.helms.jy@renesas.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+For each function that x30 will be pushed onto the stack during execution,
+this plugin, similar to gcc's pac implementation, will normally:
+1) insert "str x30, [x18], #8" at the beginning of function's prologue
+2) insert "ldr x30, [x18, #-8]!" immediately before function's
+epilogue return/sibling calls
 
-Thanks for your patch!
+If pac is enabled, scs push/pop will be inserted between paciasp/autiasp.
 
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/renesas,8t49n241.yaml
+At present, this patch has been successfully compiled in the following
+gcc versions based on defconfig with kernel 5.14 and startup normally
+with commands:
 
-> +  reg:
-> +    description: I2C device address
-> +    enum: [ 0x7c, 0x6c, 0x7d, 0x6d, 0x7e, 0x6e, 0x7f, 0x6f ]
+make ARCH=arm64 defconfig
+./scripts/config -e CONFIG_GCC_PLUGINS -e CONFIG_SHADOW_CALL_STACK \
+-e CONFIG_GCC_PLUGIN_SHADOW_CALL_STACK
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
 
-I think this is too strict: according to the datasheet, the full
-device address can be customized when ordering.
+Tested gcc version:
+* 6.3.1
+* 7.3.1
+* 7.5.0
+* 8.2.1
+* 9.2.0
+* 10.3.1
 
-> +examples:
+Signed-off-by: Dan Li <ashimida@linux.alibaba.com>
 
-> +    i2c@0 {
-> +        reg = <0x0 0x100>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        renesas8t49n241_2: clock-generator@6c {
-> +            compatible = "renesas,8t49n241";
-> +            reg = <0x6c>;
-> +            #clock-cells = <1>;
-> +
-> +            clocks = <&xtal>;
-> +            clock-names = "xtal";
-> +
-> +            renesas,settings=[
+---
+V3:
+- fix incorrect description of the compilation option
 
-Missing spaces around equal sign.
+V2:
+- fix incorrect config dependency
+- tested against DYNAMIC_FTRACE_WITH_REGS
+- add support for sibling call
+- add support for ARM64_PTR_AUTH_KERNEL/ARM64_BTI_KERNEL
 
-> +                09 50 00 60 67 C5 6C FF 03 00 30 00 00 01 00 00
+FYI:
+- The kernel compiled by Linaro GCC 7.3-2018.05 runs for more than 10
+days, ltp> 24 hours without crash.
+- This function can be used to test whether the shadow stack is effective:
+//noinline void __noscs scs_test(void)
+noinline void scs_test(void)
+{
+    register unsigned long *sp asm("sp");
+    unsigned long * lr = sp + 1;
 
-[...]
+    asm volatile("":::"x30");
+    *lr = 0;
+}
 
-> +            ];
+when compiled with:
+CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
+CONFIG_ARM64_PTR_AUTH_KERNEL=y
+CONFIG_ARM64_BTI_KERNEL=y
 
-With the above fixed:
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+ffff800010013b60 <scs_test>:
+ffff800010013b60:       d503245f        bti     c
+ffff800010013b64:       d503201f        nop
+ffff800010013b68:       d503201f        nop
+ffff800010013b6c:       d503233f        paciasp
+ffff800010013b70:       f800865e        str     x30, [x18], #8
+ffff800010013b74:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
+ffff800010013b78:       910003fd        mov     x29, sp
+ffff800010013b7c:       910003e0        mov     x0, sp
+ffff800010013b80:       f900041f        str     xzr, [x0, #8]
+ffff800010013b84:       a8c17bfd        ldp     x29, x30, [sp], #16
+ffff800010013b88:       f85f8e5e        ldr     x30, [x18, #-8]!
+ffff800010013b8c:       d50323bf        autiasp
+ffff800010013b90:       d65f03c0        ret
 
-BTW, do you plan to add interrupt and/or GPIO support later?
+If SCS protection is enabled, this function will return normally.
+If the function has __noscs attribute (scs disabled), it will crash due to 0
+address access.
 
-Gr{oetje,eeting}s,
+ Makefile                               |  20 ++-
+ arch/Kconfig                           |  13 +-
+ arch/arm64/Kconfig                     |   4 +-
+ include/linux/compiler-gcc.h           |   4 +
+ scripts/Makefile.gcc-plugins           |   7 +
+ scripts/gcc-plugins/Kconfig            |   9 +
+ scripts/gcc-plugins/arm64_scs_plugin.c | 299 +++++++++++++++++++++++++++++++++
+ scripts/gcc-plugins/gcc-common.h       |   4 +
+ 8 files changed, 346 insertions(+), 14 deletions(-)
+ create mode 100644 scripts/gcc-plugins/arm64_scs_plugin.c
 
-                        Geert
-
+diff --git a/Makefile b/Makefile
+index 61741e9..8039e61 100644
+--- a/Makefile
++++ b/Makefile
+@@ -923,12 +923,6 @@ KBUILD_CFLAGS_KERNEL += -ffunction-sections -fdata-sections
+ LDFLAGS_vmlinux += --gc-sections
+ endif
+ 
+-ifdef CONFIG_SHADOW_CALL_STACK
+-CC_FLAGS_SCS	:= -fsanitize=shadow-call-stack
+-KBUILD_CFLAGS	+= $(CC_FLAGS_SCS)
+-export CC_FLAGS_SCS
+-endif
+-
+ ifdef CONFIG_LTO_CLANG
+ ifdef CONFIG_LTO_CLANG_THIN
+ CC_FLAGS_LTO	:= -flto=thin -fsplit-lto-unit
+@@ -1034,6 +1028,20 @@ include-$(CONFIG_GCC_PLUGINS)	+= scripts/Makefile.gcc-plugins
+ 
+ include $(addprefix $(srctree)/, $(include-y))
+ 
++ifdef CONFIG_SHADOW_CALL_STACK
++
++ifdef CONFIG_CC_IS_CLANG
++CC_FLAGS_SCS	:= -fsanitize=shadow-call-stack
++endif
++
++ifdef CONFIG_CC_IS_GCC
++CC_FLAGS_SCS	:= $(ENABLE_SHADOW_CALL_STACK_PLUGIN)
++endif
++
++KBUILD_CFLAGS	+= $(CC_FLAGS_SCS)
++export CC_FLAGS_SCS
++endif
++
+ # scripts/Makefile.gcc-plugins is intentionally included last.
+ # Do not add $(call cc-option,...) below this line. When you build the kernel
+ # from the clean source tree, the GCC plugins do not exist at this point.
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 98db634..1065cd0 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -593,14 +593,15 @@ config ARCH_SUPPORTS_SHADOW_CALL_STACK
+ 	  switching.
+ 
+ config SHADOW_CALL_STACK
+-	bool "Clang Shadow Call Stack"
+-	depends on CC_IS_CLANG && ARCH_SUPPORTS_SHADOW_CALL_STACK
++	bool "Shadow Call Stack"
++	depends on ARCH_SUPPORTS_SHADOW_CALL_STACK
+ 	depends on DYNAMIC_FTRACE_WITH_REGS || !FUNCTION_GRAPH_TRACER
+ 	help
+-	  This option enables Clang's Shadow Call Stack, which uses a
+-	  shadow stack to protect function return addresses from being
+-	  overwritten by an attacker. More information can be found in
+-	  Clang's documentation:
++	  This option enables Shadow Call Stack(supported as a compiler
++	  option in the case of clang, supported as a plugin in the case
++	  of gcc), which uses a shadow stack to protect function return
++	  addresses from being overwritten by an attacker.
++	  More information can be found in Clang's documentation:
+ 
+ 	    https://clang.llvm.org/docs/ShadowCallStack.html
+ 
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 62c3c1d..da2da8c 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -81,7 +81,7 @@ config ARM64
+ 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC
+ 	select ARCH_SUPPORTS_HUGETLBFS
+ 	select ARCH_SUPPORTS_MEMORY_FAILURE
+-	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
++	select ARCH_SUPPORTS_SHADOW_CALL_STACK if (CC_HAVE_SHADOW_CALL_STACK || GCC_PLUGIN_SHADOW_CALL_STACK)
+ 	select ARCH_SUPPORTS_LTO_CLANG if CPU_LITTLE_ENDIAN
+ 	select ARCH_SUPPORTS_LTO_CLANG_THIN
+ 	select ARCH_SUPPORTS_CFI_CLANG
+@@ -1062,7 +1062,7 @@ config ARCH_HAS_FILTER_PGPROT
+ 
+ # Supported by clang >= 7.0
+ config CC_HAVE_SHADOW_CALL_STACK
+-	def_bool $(cc-option, -fsanitize=shadow-call-stack -ffixed-x18)
++	def_bool (CC_IS_CLANG && $(cc-option, -fsanitize=shadow-call-stack -ffixed-x18))
+ 
+ config PARAVIRT
+ 	bool "Enable paravirtualization code"
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index cb9217f..426c8e5 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -50,6 +50,10 @@
+ #define __latent_entropy __attribute__((latent_entropy))
+ #endif
+ 
++#if defined(SHADOW_CALL_STACK_PLUGIN) && !defined(__CHECKER__)
++#define __noscs __attribute__((no_shadow_call_stack))
++#endif
++
+ /*
+  * calling noreturn functions, __builtin_unreachable() and __builtin_trap()
+  * confuse the stack allocation in gcc, leading to overly large stack
+diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
+index 952e468..b45bd8c 100644
+--- a/scripts/Makefile.gcc-plugins
++++ b/scripts/Makefile.gcc-plugins
+@@ -46,6 +46,13 @@ ifdef CONFIG_GCC_PLUGIN_ARM_SSP_PER_TASK
+ endif
+ export DISABLE_ARM_SSP_PER_TASK_PLUGIN
+ 
++gcc-plugin-$(CONFIG_GCC_PLUGIN_SHADOW_CALL_STACK) += arm64_scs_plugin.so
++gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_SHADOW_CALL_STACK)	\
++		+= -DSHADOW_CALL_STACK_PLUGIN
++ifdef CONFIG_GCC_PLUGIN_SHADOW_CALL_STACK
++    ENABLE_SHADOW_CALL_STACK_PLUGIN += -fplugin-arg-arm64_scs_plugin-enable
++endif
++
+ # All the plugin CFLAGS are collected here in case a build target needs to
+ # filter them out of the KBUILD_CFLAGS.
+ GCC_PLUGINS_CFLAGS := $(strip $(addprefix -fplugin=$(objtree)/scripts/gcc-plugins/, $(gcc-plugin-y)) $(gcc-plugin-cflags-y))
+diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
+index ab9eb4c..92f7f76 100644
+--- a/scripts/gcc-plugins/Kconfig
++++ b/scripts/gcc-plugins/Kconfig
+@@ -19,6 +19,15 @@ menuconfig GCC_PLUGINS
+ 
+ if GCC_PLUGINS
+ 
++config GCC_PLUGIN_SHADOW_CALL_STACK
++	bool "Plugin for ARM64 Shadow Call Stack"
++	depends on (!CC_HAVE_SHADOW_CALL_STACK) && ARM64
++	help
++	  This plugin is used to support kernel CONFIG_SHADOW_CALL_STACK
++	  compiled by gcc. Its principle is basically the same as that of
++	  CLANG.
++	  For more information, please refer to "config SHADOW_CALL_STACK"
++
+ config GCC_PLUGIN_CYC_COMPLEXITY
+ 	bool "Compute the cyclomatic complexity of a function" if EXPERT
+ 	depends on !COMPILE_TEST	# too noisy
+diff --git a/scripts/gcc-plugins/arm64_scs_plugin.c b/scripts/gcc-plugins/arm64_scs_plugin.c
+new file mode 100644
+index 0000000..bb72baa
+--- /dev/null
++++ b/scripts/gcc-plugins/arm64_scs_plugin.c
+@@ -0,0 +1,299 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "gcc-common.h"
++
++#define v_info(fmt, ...)							\
++	do {									\
++		if (verbose)							\
++			fprintf(stderr, "[SCS]:" fmt,  ## __VA_ARGS__);	\
++	} while (0)
++
++#define NOSCS_ATTR_STR  "no_shadow_call_stack"
++#define SCS_ASM_PUSH_STR "str x30, [x18], #8\n\t"
++#define SCS_ASM_POP_STR  "ldr x30, [x18, #-8]!\n\t"
++
++__visible int plugin_is_GPL_compatible;
++
++static struct plugin_info arm64_scs_plugin_info = {
++	.version	= "20210926vanilla",
++	.help		= "enable\tactivate plugin\n"
++			  "verbose\tprint all debug infos\n",
++};
++
++static bool verbose;
++
++#if BUILDING_GCC_VERSION >= 10001
++enum insn_code paciasp_num = CODE_FOR_paciasp;
++enum insn_code autiasp_num = CODE_FOR_autiasp;
++#elif BUILDING_GCC_VERSION >= 7003
++enum insn_code paciasp_num = CODE_FOR_pacisp;
++enum insn_code autiasp_num = CODE_FOR_autisp;
++#else
++enum insn_code paciasp_num = CODE_FOR_nothing;
++enum insn_code autiasp_num = CODE_FOR_nothing;
++#define TARGET_ARMV8_3 0
++#endif
++
++static rtx_insn * (*old_gen_prologue)(void);
++static rtx_insn * (*old_gen_epilogue)(void);
++static rtx_insn * (*old_gen_sibcall_epilogue)(void);
++
++static rtx gen_scs_push(location_t loc)
++{
++	rtx insn = gen_rtx_ASM_INPUT_loc(VOIDmode, ggc_strdup(SCS_ASM_PUSH_STR), loc);
++
++	MEM_VOLATILE_P(insn) = 1;
++	return insn;
++}
++
++static rtx gen_scs_pop(location_t loc)
++{
++	rtx insn = gen_rtx_ASM_INPUT_loc(VOIDmode, ggc_strdup(SCS_ASM_POP_STR), loc);
++
++	MEM_VOLATILE_P(insn) = 1;
++	return insn;
++}
++
++static bool scs_func_ignored(void)
++{
++	bool is_ignored;
++
++#if BUILDING_GCC_VERSION >= 8002
++	is_ignored = !cfun->machine->frame.emit_frame_chain;
++#else
++	is_ignored = !frame_pointer_needed;
++#endif
++
++	/*
++	 * Functions that do not push LR into stack are not protected.
++	 * Functions that call __builin_eh_return is not protected(consistent with gcc's PAC).
++	 */
++	if (is_ignored || crtl->calls_eh_return) {
++		v_info("No protection code inserted into func:%s in file:%s\n",
++			get_name(current_function_decl), main_input_filename);
++		return 1;
++	}
++
++	/* Functions with attribute NOSCS_ATTR_STR need to be unprotected */
++	if (lookup_attribute(NOSCS_ATTR_STR, DECL_ATTRIBUTES(current_function_decl))) {
++		v_info("No protection code inserted into %s func:%s in file:%s\n", NOSCS_ATTR_STR,
++				get_name(current_function_decl), main_input_filename);
++		return 1;
++	}
++
++	return 0;
++}
++
++static rtx_insn *search_insn(enum insn_code code, rtx_insn *seq)
++{
++	rtx_insn *insn;
++
++	for (insn = get_insns(); insn; insn = NEXT_INSN(insn)) {
++		if (code == recog(PATTERN(insn), insn, 0))
++			return insn;
++	}
++
++	return NULL;
++}
++
++static bool scs_return_address_signing_enabled(void)
++{
++#if BUILDING_GCC_VERSION >= 7003
++	return aarch64_return_address_signing_enabled();
++#else
++	return false;
++#endif
++}
++
++static rtx_insn *scs_gen_prologue(void)
++{
++	rtx_insn *seq = NULL, *mark;
++	rtx tmp;
++	bool ret_sign_enabled;
++
++	if (old_gen_prologue)
++		seq = old_gen_prologue();
++
++	if ((!seq) || scs_func_ignored())
++		return seq;
++
++	ret_sign_enabled = scs_return_address_signing_enabled();
++	tmp = gen_scs_push(RESERVED_LOCATION_COUNT);
++
++	start_sequence();
++	emit_insn(seq);
++
++	if (ret_sign_enabled) {
++		/* For functions with pac enabled, insert scs push after the 'paciasp' insn */
++		mark = search_insn(paciasp_num, get_insns());
++		if (!mark)
++			error(G_("Non-standard insn seqs found:\n"
++				"__noscs attr should be added on func:%s,file:%s\n"),
++				get_name(current_function_decl), main_input_filename);
++
++		emit_insn_after(tmp, mark);
++	} else {
++		/* For functions that do not enable pac, insert scs push at the start of insns */
++		mark = get_insns();
++		emit_insn_before(tmp, mark);
++	}
++
++	seq = get_insns();
++	end_sequence();
++	return seq;
++}
++
++static rtx_insn *scs_gen_epilogue(void)
++{
++	rtx_insn *seq = NULL, *mark;
++	rtx tmp;
++	bool ret_sign_enabled;
++
++	if (old_gen_epilogue)
++		seq = old_gen_epilogue();
++
++	if ((!seq) || scs_func_ignored())
++		return seq;
++
++	ret_sign_enabled = scs_return_address_signing_enabled();
++	tmp = gen_scs_pop(RESERVED_LOCATION_COUNT);
++
++	start_sequence();
++	emit_insn(seq);
++
++	if (ret_sign_enabled && (!TARGET_ARMV8_3)) {
++		/* For functions with pac enabled, if 'autiasp' is used in epilogue
++		 * (!TARGET_ARMV8_3), scs pop should inserted before this insn.
++		 */
++		mark = search_insn(autiasp_num, get_insns());
++	} else {
++		/* For functions do not enabled pac or used 'retaa' as pac check,
++		 * scs pop inserted before the last 'return" insn
++		 */
++		mark = get_last_insn();
++	}
++
++	if (!mark)
++		error(G_("Non-standard insn seqs found:\n"
++			"__noscs attr should be added on func:%s,file:%s\n"),
++			get_name(current_function_decl), main_input_filename);
++
++	emit_insn_before(tmp, mark);
++
++	seq = get_insns();
++	end_sequence();
++	return seq;
++}
++
++static rtx_insn *scs_gen_sibcall_epilogue(void)
++{
++	rtx_insn *seq = NULL, *mark;
++	rtx tmp;
++	bool ret_sign_enabled;
++
++	if (old_gen_sibcall_epilogue)
++		seq = old_gen_sibcall_epilogue();
++
++	if ((!seq) || scs_func_ignored())
++		return seq;
++
++	ret_sign_enabled = scs_return_address_signing_enabled();
++	tmp = gen_scs_pop(RESERVED_LOCATION_COUNT);
++
++	start_sequence();
++	emit_insn(seq);
++
++	if (ret_sign_enabled) {
++		/* If pac is enabled, sibling_call will always use 'autiasp' as pac check */
++		mark = search_insn(autiasp_num, get_insns());
++		if (!mark)
++			error(G_("Non-standard insn seqs found:\n"
++				"__noscs attr should be added on func:%s,file:%s\n"),
++				get_name(current_function_decl), main_input_filename);
++		emit_insn_before(tmp, mark);
++	} else {
++		/* If pac is disabled, insert scs pop at the end of insns */
++		mark = get_last_insn();
++		emit_insn_after(tmp, mark);
++	}
++
++	seq = get_insns();
++	end_sequence();
++
++	return seq;
++}
++
++static void callback_before_start_unit(void *gcc_data __unused, void *user_data __unused)
++{
++	old_gen_prologue = targetm.gen_prologue;
++	old_gen_epilogue = targetm.gen_epilogue;
++	old_gen_sibcall_epilogue = targetm.gen_sibcall_epilogue;
++
++	targetm.gen_prologue = scs_gen_prologue;
++	targetm.gen_epilogue = scs_gen_epilogue;
++	targetm.gen_sibcall_epilogue = scs_gen_sibcall_epilogue;
++}
++
++static tree handle_noscs_attribute(tree *node, tree name, tree args __unused, int flags,
++		bool *no_add_attrs)
++{
++	/* NOSCS_ATTR_STR can only be used for function declarations */
++	switch (TREE_CODE(*node)) {
++	case FUNCTION_DECL:
++		break;
++	default:
++		error(G_("%qE attribute can be applies to function decl only (%qE)"), name, *node);
++		gcc_unreachable();
++	}
++
++	*no_add_attrs = false;
++	return NULL_TREE;
++}
++
++static struct attribute_spec noscs_attr = {};
++
++static void scs_register_attributes(void *event_data __unused, void *data __unused)
++{
++	noscs_attr.name	= NOSCS_ATTR_STR;
++	noscs_attr.decl_required = true;
++	noscs_attr.handler = handle_noscs_attribute;
++	register_attribute(&noscs_attr);
++}
++
++__visible int plugin_init(struct plugin_name_args *plugin_info, struct plugin_gcc_version *version)
++{
++	int i;
++	bool enable = false;
++	const char * const plugin_name = plugin_info->base_name;
++	const int argc = plugin_info->argc;
++	const struct plugin_argument * const argv = plugin_info->argv;
++
++	if (!plugin_default_version_check(version, &gcc_version)) {
++		error(G_("Incompatible gcc/plugin versions"));
++		return 1;
++	}
++
++	for (i = 0; i < argc; ++i) {
++		if (!strcmp(argv[i].key, "enable")) {
++			enable = true;
++			continue;
++		}
++		if (!strcmp(argv[i].key, "verbose")) {
++			verbose = true;
++			continue;
++		}
++		error(G_("unknown option '-fplugin-arg-%s-%s'"), plugin_name, argv[i].key);
++	}
++
++	if (!enable) {
++		v_info("Plugin disabled for file:%s\n", main_input_filename);
++		return 0;
++	}
++
++	register_callback(plugin_name, PLUGIN_INFO, NULL, &arm64_scs_plugin_info);
++
++	register_callback(plugin_name, PLUGIN_ATTRIBUTES, scs_register_attributes, NULL);
++
++	register_callback(plugin_name, PLUGIN_START_UNIT, callback_before_start_unit, NULL);
++
++	return 0;
++}
+diff --git a/scripts/gcc-plugins/gcc-common.h b/scripts/gcc-plugins/gcc-common.h
+index 0c08761..7251b00 100644
+--- a/scripts/gcc-plugins/gcc-common.h
++++ b/scripts/gcc-plugins/gcc-common.h
+@@ -27,6 +27,7 @@
+ #include "except.h"
+ #include "function.h"
+ #include "toplev.h"
++#include "insn-codes.h"
+ #if BUILDING_GCC_VERSION >= 5000
+ #include "expr.h"
+ #endif
+@@ -535,6 +536,9 @@ static inline void ipa_remove_stmt_references(symtab_node *referring_node, gimpl
+ }
+ #endif
+ 
++/* RTL related */
++extern int recog(rtx, rtx_insn *, int *);
++
+ #if BUILDING_GCC_VERSION < 6000
+ #define get_inner_reference(exp, pbitsize, pbitpos, poffset, pmode, punsignedp, preversep, pvolatilep, keep_aligning)	\
+ 	get_inner_reference(exp, pbitsize, pbitpos, poffset, pmode, punsignedp, pvolatilep, keep_aligning)
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.7.4
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
