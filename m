@@ -2,146 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BC242CD5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B3B42CD57
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhJMWKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 18:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbhJMWKw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 18:10:52 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF2EC061570;
-        Wed, 13 Oct 2021 15:08:48 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S230474AbhJMWKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 18:10:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230251AbhJMWKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 18:10:41 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4HV6B02yKzzQjmX;
-        Thu, 14 Oct 2021 00:08:40 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Message-ID: <e7983fec-f4f1-6d31-5e46-f5a427fe55cc@v0yd.nl>
-Date:   Thu, 14 Oct 2021 00:08:31 +0200
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C558610D0;
+        Wed, 13 Oct 2021 22:08:37 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 18:08:34 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
+        samitolvanen@google.com, ndesaulniers@google.com,
+        kernel-team@android.com, Ingo Molnar <mingo@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing/cfi: Fix cmp_entries_* functions signature
+ mismatch
+Message-ID: <20211013180834.73e2653e@gandalf.local.home>
+In-Reply-To: <20210923170908.2184404-1-kaleshsingh@google.com>
+References: <20210923170908.2184404-1-kaleshsingh@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Subject: Re: [PATCH] mwifiex: Add quirk resetting the PCI bridge on MS Surface
- devices
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Brian Norris <briannorris@chromium.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Victor Ding <victording@google.com>
-References: <20211012153921.GA1754629@bhelgaas>
-From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
-In-Reply-To: <20211012153921.GA1754629@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4CD6117FC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 17:39, Bjorn Helgaas wrote:
-> [+cc Vidya, Victor, ASPM L1.2 config issue; beginning of thread:
-> https://lore.kernel.org/all/20211011134238.16551-1-verdre@v0yd.nl/]
-> 
-> On Tue, Oct 12, 2021 at 10:55:03AM +0200, Jonas Dreßler wrote:
->> On 10/11/21 19:02, Pali Rohár wrote:
->>> On Monday 11 October 2021 15:42:38 Jonas Dreßler wrote:
->>>> The most recent firmware (15.68.19.p21) of the 88W8897 PCIe+USB card
->>>> reports a hardcoded LTR value to the system during initialization,
->>>> probably as an (unsuccessful) attempt of the developers to fix firmware
->>>> crashes. This LTR value prevents most of the Microsoft Surface devices
->>>> from entering deep powersaving states (either platform C-State 10 or
->>>> S0ix state), because the exit latency of that state would be higher than
->>>> what the card can tolerate.
->>>
->>> This description looks like a generic issue in 88W8897 chip or its
->>> firmware and not something to Surface PCIe controller or Surface HW. But
->>> please correct me if I'm wrong here.
->>>
->>> Has somebody 88W8897-based PCIe card in non-Surface device and can check
->>> or verify if this issue happens also outside of the Surface device?
->>>
->>> It would be really nice to know if this is issue in Surface or in 8897.
->>
->> Fairly sure the LTR value is something that's reported by the firmware
->> and will be the same on all 8897 devices (as mentioned in my reply to Bjorn
->> the second-latest firmware doesn't report that fixed LTR value).
-> 
-> I suggested earlier that the LTR values reported by the device might
-> depend on the electrical characteristics of the link and hence be
-> platform-dependent, but I think that might be wrong.
-> 
-> The spec (PCIe r5.0, sec 5.5.4) does say that some of the *other*
-> parameters related to L1.2 entry are platform-dependent:
-> 
->    Prior to setting either or both of the enable bits for L1.2, the
->    values for TPOWER_ON, Common_Mode_Restore_Time, and, if the ASPM
->    L1.2 Enable bit is to be Set, the LTR_L1.2_THRESHOLD (both Value
->    and Scale fields) must be programmed.  The TPOWER_ON and
->    Common_Mode_Restore_Time fields must be programmed to the
->    appropriate values based on the components and AC coupling
->    capacitors used in the connection linking the two components. The
->    determination of these values is design implementation specific.
-> 
-> These T_POWER_ON, Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD
-> values are in the L1 PM Substates Control registers.
-> 
-> I don't know of a way for the kernel or the device firmware to learn
-> these circuit characteristics or the appropriate values, so I think
-> only system firmware can program the L1 PM Substates Control registers
-> (a corollary of this is that I don't see a way for hot-plugged devices
-> to *ever* use L1.2).
-> 
-> I wonder if this reset quirk works because pci_reset_function() saves
-> and restores much of config space, but it currently does *not* restore
-> the L1 PM Substates capability, so those T_POWER_ON,
-> Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD values probably get
-> cleared out by the reset.  We did briefly save/restore it [1], but we
-> had to revert that because of a regression that AFAIK was never
-> resolved [2].  I expect we will eventually save/restore this, so if
-> the quirk depends on it *not* being restored, that would be a problem.
-> 
-> You should be able to test whether this is the critical thing by
-> clearing those registers with setpci instead of doing the reset.  Per
-> spec, they can only be modified when L1.2 is disabled, so you would
-> have to disable it via sysfs (for the endpoint, I think)
-> /sys/.../l1_2_aspm and /sys/.../l1_2_pcipm, do the setpci on the root
-> port, then re-enable L1.2.
-> 
-> [1] https://git.kernel.org/linus/4257f7e008ea
-> [2] https://lore.kernel.org/all/20210127160449.2990506-1-helgaas@kernel.org/
-> 
+On Thu, 23 Sep 2021 17:09:07 +0000
+Kalesh Singh <kaleshsingh@google.com> wrote:
 
-Hmm, interesting, thanks for those links.
 
-Are you sure the config values will get lost on the reset? If we only reset
-the port by going into D3hot and back into D0, the device will remain powered
-and won't lose the config space, will it?
+This finally popped up into my queue (from all my traveling and running of
+conferences :-p )
 
-Because when I reset the bridge using pci_reset_function() (ie. pci_pm_reset())
-or when I suspend and resume the laptop, all the L1 PM Substates registers are
-still the same as before, nothing is lost.
 
-That said, our new mwifiex_pcie_reset_d3cold_quirk() puts *both the card and
-the bridge* into D3cold, so I gave that a try, and indeed the cards L1 Substate
-Ctl registers are cleared out (so T_CommonMode, LTR1.2_Threshold and T_PwrOn),
-but the bridge still has its values, no clue why that's the case.
+> If CONFIG_CFI_CLANG=y, attempting to read an event histogram will cause
+> the kernel to panic due to failed CFI check.
+> 
+>     1. echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
+>     2. cat >> events/sched/sched_switch/hist
+
+Do you mean:
+
+	  2. cat events/sched/sched_switch/hist
+
+?
+
+Small nits below.
+
+>     3. kernel panices on attempting to read hist
+> 
+> This happens because the sort() function expects a generic
+> int (*)(const void *, const void *) pointer for the compare function.
+> To prevent this CFI failure, change tracing map cmp_entries_* function
+> signatures to match this.
+> 
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> ---
+>  kernel/trace/tracing_map.c | 40 ++++++++++++++++++++++----------------
+>  1 file changed, 23 insertions(+), 17 deletions(-)
+> 
+> diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
+> index d6bddb157ef2..a8c80ebbf9da 100644
+> --- a/kernel/trace/tracing_map.c
+> +++ b/kernel/trace/tracing_map.c
+> @@ -834,19 +834,21 @@ int tracing_map_init(struct tracing_map *map)
+>  	return err;
+>  }
+>  
+> -static int cmp_entries_dup(const struct tracing_map_sort_entry **a,
+> -			   const struct tracing_map_sort_entry **b)
+> +static int cmp_entries_dup(const void *__a, const void *__b)
+
+Instead of __a and __b, have it as: 
+
+	const void *A, const void *B
+
+
+>  {
+>  	int ret = 0;
+> +	const struct tracing_map_sort_entry *a
+> +		= *(const struct tracing_map_sort_entry **)__a;
+> +	const struct tracing_map_sort_entry *b
+> +		= *(const struct tracing_map_sort_entry **)__b;
+
+Please put these before the ret, we like to have a "upside down xmas tree"
+type of declaration, where longer lines come before shorter ones. Also,
+this can be "prettified" as:
+
+	const struct tracing_map_sort_entry **pa = A;
+	const struct tracing_map_sort_entry **pb = B;
+	const struct tracing_map_sort_entry *a = *pa;
+	const struct tracing_map_sort_entry *b = *pb;
+	int ret = 0;
+
+>  
+> -	if (memcmp((*a)->key, (*b)->key, (*a)->elt->map->key_size))
+> +	if (memcmp(a->key, b->key, a->elt->map->key_size))
+>  		ret = 1;
+>  
+>  	return ret;
+>  }
+>  
+> -static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
+> -			   const struct tracing_map_sort_entry **b)
+> +static int cmp_entries_sum(const void *__a, const void *__b)
+>  {
+>  	const struct tracing_map_elt *elt_a, *elt_b;
+>  	struct tracing_map_sort_key *sort_key;
+> @@ -854,9 +856,13 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
+>  	tracing_map_cmp_fn_t cmp_fn;
+>  	void *val_a, *val_b;
+>  	int ret = 0;
+> +	const struct tracing_map_sort_entry *a
+> +		= *(const struct tracing_map_sort_entry **)__a;
+> +	const struct tracing_map_sort_entry *b
+> +		= *(const struct tracing_map_sort_entry **)__b;
+
+Same here.
+
+>  
+> -	elt_a = (*a)->elt;
+> -	elt_b = (*b)->elt;
+> +	elt_a = a->elt;
+> +	elt_b = b->elt;
+>  
+>  	sort_key = &elt_a->map->sort_key;
+>  
+> @@ -873,8 +879,7 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
+>  	return ret;
+>  }
+>  
+> -static int cmp_entries_key(const struct tracing_map_sort_entry **a,
+> -			   const struct tracing_map_sort_entry **b)
+> +static int cmp_entries_key(const void *__a, const void *__b)
+>  {
+>  	const struct tracing_map_elt *elt_a, *elt_b;
+>  	struct tracing_map_sort_key *sort_key;
+> @@ -882,9 +887,13 @@ static int cmp_entries_key(const struct tracing_map_sort_entry **a,
+>  	tracing_map_cmp_fn_t cmp_fn;
+>  	void *val_a, *val_b;
+>  	int ret = 0;
+> +	const struct tracing_map_sort_entry *a
+> +		= *(const struct tracing_map_sort_entry **)__a;
+> +	const struct tracing_map_sort_entry *b
+> +		= *(const struct tracing_map_sort_entry **)__b;
+
+And here.
+
+Thanks, and sorry for the long delay.
+
+-- Steve
+
+>  
+> -	elt_a = (*a)->elt;
+> -	elt_b = (*b)->elt;
+> +	elt_a = a->elt;
+> +	elt_b = b->elt;
+>  
+>  	sort_key = &elt_a->map->sort_key;
+>  
+> @@ -989,10 +998,8 @@ static void sort_secondary(struct tracing_map *map,
+>  			   struct tracing_map_sort_key *primary_key,
+>  			   struct tracing_map_sort_key *secondary_key)
+>  {
+> -	int (*primary_fn)(const struct tracing_map_sort_entry **,
+> -			  const struct tracing_map_sort_entry **);
+> -	int (*secondary_fn)(const struct tracing_map_sort_entry **,
+> -			    const struct tracing_map_sort_entry **);
+> +	int (*primary_fn)(const void *, const void *);
+> +	int (*secondary_fn)(const void *, const void *);
+>  	unsigned i, start = 0, n_sub = 1;
+>  
+>  	if (is_key(map, primary_key->field_idx))
+> @@ -1061,8 +1068,7 @@ int tracing_map_sort_entries(struct tracing_map *map,
+>  			     unsigned int n_sort_keys,
+>  			     struct tracing_map_sort_entry ***sort_entries)
+>  {
+> -	int (*cmp_entries_fn)(const struct tracing_map_sort_entry **,
+> -			      const struct tracing_map_sort_entry **);
+> +	int (*cmp_entries_fn)(const void *, const void *);
+>  	struct tracing_map_sort_entry *sort_entry, **entries;
+>  	int i, n_entries, ret;
+>  
+> 
+> base-commit: 58e2cf5d794616b84f591d4d1276c8953278ce24
+
