@@ -2,133 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0E242B28D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C0642B28F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236551AbhJMCPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 22:15:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231543AbhJMCPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 22:15:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30DE560E0C;
-        Wed, 13 Oct 2021 02:13:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634091192;
-        bh=KiCOpXJtLtS5DgA89L5VHZVV6seYAK79kT/+26LXy+U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=rbsD9cK4wZlyphGRjfr1ysvki7scvQqV5s3dfffPqIGaP/N/LkDsfLMB+d5CagphS
-         4M4P783zd6dkXrVo7WRLzDUp/GDS2oqlaABys/puDUZ1JQ45KFZ5KXbai237P1udeA
-         fPugekLr4JfA5M5S/mMyCGYl6R8tVZrXA7SZXhZL6mMg3bwwGcWh40vCqGEHo14LI7
-         tJBBW68o+EI+RR10wK8fdNONA1j4Qp7GF2qZ6SPG3aJX4L7KiEjcgez7IKGkl6DiCw
-         2wjGw63KR530UJz0DU17dQu12Spzf/cU+dG+gA33w5ZmtyYyQcR+ClKZWwnYeIKLEo
-         co8UKkygxVpqw==
-Date:   Tue, 12 Oct 2021 21:13:10 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Naveen Naidu <naveennaidu479@gmail.com>
-Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        bhelgaas@google.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        "moderated list:PCI DRIVER FOR AARDVARK (Marvell Armada 3700)" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 09/22] PCI: aardvark: Use SET_PCI_ERROR_RESPONSE() when
- device not found
-Message-ID: <20211013021310.GA1864069@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211012155928.3nuyzgrgvyjm2v3r@theprophet>
+        id S232913AbhJMCSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 22:18:16 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:14507 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234846AbhJMCSP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 22:18:15 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20211013021610epoutp0197ae4cbacca47c7eb57fd8b51f6ab0c1~tdXGS_ZLk1331113311epoutp01P
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 02:16:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20211013021610epoutp0197ae4cbacca47c7eb57fd8b51f6ab0c1~tdXGS_ZLk1331113311epoutp01P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1634091370;
+        bh=iBlDvHB/OsQgZeiVFRhnDt3AUZmGw5uX/LXkxr2NQ2U=;
+        h=Subject:Reply-To:From:To:Date:References:From;
+        b=iKbonuHCFzZHkNZnM0i7tppseK3P8qq9ViFB4Un7CVc8eLqFCt/kDh9H6GPeA7Ysc
+         2LsQRPAi7mNqAfVxKplMZzDYBqZSQtBor0SxZFiScyikSP/JXTZJEmzw8MpZCCCxQP
+         1STnwnWz302Xm9B9WPwQo+/juiV4IvHKMUxYsmtQ=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20211013021609epcas2p4af48ddd86dbd7542c9053cd5f078d8ec~tdXF2Po-q2449924499epcas2p4M;
+        Wed, 13 Oct 2021 02:16:09 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.36.91]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4HTbjy0smyz4x9QZ; Wed, 13 Oct
+        2021 02:16:06 +0000 (GMT)
+X-AuditID: b6c32a45-4c1ff700000025f5-7f-6166416389a4
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2C.45.09717.36146616; Wed, 13 Oct 2021 11:16:03 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH RESEND v2] block-map: added error handling for
+ bio_copy_kern()
+Reply-To: j-young.choi@samsung.com
+Sender: Jinyoung CHOI <j-young.choi@samsung.com>
+From:   Jinyoung CHOI <j-young.choi@samsung.com>
+To:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20211013021602epcms2p408b3eb79d4861bf8c340542ac92c23ec@epcms2p4>
+Date:   Wed, 13 Oct 2021 11:16:02 +0900
+X-CMS-MailID: 20211013021602epcms2p408b3eb79d4861bf8c340542ac92c23ec
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGKsWRmVeSWpSXmKPExsWy7bCmqW6yY1qiwf5dLBar7/azWbw8pGlx
+        esIiJove/q1sFntvaVtc3jWHzYHNY/MKLY/LZ0s9+rasYvT4vEkugCUq2yYjNTEltUghNS85
+        PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaLGSQlliTilQKCCxuFhJ386m
+        KL+0JFUhI7+4xFYptSAlp8C8QK84Mbe4NC9dLy+1xMrQwMDIFKgwITvj3qwNLAV/+CqePdjK
+        3MD4nKuLkYNDQsBE4kWbQxcjF4eQwA5GiZW/ehhB4rwCghJ/dwh3MXJyCAsESDx+tIAZxBYS
+        UJI4t2YWWImwgIHErV5zkDCbgJ7EzyUz2EDGiAhcYJRYPGEnWL2EAK/EjPanLBC2tMT25VsZ
+        IWwNiR/LeqFqRCVurn7LDmO/PzYfqkZEovXeWagaQYkHP3dDxSUlGidMg5pZLnF1+RwWkMUS
+        Ah2MEpeX3IRK6Etc69gIZvMK+Eqsmn6ODcRmEVCVuNJwGWqZi8S8P1dZQWxmAXmJ7W/nMIM8
+        xiygKbF+lz4keJQljtxigXmlYeNvdnQ2swCfRMfhv3DxHfOeMEG0qkksajKCCMtIfD08H6rE
+        Q2LmnA7mCYyKsxDhPAvJCbMQTljAyLyKUSy1oDg3PbXYqMAQHrPJ+bmbGMEJUMt1B+Pktx/0
+        DjEycTAeYpTgYFYS4TUEpish3pTEyqrUovz4otKc1OJDjKZAz09klhJNzgem4LySeEMTSwMT
+        MzNDcyNTA3Mlcd65/5wShQTSE0tSs1NTC1KLYPqYODilGphEV13+zGXdO69HPe/5B/dvujvY
+        F+rkPeVxlRDZ13HZTOX8JOkU3TANpRfv1IxiBQ7O41p2NkszOF1uJt//nxKdjt96Hmbc/fSh
+        rVrloJbngmfFh+7ceuhxVnfq9gdnFBbl8MZOZ19yd8fvrBNPTlXMfr2xSsVy6Smb+yZpflei
+        Lz7ZvMtjEedN5pftxd9F7l4+c9/GkK0v/qDfceaSlIeK2e2tAtxTNz1L6lRsy3C37/u3Zs1e
+        JWuReofZ1htyjttOvn/D0tN8aUXoMudJT6VufPkhMoFdt39TyaeyImbx37dX9N6d3RGxUrZo
+        nmdpugybhcZfVh87M4kfn6MNK6+5sz8Xz6uZEckgo62oVKDEUpyRaKjFXFScCAAZNUxGCQQA
+        AA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20211013014256epcms2p5485187a369a9f8c74c2b3ab925df88fb
+References: <CGME20211013014256epcms2p5485187a369a9f8c74c2b3ab925df88fb@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 09:29:28PM +0530, Naveen Naidu wrote:
-> On 11/10, Pali Rohár wrote:
-> > On Monday 11 October 2021 23:55:35 Naveen Naidu wrote:
-> > > On 11/10, Pali Rohár wrote:
-> > > > On Monday 11 October 2021 23:26:33 Naveen Naidu wrote:
-> > > > > An MMIO read from a PCI device that doesn't exist or doesn't respond
-> > > > > causes a PCI error.  There's no real data to return to satisfy the
-> > > > > CPU read, so most hardware fabricates ~0 data.
-> > > > > 
-> > > > > Use SET_PCI_ERROR_RESPONSE() to set the error response, when a faulty
-> > > > > read occurs.
-> > > > > 
-> > > > > This helps unify PCI error response checking and make error check
-> > > > > consistent and easier to find.
-> > > > > 
-> > > > > Compile tested only.
-> > > > > 
-> > > > > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> > > > > ---
-> > > > >  drivers/pci/controller/pci-aardvark.c | 8 ++++----
-> > > > >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> > > > > index 596ebcfcc82d..dc2f820ef55f 100644
-> > > > > --- a/drivers/pci/controller/pci-aardvark.c
-> > > > > +++ b/drivers/pci/controller/pci-aardvark.c
-> > > > > @@ -894,7 +894,7 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
-> > > > >  	int ret;
-> > > > >  
-> > > > >  	if (!advk_pcie_valid_device(pcie, bus, devfn)) {
-> > > > > -		*val = 0xffffffff;
-> > > > > +		SET_PCI_ERROR_RESPONSE(val);
-> > > > 
-> > > > Hello! Now I'm looking at this macro, and should not it depends on
-> > > > "size" argument? If doing 8-bit or 16-bit read operation then should not
-> > > > it rather sets only low 8 bits or low 16 bits to ones?
+When new pages are allocated to bio through alloc_page() in
+bio_copy_kern(), the pages must be freed in error handling after that.
 
-> > Function itself is declared as:
-> > 
-> > static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn, int where, int size, u32 *val);
-> > 
-> > And in "size" argument is stored number of bytes, kind of read operation
-> > (read byte, read word, read dword). In *val is then stored read value.
-> > For byte operation, just low 8 bits in *val variable are set.
-> > 
-> > Because *val is u32 it means that typeof(*val) is always 4 independently
-> > of the "size" argument.
-> > 
-> > For example other project U-Boot has also pci-aardvark.c driver and
-> > U-Boot has for (probably same) purpose pci_get_ff() macro, see:
-> > https://source.denx.de/u-boot/u-boot/-/blob/v2021.10/drivers/pci/pci-aardvark.c#L367
-> > 
-> > I'm not saying if current approach to always sets 0xffffffff
-> > (independently of "size" argument) is correct or not as I do not know
-> > it too! I'm just giving example that this PCI code has very similar
-> > implementation of other project (U-Boot) which sets number of ones based
-> > on the size argument.
+There is little chance of an error occurring in blk_rq_append_bio(), but
+in the code flow, pages additionally allocated to bio must be released.
 
-I don't think there's an issue here.  advk_pcie_rd_conf() can set the
-whole u32 to 0xffffffff regardless of the "size" value because
-pci_bus_read_config_byte() and pci_bus_read_config_word() extract out
-the part they need:
+V2:
+        - replace int with bool
 
-  res = bus->ops->read(bus, devfn, pos, len, &data);              \
-  *value = (type)data;                                            \
+Signed-off-by: Jinyoung Choi <j-young.choi@samsung.com>
+---
+ block/blk-map.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-where "type" is u8 or u16 (this is hard to grep for; it's in the
-PCI_OP_READ() macro in drivers/pci/access.c).
+diff --git a/block/blk-map.c b/block/blk-map.c
+index 4526adde0156..b137a2f569f8 100644
+--- a/block/blk-map.c
++++ b/block/blk-map.c
+@@ -628,6 +628,7 @@ int blk_rq_map_kern(struct request_queue *q, struct request *rq, void *kbuf,
+        int reading = rq_data_dir(rq) == READ;
+        unsigned long addr = (unsigned long) kbuf;
+        struct bio *bio;
++       bool do_copy;
+        int ret;
 
-> I am not sure too, if we would like to have something like pci_get_ff()
-> which sets the return mask based on the size.
+        if (len > (queue_max_hw_sectors(q) << 9))
+@@ -635,8 +636,9 @@ int blk_rq_map_kern(struct request_queue *q, struct request *rq, void *kbuf,
+        if (!len || !kbuf)
+                return -EINVAL;
 
-I'd like to see how pci_get_ff() works because this is potentially a
-widespread, invasive change and it's always better to copy a good
-existing design than to make up something new.
+-       if (!blk_rq_aligned(q, addr, len) || object_is_on_stack(kbuf) ||
+-           blk_queue_may_bounce(q))
++       do_copy = !blk_rq_aligned(q, addr, len) || object_is_on_stack(kbuf) ||
++               blk_queue_may_bounce(q);
++       if (do_copy)
+                bio = bio_copy_kern(q, kbuf, len, gfp_mask, reading);
+        else
+                bio = bio_map_kern(q, kbuf, len, gfp_mask);
+@@ -648,8 +650,11 @@ int blk_rq_map_kern(struct request_queue *q, struct request *rq, void *kbuf,
+        bio->bi_opf |= req_op(rq);
 
-> > Anyway, I very like this your idea to have a macro which purpose is to
-> > explicitly indicate error during config read operation! And to unify all
-> > drivers to use same style for signalling config read error.
-
-I definitely think there's a lot of value in making this consistent
-*somehow*, so thanks for working on this!
-
-Bjorn
+        ret = blk_rq_append_bio(rq, bio);
+-       if (unlikely(ret))
++       if (unlikely(ret)) {
++               if (do_copy)
++                       bio_free_pages(bio);
+                bio_put(bio);
++       }
+        return ret;
+ }
+ EXPORT_SYMBOL(blk_rq_map_kern);
+--
+2.25.1
