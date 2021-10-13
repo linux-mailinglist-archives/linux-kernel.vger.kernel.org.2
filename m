@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED35342BFCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A1542C049
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232148AbhJMMXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:23:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51360 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230236AbhJMMXg (ORCPT
+        id S233695AbhJMMos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232366AbhJMMom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:23:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634127693;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aI/a1CuIplLBzfM7K3SKE+P3jJtMmkhDmL35+rhqKP0=;
-        b=C4LauQ+o9aqPqS48sQDqIGOFb3fS8HOAbMFB29oMK8POZgiuOaYWLRuebzXGiGK8AmR/XG
-        AuWoBsNVLkljQaCkEAVHvBG4Gm0snKVtKB7fKY6RKopb4UC3dqsYCW47oNIg++IY9rYAzC
-        ybbeuJnS8h8TdT7821V4Iz7rA8q863M=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-tuALkpf8NCG9-SPeCijViw-1; Wed, 13 Oct 2021 08:21:32 -0400
-X-MC-Unique: tuALkpf8NCG9-SPeCijViw-1
-Received: by mail-wr1-f71.google.com with SMTP id 10-20020a5d47aa000000b001610cbda93dso1788341wrb.23
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:21:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aI/a1CuIplLBzfM7K3SKE+P3jJtMmkhDmL35+rhqKP0=;
-        b=bUeRSH40GCWRf8o6dGMrBCsVFIhyHUUd3/WXXeLk+IpjoXUQl5kSvFCTaHKEFUK2Dd
-         Z2C533yARz60cTvpxfJiarauFKdPF7CpB73tQBCNfDNfPmJFkcXREYQgaxmVL6H/x1ao
-         CB+70l1CkyIN8GhGD+3RLF2PRdCpeF62saFqf4Qa7RD69oVo6VihYoWCIaeQca2DWd2s
-         RbE3TErIO66Ksr03MSb595K9SXvctJqAKNkNnDs/uGbSjQjXVo16mtZmCWVR6Ym/Jbyd
-         PdsH8MR07zqG49PV9evrbxblUknTd4XPHIg834ftdPVrISHBk1IoJbohZ7MQlyPTLrHq
-         2lMQ==
-X-Gm-Message-State: AOAM531TtD8EmWpJ9QI1c/8ALIruuysY+PJ0ns3iBTWAvGqxA5gLSE0o
-        DllXWXUGFWMglDHLQ/A56u7LUkuUC6vkbxn4/VZPKTnkh1xkYKM+fz+0F+F4LIKHNBcAIVr77lZ
-        vx+ca3s/IsI/1a7f1YCO7YFuW
-X-Received: by 2002:adf:a390:: with SMTP id l16mr39148256wrb.291.1634127691196;
-        Wed, 13 Oct 2021 05:21:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzTkyD1UVKzRrFV61FHdBE4Y7buV45IeIqTmyybPN8AIOWvYr+YRHziMwJhfqqGLO65loliiQ==
-X-Received: by 2002:adf:a390:: with SMTP id l16mr39148230wrb.291.1634127690995;
-        Wed, 13 Oct 2021 05:21:30 -0700 (PDT)
-Received: from redhat.com ([2.55.30.112])
-        by smtp.gmail.com with ESMTPSA id q14sm5174087wmq.4.2021.10.13.05.21.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 05:21:30 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 08:21:26 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Xie Yongji <xieyongji@bytedance.com>, jasowang@redhat.com,
-        stefanha@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kevin Wolf <kwolf@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v5] virtio-blk: Add validation for block size in config
- space
-Message-ID: <20211013082025-mutt-send-email-mst@kernel.org>
-References: <20210809101609.148-1-xieyongji@bytedance.com>
- <20211004112623-mutt-send-email-mst@kernel.org>
- <20211005062359-mutt-send-email-mst@kernel.org>
- <20211011114041.GB16138@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011114041.GB16138@lst.de>
+        Wed, 13 Oct 2021 08:44:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1F4C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:42:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=25CpRf+MDs6TpGnqPg2LQG77DWwYq5KOBT2rW1Xzan4=; b=Z0bzRMwY4wG8kohKlF9zmZ74tD
+        HtWbVR0rDI6NN7LG279ZdCvNXiho9Omk1Bl3nlJgZ2fOGhweSpJHftHF22Lro+wxDohDp7OiqqIEb
+        oApgmnPDYOZBdLAjyXvaowc5Wc09rPKikU7blDrahdi5Mlfrn9CXvtgNCq1HErHjNUP1OltzUI8W9
+        fI4QWQDCQa0Z0d7proGsDBniaxjlceTShw3kZSXBBIMUYzRP6i7QdLkS3V6bhoutfCyF8i1Lmwk7s
+        TO1IPVl742A5Nzq6a5BDef+5aqN6lS4xbDS7aIOZ4IJYbCkFbQVAHDMG/wbvda59Ea3XcUpNWGfIl
+        pAXE+dNQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1madYM-007QZR-82; Wed, 13 Oct 2021 12:40:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D9CEC30072B;
+        Wed, 13 Oct 2021 14:40:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 9CE842083A874; Wed, 13 Oct 2021 14:40:13 +0200 (CEST)
+Message-ID: <20211013122217.304265366@infradead.org>
+User-Agent: quilt/0.66
+Date:   Wed, 13 Oct 2021 14:22:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org, jpoimboe@redhat.com, andrew.cooper3@citrix.com
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        alexei.starovoitov@gmail.com, ndesaulniers@google.com
+Subject: [PATCH 0/9] x86: Rewrite the retpoline rewrite logic
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 01:40:41PM +0200, Christoph Hellwig wrote:
-> On Tue, Oct 05, 2021 at 06:42:43AM -0400, Michael S. Tsirkin wrote:
-> > Stefan also pointed out this duplicates the logic from 
-> > 
-> >         if (blksize < 512 || blksize > PAGE_SIZE || !is_power_of_2(blksize))
-> >                 return -EINVAL;
-> > 
-> > 
-> > and a bunch of other places.
-> > 
-> > 
-> > Would it be acceptable for blk layer to validate the input
-> > instead of having each driver do it's own thing?
-> > Maybe inside blk_queue_logical_block_size?
-> 
-> I'm pretty sure we want down that before.  Let's just add a helper
-> just for that check for now as part of this series.  Actually validating
-> in in blk_queue_logical_block_size seems like a good idea, but returning
-> errors from that has a long tail.
+Hi,
 
-Xie Yongji, I think I will revert this patch for now - can you
-please work out adding that helper and using it in virtio?
+These patches rewrite the way retpolines are rewritten. Currently objtool emits
+alternative entries for most retpoline calls. However trying to extend that led
+to trouble (ELF files are horrid).
 
-Thanks,
+Therefore completely overhaul this and have objtool emit a .retpoline_sites
+section that lists all compiler generated retpoline thunk calls. Then the
+kernel can do with them as it pleases.
 
--- 
-MST
+Notably it will:
+
+ - rewrite them to indirect instructions for !RETPOLINE
+ - rewrite them to lfence; indirect; for RETPOLINE_AMD,
+   where size allows (boo clang!)
+
+Specifically, the !RETPOLINE case can now also deal with the clang-special
+conditional-indirect-tail-call:
+
+  Jcc __x86_indirect_thunk_\reg.
+
+Finally, also update the x86 BPF jit to catch up to recent times and do these
+same things.
+
+All this should help improve performance by removing an indirection.
+
+The series has been booted in kvm using 'debug-alternative spectre_v2=off' and
+'debug-alternative spectre_v2=retpoline,amd' on a x86_64
+defconfig+kvm_guest.config build. IOW, early days.
+
+---
+ arch/x86/include/asm/GEN-for-each-reg.h |  10 +-
+ arch/x86/include/asm/alternative.h      |   1 +
+ arch/x86/kernel/alternative.c           | 186 +++++++++++++++++++++++++++++++-
+ arch/x86/kernel/cpu/bugs.c              |   7 --
+ arch/x86/kernel/module.c                |   9 +-
+ arch/x86/kernel/vmlinux.lds.S           |  12 +++
+ arch/x86/lib/retpoline.S                |  42 --------
+ arch/x86/net/bpf_jit_comp.c             |  18 ++--
+ tools/objtool/arch/x86/decode.c         | 126 +++++-----------------
+ tools/objtool/elf.c                     |  84 ---------------
+ tools/objtool/include/objtool/elf.h     |   1 -
+ 11 files changed, 246 insertions(+), 250 deletions(-)
 
