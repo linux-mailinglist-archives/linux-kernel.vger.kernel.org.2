@@ -2,117 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A9942CAC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C91442CAC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhJMUSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:18:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52080 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231654AbhJMUSH (ORCPT
+        id S229675AbhJMUS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhJMUS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:18:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634156163;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A+zpM57tek64fM0J8Kk21GMnK3D9CQVRBLWrNmjTLBk=;
-        b=Tsp8DZiBjBJRpJ/QOtPk2n1a+2UNLkhxisZpIGaVQU6TX6yDSblKnXJtRKJJx7mONYxO3l
-        nbHtWaxLqDA4VTVRpi0jsp3G3dpvPvaW0G9mHzAQfDAFfX64Vu8p4bLjKS4Qn3MMtC9yrb
-        VfoagieMOZ3J1n/AP96iZLIdR5eoO3U=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-417-d1qu7EByOZ2to8GrksjByA-1; Wed, 13 Oct 2021 16:16:02 -0400
-X-MC-Unique: d1qu7EByOZ2to8GrksjByA-1
-Received: by mail-qk1-f199.google.com with SMTP id j6-20020a05620a288600b0045e5d85ca17so2753302qkp.16
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:16:02 -0700 (PDT)
+        Wed, 13 Oct 2021 16:18:57 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6FAC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:16:54 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id m21so3379961pgu.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:16:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5yhRH7ZIJi4Rd6WTmMMqH8HhEZQLNXc5e/9FRtAhMOI=;
+        b=RPhDaWnpurS4y7tVtRZqV2m7TT/CvyExa80zu6eKOfi+Uxq6OHkuPWKuzBu6usovry
+         1r5rS6U2o3QdPYKrrldUS3PG46VJM5XJ2jtd33eGezktpZLITFB62sVzB1xF+QWmQaYs
+         4lw6stQbe55qE7qBX+H95iI+3MJ7iWrKq5aThQoS+CDOFbq9aHteipRRBoAwV4uM/anD
+         EZ86zFuK/mnrh84e5NkEyIliobHoUE58WGdSy5se484Rd0wh2bLKfWmvsE6lHQ/99GMd
+         jfvaDnPWztORPtxmDG6KJGEGfMa2WvnYpQvEZrq/5p6G0eQupghkiidJ69V+q6DshQJJ
+         eHpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=A+zpM57tek64fM0J8Kk21GMnK3D9CQVRBLWrNmjTLBk=;
-        b=BC8legzgtxGvcNQIhTM63jTEzJ2MdyhmmLSEg1uOFeum+c5VtBiPMl2eahEbsST2qc
-         6//MIHhmb1KLhsLZf+jgFy1t3HEJP2wxAA/7iMP/0mHH7Y7Q9NQF/tHjeAIIyEDVJDnD
-         C34A0R7yO+ZWwt/ylQTQDeq2YYPw7fVnenFxqg0GzifGLUwntC6L/C6Qcovgt7FT2Gxh
-         /K+lTFTqbbDD6BzDURJ9jyLHL5Q7VeS77Q8TenJ1T4kmbiPxvZQgAUX8l8bH6ZuVHexd
-         aH1r5AQp+r4/60WJb9dtWoqNLFmvFNH3JjyWs2CnT+7DLxBJrUWTKxsOJYftqrXb/a7k
-         37pQ==
-X-Gm-Message-State: AOAM533A5s+7mI2Ww/6MlIEhRag4RV/HCTOja8si5RNs3sbYt/xPR8X2
-        cpYzp5GFu/bKMID3qJRFDi5re39R6/FGH5yB7Djd2xFltmOU9D3+dSWIwWIs4rzBtvR5QBqxCAb
-        Cpe++HRp6+L5iisM/fWhxMAYL
-X-Received: by 2002:a37:aa8f:: with SMTP id t137mr1211820qke.198.1634156161612;
-        Wed, 13 Oct 2021 13:16:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy74jjRoajSLKzNqUdfBxS05mC89jBZk/pRT2d3PNPU6Fs6A8FRejmJ8RMTMfQ+lsyO79ahHA==
-X-Received: by 2002:a37:aa8f:: with SMTP id t137mr1211803qke.198.1634156161390;
-        Wed, 13 Oct 2021 13:16:01 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id d129sm294866qkf.136.2021.10.13.13.16.00
+        bh=5yhRH7ZIJi4Rd6WTmMMqH8HhEZQLNXc5e/9FRtAhMOI=;
+        b=XmHAihkctkkk2Kwqro+wkTmpGJFPMK8gVP8e5J3aT4SN/jzX+2BfzFWQwfMfk8zw8m
+         hrVxdTpnXpbiuDqey/BlwXQ0bR9pKkgSUEU5yJ/JwCp9kS2NGU1VSwukYnXhRbMynecy
+         SvVlRVTTO4t98pRmK0mk3NSe7hA1m3nistKTplhAlB77ZOwQ/0RU71LlteAG0FPT8cp0
+         rDbK4pdhu5kti2j+vo3adUELKUwlyFLhFEqXhPUbz5XV+kI6Xb90EL0F2LthUrigrp1a
+         c4Z4nrJLI+ebLDiRQlX6fXuuxdOaF5vvYOoGWepkPWQ/2IBBdlz/jJHp9S0sh2tOLytV
+         iM0w==
+X-Gm-Message-State: AOAM532yXtuCx7+6+nzSe19Y35daJ39d1rpfamR9lkCYrhkwiCSjQAAK
+        K6ivAjSr4RS+TUdzWBtP9+/DPg==
+X-Google-Smtp-Source: ABdhPJydTqRd+TbelV+KMJzjHnbhI2cqYnqRbRh8getW270LAhsuC1uWiMUAmXUve3gaAGCtai4VyQ==
+X-Received: by 2002:a63:7c5b:: with SMTP id l27mr393227pgn.227.1634156213632;
+        Wed, 13 Oct 2021 13:16:53 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id y3sm334520pjg.7.2021.10.13.13.16.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 13:16:01 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 13:15:58 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com
-Subject: Re: [PATCH 3/9] x86/asm: Fix register order
-Message-ID: <20211013201558.xwvsisgnrirbbckf@treble>
-References: <20211013122217.304265366@infradead.org>
- <20211013123644.882036544@infradead.org>
+        Wed, 13 Oct 2021 13:16:53 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 20:16:49 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 39/45] KVM: SVM: Introduce ops for the post gfn
+ map and unmap
+Message-ID: <YWc+sRwHxEmcZZxB@google.com>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-40-brijesh.singh@amd.com>
+ <YWYm/Gw8PbaAKBF0@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211013123644.882036544@infradead.org>
+In-Reply-To: <YWYm/Gw8PbaAKBF0@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 02:22:20PM +0200, Peter Zijlstra wrote:
-> Ensure the register order is correct; this allows for easy translation
-> between register number and trampoline and vice-versa.
+On Wed, Oct 13, 2021, Sean Christopherson wrote:
+> On Fri, Aug 20, 2021, Brijesh Singh wrote:
+> > When SEV-SNP is enabled in the guest VM, the guest memory pages can
+> > either be a private or shared. A write from the hypervisor goes through
+> > the RMP checks. If hardware sees that hypervisor is attempting to write
+> > to a guest private page, then it triggers an RMP violation #PF.
+> > 
+> > To avoid the RMP violation, add post_{map,unmap}_gfn() ops that can be
+> > used to verify that its safe to map a given guest page. Use the SRCU to
+> > protect against the page state change for existing mapped pages.
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> SRCU isn't protecting anything.  The synchronize_srcu_expedited() in the PSC code
+> forces it to wait for existing maps to go away, but it doesn't prevent new maps
+> from being created while the actual RMP updates are in-flight.  Most telling is
+> that the RMP updates happen _after_ the synchronize_srcu_expedited() call.
 
-It would be wise to add a comment saying the register order is critical
-to the functioning of the system and shouldn't be changed.
+Argh, another goof on my part.  Rereading prior feedback, I see that I loosely
+suggested SRCU as a possible solution.  That was a bad, bad suggestion.  I think
+(hope) I made it offhand without really thinking it through.  SRCU can't work in
+this case, because the whole premise of Read-Copy-Update is that there can be
+multiple copies of the data.  That simply can't be true for the RMP as hardware
+operates on a single table.
 
-> ---
->  arch/x86/include/asm/GEN-for-each-reg.h |   10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> --- a/arch/x86/include/asm/GEN-for-each-reg.h
-> +++ b/arch/x86/include/asm/GEN-for-each-reg.h
-> @@ -1,11 +1,12 @@
->  #ifdef CONFIG_64BIT
->  GEN(rax)
-> -GEN(rbx)
->  GEN(rcx)
->  GEN(rdx)
-> +GEN(rbx)
-> +GEN(rsp)
-> +GEN(rbp)
->  GEN(rsi)
->  GEN(rdi)
-> -GEN(rbp)
->  GEN(r8)
->  GEN(r9)
->  GEN(r10)
-> @@ -16,10 +17,11 @@ GEN(r14)
->  GEN(r15)
->  #else
->  GEN(eax)
-> -GEN(ebx)
->  GEN(ecx)
->  GEN(edx)
-> +GEN(ebx)
-> +GEN(esp)
-> +GEN(ebp)
->  GEN(esi)
->  GEN(edi)
-> -GEN(ebp)
->  #endif
-
--- 
-Josh
-
+In the future, please don't hesitate to push back on and/or question suggestions,
+especially those that are made without concrete examples, i.e. are likely off the
+cuff.  My goal isn't to set you up for failure :-/
