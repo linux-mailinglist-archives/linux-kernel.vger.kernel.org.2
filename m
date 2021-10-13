@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FBE42CC2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B5A42CC1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhJMU5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:57:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229773AbhJMU5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:57:38 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B2C8611AD;
-        Wed, 13 Oct 2021 20:55:35 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1malHi-0069mp-04; Wed, 13 Oct 2021 16:55:34 -0400
-Message-ID: <20211013205533.836644549@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Wed, 13 Oct 2021 16:51:13 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Yordan Karadzhov <y.karadz@gmail.com>
-Subject: [PATCH v2 2/2] selftests/ftrace: Update test for more eprobe removal process
-References: <20211013205111.587708359@goodmis.org>
+        id S229920AbhJMUzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:55:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46754 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229897AbhJMUzI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 16:55:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634158384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N3Ys0GKSzSbqDhdpxCV91fHChV1yr5umjrGeyF6XK/E=;
+        b=Fnfhwgzp0qPuK8wZKN0GKsh1kZWiLCCjZ0o76l6kYRgAL5khCSbVaLsrztdb4KXHclyj8/
+        Gsr8CMfTq3utxTvGLeX1ztZyqHzCRU6C3xulO2w9aMGmOtsPCqqpDihKFITHKmu8M3TEzo
+        2ya7pw8j/7QEMySbDCeabViZO+U1U38=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-jwoc5FqvOCqCyP9KVSIweg-1; Wed, 13 Oct 2021 16:53:03 -0400
+X-MC-Unique: jwoc5FqvOCqCyP9KVSIweg-1
+Received: by mail-qv1-f69.google.com with SMTP id t12-20020a05621421ac00b00382ea49a7cbso3829709qvc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 13:53:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N3Ys0GKSzSbqDhdpxCV91fHChV1yr5umjrGeyF6XK/E=;
+        b=aL6hr9PAQ304rQ4913dxg1HvEWkRVZim+6SYNtxIoGN4PIJYJ6ISZ/cmSYbM3yH1uO
+         7gn/BY05G9XVLzRtQQDvGBELEEz+A2RuHmrJ5TuyHHAgzS7iibdASxOGA1xU9F7nxpo6
+         F8eiZDBhTWJqLEtzg0ZpveGB4Ii97rmawAd72IeRfEf6YmaNTJQRR1m18syop571hYJA
+         qp2dh+DAnT6ekMtueFWlRhoCEpaY7G4KJXuNdZ7A2AiQVsgfP0unfLXVeSgKpqi08YUV
+         Fe3EvuRykpOiarn5DMiQwYSwJLokMTEVR8G84YXclrkoKNITqR/scj8EBBXiYyFwRESb
+         3how==
+X-Gm-Message-State: AOAM530/46S0I9btYUFHYof7+oDc6uevaLWPgJSKZnMYJJ25XVjR+gfk
+        H8S8pQHhNQBPxl9kUIRe2qk0PgUWU7485XNDaMoglTzjT4/FHQQUn15Yo62SPoeOhns1d83cAoc
+        ymkoGv+n5iAf9vUeGPvHk5oB3
+X-Received: by 2002:a05:622a:1343:: with SMTP id w3mr1918846qtk.203.1634158382741;
+        Wed, 13 Oct 2021 13:53:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKOVyFEEy+K+cN6AS/kNLt0G8AYlja8L6t11WipMXDhmobIe6FumGFVQGEZeh9tiF6qPU4xw==
+X-Received: by 2002:a05:622a:1343:: with SMTP id w3mr1918823qtk.203.1634158382511;
+        Wed, 13 Oct 2021 13:53:02 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id s185sm349026qke.93.2021.10.13.13.53.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 13:53:02 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 13:52:59 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
+Message-ID: <20211013205259.44cvvaxiexiff5w5@treble>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123645.002402102@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211013123645.002402102@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Wed, Oct 13, 2021 at 02:22:21PM +0200, Peter Zijlstra wrote:
+>  	/*
+> +	 * Rewrite the retpolines, must be done before alternatives since
+> +	 * those can rewrite the retpoline thunks.
+> +	 */
 
-The removal of eprobes was broken and missed in testing. Add various ways
-to remove eprobes that are considered acceptable to the testing process to
-catch when/if they break again.
+Why exactly is that a problem?  This code doesn't read the thunks.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- .../test.d/dynevent/add_remove_eprobe.tc      | 54 ++++++++++++++++++-
- 1 file changed, 52 insertions(+), 2 deletions(-)
+BTW, CALL_NOSPEC results in a retpoline site in .altinstr_replacement:
 
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc
-index 5f5b2ba3e557..60c02b482be8 100644
---- a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_eprobe.tc
-@@ -11,8 +11,8 @@ SYSTEM="syscalls"
- EVENT="sys_enter_openat"
- FIELD="filename"
- EPROBE="eprobe_open"
--
--echo "e:$EPROBE $SYSTEM/$EVENT file=+0(\$filename):ustring" >> dynamic_events
-+OPTIONS="file=+0(\$filename):ustring"
-+echo "e:$EPROBE $SYSTEM/$EVENT $OPTIONS" >> dynamic_events
- 
- grep -q "$EPROBE" dynamic_events
- test -d events/eprobes/$EPROBE
-@@ -37,4 +37,54 @@ echo "-:$EPROBE" >> dynamic_events
- ! grep -q "$EPROBE" dynamic_events
- ! test -d events/eprobes/$EPROBE
- 
-+# test various ways to remove the probe (already tested with just event name)
-+
-+# With group name
-+echo "e:$EPROBE $SYSTEM/$EVENT $OPTIONS" >> dynamic_events
-+grep -q "$EPROBE" dynamic_events
-+test -d events/eprobes/$EPROBE
-+echo "-:eprobes/$EPROBE" >> dynamic_events
-+! grep -q "$EPROBE" dynamic_events
-+! test -d events/eprobes/$EPROBE
-+
-+# With group name and system/event
-+echo "e:$EPROBE $SYSTEM/$EVENT $OPTIONS" >> dynamic_events
-+grep -q "$EPROBE" dynamic_events
-+test -d events/eprobes/$EPROBE
-+echo "-:eprobes/$EPROBE $SYSTEM/$EVENT" >> dynamic_events
-+! grep -q "$EPROBE" dynamic_events
-+! test -d events/eprobes/$EPROBE
-+
-+# With just event name and system/event
-+echo "e:$EPROBE $SYSTEM/$EVENT $OPTIONS" >> dynamic_events
-+grep -q "$EPROBE" dynamic_events
-+test -d events/eprobes/$EPROBE
-+echo "-:$EPROBE $SYSTEM/$EVENT" >> dynamic_events
-+! grep -q "$EPROBE" dynamic_events
-+! test -d events/eprobes/$EPROBE
-+
-+# With just event name and system/event and options
-+echo "e:$EPROBE $SYSTEM/$EVENT $OPTIONS" >> dynamic_events
-+grep -q "$EPROBE" dynamic_events
-+test -d events/eprobes/$EPROBE
-+echo "-:$EPROBE $SYSTEM/$EVENT $OPTIONS" >> dynamic_events
-+! grep -q "$EPROBE" dynamic_events
-+! test -d events/eprobes/$EPROBE
-+
-+# With group name and system/event and options
-+echo "e:$EPROBE $SYSTEM/$EVENT $OPTIONS" >> dynamic_events
-+grep -q "$EPROBE" dynamic_events
-+test -d events/eprobes/$EPROBE
-+echo "-:eprobes/$EPROBE $SYSTEM/$EVENT $OPTIONS" >> dynamic_events
-+! grep -q "$EPROBE" dynamic_events
-+! test -d events/eprobes/$EPROBE
-+
-+# Finally make sure what is in the dynamic_events file clears it too
-+echo "e:$EPROBE $SYSTEM/$EVENT $OPTIONS" >> dynamic_events
-+LINE=`sed -e '/$EPROBE/s/^e/-/' < dynamic_events`
-+test -d events/eprobes/$EPROBE
-+echo "-:eprobes/$EPROBE $SYSTEM/$EVENT $OPTIONS" >> dynamic_events
-+! grep -q "$EPROBE" dynamic_events
-+! test -d events/eprobes/$EPROBE
-+
- clear_trace
+Relocation section [40] '.rela.retpoline_sites' for section [39] '.retpoline_sites' at offset 0x8d28 contains 1 entry:
+  Offset              Type            Value               Addend Name
+  000000000000000000  X86_64_PC32     000000000000000000     +10 .altinstr_replacement
+
+Which I assume we don't want.
+
 -- 
-2.32.0
+Josh
+
