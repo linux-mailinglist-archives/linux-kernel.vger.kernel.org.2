@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD7642C833
+	by mail.lfdr.de (Postfix) with ESMTP id 4245D42C832
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238378AbhJMSAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 14:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
+        id S238468AbhJMSAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 14:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238342AbhJMR75 (ORCPT
+        with ESMTP id S238259AbhJMR74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:59:57 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444D2C061767
+        Wed, 13 Oct 2021 13:59:56 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24666C061570
         for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:57:53 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id d23so3071409pgh.8
+Received: by mail-pg1-x534.google.com with SMTP id q12so156674pgq.11
         for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:57:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Rp/JVQM4Zv+z3R4Pp047EZ8OQIJJhiuVH2ShyShd8FQ=;
-        b=AGf5J4fnB0CIf5oxKxNnebjHnga1X27gio9TLxKDp4cDcoEwjJkAv0RTYHBrcorpdn
-         SDIGdpyqqgIZhXiJZTCki+bz8p6xidCP/Hiysv2vJB9Nael8hi4PJ5xzrSnIVLjQWXII
-         4tUmK26ouXhNJAnDDBCpgiRcfyPY8NmpLk3RU=
+        bh=Kcjz/jZcxE+mB3F2AkM0clWB2nKEsktmPdDaqY7pNLM=;
+        b=L75cOX6+P2Yg2PCtJBc3rDxsjCw7N/NVtlafkSSqqUGzYVqCBBPEt9zMKsJ+BBeqTQ
+         XSfl2ZFSn+uvEQ2K00+x27I4dsgfBWLotrBBXGLMS7tKuUf8Tj6WaQSomgkFtKyLA4W2
+         lCeFO9tpk6CbOVBc2TLZDwUMCfoxm5xa5u7L0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Rp/JVQM4Zv+z3R4Pp047EZ8OQIJJhiuVH2ShyShd8FQ=;
-        b=DMBPtWedGF9v1wPZwaXCDGHQ3AvJ1E2zecNNeGHM8zx1g6NQ+N1ys5Zo98ZoLAg8Wg
-         ekgWGYbWNh7R6vdyX97A6Cd1QmKmTQXfS2bwY/7GY5o3mdx1sUZIv/baiA+7UhfmO1wh
-         MOV+Rwm/PTjNL+3vtQh48/odT6wIZrhh/5OpmURkwtTxxw6K611C8RliuxzOaixNhRQO
-         VMwkVdEx9Fys/s/Z2FDcdq52kVmywqrFJbjfq6i1yUd/pNouIRLnJ62EWozKWEP3L8Yf
-         +6845rF/TC4pMOug+U1+vwe6psDZuOPW/GzbRHQaD93df8wREVLbublWPRIk9gJYrTbx
-         9lsQ==
-X-Gm-Message-State: AOAM533uNFd1+9e604fqlkgGRzj0LAWR26u9kF5hXpaUkKHclTSkK+8h
-        YSVcmvhWUxjj+1JVY3BFeadOLg==
-X-Google-Smtp-Source: ABdhPJzzqggQEfz5rWpsNrPSPD8dksHrIMYyrtHC5TUFXM/iotEJD9Nvzsjyf2oRj3qDSc5gKHiYFQ==
-X-Received: by 2002:a63:e10d:: with SMTP id z13mr442755pgh.375.1634147872778;
+        bh=Kcjz/jZcxE+mB3F2AkM0clWB2nKEsktmPdDaqY7pNLM=;
+        b=ouVlp63YVTzXI4bEgd7soRPrp1/wh4LgjU8kq+I7rYk7zNtVmBSNPP2P9tL7vr54N0
+         r8jI5CyHmwvo5kCEUwSOAqDu5WflHAOwyULKKFkGa7w3fQ8s2QYrWeMdGYIOhC8ZOI+T
+         cquaFF9whYJZP6lew3OCO/jeP6T/p3gtxuGN6AkYOFEyugSxhxRk2zARq+sziOAfQd2x
+         xfHG49k5LPzqfEqze3rRJzNFfaJRa8sbwcudX8+BQguKZQX9/5Le9PK6sNXZStyDjR1H
+         dNE24/zHXLEGe6MvHlCI9qIWf7PumB/qctmaJaAeAyCby8T1Z16hWE5F1YZ3pl5HsKkl
+         v8lg==
+X-Gm-Message-State: AOAM530SU3PIoRPArKEw7E/1sBtMrVsaaw9sEUOsGHfwlmoC6e9eOBHt
+        KCe2tFlIBCSmGU5d06eFCe4sWQ==
+X-Google-Smtp-Source: ABdhPJx3hCeP0/qXzBriQG9RAyOIBhOSahtHSc2nigzi8GBlJyOW45fh2MS5OSF1B4QStfEMj11pPA==
+X-Received: by 2002:a63:2acc:: with SMTP id q195mr450989pgq.45.1634147872623;
         Wed, 13 Oct 2021 10:57:52 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i15sm184365pfq.21.2021.10.13.10.57.51
+        by smtp.gmail.com with ESMTPSA id d9sm162132pgn.64.2021.10.13.10.57.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 13 Oct 2021 10:57:52 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Borislav Petkov <bp@suse.de>
 Cc:     Kees Cook <keescook@chromium.org>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Kristen Carlson Accardi <kristen@linux.intel.com>,
         Tony Luck <tony.luck@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Arnd Bergmann <arnd@arndb.de>, Joerg Roedel <jroedel@suse.de>,
@@ -69,83 +69,153 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Fangrui Song <maskray@google.com>,
         linux-kernel@vger.kernel.org, x86@kernel.org,
         linux-arch@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH 2/4] x86/boot: Allow a "silent" kaslr random byte fetch
-Date:   Wed, 13 Oct 2021 10:57:40 -0700
-Message-Id: <20211013175742.1197608-3-keescook@chromium.org>
+Subject: [PATCH 3/4] x86/boot/compressed: Avoid duplicate malloc() implementations
+Date:   Wed, 13 Oct 2021 10:57:41 -0700
+Message-Id: <20211013175742.1197608-4-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211013175742.1197608-1-keescook@chromium.org>
 References: <20211013175742.1197608-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1845; h=from:subject; bh=QYsHdjNAtpfLq0fC/fv08OJWSBanqdK3WCZTPqw/9/s=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhZx4V4ONsRXTnUoTv5VE1BbZVcnOmEFIIPdvBhYBT k3QraSKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYWceFQAKCRCJcvTf3G3AJpVREA CkYyOkUtZaF+Mud9ViQGaUPLcCI1HQbGZwtEHWyhrvXtV6LhGtQllhonYGicjqofzZPd6VFr3wpfP6 4B4EpTlXgvkr83DGSN0Lh2/z3O2QIrDsz3zXQYwMVVAqWY+9BVuNUgFtpiHrKODBFfcRHVAtCH3Msu hwLWa+7A3XxKUWbpLw2pmyIydVpuPAFZW2JZ/5tZDxhG6UjKgw+hu99phR8lL6cx4PlTt4+Mp1W18g JJfAkLhKJdvmOSAMUIZWqnnw+iM6+9/bVdFzCEJcMHnFsATRc1yVv2IaTkZpVXMLV96PAdgGny4zBk oX6IBB6UB9aj60WoVaONIxaM+ebV2o6HfE5UFP7DmBHA6IPMVUpfK9F5kUWvkKrH71FPqoOwJuc6jH l2Lu8GguqnBYXTRPPTJgOAxt3AahlwxlNlBs6TSRYc6RBGirisMTtlsZjdtbkL2vEnDd2QW6q0O2W+ L75t7fTCJq5Px5dBCU8MDIvhC4MwHyMy3t45oivfYs+4oIPeguiVsxV66z6vS4MryzM+JHT53eZ498 STKepS+eXsnCSzBbZUrxsvbe4Z8kpDR1EI+uII91hWxJxT98GqYesqXbWrevxmMMv7zoS3WsAi3MMG tkQBpRDL7CXB0eol2vprTxzr7eI9rZsWDpskFepd9u98TYVSYf0HFRHyonkA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4454; h=from:subject; bh=hYF77CNx8NXydRq0Sh94JwlUksK5cSbvI41FvGg5UbQ=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhZx4VrL7HD4WV4zwnJZdT6sN2jDPwltje0/KQButA e0RjcEKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYWceFQAKCRCJcvTf3G3AJjoGD/ sGuSJ5GjwOngN6Kzcn20C3dlHYxuKIeUYkhzF7JVQ1n9+cPfhqDVzDkbO+NJHYfvK7zrlGgsa6wtI2 fi7EeRT/FVXdNE356vGVAKnwm8+JqAf8+fMAZCnQAtpMjwF6Wgs9uBhPvRxnKb2AKTXjWqEiwhfTBS QabEnkh5Xo6Dy2QFIJVGPob91BrYShwcIClCE2qTZiAIGbKxS4ia3bHtBPTDXVLNgutIo9Lemw9Htd 70YgUsSCEj0YBclhomTZ4ZMh/hN6yNgXDVo8vnUGrLqtWKsrqAec1NSe11qDqnG2ih+vcoYkivRemG c6TCd9u6BDGU8EIATYPTf577U7csmm4Mdfi29fsUhG58Fg0z9Os2/cZd4LKvAJFZmDmyIQvrnw9Ymt jHGrMQz2/qdikk4WfndV7Pw+tJ7c68L2hHXynezzXebe1LdW2fcuVaeeME1cyF0kjZ9x1lIBw3MBEv Q+OqsZCZ0mSjrL2zFAovH6+vnhA5M1wv34ML2bYsgn/kDHg7SgmIEfzCvi/0p4rk9guAkF+VSMhNQn s/AEh3Knh2JP4VvkKq4gR1of3+iCI8cr5aPhhwppSOvqqJdjozgCHojH4ZZG/m1yiprZBQBWEDVT1n Ax/1g3/3igDo4LbXRABYBefMmZOEFhGay99YNxHgk0tkgX2EXq8bucbu/1Hg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Under earlyprintk, each RNG call produces a debug report line. To support
-the future FGKASLR feature, which will fetch random bytes during function
-shuffling, this is not useful information (each line is identical and
-tells us nothing new), needlessly spamming the console. Instead, allow
-for a NULL "purpose" to suppress the debug reporting.
+The early malloc() and free() implementation in include/linux/decompress/mm.h
+(which is also included by the static decompressors) is static. This is
+fine when the only thing interested in using malloc() is the decompression
+code, but the x86 early boot environment may use malloc() in a couple places,
+leading to a potential collision when the static copies of the available
+memory region ("malloc_ptr") gets reset to the global "free_mem_ptr" value.
+As it happened, the existing usage pattern was accidentally safe because each
+user did 1 malloc() and 1 free() before returning and were not nested:
 
+extract_kernel() (misc.c)
+	choose_random_location() (kaslr.c)
+		mem_avoid_init()
+			handle_mem_options()
+				malloc()
+				...
+				free()
+	...
+	parse_elf() (misc.c)
+		malloc()
+		...
+		free()
+
+Once the future FGKASLR series is added, however, it will insert
+additional malloc() calls local to fgkaslr.c in the middle of
+parse_elf()'s malloc()/free() pair:
+
+	parse_elf() (misc.c)
+		malloc()
+		if (...) {
+			layout_randomized_image(output, &ehdr, phdrs);
+				malloc() <- boom
+				...
+		else
+			layout_image(output, &ehdr, phdrs);
+		free()
+
+To avoid collisions, there must be a single implementation of malloc().
+Adjust include/linux/decompress/mm.h so that visibility can be
+controlled, provide prototypes in misc.h, and implement the functions in
+misc.c. This also results in a small size savings:
+
+$ size vmlinux.before vmlinux.after
+   text    data     bss     dec     hex filename
+8842314     468  178320 9021102  89a6ae vmlinux.before
+8842240     468  178320 9021028  89a664 vmlinux.after
+
+Fixed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/x86/lib/kaslr.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ arch/x86/boot/compressed/kaslr.c |  4 ----
+ arch/x86/boot/compressed/misc.c  |  3 +++
+ arch/x86/boot/compressed/misc.h  |  2 ++
+ include/linux/decompress/mm.h    | 12 ++++++++++--
+ 4 files changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/lib/kaslr.c b/arch/x86/lib/kaslr.c
-index a53665116458..2b3eb8c948a3 100644
---- a/arch/x86/lib/kaslr.c
-+++ b/arch/x86/lib/kaslr.c
-@@ -56,11 +56,14 @@ unsigned long kaslr_get_random_long(const char *purpose)
- 	unsigned long raw, random = get_boot_seed();
- 	bool use_i8254 = true;
+diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
+index 67c3208b668a..411b268bc0a2 100644
+--- a/arch/x86/boot/compressed/kaslr.c
++++ b/arch/x86/boot/compressed/kaslr.c
+@@ -32,10 +32,6 @@
+ #include <generated/utsrelease.h>
+ #include <asm/efi.h>
  
--	debug_putstr(purpose);
--	debug_putstr(" KASLR using");
-+	if (purpose) {
-+		debug_putstr(purpose);
-+		debug_putstr(" KASLR using");
-+	}
+-/* Macros used by the included decompressor code below. */
+-#define STATIC
+-#include <linux/decompress/mm.h>
+-
+ #define _SETUP
+ #include <asm/setup.h>	/* For COMMAND_LINE_SIZE */
+ #undef _SETUP
+diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
+index 743f13ea25c1..a4339cb2d247 100644
+--- a/arch/x86/boot/compressed/misc.c
++++ b/arch/x86/boot/compressed/misc.c
+@@ -28,6 +28,9 @@
  
- 	if (has_cpuflag(X86_FEATURE_RDRAND)) {
--		debug_putstr(" RDRAND");
-+		if (purpose)
-+			debug_putstr(" RDRAND");
- 		if (rdrand_long(&raw)) {
- 			random ^= raw;
- 			use_i8254 = false;
-@@ -68,7 +71,8 @@ unsigned long kaslr_get_random_long(const char *purpose)
- 	}
+ /* Macros used by the included decompressor code below. */
+ #define STATIC		static
++/* Define an externally visible malloc()/free(). */
++#define MALLOC_VISIBLE
++#include <linux/decompress/mm.h>
  
- 	if (has_cpuflag(X86_FEATURE_TSC)) {
--		debug_putstr(" RDTSC");
-+		if (purpose)
-+			debug_putstr(" RDTSC");
- 		raw = rdtsc();
+ /*
+  * Provide definitions of memzero and memmove as some of the decompressors will
+diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
+index 31139256859f..975ef4ae7395 100644
+--- a/arch/x86/boot/compressed/misc.h
++++ b/arch/x86/boot/compressed/misc.h
+@@ -44,6 +44,8 @@ extern char _head[], _end[];
+ /* misc.c */
+ extern memptr free_mem_ptr;
+ extern memptr free_mem_end_ptr;
++void *malloc(int size);
++void free(void *where);
+ extern struct boot_params *boot_params;
+ void __putstr(const char *s);
+ void __puthex(unsigned long value);
+diff --git a/include/linux/decompress/mm.h b/include/linux/decompress/mm.h
+index 868e9eacd69e..9192986b1a73 100644
+--- a/include/linux/decompress/mm.h
++++ b/include/linux/decompress/mm.h
+@@ -25,13 +25,21 @@
+ #define STATIC_RW_DATA static
+ #endif
  
- 		random ^= raw;
-@@ -76,7 +80,8 @@ unsigned long kaslr_get_random_long(const char *purpose)
- 	}
++/*
++ * When an architecture needs to share the malloc()/free() implementation
++ * between compilation units, it needs to have non-local visibility.
++ */
++#ifndef MALLOC_VISIBLE
++#define MALLOC_VISIBLE static
++#endif
++
+ /* A trivial malloc implementation, adapted from
+  *  malloc by Hannu Savolainen 1993 and Matthias Urlichs 1994
+  */
+ STATIC_RW_DATA unsigned long malloc_ptr;
+ STATIC_RW_DATA int malloc_count;
  
- 	if (use_i8254) {
--		debug_putstr(" i8254");
-+		if (purpose)
-+			debug_putstr(" i8254");
- 		random ^= i8254();
- 	}
+-static void *malloc(int size)
++MALLOC_VISIBLE void *malloc(int size)
+ {
+ 	void *p;
  
-@@ -86,7 +91,8 @@ unsigned long kaslr_get_random_long(const char *purpose)
- 	    : "a" (random), "rm" (mix_const));
- 	random += raw;
- 
--	debug_putstr("...\n");
-+	if (purpose)
-+		debug_putstr("...\n");
- 
- 	return random;
+@@ -52,7 +60,7 @@ static void *malloc(int size)
+ 	return p;
  }
+ 
+-static void free(void *where)
++MALLOC_VISIBLE void free(void *where)
+ {
+ 	malloc_count--;
+ 	if (!malloc_count)
 -- 
 2.30.2
 
