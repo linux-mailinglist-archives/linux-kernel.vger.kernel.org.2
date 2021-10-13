@@ -2,96 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F93342BBD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3531E42BC27
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239213AbhJMJo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:44:59 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14344 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239196AbhJMJow (ORCPT
+        id S239172AbhJMJyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:54:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53502 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238206AbhJMJyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:44:52 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HTnWh65JWz9007;
-        Wed, 13 Oct 2021 17:37:52 +0800 (CST)
-Received: from kwepemm600015.china.huawei.com (7.193.23.52) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 13 Oct 2021 17:42:38 +0800
-Received: from huawei.com (10.175.101.6) by kwepemm600015.china.huawei.com
- (7.193.23.52) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 13 Oct
- 2021 17:42:37 +0800
-From:   ChenXiaoSong <chenxiaosong2@huawei.com>
-To:     <viro@zeniv.linux.org.uk>, <stable@vger.kernel.org>,
-        <gregkh@linuxfoundation.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dhowells@redhat.com>, <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
-        <chenxiaosong2@huawei.com>, <zhangxiaoxu5@huawei.com>
-Subject: [PATCH 4.19,v2] VFS: Fix fuseblk memory leak caused by mount concurrency
-Date:   Wed, 13 Oct 2021 17:51:01 +0800
-Message-ID: <20211013095101.641329-1-chenxiaosong2@huawei.com>
-X-Mailer: git-send-email 2.25.4
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600015.china.huawei.com (7.193.23.52)
-X-CFilter-Loop: Reflected
+        Wed, 13 Oct 2021 05:54:02 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EC182222D5;
+        Wed, 13 Oct 2021 09:51:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634118718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pA9BDJcI5fQpUiH9skGe8D3QbL5rS02Lw+A2yhWbX2Y=;
+        b=TR915s66BXRg5uB/lrJCG5QRbnBPFxSaA2HsgytBatEFFqH649C23oNr9WKH1GsoJK463c
+        v8moP06J46uM4R1VC1HhZiSoxmymJX6tmb9UqCbkKErEgt/xNsrz3g78/9KUgSHw/3N+m3
+        pnu6cKX8xgrC5DVu9jZWMXbnSZrxvBU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634118718;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pA9BDJcI5fQpUiH9skGe8D3QbL5rS02Lw+A2yhWbX2Y=;
+        b=vAGMi8xH6OJACTYjZK3R6EGaICaIctCAeB18LuiE7CbbE2F+UyxUu9rkDyToUC1aFVWfje
+        HiAORuKLqDKqUEDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B931F13CEC;
+        Wed, 13 Oct 2021 09:51:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 3SIYKz6sZmH0OQAAMHmgww
+        (envelope-from <iivanov@suse.de>); Wed, 13 Oct 2021 09:51:58 +0000
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
+Subject: Re: [RESEND] [PATCH] Revert "efi/random: Treat EFI_RNG_PROTOCOL
+ output as bootloader randomness"
+From:   "Ivan T. Ivanov" <iivanov@suse.de>
+In-Reply-To: <CAMj1kXE7FbEqxyBcPS6mx5wU82+H0WK67HU=S6hq=WAG5EBwyQ@mail.gmail.com>
+Date:   Wed, 13 Oct 2021 12:51:57 +0300
+Cc:     Dominik Brodowski <linux@dominikbrodowski.net>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <2E0472BF-BC05-4722-83EC-26919278CC2E@suse.de>
+References: <20211012082708.121931-1-iivanov@suse.de>
+ <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
+ <4eccf707f2553f0f66ae3789b5689231@suse.de>
+ <CAMj1kXE7FbEqxyBcPS6mx5wU82+H0WK67HU=S6hq=WAG5EBwyQ@mail.gmail.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.7)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If two processes mount same superblock, memory leak occurs:
+Hi,
 
-CPU0               |  CPU1
-do_new_mount       |  do_new_mount
-  fs_set_subtype   |    fs_set_subtype
-    kstrdup        |
-                   |      kstrdup
-    memrory leak   |
+> On 13 Oct 2021, at 10:50, Ard Biesheuvel <ardb@kernel.org> wrote:
+>=20
+> On Wed, 13 Oct 2021 at 09:30, Ivan T. Ivanov <iivanov@suse.de> wrote:
+>>=20
+>> Hi,
+>>=20
+>> Quoting Dominik Brodowski (2021-10-12 11:40:34)
+>>> Am Tue, Oct 12, 2021 at 11:27:08AM +0300 schrieb Ivan T. Ivanov:
+>>>> This reverts commit 18b915ac6b0ac5ba7ded03156860f60a9f16df2b.
+>>>>=20
+>>>> When CONFIG_RANDOM_TRUST_BOOTLOADER is enabled =
+add_bootloader_randomness()
+>>>> calls add_hwgenerator_randomness() which might sleep,
+>>>=20
+>>> Wouldn't it be better to fix add_bootloader_randomness(), =
+considering
+>>> that
+>>> calls to that function are likely to happen quite early during =
+kernel
+>>> initialization? Especially as it seems to have worked beforehand?
+>>=20
+>> I have tried. I made wait_event_interruptible() optional, but then
+>> crng_reseed() segfault badly. And I don't think crng_reseed() is
+>> something that I could fix easily. Suggestions are welcomed ;-)
+>>=20
+>=20
+> How about
+>=20
+> diff --git a/drivers/char/random.c b/drivers/char/random.c
+> index 605969ed0f96..1828dc691ebf 100644
+> --- a/drivers/char/random.c
+> +++ b/drivers/char/random.c
+> @@ -2297,9 +2297,8 @@ EXPORT_SYMBOL_GPL(add_hwgenerator_randomness);
+>  */
+> void add_bootloader_randomness(const void *buf, unsigned int size)
+> {
+> +       add_device_randomness(buf, size);
+>        if (IS_ENABLED(CONFIG_RANDOM_TRUST_BOOTLOADER))
+> -               add_hwgenerator_randomness(buf, size, size * 8);
+> -       else
+> -               add_device_randomness(buf, size);
+> +               credit_entropy(&input_pool, size * 8);
+> }
+> EXPORT_SYMBOL_GPL(add_bootloader_randomness);
 
-Fix this by adding a write lock while calling fs_set_subtype.
+This doesn=E2=80=99t boot. I just changed following and kernel panics. =20=
 
-Linus's tree already have refactoring patchset [1], one of them can fix this bug:
-        c30da2e981a7 (fuse: convert to use the new mount API)
 
-Since we did not merge the refactoring patchset in this branch, I create this patch.
+- credit_entropy
++ credit_entropy_bits
 
-[1] https://patchwork.kernel.org/project/linux-fsdevel/patch/20190903113640.7984-3-mszeredi@redhat.com/
+Please see attached file.
 
-Fixes: 79c0b2df79eb (add filesystem subtype support)
-Cc: David Howells <dhowells@redhat.com>
-Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
----
-v1: Can not mount sshfs ([PATCH linux-4.19.y] VFS: Fix fuseblk memory leak caused by mount concurrency)
-v2: Use write lock while writing superblock
+Regards,
+Ivan
 
- fs/namespace.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/fs/namespace.c b/fs/namespace.c
-index 2f3c6a0350a8..396ff1bcfdad 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -2490,9 +2490,12 @@ static int do_new_mount(struct path *path, const char *fstype, int sb_flags,
- 		return -ENODEV;
- 
- 	mnt = vfs_kern_mount(type, sb_flags, name, data);
--	if (!IS_ERR(mnt) && (type->fs_flags & FS_HAS_SUBTYPE) &&
--	    !mnt->mnt_sb->s_subtype)
--		mnt = fs_set_subtype(mnt, fstype);
-+	if (!IS_ERR(mnt) && (type->fs_flags & FS_HAS_SUBTYPE)) {
-+		down_write(&mnt->mnt_sb->s_umount);
-+		if (!mnt->mnt_sb->s_subtype)
-+			mnt = fs_set_subtype(mnt, fstype);
-+		up_write(&mnt->mnt_sb->s_umount);
-+	}
- 
- 	put_filesystem(type);
- 	if (IS_ERR(mnt))
--- 
-2.25.4
 
