@@ -2,147 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A69242BCAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7661642BCB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239332AbhJMKXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:23:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45268 "EHLO
+        id S239307AbhJMKXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:23:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29488 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230005AbhJMKXE (ORCPT
+        by vger.kernel.org with ESMTP id S239149AbhJMKXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:23:04 -0400
+        Wed, 13 Oct 2021 06:23:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634120461;
+        s=mimecast20190719; t=1634120486;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YSYWHpq2MR9akUHQCfV2yM1cAtmp2ZHpGTTEYqlRXUw=;
-        b=g/gjsq5rANp8669jrPqUEBzMI+2AgaAXtojkLjXtfOCwrhLeehq6nKBqoAdGXKmI3h637X
-        MqNudD+Tm7undXsrnUhqDQsNFtGC7bOJIbd++E3TwC0tEqNU9yWh7tFQiy7Mbn0GSpy/75
-        VlmTHOQLjVP/WyPybRMzOM1r7KxBrQ8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-201-EAyJOMnBNpG7n0YyBk0cFg-1; Wed, 13 Oct 2021 06:20:56 -0400
-X-MC-Unique: EAyJOMnBNpG7n0YyBk0cFg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E92C8362F8;
-        Wed, 13 Oct 2021 10:20:54 +0000 (UTC)
-Received: from T590 (ovpn-8-39.pek2.redhat.com [10.72.8.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AE57E60C5F;
-        Wed, 13 Oct 2021 10:20:51 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 18:20:46 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kashyap.desai@broadcom.com,
-        hare@suse.de
-Subject: Re: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
-Message-ID: <YWay/n+BJTLm1Alb@T590>
-References: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
- <YWalYoOZmpkmAZNK@T590>
- <79266509-f327-9de3-d22e-0e9fe00387ee@huawei.com>
+        bh=ZYGUqokbeWERaGDZ6FCBB90KTOT0LH0B99uKg6pXVUo=;
+        b=hs6DzKk5DE84auLJH+0WMNMvnMGaum25WXvM1toddtPAVGqhbWGDRfu3XoD2/7B8OSeKke
+        7+UX7rNegtP5QWqh9cUCx3AKi6z3w6b0fCPZLH2vsDw6NO4N3tn1xGPw7tmL3UAPz0PWux
+        /TALBl/kNvgFqSE1GWaFpv+bhFJt8FE=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-ujAKqWH8PgKKxz9gSsoIhw-1; Wed, 13 Oct 2021 06:21:25 -0400
+X-MC-Unique: ujAKqWH8PgKKxz9gSsoIhw-1
+Received: by mail-ed1-f72.google.com with SMTP id cy14-20020a0564021c8e00b003db8c9a6e30so1831306edb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:21:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZYGUqokbeWERaGDZ6FCBB90KTOT0LH0B99uKg6pXVUo=;
+        b=p8fP4KaCTNTUj1W++avek/AuqCl2IqnmWMSrnDSwU+ZCvmczBknWMC5jzmYJ5MIXHV
+         hNp9/X5LHvDKzyfQh5M5DoUvzjFCrTv80PmYo1ab1F7EajSwkJpQyBYCqFf26RVCpDcb
+         pPkceA+DPz8dFgL5FgnWlxg8+PuR4PRroLgnGG2NwWothH6ukMdwiArGUpya+EX3D9XJ
+         0eR+l7ndEeGljO/XZCiuI+eHfjz4HqXU1KE06a5SE2a3tdmcTVg7IyxcthYMRXsiLJfz
+         FuoihoPuVNgkbobhIVfL0mphto947Rp4qKpdwKX5U+jyZlxrjEVu2eEgEOrMg0TJbr3h
+         r+GA==
+X-Gm-Message-State: AOAM533pcuXCZzGmDYL/3QAERktnE+MLL1DdOz2RDCBh/Oj+7wreMZX3
+        9UJapuUNSqGPFEv1bH7Jp+cZKCRnOzaT2fS5YblIKZFqMC27gwu9tKsQ+6vvoDYcLP+rSTQ3QNd
+        +G9EwVkHTcZkseXrQRGjw4IZh
+X-Received: by 2002:a17:906:cccb:: with SMTP id ot11mr38494148ejb.219.1634120484353;
+        Wed, 13 Oct 2021 03:21:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw97yXcFt1jprzlskLyznf8XHJEKZqMfElmYmzbeTjoIeW1izLyccuYuEX7MU3fMvW9BgsYSQ==
+X-Received: by 2002:a17:906:cccb:: with SMTP id ot11mr38494122ejb.219.1634120484159;
+        Wed, 13 Oct 2021 03:21:24 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id i21sm6369957eja.50.2021.10.13.03.21.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 03:21:23 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
+        hawk@kernel.org, ilias.apalodimas@linaro.org,
+        akpm@linux-foundation.org, peterz@infradead.org, will@kernel.org,
+        jhubbard@nvidia.com, yuzhao@google.com, mcroce@microsoft.com,
+        fenghua.yu@intel.com, feng.tang@intel.com, jgg@ziepe.ca,
+        aarcange@redhat.com, guro@fb.com,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH net-next v6] page_pool: disable dma mapping support for
+ 32-bit arch with 64-bit DMA
+To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        kuba@kernel.org
+References: <20211013091920.1106-1-linyunsheng@huawei.com>
+Message-ID: <458b7f87-a7ca-739d-cb8c-494909bf0dc3@redhat.com>
+Date:   Wed, 13 Oct 2021 12:21:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <79266509-f327-9de3-d22e-0e9fe00387ee@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20211013091920.1106-1-linyunsheng@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:01:11AM +0100, John Garry wrote:
-> On 13/10/2021 10:22, Ming Lei wrote:
-> > On Wed, Oct 13, 2021 at 04:40:59PM +0800, John Garry wrote:
-> > > Since it is now possible for a tagset to share a single set of tags, the
-> > > iter function should not re-iter the tags for the count of #hw queues in
-> > > that case. Rather it should just iter once.
-> > > 
-> > > Fixes: e0fdf846c7bb ("blk-mq: Use shared tags for shared sbitmap support")
-> > > Reported-by: Kashyap Desai<kashyap.desai@broadcom.com>
-> > > Signed-off-by: John Garry<john.garry@huawei.com>
-> > > 
-> > > diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-> > > index 72a2724a4eee..c943b6529619 100644
-> > > --- a/block/blk-mq-tag.c
-> > > +++ b/block/blk-mq-tag.c
-> > > @@ -378,9 +378,12 @@ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
-> > >   void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
-> > >   		busy_tag_iter_fn *fn, void *priv)
-> > >   {
-> > > -	int i;
-> > > +	unsigned int flags = tagset->flags;
-> > > +	int i, nr_tags;
-> > > +
-> > > +	nr_tags = blk_mq_is_shared_tags(flags) ? 1 : tagset->nr_hw_queues;
-> > > -	for (i = 0; i < tagset->nr_hw_queues; i++) {
-> > > +	for (i = 0; i < nr_tags; i++) {
-> > >   		if (tagset->tags && tagset->tags[i])
-> > >   			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
-> > >   					      BT_TAG_ITER_STARTED);
-> > blk_mq_queue_tag_busy_iter() needn't such change?
-> 
-> I didn't think so.
-> 
-> blk_mq_queue_tag_busy_iter() will indeed re-iter the tags per hctx. However
-> in bt_iter(), we check rq->mq_hctx == hctx for calling the iter callback:
-> 
-> static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
-> {
-> 	...
-> 
-> 	if (rq->q == hctx->queue && rq->mq_hctx == hctx)
-> 		ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
-> 
-> And this would only pass for the correct hctx which we're iter'ing for.
-
-It is true for both shared and non-shared sbitmap since we don't share
-hctx, so what does matter? With single shared tags, you can iterate over
-all requests originated from all hw queues, right?
-
-> Indeed, it would be nice not to iter excessive times, but I didn't see a
-> straightforward way to change that.
-
-In Kashyap's report, the lock contention is actually from
-blk_mq_queue_tag_busy_iter(), see:
-
-https://lore.kernel.org/linux-block/8867352d-2107-1f8a-0f1c-ef73450bf256@huawei.com/
-
-> 
-> There is also blk_mq_all_tag_iter():
-> 
-> void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
-> 		void *priv)
-> {
-> 	__blk_mq_all_tag_iter(tags, fn, priv, BT_TAG_ITER_STATIC_RQS);
-> }
-> 
-> But then the only user is blk_mq_hctx_has_requests():
-> 
-> static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
-> {
-> 	struct blk_mq_tags *tags = hctx->sched_tags ?
-> 			hctx->sched_tags : hctx->tags;
-> 	struct rq_iter_data data = {
-> 		.hctx	= hctx,
-> 	};
-> 
-> 	blk_mq_all_tag_iter(tags, blk_mq_has_request, &data);
-> 	return data.has_rq;
-> }
-
-This above one only iterates over the specified hctx/tags, it won't be
-affected.
-
-> 
-> But, again like bt_iter(), blk_mq_has_request() will check the hctx matches:
-
-Not see what matters wrt. checking hctx.
 
 
+On 13/10/2021 11.19, Yunsheng Lin wrote:
+> As the 32-bit arch with 64-bit DMA seems to rare those days,
+> and page pool might carry a lot of code and complexity for
+> systems that possibly.
+> 
+> So disable dma mapping support for such systems, if drivers
+> really want to work on such systems, they have to implement
+> their own DMA-mapping fallback tracking outside page_pool.
+> 
+> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+> V6: Drop pp page tracking support
+> ---
+>   include/linux/mm_types.h | 13 +------------
+>   include/net/page_pool.h  | 12 +-----------
+>   net/core/page_pool.c     | 10 ++++++----
+>   3 files changed, 8 insertions(+), 27 deletions(-)
 
-Thanks,
-Ming
+
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+This is a nice simplification of struct page and page_pool code, when we 
+don't need to handle this 32-bit ARCH with 64-bit DMA case.
+It also gets rid of the confusingly named define. Thanks.
+
+
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 7f8ee09c711f..436e0946d691 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -104,18 +104,7 @@ struct page {
+>   			struct page_pool *pp;
+>   			unsigned long _pp_mapping_pad;
+>   			unsigned long dma_addr;
+> -			union {
+> -				/**
+> -				 * dma_addr_upper: might require a 64-bit
+> -				 * value on 32-bit architectures.
+> -				 */
+> -				unsigned long dma_addr_upper;
+> -				/**
+> -				 * For frag page support, not supported in
+> -				 * 32-bit architectures with 64-bit DMA.
+> -				 */
+> -				atomic_long_t pp_frag_count;
+> -			};
+> +			atomic_long_t pp_frag_count;
+>   		};
+>   		struct {	/* slab, slob and slub */
+>   			union {
+> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> index a4082406a003..3855f069627f 100644
+> --- a/include/net/page_pool.h
+> +++ b/include/net/page_pool.h
+> @@ -216,24 +216,14 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+>   	page_pool_put_full_page(pool, page, true);
+>   }
+>   
+> -#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT	\
+> -		(sizeof(dma_addr_t) > sizeof(unsigned long))
+> -
+>   static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+>   {
+> -	dma_addr_t ret = page->dma_addr;
+> -
+> -	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+> -		ret |= (dma_addr_t)page->dma_addr_upper << 16 << 16;
+> -
+> -	return ret;
+> +	return page->dma_addr;
+>   }
+>   
+>   static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+>   {
+>   	page->dma_addr = addr;
+> -	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+> -		page->dma_addr_upper = upper_32_bits(addr);
+>   }
+>   
+>   static inline void page_pool_set_frag_count(struct page *page, long nr)
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index 1a6978427d6c..9b60e4301a44 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -49,6 +49,12 @@ static int page_pool_init(struct page_pool *pool,
+>   	 * which is the XDP_TX use-case.
+>   	 */
+>   	if (pool->p.flags & PP_FLAG_DMA_MAP) {
+> +		/* DMA-mapping is not supported on 32-bit systems with
+> +		 * 64-bit DMA mapping.
+> +		 */
+> +		if (sizeof(dma_addr_t) > sizeof(unsigned long))
+> +			return -EOPNOTSUPP;
+> +
+>   		if ((pool->p.dma_dir != DMA_FROM_DEVICE) &&
+>   		    (pool->p.dma_dir != DMA_BIDIRECTIONAL))
+>   			return -EINVAL;
+> @@ -69,10 +75,6 @@ static int page_pool_init(struct page_pool *pool,
+>   		 */
+>   	}
+>   
+> -	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
+> -	    pool->p.flags & PP_FLAG_PAGE_FRAG)
+> -		return -EINVAL;
+> -
+>   	if (ptr_ring_init(&pool->ring, ring_qsize, GFP_KERNEL) < 0)
+>   		return -ENOMEM;
+>   
+> 
 
