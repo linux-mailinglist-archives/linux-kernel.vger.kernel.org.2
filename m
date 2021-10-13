@@ -2,97 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D73042CC8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45CA42CC8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhJMVM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 17:12:26 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:60753 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229882AbhJMVMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 17:12:25 -0400
-Received: from localhost.localdomain (ip5f5ae911.dynamic.kabel-deutschland.de [95.90.233.17])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2425261E64760;
-        Wed, 13 Oct 2021 23:10:20 +0200 (CEST)
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-To:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Paul Menzel <pmenzel@molgen.mpg.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: sched: fix infinite loop when trying to create tcf rule
-Date:   Wed, 13 Oct 2021 23:09:59 +0200
-Message-Id: <20211013211000.8962-1-pmenzel@molgen.mpg.de>
-X-Mailer: git-send-email 2.33.0
+        id S230034AbhJMVPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 17:15:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31647 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229771AbhJMVPe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 17:15:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634159610;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qkLA5UFP68R6JirgvQAxyouzMyG5FNhHnkbPPL9o2QQ=;
+        b=ekqMm97iF+VQF+YqJozhN1ZRS5WwtbjN0K6loZR08ypjl8yjwBE5avbc+nFHZQVVsxh9WW
+        t9LWDCQhZ7MU/PBChgtREz7Fgunu8Ag90ud7EgZEBCRlkz5zvx22RXll21xYFFatqS5be+
+        dKiwbqOQ1Jhvg0eUCTM8cnqaSJPzNgI=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-sq7_GzVvP1WPDrI859zrRg-1; Wed, 13 Oct 2021 17:13:29 -0400
+X-MC-Unique: sq7_GzVvP1WPDrI859zrRg-1
+Received: by mail-oi1-f200.google.com with SMTP id 17-20020aca1111000000b0027368cbf687so2354813oir.23
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:13:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qkLA5UFP68R6JirgvQAxyouzMyG5FNhHnkbPPL9o2QQ=;
+        b=nYFE0qVjIwP0Rh/7jLG83vAaxRFkxsIo4YJh364Ybd3lFQ0Iy7zKGW6JDWJGwUmeHC
+         7KSF9rKcVQI5tCSV74oGkMWBZUDur/6FGmWWRHWJxWuOlqrYZabh2Qv72NNZGcJ/Pgva
+         sp3UMJlk55tkhA3nyhaAUOiDPvzV/Q2yOcqKR9xx5VR+sLdOrkN/H9MWXIuB2NTVW7Re
+         iX4uv6Hx11fxZ0xBs9D4TeUo7q2NODzp92Tv5FPxxX5LcaBtjrwC637+2OIm3F4OyroY
+         u1P8EbjB+r5YbSiLdV1IIp1xugosH8OJuh2jD+bIcknHSWVvvvuqw8rntcbki7HziUoN
+         9ZZg==
+X-Gm-Message-State: AOAM5316hmbTRTkfp+uofEd88ci+XyIAK8hmisUiINmOzezaJtrsx2/D
+        PB8ln3i+Y/5C1dvSigMjwUk2q46dhPYruhril+fkvlANhjMW4WO3WLf0EhiVnaLF5aSxcbK378f
+        UC2Oj9LzIbDki/1DfOfdHwlcT
+X-Received: by 2002:a4a:ca0f:: with SMTP id w15mr1138296ooq.39.1634159608591;
+        Wed, 13 Oct 2021 14:13:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy79hvNlXOyRefoedwWX4VVBZtM5zY0xCUI8/xUxS//VBNfU3NyU+qhwDEpuSugZdUkJvBb8A==
+X-Received: by 2002:a4a:ca0f:: with SMTP id w15mr1138276ooq.39.1634159608388;
+        Wed, 13 Oct 2021 14:13:28 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id 12sm138496otg.69.2021.10.13.14.11.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 14:11:58 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 14:11:18 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
+Message-ID: <20211013211118.apsj66c6b6abubeo@treble>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123645.002402102@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211013123645.002402102@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serhiy Boiko <serhiy.boiko@plvision.eu>
+On Wed, Oct 13, 2021 at 02:22:21PM +0200, Peter Zijlstra wrote:
+> +#ifdef CONFIG_X86_64
+> +
+> +/*
+> + * CALL/JMP *%\reg
+> + */
+> +static int emit_indirect(int op, int reg, u8 *bytes)
 
-After running a specific set of commands tc will become unresponsive:
+X86_64 is already equivalent to STACK_VALIDATION these days, but might
+as well clarify here where the retpoline_sites dependency comes from by
+changing this to '#ifdef CONFIG_STACK_VALIDATION'.
 
-    $ ip link add dev DEV type veth
-    $ tc qdisc add dev DEV clsact
-    $ tc chain add dev DEV chain 0 ingress
-    $ tc filter del dev DEV ingress
-    $ tc filter add dev DEV ingress flower action pass
-
-When executing chain flush the chain->flushing field is set to true, which
-prevents insertion of new classifier instances.  It is unset in one place
-under two conditions: `refcnt - chain->action_refcnt == 0` and `!by_act`.
-Ignoring the by_act and action_refcnt arguments the `flushing procedure`
-will be over when refcnt is 0.
-
-But if the chain is explicitly created (e.g. `tc chain add .. chain 0 ..`)
-refcnt is set to 1 without any classifier instances. Thus the condition is
-never met and the chain->flushing field is never cleared.  And because the
-default chain is `flushing` new classifiers cannot be added. tc_new_tfilter
-is stuck in a loop trying to find a chain where chain->flushing is false.
-
-Moving `chain->flushing = false` from __tcf_chain_put to the end of
-tcf_chain_flush will avoid the condition and the field will always be reset
-after the flush procedure.
-
-Signed-off-by: Serhiy Boiko <serhiy.boiko@plvision.eu>
-[Upstreamed from https://github.com/dentproject/dentOS/commit/3480aceaa5244a11edfe1fda90afd92b0199ef23]
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
----
- net/sched/cls_api.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-index 2ef8f5a6205a..405f955bef1e 100644
---- a/net/sched/cls_api.c
-+++ b/net/sched/cls_api.c
-@@ -563,8 +563,6 @@ static void __tcf_chain_put(struct tcf_chain *chain, bool by_act,
- 	if (refcnt - chain->action_refcnt == 0 && !by_act) {
- 		tc_chain_notify_delete(tmplt_ops, tmplt_priv, chain->index,
- 				       block, NULL, 0, 0, false);
--		/* Last reference to chain, no need to lock. */
--		chain->flushing = false;
- 	}
- 
- 	if (refcnt == 0)
-@@ -615,6 +613,9 @@ static void tcf_chain_flush(struct tcf_chain *chain, bool rtnl_held)
- 		tcf_proto_put(tp, rtnl_held, NULL);
- 		tp = tp_next;
- 	}
-+
-+	/* Last reference to chain, no need to lock. */
-+	chain->flushing = false;
- }
- 
- static int tcf_block_setup(struct tcf_block *block,
 -- 
-2.33.0
+Josh
 
