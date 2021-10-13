@@ -2,190 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D8442C9D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B1042C9E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235220AbhJMTVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 15:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
+        id S236646AbhJMTWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 15:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231522AbhJMTVi (ORCPT
+        with ESMTP id S235560AbhJMTWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 15:21:38 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0B6C06174E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:19:34 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id u18so16198680lfd.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:19:34 -0700 (PDT)
+        Wed, 13 Oct 2021 15:22:01 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CD4C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:19:57 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id c65-20020a251c44000000b005ba81fe4944so4256242ybc.14
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:19:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+AcexaJ+rgtv/yakBs6TGaqPz081SnkKrIPwMz+w14Y=;
-        b=CVHJY7EYtp00iSWw5aqa2NgaaWU8qEXJuk+OQqTkx8ySogOsyDa/Mwl3n9l8LV0wv8
-         1y2axYXAT6/d7O5x4+rEj8O+k1GQhPfGyf2IvsoKq9oI98XiaSxMQjoX+5kiNUo/sNW9
-         aqCO43VOqPx893RZDpJCMu88V02WWOf/pfj1Nv06acyFGGwOiYY/L5FkdEzwbMoySRIe
-         /gGiSBKXxu9J23jVYc2bPUCOXiKRRIOYNKOJogOVfu3MTWH12O8WkzyADuBGsUMPZwLa
-         qAd9MrIYBLHc34WM6dToGKxGVkiyiexW3EqTqaFoMO/7zkzlzs2r0QAM06BzT3JIxsqU
-         znFQ==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=d0rAx93itBTSy1xOFmXFYBiya33QB5vLyzSyQgo9d2c=;
+        b=D0+l2u4oHREq5LiRim/bUBO5IIzBDxCa771gjZQxRJ+bWU4NFILtxa9VrWxdPA88Ba
+         +COehWk0YG+QXxNevytH5qXsLOwufKKazg2eg3Eq/ze3To5hkil+lfnM0fjyDT/RAKxL
+         zmMpS76ZUFqu6cwwikvocolnJEfxIoqHJFcdLBWVSaK+O2vxYluCJaGwPXaimtioKFQR
+         /hVfN4+W6BPhBB3TGdndzYaxMsG+NCWNNIbDC5DWiIK8fGif/qiaZUm4JPyKVmaWlOf6
+         AzlK1u9qPMuavAvJ+EBpc1L97awfCOlESTQVx65Pa+gWRZC+eLP1dMl3rgNIyNJFo38p
+         1vMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+AcexaJ+rgtv/yakBs6TGaqPz081SnkKrIPwMz+w14Y=;
-        b=3c628vE2wOX9L2WJ2v2CX/UgrLjmf90M1zXvoMq3vlOOhgmUqUJESuwD4kvFDUR5ia
-         cDB8/bAMJvWnpamCmRXGfTjrFQFHSIMIARYHiE5yx2+/gk0boRXWu8kjnlcOMwYhNEwY
-         hoA5GgDBgmZ187IcT4UDpjsnRQLS7pMkjRiVmVYKulS+Tqr9BFsLRH6/RQeK40t+63eY
-         C3O1SJEYU1eJuCK2OhLVvGS7koFjsXk95ARy/8YMfDm8q3mfApN2m93WPT0PAs90lsAT
-         MxTk/ZqSnaV0/oFj1QLlA/rS6CQ7rNo9QrkjeK7OcMzsarwYcWVckV5mwM3y7k8xgfaE
-         0V5Q==
-X-Gm-Message-State: AOAM533jQGFZgQDO2q3BwABfurBLacbGgbXfC3YDJWv13jbpLHpoZejF
-        J333KnJUUmTuVU84SxiD5wpiKg==
-X-Google-Smtp-Source: ABdhPJy9CTZfpRRtRzPdMRIilVNtWA1m3Yh6dxpi0fTijyEEUd/0qb3zO42+Eif79BvrC+6Rk1wyKQ==
-X-Received: by 2002:a05:651c:515:: with SMTP id o21mr1299427ljp.395.1634152773002;
-        Wed, 13 Oct 2021 12:19:33 -0700 (PDT)
-Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
-        by smtp.gmail.com with ESMTPSA id q14sm30500lfp.102.2021.10.13.12.19.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 12:19:32 -0700 (PDT)
-Subject: Re: [PATCH v4 14/20] crypto: qce: core: Add support to initialize
- interconnect path
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
- <20211013105541.68045-15-bhupesh.sharma@linaro.org>
-From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Message-ID: <8f7eee67-7394-4938-7ace-f1dee397db2b@linaro.org>
-Date:   Wed, 13 Oct 2021 22:19:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20211013105541.68045-15-bhupesh.sharma@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=d0rAx93itBTSy1xOFmXFYBiya33QB5vLyzSyQgo9d2c=;
+        b=g3vrkTvRRPm47env+NkBJ8KobkLq86OBfORlir3TB3UsT7UtQzbi2CKa7kD79TvX6P
+         nTNN/LQCXf4V05kZCGx0gAty9DT0c541rEHKNAdJfZDpHrxP04j48Muc9aYlKf7hdVJy
+         bWwDN40L0n6bUlMCOZsYaNeY/ZPp1MXPkCUwuEmeFgzb0Cy4BrCaRXBMmF6kWfbiAHCM
+         jI2DUvI3jKgPXfqA8Myy8yQPFZnQgt5J41VcbPeFxd//xQAap3yxx7el66Rad0Ohbn3h
+         T3ZEa8pKDdMVc7dW+IMc4fMTK1Mlj+KtSI+Bg3rsRBOD+o45LVX2t5Qy+fFQbr3oUofy
+         MqTw==
+X-Gm-Message-State: AOAM533IwNChyqjv/O43zwlpXAEXZgD/rg3dypnPNVfmAoQSR+Qs7Xn7
+        bGoyVK1f0cJA4eTR5DLYQyrJzVXCuSEuOQ==
+X-Google-Smtp-Source: ABdhPJwulKZu414F3l5Atx3YNuWmHlorG2mHqfczLBh6vFzVZjLMPq9K6DvJuf7brTnwZT98+IHBFEwRVS5ylg==
+X-Received: from mmandlik.mtv.corp.google.com ([2620:15c:202:201:9910:f10f:1467:c3f])
+ (user=mmandlik job=sendgmr) by 2002:a25:df06:: with SMTP id
+ w6mr1182115ybg.459.1634152796951; Wed, 13 Oct 2021 12:19:56 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 12:19:52 -0700
+Message-Id: <20211013121544.v3.1.Ic0a40b84dee3825302890aaea690e73165c71820@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH v3] bluetooth: Add Adv Monitor Device Lost event
+From:   Manish Mandlik <mmandlik@google.com>
+To:     marcel@holtmann.org, luiz.dentz@gmail.com
+Cc:     linux-bluetooth@vger.kernel.org,
+        chromeos-bluetooth-upstreaming@chromium.org,
+        Manish Mandlik <mmandlik@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhupesh,
+Whenever the controller starts/stops monitoring a bt device, it sends
+MSFT Monitor Device event. Handle this event and notify the bluetoothd
+whenever the controller stops monitoring a particular device.
 
-On 10/13/21 1:55 PM, Bhupesh Sharma wrote:
-> From: Thara Gopinath <thara.gopinath@linaro.org>
-> 
-> Crypto engine on certain Snapdragon processors like sm8150, sm8250, sm8350
-> etc. requires interconnect path between the engine and memory to be
-> explicitly enabled and bandwidth set prior to any operations. Add support
-> in the qce core to enable the interconnect path appropriately.
-> 
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> [Make header file inclusion alphabetical]
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
->   drivers/crypto/qce/core.c | 35 ++++++++++++++++++++++++++++-------
->   drivers/crypto/qce/core.h |  1 +
->   2 files changed, 29 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index d3780be44a76..033c7278aa5d 100644
-> --- a/drivers/crypto/qce/core.c
-> +++ b/drivers/crypto/qce/core.c
-> @@ -5,6 +5,7 @@
->   
->   #include <linux/clk.h>
->   #include <linux/dma-mapping.h>
-> +#include <linux/interconnect.h>
->   #include <linux/interrupt.h>
->   #include <linux/module.h>
->   #include <linux/mod_devicetable.h>
-> @@ -22,6 +23,8 @@
->   #define QCE_MAJOR_VERSION5	0x05
->   #define QCE_QUEUE_LENGTH	1
->   
-> +#define QCE_DEFAULT_MEM_BANDWIDTH	393600
-> +
->   static const struct qce_algo_ops *qce_ops[] = {
->   #ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
->   	&skcipher_ops,
-> @@ -206,21 +209,35 @@ static int qce_crypto_probe(struct platform_device *pdev)
->   	if (ret < 0)
->   		return ret;
->   
-> +	qce->mem_path = of_icc_get(qce->dev, "memory");
+Test performed:
+- verified by logs that the MSFT Monitor Device is received from the
+  controller and the bluetoothd is notified when the controller stops
+  monitoring the device.
 
-Please consider to use devm_of_icc_get() here also.
+Signed-off-by: Manish Mandlik <mmandlik@google.com>
+---
+Hello Bt-Maintainers,
 
-> +	if (IS_ERR(qce->mem_path))
-> +		return PTR_ERR(qce->mem_path);
-> +
->   	qce->core = devm_clk_get(qce->dev, "core");
-> -	if (IS_ERR(qce->core))
-> -		return PTR_ERR(qce->core);
-> +	if (IS_ERR(qce->core)) {
-> +		ret = PTR_ERR(qce->core);
-> +		goto err_mem_path_put;
-> +	}
->   
->   	qce->iface = devm_clk_get(qce->dev, "iface");
-> -	if (IS_ERR(qce->iface))
-> -		return PTR_ERR(qce->iface);
-> +	if (IS_ERR(qce->iface)) {
-> +		ret = PTR_ERR(qce->iface);
-> +		goto err_mem_path_put;
-> +	}
->   
->   	qce->bus = devm_clk_get(qce->dev, "bus");
-> -	if (IS_ERR(qce->bus))
-> -		return PTR_ERR(qce->bus);
-> +	if (IS_ERR(qce->bus)) {
-> +		ret = PTR_ERR(qce->bus);
-> +		goto err_mem_path_put;
-> +	}
-> +
-> +	ret = icc_set_bw(qce->mem_path, QCE_DEFAULT_MEM_BANDWIDTH, QCE_DEFAULT_MEM_BANDWIDTH);
-> +	if (ret)
-> +		goto err_mem_path_put;
->   
->   	ret = clk_prepare_enable(qce->core);
->   	if (ret)
-> -		return ret;
-> +		goto err_mem_path_disable;
->   
->   	ret = clk_prepare_enable(qce->iface);
->   	if (ret)
-> @@ -260,6 +277,10 @@ static int qce_crypto_probe(struct platform_device *pdev)
->   	clk_disable_unprepare(qce->iface);
->   err_clks_core:
->   	clk_disable_unprepare(qce->core);
-> +err_mem_path_disable:
-> +	icc_set_bw(qce->mem_path, 0, 0);
-> +err_mem_path_put:
-> +	icc_put(qce->mem_path);
->   	return ret;
->   }
->   
-> diff --git a/drivers/crypto/qce/core.h b/drivers/crypto/qce/core.h
-> index 085774cdf641..228fcd69ec51 100644
-> --- a/drivers/crypto/qce/core.h
-> +++ b/drivers/crypto/qce/core.h
-> @@ -35,6 +35,7 @@ struct qce_device {
->   	void __iomem *base;
->   	struct device *dev;
->   	struct clk *core, *iface, *bus;
-> +	struct icc_path *mem_path;
->   	struct qce_dma_data dma;
->   	int burst_size;
->   	unsigned int pipe_pair_id;
-> 
+As mentioned in the bluez patch series [1], we need to capture the 'MSFT
+Monitor Device' from the controller and pass it to the bluetoothd.
 
---
-Best wishes,
-Vladimir
+This is required to further optimize the power consumption by avoiding
+handling of RSSI thresholds and timeouts in the user space and let the
+controller do the RSSI tracking.
+
+This patch adds support to read HCI_VS_MSFT_LE_Monitor_Device_Event and
+introduces a new MGMT event MGMT_EV_ADV_MONITOR_DEVICE_LOST to indicate
+that the controller has stopped tracking that particular device.
+
+Please let me know what you think about this or if you have any further
+questions.
+
+[1] https://patchwork.kernel.org/project/bluetooth/list/?series=562967
+
+Thanks,
+Manish.
+
+Changes in v3:
+- Discard changes to the Device Found event and notify bluetoothd only
+  when the controller stops monitoring the device via new Device Lost
+  event.
+
+Changes in v2:
+- Instead of creating a new 'Device Tracking' event, add a flag 'Device
+  Tracked' in the existing 'Device Found' event and add a new 'Device
+  Lost' event to indicate that the controller has stopped tracking that
+  device.
+
+ include/net/bluetooth/hci_core.h |  2 +
+ include/net/bluetooth/mgmt.h     |  6 ++
+ net/bluetooth/mgmt.c             | 14 +++++
+ net/bluetooth/msft.c             | 94 +++++++++++++++++++++++++-------
+ 4 files changed, 95 insertions(+), 21 deletions(-)
+
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index dd8840e70e25..8a160c0bba21 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -1842,6 +1842,8 @@ void mgmt_adv_monitor_removed(struct hci_dev *hdev, u16 handle);
+ int mgmt_phy_configuration_changed(struct hci_dev *hdev, struct sock *skip);
+ int mgmt_add_adv_patterns_monitor_complete(struct hci_dev *hdev, u8 status);
+ int mgmt_remove_adv_monitor_complete(struct hci_dev *hdev, u8 status);
++void mgmt_adv_monitor_device_lost(struct hci_dev *hdev, u16 handle,
++				  bdaddr_t *addr, u8 addr_type);
+ 
+ u8 hci_le_conn_update(struct hci_conn *conn, u16 min, u16 max, u16 latency,
+ 		      u16 to_multiplier);
+diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
+index 23a0524061b7..d438b51310d4 100644
+--- a/include/net/bluetooth/mgmt.h
++++ b/include/net/bluetooth/mgmt.h
+@@ -1103,3 +1103,9 @@ struct mgmt_ev_controller_resume {
+ #define MGMT_WAKE_REASON_NON_BT_WAKE		0x0
+ #define MGMT_WAKE_REASON_UNEXPECTED		0x1
+ #define MGMT_WAKE_REASON_REMOTE_WAKE		0x2
++
++#define MGMT_EV_ADV_MONITOR_DEVICE_LOST		0x002f
++struct mgmt_ev_adv_monitor_device_lost {
++	__le16 monitor_handle;
++	struct mgmt_addr_info addr;
++} __packed;
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 44683443300c..c3c178e1878e 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -173,6 +173,7 @@ static const u16 mgmt_events[] = {
+ 	MGMT_EV_ADV_MONITOR_REMOVED,
+ 	MGMT_EV_CONTROLLER_SUSPEND,
+ 	MGMT_EV_CONTROLLER_RESUME,
++	MGMT_EV_ADV_MONITOR_DEVICE_LOST,
+ };
+ 
+ static const u16 mgmt_untrusted_commands[] = {
+@@ -4396,6 +4397,19 @@ static int set_device_flags(struct sock *sk, struct hci_dev *hdev, void *data,
+ 				 &cp->addr, sizeof(cp->addr));
+ }
+ 
++void mgmt_adv_monitor_device_lost(struct hci_dev *hdev, u16 handle,
++				  bdaddr_t *addr, u8 addr_type)
++{
++	struct mgmt_ev_adv_monitor_device_lost ev;
++
++	ev.monitor_handle = cpu_to_le16(handle);
++	bacpy(&ev.addr.bdaddr, addr);
++	ev.addr.type = addr_type;
++
++	mgmt_event(MGMT_EV_ADV_MONITOR_DEVICE_LOST, hdev, &ev, sizeof(ev),
++		   NULL);
++}
++
+ static void mgmt_adv_monitor_added(struct sock *sk, struct hci_dev *hdev,
+ 				   u16 handle)
+ {
+diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
+index 255cffa554ee..40f95263ebb6 100644
+--- a/net/bluetooth/msft.c
++++ b/net/bluetooth/msft.c
+@@ -80,6 +80,14 @@ struct msft_rp_le_set_advertisement_filter_enable {
+ 	__u8 sub_opcode;
+ } __packed;
+ 
++#define MSFT_EV_LE_MONITOR_DEVICE	0x02
++struct msft_ev_le_monitor_device {
++	__u8     addr_type;
++	bdaddr_t bdaddr;
++	__u8     monitor_handle;
++	__u8     monitor_state;
++} __packed;
++
+ struct msft_monitor_advertisement_handle_data {
+ 	__u8  msft_handle;
+ 	__u16 mgmt_handle;
+@@ -103,6 +111,26 @@ static int __msft_add_monitor_pattern(struct hci_dev *hdev,
+ static int __msft_remove_monitor(struct hci_dev *hdev,
+ 				 struct adv_monitor *monitor, u16 handle);
+ 
++/* is_mgmt = true matches the handle exposed to userspace via mgmt.
++ * is_mgmt = false matches the handle used by the msft controller.
++ * This function requires the caller holds hdev->lock
++ */
++static struct msft_monitor_advertisement_handle_data *msft_find_handle_data
++				(struct hci_dev *hdev, u16 handle, bool is_mgmt)
++{
++	struct msft_monitor_advertisement_handle_data *entry;
++	struct msft_data *msft = hdev->msft_data;
++
++	list_for_each_entry(entry, &msft->handle_map, list) {
++		if (is_mgmt && entry->mgmt_handle == handle)
++			return entry;
++		if (!is_mgmt && entry->msft_handle == handle)
++			return entry;
++	}
++
++	return NULL;
++}
++
+ bool msft_monitor_supported(struct hci_dev *hdev)
+ {
+ 	return !!(msft_get_features(hdev) & MSFT_FEATURE_MASK_LE_ADV_MONITOR);
+@@ -341,6 +369,38 @@ void msft_unregister(struct hci_dev *hdev)
+ 	kfree(msft);
+ }
+ 
++/* This function requires the caller holds hdev->lock */
++static void msft_monitor_device_evt(struct hci_dev *hdev, struct sk_buff *skb)
++{
++	struct msft_ev_le_monitor_device *ev = (void *)skb->data;
++	struct msft_monitor_advertisement_handle_data *handle_data;
++
++	if (skb->len < sizeof(*ev)) {
++		bt_dev_err(hdev,
++			   "MSFT vendor event %u: insufficient data (len: %u)",
++			   MSFT_EV_LE_MONITOR_DEVICE, skb->len);
++		return;
++	}
++	skb_pull(skb, sizeof(*ev));
++
++	bt_dev_dbg(hdev,
++		   "MSFT vendor event %u: handle 0x%04x state %d addr %pMR",
++		   MSFT_EV_LE_MONITOR_DEVICE, ev->monitor_handle,
++		   ev->monitor_state, &ev->bdaddr);
++
++	handle_data = msft_find_handle_data(hdev, ev->monitor_handle, false);
++
++	if (!ev->monitor_state) {
++		/* Notify the bluetoothd ONLY when the controller stops
++		 * monitoring a particular device. No need to notify when
++		 * the controller starts monitoring a device as the Device
++		 * Found event will be sent anyway.
++		 */
++		mgmt_adv_monitor_device_lost(hdev, handle_data->mgmt_handle,
++					     &ev->bdaddr, ev->addr_type);
++	}
++}
++
+ void msft_vendor_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ {
+ 	struct msft_data *msft = hdev->msft_data;
+@@ -368,37 +428,29 @@ void msft_vendor_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ 	if (skb->len < 1)
+ 		return;
+ 
++	hci_dev_lock(hdev);
++
+ 	event = *skb->data;
+ 	skb_pull(skb, 1);
+ 
+-	bt_dev_dbg(hdev, "MSFT vendor event %u", event);
+-}
++	switch (event) {
++	case MSFT_EV_LE_MONITOR_DEVICE:
++		msft_monitor_device_evt(hdev, skb);
++		break;
+ 
+-__u64 msft_get_features(struct hci_dev *hdev)
+-{
+-	struct msft_data *msft = hdev->msft_data;
++	default:
++		bt_dev_dbg(hdev, "MSFT vendor event %u", event);
++		break;
++	}
+ 
+-	return msft ? msft->features : 0;
++	hci_dev_unlock(hdev);
+ }
+ 
+-/* is_mgmt = true matches the handle exposed to userspace via mgmt.
+- * is_mgmt = false matches the handle used by the msft controller.
+- * This function requires the caller holds hdev->lock
+- */
+-static struct msft_monitor_advertisement_handle_data *msft_find_handle_data
+-				(struct hci_dev *hdev, u16 handle, bool is_mgmt)
++__u64 msft_get_features(struct hci_dev *hdev)
+ {
+-	struct msft_monitor_advertisement_handle_data *entry;
+ 	struct msft_data *msft = hdev->msft_data;
+ 
+-	list_for_each_entry(entry, &msft->handle_map, list) {
+-		if (is_mgmt && entry->mgmt_handle == handle)
+-			return entry;
+-		if (!is_mgmt && entry->msft_handle == handle)
+-			return entry;
+-	}
+-
+-	return NULL;
++	return msft ? msft->features : 0;
+ }
+ 
+ static void msft_le_monitor_advertisement_cb(struct hci_dev *hdev,
+-- 
+2.33.0.882.g93a45727a2-goog
+
