@@ -2,188 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E9142BAA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4104C42BAA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238444AbhJMIlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:41:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229644AbhJMIlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:41:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A06ED61074
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634114345;
-        bh=ZNUTxDIwgSu+vOtmo4g3584XPbhlqaPhtiT514GpsXM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hb2LFyxQJ3A9SSPuAtj8fUizWNkliuyk03zKrk/xcarnbI8zZFW8j57GJcen3452U
-         xdJCHfmmjaggYNNqmnLBZ98QkDhTwpzO5x3jaLFhphVNbkavUVfxUy/9GvFPqrpx7W
-         ux9JLWEQACcSuVMjeLcIxNZqTqZpcLRhDue0Cy/+6uLfdjQib2gIICmRs1FYbiwUSC
-         e9OXBaJv1rQDiczcK1xhgVMUNQPB6RyG/Hr+DlOzi6EXv4SFSRbxQf36lOaUS3K5OA
-         yl9PRt4qOqb8O7uxSjHCEp7YgPEfLNrUw9v9gg6MHu40pH/Pi68MKY1SY6LE8h+kNY
-         txuDox5x6HyRg==
-Received: by mail-ua1-f46.google.com with SMTP id h4so3009452uaw.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 01:39:05 -0700 (PDT)
-X-Gm-Message-State: AOAM532I61XXAMXp9u/LShyAoewOESWx/hW9l2Cx1jHGqc+vLB5OCr6z
-        OrKOyybCBKyUGa1K3QR7c+EfwwODo+QduqB9Mlc=
-X-Google-Smtp-Source: ABdhPJzMzPjRx0tJntq697GnLyNdIiu+c7GL9onC6nRg14TohlFxhP/gu7b1LNwQtL/7EqE/SUsB+UpbjNLRSdbdWP0=
-X-Received: by 2002:a05:6102:537:: with SMTP id m23mr55870vsa.43.1634114344625;
- Wed, 13 Oct 2021 01:39:04 -0700 (PDT)
+        id S238548AbhJMImO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:42:14 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:58657 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhJMImN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 04:42:13 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MlfCm-1n0Jtz0Nso-00inTn; Wed, 13 Oct 2021 10:40:09 +0200
+Received: by mail-wr1-f43.google.com with SMTP id o20so5683495wro.3;
+        Wed, 13 Oct 2021 01:40:08 -0700 (PDT)
+X-Gm-Message-State: AOAM531XZ+akxFDnC9pNLL8QnAfsTzc+/qTNCcHliS7C1weqMeOM0oJB
+        jBaIhr/zeJ55KEGm5LWuQbKsHk1CRYN4fsbVNqc=
+X-Google-Smtp-Source: ABdhPJylEmhtr82il6e0GF5LoTKEaSZZhYHzvRZQ/fSCmQWwST+wPLckjIEh7n69i2viC66dywxL9rWDe+r1YR2RU7w=
+X-Received: by 2002:a05:600c:208:: with SMTP id 8mr11068365wmi.173.1634114408630;
+ Wed, 13 Oct 2021 01:40:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211013012149.2834212-1-guoren@kernel.org> <20211013012149.2834212-2-guoren@kernel.org>
- <CAAhSdy3B9AtbeBrNoQJOBkmAcOR56s1WExGNPMXsSsF+38y8DA@mail.gmail.com>
-In-Reply-To: <CAAhSdy3B9AtbeBrNoQJOBkmAcOR56s1WExGNPMXsSsF+38y8DA@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 13 Oct 2021 16:38:53 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSzz_41cLHH48C98FqstEK+AVMAi2xrdfMQbQn2=xEKcQ@mail.gmail.com>
-Message-ID: <CAJF2gTSzz_41cLHH48C98FqstEK+AVMAi2xrdfMQbQn2=xEKcQ@mail.gmail.com>
-Subject: Re: [PATCH V3 2/2] irqchip/sifive-plic: Add thead,c900-plic support
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>
+References: <20211013005603.700363-1-sashal@kernel.org>
+In-Reply-To: <20211013005603.700363-1-sashal@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 13 Oct 2021 10:39:52 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0DogjF=AeTD8hv++ns9j8zh_5u1W0Vcusqxe4srnrp8w@mail.gmail.com>
+Message-ID: <CAK8P3a0DogjF=AeTD8hv++ns9j8zh_5u1W0Vcusqxe4srnrp8w@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.4 1/6] ARM: config: mutli v7: Reenable FB dependency
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:vwlE9709mGLvJbfWkWawOMIZpg+f3UuBbyoU6r85lZNo7V5xe5l
+ jyP129R2Rs5G0Q1HFSfLZhLiJRigXNkmNjsrZu5H783RxBISlb2PSzmq7B4CXn6j3DZMtA8
+ bL22LD8s79uOWzjmZ/R7wX3xBxDW3Qwiy08auy4nCetX29K+NM53ZzqIOz4WBTZBOpearC3
+ CZcxiXodOq6cJHnKidF+A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0saA689E8fI=:xq2t3z5W/aM/lkzk2UktRM
+ aooD0yek1cWWU+QliSC3GrqPfrSw1MfYiJp2e08t9FBB/3l41UBgfqYWxoyAuGbEiDk9Gvvig
+ 4LKi7fge/eOp4pHot2mB4wnu7UJvpYdLVFu9rhRyAboVKT2m1O0ppKHwdFuSmgxA81C6cJgVq
+ bs7eXxthsCN49hu4xbiWp0Np36ONV2cP0eSmfP2A/P5VSRvEDeUluO/dresuv5MusVfcxcS+n
+ on3z8QZ+tXK25uc18F0w+D4daT1rnvRXQdHshBEX4hVKigzE1XpeQf7x6bkAlh9l76Jtpey2g
+ cc75o89HHe1GByFHBJASLbcM4Vr5o3dJN3Yj3g+32V8g9DFANziA+HlOQZ4E83vzTCVHMn4S0
+ 24eulTfJqBV3OJs+jD24FGQJwRP36O26CA/+Kmju1KlKVVy2AIcw9zffhqDLf4e8tW3AwCfkL
+ hUJ3WKkFjbXyrSd+9y64IUgg8OiwwM8uec1Po+YLwTrdwxnZoD1tm4RNfzz9FP5u90HurjtXb
+ rp7UfzA+Jv6qUDcOrZj9vc7EJ6kQBlYbO1lh9BUKKhG14EThv0kzxPvIi0uraql4QhTDFJezB
+ AkpNwb5SNkEjn6sZrL8KcZ40mF9oW+GA3b4tgTYP/ZmjZwpPl4g0i1pLZTwcZGhB/JxvK6GRU
+ /gazfU+ck/9bUc+4spdHWwzfKBt67VcqvGWIMDIpK2MRjC3xSGl+mqI7Obh3ro6dRrFpb70qq
+ 02FczX+Qf2MVGeEE83L6jsiD9UWZ/rCtar5epLs9yfdrfhQ1VE9wP1X71p61qz5KzpW2vhSo8
+ mVBhS5JOXQvtE/NiuBAA9ZaXwy+1km9a/xn4uMmzFnurvJfUEnCWRwSYq8aogFp8IPLINGp/x
+ FhnaFsmSAVTvAUsuvAZA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 1:04 PM Anup Patel <anup@brainfault.org> wrote:
+On Wed, Oct 13, 2021 at 2:55 AM Sasha Levin <sashal@kernel.org> wrote:
 >
-> On Wed, Oct 13, 2021 at 6:52 AM <guoren@kernel.org> wrote:
-> >
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > thead,c900-plic would mask IRQ with readl(claim), so it needn't
-> > mask/unmask which needed in RISC-V PLIC.
-> >
-> > When in IRQS_ONESHOT & IRQCHIP_EOI_THREADED path, unnecessary mask
-> > operation would cause a blocking irq bug in thead,c900-plic. Because
-> > when IRQ is disabled in c900, writel(hwirq, claim) would be invalid.
+> From: Joel Stanley <joel@jms.id.au>
 >
-> This is a totally incorrect description.
+> [ Upstream commit 8c1768967e2733d55abf449d8abd6f1915ba3539 ]
 >
-> Instead of this, the commit description should say the following:
+> DRM_FBDEV_EMULATION previously selected FB and was default y as long as DRM
+> was enabled. In commit f611b1e7624c ("drm: Avoid circular dependencies for
+> CONFIG_FB") the select was replaced with a depends on FB, disabling the
+> drivers that depended on it.
 >
-> 1) The irq_mask/unmask() is used by handle_fasteoi_irq() is mostly
-> for ONESHOT irqs and there is no limitation in the RISC-V PLIC driver
-> due to use of irq_mask/unmask() callbacks. In fact, a lot of irqchip
-> drivers using handle_fasteoi_irq() also implement irq_mask/unmask().
-Add irq_mask/unmask in handle_fasteoi_irq() would decrease the
-performance, we also need to add this fact in the description.
+> Renable FB so we get back FB_EFI, FB_WM8505, FB_SH_MOBILE_LCDC, FB_SIMPLE and
+> VIDEO_VIVID.
 >
-> 2) The C9xx PLIC does not comply with the interrupt claim/completion
-> process defined by the RISC-V PLIC specification because C9xx PLIC
-> will mask an IRQ when it is claimed by PLIC driver (i.e. readl(claim) and
-> the IRQ will be unmasked upon completion by PLIC driver (i.e. writel(claim).
-> This behaviour breaks the handling of IRQS_ONESHOT by the generic
-> handle_fasteoi_irq() used in the PLIC driver.
+> It must be set to y and not a module as the test driver VIDEO_VIVID
+> requires it to be built in.
 >
-> 3) This patch adds an errata fix for IRQS_ONESHOT handling on
-> C9xx PLIC by using irq_enable/disable() callbacks instead of
-> irq_mask/unmask().
->
-> In general, non-compliance of the C9xx PLIC should be treated as
-> an errata so please don't project it as a feature.
->
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Cc: Anup Patel <anup@brainfault.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> > Cc: Atish Patra <atish.patra@wdc.com>
-> >
-> > ---
-> >
-> > Changes since V3:
-> >  - Rename "c9xx" to "c900"
-> >  - Add sifive_plic_chip and thead_plic_chip for difference
-> >
-> > Changes since V2:
-> >  - Add a separate compatible string "thead,c9xx-plic"
-> >  - set irq_mask/unmask of "plic_chip" to NULL and point
-> >    irq_enable/disable of "plic_chip" to plic_irq_mask/unmask
-> >  - Add a detailed comment block in plic_init() about the
-> >    differences in Claim/Completion process of RISC-V PLIC and C9xx
-> >    PLIC.
-> > ---
-> >  drivers/irqchip/irq-sifive-plic.c | 25 +++++++++++++++++++++++--
-> >  1 file changed, 23 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> > index cf74cfa82045..5b806d823df7 100644
-> > --- a/drivers/irqchip/irq-sifive-plic.c
-> > +++ b/drivers/irqchip/irq-sifive-plic.c
-> > @@ -166,7 +166,7 @@ static void plic_irq_eoi(struct irq_data *d)
-> >         writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> >  }
-> >
-> > -static struct irq_chip plic_chip = {
-> > +static struct irq_chip sifive_plic_chip = {
-> >         .name           = "SiFive PLIC",
-> >         .irq_mask       = plic_irq_mask,
-> >         .irq_unmask     = plic_irq_unmask,
-> > @@ -176,12 +176,24 @@ static struct irq_chip plic_chip = {
-> >  #endif
-> >  };
-> >
->
-> Please add a detailed comment block as described by point#2
-> above.
->
-> > +static struct irq_chip thead_plic_chip = {
-> > +       .name           = "T-Head PLIC",
-> > +       .irq_disable    = plic_irq_mask,
-> > +       .irq_enable     = plic_irq_unmask,
-> > +       .irq_eoi        = plic_irq_eoi,
-> > +#ifdef CONFIG_SMP
-> > +       .irq_set_affinity = plic_set_affinity,
-> > +#endif
-> > +};
-> > +
-> > +static struct irq_chip *def_plic_chip = &sifive_plic_chip;
-> > +
-> >  static int plic_irqdomain_map(struct irq_domain *d, unsigned int irq,
-> >                               irq_hw_number_t hwirq)
-> >  {
-> >         struct plic_priv *priv = d->host_data;
-> >
-> > -       irq_domain_set_info(d, irq, hwirq, &plic_chip, d->host_data,
-> > +       irq_domain_set_info(d, irq, hwirq, def_plic_chip, d->host_data,
-> >                             handle_fasteoi_irq, NULL, NULL);
-> >         irq_set_noprobe(irq);
-> >         irq_set_affinity(irq, &priv->lmask);
-> > @@ -390,5 +402,14 @@ static int __init plic_init(struct device_node *node,
-> >         return error;
-> >  }
-> >
-> > +static int __init thead_c900_plic_init(struct device_node *node,
-> > +               struct device_node *parent)
-> > +{
-> > +       def_plic_chip = &thead_plic_chip;
-> > +
-> > +       return plic_init(node, parent);
-> > +}
-> > +
-> >  IRQCHIP_DECLARE(sifive_plic, "sifive,plic-1.0.0", plic_init);
-> >  IRQCHIP_DECLARE(riscv_plic0, "riscv,plic0", plic_init); /* for legacy systems */
-> > +IRQCHIP_DECLARE(thead_c900_plic, "thead,c900-plic", thead_c900_plic_init);
-> > --
-> > 2.25.1
-> >
->
-> Regards,
-> Anup
+> Link: https://lore.kernel.org/r/CAK8P3a18EdBKQdGDOZc9cPKsf=hY8==v2cO0DBE_tyd82Uq-Ng@mail.gmail.com
+> Signed-off-by: Joel Stanley <joel@jms.id.au>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
+This is only needed to fix regressions from f611b1e7624c, which made it into
+v5.14. I don't think that patch should be backported, so neither
+should this one.
 
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+       Arnd
