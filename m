@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93F042C0A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C562842C0AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233236AbhJMM5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:57:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48170 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231516AbhJMM5N (ORCPT
+        id S233707AbhJMM5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232645AbhJMM5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:57:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634129710;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bua+UvhRZx/vtJpW/R79wAmjzbaBOR2FatQ2gYmLKAk=;
-        b=imCDhWuWI5hr9wxKRNm+RZyDWnJUNKV39xwKQtw3TkcLGfdCvLzMrnapy3qlT/MV0lN9Yo
-        GgkZNr7ehYSNFnKhhWxJ6MthVECACrBxnnuYBMn1i7mTJAuQS8x8m5ZhQYvDXohyqkh67p
-        juX97odvt37mrfN0/KE6gNs1Fgz+Z8g=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-5TFGFl_wMfOzvTKqoDVnFA-1; Wed, 13 Oct 2021 08:55:09 -0400
-X-MC-Unique: 5TFGFl_wMfOzvTKqoDVnFA-1
-Received: by mail-wr1-f70.google.com with SMTP id l8-20020a5d6d88000000b001611b5de796so1903453wrs.10
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:55:08 -0700 (PDT)
+        Wed, 13 Oct 2021 08:57:50 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967B1C061746;
+        Wed, 13 Oct 2021 05:55:47 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso4352787pjb.4;
+        Wed, 13 Oct 2021 05:55:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qr5cIxR0kdJHZu/gbgrUUMTaWeuTBYEyE1I2TMeES3E=;
+        b=BUVeFcn3vgfyjzgM6QdcnqCR93fo+yrUB6EJo2NT0cf/r7m3xXFLZc1jDRog2P+w+3
+         MrmFHkUKzPOgaSqSXB+2JBYb6ir9knikOqS39VpJPvg5N1Pqfs3bCit6/HNG4hLovR1C
+         4i5HzENFtqN999l+3lrtZTPoC3m+xtHcTW4S/Z9BYMim4MJGD1Pxh61aqD0C0vpJzLmw
+         12NM+eLfhHL1twGh/MM4F9WvupOR+x/EzMHrd86uMbav/7Zx2S0JcQveMYz5qzzQqU3l
+         A6ZCU5Iq2LKi5AL4QeOy9jXvcipqS3fqadeDJ2f7edjTLwHLT+MvpP/6SblGJnGs1y1h
+         wJgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bua+UvhRZx/vtJpW/R79wAmjzbaBOR2FatQ2gYmLKAk=;
-        b=IT46l2CrIN1vINyjLTTCXubhOoiciomlbzXW3QzeKy6pedWbdgoK6fhaS7iYaDvnN8
-         Agyhb2rX1xDASZn1CwHuFgnK4WxsAGB+wbuwTbegDSGjtV7+FUTZJt5QNMyIsMAEU/Me
-         cy9KkPVF9aFFrpBKwvLAVEfnvS4YqY01hfC6ApGpLTCwjeADTVb2uKlubbaky/75G2rn
-         qqTG7sGuv/spzgVNA3dNgTrRsMgrMy/HpPcRbMePJY7w8ALmKoZz9KCLV3iCMtQsL4sR
-         +NQTTRgxQ5eVv1BAYQZg59pT00aLUUFrAtsrmkBM2Z4Us6P3Mv/vzual7kWBLtEgdKoN
-         WvOw==
-X-Gm-Message-State: AOAM531Lk1tA+9Q6Zq23cEcmjo/w+vzhDHtTNR5xTYVidy8Bs6EolNdC
-        HOfncSC50CfBJ4naSY2mRAOG7RcTg7FuKDxIUvAegkCADjSw0/O9Cf8+BlGkG+kQZfpCs5gRliR
-        RxTolpCwUwBOyBU5VE+RoY+Ms
-X-Received: by 2002:a1c:22d7:: with SMTP id i206mr13001184wmi.122.1634129708025;
-        Wed, 13 Oct 2021 05:55:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUlSBIGEPmkknnlsQTkGPbs0LAOHhsvCUmorYQR19foafC7W/ikoT3XdyrV6wuhDzoeZLiZw==
-X-Received: by 2002:a1c:22d7:: with SMTP id i206mr13001158wmi.122.1634129707894;
-        Wed, 13 Oct 2021 05:55:07 -0700 (PDT)
-Received: from redhat.com ([2.55.30.112])
-        by smtp.gmail.com with ESMTPSA id g12sm5445986wme.3.2021.10.13.05.55.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qr5cIxR0kdJHZu/gbgrUUMTaWeuTBYEyE1I2TMeES3E=;
+        b=0JCplw4iPK8KAVsse14nx93lw3f0Se7QKAl0U2+ZIpLTP0q09cQRhSIek7ZPuSQ3kA
+         fWAWhQTSa4wDcVkKPp9wXFZVjo0b7+FbPOI8dsIhPHIpi5eovpysWzGT0Ox9ZTKZkCN1
+         VdRTw+Ss/Lk7Of9NdnLzy4cXmOpwM7xHSUhiH+nZcUWo4Vrik34WWYQFYXU5TrIVa90m
+         pmWPxoHw80xNcrxN6pg5VsfBo7q1tT49UY9drInI0ulOujMGzijZjQs5ffP25LH8i8Et
+         EXCZYJyfqTDobq3ObjAr0Za2B7BTRz0/kaZYKVn7mu8uywpoEbqLd3uSO4PTS2AFgaxf
+         cKig==
+X-Gm-Message-State: AOAM533pqT66Tmc87/VIQkZOhOiMLEdh2ch48LXXKBaTlm2GvYhyD6AS
+        i8kCK+uleavWQvl3N9FMBZg4b2YdBoQ=
+X-Google-Smtp-Source: ABdhPJwAkaclm8MzT5pl3WIADyA9rHbW9aNl8oBMKSQ/1bAMV+IqbI8a3AVx+5uQhxe04xG2IO6OAA==
+X-Received: by 2002:a17:902:b70d:b0:13d:f6c9:2066 with SMTP id d13-20020a170902b70d00b0013df6c92066mr35704665pls.2.1634129747148;
+        Wed, 13 Oct 2021 05:55:47 -0700 (PDT)
+Received: from desktop.cluster.local ([162.14.19.95])
+        by smtp.gmail.com with ESMTPSA id z13sm14302581pfq.130.2021.10.13.05.55.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 05:55:07 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 08:55:03 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        markver@us.ibm.com, linux-s390@vger.kernel.org,
-        stefanha@redhat.com, Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        qemu-devel@nongnu.org
-Subject: Re: [PATCH v3 1/1] virtio: write back F_VERSION_1 before validate
-Message-ID: <20211013085423-mutt-send-email-mst@kernel.org>
-References: <20211011053921.1198936-1-pasic@linux.ibm.com>
- <20211013060923-mutt-send-email-mst@kernel.org>
- <96561e29-e0d6-9a4d-3657-999bad59914e@de.ibm.com>
- <20211013081836-mutt-send-email-mst@kernel.org>
- <87zgrdulwp.fsf@redhat.com>
+        Wed, 13 Oct 2021 05:55:46 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <imagedong@tencent.com>
+Subject: [PATCH] pci: call _cond_resched() after pci_bus_write_config
+Date:   Wed, 13 Oct 2021 20:55:42 +0800
+Message-Id: <20211013125542.759696-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zgrdulwp.fsf@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 02:52:38PM +0200, Cornelia Huck wrote:
-> On Wed, Oct 13 2021, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> 
-> > On Wed, Oct 13, 2021 at 01:23:50PM +0200, Christian Borntraeger wrote:
-> >> Can we get this kernel patch queued for 5.15 and stable without waiting for the QEMU patch
-> >> as we have a regression with 4.14?
-> >
-> > Probably. Still trying to decide between this and plain revert for 5.15
-> > and back. Maybe both?
-> 
-> Probably better queue this one, in case we have some undiscovered
-> problems with the config space access in virtio-net?
+From: Menglong Dong <imagedong@tencent.com>
 
-So both then. I think you are right. Pushed out to -next. Will do a pull
-towards end of the week.
+While the system is running in KVM, pci config writing for virtio devices
+may cost long time(about 1-2ms), as it causes VM-exit. During
+__pci_bus_assign_resources(), pci_setup_bridge, which can do pci config
+writing up to 10 times, can be called many times without any
+_cond_resched(). So __pci_bus_assign_resources can cause 25+ms scheduling
+latency with !CONFIG_PREEMPT.
 
+To solve this problem, call _cond_resched() after pci config writing.
+
+Signed-off-by: Menglong Dong <imagedong@tencent.com>
+---
+ drivers/pci/access.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pci/access.c b/drivers/pci/access.c
+index 46935695cfb9..babed43702df 100644
+--- a/drivers/pci/access.c
++++ b/drivers/pci/access.c
+@@ -57,6 +57,7 @@ int noinline pci_bus_write_config_##size \
+ 	pci_lock_config(flags);						\
+ 	res = bus->ops->write(bus, devfn, pos, len, value);		\
+ 	pci_unlock_config(flags);					\
++	_cond_resched();						\
+ 	return res;							\
+ }
+ 
 -- 
-MST
+2.27.0
 
