@@ -2,69 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91AC42C2C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84EC042C2CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235349AbhJMOVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:21:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38370 "EHLO mail.kernel.org"
+        id S236067AbhJMOWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:22:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229562AbhJMOVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:21:30 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A57E760ED4;
-        Wed, 13 Oct 2021 14:19:24 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 10:19:21 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     keescook@chromium.org, peterz@infradead.org, pmladek@suse.com,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        valentin.schneider@arm.com, mathieu.desnoyers@efficios.com,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        Vladimir Zapolskiy <vzapolskiy@gmail.com>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v4 2/5] connector: use __get_task_comm in
- proc_comm_connector
-Message-ID: <20211013101921.0843aaf0@gandalf.local.home>
-In-Reply-To: <20211013102346.179642-3-laoar.shao@gmail.com>
-References: <20211013102346.179642-1-laoar.shao@gmail.com>
-        <20211013102346.179642-3-laoar.shao@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229562AbhJMOWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:22:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F18D1610A2;
+        Wed, 13 Oct 2021 14:19:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634134797;
+        bh=RgljqDQdPTL+CF9pUvoROzzd39ppgepx5tkwdX4IFlo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YZE09hVk9RTlI4WPH4BsfFNydLErWjVQ1ilSgAcDrcxX+PB7fyz63xSv55wINJIB7
+         y8xpt6IHPkOIm8jYgsEQw617skRpGK+uuLabbXSWuc5jws20Szxlb3e/eoNFdPGO6N
+         Nqxp6/XnZjzy3YOp+BaredaL9dNXS2Zy0CUMftWAZ9nh2h9fBCpJG27vzHdmQBsN0l
+         ipG3Q9tM86KNImZeNK7FYj/Dk0O+z6WqhY8Cwk4ZGNo+c1tKJDdXAsuexdTbUZFvzL
+         FhA/JQQ4WmRlrHrZiFBFFywmW9ydMnUDzaePGLyNrGl2E3iyIH5wtXUPWB2HbgRzgc
+         wr9hC52im7ZAA==
+Received: by pali.im (Postfix)
+        id B36B87FF; Wed, 13 Oct 2021 16:19:54 +0200 (CEST)
+Date:   Wed, 13 Oct 2021 16:19:54 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 5/6] arm64: dts: marvell: armada-37xx: add device node
+ for UART clock and use it
+Message-ID: <20211013141954.cg7reu5nnj5tdsrp@pali>
+References: <20210930095838.28145-1-pali@kernel.org>
+ <20210930095838.28145-6-pali@kernel.org>
+ <87r1cpdncz.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87r1cpdncz.fsf@BL-laptop>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 10:23:43 +0000
-Yafang Shao <laoar.shao@gmail.com> wrote:
+On Wednesday 13 October 2021 16:13:16 Gregory CLEMENT wrote:
+> Hello Pali,
+> 
+> > This change defines DT node for UART clock "marvell,armada-3700-uart-clock"
+> > and use this UART clock as a base clock for all UART devices.
+> >
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> >
+> > ---
+> > Changes in v6:
+> > * Do not disable uartclk by default
+> > * Rename node to clock-controller@12010
+> > ---
+> >  arch/arm64/boot/dts/marvell/armada-37xx.dtsi | 14 ++++++++++++--
+> >  1 file changed, 12 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> > index 9acc5d2b5a00..f9bfe73d8ec2 100644
+> > --- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> > +++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> > @@ -132,10 +132,20 @@
+> >  				reg = <0x11500 0x40>;
+> >  			};
+> >  
+> > +			uartclk: clock-controller@12010 {
+> > +				compatible = "marvell,armada-3700-uart-clock";
+> > +				reg = <0x12010 0x4>, <0x12210 0x4>;
+> > +				clocks = <&tbg 0>, <&tbg 1>, <&tbg 2>,
+> > +					<&tbg 3>, <&xtalclk>;
+> > +				clock-names = "TBG-A-P", "TBG-B-P", "TBG-A-S",
+> > +					"TBG-B-S", "xtal";
+> > +				#clock-cells = <1>;
+> > +			};
+> > +
+> >  			uart0: serial@12000 {
+> >  				compatible = "marvell,armada-3700-uart";
+> >  				reg = <0x12000 0x18>;
+> > -				clocks = <&xtalclk>;
+> > +				clocks = <&uartclk 0>;
+> 
+> What happens if we have a new kernel using on old device tree ?
 
-> --- a/drivers/connector/cn_proc.c
-> +++ b/drivers/connector/cn_proc.c
-> @@ -230,7 +230,10 @@ void proc_comm_connector(struct task_struct *task)
->  	ev->what = PROC_EVENT_COMM;
->  	ev->event_data.comm.process_pid  = task->pid;
->  	ev->event_data.comm.process_tgid = task->tgid;
-> -	get_task_comm(ev->event_data.comm.comm, task);
-> +
-> +	/* This may get truncated. */
-> +	__get_task_comm(ev->event_data.comm.comm,
-> +			sizeof(ev->event_data.comm.comm), task);
->  
->  	memcpy(&msg->id, &cn_proc_event_id, sizeof(msg->id));
->  	msg->ack = 0; /* not used */
+Hello! There would be no change. New kernel would work as old kernel.
+Into clocks property you can still set xtatclk as before and it would
+still works.
 
-__get_task_comm() uses strncpy() which my understanding is, does not add
-the nul terminating byte when truncating. Which changes the functionality
-here. As all task comms have a terminating byte, the old method would copy
-that and include it. This won't add the terminating byte if the buffer is
-smaller than the comm, and that might cause issues.
-
--- Steve
+> Gregory
+> 
+> >  				interrupts =
+> >  				<GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+> >  				<GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+> > @@ -147,7 +157,7 @@
+> >  			uart1: serial@12200 {
+> >  				compatible = "marvell,armada-3700-uart-ext";
+> >  				reg = <0x12200 0x30>;
+> > -				clocks = <&xtalclk>;
+> > +				clocks = <&uartclk 1>;
+> >  				interrupts =
+> >  				<GIC_SPI 30 IRQ_TYPE_EDGE_RISING>,
+> >  				<GIC_SPI 31 IRQ_TYPE_EDGE_RISING>;
+> > -- 
+> > 2.20.1
+> >
+> 
+> -- 
+> Gregory Clement, Bootlin
+> Embedded Linux and Kernel engineering
+> http://bootlin.com
