@@ -2,84 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45CA42CC8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D74E42CC8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhJMVPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 17:15:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31647 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229771AbhJMVPe (ORCPT
+        id S229981AbhJMVO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 17:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229771AbhJMVOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 17:15:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634159610;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qkLA5UFP68R6JirgvQAxyouzMyG5FNhHnkbPPL9o2QQ=;
-        b=ekqMm97iF+VQF+YqJozhN1ZRS5WwtbjN0K6loZR08ypjl8yjwBE5avbc+nFHZQVVsxh9WW
-        t9LWDCQhZ7MU/PBChgtREz7Fgunu8Ag90ud7EgZEBCRlkz5zvx22RXll21xYFFatqS5be+
-        dKiwbqOQ1Jhvg0eUCTM8cnqaSJPzNgI=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-443-sq7_GzVvP1WPDrI859zrRg-1; Wed, 13 Oct 2021 17:13:29 -0400
-X-MC-Unique: sq7_GzVvP1WPDrI859zrRg-1
-Received: by mail-oi1-f200.google.com with SMTP id 17-20020aca1111000000b0027368cbf687so2354813oir.23
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:13:29 -0700 (PDT)
+        Wed, 13 Oct 2021 17:14:55 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE49FC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:12:50 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id z20so15655733edc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i1LgKY9ubJwkEIHDGsg63hyGpmKH47suPVaXuM2S3ec=;
+        b=VKqbb/4vPpf51Tc4j5Z45Sf3Zz1o4H/vNa/IrPfr3ggAxr8mLwee/dGVhmaGV+2fpz
+         SJ+Lk130pXh5HB7kD1XYc5a98MeiqQ5AuLG/PJlHTXV8Jl4qUCWFEspQa2pAhB0qwtxF
+         BpKUFjZeDvSXMhwxODPSe51qoCqkr9ihle/jnoQ86Ajh9syi4H/hG9G9HenDxYGeQrrw
+         CamZKxSNdAl+LtOpgdzYgrWtsiaGQIcqy7MgdKNCtFNjtFai93n0ixERXGSlIJdESus4
+         aw2OTx7yNu8VBK5ULb0RokU1bgVcUg5fQswkAnnhQNYeCVx3inrd02efClpRlWX6Q36I
+         1BGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qkLA5UFP68R6JirgvQAxyouzMyG5FNhHnkbPPL9o2QQ=;
-        b=nYFE0qVjIwP0Rh/7jLG83vAaxRFkxsIo4YJh364Ybd3lFQ0Iy7zKGW6JDWJGwUmeHC
-         7KSF9rKcVQI5tCSV74oGkMWBZUDur/6FGmWWRHWJxWuOlqrYZabh2Qv72NNZGcJ/Pgva
-         sp3UMJlk55tkhA3nyhaAUOiDPvzV/Q2yOcqKR9xx5VR+sLdOrkN/H9MWXIuB2NTVW7Re
-         iX4uv6Hx11fxZ0xBs9D4TeUo7q2NODzp92Tv5FPxxX5LcaBtjrwC637+2OIm3F4OyroY
-         u1P8EbjB+r5YbSiLdV1IIp1xugosH8OJuh2jD+bIcknHSWVvvvuqw8rntcbki7HziUoN
-         9ZZg==
-X-Gm-Message-State: AOAM5316hmbTRTkfp+uofEd88ci+XyIAK8hmisUiINmOzezaJtrsx2/D
-        PB8ln3i+Y/5C1dvSigMjwUk2q46dhPYruhril+fkvlANhjMW4WO3WLf0EhiVnaLF5aSxcbK378f
-        UC2Oj9LzIbDki/1DfOfdHwlcT
-X-Received: by 2002:a4a:ca0f:: with SMTP id w15mr1138296ooq.39.1634159608591;
-        Wed, 13 Oct 2021 14:13:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy79hvNlXOyRefoedwWX4VVBZtM5zY0xCUI8/xUxS//VBNfU3NyU+qhwDEpuSugZdUkJvBb8A==
-X-Received: by 2002:a4a:ca0f:: with SMTP id w15mr1138276ooq.39.1634159608388;
-        Wed, 13 Oct 2021 14:13:28 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id 12sm138496otg.69.2021.10.13.14.11.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 14:11:58 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 14:11:18 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
-        ndesaulniers@google.com
-Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
-Message-ID: <20211013211118.apsj66c6b6abubeo@treble>
-References: <20211013122217.304265366@infradead.org>
- <20211013123645.002402102@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i1LgKY9ubJwkEIHDGsg63hyGpmKH47suPVaXuM2S3ec=;
+        b=Q1R2V1rGaFKZgsfM0hCzIiHOODYNhNsX5jNlUH0JkcOOMS7N3urzHDCXoeGBv1l3/J
+         FL+mZ08sAIx2Amimg/jaLDbMRN6CxPXX+TFKA2ZLB1E1CZ9ZTZGWE58GVTeE50ywS7Np
+         DRG4KNGrgCao4YRt61FKgRXRNs2akRDBH22fYPfA3uTG4OTdA/E1EwI41x4P4ZHPonA2
+         wKVcm8oREHILmFp26BkCjf791yVZdpHFcgXGJ9JMKgchAP5zGO13PJLCMjLX3bCRLnHK
+         juLEZ1x4HlI1DVH+Wv5hJWNM7JlSKXtAF1TvS4TK4Qlg63fLIf+Wqv5G0fqz+NhOUjdf
+         3adA==
+X-Gm-Message-State: AOAM532oOUIH388Y/i8LzbULl/VtwP+YQHBopgxU+znAH/YyWL3wGYPE
+        ZMGBIBzUF+A9vZLQpyvVohytIfQSMMM4f+gfPUF4
+X-Google-Smtp-Source: ABdhPJyAiWQXGQhIqSy4BRdxxSMzu4wtimoLcUmCiwhwOPD13Peavb3ClTRn5qpYIdmr7XV6U9ZqUK9coskHkfzuO+o=
+X-Received: by 2002:a17:906:d975:: with SMTP id rp21mr1923350ejb.104.1634159569393;
+ Wed, 13 Oct 2021 14:12:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211013123645.002402102@infradead.org>
+References: <20211013091208.36209-1-cuigaosheng1@huawei.com> <20211013091208.36209-2-cuigaosheng1@huawei.com>
+In-Reply-To: <20211013091208.36209-2-cuigaosheng1@huawei.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 13 Oct 2021 17:12:38 -0400
+Message-ID: <CAHC9VhQR4OZWRrQODEjBxhjpH3yPRqPFE4X6RkVFEmv1e9Z8iw@mail.gmail.com>
+Subject: Re: [PATCH -next,v2 1/2] audit: fix possible null-pointer dereference
+ in audit_filter_rules
+To:     Gaosheng Cui <cuigaosheng1@huawei.com>
+Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org, xiujianfeng@huawei.com,
+        wangweiyang2@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 02:22:21PM +0200, Peter Zijlstra wrote:
-> +#ifdef CONFIG_X86_64
-> +
-> +/*
-> + * CALL/JMP *%\reg
-> + */
-> +static int emit_indirect(int op, int reg, u8 *bytes)
+On Wed, Oct 13, 2021 at 5:10 AM Gaosheng Cui <cuigaosheng1@huawei.com> wrote:
+>
+> Fix this possible null-pointer dereference in audit_filter_rules.
 
-X86_64 is already equivalent to STACK_VALIDATION these days, but might
-as well clarify here where the retpoline_sites dependency comes from by
-changing this to '#ifdef CONFIG_STACK_VALIDATION'.
+Thanks for fixing this, just a couple of small comments:
+
+I think you can drop the description text below here, the code snippet
+is just a duplicate of the code and the error message is pretty
+obvious.
+
+> If ctx is null, a null-pointer dereference will occur:
+>     case AUDIT_SADDR_FAM:
+>         if (ctx->sockaddr)
+>                 ...
+>         break;
+>
+> audit_filter_rules() error: we previously assumed 'ctx' could be null
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+
+I would also add a Fixes tag, for example:
+
+Fixes: bf361231c295 ("audit: add saddr_fam filter field")
+
+> ---
+>  kernel/auditsc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> index 4ba3b8573ff4..42d4a4320526 100644
+> --- a/kernel/auditsc.c
+> +++ b/kernel/auditsc.c
+> @@ -647,7 +647,7 @@ static int audit_filter_rules(struct task_struct *tsk,
+>                         result = audit_comparator(audit_loginuid_set(tsk), f->op, f->val);
+>                         break;
+>                 case AUDIT_SADDR_FAM:
+> -                       if (ctx->sockaddr)
+> +                       if (ctx && ctx->sockaddr)
+>                                 result = audit_comparator(ctx->sockaddr->ss_family,
+>                                                           f->op, f->val);
+>                         break;
+> --
+> 2.30.0
 
 -- 
-Josh
-
+paul moore
+www.paul-moore.com
