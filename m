@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1339642CD65
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AB442CD68
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhJMWL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 18:11:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41400 "EHLO mail.kernel.org"
+        id S231161AbhJMWLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 18:11:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230142AbhJMWLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 18:11:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 229B0610CF;
-        Wed, 13 Oct 2021 22:09:22 +0000 (UTC)
+        id S231147AbhJMWLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 18:11:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1FA6610CF;
+        Wed, 13 Oct 2021 22:09:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634162962;
-        bh=eHCSz6m9p8VBeP1Fc64wmbF00PZridKyFYWbVYHrvqw=;
+        s=k20201202; t=1634162970;
+        bh=xIG1F21bS6mX1Pu1DeS0JUv1ggyB9Pr3QpT+P3WvXjM=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=CKqNxgfdPmaezavJ6+gi4+bub6vkQ51HVYr2wlY2kknwmiUps9ADHibh0oEx2aOmr
-         ZaUBqWQlFjZDt8n2XVIGVOHIwIgNTi9zErAuy+iQPJC5CoOoHPI4MIdRiviJNWJIdw
-         oeTUqYqXVUcnvNYmiaT6OQqhLfLxrA+sFV9Br5g7z81hTKJ+DlYLofEaIV6Cdk2+Jp
-         FXRdtnZFdqF3UxnI9KaLLu0EGlCJktPJsxr0F33GNCuQh11puJVd/4FeX+rT88A37E
-         Tp0uOTpIJ51QrwnnZ5bUGMB2d56b48CamccwiGNUTqhT6ull/OrusTZePzM3DbLjoZ
-         8Hf/YQsgZmfnQ==
+        b=kH12Yec4HbPetogA0tckrCoQVAJzwOwYF6rD/xOBuXZEI7LT2yy1jVVPtX9D9/Aa7
+         HfDKNkB8GJ3Tzx78Wd+TbAar+G21QaqaZAF+gDLxezRu4tmoW1aLk/Ecw2OZN97zko
+         DsuWsiqYzhfo9ZU+NPzqJNRnGw2fVF4EswGKVbo7VsILebmsNXJzKgfQ+3VwDBicjX
+         3K5TOBcPuSzO6X9rgmZacyfwOjC7Sm73bX7FdHe/9TNyVPMhcEqT+7+p6Z0GQ9pXKq
+         dCkhefHKgGmse3aU9pgeOzjWCLcJO/L8UmuT1h2XdDkTwApqyKny3ODRheQFeXzpXQ
+         2ooUqvyEv6Ewg==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210923162645.23257-1-konrad.dybcio@somainline.org>
-References: <20210923162645.23257-1-konrad.dybcio@somainline.org>
-Subject: Re: [PATCH v4 1/9] dt-bindings: clk: qcom: Add bindings for MSM8994 GCC driver
+In-Reply-To: <20210923162645.23257-2-konrad.dybcio@somainline.org>
+References: <20210923162645.23257-1-konrad.dybcio@somainline.org> <20210923162645.23257-2-konrad.dybcio@somainline.org>
+Subject: Re: [PATCH v4 2/9] clk: qcom: gcc-msm8994: Modernize the driver
 From:   Stephen Boyd <sboyd@kernel.org>
 Cc:     martin.botka@somainline.org,
         angelogioacchino.delregno@somainline.org,
@@ -37,22 +37,20 @@ Cc:     martin.botka@somainline.org,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
         linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+        linux-kernel@vger.kernel.org
 To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
         ~postmarketos/upstreaming@lists.sr.ht
-Date:   Wed, 13 Oct 2021 15:09:20 -0700
-Message-ID: <163416296096.936110.1157816048811382134@swboyd.mtv.corp.google.com>
+Date:   Wed, 13 Oct 2021 15:09:29 -0700
+Message-ID: <163416296959.936110.11740293057085265488@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Konrad Dybcio (2021-09-23 09:26:34)
-> Add documentation for the MSM8994 GCC driver. While at it, retire its
-> compatible from the old, everyone-get-in-here file.
+Quoting Konrad Dybcio (2021-09-23 09:26:35)
+> Switch to the newer-style parent_data and remove the hardcoded
+> xo clock.
 >=20
 > Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
