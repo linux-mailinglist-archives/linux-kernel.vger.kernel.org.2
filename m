@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AC142CA03
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BE842CA08
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238838AbhJMT22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 15:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
+        id S237580AbhJMTbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 15:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbhJMT20 (ORCPT
+        with ESMTP id S231246AbhJMTb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 15:28:26 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE485C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:26:22 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id y26so16444669lfa.11
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:26:22 -0700 (PDT)
+        Wed, 13 Oct 2021 15:31:28 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13F8C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:29:24 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id m26so3389112pff.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:29:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Cqg6OlscZqEMvb/ReYXudBaSyipapWX2ho/bKAy2P6s=;
-        b=QIG+ixl2Q4prZfyV2wCaaV06GK34fLeJljGPY2tmislnOnnZgid7OA0rtWBo2t1esQ
-         afLbkXegUw8WteZuauN8DY9jGP1mQwJQaW3ImwlYDIdxUiDuLqIcY27qyI0RyBSXan/Z
-         McxnsDpDOA8ZCTeLKYdTVX4lPhTSWMxeZUVvyNIxDQlqzvLav/ktJErSDZFwdFdV+OXC
-         gwVnso03jrqpF7HGBdkBDmGG5QzCb9hOn71y9ANa75N0QrsXa4Wv9Eg/MSg2+nL6JtGX
-         jPWdB7AWpsfuPYHmi5FfPW7/vIs8PGanB/plcFVlvijuJGnn+ii7JWR5WkwWhkEFVOlf
-         pn1g==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HJWlwMc3bcVndzEG3rK1HHM2GpwqaG1vW1trPKMhPTE=;
+        b=ngD+bHowU5GX0hIFoHwCgvBSYL1kIwj5BamgcK2b44Hn0Efa1cJh1BkhvPnJNyXaz+
+         oaTiT+/SvMe6Sna42CuymTahBBHtBTsM99qXGLLWtDgURRrWH7WsP4ESROuTVw/YrLgC
+         CNfDMvuhnaZto7jmQiMkFOCpDK0ROXVXdyYLbaV5tFR9BX0J2eg3sjJpkF1ptwft6sX1
+         FWrvZX8CX+PrVKFcYhPqspYD4+FBt2wBaQ7Ooa8YpeerB3ORiRQFE/S6I6RUkpe3R4PG
+         GECmmS0ixOIVW4fYFpRI7AkWVEQ3gsU1YNKQ5R8s4sfw7DL9MKXo3I22jJxSTVstAuO2
+         yFfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cqg6OlscZqEMvb/ReYXudBaSyipapWX2ho/bKAy2P6s=;
-        b=LptJnAb7bvz1ioonupyYZ3ubuE4vCcDJoGdtX3uxtATuB4alQLWSn+omBaLu2p0ro0
-         SQ//hGezueUeBEy6le2v7s53vrygoFpEnyMXttFuu1Iiv5kh0nlbsOwyiAb7YglhQWw3
-         sxpgEnIeqjrjl68Ct1RE+MpebeZ/pn277UMJzRj6+trUSKtCn6y6Crmym+GIT1rRJ01m
-         +JB29pQQ6joClFLg87/EYEAoa1ny5gq+MkyIUPErxun/sa7TGI3egxPyItom7uHChVqA
-         NqEeAvI8O5k3u8eU4Eym+pp7SkYDRgF+NGhF26pl7vEXRMjFICM/nIdgvuc0MyL/SELx
-         yzlw==
-X-Gm-Message-State: AOAM533rjE0S3ecR8rWEKaMXHfXSByuEMc23r2H5ktDyf1dLPTMwU3vE
-        DX5aW6sWiC1DdirETRxrhEllQ99s4Jt7uA==
-X-Google-Smtp-Source: ABdhPJznjZnDpqOvqSdheZSC8P42iPnMdQCzy/Tnq4TKbALGTxj9GhVYDaxKh0Q/72NXCoIRKjTuew==
-X-Received: by 2002:a05:6512:14b:: with SMTP id m11mr811712lfo.410.1634153181254;
-        Wed, 13 Oct 2021 12:26:21 -0700 (PDT)
-Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
-        by smtp.gmail.com with ESMTPSA id g7sm31776lfr.113.2021.10.13.12.26.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 12:26:21 -0700 (PDT)
-Subject: Re: [PATCH v4 17/20] crypto: qce: Print a failure msg in case probe()
- fails
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>
-References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
- <20211013105541.68045-18-bhupesh.sharma@linaro.org>
-From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Message-ID: <2699de22-4943-685f-5700-82137a4326ae@linaro.org>
-Date:   Wed, 13 Oct 2021 22:26:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HJWlwMc3bcVndzEG3rK1HHM2GpwqaG1vW1trPKMhPTE=;
+        b=WQe2ncoW7vRIRFty8GDNURwmHrgQ7H9oI72B3l3FHNV1xbsJbdX/3VI5SQTHY/uflK
+         w1MnTOn0+Iarcnts0xdF83RSgJeVG6lpi2RcIfpaccTS1HppNBbkuSyo/W2JNBdeWcoh
+         hZq+NzQmSnTLhVosxjVqyM0oXZZpq9IavEmK5JvIxgC+I1YeprY4bpSvXpJoFwS3AGBa
+         9wFq+u+Dy4UkTe1thXJ72WucMlH0iPD73x4umDF4H1n7P2uFR0UfGOzJhlR1i8KhVK/b
+         k6aXapAefQlH5rzr2hHtkPm1mPO5vsHMaMP6c2CE+M2xXQlY5dRfLhbXVGhvPHLYbU2x
+         Jbyg==
+X-Gm-Message-State: AOAM533XrCz0GIW5lLqzc9VCkVM51Y+BVKdJILN6Uiwqck7qZpo4Tag1
+        14FePvP9jNEXaM7qiRZVpXiLfw==
+X-Google-Smtp-Source: ABdhPJwBnTbMERs0zBoP7LOWHM0wM+4dMwjgOwnXVqj4whYC/0ed3HgNAWHQmB2Rp9Cx46+JjoCGag==
+X-Received: by 2002:a63:2041:: with SMTP id r1mr828228pgm.482.1634153364099;
+        Wed, 13 Oct 2021 12:29:24 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j6sm302246pgq.0.2021.10.13.12.29.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 12:29:23 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 19:29:20 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Salvatore Bonaccorso <carnil@debian.org>,
+        Stephen <stephenackerman16@gmail.com>, djwong@kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, rppt@kernel.org,
+        James.Bottomley@hansenpartnership.com, akpm@linux-foundation.org,
+        david@redhat.com, hagen@jauu.net
+Subject: Re: kvm crash in 5.14.1?
+Message-ID: <YWczkHnrv5ZQAkCH@google.com>
+References: <85e40141-3c17-1dff-1ed0-b016c5d778b6@gmail.com>
+ <2cd8af17-8631-44b5-8580-371527beeb38@gmail.com>
+ <YWcs3XRLdrvyRz31@eldamar.lan>
+ <f430d53f-59cf-a658-a207-1f04adb32c56@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211013105541.68045-18-bhupesh.sharma@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f430d53f-59cf-a658-a207-1f04adb32c56@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhupesh,
-
-On 10/13/21 1:55 PM, Bhupesh Sharma wrote:
-> Print a failure message (dev_err) in case the qcom qce crypto
-> driver probe() fails.
+On Wed, Oct 13, 2021, Paolo Bonzini wrote:
+> On 13/10/21 21:00, Salvatore Bonaccorso wrote:
+> > Hi,
+> > 
+> > On Sat, Oct 09, 2021 at 12:00:39PM -0700, Stephen wrote:
+> > > > I'll try to report back if I see a crash; or in roughly a week if the
+> > > system seems to have stabilized.
+> > > 
+> > > Just wanted to provide a follow-up here and say that I've run on both
+> > > v5.14.8 and v5.14.9 with this patch and everything seems to be good; no
+> > > further crashes or problems.
+> > 
+> > In Debian we got a report as well related to this issue (cf.
+> > https://bugs.debian.org/996175). Do you know did the patch felt
+> > through the cracks?
 > 
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->   drivers/crypto/qce/core.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index 576c416461f9..cb8c77709e1e 100644
-> --- a/drivers/crypto/qce/core.c
-> +++ b/drivers/crypto/qce/core.c
-> @@ -281,6 +281,8 @@ static int qce_crypto_probe(struct platform_device *pdev)
->   	icc_set_bw(qce->mem_path, 0, 0);
->   err_mem_path_put:
->   	icc_put(qce->mem_path);
-> +
-> +	dev_err(dev, "%s failed : %d\n", __func__, ret);
->   	return ret;
->   }
->   
+> Yeah, it's not a KVM patch so the mm maintainers didn't see it.  I'll handle
+> it tomorrow.
 
-As for me the rationale of this change is quite non-obvious, a user is well
-informed, if a driver probe fails. I would rather ask you to consider to
-drop this change.
+It's queued in the -mm tree.
 
---
-Best wishes,
-Vladimir
+https://lore.kernel.org/mm-commits/20211010224759.Ny1hd1WiD%25akpm@linux-foundation.org/
