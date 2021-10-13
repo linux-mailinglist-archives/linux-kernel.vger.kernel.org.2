@@ -2,190 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FB242C157
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70CB42C159
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234793AbhJMNZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:25:33 -0400
-Received: from mga17.intel.com ([192.55.52.151]:29501 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233226AbhJMNZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:25:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="208223337"
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="208223337"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 06:23:29 -0700
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="626341116"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 06:23:15 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1maeDt-000LPO-Od;
-        Wed, 13 Oct 2021 16:23:09 +0300
-Date:   Wed, 13 Oct 2021 16:23:09 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jack Xu <jack.xu@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        Juergen Gross <jgross@suse.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Michael Buesch <m@bues.ch>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Russell Currey <ruscur@russell.cc>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
-        MPT-FusionLinux.pdl@broadcom.com, netdev <netdev@vger.kernel.org>,
-        oss-drivers@corigine.com, qat-linux@intel.com,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v6 00/11] PCI: Drop duplicated tracking of a pci_dev's
- bound driver
-Message-ID: <YWbdvc7EWEZLVTHM@smile.fi.intel.com>
-References: <CAHp75Vd0uYEdfB0XaQuUV34V91qJdHR5ARku1hX_TCJLJHEjxQ@mail.gmail.com>
- <20211013113356.GA1891412@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211013113356.GA1891412@bhelgaas>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S234916AbhJMNZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:25:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57030 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234896AbhJMNZg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:25:36 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 46D1722349;
+        Wed, 13 Oct 2021 13:23:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634131412; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oZyBkiR23eLUY9zYUwi72aab8a0rEnfHoQwUcj+ieIk=;
+        b=iKI1QdfkF3T0K5D83ip+Di/QwhpU6ymij8ETTXvPCzx0eKHcavoyC66/AxldpCb9SURVRy
+        ArejHxUL6vhBv2vt3p1owoDVW5aeP2wv5Zm3whF6vf6AQjW78oXLMjTPwCR0EHYW2l5ICp
+        SLURzzOYWVD1YMGJccPU0bVt5AX77Oo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634131412;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oZyBkiR23eLUY9zYUwi72aab8a0rEnfHoQwUcj+ieIk=;
+        b=kOiZU2CQOpwoI43togyV/D4SL2mqf8TGXeY9MlkDO6wHDEVnuASuZ0cQZ+6oGK8fvgj4XT
+        Pw++vD/BJpcrEmAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B80713CF6;
+        Wed, 13 Oct 2021 13:23:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id M/+yANTdZmG7LQAAMHmgww
+        (envelope-from <iivanov@suse.de>); Wed, 13 Oct 2021 13:23:32 +0000
+From:   "Ivan T. Ivanov" <iivanov@suse.de>
+Message-Id: <CB0F618D-2B3C-473A-93BC-A6AD752B9EC6@suse.de>
+Content-Type: multipart/mixed;
+        boundary="Apple-Mail=_C476DF10-B533-485E-A35A-1DEC4164C313"
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
+Subject: Re: [RESEND] [PATCH] Revert "efi/random: Treat EFI_RNG_PROTOCOL
+ output as bootloader randomness"
+Date:   Wed, 13 Oct 2021 16:23:31 +0300
+In-Reply-To: <7BB7EE30-257A-4B27-B420-B0C72292444A@suse.de>
+Cc:     Dominik Brodowski <linux@dominikbrodowski.net>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+References: <20211012082708.121931-1-iivanov@suse.de>
+ <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
+ <4eccf707f2553f0f66ae3789b5689231@suse.de>
+ <CAMj1kXE7FbEqxyBcPS6mx5wU82+H0WK67HU=S6hq=WAG5EBwyQ@mail.gmail.com>
+ <2E0472BF-BC05-4722-83EC-26919278CC2E@suse.de>
+ <7BB7EE30-257A-4B27-B420-B0C72292444A@suse.de>
+X-Mailer: Apple Mail (2.3608.120.23.2.7)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 06:33:56AM -0500, Bjorn Helgaas wrote:
-> On Wed, Oct 13, 2021 at 12:26:42PM +0300, Andy Shevchenko wrote:
-> > On Wed, Oct 13, 2021 at 2:33 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > On Mon, Oct 04, 2021 at 02:59:24PM +0200, Uwe Kleine-König wrote:
 
-...
+--Apple-Mail=_C476DF10-B533-485E-A35A-1DEC4164C313
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
 
-> > It's a bit unusual. Other to_*_dev() are not NULL-aware IIRC.
-> 
-> It is a little unusual.  I only found three of 77 that are NULL-aware:
-> 
->   to_moxtet_driver()
->   to_siox_driver()
->   to_spi_driver()
-> 
-> It seems worthwhile to me because it makes the patch and the resulting
-> code significantly cleaner.
+Hi,
 
-I'm not objecting the change, just a remark.
+> On 13 Oct 2021, at 12:53, Ivan T. Ivanov <iivanov@suse.de> wrote:
+>=20
+>=20
+>=20
+>> On 13 Oct 2021, at 12:51, Ivan T. Ivanov <iivanov@suse.de> wrote:
+>>=20
+>> Hi,
+>>=20
+>>> On 13 Oct 2021, at 10:50, Ard Biesheuvel <ardb@kernel.org> wrote:
+>>>=20
+>>> On Wed, 13 Oct 2021 at 09:30, Ivan T. Ivanov <iivanov@suse.de> =
+wrote:
+>>>>=20
+>>>> Hi,
+>>>>=20
+>>>> Quoting Dominik Brodowski (2021-10-12 11:40:34)
+>>>>> Am Tue, Oct 12, 2021 at 11:27:08AM +0300 schrieb Ivan T. Ivanov:
+>>>>>> This reverts commit 18b915ac6b0ac5ba7ded03156860f60a9f16df2b.
+>>>>>>=20
+>>>>>> When CONFIG_RANDOM_TRUST_BOOTLOADER is enabled =
+add_bootloader_randomness()
+>>>>>> calls add_hwgenerator_randomness() which might sleep,
+>>>>>=20
+>>>>> Wouldn't it be better to fix add_bootloader_randomness(), =
+considering
+>>>>> that
+>>>>> calls to that function are likely to happen quite early during =
+kernel
+>>>>> initialization? Especially as it seems to have worked beforehand?
+>>>>=20
+>>>> I have tried. I made wait_event_interruptible() optional, but then
+>>>> crng_reseed() segfault badly. And I don't think crng_reseed() is
+>>>> something that I could fix easily. Suggestions are welcomed ;-)
+>>>>=20
+>>>=20
+>>> How about
+>>>=20
+>>> diff --git a/drivers/char/random.c b/drivers/char/random.c
+>>> index 605969ed0f96..1828dc691ebf 100644
+>>> --- a/drivers/char/random.c
+>>> +++ b/drivers/char/random.c
+>>> @@ -2297,9 +2297,8 @@ EXPORT_SYMBOL_GPL(add_hwgenerator_randomness);
+>>> */
+>>> void add_bootloader_randomness(const void *buf, unsigned int size)
+>>> {
+>>> +       add_device_randomness(buf, size);
+>>>      if (IS_ENABLED(CONFIG_RANDOM_TRUST_BOOTLOADER))
+>>> -               add_hwgenerator_randomness(buf, size, size * 8);
+>>> -       else
+>>> -               add_device_randomness(buf, size);
+>>> +               credit_entropy(&input_pool, size * 8);
+>>> }
+>>> EXPORT_SYMBOL_GPL(add_bootloader_randomness);
+>>=20
+>> This doesn=E2=80=99t boot. I just changed following and kernel =
+panics. =20
+>>=20
 
-...
+And before anyone asked =E2=80=9C.. Hey but this is 5.3.18 kernel =
+version=E2=80=9D
+here is the kernel panic with 5.14.11 :-)
 
-> > > +       for (id = drv ? drv->id_table : NULL; id && id->vendor; id++)
-> > > +               if (id->vendor == vendor && id->device == device)
-> > 
-> > > +                       break;
-> > 
-> > return true;
-> > 
-> > >         return id && id->vendor;
-> > 
-> > return false;
-> 
-> Good cleanup for a follow-up patch, but doesn't seem directly related
-> to the objective here.
-
-True. Maybe you can bake one while not forgotten?
-
-...
-
-> > > +       return drv && drv->resume ?
-> > > +                       drv->resume(pci_dev) : pci_pm_reenable_device(pci_dev);
-> > 
-> > One line?
-> 
-> I don't think I touched that line.
-
-Then why they are both in + section?
-
-...
-
-> > > +       struct pci_driver *drv = to_pci_driver(dev->dev.driver);
-> > >         const struct pci_error_handlers *err_handler =
-> > > -                       dev->dev.driver ? to_pci_driver(dev->dev.driver)->err_handler : NULL;
-> > > +                       drv ? drv->err_handler : NULL;
-> > 
-> > Isn't dev->driver == to_pci_driver(dev->dev.driver)?
-> 
-> Yes, I think so, but not sure what you're getting at here, can you
-> elaborate?
-
-Getting pointer from another pointer seems waste of resources, why we
-can't simply
-
-	struct pci_driver *drv = dev->driver;
-
-?
-
-...
-
-> > Stray change? Or is it in a separate patch in your tree?
-> 
-> Could be skipped.  The string now fits on one line so I combined it to
-> make it more greppable.
-
-This is inconsistency in your changes, in one case you are objecting of
-doing something close to the changed lines, in the other you are doing
-unrelated change.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+Ivan
 
 
+--Apple-Mail=_C476DF10-B533-485E-A35A-1DEC4164C313
+Content-Disposition: attachment;
+	filename=kernel-5.14-panic.log
+Content-Type: application/octet-stream;
+	x-unix-mode=0644;
+	name="kernel-5.14-panic.log"
+Content-Transfer-Encoding: 7bit
+
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x481fd010]
+[    0.000000] Linux version 5.14.11-0.g6451538-default (geeko@buildhost) (gcc (SUSE Linux) 11.2.1 20210816 [revision 056e324ce46a7924b5cf10f61010cf9dd2ca10e9], GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.37.20210803-1) #1 SMP Wed Oct 13 12:57:23 UTC 2021 (6451538)
+[    0.000000] earlycon: pl11 at MMIO 0x0000000009000000 (options '')
+[    0.000000] printk: bootconsole [pl11] enabled
+[    0.000000] efi: EFI v2.70 by EDK II
+[    0.000000] efi: SMBIOS 3.0=0xbbed0000 MEMATTR=0xba613018 ACPI 2.0=0xb8420018 RNG=0xbbfdbd98 MEMRESERVE=0xb82b8d98
+[    0.000000] efi: seeding entropy pool
+[    0.000000] Unable to handle kernel read from unreadable memory at virtual address 0000000000000100
+[    0.000000] Mem abort info:
+[    0.000000]   ESR = 0x96000004
+[    0.000000]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    0.000000]   SET = 0, FnV = 0
+[    0.000000]   EA = 0, S1PTW = 0
+[    0.000000]   FSC = 0x04: level 0 translation fault
+[    0.000000] Data abort info:
+[    0.000000]   ISV = 0, ISS = 0x00000004
+[    0.000000]   CM = 0, WnR = 0
+[    0.000000] [0000000000000100] user address but active_mm is swapper
+[    0.000000] Internal error: Oops: 96000004 [#1] SMP
+[    0.000000] Modules linked in:
+[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.14.11-0.g6451538-default #1 openSUSE Tumbleweed (unreleased) 60c96ed3deefa67df40302b86abb113f2e90c73b
+[    0.000000] pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO BTYPE=--)
+[    0.000000] pc : __queue_work+0x34/0x600
+[    0.000000] lr : queue_work_on+0x64/0xa0
+[    0.000000] sp : ffffce52f6c03b00
+[    0.000000] x29: ffffce52f6c03b00 x28: ffffce52f63ddb80 x27: 0000000000007ffe
+[    0.000000] x26: 00000000000001e0 x25: ffffce52f70a6000 x24: 00000000000001e0
+[    0.000000] x23: ffffce52f70a6f10 x22: 0000000000000000 x21: ffffce52f70a6f30
+[    0.000000] x20: ffffce52f6443000 x19: ffffce52f6e9a4a8 x18: 0000000000000007
+[    0.000000] x17: 000000000000000e x16: 0000000000000001 x15: 0000000000000019
+[    0.000000] x14: 0000000000000001 x13: 000000000000004c x12: 0000000000000068
+[    0.000000] x11: ffffce52f6053528 x10: 00000000000000d8 x9 : 000000006f6e4246
+[    0.000000] x8 : ffffce52f6c03c4c x7 : 0000000000000007 x6 : 0000000000000000
+[    0.000000] x5 : 0000000000000000 x4 : 0000000fffffffe1 x3 : 0000000fffffffe0
+[    0.000000] x2 : ffffce52f6e9a4a8 x1 : 0000000000000000 x0 : 00000000000001e0
+[    0.000000] Call trace:
+[    0.000000]  __queue_work+0x34/0x600
+[    0.000000]  queue_work_on+0x64/0xa0
+[    0.000000]  crng_reseed+0x668/0x790
+[    0.000000]  credit_entropy_bits.constprop.0+0x208/0x21c
+[    0.000000]  add_bootloader_randomness+0x2c/0x3c
+[    0.000000]  efi_config_parse_tables+0x134/0x250
+[    0.000000]  efi_init+0x170/0x21c
+[    0.000000]  setup_arch+0x2a4/0x6b0
+[    0.000000]  start_kernel+0x90/0x9cc
+[    0.000000]  __primary_switched+0xc0/0xc8
+[    0.000000] Code: a90363f7 2a0003f8 a9046bf9 2a0003fa (b9410020)
+[    0.000000] random: get_random_bytes called from oops_exit+0x44/0x80 with crng_init=0
+[    0.000000] ---[ end trace d23bd08a2a1c3f33 ]---
+[    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
+[    0.000000] Rebooting in 90 seconds..
+[    0.000000] Reboot failed -- System halted
+--Apple-Mail=_C476DF10-B533-485E-A35A-1DEC4164C313--
