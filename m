@@ -2,97 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF6442B6F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673B042B6FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237888AbhJMGU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 02:20:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48618 "EHLO
+        id S237971AbhJMGVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 02:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhJMGUw (ORCPT
+        with ESMTP id S229991AbhJMGU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 02:20:52 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949A0C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:18:49 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id h10so1488397ilq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:18:49 -0700 (PDT)
+        Wed, 13 Oct 2021 02:20:58 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1268CC061570;
+        Tue, 12 Oct 2021 23:18:56 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id y10so1256611qkp.9;
+        Tue, 12 Oct 2021 23:18:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p2Vb9i/PJ7w2kwE75H5UZs8Spnuuytnn4odzwjotJmY=;
-        b=HBrrRoV6b/HfdG2UOPggH8S8KCDaj1WWPMVafGBe/8Q59pxiC/Jj5XIOIS9sVm3C9c
-         694X/sdc0Loy2JcTBl+qLxcH9elOpwIugBv7i6kVl89QyqOroaEZkD8TwPmdbpUWv6F1
-         FxpSNRtABHzHKIdjKFJjo75h6/QFcQpHRQ//ICfURQVoYJ8HV/4WXIBo4Pw/fhVs1dwS
-         AIT2THjJ5bN6Z8HcHvRNUJTvQrp8Ca9MQNunI7gkW+nl9Ad+EqluRQC60ShF4HiSXL0/
-         zv0ABMvKJOs3LnQEev20N5v7X8yc7BWK84QJfgviuifqWDMlx9fmpCTchSCmztpzXcEt
-         x48Q==
+         :cc:content-transfer-encoding;
+        bh=JcdsjTEjHPlZZyb1Dbmr1v+cGhuV1W3tnNYJBsIpCnE=;
+        b=h5Y1ORQPJJD8/3xiT9opipmvbm7onqZfube15REdira6D7JFIGZYHcvePG35Vvg1EM
+         wxnV3L8+nVU8Doaz3AHNVtYosj3JkeG8PEXk/BY0ECewc3sCeSjAm1G6jWMbeJuap4I5
+         K56W/0pTqiUdmsT75HzkL5Dl7/DwtdxSE6U++Z7BvZf8WTDGQDqozTN6OP7gFSThqC6V
+         /OOKxb4F+XOjBCLfR7qEv29zhsLSL1+6V1tPABgTIf17TM59qitA70EQ7r5PrH/Th4u3
+         81rr2mtoP7lFMf/KW7eEEGbeijhkNi/PMeCrxDXC17TktJmPDQ7xRdMZfDvCb66qMvcj
+         xJRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p2Vb9i/PJ7w2kwE75H5UZs8Spnuuytnn4odzwjotJmY=;
-        b=NuipnGGbmssf0y8fue4BU6bpekfIAWNfXY3GRb2XT6AZsF+vXctIS0p6vGfjS3O3x4
-         x51AJsvEUAC/o0zAHeLnznDB/4FdpbGBQb6Znj4pCwWNy73zPEd5wOpQ4Q2yqJ3JX0LX
-         glN+Rf0DzGgTJQS62pZku1cheo6YmSG3MH3QsfI+GZ4JjG7n/qIxBeeC4ENnAof+NSWi
-         qHricEK/SnRHV6YBJaboz0gKYqOCQU1O+Xv/X3IvTZGIRsKoWoHfzRm1IsFjIIHQgojt
-         mGaN9PofstZQaRBPqkiY9K66nIaI3o2OGQRK9Ndax4HwY9YA9OB92fS+TiNWPQizxphD
-         bjuA==
-X-Gm-Message-State: AOAM530t4gUycmeEb2rRkGgHGqFxIcOC1ueB3CteaZAvf2mtqisX0s1N
-        rHnHwMKQxLI4p2JvtjJWBN16JkSehXsLvrjAHR4=
-X-Google-Smtp-Source: ABdhPJyPhvVd5LK+pODg3+wLQ9oQmq6s5LWY9R5KLOxEu65VNkSbHrHPMNrGt1xNtn2yHIC9Hzv5FHkXh6ekPPvHM4I=
-X-Received: by 2002:a92:c009:: with SMTP id q9mr13987273ild.131.1634105928954;
- Tue, 12 Oct 2021 23:18:48 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JcdsjTEjHPlZZyb1Dbmr1v+cGhuV1W3tnNYJBsIpCnE=;
+        b=wKYbmiERVIY01kOpBfWYkzdQ4tA7oQAst/QPmdnkFjimHJV5KzFqF05qF0VKRPHP6+
+         2QIdUVBctAdRTwycK9Gi34KQT2MCrqvfdTTHrAD9SI0lAwxQ1V1A8EV5K0Mz4igW+/ix
+         FuvNMFWEXbteVPAJRj8oYEQo/Q2QoE9oyRzEoojTL89/XWxfR5ZSbhRlArxr74aZDts3
+         9fxG1pWVtr9ll6IVSLAEB9YNokvw1EcxP6+cSCDRqkU49rteC21niY/r3ZQsCA/FLugt
+         l13wvjJiKgJGh6eQSSzWUDlPalkOVevyL5DTcL2vM0L7JwcKePQ7ZfaIym4lbjP23MDG
+         +vfA==
+X-Gm-Message-State: AOAM532g7sh8Cdbpzd3/A2fhONmEeki2Vb7Q0dtvrFCNOr4iK0xvXRX8
+        2gIlljm1lxnxzHuz3R5WXL9gBI0FJF1Z2tRNBSo=
+X-Google-Smtp-Source: ABdhPJzNukla2kqaI6glp6RgpRUG7saizBBtMwf/fEJQoJ+tivUtj0te51DfXp+D88jI2i7TelfTL1DQDR6uzH5+vws=
+X-Received: by 2002:a37:a301:: with SMTP id m1mr1088774qke.470.1634105935214;
+ Tue, 12 Oct 2021 23:18:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <202110121132.N2z9JrD0-lkp@intel.com> <YWVw/oVd5ztGZDAK@hirez.programming.kicks-ass.net>
- <YWWPLnaZGybHsTkv@hirez.programming.kicks-ass.net>
-In-Reply-To: <YWWPLnaZGybHsTkv@hirez.programming.kicks-ass.net>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 13 Oct 2021 14:18:13 +0800
-Message-ID: <CALOAHbDkBn3LDsNvSXujMiQXrLHdRsfvJUqJv_eTh4s63osuTw@mail.gmail.com>
-Subject: Re: [tip:sched/core 14/47] kernel/sched/fair.c:893:22: error:
- variable 'p' set but not used
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>
+References: <20200909112850.hbtgkvwqy2rlixst@pali> <20201006222222.GA3221382@bjorn-Precision-5520>
+ <20201007081227.d6f6otfsnmlgvegi@pali> <20210407142538.GA12387@meh.true.cz>
+ <20210407145147.bvtubdmz4k6nulf7@pali> <20210407153041.GA17046@meh.true.cz>
+ <cd4812f0-1de3-0582-936c-ba30906595af@citymesh.com> <20210625115402.jwga35xmknmo4vdk@pali>
+In-Reply-To: <20210625115402.jwga35xmknmo4vdk@pali>
+From:   Dexuan-Linux Cui <dexuan.linux@gmail.com>
+Date:   Tue, 12 Oct 2021 23:18:44 -0700
+Message-ID: <CAA42JLZCE0CFUJHVZLT77YvPap49_cGiAMMt2E-B7X0tzST6jg@mail.gmail.com>
+Subject: Re: PCI: Race condition in pci_create_sysfs_dev_files
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Koen Vandeputte <koen.vandeputte@citymesh.com>,
+        =?UTF-8?Q?Petr_=C5=A0tetiar?= <ynezz@true.cz>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Yinghai Lu <yinghai@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 9:35 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Fri, Jun 25, 2021 at 4:55 AM Pali Roh=C3=A1r <pali@kernel.org> wrote:
 >
-> On Tue, Oct 12, 2021 at 01:26:54PM +0200, Peter Zijlstra wrote:
+> Hello!
 >
-> > Again, I have absolutely no intention of fixing this. IMO this is the
-> > compiler being a total pain in the arse.
-> >
-> > Please stop reporting this.
+> On Friday 25 June 2021 13:29:00 Koen Vandeputte wrote:
+> > ...
+> It is same race condition which I described in the first email of this
+> email thread. I described exactly when it happens. I'm not able to
+> trigger it with new kernels but as we know race conditions are hard to
+> trigger...
 >
-> How's this then?
+> So result is that we know about it, just fix is not ready yet as it is
+> not easy to fix it.
 >
-> diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
-> index 978fcfca5871..b0d9121c5dce 100644
-> --- a/kernel/sched/Makefile
-> +++ b/kernel/sched/Makefile
-> @@ -3,6 +3,10 @@ ifdef CONFIG_FUNCTION_TRACER
->  CFLAGS_REMOVE_clock.o = $(CC_FLAGS_FTRACE)
->  endif
->
-> +# The compilers are complaining about unused variables inside an if(0) scope
-> +# block. This is daft, shut them up.
-> +ccflags-y += -Wno-unused-but-set-variable
-> +
->  # These files are disabled because they produce non-interesting flaky coverage
->  # that is not a function of syscall inputs. E.g. involuntary context switches.
->  KCOV_INSTRUMENT := n
+> Krzysztof has been working on fixing it, so maybe can provide an
+> update...
 
-After this diff, the warnings disappear.
+I think we're seeing the same issue with a Linux VM on Hyper-V. Here
+the kernel is https://git.launchpad.net/~canonical-kernel/ubuntu/+source/li=
+nux-azure/+git/bionic/tree/?h=3DUbuntu-azure-5.4-5.4.0-1061.64_18.04.1
 
-Tested-by: Yafang Shao <laoar.shao@gmail.com>
+[    4.680707] hv_pci 47505500-0003-0000-3130-444531334632: PCI VMBus
+probing: Using version 0x10002
+[    4.730457] hv_pci 47505500-0003-0000-3130-444531334632: PCI host
+bridge to bus 0003:00
+[    4.735577] pci_bus 0003:00: root bus resource [mem
+0x43000000-0x43ffffff window]
+[    4.742189] pci_bus 0003:00: root bus resource [mem
+0x1020000000-0x1031ffffff window]
+[    4.747027] pci 0003:00:00.0: [10de:13f2] type 00 class 0x030000
+[    4.770114] pci 0003:00:00.0: reg 0x10: [mem 0x43000000-0x43ffffff]
+[    4.792153] pci 0003:00:00.0: reg 0x14: [mem
+0x1020000000-0x102fffffff 64bit pref]
+[    4.814022] pci 0003:00:00.0: reg 0x1c: [mem
+0x1030000000-0x1031ffffff 64bit pref]
+[    4.854830] pci 0003:00:00.0: Enabling HDA controller
+[    4.869665] pci 0003:00:00.0: vgaarb: VGA device added:
+decodes=3Dio+mem,owns=3Dmem,locks=3Dnone
+[    4.879399] pci 0003:00:00.0: BAR 1: assigned [mem
+0x1020000000-0x102fffffff 64bit pref]
+[    4.903880] pci 0003:00:00.0: BAR 3: assigned [mem
+0x1030000000-0x1031ffffff 64bit pref]
+[    4.927977] pci 0003:00:00.0: BAR 0: assigned [mem 0x43000000-0x43ffffff=
+]
+[    4.938162] sysfs: cannot create duplicate filename
+'/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A03:00/device:07/VMBUS:01/47505500-00=
+03-0000-3130-444531334632/pci0003:00/0003:00:00.0/config'
+[    4.951818] CPU: 0 PID: 135 Comm: kworker/0:2 Not tainted
+5.4.0-1061-azure #64~18.04.1-Ubuntu
+[    4.951820] Hardware name: Microsoft Corporation Virtual
+Machine/Virtual Machine, BIOS 090007  06/02/2017
+[    4.955812] Workqueue: hv_pri_chan vmbus_add_channel_work
+[    4.955812] Call Trace:
+[    4.955812]  dump_stack+0x57/0x6d
+[    4.955812]  sysfs_warn_dup+0x5b/0x70
+[    4.955812]  sysfs_add_file_mode_ns+0x158/0x180
+[    4.955812]  sysfs_create_bin_file+0x64/0x90
+[    4.955812]  pci_create_sysfs_dev_files+0x72/0x270
+[    4.955812]  pci_bus_add_device+0x30/0x80
+[    4.955812]  pci_bus_add_devices+0x31/0x70
+[    4.955812]  hv_pci_probe+0x48c/0x650
+[    4.955812]  vmbus_probe+0x3e/0x90
+[    4.955812]  really_probe+0xf5/0x440
+[    4.955812]  driver_probe_device+0x11b/0x130
+[    4.955812]  __device_attach_driver+0x7b/0xe0
+[    4.955812]  ? driver_allows_async_probing+0x60/0x60
+[    4.955812]  bus_for_each_drv+0x6e/0xb0
+[    4.955812]  __device_attach+0xe4/0x160
+[    4.955812]  device_initial_probe+0x13/0x20
+[    4.955812]  bus_probe_device+0x92/0xa0
+[    4.955812]  device_add+0x402/0x690
+[    4.955812]  device_register+0x1a/0x20
+[    4.955812]  vmbus_device_register+0x5e/0xf0
+[    4.955812]  vmbus_add_channel_work+0x2c4/0x640
+[    4.955812]  process_one_work+0x209/0x400
+[    4.955812]  worker_thread+0x34/0x400
+[    4.955812]  kthread+0x121/0x140
+[    4.955812]  ? process_one_work+0x400/0x400
+[    4.955812]  ? kthread_park+0x90/0x90
+[    4.955812]  ret_from_fork+0x35/0x40
 
--- 
-Thanks
-Yafang
+Thanks,
+Dexuan
