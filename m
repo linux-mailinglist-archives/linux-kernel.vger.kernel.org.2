@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706B842C75D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0127442C760
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237704AbhJMRRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
+        id S237916AbhJMRRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236309AbhJMRRJ (ORCPT
+        with ESMTP id S237869AbhJMRRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:17:09 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04121C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:15:06 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id n64so4787864oih.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:15:05 -0700 (PDT)
+        Wed, 13 Oct 2021 13:17:50 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C0F3C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:15:47 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id o204so4699859oih.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:15:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EagSEJLuJ76DU1xuVtP8rPwTPOeomx72A3YkYCudisw=;
-        b=QC1Nf8QJGGrpFuYv0xu/VPSu8kkfNkQpIgx/LAvTCvhSVujjNyQLtWm2c34LJnZfbw
-         hMFNl/JEfTo+fG3NTl30MTUhtWinqVy/q/EqcwV31Sz5tv7rUpLOJwsqDX3TM0pEGm+X
-         nCAcpAcyWvnoRpixKQCr+K+Pe9KfQtQwIZeh23IaRBR7uYqC2i9s7sBBSJUVYx3gTCVQ
-         wsfPAxkB36YxNKfRcCu+1osxADUi/r39xrUjaQKdOB20xmdMKK0uITRt5OpDS2G9nkkc
-         AHdDDLtf5hEGC+6tLibOaabbxFo2UqhxGiw7/UrvIPqEh/aEHUBs51krN+eC2cGVLo4d
-         YS7Q==
+        bh=W8nJn1I9+6xqCWimBgakZ0ZykoVGwL72//fXC4D2ENM=;
+        b=GI2da+Yf8iRRrz33iNLPc7mzogAwHgSYE6UnW3MHkFfv7C00ULlaeRSw+ecfq1ILmK
+         yJIL013x3qXks11y/cjE+AALW6awCN1OArNQUkyBQ+4mgvb0KjtqVqo+kEkh+UoCBt+H
+         0WDCQuuqVuTNpZJ4fvbpMBA9HV5sEbdiL3Q3jZrxBESwug1StY1cjr8xlboSu4cmw+8j
+         6pN+Le3SWffPOmsGK3waohlhvtMo927iGVjPzMVlGN/hzh9v4oBqB7lWtvtuVSYvhn99
+         0dAJdEtstNq+XGfKyAf2tiglHD+mxdHxf9/Y1ZgeXqp3HaNt5gVA40RtAqLUQMUAO5CQ
+         QMrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EagSEJLuJ76DU1xuVtP8rPwTPOeomx72A3YkYCudisw=;
-        b=rqJgpKFuHPvwFZAZP1d5pbC+Dh3wZ4HZe5E1rg8LATku0BUjMuNOEnCkl2xow6VZIm
-         o4y6rbgrXOAxPxqK+ZeD2zLB4Tnu2FKxtl0aSOUFJLSAyIF93QgVe8ddfVWxmswraT1r
-         fv+FpzgYKdaOrRc2rn98Ie6MgaUSiHnDLB0U7MK+BuHbI7hJjZbV7ZWwtN23fnPFMfUK
-         gIsInEqQC0G6XzSzGSDH4nzFm6ZBTCg8G6xMNaSmgjryQ6Oco+GGiGPsYGBFQDlO9bN3
-         mrCbiSXICQ54EeK5P8XFHWU3mbC6V5bIGik8crxYkTxthlcvWcqUy4ZEq0APhScOaPQC
-         rjOg==
-X-Gm-Message-State: AOAM5337DDdrnJvmMRHLgRQM5xLrh3C9UcXgRs0G0H048ODVS47LqbvA
-        9EKyT1Nj1vfDYwh32xOXMHNwb2iXe752994wM0E85w==
-X-Google-Smtp-Source: ABdhPJyof8AP6eNsSD6J4Oos5uZK9mgOi8QhTiPR4KT65njhsOIHv+m0av05pydrGtvWHgaPSyadSiB8AdaiL3xhziY=
-X-Received: by 2002:aca:6549:: with SMTP id j9mr9524859oiw.126.1634145305328;
- Wed, 13 Oct 2021 10:15:05 -0700 (PDT)
+        bh=W8nJn1I9+6xqCWimBgakZ0ZykoVGwL72//fXC4D2ENM=;
+        b=sDKvhTtf9IAr+aJUX95+N1lMgUpb4W7mME6ntpn4HdUa3329SUw6sCKUe1BJlGkBr/
+         5im0oAXXJQxjsxgacAQZ51OydImhDfF/HhE8HSu6pjrSyuDfE5Nku/HtMwCSV7j/FOm1
+         9bEiS5UEE18skZBDIXe+UDe/a7vSWms/MPzHPP1qXRaA+FF7PpA0Cg0RxANnT7rYWqNS
+         N/yWI3/eftXbZphzlsUrGCpp0dZTNymJRRPKwjY6tuLyw/w/Kth9COqoU4UHIq/R58Fu
+         LjMaVS1nSFSWLlBFfkE63EBLGQFQfgPAJAtnQ62Wj22zHW4F7fTYhDY7PADj7B1MS73s
+         3OUw==
+X-Gm-Message-State: AOAM532/NEa9FPeJym7zmU4llNf+9jfJxE548lyd0yo4zmbqrWvMOft3
+        /b1jL3EkXcDVGvk9dPJUsYZE5y3+zL3x8ix05CLJM5eS3z7ZrA==
+X-Google-Smtp-Source: ABdhPJxlYaW0DbUNDGvX1GOmNno4laeXfJ5hJQT1f9YdWbCUWCT4I+0fram+3t4Qp5MihxS84DdI0NDO7jJ4uJ+qErc=
+X-Received: by 2002:a05:6808:1686:: with SMTP id bb6mr246917oib.40.1634145346288;
+ Wed, 13 Oct 2021 10:15:46 -0700 (PDT)
 MIME-Version: 1.0
 References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
- <20211013105541.68045-6-bhupesh.sharma@linaro.org> <6d325686-461a-b321-148c-0142933a29e4@linaro.org>
-In-Reply-To: <6d325686-461a-b321-148c-0142933a29e4@linaro.org>
+ <20211013105541.68045-8-bhupesh.sharma@linaro.org> <f58d549a-5ce3-a51d-c371-a3ffdc76496d@linaro.org>
+In-Reply-To: <f58d549a-5ce3-a51d-c371-a3ffdc76496d@linaro.org>
 From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Wed, 13 Oct 2021 22:44:54 +0530
-Message-ID: <CAH=2Nty+SKm4VcSXc66o0_9m7RDW7tZQwXX8NswKSzPjb2Y9QQ@mail.gmail.com>
-Subject: Re: [PATCH v4 05/20] dt-bindings: qcom-bam: Add 'interconnects' &
- 'interconnect-names' to optional properties
+Date:   Wed, 13 Oct 2021 22:45:35 +0530
+Message-ID: <CAH=2NtzoVs5XjSn11_VioEhTiTDN9_E9iU7eSTxT2R4gR8W80A@mail.gmail.com>
+Subject: Re: [PATCH v4 07/20] dt-bindings: qcom-qce: Convert bindings to yaml
 To:     Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
 Cc:     MSM <linux-arm-msm@vger.kernel.org>, linux-crypto@vger.kernel.org,
         bhupesh.linux@gmail.com,
@@ -63,7 +62,8 @@ Cc:     MSM <linux-arm-msm@vger.kernel.org>, linux-crypto@vger.kernel.org,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S . Miller" <davem@davemloft.net>,
         Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -71,56 +71,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Vladimir,
 
-On Wed, 13 Oct 2021 at 18:33, Vladimir Zapolskiy
+On Wed, 13 Oct 2021 at 18:35, Vladimir Zapolskiy
 <vladimir.zapolskiy@linaro.org> wrote:
 >
 > Hi Bhupesh,
 >
 > On 10/13/21 1:55 PM, Bhupesh Sharma wrote:
-> > Add new optional properties - 'interconnects' and
-> > 'interconnect-names' to the device-tree binding documentation for
-> > qcom-bam DMA IP.
-> >
-> > These properties describe the interconnect path between bam and main
-> > memory and the interconnect type respectively.
+> > Convert Qualcomm QCE crypto devicetree binding to YAML.
 > >
 > > Cc: Thara Gopinath <thara.gopinath@linaro.org>
 > > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
 > > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 > > ---
-> >   Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml | 8 ++++++++
-> >   1 file changed, 8 insertions(+)
+> >   .../devicetree/bindings/crypto/qcom-qce.yaml  | 67 +++++++++++++++++++
+> >   1 file changed, 67 insertions(+)
+> >   create mode 100644 Documentation/devicetree/bindings/crypto/qcom-qce.yaml
 > >
-> > diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> > index 32b47e3b7769..602e68df971f 100644
-> > --- a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> > +++ b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> > @@ -45,6 +45,14 @@ properties:
-> >       const: 1
-> >       description: The single cell represents the channel index.
-> >
-> > +  interconnects:
+> > diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+> > new file mode 100644
+> > index 000000000000..b7ae873dc943
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+> > @@ -0,0 +1,67 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/crypto/qcom-qce.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm crypto engine driver
+> > +
+> > +maintainers:
+> > +  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > +
+> > +description: |
+> > +  This document defines the binding for the QCE crypto
+> > +  controller found on Qualcomm parts.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: qcom,crypto-v5.1
+> > +
+> > +  reg:
 > > +    maxItems: 1
-> > +    description: |
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: iface clocks register interface.
+> > +      - description: bus clocks data transfer interface.
+> > +      - description: core clocks rest of the crypto block.
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: iface
+> > +      - const: bus
+> > +      - const: core
+> > +
+> > +  dmas:
+> > +    items:
+> > +      - description: DMA specifiers for tx dma channel.
+> > +      - description: DMA specifiers for rx dma channel.
 >
-> here I have the same comment about the set literal style of the
-> multi-line description, which is one-line, likely the specifier
-> is not needed...
+> Please consider to swap the description lines, so that they'll
+> be matching the dma-names below and a regular order found in
+> dts files.
 
 Ok, I will fix it in v5.
 
 Regards,
 Bhupesh
 
-> > +      Interconnect path between bam and main memory.
 > > +
-> > +  interconnect-names:
-> > +    const: memory
+> > +  dma-names:
+> > +    items:
+> > +      - const: rx
+> > +      - const: tx
 > > +
-> >     qcom,ee:
-> >       $ref: /schemas/types.yaml#/definitions/uint32
-> >       description:
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - clocks
+> > +  - clock-names
+> > +  - dmas
+> > +  - dma-names
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/qcom,gcc-apq8084.h>
+> > +    crypto-engine@fd45a000 {
+> > +        compatible = "qcom,crypto-v5.1";
+> > +        reg = <0xfd45a000 0x6000>;
+> > +        clocks = <&gcc GCC_CE2_AHB_CLK>,
+> > +                 <&gcc GCC_CE2_AXI_CLK>,
+> > +                 <&gcc GCC_CE2_CLK>;
+> > +        clock-names = "iface", "bus", "core";
+> > +        dmas = <&cryptobam 2>, <&cryptobam 3>;
+> > +        dma-names = "rx", "tx";
+> > +    };
 > >
 >
 > --
