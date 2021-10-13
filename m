@@ -2,177 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD4542C198
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B15842C19C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234555AbhJMNmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233962AbhJMNmx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:42:53 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D3AC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:40:50 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id r15so2179201qkp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:40:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=fOYbDlxyEHO5mkyCfKHOpCUjsLY9l97TCTcV9KNabAI=;
-        b=XEMDZnEQl+Zq4wdmUGLLkjtYBSRaidWKvmxJuA15ySkjsui1JPqSa1ZWzleiUodnS4
-         4kEGOVz0bH/AxD0L3s6/3RIDu4RfcqE2LLDhVlB6gfyzxNSPDLjn8nKwor3ZW4B2trQ4
-         bqYp7O2eM/tWm58CSJcTcb+uzkk6SVgv7INyUW35WUFBcOYiq7WIEzKL+hjzXHiCejph
-         QHpMYkfvIuDNhSItQqmJ+Vc1XYqrKQgGHazI8WnHTrCsouXpwYyiAYgiM2QEsVF5gHdz
-         ZJLvnUp5Oc2Rp0xJOZhR7zuun0gEe51MGZSvFVnEu+r4qI4EqOf+bJ6xWqK0udAIUOEO
-         2D7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=fOYbDlxyEHO5mkyCfKHOpCUjsLY9l97TCTcV9KNabAI=;
-        b=E2u0ZkXO4J/MQSi9q29xMC1zpsAlwn0yn4et36LykpEGthsAgXtFXSnirT42egKM6o
-         dyeS6hpixNzLaHWtLSaDqu0bHgp6MQphhnLCaiLjLL6fgc8l+4i3W7e+JbO5phXiPDB6
-         t7+NlxAAzxc0+yswZFZZ2YV+Mo/qb0yNYc219wXrdcJf+aO1zOVDq6skvGnd3s0KCDb3
-         UftvCZxJGA9xBrvz5V84D1wI7v5e86FzJ/NV7amAUOPeF6f4olJCfhhl8j+2mWEhOXnQ
-         qasLFUF5HDkVBuZD/V/8VCNripBOIKewKLpYOlZTD64O4fUkQiuaICUb15Gb0vlGGNbc
-         5r7g==
-X-Gm-Message-State: AOAM531ygP/rfiaXFT+Y2Jk2pSKLvVFn0r6hGnc7aC0vxZn37FkEc9Iu
-        lmxiZq+ONEpjzi6EfPE97w227A==
-X-Google-Smtp-Source: ABdhPJzOTaRXeM7E9FNDf2aud4bzU/5ORGrb5nxt55vCz9M67pEiwG1gJqMRtM1pQtJ5njQL8zGp2w==
-X-Received: by 2002:a37:a754:: with SMTP id q81mr18304335qke.303.1634132449920;
-        Wed, 13 Oct 2021 06:40:49 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id p2sm4953006qtq.41.2021.10.13.06.40.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 06:40:49 -0700 (PDT)
-Message-ID: <ff0769efee51e15451d48e23860f8b1710593cd7.camel@ndufresne.ca>
-Subject: Re: [PATCH 0/2] media: rkvdec: Align decoder behavior with Hantro
- and Cedrus
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Date:   Wed, 13 Oct 2021 09:40:48 -0400
-In-Reply-To: <CAGXv+5FnFq1mN79sqUp-o6pHirYvp55gurnsUCgqYvEAX2=4oQ@mail.gmail.com>
-References: <20211008100423.739462-1-wenst@chromium.org>
-         <f108f23dadc846222c63c88af826dae9c5082d83.camel@ndufresne.ca>
-         <CAGXv+5FnFq1mN79sqUp-o6pHirYvp55gurnsUCgqYvEAX2=4oQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        id S235251AbhJMNnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:43:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:39458 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234903AbhJMNnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:43:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8E5A1FB;
+        Wed, 13 Oct 2021 06:41:17 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A2C993F694;
+        Wed, 13 Oct 2021 06:41:16 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 14:41:14 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] PCI: apple: Remove redundant initialization of
+ pointer port_pdev
+Message-ID: <20211013134114.GC11036@lpieralisi>
+References: <20211012133235.260534-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012133235.260534-1-colin.king@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 13 octobre 2021 à 15:05 +0800, Chen-Yu Tsai a écrit :
-> Hi,
+On Tue, Oct 12, 2021 at 02:32:35PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> On Fri, Oct 8, 2021 at 11:42 PM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
-> > 
-> > Hi Chen-Yu,
-> > 
-> > thanks for looking into this.
-> > 
-> > Le vendredi 08 octobre 2021 à 18:04 +0800, Chen-Yu Tsai a écrit :
-> > > Hi everyone,
-> > > 
-> > > While working on the rkvdec H.264 decoder for ChromeOS, I noticed some
-> > > behavioral differences compared to Hantro and Cedrus:
-> > > 
-> > > 1. The driver always overrides the sizeimage setting given by userspace
-> > >    for the output format. This results in insufficient buffer space when
-> > >    running the ChromeOS video_decode_accelerator_tests test program,
-> > >    likely due to a small initial resolution followed by dynamic
-> > >    resolution change.
-> > > 
-> > > 2. Doesn't support dynamic resolution change.
-> > > 
-> > > This small series fixes both and aligns the behavior with the other two
-> > > stateless decoder drivers. This was tested on the downstream ChromeOS
-> > > 5.10 kernel with ChromeOS. Also compiled tested on mainline but I don't
-> > > have any other RK3399 devices set up to test video stuff, so testing
-> > > would be very much appreciated.
-> > > 
-> > > Also, I'm not sure if user applications are required to check the value
-> > > of sizeimage upon S_FMT return. If the value is different or too small,
-> > > what can the application do besides fail? AFAICT it can't split the
-> > > data of one frame (or slice) between different buffers.
-> > 
-> > While most software out there just assumes that driver will do it right and
-> > crash when it's not the case, application that do map the buffer to CPU must
-> > read back the fmt structure as the drivers are all fail-safe and will modify
-> > that structure to a set of valid value s for the context.
+> The pointer port_pdev is being initialized with a value that is never
+> read, it is being updated later on. The assignment is redundant and
+> can be removed.
 > 
-> I believe what is happening in Chromium is that the decoder is opened with
-> some default settings, including the smallest viable resolution for the
-> output side, and the buffers allocated accordingly. When dynamic resolution
-> change happens, the decoder does not check if the current buffers are
-> sufficiently sized; it just assumes that they are. And when it starts
-> pushing data into the buffers, it realizes they are too small and fails.
-> 
-> The spec also says:
-> 
->     Clients are allowed to set the sizeimage field for variable length
->     compressed data flagged with V4L2_FMT_FLAG_COMPRESSED at ioctl
->     VIDIOC_ENUM_FMT, but the driver may ignore it and set the value itself,
->     or it may modify the provided value based on alignment requirements or
->     minimum/maximum size requirements.
-> 
-> The spec only guarantees that the buffers are of sufficient size for the
-> resolution configured at the time they were allocated/requested.
-> 
-> So I think my first patch is a workaround for a somewhat broken userspace.
-> But it seems the other stateless drivers are providing similar behavior,
-> as I previously mentioned.
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/pci/controller/pcie-apple.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-That's what I mean, this is not a driver bug strictly speaking (assuming it does
-guaranty the buffer size is sufficient) but it is without your change
-inconvenient, as userspace may be aware of the largest resolution it will
-decode, and may want to allocate larger buffer upfront.
+Squashed into the commit it is fixing.
 
-As per Chromium bug, this is being addressed already. Thanks for this driver
-improvement.
+Thanks !
+Lorenzo
 
+> diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
+> index b4db7a065553..19fd2d38aaab 100644
+> --- a/drivers/pci/controller/pcie-apple.c
+> +++ b/drivers/pci/controller/pcie-apple.c
+> @@ -634,7 +634,7 @@ static struct apple_pcie_port *apple_pcie_get_port(struct pci_dev *pdev)
+>  {
+>  	struct pci_config_window *cfg = pdev->sysdata;
+>  	struct apple_pcie *pcie = cfg->priv;
+> -	struct pci_dev *port_pdev = pdev;
+> +	struct pci_dev *port_pdev;
+>  	struct apple_pcie_port *port;
+>  
+>  	/* Find the root port this device is on */
+> -- 
+> 2.32.0
 > 
-> > As for opposite direction (output vs capture) format being changed, this should
-> > be documented in the spec, if you find it too unclear or missing for sateless
-> > codec (I know it's there for stateful but can't remember, would have to re-read,
-> > for stateless) let us know.
-> 
-> AFAICT the capture side is working OK and to spec.
-> 
-> 
-> Regards
-> ChenYu
-> 
-> > regards,
-> > Nicolas
-> > 
-> > > 
-> > > Andrzej, I believe the second patch would conflict with your VP9 series.
-> > > 
-> > > 
-> > > Regards
-> > > ChenYu
-> > > 
-> > > Chen-Yu Tsai (2):
-> > >   media: rkvdec: Do not override sizeimage for output format
-> > >   media: rkvdec: Support dynamic resolution changes
-> > > 
-> > >  drivers/staging/media/rkvdec/rkvdec-h264.c |  5 +--
-> > >  drivers/staging/media/rkvdec/rkvdec.c      | 40 +++++++++++-----------
-> > >  2 files changed, 23 insertions(+), 22 deletions(-)
-> > > 
-> > 
-> > 
-
-
