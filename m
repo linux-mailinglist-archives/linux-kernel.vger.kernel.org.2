@@ -2,100 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF38242BA9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C88D42BAA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233813AbhJMIjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:39:04 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:29076 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbhJMIjD (ORCPT
+        id S238509AbhJMIkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:40:24 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:54755 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhJMIkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:39:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1634114220; x=1665650220;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=1wd9chj+GDl1ze4cZrlHuRft42asnGxq4BfF+IvjuH8=;
-  b=HSfQm3gTa+54mqfR7JK9jOCIvA2iX8VYPj3C6VpFuRDdSxZEUoxKHAvC
-   dhIy+r0t/YcHzVn03bUfoEuiy5Gdmi6X55Jv6noOG33SfnDTT6iswLVNl
-   ZDcLK/Vwqu9XiGYQy31xV7Nl6wgTBxp7fxwB3hAv3q7dXAL18Cg9iBxMC
-   I=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 13 Oct 2021 01:37:00 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 01:37:00 -0700
-Received: from [10.233.23.112] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Wed, 13 Oct 2021
- 01:36:58 -0700
-Subject: Re: [RESEND PATCH v1 8/9] spmi: pmic-arb: make interrupt support
- optional
-To:     Stephen Boyd <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>
-References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com>
- <1631860384-26608-9-git-send-email-quic_fenglinw@quicinc.com>
- <163406051353.936959.12718174954614897750@swboyd.mtv.corp.google.com>
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-Message-ID: <3bf1fbf3-e741-ef08-a4e4-b348b877d02a@quicinc.com>
-Date:   Wed, 13 Oct 2021 16:36:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 13 Oct 2021 04:40:23 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MTw02-1m9jDc1EHK-00R2xI; Wed, 13 Oct 2021 10:38:18 +0200
+Received: by mail-wr1-f45.google.com with SMTP id t2so5611840wrb.8;
+        Wed, 13 Oct 2021 01:38:18 -0700 (PDT)
+X-Gm-Message-State: AOAM532sIms2k2gL9BMiv8xID3CPh7cFSIveAH5Y8WyvdAWsIEGWyEgZ
+        iv9ehvy8A0i6G3ZX+hTnK+srXYjStOxauLLqUGU=
+X-Google-Smtp-Source: ABdhPJzERy7qzxbolOT39FrUcwqPdeh2fIURPv4ilmByKiguzqnvn/Xhapdln0hugnZ2cVo72Y7EAER3Sss3B8QKu2E=
+X-Received: by 2002:adf:a3da:: with SMTP id m26mr37292890wrb.336.1634114297720;
+ Wed, 13 Oct 2021 01:38:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <163406051353.936959.12718174954614897750@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+References: <20211013005532.700190-1-sashal@kernel.org> <20211013005532.700190-11-sashal@kernel.org>
+ <YWZ1om+pLmV3atTd@kroah.com>
+In-Reply-To: <YWZ1om+pLmV3atTd@kroah.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 13 Oct 2021 10:38:01 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2AC9-ogoxi1q+NQyBqMwrFqSZtHvZVdJ9HF+OLB3O62g@mail.gmail.com>
+Message-ID: <CAK8P3a2AC9-ogoxi1q+NQyBqMwrFqSZtHvZVdJ9HF+OLB3O62g@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.10 11/11] firmware: include drivers/firmware/Kconfig
+ unconditionally
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Mike Rapoport <rppt@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Jens Axboe <axboe@kernel.dk>, ben.widawsky@intel.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-ia64@vger.kernel.org,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:zhj9YlgIJvmAFu1sVCt9oWh31Lweh3k5LoV6efB6VHK7enEic5L
+ 0lnGmkqqdJ+BqVVa49I3PMBcAU5O/W2dgpXbb3bx8ZBRCK3pFXKDFiXFDVt0BOHyVhhHo9W
+ fVZLkHYBUtk8BWjH7XC6NZb8jNqAE70rJfVP11RuN0gte7xLck4Yt0toweqvM8zBtuvGkKX
+ aCT663Pj+9ZvzG+rWL7Pw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cNkEPDcmdec=:Dn2SUKIhNPMW5NrVK4+yq3
+ LoxGp86ovdWOWxU1h/l8RkVfDuwwKWW2l1meWQiyxmJdIJVHmU+mMpk/GxPcGaMoxPWbyaHRt
+ UhVOwsJEVGZd7hQR2YFYS4QewnAbh7jLgOICYBit/xCpjG/Ux7YAK9WHxozkwTWuhG69fG9jk
+ pqynODcbLH8kxolLq2JrVywRRNXN1wxtkgRwmdY2PyqRozOjSukXiQcJx3gpcVJeSonF2y+tS
+ /jSgeMvKCk8ZGgLCTOXT8f64z1+9uFc4ZBrI67INehFfd3HSmK4xkttWlQjCmNSb4Iw728451
+ wyZVGn2iXknQtPiJR5Hn1ihfxHHtkZeztZ/mCk0aagrZzREBKXdijqVATUh4Z2QZZIHHmOfQ1
+ cW4IJ5WD3OpxcxY5u1nUHqY867j97yTjxaoZgRxwdj9ZG7w91GylgKf9oM/mhKW2cE5x160mS
+ in5SYhz4kXcHBFTFSOt9l9Gv5XlQY8V4oapOH+wAGySPWlESLNHJEUnxQZiu3F4WPJLRrN1Jb
+ Gnz9dIv8KSxtOGNPP1O04evz59eXObl2fyzfqcv81m3eDPNlcn9FHudA9DQ4e29aGeuPVraOv
+ DW+nhPHzlMqTtZpS/foczN2MRZzDKASXXS+SoF7qzcyOzJ1khyuh4pdD47TfHCBtxzAqr4WIk
+ p9QyRpWHUY3c4FYdiM2Wbp7FMIPrSTon7m10/hulJdCJJLBCa9r+zXa0xg/OKq6YJyxgiG8I2
+ ULjP4gSNeElevnFOxzrgBnirhHycAiNstPuymr4CrXLd1AbX0FKeBi9t2vOpMXp9CXJ9fZKNI
+ BIWP4Ip9XULklH9MHWfZDBC5FslZZIU5ClLJ+H8JpRg3j9IKXYidoHeoMDsYtENLNoKMscyyC
+ h0ZzjXaMGXqKPCquwZAg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/13/2021 1:41 AM, Stephen Boyd wrote:
-> Quoting Fenglin Wu (2021-09-16 23:33:03)
->> From: David Collins <collinsd@codeaurora.org>
->>
->> Make the support of PMIC peripheral interrupts optional for
->> spmi-pmic-arb devices.  This is useful in situations where
->> SPMI address mapping is required without the need for IRQ
->> support.
->>
->> Signed-off-by: David Collins <collinsd@codeaurora.org>
->> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
->> ---
->>   drivers/spmi/spmi-pmic-arb.c | 45 +++++++++++++++++++++++++++-----------------
-> Is there a binding update? Can the binding be converted to YAML as well?
-This change doesn't add/update any dtsi properties but just checking if an
-existing property is present to decide if IRQ support is required, so no
-binding change is needed.
+On Wed, Oct 13, 2021 at 7:58 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> On Tue, Oct 12, 2021 at 08:55:31PM -0400, Sasha Levin wrote:
 >
->>   1 file changed, 28 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
->> index 988204c..55fa981 100644
->> --- a/drivers/spmi/spmi-pmic-arb.c
->> +++ b/drivers/spmi/spmi-pmic-arb.c
->> @@ -1280,10 +1280,12 @@ static int spmi_pmic_arb_probe(struct platform_device *pdev)
->>                  goto err_put_ctrl;
->>          }
->>   
->> -       pmic_arb->irq = platform_get_irq_byname(pdev, "periph_irq");
->> -       if (pmic_arb->irq < 0) {
->> -               err = pmic_arb->irq;
->> -               goto err_put_ctrl;
->> +       if (of_find_property(pdev->dev.of_node, "interrupt-names", NULL)) {
-> I don't think we should be keying off of interrupt-names. Instead we
-> should be checking for something else. Maybe interrupt-controller
-> property?
-Sure, I can update it to check the presence of "interrupt-controller" 
-property.
->> +               pmic_arb->irq = platform_get_irq_byname(pdev, "periph_irq");
->> +               if (pmic_arb->irq < 0) {
->> +                       err = pmic_arb->irq;
->> +                       goto err_put_ctrl;
+> This isn't for stable kernels, it should be dropped from all of your
+> AUTOSEL queues.
+
+Agreed. The second patch that depends on this does fix a (randconfig)
+build issue in stable kernels as well, but that patch is currently broken,
+and the two patches combined do feel a little too invasive for addressing
+such a minor issue in the stable kernels.
+
+If anyone runs into the QCOM_SCM link failures on stable kernels, I
+can come up with a more localized fix.
+
+       Arnd
