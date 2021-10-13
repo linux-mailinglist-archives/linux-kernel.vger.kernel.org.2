@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6644742C93A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4858942C946
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238955AbhJMTCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 15:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238916AbhJMTCE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 15:02:04 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6AC3C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:00:00 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id e65so835953pgc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:00:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F9f/KoKd1hYZKxslXq7WYINWiftBc0Y2sa1qu99T4yo=;
-        b=mznZm6aoTrn+9fmofOmEJxUdlsC0Ctd7RPfZuHr+oV2pinF1avA3HeOGLaH6A6b4xf
-         ytNOOHFFymuO6pfIhcnhuDEO+nLtOaVw3INU1sOGj/wAk3S6+DF5YTPn3x2QUDrwmS1W
-         PE8YGtuj0YjAyg+6srty0MCMuldh1p8C/EXOg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F9f/KoKd1hYZKxslXq7WYINWiftBc0Y2sa1qu99T4yo=;
-        b=YtRpNcUzvBU4tS9OmPjZBD0He+bO2UeiCsqaLOZT0btX5Wm22UI8D6YXsPTGKLIxqv
-         H0z2WFHY1XJyP6dmjib+9aKxaOfGki+jjczNqr1Su3DO99ZumDtohaVeFX+7DMAU/U5I
-         pOptGAHrlYSj/10DXgJmyl5ikDXkxQM/xP18m64xSPoxNs3PlfmXxRREZQVyAYKe1KyX
-         I3AC46U8lUbrl5dwk4Nes6cDSu+XQF3KafkOrWD0HOq9wU0ZXE6nrh2jaj9SmfdN29kR
-         E+ugpsYXucwQ3rfwAKECop7uJjYWuXtGfTIg8VsuXXOAtmr0nXd6IYOgzPmU2YNuWZii
-         iMEw==
-X-Gm-Message-State: AOAM533bF+Cdt7Yx2lydKzfDvC4cHX8ajm+TLulbul25mtO/PbLwz1KB
-        MTEuPG6q7N/YHGu5v/biT1LAbHrj5I+IEg==
-X-Google-Smtp-Source: ABdhPJzUxjWaPArdV/xc7rIFZrQW7VAbqqTyu8rROiGa4ohhyF6E9ngm+I7Cpkn/tSAsBuHJwGbm2w==
-X-Received: by 2002:aa7:93d2:0:b0:44d:4a13:5267 with SMTP id y18-20020aa793d2000000b0044d4a135267mr1075576pff.52.1634151600316;
-        Wed, 13 Oct 2021 12:00:00 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u4sm239110pfh.147.2021.10.13.11.59.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 12:00:00 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 11:59:59 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v5 02/15] objtool: Add ASM_STACK_FRAME_NON_STANDARD
-Message-ID: <202110131159.1A0BB2876@keescook>
-References: <20211013181658.1020262-1-samitolvanen@google.com>
- <20211013181658.1020262-3-samitolvanen@google.com>
+        id S238972AbhJMTCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 15:02:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231246AbhJMTCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 15:02:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EE06610E8;
+        Wed, 13 Oct 2021 19:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634151616;
+        bh=vu0O+pfV+sCyaPdC66uaJw0vVQuREbc9+nyIuESVaQw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=t08h/jItfp6nbs6PYAEQyke8nuQTkSs0EEEmdggCQQ0dRzR0PuFh8jgsf4zelvM5V
+         7sWRUEBc3w9k1sLQ5KmMfuhVaNPWoYPyBZUyqtAo0D7iVSBklrXA9o3yxmhFjWwaB2
+         9XNWwZdaK1k5JSwcDnWOmrqnDycU2C6AzPqO7a3iKsv6tk6bRZUoqjGEWaBxf2Fv56
+         CNv5IPAFtoRhAy3jEJ1i6p5Mhn0OxQLmqAqPz2p0e3sLBFq/LC0L2Zhlsdx38CNd0r
+         pPPpTXiBCiHHI5UeA38KXbHgNqN3qKS9nBmhB9o9eTXKeHVVu2w+5KVF/mnKu1gxD1
+         nmlruchHZZCBA==
+Date:   Wed, 13 Oct 2021 14:00:14 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+Subject: Re: [PATCH] pci: call _cond_resched() after pci_bus_write_config
+Message-ID: <20211013190014.GA1909934@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211013181658.1020262-3-samitolvanen@google.com>
+In-Reply-To: <20211013125542.759696-1-imagedong@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:16:45AM -0700, Sami Tolvanen wrote:
-> To use the STACK_FRAME_NON_STANDARD macro for a static symbol
-> defined in inline assembly, we need a C declaration that implies
-> global visibility. This type mismatch confuses the compiler with
-> CONFIG_CFI_CLANG. This change adds an inline assembly version of
-> the macro to avoid the issue.
+Match previous subject lines (use "git log --oneline
+drivers/pci/access.c" to see them).
+
+On Wed, Oct 13, 2021 at 08:55:42PM +0800, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <imagedong@tencent.com>
 > 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> While the system is running in KVM, pci config writing for virtio devices
+> may cost long time(about 1-2ms), as it causes VM-exit. During
+> __pci_bus_assign_resources(), pci_setup_bridge, which can do pci config
+> writing up to 10 times, can be called many times without any
+> _cond_resched(). So __pci_bus_assign_resources can cause 25+ms scheduling
+> latency with !CONFIG_PREEMPT.
+> 
+> To solve this problem, call _cond_resched() after pci config writing.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+s/pci/PCI/ above.
+Add space before "(".
+Add "()" after function names consistently (some have it, some don't).
 
--- 
-Kees Cook
+What exactly is the problem?  I expect __pci_bus_assign_resources() to
+be used mostly during boot-time enumeration.  How much of a problem is
+the latency at that point?  Why is this particularly a problem in the
+KVM environment?  Or is it also a problem on bare metal?
+
+Are there other config write paths that should have a similar change?
+
+_cond_resched() only appears here:
+
+  $ git grep "\<_cond_resched\>"
+  include/linux/sched.h:static __always_inline int _cond_resched(void)
+  include/linux/sched.h:static inline int _cond_resched(void)
+  include/linux/sched.h:static inline int _cond_resched(void) { return 0; }
+  include/linux/sched.h:  _cond_resched();
+
+so I don't believe PCI is so special that this needs to be the only
+other use.  Maybe a different resched interface is more appropriate?
+
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> ---
+>  drivers/pci/access.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
+> index 46935695cfb9..babed43702df 100644
+> --- a/drivers/pci/access.c
+> +++ b/drivers/pci/access.c
+> @@ -57,6 +57,7 @@ int noinline pci_bus_write_config_##size \
+>  	pci_lock_config(flags);						\
+>  	res = bus->ops->write(bus, devfn, pos, len, value);		\
+>  	pci_unlock_config(flags);					\
+> +	_cond_resched();						\
+>  	return res;							\
+>  }
+>  
+> -- 
+> 2.27.0
+> 
