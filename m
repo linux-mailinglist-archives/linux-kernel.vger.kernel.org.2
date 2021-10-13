@@ -2,119 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD91542CD03
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F7142CD12
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhJMVpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 17:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37772 "EHLO
+        id S230214AbhJMVuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 17:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbhJMVo7 (ORCPT
+        with ESMTP id S230205AbhJMVuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 17:44:59 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975D3C061570;
-        Wed, 13 Oct 2021 14:42:55 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id t16so15912819eds.9;
-        Wed, 13 Oct 2021 14:42:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+74ZuFQnhra1mA1yYzIx/vvNdxWlZMlZrX1c1bZpxQM=;
-        b=mZC4pT++UMEOauA4S5g8YTkpiJT3CPeW6UBji2zCvAvlZmBYIsXB3UU+bQPMBvM1Sr
-         aw24uTe6odebY5TY6caJLOAxOYisGTqjcpNffBqf6VrFB2cuiMq5tIH2+ZbmB39eR3ka
-         SE4rX/119ghNd45eGNppFMcMsFC+D9cB74ShLm+W1q3ROL0HDkvJjKAGXqVnPl9kVnlD
-         SVUkE4nDALNivePSINq5hG2KpEUM0gtTNkl0MO+GBggjUZkn+sW2bnv1kXqKl/WLB1PC
-         OMJ3NcPwajOfk1Q2q9umNygvEEizenOB2Aa5f0L/NpzyUPTB7X+3f26XRkxlyaqph0mc
-         m+aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+74ZuFQnhra1mA1yYzIx/vvNdxWlZMlZrX1c1bZpxQM=;
-        b=vr/+/+Kc30J+MZ0XrmqJxWHGsULFqzogOc+P/33TPUdXtYoMJ5AwRIB4i70036IGdU
-         vk+AZ7HbNW5Nnf9YibJjnuOcnDFUlCDUZ0nkrwlvnYYCk59+LM4uOF4bmxcOYOd9JGZT
-         O3GXGSD/Qson5g+inxPCMaaVLXET8yDy/0XHRpQOnVU9cJd4GhhA1U7CdW215iasdqvX
-         Y+iPOghvl0/3YKCJ3jOz9oVK7Slc6+AcN0CWt6oeqVbD7BAyz2jD7KRg8VbsAOxkqJsw
-         0JKsJaa6CWtJ4U+7jg43iX4TiPk4w+x+t4HB/X0av1gBDDxlhnJvw4j6UoUPwkouSD6e
-         tUkA==
-X-Gm-Message-State: AOAM532UAk+xUl5N5IPMJl4a9uQwgFbjfecZZ3UjR6cX4m8Ns5OAX4L9
-        CfH6nvVpi65kejEgVoVwJ5+YW4gMhcqMdycKc5Q=
-X-Google-Smtp-Source: ABdhPJx9tJwAHOBTrDWPCFv16dqCid3PHadT6+J/KPMUKiY7D2dPw3VxGvjydNx4DFMQCrjVpO4jdVubBe1D8lZwVGY=
-X-Received: by 2002:a17:906:a94b:: with SMTP id hh11mr2073351ejb.85.1634161374135;
- Wed, 13 Oct 2021 14:42:54 -0700 (PDT)
+        Wed, 13 Oct 2021 17:50:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FF1C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 14:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HZ56KTHPdvuvUfo/m6ab1r7tDy+YZjwbbIrWO42qRg8=; b=Tt5MSBeGQSYsqjHikpMA7ypEXw
+        a+2fYM7CcZMHQ+mV02ptnXLWWGrl/by2EqAzIqvUkc17MnorSklObsMTfE8CHiamk3w/6kaJqNFj9
+        Cn+yyCMuV340ce88gXIoZrgwW7hL4vvBkKn/TLgcij5nGpLAxsAG54Ah59M4SiaivtVPwSHsVeHYZ
+        8bOitIanF5x9vYUWoDqhRtXWTC4sJwNexzi/pXDpc1oySC3bZdN7/m1aguAI1Yz+BNKgonly3oUyp
+        zp7XKGtHIALao/sHQpOa6GzJzA0J4t4lIMyhKrHNTFK1cm3QcI4Gq9YD8IgTjqjVIxYQhahmb92Wt
+        dNv9FYLw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mam2I-007p69-VS; Wed, 13 Oct 2021 21:44:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3695D300252;
+        Wed, 13 Oct 2021 23:43:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2077320193AF3; Wed, 13 Oct 2021 23:43:43 +0200 (CEST)
+Date:   Wed, 13 Oct 2021 23:43:43 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH 4/9] x86/alternative: Implement .retpoline_sites support
+Message-ID: <YWdTDz8Qqs3jjCf1@hirez.programming.kicks-ass.net>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123645.002402102@infradead.org>
+ <20211013211118.apsj66c6b6abubeo@treble>
 MIME-Version: 1.0
-References: <YV4Dz3y4NXhtqd6V@t490s> <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
- <CAHbLzkqm_Os8TLXgbkL-oxQVsQqRbtmjdMdx0KxNke8mUF1mWA@mail.gmail.com>
- <YWTc/n4r6CJdvPpt@t490s> <YWTobPkBc3TDtMGd@t490s> <CAHbLzkrOsNygu5x8vbMHedv+P3dEqOxOC6=O6ACSm1qKzmoCng@mail.gmail.com>
- <YWYHukJIo8Ol2sHN@t490s> <CAHbLzkp3UXKs_NP9XD_ws=CSSFzUPk7jRxj0K=gvOqoi+GotmA@mail.gmail.com>
- <YWZMDTwCCZWX5/sQ@t490s> <CAHbLzkp8QkORXK_y8hnrg=2kTRFyoZpJcXbkyj6eyCdcYSbZTw@mail.gmail.com>
- <YWZVdDSS/4rnFbqK@t490s>
-In-Reply-To: <YWZVdDSS/4rnFbqK@t490s>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 13 Oct 2021 14:42:42 -0700
-Message-ID: <CAHbLzkrcOpG5AHk934hDJb2d+FocYjUc6nhBRofhTbTxLVWtYA@mail.gmail.com>
-Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-To:     Peter Xu <peterx@redhat.com>
-Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013211118.apsj66c6b6abubeo@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 8:41 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Tue, Oct 12, 2021 at 08:27:06PM -0700, Yang Shi wrote:
-> > > But this also reminded me that shouldn't we be with the page lock already
-> > > during the process of "setting hwpoison-subpage bit, split thp, clear
-> > > hwpoison-subpage bit"?  If it's only the small window that needs protection,
-> > > while when looking up the shmem pagecache we always need to take the page lock
-> > > too, then it seems already safe even without the extra bit?  Hmm?
-> >
-> > I don't quite get your point. Do you mean memory_failure()? If so the
-> > answer is no, outside the page lock. And the window may be indefinite
-> > since file THP doesn't get split before this series and the split may
-> > fail even after this series.
->
-> What I meant is that we could extend the page_lock in try_to_split_thp_page()
-> to cover setting hwpoison-subpage too (and it of course covers the clearing if
-> thp split succeeded, as that's part of the split process).  But yeah it's a
-> good point that the split may fail, so the extra bit seems still necessary.
->
-> Maybe that'll be something worth mentioning in the commit message too?  The
-> commit message described very well on the overhead of looping over 512 pages,
-> however the reader can easily overlook the real reason for needing this bit -
-> IMHO it's really for the thp split failure case, as we could also mention that
-> if thp split won't fail, page lock should be suffice (imho).  We could also
+On Wed, Oct 13, 2021 at 02:11:18PM -0700, Josh Poimboeuf wrote:
+> On Wed, Oct 13, 2021 at 02:22:21PM +0200, Peter Zijlstra wrote:
+> > +#ifdef CONFIG_X86_64
+> > +
+> > +/*
+> > + * CALL/JMP *%\reg
+> > + */
+> > +static int emit_indirect(int op, int reg, u8 *bytes)
+> 
+> X86_64 is already equivalent to STACK_VALIDATION these days, but might
+> as well clarify here where the retpoline_sites dependency comes from by
+> changing this to '#ifdef CONFIG_STACK_VALIDATION'.
 
-Not only for THP split failure case. Before this series, shmem THP
-does't get split at all. And this commit is supposed to be backported
-to the older versions, so saying "page lock is sufficient" is not
-precise and confusing.
+Yeah, I was contemplating having x86_64 unconditionally select that.
+Maybe we should.
 
-> mention about why soft offline does not need that extra bit, which seems not
-> obvious as well, so imho good material for commit messages.
+Also, I think I've proposed it before, but what about:
 
-It would be nice to mention soft offline case.
+ s/STACK_VALIDATION/OBJTOOL/
 
->
-> Sorry to have asked for a lot of commit message changes; I hope they make sense.
-
-Thanks a lot for all the great suggestions.
-
->
-> Thanks,
->
-> --
-> Peter Xu
->
+on all that?
