@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CFC42B2CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB2B42B2CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236225AbhJMCqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 22:46:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48334 "EHLO mail.kernel.org"
+        id S236709AbhJMCqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 22:46:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229980AbhJMCqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 22:46:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CAF460F38;
-        Wed, 13 Oct 2021 02:43:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634093037;
-        bh=uWF2h7wVwbhN8R7YBCXFrfY9XfSneeNPhl9j7cDE2Eg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=D+wndaYugsj0a/KFWj6jNfG705tzZ2S8OvWtV5jg0htFcEJYGSnVD709jkZ+01kdn
-         CRQ07wIquGb02knjyBWRm6YpN2oLCOXlOJH0+V1Yth06b1vllZvSgdhLCoIlBC9TfR
-         CVi1kPJMPu13cBZceSWDQdmJOVegGM2J/dQqkBU4kdOKsd+2zTRmszOuTZdvfKNsLp
-         bGFWyLvvrjlSBY1RmNOfqpopNq400+lz6Oe+FXcmyYEaZ4mugnq5l+wap0Q7ruO2kt
-         xtV1K/iXdHVR+1T1QeZ4KykNenNwP6Nle3g5pdKVX9FHTvRobBXc9rQvC3Dk3DxV1s
-         xKfNOhbxPqO6g==
-Date:   Tue, 12 Oct 2021 21:43:55 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Naveen Naidu <naveennaidu479@gmail.com>, bhelgaas@google.com,
-        linux-pci@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Subject: Re: [PATCH 02/22] PCI: Unify PCI error response checking
-Message-ID: <20211013024355.GA1865721@bhelgaas>
+        id S229980AbhJMCqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 22:46:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DAFE60F38;
+        Wed, 13 Oct 2021 02:44:47 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 22:44:45 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH][next] ftrace: Fix -Wcast-function-type warnings on
+ powerpc64
+Message-ID: <20211012224445.4f4be290@oasis.local.home>
+In-Reply-To: <20211013023920.GA1090530@embeddedor>
+References: <20211005161812.GA768055@embeddedor>
+        <20211005123522.244281e6@gandalf.local.home>
+        <20211005165027.GA797862@embeddedor>
+        <20211005150807.03da5e54@gandalf.local.home>
+        <20211005193557.GA881195@embeddedor>
+        <20211005200935.2429ec2c@rorschach.local.home>
+        <20211006211426.GA916113@embeddedor>
+        <20211006171443.4faecbe9@gandalf.local.home>
+        <20211013014042.GA1089693@embeddedor>
+        <20211012222340.4f5789d7@oasis.local.home>
+        <20211013023920.GA1090530@embeddedor>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWS1QtNJh7vPCftH@robh.at.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Pali]
+On Tue, 12 Oct 2021 21:39:20 -0500
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-On Mon, Oct 11, 2021 at 05:05:54PM -0500, Rob Herring wrote:
-> On Mon, Oct 11, 2021 at 11:08:32PM +0530, Naveen Naidu wrote:
-> > An MMIO read from a PCI device that doesn't exist or doesn't respond
-> > causes a PCI error.  There's no real data to return to satisfy the
-> > CPU read, so most hardware fabricates ~0 data.
+> On Tue, Oct 12, 2021 at 10:23:40PM -0400, Steven Rostedt wrote:
+> > On Tue, 12 Oct 2021 20:40:42 -0500
+> > "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+> >   
+> > > Do you mind if, in the meantime, I add your patch to my -next tree?
+> > > So, I can enable -Wcast-function-type in linux-next --I want to get
+> > > ready for the next merge window.  
 > > 
-> > Use SET_PCI_ERROR_RESPONSE() to set the error response and
-> > RESPONSE_IS_PCI_ERROR() to check the error response during hardware
-> > read.
-> > 
-> > These definitions make error checks consistent and easier to find.
-> > 
-> > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> > ---
-> >  drivers/pci/access.c | 22 +++++++++++-----------
-> >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-> > index 46935695cfb9..e1954bbbd137 100644
-> > --- a/drivers/pci/access.c
-> > +++ b/drivers/pci/access.c
-> > @@ -81,7 +81,7 @@ int pci_generic_config_read(struct pci_bus *bus, unsigned int devfn,
-> >  
-> >  	addr = bus->ops->map_bus(bus, devfn, where);
-> >  	if (!addr) {
-> > -		*val = ~0;
-> > +		SET_PCI_ERROR_RESPONSE(val);
+> > You mean to push it to Linus as well? I'm not sure that's the best way.  
 > 
-> This to me doesn't look like kernel style. I'd rather see a define 
-> replace just '~0', but I defer to Bjorn.
+> No. Just add it to my -next tree, temporarily. So, I can enable the
+> compiler option and it can be tested in linux-next (and no more of
+> these issues are introduced). The only part I'll send to Linus would
+> be the Makefile patch.
+
+Sure, I have no problem with that.
+
 > 
-> >  		return PCIBIOS_DEVICE_NOT_FOUND;
+> > I'm still working on some bugs that are going to go into this rc
+> > release, and then I plan on pushing my for-next queue (which includes
+> > this change).  
 > 
-> Neither does this using custom error codes rather than standard Linux 
-> errno. I point this out as I that's were I'd start with the config 
-> accessors. Though there are lots of occurrences so we'd need a way to do 
-> this in manageable steps.
+> Once you have it ready, I would remove it from my tree.
 
-I would love to see PCIBIOS_* confined to arch/x86 and everywhere else
-using standard Linux error codes.  That's probably a lot of work, but
-Naveen has a lot of energy :)
+Sounds like a plan ;-)
 
-> Can't we make PCI_OP_READ and PCI_USER_READ_CONFIG set the data value 
-> and delete the drivers all doing this? Then we have 2 copies (in source) 
-> rather than the many this series modifies. Though I'm not sure if there 
-> are other cases of calling pci_bus.ops.read() which expect to get ~0.
-
-That does seem like a really good idea.
-
-Bjorn
+-- Steve
