@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DFD42B35E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866D042B362
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237218AbhJMD0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:26:51 -0400
-Received: from mail-eopbgr1310092.outbound.protection.outlook.com ([40.107.131.92]:30357
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        id S237273AbhJMD1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:27:08 -0400
+Received: from mail-eopbgr1320099.outbound.protection.outlook.com ([40.107.132.99]:6608
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237109AbhJMD0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:26:50 -0400
+        id S237289AbhJMD1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 23:27:02 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C2fVyaJBOS61oxW0OxPSP2r35hHpxC/igqhbYcvA9snhNMfieEJ3ZF+GHx6fxUJDByoGTCiKpTKHGNY+vWbKhkOhrqQst1SXvk2B+CRus9GzIbpTQ7QhD+CuXPedxQ1Wvx7IKMUye+7MQfK7/N/58AkCCUvq/bbOgAnNzQxc1oWKkKkqIgr++aw88T4FCug+sJSeD63pv06BvpW86GcXwdhNgNEUEWdFBt6phUzpnoccQPH1a1Vx2Owh5cBeWFhQNiNjIcKJIaupUviuPdMeYl34itcLoNml8plnpwIx8KXOzsn9vYF7LK8ZVT/YYxGHAAZqAeOCm92nFZHQyJiWnQ==
+ b=fm4kKyD6nNR8y5zthhnpn9Kh6vTo7BKphP8ArnBZiZ4wdkcAFiQptFjanooHZA6o8rlKwctFQchIMJC50oDowoQpX8A5kfTfO9TldstIK5MYlHTBS5k7Gh3iUXdcZn0Wvgp0L3O8JwQH8SGftHsokeu0qtwOvAFuyoW8o4OJSG5GZd8pn1OdM4wpviyNk8huA/ZcZ8GRMo+V1Js6JPdp8+9ozRjQn2MVBLAZzPZBOBKEUe/6+qVV+Qm/47T0Gni3aIW6VXKSS8iF2T7qEeB0KqXIE1gjuEAUbzYy74dyfcHz/qaiZGC8MWAuPzvcw7LRX9NO6MXid2ZfZk1zHAPC2w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KMbiS//vwMsRIOo4ubzvqOTRyi+izql1WBCgmC+x+qY=;
- b=nq1OBzOghbu5d6vw8ETsZ9hsNmAK8meWrB2bNt/ligmJcKuCbPgcznIK7KIa0E+NoUeTUQ64kDohT1uUXNJV0KL9apq9vgi1485giNENhNWld5mVAYlzXMHlhaJE4YgnSpjDerOsFXSvAt88gSWATd5p7EH7JAiq/cH6aMWqyUlO78VKDKAl+5fUZwlsMn47IpNpCvoYgxrr3KPiPmVc+TRfNQOrE8U2K5nk7625zSrNb8i0d5in5bDofiaEODQRDpj61ncR/setYRGi2k6BBuYDi9+esuhpLf9QPTOa8Fv0bNKasCuurmeX4t02IJQrGrwOkczVvmoVuuBLtp1fBw==
+ bh=CIdOid3KHZ5mSPXmYepT+86Rjr2PCaqdU3MFIisT/U4=;
+ b=bZAO7MoYQavZ1tCiRzxvQ+cluG68qZ05uLZAi6oPkhIer87IFHZzKeir5WpA60c/kOhE2TXcZK7vnGKipJOqyvo4pmP846wgs5KxqOROWBiSL9Kdht1QzZ0YfvCFbmDVx9UwbwkOLTAaMTGGRi1/RjwgmhZw1tqz/gvMqFFeiQDFS0GNaAXRrkbk9nOvA9BSFm45rZNoGGruGFM3hIqU3rA5BkTzZ68yd5iWpQ44YziVsaagTYhTn3nHDV8974NyVN20DMvKmD8JKyKTGbOeNgKDhk8/uyJ0OO1IZGHFqbzrQ6cCj3icsRruhLjTNxZk4fzoAK9Gn0+f+Q7mvdJoow==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
  s=selector2-vivo0-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KMbiS//vwMsRIOo4ubzvqOTRyi+izql1WBCgmC+x+qY=;
- b=mbqIphHTGGpfLa1kZs4MQtNR/7jnniPL0elSNrl1fnv+w93Nsk9haKSztW+stEbn8mHq6HcymyNQKRMqRIq3IAbhrBdory9E8ojcyQNfFdz7r7Ywc/NfOTtfqgJhTkd6zNJtOh/NWOIEY3jRFsNWYRx2zWUxyFI33FVJeDHD56U=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=vivo.com;
+ bh=CIdOid3KHZ5mSPXmYepT+86Rjr2PCaqdU3MFIisT/U4=;
+ b=DjE7DqPH+tgvbzhkjqsU9V7CAtUX8Jc2sRRbdfxlEI3dN6mKgYCr+VfL2BCduO3zqFDjBJzjwyFK2hqixkMHw/cSKHXWe+GUnmwUD5XUAVFCK5dmrYLw+XzYXRBoTikPJ6PQJeHQdUGdXdo71nVQGh2dCGIyLhoiWNn01xWvfLw=
+Authentication-Results: rjwysocki.net; dkim=none (message not signed)
+ header.d=none;rjwysocki.net; dmarc=none action=none header.from=vivo.com;
 Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
  by SL2PR06MB3387.apcprd06.prod.outlook.com (2603:1096:100:3d::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.14; Wed, 13 Oct
- 2021 03:24:44 +0000
+ 2021 03:24:58 +0000
 Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
  ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
  ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4587.024; Wed, 13 Oct 2021
- 03:24:43 +0000
+ 03:24:58 +0000
 From:   Qing Wang <wangqing@vivo.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-perf-users@vger.kernel.org,
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Qing Wang <wangqing@vivo.com>
-Subject: [PATCH] x86: events: replace snprintf in show functions with sysfs_emit
-Date:   Tue, 12 Oct 2021 20:24:35 -0700
-Message-Id: <1634095476-3750-1-git-send-email-wangqing@vivo.com>
+Subject: [PATCH] acpi: replace snprintf in show functions with sysfs_emit
+Date:   Tue, 12 Oct 2021 20:24:50 -0700
+Message-Id: <1634095490-3799-1-git-send-email-wangqing@vivo.com>
 X-Mailer: git-send-email 2.7.4
 Content-Type: text/plain
-X-ClientProxiedBy: HK2PR06CA0020.apcprd06.prod.outlook.com
- (2603:1096:202:2e::32) To SL2PR06MB3082.apcprd06.prod.outlook.com
+X-ClientProxiedBy: HK2PR04CA0050.apcprd04.prod.outlook.com
+ (2603:1096:202:14::18) To SL2PR06MB3082.apcprd06.prod.outlook.com
  (2603:1096:100:37::17)
 MIME-Version: 1.0
-Received: from ubuntu.localdomain (218.213.202.189) by HK2PR06CA0020.apcprd06.prod.outlook.com (2603:1096:202:2e::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4587.25 via Frontend Transport; Wed, 13 Oct 2021 03:24:42 +0000
+Received: from ubuntu.localdomain (218.213.202.189) by HK2PR04CA0050.apcprd04.prod.outlook.com (2603:1096:202:14::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4608.15 via Frontend Transport; Wed, 13 Oct 2021 03:24:57 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 65e4fb55-95d2-40b7-8254-08d98df90007
+X-MS-Office365-Filtering-Correlation-Id: e88d29a5-6ca8-4394-73e8-08d98df9087a
 X-MS-TrafficTypeDiagnostic: SL2PR06MB3387:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SL2PR06MB33878F88C724B846621A1482BDB79@SL2PR06MB3387.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:332;
+X-Microsoft-Antispam-PRVS: <SL2PR06MB33874AEBC46FD219DC436A0EBDB79@SL2PR06MB3387.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:225;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9yjkWyKU0RPmY/wmJi3y7hxyBQ03FmnctcaKeTGrEaNlLpix22XH61Iu5ihS7dKjYLvz3Lkq9424zIBkI/HTo5S+G4Giu5I0GX/rliMJGdLy0elU2Qvo/ywjKv7/uODrzs5NdrtTxGqeVrTLAHN0z+mxgWgvvcu0w7L5SBDmvjGHVGI9UC3vGOGoi3/RKsaa8Ilr0wUPi/BhKbkieckdT/WW/i+cCY5Qu26gK7cL24DFEGVkJmt4MJ+yTF23ZrWi6pf4PuisyrqtcdIEMj50AB3Y4Gz82TEmXWz439o3X+Rx56741DCLymPxQNq60qbRRxGzp3wbPlTNtIA/PONRNKMObJ5G0JYuGdeVupjdEv6lzflupBSOzyZXeQF8F/WVwEEkxNvG2vSoDCJSNy6w4CEcml6eXB8Q6Lyy02PmzLkSOJJ1Wb18i1Qv7lehDH68RRli898rVSUL5uY8BSDf3+TD2YgEjecevnR0ImK6Netw9MHEsxaAJTS+6V9Nj7HaLzLU7DvbYS8kNpefVxQGwJgDTxDuHmsqYAeTIvOhqJfm+hxzrJlBORlulQJwXs4t6ApIjcavyFFwsCJCcFlX+tZTa0GyTu2loJtoq0L6afUaQ1kAsgWY/9vncxOdmwZgboNq9eLOiIGccC3J6xsRE/Gtf0pUtSvXsQInx5uH+xP0lyJvbBVmEzK+XgPpqp8Vmpxi1k4oG1YaQxyyFAzAuMwA13GtcRPpyPrN3HzGk/M=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(86362001)(26005)(6486002)(316002)(38100700002)(5660300002)(921005)(66476007)(6666004)(83380400001)(4326008)(6506007)(38350700002)(66946007)(107886003)(110136005)(508600001)(66556008)(2616005)(8936002)(2906002)(52116002)(8676002)(6512007)(36756003)(7416002)(956004);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: KlY/Xta6U8WWSv4eRyeccxhD7DyF3oUJxMFuYp4ZFTMTLom/LudzdoRrxOjWgto/V8Zkh9SoTl16rOMwOq+wfVXXDXtNJtSv0nz5h4YFijNPLVfnSGo7fiQOZXD5MlW3LA1uLfGV5+Yq61RU/jbxWSSrFdU2vKxLLkByJqm4y0nAyRh8ONg774mW3tXLFJpxZZmqtOV05XNhwl+8L17uoc1KgFgTkKX9CZR87Q7ZxKyy+lb0wt5MAsP2hs0HzEG4aqSbUvi6w8xJM6gmcwo9LiOWXo406yMOE91QdvMor51SN8GCKW+qpfNKH7REEFC0/zMXavqmiBF63Fv2M/hD8q4eSXl2pXRo1/U8/6+f9GCVYbXlZpo/JAlYYAsX/lGy9tpCZlkqrrzE7Wwkze1of3amhlN1tG1pkR7kgZ25n4rv0zaJzXEa2DNwl3gOjW34EQzgbz8fiyixFuavH+3mXLpyNObsE6kbUICZ7yEo8bJAlBzaVt1d2UbpMHA6kaiVJ5m53r3SdICDxld48CPJICv1CLWhKG/pbUVFslUmKM5Qr1hhANouBoCdQ0G6+95rFDb+sT+LMS5u5e8LLfKs71eWbNDXlsprwBPC1graWMReh9RqzaryQjMcUgfR+YxHjsne0w0TqVEX8+8UlESjgXSwZUv58hZzsiL47varBeMgaMpYj74vZfLhX+y79eUFNnxPFFya3BhbY8Zxoavt6g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(86362001)(26005)(6486002)(316002)(38100700002)(5660300002)(66476007)(6666004)(83380400001)(4326008)(6506007)(38350700002)(66946007)(107886003)(110136005)(508600001)(66556008)(2616005)(8936002)(2906002)(52116002)(8676002)(6512007)(36756003)(956004);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3DidPQgwX4LIztJOmlaJAOTu6yLayPMXzyrm4WBBnJBzPie/WBB5meAcJYsv?=
- =?us-ascii?Q?OVGai4KpW0snsgbHEuTHaOeFJmiGcJ3DInx4NwyZ18M0I5ioHT274DVoh5CZ?=
- =?us-ascii?Q?UI0s6LgUGTL4WznGKRe1rNrzJOSRrPkMc7fDE5V2wKG1lZqWQRTVhyxPVnIn?=
- =?us-ascii?Q?wBZjDZzrOBX0In6WanJJ5h0gd/N7fkGQgMY6XJwl6qIaLqC0IzZQiuLqLtYE?=
- =?us-ascii?Q?TjNwhHggs/KDFRpwFZBLPtlgWtVs24fDSa9J/sqYT0NpF8IsZIm2POcZ8/wR?=
- =?us-ascii?Q?tB6w2nbN0kSG/na1SFaEePx/WjEWZGou6uXT0PxrbJNmqmzUbXWbsVa++qbf?=
- =?us-ascii?Q?jPYNXrVeFfMqlDo94yCbyl3cXX15uFW5CDsv8/eOO8lwuTTFMtVObyx2gl9A?=
- =?us-ascii?Q?RTOZj2oeFsceEM8lMccXUY6MIBlN5aPwwKrnzz2YnscK2tlGuac3CW7bCJpX?=
- =?us-ascii?Q?UttnNm5YxB/z4kLUzyovaQsHtD6yt8anVcsBSdG8rQyP9wb5FlFgfb7m/m5i?=
- =?us-ascii?Q?V4g333Iulb9QESXhrxNC0a7Nwy7gHmyMTlrJ4zfpFjXbuw5ntg42EauqIV3w?=
- =?us-ascii?Q?QFe7J1SrnSp1pXRKBU4RfBTeoC8iwwpikRETbai+jHEYTpIO5rX4IekK2bsV?=
- =?us-ascii?Q?Vznt142VmWqfqTBClTW+3Ui8xKZmMJ1fXoRU96OwU4xkK54yv7N+UTGV+8UM?=
- =?us-ascii?Q?vHxlCgrmUYRJ6q+04r8q1Ci06z8wVloLIgUEUklFQv1SHaW6zMOMc3NpDbZu?=
- =?us-ascii?Q?5besIEWUvOplxcy4dhE69tpIGe3PhD3vuU3Im2AuBw4eT3W62orICSYOJyUs?=
- =?us-ascii?Q?Sx3D1J7zBiU1ZMX0a+ZKbbLXYyqz7p4OAENh6WKjpA3LgQz0uCXcyBwfpjqF?=
- =?us-ascii?Q?OJ35x2hvZ5TO4E7aAAV8a+DDMHV6gGQ4TO1HngEAwde3SEhGBlgkdPfaj2Xc?=
- =?us-ascii?Q?RT6TLNWoBnpZYfkeqr2W/5Bvd6w9P6SsjtV3tDIIiqZmaJ9Y98XWjt/3WPIU?=
- =?us-ascii?Q?MgdBF9sWGi2/3ULzlI4vPjy9EfFtT0B2P0lbCv5bax9kdC6+eW6m0wc5XHYC?=
- =?us-ascii?Q?3Cr4z5tz8g+bZFLRa/qdjGTp+MEgUIfyHk33ZXNoheG2ZyfopePqAWCvCr5Z?=
- =?us-ascii?Q?U2RGfY08mobUM7vO+/djCdHCWMmKYOp7okI/NXC5carDF6wkVab4BMEKpobi?=
- =?us-ascii?Q?C0/X4s5wz2jO+F25mpA64mEtrjUPNwNZBPgL4Lkk7pMNP47/KzFHnWU6Bage?=
- =?us-ascii?Q?GlqvJimkMUmt5rod+eNNkCA/MZLXUMTh3kzwani4IZmpks2gTqoifqJXTN3a?=
- =?us-ascii?Q?lQ1cv2ICGsO4vtEVfJzM0Oku?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1k3dpCdCcoY1E4OtDP6r1t06nkowiXMDXqMAZS6CUBiTxr/tuTHhCr2nIS4H?=
+ =?us-ascii?Q?W9rKJU5F52hRY6YZWw4H+ZBwQxsaeC0kvaiQPR0JcwrdoUiUCOT6LsFJR52s?=
+ =?us-ascii?Q?IToOa8DaqExTgmh6xeN1viwL7BNmqFe3z6AeBuO8r5MeR89OF/WUbowjKuCw?=
+ =?us-ascii?Q?1HMCE/G+G/nP5lx19nWr6acTI1TTPx/QSCLNd+utzMjQGUVsWmcghh2wEqbA?=
+ =?us-ascii?Q?s6cRXxQ9+FRN4PXFr3ctt091hC+SmaFPu0BlvJK/5xu0zUxFtMirv2ivv1mq?=
+ =?us-ascii?Q?PBT88tprWH5UbsMWPFDAFT400alfoHA48r5EMcStZbuq6eHCXncohh+BwS4V?=
+ =?us-ascii?Q?OjPLb6sJe3JsBNrERETrZ4pHYArMN+zSdaywAOVpgJn+Q7XQf4spd1hu3mK9?=
+ =?us-ascii?Q?hU8NZ4X2jupYh1Q328Z9vbLIIIgxOA8N2LIhWyNSxq38mMPXf49gAESI61ym?=
+ =?us-ascii?Q?wW2WLD6qg2ZNLa5FOQeu1dXTW6oH370bx9i3u1TlG+vnG6EfKPRMfD+di74l?=
+ =?us-ascii?Q?klT53Qio3fS4juTYWybCDDAzeTx1cc9LFm4W0I9Mgd8e4yNjit8Z8X0BGb6x?=
+ =?us-ascii?Q?nCHWI6wnB6Yxr67+4EPz4Sz8xIJ4Bd99+YC3DmjuHx1tNqcXiL0X8QkpkA55?=
+ =?us-ascii?Q?vWmwUrKxGohls7pTRTvPXIBuht73dWB3AsrVJ0oJc+/oOjKV3yeVFHiJNMhI?=
+ =?us-ascii?Q?CqRQR+BUjjesm8gZambD0rI4fNkxlKiO3WaKtiNnR9emKOlMY6aiavWXbGy/?=
+ =?us-ascii?Q?IuGPdv2IQ0tipteqNAVysxcdlOYw963FwCssr4QngNGdiBwcIM4pwCxnuHmi?=
+ =?us-ascii?Q?T3gwpT+m1GsTmG8spMmbGS/FDRiuM6eLBgW0NPrmAlHi8tJ+X/LePAtgwYae?=
+ =?us-ascii?Q?fPCmPMDe2cVe4P0u3CbuE3FT0NE2lDEBnTyIewe5LGabw6VyWE4/lrkvhe8d?=
+ =?us-ascii?Q?qqwy7J9RDPHKSvxY6Otld2p6INFKYE8pIRuIxkRFWD00jlZuZiT+RtgzZvpf?=
+ =?us-ascii?Q?xyS3wujrQAGavgXB1Am2dN7JFDEJui7nvBVfkfvrCzbjiw97EecT86J24e/2?=
+ =?us-ascii?Q?LmkRakafHVJKFSxCsN5XNjfq46uIBGMDds6HwX3VIeN6tPFgh03kkBqDlVqd?=
+ =?us-ascii?Q?WXOGNKpsDbbrK/NKkLN4WW9jAPIigRvgRP1lsMLHfv33DaNrRkNM+K2LteyW?=
+ =?us-ascii?Q?p9O7otcuEdDQLD53H42Cjk021Uct9vOriHfcz+fpDW8mrTtWK1WTcJe/Q8Mk?=
+ =?us-ascii?Q?XAD9nRyGCxNenDJuWVdphrvOmuOHPCgRF4PJbcphcnmLGUeSb3S7hGHarLwf?=
+ =?us-ascii?Q?GX4eZBwZnhE6WDtdkcK4XYVP?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65e4fb55-95d2-40b7-8254-08d98df90007
+X-MS-Exchange-CrossTenant-Network-Message-Id: e88d29a5-6ca8-4394-73e8-08d98df9087a
 X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 03:24:43.8010
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 03:24:57.9650
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 811HM0tMNdiQPwCiuaE4H/NNkGvLGr36kSMZGghiOicO2147c6j6OXunBoLOjUuWtlxg+Q8pbKGQmJKPKyBg2Q==
+X-MS-Exchange-CrossTenant-UserPrincipalName: Kn1ZfRRhAv1ghsVj2xx0KmPbCaOnnESXEUuarcL+AQsQ6KHzd97/Rj1FWZ2SOc8XVEWbAgTCtxy0INT/O3z9GA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3387
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -120,59 +112,63 @@ Use sysfs_emit instead of scnprintf or sprintf makes more sense.
 
 Signed-off-by: Qing Wang <wangqing@vivo.com>
 ---
- arch/x86/events/core.c       | 2 +-
- arch/x86/events/intel/core.c | 4 ++--
- arch/x86/events/intel/pt.c   | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/acpi/acpi_lpss.c | 2 +-
+ drivers/acpi/dock.c      | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 3092fbf..d82ec72 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -2608,7 +2608,7 @@ static ssize_t max_precise_show(struct device *cdev,
- 				  struct device_attribute *attr,
- 				  char *buf)
+diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
+index 894b7e6..9c437d4 100644
+--- a/drivers/acpi/acpi_lpss.c
++++ b/drivers/acpi/acpi_lpss.c
+@@ -748,7 +748,7 @@ static ssize_t lpss_ltr_show(struct device *dev, struct device_attribute *attr,
+ 	if (ret)
+ 		return ret;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%08x\n", ltr_value);
++	return sysfs_emit(buf, "%08x\n", ltr_value);
+ }
+ 
+ static ssize_t lpss_ltr_mode_show(struct device *dev,
+diff --git a/drivers/acpi/dock.c b/drivers/acpi/dock.c
+index 7cf9215..c8e9b96 100644
+--- a/drivers/acpi/dock.c
++++ b/drivers/acpi/dock.c
+@@ -492,7 +492,7 @@ static ssize_t docked_show(struct device *dev,
+ 	struct acpi_device *adev = NULL;
+ 
+ 	acpi_bus_get_device(dock_station->handle, &adev);
+-	return snprintf(buf, PAGE_SIZE, "%u\n", acpi_device_enumerated(adev));
++	return sysfs_emit(buf, "%u\n", acpi_device_enumerated(adev));
+ }
+ static DEVICE_ATTR_RO(docked);
+ 
+@@ -504,7 +504,7 @@ static ssize_t flags_show(struct device *dev,
  {
--	return snprintf(buf, PAGE_SIZE, "%d\n", x86_pmu_max_precise());
-+	return sysfs_emit(buf, "%d\n", x86_pmu_max_precise());
+ 	struct dock_station *dock_station = dev->platform_data;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", dock_station->flags);
++	return sysfs_emit(buf, "%d\n", dock_station->flags);
+ 
  }
+ static DEVICE_ATTR_RO(flags);
+@@ -543,7 +543,7 @@ static ssize_t uid_show(struct device *dev,
+ 	if (ACPI_FAILURE(status))
+ 		return 0;
  
- static DEVICE_ATTR_RO(max_precise);
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index ac6fd2d..acc994b 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -5091,7 +5091,7 @@ static ssize_t branches_show(struct device *cdev,
- 			     struct device_attribute *attr,
- 			     char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", x86_pmu.lbr_nr);
-+	return sysfs_emit(buf, "%d\n", x86_pmu.lbr_nr);
+-	return snprintf(buf, PAGE_SIZE, "%llx\n", lbuf);
++	return sysfs_emit(buf, "%llx\n", lbuf);
  }
+ static DEVICE_ATTR_RO(uid);
  
- static DEVICE_ATTR_RO(branches);
-@@ -5107,7 +5107,7 @@ static ssize_t pmu_name_show(struct device *cdev,
- 			     struct device_attribute *attr,
- 			     char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%s\n", pmu_name_str);
-+	return sysfs_emit(buf, "%s\n", pmu_name_str);
+@@ -562,7 +562,7 @@ static ssize_t type_show(struct device *dev,
+ 	else
+ 		type = "unknown";
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", type);
++	return sysfs_emit(buf, "%s\n", type);
  }
+ static DEVICE_ATTR_RO(type);
  
- static DEVICE_ATTR_RO(pmu_name);
-diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
-index 9158476..846d708 100644
---- a/arch/x86/events/intel/pt.c
-+++ b/arch/x86/events/intel/pt.c
-@@ -92,7 +92,7 @@ static ssize_t pt_cap_show(struct device *cdev,
- 		container_of(attr, struct dev_ext_attribute, attr);
- 	enum pt_capabilities cap = (long)ea->var;
- 
--	return snprintf(buf, PAGE_SIZE, "%x\n", intel_pt_validate_hw_cap(cap));
-+	return sysfs_emit(buf, "%x\n", intel_pt_validate_hw_cap(cap));
- }
- 
- static struct attribute_group pt_cap_group __ro_after_init = {
 -- 
 2.7.4
 
