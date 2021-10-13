@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C0642B28F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A50942B292
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 04:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbhJMCSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 22:18:16 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:14507 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234846AbhJMCSP (ORCPT
+        id S234230AbhJMCVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 22:21:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51613 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229796AbhJMCVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 22:18:15 -0400
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20211013021610epoutp0197ae4cbacca47c7eb57fd8b51f6ab0c1~tdXGS_ZLk1331113311epoutp01P
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 02:16:10 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20211013021610epoutp0197ae4cbacca47c7eb57fd8b51f6ab0c1~tdXGS_ZLk1331113311epoutp01P
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1634091370;
-        bh=iBlDvHB/OsQgZeiVFRhnDt3AUZmGw5uX/LXkxr2NQ2U=;
-        h=Subject:Reply-To:From:To:Date:References:From;
-        b=iKbonuHCFzZHkNZnM0i7tppseK3P8qq9ViFB4Un7CVc8eLqFCt/kDh9H6GPeA7Ysc
-         2LsQRPAi7mNqAfVxKplMZzDYBqZSQtBor0SxZFiScyikSP/JXTZJEmzw8MpZCCCxQP
-         1STnwnWz302Xm9B9WPwQo+/juiV4IvHKMUxYsmtQ=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20211013021609epcas2p4af48ddd86dbd7542c9053cd5f078d8ec~tdXF2Po-q2449924499epcas2p4M;
-        Wed, 13 Oct 2021 02:16:09 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.91]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4HTbjy0smyz4x9QZ; Wed, 13 Oct
-        2021 02:16:06 +0000 (GMT)
-X-AuditID: b6c32a45-4c1ff700000025f5-7f-6166416389a4
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2C.45.09717.36146616; Wed, 13 Oct 2021 11:16:03 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH RESEND v2] block-map: added error handling for
- bio_copy_kern()
-Reply-To: j-young.choi@samsung.com
-Sender: Jinyoung CHOI <j-young.choi@samsung.com>
-From:   Jinyoung CHOI <j-young.choi@samsung.com>
-To:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hch@infradead.org" <hch@infradead.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20211013021602epcms2p408b3eb79d4861bf8c340542ac92c23ec@epcms2p4>
-Date:   Wed, 13 Oct 2021 11:16:02 +0900
-X-CMS-MailID: 20211013021602epcms2p408b3eb79d4861bf8c340542ac92c23ec
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGKsWRmVeSWpSXmKPExsWy7bCmqW6yY1qiwf5dLBar7/azWbw8pGlx
-        esIiJove/q1sFntvaVtc3jWHzYHNY/MKLY/LZ0s9+rasYvT4vEkugCUq2yYjNTEltUghNS85
-        PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaLGSQlliTilQKCCxuFhJ386m
-        KL+0JFUhI7+4xFYptSAlp8C8QK84Mbe4NC9dLy+1xMrQwMDIFKgwITvj3qwNLAV/+CqePdjK
-        3MD4nKuLkYNDQsBE4kWbQxcjF4eQwA5GiZW/ehhB4rwCghJ/dwh3MXJyCAsESDx+tIAZxBYS
-        UJI4t2YWWImwgIHErV5zkDCbgJ7EzyUz2EDGiAhcYJRYPGEnWL2EAK/EjPanLBC2tMT25VsZ
-        IWwNiR/LeqFqRCVurn7LDmO/PzYfqkZEovXeWagaQYkHP3dDxSUlGidMg5pZLnF1+RwWkMUS
-        Ah2MEpeX3IRK6Etc69gIZvMK+Eqsmn6ODcRmEVCVuNJwGWqZi8S8P1dZQWxmAXmJ7W/nMIM8
-        xiygKbF+lz4keJQljtxigXmlYeNvdnQ2swCfRMfhv3DxHfOeMEG0qkksajKCCMtIfD08H6rE
-        Q2LmnA7mCYyKsxDhPAvJCbMQTljAyLyKUSy1oDg3PbXYqMAQHrPJ+bmbGMEJUMt1B+Pktx/0
-        DjEycTAeYpTgYFYS4TUEpish3pTEyqrUovz4otKc1OJDjKZAz09klhJNzgem4LySeEMTSwMT
-        MzNDcyNTA3Mlcd65/5wShQTSE0tSs1NTC1KLYPqYODilGphEV13+zGXdO69HPe/5B/dvujvY
-        F+rkPeVxlRDZ13HZTOX8JOkU3TANpRfv1IxiBQ7O41p2NkszOF1uJt//nxKdjt96Hmbc/fSh
-        rVrloJbngmfFh+7ceuhxVnfq9gdnFBbl8MZOZ19yd8fvrBNPTlXMfr2xSsVy6Smb+yZpflei
-        Lz7ZvMtjEedN5pftxd9F7l4+c9/GkK0v/qDfceaSlIeK2e2tAtxTNz1L6lRsy3C37/u3Zs1e
-        JWuReofZ1htyjttOvn/D0tN8aUXoMudJT6VufPkhMoFdt39TyaeyImbx37dX9N6d3RGxUrZo
-        nmdpugybhcZfVh87M4kfn6MNK6+5sz8Xz6uZEckgo62oVKDEUpyRaKjFXFScCAAZNUxGCQQA
-        AA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211013014256epcms2p5485187a369a9f8c74c2b3ab925df88fb
-References: <CGME20211013014256epcms2p5485187a369a9f8c74c2b3ab925df88fb@epcms2p4>
+        Tue, 12 Oct 2021 22:21:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634091540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wcg8uv0C3xyyk65eRbzrMi+K/zZRYWFm2h8Sqmj3wMU=;
+        b=SiYxrXddZTqyXliqDeYXgfmZ3Xj4SzYcVFjDOoLS3Mc+r0XKg6jRD9qBpmlj/3Q+Tnvmej
+        /xMQ27G+1v9yuBYlnyRNwxzz3HPkxaBK+K1JSnk6OAgpzchRgmA5yYQYEmj5JPurrN1fbP
+        oIPBG9FBeuHY+l0b4nY6ny9Rb69ko4k=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-WlP7gyPPOvOHQMpKl_o_VA-1; Tue, 12 Oct 2021 22:18:59 -0400
+X-MC-Unique: WlP7gyPPOvOHQMpKl_o_VA-1
+Received: by mail-pj1-f71.google.com with SMTP id oo5-20020a17090b1c8500b0019e585e8f6fso2676675pjb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 19:18:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wcg8uv0C3xyyk65eRbzrMi+K/zZRYWFm2h8Sqmj3wMU=;
+        b=GKwX5d2TwfrVHmKvf25oY2XszwUQ0KDE64D8CwJLG2E6iksm3heAPLLN6oHT4S3qeg
+         W8px0p+nrABTpnbwAtzIxrWQivlJMQpSiL7Y4EVftH9w4/9YCcqyw1ADsVJn8dEwfemS
+         zzUUG2WqXs8NudDqJhVOpyMaB+HmAWN4+klKE6MW9pfPAxCH+a9XBD8EufkLfKo8itCw
+         GgAqMOMvPBn4dQgme8tRDubWA1UMWZRbH/INN+KKA1/SwHNOTs1pCq43thRR9cLez1c7
+         3Q49kjULPrPfqJygHw+IjayBJb+UL32nbCabuo1yTG8tlV/jB6dxJhYkxIkdfT+s9zVn
+         C/Qg==
+X-Gm-Message-State: AOAM5339MqhdRYTG7kHVm/NYcvko3odZNCmjlN12w6klBXB/nR+nog/L
+        KrR6fIBLG9PZFI/nS86k4F2yetvlr9Xag5GDwaUJQcR3dBRRageTkD2QPeEwXqVdroJ/Y3D3BXJ
+        Rl5JO+xB0hbtubX/4DNwtPEun
+X-Received: by 2002:a17:90b:34a:: with SMTP id fh10mr10255609pjb.51.1634091538057;
+        Tue, 12 Oct 2021 19:18:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyx7vhHBd0uMwE25QMwUcweWXCRlis6s+sUV3hVb0B0kmMTX/EAjx0MTIPg+pR0k1K2hWHfIA==
+X-Received: by 2002:a17:90b:34a:: with SMTP id fh10mr10255583pjb.51.1634091537771;
+        Tue, 12 Oct 2021 19:18:57 -0700 (PDT)
+Received: from t490s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id p189sm12159497pfp.167.2021.10.12.19.18.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 19:18:57 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 10:18:50 +0800
+From:   Peter Xu <peterx@redhat.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [RFC PATCH] userfaultfd: support control over mm of remote PIDs
+Message-ID: <YWZCClDorCCM7KMG@t490s>
+References: <20210926170637.245699-1-namit@vmware.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210926170637.245699-1-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When new pages are allocated to bio through alloc_page() in
-bio_copy_kern(), the pages must be freed in error handling after that.
+On Sun, Sep 26, 2021 at 10:06:37AM -0700, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
+> 
+> Non-cooperative mode is useful but only for forked processes.
+> Userfaultfd can be useful to monitor, debug and manage memory of remote
+> processes.
+> 
+> To support this mode, add a new flag, UFFD_REMOTE_PID, and an optional
+> second argument to the userfaultfd syscall. When the flag is set, the
+> second argument is assumed to be the PID of the process that is to be
+> monitored. Otherwise the flag is ignored.
+> 
+> The syscall enforces that the caller has CAP_SYS_PTRACE to prevent
+> misuse of this feature.
+> 
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> Cc: Peter Xu <peterx@redhat.com>
+> Signed-off-by: Nadav Amit <namit@vmware.com>
 
-There is little chance of an error occurring in blk_rq_append_bio(), but
-in the code flow, pages additionally allocated to bio must be released.
+I think this patch from one pov looks just likes the other patch of the
+process_madvise on DONTNEED - the new interface definitely opens new way to do
+things, however IMHO it would be great to discuss some detailed scenario that
+we can do with it better than the existing facilities.
 
-V2:
-        - replace int with bool
+The thing is uffd already provides some mechanism for doing things like
+customized swapping, so that's not something new IMHO that this patch brings
+(neither is what the DONTNEED patch brings), just like when I raised in the
+other thread about umap.
 
-Signed-off-by: Jinyoung Choi <j-young.choi@samsung.com>
----
- block/blk-map.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+So IMHO it'll be great if there can be some elaboration on how the "remote"
+capability could help us do things better (e.g., use cases that we may not
+solve with linking against another uffd-supported library, or we can't do with
+register uffd then fork()).
 
-diff --git a/block/blk-map.c b/block/blk-map.c
-index 4526adde0156..b137a2f569f8 100644
---- a/block/blk-map.c
-+++ b/block/blk-map.c
-@@ -628,6 +628,7 @@ int blk_rq_map_kern(struct request_queue *q, struct request *rq, void *kbuf,
-        int reading = rq_data_dir(rq) == READ;
-        unsigned long addr = (unsigned long) kbuf;
-        struct bio *bio;
-+       bool do_copy;
-        int ret;
+(I skipped the security side of things, as I replied in the other thread that I
+ think I buy in your point on depending on PTRACE capability and also the
+ examples you gave on ptrace() and process_vm_writev() are persuasive to me,
+ but no expert on that..)
 
-        if (len > (queue_max_hw_sectors(q) << 9))
-@@ -635,8 +636,9 @@ int blk_rq_map_kern(struct request_queue *q, struct request *rq, void *kbuf,
-        if (!len || !kbuf)
-                return -EINVAL;
+Thanks,
 
--       if (!blk_rq_aligned(q, addr, len) || object_is_on_stack(kbuf) ||
--           blk_queue_may_bounce(q))
-+       do_copy = !blk_rq_aligned(q, addr, len) || object_is_on_stack(kbuf) ||
-+               blk_queue_may_bounce(q);
-+       if (do_copy)
-                bio = bio_copy_kern(q, kbuf, len, gfp_mask, reading);
-        else
-                bio = bio_map_kern(q, kbuf, len, gfp_mask);
-@@ -648,8 +650,11 @@ int blk_rq_map_kern(struct request_queue *q, struct request *rq, void *kbuf,
-        bio->bi_opf |= req_op(rq);
+-- 
+Peter Xu
 
-        ret = blk_rq_append_bio(rq, bio);
--       if (unlikely(ret))
-+       if (unlikely(ret)) {
-+               if (do_copy)
-+                       bio_free_pages(bio);
-                bio_put(bio);
-+       }
-        return ret;
- }
- EXPORT_SYMBOL(blk_rq_map_kern);
---
-2.25.1
