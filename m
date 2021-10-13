@@ -2,154 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5508C42C187
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD4542C198
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235342AbhJMNiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:38:07 -0400
-Received: from www62.your-server.de ([213.133.104.62]:59648 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233901AbhJMNiD (ORCPT
+        id S234555AbhJMNmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233962AbhJMNmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:38:03 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1maeQI-000B9f-8W; Wed, 13 Oct 2021 15:35:58 +0200
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux.fritz.box)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1maeQH-0002T3-Rr; Wed, 13 Oct 2021 15:35:57 +0200
-Subject: Re: [syzbot] BUG: corrupted list in netif_napi_add
-To:     syzbot <syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-References: <0000000000005639cd05ce3a6d4d@google.com>
-Cc:     pabeni@redhat.com, toke@toke.dk, joamaki@gmail.com
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f821df00-b3e9-f5a8-3dcb-a235dd473355@iogearbox.net>
-Date:   Wed, 13 Oct 2021 15:35:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Wed, 13 Oct 2021 09:42:53 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D3AC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:40:50 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id r15so2179201qkp.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=fOYbDlxyEHO5mkyCfKHOpCUjsLY9l97TCTcV9KNabAI=;
+        b=XEMDZnEQl+Zq4wdmUGLLkjtYBSRaidWKvmxJuA15ySkjsui1JPqSa1ZWzleiUodnS4
+         4kEGOVz0bH/AxD0L3s6/3RIDu4RfcqE2LLDhVlB6gfyzxNSPDLjn8nKwor3ZW4B2trQ4
+         bqYp7O2eM/tWm58CSJcTcb+uzkk6SVgv7INyUW35WUFBcOYiq7WIEzKL+hjzXHiCejph
+         QHpMYkfvIuDNhSItQqmJ+Vc1XYqrKQgGHazI8WnHTrCsouXpwYyiAYgiM2QEsVF5gHdz
+         ZJLvnUp5Oc2Rp0xJOZhR7zuun0gEe51MGZSvFVnEu+r4qI4EqOf+bJ6xWqK0udAIUOEO
+         2D7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=fOYbDlxyEHO5mkyCfKHOpCUjsLY9l97TCTcV9KNabAI=;
+        b=E2u0ZkXO4J/MQSi9q29xMC1zpsAlwn0yn4et36LykpEGthsAgXtFXSnirT42egKM6o
+         dyeS6hpixNzLaHWtLSaDqu0bHgp6MQphhnLCaiLjLL6fgc8l+4i3W7e+JbO5phXiPDB6
+         t7+NlxAAzxc0+yswZFZZ2YV+Mo/qb0yNYc219wXrdcJf+aO1zOVDq6skvGnd3s0KCDb3
+         UftvCZxJGA9xBrvz5V84D1wI7v5e86FzJ/NV7amAUOPeF6f4olJCfhhl8j+2mWEhOXnQ
+         qasLFUF5HDkVBuZD/V/8VCNripBOIKewKLpYOlZTD64O4fUkQiuaICUb15Gb0vlGGNbc
+         5r7g==
+X-Gm-Message-State: AOAM531ygP/rfiaXFT+Y2Jk2pSKLvVFn0r6hGnc7aC0vxZn37FkEc9Iu
+        lmxiZq+ONEpjzi6EfPE97w227A==
+X-Google-Smtp-Source: ABdhPJzOTaRXeM7E9FNDf2aud4bzU/5ORGrb5nxt55vCz9M67pEiwG1gJqMRtM1pQtJ5njQL8zGp2w==
+X-Received: by 2002:a37:a754:: with SMTP id q81mr18304335qke.303.1634132449920;
+        Wed, 13 Oct 2021 06:40:49 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id p2sm4953006qtq.41.2021.10.13.06.40.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 06:40:49 -0700 (PDT)
+Message-ID: <ff0769efee51e15451d48e23860f8b1710593cd7.camel@ndufresne.ca>
+Subject: Re: [PATCH 0/2] media: rkvdec: Align decoder behavior with Hantro
+ and Cedrus
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Date:   Wed, 13 Oct 2021 09:40:48 -0400
+In-Reply-To: <CAGXv+5FnFq1mN79sqUp-o6pHirYvp55gurnsUCgqYvEAX2=4oQ@mail.gmail.com>
+References: <20211008100423.739462-1-wenst@chromium.org>
+         <f108f23dadc846222c63c88af826dae9c5082d83.camel@ndufresne.ca>
+         <CAGXv+5FnFq1mN79sqUp-o6pHirYvp55gurnsUCgqYvEAX2=4oQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <0000000000005639cd05ce3a6d4d@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26321/Wed Oct 13 10:21:20 2021)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 1:40 PM, syzbot wrote:
-> Hello,
+Le mercredi 13 octobre 2021 à 15:05 +0800, Chen-Yu Tsai a écrit :
+> Hi,
 > 
-> syzbot found the following issue on:
+> On Fri, Oct 8, 2021 at 11:42 PM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
+> > 
+> > Hi Chen-Yu,
+> > 
+> > thanks for looking into this.
+> > 
+> > Le vendredi 08 octobre 2021 à 18:04 +0800, Chen-Yu Tsai a écrit :
+> > > Hi everyone,
+> > > 
+> > > While working on the rkvdec H.264 decoder for ChromeOS, I noticed some
+> > > behavioral differences compared to Hantro and Cedrus:
+> > > 
+> > > 1. The driver always overrides the sizeimage setting given by userspace
+> > >    for the output format. This results in insufficient buffer space when
+> > >    running the ChromeOS video_decode_accelerator_tests test program,
+> > >    likely due to a small initial resolution followed by dynamic
+> > >    resolution change.
+> > > 
+> > > 2. Doesn't support dynamic resolution change.
+> > > 
+> > > This small series fixes both and aligns the behavior with the other two
+> > > stateless decoder drivers. This was tested on the downstream ChromeOS
+> > > 5.10 kernel with ChromeOS. Also compiled tested on mainline but I don't
+> > > have any other RK3399 devices set up to test video stuff, so testing
+> > > would be very much appreciated.
+> > > 
+> > > Also, I'm not sure if user applications are required to check the value
+> > > of sizeimage upon S_FMT return. If the value is different or too small,
+> > > what can the application do besides fail? AFAICT it can't split the
+> > > data of one frame (or slice) between different buffers.
+> > 
+> > While most software out there just assumes that driver will do it right and
+> > crash when it's not the case, application that do map the buffer to CPU must
+> > read back the fmt structure as the drivers are all fail-safe and will modify
+> > that structure to a set of valid value s for the context.
+> 
+> I believe what is happening in Chromium is that the decoder is opened with
+> some default settings, including the smallest viable resolution for the
+> output side, and the buffers allocated accordingly. When dynamic resolution
+> change happens, the decoder does not check if the current buffers are
+> sufficiently sized; it just assumes that they are. And when it starts
+> pushing data into the buffers, it realizes they are too small and fails.
+> 
+> The spec also says:
+> 
+>     Clients are allowed to set the sizeimage field for variable length
+>     compressed data flagged with V4L2_FMT_FLAG_COMPRESSED at ioctl
+>     VIDIOC_ENUM_FMT, but the driver may ignore it and set the value itself,
+>     or it may modify the provided value based on alignment requirements or
+>     minimum/maximum size requirements.
+> 
+> The spec only guarantees that the buffers are of sufficient size for the
+> resolution configured at the time they were allocated/requested.
+> 
+> So I think my first patch is a workaround for a somewhat broken userspace.
+> But it seems the other stateless drivers are providing similar behavior,
+> as I previously mentioned.
 
-[ +Paolo/Toke wrt veth/XDP, +Jussi wrt bond/XDP, please take a look, thanks! ]
+That's what I mean, this is not a driver bug strictly speaking (assuming it does
+guaranty the buffer size is sufficient) but it is without your change
+inconvenient, as userspace may be aware of the largest resolution it will
+decode, and may want to allocate larger buffer upfront.
 
-> HEAD commit:    683f29b781ae Add linux-next specific files for 20211008
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1525a614b00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=673b3589d970c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=62e474dd92a35e3060d8
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c98e98b00000
+As per Chromium bug, this is being addressed already. Thanks for this driver
+improvement.
+
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+62e474dd92a35e3060d8@syzkaller.appspotmail.com
+> > As for opposite direction (output vs capture) format being changed, this should
+> > be documented in the spec, if you find it too unclear or missing for sateless
+> > codec (I know it's there for stateful but can't remember, would have to re-read,
+> > for stateless) let us know.
 > 
-> IPv6: ADDRCONF(NETDEV_CHANGE): vcan0: link becomes ready
-> list_add double add: new=ffff888023417160, prev=ffff88807de3a050, next=ffff888023417160.
-> ------------[ cut here ]------------
-> kernel BUG at lib/list_debug.c:29!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 9490 Comm: syz-executor.1 Not tainted 5.15.0-rc4-next-20211008-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:__list_add_valid.cold+0x26/0x3c lib/list_debug.c:29
-> Code: b1 24 c3 fa 4c 89 e1 48 c7 c7 60 56 04 8a e8 f2 8c f1 ff 0f 0b 48 89 f2 4c 89 e1 48 89 ee 48 c7 c7 a0 57 04 8a e8 db 8c f1 ff <0f> 0b 48 89 f1 48 c7 c7 20 57 04 8a 4c 89 e6 e8 c7 8c f1 ff 0f 0b
-> RSP: 0018:ffffc90002c26a48 EFLAGS: 00010286
-> RAX: 0000000000000058 RBX: 0000000000000040 RCX: 0000000000000000
-> RDX: ffff888023263a00 RSI: ffffffff815e0d78 RDI: fffff52000584d3b
-> RBP: ffff888023417160 R08: 0000000000000058 R09: 0000000000000000
-> R10: ffffffff815dab5e R11: 0000000000000000 R12: ffff888023417160
-> R13: ffff888023417000 R14: ffff888023417160 R15: ffff888023417160
-> FS:  00007f841e9e8700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000000 CR3: 00000000601bd000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   __list_add_rcu include/linux/rculist.h:79 [inline]
->   list_add_rcu include/linux/rculist.h:106 [inline]
->   netif_napi_add+0x3fd/0x9c0 net/core/dev.c:6889
->   veth_enable_xdp_range+0x1b1/0x300 drivers/net/veth.c:1009
->   veth_enable_xdp+0x2a5/0x620 drivers/net/veth.c:1063
->   veth_xdp_set drivers/net/veth.c:1483 [inline]
->   veth_xdp+0x4d4/0x780 drivers/net/veth.c:1523
->   bond_xdp_set drivers/net/bonding/bond_main.c:5217 [inline]
->   bond_xdp+0x325/0x920 drivers/net/bonding/bond_main.c:5263
->   dev_xdp_install+0xd5/0x270 net/core/dev.c:9365
->   dev_xdp_attach+0x83d/0x1010 net/core/dev.c:9513
->   dev_change_xdp_fd+0x246/0x300 net/core/dev.c:9753
->   do_setlink+0x2fb4/0x3970 net/core/rtnetlink.c:2931
->   rtnl_group_changelink net/core/rtnetlink.c:3242 [inline]
->   __rtnl_newlink+0xc06/0x1750 net/core/rtnetlink.c:3396
->   rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
->   rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
->   netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2491
->   netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
->   netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
->   netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
->   sock_sendmsg_nosec net/socket.c:704 [inline]
->   sock_sendmsg+0xcf/0x120 net/socket.c:724
->   ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
->   ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
->   __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7f841f2718d9
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f841e9e8188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 00007f841f375f60 RCX: 00007f841f2718d9
-> RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000003
-> RBP: 00007f841f2cbcb4 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffc8978d37f R14: 00007f841e9e8300 R15: 0000000000022000
->   </TASK>
-> Modules linked in:
-> ---[ end trace 7281cadbc8534f23 ]---
-> RIP: 0010:__list_add_valid.cold+0x26/0x3c lib/list_debug.c:29
-> Code: b1 24 c3 fa 4c 89 e1 48 c7 c7 60 56 04 8a e8 f2 8c f1 ff 0f 0b 48 89 f2 4c 89 e1 48 89 ee 48 c7 c7 a0 57 04 8a e8 db 8c f1 ff <0f> 0b 48 89 f1 48 c7 c7 20 57 04 8a 4c 89 e6 e8 c7 8c f1 ff 0f 0b
-> RSP: 0018:ffffc90002c26a48 EFLAGS: 00010286
-> RAX: 0000000000000058 RBX: 0000000000000040 RCX: 0000000000000000
-> RDX: ffff888023263a00 RSI: ffffffff815e0d78 RDI: fffff52000584d3b
-> RBP: ffff888023417160 R08: 0000000000000058 R09: 0000000000000000
-> R10: ffffffff815dab5e R11: 0000000000000000 R12: ffff888023417160
-> R13: ffff888023417000 R14: ffff888023417160 R15: ffff888023417160
-> FS:  00007f841e9e8700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000000 CR3: 00000000601bd000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> AFAICT the capture side is working OK and to spec.
 > 
 > 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> Regards
+> ChenYu
 > 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
-> 
+> > regards,
+> > Nicolas
+> > 
+> > > 
+> > > Andrzej, I believe the second patch would conflict with your VP9 series.
+> > > 
+> > > 
+> > > Regards
+> > > ChenYu
+> > > 
+> > > Chen-Yu Tsai (2):
+> > >   media: rkvdec: Do not override sizeimage for output format
+> > >   media: rkvdec: Support dynamic resolution changes
+> > > 
+> > >  drivers/staging/media/rkvdec/rkvdec-h264.c |  5 +--
+> > >  drivers/staging/media/rkvdec/rkvdec.c      | 40 +++++++++++-----------
+> > >  2 files changed, 23 insertions(+), 22 deletions(-)
+> > > 
+> > 
+> > 
+
 
