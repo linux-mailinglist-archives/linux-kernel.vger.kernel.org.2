@@ -2,124 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF3D42B550
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCC742B57D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237736AbhJMFdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 01:33:31 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:20321 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237706AbhJMFda (ORCPT
+        id S237735AbhJMFgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 01:36:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38789 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229524AbhJMFgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 01:33:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1634103087; x=1665639087;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=R5yN/bebUFx9ehiYvk0KzgmQXPxl9EYqebEotv3PG+8=;
-  b=giJXUzuy4YoYVrxXfKwRpxBZDrr8Ib01xnfgLkv7Bv7aoettdh8v3lej
-   PbJ6etNEkiRMgBV214kys205Bq/8AzdWU4JoWCdXIeyT9RW+10iaMuYem
-   mkfAxmLURJH+Ku7dGkgObbBTNNFSz4B4ikY6pa/Dr3OsjILSuCrec10KP
-   8=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 12 Oct 2021 22:31:27 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 22:31:26 -0700
-Received: from [10.231.205.174] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Tue, 12 Oct 2021
- 22:31:24 -0700
-Subject: Re: [RESEND PATCH v1 3/9] spmi: pmic-arb: check apid against limits
- before calling irq handler
-To:     Stephen Boyd <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
-        <tglx@linutronix.de>, <maz@kernel.org>
-References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com>
- <1631860384-26608-4-git-send-email-quic_fenglinw@quicinc.com>
- <163406173869.936959.6395787327312518099@swboyd.mtv.corp.google.com>
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-Message-ID: <7efffba4-5e8b-1b71-8bee-3dffe65cfdf5@quicinc.com>
-Date:   Wed, 13 Oct 2021 13:31:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 13 Oct 2021 01:36:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634103289;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s9r2xR2EqP/t5FLsHTwtUUvaANXfO/gylgaJSKQRa+8=;
+        b=Aln7cKPDmSmUrSA3Px3eLIZFm9ZulRJ2HLhmjniDv0H6jQ0qVcRM8Lq6QDTAVfhxTmMY96
+        BhaRJirC3jSg/8iKsx5qa+Q/TROzE9QEfG/WKSlkuC8Pb9LCK36tide8InEHXfFSZdcGjQ
+        L2vYctiPpGMoxQd8nkdS/6NZ8polaYA=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-573-4vdsWIRUNby4wvcWIRvbqw-1; Wed, 13 Oct 2021 01:34:47 -0400
+X-MC-Unique: 4vdsWIRUNby4wvcWIRvbqw-1
+Received: by mail-ed1-f70.google.com with SMTP id z23-20020aa7cf97000000b003db7be405e1so1197826edx.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 22:34:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=s9r2xR2EqP/t5FLsHTwtUUvaANXfO/gylgaJSKQRa+8=;
+        b=y/RQxhCdwlsa6p9i4sHDBb2GfFbcOXe2NB+Uosb0ExhQvjHu9r/PBY4T3w8qwjiZLT
+         KfF5ptU9i7Fq8IeOVEgthLahdDLPiYbZ3ZkYQWIGMop+ywIQAg1jkIYXX+BgCs8xv0fP
+         99TtnyOSO/6R4Knj7azGhTr3JuLxQ3VthhHPmxI7ulL3xmJHLEqISL7UPxduuzACwdyD
+         r/w/xZl4+wEYsomLj6FkwAd1O8yn6p9r6+cwbDdzgyyvbiZRYsojgr2hrwzO6uaiRDa4
+         lbbU5chFM1Jfd5HipyVP2rZ7zdunwTuxqOKy8KKZX7l/KPIftaGr97L1PFp8vWwOjF5e
+         QN4A==
+X-Gm-Message-State: AOAM5306ejGIWN39SCaG3no04uREV6QlUjJcR6+pTg/38mToHI9P9L1F
+        rgJi2e3b3m0cbpgeAC9VuRCN0cAq2y2hjdxvfyBer7aE9ljEQlysEaRg3T7gjHQUjuNl/a3KcrI
+        ELHbTufA5/GW0uLLrt0K4v+4W
+X-Received: by 2002:a05:6402:2684:: with SMTP id w4mr6554722edd.108.1634103286330;
+        Tue, 12 Oct 2021 22:34:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxvbp0lfx3vs0ck1sseLJlqp7mWqgndzQU8vzGaHBI2q4E7j80ZWXtMNpOrO5LTzF7xq9/gig==
+X-Received: by 2002:a05:6402:2684:: with SMTP id w4mr6554698edd.108.1634103286140;
+        Tue, 12 Oct 2021 22:34:46 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x26sm1916924ejf.103.2021.10.12.22.34.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Oct 2021 22:34:45 -0700 (PDT)
+Message-ID: <cc8893f1-df60-2155-d3b6-f889bc1c2201@redhat.com>
+Date:   Wed, 13 Oct 2021 07:34:43 +0200
 MIME-Version: 1.0
-In-Reply-To: <163406173869.936959.6395787327312518099@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [patch 16/31] x86/fpu: Replace KVMs homebrewn FPU copy to user
 Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org
+References: <20211011215813.558681373@linutronix.de>
+ <20211011223611.249593446@linutronix.de>
+ <0d222978-014a-cdcb-f8aa-5b3179cb0809@redhat.com> <87fst6b0f5.ffs@tglx>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <87fst6b0f5.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/10/21 19:47, Thomas Gleixner wrote:
+>> The memset(guest_xsave, 0, sizeof(struct kvm_xsave)) also is not
+>> reproduced, you can make it unconditional for simplicity; this is not a
+>> fast path.
+> Duh, I should have mentioned that in the changelog. The buffer is
+> allocated with kzalloc() soe the memset is redundant, right?
 
-On 10/13/2021 2:02 AM, Stephen Boyd wrote:
-> Quoting Fenglin Wu (2021-09-16 23:32:58)
->> From: David Collins <collinsd@codeaurora.org>
->>
->> Check that the apid for an SPMI interrupt falls between the
->> min_apid and max_apid that can be handled by the APPS processor
->> before invoking the per-apid interrupt handler:
->> periph_interrupt().
->>
->> This avoids an access violation in rare cases where the status
->> bit is set for an interrupt that is not owned by the APPS
->> processor.
->>
->> Signed-off-by: David Collins <collinsd@codeaurora.org>
->> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
->> ---
-> Fixes? BTW, a lot of these patches are irqchip specific. It would be
-> good to get review from irqchip maintainers. Maybe we should split the
-> irqchip driver off via the auxiliary bus so that irqchip maintainers can
-> review. Please Cc them on irqchip related patches.
->
-> IRQCHIP DRIVERS
-> M:      Thomas Gleixner <tglx@linutronix.de>
-> M:      Marc Zyngier <maz@kernel.org>
-Sure, copied Thomas and Marc for code review.
-This is a fix to avoid the register access violation in a case that an
-interrupt is fired in a PMIC module which is not owned by APPS
-processor.
->>   drivers/spmi/spmi-pmic-arb.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
->> index 4d7ad004..c4adc06 100644
->> --- a/drivers/spmi/spmi-pmic-arb.c
->> +++ b/drivers/spmi/spmi-pmic-arb.c
->> @@ -535,6 +535,12 @@ static void pmic_arb_chained_irq(struct irq_desc *desc)
->>                          id = ffs(status) - 1;
->>                          status &= ~BIT(id);
->>                          apid = id + i * 32;
->> +                       if (apid < pmic_arb->min_apid
->> +                           || apid > pmic_arb->max_apid) {
-> The || goes on the line above. What about making a local variable for
-> first and last and then shifting by 5 in the loop?
->
-> int first = pmic_arb->min_apid;
-> int last = pmic_arb->max_apid;
->
-> for (i = first >> 5; i <= last >> 5; i++)
->
-> 	if (apid < first || apid > last)
-ACK, will update it following this.
->> +                               WARN_ONCE(true, "spurious spmi irq received for apid=%d\n",
->> +                                       apid);
-> Is there any way to recover from this? Or once the mapping is wrong
-> we're going to get interrupts that we don't know what to do with
-> forever?
-This is a rare case that the unexpected interrupt is fired in a module
-not owned by APPS process, so the interrupt itself is not expected hence
-no need to recover from this but just bail out to avoid following register
-access violation.
->> +                               continue;
->> +                       }
->>                          enable = readl_relaxed(
->>                                          ver_ops->acc_enable(pmic_arb, apid));
->>                          if (enable & SPMI_PIC_ACC_ENABLE_BIT)
+Yes, I always confuse the __user pointers with the temporary ones that 
+are allocated in the callers.
+
+Paolo
+
