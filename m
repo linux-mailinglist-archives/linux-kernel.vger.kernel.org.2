@@ -2,191 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCDB42BFB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5298E42BF83
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232829AbhJMMUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:20:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27243 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229715AbhJMMUJ (ORCPT
+        id S231635AbhJMMIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:08:41 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14345 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhJMMIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:20:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634127484;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8uA+gFhUzMMrb5D5fxARTwQwcT+AEfWKWkQ0ooGMKj8=;
-        b=TZMF+NDbhZW+4HHsZxVX2rPijIO4PiINa21PVdhukgtbGMCSiPRVkePi5hw7VffQ6E7jqp
-        OkhBoAJKpcxBb+P6flaJq/iGgXXpNEe3ctH0RLr2i5W0qBhJz7q02Vu+ZamQjipidlWK/O
-        uZOXlkckykR5xE+Tmh92fru2S4HiKXU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-523-xtdspekhMnCZMxm1wOg6Bg-1; Wed, 13 Oct 2021 08:18:03 -0400
-X-MC-Unique: xtdspekhMnCZMxm1wOg6Bg-1
-Received: by mail-wr1-f71.google.com with SMTP id s18-20020adfbc12000000b00160b2d4d5ebso1841538wrg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:18:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8uA+gFhUzMMrb5D5fxARTwQwcT+AEfWKWkQ0ooGMKj8=;
-        b=mlNp1u/U9ryOGkpglq6XUonbb8WzwshK1YiWUsvO/yNO9lXG7mY9XuG6OfwFXGVtfs
-         vLIl1HQv5eCapO2MrM509r1wIPgb31SIO/GZLhaEvUHklTOQozzxd24MjhSxpmFaqH2B
-         9sRPyy+TRbKl31IVq1a7Gz3DpvZm6zvMbuLb/ONhCAXGLPRQ3vV5Y2lmvQ2k86nNx0E6
-         6i9Q4lh5W2dGzFLs1JWQNdGITaNw/VkUIEBfWIrrm9ZrmxXtGBC/0VKST7NXvdlTv92B
-         e81qbQmSP45wZttpuRLIrzp+65R7ldaSj7lrLNOjBacOR+Iwzs9Gh2bYce8BBMowNgNw
-         iYGg==
-X-Gm-Message-State: AOAM531dSGdwbjpxe/fDQHoz9j/7TZ0rkW/0dzNpt5aHjiMUVBpW5dph
-        1AiDGqleFriGG4+n9634TZc5I7FXthOG87qVbVSyCNOX072LPOEPnGH+YBhzx2lc5YB/IqCaj9q
-        vGFSqb8ESxaqzgSjcCHtVUmhf
-X-Received: by 2002:a7b:c30c:: with SMTP id k12mr12535208wmj.38.1634127481357;
-        Wed, 13 Oct 2021 05:18:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwFEzPqFQ+1qHznC4euH1QtbfXrvr/+t46tCqHwjpC6aqk2B2gJ30j5Cm2I+Hz0oA4zGN44UQ==
-X-Received: by 2002:a7b:c30c:: with SMTP id k12mr12535146wmj.38.1634127481076;
-        Wed, 13 Oct 2021 05:18:01 -0700 (PDT)
-Received: from redhat.com ([2.55.30.112])
-        by smtp.gmail.com with ESMTPSA id z1sm4104369wrt.94.2021.10.13.05.17.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 05:18:00 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 08:17:49 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gonglei <arei.gonglei@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Jie Deng <jie.deng@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-um@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-i2c@vger.kernel.org, iommu@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, kvm@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
-Message-ID: <20211013081632-mutt-send-email-mst@kernel.org>
-References: <20211013105226.20225-1-mst@redhat.com>
- <2060bd96-5884-a1b5-9f29-7fe670dc088d@redhat.com>
+        Wed, 13 Oct 2021 08:08:39 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HTrjh1Dqhz90C4;
+        Wed, 13 Oct 2021 20:01:44 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggeme754-chm.china.huawei.com
+ (10.3.19.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 13
+ Oct 2021 20:06:34 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <rafael@kernel.org>, <len.brown@intel.com>, <pavel@ucw.cz>,
+        <linux-pm@vger.kernel.org>
+CC:     <tytso@mit.edu>, <linux-kernel@vger.kernel.org>, <jack@suse.cz>,
+        Ye Bin <yebin10@huawei.com>
+Subject: [PATCH -next] PM: hibernate: Get block device exclusively when do swsusp_check
+Date:   Wed, 13 Oct 2021 20:19:14 +0800
+Message-ID: <20211013121914.3146812-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2060bd96-5884-a1b5-9f29-7fe670dc088d@redhat.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 01:03:46PM +0200, David Hildenbrand wrote:
-> On 13.10.21 12:55, Michael S. Tsirkin wrote:
-> > This will enable cleanups down the road.
-> > The idea is to disable cbs, then add "flush_queued_cbs" callback
-> > as a parameter, this way drivers can flush any work
-> > queued after callbacks have been disabled.
-> > 
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > ---
-> >   arch/um/drivers/virt-pci.c                 | 2 +-
-> >   drivers/block/virtio_blk.c                 | 4 ++--
-> >   drivers/bluetooth/virtio_bt.c              | 2 +-
-> >   drivers/char/hw_random/virtio-rng.c        | 2 +-
-> >   drivers/char/virtio_console.c              | 4 ++--
-> >   drivers/crypto/virtio/virtio_crypto_core.c | 8 ++++----
-> >   drivers/firmware/arm_scmi/virtio.c         | 2 +-
-> >   drivers/gpio/gpio-virtio.c                 | 2 +-
-> >   drivers/gpu/drm/virtio/virtgpu_kms.c       | 2 +-
-> >   drivers/i2c/busses/i2c-virtio.c            | 2 +-
-> >   drivers/iommu/virtio-iommu.c               | 2 +-
-> >   drivers/net/caif/caif_virtio.c             | 2 +-
-> >   drivers/net/virtio_net.c                   | 4 ++--
-> >   drivers/net/wireless/mac80211_hwsim.c      | 2 +-
-> >   drivers/nvdimm/virtio_pmem.c               | 2 +-
-> >   drivers/rpmsg/virtio_rpmsg_bus.c           | 2 +-
-> >   drivers/scsi/virtio_scsi.c                 | 2 +-
-> >   drivers/virtio/virtio.c                    | 5 +++++
-> >   drivers/virtio/virtio_balloon.c            | 2 +-
-> >   drivers/virtio/virtio_input.c              | 2 +-
-> >   drivers/virtio/virtio_mem.c                | 2 +-
-> >   fs/fuse/virtio_fs.c                        | 4 ++--
-> >   include/linux/virtio.h                     | 1 +
-> >   net/9p/trans_virtio.c                      | 2 +-
-> >   net/vmw_vsock/virtio_transport.c           | 4 ++--
-> >   sound/virtio/virtio_card.c                 | 4 ++--
-> >   26 files changed, 39 insertions(+), 33 deletions(-)
-> > 
-> > diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-> > index c08066633023..22c4d87c9c15 100644
-> > --- a/arch/um/drivers/virt-pci.c
-> > +++ b/arch/um/drivers/virt-pci.c
-> > @@ -616,7 +616,7 @@ static void um_pci_virtio_remove(struct virtio_device *vdev)
-> >   	int i;
-> >           /* Stop all virtqueues */
-> > -        vdev->config->reset(vdev);
-> > +        virtio_reset_device(vdev);
-> >           vdev->config->del_vqs(vdev);
-> 
-> Nit: virtio_device_reset()?
-> 
-> Because I see:
-> 
-> int virtio_device_freeze(struct virtio_device *dev);
-> int virtio_device_restore(struct virtio_device *dev);
-> void virtio_device_ready(struct virtio_device *dev)
-> 
-> But well, there is:
-> void virtio_break_device(struct virtio_device *dev);
+We got follow issue:
+[   89.266592] ------------[ cut here ]------------
+[   89.267427] kernel BUG at fs/buffer.c:3020!
+[   89.268264] invalid opcode: 0000 [#1] SMP KASAN PTI
+[   89.269116] CPU: 7 PID: 1750 Comm: kmmpd-loop0 Not tainted 5.10.0-862.14.0.6.x86_64-08610-gc932cda3cef4-dirty #20
+[   89.273169] RIP: 0010:submit_bh_wbc.isra.0+0x538/0x6d0
+[   89.277157] RSP: 0018:ffff888105ddfd08 EFLAGS: 00010246
+[   89.278093] RAX: 0000000000000005 RBX: ffff888124231498 RCX: ffffffffb2772612
+[   89.279332] RDX: 1ffff11024846293 RSI: 0000000000000008 RDI: ffff888124231498
+[   89.280591] RBP: ffff8881248cc000 R08: 0000000000000001 R09: ffffed1024846294
+[   89.281851] R10: ffff88812423149f R11: ffffed1024846293 R12: 0000000000003800
+[   89.283095] R13: 0000000000000001 R14: 0000000000000000 R15: ffff8881161f7000
+[   89.284342] FS:  0000000000000000(0000) GS:ffff88839b5c0000(0000) knlGS:0000000000000000
+[   89.285711] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   89.286701] CR2: 00007f166ebc01a0 CR3: 0000000435c0e000 CR4: 00000000000006e0
+[   89.287919] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   89.289138] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   89.290368] Call Trace:
+[   89.290842]  write_mmp_block+0x2ca/0x510
+[   89.292218]  kmmpd+0x433/0x9a0
+[   89.294902]  kthread+0x2dd/0x3e0
+[   89.296268]  ret_from_fork+0x22/0x30
+[   89.296906] Modules linked in:
 
-Exactly. I don't know what's best, so I opted for plain english :)
+We can reproduce this issue as follow:
+1. mkfs.ext4 -O mmp  /dev/sda -b 1024
+2. mount /dev/sda /home/test
+3. echo "/dev/sda" > /sys/power/resume
+4. wait a moment we will get exception
 
+The sequence of issue is as follows:
+       Thread1                       Thread2
+mount /dev/sda /home/test
+get s_mmp_bh  --> has mapped flag
+start kmmpd thread
+				echo "/dev/sda" > /sys/power/resume
+				  resume_store
+				    software_resume
+				      swsusp_check
+				        set_blocksize
+					  truncate_inode_pages_range
+					    truncate_cleanup_page
+					      block_invalidatepage
+					        discard_buffer --> clean mapped flag
+write_mmp_block
+  submit_bh
+    submit_bh_wbc
+      BUG_ON(!buffer_mapped(bh)) --> trigger bug_on
 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
+To solve this issue, get block device exclusively when do swsusp_check.
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ kernel/power/swap.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+index 9ec418955556..26c0bd2a50da 100644
+--- a/kernel/power/swap.c
++++ b/kernel/power/swap.c
+@@ -1521,9 +1521,10 @@ int swsusp_read(unsigned int *flags_p)
+ int swsusp_check(void)
+ {
+ 	int error;
++	void *holder;
+ 
+ 	hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device,
+-					    FMODE_READ, NULL);
++					    FMODE_READ | FMODE_EXCL, &holder);
+ 	if (!IS_ERR(hib_resume_bdev)) {
+ 		set_blocksize(hib_resume_bdev, PAGE_SIZE);
+ 		clear_page(swsusp_header);
+@@ -1545,7 +1546,7 @@ int swsusp_check(void)
+ 
+ put:
+ 		if (error)
+-			blkdev_put(hib_resume_bdev, FMODE_READ);
++			blkdev_put(hib_resume_bdev, FMODE_READ | FMODE_EXCL);
+ 		else
+ 			pr_debug("Image signature found, resuming\n");
+ 	} else {
+-- 
+2.31.1
 
