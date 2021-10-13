@@ -2,111 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B81942C7CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D64B42C7CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235278AbhJMRmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:42:00 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:36753 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhJMRl4 (ORCPT
+        id S237468AbhJMRma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:42:30 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3978 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229714AbhJMRm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:41:56 -0400
-Received: by mail-ot1-f44.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so4727525otk.3;
-        Wed, 13 Oct 2021 10:39:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b4kDTrwLJFhbJUtgSMv9e6E8tfp7/gGalPU4LhmCAqg=;
-        b=dO/7/YKbr6n2c4QMLFhu3PbooDTS4fvUqo/b5gk8Xi0Lanj3b8Y9OeJYkJPQEPBI/D
-         kV+lCpKPp6h0nmBDpnk0JevK2mqx64CLBetWUbKkoKg5reh38K2tFAe7M7DKaldRXo6s
-         sCeF6Zzo1Yc6FX+Tbmizum0ertRuQOKIu78mTPb4n8K+WmIJOWzdeeFrKmpciTcM+6om
-         pu/kZPPvyTywsweUjPOnAvhAx9Pggr8bifi6yV5As7vHRi4lWml9MnHjPOUyk+ir+0dl
-         7fCtXan2ZLOhn1Fw7PNtCktJLxKM03lIp5CY4SQGNqAD3/1hQOv5d5ixKprS2aV5p6SC
-         /A8w==
-X-Gm-Message-State: AOAM5301mQkl8S7IBAT6jJMY/XcJ10AtNXim/qmvundLo2w9xCk+afOA
-        KdaDntA+FHCXOWtMg5mZv8/hnQdHk3LEK20VkSqTBGfb
-X-Google-Smtp-Source: ABdhPJztUmBjMseKDFXZQwK8hfLr2SrbEuicbMY/t5ZrYfHIjdUf+gnWa9YYYP6Dms5OmHK0nP+gXbLxR6gOK8sUgQQ=
-X-Received: by 2002:a9d:2f24:: with SMTP id h33mr496079otb.254.1634146792326;
- Wed, 13 Oct 2021 10:39:52 -0700 (PDT)
+        Wed, 13 Oct 2021 13:42:28 -0400
+Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HV08N4j7Fz67XhV;
+        Thu, 14 Oct 2021 01:36:52 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 19:40:23 +0200
+Received: from localhost (10.52.125.73) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 13 Oct
+ 2021 18:40:22 +0100
+Date:   Wed, 13 Oct 2021 18:40:01 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     kernel test robot <lkp@intel.com>
+CC:     Lars-Peter Clausen <lars@metafoo.de>, <kbuild-all@lists.01.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mihail Chindris <mihail.chindris@analog.com>
+Subject: Re: [jic23-iio:testing 149/151]
+ drivers/iio/buffer/kfifo_buf.c:165:9: sparse: sparse: cast to restricted
+ __poll_t
+Message-ID: <20211013184001.00005b76@Huawei.com>
+In-Reply-To: <202110110440.lDjKV8lX-lkp@intel.com>
+References: <202110110440.lDjKV8lX-lkp@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20211010185707.195883-1-hdegoede@redhat.com> <20211010185707.195883-3-hdegoede@redhat.com>
-In-Reply-To: <20211010185707.195883-3-hdegoede@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 13 Oct 2021 19:39:41 +0200
-Message-ID: <CAJZ5v0gBALWzpdmy1H3FLqFLqf3wXyVQwFRz99PJo06x53dHcQ@mail.gmail.com>
-Subject: Re: [PATCH v3 02/11] i2c: acpi: Use acpi_dev_ready_for_enumeration() helper
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.73]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 8:57 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> The clk and regulator frameworks expect clk/regulator consumer-devices
-> to have info about the consumed clks/regulators described in the device's
-> fw_node.
->
-> To work around cases where this info is not present in the firmware tables,
-> which is often the case on x86/ACPI devices, both frameworks allow the
-> provider-driver to attach info about consumers to the clks/regulators
-> when registering these.
->
-> This causes problems with the probe ordering wrt drivers for consumers
-> of these clks/regulators. Since the lookups are only registered when the
-> provider-driver binds, trying to get these clks/regulators before then
-> results in a -ENOENT error for clks and a dummy regulator for regulators.
->
-> To ensure the correct probe-ordering the ACPI core has code to defer the
-> enumeration of consumers affected by this until the providers are ready.
->
-> Call the new acpi_dev_ready_for_enumeration() helper to avoid
-> enumerating / instantiating i2c-clients too early.
->
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  drivers/i2c/i2c-core-acpi.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
-> index aaeeacc12121..688cc71d650d 100644
-> --- a/drivers/i2c/i2c-core-acpi.c
-> +++ b/drivers/i2c/i2c-core-acpi.c
-> @@ -144,9 +144,12 @@ static int i2c_acpi_do_lookup(struct acpi_device *adev,
->         struct list_head resource_list;
->         int ret;
->
-> -       if (acpi_bus_get_status(adev) || !adev->status.present)
-> +       if (acpi_bus_get_status(adev))
->                 return -EINVAL;
->
-> +       if (!acpi_dev_ready_for_enumeration(adev))
-> +               return -ENODEV;
-> +
->         if (acpi_match_device_ids(adev, i2c_acpi_ignored_device_ids) == 0)
->                 return -ENODEV;
+On Mon, 11 Oct 2021 04:39:48 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-I kind of prefer combining checks that cause the same error code to be
-returned, but this is fine with me too.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git testing
+> head:   687109cbbfd744cba8aea3580770dcf6e13ce12a
+> commit: dc02c5452d3a3c2792efae0b6b436634915384ac [149/151] iio: kfifo-buffer: Add output buffer support
+> config: xtensa-randconfig-s031-20211010 (attached as .config)
+> compiler: xtensa-linux-gcc (GCC) 11.2.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.4-dirty
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git/commit/?id=dc02c5452d3a3c2792efae0b6b436634915384ac
+>         git remote add jic23-iio https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git
+>         git fetch --no-tags jic23-iio testing
+>         git checkout dc02c5452d3a3c2792efae0b6b436634915384ac
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=xtensa SHELL=/bin/bash drivers/iio/buffer/
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> 
+> sparse warnings: (new ones prefixed by >>)
+> >> drivers/iio/buffer/kfifo_buf.c:165:9: sparse: sparse: cast to restricted __poll_t  
+> 
+> vim +165 drivers/iio/buffer/kfifo_buf.c
+> 
+>    152	
+>    153	static int iio_kfifo_remove_from(struct iio_buffer *r, void *data)
+>    154	{
+>    155		int ret;
+>    156		struct iio_kfifo *kf = iio_to_kfifo(r);
+>    157	
+>    158		if (kfifo_size(&kf->kf) < 1)
+>    159			return -EBUSY;
+>    160	
+>    161		ret = kfifo_out(&kf->kf, data, 1);
+>    162		if (ret != 1)
+>    163			return -EBUSY;
+>    164	
+>  > 165		wake_up_interruptible_poll(&r->pollq, POLLOUT | POLLWRNORM);  
+
+These should be EPOLLOUT and EPOLLWRNORM I believe. I'll apply a fixup.
+
+>    166	
+>    167		return 0;
+>    168	}
+>    169	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+
