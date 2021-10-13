@@ -2,213 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEC842C0F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0A742C0EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234300AbhJMNHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234611AbhJMNH2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:07:28 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CCCC061766;
-        Wed, 13 Oct 2021 06:05:24 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id 188so2049233iou.12;
-        Wed, 13 Oct 2021 06:05:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OdDP23xTIm+L6AbgxUQAfMNtcdnt3NDc3uwJWZ3/brU=;
-        b=cWKeh76le0fsu0suTyiUTkglKAesPU8k4qutXM3URlYslBBH13tmuFsnH+g4GBaL4W
-         wF2sN3+LP0VCgnKDbMtVvC1W9oDEz81lD0BdDKvI7iT7i3EcPnPLkeYjaPjQX04AzgKk
-         gTzduFMR5Yt+2xsp/uyXjUsBZHG+1UUjANunL/9epo5iFqPKCM09x/nByUTYyrN25sCP
-         FcOTCOcoKDL8sXt/CMnpixe1Tynuj7UdSRvpmzvftkJ8X+ukEQ4/F8/3ngY1Su17Qoah
-         4ssodbwf9cZTk68BW92fPJBxLZLO5bZGqoXWwSJEW02O5TM96c03vOJfCkORSoHt4lQK
-         6utg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OdDP23xTIm+L6AbgxUQAfMNtcdnt3NDc3uwJWZ3/brU=;
-        b=I0S+oEh/WQW+4MRI4okwKgru4vtXF73ovV7zv8f8R0OxwyuZBbwGEZr5RbyBVl2eAk
-         SV9EbwuIyeuHiZFyjVALqEB8TZw6ccDr3KQnghN0A0w4fq3R0akFF5vOWIejZGL8zXT1
-         jwJtPxwHLUkHuGX+/JpJZEW/7olZtUB1t7ppezzgZk/4NlFMD6uIB56w7HXdPAK9tmDH
-         uC8Khx/ntSUV9yIQQr4D/NtaGOYA4x2hzNwRIT9RARHrlAFmQfytDdM7kwadxIO6rpaT
-         /HX9ZTnd8m9U03rgjbkjzx2hkXw30UZqq+C/UdclxSO1fd+tLuSWWiyxKO4zU5avUwAW
-         sxZQ==
-X-Gm-Message-State: AOAM531/EJqtiHlMI8vgM7rbmjHpUM345T3xDis4pzafw9F5Pv8riQ73
-        Y/+KQghmQ+NPIAPTzWggeYfpCbOlqCRoEbj4Ryo=
-X-Google-Smtp-Source: ABdhPJys07u3tQk0DlgmcycPhDS0B5sydtpFJz8LFYIwptJZQNGyH2ty65H+xX3LsytPKF8v8yjY/uq4YJixre3JZPA=
-X-Received: by 2002:a5e:9612:: with SMTP id a18mr28020221ioq.57.1634130323207;
- Wed, 13 Oct 2021 06:05:23 -0700 (PDT)
+        id S234452AbhJMNH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:07:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:38856 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232645AbhJMNHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:07:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B2DD1FB;
+        Wed, 13 Oct 2021 06:05:15 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 898BA3F66F;
+        Wed, 13 Oct 2021 06:05:13 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 14:05:11 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     linux-pci@vger.kernel.org, john@phrozen.org,
+        devicetree@vger.kernel.org, tsbogend@alpha.franken.de,
+        bhelgaas@google.com, matthias.bgg@gmail.com,
+        gregkh@linuxfoundation.org, linux-mips@vger.kernel.org,
+        linux-staging@lists.linux.dev, neil@brown.name,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] PCI: mt7621: Add MediaTek MT7621 PCIe host
+ controller driver
+Message-ID: <20211013130511.GB11036@lpieralisi>
+References: <20210922050035.18162-1-sergio.paracuellos@gmail.com>
+ <20210922050035.18162-3-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
-References: <20211009113707.17568-1-alistair@alistair23.me>
- <20211009113707.17568-2-alistair@alistair23.me> <YWZYy8OsqJx1J8VA@google.com>
-In-Reply-To: <YWZYy8OsqJx1J8VA@google.com>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Wed, 13 Oct 2021 23:04:57 +1000
-Message-ID: <CAKmqyKM=wHN=NhfSBFT243oTkozcpFrqt1xM8xRP6Yf4ONGG1Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Input: wacom_i2c - Use macros for the bit masks
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210922050035.18162-3-sergio.paracuellos@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 1:56 PM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> Hi Alistair,
->
-> On Sat, Oct 09, 2021 at 09:37:07PM +1000, Alistair Francis wrote:
-> > To make the code easier to read use macros for the bit masks.
-> >
-> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> > ---
-> >  drivers/input/touchscreen/wacom_i2c.c | 14 ++++++++++----
-> >  1 file changed, 10 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> > index 8d7267ccc661..6865342db659 100644
-> > --- a/drivers/input/touchscreen/wacom_i2c.c
-> > +++ b/drivers/input/touchscreen/wacom_i2c.c
-> > @@ -14,6 +14,12 @@
-> >  #include <linux/interrupt.h>
-> >  #include <asm/unaligned.h>
-> >
-> > +// Bitmasks (for data[3])
-> > +#define WACOM_TIP_SWITCH_bm         (1 << 0)
-> > +#define WACOM_BARREL_SWITCH_bm      (1 << 1)
-> > +#define WACOM_ERASER_bm             (1 << 2)
-> > +#define WACOM_BARREL_SWITCH_2_bm    (1 << 4)
->
-> We have BIT() for that.
->
-> By the way, do you know what is the good name for bit 3? I see it is
-> being used in:
-
-I have this for bit 3:
-
-#define WACOM_INVERT_bm             (1 << 3)
-
-
->
->         if (!wac_i2c->prox)
->                 wac_i2c->tool = (data[3] & 0x0c) ?
->                         BTN_TOOL_RUBBER : BTN_TOOL_PEN;
->
->         wac_i2c->prox = data[3] & WACOM_IN_PROXIMITY;
->
-> 0x0c is (WACOM_ERASER | <something else>).
->
-> Also, I am a bit confused by this code, now that I look at it closer.
-> Are we saying that the tool type (eraser or something else) is set only
-> in first packet for contact/touch?
-
-I'm not sure, you would have to check with the wacom people.
-
->
-> > +
-> >  // Registers
-> >  #define WACOM_COMMAND_LSB   0x04
-> >  #define WACOM_COMMAND_MSB   0x00
-> > @@ -110,10 +116,10 @@ static irqreturn_t wacom_i2c_irq(int irq, void *dev_id)
-> >       if (error < 0)
-> >               goto out;
-> >
-> > -     tsw = data[3] & 0x01;
-> > -     ers = data[3] & 0x04;
-> > -     f1 = data[3] & 0x02;
-> > -     f2 = data[3] & 0x10;
-> > +     tsw = data[3] & WACOM_TIP_SWITCH_bm;
-> > +     ers = data[3] & WACOM_ERASER_bm;
-> > +     f1 = data[3] & WACOM_BARREL_SWITCH_bm;
-> > +     f2 = data[3] & WACOM_BARREL_SWITCH_2_bm;
-> >       x = le16_to_cpup((__le16 *)&data[4]);
-> >       y = le16_to_cpup((__le16 *)&data[6]);
-> >       pressure = le16_to_cpup((__le16 *)&data[8]);
-> > --
-> > 2.31.1
-> >
->
-> How about the version of the patch below?
-
-Looks good to me!
-
-Alistair
-
->
-> --
-> Dmitry
->
-> Input: wacom_i2c - use macros for the bit masks
->
-> From: Alistair Francis <alistair@alistair23.me>
->
-> To make the code easier to read use macros for the bit masks.
->
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> Link: https://lore.kernel.org/r/20211009113707.17568-2-alistair@alistair23.me
-> Patchwork-Id: 12547519
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+On Wed, Sep 22, 2021 at 07:00:34AM +0200, Sergio Paracuellos wrote:
+> Add driver for the PCIe controller of the MT7621 SoC.
+> 
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 > ---
->  drivers/input/touchscreen/wacom_i2c.c |   19 ++++++++++++++-----
->  1 file changed, 14 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> index 22826c387da5..d3ea9aa8a98c 100644
-> --- a/drivers/input/touchscreen/wacom_i2c.c
-> +++ b/drivers/input/touchscreen/wacom_i2c.c
-> @@ -6,6 +6,7 @@
->   * <tobita.tatsunosuke@wacom.co.jp>
->   */
->
-> +#include <linux/bits.h>
->  #include <linux/module.h>
->  #include <linux/input.h>
->  #include <linux/i2c.h>
-> @@ -14,6 +15,14 @@
->  #include <linux/interrupt.h>
->  #include <asm/unaligned.h>
->
-> +// Bitmasks (for data[3])
-> +#define WACOM_TIP_SWITCH       BIT(0)
-> +#define WACOM_BARREL_SWITCH    BIT(1)
-> +#define WACOM_ERASER           BIT(2)
-> +#define WACOM_BARREL_SWITCH_2  BIT(4)
-> +#define WACOM_IN_PROXIMITY     BIT(5)
+>  arch/mips/ralink/Kconfig                      |   3 +-
+>  drivers/pci/controller/Kconfig                |   8 ++
+>  drivers/pci/controller/Makefile               |   1 +
+>  .../controller}/pci-mt7621.c                  |   0
+>  drivers/staging/Kconfig                       |   2 -
+>  drivers/staging/Makefile                      |   1 -
+>  drivers/staging/mt7621-pci/Kconfig            |   8 --
+>  drivers/staging/mt7621-pci/Makefile           |   2 -
+>  drivers/staging/mt7621-pci/TODO               |   4 -
+>  .../mt7621-pci/mediatek,mt7621-pci.txt        | 104 ------------------
+>  10 files changed, 11 insertions(+), 122 deletions(-)
+>  rename drivers/{staging/mt7621-pci => pci/controller}/pci-mt7621.c (100%)
+>  delete mode 100644 drivers/staging/mt7621-pci/Kconfig
+>  delete mode 100644 drivers/staging/mt7621-pci/Makefile
+>  delete mode 100644 drivers/staging/mt7621-pci/TODO
+>  delete mode 100644 drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
+> 
+> diff --git a/arch/mips/ralink/Kconfig b/arch/mips/ralink/Kconfig
+> index c800bf5559b5..120adad51d6a 100644
+> --- a/arch/mips/ralink/Kconfig
+> +++ b/arch/mips/ralink/Kconfig
+> @@ -51,7 +51,8 @@ choice
+>  		select SYS_SUPPORTS_HIGHMEM
+>  		select MIPS_GIC
+>  		select CLKSRC_MIPS_GIC
+> -		select HAVE_PCI if PCI_MT7621
+> +		select HAVE_PCI
+> +		select PCI_DRIVERS_GENERIC
+>  		select SOC_BUS
+>  endchoice
+>  
+> diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+> index 326f7d13024f..b76404be0360 100644
+> --- a/drivers/pci/controller/Kconfig
+> +++ b/drivers/pci/controller/Kconfig
+> @@ -312,6 +312,14 @@ config PCIE_HISI_ERR
+>  	  Say Y here if you want error handling support
+>  	  for the PCIe controller's errors on HiSilicon HIP SoCs
+>  
+> +config PCI_MT7621
+> +	tristate "MediaTek MT7621 PCI Controller"
+> +	depends on (RALINK && SOC_MT7621) || (MIPS && COMPILE_TEST)
+
+- Is there a chance we can remove the MIPS dependency from the
+  COMPILE_TEST conditional ?
+- I am not a big fan of "SOC_XXX" config options dependencies, actually
+  there is none in pci/controller. Is there a way to remove it ?
+
+Lorenzo
+
+> +	select PHY_MT7621_PCI
+> +	default SOC_MT7621
+> +	help
+> +	  This selects a driver for the MediaTek MT7621 PCI Controller.
 > +
-> +// Registers
->  #define WACOM_CMD_QUERY0       0x04
->  #define WACOM_CMD_QUERY1       0x00
->  #define WACOM_CMD_QUERY2       0x33
-> @@ -99,10 +108,10 @@ static irqreturn_t wacom_i2c_irq(int irq, void *dev_id)
->         if (error < 0)
->                 goto out;
->
-> -       tsw = data[3] & 0x01;
-> -       ers = data[3] & 0x04;
-> -       f1 = data[3] & 0x02;
-> -       f2 = data[3] & 0x10;
-> +       tsw = data[3] & WACOM_TIP_SWITCH;
-> +       ers = data[3] & WACOM_ERASER;
-> +       f1 = data[3] & WACOM_BARREL_SWITCH;
-> +       f2 = data[3] & WACOM_BARREL_SWITCH_2;
->         x = le16_to_cpup((__le16 *)&data[4]);
->         y = le16_to_cpup((__le16 *)&data[6]);
->         pressure = le16_to_cpup((__le16 *)&data[8]);
-> @@ -111,7 +120,7 @@ static irqreturn_t wacom_i2c_irq(int irq, void *dev_id)
->                 wac_i2c->tool = (data[3] & 0x0c) ?
->                         BTN_TOOL_RUBBER : BTN_TOOL_PEN;
->
-> -       wac_i2c->prox = data[3] & 0x20;
-> +       wac_i2c->prox = data[3] & WACOM_IN_PROXIMITY;
->
->         input_report_key(input, BTN_TOUCH, tsw || ers);
->         input_report_key(input, wac_i2c->tool, wac_i2c->prox);
+>  source "drivers/pci/controller/dwc/Kconfig"
+>  source "drivers/pci/controller/mobiveil/Kconfig"
+>  source "drivers/pci/controller/cadence/Kconfig"
+> diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
+> index aaf30b3dcc14..f42a566353cb 100644
+> --- a/drivers/pci/controller/Makefile
+> +++ b/drivers/pci/controller/Makefile
+> @@ -37,6 +37,7 @@ obj-$(CONFIG_VMD) += vmd.o
+>  obj-$(CONFIG_PCIE_BRCMSTB) += pcie-brcmstb.o
+>  obj-$(CONFIG_PCI_LOONGSON) += pci-loongson.o
+>  obj-$(CONFIG_PCIE_HISI_ERR) += pcie-hisi-error.o
+> +obj-$(CONFIG_PCI_MT7621) += pci-mt7621.o
+>  # pcie-hisi.o quirks are needed even without CONFIG_PCIE_DW
+>  obj-y				+= dwc/
+>  obj-y				+= mobiveil/
+> diff --git a/drivers/staging/mt7621-pci/pci-mt7621.c b/drivers/pci/controller/pci-mt7621.c
+> similarity index 100%
+> rename from drivers/staging/mt7621-pci/pci-mt7621.c
+> rename to drivers/pci/controller/pci-mt7621.c
+> diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
+> index e03627ad4460..59af251e7576 100644
+> --- a/drivers/staging/Kconfig
+> +++ b/drivers/staging/Kconfig
+> @@ -86,8 +86,6 @@ source "drivers/staging/vc04_services/Kconfig"
+>  
+>  source "drivers/staging/pi433/Kconfig"
+>  
+> -source "drivers/staging/mt7621-pci/Kconfig"
+> -
+>  source "drivers/staging/mt7621-dma/Kconfig"
+>  
+>  source "drivers/staging/ralink-gdma/Kconfig"
+> diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
+> index c7f8d8d8dd11..76f413470bc8 100644
+> --- a/drivers/staging/Makefile
+> +++ b/drivers/staging/Makefile
+> @@ -33,7 +33,6 @@ obj-$(CONFIG_KS7010)		+= ks7010/
+>  obj-$(CONFIG_GREYBUS)		+= greybus/
+>  obj-$(CONFIG_BCM2835_VCHIQ)	+= vc04_services/
+>  obj-$(CONFIG_PI433)		+= pi433/
+> -obj-$(CONFIG_PCI_MT7621)	+= mt7621-pci/
+>  obj-$(CONFIG_SOC_MT7621)	+= mt7621-dma/
+>  obj-$(CONFIG_DMA_RALINK)	+= ralink-gdma/
+>  obj-$(CONFIG_SOC_MT7621)	+= mt7621-dts/
+> diff --git a/drivers/staging/mt7621-pci/Kconfig b/drivers/staging/mt7621-pci/Kconfig
+> deleted file mode 100644
+> index ce58042f2f21..000000000000
+> --- a/drivers/staging/mt7621-pci/Kconfig
+> +++ /dev/null
+> @@ -1,8 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> -config PCI_MT7621
+> -	tristate "MediaTek MT7621 PCI Controller"
+> -	depends on RALINK
+> -	select PCI_DRIVERS_GENERIC
+> -	help
+> -	  This selects a driver for the MediaTek MT7621 PCI Controller.
+> -
+> diff --git a/drivers/staging/mt7621-pci/Makefile b/drivers/staging/mt7621-pci/Makefile
+> deleted file mode 100644
+> index f4e651cf7ce3..000000000000
+> --- a/drivers/staging/mt7621-pci/Makefile
+> +++ /dev/null
+> @@ -1,2 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> -obj-$(CONFIG_PCI_MT7621)       += pci-mt7621.o
+> diff --git a/drivers/staging/mt7621-pci/TODO b/drivers/staging/mt7621-pci/TODO
+> deleted file mode 100644
+> index d674a9ac85c1..000000000000
+> --- a/drivers/staging/mt7621-pci/TODO
+> +++ /dev/null
+> @@ -1,4 +0,0 @@
+> -
+> -- general code review and cleanup
+> -
+> -Cc: NeilBrown <neil@brown.name>
+> diff --git a/drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt b/drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
+> deleted file mode 100644
+> index 327a68267309..000000000000
+> --- a/drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
+> +++ /dev/null
+> @@ -1,104 +0,0 @@
+> -MediaTek MT7621 PCIe controller
+> -
+> -Required properties:
+> -- compatible: "mediatek,mt7621-pci"
+> -- device_type: Must be "pci"
+> -- reg: Base addresses and lengths of the PCIe subsys and root ports.
+> -- bus-range: Range of bus numbers associated with this controller.
+> -- #address-cells: Address representation for root ports (must be 3)
+> -- pinctrl-names : The pin control state names.
+> -- pinctrl-0: The "default" pinctrl state.
+> -- #size-cells: Size representation for root ports (must be 2)
+> -- ranges: Ranges for the PCI memory and I/O regions.
+> -- #interrupt-cells: Must be 1
+> -- interrupt-map-mask and interrupt-map: Standard PCI IRQ mapping properties.
+> -  Please refer to the standard PCI bus binding document for a more detailed
+> -  explanation.
+> -- status: either "disabled" or "okay".
+> -- resets: Must contain an entry for each entry in reset-names.
+> -  See ../reset/reset.txt for details.
+> -- reset-names: Must be "pcie0", "pcie1", "pcieN"... based on the number of
+> -  root ports.
+> -- clocks: Must contain an entry for each entry in clock-names.
+> -  See ../clocks/clock-bindings.txt for details.
+> -- clock-names: Must be "pcie0", "pcie1", "pcieN"... based on the number of
+> -  root ports.
+> -- reset-gpios: GPIO specs for the reset pins.
+> -
+> -In addition, the device tree node must have sub-nodes describing each PCIe port
+> -interface, having the following mandatory properties:
+> -
+> -Required properties:
+> -- reg: Only the first four bytes are used to refer to the correct bus number
+> -      and device number.
+> -- #address-cells: Must be 3
+> -- #size-cells: Must be 2
+> -- ranges: Sub-ranges distributed from the PCIe controller node. An empty
+> -  property is sufficient.
+> -- bus-range: Range of bus numbers associated with this port.
+> -
+> -Example for MT7621:
+> -
+> -	pcie: pcie@1e140000 {
+> -		compatible = "mediatek,mt7621-pci";
+> -        reg = <0x1e140000 0x100    /* host-pci bridge registers */
+> -               0x1e142000 0x100    /* pcie port 0 RC control registers */
+> -               0x1e143000 0x100    /* pcie port 1 RC control registers */
+> -               0x1e144000 0x100>;  /* pcie port 2 RC control registers */
+> -
+> -		#address-cells = <3>;
+> -		#size-cells = <2>;
+> -
+> -		pinctrl-names = "default";
+> -		pinctrl-0 = <&pcie_pins>;
+> -
+> -		device_type = "pci";
+> -
+> -		bus-range = <0 255>;
+> -		ranges = <
+> -			0x02000000 0 0x00000000 0x60000000 0 0x10000000 /* pci memory */
+> -			0x01000000 0 0x00000000 0x1e160000 0 0x00010000 /* io space */
+> -		>;
+> -
+> -		#interrupt-cells = <1>;
+> -		interrupt-map-mask = <0xF0000 0 0 1>;
+> -		interrupt-map = <0x10000 0 0 1 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>,
+> -				<0x20000 0 0 1 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>,
+> -				<0x30000 0 0 1 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
+> -
+> -		status = "disabled";
+> -
+> -		resets = <&rstctrl 24 &rstctrl 25 &rstctrl 26>;
+> -		reset-names = "pcie0", "pcie1", "pcie2";
+> -		clocks = <&clkctrl 24 &clkctrl 25 &clkctrl 26>;
+> -		clock-names = "pcie0", "pcie1", "pcie2";
+> -
+> -		reset-gpios = <&gpio 19 GPIO_ACTIVE_LOW>,
+> -				<&gpio 8 GPIO_ACTIVE_LOW>,
+> -				<&gpio 7 GPIO_ACTIVE_LOW>;
+> -
+> -		pcie@0,0 {
+> -			reg = <0x0000 0 0 0 0>;
+> -			#address-cells = <3>;
+> -			#size-cells = <2>;
+> -			ranges;
+> -			bus-range = <0x00 0xff>;
+> -		};
+> -
+> -		pcie@1,0 {
+> -			reg = <0x0800 0 0 0 0>;
+> -			#address-cells = <3>;
+> -			#size-cells = <2>;
+> -			ranges;
+> -			bus-range = <0x00 0xff>;
+> -		};
+> -
+> -		pcie@2,0 {
+> -			reg = <0x1000 0 0 0 0>;
+> -			#address-cells = <3>;
+> -			#size-cells = <2>;
+> -			ranges;
+> -			bus-range = <0x00 0xff>;
+> -		};
+> -	};
+> -
+> -- 
+> 2.25.1
+> 
