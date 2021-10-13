@@ -2,159 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9797342C1A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DE542C1AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbhJMNpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231644AbhJMNpJ (ORCPT
+        id S234911AbhJMNrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:47:22 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:43331 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229611AbhJMNrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:45:09 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC90C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:43:05 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id t2so8565917wrb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:43:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i+Y0xyyI1wLmc3f9TlGqhucUogMT+qFqaRbraqD/TSo=;
-        b=v0LSbR00mJZeqwHdD2h5ESrF3UnP8I0vyl7OIhpMgahKvzTvI/9e4nVBnrxMCszkKL
-         p9luteX+Yn5bWVI8RphvikmshhL3NwKYW+P8QPzUoFwv+k2MxUJkyF7BtMswP+PeJqn0
-         7fZHSnwxRQRQZtNbSNSQsXnLd+kYmxgDMo9iMvLRQb33DpntYwM5EJpbcIuzKUTkngda
-         SHN6DNmhk8wzdC6i8lb/k3J/I8i8v11EPggq34p1qq+VLL3wNs0ZK3DRomTc9Qq66fa2
-         0ElEXF0WwPCs6pHMFfb8V8UNWE9Tp9zCzbHrN2vz2BK3WlI4AFntaLL+/XWeL3e+vCrH
-         JxAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i+Y0xyyI1wLmc3f9TlGqhucUogMT+qFqaRbraqD/TSo=;
-        b=H+69zHg8Vr/Mr+hfgPk4se+9nE11dfdIoccVXNGMFtqZ0BqcZDvVrv1pqjNZc0ytpO
-         CVywA1KP2/bMUayOcBJftjl/QJNpBBe+a3K79a98JRy6cUvm0NuI3bFN8CyOUgcP5sXl
-         ZxtI/Wp8cksqm83q4RVo6pkyASSWxgLFrM7irFCPGoANdkelch8NIee60WRo7VMnvZSF
-         ciQP+1B5VzIpb1a83iGc2dWLG44krJviCkc4wQQcRe/TBCoEBGSHWT5ivrgLtDAUzp8S
-         AtgA58/Wb5lr9hwzp35qu/9rxYMPSMPOcrR67WHlgk4ua5ihpZa8suLlYfmHRnKimsBX
-         Mb2w==
-X-Gm-Message-State: AOAM532k0PNNkGiO33/vXcFAdlEAZ2f87xxzuRyzZzWQePpjQgeL+Lx6
-        7n4C631JKqRoTJu50gDfKqL79uRTtOgTS3MKefnpYw==
-X-Google-Smtp-Source: ABdhPJwJ9HbDf8L1dZ2qzc+MlJeIlkxrfEj/wa5d66jDnrlWwI3mSRO5QpF9ovKMRItVh8P6fqQmQNmpT0lzkOB2t1s=
-X-Received: by 2002:a5d:6d86:: with SMTP id l6mr4282849wrs.96.1634132584493;
- Wed, 13 Oct 2021 06:43:04 -0700 (PDT)
+        Wed, 13 Oct 2021 09:47:21 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6E91658109A;
+        Wed, 13 Oct 2021 09:45:17 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 13 Oct 2021 09:45:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=FgY2hnPsjJYOKFF2DfGAEdLl833
+        3nbKBOAi3tBKnQlQ=; b=ILAGaEIzzGT1Crwgs6sVwiM8jp7fDV292TfRxD9WjM3
+        nLQuvEp7LxnDwPl1JxXScK1ThPlXr4Wf49BDFVjOdlOqjYi4pTMXr45knwt8FhRO
+        ckI1ffIItH6jTDPHsxyOee0Vp6brQISi1OJuf4jMReH/04LAi2CeRvWmCnxI+jJf
+        6RTKViyIiRk/EzZf8+voCBu1+rodC5nYkFMtqnrOm46yKv/SRareb1ZcSBA8kNgh
+        6nInIt13Gs3YMi77ME49LtJtwSCSbP2zHBOECWl1vOcrDVOwmi/IykIIIsN76YIv
+        9rq4xzNZB4B8ghtuVHx0fjuDbd19pbONRY5JR96sClw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=FgY2hn
+        PsjJYOKFF2DfGAEdLl8333nbKBOAi3tBKnQlQ=; b=MCzneJUdJskivibM/B8m58
+        p2fJLYMp7cyea/+gacO5Q5XzORoDOfwMLAuHquGTCq+IubJQtv8azQTrSFtmfY+T
+        xI3QG2RpB71HWqh/nV2uukpdKivNfJmIMX1UtjwghV2kEvwi5oS5GpPDHwdujSyD
+        eu1HU7jVf4oMxdjgMJ9GpsZcIfrAHk+ngxFzOLWShE+blBVtTKn4gJkS269elpSU
+        cO4AOodQSEOOr50Ur7bJ6wfWzqSoAzEnuIBbsz82iFFUUmewYkzlPJsCpFBUY1lx
+        6m8Be/NzoY4gM7vBWt38OSeYvkBgWr8SadMPsgQlpyfhLVJ1sc/riwGsoVB8op7Q
+        ==
+X-ME-Sender: <xms:6-JmYT_Z-TnrdWsnG0qgims4_VgA5CMDoXKnsChz4Hi9tQEkX9i40g>
+    <xme:6-JmYfs1mlil60fbhZCpXwSBBQhGDAbSiWZlMPPM8xuLcufbMIM-lLYKPZVhHrT3C
+    Oc8oDIMSVglG0qVfKs>
+X-ME-Received: <xmr:6-JmYRDW7Ko8H9rRg5acJMSiNT3bm9NH7S1_rjcsTzsk9GgmguxJX8lqdPGfBiPNPrB_C19niqYJQIXemaYSb42GMmHmW18oBwdGDBbP>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddutddgieejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepudfhgeffjedvueegudehgeevgefhgfdujeeguedvgeelgeeuffeifedtheet
+    leeinecuffhomhgrihhnpehfrhgvvgguvghskhhtohhprdhorhhgpdhlihhnrghrohdroh
+    hrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
+    rgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:6-JmYffwzApL3L4WQhcOYb-3771Otqxn9jsWg_yLnO87TsS8nZvBEg>
+    <xmx:6-JmYYNHuEuEJKhvTyNMtYEUHSe7hNvRytMC7_3KoGGmt-qktJ1vbQ>
+    <xmx:6-JmYRnBYNUJTjZusigkIzqQJ_hxZTVsvrH6WhonWbSoc8PzZNOQbA>
+    <xmx:7eJmYbioKLHlBrVGP2IgnvTOW-FAvO43thR-PKrmfHMMsh-wnfd0Cw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 13 Oct 2021 09:45:15 -0400 (EDT)
+Date:   Wed, 13 Oct 2021 15:45:13 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: [PATCH v4 00/24] drm/bridge: Make panel and bridge probe order
+ consistent
+Message-ID: <20211013134513.hm6ftktkbh4kpudv@gilmour>
+References: <20210910101218.1632297-1-maxime@cerno.tech>
+ <CALAqxLUqdkxXogmPhPgHv4Bgx-4b3mxe12LzzvWb07pLSnb2kA@mail.gmail.com>
+ <CALAqxLUYb=ge4AZZzmk71Qr-92vnnE6sJxwCNUdEz4=VDKr1kg@mail.gmail.com>
+ <CALAqxLX7oK6DeoCPZhMTpHKCihSYq7KZDrt5UKb46=ZBbJd9fA@mail.gmail.com>
+ <CALAqxLW=dJSmfaHAL=BfYVVxZHQvzJWu4UjMixwgM=Nh85JVNw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211006071546.2540920-1-jens.wiklander@linaro.org>
- <20211006071546.2540920-6-jens.wiklander@linaro.org> <CAFA6WYNdebJKoWZdQRPc=OdmaA=_jiguz12gfyHsdozbdx45vQ@mail.gmail.com>
-In-Reply-To: <CAFA6WYNdebJKoWZdQRPc=OdmaA=_jiguz12gfyHsdozbdx45vQ@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Wed, 13 Oct 2021 15:42:53 +0200
-Message-ID: <CAHUa44E9jLYsMd1LPVJTDXyCkT==EW7s-nHn3rYRx30gyBU8=g@mail.gmail.com>
-Subject: Re: [PATCH v6 5/6] optee: separate notification functions
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jerome Forissier <jerome@forissier.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yp3sab3u3qe3qd7a"
+Content-Disposition: inline
+In-Reply-To: <CALAqxLW=dJSmfaHAL=BfYVVxZHQvzJWu4UjMixwgM=Nh85JVNw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 9:15 AM Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> On Wed, 6 Oct 2021 at 12:46, Jens Wiklander <jens.wiklander@linaro.org> wrote:
-> >
-> > Renames struct optee_wait_queue to struct optee_notif and all related
-> > functions to optee_notif_*().
-> >
-> > The implementation is changed to allow sending a notification from an
-> > atomic state, that is from the top half of an interrupt handler.
-> >
-> > Waiting for keys is currently only used when secure world is waiting for
-> > a mutex or condition variable. The old implementation could handle any
-> > 32-bit key while this new implementation is restricted to only 8 bits or
-> > the maximum value 255. A upper value is needed since a bitmap is
-> > allocated to allow an interrupt handler to only set a bit in case the
-> > waiter hasn't had the time yet to allocate and register a completion.
-> >
-> > The keys are currently only representing secure world threads which
-> > number usually are never even close to 255 so it should be safe for now.
-> > In future ABI updates the maximum value of the key will be communicated
-> > while the driver is initializing.
-> >
-> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > ---
-> >  drivers/tee/optee/Makefile        |   1 +
-> >  drivers/tee/optee/core.c          |  12 ++-
-> >  drivers/tee/optee/notif.c         | 125 ++++++++++++++++++++++++++++++
-> >  drivers/tee/optee/optee_private.h |  19 +++--
-> >  drivers/tee/optee/optee_rpc_cmd.h |  31 ++++----
-> >  drivers/tee/optee/rpc.c           |  73 ++---------------
-> >  6 files changed, 170 insertions(+), 91 deletions(-)
-> >  create mode 100644 drivers/tee/optee/notif.c
-> >
->
-> Apart from minor nit below:
->
-> Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
->
-> > diff --git a/drivers/tee/optee/Makefile b/drivers/tee/optee/Makefile
-> > index 3aa33ea9e6a6..df55e4ad5370 100644
-> > --- a/drivers/tee/optee/Makefile
-> > +++ b/drivers/tee/optee/Makefile
-> > @@ -2,6 +2,7 @@
-> >  obj-$(CONFIG_OPTEE) += optee.o
-> >  optee-objs += core.o
-> >  optee-objs += call.o
-> > +optee-objs += notif.o
-> >  optee-objs += rpc.o
-> >  optee-objs += supp.o
-> >  optee-objs += shm_pool.o
-> > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> > index 5ce13b099d7d..8531184f98f4 100644
-> > --- a/drivers/tee/optee/core.c
-> > +++ b/drivers/tee/optee/core.c
-> > @@ -592,6 +592,7 @@ static int optee_remove(struct platform_device *pdev)
-> >          */
-> >         optee_disable_shm_cache(optee);
-> >
-> > +       optee_notif_uninit(optee);
-> >         /*
-> >          * The two devices have to be unregistered before we can free the
-> >          * other resources.
-> > @@ -602,7 +603,6 @@ static int optee_remove(struct platform_device *pdev)
-> >         tee_shm_pool_free(optee->pool);
-> >         if (optee->memremaped_shm)
-> >                 memunmap(optee->memremaped_shm);
-> > -       optee_wait_queue_exit(&optee->wait_queue);
-> >         optee_supp_uninit(&optee->supp);
-> >         mutex_destroy(&optee->call_queue.mutex);
-> >
-> > @@ -712,11 +712,17 @@ static int optee_probe(struct platform_device *pdev)
-> >
-> >         mutex_init(&optee->call_queue.mutex);
-> >         INIT_LIST_HEAD(&optee->call_queue.waiters);
-> > -       optee_wait_queue_init(&optee->wait_queue);
-> >         optee_supp_init(&optee->supp);
-> >         optee->memremaped_shm = memremaped_shm;
-> >         optee->pool = pool;
-> >
-> > +       platform_set_drvdata(pdev, optee);
-> > +       rc = optee_notif_init(optee, 255);
->
-> nit: Can you use a macro here instead of a constant with a proper
-> comment similar to the one in commit description?
 
-OK, I'll fix.
+--yp3sab3u3qe3qd7a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Jens
+Hi John,
+
+On Wed, Sep 29, 2021 at 04:29:42PM -0700, John Stultz wrote:
+> On Wed, Sep 29, 2021 at 2:51 PM John Stultz <john.stultz@linaro.org> wrot=
+e:
+> >
+> > On Wed, Sep 29, 2021 at 2:32 PM John Stultz <john.stultz@linaro.org> wr=
+ote:
+> > > On Wed, Sep 29, 2021 at 2:27 PM John Stultz <john.stultz@linaro.org> =
+wrote:
+> > > > On Fri, Sep 10, 2021 at 3:12 AM Maxime Ripard <maxime@cerno.tech> w=
+rote:
+> > > > > The best practice to avoid those issues is to register its functi=
+ons only after
+> > > > > all its dependencies are live. We also shouldn't wait any longer =
+than we should
+> > > > > to play nice with the other components that are waiting for us, s=
+o in our case
+> > > > > that would mean moving the DSI device registration to the bridge =
+probe.
+> > > > >
+> > > > > I also had a look at all the DSI hosts, and it seems that exynos,=
+ kirin and msm
+> > > > > would be affected by this and wouldn't probe anymore after those =
+changes.
+> > > > > Exynos and kirin seems to be simple enough for a mechanical chang=
+e (that still
+> > > > > requires to be tested), but the changes in msm seemed to be far m=
+ore important
+> > > > > and I wasn't confortable doing them.
+> > > >
+> > > >
+> > > > Hey Maxime,
+> > > >   Sorry for taking so long to get to this, but now that plumbers is
+> > > > over I've had a chance to check it out on kirin
+> > > >
+> > > > Rob Clark pointed me to his branch with some fixups here:
+> > > >    https://gitlab.freedesktop.org/robclark/msm/-/commits/for-mripar=
+d/bridge-rework
+> > > >
+> > > > But trying to boot hikey with that, I see the following loop indefi=
+nitely:
+> > > > [    4.632132] adv7511 2-0039: supply avdd not found, using dummy r=
+egulator
+> > > > [    4.638961] adv7511 2-0039: supply dvdd not found, using dummy r=
+egulator
+> > > > [    4.645741] adv7511 2-0039: supply pvdd not found, using dummy r=
+egulator
+> > > > [    4.652483] adv7511 2-0039: supply a2vdd not found, using dummy =
+regulator
+> > > > [    4.659342] adv7511 2-0039: supply v3p3 not found, using dummy r=
+egulator
+> > > > [    4.666086] adv7511 2-0039: supply v1p2 not found, using dummy r=
+egulator
+> > > > [    4.681898] adv7511 2-0039: failed to find dsi host
+> > >
+> > > I just realized Rob's tree is missing the kirin patch. My apologies!
+> > > I'll retest and let you know.
+> >
+> > Ok, just retested including the kirin patch and unfortunately I'm
+> > still seeing the same thing.  :(
+> >
+> > Will dig a bit and let you know when I find more.
+>=20
+> Hey Maxime!
+>   I chased down the issue. The dsi probe code was still calling
+> drm_of_find_panel_or_bridge() in order to succeed.
+>=20
+> I've moved the logic that looks for the bridge into the bridge_init
+> and with that it seems to work.
+>=20
+> Feel free (assuming it looks ok) to fold this change into your kirin patc=
+h:
+>   https://git.linaro.org/people/john.stultz/android-dev.git/commit/?id=3D=
+4a35ccc4d7a53f68d6d93da3b47e232a7c75b91d
+
+Thanks for testing, I've picked and squashed your fixup
+
+Maxime
+
+--yp3sab3u3qe3qd7a
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYWbi6QAKCRDj7w1vZxhR
+xWrqAQDj1jImF6Y4lt74Rko+bxO0mdKNx+0pGLW7VlQhBEicrwEAk7tEp5uOOwcw
+jaEEUSlRzwDB0bV4i3OaMZN48bhI7wA=
+=KNVX
+-----END PGP SIGNATURE-----
+
+--yp3sab3u3qe3qd7a--
