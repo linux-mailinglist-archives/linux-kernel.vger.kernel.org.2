@@ -2,214 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA6342BBCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B72242BBD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239126AbhJMJkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:40:53 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49614 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238388AbhJMJkv (ORCPT
+        id S239195AbhJMJoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:44:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46774 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239166AbhJMJoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:40:51 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3168F21A63;
-        Wed, 13 Oct 2021 09:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634117927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Wed, 13 Oct 2021 05:44:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634118128;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=YxjEGZZ1prI96OAFnaOsXZL53xqr89Luesf5g0xwzvc=;
-        b=wMOoFPoGcozMXIDZZg5MQ+yQjOhvCmgGFo5xJ+gJfe3aA2f8PT0R3kB7yKiblCZpuliiox
-        3O+ac2MoOgtXpZIvrJCoT8KyDzXMxDEKOc1wBZs7wjNiYk3mde8LaMGkeoAJ2vUqpPa1Px
-        WECW95hlU7ti6sjlZLCTV7Lss0izXrI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634117927;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YxjEGZZ1prI96OAFnaOsXZL53xqr89Luesf5g0xwzvc=;
-        b=9IZCJSmB+5AAZGerpBYokk4amIXaeOhmnTBRhxu/0ZKJ+6I6s9/5+EuDuUEJ5kv3CaQ4C1
-        WRS3LwT2zUl0O9CQ==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 21DCDA3B85;
-        Wed, 13 Oct 2021 09:38:47 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 268831E11B6; Wed, 13 Oct 2021 11:38:47 +0200 (CEST)
-Date:   Wed, 13 Oct 2021 11:38:47 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     yebin <yebin10@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
- previous check time
-Message-ID: <20211013093847.GB19200@quack2.suse.cz>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-3-yebin10@huawei.com>
- <20211007123100.GG12712@quack2.suse.cz>
- <615FA55B.5070404@huawei.com>
- <615FAF27.8070000@huawei.com>
- <20211012084727.GF9697@quack2.suse.cz>
- <61657590.2050407@huawei.com>
+        bh=U68OI4OeCzb+i7/ugVEhD/bkOqefRrn7yZ62rOLQMr0=;
+        b=Sp8eo/iqGbg/r0btsoRnelbObI6MwLYFAKqUU6nY0b0ta46oeu/qhfXVZHgw2pA0UpvbTm
+        L8IPUWketd+kvUxwzhkcyrOqDQGMNHxFsovm/lzA4DAE+NDBCSQsWKzZDfwkg3jGiNzU/a
+        Wz+V9ipU9tEyAZXEnmjJJBzau07zTyU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301-CSZqfB_YPTCXwMeWPxRNKg-1; Wed, 13 Oct 2021 05:42:07 -0400
+X-MC-Unique: CSZqfB_YPTCXwMeWPxRNKg-1
+Received: by mail-wr1-f72.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso1475311wrb.20
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 02:42:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U68OI4OeCzb+i7/ugVEhD/bkOqefRrn7yZ62rOLQMr0=;
+        b=4/XsQ8alTDGaRCCQaVKD4EWcv9W9eYXu3u/eWk6RYA2NZP1ZDMxHgruw6Z697NF+LG
+         l2ek7VZVtNKNH8bbvItv2DtN+fxf9O6i9NG7hfjAuuEfkrZjK4i+RmHGLK88kTsrM5ze
+         jjqwvGgjVmJyIPQ8PovzziVhwYp55MA/a/dHtriO4R8NuqXNepWNW8gEIbUVKWmzp28Q
+         5mpSjjaB0NDbahwcYNDSUgYJNhqLrNHujegpr5NUue52lTvzWJ6AEsI9YZIeQGEY+3+O
+         6z9wMlyYcPt45ewCcxHtzmOQ7q6rTpEQT2ZOM0LKXhFR4vQFeLc3LSMgAwCl/5zMxxq+
+         FMDw==
+X-Gm-Message-State: AOAM5313/W+rq+939mfGCwRE4ILgmtcvQ5f7cUiZO/eeDWCsy4+FBKuL
+        QQfE3iUb18ZQ4f19COQw0JVkkWTwmqYfK5n/Z1EqaIUEhjyeguo7bMJ7/b4Wh7MgSv8Exht8kJ6
+        9ZuHYyTFM+Fe5FBkSnwu9l6VT
+X-Received: by 2002:a05:600c:154f:: with SMTP id f15mr11963037wmg.195.1634118125839;
+        Wed, 13 Oct 2021 02:42:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwn/WvcYSD7wMef0lNnYuPUlX4EALP+Md0v/JLHsPep5rirJoC9RpK1Qa6aqmeDkrkWjH1gbw==
+X-Received: by 2002:a05:600c:154f:: with SMTP id f15mr11963020wmg.195.1634118125653;
+        Wed, 13 Oct 2021 02:42:05 -0700 (PDT)
+Received: from redhat.com ([2.55.30.112])
+        by smtp.gmail.com with ESMTPSA id u2sm12504081wrr.35.2021.10.13.02.42.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 02:42:05 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 05:42:01 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
+        david.kaplan@amd.com, konrad.wilk@oracle.com,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH V2 07/12] virtio-pci: harden INTX interrupts
+Message-ID: <20211013053627-mutt-send-email-mst@kernel.org>
+References: <20211012065227.9953-1-jasowang@redhat.com>
+ <20211012065227.9953-8-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <61657590.2050407@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211012065227.9953-8-jasowang@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12-10-21 19:46:24, yebin wrote:
-> On 2021/10/12 16:47, Jan Kara wrote:
-> > On Fri 08-10-21 10:38:31, yebin wrote:
-> > > On 2021/10/8 9:56, yebin wrote:
-> > > > On 2021/10/7 20:31, Jan Kara wrote:
-> > > > > On Sat 11-09-21 17:00:55, Ye Bin wrote:
-> > > > > > kmmpd:
-> > > > > > ...
-> > > > > >       diff = jiffies - last_update_time;
-> > > > > >       if (diff > mmp_check_interval * HZ) {
-> > > > > > ...
-> > > > > > As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
-> > > > > > than 'mmp_update_interval', so there will never trigger detection.
-> > > > > > Introduce last_check_time record previous check time.
-> > > > > > 
-> > > > > > Signed-off-by: Ye Bin <yebin10@huawei.com>
-> > > > > I think the check is there only for the case where write_mmp_block() +
-> > > > > sleep took longer than mmp_check_interval. I agree that should rarely
-> > > > > happen but on a really busy system it is possible and in that case
-> > > > > we would
-> > > > > miss updating mmp block for too long and so another node could have
-> > > > > started
-> > > > > using the filesystem. I actually don't see a reason why kmmpd should be
-> > > > > checking the block each mmp_check_interval as you do -
-> > > > > mmp_check_interval
-> > > > > is just for ext4_multi_mount_protect() to know how long it should wait
-> > > > > before considering mmp block stale... Am I missing something?
-> > > > > 
-> > > > >                                  Honza
-> > > > I'm sorry, I didn't understand the detection mechanism here before. Now
-> > > > I understand
-> > > > the detection mechanism here.
-> > > > As you said, it's just an abnormal protection. There's really no problem.
-> > > > 
-> > > Yeah, i did test as following steps
-> > > hostA                        hostB
-> > >     mount
-> > >       ext4_multi_mount_protect  -> seq == EXT4_MMP_SEQ_CLEAN
-> > >          delay 5s after label "skip" so hostB will see seq is
-> > > EXT4_MMP_SEQ_CLEAN
-> > >                         mount
-> > >                         ext4_multi_mount_protect -> seq == EXT4_MMP_SEQ_CLEAN
-> > >                                 run  kmmpd
-> > >      run kmmpd
-> > > 
-> > > Actually，in this  situation kmmpd will not detect  confliction.
-> > > In ext4_multi_mount_protect function we write mmp data first and wait
-> > > 'wait_time * HZ'  seconds,
-> > > read mmp data do check. Most of the time, If 'wait_time' is zero, it can pass
-> > > check.
-> > But how can be wait_time zero? As far as I'm reading the code, wait_time
-> > must be at least EXT4_MMP_MIN_CHECK_INTERVAL...
-> > 
-> > 								Honza
->  int ext4_multi_mount_protect(struct super_block *sb,
->                                      ext4_fsblk_t mmp_block)
->  {
->          struct ext4_super_block *es = EXT4_SB(sb)->s_es;
->          struct buffer_head *bh = NULL;
->          struct mmp_struct *mmp = NULL;
->          u32 seq;
->          unsigned int mmp_check_interval =
-> le16_to_cpu(es->s_mmp_update_interval);
->          unsigned int wait_time = 0;                    --> wait_time is
-> equal with zero
->          int retval;
+On Tue, Oct 12, 2021 at 02:52:22PM +0800, Jason Wang wrote:
+> This patch tries to make sure the virtio interrupt handler for INTX
+> won't be called after a reset and before virtio_device_ready(). We
+> can't use IRQF_NO_AUTOEN since we're using shared interrupt
+> (IRQF_SHARED). So this patch tracks the INTX enabling status in a new
+> intx_soft_enabled variable and toggle it during in
+> vp_disable/enable_vectors(). The INTX interrupt handler will check
+> intx_soft_enabled before processing the actual interrupt.
 > 
->          if (mmp_block < le32_to_cpu(es->s_first_data_block) ||
->              mmp_block >= ext4_blocks_count(es)) {
->                  ext4_warning(sb, "Invalid MMP block in superblock");
->                  goto failed;
->          }
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> ---
+>  drivers/virtio/virtio_pci_common.c | 24 ++++++++++++++++++++++--
+>  drivers/virtio/virtio_pci_common.h |  1 +
+>  2 files changed, 23 insertions(+), 2 deletions(-)
 > 
->          retval = read_mmp_block(sb, &bh, mmp_block);
->          if (retval)
->                  goto failed;
-> 
->          mmp = (struct mmp_struct *)(bh->b_data);
-> 
->          if (mmp_check_interval < EXT4_MMP_MIN_CHECK_INTERVAL)
->                  mmp_check_interval = EXT4_MMP_MIN_CHECK_INTERVAL;
-> 
->          /*
->           * If check_interval in MMP block is larger, use that instead of
->           * update_interval from the superblock.
->           */
->          if (le16_to_cpu(mmp->mmp_check_interval) > mmp_check_interval)
->                  mmp_check_interval = le16_to_cpu(mmp->mmp_check_interval);
-> 
->          seq = le32_to_cpu(mmp->mmp_seq);
->          if (seq == EXT4_MMP_SEQ_CLEAN)   --> If hostA and hostB mount the
-> same block device at the same time,
-> --> HostA and hostB  maybe get 'seq' with the same value EXT4_MMP_SEQ_CLEAN.
->                  goto skip;
+> diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> index 0b9523e6dd39..5ae6a2a4eb77 100644
+> --- a/drivers/virtio/virtio_pci_common.c
+> +++ b/drivers/virtio/virtio_pci_common.c
+> @@ -30,8 +30,16 @@ void vp_disable_vectors(struct virtio_device *vdev)
+>  	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+>  	int i;
+>  
+> -	if (vp_dev->intx_enabled)
+> +	if (vp_dev->intx_enabled) {
+> +		/*
+> +		 * The below synchronize() guarantees that any
+> +		 * interrupt for this line arriving after
+> +		 * synchronize_irq() has completed is guaranteed to see
+> +		 * intx_soft_enabled == false.
+> +		 */
+> +		WRITE_ONCE(vp_dev->intx_soft_enabled, false);
+>  		synchronize_irq(vp_dev->pci_dev->irq);
+> +	}
+>  
+>  	for (i = 0; i < vp_dev->msix_vectors; ++i)
+>  		disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> @@ -43,8 +51,16 @@ void vp_enable_vectors(struct virtio_device *vdev)
+>  	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+>  	int i;
+>  
+> -	if (vp_dev->intx_enabled)
+> +	if (vp_dev->intx_enabled) {
+> +		disable_irq(vp_dev->pci_dev->irq);
+> +		/*
+> +		 * The above disable_irq() provides TSO ordering and
+> +		 * as such promotes the below store to store-release.
+> +		 */
+> +		WRITE_ONCE(vp_dev->intx_soft_enabled, true);
+> +		enable_irq(vp_dev->pci_dev->irq);
+>  		return;
+> +	}
+>  
+>  	for (i = 0; i < vp_dev->msix_vectors; ++i)
+>  		enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> @@ -97,6 +113,10 @@ static irqreturn_t vp_interrupt(int irq, void *opaque)
+>  	struct virtio_pci_device *vp_dev = opaque;
+>  	u8 isr;
+>  
+> +	/* read intx_soft_enabled before read others */
+> +	if (!smp_load_acquire(&vp_dev->intx_soft_enabled))
+> +		return IRQ_NONE;
+> +
+>  	/* reading the ISR has the effect of also clearing it so it's very
+>  	 * important to save off the value. */
+>  	isr = ioread8(vp_dev->isr);
 
-Oh, I see. Thanks for explanation. 
+I don't see why we need this ordering guarantee here.
 
-> ...
-> skip:
->         /*
->          * write a new random sequence number.
->          */
->         seq = mmp_new_seq();
->         mmp->mmp_seq = cpu_to_le32(seq);
-> 
->         retval = write_mmp_block(sb, bh);
->         if (retval)
->                 goto failed;
-> 
->         /*
->          * wait for MMP interval and check mmp_seq.
->          */
->         if (schedule_timeout_interruptible(HZ * wait_time) != 0) {
-> --> If seq is equal with EXT4_MMP_SEQ_CLEAN, wait_time is zero.
->                 ext4_warning(sb, "MMP startup interrupted, failing mount");
->                 goto failed;
->         }
-> 
->         retval = read_mmp_block(sb, &bh, mmp_block); -->We may get the same
-> data with which we wrote, so we can't detect conflict at here.
+synchronize_irq above makes sure no interrupt handler
+is in progress. the handler itself thus does not need
+any specific order, it is ok if intx_soft_enabled is read
+after, not before the rest of it.
 
-OK, I see. So the race in ext4_multi_mount_protect() goes like:
+Just READ_ONCE should be enough, and we can drop the comment.
 
-hostA				hostB
 
-read_mmp_block()		read_mmp_block()
-- sees EXT4_MMP_SEQ_CLEAN	- sees EXT4_MMP_SEQ_CLEAN
-write_mmp_block()
-wait_time == 0 -> no wait
-read_mmp_block()
-  - all OK, mount
-				write_mmp_block()
-				wait_time == 0 -> no wait
-				read_mmp_block()
-				  - all OK, mount
+> diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+> index a235ce9ff6a5..3c06e0f92ee4 100644
+> --- a/drivers/virtio/virtio_pci_common.h
+> +++ b/drivers/virtio/virtio_pci_common.h
+> @@ -64,6 +64,7 @@ struct virtio_pci_device {
+>  	/* MSI-X support */
+>  	int msix_enabled;
+>  	int intx_enabled;
+> +	bool intx_soft_enabled;
+>  	cpumask_var_t *msix_affinity_masks;
+>  	/* Name strings for interrupts. This size should be enough,
+>  	 * and I'm too lazy to allocate each name separately. */
+> -- 
+> 2.25.1
 
-Do I get it right? Actually, if we passed seq we wrote in
-ext4_multi_mount_protect() to kmmpd (probably in sb), then kmmpd would
-notice the conflict on its first invocation but still that would be a bit
-late because there would be a time window where hostA and hostB would be
-both using the fs.
-
-We could reduce the likelyhood of this race by always waiting in
-ext4_multi_mount_protect() between write & read but I guess that is
-undesirable as it would slow down all clean mounts. Ted?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
