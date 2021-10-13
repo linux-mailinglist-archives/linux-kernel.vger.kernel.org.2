@@ -2,119 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0266742C50B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBB842C514
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbhJMPov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 11:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235709AbhJMPos (ORCPT
+        id S232801AbhJMPr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 11:47:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5942 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229653AbhJMPr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:44:48 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAE8C061764;
-        Wed, 13 Oct 2021 08:42:44 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so4253110otb.1;
-        Wed, 13 Oct 2021 08:42:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=37hVPOd3BIfvxpW5fFUuBklEo2czP1RmXoKx7X0bcv4=;
-        b=Jy5gzAES3gON/iVMPdegqj9JaQV3sbgnGhyzHkKRxU2R6RcDOP4hpvJ62nEH81JBhP
-         DLK3ZMeVFdbUBRtwrNO85/FN4x66+MfZLLjWENuYUiM+sV5MEPJlboN2gUTLDArMpIxq
-         KCNB62r6K42znXk5MppJnepvkqedLl/lrfIzikyG2J70nwRyW1XNYstnur9BIfpk7WfT
-         qiUCZI+FkWxaw3uYfIlM9nD+D6j1QaIAjsNeBy2qadxlbQLYWEqTK6W9zSCeAOb7WK+P
-         /gXXwsNeaRQU7VC1qfqQ9cBNNHPEGOhMGZHOZl8zjUgdz1iaYWqwunpcexCWzRVgGdW+
-         aAdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=37hVPOd3BIfvxpW5fFUuBklEo2czP1RmXoKx7X0bcv4=;
-        b=IxyefYZYPMgJd0NsdHcnBHG3+iDAuTUCnIS7WfmS1F3ytGDDzV0u4vWRuaEuwVYytg
-         cC+LJnkcJJwgTThWPdV43hjkVR8KmOmGKZ9TbVwj8jLLJbY5y4FVbmBQ5HbDlCIA1686
-         0xav/bZN5vEyjQ+C7xYQLbuzm129q6unKAxBaAGOC1QQPT6KI2YP3O3HMdljbd2+yloR
-         3Wn48cmge5hGEUuToGLPdyrOqZxa805GZVIpfmvtrq805v+L9bmAOWnpu6a8SfMwxXd4
-         xdyAWiFPhs4uIWwmpzZy/X2Yvacqo04ivCfC5epxtG8yL78sMH2OPXQ51xnsRicjTyRW
-         poKQ==
-X-Gm-Message-State: AOAM5317zg00j34aje+6scEEyHnJHQbSCOvUnkpIgwpkcRH7BRfXwbBP
-        vZYK/cfr063+MGUnkyG6DdQ=
-X-Google-Smtp-Source: ABdhPJyLua6LzSe9PuJTTcxWZIrYhD4BTtmKXiQnqFeOYdIcgOpJS7+rWZst0dWr4lw08IIH6Mx1pQ==
-X-Received: by 2002:a9d:750d:: with SMTP id r13mr31862806otk.264.1634139764172;
-        Wed, 13 Oct 2021 08:42:44 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e28sm3228070oth.40.2021.10.13.08.42.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 08:42:43 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 13 Oct 2021 08:42:41 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: tegra20: fix build with CONFIG_PM_SLEEP=n
-Message-ID: <20211013154241.GA2356944@roeck-us.net>
-References: <20211013144538.2346533-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013144538.2346533-1-arnd@kernel.org>
+        Wed, 13 Oct 2021 11:47:26 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19DEtEQn008807;
+        Wed, 13 Oct 2021 11:45:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=NUJPki3KGMmWDaYljNErOGlAovz5VtzyJpTafaf11rE=;
+ b=SvDvo11ycpAr49LTZr2dJCqVLOgG432/h5p5+mc2r89f53pytOztn2ufjKZfnICM7zJ4
+ rnEd4DmvjVOmDV3xwuzPND/erD6Z5/G4WhmadcSCyKOyE82Bk2mikT2K96XP0zb8vGbR
+ ruPpZP+pKk9LvXEl8rB3qvUdYai9N2QkafwMmpCx5/yHZcCRWgER41kJHFhO3/R3t5fI
+ pvDXbnQO953Osv96xxzokKazRb2226K2f31XyI8G2zibclXsbNTcwKrBh8qrNJyAJ+Ba
+ rrYj1RVi+iuyCcj6iVJUZDpb272z34ugp9wyj0FuwCBDNDhd1RmIQ7i3jKQ3sIcNfXkg uQ== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bnpf3gajp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 11:45:18 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19DFRRAk012339;
+        Wed, 13 Oct 2021 15:45:16 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bk2q9v91q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 15:45:16 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19DFj8GZ44826940
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Oct 2021 15:45:08 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADE4752067;
+        Wed, 13 Oct 2021 15:45:08 +0000 (GMT)
+Received: from sig-9-65-208-89.ibm.com (unknown [9.65.208.89])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id D1A0E5206D;
+        Wed, 13 Oct 2021 15:45:03 +0000 (GMT)
+Message-ID: <e1c2d34acb37d85e94af15ca1edd162e1e7f9a2a.camel@linux.ibm.com>
+Subject: Re: [PATCH 2/2] fs: extend the trusted_for syscall to call IMA
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+Date:   Wed, 13 Oct 2021 11:45:01 -0400
+In-Reply-To: <d4273866-607e-37be-076b-a920bbf08bf9@digikod.net>
+References: <20211013110113.13239-1-zohar@linux.ibm.com>
+         <20211013110113.13239-2-zohar@linux.ibm.com>
+         <d4273866-607e-37be-076b-a920bbf08bf9@digikod.net>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: TjR-m_N0UdEj6vctAFf7riOsvT3TSVKc
+X-Proofpoint-ORIG-GUID: TjR-m_N0UdEj6vctAFf7riOsvT3TSVKc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-13_06,2021-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 clxscore=1015 lowpriorityscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ spamscore=0 mlxlogscore=655 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110130101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 04:45:23PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> There is another one of these warnings:
-> 
-> drivers/spi/spi-tegra20-slink.c:1197:12: error: 'tegra_slink_runtime_resume' defined but not used [-Werror=unused-function]
->  1197 | static int tegra_slink_runtime_resume(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Give it the same treatment as the other functions in this file.
-> 
-> Fixes: efafec27c565 ("spi: Fix tegra20 build with CONFIG_PM=n")
-> Fixes: 2bab94090b01 ("spi: tegra20-slink: Declare runtime suspend and resume functions conditionally")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/spi/spi-tegra20-slink.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
-> index 713292b0c71e..33302f6b42d7 100644
-> --- a/drivers/spi/spi-tegra20-slink.c
-> +++ b/drivers/spi/spi-tegra20-slink.c
-> @@ -1194,7 +1194,7 @@ static int __maybe_unused tegra_slink_runtime_suspend(struct device *dev)
->  	return 0;
->  }
->  
-> -static int tegra_slink_runtime_resume(struct device *dev)
-> +static __maybe_unused int tegra_slink_runtime_resume(struct device *dev)
+[CC'ing Casey]
 
-That was actually done in efafec27c565. The error is the result of a bad
-conflict resolution against 2bab94090b01, not a result of any of the
-two patches listed in the Fixes: tags. So, yes, either this patch needs
-to be applied in -next or the conflict resolution needs to be fixed.
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
-
->  {
->  	struct spi_master *master = dev_get_drvdata(dev);
->  	struct tegra_slink_data *tspi = spi_master_get_devdata(master);
-> -- 
-> 2.29.2
+On Wed, 2021-10-13 at 17:26 +0200, Mickaël Salaün wrote:
+> Nice!
 > 
+> On 13/10/2021 13:01, Mimi Zohar wrote:
+> > Extend the trusted_for syscall to call the newly defined
+> > ima_trusted_for hook.
+> > 
+> > Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+> > ---
+> >  fs/open.c           | 3 +++
+> >  include/linux/ima.h | 9 +++++++++
+> >  2 files changed, 12 insertions(+)
+> > 
+> > diff --git a/fs/open.c b/fs/open.c
+> > index c79c138a638c..4d54e2a727e1 100644
+> > --- a/fs/open.c
+> > +++ b/fs/open.c
+> > @@ -585,6 +585,9 @@ SYSCALL_DEFINE3(trusted_for, const int, fd, const enum trusted_for_usage, usage,
+> >  	err = inode_permission(file_mnt_user_ns(f.file), inode,
+> >  			mask | MAY_ACCESS);
+> >  
+> > +	if (!err)
+> > +		err = ima_trusted_for(f.file, usage);
+> 
+> Could you please implement a new LSM hook instead? Other LSMs may want
+> to use this information as well.
+
+Casey normally pushes back on my defining a new LSM hook, when IMA is
+the only user.  If any of the LSM maintainers are planning on defining
+this hook, please chime in.
+
+thanks,
+
+Mimi
+
