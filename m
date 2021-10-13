@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F8142B0E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3720042B0ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234752AbhJMAUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 20:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbhJMAUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 20:20:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432D6C061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=ENilPhVukyFHnaY/AS4Gv9gS6lt1d3pyM/7jv2Mwtjk=; b=2VH1yhUPmD350CsU5wiq7buw/p
-        3+/I3Vrba/5ao8UVg5IUHvg8tIrvux3NQziCz1oJ+vt/SGbyGUD4dgKB1AL9Y+DJIccz8RPi5MRMj
-        o6hK+/HiwD87sREpNPzEtFmVNTIyTM4qTnshLC/nxeZRCj/qFUDflhW4PvheNbQWnlG+tESmNhL3y
-        LaOVoX9zYbt/GX0oE+cjV2RLZUItUj3TWQCnHJuBZ4i49zMYlRp+VWAR+OmiOUbTi1JkKNjxLTOae
-        3i0nvWRv7KvMw5YUDsKPQMImhyTwZJcDMi1jm5JISSJyVOmGazP8jZK8VJjfTKk3bPQXQPHcRQIq3
-        Wfo6iMoQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maRyb-00EMA4-OG; Wed, 13 Oct 2021 00:18:33 +0000
-Subject: Re: [PATCH] init: Make unknown command line param message clearer
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Halaney <ahalaney@redhat.com>
-Cc:     akpm@linux-foundation.org, bp@suse.de, linux-kernel@vger.kernel.org
-References: <20211012213523.39801-1-ahalaney@redhat.com>
- <20211012200106.1afdbb0b@gandalf.local.home>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <87853d4f-d6f8-1d58-1a07-c8232dae87fd@infradead.org>
-Date:   Tue, 12 Oct 2021 17:18:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235549AbhJMAWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 20:22:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233128AbhJMAWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 20:22:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id CDC7D60BD3;
+        Wed, 13 Oct 2021 00:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634084407;
+        bh=ZCfu3epMVVobfTkmCWalLec03U/dCcWUdJEtgkxdfOc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Pc45Vo13hkT4jFpIGN9EKzpr3697hBj5XOiOaY1GcOCrcDzLrCUDt1LlJvhoZEj9R
+         pU5yxm5Ub2fzU3X4Bi04v6V+BGcB9XVMDt0D9M14+lKrcOihrUBFRfH1V5x40dKTzS
+         C26BF7HcMoBS7fYRgoWJyTRLWc/bwzZSSLAk6XHtEdMx4l1a5eG2CDhJIkIlFO58Eo
+         nz6YrRJsvEh56PcgI+P8WQZTbT0TJcj7jjpdkl13Xqr/NhlddpsJEGPTAGayZD2C8U
+         qINM/ujD+Yj4lrIDDAw2MvxDLrDLeTStseFgDjqTCG8TIqO2HpLCZ2RspAipo1Ho0M
+         KLr+vVgUwJNLw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BF732609CC;
+        Wed, 13 Oct 2021 00:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20211012200106.1afdbb0b@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v4 0/6] devlink reload simplification
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163408440777.9622.8852746022639059437.git-patchwork-notify@kernel.org>
+Date:   Wed, 13 Oct 2021 00:20:07 +0000
+References: <cover.1634044267.git.leonro@nvidia.com>
+In-Reply-To: <cover.1634044267.git.leonro@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, leonro@nvidia.com,
+        idosch@nvidia.com, mingo@redhat.com, jiri@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        mlxsw@nvidia.com, moshe@nvidia.com, netdev@vger.kernel.org,
+        saeedm@nvidia.com, salil.mehta@huawei.com, shayd@nvidia.com,
+        rostedt@goodmis.org, tariqt@nvidia.com, yisen.zhuang@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/21 5:01 PM, Steven Rostedt wrote:
-> On Tue, 12 Oct 2021 16:35:23 -0500
-> Andrew Halaney <ahalaney@redhat.com> wrote:
-> 
->> --- a/init/main.c
->> +++ b/init/main.c
->> @@ -925,6 +925,10 @@ static void __init print_unknown_bootoptions(void)
->>   	for (p = &envp_init[2]; *p; p++)
->>   		end += sprintf(end, " %s", *p);
->>   
->> +	pr_notice("The kernel command line has unknown parameters. They are either\n");
->> +	pr_notice("misspelled, not valid for the current kernel configuration,\n");
->> +	pr_notice("or are meant for init but are not after the '--' delineator. They will\n");
->> +	pr_notice("be passed to init along with those after '--' on the command line.\n");
->>   	pr_notice("Unknown command line parameters:%s\n", unknown_options);
->>   	memblock_free(unknown_options, len);
-> 
-> What about just changing it to simply say:
-> 
-> 	pr_notice("Unknown kernel command line parameters "%s", will be	passed to user space.\n",
-> 		  unknown_options);
-> 
+Hello:
 
-Yes, that's much more palatable.
+This series was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-thanks.
--- 
-~Randy
+On Tue, 12 Oct 2021 16:15:20 +0300 you wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Changelog:
+> v4:
+>  * Removed legacy BUG_ON() in first patch.
+>  * Added new patch that moves netdev_to_devlink functions to devlink.c.
+>  * Rewrote devlink ops patch to use feature mask.
+> v3: https://lore.kernel.org/all/cover.1633589385.git.leonro@nvidia.com
+>  * Rewrote third patch to keep static const nature of ops. This is done
+>    by extracting reload ops to separate ops structure.
+>  * Changed commit message in last patch as was suggested by Ido.
+> v2: https://lore.kernel.org/all/cover.1633284302.git.leonro@nvidia.com
+>  * Dropped const removal patch
+>  * Added new patch to hide struct devlink
+>  * Added new patch to annotate devlink API
+>  * Implemented copy of all callback in devlink ops
+> v1: https://lore.kernel.org/all/cover.1632916329.git.leonro@nvidia.com
+>  * Missed removal of extra WARN_ON
+>  * Added "ops parameter to macro as Dan suggested.
+> v0: https://lore.kernel.org/all/cover.1632909221.git.leonro@nvidia.com
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v4,1/6] devlink: Reduce struct devlink exposure
+    https://git.kernel.org/netdev/net-next/c/21314638c9f2
+  - [net-next,v4,2/6] devlink: Move netdev_to_devlink helpers to devlink.c
+    https://git.kernel.org/netdev/net-next/c/2bc50987dc1f
+  - [net-next,v4,3/6] devlink: Annotate devlink API calls
+    https://git.kernel.org/netdev/net-next/c/b88f7b1203bf
+  - [net-next,v4,4/6] devlink: Allow control devlink ops behavior through feature mask
+    https://git.kernel.org/netdev/net-next/c/bd032e35c568
+  - [net-next,v4,5/6] net/mlx5: Set devlink reload feature bit for supported devices only
+    https://git.kernel.org/netdev/net-next/c/96869f193cfd
+  - [net-next,v4,6/6] devlink: Delete reload enable/disable interface
+    https://git.kernel.org/netdev/net-next/c/82465bec3e97
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
