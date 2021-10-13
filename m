@@ -2,172 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F06242C0F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2BA42C0F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234231AbhJMNHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232645AbhJMNHa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:07:30 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A130EC061768
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:05:24 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id r19so11449007lfe.10
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:05:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xowPA0KXkDimH5diDPNJR7+P4PZbybslKdAEHgBwaCw=;
-        b=s0FRSbCg+aUO1rTNrATLxL+l6IGjLXN7+TMv7tgNoLErDOmqGT4xWn8Nq2zNs5i2w/
-         hwbTSI1PehHXFY8S83cprG48o3vRAtSypgkUvfhzp6YOV/IF267y4MCwLBo+5vDWyvqC
-         d4xWpeAmaX+GUMLAmCerk7PIMuyz+pIw+KwWkG3Gdtd89570uxLA6J9Il7nWB0NAwXJH
-         KK7SQD/V60XnmgKJCe9BVXg3PWsTLliMa3EMExdohHirPOwhbM0vXm8avgYdMHPp5IIX
-         uMPBrtUxkB0LxUz5iQJ/bLx18aaaovVXN49vcjjxs2L8mSBu7pmG7fHVo0+74k2UQf4+
-         CEBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xowPA0KXkDimH5diDPNJR7+P4PZbybslKdAEHgBwaCw=;
-        b=bpnwdHQZyh02mmiyPBI5vA+zoYTNYWdAHhA+rzeMH6MLadsU7A/1B7l2mYjZVeLX5h
-         HGs1xZB02n6cFf0q12idZP/5IweJb8I0frgw61KOOldEV4zZFazTg3Wqbx50eh1L26Sg
-         3eHVX5+i/jWQRuTSNPGQG7fGJ1BZ4TiVMnwCMxLFRiqGGfhhoNPhSDrbBZ8jEbhxCuOk
-         ntYClHLwXY0FlVh+XVU+95qjwCY2O+wQD3kwhNnrdQZ8byjoo4b7yfxb2zIRWETst++A
-         zyPBwnL6/hoUmmfWiEBjF8v7bNV1g9/Ih7pw57kSR8AiT7D+NLbPBqhyrD5QEB2+F2sc
-         IZPg==
-X-Gm-Message-State: AOAM530Qbymm8vycs3Puje3rZzS8gR3TV5V6UItDVkhT3sr0IJfHjRj8
-        +mO60Ww+LQm2saaPOffLWPsswA==
-X-Google-Smtp-Source: ABdhPJwIZLLaMhm3M7J6QiDzYJdWa2mNtm9tk6WbTR9xWYATnnQynUkZYRkYvQjmnu3/QYJxqIxtAQ==
-X-Received: by 2002:a05:651c:514:: with SMTP id o20mr37782556ljp.305.1634130318011;
-        Wed, 13 Oct 2021 06:05:18 -0700 (PDT)
-Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
-        by smtp.gmail.com with ESMTPSA id y6sm1327449lfa.122.2021.10.13.06.05.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 06:05:17 -0700 (PDT)
-Subject: Re: [PATCH v4 07/20] dt-bindings: qcom-qce: Convert bindings to yaml
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh@kernel.org>
-References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
- <20211013105541.68045-8-bhupesh.sharma@linaro.org>
-From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Message-ID: <f58d549a-5ce3-a51d-c371-a3ffdc76496d@linaro.org>
-Date:   Wed, 13 Oct 2021 16:05:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S234321AbhJMNHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:07:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234870AbhJMNHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:07:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BB79610CB;
+        Wed, 13 Oct 2021 13:05:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634130339;
+        bh=2wpgNMp/xwS95ZLKd4Ypa7M47fvb7ni003XFeMctCI8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZAU+s1+/+Ryw7aJqpvVZJfWgsBR+mfNGQYKeD+MXahGXqXfrnmkOiUiakpLJVDgnZ
+         BlqnV+cZqIGnKuWeoyNp1DeR5VSsD+Qp0c5FoCy6jRuM7DfLEiyapOLr24MmWkV5pk
+         tOpV1411Fc0bAwluNsEiqiOO3ms2sFoDXUdXGQGk=
+Date:   Wed, 13 Oct 2021 15:05:36 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Abhyuday Godhasara <agodhasa@xilinx.com>
+Cc:     Michal Simek <michals@xilinx.com>, Rajan Vaja <RAJANV@xilinx.com>,
+        Manish Narani <MNARANI@xilinx.com>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>,
+        Sai Krishna Potthuri <lakshmis@xilinx.com>,
+        Jiaying Liang <jliang@xilinx.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+Message-ID: <YWbZoPHDzc4e5Nme@kroah.com>
+References: <438b398c-a901-7568-11e0-cd9bf302343f@xilinx.com>
+ <20210915131615.16506-1-abhyuday.godhasara@xilinx.com>
+ <SA1PR02MB8592838B99062EFA6EAAE73DA1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
+ <YWbYKQXf8g8s55kG@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20211013105541.68045-8-bhupesh.sharma@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWbYKQXf8g8s55kG@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhupesh,
-
-On 10/13/21 1:55 PM, Bhupesh Sharma wrote:
-> Convert Qualcomm QCE crypto devicetree binding to YAML.
+On Wed, Oct 13, 2021 at 02:59:21PM +0200, gregkh@linuxfoundation.org wrote:
+> On Wed, Oct 13, 2021 at 12:27:58PM +0000, Abhyuday Godhasara wrote:
+> > Hi Greg,
+> > 
+> > > -----Original Message-----
+> > > From: Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
+> > > Sent: Wednesday, September 15, 2021 6:46 PM
+> > > To: gregkh@linuxfoundation.org
+> > > Cc: Michal Simek <michals@xilinx.com>; Abhyuday Godhasara
+> > > <agodhasa@xilinx.com>; Rajan Vaja <RAJANV@xilinx.com>; Manish Narani
+> > > <MNARANI@xilinx.com>; zou_wei@huawei.com; Sai Krishna Potthuri
+> > > <lakshmis@xilinx.com>; Jiaying Liang <jliang@xilinx.com>; Jiaying Liang
+> > > <jliang@xilinx.com>; linux-kernel@vger.kernel.org; linux-arm-
+> > > kernel@lists.infradead.org
+> > > Subject: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > > 
+> > > This Linux driver provides support to subscribe error/event notification and
+> > > receive notification from firmware for error/event and forward event
+> > > notification to subscribed driver via registered callback.
+> > > 
+> > > All types of events like power and error will be handled from single place as
+> > > part of event management driver.
+> > > 
+> > > Changes in v4:
+> > > - Rebase on latest tree
+> > > 
+> > > Changes in v3:
+> > > - Update the commit message.
+> > > 
+> > > Changes in v2:
+> > > - Removed updated copyright year from unchanged files.
+> > > - make sgi_num as module parameter for event management driver.
+> > > - Use same object for error detection and printing.
+> > > 
+> > > Acked-by: Michal Simek <michal.simek@xilinx.com>
+> > [Abhyuday] Michal suggested to merge this via your tree. Please have a look.
+> > Please let me know if there is anything required from my side.
 > 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->   .../devicetree/bindings/crypto/qcom-qce.yaml  | 67 +++++++++++++++++++
->   1 file changed, 67 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-> new file mode 100644
-> index 000000000000..b7ae873dc943
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/crypto/qcom-qce.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm crypto engine driver
-> +
-> +maintainers:
-> +  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> +
-> +description: |
-> +  This document defines the binding for the QCE crypto
-> +  controller found on Qualcomm parts.
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,crypto-v5.1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: iface clocks register interface.
-> +      - description: bus clocks data transfer interface.
-> +      - description: core clocks rest of the crypto block.
-> +
-> +  clock-names:
-> +    items:
-> +      - const: iface
-> +      - const: bus
-> +      - const: core
-> +
-> +  dmas:
-> +    items:
-> +      - description: DMA specifiers for tx dma channel.
-> +      - description: DMA specifiers for rx dma channel.
+> Ok, I'll pick it up, thanks.
 
-Please consider to swap the description lines, so that they'll
-be matching the dma-names below and a regular order found in
-dts files.
+Nope, I can not as for some reason it all did not show up on
+lore.kernel.org.
 
-> +
-> +  dma-names:
-> +    items:
-> +      - const: rx
-> +      - const: tx
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - dmas
-> +  - dma-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-apq8084.h>
-> +    crypto-engine@fd45a000 {
-> +        compatible = "qcom,crypto-v5.1";
-> +        reg = <0xfd45a000 0x6000>;
-> +        clocks = <&gcc GCC_CE2_AHB_CLK>,
-> +                 <&gcc GCC_CE2_AXI_CLK>,
-> +                 <&gcc GCC_CE2_CLK>;
-> +        clock-names = "iface", "bus", "core";
-> +        dmas = <&cryptobam 2>, <&cryptobam 3>;
-> +        dma-names = "rx", "tx";
-> +    };
-> 
+Please resend this, with Michal's ack and I will be glad to pick it up.
 
---
-Best wishes,
-Vladimir
+thanks,
+
+greg k-h
