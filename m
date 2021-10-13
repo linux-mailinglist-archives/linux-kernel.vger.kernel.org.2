@@ -2,95 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7B942B649
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C133A42B64A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237832AbhJMGEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 02:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbhJMGEc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 02:04:32 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA52C061749
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:02:30 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id w10so3692548ybt.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/jfyDf2uGQ0G4PkhWSUViq4lngXtqzf19oHYgswwn6Y=;
-        b=e4B0U3PugQFXwhVwi+3PkWnNYTEekHcEdqpScwPjfcR1HAJEFUJEBXVMH5zgi2JTu4
-         sZEfEkl6wL4SXmPXp4cr1q4EXLIkULvaf7h4n/ATPm0uUITM4A1YgMVgLzbwxhebswTZ
-         CFFEc8pLIwTzi7rVABmqC8WNsHJUcrRwZgTpv41TXZdoDZqGPQjzRfBG4Ar4Bk/dsyqN
-         SY7alCp3dFnnoO3Iba1UxoZWctaNp4EvK622hpTldc0LzJ4nCb1Oyxtwjox6W7NH3MzW
-         meibd3gcTorIwzjR5FEVCesH8Mmr5ENHa9wRG+geNA2jD9HGTsV42si2MQh33QwqZH4p
-         GbCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/jfyDf2uGQ0G4PkhWSUViq4lngXtqzf19oHYgswwn6Y=;
-        b=5vLRI6QLz1hcsDoE6HtGarpKFLNHUiFfmIj0yJscncz0ZivPGO5BTw/AAM3zXusogZ
-         TIUEmnKw6asLe0GITs7nngH2l8N426ZZo65YHrxs0iuUtpHmi/580rdbFExRpQx4KvY4
-         GJl2A7+O0+kH19r+KFs08o2/Bn8d3DPAlQko0FxZcLQoREiSyxLotLM16g7uEt28h88f
-         D0l/rJP7L0yE8UsqVk9+iaULNi0yHw5tCsntXyZhIyXZooUGxFxnVUfol8FkrlQDWxR7
-         kPbIs72YXS4AiRySgkd18hmkCQRD8h2tn/2P6Z4+s0tjxMOk423Zj7pvqi+jUtjLmfhk
-         WS4Q==
-X-Gm-Message-State: AOAM530hUicBXRZ0sflKPPktnTyyB1tqTI4dFui65i2pW1oLip9fgK+R
-        KffnqmR90ouxulxytMY7/15q0NyIw5zKMiW23d4=
-X-Google-Smtp-Source: ABdhPJzgYvmZ7MvxMJYQZyY5vw0z3ppS4nhjWwRxCdCPXmojYCpY2AoZcDjVrA8qeiF9ImXpl69nRlBpq9pYZ7Tdvvw=
-X-Received: by 2002:a5b:791:: with SMTP id b17mr34131411ybq.263.1634104949115;
- Tue, 12 Oct 2021 23:02:29 -0700 (PDT)
+        id S237838AbhJMGFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 02:05:03 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:50634 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229750AbhJMGFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 02:05:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id A9626FB03;
+        Wed, 13 Oct 2021 08:02:56 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 66EE4GbhLCIQ; Wed, 13 Oct 2021 08:02:55 +0200 (CEST)
+Date:   Wed, 13 Oct 2021 08:02:54 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: Ignore -EPROBE_DEFER when bridge attach fails
+Message-ID: <YWZ2jppbbdKwI2AW@qwark.sigxcpu.org>
+References: <00493cc61d1443dab1c131c46c5890f95f6f9b25.1634068657.git.agx@sigxcpu.org>
+ <YWXtQ778N/rn+Jnu@pendragon.ideasonboard.com>
+ <YWX0UPyw+5OBsBA6@qwark.sigxcpu.org>
 MIME-Version: 1.0
-Received: by 2002:a05:7108:7016:0:0:0:0 with HTTP; Tue, 12 Oct 2021 23:02:28
- -0700 (PDT)
-Reply-To: shawnhayden424@gmail.com
-From:   Shawn Hayden <shawnhayden424@gmail.com>
-Date:   Wed, 13 Oct 2021 07:02:28 +0100
-Message-ID: <CAFrwAPLp=Z8=4iPvFdOyoAOvuRjUKXregwn2z49_trffD+8cNA@mail.gmail.com>
-Subject: OUR PORTFOLIO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWX0UPyw+5OBsBA6@qwark.sigxcpu.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir,
+Hi,
+On Tue, Oct 12, 2021 at 10:47:14PM +0200, Guido Günther wrote:
+> Hi Laurent,
+> On Tue, Oct 12, 2021 at 11:17:07PM +0300, Laurent Pinchart wrote:
+> > Hi Guido,
+> > 
+> > Thank you for the patch.
+> > 
+> > On Tue, Oct 12, 2021 at 09:58:58PM +0200, Guido Günther wrote:
+> > > Otherwise logs are filled with
+> > > 
+> > >   [drm:drm_bridge_attach] *ERROR* failed to attach bridge /soc@0/bus@30800000/mipi-dsi@30a0 0000 to encoder None-34: -517
+> > > 
+> > > when the bridge isn't ready yet.
+> > > 
+> > > Fixes: fb8d617f8fd6 ("drm/bridge: Centralize error message when bridge attach fails")
+> > > Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> > > ---
+> > >  drivers/gpu/drm/drm_bridge.c | 11 ++++++-----
+> > >  1 file changed, 6 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> > > index a8ed66751c2d..f0508e85ae98 100644
+> > > --- a/drivers/gpu/drm/drm_bridge.c
+> > > +++ b/drivers/gpu/drm/drm_bridge.c
+> > > @@ -227,14 +227,15 @@ int drm_bridge_attach(struct drm_encoder *encoder, struct drm_bridge *bridge,
+> > >  	bridge->encoder = NULL;
+> > >  	list_del(&bridge->chain_node);
+> > >  
+> > > +	if (ret != -EPROBE_DEFER) {
+> > >  #ifdef CONFIG_OF
+> > > -	DRM_ERROR("failed to attach bridge %pOF to encoder %s: %d\n",
+> > > -		  bridge->of_node, encoder->name, ret);
+> > > +		DRM_ERROR("failed to attach bridge %pOF to encoder %s: %d\n",
+> > > +			  bridge->of_node, encoder->name, ret);
+> > >  #else
+> > > -	DRM_ERROR("failed to attach bridge to encoder %s: %d\n",
+> > > -		  encoder->name, ret);
+> > > +		DRM_ERROR("failed to attach bridge to encoder %s: %d\n",
+> > > +			  encoder->name, ret);
+> > >  #endif
+> > > -
+> > > +	}
+> > 
+> > This looks fine as such, but I'm concerned about the direction it's
+> > taking. Ideally, probe deferral should happen at probe time, way before
+> > the bridge is attached. Doing otherwise is a step in the wrong direction
+> > in my opinion, and something we'll end up regretting when we'll feel the
+> > pain it inflicts.
+> 
+> The particular case I'm seeing this is the nwl driver probe deferrals if
+> the panel bridge isn't ready (which needs a bunch of components
+> (dsi, panel, backlight wrapped led, ...) and it probes fine later on so I
+> wonder where you see the actual error cause? That downstream of the
+> bridge isn't ready or that the display controller is already attaching
+> the bridge?
 
-Aseel Islamic finance PJSC is private joint stock company that was
-established in 2006 and has built a leading market position for itself
-in the UAE's Islamic finance market which specializes in loan finance
-and investment activities in real estate, hospitality, industrial &
-sustainable technologies, strategic financial investments, specialized
-education, healthcare services, agriculture, manufacturing,
-mining,energy and additional environmentally sustainable projects.
+I should add that mxsfb does a `dev_err_probe()` already when checking
+the return value of `drm_bridge_attach()` so the error printed is
+triggered by the additional check added in the above function while the
+code path already ignored -EPROBE_DEFER before. This looks sensible to
+me since upper layers can't known when all the downstream bridges are
+done probing or am I missing something?
 
-My name is Mr. Ibn Ahmad Mustafa . Do you have projects that require
-funding? We have finance available for your projects with over 2
-trillion private and corporate investment portfolios.  Aseel Islamic
-finance PJSC is looking for equity partners, entrepreneur, fund
-raisers and portfolio managers who will pay up to 4.5% interest and/or
-part equity position with a 5 to 10 year hold. In 2030, we plan on
-acquiring up to 2 trillion in high-quality, low risk assets and
-investments to capitalize on the current market cycle.
+Cheers,
+ -- Guido
 
-Aseel Islamic finance PJSC is acting as a lender and the fund will be
-disbursed on a clear interest rate of 3.5% annually to the equity
-partners and entrepreneurs for their investment projects. We also give
-a 2% commission to brokers, who bring project owners for finance or
-other opportunities.
-
-For further details, kindly send us your business plans or project summary.
-
-Regards,
-
-
-Mr. Ibn Ahmad Mustafa
-International Business Coordinator
-Aseel Islamic Finance PJSC
-Al Mankhool, Dubai C2 Tower,
-Ground floor,P.O 94669 Dubai, UAE
-Abu Dhabi - United Arab Emirates
-Email : ahmadmustafa.7800@gmail.com
+> 
+> Cheers,
+>  -- Guido
+> 
+> > 
+> > >  	return ret;
+> > >  }
+> > >  EXPORT_SYMBOL(drm_bridge_attach);
+> > 
+> > -- 
+> > Regards,
+> > 
+> > Laurent Pinchart
+> > 
