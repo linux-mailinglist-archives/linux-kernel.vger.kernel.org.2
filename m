@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A5442C5B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C01142C5BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237820AbhJMQDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237837AbhJMQDA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:03:00 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBC8C061766;
-        Wed, 13 Oct 2021 09:00:56 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id r17so2966381qtx.10;
-        Wed, 13 Oct 2021 09:00:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JqXrOW1sz81l7piXeJ6TmVlYLqW03X51G3JR7Qr/jYw=;
-        b=mpN2Ljf6OWSB7Vva54RoUDfZ6Q3KNqIBKGRBHhpr6j0955npGcPr5zboDSUBt8+OMH
-         EbZ15JvJ8T9M34AHEeXip3qHWrrwS+RDrwcbLh6ae9OehrnQuln0mj6XWCG8yRJggHON
-         0pj2mXcE83TZsXJ+XFyx2B5Ab/O3ZD3l+KemPRGhyWYRAb4xLaMriSsH93pgR9KJuZE9
-         yMiHo+XQJe1ULyeEfm3PFiC1JJH0+eqWGovjNWEmDK0d4rHzyZsOvvtoPEw+Bl+fEnGj
-         T70aXIcDaPrG2hp+p06tgaDc78NMCEQ4yfI9X+tHBnhAr+cT+KfhdmpwvJXgtLkumthE
-         OU0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JqXrOW1sz81l7piXeJ6TmVlYLqW03X51G3JR7Qr/jYw=;
-        b=3NMlPSOYk7nv8PmoMxHVQaBDIywu5nMbJYhjx875NMlsNIixHWtzSKxsTf3il3qgEu
-         CHq2ykdYX19bWCkmFXMTGwDl8ZSgpDMCil4HT/C1jv+UlKGVkmPszV91Cb8Kor+zpmPJ
-         GiQZjz86dirbHJ1NKzsG0vHCs6i6HFgNAYXMIgVSahv2S5udfmUk7mbT12zTi1uDBhuj
-         hgzgxa+WrbRyF19m7P2y1Lznj5uIIhSTB0r65FUkBzWWT42HdKls7pPgsqo4SC3DG5Jq
-         NpG7QMsTVgAD7tIl6u80On1ph2b9kIG3SjJwAqwys7JLDdAKvlgntQvd2Rvm+k++4pU4
-         ccHA==
-X-Gm-Message-State: AOAM531ew/WfJlLgUTLdq5XB3I6EvVdrgMf2siuzq2givs237NIKSKLU
-        1GSqhX6air5i8Z7erx30h32I2xMtVSzW
-X-Google-Smtp-Source: ABdhPJx1ckUYAdslQAAfyG6CdVNk5O/7d27iKRx/bXp+Qol0mRi3VXuk+NUm3TZhT+H2RMTyLjJvOw==
-X-Received: by 2002:a05:622a:186:: with SMTP id s6mr58015qtw.323.1634140855563;
-        Wed, 13 Oct 2021 09:00:55 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id w17sm20161qts.53.2021.10.13.09.00.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 09:00:54 -0700 (PDT)
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, linux-raid@vger.kernel.org,
-        linux-block@vger.kernel.org, axboe@kernel.dk
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        alexander.h.duyck@linux.intel.com
-Subject: [PATCH 5/5] brd: Kill usage of page->index
-Date:   Wed, 13 Oct 2021 12:00:34 -0400
-Message-Id: <20211013160034.3472923-6-kent.overstreet@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211013160034.3472923-1-kent.overstreet@gmail.com>
-References: <20211013160034.3472923-1-kent.overstreet@gmail.com>
+        id S236683AbhJMQDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:03:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234299AbhJMQDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 12:03:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 420FD61163;
+        Wed, 13 Oct 2021 16:01:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634140890;
+        bh=ZcDHjeRbgYldiN+EnZbgK8dxzhD9aFEKrAyPnXY8lPY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ABu1UtyAkUZRQbClGExgGowpLgosEe5Hj5VWtx3iYLctEXI9CAU9Sb7I1zpAg7Ob+
+         0l1C6OCCsVq0y5YSAZGFBvAFNgypdmqSHUqATY3WKOWHFaacZIQPZiO5X/8TLtk3Df
+         GYW03I3i59UJ+fPp1Buwhd4W4t5f0FpJqC5Z0YIx/IBDdyWS+9ka9BaKZG2nYbiEO2
+         daY2q7H/qwNRe4mKqnCeulT9PFllORoXxhUQ03ITerAdlCf/9WxfS5zt74Bw0iK7Kr
+         B1ldeb1igpHSZDCj8KkAguDmwYQFgjxV5o9sOoqC3SlDgfpXPCyqNbBqls+5mE+77T
+         0YA2wzbPkaHTw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        He Ying <heying24@huawei.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] cpuidle: tegra: add ARCH_SUSPEND_POSSIBLE dependency
+Date:   Wed, 13 Oct 2021 18:01:19 +0200
+Message-Id: <20211013160125.772873-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As part of the struct page cleanups underway, we want to remove as much
-usage of page->mapping and page->index as possible, as frequently they
-are known from context.
+From: Arnd Bergmann <arnd@arndb.de>
 
-In the brd code, we're never actually reading from page->index except in
-assertions, so references to it can be safely deleted.
+Some StrongARM processors don't support suspend, which leads
+to a build failure with the tegra cpuidle driver:
 
-Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+WARNING: unmet direct dependencies detected for ARM_CPU_SUSPEND
+  Depends on [n]: ARCH_SUSPEND_POSSIBLE [=n]
+  Selected by [y]:
+  - ARM_TEGRA_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_TEGRA [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
+
+arch/arm/kernel/sleep.o: in function `__cpu_suspend':
+(.text+0x68): undefined reference to `cpu_sa110_suspend_size'
+
+Add an explicit dependency to make randconfig builds avoid
+this combination.
+
+Fixes: faae6c9f2e68 ("cpuidle: tegra: Enable compile testing")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/block/brd.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/cpuidle/Kconfig.arm | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/block/brd.c b/drivers/block/brd.c
-index 58ec167aa0..0a55aed832 100644
---- a/drivers/block/brd.c
-+++ b/drivers/block/brd.c
-@@ -72,8 +72,6 @@ static struct page *brd_lookup_page(struct brd_device *brd, sector_t sector)
- 	page = radix_tree_lookup(&brd->brd_pages, idx);
- 	rcu_read_unlock();
- 
--	BUG_ON(page && page->index != idx);
--
- 	return page;
- }
- 
-@@ -108,12 +106,10 @@ static struct page *brd_insert_page(struct brd_device *brd, sector_t sector)
- 
- 	spin_lock(&brd->brd_lock);
- 	idx = sector >> PAGE_SECTORS_SHIFT;
--	page->index = idx;
- 	if (radix_tree_insert(&brd->brd_pages, idx, page)) {
- 		__free_page(page);
- 		page = radix_tree_lookup(&brd->brd_pages, idx);
- 		BUG_ON(!page);
--		BUG_ON(page->index != idx);
- 	} else {
- 		brd->brd_nr_pages++;
- 	}
+diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
+index 2cc3c208a180..af97992eaa82 100644
+--- a/drivers/cpuidle/Kconfig.arm
++++ b/drivers/cpuidle/Kconfig.arm
+@@ -100,6 +100,7 @@ config ARM_MVEBU_V7_CPUIDLE
+ config ARM_TEGRA_CPUIDLE
+ 	bool "CPU Idle Driver for NVIDIA Tegra SoCs"
+ 	depends on (ARCH_TEGRA || COMPILE_TEST) && !ARM64 && MMU
++	depends on ARCH_SUSPEND_POSSIBLE
+ 	select ARCH_NEEDS_CPU_IDLE_COUPLED if SMP
+ 	select ARM_CPU_SUSPEND
+ 	help
 -- 
-2.33.0
+2.29.2
 
