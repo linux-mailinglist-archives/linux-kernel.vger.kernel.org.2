@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6070B42B22F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F11D42B231
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237630AbhJMBTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 21:19:53 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33012 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237675AbhJMBTS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 21:19:18 -0400
-X-UUID: 95088808a2954397beafa37b1f51ae8a-20211013
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=t7k1wvNec9YBr9g8AUC0Ax/3BfSKfgXeVcp0+CHknXw=;
-        b=gSOSFIYR15LI3h2XykYFJbMAFA/8uSLSYAH7h1HmaTrx0h7TEpp+GI6pIFqlQ86p6Xa0Uem7ynBZ/hWAK+9BA/FxZ2Sw4p0bw3key4huIN1MZ2KvAirdIJMfVimcr6ogGC+DzbCH9PKR6OPAXy0AXpvUlNG4cWF6MXHATcocpaI=;
-X-UUID: 95088808a2954397beafa37b1f51ae8a-20211013
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <yunfei.dong@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 98030683; Wed, 13 Oct 2021 09:17:12 +0800
-Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 13 Oct 2021 09:17:12 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 13 Oct
- 2021 09:17:11 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 13 Oct 2021 09:17:09 +0800
-Message-ID: <b3fa00e8b66658e120279e37261cbdb5db7edf52.camel@mediatek.com>
-Subject: Re: [PATCH v6, 00/15] Using component framework to support multi
- hardware decode
-From:   "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-CC:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        "Tiffany Lin" <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Date:   Wed, 13 Oct 2021 09:17:13 +0800
-In-Reply-To: <CAAEAJfCHEBFc8B7C0bu7UxtJdffvDarqgA-rset1wPjLOiV01A@mail.gmail.com>
-References: <20210901083215.25984-1-yunfei.dong@mediatek.com>
-         <CAAEAJfDOt_GyDPojcj5P6Wou9HC2GC8YzRt2wYyqdrCOjfeOog@mail.gmail.com>
-         <3b9463e88d88ce85205da08f8263252da7726ade.camel@mediatek.com>
-         <aba7fb4ffe6e45ac90869b5017468386bce64d28.camel@mediatek.com>
-         <b7ed8b71578a98704e9b8ca29cac63c67cc14b3f.camel@mediatek.com>
-         <CAAEAJfCHEBFc8B7C0bu7UxtJdffvDarqgA-rset1wPjLOiV01A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S236259AbhJMBVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 21:21:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235775AbhJMBU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 21:20:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2813D60EB4;
+        Wed, 13 Oct 2021 01:18:55 +0000 (UTC)
+Date:   Tue, 12 Oct 2021 21:18:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] user_events: Enable user processes to create and write
+ to trace events
+Message-ID: <20211012211852.2bbf921b@oasis.local.home>
+In-Reply-To: <20211011162523.GA1542@kbox>
+References: <20211005224428.2551-1-beaub@linux.microsoft.com>
+        <20211007012827.99cd5795140cbb0c932e1b5a@kernel.org>
+        <20211006175611.GA2995@kbox>
+        <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
+        <20211007162204.GA30947@kbox>
+        <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
+        <20211008000540.GA31220@kbox>
+        <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
+        <20211011162523.GA1542@kbox>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRXplcXVpZWwsDQoNClRoYW5rcyBmb3IgeW91ciBmZWVkYmFjaywNCg0KVGhlIGRyaXZlciBj
-YW4gd29yayB3ZWxsIG5vdyBhY2NvcmRpbmcgdG8geW91ciBhZHZpY2Ugd2l0aA0Kb2ZfcGxhdGZv
-cm1fcG9wdWxhdGUgaW50ZXJmYWNlLg0KDQpJbiBvcmRlciB0byBzZXBhcmF0ZSBwYXJlbnQgbm9k
-ZSB3aXRoIGNoaWxkcmVuIG5vZGUsIHBhcmVudCBub2RlIGlzDQptYXN0ZXIgZGV2aWNlLCBjaGls
-ZHJlbiBub2RlIGlzIGNvbXBvbmVudCBkZXZpY2UuDQoNClRoZSBtYXN0ZXIgYW5kIGNvbXBvbmVu
-dCBhcmUgcmVnaXN0ZXJlZCBwbGF0Zm9ybSBkZXZpY2UuDQoNCg0KQ291bGQgeW91IHBsZWFzZSBo
-ZWxwIHRvIHJldmlldyB0aGUgcGF0Y2ggYWdhaW4gd2hlbiB5b3UgYXJlIGZyZWU6DQoNCmh0dHBz
-Oi8vcGF0Y2h3b3JrLmxpbnV4dHYub3JnL3Byb2plY3QvbGludXgtbWVkaWEvY292ZXIvMjAyMTEw
-MTEwNzAyNDcuNzkyLTEteXVuZmVpLmRvbmdAbWVkaWF0ZWsuY29tLw0KDQpCZXN0IFJlZ2FyZHMs
-DQpZdW5mZWkgRG9uZw0KDQpPbiBTdW4sIDIwMjEtMDktMjYgYXQgMTE6NTEgLTAzMDAsIEV6ZXF1
-aWVsIEdhcmNpYSB3cm90ZToNCj4gT24gU3VuLCAyNiBTZXB0IDIwMjEgYXQgMDU6MjcsIHl1bmZl
-aS5kb25nQG1lZGlhdGVrLmNvbQ0KPiA8eXVuZmVpLmRvbmdAbWVkaWF0ZWsuY29tPiB3cm90ZToN
-Cj4gPiANCj4gPiBIaSBFemVxdWllbCwNCj4gPiANCj4gPiBDb3VsZCB5b3UgcGxlYXNlIGhlbHAg
-dG8gZ2l2ZSBzb21lIGZlZWRiYWNrIHdoZW4geW91IGFyZSBmcmVlIGZvcg0KPiA+IGlvbW11DQo+
-ID4gbGltaXRhdGlvbj8NCj4gPiANCj4gDQo+IEhvdyBhYm91dCB5b3Ugd29yayBvbiB0aGUgYXJj
-aGl0ZWN0dXJlIEkgb3JpZ2luYWxseSBzdWdnZXN0ZWQ/DQo+IA0KPiBBcyB0aGUgc2F5aW5nIGdv
-ZXMsIHRhbGsgaXMgY2hlYXAsIHNob3cgdXMgdGhlIGNvZGUuDQo+IFNvIGxldCdzIHNlZSB0aGUg
-Y29kZSBhbmQgbGV0J3MgZGlzY3VzcyB0aGUgbGltaXRhdGlvbnMNCj4gd2l0aCB0aGUgY29kZS4N
-Cj4gDQo+ID4gQWNjb3JkaW5nIHRvIGdvb2dsZSdzIHN1Z2dlc3Rpb24sIGl0J3MgYmV0dGVyIG5v
-dCB0byB1c2UgdjRsMiBhc3luYw0KPiA+IGFsc28uDQo+IA0KPiBIdW0/IEkgaGF2ZW4ndCBzZWVu
-IHN1Y2ggb2JqZWN0aW9uIG9uIHRoZSBtYWlsaW5nIGxpc3QuDQo+IA0KPiBUaGFua3MsDQo+IEV6
-ZXF1aWVsDQo=
+On Mon, 11 Oct 2021 09:25:23 -0700
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> 
+> Yes, in my mind there are two options to avoid kernel memory usage
+> per-event.
+> 
+> 1.
+> We have a an array per file struct that is independently ref-counted.
+> This is required to ensure lifetime requirements and to ensure user code
+> cannot access other user events that might have been free'd outside of
+> the lifetime and cause a kernel crash.
+> 
+> This approach also requires 2 int's to be returned, 1 for the status
+> page the other a local index for the write into the above array per-file
+> struct.
+> 
+> This is likely the most complex method due to it's lifetime and RCU
+> synchronization requirements. However, it represents the least memory to
+> both kernel and user space.
 
+Does it require RCU synchronization as the updates only happen from
+user space. But is this for the writing of the event? You want a
+separate fd for each event to write to, instead of saying you have
+another interface to write and just pass the given id?
+
+> 
+> 2.
+> We have a anon_inode FD that gets installed into the user process and
+> returned via the ioctl from user_events tracefs file. The file struct
+> backing the FD is shared by all user mode processes for that event. Like
+> having an inject/marker file per-event in the user_events subsystem.
+> 
+> This approach requires an FD returned and either an int for the status
+> page or the returend FD could expose the ID via another IOCTL being
+> issued.
+> 
+> This is the simplest method since the FD manages the lifetime, when FD
+> is released so is the shared file struct. Kernel side memory is reduced
+> to only unique events that are actively being used. There is no RCU or
+> synchronization beyond the FD lifetime. The user mode processes does
+> incur an FD per-event within their file description table. So they
+> events charge against their FD per-process limit (not necessarily a bad
+> thing).
+> 
+> This also seems to follow the pre-existing patterns of tracefs
+> (trace_marker, inject, format, etc all have a shared file available to
+> user-processes that have been granted access). For our case, we want
+> that, but we want it on a access boundary to who all have access to the
+> user_events_* tracefs files. We don't want to open up all of tracefs
+> widely.
+> 
+> > > I want to make
+> > > sure the complexity is worth it. Is the overhead of an FD per event in
+> > > user space too much?  
+> > 
+> > It depends on the use case, how much events you wants to use with
+> > the user-events. If there are hundreds of the evets, that will consume
+> > kernel resources and /proc/*/fd/ will be filled with the event's fds.
+> > But if there is a few events, I think no problem.
+> >   
+> In our own use case this will be low due to the way we plan to use the
+> events. However, I am not sure others will follow that :)
+
+I will say, whenever we say this will only have a "few", if it becomes
+useful, it will end up having many.
+
+-- Steve
