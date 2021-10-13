@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970B942BA97
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF38242BA9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbhJMIhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232922AbhJMIhS (ORCPT
+        id S233813AbhJMIjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:39:04 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:29076 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhJMIjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:37:18 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69AEC061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 01:35:15 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id x27so8446843lfu.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 01:35:15 -0700 (PDT)
+        Wed, 13 Oct 2021 04:39:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SefPEr/moa6wKQbCWN6jZ4XKEiadGETzM9Rm53D/EzU=;
-        b=vknABL3GD8R2SCx+yRHuxuXifwOW2ayrE5DQjDemq83z5+4G7v2Rwp4QdzWEmDtUl6
-         RhQj49RaP8tSRCqWRlUiUayLRCxAGMR9IxJmXLlKsScV9r0+QXFUUfgAgD84t9oekgpc
-         ztBwHaKrhwuXXOarPxkgoztR0ybOIwhXwX6XM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SefPEr/moa6wKQbCWN6jZ4XKEiadGETzM9Rm53D/EzU=;
-        b=03bFnvSNxT7fXje4CGfa76atZ4khqmj4Hef/xCeag8dOwutXPvtHKj2M5y3xg0NcOq
-         ZGV+q+BP9DEsZp2NGp3fwmUwQ2D/XCVfJ3tM+t1AhKbEDUJV+mTGMZV3M3w9zYJcGPvo
-         DFUoXhl3ERcheqjpqkNIrxbLqyjnc4zsVtu5pKlCI4nmrV5jbCA12JkZSoyvIMVEWz4I
-         PWB0i+JU0P0Upr1n/zGaxsx7bhJijaVhWHh6+GY9eTLv6rCniGqrxnGapHtSct7GWBI9
-         ODbnk4DBNxRdNBy+Vkc5jXnF+MtOLXEpnsAzhH8+XwzmzSJU4Ykv1JS/NZRGqofuiRsA
-         W5lg==
-X-Gm-Message-State: AOAM531MWHDL5cge9sipKK30Ye7mURyZEbqymg06h2xrhcfi96OxrEIK
-        0CFA2d6ZoI/SCyvOk0vwlHnKzMrxftgpZqLEeoDskg==
-X-Google-Smtp-Source: ABdhPJxwVjBoXGbdxEOjKa3jafLF2MTLf7MWOKnf9TsyT7qGPhKyGXz2Y2SQhSx02NS3pjnpCMIzIPz7JhLyZOSw7zM=
-X-Received: by 2002:a05:6512:314b:: with SMTP id s11mr13005772lfi.206.1634114114183;
- Wed, 13 Oct 2021 01:35:14 -0700 (PDT)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1634114220; x=1665650220;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=1wd9chj+GDl1ze4cZrlHuRft42asnGxq4BfF+IvjuH8=;
+  b=HSfQm3gTa+54mqfR7JK9jOCIvA2iX8VYPj3C6VpFuRDdSxZEUoxKHAvC
+   dhIy+r0t/YcHzVn03bUfoEuiy5Gdmi6X55Jv6noOG33SfnDTT6iswLVNl
+   ZDcLK/Vwqu9XiGYQy31xV7Nl6wgTBxp7fxwB3hAv3q7dXAL18Cg9iBxMC
+   I=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 13 Oct 2021 01:37:00 -0700
+X-QCInternal: smtphost
+Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 01:37:00 -0700
+Received: from [10.233.23.112] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Wed, 13 Oct 2021
+ 01:36:58 -0700
+Subject: Re: [RESEND PATCH v1 8/9] spmi: pmic-arb: make interrupt support
+ optional
+To:     Stephen Boyd <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>
+References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com>
+ <1631860384-26608-9-git-send-email-quic_fenglinw@quicinc.com>
+ <163406051353.936959.12718174954614897750@swboyd.mtv.corp.google.com>
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+Message-ID: <3bf1fbf3-e741-ef08-a4e4-b348b877d02a@quicinc.com>
+Date:   Wed, 13 Oct 2021 16:36:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211012135935.37054-1-lmb@cloudflare.com> <20211012135935.37054-5-lmb@cloudflare.com>
- <836d9371-7d51-b01f-eefd-cc3bf6f5f68e@6wind.com>
-In-Reply-To: <836d9371-7d51-b01f-eefd-cc3bf6f5f68e@6wind.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 13 Oct 2021 09:35:03 +0100
-Message-ID: <CACAyw99ZfALrTRYKOTifWXCRFS9sUOhONbyEyWjTBdzFE4fpQQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] bpf: export bpf_jit_current
-To:     nicolas.dichtel@6wind.com
-Cc:     Luke Nelson <luke.r.nels@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <163406051353.936959.12718174954614897750@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 at 17:29, Nicolas Dichtel <nicolas.dichtel@6wind.com> w=
-rote:
+
+On 10/13/2021 1:41 AM, Stephen Boyd wrote:
+> Quoting Fenglin Wu (2021-09-16 23:33:03)
+>> From: David Collins <collinsd@codeaurora.org>
+>>
+>> Make the support of PMIC peripheral interrupts optional for
+>> spmi-pmic-arb devices.  This is useful in situations where
+>> SPMI address mapping is required without the need for IRQ
+>> support.
+>>
+>> Signed-off-by: David Collins <collinsd@codeaurora.org>
+>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+>> ---
+>>   drivers/spmi/spmi-pmic-arb.c | 45 +++++++++++++++++++++++++++-----------------
+> Is there a binding update? Can the binding be converted to YAML as well?
+This change doesn't add/update any dtsi properties but just checking if an
+existing property is present to decide if IRQ support is required, so no
+binding change is needed.
 >
-> Le 12/10/2021 =C3=A0 15:59, Lorenz Bauer a =C3=A9crit :
-> > Expose bpf_jit_current as a read only value via sysctl.
-> >
-> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > ---
->
-> [snip]
->
-> > +     {
-> > +             .procname       =3D "bpf_jit_current",
-> > +             .data           =3D &bpf_jit_current,
-> > +             .maxlen         =3D sizeof(long),
-> > +             .mode           =3D 0400,
-> Why not 0444 ?
-
-This mirrors what the other BPF related sysctls do, which only allow
-access from root with CAP_SYS_ADMIN. I'd prefer 0444 as well, but
-Daniel explicitly locked down these sysctls in
-2e4a30983b0f9b19b59e38bbf7427d7fdd480d98.
-
-Lorenz
-
---
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+>>   1 file changed, 28 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
+>> index 988204c..55fa981 100644
+>> --- a/drivers/spmi/spmi-pmic-arb.c
+>> +++ b/drivers/spmi/spmi-pmic-arb.c
+>> @@ -1280,10 +1280,12 @@ static int spmi_pmic_arb_probe(struct platform_device *pdev)
+>>                  goto err_put_ctrl;
+>>          }
+>>   
+>> -       pmic_arb->irq = platform_get_irq_byname(pdev, "periph_irq");
+>> -       if (pmic_arb->irq < 0) {
+>> -               err = pmic_arb->irq;
+>> -               goto err_put_ctrl;
+>> +       if (of_find_property(pdev->dev.of_node, "interrupt-names", NULL)) {
+> I don't think we should be keying off of interrupt-names. Instead we
+> should be checking for something else. Maybe interrupt-controller
+> property?
+Sure, I can update it to check the presence of "interrupt-controller" 
+property.
+>> +               pmic_arb->irq = platform_get_irq_byname(pdev, "periph_irq");
+>> +               if (pmic_arb->irq < 0) {
+>> +                       err = pmic_arb->irq;
+>> +                       goto err_put_ctrl;
