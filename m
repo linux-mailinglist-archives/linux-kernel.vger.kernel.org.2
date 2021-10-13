@@ -2,89 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCC742B57D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A09F42B59A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237735AbhJMFgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 01:36:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38789 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229524AbhJMFgw (ORCPT
+        id S230198AbhJMFjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 01:39:52 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:41661 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhJMFjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 01:36:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634103289;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s9r2xR2EqP/t5FLsHTwtUUvaANXfO/gylgaJSKQRa+8=;
-        b=Aln7cKPDmSmUrSA3Px3eLIZFm9ZulRJ2HLhmjniDv0H6jQ0qVcRM8Lq6QDTAVfhxTmMY96
-        BhaRJirC3jSg/8iKsx5qa+Q/TROzE9QEfG/WKSlkuC8Pb9LCK36tide8InEHXfFSZdcGjQ
-        L2vYctiPpGMoxQd8nkdS/6NZ8polaYA=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-4vdsWIRUNby4wvcWIRvbqw-1; Wed, 13 Oct 2021 01:34:47 -0400
-X-MC-Unique: 4vdsWIRUNby4wvcWIRvbqw-1
-Received: by mail-ed1-f70.google.com with SMTP id z23-20020aa7cf97000000b003db7be405e1so1197826edx.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 22:34:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=s9r2xR2EqP/t5FLsHTwtUUvaANXfO/gylgaJSKQRa+8=;
-        b=y/RQxhCdwlsa6p9i4sHDBb2GfFbcOXe2NB+Uosb0ExhQvjHu9r/PBY4T3w8qwjiZLT
-         KfF5ptU9i7Fq8IeOVEgthLahdDLPiYbZ3ZkYQWIGMop+ywIQAg1jkIYXX+BgCs8xv0fP
-         99TtnyOSO/6R4Knj7azGhTr3JuLxQ3VthhHPmxI7ulL3xmJHLEqISL7UPxduuzACwdyD
-         r/w/xZl4+wEYsomLj6FkwAd1O8yn6p9r6+cwbDdzgyyvbiZRYsojgr2hrwzO6uaiRDa4
-         lbbU5chFM1Jfd5HipyVP2rZ7zdunwTuxqOKy8KKZX7l/KPIftaGr97L1PFp8vWwOjF5e
-         QN4A==
-X-Gm-Message-State: AOAM5306ejGIWN39SCaG3no04uREV6QlUjJcR6+pTg/38mToHI9P9L1F
-        rgJi2e3b3m0cbpgeAC9VuRCN0cAq2y2hjdxvfyBer7aE9ljEQlysEaRg3T7gjHQUjuNl/a3KcrI
-        ELHbTufA5/GW0uLLrt0K4v+4W
-X-Received: by 2002:a05:6402:2684:: with SMTP id w4mr6554722edd.108.1634103286330;
-        Tue, 12 Oct 2021 22:34:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxvbp0lfx3vs0ck1sseLJlqp7mWqgndzQU8vzGaHBI2q4E7j80ZWXtMNpOrO5LTzF7xq9/gig==
-X-Received: by 2002:a05:6402:2684:: with SMTP id w4mr6554698edd.108.1634103286140;
-        Tue, 12 Oct 2021 22:34:46 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x26sm1916924ejf.103.2021.10.12.22.34.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Oct 2021 22:34:45 -0700 (PDT)
-Message-ID: <cc8893f1-df60-2155-d3b6-f889bc1c2201@redhat.com>
-Date:   Wed, 13 Oct 2021 07:34:43 +0200
+        Wed, 13 Oct 2021 01:39:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1634103468; x=1665639468;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=9fhbkTDJxMCsx3vMwgVwFc3cEfidix11BjFd5kmmHMw=;
+  b=nTVwUbg4cO4stmFmE0DlKbpGWG7NKr2Nz2vb26HB5CQfVAIjF4HYidBD
+   HboO4/uBKbk4pmNlAtQHZJcssmbuA+s4H7WxA0qHk2iEtP+5n8GH7l6Cx
+   kzXQKfiJGYGnWQ4N1DYGS/nTPFGc9h39NM5A23zt0HZ7KsTANQGia6+Wu
+   s=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 12 Oct 2021 22:37:48 -0700
+X-QCInternal: smtphost
+Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 22:37:48 -0700
+Received: from [10.231.205.174] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Tue, 12 Oct 2021
+ 22:37:46 -0700
+Subject: Re: [RESEND PATCH v1 5/9] spmi: pmic-arb: correct duplicate APID to
+ PPID mapping logic
+To:     Stephen Boyd <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>
+References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com>
+ <1631860384-26608-6-git-send-email-quic_fenglinw@quicinc.com>
+ <163406067294.936959.15501496135258886323@swboyd.mtv.corp.google.com>
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+Message-ID: <a81b19e2-c2f9-42a5-b976-85e064781287@quicinc.com>
+Date:   Wed, 13 Oct 2021 13:37:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [patch 16/31] x86/fpu: Replace KVMs homebrewn FPU copy to user
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org
-References: <20211011215813.558681373@linutronix.de>
- <20211011223611.249593446@linutronix.de>
- <0d222978-014a-cdcb-f8aa-5b3179cb0809@redhat.com> <87fst6b0f5.ffs@tglx>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <87fst6b0f5.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <163406067294.936959.15501496135258886323@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/21 19:47, Thomas Gleixner wrote:
->> The memset(guest_xsave, 0, sizeof(struct kvm_xsave)) also is not
->> reproduced, you can make it unconditional for simplicity; this is not a
->> fast path.
-> Duh, I should have mentioned that in the changelog. The buffer is
-> allocated with kzalloc() soe the memset is redundant, right?
 
-Yes, I always confuse the __user pointers with the temporary ones that 
-are allocated in the callers.
-
-Paolo
-
+On 10/13/2021 1:44 AM, Stephen Boyd wrote:
+> Quoting Fenglin Wu (2021-09-16 23:33:00)
+>> From: David Collins <collinsd@codeaurora.org>
+>>
+>> Correct the way that duplicate PPID mappings are handled for PMIC
+>> arbiter v5.  The final APID mapped to a given PPID should be the
+>> one which has write owner = APPS EE, if it exists, or if not
+>> that, then the first APID mapped to the PPID, if it exists.
+>>
+>> Signed-off-by: David Collins <collinsd@codeaurora.org>
+>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+>> ---
+> Does this need a Fixes tag?
+ACK, will add a Fixes tag
+>
+>>   drivers/spmi/spmi-pmic-arb.c | 13 +++++++------
+>>   1 file changed, 7 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
+>> index 59c445b..f1b72d8 100644
+>> --- a/drivers/spmi/spmi-pmic-arb.c
+>> +++ b/drivers/spmi/spmi-pmic-arb.c
+>> @@ -918,7 +918,8 @@ static int pmic_arb_read_apid_map_v5(struct spmi_pmic_arb *pmic_arb)
+>>           * version 5, there is more than one APID mapped to each PPID.
+>>           * The owner field for each of these mappings specifies the EE which is
+>>           * allowed to write to the APID.  The owner of the last (highest) APID
+>> -        * for a given PPID will receive interrupts from the PPID.
+>> +        * which has the IRQ owner bit set for a given PPID will receive
+>> +        * interrupts from the PPID.
+>>           */
+>>          for (i = 0; ; i++, apidd++) {
+>>                  offset = pmic_arb->ver_ops->apid_map_offset(i);
+>> @@ -941,16 +942,16 @@ static int pmic_arb_read_apid_map_v5(struct spmi_pmic_arb *pmic_arb)
+>>                  apid = pmic_arb->ppid_to_apid[ppid] & ~PMIC_ARB_APID_VALID;
+>>                  prev_apidd = &pmic_arb->apid_data[apid];
+>>   
+>> -               if (valid && is_irq_ee &&
+>> -                               prev_apidd->write_ee == pmic_arb->ee) {
+>> +               if (!valid || apidd->write_ee == pmic_arb->ee) {
+>> +                       /* First PPID mapping or one for this EE */
+>> +                       pmic_arb->ppid_to_apid[ppid] = i | PMIC_ARB_APID_VALID;
+>> +               } else if (valid && is_irq_ee &&
+>> +                          prev_apidd->write_ee == pmic_arb->ee) {
+> This can be one line please.
+ACK.
+>>                          /*
+>>                           * Duplicate PPID mapping after the one for this EE;
+>>                           * override the irq owner
+>>                           */
+>>                          prev_apidd->irq_ee = apidd->irq_ee;
+>> -               } else if (!valid || is_irq_ee) {
+>> -                       /* First PPID mapping or duplicate for another EE */
+>> -                       pmic_arb->ppid_to_apid[ppid] = i | PMIC_ARB_APID_VALID;
+>>                  }
+>>   
+>>                  apidd->ppid = ppid;
+>> -- 
+>> 2.7.4
+>>
