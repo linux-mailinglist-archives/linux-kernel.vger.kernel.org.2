@@ -2,189 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1339342C457
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F2542C460
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236921AbhJMPD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 11:03:29 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:43663 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236847AbhJMPDK (ORCPT
+        id S236961AbhJMPFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 11:05:09 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:45834
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237775AbhJMPDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:03:10 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 70D2F5C0098;
-        Wed, 13 Oct 2021 11:01:06 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 13 Oct 2021 11:01:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=JT3rF9I4EV/hP/NrO3DfS+hQTjz
-        QdnfHkTyQokP/KfM=; b=BKE9wmc5whTAODhKWdKIpLLqsi8Ku654esYrrhhAuxe
-        PXk4OIpRXE00kSt0aBbosoxnKo1qL6emQ7WafyOqHrUHD3YMDoR3FUpiYBKhujaB
-        PeW9PluLZte5NFyh0/iOkATe2UIlZIC42GFU2wH6B7MsfF10d+ptHJFt9I6Mi1mc
-        rNu6zPP1Xnv5Tg0pQRfpFUElrshzyJk2RGVd9zvXO72CF56j41gcdhAPBJpTEOJQ
-        JK2EMhlxbv/lzf1uzNbA0j8PHR2qrECWBMdWD/Bzi7utbTgSy6Bwodv96wz0tBTP
-        vGCXHZSEonY7n8ByWlPKP+lo0GcXhYOsc5IIihqikvQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=JT3rF9
-        I4EV/hP/NrO3DfS+hQTjzQdnfHkTyQokP/KfM=; b=BiguNnSr5azHDSd6uETkks
-        xI7CmBYQzX1k5J/bo77SomyMdrPDGPayDC6YdiW6kS0saYOVh3iQnM0qar7b1CIR
-        43u8UKAQxhK5cw2tGOgqcrl/pV/2Iqdkn4zrda5adKUdCMf7whNIagcKEm81uWKe
-        ccf6iGK7jE26gFrXnfx4Jk7Il+LGNvD3xf/l/37aNYQr40E30Q728c5DSK1cig1F
-        j9JMjD+lYLVvAUV77dgIoEwsI7V+DOy4LCymZSRfjkWr4Q2UawhkWle6A4lyQTDV
-        xhK/i4MF8bk7/TSzDWNeppJT83i7kh2aq0L24YAOj1hroqX9gjXXs4RFgB9Jnaqg
-        ==
-X-ME-Sender: <xms:sfRmYSzRYNcXEV1iFDb8bz6XGL-QZQe5DxGkUd2OeZKbB2fs-IFG0A>
-    <xme:sfRmYeSzrPQWbQBkBszrKlou7ZctwUV06QunlXQf_-CtUTLuQmp4kiJ6CJxVo8w-4
-    0c0D3fO9EZOHd9yiTo>
-X-ME-Received: <xmr:sfRmYUXIt9yiQv4Pr8ZN2JqcbvVo1V3egH8iOBfY2Y87n_O1UXKObcpVGqW-GTNX2xQ6qDzAeD9quiCtsCN2pHzLCviZkQUEjq6lR6U9>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddutddgkeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:sfRmYYivrdLJU2l2yVMMVGzfMn9MUBV-7qEFu3tdk50dueQDuCpBYQ>
-    <xmx:sfRmYUCxS70-9SFbLFORyvw18s-MpDZ3HT2CXj-xxPqqfvKDaewTcA>
-    <xmx:sfRmYZKUYAKsEAV7a-dr5Je5uVTDupv8dzI49OtfF8G_n0c0Q-p43A>
-    <xmx:svRmYT6KNJGPJrGm9Aes5mwgfAig4nHoNPSSyauSyv0TmY1_DkrsdA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 Oct 2021 11:01:05 -0400 (EDT)
-Date:   Wed, 13 Oct 2021 17:01:03 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Regression with mainline kernel on rpi4
-Message-ID: <20211013150103.p3rea3ny3rjmohtd@gilmour>
-References: <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
- <CAHk-=wi=8Wp31FSyOH5A8KY+7f3dSuP62zUpvTtyvENm1Hh7xA@mail.gmail.com>
- <CADVatmNZB6yjS6zXqUcY4xsUTyX3pa6VysB6RmT1CGV5LXer6g@mail.gmail.com>
- <CAHk-=wh+y=C5hVhE1X=AvZz+OM5Yp8eLHYGth31pfoJVF7UKKQ@mail.gmail.com>
- <CADVatmPDeSxeY3GTZyC6+G0N76su0E6Y3LF_h6BOcBf5QAtjvg@mail.gmail.com>
- <CAHk-=whASMriPYRdH8kxC_UwObBtwHbPvf7rb58sUEZZyaFxJg@mail.gmail.com>
- <20210924133022.waqgtr5xjjxigong@gilmour>
- <CAKMK7uFxO-ss86k483VJQJiHwcAYxNwD06xSEZStn+fWiRJ6iw@mail.gmail.com>
- <20210928083446.cfji7hmndt6a5nop@gilmour>
- <YVWBP5ZJInH/wt1P@phenom.ffwll.local>
+        Wed, 13 Oct 2021 11:03:21 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8B23A40016
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:01:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634137276;
+        bh=xYuV2MmQladXcPP7bw44n/vAd85hc1wnSNxzKdpoKHU=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=h/QXGNQ6m1uR7tRK3CIgv+bWw+nupVn7pe1kAe5t9gLcWICbqxFktHubqMlefJyXZ
+         r9h/t08O0MBlx3IK3OB0k+exGFDs55Zs+JezlrzE6UtYngOOJQsf6SVXd2+QPql2Ex
+         omo5Zh/p+ywpyP2Z4NPqn0X9bmxlz2Bzi3lDwV4tC5uZ9Vg8Wbs93ORlvyuZRZ20rQ
+         9o69lMx7hNW9oRyHC/o09MJSDcgx8mpp4P/vShDjdMR/yR1U1xyQFxyumsND5uE59I
+         I9+CwOPfynNFba8zHE7e7RDXwvUUBp03k6Le/XRWTqfNbsXtAIR2jD6uK+8cDnHxem
+         T9zFtS9pJZ13w==
+Received: by mail-ed1-f71.google.com with SMTP id l10-20020a056402230a00b003db6977b694so2445591eda.23
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:01:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xYuV2MmQladXcPP7bw44n/vAd85hc1wnSNxzKdpoKHU=;
+        b=ltUUrL17yt3erkk+/2+sUzh9dBzYembEGncne4DgFkoDw0i28fxR86VfcwCHN5h8E9
+         NLEHBUWGgDseE7AgPDmQTjBoom4QRbU6w62XsXABNK7yolS5G2VIpq79ipKmm0ZvqO47
+         m/ColVl/s1I/IJKR9SkuhN8PxoVaSWHASq/V5S/FmHJfOu1xZdFp/wFsDSIq3TqCT5YK
+         iFD+7KvnleVplE3PEZ34fVpStLgF0XTPYZhgk5Vb9x6vgXKL9k4E3OUz+ZJyLhlGY60I
+         EADBg76VF70yf7vDzu3hAWMfkysnjRxELAeK8uo9uKFH3tHn2VW+xet+/ucwlMhMtkGs
+         8BWA==
+X-Gm-Message-State: AOAM532JXzxmiwYejEUk1BUKC9htKGZyzzFSfWAt5ji4FAs74rtv+AcM
+        F5GtLQMJki3nead859Pih3+H3bVEmgVZT5iiAd1oFBLaxi5cDs9aOzIAFIVxS9/3OLcfyLCHl3R
+        0qOOFQ15JZqvldU7XoLUFNxsdUspKvfNCWBK7oLp5/3FKMBQvo06gIKw2/Q==
+X-Received: by 2002:a50:cf87:: with SMTP id h7mr10281324edk.330.1634137275951;
+        Wed, 13 Oct 2021 08:01:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwegVNQSzIUZzqwL+kBl/pg71DIpq9sCZIiDU4Wb8xJespMOYwK9v10kYYfIdkQ4bJOR0ucGyI5yMK1rTxX1ro=
+X-Received: by 2002:a50:cf87:: with SMTP id h7mr10281285edk.330.1634137275716;
+ Wed, 13 Oct 2021 08:01:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="peyav3thoy3lt6kq"
-Content-Disposition: inline
-In-Reply-To: <YVWBP5ZJInH/wt1P@phenom.ffwll.local>
+References: <20211013143810.2101838-1-arnd@kernel.org> <20211013143810.2101838-2-arnd@kernel.org>
+In-Reply-To: <20211013143810.2101838-2-arnd@kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date:   Wed, 13 Oct 2021 17:01:04 +0200
+Message-ID: <CA+Eumj5Fx6tQv9B9R9iBCP4C=f2dk3szCGcisvPHYfMWpsCCfw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: exynos: fix cpu unit name warnings
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Chanho Park <chanho61.park@samsung.com>, soc@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 13 Oct 2021 at 16:38, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> dtc started warning about some of the CPU addresses:
+>
+> arch/arm64/boot/dts/exynos/exynosautov9.dtsi:78.20-83.5: Warning (unit_address_format): /cpus/cpu@000000: unit name should not have leading 0s
+> arch/arm64/boot/dts/exynos/exynosautov9.dtsi:85.20-90.5: Warning (unit_address_format): /cpus/cpu@000100: unit name should not have leading 0s
+> arch/arm64/boot/dts/exynos/exynosautov9.dtsi:92.20-97.5: Warning (unit_address_format): /cpus/cpu@000200: unit name should not have leading 0s
+> arch/arm64/boot/dts/exynos/exynosautov9.dtsi:99.20-104.5: Warning (unit_address_format): /cpus/cpu@000300: unit name should not have leading 0s
+>
+> Remove the leading zeroes.
+>
+> Fixes: f695b3f4c45d ("arm64: dts: exynos: add initial support for exynosautov9 SoC")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
---peyav3thoy3lt6kq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks Arnd, but this was fixed with the next version of patchset.
+It's my bad because I did not drop the patch from my next branch after
+spotting it, knowing that Chanho will resubmit the next day and then I
+would replace it. This replacement happened next day but linux next
+got the older/buggy patch.
 
-On Thu, Sep 30, 2021 at 11:19:59AM +0200, Daniel Vetter wrote:
-> On Tue, Sep 28, 2021 at 10:34:46AM +0200, Maxime Ripard wrote:
-> > Hi Daniel,
-> >=20
-> > On Sat, Sep 25, 2021 at 12:50:17AM +0200, Daniel Vetter wrote:
-> > > On Fri, Sep 24, 2021 at 3:30 PM Maxime Ripard <maxime@cerno.tech> wro=
-te:
-> > > >
-> > > > On Wed, Sep 22, 2021 at 01:25:21PM -0700, Linus Torvalds wrote:
-> > > > > On Wed, Sep 22, 2021 at 1:19 PM Sudip Mukherjee
-> > > > > <sudipm.mukherjee@gmail.com> wrote:
-> > > > > >
-> > > > > > I added some debugs to print the addresses, and I am getting:
-> > > > > > [   38.813809] sudip crtc 0000000000000000
-> > > > > >
-> > > > > > This is from struct drm_crtc *crtc =3D connector->state->crtc;
-> > > > >
-> > > > > Yeah, that was my personal suspicion, because while the line numb=
-er
-> > > > > implied "crtc->state" being NULL, the drm data structure document=
-ation
-> > > > > and other drivers both imply that "crtc" was the more likely one.
-> > > > >
-> > > > > I suspect a simple
-> > > > >
-> > > > >         if (!crtc)
-> > > > >                 return;
-> > > > >
-> > > > > in vc4_hdmi_set_n_cts() is at least part of the fix for this all,=
- but
-> > > > > I didn't check if there is possibly something else that needs to =
-be
-> > > > > done too.
-> > > >
-> > > > Thanks for the decode_stacktrace.sh and the follow-up
-> > > >
-> > > > Yeah, it looks like we have several things wrong here:
-> > > >
-> > > >   * we only check that connector->state is set, and not
-> > > >     connector->state->crtc indeed.
-> > > >
-> > > >   * We also check only in startup(), so at open() and not later on =
-when
-> > > >     the sound streaming actually start. This has been there for a w=
-hile,
-> > > >     so I guess it's never really been causing a practical issue bef=
-ore.
-> > >=20
-> > > You also have no locking
-> >=20
-> > Indeed. Do we just need locking to prevent a concurrent audio setup and
-> > modeset, or do you have another corner case in mind?
-> >=20
-> > Also, generally, what locks should we make sure we have locked when
-> > accessing the connector and CRTC state? drm_mode_config.connection_mutex
-> > and drm_mode_config.mutex, respectively?
-> >=20
-> > > plus looking at ->state objects outside of atomic commit machinery
-> > > makes no sense because you're not actually in sync with the hw state.
-> > > Relevant bits need to be copied over at commit time, protected by some
-> > > spinlock (and that spinlock also needs to be held over whatever other
-> > > stuff you're setting to make sure we don't get a funny out-of-sync
-> > > state anywhere).
-> >=20
-> > If we already have a lock protecting against having both an ASoC and KMS
-> > function running, it's not clear to me what the spinlock would prevent
-> > here?
->=20
-> Replicating the irc chat here. With
->=20
-> commit 6c5ed5ae353cdf156f9ac4db17e15db56b4de880
-> Author: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Date:   Thu Apr 6 20:55:20 2017 +0200
->=20
->     drm/atomic: Acquire connection_mutex lock in drm_helper_probe_single_=
-connector_modes, v4.
->=20
-> this is already taken care of for drivers and should be all good from a
-> locking pov.
 
-So, if I understand this properly, this superseeds your comment on the
-spinlock for the hw state, but not the comment that we need some locking
-to synchronize between the audio and KMS path (and CEC?). Right?
-
-Maxime
-
---peyav3thoy3lt6kq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYWb0rwAKCRDj7w1vZxhR
-xeHSAQDU0V5TZK2D6sulS8ToJp7H7Q/vdu9etNO4fRwbMpqOYQEAqukjS+xrus3a
-wg9JV8BsOTfB7osX5CRL7kqBAWu+uwQ=
-=vTbV
------END PGP SIGNATURE-----
-
---peyav3thoy3lt6kq--
+Best regards,
+Krzysztof
