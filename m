@@ -2,64 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0139A42BA04
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655C642B9DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238871AbhJMIR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:17:56 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:50654 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231559AbhJMIRq (ORCPT
+        id S238764AbhJMIHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:07:50 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56158 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233368AbhJMIHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:17:46 -0400
-X-Greylist: delayed 908 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Oct 2021 04:17:46 EDT
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Wed, 13 Oct 2021 01:00:27 -0700
-Received: from sc-dbc2135.eng.vmware.com (sc-dbc2135.eng.vmware.com [10.182.28.35])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 14EB2202A3;
-        Wed, 13 Oct 2021 01:00:30 -0700 (PDT)
-From:   Bryan Tan <bryantan@vmware.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>
-CC:     <Pv-drivers@vmware.com>, <gregkh@linuxfoundation.org>,
-        <aditr@vmware.com>, <vdasa@vmware.com>,
-        Bryan Tan <bryantan@vmware.com>
-Subject: [PATCH] MAINTAINERS: Update for VMware PVRDMA driver
-Date:   Wed, 13 Oct 2021 00:59:36 -0700
-Message-ID: <1634111976-21283-1-git-send-email-bryantan@vmware.com>
-X-Mailer: git-send-email 2.6.2
+        Wed, 13 Oct 2021 04:07:43 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 563EC2228E;
+        Wed, 13 Oct 2021 08:05:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634112339; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MYBetIHiRnm5MPnYrU8m+s3sHrngXKaFc0Qug9OrkIs=;
+        b=EjAzsDX2+zKTYfvf6tt1UnI74JTcYBLgT6njvzgUQGlmGCeEoRsvOeuV7f5wF7ORhcCLiM
+        YJvYbI+0sv2xyxT5A73pPpWj/dPiRc9XmnRlf8tI/avsJgwb1JxVSqM3XfKddXE1mII69t
+        jVbKFicq5fCtiYhBL9UWMEQcmAZWFzY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634112339;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MYBetIHiRnm5MPnYrU8m+s3sHrngXKaFc0Qug9OrkIs=;
+        b=uZAM7JtAcnRqCt2eGdlCK12fNcC034xOtUV5YyFXRy8Ra/5d9IJbFjVzxbNBrCqwdhiAQB
+        9VHc+iHjgaF8VFAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4CEB213CBE;
+        Wed, 13 Oct 2021 08:05:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id X5uUElOTZmEvBgAAMHmgww
+        (envelope-from <iivanov@suse.de>); Wed, 13 Oct 2021 08:05:39 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: bryantan@vmware.com does not
- designate permitted sender hosts)
+Date:   Wed, 13 Oct 2021 11:05:39 +0300
+From:   "Ivan T. Ivanov" <iivanov@suse.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Dominik Brodowski <linux@dominikbrodowski.net>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND] Re: [PATCH] Revert "efi/random: Treat EFI_RNG_PROTOCOL
+ output as bootloader randomness"
+In-Reply-To: <CAMj1kXE7FbEqxyBcPS6mx5wU82+H0WK67HU=S6hq=WAG5EBwyQ@mail.gmail.com>
+References: <20211012082708.121931-1-iivanov@suse.de>
+ <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
+ <4eccf707f2553f0f66ae3789b5689231@suse.de>
+ <CAMj1kXE7FbEqxyBcPS6mx5wU82+H0WK67HU=S6hq=WAG5EBwyQ@mail.gmail.com>
+User-Agent: Roundcube Webmail
+Message-ID: <e8c2ce11ec8b6193d891288ce6b3caa0@suse.de>
+X-Sender: iivanov@suse.de
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update maintainer info for the VMware PVRDMA driver.
+On 2021-10-13 10:50, Ard Biesheuvel wrote:
+> On Wed, 13 Oct 2021 at 09:30, Ivan T. Ivanov <iivanov@suse.de> wrote:
+>> 
+>> Hi,
+>> 
+>> Quoting Dominik Brodowski (2021-10-12 11:40:34)
+>> > Am Tue, Oct 12, 2021 at 11:27:08AM +0300 schrieb Ivan T. Ivanov:
+>> > > This reverts commit 18b915ac6b0ac5ba7ded03156860f60a9f16df2b.
+>> > >
+>> > > When CONFIG_RANDOM_TRUST_BOOTLOADER is enabled add_bootloader_randomness()
+>> > > calls add_hwgenerator_randomness() which might sleep,
+>> >
+>> > Wouldn't it be better to fix add_bootloader_randomness(), considering
+>> > that
+>> > calls to that function are likely to happen quite early during kernel
+>> > initialization? Especially as it seems to have worked beforehand?
+>> 
+>> I have tried. I made wait_event_interruptible() optional, but then
+>> crng_reseed() segfault badly. And I don't think crng_reseed() is
+>> something that I could fix easily. Suggestions are welcomed ;-)
+>> 
+> 
+> How about
+> 
+> diff --git a/drivers/char/random.c b/drivers/char/random.c
+> index 605969ed0f96..1828dc691ebf 100644
+> --- a/drivers/char/random.c
+> +++ b/drivers/char/random.c
+> @@ -2297,9 +2297,8 @@ EXPORT_SYMBOL_GPL(add_hwgenerator_randomness);
+>   */
+>  void add_bootloader_randomness(const void *buf, unsigned int size)
+>  {
+> +       add_device_randomness(buf, size);
+>         if (IS_ENABLED(CONFIG_RANDOM_TRUST_BOOTLOADER))
+> -               add_hwgenerator_randomness(buf, size, size * 8);
+> -       else
+> -               add_device_randomness(buf, size);
+> +               credit_entropy(&input_pool, size * 8);
+>  }
+>  EXPORT_SYMBOL_GPL(add_bootloader_randomness);
 
-Reviewed-by: Adit Ranadive <aditr@vmware.com>
-Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
-Signed-off-by: Bryan Tan <bryantan@vmware.com>
----
- MAINTAINERS | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This is more or less what I have done. credit_entropy() calls
+crng_reseed() which crash badly.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index abdcbcfef73d..b3b5b8b0e207 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20022,7 +20022,8 @@ F:	arch/x86/include/asm/vmware.h
- F:	arch/x86/kernel/cpu/vmware.c
- 
- VMWARE PVRDMA DRIVER
--M:	Adit Ranadive <aditr@vmware.com>
-+M:	Bryan Tan <bryantan@vmware.com>
-+M:	Vishnu Dasa <vdasa@vmware.com>
- M:	VMware PV-Drivers <pv-drivers@vmware.com>
- L:	linux-rdma@vger.kernel.org
- S:	Maintained
--- 
-2.14.1
+Will check again, but I am sure it will give me same result.
 
+Regards,
+Ivan
