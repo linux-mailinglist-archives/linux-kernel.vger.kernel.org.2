@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956F442B9E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDD442B9E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238821AbhJMIJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:09:08 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:24802 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238743AbhJMIIJ (ORCPT
+        id S238832AbhJMIKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:10:12 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:31491 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238839AbhJMIJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:08:09 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19D5M4xr003946;
-        Wed, 13 Oct 2021 03:05:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=xN3HwVR8Olq4c8b80ksL+6F0RWwTIzqvH/ci+40/9ys=;
- b=qVlRbrN4ezddF/g1zdnAe2813XEyb02o8yc47aiOwvXm9fuSFUpldFxOrgnIRvho7mmX
- AsXyMzlcCBdK/2MQJNT+7QUeigFXV+Y8XIv8v8NfHJi5PhUNYhcwsJOh88jDF1CP4bDV
- OWzTtal8VNJfIumLEFXQ9+KPQpF/fuYtm5WUnqLYtj4rGo2CckH3VP1r4jsxVORqHXYQ
- bY1cGQRCVpZFV7RfbUSB6AwOKBoYANX58WK7fUt2oBjjVjHRYEXvfDgUay46Lm0tvtaD
- LquR9/UunkXphtLHJglDF2f8Z53b9PtXweXJXETrVU3HVSMDrfPPYwhyz++qxyY5B1vh EQ== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3bnkc08hm7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 13 Oct 2021 03:05:46 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Wed, 13 Oct
- 2021 09:05:45 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.7 via Frontend
- Transport; Wed, 13 Oct 2021 09:05:45 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E483EB15;
-        Wed, 13 Oct 2021 08:05:44 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 08:05:44 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <kuninori.morimoto.gx@renesas.com>,
-        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] ASoC: wm8960: Fix clock configuration on slave mode
-Message-ID: <20211013080544.GB28292@ediswmail.ad.cirrus.com>
-References: <1634102224-3922-1-git-send-email-shengjiu.wang@nxp.com>
+        Wed, 13 Oct 2021 04:09:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1634112408;
+    s=strato-dkim-0002; d=xenosoft.de;
+    h=In-Reply-To:Date:Message-ID:References:To:From:Subject:Cc:Date:From:
+    Subject:Sender;
+    bh=SIdqttAv8VY7+GPnyA9vyn4IVdFg1Dkp5cQAN7dWsbA=;
+    b=TZU2b0lOnmLfKHi2inaQ528J4Rm8TEj1TfhwkuQBKmTf1uB7NhnT8yTKEsZA2ErZvB
+    yPCprch6lE9F1gB27JLaStHAbV340zYe/MRN9wYqvCGgZw+W3qy2R6axfc51pp35dUh1
+    WM5njfwXe8B8LKfgXSfWJHEPNAsFtJ4YCoz3+mqe3tdbqPJkcgQpu7urHH3kyjJtSuWL
+    J2RjhXdaP9hCqx58oZOyvVERKr3AMANNAqmg0k0B9rJZC6Y45Ot7koo6oFgyrF3obhUk
+    +WbO6sr7BoHUznPxjUYK1Nd7yQG554TzF0YWA4PIL9L0/igCESNAbZcZb08pPsx/Pcvy
+    akFQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHfJ+Dkjp5DdBJSrwuuqxvPgFJ9KSk6V3+Pov4y9Nnu4lP5KR8g=="
+X-RZG-CLASS-ID: mo00
+Received: from Christians-iMac.fritz.box
+    by smtp.strato.de (RZmta 47.34.1 AUTH)
+    with ESMTPSA id z02498x9D86kgmG
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 13 Oct 2021 10:06:46 +0200 (CEST)
+Subject: Re: [PATCH v2 00/11] Add Apple M1 support to PASemi i2c driver
+From:   Christian Zigotzky <chzigotzky@xenosoft.de>
+To:     Wolfram Sang <wsa@kernel.org>, Sven Peter <sven@svenpeter.dev>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        Hector Martin <marcan@marcan.st>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "R.T.Dickinson" <rtd@a-eon.com>,
+        Matthew Leaman <matthew@a-eon.biz>,
+        Darren Stevens <darren@stevens-zone.net>
+References: <20211008163532.75569-1-sven@svenpeter.dev>
+ <YWFqr4uQGlNgnT1z@ninjato> <8a8afc73-3756-a305-ce5f-70b4bce6999f@xenosoft.de>
+Message-ID: <df424385-92af-3fad-f50b-c64897e991e8@xenosoft.de>
+Date:   Wed, 13 Oct 2021 10:06:45 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1634102224-3922-1-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: NbTush4FL2ZubP2MgG4FZxPUgVnVB4Bx
-X-Proofpoint-ORIG-GUID: NbTush4FL2ZubP2MgG4FZxPUgVnVB4Bx
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <8a8afc73-3756-a305-ce5f-70b4bce6999f@xenosoft.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: de-DE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 01:17:04PM +0800, Shengjiu Wang wrote:
-> There is a noise issue for 8kHz sample rate on slave mode.
-> Compared with master mode, the difference is the DACDIV
-> setting, after correcting the DACDIV, the noise is gone.
-> 
-> There is no noise issue for 48kHz sample rate, because
-> the default value of DACDIV is correct for 48kHz.
-> 
-> So wm8960_configure_clocking() should be functional for
-> ADC and DAC function even if it is slave mode.
-> 
-> In order to be compatible for old use case, just add
-> condition for checking that sysclk is zero with
-> slave mode.
-> 
-> Fixes: 0e50b51aa22f ("ASoC: wm8960: Let wm8960 driver configure its bit clock and frame clock")
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
+On 09 October 2021 at 03:57 pm, Christian Zigotzky wrote:
+ > On 09 October 2021 at 12:10 pm, Wolfram Sang wrote:
+ >>> I still don't have access to any old PASemi hardware but the 
+changes from
+ >>> v1 are pretty small and I expect them to still work. Would still be 
+nice
+ >>> if someone with access to such hardware could give this a quick test.
+ >> Looks good to me. I will wait a few more days so that people can report
+ >> their tests. But it will be in the next merge window.
+ >>
+ > Series v2:
+ >
+ > Tested-by: Christian Zigotzky <chzigotzky@xenosoft.de> [1]
+ >
+ > - Christian
+ >
+ > [1] 
+https://forum.hyperion-entertainment.com/viewtopic.php?p=54213#p54213
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Series v2:
 
-Thanks,
-Charles
+Tested-by: Damien Stewart (Hypex) [1]
+
+- Christian
+
+[1] https://forum.hyperion-entertainment.com/viewtopic.php?p=54217#p54217
+
