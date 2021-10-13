@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D634A42C790
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B583842C793
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238031AbhJMR2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:28:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:42826 "EHLO foss.arm.com"
+        id S231284AbhJMRaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:30:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230488AbhJMR2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:28:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A45A1063;
-        Wed, 13 Oct 2021 10:26:40 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.73.189])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2ED533F694;
-        Wed, 13 Oct 2021 10:26:35 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 18:26:33 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
-        Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 2/5] perf: Add a counter for number of user access
- events in context
-Message-ID: <20211013172633.GB5400@C02TD0UTHF1T.local>
-References: <20210914204800.3945732-1-robh@kernel.org>
- <20210914204800.3945732-3-robh@kernel.org>
+        id S229915AbhJMR37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 13:29:59 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C565610CC;
+        Wed, 13 Oct 2021 17:27:55 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 13:27:53 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] user_events: Enable user processes to create and write
+ to trace events
+Message-ID: <20211013132753.63ea60b2@gandalf.local.home>
+In-Reply-To: <20211013171747.GA1549@kbox>
+References: <20211006175611.GA2995@kbox>
+        <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
+        <20211007162204.GA30947@kbox>
+        <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
+        <20211008000540.GA31220@kbox>
+        <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
+        <20211011162523.GA1542@kbox>
+        <20211012211852.2bbf921b@oasis.local.home>
+        <20211013165043.GA1427@kbox>
+        <20211013131155.69fa0e11@gandalf.local.home>
+        <20211013171747.GA1549@kbox>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914204800.3945732-3-robh@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 03:47:57PM -0500, Rob Herring wrote:
-> For controlling user space counter access, we need to know if any event
-> in a context (currently scheduled or not) is using user space counters.
-> Walking the context's list of events would be slow, so add a counter
-> to track this.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+On Wed, 13 Oct 2021 10:17:47 -0700
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-
-Mark.
-
-> ---
-> v10:
->  - Re-added.
->  - Maintain the count in the perf core
-> v9:
->  - Dropped
-> v8:
->  - new patch
-> ---
->  include/linux/perf_event.h | 1 +
->  kernel/events/core.c       | 4 ++++
->  2 files changed, 5 insertions(+)
+> On Wed, Oct 13, 2021 at 01:11:55PM -0400, Steven Rostedt wrote:
+> > On Wed, 13 Oct 2021 09:50:43 -0700
+> > Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> >   
+> > > > Does it require RCU synchronization as the updates only happen from
+> > > > user space. But is this for the writing of the event? You want a
+> > > > separate fd for each event to write to, instead of saying you have
+> > > > another interface to write and just pass the given id?
+> > > >    
+> > > Yes, an example is a process creates the fd and registers some events.
+> > > Then the process forks and the child registers another event using the
+> > > same fd that was inherited.  
+> > 
+> > Well, I was thinking simple locking could work too. But I guess RCU is like
+> > Batman. You know, "Always be yourself. Unless you can be Batman, then
+> > always be Batman!". So always use locking, unless you can use RCU,
+> > then always use RCU.
+> >   
+> LOL, I'm happy to use a rwlock_t instead. Not sure which is faster, to
+> me I care most about the write path not skewing clock times of the
+> events being emitted. It seems like the contention case will be low in
+> most cases, so these paths will be read-only most of the time.
 > 
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index 12debf008d39..4f82a4d47139 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -821,6 +821,7 @@ struct perf_event_context {
->  
->  	int				nr_events;
->  	int				nr_active;
-> +	int				nr_user;
->  	int				is_active;
->  	int				nr_stat;
->  	int				nr_freq;
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 744e8726c5b2..01290d150da3 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -1808,6 +1808,8 @@ list_add_event(struct perf_event *event, struct perf_event_context *ctx)
->  
->  	list_add_rcu(&event->event_entry, &ctx->event_list);
->  	ctx->nr_events++;
-> +	if (event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT)
-> +		ctx->nr_user++;
->  	if (event->attr.inherit_stat)
->  		ctx->nr_stat++;
->  
-> @@ -1999,6 +2001,8 @@ list_del_event(struct perf_event *event, struct perf_event_context *ctx)
->  	event->attach_state &= ~PERF_ATTACH_CONTEXT;
->  
->  	ctx->nr_events--;
-> +	if (event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT)
-> +		ctx->nr_user--;
->  	if (event->attr.inherit_stat)
->  		ctx->nr_stat--;
->  
-> -- 
-> 2.30.2
+> It seems rwlock_t has the disadvantage of the writes blocking on the
+> realloc/free case during the resize. RCU can delay the free until
+> something has time to do so, so seems a good fit.
 > 
+> Thoughts?
+
+You can always do the allocation and free outside the rwlock_t.
+
+	new_data = alloc();
+	lock();
+	update new_data with old_data
+	ptr = new_data;
+	unlock();
+	free old_data
+
+And is the preferred method, as we don't want allocation or freeing done
+inside the locking (especially on RT, where rwlocks are not "special").
+
+The main concern is cache contention with the updates, even among readers.
+That is, readers may not block on each other, but the accessing of the same
+lock will cause cache contention.
+
+And writers will block. I don't remember if rwlocks are fair or not (when a
+writer blocks, all new readers block too.) I think it is.
+
+For RCU, it's how you free it. You can push it off to a queue, if you have
+a field in the data structure that can be added to the rcu link list that
+wont affect the readers.
+
+If you are concerned about the contention between readers, then RCU is the
+way to go, as it doesn't have that issue.
+
+-- Steve
