@@ -2,149 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F97842B5AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BF542B5B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237633AbhJMFlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 01:41:15 -0400
-Received: from ni.piap.pl ([195.187.100.5]:44190 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229735AbhJMFlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 01:41:13 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        by ni.piap.pl (Postfix) with ESMTPSA id A707FC36955E;
-        Wed, 13 Oct 2021 07:39:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl A707FC36955E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1634103547; bh=5GPJZkCmh6R4KMyc90zRKGcT2ecjuzI4fDbaZ5mnFYw=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Jq7QRpZCQpKYz3uAgihW9NsSw4Ilf+tdFVpGWgi8tAdSIyVu8CPBTxDYwZ7+Gv1d6
-         q/nCIjL9HmyuBKHnSymTJ9bwS43cyHofuXGi7tbmIbRBcxElVbtfT2QogBsMpgKrXK
-         ohs5d066aKq6TBD2RoIRvBGF0FSjYASyEAzrtqmk=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Jacopo Mondi <jacopo@jmondi.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>
-Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
-References: <m3fstfoexa.fsf@t19.piap.pl>
-        <20211009102446.jrvrdr7whtd2rv4z@uno.localdomain>
-        <m3mtnflpna.fsf@t19.piap.pl>
-        <20211011143420.vm6ncl5gdv44nsn3@uno.localdomain>
-        <m3a6jel9ce.fsf@t19.piap.pl> <YWXwSAm3OO/WTkOL@valkosipuli.retiisi.eu>
-Sender: khalasa@piap.pl
-Date:   Wed, 13 Oct 2021 07:39:07 +0200
-In-Reply-To: <YWXwSAm3OO/WTkOL@valkosipuli.retiisi.eu> (Sakari Ailus's message
-        of "Tue, 12 Oct 2021 23:30:00 +0300")
-Message-ID: <m335p5lc04.fsf@t19.piap.pl>
-MIME-Version: 1.0
+        id S237807AbhJMFlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 01:41:39 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:56382 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237705AbhJMFlf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 01:41:35 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19D59vu1023311;
+        Wed, 13 Oct 2021 05:39:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=IK9sBlANBEnCIg8539gbmzf+A4wpveieHgPl6Q0Ozxo=;
+ b=B2Fy03IVDDPg+GUT+bA3p8Vyh8QKVBqqnzJzTBWs+rQd11yuhhEhKukbJmGoV6SMpwNe
+ HOjQKuJRse1h93teBAsBPb9OK6fyvpl3FWZHzoUDogU17R6fnUXC0/Mv9h0ngjoAe8zj
+ BJCv/vdlDXfHfIpf+6aT3dhWujT+aNFTWfSQffvoh/GCRp1H3x0B/TSx2RVNb5ZuLXOt
+ M5sBAxEHNOyriz+XPm+FG3Mb8wBouSK0Pj9ZCO/tLwjrZSEsh3SO8iM5lkxr3YAFF1nO
+ Gt+cOKcArXHdXGHrqTxyYb79MxzrfM8p0vqRwlkkCtQWIm4DTjWqulvhLwJaGx4goQnJ pQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bnkbj1fxj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Oct 2021 05:39:26 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19D5aR5N064270;
+        Wed, 13 Oct 2021 05:39:25 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
+        by aserp3030.oracle.com with ESMTP id 3bkyxsvx8a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Oct 2021 05:39:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ME++GLuhv9HD42xcM0HP7WH02I5VsmAj0Z7IXPFkUm9ZhUuJjm21iGTUm/aJ5SX1eQ8Ox7fXNb6xE6UKlcpVuw5r3j3GUS0Lbc4xK4Q2Fs2IUKaxWok62/Y83hmlnbIYv5m5iy03Y0l6wK2VLfvCbR7QBgRyPWuDB6nJrKMsctuetairgmUcg/8v1TiW0JCXBUyBeceDy70Gp5Y5zss43RMeiToJNvhmpXxUgs79mgKb2aQi07ozyqw/LVmDwOtl7HFChYAuHyRhcFVv9xMcOwYcV9VK0V/MpQOKLjxV6a4roackoZv/Ir72gzcYn6tBSN9FmAHqXxYu8c8/WFdCBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IK9sBlANBEnCIg8539gbmzf+A4wpveieHgPl6Q0Ozxo=;
+ b=frcqHsbpSfVRJADvuyhvUQ3wpKCOX4jH9ZqSLFyvKwT/15ZLujG9gknOOZAmtDC9zADCZMSGAb3J0NAHkjT5wta8Y3LrpTOKCiJ1fHF0eYO0sfZ18ZzRuacUjlrx/w9eRwkWTZyOn3kw25UoPDuoQV/Lwg5dTX5AcbsYgiJ0k6CpAajdlti/jL+YH28IVfX/u9bcXVX/CRKz3HkHyJiIATpiGArdS6f0JESxEp9X7j0TU5Isanw7C/yiJX1ylN46eRZJe8LR0sohmx6pu8HVSr2M3+SpXD34gsF3vVVEiVZkHmnE85hHabVHJa+ocFJIyB/zegwEO+bfZba9YEJ/iw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IK9sBlANBEnCIg8539gbmzf+A4wpveieHgPl6Q0Ozxo=;
+ b=i7U9h2IGPz+QgLuQKUDViwG0Wd0kycx/h4DeDAuj34Ky6gKwJkfAOcn8WpnQ/163m9LeVuZshSMrq177vgor3SkYKj6w31V8E+AK03Hh/jFC4lLytnhex5cN2TPxktM0FxFT9ZAi+scSWghofy7cTdTffIPhl0o8y7aPiQ5ZD0U=
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB5433.namprd10.prod.outlook.com (13.101.54.137) by
+ PH0PR10MB4422.namprd10.prod.outlook.com (20.182.126.12) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4587.20; Wed, 13 Oct 2021 05:39:23 +0000
+Received: from PH0PR10MB5433.namprd10.prod.outlook.com
+ ([fe80::958c:1aaa:ad5:40c6]) by PH0PR10MB5433.namprd10.prod.outlook.com
+ ([fe80::958c:1aaa:ad5:40c6%8]) with mapi id 15.20.4587.026; Wed, 13 Oct 2021
+ 05:39:23 +0000
+Subject: Re: [RFC PATCH] kbuild: only prompt for compressors that are actually
+ usable
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <20211012170121.31549-1-vegard.nossum@oracle.com>
+ <CAK7LNAT_0PnW0opWQoCiF5mWH4YEKxXHbdiTrSGqGFRv5nhY=w@mail.gmail.com>
+From:   Vegard Nossum <vegard.nossum@oracle.com>
+Message-ID: <68df3063-1dda-4736-27b4-8716321620c7@oracle.com>
+Date:   Wed, 13 Oct 2021 07:39:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <CAK7LNAT_0PnW0opWQoCiF5mWH4YEKxXHbdiTrSGqGFRv5nhY=w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 166679 [Oct 13 2021]
-X-KLMS-AntiSpam-Version: 5.9.20.0
-X-KLMS-AntiSpam-Envelope-From: khalasa@piap.pl
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=pass header.d=piap.pl
-X-KLMS-AntiSpam-Info: LuaCore: 463 463 5854868460de3f0d8e8c0a4df98aeb05fb764a09, {Tracking_uf_ne_domains}, {Tracking_marketers, three}, {Tracking_from_domain_doesnt_match_to}, t19.piap.pl:7.1.1;piap.pl:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;hverkuil.home.xs4all.nl:7.1.1
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2021/10/13 04:39:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/10/13 03:14:00 #17311323
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR1PR01CA0032.eurprd01.prod.exchangelabs.com
+ (2603:10a6:102::45) To PH0PR10MB5433.namprd10.prod.outlook.com
+ (2603:10b6:510:e0::9)
+MIME-Version: 1.0
+Received: from [192.168.1.13] (86.217.161.200) by PR1PR01CA0032.eurprd01.prod.exchangelabs.com (2603:10a6:102::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend Transport; Wed, 13 Oct 2021 05:39:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f9f9d46d-1b22-4c1c-8076-08d98e0bcfdc
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4422:
+X-Microsoft-Antispam-PRVS: <PH0PR10MB442240B866B858478FB5DA0E97B79@PH0PR10MB4422.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: X5BBzKxsPqrWvLp4wxUGfNllL+FL3RK68zGuYMw9UkKHX0bxU4esmzoSXUZS4vZFSIBeiRriNwsvE7tlXs+kEdFV9mIjOdLe5coBi7XxPrq3avjAoB1WURk9tMkl5HYsbsyRb8Qmk7yC+NtzbEeE8nPQznj4hSxaXMxVdlg1k/LxlEe+TJa21FRqV2KX9dZMh2j64mKzKUesghqX65iEuKvoXpRIy/wkbXbphDCUveugcdZx04gd5MG12Iuw8nY6XnRV669ZELwphuMhfUx8K3NT6FvTgTrP3r4fvzyeHYS6E1mrfZMu1PoAk5V/LC7qktfaOxBwwW840BzGArfhC2WgfP0xGH28909nc18qZC9iJQgGjrSjDjP/8NsVIn2c8lraJ/J3xd099Z/HYo10ww8tiJzZuQU3kcpWZoTwk45b0VO8OCRDqcvfeFfPcYNY670sRJ0mVHNSLJxsviVcJuwxuYG50WOiHkM/FiogwSlH+y5Pq31RDkL6TxkIObP9Xs3axHvOoGgR+lyE9cs1S6Ij7EPMhnwgA0S4dE5vfG+u6uSwgYmGhmSUmWQKyMyJR4Z8YpV39HpJLEfBd2IskdxKHT3+YBCwIJ8FfuG/AcAbyp4+xnG0c4idXCYACOvxRYhDe+devJ01jM0aGTZ3Odh93i0nxzX/eV38W8a7o7epzFRtZ5zUu6nl54WHOKblbJ9/6GATUj/JEY4utefQF90i7s5Gge9UPCTgvJtnGHY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5433.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(86362001)(66476007)(66946007)(4326008)(186003)(66556008)(83380400001)(38350700002)(6916009)(44832011)(31696002)(2906002)(8676002)(52116002)(8936002)(6486002)(956004)(26005)(16576012)(5660300002)(6666004)(31686004)(54906003)(53546011)(316002)(38100700002)(36756003)(2616005)(508600001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0hrU2pQWUdxT0RJZWJxSDBVUVhNK1JrM1lIWjlzdjZSQVB5d3BUUkZVUy9D?=
+ =?utf-8?B?R3RpUEVxb0ZwbGlRbXpGcUwxMnUwSm9WaTNBbVNtZDRhOWU4a0gzcUw2Njl3?=
+ =?utf-8?B?V3EyWmRVMWxncnZrT3lubHZMWUFxanhoMjdaMUN5N1lXcXN0bzdNN0RpNW9W?=
+ =?utf-8?B?VFowNEdiMGhwbjJYNFBYMjlYamE0QmRrcWQyS3dwVkpRMEEyV1hNUEtGWVZt?=
+ =?utf-8?B?NHlJdWhFSkdoQWpTMllSWFdlM3ZWRGxVN2lrNGJvTDkwMCtobFRYcTMyMlI2?=
+ =?utf-8?B?YStscUdYRmRUNDQwclJ5SXJRZXFta1pUb1EyYTBzNVpLQXdPNzA1REQxZEZE?=
+ =?utf-8?B?cjJWL0F4RlVwd3VnTG1XaytuRXNBeU82bUZCNWkrbExvN1JUcDJZYzlWNU95?=
+ =?utf-8?B?SWdXS2VRMHZlWVBpclIvMXc3L3A4QjdDbmd4T0s2eGRtRzZRNUJWenhNaFl0?=
+ =?utf-8?B?OTJ4VkJLT3hxSGZ0TFJjY2pLZ3QxN1lHaFd3MzJsc1pydWxqcGFUODVIUUdp?=
+ =?utf-8?B?TkdsUzhWWHdCZldpdTJ3ZU95eWxpM2ZKd3NwRkxtckZpZWx3cG1IenUvamI0?=
+ =?utf-8?B?WVVzTjdYUFQ5YlN0azVRTldQbDlxM0U2aldicmV1V3QxcGMyMy83NStwTGdt?=
+ =?utf-8?B?WmpxbCtIK2E1OUlrZzZmTm4rZHViSUpJVFp3a0p1OVFWUGc3K0pzVUNPU0pH?=
+ =?utf-8?B?Y1lNQVpxMGVNSTFadHdmM21MSHhmUjEwUzE2NjNBdDk0OTdySm1zb2xNaVJp?=
+ =?utf-8?B?b3FnT1hoejZ6bDlMV2dZZ0M2OHAzSmd1eGF0UFJHaWh5M2hhdWRrZmR1MDc2?=
+ =?utf-8?B?RTdXZzc2ZFlKQ0ZKb2lxOCswZ3BYQjBjR0UzZzBMdVRCUkZUL3VaWTVrcndm?=
+ =?utf-8?B?dm04NnFNWTJNWm5WbUdHS2dYVi8ybEcwZU1rTU5ZaXpGajUrRTQ5dnZyTStN?=
+ =?utf-8?B?M2dxNU5JVWUrdVEzczd0Uk0vTkpZZzN0SDdiVjdjYlVmbG5LZkJMQ3JrZkJz?=
+ =?utf-8?B?U0dQRTh1WEliWHhsc0xIeUpHQlBSQ0ZuZzRwS2hWQ3c1RXpBemZUTWtkSUh4?=
+ =?utf-8?B?L3NTc2J5d3ZnQzhWT0I3SU5UL0hnK3lPZUZTZi9ESXVMa0Z1M2FPVi9OWmNo?=
+ =?utf-8?B?bTRhSHJvTFJTUVAzOUNoVm5BMmlMcVBUblV5dUlFREZVRm5tdDRXdW4rL1Bh?=
+ =?utf-8?B?ZUd0ODVoYUUrZU9rNHI5WW0waVRGY3Q0NEtxZ2JUK1g0ajJKQklRYWIwTEtE?=
+ =?utf-8?B?QnRhUXZCYUMvalNlaHJmKy9maHJSRHo4cU1oMUVRUWYvVlZzUG45WlU3aE9O?=
+ =?utf-8?B?WDYzRzVkV01Dak9EelZkWXloYTNIekVqdm9iYXpLdVFHZkdWRzZUcThzTVAw?=
+ =?utf-8?B?UXJoMm1nZk1YeUU4THJNL1RlRnNuRFFpR3p2S0NIS1lmSzRVTnBEUy9MSFR3?=
+ =?utf-8?B?Q0JNd3dObWJRZTEvYlBVOWd1SGFsZ0NueDY3UGtvYTN2UGFxajVqT2xDT1ho?=
+ =?utf-8?B?V1NudmdJU3BzQTVuYkZpc2s5dldlZ3dXSmJUOVk4dDRVOHlaRXJBa1ozekpu?=
+ =?utf-8?B?WFhzQ2JNc1FobUtMYzY5a2xJZUdVTkRhVWRJYW5BMHY5dGxxWXRSVm43Njd2?=
+ =?utf-8?B?dTVRZzFpWU9zTit4VTlMeGVmQnVHT3hZaXdJa1R3Y1lIKzEvbkVJeGtDeDJn?=
+ =?utf-8?B?dVoyb1VEL0NQMGwzNy9Od1ErV25FN3ZuR3cwWFNZRlJJQVBWV2p1c0p6SnVM?=
+ =?utf-8?Q?ATzmAYnZPZCp6aV2wRowIKFSBtAAUIvWsnCTDZY?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9f9d46d-1b22-4c1c-8076-08d98e0bcfdc
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5433.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 05:39:23.4765
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AldmVimDhJstAWFTE7n3imqqwZPrKTD8V7gaS1qlk7p2gX8CtfhUEdc4QAD+8Rm8F9P4ViLHh9IU+6zIr72yZzIAi+rL7WnadZloXMQJZCQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4422
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10135 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110130038
+X-Proofpoint-ORIG-GUID: ypcmhK-rzmmgYwiSHQPRHVHb2PHsVLsc
+X-Proofpoint-GUID: ypcmhK-rzmmgYwiSHQPRHVHb2PHsVLsc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
 
-> 	https://hverkuil.home.xs4all.nl/spec/driver-api/camera-sensor.html
+On 10/13/21 3:34 AM, Masahiro Yamada wrote:
+> On Wed, Oct 13, 2021 at 2:01 AM Vegard Nossum <vegard.nossum@oracle.com> wrote:
+>>
+>> If a given compression algorithm for the kernel image is not usable on
+>> the host system, there is no point prompting for it.
+>>
+>> We can use the kconfig preprocessing feature to check if the command is
+>> available or not. I've chosen to test this using "which", which exits
+>> with success if the given command exists in PATH (or it is an absolute
+>> path), which mimics exactly how it would be found in the kernel's
+>> Makefiles.
+>>
+>> This uses the make variables that are set in Makefile and/or the
+>> command line, so you can do e.g.
+>>
+>>   make KGZIP=pigz menuconfig
+>>
+>> and it will test for the correct program.
+>>
+>> I am intentionally adding these dependencies to e.g. KERNEL_LZ4, as
+>> opposed to HAVE_KERNEL_LZ4, since the latter are "select"-ed
+>> unconditionally by the architectures that use them, so they are not
+>> suitable for depending on anything else.
+>>
+>> I've put RFC in the subject as maybe there are downsides to this that
+>> I'm not aware of.
+>>
+>> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+>> ---
+> 
+> 
+> I think we should keep the host-tools dependency open in general.
+> You can easily install necessary packages.
 
-Ok:
-"8.2.2. Devicetree
+So just to be clear, you object to the patch because it hides the
+possibility of using a different compression algorithm from the user and
+doesn't give them a chance to know that it exists when it's not already
+installed?
 
-The currently preferred way to achieve this is using assigned-clocks,
-assigned-clock-parents and assigned-clock-rates properties. See
-Documentation/devicetree/bindings/clock/clock-bindings.txt for more
-information. The driver then gets the frequency using clk_get_rate()."
+I don't really think this is much different from any other choice block
+in the config where the visibility of the choices have dependencies on
+other config options.
 
-Let's see:
-Documentation/devicetree/bindings/clock/clock-bindings.txt:
+In my case, the reason for doing this patch was that I was seeing build
+failures during randomized testing (satrandconfig) due to missing
+programs, and these build failures appear only at the end of potentially
+very time-consuming builds.
 
-"=3D=3DAssigned clock parents and rates=3D=3D
+Maybe we can introduce a new option similar to COMPILE_TEST (or
+ADVANCED_OPTIONS) so that the options are showed by default, even when
+the host program is not available?
 
-Some platforms may require initial configuration of default parent clocks
-and clock frequencies. Such a configuration can be specified in a device tr=
-ee
-node through assigned-clocks, assigned-clock-parents and assigned-clock-rat=
-es
-properties. The assigned-clock-parents property should contain a list of pa=
-rent
-clocks in the form of a phandle and clock specifier pair and the
-assigned-clock-rates property should contain a list of frequencies in Hz. B=
-oth
-these properties should correspond to the clocks listed in the assigned-clo=
-cks
-property."
++config UNAVAILABLE_COMPRESSORS
++       bool "Prompt for compressors that are not available"
++       help
++         Note: Enabling this option can lead to build failures if
++         the chosen compressor is not available on the host machine.
 
-So I'm after "assigned-clock-rates", right?
+ config KERNEL_GZIP
+        bool "Gzip"
+        depends on HAVE_KERNEL_GZIP
++       depends on UNAVAILABLE_COMPRESSORS || $(success,which $(KGZIP))
+        help
+          The old and tried gzip compression. It provides a good balance
+          between compression ratio and decompression speed.
 
-"Configuring a clock's parent and rate through the device node that consumes
-the clock can be done only for clocks that have a single user. Specifying
-conflicting parent or rate configuration in multiple consumer nodes for
-a shared clock is forbidden."
 
-This sounds a bit problematic, the clock I use is at least potentially
-shared by multiple parts of the system, depending on current (run time)
-configuration. I am/was getting different frequencies depending of the
-particular system (all based on the same i.MX6* SoC, but with different
-peripherals used/enabled). I think it's quite a common situation.
-
-> Generally camera sensor drivers that set the clock in drivers themselves
-> are (very) old.
-
-Let's have a look... ov9282 is (one of) the newest drivers. It does:
-#define OV9282_INCLK_RATE    24000000
-
-        /* Get sensor input clock */
-        ov9282->inclk =3D devm_clk_get(ov9282->dev, NULL);
-        if (IS_ERR(ov9282->inclk)) {
-                dev_err(ov9282->dev, "could not get inclk");
-                return PTR_ERR(ov9282->inclk);
-        }
-
-        rate =3D clk_get_rate(ov9282->inclk);
-        if (rate !=3D OV9282_INCLK_RATE) {
-                dev_err(ov9282->dev, "inclk frequency mismatch");
-                return -EINVAL;
-        }
-
-$ git grep -l ov9282
-Documentation/devicetree/bindings/media/i2c/ovti,ov9282.yaml
-MAINTAINERS
-drivers/media/i2c/Kconfig
-drivers/media/i2c/Makefile
-drivers/media/i2c/ov9282.c
-
-  clocks:
-    description: Clock frequency from 6 to 27MHz
-
-No in-tree DTS exists, but the single frequency (both in the driver -
-this one can be fixed - and in the DTS) is rather limiting. Maybe
-another:
-
-imx412, imx335, imx334, imx258 - same here.
-imx208 is ACPI-based.
-
-Which driver should I consult?
---=20
-Krzysztof "Chris" Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+Vegard
