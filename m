@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF3C42C709
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBBE42C70C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238209AbhJMQ7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:59:52 -0400
-Received: from mout.gmx.net ([212.227.17.21]:50943 "EHLO mout.gmx.net"
+        id S237851AbhJMRAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:00:02 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:37814 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238047AbhJMQ7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:59:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634144237;
-        bh=H0NVNpK0fftAT3BEIq4Q/VjiBME4Ggj1xdbyrhLlOkQ=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=LRr+HyzCtbWESFIv+4bu0tz/iCA4pq+eCcWDI9UNt9Akm+V7syl/N3UokJTupbtIc
-         rQA2NyPnekrF6/jqJ7jUySP/9p8iauTKt6d4EAQyAvhtTUqvnp8MIgyP6X+FLuI9jO
-         oxGvL7pHRBKIQk/nT2YDu295bG/o4V+wMHemL6Tc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.85]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MLQxX-1mILKo2zDv-00ITjh; Wed, 13
- Oct 2021 18:57:17 +0200
-Message-ID: <16b0ac0a69615ecd3ae59b0c32161a0b26b8b3ca.camel@gmx.de>
-Subject: Re: [tip: locking/core] futex: Split out requeue
-From:   Mike Galbraith <efault@gmx.de>
-To:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        andrealmeid@collabora.com, x86@kernel.org
-Date:   Wed, 13 Oct 2021 18:57:15 +0200
-In-Reply-To: <163377402732.25758.10591795748827044017.tip-bot2@tip-bot2>
-References: <20210923171111.300673-14-andrealmeid@collabora.com>
-         <163377402732.25758.10591795748827044017.tip-bot2@tip-bot2>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S230415AbhJMQ7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 12:59:51 -0400
+Received: from zn.tnic (p200300ec2f12080010afaa72f664282d.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:800:10af:aa72:f664:282d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8FB151EC04DA;
+        Wed, 13 Oct 2021 18:57:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634144266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=BqJ9v+qKrQZJN9M6joACzgDRICdWGPAemCXzOBxSZp0=;
+        b=T/E3dOPlSJ7eRhLGyVTRxLirMHKqnVsZgWuCdNAy84scW7kIDam/TaRyDSyaicc+/ckC/L
+        zez1OXupgZAmtp5JJ+WvlAZZ5MiFMprfohIhk5AHV283c+MDwOM1jkiOjWJTi6aHGbAeUq
+        95XB/POm9Il9g761lgRzKmQlQ3hfeKI=
+Date:   Wed, 13 Oct 2021 18:57:49 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Marcos Del Sol Vives <marcos@orca.pet>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86: add support DM&P devices
+Message-ID: <YWcQDYY9CuWKsayl@zn.tnic>
+References: <20211008162246.1638801-1-marcos@orca.pet>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Cza89XcjD9J4b/9j4noVjjK/fGwDE7SUc2IiAqxLAFgFrUiw9WW
- dqqJqmfyn5fLoDCmTcSAtjclacxTviWpmawRPfRZ/shiFM5gljWzNokShC/1ra4q9Fai6pq
- tcKPufTOX5EEnhWhjGijM2k1aY5Yk3EudcdN59YQ+aAMWcvTcSvBpS+OvxzSTLS64UcLB5a
- 4MgKT4SJcqYk7FiT32kGQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kAdNmo8vxGU=:G3gVttsKAvscRBZ8iyZ//M
- xqnl1WFlt5RGhf+dTA2q1YmiKZT2XAbzNpl852gE2Ej+WxznhVDryjgkf0wpxGdXP0qVQa7By
- sAac/TSmQgtWbWv6uSg6ejM7VhpckqVCfbubyx7jk0emYpwZzkZbUgmCzMe17ZZds72lZ8iDV
- BOzc1ctl/9ntQGEzxHKBcymbe1D9IgvFXQ4P7ayueFBqOdpRv1IBW2ng5WpTkKxz518GgqD7B
- +2hI4COI6Wx9CMEDQKcpMKjhN8XwxXSizjWtQW7p2DcpzbIWsJRHuF4Cewr7RqmYiSo6BEThY
- 66yNbBLIYutHpCPJxJGOqSBzK/SrpGYV4woBLHJP0XuCzNNZWra8HjBUYAeOLnCctJYwmuCqE
- 36TlHKW9P8LTycRj2nKtbk3r6jOIVdK4AnZAPR282njWwgjsoa5AM9MeY1eZ3P0E74CJia8u5
- 4mgFQAN7EtcXLkGzG0bbPKLj3qrpWHAnZbh6PZ9ORT0v2MjZ4q6QHQTk2vVUkd+9EVAS+EfSc
- vZna7/JQTXrFF6A7ZbeBW5AgQBVRsjDP6oyk8MxSBzty+P3+8uFRxQv//7ZoVRFgIKwP7NbBj
- r4W56SxDvu6vlxfYzsRD0b5o3vWefDeEL+WMymkDo+sILxFJYRP1yDQIp7IulGcmO3qmvTU16
- HlkLk3BUG+N67iG/w4YMgJsUlyZjLb8VYYeRLkTTZdOY8evjHEcC+RShH/3SHQ0Vzb1H9Tan+
- jdDuYGgL5Bmc97TI5TSAmQU+NagVoz75eLzd5rpdCu7aP2ttJtTItEJHx4xtYYjvJPoYmLeds
- Uq1ju5QZ1j7tdXnO7FO/03wlhFV2LNfJJ4urOPpmDkEC8GoMsz5qW1eJKHwXpJyL1ucCSdA4w
- xod646pnKIWOa4lvINUUr5eoGW07TmwiZuKv3x8NBSEZgvmtuphJ2UqA0jBfmziTCPClV8js6
- FCWaaXEGNurqBg5LwijbNtZaXTCCIJDiFnjVVdqu0amIkq14avLtbWjvM4OIrgpXj6v8lC6e8
- P7clCUfo8f0JyOz+VGKFt7FrNCNqFi4Ly4P+DdgPqtqoe+UO34NMiG/RzARa5suZq7iFewJck
- GmbUuqLBt4lhQY=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211008162246.1638801-1-marcos@orca.pet>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-10-09 at 10:07 +0000, tip-bot2 for Peter Zijlstra wrote:
->
-> diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-> index 4969e96..840302a 100644
-> --- a/kernel/futex/futex.h
-> +++ b/kernel/futex/futex.h
-> @@ -3,6 +3,8 @@
-> =C2=A0#define _FUTEX_H
-> =C2=A0
-> =C2=A0#include <linux/futex.h>
-> +#include <linux/sched/wake_q.h>
+On Fri, Oct 08, 2021 at 06:22:46PM +0200, Marcos Del Sol Vives wrote:
+> +config CPU_SUP_DMP_32
+> +	default y
+> +	bool "Support DM&P processors" if PROCESSOR_SELECT
+> +	depends on !64BIT
 
-+#ifdef CONFIG_PREEMPT_RT
-+#include <linux/rcuwait.h>
-+#endif
+You mean
+
+	depends on X86_32
 
 ?
 
-I needed that for tip-rt to build. It also boots, and futextests are
-happy (whew, futexes hard).
+Wikipedia says those things are 32-bit.
 
-	-Mike
+> +	help
+> +	  This enables detection, tunings and quirks for DM&P processors
+> +
+> +	  You need this enabled if you want your kernel to run on a
+> +	  DM&P CPU. Disabling this option on other types of CPUs
+
+So I'm not sure about the nomenclature: those CPUs are called Vortex86
+and DM&P is simply the next owner of the IP:
+
+"Vortex86 previously belonged to SiS, which got the basic design from
+Rise Technology.[1] SiS sold it to DM&P Electronics[2] in Taiwan."
+
+So I'm thinking we should call everything Vortex, the file vortex.c, the
+vendor define X86_VENDOR_VORTEX and so on.
+
+> +	  makes the kernel a tiny bit smaller. Disabling it on a DM&P
+> +	  CPU might render the kernel unbootable.
+
+Why unbootable? It looks like those are perfect clones: "No special init
+required for DM&P processors." it says in the patch. :)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
