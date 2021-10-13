@@ -2,48 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A1C42C0E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 016AF42C0E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233900AbhJMNFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:05:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231516AbhJMNFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:05:39 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9268F610CB;
-        Wed, 13 Oct 2021 13:03:35 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 09:03:33 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org,
-        bp@suse.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] init: Make unknown command line param message clearer
-Message-ID: <20211013090333.19d55216@gandalf.local.home>
-In-Reply-To: <20211013125638.4nc4bnbzbeixfrii@halaneylaptop>
-References: <20211012213523.39801-1-ahalaney@redhat.com>
-        <20211012200106.1afdbb0b@gandalf.local.home>
-        <87853d4f-d6f8-1d58-1a07-c8232dae87fd@infradead.org>
-        <20211013125638.4nc4bnbzbeixfrii@halaneylaptop>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234117AbhJMNGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:06:04 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:36415 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231516AbhJMNGC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:06:02 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M7sM0-1meTfg1hQY-0053nk; Wed, 13 Oct 2021 15:03:58 +0200
+Received: by mail-wr1-f45.google.com with SMTP id r7so8143753wrc.10;
+        Wed, 13 Oct 2021 06:03:58 -0700 (PDT)
+X-Gm-Message-State: AOAM532deevjCKNRsTK3QplimFN3rRsPI+gWcQK1HOWK8cZwoz6T89pu
+        RE2YyhtZkLNAmHTpdoN18fhuZCXDZ6qK4pf71w0=
+X-Google-Smtp-Source: ABdhPJxrqmezALSBTO/BTYl8vNqV31BBADHOaBtQOotspl4zEqXFT9c7CCMDgePjQq0qoxmKIaQg8BmmJRdC0kZoEJA=
+X-Received: by 2002:a05:600c:1548:: with SMTP id f8mr13062202wmg.35.1634130237935;
+ Wed, 13 Oct 2021 06:03:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211011152941.12847-1-vegard.nossum@oracle.com>
+ <YWbQd51r8R3BprMi@kroah.com> <1bfd3945-3487-31ab-5489-9c12c759276b@oracle.com>
+In-Reply-To: <1bfd3945-3487-31ab-5489-9c12c759276b@oracle.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 13 Oct 2021 15:03:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a05E2muUiy0KcRgzhGef-Xg99_pY3gnDpWt7uHmbTxVGg@mail.gmail.com>
+Message-ID: <CAK8P3a05E2muUiy0KcRgzhGef-Xg99_pY3gnDpWt7uHmbTxVGg@mail.gmail.com>
+Subject: Re: [PATCH] staging: ks7010: select CRYPTO_HASH/CRYPTO_MICHAEL_MIC
+To:     Vegard Nossum <vegard.nossum@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:g5pi1PT7/bTFPDH4BswBgDSug71I9IFuCMcnFhyW6XNEeEmNOAV
+ hHyE0EPeJNHdzMJA3+BLejxpY18Vi5YVuDDu972WML9BhMWKI1aHmz4ANa/x1JisEnUofFn
+ q/9leCPfVcs86y7bg0xsnF+wqC6f9VakuO/483wws0DfC3nUZPwryJfBiJ+gHcyxRcnWUj4
+ +XcQTMSUss60//Vldt5xw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HOSRj9vWFng=:r2VdZPsvJVAUpgkx5eOHab
+ QnJM3l7EnFLJILbhOX9urY68W5X/Ze/4qbBqeHz1JCh7bVEXT5UgbSidebh7lFdQcGpgsudfC
+ 9Xa1Dq0bviis9rF+luBnJQb0LFTvvjSsFxfaMOcp90jfeXCuWVLMEg87y+emkhfaQ7dXZvkzQ
+ 4QEX7m+YebRoQGXPN5xaOZ6cmJEakw7s58xiSTORTUMSTyuA2TqAgZPkPg1RUoqKMzrR2pJBZ
+ aLaomllnnTk+gigGVk+RedaPUsIa8at+Yve4TDTKsDSsnvMMlF0o6hP9E4hDNV4MspInri7Ea
+ FiPWSstQ4IDXZfKKI1bRZF3dWL10Dcn4T4SWOKotK++EH6WsH4ezY4iaMSjG69kxx2YCjWmqM
+ 2vIC1VAK8Wp28Dv9rHgdhEgotiuBy6pvMMi0eaFbbUS4R+XhBaqa3E7yEahn+IIAFr8I09IyG
+ wJZ3eePZpYbhRi/LxQHpSr6cTso/LW8q1oNxDg+VOFI4DQI+FATGF3HT7+RWs/mN4G+zKbEFJ
+ Gb8XIBA1M/fGhs23QwXKrGFDwpLn3jf13bbCUB+mFIZwX1xl4fe9DnqESY/JATGiuZSqwUjLp
+ Vtvm/XscIdRTUTCNi/eVK8vyOF7meQEh/Jksb2juzXR/f3+41Mc+BTG90Oj/HGTQRlPxMPxGo
+ EiLZKI8tge/UgWNOPWyPV6Raas8wPfuJe/RXPpwCshiLr8w59C9sLcaLzFBEQjXamTtJN+q26
+ qQAohWAsmKKyvgBDJT6liuoGF6dybV/agdzM2w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 07:56:38 -0500
-Andrew Halaney <ahalaney@redhat.com> wrote:
+On Wed, Oct 13, 2021 at 2:51 PM Vegard Nossum <vegard.nossum@oracle.com> wrote:
+> On 10/13/21 2:26 PM, Greg Kroah-Hartman wrote:
+> > On Mon, Oct 11, 2021 at 05:29:41PM +0200, Vegard Nossum wrote:
+> >> Fix the following build/link errors:
+> >>
+> >>   ld: drivers/staging/ks7010/ks_hostif.o: in function `michael_mic.constprop.0':
+> >>   ks_hostif.c:(.text+0x95b): undefined reference to `crypto_alloc_shash'
+> >>   ld: ks_hostif.c:(.text+0x97a): undefined reference to `crypto_shash_setkey'
+> >>   ld: ks_hostif.c:(.text+0xa13): undefined reference to `crypto_shash_update'
+> >>   ld: ks_hostif.c:(.text+0xa28): undefined reference to `crypto_shash_update'
+> >>   ld: ks_hostif.c:(.text+0xa48): undefined reference to `crypto_shash_finup'
+> >>   ld: ks_hostif.c:(.text+0xa6d): undefined reference to `crypto_destroy_tfm'
+> >>
+> >> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+> >> ---
+> >>  drivers/staging/ks7010/Kconfig | 3 +++
+> >>  1 file changed, 3 insertions(+)
+> >>
+> >> diff --git a/drivers/staging/ks7010/Kconfig b/drivers/staging/ks7010/Kconfig
+> >> index 0987fdc2f70db..8ea6c09286798 100644
+> >> --- a/drivers/staging/ks7010/Kconfig
+> >> +++ b/drivers/staging/ks7010/Kconfig
+> >> @@ -5,6 +5,9 @@ config KS7010
+> >>      select WIRELESS_EXT
+> >>      select WEXT_PRIV
+> >>      select FW_LOADER
+> >> +    select CRYPTO
+> >> +    select CRYPTO_HASH
+> >> +    select CRYPTO_MICHAEL_MIC
+> >
+> > Let's try to rely on 'depend' and not 'select' please.
+>
+> I used 'select' because it seemed to be the established pattern for
+> these options.
 
-> I'll spin a v2 with that considering everyone likes that form more.
+Yes, this is the correct way to do it here. In general, using "depends on"
+is better than "select", especially when crossing subsystem boundaries,
+however mixing the two is what really hurts because of the circular
+dependencies you'd get.
 
-Right, because we don't need a novel in the kernel to be printed ;-)
+The only way we could use 'depends on' here would be to change all
+the other drivers to do the same.
 
-Just enough info that makes sense, and have comments or documentation
-elsewhere that can explain more details.
+> Compare:
+>
+> $ find -name '*Kconfig*' | xargs git grep 'depends on CRYPTO$' | wc --lines
+> 1
+>
+> $ find -name '*Kconfig*' | xargs git grep 'select CRYPTO$' | wc --lines
+> 66
+>
+> $ find -name '*Kconfig*' | xargs git grep 'depends on CRYPTO' | wc --lines
+> 87
+>
+> $ find -name '*Kconfig*' | xargs git grep 'select CRYPTO' | wc --lines
+> 1005
+>
+> That said, I have found several other cases where CRYPTO_* algorithms
+> are getting 'select'-ed without also selecting CRYPTO/CRYPTO_HASH, so I
+> definitely see the problem you're trying to address.
+>
+> I've added some more people on Cc to see if there is a consensus on the
+> best way to do this for the CRYPTO* options going forwards. Thoughts,
+> anybody?
 
--- Steve
+I don't think there is much point in trying to change the
+existing pattern for crypto. We might want to change some of those
+that use 'depends on' at the moment for consistency, though most of
+those look correct as well.
+
+        Arnd
