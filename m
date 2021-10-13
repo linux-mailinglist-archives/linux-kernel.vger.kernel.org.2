@@ -2,73 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1352E42C485
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6AC942C48B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbhJMPMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 11:12:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229514AbhJMPMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:12:05 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 629EE610E6;
-        Wed, 13 Oct 2021 15:10:01 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 11:09:59 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Yordan Karadzhov <y.karadz@gmail.com>
-Subject: Re: [PATCH v2] tracing: Fix event probe removal from dynamic events
-Message-ID: <20211013110959.5c4d294d@gandalf.local.home>
-In-Reply-To: <20211013233244.46341468a06ba43895b99c0e@kernel.org>
-References: <20211012081925.0e19cc4f@gandalf.local.home>
- <20211013074611.ea157d4ed04d3c33290361f5@kernel.org>
- <20211012201559.5f0ad249@gandalf.local.home>
- <20211013233244.46341468a06ba43895b99c0e@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229836AbhJMPNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 11:13:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29890 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229514AbhJMPNu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 11:13:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634137906;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0g1uQp5+rGbXrxfLTXwqievrvV6EIKzK3sIM3pZ9TKs=;
+        b=QRUoAlJ1/zRpfUmBYFutE/SCd7AQOiUKQrIsSjriYn94ek2rfDrPKAeuc7CmLvIIb0iv+t
+        L7GHw5Xh9VrVD75X2m1XQKDIpPRA6ALtd64dvqdRErLPsiB9JhNK2jA4G3LtUd00OK8hbI
+        RR/V8ngdh+SLIFBH7Ol5s9lHcKLkcjI=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209--wots0E0OjiS1JxBLzdHNg-1; Wed, 13 Oct 2021 11:11:43 -0400
+X-MC-Unique: -wots0E0OjiS1JxBLzdHNg-1
+Received: by mail-ed1-f71.google.com with SMTP id i7-20020a50d747000000b003db0225d219so2595018edj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:11:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=0g1uQp5+rGbXrxfLTXwqievrvV6EIKzK3sIM3pZ9TKs=;
+        b=Fcb431sEdzz1rFzvorACoyJXNwojfLJmbN/OyWX6Ds9HFROIIMNFInY5VkhHpj1KDG
+         Vr695ilD3RJeJltEZUVPXBu0vJhoHY5bdCQI7He9u2Yo/jV456+P52dOclwZYoGu5r6b
+         2iwK4Dr5cRyNl2lJmIvSQ/6A895MdzkXqCIHR4dYrnulwtFRihiQfznRcr6E4415kDeZ
+         fQLtWOFTuoQrXuh7+Ld8ABj04xvQ5M88XI0rtviYiGVT+LhpVAh2woQnhjPEuXrrREva
+         PzVUoc4TMtZlg6IZ9foO53eBhAZM4ZfSUPScT0WhurS7yMsfhHG2SmiYGguIMhmidR0h
+         lVhg==
+X-Gm-Message-State: AOAM531PIUfInXfBHhgspHltmhwuh3ASDEuOiT5DHdeQ/3qBoHSrBJc0
+        kZcj3HSsxX8sLp3Yri7hGNRqoMw1a1XLQO3h6SE4K9y+gczX99XUzeI1SgeE9woMMELqfZMt8i2
+        J4GTGNpLyaqOnLHjCIWWfohRM
+X-Received: by 2002:a17:906:180a:: with SMTP id v10mr114750eje.112.1634137902453;
+        Wed, 13 Oct 2021 08:11:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzeiL2TAH+e1mlhR/iCAxD+5eZ5rlY38mxxrsDti8Miyy0J3ItGSWnn0mUU/TFTkQ1bkHw1Ug==
+X-Received: by 2002:a17:906:180a:: with SMTP id v10mr114718eje.112.1634137902217;
+        Wed, 13 Oct 2021 08:11:42 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id r19sm8234847edt.54.2021.10.13.08.11.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 08:11:41 -0700 (PDT)
+Message-ID: <d405824e-66d3-a1ec-6bcb-f560687b758d@redhat.com>
+Date:   Wed, 13 Oct 2021 17:11:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [patch 05/21] x86/KVM: Convert to fpstate
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org
+References: <20211013142847.120153383@linutronix.de>
+ <20211013145322.451439983@linutronix.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211013145322.451439983@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 23:32:44 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On 13/10/21 16:55, Thomas Gleixner wrote:
+> Convert KVM code to the new register storage mechanism in preparation for
+> dynamically sized buffers.
+> 
+> No functional change.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: kvm@vger.kernel.org
+> ---
+>   arch/x86/kvm/x86.c |    4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10389,7 +10389,7 @@ int kvm_arch_vcpu_ioctl_get_fpu(struct k
+>   
+>   	vcpu_load(vcpu);
+>   
+> -	fxsave = &vcpu->arch.guest_fpu->state.fxsave;
+> +	fxsave = &vcpu->arch.guest_fpu->fpstate->regs.fxsave;
+>   	memcpy(fpu->fpr, fxsave->st_space, 128);
+>   	fpu->fcw = fxsave->cwd;
+>   	fpu->fsw = fxsave->swd;
+> @@ -10412,7 +10412,7 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct k
+>   
+>   	vcpu_load(vcpu);
+>   
+> -	fxsave = &vcpu->arch.guest_fpu->state.fxsave;
+> +	fxsave = &vcpu->arch.guest_fpu->fpstate->regs.fxsave;
+>   
+>   	memcpy(fxsave->st_space, fpu->fpr, 128);
+>   	fxsave->cwd = fpu->fcw;
+> 
 
-> > Then the following should work:
-> > 
-> >   # echo '-:hrstate timer/hrtimer_cancel state=+0x38($hrtimer):u8' >> dynamic_events
-> >   # echo '-:eprobes/hrstate timer.hrtimer_cancel state=+0x38($hrtimer):u8' >> dynamic_events
-> >   # echo '-:eprobes/hrstate timer.hrtimer_cancel' >> dynamic_events
-> >   # echo '-:eprobes/hrstate' >> dynamic_events  
-> 
-> Agreed.
-> 
-> > 
-> > But the following will not work:
-> > 
-> >   # echo '-:hrstate state=+0x38($hrtimer):u8' >> dynamic_events
-> >   # echo '-:hrstate timer.hrtimer_cancel state=+0x38($hrtimer):u8' >> dynamic_events
-> >   # echo '-:hrstate timer.hrtimer_cancel' >> dynamic_events  
-> 
-> The first one is agreed. But the rest 2 cases should work because it just omits the
-> group name. At least {k,u}probe events work.
-> 
-> > Should this work?
-> > 
-> >   # echo '-:hrstate' >> dynamic_events  
-> 
-> Yes. In this case, all dynamic events which have "hrstate" event name are removed.
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 
-
-Thanks for the feedback. I'll update it.
-
--- Steve
