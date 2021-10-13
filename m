@@ -2,97 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6180242CCF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DA442CCFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhJMVne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 17:43:34 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39349 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229702AbhJMVnd (ORCPT
+        id S230096AbhJMVos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 17:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhJMVor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 17:43:33 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 19DLfCeL022673
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Oct 2021 17:41:13 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A29C915C00CA; Wed, 13 Oct 2021 17:41:12 -0400 (EDT)
-Date:   Wed, 13 Oct 2021 17:41:12 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     yebin <yebin10@huawei.com>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
- previous check time
-Message-ID: <YWdSeMuosYio7TFv@mit.edu>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-3-yebin10@huawei.com>
- <20211007123100.GG12712@quack2.suse.cz>
- <615FA55B.5070404@huawei.com>
- <615FAF27.8070000@huawei.com>
- <20211012084727.GF9697@quack2.suse.cz>
- <61657590.2050407@huawei.com>
- <20211013093847.GB19200@quack2.suse.cz>
+        Wed, 13 Oct 2021 17:44:47 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BE7C061570;
+        Wed, 13 Oct 2021 14:42:43 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 21:42:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634161362;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6IIsrHKxHFuYkKL8EijlX0RS2UHCeNbh801MLICqzr0=;
+        b=ol8jNUShAj+WJ9MWhuXsjeXj42bESb+mEbDLMSIO3IF8V8uLdGr2yXx1jNzdf5kbW+IBYX
+        g+I1KA7wngjqt0HA5LPQ28F6hyRFjFC0II09CQjmI7ZihqlkAPOlVk9UpRTt/vP2NVRsoM
+        T955lOi3alcOaZlUxB++O+fQhO8wOyectzzAvtKQcV5rQEpD3OTgJxUwKO4UaZ4AF0A7rH
+        RZL1XFJ1+wRji2fyC1Zr5t3nUjgg4k5UI4vYZ3/VhfCZGBW13ibIWSeQkvc228inlYHTTj
+        0hGZe/vU2x48pHbVLFXK4+Q50xXmMvIkkqCF5St4kka1L3ffioDqa8I7ej/Upw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634161362;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6IIsrHKxHFuYkKL8EijlX0RS2UHCeNbh801MLICqzr0=;
+        b=Ba3J8E6Pb0LMuhlfhVakAYyEgJXIy9oYqN0EXC5A5R9ENQC85VY/2aA7oBCobfbcqqDQ9r
+        9c2nQaLm5cXm90Bw==
+From:   "tip-bot2 for Michael Forney" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/urgent] objtool: Update section header before relocations
+Cc:     Michael Forney <mforney@mforney.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210509000103.11008-2-mforney@mforney.org>
+References: <20210509000103.11008-2-mforney@mforney.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013093847.GB19200@quack2.suse.cz>
+Message-ID: <163416136123.25758.14592305159373285844.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:38:47AM +0200, Jan Kara wrote:
-> 
-> OK, I see. So the race in ext4_multi_mount_protect() goes like:
-> 
-> hostA				hostB
-> 
-> read_mmp_block()		read_mmp_block()
-> - sees EXT4_MMP_SEQ_CLEAN	- sees EXT4_MMP_SEQ_CLEAN
-> write_mmp_block()
-> wait_time == 0 -> no wait
-> read_mmp_block()
->   - all OK, mount
-> 				write_mmp_block()
-> 				wait_time == 0 -> no wait
-> 				read_mmp_block()
-> 				  - all OK, mount
-> 
-> Do I get it right? Actually, if we passed seq we wrote in
-> ext4_multi_mount_protect() to kmmpd (probably in sb), then kmmpd would
-> notice the conflict on its first invocation but still that would be a bit
-> late because there would be a time window where hostA and hostB would be
-> both using the fs.
-> 
-> We could reduce the likelyhood of this race by always waiting in
-> ext4_multi_mount_protect() between write & read but I guess that is
-> undesirable as it would slow down all clean mounts. Ted?
+The following commit has been merged into the objtool/urgent branch of tip:
 
-I'd like Andreas to comment here.  My understanding is that MMP
-originally intended as a safety mechanism which would be used as part
-of a primary/backup high availability system, but not as the *primary*
-system where you might try to have two servers simultaneously try to
-mount the file system and use MMP as the "election" mechanism to
-decide which server is going to be the primary system, and which would
-be the backup system.
+Commit-ID:     86e1e054e0d2105cf32b0266cf1a64e6c26424f7
+Gitweb:        https://git.kernel.org/tip/86e1e054e0d2105cf32b0266cf1a64e6c26424f7
+Author:        Michael Forney <mforney@mforney.org>
+AuthorDate:    Sat, 08 May 2021 17:01:03 -07:00
+Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
+CommitterDate: Wed, 06 Oct 2021 20:11:57 -07:00
 
-The cost of being able to handle this particular race is it would slow
-down the mounts of cleanly unmounted systems.
+objtool: Update section header before relocations
 
-There *are* better systems to implement leader elections[1] than using
-MMP.  Most of these more efficient leader elections assume that you
-have a working IP network, and so if you have a separate storage
-network (including a shared SCSI bus) from your standard IP network,
-then MMP is a useful failsafe in the face of a network partition of
-your IP network.  The question is whether MMP should be useful for
-more than that.  And if it isn't, then we should probably document
-what MMP is and isn't good for, and give advice in the form of an
-application note for how MMP should be used in the context of a larger
-system.
+The libelf implementation from elftoolchain has a safety check in
+gelf_update_rel[a] to check that the data corresponds to a section
+that has type SHT_REL[A] [0]. If the relocation is updated before
+the section header is updated with the proper type, this check
+fails.
 
-[1] https://en.wikipedia.org/wiki/Leader_election
+To fix this, update the section header first, before the relocations.
+Previously, the section size was calculated in elf_rebuild_reloc_section
+by counting the number of entries in the reloc_list. However, we
+now need the size during elf_write so instead keep a running total
+and add to it for every new relocation.
 
-						- Ted
+[0] https://sourceforge.net/p/elftoolchain/mailman/elftoolchain-developers/thread/CAGw6cBtkZro-8wZMD2ULkwJ39J+tHtTtAWXufMjnd3cQ7XG54g@mail.gmail.com/
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lore.kernel.org/r/20210509000103.11008-2-mforney@mforney.org
+---
+ tools/objtool/elf.c | 46 ++++++++++++++++----------------------------
+ 1 file changed, 17 insertions(+), 29 deletions(-)
+
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index d1d4491..fee03b7 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -508,6 +508,7 @@ int elf_add_reloc(struct elf *elf, struct section *sec, unsigned long offset,
+ 	list_add_tail(&reloc->list, &sec->reloc->reloc_list);
+ 	elf_hash_add(reloc, &reloc->hash, reloc_hash(reloc));
+ 
++	sec->reloc->sh.sh_size += sec->reloc->sh.sh_entsize;
+ 	sec->reloc->changed = true;
+ 
+ 	return 0;
+@@ -977,26 +978,23 @@ static struct section *elf_create_reloc_section(struct elf *elf,
+ 	}
+ }
+ 
+-static int elf_rebuild_rel_reloc_section(struct section *sec, int nr)
++static int elf_rebuild_rel_reloc_section(struct section *sec)
+ {
+ 	struct reloc *reloc;
+-	int idx = 0, size;
++	int idx = 0;
+ 	void *buf;
+ 
+ 	/* Allocate a buffer for relocations */
+-	size = nr * sizeof(GElf_Rel);
+-	buf = malloc(size);
++	buf = malloc(sec->sh.sh_size);
+ 	if (!buf) {
+ 		perror("malloc");
+ 		return -1;
+ 	}
+ 
+ 	sec->data->d_buf = buf;
+-	sec->data->d_size = size;
++	sec->data->d_size = sec->sh.sh_size;
+ 	sec->data->d_type = ELF_T_REL;
+ 
+-	sec->sh.sh_size = size;
+-
+ 	idx = 0;
+ 	list_for_each_entry(reloc, &sec->reloc_list, list) {
+ 		reloc->rel.r_offset = reloc->offset;
+@@ -1011,26 +1009,23 @@ static int elf_rebuild_rel_reloc_section(struct section *sec, int nr)
+ 	return 0;
+ }
+ 
+-static int elf_rebuild_rela_reloc_section(struct section *sec, int nr)
++static int elf_rebuild_rela_reloc_section(struct section *sec)
+ {
+ 	struct reloc *reloc;
+-	int idx = 0, size;
++	int idx = 0;
+ 	void *buf;
+ 
+ 	/* Allocate a buffer for relocations with addends */
+-	size = nr * sizeof(GElf_Rela);
+-	buf = malloc(size);
++	buf = malloc(sec->sh.sh_size);
+ 	if (!buf) {
+ 		perror("malloc");
+ 		return -1;
+ 	}
+ 
+ 	sec->data->d_buf = buf;
+-	sec->data->d_size = size;
++	sec->data->d_size = sec->sh.sh_size;
+ 	sec->data->d_type = ELF_T_RELA;
+ 
+-	sec->sh.sh_size = size;
+-
+ 	idx = 0;
+ 	list_for_each_entry(reloc, &sec->reloc_list, list) {
+ 		reloc->rela.r_offset = reloc->offset;
+@@ -1048,16 +1043,9 @@ static int elf_rebuild_rela_reloc_section(struct section *sec, int nr)
+ 
+ static int elf_rebuild_reloc_section(struct elf *elf, struct section *sec)
+ {
+-	struct reloc *reloc;
+-	int nr;
+-
+-	nr = 0;
+-	list_for_each_entry(reloc, &sec->reloc_list, list)
+-		nr++;
+-
+ 	switch (sec->sh.sh_type) {
+-	case SHT_REL:  return elf_rebuild_rel_reloc_section(sec, nr);
+-	case SHT_RELA: return elf_rebuild_rela_reloc_section(sec, nr);
++	case SHT_REL:  return elf_rebuild_rel_reloc_section(sec);
++	case SHT_RELA: return elf_rebuild_rela_reloc_section(sec);
+ 	default:       return -1;
+ 	}
+ }
+@@ -1117,12 +1105,6 @@ int elf_write(struct elf *elf)
+ 	/* Update changed relocation sections and section headers: */
+ 	list_for_each_entry(sec, &elf->sections, list) {
+ 		if (sec->changed) {
+-			if (sec->base &&
+-			    elf_rebuild_reloc_section(elf, sec)) {
+-				WARN("elf_rebuild_reloc_section");
+-				return -1;
+-			}
+-
+ 			s = elf_getscn(elf->elf, sec->idx);
+ 			if (!s) {
+ 				WARN_ELF("elf_getscn");
+@@ -1133,6 +1115,12 @@ int elf_write(struct elf *elf)
+ 				return -1;
+ 			}
+ 
++			if (sec->base &&
++			    elf_rebuild_reloc_section(elf, sec)) {
++				WARN("elf_rebuild_reloc_section");
++				return -1;
++			}
++
+ 			sec->changed = false;
+ 			elf->changed = true;
+ 		}
