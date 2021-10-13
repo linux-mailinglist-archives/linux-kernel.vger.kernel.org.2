@@ -2,147 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AB542BACA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA63742BAD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238921AbhJMItK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:49:10 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:25755 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234560AbhJMItI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:49:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1634114825; x=1665650825;
-  h=subject:from:to:cc:date:mime-version:
-   content-transfer-encoding:message-id;
-  bh=pAs91x88z+ajqtkXU1xcpob8J9OK5iJT+zTO2gT1iSo=;
-  b=IeDsCLCaYBqRNw6a8nWeozpJt8XYOwQ7SBTjXp7oWPfUA/W8iv0vSYnC
-   0yTpd7+bdejEDEbQuuo+Lz3/SrMy8UakHGWNb406h/9RhggKBhfmmJToH
-   45Gi/qpAdZAarL2ISwgG87c0UIiBFEXGEqNjhvDu8mYn+7UBRm6PHogtK
-   Gllcg7THZeg4+2XY9MYchvbdaRVNqg7y3KPgQh2qGJwZAsNpnYyzhxIWW
-   yAXMfjyZ7J6/d8PplpxpIu82a+DiS3vntO1YoduWgyB/k7vNCQMi8lDCE
-   bB8chlI/VJ6VoRetAUpHcvLNQV1uyJRqHhRTrDVY/Bz6kiP+oYUUHBPlf
-   g==;
-X-IronPort-AV: E=Sophos;i="5.85,370,1624312800"; 
-   d="scan'208";a="20016647"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 13 Oct 2021 10:47:04 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 13 Oct 2021 10:47:04 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 13 Oct 2021 10:47:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1634114824; x=1665650824;
-  h=subject:from:to:cc:date:mime-version:
-   content-transfer-encoding:message-id;
-  bh=pAs91x88z+ajqtkXU1xcpob8J9OK5iJT+zTO2gT1iSo=;
-  b=pS+TCdEXTeT871X7A3AyV7GPgqdefmlmSrHkc64z0Mvm7/QX/5B83d8A
-   LWpGD3Lf4VqfeRYqFMNHHd99uMYpP4L1syiu1VnvyTlOaxBrHcX7XkbUX
-   srUAtyVyMR3VNUaAkThGn90YjgPFptlP4+ito4aqpxA/uhIfNwefSzfnA
-   kyxwh87CpYRuU47/iRR7k8DU59gKjD6nEy3okd8j35Sun/v2+VneGxCXE
-   WSuog9hygkQYnVij37xIMipsK0NJ7JWviZcrL5IKTX/Uz0045LcKWujn+
-   btfR863ngaZ/tpn7b8yQLIXW13ffhzuTojdJbCOy7g6dO+wK58nxYrDNz
-   A==;
-X-IronPort-AV: E=Sophos;i="5.85,370,1624312800"; 
-   d="scan'208";a="20016646"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 13 Oct 2021 10:47:04 +0200
-Received: from vtuxmail01.tq-net.de (localhost [127.0.0.1])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTP id 550EF280065;
-        Wed, 13 Oct 2021 10:47:04 +0200 (CEST)
-Received: by vtuxmail01 (kopano-spooler) with MAPI; Wed, 13 Oct 2021 10:47:04
- +0200
-Subject: AW: (EXT) Re: [PATCH v2 1/2] dt-bindings: mtd: spi-nor: Add
- output-driver-strength property
-From:   "Alexander Stein" <Alexander.Stein@ew.tq-group.com>
-To:     "Michael Walle" <michael@walle.cc>
-Cc:     "Miquel Raynal" <miquel.raynal@bootlin.com>,
-        "Richard Weinberger" <richard@nod.at>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>,
-        "Rob Herring" <robh@kernel.org>, "Pratyush Yadav" <p.yadav@ti.com>,
-        "Tudor Ambarus" <tudor.ambarus@microchip.com>,
-        =?us-ascii?Q?linux-mtd=40lists=2Einfrad?= =?us-ascii?Q?ead=2Eorg?= 
-        <linux-mtd@lists.infradead.org>,
-        =?us-ascii?Q?devicetree=40vger=2Ekernel=2Eorg?= 
-        <devicetree@vger.kernel.org>,
-        =?us-ascii?Q?linux-kernel=40vger=2Ekernel=2Eorg?= 
-        <linux-kernel@vger.kernel.org>
-Date:   Wed, 13 Oct 2021 08:47:04 +0000
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Priority: 3 (Normal)
-X-Mailer: Kopano 8.7.82
-Message-Id: <kcEE.9geNR42QRKGTSoedF1sEfQ.ALRP5Q7A1wE@vtuxmail01.tq-net.de>
+        id S235536AbhJMIvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:51:12 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46788 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231658AbhJMIvK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 04:51:10 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19D7KaHY022021;
+        Wed, 13 Oct 2021 04:48:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=/xQeJeUmpJlJzCaD4xNAcQ4788Uct2qKLbjhRFnjppI=;
+ b=JDn1+zwumLdHyTi3WmRf/u2ygAcKeV8ZSHrv/KR1+nt86Ay6HbaZzHiCMCJi1ZkZo28Z
+ 6OlsBgx2W7WIcoxq1mwpLOcDQrmhA3rkib/R/CnWAVsjb5lD0wYxVh3dWrMYHjc1Dula
+ jAr2b2lncnFoBD8u8BhvcrJdCw/tNxzPCsIvZbURiDO0d96om7FIuDgBXeTsE+OpTGVZ
+ 3NLh+ka7/b2WKHU/m1fr+shSYYaNVh/JYadBaTSzh6hEOnUM5mn7Y1OtaCrr6QTnmOWD
+ be9O2nODSTllUUtaZ4VYGldPPklCA99Ofi4GFwU/gA7Zt9Hin43qajx4YmZ4i1cNsK7z 2Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bnr79d4va-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 04:48:32 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19D6t5hh004374;
+        Wed, 13 Oct 2021 04:48:32 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bnr79d4um-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 04:48:31 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19D8iESP028849;
+        Wed, 13 Oct 2021 08:48:29 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 3bk2bjppjr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 08:48:29 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19D8mMf330540102
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Oct 2021 08:48:23 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC77242045;
+        Wed, 13 Oct 2021 08:48:22 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6B81F42042;
+        Wed, 13 Oct 2021 08:48:22 +0000 (GMT)
+Received: from osiris (unknown [9.145.19.118])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 13 Oct 2021 08:48:22 +0000 (GMT)
+Date:   Wed, 13 Oct 2021 10:48:20 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] s390: DYNAMIC_FTRACE_WITH_DIRECT_CALL support
+Message-ID: <YWadVEtwt8+mWsWo@osiris>
+References: <20211012133802.2460757-1-hca@linux.ibm.com>
+ <20211012094852.7f6a59b8@gandalf.local.home>
+ <YWWithSCGThguq7s@osiris>
+ <YWXANRbkPIE3HtOE@krava>
+ <YWXTCm2S8WFIZKbh@osiris>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWXTCm2S8WFIZKbh@osiris>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 8cCMGh8B41tzZsxOaLfuIHobmF-Z5UOe
+X-Proofpoint-ORIG-GUID: i6e3rtHGX7nrW8M4BQpaE747vbSmy_dj
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-13_02,2021-10-13_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 mlxlogscore=944 malwarescore=0 adultscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxscore=0
+ priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110130057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Michael,
+On Tue, Oct 12, 2021 at 08:25:14PM +0200, Heiko Carstens wrote:
+> On Tue, Oct 12, 2021 at 07:04:53PM +0200, Jiri Olsa wrote:
+> > > > See here:
+> > > > 
+> > > >   https://lore.kernel.org/all/20211008091336.33616-1-jolsa@kernel.org/
+> > > 
+> > > I applied Jiri's patch set and the newly added selftest passes.
+> > 
+> > nice, could I have your Tested-by? ;-)
+> 
+> Well, now I added also the missing pieces to ftrace-direct-multi
+> sample module and when loading that and looking into
+> /sys/kernel/debug/tracing/trace it looks like "my_direct_func" gets
+> some random junk as parameter and nothing that could count as "ip".
+> 
+> Will look into that, probably tomorrow.
 
+Ok, if I load the correct module, it even works. I had a bug in the
+first version, fixed it, but still loaded the broken module to test
+my changes. Clever me ;)
 
-Am 2021-10-12 09:48, schrieb Michael Walle:
-> Am 2021-10-12 08:17, schrieb Alexander Stein:
-> > This property is for optimizing output voltage impedance and is
-> > specific to each board. It overwrites the default set by the flash
-> > device. Various flash devices support different impedances.
-> >=20
-> > Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-> > ---
-> > Changes in v2:
-> > * Updated the property description and the commit message accordingly
-> >=20
-> >  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > index ed590d7c6e37..4c3c506a8853 100644
-> > --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > @@ -72,6 +72,14 @@ properties:
-> >        be used on such systems, to denote the absence of a reliable=20
-> > reset
-> >        mechanism.
-> >=20
-> > +  output-driver-strength:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    description:
-> > +      Output driver strength in ohms which optimizes the impedance at=20
-> > Vcc/2
-> > +      output voltage. This property overwrites the default set by the=20
-> > flash
-> > +      device. This is board specific and should be determined by the
-> > +      manufacturer. Various flash devices support different=20
-> > impedances.
->=20
-> Mh, this seems to be very tailored to this flash chip. Eg. the "Vcc/2",=20
-> is
-> this something specific to this flash or is this some kind of common=20
-> usage=3F
-
-"Vcc/2" is taken from the datasheet description.
-
-> For example, Winbond flashes specifies the output driver strength in=20
-> percent.
-> Settings are 25%, 50%, 75%, 100% there.
->=20
-> I'd have to ask a hardware guy, if one could convert between these two
-> representations of the driver strength.
-
-Well, 100% must map to some actual value. Which then can be used to create
-a discrete value table, which are then supported by the flash driver.
-E.g. for Micron not every flash supports the same set of settings for
-driver strength.
-Macronix uses similar settings (values and bitmask), but in a different
-register. But if some vendors have pretty much incompatible settings, it
-might be feasible to provide vendor specific settings, e.g.
-"micron,drive-strength =3D <45>" (for 45 Ohm) or "winbond,drive-strength =3D <100>"
-(for 100%).
-
-Best regards,
-Alexander
-
+So it all works for me.
