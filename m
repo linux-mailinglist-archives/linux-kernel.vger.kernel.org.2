@@ -2,83 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A2742C78C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F8142C78B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237943AbhJMR1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35072 "EHLO
+        id S237654AbhJMR0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:26:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237891AbhJMR1L (ORCPT
+        with ESMTP id S230313AbhJMR0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:27:11 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DD5C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:25:07 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id d20so2138835qvm.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:25:07 -0700 (PDT)
+        Wed, 13 Oct 2021 13:26:52 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECF5C061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:24:48 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so4950842pjc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:24:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d5B9e1Cyi0JhwKWEml7iuPih0nBAtWtEukFOrjjJnY0=;
-        b=f+bvuZ6JlYfGopABNgCneINt/jqcD0o7QYvRv8DV5elz3c9CpVryuAwTSBzor5IdP0
-         yzO406sYsOTmRhEZ6K8FKqiG3GHEYFNXG2WRO0K0emxr8BDPIKTwZ8LUD0Izc+mXjnNF
-         uNpjwAJcMjqxKdzS9WlG5BW5l0O89Hz4uLBtruj2EM/+JiUbleA0HafQBBnfP8NPIjex
-         LX7tx/O1dlIFeqVasAOrLsxirjiWkDtl7LjFmexe/HDzCaqEU369EIguu2ziUX3V/DUa
-         zvTb8HPMrymg6vX9QTMAEijxGbYkG1MvIuXd3jWZztLB++3ODvGbn+hyjheGWwn4tUkg
-         YiYg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=znXxY8k0yLhwBo4efWALoeW3xXIEX4hKO/JqS3b4Dyg=;
+        b=Z6YEV8Cobp8BBjd4T6EW5woNqLhuBZaG7SxbSekXJNyXJWRkz1azJSTu3gOp4dXKdO
+         4FBHrg/Domvx507fqMSOgFtt/Xv69x+Y84bt8auhTLLYQhJZOlaTd3wQmym3OaJKgtH+
+         WqkA5fvqnwNY6A6nZAFtPRp/4kAM3o0TS0Dn9QUKQzIlVAX0UqpyATB3bzmxjBik9hFC
+         +KRZ3lxRKUFEnm2cWjd/yV1GyemnKu6e+fItC343CgRoKyestVhd5nxdLXR4grlSVLu4
+         l1EYljp0lpYLbg7qvECY8qrKHFYNObgOsbE8Hs5p/b6NJTjhEWVJ3wJT6EiFnMG5c2bo
+         vfUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d5B9e1Cyi0JhwKWEml7iuPih0nBAtWtEukFOrjjJnY0=;
-        b=uw2cA7WmpNb/ERjZkOaealLqhl2HSiayCQcpbPhf6JsTVaOQBJi6x947IuaiJ/eBT8
-         NW1QyfrMdyoQAie08yXX60/AWVfs30DhPHANH0zZv89JiLGsUrNWTTooxEQSWMiriyBh
-         Zg87D/+ruvtgLMdUKQWmKeEil+n7kLq7JXptXlamGSBmKjRhcR80ryCRndtxdbJ2B9pB
-         WnMqZHRqJNtwtyyVoMQl1QS4Lf8FLMJvu7r1FD4h6QhFQuMrNtN1ogNc2ge2V6B3zDkA
-         CldoVt9K4ECt3hmHb0dXUqVsPywkmdZ3e6VC7SDnDhCwAASGYtuzpchpNPTAIop3W8hZ
-         M8FA==
-X-Gm-Message-State: AOAM532O/4u7h1p6A4gAgh8n3NNWsNO31MLsz0W+42D7uBmlF6cphc98
-        GSSU5gALDwX1lsYTXPO+ukmyhX65i8T8UmZcLV6dwg==
-X-Google-Smtp-Source: ABdhPJx6YyZ/+etdKFX6+ZvhxFnw3OJipzQgmPjSPysSm4HVGBCwTGzggnrRlwwt8VN2N9FOPBJimKbN6+UB7foi4Gs=
-X-Received: by 2002:a0c:aac2:: with SMTP id g2mr202369qvb.41.1634145906145;
- Wed, 13 Oct 2021 10:25:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=znXxY8k0yLhwBo4efWALoeW3xXIEX4hKO/JqS3b4Dyg=;
+        b=BvtPFsCgbaP1FBAVi/sl0cmHnjVuhBWhWPs/vLuFbdrdnI7YGq42T5IdiIYybeLhs3
+         bR2znZ0f4DNMQuFnHdbzCjYl2AgoiNetA7NX/qj1gB+ZlV/zZstidqA6SE5vmocXUA4X
+         TfeWlThjH/jMb3OPzr39WS8/MylwiO15s1MrAGHyujb3VA6Td7wJPIC6VfYVPg0C9Jh1
+         29vTyjwp0WqAPzToMVLRsORDbf3cMAKreLMLoOPRutAbHQys0GOPeLz8Dt09QQmvBHew
+         ju3sfkhBxau4TV2tibhNS5XO2opxzeTC25rlRkyApC46ATyIQXG1ZwPwQBzEzxWwvafV
+         Toxw==
+X-Gm-Message-State: AOAM532MY7wxVI1HhBT+7zHkbcq3DHHGaVKUIQc6NPXyqmfBDtgglO9E
+        TR/c9y0P5UlmP3EXGs0EPzRADw==
+X-Google-Smtp-Source: ABdhPJwaiA5rH696JEVs1LyaPKo4rf9o9kfJpWWgIN+FdZR7N051iOYsTHra9i4SBRSPNHgi4Pjmnw==
+X-Received: by 2002:a17:90b:782:: with SMTP id l2mr618878pjz.190.1634145887734;
+        Wed, 13 Oct 2021 10:24:47 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id 14sm133224pfu.29.2021.10.13.10.24.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 10:24:47 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 17:24:43 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 37/45] KVM: SVM: Add support to handle MSR based
+ Page State Change VMGEXIT
+Message-ID: <YWcWW7eikkWSmCkH@google.com>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-38-brijesh.singh@amd.com>
+ <YWYCrQX4ZzwUVZCe@google.com>
+ <a677423e-fa24-5b6a-785f-4cbdf0ebee37@amd.com>
 MIME-Version: 1.0
-References: <20211012234606.91717-1-ndesaulniers@google.com> <20211012234606.91717-2-ndesaulniers@google.com>
-In-Reply-To: <20211012234606.91717-2-ndesaulniers@google.com>
-From:   Christian Biesinger <cbiesinger@google.com>
-Date:   Wed, 13 Oct 2021 13:24:28 -0400
-Message-ID: <CAPTJ0XEQn7W-2a3NPUZYt4Jr1nKCVVp2W-uKTfdiFEbiyuBQcQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] arm64: vdso32: drop the test for dmb ishld
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Simon Marchi <simon.marchi@polymtl.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a677423e-fa24-5b6a-785f-4cbdf0ebee37@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+On Wed, Oct 13, 2021, Brijesh Singh wrote:
+> > The more I look at this, the more strongly I feel that private <=> shared conversions
+> > belong in the MMU, and that KVM's SPTEs should be the single source of truth for
+> > shared vs. private.  E.g. add a SPTE_TDP_PRIVATE_MASK in the software available bits.
+> > I believe the only hiccup is the snafu where not zapping _all_ SPTEs on memslot
+> > deletion breaks QEMU+VFIO+GPU, i.e. KVM would lose its canonical info on unrelated
+> > memslot deletion.
+> >
+> > But that is a solvable problem.  Ideally the bug, wherever it is, would be root
+> > caused and fixed.  I believe Peter (and Marc?) is going to work on reproducing
+> > the bug.
+> We have been also setting up VM with Qemu + VFIO + GPU usecase to repro
+> the bug on AMD HW and so far we no luck in reproducing it. Will continue
+> stressing the system to recreate it. Lets hope that Peter (and Marc) can
+> easily recreate on Intel HW so that we can work towards fixing it.
 
-On Tue, Oct 12, 2021 at 7:46 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> Binutils added support for this instruction in commit
-> e797f7e0b2bedc9328d4a9a0ebc63ca7a2dbbebc which shipped in 2.34 (just
-> missing the 2.33 release) but was cherry-picked into 2.33 in commit
+Are you trying on a modern kernel?  If so, double check that nx_huge_pages is off,
+turning that on caused the bug to disappear.  It should be off for AMD systems,
+but it's worth checking.
 
-Shouldn't that be 2.24 and 2.23, respectively?
+> >> +		if (!rc) {
+> >> +			/*
+> >> +			 * This may happen if another vCPU unmapped the page
+> >> +			 * before we acquire the lock. Retry the PSC.
+> >> +			 */
+> >> +			write_unlock(&kvm->mmu_lock);
+> >> +			return 0;
+> > How will the caller (guest?) know to retry the PSC if KVM returns "success"?
+> 
+> If a guest is adhering to the GHCB spec then it will see that hypervisor
+> has not processed all the entry and it should retry the PSC.
 
-> 27a50d6755bae906bc73b4ec1a8b448467f0bea1. Thanks to Christian and Simon
-> for helping me with the patch archaeology.
->
-> According to Documentation/process/changes.rst, the minimum supported
-> version of binutils is 2.33. Since all supported versions of GAS support
+But AFAICT that information isn't passed to the guest.  Even in this single-page
+MSR-based case, the caller will say "all good" on a return of 0.
 
-(I have not checked whether this version is correct or not.)
+The "full" path is more obvious, as the caller clearly continues to process
+entries unless there's an actual failure.
 
-Christian
++       for (; cur <= end; cur++) {
++               entry = &info->entries[cur];
++               gpa = gfn_to_gpa(entry->gfn);
++               level = RMP_TO_X86_PG_LEVEL(entry->pagesize);
++               op = entry->operation;
++
++               if (!IS_ALIGNED(gpa, page_level_size(level))) {
++                       rc = PSC_INVALID_ENTRY;
++                       goto out;
++               }
++
++               rc = __snp_handle_page_state_change(vcpu, op, gpa, level);
++               if (rc)
++                       goto out;
++       }
