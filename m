@@ -2,157 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E06142C6C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD9042C6C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236335AbhJMQx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:53:28 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:45748 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbhJMQx1 (ORCPT
+        id S236555AbhJMQxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:53:52 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:49086
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237399AbhJMQxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:53:27 -0400
-Received: by mail-io1-f69.google.com with SMTP id k9-20020a5d91c9000000b005dc4a740599so247894ior.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 09:51:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=aljqd/llVrGPRpRCQdaAFVs7OepeuWm3WekPI8dhI8Y=;
-        b=GY3Gch+GqVF6y/h+V73GF/cyE1Gm/ChMsFDsnGBIW3UmYth9kpGIj+tw6Zi5CMNbes
-         Ln3NOZaQGuMScDNcuKpTym3t+mP695t2N40wb/tjP1MOYf9aSzRDKra+DTGnZVhHuZdr
-         Ap2rfHeqkxdKqqdxvZ+zyMl337B7HRn7E4VNR0lLd9szjc16BHFABdo8a2370v/kmbLY
-         uRyrZORLYRGiBkNAzp4YNvXm3keZiS10gXmtmZZ7OtmZl7fsuafLYGyqBpI+t3RqiVeK
-         tNxwCdTLmIlaQZHL/aCsmobRp02WF5oviHq22Ve0SzpVmszeNPsvaBpKYkUrFfCxKG2B
-         /MYw==
-X-Gm-Message-State: AOAM53343q8nY9iauqFjZK4VHEbHDqwJOY4X7TJKFFjRryEGsdnSchxv
-        IU8x+IFDefagxeEejzfsoItSvO2Z3q6Pw4X28Z5tVdh3GrnU
-X-Google-Smtp-Source: ABdhPJxK2KFKjAUHFgSXAhmFiYJC2f/9W0MLsXX82FztEyiueTmy96qj/Ze4lmTd/2beJheUsOmQmDP8owN7SvhJ1WakVv8Xxkgs
+        Wed, 13 Oct 2021 12:53:49 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id F11133FFDC;
+        Wed, 13 Oct 2021 16:51:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634143903;
+        bh=nspxtz40p65DZu4TYJBabtEkFf22gqNZfGTLya7Yrd8=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=jHQ+xQpZT3ySNZvfc7Mv2IO5uEBq9duWF1MlPWpGZvYeJHiVcz9A7rRAAkuRwsAWD
+         L0aC8QkbNLM/Ovd66WAmrejidVQGrzhN/CM3WyfiuZ67P2/G4AsejdKw/iNfhdcvLf
+         r8uEJeG5anV0ARNJ+4MVgIKMi6VYnOWCUlnwC6OShxeUQqiw8abRiFgcNeSpyHUHCF
+         a0MLlhJasei7LHS5hQPlNdEOtLCQ/Fpytil4ruNAnNd2LOKPm8bLRwLRwztOhSb6zl
+         7fo6dG70HRDukksIb7Qk8FDlv02QO//kgN80AcJNgMvrord248FTEehqNUeiLyynrG
+         vcou6qPyVlE6A==
+From:   Colin King <colin.king@canonical.com>
+To:     Wei Liu <wei.liu@kernel.org>, Paul Durrant <paul@xen.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        xen-devel@lists.xenproject.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] xen-netback: Remove redundant initialization of variable err
+Date:   Wed, 13 Oct 2021 17:51:42 +0100
+Message-Id: <20211013165142.135795-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:b48b:: with SMTP id d133mr331015iof.12.1634143883531;
- Wed, 13 Oct 2021 09:51:23 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 09:51:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b0a1a605ce3ec5ad@google.com>
-Subject: [syzbot] general protection fault in sg_alloc_append_table_from_pages
-From:   syzbot <syzbot+2c56b725ec547fa9cb29@syzkaller.appspotmail.com>
-To:     christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
-        gurchetansingh@chromium.org, kraxel@redhat.com,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, sumit.semwal@linaro.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Colin Ian King <colin.king@canonical.com>
 
-syzbot found the following issue on:
+The variable err is being initialized with a value that is never read, it
+is being updated immediately afterwards. The assignment is redundant and
+can be removed.
 
-HEAD commit:    717478d89fe2 Merge tag 'riscv-for-linus-5.15-rc5' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12489abf300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=32e6048063923b7b
-dashboard link: https://syzkaller.appspot.com/bug?extid=2c56b725ec547fa9cb29
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=167b9e4f300000
-
-The issue was bisected to:
-
-commit 284562e1f34874e267d4f499362c3816f8f6bc3f
-Author: Gurchetan Singh <gurchetansingh@chromium.org>
-Date:   Tue Dec 3 01:36:27 2019 +0000
-
-    udmabuf: implement begin_cpu_access/end_cpu_access hooks
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12d68447300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11d68447300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d68447300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2c56b725ec547fa9cb29@syzkaller.appspotmail.com
-Fixes: 284562e1f348 ("udmabuf: implement begin_cpu_access/end_cpu_access hooks")
-
-general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-CPU: 1 PID: 7990 Comm: syz-executor.0 Not tainted 5.15.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:sg_alloc_append_table_from_pages+0x821/0xdb0 lib/scatterlist.c:525
-Code: 0c 24 48 8b 4c 24 48 48 39 c8 48 0f 46 c8 89 f0 4c 8d 3c c7 48 89 4c 24 30 48 b9 00 00 00 00 00 fc ff df 4c 89 f8 48 c1 e8 03 <80> 3c 08 00 0f 85 24 05 00 00 4d 8b 3f 4c 89 e0 31 ff 83 e0 03 48
-RSP: 0018:ffffc90006087c48 EFLAGS: 00010212
-RAX: 0000000000000002 RBX: 0000000000000001 RCX: dffffc0000000000
-RDX: ffff888074588000 RSI: 0000000000000000 RDI: 0000000000000010
-RBP: 00000000fffff000 R08: fffffffffffff000 R09: ffff88801afe1940
-R10: ffffffff83d737d0 R11: 0000000000000000 R12: 0000000000000002
-R13: ffff88801afe1940 R14: 0000000000000000 R15: 0000000000000010
-FS:  00007fd273545700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd273545718 CR3: 000000001a51c000 CR4: 0000000000350ee0
-Call Trace:
- sg_alloc_table_from_pages_segment+0xc9/0x260 lib/scatterlist.c:573
- sg_alloc_table_from_pages include/linux/scatterlist.h:331 [inline]
- get_sg_table.isra.0+0xbb/0x160 drivers/dma-buf/udmabuf.c:67
- begin_cpu_udmabuf+0x130/0x1d0 drivers/dma-buf/udmabuf.c:126
- dma_buf_begin_cpu_access+0xfd/0x1d0 drivers/dma-buf/dma-buf.c:1204
- dma_buf_ioctl+0x29a/0x380 drivers/dma-buf/dma-buf.c:403
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:874 [inline]
- __se_sys_ioctl fs/ioctl.c:860 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fd273e108d9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd273545188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fd273f150e0 RCX: 00007fd273e108d9
-RDX: 0000000020000000 RSI: 0000000040086200 RDI: 0000000000000004
-RBP: 00007fd273e6acb4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd358e3ccf R14: 00007fd273545300 R15: 0000000000022000
-Modules linked in:
----[ end trace 225c119d3f055d42 ]---
-RIP: 0010:sg_alloc_append_table_from_pages+0x821/0xdb0 lib/scatterlist.c:525
-Code: 0c 24 48 8b 4c 24 48 48 39 c8 48 0f 46 c8 89 f0 4c 8d 3c c7 48 89 4c 24 30 48 b9 00 00 00 00 00 fc ff df 4c 89 f8 48 c1 e8 03 <80> 3c 08 00 0f 85 24 05 00 00 4d 8b 3f 4c 89 e0 31 ff 83 e0 03 48
-RSP: 0018:ffffc90006087c48 EFLAGS: 00010212
-RAX: 0000000000000002 RBX: 0000000000000001 RCX: dffffc0000000000
-RDX: ffff888074588000 RSI: 0000000000000000 RDI: 0000000000000010
-RBP: 00000000fffff000 R08: fffffffffffff000 R09: ffff88801afe1940
-R10: ffffffff83d737d0 R11: 0000000000000000 R12: 0000000000000002
-R13: ffff88801afe1940 R14: 0000000000000000 R15: 0000000000000010
-FS:  00007fd273545700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd273545718 CR3: 000000001a51c000 CR4: 0000000000350ee0
-----------------
-Code disassembly (best guess):
-   0:	0c 24                	or     $0x24,%al
-   2:	48 8b 4c 24 48       	mov    0x48(%rsp),%rcx
-   7:	48 39 c8             	cmp    %rcx,%rax
-   a:	48 0f 46 c8          	cmovbe %rax,%rcx
-   e:	89 f0                	mov    %esi,%eax
-  10:	4c 8d 3c c7          	lea    (%rdi,%rax,8),%r15
-  14:	48 89 4c 24 30       	mov    %rcx,0x30(%rsp)
-  19:	48 b9 00 00 00 00 00 	movabs $0xdffffc0000000000,%rcx
-  20:	fc ff df
-  23:	4c 89 f8             	mov    %r15,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	80 3c 08 00          	cmpb   $0x0,(%rax,%rcx,1) <-- trapping instruction
-  2e:	0f 85 24 05 00 00    	jne    0x558
-  34:	4d 8b 3f             	mov    (%r15),%r15
-  37:	4c 89 e0             	mov    %r12,%rax
-  3a:	31 ff                	xor    %edi,%edi
-  3c:	83 e0 03             	and    $0x3,%eax
-  3f:	48                   	rex.W
-
-
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/xen-netback/netback.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/net/xen-netback/netback.c b/drivers/net/xen-netback/netback.c
+index 32d5bc4919d8..0f7fd159f0f2 100644
+--- a/drivers/net/xen-netback/netback.c
++++ b/drivers/net/xen-netback/netback.c
+@@ -1474,7 +1474,7 @@ int xenvif_map_frontend_data_rings(struct xenvif_queue *queue,
+ 	struct xen_netif_tx_sring *txs;
+ 	struct xen_netif_rx_sring *rxs;
+ 	RING_IDX rsp_prod, req_prod;
+-	int err = -ENOMEM;
++	int err;
+ 
+ 	err = xenbus_map_ring_valloc(xenvif_to_xenbus_device(queue->vif),
+ 				     &tx_ring_ref, 1, &addr);
+-- 
+2.32.0
+
