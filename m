@@ -2,138 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6848A42B866
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F4D42B870
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238256AbhJMHHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238173AbhJMHHb (ORCPT
+        id S238220AbhJMHIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:08:06 -0400
+Received: from mail-vk1-f178.google.com ([209.85.221.178]:46739 "EHLO
+        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238262AbhJMHIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:07:31 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89635C061714
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:05:28 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id g9so1149519plo.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:05:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6tGvcqjwGnkwXapVdxREWLfq3SeiEzYltujninCiyHk=;
-        b=Y9iLi2JrztwgqJU7WxouRqkcs19pQmlvc+dwqmTt/LsB2A/+LkmdmebziJqWx90+1l
-         QGUBkBxPvUXkDNRhn2WfhIRnIA//lJRWBR6Sy4+Bvt3AZnPK5owInFUImk8i6ZlkNfXx
-         3PbBkcLhCoweDrO9NiqjhNF4c3MLWR35u5DiA=
+        Wed, 13 Oct 2021 03:08:02 -0400
+Received: by mail-vk1-f178.google.com with SMTP id 34so1353179vkl.13;
+        Wed, 13 Oct 2021 00:05:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6tGvcqjwGnkwXapVdxREWLfq3SeiEzYltujninCiyHk=;
-        b=PruRxbBtNDWXyYj9ZeQS1LsVK/0JMZuhaZktnvUJb0EShJLsMhBplOvOHmwj7WUNcI
-         SFStHUkAGNQsNIwYdcynTsALv/i7KQzqf8hMaSVAvyRbYY0wfMb8B7IM6ruZtPj2TLZR
-         uqZmAu0Ym7RcRrQoFAGe0xtEO+Ui39a1ZaBoOHfdicoaGZpvxr36umWNCg8rMcm0f7Rg
-         7LWMRy1jwrCOkToOOWoW/EgGbcK/Vb71jnLKdpnfFOFnsDaZWmnPOmWAJdX1Zta7QVsV
-         Ehwt++vrxUyI21paSyGz/dQTaxiN7EzCHE+55siC1zWoO6oVhy2JOMVS/N4pkk/1HvQ3
-         TYYQ==
-X-Gm-Message-State: AOAM530rMHuWgrq/6E0FQH/0lhRFUoL2IEIs1ANPDiRgtZwQxoZ97RR8
-        8l490hxynUs0Q9ob+fp2/ep/XA==
-X-Google-Smtp-Source: ABdhPJxyo+lKj4DVYPaWC7XDi86I8yDjK4zmQZScEiHVyq9xnd6FexVoNrQNr9v1X26KMPGowX7ckA==
-X-Received: by 2002:a17:90b:3b44:: with SMTP id ot4mr11523975pjb.73.1634108727909;
-        Wed, 13 Oct 2021 00:05:27 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id ip10sm5334805pjb.40.2021.10.13.00.05.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 00:05:27 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 00:05:26 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 08/10] lkdtm: Really write into kernel text in
- WRITE_KERN
-Message-ID: <202110130004.880A6C841@keescook>
-References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
- <624940395e5d81967246f911a65740b9a15b5a70.1633964380.git.christophe.leroy@csgroup.eu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Le9QZPuNWHanoI4mM43dOJuIkLPwVhdbuEPDJXqaV0=;
+        b=5VOaAt/NSN1eUax8xeQLpyMsKGYwoyl+rpRRfELyh9Hm/5QCYrOx2n7vCUCZoYSLqF
+         eu5rsY2C7vZHkt3PuPcisDgagXNpjzsHHMgw0TO704zanYVWCFt0R+eGE+3bbwsjmGqm
+         V1pBflPLe9aCih/NbSuerQmDOJGi3cCBsdcWQBYvtp1JcyIJJHLm+RYWFL0MkLnB0ZKH
+         UEXV/KfR0WUHBU35DqT6W0NcUuuaTZgJbgYmsVguJQLBKUVEjA3hWBtsAlwP1PZrW6YT
+         Ezd15snf1AHnk9+pXC+SU4/JsdxC6jQenv2pQlVpI7JftEc3q1RiC/sP+xhPZzrJ1FTP
+         KiaA==
+X-Gm-Message-State: AOAM533JeL0yTY4zchY45C6xyoLRwElFnwUiDn0QydQPnHM+dhVg/Q1P
+        LIgs4x/QfUe1v++9/GF7dvfTUdydcPnbqk59IIw=
+X-Google-Smtp-Source: ABdhPJwEa5NDkP57MCTKn5kzUR3aq+JEVBowsC/GEnWHnA8M9YW2ZrsM+SdOBCcoc14Elp0mTni+XsamiZ/lrTJkGX0=
+X-Received: by 2002:a1f:3a4b:: with SMTP id h72mr31719119vka.19.1634108759159;
+ Wed, 13 Oct 2021 00:05:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <624940395e5d81967246f911a65740b9a15b5a70.1633964380.git.christophe.leroy@csgroup.eu>
+References: <20211012134027.684712-1-kernel@esmil.dk> <20211012134027.684712-4-kernel@esmil.dk>
+In-Reply-To: <20211012134027.684712-4-kernel@esmil.dk>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 Oct 2021 09:05:48 +0200
+Message-ID: <CAMuHMdVA5h_Z27uo=czbQLatCe6-zOoBQGEeuooW2ExMHzGbmw@mail.gmail.com>
+Subject: Re: [PATCH v1 03/16] dt-bindings: interrupt-controller: Add StarFive
+ JH7100 plic
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 05:25:35PM +0200, Christophe Leroy wrote:
-> WRITE_KERN is supposed to overwrite some kernel text, namely
-> do_overwritten() function.
-> 
-> But at the time being it overwrites do_overwritten() function
-> descriptor, not function text.
-> 
-> Fix it by dereferencing the function descriptor to obtain
-> function text pointer.
-> 
-> And make do_overwritten() noinline so that it is really
-> do_overwritten() which is called by lkdtm_WRITE_KERN().
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  drivers/misc/lkdtm/perms.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
-> index 60b3b2fe929d..442d60ed25ef 100644
-> --- a/drivers/misc/lkdtm/perms.c
-> +++ b/drivers/misc/lkdtm/perms.c
-> @@ -5,6 +5,7 @@
->   * even non-readable regions.
->   */
->  #include "lkdtm.h"
-> +#include <linux/kallsyms.h>
+On Tue, Oct 12, 2021 at 3:41 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> Add compatible string for StarFive JH7100 plic.
+>
+> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
 
-Why not #include <asm/sections.h> instead here?
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
->  #include <linux/slab.h>
->  #include <linux/vmalloc.h>
->  #include <linux/mman.h>
-> @@ -37,7 +38,7 @@ static noinline void do_nothing(void)
->  }
->  
->  /* Must immediately follow do_nothing for size calculuations to work out. */
-> -static void do_overwritten(void)
-> +static noinline void do_overwritten(void)
->  {
->  	pr_info("do_overwritten wasn't overwritten!\n");
->  	return;
-> @@ -113,8 +114,9 @@ void lkdtm_WRITE_KERN(void)
->  	size_t size;
->  	volatile unsigned char *ptr;
->  
-> -	size = (unsigned long)do_overwritten - (unsigned long)do_nothing;
-> -	ptr = (unsigned char *)do_overwritten;
-> +	size = (unsigned long)dereference_symbol_descriptor(do_overwritten) -
-> +	       (unsigned long)dereference_symbol_descriptor(do_nothing);
-> +	ptr = dereference_symbol_descriptor(do_overwritten);
+Gr{oetje,eeting}s,
 
-But otherwise, yup, I expect there will be a bunch of things like this
-to clean up in LKDTM. :| Sorry about that!
-
-Acked-by: Kees Cook <keescook@chromium.org>
-
->  
->  	pr_info("attempting bad %zu byte write at %px\n", size, ptr);
->  	memcpy((void *)ptr, (unsigned char *)do_nothing, size);
-> -- 
-> 2.31.1
-> 
+                        Geert
 
 -- 
-Kees Cook
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
