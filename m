@@ -2,101 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFEC42C6BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE0842C6C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbhJMQwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:52:54 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:33744 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbhJMQww (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:52:52 -0400
-Received: from kbox (unknown [24.17.193.74])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7108120B9CE1;
-        Wed, 13 Oct 2021 09:50:48 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7108120B9CE1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1634143848;
-        bh=5gfRdtuYHgQ1LuQf5SFk00XsiDnfBii0Avdbx+Ckngk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EWoKp8v6LwSCjyJ7A6yMk6fsZ3nL4oSWSWUmYAN0n8Ot/H30dXEq2Z+jcP0FhVwQA
-         vx0/gw3H4wZCPWXHIpWucgGTT6BvxdV8Gy0qyc4OhiG9qBjXiDmN62qVg4yUI/sefq
-         9pmMLOCpENL4xni/UEbyRTOg9MAAitK67HF+g4Hk=
-Date:   Wed, 13 Oct 2021 09:50:43 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] user_events: Enable user processes to create and write
- to trace events
-Message-ID: <20211013165043.GA1427@kbox>
-References: <20211005224428.2551-1-beaub@linux.microsoft.com>
- <20211007012827.99cd5795140cbb0c932e1b5a@kernel.org>
- <20211006175611.GA2995@kbox>
- <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
- <20211007162204.GA30947@kbox>
- <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
- <20211008000540.GA31220@kbox>
- <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
- <20211011162523.GA1542@kbox>
- <20211012211852.2bbf921b@oasis.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012211852.2bbf921b@oasis.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S237272AbhJMQxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:53:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233731AbhJMQxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 12:53:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3CCB61168;
+        Wed, 13 Oct 2021 16:51:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634143887;
+        bh=LBXct+kmDvk5TkVtHHW7PAuxFFNJuafSepYBdwCX45M=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=XUWkhdoYmoYJ1RszQRAvXM1laNkpz+L2dSEERb+eQOYg8SwjCZEIovM6rBWLWJ4lo
+         wogVzszJFYyAnG1Wp5aZRrZ8O26ZoSJ0QkEnAaBv9zV51nZoE2dIQ8km8CkvhM5is1
+         u4r33jjRniHAqQLrpNbZg7NKSPq2psbNwzTpRgo8cYoiQ4DUek/fER6hLriDagshaQ
+         YvPhGI2zI5zRQwlVt4PR69XnRphY1l9DUAtLHWYEsxm5zyaMYyc1TwxIs1yH1IfwtY
+         u/IyDtuMuCfkPIaTw/gEOMAD88nU4qyYlmd6KmU/WLI910AdS/UDInJYzCq99p1ULr
+         SWxYsS265cTBg==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id E276D27C0054;
+        Wed, 13 Oct 2021 12:51:25 -0400 (EDT)
+Received: from imap48 ([10.202.2.98])
+  by compute6.internal (MEProxy); Wed, 13 Oct 2021 12:51:25 -0400
+X-ME-Sender: <xms:jA5nYdYIrqufvqR0QHSxKzwIPiJL1yNB3PkhEAY3pXqxj0ynWH4aiQ>
+    <xme:jA5nYUYjSHb_-dxb1qcLJ_Okzhxz2WZOrqLpj4q7ahMY1Upty9x-CPxWjc6vBqM6l
+    aYpH3MdJyJv_D6kjl8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddutddguddtgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnheptdfhheettddvtedvtedugfeuuefhtddugedvleevleefvdetleff
+    gfefvdekgeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:jA5nYf9AUFxaiR2f9tDmelAP3-v_r3_3-DfbpJmpn439msThUDgCXw>
+    <xmx:jA5nYboyiLpT5i5cglr4OUO4waXIzqlJiZ60zGmaI7MsB_PNqr88Yw>
+    <xmx:jA5nYYp5TBUp4JxLJpoyfgpKerCpmvQlX5K9ed8SL7dQlRZ6IbibIw>
+    <xmx:jQ5nYf11V0b9Uw_lFNrmthfBfpLIaXxtUf6C9e0kYSzX-gQFZyZDPBzWrNg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 6ED4221E006A; Wed, 13 Oct 2021 12:51:24 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1345-g8441cd7852-fm-20211006.001-g8441cd78
+Mime-Version: 1.0
+Message-Id: <98e38690-6be2-4839-99a4-148b61cc9749@www.fastmail.com>
+In-Reply-To: <20211013163023.GD8557@1wt.eu>
+References: <YWXwQ2P0M0uzHo0o@zn.tnic>
+ <20211012222311.578581-1-ammar.faizi@students.amikom.ac.id>
+ <YWbUbSUVLy/tx7Zu@zn.tnic> <20211013125142.GD5485@1wt.eu>
+ <YWbZz7gHBV18QJC3@zn.tnic> <20211013140723.GE5485@1wt.eu>
+ <YWbrR1BqI1CxneN/@zn.tnic> <20211013142433.GB8557@1wt.eu>
+ <alpine.LSU.2.20.2110131601000.26294@wotan.suse.de>
+ <20211013163023.GD8557@1wt.eu>
+Date:   Wed, 13 Oct 2021 09:51:04 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Willy Tarreau" <w@1wt.eu>, "Michael Matz" <matz@suse.de>
+Cc:     "Borislav Petkov" <bp@alien8.de>,
+        "Ammar Faizi" <ammar.faizi@students.amikom.ac.id>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        "Albert Ou" <aou@eecs.berkeley.edu>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the clobber
+ list
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 09:18:52PM -0400, Steven Rostedt wrote:
-> On Mon, 11 Oct 2021 09:25:23 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > 
-> > Yes, in my mind there are two options to avoid kernel memory usage
-> > per-event.
-> > 
-> > 1.
-> > We have a an array per file struct that is independently ref-counted.
-> > This is required to ensure lifetime requirements and to ensure user code
-> > cannot access other user events that might have been free'd outside of
-> > the lifetime and cause a kernel crash.
-> > 
-> > This approach also requires 2 int's to be returned, 1 for the status
-> > page the other a local index for the write into the above array per-file
-> > struct.
-> > 
-> > This is likely the most complex method due to it's lifetime and RCU
-> > synchronization requirements. However, it represents the least memory to
-> > both kernel and user space.
-> 
-> Does it require RCU synchronization as the updates only happen from
-> user space. But is this for the writing of the event? You want a
-> separate fd for each event to write to, instead of saying you have
-> another interface to write and just pass the given id?
+
+
+On Wed, Oct 13, 2021, at 9:30 AM, Willy Tarreau wrote:
+> Hello Michael,
 >
-Yes, an example is a process creates the fd and registers some events.
-Then the process forks and the child registers another event using the
-same fd that was inherited.
+> On Wed, Oct 13, 2021 at 04:24:28PM +0000, Michael Matz wrote:
+> (...)
+>> In short:  Ammars initial claim:
+>> 
+>> > Linux x86-64 syscall only clobbers rax, rcx and r11 (and "memory").
+>> > 
+>> >   - rax for the return value.
+>> >   - rcx to save the return address.
+>> >   - r11 to save the rflags.
+>> > 
+>> > Other registers are preserved.
+>> 
+>> is accurate and I will clarify the psABI to make that explicit.
+>
+> Many thanks for this very detailed explanation! Ammar, I'll take your
+> patch.
 
-If the original process writes while the child process registers at that
-point the FD array can get resized / moved, therefore we need RCU deref
-protection when resizing, etc.
+Acked-by: Andy Lutomirski <luto@kernel.org>
 
-I have a few gauntlet tools that try to crash user_events by writing,
-registering, unregistering at weird times to try to flush this stuff
-out.
-> > In our own use case this will be low due to the way we plan to use the
-> > events. However, I am not sure others will follow that :)
-> 
-> I will say, whenever we say this will only have a "few", if it becomes
-> useful, it will end up having many.
-> 
-> -- Steve
-Agree 100%, I've gone back and forth on which is better for a while. I'm
-happy to update to RCU and send out a V3. Want to make sure we have
-consensus of the right approach before spinning on it :)
-
-Thanks,
--Beau
+>
+> Thanks all,
+> Willy
