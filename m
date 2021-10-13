@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BCC42C3C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F021442C3C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237498AbhJMOpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:45:51 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:40699 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233744AbhJMOpu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:45:50 -0400
-Received: (Authenticated sender: gregory.clement@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 70C2D1BF205;
-        Wed, 13 Oct 2021 14:43:44 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Marcel Ziswiler <marcel@ziswiler.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Marcel Ziswiler <marcel@ziswiler.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Olof Johansson <olof@lixom.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        soc@kernel.org
-Subject: Re: [PATCH v3 0/3] ARM: prepare and add netgear gs110emx support
-In-Reply-To: <20211007205659.702842-1-marcel@ziswiler.com>
-References: <20211007205659.702842-1-marcel@ziswiler.com>
-Date:   Wed, 13 Oct 2021 16:43:38 +0200
-Message-ID: <87ily1dlyd.fsf@BL-laptop>
+        id S236050AbhJMOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:46:14 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:52627 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233744AbhJMOqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:46:13 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HTwK46BYsz9sS3;
+        Wed, 13 Oct 2021 16:44:08 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id TpKPfGchi9lR; Wed, 13 Oct 2021 16:44:08 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HTwK45NbRz9sS0;
+        Wed, 13 Oct 2021 16:44:08 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A2C028B786;
+        Wed, 13 Oct 2021 16:44:08 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id EnVTRYWogTQZ; Wed, 13 Oct 2021 16:44:08 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 818138B763;
+        Wed, 13 Oct 2021 16:44:08 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 19DEhwZg2125395
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 16:43:58 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 19DEhw8q2125394;
+        Wed, 13 Oct 2021 16:43:58 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc: Mark .opd section read-only
+Date:   Wed, 13 Oct 2021 16:43:54 +0200
+Message-Id: <3cd40b682fb6f75bb40947b55ca0bac20cb3f995.1634136222.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1634136233; l=1235; s=20211009; h=from:subject:message-id; bh=lpaC6Oi5RiGO/pS0hBKg1xO31nCFLyBbA6zQNLxTo/Y=; b=0J8NsJzOJ6is94Yh3RvTBReeZ+Y5seuf/gHQnsqrhpHtHzIGk/GIXipWo+MpOXe216JuUMF64FNH cQffp7I+C27voKsh2wKovwoHlQ2ewpK5EPp+y6k0fjXrRn9cnuQU
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Marcel Ziswiler,
+.opd section contains function descriptors used to locate
+functions in the kernel. If someone is able to modify a
+function descriptor he will be able to run arbitrary
+kernel function instead of another.
 
-> Cleanup mvebu_v7_defconfig and then add support for the Netgear
-> GS110EMX which is an 8 port Gigabit switch with two additional
-> Multi-Gig ports. An 88E6390X switch sits at its core connecting to two
-> 88X3310P 10G PHYs while the control plane is handled by an 88F6811
-> Armada 381 SoC.
->
-> Changes in v3:
-> - Got rid of unused 3.3 volt regulator as suggested by Andrew.
-> - Got rid of partitioning comment.
-> - Added switch interrupt GPIO configuration.
->
-> Changes in v2:
-> - Add Andrew's reviewed-by tag.
-> - Add Andrew's reviewed-by tag.
-> - Send previous first patch separately to netdev mailing list as
->   suggested by Andrew.
-> - Fix numbering of the PHY labels as suggested by Andrew.
->
-> Marcel Ziswiler (3):
->   ARM: mvebu_v7_defconfig: enable mtd physmap
->   ARM: mvebu_v7_defconfig: rebuild default configuration
+To avoid that, move .opd section inside read-only memory.
 
-Both applied on mvebu/defconfig
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/vmlinux.lds.S | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
->   ARM: dts: mvebu: add device tree for netgear gs110emx switch
-
-Applied on mvebu/dt
-
-Thanks,
-
-Gregory
-
->
->  arch/arm/boot/dts/Makefile                    |   1 +
->  .../boot/dts/armada-381-netgear-gs110emx.dts  | 295 ++++++++++++++++++
->  arch/arm/configs/mvebu_v7_defconfig           |  18 +-
->  3 files changed, 304 insertions(+), 10 deletions(-)
->  create mode 100644 arch/arm/boot/dts/armada-381-netgear-gs110emx.dts
->
-> -- 
-> 2.26.2
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
+diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
+index 40bdefe9caa7..18e42c74abdd 100644
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -143,6 +143,12 @@ SECTIONS
+ 	SOFT_MASK_TABLE(8)
+ 	RESTART_TABLE(8)
+ 
++	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
++		__start_opd = .;
++		KEEP(*(.opd))
++		__end_opd = .;
++	}
++
+ 	. = ALIGN(8);
+ 	__stf_entry_barrier_fixup : AT(ADDR(__stf_entry_barrier_fixup) - LOAD_OFFSET) {
+ 		__start___stf_entry_barrier_fixup = .;
+@@ -339,12 +345,6 @@ SECTIONS
+ 		*(.branch_lt)
+ 	}
+ 
+-	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
+-		__start_opd = .;
+-		KEEP(*(.opd))
+-		__end_opd = .;
+-	}
+-
+ 	. = ALIGN(256);
+ 	.got : AT(ADDR(.got) - LOAD_OFFSET) {
+ 		__toc_start = .;
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.31.1
+
