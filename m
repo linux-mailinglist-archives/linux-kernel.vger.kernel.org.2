@@ -2,128 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18A842BDED
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9623642BE10
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbhJMK5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:57:33 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:35238 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhJMK5b (ORCPT
+        id S232902AbhJMK6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232145AbhJMK6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:57:31 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 376CE1F4415E
-Subject: Re: [PATCH v7, 00/15] Support multi hardware decode using
- of_platform_populate
-To:     "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20211011070247.792-1-yunfei.dong@mediatek.com>
- <73f83f00-5d49-ba77-f46d-9c0855dc5268@collabora.com>
- <11498cb8b7f1754f6134ce8143bd4f81272d0ffc.camel@mediatek.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Message-ID: <e62baef3-3fa6-5dd4-cbd0-026227b4cf7c@collabora.com>
-Date:   Wed, 13 Oct 2021 12:55:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 13 Oct 2021 06:58:14 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF012C061767
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:56:06 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso1958765pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 03:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LL9CpSaKrwIGmzf5gUizL7uHqJVR8v2f7iF2al5I2gY=;
+        b=mxHA9h0fvl0IV6lqG/ITsAIHHgpNrWhGbL8wzkufFz91H7ItJqO3eFvtZeFcBE25Me
+         eXLDK86XM4C6uCH99pHIDHinaiwO8GzO4sT08bzTzTqnsETHwZupKrAaMjl6jbTMzMLa
+         gZbL+YAz5ZvaJ5b1ulkwfbogdKK938pwYvQbZ9TcKLC2IHlSo6UYfoI9y9PuhosQz8Fd
+         TRrwI1Ir8CWcFlUZvdmt3HlssDOURZXFSx0ZoNWvb3DoKQX+83yVF6s8NoWY4z3VuE6f
+         +pD0hd5UY1Xjm7KUtAtLyjW7kTAucKEgBfT/qjX2CA79qg7G7Gk0CP/4cOb90oEt6oyT
+         E9aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LL9CpSaKrwIGmzf5gUizL7uHqJVR8v2f7iF2al5I2gY=;
+        b=M6UZ/YPzb7cI5BxNy9v1i1WWv30ZD2uvsz/jTI/suw/bpUEuedCsXOVxe+MPNJ00sO
+         15xQasjiy9tXaaZ/OjzldZNph2uXyXif+qyMcz1MV4pckqFaUZTUKuGYsX2MtsQ4EQuD
+         9o77dxtscYpiwcdmmjr6kinK5V+z/fOYKxmgNqVgWtG1MIsiaeWXw9DdpbDzmaoB437q
+         813OtdkJT/S/NDsgol7muQ3eeps0c4BmoZ3IM5DruuQy8i4HsolCoBAtcLCOPLQTYw8V
+         gMoA4n71Uf1Mv7dJztizhLOrFYtOV3CLGfIbOILzIhbRF8NszavBPtwu79Z1gEMEMMYK
+         ztvg==
+X-Gm-Message-State: AOAM531q+sE+JbGglOGu7phuLkOk4CqaRZtW8XxFRdxoTVVxfxXDCUF9
+        1FAsQ21IZqlMpPiwxLeBeqtKEA==
+X-Google-Smtp-Source: ABdhPJxpVn6s06BcFRv7MNatv5Gi4Lr15alhu+KdWwOD+0qh74bxiXioA5VZD8McVcgCoxmkDnyJOg==
+X-Received: by 2002:a17:90a:5108:: with SMTP id t8mr12571728pjh.201.1634122566438;
+        Wed, 13 Oct 2021 03:56:06 -0700 (PDT)
+Received: from localhost.name ([122.161.48.68])
+        by smtp.gmail.com with ESMTPSA id b13sm6155351pjl.15.2021.10.13.03.56.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 03:56:06 -0700 (PDT)
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+To:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.sharma@linaro.org, bhupesh.linux@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, agross@kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH v4 02/20] arm64/dts: qcom: ipq6018: Remove unused 'qcom,config-pipe-trust-reg' property
+Date:   Wed, 13 Oct 2021 16:25:23 +0530
+Message-Id: <20211013105541.68045-3-bhupesh.sharma@linaro.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <11498cb8b7f1754f6134ce8143bd4f81272d0ffc.camel@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+'qcom,config-pipe-trust-reg' property doesn't seem to be
+used by the qcom, bam_dma driver, so remove the same
+from 'ipq6018' dts.
 
-W dniu 13.10.2021 o 03:08, yunfei.dong@mediatek.com pisze:
-> Hi Andrzej,
-> 
-> 
-> On Tue, 2021-10-12 at 16:27 +0200, Andrzej Pietrasiewicz wrote:
->> Hi Yunfei Dong,
->>
->> W dniu 11.10.2021 o 09:02, Yunfei Dong pisze:
->>> This series adds support for multi hardware decode into mtk-vcodec,
->>> by first
->>> adding use of_platform_populate to manage each hardware
->>> information: interrupt,
->>> clock, register bases and power. Secondly add core thread to deal
->>> with core
->>> hardware message, at the same time, add msg queue for different
->>> hardware
->>> share messages. Lastly, the architecture of different specs are not
->>> the same,
->>> using specs type to separate them.
->>>
->>> This series has been tested with both MT8183 and MT8173. Decoding
->>> was working
->>> for both chips.
->>>
->>> Patches 1~3 rewrite get register bases and power on/off interface.
->>>
->>> Patch 4 add to support multi hardware.
->>>
->>> Patch 5 separate video encoder and decoder document
->>>
->>> Patches 6-15 add interfaces to support core hardware.
->>
->> Which tree does the series apply to?
-> 
-> I don't understand your mean clearly. Media tree?
-> 
-> You can get the patches from this link:
-> 
-> https://patchwork.linuxtv.org/project/linux-media/cover/20211011070247.792-1-yunfei.dong@mediatek.com/
-> 
+This is a preparatory patch for subsequent patch in
+this series which converts the qcom_bam_dma device-tree
+binding into YAML format.
 
-Here's what I get:
+Without this change, 'make dtbs_check' leads to the following
+error:
+ $ arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml:
+     dma-controller@704000: 'qcom,config-pipe-trust-reg' does not match
+     any of the regexes: 'pinctrl-[0-9]+'
 
-$ git remote update media_tree
-Fetching media_tree
+Fix the same.
 
-$ git branch
-   master
-* media_tree
-   mediatek-master
+Cc: Thara Gopinath <thara.gopinath@linaro.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-$ git-pw --server https://patchwork.linuxtv.org/api/1.1 --project linux-media 
-series apply 6465 -3
-Failed to apply patch:
-Applying: media: mtk-vcodec: Get numbers of register bases from DT
-Applying: media: mtk-vcodec: Align vcodec wake up interrupt interface
-Applying: media: mtk-vcodec: Refactor vcodec pm interface
-Applying: media: mtk-vcodec: Manage multi hardware information
-error: sha1 information is lacking or useless 
-(drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c).
-error: could not build fake ancestor
-Patch failed at 0004 media: mtk-vcodec: Manage multi hardware information
-Use 'git am --show-current-patch' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
+diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+index 7b6205c180df..6a05ee82547f 100644
+--- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+@@ -201,7 +201,6 @@ cryptobam: dma-controller@704000 {
+ 			#dma-cells = <1>;
+ 			qcom,ee = <1>;
+ 			qcom,controlled-remotely;
+-			qcom,config-pipe-trust-reg = <0>;
+ 		};
+ 
+ 		crypto: crypto@73a000 {
+-- 
+2.31.1
 
-Regards,
-
-Andrzej
