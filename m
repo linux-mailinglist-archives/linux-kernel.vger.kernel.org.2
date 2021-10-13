@@ -2,247 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C31542C7C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFCF42C7B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238020AbhJMRjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:39:36 -0400
-Received: from mail-pl1-f170.google.com ([209.85.214.170]:38780 "EHLO
-        mail-pl1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhJMRje (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:39:34 -0400
-Received: by mail-pl1-f170.google.com with SMTP id x4so2336220pln.5;
-        Wed, 13 Oct 2021 10:37:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QVBAEtzBf8NgxxaPCvIOBWMtr/VM/UkracigHu4Aldw=;
-        b=njSTvVLh3pwlEt6HIDohqFC6qG7iLxFH10gPAa3yIJ4pXEILqey9P5nzB4roxexiGL
-         QlqJf4MwtrGsDF0gbJH8Pi3viCw2rzJw9Wahp0XkI5+IPJaQpgYBpglixBOlVt8epL3J
-         y4ofuiKO27/757F71NN2LZvDgmABu2siMWkltLD5q8iBsByE9/OZ+yHxMDKRD6gFWQEX
-         Oub9WsIlesxlfXjyurJWpwLbOSzD2RFrXNPQUvKXOAWEX3rXhGXUEJOzx13VLPSIGnbc
-         jzmZHTPZcvQtsLgDX3KOhiLSAT7GSGedi6M5prUWOznmPu1Z68nJSTB0T7tIncKXx4q+
-         n8rg==
-X-Gm-Message-State: AOAM532cFSpvO+VQfBmEOVLXaHRkjie2LAGGi40m8ikFtRxcWni2MLqS
-        KMdstBJbF42ctXM2PGdjU6crrDG/SCWY+sSDvCY=
-X-Google-Smtp-Source: ABdhPJw/YzBKZ+RUpkqcTx87u4/1JB8mo6GfzPiUnysSmxNEGdy6ehUNO+jOIbpnwyFqhyCb1aePjG1Dul7hPUEfr9k=
-X-Received: by 2002:a17:902:7783:b0:13d:fee6:8095 with SMTP id
- o3-20020a170902778300b0013dfee68095mr533536pll.7.1634146650266; Wed, 13 Oct
- 2021 10:37:30 -0700 (PDT)
+        id S237901AbhJMRgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:36:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229714AbhJMRgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 13:36:23 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC479610EA;
+        Wed, 13 Oct 2021 17:34:17 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 18:38:28 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Roan van Dijk <roan@protonic.nl>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, david@protonic.nl,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v5 0/4] iio: chemical: Add support for Sensirion SCD4x
+ CO2 sensor
+Message-ID: <20211013183828.521f043f@jic23-huawei>
+In-Reply-To: <20211010165919.51f06938@jic23-huawei>
+References: <20211008101706.755942-1-roan@protonic.nl>
+        <20211010165919.51f06938@jic23-huawei>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211012134027.684712-1-kernel@esmil.dk> <20211012134027.684712-13-kernel@esmil.dk>
- <CAHp75Vep+i+iyJi0LAOKuer-cUZoUoB_ZrWKcmT=EB_4hOgFGw@mail.gmail.com>
- <CANBLGczDZh+kLWM017mPenY8WO5OovH2DFUSS-shRD-aZVKa0A@mail.gmail.com> <YWc5zq0Moz3asWEa@smile.fi.intel.com>
-In-Reply-To: <YWc5zq0Moz3asWEa@smile.fi.intel.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Wed, 13 Oct 2021 19:37:19 +0200
-Message-ID: <CANBLGcx7M4z16Wb62bnpS0v3BP6E8RXEu0O0+D=RwD_1O=7AfQ@mail.gmail.com>
-Subject: Re: [PATCH v1 12/16] pinctrl: starfive: Add pinctrl driver for
- StarFive SoCs
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Huan Feng <huan.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 at 18:59, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> On Wed, Oct 13, 2021 at 06:38:14PM +0200, Emil Renner Berthing wrote:
-> > On Tue, 12 Oct 2021 at 19:03, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > On Tue, Oct 12, 2021 at 4:43 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
->
-> ...
->
-> > > > +free_pinmux:
-> > > > +       devm_kfree(dev, pinmux);
-> > > > +free_pins:
-> > > > +       devm_kfree(dev, pins);
-> > > > +free_grpname:
-> > > > +       devm_kfree(dev, grpname);
-> > >
-> > > What the heck?!
-> >
-> > Just to be clear. You mean we don't need to explicitly free them
-> > because they're tied to the device right? I don't think the device
-> > will go away just because a single device tree entry can't be parsed,
-> > so on such errors this garbage would be left behind. You can still
-> > argue we shouldn't optimize for broken device trees, I just want to
-> > make it at conscious decision.
->
-> If you are using devm_kfree() it is quite likely shows either of the following
-> issues:
->
-> * you mustn't use devm_*() in the first place due to object lifetime;
-> * you shouldn't use devm_kfree() since this is the whole point of devm.
+On Sun, 10 Oct 2021 16:59:19 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-Hmm.. it seems like other drivers that dynamically builds the groups
-and functions either also uses devm_kcalloc/devm_kfree like fx.
-pinctrl-single or implements their own code to clean up groups and
-functions when unloaded. There are no group destroy or function
-destroy callbacks. I like devm_kcalloc/devm_kfree version better since
-it's less code to write.
+> On Fri,  8 Oct 2021 12:17:02 +0200
+> Roan van Dijk <roan@protonic.nl> wrote:
+> 
+> > This series adds support for the Sensirion SCD4x sensor.
+> > 
+> > The driver supports continuous reads of temperature, relative humdity and CO2
+> > concentration. There is an interval of 5 seconds between readings. During
+> > this interval the drivers checks if the sensor has new data available.
+> > 
+> > The driver is based on the scd30 driver. However, The scd4x has become too
+> > different to just expand the scd30 driver. I made a new driver instead of
+> > expanding the scd30 driver. I hope I made the right choice by doing so?  
+> 
+> Applied to the togreg branch of iio.git with the issues Randy mentioned tidied
+> up. Pushed out as testing for 0-day to see if it can find anything we missed
 
-> > > > +free_pgnames:
-> > > > +       devm_kfree(dev, pgnames);
-> > >
-> > > Ditto.
->
-> ...
->
-> > > > +out:
-> > >
-> > > Useless label.
-> >
-> > Hmm.. my compiler disagrees.
->
-> The comment implies that you return directly instead of using `goto out;`.
->
-> > > > +       return ret;
->
-> ...
->
-> > > > +               v = pinmux[i];
-> > > > +               dout = ((v & BIT(7)) << (31 - 7)) | ((v >> 24) & 0xffU);
-> > > > +               doen = ((v & BIT(6)) << (31 - 6)) | ((v >> 16) & 0xffU);
-> > > > +               din  = (v >> 8) & 0xffU;
-> > >
-> > > What is this voodoo for?
-> >
-> > In order to do pinmux we need the following pieces of information from
-> > the device tree for each pin ("GPIO" they call it):
-> >
-> > output signal: 0-133 + 1bit reverse flag
-> > output enable signal: 0-133 + 1bit reverse flag
-> > optional input signal: 0-74 + special "none" value, right now 0xff
-> > gpio number: 0-63
-> >
-> > As the code is now all that info is packed into a u32 for each pin
-> > using the GPIOMUX macro defined in the dt-binding header added in
-> > patch 10. There is also a diagram for how this packing is done. The
-> > above voodoo is for unpacking that.
-> >
-> > I'd very much like to hear if you have a better solution for how to
-> > convey that information from the device tree to here.
->
-> At very least this code should have something like above in the comment.
+And indeed - I missed a bunch of places where explicit __be16 types should have
+been used.
 
-Will add!
+I've applied the following fixup, shout if it's wrong.
 
-> ...
->
-> > > > +               if (din != 0xff)
-> > > > +                       reg_din = sfp->base + GPIO_IN_OFFSET + 4 * din;
-> > > > +               else
-> > > > +                       reg_din = NULL;
-> > >
-> > > This looks like you maybe use gpio-regmap instead?
-> >
-> > This was discussed at length when Drew sent in the GPIO part of this code:
-> > https://lore.kernel.org/linux-riscv/20210701002037.912625-1-drew@beagleboard.org/
-> > The conclusion was that because pinmux and controlling the pins from
-> > software in GPIO mode uses the same registers it is better to do a
-> > combined driver like this that can share the lock among other things.
->
-> And what does prevent exactly to base the GPIO part on gpio-regmap?
 
-Other reasons are that gpio-regmap doesn't implement the .set_config
-and .add_pin_ranges callbacks. add_pin_ranges is needed because the 64
-GPIOs map to different pin numbers depending on the chosen "signal
-group".
+diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
+index 09b34201c42b..ebebcb117ba2 100644
+--- a/drivers/iio/chemical/scd4x.c
++++ b/drivers/iio/chemical/scd4x.c
+@@ -263,7 +263,7 @@ static int scd4x_write_and_fetch(struct scd4x_state *state, enum scd4x_cmd cmd,
+ static int scd4x_read_meas(struct scd4x_state *state, uint16_t *meas)
+ {
+ 	int i, ret;
+-	uint16_t buf[3];
++	__be16 buf[3];
+ 
+ 	ret = scd4x_read(state, CMD_READ_MEAS, buf, sizeof(buf));
+ 	if (ret)
+@@ -282,12 +282,13 @@ static int scd4x_wait_meas_poll(struct scd4x_state *state)
+ 	int ret;
+ 
+ 	do {
++		__be16 bval;
+ 		uint16_t val;
+ 
+-		ret = scd4x_read(state, CMD_GET_DATA_READY, &val, sizeof(val));
++		ret = scd4x_read(state, CMD_GET_DATA_READY, &bval, sizeof(bval));
+ 		if (ret)
+ 			return -EIO;
+-		val = be16_to_cpu(val);
++		val = be16_to_cpu(bval);
+ 
+ 		/* new measurement available */
+ 		if (val & 0x7FF)
+@@ -333,7 +334,7 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
+ {
+ 	struct scd4x_state *state = iio_priv(indio_dev);
+ 	int ret;
+-	uint16_t tmp;
++	__be16 tmp;
+ 
+ 	switch (mask) {
+ 	case IIO_CHAN_INFO_RAW:
+@@ -405,17 +406,18 @@ static ssize_t calibration_auto_enable_show(struct device *dev,
+ 	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+ 	struct scd4x_state *state = iio_priv(indio_dev);
+ 	int ret;
+-	uint16_t val;
++	__be16 bval;
++	u16 val;
+ 
+ 	mutex_lock(&state->lock);
+-	ret = scd4x_read(state, CMD_GET_ASC, &val, sizeof(val));
++	ret = scd4x_read(state, CMD_GET_ASC, &bval, sizeof(bval));
+ 	mutex_unlock(&state->lock);
+ 	if (ret) {
+ 		dev_err(dev, "failed to read automatic calibration");
+ 		return ret;
+ 	}
+ 
+-	val = (be16_to_cpu(val) & SCD4X_READY_MASK) ? 1 : 0;
++	val = (be16_to_cpu(bval) & SCD4X_READY_MASK) ? 1 : 0;
+ 
+ 	return sprintf(buf, "%d\n", val);
+ }
 
-> ...
->
-> > > > +static const unsigned char starfive_drive_strength[] = {
-> > > > +       14, 21, 28, 35, 42, 49, 56, 63,
-> > >
-> > > Why table? Can you simply use the formula?!
-> >
-> > Heh, yeah. So these are rounded values from a table and I never
-> > noticed that after rounding they follow a nice arithmetic progression.
-> > It'll probably still be nice to have an explanation in the comments
-> > about the formula then.
->
-> Yup!
->
-> > > > +};
->
-> ...
->
-> > > > +               irq_set_handler_locked(d, handle_bad_irq);
-> > >
-> > > Why is this here? Move it to ->probe().
-> >
-> > My thinking was that if something tries to set a an unsupported irq
-> > type, we should make sure the caller doesn't get spurious interrupts
-> > because we left the handler at its old value.
->
-> You already assigned to this handler in the ->probe(), what's this then?
 
-But userspace could fx. first request IRQ_TYPE_EDGE_BOTH through the
-gpio api and later load a driver that might request an unsupported irq
-type right? Or am I missing something.
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+> > 
+> > Changes since v5:
+> > scd4x.c:
+> >   - Fix bug in trigger_handler
+> > 
+> > Changes since v4:
+> > scd4x.c:
+> >   - Minor fixes in documentation
+> >   - Reorder trigger_handler so memcpy is not needed anymore
+> > Documentation:
+> >   - Change information about the KernelVersion for the 
+> >     calibration_forced_value_available
+> > 
+> > Changes since v3:
+> > scd4x.c
+> >   - Change read and write_and_fetch function parameter. CRC byte is now
+> >     hidden inside the function.
+> >   - Fix minor style issues
+> >   - Add calibration_forced_value_available attribute to the driver
+> >   - Remove including BUFFER_TRIGGERED
+> >   - Change calibbias to raw ADC readings rather than converting it to
+> >     milli degrees C.
+> > Documentation:
+> >   - Change description of driver attributes
+> >   - Add calibration_forced_value_available documentation
+> > 
+> > Changes since v2:
+> > scd4x.c:
+> >   - Change boolean operations
+> >   - Document scope of lock
+> >   - Remove device *dev from struct
+> >   - Add goto block for errror handling
+> >   - Add function to read value per channel in read_raw
+> >   - Fix bug with lock in error paths
+> >   - Remove conversion of humidity and temperature values
+> >   - Add scale and offset to temperature channel
+> >   - Add scale to humidity channel
+> >   - Move memset out of locked section
+> >   - Remove unused irq functions
+> >   - Move device register at end of probe function
+> > Documentation:
+> >   - Copy content of sysfs-bus-iio-scd30 to sysfs-bus-iio
+> >   - Remove Documentation/ABI/testing/sysfs-bus-iio-scd30
+> > 
+> > Changes since v1:
+> > dt-bindings:
+> >   - Separated compatible string for each sensor type
+> > scd4x.c:
+> >   - Changed probe, resume and suspend functions to static
+> >   - Added SIMPLE_DEV_PM_OPS function call for power management
+> >     operations.
+> > 
+> > Roan van Dijk (4):
+> >   dt-bindings: iio: chemical: sensirion,scd4x: Add yaml description
+> >   MAINTAINERS: Add myself as maintainer of the scd4x driver
+> >   drivers: iio: chemical: Add support for Sensirion SCD4x CO2 sensor
+> >   iio: documentation: Document scd4x calibration use
+> > 
+> >  Documentation/ABI/testing/sysfs-bus-iio       |  41 ++
+> >  Documentation/ABI/testing/sysfs-bus-iio-scd30 |  34 -
+> >  .../iio/chemical/sensirion,scd4x.yaml         |  46 ++
+> >  MAINTAINERS                                   |   6 +
+> >  drivers/iio/chemical/Kconfig                  |  13 +
+> >  drivers/iio/chemical/Makefile                 |   1 +
+> >  drivers/iio/chemical/scd4x.c                  | 689 ++++++++++++++++++
+> >  7 files changed, 796 insertions(+), 34 deletions(-)
+> >  delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
+> >  create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
+> >  create mode 100644 drivers/iio/chemical/scd4x.c
+> >   
+> 
 
-> ...
->
-> > > > +               if (value <= 6)
-> > > > +                       writel(value, sfp->padctl + IO_PADSHARE_SEL);
-> > > > +               else
-> > >
-> > > > +                       dev_err(dev, "invalid signal group %u\n", value);
-> > >
-> > > Why _err if you not bail out here?
-> >
-> > My thinking was that if the device tree specifies an invalid signal
-> > group we should just leave the setting alone and not break booting,
-> > but still be loud about it. Maybe that's too lenient and it's better
-> > to crash and burn immediately if someone does that.
->
-> Here is inconsistency between level of the message and following action.
-> There are (rare!) cases when it's justified, but I believe it's not the
-> case here. You have two choices or justify why you have to use error
-> level without stopping process.
->
-> ...
->
-> All uncommented stuff you agreed on, correct?
-
-Yes, thank you! (.. or at least I'll get back to you if something comes up ;)
-
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
