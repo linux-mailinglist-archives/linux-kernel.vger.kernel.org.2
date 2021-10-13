@@ -2,247 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC5142C0BF
+	by mail.lfdr.de (Postfix) with ESMTP id 3469942C0BE
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235038AbhJMM7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        id S234563AbhJMM7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232949AbhJMM7A (ORCPT
+        with ESMTP id S234611AbhJMM67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:59:00 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD81DC061762
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:56:56 -0700 (PDT)
-Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1madoU-0004Lp-PF; Wed, 13 Oct 2021 14:56:54 +0200
-Received: from sha by dude02.hi.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1madoU-00F0tt-2i; Wed, 13 Oct 2021 14:56:54 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     ecryptfs@vger.kernel.org
-Cc:     Tyler Hicks <code@tyhicks.com>, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH v2] eCryptfs: fix setattr on empty lower file
-Date:   Wed, 13 Oct 2021 14:56:52 +0200
-Message-Id: <20211013125652.3578336-1-s.hauer@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+        Wed, 13 Oct 2021 08:58:59 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AFAC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:56:55 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id c16so11516474lfb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p33QOHvQ95RnptXn6dj3IzSbxw6szXttwK/+SnkkIak=;
+        b=mIbAm11hhRBoasT9fywxO7RHj8bVvziNhtA54PTIM3r/GBfiSV9iOwKoFCzblhjncG
+         /ThqehyPFsRUNwKSkHrCR1Eha/5qR9mFfCPvTGN6pWPPxblLxNAKoP9Srb40+DjERUKE
+         VUs4t4VB+5Q00RlHAOwJyLKe2Ad7wo9Va8hRKCoz+EFucHq32gqZTpmQqCj/MqCq4dD+
+         HLqnv/GvDuj2NVVPclGcW5mOlLMHdAld0AFnm/10KFMcIY4OtOXYooW1ZZau4y4asYsf
+         5ztIBzQ2bOPq61SLEKBzNOCMSElESRq6Y7uhmTebLsymWwz+fXPPiSSDDR4LIzznQ7Gk
+         fITw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p33QOHvQ95RnptXn6dj3IzSbxw6szXttwK/+SnkkIak=;
+        b=c75yJIHLuq3uEvwlUZ7SfGlmaslrCruOerbxNgiTBHzvy2lY/vQ6FwmPtVkaam1nZH
+         Z1QEGMVffH3odewJg6SX02AD1AnLXbXQuqjj3kBtem2cdn2xDY279Ha3wFTHa8i/eVhi
+         oaBK9yVxW0N/XBPnrMcvPBo3Bgbkng8UU8NhswdFfxSkKZmHuXDen5RM6wWQTh96luP7
+         c5Y/2sXgIE2+Rj9iThZI/hPjssO6sxqU76KRXL/ZbmfZUwvBEQNV1rCSZdTGBOTQaaJ8
+         I84Q2EX3iECuAXJCtfl8wcduMnVz64OzYeHux54a6LIMgTZxcB/wrKHyQmPNh70PkRrw
+         JjMg==
+X-Gm-Message-State: AOAM533aKEYSbNfk9xu8fbNRWe6ZBH07dTklcm7vPUfhcDw+h76gFiyk
+        /owtvbqarGsolPrjaaCl0A6M5A==
+X-Google-Smtp-Source: ABdhPJwfLCh+TS+/g9bV7W8np89O1BSQLOQf/9AWEOondje7XbOuqOvzrxSw++S1Hwz3WMjyoWqyGA==
+X-Received: by 2002:ac2:5dd4:: with SMTP id x20mr18170982lfq.313.1634129813780;
+        Wed, 13 Oct 2021 05:56:53 -0700 (PDT)
+Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
+        by smtp.gmail.com with ESMTPSA id y24sm385688lfh.62.2021.10.13.05.56.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 05:56:53 -0700 (PDT)
+Subject: Re: [PATCH v4 04/20] dt-bindings: qcom-bam: Convert binding to YAML
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+ <20211013105541.68045-5-bhupesh.sharma@linaro.org>
+From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Message-ID: <b41ba845-5f28-8405-0cd0-2342e4b6b372@linaro.org>
+Date:   Wed, 13 Oct 2021 15:56:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20211013105541.68045-5-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Depending on the synchronization state of the lower filesystem during a
-power cut it can happen that a lower file is empty after that power cut.
+Hi Bhupesh,
 
-An inode_operations::setattr operation fails with -EIO on such files,
-because ecryptfs_read_metadata() fails. In e3ccaa976120 ("eCryptfs:
-Initialize empty lower files when opening them") a similar problem was
-solved in the open() path:
+On 10/13/21 1:55 PM, Bhupesh Sharma wrote:
+> Convert Qualcomm BAM DMA devicetree binding to YAML.
+> 
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>   .../devicetree/bindings/dma/qcom_bam_dma.txt  | 50 -----------
+>   .../devicetree/bindings/dma/qcom_bam_dma.yaml | 89 +++++++++++++++++++
+>   2 files changed, 89 insertions(+), 50 deletions(-)
+>   delete mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+>   create mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt b/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+> deleted file mode 100644
+> index cf5b9e44432c..000000000000
+> --- a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+> +++ /dev/null
+> @@ -1,50 +0,0 @@
+> -QCOM BAM DMA controller
+> -
+> -Required properties:
+> -- compatible: must be one of the following:
+> - * "qcom,bam-v1.4.0" for MSM8974, APQ8074 and APQ8084
+> - * "qcom,bam-v1.3.0" for APQ8064, IPQ8064 and MSM8960
+> - * "qcom,bam-v1.7.0" for MSM8916
+> -- reg: Address range for DMA registers
+> -- interrupts: Should contain the one interrupt shared by all channels
+> -- #dma-cells: must be <1>, the cell in the dmas property of the client device
+> -  represents the channel number
+> -- clocks: required clock
+> -- clock-names: must contain "bam_clk" entry
+> -- qcom,ee : indicates the active Execution Environment identifier (0-7) used in
+> -  the secure world.
+> -- qcom,controlled-remotely : optional, indicates that the bam is controlled by
+> -  remote proccessor i.e. execution environment.
+> -- num-channels : optional, indicates supported number of DMA channels in a
+> -  remotely controlled bam.
+> -- qcom,num-ees : optional, indicates supported number of Execution Environments
+> -  in a remotely controlled bam.
+> -
+> -Example:
+> -
+> -	uart-bam: dma@f9984000 = {
+> -		compatible = "qcom,bam-v1.4.0";
+> -		reg = <0xf9984000 0x15000>;
+> -		interrupts = <0 94 0>;
+> -		clocks = <&gcc GCC_BAM_DMA_AHB_CLK>;
+> -		clock-names = "bam_clk";
+> -		#dma-cells = <1>;
+> -		qcom,ee = <0>;
+> -	};
+> -
+> -DMA clients must use the format described in the dma.txt file, using a two cell
+> -specifier for each channel.
+> -
+> -Example:
+> -	serial@f991e000 {
+> -		compatible = "qcom,msm-uart";
+> -		reg = <0xf991e000 0x1000>
+> -			<0xf9944000 0x19000>;
+> -		interrupts = <0 108 0>;
+> -		clocks = <&gcc GCC_BLSP1_UART2_APPS_CLK>,
+> -			<&gcc GCC_BLSP1_AHB_CLK>;
+> -		clock-names = "core", "iface";
+> -
+> -		dmas = <&uart-bam 0>, <&uart-bam 1>;
+> -		dma-names = "rx", "tx";
+> -	};
+> diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+> new file mode 100644
+> index 000000000000..32b47e3b7769
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+> @@ -0,0 +1,89 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/qcom_bam_dma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: QCOM BAM DMA controller binding
+> +
+> +maintainers:
+> +  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> +
+> +description: |
+> +  This document defines the binding for the BAM DMA controller
+> +  found on Qualcomm parts.
+> +
+> +allOf:
+> +  - $ref: "dma-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,bam-v1.4.0 # for MSM8974, APQ8074 and APQ8084
+> +      - qcom,bam-v1.3.0 # for APQ8064, IPQ8064 and MSM8960
+> +      - qcom,bam-v1.7.0 # for MSM8916
 
-| To transparently solve this problem, this patch initializes empty lower
-| files in the ecryptfs_open() error path. If the metadata is unreadable
-| due to the lower inode size being 0, plaintext passthrough support is
-| not in use, and the metadata is stored in the header of the file (as
-| opposed to the user.ecryptfs extended attribute), the lower file will be
-| initialized.
+would it be better to sort the list above by IP version?
 
-Do the same in inode_operations::setattr to allow setattr on empty lower
-files.
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: bam_clk
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 31
+> +
+> +  num-channels:
+> +    maximum: 31
+> +    description: |
+> +      Indicates supported number of DMA channels in a remotely controlled bam.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
+A comment about YAML specifics, I'm not sure, if it makes sense to set a control
+to enable literal style of the given multiline description, since it is a one-liner.
 
-Changes since v1 (https://www.spinics.net/lists/ecryptfs/msg01397.html):
-- In ecryptfs_setattr() ecryptfs_read_or_initialize_metadata() can't be
-  called directly as &crypt_stat->cs_mutex would be locked, but in
-  ecryptfs_settattr() that mutex is already locked. Create a
-  locked/unlocked version of ecryptfs_read_or_initialize_metadata() and
-  use the latter one in ecryptfs_setattr().
+My main observation though is that all actually multi-line descriptions in the
+schema are different and of the folded style ("pipe" symbol is not set).
 
- fs/ecryptfs/crypto.c          | 61 +++++++++++++++++++++++++++++++++--
- fs/ecryptfs/ecryptfs_kernel.h |  3 +-
- fs/ecryptfs/file.c            | 44 +------------------------
- fs/ecryptfs/inode.c           |  2 +-
- 4 files changed, 63 insertions(+), 47 deletions(-)
+Probably it's good enough just to remove the "pipe" above.
 
-diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
-index e3f5d7f3c8a0a..a14d3ef40259f 100644
---- a/fs/ecryptfs/crypto.c
-+++ b/fs/ecryptfs/crypto.c
-@@ -1377,7 +1377,7 @@ int ecryptfs_read_and_validate_xattr_region(struct dentry *dentry,
-  *
-  * Returns zero if valid headers found and parsed; non-zero otherwise
-  */
--int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry)
-+static int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry)
- {
- 	int rc;
- 	char *page_virt;
-@@ -1443,7 +1443,64 @@ int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry)
- 	return rc;
- }
- 
--/*
-+int ecryptfs_read_or_initialize_metadata_locked(struct dentry *dentry)
-+{
-+	struct inode *inode = d_inode(dentry);
-+	struct ecryptfs_mount_crypt_stat *mount_crypt_stat;
-+	struct ecryptfs_crypt_stat *crypt_stat;
-+	int rc;
-+
-+	crypt_stat = &ecryptfs_inode_to_private(inode)->crypt_stat;
-+	mount_crypt_stat = &ecryptfs_superblock_to_private(
-+						inode->i_sb)->mount_crypt_stat;
-+
-+	if (crypt_stat->flags & ECRYPTFS_POLICY_APPLIED &&
-+	    crypt_stat->flags & ECRYPTFS_KEY_VALID) {
-+		rc = 0;
-+		goto out;
-+	}
-+
-+	rc = ecryptfs_read_metadata(dentry);
-+	if (!rc)
-+		goto out;
-+
-+	if (mount_crypt_stat->flags & ECRYPTFS_PLAINTEXT_PASSTHROUGH_ENABLED) {
-+		crypt_stat->flags &= ~(ECRYPTFS_I_SIZE_INITIALIZED
-+				       | ECRYPTFS_ENCRYPTED);
-+		rc = 0;
-+		goto out;
-+	}
-+
-+	if (!(mount_crypt_stat->flags & ECRYPTFS_XATTR_METADATA_ENABLED) &&
-+	    !i_size_read(ecryptfs_inode_to_lower(inode))) {
-+		rc = ecryptfs_initialize_file(dentry, inode);
-+		if (!rc)
-+			goto out;
-+	}
-+
-+	rc = -EIO;
-+out:
-+	return rc;
-+}
-+
-+int ecryptfs_read_or_initialize_metadata(struct dentry *dentry)
-+{
-+	struct inode *inode = d_inode(dentry);
-+	struct ecryptfs_crypt_stat *crypt_stat;
-+	int rc;
-+
-+	crypt_stat = &ecryptfs_inode_to_private(inode)->crypt_stat;
-+
-+	mutex_lock(&crypt_stat->cs_mutex);
-+
-+	rc = ecryptfs_read_or_initialize_metadata_locked(dentry);
-+
-+	mutex_unlock(&crypt_stat->cs_mutex);
-+
-+	return rc;
-+}
-+
-+/**
-  * ecryptfs_encrypt_filename - encrypt filename
-  *
-  * CBC-encrypts the filename. We do not want to encrypt the same
-diff --git a/fs/ecryptfs/ecryptfs_kernel.h b/fs/ecryptfs/ecryptfs_kernel.h
-index 5f2b49e13731a..af71d6f7da91d 100644
---- a/fs/ecryptfs/ecryptfs_kernel.h
-+++ b/fs/ecryptfs/ecryptfs_kernel.h
-@@ -573,7 +573,8 @@ int ecryptfs_encrypt_page(struct page *page);
- int ecryptfs_decrypt_page(struct page *page);
- int ecryptfs_write_metadata(struct dentry *ecryptfs_dentry,
- 			    struct inode *ecryptfs_inode);
--int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry);
-+int ecryptfs_read_or_initialize_metadata(struct dentry *dentry);
-+int ecryptfs_read_or_initialize_metadata_locked(struct dentry *dentry);
- int ecryptfs_new_file_context(struct inode *ecryptfs_inode);
- void ecryptfs_write_crypt_stat_flags(char *page_virt,
- 				     struct ecryptfs_crypt_stat *crypt_stat,
-diff --git a/fs/ecryptfs/file.c b/fs/ecryptfs/file.c
-index 18d5b91cb573e..4721aba376784 100644
---- a/fs/ecryptfs/file.c
-+++ b/fs/ecryptfs/file.c
-@@ -124,48 +124,6 @@ static int ecryptfs_readdir(struct file *file, struct dir_context *ctx)
- 
- struct kmem_cache *ecryptfs_file_info_cache;
- 
--static int read_or_initialize_metadata(struct dentry *dentry)
--{
--	struct inode *inode = d_inode(dentry);
--	struct ecryptfs_mount_crypt_stat *mount_crypt_stat;
--	struct ecryptfs_crypt_stat *crypt_stat;
--	int rc;
--
--	crypt_stat = &ecryptfs_inode_to_private(inode)->crypt_stat;
--	mount_crypt_stat = &ecryptfs_superblock_to_private(
--						inode->i_sb)->mount_crypt_stat;
--	mutex_lock(&crypt_stat->cs_mutex);
--
--	if (crypt_stat->flags & ECRYPTFS_POLICY_APPLIED &&
--	    crypt_stat->flags & ECRYPTFS_KEY_VALID) {
--		rc = 0;
--		goto out;
--	}
--
--	rc = ecryptfs_read_metadata(dentry);
--	if (!rc)
--		goto out;
--
--	if (mount_crypt_stat->flags & ECRYPTFS_PLAINTEXT_PASSTHROUGH_ENABLED) {
--		crypt_stat->flags &= ~(ECRYPTFS_I_SIZE_INITIALIZED
--				       | ECRYPTFS_ENCRYPTED);
--		rc = 0;
--		goto out;
--	}
--
--	if (!(mount_crypt_stat->flags & ECRYPTFS_XATTR_METADATA_ENABLED) &&
--	    !i_size_read(ecryptfs_inode_to_lower(inode))) {
--		rc = ecryptfs_initialize_file(dentry, inode);
--		if (!rc)
--			goto out;
--	}
--
--	rc = -EIO;
--out:
--	mutex_unlock(&crypt_stat->cs_mutex);
--	return rc;
--}
--
- static int ecryptfs_mmap(struct file *file, struct vm_area_struct *vma)
- {
- 	struct file *lower_file = ecryptfs_file_to_lower(file);
-@@ -232,7 +190,7 @@ static int ecryptfs_open(struct inode *inode, struct file *file)
- 	}
- 	ecryptfs_set_file_lower(
- 		file, ecryptfs_inode_to_private(inode)->lower_file);
--	rc = read_or_initialize_metadata(ecryptfs_dentry);
-+	rc = ecryptfs_read_or_initialize_metadata(ecryptfs_dentry);
- 	if (rc)
- 		goto out_put;
- 	ecryptfs_printk(KERN_DEBUG, "inode w/ addr = [0x%p], i_ino = "
-diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
-index 16d50dface59a..bdeeb89d1dc95 100644
---- a/fs/ecryptfs/inode.c
-+++ b/fs/ecryptfs/inode.c
-@@ -916,7 +916,7 @@ static int ecryptfs_setattr(struct user_namespace *mnt_userns,
- 			mutex_unlock(&crypt_stat->cs_mutex);
- 			goto out;
- 		}
--		rc = ecryptfs_read_metadata(dentry);
-+		rc = ecryptfs_read_or_initialize_metadata_locked(dentry);
- 		ecryptfs_put_lower_file(inode);
- 		if (rc) {
- 			if (!(mount_crypt_stat->flags
--- 
-2.30.2
+> +
+> +  "#dma-cells":
+> +    const: 1
+> +    description: The single cell represents the channel index.
+> +
+> +  qcom,ee:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Indicates the active Execution Environment identifier (0-7)
+> +      used in the secure world.
 
+Would it make sense to add here
+
+   minimum: 0
+   maximum: 7
+
+?
+
+> +
+> +  qcom,controlled-remotely:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Indicates that the bam is controlled by remote proccessor i.e.
+> +      execution environment.
+> +
+> +  qcom,num-ees:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 31
+> +    default: 2
+> +    description:
+> +      Indicates supported number of Execution Environments in a
+> +      remotely controlled bam.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - "#dma-cells"
+> +  - qcom,ee
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,gcc-msm8974.h>
+> +    dma-controller@f9984000 {
+> +        compatible = "qcom,bam-v1.4.0";
+> +        reg = <0xf9984000 0x15000>;
+> +        interrupts = <0 94 0>;
+> +        clocks = <&gcc GCC_BAM_DMA_AHB_CLK>;
+> +        clock-names = "bam_clk";
+> +        #dma-cells = <1>;
+> +        qcom,ee = <0>;
+> +    };
+> 
+
+--
+Best wishes,
+Vladimir
