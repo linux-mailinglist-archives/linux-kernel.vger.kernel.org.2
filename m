@@ -2,69 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36AA42C4F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0266742C50B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234198AbhJMPml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 11:42:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229711AbhJMPmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:42:40 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E4BE610A0;
-        Wed, 13 Oct 2021 15:40:36 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 11:40:34 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] user_events: Enable user processes to create and write
- to trace events
-Message-ID: <20211013114034.13daac32@gandalf.local.home>
-In-Reply-To: <20211014002132.ee7668a4790ea75b0f7a9ceb@kernel.org>
-References: <20211005224428.2551-1-beaub@linux.microsoft.com>
-        <20211007012827.99cd5795140cbb0c932e1b5a@kernel.org>
-        <20211006175611.GA2995@kbox>
-        <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
-        <20211007162204.GA30947@kbox>
-        <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
-        <20211008000540.GA31220@kbox>
-        <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
-        <20211011162523.GA1542@kbox>
-        <20211014002132.ee7668a4790ea75b0f7a9ceb@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229711AbhJMPov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 11:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235709AbhJMPos (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 11:44:48 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAE8C061764;
+        Wed, 13 Oct 2021 08:42:44 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so4253110otb.1;
+        Wed, 13 Oct 2021 08:42:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=37hVPOd3BIfvxpW5fFUuBklEo2czP1RmXoKx7X0bcv4=;
+        b=Jy5gzAES3gON/iVMPdegqj9JaQV3sbgnGhyzHkKRxU2R6RcDOP4hpvJ62nEH81JBhP
+         DLK3ZMeVFdbUBRtwrNO85/FN4x66+MfZLLjWENuYUiM+sV5MEPJlboN2gUTLDArMpIxq
+         KCNB62r6K42znXk5MppJnepvkqedLl/lrfIzikyG2J70nwRyW1XNYstnur9BIfpk7WfT
+         qiUCZI+FkWxaw3uYfIlM9nD+D6j1QaIAjsNeBy2qadxlbQLYWEqTK6W9zSCeAOb7WK+P
+         /gXXwsNeaRQU7VC1qfqQ9cBNNHPEGOhMGZHOZl8zjUgdz1iaYWqwunpcexCWzRVgGdW+
+         aAdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=37hVPOd3BIfvxpW5fFUuBklEo2czP1RmXoKx7X0bcv4=;
+        b=IxyefYZYPMgJd0NsdHcnBHG3+iDAuTUCnIS7WfmS1F3ytGDDzV0u4vWRuaEuwVYytg
+         cC+LJnkcJJwgTThWPdV43hjkVR8KmOmGKZ9TbVwj8jLLJbY5y4FVbmBQ5HbDlCIA1686
+         0xav/bZN5vEyjQ+C7xYQLbuzm129q6unKAxBaAGOC1QQPT6KI2YP3O3HMdljbd2+yloR
+         3Wn48cmge5hGEUuToGLPdyrOqZxa805GZVIpfmvtrq805v+L9bmAOWnpu6a8SfMwxXd4
+         xdyAWiFPhs4uIWwmpzZy/X2Yvacqo04ivCfC5epxtG8yL78sMH2OPXQ51xnsRicjTyRW
+         poKQ==
+X-Gm-Message-State: AOAM5317zg00j34aje+6scEEyHnJHQbSCOvUnkpIgwpkcRH7BRfXwbBP
+        vZYK/cfr063+MGUnkyG6DdQ=
+X-Google-Smtp-Source: ABdhPJyLua6LzSe9PuJTTcxWZIrYhD4BTtmKXiQnqFeOYdIcgOpJS7+rWZst0dWr4lw08IIH6Mx1pQ==
+X-Received: by 2002:a9d:750d:: with SMTP id r13mr31862806otk.264.1634139764172;
+        Wed, 13 Oct 2021 08:42:44 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e28sm3228070oth.40.2021.10.13.08.42.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 08:42:43 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 13 Oct 2021 08:42:41 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: tegra20: fix build with CONFIG_PM_SLEEP=n
+Message-ID: <20211013154241.GA2356944@roeck-us.net>
+References: <20211013144538.2346533-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013144538.2346533-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 00:21:32 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> > This approach requires an FD returned and either an int for the status
-> > page or the returend FD could expose the ID via another IOCTL being
-> > issued.  
+On Wed, Oct 13, 2021 at 04:45:23PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> OK, I would like to suggest you to add events/user-events/*/marker file
-> (which returns that shared file struct backed FD) so that some simple
-> user scripts can also send the events (these may not use ioctl, just
-> write the events.) But this can be done afterwards anyway.
+> There is another one of these warnings:
 > 
+> drivers/spi/spi-tegra20-slink.c:1197:12: error: 'tegra_slink_runtime_resume' defined but not used [-Werror=unused-function]
+>  1197 | static int tegra_slink_runtime_resume(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Give it the same treatment as the other functions in this file.
+> 
+> Fixes: efafec27c565 ("spi: Fix tegra20 build with CONFIG_PM=n")
+> Fixes: 2bab94090b01 ("spi: tegra20-slink: Declare runtime suspend and resume functions conditionally")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/spi/spi-tegra20-slink.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
+> index 713292b0c71e..33302f6b42d7 100644
+> --- a/drivers/spi/spi-tegra20-slink.c
+> +++ b/drivers/spi/spi-tegra20-slink.c
+> @@ -1194,7 +1194,7 @@ static int __maybe_unused tegra_slink_runtime_suspend(struct device *dev)
+>  	return 0;
+>  }
+>  
+> -static int tegra_slink_runtime_resume(struct device *dev)
+> +static __maybe_unused int tegra_slink_runtime_resume(struct device *dev)
 
-I'd prefer we avoid this. It will break some of the semantics of the events
-directory. One, only "user-events" will have this "marker" file. Although
-it will be very similar to the "inject" file, but that's only for debugging
-anyway.
+That was actually done in efafec27c565. The error is the result of a bad
+conflict resolution against 2bab94090b01, not a result of any of the
+two patches listed in the Fixes: tags. So, yes, either this patch needs
+to be applied in -next or the conflict resolution needs to be fixed.
 
-All the files in the events directory is starting to add a bunch of
-overhead, as they are typically copied into the instances. Although, when
-we get the eventfs directory created, maybe that will not be as big of a
-deal. But that still doesn't fix the semantics issue.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
--- Steve
+Guenter
 
+>  {
+>  	struct spi_master *master = dev_get_drvdata(dev);
+>  	struct tegra_slink_data *tspi = spi_master_get_devdata(master);
+> -- 
+> 2.29.2
+> 
