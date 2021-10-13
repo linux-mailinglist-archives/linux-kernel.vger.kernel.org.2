@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E9742CED8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C358D42CEDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbhJMWvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 18:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
+        id S230032AbhJMWwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 18:52:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhJMWvh (ORCPT
+        with ESMTP id S229930AbhJMWwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 18:51:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0965C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:49:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=IPNCwnThf2t1Ii4hs5jFUu0ZSK8PstKHiAQrTyemuXU=; b=mkHy3KBnPu8RFYERQV5eK5hDd8
-        eiBovp6x/asrzJeBnzgyvDEHEUuSu2OshMM4+XOzuAWCMYzjqG82IEAJDLW5x+eNRBRxOYyukHN3k
-        /zZNTrpQTxw6JGQ/I9qIOVUH5HTM1yRBDbajoBfpapPZyOv6PfwkgJbdYOPxs3/kaiT3IEJiLlhGy
-        yg7DRZgslLfI8Zr1xma+Oey2pcIsc/dKUI/QSqNnhwAatxB8KV9lXPJfE2Xx2uJsdgmEsx9TgGNvc
-        EvyUeK020H01WoDIlILEl28LPxH59cy/tn4vDfZcXlAFDrC6NevcXKht6LB04daTg5dArBcN6ev1h
-        rC3JzgTw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1man3z-000w0v-QA; Wed, 13 Oct 2021 22:49:31 +0000
-Subject: Re: [PATCH] init: Make unknown command line param message clearer
-To:     Andrew Halaney <ahalaney@redhat.com>, akpm@linux-foundation.org
-Cc:     rostedt@goodmis.org, bp@suse.de, linux-kernel@vger.kernel.org
-References: <20211013223502.96756-1-ahalaney@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4e670eb5-2e73-5169-6ae1-6cd2b2ca8013@infradead.org>
-Date:   Wed, 13 Oct 2021 15:49:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 13 Oct 2021 18:52:37 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF086C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:50:33 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id w2so4233353qtn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xM1fMd37P0GkH+ZlVvAIHq/XlgyRCHndX09GA3o6I2w=;
+        b=sV74+qP2MQF6w9NmafHoTpTolVfVwa0rljewKiYT94oDqfz0A5uHEVwWv2+SmELSHc
+         tWi6VdT69T4pL6mhUtsPnJwakwfrCd8tASkny/rtRx3bV5bZnliB+S91yJtXbcd4cJsP
+         CEhnBkaQthmsfom4VTyB5PDG8CoKhTHAi0ufvApv/LElVrWx/9vAwQnuQ4FIx80EIjgr
+         yeORRy5s1q4pLKS0K3IRbLLUlzgFwOrD4yiBCTNTw7+G6ykXocghAiFCj3U3+GBI2e/7
+         5awydk+SNqULo5yRmsVegI6pH+Cn83rFSzSS36NqX0k3ET+lDcgZ6BH/8i5vOlv2eUAo
+         Kakw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xM1fMd37P0GkH+ZlVvAIHq/XlgyRCHndX09GA3o6I2w=;
+        b=rc3W9lq4oeR3q+NuMw4gWgSiRGLQBZPcNn/OVe6Voi2UjJw1CiID051Br6qp9wX5Fg
+         mH1qG53c+EGpqO3wXsH9Ex5+FuBKmHWOvPL6+kk/GUT9RJpZWhliOK+IIC7JdUMi4PRO
+         yBAnkhAfY19yhC02ONROwVC8Jre/9Wfsp/2170/nNIsdLf3+T8BSflbCx3ylx9YK41Jd
+         Kum2JReao+ufDIWFjn1ePDIw11rOLGdB/thqDESAtzeOsYADxW8mqXKY+s5Yi5GtgI9i
+         Itr7sodW1P+FAOgfYU/S0POjCBte+J9iiuA+UgEJ+yVuE+ukPNRSYSdZN14kboHqNUOy
+         Vwnw==
+X-Gm-Message-State: AOAM53191OTMqVuNs3Y6jifoilzWtlLsO9plOgR52dC03wgmsdrZC0xv
+        fDjCPVJIuWEuWynMw0gdufenTQ==
+X-Google-Smtp-Source: ABdhPJyMyktfWBfUtcNLXQN+ND/84ayn5d3dsHNkBD7ZxYgHVbjL6ZghrpM+UN8x+hQpM+G+IwpnBw==
+X-Received: by 2002:ac8:7f44:: with SMTP id g4mr2516291qtk.130.1634165432864;
+        Wed, 13 Oct 2021 15:50:32 -0700 (PDT)
+Received: from fedora ([196.32.91.248])
+        by smtp.gmail.com with ESMTPSA id g11sm606454qko.31.2021.10.13.15.50.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 15:50:31 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 19:50:27 -0300
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: media: rkvdec: Constify static struct
+ v4l2_m2m_ops
+Message-ID: <YWdis9cj3OyLFNaR@fedora>
+References: <20211012221144.30638-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211013223502.96756-1-ahalaney@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012221144.30638-1-rikard.falkeborn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 3:35 PM, Andrew Halaney wrote:
-> The prior message is confusing users, which is the exact opposite of the
-> goal. If the message is being seen, one of the following situations is
-> happening:
+On Wed, Oct 13, 2021 at 12:11:44AM +0200, Rikard Falkeborn wrote:
+> The only usage of rkvdec_m2m_ops is to pass its address to v4l2_m2m_init(),
+> which takes a pointer to const v4l2_m2m_ops as argument. Make it const
+> to allow the compiler to put it in read-only memory.
 > 
->   1. the param is misspelled
->   2. the param is not valid due to the kernel configuration
->   3. the param is intended for init but isn't after the '--'
->      delineator on the command line
-> 
-> To make that more clear to the user, explicitly mention "kernel command
-> line" and also note that the params are still passed to user space to
-> avoid causing any alarm over params intended for init.
-> 
-> Fixes: 86d1919a4fb0 ("init: print out unknown kernel parameters")
-> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+
 > ---
+>  drivers/staging/media/rkvdec/rkvdec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Here's v2 of this. I had to change the code a bit from what Steven
-> recommended to compile/look proper, but the intended format he had
-> suggested is still the same.
+> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
+> index bf00fe6534a3..28aab5c7fe33 100644
+> --- a/drivers/staging/media/rkvdec/rkvdec.c
+> +++ b/drivers/staging/media/rkvdec/rkvdec.c
+> @@ -677,7 +677,7 @@ static void rkvdec_device_run(void *priv)
+>  		rkvdec_job_finish(ctx, VB2_BUF_STATE_ERROR);
+>  }
+>  
+> -static struct v4l2_m2m_ops rkvdec_m2m_ops = {
+> +static const struct v4l2_m2m_ops rkvdec_m2m_ops = {
+>  	.device_run = rkvdec_device_run,
+>  };
+>  
+> -- 
+> 2.33.0
 > 
-> v1 -> v2:
->   * Print a much more concise message
-> 
-> v1: https://lore.kernel.org/all/20211012213523.39801-1-ahalaney@redhat.com/
-> 
-> Thanks,
-> Andrew
-> 
->   init/main.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/init/main.c b/init/main.c
-> index ee4d3e1b3eb9..a286995449e2 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -925,7 +925,9 @@ static void __init print_unknown_bootoptions(void)
->   	for (p = &envp_init[2]; *p; p++)
->   		end += sprintf(end, " %s", *p);
->   
-> -	pr_notice("Unknown command line parameters:%s\n", unknown_options);
-> +	/* Start at unknown_options[1] to skip the initial space */
-> +	pr_notice("Unknown kernel command line parameters \"%s\", will be passed to user space.\n",
-> +		&unknown_options[1]);
->   	memblock_free(unknown_options, len);
->   }
->   
-> 
-
-LGTM. Thanks.
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
--- 
-~Randy
