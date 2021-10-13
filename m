@@ -2,108 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2882042BB3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7AC42BB42
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239046AbhJMJPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:15:00 -0400
-Received: from mga02.intel.com ([134.134.136.20]:25033 "EHLO mga02.intel.com"
+        id S239033AbhJMJQu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Oct 2021 05:16:50 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:43518 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239008AbhJMJO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:14:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="214537144"
-X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
-   d="scan'208";a="214537144"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 02:12:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
-   d="scan'208";a="570770415"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by fmsmga002.fm.intel.com with ESMTP; 13 Oct 2021 02:12:49 -0700
-Subject: Re: [PATCH V3 1/3] perf/x86: Add new event for AUX output counter
- index
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "Liang, Kan" <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        x86@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210907163903.11820-1-adrian.hunter@intel.com>
- <20210907163903.11820-2-adrian.hunter@intel.com>
- <ab6f9ec2-2571-de5a-d44a-427851b08d19@linux.intel.com>
- <20210910160409.GI4323@worktop.programming.kicks-ass.net>
- <453b9364-c350-79ca-00fa-b9e6ed6e3367@linux.intel.com>
- <9da4ae5e-3e0e-180e-5bba-1351c08d7df9@intel.com>
- <87k0j7hzaw.fsf@ashishki-desk.ger.corp.intel.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <3211feb9-b8e3-21fc-958c-07c7c7766bf2@intel.com>
-Date:   Wed, 13 Oct 2021 12:12:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S238960AbhJMJQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 05:16:49 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1maaLU-0003mB-I0; Wed, 13 Oct 2021 11:14:44 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Guo Ren <guoren@kernel.org>, Atish Patra <atish.patra@wdc.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Rob Herring <robh@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH V3 1/2] dt-bindings: update riscv plic compatible string
+Date:   Wed, 13 Oct 2021 11:14:43 +0200
+Message-ID: <4245323.jvX0RauA9x@diego>
+In-Reply-To: <CAAhSdy3j2Co2ckxn4vDtOxL=Ym3hgb66vkmnTbUjec+x7bRRDA@mail.gmail.com>
+References: <20211013012149.2834212-1-guoren@kernel.org> <4039032.XOxOlHldtI@diego> <CAAhSdy3j2Co2ckxn4vDtOxL=Ym3hgb66vkmnTbUjec+x7bRRDA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87k0j7hzaw.fsf@ashishki-desk.ger.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/2021 22:22, Alexander Shishkin wrote:
-> Adrian Hunter <adrian.hunter@intel.com> writes:
+Am Mittwoch, 13. Oktober 2021, 11:11:26 CEST schrieb Anup Patel:
+> On Wed, Oct 13, 2021 at 2:27 PM Heiko St�bner <heiko@sntech.de> wrote:
+> >
+> > Hi Anup,
+> >
+> > Am Mittwoch, 13. Oktober 2021, 07:11:46 CEST schrieb Anup Patel:
+> > > On Wed, Oct 13, 2021 at 6:52 AM <guoren@kernel.org> wrote:
+> > > >
+> > > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > >
+> > > > Add the compatible string "thead,c900-plic" to the riscv plic
+> > > > bindings to support SOCs with thead,c9xx processor cores.
+> > > >
+> > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > > Cc: Rob Herring <robh@kernel.org>
+> > > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> > > > Cc: Anup Patel <anup@brainfault.org>
+> > > > Cc: Atish Patra <atish.patra@wdc.com>
+> > > >
+> > > > ---
+> > > >
+> > > > Changes since V3:
+> > > >  - Rename "c9xx" to "c900"
+> > > >  - Add thead,c900-plic in the description section
+> > > > ---
+> > > >  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml    | 6 ++++++
+> > > >  1 file changed, 6 insertions(+)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > > > index 08d5a57ce00f..82629832e5a5 100644
+> > > > --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > > > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> > > > @@ -35,6 +35,11 @@ description:
+> > > >    contains a specific memory layout, which is documented in chapter 8 of the
+> > > >    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
+> > > >
+> > > > +  While the "thead,c900-plic" would mask IRQ with readl(claim), so it needn't
+> > > > +  mask/unmask which needed in RISC-V PLIC. When in IRQS_ONESHOT & IRQCHIP_EOI_THREADED
+> > > > +  path, unnecessary mask operation would cause a blocking irq bug in thead,c900-plic.
+> > > > +  Because when IRQ is disabled in c900, writel(hwirq, claim) would be invalid.
+> > >
+> > > This is a totally incorrect description of the errata required for C9xx PLIC.
+> > >
+> > > Please don't project non-compliance as a feature of C9xx PLIC.
+> > >
+> > > > +
+> > > >  maintainers:
+> > > >    - Sagar Kadam <sagar.kadam@sifive.com>
+> > > >    - Paul Walmsley  <paul.walmsley@sifive.com>
+> > > > @@ -46,6 +51,7 @@ properties:
+> > > >        - enum:
+> > > >            - sifive,fu540-c000-plic
+> > > >            - canaan,k210-plic
+> > > > +          - thead,c900-plic
+> >
+> > we still want specific SoC names in the compatible, the "c900"
+> > is still a sort-of placeholder.
 > 
->> On 10/09/21 7:29 pm, Liang, Kan wrote:
->>>
->>>
->>> On 9/10/2021 12:04 PM, Peter Zijlstra wrote:
->>>> On Tue, Sep 07, 2021 at 01:45:22PM -0400, Liang, Kan wrote:
->>>>> On 9/7/2021 12:39 PM, Adrian Hunter wrote:
->>>>
->>>>>> @@ -4494,8 +4500,16 @@ static int intel_pmu_check_period(struct perf_event *event, u64 value)
->>>>>>        return intel_pmu_has_bts_period(event, value) ? -EINVAL : 0;
->>>>>>    }
->>>>>> +static void intel_aux_output_init(void)
->>>>>> +{
->>>>>> +    /* Refer also intel_pmu_aux_output_match() */
->>>>>> +    if (x86_pmu.intel_cap.pebs_output_pt_available)
->>>>>> +        x86_pmu.assign = intel_pmu_assign_event;
->>>>>> +}
->>>>>
->>>>> For a hybrid machine, x86_pmu.intel_cap.pebs_output_pt_available is always
->>>>> cleared. We probably need the PMU specific
->>>>> pmu->intel_cap.pebs_output_pt_available here.
->>>>>
->>>>>> +
->>>>>>    static int intel_pmu_aux_output_match(struct perf_event *event)
->>>>>>    {
->>>>>> +    /* intel_pmu_assign_event() is needed, refer intel_aux_output_init() */
->>>>>>        if (!x86_pmu.intel_cap.pebs_output_pt_available)
->>>>>>            return 0;
->>>>>>
->>>>>
->>>>> For a hybrid machine, this always return 0. I think we need to fix it first?
->>>>
->>>> AFAICT the patch is correct for !hybrid, and the hybrid PT muck can then
->>>> also fix this up, right?
->>>>
->>>
->>> Yes, for !hybrid, the patch is good.
->>>
->>> Since PEBS via PT is temporarily disabled for hybrid for now, the patch set should not bring any issues with hybrid either.
->>> The hybrid PT can be fixed separately.
->>
->> I don't have much time to look at the hybrid case right now.
->>
->> Would it be OK to go ahead with these patches?
-> 
-> I'll deal with the PEBS-via-PT on hybrid. As it stands right now, this
-> patchset is good.
+> Yes, we need "c900" compatible string as well. The "c9xx"
+> compatible string is for the custom PLIC spec followed by T-HEAD.
 
-Will anyone takes these patches?  Perhaps Arnaldo if no one objects?
-The patches still seem to apply cleanly.
+What I meant was that the soc-specific string should name the
+actual SoC (c906, c910) and not some imaginary chip ;-)
+
+See for example mali gpu bindings for a similar reference
+in devicetree/bindings/gpu/arm,mali-bifrost.yaml .
+
+
+
+
+> 
+> >
+> >
+> > > >        - const: sifive,plic-1.0.0
+> > >
+> > > The PLIC DT node requires two compatible string:
+> > > <implementation_compat>, <spec_compat>
+> > >
+> > > The C9xx PLIC is not RISC-V PLIC so, the DT node should
+> > > be: "thead,c900-plic", "thead,c9xx-plic"
+> > >
+> > > You need to change "- const: sifive,plic-1.0.0" to
+> > > - enum:
+> > >     - sifive,plic-1.0.0
+> > >     - thead,c9xx-plic
+> >
+> >
+> 
+> Regards,
+> Anup
+> 
+
+
+
+
