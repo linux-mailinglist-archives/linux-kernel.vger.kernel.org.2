@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D591E42BB71
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CB542BB77
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239122AbhJMJZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:25:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29214 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230150AbhJMJY7 (ORCPT
+        id S239094AbhJMJ2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:28:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235222AbhJMJ2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:24:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634116976;
+        Wed, 13 Oct 2021 05:28:20 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE743C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 02:26:16 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ce200e42a3e901495df36.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:e200:e42a:3e90:1495:df36])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D79CD1EC04D1;
+        Wed, 13 Oct 2021 11:26:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634117174;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jWnFrkPl/HQNKGbEFFdCtAjAbrQ0f0wfX+pKKqhAWSU=;
-        b=FDikJDuGWPqpjQUYpuRDk95KCLByQao2TtFZHmnfDbZtmSbGdja13X2xq93MsqZPYVmUir
-        oXSBY5wsVXYQEU45VrGaf/DhuB5gnPmB2SiYLA9QU3MuyPbic4nZD2K4cKb8JzFkwwVlwI
-        mkdgrEM0/3Sm8esES2sj6gq6+g/hfJE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-430-n_8-IG_fM_uOmtY2wl_brw-1; Wed, 13 Oct 2021 05:22:52 -0400
-X-MC-Unique: n_8-IG_fM_uOmtY2wl_brw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22CBF5074C;
-        Wed, 13 Oct 2021 09:22:51 +0000 (UTC)
-Received: from T590 (ovpn-8-39.pek2.redhat.com [10.72.8.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 782BE22713;
-        Wed, 13 Oct 2021 09:22:47 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 17:22:42 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kashyap.desai@broadcom.com,
-        hare@suse.de
-Subject: Re: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
-Message-ID: <YWalYoOZmpkmAZNK@T590>
-References: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=mzSW+lZEocE/K7VEFrysmA7kJQvRTS0m7rv02eijMs4=;
+        b=qt6lM7be63EpV5GkEoIkqUVieASALd/z7ZFtEQfgnNn7cBQU2pmkf+0/sAGqmb5IRJtX8q
+        gcE0qUSPEXFZMbj1TtKfwdD/0mdNIb0rwGrGuPDqcnxWLRFlnDGXmKNnipiuRG6dy9TkOd
+        xDEA9WeehT2mRoFk6unESyzbMHFc0To=
+Date:   Wed, 13 Oct 2021 11:26:13 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Quan, Evan" <Evan.Quan@amd.com>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        "Chen, Guchun" <Guchun.Chen@amd.com>
+Subject: Re: bf756fb833cb ("drm/amdgpu: add missing cleanups for Polaris12
+ UVD/VCE on suspend")
+Message-ID: <YWamNaMAxaw+/9Az@zn.tnic>
+References: <YWBeD7fd2sYSSTyc@zn.tnic>
+ <CADnq5_MeEP-PbDp+Js3zEsuj=CvxDAD2qcFSskWhW4b4SkhwEQ@mail.gmail.com>
+ <YWBlVzZK35ecQHNZ@zn.tnic>
+ <DM6PR12MB2619FD47CD826ADC91F87AFBE4B39@DM6PR12MB2619.namprd12.prod.outlook.com>
+ <YWFaUjKEp+5819O/@zn.tnic>
+ <DM6PR12MB26195857D2FA0946C9833F19E4B39@DM6PR12MB2619.namprd12.prod.outlook.com>
+ <YWFp2qHwbWHEqxWh@zn.tnic>
+ <DM6PR12MB26193B59E0C5971F458E17C9E4B59@DM6PR12MB2619.namprd12.prod.outlook.com>
+ <YWRvl6ymevr7+kiB@zn.tnic>
+ <BYAPR12MB26152EF8CD43290EBE40C165E4B79@BYAPR12MB2615.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <BYAPR12MB26152EF8CD43290EBE40C165E4B79@BYAPR12MB2615.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 04:40:59PM +0800, John Garry wrote:
-> Since it is now possible for a tagset to share a single set of tags, the
-> iter function should not re-iter the tags for the count of #hw queues in
-> that case. Rather it should just iter once.
-> 
-> Fixes: e0fdf846c7bb ("blk-mq: Use shared tags for shared sbitmap support")
-> Reported-by: Kashyap Desai <kashyap.desai@broadcom.com>
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> 
-> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-> index 72a2724a4eee..c943b6529619 100644
-> --- a/block/blk-mq-tag.c
-> +++ b/block/blk-mq-tag.c
-> @@ -378,9 +378,12 @@ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
->  void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
->  		busy_tag_iter_fn *fn, void *priv)
->  {
-> -	int i;
-> +	unsigned int flags = tagset->flags;
-> +	int i, nr_tags;
-> +
-> +	nr_tags = blk_mq_is_shared_tags(flags) ? 1 : tagset->nr_hw_queues;
->  
-> -	for (i = 0; i < tagset->nr_hw_queues; i++) {
-> +	for (i = 0; i < nr_tags; i++) {
->  		if (tagset->tags && tagset->tags[i])
->  			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
->  					      BT_TAG_ITER_STARTED);
+On Wed, Oct 13, 2021 at 09:19:45AM +0000, Quan, Evan wrote:
+> So, I need your help to confirm the last two patches(I sent you) do not affect the fix for the bug above.
+> Please follow the steps below to verify it:
+> 1. Launch a video playing
+> 2. open another terminal and issue "sudo pm-suspend" command to force suspending
+> 3. verify the system can suspend and resume back correctly without errors or hangs
 
-blk_mq_queue_tag_busy_iter() needn't such change?
+Just to confirm: you want me to do that with the last two patches
+applied?
 
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
-Ming
-
+https://people.kernel.org/tglx/notes-about-netiquette
