@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBCC42BEFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DBE242BF02
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbhJMLg5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Oct 2021 07:36:57 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:36919 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhJMLgz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:36:55 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N7zJj-1mnOSf2Yxn-0151eV; Wed, 13 Oct 2021 13:34:50 +0200
-Received: by mail-wr1-f43.google.com with SMTP id m22so7456196wrb.0;
-        Wed, 13 Oct 2021 04:34:50 -0700 (PDT)
-X-Gm-Message-State: AOAM530JJTnCoKXLzarJsfmUUmoC+kyDEkbwMGqLyNRbKq/H2oBVjcA+
-        mhT90RL6MaXQYKdsC0j2Mzqa9n7Iac0Z6xMPc6A=
-X-Google-Smtp-Source: ABdhPJz/tQxa5v4qhwFE3sQu9avl5eu7/EDdEmltQMqmVp+Zjg8+ZW0kGehN4p6hG6cHdJWighfCnt4BmNvUupzN+ls=
-X-Received: by 2002:adf:ab46:: with SMTP id r6mr38988320wrc.71.1634124890085;
- Wed, 13 Oct 2021 04:34:50 -0700 (PDT)
+        id S231200AbhJMLh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 07:37:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229580AbhJMLh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 07:37:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF65561027;
+        Wed, 13 Oct 2021 11:35:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634124924;
+        bh=Ew/eQo/93Bchex5IgKhMWzqA884BlihcmHekA2AuKz8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SPmjnkDSb5sEEV9uMRXqRJjVTS54T4sJ05ja57VRtyZIWHEKgub42Srx6oyMcYT1l
+         PcWjzt8lTQDDy6ZJ5mTzNPT9AbPVz7zSGaA9DGYWHKk/7lBkLceOdG0b3XCAnfkoOG
+         0aA4dIgsbxchHemPZpgxcxHY+8UgRo6w5uE+S+JfLG5lq1QLLeisNnD53bLshcYVGG
+         PeG8C/LI8r4nrNSa8dFbxuJ3kKdfZ2nrI0RvcVuurF49uu8lckjDa2NU3vrmU7DVMm
+         9sZMMn1UFT8+PxUUhEbxmItW3oDgFp2y9yfOwIhJZklvj4GhBeNWigGQhbk2j4Wo1N
+         vIiNHwTnMx35g==
+Date:   Wed, 13 Oct 2021 14:35:18 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memblock: exclude NOMAP regions from kmemleak
+Message-ID: <YWbEdklkUD3uIePa@kernel.org>
+References: <20211013054756.12177-1-rppt@kernel.org>
+ <YWaOpMhO6LoiiD+S@arm.com>
 MIME-Version: 1.0
-References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
- <c215b244a19a07327ec81bf99f3c5f89c68af7b4.1633964380.git.christophe.leroy@csgroup.eu>
- <202110130002.A7C0A86@keescook> <c2904a2e-c112-f2bc-04a0-52b08b46c1ce@csgroup.eu>
-In-Reply-To: <c2904a2e-c112-f2bc-04a0-52b08b46c1ce@csgroup.eu>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 13 Oct 2021 13:34:33 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0G8zOD-DJVOxWWwHgGUWQC2yxgMMKYrBQTgVLAicC7pw@mail.gmail.com>
-Message-ID: <CAK8P3a0G8zOD-DJVOxWWwHgGUWQC2yxgMMKYrBQTgVLAicC7pw@mail.gmail.com>
-Subject: Re: [PATCH v1 06/10] asm-generic: Refactor dereference_[kernel]_function_descriptor()
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Kees Cook <keescook@chromium.org>, Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-ia64@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:aKXdFfQHHJqa+PGJd0D0CX4GFyeR8Gs2iyTgOMSiqKrrS5DRfiG
- h1gsuMfiWWdOlkpHquK5Qmb3cl+a+79dUuZ0YE10HlcmyzTDdeY9V8vEW0zhYKirbm/FPoa
- vTPHLU2iGWRwCJP4NneTP4mcVH6iEWDchEqQVY8EjB1oQY/RlcAIGgXJM3fdz5gCIUmTOD2
- DgZoHBJ/HonekaByWqDxA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mpUpj2+QhgA=:5zFFMUKPYHCBOM9HzxsjX0
- 4ra+DlLJPIeAxBP4Ofuch9YCuO8j3PJ175e/jrXzlIeF3IJPo6miW1KwiXvo1Aj0Min2s5htD
- y5jRo41flZUbI7dqj+c/c310D+o2nlgQfiPQ+PEXbog25A1FW6ZaNT2wrsBZlBKRED9ji4xrs
- 7gK/7+m1QRFq5rWUA6t9Mfk0CbKLyXBwoGhkPXb7cewHkmr6wkCbGNY30K/kSmbL6JhzrEAJf
- ezIgqRFmPvVqRGGKbX9+xZrPgSHifDLmPzk9Nc4RV8oy0XKx9PCtqA+FzEM1IW4KkFxYzW3oS
- DNWRWVRC65I+Cn2nQCUONwU4II6V7zDHU5n26r1K4lxlhdrbBgMDE8FjbEdOFVCKRpWltRbUa
- 7CIFLJ46wmfHpSaxtJ0UX1orNU7pP9orF82mzPBPhCDHlQaY/PYMJDqp3olvTvj55buTQxmmA
- ZXpoNaDQ7qntFF2yHu91Fr4tjYV/v3Z56BsYLKgu9Aaapr2nm47xafc5mPKA2/J5TPySHoHF9
- dH4xkphaH2+VJ0to/FtYk4SmBKv4zPZOusKW0X07I1w9t3iikj2QudIK6lgkSqzfnB7MjK00E
- UIfeoQgm65BfUYDnaLQBtZynM7tdQx9Ql/cMnXkIeC8AGrfed1dwHUhy4sCh89z84A076iKi5
- QGdJMw9yyT37j9L95vWqEvEK2J7b+SDweRXrHgtdsNRi4luRdmz/w5AryzicjoGT2C3MWu2S1
- r13c2HlNpMAb1eHdYRRo8Kqt8qIgmS4yplcrHLF3JOmnkWp7Ea6szXivrFB1syWgtoxoTalEF
- zn5/nNM5jzSElRztbFDQsUrQNen91J3NrnhsZ8W5kPaDGegQFt2d6UXcj0Bscik7zXXVlyRao
- pcRCyKhh0lEnA//ie7pQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWaOpMhO6LoiiD+S@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 1:20 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
-> Le 13/10/2021 à 09:02, Kees Cook a écrit :
-> > On Mon, Oct 11, 2021 at 05:25:33PM +0200, Christophe Leroy wrote:
-> >> dereference_function_descriptor() and
-> >> dereference_kernel_function_descriptor() are identical on the
-> >> three architectures implementing them.
-> >>
-> >> Make it common.
-> >>
-> >> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> >> ---
-> >>   arch/ia64/include/asm/sections.h    | 19 -------------------
-> >>   arch/parisc/include/asm/sections.h  |  9 ---------
-> >>   arch/parisc/kernel/process.c        | 21 ---------------------
-> >>   arch/powerpc/include/asm/sections.h | 23 -----------------------
-> >>   include/asm-generic/sections.h      | 18 ++++++++++++++++++
-> >>   5 files changed, 18 insertions(+), 72 deletions(-)
-> >
-> > A diffstat to love. :)
-> >
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
+On Wed, Oct 13, 2021 at 08:45:40AM +0100, Catalin Marinas wrote:
+> On Wed, Oct 13, 2021 at 08:47:56AM +0300, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > Vladimir Zapolskiy reports:
+> > 
+> > commit a7259df76702 ("memblock: make memblock_find_in_range method private")
+> > invokes a kernel panic while running kmemleak on OF platforms with nomaped
+> > regions:
+> > 
+> >   Unable to handle kernel paging request at virtual address fff000021e00000
+> >   [...]
+> >     scan_block+0x64/0x170
+> >     scan_gray_list+0xe8/0x17c
+> >     kmemleak_scan+0x270/0x514
+> >     kmemleak_write+0x34c/0x4ac
+> > 
+> > Indeed, NOMAP regions don't have linear map entries so an attempt to scan
+> > these areas would fault.
+> > 
+> > Prevent such faults by excluding NOMAP regions from kmemleak.
+> > 
+> > Link: https://lore.kernel.org/all/8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org
+> > Fixes: a7259df76702 ("memblock: make memblock_find_in_range method private")
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > Tested-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+> 
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Thanks!
 
-> Unless somebody minds, I will make them out of line as
-> suggested by Helge in he's comment to patch 4.
->
-> Allthough there is no spectacular size reduction, the functions
-> are not worth being inlined as they are not used in critical pathes.
+I'm going to take it via memblock tree if that's fine with everybody.
 
-Sounds good to me.
-
-      Arnd
+-- 
+Sincerely yours,
+Mike.
