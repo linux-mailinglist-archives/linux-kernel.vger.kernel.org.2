@@ -2,66 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D679942C319
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E22342C320
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235340AbhJMO3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:29:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230324AbhJMO3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:29:23 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 898E260ED4;
-        Wed, 13 Oct 2021 14:27:18 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 10:27:16 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Gavin Shan <gshan@redhat.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [BUG] WARNING: CPU: 3 PID: 1 at mm/debug_vm_pgtable.c:493
-Message-ID: <20211013102716.4a7c3800@gandalf.local.home>
-In-Reply-To: <40dd8b91-7f4f-0f5f-bf15-504c0960c802@arm.com>
-References: <20211012141131.3c9a2eb1@gandalf.local.home>
-        <CAHk-=wj2SbVnsO7yxgaD20HBaH=0rNM60nD92+BDSwQxofd9SQ@mail.gmail.com>
-        <40dd8b91-7f4f-0f5f-bf15-504c0960c802@arm.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235662AbhJMO3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235412AbhJMO3y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:29:54 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDDFC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:27:50 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id e10so243755uab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 07:27:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Bj1qNEG+5FP9GKXBmM4kufW+uVF44PKuB8CVz9DjaKc=;
+        b=gRlcFYjDdxION0Qyby/akwGm75WSXINStyTQHZZuBBF2RIGoipgwpbONDCZzUuhSr+
+         1CtJI5NfddIfHkuRkTJ3QSLnJFns92TUxaOOXLQRCrS8PCV/mAopiiz1ktRZN4hiMhHL
+         ONOGYv4jqBzR9hcQiavr5d1cIRmjA/7PfIKjm84KYRf8FgXSwuuGS/J/UNfs9bbDoeI1
+         9c5cEUkU+uYHFms0MChAkU9AMdC8bbSkYsLM30Empx/KBSV9vdpQSDGxK9mI8n0YeSfB
+         gqi7v/FIqH0F3J7NkhSw2VpGE2QAAVTPg41ty5iHRUfQbYMqFzQeM6LXfO3d/zjG7mK8
+         getA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Bj1qNEG+5FP9GKXBmM4kufW+uVF44PKuB8CVz9DjaKc=;
+        b=iiYE6HUYa4IqriMck9+pOZ4nT36kZYL1/ZKnGwcr0Ry5s++/2QmkE7c1tKK3W+EWBu
+         xjOVb3jBxS/TsjBJftx2Toj5+Ze94Ww5cjEc4yT5EX7peeZdPJLKiQqSJdjmUN8mPCmu
+         G/jv+n9ZeJyidg/sqnfCEJ4wtxSUtLYZzAm1k+DSW+WNMehoNRR/vvx0JR/FUQxwTlWT
+         LzeleeSdPtq1vuH+v9EEjtiIrdoHdmh/X1JK3ngh0vbGF+fSrd00W7Sm1dx0FkUcFLpc
+         TLkMyB0ydqNlp8VA+skARcQBsyrJEs190v9FQiEu6Rjj9ybE3VB5UiLPQcbRjkj6+xKS
+         xfjA==
+X-Gm-Message-State: AOAM533+tymzTx+xV4A6qkHiLB87NS8BrEbJNlzCNfLdLCv5SoG8oCiG
+        7nl73GD7Qo4MSeqfdWcoZ903YQ==
+X-Google-Smtp-Source: ABdhPJyeFIGcjygyszMEknoRPsLumSj93t/Zso1VLa1Hm6InMKEqO7C3740GLJxdppAFCA5swk/HJg==
+X-Received: by 2002:ab0:7a50:: with SMTP id a16mr29932206uat.92.1634135270072;
+        Wed, 13 Oct 2021 07:27:50 -0700 (PDT)
+Received: from fedora ([196.32.91.248])
+        by smtp.gmail.com with ESMTPSA id j11sm5825138uaa.6.2021.10.13.07.27.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 07:27:49 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 11:27:44 -0300
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] media: rkvdec: Support dynamic resolution changes
+Message-ID: <YWbs4Ng/mDQpIoiK@fedora>
+References: <20211008100423.739462-1-wenst@chromium.org>
+ <20211008100423.739462-3-wenst@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008100423.739462-3-wenst@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 09:40:11 +0530
-Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+Hi Chen-Yu,
 
-> I have run this test on x86 platform many times before (although not recently)
-> without any problem and never had this bug report before. Wondering if there
-> are recent changes on x86 platform, causing these warning.
-
-As noticed in my conversation with Linus, this warning was there before
-your updates, as it was in 5.14-rc2.
-
+On Fri, Oct 08, 2021 at 06:04:23PM +0800, Chen-Yu Tsai wrote:
+> The mem-to-mem stateless decoder API specifies support for dynamic
+> resolution changes. In particular, the decoder should accept format
+> changes on the OUTPUT queue even when buffers have been allocated,
+> as long as it is not streaming.
 > 
-> Gavin,
+> Relax restrictions for S_FMT as described in the previous paragraph,
+> and as long as the codec format remains the same. This aligns it with
+> the Hantro and Cedrus decoders. This change was mostly based on commit
+> ae02d49493b5 ("media: hantro: Fix s_fmt for dynamic resolution changes").
 > 
-> Although unlikely, was there something on the series which might have
-> changed pud_huge_tests() ?
+> Since rkvdec_s_fmt() is now just a wrapper around the output/capture
+> variants without any additional shared functionality, drop the wrapper
+> and call the respective functions directly.
+> 
+> Fixes: cd33c830448b ("media: rkvdec: Add the rkvdec driver")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 
-Not sure. But my test box that triggers this is open now, and I'll add
-Linus's debug patch and see if I can retrigger it.
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 
--- Steve
+Seems we forgot to port Hantro changes over here, so thanks a lot
+for picking this up.
+
+Ezequiel
+
+> ---
+>  drivers/staging/media/rkvdec/rkvdec.c | 40 +++++++++++++--------------
+>  1 file changed, 20 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
+> index 7131156c1f2c..3f3f96488d74 100644
+> --- a/drivers/staging/media/rkvdec/rkvdec.c
+> +++ b/drivers/staging/media/rkvdec/rkvdec.c
+> @@ -280,31 +280,20 @@ static int rkvdec_try_output_fmt(struct file *file, void *priv,
+>  	return 0;
+>  }
+>  
+> -static int rkvdec_s_fmt(struct file *file, void *priv,
+> -			struct v4l2_format *f,
+> -			int (*try_fmt)(struct file *, void *,
+> -				       struct v4l2_format *))
+> +static int rkvdec_s_capture_fmt(struct file *file, void *priv,
+> +				struct v4l2_format *f)
+>  {
+>  	struct rkvdec_ctx *ctx = fh_to_rkvdec_ctx(priv);
+>  	struct vb2_queue *vq;
+> +	int ret;
+>  
+> -	if (!try_fmt)
+> -		return -EINVAL;
+> -
+> -	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
+> +	/* Change not allowed if queue is busy */
+> +	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx,
+> +			     V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE);
+>  	if (vb2_is_busy(vq))
+>  		return -EBUSY;
+>  
+> -	return try_fmt(file, priv, f);
+> -}
+> -
+> -static int rkvdec_s_capture_fmt(struct file *file, void *priv,
+> -				struct v4l2_format *f)
+> -{
+> -	struct rkvdec_ctx *ctx = fh_to_rkvdec_ctx(priv);
+> -	int ret;
+> -
+> -	ret = rkvdec_s_fmt(file, priv, f, rkvdec_try_capture_fmt);
+> +	ret = rkvdec_try_capture_fmt(file, priv, f);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -319,9 +308,20 @@ static int rkvdec_s_output_fmt(struct file *file, void *priv,
+>  	struct v4l2_m2m_ctx *m2m_ctx = ctx->fh.m2m_ctx;
+>  	const struct rkvdec_coded_fmt_desc *desc;
+>  	struct v4l2_format *cap_fmt;
+> -	struct vb2_queue *peer_vq;
+> +	struct vb2_queue *peer_vq, *vq;
+>  	int ret;
+>  
+> +	/*
+> +	 * In order to support dynamic resolution change, the decoder admits
+> +	 * a resolution change, as long as the pixelformat remains. Can't be
+> +	 * done if streaming.
+> +	 */
+> +	vq = v4l2_m2m_get_vq(m2m_ctx, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE);
+> +	if (vb2_is_streaming(vq) ||
+> +	    (vb2_is_busy(vq) &&
+> +	     f->fmt.pix_mp.pixelformat != ctx->coded_fmt.fmt.pix_mp.pixelformat))
+> +		return -EBUSY;
+> +
+>  	/*
+>  	 * Since format change on the OUTPUT queue will reset the CAPTURE
+>  	 * queue, we can't allow doing so when the CAPTURE queue has buffers
+> @@ -331,7 +331,7 @@ static int rkvdec_s_output_fmt(struct file *file, void *priv,
+>  	if (vb2_is_busy(peer_vq))
+>  		return -EBUSY;
+>  
+> -	ret = rkvdec_s_fmt(file, priv, f, rkvdec_try_output_fmt);
+> +	ret = rkvdec_try_output_fmt(file, priv, f);
+>  	if (ret)
+>  		return ret;
+>  
+> -- 
+> 2.33.0.882.g93a45727a2-goog
+> 
