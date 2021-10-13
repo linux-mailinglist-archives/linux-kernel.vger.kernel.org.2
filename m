@@ -2,94 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A5942BEB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007A342BEEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbhJMLPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 07:15:14 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:25181 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhJMLPI (ORCPT
+        id S230150AbhJMLbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 07:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhJMLb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:15:08 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HTqcC60wFz8tbx;
-        Wed, 13 Oct 2021 19:11:55 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 13 Oct 2021 19:13:01 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 13
- Oct 2021 19:13:01 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH v3 2/2] block, bfq: do not idle if only one cgroup is activated
-Date:   Wed, 13 Oct 2021 19:25:34 +0800
-Message-ID: <20211013112534.3073296-3-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211013112534.3073296-1-yukuai3@huawei.com>
-References: <20211013112534.3073296-1-yukuai3@huawei.com>
+        Wed, 13 Oct 2021 07:31:29 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258A1C061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 04:29:26 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id d23so2021445pgh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 04:29:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amikom.ac.id; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YuWBjOBWFaZ9lrZUP7rUQNvD8WGdCrnx1RCHoRN4vG4=;
+        b=gvDJHW8xOgjDGJ68oY19cG8LUlkrOqdCnDFCI7u4mQv73QvzNAW1eZjZTsEUTTZSGt
+         wqDqupw1B9GLCtgi67kbpQhQShir3Aw845SOOspsEaOKWZLgC7P+Sq7WZfPiIOHYrfPn
+         uDJTBUVABgIyrClGmQPuq38oG5VAxzJMwqkvN4cqizJmY+7yZC7hb+31h53pM7TQDuKo
+         hOiV0CrEjzalhNu55lTbB3frXnelqHKizlqjx18DtIV5KHZcvqMVc3sWdOtzzHo6QHZX
+         q8sLvhaZwNdBaJUWTF7zvqAkN/HnVsDhXjtCTVxmcTB/E3R6dKUGvQ4lda2hjy/aily7
+         dNsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YuWBjOBWFaZ9lrZUP7rUQNvD8WGdCrnx1RCHoRN4vG4=;
+        b=IAEsFBlF4xDU3dgEfQ8uyo4Caa1gkxHDhap6V5pX7QTe3tF/tVYwJJL9+ao9bEg0am
+         foJO079rnBMOikl0Df68a5v1Q6a4ZaT5l8Nu0Hu+kJKq2vR/H/ax7tyKRTxvJPjU3+Rk
+         frRHSlIFDwz11gsHcjIacM0+Wr27VRO98qOTa+SXQv43MvN7Z+pDl+T9Un0gCXagJdr3
+         mOi1lV2FyEd1a8tYzf3lpOlS6g5iBhh2ylpFMPGmDF2lkcLMEjEWq4lrbXPjuLIYKVt3
+         VXo6DeHD9e2dqgCRhMwxXpCeImkS3vomXW50BE01bzsX6dgTXVofzFIQKFvlUqzPtvPi
+         eLow==
+X-Gm-Message-State: AOAM533FUnqOtS6ICaKoWUsaudf+arMLJKPKoqjpEfmNAm3ij0E38R1j
+        sLoFY70BluHlzwHPBHmt+ktXkA==
+X-Google-Smtp-Source: ABdhPJxSk/gxyRSi14qShY3arNwIDjljb6lcvx8WXPNb4o1XjlQzGEH08kKzO4L/554uHlqXYRm5LA==
+X-Received: by 2002:aa7:9523:0:b0:44c:c171:9ae with SMTP id c3-20020aa79523000000b0044cc17109aemr36174264pfp.75.1634124565321;
+        Wed, 13 Oct 2021 04:29:25 -0700 (PDT)
+Received: from localhost.localdomain ([182.2.74.1])
+        by smtp.gmail.com with ESMTPSA id u65sm6212700pfb.208.2021.10.13.04.29.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 04:29:24 -0700 (PDT)
+From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "John W. Linville" <linville@tuxdriver.com>,
+        Vasanthakumar Thiagarajan <vthiagar@qca.qualcomm.com>,
+        Avraham Stern <avraham.stern@intel.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: WARNING: CPU: 2 PID: 633 at net/wireless/sme.c:974 cfg80211_roamed+0x265/0x2a0 [cfg80211]
+Date:   Wed, 13 Oct 2021 18:27:09 +0700
+Message-Id: <20211013112709.636468-1-ammar.faizi@students.amikom.ac.id>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <874k9l1p19.fsf@tynnyri.adurom.net>
+References: <874k9l1p19.fsf@tynnyri.adurom.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If only one group is activated, there is no need to guarantee the
-same share of the throughput of queues in the same group.
+On Wed, Oct 13, 2021 at 12:18 PM Kalle Valo <kvalo@codeaurora.org> wrote:
+> >
+> > Here is the log:
+> >
+> > <4>[266728.385936][  T633] ------------[ cut here ]------------
+> > <4>[266728.385946][  T633] WARNING: CPU: 2 PID: 633 at net/wireless/sme.c:974 cfg80211_roamed+0x265/0x2a0 [cfg80211]
+> > <4>[266728.386040][ T633] Modules linked in: rfcomm xt_CHECKSUM
+> > xt_MASQUERADE xt_conntrack ipt_REJECT nf_reject_ipv4 xt_tcpudp
+> > nft_compat nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6
+> > nf_defrag_ipv4 nft_counter nf_tables nfnetlink bridge stp llc bfq cmac
+> > algif_hash algif_skcipher af_alg bnep dm_multipath scsi_dh_rdac
+> > scsi_dh_emc scsi_dh_alua snd_hda_codec_realtek snd_hda_codec_hdmi
+> > uvcvideo snd_hda_codec_generic ledtrig_audio snd_hda_intel
+> > videobuf2_vmalloc snd_intel_dspcfg videobuf2_memops snd_intel_sdw_acpi
+> > btusb btrtl videobuf2_v4l2 videobuf2_common btbcm snd_hda_codec
+> > btintel videodev snd_hda_core bluetooth snd_hwdep wl(OE) mc snd_pcm
+> > ecdh_generic snd_seq_midi ecc snd_seq_midi_event edac_mce_amd
+> > snd_rawmidi kvm_amd acer_wmi snd_seq sparse_keymap kvm cfg80211
+> > wmi_bmof input_leds serio_raw snd_seq_device snd_timer snd soundcore
+> > ccp fam15h_power k10temp mac_hid sch_fq_codel msr ip_tables x_tables
+> > autofs4 btrfs blake2b_generic raid10 raid456 async_raid6_recov
+> > async_memcpy async_pq
+> > <4>[266728.386224][ T633] async_xor async_tx xor raid6_pq libcrc32c
+> > raid1 raid0 multipath linear amdgpu iommu_v2 gpu_sched radeon
+> > i2c_algo_bit drm_ttm_helper ttm hid_generic drm_kms_helper syscopyarea
+> > usbhid crct10dif_pclmul sysfillrect crc32_pclmul sysimgblt hid
+> > ghash_clmulni_intel fb_sys_fops cec aesni_intel rc_core rtsx_pci_sdmmc
+> > sdhci_pci crypto_simd cqhci r8169 cryptd psmouse ahci xhci_pci
+> > rtsx_pci realtek libahci drm sdhci i2c_piix4 xhci_pci_renesas wmi
+> > video
+> > <4>[266728.386330][ T633] CPU: 2 PID: 633 Comm: wl_event_handle
+> > Tainted: G W OE 5.15.0-rc4-for-5.16-io-uring-00060-g4922ab639eb6 #4
+> > 8b24b2500a34cedea2e69c8d84eb4c855e713e61
+> > <4>[266728.386337][  T633] Hardware name: Acer Aspire ES1-421/OLVIA_BE, BIOS V1.05 07/02/2015
+> > <4>[266728.386341][  T633] RIP: 0010:cfg80211_roamed+0x265/0x2a0 [cfg80211]
+> > <4>[266728.386408][ T633] Code: 4c 89 f7 49 8d 8d 22 01 00 00 45 0f b6
+> > 85 42 01 00 00 6a 02 48 8b 36 e8 79 ab fc ff 48 89 43 08 5a 48 85 c0
+> > 0f 85 d6 fd ff ff <0f> 0b 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3
+> > 0f 0b 48 8b 73
+> > <4>[266728.386412][  T633] RSP: 0018:ffffc9000157bdd8 EFLAGS: 00010246
+> > <4>[266728.386418][  T633] RAX: 0000000000000000 RBX: ffffc9000157be20 RCX: 0000000000000000
+> > <4>[266728.386421][  T633] RDX: 0000000000000002 RSI: 0000000000000000 RDI: ffffffff8109ead2
+> > <4>[266728.386425][  T633] RBP: ffffc9000157be10 R08: 0000000000000001 R09: 0000000000000001
+> > <4>[266728.386428][  T633] R10: fffffffefb3c8d52 R11: ffff8881328b75b2 R12: 0000000000000cc0
+> > <4>[266728.386431][  T633] R13: ffff888105873800 R14: ffff8881328b6580 R15: dead000000000100
+> > <4>[266728.386435][  T633] FS:  0000000000000000(0000) GS:ffff888313d00000(0000) knlGS:0000000000000000
+> > <4>[266728.386439][  T633] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > <4>[266728.386443][  T633] CR2: 00007f3033edd000 CR3: 000000011a878000 CR4: 00000000000406e0
+> > <4>[266728.386447][  T633] Call Trace:
+> > <4>[266728.386456][  T633]  ? wl_update_bss_info.isra.0+0xf5/0x210 [wl 47ce17d152623ac79abb5e1d4a28d4375eb94473]
+> > <4>[266728.386555][  T633]  wl_bss_roaming_done.constprop.0+0xc4/0x100 [wl 47ce17d152623ac79abb5e1d4a28d4375eb94473]
+> > <4>[266728.386648][  T633]  wl_notify_roaming_status+0x3f/0x60 [wl 47ce17d152623ac79abb5e1d4a28d4375eb94473]
+> > <4>[266728.386730][  T633]  wl_event_handler+0x5f/0x140 [wl 47ce17d152623ac79abb5e1d4a28d4375eb94473]
+> > <4>[266728.386808][  T633]  ? wl_cfg80211_del_key+0x100/0x100 [wl 47ce17d152623ac79abb5e1d4a28d4375eb94473]
+>
+> What wireless device and driver you have? Based on the call trace it
+> looks like you are using Broadcom's out-of-tree driver called wl.
+>
 
-Test procedure:
-run "fio -numjobs=1 -ioengine=psync -bs=4k -direct=1 -rw=randread..."
-multiple times in the same cgroup.
+Yes, it is. Here is the info when I load the module.
 
-Test result: total bandwidth(Mib/s)
-| total jobs | before this patch | after this patch      |
-| ---------- | ----------------- | --------------------- |
-| 1          | 33.8              | 33.8                  |
-| 2          | 33.8              | 65.4 (32.7 each job)  |
-| 4          | 33.8              | 106.8 (26.7 each job) |
-| 8          | 33.8              | 126.4 (15.8 each job) |
+<5>[329274.450461][T634003] cfg80211: Loading compiled-in X.509 certificates for regulatory database
+<5>[329274.451011][T634003] cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+<4>[329274.876411][T634003] wlan0: Broadcom BCM4365 802.11 Hybrid Wireless Controller 6.30.223.271 (r587334)
+<4>[329274.876424][T634003]
+<6>[329275.232559][T634007] wl 0000:02:00.0 wlp2s0: renamed from wlan0
+<6>[329294.320737][  T892] IPv6: ADDRCONF(NETDEV_CHANGE): wlp2s0: link becomes ready
 
-By the way, if I test with "fio -numjobs=1/2/4/8 ...", test result is
-the same with or without this patch. This is because bfq_queue can
-be merged in this situation.
+Any direction where to go or what to do?
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/bfq-iosched.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index d251735383f7..8d94f511bee8 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -709,7 +709,7 @@ bfq_pos_tree_add_move(struct bfq_data *bfqd, struct bfq_queue *bfqq)
-  * much easier to maintain the needed state:
-  * 1) all active queues have the same weight,
-  * 2) all active queues belong to the same I/O-priority class,
-- * 3) there are no active groups.
-+ * 3) there are one active group at most.
-  * In particular, the last condition is always true if hierarchical
-  * support or the cgroups interface are not enabled, thus no state
-  * needs to be maintained in this case.
-@@ -741,7 +741,7 @@ static bool bfq_asymmetric_scenario(struct bfq_data *bfqd,
- 
- 	return varied_queue_weights || multiple_classes_busy
- #ifdef CONFIG_BFQ_GROUP_IOSCHED
--	       || bfqd->num_groups_with_pending_reqs > 0
-+	       || bfqd->num_groups_with_pending_reqs > 1
- #endif
- 		;
- }
 -- 
-2.31.1
-
+Ammar Faizi
