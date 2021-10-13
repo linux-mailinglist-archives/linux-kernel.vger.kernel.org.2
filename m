@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD4B42C8BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605ED42C8BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238301AbhJMSft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 14:35:49 -0400
-Received: from mail-pj1-f45.google.com ([209.85.216.45]:56210 "EHLO
-        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbhJMSfn (ORCPT
+        id S238454AbhJMSgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 14:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237102AbhJMSgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 14:35:43 -0400
-Received: by mail-pj1-f45.google.com with SMTP id om14so2894555pjb.5;
-        Wed, 13 Oct 2021 11:33:40 -0700 (PDT)
+        Wed, 13 Oct 2021 14:36:20 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5954CC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:34:17 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id a73so3210133pge.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:34:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=tzgCA7E355JBDp4s5SOgr19PHTQj2Yqya87H/7XlOEE=;
+        b=f/EptPa0NOdk6stOWlSiphYhkMGjT3LMaRY98SXsewxWS+aUxYIE+ai4r6BDISbCgX
+         jMLKB7s9ZalsufuF84f+LQXAdvewWpINqa7IvPkD6lFn7WM9wO9CHyNBLX2CqilFDOmn
+         E0BzeILCIlFg41/MdOCbAlkwC6CboaMRqVb6SVFXkoFHfF5CXWzeAPa3smR8ZWNsBsli
+         hrBOnMgWuKmGDgf8FcETkxMSRyEWS6UqFijNl2XXNQZnpaQPCOHN6+h4JfOzLuM0Xzzw
+         hwpQoWTJEa5aj+iQ3hqxWmCERxOhSVhheBsBXUxij8NIZE96GG/LvDkF9/erlor0y2jU
+         Ye6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4XmJ1jC9DPXCMuf8a+fhehsw5ASjCFlKX2CL8Hazd58=;
-        b=lSvBR0WCHxZ+4vaWxQSwOO+ehKuzawMWIXlhqMi5SDp095XMPLQvxWBdd4DbxwXsqX
-         U1qkP0zu/floAT8r8ErVB1BV0Z2pvAWv1FDjgKCKrvaTYMdCEdpKPuecv+hHOOJIlPpZ
-         hw9Ri0nzUlkZpPCojvxgOsVAgS9F7Y0Bry864l1EF40Eo3AwU9/LDWK6SuZJu1uEgg6+
-         TSCuIhnzrhu7wUEndineBcyTytajVrp0w1OxB+dTJaaLfyQqkD4kCkSTAkyWLzfzvIVC
-         +pMVtr9X385pLdRJD0X8N/4DuwsHLQBsaW6Cg2UBaCHk39vUvAHmux9C/kKWuVN2fAu4
-         zPDg==
-X-Gm-Message-State: AOAM533HYabEDZ05EOsyQYftRvIfBGFHJUzAadsZ2VJrYQfja8+oSuVH
-        if7ymVZm/tZTD0vDJRlspYM=
-X-Google-Smtp-Source: ABdhPJz9+PJn+XMP/2yVysc274MYh3vDJSSYXwrBfoOu9RYy9tqyuIvTbIcEuiqgsU9EfeJWlk9gOA==
-X-Received: by 2002:a17:90b:1c82:: with SMTP id oo2mr1003840pjb.53.1634150018223;
-        Wed, 13 Oct 2021 11:33:38 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:ae3:1dc1:f2a3:9c06])
-        by smtp.gmail.com with ESMTPSA id u24sm223779pfm.27.2021.10.13.11.33.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 11:33:37 -0700 (PDT)
-Subject: Re: [PATCH] RDMA/core: Set sgtable nents when using
- ib_dma_virt_map_sg()
-To:     Logan Gunthorpe <logang@deltatee.com>, linux-rdma@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-References: <20211013165942.89806-1-logang@deltatee.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <5eec6b1b-726e-b26d-bd82-f03fd5462b8f@acm.org>
-Date:   Wed, 13 Oct 2021 11:33:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=tzgCA7E355JBDp4s5SOgr19PHTQj2Yqya87H/7XlOEE=;
+        b=T764AsaIBKQ+VnycpqAHnF8xe/F25a4FDVpg1y8CnU5LlWCkaMWv8AeZ6Y2ma8lRCw
+         4IhgCqLYQ3/4L1DhpuSbzLpM5t+jo93vFDf9QkD9m+gnbfe53hkgUCaZtzBroDBfDgPK
+         qsLC4SmXNxHxvmxhzKYaIRUUPY1CNsIhLjP79JFhWIo0TXG2nSLsDj8WqQJYxxPVa7BB
+         ZYDN4b1u95UpFrEaFzJEm5Bs6joSBmnPxhmb3C37ccd2tgYK34P/0sayOKC/OqtW+uV4
+         Din1gOl/cIfR7Nf3nsebMpGG6xqQ/Ce9FInGfC8YGcWZ4eS9oQvLg20E4KYa8JW32Elg
+         VNjw==
+X-Gm-Message-State: AOAM533DVEp9DLObqbTCoDE9NGCqKosfvEiPorpxTUudn+jDW2gkxZ7b
+        rLu33b9TQnNB23JcDLR+jUXbyezoJgZ3kSHg+ts=
+X-Google-Smtp-Source: ABdhPJxCphiclUdgGTxGjGKMOHmcAkUDKf676pa/PRdq/2Sdj6mbrNmT/t07sayaUnCk+6BgQJQjQ4FJ8vP7L9cujMU=
+X-Received: by 2002:a63:1262:: with SMTP id 34mr647418pgs.356.1634150056852;
+ Wed, 13 Oct 2021 11:34:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211013165942.89806-1-logang@deltatee.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a17:90b:4b82:0:0:0:0 with HTTP; Wed, 13 Oct 2021 11:34:15
+ -0700 (PDT)
+Reply-To: mrmichelduku@outlook.com
+From:   michel duku <mrdukumichel@gmail.com>
+Date:   Wed, 13 Oct 2021 18:34:15 +0000
+Message-ID: <CAFOTq7a5w-bpcU3+CjNpKFe4B-R7hVhPGSbpws3p23vopjbA8Q@mail.gmail.com>
+Subject: Please Respond Urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 9:59 AM, Logan Gunthorpe wrote:
-> ib_dma_map_sgtable_attrs() should be mapping the sgls and setting nents
-> but the ib_uses_virt_dma() path falls back to ib_dma_virt_map_sg()
-> which will not set the nents in the sgtable.
-> 
-> Check the return value (per the map_sg calling convention) and set
-> sgt->nents appropriately on success.
-> 
-> Link: https://lore.kernel.org/all/996fa723-18ef-d35b-c565-c9cb9dc2d5e1@acm.org/T/#u
-> Reported-by: Bart Van Assche <bvanassche@acm.org>
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> Tested-by: Bart Van Assche <bvanassche@acm.org>
+Greetings,
 
-Does this patch need a "Fixes:" tag?
+With due respect to your person, I make this contact with you as I
+believe that you can be of great assistance to me. I need your urgent
+assistance in transferring the sum of $11.3million to your private
+account Where this money can be shared between us.
 
-Thanks,
+The money has been here in our Bank lying dormant for years now
+without anybody coming for the claim. I want to release the money to
+you as the relative to our deceased customer (the account owner) who
+died in a plane crash with his family since 16th October 2005.
 
-Bart.
+By indicating your interest I will send you the full details on how
+the business will be executed.
+
+Best Regards,
+Mr.Michel Duku.
