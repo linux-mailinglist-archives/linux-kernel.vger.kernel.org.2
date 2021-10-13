@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A28442B93F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1914142B945
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238516AbhJMHgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232458AbhJMHg2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:36:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FDFC061570;
-        Wed, 13 Oct 2021 00:34:25 -0700 (PDT)
-From:   Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634110462;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BoBO8v8xV3g6Rp8um6ygnHmfr/6EsiEB9PRtDEyc70c=;
-        b=D0z6yuJVThpCfxAmjHC1+UsPkR2QPNc9M/9113DqNPTRVtCRoPQWIWKsgS6sA8aJkIR/zW
-        rOoC/eyzDhcy4rby/sxn0mHfix0sMm8OgGwSFxq/KmuaxBsold5f0r1FK10w4y+XFKyEl6
-        sHYw24EX1O6b+NeNUQmEAQ++ogyi3nYQJxkHqD5RNOFjfVjjEdf2bwYl1ZESrwoOJ7uLHa
-        wdqfJsk2prhS0n6udkzjieqvyq/vPkhCM2GgJjHoXAIbEik4uWPx0speAPDlpPKVio643p
-        DKOE1ETyDnt5PAw7Cgr5rhklokRlTFa3NKEGE0JhLHy+QQg7Jq3Lw9E/qLanbA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634110462;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BoBO8v8xV3g6Rp8um6ygnHmfr/6EsiEB9PRtDEyc70c=;
-        b=kPdQ4jvjSI3sTpH75SWW8kNT/7gIo/QLtPaBbw30lJrCGyzxjRZu3oyF1WQhzHJPo1p4dE
-        DbFXfBdHNbBjRICw==
-To:     Ong Boon Leong <boon.leong.ong@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lay Kuan Loon <kuan.loon.lay@intel.com>,
-        Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Subject: Re: [PATCH net-next v2 1/1] net: phy: dp83867: introduce critical
- chip default init for non-of platform
-In-Reply-To: <20211013065941.2124858-2-boon.leong.ong@intel.com>
-References: <20211013065941.2124858-1-boon.leong.ong@intel.com>
- <20211013065941.2124858-2-boon.leong.ong@intel.com>
-Date:   Wed, 13 Oct 2021 09:34:21 +0200
-Message-ID: <87a6jd5qf6.fsf@kurt>
+        id S238537AbhJMHhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:37:41 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:34967 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232634AbhJMHhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 03:37:39 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HTkpb11MYz9sSS;
+        Wed, 13 Oct 2021 09:35:35 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id KISzn_mNvu5e; Wed, 13 Oct 2021 09:35:35 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HTkpb079hz9sRn;
+        Wed, 13 Oct 2021 09:35:35 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E0E038B77E;
+        Wed, 13 Oct 2021 09:35:34 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id UMXHteUt4-Xt; Wed, 13 Oct 2021 09:35:34 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id AF3C08B763;
+        Wed, 13 Oct 2021 09:35:34 +0200 (CEST)
+Subject: Re: [PATCH v1 09/10] lkdtm: Fix lkdtm_EXEC_RODATA()
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
+ <7da92e59e148bd23564d63bdd8bcfaba0ba6d1f1.1633964380.git.christophe.leroy@csgroup.eu>
+ <202110130008.EC5E957D4A@keescook>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <5181d261-fe93-5e21-5013-321d85e22354@csgroup.eu>
+Date:   Wed, 13 Oct 2021 09:35:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+In-Reply-To: <202110130008.EC5E957D4A@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
 
-On Wed Oct 13 2021, Ong Boon Leong wrote:
-> From: "Lay, Kuan Loon" <kuan.loon.lay@intel.com>
->
-> PHY driver dp83867 has rich supports for OF-platform to fine-tune the PHY
-> chip during phy configuration. However, for non-OF platform, certain PHY
-> tunable parameters such as IO impedance and RX & TX internal delays are
-> critical and should be initialized to its default during PHY driver probe.
->
-> Tested-by: Clement <clement@intel.com>
-> Signed-off-by: Lay, Kuan Loon <kuan.loon.lay@intel.com>
-> Co-developed-by: Ong Boon Leong <boon.leong.ong@intel.com>
-> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
 
-Thanks!
+Le 13/10/2021 à 09:09, Kees Cook a écrit :
+> On Mon, Oct 11, 2021 at 05:25:36PM +0200, Christophe Leroy wrote:
+>> Behind a location, lkdtm_EXEC_RODATA() executes a real function,
+>> not a copy of do_nothing().
+>>
+>> So do it directly instead of using execute_location().
+> 
+> I don't understand this. Why does the next patch not fix this?
 
-Tested-by: Kurt Kanzenbach <kurt@linutronix.de>
+Well, probably it would, but it looked incorrect in my mind.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+lkdtm_rodata_do_nothing() is a function which has its own function 
+descriptor, it is not a copy of do_nothing().
 
------BEGIN PGP SIGNATURE-----
+If we use execute_location() as modified by next patch, then we will 
+execute it using the function descriptor of do_nothing(). Allthough it 
+most likely works (at least on powerpc as it uses the same TOC) it looks 
+odd to me to do so.
 
-iQJHBAEBCgAxFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmFmi/0THGt1cnRAbGlu
-dXRyb25peC5kZQAKCRB5KluBy5jwpkPDEADXps/m6uU4NMKjuzLOYjb5cgHAQxP0
-/6Y9CMU2v9WcI7opoiwlD6gZwFmnF6/6vNvgRYtN28ryv58XG5zOb2mvGBDFOTeI
-jMmlzwiubTB6z3/PaSnaGvCAAuf5B8Q5L+BYwWpWqLpnepAql6fprBKIjgmE6Ezg
-9YAz63p4Df9L1Krln3BjCA/6yCVAc5riwXSxIogm84JTFAgd6ae9UfLU2XF3opvf
-0ERCa0AT6Yp6+tQrpZKTrsvzUtK6BaHmWijeJcbsZ3ayF18dNHioY7L/aeVvWbZM
-GTmhohr+w1UnyRg1i/ANdjmzNtobdVaN6Op6vvUTIlItKhhxbKvI25hJ+62oAYZU
-mf95hbxT94GsqW/8xbJ6VELauujcXMn63VpkuqYdcGyQuERJdC8CpdpNYMbZc8/C
-r3XARRY69Gokn5dFLbUX4B3vujMgKwcPqHVpRP0xREm7E1pqkUtGzBcexeebE//L
-p6vPB1vxGMbSVYBxMnQsZgJotJ11Q2EztG4qsoCos19NACYC+Ok+HsIZ8Lotsfrq
-Jg2vSYRkFwSactr5+fAWKNbaXSm7Tw+Zkwh0Mjn6lFbWM5dNob36nmrVvin/ba4u
-YmtF881aL38DDB4Vb88gSAdRYuprJfg/5Obn44rNY4QFxoaC2ncgXajzBCedWK2o
-rRJQmgo6soysRQ==
-=LFAf
------END PGP SIGNATURE-----
---=-=-=--
+Am I missing something ?
+
+Christophe
+
+
+> 
+> -Kees
+> 
+>>
+>> And fix displayed addresses by dereferencing the function descriptors.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   drivers/misc/lkdtm/perms.c | 9 ++++++++-
+>>   1 file changed, 8 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
+>> index 442d60ed25ef..da16564e1ecd 100644
+>> --- a/drivers/misc/lkdtm/perms.c
+>> +++ b/drivers/misc/lkdtm/perms.c
+>> @@ -153,7 +153,14 @@ void lkdtm_EXEC_VMALLOC(void)
+>>   
+>>   void lkdtm_EXEC_RODATA(void)
+>>   {
+>> -	execute_location(lkdtm_rodata_do_nothing, CODE_AS_IS);
+>> +	pr_info("attempting ok execution at %px\n",
+>> +		dereference_symbol_descriptor(do_nothing));
+>> +	do_nothing();
+>> +
+>> +	pr_info("attempting bad execution at %px\n",
+>> +		dereference_symbol_descriptor(lkdtm_rodata_do_nothing));
+>> +	lkdtm_rodata_do_nothing();
+>> +	pr_err("FAIL: func returned\n");
+>>   }
+>>   
+>>   void lkdtm_EXEC_USERSPACE(void)
+>> -- 
+>> 2.31.1
+>>
+> 
