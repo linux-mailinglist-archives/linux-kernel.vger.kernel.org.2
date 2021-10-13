@@ -2,114 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215E742CB41
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8671742CB42
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhJMUqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:46:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229462AbhJMUqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:46:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABB416113E;
-        Wed, 13 Oct 2021 20:44:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634157873;
-        bh=Z3DQ+Z4nxCDiFf5YjNS+6ibcgkKch/WFjfU7mmSJe5o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UOou6/xVP9Bbq6KxlSMJ7usDWiCY1lhmNehP5uc/EbFKYKvSXwMP3lryuFLNGZHb6
-         x0ST6J8TBqrWBdleHeL9p2EjzjeHu6DR4MN8xutFJnCxmrSQAAwQj0B6E6bSTIS+Ah
-         0sbEeW+SKL9x89E4EslKn7xla7ZXa3Q4q/YAq0j9t52A0Bi28jHqKO6XRhYVi3qMaf
-         LmDA7KhRsYPAhjcjEPetk4V7y24X7jVaErMkVJ0MCqvwfxSW3vGZ0hCv2bJTKOCuZV
-         uTmZCFQY5vtPOZdVBSP1sUaE8uDl5rWQERMQ63FQUWwEzsMg1PL1kcNZklKjumnBmX
-         P3TqZetfsQoGA==
-From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-To:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        pavel@ucw.cz, Andrew Lunn <andrew@lunn.ch>
-Cc:     robh+dt@kernel.org, Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 3/3] dt-bindings: leds: Allow for multiple colors in the `color` property
-Date:   Wed, 13 Oct 2021 22:44:24 +0200
-Message-Id: <20211013204424.10961-3-kabel@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211013204424.10961-1-kabel@kernel.org>
-References: <20211013204424.10961-1-kabel@kernel.org>
+        id S229462AbhJMUqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:46:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37352 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhJMUqn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 16:46:43 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634157878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MZjN8I6TNN3RSbhgj/0YmLJpzhG18z0CsDXHiDNSaLs=;
+        b=XTTAay9Zg0qYWuHD34wlB+ZgnnQ8cs2VF40KFbkE+YdpdFZhdtAx6tmbfKlLdvQo73Z04J
+        xU+5P3ac1bZNYTTzJ+NY9ZSAzQt0TeCaFYI0yWA5UgqIJgE/rl8doXTLvpxx58w7bH2V7v
+        MSFYCPUhgu8j3vJPSTZCvwtuU9nBCv9RPqIgMYLtBApkMS4BeoexVTt3RMPCgxU+3j2BXs
+        5opm7WjXUuBuvXVNoq6IffsNvoN93Lok7hNvcYB/WKQjq2BvRhL/0Yc/mfT9ZBp2B+gOWr
+        ck/UVqV9Y54kdiOJaOAcoaMm+tNjgQzgtyC1+AurxkTfa/e5SySLo35yEfbtGg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634157878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MZjN8I6TNN3RSbhgj/0YmLJpzhG18z0CsDXHiDNSaLs=;
+        b=LU0iVAnlh8gelKzVthRAug8oFCsCBLd+8kLxrT/0jXrdOwQ3PjXEjHG+jZZNd0F4o2tu0i
+        WBp7l08zm+TH5sAw==
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+In-Reply-To: <20211009053747.1694419-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053747.1694419-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+Date:   Wed, 13 Oct 2021 22:44:37 +0200
+Message-ID: <87ee8o8xje.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some RJ-45 connectors have one green/yellow LED wired in the following
-way:
+On Fri, Oct 08 2021 at 22:37, Kuppuswamy Sathyanarayanan wrote:
+> +
+> +bool is_tdx_guest(void)
+> +{
+> +	static int tdx_guest = -1;
+> +	u32 eax, sig[3];
+> +
+> +	if (tdx_guest >= 0)
+> +		goto done;
+> +
+> +	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID) {
+> +		tdx_guest = 0;
+> +		goto done;
+> +	}
+> +
+> +	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
+> +
+> +	tdx_guest = !memcmp("IntelTDX    ", sig, 12);
+> +
+> +done:
+> +	return !!tdx_guest;
+> +}
 
-        green
-      +--|>|--+
-      |       |
-  A---+--|<|--+---B
-        yellow
+No. This is tasteless garbage, really.
 
-But semantically this is still just one (multi-color) LED (for example
-it can be controlled by HW as one dual-LED).
+tdx_early_init() is invoked from x86_64_start_kernel() very early in the
+boot process __before__ is_tdx_guest() is invoked.
 
-This is a case that we do not support in device tree bindings; setting
-  color = <LED_COLOR_ID_MULTI>;
-or
-  color = <LED_COLOR_ID_RGB>;
-is wrong, because those are meant for when the controller can mix the
-"channels", while for our case only one "channel" can be active at a
-time.
+So why on earth is it requried to keep those conditionals and cpuid()
+muck around after init?
 
-Change the `color` property to accept an (non-empty) array of colors to
-indicate this case.
+> +void __init tdx_early_init(void)
+> +{
+> +	if (!is_tdx_guest())
+> +		return;
+> +
+> +	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+> +
+> +	pr_info("Guest initialized\n");
+> +}
 
-Example:
-  ethernet-phy {
-    led@0 {
-      reg = <0>;
-      color = <LED_COLOR_ID_GREEN LED_COLOR_ID_YELLOW>;
-      function = LED_FUNCTION_ID_LAN;
-      trigger-sources = <&eth0>;
-    };
-  };
+What's wrong with:
 
-Signed-off-by: Marek Behún <kabel@kernel.org>
----
- .../devicetree/bindings/leds/common.yaml         | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+static bool tdx_guest_detected __ro_after_init;
 
-diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
-index 03759d2e125a..492dd3e7f9ac 100644
---- a/Documentation/devicetree/bindings/leds/common.yaml
-+++ b/Documentation/devicetree/bindings/leds/common.yaml
-@@ -37,13 +37,21 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/string
- 
-   color:
--    description:
-+    description: |
-       Color of the LED. Use one of the LED_COLOR_ID_* prefixed definitions from
-       the header include/dt-bindings/leds/common.h. If there is no matching
-       LED_COLOR_ID available, add a new one.
--    $ref: /schemas/types.yaml#/definitions/uint32
--    minimum: 0
--    maximum: 9
-+
-+      For multi color LEDs there are two cases:
-+        - the LED can mix the channels (i.e. RGB LED); in this case use
-+          LED_COLOR_ID_MULTI or LED_COLOR_ID_RGB
-+        - the LED cannot mix the channels, only one can be active; in this case
-+          enumerate all the possible colors
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    minItems: 1
-+    items:
-+      minimum: 0
-+      maximum: 9
- 
-   function-enumerator:
-     description:
--- 
-2.32.0
+void __init tdx_early_init(void)
+{
+	u32 eax, sig[3];
 
+	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID)
+        	return;
+
+        cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2],  &sig[1]);
+
+        if (memcmp("IntelTDX    ", sig, 12))
+        	return;
+
+        tdx_guest_detected = true;
+	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
+
+	pr_info("Guest initialized\n");
+}
+
+bool is_tdx_guest(void)
+{
+        return tdx_guest_detected;
+}
+
+That's simple and obvious and discards all the detection gunk completely
+after init and uses the proper data type, right?
+
+Thanks,
+
+        tglx
