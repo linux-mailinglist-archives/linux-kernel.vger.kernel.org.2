@@ -2,170 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E0B42BA05
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440C842BA09
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbhJMISB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:18:01 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:32313 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238779AbhJMIRy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:17:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634112951; x=1665648951;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=95m3KnwmwCS/v/U7123irAVjAhl2OtSvPzVirdG7Kzo=;
-  b=vBxnvAzGXrzBXmxgic+bhVxLUpyfP/4sK29KJWopJxlz3ZPX1WAvFEjr
-   R4V2u8IKkh0137W0D+22ogyLf0vUZGVWqE4qtzi50+rPpzbq87dAipzEq
-   gZyRPrtDJzo2s8i1hSREAPWeoUZzZ6cj3pt4J8K+x7cWbaUQtJ676SOEv
-   tsuXKmkGoHmitoVjjdur+vQjan1PazoLzo0OawEqKDxoSgL3M7I93uSCW
-   W26HDR43JR6/YWlOI/WP9kRZBNO4/t5rzb5WdGWEV9CbxaiKVHg09Wqi0
-   zxsTDXSp8kPiW7+FeaFgk11IZrvGcg+Dhy5PRlD2nOl9bC9PipnJVJQ39
-   g==;
-IronPort-SDR: whFJKnvvdRSR7UvY6k92qb/BQYtHLevfl2ugBqal400wwUYMWkdk8EgWPCNhh6kT4rE3rjPd74
- sW3f3EcfCl32hvqpqZ/+dvs5m5rfZ1/sRN26O9xRNW7hMHym+0kN+fvmoQXJm/zQzEwR2q8ZsH
- NaC8T4OCDrIhBRpgYOM5ja5QGEoeMtWcK5P4SO8mFvWtdbcr9fFOXZ0RqiDqw4Q6Q5NzA64bz7
- bBsRUKukT1NPJwg4ad7nZ0ir29bpDbG/5273bVZAOmsoyp7Sw2xFaIqhHAmcBb+xleESq5Fqz8
- RdaWBxrbszTnirledMmR/ENw
-X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
-   d="scan'208";a="132822699"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Oct 2021 01:15:50 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 13 Oct 2021 01:15:50 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14 via Frontend
- Transport; Wed, 13 Oct 2021 01:15:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=btWKK6EhPbLOCvMWJDbwPT8JOOfezYeyRES2AXbsYJzTnqHu8QTCirg/4Ojz72W+hlVFIyyH7k/oZV5lYGV1F66qDM6/R+tcO3Sv+he8lsbWKBgf1dCMQjGyc/b61yvJtIJfZvUKM8sTqJjUSox/+zRYSsLlgWSYj24XBv1sF8dSP3IuVO7xTfNf8LmMp2nbVw+PysSnG24TSQUctcbJt//1N3P794YA4dBvxu/MrQQrfHyhcdntLoL8Z0Dc2r3sKbQh22O3P7s2ZiFQsWXOuNFfsZ0R118sOusXsBD3RazePtxDMubspUd2LZAsOxhvXyW3bDyVhB6/sYEDBb4TbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=95m3KnwmwCS/v/U7123irAVjAhl2OtSvPzVirdG7Kzo=;
- b=eIJSCXdyN+xCBY6FMpmhVG5BcIXtPLG8yb3fzEt4Pk8PNDM3LNwqY1LJT+WcR/PExqdL4t+A2NeKQNHRU5NfjZHTEzRW1encbVvuqpTRS9WoC0P1edhGMljOGs/3/bOIsBHQzcIKsfNCPOvnK73uMByE65jDC7O997003qKYkzBxieav5th1/DT8UdcDGXOxMYqARqeFxPfnEiFVcQFBEqoOa4GPKo3KLIrsrHoAUqaIO7xMvgjEbsCcQn3X+P6kgn6aOTaX2xBPgsZbyaC8CU8VJ+exFnoRLGn3xzytLvFgOiLULzecxEixiu1t929H2baLzujPvpIbtTl7lf63Zw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=95m3KnwmwCS/v/U7123irAVjAhl2OtSvPzVirdG7Kzo=;
- b=TmvUGt9YtwLatax6HQ+PA+rvQ8PyGNhlnhwH+z7vWw5wu6mPQ1GW9tmagU2fcMqFV4T20CUrrxtE3cEZ3fqTPnq29HeNw0KgZThzcNrQKDXgmctrCQqY8hGSMzQyJBTLwQydG6R/wJRaWwKRgqQXV13vLO3umCr3jKQNVztytf0=
-Received: from DM8PR11MB5687.namprd11.prod.outlook.com (2603:10b6:8:22::7) by
- DM4PR11MB5470.namprd11.prod.outlook.com (2603:10b6:5:39c::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.19; Wed, 13 Oct 2021 08:15:46 +0000
-Received: from DM8PR11MB5687.namprd11.prod.outlook.com
- ([fe80::50fa:94b5:51bc:6409]) by DM8PR11MB5687.namprd11.prod.outlook.com
- ([fe80::50fa:94b5:51bc:6409%9]) with mapi id 15.20.4587.026; Wed, 13 Oct 2021
- 08:15:46 +0000
-From:   <Codrin.Ciubotariu@microchip.com>
-To:     <rdunlap@infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     <geert@linux-m68k.org>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH] ASoC: atmel: add COMPILE_TEST for SND_ATMEL_SOC_PDC
-Thread-Topic: [PATCH] ASoC: atmel: add COMPILE_TEST for SND_ATMEL_SOC_PDC
-Thread-Index: AQHXuANXAhRXehsB4E643JcWeyvgl6vQpQUA
-Date:   Wed, 13 Oct 2021 08:15:46 +0000
-Message-ID: <96c810cb-f7e3-d9ff-9713-7ec007ebb599@microchip.com>
-References: <20211003030357.32456-1-rdunlap@infradead.org>
-In-Reply-To: <20211003030357.32456-1-rdunlap@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none
- header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 528c7caa-c805-4f83-b546-08d98e21a8be
-x-ms-traffictypediagnostic: DM4PR11MB5470:
-x-microsoft-antispam-prvs: <DM4PR11MB5470B5F3B1F1F58F9CED5B47E7B79@DM4PR11MB5470.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jR3LFcS1so2l2vNZFIXD8QehENaN7Mb/XWQ+W+QFCi6MdcG2dq/+6Cgsikr1TVryyD2IbUsFVYSubOeTgN51GBL2iT55iHuOxTRnjLJal1phIxA1tq+2jgL+TLvfqwKyBgNDMs/1bnt1fBrh9y7oCREQoh3+uyhQMQuHcljhtl35enmJfahVo+K5OyTzvG8RfnPalw5qcZ1XNJ4/Cg4l5mzrc9YqbdtKV4Bfto582//1z3O07W0QQg+dV/pSIN+7KpazZnp+qGVfsAeoSgPFQQrJPw/an654QtKJ+qNGud4mrhigHZNOG+X6l+O6Fxgmq9egOddz8XDaaX8YmYEA2XHwT5Dl+85t0YwDD8xuCsMiEwZS58ATeIXOEXYsyVQXxzCNBAEvxaiFaunqPY82fjVzbd/X3HKGvOzyjchQSDygVjkxEh4vIXbp1/RoF36W1HqrpYQE1Xi6mKDiBkXKdQaodHx2hlS1+mGpkiG1HEMLhw0BGmxkAmmutRw8X9qrl/M1owUBWl+oJhxGdhZspqX04qsrolAdwDt0bc1iizXGFmgcJ1oztnwhu9k13GZl+OsxvkZpRqosB94vj2s+tmwMZX7I+t5Mt2jt2SQpCXP/dRVTPC6qMl5GVEfw304imPYW/i/jE6/AGHJf9VRwaZNIrFiog/ugJ4BJLh9TWTspKIOQw9tOieZLrVghVubwyYQLjVlrQYK1we9E/2p7aZTlNK2lOqdC21FAW+V4UTUIgpuN7Ce6vN4ZpRkMIVlPjjJdIscqi3gqnTvlXGzb6fxQtEjYWj3yD6Dtg/CCfAWPkNACPwQj1YnKmppsmBT7GzPRg1O/kOukRPGJvWe2CHQGsjXIF9wnwDzoqFE1GHQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5687.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(71200400001)(66946007)(66446008)(4744005)(66556008)(8676002)(66476007)(54906003)(76116006)(110136005)(122000001)(64756008)(2906002)(4326008)(31686004)(508600001)(31696002)(2616005)(5660300002)(8936002)(38100700002)(6486002)(36756003)(91956017)(6512007)(316002)(6506007)(86362001)(186003)(38070700005)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aFEyS3VuNGdTMFhGUUlWSmR0aEZCL2U2Vm1IRE5aaTdDK3l6UThwbk9ReWRW?=
- =?utf-8?B?Q0paaFlvZzYvQTVVbG9SZHNkS1Ixd0tXa0srdlFzQTYrOFhubk1mUCtWUEJ0?=
- =?utf-8?B?UXJ6QVREWDY3QlZBVzRueHNCTXpRU3gwaGwva2ltZnY2OG1ySi82b0pvcHNU?=
- =?utf-8?B?TVo1MmFncWpURE0zamVYY0VEVmVrazlKS3RPb1RTUGxVMEVYa2pTRjI5RVRv?=
- =?utf-8?B?b1VQcnFlYkNXNE9ScnZTNlRSTWw5bk9iUGdqeUp1SGdac2xLTHNwWGZMdUlX?=
- =?utf-8?B?Vmx0RnVlbkwxdGJvQTIzRmNJVzhKWkxDeDhyamdRM3Roa3FUci9KUU1CZVU1?=
- =?utf-8?B?RndSbDY2WmRuRDRsclo2cFFLRmZlcTM4NU9ON2w3NDJKVlVSZlR2QlhiLzRx?=
- =?utf-8?B?bCtIRkZsZHloSGg4UzAreGVRbmgwb040Z1V6Qm80YzlPQmkwczlDNTVZWmRG?=
- =?utf-8?B?QVIycHdLa0NYNTdFNkZjemJBd2lMb2lrYmtRWElCUzNHN1ZLblVaMUoyZlhx?=
- =?utf-8?B?V015WXVvTWdFZVFKTzR2M1Zrb0x4WXVMMWluU0ZmN25FTFZWNTl0ZFNzOEJN?=
- =?utf-8?B?dzEwVnBZZGxhUFFjNU82UGN0K1JrOXFDSHl2Sk0wUWRvejd4Yzc2MVZyNnBs?=
- =?utf-8?B?UHA0ekpsa0lOZUxPM2JMcmJhTXBWOTJxaW9ONW5VaEFGT216KzNJeTZ3YWJO?=
- =?utf-8?B?b2dDWEQ4SUFYK0VYSldzTVRTUXlsWk1aaHI0VjUrUGdueEh0UU9EUEJTTS9z?=
- =?utf-8?B?MDM5UWpVa3BJdDJXVDRIVGtjeDRzS1NRTlNKZ1U5bVMxZklOQnViaHRCUHI2?=
- =?utf-8?B?cUxhb3hBV0Vqa2xCMHpsQVlsWFdPdzBuaFdERFBMc0o1cXdIeHBJNUYrYWQ2?=
- =?utf-8?B?Q2grNlZlM3hSZk5zYnJ4c1dEVk5zOHJMQmhsVEViWnlra2E5OGdRVkNvdmJB?=
- =?utf-8?B?d2Y4dmV2UVpPUHNqL1piY0E0b2IyTjNrNERYNnNzK1ZLbmJqWUEwMjBJcWJt?=
- =?utf-8?B?bHhYRFg0b1R6R0cwckJSbnF6OGtha3lzSkkzQ29BcWJjY3pZcTl0cm0zVDJu?=
- =?utf-8?B?U3piMGM5WnBWMWhTdGI1RTR0aFJXeG9EY3pHTnlhOElIa1ROdzdyUjl5bDVw?=
- =?utf-8?B?QnlIZ0w2S25tdzN1cjBWRUZIeWlCY3NmY3FLWUJKd2VkYm9MajBhMFZtNndK?=
- =?utf-8?B?TWl6STRqaHkrT3N3TmlpTEhPdloranhhMTZWdWI4THZFTG41Z3IvRWZoaHY5?=
- =?utf-8?B?RXdFRm1kWlRDVUlMQmtReGNLVHB3S1ROb0xUbnBWUXFYT01xUUM3a3Nicjhq?=
- =?utf-8?B?cFcwM0lIbTh2dGhPS0dyN3lFVkNlNlBLWStYZjJjN3dNdnhQNVBtVDVoZVdC?=
- =?utf-8?B?V2xBVExxNWQ0TmVOUkpqNGtEN0UrSmNyOXZyVEZYaHA1SjFpd2dTUTAvc2ZG?=
- =?utf-8?B?cFRQU1VIcS9PVzVqRlllemlVdXh1M3lUWW90K3hwTm0zMGlFNW9RcDNuMEdp?=
- =?utf-8?B?cmRHeVAwd1Evb3A5L2hsL0tmOW5FaFhxUkw4U1pIZXVabWJoVS9RQmhaS2Zw?=
- =?utf-8?B?cENsa0wveEg5bm5xWXBkeGN4VUtTUy9PZXEwTVBkU05DMG9zQWd2TDMrOVVE?=
- =?utf-8?B?U3owTDNDRCtDNWpYWkkyejEyZlpPdWhKeFVWcm5GZUwwQkRCOHR0aVF2RDQv?=
- =?utf-8?B?ZHR6QmlHQ2RNRERQU2F1Z0lBQlZmZVRBamxUYy9vYnVDcmFCSXZpQUlseU9p?=
- =?utf-8?B?aUlmR1pjeUpjeGplTGozSzNzUm4wZXZFdHR4NzM0MXBpVlllNUNkN25aTkUy?=
- =?utf-8?B?UlU2bU5PREErNlZDa0Q4UTZXblczOVpzTElET3pLcmFlRHV0QnEwb1ZJQkRC?=
- =?utf-8?Q?WvJPf5nqA+rgY?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <347E9A158C2F8840B69024BD73F1D972@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S229828AbhJMITG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:19:06 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:57405 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229841AbhJMITD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 04:19:03 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HTlkM3zWfz9sSW;
+        Wed, 13 Oct 2021 10:16:59 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pN2ZAo9E-Qm9; Wed, 13 Oct 2021 10:16:59 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HTlkM3CX9z9sRn;
+        Wed, 13 Oct 2021 10:16:59 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 57AA48B780;
+        Wed, 13 Oct 2021 10:16:59 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Lmb1gfGpz5Y9; Wed, 13 Oct 2021 10:16:59 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3061B8B763;
+        Wed, 13 Oct 2021 10:16:59 +0200 (CEST)
+Subject: Re: [PATCH] powerpc: don't select KFENCE on platform PPC_FSL_BOOK3E
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Marco Elver <elver@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210924063927.1341241-1-liushixin2@huawei.com>
+ <77ce95e4-1af1-6536-5f0c-a573c648801a@huawei.com>
+ <87bl3u7oay.fsf@mpe.ellerman.id.au>
+ <9c1ee778-b38b-3d41-37f3-5ea22dca063b@csgroup.eu>
+ <8735p57nsb.fsf@mpe.ellerman.id.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <09bd30b9-9a62-3c59-0ad3-62143a4c0343@csgroup.eu>
+Date:   Wed, 13 Oct 2021 10:16:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5687.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 528c7caa-c805-4f83-b546-08d98e21a8be
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2021 08:15:46.5203
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: C5y3gYhm64ZItxl5JxjaX1qhZcsPTNaHlayETX2X4WfRpZb2+Cuz3EXE+/gp50rmlSK/zyXf4yxEQRSroykaUgQ7pvo1xnb2UAk7zk1MQFc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5470
+In-Reply-To: <8735p57nsb.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMDMuMTAuMjAyMSAwNjowMywgUmFuZHkgRHVubGFwIHdyb3RlOg0KPiBHZWVydCBwb2ludGVk
-IG91dCB0aGF0IHNpbmNlIHNvdW5kL3NvYyBoYXMgdGhlIHNvY19kdW1teV9kcml2ZXIgZm9yDQo+
-IE5PX0RNQSBwbGF0Zm9ybXMsIGl0IGlzIHBvc3NpYmxlIChkZXNpcmFibGUpIHRvIGhhdmUgZHJp
-dmVycyB0aGF0DQo+IGRlcGVuZCBvbiBIQVNfRE1BIHRvIGFsdGVybmF0ZWx5IGRlcGVuZCBvbiBD
-T01QSUxFX1RFU1QuDQo+IA0KPiBUaGlzIG1lYW5zIHRoYXQgU05EX0FUTUVMX1NPQ19QREMgY2Fu
-IGRlcGVuZCBvbiBIQVNfRE1BIHx8IENPTVBJRV9URVNULg0KPiANCj4gRml4ZXM6IDZjNWM2NTlk
-ZmUzZiAoIkFTb0M6IGF0bWVsOiBBVE1FTCBkcml2ZXJzIGRvbid0IG5lZWQgSEFTX0RNQSIpDQo+
-IFNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPg0KPiBT
-dWdnZXN0ZWQtYnk6IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+DQo+
-IENjOiBMaWFtIEdpcmR3b29kIDxsZ2lyZHdvb2RAZ21haWwuY29tPg0KPiBDYzogTWFyayBCcm93
-biA8YnJvb25pZUBrZXJuZWwub3JnPg0KPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-DQo+IENjOiBDb2RyaW4gQ2l1Ym90YXJpdSA8Y29kcmluLmNpdWJvdGFyaXVAbWljcm9jaGlwLmNv
-bT4NCj4gLS0tDQo+ICAgc291bmQvc29jL2F0bWVsL0tjb25maWcgfCAgICAxICsNCj4gICAxIGZp
-bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gDQo+IC0tLSBsaW51eC1uZXh0LTIwMjExMDAx
-Lm9yaWcvc291bmQvc29jL2F0bWVsL0tjb25maWcNCj4gKysrIGxpbnV4LW5leHQtMjAyMTEwMDEv
-c291bmQvc29jL2F0bWVsL0tjb25maWcNCj4gQEAgLTExLDYgKzExLDcgQEAgaWYgU05EX0FUTUVM
-X1NPQw0KPiANCj4gICBjb25maWcgU05EX0FUTUVMX1NPQ19QREMNCj4gICAgICAgICAgYm9vbA0K
-PiArICAgICAgIGRlcGVuZHMgb24gSEFTX0RNQSB8fCBDT01QSUxFX1RFU1QNCg0KU05EX0FUTUVM
-X1NPQ19QREMgY29tcGlsZXMgZmluZSB3aXRob3V0IEhBU19ETUEsIHNvIEkgZG9uJ3QgdW5kZXJz
-dGFuZCANCnRoZSBuZWVkIGZvciB0aGlzLi4uDQo=
+
+
+Le 13/10/2021 à 02:48, Michael Ellerman a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>> Le 12/10/2021 à 08:24, Michael Ellerman a écrit :
+>>> Liu Shixin <liushixin2@huawei.com> writes:
+>>>> kindly ping.
+>>>
+>>> I was under the impression you were trying to debug why it wasn't
+>>> working with Christophe.
+>>
+>> The investigation was a bit dormant to be honest since Liu confirmed
+>> that neither KFENCE not DEBUG_PAGEALLOC works.
+> 
+> No worries. Sorry it fell to you to do the investigation.
+
+No problem.
+
+
+> 
+>> I now looked at the effort to make it work, and it is not trivial.
+>> At the time being, all linear space is mapped with pinned TLBs and
+>> everything is setup for space 0, with space 1 being used temporarily
+>> when doing heavy changes to space 0.
+>>
+>> We can't use standard pages for linear space on space 0 because we need
+>> memory mapped at all time for exceptions (on booke exception run with
+>> MMU on in space 0).
+>>
+>> In order to use standard pages, we'd need to reorganise the kernel to
+>> have it run mostly in space 1 (for data at least) where we would map
+>> almost everything with standard pages, and keep pinned TLB to map linear
+>> space on space 0 for TLB miss exceptions. Then we'd do more or less like
+>> book3s/32 and switch back into space 1 into other exceptions prolog.
+>>
+>> That could be good to do it as we could maybe have more code in common
+>> with non booke 32 bits, but it is not a trivial job.
+>>
+>> So I suggest that for now, we just make KFENCE and DEBUG_PAGEALLOC
+>> unselectable for booke/32 (e500 and 44x).
+> 
+> Yep seems reasonable.
+> 
+
+
+We also have a problem with STRICT_KERNEL_RWX as it is based on the same 
+principles until someone implements it by blocks like book3s/32 and 8xx.
+
+So it should also be unselectable on e500 and 44x for now.
+
+Christophe
