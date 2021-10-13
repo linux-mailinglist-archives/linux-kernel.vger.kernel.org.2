@@ -2,188 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3840C42BF99
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C2142BF9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhJMMQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:16:43 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:59260 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229535AbhJMMQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:16:40 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id DA090FB03;
-        Wed, 13 Oct 2021 14:14:34 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id tODvGRgMKZMh; Wed, 13 Oct 2021 14:14:33 +0200 (CEST)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Andrzej Hajda <andrzej.hajda@gmail.com>,
+        id S232870AbhJMMQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232260AbhJMMQp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 08:16:45 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A272C061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:14:42 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id y3so7727997wrl.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:14:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dMRaftnF9U+W3ku1B/GD71FJ+aEgoWgdI3sg+irCBSU=;
+        b=MhciuyvSk02sHng4PyOacoSMmXkEirv4ROaG/YFOPm3C/PGs4IaqJa0KzfxdG/7GZy
+         j0erLuzznKPfPq1SooRZKFK4Ph0eeQeU9mpXHHT+jpz7xE3bhD8wZpm0IH5MWOlJV1Vs
+         JSjS/+eukQ+3NvBveep9Rvje8X5OHCWQU9oNk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=dMRaftnF9U+W3ku1B/GD71FJ+aEgoWgdI3sg+irCBSU=;
+        b=KE4UZtogfT3C6hWTyQa8ApQrMAyNVW6s9sMEawwPaMjgMeZr8vwqAfyhoBXTkCfSMq
+         ScDmXN3868u6vI1Kxadiq1i1WzPBZM2u6+1oN8abFPwbpY6w/0irhKUqdZaUK9HJUCYS
+         zeIIz02lIW7o9BdLIYBqXBdtaKsoKETG5iLrdvdkob8FVrL5zbRT+GMzKh8tZ0PikRIG
+         GYqDs2Tym6oTOkcL7qkM1FgBeoxeHNIZ2zIUTfEk6dZ2zT2yMXwDoItCkzCH0ZqPWwaE
+         VPyfw7U2xPcbwBjxtyMIU7UFPJYN6wBgtNTpkMII+CRpfa4ONhkrKuHtyUeXleF5msBe
+         C6vA==
+X-Gm-Message-State: AOAM530T++0GIHdzi1CygzrvEITSEGBD8xhB1jXCEb6SB19Iu7d60CKZ
+        UX00N+GVDnLKT7mEO4j1r/+tzg==
+X-Google-Smtp-Source: ABdhPJwjQFtFTLxMhkElGP+tQ3IDjeuJllYWlfjQHSU4ZkxQZ996sxB4SGM/CwV1ziLNNbEonMsSKw==
+X-Received: by 2002:a05:600c:4ba9:: with SMTP id e41mr12535688wmp.70.1634127281038;
+        Wed, 13 Oct 2021 05:14:41 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q16sm13619647wru.39.2021.10.13.05.14.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 05:14:40 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 14:14:37 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrzej Hajda <andrzej.hajda@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Emma Anholt <emma@anholt.net>,
+        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        Inki Dae <inki.dae@samsung.com>,
+        James Qian Wang <james.qian.wang@arm.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Joerg Roedel <joro@8bytes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-pm@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
         Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/bridge: nwl-dsi: Move bridge add/remove to dsi callbacks
-Date:   Wed, 13 Oct 2021 14:14:25 +0200
-Message-Id: <4d0ec577fdeb01fa232ffa743fde06129353396a.1634126587.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.33.0
+        Paul Cercueil <paul@crapouillou.net>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Russell King <rmk+kernel@arm.linux.org.uk>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Tomi Valkeinen <tomba@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Yong Wu <yong.wu@mediatek.com>
+Subject: Re: [PATCH v2 00/34] component: Make into an aggregate bus
+Message-ID: <YWbNrfxQ0IqV7vsO@phenom.ffwll.local>
+Mail-Followup-To: Stephen Boyd <swboyd@chromium.org>,
+        Andrzej Hajda <andrzej.hajda@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Chen Feng <puck.chen@hisilicon.com>, Chen-Yu Tsai <wens@csie.org>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Emma Anholt <emma@anholt.net>,
+        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        Inki Dae <inki.dae@samsung.com>,
+        James Qian Wang <james.qian.wang@arm.com>,
+        Jaroslav Kysela <perex@perex.cz>, Joerg Roedel <joro@8bytes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-pm@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>, Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Russell King <rmk+kernel@arm.linux.org.uk>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Takashi Iwai <tiwai@suse.com>, Tian Tao <tiantao6@hisilicon.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Tomi Valkeinen <tomba@kernel.org>, Will Deacon <will@kernel.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Yong Wu <yong.wu@mediatek.com>
+References: <20211006193819.2654854-1-swboyd@chromium.org>
+ <5d3f4343-da38-04b4-fdb9-cb2dd4983db2@gmail.com>
+ <CAE-0n50s_cOLA0xRa8mmUS2Nawd5X7WiQE3PvOLHu+i=hE3Eow@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE-0n50s_cOLA0xRa8mmUS2Nawd5X7WiQE3PvOLHu+i=hE3Eow@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the panel and bridge_{add,remove} from the bridge callbacks to the
-DSI callbacks to make sure we don't indicate readiness to participate in
-the display pipeline before the panel is attached.
+On Thu, Oct 07, 2021 at 04:46:22PM -0400, Stephen Boyd wrote:
+> Quoting Andrzej Hajda (2021-10-07 03:16:27)
+> > Hi Stephen,
+> >
+> > On 06.10.2021 21:37, Stephen Boyd wrote:
+> > > This series is from discussion we had on reordering the device lists for
+> > > drm shutdown paths[1]. I've introduced an 'aggregate' bus that we put
+> > > the aggregate device onto and then we probe the aggregate device once
+> > > all the components are probed and call component_add(). The probe/remove
+> > > hooks are where the bind/unbind calls go, and then a shutdown hook is
+> > > added that can be used to shutdown the drm display pipeline at the right
+> > > time.
+> > >
+> > > This works for me on my sc7180 board. I no longer get a warning from i2c
+> > > at shutdown that we're trying to make an i2c transaction after the i2c
+> > > bus has been shutdown. There's more work to do on the msm drm driver to
+> > > extract component device resources like clks, regulators, etc. out of
+> > > the component bind function into the driver probe but I wanted to move
+> > > everything over now in other component drivers before tackling that
+> > > problem.
+> >
+> >
+> > As I understand you have DSI host with i2c-controlled DSI bridge. And
+> > there is an issue that bridge is shutdown before msmdrm. Your solution
+> > is to 'adjust' device order on pm list.
+> > I had similar issue and solved it locally by adding notification from
+> > DSI bridge to DSI host that is has to be removed: mipi_dsi_detach, this
+> > notification escalates in DSI host to component_del and this allow to
+> > react properly.
+> >
+> > Advantages:
+> > - it is local (only involves DSI host and DSI device),
+> > - it does not depend on PM internals,
+> > - it can be used in other scenarios as well - unbinding DSI device driver
+> >
+> > Disadvantage:
+> > - It is DSI specific (but this is your case), I have advertised some
+> > time ago more general approach [1][2].
+> >
+> > [1]: https://static.sched.com/hosted_files/osseu18/0f/deferred_problem.pdf
+> > [2]: https://lwn.net/Articles/625454/
+> >
+> 
+> I think these are all points for or against using the component code in
+> general? Maybe you can send patches that you think can solve the problem
+> I'm experiencing and we can review them on the list.
 
-This was prompted by commit fb8d617f8fd6 ("drm/bridge: Centralize error
-message when bridge attach fails") which triggered
+Yeah I think this is entirely orthogonal. If you use component, then
+component should provide a way to handle this.
 
-  [drm:drm_bridge_attach] *ERROR* failed to attach bridge /soc@0/bus@30800000/mipi-dsi@30a0 0000 to encoder None-34: -517
+If you use something else, like drm_bridge or dsi or whatever, then that
+part should provide a solution to stage stuff correctly and handle all the
+ordering.
 
-during boot.
-
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
-This was prompted by the discussion at
-https://lore.kernel.org/dri-devel/00493cc61d1443dab1c131c46c5890f95f6f9b25.1634068657.git.agx@sigxcpu.org/
-
- drivers/gpu/drm/bridge/nwl-dsi.c | 64 ++++++++++++++++++--------------
- 1 file changed, 37 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
-index a7389a0facfb..77aa6f13afef 100644
---- a/drivers/gpu/drm/bridge/nwl-dsi.c
-+++ b/drivers/gpu/drm/bridge/nwl-dsi.c
-@@ -355,6 +355,9 @@ static int nwl_dsi_host_attach(struct mipi_dsi_host *dsi_host,
- {
- 	struct nwl_dsi *dsi = container_of(dsi_host, struct nwl_dsi, dsi_host);
- 	struct device *dev = dsi->dev;
-+	struct drm_bridge *panel_bridge;
-+	struct drm_panel *panel;
-+	int ret;
- 
- 	DRM_DEV_INFO(dev, "lanes=%u, format=0x%x flags=0x%lx\n", device->lanes,
- 		     device->format, device->mode_flags);
-@@ -362,10 +365,43 @@ static int nwl_dsi_host_attach(struct mipi_dsi_host *dsi_host,
- 	if (device->lanes < 1 || device->lanes > 4)
- 		return -EINVAL;
- 
-+	ret = drm_of_find_panel_or_bridge(dsi->dev->of_node, 1, 0, &panel,
-+					  &panel_bridge);
-+	if (ret)
-+		return ret;
-+
-+	if (panel) {
-+		panel_bridge = drm_panel_bridge_add(panel);
-+		if (IS_ERR(panel_bridge))
-+			return PTR_ERR(panel_bridge);
-+	}
-+	if (!panel_bridge)
-+		return -EPROBE_DEFER;
-+
-+	dsi->panel_bridge = panel_bridge;
- 	dsi->lanes = device->lanes;
- 	dsi->format = device->format;
- 	dsi->dsi_mode_flags = device->mode_flags;
- 
-+	/*
-+	 * The DSI output has been properly configured, we can now safely
-+	 * register the input to the bridge framework so that it can take place
-+	 * in a display pipeline.
-+	 */
-+	drm_bridge_add(&dsi->bridge);
-+
-+	return 0;
-+}
-+
-+static int nwl_dsi_host_detach(struct mipi_dsi_host *dsi_host,
-+			       struct mipi_dsi_device *dev)
-+{
-+	struct nwl_dsi *dsi = container_of(dsi_host, struct nwl_dsi, dsi_host);
-+
-+	drm_bridge_remove(&dsi->bridge);
-+	if (dsi->panel_bridge)
-+		drm_panel_bridge_remove(dsi->panel_bridge);
-+
- 	return 0;
- }
- 
-@@ -632,6 +668,7 @@ static ssize_t nwl_dsi_host_transfer(struct mipi_dsi_host *dsi_host,
- 
- static const struct mipi_dsi_host_ops nwl_dsi_host_ops = {
- 	.attach = nwl_dsi_host_attach,
-+	.detach = nwl_dsi_host_detach,
- 	.transfer = nwl_dsi_host_transfer,
- };
- 
-@@ -910,35 +947,11 @@ static int nwl_dsi_bridge_attach(struct drm_bridge *bridge,
- 				 enum drm_bridge_attach_flags flags)
- {
- 	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
--	struct drm_bridge *panel_bridge;
--	struct drm_panel *panel;
--	int ret;
--
--	ret = drm_of_find_panel_or_bridge(dsi->dev->of_node, 1, 0, &panel,
--					  &panel_bridge);
--	if (ret)
--		return ret;
--
--	if (panel) {
--		panel_bridge = drm_panel_bridge_add(panel);
--		if (IS_ERR(panel_bridge))
--			return PTR_ERR(panel_bridge);
--	}
--	dsi->panel_bridge = panel_bridge;
--
--	if (!dsi->panel_bridge)
--		return -EPROBE_DEFER;
- 
- 	return drm_bridge_attach(bridge->encoder, dsi->panel_bridge, bridge,
- 				 flags);
- }
- 
--static void nwl_dsi_bridge_detach(struct drm_bridge *bridge)
--{	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
--
--	drm_of_panel_bridge_remove(dsi->dev->of_node, 1, 0);
--}
--
- static u32 *nwl_bridge_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
- 						 struct drm_bridge_state *bridge_state,
- 						 struct drm_crtc_state *crtc_state,
-@@ -984,7 +997,6 @@ static const struct drm_bridge_funcs nwl_dsi_bridge_funcs = {
- 	.mode_set		= nwl_dsi_bridge_mode_set,
- 	.mode_valid		= nwl_dsi_bridge_mode_valid,
- 	.attach			= nwl_dsi_bridge_attach,
--	.detach			= nwl_dsi_bridge_detach,
- };
- 
- static int nwl_dsi_parse_dt(struct nwl_dsi *dsi)
-@@ -1210,7 +1222,6 @@ static int nwl_dsi_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	drm_bridge_add(&dsi->bridge);
- 	return 0;
- }
- 
-@@ -1220,7 +1231,6 @@ static int nwl_dsi_remove(struct platform_device *pdev)
- 
- 	nwl_dsi_deselect_input(dsi);
- 	mipi_dsi_host_unregister(&dsi->dsi_host);
--	drm_bridge_remove(&dsi->bridge);
- 	pm_runtime_disable(&pdev->dev);
- 	return 0;
- }
+Now there's a bunch of drivers which mix up component with bridge use and
+hilarity ensues, but since there's no real effort to fix that I think it's
+toally fine to just improve component.c meanwhile.
+-Daniel
 -- 
-2.33.0
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
