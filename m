@@ -2,176 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79BD942BFDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B0942BFE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbhJMM1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:27:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49484 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232573AbhJMM1E (ORCPT
+        id S233140AbhJMM1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:27:30 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:38930 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232807AbhJMM1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:27:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634127900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3NtOzxvADTQDRxUqq39GhmNI5frCiu0QqcftxeM4E6Y=;
-        b=SFwK9pKjAHMDjMRTHhl+c0Xr1vH2exLwb6yUmMcmAK5JdK8r2vnVz90Res9Ve2SiXRcvSh
-        dZHH+MPuDKgIOmj40Rp3k8IJrTIROJ9+G0VitQXBF6Equ9QGobxGbIcLyqKDdz3VfQa9MD
-        OYWufBnUKCZHFRJxg1/1xKjaVdCHB3s=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-rG8DjhJSMxSW3hEpkq6joQ-1; Wed, 13 Oct 2021 08:24:59 -0400
-X-MC-Unique: rG8DjhJSMxSW3hEpkq6joQ-1
-Received: by mail-wr1-f69.google.com with SMTP id f1-20020a5d64c1000000b001611832aefeso1821405wri.17
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:24:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3NtOzxvADTQDRxUqq39GhmNI5frCiu0QqcftxeM4E6Y=;
-        b=5Ti+pVKZsCkyWVYgxRWxZ2ZxJrrsYlICd3BmA2ILb8Yw4Upesn2lwtL+bxGgoKSEbM
-         bwIjnL3uNYfhXlteA7mFPQJVGN73qwUw/E6Wd1XxcnO2hje5srCK3lHmdHyHrIpE0Yga
-         fHtXbymVjuSkglcN3HqZV2kwoO2l7gLjeylBFwymCAR+F5JzoTD2+vRfxToaEseTKoyO
-         MQbDBVG0FtMAYf27RtEVmWiSE1pWMkptjFWG+r6LPRcEvrzGW1Rxx0iiKX0pS2zCNHOm
-         9G71T52EhhxU41ZG3tjgWvgrC+14byuM1Zv/49+eCSIJduO2TdLke27XyVVPG0dfgWzd
-         111w==
-X-Gm-Message-State: AOAM533LnfMvXty1gFJCRX/1/u6kbcNLZ/bHeBEylL8tDSRyKylzrlbC
-        rVi/1dmlwHaW32dvk2UCSGKILNnR15MJHWCYkXnJsyVsTfnGj0bOwJqTNSSkz4TzQzjwfuXBxqy
-        JrD5hRkwCqy08Vwzc0g6XBPeW
-X-Received: by 2002:adf:a455:: with SMTP id e21mr39490167wra.232.1634127898286;
-        Wed, 13 Oct 2021 05:24:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDSFMe16ogpHVDRTaFOz/jIPakQIZOos3qRZcdyyohISEjdGqG71pBPixTxJCG6KjC1I5tyQ==
-X-Received: by 2002:adf:a455:: with SMTP id e21mr39490144wra.232.1634127898093;
-        Wed, 13 Oct 2021 05:24:58 -0700 (PDT)
-Received: from redhat.com ([2.55.30.112])
-        by smtp.gmail.com with ESMTPSA id r3sm6850548wrw.55.2021.10.13.05.24.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 05:24:57 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 08:24:53 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Halil Pasic <pasic@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        markver@us.ibm.com, Cornelia Huck <cohuck@redhat.com>,
-        linux-s390@vger.kernel.org, stefanha@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        qemu-devel@nongnu.org
-Subject: Re: [PATCH v3 1/1] virtio: write back F_VERSION_1 before validate
-Message-ID: <20211013081836-mutt-send-email-mst@kernel.org>
-References: <20211011053921.1198936-1-pasic@linux.ibm.com>
- <20211013060923-mutt-send-email-mst@kernel.org>
- <96561e29-e0d6-9a4d-3657-999bad59914e@de.ibm.com>
+        Wed, 13 Oct 2021 08:27:22 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UrhQKP0_1634127914;
+Received: from 30.225.212.68(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0UrhQKP0_1634127914)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 13 Oct 2021 20:25:15 +0800
+Message-ID: <1ca9ebfe-7d1d-d74d-7bee-9c7a9d13bd87@linux.alibaba.com>
+Date:   Wed, 13 Oct 2021 20:25:14 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96561e29-e0d6-9a4d-3657-999bad59914e@de.ibm.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.2
+Subject: Re: [PATCH v2 1/2] PCI: MCFG: Consolidate the separate PCI MCFG table
+ entry list
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     catalin.marinas@arm.com, james.morse@arm.com, will@kernel.org,
+        rafael@kernel.org, tony.luck@intel.com, bp@alien8.de,
+        mingo@kernel.org, bhelgaas@google.com, mark.rutland@arm.com,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jayachandran C <c.jayachandran@gmail.com>,
+        Tomasz Nowicki <tn@semihalf.com>,
+        xuesong.chen@linux.alibaba.com
+References: <YWAD7LRsTCcfTkgJ@Dennis-MBP.local>
+ <20211008213143.GA1373034@bhelgaas> <20211013104444.GA10360@lpieralisi>
+From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
+In-Reply-To: <20211013104444.GA10360@lpieralisi>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 01:23:50PM +0200, Christian Borntraeger wrote:
+Hi Lorenzo,
+
+Thanks for your kindly feedback :)
+
+On 13/10/2021 18:44, Lorenzo Pieralisi wrote:
+> On Fri, Oct 08, 2021 at 04:31:43PM -0500, Bjorn Helgaas wrote:
+>> [+cc Jayachandran, Tomasz; not sure if they're still around, but just
+>> in case they have a comment on any reasons for keeping the
+>> pci_mcfg_list list separate.]
+>>
+>> On Fri, Oct 08, 2021 at 04:40:12PM +0800, Xuesong Chen wrote:
+>>> The PCI MCFG entry list is discrete on x86 and other architectures like
+>>> arm64 in current implementation, this list variable can be consolidated
+>>> for unnecessary duplication and other purposes, for example, we can remove
+>>> some of the 'arch' specific codes in the APEI/EINJ module and re-implement
+>>> it in a more common arch-agnostic way.
+>>
+>> This commit log could be more explicit about what's going on here.
+>>
+>> From deciphering the patch, I think it takes advantage of the fact
+>> that struct pci_mmcfg_region and struct mcfg_entry contain basically
+>> the same information, but pci_mmcfg_region contains a little extra
+>> information (a struct resource, a virtual address, and a name).
+>>
+>> To reduce the redundancy, it:
+>>
+>>   - Moves the "struct pci_mmcfg_region" definition from
+>>     arch/x86/include/asm/pci_x86.h to include/linux/pci.h, where it
+>>     can be shared across arches.
+>>
+>>   - Moves pci_mmcfg_list (a list of pci_mmcfg_region structs) from
+>>     arch/x86/pci/mmconfig-shared.c to drivers/pci/pci.c, where it can
+>>     be shared across arches.
 > 
+> This is a bit ugly, especially the resulting ifdef CONFIG_PCI in
+> patch 2:
 > 
-> Am 13.10.21 um 12:10 schrieb Michael S. Tsirkin:
-> > On Mon, Oct 11, 2021 at 07:39:21AM +0200, Halil Pasic wrote:
-> > > The virtio specification virtio-v1.1-cs01 states: "Transitional devices
-> > > MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
-> > > been acknowledged by the driver."  This is exactly what QEMU as of 6.1
-> > > has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
-> > > 
-> > > However, the specification also says: "... the driver MAY read (but MUST
-> > > NOT write) the device-specific configuration fields to check that it can
-> > > support the device ..." before setting FEATURES_OK.
-> > > 
-> > > In that case, any transitional device relying solely on
-> > > VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
-> > > legacy format.  In particular, this implies that it is in big endian
-> > > format for big endian guests. This naturally confuses the driver which
-> > > expects little endian in the modern mode.
-> > > 
-> > > It is probably a good idea to amend the spec to clarify that
-> > > VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
-> > > is complete. Before validate callback existed, config space was only
-> > > read after FEATURES_OK. However, we already have two regressions, so
-> > > let's address this here as well.
-> > > 
-> > > The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and
-> > > the VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when
-> > > virtio 1.0 is used on both sides. The latter renders virtio-blk unusable
-> > > with DASD backing, because things simply don't work with the default.
-> > > See Fixes tags for relevant commits.
-> > > 
-> > > For QEMU, we can work around the issue by writing out the feature bits
-> > > with VIRTIO_F_VERSION_1 bit set.  We (ab)use the finalize_features
-> > > config op for this. This isn't enough to address all vhost devices since
-> > > these do not get the features until FEATURES_OK, however it looks like
-> > > the affected devices actually never handled the endianness for legacy
-> > > mode correctly, so at least that's not a regression.
-> > > 
-> > > No devices except virtio net and virtio blk seem to be affected.
-> > > 
-> > > Long term the right thing to do is to fix the hypervisors.
-> > > 
-> > > Cc: <stable@vger.kernel.org> #v4.11
-> > > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> > > Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-> > > Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
-> > > Reported-by: markver@us.ibm.com
-> > > Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-> > 
-> > OK this looks good! How about a QEMU patch to make it spec compliant on
-> > BE?
+> https://lore.kernel.org/linux-acpi/YWAEG7fyFC+lhwd+@Dennis-MBP.local
 > 
-> Who is going to do that? Halil? you? Conny?
+> I'd rather make apei_filter_mcfg_addr() conditional, on what, that's
+> the question.
+> 
+> #ifdef CONFIG_FOO
+> static int apei_filter_mcfg_addr()
+> {
+> ...
+> }
+> #else
+> static inline int apei_filter_mcfg_addr() { return 0; }
+> #endif
+> 
 
-Halil said he'll do it... Right, Halil?
+How about below change in patch 2 to make it not as such a bit ugly:
 
-> Can we get this kernel patch queued for 5.15 and stable without waiting for the QEMU patch
-> as we have a regression with 4.14?
+#ifdef CONFIG_PCI
+static int apei_filter_mcfg_addr()
+{
+...
+}
+#else
+static inline int apei_filter_mcfg_addr() { return 0; }
+#endif
 
-Probably. Still trying to decide between this and plain revert for 5.15
-and back. Maybe both?
+I'd like to update it in the next version if it's OK...
 
-> > 
-> > > ---
-> > > 
-> > > @Connie: I made some more commit message changes to accommodate Michael's
-> > > requests. I just assumed these will work or you as well and kept your
-> > > r-b. Please shout at me if it needs to be dropped :)
-> > > ---
-> > >   drivers/virtio/virtio.c | 11 +++++++++++
-> > >   1 file changed, 11 insertions(+)
-> > > 
-> > > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> > > index 0a5b54034d4b..236081afe9a2 100644
-> > > --- a/drivers/virtio/virtio.c
-> > > +++ b/drivers/virtio/virtio.c
-> > > @@ -239,6 +239,17 @@ static int virtio_dev_probe(struct device *_d)
-> > >   		driver_features_legacy = driver_features;
-> > >   	}
-> > > +	/*
-> > > +	 * Some devices detect legacy solely via F_VERSION_1. Write
-> > > +	 * F_VERSION_1 to force LE config space accesses before FEATURES_OK for
-> > > +	 * these when needed.
-> > > +	 */
-> > > +	if (drv->validate && !virtio_legacy_is_little_endian()
-> > > +			  && device_features & BIT_ULL(VIRTIO_F_VERSION_1)) {
-> > > +		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
-> > > +		dev->config->finalize_features(dev);
-> > > +	}
-> > > +
-> > >   	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
-> > >   		dev->features = driver_features & device_features;
-> > >   	else
-> > > 
-> > > base-commit: 60a9483534ed0d99090a2ee1d4bb0b8179195f51
-> > > -- 
-> > > 2.25.1
-> > 
+>>   - On x86 (which does not enable CONFIG_ACPI_MCFG), pci_mmcfg_list is
+>>     built in arch/x86/pci/mmconfig-shared.c as before.
+>>
+>>   - Removes the "struct mcfg_entry" from drivers/acpi/pci_mcfg.c.
+>>
+>>   - Replaces pci_mcfg_list (previously a list of mcfg_entry structs)
+>>     in drivers/acpi/pci_mcfg.c with the newly-shared pci_mmcfg_list (a
+>>     list of pci_mmcfg_region structs).
+>>
+>>   - On ARM64 (which does enable CONFIG_ACPI_MCFG), pci_mmcfg_list is
+>>     built in drivers/acpi/pci_mcfg.c.
+>>
+>> Does that sound about right?
+> 
+> Yes it does. Another option would consist in doing all the MCFG parsing
+> (anew) in APEI code to build a temporary list that is discarded as soon
+> as the resource filtering took place - maybe it is something worth
+> thinking about (but do we really need more MCFG parsing code ?).
 
+IIRC, currently both x86 MMCONFIG and ACPI MCFG has its own MCFG parsing code, 
+so adding another new MCFG parsing code maybe not a good idea.
+
+Thanks,
+Xuesong
+
+> 
+> Lorenzo
+> 
+>>> Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
+>>> ---
+>>>  arch/x86/include/asm/pci_x86.h | 17 +----------------
+>>>  arch/x86/pci/mmconfig-shared.c |  2 --
+>>>  drivers/acpi/pci_mcfg.c        | 34 +++++++++++++---------------------
+>>>  drivers/pci/pci.c              |  2 ++
+>>>  include/linux/pci.h            | 17 +++++++++++++++++
+>>>  5 files changed, 33 insertions(+), 39 deletions(-)
+>>>
+>>> diff --git a/arch/x86/include/asm/pci_x86.h b/arch/x86/include/asm/pci_x86.h
+>>> index 490411d..1f4257c 100644
+>>> --- a/arch/x86/include/asm/pci_x86.h
+>>> +++ b/arch/x86/include/asm/pci_x86.h
+>>> @@ -146,20 +146,7 @@ static inline int  __init pci_acpi_init(void)
+>>>  extern void pcibios_fixup_irqs(void);
+>>>  
+>>>  /* pci-mmconfig.c */
+>>> -
+>>> -/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
+>>> -#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
+>>> -
+>>> -struct pci_mmcfg_region {
+>>> -	struct list_head list;
+>>> -	struct resource res;
+>>> -	u64 address;
+>>> -	char __iomem *virt;
+>>> -	u16 segment;
+>>> -	u8 start_bus;
+>>> -	u8 end_bus;
+>>> -	char name[PCI_MMCFG_RESOURCE_NAME_LEN];
+>>> -};
+>>> +struct pci_mmcfg_region;
+>>>  
+>>>  extern int __init pci_mmcfg_arch_init(void);
+>>>  extern void __init pci_mmcfg_arch_free(void);
+>>> @@ -174,8 +161,6 @@ extern struct pci_mmcfg_region *__init pci_mmconfig_add(int segment, int start,
+>>>  
+>>>  extern struct list_head pci_mmcfg_list;
+>>>  
+>>> -#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
+>>> -
+>>>  /*
+>>>   * On AMD Fam10h CPUs, all PCI MMIO configuration space accesses must use
+>>>   * %eax.  No other source or target registers may be used.  The following
+>>> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+>>> index 758cbfe..0b961fe6 100644
+>>> --- a/arch/x86/pci/mmconfig-shared.c
+>>> +++ b/arch/x86/pci/mmconfig-shared.c
+>>> @@ -31,8 +31,6 @@
+>>>  static DEFINE_MUTEX(pci_mmcfg_lock);
+>>>  #define pci_mmcfg_lock_held() lock_is_held(&(pci_mmcfg_lock).dep_map)
+>>>  
+>>> -LIST_HEAD(pci_mmcfg_list);
+>>> -
+>>>  static void __init pci_mmconfig_remove(struct pci_mmcfg_region *cfg)
+>>>  {
+>>>  	if (cfg->res.parent)
+>>> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
+>>> index 53cab97..d9506b0 100644
+>>> --- a/drivers/acpi/pci_mcfg.c
+>>> +++ b/drivers/acpi/pci_mcfg.c
+>>> @@ -13,14 +13,7 @@
+>>>  #include <linux/pci-acpi.h>
+>>>  #include <linux/pci-ecam.h>
+>>>  
+>>> -/* Structure to hold entries from the MCFG table */
+>>> -struct mcfg_entry {
+>>> -	struct list_head	list;
+>>> -	phys_addr_t		addr;
+>>> -	u16			segment;
+>>> -	u8			bus_start;
+>>> -	u8			bus_end;
+>>> -};
+>>> +extern struct list_head pci_mmcfg_list;
+>>>  
+>>>  #ifdef CONFIG_PCI_QUIRKS
+>>>  struct mcfg_fixup {
+>>> @@ -214,16 +207,13 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
+>>>  #endif
+>>>  }
+>>>  
+>>> -/* List to save MCFG entries */
+>>> -static LIST_HEAD(pci_mcfg_list);
+>>> -
+>>>  int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
+>>>  		    const struct pci_ecam_ops **ecam_ops)
+>>>  {
+>>>  	const struct pci_ecam_ops *ops = &pci_generic_ecam_ops;
+>>>  	struct resource *bus_res = &root->secondary;
+>>>  	u16 seg = root->segment;
+>>> -	struct mcfg_entry *e;
+>>> +	struct pci_mmcfg_region *e;
+>>>  	struct resource res;
+>>>  
+>>>  	/* Use address from _CBA if present, otherwise lookup MCFG */
+>>> @@ -233,10 +223,10 @@ int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
+>>>  	/*
+>>>  	 * We expect the range in bus_res in the coverage of MCFG bus range.
+>>>  	 */
+>>> -	list_for_each_entry(e, &pci_mcfg_list, list) {
+>>> -		if (e->segment == seg && e->bus_start <= bus_res->start &&
+>>> -		    e->bus_end >= bus_res->end) {
+>>> -			root->mcfg_addr = e->addr;
+>>> +	list_for_each_entry(e, &pci_mmcfg_list, list) {
+>>> +		if (e->segment == seg && e->start_bus <= bus_res->start &&
+>>> +		    e->end_bus >= bus_res->end) {
+>>> +			root->mcfg_addr = e->address;
+>>>  		}
+>>>  
+>>>  	}
+>>> @@ -268,7 +258,7 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
+>>>  {
+>>>  	struct acpi_table_mcfg *mcfg;
+>>>  	struct acpi_mcfg_allocation *mptr;
+>>> -	struct mcfg_entry *e, *arr;
+>>> +	struct pci_mmcfg_region *e, *arr;
+>>>  	int i, n;
+>>>  
+>>>  	if (header->length < sizeof(struct acpi_table_mcfg))
+>>> @@ -285,10 +275,12 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
+>>>  
+>>>  	for (i = 0, e = arr; i < n; i++, mptr++, e++) {
+>>>  		e->segment = mptr->pci_segment;
+>>> -		e->addr =  mptr->address;
+>>> -		e->bus_start = mptr->start_bus_number;
+>>> -		e->bus_end = mptr->end_bus_number;
+>>> -		list_add(&e->list, &pci_mcfg_list);
+>>> +		e->address =  mptr->address;
+>>> +		e->start_bus = mptr->start_bus_number;
+>>> +		e->end_bus = mptr->end_bus_number;
+>>> +		e->res.start = e->address + PCI_MMCFG_BUS_OFFSET(e->start_bus);
+>>> +		e->res.end = e->address + PCI_MMCFG_BUS_OFFSET(e->end_bus + 1) - 1;
+>>> +		list_add(&e->list, &pci_mmcfg_list);
+>>>  	}
+>>>  
+>>>  #ifdef CONFIG_PCI_QUIRKS
+>>> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+>>> index ce2ab62..899004e 100644
+>>> --- a/drivers/pci/pci.c
+>>> +++ b/drivers/pci/pci.c
+>>> @@ -47,6 +47,8 @@
+>>>  int pci_pci_problems;
+>>>  EXPORT_SYMBOL(pci_pci_problems);
+>>>  
+>>> +LIST_HEAD(pci_mmcfg_list);
+>>> +
+>>>  unsigned int pci_pm_d3hot_delay;
+>>>  
+>>>  static void pci_pme_list_scan(struct work_struct *work);
+>>> diff --git a/include/linux/pci.h b/include/linux/pci.h
+>>> index cd8aa6f..71e4c06 100644
+>>> --- a/include/linux/pci.h
+>>> +++ b/include/linux/pci.h
+>>> @@ -55,6 +55,23 @@
+>>>  #define PCI_RESET_PROBE		true
+>>>  #define PCI_RESET_DO_RESET	false
+>>>  
+>>> +#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
+>>> +
+>>> +/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
+>>> +#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
+>>> +
+>>> +/* pci mcfg region */
+>>> +struct pci_mmcfg_region {
+>>> +	struct list_head list;
+>>> +	struct resource res;
+>>> +	u64 address;
+>>> +	char __iomem *virt;
+>>> +	u16 segment;
+>>> +	u8 start_bus;
+>>> +	u8 end_bus;
+>>> +	char name[PCI_MMCFG_RESOURCE_NAME_LEN];
+>>> +};
+>>> +
+>>>  /*
+>>>   * The PCI interface treats multi-function devices as independent
+>>>   * devices.  The slot/function address of each device is encoded
+>>> -- 
+>>> 1.8.3.1
+>>>
