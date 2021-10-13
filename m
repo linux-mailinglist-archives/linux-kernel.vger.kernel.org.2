@@ -2,108 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101F842C829
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B032942C82A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238226AbhJMR7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
+        id S238323AbhJMR7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhJMR7Y (ORCPT
+        with ESMTP id S233315AbhJMR7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:59:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD78CC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9PscKTgwema1CV/ObUGT9iiJi3NgNOjPZpZfckZDhw4=; b=DjiL4hwFLfNH2TSKj9qCCUziRr
-        sJAQmyZOK6wZgoOO47bdfa7TlqFwe7//KKCDk7ArR+vemIcoZEplslecn+/I9cu9/uh5HXIqYBvuj
-        GRNq5QZXum+iyzf2fKCL63aFm+vUIng7nhVAEA8cIo5iOK+7BRoxlvFMRRVdLFROPs+0fBobqhbGd
-        Ubal0wGlPZQlSk5W4qMf4Kx8bdCDrUeo2IaHYwgDjobOktxgL5X9fIr1IntLCSh78zP3uSX7M4tje
-        ixt2cew3EQtksAnK1TF1w7ME6G0It/xRNo3gpcEcsbogeMO0FR0uZd9IwgeH2V9Kk4w/x4og2yegY
-        ZyP3Piig==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maiTi-007gC2-Fm; Wed, 13 Oct 2021 17:55:58 +0000
-Date:   Wed, 13 Oct 2021 18:55:46 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-mm@kvack.org, Kent Overstreet <kent.overstreet@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Wed, 13 Oct 2021 13:59:30 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE78C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:57:25 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id q12so155519pgq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:57:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nYRMF9NLZlIYvCMUzNz88c0C/LYzcmp0YC6IScl8K1M=;
+        b=NgG+UbKFXQEeJU+vxIERcV8ISM8vK2GCSApZ6LVvO8Ca4vuob2erFTer8Pjy+LmOlx
+         oQNqfc4GDoSc8kBYl2UQuoJCdCPDunS7oChSW89ZvBC0D5H5CPPmiL+ueA8J+Mm8lR4T
+         hJJlty1d2LjuoUIDYuT/iG0qDt97u16L7UQrJg/LobgP9fw0Bk0K06xWDbzC+nFmvUR9
+         e05rVnnoZXh6SEoemSALmKQmezFDLIf1O9MDVP1nYpxigjBeIyWXGs/Fr4gJGcrY3APT
+         lQZGOxPee5B/4281bZcijDSsReBobfryrTBKyzHczFPs3pwj76Rw2G3+tM++U5ijVdOF
+         hMgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nYRMF9NLZlIYvCMUzNz88c0C/LYzcmp0YC6IScl8K1M=;
+        b=7vLROeyJmjjLdYuTXyK9R+DqOj3JlLd9TStkJ92SWPLDEWANWVX4kl2jomWJ5etYrW
+         yz0E19jYmZAp4BzV1wVjr01Zo4M277ybwE71ov6EyF/PMMufNZnJMC3XHZnFtuO2u1vh
+         f0M6PNCoMGe0oRaNUkqp/xsdwXu4wBAP89PuPnO8Ce5NwX4jwc87KU6syEx62XjeQ/c4
+         8OdaxFmPev2gdcJxnpgVJCVUvZ+MSfO76XwAtOK9ITr2DGPk6MtEQFvEnzag/wUXGC/l
+         nIZHSUEHreQg6Cki7i1SzZ9wFxrpuyOSi2PnPXNx8oCEwIS9u4HIwTbIM4XX/fIME3vi
+         1X8Q==
+X-Gm-Message-State: AOAM533eaIGVDNts0GUtdv5wKoPh8W35QHadJCEsQSGunM08ihG0Pski
+        9AEAThMPCJ/iel589MBO43oY+w==
+X-Google-Smtp-Source: ABdhPJyMiVGmUTYUtcdh7bcTvHq4WhqYjQCakcIXj/dCcEixSLcina/nmF5U4pACwtO5b1z16bv7/Q==
+X-Received: by 2002:a05:6a00:1344:b0:44c:4cd7:4d4b with SMTP id k4-20020a056a00134400b0044c4cd74d4bmr795524pfu.50.1634147844761;
+        Wed, 13 Oct 2021 10:57:24 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z24sm180698pgu.54.2021.10.13.10.57.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 10:57:24 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 17:57:20 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
         Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 00/11] PageSlab: eliminate unnecessary compound_head()
- calls
-Message-ID: <YWcdoktn30ofnsPO@casper.infradead.org>
-References: <20211012180148.1669685-1-hannes@cmpxchg.org>
- <YWXgrhRDIxcoBhA1@casper.infradead.org>
- <YWXwXINogE0Qb0Ip@cmpxchg.org>
- <YWZQNj+axlIQrD5C@casper.infradead.org>
- <YWbj6+myCposUKk1@cmpxchg.org>
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 41/45] KVM: SVM: Add support to handle the RMP
+ nested page fault
+Message-ID: <YWceAL4v+zcJFrhU@google.com>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-42-brijesh.singh@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YWbj6+myCposUKk1@cmpxchg.org>
+In-Reply-To: <20210820155918.7518-42-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 09:49:31AM -0400, Johannes Weiner wrote:
-> On Wed, Oct 13, 2021 at 04:19:18AM +0100, Matthew Wilcox wrote:
-> > For today, testing PageSlab on the tail page helps the test proceed
-> > in parallel with the action.  Looking at slub's kfree() for an example:
-> > 
-> >         page = virt_to_head_page(x);
-> >         if (unlikely(!PageSlab(page))) {
-> >                 free_nonslab_page(page, object);
-> >                 return;
-> >         }
-> >         slab_free(page->slab_cache, page, object, NULL, 1, _RET_IP_);
-> > 
-> > Your proposal is certainly an improvement (since gcc doesn't know
-> > that compound_head(compound_head(x)) == compound_head(x)), but I
-> > think checking on the tail page is even better:
-> > 
-> > 	page = virt_to_page(x);
-> > 	if (unlikely(!PageSlab(page))) {
-> > 		free_nonslab_page(compound_head(page), object);
-> > 		return;
-> > 	}
-> > 	slab = page_slab(page);
-> > 	slab_free(slab->slab_cache, slab, object, NULL, 1, _RET_IP_);
-> > 
-> > The compound_head() parts can proceed in parallel with the check of
-> > PageSlab().
-> >
-> > As far as the cost of setting PageSlab, those cachelines are already
-> > dirty because we set compound_head on each of those pages already
-> > (or in the case of freeing, we're about to clear compound_head on
-> > each of those pages).
+On Fri, Aug 20, 2021, Brijesh Singh wrote:
+> When SEV-SNP is enabled in the guest, the hardware places restrictions on
+> all memory accesses based on the contents of the RMP table. When hardware
+> encounters RMP check failure caused by the guest memory access it raises
+> the #NPF. The error code contains additional information on the access
+> type. See the APM volume 2 for additional information.
 > 
-> ... but this is not. I think the performance gains from this would
-> have to be significant to justify complicating page flags further.
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/kvm/svm/sev.c | 76 ++++++++++++++++++++++++++++++++++++++++++
+>  arch/x86/kvm/svm/svm.c | 14 +++++---
+>  arch/x86/kvm/svm/svm.h |  1 +
+>  3 files changed, 87 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 65b578463271..712e8907bc39 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -3651,3 +3651,79 @@ void sev_post_unmap_gfn(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn, int token)
+>  
+>  	srcu_read_unlock(&sev->psc_srcu, token);
+>  }
+> +
+> +void handle_rmp_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u64 error_code)
+> +{
+> +	int rmp_level, npt_level, rc, assigned;
 
-My argument isn't really "this is more efficient", because I think
-the performance gains are pretty minimal.  More that I would like to
-be able to write code in the style which we'll want to use when we're
-using dynamically allocated memory descriptors.  It's all just code,
-and we can change it at any time, but better to change it to something
-that continues to work well in the future.
+Really silly nit: can you use 'r' or 'ret' instead of 'rc'?  Outside of the
+emulator, which should never be the gold standard for code ;-), 'rc' isn't used
+in x86 KVM.
 
-I don't think we end up with "virt_to_head_page()" in a dynamically
-allocated memory descriptor world.  The head page contains no different
-information from the tail pages, and indeed the tail pages don't know
-that they're tail pages, or where the head page is.  Or maybe they're
-all tail pages.
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 3784d389247b..3ba62f21b113 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1933,15 +1933,21 @@ static int pf_interception(struct kvm_vcpu *vcpu)
+>  static int npf_interception(struct kvm_vcpu *vcpu)
+>  {
+>  	struct vcpu_svm *svm = to_svm(vcpu);
+> +	int rc;
+>  
+>  	u64 fault_address = svm->vmcb->control.exit_info_2;
+>  	u64 error_code = svm->vmcb->control.exit_info_1;
+>  
+>  	trace_kvm_page_fault(fault_address, error_code);
+> -	return kvm_mmu_page_fault(vcpu, fault_address, error_code,
+> -			static_cpu_has(X86_FEATURE_DECODEASSISTS) ?
+> -			svm->vmcb->control.insn_bytes : NULL,
+> -			svm->vmcb->control.insn_len);
+> +	rc = kvm_mmu_page_fault(vcpu, fault_address, error_code,
+> +				static_cpu_has(X86_FEATURE_DECODEASSISTS) ?
+> +				svm->vmcb->control.insn_bytes : NULL,
+> +				svm->vmcb->control.insn_len);
+> +
+> +	if (error_code & PFERR_GUEST_RMP_MASK)
 
-I could see a world where we had a virt_to_memdesc() which returned
-a generic memory descriptor that could be cast to a struct slab if
-the flags within that memdesc said it was a slab.  But I think it works
-out better to tag the memory descriptor pointer with a discriminator
-that defines what the pointer is.  Plus it saves a page flag.
+Don't think it will matter in the end, but shouldn't this consult 'rc' before
+diving into RMP handling?
 
-Maybe that's the best way to approach it -- how would you want to write
-this part of kfree() when memory descriptors are dynamically allocated?
+> +		handle_rmp_page_fault(vcpu, fault_address, error_code);
+
+Similar to my comments on the PSC patches, I think this is backwards.  The MMU
+should provide the control logic to convert between private and shared, and vendor
+code should only get involved when there are side effects from the conversion.
+
+Once I've made a dent in my review backlog, I'll fiddle with this and some of the
+other MMU interactions, and hopefully come up with a workable sketch for the MMU
+stuff.  Yell at me if you haven't gotten an update by Wednesday or so.
