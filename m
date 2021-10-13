@@ -2,84 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4951542BC2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA64A42BC20
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239178AbhJMJzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239305AbhJMJxR (ORCPT
+        id S237548AbhJMJxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:53:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59085 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235811AbhJMJxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:53:17 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA9CC061746;
-        Wed, 13 Oct 2021 02:51:14 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id d3so7783084edp.3;
-        Wed, 13 Oct 2021 02:51:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CPBt/4KUoaneMkVHcjVEd+UeNw6KJR5ixhmRH7r0XSE=;
-        b=Pw4XojORQxY2ifs+HKqaiQpiPCTMywJyV4fa+uVdzb6vlxETKfuON4mMIZooLlmBd+
-         fvkMtopmTnBUzyMaanYlY6axXdckNH58/VTZYu8Sa1bYS5Bzwe3eWbEKBb66eWfyJ+ml
-         ZuTab+wEmM/byeHYymPx5S7nWgITAGUysLRGdvT19lxiYLf40iE9mTGvAQs/UNM+sCj1
-         KrtpLtGaaWO+HmNP73oldPb5YhLtlo285WpbFwjWQ4ypqHIaSKipsJbu+NeUbryPdEw6
-         kPe40PUL11qlWjfH0KWEQVutjav67zREqdekxGL9AftcSfAD4dgX1j4rjPOSseZ+xofv
-         RNMA==
+        Wed, 13 Oct 2021 05:53:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634118662;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2bMtuqmvFrBXvajo5ygYeexeG09umaxUpukubw0/PIg=;
+        b=YCaie8tDCEnOXwnwvfS4NW4jA1R/3PScw9GUT3t95iUcPUM7hYM4YrmK1NKa8pAwgAeqhw
+        Ie89BuKTsRKjmZtoNDV+X/I6kp38kd3xjlhwgJSNADK8siKLS02NG+uD6NTqqsNfOXOv3I
+        gzppwgQ5YMgivlvI80HuocyeOOAeRRc=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-547-Kg5jEeIZNhG8uxlP0m3a0w-1; Wed, 13 Oct 2021 05:51:01 -0400
+X-MC-Unique: Kg5jEeIZNhG8uxlP0m3a0w-1
+Received: by mail-wr1-f71.google.com with SMTP id 41-20020adf802c000000b00161123698e0so1517879wrk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 02:51:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CPBt/4KUoaneMkVHcjVEd+UeNw6KJR5ixhmRH7r0XSE=;
-        b=3pCbSNR+8R56aCKQ9M97xNz70FSx1qvdisMJMavofw0CPsIPUlAOkRjScu+2hwyPRa
-         ouxTppMpHhL6XuQqa6WU87fbxHSNMNkqqSsWbsxAHsJxSmK1VdvIjfx98cWsffGku+XD
-         Rlr/TWw9/tOScQJ7Qs4dzCqktBqnbfOU5yYqqrQCd3gZ4/G+LoIHvK98OepBZEBYkdjL
-         d8rh4wqaTZXAo296LPj826/Q7+HX+j/wPFUlBtTmoZtB12/sB6J235E6HXrmR7dMHN3n
-         0gQtvBVMV85tV+/cMDpEmwrgpke/VU2ZX3WrRqZe8D+TObpPO77myVPsk4EUFT/iY13J
-         RbLA==
-X-Gm-Message-State: AOAM5305VD8pxkKuiAG8LIxs7GLSzm2sdiF/46d3DlaWPVnrX1tK5Ayc
-        1LyQ80hAysibJU7AuVXj7CX3wyCd3p+PszkCous=
-X-Google-Smtp-Source: ABdhPJxf86UVc3m9pU19cXQgmJcDmqtB5+RigtFoifMlf8XDpRtGJZh9Cs+CRPHeAxtdOqVnxxfQOuvh90SQW+kC+Vk=
-X-Received: by 2002:a05:6402:143b:: with SMTP id c27mr8211050edx.224.1634118672857;
- Wed, 13 Oct 2021 02:51:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2bMtuqmvFrBXvajo5ygYeexeG09umaxUpukubw0/PIg=;
+        b=hUDoDNNUSvOm0wBuTDAjWmCb2ncxk3Mw15fSoEzZYMemOI/mBQI9xBtODJ249HgbWK
+         S5PQhnYFaiWQ+ohhk/ygtoGTo44nILo4GK7wkFU3qQ69XN3FAoF8/naGaQqvWEVKKfdc
+         QFfFbxneko8piLt6y729Q6vdo4kRd8VWasDlFQTv0x/K0TiKdaAfkt4RPueQDtItzEIz
+         7zkrHWznZT9r54GztYLyfFQ9CdHtm4ZyOAHmWE/7FAHZ4BQePKU3bPF+iOZTVoOnlP67
+         RLHCzAsUhb33jY3uqtUvvOuxEmLRl+XXLrw1q9HpDsKQhX9twg/SUt4ky+YY5BfoLUOi
+         15cQ==
+X-Gm-Message-State: AOAM532HNMWl6PhIWjT3SY22XQRiNilLYS1LMGD0MA6vbdqXf+lKYT3t
+        72EnYSbi20A1B3Ajhk+dznysFj5+4P0cIbLe2rQ83GCiz/KGvuZaH4D+4x33wu2p2DL1AVK+FMt
+        ZHaL0mtuwDYQ8bmnQbDH4wfLd
+X-Received: by 2002:a7b:c14b:: with SMTP id z11mr11708568wmi.67.1634118660014;
+        Wed, 13 Oct 2021 02:51:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz7UAlyix1UxhXcSJPbjy6Nzg7rV88ALGuAtobs2lkuFZgGVV2vGm8vG/ZgnqMYwvr0pTsHzA==
+X-Received: by 2002:a7b:c14b:: with SMTP id z11mr11708551wmi.67.1634118659819;
+        Wed, 13 Oct 2021 02:50:59 -0700 (PDT)
+Received: from redhat.com ([2.55.30.112])
+        by smtp.gmail.com with ESMTPSA id l17sm12559893wrx.24.2021.10.13.02.50.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 02:50:59 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 05:50:56 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
+        david.kaplan@amd.com, konrad.wilk@oracle.com,
+        Amit Shah <amit@kernel.org>
+Subject: Re: [PATCH V2 03/12] virtio-console: switch to use .validate()
+Message-ID: <20211013054334-mutt-send-email-mst@kernel.org>
+References: <20211012065227.9953-1-jasowang@redhat.com>
+ <20211012065227.9953-4-jasowang@redhat.com>
 MIME-Version: 1.0
-References: <20211012092513.1349295-1-yangyingliang@huawei.com>
- <CA+U=DsrHSwaiS7mT4rcHT_ZQwfPg+-Hwm-jkib11+m7W-VA_FQ@mail.gmail.com>
- <CAHp75Vf+DHNxiP5HzsKzzh5hFmr20P8SzOTnLXAvhC5Vb6hzMA@mail.gmail.com>
- <61c28865036cd40a96f2d1bb4c27fbbb08c2d3a5.camel@perches.com>
- <CAHp75VfBXuMboFr6czRipXKfBpBNj8Syo9cvhiMXD7VaVaka+Q@mail.gmail.com>
- <fe8a022750e911159abcac979bada51940c03d72.camel@perches.com>
- <CAHp75Vdx1=q=5sNkn9o=mqnufxYiXnssmMJtXw9goFskGijc1w@mail.gmail.com>
- <04c752b5-3814-34d0-82e4-9d0d46af433f@huawei.com> <CAHp75VeoOj0bvGBO3PaMMD4sQTRF=rpxxLQXKeyFucpvofbV1w@mail.gmail.com>
-In-Reply-To: <CAHp75VeoOj0bvGBO3PaMMD4sQTRF=rpxxLQXKeyFucpvofbV1w@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 13 Oct 2021 12:50:36 +0300
-Message-ID: <CAHp75VfRH3Z=-j=GVqzpuPGc5sPet+Jdd6WqnGmhTLW=Gm2VaQ@mail.gmail.com>
-Subject: Re: [PATCH] iio: buffer: Fix double-free in iio_buffers_alloc_sysfs_and_mask()
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012065227.9953-4-jasowang@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 12:28 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Wed, Oct 13, 2021 at 12:17 PM Yang Yingliang
-> <yangyingliang@huawei.com> wrote:
+On Tue, Oct 12, 2021 at 02:52:18PM +0800, Jason Wang wrote:
+> This patch switches to use validate() to filter out the features that
+> is not supported by the rproc.
 
-> I could send a v2 on your behalf.
+are not supported
 
-Looking into code further I think that your patch is good as is, see
-v2 I have just sent.
+> 
+> Cc: Amit Shah <amit@kernel.org>
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
 
--- 
-With Best Regards,
-Andy Shevchenko
+
+Does this have anything to do with hardening?
+
+It seems cleaner to not negotiate features we do not use,
+but given we did this for many years ... should we bother
+at this point?
+
+
+> ---
+>  drivers/char/virtio_console.c | 41 ++++++++++++++++++++++-------------
+>  1 file changed, 26 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+> index 7eaf303a7a86..daeed31df622 100644
+> --- a/drivers/char/virtio_console.c
+> +++ b/drivers/char/virtio_console.c
+> @@ -1172,9 +1172,7 @@ static void resize_console(struct port *port)
+>  
+>  	vdev = port->portdev->vdev;
+>  
+> -	/* Don't test F_SIZE at all if we're rproc: not a valid feature! */
+> -	if (!is_rproc_serial(vdev) &&
+> -	    virtio_has_feature(vdev, VIRTIO_CONSOLE_F_SIZE))
+> +	if (virtio_has_feature(vdev, VIRTIO_CONSOLE_F_SIZE))
+>  		hvc_resize(port->cons.hvc, port->cons.ws);
+>  }
+>  
+> @@ -1981,6 +1979,29 @@ static void virtcons_remove(struct virtio_device *vdev)
+>  	kfree(portdev);
+>  }
+>  
+> +static int virtcons_validate(struct virtio_device *vdev)
+> +{
+> +	if (is_rproc_serial(vdev)) {
+> +		/* Don't test F_SIZE at all if we're rproc: not a
+> +		 * valid feature! */
+
+
+This comment needs to be fixed now. And the format's wrong
+since you made it a multi-line comment.
+Should be
+	/*
+	 * like
+	 * this
+	 */
+
+> +		__virtio_clear_bit(vdev, VIRTIO_CONSOLE_F_SIZE);
+> +		/* Don't test MULTIPORT at all if we're rproc: not a
+> +		 * valid feature! */
+> +		__virtio_clear_bit(vdev, VIRTIO_CONSOLE_F_MULTIPORT);
+> +	}
+> +
+> +	/* We only need a config space if features are offered */
+> +	if (!vdev->config->get &&
+> +	    (virtio_has_feature(vdev, VIRTIO_CONSOLE_F_SIZE)
+> +	     || virtio_has_feature(vdev, VIRTIO_CONSOLE_F_MULTIPORT))) {
+> +		dev_err(&vdev->dev, "%s failure: config access disabled\n",
+> +			__func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Once we're further in boot, we get probed like any other virtio
+>   * device.
+
+This switches the order of tests around, so if an rproc device
+offers VIRTIO_CONSOLE_F_SIZE or VIRTIO_CONSOLE_F_MULTIPORT
+without get it will now try to work instead of failing.
+
+Which is maybe a worthy goal, but given rproc does not support
+virtio 1.0 it also risks trying to drive something completely
+unreasonable.
+
+Overall does not feel like hardening which is supposed to make
+things more strict, not less.
+
+
+> @@ -1996,15 +2017,6 @@ static int virtcons_probe(struct virtio_device *vdev)
+>  	bool multiport;
+>  	bool early = early_put_chars != NULL;
+>  
+> -	/* We only need a config space if features are offered */
+> -	if (!vdev->config->get &&
+> -	    (virtio_has_feature(vdev, VIRTIO_CONSOLE_F_SIZE)
+> -	     || virtio_has_feature(vdev, VIRTIO_CONSOLE_F_MULTIPORT))) {
+> -		dev_err(&vdev->dev, "%s failure: config access disabled\n",
+> -			__func__);
+> -		return -EINVAL;
+> -	}
+> -
+>  	/* Ensure to read early_put_chars now */
+>  	barrier();
+>  
+> @@ -2031,9 +2043,7 @@ static int virtcons_probe(struct virtio_device *vdev)
+>  	multiport = false;
+>  	portdev->max_nr_ports = 1;
+>  
+> -	/* Don't test MULTIPORT at all if we're rproc: not a valid feature! */
+> -	if (!is_rproc_serial(vdev) &&
+> -	    virtio_cread_feature(vdev, VIRTIO_CONSOLE_F_MULTIPORT,
+> +	if (virtio_cread_feature(vdev, VIRTIO_CONSOLE_F_MULTIPORT,
+>  				 struct virtio_console_config, max_nr_ports,
+>  				 &portdev->max_nr_ports) == 0) {
+>  		multiport = true;
+> @@ -2210,6 +2220,7 @@ static struct virtio_driver virtio_console = {
+>  	.driver.name =	KBUILD_MODNAME,
+>  	.driver.owner =	THIS_MODULE,
+>  	.id_table =	id_table,
+> +	.validate = 	virtcons_validate,
+>  	.probe =	virtcons_probe,
+>  	.remove =	virtcons_remove,
+>  	.config_changed = config_intr,
+> -- 
+> 2.25.1
+
