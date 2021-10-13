@@ -2,156 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2411D42C0FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934D942C103
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233431AbhJMNKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:10:53 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:34535 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbhJMNKw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:10:52 -0400
-Received: by mail-ua1-f46.google.com with SMTP id h4so4381691uaw.1;
-        Wed, 13 Oct 2021 06:08:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e70ZGQ5tbBAmM8hpsBFgeuMrXUs03WqPhKmll1O0FNQ=;
-        b=SZSttMG6wBT/sBuZHH/vbgJkn0Xfmp9f0Uau3YKtJT3M4R5llbhLH/TIAZc+rH/6hV
-         oRIUlSuSn2wLqmcRjXLumIPGfZLfUGPaH1YjcU9muS9cEGJc5PPlbzB0ubzzAxJSHsuQ
-         bGGxsjcumN4dMPVCfjWRxkFG/WsJfNZ5oO5N/0urlv3Jvq232S8qu+GaSJGp/hxv/+hr
-         FDf6uyWjaUAH0IZUItaUemtasXx1/kPSBldSTLQfiRzPIV6TjpMAMxoVPOLFdq5TTsAJ
-         9wCf+ZdSDM5T7H4ZJEiKTkWt2pHdqlS0D0OJyeicXXjvLylaqzLgCvG2EbVLtkrjbxAX
-         iTrA==
-X-Gm-Message-State: AOAM533m1e1UKJlJofsIUKctsqQkw1ro7lJgO4N+JSd86lGZgwdDU1eM
-        wOSkCAmAuMmnpB27mzIch0N6vX+7A2gKCyGk78w=
-X-Google-Smtp-Source: ABdhPJzzTnqMQ1H8/zxnS6rBpfwGWrPlgqwFBcbKeZ5QjGmd5ALyVtkAZrEjaLT34o+/6EAJu8G8bzb3kKOKq2cEdJc=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr38971206vsl.9.1634130528502;
- Wed, 13 Oct 2021 06:08:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211007182158.7490-1-semen.protsenko@linaro.org>
- <YWXaKevf8D0kKYXo@smile.fi.intel.com> <CAPLW+4==u6Lpi-tRpGCFjuCBUARsarJx=Lg2QVAbvXX7hOyRVg@mail.gmail.com>
-In-Reply-To: <CAPLW+4==u6Lpi-tRpGCFjuCBUARsarJx=Lg2QVAbvXX7hOyRVg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 13 Oct 2021 15:08:37 +0200
-Message-ID: <CAMuHMdXmp5qngW9XKSzFwBGMQs4YduQbw3zxDfSAjho_deMjaQ@mail.gmail.com>
-Subject: Re: [PATCH v5] clk: Add write operation for clk_parent debugfs node
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mike Tipton <mdtipton@codeaurora.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234043AbhJMNMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:12:08 -0400
+Received: from m12-16.163.com ([220.181.12.16]:36389 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233552AbhJMNMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:12:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=sUtf0XVHSTX2ol/mZr
+        WRCxgBkBPfPmN/2f2tz+1TqbI=; b=poQndgCxhffIodp3KZIUC6RR3Vl3WsaUSz
+        6o5/FFb60Pnb451TEO6aeKE/sxe0aNRYtFsVh9dxnaGdym/TW9lIzY3pAWUlwLPP
+        1OCJf8DQ2eUZCsICnMxt+A0L1pQ7Oh0dvacNI0jhP4C3z4AsPfJYbb58T+yXrTz2
+        OATwSdsQI=
+Received: from localhost.localdomain (unknown [171.221.151.0])
+        by smtp12 (Coremail) with SMTP id EMCowABHXi1y2mZheO5fEA--.28928S2;
+        Wed, 13 Oct 2021 21:09:19 +0800 (CST)
+From:   Chen Lin <chen45464546@163.com>
+To:     will@kernel.org
+Cc:     catalin.marinas@arm.com, mark.rutland@arm.com, joey.gouly@arm.com,
+        maz@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, chen.lin5@zte.com.cn,
+        Chen Lin <chen45464546@163.com>
+Subject: Re:Re: [PATCH] arm64: traps: add dump instr before BUG in kernel
+Date:   Wed, 13 Oct 2021 21:08:43 +0800
+Message-Id: <1634130523-2634-1-git-send-email-chen45464546@163.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <20211011100649.GB3681@willie-the-truck>
+References: <20211011100649.GB3681@willie-the-truck>
+X-CM-TRANSID: EMCowABHXi1y2mZheO5fEA--.28928S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXF48KFyfWF4xJF1xXrW5ZFb_yoW5uw47pF
+        W7u3WYyFWDWw4UCw1Utw4rK3W3tws8Jr47WFn8ta4Sywn0qF1IqF4vqr13CayqvrWxuw42
+        vFyjqF1293W7ZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UOjjkUUUUU=
+X-Originating-IP: [171.221.151.0]
+X-CM-SenderInfo: hfkh0kqvuwkkiuw6il2tof0z/xtbBqhsrnl75b4w9DAAAsx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  Hi Sam,
-
-On Wed, Oct 13, 2021 at 1:36 PM Sam Protsenko
-<semen.protsenko@linaro.org> wrote:
-> On Tue, 12 Oct 2021 at 21:55, Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Thu, Oct 07, 2021 at 09:21:58PM +0300, Sam Protsenko wrote:
-> > > Useful for testing mux clocks. One can write the index of the parent to
-> > > be set into clk_parent node, starting from 0. Example
-> > >
-> > >     # cd /sys/kernel/debug/clk/mout_peri_bus
-> > >     # cat clk_possible_parents
-> > >       dout_shared0_div4 dout_shared1_div4
-> > >     # cat clk_parent
-> > >       dout_shared0_div4
-> > >     # echo 1 > clk_parent
-> > >     # cat clk_parent
-> > >       dout_shared1_div4
-> > >
-> > > CLOCK_ALLOW_WRITE_DEBUGFS has to be defined in drivers/clk/clk.c in
-> > > order to use this feature.
-> >
-> > ...
-> >
-> > > +#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-> > > +     if (core->num_parents > 1)
-> > > +             debugfs_create_file("clk_parent", 0644, root, core,
-> > > +                                 &current_parent_rw_fops);
-> > > +     else
-> > > +#endif
-> >
-> > > +     {
-> > > +             if (core->num_parents > 0)
-> > > +                     debugfs_create_file("clk_parent", 0444, root, core,
-> > > +                                         &current_parent_fops);
-> > > +     }
-> >
-> > Currently there is no need to add the {} along with increased indentation
-> > level. I.o.w. the 'else if' is valid in C.
+At 2021-10-11 17:06:50, "Will Deacon" <will@kernel.org> wrote:
+>On Thu, Sep 30, 2021 at 10:41:30PM +0800, Chen Lin wrote:
+>> At 2021-09-30 15:42:47, "Will Deacon" <will@kernel.org> wrote:
+>> 
+>> >On Wed, Sep 29, 2021 at 09:29:46PM +0800, Chen Lin wrote:
+>> >> From: Chen Lin <chen.lin5@zte.com.cn>
+>> >> 
+>> >> we should dump the real instructions before BUG in kernel mode, and
+>> >> compare this to the instructions from objdump.
+>> >> 
+>> >> Signed-off-by: Chen Lin <chen.lin5@zte.com.cn>
+>> >> ---
+>> >>  arch/arm64/kernel/traps.c |    7 ++++++-
+>> >>  1 file changed, 6 insertions(+), 1 deletion(-)
+>> >> 
+>> >> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+>> >> index b03e383..621a9dd 100644
+>> >> --- a/arch/arm64/kernel/traps.c
+>> >> +++ b/arch/arm64/kernel/traps.c
+>> >> @@ -495,7 +495,12 @@ void do_undefinstr(struct pt_regs *regs)
+>> >>  	if (call_undef_hook(regs) == 0)
+>> >>  		return;
+>> >>  
+>> >> -	BUG_ON(!user_mode(regs));
+>> >> +	if (!user_mode(regs)) {
+>> >> +		pr_emerg("Undef instruction in kernel, dump instr:");
+>> >> +		dump_kernel_instr(KERN_EMERG, regs);
+>> >> +		BUG();
+>> >> +	}
+>> >
+>> >Hmm, I'm not completely convinced about this as the instruction in the
+>> >i-cache could be completely different. I think the PC value (for addr2line)
+>> >is a lot more useful, and we should be printing that already.
+>> >
+>> >Maybe you can elaborate on a situation where this information was helpful?
+>> >
+>> >Thanks,
+>> >
+>> >Will
+>> 
+>> Undef instruction occurs in some cases
+>> 
+>> 1. CPU do not have the permission to execute the instruction or the current CPU
+>>  version does not support the instruction. For example, execute 
+>>  'mrs x0, tcr_el3' under el1.
 >
-> Without those {} we have two bad options:
+>This really shouldn't happen, but if it did, the PC would surely be enough
+>to debug the problem?
 >
->   1. When putting subsequent 'if' block on the same indentation level
-> as 'else': looks ok-ish for my taste (though inconsistent with #ifdef
-> code) and checkpatch swears:
+
+yes, PC is enough in this situation.
+
+>> 2. The instruction is a normal instruction, but it is changed during board 
+>> running in some abnormal situation. eg: DDR bit flip, the normal instruction 
+>> will become an undefined one. By printing the instruction, we can see the 
+>> accurate instruction code and compare it with the instruction code from objdump
+>> to determine that it is a DDR issue.
 >
->         WARNING: suspect code indent for conditional statements (8, 8)
->         #82: FILE: drivers/clk/clk.c:3334:
->         +    else
->         [...]
->              if (core->num_parents > 0)
+>Is this really something we should be designing our exception handlers for?
+>If we're getting DDR bit flips for kernel .text, then it sounds like we need
+>ECC and/or RAS features to deal with them.
 >
->   2. When adding 1 additional indentation level for subsequent 'if'
-> block: looks plain ugly to me, inconsistent for the case when
-> CLOCK_ALLOW_WRITE_DEBUGFS is not defined, but checkpatch is happy
+>So I'm not really sold on this change.
+
+1. About the DDR bit flip, YES, the instruction code information is really useless 
+in the ideal state. The ideal state includes the following conditions like: the DDR 
+controller do supports ECC, and also is configured correctly, such as ECC enabled 
+and ECC fixing enabled. There may exist various old boards or abnormal DDR 
+configurations in embedded systems.
+
+
+2. DDR flip is just one example. Other examples include text segment being overwritten 
+by DMA and other accidental writes, we want more info about what it writes. 
+Another example, some instructions may change at runtime by ALTERNATIVE(oldinstr, newinstr, feature) 
+or live patch, we want both the pc and the instruction code to double check what 
+happened if illegal instruction exception happen at such points.
+
+
+Personally, I think adding more information can make it easier to locate the above problems. 
+Anyway, Thank you for your patience in reading and replying.
 >
-> I still think that the way I did that (with curly braces) is better
-> one: it's consistent for all cases, looking ok, checkpatch is happy
-> too. But isn't it hairsplitting? This particular case is not described
-> in kernel coding style doc, so it's about personal preferences.
->
-> If it's still important to you -- please provide exact code snippet
-> here (with indentations) for what you desire, I'll send v6. But
-> frankly I'd rather spend my time on something more useful. This is
-> minor patch, and I don't see any maintainers wishing to pull it yet.
+>Will
 
-Note that checkpatch is just a tool, providing advice. It is not perfect,
-and if there is a good reason to ignore it, I'm all for that.
-
-Personally, I would write:
-
-    #ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-            if (core->num_parents > 1)
-                    debugfs_create_file("clk_parent", 0644, root, core,
-                                        &current_parent_rw_fops);
-            else
-    #endif
-            if (core->num_parents > 0)
-                    debugfs_create_file("clk_parent", 0444, root, core,
-                                        &current_parent_fops);
-            }
-
-Then, I'm wondering if it really is worth it to have separate cases for
-"num_parents> 1" and "num_parents > 0".  If there's a single parent,
-current_parent_write() should still work fine with "0", wouldn't it?
-Then the only differences are the file mode and the fops.
-You could handle that with #defines above, like is currently done for
-clk_rate_mode.  And the checkpatch issue is gone ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
