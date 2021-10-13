@@ -2,266 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3469942C0BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A0B42C0CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234563AbhJMM7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
+        id S233627AbhJMNB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234611AbhJMM67 (ORCPT
+        with ESMTP id S233368AbhJMNB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:58:59 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AFAC061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:56:55 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id c16so11516474lfb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:56:55 -0700 (PDT)
+        Wed, 13 Oct 2021 09:01:28 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E08FC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:59:25 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id a25so9857577edx.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:59:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p33QOHvQ95RnptXn6dj3IzSbxw6szXttwK/+SnkkIak=;
-        b=mIbAm11hhRBoasT9fywxO7RHj8bVvziNhtA54PTIM3r/GBfiSV9iOwKoFCzblhjncG
-         /ThqehyPFsRUNwKSkHrCR1Eha/5qR9mFfCPvTGN6pWPPxblLxNAKoP9Srb40+DjERUKE
-         VUs4t4VB+5Q00RlHAOwJyLKe2Ad7wo9Va8hRKCoz+EFucHq32gqZTpmQqCj/MqCq4dD+
-         HLqnv/GvDuj2NVVPclGcW5mOlLMHdAld0AFnm/10KFMcIY4OtOXYooW1ZZau4y4asYsf
-         5ztIBzQ2bOPq61SLEKBzNOCMSElESRq6Y7uhmTebLsymWwz+fXPPiSSDDR4LIzznQ7Gk
-         fITw==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VgcPZ/VE3a6UD0gwAUDDSfYNJhdyVBbycd9KeXHOYHM=;
+        b=ndArNa0HmqnsRzlysy93djlVuh/kqTwrCRC04MiyCzlokwU6D0cQ3Bbx+1Msp3a0kq
+         fDJVYpiLq3aFIRt7VgtW7JibN+h+Q/yN9IfOzJhAkTM/fr5cvIWR2/1cWKdtOYSA3EYm
+         qZWl8LdPki4DjSLk2jLjHAErrC0Al++e3odTf+AmXTPv/EVUClim6wIPE4wk923ZlyD+
+         TLHR+7NpFulvfpJW8peNGqIZRn/XRiGFn1wjGDpJXT2AFkRFATP0HMC9KWP6A7uu6Ub1
+         fWThoH+Vn4zUBbvaUaXpQNuRIGYXgtY8CdRM80d7L9TWYBPAPOck4ohsweYsRFR2VdNa
+         Jv1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p33QOHvQ95RnptXn6dj3IzSbxw6szXttwK/+SnkkIak=;
-        b=c75yJIHLuq3uEvwlUZ7SfGlmaslrCruOerbxNgiTBHzvy2lY/vQ6FwmPtVkaam1nZH
-         Z1QEGMVffH3odewJg6SX02AD1AnLXbXQuqjj3kBtem2cdn2xDY279Ha3wFTHa8i/eVhi
-         oaBK9yVxW0N/XBPnrMcvPBo3Bgbkng8UU8NhswdFfxSkKZmHuXDen5RM6wWQTh96luP7
-         c5Y/2sXgIE2+Rj9iThZI/hPjssO6sxqU76KRXL/ZbmfZUwvBEQNV1rCSZdTGBOTQaaJ8
-         I84Q2EX3iECuAXJCtfl8wcduMnVz64OzYeHux54a6LIMgTZxcB/wrKHyQmPNh70PkRrw
-         JjMg==
-X-Gm-Message-State: AOAM533aKEYSbNfk9xu8fbNRWe6ZBH07dTklcm7vPUfhcDw+h76gFiyk
-        /owtvbqarGsolPrjaaCl0A6M5A==
-X-Google-Smtp-Source: ABdhPJwfLCh+TS+/g9bV7W8np89O1BSQLOQf/9AWEOondje7XbOuqOvzrxSw++S1Hwz3WMjyoWqyGA==
-X-Received: by 2002:ac2:5dd4:: with SMTP id x20mr18170982lfq.313.1634129813780;
-        Wed, 13 Oct 2021 05:56:53 -0700 (PDT)
-Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
-        by smtp.gmail.com with ESMTPSA id y24sm385688lfh.62.2021.10.13.05.56.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 05:56:53 -0700 (PDT)
-Subject: Re: [PATCH v4 04/20] dt-bindings: qcom-bam: Convert binding to YAML
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
- <20211013105541.68045-5-bhupesh.sharma@linaro.org>
-From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Message-ID: <b41ba845-5f28-8405-0cd0-2342e4b6b372@linaro.org>
-Date:   Wed, 13 Oct 2021 15:56:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VgcPZ/VE3a6UD0gwAUDDSfYNJhdyVBbycd9KeXHOYHM=;
+        b=1Ikj9AeGOK8gxeDp0KTRLx6LNIQFGyXaCiM49enjTkNAgm4WxDWXY0vypOMFWDGJpm
+         Aso0UHOpPRUafSc+bR8sC/VmYl4yerjsGNZUS2hmRNgDasWfr66oPY/NW0/VTNXJ0Gg4
+         IvWqwhzVfdNmKTmQPyHPkXJnhLDOcyMreL/+y3aa8OjbvMF+1GJea37aLxYHenharurv
+         EuzluCnulfAoIDjYhol3yMbqYL5iq7c7Idy96qcqzpGqlz4lEUIcIK7PT1gs6u9uy9Nz
+         RNanIsU9lwKGj4vt/ad2SrrV8QOCPSRquMJ7mUFRKRItgL2tiCI7q35wLhN+4PxX7mC5
+         ZKEQ==
+X-Gm-Message-State: AOAM532AVk45ZRbA1rPcvkiPIPulNXVtdFU9o/fP1/F3Fkn5eW7Eyyzu
+        jThgnkCaM+xqBpSTpYlKSUlW6g7yFfRjeVwDaYaH
+X-Google-Smtp-Source: ABdhPJzgPADRXFXaS1vYyh2jK9MJH6mvnTgnwdfTvoN2wDEHXGVHLXkBfHUrjA74sxkLWw0zhl39qEXkT1/imAT3FrA=
+X-Received: by 2002:a17:906:ce25:: with SMTP id sd5mr39252100ejb.398.1634129963024;
+ Wed, 13 Oct 2021 05:59:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211013105541.68045-5-bhupesh.sharma@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210809101609.148-1-xieyongji@bytedance.com> <20211004112623-mutt-send-email-mst@kernel.org>
+ <20211005062359-mutt-send-email-mst@kernel.org> <20211011114041.GB16138@lst.de>
+ <20211013082025-mutt-send-email-mst@kernel.org> <CACycT3skLJp1HfovKP8AvQmdxhyJNG6YFrb6kXjd48qaztHBNQ@mail.gmail.com>
+ <20211013084711-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20211013084711-mutt-send-email-mst@kernel.org>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Wed, 13 Oct 2021 20:59:12 +0800
+Message-ID: <CACycT3vNOcuEZngDcUup=jugj-HJWUjSot5AkE5DYdBzPfzZZg@mail.gmail.com>
+Subject: Re: [PATCH v5] virtio-blk: Add validation for block size in config space
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-block@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kevin Wolf <kwolf@redhat.com>, Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhupesh,
+On Wed, Oct 13, 2021 at 8:51 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Wed, Oct 13, 2021 at 08:34:22PM +0800, Yongji Xie wrote:
+> > On Wed, Oct 13, 2021 at 8:21 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Mon, Oct 11, 2021 at 01:40:41PM +0200, Christoph Hellwig wrote:
+> > > > On Tue, Oct 05, 2021 at 06:42:43AM -0400, Michael S. Tsirkin wrote:
+> > > > > Stefan also pointed out this duplicates the logic from
+> > > > >
+> > > > >         if (blksize < 512 || blksize > PAGE_SIZE || !is_power_of_2(blksize))
+> > > > >                 return -EINVAL;
+> > > > >
+> > > > >
+> > > > > and a bunch of other places.
+> > > > >
+> > > > >
+> > > > > Would it be acceptable for blk layer to validate the input
+> > > > > instead of having each driver do it's own thing?
+> > > > > Maybe inside blk_queue_logical_block_size?
+> > > >
+> > > > I'm pretty sure we want down that before.  Let's just add a helper
+> > > > just for that check for now as part of this series.  Actually validating
+> > > > in in blk_queue_logical_block_size seems like a good idea, but returning
+> > > > errors from that has a long tail.
+> > >
+> > > Xie Yongji, I think I will revert this patch for now - can you
+> > > please work out adding that helper and using it in virtio?
+> > >
+> >
+> > Fine, I will do it.
+> >
+> > Thanks,
+> > Yongji
+>
+> Great, thanks! And while at it, pls research a bit more and mention
+> in the commit log what is the result of an illegal blk size?
+> Is it memory corruption? A catastrophic failure?
+> If it's one of these cases, then it's ok to just fail probe.
+>
 
-On 10/13/21 1:55 PM, Bhupesh Sharma wrote:
-> Convert Qualcomm BAM DMA devicetree binding to YAML.
-> 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->   .../devicetree/bindings/dma/qcom_bam_dma.txt  | 50 -----------
->   .../devicetree/bindings/dma/qcom_bam_dma.yaml | 89 +++++++++++++++++++
->   2 files changed, 89 insertions(+), 50 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
->   create mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt b/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
-> deleted file mode 100644
-> index cf5b9e44432c..000000000000
-> --- a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
-> +++ /dev/null
-> @@ -1,50 +0,0 @@
-> -QCOM BAM DMA controller
-> -
-> -Required properties:
-> -- compatible: must be one of the following:
-> - * "qcom,bam-v1.4.0" for MSM8974, APQ8074 and APQ8084
-> - * "qcom,bam-v1.3.0" for APQ8064, IPQ8064 and MSM8960
-> - * "qcom,bam-v1.7.0" for MSM8916
-> -- reg: Address range for DMA registers
-> -- interrupts: Should contain the one interrupt shared by all channels
-> -- #dma-cells: must be <1>, the cell in the dmas property of the client device
-> -  represents the channel number
-> -- clocks: required clock
-> -- clock-names: must contain "bam_clk" entry
-> -- qcom,ee : indicates the active Execution Environment identifier (0-7) used in
-> -  the secure world.
-> -- qcom,controlled-remotely : optional, indicates that the bam is controlled by
-> -  remote proccessor i.e. execution environment.
-> -- num-channels : optional, indicates supported number of DMA channels in a
-> -  remotely controlled bam.
-> -- qcom,num-ees : optional, indicates supported number of Execution Environments
-> -  in a remotely controlled bam.
-> -
-> -Example:
-> -
-> -	uart-bam: dma@f9984000 = {
-> -		compatible = "qcom,bam-v1.4.0";
-> -		reg = <0xf9984000 0x15000>;
-> -		interrupts = <0 94 0>;
-> -		clocks = <&gcc GCC_BAM_DMA_AHB_CLK>;
-> -		clock-names = "bam_clk";
-> -		#dma-cells = <1>;
-> -		qcom,ee = <0>;
-> -	};
-> -
-> -DMA clients must use the format described in the dma.txt file, using a two cell
-> -specifier for each channel.
-> -
-> -Example:
-> -	serial@f991e000 {
-> -		compatible = "qcom,msm-uart";
-> -		reg = <0xf991e000 0x1000>
-> -			<0xf9944000 0x19000>;
-> -		interrupts = <0 108 0>;
-> -		clocks = <&gcc GCC_BLSP1_UART2_APPS_CLK>,
-> -			<&gcc GCC_BLSP1_AHB_CLK>;
-> -		clock-names = "core", "iface";
-> -
-> -		dmas = <&uart-bam 0>, <&uart-bam 1>;
-> -		dma-names = "rx", "tx";
-> -	};
-> diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> new file mode 100644
-> index 000000000000..32b47e3b7769
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> @@ -0,0 +1,89 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/dma/qcom_bam_dma.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: QCOM BAM DMA controller binding
-> +
-> +maintainers:
-> +  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> +
-> +description: |
-> +  This document defines the binding for the BAM DMA controller
-> +  found on Qualcomm parts.
-> +
-> +allOf:
-> +  - $ref: "dma-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,bam-v1.4.0 # for MSM8974, APQ8074 and APQ8084
-> +      - qcom,bam-v1.3.0 # for APQ8064, IPQ8064 and MSM8960
-> +      - qcom,bam-v1.7.0 # for MSM8916
+Sure, and I think it will be one of these cases. Will add some stack
+dump in the commit log.
 
-would it be better to sort the list above by IP version?
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    const: bam_clk
-> +
-> +  interrupts:
-> +    minItems: 1
-> +    maxItems: 31
-> +
-> +  num-channels:
-> +    maximum: 31
-> +    description: |
-> +      Indicates supported number of DMA channels in a remotely controlled bam.
-
-A comment about YAML specifics, I'm not sure, if it makes sense to set a control
-to enable literal style of the given multiline description, since it is a one-liner.
-
-My main observation though is that all actually multi-line descriptions in the
-schema are different and of the folded style ("pipe" symbol is not set).
-
-Probably it's good enough just to remove the "pipe" above.
-
-> +
-> +  "#dma-cells":
-> +    const: 1
-> +    description: The single cell represents the channel index.
-> +
-> +  qcom,ee:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Indicates the active Execution Environment identifier (0-7)
-> +      used in the secure world.
-
-Would it make sense to add here
-
-   minimum: 0
-   maximum: 7
-
-?
-
-> +
-> +  qcom,controlled-remotely:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      Indicates that the bam is controlled by remote proccessor i.e.
-> +      execution environment.
-> +
-> +  qcom,num-ees:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 31
-> +    default: 2
-> +    description:
-> +      Indicates supported number of Execution Environments in a
-> +      remotely controlled bam.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - "#dma-cells"
-> +  - qcom,ee
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-msm8974.h>
-> +    dma-controller@f9984000 {
-> +        compatible = "qcom,bam-v1.4.0";
-> +        reg = <0xf9984000 0x15000>;
-> +        interrupts = <0 94 0>;
-> +        clocks = <&gcc GCC_BAM_DMA_AHB_CLK>;
-> +        clock-names = "bam_clk";
-> +        #dma-cells = <1>;
-> +        qcom,ee = <0>;
-> +    };
-> 
-
---
-Best wishes,
-Vladimir
+Thanks,
+Yongji
