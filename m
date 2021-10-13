@@ -2,159 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007CC42BDDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B710442BDE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhJMK4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:56:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55102 "EHLO mail.kernel.org"
+        id S230231AbhJMK5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:57:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhJMK4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:56:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85F6E60ED4;
-        Wed, 13 Oct 2021 10:54:29 +0000 (UTC)
+        id S229602AbhJMK5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 06:57:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3886610D1;
+        Wed, 13 Oct 2021 10:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634122469;
-        bh=7iHTFHMgD8tHMQJ8um3MWnq2WmS30AxI0TP6/V1BtV4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=OqtFMqGMGFV4K9yVj94P1PdYhryA/CdqOslHcpNhaQ08AmoURmbWpdbwgGLpBRtvv
-         GOsgbbkXEnNemfGxenULuEuLWhQSBLZDlcXtsIPUtWRz0Xquu4nM3on/FjIIYLKVym
-         bnMheTYnvnPKKCMeJmHy92kqkk6lJLUVe2jWrwP9ZfoZxr9KzicovqTES+nvgUJrgd
-         CW5TCOmBqfvu1ALAWILVarLhtB0Ty7o6Te/0Wlj3D4Ep4xDYZe5KxmPTRIsD28cE8M
-         U3L0ny1u+JWyxeAAoH7731EvVOLTcEPfK9OIXkjw0dh6LOeY9oV0Ng9JEnXKuTIMCX
-         IWg5mdhv7zLQg==
-Date:   Wed, 13 Oct 2021 05:54:28 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-pci@vger.kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
-        Russell Currey <ruscur@russell.cc>, x86@kernel.org,
-        qat-linux@intel.com, oss-drivers@corigine.com,
-        Oliver O'Halloran <oohall@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-scsi@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-wireless@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jack Xu <jack.xu@intel.com>, Borislav Petkov <bp@alien8.de>,
-        Michael Buesch <m@bues.ch>, Jiri Pirko <jiri@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        xen-devel@lists.xenproject.org, Vadym Kochan <vkochan@marvell.com>,
-        MPT-FusionLinux.pdl@broadcom.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Wojciech Ziemba <wojciech.ziemba@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
-        netdev@vger.kernel.org, Frederic Barrat <fbarrat@linux.ibm.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v6 00/11] PCI: Drop duplicated tracking of a pci_dev's
- bound driver
-Message-ID: <20211013105428.GA1890798@bhelgaas>
+        s=k20201202; t=1634122504;
+        bh=cHJwlE/4hKjsg8N9PIPkUgBxfg4CYIeT2a/7mtQ0gV4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Gvd6nNUOzZ1UK/F83pyQaR5TauDo53BnYMnJejta47hA700Gc4nEjGIFnHwmjOADo
+         AKNy+aONpGH/0IsqLm0Dcpm6wjEJavnew940SDLuN/5a6FYUw3ELyYcU0A3Q/NRQek
+         QfoThQlCQv7p+iOVnXWOAHkCznwBtAwOy+ujza96o7WAaFxFjrC8XZ1wckA/fZVTbk
+         VwI4mJWJKdlfyh1Lt6ftM0G3FhFyxA8FUoE+m7e14+8RRL2PlJvv9hf7Oz7NJ/FAwC
+         wgr7gidywOLH4DV+TxM46MeGP/by3gM7M3FjX3pF1U7UjvwkkKAPLPGpJwUDxBDIsM
+         sv3E+u1PeyN3A==
+Received: by mail-wr1-f45.google.com with SMTP id o20so6930614wro.3;
+        Wed, 13 Oct 2021 03:55:04 -0700 (PDT)
+X-Gm-Message-State: AOAM530iZXvF4GxMweqi4kkfiz7ZUk97vL95SLqNn2ulZn679H1I9FS6
+        nYyJQLDddw3zeAFg/BNgI5e/wVU24xPXuOhmPUE=
+X-Google-Smtp-Source: ABdhPJzW6QwF+fpri3xax3BToB6ExyXZ9H+Kw/HXMbby5km4lbFfKsXJq/EA3ZMCLu9RmweZx7YA8FnfMM0PPRf9Pg4=
+X-Received: by 2002:a05:600c:4f42:: with SMTP id m2mr9273874wmq.82.1634122503094;
+ Wed, 13 Oct 2021 03:55:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211013085131.5htnch5p6zv46mzn@pengutronix.de>
+References: <20211006025350.a5PczFZP4%akpm@linux-foundation.org>
+ <58fbf2ff-b367-2137-aa77-fcde6c46bbb7@infradead.org> <20211006182052.6ecc17cf@canb.auug.org.au>
+ <f877a1c9-1898-23f3-bba3-3442dc1f3979@amd.com> <CAMuHMdV3eMchpgUasU6BBHrDQyjCc2TrqJ+zJgFhgAySpqVGfw@mail.gmail.com>
+In-Reply-To: <CAMuHMdV3eMchpgUasU6BBHrDQyjCc2TrqJ+zJgFhgAySpqVGfw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 13 Oct 2021 12:54:47 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1LLABstZ2rPYpsXRTxMdbSTrh0y753vrfGbRovv9fS8A@mail.gmail.com>
+Message-ID: <CAK8P3a1LLABstZ2rPYpsXRTxMdbSTrh0y753vrfGbRovv9fS8A@mail.gmail.com>
+Subject: Re: mmotm 2021-10-05-19-53 uploaded (drivers/gpu/drm/msm/hdmi/hdmi_phy.o)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux-Next <linux-next@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.cz>, mm-commits@vger.kernel.org,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 10:51:31AM +0200, Uwe Kleine-König wrote:
-> On Tue, Oct 12, 2021 at 06:32:12PM -0500, Bjorn Helgaas wrote:
-> > On Mon, Oct 04, 2021 at 02:59:24PM +0200, Uwe Kleine-König wrote:
-> > > Hello,
-> > > 
-> > > this is v6 of the quest to drop the "driver" member from struct pci_dev
-> > > which tracks the same data (apart from a constant offset) as dev.driver.
-> > 
-> > I like this a lot and applied it to pci/driver for v5.16, thanks!
-> > 
-> > I split some of the bigger patches apart so they only touched one
-> > driver or subsystem at a time.  I also updated to_pci_driver() so it
-> > returns NULL when given NULL, which makes some of the validations
-> > quite a bit simpler, especially in the PM code in pci-driver.c.
-> 
-> OK.
-> 
-> > Full interdiff from this v6 series:
-> > 
-> > diff --git a/arch/x86/kernel/probe_roms.c b/arch/x86/kernel/probe_roms.c
-> > index deaaef6efe34..36e84d904260 100644
-> > --- a/arch/x86/kernel/probe_roms.c
-> > +++ b/arch/x86/kernel/probe_roms.c
-> > @@ -80,17 +80,15 @@ static struct resource video_rom_resource = {
-> >   */
-> >  static bool match_id(struct pci_dev *pdev, unsigned short vendor, unsigned short device)
-> >  {
-> > +	struct pci_driver *drv = to_pci_driver(pdev->dev.driver);
-> >  	const struct pci_device_id *id;
-> >  
-> >  	if (pdev->vendor == vendor && pdev->device == device)
-> >  		return true;
-> >  
-> > -	if (pdev->dev.driver) {
-> > -		struct pci_driver *drv = to_pci_driver(pdev->dev.driver);
-> > -		for (id = drv->id_table; id && id->vendor; id++)
-> > -			if (id->vendor == vendor && id->device == device)
-> > -				break;
-> > -	}
-> > +	for (id = drv ? drv->id_table : NULL; id && id->vendor; id++)
-> > +		if (id->vendor == vendor && id->device == device)
-> > +			break;
-> >  
-> >  	return id && id->vendor;
-> >  }
-> > diff --git a/drivers/misc/cxl/guest.c b/drivers/misc/cxl/guest.c
-> > index d997c9c3ebb5..7eb3706cf42d 100644
-> > --- a/drivers/misc/cxl/guest.c
-> > +++ b/drivers/misc/cxl/guest.c
-> > @@ -20,38 +20,38 @@ static void pci_error_handlers(struct cxl_afu *afu,
-> >  				pci_channel_state_t state)
-> >  {
-> >  	struct pci_dev *afu_dev;
-> > +	struct pci_driver *afu_drv;
-> > +	struct pci_error_handlers *err_handler;
-> 
-> These two could be moved into the for loop (where afu_drv was with my
-> patch already). This is also possible in a few other drivers.
+On Thu, Oct 7, 2021 at 11:51 AM Geert Uytterhoeven <geert@linux-m68k.org> w=
+rote:
+> On Wed, Oct 6, 2021 at 9:28 AM Christian K=C3=B6nig <christian.koenig@amd=
+.com> wrote:
+> > Am 06.10.21 um 09:20 schrieb Stephen Rothwell:
+> > > On Tue, 5 Oct 2021 22:48:03 -0700 Randy Dunlap <rdunlap@infradead.org=
+> wrote:
+> > >> on i386:
+> > >>
+> > >> ld: drivers/gpu/drm/msm/hdmi/hdmi_phy.o:(.rodata+0x3f0): undefined r=
+eference to `msm_hdmi_phy_8996_cfg'
 
-That's true, they could.  I tried to follow the prevailing style in
-the file.  At least in cxl, I didn't see any other cases of
-declarations being in the minimal scope like that.
+I ran into the same thing now as well.
+E_TEST) && COMMON_CLK
+>
+> I'd make that:
+>
+>     -        depends on DRM
+>     +       depends on COMMON_CLK && DRM && IOMMU_SUPPORT
+>             depends on ARCH_QCOM || SOC_IMX5 || COMPILE_TEST
+>     -        depends on IOMMU_SUPPORT
+>     -       depends on (OF && COMMON_CLK) || COMPILE_TEST
+>     +       depends on OF || COMPILE_TEST
+>
+> to keep a better separation between hard and soft dependencies.
+>
+> Note that the "depends on OF || COMPILE_TEST" can even be
+> deleted, as the dependency on ARCH_QCOM || SOC_IMX5 implies OF.
 
-Bjorn
+Looks good to me, I would also drop that last line in this case, and maybe
+add this change as building without COMMON_CLK is no longer possible:
+
+diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
+index 904535eda0c4..a5d87e03812f 100644
+--- a/drivers/gpu/drm/msm/Makefile
++++ b/drivers/gpu/drm/msm/Makefile
+@@ -116,10 +116,10 @@ msm-$(CONFIG_DRM_MSM_DP)+=3D dp/dp_aux.o \
+  dp/dp_power.o \
+  dp/dp_audio.o
+
+-msm-$(CONFIG_DRM_FBDEV_EMULATION) +=3D msm_fbdev.o
+-msm-$(CONFIG_COMMON_CLK) +=3D disp/mdp4/mdp4_lvds_pll.o
+-msm-$(CONFIG_COMMON_CLK) +=3D hdmi/hdmi_pll_8960.o
+-msm-$(CONFIG_COMMON_CLK) +=3D hdmi/hdmi_phy_8996.o
++msm-$(CONFIG_DRM_FBDEV_EMULATION) +=3D msm_fbdev.o \
++ disp/mdp4/mdp4_lvds_pll.o \
++ hdmi/hdmi_pll_8960.o \
++ hdmi/hdmi_phy_8996.o
+
+ msm-$(CONFIG_DRM_MSM_HDMI_HDCP) +=3D hdmi/hdmi_hdcp.o
+
+Has anyone submitted a patch already, or should I send the version
+that I am using locally now?
+
+        Arnd
