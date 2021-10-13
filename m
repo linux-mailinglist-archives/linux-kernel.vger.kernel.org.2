@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFBE42B323
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9744F42B324
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237108AbhJMDLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbhJMDLk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:11:40 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AFBC061570;
-        Tue, 12 Oct 2021 20:09:38 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id a25so3975885edx.8;
-        Tue, 12 Oct 2021 20:09:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HCj1lkjwgbEmXu7cDtw3vmGVDAughdgaboyPo11IbyY=;
-        b=gPg+9TXyXNbceMu0iZnHpqvcf/Dh8NUumwo5xVdgEzqQSBBRrM3O5An820DO8O/oPE
-         I27gQ4e6omZrGCP9BZKNEqMjuoWXuqHfvmT0BtkdvKlX/afPEiihw0hOvsyQwbipoM6r
-         JIt3oC8nckpl0NKL/Le5xeyZdnSSCJm334CwpRGYrfVd7Xcz648acE1gi5+TSB30kLED
-         a5RPKNXRr2rQmmtNT+veO7ICttJac/qsZ64t/77ef+7mWbzWXMdDwMpMm3m0h/BlbRY4
-         0GtqwLaEtL6a0vaOjGmktsJtnhMEwnhCGS+dO4I/zdKegxFqBncJ4lwyb+s3qBO2OClB
-         7ybg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HCj1lkjwgbEmXu7cDtw3vmGVDAughdgaboyPo11IbyY=;
-        b=0Ic+9Ft3hzWGYJ1ABOy1uDs91msTZu5eMCTjwwAEq8x3LNCLkdrmEz7dX/m+a8hCD/
-         qANfKjmHf+1gnIw0hVlNIqTVgOvRYwaYgKOd3NVx/Wc4RYjXjZGPCrTxsZvjMnEf/tw1
-         SGRizrXNsTaKYOKpnFOrO/T1qbJcgYSrtOwYQiLnHtMACMXaE2dW5nIngiQdjq0V6B/T
-         Nwqeelapcv7QGdKM/GSRxk538AOZnrZWaoBWvfIOjQv7bNKMkT4LLUQw32B9+v63q2gj
-         riVs9Mwmsg8nU66A9YR0upQuoxgBU0Jz0ji4JvoxXVeyRX2++2OxVR/3XwcJOfNHrKUw
-         ZkVQ==
-X-Gm-Message-State: AOAM530FJTXuGjIFjzHRXrKWylB4/8oa9upvFU6vavB1LomwHRipsoGH
-        4gfc6jem71srNU4Kfa9fHOkrCamZN3sblPPQ6X0=
-X-Google-Smtp-Source: ABdhPJyuYJsTNqDNqpkO4cOocgXz+Ee+xNW+iBResKEZMLhch/S4NGvSvXFfukNYWy8lXyaKHbkK9TaixmdPHneWpoA=
-X-Received: by 2002:a05:6402:1e8c:: with SMTP id f12mr5508316edf.71.1634094576961;
- Tue, 12 Oct 2021 20:09:36 -0700 (PDT)
+        id S237158AbhJMDLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:11:52 -0400
+Received: from mga04.intel.com ([192.55.52.120]:13359 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237109AbhJMDLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 23:11:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="226107806"
+X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
+   d="scan'208";a="226107806"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 20:09:49 -0700
+X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
+   d="scan'208";a="491255283"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.172.110]) ([10.249.172.110])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 20:09:46 -0700
+Subject: Re: [kbuild-all] Re: undefined reference to `memcg_bulk_charge_hook'
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Vasily Averin <vvs@virtuozzo.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+References: <202110130513.t6y4KgaP-lkp@intel.com>
+ <2a5a496b-5b5e-0039-5bb2-d04268215e37@infradead.org>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <8586cfc1-1d57-f9d9-e95a-b0c53b884471@intel.com>
+Date:   Wed, 13 Oct 2021 11:09:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210930215311.240774-1-shy828301@gmail.com> <YWZHOYgFrMYbmNA/@t490s>
-In-Reply-To: <YWZHOYgFrMYbmNA/@t490s>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 12 Oct 2021 20:09:24 -0700
-Message-ID: <CAHbLzkoz6Gm31Qz-u_ohR6NK2RRE5OdEkSq_3t9Cjwkqf1+a7w@mail.gmail.com>
-Subject: Re: [RFC v3 PATCH 0/5] Solve silent data loss caused by poisoned page
- cache (shmem/tmpfs)
-To:     Peter Xu <peterx@redhat.com>
-Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2a5a496b-5b5e-0039-5bb2-d04268215e37@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 7:41 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Thu, Sep 30, 2021 at 02:53:06PM -0700, Yang Shi wrote:
-> > Yang Shi (5):
-> >       mm: hwpoison: remove the unnecessary THP check
-> >       mm: filemap: check if THP has hwpoisoned subpage for PMD page fault
-> >       mm: hwpoison: refactor refcount check handling
-> >       mm: shmem: don't truncate page if memory failure happens
-> >       mm: hwpoison: handle non-anonymous THP correctly
->
-> Today I just noticed one more thing: unpoison path has (unpoison_memory):
->
->         if (page_mapping(page)) {
->                 unpoison_pr_info("Unpoison: the hwpoison page has non-NULL mapping %#lx\n",
->                                  pfn, &unpoison_rs);
->                 return 0;
->         }
->
-> I _think_ it was used to make sure we ignore page that was not successfully
-> poisoned/offlined before (for anonymous), so raising this question up on
-> whether we should make sure e.g. shmem hwpoisoned pages still can be unpoisoned
-> for debugging purposes.
 
-Yes, not only mapping, the refcount check is not right if page cache
-page is kept in page cache instead of being truncated after this
-series. But actually unpoison has been broken since commit
-0ed950d1f28142ccd9a9453c60df87853530d778 ("mm,hwpoison: make
-get_hwpoison_page() call get_any_page()"). And Naoya said in the
-commit "unpoison_memory() is also unchanged because it's broken and
-need thorough fixes (will be done later)."
 
-I do have some fixes in my tree to unblock tests and fix unpoison for
-this series (just make it work for testing). Naoya may have some ideas
-in mind and it is just a debugging feature so I don't think it must be
-fixed in this series. It could be done later. I could add a TODO
-section in the cover letter to make this more clear.
+On 10/13/2021 5:55 AM, Randy Dunlap wrote:
+> On 10/12/21 2:34 PM, kernel test robot wrote:
+>> tree:   
+>> https://github.com/0day-ci/linux/commits/UPDATE-20211012-182031/Vasily-Averin/memcg-enable-memory-accounting-in-__alloc_pages_bulk/20211008-172703 
+>>
+>> head:   e10c5e64a0799c75d26d2a82c03f757335616711
+>> commit: e10c5e64a0799c75d26d2a82c03f757335616711 memcg: enable memory 
+>> accounting in __alloc_pages_bulk
+>> date:   11 hours ago
+>> config: powerpc64-randconfig-r001-20211012 (attached as .config)
+>> compiler: powerpc-linux-gcc (GCC) 11.2.0
+>> reproduce (this is a W=1 build):
+>>          wget 
+>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
+>> -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # 
+>> https://github.com/0day-ci/linux/commit/e10c5e64a0799c75d26d2a82c03f757335616711 
+>>
+>>          git remote add linux-review https://github.com/0day-ci/linux
+>>          git fetch --no-tags linux-review 
+>> UPDATE-20211012-182031/Vasily-Averin/memcg-enable-memory-accounting-in-__alloc_pages_bulk/20211008-172703 
+>>
+>>          git checkout e10c5e64a0799c75d26d2a82c03f757335616711
+>>          # save the attached .config to linux build tree
+>>          mkdir build_dir
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 
+>> make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash
+> 
+> Hi ktr/lkp,
+> 
+> Can you explain why the (previously) attached .config file says:
+> CONFIG_32BIT=y
+> 
+> but in the email text above, it says:
+> config: powerpc64-randconfig-r001-20211012
+> 
+> I would expect a powerpc64 randconfig to say
+> CONFIG_64BIT=y
+> 
+> Am I just confused?
 
->
-> --
-> Peter Xu
->
+Hi Randy,
+
+Sorry for the trouble, the name of randconfig here is wrong,
+it didn't set CONFIG_64BIT=y, it should be powerpc-randconfig-r001-xxx
+
+
+> 
+> Also, using (Arnd's) crosstools, the compiler for powerpc64 shows up
+> as powerpc64-linux-ld, not as powerpc-linux-ld.
+> Is that different for the 0day toolchains?
+
+we'll check CONFIG_64BIT to choose the proper toolchain in reproduce 
+script 
+"https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross"
+
+Best Regards,
+Rong Chen
+
+
+> (not AFAICT)
+> 
+> 
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>     powerpc-linux-ld: mm/page_alloc.o: in function `__alloc_pages_bulk':
+>>>> (.text+0x857c): undefined reference to `memcg_bulk_charge_hook'
+>>>> powerpc-linux-ld: (.text+0x86d0): undefined reference to 
+>>>> `memcg_bulk_post_charge_hook'
+>>     powerpc-linux-ld: (.text+0x870c): undefined reference to 
+>> `memcg_bulk_post_charge_hook'
+>>>> powerpc-linux-ld: (.text+0x87c8): undefined reference to 
+>>>> `memcg_bulk_pre_charge_hook'
+>>
+>> ---
+> 
+> thanks.
