@@ -2,205 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE7E42C32C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A60E42C329
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235781AbhJMObu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:31:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35168 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230324AbhJMObt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:31:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634135385;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TvDOG3/TIKu7XYQ57oonwZXIqqIxlTxJBy8V8rPfz/o=;
-        b=cSjN6LPUkvQit5Hm4RVVbomVAyI3UKT4q4n99ksOwnqAh7gwN7eY16gcjaC5wHN8pAWYXg
-        lLkJETHlzobkDXZs70/atraVvi7vY8ohdPMFGMADdfxU/6tPV0XIOQhpJUoqlyohJkMCRE
-        GWNVB5Db+8baDB/6pICC3e9tBH6fkbI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-__f4wOWDN_qlX_ChorH5nw-1; Wed, 13 Oct 2021 10:29:42 -0400
-X-MC-Unique: __f4wOWDN_qlX_ChorH5nw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46E921006AAE;
-        Wed, 13 Oct 2021 14:29:41 +0000 (UTC)
-Received: from T590 (ovpn-8-39.pek2.redhat.com [10.72.8.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 84AE0380;
-        Wed, 13 Oct 2021 14:29:31 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 22:29:26 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kashyap.desai@broadcom.com,
-        hare@suse.de, ming.lei@redhat.com
-Subject: Re: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
-Message-ID: <YWbtRm22vohvY0Ca@T590>
-References: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
- <YWalYoOZmpkmAZNK@T590>
- <79266509-f327-9de3-d22e-0e9fe00387ee@huawei.com>
- <YWay/n+BJTLm1Alb@T590>
- <9f3c4d57-6b77-5345-0d4c-275962214b2a@huawei.com>
+        id S230348AbhJMObh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:31:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45560 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230324AbhJMObg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:31:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A0DA60EE9;
+        Wed, 13 Oct 2021 14:29:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634135372;
+        bh=sV6l3nqLV1aX/ZDjKoCUEtdwnkPU1W0Ld0Bd0Crp9J0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y0B3ATAP1b+y1ItrmwChJhqxhpIqq6Yq5wHV+7nIFP/yf8DgyfNxfE8uFYO0D9mTM
+         xmSATbKgZlj/TYwU8yHSrXfLgniLs3qUFisIdp5cLLIj+PTUX4L2UebkITt6xhTqSQ
+         HlD4hGanwG2F1w67X1Rslhc08sGFpT6y40J5bUos=
+Date:   Wed, 13 Oct 2021 16:29:30 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Abhyuday Godhasara <agodhasa@xilinx.com>
+Cc:     Michal Simek <michals@xilinx.com>, Rajan Vaja <RAJANV@xilinx.com>,
+        Manish Narani <MNARANI@xilinx.com>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>,
+        Sai Krishna Potthuri <lakshmis@xilinx.com>,
+        Jiaying Liang <jliang@xilinx.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+Message-ID: <YWbtSiHWNOf2djee@kroah.com>
+References: <438b398c-a901-7568-11e0-cd9bf302343f@xilinx.com>
+ <20210915131615.16506-1-abhyuday.godhasara@xilinx.com>
+ <SA1PR02MB8592838B99062EFA6EAAE73DA1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
+ <YWbYKQXf8g8s55kG@kroah.com>
+ <YWbZoPHDzc4e5Nme@kroah.com>
+ <SA1PR02MB8592E68D021E12DCA45B70A2A1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
+ <YWbo660XPKlwDZH0@kroah.com>
+ <SA1PR02MB8592EB312091543A1D564D70A1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9f3c4d57-6b77-5345-0d4c-275962214b2a@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <SA1PR02MB8592EB312091543A1D564D70A1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 12:11:12PM +0100, John Garry wrote:
-> > > > blk_mq_queue_tag_busy_iter() needn't such change? >> I didn't
-> > > > think so.>>>> blk_mq_queue_tag_busy_iter() will indeed
-> re-iter the tags per hctx. However
-> > > in bt_iter(), we check rq->mq_hctx == hctx for calling the iter callback:
-> > > 
-> > > static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
-> > > {
-> > > 	...
-> > > 
-> > > 	if (rq->q == hctx->queue && rq->mq_hctx == hctx)
-> > > 		ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
-> > > 
-> > > And this would only pass for the correct hctx which we're iter'ing for.
-> > It is true for both shared and non-shared sbitmap since we don't share
-> > hctx, so what does matter?
+On Wed, Oct 13, 2021 at 02:21:01PM +0000, Abhyuday Godhasara wrote:
+> Hi Greg,
 > 
-> It matters that we are doing the right thing for shared tags. My point is we
-> iter but don't call the callback unless the correct hctx.
 > 
-> As I see, this has not changed in transitioning from shared sbitmap to
-> shared tags.
+> Thanks,
+> Abhyuday
 > 
-> > With single shared tags, you can iterate over
-> > all requests originated from all hw queues, right?
+> > -----Original Message-----
+> > From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+> > Sent: Wednesday, October 13, 2021 7:41 PM
+> > To: Abhyuday Godhasara <agodhasa@xilinx.com>
+> > Cc: Michal Simek <michals@xilinx.com>; Rajan Vaja <RAJANV@xilinx.com>;
+> > Manish Narani <MNARANI@xilinx.com>; zou_wei@huawei.com; Sai Krishna
+> > Potthuri <lakshmis@xilinx.com>; Jiaying Liang <jliang@xilinx.com>; linux-
+> > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> > Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
 > > 
-> Right, for the same request queue, we should do that.
-> 
-> > > Indeed, it would be nice not to iter excessive times, but I didn't see a
-> > > straightforward way to change that.
-> 
-> 
-> > In Kashyap's report, the lock contention is actually from
-> > blk_mq_queue_tag_busy_iter(), see:
+> > On Wed, Oct 13, 2021 at 01:57:59PM +0000, Abhyuday Godhasara wrote:
+> > > Hi Greg,
+> > >
+> > > > -----Original Message-----
+> > > > From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+> > > > Sent: Wednesday, October 13, 2021 6:36 PM
+> > > > To: Abhyuday Godhasara <agodhasa@xilinx.com>
+> > > > Cc: Michal Simek <michals@xilinx.com>; Rajan Vaja
+> > > > <RAJANV@xilinx.com>; Manish Narani <MNARANI@xilinx.com>;
+> > > > zou_wei@huawei.com; Sai Krishna Potthuri <lakshmis@xilinx.com>;
+> > > > Jiaying Liang <jliang@xilinx.com>; linux- kernel@vger.kernel.org;
+> > > > linux-arm-kernel@lists.infradead.org
+> > > > Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > > >
+> > > > On Wed, Oct 13, 2021 at 02:59:21PM +0200, gregkh@linuxfoundation.org
+> > > > wrote:
+> > > > > On Wed, Oct 13, 2021 at 12:27:58PM +0000, Abhyuday Godhasara wrote:
+> > > > > > Hi Greg,
+> > > > > >
+> > > > > > > -----Original Message-----
+> > > > > > > From: Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
+> > > > > > > Sent: Wednesday, September 15, 2021 6:46 PM
+> > > > > > > To: gregkh@linuxfoundation.org
+> > > > > > > Cc: Michal Simek <michals@xilinx.com>; Abhyuday Godhasara
+> > > > > > > <agodhasa@xilinx.com>; Rajan Vaja <RAJANV@xilinx.com>; Manish
+> > > > > > > Narani <MNARANI@xilinx.com>; zou_wei@huawei.com; Sai Krishna
+> > > > > > > Potthuri <lakshmis@xilinx.com>; Jiaying Liang
+> > > > > > > <jliang@xilinx.com>; Jiaying Liang <jliang@xilinx.com>;
+> > > > > > > linux-kernel@vger.kernel.org;
+> > > > > > > linux-arm- kernel@lists.infradead.org
+> > > > > > > Subject: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > > > > > >
+> > > > > > > This Linux driver provides support to subscribe error/event
+> > > > > > > notification and receive notification from firmware for
+> > > > > > > error/event and forward event notification to subscribed
+> > > > > > > driver via
+> > > > registered callback.
+> > > > > > >
+> > > > > > > All types of events like power and error will be handled from
+> > > > > > > single place as part of event management driver.
+> > > > > > >
+> > > > > > > Changes in v4:
+> > > > > > > - Rebase on latest tree
+> > > > > > >
+> > > > > > > Changes in v3:
+> > > > > > > - Update the commit message.
+> > > > > > >
+> > > > > > > Changes in v2:
+> > > > > > > - Removed updated copyright year from unchanged files.
+> > > > > > > - make sgi_num as module parameter for event management driver.
+> > > > > > > - Use same object for error detection and printing.
+> > > > > > >
+> > > > > > > Acked-by: Michal Simek <michal.simek@xilinx.com>
+> > > > > > [Abhyuday] Michal suggested to merge this via your tree. Please
+> > > > > > have a
+> > > > look.
+> > > > > > Please let me know if there is anything required from my side.
+> > > > >
+> > > > > Ok, I'll pick it up, thanks.
+> > > >
+> > > > Nope, I can not as for some reason it all did not show up on lore.kernel.org.
+> > > >
+> > > > Please resend this, with Michal's ack and I will be glad to pick it up.
+> > > [Abhyuday] Sent v5 with Michal's ack.
 > > 
-> > https://lore.kernel.org/linux-block/8867352d-2107-1f8a-0f1c-ef73450bf256@huawei.com/
-> > 
-> 
-> As I understand, Kashyap mentioned no throughput regression with my series,
-> but just higher cpu usage in blk_mq_find_and_get_req().
-> 
-> I'll see if I can see such a thing in my setup.
-> 
-> But could it be that since we only have a single sets of requests per
-> tagset, and not a set of requests per HW queue, there is more contention on
-> the common set of requests in the refcount_inc_not_zero() call ***, below:
-> 
-> static struct request *blk_mq_find_and_get_req(struct blk_mq_tags *tags,
-> unsigned int bitnr)
-> {
-> 	...
-> 
-> 	rq = tags->rqs[bitnr];
-> 	if (... || !refcount_inc_not_zero(&rq->ref)) ***
-> 	...
-> }
+> > Sent where?  Do you have a lore.kernel.org link?  Did you cc: me?
+> [Abhyuday] I added linux-kernel@vger.kernel.org and linux-arm-kernel@lists.infradead.org in CC. also  added you in "To" for v5.
+> Please let me know if require anything else also.
 
-Kashyap's log shows that contention on tags->lock is increased, that
-should be caused by nr_hw_queues iterating. blk_mq_find_and_get_req()
-will be run nr_hw_queue times compared with pre-shared-sbitmap, since it
-is done before checking rq->mq_hctx.
+Again, I do not see them in my inbox, nor do I see them on
+lore.kernel.org.
 
-> 
-> But I wonder why this function is even called often...
-> 
-> > > There is also blk_mq_all_tag_iter():
-> > > 
-> > > void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
-> > > 		void *priv)
-> > > {
-> > > 	__blk_mq_all_tag_iter(tags, fn, priv, BT_TAG_ITER_STATIC_RQS);
-> > > }
-> > > 
-> > > But then the only user is blk_mq_hctx_has_requests():
-> > > 
-> > > static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
-> > > {
-> > > 	struct blk_mq_tags *tags = hctx->sched_tags ?
-> > > 			hctx->sched_tags : hctx->tags;
-> > > 	struct rq_iter_data data = {
-> > > 		.hctx	= hctx,
-> > > 	};
-> > > 
-> > > 	blk_mq_all_tag_iter(tags, blk_mq_has_request, &data);
-> > > 	return data.has_rq;
-> > > }
-> > This above one only iterates over the specified hctx/tags, it won't be
-> > affected.
-> > 
-> > > But, again like bt_iter(), blk_mq_has_request() will check the hctx matches:
-> > Not see what matters wrt. checking hctx.
-> 
-> I'm just saying that something like the following would be broken for shared
-> tags:
-> 
-> static bool blk_mq_has_request(struct request *rq, void *data, bool
-> reserved)
-> {
-> 	struct rq_iter_data *iter_data = data;
-> 
-> 	iter_data->has_rq = true;
-> 	return true;
-> }
-> 
-> static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
-> {
-> 	struct rq_iter_data data = {
-> 	};
-> 
-> 	blk_mq_all_tag_iter(tags, blk_mq_has_request, &data);
-> 	return data.has_rq;
-> }
-> 
-> As it ignores that we want to check for a specific hctx.
+Are you _sure_ you sent them?
 
-No, that isn't what I meant, follows the change I suggested:
+thanks,
 
-
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 72a2724a4eee..2a2ad6dfcc33 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -232,8 +232,9 @@ static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
- 	if (!rq)
- 		return true;
- 
--	if (rq->q == hctx->queue && rq->mq_hctx == hctx)
--		ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
-+	if (rq->q == hctx->queue && (rq->mq_hctx == hctx ||
-+				blk_mq_is_shared_tags(hctx->flags)))
-+		ret = iter_data->fn(rq->mq_hctx, rq, iter_data->data, reserved);
- 	blk_mq_put_rq_ref(rq);
- 	return ret;
- }
-@@ -460,6 +461,9 @@ void blk_mq_queue_tag_busy_iter(struct request_queue *q, busy_iter_fn *fn,
- 		if (tags->nr_reserved_tags)
- 			bt_for_each(hctx, &tags->breserved_tags, fn, priv, true);
- 		bt_for_each(hctx, &tags->bitmap_tags, fn, priv, false);
-+
-+		if (blk_mq_is_shared_tags(hctx->flags))
-+			break;
- 	}
- 	blk_queue_exit(q);
- }
-
-
-Thanks,
-Ming
-
+greg k-h
