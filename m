@@ -2,158 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E68E42C4D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CB442C4D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232692AbhJMPfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 11:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
+        id S233744AbhJMPgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 11:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhJMPfx (ORCPT
+        with ESMTP id S232801AbhJMPgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:35:53 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6B8C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:33:50 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id 21so2056304plo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:33:50 -0700 (PDT)
+        Wed, 13 Oct 2021 11:36:19 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1B4C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:34:16 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id f5so2645277pgc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:34:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=w0OXKQO+EQQ/M5woV3NPH/hGk7JVf61CPOh6HhRk/m8=;
-        b=sk1tTuqj/MCxcwKyXEpXPEoUQXTOIfjFXKFpcEO7e7km7L0f2uVxpAarDVbOFcPfZj
-         AaOMeRbp4pC54f9RoxLmNi9V7CBYoBY1iyg9go/NhpUX6rxl/Bs7DQywRj7z7CNV4Icw
-         phkGQth0VbP/e+oGfy5k2wyLOkQ9uo0cMwFuFcLpp+k+5Vt7Gp8qhcspnfT7fKxbSBfc
-         yBkDFK92khyeeiGtbaLySGhojmyIoZHyBZz+pNPbLCghA75QCxHiZCuPcWG8zASdpSLp
-         wkXrG5gjIQ8mY7pZDUe6GW6iu8tNFQyciIXy/X8jRSaEZUUlBRse1lVXJXHUtz1AIKN8
-         gdzw==
+        bh=QqZTBfg3/QOuM5T2ZYO9ec8lSodF69mZtRRrLvQ5Gfg=;
+        b=bwlGOxIr7XIuC25JE0sXW96+DAR4tBZkoc4cTzBClGIvv/CT0jHFDTCoJ8EoTdwa4u
+         5AWys82W0ENXsXAxlng2zjJpvSftLKHB9qGJWmmHYDulwIQRzH//WJPcN3mfPelAhdZK
+         AJIb3iaIsOIBPS2YL/IWt6kSS9r6nHqMp0Fw3BeaRUoyYzAjHzkTf7zcTRoS2wkh7YAy
+         lyW/1ykD4bjw0yTjtS+ykWQ+7PJc43SGk6Q9gqhcQXJMi2ZF4OCDgP4C952qRUgmxy9J
+         U52FLQElZCFUvGGrCvFOL3iwTSPkx6q9O1+a7m2E/avbpYSo7ww1vZ2kzjZMb12SkcuI
+         yhVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=w0OXKQO+EQQ/M5woV3NPH/hGk7JVf61CPOh6HhRk/m8=;
-        b=raiR+EOhCibFR5i+LdMRQ1VIQpQ1zRIL74sTR0pRNR9GdqiWh7XeMn5+ceRjbQ8HbH
-         eEoaYlukTgEt4y78+1wzLu4ClxHVehUIQELu9bW4udjqfRmogcBPN5ahtoEo3BrEwIxj
-         E2bEGAo7PjBpNK+UCBuT6ytGmWXVDFr3djmbhStse5lrrQBpfmwCQ8FeKPunAs29b2Rr
-         EMJjcLJ8cXcbJmfpMM4XOM5FG3Wtg/XGCkN70wKENX9RD0f4BwQkHoy95TLZYYlwJFtQ
-         C22S9BKi3SPLRipAk4OFNY2h9mjLs6dKUTelkzcDWeph0ki5+OgtsZ7KNwXJRpUbmWAL
-         UF1w==
-X-Gm-Message-State: AOAM532+oXdUeFK6l5YfRi++43QZut+wZ9gzqoSrnae2ZRvzezgYBp8L
-        FvzNuOs7W7MmWjA6FIbQwscuqA==
-X-Google-Smtp-Source: ABdhPJyIpI8yklVSJGPLmwLeEm7VlfgHbKcdMxX12nXi3LKT7tczNU8dmkCQdhnCU2lfWOgycwTuYQ==
-X-Received: by 2002:a17:90b:4f4b:: with SMTP id pj11mr98367pjb.4.1634139229516;
-        Wed, 13 Oct 2021 08:33:49 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id x35sm17301351pfh.52.2021.10.13.08.33.48
+        bh=QqZTBfg3/QOuM5T2ZYO9ec8lSodF69mZtRRrLvQ5Gfg=;
+        b=K3g3n5qJ2/C3BvizNV+10vIC4s/XxfVDLP6hzHwYraDc3dUQ3c9EkLPopyeD6gHmBH
+         ustxzizWXFjsaYcKN4vroOn1phO+iUTyAFQDbSjDiHexa3t7NgV4B355hhAu8ZApnZdv
+         2POhEJxGMP4hec8VazkDJ1n6BYuGYaOdwvBl809JFU6z/hlP2hcPkAGfgfVxnUwcGehU
+         Zg98dfCrTqRCLr8NwLu1fv5sly2GbxeZZlC59pW+TsqF7w/exGWQHqp8KRIyGvhlrSaA
+         fXugSQgkywLS03nMrEnZTdxsBmTOT3BLB14Yk0DO1Y2iscIH2M4ZZcKLaRDGv5KDfGyc
+         24nQ==
+X-Gm-Message-State: AOAM533/NMWPn3sDwMTfIV3DiBVUTwf9+SVDJyEoHknXWRbh7BO5IM6M
+        uCXwYjQjj80f6pqhhQdMLaCorA==
+X-Google-Smtp-Source: ABdhPJyPXPZb1/+CaHCnBr8Ol7WULnfQkgqWGf4T4Nr8NuvNfEd/PW9dkr0l7RbAfIRcQU2v2AWLDw==
+X-Received: by 2002:aa7:9287:0:b0:44c:767e:4e71 with SMTP id j7-20020aa79287000000b0044c767e4e71mr46146pfa.76.1634139255958;
+        Wed, 13 Oct 2021 08:34:15 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id j4sm15968517pfu.94.2021.10.13.08.34.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 08:33:48 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 15:33:44 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 26/45] KVM: SVM: Mark the private vma unmerable
- for SEV-SNP guests
-Message-ID: <YWb8WG6Ravbs1nbx@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <20210820155918.7518-27-brijesh.singh@amd.com>
- <YWXYIWuK2T8Kejng@google.com>
- <2a8bf18e-1413-f884-15c4-0927f34ee3b9@amd.com>
- <YWbufTl2CKwJ2uzw@google.com>
- <5eb61b30-e889-2299-678f-4edeada46c2d@amd.com>
+        Wed, 13 Oct 2021 08:34:15 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 09:34:13 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com
+Subject: Re: [PATCH] remoteproc: imx_dsp_rproc: Correct the comment style of
+ copyright
+Message-ID: <20211013153413.GA4135908@p14s>
+References: <1634092749-3707-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5eb61b30-e889-2299-678f-4edeada46c2d@amd.com>
+In-Reply-To: <1634092749-3707-1-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021, Brijesh Singh wrote:
+On Wed, Oct 13, 2021 at 10:39:09AM +0800, Shengjiu Wang wrote:
+> Change '//' on copyright line to C style comments.
 > 
-> On 10/13/21 7:34 AM, Sean Christopherson wrote:
-> > On Wed, Oct 13, 2021, Brijesh Singh wrote:
-> >> On 10/12/21 11:46 AM, Sean Christopherson wrote:
-> >>> On Fri, Aug 20, 2021, Brijesh Singh wrote:
-> >>>> When SEV-SNP is enabled, the guest private pages are added in the RMP
-> >>>> table; while adding the pages, the rmp_make_private() unmaps the pages
-> >>>> from the direct map. If KSM attempts to access those unmapped pages then
-> >>>> it will trigger #PF (page-not-present).
-> >>>>
-> >>>> Encrypted guest pages cannot be shared between the process, so an
-> >>>> userspace should not mark the region mergeable but to be safe, mark the
-> >>>> process vma unmerable before adding the pages in the RMP table.
-> >>> To be safe from what?  Does the !PRESENT #PF crash the kernel?
-> >> Yes, kernel crashes when KSM attempts to access to an unmaped pfn.
-> > Is this problem unique to nuking the direct map (patch 05), 
+> Fixes: ec0e5549f358 ("remoteproc: imx_dsp_rproc: Add remoteproc driver for DSP on i.MX")
+> Reported-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  drivers/remoteproc/imx_dsp_rproc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Yes. This problem didn't exist in previous series because we were not
-> nuking the page from direct map and KSM was able to read the memory just
-> fine. Now with the page removed from the direct map causes #PF
-> (not-present).
-
-Hrm, so regardless of what manipulations are done to the direct map, any errant
-write to guest private memory via the direct map would be fatal to the kernel.
-That's both mildly terrifying and oddly encouraging, as it means silent guest data
-corruption is no longer a thing, at least for private memory.
-
-One concrete takeaway for me is that "silently" nuking the direct map on RMP
-assignment is not an option.  Nuking the direct map if the kernel has a way to
-determine that the backing store is for guest private memory is perfectly ok,
-but pulling the rug out so to speak is setting us up for maintenance hell.
-
-> > or would it also be a problem (in the form of an RMP violation) if the
-> > direct map were demoted to 4k pages?
-> >  
+> diff --git a/drivers/remoteproc/imx_dsp_rproc.c b/drivers/remoteproc/imx_dsp_rproc.c
+> index 63749cfcf22f..6f306fbd3448 100644
+> --- a/drivers/remoteproc/imx_dsp_rproc.c
+> +++ b/drivers/remoteproc/imx_dsp_rproc.c
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -// Copyright 2021 NXP
+> +/* Copyright 2021 NXP */
 > 
-> No, this problem does happen due to the demotion. In previous series, we
-> were demoting the pages to 4k and everyone was happy (including ksm). In
-> the case of ksm, the page will *never* be merged because ciphertext for
-> two private pages will never be the same. Removing the pages from direct
-> map certainly brings additional complexity in the KVM and other places
-> in the kernel. From architecture point of view, there is actually no
-> need to mark the page *not present* in the direct map. I believe in TDX
-> that is must but for the SEV-SNP its not required at all.
 
-Nuking the direct map is not strictly required for TDX either, as reads do not
-compromise the integrity of the memory, i.e. don't poison memory and lead to
-#MC.  Like SNP, writes via the direct map would be fatal.
+I have applied your patch.
 
-The issue with TDX that is not shared by SNP is that writes through _user_ mappings
-can be fatal the system.  With SNP, those generate RMP violations, but because they
-are "just" page faults, the normal uaccess machinery happily eats them and SIGBUSes
-the VMM.
+Thanks,
+Mathieu
 
-> A hypervisor can read the guest private pages just fine, only the write will
-> cause an RMP fault.
-
-Well, for some definitions of "read".  I'm kinda joking, kinda serious.  KSM may
-"work" when it reads garbage, but the same is likely not true for other kernel
-code that wanders into guest private memory.  Ideally, the kernel would provide
-a mechanism to _prevent_ any such reads/writes, and violations would be treated
-as kernel bugs.  Given that SEV has been successfully deployed, the probability
-of lurking bugs is quite low, but I still dislike the idea of latent bugs going
-unnoticed or manifesting in weird ways.
+>  #include <dt-bindings/firmware/imx/rsrc.h>
+>  #include <linux/arm-smccc.h>
+> -- 
+> 2.17.1
+> 
