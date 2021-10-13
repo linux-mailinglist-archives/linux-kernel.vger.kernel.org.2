@@ -2,100 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F008142BFFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4AF42C003
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbhJMMbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
+        id S233553AbhJMMbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232491AbhJMMbB (ORCPT
+        with ESMTP id S233627AbhJMMbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:31:01 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E268C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:28:58 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id z11so10879333lfj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:28:58 -0700 (PDT)
+        Wed, 13 Oct 2021 08:31:23 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09AEC061753
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:29:19 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id v17so7746651wrv.9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:29:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=YQxIXPosPmgxsSw+KN3L87guIjR+Zb/COJnPCTaxmBs=;
-        b=Rifnnp3/msmOFFAH4gZiR/fVd2rDLGv96hGaf9c2Ia/LzmL8p8R2juMSa2fLTURRjq
-         1B1/byT90AAiATYiDuE5eQ2O0+ZOX1wsRXw6vulbNWoo/jlaLnsswdT23NGtKwsWFqv/
-         2KcybND8Du2UfsllhRI5e5GEc3Pb7a45xVZoCJ154HJocNmYVuyKNeGywwg23GqqV2z9
-         U5UWgr0dDYh9/3mhJbaZ8OXkj62HMWpLq1/mxK0CB8tGDnpO5j6P4yjZ/AjKb5ktIgOV
-         G5YZdnPY7HMqaIc0M7Xv3A5TtmR+wJueI315eQOJzBRfEn2BLyKsQ961AAbOxX5rdM7g
-         X0cQ==
+        d=6wind.com; s=google;
+        h=reply-to:subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jxXON34bwb9U7480ZI8tD9t7EEtIFIeyXWCvuOY9nFo=;
+        b=VC+P5UlQ+oa8RbtjkI6ihbKMfbye3hyLHafy4vC6TZ/b2HfnrH7nV5364N8CnXHH1o
+         GbrzBKBdRPPQwEX23FzhzFYs+Z/tTPuDETyDVqrmCttOwI/ei3kS9hWtQLQwrHOOqLQY
+         7QVhHDvwEkBleqiz2KkdOF//mFKsb9feT36V6YQo1YENKhAt7e+1sGujzR09uh0pts6/
+         IPzecce4A3D3bTmbWBNYJDdOgBeQtnep1bknl+zPOpw3Rro+Gzg7ki4oajHI0OLuU7qP
+         y0yXUzV0jHJTZs31IUWS/8z+loY+KCEqCzPKP5tdrM02RliDA8izTq7dD3tMiygPax1t
+         I5OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=YQxIXPosPmgxsSw+KN3L87guIjR+Zb/COJnPCTaxmBs=;
-        b=oF6sAzP6drQHXA5kWn8v9FjfWlOX0I4+sxZHSgfjyqCF7uhLJJGwtF6557aUU+s1/J
-         6GcbOKiEbC8rfrQ5L1uX+uePDeUuWh2ClGjPz6/f+hKMzr6P3LqiMsAAxeld3kRbdOWu
-         RnuAbF/UVFOR6PM+SBFpt/af/ITnNJozSJgMiv/B2fc/YhFyzbVtGivx+FdaqEd2xWwH
-         lcARbZRp6/QRqpQTohJUycPTWJw2WT7p207JwzKyOn9bNwV98oy1C65naayskPkG9FFn
-         OkQNGbItHG/2XI4X9uM7rFJndYjzDrsDzlDpCkYQ9RkPkxkjnnH5M+8sa4WcbG7t7LmV
-         60kA==
-X-Gm-Message-State: AOAM530GPHOtd063qnuNYtf6ffJv/8YWsJhxop5CHPvI7A72vUSWkziJ
-        sg2PB7S9yMHD/DS3OirwRroUxQ==
-X-Google-Smtp-Source: ABdhPJy3d9acfipfn6BL8sZ9BbGREmBgKOtPq+gewmCh9iMMxd2GpJWrn4fMfwdkZAQ+9h/hkeVUOQ==
-X-Received: by 2002:a19:7516:: with SMTP id y22mr11435277lfe.197.1634128136481;
-        Wed, 13 Oct 2021 05:28:56 -0700 (PDT)
-Received: from jade (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
-        by smtp.gmail.com with ESMTPSA id e14sm1317545lfs.287.2021.10.13.05.28.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 05:28:56 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 14:28:54 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [GIT PULL] another OP-TEE fix for v5.15
-Message-ID: <20211013122854.GA1542549@jade>
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=jxXON34bwb9U7480ZI8tD9t7EEtIFIeyXWCvuOY9nFo=;
+        b=TqfeetGNOnPprIEtxTG9APLnFyzkv9Msp6VSLJUKtB0ZyY2Cgv0jSNVPsKlK5/obmE
+         NLHC+ukcVVl1qTh9QqhSyy37WdpkFCumglsvk8fFjh1Mu/A4MyJcTat5ejsX9yUqPd0H
+         9DP922kLRpJ7g0W1aoeacC49ML0I2YjRbL6rmci9FK2d58B/LQbhLmJO7C4fOFQ+doDE
+         HCm3K5Hhdn/I6FBAGPrcnU6J0VwdpvuBXVctL49mbgHGgnCN2YgegUnJNG9dl6ENBNEL
+         BZDCHzIu9ixZ3It3MUZyOdTDrhp5lSKx/igDc3Iq+zYQz+TaL1mGR75h68vkbvKXN10d
+         vvLQ==
+X-Gm-Message-State: AOAM530sr3t3wSEWdkAS/hfBYUy/kiLvt8iD4iuEmJbJ/3bhw3qT1lBw
+        Hd5JCZW68tn1Y1PtWQj1uFnYXA==
+X-Google-Smtp-Source: ABdhPJzl6+sUsuUybRUSH6RZdbmAHK1EefCNIcA8VP9VCCbH04KII0GFLfkdnJcYa7FxDnWPNabdHg==
+X-Received: by 2002:a7b:cf29:: with SMTP id m9mr12651264wmg.64.1634128158449;
+        Wed, 13 Oct 2021 05:29:18 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:410:bb00:cdb4:f738:2bad:740f? ([2a01:e0a:410:bb00:cdb4:f738:2bad:740f])
+        by smtp.gmail.com with ESMTPSA id v3sm13427135wrg.23.2021.10.13.05.29.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 05:29:18 -0700 (PDT)
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [PATCH v2 4/4] bpf: export bpf_jit_current
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Luke Nelson <luke.r.nels@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20211012135935.37054-1-lmb@cloudflare.com>
+ <20211012135935.37054-5-lmb@cloudflare.com>
+ <836d9371-7d51-b01f-eefd-cc3bf6f5f68e@6wind.com>
+ <CACAyw99ZfALrTRYKOTifWXCRFS9sUOhONbyEyWjTBdzFE4fpQQ@mail.gmail.com>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+Message-ID: <1792748b-9204-c96e-b9c6-367eb19928cb@6wind.com>
+Date:   Wed, 13 Oct 2021 14:29:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <CACAyw99ZfALrTRYKOTifWXCRFS9sUOhONbyEyWjTBdzFE4fpQQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+Le 13/10/2021 à 10:35, Lorenz Bauer a écrit :
+> On Tue, 12 Oct 2021 at 17:29, Nicolas Dichtel <nicolas.dichtel@6wind.com> wrote:
+>>
+>> Le 12/10/2021 à 15:59, Lorenz Bauer a écrit :
+>>> Expose bpf_jit_current as a read only value via sysctl.
+>>>
+>>> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+>>> ---
+>>
+>> [snip]
+>>
+>>> +     {
+>>> +             .procname       = "bpf_jit_current",
+>>> +             .data           = &bpf_jit_current,
+>>> +             .maxlen         = sizeof(long),
+>>> +             .mode           = 0400,
+>> Why not 0444 ?
+> 
+> This mirrors what the other BPF related sysctls do, which only allow
+> access from root with CAP_SYS_ADMIN. I'd prefer 0444 as well, but
+> Daniel explicitly locked down these sysctls in
+> 2e4a30983b0f9b19b59e38bbf7427d7fdd480d98.
+Even after this patch, bpf_jit_enable is 0644.
 
-Please pull this OP-TEE driver fix to unregister OP-TEE client devices
-from the TEE bus when the OP-TEE driver is unloaded.
+In fact, if you have CAP_BPF or CAP_SYS_ADMIN, this value has no impact for your
+programs. But I you don't have one of these capabilities, it may be rejected,
+but you cannot read these values, which help to understand why.
 
-Note that this is based on the previous already merged OP-TEE driver
-fix.
 
-Thanks,
-Jens
-
-The following changes since commit 88a3856c0a8c03188db7913f4d49379432fe1f93:
-
-  tee/optee/shm_pool: fix application of sizeof to pointer (2021-09-14 07:54:56 +0200)
-
-are available in the Git repository at:
-
-  git://git.linaro.org/people/jens.wiklander/linux-tee.git tags/optee-fix2-for-v5.15
-
-for you to fetch changes up to 7f565d0ead264329749c0da488de9c8dfa2f18ce:
-
-  tee: optee: Fix missing devices unregister during optee_remove (2021-10-12 13:24:39 +0200)
-
-----------------------------------------------------------------
-Fix missing devices unregister during optee_remove
-
-Unregisters OP-TEE client devices (UUIDs of some known Trusted
-Applications) from the TEE bus when the OP-TEE driver is unloaded.
-
-----------------------------------------------------------------
-Sumit Garg (1):
-      tee: optee: Fix missing devices unregister during optee_remove
-
- drivers/tee/optee/core.c          |  3 +++
- drivers/tee/optee/device.c        | 22 ++++++++++++++++++++++
- drivers/tee/optee/optee_private.h |  1 +
- 3 files changed, 26 insertions(+)
+Regards,
+Nicolas
