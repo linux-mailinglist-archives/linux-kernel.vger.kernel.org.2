@@ -2,117 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7B342B0FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC01F42B102
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235872AbhJMAeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 20:34:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235130AbhJMAeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 20:34:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 020AF60BD3;
-        Wed, 13 Oct 2021 00:32:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634085136;
-        bh=15tIGEmSRDeMwHSZMOGrUI9+rPbGgXy1OpVbejEK7kU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uAQYzu9SNl5G14X8qWMZx1tPoylG1EMLGH32unznrqTabc2As9oPqnAZvcd70Kdfh
-         ++uaD2i3xE7KAScEIgfvAWxuIdfPxo9dDYn10ES01of/EbwMFMnZ5R/wr5z4o6dv9y
-         j39zHWgcpQXfuX5T34jpknDdV3+H8kzunUlGbGPrd8yYPaUGS9jmomK13jp/WL5VGH
-         gYDRC9z3aYAENEzlYIzIvLCMcf1DDZQ5GnzWkOxD6VdPbzWNFQFLB8Hq4m1nrbzTyN
-         hLUPGEGJ/0WJPijgnmQfg8xCyT7Q0Qz76QnsDbDiHvIi9SBGGqKAKZSUiKFtjsXZlN
-         hLowohCPdeg9g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C84E25C0887; Tue, 12 Oct 2021 17:32:15 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 17:32:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB
- + a few other fixes v2
-Message-ID: <20211013003215.GP880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211011145140.359412-1-frederic@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011145140.359412-1-frederic@kernel.org>
+        id S235715AbhJMAiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 20:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231855AbhJMAh7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 20:37:59 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95171C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:35:57 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id h8-20020a05620a284800b0045ec745583cso641211qkp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 17:35:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=bNMsQGBmtJcsL+f2JEtI6WHNz/oM/2I9pWdaF81Yh3g=;
+        b=ChlnA879mCqQnxov2MNS+l1VdsTIJgCGvHOgT7z9fMUaRX2oxqszjkErc6AMn6wYwm
+         pu3F1wlzdvEuQvlvf74PzFpSWmXluDqygWtteGj8Mh8z0yxBDO7pS8SsTLkbrOr7vjuT
+         fzcIBZJ4r8w6eHanPMcIFsmWg3mDUghkOngqTMDevB5gy8W0dtfUhj7gLeSlK8AIy6V8
+         cIqVRH/Kxkz+YBiqSezxP5JvFjSQCtmnEMSCp0fb1yRIajWXb681e4jNHiPQk5vQb/Kh
+         dtB5vbD5z6IW/1I4lpEdbWdMMRERQmCYeaw8TFJk+nU4TwAffumQsdSf3QzWHgDJYzfD
+         dqFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=bNMsQGBmtJcsL+f2JEtI6WHNz/oM/2I9pWdaF81Yh3g=;
+        b=F+sfN3wTqdG4qwZhA6P2sQ1tK9T6S/LowXeoXazdGn1xULbOp/1yAd193DegquqpOF
+         5FnpjAL2eyXjUjp8SA4tHzTRCROOdsTLbZ5YCKlCiOoJ9hQVrld9RyozU5c0a1SU6Bsp
+         JqRoR/9W1R3aRDsm2nZUR2yoT/TBOUIqT88c3cRliDzFGOKG8vvmXAhuUO+tvX7gGRyQ
+         xiUNov+HKyzvwEl6Hz+fYKyyZ9efNLs6XQXblSeiGcfYH/anmbKPngiqgKVRCko9Npd3
+         3sQkfDyv65URqTZdSBF2V6PYkeiQH5xF/gPSb/1w8zOPAo8dJAlAP116hHqvW0qgtrEW
+         S6Ww==
+X-Gm-Message-State: AOAM532AlMP7QO7R3PJvKTved4gLFissZQWnZP+ubJ4Z0BDemXlRZf44
+        Tr1Ys2+admedUV5sEZh0jjWToK2EQlo=
+X-Google-Smtp-Source: ABdhPJyRTuR3nWx6ltREyOknYOe+wYccN8lUtdRJBAQdpBFepQlQhMXKfgWmb9OYSRA1ncnMYGSXnpFBcok=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e55e:31ed:7b83:d4a6])
+ (user=seanjc job=sendgmr) by 2002:ac8:5e0d:: with SMTP id h13mr25862181qtx.403.1634085356711;
+ Tue, 12 Oct 2021 17:35:56 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 12 Oct 2021 17:35:52 -0700
+Message-Id: <20211013003554.47705-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH 0/2] KVM: x86: Revert to fix apic_hw_disabled underflow
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+9fc046ab2b0cf295a063@syzkaller.appspotmail.com,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 04:51:29PM +0200, Frederic Weisbecker wrote:
-> Hi,
-> 
-> No code change in this v2, only changelogs:
-> 
-> * Add tags from Valentin and Sebastian
-> 
-> * Remove last reference to SEGCBLIST_SOFTIRQ_ONLY (thanks Valentin)
-> 
-> * Rewrite changelog for "rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check"
->   after off-list debates with Paul.
-> 
-> * Remove the scenario with softirq interrupting rcuc on
->   "rcu/nocb: Limit number of softirq callbacks only on softirq" as it's
->   probably not possible (thanks Valentin).
-> 
-> * Remove the scenario with task spent scheduling out accounted on tlimit
->   as it's not possible (thanks Valentin)
->   (see "rcu: Apply callbacks processing time limit only on softirq")
-> 
-> * Fixed changelog of
->   "rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread"
->   (thanks Sebastian).
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> 	rcu/rt-v2
-> 
-> HEAD: 2c9349986d5f70a555195139665841cd98e9aba4
-> 
-> Thanks,
-> 	Frederic
+Revert (mostly) a patch from the vCPU RESET cleanup that open coded some
+APIC shenanigans to avoid stuffing vcpu->arch.apic_base at vCPU creation,
+and completely overlooked the side effects on apic_hw_disabled.  I went
+for a revert as I think the original behavior is the least awful solution,
+just somewhat poorly documented.
 
-Nice!
+The second patch adds WARNs to detect "overflow", where "overflow" means
+KVM incorrectly increments apic_hw_disabled.
 
-I queued these for further review and testing.  I reworked the commit log
-of 6/11 to give my idea of the reason, though I freely admit that this
-reason is not as compelling as it no doubt seemed when I wrote that code.
+Sean Christopherson (2):
+  Revert "KVM: x86: Open code necessary bits of kvm_lapic_set_base() at
+    vCPU RESET"
+  KVM: x86: WARN if APIC HW/SW disable static keys are non-zero on
+    unload
 
-							Thanx, Paul
+ arch/x86/kvm/lapic.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-> ---
-> 
-> Frederic Weisbecker (10):
->       rcu/nocb: Make local rcu_nocb_lock_irqsave() safe against concurrent deoffloading
->       rcu/nocb: Prepare state machine for a new step
->       rcu/nocb: Invoke rcu_core() at the start of deoffloading
->       rcu/nocb: Make rcu_core() callbacks acceleration (de-)offloading safe
->       rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check
->       rcu/nocb: Use appropriate rcu_nocb_lock_irqsave()
->       rcu/nocb: Limit number of softirq callbacks only on softirq
->       rcu: Fix callbacks processing time limit retaining cond_resched()
->       rcu: Apply callbacks processing time limit only on softirq
->       rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread
-> 
-> Thomas Gleixner (1):
->       rcu/nocb: Make rcu_core() callbacks acceleration preempt-safe
-> 
-> 
->  include/linux/rcu_segcblist.h | 51 ++++++++++++++++++-------
->  kernel/rcu/rcu_segcblist.c    | 10 ++---
->  kernel/rcu/rcu_segcblist.h    | 12 +++---
->  kernel/rcu/tree.c             | 87 +++++++++++++++++++++++++++++--------------
->  kernel/rcu/tree.h             | 16 +++++---
->  kernel/rcu/tree_nocb.h        | 29 ++++++++++++---
->  6 files changed, 141 insertions(+), 64 deletions(-)
+-- 
+2.33.0.1079.g6e70778dc9-goog
+
