@@ -2,128 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713C442C0B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E13A42C0B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhJMM6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233368AbhJMM6b (ORCPT
+        id S234170AbhJMM6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:58:40 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34616 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234152AbhJMM6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:58:31 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C81C061570;
-        Wed, 13 Oct 2021 05:56:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lhMXJ6WblZHJe5mfBpeJXNE2FMlxg7WKQvEx789XACc=; b=z8dydKsbniwXTXgDkmitK6D/XA
-        UuBawAGO4qpG/w28f2YxmVEvSKcSsHlORywXRdtxLhBxhYDZvj+YluC1qo5ZsWEryfrBS3LEyt94s
-        zTUSAU9z1B4m+Kd220PWloGGivgPmDPOrw3X7Q2DEkREzdkgqIIujCFdnWzNK5YM3ixDqmatqP7J3
-        OAw5uWxOfF8vyQJJflZgnMwYepuAX2LmRVHnywPFfsxxZdq11XY1qeWSFhtMD1PZL2vxbNEEJl0lR
-        4zvoswi4rPnGI7BfiNjnSlDpMfidOAzqVPJzCbr37y2FfZDvJKnO3xb3/6cel4k5dOZCkM+hxzaAF
-        gm9V7MZg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1madnw-00Gi2p-G4; Wed, 13 Oct 2021 12:56:20 +0000
-Date:   Wed, 13 Oct 2021 05:56:20 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH V5 15/22] LoongArch: Add elf and module support
-Message-ID: <YWbXdEyonDpXJFK2@bombadil.infradead.org>
-References: <20211013063656.3084555-1-chenhuacai@loongson.cn>
- <20211013071117.3097969-1-chenhuacai@loongson.cn>
- <20211013071117.3097969-2-chenhuacai@loongson.cn>
+        Wed, 13 Oct 2021 08:58:39 -0400
+Date:   Wed, 13 Oct 2021 12:56:32 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634129794;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/Nm+nzMa68X/wrBkOvkMjLmOViE9gmFSjoU3qCmh5W8=;
+        b=tK/I9Nm3n8EvNNN8CGFlGpr3sIPP0wdaor5I9cbzjF8+ZzRWXEdDzGayFxn7cdpNKLo7jt
+        07zcbMrL7ly7Cm0s1o9OIK/o+pLe42H1vzJ5s4/KbhjUWB1ls/F5+fk8F34PGZG3PJnmHg
+        nJkR81dZOk9QavwTzBLc4IbNXidXv1QjSQbKTijaPmT5jnDXJ+BkzvzzZiCOzNNSCtfGoC
+        9+kmCA2e/f3ysC5CeLqo7xi2r3CuOamp1zMVzJDUG8ANUGGIeaHiLnGQxWUCUvWNJ0gyUi
+        BxUiSNtKCsMbsxtmKvJEC52lrF2mZx2Jhdg7ZLkGwGsXnJAABukN7COJzdDZHg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634129794;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/Nm+nzMa68X/wrBkOvkMjLmOViE9gmFSjoU3qCmh5W8=;
+        b=zQNFsMFuqkrcdtT+30MNRkRcrTq4rEVqsHuqnt+zzsYbGZ8NBy6NmivEPN+hQY4HyOyKWb
+        hb/7Ufb6WDTDtmBQ==
+From:   "tip-bot2 for Paolo Bonzini" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sgx] x86/sgx/virt: Implement SGX_IOC_VEPC_REMOVE ioctl
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Borislav Petkov <bp@suse.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211012105708.2070480-3-pbonzini@redhat.com>
+References: <20211012105708.2070480-3-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013071117.3097969-2-chenhuacai@loongson.cn>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Message-ID: <163412979290.25758.2405858058111244615.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 03:11:10PM +0800, Huacai Chen wrote:
-> diff --git a/arch/loongarch/include/asm/vermagic.h b/arch/loongarch/include/asm/vermagic.h
-> new file mode 100644
-> index 000000000000..9882dfd4702a
-> --- /dev/null
-> +++ b/arch/loongarch/include/asm/vermagic.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +#ifndef _ASM_VERMAGIC_H
-> +#define _ASM_VERMAGIC_H
-> +
-> +#define MODULE_PROC_FAMILY "LOONGARCH "
+The following commit has been merged into the x86/sgx branch of tip:
 
-I take it this not a mips arch? There are other longarchs under
-arch/mips/include/asm/vermagic.h which is why I ask.
+Commit-ID:     71eba1c0939e3b1ad1b71fe0171de30e265437e3
+Gitweb:        https://git.kernel.org/tip/71eba1c0939e3b1ad1b71fe0171de30e265437e3
+Author:        Paolo Bonzini <pbonzini@redhat.com>
+AuthorDate:    Tue, 12 Oct 2021 06:57:08 -04:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 13 Oct 2021 11:57:53 +02:00
 
-> diff --git a/arch/loongarch/kernel/module.c b/arch/loongarch/kernel/module.c
-> new file mode 100644
-> index 000000000000..af7c403b032b
-> --- /dev/null
-> +++ b/arch/loongarch/kernel/module.c
-> @@ -0,0 +1,652 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Author: Hanlu Li <lihanlu@loongson.cn>
-> + *         Huacai Chen <chenhuacai@loongson.cn>
-> + *
-> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> + */
-> +
-> +#undef DEBUG
+x86/sgx/virt: Implement SGX_IOC_VEPC_REMOVE ioctl
 
-Please remove this undef DEBUG line.
+For bare-metal SGX on real hardware, the hardware provides guaranteed
+SGX state at reboot.  For instance, all pages start out uninitialized.
+The vepc driver provides a similar guarantee today for freshly-opened
+vepc instances, but guests such as Windows expect all pages to be in
+uninitialized state on startup, including after every guest reboot.
 
-> +
-> +#include <linux/moduleloader.h>
-> +#include <linux/elf.h>
-> +#include <linux/mm.h>
-> +#include <linux/vmalloc.h>
-> +#include <linux/slab.h>
-> +#include <linux/fs.h>
-> +#include <linux/string.h>
-> +#include <linux/kernel.h>
-> +
-> +static int rela_stack_push(s64 stack_value, s64 *rela_stack, size_t *rela_stack_top)
-> +{
-> +	if (*rela_stack_top >= RELA_STACK_DEPTH)
-> +		return -ENOEXEC;
-> +
-> +	rela_stack[(*rela_stack_top)++] = stack_value;
-> +	pr_debug("%s stack_value = 0x%llx\n", __func__, stack_value);
+Some userspace implementations of virtual SGX would rather avoid having
+to close and reopen the /dev/sgx_vepc file descriptor and re-mmap the
+virtual EPC.  For example, they could sandbox themselves after the guest
+starts and forbid further calls to open(), in order to mitigate exploits
+from untrusted guests.
 
-If you are going to use pr_debug() so much you may want to add
-a define for #define pr_fmt(fmt) at the very top.
+Therefore, add a ioctl that does this with EREMOVE.  Userspace can
+invoke the ioctl to bring its vEPC pages back to uninitialized state.
+There is a possibility that some pages fail to be removed if they are
+SECS pages, and the child and SECS pages could be in separate vEPC
+regions.  Therefore, the ioctl returns the number of EREMOVE failures,
+telling userspace to try the ioctl again after it's done with all
+vEPC regions.  A more verbose description of the correct usage and
+the possible error conditions is documented in sgx.rst.
 
-> +int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
-> +		       unsigned int symindex, unsigned int relsec,
-> +		       struct module *me)
-> +{
+ [ bp: Minor massaging. ]
 
-Nit: Please use struct module *mod, it is much more common in other places.
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Link: https://lkml.kernel.org/r/20211012105708.2070480-3-pbonzini@redhat.com
+---
+ Documentation/x86/sgx.rst       | 26 +++++++++++++++-
+ arch/x86/include/asm/sgx.h      |  3 ++-
+ arch/x86/include/uapi/asm/sgx.h |  2 +-
+ arch/x86/kernel/cpu/sgx/virt.c  | 57 ++++++++++++++++++++++++++++++++-
+ 4 files changed, 88 insertions(+)
 
-Other than that, this looks fine to me.
-
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-
-  Luis
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+index dd0ac96..7bc9c3b 100644
+--- a/Documentation/x86/sgx.rst
++++ b/Documentation/x86/sgx.rst
+@@ -250,3 +250,29 @@ user wants to deploy SGX applications both on the host and in guests
+ on the same machine, the user should reserve enough EPC (by taking out
+ total virtual EPC size of all SGX VMs from the physical EPC size) for
+ host SGX applications so they can run with acceptable performance.
++
++Architectural behavior is to restore all EPC pages to an uninitialized
++state also after a guest reboot.  Because this state can be reached only
++through the privileged ``ENCLS[EREMOVE]`` instruction, ``/dev/sgx_vepc``
++provides the ``SGX_IOC_VEPC_REMOVE_ALL`` ioctl to execute the instruction
++on all pages in the virtual EPC.
++
++``EREMOVE`` can fail for two reasons, which Linux relays to userspace
++in a different manner:
++
++1. Page removal will always fail when any thread is running in the
++   enclave to which the page belongs.  In this case the ioctl will
++   return ``EBUSY`` independent of whether it has successfully removed
++   some pages; userspace can avoid these failures by preventing execution
++   of any vcpu which maps the virtual EPC.
++
++2) Page removal will also fail for SGX "SECS" metadata pages which still
++   have child pages.  Child pages can be removed by executing
++   ``SGX_IOC_VEPC_REMOVE_ALL`` on all ``/dev/sgx_vepc`` file descriptors
++   mapped into the guest.  This means that the ioctl() must be called
++   twice: an initial set of calls to remove child pages and a subsequent
++   set of calls to remove SECS pages.  The second set of calls is only
++   required for those mappings that returned a nonzero value from the
++   first call.  It indicates a bug in the kernel or the userspace client
++   if any of the second round of ``SGX_IOC_VEPC_REMOVE_ALL`` calls has
++   a return code other than 0.
+diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
+index 05f3e21..2e5d8c9 100644
+--- a/arch/x86/include/asm/sgx.h
++++ b/arch/x86/include/asm/sgx.h
+@@ -50,6 +50,8 @@ enum sgx_encls_function {
+  * %SGX_NOT_TRACKED:		Previous ETRACK's shootdown sequence has not
+  *				been completed yet.
+  * %SGX_CHILD_PRESENT		SECS has child pages present in the EPC.
++ * %SGX_ENCLAVE_ACT		One or more logical processors are executing
++ *				inside the enclave.
+  * %SGX_INVALID_EINITTOKEN:	EINITTOKEN is invalid and enclave signer's
+  *				public key does not match IA32_SGXLEPUBKEYHASH.
+  * %SGX_UNMASKED_EVENT:		An unmasked event, e.g. INTR, was received
+@@ -57,6 +59,7 @@ enum sgx_encls_function {
+ enum sgx_return_code {
+ 	SGX_NOT_TRACKED			= 11,
+ 	SGX_CHILD_PRESENT		= 13,
++	SGX_ENCLAVE_ACT			= 14,
+ 	SGX_INVALID_EINITTOKEN		= 16,
+ 	SGX_UNMASKED_EVENT		= 128,
+ };
+diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
+index 9690d68..f4b8158 100644
+--- a/arch/x86/include/uapi/asm/sgx.h
++++ b/arch/x86/include/uapi/asm/sgx.h
+@@ -27,6 +27,8 @@ enum sgx_page_flags {
+ 	_IOW(SGX_MAGIC, 0x02, struct sgx_enclave_init)
+ #define SGX_IOC_ENCLAVE_PROVISION \
+ 	_IOW(SGX_MAGIC, 0x03, struct sgx_enclave_provision)
++#define SGX_IOC_VEPC_REMOVE_ALL \
++	_IO(SGX_MAGIC, 0x04)
+ 
+ /**
+  * struct sgx_enclave_create - parameter structure for the
+diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
+index 59cdf3f..4465253 100644
+--- a/arch/x86/kernel/cpu/sgx/virt.c
++++ b/arch/x86/kernel/cpu/sgx/virt.c
+@@ -150,6 +150,46 @@ static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
+ 	return 0;
+ }
+ 
++static long sgx_vepc_remove_all(struct sgx_vepc *vepc)
++{
++	struct sgx_epc_page *entry;
++	unsigned long index;
++	long failures = 0;
++
++	xa_for_each(&vepc->page_array, index, entry) {
++		int ret = sgx_vepc_remove_page(entry);
++		switch (ret) {
++		case 0:
++			break;
++
++		case SGX_CHILD_PRESENT:
++			failures++;
++			break;
++
++		case SGX_ENCLAVE_ACT:
++			/*
++			 * Unlike in sgx_vepc_free_page, userspace could be calling
++			 * the ioctl while logical processors are running in the
++			 * enclave; do not warn.
++			 */
++			return -EBUSY;
++
++		default:
++			WARN_ONCE(1, EREMOVE_ERROR_MESSAGE, ret, ret);
++			failures++;
++			break;
++		}
++		cond_resched();
++	}
++
++	/*
++	 * Return the number of pages that failed to be removed, so
++	 * userspace knows that there are still SECS pages lying
++	 * around.
++	 */
++	return failures;
++}
++
+ static int sgx_vepc_release(struct inode *inode, struct file *file)
+ {
+ 	struct sgx_vepc *vepc = file->private_data;
+@@ -235,9 +275,26 @@ static int sgx_vepc_open(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
++static long sgx_vepc_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	struct sgx_vepc *vepc = file->private_data;
++
++	switch (cmd) {
++	case SGX_IOC_VEPC_REMOVE_ALL:
++		if (arg)
++			return -EINVAL;
++		return sgx_vepc_remove_all(vepc);
++
++	default:
++		return -ENOTTY;
++	}
++}
++
+ static const struct file_operations sgx_vepc_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.open		= sgx_vepc_open,
++	.unlocked_ioctl	= sgx_vepc_ioctl,
++	.compat_ioctl	= sgx_vepc_ioctl,
+ 	.release	= sgx_vepc_release,
+ 	.mmap		= sgx_vepc_mmap,
+ };
