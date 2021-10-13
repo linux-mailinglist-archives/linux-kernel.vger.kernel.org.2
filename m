@@ -2,146 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699BA42B85E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B5942B985
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238296AbhJMHF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:05:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232006AbhJMHFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:05:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E0F660EDF;
-        Wed, 13 Oct 2021 07:03:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634108601;
-        bh=WtQf4uvFVelVyj+Fi3La0+7A9K3Xt2zv88Vm2szQP8s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pAHFnm2FPdV8mEaG1hwpaoqbvu0HkRq1jYkctN7rGixAeb6MC6p7GbLOwUQVXgM1a
-         Unj51UuhdA+8csfVeSIwO7ASyQMoa8Uo7ueVucIYPm65eHPerxtI68f5mAn0gKa2Wo
-         Zo1T0YMPuyuA55v5a7zKS6QP8+06ElGLH1jQQVwo=
-Date:   Wed, 13 Oct 2021 09:03:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Long Li <longli@microsoft.com>
-Cc:     vkuznets <vkuznets@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [Patch v5 0/3] Introduce a driver to support host accelerated
- access to Microsoft Azure Blob for Azure VM
-Message-ID: <YWaEtzc7I4LxBV2Q@kroah.com>
-References: <BY5PR21MB1506091AFED0EB62F081313ECEA29@BY5PR21MB1506.namprd21.prod.outlook.com>
- <DM6PR21MB15135923A4CB0E61786ABC22CEAA9@DM6PR21MB1513.namprd21.prod.outlook.com>
- <YVa6dtvt/BaajmmK@kroah.com>
- <BY5PR21MB15060E0A4AC1F6335A08EAB4CEB19@BY5PR21MB1506.namprd21.prod.outlook.com>
- <YV/dMdcmADXH/+k2@kroah.com>
- <87fstb3h6h.fsf@vitty.brq.redhat.com>
- <YWApWbYeGqutoDMG@kroah.com>
- <87a6jj3asl.fsf@vitty.brq.redhat.com>
- <BY5PR21MB15065897C3D2461637986D60CEB59@BY5PR21MB1506.namprd21.prod.outlook.com>
- <BY5PR21MB150659133AE67AC7CA79A78CCEB79@BY5PR21MB1506.namprd21.prod.outlook.com>
+        id S238575AbhJMHvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:51:37 -0400
+Received: from twhmllg3.macronix.com ([122.147.135.201]:59872 "EHLO
+        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238649AbhJMHvf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 03:51:35 -0400
+X-Greylist: delayed 1725 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Oct 2021 03:51:34 EDT
+Received: from TWHMLLG3.macronix.com (localhost [127.0.0.2] (may be forged))
+        by TWHMLLG3.macronix.com with ESMTP id 19D758O6002107;
+        Wed, 13 Oct 2021 15:05:08 +0800 (GMT-8)
+        (envelope-from zhengxunli@mxic.com.tw)
+Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
+        by TWHMLLG3.macronix.com with ESMTP id 19D74Egk001058;
+        Wed, 13 Oct 2021 15:04:14 +0800 (GMT-8)
+        (envelope-from zhengxunli@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
+        by Forcepoint Email with ESMTP id 4A9624BE66CA0D66112B;
+        Wed, 13 Oct 2021 15:04:15 +0800 (CST)
+In-Reply-To: <OF11A0CCB6.4C81ABAD-ON4825876D.00256D6A-4825876D.00256F7A@LocalDomain>
+References: <20211008162228.1753083-1-miquel.raynal@bootlin.com> <20211008162228.1753083-9-miquel.raynal@bootlin.com> <OF11A0CCB6.4C81ABAD-ON4825876D.00256D6A-4825876D.00256F7A@LocalDomain>
+To:     "Miquel Raynal" <miquel.raynal@bootlin.com>
+Cc:     "Rob Herring" <robh+dt@kernel.org>,
+        "Mark Brown" <broonie@kernel.org>,
+        "Xiangsheng Hou" <Xiangsheng.Hou@mediatek.com>,
+        "Boris Brezillon" <bbrezillon@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jaimeliao@mxic.com.tw, juliensu@mxic.com.tw,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+        "Miquel Raynal" <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, "Mason Yang" <masonccyang@mxic.com.tw>,
+        "Richard Weinberger" <richard@nod.at>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>,
+        "Tudor Ambarus" <Tudor.Ambarus@microchip.com>,
+        <linux-mtd@lists.infradead.org>, linux-spi@vger.kernel.org
+Subject: =?Big5?B?UmU6IKZeq0g6IFtSRkMgUEFUQ0ggMDgvMTBdIHNwaTogbXhpYzogRml4IHRoZQ==?=
+ =?Big5?B?IHRyYW5zbWl0IHBhdGg=?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR21MB150659133AE67AC7CA79A78CCEB79@BY5PR21MB1506.namprd21.prod.outlook.com>
+X-KeepSent: 7B755571:931AC374-4825876D:0025ED60;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
+Message-ID: <OF7B755571.931AC374-ON4825876D.0025ED60-4825876D.0026D775@mxic.com.tw>
+From:   zhengxunli@mxic.com.tw
+Date:   Wed, 13 Oct 2021 15:04:15 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
+ 2021/10/13 PM 03:04:15,
+        Serialize complete at 2021/10/13 PM 03:04:15
+Content-Type: text/plain; charset="US-ASCII"
+X-MAIL: TWHMLLG3.macronix.com 19D74Egk001058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 12:58:55AM +0000, Long Li wrote:
-> > Subject: RE: [Patch v5 0/3] Introduce a driver to support host accelerated access
-> > to Microsoft Azure Blob for Azure VM
-> > 
-> > > Subject: Re: [Patch v5 0/3] Introduce a driver to support host
-> > > accelerated access to Microsoft Azure Blob for Azure VM
-> > >
-> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> > >
-> > > > On Fri, Oct 08, 2021 at 01:11:02PM +0200, Vitaly Kuznetsov wrote:
-> > > >> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> > > >>
-> > > >> ...
-> > > >> >
-> > > >> > Not to mention the whole crazy idea of "let's implement our REST
-> > > >> > api that used to go over a network connection over an ioctl instead!"
-> > > >> > That's the main problem that you need to push back on here.
-> > > >> >
-> > > >> > What is forcing you to put all of this into the kernel in the
-> > > >> > first place?  What's wrong with the userspace network
-> > > >> > connection/protocol that you have today?
-> > > >> >
-> > > >> > Does this mean that we now have to implement all REST apis that
-> > > >> > people dream up as ioctl interfaces over a hyperv transport?
-> > > >> > That would be insane.
-> > > >>
-> > > >> As far as I understand, the purpose of the driver is to replace a "slow"
-> > > >> network connection to API endpoint with a "fast" transport over
-> > > >> Vmbus.
-> > > >
-> > > > Given that the network connection is already over vmbus, how is this
-> > > > "slow" today?  I have yet to see any benchmark numbers anywhere :(
-> > > >
-> > > >> So what if instead of implementing this new driver we just use
-> > > >> Hyper-V Vsock and move API endpoint to the host?
-> > > >
-> > > > What is running on the host in the hypervisor that is supposed to be
-> > > > handling these requests?  Isn't that really on some other guest?
-> > > >
-> > >
-> > > Long,
-> > >
-> > > would it be possible to draw a simple picture for us describing the
-> > > backend flow of the feature, both with network connection and with
-> > > this new driver? We're struggling to understand which particular
-> > > bottleneck the driver is trying to eliminate.
-> > 
-> > Thank you for this great suggestion. I'm preparing some diagrams for describing
-> > the problem. I will be sending them soon.
-> > 
+
+> By working with external hardware ECC engines, we figured out that
+> Under certain circumstances, it is needed for the SPI controller to
+> check INT_TX_EMPTY and INT_RX_NOT_EMPTY in both receive and transmit
+> path (not only in the receive path). The delay penalty being
+> negligible, move this code in the common path.
 > 
-> Please find the pictures describing the problem and data flow before and after this driver.
+> Fixes: b942d80b0a39 ("spi: Add MXIC controller driver")
+> Cc: stable@vger.kernel.org
+> Suggested-by: Mason Yang <masonccyang@mxic.com.tw>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/spi/spi-mxic.c | 28 ++++++++++++----------------
+>  1 file changed, 12 insertions(+), 16 deletions(-)
 > 
-> existing_blob_access.jpg shows the current method of accessing Blob through HTTP.
-> fastpath_blob_access.jpg shows the access to Blob through this driver.
+> diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
+> index 96b418293bf2..4fb19e6f94b0 100644
+> --- a/drivers/spi/spi-mxic.c
+> +++ b/drivers/spi/spi-mxic.c
+> @@ -304,25 +304,21 @@ static int mxic_spi_data_xfer(struct mxic_spi 
+> *mxic, const void *txbuf,
 > 
-> This driver enables the Blob application to use the host native network to get access directly to the Data Block server. The host networks are the backbones of Azure. The networks are RDMA capable, but they are not available for use by VMs due to security requirements.
+>        writel(data, mxic->regs + TXD(nbytes % 4));
+> 
+> +      ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
+> +                sts & INT_TX_EMPTY, 0, USEC_PER_SEC);
+> +      if (ret)
+> +         return ret;
+> +
+> +      ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
+> +                sts & INT_RX_NOT_EMPTY, 0,
+> +                USEC_PER_SEC);
+> +      if (ret)
+> +         return ret;
+> +
+> +      data = readl(mxic->regs + RXD);
+>        if (rxbuf) {
+> -         ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
+> -                   sts & INT_TX_EMPTY, 0,
+> -                   USEC_PER_SEC);
+> -         if (ret)
+> -            return ret;
+> -
+> -         ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
+> -                   sts & INT_RX_NOT_EMPTY, 0,
+> -                   USEC_PER_SEC);
+> -         if (ret)
+> -            return ret;
+> -
+> -         data = readl(mxic->regs + RXD);
+>           data >>= (8 * (4 - nbytes));
+>           memcpy(rxbuf + pos, &data, nbytes);
+> -         WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
+> -      } else {
+> -         readl(mxic->regs + RXD);
+>        }
+>        WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
+> 
+> -- 
+> 2.27.0
+> 
 
-Please wrap your lines when responding...
+Reviewed-by: Zhengxun Li <zhengxunli@mxic.com.tw>
 
-Anyway, this shows that you are trying to work around a crazy network
-design by adding lots of kernel code and a custom user/kernel api.
 
-Please just fix your network design instead, put the network that you
-want this "blob api" on the RDMA network so that you will get the same
-throughput as this odd one-off ioctl will provide.
+CONFIDENTIALITY NOTE:
 
-That way you also get the proper flow control, error handling,
-encryption, and all the other goodness that a real network connection
-provides you.  Instead of this custom, one-off, fragile, ioctl command
-that requires custom userspace code to handle and needs to be maintained
-for the next 40+ years by yourself.
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
 
-Do it right please, do not force the kernel and userspace to do foolish
-things because your network designers do not want to do the real work
-here.
+Macronix International Co., Ltd.
 
-thanks,
+=====================================================================
 
-greg k-h
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
