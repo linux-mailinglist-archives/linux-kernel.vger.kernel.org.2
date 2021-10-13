@@ -2,131 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D571742C7DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E2D42C7E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238090AbhJMRq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:46:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:43090 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229714AbhJMRqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:46:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E85541063;
-        Wed, 13 Oct 2021 10:44:51 -0700 (PDT)
-Received: from [10.1.196.28] (eglon.cambridge.arm.com [10.1.196.28])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E710E3F694;
-        Wed, 13 Oct 2021 10:44:50 -0700 (PDT)
-Subject: Re: [PATCH V2] ACPI / APEI: restore interrupt before panic in sdei
- flow
-To:     Liguang Zhang <zhangliguang@linux.alibaba.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tony Luck <tony.luck@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Borislav Petkov <bp@alien8.de>, Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <20211012142910.9688-1-zhangliguang@linux.alibaba.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <5951ad5b-d755-0150-0f2a-c567eb454dac@arm.com>
-Date:   Wed, 13 Oct 2021 18:44:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20211012142910.9688-1-zhangliguang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S238137AbhJMRsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238147AbhJMRs1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 13:48:27 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37DCC061753
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:46:22 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id z2-20020a254c02000000b005b68ef4fe24so3969804yba.11
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:46:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Zi5HmM/Iu6/fkSGLhyqm/tkYmOiHV4iGSD0CDddNH0Q=;
+        b=VGGWiTy5s9uZj6oVqPMRlagfGE5LIaoUFUuRzCfilBPRS+fJWlHbnEXUD/nhWoMqFg
+         AGTHRbNNbNBF0kefvoq76q8Fozlqx28Z9UYaANCJ/vhJBY7AhvfQ4IScC19jEXSqCATL
+         YBfMLGJnKGss4DP8nbrrliZuGBMYEk+nOhkwnfw9QJUIz1tQYcqSuBYfKinKmifEFKQX
+         X8WqAl/dXscFcX+s3sHdhfNteTM83UZjlADZMm/wurOtz30Wf8niHLzPd8r00mFQ74Lo
+         Wl8GQ91hzqVLzbemu3So9NfbjDzCuU3F5gMMJyO6EqU2V237ni/XLA79fcOLFagw3IMG
+         JQbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Zi5HmM/Iu6/fkSGLhyqm/tkYmOiHV4iGSD0CDddNH0Q=;
+        b=BViP5Os9c9u66wX0EhtWZ6n0ZTWAE8i+wS50/rljKOFrJX5igPZn3rTnOFHgGLV0sX
+         mNJiDsxI/vNvhXcM1UwJ/whKXWudhDGlFRwQ8DSStIAHNURSd8jkCl38+lBrWcJ2ZN6I
+         nCDrvUfJwXF1/4bLZW/eTW45vcGG1rXR+GDRVV4F364auyLW8PK66x15H0VAiNP75IQL
+         988VkfS+0eeBR1sK0LCKgLSAfADHZPscLhpC5EumpO88xaQixChsYiMRerEnzas6+8N3
+         mH6L4Z4ESF+EWt4zpH7ILPcVf+AnX3Quv08bX/JlvIzegUOifYhJfvT5tcbE7GEZjZ6c
+         G5Bg==
+X-Gm-Message-State: AOAM531/3U7BYD2TTlBfsLVY0s1N1ijPPEP++ClHSlgRbMzyo47x4c9r
+        x0r6+VRqiBlHUDJgyCuSvpzpKoYO8qTa
+X-Google-Smtp-Source: ABdhPJwzOqfZ1PiPr3V1eCTuH0ImAWtQ6SJ7/slvZ79fWK8rMMpQaHA0e/a6liIK03GeDlqSAlIkSrHWmK7Z
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:aeaf:8e9e:3df2:aad9])
+ (user=irogers job=sendgmr) by 2002:a25:4146:: with SMTP id
+ o67mr836334yba.113.1634147181878; Wed, 13 Oct 2021 10:46:21 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 10:45:42 -0700
+Message-Id: <20211013174604.747276-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH v2 00/22] Start aligning perf test with kunit style
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Perf test uses its own structs and code layout that differs from kunit
+that was more recently introduced to the kernel. Besides consistency,
+it is hoped that moving in the direction of kunit style will enable
+reuse of infrastructure like test output formatting for continuous
+testing systems. For example:
+https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
 
-On 12/10/2021 15:29, Liguang Zhang wrote:
-> When hest acpi table configure Hardware Error Notification type as
-> Software Delegated Exception(0x0B) for RAS event, OS RAS interacts with
-> ATF by SDEI mechanism. On the firmware first system, OS was notified by
-> ATF sdei call.
-> 
-> The calling flow like as below when fatal RAS error happens:
-> 
-> ATF notify OS flow:
->   sdei_dispatch_event()
->     ehf_activate_priority()
->       call sdei callback  // callback registered by OS
->     ehf_deactivate_priority()
-> 
-> OS sdei callback:
->   sdei_asm_handler()
->     __sdei_handler()
->       _sdei_handler()
->         sdei_event_handler()
->           ghes_sdei_critical_callback()
->             ghes_in_nmi_queue_one_entry()
->               /* if RAS error is fatal */
->               __ghes_panic()
->                 panic()
-> 
-> If fatal RAS error occured, panic was called in sdei_asm_handle()
-> without ehf_deactivate_priority executed, which lead interrupt masked.
+The motivation for this restructuring comes from wanting to be able to
+tag tests with a size:
+https://lore.kernel.org/linux-perf-users/CAP-5=fWmGyuqFKc-EMP3rbmTkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com/
+To have more exhaustive and slower running tests.  This isn't
+something kunit currently supports, nor is the execution of python and
+shell tests, but it seems sensible to work on an approach with kunit
+rather to invent a new wheel inside of perf.
 
-So far the story is:
-Firmware generated and SDEI event (a kind of software NMI) because of a firmware
-interrupt, but it hasn't completely handled the interrupt.
+These initial patches are just refactoring the main test suite
+definitions to be in a more kunit style. Kunit isn't depended upon, it
+is hoped that this can be done in later patches for the sake of
+consistency.
 
+v2. Gets to a point of the perf test test suite/case structs being
+    close facsimiles of the kunit ones. It also addresses feedback on
+    the v1 RFC, in particular from Jiri Olsa <jolsa@redhat.com>.
 
-> If interrupt masked, system would be halted in kdump flow like this:
-> 
-> arm-smmu-v3 arm-smmu-v3.3.auto: allocated 65536 entries for cmdq
-> arm-smmu-v3 arm-smmu-v3.3.auto: allocated 32768 entries for evtq
-> arm-smmu-v3 arm-smmu-v3.3.auto: allocated 65536 entries for priq
-> arm-smmu-v3 arm-smmu-v3.3.auto: SMMU currently enabled! Resetting...
+v1. Built/tested on x86.
 
-How and why do firmware interrupts affect the IOMMU?
+Ian Rogers (22):
+  perf test: Use macro for "suite" declarations
+  perf test: Use macro for "suite" definitions
+  perf test: Make each test/suite its own struct.
+  perf test: Move each test suite struct to its test
+  perf test: Rename struct test to test_suite
+  perf test: Add helper functions for abstraction.
+  perf test: Add test case struct.
+  perf test: Add skip reason to test case.
+  perf test: Convert pfm tests to use test cases.
+  perf test: Convert pmu event tests to test cases.
+  perf test: Convert watch point tests to test cases.
+  perf test: Convert clang tests to test cases.
+  perf test: Convert bpf tests to test cases.
+  perf test: Convert llvm tests to test cases.
+  perf test: Remove now unused subtest helpers
+  perf test: bp tests use test case
+  perf test: Convert time to tsc test to test case.
+  perf test: Remove non test case style support.
+  perf test: BP tests, remove is_supported use
+  perf test: TSC test, remove is_supported use
+  perf test: Remove is_supported function
+  perf test: Remove skip_if_fail
 
-It sounds like you are sharing something with firmware that you shouldn't.
+ tools/perf/arch/arm/include/arch-tests.h      |   2 +-
+ tools/perf/arch/arm/tests/arch-tests.c        |  18 +-
+ tools/perf/arch/arm/tests/vectors-page.c      |   2 +-
+ tools/perf/arch/arm64/include/arch-tests.h    |   2 +-
+ tools/perf/arch/arm64/tests/arch-tests.c      |  11 +-
+ tools/perf/arch/powerpc/include/arch-tests.h  |   2 +-
+ tools/perf/arch/powerpc/tests/arch-tests.c    |  12 +-
+ tools/perf/arch/x86/include/arch-tests.h      |  14 +-
+ tools/perf/arch/x86/tests/arch-tests.c        |  46 +-
+ tools/perf/arch/x86/tests/bp-modify.c         |   2 +-
+ tools/perf/arch/x86/tests/insn-x86.c          |   2 +-
+ tools/perf/arch/x86/tests/intel-cqm.c         |   2 +-
+ .../x86/tests/intel-pt-pkt-decoder-test.c     |   2 +-
+ tools/perf/arch/x86/tests/rdpmc.c             |   2 +-
+ tools/perf/arch/x86/tests/sample-parsing.c    |   2 +-
+ tools/perf/tests/api-io.c                     |   6 +-
+ tools/perf/tests/attr.c                       |   4 +-
+ tools/perf/tests/backward-ring-buffer.c       |   4 +-
+ tools/perf/tests/bitmap.c                     |   4 +-
+ tools/perf/tests/bp_account.c                 |  36 +-
+ tools/perf/tests/bp_signal.c                  |  34 +-
+ tools/perf/tests/bp_signal_overflow.c         |   9 +-
+ tools/perf/tests/bpf.c                        |  69 ++-
+ tools/perf/tests/builtin-test.c               | 578 ++++++------------
+ tools/perf/tests/clang.c                      |  54 +-
+ tools/perf/tests/code-reading.c               |   4 +-
+ tools/perf/tests/cpumap.c                     |  10 +-
+ tools/perf/tests/demangle-java-test.c         |   4 +-
+ tools/perf/tests/demangle-ocaml-test.c        |   4 +-
+ tools/perf/tests/dlfilter-test.c              |   4 +-
+ tools/perf/tests/dso-data.c                   |  10 +-
+ tools/perf/tests/dwarf-unwind.c               |   5 +-
+ tools/perf/tests/event-times.c                |   4 +-
+ tools/perf/tests/event_update.c               |   4 +-
+ tools/perf/tests/evsel-roundtrip-name.c       |   5 +-
+ tools/perf/tests/evsel-tp-sched.c             |   5 +-
+ tools/perf/tests/expand-cgroup.c              |   6 +-
+ tools/perf/tests/expr.c                       |   4 +-
+ tools/perf/tests/fdarray.c                    |   7 +-
+ tools/perf/tests/genelf.c                     |   6 +-
+ tools/perf/tests/hists_cumulate.c             |   4 +-
+ tools/perf/tests/hists_filter.c               |   4 +-
+ tools/perf/tests/hists_link.c                 |   4 +-
+ tools/perf/tests/hists_output.c               |   4 +-
+ tools/perf/tests/is_printable_array.c         |   4 +-
+ tools/perf/tests/keep-tracking.c              |   4 +-
+ tools/perf/tests/kmod-path.c                  |   4 +-
+ tools/perf/tests/llvm.c                       |  74 ++-
+ tools/perf/tests/maps.c                       |   4 +-
+ tools/perf/tests/mem.c                        |   4 +-
+ tools/perf/tests/mem2node.c                   |   4 +-
+ tools/perf/tests/mmap-basic.c                 |   4 +-
+ tools/perf/tests/mmap-thread-lookup.c         |   4 +-
+ tools/perf/tests/openat-syscall-all-cpus.c    |   5 +-
+ tools/perf/tests/openat-syscall-tp-fields.c   |   5 +-
+ tools/perf/tests/openat-syscall.c             |   5 +-
+ tools/perf/tests/parse-events.c               |   4 +-
+ tools/perf/tests/parse-metric.c               |   4 +-
+ tools/perf/tests/parse-no-sample-id-all.c     |   5 +-
+ tools/perf/tests/pe-file-parsing.c            |   6 +-
+ tools/perf/tests/perf-hooks.c                 |   4 +-
+ tools/perf/tests/perf-record.c                |   4 +-
+ tools/perf/tests/perf-time-to-tsc.c           |  30 +-
+ tools/perf/tests/pfm.c                        |  63 +-
+ tools/perf/tests/pmu-events.c                 |  73 +--
+ tools/perf/tests/pmu.c                        |   4 +-
+ tools/perf/tests/python-use.c                 |   4 +-
+ tools/perf/tests/sample-parsing.c             |   4 +-
+ tools/perf/tests/sdt.c                        |   6 +-
+ tools/perf/tests/stat.c                       |  11 +-
+ tools/perf/tests/sw-clock.c                   |   4 +-
+ tools/perf/tests/switch-tracking.c            |   4 +-
+ tools/perf/tests/task-exit.c                  |   4 +-
+ tools/perf/tests/tests.h                      | 238 ++++----
+ tools/perf/tests/thread-map.c                 |  10 +-
+ tools/perf/tests/thread-maps-share.c          |   4 +-
+ tools/perf/tests/time-utils-test.c            |   4 +-
+ tools/perf/tests/topology.c                   |   4 +-
+ tools/perf/tests/unit_number__scnprintf.c     |   4 +-
+ tools/perf/tests/vmlinux-kallsyms.c           |   5 +-
+ tools/perf/tests/wp.c                         | 122 +---
+ tools/perf/util/c++/clang-c.h                 |   8 +-
+ tools/perf/util/c++/clang-test.cpp            |   6 +-
+ 83 files changed, 811 insertions(+), 966 deletions(-)
 
+-- 
+2.33.0.882.g93a45727a2-goog
 
-> After debug, we found accurate halted position is:
-> arm_smmu_device_probe()
->   arm_smmu_device_reset()
->     arm_smmu_device_disable()
->       arm_smmu_write_reg_sync()
->         readl_relaxed_poll_timeout()
->           readx_poll_timeout()
->             read_poll_timeout()
->               usleep_range() // hrtimer is never waked.
-> 
-> So interrupt should be restored before panic otherwise kdump will trigger
-> error.
-
-Why can't firmware finish with the interrupt before injecting the SDEI event?
-If you need it to not happen a second time while the handler runs, you can always disable it.
-
-The text in the spec about the interaction of complete and physical interrupts is for
-bound interrupts. Linux doesn't support these. It isn't possible for linux to know whether
-firmware tied any other kind of event to a physical interrupt or not.
-
-
-> In the process of sdei, a SDEI_EVENT_COMPLETE_AND_RESUME call
-> should be called before panic for a completed run of ehf_deactivate_priority().
-
-SDEI_EVENT_COMPLETE_AND_RESUME is a complete, it tells firmware to restore the execution
-state from before the event. You get almost get away with x17-x30 being corrupted as
-panic() won't return - but the stack trace produced will be corrupt. If the original
-exception was from user-space, SP_EL0 will have been restored to be the user value. The
-kernel uses this for 'current'.
-
-
-The way this is supposed to work is the die-ing kernel calls SDEI_PE_MASK while it does
-the kdump reboot. Once the kdump kernel has started, the SDEI_PRIVATE_RESET and
-SDEI_SHARED_RESET calls should fix anything left over in firmware.
-
-
-Could you debug why firmware interrupts being active prevent the SMMU from being reset. As
-far as I can tell, those should be totally independent.
-
-
-Thanks,
-
-James
