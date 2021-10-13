@@ -2,77 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE2342BC85
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC0442BC8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239278AbhJMKNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 06:13:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229853AbhJMKN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:13:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EED061077;
-        Wed, 13 Oct 2021 10:11:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634119885;
-        bh=nfULThVsL8PZi2EK7lNA9LOGPPun9HsOuXuidX4x624=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VwNLqnVTAmlp9DN94XpAzhi3BZMEhLGfk4Z8roBXXp9tHX16hSy9epXZqNLfJqnpp
-         GoR7gRXnFnGk4JdCYGtKm/X2JfGxRRgTo1gasAkdf9w+b+466f62YSoziYSgk5oQq6
-         wGx4HjrA0CpcuPMzOHD9IloW4d2DqSGrEoUukBkc=
-Date:   Wed, 13 Oct 2021 12:11:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     ChenXiaoSong <chenxiaosong2@huawei.com>
-Cc:     viro@zeniv.linux.org.uk, stable@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dhowells@redhat.com, yukuai3@huawei.com, yi.zhang@huawei.com,
-        zhangxiaoxu5@huawei.com
-Subject: Re: [PATCH 4.19,v2] VFS: Fix fuseblk memory leak caused by mount
- concurrency
-Message-ID: <YWawy0J9JfStEku0@kroah.com>
-References: <20211013095101.641329-1-chenxiaosong2@huawei.com>
+        id S239269AbhJMKPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 06:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237525AbhJMKPx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 06:15:53 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5FEC061570;
+        Wed, 13 Oct 2021 03:13:50 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id ls18so1812265pjb.3;
+        Wed, 13 Oct 2021 03:13:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=1dUeTZLXCuNXDhj8msmYssPF3RGBm/4w14GViom8/z8=;
+        b=E5P+abuumiIOCiu+ElUEX2ETeN6nH/SD0vtRth4wjleHKZv0MBERHK6yLO8UtObpBJ
+         950msUkL69OFeoJpmdS6V2HkJiDagXtOYfN/mlirF7dfy++1MF6V6zewRitwv65inEJS
+         nJvk/R4W6sUMDZODcvri7B5eVwLzxrq22iNnWlcAg0JWFFZYA54KudHI0vtoO+7UAM6v
+         DPVjCJMdGXT4UgaObzScpHIMJhaNyB5+6daiPba5bDzHxSRNr9T2Tvwggv/OVXF51MJk
+         RMRuto6NRST/UL3FsCxjpc00IZFqsRFD1xBnoodIpTDCIPZAS5yNMpCFygubXiYpbyzK
+         5j2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=1dUeTZLXCuNXDhj8msmYssPF3RGBm/4w14GViom8/z8=;
+        b=B5eNHjhBBtn0zL9ajqHSyloMOGXoosiccu3w7SOvvSWG22lL4RBZw0ulTl83Yj3DYC
+         qfbFBkjfarCb7TdGEAWCcJ3BXWfcmlAWBaFx9ZjiAMNA4slm7d3vtg0rmw7FBFkiPMDx
+         9aQNgVmnN4dRfWMnsduraUhii3aZ7tI4cVJyFnxh/TJImOV02u5a8TyE9xDBr6Q69GqJ
+         SLEqzbcJdZljpogYTL0k5BwVuXG7BgXCGTEDi6aGENNpQI2DQMCJqtFJL+YZ2SC42Yuj
+         EKLtVHhrnpx5bFewMP3FgoCCEkse7d11YIWEymcHq45kcr7xIXo0BxIPpwO+T/BmKNNs
+         RCzA==
+X-Gm-Message-State: AOAM531LEAH7D1KwlBmt6rrCqQ/Utlp+Lg8FKsUg3aVu71MNMZuMxVdc
+        sg7by4g1dErdfOp5QlUU/UU=
+X-Google-Smtp-Source: ABdhPJyf0XEpOl2mztCpYhNDU0671zzQu2YhtSz5vcY6u+YY2wKFQlYAaO6O+ITGmONzoFI2OC0c6A==
+X-Received: by 2002:a17:90b:3749:: with SMTP id ne9mr12487858pjb.192.1634120030029;
+        Wed, 13 Oct 2021 03:13:50 -0700 (PDT)
+Received: from localhost.localdomain ([171.211.26.24])
+        by smtp.gmail.com with ESMTPSA id a11sm14018427pgj.75.2021.10.13.03.13.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 03:13:49 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
+Cc:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Rasmussen <MIR@bang-olufsen.dk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 5/6] net: dsa: realtek-smi: add rtl8365mb subdriver for RTL8365MB-VC
+Date:   Wed, 13 Oct 2021 18:13:41 +0800
+Message-Id: <20211013101341.56223-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <32ffccb4-ff8b-5e60-ad29-e32bcb22969f@bang-olufsen.dk>
+References: <20211012123557.3547280-1-alvin@pqrs.dk> <20211012123557.3547280-6-alvin@pqrs.dk> <20211013095505.55966-1-dqfext@gmail.com> <32ffccb4-ff8b-5e60-ad29-e32bcb22969f@bang-olufsen.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211013095101.641329-1-chenxiaosong2@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 05:51:01PM +0800, ChenXiaoSong wrote:
-> If two processes mount same superblock, memory leak occurs:
+On Wed, Oct 13, 2021 at 10:05:21AM +0000, Alvin Šipraga wrote:
+> Andrew also suggested this, but the discontinuity in port IDs seems to 
+> be an invitation for trouble. Here is an example of a series of 
+> functions from dsa.h:
 > 
-> CPU0               |  CPU1
-> do_new_mount       |  do_new_mount
->   fs_set_subtype   |    fs_set_subtype
->     kstrdup        |
->                    |      kstrdup
->     memrory leak   |
+> static inline struct dsa_port *dsa_to_port(struct dsa_switch *ds, int p)
+> {
+> 	struct dsa_switch_tree *dst = ds->dst;
+> 	struct dsa_port *dp;
 > 
-> Fix this by adding a write lock while calling fs_set_subtype.
+> 	list_for_each_entry(dp, &dst->ports, list)
+> 		if (dp->ds == ds && dp->index == p)
+> 			return dp;
 > 
-> Linus's tree already have refactoring patchset [1], one of them can fix this bug:
->         c30da2e981a7 (fuse: convert to use the new mount API)
+> 	return NULL;
+> }
 > 
-> Since we did not merge the refactoring patchset in this branch, I create this patch.
+> static inline bool dsa_is_user_port(struct dsa_switch *ds, int p)
+> {
+> 	return dsa_to_port(ds, p)->type == DSA_PORT_TYPE_USER;
+> }
 > 
-> [1] https://patchwork.kernel.org/project/linux-fsdevel/patch/20190903113640.7984-3-mszeredi@redhat.com/
+> static inline u32 dsa_user_ports(struct dsa_switch *ds)
+> {
+> 	u32 mask = 0;
+> 	int p;
 > 
-> Fixes: 79c0b2df79eb (add filesystem subtype support)
-> Cc: David Howells <dhowells@redhat.com>
-> Signed-off-by: ChenXiaoSong <chenxiaosong2@huawei.com>
-> ---
-> v1: Can not mount sshfs ([PATCH linux-4.19.y] VFS: Fix fuseblk memory leak caused by mount concurrency)
-> v2: Use write lock while writing superblock
+> 	for (p = 0; p < ds->num_ports; p++)
+> 		if (dsa_is_user_port(ds, p))
+> 			mask |= BIT(p);
 > 
->  fs/namespace.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+> 	return mask;
+> }
+> 
+> My reading of dsa_user_ports() is that the port IDs run from 0 to 
+> (ds->num_ports - 1). If num_ports is 5 (4 user ports and 1 CPU port, as 
+> in my case), but the CPU is port 6, will we not dereference NULL when 
+> calling dsa_is_user_port(ds, 4)?
 
-As you are referring to a fuse-only patch above, why are you trying to
-resolve this issue in the core namespace code instead?
+So set num_ports to 7.
 
-How does fuse have anything to do with this?
-
-confused,
-
-greg k-h
+> 
+> > 
+> >> +
+> >> +/* Chip-specific data and limits */
+> 
