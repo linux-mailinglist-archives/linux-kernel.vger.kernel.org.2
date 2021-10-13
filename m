@@ -2,177 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0127442C760
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0671142C766
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237916AbhJMRRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237869AbhJMRRu (ORCPT
+        id S237964AbhJMRSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:18:39 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43876 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234083AbhJMRSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:17:50 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C0F3C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:15:47 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id o204so4699859oih.13
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:15:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W8nJn1I9+6xqCWimBgakZ0ZykoVGwL72//fXC4D2ENM=;
-        b=GI2da+Yf8iRRrz33iNLPc7mzogAwHgSYE6UnW3MHkFfv7C00ULlaeRSw+ecfq1ILmK
-         yJIL013x3qXks11y/cjE+AALW6awCN1OArNQUkyBQ+4mgvb0KjtqVqo+kEkh+UoCBt+H
-         0WDCQuuqVuTNpZJ4fvbpMBA9HV5sEbdiL3Q3jZrxBESwug1StY1cjr8xlboSu4cmw+8j
-         6pN+Le3SWffPOmsGK3waohlhvtMo927iGVjPzMVlGN/hzh9v4oBqB7lWtvtuVSYvhn99
-         0dAJdEtstNq+XGfKyAf2tiglHD+mxdHxf9/Y1ZgeXqp3HaNt5gVA40RtAqLUQMUAO5CQ
-         QMrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W8nJn1I9+6xqCWimBgakZ0ZykoVGwL72//fXC4D2ENM=;
-        b=sDKvhTtf9IAr+aJUX95+N1lMgUpb4W7mME6ntpn4HdUa3329SUw6sCKUe1BJlGkBr/
-         5im0oAXXJQxjsxgacAQZ51OydImhDfF/HhE8HSu6pjrSyuDfE5Nku/HtMwCSV7j/FOm1
-         9bEiS5UEE18skZBDIXe+UDe/a7vSWms/MPzHPP1qXRaA+FF7PpA0Cg0RxANnT7rYWqNS
-         N/yWI3/eftXbZphzlsUrGCpp0dZTNymJRRPKwjY6tuLyw/w/Kth9COqoU4UHIq/R58Fu
-         LjMaVS1nSFSWLlBFfkE63EBLGQFQfgPAJAtnQ62Wj22zHW4F7fTYhDY7PADj7B1MS73s
-         3OUw==
-X-Gm-Message-State: AOAM532/NEa9FPeJym7zmU4llNf+9jfJxE548lyd0yo4zmbqrWvMOft3
-        /b1jL3EkXcDVGvk9dPJUsYZE5y3+zL3x8ix05CLJM5eS3z7ZrA==
-X-Google-Smtp-Source: ABdhPJxlYaW0DbUNDGvX1GOmNno4laeXfJ5hJQT1f9YdWbCUWCT4I+0fram+3t4Qp5MihxS84DdI0NDO7jJ4uJ+qErc=
-X-Received: by 2002:a05:6808:1686:: with SMTP id bb6mr246917oib.40.1634145346288;
- Wed, 13 Oct 2021 10:15:46 -0700 (PDT)
+        Wed, 13 Oct 2021 13:18:36 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0D37A21A1E;
+        Wed, 13 Oct 2021 17:16:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634145391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b/zEsRXmAZrCKtzPcm6tYZaLnIWbf4/HEIHx/3hXRrA=;
+        b=CiciIxvn36QlEyV9EzgU3lo8Sh9+Q+9OSO4PP9EFH7QREFnrsp5lIFmdQgR+6SbdFsawxz
+        JcouaancYdkpi34W539NgTOqpe6RDOJpphs60LND9NNE5O9AfM55yFHBis1V3N/KT2HyvE
+        KnjD8z1Menw7asLknSWNkTZYeQ3hbGw=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 26179A3B8F;
+        Wed, 13 Oct 2021 17:16:30 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 19:16:29 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Vasily Averin <vvs@virtuozzo.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org
+Subject: Re: [PATCH mm v3] memcg: enable memory accounting in
+ __alloc_pages_bulk
+Message-ID: <YWcUbXfBsbNzYIad@dhcp22.suse.cz>
+References: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
+ <60df0efd-f458-a13c-7c89-749bdab21d1d@virtuozzo.com>
+ <YWWrai/ChIgycgCo@dhcp22.suse.cz>
+ <CALvZod7LpEY98r=pD-k=WbOT-z=Ux16Mfmv3s7PDtJg6=ZStgw@mail.gmail.com>
+ <YWXS09ZBhZSy6FQQ@dhcp22.suse.cz>
+ <CALvZod6K6UXxDrkHp=mVDV7O-fAtmRkgMDngPazBhcyDUNxy_Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
- <20211013105541.68045-8-bhupesh.sharma@linaro.org> <f58d549a-5ce3-a51d-c371-a3ffdc76496d@linaro.org>
-In-Reply-To: <f58d549a-5ce3-a51d-c371-a3ffdc76496d@linaro.org>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Wed, 13 Oct 2021 22:45:35 +0530
-Message-ID: <CAH=2NtzoVs5XjSn11_VioEhTiTDN9_E9iU7eSTxT2R4gR8W80A@mail.gmail.com>
-Subject: Re: [PATCH v4 07/20] dt-bindings: qcom-qce: Convert bindings to yaml
-To:     Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, linux-crypto@vger.kernel.org,
-        bhupesh.linux@gmail.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod6K6UXxDrkHp=mVDV7O-fAtmRkgMDngPazBhcyDUNxy_Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
-
-On Wed, 13 Oct 2021 at 18:35, Vladimir Zapolskiy
-<vladimir.zapolskiy@linaro.org> wrote:
->
-> Hi Bhupesh,
->
-> On 10/13/21 1:55 PM, Bhupesh Sharma wrote:
-> > Convert Qualcomm QCE crypto devicetree binding to YAML.
+On Wed 13-10-21 09:41:15, Shakeel Butt wrote:
+> On Tue, Oct 12, 2021 at 11:24 AM Michal Hocko <mhocko@suse.com> wrote:
 > >
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > ---
-> >   .../devicetree/bindings/crypto/qcom-qce.yaml  | 67 +++++++++++++++++++
-> >   1 file changed, 67 insertions(+)
-> >   create mode 100644 Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+> > On Tue 12-10-21 09:08:38, Shakeel Butt wrote:
+> > > On Tue, Oct 12, 2021 at 8:36 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Tue 12-10-21 17:58:21, Vasily Averin wrote:
+> > > > > Enable memory accounting for bulk page allocator.
+> > > >
+> > > > ENOCHANGELOG
+> > > >
+> > > > And I have to say I am not very happy about the solution. It adds a very
+> > > > tricky code where it splits different charging steps apart.
+> > > >
+> > > > Would it be just too inefficient to charge page-by-page once all pages
+> > > > are already taken away from the pcp lists? This bulk should be small so
+> > > > this shouldn't really cause massive problems. I mean something like
+> > > >
+> > > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > > > index b37435c274cf..8bcd69195ef5 100644
+> > > > --- a/mm/page_alloc.c
+> > > > +++ b/mm/page_alloc.c
+> > > > @@ -5308,6 +5308,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+> > > >
+> > > >         local_unlock_irqrestore(&pagesets.lock, flags);
+> > > >
+> > > > +       if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT)) {
+> > > > +               /* charge pages here */
+> > > > +       }
+> > >
+> > > It is not that simple because __alloc_pages_bulk only allocate pages
+> > > for empty slots in the page_array provided by the caller.
+> > >
+> > > The failure handling for post charging would be more complicated.
 > >
-> > diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-> > new file mode 100644
-> > index 000000000000..b7ae873dc943
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
-> > @@ -0,0 +1,67 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/crypto/qcom-qce.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Qualcomm crypto engine driver
-> > +
-> > +maintainers:
-> > +  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > +
-> > +description: |
-> > +  This document defines the binding for the QCE crypto
-> > +  controller found on Qualcomm parts.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: qcom,crypto-v5.1
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: iface clocks register interface.
-> > +      - description: bus clocks data transfer interface.
-> > +      - description: core clocks rest of the crypto block.
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: iface
-> > +      - const: bus
-> > +      - const: core
-> > +
-> > +  dmas:
-> > +    items:
-> > +      - description: DMA specifiers for tx dma channel.
-> > +      - description: DMA specifiers for rx dma channel.
->
-> Please consider to swap the description lines, so that they'll
-> be matching the dma-names below and a regular order found in
-> dts files.
+> > If this is really that complicated (I haven't tried) then it would be
+> > much more simple to completely skip the bulk allocator for __GFP_ACCOUNT
+> > rather than add a tricky code. The bulk allocator is meant to be used
+> > for ultra hot paths and memcg charging along with the reclaim doesn't
+> > really fit into that model anyway. Or are there any actual users who
+> > really need bulk allocator optimization and also need memcg accounting?
+> 
+> Bulk allocator is being used for vmalloc and we have several
+> kvmalloc() with __GFP_ACCOUNT allocations.
 
-Ok, I will fix it in v5.
-
-Regards,
-Bhupesh
-
-> > +
-> > +  dma-names:
-> > +    items:
-> > +      - const: rx
-> > +      - const: tx
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - clocks
-> > +  - clock-names
-> > +  - dmas
-> > +  - dma-names
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/qcom,gcc-apq8084.h>
-> > +    crypto-engine@fd45a000 {
-> > +        compatible = "qcom,crypto-v5.1";
-> > +        reg = <0xfd45a000 0x6000>;
-> > +        clocks = <&gcc GCC_CE2_AHB_CLK>,
-> > +                 <&gcc GCC_CE2_AXI_CLK>,
-> > +                 <&gcc GCC_CE2_CLK>;
-> > +        clock-names = "iface", "bus", "core";
-> > +        dmas = <&cryptobam 2>, <&cryptobam 3>;
-> > +        dma-names = "rx", "tx";
-> > +    };
-> >
->
-> --
-> Best wishes,
-> Vladimir
+Do we really need to use bulk allocator for these allocations?
+Bulk allocator is an bypass of the page allocator for performance reason
+and I can see why that can be useful but considering that the charging
+path can imply some heavy lifting is all the code churn to make bulk
+allocator memcg aware really worth it? Why cannot we simply skip over
+bulk allocator for __GFP_ACCOUNT. That would be a trivial fix.
+-- 
+Michal Hocko
+SUSE Labs
