@@ -2,177 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D17642C4F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BDC42C500
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbhJMPln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 11:41:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53866 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhJMPll (ORCPT
+        id S234081AbhJMPoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 11:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229711AbhJMPoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:41:41 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DB7442199F;
-        Wed, 13 Oct 2021 15:39:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634139576; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FNjFlLBCp8eIniFVxC2OTUCUHJDZc+bQGW4gxrxjguU=;
-        b=2mNBWlrdAdRT1IpwE9rQPOuZw6AahAK19rjBykFGnH2K1nyTFnMqyyVT6I19SNAlfLbQL9
-        gav+K0NvwaPnXEdVUrZ8RWSO1ZA9K3+4NSeMQ0obfx7sq9UL276QvTnTrBHQCtgUFoRihS
-        FAVNP/qetNKkny0rkaZwQBsEaEvsW9w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634139576;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FNjFlLBCp8eIniFVxC2OTUCUHJDZc+bQGW4gxrxjguU=;
-        b=KqOOnrNZJ/HPOwlOsOK0o6nRptwG4pCDO5AkIv7nwQlkaAIFWH3/TlZZMxlrHZ/kqYhBw3
-        g0zeQRk8Q1UqrZBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A5B4813D05;
-        Wed, 13 Oct 2021 15:39:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 06aHJ7j9ZmEDfQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 13 Oct 2021 15:39:36 +0000
-Message-ID: <63898e7a-0846-3105-96b5-76c89635e499@suse.cz>
-Date:   Wed, 13 Oct 2021 17:39:36 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Linux-MM <linux-mm@kvack.org>
-Cc:     NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20211008135332.19567-1-mgorman@techsingularity.net>
- <20211008135332.19567-2-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 1/8] mm/vmscan: Throttle reclaim until some writeback
- completes if congested
-In-Reply-To: <20211008135332.19567-2-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Wed, 13 Oct 2021 11:44:22 -0400
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4642C061570;
+        Wed, 13 Oct 2021 08:42:18 -0700 (PDT)
+Received: from pps.filterd (m0122331.ppops.net [127.0.0.1])
+        by mx0b-00190b01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19DEoeFe022425;
+        Wed, 13 Oct 2021 16:42:13 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=from : to : cc :
+ subject : date : message-id; s=jan2016.eng;
+ bh=DO0lCRBNP6M5Y5Vbcjjxet85Ai56VRLRgzAv8gTnEi4=;
+ b=LutFxOtBHH79K4N5/a25Rr5fdS8vCseKjZljj9fq3w8Y7I1Mx1JulDF+glH0gK6yXyQc
+ oEAUkdA3bi9qSk3qOWdHMEj8mhPqOjQx+LxgSi4JzZY6vv55XF/Tk68P4JRju1oy4Kod
+ CLUcnNRIKFtL7ToA/UoKrZqLNyS4nF4XzrxKNr99T6838UztHHqMUIIpcEZ0l4JB/e8M
+ zO8u7zmKca8KFu9tGVvi05F9gKpvaG44sICgCOY74UN+cViLKJ6L5khXEwZJbKBWkb7y
+ NE4ACHdSsDfRw+LOiNZhC6JS8lP/cS0wJtMcCi50sN5XqTZ7kbLCGWnbCMERJNaP6xkx Kg== 
+Received: from prod-mail-ppoint1 (prod-mail-ppoint1.akamai.com [184.51.33.18] (may be forged))
+        by mx0b-00190b01.pphosted.com with ESMTP id 3bp1jy15hq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 16:42:13 +0100
+Received: from pps.filterd (prod-mail-ppoint1.akamai.com [127.0.0.1])
+        by prod-mail-ppoint1.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 19DFXxKI013080;
+        Wed, 13 Oct 2021 11:42:12 -0400
+Received: from prod-mail-relay11.akamai.com ([172.27.118.250])
+        by prod-mail-ppoint1.akamai.com with ESMTP id 3bneah9r5t-1;
+        Wed, 13 Oct 2021 11:42:12 -0400
+Received: from bos-lpjec.145bw.corp.akamai.com (bos-lpjec.145bw.corp.akamai.com [172.28.3.71])
+        by prod-mail-relay11.akamai.com (Postfix) with ESMTP id 9E4F127751;
+        Wed, 13 Oct 2021 15:42:12 +0000 (GMT)
+From:   Jason Baron <jbaron@akamai.com>
+To:     gregkh@linuxfoundation.org
+Cc:     ahalaney@redhat.com, jim.cromie@gmail.com, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] Trivial dynamic debug fixups
+Date:   Wed, 13 Oct 2021 11:40:19 -0400
+Message-Id: <1634139622-20667-1-git-send-email-jbaron@akamai.com>
+X-Mailer: git-send-email 2.7.4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-10-13_06:2021-10-13,2021-10-13 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=758 adultscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110130101
+X-Proofpoint-ORIG-GUID: BFN7zaovYHcpRbmz3HlFNSeoqVYD4-jF
+X-Proofpoint-GUID: BFN7zaovYHcpRbmz3HlFNSeoqVYD4-jF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-13_06,2021-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 clxscore=1015
+ suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0 adultscore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=713 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110130102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/21 15:53, Mel Gorman wrote:
-> Page reclaim throttles on wait_iff_congested under the following conditions
-> 
-> o kswapd is encountering pages under writeback and marked for immediate
->   reclaim implying that pages are cycling through the LRU faster than
->   pages can be cleaned.
-> 
-> o Direct reclaim will stall if all dirty pages are backed by congested
->   inodes.
-> 
-> wait_iff_congested is almost completely broken with few exceptions. This
-> patch adds a new node-based workqueue and tracks the number of throttled
-> tasks and pages written back since throttling started. If enough pages
-> belonging to the node are written back then the throttled tasks will wake
-> early. If not, the throttled tasks sleeps until the timeout expires.
-> 
-> [neilb@suse.de: Uninterruptible sleep and simpler wakeups]
-> [hdanton@sina.com: Avoid race when reclaim starts]
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Hi Greg,
 
-Seems mostly OK, have just some doubts wrt NR_THROTTLED_WRITTEN mechanics,
-that may ultimately be just a point of comments to add.
+Here's the patch series from Andrew. Please consider applying to -next.
+I copied his cover letter message below.
 
-...
+Thanks!
 
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1006,6 +1006,56 @@ static void handle_write_error(struct address_space *mapping,
->  	unlock_page(page);
->  }
->  
-> +static void
-> +reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason,
-> +							long timeout)
-> +{
-> +	wait_queue_head_t *wqh = &pgdat->reclaim_wait;
-> +	long ret;
-> +	DEFINE_WAIT(wait);
-> +
-> +	/*
-> +	 * Do not throttle IO workers, kthreads other than kswapd or
-> +	 * workqueues. They may be required for reclaim to make
-> +	 * forward progress (e.g. journalling workqueues or kthreads).
-> +	 */
-> +	if (!current_is_kswapd() &&
-> +	    current->flags & (PF_IO_WORKER|PF_KTHREAD))
-> +		return;
-> +
-> +	if (atomic_inc_return(&pgdat->nr_reclaim_throttled) == 1) {
-> +		WRITE_ONCE(pgdat->nr_reclaim_start,
-> +			node_page_state(pgdat, NR_THROTTLED_WRITTEN));
-> +	}
-> +
-> +	prepare_to_wait(wqh, &wait, TASK_UNINTERRUPTIBLE);
-> +	ret = schedule_timeout(timeout);
-> +	finish_wait(wqh, &wait);
-> +	atomic_dec(&pgdat->nr_reclaim_throttled);
-> +
-> +	trace_mm_vmscan_throttled(pgdat->node_id, jiffies_to_usecs(timeout),
-> +				jiffies_to_usecs(timeout - ret),
-> +				reason);
-> +}
-> +
-> +/*
-> + * Account for pages written if tasks are throttled waiting on dirty
-> + * pages to clean. If enough pages have been cleaned since throttling
-> + * started then wakeup the throttled tasks.
-> + */
-> +void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page,
-> +							int nr_throttled)
-> +{
-> +	unsigned long nr_written;
-> +
-> +	__inc_node_page_state(page, NR_THROTTLED_WRITTEN);
+-Jason
 
-Is this intentionally using the __ version that normally expects irqs to be
-disabled (AFAIK they are not in this path)? I think this is rarely used cold
-path so it doesn't seem worth to trade off speed for accuracy.
 
-> +	nr_written = node_page_state(pgdat, NR_THROTTLED_WRITTEN) -
-> +		READ_ONCE(pgdat->nr_reclaim_start);
+Here is round 3 of some trivial dynamic debug improvements.
 
-Even if the inc above was safe, node_page_state() will return only the
-global counter, so the value we read here will only actually increment when
-some cpu's counter overflows, so it will be "bursty". Maybe it's ok, just
-worth documenting?
+v2 -> v3:
+ * Use a more clear example in the cli param examples
 
-> +
-> +	if (nr_written > SWAP_CLUSTER_MAX * nr_throttled)
-> +		wake_up_all(&pgdat->reclaim_wait);
+v1 -> v2:
+ * Use different example when showing misleading error message
+ * Justify dynamic debug scanning the whole command line
+ * Add patch removing ddebug_query
+ * Add patch improving cli param examples for dyndbg/$module.dyndbg
 
-Hm it seems a bit weird that the more tasks are throttled, the more we wait,
-and then wake up all. Theoretically this will lead to even more
-bursty/staggering herd behavior. Could be better to wake up single task each
-SWAP_CLUSTER_MAX, and bump nr_reclaim_start? But maybe it's not a problem in
-practice due to HZ/10 timeouts being short enough?
+v2: https://lore.kernel.org/all/20210913222440.731329-1-ahalaney@redhat.com/
+v1: https://lore.kernel.org/all/20210909161755.61743-1-ahalaney@redhat.com/
 
-> +}
-> +
+
+Andrew Halaney (3):
+  dyndbg: make dyndbg a known cli param
+  dyndbg: Remove support for ddebug_query param
+  Documentation: dyndbg: Improve cli param examples
+
+ Documentation/admin-guide/dynamic-debug-howto.rst | 13 ++++++-----
+ Documentation/admin-guide/kernel-parameters.txt   |  5 -----
+ lib/dynamic_debug.c                               | 27 ++++++-----------------
+ 3 files changed, 14 insertions(+), 31 deletions(-)
+
+-- 
+2.7.4
+
