@@ -2,291 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0A742C0EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F06242C0F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbhJMNH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:07:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:38856 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232645AbhJMNHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:07:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B2DD1FB;
-        Wed, 13 Oct 2021 06:05:15 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 898BA3F66F;
-        Wed, 13 Oct 2021 06:05:13 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 14:05:11 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     linux-pci@vger.kernel.org, john@phrozen.org,
-        devicetree@vger.kernel.org, tsbogend@alpha.franken.de,
-        bhelgaas@google.com, matthias.bgg@gmail.com,
-        gregkh@linuxfoundation.org, linux-mips@vger.kernel.org,
-        linux-staging@lists.linux.dev, neil@brown.name,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] PCI: mt7621: Add MediaTek MT7621 PCIe host
- controller driver
-Message-ID: <20211013130511.GB11036@lpieralisi>
-References: <20210922050035.18162-1-sergio.paracuellos@gmail.com>
- <20210922050035.18162-3-sergio.paracuellos@gmail.com>
+        id S234231AbhJMNHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232645AbhJMNHa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:07:30 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A130EC061768
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:05:24 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id r19so11449007lfe.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:05:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xowPA0KXkDimH5diDPNJR7+P4PZbybslKdAEHgBwaCw=;
+        b=s0FRSbCg+aUO1rTNrATLxL+l6IGjLXN7+TMv7tgNoLErDOmqGT4xWn8Nq2zNs5i2w/
+         hwbTSI1PehHXFY8S83cprG48o3vRAtSypgkUvfhzp6YOV/IF267y4MCwLBo+5vDWyvqC
+         d4xWpeAmaX+GUMLAmCerk7PIMuyz+pIw+KwWkG3Gdtd89570uxLA6J9Il7nWB0NAwXJH
+         KK7SQD/V60XnmgKJCe9BVXg3PWsTLliMa3EMExdohHirPOwhbM0vXm8avgYdMHPp5IIX
+         uMPBrtUxkB0LxUz5iQJ/bLx18aaaovVXN49vcjjxs2L8mSBu7pmG7fHVo0+74k2UQf4+
+         CEBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xowPA0KXkDimH5diDPNJR7+P4PZbybslKdAEHgBwaCw=;
+        b=bpnwdHQZyh02mmiyPBI5vA+zoYTNYWdAHhA+rzeMH6MLadsU7A/1B7l2mYjZVeLX5h
+         HGs1xZB02n6cFf0q12idZP/5IweJb8I0frgw61KOOldEV4zZFazTg3Wqbx50eh1L26Sg
+         3eHVX5+i/jWQRuTSNPGQG7fGJ1BZ4TiVMnwCMxLFRiqGGfhhoNPhSDrbBZ8jEbhxCuOk
+         ntYClHLwXY0FlVh+XVU+95qjwCY2O+wQD3kwhNnrdQZ8byjoo4b7yfxb2zIRWETst++A
+         zyPBwnL6/hoUmmfWiEBjF8v7bNV1g9/Ih7pw57kSR8AiT7D+NLbPBqhyrD5QEB2+F2sc
+         IZPg==
+X-Gm-Message-State: AOAM530Qbymm8vycs3Puje3rZzS8gR3TV5V6UItDVkhT3sr0IJfHjRj8
+        +mO60Ww+LQm2saaPOffLWPsswA==
+X-Google-Smtp-Source: ABdhPJwIZLLaMhm3M7J6QiDzYJdWa2mNtm9tk6WbTR9xWYATnnQynUkZYRkYvQjmnu3/QYJxqIxtAQ==
+X-Received: by 2002:a05:651c:514:: with SMTP id o20mr37782556ljp.305.1634130318011;
+        Wed, 13 Oct 2021 06:05:18 -0700 (PDT)
+Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
+        by smtp.gmail.com with ESMTPSA id y6sm1327449lfa.122.2021.10.13.06.05.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 06:05:17 -0700 (PDT)
+Subject: Re: [PATCH v4 07/20] dt-bindings: qcom-qce: Convert bindings to yaml
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     bhupesh.linux@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>
+References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+ <20211013105541.68045-8-bhupesh.sharma@linaro.org>
+From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Message-ID: <f58d549a-5ce3-a51d-c371-a3ffdc76496d@linaro.org>
+Date:   Wed, 13 Oct 2021 16:05:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210922050035.18162-3-sergio.paracuellos@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20211013105541.68045-8-bhupesh.sharma@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 07:00:34AM +0200, Sergio Paracuellos wrote:
-> Add driver for the PCIe controller of the MT7621 SoC.
+Hi Bhupesh,
+
+On 10/13/21 1:55 PM, Bhupesh Sharma wrote:
+> Convert Qualcomm QCE crypto devicetree binding to YAML.
 > 
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 > ---
->  arch/mips/ralink/Kconfig                      |   3 +-
->  drivers/pci/controller/Kconfig                |   8 ++
->  drivers/pci/controller/Makefile               |   1 +
->  .../controller}/pci-mt7621.c                  |   0
->  drivers/staging/Kconfig                       |   2 -
->  drivers/staging/Makefile                      |   1 -
->  drivers/staging/mt7621-pci/Kconfig            |   8 --
->  drivers/staging/mt7621-pci/Makefile           |   2 -
->  drivers/staging/mt7621-pci/TODO               |   4 -
->  .../mt7621-pci/mediatek,mt7621-pci.txt        | 104 ------------------
->  10 files changed, 11 insertions(+), 122 deletions(-)
->  rename drivers/{staging/mt7621-pci => pci/controller}/pci-mt7621.c (100%)
->  delete mode 100644 drivers/staging/mt7621-pci/Kconfig
->  delete mode 100644 drivers/staging/mt7621-pci/Makefile
->  delete mode 100644 drivers/staging/mt7621-pci/TODO
->  delete mode 100644 drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
+>   .../devicetree/bindings/crypto/qcom-qce.yaml  | 67 +++++++++++++++++++
+>   1 file changed, 67 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/crypto/qcom-qce.yaml
 > 
-> diff --git a/arch/mips/ralink/Kconfig b/arch/mips/ralink/Kconfig
-> index c800bf5559b5..120adad51d6a 100644
-> --- a/arch/mips/ralink/Kconfig
-> +++ b/arch/mips/ralink/Kconfig
-> @@ -51,7 +51,8 @@ choice
->  		select SYS_SUPPORTS_HIGHMEM
->  		select MIPS_GIC
->  		select CLKSRC_MIPS_GIC
-> -		select HAVE_PCI if PCI_MT7621
-> +		select HAVE_PCI
-> +		select PCI_DRIVERS_GENERIC
->  		select SOC_BUS
->  endchoice
->  
-> diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-> index 326f7d13024f..b76404be0360 100644
-> --- a/drivers/pci/controller/Kconfig
-> +++ b/drivers/pci/controller/Kconfig
-> @@ -312,6 +312,14 @@ config PCIE_HISI_ERR
->  	  Say Y here if you want error handling support
->  	  for the PCIe controller's errors on HiSilicon HIP SoCs
->  
-> +config PCI_MT7621
-> +	tristate "MediaTek MT7621 PCI Controller"
-> +	depends on (RALINK && SOC_MT7621) || (MIPS && COMPILE_TEST)
-
-- Is there a chance we can remove the MIPS dependency from the
-  COMPILE_TEST conditional ?
-- I am not a big fan of "SOC_XXX" config options dependencies, actually
-  there is none in pci/controller. Is there a way to remove it ?
-
-Lorenzo
-
-> +	select PHY_MT7621_PCI
-> +	default SOC_MT7621
-> +	help
-> +	  This selects a driver for the MediaTek MT7621 PCI Controller.
+> diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.yaml b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+> new file mode 100644
+> index 000000000000..b7ae873dc943
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.yaml
+> @@ -0,0 +1,67 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/crypto/qcom-qce.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  source "drivers/pci/controller/dwc/Kconfig"
->  source "drivers/pci/controller/mobiveil/Kconfig"
->  source "drivers/pci/controller/cadence/Kconfig"
-> diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
-> index aaf30b3dcc14..f42a566353cb 100644
-> --- a/drivers/pci/controller/Makefile
-> +++ b/drivers/pci/controller/Makefile
-> @@ -37,6 +37,7 @@ obj-$(CONFIG_VMD) += vmd.o
->  obj-$(CONFIG_PCIE_BRCMSTB) += pcie-brcmstb.o
->  obj-$(CONFIG_PCI_LOONGSON) += pci-loongson.o
->  obj-$(CONFIG_PCIE_HISI_ERR) += pcie-hisi-error.o
-> +obj-$(CONFIG_PCI_MT7621) += pci-mt7621.o
->  # pcie-hisi.o quirks are needed even without CONFIG_PCIE_DW
->  obj-y				+= dwc/
->  obj-y				+= mobiveil/
-> diff --git a/drivers/staging/mt7621-pci/pci-mt7621.c b/drivers/pci/controller/pci-mt7621.c
-> similarity index 100%
-> rename from drivers/staging/mt7621-pci/pci-mt7621.c
-> rename to drivers/pci/controller/pci-mt7621.c
-> diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
-> index e03627ad4460..59af251e7576 100644
-> --- a/drivers/staging/Kconfig
-> +++ b/drivers/staging/Kconfig
-> @@ -86,8 +86,6 @@ source "drivers/staging/vc04_services/Kconfig"
->  
->  source "drivers/staging/pi433/Kconfig"
->  
-> -source "drivers/staging/mt7621-pci/Kconfig"
-> -
->  source "drivers/staging/mt7621-dma/Kconfig"
->  
->  source "drivers/staging/ralink-gdma/Kconfig"
-> diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
-> index c7f8d8d8dd11..76f413470bc8 100644
-> --- a/drivers/staging/Makefile
-> +++ b/drivers/staging/Makefile
-> @@ -33,7 +33,6 @@ obj-$(CONFIG_KS7010)		+= ks7010/
->  obj-$(CONFIG_GREYBUS)		+= greybus/
->  obj-$(CONFIG_BCM2835_VCHIQ)	+= vc04_services/
->  obj-$(CONFIG_PI433)		+= pi433/
-> -obj-$(CONFIG_PCI_MT7621)	+= mt7621-pci/
->  obj-$(CONFIG_SOC_MT7621)	+= mt7621-dma/
->  obj-$(CONFIG_DMA_RALINK)	+= ralink-gdma/
->  obj-$(CONFIG_SOC_MT7621)	+= mt7621-dts/
-> diff --git a/drivers/staging/mt7621-pci/Kconfig b/drivers/staging/mt7621-pci/Kconfig
-> deleted file mode 100644
-> index ce58042f2f21..000000000000
-> --- a/drivers/staging/mt7621-pci/Kconfig
-> +++ /dev/null
-> @@ -1,8 +0,0 @@
-> -# SPDX-License-Identifier: GPL-2.0
-> -config PCI_MT7621
-> -	tristate "MediaTek MT7621 PCI Controller"
-> -	depends on RALINK
-> -	select PCI_DRIVERS_GENERIC
-> -	help
-> -	  This selects a driver for the MediaTek MT7621 PCI Controller.
-> -
-> diff --git a/drivers/staging/mt7621-pci/Makefile b/drivers/staging/mt7621-pci/Makefile
-> deleted file mode 100644
-> index f4e651cf7ce3..000000000000
-> --- a/drivers/staging/mt7621-pci/Makefile
-> +++ /dev/null
-> @@ -1,2 +0,0 @@
-> -# SPDX-License-Identifier: GPL-2.0
-> -obj-$(CONFIG_PCI_MT7621)       += pci-mt7621.o
-> diff --git a/drivers/staging/mt7621-pci/TODO b/drivers/staging/mt7621-pci/TODO
-> deleted file mode 100644
-> index d674a9ac85c1..000000000000
-> --- a/drivers/staging/mt7621-pci/TODO
-> +++ /dev/null
-> @@ -1,4 +0,0 @@
-> -
-> -- general code review and cleanup
-> -
-> -Cc: NeilBrown <neil@brown.name>
-> diff --git a/drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt b/drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
-> deleted file mode 100644
-> index 327a68267309..000000000000
-> --- a/drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
-> +++ /dev/null
-> @@ -1,104 +0,0 @@
-> -MediaTek MT7621 PCIe controller
-> -
-> -Required properties:
-> -- compatible: "mediatek,mt7621-pci"
-> -- device_type: Must be "pci"
-> -- reg: Base addresses and lengths of the PCIe subsys and root ports.
-> -- bus-range: Range of bus numbers associated with this controller.
-> -- #address-cells: Address representation for root ports (must be 3)
-> -- pinctrl-names : The pin control state names.
-> -- pinctrl-0: The "default" pinctrl state.
-> -- #size-cells: Size representation for root ports (must be 2)
-> -- ranges: Ranges for the PCI memory and I/O regions.
-> -- #interrupt-cells: Must be 1
-> -- interrupt-map-mask and interrupt-map: Standard PCI IRQ mapping properties.
-> -  Please refer to the standard PCI bus binding document for a more detailed
-> -  explanation.
-> -- status: either "disabled" or "okay".
-> -- resets: Must contain an entry for each entry in reset-names.
-> -  See ../reset/reset.txt for details.
-> -- reset-names: Must be "pcie0", "pcie1", "pcieN"... based on the number of
-> -  root ports.
-> -- clocks: Must contain an entry for each entry in clock-names.
-> -  See ../clocks/clock-bindings.txt for details.
-> -- clock-names: Must be "pcie0", "pcie1", "pcieN"... based on the number of
-> -  root ports.
-> -- reset-gpios: GPIO specs for the reset pins.
-> -
-> -In addition, the device tree node must have sub-nodes describing each PCIe port
-> -interface, having the following mandatory properties:
-> -
-> -Required properties:
-> -- reg: Only the first four bytes are used to refer to the correct bus number
-> -      and device number.
-> -- #address-cells: Must be 3
-> -- #size-cells: Must be 2
-> -- ranges: Sub-ranges distributed from the PCIe controller node. An empty
-> -  property is sufficient.
-> -- bus-range: Range of bus numbers associated with this port.
-> -
-> -Example for MT7621:
-> -
-> -	pcie: pcie@1e140000 {
-> -		compatible = "mediatek,mt7621-pci";
-> -        reg = <0x1e140000 0x100    /* host-pci bridge registers */
-> -               0x1e142000 0x100    /* pcie port 0 RC control registers */
-> -               0x1e143000 0x100    /* pcie port 1 RC control registers */
-> -               0x1e144000 0x100>;  /* pcie port 2 RC control registers */
-> -
-> -		#address-cells = <3>;
-> -		#size-cells = <2>;
-> -
-> -		pinctrl-names = "default";
-> -		pinctrl-0 = <&pcie_pins>;
-> -
-> -		device_type = "pci";
-> -
-> -		bus-range = <0 255>;
-> -		ranges = <
-> -			0x02000000 0 0x00000000 0x60000000 0 0x10000000 /* pci memory */
-> -			0x01000000 0 0x00000000 0x1e160000 0 0x00010000 /* io space */
-> -		>;
-> -
-> -		#interrupt-cells = <1>;
-> -		interrupt-map-mask = <0xF0000 0 0 1>;
-> -		interrupt-map = <0x10000 0 0 1 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>,
-> -				<0x20000 0 0 1 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>,
-> -				<0x30000 0 0 1 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
-> -
-> -		status = "disabled";
-> -
-> -		resets = <&rstctrl 24 &rstctrl 25 &rstctrl 26>;
-> -		reset-names = "pcie0", "pcie1", "pcie2";
-> -		clocks = <&clkctrl 24 &clkctrl 25 &clkctrl 26>;
-> -		clock-names = "pcie0", "pcie1", "pcie2";
-> -
-> -		reset-gpios = <&gpio 19 GPIO_ACTIVE_LOW>,
-> -				<&gpio 8 GPIO_ACTIVE_LOW>,
-> -				<&gpio 7 GPIO_ACTIVE_LOW>;
-> -
-> -		pcie@0,0 {
-> -			reg = <0x0000 0 0 0 0>;
-> -			#address-cells = <3>;
-> -			#size-cells = <2>;
-> -			ranges;
-> -			bus-range = <0x00 0xff>;
-> -		};
-> -
-> -		pcie@1,0 {
-> -			reg = <0x0800 0 0 0 0>;
-> -			#address-cells = <3>;
-> -			#size-cells = <2>;
-> -			ranges;
-> -			bus-range = <0x00 0xff>;
-> -		};
-> -
-> -		pcie@2,0 {
-> -			reg = <0x1000 0 0 0 0>;
-> -			#address-cells = <3>;
-> -			#size-cells = <2>;
-> -			ranges;
-> -			bus-range = <0x00 0xff>;
-> -		};
-> -	};
-> -
-> -- 
-> 2.25.1
+> +title: Qualcomm crypto engine driver
+> +
+> +maintainers:
+> +  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> +
+> +description: |
+> +  This document defines the binding for the QCE crypto
+> +  controller found on Qualcomm parts.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,crypto-v5.1
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: iface clocks register interface.
+> +      - description: bus clocks data transfer interface.
+> +      - description: core clocks rest of the crypto block.
+> +
+> +  clock-names:
+> +    items:
+> +      - const: iface
+> +      - const: bus
+> +      - const: core
+> +
+> +  dmas:
+> +    items:
+> +      - description: DMA specifiers for tx dma channel.
+> +      - description: DMA specifiers for rx dma channel.
+
+Please consider to swap the description lines, so that they'll
+be matching the dma-names below and a regular order found in
+dts files.
+
+> +
+> +  dma-names:
+> +    items:
+> +      - const: rx
+> +      - const: tx
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - dmas
+> +  - dma-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,gcc-apq8084.h>
+> +    crypto-engine@fd45a000 {
+> +        compatible = "qcom,crypto-v5.1";
+> +        reg = <0xfd45a000 0x6000>;
+> +        clocks = <&gcc GCC_CE2_AHB_CLK>,
+> +                 <&gcc GCC_CE2_AXI_CLK>,
+> +                 <&gcc GCC_CE2_CLK>;
+> +        clock-names = "iface", "bus", "core";
+> +        dmas = <&cryptobam 2>, <&cryptobam 3>;
+> +        dma-names = "rx", "tx";
+> +    };
 > 
+
+--
+Best wishes,
+Vladimir
