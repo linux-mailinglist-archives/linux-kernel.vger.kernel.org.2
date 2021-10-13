@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F54342B1B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3B042B1A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237037AbhJMBAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 21:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237295AbhJMBAK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 21:00:10 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C66A4C06176D;
-        Tue, 12 Oct 2021 17:56:49 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id e7so696818pgk.2;
-        Tue, 12 Oct 2021 17:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jk+dJudPrE0+XDIqtsyqRFyo5a48Ow5IdBOK3OS2dpg=;
-        b=ix+LdVAgj9+4E3/cmxG0azr2mcljAALqBRbmxBgnk5n2oCwqjZKRSf4SdXdfYtk/mT
-         /PzPoE9u97opybyE09cQRNKRgys9blC0s/KpKaVXaq7iZG5K7r0fE/zNJEtEYbREagwv
-         FemXTYnvq9zc4jFPZDFuvk4y/2LMQPLDAeycz0XvS/+7lukLiHlAshvIHZbxi/nOoQRZ
-         Jwrxsc0dtTSL9HI5VgAUdp7Cw2FbOp9EywdwDd7mxCUO49zP0eFB75NgSbUtBlWtPK/3
-         qXm4Rj1SoLPORgw5hH9K34ahUVOy7d8RkReCRmpST/0ViBGydqaF6zS6WWGY2N4MUsfw
-         ReQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jk+dJudPrE0+XDIqtsyqRFyo5a48Ow5IdBOK3OS2dpg=;
-        b=U79Od3n4iEYcFybe4CDnBUAr7SfY2bU4i5nEELYpmnwTVu0zL7y9OdRoiHFucctnc3
-         p7naBWoif7o+CktbLb9JaY2DtJWX4MoWet0CGtV0mIGCxEkxBvcS3IAo1scmNHm1HCbc
-         SYGFxb3STbUT8wAYiC5CTlwS6zmtRMhuTL4/uIBIHoT8RtlhohapoUnPbSGQGz03Ctyo
-         er9U2Pjri3aEgv6SDOEg5bvHuOvxoG88X70tefMbkKnAsdW/dR2I3x1+uwxuIj2+oC2G
-         3N0NnwGGCtntlE+Zx+xWasqRaQSq759NwWSzBe+SfWKi8nMw4NDKhd8HIKFr/AluO2FJ
-         8yYA==
-X-Gm-Message-State: AOAM533X6VnB45Mxw8JA1A5Fpg5tzHvikXoA1kbSp6o5wtn5v6u6re8h
-        2c63hjTrRoJ4S5PGWX7gr0U=
-X-Google-Smtp-Source: ABdhPJzonkb+ywewn9SiNlJWit2XGKYp4ld1IuBU91HkiXS2jZgklCrSG1z7+2yVoukZtXMdbTGTKw==
-X-Received: by 2002:a63:6e07:: with SMTP id j7mr11363723pgc.6.1634086609279;
-        Tue, 12 Oct 2021 17:56:49 -0700 (PDT)
-Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
-        by smtp.gmail.com with ESMTPSA id t126sm4069791pfc.80.2021.10.12.17.56.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 17:56:48 -0700 (PDT)
-From:   davidcomponentone@gmail.com
-To:     marcel@holtmann.org
-Cc:     johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Yang <davidcomponentone@gmail.com>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH v2] Fix application of sizeof to pointer
-Date:   Wed, 13 Oct 2021 08:56:33 +0800
-Message-Id: <88c30c5f6238a096d1d431634f3ea93d97f66215.1634086268.git.davidcomponentone@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S237673AbhJMA7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 20:59:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237675AbhJMA6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 20:58:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCA5260EBB;
+        Wed, 13 Oct 2021 00:56:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634086606;
+        bh=BBTq1XMHgxZOIYSLL3kcvMpjtwUESCOr80d3awmgXKA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=a6VX8gxqF0z6Gok8SZ5jYY9R7V8yWCeAMAoheSH5IWj3uFxrSVP1KogUX7J14nGV0
+         QkOcnbELXmQ+E1x/Xkd7lXErIrHIFG/IOnntgspgaTbyznGbGsgekobDsUe+ssnRu8
+         Kl9mhrKyZmIKTjXt9bdjELjGkoFjGzBsMJ4M7kigC1FohMhJoO1asX8mk6SzyLLP/G
+         Qo1xDvUNI7+SWM4ulEWNeL+Z+6oAN2NRKVETJVv4iRJKwHqhmTkyCDvrPMEXxM2MYU
+         fdQOSZiFlAzauFoaxmTWnqaFOeU3cWh+M/QbFK/Q4XKsrz9+l+Qmf7nKveHj21muV1
+         Co3cewXtiSIpQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Max Filippov <jcmvbkbc@gmail.com>, Sasha Levin <sashal@kernel.org>,
+        chris@zankel.net, linux@roeck-us.net, linux-xtensa@linux-xtensa.org
+Subject: [PATCH AUTOSEL 4.9 1/4] xtensa: xtfpga: use CONFIG_USE_OF instead of CONFIG_OF
+Date:   Tue, 12 Oct 2021 20:56:40 -0400
+Message-Id: <20211013005644.700705-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Yang <davidcomponentone@gmail.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-The coccinelle check report:
-"./drivers/bluetooth/btusb.c:2239:36-42:
-ERROR: application of sizeof to pointer".
-Using the real size to fix it.
+[ Upstream commit f3d7c2cdf6dc0d5402ec29c3673893b3542c5ad1 ]
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: David Yang <davidcomponentone@gmail.com>
+Use platform data to initialize xtfpga device drivers when CONFIG_USE_OF
+is not selected. This fixes xtfpga networking when CONFIG_USE_OF is not
+selected but CONFIG_OF is.
+
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btusb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/xtensa/platforms/xtfpga/setup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 75c83768c257..3e26f60b457e 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -2236,7 +2236,7 @@ static int btusb_set_bdaddr_mtk(struct hci_dev *hdev, const bdaddr_t *bdaddr)
- 	struct sk_buff *skb;
- 	long ret;
+diff --git a/arch/xtensa/platforms/xtfpga/setup.c b/arch/xtensa/platforms/xtfpga/setup.c
+index 42285f35d313..982e7c22e7ca 100644
+--- a/arch/xtensa/platforms/xtfpga/setup.c
++++ b/arch/xtensa/platforms/xtfpga/setup.c
+@@ -85,7 +85,7 @@ void __init platform_calibrate_ccount(void)
  
--	skb = __hci_cmd_sync(hdev, 0xfc1a, sizeof(bdaddr), bdaddr, HCI_INIT_TIMEOUT);
-+	skb = __hci_cmd_sync(hdev, 0xfc1a, 6, bdaddr, HCI_INIT_TIMEOUT);
- 	if (IS_ERR(skb)) {
- 		ret = PTR_ERR(skb);
- 		bt_dev_err(hdev, "changing Mediatek device address failed (%ld)",
+ #endif
+ 
+-#ifdef CONFIG_OF
++#ifdef CONFIG_USE_OF
+ 
+ static void __init xtfpga_clk_setup(struct device_node *np)
+ {
+@@ -303,4 +303,4 @@ static int __init xtavnet_init(void)
+  */
+ arch_initcall(xtavnet_init);
+ 
+-#endif /* CONFIG_OF */
++#endif /* CONFIG_USE_OF */
 -- 
-2.30.2
+2.33.0
 
