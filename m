@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C8442C284
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C796642C275
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235841AbhJMOPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:15:18 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:5438 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhJMOPN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:15:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634134390; x=1665670390;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=XwFxZzbdV+FjwFqNLqNmM3P65mE3OIvnLElxkhz2zRE=;
-  b=hXRKc7FDBxxIkPHroZEibE6KS1YXnZybQxL7BhQx5fxPW5Ad5Rq7HTnz
-   g27xd5/rMR/FCi4ZJZBaBQBG6HghovDeMCdmn+857jvl263Yog5X34Kcq
-   GSEEsbiypNa6kh2zlJR3FsJWLWWTnyiUs1XeKRg/SF4dZQtnPJEsul0O3
-   kpueo9pYE3OVZ/+1Y7MKPkIPGKGB90NeKM6SXzmo/17oUA/ocX4mfbjpo
-   IeJfesOO68gVPOU6golghAHu5T/FVudOeyX6VMDjgmR6pURodbZUTsmGs
-   zixG4EbNTRjj4vfe9wOdD0ibR6OAFLm1zY33JRIKMpHwTbWeR6SztgJkv
-   Q==;
-IronPort-SDR: uutPBZhzUAMA/q7T3VprZA70/jge25CgEEz8VinJFExlOzb7MSRSHwzN9NIix7IUhOincCcFW6
- N3RUmreMhE+mJzEL/1EFblto+EBTOybImZDUvAQQ3sN7N1lSnuY0eoVxaL9PZE8Q5HqA8BMJTW
- KIezk2m0DJSiPMZ5NrNKDNacqCNCFVevxdE5oNdmRLwbcgCj7wpfRKqU2Ai2iSXF0ZK6YUq4Kv
- rlI4DoA7ctSctEnrmhrSOnYgstgPJIx9GxszyItnWkMJSLoQ/Vpd+9Du5RdrFLe+nY98zb6SXH
- 2/6gj7rproxGmcvHK7ZGqSTg
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="72800409"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Oct 2021 07:09:51 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 13 Oct 2021 07:09:51 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Wed, 13 Oct 2021 07:09:50 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <peda@axentia.se>, <robh+dt@kernel.org>,
-        <peter.korsgaard@barco.com>, <lars.povlsen@microchip.com>,
-        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH 2/2] i2c: i2c-mux-gpio: Add support 'select-delay' property
-Date:   Wed, 13 Oct 2021 16:10:03 +0200
-Message-ID: <20211013141003.2388495-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211013141003.2388495-1-horatiu.vultur@microchip.com>
-References: <20211013141003.2388495-1-horatiu.vultur@microchip.com>
+        id S235811AbhJMOM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:12:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235564AbhJMOM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:12:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD755610A2;
+        Wed, 13 Oct 2021 14:10:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634134254;
+        bh=MCbUSpXLvBAnZfn8uK00pPLksVK7sxri5OuKDIq3xbU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Io/RxVIRW+Um06HQJcY1eWk+WuM4gWpZ4+NCBWfidvCtVHSQP7shRXxRjN8CtzcLL
+         u+Uzp8zgYQFKlPfdwZQQbIlVhT9XDkEH53bhB5iX10zQXg/dj5Pp9OQiEDvrbEZtnt
+         VCTo5ebkguj78HU3+O+EVT/ZEBA3DFa/nk7/GMTM=
+Date:   Wed, 13 Oct 2021 16:10:51 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Abhyuday Godhasara <agodhasa@xilinx.com>
+Cc:     Michal Simek <michals@xilinx.com>, Rajan Vaja <RAJANV@xilinx.com>,
+        Manish Narani <MNARANI@xilinx.com>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>,
+        Sai Krishna Potthuri <lakshmis@xilinx.com>,
+        Jiaying Liang <jliang@xilinx.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+Message-ID: <YWbo660XPKlwDZH0@kroah.com>
+References: <438b398c-a901-7568-11e0-cd9bf302343f@xilinx.com>
+ <20210915131615.16506-1-abhyuday.godhasara@xilinx.com>
+ <SA1PR02MB8592838B99062EFA6EAAE73DA1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
+ <YWbYKQXf8g8s55kG@kroah.com>
+ <YWbZoPHDzc4e5Nme@kroah.com>
+ <SA1PR02MB8592E68D021E12DCA45B70A2A1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SA1PR02MB8592E68D021E12DCA45B70A2A1B79@SA1PR02MB8592.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use select-delay property to add a delay once the mux state is changed.
-This is required on some platforms to allow the GPIO signals to get
-stabilized.
+On Wed, Oct 13, 2021 at 01:57:59PM +0000, Abhyuday Godhasara wrote:
+> Hi Greg,
+> 
+> > -----Original Message-----
+> > From: gregkh@linuxfoundation.org <gregkh@linuxfoundation.org>
+> > Sent: Wednesday, October 13, 2021 6:36 PM
+> > To: Abhyuday Godhasara <agodhasa@xilinx.com>
+> > Cc: Michal Simek <michals@xilinx.com>; Rajan Vaja <RAJANV@xilinx.com>;
+> > Manish Narani <MNARANI@xilinx.com>; zou_wei@huawei.com; Sai Krishna
+> > Potthuri <lakshmis@xilinx.com>; Jiaying Liang <jliang@xilinx.com>; linux-
+> > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> > Subject: Re: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > 
+> > On Wed, Oct 13, 2021 at 02:59:21PM +0200, gregkh@linuxfoundation.org
+> > wrote:
+> > > On Wed, Oct 13, 2021 at 12:27:58PM +0000, Abhyuday Godhasara wrote:
+> > > > Hi Greg,
+> > > >
+> > > > > -----Original Message-----
+> > > > > From: Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
+> > > > > Sent: Wednesday, September 15, 2021 6:46 PM
+> > > > > To: gregkh@linuxfoundation.org
+> > > > > Cc: Michal Simek <michals@xilinx.com>; Abhyuday Godhasara
+> > > > > <agodhasa@xilinx.com>; Rajan Vaja <RAJANV@xilinx.com>; Manish
+> > > > > Narani <MNARANI@xilinx.com>; zou_wei@huawei.com; Sai Krishna
+> > > > > Potthuri <lakshmis@xilinx.com>; Jiaying Liang <jliang@xilinx.com>;
+> > > > > Jiaying Liang <jliang@xilinx.com>; linux-kernel@vger.kernel.org;
+> > > > > linux-arm- kernel@lists.infradead.org
+> > > > > Subject: [PATCH v4 0/6] Add Xilinx Event Management Driver
+> > > > >
+> > > > > This Linux driver provides support to subscribe error/event
+> > > > > notification and receive notification from firmware for
+> > > > > error/event and forward event notification to subscribed driver via
+> > registered callback.
+> > > > >
+> > > > > All types of events like power and error will be handled from
+> > > > > single place as part of event management driver.
+> > > > >
+> > > > > Changes in v4:
+> > > > > - Rebase on latest tree
+> > > > >
+> > > > > Changes in v3:
+> > > > > - Update the commit message.
+> > > > >
+> > > > > Changes in v2:
+> > > > > - Removed updated copyright year from unchanged files.
+> > > > > - make sgi_num as module parameter for event management driver.
+> > > > > - Use same object for error detection and printing.
+> > > > >
+> > > > > Acked-by: Michal Simek <michal.simek@xilinx.com>
+> > > > [Abhyuday] Michal suggested to merge this via your tree. Please have a
+> > look.
+> > > > Please let me know if there is anything required from my side.
+> > >
+> > > Ok, I'll pick it up, thanks.
+> > 
+> > Nope, I can not as for some reason it all did not show up on lore.kernel.org.
+> > 
+> > Please resend this, with Michal's ack and I will be glad to pick it up.
+> [Abhyuday] Sent v5 with Michal's ack.
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/i2c/muxes/i2c-mux-gpio.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Sent where?  Do you have a lore.kernel.org link?  Did you cc: me?
 
-diff --git a/drivers/i2c/muxes/i2c-mux-gpio.c b/drivers/i2c/muxes/i2c-mux-gpio.c
-index bac415a52b78..1cc69eb67221 100644
---- a/drivers/i2c/muxes/i2c-mux-gpio.c
-+++ b/drivers/i2c/muxes/i2c-mux-gpio.c
-@@ -13,6 +13,8 @@
- #include <linux/slab.h>
- #include <linux/bits.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/delay.h>
-+
- /* FIXME: stop poking around inside gpiolib */
- #include "../../gpio/gpiolib.h"
- 
-@@ -20,6 +22,7 @@ struct gpiomux {
- 	struct i2c_mux_gpio_platform_data data;
- 	int ngpios;
- 	struct gpio_desc **gpios;
-+	int select_delay;
- };
- 
- static void i2c_mux_gpio_set(const struct gpiomux *mux, unsigned val)
-@@ -29,6 +32,8 @@ static void i2c_mux_gpio_set(const struct gpiomux *mux, unsigned val)
- 	values[0] = val;
- 
- 	gpiod_set_array_value_cansleep(mux->ngpios, mux->gpios, NULL, values);
-+	if (mux->select_delay)
-+		udelay(mux->select_delay);
- }
- 
- static int i2c_mux_gpio_select(struct i2c_mux_core *muxc, u32 chan)
-@@ -153,6 +158,8 @@ static int i2c_mux_gpio_probe_fw(struct gpiomux *mux,
- 	if (fwnode_property_read_u32(dev->fwnode, "idle-state", &mux->data.idle))
- 		mux->data.idle = I2C_MUX_GPIO_NO_IDLE;
- 
-+	fwnode_property_read_u32(dev->fwnode, "select-delay", &mux->select_delay);
-+
- 	return 0;
- }
- 
--- 
-2.33.0
+thanks,
 
+greg k-h
