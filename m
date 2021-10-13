@@ -2,334 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F14D42B7EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3AA42B7F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238013AbhJMGvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 02:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55836 "EHLO
+        id S238062AbhJMGw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 02:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237918AbhJMGvp (ORCPT
+        with ESMTP id S230156AbhJMGww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 02:51:45 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37650C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:49:42 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id z11so7250985lfj.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:49:42 -0700 (PDT)
+        Wed, 13 Oct 2021 02:52:52 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2C1C061570;
+        Tue, 12 Oct 2021 23:50:50 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id ec8so5780497edb.6;
+        Tue, 12 Oct 2021 23:50:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1ZFyXssI7TrFyz6t72UIWjHiVPEaGRTFviZ9B7b1svQ=;
-        b=iPAivlo5uIKBxRfNUXcOVhQG7osPvDAYsKhzpbHwuoQ9aRqJOVq0CIRSJJLsHiVUUR
-         esn/LxUxQJ3bT6IDck5KrRR4XQfGxDdO1QkAnr3Efw+Jbn0XB6gZpc621AyVERubhwWH
-         hl+97CPoXQzYj7hxmpDhOVSF3m6+2E3dxeqPQ=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rJuE6Pp9lkDOOOTalExDw5jNyfW6/ykHvOQPHpnMcnQ=;
+        b=WSztpwpydnYASkv73NyidXyVf9vx22yndzvImhNv5g3NN+LZHyQTxnVhjqZWah5+51
+         O+PpOXT+cDy2XWR4+q8Wv973ut+16yacHkpJFe7dXuh+bdDzWwZd49QToFGfEnd83Qq3
+         pNFtGge7d2kRgJpHlaEgIvrUmb23gdzzlZBv03EQHolCD5eqwuRcrJXmLkKQinJUipAu
+         oNfO+j+poCO0iHHV/c64sBj6l3PWQCZaX3nqUQiskIuiXZ3oDzmGH3hAQOEZllxDy8yk
+         zBWDk2kDdCmmlH6QLRvAlk1PsYA80CgYl2r56xT+xWACxhZQE8ZwDgsJN8aoKKcrDTYN
+         5dKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1ZFyXssI7TrFyz6t72UIWjHiVPEaGRTFviZ9B7b1svQ=;
-        b=Wg9tNYk4KrgcSGKsiHorYVEsJlYLzX2IXf2bOJ+Wk0I256PCGYC95iuPrA8x0pQX2t
-         G4j7i8Kdn2CTwUPZQ3HFy0DFoemQnvKdsRhpRGz6H+yaX0K6gGh2e8vxbAzwzMDeAD53
-         UXrloL+J7fmlv5A7AUuIbEp1G6ahqHLAzgKbTxuNHMxAb7bwzvIkDwnY6q7zjJMMQB/t
-         vl5Q1hVELBXLX41ROM6/zTnaVhp8iRDAngVWu2nAuh/2Sieb+KvD6a5RrPuhhB3ET1gR
-         IV0PRlnp5bg20pCPyBIQXZOsKhwtoU/l11pSkJ7OHzellj5ulmtHAmUYGVbcxaNTu4ZY
-         wtkA==
-X-Gm-Message-State: AOAM531O6Sfx0pLsPe0EdkhC4WtgQCTuNOAp4ErZmq1CRXSzVvqBLy/B
-        Q6XKYMMjMPgt4EMPzdYLggnNzyNC7ellF2ipzIE62Q==
-X-Google-Smtp-Source: ABdhPJwFRC8f4YHp1POH1B8FM/bW1GCM0+rzp1dcWUlLDn5NbCrjKKqZDtFyz2PzgznWSPlne39IuFhFg8Pa7ILhz9w=
-X-Received: by 2002:ac2:5627:: with SMTP id b7mr9696386lff.670.1634107780512;
- Tue, 12 Oct 2021 23:49:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rJuE6Pp9lkDOOOTalExDw5jNyfW6/ykHvOQPHpnMcnQ=;
+        b=n7S3twYf6Vt3zfY82A8j+IEEiysnraEKJ4zc1XWj9QZH3pqqgRD5KbelyJs85gDulG
+         18O5EKPyj012QUWt48tgC9CD86ommOjrzcTL2/HW8kmilWLaFFcld+R+PseBwh5USSbu
+         HGpqqgcoA0rfQ1ruRonJgNJmYjQW/kqnwekqdRWaE9oENLR9LEVvUcoD2nO6mQ2ItSMt
+         cmf16QOhkITBGlwCVdEw7iHE+AS0xxV8tPyb6wZdkKcKHDwcvAuaK70mi9XcSLF/u7bm
+         7PkfGk2frp+Z29E2nsdzKMdlnge80NQlOfjxn10fEVLNqAYoR/mxiobk/v17tGwk33Oi
+         0qvw==
+X-Gm-Message-State: AOAM532YmMDfmVapcd+eECfJl4eEljqYThy89cCW47pVJR7RTOagElhA
+        n998DBwpWsD17bo7ApriUuk=
+X-Google-Smtp-Source: ABdhPJyrFw3rn6IHBty5/kP1xrHecojrR8X6QfUbWvzX1/Lqtkn+DoqNjp2Z0r4mra4jbwiedSUC4g==
+X-Received: by 2002:a17:906:712:: with SMTP id y18mr37710983ejb.408.1634107848578;
+        Tue, 12 Oct 2021 23:50:48 -0700 (PDT)
+Received: from ponky.lan ([2a04:241e:501:3870:6346:a6a3:f7ea:349e])
+        by smtp.gmail.com with ESMTPSA id m15sm4568710edd.5.2021.10.12.23.50.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 23:50:47 -0700 (PDT)
+From:   Leonard Crestez <cdleonard@gmail.com>
+To:     David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Yonghong Song <yhs@fb.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] tcp: md5: Fix overlap between vrf and non-vrf keys
+Date:   Wed, 13 Oct 2021 09:50:34 +0300
+Message-Id: <cover.1634107317.git.cdleonard@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210924080632.28410-1-zhiyong.tao@mediatek.com>
- <20210924080632.28410-3-zhiyong.tao@mediatek.com> <YVTfDJNW5Pe3iAR/@robh.at.kernel.org>
- <37eac06e20d82c0fe37a5d8e5633cbbc48d4af29.camel@mediatek.com>
-In-Reply-To: <37eac06e20d82c0fe37a5d8e5633cbbc48d4af29.camel@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Wed, 13 Oct 2021 14:49:29 +0800
-Message-ID: <CAGXv+5GoXu-Jg6Lhbfjd2an7nzzn2EHqQ7DN6FCB6EBRocavgQ@mail.gmail.com>
-Subject: Re: [PATCH v14 2/5] dt-bindings: pinctrl: mt8195: change pull up/down description
-To:     "zhiyong.tao" <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com, Light Hsieh <light.hsieh@mediatek.com>,
-        Biao Huang <biao.huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 9:59 AM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
->
-> On Wed, 2021-09-29 at 16:47 -0500, Rob Herring wrote:
-> > On Fri, Sep 24, 2021 at 04:06:29PM +0800, Zhiyong Tao wrote:
-> > > For supporting SI units in "bias-pull-down" & "bias-pull-up",
-> > > change pull up/down description
-> > > and add "mediatek,rsel_resistance_in_si_unit" description.
-> > >
-> > > Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> > > ---
-> > >  .../bindings/pinctrl/pinctrl-mt8195.yaml      | 86
-> > > ++++++++++++++++++-
-> > >  1 file changed, 84 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-
-> > > mt8195.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-
-> > > mt8195.yaml
-> > > index 2f12ec59eee5..5f642bef72af 100644
-> > > --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-> > > +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
-> > > @@ -49,6 +49,12 @@ properties:
-> > >      description: The interrupt outputs to sysirq.
-> > >      maxItems: 1
-> > >
-> > > +  mediatek,rsel_resistance_in_si_unit:
-> >
-> > s/_/-/
->
-> Hi Rob,
->
-> what do you mean?
+With net.ipv4.tcp_l3mdev_accept=1 it is possible for a listen socket to
+accept connection from the same client address in different VRFs. It is
+also possible to set different MD5 keys for these clients which differ
+only in the tcpm_l3index field.
 
-He means: replace the hyphens ("-") with underscores ("_").
-(s/X/Y/ is a regular expression.)
+This appears to work when distinguishing between different VRFs but not
+between non-VRF and VRF connections. In particular:
 
-> >
-> > > +    type: boolean
-> > > +    description: |
-> > > +      Identifying i2c pins pull up/down type which is RSEL. It can
-> > > support
-> > > +      RSEL define or si unit value(ohm) to set different
-> > > resistance.
-> >
-> > Aren't the RSEL and ohms disjoint values? 0-207 for RSEL and >1000
-> > for
-> > ohms. Why is this property even needed.
-> >
-> No, they aren't.
-> As we talked in v11. "mediatek,rsel_resistance_in_si_unit" is only a
-> flag.
->
->
->
-> Hi ChenYu,
->
-> In the next version, we provide a solution which we discussed internal
-> to avoid value clashes.
->
-> The solution:
-> 1. We will keep the define "MTK_PULL_SET_RSEL_000 200". It won't
-> change.
->
-> 2. We will add a property in pio dtsi node, for example,
-> the property name is "rsel_resistance_in_si_unit".
-> We will add a flag "rsel_si_unit" in pinctrl device.
-> in probe function, we will identify the property name
-> "rsel_resistance_in_si_unit" to set the flag "rsel_si_unit" value.
-> So it can void value clashes.
->
-> 3.We will provide the define "MTK_PULL_SET_RSEL_000 200" and si unit
-> two solution. users can support which solution by add property
-> "rsel_resistance_in_si_unit" in dts node or not.
+ * tcp_md5_do_lookup_exact will match a non-vrf key against a vrf key.
+This means that adding a key with l3index != 0 after a key with l3index
+== 0 will cause the earlier key to be deleted. Both keys can be present
+if the non-vrf key is added later.
+ * _tcp_md5_do_lookup can match a non-vrf key before a vrf key. This
+casues failures if the passwords differ.
 
-Right. I thought that is what is implemented in this version already?
+This can be fixed by making tcp_md5_do_lookup_exact perform an actual
+exact comparison on l3index and by making  __tcp_md5_do_lookup perfer
+vrf-bound keys above other considerations like prefixlen.
 
-Also I just realized that this binding is limited in scope to just the
-MT8195, for which we already know that the RSEL values do not overlap
-with MTK_PULL_SET_RSEL_*. I assume that is why Rob thinks the flag
-is unnecessary.
+The fact that keys with l3index==0 affect VRF connections is usually
+not desirable, VRFs are meant to be completely independent. This
+behavior needs to preserved for backwards compatiblity. Also,
+applications can just bind listen sockets to VRF and never specify
+TCP_MD5SIG_IFINDEX at all.
 
-> > > +
-> > >  #PIN CONFIGURATION NODES
-> > >  patternProperties:
-> > >    '-pins$':
-> > > @@ -85,9 +91,85 @@ patternProperties:
-> > >            2/4/6/8/10/12/14/16mA in mt8195.
-> > >          enum: [0, 1, 2, 3, 4, 5, 6, 7]
-> > >
-> > > -      bias-pull-down: true
-> > > +      bias-pull-down:
-> > > +        description: |
-> > > +          For pull down type is normal, it don't need add RSEL &
-> > > R1R0 define
-> > > +          and resistance value.
-> > > +          For pull down type is PUPD/R0/R1 type, it can add R1R0
-> > > define to
-> > > +          set different resistance. It can support
-> > > "MTK_PUPD_SET_R1R0_00" &
-> > > +          "MTK_PUPD_SET_R1R0_01" & "MTK_PUPD_SET_R1R0_10" &
-> > > "MTK_PUPD_SET_R1R0_11"
-> > > +          define in mt8195.
-> > > +          For pull down type is RSEL, it can add RSEL define &
-> > > resistance value(ohm)
-> > > +          to set different resistance by identifying property
-> > > "mediatek,rsel_resistance_in_si_unit".
-> > > +          It can support "MTK_PULL_SET_RSEL_000" &
-> > > "MTK_PULL_SET_RSEL_001"
-> > > +          & "MTK_PULL_SET_RSEL_010" & "MTK_PULL_SET_RSEL_011" &
-> > > "MTK_PULL_SET_RSEL_100"
-> > > +          & "MTK_PULL_SET_RSEL_101" & "MTK_PULL_SET_RSEL_110" &
-> > > "MTK_PULL_SET_RSEL_111"
-> > > +          define in mt8195. It can also support resistance
-> > > value(ohm) "75000" & "5000" in mt8195.
-> > > +          oneOf:
-> >
-> > Because of the indentation, this is all just part of 'description'.
->
-> Can you help to give some suggestion to fix it?
+So far the combination of TCP_MD5SIG_IFINDEX with tcpm_ifindex == 0
+was an error, accept this to mean "key only applies to default VRF".
+This is what applications using VRFs for traffic separation want.
 
-Unindent it by two spaces, so that it is at the same level with
-"description:".
+This also contains tests for the second part. It does not contain
+tests for overlapping keys, that would require more changes in
+nettest to add multiple keys. These scenarios are also covered by
+my tests for TCP-AO, especially around this area:
+https://github.com/cdleonard/tcp-authopt-test/blob/main/tcp_authopt_test/test_vrf_bind.py
 
-> > > +            - enum: [100, 101, 102, 103]
-> > > +            - description: mt8195 pull down PUPD/R0/R1 type define
-> > > value.
-> >
-> > This entry is always true.
->
-> why is it always true? we only get define value.
-> "100~104" are means that "#define MTK_PUPD_SET_R1R0_10 102" in
-> include/dt-bindings/pinctrl/mt65xx.h.
+Changes since V1:
+* Accept (TCP_MD5SIG_IFINDEX with tcpm_ifindex == 0)
+* Add flags for explicitly including or excluding TCP_MD5SIG_IFINDEX
+to nettest
+* Add few more tests in fcnal-test.sh.
+Link to v1: https://lore.kernel.org/netdev/3d8387d499f053dba5cd9184c0f7b8445c4470c6.1633542093.git.cdleonard@gmail.com/
 
-"description" is not a conditional match, so it always evaluates to true.
-Based on my limited DT schema and YAML knowledge, I think the underlying
-issue is that you have the structure incorrectly defined.
+Leonard Crestez (4):
+  tcp: md5: Fix overlap between vrf and non-vrf keys
+  tcp: md5: Allow MD5SIG_FLAG_IFINDEX with ifindex=0
+  selftests: nettest: Add --{do,no}-bind-key-ifindex
+  selftests: net/fcnal: Test --{do,no}-bind-key-ifindex
 
-"-" denotes a list item. So in your example, you have "enum" and "description"
-as separate associative arrays, each as a list item part of the "oneOf" list.
-
-What you want is actually:
-
-    oneOf:
-      - enum: [100, 101, 102, 103]
-        description: mt8195 pull down PUPD/R0/R1 type define value.
-      - enum: [200, 201, 202, 203, 204, 205, 206, 207]
-        description: mt8195 pull down RSEL type define value.
-
-So that "enum" and "description" are part of the same associative array.
-Note the lack of a "-" and the extra indentation in front of "description".
+ include/net/tcp.h                         |  5 +-
+ net/ipv4/tcp_ipv4.c                       | 45 ++++++++++++-----
+ net/ipv6/tcp_ipv6.c                       | 15 +++---
+ tools/testing/selftests/net/fcnal-test.sh | 60 +++++++++++++++++++++++
+ tools/testing/selftests/net/nettest.c     | 28 ++++++++++-
+ 5 files changed, 130 insertions(+), 23 deletions(-)
 
 
-Regards
-ChenYu
+base-commit: d1f24712a86abd04d82cf4b00fb4ab8ff2d23c8a
+-- 
+2.25.1
 
-
-> >
-> > > +            - enum: [200, 201, 202, 203, 204, 205, 206, 207]
-> >
-> > Are these supposed to be hex?
-> yes, it is patch 1/5 define "#define MTK_PULL_SET_RSEL_000  200".
-> >
-> > > +            - description: mt8195 pull down RSEL type define
-> > > value.
-> >
-> > And so is this one. That makes 'oneOf' always false.
->
-> why is it always false? we only get the si unit value.
->
-> >
-> > > +            - enum: [75000, 5000]
-> > > +            - description: mt8195 pull down RSEL type si unit
-> > > value(ohm).
-> > > +
-> > > +          An example of using RSEL define:
-> > > +          pincontroller {
-> > > +            i2c0_pin {
-> > > +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
-> > > +              bias-pull-down = <MTK_PULL_SET_RSEL_001>;
-> > > +            };
-> > > +          };
-> > > +          An example of using si unit resistance value(ohm):
-> > > +          &pio {
-> > > +            mediatek,rsel_resistance_in_si_unit;
-> > > +          }
-> > > +          pincontroller {
-> > > +            i2c0_pin {
-> > > +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
-> > > +              bias-pull-down = <75000>;
-> > > +            };
-> > > +          };
-> > >
-> > > -      bias-pull-up: true
-> > > +      bias-pull-up:
-> > > +        description: |
-> > > +          For pull up type is normal, it don't need add RSEL &
-> > > R1R0 define
-> > > +          and resistance value.
-> > > +          For pull up type is PUPD/R0/R1 type, it can add R1R0
-> > > define to
-> > > +          set different resistance. It can support
-> > > "MTK_PUPD_SET_R1R0_00" &
-> > > +          "MTK_PUPD_SET_R1R0_01" & "MTK_PUPD_SET_R1R0_10" &
-> > > "MTK_PUPD_SET_R1R0_11"
-> > > +          define in mt8195.
-> > > +          For pull up type is RSEL, it can add RSEL define &
-> > > resistance value(ohm)
-> > > +          to set different resistance by identifying property
-> > > "mediatek,rsel_resistance_in_si_unit".
-> > > +          It can support "MTK_PULL_SET_RSEL_000" &
-> > > "MTK_PULL_SET_RSEL_001"
-> > > +          & "MTK_PULL_SET_RSEL_010" & "MTK_PULL_SET_RSEL_011" &
-> > > "MTK_PULL_SET_RSEL_100"
-> > > +          & "MTK_PULL_SET_RSEL_101" & "MTK_PULL_SET_RSEL_110" &
-> > > "MTK_PULL_SET_RSEL_111"
-> > > +          define in mt8195. It can also support resistance
-> > > value(ohm)
-> > > +          "1000" & "1500" & "2000" & "3000" & "4000" & "5000" &
-> > > "10000" & "75000" in mt8195.
-> > > +          oneOf:
-> > > +            - enum: [100, 101, 102, 103]
-> > > +            - description: mt8195 pull up PUPD/R0/R1 type define
-> > > value.
-> > > +            - enum: [200, 201, 202, 203, 204, 205, 206, 207]
-> > > +            - description: mt8195 pull up RSEL type define value.
-> > > +            - enum: [1000, 1500, 2000, 3000, 4000, 5000, 10000,
-> > > 75000]
-> > > +            - description: mt8195 pull up RSEL type si unit
-> > > value(ohm).
-> >
-> > Same issues here.
-> >
-> > > +          An example of using RSEL define:
-> > > +          pincontroller {
-> > > +            i2c0_pin {
-> > > +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
-> > > +              bias-pull-up = <MTK_PULL_SET_RSEL_001>;
-> > > +            };
-> > > +          };
-> > > +          An example of using si unit resistance value(ohm):
-> > > +          &pio {
-> > > +            mediatek,rsel_resistance_in_si_unit;
-> > > +          }
-> > > +          pincontroller {
-> > > +            i2c0_pin {
-> > > +              pinmux = <PINMUX_GPIO8__FUNC_SDA0>;
-> > > +              bias-pull-up = <1000>;
-> > > +            };
-> > > +          };
-> > >
-> > >        bias-disable: true
-> > >
-> > > --
-> > > 2.25.1
-> > >
-> > >
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
