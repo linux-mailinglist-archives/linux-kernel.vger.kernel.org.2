@@ -2,204 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70CB42C159
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B58042C15F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234916AbhJMNZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 09:25:41 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57030 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234896AbhJMNZg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 09:25:36 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 46D1722349;
-        Wed, 13 Oct 2021 13:23:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634131412; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oZyBkiR23eLUY9zYUwi72aab8a0rEnfHoQwUcj+ieIk=;
-        b=iKI1QdfkF3T0K5D83ip+Di/QwhpU6ymij8ETTXvPCzx0eKHcavoyC66/AxldpCb9SURVRy
-        ArejHxUL6vhBv2vt3p1owoDVW5aeP2wv5Zm3whF6vf6AQjW78oXLMjTPwCR0EHYW2l5ICp
-        SLURzzOYWVD1YMGJccPU0bVt5AX77Oo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634131412;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oZyBkiR23eLUY9zYUwi72aab8a0rEnfHoQwUcj+ieIk=;
-        b=kOiZU2CQOpwoI43togyV/D4SL2mqf8TGXeY9MlkDO6wHDEVnuASuZ0cQZ+6oGK8fvgj4XT
-        Pw++vD/BJpcrEmAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B80713CF6;
-        Wed, 13 Oct 2021 13:23:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id M/+yANTdZmG7LQAAMHmgww
-        (envelope-from <iivanov@suse.de>); Wed, 13 Oct 2021 13:23:32 +0000
-From:   "Ivan T. Ivanov" <iivanov@suse.de>
-Message-Id: <CB0F618D-2B3C-473A-93BC-A6AD752B9EC6@suse.de>
-Content-Type: multipart/mixed;
-        boundary="Apple-Mail=_C476DF10-B533-485E-A35A-1DEC4164C313"
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [RESEND] [PATCH] Revert "efi/random: Treat EFI_RNG_PROTOCOL
- output as bootloader randomness"
-Date:   Wed, 13 Oct 2021 16:23:31 +0300
-In-Reply-To: <7BB7EE30-257A-4B27-B420-B0C72292444A@suse.de>
-Cc:     Dominik Brodowski <linux@dominikbrodowski.net>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-References: <20211012082708.121931-1-iivanov@suse.de>
- <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
- <4eccf707f2553f0f66ae3789b5689231@suse.de>
- <CAMj1kXE7FbEqxyBcPS6mx5wU82+H0WK67HU=S6hq=WAG5EBwyQ@mail.gmail.com>
- <2E0472BF-BC05-4722-83EC-26919278CC2E@suse.de>
- <7BB7EE30-257A-4B27-B420-B0C72292444A@suse.de>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
+        id S234087AbhJMN1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 09:27:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229535AbhJMN1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 09:27:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B5176109E;
+        Wed, 13 Oct 2021 13:25:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634131511;
+        bh=UGcV/mUCdeF23MAlNCj+71r+JKJVmreKKnW9gSNVkpI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=as4GM+yymmKWnuZa+Cd1AjfwLwOcsyUMmBc+1vYOnm2I2ifZeiOKzUf4QLr/WwZpB
+         iCMlEsd6omh7JOqvRZDoCNdNMuFlxEtKqCvVmOCa1Yz+WZKQo+wtKv9mCt10dafUMK
+         Gl00v0aOjB8Sgtk+VQn9+1QOokf5GdRvKFQu6JgD1YE9N0i0298WQG861cUJLFR2sl
+         NnU1wmKFoTIo7rX9zzDoI3MWYlprfaxaJ0J6shhwyVgFaUEvSeKhAtwaseu2EfUYw4
+         R98KQEGXbVowEoi+CD2doEWwJfutvvdpYz3vBjOszdKd2ZemgF0dpLVgwOX+/HBA9/
+         zKYIaefy/dRRw==
+Received: by mail-ed1-f43.google.com with SMTP id p13so10472972edw.0;
+        Wed, 13 Oct 2021 06:25:11 -0700 (PDT)
+X-Gm-Message-State: AOAM532gwkvvdj+uTYsSGBiLpqM78gGX7hx5qJHIZg6NPgxfGX2Femni
+        A5SwQa8TDvr4SB4jarTGu0QNfJ6t7NLjjfdw2g==
+X-Google-Smtp-Source: ABdhPJzaMP5MaQHrWDeZbquEbFJmvW/OITWr+5JKQkAI1+lpde9YiZTx1UaLtUUsXUk9JN9tflZBcGOJOkAkl+A0LJ4=
+X-Received: by 2002:a17:906:c350:: with SMTP id ci16mr12012432ejb.466.1634131509092;
+ Wed, 13 Oct 2021 06:25:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211008234312.61688-1-david@ixit.cz>
+In-Reply-To: <20211008234312.61688-1-david@ixit.cz>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 13 Oct 2021 08:24:56 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ6Br4S-P65K+n+3wyD4FpXYXDBkeXj+TbgFz8p9hetfA@mail.gmail.com>
+Message-ID: <CAL_JsqJ6Br4S-P65K+n+3wyD4FpXYXDBkeXj+TbgFz8p9hetfA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: serial: uartlite: drop $ref for -bits property
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 8, 2021 at 6:54 PM David Heidelberg <david@ixit.cz> wrote:
+>
+> Fixes warning:
+> Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml: properties:xlnx,data-bits: {'const': '$ref'} is not allowed for '$ref'
+>         hint: Standard unit suffix properties don't need a type $ref
+>         from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+>
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+>  Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml | 1 -
+>  1 file changed, 1 deletion(-)
 
---Apple-Mail=_C476DF10-B533-485E-A35A-1DEC4164C313
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
+Thanks for fixing.
 
-Hi,
-
-> On 13 Oct 2021, at 12:53, Ivan T. Ivanov <iivanov@suse.de> wrote:
->=20
->=20
->=20
->> On 13 Oct 2021, at 12:51, Ivan T. Ivanov <iivanov@suse.de> wrote:
->>=20
->> Hi,
->>=20
->>> On 13 Oct 2021, at 10:50, Ard Biesheuvel <ardb@kernel.org> wrote:
->>>=20
->>> On Wed, 13 Oct 2021 at 09:30, Ivan T. Ivanov <iivanov@suse.de> =
-wrote:
->>>>=20
->>>> Hi,
->>>>=20
->>>> Quoting Dominik Brodowski (2021-10-12 11:40:34)
->>>>> Am Tue, Oct 12, 2021 at 11:27:08AM +0300 schrieb Ivan T. Ivanov:
->>>>>> This reverts commit 18b915ac6b0ac5ba7ded03156860f60a9f16df2b.
->>>>>>=20
->>>>>> When CONFIG_RANDOM_TRUST_BOOTLOADER is enabled =
-add_bootloader_randomness()
->>>>>> calls add_hwgenerator_randomness() which might sleep,
->>>>>=20
->>>>> Wouldn't it be better to fix add_bootloader_randomness(), =
-considering
->>>>> that
->>>>> calls to that function are likely to happen quite early during =
-kernel
->>>>> initialization? Especially as it seems to have worked beforehand?
->>>>=20
->>>> I have tried. I made wait_event_interruptible() optional, but then
->>>> crng_reseed() segfault badly. And I don't think crng_reseed() is
->>>> something that I could fix easily. Suggestions are welcomed ;-)
->>>>=20
->>>=20
->>> How about
->>>=20
->>> diff --git a/drivers/char/random.c b/drivers/char/random.c
->>> index 605969ed0f96..1828dc691ebf 100644
->>> --- a/drivers/char/random.c
->>> +++ b/drivers/char/random.c
->>> @@ -2297,9 +2297,8 @@ EXPORT_SYMBOL_GPL(add_hwgenerator_randomness);
->>> */
->>> void add_bootloader_randomness(const void *buf, unsigned int size)
->>> {
->>> +       add_device_randomness(buf, size);
->>>      if (IS_ENABLED(CONFIG_RANDOM_TRUST_BOOTLOADER))
->>> -               add_hwgenerator_randomness(buf, size, size * 8);
->>> -       else
->>> -               add_device_randomness(buf, size);
->>> +               credit_entropy(&input_pool, size * 8);
->>> }
->>> EXPORT_SYMBOL_GPL(add_bootloader_randomness);
->>=20
->> This doesn=E2=80=99t boot. I just changed following and kernel =
-panics. =20
->>=20
-
-And before anyone asked =E2=80=9C.. Hey but this is 5.3.18 kernel =
-version=E2=80=9D
-here is the kernel panic with 5.14.11 :-)
-
-Regards,
-Ivan
-
-
---Apple-Mail=_C476DF10-B533-485E-A35A-1DEC4164C313
-Content-Disposition: attachment;
-	filename=kernel-5.14-panic.log
-Content-Type: application/octet-stream;
-	x-unix-mode=0644;
-	name="kernel-5.14-panic.log"
-Content-Transfer-Encoding: 7bit
-
-[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x481fd010]
-[    0.000000] Linux version 5.14.11-0.g6451538-default (geeko@buildhost) (gcc (SUSE Linux) 11.2.1 20210816 [revision 056e324ce46a7924b5cf10f61010cf9dd2ca10e9], GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.37.20210803-1) #1 SMP Wed Oct 13 12:57:23 UTC 2021 (6451538)
-[    0.000000] earlycon: pl11 at MMIO 0x0000000009000000 (options '')
-[    0.000000] printk: bootconsole [pl11] enabled
-[    0.000000] efi: EFI v2.70 by EDK II
-[    0.000000] efi: SMBIOS 3.0=0xbbed0000 MEMATTR=0xba613018 ACPI 2.0=0xb8420018 RNG=0xbbfdbd98 MEMRESERVE=0xb82b8d98
-[    0.000000] efi: seeding entropy pool
-[    0.000000] Unable to handle kernel read from unreadable memory at virtual address 0000000000000100
-[    0.000000] Mem abort info:
-[    0.000000]   ESR = 0x96000004
-[    0.000000]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    0.000000]   SET = 0, FnV = 0
-[    0.000000]   EA = 0, S1PTW = 0
-[    0.000000]   FSC = 0x04: level 0 translation fault
-[    0.000000] Data abort info:
-[    0.000000]   ISV = 0, ISS = 0x00000004
-[    0.000000]   CM = 0, WnR = 0
-[    0.000000] [0000000000000100] user address but active_mm is swapper
-[    0.000000] Internal error: Oops: 96000004 [#1] SMP
-[    0.000000] Modules linked in:
-[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.14.11-0.g6451538-default #1 openSUSE Tumbleweed (unreleased) 60c96ed3deefa67df40302b86abb113f2e90c73b
-[    0.000000] pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO BTYPE=--)
-[    0.000000] pc : __queue_work+0x34/0x600
-[    0.000000] lr : queue_work_on+0x64/0xa0
-[    0.000000] sp : ffffce52f6c03b00
-[    0.000000] x29: ffffce52f6c03b00 x28: ffffce52f63ddb80 x27: 0000000000007ffe
-[    0.000000] x26: 00000000000001e0 x25: ffffce52f70a6000 x24: 00000000000001e0
-[    0.000000] x23: ffffce52f70a6f10 x22: 0000000000000000 x21: ffffce52f70a6f30
-[    0.000000] x20: ffffce52f6443000 x19: ffffce52f6e9a4a8 x18: 0000000000000007
-[    0.000000] x17: 000000000000000e x16: 0000000000000001 x15: 0000000000000019
-[    0.000000] x14: 0000000000000001 x13: 000000000000004c x12: 0000000000000068
-[    0.000000] x11: ffffce52f6053528 x10: 00000000000000d8 x9 : 000000006f6e4246
-[    0.000000] x8 : ffffce52f6c03c4c x7 : 0000000000000007 x6 : 0000000000000000
-[    0.000000] x5 : 0000000000000000 x4 : 0000000fffffffe1 x3 : 0000000fffffffe0
-[    0.000000] x2 : ffffce52f6e9a4a8 x1 : 0000000000000000 x0 : 00000000000001e0
-[    0.000000] Call trace:
-[    0.000000]  __queue_work+0x34/0x600
-[    0.000000]  queue_work_on+0x64/0xa0
-[    0.000000]  crng_reseed+0x668/0x790
-[    0.000000]  credit_entropy_bits.constprop.0+0x208/0x21c
-[    0.000000]  add_bootloader_randomness+0x2c/0x3c
-[    0.000000]  efi_config_parse_tables+0x134/0x250
-[    0.000000]  efi_init+0x170/0x21c
-[    0.000000]  setup_arch+0x2a4/0x6b0
-[    0.000000]  start_kernel+0x90/0x9cc
-[    0.000000]  __primary_switched+0xc0/0xc8
-[    0.000000] Code: a90363f7 2a0003f8 a9046bf9 2a0003fa (b9410020)
-[    0.000000] random: get_random_bytes called from oops_exit+0x44/0x80 with crng_init=0
-[    0.000000] ---[ end trace d23bd08a2a1c3f33 ]---
-[    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
-[    0.000000] Rebooting in 90 seconds..
-[    0.000000] Reboot failed -- System halted
---Apple-Mail=_C476DF10-B533-485E-A35A-1DEC4164C313--
+Acked-by: Rob Herring <robh@kernel.org>
