@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EC342C350
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D593042C355
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235509AbhJMOfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:35:01 -0400
-Received: from mga12.intel.com ([192.55.52.136]:5095 "EHLO mga12.intel.com"
+        id S237909AbhJMOfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:35:05 -0400
+Received: from mga12.intel.com ([192.55.52.136]:5099 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237030AbhJMOdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237036AbhJMOdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Oct 2021 10:33:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="207554882"
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="207554891"
 X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="207554882"
+   d="scan'208";a="207554891"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 07:31:25 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 07:31:27 -0700
 X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="524649589"
+   d="scan'208";a="524649596"
 Received: from ssafavib-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.209.164.198])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 07:31:23 -0700
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 07:31:25 -0700
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
@@ -28,18 +28,13 @@ Cc:     tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
         Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
         Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
-        linuxppc-dev@lists.ozlabs.org (open list:FREESCALE SOC SOUND DRIVERS),
         linux-kernel@vger.kernel.org (open list)
-Subject: [RFC PATCH v3 10/13] ASoC: fsl: asrc_dma: protect for_each_dpcm_be() loops
-Date:   Wed, 13 Oct 2021 09:30:47 -0500
-Message-Id: <20211013143050.244444-11-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH v3 11/13] ASoC: soc-pcm: serialize BE triggers
+Date:   Wed, 13 Oct 2021 09:30:48 -0500
+Message-Id: <20211013143050.244444-12-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
 References: <20211013143050.244444-1-pierre-louis.bossart@linux.intel.com>
@@ -49,33 +44,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Follow the locking model used within soc-pcm.c
+When more than one FE is connected to a BE, e.g. in a mixing use case,
+the BE can be triggered multiple times when the FE are opened/started
+concurrently. This race condition is problematic in the case of
+SoundWire BE dailinks, and this is not desirable in a general
+case.
+
+This patch relies on the existing BE PCM lock, which takes atomicity into
+account. The locking model assumes that all interactions start with
+the FE, so that there is no deadlock between FE and BE locks.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/fsl/fsl_asrc_dma.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/soc-pcm.c | 49 +++++++++++++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-index cd9b36ec0ecb..b67097503836 100644
---- a/sound/soc/fsl/fsl_asrc_dma.c
-+++ b/sound/soc/fsl/fsl_asrc_dma.c
-@@ -151,6 +151,7 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
- 	int ret, width;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 5f2368059e14..d115e9409c14 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -41,6 +41,12 @@ void snd_soc_dpcm_fe_unlock_irq(struct snd_soc_pcm_runtime *fe, int stream)
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_fe_unlock_irq);
  
- 	/* Fetch the Back-End dma_data from DPCM */
-+	snd_soc_dpcm_fe_lock_irq(rtd, stream);
- 	for_each_dpcm_be(rtd, stream, dpcm) {
- 		struct snd_soc_pcm_runtime *be = dpcm->be;
- 		struct snd_pcm_substream *substream_be;
-@@ -164,6 +165,7 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
- 		dev_be = dai->dev;
- 		break;
++#define snd_soc_dpcm_be_lock_irqsave(be, stream, flags) \
++	snd_pcm_stream_lock_irqsave(snd_soc_dpcm_get_substream(be, stream), flags)
++
++#define snd_soc_dpcm_be_unlock_irqrestore(be, stream, flags) \
++	snd_pcm_stream_unlock_irqrestore(snd_soc_dpcm_get_substream(be, stream), flags)
++
+ /* can this BE stop and free */
+ static int snd_soc_dpcm_can_be_free_stop_locked(struct snd_soc_pcm_runtime *fe,
+ 						struct snd_soc_pcm_runtime *be, int stream);
+@@ -2071,6 +2077,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ {
+ 	struct snd_soc_pcm_runtime *be;
+ 	struct snd_soc_dpcm *dpcm;
++	unsigned long flags;
+ 	int ret = 0;
+ 
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+@@ -2086,85 +2093,89 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 		dev_dbg(be->dev, "ASoC: trigger BE %s cmd %d\n",
+ 			be->dai_link->name, cmd);
+ 
++		snd_soc_dpcm_be_lock_irqsave(be, stream, flags);
+ 		switch (cmd) {
+ 		case SNDRV_PCM_TRIGGER_START:
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+ 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
+ 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+-				continue;
++				goto unlock_be;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				goto end;
++				goto unlock_be;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_RESUME:
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
+-				continue;
++				goto unlock_be;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				goto end;
++				goto unlock_be;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+-				continue;
++				goto unlock_be;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				goto end;
++				goto unlock_be;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_STOP:
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) &&
+ 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+-				continue;
++				goto unlock_be;
+ 
+ 			if (!snd_soc_dpcm_can_be_free_stop_locked(fe, be, stream))
+-				continue;
++				goto unlock_be;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				goto end;
++				goto unlock_be;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_SUSPEND:
+ 			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+-				continue;
++				goto unlock_be;
+ 
+ 			if (!snd_soc_dpcm_can_be_free_stop_locked(fe, be, stream))
+-				continue;
++				goto unlock_be;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				goto end;
++				goto unlock_be;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_SUSPEND;
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+-				continue;
++				goto unlock_be;
+ 
+ 			if (!snd_soc_dpcm_can_be_free_stop_locked(fe, be, stream))
+-				continue;
++				goto unlock_be;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				goto end;
++				goto unlock_be;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
+ 			break;
+ 		}
++unlock_be:
++		snd_soc_dpcm_be_unlock_irqrestore(be, stream, flags);
++		if (ret < 0) {
++			dev_err(fe->dev, "ASoC: %s() failed at %s (%d)\n",
++				__func__, be->dai_link->name, ret);
++			break;
++		}
  	}
-+	snd_soc_dpcm_fe_unlock_irq(rtd, stream);
- 
- 	if (!dma_params_be) {
- 		dev_err(dev, "failed to get the substream of Back-End\n");
+-end:
+-	if (ret < 0)
+-		dev_err(fe->dev, "ASoC: %s() failed at %s (%d)\n",
+-			__func__, be->dai_link->name, ret);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(dpcm_be_dai_trigger);
 -- 
 2.25.1
 
