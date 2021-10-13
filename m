@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD5B42BAC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D3842BAAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238673AbhJMIsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:48:17 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3973 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232692AbhJMIsO (ORCPT
+        id S238327AbhJMInm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:43:42 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:19027 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233707AbhJMInk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:48:14 -0400
-Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HTmHz6ymgz67Mml;
-        Wed, 13 Oct 2021 16:42:39 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
+        Wed, 13 Oct 2021 04:43:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634114497; x=1665650497;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=uS5AUBVNgvSk7L6DFWnNIGqcFmvItYvZAYD6rQ6KYRo=;
+  b=p08/uONEKTvvDpADmk4WBZlIc2bTNe7gWO0Udgvs4l8w4F1pMH7YGQ9w
+   xX6kxB7BnRtac/ec+4HWN0q7iZ/e3eX5Mta+w+XeWkbGw7dfK0YX1WNuu
+   tlUEfpsCAmgxEDT4r6BWijftUmPFmNir/fYZ6Krv/b0kDS0HVTwlYWQ9N
+   aHd2QfRQmYiUWohQO4CGrfCqA0WunRPNC40f5CMT3jy61bt5FXwwnyEF5
+   i3feqy7biIaw/qL7CkIU2JRXyvMm4b1nUGKBbm20WPJBByP6m1SjcCZbt
+   F0iQ2t4yzVRK7NSH9WjC/51KgKoZYGcgk9CQk7vh6WtIAcGl8Nt6KWeXU
+   g==;
+IronPort-SDR: kDs5hX2aE+TjJTDd44u9mMdNi45JykHWVZyXP867ispU0XU0EqAhvCsGCd7HiSemh5i4aQa8s8
+ O5FMwWgCLTFCJIVoJAUblP1SLP1dlBv4UNRz7fgnBm4y8ap4E9UJjGHqFXuh2Z0lGM7A5pKE0v
+ cf3w7B7lSchHRDvrI8f7caUXKKvsPa9JuJ/IVS9OPCGzEqVxJh8L9gkwk4nXCMuXw1ruajEqAC
+ zKb4eCQULASDqk3xTZ71mPmp6BiYj1Bs7b9GuFZhSbywfmQL2P7i7r/Sx8Buwt42GXIXBGPNQh
+ M/anCRohilkpO0zsWsQai6E4
+X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
+   d="scan'208";a="72768982"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Oct 2021 01:41:36 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 13 Oct 2021 10:46:09 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 13 Oct 2021 09:46:07 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <axboe@kernel.dk>
-CC:     <ming.lei@redhat.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kashyap.desai@broadcom.com>,
-        <hare@suse.de>, John Garry <john.garry@huawei.com>
-Subject: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
-Date:   Wed, 13 Oct 2021 16:40:59 +0800
-Message-ID: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+ 15.1.2176.14; Wed, 13 Oct 2021 01:41:36 -0700
+Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Wed, 13 Oct 2021 01:41:34 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
+        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
+        <UNGLinuxDriver@microchip.com>, <p.zabel@pengutronix.de>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH v2 0/2] pinctrl: pinctrl-microchip-sgpio: Extend to call reset driver
+Date:   Wed, 13 Oct 2021 10:42:15 +0200
+Message-ID: <20211013084217.2298553-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since it is now possible for a tagset to share a single set of tags, the
-iter function should not re-iter the tags for the count of #hw queues in
-that case. Rather it should just iter once.
+This allows the driver to call an optional reset driver.
 
-Fixes: e0fdf846c7bb ("blk-mq: Use shared tags for shared sbitmap support")
-Reported-by: Kashyap Desai <kashyap.desai@broadcom.com>
-Signed-off-by: John Garry <john.garry@huawei.com>
+v1->v2:
+ - add dt-bidings changes
 
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 72a2724a4eee..c943b6529619 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -378,9 +378,12 @@ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
- void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
- 		busy_tag_iter_fn *fn, void *priv)
- {
--	int i;
-+	unsigned int flags = tagset->flags;
-+	int i, nr_tags;
-+
-+	nr_tags = blk_mq_is_shared_tags(flags) ? 1 : tagset->nr_hw_queues;
- 
--	for (i = 0; i < tagset->nr_hw_queues; i++) {
-+	for (i = 0; i < nr_tags; i++) {
- 		if (tagset->tags && tagset->tags[i])
- 			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
- 					      BT_TAG_ITER_STARTED);
+Horatiu Vultur (2):
+  dt-bindings: pinctrl: pinctrl-microchip-sgpio: Add reset binding
+  pinctrl: microchip sgpio: use reset driver
+
+ .../devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml | 6 ++++++
+ drivers/pinctrl/pinctrl-microchip-sgpio.c                   | 6 ++++++
+ 2 files changed, 12 insertions(+)
+
 -- 
-2.26.2
+2.33.0
 
