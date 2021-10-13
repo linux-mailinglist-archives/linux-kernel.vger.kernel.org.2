@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB67C42B3C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1ACC42B3AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237244AbhJMDnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:43:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39804 "EHLO mail.kernel.org"
+        id S237333AbhJMDhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:37:23 -0400
+Received: from mga17.intel.com ([192.55.52.151]:58999 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231253AbhJMDnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:43:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55326604DC;
-        Wed, 13 Oct 2021 03:41:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634096460;
-        bh=AIdAHNFHuai/d02DcDs5zpN1aDYqcsFZdyW+f3Cp69s=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZNDlX9DzKPnrjzSc28e7TV6UMZCiEbdqYIgJf8UemugainF+EVktPgHBJEl0R/mas
-         f/QOobraGrzgEzRv036samM99RwUtzURQgFuxiHT4GoUZ4KWqwlVKfFxJJYhHismTm
-         bUuE4UByR+VN1LoKuypdyd3VtSMOy29drTiZHUmdUjyzQ0LGmpXhBFRp8EaPbbmM3k
-         vUNyEwWvLHSfx6TfX09TEuKUald8btL4a0akenkdgio33QxtgYevSp19ry6p/9hbAy
-         NtrBjJISYyW6Sd1vZ012BLKCmLWhhcDFn+eOu0/oKblrnYOwte/EdK7yWodQbE7fou
-         nXMMiUB8XSYNw==
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Update entry for the Stratix10 firmware
-Date:   Tue, 12 Oct 2021 22:40:56 -0500
-Message-Id: <20211013034056.1560020-1-dinguyen@kernel.org>
+        id S229581AbhJMDhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 23:37:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="208138747"
+X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
+   d="scan'208";a="208138747"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 20:35:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
+   d="scan'208";a="524469770"
+Received: from glass.png.intel.com ([10.158.65.69])
+  by orsmga001.jf.intel.com with ESMTP; 12 Oct 2021 20:35:14 -0700
+From:   Ong Boon Leong <boon.leong.ong@intel.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/2] net: phy: dp83867 non-OF and loopback support
+Date:   Wed, 13 Oct 2021 11:41:26 +0800
+Message-Id: <20211013034128.2094426-1-boon.leong.ong@intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -36,27 +38,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Richard Gong is no longer at Intel, so update the MAINTAINER's entry for
-the Stratix10 firmware drivers.
+Hi,
 
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+1/2:  TI DP83867 is chosen as Ethernet PHY card that paired with intel
+      mGbE controller (stmmac, dw-intel) and used for non-OF platform.
+      It is important for DP83867 default settings (RX & TX internal
+      delay and IO impedence) are initialied for non-OF platform in order
+      to get the basic TX and RX traffics to work.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e0bca0de0df7..6b6f98483deb 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9629,7 +9629,7 @@ F:	include/uapi/linux/isst_if.h
- F:	tools/power/x86/intel-speed-select/
- 
- INTEL STRATIX10 FIRMWARE DRIVERS
--M:	Richard Gong <richard.gong@linux.intel.com>
-+M:	Dinh Nguyen <dinguyen@kernel.org>
- L:	linux-kernel@vger.kernel.org
- S:	Maintained
- F:	Documentation/ABI/testing/sysfs-devices-platform-stratix10-rsu
+2/2:  To enable loopback operation enabled/disabled using BMCR register
+      that is available for TI DP83867 PHY.
+
+These two patches have been tested on Intel Elkhart Lake board with TI
+DP83867 AIC card and other derivative platforms from board vendors
+
+Thanks
+Boon Leong
+
+Lay, Kuan Loon (2):
+  net: phy: dp83867: introduce critical chip default init for non-of
+    platform
+  net: phy: dp83867: add generic PHY loopback
+
+ drivers/net/phy/dp83867.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
 -- 
 2.25.1
 
