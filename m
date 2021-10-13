@@ -2,94 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66C042C8E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1A542C8EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237102AbhJMSmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 14:42:04 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:36506 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237656AbhJMSl7 (ORCPT
+        id S238665AbhJMSmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 14:42:37 -0400
+Received: from mail-1.ca.inter.net ([208.85.220.69]:59760 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229967AbhJMSmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 14:41:59 -0400
-Received: by mail-ot1-f46.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so4957051otk.3;
-        Wed, 13 Oct 2021 11:39:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=aa+o+UEmzQ4msWcFbeNJ9FBiQkiCPc74zgsEuSsVOHI=;
-        b=xlgkdbmlRoNwhoKYG+US1lRPkHTMp0InMLvz58+9OlhDuGVUGjhZHcLyFe5LRV7HRr
-         arN0uL0NbUOAhHLa1XkT+3QOtLsvW+/s3je/claqIQKH+QmfuyAKmNjrTlLfZ5eAXL7W
-         vZrRQ4iXEM2e+r4KsT+jKrM+GmZ7mTynO+4ocheu+4tZsCoyfIOvLy3BQWEwo8KcDUmq
-         XULbt5m8K4TWzLM6No7qyiLy9HfWzeeJJAs7Mm8ZTkkpjEkWDQYhP9S/Olg1BD7i76Ux
-         lxLSj5p3AsVzi1L8Pm8tbtW57a+PHiIWjydY9cYFGHVPSQGTOMGrK/e7YN9LqX9y8r1C
-         UQVw==
-X-Gm-Message-State: AOAM532NOHsTvgUMrIAot//zGEepZhSqqArR0+Pv75Ju/cZHWnasU2CM
-        ChWElrZSKvaDB4eKaOZHeg==
-X-Google-Smtp-Source: ABdhPJyS8F4OEoCJ+h6d61xQGrmUpNOb8cRogGGY/YZJolLcUKW7EfCIoSHsqMFYF4Mcw5yRCGSEoA==
-X-Received: by 2002:a9d:84d:: with SMTP id 71mr767888oty.190.1634150395859;
-        Wed, 13 Oct 2021 11:39:55 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q15sm67453otm.15.2021.10.13.11.39.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 11:39:55 -0700 (PDT)
-Received: (nullmailer pid 1324766 invoked by uid 1000);
-        Wed, 13 Oct 2021 18:39:52 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     linus.walleij@linaro.org, lars.povlsen@microchip.com,
-        robh+dt@kernel.org, p.zabel@pengutronix.de,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        UNGLinuxDriver@microchip.com, Steen.Hegelund@microchip.com
-In-Reply-To: <20211013084217.2298553-2-horatiu.vultur@microchip.com>
-References: <20211013084217.2298553-1-horatiu.vultur@microchip.com> <20211013084217.2298553-2-horatiu.vultur@microchip.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: pinctrl: pinctrl-microchip-sgpio: Add reset binding
-Date:   Wed, 13 Oct 2021 13:39:52 -0500
-Message-Id: <1634150392.542575.1324765.nullmailer@robh.at.kernel.org>
+        Wed, 13 Oct 2021 14:42:36 -0400
+Received: from mp-mx11.ca.inter.net (mp-mx11.ca.inter.net [208.85.217.19])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id BFFB32EA525;
+        Wed, 13 Oct 2021 14:40:31 -0400 (EDT)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by mp-mx11.ca.inter.net (mp-mx11.ca.inter.net [208.85.217.19]) (amavisd-new, port 10024)
+        with ESMTP id gmdedJn2uhmy; Wed, 13 Oct 2021 14:40:31 -0400 (EDT)
+Received: from [192.168.48.23] (host-23-91-187-47.dyn.295.ca [23.91.187.47])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id B3C7E2EA078;
+        Wed, 13 Oct 2021 14:40:30 -0400 (EDT)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH v2 resend 2/2] scsi:scsi_debug:Fix out-of-bound read in
+ resp_report_tgtpgs
+To:     Ye Bin <yebin10@huawei.com>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bvanassche@acm.org
+References: <20211013033913.2551004-1-yebin10@huawei.com>
+ <20211013033913.2551004-3-yebin10@huawei.com>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <ff5097fd-a969-c088-fec4-3a0f2b898993@interlog.com>
+Date:   Wed, 13 Oct 2021 14:40:29 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20211013033913.2551004-3-yebin10@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 10:42:16 +0200, Horatiu Vultur wrote:
-> This describes the new binding for calling the reset driver in the
-> pinctrl-microchip-sgpio driver.
+On 2021-10-12 11:39 p.m., Ye Bin wrote:
+> We got follow issue when run syzkaller:
+> BUG: KASAN: slab-out-of-bounds in memcpy include/linux/string.h:377 [inline]
+> BUG: KASAN: slab-out-of-bounds in sg_copy_buffer+0x150/0x1c0 lib/scatterlist.c:831
+> Read of size 2132 at addr ffff8880aea95dc8 by task syz-executor.0/9815
 > 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> CPU: 0 PID: 9815 Comm: syz-executor.0 Not tainted 4.19.202-00874-gfc0fe04215a9 #2
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+> Call Trace:
+>   __dump_stack lib/dump_stack.c:77 [inline]
+>   dump_stack+0xe4/0x14a lib/dump_stack.c:118
+>   print_address_description+0x73/0x280 mm/kasan/report.c:253
+>   kasan_report_error mm/kasan/report.c:352 [inline]
+>   kasan_report+0x272/0x370 mm/kasan/report.c:410
+>   memcpy+0x1f/0x50 mm/kasan/kasan.c:302
+>   memcpy include/linux/string.h:377 [inline]
+>   sg_copy_buffer+0x150/0x1c0 lib/scatterlist.c:831
+>   fill_from_dev_buffer+0x14f/0x340 drivers/scsi/scsi_debug.c:1021
+>   resp_report_tgtpgs+0x5aa/0x770 drivers/scsi/scsi_debug.c:1772
+>   schedule_resp+0x464/0x12f0 drivers/scsi/scsi_debug.c:4429
+>   scsi_debug_queuecommand+0x467/0x1390 drivers/scsi/scsi_debug.c:5835
+>   scsi_dispatch_cmd+0x3fc/0x9b0 drivers/scsi/scsi_lib.c:1896
+>   scsi_request_fn+0x1042/0x1810 drivers/scsi/scsi_lib.c:2034
+>   __blk_run_queue_uncond block/blk-core.c:464 [inline]
+>   __blk_run_queue+0x1a4/0x380 block/blk-core.c:484
+>   blk_execute_rq_nowait+0x1c2/0x2d0 block/blk-exec.c:78
+>   sg_common_write.isra.19+0xd74/0x1dc0 drivers/scsi/sg.c:847
+>   sg_write.part.23+0x6e0/0xd00 drivers/scsi/sg.c:716
+>   sg_write+0x64/0xa0 drivers/scsi/sg.c:622
+>   __vfs_write+0xed/0x690 fs/read_write.c:485
+> kill_bdev:block_device:00000000e138492c
+>   vfs_write+0x184/0x4c0 fs/read_write.c:549
+>   ksys_write+0x107/0x240 fs/read_write.c:599
+>   do_syscall_64+0xc2/0x560 arch/x86/entry/common.c:293
+>   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+>   As with previous patch, we get 'alen' from command, and 'alen''s type is
+>   int, If userspace pass large length we will get negative 'alen'.
+>   So just set 'n'/'alen'/'rlen' with u32 type.
+> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+
+Acked-by: Douglas Gilbert <dgilbert@interlog.com>
+
+Thanks.
+
 > ---
->  .../devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
+>   drivers/scsi/scsi_debug.c | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
-
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
-
-Full log is available here: https://patchwork.ozlabs.org/patch/1540276
-
-
-gpio@61101036c: 'reset-names', 'resets' do not match any of the regexes: '^gpio@[0-1]$', 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/microchip/sparx5_pcb125.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb134.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb135.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dt.yaml
-
-gpio@611010484: 'reset-names', 'resets' do not match any of the regexes: '^gpio@[0-1]$', 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/microchip/sparx5_pcb125.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb134.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb135.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dt.yaml
-
-gpio@61101059c: 'reset-names', 'resets' do not match any of the regexes: '^gpio@[0-1]$', 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/microchip/sparx5_pcb125.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb134.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb135.dt.yaml
-	arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dt.yaml
+> diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+> index be0440545744..ead65cdfb522 100644
+> --- a/drivers/scsi/scsi_debug.c
+> +++ b/drivers/scsi/scsi_debug.c
+> @@ -1896,8 +1896,9 @@ static int resp_report_tgtpgs(struct scsi_cmnd *scp,
+>   	unsigned char *cmd = scp->cmnd;
+>   	unsigned char *arr;
+>   	int host_no = devip->sdbg_host->shost->host_no;
+> -	int n, ret, alen, rlen;
+>   	int port_group_a, port_group_b, port_a, port_b;
+> +	u32 alen, n, rlen;
+> +	int ret;
+>   
+>   	alen = get_unaligned_be32(cmd + 6);
+>   	arr = kzalloc(SDEBUG_MAX_TGTPGS_ARR_SZ, GFP_ATOMIC);
+> @@ -1959,9 +1960,9 @@ static int resp_report_tgtpgs(struct scsi_cmnd *scp,
+>   	 * - The constructed command length
+>   	 * - The maximum array size
+>   	 */
+> -	rlen = min_t(int, alen, n);
+> +	rlen = min(alen, n);
+>   	ret = fill_from_dev_buffer(scp, arr,
+> -			   min_t(int, rlen, SDEBUG_MAX_TGTPGS_ARR_SZ));
+> +			   min_t(u32, rlen, SDEBUG_MAX_TGTPGS_ARR_SZ));
+>   	kfree(arr);
+>   	return ret;
+>   }
+> 
 
