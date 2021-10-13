@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93E142BB51
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4DE42BB53
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239080AbhJMJTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:19:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:48932 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230045AbhJMJTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:19:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="290878653"
-X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
-   d="scan'208";a="290878653"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 02:17:13 -0700
-X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
-   d="scan'208";a="480721077"
-Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.230.131]) ([10.249.230.131])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 02:17:08 -0700
-Subject: Re: [PATCH v3 0/8] perf session: Extend reader object to allow
- multiple readers
-From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-References: <cover.1634113027.git.alexey.v.bayduraev@linux.intel.com>
-Organization: Intel Corporation
-Message-ID: <9365d01b-20a7-2ad2-2a50-b3661a47da9f@linux.intel.com>
-Date:   Wed, 13 Oct 2021 12:17:05 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S239097AbhJMJTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:19:21 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28928 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239072AbhJMJTS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 05:19:18 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HTmyj18T8zbn7Q;
+        Wed, 13 Oct 2021 17:12:45 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 17:17:10 +0800
+Received: from [10.174.178.174] (10.174.178.174) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 17:17:09 +0800
+Subject: Re: [PATCH] iio: buffer: Fix double-free in
+ iio_buffers_alloc_sysfs_and_mask()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Joe Perches <joe@perches.com>
+CC:     Alexandru Ardelean <ardeleanalex@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>
+References: <20211012092513.1349295-1-yangyingliang@huawei.com>
+ <CA+U=DsrHSwaiS7mT4rcHT_ZQwfPg+-Hwm-jkib11+m7W-VA_FQ@mail.gmail.com>
+ <CAHp75Vf+DHNxiP5HzsKzzh5hFmr20P8SzOTnLXAvhC5Vb6hzMA@mail.gmail.com>
+ <61c28865036cd40a96f2d1bb4c27fbbb08c2d3a5.camel@perches.com>
+ <CAHp75VfBXuMboFr6czRipXKfBpBNj8Syo9cvhiMXD7VaVaka+Q@mail.gmail.com>
+ <fe8a022750e911159abcac979bada51940c03d72.camel@perches.com>
+ <CAHp75Vdx1=q=5sNkn9o=mqnufxYiXnssmMJtXw9goFskGijc1w@mail.gmail.com>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <04c752b5-3814-34d0-82e4-9d0d46af433f@huawei.com>
+Date:   Wed, 13 Oct 2021 17:17:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <cover.1634113027.git.alexey.v.bayduraev@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+In-Reply-To: <CAHp75Vdx1=q=5sNkn9o=mqnufxYiXnssmMJtXw9goFskGijc1w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.10.2021 12:06, Alexey Bayduraev wrote:> Changes in v4:> - set/unset active_decomp within reader__process_events
-Sorry, 
+Hi,
 
-The subject should of course be [PATCH v4 0/8] ...
-
-Regards,
-Alexey
-
-> 
-> Changes in v3:
-> - removed struct reader_state in [PATCH v3 1/8]
-> - fixed repeating code in [PATCH v3 2/8]
-> - split [PATCH v2 4/5] to [PATCH v3 4/8], [PATCH v3 5/8]
-> - split [PATCH v2 5/5] to [PATCH v3 6/8] - [PATCH v3 8/8]
-> 
-> Changes in v2:
-> - introduced struct decomp_data suggested by Jiri Olsa
-> - removed unnecessary [PATCH v1 1/6]
-> - removed unnecessary extra line in [PATCH v2 4/5]
-> - removed unnecessary reader_state.eof flag in [PATCH v2 5/5]
-> 
-> Patchset moves state info and decompressor object into reader object
-> that made possible to split reader__process_events function into three
-> logical parts: init, map/unmap and single event reader which are used
-> in events reader loop. This approach allows reading multiple trace
-> files at the same time. 
-> 
-> The design and implementation are based on the prototype [1], [2].
-> The patchset was separated from [3].
-> 
-> Tested:
-> 
-> tools/perf/perf record -o prof.data -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data -z -- matrix.gcc.g.O3
-> tools/perf/perf report -i prof.data
-> tools/perf/perf report -i prof.data --call-graph=callee
-> tools/perf/perf report -i prof.data --stdio --header
-> tools/perf/perf report -i prof.data -D --header
-> 
-> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
-> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
-> [3] https://lore.kernel.org/lkml/cover.1629186429.git.alexey.v.bayduraev@linux.intel.com/
-> 
-> Alexey Bayduraev (8):
->   perf session: Move all state items to reader object
->   perf session: Introduce decompressor in reader object
->   perf session: Move init/release code to separate functions
->   perf session: Move map code to separate function
->   perf session: Move unmap code to reader__mmap
->   perf session: Move event read code to separate function
->   perf session: Introduce reader return codes
->   perf session: Introduce reader EOF function
-> 
->  tools/perf/util/session.c | 193 ++++++++++++++++++++++++++------------
->  tools/perf/util/session.h |  10 +-
->  2 files changed, 141 insertions(+), 62 deletions(-)
-> 
+On 2021/10/13 4:58, Andy Shevchenko wrote:
+> On Tue, Oct 12, 2021 at 8:55 PM Joe Perches <joe@perches.com> wrote:
+>> On Tue, 2021-10-12 at 23:48 +0300, Andy Shevchenko wrote:
+>>> On Tue, Oct 12, 2021 at 8:43 PM Joe Perches <joe@perches.com> wrote:
+>>>> On Tue, 2021-10-12 at 23:30 +0300, Andy Shevchenko wrote:
+>>>>> On Tue, Oct 12, 2021 at 2:37 PM Alexandru Ardelean
+>>>>> <ardeleanalex@gmail.com> wrote:
+>>>>>> On Tue, Oct 12, 2021 at 12:18 PM Yang Yingliang
+>>>>>> <yangyingliang@huawei.com> wrote:
+> ...
+>
+>>>>> I prefer to see
+>>>>>
+>>>>> - for (; unwind_idx >= 0; unwind_idx--) {
+>>>>> + while (unwind_idx--)
+>>>> Not the same code as unwind_idx would be decremented before entering
+>>>> the code block.
+>>> It's kinda cryptic what you are pointing out.
+>> Not really,
+> It's. It lacks the very same "additional" words to explain what you
+> meant and why.
+>
+>>> What's needed additionally is to change
+>>>
+>>> - unwind_idx = iio_dev_opaque->attached_buffers_cnt - 1;
+>>> + unwind_idx = i;
+>> You left out that 'additional change' above from your reply.
+> Yes, that's true, but it took some time to decrypt your message.
+>
+>>> Of course not. See above. The usual pattern is
+>>>
+>>>    while (i--)
+>>>      do_clean_item(i);
+>> Of course, but that's not what you replied.
+>> I was merely pointing out that your reply included a logic change
+>> converting a loop from for to while.
+> I expect that developers actually think about the changes they do and
+> double check what's proposed by reviewers. If they just copy'n'paste
+> whatever others propose, I wouldn't take any patch from such a
+> developer.
+I think in alloc path is using for loop, and in error/free path also 
+using for loop is better to read the code.
+>
