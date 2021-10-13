@@ -2,58 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEAA142B17E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D42F42B182
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 02:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236895AbhJMA6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 20:58:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41270 "EHLO mail.kernel.org"
+        id S237584AbhJMA6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 20:58:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237316AbhJMA6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 20:58:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBD606101B;
-        Wed, 13 Oct 2021 00:55:57 +0000 (UTC)
+        id S237459AbhJMA6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 20:58:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FC1360EDF;
+        Wed, 13 Oct 2021 00:56:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634086561;
-        bh=Id+lo8S98inx0VkSjzSpon/uiOSKyP7vBgn14eXMLQY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gfl2QErIKnUHyotNIdCXlr+UEztBZuK8ml1yDrMvHIwpHVCApqeUQ+o9asci+P2ND
-         KMh2iPDZPVH06aPm4jLJFmm4VjhRzk3DIjeLztGvF1rmd8rBgzFGEHHU9oGlhpGWYE
-         UtKBP6sKcIj+hbXH/LlWTm8DenNqpgBWS+FnDhiDg78l81Le96MOJn/Id+QV4zQJau
-         +guWnqoXOoN2ZmZlPeYibLpudjHAMZ5R3UE3g/56JuTLpV/5f7bCmdaoonZDPuhiDn
-         iqTJXDd0HNKzDl4fyxWLSyvr7F9FjUMJ6E4PiotRTsXxcoYK06Uk/sS/X4AnwqOrLt
-         ZlreT7ooFYQkg==
+        s=k20201202; t=1634086567;
+        bh=1JCWJM5h9l5MnhFtkxyHxXoaEYnnSNwNurlbdVs2bKo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RbQ2PaecOshL35nrOII+b/7SN/b/vx6URPcZ1sF8H47bNCMSCWgCeDBWzNgK+ZN8F
+         eh4QRhSFlHZhOJuR8iLt1UuABS+OBt3SoLxad4yX+/EOknWFiZf3fDZiLznihJfKrK
+         K7VGUapSCxBtsF/62yWmvuRMo6hU3GqzrASSRYWGQlMBmD/JYyIcDvDM79tGNWcL6l
+         /bbHhQ17IwYQcCMG86TQ3IsnVl8e5uR7iSNKy+Yl2DRFkvKWLJN/k1NQxBO10BIEab
+         1efBzCdhMslPnnZv02jEfGjNs/9Ks1vm45DSukgBZg8E/Ol5Gv8Z0OciXyBGdOnaq9
+         372UiYrHf6xNA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+Cc:     Joel Stanley <joel@jms.id.au>, Arnd Bergmann <arnd@arndb.de>,
         Sasha Levin <sashal@kernel.org>, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, tsbogend@alpha.franken.de,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, linus.walleij@linaro.org,
-        geert+renesas@glider.be, rmk+kernel@armlinux.org.uk,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        mark.rutland@arm.com, ardb@kernel.org,
-        u.kleine-koenig@pengutronix.de, rppt@kernel.org,
-        lukas.bulwahn@gmail.com, wangkefeng.wang@huawei.com,
-        slyfox@gentoo.org, axboe@kernel.dk, ben.widawsky@intel.com,
-        dan.j.williams@intel.com, gregkh@linuxfoundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 11/11] firmware: include drivers/firmware/Kconfig unconditionally
-Date:   Tue, 12 Oct 2021 20:55:31 -0400
-Message-Id: <20211013005532.700190-11-sashal@kernel.org>
+        krzysztof.kozlowski@canonical.com, alexandre.torgue@foss.st.com,
+        treding@nvidia.com, digetx@gmail.com, m.szyprowski@samsung.com,
+        olivier.moysan@st.com, mani@kernel.org, grygorii.strashko@ti.com,
+        f.fainelli@gmail.com, stefan.wahren@i2se.com,
+        alexandre.belloni@bootlin.com, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 1/6] ARM: config: mutli v7: Reenable FB dependency
+Date:   Tue, 12 Oct 2021 20:55:57 -0400
+Message-Id: <20211013005603.700363-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211013005532.700190-1-sashal@kernel.org>
-References: <20211013005532.700190-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -62,147 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Joel Stanley <joel@jms.id.au>
 
-[ Upstream commit 951cd3a0866d29cb9c01ebc1d9c17590e598226e ]
+[ Upstream commit 8c1768967e2733d55abf449d8abd6f1915ba3539 ]
 
-Compile-testing drivers that require access to a firmware layer
-fails when that firmware symbol is unavailable. This happened
-twice this week:
+DRM_FBDEV_EMULATION previously selected FB and was default y as long as DRM
+was enabled. In commit f611b1e7624c ("drm: Avoid circular dependencies for
+CONFIG_FB") the select was replaced with a depends on FB, disabling the
+drivers that depended on it.
 
- - My proposed to change to rework the QCOM_SCM firmware symbol
-   broke on ppc64 and others.
+Renable FB so we get back FB_EFI, FB_WM8505, FB_SH_MOBILE_LCDC, FB_SIMPLE and
+VIDEO_VIVID.
 
- - The cs_dsp firmware patch added device specific firmware loader
-   into drivers/firmware, which broke on the same set of
-   architectures.
+It must be set to y and not a module as the test driver VIDEO_VIVID
+requires it to be built in.
 
-We should probably do the same thing for other subsystems as well,
-but fix this one first as this is a dependency for other patches
-getting merged.
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Acked-by: Will Deacon <will@kernel.org>
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: Simon Trimmer <simont@opensource.cirrus.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Reviewed-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/CAK8P3a18EdBKQdGDOZc9cPKsf=hY8==v2cO0DBE_tyd82Uq-Ng@mail.gmail.com
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/Kconfig    | 2 --
- arch/arm64/Kconfig  | 2 --
- arch/ia64/Kconfig   | 2 --
- arch/mips/Kconfig   | 2 --
- arch/parisc/Kconfig | 2 --
- arch/riscv/Kconfig  | 2 --
- arch/x86/Kconfig    | 2 --
- drivers/Kconfig     | 2 ++
- 8 files changed, 2 insertions(+), 14 deletions(-)
+ arch/arm/configs/multi_v7_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 002e0cf025f5..d4c6b95b24d7 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -2043,8 +2043,6 @@ config ARCH_HIBERNATION_POSSIBLE
- 
- endmenu
- 
--source "drivers/firmware/Kconfig"
--
- if CRYPTO
- source "arch/arm/crypto/Kconfig"
- endif
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 5e5cf3af6351..f4809760a806 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1933,8 +1933,6 @@ source "drivers/cpufreq/Kconfig"
- 
- endmenu
- 
--source "drivers/firmware/Kconfig"
--
- source "drivers/acpi/Kconfig"
- 
- source "arch/arm64/kvm/Kconfig"
-diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index 39b25a5a591b..e8014d2e36c0 100644
---- a/arch/ia64/Kconfig
-+++ b/arch/ia64/Kconfig
-@@ -426,8 +426,6 @@ config CRASH_DUMP
- 	  help
- 	    Generate crash dump after being started by kexec.
- 
--source "drivers/firmware/Kconfig"
--
- endmenu
- 
- menu "Power management and ACPI options"
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 1a63f592034e..3bd3a01a2a2b 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -3328,8 +3328,6 @@ source "drivers/cpuidle/Kconfig"
- 
- endmenu
- 
--source "drivers/firmware/Kconfig"
--
- source "arch/mips/kvm/Kconfig"
- 
- source "arch/mips/vdso/Kconfig"
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 14f3252f2da0..ad13477fb40c 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -378,6 +378,4 @@ config KEXEC_FILE
- 
- endmenu
- 
--source "drivers/firmware/Kconfig"
--
- source "drivers/parisc/Kconfig"
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index f7abd118d23d..fcb8e5da148e 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -428,5 +428,3 @@ menu "Power management options"
- source "kernel/power/Kconfig"
- 
- endmenu
--
--source "drivers/firmware/Kconfig"
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index f3c8a8110f60..499f3cc1e62f 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2899,8 +2899,6 @@ config HAVE_ATOMIC_IOMAP
- 	def_bool y
- 	depends on X86_32
- 
--source "drivers/firmware/Kconfig"
--
- source "arch/x86/kvm/Kconfig"
- 
- source "arch/x86/Kconfig.assembler"
-diff --git a/drivers/Kconfig b/drivers/Kconfig
-index dcecc9f6e33f..493ac7ffd8d0 100644
---- a/drivers/Kconfig
-+++ b/drivers/Kconfig
-@@ -16,6 +16,8 @@ source "drivers/bus/Kconfig"
- 
- source "drivers/connector/Kconfig"
- 
-+source "drivers/firmware/Kconfig"
-+
- source "drivers/gnss/Kconfig"
- 
- source "drivers/mtd/Kconfig"
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index e4c8def9a0a5..32dfc736a4b1 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -677,6 +677,7 @@ CONFIG_DRM_PL111=m
+ CONFIG_DRM_LIMA=m
+ CONFIG_DRM_PANFROST=m
+ CONFIG_DRM_ASPEED_GFX=m
++CONFIG_FB=y
+ CONFIG_FB_EFI=y
+ CONFIG_FB_WM8505=y
+ CONFIG_FB_SH_MOBILE_LCDC=y
 -- 
 2.33.0
 
