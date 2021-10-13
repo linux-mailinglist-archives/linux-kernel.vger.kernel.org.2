@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABF542C952
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5367842C953
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhJMTHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 15:07:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55228 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234649AbhJMTHo (ORCPT
+        id S236214AbhJMTIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 15:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233600AbhJMTIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 15:07:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634151940;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Eiv40w3h1hcVei6B4W9Y1LVqxQiJmLHN86qfNssdwM=;
-        b=fBk95QVvTKSn7D8NZUtoxSN2r5cmkBzbM9mgw1TM+E3wPKvLNEreSnfEvNSYq55gaEhJv1
-        pNpaJS4bkBFoD09Zj+QyQ2JARVgX6h8TNmroZKPzqG01np2yili1axD6TxGzuGLfcaIT3o
-        r9OebhEF+HcxJeQ8V17nNIEALAOR5T4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-sCSz0iVYO6WRaTK6KClOqQ-1; Wed, 13 Oct 2021 15:05:36 -0400
-X-MC-Unique: sCSz0iVYO6WRaTK6KClOqQ-1
-Received: by mail-ed1-f72.google.com with SMTP id s12-20020a50dacc000000b003dbf7a78e88so98792edj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:05:36 -0700 (PDT)
+        Wed, 13 Oct 2021 15:08:04 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0561C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:06:00 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so2986611pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nXWn+C65G2sncjtbdtLGu+sNNu6Ws1SqzBL/4RC9QLU=;
+        b=erKHCPbwnNJ+dbqyPQbIehybLasan69a6yMxEWXzryT+WjIUFwYywkEcbu3sK2q+sy
+         B4xybss34Pz4s5MJQv6FtWcW/s4zV23O6TAK3lHCVve6FUWq6ON/yXJ7bVJmDYQv+KnY
+         mvgU1s3Cf/SkHLYm5h2XUwvQO6CkkSvIVSm7Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=7Eiv40w3h1hcVei6B4W9Y1LVqxQiJmLHN86qfNssdwM=;
-        b=g8FBT81q5gkOAwZu4p2QJXoHVi50cn04xxs1jwhNBOxhzktRdNLRdCnNwK03whCKmL
-         vdoV5arXaDBGwU4FiQI+D5UVx3MLdPbH5XePiP2z5IYwkWCXeyS0dQS511aHUuSMsbS0
-         YT1ItGHQx6pqy84lwDpEeyqSFSDdhCqSI+i7mwKj9RZ+zafpB7YWAww2NHObuSKKcxyL
-         vrAkjYrNDdFLrN61wPOX/QcMCGkopkynBHkw8HYtSWcE7TaG8beRRZvqBbL0kvDXNAKB
-         V85QWY7MD5VnKuuZbpchOS8rq8bPkArEs+s1SH09iBvxV0kBQt7gEIHETOwAl/AYgB+T
-         6Npw==
-X-Gm-Message-State: AOAM5312V49xAY9PfAxRlVuJc5c/9yBgFOMfHldR1TqZ34rg8xrpJLL3
-        yI6CZXtzLKVxwIL+jHWaBZeoOV/VrpAmv9VVB9aUqRtz8AKzGSYFvc1tdPgf0MkURaLmqyI+Yf2
-        ZIkCTsZ+yc3OZqbTLoTud31Qw
-X-Received: by 2002:a50:bf02:: with SMTP id f2mr1749035edk.226.1634151935667;
-        Wed, 13 Oct 2021 12:05:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzmcKV0CYPqwd/mDtR926wvJB++ZYNsP6Vx3CrliwDx64dKP6XU/wrZXnneZ49I7EzdutDhVQ==
-X-Received: by 2002:a50:bf02:: with SMTP id f2mr1748397edk.226.1634151931214;
-        Wed, 13 Oct 2021 12:05:31 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r22sm278778ejd.109.2021.10.13.12.05.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 12:05:30 -0700 (PDT)
-Message-ID: <f430d53f-59cf-a658-a207-1f04adb32c56@redhat.com>
-Date:   Wed, 13 Oct 2021 21:05:25 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nXWn+C65G2sncjtbdtLGu+sNNu6Ws1SqzBL/4RC9QLU=;
+        b=5fa4oUkemQBb+dxNUPcqpYoBckZ8qhhCUPtRCyn7Ji2G8U1MNoWlWpg9HgEKRXtOxT
+         BmEBBDqnHkpCSIJIhJ5ie34kRfW1i1SZnbalKL4ai/MG42az3UIuNyxWN+wHbip5DreS
+         uyawT47S0bl6fVMKAxB6N0P+nrnVND/oR6hVBxbyKhF7nt0j3AgGvyqz0MNEobW45oFS
+         sSEWxWUoifhWhKW6dYa1h9HGUfABajG9vPXG12ztYnQZEFLRVaZleMZsIkrvAtR3kF3c
+         Nc+dEIuMC2PCr7EJR54zc3gPlBzMaLf8bV2abKKagljrr1baSe3Z2L6JFG5Lx2nwu1yj
+         WUNA==
+X-Gm-Message-State: AOAM531esN7tY2MH+ZAEsAO6b99A19ZbIDSOhDj0TcJSDoAssNX92900
+        e2sTLljAQr/wxXzNEUUx9ViOMQ==
+X-Google-Smtp-Source: ABdhPJxDuBX+/M7L1lKdmAL5VUL05XQ8QINY1cDE3k+ssDyXnVzf+flLTDS1Ptu7vFglJAdHNPg/Tw==
+X-Received: by 2002:a17:90a:708c:: with SMTP id g12mr15274111pjk.13.1634151960400;
+        Wed, 13 Oct 2021 12:06:00 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o72sm235042pjo.50.2021.10.13.12.06.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 12:06:00 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 12:05:59 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 10/15] x86/purgatory: Disable CFI
+Message-ID: <202110131204.9978A005FC@keescook>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-11-samitolvanen@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: kvm crash in 5.14.1?
-Content-Language: en-US
-To:     Salvatore Bonaccorso <carnil@debian.org>,
-        Stephen <stephenackerman16@gmail.com>
-Cc:     djwong@kernel.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, seanjc@google.com, rppt@kernel.org,
-        James.Bottomley@hansenpartnership.com, akpm@linux-foundation.org,
-        david@redhat.com, hagen@jauu.net
-References: <85e40141-3c17-1dff-1ed0-b016c5d778b6@gmail.com>
- <2cd8af17-8631-44b5-8580-371527beeb38@gmail.com>
- <YWcs3XRLdrvyRz31@eldamar.lan>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YWcs3XRLdrvyRz31@eldamar.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013181658.1020262-11-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/21 21:00, Salvatore Bonaccorso wrote:
-> Hi,
+On Wed, Oct 13, 2021 at 11:16:53AM -0700, Sami Tolvanen wrote:
+> Disable CONFIG_CFI_CLANG for the stand-alone purgatory.ro.
+
+If there's a v6, this commit log might do well to have a "why" added. I
+assume it'd be something like:
+
+... because purgatory is not running with a full kernel mapping with
+jump tables, etc...
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 > 
-> On Sat, Oct 09, 2021 at 12:00:39PM -0700, Stephen wrote:
->>> I'll try to report back if I see a crash; or in roughly a week if the
->> system seems to have stabilized.
->>
->> Just wanted to provide a follow-up here and say that I've run on both
->> v5.14.8 and v5.14.9 with this patch and everything seems to be good; no
->> further crashes or problems.
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> ---
+>  arch/x86/purgatory/Makefile | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> In Debian we got a report as well related to this issue (cf.
-> https://bugs.debian.org/996175). Do you know did the patch felt
-> through the cracks?
+> diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+> index 95ea17a9d20c..911954fec31c 100644
+> --- a/arch/x86/purgatory/Makefile
+> +++ b/arch/x86/purgatory/Makefile
+> @@ -55,6 +55,10 @@ ifdef CONFIG_RETPOLINE
+>  PURGATORY_CFLAGS_REMOVE		+= $(RETPOLINE_CFLAGS)
+>  endif
+>  
+> +ifdef CONFIG_CFI_CLANG
+> +PURGATORY_CFLAGS_REMOVE		+= $(CC_FLAGS_CFI)
+> +endif
+> +
+>  CFLAGS_REMOVE_purgatory.o	+= $(PURGATORY_CFLAGS_REMOVE)
+>  CFLAGS_purgatory.o		+= $(PURGATORY_CFLAGS)
+>  
+> -- 
+> 2.33.0.1079.g6e70778dc9-goog
+> 
 
-Yeah, it's not a KVM patch so the mm maintainers didn't see it.  I'll 
-handle it tomorrow.
-
-Paolo
-
+-- 
+Kees Cook
