@@ -2,82 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53CF42C303
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B214A42C305
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236332AbhJMO0Z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Oct 2021 10:26:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236942AbhJMO0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:26:23 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C6F26101D;
-        Wed, 13 Oct 2021 14:24:17 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 10:24:15 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Miroslav Benes <mbenes@suse.cz>, Guo Ren <guoren@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-Subject: Re: [RESEND PATCH v2 1/2] ftrace: disable preemption between
- ftrace_test_recursion_trylock/unlock()
-Message-ID: <20211013102415.10788200@gandalf.local.home>
-In-Reply-To: <861d81d6-e202-09f3-f0be-6c77205f9d34@linux.alibaba.com>
-References: <b1d7fe43-ce84-0ed7-32f7-ea1d12d0b716@linux.alibaba.com>
-        <75ee86ac-02f2-d687-ab1e-9c8c33032495@linux.alibaba.com>
-        <alpine.LSU.2.21.2110130948120.5647@pobox.suse.cz>
-        <d5fbd49a-55c5-a9f5-6600-707c8d749312@linux.alibaba.com>
-        <alpine.LSU.2.21.2110131022590.5647@pobox.suse.cz>
-        <861d81d6-e202-09f3-f0be-6c77205f9d34@linux.alibaba.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S237085AbhJMO0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:26:32 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35146 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232589AbhJMO0b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:26:31 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634135067;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7nVZGBCeuindwKm9eXa4HWiuVLAO3Utl4ky+RFG0dug=;
+        b=aiZKgw7mnAIdEVEqdRTLyH/4mddDXeHSivtaNj8XXbmeRAtG8esEBBBm/BQNJwg0ahagxa
+        sFx1ynBMku/YHRYrpjAk7klrcbsrSEx0vir3dS8iKNj+Aoik/ARbVtKNOYDXvrAG0g+R5R
+        hYccq7Em5ereAEA9ONQT39Y02XeNaZ/uzWEGdoWPpFFcO5hpyeVIWih8G0/Kohp1/Yupd2
+        5OFW62xjhhyukAuS/QNUeqo+NxW01E5dVyshJd4FgnO0rF72K6Zhz84GhvtzGlXkLz+6Ka
+        aHaugf1nWhMv6qC8hi7Rs5xCur1F88xTiIPV3tfXmwWhnxcJ1GvhoR4w6cD+NA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634135067;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7nVZGBCeuindwKm9eXa4HWiuVLAO3Utl4ky+RFG0dug=;
+        b=8q2eYQd6ckfL6+RDB/3XOTz/iUl+8MtbNZl2ez1dS28Z4mdTArkP2ci186WOGQeCrlFdQb
+        6Xdx8KNh/qmS+yDw==
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     the arch/x86 maintainers <x86@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm list <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+In-Reply-To: <87y26x811c.ffs@tglx>
+References: <20211011215813.558681373@linutronix.de>
+ <20211011223611.069324121@linutronix.de>
+ <8a5762ab-18d5-56f8-78a6-c722a2f387c5@redhat.com>
+ <BYAPR11MB3256B39E2A34A09FF64ECC5BA9B79@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <0962c143-2ff9-f157-d258-d16659818e80@redhat.com>
+ <BYAPR11MB325676AAA8A0785AF992A2B9A9B79@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <da47ba42-b61e-d236-2c1c-9c5504e48091@redhat.com>
+ <d673e736-0a72-4549-816d-b755227ea797@www.fastmail.com>
+ <df3af1c2-fe93-ea21-56e5-4d70d08e55f2@redhat.com> <87y26x811c.ffs@tglx>
+Date:   Wed, 13 Oct 2021 16:24:27 +0200
+Message-ID: <87v92180kk.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 16:34:53 +0800
-王贇 <yun.wang@linux.alibaba.com> wrote:
+On Wed, Oct 13 2021 at 16:14, Thomas Gleixner wrote:
 
-> On 2021/10/13 下午4:25, Miroslav Benes wrote:
-> >>> Side note... the comment will eventually conflict with peterz's 
-> >>> https://lore.kernel.org/all/20210929152429.125997206@infradead.org/.  
-> >>
-> >> Steven, would you like to share your opinion on this patch?
-> >>
-> >> If klp_synchronize_transition() will be removed anyway, the comments
-> >> will be meaningless and we can just drop it :-P  
-> > 
-> > The comment will still be needed in some form. We will handle it depending 
-> > on what gets merged first. peterz's patches are not ready yet.  
-> 
-> Ok, then I'll move it before trylock() inside klp_ftrace_handler() anyway.
+> On Wed, Oct 13 2021 at 14:26, Paolo Bonzini wrote:
+>
+>> On 13/10/21 12:14, Andy Lutomirski wrote:
+>>>> I think it's simpler to always wait for #NM, it will only happen
+>>>> once per vCPU.  In other words, even if the guest clears XFD before
+>>>> it generates #NM, the guest_fpu's XFD remains nonzero and an #NM
+>>>> vmexit is possible.  After #NM the guest_fpu's XFD is zero; then
+>>>> passthrough can happen and the #NM vmexit trap can be disabled.
+>>>
+>>> This will stop being at all optimal when Intel inevitably adds
+>>> another feature that uses XFD.  In the potentially infinite window in
+>>> which the guest manages XFD and #NM on behalf of its userspace and
+>>> when the guest allocates the other hypothetical feature, all the #NMs
+>>> will have to be trapped by KVM.
+>>
+>> The reason is that it's quite common to simply let the guest see all 
+>> CPUID bits that KVM knows about.
+>
+> On fleets the cpu features exposed to guests matter a lot to ensure
+> migratability and I would be surprised when such a feature would just
+> be universally available to anyone.
 
-+1
+As a VM customer you get charged for RAM, CPUs, storage and whatever
+extra features you need. So why would AMX be any different?
 
--- Steve
+So far Intel ignored the fact that these accelerators are managed
+resources even if they are accessible via instructions and do not
+require to open(/dev/magic_accelerator). But that's just wrong and XFD
+should already have happened with AVX512.
+
+Trying to expose AMX unconditionally is just wrong and overengineered
+and proliferating the mess we already have to suffer from.
+
+As I said in the other mail. QEMU has to get permissions to use AMX
+first and not doing it by circumventing the permission part via a KVM
+hack.
+
+Thanks,
+
+        tglx
+
+
+
