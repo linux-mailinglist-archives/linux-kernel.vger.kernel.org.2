@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8AE42B998
+	by mail.lfdr.de (Postfix) with ESMTP id D022F42B99A
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238752AbhJMHxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:53:38 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54554 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238709AbhJMHxc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:53:32 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AEE15222C1;
-        Wed, 13 Oct 2021 07:51:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634111488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nvhvYT08OaBqekgPrVrQj1DDQAtPcS5s6MXS0Pvx68I=;
-        b=s3y1wFhKX4teW+dk2EZJGMb99n8sq0H9hd8aKuV07ZXB74HtatOMBISZgvSw6Kz+WdT45r
-        fS7FVLumcSZ6oJv5qKAQ2xg9j5PqW1+z59SUJAslCHwMlXrky6Wx2PKoJmGPHFU8gVhpl1
-        AWpa22y+e9pNkampxM6cnmH5qycab9g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634111488;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nvhvYT08OaBqekgPrVrQj1DDQAtPcS5s6MXS0Pvx68I=;
-        b=nVLHOft2uQ23MngH/fBxeTWsZAWOHgcA9AJT3M5JWlDBcM1qPglvc1OZNQcBR9suFDzwy7
-        1l+BZ1Ozbe7BcZAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 34E0A13CBE;
-        Wed, 13 Oct 2021 07:51:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mSmINP6PZmG8fgAAMHmgww
-        (envelope-from <colyli@suse.de>); Wed, 13 Oct 2021 07:51:26 +0000
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIXSBiY2FjaGU6IHJlcGxhY2Ugc25wcmlu?=
- =?UTF-8?Q?tf_in_show_functions_with_sysfs=5femit?=
-To:     =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
-Cc:     "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1634095639-4227-1-git-send-email-wangqing@vivo.com>
- <AI*ALgD1Em5Q2PfGyVlLhqrx.9.1634108359294.Hmail.wangqing@vivo.com>
- <SL2PR06MB3082B818199080975B93D0B6BDB79@SL2PR06MB3082.apcprd06.prod.outlook.com>
-From:   Coly Li <colyli@suse.de>
-Message-ID: <fff14784-aadf-d7b0-3aed-e2428b1a7b54@suse.de>
-Date:   Wed, 13 Oct 2021 15:51:24 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S238775AbhJMHxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:53:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238660AbhJMHxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 03:53:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E6A860E97;
+        Wed, 13 Oct 2021 07:51:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634111491;
+        bh=jxBe3EdmOkp/uf/o/Y4dxlDbjXr7z5Jy5FzRlJAf0iU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vILv/kn38IFQtIG005rvJ82OGKrmrcTLR2kW4PIyv1aDZi0QVHFfftbMghZ3/V/cU
+         sytZdYnQDpJkIr22aL4i2CKSyiWhy5IDVN1TTGBxh8lNlWHLtsK3RFeCrGrLchauNB
+         bpezcsIyMd3Zd0w4jN/dscn89MfWjHYKsX80lR3njxJ+PlA9SzZJegZWwmlR6BsVGF
+         Y0L2n4/Y/3NFjhsVkFM2Se4siag5ymMuHvobek6QusPZEu8VJwo/+d4CVr7qWFBDpv
+         yl87VkqK+MMHWfJ2AG1ueH+v7bbZfWHjTqM+z4X84L3w9D5LqOtDSh3NwjwMyYDlZu
+         rlhqmGpEfatFQ==
+Date:   Wed, 13 Oct 2021 08:51:26 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     German Gomez <german.gomez@arm.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        James Clark <James.Clark@arm.com>
+Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
+Message-ID: <20211013075125.GA6701@willie-the-truck>
+References: <20210916154635.1525-1-german.gomez@arm.com>
+ <20210916154635.1525-4-german.gomez@arm.com>
+ <20210923135016.GG400258@leoy-ThinkPad-X240s>
+ <20210923144048.GB603008@leoy-ThinkPad-X240s>
+ <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
+ <20211004122724.GC174271@leoy-ThinkPad-X240s>
+ <6b092f13-832f-5d1d-a504-aea96c81bf17@arm.com>
+ <20211006095124.GC14400@leoy-ThinkPad-X240s>
+ <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
+ <20211013003916.GA130842@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-In-Reply-To: <SL2PR06MB3082B818199080975B93D0B6BDB79@SL2PR06MB3082.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013003916.GA130842@leoy-ThinkPad-X240s>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 3:39 PM, 王擎 wrote:
->>> diff --git a/drivers/md/bcache/sysfs.h b/drivers/md/bcache/sysfs.h
->>> index 215df32..8bec32d 100644
->>> --- a/drivers/md/bcache/sysfs.h
->>> +++ b/drivers/md/bcache/sysfs.h
->>> @@ -51,7 +51,7 @@ STORE(fn)                                                           \
->>>     #define sysfs_printf(file, fmt, ...)                                        \
->>>     do {                                                                        \
->>>          if (attr == &sysfs_ ## file)                                    \
->>> -             return snprintf(buf, PAGE_SIZE, fmt "\n", __VA_ARGS__); \
->>> +             return sysfs_emit(buf, fmt "\n", __VA_ARGS__);  \
->>>     } while (0)
->>>     
->>>     #define sysfs_print(file, var)                                              \
->> IMHO I like this change :-) BTW, for snprint() from util.h, it seems
->> only to be used by sysfs_print() in syfs.h, would you like to change it
->> to use sysfs_emit too ?
->>
->> Thanks for the patch.
->>
->> Coly Li
->>
-> sysfs_print() should also be modified if size is a fixed value PAGE_SIZE,
-> but here is param, it would be appreciate if you have better method.
+On Wed, Oct 13, 2021 at 08:39:16AM +0800, Leo Yan wrote:
+> On Mon, Oct 11, 2021 at 04:55:37PM +0100, German Gomez wrote:
+> > On 06/10/2021 10:51, Leo Yan wrote:
+> > > On Wed, Oct 06, 2021 at 10:35:20AM +0100, German Gomez wrote:
+> > >
+> > > [...]
+> > >
+> > >>> So simply say, I think the head pointer monotonically increasing is
+> > >>> the right thing to do in Arm SPE driver.
+> > >> I will talk to James about how we can proceed on this.
+> > > Thanks!
+> > 
+> > I took this offline with James and, though it looks possible to patch
+> > the SPE driver to have a monotonically increasing head pointer in order
+> > to simplify the handling in the perf tool, it could be a breaking change
+> > for users of the perf_event_open syscall that currently rely on the way
+> > it works now.
+> 
+> Here I cannot create the connection between AUX head pointer and the
+> breakage of calling perf_event_open().
+> 
+> Could you elaborate what's the reason the monotonical increasing head
+> pointer will lead to the breakage for perf_event_open()?
 
-Yes, I meant you may implement sysfs_print() by sysfs_emit() directly in 
-the way as snprint() does. Then you may remove snprint() since no one 
-uses it any more.
+It's a user-visible change in behaviour, isn't it? Therefore we risk
+breaking applications that rely on the current behaviour if we change it
+unconditionally.
 
-Coly Li
+Given that the driver has always worked like this and it doesn't sound like
+it's the end of the world to deal with it in userspace (after all, it's
+aligned with intel-pt), then I don't think we should change it.
+
+Will
