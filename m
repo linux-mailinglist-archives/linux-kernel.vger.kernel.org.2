@@ -2,271 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F4B42C7E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1EB42C7E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 19:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238212AbhJMRsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 13:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238183AbhJMRs2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 13:48:28 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09F4C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:46:24 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id j193-20020a2523ca000000b005b789d71d9aso3894257ybj.21
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 10:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=X+fxtI2nVUilM//Lrzs3wOia4+gTIjylHdREa7+Mblg=;
-        b=TEMjK0WPioof8DRu0gVnLakn3t+vDbZvYDJxSdkJ36ILtnvxMeJNlai2otbCYDmCG4
-         EDe6KwZt8cvz513S4XzL/dhQ0XspXiXqJ6LCbjtXla/Bnr4H5WUdPZnceZ3B/r6E4qwN
-         w9PODxW1mR8zuAdPQ21vofwu0LrzFCWcELaxcQqj30Xp8ljzcEeBpu0YFNsRDHko3vog
-         e5Jhg6mZ3LV2IpC9yQU369LDO7SOB5bLSRdX/WKEjrr7yqtH5e096ff4dXnwr4q/TcYN
-         6mCoKXWr1aDv+aFHMSijlf0aYxS3fnm/rbOvvByAdCaa/89sCfJYYj5nKMwEFd47MA0g
-         LB/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=X+fxtI2nVUilM//Lrzs3wOia4+gTIjylHdREa7+Mblg=;
-        b=Ft4OBw0AkuwEtyWlmxHhCao+i9pFysjTwhlOE5+6WKvekDa9LeXUrzzmkhglH4VBL1
-         FiRKrDSKculfjhYOTxtjtbdTF17U9o0153x2+7UvhylZhsJVODTojgURumJsqADvqedY
-         Pf7N+BGSbNYpIRJ02PFKoMYtmJaJQ7242axfZW2EVDSblIGQl+qb4EadAgrYdlaV60A+
-         Mr4OVNuY5ialA0M2Ojxjrs98B9vxWsHND3TNDBWh5ojishd17uoC/1s1u/yvESaHlHnB
-         S24P0LyNL7cUC30cjJbMHXbVTC2AjtvTjskGNigbo4RweSQtLBrXn1W9cGf15VZWmK2k
-         BYDA==
-X-Gm-Message-State: AOAM533i/uJSlvmU/DGTEOVoGfW2IOpdQAIWcuG3I4TaZKibsokSZnS+
-        VArQS/w6Zr9BRAFPz1Fsnd9qnFeV4h2F
-X-Google-Smtp-Source: ABdhPJzOB3Qv+cearyHfjmW1hD+alWpsW/qAMNnvuM1NR+uBk2E/TGY9c0uB2bgDWWFcciDmxntZZNcM8n4r
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:aeaf:8e9e:3df2:aad9])
- (user=irogers job=sendgmr) by 2002:a25:f803:: with SMTP id
- u3mr818349ybd.386.1634147184070; Wed, 13 Oct 2021 10:46:24 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 10:45:43 -0700
-In-Reply-To: <20211013174604.747276-1-irogers@google.com>
-Message-Id: <20211013174604.747276-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20211013174604.747276-1-irogers@google.com>
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH v2 01/22] perf test: Use macro for "suite" declarations
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>
-Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231213AbhJMRr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 13:47:59 -0400
+Received: from rosenzweig.io ([138.197.143.207]:46982 "EHLO rosenzweig.io"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229714AbhJMRrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 13:47:55 -0400
+Date:   Wed, 13 Oct 2021 13:45:43 -0400
+From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
+To:     dri-devel@lists.freedesktop.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v2] drm/cma-helper: Set VM_DONTEXPAND for mmap
+Message-ID: <YWcbRyk06yV2wT6A@sunset>
+References: <20211013143654.39031-1-alyssa@rosenzweig.io>
+ <YWcSm6szGFdnAvOe@phenom.ffwll.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWcSm6szGFdnAvOe@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently tests are setup in builtin-test with function pointers. Kunit
-exposes tests as a kunit_suite with a null terminated array of test
-cases. Use a macro to aid transition from one to the other in later
-changes.
+> > From: Robin Murphy <robin.murphy@arm.com>
+> > 
+> > drm_gem_cma_mmap() cannot assume every implementation of dma_mmap_wc()
+> > will end up calling remap_pfn_range() (which happens to set the relevant
+> > vma flag, among others), so in order to make sure expectations around
+> > VM_DONTEXPAND are met, let it explicitly set the flag like most other
+> > GEM mmap implementations do.
+> > 
+> > This avoids repeated warnings on a small minority of systems where the
+> > display is behind an IOMMU, and has a simple driver which does not
+> > override drm_gem_cma_default_funcs. Arm hdlcd is an in-tree affected
+> > driver. Out-of-tree, the Apple DCP driver is affected; this fix is
+> > required for DCP to be mainlined.
+> 
+> How/where does this warn? Also there should be a lot more drivers than
+> just these two which have an iommu for the display block, so this not
+> working is definitely a more wide-spread issue.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/tests.h | 151 ++++++++++++++++++++-------------------
- 1 file changed, 77 insertions(+), 74 deletions(-)
+To summarize our discussion on IRC:
 
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index fe1306f58495..0846f66d67f9 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -40,94 +40,97 @@ struct test {
- 	void *priv;
- };
- 
-+#define DECLARE_SUITE(name) \
-+	int test__##name(struct test *test, int subtest)
-+
- /* Tests */
--int test__vmlinux_matches_kallsyms(struct test *test, int subtest);
--int test__openat_syscall_event(struct test *test, int subtest);
--int test__openat_syscall_event_on_all_cpus(struct test *test, int subtest);
--int test__basic_mmap(struct test *test, int subtest);
--int test__PERF_RECORD(struct test *test, int subtest);
--int test__perf_evsel__roundtrip_name_test(struct test *test, int subtest);
--int test__perf_evsel__tp_sched_test(struct test *test, int subtest);
--int test__syscall_openat_tp_fields(struct test *test, int subtest);
--int test__pmu(struct test *test, int subtest);
--int test__pmu_events(struct test *test, int subtest);
-+DECLARE_SUITE(vmlinux_matches_kallsyms);
-+DECLARE_SUITE(openat_syscall_event);
-+DECLARE_SUITE(openat_syscall_event_on_all_cpus);
-+DECLARE_SUITE(basic_mmap);
-+DECLARE_SUITE(PERF_RECORD);
-+DECLARE_SUITE(perf_evsel__roundtrip_name_test);
-+DECLARE_SUITE(perf_evsel__tp_sched_test);
-+DECLARE_SUITE(syscall_openat_tp_fields);
-+DECLARE_SUITE(pmu);
-+DECLARE_SUITE(pmu_events);
- const char *test__pmu_events_subtest_get_desc(int subtest);
- const char *test__pmu_events_subtest_skip_reason(int subtest);
- int test__pmu_events_subtest_get_nr(void);
--int test__attr(struct test *test, int subtest);
--int test__dso_data(struct test *test, int subtest);
--int test__dso_data_cache(struct test *test, int subtest);
--int test__dso_data_reopen(struct test *test, int subtest);
--int test__parse_events(struct test *test, int subtest);
--int test__hists_link(struct test *test, int subtest);
--int test__python_use(struct test *test, int subtest);
--int test__bp_signal(struct test *test, int subtest);
--int test__bp_signal_overflow(struct test *test, int subtest);
--int test__bp_accounting(struct test *test, int subtest);
--int test__wp(struct test *test, int subtest);
-+DECLARE_SUITE(attr);
-+DECLARE_SUITE(dso_data);
-+DECLARE_SUITE(dso_data_cache);
-+DECLARE_SUITE(dso_data_reopen);
-+DECLARE_SUITE(parse_events);
-+DECLARE_SUITE(hists_link);
-+DECLARE_SUITE(python_use);
-+DECLARE_SUITE(bp_signal);
-+DECLARE_SUITE(bp_signal_overflow);
-+DECLARE_SUITE(bp_accounting);
-+DECLARE_SUITE(wp);
- const char *test__wp_subtest_get_desc(int subtest);
- const char *test__wp_subtest_skip_reason(int subtest);
- int test__wp_subtest_get_nr(void);
--int test__task_exit(struct test *test, int subtest);
--int test__mem(struct test *test, int subtest);
--int test__sw_clock_freq(struct test *test, int subtest);
--int test__code_reading(struct test *test, int subtest);
--int test__sample_parsing(struct test *test, int subtest);
--int test__keep_tracking(struct test *test, int subtest);
--int test__parse_no_sample_id_all(struct test *test, int subtest);
--int test__dwarf_unwind(struct test *test, int subtest);
--int test__expr(struct test *test, int subtest);
--int test__hists_filter(struct test *test, int subtest);
--int test__mmap_thread_lookup(struct test *test, int subtest);
--int test__thread_maps_share(struct test *test, int subtest);
--int test__hists_output(struct test *test, int subtest);
--int test__hists_cumulate(struct test *test, int subtest);
--int test__switch_tracking(struct test *test, int subtest);
--int test__fdarray__filter(struct test *test, int subtest);
--int test__fdarray__add(struct test *test, int subtest);
--int test__kmod_path__parse(struct test *test, int subtest);
--int test__thread_map(struct test *test, int subtest);
--int test__llvm(struct test *test, int subtest);
-+DECLARE_SUITE(task_exit);
-+DECLARE_SUITE(mem);
-+DECLARE_SUITE(sw_clock_freq);
-+DECLARE_SUITE(code_reading);
-+DECLARE_SUITE(sample_parsing);
-+DECLARE_SUITE(keep_tracking);
-+DECLARE_SUITE(parse_no_sample_id_all);
-+DECLARE_SUITE(dwarf_unwind);
-+DECLARE_SUITE(expr);
-+DECLARE_SUITE(hists_filter);
-+DECLARE_SUITE(mmap_thread_lookup);
-+DECLARE_SUITE(thread_maps_share);
-+DECLARE_SUITE(hists_output);
-+DECLARE_SUITE(hists_cumulate);
-+DECLARE_SUITE(switch_tracking);
-+DECLARE_SUITE(fdarray__filter);
-+DECLARE_SUITE(fdarray__add);
-+DECLARE_SUITE(kmod_path__parse);
-+DECLARE_SUITE(thread_map);
-+DECLARE_SUITE(llvm);
- const char *test__llvm_subtest_get_desc(int subtest);
- int test__llvm_subtest_get_nr(void);
--int test__bpf(struct test *test, int subtest);
-+DECLARE_SUITE(bpf);
- const char *test__bpf_subtest_get_desc(int subtest);
- int test__bpf_subtest_get_nr(void);
--int test__session_topology(struct test *test, int subtest);
--int test__thread_map_synthesize(struct test *test, int subtest);
--int test__thread_map_remove(struct test *test, int subtest);
--int test__cpu_map_synthesize(struct test *test, int subtest);
--int test__synthesize_stat_config(struct test *test, int subtest);
--int test__synthesize_stat(struct test *test, int subtest);
--int test__synthesize_stat_round(struct test *test, int subtest);
--int test__event_update(struct test *test, int subtest);
--int test__event_times(struct test *test, int subtest);
--int test__backward_ring_buffer(struct test *test, int subtest);
--int test__cpu_map_print(struct test *test, int subtest);
--int test__cpu_map_merge(struct test *test, int subtest);
--int test__sdt_event(struct test *test, int subtest);
--int test__is_printable_array(struct test *test, int subtest);
--int test__bitmap_print(struct test *test, int subtest);
--int test__perf_hooks(struct test *test, int subtest);
--int test__clang(struct test *test, int subtest);
-+DECLARE_SUITE(session_topology);
-+DECLARE_SUITE(thread_map_synthesize);
-+DECLARE_SUITE(thread_map_remove);
-+DECLARE_SUITE(cpu_map_synthesize);
-+DECLARE_SUITE(synthesize_stat_config);
-+DECLARE_SUITE(synthesize_stat);
-+DECLARE_SUITE(synthesize_stat_round);
-+DECLARE_SUITE(event_update);
-+DECLARE_SUITE(event_times);
-+DECLARE_SUITE(backward_ring_buffer);
-+DECLARE_SUITE(cpu_map_print);
-+DECLARE_SUITE(cpu_map_merge);
-+DECLARE_SUITE(sdt_event);
-+DECLARE_SUITE(is_printable_array);
-+DECLARE_SUITE(bitmap_print);
-+DECLARE_SUITE(perf_hooks);
-+DECLARE_SUITE(clang);
- const char *test__clang_subtest_get_desc(int subtest);
- int test__clang_subtest_get_nr(void);
--int test__unit_number__scnprint(struct test *test, int subtest);
--int test__mem2node(struct test *t, int subtest);
--int test__maps__merge_in(struct test *t, int subtest);
--int test__time_utils(struct test *t, int subtest);
--int test__jit_write_elf(struct test *test, int subtest);
--int test__api_io(struct test *test, int subtest);
--int test__demangle_java(struct test *test, int subtest);
--int test__demangle_ocaml(struct test *test, int subtest);
--int test__pfm(struct test *test, int subtest);
-+DECLARE_SUITE(unit_number__scnprint);
-+DECLARE_SUITE(mem2node);
-+DECLARE_SUITE(maps__merge_in);
-+DECLARE_SUITE(time_utils);
-+DECLARE_SUITE(jit_write_elf);
-+DECLARE_SUITE(api_io);
-+DECLARE_SUITE(demangle_java);
-+DECLARE_SUITE(demangle_ocaml);
-+DECLARE_SUITE(pfm);
- const char *test__pfm_subtest_get_desc(int subtest);
- int test__pfm_subtest_get_nr(void);
--int test__parse_metric(struct test *test, int subtest);
--int test__pe_file_parsing(struct test *test, int subtest);
--int test__expand_cgroup_events(struct test *test, int subtest);
--int test__perf_time_to_tsc(struct test *test, int subtest);
--int test__dlfilter(struct test *test, int subtest);
-+DECLARE_SUITE(parse_metric);
-+DECLARE_SUITE(pe_file_parsing);
-+DECLARE_SUITE(expand_cgroup_events);
-+DECLARE_SUITE(perf_time_to_tsc);
-+DECLARE_SUITE(dlfilter);
- 
- bool test__bp_signal_is_supported(void);
- bool test__bp_account_is_supported(void);
-@@ -142,7 +145,7 @@ int test__arch_unwind_sample(struct perf_sample *sample,
- #endif
- 
- #if defined(__arm__)
--int test__vectors_page(struct test *test, int subtest);
-+DECLARE_SUITE(vectors_page);
- #endif
- 
- #endif /* TESTS_H */
--- 
-2.33.0.882.g93a45727a2-goog
+This fails `WARN_ON(!(vma->vm_flags & VM_DONTEXPAND))` in
+drm_gem_mmap_obj. This warning was introduced in Oct 2019.
 
+For a driver to hit this code path, it must use the CMA helpers without
+overriding dem_gem_cma_default_funcs, but use CMA backed by a hardware
+IOMMU instead of a physical carveout. This means popular drivers don't
+hit this warning: normal drivers that use CMA do so with a carveout
+instead of an IOMMU, and normal drivers with an IOMMU do not use the
+default CMA helpers. hdlcd is one of the few drivers hitting this, but
+hdlcd gets very little testing. Seeing as the last significant change to
+hdlcd was in May 2019, it's believable that nobody noticed until Robin
+hit this WARN and typed out this patch, especially as the driver still
+works despite the WARN.
