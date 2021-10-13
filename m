@@ -2,139 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D69542BABB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9BC42BABE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238513AbhJMIpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:45:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54189 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233368AbhJMIpB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:45:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634114578;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZNEBzMh01UbIpCvcvAMyeRlQt2efPWKePBsn29MszCA=;
-        b=JLJnL2nrV3fYbp/+i9mdTEIdntNu7dAVW19ry8o86cfL1nQ8PG8/Y2zVGTbPBCPp4/WZ2q
-        +CPmeCpnlo/3gAAuew+l5zJPhMDz2xDBWgdeYkwfJ0dzNGvEh7F+evGMMk162UwR8iXqGK
-        phgPz5LTdeqG7KC5Zlg5/Jt0gZO9oNU=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-apS9RiEmMCiTXvAUYH-L3g-1; Wed, 13 Oct 2021 04:42:56 -0400
-X-MC-Unique: apS9RiEmMCiTXvAUYH-L3g-1
-Received: by mail-ed1-f72.google.com with SMTP id h19-20020aa7de13000000b003db6ad5245bso1600859edv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 01:42:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ZNEBzMh01UbIpCvcvAMyeRlQt2efPWKePBsn29MszCA=;
-        b=BLiykbAA/6+sDjcNuk32nyJsc2kZ9/iLBnCDIkPUbXvSPggU5LvKteO0KauFR1GrVr
-         wMdqgtFHXoKTmZOeXZQrU46KQH3nFJdVHJ/NqjuQ1A+RoVjjVg1xpSKe5a0JCVX6bFCH
-         0HOkekblS1/7ePE3cQYpDmEM/0H7XawEHY6hjCT32s3tTlgygLXTIMNZvDsT4vPHIAm5
-         8fSN53GWeluqT3c+jVlg4JKAVUxTIUOd44grvGpTI18rn4IuwhUgvAHTqeDFRvAqVdWO
-         uHGu2hWdoL9W8obKDAerYgomCktgwze1GwQ8dm/EWIWkB2hvIiEoRePTwHyuda+JUpIl
-         UhdA==
-X-Gm-Message-State: AOAM532ZWJ00izsVUmMjF4vxUXH6p/YO6yhaDEvC8MDXwQQcqY3qjFVk
-        cR9f0pLmGmJod61GLj5CHFa5O18Do5BEKSwouv+TCT3KlRjZ3PT/aYa9RnPkVXDExcJ0fSS339R
-        6vkGyy4Fr5hV1AtMdWxwp4iwy
-X-Received: by 2002:a50:d88b:: with SMTP id p11mr7818889edj.287.1634114575402;
-        Wed, 13 Oct 2021 01:42:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyAWsODufwXfMW8KNKakO9uRsUWFkAKm1xso7Dyxl0T3P74KqLy/MBGkXk476xbNpTYJx3Ywg==
-X-Received: by 2002:a50:d88b:: with SMTP id p11mr7818859edj.287.1634114575212;
-        Wed, 13 Oct 2021 01:42:55 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id 10sm6252772eju.12.2021.10.13.01.42.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 01:42:54 -0700 (PDT)
-Message-ID: <da47ba42-b61e-d236-2c1c-9c5504e48091@redhat.com>
-Date:   Wed, 13 Oct 2021 10:42:53 +0200
+        id S233823AbhJMIrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:47:22 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:35713 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232692AbhJMIrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 04:47:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634114717; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=l6omNya1/EkI04DuKbuDKH4HzjeEIZgIwC7p3ibuEy4=; b=fr/U51LT32ZtLaybRhJhwFlvIuwVq8Vl8xoMCoqh83SQ1V4TYrhr0hkjSfGJR2UnuIkPuXWT
+ NhOFghgBR5EwuAtrK7CN6xshJQ7lacIPa9LD/yRbGdWAVoScMmIFnkGYtpdE+d1RpwO2C6ff
+ FBgukQ+wdvFvr9M1Mc22VA0rViQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 61669c9bab9da96e6430b8c1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Oct 2021 08:45:15
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2BD80C43616; Wed, 13 Oct 2021 08:45:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.109] (unknown [49.204.183.203])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 68031C4338F;
+        Wed, 13 Oct 2021 08:45:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 68031C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2] mm: page_alloc: Add debug log in free_reserved_area
+ for static memory
+To:     David Hildenbrand <david@redhat.com>,
+        Faiyaz Mohammed <quic_faiyazm@codeaurora.org>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     guptap@codeaurora.org
+References: <1633936279-26856-1-git-send-email-quic_faiyazm@codeaurora.org>
+ <7027fa91-296f-01cb-6c5d-d25c81c835d5@redhat.com>
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+Message-ID: <0504c1eb-7c46-7def-5d08-8f7aa027784a@codeaurora.org>
+Date:   Wed, 13 Oct 2021 14:15:09 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+In-Reply-To: <7027fa91-296f-01cb-6c5d-d25c81c835d5@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     "Liu, Jing2" <jing2.liu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Jing Liu <jing2.liu@linux.intel.com>,
-        "seanjc@google.com" <seanjc@google.com>
-References: <20211011215813.558681373@linutronix.de>
- <20211011223611.069324121@linutronix.de>
- <8a5762ab-18d5-56f8-78a6-c722a2f387c5@redhat.com>
- <BYAPR11MB3256B39E2A34A09FF64ECC5BA9B79@BYAPR11MB3256.namprd11.prod.outlook.com>
- <0962c143-2ff9-f157-d258-d16659818e80@redhat.com>
- <BYAPR11MB325676AAA8A0785AF992A2B9A9B79@BYAPR11MB3256.namprd11.prod.outlook.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <BYAPR11MB325676AAA8A0785AF992A2B9A9B79@BYAPR11MB3256.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/21 09:46, Liu, Jing2 wrote:
-> 
->> On 13/10/21 08:15, Liu, Jing2 wrote:
->>> After KVM passthrough XFD to guest, when vmexit opening irq window and
->>> KVM is interrupted, kernel softirq path can call
->>> kernel_fpu_begin() to touch xsave state. This function does XSAVES. If
->>> guest XFD[18] is 1, and with guest AMX state in register, then guest
->>> AMX state is lost by XSAVES.
+
+
+On 10/11/2021 2:04 PM, David Hildenbrand wrote:
+> On 11.10.21 09:11, Faiyaz Mohammed wrote:
+>> From: Faiyaz Mohammed <faiyazm@codeaurora.org>
 >>
->> Yes, the host value of XFD (which is zero) has to be restored after vmexit.
->> See how KVM already handles SPEC_CTRL.
+>> For INITRD and initmem memory is reserved through "memblock_reserve"
+>> during boot up but it is free via "free_reserved_area" instead
+>> of "memblock_free".
+>> For example:
+>> [    0.294848] Freeing initrd memory: 12K.
+>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>
+>> To get the start and end address of the above freed memory and to account
+>> proper memblock added pr_debug log in "free_reserved_area".
+>> After adding log:
+>> [    0.294837] 0x00000083600000-0x00000083603000
+>> free_initrd_mem+0x20/0x28
+>> [    0.294848] Freeing initrd memory: 12K.
+>> [    0.695246] 0x00000081600000-0x00000081a00000 free_initmem+0x70/0xc8
+>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>
+>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+>> ---
+>> changes in v2:
+>>     - To avoid confusion, remove the memblock_dbg print and drop the
+>>     memblock_free string, now using pr_debug to print the address ranges.
+>>
+>>   mm/page_alloc.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index 668edb1..395df3f 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -8153,6 +8153,11 @@ unsigned long free_reserved_area(void *start,
+>> void *end, int poison, const char
+>>       if (pages && s)
+>>           pr_info("Freeing %s memory: %ldK\n", s, K(pages));
+>>   +#ifdef CONFIG_HAVE_MEMBLOCK
+>> +        pr_debug("%#016llx-%#016llx %pS\n",
+>> +            __pa(start), __pa(end), (void *)_RET_IP_);
+>> +#endif
+>> +
 > 
-> I'm trying to understand why qemu's XFD is zero after kernel supports AMX.
+> Are we missing parentheses that the code indentation implies?
+> Further, I think we want to use "%pa" instead of "%llx" and
+> eventually drop the CONFIG_HAVE_MEMBLOCK dependency. Maybe
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index b37435c274cf..e7946e5ca094 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -8097,6 +8097,8 @@ EXPORT_SYMBOL(adjust_managed_page_count);
+>  
+>  unsigned long free_reserved_area(void *start, void *end, int poison,
+> const char *s)
+>  {
+> +       const phys_addr_t pstart = __pa(start);
+> +       const phys_addr_t pend = __pa(end);
+>         void *pos;
+>         unsigned long pages = 0;
+>  
+> @@ -8125,9 +8127,11 @@ unsigned long free_reserved_area(void *start,
+> void *end, int poison, const char
+>                 free_reserved_page(page);
+>         }
+>  
+> -       if (pages && s)
+> +       if (pages && s) {
+>                 pr_info("Freeing %s memory: %ldK\n",
+>                         s, pages << (PAGE_SHIFT - 10));
+> +               pr_debug("[%pa-%pa] %pS\n", &pstart, &pend, (void
+> *)_RET_IP_);
+> +       }
+>  
+>         return pages;
+>  }
+> Sure, I will update it and push again.
 
-There are three copies of XFD:
-
-- the guest value stored in vcpu->arch.
-
-- the "QEMU" value attached to host_fpu.  This one only becomes zero if 
-QEMU requires AMX (which shouldn't happen).
-
-- the internal KVM value attached to guest_fpu.  When #NM happens, this 
-one becomes zero.
-
-
-The CPU value is:
-
-- the host_fpu value before kvm_load_guest_fpu and after 
-kvm_put_guest_fpu.  This ensures that QEMU context switch is as cheap as 
-possible.
-
-- the guest_fpu value between kvm_load_guest_fpu and kvm_put_guest_fpu. 
-  This ensures that no state is lost in the case you are describing.
-
-- the OR of the guest value and the guest_fpu value while the guest runs 
-(using either MSR load/save lists, or manual wrmsr like 
-pt_guest_enter/pt_guest_exit).  This ensures that the host has the 
-opportunity to get a #NM exception, and allocate AMX state in the 
-guest_fpu and in current->thread.fpu.
-
-> Yes, passthrough is done by two cases: one is guest #NM trapped;
-> another is guest clearing XFD before it generates #NM (this is possible for
-> guest), then passthrough.
-> For the two cases, we passthrough and allocate buffer for guest_fpu, and
-> current->thread.fpu.
-
-I think it's simpler to always wait for #NM, it will only happen once 
-per vCPU.  In other words, even if the guest clears XFD before it 
-generates #NM, the guest_fpu's XFD remains nonzero and an #NM vmexit is 
-possible.  After #NM the guest_fpu's XFD is zero; then passthrough can 
-happen and the #NM vmexit trap can be disabled.
-
-Paolo
-
+Thanks and regards,
+Mohammed Faiyaz
