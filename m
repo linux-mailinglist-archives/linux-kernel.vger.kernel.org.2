@@ -2,68 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D1842B3AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3573642B3C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 05:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237156AbhJMDha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 23:37:30 -0400
-Received: from mga17.intel.com ([192.55.52.151]:59005 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237377AbhJMDhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 23:37:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="208138764"
-X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
-   d="scan'208";a="208138764"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 20:35:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,369,1624345200"; 
-   d="scan'208";a="524469776"
-Received: from glass.png.intel.com ([10.158.65.69])
-  by orsmga001.jf.intel.com with ESMTP; 12 Oct 2021 20:35:18 -0700
-From:   Ong Boon Leong <boon.leong.ong@intel.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/2] net: phy: dp83867: add generic PHY loopback
-Date:   Wed, 13 Oct 2021 11:41:28 +0800
-Message-Id: <20211013034128.2094426-3-boon.leong.ong@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211013034128.2094426-1-boon.leong.ong@intel.com>
-References: <20211013034128.2094426-1-boon.leong.ong@intel.com>
+        id S237461AbhJMDn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 23:43:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23266 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231253AbhJMDny (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 23:43:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634096511;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=P9QQpHMzPqOGAUAgrM92CQtjCHKsEXKEq2E7CGbFGTs=;
+        b=FCGuTLXqaKbORxt68jvecb+cOY8K6lYUomVBsY6I8aRuTVdXAKYOVV/9hZcWslkth17u8h
+        mwHnlIVuwKrF+bAdDP5E9Zugx4bOpR9c1P6UuA/1VYkyfekeUMozPbgfhzR3ti4/ok/5Vy
+        f3S0sZsWjgaGRGIbtbpJhLWDt0U4CV0=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-485-DMxmEFpOPu-jVf1KoTS_DQ-1; Tue, 12 Oct 2021 23:41:50 -0400
+X-MC-Unique: DMxmEFpOPu-jVf1KoTS_DQ-1
+Received: by mail-pf1-f197.google.com with SMTP id j2-20020a056a00174200b0044d39a43c9bso758593pfc.22
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 20:41:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P9QQpHMzPqOGAUAgrM92CQtjCHKsEXKEq2E7CGbFGTs=;
+        b=ngwbzhV+J6OJKvYs/gXYeVuk4BNGdw7E2FKa2L8oqBBrkQxgdbcwUpcNpa3830DQae
+         uFgllCvyGxZseu+UYxK+UKyijmpYkFx4Okm/sPBvXOXi4qCiTxbu5U8WWGieTDMRphjR
+         Das9QjJ3PrpPw4zopkr1CdIuCF0ju09KSWzqRzh/A0XYgQo9uvghbuhfKriSh+BBWLyq
+         +h6zS3YRaHAAGfRr+LLXUP5mXnaekLqrF9tuja981liDPFgUeTavjo8QyO/PV4kCn2Hg
+         qc1UcFNbeMdMhvE6ZFDt57Zet4TM5dnHBIg80QcQQS7bXrl2AUJ8M3B/hDZRuYEbiwXn
+         kJ8Q==
+X-Gm-Message-State: AOAM532p+A4t0d8feX8SLhdwYbTWxAaTEpQ18VHFCMsj44YM9u0Rhw6j
+        UouR6HTBvrEZPfLjU2K4oF9RFx3JUzLUhnGBuYg5dFrJ59P4rs2xUMhMyWFE/yccll/ISCTh6Y1
+        7azoID+eev5sS9vo8VKvKAC9y
+X-Received: by 2002:a62:1b92:0:b0:3eb:3f92:724 with SMTP id b140-20020a621b92000000b003eb3f920724mr35757520pfb.3.1634096508717;
+        Tue, 12 Oct 2021 20:41:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwTsSrRU70L24zyehCxjIOcnI0fW5T3TZ6w598G0eEchUTE4T6Elozl+lg8k4lS16yUUCus6A==
+X-Received: by 2002:a62:1b92:0:b0:3eb:3f92:724 with SMTP id b140-20020a621b92000000b003eb3f920724mr35757499pfb.3.1634096508378;
+        Tue, 12 Oct 2021 20:41:48 -0700 (PDT)
+Received: from t490s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id v13sm12837847pgt.7.2021.10.12.20.41.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 20:41:47 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 11:41:40 +0800
+From:   Peter Xu <peterx@redhat.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+Message-ID: <YWZVdDSS/4rnFbqK@t490s>
+References: <YV4Dz3y4NXhtqd6V@t490s>
+ <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
+ <CAHbLzkqm_Os8TLXgbkL-oxQVsQqRbtmjdMdx0KxNke8mUF1mWA@mail.gmail.com>
+ <YWTc/n4r6CJdvPpt@t490s>
+ <YWTobPkBc3TDtMGd@t490s>
+ <CAHbLzkrOsNygu5x8vbMHedv+P3dEqOxOC6=O6ACSm1qKzmoCng@mail.gmail.com>
+ <YWYHukJIo8Ol2sHN@t490s>
+ <CAHbLzkp3UXKs_NP9XD_ws=CSSFzUPk7jRxj0K=gvOqoi+GotmA@mail.gmail.com>
+ <YWZMDTwCCZWX5/sQ@t490s>
+ <CAHbLzkp8QkORXK_y8hnrg=2kTRFyoZpJcXbkyj6eyCdcYSbZTw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkp8QkORXK_y8hnrg=2kTRFyoZpJcXbkyj6eyCdcYSbZTw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Lay, Kuan Loon" <kuan.loon.lay@intel.com>
+On Tue, Oct 12, 2021 at 08:27:06PM -0700, Yang Shi wrote:
+> > But this also reminded me that shouldn't we be with the page lock already
+> > during the process of "setting hwpoison-subpage bit, split thp, clear
+> > hwpoison-subpage bit"?  If it's only the small window that needs protection,
+> > while when looking up the shmem pagecache we always need to take the page lock
+> > too, then it seems already safe even without the extra bit?  Hmm?
+> 
+> I don't quite get your point. Do you mean memory_failure()? If so the
+> answer is no, outside the page lock. And the window may be indefinite
+> since file THP doesn't get split before this series and the split may
+> fail even after this series.
 
-TI DP83867 supports loopback enabled using BMCR, so we add
-genphy_loopback to the phy driver.
+What I meant is that we could extend the page_lock in try_to_split_thp_page()
+to cover setting hwpoison-subpage too (and it of course covers the clearing if
+thp split succeeded, as that's part of the split process).  But yeah it's a
+good point that the split may fail, so the extra bit seems still necessary.
 
-Tested-by: Clement <clement@intel.com>
-Signed-off-by: Lay, Kuan Loon <kuan.loon.lay@intel.com>
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
----
- drivers/net/phy/dp83867.c | 1 +
- 1 file changed, 1 insertion(+)
+Maybe that'll be something worth mentioning in the commit message too?  The
+commit message described very well on the overhead of looping over 512 pages,
+however the reader can easily overlook the real reason for needing this bit -
+IMHO it's really for the thp split failure case, as we could also mention that
+if thp split won't fail, page lock should be suffice (imho).  We could also
+mention about why soft offline does not need that extra bit, which seems not
+obvious as well, so imho good material for commit messages.
 
-diff --git a/drivers/net/phy/dp83867.c b/drivers/net/phy/dp83867.c
-index bb4369b75179..af47c62d6e04 100644
---- a/drivers/net/phy/dp83867.c
-+++ b/drivers/net/phy/dp83867.c
-@@ -878,6 +878,7 @@ static struct phy_driver dp83867_driver[] = {
- 
- 		.suspend	= genphy_suspend,
- 		.resume		= genphy_resume,
-+		.set_loopback	= genphy_loopback,
- 	},
- };
- module_phy_driver(dp83867_driver);
+Sorry to have asked for a lot of commit message changes; I hope they make sense.
+
+Thanks,
+
 -- 
-2.25.1
+Peter Xu
 
