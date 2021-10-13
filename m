@@ -2,211 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98E242B641
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDB142B644
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 08:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237786AbhJMGBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 02:01:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229665AbhJMGBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 02:01:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2F5760C4A;
-        Wed, 13 Oct 2021 05:59:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634104743;
-        bh=/qus41ilY6w21Ca2R+0Q6xIAZtlILxDno5T19N3Hbh0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SpDIVM2VGBPZsKjcC97qrSMhyUjATK0iwjm1dmQcPw52HWoSMTiTYciSLUQ/Ss92d
-         h/EQyXwbDzuXxR5uHYtTdFICsob4rzONLe6Tgq0VLdp50etPD0ZuBDSRx3eRhtpxfH
-         FWtL2YaYFXH1YFJzanaKq6d4doBz3WR0T9JnQV5I=
-Date:   Wed, 13 Oct 2021 07:58:58 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Michael Ellerman <mpe@ellerman.id.au>, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, tsbogend@alpha.franken.de,
-        James.Bottomley@hansenpartnership.com, deller@gmx.de,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, linus.walleij@linaro.org,
-        geert+renesas@glider.be, rmk+kernel@armlinux.org.uk,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        mark.rutland@arm.com, ardb@kernel.org,
-        u.kleine-koenig@pengutronix.de, rppt@kernel.org,
-        lukas.bulwahn@gmail.com, wangkefeng.wang@huawei.com,
-        slyfox@gentoo.org, axboe@kernel.dk, ben.widawsky@intel.com,
-        dan.j.williams@intel.com, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH AUTOSEL 5.10 11/11] firmware: include
- drivers/firmware/Kconfig unconditionally
-Message-ID: <YWZ1om+pLmV3atTd@kroah.com>
-References: <20211013005532.700190-1-sashal@kernel.org>
- <20211013005532.700190-11-sashal@kernel.org>
+        id S237780AbhJMGCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 02:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhJMGCV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 02:02:21 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB61CC061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:00:18 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x27so6648058lfa.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 23:00:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uEWRKo0fhQ7LaA5ubEPV4PTCzW8bHaOQIjdgFkAs2J0=;
+        b=MCCKvjTsqHrXf2nJrTdQUwft5thpfnFD3ag6RR9xVjUaLR11jt4OkCrdsL6/BGA9I0
+         PhBYxGmeNkFsS8N3ctPy4WAuiQbDBwGQjo1pO5QUf5PLHjk/u0k83BLBj2ws3AWytC2n
+         ocKk+/3D99ZKm47+WvOeOziGQ7usEKFIJXtEr5vBiALWfyySllQlvTpFVh92fLwgqP+z
+         TJaXKn0ZaLs5JfuU2x1z2Pb+sRk7y9nw79Yq0fepf+yfvgVQDu5Q8uVYF9x8zCojcV8p
+         B6MWJ+QWMgw3BmPsEycirH96xi3iDFywXOYHTAN2MQU0pEU4yuZGMdLVKRyW8JxgkZJW
+         h0wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uEWRKo0fhQ7LaA5ubEPV4PTCzW8bHaOQIjdgFkAs2J0=;
+        b=Ix1PNUOK3JY/8OC+q6vQL8V7VDADMPJ6pzcEJCnXi/nZ2vS7lJ0mq/UhxDMgpvkg64
+         CR8d/58Iv1Q/As+sJGhd2M64VorIilaj32ONtX4MqYArPNUOr1WelxZbJxvHNN2hGuuU
+         GRwJ36UaX99246qgyQvaS7G0eP9uGRoGDQHT3D+Ir20/mGxYFBQ2mLCx+KqKNde+sFUl
+         jtg70m/Ek1bE0lHwbZakSXeWUR7z8X/f9cNg3xgtLzbbzZ/GXnUJ1q7IxZkfUXUabaaq
+         ybO9bW8wdqYHpIBrKgfJKrCENsE3UmFbaJ6ewd+EZa5NV4wGw2DkoNqi2BfPaFe0weHL
+         NS1w==
+X-Gm-Message-State: AOAM531ItIbAcbl4+x9AtR3/U7KIpocncHPAJJISAUpHBiKejsK8LC3R
+        PV85GdYTEAfnTVZAv8AZA+FOHGz0VPEOXJIiT/iGk3E9pdKw+w==
+X-Google-Smtp-Source: ABdhPJwdUroKerRP156Qz3NtV+bU8DBdkfS+K+EFkrjloNW/BMTSH7n2UNx5Pm6ZSemjooLT1HEQ/tMpmhNhrKOAjJQ=
+X-Received: by 2002:a05:651c:1304:: with SMTP id u4mr33243525lja.136.1634104817130;
+ Tue, 12 Oct 2021 23:00:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013005532.700190-11-sashal@kernel.org>
+References: <20211012073116.4156054-1-sumit.garg@linaro.org> <20211012180348.zalanzdw3ykqg4db@bogus>
+In-Reply-To: <20211012180348.zalanzdw3ykqg4db@bogus>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 13 Oct 2021 11:30:04 +0530
+Message-ID: <CAFA6WYNqzmEe23RQ2Wrq2oeaxAxxwg+e3sW0=7PmgZni5Sd2eQ@mail.gmail.com>
+Subject: Re: [PATCH] tee: optee: Fix missing devices unregister during optee_remove
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jerome Forissier <jerome@forissier.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 08:55:31PM -0400, Sasha Levin wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> [ Upstream commit 951cd3a0866d29cb9c01ebc1d9c17590e598226e ]
-> 
-> Compile-testing drivers that require access to a firmware layer
-> fails when that firmware symbol is unavailable. This happened
-> twice this week:
-> 
->  - My proposed to change to rework the QCOM_SCM firmware symbol
->    broke on ppc64 and others.
-> 
->  - The cs_dsp firmware patch added device specific firmware loader
->    into drivers/firmware, which broke on the same set of
->    architectures.
-> 
-> We should probably do the same thing for other subsystems as well,
-> but fix this one first as this is a dependency for other patches
-> getting merged.
-> 
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> Acked-by: Will Deacon <will@kernel.org>
-> Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
-> Cc: Simon Trimmer <simont@opensource.cirrus.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  arch/arm/Kconfig    | 2 --
->  arch/arm64/Kconfig  | 2 --
->  arch/ia64/Kconfig   | 2 --
->  arch/mips/Kconfig   | 2 --
->  arch/parisc/Kconfig | 2 --
->  arch/riscv/Kconfig  | 2 --
->  arch/x86/Kconfig    | 2 --
->  drivers/Kconfig     | 2 ++
->  8 files changed, 2 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index 002e0cf025f5..d4c6b95b24d7 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -2043,8 +2043,6 @@ config ARCH_HIBERNATION_POSSIBLE
->  
->  endmenu
->  
-> -source "drivers/firmware/Kconfig"
-> -
->  if CRYPTO
->  source "arch/arm/crypto/Kconfig"
->  endif
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 5e5cf3af6351..f4809760a806 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1933,8 +1933,6 @@ source "drivers/cpufreq/Kconfig"
->  
->  endmenu
->  
-> -source "drivers/firmware/Kconfig"
-> -
->  source "drivers/acpi/Kconfig"
->  
->  source "arch/arm64/kvm/Kconfig"
-> diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-> index 39b25a5a591b..e8014d2e36c0 100644
-> --- a/arch/ia64/Kconfig
-> +++ b/arch/ia64/Kconfig
-> @@ -426,8 +426,6 @@ config CRASH_DUMP
->  	  help
->  	    Generate crash dump after being started by kexec.
->  
-> -source "drivers/firmware/Kconfig"
-> -
->  endmenu
->  
->  menu "Power management and ACPI options"
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 1a63f592034e..3bd3a01a2a2b 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -3328,8 +3328,6 @@ source "drivers/cpuidle/Kconfig"
->  
->  endmenu
->  
-> -source "drivers/firmware/Kconfig"
-> -
->  source "arch/mips/kvm/Kconfig"
->  
->  source "arch/mips/vdso/Kconfig"
-> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-> index 14f3252f2da0..ad13477fb40c 100644
-> --- a/arch/parisc/Kconfig
-> +++ b/arch/parisc/Kconfig
-> @@ -378,6 +378,4 @@ config KEXEC_FILE
->  
->  endmenu
->  
-> -source "drivers/firmware/Kconfig"
-> -
->  source "drivers/parisc/Kconfig"
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index f7abd118d23d..fcb8e5da148e 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -428,5 +428,3 @@ menu "Power management options"
->  source "kernel/power/Kconfig"
->  
->  endmenu
-> -
-> -source "drivers/firmware/Kconfig"
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index f3c8a8110f60..499f3cc1e62f 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -2899,8 +2899,6 @@ config HAVE_ATOMIC_IOMAP
->  	def_bool y
->  	depends on X86_32
->  
-> -source "drivers/firmware/Kconfig"
-> -
->  source "arch/x86/kvm/Kconfig"
->  
->  source "arch/x86/Kconfig.assembler"
-> diff --git a/drivers/Kconfig b/drivers/Kconfig
-> index dcecc9f6e33f..493ac7ffd8d0 100644
-> --- a/drivers/Kconfig
-> +++ b/drivers/Kconfig
-> @@ -16,6 +16,8 @@ source "drivers/bus/Kconfig"
->  
->  source "drivers/connector/Kconfig"
->  
-> +source "drivers/firmware/Kconfig"
-> +
->  source "drivers/gnss/Kconfig"
->  
->  source "drivers/mtd/Kconfig"
-> -- 
-> 2.33.0
-> 
+On Tue, 12 Oct 2021 at 23:33, Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> On Tue, Oct 12, 2021 at 01:01:16PM +0530, Sumit Garg wrote:
+> > When OP-TEE driver is built as a module, OP-TEE client devices
+> > registered on TEE bus during probe should be unregistered during
+> > optee_remove. So implement optee_unregister_devices() accordingly.
+> >
+> > Fixes: c3fa24af9244 ("tee: optee: add TEE bus device enumeration support")
+> > Reported-by: Sudeep Holla <sudeep.holla@arm.com>
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  drivers/tee/optee/core.c          |  3 +++
+> >  drivers/tee/optee/device.c        | 22 ++++++++++++++++++++++
+> >  drivers/tee/optee/optee_private.h |  1 +
+> >  3 files changed, 26 insertions(+)
+> >
+> > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> > index ccad3c7c8f6d..3915dc574503 100644
+> > --- a/drivers/tee/optee/core.c
+> > +++ b/drivers/tee/optee/core.c
+> > @@ -586,6 +586,9 @@ static int optee_remove(struct platform_device *pdev)
+> >  {
+> >       struct optee *optee = platform_get_drvdata(pdev);
+> >
+> > +     /* Unregister OP-TEE specific client devices on TEE bus */
+> > +     optee_unregister_devices();
+> > +
+>
+> This is not based on FF-A support series by Jens I assume.
 
-This isn't for stable kernels, it should be dropped from all of your
-AUTOSEL queues.
+Yeah as it fixes an existing problem and for stable backport reasons I
+would suggest rebasing FF-A support series on top of it.
 
-thanks,
+> I added
+> optee_unregister_devices to optee_remove_common and that fixes the issue
+> I reported. I haven't followed the comments by Jens on the approach yet.
+>
 
-greg k-h
+Thanks for testing this fix.
+
+-Sumit
+
+> --
+> Regards,
+> Sudeep
