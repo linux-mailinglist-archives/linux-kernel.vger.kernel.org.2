@@ -2,350 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5B542BB68
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D591E42BB71
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239109AbhJMJX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbhJMJX6 (ORCPT
+        id S239122AbhJMJZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:25:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29214 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230150AbhJMJY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:23:58 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F44C061570;
-        Wed, 13 Oct 2021 02:21:55 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id k7so5927662wrd.13;
-        Wed, 13 Oct 2021 02:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uNF3RaS9/sT6+odi9lPrDXDb6WsY4KBhg798xoiyr2U=;
-        b=S4XDCjW/x/6OCUR8iwHWtZpbbNAmXo8e/Y6RlwvN7mTmo265/Fbzc8Viq+M8qYJIBP
-         KlHrQolgEa/tRH8M1CzW4Rwlss4o4g/ZdiSukT6oU0dadX4/UQ15oVTi/Dp/gmSfYJmH
-         ngDCFAtMdGNHAwi8qPK/qMMQ/TU1pKHa1fIIukZ/+Dr6BjzbvG9yYn3CKoeXdn3itQDl
-         kAHYMjZdMKcEfdZLn2+KUVL7iY4rQfwVmyBM/JkqtN/ijjR5dMnJ5hUXqx+iCvrqpQiO
-         bKrbusQVxnmZwBMOWcb1GgYW15jCMojBDRDWEe2LaHaHUzAIRSrobF8uQmj8ShbFHnyN
-         Bh0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uNF3RaS9/sT6+odi9lPrDXDb6WsY4KBhg798xoiyr2U=;
-        b=geofRnYb5ne/jZa0JTlJY/+v7Z9D6s79AtQeIykqMtE13VGRzFXh4NFIdgsNbIPe8u
-         2p6FSlobPXWyjnfsMtQGUB40oy9dLyGWYrIOHVRM0MjWgAB0C2l+VjCRg3JmfwZ8ZgFx
-         K+UXqi5PJetCUlyPk7qv69xwYOHamgLAw1iCgFniOQIoBKHlG6oVTktbczSu1dO7p7sG
-         2H40HpZvZm/jrhQpxRPYrgJmFDbeUx5w6tLhnJWfDhxC3xz/9xvl0QC37eejVkuuezEE
-         S/HgCliar00RPhKontDOfe4Wakep1iVvDyC2L/Fbap63EVVrM/5QHXO1u08B9HwXEA25
-         aWcA==
-X-Gm-Message-State: AOAM5335APTG9WA4VD7oVk9j/9MdoRiiLxWZloBKkfYZFA57O+ZmD4pR
-        0tgdCxKYdFgvbb/8Az+7fqvv6E0OCg4=
-X-Google-Smtp-Source: ABdhPJzUG/lOcQzZFiCabW109RZ2NKZEzrsblv2fjahzzsvRyq7VSkw3eA/d2CbWrTUpCKNMmvHRDA==
-X-Received: by 2002:a05:6000:1aca:: with SMTP id i10mr39125044wry.207.1634116913746;
-        Wed, 13 Oct 2021 02:21:53 -0700 (PDT)
-Received: from localhost.localdomain ([197.49.234.11])
-        by smtp.gmail.com with ESMTPSA id z6sm7184636wmp.1.2021.10.13.02.21.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 02:21:53 -0700 (PDT)
-From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
-To:     sohaib.amhmd@gmail.com
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tpm/st33zp24: drop unneeded over-commenting
-Date:   Wed, 13 Oct 2021 11:21:50 +0200
-Message-Id: <20211013092151.11835-1-sohaib.amhmd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 13 Oct 2021 05:24:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634116976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jWnFrkPl/HQNKGbEFFdCtAjAbrQ0f0wfX+pKKqhAWSU=;
+        b=FDikJDuGWPqpjQUYpuRDk95KCLByQao2TtFZHmnfDbZtmSbGdja13X2xq93MsqZPYVmUir
+        oXSBY5wsVXYQEU45VrGaf/DhuB5gnPmB2SiYLA9QU3MuyPbic4nZD2K4cKb8JzFkwwVlwI
+        mkdgrEM0/3Sm8esES2sj6gq6+g/hfJE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-430-n_8-IG_fM_uOmtY2wl_brw-1; Wed, 13 Oct 2021 05:22:52 -0400
+X-MC-Unique: n_8-IG_fM_uOmtY2wl_brw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22CBF5074C;
+        Wed, 13 Oct 2021 09:22:51 +0000 (UTC)
+Received: from T590 (ovpn-8-39.pek2.redhat.com [10.72.8.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 782BE22713;
+        Wed, 13 Oct 2021 09:22:47 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 17:22:42 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kashyap.desai@broadcom.com,
+        hare@suse.de
+Subject: Re: [PATCH] blk-mq: Fix blk_mq_tagset_busy_iter() for shared tags
+Message-ID: <YWalYoOZmpkmAZNK@T590>
+References: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1634114459-143003-1-git-send-email-john.garry@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove parameter descriptions from all static functions.
-Remove the comment altogether that does not tell what the function does.
+On Wed, Oct 13, 2021 at 04:40:59PM +0800, John Garry wrote:
+> Since it is now possible for a tagset to share a single set of tags, the
+> iter function should not re-iter the tags for the count of #hw queues in
+> that case. Rather it should just iter once.
+> 
+> Fixes: e0fdf846c7bb ("blk-mq: Use shared tags for shared sbitmap support")
+> Reported-by: Kashyap Desai <kashyap.desai@broadcom.com>
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> 
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> index 72a2724a4eee..c943b6529619 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -378,9 +378,12 @@ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
+>  void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
+>  		busy_tag_iter_fn *fn, void *priv)
+>  {
+> -	int i;
+> +	unsigned int flags = tagset->flags;
+> +	int i, nr_tags;
+> +
+> +	nr_tags = blk_mq_is_shared_tags(flags) ? 1 : tagset->nr_hw_queues;
+>  
+> -	for (i = 0; i < tagset->nr_hw_queues; i++) {
+> +	for (i = 0; i < nr_tags; i++) {
+>  		if (tagset->tags && tagset->tags[i])
+>  			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
+>  					      BT_TAG_ITER_STARTED);
 
-Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
----
- drivers/char/tpm/st33zp24/st33zp24.c | 122 ++++-----------------------
- 1 file changed, 17 insertions(+), 105 deletions(-)
+blk_mq_queue_tag_busy_iter() needn't such change?
 
-diff --git a/drivers/char/tpm/st33zp24/st33zp24.c b/drivers/char/tpm/st33zp24/st33zp24.c
-index 4ec10ab5e576..ce9efb73c144 100644
---- a/drivers/char/tpm/st33zp24/st33zp24.c
-+++ b/drivers/char/tpm/st33zp24/st33zp24.c
-@@ -61,9 +61,7 @@ enum tis_defaults {
- };
- 
- /*
-- * clear_interruption clear the pending interrupt.
-- * @param: tpm_dev, the tpm device device.
-- * @return: the interrupt status value.
-+ * clear the pending interrupt.
-  */
- static u8 clear_interruption(struct st33zp24_dev *tpm_dev)
- {
-@@ -72,12 +70,10 @@ static u8 clear_interruption(struct st33zp24_dev *tpm_dev)
- 	tpm_dev->ops->recv(tpm_dev->phy_id, TPM_INT_STATUS, &interrupt, 1);
- 	tpm_dev->ops->send(tpm_dev->phy_id, TPM_INT_STATUS, &interrupt, 1);
- 	return interrupt;
--} /* clear_interruption() */
-+}
- 
- /*
-- * st33zp24_cancel, cancel the current command execution or
-- * set STS to COMMAND READY.
-- * @param: chip, the tpm_chip description as specified in driver/char/tpm/tpm.h
-+ * cancel the current command execution or set STS to COMMAND READY.
-  */
- static void st33zp24_cancel(struct tpm_chip *chip)
- {
-@@ -86,12 +82,10 @@ static void st33zp24_cancel(struct tpm_chip *chip)
- 
- 	data = TPM_STS_COMMAND_READY;
- 	tpm_dev->ops->send(tpm_dev->phy_id, TPM_STS, &data, 1);
--} /* st33zp24_cancel() */
-+}
- 
- /*
-- * st33zp24_status return the TPM_STS register
-- * @param: chip, the tpm chip description
-- * @return: the TPM_STS register value.
-+ * return the TPM_STS register
-  */
- static u8 st33zp24_status(struct tpm_chip *chip)
- {
-@@ -100,12 +94,10 @@ static u8 st33zp24_status(struct tpm_chip *chip)
- 
- 	tpm_dev->ops->recv(tpm_dev->phy_id, TPM_STS, &data, 1);
- 	return data;
--} /* st33zp24_status() */
-+}
- 
- /*
-- * check_locality if the locality is active
-- * @param: chip, the tpm chip description
-- * @return: true if LOCALITY0 is active, otherwise false
-+ * if the locality is active
-  */
- static bool check_locality(struct tpm_chip *chip)
- {
-@@ -120,13 +112,8 @@ static bool check_locality(struct tpm_chip *chip)
- 		return true;
- 
- 	return false;
--} /* check_locality() */
-+}
- 
--/*
-- * request_locality request the TPM locality
-- * @param: chip, the chip description
-- * @return: the active locality or negative value.
-- */
- static int request_locality(struct tpm_chip *chip)
- {
- 	struct st33zp24_dev *tpm_dev = dev_get_drvdata(&chip->dev);
-@@ -153,12 +140,8 @@ static int request_locality(struct tpm_chip *chip)
- 
- 	/* could not get locality */
- 	return -EACCES;
--} /* request_locality() */
-+}
- 
--/*
-- * release_locality release the active locality
-- * @param: chip, the tpm chip description.
-- */
- static void release_locality(struct tpm_chip *chip)
- {
- 	struct st33zp24_dev *tpm_dev = dev_get_drvdata(&chip->dev);
-@@ -171,8 +154,6 @@ static void release_locality(struct tpm_chip *chip)
- 
- /*
-  * get_burstcount return the burstcount value
-- * @param: chip, the chip description
-- * return: the burstcount or negative value.
-  */
- static int get_burstcount(struct tpm_chip *chip)
- {
-@@ -200,18 +181,8 @@ static int get_burstcount(struct tpm_chip *chip)
- 		msleep(TPM_TIMEOUT);
- 	} while (time_before(jiffies, stop));
- 	return -EBUSY;
--} /* get_burstcount() */
--
-+}
- 
--/*
-- * wait_for_tpm_stat_cond
-- * @param: chip, chip description
-- * @param: mask, expected mask value
-- * @param: check_cancel, does the command expected to be canceled ?
-- * @param: canceled, did we received a cancel request ?
-- * @return: true if status == mask or if the command is canceled.
-- * false in other cases.
-- */
- static bool wait_for_tpm_stat_cond(struct tpm_chip *chip, u8 mask,
- 				bool check_cancel, bool *canceled)
- {
-@@ -228,13 +199,7 @@ static bool wait_for_tpm_stat_cond(struct tpm_chip *chip, u8 mask,
- }
- 
- /*
-- * wait_for_stat wait for a TPM_STS value
-- * @param: chip, the tpm chip description
-- * @param: mask, the value mask to wait
-- * @param: timeout, the timeout
-- * @param: queue, the wait queue.
-- * @param: check_cancel, does the command can be cancelled ?
-- * @return: the tpm status, 0 if success, -ETIME if timeout is reached.
-+ * wait for a TPM_STS value
-  */
- static int wait_for_stat(struct tpm_chip *chip, u8 mask, unsigned long timeout,
- 			wait_queue_head_t *queue, bool check_cancel)
-@@ -292,15 +257,8 @@ static int wait_for_stat(struct tpm_chip *chip, u8 mask, unsigned long timeout,
- 	}
- 
- 	return -ETIME;
--} /* wait_for_stat() */
-+}
- 
--/*
-- * recv_data receive data
-- * @param: chip, the tpm chip description
-- * @param: buf, the buffer where the data are received
-- * @param: count, the number of data to receive
-- * @return: the number of bytes read from TPM FIFO.
-- */
- static int recv_data(struct tpm_chip *chip, u8 *buf, size_t count)
- {
- 	struct st33zp24_dev *tpm_dev = dev_get_drvdata(&chip->dev);
-@@ -325,12 +283,6 @@ static int recv_data(struct tpm_chip *chip, u8 *buf, size_t count)
- 	return size;
- }
- 
--/*
-- * tpm_ioserirq_handler the serirq irq handler
-- * @param: irq, the tpm chip description
-- * @param: dev_id, the description of the chip
-- * @return: the status of the handler.
-- */
- static irqreturn_t tpm_ioserirq_handler(int irq, void *dev_id)
- {
- 	struct tpm_chip *chip = dev_id;
-@@ -341,16 +293,10 @@ static irqreturn_t tpm_ioserirq_handler(int irq, void *dev_id)
- 	disable_irq_nosync(tpm_dev->irq);
- 
- 	return IRQ_HANDLED;
--} /* tpm_ioserirq_handler() */
-+}
- 
- /*
-- * st33zp24_send send TPM commands through the I2C bus.
-- *
-- * @param: chip, the tpm_chip description as specified in driver/char/tpm/tpm.h
-- * @param: buf,	the buffer to send.
-- * @param: count, the number of bytes to send.
-- * @return: In case of success the number of bytes sent.
-- *			In other case, a < 0 value describing the issue.
-+ * send TPM commands through the I2C bus.
-  */
- static int st33zp24_send(struct tpm_chip *chip, unsigned char *buf,
- 			 size_t len)
-@@ -431,14 +377,6 @@ static int st33zp24_send(struct tpm_chip *chip, unsigned char *buf,
- 	return ret;
- }
- 
--/*
-- * st33zp24_recv received TPM response through TPM phy.
-- * @param: chip, the tpm_chip description as specified in driver/char/tpm/tpm.h.
-- * @param: buf,	the buffer to store datas.
-- * @param: count, the number of bytes to send.
-- * @return: In case of success the number of bytes received.
-- *	    In other case, a < 0 value describing the issue.
-- */
- static int st33zp24_recv(struct tpm_chip *chip, unsigned char *buf,
- 			    size_t count)
- {
-@@ -478,12 +416,6 @@ static int st33zp24_recv(struct tpm_chip *chip, unsigned char *buf,
- 	return size;
- }
- 
--/*
-- * st33zp24_req_canceled
-- * @param: chip, the tpm_chip description as specified in driver/char/tpm/tpm.h.
-- * @param: status, the TPM status.
-- * @return: Does TPM ready to compute a new command ? true.
-- */
- static bool st33zp24_req_canceled(struct tpm_chip *chip, u8 status)
- {
- 	return (status == TPM_STS_COMMAND_READY);
-@@ -501,11 +433,7 @@ static const struct tpm_class_ops st33zp24_tpm = {
- };
- 
- /*
-- * st33zp24_probe initialize the TPM device
-- * @param: client, the i2c_client description (TPM I2C description).
-- * @param: id, the i2c_device_id struct.
-- * @return: 0 in case of success.
-- *	 -1 in other case.
-+ * initialize the TPM device
-  */
- int st33zp24_probe(void *phy_id, const struct st33zp24_phy_ops *ops,
- 		   struct device *dev, int irq, int io_lpcpd)
-@@ -583,11 +511,6 @@ int st33zp24_probe(void *phy_id, const struct st33zp24_phy_ops *ops,
- }
- EXPORT_SYMBOL(st33zp24_probe);
- 
--/*
-- * st33zp24_remove remove the TPM device
-- * @param: tpm_data, the tpm phy.
-- * @return: 0 in case of success.
-- */
- int st33zp24_remove(struct tpm_chip *chip)
- {
- 	tpm_chip_unregister(chip);
-@@ -596,12 +519,6 @@ int st33zp24_remove(struct tpm_chip *chip)
- EXPORT_SYMBOL(st33zp24_remove);
- 
- #ifdef CONFIG_PM_SLEEP
--/*
-- * st33zp24_pm_suspend suspend the TPM device
-- * @param: tpm_data, the tpm phy.
-- * @param: mesg, the power management message.
-- * @return: 0 in case of success.
-- */
- int st33zp24_pm_suspend(struct device *dev)
- {
- 	struct tpm_chip *chip = dev_get_drvdata(dev);
-@@ -615,14 +532,9 @@ int st33zp24_pm_suspend(struct device *dev)
- 		ret = tpm_pm_suspend(dev);
- 
- 	return ret;
--} /* st33zp24_pm_suspend() */
-+}
- EXPORT_SYMBOL(st33zp24_pm_suspend);
- 
--/*
-- * st33zp24_pm_resume resume the TPM device
-- * @param: tpm_data, the tpm phy.
-- * @return: 0 in case of success.
-- */
- int st33zp24_pm_resume(struct device *dev)
- {
- 	struct tpm_chip *chip = dev_get_drvdata(dev);
-@@ -640,7 +552,7 @@ int st33zp24_pm_resume(struct device *dev)
- 			tpm1_do_selftest(chip);
- 	}
- 	return ret;
--} /* st33zp24_pm_resume() */
-+}
- EXPORT_SYMBOL(st33zp24_pm_resume);
- #endif
- 
--- 
-2.25.1
+
+Thanks,
+Ming
 
