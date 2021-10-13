@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E58C42C1FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 15:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918F242C1FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235484AbhJMOBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232459AbhJMOBy (ORCPT
+        id S235519AbhJMOCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:02:34 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36844 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230324AbhJMOCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:01:54 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E9AC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 06:59:50 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1maenF-00047v-AN; Wed, 13 Oct 2021 15:59:41 +0200
-Received: from pengutronix.de (2a03-f580-87bc-d400-4e9e-60fc-b8e7-7754.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:4e9e:60fc:b8e7:7754])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 85F196924D0;
-        Wed, 13 Oct 2021 13:59:39 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 15:59:38 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [patch 05/11] can: bcm: Use hrtimer_forward_now()
-Message-ID: <20211013135938.mdg3ucyjtkvfcxcu@pengutronix.de>
-References: <20210923153311.225307347@linutronix.de>
- <20210923153339.684546907@linutronix.de>
+        Wed, 13 Oct 2021 10:02:33 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19DDN6eM011490;
+        Wed, 13 Oct 2021 16:00:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=fCSqyNLZi/i47QTIlxvDJ8Eee5KYsx+MfdTqMt9Kdc0=;
+ b=iC+84/nFPw5V7xCloQvvjVfvnEuuEi+MWBmN7CJBEaOdVE2Fhwwywv2YL+ZfzFUB7uuX
+ kcc1sxjSFVMzuZvTR28I4m74NMF4gKWaJMAATsKRvRmCvrhJdb0RaZObMgc5+u2QhV5x
+ AX77qWrBywxeqr+QLeJ1zazZf6ShbLF7+7zxDgdPhw3DIUP1cX8zr52Yrtpgi6gNZum8
+ jQTmMhLa1Kkpc8mkDGXRobG1MuKUgKHIJ+fFLOQ4mOErOgo1ktBZQl58OBQ2qpxKZ3bw
+ razL6Z7oALDJxHL6OTczsiwDxq+76GkHQEhFJXceSiXyA8f96lPwyX7bLnCCeP/3MOVJ vw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bnuxttbaq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 16:00:24 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0F8EB10002A;
+        Wed, 13 Oct 2021 16:00:24 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0799622F7D6;
+        Wed, 13 Oct 2021 16:00:24 +0200 (CEST)
+Received: from [10.211.0.59] (10.75.127.49) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 13 Oct
+ 2021 16:00:22 +0200
+Subject: Re: [PATCH v2 0/2] usb: dwc2: fill in gadget caps, configure it for
+ stm32mp15
+To:     <hminas@synopsys.com>, <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <amelie.delaunay@foss.st.com>, <alexandre.torgue@foss.st.com>
+References: <1633679589-16021-1-git-send-email-fabrice.gasnier@foss.st.com>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <1000e62a-26e2-90d3-afee-a4166bb4ff79@foss.st.com>
+Date:   Wed, 13 Oct 2021 16:00:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ulf5aacqnjevo763"
-Content-Disposition: inline
-In-Reply-To: <20210923153339.684546907@linutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <1633679589-16021-1-git-send-email-fabrice.gasnier@foss.st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-13_05,2021-10-13_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/8/21 9:53 AM, Fabrice Gasnier wrote:
+> This patchset fills in 'otg_caps' of the usb_gadget structure, and
+> configures it on stm32mp15.
+> 
+> When dwc2 is configured as dual role (OTG), the USB gadget descriptors
+> (device mode) are configured via configfs. This lead in calling
+> usb_otg_descriptor_init().
+> In usb_otg_descriptor_init() (drivers/usb/gadget/config.c):
+> - If otg caps structure is provided -> use it
+> - If otg caps structure isn't provided -> HNP and SRP are enabled by default
+> 
+> This could lead to a configuration mismatch beetween:
+> - OTG controller: HNP and SRP aren't enabled
+> - gadget descriptors: HNP and SRP are advertised
+> 
+> ---
 
---ulf5aacqnjevo763
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi All, I just sent a v3 of this series, to add the dt-bindings.
 
-On 23.09.2021 18:04:27, Thomas Gleixner wrote:
-> hrtimer_forward_now() provides the same functionality as the open coded
-> hrimer_forward() invocation. Prepares for removal of hrtimer_forward() fr=
-om
-> the public interfaces.
->=20
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-> Cc: linux-can@vger.kernel.org
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: netdev@vger.kernel.org
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
+Please rather review the v3.
 
-Tnx, applied to linux-can-next/testing.
+Thanks in advance,
+Fabrice
 
-regards,
-Marc
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---ulf5aacqnjevo763
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFm5kgACgkQqclaivrt
-76ly8Af+MZpwNSBSkgu3BoHbXJM/ftEtG8NwqL4gN3XFG2q00fGFifF6cR1SZqB8
-lnFWAfGMCPGla49W/6vkAg9x1QwGR74q++Z+Dj51dImt7qYTsDMoVhDS3jrSO+5b
-ESnvU6e5FXZbI0bvnZCvM3ML9kxSb8vXaYUxKRBrkf4gK7dQNAl1PAAK4B3h03xf
-JPV4wpZGxcxeVUEffv9PvvX9fdwVfb7szCmt8KqaxIUuH1IfM+gZGxxoiNW8YEPZ
-YgixZRWjON1Y5SJ/FmEYBW3Wk/1Scyqg/Ts9LC0TQRvLJIiojQrpC4X5qDUr2P8N
-3tH/WZoW99MfvlmrL8zSxRcp0sNqPQ==
-=PxYX
------END PGP SIGNATURE-----
-
---ulf5aacqnjevo763--
+> Changes in v2:
+> - replace otg_cap bit field by otg_caps structure.
+> - Fix build issue when HOST only mode is selected [1]
+> - DT patch for stm32mp151 merged in v1, so not resent
+> 
+> [1] https://syzkaller.appspot.com/bug?extid=7af597ce2b38596c16ea
+> 
+> Fabrice Gasnier (2):
+>   usb: dwc2: add otg_rev and otg_caps information for gadget driver
+>   usb: dwc2: stm32mp15: set otg_rev
+> 
+>  drivers/usb/dwc2/core.h    | 19 ++++++------
+>  drivers/usb/dwc2/debugfs.c |  4 ++-
+>  drivers/usb/dwc2/gadget.c  |  1 +
+>  drivers/usb/dwc2/hcd.c     | 12 +++-----
+>  drivers/usb/dwc2/params.c  | 75 ++++++++++++++++++++++++++--------------------
+>  5 files changed, 59 insertions(+), 52 deletions(-)
+> 
