@@ -2,67 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1703242CDB1
+	by mail.lfdr.de (Postfix) with ESMTP id E2C3842CDB3
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhJMWSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 18:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45720 "EHLO
+        id S231182AbhJMWSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 18:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhJMWSl (ORCPT
+        with ESMTP id S230515AbhJMWSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 18:18:41 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDD5C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:16:38 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id w11so1351253ilv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:16:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GF/XXkjPXvEgKs4g1A5s991twcUkvkUaUKmbFgsBBI8=;
-        b=VWlhqDclteXwnS/wCk7OMJ4IF0eeUt59VOGq66zYhij02i4wuueiRykJF/kQXmu0ue
-         7AJOAnpdS0XOqPUpdJnKkFoF1DPgWiWNqZt9skoyVthKgtBZ/XGkOZ7CwHvnRW5Zv9/k
-         gmOD8T8A2MgTWXIDQoZUh8bDgNCz652qQlmrw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GF/XXkjPXvEgKs4g1A5s991twcUkvkUaUKmbFgsBBI8=;
-        b=zX9y/yWeBqlczn6tFTpckl7coefMEfoKhYiH0z/rvLz6k/cSjDKgEC0ghd3N5R22o/
-         HykmBknkGpI5EFJqRSlywEFyvdFVkEezZx4r0BysgAFfvSTa9MbE7sMVxmxT3xjUjgKX
-         GT73eYjHsXf+uXvydL6bT6+7noS0utY2arN2HWLwH+qc0FJoCXPxMPJEOPi1t60mAhfG
-         khRtgIsOho44COkZPmTxOGClIq3whcHWqOHPy41PIecDyFfetcHLKHdFdruZzd7oAuzj
-         uOx3FTyew1vKB10y78SYBhLt5NSg+3HLRZgqBDBGfvn4ntPjiLQbbNhdFuOghZZQUd7k
-         kfYg==
-X-Gm-Message-State: AOAM530AMN4w5zT5fHWzK9joOhPPNZpHR+Znq1vZiE2wp/oUdZwMoBjt
-        z/lhc2wiAjdh/mCSlunzn6kuIPHXZVoeAg==
-X-Google-Smtp-Source: ABdhPJxT5yvGWSeLtHUEKkvIPnj+x6c5EEtnJizDBiS30hWQP5PF64bEZVRmNV0Mwm/ReRUtcpGTsw==
-X-Received: by 2002:a05:6e02:156b:: with SMTP id k11mr1345867ilu.115.1634163397189;
-        Wed, 13 Oct 2021 15:16:37 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id g1sm350691ild.86.2021.10.13.15.16.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 15:16:36 -0700 (PDT)
-Subject: Re: [mcgrof:modules-next 1/1] include/linux/kern_levels.h:5:18:
- warning: format '%llu' expects argument of type 'long long unsigned int', but
- argument 3 has type 'Elf32_Off' {aka 'unsigned int'}
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <202110140056.Fb6aizTM-lkp@intel.com>
- <c4be5b17-3071-0d99-f896-40040c81d9d3@linuxfoundation.org>
- <YWdNL8m5A3qtIm24@bombadil.infradead.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <5a482ade-7e73-ba6f-457e-75dfdb80a2c8@linuxfoundation.org>
-Date:   Wed, 13 Oct 2021 16:16:36 -0600
+        Wed, 13 Oct 2021 18:18:45 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4700C061746;
+        Wed, 13 Oct 2021 15:16:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=+u0puN0sMkyAYkNQMTT8QtUODmKP6eAbIA4yxZYl8WM=; b=Eau9WGW08s+kawzSJ3n5iwHVEP
+        8qUk1k1WwQiUEtMiBwrydbwfly+bEnFmyttCySvY9Er2RHzXycILy3bfwG5JV2b/rrK4CDWJJIL4L
+        pcPW02fVBXAWQLaRFPIkt5kB2j0uiGpnIAEVVb4xAfPmA38znuGbwKUGlwwYxn5ltfCfxV0c03Eve
+        SjTPANcs20EvVSwKCec21Ix31Z+u5f6A0nLaNmFgDLrbbC0ESGMDku+wfZlKPqVdjAa3hfBcAMIaM
+        CqIu899k8CSwJDzcgDEm958WGfc4sz7XwLnkL/dONmiv2kwNDUhM8V4u84sdpK2j2Qa5TqROIO+E8
+        JQvDtMWg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mamYB-000oAV-Fv; Wed, 13 Oct 2021 22:16:39 +0000
+Subject: Re: [PATCH v10 03/13] media: amphion: add amphion vpu device driver
+To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
+        shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de
+Cc:     hverkuil-cisco@xs4all.nl, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, aisheng.dong@nxp.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <cover.1634095309.git.ming.qian@nxp.com>
+ <2a70d55e012874b9a3381e0aca23010edf65b2f4.1634095309.git.ming.qian@nxp.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <591813d6-2633-bc64-110e-8f62ca07044e@infradead.org>
+Date:   Wed, 13 Oct 2021 15:16:38 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YWdNL8m5A3qtIm24@bombadil.infradead.org>
+In-Reply-To: <2a70d55e012874b9a3381e0aca23010edf65b2f4.1634095309.git.ming.qian@nxp.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,26 +51,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 3:18 PM, Luis Chamberlain wrote:
-> On Wed, Oct 13, 2021 at 11:09:15AM -0600, Shuah Khan wrote:
->> Hi Luis,
->> We can introduce arch specific header print routine. Easy option is not
->> printing any info., which we know isn't very useful.
->>
->> Let me know your thoughts.
-> 
-> You found an issue without the debug prints, and so you'd know better if
-> the effort is worth the trouble, so I'll let you decide.
-> 
+On 10/13/21 1:27 AM, Ming Qian wrote:
+> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> index d9f90084c2f6..2465a5f7a073 100644
+> --- a/drivers/media/platform/Kconfig
+> +++ b/drivers/media/platform/Kconfig
+> @@ -200,6 +200,25 @@ config VIDEO_TI_CAL_MC
+>   
+>   endif # VIDEO_TI_CAL
+>   
+> +config VIDEO_AMPHION_VPU
+> +	tristate "Amphion VPU(Video Processing Unit) Codec IP"
+> +	depends on ARCH_MXC
+> +	depends on MEDIA_SUPPORT
+> +	depends on VIDEO_DEV
+> +	depends on VIDEO_V4L2
+> +	select V4L2_MEM2MEM_DEV
+> +	select VIDEOBUF2_DMA_CONTIG
+> +	select VIDEOBUF2_VMALLOC
+> +	default y
 
-Right the issue with validate_section_offset() is separate from the debug.
-I will fix the pr_err warns first by tweaking the messages to not print
-the variables that cause problems.
+This should not be "default y" unless it is needed to boot up
+some platform/machine. And even then it should depend on that
+platform/machine if possible.
 
-I will send a separate patch for validate_section_offset() which needs to
-be arch specific similar to elf_check_arch().
+And there are 2 other drivers in that same Kconfig file that
+have the same problem.
 
-Let me know if this plan sounds good.
+> +	help
+> +	  Amphion VPU Codec IP contains two parts: Windsor and Malone.
+> +	  Windsor is encoder that supports H.264, and Malone is decoder
+> +	  that supports H.264, HEVC, and other video formats.
+> +	  This is a V4L2 driver for NXP MXC 8Q video accelerator hardware.
+> +	  It accelerates encoding and decoding operations on
+> +	  various NXP SoCs.
+> +	  To compile this driver as a module choose m here.
 
-thanks,
--- Shuah
+
+-- 
+~Randy
