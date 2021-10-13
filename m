@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF24442CA86
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C551042CA88
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 22:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239068AbhJMUCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 16:02:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40738 "EHLO mail.kernel.org"
+        id S239091AbhJMUCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 16:02:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238928AbhJMUCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 16:02:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9393611EE;
-        Wed, 13 Oct 2021 20:00:05 +0000 (UTC)
+        id S239096AbhJMUCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 16:02:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2105611F0;
+        Wed, 13 Oct 2021 20:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634155206;
-        bh=om0HazlAjz/5nUCLR5kLqslvvq5C7vKYnMkWeQTOsBs=;
+        s=k20201202; t=1634155209;
+        bh=jnF9fcRu7yXZHVCLu2T4kmJ5wS9Wn3iOmYmY9ymBctk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EmI2cldZLk7dXlFCA6+ucpCFWa7lvxlNiJZYbWmw92AuUSrCbPFjjkciTpiDcIi2x
-         4w17i9RqXDo6Ai1crmQVnvy0WmPbTGahMUV03YqK1H3ifwtkIpkFARIPGyxFkNBwKp
-         y2VLt3mCy6NIy3eWKcMda9HgSEWEiRIqGbH/raO1kqGAD3L2GjVFJOJ2GuIogxquv0
-         Qsac8OJXZLPOOFrOuq4d7EnQjbzuBLZzTe5UV/vf7fm0x9lP8vf+EzRHtc+fN1FdlU
-         gxt4hqqYJ0eYO7Hsl90fSO52bLW1Y0n3RvXZxCDxGaeMyBfAc4kytdA2g3cH7S5RwW
-         Ada7zRIhVddFA==
+        b=mlU91my6+As/ZlrtRFPb33MOJr04ueUWqpj04zpTzp9jpFLNwk65SvrefXTyGzguV
+         dA79iV3/WT45uvvq6bwLVQDU81/0INNX94+hQ2H2DgIX2+0PgZnpY7f7vYVl+r1guF
+         +4mxdNE36lW2F+IFgmKYSCchYbph6yMn3JtzdlyD7o3+4r9VO8e23VMvVHLWMbAIl2
+         FC+IdC98SMG64v1gMcoqJm3hiZ9zXlklN4FAo3qTxLcHHgEbnis+TIGNwjXJ4Aa7QF
+         b5TkXUsF1OVRD/XDVK/lzFvwhciXu2Q0s+bb11VIN/FuCVGRc/EMlqvB/e6vvK0qWn
+         5/OJro8dxL9dQ==
 From:   Mark Brown <broonie@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Rikard Falkeborn <rikard.falkeborn@gmail.com>
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
         Jaroslav Kysela <perex@perex.cz>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        linux-arm-kernel@lists.infradead.org,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
         Takashi Iwai <tiwai@suse.com>,
-        linux-mediatek@lists.infradead.org,
-        Jiaxin Yu <jiaxin.yu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: mediatek: Constify static snd_soc_ops
-Date:   Wed, 13 Oct 2021 20:59:48 +0100
-Message-Id: <163415517073.1358186.16264637881632852203.b4-ty@kernel.org>
+Subject: Re: [PATCH] ASoC: amd: vangogh: constify static struct snd_soc_dai_ops
+Date:   Wed, 13 Oct 2021 20:59:49 +0100
+Message-Id: <163415517073.1358186.17967517863564230911.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211012205521.14098-1-rikard.falkeborn@gmail.com>
-References: <20211012205521.14098-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20211012211506.21159-1-rikard.falkeborn@gmail.com>
+References: <20211012211506.21159-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -48,10 +45,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Oct 2021 22:55:21 +0200, Rikard Falkeborn wrote:
-> These are only assigned to the ops field in the snd_soc_dai_link struct
-> which is a pointer to const struct snd_soc_ops. Make them const to allow
-> the compiler to put them in read-only memory.
+On Tue, 12 Oct 2021 23:15:06 +0200, Rikard Falkeborn wrote:
+> The only usage of acp5x_i2s_dai_ops is to assign its address to the ops
+> field in the snd_soc_dai_driver struct, which is a pointer to const.
+> Make it const to allow the compiler to put it in read-only memory.
 > 
 > 
 
@@ -61,8 +58,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: Constify static snd_soc_ops
-      commit: abed054f039a69579a21099dbb53aa008ea66d03
+[1/1] ASoC: amd: vangogh: constify static struct snd_soc_dai_ops
+      commit: bd6e4b992bb0580232e900762c131d95a73808b7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
