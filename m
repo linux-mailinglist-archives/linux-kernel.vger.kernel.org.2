@@ -2,73 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E658142B997
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC0E42B992
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238728AbhJMHxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:53:36 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13733 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238736AbhJMHxb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:53:31 -0400
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HTl715TnjzWktr;
-        Wed, 13 Oct 2021 15:49:49 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 13 Oct 2021 15:51:26 +0800
-From:   Ziyang Xuan <william.xuanziyang@huawei.com>
-To:     <krzysztof.kozlowski@canonical.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net 2/2] NFC: digital: fix possible memory leak in digital_in_send_sdd_req()
-Date:   Wed, 13 Oct 2021 15:50:32 +0800
-Message-ID: <56fbe3414c94916d197a1a1b3e438eaa129d5c9f.1634111083.git.william.xuanziyang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1634111083.git.william.xuanziyang@huawei.com>
-References: <cover.1634111083.git.william.xuanziyang@huawei.com>
+        id S238698AbhJMHxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:53:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238626AbhJMHxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 03:53:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA3DB60F94;
+        Wed, 13 Oct 2021 07:51:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634111460;
+        bh=OXCqkhh4wPeAYcArRqvAfGp3MlPsBVIOg7joR3nwwmI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nMCMOuPrDQuPbS+XQ0PC5jK7hV5MAY1+SYszB0z0L3g4lSapQXCtooKSLHzqfRbCA
+         uCMvyNLQN4q7rMULxd4s3/QgvyRETNssjKsgsMTIRhKymonkWkAGid8HXpq+W/lCzW
+         XWVARwXuGZzXsEmNhax2j7RD2SDGY/1qx3GNAIureFtSSoBEdoIdu9RoOVtSZQI9mN
+         JDcheFuwrGoQnxURMtjMLSAj0yTqaTFp3EL67ZzHG8PKLYPVbJeWAUVj0JRnVz2gyZ
+         vatgiMENXuuU+tr7jUcx+xEE/M8l+SvbFMKTXDo8+jGEek7+lx8Q4sdX434vEbPFMl
+         a6YTvLwpBwyLw==
+Received: by mail-ot1-f51.google.com with SMTP id w10-20020a056830280a00b0054e4e6c85a6so2586392otu.5;
+        Wed, 13 Oct 2021 00:51:00 -0700 (PDT)
+X-Gm-Message-State: AOAM531piHKYS/FT7H9U5fF136dgLVYlgF5ruvY4pNDDsZ9LW2Qo90h7
+        46GtcZ+mzOdlk9XsZDPr9nzPHqLVKdrR6rbqRo8=
+X-Google-Smtp-Source: ABdhPJyGECDlxM/1cIMBiZbjeplAKBVbiJLIuV2qyOa5uJNP+N0IfjjQq54Bet9dtKDzxCSdFURkpbSkD8XamyDr+Lg=
+X-Received: by 2002:a9d:7b48:: with SMTP id f8mr30224626oto.112.1634111459964;
+ Wed, 13 Oct 2021 00:50:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeml757-chm.china.huawei.com (10.1.199.137)
-X-CFilter-Loop: Reflected
+References: <20211012082708.121931-1-iivanov@suse.de> <YWVKAk4h5bsUA3b6@light.dominikbrodowski.net>
+ <4eccf707f2553f0f66ae3789b5689231@suse.de>
+In-Reply-To: <4eccf707f2553f0f66ae3789b5689231@suse.de>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 13 Oct 2021 09:50:48 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXE7FbEqxyBcPS6mx5wU82+H0WK67HU=S6hq=WAG5EBwyQ@mail.gmail.com>
+Message-ID: <CAMj1kXE7FbEqxyBcPS6mx5wU82+H0WK67HU=S6hq=WAG5EBwyQ@mail.gmail.com>
+Subject: Re: [RESEND] Re: [PATCH] Revert "efi/random: Treat EFI_RNG_PROTOCOL
+ output as bootloader randomness"
+To:     "Ivan T. Ivanov" <iivanov@suse.de>
+Cc:     Dominik Brodowski <linux@dominikbrodowski.net>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'skb' is allocated in digital_in_send_sdd_req(), but not free when
-digital_in_send_cmd() failed, which will cause memory leak. Fix it
-by freeing 'skb' if digital_in_send_cmd() return failed.
+On Wed, 13 Oct 2021 at 09:30, Ivan T. Ivanov <iivanov@suse.de> wrote:
+>
+> Hi,
+>
+> Quoting Dominik Brodowski (2021-10-12 11:40:34)
+> > Am Tue, Oct 12, 2021 at 11:27:08AM +0300 schrieb Ivan T. Ivanov:
+> > > This reverts commit 18b915ac6b0ac5ba7ded03156860f60a9f16df2b.
+> > >
+> > > When CONFIG_RANDOM_TRUST_BOOTLOADER is enabled add_bootloader_randomness()
+> > > calls add_hwgenerator_randomness() which might sleep,
+> >
+> > Wouldn't it be better to fix add_bootloader_randomness(), considering
+> > that
+> > calls to that function are likely to happen quite early during kernel
+> > initialization? Especially as it seems to have worked beforehand?
+>
+> I have tried. I made wait_event_interruptible() optional, but then
+> crng_reseed() segfault badly. And I don't think crng_reseed() is
+> something that I could fix easily. Suggestions are welcomed ;-)
+>
 
-Fixes: 2c66daecc409 ("NFC Digital: Add NFC-A technology support")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
----
- net/nfc/digital_technology.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+How about
 
-diff --git a/net/nfc/digital_technology.c b/net/nfc/digital_technology.c
-index 84d2345c75a3..3adf4589852a 100644
---- a/net/nfc/digital_technology.c
-+++ b/net/nfc/digital_technology.c
-@@ -465,8 +465,12 @@ static int digital_in_send_sdd_req(struct nfc_digital_dev *ddev,
- 	skb_put_u8(skb, sel_cmd);
- 	skb_put_u8(skb, DIGITAL_SDD_REQ_SEL_PAR);
- 
--	return digital_in_send_cmd(ddev, skb, 30, digital_in_recv_sdd_res,
--				   target);
-+	rc = digital_in_send_cmd(ddev, skb, 30, digital_in_recv_sdd_res,
-+				 target);
-+	if (rc)
-+		kfree_skb(skb);
-+
-+	return rc;
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 605969ed0f96..1828dc691ebf 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -2297,9 +2297,8 @@ EXPORT_SYMBOL_GPL(add_hwgenerator_randomness);
+  */
+ void add_bootloader_randomness(const void *buf, unsigned int size)
+ {
++       add_device_randomness(buf, size);
+        if (IS_ENABLED(CONFIG_RANDOM_TRUST_BOOTLOADER))
+-               add_hwgenerator_randomness(buf, size, size * 8);
+-       else
+-               add_device_randomness(buf, size);
++               credit_entropy(&input_pool, size * 8);
  }
- 
- static void digital_in_recv_sens_res(struct nfc_digital_dev *ddev, void *arg,
--- 
-2.25.1
-
+ EXPORT_SYMBOL_GPL(add_bootloader_randomness);
