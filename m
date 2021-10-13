@@ -2,209 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD5042C0AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713C442C0B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbhJMM6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:58:04 -0400
-Received: from ni.piap.pl ([195.187.100.5]:50132 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233859AbhJMM6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:58:02 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        by ni.piap.pl (Postfix) with ESMTPSA id 6F607C36955D;
-        Wed, 13 Oct 2021 14:55:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 6F607C36955D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1634129755; bh=sIcUI8mTmZIydzUXeyZ3J5UffwR7mSdChbwCl8LylUM=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=lXXv7SrHezO9kprc+RtdzBI7iBhj783hV76a5IuI0UjebTi7qPoMsjvMvZ1LIEBpv
-         lsfDkcZGq/ysQQoIpP/FujsUF5sfGzuXPru4qkl9xt2f19YN93QkgcbF8zMVLBrUg/
-         a62IU7oigYVV8vbcZFm+RIeTquM1vnYH/wp2GgM4=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Matteo Lisi <matteo.lisi@engicam.com>
-Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
-References: <m3fstfoexa.fsf@t19.piap.pl>
-        <20211009102446.jrvrdr7whtd2rv4z@uno.localdomain>
-        <m3mtnflpna.fsf@t19.piap.pl>
-        <20211011143420.vm6ncl5gdv44nsn3@uno.localdomain>
-        <m3a6jel9ce.fsf@t19.piap.pl>
-        <20211013082634.53zh5j26gucddome@uno.localdomain>
-Sender: khalasa@piap.pl
-Date:   Wed, 13 Oct 2021 14:55:54 +0200
-In-Reply-To: <20211013082634.53zh5j26gucddome@uno.localdomain> (Jacopo Mondi's
-        message of "Wed, 13 Oct 2021 10:26:34 +0200")
-Message-ID: <m3y26xjd7p.fsf@t19.piap.pl>
+        id S234114AbhJMM6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233368AbhJMM6b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 08:58:31 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C81C061570;
+        Wed, 13 Oct 2021 05:56:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lhMXJ6WblZHJe5mfBpeJXNE2FMlxg7WKQvEx789XACc=; b=z8dydKsbniwXTXgDkmitK6D/XA
+        UuBawAGO4qpG/w28f2YxmVEvSKcSsHlORywXRdtxLhBxhYDZvj+YluC1qo5ZsWEryfrBS3LEyt94s
+        zTUSAU9z1B4m+Kd220PWloGGivgPmDPOrw3X7Q2DEkREzdkgqIIujCFdnWzNK5YM3ixDqmatqP7J3
+        OAw5uWxOfF8vyQJJflZgnMwYepuAX2LmRVHnywPFfsxxZdq11XY1qeWSFhtMD1PZL2vxbNEEJl0lR
+        4zvoswi4rPnGI7BfiNjnSlDpMfidOAzqVPJzCbr37y2FfZDvJKnO3xb3/6cel4k5dOZCkM+hxzaAF
+        gm9V7MZg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1madnw-00Gi2p-G4; Wed, 13 Oct 2021 12:56:20 +0000
+Date:   Wed, 13 Oct 2021 05:56:20 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [PATCH V5 15/22] LoongArch: Add elf and module support
+Message-ID: <YWbXdEyonDpXJFK2@bombadil.infradead.org>
+References: <20211013063656.3084555-1-chenhuacai@loongson.cn>
+ <20211013071117.3097969-1-chenhuacai@loongson.cn>
+ <20211013071117.3097969-2-chenhuacai@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 3
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013071117.3097969-2-chenhuacai@loongson.cn>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jacopo Mondi <jacopo@jmondi.org> writes:
+On Wed, Oct 13, 2021 at 03:11:10PM +0800, Huacai Chen wrote:
+> diff --git a/arch/loongarch/include/asm/vermagic.h b/arch/loongarch/include/asm/vermagic.h
+> new file mode 100644
+> index 000000000000..9882dfd4702a
+> --- /dev/null
+> +++ b/arch/loongarch/include/asm/vermagic.h
+> @@ -0,0 +1,19 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
+> + */
+> +#ifndef _ASM_VERMAGIC_H
+> +#define _ASM_VERMAGIC_H
+> +
+> +#define MODULE_PROC_FAMILY "LOONGARCH "
 
-> You have never been told before, while submitting code to Linux, not
-> to use C++ comments ? Are you surprised someone contests that ?
+I take it this not a mips arch? There are other longarchs under
+arch/mips/include/asm/vermagic.h which is why I ask.
 
-Surprised, far from it. Linus has decided C++ comments are ok.
-I simply follow his advice (C++ comments are, after all, technically
-a little bit better).
+> diff --git a/arch/loongarch/kernel/module.c b/arch/loongarch/kernel/module.c
+> new file mode 100644
+> index 000000000000..af7c403b032b
+> --- /dev/null
+> +++ b/arch/loongarch/kernel/module.c
+> @@ -0,0 +1,652 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Author: Hanlu Li <lihanlu@loongson.cn>
+> + *         Huacai Chen <chenhuacai@loongson.cn>
+> + *
+> + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
+> + */
+> +
+> +#undef DEBUG
 
-> No driver in media (which I'm aware of) uses C++ comments.
-> Your one is entirely commented with C++ comments.
->
-> They all try to stay in the 80-cols limit.
-> Yours have lines that span to 140 cols and goes regularly over 100.
+Please remove this undef DEBUG line.
 
-Linus has already (in 2016 IIRC) said 80 cols are BS. This is BTW what
-several people (me included) postulated long before. Would it make sense
-to use this limit now?
+> +
+> +#include <linux/moduleloader.h>
+> +#include <linux/elf.h>
+> +#include <linux/mm.h>
+> +#include <linux/vmalloc.h>
+> +#include <linux/slab.h>
+> +#include <linux/fs.h>
+> +#include <linux/string.h>
+> +#include <linux/kernel.h>
+> +
+> +static int rela_stack_push(s64 stack_value, s64 *rela_stack, size_t *rela_stack_top)
+> +{
+> +	if (*rela_stack_top >= RELA_STACK_DEPTH)
+> +		return -ENOEXEC;
+> +
+> +	rela_stack[(*rela_stack_top)++] = stack_value;
+> +	pr_debug("%s stack_value = 0x%llx\n", __func__, stack_value);
 
-If the above constitutes being "alien", well, don't worry about it.
+If you are going to use pr_debug() so much you may want to add
+a define for #define pr_fmt(fmt) at the very top.
 
-> Ok, I give up then, feels like a waste of time reviewing a driver
-> (for the only sake of code consistency) and have every single comment
-> contested.
+> +int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+> +		       unsigned int symindex, unsigned int relsec,
+> +		       struct module *me)
+> +{
 
-Please note a didn't contest your every comment. Actually, I have
-contested only those... which I contested, by definition. I have
-(perhaps too silently) accepted the rest.
+Nit: Please use struct module *mod, it is much more common in other places.
 
-> Documentation/driver-api/media/maintainer-entry-profile.rst
->
-> and has there suggested have the patch go through
-> ./scripts/checkpatch.pl --strict --max-line-length=3D80
+Other than that, this looks fine to me.
 
-You suggest I'm to fix this (.rst) file first? I think I can at least
-try.
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
->> I'd love to get rid of the be(), though. What do you propose instead?
->
-> Mode based sensor drivers usually rely on long register tables, whose
-> writing is an expensive operation to be done at streamon time. Power
-> up is usually done at devnode open time but you relay on the legacy
-> s_power() here,
-
-It's been suggested I get rid of it, and I'm going to do exactly this.
-
-> so it's in control of the receiver driver which
-> depending on the implemenation might call it at open() time or stream
-> on. Sorry, I didn't notice that, has you register a devnode I assumed
-> you had an open() function, which you don't.
-
-Should I have one? Why? Are other drivers expected to have an open()?
-Shouldn't I register a devnode?
-
-> The efficiency argument holds as long as we are in an hot path and I
-> understand writing 216 registers in pairs has an overhead which to
-> me, at open devnode open time is marginal, but if done at streamon time
-> should be avoided.
-
-It *may*be* marginal in some cases, but it you have a single I^2 bus for
-a bunch of devices, some of them e.g. MEMS, it may be as well critical.
-
->> Just tested it and it works for me in 1920x1080p30 without any changes.
->> Would it be possible it's the gain/exposure settings? If not, what exact
->> clock frequency (for the chip) do you use?
->
-> 24Mhz
-
-I will try to use that.
-What SoC (or MIPI receiver) are you using?
-
-> The difference is that the 0x3xxx ones are frame synchronized and
-> apply to 'bad frames' too.
-
-Is it stated in the docs?
-
->> I don't think so. I think, in proprietary development, nobody cares
->> about what does the chip send while not streaming.
->>
->
-> afaict only imx6 has this check enforced (but I might be wrong)
-
-Possibly only in the official tree (not the FSL/NXP).
-
->> How would you do that?
->> If you disable streaming, LP-11 is gone.
->> You need STREAMING to actually "stream" LP-11.
->
-> Even for test mode ? So for you streamoff is:
-> - Enable test mode (programmed to be LP-11)
-> - Start stream
-> ?
-
-That's correct. LP-11 here *is* a test mode.
-
-> Anyway, should the AR0521_REG_RESET_RESTART bit be dropped ?
-
-Not sure. Why do you think so?
-
-> I don't have a way to test LP-11 state,
-
-On i.MX6 you can read a MIPI RX status register. IIRC the results may be
-a bit unclear, though - using an oscilloscope removes any doubt.
-
->> But it doesn't say EBUSY MUST BE returned when the sensor is streaming,
->> only that it MAY BE returned. Looking at the code, I can see nothing
->> forcing the EBUSY (subdev_do_ioctl(VIDIOC_SUBDEV_S_FMT) ->
->
-> There's nothing in the core that has the notion of 'active streaming'
-
-Come on. It appears Linux (from top to the bottom) will accept set_fmt
-while streaming. With certain (most?) drivers only, that's it. Not that
-I actually tested it, but the v4l2 core code suggests it.
-So I'm either to return -EBUSY, or - as others, probably most drivers -
-update the registers. I can't just drop it on the floor, and let the
-driver apply it on the next s_stream(1)... can I?
-
-> I hardly see a case where changing format on the sensor through an
-> operation on the subdev while streaming, is a good idea.
-
-I'm not in control of this.
-
-> Also, your s_fmt() and s_frame_interval() call write_mode() which
-> stops the streaming and it doesn't get restarted. I think that's
-> wrong and it's an undesired side effect.
-
-That would be wrong indeed, but I can't see it in the code.
-write_mode() stop streaming only momentarily, I can't avoid this.
-s_frame_interval() returns -EBUSY if streaming (which I guess I should
-remove). If not for the return, it wouldn't stop streaming either.
-
-I will do some experiments, though.
-
-> (Also had a chat with Hans about this, the takeaway is that it's a
-> really bad idea and you need very strong reasons to allow that. It
-> could be considered for extreme cases like changing the color spaces of
-> reducing the image size as the allocated buffers are big enough but
-> again, you need very strong reasons to do so)
-
-Ah, buffers are a different story. You can't, for example, request
-buffers which streaming etc. This is a completely different territory.
-
-Now... I don't have buffers :-)
-
-It's a MIPI sensor, the output is a bunch of LVDS lines.
-Certain devices (like THC63LVD104C, an LVDS -> parallel receiver) simply
-always stream (well, not in powerdown and not without incoming clock).
-They don't even notice that some format has maybe changed.
-A MIPI sensor is a bit smarter than that, but buffers - it's the
-receiver's problem.
---=20
-Krzysztof "Chris" Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+  Luis
