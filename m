@@ -2,108 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E540F42B988
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABD342B8F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238662AbhJMHvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:51:44 -0400
-Received: from twhmllg3.macronix.com ([122.147.135.201]:59881 "EHLO
-        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238634AbhJMHvn (ORCPT
+        id S238364AbhJMH0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233938AbhJMHZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:51:43 -0400
-Received: from TWHMLLG3.macronix.com (localhost [127.0.0.2] (may be forged))
-        by TWHMLLG3.macronix.com with ESMTP id 19D7NsIO019283
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:23:54 +0800 (GMT-8)
-        (envelope-from zhengxunli@mxic.com.tw)
-Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
-        by TWHMLLG3.macronix.com with ESMTP id 19D7NkaN019186;
-        Wed, 13 Oct 2021 15:23:46 +0800 (GMT-8)
-        (envelope-from zhengxunli@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
-        by Forcepoint Email with ESMTP id 4B960207F6AF699EF3AD;
-        Wed, 13 Oct 2021 15:23:47 +0800 (CST)
-In-Reply-To: <OF86339F0C.88E145E3-ON4825876D.002567AA-4825876D.002569D9@LocalDomain>
-References: <20211008162228.1753083-1-miquel.raynal@bootlin.com> <20211008162228.1753083-10-miquel.raynal@bootlin.com> <OF86339F0C.88E145E3-ON4825876D.002567AA-4825876D.002569D9@LocalDomain>
-To:     "Miquel Raynal" <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        <linux-mtd@lists.infradead.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Mark Brown" <broonie@kernel.org>,
-        "Xiangsheng Hou" <Xiangsheng.Hou@mediatek.com>,
-        "Boris Brezillon" <bbrezillon@kernel.org>,
-        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jaimeliao@mxic.com.tw,
-        juliensu@mxic.com.tw,
-        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
-        "Miquel Raynal" <miquel.raynal@bootlin.com>
-Subject: =?Big5?B?UmU6IKZeq0g6IFtSRkMgUEFUQ0ggMDkvMTBdIHNwaTogbXhpYzogQWRk?=
- =?Big5?B?IHN1cHBvcnQgZm9yIGRpcmVjdCBtYXBwaW5n?=
+        Wed, 13 Oct 2021 03:25:57 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A745EC061714
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:23:54 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id 187so1644464pfc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:23:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a+STDQupphuK/7Y3WCz3HFR7aiY2eZV5V/OCb+gsLGo=;
+        b=I6w+qFwPBk9quxtMfcJjbCISh5NslqMD7RdikCpk68hT3HijzJ6U/NXdwAKbOum8vu
+         vS3MxhZN9eoIgGDE3MBgTwkD9wwygGF3hFe/u5FZ9aYt5bDUp5/SKHaBIb9JSSrj/Eo+
+         hIxM+4qao33lcbsDFkeMBUVK1pi5/3teC4vZw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a+STDQupphuK/7Y3WCz3HFR7aiY2eZV5V/OCb+gsLGo=;
+        b=dUkefUuc+vTEws18Y+tJadiqP4A5ov5JUioDmvatD5fqvOPoqh9tJG96OJmKRoGqLR
+         V7TFz6YlSATnG3Zbv9c12mDE5V/LH5s//AlPQikPISd2luiXJClcwLkLlnMMBlKr6I/s
+         OlJvyhPePr78lQhFMi4G8lASw9hfj0ag8VxNVJ3NWHEDpUimVibPX+CZFKb2pXIOnHWm
+         ew7i0yofAoR5J84c5xKPYj7oiT+lddnBORCIneforcrG9w3HkfDiDWT5fciSZZFYu4pk
+         liP+R1v15lAfa0akMmfBbgPgAkNhxSym0bBFnoAFdoM46We/UaQwEmV6vi2W9tpGMgZK
+         uQDA==
+X-Gm-Message-State: AOAM532LBcaMS+wUxphYLUSHE9SCa4PdBs2INCXcO9XFZR7zNd4GCw/G
+        u024pMG+ZqMDaOoF7sNmf4vh+Q==
+X-Google-Smtp-Source: ABdhPJwUdjDXsZD6PJOkAL4X8A7lF2TLTDyO8KSYEbRyWhK7gdzTiI5rlXDwv4Yr1q/D3xOPKfxUmw==
+X-Received: by 2002:a63:6c89:: with SMTP id h131mr16767067pgc.47.1634109834205;
+        Wed, 13 Oct 2021 00:23:54 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t125sm3280014pfc.119.2021.10.13.00.23.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 00:23:53 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 00:23:53 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 09/10] lkdtm: Fix lkdtm_EXEC_RODATA()
+Message-ID: <202110130018.7B2129375@keescook>
+References: <cover.1633964380.git.christophe.leroy@csgroup.eu>
+ <7da92e59e148bd23564d63bdd8bcfaba0ba6d1f1.1633964380.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-KeepSent: 2120B7BA:FA9EA9F2-4825876D:002705BD;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
-Message-ID: <OF2120B7BA.FA9EA9F2-ON4825876D.002705BD-4825876D.0028A142@mxic.com.tw>
-From:   zhengxunli@mxic.com.tw
-Date:   Wed, 13 Oct 2021 15:23:47 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2021/10/13 PM 03:23:47,
-        Serialize complete at 2021/10/13 PM 03:23:47
-Content-Type: text/plain; charset="US-ASCII"
-X-MAIL: TWHMLLG3.macronix.com 19D7NkaN019186
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7da92e59e148bd23564d63bdd8bcfaba0ba6d1f1.1633964380.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> Implement the ->dirmap_create() and ->dirmap_read/write() hooks to
-> provide a fast path for read and write accesses.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+On Mon, Oct 11, 2021 at 05:25:36PM +0200, Christophe Leroy wrote:
+> Behind a location, lkdtm_EXEC_RODATA() executes a real function,
+> not a copy of do_nothing().
+>
+> So do it directly instead of using execute_location().
+>
+> And fix displayed addresses by dereferencing the function descriptors.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 > ---
->  drivers/spi/spi-mxic.c | 171 ++++++++++++++++++++++++++++++++++-------
->  1 file changed, 144 insertions(+), 27 deletions(-)
+>  drivers/misc/lkdtm/perms.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
+> index 442d60ed25ef..da16564e1ecd 100644
+> --- a/drivers/misc/lkdtm/perms.c
+> +++ b/drivers/misc/lkdtm/perms.c
+> @@ -153,7 +153,14 @@ void lkdtm_EXEC_VMALLOC(void)
+>
+>  void lkdtm_EXEC_RODATA(void)
+>  {
+> -	execute_location(lkdtm_rodata_do_nothing, CODE_AS_IS);
+> +	pr_info("attempting ok execution at %px\n",
+> +		dereference_symbol_descriptor(do_nothing));
+> +	do_nothing();
+> +
+> +	pr_info("attempting bad execution at %px\n",
+> +		dereference_symbol_descriptor(lkdtm_rodata_do_nothing));
+> +	lkdtm_rodata_do_nothing();
+> +	pr_err("FAIL: func returned\n");
+>  }
 
-Hi Miquel,
+(In re-reading this more carefully, I see now why kallsyms.h is used
+earlier: _function_ vs _symbol_ descriptor.)
 
-I verified it by reading, writing, and erasing through normal and quad 
-modes
-on the Xilinx Zynq PicoZed FPGA board. Except for the need to update the 
-SPI
-MXIC driver version, it looks good.
+In the next patch:
 
-Tested-by: Zhengxun Li <zhengxunli@mxic.com.tw>
-Reviewed-by: Zhengxun Li <zhengxunli@mxic.com.tw>
+static noinline void execute_location(void *dst, bool write)
+{
+...
+       func = setup_function_descriptor(&fdesc, dst);
+       if (IS_ERR(func))
+               return;
 
+       pr_info("attempting bad execution at %px\n", dst);
+       func();
+       pr_err("FAIL: func returned\n");
+}
 
+What are the conditions for which dereference_symbol_descriptor works
+but dereference _function_descriptor doesn't?
 
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+--
+Kees Cook
