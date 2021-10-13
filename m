@@ -2,136 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FC342C0B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78E742C0B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234252AbhJMM6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234186AbhJMM6k (ORCPT
+        id S234294AbhJMM6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:58:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22503 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234452AbhJMM6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:58:40 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3380AC061570;
-        Wed, 13 Oct 2021 05:56:37 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 12:56:33 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634129794;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Wed, 13 Oct 2021 08:58:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634129807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=yrIeds/TVlfcjqsL7Y2yNbwNao3EblKRHIG8Z7Kz18I=;
-        b=P69m9Lvio5hD2hin7wd8KOIH+4VVEI7Z0xnjYfJGebuB5YyOgGeHGP9+JMiDMshgrwa5Ho
-        CWLSTUGUsltUuyp/vrXcA4lGbo2omMdE2dzudCP9bssH6L+L9ctXVHmzTlx4RiEJVLyi92
-        kcR7xcQVHJ3sxvNfQghuF4QSF2tr10UtJg6OwmbztPS93P5lBwCsr6QHRJsMeY9pxezaFG
-        26u0xqpxUfil+cmsdVJcFj3fSd8Jk0FfmpIl3wJrGUT27ai4O6qfq+JQNrwoTg3b5r95TN
-        zRxcXvdZnDXR+OaARmLaa2aQmF+ptHIMgcYNMnNUJ5B7/wmraT9lVf34f9MNrA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634129794;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yrIeds/TVlfcjqsL7Y2yNbwNao3EblKRHIG8Z7Kz18I=;
-        b=QoVFLucd/jWjmzuTwgMzhwlZxEmJ5oN0c994NXxokZP6IqZjAbwQqAooarVSBqKzD4uJsW
-        Dj96ZEzI70dYmbBw==
-From:   "tip-bot2 for Paolo Bonzini" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sgx] x86/sgx/virt: Extract sgx_vepc_remove_page()
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Borislav Petkov <bp@suse.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211012105708.2070480-2-pbonzini@redhat.com>
-References: <20211012105708.2070480-2-pbonzini@redhat.com>
+        bh=CkJpH3DgOJL3jwDbLBu0PEHYw2VVuRmqEfiPi5X44AA=;
+        b=DVqa1jFVPrWhrwbHIGq92pN/h7wfplrE5zjj5RyNS8BenPOYDgyYKo4N4PoyC9vQgAm48A
+        XRRWAifkNxh0VgbQo+6A8/lLkVzQ6VyBWjeIrA+lpHi19QYfkW9/3D7gMnnAsc8402uhOs
+        22wD40qvZfgaC085b0+8+AC7Lfa6/Pw=
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
+ [209.85.166.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-207-Df_uBI5ePjWQTCX74WeCkg-1; Wed, 13 Oct 2021 08:56:46 -0400
+X-MC-Unique: Df_uBI5ePjWQTCX74WeCkg-1
+Received: by mail-il1-f197.google.com with SMTP id s8-20020a056e02216800b002593ad87094so1506416ilv.15
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 05:56:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CkJpH3DgOJL3jwDbLBu0PEHYw2VVuRmqEfiPi5X44AA=;
+        b=KViwyzvfen7JaMpIYmyfgmT74lJ7Htarrd16TjMoylDrl2UHiFMmo8X7RQrxIF/16U
+         0Q5DSbX9fBzP05f6wqtDiG90pHY5w/JPPKjIjXhPbE3zCaP9exziC8o3DMa7Cfc2ekCY
+         8AP3BI4OEa4qpptFbJlUmkkGHkS6ZgbUd7lH5yCYuW/vllYymRYBAO5XY4yJwH6wzHeX
+         mIcmrSOOzmG/kmiGLi0SXzdHB9N5HghV0Hnra+T8CW07CtrwmOcoyET8THowJ0iwGerA
+         bCvKlDK/Zg7zATEILjA65/mM2KUyvuKsUrE5jSVlZFDWASVA/d1z6QnwoKohTctDSyVp
+         YX9Q==
+X-Gm-Message-State: AOAM531o3bv5O6qBBouCUJCE1FE6MBVjAYE1LzAueJAq6C49V1ML+QR6
+        /k90fVd8H7kiRHHEzxbYBWXxiQholVTEvdDd9O1XWW+/cekmbncKCNi91cZLFlZU6Rv0mpQ8ciF
+        T6FDcIu7bMJGoYURrrYE1Aiao
+X-Received: by 2002:a05:6e02:1909:: with SMTP id w9mr30332824ilu.34.1634129805435;
+        Wed, 13 Oct 2021 05:56:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwamTB8fvGG9rXJbVv2Ztg+M9X2Z1B0WdlXpPI7aycJycLAGn4sy/delupn/k2w5vVY/HbAAw==
+X-Received: by 2002:a05:6e02:1909:: with SMTP id w9mr30332809ilu.34.1634129805239;
+        Wed, 13 Oct 2021 05:56:45 -0700 (PDT)
+Received: from halaneylaptop (068-184-200-203.res.spectrum.com. [68.184.200.203])
+        by smtp.gmail.com with ESMTPSA id z5sm6760050ile.42.2021.10.13.05.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 05:56:40 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 07:56:38 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, akpm@linux-foundation.org,
+        bp@suse.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] init: Make unknown command line param message clearer
+Message-ID: <20211013125638.4nc4bnbzbeixfrii@halaneylaptop>
+References: <20211012213523.39801-1-ahalaney@redhat.com>
+ <20211012200106.1afdbb0b@gandalf.local.home>
+ <87853d4f-d6f8-1d58-1a07-c8232dae87fd@infradead.org>
 MIME-Version: 1.0
-Message-ID: <163412979365.25758.7879693193208918421.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87853d4f-d6f8-1d58-1a07-c8232dae87fd@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/sgx branch of tip:
+On Tue, Oct 12, 2021 at 05:18:32PM -0700, Randy Dunlap wrote:
+> On 10/12/21 5:01 PM, Steven Rostedt wrote:
+> > On Tue, 12 Oct 2021 16:35:23 -0500
+> > Andrew Halaney <ahalaney@redhat.com> wrote:
+> > 
+> > > --- a/init/main.c
+> > > +++ b/init/main.c
+> > > @@ -925,6 +925,10 @@ static void __init print_unknown_bootoptions(void)
+> > >   	for (p = &envp_init[2]; *p; p++)
+> > >   		end += sprintf(end, " %s", *p);
+> > > +	pr_notice("The kernel command line has unknown parameters. They are either\n");
+> > > +	pr_notice("misspelled, not valid for the current kernel configuration,\n");
+> > > +	pr_notice("or are meant for init but are not after the '--' delineator. They will\n");
+> > > +	pr_notice("be passed to init along with those after '--' on the command line.\n");
+> > >   	pr_notice("Unknown command line parameters:%s\n", unknown_options);
+> > >   	memblock_free(unknown_options, len);
+> > 
+> > What about just changing it to simply say:
+> > 
+> > 	pr_notice("Unknown kernel command line parameters "%s", will be	passed to user space.\n",
+> > 		  unknown_options);
+> > 
+> 
+> Yes, that's much more palatable.
+> 
+> thanks.
+> -- 
+> ~Randy
+> 
 
-Commit-ID:     33633b20e0da301f9009cc9aa00282acbc282a1f
-Gitweb:        https://git.kernel.org/tip/33633b20e0da301f9009cc9aa00282acbc282a1f
-Author:        Paolo Bonzini <pbonzini@redhat.com>
-AuthorDate:    Tue, 12 Oct 2021 06:57:07 -04:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 13 Oct 2021 11:57:44 +02:00
+Heh, that's basically what the users suggested too but I wasn't the
+biggest fan since I didn't think it highlighted the points I tried to
+make. I guess I'm just too verbose :P
 
-x86/sgx/virt: Extract sgx_vepc_remove_page()
+I'll spin a v2 with that considering everyone likes that form more.
 
-For bare-metal SGX on real hardware, the hardware provides guaranteed
-SGX state at reboot.  For instance, all pages start out uninitialized.
-The vepc driver provides a similar guarantee today for freshly-opened
-vepc instances, but guests such as Windows expect all pages to be in
-uninitialized state on startup, including after every guest reboot.
+Thanks,
+Andrew
 
-One way to do this is to simply close and reopen the /dev/sgx_vepc file
-descriptor and re-mmap the virtual EPC.  However, this is problematic
-because it prevents sandboxing the userspace (for example forbidding
-open() after the guest starts; this is doable with heavy use of SCM_RIGHTS
-file descriptor passing).
-
-In order to implement this, an ioctl will be needed that performs
-EREMOVE on all pages mapped by a /dev/sgx_vepc file descriptor: other
-possibilities, such as closing and reopening the device, are racy.
-
-Start the implementation by creating a separate function with just
-the __eremove() wrapper.
-
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Link: https://lkml.kernel.org/r/20211012105708.2070480-2-pbonzini@redhat.com
----
- arch/x86/kernel/cpu/sgx/virt.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-index 64511c4..59cdf3f 100644
---- a/arch/x86/kernel/cpu/sgx/virt.c
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -111,10 +111,8 @@ static int sgx_vepc_mmap(struct file *file, struct vm_area_struct *vma)
- 	return 0;
- }
- 
--static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
-+static int sgx_vepc_remove_page(struct sgx_epc_page *epc_page)
- {
--	int ret;
--
- 	/*
- 	 * Take a previously guest-owned EPC page and return it to the
- 	 * general EPC page pool.
-@@ -124,7 +122,12 @@ static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
- 	 * case that a guest properly EREMOVE'd this page, a superfluous
- 	 * EREMOVE is harmless.
- 	 */
--	ret = __eremove(sgx_get_epc_virt_addr(epc_page));
-+	return __eremove(sgx_get_epc_virt_addr(epc_page));
-+}
-+
-+static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
-+{
-+	int ret = sgx_vepc_remove_page(epc_page);
- 	if (ret) {
- 		/*
- 		 * Only SGX_CHILD_PRESENT is expected, which is because of
-@@ -144,7 +147,6 @@ static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
- 	}
- 
- 	sgx_free_epc_page(epc_page);
--
- 	return 0;
- }
- 
