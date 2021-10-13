@@ -2,107 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AFB42C493
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8985942C499
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbhJMPOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 11:14:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33468 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232118AbhJMPO3 (ORCPT
+        id S232784AbhJMPPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 11:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229903AbhJMPPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:14:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634137945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jevHWv3I+jeDgbOR89zqbg54Wz1Hnd03eixogAhyAP0=;
-        b=RUNB3fxMmDUd8jwcvvzgGtgsdN2uHG+dM5vE4RmivGKe/wq1s+MCjqmGW1qLCTR39qSlCS
-        PbA4QRFVMOEtcOvXqTUtibeJz9Q6NxJ/K1uYupoX8vDaPWvSTuSSqE1tMNJN87aUE8Dzgo
-        yI1H0p9cROTD2+hE6cBz8Dd5JEEJuXk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-bCW9-sYDOZOm3wCelf4nOg-1; Wed, 13 Oct 2021 11:12:24 -0400
-X-MC-Unique: bCW9-sYDOZOm3wCelf4nOg-1
-Received: by mail-ed1-f69.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so2516277edy.14
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:12:24 -0700 (PDT)
+        Wed, 13 Oct 2021 11:15:05 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D241EC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:13:01 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id z11so12772075lfj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 08:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KeBf3L7IIF8Rv/Bp70om/1tZpd3FOupbjhm8llgp0W8=;
+        b=upCptVhN8O7PL7K/2Xmyntm8koWnqGyv185dyC0zDf2wLGIeqwnkvsk7yMCUfO0Rwm
+         lM6c+2SZ9LJBJojVFJSPXgfhPn92tnIXEX6iePeZJ8ERM3AWA5QLV0FMSXxtYiKxUwbU
+         c+r1OeF3bw05W6ouhHvp1ezmlmEwMIxH4b5ZtpadYQVs0QhBrdwHhb2KddOyC+VXP7gU
+         gP78rYq5pG7XPc7dnfMNpD5c8Ln+O2E91/A/bsu9Hoj9PbrHElK2rCxQWncYnlzRGTgr
+         BxKzio5Zmeo2SBAUBEwlyAqgvE5V7SA1GJ7HR2KHLuzdeuI9uRqVYtR7ABBfcL+B5XTt
+         FCyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=jevHWv3I+jeDgbOR89zqbg54Wz1Hnd03eixogAhyAP0=;
-        b=oumsLtDF6q6OoxFCsUQ+0b3CLCoXoczoNx3YUksz4t/Od/8DT9sSxMezWTYvlV+Bfg
-         ji9kxM/GYeR2gQpUvOeg+T5dlNYG/mSYbqgggxsQSNVj+ymWGMbtJKak6XCCWRlJ0owR
-         +ZzlkYRpypCJUkCAC4Pzw3YBCEmiNeuB6Cj8NNZXvcnbs/dLYftn2V4VQvOLsD4fkVkK
-         TqN99go5CRNiiP1OfCK2CXBeDCaY1/rQM1QHTAI9wd2BBnAI173tGk0mcPHTvdWsNyti
-         sG3mWkayz2O+injndsfoiPW7RU3QaL47iTvUA9n2mGBx3X/1/5xsh4XqiUCvGa/0Wk3O
-         XMbw==
-X-Gm-Message-State: AOAM531LG4YevacOQRH5AzEMsjDQxCzwHRTo8EOxS8iAHh2uGQzmWMP1
-        pdBAuqZMHde2DZyNkCgd33rcK9n73hHUoHR2GIFn9K/hMJ1llWSwQa6x3/Z/Qy08qi5/eL+K9nN
-        ZRRJXSATMCWR1tbx6Di3746Bd
-X-Received: by 2002:a17:907:1dd2:: with SMTP id og18mr41272ejc.267.1634137943374;
-        Wed, 13 Oct 2021 08:12:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwae9xhG7EGdZA2V4vnuNuXRMDzZv0Q1hHuqm+C+/4peepodprFKI0tHKPW8yWjmmtYrS29Qw==
-X-Received: by 2002:a17:907:1dd2:: with SMTP id og18mr41244ejc.267.1634137943141;
-        Wed, 13 Oct 2021 08:12:23 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id y4sm6907507ejr.101.2021.10.13.08.12.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 08:12:22 -0700 (PDT)
-Message-ID: <9adb43fb-182f-dffb-1fde-ae7e9610a344@redhat.com>
-Date:   Wed, 13 Oct 2021 17:12:21 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KeBf3L7IIF8Rv/Bp70om/1tZpd3FOupbjhm8llgp0W8=;
+        b=FeSPjqik7w9hvu1dpcl5wypAuVWjDjPfBhv9azTQ0sCDF97ksV37q+BNLEK9WKEGZ6
+         S0hXnMOfq6DaXtniJceBEx8AY5EeTgPJ486Rh8ecv2+HYRmR/y9HptM5itqjxPSHLk0W
+         ulJDoFKubbqYB0m8k03dLcMYGYtS0ah6KyV0zoGLNmGZJs1zv07mYb2xAf6QikqGalYx
+         lwjlyjmaD3sBmYISU5+qE4wJ9OoF5pB0J2cT9gwrvCOP3sM7EdTCoSBp0bmktuBAYCM2
+         ZYS7eVzLfT6c0xuDc5h51YSzLSezIemCZZbK8S2VMnMOqk5wMF+z/jY5G0darw9pdDjA
+         Zq8Q==
+X-Gm-Message-State: AOAM530KmviiyHJ9egw4zuXUlenw0j5MhszhSE1gVzkDj35pPIk1MVvC
+        neYmDQrHsP80m8AteU+MrPJbubpX5p/pQnqwBowQFQ==
+X-Google-Smtp-Source: ABdhPJxsi6yl4d+fJISK8+JZ/UaD4XqCzsHCSENtim47MqwOVR+AZEyZ64Jm3UrawMFcA93DGim4kE6c9FW1FJ1nhUM=
+X-Received: by 2002:a05:6512:1303:: with SMTP id x3mr40718274lfu.291.1634137971739;
+ Wed, 13 Oct 2021 08:12:51 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [patch 14/31] x86/fpu: Replace KVMs homebrewn FPU copy from user
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        kvm@vger.kernel.org
-References: <20211011215813.558681373@linutronix.de>
- <20211011223611.129308001@linutronix.de> <YWW/PEQyQAwS9/qv@zn.tnic>
- <YWbz0ayrpoxbBo5U@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YWbz0ayrpoxbBo5U@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211012123557.3547280-1-alvin@pqrs.dk> <20211012123557.3547280-6-alvin@pqrs.dk>
+In-Reply-To: <20211012123557.3547280-6-alvin@pqrs.dk>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 13 Oct 2021 17:12:39 +0200
+Message-ID: <CACRpkdYwTUopZ_6khRpkAPFg6qiRTOgyKe=URzVRrNagK2HZMw@mail.gmail.com>
+Subject: Re: [PATCH net-next 5/6] net: dsa: realtek-smi: add rtl8365mb
+ subdriver for RTL8365MB-VC
+To:     =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Michael Rasmussen <mir@bang-olufsen.dk>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/21 16:57, Sean Christopherson wrote:
->>> +int fpu_copy_kvm_uabi_to_vcpu(struct fpu *fpu, const void *buf, u64 xcr0,
->>> +			      u32 *vpkru)
->> Right, except that there's no @vcpu in the args of that function. I
->> guess you could call it
->>
->> fpu_copy_kvm_uabi_to_buf()
->>
->> and that @buf can be
->>
->> vcpu->arch.guest_fpu
-> But the existing @buf is the userspace pointer, which semantically makes sense
-> because the userspace pointer is the "buffer" and the destination @fpu (and @prku)
-> is vCPU state, not a buffer.
-> 
-> That said, I also struggled with the lack of @vcpu.  What about prepending vcpu_
-> to fpu and to pkru?  E.g.
-> 
->    int fpu_copy_kvm_uabi_to_vcpu(struct fpu *vcpu_fpu, const void *buf, u64 xcr0,
->    				u32 *vcpu_pkru)
-> 
+On Tue, Oct 12, 2021 at 2:37 PM Alvin =C5=A0ipraga <alvin@pqrs.dk> wrote:
 
-It doesn't matter much that the source is somehow related to a vCPU, as 
-long as the FPU is concerned.  If anything I would even drop the "v" 
-from vpkru, but that's really nitpicking.
+> This patch adds a realtek-smi subdriver for the RTL8365MB-VC 4+1 port
+> 10/100/1000M switch controller. The driver has been developed based on a
+> GPL-licensed OS-agnostic Realtek vendor driver known as rtl8367c found
+> in the OpenWrt source tree.
+(...)
+> Co-developed-by: Michael Rasmussen <mir@bang-olufsen.dk>
+> Signed-off-by: Michael Rasmussen <mir@bang-olufsen.dk>
+> Signed-off-by: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
 
-Paolo
+Overall this driver looks very good :)
 
+Some minor nits below:
+
+> +static irqreturn_t rtl8365mb_irq(int irq, void *data)
+> +{
+(...)
+> +       if (!line_changes)
+> +               goto out_none;
+> +
+> +       while (line_changes) {
+> +               int line =3D __ffs(line_changes);
+> +               int child_irq;
+> +
+> +               line_changes &=3D ~BIT(line);
+> +
+> +               child_irq =3D irq_find_mapping(smi->irqdomain, line);
+> +               handle_nested_irq(child_irq);
+> +       }
+
+What about just:
+
+for_each_set_bit(offset, &line_changes, 32) {
+  child_irq =3D irq_find_mapping(smi->irqdomain, line);
+  handle_nested_irq(child_irq);
+}
+
+?
+
+I don't know how many or which bits are valid IRQs, 16 maybe rather
+than 32.
+
+> +static struct irq_chip rtl8365mb_irq_chip =3D {
+> +       .name =3D "rtl8365mb",
+> +       /* The hardware doesn't support masking IRQs on a per-port basis =
+*/
+> +};
+
+I would rathe make this a dynamically allocated struct inside
+struct rtl8365mb, so the irqchip lives with the instance of the
+chip. (Which is nice if there would happen to be two of these
+chips in a system.)
+
+> +static int _rtl8365mb_irq_enable(struct realtek_smi *smi, bool enable)
+
+I'm personally a bit allergic to _rand_underscore_naming, as sometimes
+that means "inner function" and sometimes it means "compiler intrinsic"
+I would just name it rtl8365mb_irq_config_commit()
+
+(no strong opinion)
+
+> +       /* Configure chip interrupt signal polarity */
+> +       irq_trig =3D irqd_get_trigger_type(irq_get_irq_data(irq));
+
+Nice that you preserve this edge trigger config from the machine
+description (DT)!
+
+With this fixed or not (your preference)
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
