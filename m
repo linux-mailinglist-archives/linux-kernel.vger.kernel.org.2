@@ -2,164 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA1042B862
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5AF42B86B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbhJMHH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhJMHH1 (ORCPT
+        id S238210AbhJMHHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:07:38 -0400
+Received: from mail-ua1-f42.google.com ([209.85.222.42]:36507 "EHLO
+        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238254AbhJMHHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:07:27 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA67C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:05:24 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id z11so7430547lfj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:05:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PfnVX7fs5mOAIg5g0IqUeD9+3NCJp4mY90XboBsyTc0=;
-        b=PJn70qZ0of/CLO+ZxZI67bYUqZTq5pvu4J69Nxw34dbToC6iLbo2ubHihqjbU+KWvU
-         jT02ga161bl+/F27IiyaK0qLauaVLgIhgN5hOmgGgxjZ+XoUH49428zf2pNFYPHFfaCR
-         bplSjSXtd3xozXnXz7wtrKc5ZFxoqxM+9OoRo=
+        Wed, 13 Oct 2021 03:07:35 -0400
+Received: by mail-ua1-f42.google.com with SMTP id g13so2580086uaj.3;
+        Wed, 13 Oct 2021 00:05:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PfnVX7fs5mOAIg5g0IqUeD9+3NCJp4mY90XboBsyTc0=;
-        b=YKEQfEwuk4vAz3CCg9jSpEoFFVx9p16St9lBhSqy6LJhd3JEAMCWyxm7qVpp9NIkmo
-         HuQ7gv+tDEaSH1sDrhzunV+oS+EPmk4PZd5xT0Wx1jDecj7HQNezeBeUjLMWY4NCc+OJ
-         x0OHV2zSqFV/4N4aIKuQiFTagRtU0jaVyaykO30q6nE+WnzsIeGPk4Kyu1FM0XHfge6v
-         DC0kx+JoE6SRTMHCD3xVRL2165/u8pJ8lJdS3PHoYLcyNnvVlj9KezcsYEkDugajxQqc
-         RC7V16KrwLfGunKWlDn17qg0jXAl1lCsJQUgOCKAB9LED1jKdYpWl9U2yiYxMQisjWGb
-         ezeg==
-X-Gm-Message-State: AOAM532XNxjdBErDPOfu2H2TW5CL9xRtcF54ueLgIOwx/P/HNmX+l2iL
-        JynZyqttmxTSid1dr6i4E24jaA5FkqROT19WHTjozw==
-X-Google-Smtp-Source: ABdhPJxYjLoBprzSyIXGzP7xjmn68PtGM7ruxdJkHX33kuYTv8KEpFlP6xZXAhM7paKE8nSoUpMNEuk3fyQqHBpe0pM=
-X-Received: by 2002:ac2:4e07:: with SMTP id e7mr1074589lfr.308.1634108722948;
- Wed, 13 Oct 2021 00:05:22 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=ODFUHeafSyfJJr/dZjG81Kg2CJUeDy3Vtm7EDZAJVcs=;
+        b=og7nzTLHxkgANB4EI3vWMndMUoWnJePNBajfRt4/EcP2+qxvJZb7xsvMRvvgOwTbRn
+         ndcNHMdBmrsbdtIMwUc6cs9z8iqHhdHvhcuz8rV4rh6YUJvmNnrFHVeVo+CTXYeTe020
+         XSvEgFc02ZVJY8w2I4aFJg5ejL9WyYvZIhFj865qOq2Smh7Ywhpybnuir2TAEuAA/9rm
+         x005ufa1S8p8pwt3JeBu6tFiwzPOzNczqmMQGbegIzIncwpfkJbtTyrIxFIHb5lM2PyE
+         k9MlGZLZYYLUcUP+CylP5SYJeCRhv3zG1aUrVDcxbWdG9uVsG4YCHjjIw+uM7erlbzxh
+         gf+A==
+X-Gm-Message-State: AOAM531bSr84X3Cqs4njlSnzGyNZjZoXYcyqNA4kmVNRpidr5vMcU22r
+        h1+kqz+8KQvD0urdGgXVdlU284+3h+YKlH12CMA=
+X-Google-Smtp-Source: ABdhPJygs5LYNeOJqEM1k5UdNR0eKKutf4oKyYkCZ3Sv+78TmKiKttmATy8/qE8zE082U1qV2JXAhNEbNBitCJBQkF8=
+X-Received: by 2002:a05:6102:290c:: with SMTP id cz12mr15636134vsb.35.1634108731922;
+ Wed, 13 Oct 2021 00:05:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211008100423.739462-1-wenst@chromium.org> <f108f23dadc846222c63c88af826dae9c5082d83.camel@ndufresne.ca>
-In-Reply-To: <f108f23dadc846222c63c88af826dae9c5082d83.camel@ndufresne.ca>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Wed, 13 Oct 2021 15:05:11 +0800
-Message-ID: <CAGXv+5FnFq1mN79sqUp-o6pHirYvp55gurnsUCgqYvEAX2=4oQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] media: rkvdec: Align decoder behavior with Hantro and Cedrus
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
+References: <20211012134027.684712-1-kernel@esmil.dk> <20211012134027.684712-3-kernel@esmil.dk>
+In-Reply-To: <20211012134027.684712-3-kernel@esmil.dk>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 Oct 2021 09:05:20 +0200
+Message-ID: <CAMuHMdW1YD2hJ+eSwHe8WLK1YJZ9pHYrESX3-M70au_3HCKfdA@mail.gmail.com>
+Subject: Re: [PATCH v1 02/16] dt-bindings: timer: Add StarFive JH7100 clint
+To:     Emil Renner Berthing <kernel@esmil.dk>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, Oct 8, 2021 at 11:42 PM Nicolas Dufresne <nicolas@ndufresne.ca> wro=
-te:
+On Tue, Oct 12, 2021 at 3:41 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> Add compatible string for the StarFive JH7100 clint.
 >
-> Hi Chen-Yu,
->
-> thanks for looking into this.
->
-> Le vendredi 08 octobre 2021 =C3=A0 18:04 +0800, Chen-Yu Tsai a =C3=A9crit=
- :
-> > Hi everyone,
-> >
-> > While working on the rkvdec H.264 decoder for ChromeOS, I noticed some
-> > behavioral differences compared to Hantro and Cedrus:
-> >
-> > 1. The driver always overrides the sizeimage setting given by userspace
-> >    for the output format. This results in insufficient buffer space whe=
-n
-> >    running the ChromeOS video_decode_accelerator_tests test program,
-> >    likely due to a small initial resolution followed by dynamic
-> >    resolution change.
-> >
-> > 2. Doesn't support dynamic resolution change.
-> >
-> > This small series fixes both and aligns the behavior with the other two
-> > stateless decoder drivers. This was tested on the downstream ChromeOS
-> > 5.10 kernel with ChromeOS. Also compiled tested on mainline but I don't
-> > have any other RK3399 devices set up to test video stuff, so testing
-> > would be very much appreciated.
-> >
-> > Also, I'm not sure if user applications are required to check the value
-> > of sizeimage upon S_FMT return. If the value is different or too small,
-> > what can the application do besides fail? AFAICT it can't split the
-> > data of one frame (or slice) between different buffers.
->
-> While most software out there just assumes that driver will do it right a=
-nd
-> crash when it's not the case, application that do map the buffer to CPU m=
-ust
-> read back the fmt structure as the drivers are all fail-safe and will mod=
-ify
-> that structure to a set of valid value s for the context.
+> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
 
-I believe what is happening in Chromium is that the decoder is opened with
-some default settings, including the smallest viable resolution for the
-output side, and the buffers allocated accordingly. When dynamic resolution
-change happens, the decoder does not check if the current buffers are
-sufficiently sized; it just assumes that they are. And when it starts
-pushing data into the buffers, it realizes they are too small and fails.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-The spec also says:
+Gr{oetje,eeting}s,
 
-    Clients are allowed to set the sizeimage field for variable length
-    compressed data flagged with V4L2_FMT_FLAG_COMPRESSED at ioctl
-    VIDIOC_ENUM_FMT, but the driver may ignore it and set the value itself,
-    or it may modify the provided value based on alignment requirements or
-    minimum/maximum size requirements.
+                        Geert
 
-The spec only guarantees that the buffers are of sufficient size for the
-resolution configured at the time they were allocated/requested.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-So I think my first patch is a workaround for a somewhat broken userspace.
-But it seems the other stateless drivers are providing similar behavior,
-as I previously mentioned.
-
-> As for opposite direction (output vs capture) format being changed, this =
-should
-> be documented in the spec, if you find it too unclear or missing for sate=
-less
-> codec (I know it's there for stateful but can't remember, would have to r=
-e-read,
-> for stateless) let us know.
-
-AFAICT the capture side is working OK and to spec.
-
-
-Regards
-ChenYu
-
-> regards,
-> Nicolas
->
-> >
-> > Andrzej, I believe the second patch would conflict with your VP9 series=
-.
-> >
-> >
-> > Regards
-> > ChenYu
-> >
-> > Chen-Yu Tsai (2):
-> >   media: rkvdec: Do not override sizeimage for output format
-> >   media: rkvdec: Support dynamic resolution changes
-> >
-> >  drivers/staging/media/rkvdec/rkvdec-h264.c |  5 +--
-> >  drivers/staging/media/rkvdec/rkvdec.c      | 40 +++++++++++-----------
-> >  2 files changed, 23 insertions(+), 22 deletions(-)
-> >
->
->
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
