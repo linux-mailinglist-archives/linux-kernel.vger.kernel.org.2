@@ -2,61 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34AA42C4C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA4F42C4C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 17:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233662AbhJMP3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 11:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35516 "EHLO
+        id S233387AbhJMP1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 11:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232155AbhJMP3R (ORCPT
+        with ESMTP id S232692AbhJMP1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:29:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBB3C061570;
-        Wed, 13 Oct 2021 08:27:14 -0700 (PDT)
+        Wed, 13 Oct 2021 11:27:46 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F3CC061570;
+        Wed, 13 Oct 2021 08:25:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7E+hPiQQERHmVxALs9OGq5/I4NAGwHktosOAiz3bsWE=; b=frB1GlKz/JIvrtbxv67JeTgiBL
-        UD236qPs1B5cHQRdecow1PHYsMxV6I90Qt812LFmJanJrpvO5yCimfGJjJAEJfbLQE8PuZYfZsFKV
-        H15IQdMcV4ClFdGH9i5SPm0L+6Czy5lYbQL30p2zJF+oSq5N5/BAejVtDsVvPHhPhbLtCMiqtpOG1
-        D6qBRib2jCAwvT1ZGqOt6s5rRfodxoZYqQMVfY/BBkRY31tClXO/5qL3GH5G6ouhIcoAES8m/AzGz
-        8+NM3yggeygJvL8ztepF1XEuqmbXh+4xpzM9dJPcDzs9C0GNaHGCxo7D9HBSIpqU9gwqOKOLIo4LO
-        JRSJXMqw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mag7y-007YNf-Df; Wed, 13 Oct 2021 15:25:24 +0000
-Date:   Wed, 13 Oct 2021 16:25:10 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 2/3] block: don't hide inode from block_device users
-Message-ID: <YWb6VgEjEZFexiV0@infradead.org>
-References: <cover.1634115360.git.asml.silence@gmail.com>
- <2b8c84834a304871d78f91d4ebe153fac2192fd5.1634115360.git.asml.silence@gmail.com>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=wLKFl9hJovma3HR1JQUfzFV4dSW0MXFKvmPEDZSEdrw=; b=ZH2RJkVXauMhi5VttRQ3IPzAlc
+        G5OAV4VS/VFJbAP0AHqJcJaLBXIdN42F3co5T7Si3Lz84xyCh5m0F86d2/iJ4IKQlQUvqPretTmcB
+        /WV6r6iEMjSkq6+Z9GaoOolYxiTaFivy+6Rd3KSnE/Gshi2e/Elh9QDJCTF0HotaHc1btqRgC05Yw
+        4IyKUel7pECtsBgKGvjTzeaVFk8YMOzNJiSv2KzNaVBYZVdHOrbSZroTl7i9HjDWRKkQiulOwb//Z
+        gcLDJl9mCOCoGnBy8KwaW40aqY13RhK0rKhN97hjy1pXQqjn0NDWjsRT0Rn6NwwjG94qj31NlDKKj
+        F1zFWdVw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mag8M-00HLgm-Vm; Wed, 13 Oct 2021 15:25:35 +0000
+Subject: Re: [PATCH v2 3/6] staging: media: wave5: Add the v4l2 layer
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        linux-media@vger.kernel.org
+Cc:     Robert Beckett <bob.beckett@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        laurent.pinchart@ideasonboard.com, hverkuil@xs4all.nl,
+        kernel@collabora.com, dafna3@gmail.com,
+        kiril.bicevski@collabora.com,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        lafley.kim@chipsnmedia.com, scott.woo@chipsnmedia.com,
+        olivier.crete@collabora.com
+References: <20211013105609.21457-1-dafna.hirschfeld@collabora.com>
+ <20211013105609.21457-4-dafna.hirschfeld@collabora.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ad36b166-ed51-5192-c12e-d6c86d7ad083@infradead.org>
+Date:   Wed, 13 Oct 2021 08:25:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b8c84834a304871d78f91d4ebe153fac2192fd5.1634115360.git.asml.silence@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20211013105609.21457-4-dafna.hirschfeld@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 09:57:12AM +0100, Pavel Begunkov wrote:
-> Instead of tricks with struct bdev_inode, just openly place the inode
-> inside struct block_device. First, it allows us to inline I_BDEV, which
-> is simple but non-inline nature of it impacts performance. Also, make it
-> possible to get rid of ->bd_inode pointer and hooping with extra
-> indirection, the amount of which became a noticeable problem for the
-> block layer.
+Hi,
 
-What fast path outside of bdev.c cares about an inlined I_BDEV?
-I have dusted off patches to reduce (and hopefully eventually kill)
-accesses to bd_inode outside of bdev.c, so this goes into the wrong
-direction.
+On 10/13/21 3:56 AM, Dafna Hirschfeld wrote:
+> diff --git a/drivers/staging/media/wave5/Kconfig b/drivers/staging/media/wave5/Kconfig
+> new file mode 100644
+> index 000000000000..efaacf391e01
+> --- /dev/null
+> +++ b/drivers/staging/media/wave5/Kconfig
+> @@ -0,0 +1,12 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +config VIDEO_WAVE_VPU
+> +        tristate "Chips&Media Wave Codec Driver"
+> +        depends on VIDEO_DEV && VIDEO_V4L2 && OF
+> +        select VIDEOBUF2_DMA_CONTIG
+> +        select VIDEOBUF2_VMALLOC
+> +        select V4L2_MEM2MEM_DEV
+> +        help
+> +          Chips&Media stateful encoder and decoder driver.
+> +	  The driver supports HEVC and H264 formats.
+> +          To compile this driver as modules, choose M here: the
+> +          modules will be called wave5.
 
-If needed I'd rather figure out a way to fix any smoking gun without
-this change.
+Please follow coding-style for Kconfig files:
+
+(from Documentation/process/coding-style.rst, section 10):
+
+For all of the Kconfig* configuration files throughout the source tree,
+the indentation is somewhat different.  Lines under a ``config`` definition
+are indented with one tab, while help text is indented an additional two
+spaces.
+
+
+Also, depending on OF is usually not necessary since there are stubs
+for non-CONFIG_OF functions.  That may even allow you to add
+COMPILE_TEST here.
+
+thanks.
+-- 
+~Randy
