@@ -2,104 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BF142C8FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E09942C904
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 20:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhJMSs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 14:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
+        id S238603AbhJMSuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 14:50:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhJMSsP (ORCPT
+        with ESMTP id S229814AbhJMSt6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 14:48:15 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D93C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:46:11 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id o12so3514112qtq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:46:11 -0700 (PDT)
+        Wed, 13 Oct 2021 14:49:58 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E950C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:47:55 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id q13so6548688uaq.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 11:47:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AwHUQJramerjMjPDVke9ewo/gUDLb1OY7VemPgKlrmU=;
-        b=jnm+XSVRz/0T1JK6CURzmHXQjjnk4suJMNDjwgvfwc6yXIrZm+oIp2pgS1s6OslKX+
-         ccDv6vKMXU41wWwTRzM/sswVjfb67zhzp0dwDiCS/RwreHYZoc01pJBjaAE634gVWx/I
-         K7zp8l4Xb5p3viOyEnwzVfD9hnr/doA4xIFLaCmPIbCmwoWJx2XSy4i/BmYKZ6dGZ9PS
-         mAFeNFmw88HXj3GfyBVOMWS4OMb1qPYtcP2S/XYLMt4O27gvtHwpQ4fmcly1aNziSXqn
-         smB1+A8rRi/AuQF1EDOCzXwNmhT+nj2ohHyVtajLmqDYQioBZ+CiV3qi8BtkSIyH81hh
-         kLjA==
+         :cc;
+        bh=BPdx51HLhI11HArGS1VOToC12vt9boCyZfmyE8AUMrY=;
+        b=mKsATYIxxTzZn/e9ngGNBe7FtahJOkf9YcbmoIiL5UCUn9tKU49eK6irgxYYCsvOuP
+         qDHksHiwtIA6gH2mpt7sSSlR36jEIHuOdHSPKPmvGseuC7PT+KfVf66lQzPs+VoBUu2y
+         fnLtaiTvpmzz7Zb35mVCb/5RGZI0M/POEfhwim+/QywZvOdNw5lZvVBaRrRq8bWkkjW5
+         tfJNveWzv7vi5FSOD/edJWxAqPoeOHXDFoWYk0PLvSNi78O3VVYfMBIOGfud2ICog+6x
+         HvNuegoTFGEb3NQGyutduaHc/MPeGeiv5pZbMpgOs/yuA7WR3ufaUFcmyXqhBYCaQlbv
+         6TTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AwHUQJramerjMjPDVke9ewo/gUDLb1OY7VemPgKlrmU=;
-        b=g4fsW1IdwtPUpdtbCNFpV5cMf2oY93h2Gj6EOQD+slanqLzixhn5P0IfD3s7ETgHpM
-         voOOOiMBSCx+MizcUmN3sibiPjVMfIbcRyO7+hZsWpXuPFQXoS6WjUXo2Z+UZzN+K3Cd
-         9WeBMeCCT6y6LBpoUVTi/U7UlPcKmHutGc4WID13OuPP6jWcwq2T4V6wyrqfxbk0OlaI
-         lMQzO5Y/Lj/TgkVCEMz2JIAG9c75bFvh+UTl8y1myG57HP7e9w6FSi5XgAO7ffilCkYi
-         +mJeFmsyJJVoAdFAtfr5+i0lWehq8xWybPAG+MaX55PSUvRrLCUoDLUFd4ezh3prJWrm
-         AUVQ==
-X-Gm-Message-State: AOAM532WgmTvlK3pzHRWFuMStRRe34UXo3/pdXPAcCRS85okbyIc8CgE
-        jBOJDrJTyV1F9UFUaqqCwcOS1XWzw3TiWqPTfGeLuA==
-X-Google-Smtp-Source: ABdhPJwzjBvpDQylCdVfQlBVWUY38CfJDhQVrPERAgvpvDe4rDL1fyerkjDFv7RUKDYTLKVUTnsEbDBxhwStg27GXeo=
-X-Received: by 2002:a05:622a:3c9:: with SMTP id k9mr1194745qtx.170.1634150770608;
- Wed, 13 Oct 2021 11:46:10 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=BPdx51HLhI11HArGS1VOToC12vt9boCyZfmyE8AUMrY=;
+        b=hkSwmNnEUvVesmjlmCDL+9+jSHFLoPmEkeWNHiRLpg5POI31IAps9mAE8XVu9lr0Ke
+         rJ3gvhIyORkibYXVHiRVxVAW4ShoFaKk2dyUIXDOjllY8ioZHu2HGIJXBFqzFTnxh1JX
+         IVa+bEOpqsO4EyczHF1QKtF/xkezKCOwws7qyKN2uHVUdQg6Xtx55D/+mMo4cLZWJesV
+         O8B0mu/T7uslCgcYa0M2jTcKzCd7m6ILp15wASoD4NGX+E6mkQ29CZ8LWOoSWzdjlhVK
+         s3ogB9JzAwLGXnIwXqxA7f4IBion614HZvaOGnTw3rUmBTLRZi1qKqW6nYimjbBu2LLn
+         Umgg==
+X-Gm-Message-State: AOAM533CR+AXAytT8MA1d7ZckZFBb4WkptmYClP/hXLjqVLlAczPz6Bw
+        SIpJ1rVrWA7cqtPtnZzvQ45MejiFgY9Me2aQVFMWbA==
+X-Google-Smtp-Source: ABdhPJyjftAWbjcnFvSUtye4sK5pBI7qz6TSUqJkXVUyAiOX4vkm4U0Mi4LdzkeaMgphkvsgGlM86z7voBl00H4U/Y8=
+X-Received: by 2002:a67:d91b:: with SMTP id t27mr1040145vsj.55.1634150874139;
+ Wed, 13 Oct 2021 11:47:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211011172236.11223-1-mkoutny@suse.com> <CAFpoUr1KrXKdiCp-DVQLnu-c2YS91AszZB6RdZNVLBm9sGjMEw@mail.gmail.com>
- <20211013143900.GB48428@blackbody.suse.cz>
-In-Reply-To: <20211013143900.GB48428@blackbody.suse.cz>
-From:   Odin Ugedal <odin@uged.al>
-Date:   Wed, 13 Oct 2021 19:45:59 +0100
-Message-ID: <CAFpoUr1NCA+L=+FkxJ-iRU-s0ehe__zY7PCwnEsk3BxOdrvCSw@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Use rq->lock when checking cfs_rq list presence
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Odin Ugedal <odin@uged.al>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
+References: <20211012171624.14338-1-semen.protsenko@linaro.org> <677711d4-61d6-1bb8-f638-c4911ef5e1cb@canonical.com>
+In-Reply-To: <677711d4-61d6-1bb8-f638-c4911ef5e1cb@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Wed, 13 Oct 2021 21:47:42 +0300
+Message-ID: <CAPLW+4mX-YN=2BgW1F5HEUS79Y97WKPTX-uwkBF0NVwKfThzjQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] soc: samsung: exynos-chipid: Pass revision reg offsets
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ons. 13. okt. 2021 kl. 15:39 skrev Michal Koutn=C3=BD <mkoutny@suse.com>:
+On Wed, 13 Oct 2021 at 19:04, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 >
-> On Mon, Oct 11, 2021 at 08:12:08PM +0100, Odin Ugedal <odin@uged.al> wrot=
-e:
+> On 12/10/2021 19:16, Sam Protsenko wrote:
+> > Old Exynos SoCs have both Product ID and Revision ID in one single
+> > register, while new SoCs tend to have two separate registers for those
+> > IDs. Implement handling of both cases by passing Revision ID register
+> > offsets in driver data.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >  drivers/soc/samsung/exynos-chipid.c       | 67 +++++++++++++++++++----
+> >  include/linux/soc/samsung/exynos-chipid.h |  6 +-
+> >  2 files changed, 58 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
+> > index 5c1d0f97f766..1264a18aef97 100644
+> > --- a/drivers/soc/samsung/exynos-chipid.c
+> > +++ b/drivers/soc/samsung/exynos-chipid.c
+> > @@ -16,6 +16,7 @@
+> >  #include <linux/errno.h>
+> >  #include <linux/mfd/syscon.h>
+> >  #include <linux/of.h>
+> > +#include <linux/of_device.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/regmap.h>
+> >  #include <linux/slab.h>
+> > @@ -24,6 +25,17 @@
+> >
+> >  #include "exynos-asv.h"
+> >
+> > +struct exynos_chipid_variant {
+> > +     unsigned int rev_reg;           /* revision register offset */
+> > +     unsigned int main_rev_bit;      /* main revision offset */
 >
-> Yes, that's my working hypothesis but Vincent found a loophole in the
-> proposed fix under this assumption.
+> I understand it is offset of a bit within register, so how about:
+>
+> unsigned int main_rev_shift;    /* main revision offset within rev_reg
+> unsigned int sub_rev_shift;     /* sub revision offset within rev_reg */
+>
+> > +     unsigned int sub_rev_bit;       /* sub revision offset */
+> > +};
+> > +
+> > +struct exynos_chipid_info {
+> > +     u32 product_id;
+> > +     u32 revision;
+> > +};
+> > +
+> >  static const struct exynos_soc_id {
+> >       const char *name;
+> >       unsigned int id;
+> > @@ -49,31 +61,55 @@ static const char *product_id_to_soc_id(unsigned int product_id)
+> >       int i;
+> >
+> >       for (i = 0; i < ARRAY_SIZE(soc_ids); i++)
+> > -             if ((product_id & EXYNOS_MASK) == soc_ids[i].id)
+> > +             if (product_id == soc_ids[i].id)
+> >                       return soc_ids[i].name;
+> >       return NULL;
+> >  }
+> >
+> > +static int exynos_chipid_get_chipid_info(struct regmap *regmap,
+> > +             const struct exynos_chipid_variant *data,
+> > +             struct exynos_chipid_info *soc_info)
+> > +{
+> > +     int ret;
+> > +     unsigned int val, main_rev, sub_rev;
+> > +
+> > +     ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &val);
+> > +     if (ret < 0)
+> > +             return ret;
+> > +     soc_info->product_id = val & EXYNOS_MASK;
+> > +
+> > +     ret = regmap_read(regmap, data->rev_reg, &val);
+> > +     if (ret < 0)
+> > +             return ret;
+> > +     main_rev = (val >> data->main_rev_bit) & EXYNOS_REV_PART_LEN;
+> > +     sub_rev = (val >> data->sub_rev_bit) & EXYNOS_REV_PART_LEN;
+> > +     soc_info->revision = (main_rev << EXYNOS_REV_PART_OFF) | sub_rev;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static int exynos_chipid_probe(struct platform_device *pdev)
+> >  {
+> > +     const struct exynos_chipid_variant *drv_data;
+> > +     struct exynos_chipid_info soc_info;
+> >       struct soc_device_attribute *soc_dev_attr;
+> >       struct soc_device *soc_dev;
+> >       struct device_node *root;
+> >       struct regmap *regmap;
+> > -     u32 product_id;
+> > -     u32 revision;
+> >       int ret;
+> >
+> > +     drv_data = of_device_get_match_data(&pdev->dev);
+> > +     if (!drv_data)
+> > +             return -EINVAL;
+> > +
+> >       regmap = device_node_to_regmap(pdev->dev.of_node);
+> >       if (IS_ERR(regmap))
+> >               return PTR_ERR(regmap);
+> >
+> > -     ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &product_id);
+> > +     ret = exynos_chipid_get_chipid_info(regmap, drv_data, &soc_info);
+> >       if (ret < 0)
+> >               return ret;
+> >
+> > -     revision = product_id & EXYNOS_REV_MASK;
+> > -
+> >       soc_dev_attr = devm_kzalloc(&pdev->dev, sizeof(*soc_dev_attr),
+> >                                   GFP_KERNEL);
+> >       if (!soc_dev_attr)
+> > @@ -86,8 +122,8 @@ static int exynos_chipid_probe(struct platform_device *pdev)
+> >       of_node_put(root);
+> >
+> >       soc_dev_attr->revision = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+> > -                                             "%x", revision);
+> > -     soc_dev_attr->soc_id = product_id_to_soc_id(product_id);
+> > +                                             "%x", soc_info.revision);
+> > +     soc_dev_attr->soc_id = product_id_to_soc_id(soc_info.product_id);
+> >       if (!soc_dev_attr->soc_id) {
+> >               pr_err("Unknown SoC\n");
+> >               return -ENODEV;
+> > @@ -106,7 +142,7 @@ static int exynos_chipid_probe(struct platform_device *pdev)
+> >
+> >       dev_info(soc_device_to_device(soc_dev),
+> >                "Exynos: CPU[%s] PRO_ID[0x%x] REV[0x%x] Detected\n",
+> > -              soc_dev_attr->soc_id, product_id, revision);
+> > +              soc_dev_attr->soc_id, soc_info.product_id, soc_info.revision);
+> >
+> >       return 0;
+> >
+> > @@ -125,9 +161,18 @@ static int exynos_chipid_remove(struct platform_device *pdev)
+> >       return 0;
+> >  }
+> >
+> > +static const struct exynos_chipid_variant exynos4210_chipid_drv_data = {
+> > +     .rev_reg        = 0x0,
+> > +     .main_rev_bit   = 0,
+> > +     .sub_rev_bit    = 4,
+> > +};
+> > +
+> >  static const struct of_device_id exynos_chipid_of_device_ids[] = {
+> > -     { .compatible = "samsung,exynos4210-chipid" },
+> > -     {}
+> > +     {
+> > +             .compatible     = "samsung,exynos4210-chipid",
+> > +             .data           = &exynos4210_chipid_drv_data,
+> > +     },
+> > +     { }
+> >  };
+> >
+> >  static struct platform_driver exynos_chipid_driver = {
+> > diff --git a/include/linux/soc/samsung/exynos-chipid.h b/include/linux/soc/samsung/exynos-chipid.h
+> > index 8bca6763f99c..5270725ba408 100644
+> > --- a/include/linux/soc/samsung/exynos-chipid.h
+> > +++ b/include/linux/soc/samsung/exynos-chipid.h
+> > @@ -9,10 +9,8 @@
+> >  #define __LINUX_SOC_EXYNOS_CHIPID_H
+> >
+> >  #define EXYNOS_CHIPID_REG_PRO_ID     0x00
+> > -#define EXYNOS_SUBREV_MASK           (0xf << 4)
+> > -#define EXYNOS_MAINREV_MASK          (0xf << 0)
+> > -#define EXYNOS_REV_MASK                      (EXYNOS_SUBREV_MASK | \
+> > -                                      EXYNOS_MAINREV_MASK)
+> > +#define EXYNOS_REV_PART_LEN          0xf
+>
+> EXYNOS_REV_PART_MASK
+>
+> > +#define EXYNOS_REV_PART_OFF          4
+>
+> define EXYNOS_REV_PART_SHIFT
+>
 
-Yes, I started to think about the same thing late yesterday afternoon as we=
-ll...
+Thanks, I'll fix everything you mentioned in v2.
 
-Ref. your comment about reverting a7b359fc6a37
-("sched/fair: Correctly insert cfs_rq's to list on unthrottle"), I
-think that is fine as
-long as we revert the commit it fixes as well, to avoid a regression
-of that (but yeah,
-that regression itself is less bad than your discovery). If we do so,
-we know that the
-only time we remove it from the list is when it is fully decayed,
-creating way less
-edge cases
+Btw, I forgot to provide an explanation on user interface changes I
+made. Those are ok from my POV, but you might disagree:
 
-In regards to the race, would a simple fix for that be to, in addition
-to your patch,
-set cfs_rq->on_list=3D2 inside that lock under your code change? If we
-then treat on_list=3D2
-as "not on list, and do not add"? We can then make constants for them.
-In that case, we
-would know that the cfs_rq will never again be inserted into the list,
-even if it has load. Would
-something like that work properly?
+1. EXYNOS_MASK is now applied to product_id when assigning it. The
+only side effect is that dev_info() in probe() will print a bit
+different info. Hope it's fine. The code looks better this way, as we
+clearly differentiate SoC ID and Revision ID from the very beginning.
 
-Thanks
-Odin
+2. "revision" sysfs node will now show the revision in this form:
+"(main_rev << 4) | sub_rev". Before this patch it was "(sub_rev << 4)
+| main_rev". It has to do with internal register representation: on
+older Exynos SoCs it has the latter form, on newer SoCs -- the former.
+For consistency I want to keep it in the same form for all platforms.
+I decided to go with approach implemented in downstream Samsung
+kernel, though it of course changes the output on older SoCs. Possible
+design options are:
+
+    (a) Use "(sub_rev << 4) | main_rev" form instead for all SoCs. It
+would preserve "revision" node output on older SoCs. On newer SoCs it
+will be rotated form w.r.t. internal register representation, and it
+won't be consistent with downstream implementation (not that we should
+care about that much)
+    (b) Use "(sub_rev << 4) | main_rev" form for old SoCs and
+"(main_rev << 4) | sub_rev" for for new SoCs. That will clutter the
+logic for sure, making it not very elegant.
+    (c) Keep it as is (as I already implemented that in this patch).
+Changes "revision" node output, but I'm not sure if we should care
+about that, user space shouldn't probably rely on that data anyway
+
+Please let me know if you think the current design is ok, or you want
+me to change that.
+
+> >  #define EXYNOS_MASK                  0xfffff000
+> >
+> >  #define EXYNOS_CHIPID_REG_PKG_ID     0x04
+> >
+>
+>
+> Best regards,
+> Krzysztof
