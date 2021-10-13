@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67EA42BA91
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970B942BA97
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238847AbhJMIhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:37:05 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:37584 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233015AbhJMIhD (ORCPT
+        id S234440AbhJMIhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232922AbhJMIhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:37:03 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0UrfYNmw_1634114093;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UrfYNmw_1634114093)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 13 Oct 2021 16:34:55 +0800
-Subject: Re: [RESEND PATCH v2 1/2] ftrace: disable preemption between
- ftrace_test_recursion_trylock/unlock()
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-References: <b1d7fe43-ce84-0ed7-32f7-ea1d12d0b716@linux.alibaba.com>
- <75ee86ac-02f2-d687-ab1e-9c8c33032495@linux.alibaba.com>
- <alpine.LSU.2.21.2110130948120.5647@pobox.suse.cz>
- <d5fbd49a-55c5-a9f5-6600-707c8d749312@linux.alibaba.com>
- <alpine.LSU.2.21.2110131022590.5647@pobox.suse.cz>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <861d81d6-e202-09f3-f0be-6c77205f9d34@linux.alibaba.com>
-Date:   Wed, 13 Oct 2021 16:34:53 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Wed, 13 Oct 2021 04:37:18 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69AEC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 01:35:15 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id x27so8446843lfu.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 01:35:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SefPEr/moa6wKQbCWN6jZ4XKEiadGETzM9Rm53D/EzU=;
+        b=vknABL3GD8R2SCx+yRHuxuXifwOW2ayrE5DQjDemq83z5+4G7v2Rwp4QdzWEmDtUl6
+         RhQj49RaP8tSRCqWRlUiUayLRCxAGMR9IxJmXLlKsScV9r0+QXFUUfgAgD84t9oekgpc
+         ztBwHaKrhwuXXOarPxkgoztR0ybOIwhXwX6XM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SefPEr/moa6wKQbCWN6jZ4XKEiadGETzM9Rm53D/EzU=;
+        b=03bFnvSNxT7fXje4CGfa76atZ4khqmj4Hef/xCeag8dOwutXPvtHKj2M5y3xg0NcOq
+         ZGV+q+BP9DEsZp2NGp3fwmUwQ2D/XCVfJ3tM+t1AhKbEDUJV+mTGMZV3M3w9zYJcGPvo
+         DFUoXhl3ERcheqjpqkNIrxbLqyjnc4zsVtu5pKlCI4nmrV5jbCA12JkZSoyvIMVEWz4I
+         PWB0i+JU0P0Upr1n/zGaxsx7bhJijaVhWHh6+GY9eTLv6rCniGqrxnGapHtSct7GWBI9
+         ODbnk4DBNxRdNBy+Vkc5jXnF+MtOLXEpnsAzhH8+XwzmzSJU4Ykv1JS/NZRGqofuiRsA
+         W5lg==
+X-Gm-Message-State: AOAM531MWHDL5cge9sipKK30Ye7mURyZEbqymg06h2xrhcfi96OxrEIK
+        0CFA2d6ZoI/SCyvOk0vwlHnKzMrxftgpZqLEeoDskg==
+X-Google-Smtp-Source: ABdhPJxwVjBoXGbdxEOjKa3jafLF2MTLf7MWOKnf9TsyT7qGPhKyGXz2Y2SQhSx02NS3pjnpCMIzIPz7JhLyZOSw7zM=
+X-Received: by 2002:a05:6512:314b:: with SMTP id s11mr13005772lfi.206.1634114114183;
+ Wed, 13 Oct 2021 01:35:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.21.2110131022590.5647@pobox.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211012135935.37054-1-lmb@cloudflare.com> <20211012135935.37054-5-lmb@cloudflare.com>
+ <836d9371-7d51-b01f-eefd-cc3bf6f5f68e@6wind.com>
+In-Reply-To: <836d9371-7d51-b01f-eefd-cc3bf6f5f68e@6wind.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 13 Oct 2021 09:35:03 +0100
+Message-ID: <CACAyw99ZfALrTRYKOTifWXCRFS9sUOhONbyEyWjTBdzFE4fpQQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] bpf: export bpf_jit_current
+To:     nicolas.dichtel@6wind.com
+Cc:     Luke Nelson <luke.r.nels@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 12 Oct 2021 at 17:29, Nicolas Dichtel <nicolas.dichtel@6wind.com> w=
+rote:
+>
+> Le 12/10/2021 =C3=A0 15:59, Lorenz Bauer a =C3=A9crit :
+> > Expose bpf_jit_current as a read only value via sysctl.
+> >
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > ---
+>
+> [snip]
+>
+> > +     {
+> > +             .procname       =3D "bpf_jit_current",
+> > +             .data           =3D &bpf_jit_current,
+> > +             .maxlen         =3D sizeof(long),
+> > +             .mode           =3D 0400,
+> Why not 0444 ?
 
+This mirrors what the other BPF related sysctls do, which only allow
+access from root with CAP_SYS_ADMIN. I'd prefer 0444 as well, but
+Daniel explicitly locked down these sysctls in
+2e4a30983b0f9b19b59e38bbf7427d7fdd480d98.
 
-On 2021/10/13 下午4:25, Miroslav Benes wrote:
->>> Side note... the comment will eventually conflict with peterz's 
->>> https://lore.kernel.org/all/20210929152429.125997206@infradead.org/.
->>
->> Steven, would you like to share your opinion on this patch?
->>
->> If klp_synchronize_transition() will be removed anyway, the comments
->> will be meaningless and we can just drop it :-P
-> 
-> The comment will still be needed in some form. We will handle it depending 
-> on what gets merged first. peterz's patches are not ready yet.
+Lorenz
 
-Ok, then I'll move it before trylock() inside klp_ftrace_handler() anyway.
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-Regards,
-Michael Wang
-
-> 
-> Miroslav
-> 
+www.cloudflare.com
