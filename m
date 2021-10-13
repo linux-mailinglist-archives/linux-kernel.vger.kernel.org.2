@@ -2,173 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B083E42BAD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F36C42BAD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238635AbhJMIv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:51:29 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:11224 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231658AbhJMIv2 (ORCPT
+        id S238779AbhJMIwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhJMIw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:51:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634114965; x=1665650965;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=0UBjeWozYfP4FaGUAH0Bt9QTRpP/qw16DOu/H1Wy3Wc=;
-  b=STrJSRoPXebgskhuN/kZKcTd5rlskUEyv3jm6MDcctaLxYZSrwceQbvX
-   X100BydMLS9R/xUnzLcibaoYFw8nRbixx5mTmdnxYhhKpgQHnTNslXPeV
-   ksQ+Ttss0eGYs9MAi8w45KcukGJ7C0OJb0V/g6xZ610tfNJY1CVSEaFM7
-   G5oJO6rCNIJJ+wS2AJCUScdorCx3opnT3vYxQ3rrYCYUzTSNcio4+eNCt
-   s3meZYjSQ6TrxG/LVihMEu+IBhovug7gkXSFzTBS0e0CBlFiMIydw7aqW
-   jxhGdDW0+bZt2Tmy7Yt3euQOSE9U1ut5kA5fc3Y/t/L1L/75HZ94+sIlN
-   A==;
-IronPort-SDR: izofhjbrdmKFWrFPvFn6GjCKK+aOvWm/527WD5Sf2muZcuhvrRL7KZg66qg1Kbp9cYJnNVWPsX
- yLsDNevVL4OD5FztPnzq7s9CROYdX6U5bN9I3UayKd9k/EwqdS4pM/QlGQBUVOn2Q7LId5tonN
- 7sYvsMoWraJ+Nkt1H1x4hHzfldV7NuRYiRU5arMeZWS/Wt6PPu8PEObMt3PESxZZ9FMnu5sNDs
- bePDlflfJQmWKei5wCT1CsNP+vD8HmrvrT1MQjFi+8EWSuXa1EMAIYBe7+FZG22ZJWNQ3GzX9o
- T+QzvWWLp6PJRK812MxL2eAa
-X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; 
-   d="scan'208";a="147905707"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Oct 2021 01:49:25 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 13 Oct 2021 01:49:25 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14 via Frontend
- Transport; Wed, 13 Oct 2021 01:49:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mMdotS62/AyNMYsv2i41Kg1q/T3TS0IghQfKt413f6bymjT9pTHLS33oPrY1+lulG1Jmp+SnO3xbL+8VZbPLMjZpS9q2OBCFGV2KYXzdwYYlqFs3vlLGBlH5idim5Ml2BO4z3MReGzJQdQQly41ePcGWepm/xsVpRo1h/GbNY1QBybsZL98OS3q1f93au1pLXwiB0vybh0hDJVdHXuOartPX7SpuH3AYTzeVU9C2ZS0zDi9DlRYVeapXBG846Kr6Jq4Klf/v/0mVqzkbiyVqX59+MvEDI9sBrEPu7a5o5LZaFBf+HcBg1D+BHb4SM3CltrC9VEoDj+TmI18qdJNZsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0UBjeWozYfP4FaGUAH0Bt9QTRpP/qw16DOu/H1Wy3Wc=;
- b=GbakvovYUgcpu/XTLgn2W5AN5J3xLBd3ra73rgBjuZeZ4S6seMEYpS/Ld9aAfwIgJkEQ4AE54PUrlnTQ3zWkHsffkV7TtvHn8WjgOq8pRx8TZS2OQhPiZJja6V11RWzma1jzABncfY40VXy8e8mS12II1h8anPL3J1P3CRouxgyskmcZYRdq37mdzZQAW5a8nflkDCTjRYEuvtD/T5gXFGiv9PkFLyEoytQINhp+CMuzeNmpVFFIRU3qdef+x7zZgsSUNoi6E2UCxJ0Dkz5tfYJgdrP2RbHvN0y2cJZVJK8GzTpvQpIkDoIxf5o25XXfEWMw+Jm3CPUATJPaxJKqSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Wed, 13 Oct 2021 04:52:29 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85AB3C061570;
+        Wed, 13 Oct 2021 01:50:26 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id 21so1314244plo.13;
+        Wed, 13 Oct 2021 01:50:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0UBjeWozYfP4FaGUAH0Bt9QTRpP/qw16DOu/H1Wy3Wc=;
- b=G4IcHSPZ/sBbUXibateSguUU+spFzfiH8MCX7nR7aJhn5Yb0k/EZCEE8eDPqGjGN4k78XAfAEb0zSgCyxJ2m4sSrOak254lh/dkE9M0iGYf3O9sU8ch0IuqhdZQmSLtPywTPj+ch4giyIGSeNIe3mCPeMT1EXevxlnF4RwAXIiM=
-Received: from DM8PR11MB5687.namprd11.prod.outlook.com (2603:10b6:8:22::7) by
- DM5PR1101MB2169.namprd11.prod.outlook.com (2603:10b6:4:51::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.25; Wed, 13 Oct 2021 08:49:20 +0000
-Received: from DM8PR11MB5687.namprd11.prod.outlook.com
- ([fe80::50fa:94b5:51bc:6409]) by DM8PR11MB5687.namprd11.prod.outlook.com
- ([fe80::50fa:94b5:51bc:6409%9]) with mapi id 15.20.4587.026; Wed, 13 Oct 2021
- 08:49:20 +0000
-From:   <Codrin.Ciubotariu@microchip.com>
-To:     <Horatiu.Vultur@microchip.com>, <robh+dt@kernel.org>,
-        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <Ludovic.Desroches@microchip.com>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] i2c: at91: Add support for programmable clock source
-Thread-Topic: [PATCH 0/2] i2c: at91: Add support for programmable clock source
-Thread-Index: AQHXv3JagbJxWnjRXkiEtRVe8te35qvQn4gA
-Date:   Wed, 13 Oct 2021 08:49:20 +0000
-Message-ID: <8a775c67-00a3-1dbe-daa3-09a537f482d8@microchip.com>
-References: <20211012140718.2138278-1-horatiu.vultur@microchip.com>
-In-Reply-To: <20211012140718.2138278-1-horatiu.vultur@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-authentication-results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none
- header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e729f836-5e3b-4f37-3ccc-08d98e265947
-x-ms-traffictypediagnostic: DM5PR1101MB2169:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR1101MB2169291CCE8F901698F16093E7B79@DM5PR1101MB2169.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ++dEEp1HmeK+57HJzqUdgmjATmoj9+n3xfgleZf6KwrcFu6vAETsXDbHKIZIhsOkk61w49n61EmSTiREmCtyhLLfiIUDe9OA2m9NGotgK1mrguDMX/F3voIONHgWm1pZlsT0kcHAu5bSuKEbwYUZOAjtcdxb2rCDIPWW/vIn/IDZEbdXBs3Z7qBDc0uMtMNYmEaodILI1inDt6DTaIEnm8rbjIOmWk8z+dYjBvvuLR8g2fqAngpJVZU2wIUJ+AF1NTBGX6yixSs9INA4eujWSlsMklqIqmVRZJn/18cXl+Xe4cPn9CLf8+RfC5tchnY+hfsYX1kA9Ogql16dAONmZJhuP94ZlV2V5o70GeXMukgKxbpx7Bt+fBk3opIMgKOjMuIYwqKd7uZZAOFWABPBaPqmnDdJpZ2Vb5tzS+dvm3hks9POFO1H9Jr5wilGGUvgxjg9DDhL0huMoIbrueq5BQNifmOoPwHLSUlPYADQWMwQU7PVXAxfy3ylLmGtYJgfz0+C4/eP7QWNPO9PFwicz2ElgxNe50lbDE/C/TisHXxVMPzW0dxCj2b/s96BKApSqzO+mzSpHCYFezrg45Fl+y42zDW6/TD/smkAuWB3GykT0yUCCkQ1p20SXgOHmuZEpVWx0mJLK+JighgtMGyAHNGNzFucQbWR3iKFyMQHs1IMIH/tjZqe8amrGRJgJd3E38YfyCGvb8rqR84r4m81EZp2HOHfzpcO8jG0XT+nPUyL7JsBcjpuvhmcUiz2lgE82soyHDx2wok/PuOEqa4LbA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5687.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(2616005)(83380400001)(38100700002)(122000001)(6486002)(86362001)(8676002)(66446008)(6512007)(38070700005)(5660300002)(508600001)(316002)(64756008)(31696002)(71200400001)(110136005)(186003)(91956017)(53546011)(66946007)(66556008)(66476007)(6506007)(2906002)(31686004)(8936002)(76116006)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aW5XRzN4ZkxaSXpJMnJWRTgzQTN3Y1cwVjBCVUVyUzdEanBlMnREakFzMWlO?=
- =?utf-8?B?RzlpU01ISHdoNlVLRnk5R05xckZOVUZDM2lFc2poNTdzUnhLM2kvMm1yVXQ5?=
- =?utf-8?B?eUd5QXMxVERSdUN4T2k5M2ljS0ZSZnl1NVArYkd1SHpyc0swaGJ4dGlSa2tG?=
- =?utf-8?B?U0dmM0RYSC90SmVlSm1QVDhCVkIwVHpGcjA2bTU2K3hLQmlZc3d0QXVOZUU0?=
- =?utf-8?B?VkJ5SVphajVjVm5pcHVoeVZqMGR2elQ5c1N0MmlkdDNjaldKVTVXZ0t2cVc0?=
- =?utf-8?B?TmF6aHlqTGZIbEpzM1J4NTErd2hDQzhXaVA4NTFoMVpZVno0WGhKZDVLaFQr?=
- =?utf-8?B?MmprczNiR3c3T05kQkRzL2hWbCtKd0lURktMTmtsT1FxRXJERW1zekNoZnZS?=
- =?utf-8?B?SzNHZTljaHNvRG1LTmZaV1Z5Z0lQTk41NEVMYXBRQXVDY1JaYVJkcjRQK2ZW?=
- =?utf-8?B?Q2xBRFZ2TUg0bm9CY1NIMDNSUkc2NEtBNE5rSktkQk1Pb3RVcnBjN0Fvd2N1?=
- =?utf-8?B?b3lBVVFRd2VjTzFBWnovdktwY09KVkNlOVppZkhyRlFkdDFPc1AzMjJlVy9M?=
- =?utf-8?B?RHpzMDdDVHpzWjgvL0xwVTlFc2NtTXNwZWE2NEtNWDI4L1d0MWsya0M2bGdt?=
- =?utf-8?B?bDBpdE1odkk1T2dnS0JXa1dYRzZMMENQTWpZbEpkV2JOQ2RxQThKM3dhU3FX?=
- =?utf-8?B?ajFKVE1UMzVJNWJaVzV3Z2RZSWV4UmIyQys0NURFMlYrTTZNOGhUaVE2bFBU?=
- =?utf-8?B?Slg2UGRJODhmVjE5d3RqK0xzNEcyUlo4dmtkRUVod1ZrNVZjelJaUFQ2UERX?=
- =?utf-8?B?L3JLYW9vQ25ZK2hGNUMyTzhaZVhKRy9VMk1kelREaGhOWjlHeFJVdnU3R0tP?=
- =?utf-8?B?RVA0cWRPNWVSNXJpQmNqNm02Yk0wbWNmaDFOMGltY09RQVdkY1owMXp3dkp1?=
- =?utf-8?B?Q24vOHBobHVNcTN0dmk5M05iR2pMTGNGTG9vdTRtRk9KU3lNWjhSU085UVZs?=
- =?utf-8?B?QThEL0VvV1dMM2sxMlpQR3d6cm91N2xic3c4aFVqSmNwK3JmMCs3cy9jSGUv?=
- =?utf-8?B?QlA3bjdJRWl6ZVMvRWFLZURxTXBPaTY5eDlCZlRJbHgxRTZ1MStDR0pMdHI4?=
- =?utf-8?B?aHFqZm1QOCt0RGNvS2JoRjZ1ejZoQlE0TmgrUmJoWWZGQ1Z6djJ1U25SOFdT?=
- =?utf-8?B?aTZMcHZJdFYvV0FlZ3dyOWxMWWJTVnpTL1J4cDBHNGRIc2ZhdnFvaTg2UUps?=
- =?utf-8?B?ZGVsaHJxbzVXMWZiS20wOGt4Q1JmdS8vUDd0NjVUaXFOT3JJMElaNG9wVVc2?=
- =?utf-8?B?UmlYSERHdGVkT256UTFORnRPNzlPaVpEaHZJWkNVQWNpNk5BWWdOYUNzeFE0?=
- =?utf-8?B?TVdrMW5tS2ZOTEpvV0hvL0wrN2c5ZjFGdTZaREkwZ2NIN053QjVYS2VtY3Zp?=
- =?utf-8?B?bGtlQkpXbnBYNWVXY29DV2ViQXM3MkpaNVhZdmx0ekRhaFdhMWE5MS9nZURV?=
- =?utf-8?B?TlpxTGxXYjdxd2p0d29DU3pkZUpKMHpMOWJwSS8rQysyWHZQdGUxM2pMcHpj?=
- =?utf-8?B?NVZ0aklpelM0UEo5bkkwMmN4NjRmQi85a3dPeTJ3VzJuUVd3OVZ5MTV4Rzli?=
- =?utf-8?B?QzlWcFJINFhNbzJlUEVEekx1SUpWUzMrUjBtUCtUMFA5Vm83WVJsQmpKbkVF?=
- =?utf-8?B?SWh1NjhMT3hBTHIwMmNVb1J2a3BVMC85TUluaENQQ2tXNVNPM3RDUUdDODRu?=
- =?utf-8?B?RngzL2lIR3RySWhGZll4YzZpUXJLdTZ5L0c4dnMzaFhsRFBkazlkSnU1QzM1?=
- =?utf-8?B?aDM4MU0rTUYzclpWTTI5bjJOcnp6Q3dLUERZREVsTmNPaEtHend0dmxYeXZ5?=
- =?utf-8?Q?kkBL3S2Q1M018?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D5F2FF34DDF74E499BB58AB0317B9797@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aVoyHG+ByS3hT7ja8NsnDLzpvX2wB0s7/rnkdNO8Z8M=;
+        b=Psg1yNCAb/W7O+NArm2at+GjICGvF6Km7EVAdr7MoqjAHsAytjWz75YYY1m8mz98sv
+         BXe/bcOkwZ8tgFfeAobmkkytkJ9Xkik9FJIZAYDWmouESWp/gnPagELjdsI08ej/Jbhz
+         XGB5JnRLasrRCtGpuvPjug516Gfd/W8EQaeRh9i4byKZthI4siCnu1nTzxAZNBDVn5yK
+         REjsGa2e7G+/iX0JGQnBjYEFJfMx9ZO6Qq99bHKx7rNHA1CLOOWhcwiP02jZtXBo23xX
+         lMf9DDoC4EMuS2VpTYiBT6eu/BGzk9sQmEajaQ4dXBjvjABa1zJezvzNjHB7t8UywAHq
+         X0IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aVoyHG+ByS3hT7ja8NsnDLzpvX2wB0s7/rnkdNO8Z8M=;
+        b=awck2bpeF2U6wuBg1XdrrzvQhbGVyy2F5FORLfZVMSTPBYwLuvvlv01O8sLJT2vQdt
+         6jIhuUAX3yN1jtrJeUcnvdzKiDaPDZOJPqx+Av5fWt4zY38m3Otkr3AvPWBzbyQQz6Gc
+         qf/hyxWABf2fhKwwMcVKRknlPob/491a/zikqakAjFtBplVikmrC5Q87vy3LZDzHWk3H
+         Kfdh7AggWWKBHZ3swJxKxlJcxmLebrA2u34CM8jypW7lGnqr8XipPklyLJ/TUi1A67HC
+         NUtD+eJ+nlNlURuDcJivJUGgU2pPJRQx4PAqkgXlv5ocC9FabtL3bkPS0FGQuqWzjXvG
+         9Bhg==
+X-Gm-Message-State: AOAM5304sGQof024z03wF02V54PaWfw/4t+HI1o29i8hwS2iG40x1VhS
+        87/tLH3BfgngMdh+zSDwi8+tFmodPokqSl8e6Ec=
+X-Google-Smtp-Source: ABdhPJwKzwpIZpekOL2Rr83/DEzkRGyBlgWm0a1CXsPZmrNjYGf+FePfNALYBcflnQ856W3DNtcGSK0NHsUfmbJHaeA=
+X-Received: by 2002:a17:903:248f:b029:128:d5ea:18a7 with SMTP id
+ p15-20020a170903248fb0290128d5ea18a7mr34959008plw.83.1634115025923; Wed, 13
+ Oct 2021 01:50:25 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5687.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e729f836-5e3b-4f37-3ccc-08d98e265947
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2021 08:49:20.6780
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Y4YQ/T9wAQ4ScTbOm6TrvPp/KsrgsNBKB2wHHlZxKvNkFmw7znjYhSxj7xUmgViI4dQzh8az4M/4Uq80Qfx2geoZA9Nb3xBE4P3pWFO0X5Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2169
+References: <20210914151032.216122-1-amirmizi6@gmail.com> <20210914151032.216122-2-amirmizi6@gmail.com>
+ <d9082b1b4c2e358c97bbc815c1b06e1b05011b0e.camel@kernel.org>
+In-Reply-To: <d9082b1b4c2e358c97bbc815c1b06e1b05011b0e.camel@kernel.org>
+From:   Amir Mizinski <amirmizi6@gmail.com>
+Date:   Wed, 13 Oct 2021 11:49:49 +0300
+Message-ID: <CAMHTsUXt7F0uWTe7qJSi8YnT-8JcXYYrdzEwi7UhN5m9c4hzYQ@mail.gmail.com>
+Subject: Re: [PATCH v15 1/6] tpm_tis: Fix expected bit handling and send all
+ bytes in one shot without last byte in exception
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Eyal.Cohen@nuvoton.com, Oshri Alkobi <oshrialkoby85@gmail.com>,
+        Alexander Steffen <alexander.steffen@infineon.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, peterhuewe@gmx.de,
+        jgg@ziepe.ca, Arnd Bergmann <arnd@arndb.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Benoit HOUYERE <benoit.houyere@st.com>,
+        Eddie James <eajames@linux.ibm.com>,
+        Joel Stanley <joel@jms.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        IS20 Oshri Alkoby <oshri.alkoby@nuvoton.com>,
+        Tomer Maimon <tmaimon77@gmail.com>, gcwilson@us.ibm.com,
+        kgoldman@us.ibm.com, IS30 Dan Morav <Dan.Morav@nuvoton.com>,
+        oren.tanami@nuvoton.com, shmulik.hager@nuvoton.com,
+        amir.mizinski@nuvoton.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTIuMTAuMjAyMSAxNzowNywgSG9yYXRpdSBWdWx0dXIgd3JvdGU6DQo+IEFkZCBzdXBwb3J0
-IHRvIGJlIGFibGUgdG8gc2V0IEJSU1JDQ0xLLiBUaGlzIGZlYXR1cmUgaXMgc3VwcG9ydCBvbiBs
-YW45NjZ4DQo+IA0KPiBIb3JhdGl1IFZ1bHR1ciAoMik6DQo+ICAgIGR0LWJpbmRpbmdzOiBpMmM6
-IGF0OTE6IEV4dGVuZCBjb21wYXRpYmxlIGxpc3QgZm9yIGxhbjk2NngNCj4gICAgaTJjOiBhdDkx
-OiBhZGQgc3VwcG9ydCBmb3IgYnJzcmNjbGsNCj4gDQo+ICAgLi4uL2RldmljZXRyZWUvYmluZGlu
-Z3MvaTJjL2kyYy1hdDkxLnR4dCAgICAgIHwgIDYgKysrLS0NCj4gICBkcml2ZXJzL2kyYy9idXNz
-ZXMvaTJjLWF0OTEtY29yZS5jICAgICAgICAgICAgfCAxNiArKysrKysrKysrKysrDQo+ICAgZHJp
-dmVycy9pMmMvYnVzc2VzL2kyYy1hdDkxLW1hc3Rlci5jICAgICAgICAgIHwgMjMgKysrKysrKysr
-KysrKysrKystLQ0KPiAgIGRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtYXQ5MS5oICAgICAgICAgICAg
-ICAgICB8ICAxICsNCj4gICA0IGZpbGVzIGNoYW5nZWQsIDQyIGluc2VydGlvbnMoKyksIDQgZGVs
-ZXRpb25zKC0pDQo+IA0KDQpIaSBIb3JhdGl1LA0KDQogRnJvbSB3aGF0IEkgdW5kZXJzdGFuZCwg
-b24geW91ciBEVFMsIHlvdSByZXBsYWNlZCB0aGUgcGVyaXBoZXJhbCBjbG9jayANCndpdGggdGhl
-IEdDTEsgaW4gdGhlIEkyQyBub2RlLiBUaGlzIG1lYW5zIHRoYXQgeW91IGFyZSBmb3JjaW5nIGFs
-bCB0aGUgDQp2YXJpYW50cyB0aGF0IHN1cHBvcnQgY2xrX2Jyc3JjY2xrIHRvIHRyZWF0IHRoZSBj
-dXJyZW50IGNsb2NrIGFzIEdDTEsuIA0KVGhpcyBpcyBub3QgbmVjZXNzYXJpbHkgY29ycmVjdCwg
-c2luY2UgdGhpcyBuZXdlciB2YXJpYW50cyBjYW4gYWxzbyB3b3JrIA0KZmluZSB3aXRoIG9ubHkg
-dGhlIHBlcmlwaGVyYWwgY2xvY2sgYW5kIHdlIHNob3VsZCBrZWVwIHRoZXNlIG9wdGlvbiANCmF2
-YWlsYWJsZS4NCg0KSSB3b3VsZCBhZGQgYW4gb3B0aW9uYWwgR0NMSyBjbG9jayBiaW5kaW5nIGlu
-IHRoZSBJMkMgbm9kZS4gVGhpcyB3YXkgDQpHQ0xLIHdpbGwgYmUgdXNlZCBvbmx5IGlmIGl0IGlz
-IHByZXNlbnQgaW4gRFQgYW5kIGNsa19icnNyY2NsayBzZXQuDQoNCkJlc3QgcmVnYXJkcywNCkNv
-ZHJpbg0K
+Hello Jarkko, apologies for the delay and thank you for your comments.
+I'll answer your comments below.
+
+
+On Tue, 14 Sept 2021 at 19:58, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>
+> On Tue, 2021-09-14 at 18:10 +0300, amirmizi6@gmail.com wrote:
+> > From: Amir Mizinski <amirmizi6@gmail.com>
+> >
+> > Detected an incorrect implementation of the send command.
+> > Currently, the driver polls the TPM_STS.stsValid field until TRUE; then it
+> > reads TPM_STS register again to verify only that TPM_STS.expect field is
+> > FALSE (i.e., it ignores TPM_STS.stsValid).
+> > Since TPM_STS.stsValid represents the TPM_STS.expect validity, both fields
+> > fields should be checked in the same TPM_STS register read value.
+>
+> This is missing description of what kind of error/consquence this caused.
+> Perhaps you got something to the klog, or how did you find out about the
+> issue? Since you have reproduced, please connect it to the reality.
+>
+
+We found out about this issue in a code review, and there's no
+specific error i can reproduce.
+The main problem here is that the current check is meaningless. Since
+TPM_STS.stsValid represents only the validity of the other bits on
+TPM_STS it makes no sense to check it on its own.
+Maybe it's better if i'll add a fix tag in here?
+
+> > Modify the signature of 'wait_for_tpm_stat()', add an additional
+> > "mask_result" parameter to its call and rename it to
+> > 'tpm_tis_wait_for_stat()' for better alignment with other naming.
+> > 'tpm_tis_wait_for_stat()' is now polling the TPM_STS with a mask and waits
+> > for the value in mask_result. Add the ability to check if certain TPM_STS
+> > bits have been cleared.
+>
+> The commit description is probably out of sync (not only rename, there is no
+> parameter called mask_result).
+>
+> It's also lacking description, how this new parameter is taken advantage of.
+>
+> E.g.
+>
+> "Use the new parameter to check that status TPM_STS_VALID is set,
+>  in addition that TPM_STS_EXPECT is zeroed. This prevents a racy
+>  checkk
+>
+Duly noted, ill fix this for next version.
+>
+> > In addition, the send command was changed to comply with
+> > TCG_DesignPrinciples_TPM2p0Driver_vp24_pubrev.pdf as follows:
+> > - send all command bytes in one loop
+> > - remove special handling of the last byte
+> >
+> > Suggested-by: Benoit Houyere <benoit.houyere@st.com>
+> > Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
+> > ---
+> >  drivers/char/tpm/tpm_tis_core.c | 68 +++++++++++++++--------------------------
+> >  1 file changed, 25 insertions(+), 43 deletions(-)
+> >
+> > diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+> > index 69579ef..7d5854b 100644
+> > --- a/drivers/char/tpm/tpm_tis_core.c
+> > +++ b/drivers/char/tpm/tpm_tis_core.c
+> > @@ -44,9 +44,9 @@ static bool wait_for_tpm_stat_cond(struct tpm_chip *chip, u8 mask,
+> >       return false;
+> >  }
+> >
+> > -static int wait_for_tpm_stat(struct tpm_chip *chip, u8 mask,
+> > -             unsigned long timeout, wait_queue_head_t *queue,
+> > -             bool check_cancel)
+> > +static int wait_for_tpm_stat(struct tpm_chip *chip, u8 mask, u8 stat,
+> > +                              unsigned long timeout,
+> > +                              wait_queue_head_t *queue, bool check_cancel)
+>
+> This naming is not too great, considering that there is already local variable
+> called status.
+>
+i will change this to result. is that better?
+>
+> >  {
+> >       unsigned long stop;
+> >       long rc;
+> > @@ -55,7 +55,7 @@ static int wait_for_tpm_stat(struct tpm_chip *chip, u8 mask,
+> >
+> >       /* check current status */
+> >       status = chip->ops->status(chip);
+> > -     if ((status & mask) == mask)
+> > +     if ((status & mask) == stat)
+> >               return 0;
+> >
+> >       stop = jiffies + timeout;
+> > @@ -83,7 +83,7 @@ static int wait_for_tpm_stat(struct tpm_chip *chip, u8 mask,
+> >                       usleep_range(TPM_TIMEOUT_USECS_MIN,
+> >                                    TPM_TIMEOUT_USECS_MAX);
+> >                       status = chip->ops->status(chip);
+> > -                     if ((status & mask) == mask)
+> > +                     if ((status & mask) == stat)
+> >                               return 0;
+> >               } while (time_before(jiffies, stop));
+> >       }
+> > @@ -260,9 +260,10 @@ static int recv_data(struct tpm_chip *chip, u8 *buf, size_t count)
+> >
+> >       while (size < count) {
+> >               rc = wait_for_tpm_stat(chip,
+> > -                              TPM_STS_DATA_AVAIL | TPM_STS_VALID,
+> > -                              chip->timeout_c,
+> > -                              &priv->read_queue, true);
+> > +                                        TPM_STS_DATA_AVAIL | TPM_STS_VALID,
+> > +                                        TPM_STS_DATA_AVAIL | TPM_STS_VALID,
+> > +                                        chip->timeout_c, &priv->read_queue,
+> > +                                        true);
+> >               if (rc < 0)
+> >                       return rc;
+> >               burstcnt = get_burstcount(chip);
+> > @@ -315,8 +316,9 @@ static int tpm_tis_recv(struct tpm_chip *chip, u8 *buf, size_t count)
+> >               goto out;
+> >       }
+> >
+> > -     if (wait_for_tpm_stat(chip, TPM_STS_VALID, chip->timeout_c,
+> > -                             &priv->int_queue, false) < 0) {
+> > +     if (wait_for_tpm_stat(chip, TPM_STS_VALID, TPM_STS_VALID,
+> > +                               chip->timeout_c, &priv->int_queue,
+> > +                               false) < 0) {
+> >               size = -ETIME;
+> >               goto out;
+> >       }
+> > @@ -342,61 +344,40 @@ static int tpm_tis_send_data(struct tpm_chip *chip, const u8 *buf, size_t len)
+> >       struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+> >       int rc, status, burstcnt;
+> >       size_t count = 0;
+> > -     bool itpm = priv->flags & TPM_TIS_ITPM_WORKAROUND;
+> >
+> >       status = tpm_tis_status(chip);
+> >       if ((status & TPM_STS_COMMAND_READY) == 0) {
+> >               tpm_tis_ready(chip);
+> > -             if (wait_for_tpm_stat
+> > -                 (chip, TPM_STS_COMMAND_READY, chip->timeout_b,
+> > -                  &priv->int_queue, false) < 0) {
+> > +             if (wait_for_tpm_stat(chip, TPM_STS_COMMAND_READY,
+> > +                                       TPM_STS_COMMAND_READY,
+> > +                                       chip->timeout_b, &priv->int_queue,
+> > +                                       false) < 0) {
+> >                       rc = -ETIME;
+> >                       goto out_err;
+> >               }
+> >       }
+> >
+> > -     while (count < len - 1) {
+> > +     while (count < len) {
+>
+> This.
+>
+> >               burstcnt = get_burstcount(chip);
+> >               if (burstcnt < 0) {
+> >                       dev_err(&chip->dev, "Unable to read burstcount\n");
+> >                       rc = burstcnt;
+> >                       goto out_err;
+> >               }
+> > -             burstcnt = min_t(int, burstcnt, len - count - 1);
+> > +             burstcnt = min_t(int, burstcnt, len - count);
+>
+> What are these two changes (loop condition and the right above change)?
+>
+
+These changes are related to unnecessary handling of the last byte,
+this is described on the last paragraph of the commit message.
+
+> >               rc = tpm_tis_write_bytes(priv, TPM_DATA_FIFO(priv->locality),
+> >                                        burstcnt, buf + count);
+> >               if (rc < 0)
+> >                       goto out_err;
+> >
+> >               count += burstcnt;
+> > -
+> > -             if (wait_for_tpm_stat(chip, TPM_STS_VALID, chip->timeout_c,
+> > -                                     &priv->int_queue, false) < 0) {
+> > -                     rc = -ETIME;
+> > -                     goto out_err;
+> > -             }
+> > -             status = tpm_tis_status(chip);
+> > -             if (!itpm && (status & TPM_STS_DATA_EXPECT) == 0) {
+> > -                     rc = -EIO;
+> > -                     goto out_err;
+> > -             }
+> >       }
+> > -
+> > -     /* write last byte */
+> > -     rc = tpm_tis_write8(priv, TPM_DATA_FIFO(priv->locality), buf[count]);
+> > -     if (rc < 0)
+> > -             goto out_err;
+> > -
+> > -     if (wait_for_tpm_stat(chip, TPM_STS_VALID, chip->timeout_c,
+> > -                             &priv->int_queue, false) < 0) {
+> > +     if (wait_for_tpm_stat(chip, TPM_STS_VALID | TPM_STS_DATA_EXPECT,
+> > +                               TPM_STS_VALID, chip->timeout_a,
+> > +                               &priv->int_queue, false) < 0) {
+> >               rc = -ETIME;
+> >               goto out_err;
+> >       }
+> > -     status = tpm_tis_status(chip);
+> > -     if (!itpm && (status & TPM_STS_DATA_EXPECT) != 0) {
+> > -             rc = -EIO;
+> > -             goto out_err;
+> > -     }
+> >
+> >       return 0;
+> >
+> > @@ -451,9 +432,10 @@ static int tpm_tis_send_main(struct tpm_chip *chip, const u8 *buf, size_t len)
+> >               ordinal = be32_to_cpu(*((__be32 *) (buf + 6)));
+> >
+> >               dur = tpm_calc_ordinal_duration(chip, ordinal);
+> > -             if (wait_for_tpm_stat
+> > -                 (chip, TPM_STS_DATA_AVAIL | TPM_STS_VALID, dur,
+> > -                  &priv->read_queue, false) < 0) {
+> > +             if (wait_for_tpm_stat(chip,
+> > +                                       TPM_STS_DATA_AVAIL | TPM_STS_VALID,
+> > +                                       TPM_STS_DATA_AVAIL | TPM_STS_VALID,
+> > +                                       dur, &priv->read_queue, false) < 0) {
+> >                       rc = -ETIME;
+> >                       goto out_err;
+> >               }
+>
+> /Jarkko
+>
+Thank you,
+Amir Mizinski
