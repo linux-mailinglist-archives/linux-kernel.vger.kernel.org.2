@@ -2,154 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F8A42BEC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1DD42BEAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhJMLP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 07:15:57 -0400
-Received: from mout.gmx.net ([212.227.17.20]:37519 "EHLO mout.gmx.net"
+        id S229991AbhJMLLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 07:11:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229750AbhJMLPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:15:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634123318;
-        bh=DvCFP7mGlO1RR++LFi/30Dh5LlgcAdLHxDufTPhSYGY=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=k22y/QpYcjQsmDrUImobjEtvx4vGbeHo8uBpLicRBvfmuDVPvbbHQRbxUOmwpERkP
-         yGC10bSpckapggSPL87UaSKL3UERrW4htiCsIv2UnRs2g3hFs9NIiOgYU/AqosgR+U
-         sSETtLecKsUKJx6Yk0wYouhAtFnECUt4Q7fpqtfw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5VD8-1mpKgB36b4-016zQw; Wed, 13
- Oct 2021 13:08:38 +0200
-Message-ID: <21e6d12b-66e7-f62a-ed5a-85545b67240e@gmx.com>
-Date:   Wed, 13 Oct 2021 19:08:32 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH] btrfs: replace snprintf in show functions with sysfs_emit
-Content-Language: en-US
-To:     =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        Anand Jain <anand.jain@oracle.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1634095717-4480-1-git-send-email-wangqing@vivo.com>
- <6f03e790-6f21-703f-c761-a034575f465e@oracle.com>
- <20211013103642.GC9286@twin.jikos.cz>
- <ADsAzABEEmLRWHzgUOl4Sqr5.9.1634122164687.Hmail.wangqing@vivo.com>
- <SL2PR06MB3082B71AFE2C42CABDD5E6D6BDB79@SL2PR06MB3082.apcprd06.prod.outlook.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <SL2PR06MB3082B71AFE2C42CABDD5E6D6BDB79@SL2PR06MB3082.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hDBsCcL+tLSbf4UqfyT1cTsKG08lOZUe2f2oQRUUmbKisvlZogE
- agZbhl+iyHmcrpeWwDSibUdipSOjxNrXDhnXxoE5jpgPQvTiK2fo28Wk4omNr80/TNmNcVM
- ThvPyI5NpiSJ5Dbi7iFEuMNAQBA4/TICaSvoqD3Wm4NwShSH9FWioEaNvFGtKx+DHJpyDNc
- kb201wMm0wiMzVBijVpFA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BX04yarxIoY=:TOl6rFpfFWbJe5PVyqFlQ9
- ZGcdMvLSHCNWArfHRzEbUnMqNmdoHQQPEkVfNKYbLND4PZaonZiZirI8QnG2awohvf0CTNAyL
- TRIOoisgPXWNzsbpHckjwVhFFGZQmAEqQA3+kjwaHYwTgm4oP4AGjvJq4vtVQyq5ALwvXkLr0
- 5zFrPqXNpe6enNMv8ihewzkUs9aFG65BXUBYKst2TMFydfIl3zmrClcs/HjcvMa10jkMYn8Ld
- gzG+BLmVR919MVPB51MJZJQcqag6qgJbVYCBeLUFK8PnzEwvZNyxrdSc0cbjOYPnZ3KCAZWYo
- WVqErfo7mAZ8AckWu1PL2kiG3llvy0fDUpPyytWy+VxQnyMV7n1z95JXDi52zhPs4Ayw6h6J8
- i82M/x2paeaqYZktgNbNLALiDQ9wvKRIR3RDwIieeBstJd8bZY5DnrU+H6ywuaxWa7uw+jJXx
- +22agwzVJYgAA2Z16dEqUcg4+Qh1cIz+gsOeznyFSPbRqakt81HvcfRI1JlTLlePNuvPrH5gd
- 9o/skSGGbxMssosuZrBSo4LCRSK8T/Y/xyu91dTsnOjPgJ9G+B2gcerK+YJlQFHmqENI5B0Jz
- hlnOYMdSYZcPN0xlgRE3x0JTkC1HHvFCHFP4EUfjuRnTwYMV5ZiqSx/aDQyKYTR026LtXCPup
- OiKXgoCwPIF187zklivJnOulPfB9Y3SAvKrHXWrFhMjyIm3hwxjNyoOi+3HSBhpyBLk4UN+cp
- owQeTNGE8CDhn1Myct23vzIegYyt4RVW53GEtAvdsmHS85Sn1k0PV6MgYgLfXJct3RxAYY0cw
- ANwEliza1SkA0Mgw9KDDNyFkWFAYUoGlPxWvGDW0A4sFMvprI+z3yEaP5IVCImjTR2qm+6ZVG
- 0TWWAp9wfUy5e/3Nmwnx5zEPCCAlDDRLE7L5cImK3qhlewq80q2kJOk4g4vQ8CF0x+fmuz4ob
- SVv41JoGNJJc1Mcc79oO55wvV2XSJr0XqaQ2xTHB49efAj02pBbxtdrqbzY0DkVMLD/d/b05e
- /C5CEtojIliQjC4ZxEJZEWt3otS0RhJAQ+yT4/LISRXFGP7MDqeV3GXMyjppVCeIf2qOwqHah
- TfTPRTsfjaNQpc=
+        id S229571AbhJMLLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 07:11:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24011610A1;
+        Wed, 13 Oct 2021 11:09:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634123348;
+        bh=dOkqsJEISz3/QuJjno6nvMjn/MqfCUVMDLekrAfMO6I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=p0c/CIltwGpCOIYKK46xr7DhHTvd0jqfhlxlteNeSICey8j2PSMrxQlTki2bWFnza
+         mZBALOL5JLFlUE+AE29nt2rUi1eg5NLq0j8sjMEutxPhuQce+aOvMyRAkfYJF+Wa19
+         BgFq9BfqSyAvqpJan5MMYT72UDx4il4KqXR4YcgZ7/QFesQWdvEohyqS4Jlr5O61wf
+         p2wezEkTVd/4h+lCOF0gD1KksmQmMzu9EXqr/GeXyn/RmzenoVXHH4oz3KQdkkSztG
+         Y/n/YYHYbMwC8qsSvDlZpOKTuZ4OLZZQNmKdCnGHS2GvmZqHEy3QuSIsFyQK2IcN/t
+         CYCfEBV0DRByA==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dani Liberman <dliberman@habana.ai>
+Subject: [PATCH] habanalabs: refactor fence handling in hl_cs_poll_fences
+Date:   Wed, 13 Oct 2021 14:09:03 +0300
+Message-Id: <20211013110903.14963-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Dani Liberman <dliberman@habana.ai>
 
+To avoid checking if fence exists multipled times, changed fence
+handling to depend only on the fence status field:
 
-On 2021/10/13 19:01, =E7=8E=8B=E6=93=8E wrote:
->
->>> On Wed, Oct 13, 2021 at 03:51:33PM +0800, Anand Jain wrote:
->>>> On 13/10/2021 11:28, Qing Wang wrote:
->>>>> coccicheck complains about the use of snprintf() in sysfs show funct=
-ions.
->>>>
->>>> It looks like the reason is snprintf() unaware of the PAGE_SIZE
->>>> max_limit of the buf.
->>>>
->>>>> Fix the following coccicheck warning:
->>>>> fs/btrfs/sysfs.c:335:8-16: WARNING: use scnprintf or sprintf.
->>
->> IIRC sprintf() is less safe than snprintf().
->> Is the check really correct to mention sprintf()?
->
-> device_attr_show.cocci metions show() must not use snprintf()
-> when formatting the value to be returned to user space.
-> If you can guarantee that an overflow will never happen you
-> can use sprintf() otherwise you must use scnprintf().
+Busy, which means CS still did not completed :
+	Add its QID so multi CS wait on its completion.
+Finished, which means CS completed and fence exists:
+	Raise its completion bit if it finished mcs handling and
+	update if necessary the earliest timestamp.
+Gone, which means CS already completed and fence deleted:
+	Update multi CS data to ignore timestamp and raise its
+	completion bit.
 
-I totally understand snprintf() has its problem for not returning the
-real written size, thus not safe.
+Signed-off-by: Dani Liberman <dliberman@habana.ai>
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ .../habanalabs/common/command_submission.c    | 71 ++++++++++---------
+ 1 file changed, 36 insertions(+), 35 deletions(-)
 
-But sprintf() is worse, it doesn't even prevent overflow from the beginnin=
-g.
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index f94ac2350a9b..4c8000fd246c 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -2382,47 +2382,48 @@ static int hl_cs_poll_fences(struct multi_cs_data *mcs_data)
+ 			break;
+ 		}
+ 
+-		/*
+-		 * It is possible to get an old sequence numbers from user
+-		 * which related to already completed CSs and their fences
+-		 * already gone. In this case, no need to consider its QID for
+-		 * mcs completion.
+-		 */
+-		if (fence)
++		switch (status) {
++		case CS_WAIT_STATUS_BUSY:
++			/* CS did not finished, keep waiting on its QID*/
+ 			mcs_data->stream_master_qid_map |=
+ 					fence->stream_master_qid_map;
++			break;
++		case CS_WAIT_STATUS_COMPLETED:
++			/*
++			 * Using mcs_handling_done to avoid possibility of mcs_data
++			 * returns to user indicating CS completed before it finished
++			 * all of its mcs handling, to avoid race the next time the
++			 * user waits for mcs.
++			 */
++			if (!fence->mcs_handling_done)
++				break;
+ 
+-		/*
+-		 * Using mcs_handling_done to avoid possibility of mcs_data
+-		 * returns to user indicating CS completed before it finished
+-		 * all of its mcs handling, to avoid race the next time the
+-		 * user waits for mcs.
+-		 */
+-		if (status == CS_WAIT_STATUS_BUSY ||
+-				(fence && !fence->mcs_handling_done))
+-			continue;
+-
+-		mcs_data->completion_bitmap |= BIT(i);
+-
+-		/*
+-		 * best effort to extract timestamp. few notes:
+-		 * - if even single fence is gone we cannot extract timestamp
+-		 *   (as fence not exist anymore)
+-		 * - for all completed CSs we take the earliest timestamp.
+-		 *   for this we have to validate that:
+-		 *       1. given timestamp was indeed set
+-		 *       2. the timestamp is earliest of all timestamps so far
+-		 */
+-
+-		if (status == CS_WAIT_STATUS_GONE) {
++			mcs_data->completion_bitmap |= BIT(i);
++			/*
++			 * For all completed CSs we take the earliest timestamp.
++			 * For this we have to validate that the timestamp is
++			 * earliest of all timestamps so far.
++			 */
++			if (mcs_data->update_ts &&
++					(ktime_compare(fence->timestamp, first_cs_time) < 0))
++				first_cs_time = fence->timestamp;
++			break;
++		case CS_WAIT_STATUS_GONE:
+ 			mcs_data->update_ts = false;
+ 			mcs_data->gone_cs = true;
+-		} else if (mcs_data->update_ts &&
+-			(ktime_compare(fence->timestamp,
+-						ktime_set(0, 0)) > 0) &&
+-			(ktime_compare(fence->timestamp, first_cs_time) < 0)) {
+-			first_cs_time = fence->timestamp;
++			/*
++			 * It is possible to get an old sequence numbers from user
++			 * which related to already completed CSs and their fences
++			 * already gone. In this case, CS set as completed but
++			 * no need to consider its QID for mcs completion.
++			 */
++			mcs_data->completion_bitmap |= BIT(i);
++			break;
++		default:
++			dev_err(hdev->dev, "Invalid fence status\n");
++			return -EINVAL;
+ 		}
++
+ 	}
+ 
+ 	hl_fences_put(mcs_data->fence_arr, arr_len);
+-- 
+2.17.1
 
-In fact, for case that could overflow, snprintf() would only overflow if
-we have extra bytes to output and doesn't check if the offset is beyond
-PAGE_SIZE at snprintf() call.
-
-But for sprintf(), it would cause overflow immediately.
-
-Thus mentioning sprintf() is more problematic.
-Only scnprintf() is safe.
-
-
-But sure, sysfs_emit() and sysfs_emit_at() would be a better solution.
-
-Thanks,
-Qu
-
->
-> My understanding is this is not only to solve the possible
-> overflow issue, snprintf() returns the length of the string, not
-> the length actually written. We can directly use sysfs_emit() here.
->
-> Thanks,
->
-> Qing
->
->>>>
->>>> Hm. We use snprintf() at quite a lot more places in sysfs.c and, I do=
-n't
->>>> see them getting this fix. Why?
->>>
->>> I guess the patch is only addressing the warning for snprintf, reading
->>> the sources would show how many more conversions could have been done =
-of
->>> scnprintf calls.
->>>
->>>>> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
->>>>
->>>> Below commit has added it. Nice.
->>>>
->>>> commit 2efc459d06f1630001e3984854848a5647086232
->>>> Date:=C2=A0=C2=A0 Wed Sep 16 13:40:38 2020 -0700
->>>>
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sysfs: Add sysfs_emit and sysfs=
-_emit_at to format sysfs out
->>>
->>> The conversion to the standard helper is good, but should be done
->>> in the entire file.
->>>
->>
->> Yeah, the same idea, all sysfs interface should convert to the new
->> interface, not only the snprintf().
->>
->> Thanks,
->> Qu
