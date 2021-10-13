@@ -2,74 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD9042C6C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D640B42C6CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 18:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236555AbhJMQxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 12:53:52 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:49086
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237399AbhJMQxt (ORCPT
+        id S237399AbhJMQyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 12:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235884AbhJMQyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:53:49 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id F11133FFDC;
-        Wed, 13 Oct 2021 16:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634143903;
-        bh=nspxtz40p65DZu4TYJBabtEkFf22gqNZfGTLya7Yrd8=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=jHQ+xQpZT3ySNZvfc7Mv2IO5uEBq9duWF1MlPWpGZvYeJHiVcz9A7rRAAkuRwsAWD
-         L0aC8QkbNLM/Ovd66WAmrejidVQGrzhN/CM3WyfiuZ67P2/G4AsejdKw/iNfhdcvLf
-         r8uEJeG5anV0ARNJ+4MVgIKMi6VYnOWCUlnwC6OShxeUQqiw8abRiFgcNeSpyHUHCF
-         a0MLlhJasei7LHS5hQPlNdEOtLCQ/Fpytil4ruNAnNd2LOKPm8bLRwLRwztOhSb6zl
-         7fo6dG70HRDukksIb7Qk8FDlv02QO//kgN80AcJNgMvrord248FTEehqNUeiLyynrG
-         vcou6qPyVlE6A==
-From:   Colin King <colin.king@canonical.com>
-To:     Wei Liu <wei.liu@kernel.org>, Paul Durrant <paul@xen.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        xen-devel@lists.xenproject.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] xen-netback: Remove redundant initialization of variable err
-Date:   Wed, 13 Oct 2021 17:51:42 +0100
-Message-Id: <20211013165142.135795-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 13 Oct 2021 12:54:11 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CE1C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 09:52:08 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id i11so375604ila.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 09:52:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jOJ5c26GcDkFy/5jnHqq9oUC7WBrX7rXHxf39J9YV6g=;
+        b=TeYhoeERypD/RHvk+nJDlPeSqLwCWWcKYh1HJWg5YxueD+6xegPODVw6KGvYWcPLKi
+         ANCuWFQi9mSUKkFbdNgp1OQYXnwALsjnH94TaKDBG/ctbWkr4Lu21U27zQTwbzrVbXJm
+         REyU4ovmRfJGdLkeRVyCaLw3elowmYBrfi3Ith1dAPYvH46jx+1nS4wHb/3nNURu1EOp
+         ZAhsxUlYk7qyDAMEQbUfZ2xUBcHi+vn55O8om+40cubhUQ3KuNlUYyhtrDeChPhrOLBy
+         XMt9Xo5Em8ATNNlfSj1pmTKkZ0GcOM/Nm0Zbr9bS1ubkFIDaSjkMA2DG+3j/ICoGfyYp
+         8CbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jOJ5c26GcDkFy/5jnHqq9oUC7WBrX7rXHxf39J9YV6g=;
+        b=VKtzXMeg8TR/ilbixl/KG1GvJSoklLxYpiJfs1qwQxsvcQ0cMjYs+rsMfoACso8AOe
+         9kAm/qdyg/pIQUyueIqATu9bGa+EpHXkESZRJ+S1F1Eq/WpFiJAHhd7tqbAxWVnP9I7S
+         4KQwkIp8bS/ajtvkqyEBSb5xFTd8MMfihW7hsDuXvEvVTt1bPW8vIe+2eGMxmTEzJxFn
+         PvhiFDr7VtmwJO68rmapODgCN2sS72nDudoV6WTeq6xfgO9v+iIFy2tpDcaqPqZygwiZ
+         MYkFerV745nY4qDKiKRhx+8a9X9zcGlTfC9N0iEdVSICiM2VU+xhjUhQKX6Fx1tQIhLo
+         ANgg==
+X-Gm-Message-State: AOAM530eZRuJ2NvTN1DbrsC8TdYDaEB1wuAGdYIgYQjMmKVOfcMt2uIg
+        VSm9POjcemvgaVVMC4ToV4YQgu3ryePsP2Ck13ksHg==
+X-Google-Smtp-Source: ABdhPJwsB3j511GxijFC797iF4RdxNaJm0W+0+Mi0Ez3GM+MbFguw2RjxWbPfg05oJR1XG62aMDekRConSfnojZpECg=
+X-Received: by 2002:a05:6e02:1846:: with SMTP id b6mr111937ilv.63.1634143927586;
+ Wed, 13 Oct 2021 09:52:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20211008210752.1109785-1-dlatypov@google.com> <CAGS_qxp0iF+7FLbgVyBHXONN8kKjcAr7B+q=kgF1c71pbgybPQ@mail.gmail.com>
+In-Reply-To: <CAGS_qxp0iF+7FLbgVyBHXONN8kKjcAr7B+q=kgF1c71pbgybPQ@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Wed, 13 Oct 2021 09:51:56 -0700
+Message-ID: <CAGS_qxq21Zce-y_DSP2t4Ws98OFLYmbSmrn0O3G5jZ-=DJv0Kg@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: continue past invalid utf-8 output
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, Oct 8, 2021 at 4:51 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> On Fri, Oct 8, 2021 at 2:08 PM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > kunit.py currently crashes and fails to parse kernel output if it's not
+> > fully valid utf-8.
+> >
+> > This can come from memory corruption or or just inadvertently printing
+> > out binary data as strings.
+> >
+> > E.g. adding this line into a kunit test
+> >   pr_info("\x80")
+> > will cause this exception
+> >   UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80 in position 1961: invalid start byte
+> >
+> > We can tell Python how to handle errors, see
+> > https://docs.python.org/3/library/codecs.html#error-handlers
+> >
+> > Unfortunately, it doesn't seem like there's a way to specify this in
+> > just one location, so we need to repeat ourselves quite a bit.
+> >
+> > Specify `errors='backslashreplace'` so we instead:
+> > * print out the offending byte as '\x80'
+> > * try and continue parsing the output.
+> >   * as long as the TAP lines themselves are valid, we're fine.
+> >
+> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > ---
+> >  tools/testing/kunit/kunit.py        | 3 ++-
+> >  tools/testing/kunit/kunit_kernel.py | 4 ++--
+> >  2 files changed, 4 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> > index 9c9ed4071e9e..28ae096d4b53 100755
+> > --- a/tools/testing/kunit/kunit.py
+> > +++ b/tools/testing/kunit/kunit.py
+> > @@ -457,9 +457,10 @@ def main(argv, linux=None):
+> >                         sys.exit(1)
+> >         elif cli_args.subcommand == 'parse':
+> >                 if cli_args.file == None:
+> > +                       sys.stdin.reconfigure(errors='backslashreplace')
+>
+> Ugh, pytype doesn't like this even though it's valid.
+> I can squash the error with
+>   sys.stdin.reconfigure(errors='backslashreplace')  # pytype:
+> disable=attribute-error
+>
+> I had wanted us to avoid having anything specific to pytype in the code.
+> But mypy (the more common typechecker iirc) hasn't been smart enough
+> to typecheck our code since the QEMU support landed.
+>
+> If we don't add this directive, both typecheckers will report at least
+> one spurious warning.
+> Should I go ahead and add it, Brendan/David?
 
-The variable err is being initialized with a value that is never read, it
-is being updated immediately afterwards. The assignment is redundant and
-can be removed.
+Friendly ping.
+Should we go ahead and add "# pytype: disable=attribute-error" here?
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/xen-netback/netback.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/xen-netback/netback.c b/drivers/net/xen-netback/netback.c
-index 32d5bc4919d8..0f7fd159f0f2 100644
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -1474,7 +1474,7 @@ int xenvif_map_frontend_data_rings(struct xenvif_queue *queue,
- 	struct xen_netif_tx_sring *txs;
- 	struct xen_netif_rx_sring *rxs;
- 	RING_IDX rsp_prod, req_prod;
--	int err = -ENOMEM;
-+	int err;
- 
- 	err = xenbus_map_ring_valloc(xenvif_to_xenbus_device(queue->vif),
- 				     &tx_ring_ref, 1, &addr);
--- 
-2.32.0
-
+>
+> >                         kunit_output = sys.stdin
+> >                 else:
+> > -                       with open(cli_args.file, 'r') as f:
+> > +                       with open(cli_args.file, 'r', errors='backslashreplace') as f:
+> >                                 kunit_output = f.read().splitlines()
+> >                 request = KunitParseRequest(cli_args.raw_output,
+> >                                             None,
+> > diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+> > index faa6320e900e..f08c6c36a947 100644
+> > --- a/tools/testing/kunit/kunit_kernel.py
+> > +++ b/tools/testing/kunit/kunit_kernel.py
+> > @@ -135,7 +135,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+> >                                            stdin=subprocess.PIPE,
+> >                                            stdout=subprocess.PIPE,
+> >                                            stderr=subprocess.STDOUT,
+> > -                                          text=True, shell=True)
+> > +                                          text=True, shell=True, errors='backslashreplace')
+> >
+> >  class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+> >         """An abstraction over command line operations performed on a source tree."""
+> > @@ -172,7 +172,7 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+> >                                            stdin=subprocess.PIPE,
+> >                                            stdout=subprocess.PIPE,
+> >                                            stderr=subprocess.STDOUT,
+> > -                                          text=True)
+> > +                                          text=True, errors='backslashreplace')
+> >
+> >  def get_kconfig_path(build_dir) -> str:
+> >         return get_file_path(build_dir, KCONFIG_PATH)
+> >
+> > base-commit: a032094fc1ed17070df01de4a7883da7bb8d5741
+> > --
+> > 2.33.0.882.g93a45727a2-goog
+> >
