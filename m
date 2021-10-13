@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B279D42B465
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A1F42B46D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 07:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbhJMFGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 01:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
+        id S233525AbhJMFOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 01:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhJMFGY (ORCPT
+        with ESMTP id S229628AbhJMFOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 01:06:24 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B112BC061570
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 22:04:20 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id y3so4035037wrl.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 22:04:20 -0700 (PDT)
+        Wed, 13 Oct 2021 01:14:02 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35D2C061570
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 22:11:59 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id m22so4192254wrb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Oct 2021 22:11:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=brainfault-org.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tBWAKhyjvL0DEIOxax/tiNNCYCLY9aiBB6SJS4PnDRo=;
-        b=ag4QfPXXGxacJzvKw8Y2T4uuWtNUx5P6CNkb7xbBaNJg8/RjPmPhanvsVdao3X2p5s
-         cGwKpdkVDNefBg7vhGdk8uCYuHO5IIoiCdTcKUSVGAqBjqv+KOEJi5AiVdEV0MYMZW5I
-         dQB3C/fG+DOmhaVZtwx75UDgvulS5SL+Br88dbYHINh2HXxfQSIrSiPfjDdpaPAXLydr
-         sFy0UKGImkVrv6I828/w+MLrX7unXr/I3YX1C4e/IC9RVfyMIVkkzCffkZBlAZ+8b00D
-         2PnGmGq8mvb5XezBBEcc34920t4Wmy9YL9ILed3T5Rl340/x7BrUEZ3Bpc46GklMY/Zl
-         UXMg==
+        bh=8oEFV0or7PHUMQMd5+/L2xMc0OUI7R/fEGHl3NgZeoE=;
+        b=P6BmYB+k8phnQzRTC3McT5TXQ8SpqX/hpEQgWN3LcU8BGs0jrFnydtG6bmNfoEuK3v
+         cosAys/VatlzBRzIkb9in8GJt4YcCKeQeUott/GfXHGoNDxCAv6nMOU6yg9mW+d6TmKv
+         iH1IxjgFVNeRJsRcFwvtLuusAhjniK8m2krvcsvLmmvFUtGnR11DbNzQZfpurHHXzQFI
+         p2oKSpijSJ3Kt2Qh4bhcZnChgUHkqBC34WIzr5TdBJ9ZGPZd/iqEGbi5LiT9gP5TXtlQ
+         ipyxeI5zNq33H8eFNddXucBXn7mCJJMETWx5qBJTUVt/PwQB9qkNaC+jcEfD0jYSKFY/
+         378w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tBWAKhyjvL0DEIOxax/tiNNCYCLY9aiBB6SJS4PnDRo=;
-        b=gSOhGMYDY6Q2cVRcKy86im+6jLAk3bMKOr1ry4Ceso0nCoc9rqiEvgLdEg43qPQ7ef
-         9BzwgchHp+Vzc+1Y3gOTRF/Trj3cSC/eLjU0ZiOKdJMirhHrjcbyIi8fCttc+bN8xWgy
-         EQ/bhFST/CzA/dOeJu8Jc/uoOVV0ScmE0aH7Ksjx8Ubx7k6g/8ky8B0v0A9+t7GES90z
-         9maC/0EXtu8OEhZ6VatVs7XFzhfS3gn85YUcfQKXQREYAQLcZ7gVGo8qFdiS9c6TmarO
-         sw/PquPGm7SgzG7/RkEk9wbPKUb+xMK2wfmUk9YQlLwN1L54qJboJhn5Fn8yT4jSG8Xp
-         861A==
-X-Gm-Message-State: AOAM531pH+OJBeK11Lj8U+mB12HRfebf4AKQwhpRhYyQdjGVCs/Zyqd+
-        8GKGssYVwj3GEppZ9L/By62MVCCa02jE7cWptbvX4A==
-X-Google-Smtp-Source: ABdhPJzoICAIfHQG/AMcUnPkuklmPbpFHoKeQzDPmSw+5K/ti0ZQraiP5gYUezuN6UrX/zQfcdgw56g4g3vTI5xmD9I=
-X-Received: by 2002:a7b:cb04:: with SMTP id u4mr10372804wmj.176.1634101459118;
- Tue, 12 Oct 2021 22:04:19 -0700 (PDT)
+        bh=8oEFV0or7PHUMQMd5+/L2xMc0OUI7R/fEGHl3NgZeoE=;
+        b=6Gqew3fB6xb31ZtLSgGunyW4rRhG49zcHEMIA5V2jON5wafubj7bXomR+O5rgufVed
+         HtBJV4Urq/Zcdpmynxy+I/IFViZFlXP7DDSbhGjcLzMOJlCxEDOwLhuXjCKdVaZElSfw
+         +mRgrsABLDu1SRkVetpHU+syno5/EYGIQtrTUKyZBUX8uckaPUA58RAirjHykVil/c1+
+         34qCgJ6OE+OH3PB3hLHZt+EwXXYLhtBZ6k9O13YcZRZivSVehGBu6gHSOwxYtcUOhDYB
+         MDY32J5fKx4kopqivHBtk/PO3kGnYNg3maDc+8nrtDqlNrvDr+tXhPV2V9YoJOORc4fS
+         NyGA==
+X-Gm-Message-State: AOAM531QmZammUraBE5Z4vULt5d91AP3eTHkIrozvODpOP78AwAfHeIP
+        YqUXw9nIPqTcRJ8F5gh52Nn5Gwku+vDe1mYFweKLGw==
+X-Google-Smtp-Source: ABdhPJzdApIqxACjaRv7O7yKEyaAFN2tRl4Gnw+yyNwEBbof7YhRHdzOv5Ct31NM/qV+9/G7APIy6OKxcza/LQfShAc=
+X-Received: by 2002:a05:600c:4111:: with SMTP id j17mr10363683wmi.59.1634101918493;
+ Tue, 12 Oct 2021 22:11:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211013012149.2834212-1-guoren@kernel.org> <20211013012149.2834212-2-guoren@kernel.org>
-In-Reply-To: <20211013012149.2834212-2-guoren@kernel.org>
+References: <20211013012149.2834212-1-guoren@kernel.org>
+In-Reply-To: <20211013012149.2834212-1-guoren@kernel.org>
 From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 13 Oct 2021 10:34:07 +0530
-Message-ID: <CAAhSdy3B9AtbeBrNoQJOBkmAcOR56s1WExGNPMXsSsF+38y8DA@mail.gmail.com>
-Subject: Re: [PATCH V3 2/2] irqchip/sifive-plic: Add thead,c900-plic support
+Date:   Wed, 13 Oct 2021 10:41:46 +0530
+Message-ID: <CAAhSdy042JY_Vm2j_d5t4jweS3gf51h30j1O9LXDnE6KkB8AEg@mail.gmail.com>
+Subject: Re: [PATCH V3 1/2] dt-bindings: update riscv plic compatible string
 To:     Guo Ren <guoren@kernel.org>
 Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -58,7 +58,9 @@ Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
         =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
         "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
         linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>
+        Guo Ren <guoren@linux.alibaba.com>,
+        Rob Herring <robh@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -68,119 +70,65 @@ On Wed, Oct 13, 2021 at 6:52 AM <guoren@kernel.org> wrote:
 >
 > From: Guo Ren <guoren@linux.alibaba.com>
 >
-> thead,c900-plic would mask IRQ with readl(claim), so it needn't
-> mask/unmask which needed in RISC-V PLIC.
->
-> When in IRQS_ONESHOT & IRQCHIP_EOI_THREADED path, unnecessary mask
-> operation would cause a blocking irq bug in thead,c900-plic. Because
-> when IRQ is disabled in c900, writel(hwirq, claim) would be invalid.
-
-This is a totally incorrect description.
-
-Instead of this, the commit description should say the following:
-
-1) The irq_mask/unmask() is used by handle_fasteoi_irq() is mostly
-for ONESHOT irqs and there is no limitation in the RISC-V PLIC driver
-due to use of irq_mask/unmask() callbacks. In fact, a lot of irqchip
-drivers using handle_fasteoi_irq() also implement irq_mask/unmask().
-
-2) The C9xx PLIC does not comply with the interrupt claim/completion
-process defined by the RISC-V PLIC specification because C9xx PLIC
-will mask an IRQ when it is claimed by PLIC driver (i.e. readl(claim) and
-the IRQ will be unmasked upon completion by PLIC driver (i.e. writel(claim).
-This behaviour breaks the handling of IRQS_ONESHOT by the generic
-handle_fasteoi_irq() used in the PLIC driver.
-
-3) This patch adds an errata fix for IRQS_ONESHOT handling on
-C9xx PLIC by using irq_enable/disable() callbacks instead of
-irq_mask/unmask().
-
-In general, non-compliance of the C9xx PLIC should be treated as
-an errata so please don't project it as a feature.
-
+> Add the compatible string "thead,c900-plic" to the riscv plic
+> bindings to support SOCs with thead,c9xx processor cores.
 >
 > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
 > Cc: Anup Patel <anup@brainfault.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
 > Cc: Atish Patra <atish.patra@wdc.com>
 >
 > ---
 >
 > Changes since V3:
 >  - Rename "c9xx" to "c900"
->  - Add sifive_plic_chip and thead_plic_chip for difference
->
-> Changes since V2:
->  - Add a separate compatible string "thead,c9xx-plic"
->  - set irq_mask/unmask of "plic_chip" to NULL and point
->    irq_enable/disable of "plic_chip" to plic_irq_mask/unmask
->  - Add a detailed comment block in plic_init() about the
->    differences in Claim/Completion process of RISC-V PLIC and C9xx
->    PLIC.
+>  - Add thead,c900-plic in the description section
 > ---
->  drivers/irqchip/irq-sifive-plic.c | 25 +++++++++++++++++++++++--
->  1 file changed, 23 insertions(+), 2 deletions(-)
+>  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml    | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >
-> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> index cf74cfa82045..5b806d823df7 100644
-> --- a/drivers/irqchip/irq-sifive-plic.c
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -166,7 +166,7 @@ static void plic_irq_eoi(struct irq_data *d)
->         writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
->  }
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> index 08d5a57ce00f..82629832e5a5 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> @@ -35,6 +35,11 @@ description:
+>    contains a specific memory layout, which is documented in chapter 8 of the
+>    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
 >
-> -static struct irq_chip plic_chip = {
-> +static struct irq_chip sifive_plic_chip = {
->         .name           = "SiFive PLIC",
->         .irq_mask       = plic_irq_mask,
->         .irq_unmask     = plic_irq_unmask,
-> @@ -176,12 +176,24 @@ static struct irq_chip plic_chip = {
->  #endif
->  };
->
+> +  While the "thead,c900-plic" would mask IRQ with readl(claim), so it needn't
+> +  mask/unmask which needed in RISC-V PLIC. When in IRQS_ONESHOT & IRQCHIP_EOI_THREADED
+> +  path, unnecessary mask operation would cause a blocking irq bug in thead,c900-plic.
+> +  Because when IRQ is disabled in c900, writel(hwirq, claim) would be invalid.
 
-Please add a detailed comment block as described by point#2
-above.
+This is a totally incorrect description of the errata required for C9xx PLIC.
 
-> +static struct irq_chip thead_plic_chip = {
-> +       .name           = "T-Head PLIC",
-> +       .irq_disable    = plic_irq_mask,
-> +       .irq_enable     = plic_irq_unmask,
-> +       .irq_eoi        = plic_irq_eoi,
-> +#ifdef CONFIG_SMP
-> +       .irq_set_affinity = plic_set_affinity,
-> +#endif
-> +};
+Please don't project non-compliance as a feature of C9xx PLIC.
+
 > +
-> +static struct irq_chip *def_plic_chip = &sifive_plic_chip;
-> +
->  static int plic_irqdomain_map(struct irq_domain *d, unsigned int irq,
->                               irq_hw_number_t hwirq)
->  {
->         struct plic_priv *priv = d->host_data;
+>  maintainers:
+>    - Sagar Kadam <sagar.kadam@sifive.com>
+>    - Paul Walmsley  <paul.walmsley@sifive.com>
+> @@ -46,6 +51,7 @@ properties:
+>        - enum:
+>            - sifive,fu540-c000-plic
+>            - canaan,k210-plic
+> +          - thead,c900-plic
+>        - const: sifive,plic-1.0.0
+
+The PLIC DT node requires two compatible string:
+<implementation_compat>, <spec_compat>
+
+The C9xx PLIC is not RISC-V PLIC so, the DT node should
+be: "thead,c900-plic", "thead,c9xx-plic"
+
+You need to change "- const: sifive,plic-1.0.0" to
+- enum:
+    - sifive,plic-1.0.0
+    - thead,c9xx-plic
+
 >
-> -       irq_domain_set_info(d, irq, hwirq, &plic_chip, d->host_data,
-> +       irq_domain_set_info(d, irq, hwirq, def_plic_chip, d->host_data,
->                             handle_fasteoi_irq, NULL, NULL);
->         irq_set_noprobe(irq);
->         irq_set_affinity(irq, &priv->lmask);
-> @@ -390,5 +402,14 @@ static int __init plic_init(struct device_node *node,
->         return error;
->  }
->
-> +static int __init thead_c900_plic_init(struct device_node *node,
-> +               struct device_node *parent)
-> +{
-> +       def_plic_chip = &thead_plic_chip;
-> +
-> +       return plic_init(node, parent);
-> +}
-> +
->  IRQCHIP_DECLARE(sifive_plic, "sifive,plic-1.0.0", plic_init);
->  IRQCHIP_DECLARE(riscv_plic0, "riscv,plic0", plic_init); /* for legacy systems */
-> +IRQCHIP_DECLARE(thead_c900_plic, "thead,c900-plic", thead_c900_plic_init);
+>    reg:
 > --
 > 2.25.1
 >
