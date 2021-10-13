@@ -2,163 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E7A42BE4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 12:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E83842BE84
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbhJMLBT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Oct 2021 07:01:19 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:44306 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233785AbhJMLAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:00:51 -0400
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id S231792AbhJMLDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 07:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233341AbhJMLDX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 07:03:23 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8614DC0612A0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 04:00:37 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1maby7-0004L8-Os; Wed, 13 Oct 2021 12:58:43 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Guo Ren <guoren@kernel.org>, Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mabyZ-0005e3-LW; Wed, 13 Oct 2021 12:59:11 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mabyL-0005Lr-7I; Wed, 13 Oct 2021 12:58:57 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mabyL-0007HS-2y; Wed, 13 Oct 2021 12:58:57 +0200
+Date:   Wed, 13 Oct 2021 12:58:56 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-pci@vger.kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
+        Russell Currey <ruscur@russell.cc>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        oss-drivers@corigine.com, netdev@vger.kernel.org,
+        Oliver O'Halloran <oohall@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-scsi@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Ido Schimmel <idosch@nvidia.com>, x86@kernel.org,
+        qat-linux@intel.com, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jack Xu <jack.xu@intel.com>, Borislav Petkov <bp@alien8.de>,
+        Michael Buesch <m@bues.ch>, Jiri Pirko <jiri@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Rob Herring <robh@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH V3 1/2] dt-bindings: update riscv plic compatible string
-Date:   Wed, 13 Oct 2021 12:58:42 +0200
-Message-ID: <4123505.Qt7VF8zqPO@diego>
-In-Reply-To: <CAAhSdy21akVxyzP=Xnci=x+=ndL3DCJ3z7s24bwp9OG9Z5bj9Q@mail.gmail.com>
-References: <20211013012149.2834212-1-guoren@kernel.org> <4027415.QZv1u5a1DM@diego> <CAAhSdy21akVxyzP=Xnci=x+=ndL3DCJ3z7s24bwp9OG9Z5bj9Q@mail.gmail.com>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        xen-devel@lists.xenproject.org, Vadym Kochan <vkochan@marvell.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Taras Chornyi <tchornyi@marvell.com>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v6 00/11] PCI: Drop duplicated tracking of a pci_dev's
+ bound driver
+Message-ID: <20211013105856.yve6n5zu625im5fo@pengutronix.de>
+References: <20211013085131.5htnch5p6zv46mzn@pengutronix.de>
+ <20211013105428.GA1890798@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="52e44hxpwffbx22b"
+Content-Disposition: inline
+In-Reply-To: <20211013105428.GA1890798@bhelgaas>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 13. Oktober 2021, 11:49:20 CEST schrieb Anup Patel:
-> On Wed, Oct 13, 2021 at 3:13 PM Heiko Stübner <heiko@sntech.de> wrote:
-> >
-> > Am Mittwoch, 13. Oktober 2021, 11:19:53 CEST schrieb Anup Patel:
-> > > On Wed, Oct 13, 2021 at 2:44 PM Heiko Stübner <heiko@sntech.de> wrote:
-> > > >
-> > > > Am Mittwoch, 13. Oktober 2021, 11:11:26 CEST schrieb Anup Patel:
-> > > > > On Wed, Oct 13, 2021 at 2:27 PM Heiko Stübner <heiko@sntech.de> wrote:
-> > > > > >
-> > > > > > Hi Anup,
-> > > > > >
-> > > > > > Am Mittwoch, 13. Oktober 2021, 07:11:46 CEST schrieb Anup Patel:
-> > > > > > > On Wed, Oct 13, 2021 at 6:52 AM <guoren@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > From: Guo Ren <guoren@linux.alibaba.com>
-> > > > > > > >
-> > > > > > > > Add the compatible string "thead,c900-plic" to the riscv plic
-> > > > > > > > bindings to support SOCs with thead,c9xx processor cores.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > > > > > > Cc: Rob Herring <robh@kernel.org>
-> > > > > > > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > > > > > > > Cc: Anup Patel <anup@brainfault.org>
-> > > > > > > > Cc: Atish Patra <atish.patra@wdc.com>
-> > > > > > > >
-> > > > > > > > ---
-> > > > > > > >
-> > > > > > > > Changes since V3:
-> > > > > > > >  - Rename "c9xx" to "c900"
-> > > > > > > >  - Add thead,c900-plic in the description section
-> > > > > > > > ---
-> > > > > > > >  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml    | 6 ++++++
-> > > > > > > >  1 file changed, 6 insertions(+)
-> > > > > > > >
-> > > > > > > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> > > > > > > > index 08d5a57ce00f..82629832e5a5 100644
-> > > > > > > > --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> > > > > > > > +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-> > > > > > > > @@ -35,6 +35,11 @@ description:
-> > > > > > > >    contains a specific memory layout, which is documented in chapter 8 of the
-> > > > > > > >    SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
-> > > > > > > >
-> > > > > > > > +  While the "thead,c900-plic" would mask IRQ with readl(claim), so it needn't
-> > > > > > > > +  mask/unmask which needed in RISC-V PLIC. When in IRQS_ONESHOT & IRQCHIP_EOI_THREADED
-> > > > > > > > +  path, unnecessary mask operation would cause a blocking irq bug in thead,c900-plic.
-> > > > > > > > +  Because when IRQ is disabled in c900, writel(hwirq, claim) would be invalid.
-> > > > > > >
-> > > > > > > This is a totally incorrect description of the errata required for C9xx PLIC.
-> > > > > > >
-> > > > > > > Please don't project non-compliance as a feature of C9xx PLIC.
-> > > > > > >
-> > > > > > > > +
-> > > > > > > >  maintainers:
-> > > > > > > >    - Sagar Kadam <sagar.kadam@sifive.com>
-> > > > > > > >    - Paul Walmsley  <paul.walmsley@sifive.com>
-> > > > > > > > @@ -46,6 +51,7 @@ properties:
-> > > > > > > >        - enum:
-> > > > > > > >            - sifive,fu540-c000-plic
-> > > > > > > >            - canaan,k210-plic
-> > > > > > > > +          - thead,c900-plic
-> > > > > >
-> > > > > > we still want specific SoC names in the compatible, the "c900"
-> > > > > > is still a sort-of placeholder.
-> > > > >
-> > > > > Yes, we need "c900" compatible string as well. The "c9xx"
-> > > > > compatible string is for the custom PLIC spec followed by T-HEAD.
-> > > >
-> > > > What I meant was that the soc-specific string should name the
-> > > > actual SoC (c906, c910) and not some imaginary chip ;-)
-> > >
-> > > Ahh, yes. It should be an actual soc name in the compatible
-> > > string.
-> > >
-> > > For example, SiFive uses "fu540" string to identify some of the
-> > > devices on both SiFive unleashed and SiFive unmatched boards.
-> > >
-> > > I was under the impression that "c900" is an actual SoC name.
-> > >
-> > > Regards,
-> > > Anup
-> > >
-> > > >
-> > > > See for example mali gpu bindings for a similar reference
-> > > > in devicetree/bindings/gpu/arm,mali-bifrost.yaml .
-> > > >
-> > > >
-> > > >
-> > > >
-> > > > >
-> > > > > >
-> > > > > >
-> > > > > > > >        - const: sifive,plic-1.0.0
-> > > > > > >
-> > > > > > > The PLIC DT node requires two compatible string:
-> > > > > > > <implementation_compat>, <spec_compat>
-> > > > > > >
-> > > > > > > The C9xx PLIC is not RISC-V PLIC so, the DT node should
-> > > > > > > be: "thead,c900-plic", "thead,c9xx-plic"
-> > > > > > >
-> > > > > > > You need to change "- const: sifive,plic-1.0.0" to
-> > > > > > > - enum:
-> > > > > > >     - sifive,plic-1.0.0
-> > > > > > >     - thead,c9xx-plic
-> >
-> > isn't XuanTie the series containing the c906 and c910?
-> > So maybe
-> >         thead,xuantie-plic
-> > for the spec compatible.
-> >
-> > So doing in full
-> >         compatible = "thead,c906-plic", "thead,xuantie-plic"
-> 
-> This is a much better suggestion. I will let Guo decide.
 
-In any case, we'll also need a new entry in
-	devicetree/bindings/vendor-prefixes.yaml
-for the "thead" prefix in a separate patch, as it looks like such a
-thing is also still missing.
+--52e44hxpwffbx22b
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Heiko
+Hello,
 
+On Wed, Oct 13, 2021 at 05:54:28AM -0500, Bjorn Helgaas wrote:
+> On Wed, Oct 13, 2021 at 10:51:31AM +0200, Uwe Kleine-K=F6nig wrote:
+> > On Tue, Oct 12, 2021 at 06:32:12PM -0500, Bjorn Helgaas wrote:
+> > > diff --git a/drivers/misc/cxl/guest.c b/drivers/misc/cxl/guest.c
+> > > index d997c9c3ebb5..7eb3706cf42d 100644
+> > > --- a/drivers/misc/cxl/guest.c
+> > > +++ b/drivers/misc/cxl/guest.c
+> > > @@ -20,38 +20,38 @@ static void pci_error_handlers(struct cxl_afu *af=
+u,
+> > >  				pci_channel_state_t state)
+> > >  {
+> > >  	struct pci_dev *afu_dev;
+> > > +	struct pci_driver *afu_drv;
+> > > +	struct pci_error_handlers *err_handler;
+> >=20
+> > These two could be moved into the for loop (where afu_drv was with my
+> > patch already). This is also possible in a few other drivers.
+>=20
+> That's true, they could.  I tried to follow the prevailing style in
+> the file.  At least in cxl, I didn't see any other cases of
+> declarations being in the minimal scope like that.
 
+I don't care much, do whatever you consider nice. I'm happy you liked
+the cleanup and that you took it.
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--52e44hxpwffbx22b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFmu+0ACgkQwfwUeK3K
+7AnoGgf+Org0o7CctF9VMJ1cRL0/n994P0Xf4J0pVgDihRJKx2m6225saLIOfR9c
+tezswS1SpHGF0jh6VVcc26om68F6diINTuhV9HjdShrJ3OqoifBqUQ+ggPRWVaT5
+KB06t/1umM6bzcXmVvhwDX4+amPeFwfSPynHBfhudbA6DLwhCVuJk+109EvvuLlm
+u79Qp7+p4PyMwo699ubwQFekrSsf72gzSOfuRBPqHqx0SWbSUPlUyLyolxtsUD22
+7/ex/TOt2JrmP7lFEfLhrONg7BvlEBUokQ5MGQqxdyP/djPUVbtDoM3iX0kC7x2A
+Fa44dFbWF/D3+K4X5Cesu+BfzXP+rA==
+=xGeM
+-----END PGP SIGNATURE-----
+
+--52e44hxpwffbx22b--
