@@ -2,173 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DD742BB83
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FB642BB82
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 11:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239134AbhJMJ3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 05:29:47 -0400
-Received: from comms.puri.sm ([159.203.221.185]:58508 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237194AbhJMJ30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 05:29:26 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id EE175DF6D2;
-        Wed, 13 Oct 2021 02:26:52 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 7tBAZzFwpWvF; Wed, 13 Oct 2021 02:26:52 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 11:26:36 +0200
-From:   Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm, phone-devel@vger.kernel.org
-Subject: Re: [PATCH] media: imx: Round line size to 4 bytes
-Message-ID: <20211013112636.6963344d.dorota.czaplejewicz@puri.sm>
-In-Reply-To: <7d61fdbd161fce40874766bde5f95c3b73f1a96d.camel@pengutronix.de>
-References: <20211006110207.256325-1-dorota.czaplejewicz@puri.sm>
-        <7d61fdbd161fce40874766bde5f95c3b73f1a96d.camel@pengutronix.de>
-Organization: Purism
+        id S238359AbhJMJ3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 05:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236145AbhJMJ3Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 05:29:24 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0A3C061570;
+        Wed, 13 Oct 2021 02:27:20 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id a25so7445359edx.8;
+        Wed, 13 Oct 2021 02:27:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+/MfPZS60YJ0eap0AJdMs6gge+XO+BZUvon0pBTzNGA=;
+        b=evc4kDT+QZNhO898nkNWsOvYd5uoHISP2WxjXfUrXPc/LAvzY9eu3qYsrzHLMiVRP3
+         7ek8KrGpW83pP3+71f6NoTqJUNew57wgLSdZESolUuO3w3SjswV4oNuZrRCsx5d2Sz6Z
+         U6Dil/exw/Z01VwoZLKDTI9+cXYT6HoMhvbPnOyg97B0PkHUENz49VLf5qJ3twBM3fy6
+         bHXGjIYLA3Q6jVCBIp04R0UFvkX24frr6ijNGP3vuZmaos7c/PDqm98vd8l9QZ2VLZ00
+         0EBJxe8ZaQK4AqNo/Rk1lDSww7yrEMjrcnUEwQvCtD2OBAhLhOYcZrSIMXdkiq7GrIG/
+         lN/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+/MfPZS60YJ0eap0AJdMs6gge+XO+BZUvon0pBTzNGA=;
+        b=sB4NJpdNsDPkUy6mxgmKe4HtKEN2nu+cK//OpsRyWcLfqCQ31MaLagEbI4kFORFqWT
+         DXbHANfm+km5qyLipWbKv5591O8apIQedw6yhqLc6B1Lu6kV3JmypGG4iKk2WO5NLkRa
+         zJbI6VauabL7kp7wxsO8rh1LG//nT89gz2Z0A/Ir7ZciqzBTL295g8CrovWFVz0JNd4K
+         KMhMg5Ydf7Xmdxs2sxIPMdWWfBLbKkwgNmHyJEe1KkptIjkS7UtgLwkWzDKnP6F1oiOm
+         4z+NWC8E31Hcy0XwUwG6HCd8EhncS4c00qRbwmTVYNuK5UhVy/FLe+YQo9dJvL2k0Srj
+         swAg==
+X-Gm-Message-State: AOAM531TZwmZkz1ZBJo16E9AqcvamrBTbCU10ocMMZ9lBNlzUFX1/LQp
+        +Azpq2TJkpSzwoXVZ2AYXYmrGbmWlW/LJhHRc6k=
+X-Google-Smtp-Source: ABdhPJzL0SqFZyZBLTfBNcE8CpMsywyY4boERpEcXyUfc9yUq7Z2mLOKk/hnon0PQ/WXXVk02NgEbEHqrWvW2H64g2s=
+X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr40092015ejc.69.1634117238956;
+ Wed, 13 Oct 2021 02:27:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Lb+aKW2dEDTyBgr2xwG1woU";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20211004125935.2300113-1-u.kleine-koenig@pengutronix.de> <20211012233212.GA1806189@bhelgaas>
+In-Reply-To: <20211012233212.GA1806189@bhelgaas>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 13 Oct 2021 12:26:42 +0300
+Message-ID: <CAHp75Vd0uYEdfB0XaQuUV34V91qJdHR5ARku1hX_TCJLJHEjxQ@mail.gmail.com>
+Subject: Re: [PATCH v6 00/11] PCI: Drop duplicated tracking of a pci_dev's
+ bound driver
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ido Schimmel <idosch@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>, Jack Xu <jack.xu@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        Juergen Gross <jgross@suse.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Michael Buesch <m@bues.ch>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Russell Currey <ruscur@russell.cc>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomaszx Kowalik <tomaszx.kowalik@intel.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-crypto <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>,
+        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
+        MPT-FusionLinux.pdl@broadcom.com, netdev <netdev@vger.kernel.org>,
+        oss-drivers@corigine.com, qat-linux@intel.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Lb+aKW2dEDTyBgr2xwG1woU
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 13, 2021 at 2:33 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> On Mon, Oct 04, 2021 at 02:59:24PM +0200, Uwe Kleine-K=C3=B6nig wrote:
 
-Hello,
+> I split some of the bigger patches apart so they only touched one
+> driver or subsystem at a time.  I also updated to_pci_driver() so it
+> returns NULL when given NULL, which makes some of the validations
+> quite a bit simpler, especially in the PM code in pci-driver.c.
 
-On Fri, 08 Oct 2021 14:19:41 +0200
-Philipp Zabel <p.zabel@pengutronix.de> wrote:
+It's a bit unusual. Other to_*_dev() are not NULL-aware IIRC.
 
-> Hi Dorota,
->=20
-> On Wed, 2021-10-06 at 13:05 +0200, Dorota Czaplejewicz wrote:
-> > Section 13.7.6.13 "CSI Image Parameter Register" of the
-> > i.MX 8M Quad Applications Processors Reference Manual
-> > states that the line size should be divisible by 8 bytes.
-> > However, the hardware also accepts sizes divisible by 4 bytes.
-> >=20
-> > This patch accepts line sizes divisible 4-bytes in non-planar mode. =20
->=20
-> Thank you, this makes it much clearer. I see two issues with this,
-> though, one small and one a bit bigger:
->=20
-> First, I'd be wary of disregarding the reference manual - unless we know
-> better, and then it should be well documented in the code. It might be
-> that the 8-byte alignment requirement stems from the fact that the FIFO
-> operates in double-word units, which might cause the CSI to write over
-> the end of the buffer if the line width is odd (in 32-bit words).
-> Or maybe it's just that the FBUF_STRIDE conflicts with this, I'm unclear
-> on whether that is only given in units of dwords (although the driver
-> currently doesn't support this anyway).
->=20
-> I wonder: if you use 4-byte aligned width and odd height, does the CSI
-> write over the end of the buffer?
+Below are some comments as well.
 
-I tested this case, and found a glitch which suggests the last 4 bytes are =
-ignored:
+...
 
-https://source.puri.sm/Librem5/linux-next/uploads/cfb59e3832431aaa3a6954945=
-5502568/image.png
+>  static bool match_id(struct pci_dev *pdev, unsigned short vendor, unsign=
+ed short device)
+>  {
+> +       struct pci_driver *drv =3D to_pci_driver(pdev->dev.driver);
+>         const struct pci_device_id *id;
+>
+>         if (pdev->vendor =3D=3D vendor && pdev->device =3D=3D device)
+>                 return true;
 
-That would be taken care of rounding up towards a number decided at runtime=
-, like:
+> +       for (id =3D drv ? drv->id_table : NULL; id && id->vendor; id++)
+> +               if (id->vendor =3D=3D vendor && id->device =3D=3D device)
 
-divisor =3D 8 >> (mbus->height % 2);
->=20
-> > Signed-off-by: Dorota Czaplejewicz <dorota.czaplejewicz@puri.sm>
-> > ---
-> >=20
-> > Hello,
-> >=20
-> > my previous patch identified something that was not a problem,
-> > so I'm sending a different one.
-> >=20
-> > This has been tested on the Librem 5.
-> >=20
-> > Cheers,
-> > Dorota
-> >=20
-> >  drivers/staging/media/imx/imx-media-utils.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/drivers/staging/media/imx/imx-media-utils.c b/drivers/stag=
-ing/media/imx/imx-media-utils.c
-> > index 5128915a5d6f..a303003929e3 100644
-> > --- a/drivers/staging/media/imx/imx-media-utils.c
-> > +++ b/drivers/staging/media/imx/imx-media-utils.c
-> > @@ -545,13 +545,13 @@ int imx_media_mbus_fmt_to_pix_fmt(struct v4l2_pix=
-_format *pix,
-> >  	}
-> > =20
-> >  	/* Round up width for minimum burst size */
-> > -	width =3D round_up(mbus->width, 8);
-> > +	width =3D round_up(mbus->width, 4);
-> > =20
-> >  	/* Round up stride for IDMAC line start address alignment */
-> >  	if (cc->planar)
-> >  		stride =3D round_up(width, 16);
-> >  	else
-> > -		stride =3D round_up((width * cc->bpp) >> 3, 8);
-> > +		stride =3D round_up((width * cc->bpp) >> 3, 4); =20
->=20
-> Second, even if this works fine on the i.MX7/8M CSI, the alignment is
-> still required for the i.MX5/6 IPU, for which this code and the comments
-> were written. So we need a way to differentiate the two cases here.
->=20
-> regards
-> Philipp
+> +                       break;
 
-How best to go about this? I can see in the file imx-media-capture.c that t=
-here the video device lives in struct capture_priv.vdev.vfd. Would that be =
-the right place to query about the underlying hardware?
+return true;
 
-Then the following functions would gain a new "small_divisor" parameter:
-- imx_media_mbus_fmt_to_pix_fmt (a GPL symbol)
-- imx_media_mbus_fmt_to_ipu_image (a GPL symbol)
-- __capture_try_fmt
+>         return id && id->vendor;
 
-Those would have to extract the device type from struct capture_priv:
-- __capture_legacy_try_fmt
-- capture_try_fmt_vid_cap
-- capture_s_fmt_vid_cap
-- capture_init_format
+return false;
 
-Regards,
-Dorota
+>  }
 
---Sig_/Lb+aKW2dEDTyBgr2xwG1woU
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+...
 
------BEGIN PGP SIGNATURE-----
+> +                       afu_result =3D err_handler->error_detected(afu_de=
+v,
+> +                                                                state);
 
-iQIzBAEBCAAdFiEExKRqtqfFqmh+lu1oADBpX4S8ZncFAmFmpkwACgkQADBpX4S8
-Zne+Wg/+MuIDGf86E/3/MqRiCINZ9zRQOQ7IPp/BCUpsxVBh5BEVKZKjkDQAoi1O
-x5/OXocME8+T7mU6NMuShIoXdCt9nX1yZ8kZTv9TcLjV+/Fd4gu5e7M6WQ4PP7CT
-V+EU38QiIPpMCavCQBKU+MIS2HNwMeZsz8G/Z5gjtPMR/Xnhh764c7wPuwWOpsOH
-aDulbdrJ0nkKSrOznou6eDgxWXDk4cuHOVe14e61k52MfXsSbXzNYV9IWUkzOL/d
-6gXVSOp9X0QC5TeDgjgVXFIJy/G5c7iOO1xNzfz4Ayg+C98lwWKfkCELUUSJGQer
-Az1t1NSjLS3oZQBL1BkDp+N9y1/Q7PBPVGi6e5wtCjeoLQuRZnyRb04+qVLM/lfo
-IieI8RtIiSx7g0jg0EALCfksUEPddln5lcR994AEtVrHjnmexOFsSFtBKZiKNNS8
-tfWO/dIfDrE8+HbXGzXWuijAQMq7M7D5t7OeHjZ+lCXuZJlCY2EmVTz20ho1rs82
-1KaX/S9/fq8Qk56xc4oUXPfWm7GZwgqBguRPHiSeIeIe0C5Y3sV9MCWqZ3Fze1ey
-7IW3mgMbFWT6wg8KAPMEa2oegymDxgO0P4r58qY3r4D2yJ5j34wpjm05PC06uBvZ
-atqqq9dIOsZ1XeKetuj5yieHhzpNId5n7GKfmIaEtObhCinXZrI=
-=YM5e
------END PGP SIGNATURE-----
+One line?
 
---Sig_/Lb+aKW2dEDTyBgr2xwG1woU--
+...
+
+>         device_lock(&vf_dev->dev);
+> -       if (vf_dev->dev.driver) {
+> +       if (to_pci_driver(vf_dev->dev.driver)) {
+
+Hmm...
+
+...
+
+> +               if (!pci_dev->state_saved && pci_dev->current_state !=3D =
+PCI_D0
+
+> +                   && pci_dev->current_state !=3D PCI_UNKNOWN) {
+
+Can we keep && on the previous line?
+
+> +                       pci_WARN_ONCE(pci_dev, pci_dev->current_state !=
+=3D prev,
+> +                                     "PCI PM: Device state not saved by =
+%pS\n",
+> +                                     drv->suspend);
+>                 }
+
+...
+
+> +       return drv && drv->resume ?
+> +                       drv->resume(pci_dev) : pci_pm_reenable_device(pci=
+_dev);
+
+One line?
+
+...
+
+> +       struct pci_driver *drv =3D to_pci_driver(dev->dev.driver);
+>         const struct pci_error_handlers *err_handler =3D
+> -                       dev->dev.driver ? to_pci_driver(dev->dev.driver)-=
+>err_handler : NULL;
+> +                       drv ? drv->err_handler : NULL;
+
+Isn't dev->driver =3D=3D to_pci_driver(dev->dev.driver)?
+
+...
+
+> +       struct pci_driver *drv =3D to_pci_driver(dev->dev.driver);
+>         const struct pci_error_handlers *err_handler =3D
+> -                       dev->dev.driver ? to_pci_driver(dev->dev.driver)-=
+>err_handler : NULL;
+> +                       drv ? drv->err_handler : NULL;
+
+Ditto.
+
+...
+
+>         device_lock(&dev->dev);
+> +       pdrv =3D to_pci_driver(dev->dev.driver);
+>         if (!pci_dev_set_io_state(dev, state) ||
+> -               !dev->dev.driver ||
+> -               !(pdrv =3D to_pci_driver(dev->dev.driver))->err_handler |=
+|
+
+> +               !pdrv ||
+> +               !pdrv->err_handler ||
+
+One line now?
+
+>                 !pdrv->err_handler->error_detected) {
+
+Or this and the previous line?
+
+...
+
+> +       pdrv =3D to_pci_driver(dev->dev.driver);
+> +       if (!pdrv ||
+> +               !pdrv->err_handler ||
+>                 !pdrv->err_handler->mmio_enabled)
+>                 goto out;
+
+Ditto.
+
+...
+
+> +       pdrv =3D to_pci_driver(dev->dev.driver);
+> +       if (!pdrv ||
+> +               !pdrv->err_handler ||
+>                 !pdrv->err_handler->slot_reset)
+>                 goto out;
+
+Ditto.
+
+...
+
+>         if (!pci_dev_set_io_state(dev, pci_channel_io_normal) ||
+> -               !dev->dev.driver ||
+> -               !(pdrv =3D to_pci_driver(dev->dev.driver))->err_handler |=
+|
+> +               !pdrv ||
+> +               !pdrv->err_handler ||
+>                 !pdrv->err_handler->resume)
+>                 goto out;
+
+Ditto.
+
+> -       result =3D PCI_ERS_RESULT_NONE;
+>
+>         pcidev =3D pci_get_domain_bus_and_slot(domain, bus, devfn);
+>         if (!pcidev || !pcidev->dev.driver) {
+>                 dev_err(&pdev->xdev->dev, "device or AER driver is NULL\n=
+");
+>                 pci_dev_put(pcidev);
+> -               return result;
+> +               return PCI_ERS_RESULT_NONE;
+>         }
+>         pdrv =3D to_pci_driver(pcidev->dev.driver);
+
+What about splitting the conditional to two with clear error message
+in each and use pci_err() in the second one?
+
+...
+
+>                 default:
+>                         dev_err(&pdev->xdev->dev,
+> -                               "bad request in aer recovery "
+> -                               "operation!\n");
+> +                               "bad request in AER recovery operation!\n=
+");
+
+Stray change? Or is it in a separate patch in your tree?
+
+--=20
+With Best Regards,
+Andy Shevchenko
