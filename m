@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3755D42CA66
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C3F42CA6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhJMTvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 15:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhJMTvW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 15:51:22 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A4AC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:49:18 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id g125so5303678oif.9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:49:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=51iCtJfwF5rNqKCUIND5PpXwy486y8bSNPCFCoqsvKM=;
-        b=GtN6f8PMidexfjnF/349pYjiZmXuf6rowzWXAw7EvtyJS68wcCRNFBO0ttVehwhlVh
-         il/ckZ8S2Ye4H4vbo6TOFCgaFJAN1lTCglERo0fqfglSlD0AWLI9QAJRQMmSWnVyFHpO
-         D4kmC6mAwQRLnVM1DUj8rY42VzjXPBOdS3izs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=51iCtJfwF5rNqKCUIND5PpXwy486y8bSNPCFCoqsvKM=;
-        b=pBTP/DBqbi1DD1CrFQeUcLinHOU1URa7UIqbGaVFQkC0Y0TzCIqk9SPGZXGymGpWPD
-         SsOvznN51ZUtL5yo3TKFo8mKDoeXRkBq4ycJZJJTwSED9qOFjV0vgr9SUjEvj0AFVu+Y
-         iLWaN8FI+Fx+4W1zeAhF1Ql5jjipsupY0M0T07nHTaowD1ND1Q1otIBjuxdOI14d8TNM
-         jvxAHFpgOSH+4YpGYq86zmByu6OjneGlfID5b8UZ24E+IvoObybfm4THHKsc7UogcQK9
-         4FJ60CcAojOFF9CmUxkHRY3p88Sqx4uT7f3izkTGWvpPLO1tpiiyB/ORixCWuWlRZ6Zy
-         G5ZA==
-X-Gm-Message-State: AOAM5303v9+xe1XS/No3prMb1omZbv/qbJ4PekfRbGJc/dSipkaClqIX
-        dk1LMAbXibvP25mwS9dGSh5bld4C9XeLMCzOjXQhXw==
-X-Google-Smtp-Source: ABdhPJxX7OwXr/yMPANG+HHhHuaY5istIek0XSOY4+ZivdVb8quhuZc49QWi/nEmYjVgcpXIEGjwzniAFVFFCF4sz7c=
-X-Received: by 2002:aca:3306:: with SMTP id z6mr9586177oiz.164.1634154558286;
- Wed, 13 Oct 2021 12:49:18 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 13 Oct 2021 14:49:17 -0500
+        id S235616AbhJMTxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 15:53:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229529AbhJMTw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 15:52:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3164B610A2;
+        Wed, 13 Oct 2021 19:50:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634154656;
+        bh=Qo88RRyOt64j7+08prsyQHVAw/B+SOseGVO3GTYGKnM=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=kf0x192TAlcxyRsRJH3n4hsMNu8TYIlvJh0PvW8ohswOZNS1UCcilEtilHdfRc0w4
+         5wWdg/0NZ1nh7AtkoNbYTzMkMQM+B9/OfAM6IzSnEA1UTfcFe9Rsd2Cqjja38vm5Gn
+         3mB5WaXT6rza5O0TTvZ5emyd6RV/W+0b44SfSAJlxhES1yraAha2YHksV355HhN48c
+         Ge1bS2GGUz33zAZ5hUTLcIOG+Sbzmg7HS+0HfpFGjTn6SqZBGmGQbYYSIxa6rOrLUt
+         +GXBrFi0fvG1wTX9KZKn7mD+aGn7q1ANNDqnZWCbrzGaaxTqda9X/TuMsbj0dAYld4
+         53EEgNkAdTI1Q==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <YWbPfwnbLKNZkRcB@phenom.ffwll.local>
-References: <20211006193819.2654854-1-swboyd@chromium.org> <20211006193819.2654854-2-swboyd@chromium.org>
- <YWbPfwnbLKNZkRcB@phenom.ffwll.local>
-From:   Stephen Boyd <swboyd@chromium.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <4614587c-b87a-4375-cb6a-6af6f5462c6b@linaro.org>
+References: <20210829154757.784699-1-dmitry.baryshkov@linaro.org> <20210829154757.784699-8-dmitry.baryshkov@linaro.org> <YV8WsQb9H7+CaLjP@ripper> <4614587c-b87a-4375-cb6a-6af6f5462c6b@linaro.org>
+Subject: Re: [PATCH v7 7/8] clk: qcom: dispcc-sm8250: stop using mmcx regulator
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 13 Oct 2021 12:50:54 -0700
+Message-ID: <163415465484.936110.9292145029740247591@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
-Date:   Wed, 13 Oct 2021 14:49:17 -0500
-Message-ID: <CAE-0n51FFUCb8C55bHSM0Fz16U65CvjGzVVe9CToqnFNZ6-bSQ@mail.gmail.com>
-Subject: Re: [PATCH v2 01/34] component: Introduce struct aggregate_device
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        Saravana Kannan <saravanak@google.com>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Daniel Vetter (2021-10-13 05:22:23)
-> On Wed, Oct 06, 2021 at 12:37:46PM -0700, Stephen Boyd wrote:
-> > Replace 'struct master' with 'struct aggregate_device' and then rename
-> > 'master' to 'adev' everywhere in the code. While we're here, put a
-> > struct device inside the aggregate device so that we can register it
-> > with a bus_type in the next patch.
-> >
-> > The diff is large but that's because this is mostly a rename, where
-> > sometimes 'master' is replaced with 'adev' and other times it is
-> > replaced with 'parent' to indicate that the struct device that was being
-> > used is actually the parent of the aggregate device and driver.
-> >
-> > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Cc: Rob Clark <robdclark@gmail.com>
-> > Cc: Russell King <rmk+kernel@arm.linux.org.uk>
-> > Cc: Saravana Kannan <saravanak@google.com>
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
->
-> This adds device model stuff, please cc Greg KH and ask him to review
-> this. Maybe also an ack from Rafael would be good whether this makes
-> sense.
+Quoting Dmitry Baryshkov (2021-10-07 09:16:13)
+> On 07/10/2021 18:48, Bjorn Andersson wrote:
+> > On Sun 29 Aug 08:47 PDT 2021, Dmitry Baryshkov wrote:
+> >=20
+> >> Now as the common qcom clock controller code has been taught about pow=
+er
+> >> domains, stop mentioning mmcx supply as a way to power up the clock
+> >> controller's gdsc.
+> >>
+> >> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >=20
+> > Once we merge these, I expect that the boards will start crashing if
+> > the kernel is booted using an existing DTB?
+> >=20
+> > Is it okay to just merge the first 6 patches in the series now and
+> > postpone these two until we've had the dts change sitting for a while?
+>=20
+> Sure it is.
+>=20
 
-I will explicitly Cc Greg on these component.c patches.
-
->
-> Once we have that I think we can then go&collect acks/review for all the
-> driver changes and get this sorted. Thanks a lot for pushing this forward.
-
-I'll resend the series today. This one has some compilation problems
-that I've fixed now.
+What's the merge strategy? It goes through arm-soc?
