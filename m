@@ -2,148 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA7342CEE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 242F342CEE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbhJMWzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 18:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
+        id S229721AbhJMW4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 18:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbhJMWzg (ORCPT
+        with ESMTP id S229575AbhJMW4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 18:55:36 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38627C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:53:32 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id y7so3782918pfg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:53:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mD52ke93bZgMN8C2a9gCtqv/RSz+k+TH8msNFSfXTEI=;
-        b=111IYqB5RWpR47n+J9LBNzUiwKITM04Su9x8IakTob8UD0Fpo6EPKusY5AgXimwuXb
-         377AkSssdJvml0TXvPV9uVNumAo5IC2LMqp7eZ1Xeav/DRvwkTDvkyyTFv+h1tEMp9CC
-         De5w7Hi6Y/tPn8BLywbkiorQH3J85/Kq6POg32i6PB4ok63I4v/qWQw1LfGjTeB9ogvY
-         PB/HqYOIkMHNUwg5m8gb/6YVP/9LI7I2MdiilPE2t17kf4EuQngM7hSWYHbpa0hBiLJs
-         U1rJE4STnZmdmNaj8Wwj6D9PXEQU3peVnr+P/0qnhlMNVYhux01Zo507yBcOgU8hDQb1
-         FiUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mD52ke93bZgMN8C2a9gCtqv/RSz+k+TH8msNFSfXTEI=;
-        b=HJgSnBAvNT3uw1q6RV9Vws0lZvSOxD9nidDtgPnrlu8uQbAW+6d1qX3SFHLBgmhk8j
-         b2m4C5YsrExSRebzTNXRhSzyPgI8CrVZxcjMHBpUwvQOBtrSKNVsB5pmWC8W03apPgpg
-         AdbXGnX0KC/xXgAF0GdGqYh7n20E4477JwRfIg2PC+pLoB8Rpv56KP2/U9O6KcddPee2
-         WHfwSSSBXf/xfMvJx8qTcMnFOU45Uymio+myM8wlpaZHgy7pF8nMi74rR4kalPb2YH6s
-         u4S9omZKLgSUbYSRQRMp9E0u4jEoPUX+A8BnHOLWBxz3dvfjSN7/kv6o5N49eOKUSXEH
-         iA4Q==
-X-Gm-Message-State: AOAM5331WmwcsXcoaZlmmBSTaJeBUnAwoUKEJx4QaJRkNryih8aFTyoD
-        QW2Pd5dWikm4d1jYqSlK3/3VZ0VlVShM8kPaC0vtfecSRjk=
-X-Google-Smtp-Source: ABdhPJzUs+C9Y/nPSblGHzVkRKNZwUBEduOOiELpNCPsaOpR5gHLldCoGaAsU4ZIsdGNciujcHSWWgt+DEurN/y2eTo=
-X-Received: by 2002:a05:6a00:140e:b0:444:b077:51ef with SMTP id
- l14-20020a056a00140e00b00444b07751efmr1680391pfu.61.1634165611611; Wed, 13
- Oct 2021 15:53:31 -0700 (PDT)
+        Wed, 13 Oct 2021 18:56:35 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E68C061570;
+        Wed, 13 Oct 2021 15:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=DsH9WcMVyggggsdQx3bujMapUdnlUoCWn8obGz9Evmg=; b=GUGQh00o6vm3mO8uquvBObd9k9
+        xig3DOa/oIupOI44S2XFrwQSfegbECOQ6MKl7rK9p32qB6d9mttvm4bECkIyO9Apb16anxPPnCQTF
+        BIiIdsU8F11eb0+F6EUQcI1mCPZMckQtjmedLAAJi38DWx8ci7qKe4AWQZrZ6vsu6J7OygfgR/WGR
+        BLz/wjUInJEHPfBYDOaVFvkaRjbpAcIXEM206gIfwoJr7rUKXF6IOGoVIriYNTHaYVEyRDnl8iZjZ
+        lEAbH+ivxLghmvukFqSpixPR5QGqI06jfHR3yLujF3AYmbo4YHFoOzCiq6uAZJosRMDrENx+jtzwx
+        9Ln/7dDA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1man8o-000wgr-2f; Wed, 13 Oct 2021 22:54:30 +0000
+Subject: Re: [RFC PATCH v7 07/16] ipe: add auditing support
+To:     deven.desai@linux.microsoft.com, corbet@lwn.net, axboe@kernel.dk,
+        agk@redhat.com, snitzer@redhat.com, ebiggers@kernel.org,
+        tytso@mit.edu, paul@paul-moore.com, eparis@redhat.com,
+        jmorris@namei.org, serge@hallyn.com
+Cc:     jannh@google.com, dm-devel@redhat.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-audit@redhat.com,
+        linux-security-module@vger.kernel.org
+References: <1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com>
+ <1634151995-16266-8-git-send-email-deven.desai@linux.microsoft.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9c1eec3b-8bb0-9e3e-d6e5-18c670ac2b03@infradead.org>
+Date:   Wed, 13 Oct 2021 15:54:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
- <163379786922.692348.2318044990911111834.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20211010042056.GJ3114988@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20211010042056.GJ3114988@iweiny-DESK2.sc.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 13 Oct 2021 15:53:20 -0700
-Message-ID: <CAPcyv4hP5ohs10-xC+h=QOH7yiUXji55ubwVG1XfMA006tjR8A@mail.gmail.com>
-Subject: Re: [PATCH v3 06/10] cxl/pci: Add @base to cxl_register_map
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1634151995-16266-8-git-send-email-deven.desai@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 9, 2021 at 9:21 PM Ira Weiny <ira.weiny@intel.com> wrote:
->
-> On Sat, Oct 09, 2021 at 09:44:29AM -0700, Dan Williams wrote:
-> > In addition to carrying @barno, @block_offset, and @reg_type, add @base
-> > to keep all map/unmap parameters in one object. The helpers
-> > cxl_{map,unmap}_regblock() handle adjusting @base to the @block_offset
-> > at map and unmap time.
-> >
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > ---
-> >  drivers/cxl/cxl.h |    1 +
-> >  drivers/cxl/pci.c |   31 ++++++++++++++++---------------
-> >  2 files changed, 17 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> > index a6687e7fd598..7cd16ef144dd 100644
-> > --- a/drivers/cxl/cxl.h
-> > +++ b/drivers/cxl/cxl.h
-> > @@ -140,6 +140,7 @@ struct cxl_device_reg_map {
-> >  };
-> >
-> >  struct cxl_register_map {
-> > +     void __iomem *base;
-> >       u64 block_offset;
-> >       u8 reg_type;
-> >       u8 barno;
-> > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> > index 9f006299a0e3..b42407d067ac 100644
-> > --- a/drivers/cxl/pci.c
-> > +++ b/drivers/cxl/pci.c
-> > @@ -306,8 +306,7 @@ static int cxl_pci_setup_mailbox(struct cxl_mem *cxlm)
-> >       return 0;
-> >  }
-> >
-> > -static void __iomem *cxl_pci_map_regblock(struct pci_dev *pdev,
-> > -                                       struct cxl_register_map *map)
-> > +static int cxl_map_regblock(struct pci_dev *pdev, struct cxl_register_map *map)
-> >  {
-> >       void __iomem *addr;
-> >       int bar = map->barno;
-> > @@ -318,24 +317,27 @@ static void __iomem *cxl_pci_map_regblock(struct pci_dev *pdev,
-> >       if (pci_resource_len(pdev, bar) < offset) {
-> >               dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
-> >                       &pdev->resource[bar], (unsigned long long)offset);
-> > -             return NULL;
-> > +             return -ENXIO;
-> >       }
-> >
-> >       addr = pci_iomap(pdev, bar, 0);
-> >       if (!addr) {
-> >               dev_err(dev, "failed to map registers\n");
-> > -             return addr;
-> > +             return -ENOMEM;
-> >       }
-> >
-> >       dev_dbg(dev, "Mapped CXL Memory Device resource bar %u @ %#llx\n",
-> >               bar, offset);
-> >
-> > -     return addr;
-> > +     map->base = addr + map->block_offset;
-> > +     return 0;
-> >  }
-> >
-> > -static void cxl_pci_unmap_regblock(struct pci_dev *pdev, void __iomem *base)
-> > +static void cxl_unmap_regblock(struct pci_dev *pdev,
-> > +                            struct cxl_register_map *map)
-> >  {
-> > -     pci_iounmap(pdev, base);
-> > +     pci_iounmap(pdev, map->base - map->block_offset);
->
-> I know we need to get these in soon.  But I think map->base should be 'base'
-> and map->block_offset should be handled in cxl_probe_regs() rather than
-> subtract it here..
+Hi,
 
-But why? The goal of the cxl_register_map cleanups is to reduce the
-open-coding for details that can just be passed around in a @map
-instance. Once cxl_map_regblock() sets up @base there's little reason
-to consider the hardware regblock details.
+On 10/13/21 12:06 PM, deven.desai@linux.microsoft.com wrote:
+> diff --git a/security/ipe/Kconfig b/security/ipe/Kconfig
+> index c4503083e92d..ef556b66e674 100644
+> --- a/security/ipe/Kconfig
+> +++ b/security/ipe/Kconfig
+> @@ -17,3 +17,55 @@ menuconfig SECURITY_IPE
+>   	  requirements on the fly.
+>   
+>   	  If unsure, answer N.
+> +
+> +if SECURITY_IPE
+> +
+> +choice
+> +	prompt "Hash algorithm used in auditing policies"
+> +	default IPE_AUDIT_HASH_SHA1
+> +	depends on AUDIT
+> +	help
+> +		Specify the hash algorithm used when auditing policies.
+> +		The hash is used to uniquely identify a policy from other
+> +		policies on the system.
+> +
+> +		If unsure, leave default.
+> +
+> +	config IPE_AUDIT_HASH_SHA1
+> +		bool "sha1"
+> +		depends on CRYPTO_SHA1
+> +		help
+> +			Use the SHA128 algorithm to hash policies
+> +			in the audit records.
+> +
+> +	config IPE_AUDIT_HASH_SHA256
+> +		bool "sha256"
+> +		depends on CRYPTO_SHA256
+> +		help
+> +			Use the SHA256 algorithm to hash policies
+> +			in the audit records.
+> +
+> +	config IPE_AUDIT_HASH_SHA384
+> +		bool "sha384"
+> +		depends on CRYPTO_SHA512
+> +		help
+> +			Use the SHA384 algorithm to hash policies
+> +			in the audit records
+> +
+> +	config IPE_AUDIT_HASH_SHA512
+> +		bool "sha512"
+> +		depends on CRYPTO_SHA512
+> +		help
+> +			Use the SHA512 algorithm to hash policies
+> +			in the audit records
+> +endchoice
+> +
+> +config IPE_AUDIT_HASH_ALG
+> +	string
+> +	depends on AUDIT
+> +	default "sha1" if IPE_AUDIT_HASH_SHA1
+> +	default "sha256" if IPE_AUDIT_HASH_SHA256
+> +	default "sha384" if IPE_AUDIT_HASH_SHA384
+> +	default "sha512" if IPE_AUDIT_HASH_SHA512
+> +
+> +endif
 
-> Either way this is cleaner than what it was.
->
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+Please follow coding-style for Kconfig files:
 
-Thanks!
+(from Documentation/process/coding-style.rst, section 10):
+
+For all of the Kconfig* configuration files throughout the source tree,
+the indentation is somewhat different.  Lines under a ``config`` definition
+are indented with one tab, while help text is indented an additional two
+spaces.
+
+
+thanks.
+-- 
+~Randy
