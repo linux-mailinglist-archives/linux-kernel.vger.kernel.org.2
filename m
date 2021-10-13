@@ -2,162 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818C342B249
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C7A42B24C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 03:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbhJMBhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Oct 2021 21:37:06 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:54782 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbhJMBhF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Oct 2021 21:37:05 -0400
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 19D1YjgN010005;
-        Wed, 13 Oct 2021 10:34:45 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 19D1YjgN010005
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1634088885;
-        bh=Rum5tYvv5Fo1dRwnGCxHyKMZgx+WDyy9BHLvS2hSW2c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=b3tYroIrUf8xtVNAyrYAprxjm9+4krBIcXjGTza3sVk7r2PMCI0Dc183TARIT8dCx
-         lkOnnIGBXuYTGa6FYHHu4Z5Gay0rp2DgUIMGNG8XRICoYzwjH0kWxOD3KPN3/S/R5I
-         mYeOKVlEqMqAKkEAYEJX7ivJ4E+/lXn2QiWIRItMDgwTro1lEoqdxd9UuQ43OpfILi
-         0+CWXXwVfBlTcyseBIVKm05vrxZvfqDS0hUBl5W8Ew/dEft8q6nk59LFXAknnTS/Ck
-         tHFxAGNBDCl47Aufhv+mrmapYTz0sWbLwLq97uLAjfaCHwA6mN3cXtoosmJoxqeIgm
-         sTR97bM8uOE5Q==
-X-Nifty-SrcIP: [209.85.215.180]
-Received: by mail-pg1-f180.google.com with SMTP id e7so764387pgk.2;
-        Tue, 12 Oct 2021 18:34:45 -0700 (PDT)
-X-Gm-Message-State: AOAM533OYXo0nbH3fHWJqwk7hnNmY+Jr6dUPeLWBKeovLoU/kO0oux+A
-        cvOTAjDhq88z1YPEXQMv28IFVIp7cyCOX6wZj8k=
-X-Google-Smtp-Source: ABdhPJx74hz1HXrwV9KFueIsSEub6ZjaQ3PXlDu2yws3N9VLdQgcBUCbjABYJ7am6LjIUW4dReFUoKYAL+gC7pWhfi8=
-X-Received: by 2002:a63:3d8f:: with SMTP id k137mr25871214pga.21.1634088884658;
- Tue, 12 Oct 2021 18:34:44 -0700 (PDT)
+        id S236319AbhJMBhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Oct 2021 21:37:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231200AbhJMBhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Oct 2021 21:37:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A8C161056;
+        Wed, 13 Oct 2021 01:35:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634088918;
+        bh=QeSMIWRZp7x+XaAw3ZCrt23uzGcrj1rReuYX+snVCF4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=DMJ4I0/WR2D8ECWc74JA9mCo8JZ13Res2KhFqKyGiOgwpet87tQ25PFZrsd1AuetZ
+         efv9OOV3BCZYgkKMllCASbO4IVgTAR/uFsk+u776UgjErHp5vEvNODjI5amWgryDGE
+         V9zaBCgIPFR7POOFr+iy7jpYxODQeAYWb73vdSs2eDyjg4YkgtNyil48R5ljTt6Lt1
+         /3hByjykPlFD9SvnPhnB2d28I/iXKBzE7VPBlWHkY6MOSFwRsx7R1tRqCXBOrONAmm
+         JXTTpznEY/W7Y6F5inhNdc3bH1AfYi3AYdmpPuvEsC7nqepiEM3N2ia1Seb4BNJVmw
+         qeh9zocoWrahQ==
+Date:   Tue, 12 Oct 2021 20:35:15 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     bhelgaas@google.com, andy.shevchenko@gmail.com, maz@kernel.org,
+        tglx@linutronix.de, song.bao.hua@hisilicon.com, 21cnbao@gmail.com,
+        gregkh@linuxfoundation.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] PCI/MSI: fix page fault when msi_populate_sysfs()
+ failed
+Message-ID: <20211013013515.GA1860366@bhelgaas>
 MIME-Version: 1.0
-References: <20211012170121.31549-1-vegard.nossum@oracle.com>
-In-Reply-To: <20211012170121.31549-1-vegard.nossum@oracle.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 13 Oct 2021 10:34:07 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT_0PnW0opWQoCiF5mWH4YEKxXHbdiTrSGqGFRv5nhY=w@mail.gmail.com>
-Message-ID: <CAK7LNAT_0PnW0opWQoCiF5mWH4YEKxXHbdiTrSGqGFRv5nhY=w@mail.gmail.com>
-Subject: Re: [RFC PATCH] kbuild: only prompt for compressors that are actually usable
-To:     Vegard Nossum <vegard.nossum@oracle.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012071556.939137-1-wanghai38@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 2:01 AM Vegard Nossum <vegard.nossum@oracle.com> wrote:
->
-> If a given compression algorithm for the kernel image is not usable on
-> the host system, there is no point prompting for it.
->
-> We can use the kconfig preprocessing feature to check if the command is
-> available or not. I've chosen to test this using "which", which exits
-> with success if the given command exists in PATH (or it is an absolute
-> path), which mimics exactly how it would be found in the kernel's
-> Makefiles.
->
-> This uses the make variables that are set in Makefile and/or the
-> command line, so you can do e.g.
->
->   make KGZIP=pigz menuconfig
->
-> and it will test for the correct program.
->
-> I am intentionally adding these dependencies to e.g. KERNEL_LZ4, as
-> opposed to HAVE_KERNEL_LZ4, since the latter are "select"-ed
-> unconditionally by the architectures that use them, so they are not
-> suitable for depending on anything else.
->
-> I've put RFC in the subject as maybe there are downsides to this that
-> I'm not aware of.
->
-> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+On Tue, Oct 12, 2021 at 03:15:56PM +0800, Wang Hai wrote:
+> I got a page fault report when doing fault injection test:
+> 
+> BUG: unable to handle page fault for address: fffffffffffffff4
+> ...
+> RIP: 0010:sysfs_remove_groups+0x25/0x60
+> ...
+> Call Trace:
+>  msi_destroy_sysfs+0x30/0xa0
+>  free_msi_irqs+0x11d/0x1b0
+>  __pci_enable_msix_range+0x67f/0x760
+>  pci_alloc_irq_vectors_affinity+0xe7/0x170
+>  vp_find_vqs_msix+0x129/0x560
+>  vp_find_vqs+0x52/0x230
+>  vp_modern_find_vqs+0x47/0xb0
+>  p9_virtio_probe+0xa1/0x460 [9pnet_virtio]
+> ...
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> When populating msi_irqs sysfs failed (such as msi_attrs = kcalloc()
+> in msi_populate_sysfs() failed) in msi_capability_init() or
+> msix_capability_init(), dev->msi_irq_groups will point to ERR_PTR(...).
+> This will cause a page fault when destroying the wrong
+> dev->msi_irq_groups in free_msi_irqs().
+> 
+> msix_capability_init()/msi_capability_init()
+> 	msi_populate_sysfs()
+> 		msi_attrs = kcalloc() // fault injection, let msi_attrs = NULL
+> 	free_msi_irqs()
+> 		msi_destroy_sysfs() // msi_irq_groups is ERR_PTR(...), page fault
+> 
+> Define a temp variable and assign it to dev->msi_irq_groups if
+> the temp variable is not PTR_ERR.
+> 
+> Fixes: 2f170814bdd2 ("genirq/msi: Move MSI sysfs handling from PCI to MSI core")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> Acked-by: Barry Song <song.bao.hua@hisilicon.com>
+
+2f170814bdd2 appeared in v5.15-rc1, so I applied this to for-linus so
+we can fix it before v5.15.  Thank you!
+
 > ---
-
-
-I think we should keep the host-tools dependency open in general.
-You can easily install necessary packages.
-
-
-
-
-
-
-
-
->  init/Kconfig | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 11f8a845f259d..f03f2b7962027 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -250,6 +250,7 @@ choice
->  config KERNEL_GZIP
->         bool "Gzip"
->         depends on HAVE_KERNEL_GZIP
-> +       depends on $(success,which $(KGZIP))
->         help
->           The old and tried gzip compression. It provides a good balance
->           between compression ratio and decompression speed.
-> @@ -257,6 +258,7 @@ config KERNEL_GZIP
->  config KERNEL_BZIP2
->         bool "Bzip2"
->         depends on HAVE_KERNEL_BZIP2
-> +       depends on $(success,which $(KBZIP2))
->         help
->           Its compression ratio and speed is intermediate.
->           Decompression speed is slowest among the choices.  The kernel
-> @@ -267,6 +269,7 @@ config KERNEL_BZIP2
->  config KERNEL_LZMA
->         bool "LZMA"
->         depends on HAVE_KERNEL_LZMA
-> +       depends on $(success,which $(LZMA))
->         help
->           This compression algorithm's ratio is best.  Decompression speed
->           is between gzip and bzip2.  Compression is slowest.
-> @@ -275,6 +278,7 @@ config KERNEL_LZMA
->  config KERNEL_XZ
->         bool "XZ"
->         depends on HAVE_KERNEL_XZ
-> +       depends on $(success,which $(XZ))
->         help
->           XZ uses the LZMA2 algorithm and instruction set specific
->           BCJ filters which can improve compression ratio of executable
-> @@ -290,6 +294,7 @@ config KERNEL_XZ
->  config KERNEL_LZO
->         bool "LZO"
->         depends on HAVE_KERNEL_LZO
-> +       depends on $(success,which $(KLZOP))
->         help
->           Its compression ratio is the poorest among the choices. The kernel
->           size is about 10% bigger than gzip; however its speed
-> @@ -298,6 +303,7 @@ config KERNEL_LZO
->  config KERNEL_LZ4
->         bool "LZ4"
->         depends on HAVE_KERNEL_LZ4
-> +       depends on $(success,which $(LZ4))
->         help
->           LZ4 is an LZ77-type compressor with a fixed, byte-oriented encoding.
->           A preliminary version of LZ4 de/compression tool is available at
-> @@ -310,6 +316,7 @@ config KERNEL_LZ4
->  config KERNEL_ZSTD
->         bool "ZSTD"
->         depends on HAVE_KERNEL_ZSTD
-> +       depends on $(success,which $(ZSTD))
->         help
->           ZSTD is a compression algorithm targeting intermediate compression
->           with fast decompression speed. It will compress better than GZIP and
-> --
-> 2.23.0.718.g5ad94255a8
->
-
-
--- 
-Best Regards
-Masahiro Yamada
+> v2->v3: refine the commit log
+> v1->v2: introduce temporary variable 'groups'
+>  drivers/pci/msi.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> index 0099a00af361..4b4792940e86 100644
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -535,6 +535,7 @@ static int msi_verify_entries(struct pci_dev *dev)
+>  static int msi_capability_init(struct pci_dev *dev, int nvec,
+>  			       struct irq_affinity *affd)
+>  {
+> +	const struct attribute_group **groups;
+>  	struct msi_desc *entry;
+>  	int ret;
+>  
+> @@ -558,12 +559,14 @@ static int msi_capability_init(struct pci_dev *dev, int nvec,
+>  	if (ret)
+>  		goto err;
+>  
+> -	dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
+> -	if (IS_ERR(dev->msi_irq_groups)) {
+> -		ret = PTR_ERR(dev->msi_irq_groups);
+> +	groups = msi_populate_sysfs(&dev->dev);
+> +	if (IS_ERR(groups)) {
+> +		ret = PTR_ERR(groups);
+>  		goto err;
+>  	}
+>  
+> +	dev->msi_irq_groups = groups;
+> +
+>  	/* Set MSI enabled bits	*/
+>  	pci_intx_for_msi(dev, 0);
+>  	pci_msi_set_enable(dev, 1);
+> @@ -691,6 +694,7 @@ static void msix_mask_all(void __iomem *base, int tsize)
+>  static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+>  				int nvec, struct irq_affinity *affd)
+>  {
+> +	const struct attribute_group **groups;
+>  	void __iomem *base;
+>  	int ret, tsize;
+>  	u16 control;
+> @@ -730,12 +734,14 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+>  
+>  	msix_update_entries(dev, entries);
+>  
+> -	dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
+> -	if (IS_ERR(dev->msi_irq_groups)) {
+> -		ret = PTR_ERR(dev->msi_irq_groups);
+> +	groups = msi_populate_sysfs(&dev->dev);
+> +	if (IS_ERR(groups)) {
+> +		ret = PTR_ERR(groups);
+>  		goto out_free;
+>  	}
+>  
+> +	dev->msi_irq_groups = groups;
+> +
+>  	/* Set MSI-X enabled bits and unmask the function */
+>  	pci_intx_for_msi(dev, 0);
+>  	dev->msix_enabled = 1;
+> -- 
+> 2.17.1
+> 
