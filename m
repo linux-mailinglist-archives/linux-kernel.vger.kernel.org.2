@@ -2,98 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0A642B9CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0139A42BA04
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 10:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238692AbhJMIAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 04:00:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232692AbhJMIAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 04:00:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39F3F60D42;
-        Wed, 13 Oct 2021 07:58:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634111889;
-        bh=D9FlrqNI1J8wIJfmRvfYUVMCVcEi1UrNOTrLK4bJETg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NRxFvKTadup6yfexYdKOPpR6RpmuDeoimcFkuQVLeQj8TNVWR0AcnbfvronX8cNWi
-         01d2u5PxqTqB17CCZl7xE/iehLLdR/8y+KHn6iJo859xj6SjhcMbFhpVFeatFlfzDK
-         uTuflds0qAo1B2X54WQDuZv/nc9/2wpQA5Kw4+7lX2JSpJRTeE3yXGlKAjs01ACCuI
-         CWdkToqqJn8vjO0LIIA1hvMTuWQg8Q4wxRNeNJvbYvYCQYzqgQtVcJ9Bi5n7jXw9zs
-         ssstPmLZeND++RljfGI19UP/OVJDhBQG9LBSX4pKBR4XL5F40fpNOSejDf81d38TE6
-         YXA2jrvIl7Uaw==
-Date:   Wed, 13 Oct 2021 08:58:03 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, Arnd Bergmann <arnd@arndb.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Alex Elder <elder@linaro.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/arm: fix ARM_SMMU_QCOM compilation
-Message-ID: <20211013075803.GB6701@willie-the-truck>
-References: <20211012151841.2639732-1-arnd@kernel.org>
+        id S238871AbhJMIR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 04:17:56 -0400
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:50654 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231559AbhJMIRq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 04:17:46 -0400
+X-Greylist: delayed 908 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Oct 2021 04:17:46 EDT
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Wed, 13 Oct 2021 01:00:27 -0700
+Received: from sc-dbc2135.eng.vmware.com (sc-dbc2135.eng.vmware.com [10.182.28.35])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 14EB2202A3;
+        Wed, 13 Oct 2021 01:00:30 -0700 (PDT)
+From:   Bryan Tan <bryantan@vmware.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>
+CC:     <Pv-drivers@vmware.com>, <gregkh@linuxfoundation.org>,
+        <aditr@vmware.com>, <vdasa@vmware.com>,
+        Bryan Tan <bryantan@vmware.com>
+Subject: [PATCH] MAINTAINERS: Update for VMware PVRDMA driver
+Date:   Wed, 13 Oct 2021 00:59:36 -0700
+Message-ID: <1634111976-21283-1-git-send-email-bryantan@vmware.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211012151841.2639732-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: bryantan@vmware.com does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 05:18:00PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> My previous bugfix ended up making things worse for the QCOM IOMMU
-> driver when it forgot to add the Kconfig symbol that is getting used to
-> control the compilation of the SMMU implementation specific code
-> for Qualcomm.
-> 
-> Fixes: 424953cf3c66 ("qcom_scm: hide Kconfig symbol")
-> Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Reported-by: John Stultz <john.stultz@linaro.org>
-> Link: https://lore.kernel.org/lkml/20211010023350.978638-1-dmitry.baryshkov@linaro.org/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> In case we want fix it this way after all, here is the patch
-> I made. Either this one or Dmitry patch from the link above
-> is required for v5.15
-> ---
->  drivers/iommu/Kconfig | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> index c5c71b7ab7e8..3eb68fa1b8cc 100644
-> --- a/drivers/iommu/Kconfig
-> +++ b/drivers/iommu/Kconfig
-> @@ -355,6 +355,14 @@ config ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT
->  	  'arm-smmu.disable_bypass' will continue to override this
->  	  config.
->  
-> +config ARM_SMMU_QCOM
-> +	def_tristate y
-> +	depends on ARM_SMMU && ARCH_QCOM
-> +	select QCOM_SCM
-> +	help
-> +	  When running on a Qualcomm platform that has the custom variant
-> +	  of the ARM SMMU, this needs to be built into the SMMU driver.
-> +
+Update maintainer info for the VMware PVRDMA driver.
 
-FWIW, I prefer this solution over changing the driver code, so:
+Reviewed-by: Adit Ranadive <aditr@vmware.com>
+Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
+Signed-off-by: Bryan Tan <bryantan@vmware.com>
+---
+ MAINTAINERS | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Acked-by: Will Deacon <will@kernel.org>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index abdcbcfef73d..b3b5b8b0e207 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -20022,7 +20022,8 @@ F:	arch/x86/include/asm/vmware.h
+ F:	arch/x86/kernel/cpu/vmware.c
+ 
+ VMWARE PVRDMA DRIVER
+-M:	Adit Ranadive <aditr@vmware.com>
++M:	Bryan Tan <bryantan@vmware.com>
++M:	Vishnu Dasa <vdasa@vmware.com>
+ M:	VMware PV-Drivers <pv-drivers@vmware.com>
+ L:	linux-rdma@vger.kernel.org
+ S:	Maintained
+-- 
+2.14.1
 
-I assume you'll be getting this fixed for 5.15?
-
-Cheers,
-
-Will
