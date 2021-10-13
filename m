@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40C642CDEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E97542CDED
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 00:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbhJMW1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 18:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47748 "EHLO
+        id S230347AbhJMW2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 18:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231368AbhJMW1X (ORCPT
+        with ESMTP id S229754AbhJMW22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 18:27:23 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76370C061570;
-        Wed, 13 Oct 2021 15:25:19 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id t9so18138163lfd.1;
-        Wed, 13 Oct 2021 15:25:19 -0700 (PDT)
+        Wed, 13 Oct 2021 18:28:28 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34BBC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:26:23 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id d131so10084204ybd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 15:26:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2OPCwBrMbBCrKDyIHkefu8URcFCi9BaSH2w554aQQPI=;
-        b=Fz5xpO0uDZ0dows1hiU+NVUA4kCzRZoxkDwqLedXiniMX+EtUknIXXl+ycTYsnnEd6
-         a2Hev/nadpzBTz1l3bP6PGNUhtreas4veRmPjtuFBnj0cKhjpPTFYtMgLxXM+aGIOPPf
-         SzHRFTnxIObca1sz9BJI9AMCohJBc8mN50UxzroK0BpQKEhk2m9YYEP9Isuuw6MwwYeB
-         +QoPQicXLc/fw0htIyOE7JERkBzucj68Z/KS6Jfei22d25bWd1JbOgQif+W8t3d8iz4w
-         fSiTfuJi33v6g++3SPv/dG41Fv2O+g3bTFewaUutUhfSCFjaTaG4ZV5C7aAZcR10kBEx
-         7LBQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I9ddwzDwjBRvjNSeQZZTZvJ2NfxDHWqyayJGGbMH5Mc=;
+        b=g+egBO0u1JLmFD3nechTRv3dWXbR4MmZz3U4Tu2XhQNHpDt5Cp/41Rr8/9empDSbjJ
+         LwTyaSGs2kCyIlQ5cWGxt4GwyEtijW3UuCi8ykujsxgRizKFdNnZkilB7Ux19W3z4gXk
+         yoW9Gn8FJ9q4h59ecIWXUCmwt2E6skuJhARdodYpzxetPL8QM0/A9+30BzxUhSx2SImy
+         /QlM39coka72/w8/hbx03q7tBa6oCSLHFOgWh/TgBgG+jiYkM9kqRQIq0NGkPEmH0gS+
+         fEs7UZWcNO+b4yX+wQcCTrC24kNsN3iEVgn44C5l5Pdsw/0kIgw1/4OBAs7tuax/gFPm
+         tt3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2OPCwBrMbBCrKDyIHkefu8URcFCi9BaSH2w554aQQPI=;
-        b=07NjHUMa8RS5Bbj36r2uy18RNjf49vg1Yq0AOTuXg7nWthIhZY1/0liHr5bgdhJzfv
-         p50ihBQVLER+YoKxopAj7vkYFkAh2xQ4UdTvMMhavzKvDXwuTlhEgC3n+x4Lbl+fCoNx
-         XBfBqw2ru+k3RdsIGEYRdPN8HP7nxim988jICJlBSHk1NpQGQXc0Oe8kVgVxHnOyRF0U
-         7urfQ3AGlu06O3RPBFYoSFTtqmb7Hna3kYR35StBZliAa6AUDj7YdJdjLljAMovLbcBi
-         myEgQmqks6bc3BlVmjaYLM970XhxLLMW2XF00PhqsBihEEvfNJhp7al9xyy/AGk5iFHh
-         8FSQ==
-X-Gm-Message-State: AOAM532duJYRMRDpDtii5FC64SNPYiHkAnx9IOwhtqov7UEqv4RcNqZq
-        ytEY6QPSIA918fcf9yJuD284qMfghV4=
-X-Google-Smtp-Source: ABdhPJztdnqI3yra7GanYKdtDlBSFacGyTa03XghwkKHspB2euhuZhbOEDcNrQ9QTRsI6ow+9R4DaA==
-X-Received: by 2002:a2e:5c43:: with SMTP id q64mr2177948ljb.224.1634163917721;
-        Wed, 13 Oct 2021 15:25:17 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-174-234.dynamic.spd-mgts.ru. [79.139.174.234])
-        by smtp.googlemail.com with ESMTPSA id c1sm78283ljr.111.2021.10.13.15.25.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 15:25:17 -0700 (PDT)
-Subject: Re: [PATCH] cpuidle: tegra: add ARCH_SUSPEND_POSSIBLE dependency
-To:     Arnd Bergmann <arnd@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thierry Reding <treding@nvidia.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        He Ying <heying24@huawei.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211013160125.772873-1-arnd@kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <2fdbd732-2496-2267-6636-2f682c39e928@gmail.com>
-Date:   Thu, 14 Oct 2021 01:25:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I9ddwzDwjBRvjNSeQZZTZvJ2NfxDHWqyayJGGbMH5Mc=;
+        b=UjyYXeqngW2NqErOlLoALjoKPaQ5ewL9jeJG1A3ufIkdM4sVj3DhhA2srx5wrbgM/C
+         0goNUHhAPycTpoBPZpWX+SRNsy6C0NAkzPPnoE0OSH/KJ0loIWUHn1R7mOVzjErx1Sw2
+         tS+xJIUPfT3Xu4WO+r0qxe7f7nsHZMPvZdvfpEw3du+DqLB6Zjyi2MJMDitNBwgMimWl
+         iaqqoJO3y3/yja8YjsDvVk1wOifecW4dZQkLwkzlESw9DuzQBDiTefrM+bhR9XXPY3Sj
+         HKu5OfPm7dwwOIWiGuBMn3sADviMk1SlfMkQ0DwM5pTeA9MxXgLI6zFld3+koDLs9/Zy
+         iX0g==
+X-Gm-Message-State: AOAM530yDXehfI5M/9MwEgjQ49jGqc21FT29qvd5RgwpBaY1JXLMmrPW
+        xCcNP4PZFE3A/0IlOG5pKTDe8PYn+ZnUo6CaUkm2Kg==
+X-Google-Smtp-Source: ABdhPJyfto3QlbGgFWppfUHSUw8DtFI2urBmgJXpBxQvxuI0GnqeXTrAMQMhYA4YvMxA1Mt8j8zni80xu6X3kvlKnyk=
+X-Received: by 2002:a25:1c08:: with SMTP id c8mr2421015ybc.316.1634163983003;
+ Wed, 13 Oct 2021 15:26:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211013160125.772873-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211013194338.1804247-1-shakeelb@google.com> <YWdXv+RBjXvdmsK+@carbon.DHCP.thefacebook.com>
+In-Reply-To: <YWdXv+RBjXvdmsK+@carbon.DHCP.thefacebook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 13 Oct 2021 15:26:11 -0700
+Message-ID: <CALvZod6ZppPNk2XfvKFfdPhrsSF6NbSBKrOOOc6UyJMfDEfKoQ@mail.gmail.com>
+Subject: Re: [PATCH] memcg: page_alloc: skip bulk allocator for __GFP_ACCOUNT
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-13.10.2021 19:01, Arnd Bergmann пишет:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Some StrongARM processors don't support suspend, which leads
-> to a build failure with the tegra cpuidle driver:
-> 
-> WARNING: unmet direct dependencies detected for ARM_CPU_SUSPEND
->   Depends on [n]: ARCH_SUSPEND_POSSIBLE [=n]
->   Selected by [y]:
->   - ARM_TEGRA_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_TEGRA [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
-> 
-> arch/arm/kernel/sleep.o: in function `__cpu_suspend':
-> (.text+0x68): undefined reference to `cpu_sa110_suspend_size'
-> 
-> Add an explicit dependency to make randconfig builds avoid
-> this combination.
-> 
-> Fixes: faae6c9f2e68 ("cpuidle: tegra: Enable compile testing")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/cpuidle/Kconfig.arm | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
-> index 2cc3c208a180..af97992eaa82 100644
-> --- a/drivers/cpuidle/Kconfig.arm
-> +++ b/drivers/cpuidle/Kconfig.arm
-> @@ -100,6 +100,7 @@ config ARM_MVEBU_V7_CPUIDLE
->  config ARM_TEGRA_CPUIDLE
->  	bool "CPU Idle Driver for NVIDIA Tegra SoCs"
->  	depends on (ARCH_TEGRA || COMPILE_TEST) && !ARM64 && MMU
-> +	depends on ARCH_SUSPEND_POSSIBLE
->  	select ARCH_NEEDS_CPU_IDLE_COUPLED if SMP
->  	select ARM_CPU_SUSPEND
->  	help
-> 
+On Wed, Oct 13, 2021 at 3:03 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Wed, Oct 13, 2021 at 12:43:38PM -0700, Shakeel Butt wrote:
+> > The commit 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in
+> > __vmalloc_area_node()") switched to bulk page allocator for order 0
+> > allocation backing vmalloc. However bulk page allocator does not support
+> > __GFP_ACCOUNT allocations and there are several users of
+> > kvmalloc(__GFP_ACCOUNT).
+> >
+> > For now make __GFP_ACCOUNT allocations bypass bulk page allocator. In
+> > future if there is workload that can be significantly improved with the
+> > bulk page allocator with __GFP_ACCCOUNT support, we can revisit the
+> > decision.
+> >
+> > Fixes: 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in __vmalloc_area_node()")
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > ---
+> >  mm/page_alloc.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index 668edb16446a..b3acad4615d3 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -5215,6 +5215,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+> >       unsigned int alloc_flags = ALLOC_WMARK_LOW;
+> >       int nr_populated = 0, nr_account = 0;
+> >
+> > +     /* Bulk allocator does not support memcg accounting. */
+> > +     if (unlikely(gfp & __GFP_ACCOUNT))
+> > +             goto out;
+> > +
+>
+> Isn't it a bit too aggressive?
+>
+> How about
+>     if (WARN_ON_ONCE(gfp & __GFP_ACCOUNT))
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+We actually know that kvmalloc(__GFP_ACCOUNT) users exist and can
+trigger bulk page allocator through vmalloc, so I don't think the
+warning would be any helpful.
+
+>        gfp &= ~__GFP_ACCOUNT;
+
+Bulk allocator is best effort, so callers have adequate fallbacks.
+Transparently disabling accounting would be unexpected.
