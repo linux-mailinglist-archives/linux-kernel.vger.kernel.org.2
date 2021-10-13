@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B815B42BF8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5E942BF91
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 14:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbhJMMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 08:14:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229653AbhJMMOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 08:14:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 482A060ED4;
-        Wed, 13 Oct 2021 12:12:39 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 14:12:36 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Bobrowski <repnop@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH v2 2/2] mm: use pidfd_get_task()
-Message-ID: <20211013121236.rydqx27bgzh67y4h@wittgenstein>
-References: <20211011133245.1703103-1-brauner@kernel.org>
- <20211011133245.1703103-3-brauner@kernel.org>
- <b91f642b-2b64-a60c-89e2-0317164c7b70@redhat.com>
+        id S232409AbhJMMPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 08:15:16 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:39449 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhJMMPO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 08:15:14 -0400
+Received: by mail-ot1-f54.google.com with SMTP id k2-20020a056830168200b0054e523d242aso3379522otr.6;
+        Wed, 13 Oct 2021 05:13:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Tfe2N7rj5j3n+ftOPGZJE3vZ01hZsrDbPoprLIjlnLs=;
+        b=d9Jun4rmsIXccI3udHg5SMG4eEGfgdSI9+YL9g6k/odKfb01pJ+x6DOtZrFPCvGC2H
+         /ul+kZPqRlOZbu4PvWmwxu4x7Ztlivt/SrjPhwhCzI9BOijB+JTRXeE5jmnVamalsoBK
+         BqvbzzDvicTkv30AsnSsxUnnxA1P0NCvNFHtdhs/Ef2XsvVhFOJEr9WqJvASJqYlzKkD
+         s08/EBzk5FehUl7mI8hFLCbgFYOnnwZ6FRNnuGhwgW/oJxVUXiO7LUzcokqsG2aSmG0c
+         9v5wc8CaTW5zVBKag/W9a2mxak4zBWW1SHlEKgGkUDvubfaddh2/12IJ/NvdhBVMi6wl
+         h6LQ==
+X-Gm-Message-State: AOAM532RHcEHpVvP3QDdjLWov5TrKe12BQbsBbbY48X2qTHcfUPrvtxQ
+        pRO/VfeQFB+O0HklX9jttQ==
+X-Google-Smtp-Source: ABdhPJzFOBhZFAsfOWqs1w4jktLjtdmNcDllxLmZYKERPT8tfehw3S1S9Td/QzIYNylxaIz1UngLzQ==
+X-Received: by 2002:a05:6830:349:: with SMTP id h9mr15633550ote.349.1634127190546;
+        Wed, 13 Oct 2021 05:13:10 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id bb39sm2956661oib.28.2021.10.13.05.13.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 05:13:10 -0700 (PDT)
+Received: (nullmailer pid 783942 invoked by uid 1000);
+        Wed, 13 Oct 2021 12:13:09 -0000
+Date:   Wed, 13 Oct 2021 07:13:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Corey Minyard <minyard@acm.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: Tree for Oct 13
+Message-ID: <YWbNVXemcnxO8wsG@robh.at.kernel.org>
+References: <20211013170522.4c6e21a1@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b91f642b-2b64-a60c-89e2-0317164c7b70@redhat.com>
+In-Reply-To: <20211013170522.4c6e21a1@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 04:13:31PM +0200, David Hildenbrand wrote:
-> On 11.10.21 15:32, Christian Brauner wrote:
-> > From: Christian Brauner <christian.brauner@ubuntu.com>
-> > 
-> > Instead of duplicating the same code in two places use the newly added
-> > pidfd_get_task() helper. This fixes an (unimportant for now) bug where
-> > PIDTYPE_PID is used whereas PIDTYPE_TGID should have been used.
+On Wed, Oct 13, 2021 at 05:05:22PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> What would have been the effect of the BUG? Is it worth Fixes: or better
-
-Right now, there's no issue. I hope my "unimportant for now" gets that
-across.
-Retrieving it via PIDTYPE_PID or PIDTYPE_TGID doesn't matter right now
-because at pidfd creation time we ensure that:
-- the pid used with pidfd_open()
-- the task created via clone{3}()'s CLONE_PIDFD
-are used as PIDTYPE_TGID, i.e. the struct pid the pidfd references is
-used as PIDTYPE_TGID, i.e. is a thread-group leader.
-The concern is for the future were we may want to enable pidfds to refer
-to individual threads. Once that happens the passed in pidfd to e.g.
-process_mrelease() or process_madvise() can refer to a struct pid that
-is only used as PIDTYPE_PID and not as PIDTYPE_TGID, i.e. it might be a
-pidfd refering to a non-threadgroup leader. Once that happens we want to
-make sure that all users of pidfds are ok working with non-threadgroup
-leaders. If we have on central helper that becomes a relatively simple
-exercise in grepping and we're sure that all current callers use
-PIDTYPE_TGID as they're using the helper. If we let places use
-PIDTYPE_PID or PIDTYPE_TGID interchangeably this becomes a more arduous
-task. So in a sense it's a bug-in-the-making. It's arguably fixes the
-addition of process_mrelease() since I mentioned this pretty early on
-and requested the addition of a helper as part of the patchset. I think
-it just got lost in the reviews though.
-
-> even separating out the fix?
+> News: there will be no linux-next release tomorrow.
 > 
-> > 
-> > Link: https://lore.kernel.org/r/20211004125050.1153693-3-christian.brauner@ubuntu.com
-> > Cc: Vlastimil Babka <vbabka@suse.cz>
-> > Cc: Suren Baghdasaryan <surenb@google.com>
-> > Cc: Matthew Bobrowski <repnop@google.com>
-> > Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> > Cc: David Hildenbrand <david@redhat.com>
-> > Cc: Jan Kara <jack@suse.cz>
-> > Cc: Minchan Kim <minchan@kernel.org>
-> > Reviewed-by: Matthew Bobrowski <repnop@google.com>
-> > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> > ---
-> > /* v2 */
-> > unchanged
+> Changes since 20211012:
 > 
-> Acked-by: David Hildenbrand <david@redhat.com>
+> The arm-soc tree lost its build failure.
+> 
+> The net-next tree gained a conflict against the net tree.
+> 
+> The drm-misc tree lost its build failure.
+> 
+> The amdgpu tree lost its build failure.
+> 
+> Non-merge commits (relative to Linus' tree): 7055
+>  6867 files changed, 394074 insertions(+), 162696 deletions(-)
 
-Thanks!
-Christian
+The commit 9cc6726f68af ("ipmi:ipmb: Add OF support") was added and has 
+warnings for 'make dt_binding_check'. I'm replying here because the 
+commit hasn't been sent to any list in lore.
+
+Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dts:22.13-26: Warning (reg_format): /example-0/ipmi-ipmb@0x40:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
+Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dts:19.24-26.11: Warning (unit_address_format): /example-0/ipmi-ipmb@0x40: unit name should not have leading "0x"
+Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
+/builds/robherring/linux-dt/Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: example-0: ipmi-ipmb@0x40:reg:0: [64] is too short
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+/builds/robherring/linux-dt/Documentation/devicetree/bindings/ipmi/ipmi-ipmb.example.dt.yaml: example-0: 'ipmi-ipmb@0x40' does not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/dt-core.yaml
+
+
+Rob
