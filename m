@@ -2,138 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BA242BE7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A541D42BE8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 13:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhJMLDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 07:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232148AbhJMLDQ (ORCPT
+        id S233544AbhJMLEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 07:04:21 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25438 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233422AbhJMLDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:03:16 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBD8C0613AB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 04:00:15 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 75so1970212pga.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 04:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nQQWQUgxuW6Tu+PRvCtkwuIVHgAhZ7y427FiGzCqW1I=;
-        b=zuDceFqPkzhsXg/5Ra0cCOC1bU0nBHOgMC+yisKtXJINh/T8f5KQ5Xk3tN1hEQWy1f
-         fF/5Ti7SlnxHTZ8CRdyv6Jl7qV6+yL697U37ZNkhKajiI+l/0MJiVPCdQ2f0nPB60e3l
-         deL9dfPtSkXLUF1i0K5lBK/jrlNzSLsedO4pErBw8lcHrmTQsFpVw/Kq9PVvZIU+2X3S
-         BjO3inmiQSb4KC3RcJr5s4SFs01LRfMOjiO3Y4IdS3Rj0CRwh+XHIqdFiSxlkBam0yxV
-         rxKuYNPGd/pLOsHpTEsqWBSUGsQm4kgH2TClaSNsf9ya4bJIDlxKTpNOca2+BLM7jp/t
-         D1tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nQQWQUgxuW6Tu+PRvCtkwuIVHgAhZ7y427FiGzCqW1I=;
-        b=qWeFl75Wf1ceBLkzHV4SmLxqdEtPCIjP0fW/Q0b9M+ANO7379x/24iQ0MbAvI+v9wW
-         DbLkOujdbgFEkKqri0I0GQFhN99l7ihsjH/X76Km/wqkcxWV+1a73LIKXzRt+Zhh5/ZU
-         Mh1/hTOWM/YM/FqEB8xWZcAnSkgS3Bi+GAtGHdeVHvUfIJ4DfeSs+H82s5EQXbiErTg3
-         Z2GeWoaxeAkrxgaSjBc/E7pqp5wo/M7qioIP6N3lKDTeDYKDisF654t3gjJ90QZvK3gq
-         Zdv/bAiMGEhuiENXeNxG/jfBBK2O9fNg2N0w6JTfbRem6PQeFQj7waEudo8NrsoEvYES
-         oFgg==
-X-Gm-Message-State: AOAM5302QtXHEBNB4yT0EQpwk/XHLHtfNkPLhOcNrl9nGfNT7/l0UAgh
-        bpZWD9gcb4G6UD+NFNHw3bHVnw==
-X-Google-Smtp-Source: ABdhPJxhzjNSoABq+dGG77CzsRDyX+40KYVEdGsQI8qW5B1JHU6i8UmOJoBqJRMmoCIvhAQ+em8rxg==
-X-Received: by 2002:a63:2dc7:: with SMTP id t190mr27705777pgt.455.1634122814960;
-        Wed, 13 Oct 2021 04:00:14 -0700 (PDT)
-Received: from localhost ([106.201.113.61])
-        by smtp.gmail.com with ESMTPSA id g189sm5284657pfb.75.2021.10.13.04.00.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 04:00:14 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 16:30:12 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gonglei <arei.gonglei@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        David Airlie <airlied@linux.ie>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Jie Deng <jie.deng@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-um@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-i2c@vger.kernel.org, iommu@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, kvm@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH RFC] virtio: wrap config->reset calls
-Message-ID: <20211013110012.3exppbls2wggqfhb@vireshk-i7>
-References: <20211013105226.20225-1-mst@redhat.com>
+        Wed, 13 Oct 2021 07:03:54 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19DAWjNY021851;
+        Wed, 13 Oct 2021 07:01:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=Px8pkOv21BYoBjV0MsiMZ5RdlpIGjMih1XX8iRmQ+n4=;
+ b=dmq+KU4lWzoORY+icHikD573vDLKwHwp+Ei5VdCCYXYnfzl9o+ShFJqGp/xZDs5NZgx1
+ lO0taxXD8oHOdySQZ/VuGtKhbd9/p1CrDoFVxoTbAIhz4vqIkZKmq6mZwdmrAkSkLYAi
+ GuSBTFi6jhBq6sj2Dd5A5v4twi0jhOcUXcqLJ6gVtrziJG/CaCzIlMDyyoLeDS2wKd39
+ 1uUuDsFqbtHDenpM+lkl14BKvSmQ5ISq87Vd+fLSa5aSJnqw69xzPMay9HXzaa5TsSY3
+ JIc81C6E/diex3HtC/lJfRJXnCmsYKN7Weh9VtgfrDZOxd4vGAU5Vdarr4aopDc3/SoH 8w== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bnr79fry8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 07:01:40 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19DAxbEu001715;
+        Wed, 13 Oct 2021 11:01:32 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03fra.de.ibm.com with ESMTP id 3bk2qa7mj7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Oct 2021 11:01:32 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19DB1Ptj52363708
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Oct 2021 11:01:25 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 50FEEAE065;
+        Wed, 13 Oct 2021 11:01:25 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 71110AE055;
+        Wed, 13 Oct 2021 11:01:20 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.160.27.171])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 13 Oct 2021 11:01:19 +0000 (GMT)
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH 1/2] ima: define ima_trusted_for hook
+Date:   Wed, 13 Oct 2021 07:01:12 -0400
+Message-Id: <20211013110113.13239-1-zohar@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013105226.20225-1-mst@redhat.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0Qa3CeZ6ycpWRLqrL4IA72DQIGVC8Lle
+X-Proofpoint-ORIG-GUID: 0Qa3CeZ6ycpWRLqrL4IA72DQIGVC8Lle
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-13_04,2021-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 mlxlogscore=955 malwarescore=0 adultscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxscore=0
+ priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110130071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-10-21, 06:55, Michael S. Tsirkin wrote:
-> This will enable cleanups down the road.
-> The idea is to disable cbs, then add "flush_queued_cbs" callback
-> as a parameter, this way drivers can flush any work
-> queued after callbacks have been disabled.
-> 
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->  drivers/gpio/gpio-virtio.c                 | 2 +-
->  drivers/i2c/busses/i2c-virtio.c            | 2 +-
+A major interpreter integrity gap exists which allows files read by
+the interpreter to be executed without measuring the file or verifying
+the file's signature.
 
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
+The kernel has no knowledge about the file being read by the interpreter.
+Only the interpreter knows the context(eg. data, execute) and must be
+trusted to provide that information accurately.
 
+To close this integrity gap, define an ima_trusted_for hook to allow
+IMA to measure the file and verify the file's signature based on policy.
+
+Sample policy rules:
+	measure func=TRUSTED_FOR_CHECK
+	appraise func=TRUSTED_FOR_CHECK
+
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+---
+Mickaël, here is the first LSM/integrity instantiation of the trusted_for
+hook.
+
+ Documentation/ABI/testing/ima_policy |  2 +-
+ security/integrity/ima/ima.h         |  1 +
+ security/integrity/ima/ima_main.c    | 23 +++++++++++++++++++++++
+ security/integrity/ima/ima_policy.c  |  3 +++
+ 4 files changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+index e1a04bd3b9e5..85618e726801 100644
+--- a/Documentation/ABI/testing/ima_policy
++++ b/Documentation/ABI/testing/ima_policy
+@@ -34,7 +34,7 @@ Description:
+ 				[FIRMWARE_CHECK]
+ 				[KEXEC_KERNEL_CHECK] [KEXEC_INITRAMFS_CHECK]
+ 				[KEXEC_CMDLINE] [KEY_CHECK] [CRITICAL_DATA]
+-				[SETXATTR_CHECK]
++				[SETXATTR_CHECK] [TRUSTED_FOR_CHECK]
+ 			mask:= [[^]MAY_READ] [[^]MAY_WRITE] [[^]MAY_APPEND]
+ 			       [[^]MAY_EXEC]
+ 			fsmagic:= hex value
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index be965a8715e4..827236dbbefb 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -202,6 +202,7 @@ static inline unsigned int ima_hash_key(u8 *digest)
+ 	hook(KEY_CHECK, key)				\
+ 	hook(CRITICAL_DATA, critical_data)		\
+ 	hook(SETXATTR_CHECK, setxattr_check)		\
++	hook(TRUSTED_FOR_CHECK, trusted_for_check)	\
+ 	hook(MAX_CHECK, none)
+ 
+ #define __ima_hook_enumify(ENUM, str)	ENUM,
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 465865412100..e09054ac3352 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -26,6 +26,7 @@
+ #include <linux/ima.h>
+ #include <linux/iversion.h>
+ #include <linux/fs.h>
++#include <uapi/linux/trusted-for.h>
+ 
+ #include "ima.h"
+ 
+@@ -519,6 +520,28 @@ int ima_file_check(struct file *file, int mask)
+ }
+ EXPORT_SYMBOL_GPL(ima_file_check);
+ 
++/**
++ * ima_trusted_for - based on policy, measure/appraise/audit measurement
++ * @file: pointer to the file to be measured/appraised/audit
++ * @usage: limit enumeration to TRUSTED_FOR_EXECUTION
++ *
++ * Measure/appraise/audit files being executed by an interpreter.
++ *
++ * On success return 0.  On integrity appraisal error, assuming the file
++ * is in policy and IMA-appraisal is in enforcing mode, return -EACCES.
++ */
++int ima_trusted_for(struct file *file, const enum trusted_for_usage usage)
++{
++	u32 secid;
++
++	if (usage != TRUSTED_FOR_EXECUTION)
++		return 0;
++
++	security_task_getsecid_subj(current, &secid);
++	return process_measurement(file, current_cred(), secid, NULL,
++				   0, MAY_EXEC, TRUSTED_FOR_CHECK);
++}
++
+ static int __ima_inode_hash(struct inode *inode, char *buf, size_t buf_size)
+ {
+ 	struct integrity_iint_cache *iint;
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 320ca80aacab..847803a24201 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -1210,6 +1210,7 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+ 	case POST_SETATTR:
+ 	case FIRMWARE_CHECK:
+ 	case POLICY_CHECK:
++	case TRUSTED_FOR_CHECK:
+ 		if (entry->flags & ~(IMA_FUNC | IMA_MASK | IMA_FSMAGIC |
+ 				     IMA_UID | IMA_FOWNER | IMA_FSUUID |
+ 				     IMA_INMASK | IMA_EUID | IMA_PCR |
+@@ -1423,6 +1424,8 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+ 			/* PATH_CHECK is for backwards compat */
+ 			else if (strcmp(args[0].from, "PATH_CHECK") == 0)
+ 				entry->func = FILE_CHECK;
++			else if (strcmp(args[0].from, "TRUSTED_FOR_CHECK") == 0)
++				entry->func = TRUSTED_FOR_CHECK;
+ 			else if (strcmp(args[0].from, "MODULE_CHECK") == 0)
+ 				entry->func = MODULE_CHECK;
+ 			else if (strcmp(args[0].from, "FIRMWARE_CHECK") == 0)
 -- 
-viresh
+2.27.0
