@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6E042CCEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9616C42CCF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 23:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhJMVlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 17:41:42 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:49926 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229588AbhJMVlj (ORCPT
+        id S229938AbhJMVmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 17:42:20 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:55982 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229588AbhJMVmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 17:41:39 -0400
-Received: from [77.244.183.192] (port=64982 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1malyI-002DCh-Aq; Wed, 13 Oct 2021 23:39:34 +0200
-Subject: Re: [PATCH 6/8] mfd: max77714: Add driver for Maxim MAX77714 PMIC
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>
-References: <20211011155615.257529-1-luca@lucaceresoli.net>
- <20211011155615.257529-7-luca@lucaceresoli.net>
- <b2355acf-94a5-1acf-122b-d661c6d9bb1b@canonical.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <5236720c-96b0-3e18-e08f-a5dde982eab5@lucaceresoli.net>
-Date:   Wed, 13 Oct 2021 23:39:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 13 Oct 2021 17:42:19 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=ashimida@linux.alibaba.com;NM=1;PH=DS;RN=28;SR=0;TI=SMTPD_---0UrjC5sw_1634161208;
+Received: from ashimida.local(mailfrom:ashimida@linux.alibaba.com fp:SMTPD_---0UrjC5sw_1634161208)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 14 Oct 2021 05:40:11 +0800
+Subject: Re: [PATCH] [PATCH V3]ARM64: SCS: Add gcc plugin to support Shadow
+ Call Stack
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        catalin.marinas@arm.com, will@kernel.org, keescook@chromium.org,
+        nathan@kernel.org, tglx@linutronix.de, akpm@linux-foundation.org,
+        samitolvanen@google.com, frederic@kernel.org, rppt@kernel.org,
+        mark.rutland@arm.com, yifeifz2@illinois.edu, rostedt@goodmis.org,
+        viresh.kumar@linaro.org, andreyknvl@gmail.com,
+        colin.king@canonical.com, ojeda@kernel.org,
+        luc.vanoostenryck@gmail.com, elver@google.com,
+        nivedita@alum.mit.edu, ardb@kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <1634148189-29393-1-git-send-email-ashimida@linux.alibaba.com>
+ <CAKwvOd=qxHU41HFEWLAz6DOvSMPdW863E9SKVe0PFK0ePDvizQ@mail.gmail.com>
+From:   Dan Li <ashimida@linux.alibaba.com>
+Message-ID: <c2d0bfc9-364e-a2a8-e786-7a5102e34ddc@linux.alibaba.com>
+Date:   Thu, 14 Oct 2021 05:40:08 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <b2355acf-94a5-1acf-122b-d661c6d9bb1b@canonical.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAKwvOd=qxHU41HFEWLAz6DOvSMPdW863E9SKVe0PFK0ePDvizQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 12/10/21 10:32, Krzysztof Kozlowski wrote:
-> On 11/10/2021 17:56, Luca Ceresoli wrote:
->> Add a simple driver for the Maxim MAX77714 PMIC, supporting RTC and
->> watchdog only.
+
+On 10/14/21 2:50 AM, Nick Desaulniers wrote:
+> On Wed, Oct 13, 2021 at 11:03 AM Dan Li <ashimida@linux.alibaba.com> wrote:
 >>
->> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
->> ---
->>  MAINTAINERS                  |   2 +
->>  drivers/mfd/Kconfig          |  14 ++++
->>  drivers/mfd/Makefile         |   1 +
->>  drivers/mfd/max77714.c       | 151 +++++++++++++++++++++++++++++++++++
->>  include/linux/mfd/max77714.h |  68 ++++++++++++++++
->>  5 files changed, 236 insertions(+)
->>  create mode 100644 drivers/mfd/max77714.c
->>  create mode 100644 include/linux/mfd/max77714.h
+>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>> index 62c3c1d..da2da8c 100644
+>> --- a/arch/arm64/Kconfig
+>> +++ b/arch/arm64/Kconfig
+>> @@ -81,7 +81,7 @@ config ARM64
+>>          select ARCH_SUPPORTS_DEBUG_PAGEALLOC
+>>          select ARCH_SUPPORTS_HUGETLBFS
+>>          select ARCH_SUPPORTS_MEMORY_FAILURE
+>> -       select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
+>> +       select ARCH_SUPPORTS_SHADOW_CALL_STACK if (CC_HAVE_SHADOW_CALL_STACK || GCC_PLUGIN_SHADOW_CALL_STACK)
+>>          select ARCH_SUPPORTS_LTO_CLANG if CPU_LITTLE_ENDIAN
+>>          select ARCH_SUPPORTS_LTO_CLANG_THIN
+>>          select ARCH_SUPPORTS_CFI_CLANG
+>> @@ -1062,7 +1062,7 @@ config ARCH_HAS_FILTER_PGPROT
 >>
+>>   # Supported by clang >= 7.0
+>>   config CC_HAVE_SHADOW_CALL_STACK
+>> -       def_bool $(cc-option, -fsanitize=shadow-call-stack -ffixed-x18)
+>> +       def_bool (CC_IS_CLANG && $(cc-option, -fsanitize=shadow-call-stack -ffixed-x18))
 > 
-> (...)
+> I guess since clang supported SCS since clang-7, but the minimally
+> supported version of clang according to
+> Documentation/process/changes.rst is 10.0.1, then this could be:
 > 
->> +
->> +static const struct of_device_id max77714_dt_match[] = {
->> +	{ .compatible = "maxim,max77714" },
->> +	{},
->> +};
+> def_boot CC_IS_CLANG || $(cc-option, -fsanitize=shadow-call-stack -ffixed-x18)
 > 
-> When converting to module - don't forget the MODULE_DEVICE_TABLE
+> Then we won't have to touch it again once SCS lands in upstream GCC,
+> as the cc-option test will start to pass?
 > 
->> +
->> +static struct i2c_driver max77714_driver = {
->> +	.driver = {
->> +		.name = "max77714",
->> +		.of_match_table = of_match_ptr(max77714_dt_match),
-> 
-> Kbuild robot pointed it out - of_matc_ptr should not be needed, even for
-> compile testing without OF.
+Thanks Nick,
 
-I wonder whether it's better to add '#ifdef CONFIG_OF / #endif' around
-the struct of_device_id declaration. I think it's what most drivers do,
-even though I tend to prefer not adding #ifdefs making code less clean
-only for COMPILE_TESTING.
-
--- 
-Luca
+That sounds reasonable.
