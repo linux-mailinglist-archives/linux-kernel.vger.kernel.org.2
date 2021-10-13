@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7572F42C948
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F0542C94A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 21:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238836AbhJMTEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 15:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234061AbhJMTET (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 15:04:19 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D568C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:02:16 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id g5so2491816plg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 12:02:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XYUZdSbtY3yILKq30armlw/nLFSTpxD7xzR0LPRYz80=;
-        b=gpYKK9FHVxBdFJtwWQViBwA6f8A8yxtHj5zqNEzFZ+S0843PtoWAyD5MADhc+CKcZ4
-         5ngK1kdS6dIScpdJWiiYbns6hn+I0/aa3zc8aYsrcaVwjDK/PyNeqgmgGZSw1ruKlLVJ
-         KmTGnrOq0PccZ2Svs/+X9fiN4LSaKncO8PW8U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XYUZdSbtY3yILKq30armlw/nLFSTpxD7xzR0LPRYz80=;
-        b=AyhpZKH7AHM+1U1zgVbiwSuRcNRIWHFmhedSzv8quA1+L/ukW3QV4/AxDi8QNoe2U8
-         2Aw3zTmR7EB+C3eBMmtF8Q2uDUsBWdiCv5lkpYvW+wbEgt1t5nPVrmXvuH4EETCPqh1r
-         vtrUs+AES4fanEFov/69ynV/GtaO+H0+EAsGw+WF5bxmHqG+u65KAsLjTBnmlrVEIILe
-         8PiMGOnbD1MzblVlR09TaJI9SaM4vpgMXMRCWurBJeuGhF96RTXKGer0G4H5WZNJ38cJ
-         CDYnvd7qPDm+frqlu6/pbTLZch7l+80MrrA5LVD/065t+YI1ipwYA+b08HVc8d40AGbe
-         fxyA==
-X-Gm-Message-State: AOAM532S4qG6hDOPI+AHXedArvx9y7G30blspWMxg0fvzAyPQrN3JT2P
-        dMHYsq8cToJI5j7sX/Hmkn/bsBuTCCCcLw==
-X-Google-Smtp-Source: ABdhPJzr8pB5JKBpq4Ks8L5I/+V7O+fqmjtmqNIRDwvNRhToQtzGptsraxsDs7uoU+If38Zs1gAazQ==
-X-Received: by 2002:a17:90a:1548:: with SMTP id y8mr15961214pja.151.1634151735724;
-        Wed, 13 Oct 2021 12:02:15 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d138sm251374pfd.74.2021.10.13.12.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 12:02:15 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 12:02:14 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v5 04/15] cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
-Message-ID: <202110131200.5D551C2D@keescook>
-References: <20211013181658.1020262-1-samitolvanen@google.com>
- <20211013181658.1020262-5-samitolvanen@google.com>
+        id S238893AbhJMTEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 15:04:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230118AbhJMTEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 15:04:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6284060E96;
+        Wed, 13 Oct 2021 19:02:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634151749;
+        bh=nrpmV2aL7Yyo2rvXkWXL6W7OTMDFqb0qTu+6E6wA2jw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=SOy4uik6jEZWbxmPABrbRogV42T8n5r6jEXXfPGNkk6SIgKDyIO6cbZHoarlAkULH
+         kjFBy8PONij7Kl/a60F5hUAIVGNFG9k12KIb2imfqAi2rJcNiU8z+4/0Pb3gpVh9NV
+         ZE3BZ4ySVphSPjAHTDam/ZsH5e6jxU/R6OI0hHiCymtbcuanXohqSbDNMLVzpcPMG4
+         +ZwTDIG4PZnBHVWK/y0yyxATl1P2Qxh2c1shr3aCXxIkGCWdlLx0vEnrb+FK0vCgIV
+         liF96uxIaP05sMPqKAeIkyXUSC0pKpdUh2TTdPkiCAvJs5qPoCYm3v145cEdkU6kNk
+         2BB+INXZ2Oo4Q==
+Date:   Wed, 13 Oct 2021 14:02:26 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        qizhong.cheng@mediatek.com, Ryan-JH.Yu@mediatek.com,
+        Tzung-Bi Shih <tzungbi@google.com>
+Subject: Re: [PATCH v2] PCI: mediatek-gen3: Disable DVFSRC voltage request
+Message-ID: <20211013190226.GA1910352@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211013181658.1020262-5-samitolvanen@google.com>
+In-Reply-To: <20211013183515.GA1907868@bhelgaas>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:16:47AM -0700, Sami Tolvanen wrote:
-> This change introduces the DEFINE_CFI_IMMEDIATE_RETURN_STUB macro,
-> which defines a stub function that immediately returns and when
-> defined in the core kernel, always passes indirect call checking
-> with CONFIG_CFI_CLANG. Note that this macro should only be used when
-> a stub cannot be called using the correct function type.
+On Wed, Oct 13, 2021 at 01:35:17PM -0500, Bjorn Helgaas wrote:
+> On Wed, Oct 13, 2021 at 03:53:28PM +0800, Jianjun Wang wrote:
+> > When the DVFSRC feature is not implemented, the MAC layer will
+> > assert a voltage request signal when exit from the L1ss state,
+> > but cannot receive the voltage ready signal, which will cause
+> > the link to fail to exit the L1ss state correctly.
+> > 
+> > Disable DVFSRC voltage request by default, we need to find
+> > a common way to enable it in the future.
 > 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Rewrap commit log to fill 75 columns.
+> 
+> Does "L1ss" above refer to L1.1 and L1.2?  If so, please say that
+> explicitly or say something like "L1 PM Substates" (the term used in
+> the PCIe spec) so it's clear.
+> 
+> This seems on the boundary of PCIe-specified things and Mediatek
+> implementation details, so I'm not sure what "DVFSRC," "MAC," and
+> "voltage request signal" mean.  Since I don't recognize those terms,
+> I'm guessing they are Mediatek-specific things.
+> 
+> But if they are things specified by the PCIe spec, please use the
+> exact names used in the spec.
+> 
+> > Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+> > Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+> > Tested-by: Qizhong Cheng <qizhong.cheng@mediatek.com>
 
-I remain a bit worried about this exception infrastructure, but it's the
-best way forward right now.
+Krzysztof also pointed out that if this is a bug fix, we may want a
+stable tag here.  And, ideally, a Fixes: tag with the specific commit
+that introduced the bug.
 
-One thought: add DEFINE_CFI_IMMEDIATE_RETURN_STUB (and maybe other
-things to watch closely) to MAINTAINERS:
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index abdcbcfef73d..2c9a24fd6a3c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4553,6 +4553,7 @@ B:	https://github.com/ClangBuiltLinux/linux/issues
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/clang/features
- F:	include/linux/cfi.h
- F:	kernel/cfi.c
-+K:	\bDEFINE_CFI_IMMEDIATE_RETURN_STUB\b
- 
- CLEANCACHE API
- M:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+> > ---
+> >  drivers/pci/controller/pcie-mediatek-gen3.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
+> > index f3aeb8d4eaca..79fb12fca6a9 100644
+> > --- a/drivers/pci/controller/pcie-mediatek-gen3.c
+> > +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+> > @@ -79,6 +79,9 @@
+> >  #define PCIE_ICMD_PM_REG		0x198
+> >  #define PCIE_TURN_OFF_LINK		BIT(4)
+> >  
+> > +#define PCIE_MISC_CTRL_REG		0x348
+> > +#define PCIE_DISABLE_DVFSRC_VLT_REQ	BIT(1)
+> > +
+> >  #define PCIE_TRANS_TABLE_BASE_REG	0x800
+> >  #define PCIE_ATR_SRC_ADDR_MSB_OFFSET	0x4
+> >  #define PCIE_ATR_TRSL_ADDR_LSB_OFFSET	0x8
+> > @@ -297,6 +300,11 @@ static int mtk_pcie_startup_port(struct mtk_pcie_port *port)
+> >  	val &= ~PCIE_INTX_ENABLE;
+> >  	writel_relaxed(val, port->base + PCIE_INT_ENABLE_REG);
+> >  
+> > +	/* Disable DVFSRC voltage request */
+> > +	val = readl_relaxed(port->base + PCIE_MISC_CTRL_REG);
+> > +	val |= PCIE_DISABLE_DVFSRC_VLT_REQ;
+> > +	writel_relaxed(val, port->base + PCIE_MISC_CTRL_REG);
+> > +
+> >  	/* Assert all reset signals */
+> >  	val = readl_relaxed(port->base + PCIE_RST_CTRL_REG);
+> >  	val |= PCIE_MAC_RSTB | PCIE_PHY_RSTB | PCIE_BRG_RSTB | PCIE_PE_RSTB;
+> > -- 
+> > 2.25.1
+> > 
