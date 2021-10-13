@@ -2,97 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615A042B961
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28EAD42B96B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 09:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238545AbhJMHnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 03:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238626AbhJMHnU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 03:43:20 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD50C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 00:41:17 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1maYsz-0006ZE-MI; Wed, 13 Oct 2021 09:41:13 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1maYsy-0005Go-GW; Wed, 13 Oct 2021 09:41:12 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1maYsy-0006oG-FA; Wed, 13 Oct 2021 09:41:12 +0200
-Date:   Wed, 13 Oct 2021 09:41:09 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Michael Hennerich <michael.hennerich@analog.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: adxl34x - fix sparse warning
-Message-ID: <20211013074109.6xmsxttihev77zkg@pengutronix.de>
-References: <YWZIjb91d6aAwgss@google.com>
+        id S238561AbhJMHrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 03:47:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238509AbhJMHrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 03:47:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1077660EDF;
+        Wed, 13 Oct 2021 07:45:43 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 08:45:40 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memblock: exclude NOMAP regions from kmemleak
+Message-ID: <YWaOpMhO6LoiiD+S@arm.com>
+References: <20211013054756.12177-1-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dxyw7xunh74cjzi3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YWZIjb91d6aAwgss@google.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20211013054756.12177-1-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 13, 2021 at 08:47:56AM +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Vladimir Zapolskiy reports:
+> 
+> commit a7259df76702 ("memblock: make memblock_find_in_range method private")
+> invokes a kernel panic while running kmemleak on OF platforms with nomaped
+> regions:
+> 
+>   Unable to handle kernel paging request at virtual address fff000021e00000
+>   [...]
+>     scan_block+0x64/0x170
+>     scan_gray_list+0xe8/0x17c
+>     kmemleak_scan+0x270/0x514
+>     kmemleak_write+0x34c/0x4ac
+> 
+> Indeed, NOMAP regions don't have linear map entries so an attempt to scan
+> these areas would fault.
+> 
+> Prevent such faults by excluding NOMAP regions from kmemleak.
+> 
+> Link: https://lore.kernel.org/all/8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org
+> Fixes: a7259df76702 ("memblock: make memblock_find_in_range method private")
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Tested-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
 
---dxyw7xunh74cjzi3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Oct 12, 2021 at 07:46:37PM -0700, Dmitry Torokhov wrote:
-> This fixes the following warning from sparse:
->=20
->   CC [M]  drivers/input/misc/adxl34x.o
->   CHECK   drivers/input/misc/adxl34x.c
-> drivers/input/misc/adxl34x.c:245:29: warning: cast to restricted __le16
-> drivers/input/misc/adxl34x.c:248:29: warning: cast to restricted __le16
-> drivers/input/misc/adxl34x.c:251:29: warning: cast to restricted __le16
-
-This was introduced (I think) in commit
-
-	e27c729219ad ("Input: add driver for ADXL345/346 Digital Accelerometers")
-
-=2E Is this worth a Fixes: line, or mentioning in the commit log?
-
-Other than that:
-
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---dxyw7xunh74cjzi3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFmjZIACgkQwfwUeK3K
-7AmCiAgAnZR6n0KE8uvnfDToSeyBPzOJ2Sz0cOG9gubTYDphEPON9ijzHmzUMjZC
-+zeFOu7y+ACjNmy7ROTmlWVqc1a1XDcGUS3GqYXPYCU9yT9zXGGeiESmSSUDg4qL
-xjdbSeTUdiGZD0QdHr6+rUoV3sixxKIFiEflgnw9Gnj7AbTKI+TROZKs4pnOzct3
-48nj4LanWWZemcreq8upGob8KklMBsS8C1sDPE+Nv+z0B9ADsSuPIUEHejqEBiZ9
-Od30WX86IE5SRm4xw2d+gP9QXNXdpqvvLxRmuK6TU4a0oF9EKbFlaiJcycSnT/ob
-GX4rqsoL3Eid/Sks6g35h0m1cs+Xew==
-=j53m
------END PGP SIGNATURE-----
-
---dxyw7xunh74cjzi3--
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
