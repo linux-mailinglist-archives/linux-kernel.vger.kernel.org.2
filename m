@@ -2,108 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918F242C1FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE2842C209
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Oct 2021 16:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235519AbhJMOCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 10:02:34 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36844 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230324AbhJMOCd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:02:33 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19DDN6eM011490;
-        Wed, 13 Oct 2021 16:00:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=fCSqyNLZi/i47QTIlxvDJ8Eee5KYsx+MfdTqMt9Kdc0=;
- b=iC+84/nFPw5V7xCloQvvjVfvnEuuEi+MWBmN7CJBEaOdVE2Fhwwywv2YL+ZfzFUB7uuX
- kcc1sxjSFVMzuZvTR28I4m74NMF4gKWaJMAATsKRvRmCvrhJdb0RaZObMgc5+u2QhV5x
- AX77qWrBywxeqr+QLeJ1zazZf6ShbLF7+7zxDgdPhw3DIUP1cX8zr52Yrtpgi6gNZum8
- jQTmMhLa1Kkpc8mkDGXRobG1MuKUgKHIJ+fFLOQ4mOErOgo1ktBZQl58OBQ2qpxKZ3bw
- razL6Z7oALDJxHL6OTczsiwDxq+76GkHQEhFJXceSiXyA8f96lPwyX7bLnCCeP/3MOVJ vw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bnuxttbaq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Oct 2021 16:00:24 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0F8EB10002A;
-        Wed, 13 Oct 2021 16:00:24 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0799622F7D6;
-        Wed, 13 Oct 2021 16:00:24 +0200 (CEST)
-Received: from [10.211.0.59] (10.75.127.49) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 13 Oct
- 2021 16:00:22 +0200
-Subject: Re: [PATCH v2 0/2] usb: dwc2: fill in gadget caps, configure it for
- stm32mp15
-To:     <hminas@synopsys.com>, <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <amelie.delaunay@foss.st.com>, <alexandre.torgue@foss.st.com>
-References: <1633679589-16021-1-git-send-email-fabrice.gasnier@foss.st.com>
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Message-ID: <1000e62a-26e2-90d3-afee-a4166bb4ff79@foss.st.com>
-Date:   Wed, 13 Oct 2021 16:00:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235653AbhJMOEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 10:04:40 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:36956 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230324AbhJMOEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:04:39 -0400
+Received: from zn.tnic (p200300ec2f1208001796bb6dc2170571.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:800:1796:bb6d:c217:571])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EF28E1EC051F;
+        Wed, 13 Oct 2021 16:02:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634133755;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=NurK9sx2E3ZorSLuDzTSVMGD0abr259MgqmkGxhYunc=;
+        b=BfN4IUFU3/eKIX37iXR25VuZJZfq0gwCcmJIo74REhBJxLHgr2IUVEc/tOe6+OWsIjhtwF
+        pqmUlzUvmYxmZqM3q5gdwSGDl6BRWnqJfG0Qw1p1V2i06CSWDsBqNUW0EudVX23OlHE2Jy
+        FVCoeKqYWNp5vr875rp1nUyJ4f0r800=
+Date:   Wed, 13 Oct 2021 16:02:33 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v6 07/42] x86/sev: Add support for hypervisor feature
+ VMGEXIT
+Message-ID: <YWbm+SOMv7AXduWR@zn.tnic>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-8-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <1633679589-16021-1-git-send-email-fabrice.gasnier@foss.st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-13_05,2021-10-13_02,2020-04-07_01
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211008180453.462291-8-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/21 9:53 AM, Fabrice Gasnier wrote:
-> This patchset fills in 'otg_caps' of the usb_gadget structure, and
-> configures it on stm32mp15.
+On Fri, Oct 08, 2021 at 01:04:18PM -0500, Brijesh Singh wrote:
+> Version 2 of GHCB specification introduced advertisement of a features
+> that are supported by the hypervisor. Add support to query the HV
+> features on boot.
 > 
-> When dwc2 is configured as dual role (OTG), the USB gadget descriptors
-> (device mode) are configured via configfs. This lead in calling
-> usb_otg_descriptor_init().
-> In usb_otg_descriptor_init() (drivers/usb/gadget/config.c):
-> - If otg caps structure is provided -> use it
-> - If otg caps structure isn't provided -> HNP and SRP are enabled by default
+> Version 2 of GHCB specification adds several new NAEs, most of them are
+> optional except the hypervisor feature. Now that hypervisor feature NAE
+> is implemented, so bump the GHCB maximum support protocol version.
 > 
-> This could lead to a configuration mismatch beetween:
-> - OTG controller: HNP and SRP aren't enabled
-> - gadget descriptors: HNP and SRP are advertised
-> 
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
 > ---
+>  arch/x86/include/asm/sev-common.h |  3 +++
+>  arch/x86/include/asm/sev.h        |  2 +-
+>  arch/x86/include/uapi/asm/svm.h   |  2 ++
+>  arch/x86/kernel/sev-shared.c      | 30 ++++++++++++++++++++++++++++++
+>  4 files changed, 36 insertions(+), 1 deletion(-)
 
-Hi All, I just sent a v3 of this series, to add the dt-bindings.
+For the next version, when you add those variables, do this too pls:
 
-Please rather review the v3.
+diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+index 8ee27d07c1cd..7a2176e0d0ad 100644
+--- a/arch/x86/kernel/sev-shared.c
++++ b/arch/x86/kernel/sev-shared.c
+@@ -21,10 +21,10 @@
+  *
+  * GHCB protocol version negotiated with the hypervisor.
+  */
+-static u16 __ro_after_init ghcb_version;
++static u16 ghcb_version __ro_after_init;
+ 
+ /* Bitmap of SEV features supported by the hypervisor */
+-static u64 __ro_after_init sev_hv_features;
++static u64 sev_hv_features __ro_after_init;
+ 
+ static bool __init sev_es_check_cpu_features(void)
+ {
 
-Thanks in advance,
-Fabrice
+I didn't realize this earlier but we put that annotation at the end.
 
+Thx.
 
-> Changes in v2:
-> - replace otg_cap bit field by otg_caps structure.
-> - Fix build issue when HOST only mode is selected [1]
-> - DT patch for stm32mp151 merged in v1, so not resent
-> 
-> [1] https://syzkaller.appspot.com/bug?extid=7af597ce2b38596c16ea
-> 
-> Fabrice Gasnier (2):
->   usb: dwc2: add otg_rev and otg_caps information for gadget driver
->   usb: dwc2: stm32mp15: set otg_rev
-> 
->  drivers/usb/dwc2/core.h    | 19 ++++++------
->  drivers/usb/dwc2/debugfs.c |  4 ++-
->  drivers/usb/dwc2/gadget.c  |  1 +
->  drivers/usb/dwc2/hcd.c     | 12 +++-----
->  drivers/usb/dwc2/params.c  | 75 ++++++++++++++++++++++++++--------------------
->  5 files changed, 59 insertions(+), 52 deletions(-)
-> 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
