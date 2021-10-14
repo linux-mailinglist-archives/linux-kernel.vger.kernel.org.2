@@ -2,241 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BE042D940
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1196C42D943
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhJNM1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbhJNM1P (ORCPT
+        id S231477AbhJNM2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:28:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25379 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230339AbhJNM2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:27:15 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566D5C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:25:10 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id p16so26316057lfa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ecDOxJ4g4rGekvg6Ad7KQ5ygSfRdg/EpAd1GYPQ0UAU=;
-        b=V2yOk6j0nyPSfywCPSk+T5zC77Z8P+1d4kSMfqNEom2mJSpFKjaexaTDKIKNgd/uBw
-         JT343HMobT/VyIVVloVoFq07SqJydkUOWoBOphIycADkj++npExCYTRID1iHmBwYp2yO
-         mBSV35f+U+ACXeph2oDYz7wcdflX8zDiGizx2ycAfrYwCWQj0einJ0/7xA/2lk2kC4ni
-         ocUzCsSRiz+6/iWrPrbmSRo+ai4wKZDY6C4IvK3s/AwXKRbf3pvDTfwee1iBVNwyuNLp
-         ekTS0cm6A0CEfr/Wjq4dbOHBRHFEqeUsvrv+nK8JkMxG7pKbMzMhPU0MB/DTNA++PmID
-         G8OA==
+        Thu, 14 Oct 2021 08:28:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634214395;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nw9W7HyIzCeo5RrN6lM9UA8wdwwigGUEHJS6J9krvP0=;
+        b=HvnSl+15guxjH+8liuUDVkR6kl6RAcxGlUHj+iiHvlUJrcT9WxrViZcWU3cmqSckEN+zPi
+        WU2r8WHdUFvSprk5UCcUewH7K8/lW7QZV8z/geV5NundF9BxPb3BJBVqnIkTdIFMpQabVw
+        RQaIY3LrN/EdN9oRQh43byz+bSrMIfA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-238-xLjMFVVyOCOOmHn-UiICOQ-1; Thu, 14 Oct 2021 08:26:34 -0400
+X-MC-Unique: xLjMFVVyOCOOmHn-UiICOQ-1
+Received: by mail-ed1-f69.google.com with SMTP id l10-20020a056402230a00b003db6977b694so4961873eda.23
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:26:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=ecDOxJ4g4rGekvg6Ad7KQ5ygSfRdg/EpAd1GYPQ0UAU=;
-        b=GxKwfjPxG5ZrVMLBWmGDN+ULUsqXr32DDUl/WWTKyBvH0mpcl/ESRjwX26qHWX4nuS
-         zeyMnJx3CX5BzeiHEyiqDLN9ImAdgAygEJAE2B7vCDp+Y1bLJbkd+7u4l2VFxgLM4fnU
-         09RV1aH4BBxeLN+j4SooFLqhFB65DhDlk0Werk0BX3X1brF5pLWztBhf67KtYbkiNmrV
-         XeoKKrQeJNdGfhmEotup4PgklHofdRgad4FV5LSgcfQpbQbu/8kcU7rrfFMzXWC+XS7N
-         TDFlb1NVL7OLQBtEE3DsXkTkLc6PplnKjOhSDVBaAYb4eMFXg2XMAQLzPvyOenlf9UBI
-         LBSg==
-X-Gm-Message-State: AOAM533/ox66D3srnlDiZk+Aay0jk308L9JGNjYQzTr1E2HCTZFue7nK
-        VMJFO19Et2CFD7Jdlhu6McBubA==
-X-Google-Smtp-Source: ABdhPJy7zlyfngIg6lyxPZFE4lAszVXSZLyFVA06ruM/zhwbizwMiSLOMbC8PwwtkU0Q/RrfvOCASQ==
-X-Received: by 2002:a2e:bd8a:: with SMTP id o10mr5630339ljq.316.1634214308569;
-        Thu, 14 Oct 2021 05:25:08 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id r10sm251605ljg.10.2021.10.14.05.25.07
+        bh=Nw9W7HyIzCeo5RrN6lM9UA8wdwwigGUEHJS6J9krvP0=;
+        b=hNZHJS+aTi/TuvCvz1WQrvJo/esB12inChdFbtgHyw/DQkmoKH39OrNq6YxpJ792kI
+         w8dGO4wnvklUy0fJnw3MTO1GUEF4KWTq1y7UT184qLVNP8sfaAO1fKcUeftEWlCVNtj8
+         aAVyu9c3udF6PVzYJ2CEotjqdbb6kTOBIwBOAdIxWIZRn4a3rRFX6pnP+M8KBUrSOrno
+         Wtd5FIIP/ot5Xr5JKutqlas8+kIu/tkgVi7TsJlGGKH8P28J7/8OH+Oq8Fd71t+uTgqB
+         +S6XEYPe5o17yHv18PCoq+V8G9r370+VDBBw/01QBgwa31IK6jSS2L8cdUY+M6T46YZj
+         ckVw==
+X-Gm-Message-State: AOAM5327TM8XJabjVGeNiK1i/r7DNEB6BGgb++dQqKRYJ80SS50s+PIV
+        zrYE7xva6T6h+5g8B6faC+y9EbCqyJ2xnzEPrgWtRHGJzsUtvW+jZQ1b5SSCF+Zs6Mu2fJgNF3n
+        /+Ltx0723fxzsvE6yh8tInzlf
+X-Received: by 2002:a17:906:c041:: with SMTP id bm1mr3477320ejb.280.1634214393532;
+        Thu, 14 Oct 2021 05:26:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzTB0hQgUCoVigLcm7gDa+Nn2NZNaSf2eIC82HTFKDicUQIlwso41JQ/erZLteLVzwc2ywzrg==
+X-Received: by 2002:a17:906:c041:: with SMTP id bm1mr3477290ejb.280.1634214393348;
+        Thu, 14 Oct 2021 05:26:33 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id o12sm2087672edw.84.2021.10.14.05.26.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 05:25:08 -0700 (PDT)
-Subject: Re: [PATCH 4/8] cpufreq: qcom_cpufreq_nvmem: Simplify reading kryo
- speedbin
-To:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org
-References: <20211014083016.137441-1-y.oudjana@protonmail.com>
- <20211014083016.137441-5-y.oudjana@protonmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <7e8b5d31-0232-7aee-ceed-ec453b447638@linaro.org>
-Date:   Thu, 14 Oct 2021 15:25:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 14 Oct 2021 05:26:32 -0700 (PDT)
+Message-ID: <0a5aa9d3-e0d4-266e-5e25-021a5ea9c611@redhat.com>
+Date:   Thu, 14 Oct 2021 14:26:31 +0200
 MIME-Version: 1.0
-In-Reply-To: <20211014083016.137441-5-y.oudjana@protonmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+References: <871r4p9fyh.ffs@tglx>
+ <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com> <875ytz7q2u.ffs@tglx>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <875ytz7q2u.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2021 11:32, Yassine Oudjana wrote:
-> In preparation for adding a separate device tree for MSM8996 Pro, skip reading
-> msm-id from smem and just read the speedbin efuse.
-
-It would be nice to comment, why is it possible/necessary. For example:
-
-MSM8996 Pro has completely different set of frequencies, so it makes no 
-sense to have a single table covering Pro and original SoCs. 
-msm8996pro.dtsi would override frequency table from msm8996.dtsi.
-
-
+On 14/10/21 14:23, Thomas Gleixner wrote:
+>> In principle I don't like it very much; it would be nicer to say "you
+>> enable it for QEMU itself via arch_prctl(ARCH_SET_STATE_ENABLE), and for
+>> the guests via ioctl(KVM_SET_CPUID2)".  But I can see why you want to
+>> keep things simple, so it's not a strong objection at all.
+> Errm.
 > 
-> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
-> ---
->   drivers/cpufreq/Kconfig.arm          |  1 -
->   drivers/cpufreq/qcom-cpufreq-nvmem.c | 75 +++-------------------------
->   2 files changed, 6 insertions(+), 70 deletions(-)
+>     qemu()
+>       read_config()
+>       if (dynamic_features_passthrough())
+> 	request_permission(feature)             <- prctl(ARCH_SET_STATE_ENABLE)
 > 
-> diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-> index 954749afb5fe..7d9798bc5753 100644
-> --- a/drivers/cpufreq/Kconfig.arm
-> +++ b/drivers/cpufreq/Kconfig.arm
-> @@ -154,7 +154,6 @@ config ARM_QCOM_CPUFREQ_NVMEM
->   	tristate "Qualcomm nvmem based CPUFreq"
->   	depends on ARCH_QCOM
->   	depends on QCOM_QFPROM
-> -	depends on QCOM_SMEM
->   	select PM_OPP
->   	help
->   	  This adds the CPUFreq driver for Qualcomm Kryo SoC based boards.
-> diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-> index d1744b5d9619..909f7d97b334 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-> @@ -9,8 +9,8 @@
->    * based on the silicon variant in use. Qualcomm Process Voltage Scaling Tables
->    * defines the voltage and frequency value based on the msm-id in SMEM
->    * and speedbin blown in the efuse combination.
-> - * The qcom-cpufreq-nvmem driver reads the msm-id and efuse value from the SoC
-> - * to provide the OPP framework with required information.
-> + * The qcom-cpufreq-nvmem driver reads efuse value from the SoC to provide the
-> + * OPP framework with required information.
->    * This is used to determine the voltage and frequency value for each OPP of
->    * operating-points-v2 table when it is parsed by the OPP framework.
->    */
-> @@ -27,22 +27,6 @@
->   #include <linux/pm_domain.h>
->   #include <linux/pm_opp.h>
->   #include <linux/slab.h>
-> -#include <linux/soc/qcom/smem.h>
-> -
-> -#define MSM_ID_SMEM	137
-> -
-> -enum _msm_id {
-> -	MSM8996V3 = 0xF6ul,
-> -	APQ8096V3 = 0x123ul,
-> -	MSM8996SG = 0x131ul,
-> -	APQ8096SG = 0x138ul,
-> -};
-> -
-> -enum _msm8996_version {
-> -	MSM8996_V3,
-> -	MSM8996_SG,
-> -	NUM_OF_MSM8996_VERSIONS,
-> -};
->   
->   struct qcom_cpufreq_drv;
->   
-> @@ -142,35 +126,6 @@ static void get_krait_bin_format_b(struct device *cpu_dev,
->   	dev_dbg(cpu_dev, "PVS version: %d\n", *pvs_ver);
->   }
->   
-> -static enum _msm8996_version qcom_cpufreq_get_msm_id(void)
-> -{
-> -	size_t len;
-> -	u32 *msm_id;
-> -	enum _msm8996_version version;
-> -
-> -	msm_id = qcom_smem_get(QCOM_SMEM_HOST_ANY, MSM_ID_SMEM, &len);
-> -	if (IS_ERR(msm_id))
-> -		return NUM_OF_MSM8996_VERSIONS;
-> -
-> -	/* The first 4 bytes are format, next to them is the actual msm-id */
-> -	msm_id++;
-> -
-> -	switch ((enum _msm_id)*msm_id) {
-> -	case MSM8996V3:
-> -	case APQ8096V3:
-> -		version = MSM8996_V3;
-> -		break;
-> -	case MSM8996SG:
-> -	case APQ8096SG:
-> -		version = MSM8996_SG;
-> -		break;
-> -	default:
-> -		version = NUM_OF_MSM8996_VERSIONS;
-> -	}
-> -
-> -	return version;
-> -}
-> -
->   static int qcom_cpufreq_kryo_name_version(struct device *cpu_dev,
->   					  struct nvmem_cell *speedbin_nvmem,
->   					  char **pvs_name,
-> @@ -178,30 +133,13 @@ static int qcom_cpufreq_kryo_name_version(struct device *cpu_dev,
->   {
->   	size_t len;
->   	u8 *speedbin;
-> -	enum _msm8996_version msm8996_version;
->   	*pvs_name = NULL;
->   
-> -	msm8996_version = qcom_cpufreq_get_msm_id();
-> -	if (NUM_OF_MSM8996_VERSIONS == msm8996_version) {
-> -		dev_err(cpu_dev, "Not Snapdragon 820/821!");
-> -		return -ENODEV;
-> -	}
-> -
->   	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
->   	if (IS_ERR(speedbin))
->   		return PTR_ERR(speedbin);
->   
-> -	switch (msm8996_version) {
-> -	case MSM8996_V3:
-> -		drv->versions = 1 << (unsigned int)(*speedbin);
-> -		break;
-> -	case MSM8996_SG:
-> -		drv->versions = 1 << ((unsigned int)(*speedbin) + 4);
-> -		break;
-> -	default:
-> -		BUG();
-> -		break;
-> -	}
-> +	drv->versions = 1 << (unsigned int)(*speedbin);
->   
->   	kfree(speedbin);
->   	return 0;
-> @@ -464,10 +402,9 @@ static const struct of_device_id qcom_cpufreq_match_list[] __initconst = {
->   MODULE_DEVICE_TABLE(of, qcom_cpufreq_match_list);
->   
->   /*
-> - * Since the driver depends on smem and nvmem drivers, which may
-> - * return EPROBE_DEFER, all the real activity is done in the probe,
-> - * which may be defered as well. The init here is only registering
-> - * the driver and the platform device.
-> + * Since the driver depends on the nvmem driver, which may return EPROBE_DEFER,
-> + * all the real activity is done in the probe, which may be defered as well.
-> + * The init here is only registering the driver and the platform device.
->    */
->   static int __init qcom_cpufreq_init(void)
->   {
+>       create_vcpu_threads()
+>         ....
+> 
+>         vcpu_thread()
+> 	 kvm_ioctl(ENABLE_DYN_FEATURE, feature) <- KVM ioctl
+> 
+> That's what I lined out, right?
 > 
 
+I meant prctl for QEMU-in-user-mode vs. ioctl QEMU-in-guest-mode (i.e. 
+no prctl if only the guest uses it).  But anyway it's just abstract 
+"beauty", let's stick to simple. :)
 
--- 
-With best wishes
-Dmitry
+Paolo
+
