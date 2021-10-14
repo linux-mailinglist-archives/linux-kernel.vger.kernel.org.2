@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41AD42D7C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0997442D7C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhJNLJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhJNLJr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:09:47 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2041FC061570;
-        Thu, 14 Oct 2021 04:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=77VgjRIde6vwrbjli0psB7WD0kOrKVS+AX+DTq527kY=; b=OFc23zjqWRPL0UVhuJbDqj8Mqh
-        mfDbpqRGvNvE6FafTd32fExbhNT3WG1AuznDKUPdN8l9mpNjAHslTNQf2mkbjv/3jDBmWB+IZkJHd
-        yE/hy3j1ce3n51aNMARZjXFpuX+ZYQ8/rtR70DtjSmvHX79Gko91eC/eBT0ULMeqHQcPNqjmADUHm
-        QU5l1jK6RmiGobV13xqTG+bDr0Lv/gCxOf5Jue6y++ne5mRm3hAGcoNDS7I+fDTbK2NdHDy4R2qD4
-        gEuS5xlsp2bIqWt3+b6eQzCSqUHKZiub1L/tmCjKUbtzBDaXsB1A9emf3LtR9++wuK2g0a0XrO1Mp
-        2ci62zJQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55090)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mayaB-0001EW-KU; Thu, 14 Oct 2021 12:07:31 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1maya3-00025Z-J0; Thu, 14 Oct 2021 12:07:23 +0100
-Date:   Thu, 14 Oct 2021 12:07:23 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     keescook@chromium.org, jannh@google.com,
-        linux-kernel@vger.kernel.org, vcaputo@pengaru.com,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, akpm@linux-foundation.org,
-        christian.brauner@ubuntu.com, amistry@google.com,
-        Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
-        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com,
-        mark.rutland@arm.com, axboe@kernel.dk, metze@samba.org,
-        laijs@linux.alibaba.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, ebiederm@xmission.com,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, jpoimboe@redhat.com,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        vgupta@kernel.org, will@kernel.org, guoren@kernel.org,
-        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
-        nickhu@andestech.com, jonas@southpole.se, mpe@ellerman.id.au,
-        paul.walmsley@sifive.com, hca@linux.ibm.com,
-        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net
-Subject: Re: [PATCH 6/7] arch: __get_wchan || STACKTRACE_SUPPORT
-Message-ID: <YWgPa3C8dKkNoJBu@shell.armlinux.org.uk>
-References: <20211008111527.438276127@infradead.org>
- <20211008111626.392918519@infradead.org>
+        id S230347AbhJNLKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:10:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230205AbhJNLJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 07:09:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E63D860F9E;
+        Thu, 14 Oct 2021 11:07:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634209671;
+        bh=mSOT5SaXvV5vgntRVKQZFS4W4Npe93HR4Dh/GaBD5zo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UHTyHKG+7hfmFs6Cs6smumVmFr3nWIHT7mWvJvNgy5WuN/KSI7+oMiEcnUDIVhptf
+         m5NH/aaM1/mw5PHUoZmzCcjzHu4kD/9pK9VCCVH7c4XnI2rqLWjlkJ5z6RW8nRkFyw
+         dwQbPFpdbLSCVkASgl6cgm1jlnDq5B+KzrQjA9HqdejEIl04JawH3av/i4ULAMrrve
+         lSsM1SLi2znKe6GIX3zr9Hb4L+m2UG+VysVsgBL6NqrE6zZ+jJbVXXJWkAYgtSJmfp
+         uzdZ6AvBACfxYOrjYDpSTEsyryjNKQ0PpuyElW8Nh0rPV24xksDyaZDkZ4upi6hT+I
+         YIxuDyzCO6Yug==
+Date:   Thu, 14 Oct 2021 13:07:48 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 03/11] rcu/nocb: Invoke rcu_core() at the start of
+ deoffloading
+Message-ID: <20211014110748.GB406368@lothringen>
+References: <20211011145140.359412-1-frederic@kernel.org>
+ <20211011145140.359412-4-frederic@kernel.org>
+ <YWcEXj2+nqO8kIFS@boqun-archlinux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211008111626.392918519@infradead.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <YWcEXj2+nqO8kIFS@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 01:15:33PM +0200, Peter Zijlstra wrote:
-> It's trivial to implement __get_wchan() with CONFIG_STACKTRACE
+Hi Boqun,
+
+On Thu, Oct 14, 2021 at 12:07:58AM +0800, Boqun Feng wrote:
+> If offloading races with rcu_core(), can the following happen?
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> 	<offload work>				
+> 	rcu_nocb_rdp_offload():
+> 	    					rcu_core():
+> 						  ...
+> 						  rcu_nocb_lock_irqsave(); // no a lock
+> 	  raw_spin_lock_irqsave(->nocb_lock);
+> 	    rdp_offload_toggle():
+> 	      <LOCKING | OFFLOADED set>
+> 	      					  if (!rcu_segcblist_restempty(...))
+> 						    rcu_accelerate_cbs_unlocked(...);
+> 						  rcu_nocb_unlock_irqrestore();
+> 						  // ^ a real unlock,
+> 						  // and will preempt_enable()
+> 	    // offload continue with ->nocb_lock not held
+> 
+> If this can happen, it means an unpaired preempt_enable() and an
+> incorrect unlock. Thoughts? Maybe I'm missing something here?
 
-This definitely needs testing, but looking at the code, I think this
-will be compatible since we're essentially doing the same tests to
-omit scheduling functions in both the old and replacement code.
+Since we are unconditionally disabling IRQs on rcu_nocb_lock_irqsave(), we can't
+be preempted by rcu_nocb_rdp_offload() until rcu_nocb_unlock_irqrestore() has
+completed. And both have to run on the rdp target CPU. So this shouldn't happen.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thanks.
+
+
+
+> 
+> Regards,
+> Boqun
+> 
+> > +	 *
+> > +	 * _ Deoffloading: In the worst case we miss callbacks acceleration or
+> > +	 *                 processing. This is fine because the early stage
+> > +	 *                 of deoffloading invokes rcu_core() after setting
+> > +	 *                 SEGCBLIST_RCU_CORE. So we guarantee that we'll process
+> > +	 *                 what could have been dismissed without the need to wait
+> > +	 *                 for the next rcu_pending() check in the next jiffy.
+> > +	 */
+> >  	const bool do_batch = !rcu_segcblist_completely_offloaded(&rdp->cblist);
+> >  
+> >  	if (cpu_is_offline(smp_processor_id()))
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index 71a28f50b40f..3b470113ae38 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -990,6 +990,15 @@ static long rcu_nocb_rdp_deoffload(void *arg)
+> >  	 * will refuse to put anything into the bypass.
+> >  	 */
+> >  	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
+> > +	/*
+> > +	 * Start with invoking rcu_core() early. This way if the current thread
+> > +	 * happens to preempt an ongoing call to rcu_core() in the middle,
+> > +	 * leaving some work dismissed because rcu_core() still thinks the rdp is
+> > +	 * completely offloaded, we are guaranteed a nearby future instance of
+> > +	 * rcu_core() to catch up.
+> > +	 */
+> > +	rcu_segcblist_set_flags(cblist, SEGCBLIST_RCU_CORE);
+> > +	invoke_rcu_core();
+> >  	ret = rdp_offload_toggle(rdp, false, flags);
+> >  	swait_event_exclusive(rdp->nocb_state_wq,
+> >  			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
+> > -- 
+> > 2.25.1
+> > 
