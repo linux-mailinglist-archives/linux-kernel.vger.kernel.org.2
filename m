@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1C142E015
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8490D42E019
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbhJNRdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 13:33:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19828 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231206AbhJNRdF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 13:33:05 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19EHSweS029454;
-        Thu, 14 Oct 2021 13:30:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=Rq0jcxFhNxsWKfix/Lz8kGT1bKN6ibN+5nMFu8RS/7A=;
- b=Y9zqZE5qg/RgZXEJaVLdbYi/r87yt1Ju43CYS85J3A+5B7LG4Tq8jMBjhHMydFu9FEWJ
- RLeDZskAxdpu7zOhaLi5AgW20fbPQ2x3D7m9iaIIhOFZoC9RHXqfHCly3ALT37FuFawo
- 35qJSl4ihWt1QHYwNLTUzpULXYD6hUH2vpF+kJjTX7QXVq8+J6pE2cdG2Tpu23hRdMK1
- /OIqoAQlrQQHqhMCba8zzNYwYEQ6RerbPYWKhlVltv3yMPlOLmUDRPwr0+LsRcQEVfi5
- L5VbhJlBCYCtu8ndfuI1kz059YYHGcTlY2Nolf1MLIv4WenyXNMjG7HyAZJw2yUgdg+r GA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bns3gch7e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Oct 2021 13:30:58 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19EHO1C5001071;
-        Thu, 14 Oct 2021 13:30:58 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bns3gch75-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Oct 2021 13:30:58 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19EHBoVD000361;
-        Thu, 14 Oct 2021 17:30:57 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma05wdc.us.ibm.com with ESMTP id 3bk2qcnb99-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Oct 2021 17:30:57 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19EHUuiC17432838
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Oct 2021 17:30:56 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4CE2978068;
-        Thu, 14 Oct 2021 17:30:56 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2207978066;
-        Thu, 14 Oct 2021 17:30:56 +0000 (GMT)
-Received: from localhost (unknown [9.211.53.229])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Oct 2021 17:30:55 +0000 (GMT)
-From:   Nathan Lynch <nathanl@linux.ibm.com>
-To:     devicetree@vger.kernel.org
-Cc:     robh+dt@kernel.org, frowand.list@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] of: make of_node_check_flag() device_node parameter const
-Date:   Thu, 14 Oct 2021 12:30:55 -0500
-Message-Id: <20211014173055.2117872-1-nathanl@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
+        id S233494AbhJNRde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 13:33:34 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:39874 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231265AbhJNRdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 13:33:33 -0400
+Received: from zn.tnic (p200300ec2f0c720076278dcac58b4415.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:7200:7627:8dca:c58b:4415])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 827361EC0136;
+        Thu, 14 Oct 2021 19:31:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1634232686;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=DQftSPqAxAWNjuaFkjQxzK/R7rLUcHBb68ob6y37uAY=;
+        b=oAjh5oIbWL4Qps5tii3z9bWeNfIXuMC0QHYFueKGxd59UyW/fZ8YnGzPXV4s72lU0LuPcF
+        1PeAlpl6o1Qg0UBR1hXBa+cATJP38cNKvjDL+XUUMJOkaq5qJP97/+Zz+vko9NQ7yU26OS
+        82fmwfUbc+Fr1ZAeTMRvYwVSV6OwzZY=
+Date:   Thu, 14 Oct 2021 19:31:26 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 09/15] x86: Use an opaque type for functions not
+ callable from C
+Message-ID: <YWhpbu/Y6V2p/zlY@zn.tnic>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-10-samitolvanen@google.com>
+ <YWgSwmzPFrRbMC1P@zn.tnic>
+ <202110140904.41B5183E@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: JY9EWnF96utcXMsIAX7Syizn4mRGmz5d
-X-Proofpoint-ORIG-GUID: 1SY0t52Oa5vD4uq0yHKtp_7ZvbkZmhos
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-14_09,2021-10-14_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 mlxscore=0
- mlxlogscore=868 spamscore=0 bulkscore=0 phishscore=0 adultscore=0
- clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2110140099
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202110140904.41B5183E@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device_node argument isn't modified by of_node_check_flag(), so mark it
-const.
+On Thu, Oct 14, 2021 at 09:07:57AM -0700, Kees Cook wrote:
+> I don't think it's a super common thing to add, so in this case, yes,
+> I think doing it on a case-by-case basis will be fine. 
 
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
----
- include/linux/of.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You don't have a choice - if there's no automation which verifies
+whether all the CFI annotation needed is there, people won't know what
+to wrap in what macro.
 
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 6f1c41f109bb..ac3a5dcbf9e1 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -185,7 +185,7 @@ static inline bool of_node_is_root(const struct device_node *node)
- 	return node && (node->parent == NULL);
- }
- 
--static inline int of_node_check_flag(struct device_node *n, unsigned long flag)
-+static inline int of_node_check_flag(const struct device_node *n, unsigned long flag)
- {
- 	return test_bit(flag, &n->_flags);
- }
+> I'd _much_ prefer keeping the macro, as it explains what's going on,
+> which doesn't require a comment at every "extern const u8 foo[]" usage.
+
+You don't have to - it is just an extern.
+
+> It serves as an annotation, etc.
+
+Oh, that I figured.
+
+> And, there's been a lot of discussion on the best way to do this, what
+> to name it, etc.
+
+Looking at the changelog, DECLARE_ASM_FUNC_SYMBOL, makes a lot more
+sense to me even if it doesn't specify the aspect that it is not called
+by C but who cares - it is generic enough.
+
+> This looks to be the best option currently.
+
+Maybe because wrapping some random symbols in a obfuscating macro to
+make the next tool happy, is simply the wrong thing to do. I know, I
+know, clang CFI needs it because of magical reason X but that doesn't
+make it any better. Someday soon we'll have to write a tutorial for
+people submitting kernel patches explaining what annotation to add where
+and why.
+
+Why can't clang be taught to ignore those symbols:
+
+clang -fsanitize=cfi -fsanitize-cfi-ignore-symbols=<list>
+
+?
+
+Hmm, looking at https://clang.llvm.org/docs/ControlFlowIntegrity.html
+
+there *is* an ignore list:
+
+"Ignorelist
+
+A Sanitizer special case list can be used to relax CFI checks for
+certain source files, functions and types using the src, fun and type
+entity types. Specific CFI modes can be be specified using [section]
+headers.
+
+...
+
+# Ignore all functions with names containing MyFooBar.
+fun:*MyFooBar*
+..."
+
+
+So why aren't we doing that instead of those macros?
+
 -- 
-2.31.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
