@@ -2,109 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FBE42E122
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEE342E123
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbhJNS0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:26:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230023AbhJNS0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:26:18 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6AFC261037;
-        Thu, 14 Oct 2021 18:24:12 +0000 (UTC)
-Date:   Thu, 14 Oct 2021 14:24:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Zong Li <zong@andestech.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: nds32/ftrace: Fix Error: invalid operands (*UND* and *UND*
- sections) for `^'
-Message-ID: <20211014142410.7601ebad@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233915AbhJNS0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:26:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230023AbhJNS0w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:26:52 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97ABC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:24:47 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id s64so16739804yba.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:24:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C8dJU1kv1VM7X95hRm6lPC2IwDByNnl9bwU9uhM4nxw=;
+        b=sZeIpuAMkhj5amBTGEsg6yiFKwfHzX2qppNlcQ9aPn27Ja4WTtulCFvjLGY2k5ZmIJ
+         Fis/PERMABHDuARXWAR6Rtx9BL3si3vyCuvLg20KAdiGAb6tqQwdhcQjY//wAvykncfD
+         inWXc24R7k3dn1wclcPtHcqhnPgDDQeerS9qDfa4UcyesEws3M9nb74cNB93h1zzQ5Fa
+         0zI5C0tC6ePRnzfiEsZeSnzRwskFJQ/frHUwD1qbXtHprAzSNmH640M/cZgFRmn4hDOu
+         OzBv130y67SZ6z6LqOO5keAv1qo7O/hDcPofW1QYi0r6JaUj6ufL+x8vs6wg3qDfbDBE
+         NpTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C8dJU1kv1VM7X95hRm6lPC2IwDByNnl9bwU9uhM4nxw=;
+        b=yx1DWZkMoiOsIn2uvWDVNTYkdJNQcusNtTThwMlnNBbiAgJFhdaxjYXq6U8oQGQmxG
+         3laSed/CVuI1bXUj0Hcx/c8DsBgGlXM+iDq/hjOXa/R7/+ECSevbHH4mvqYmTxcwtJZI
+         /Rs6nuPF5s8KYUJXh8iKf1o4yXa5PvUfLajryN5BW8jA7sKJkNgG72vnv3dkObgRpBL3
+         U0FUQlSBMwQNlnTvo3/w7YxGQ01qN+KzAt0SyXyX1XfFpZWH48IZXK1MvU1eZUiDOJt4
+         B6lvlT7HSPdEwJjMA7SxJdWNmL2DchzRYjt7a4bcpN+15+OHLL53cmDGBpXRzIN9d0nL
+         6mPA==
+X-Gm-Message-State: AOAM531D8zlD+ItoS3n4ka4PmUQJ4F889DEIY1XPzdN+IYkYI+MPSaFC
+        PVv19aLvrEM7JAmaIKSKGwoXQ8btSHd7D7dkyPlkdw==
+X-Google-Smtp-Source: ABdhPJzYx7PYwLC/K9tQ3WLlgnCTWsSWzh8u4LsqbgMqD5Nla5Hq42lQeU4xMSATsMK78KmS/8oBwDCwrKHse325wDY=
+X-Received: by 2002:a25:5b8b:: with SMTP id p133mr7892860ybb.273.1634235886735;
+ Thu, 14 Oct 2021 11:24:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-10-samitolvanen@google.com> <YWgSwmzPFrRbMC1P@zn.tnic>
+ <202110140904.41B5183E@keescook> <YWhpbu/Y6V2p/zlY@zn.tnic>
+In-Reply-To: <YWhpbu/Y6V2p/zlY@zn.tnic>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Thu, 14 Oct 2021 11:24:35 -0700
+Message-ID: <CABCJKueW+=DfzONAZb-XF=mWYH_S-BeNihZfGhidOGJO=WYmZw@mail.gmail.com>
+Subject: Re: [PATCH v5 09/15] x86: Use an opaque type for functions not
+ callable from C
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Kees Cook <keescook@chromium.org>, X86 ML <x86@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I received a build failure for a new patch I'm working on the nds32
-architecture, and when I went to test it, I couldn't get to my build error,
-because it failed to build with a bunch of:
+On Thu, Oct 14, 2021 at 10:31 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Thu, Oct 14, 2021 at 09:07:57AM -0700, Kees Cook wrote:
+> > I don't think it's a super common thing to add, so in this case, yes,
+> > I think doing it on a case-by-case basis will be fine.
+>
+> You don't have a choice - if there's no automation which verifies
+> whether all the CFI annotation needed is there, people won't know what
+> to wrap in what macro.
+>
+> > I'd _much_ prefer keeping the macro, as it explains what's going on,
+> > which doesn't require a comment at every "extern const u8 foo[]" usage.
+>
+> You don't have to - it is just an extern.
+>
+> > It serves as an annotation, etc.
+>
+> Oh, that I figured.
+>
+> > And, there's been a lot of discussion on the best way to do this, what
+> > to name it, etc.
+>
+> Looking at the changelog, DECLARE_ASM_FUNC_SYMBOL, makes a lot more
+> sense to me even if it doesn't specify the aspect that it is not called
+> by C but who cares - it is generic enough.
+>
+> > This looks to be the best option currently.
+>
+> Maybe because wrapping some random symbols in a obfuscating macro to
+> make the next tool happy, is simply the wrong thing to do. I know, I
+> know, clang CFI needs it because of magical reason X but that doesn't
+> make it any better. Someday soon we'll have to write a tutorial for
+> people submitting kernel patches explaining what annotation to add where
+> and why.
+>
+> Why can't clang be taught to ignore those symbols:
+>
+> clang -fsanitize=cfi -fsanitize-cfi-ignore-symbols=<list>
+>
+> ?
+>
+> Hmm, looking at https://clang.llvm.org/docs/ControlFlowIntegrity.html
+>
+> there *is* an ignore list:
+>
+> "Ignorelist
+>
+> A Sanitizer special case list can be used to relax CFI checks for
+> certain source files, functions and types using the src, fun and type
+> entity types. Specific CFI modes can be be specified using [section]
+> headers.
+>
+> ...
+>
+> # Ignore all functions with names containing MyFooBar.
+> fun:*MyFooBar*
+> ..."
+>
+>
+> So why aren't we doing that instead of those macros?
 
-  Error: invalid operands (*UND* and *UND* sections) for `^'
+The ignorelist can be used to disable CFI checking in the listed
+functions, but the compiler still checks indirect calls made to these
+functions from elsewhere, and therefore, using an opaque type is still
+necessary to ensure the symbol address isn't replaced with a jump
+table address.
 
-issues with various files. Those files were temporary asm files that looked
-like:  kernel/.tmp_mc_fork.s
+Anyway, I thought using a macro would make the code easier to
+understand. I'm happy to rename it to something that makes more sense,
+but also fine with switching to a simple extern u8[] if that's
+preferable.
 
-I decided to look deeper, and found that the "mc" portion of that name
-stood for "mcount", and was created by the recordmcount.pl script. One that
-I wrote over a decade ago. Once I knew the source of the problem, I was
-able to investigate it further.
-
-The way the recordmcount.pl script works (BTW, there's a C version that
-simply modifies the ELF object) is by doing an "objdump" on the object
-file. Looks for all the calls to "mcount", and creates an offset of those
-locations from some global variable it can use (usually a global function
-name, found with <.*>:). Creates a asm file that is a table of references
-to these locations, using the found variable/function. Compiles it and
-links it back into the original object file. This asm file is called
-".tmp_mc_<object_base_name>.s".
-
-The problem here is that the objdump produced by the nds32 object file,
-contains things that look like:
-
- 0000159a <.L3^B1>:
-    159a:       c6 00           beqz38 $r6, 159a <.L3^B1>
-                        159a: R_NDS32_9_PCREL_RELA      .text+0x159e
-    159c:       84 d2           movi55 $r6, #-14
-    159e:       80 06           mov55 $r0, $r6
-    15a0:       ec 3c           addi10.sp #0x3c
- 
-
-Where ".L3^B1 is somehow selected as the "global" variable to index off of.
-
-Then the assembly file that holds the mcount locations looks like this:
-
-        .section __mcount_loc,"a",@progbits
-        .align 2
-        .long .L3^B1 + -5522
-        .long .L3^B1 + -5384
-        .long .L3^B1 + -5270
-        .long .L3^B1 + -5098
-        .long .L3^B1 + -4970
-        .long .L3^B1 + -4758
-        .long .L3^B1 + -4122
-        [...]
-
-And when it is compiled back to an object to link to the original object,
-the compile fails on the "^" symbol.
-
-Simple solution for now, is to have the perl script ignore using function
-symbols that have an "^" in the name.
-
-Fixes: fbf58a52ac088 ("nds32/ftrace: Add RECORD_MCOUNT support")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
-diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
-index 8f6b13ae46bf..7d631aaa0ae1 100755
---- a/scripts/recordmcount.pl
-+++ b/scripts/recordmcount.pl
-@@ -189,7 +189,7 @@ if ($arch =~ /(x86(_64)?)|(i386)/) {
- $local_regex = "^[0-9a-fA-F]+\\s+t\\s+(\\S+)";
- $weak_regex = "^[0-9a-fA-F]+\\s+([wW])\\s+(\\S+)";
- $section_regex = "Disassembly of section\\s+(\\S+):";
--$function_regex = "^([0-9a-fA-F]+)\\s+<(.*?)>:";
-+$function_regex = "^([0-9a-fA-F]+)\\s+<([^^]*?)>:";
- $mcount_regex = "^\\s*([0-9a-fA-F]+):.*\\s(mcount|__fentry__)\$";
- $section_type = '@progbits';
- $mcount_adjust = 0;
+Sami
