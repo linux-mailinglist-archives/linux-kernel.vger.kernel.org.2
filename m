@@ -2,190 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB3042E465
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D6C42E470
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbhJNWuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 18:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
+        id S234012AbhJNWyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 18:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhJNWuS (ORCPT
+        with ESMTP id S229818AbhJNWyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 18:50:18 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6494CC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 15:48:13 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id m14so6717613pfc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 15:48:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UnvSZQA0ZwUr0GhXwVbqcq8ogB+UmTG+CsAHV9mkjo4=;
-        b=TRMnj9Bd+as2J41pVSv6cyvlY9npaN1U5mdqwQtBhBPGtO14Udn2y1rkGMqo0vkBQi
-         M9zNo2xQlGDLLmiIylx4oPKhWZ1FMpKkitlM/ydkHykOGzwePI6Fa2TuGxYmFG1kv1zn
-         1s9UJouaSjemeU9GM+JDjydi4ZB67PpV7X00AGWj3rxOpenpvm65lzqwGgH5Y+Jvyp7r
-         gv16gN06D0JEQ0sOMRUpss9asd2zGqxWD+lS1ok2euL1jjODDEgee0wNNCrPtH3OFMKW
-         yk7H5Pm99OU3/+G0kXjGM6a/MhNou7zizADE8Ln2S1tRhedJgasyriXv/1gSLMj++H/n
-         FiNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UnvSZQA0ZwUr0GhXwVbqcq8ogB+UmTG+CsAHV9mkjo4=;
-        b=NV2kmv2nSo3ZkjT7387NMvsNBehPfW1kvXJ/5gc1YUMa87TAjBKqeLgPLV9+3PJ4dl
-         WRz2mHzth/dowCtDYE9t8XkIgesV0wRN2I3XHHvze8Y6fbOyWc2LSD8ekadP/l86cv/c
-         ab7ICsSXuRmBpKJtQHCP4yoLipbsww435ZatcxcJj3utUuRlcjJKFxTsfM85Eur/BW90
-         BX4f9Rx/uYs7wJDi++h4S4eV53hTmS3jxps2NqopRp2ZVOwYsPDPaz1GPGL+wwH3nJaT
-         5VGBM2ZK1hLMyp+6Gch/Tao3GrMo/HrVHJl4JlEK7Icu8XZ99xNEjnbKEa3fzA9reoTx
-         22fg==
-X-Gm-Message-State: AOAM533rdN2+D4vGavZvIfQDpKiV2wPfEya0wn3zi8GbRgKOq2txPlRb
-        kP/8wyyCzAFFFnx17JDjCxLjiZ+lbZ4=
-X-Google-Smtp-Source: ABdhPJyzuOj9VSgbJ1QLP3uLWblHVQ4Ebssu4SN3L2FlfOF/X4JCCXFqYKr5EcCybv0qaSZ7rO83dA==
-X-Received: by 2002:a63:f963:: with SMTP id q35mr6285863pgk.132.1634251692821;
-        Thu, 14 Oct 2021 15:48:12 -0700 (PDT)
-Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id s17sm3507432pfs.91.2021.10.14.15.48.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 15:48:12 -0700 (PDT)
-Subject: Re: data dependency naming inconsistency
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <20211011064233-mutt-send-email-mst@kernel.org>
- <6c362de5-1d79-512c-37d0-81aaf5d335d1@qa2.so-net.ne.jp>
- <20211014013156-mutt-send-email-mst@kernel.org>
- <d253958f-b3d7-67c1-4cf6-38f184adabd6@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <8a9ea500-8f8c-129a-2974-4bdda65dbf64@gmail.com>
-Date:   Fri, 15 Oct 2021 07:48:09 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 14 Oct 2021 18:54:00 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5A9C061570;
+        Thu, 14 Oct 2021 15:51:54 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634251911;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FLoVNNtNPo6mitkB/AzeAHhgIos4G1PL9ZbWqs9uwB4=;
+        b=M2Qb+coA4tC6FDgliQJrP+id0TrTKs+XwCG38q94p9mGBfglKhGxLap28KS70GNdgUBLKc
+        39K9StYGC/2aAiw6dp2tPwIH7mFgPfjC1Qui0z/LY03MRxm1SeA3kD0svdPjrcTtuY8sl3
+        CK2OUKd6pna60Wu8oxCissnfBM01Epc1wIOrL3L7L2NKwMydGfbMqA3F9VMBnrl5yZEAVF
+        wRPDJRNBn8lj/MK5RiVIzfQeBflNZEzsnTwmCQlmiVDBFKU9KFGcpC7A2gg05u0iOKtDRe
+        Mk8Xda2y8HLDlLV0piTm/JXfFSrTL9HHLFEeeAt34MI32q0dXpPuB0FZQAVuJw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634251911;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FLoVNNtNPo6mitkB/AzeAHhgIos4G1PL9ZbWqs9uwB4=;
+        b=8O8sCvM5P2b942gVQkyqux5BTAhLHulOLRPnLQjT/Veg+nhYgMLVRdezjKI8uWNuSeJ36K
+        Kc3y3lsvnbXKwtCg==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: [patch V2 21/21] x86/fpu/signal: Use fpstate for size and features
+In-Reply-To: <20211013145323.285696382@linutronix.de>
+References: <20211013142847.120153383@linutronix.de>
+ <20211013145323.285696382@linutronix.de>
+Date:   Fri, 15 Oct 2021 00:51:51 +0200
+Message-ID: <87ilxz5iew.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <d253958f-b3d7-67c1-4cf6-38f184adabd6@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 23:29:43 +0900, Akira Yokosawa wrote:
-> [-CC akys: my 2nd address]
-> On Thu, 14 Oct 2021 01:37:17 -0400, Michael S. Tsirkin wrote:
->> On Thu, Oct 14, 2021 at 01:43:24PM +0900, Akira Yokosawa wrote:
->>> On Mon, 11 Oct 2021 07:07:08 -0400, Michael S. Tsirkin wrote:
->>>> Hello Paul, all!
->>>
->>> Hello Michael,
->>>
->>> I thought Paul would respond soon, but looks like he has not
->>> done so.
+For dynamically enabled features it's required to get the features which
+are enabled for that context when restoring from sigframe.
 
-This is because Michael used Paul's old email address.
+The same applies for all signal frame size calculations.
 
-Forwarding to his current address.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+V2: Added a missing conversion and folded back a conversion which
+    was hidden in part 3
+---
+ arch/x86/kernel/fpu/signal.c |   44 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 27 insertions(+), 17 deletions(-)
 
-Paul, you can see the thread at the lore archive:
-https://lore.kernel.org/lkml/20211011064233-mutt-send-email-mst@kernel.org/T/
-
-        Thanks, Akira
-
->>> So, I'm trying to give some hint to your findings.
->>>
->>>> I've been reading with interest Paul's posts about Rust interactions with LKMM
->>>> https://paulmck.livejournal.com/63316.html
->>>> and in particular it states:
->>>> 		A data dependency involves a load whose return value directly or
->>>> 	indirectly determine the value stored by a later store, which results in
->>>> 	the load being ordered before the store.
->>>>
->>>> This matches the perf book:
->>>> 	A data dependency occurs when the value returned by
->>>> 	a load instruction is used to compute the data stored by
->>>> 	a later store instruction.
->>>
->>> You might likely be aware, but these concern "data dependency",
->>> not a _barrier_.
->>>
->>>>
->>>> however, memory-barriers.txt states:
->>>>
->>>>      A data dependency barrier is a partial ordering on interdependent loads
->>>>      only; it is not required to have any effect on stores, independent loads
->>>>      or overlapping loads.
->>>>
->>>> It also says:
->>>> 	A data-dependency barrier is not required to order dependent writes
->>>> 	because the CPUs that the Linux kernel supports don't do writes
->>>> 	until they are certain (1) that the write will actually happen, (2)
->>>> 	of the location of the write, and (3) of the value to be written.
->>>
->>> These concern the historic "data-dependency barrier", or
->>> [smp_]read_barrier_depends(), which existed until Linux kernel v4.14.
-> 
-> Ah... I should have said ", which existed prior to Linux kernel v4.15".
-> This invited off-by-one error below...
-> 
->>>
->>>>
->>>> so the result it the same: writes are ordered without a barrier,
->>>> reads are ordered by a barrier.
->>>>
->>>> However, it would seem that a bit more consistency in naming won't
->>>> hurt.
->>>
->>> So, I don't think the historic term of "data-dependency barrier"
->>> can be changed.
->>>
->>> I guess the right approach would be to further de-emphasize
->>> "data-dependency barrier"/"data dependency barrier" in
->>> memory-barriers.txt.
->>>
->>> Rewrite by commit 8ca924aeb4f2 ("Documentation/barriers: Remove
->>> references to [smp_]read_barrier_depends()") did some of such
->>> changes, but it failed to update the introductory section of
->>> "VARIETIES OF MEMORY BARRIER".
->>> The part Michael quoted above belongs to it.
->>> I don't think it has any merit keeping it around.
->>>
->>> Also, there remain a couple of ascii-art diagrams concerning
->>> <data dependency barrier> in the first part of "EXAMPLES OF MEMORY
->>> BARRIER SEQUENCES" section, which, I think, can be removed as well.
->>>
->>> Hope this helps clarify the circumstances.
->>
->> It does, thanks! It might be worth adding a sentence along the lines of
->>
->> "NB: a data dependency barrier is distinct from a data dependency: it's
->> a barrier that used to be required in the presence of a data dependency.
->> Since v4.14 Linux no longer offers an API for a data dependency barrier.
-> 
->   Since v4.15
-> 
->> Instead, using READ_ONCE is sufficient for ordering in the presence of a
->> data dependency".
-> 
-> 
-> Maybe.
-> 
-> But I'm more inclined to get rid of remaining contents related to the
-> "data dependency barrier".
-> 
->         Thanks, Akira
-> 
->>
->>
->>> Paul, what is your take on the naming of "data dependency"/
->>> "data dependency barrier"?
->>>
->>>         Thanks, Akira
->>>
->>>>
->>>> Thanks,
->>>>
->>>> -- 
->>>> MST
->>
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -41,7 +41,7 @@ static inline bool check_xstate_in_sigfr
+ 	/* Check for the first magic field and other error scenarios. */
+ 	if (fx_sw->magic1 != FP_XSTATE_MAGIC1 ||
+ 	    fx_sw->xstate_size < min_xstate_size ||
+-	    fx_sw->xstate_size > fpu_user_xstate_size ||
++	    fx_sw->xstate_size > current->thread.fpu.fpstate->user_size ||
+ 	    fx_sw->xstate_size > fx_sw->extended_size)
+ 		goto setfx;
+ 
+@@ -98,7 +98,8 @@ static inline bool save_fsave_header(str
+ 	return true;
+ }
+ 
+-static inline bool save_xstate_epilog(void __user *buf, int ia32_frame)
++static inline bool save_xstate_epilog(void __user *buf, int ia32_frame,
++				      unsigned int usize)
+ {
+ 	struct xregs_state __user *x = buf;
+ 	struct _fpx_sw_bytes *sw_bytes;
+@@ -113,7 +114,7 @@ static inline bool save_xstate_epilog(vo
+ 		return !err;
+ 
+ 	err |= __put_user(FP_XSTATE_MAGIC2,
+-			  (__u32 __user *)(buf + fpu_user_xstate_size));
++			  (__u32 __user *)(buf + usize));
+ 
+ 	/*
+ 	 * Read the xfeatures which we copied (directly from the cpu or
+@@ -171,6 +172,7 @@ static inline int copy_fpregs_to_sigfram
+ bool copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
+ {
+ 	struct task_struct *tsk = current;
++	struct fpstate *fpstate = tsk->thread.fpu.fpstate;
+ 	int ia32_fxstate = (buf != buf_fx);
+ 	int ret;
+ 
+@@ -215,7 +217,7 @@ bool copy_fpstate_to_sigframe(void __use
+ 	fpregs_unlock();
+ 
+ 	if (ret) {
+-		if (!__clear_user(buf_fx, fpu_user_xstate_size))
++		if (!__clear_user(buf_fx, fpstate->user_size))
+ 			goto retry;
+ 		return false;
+ 	}
+@@ -224,17 +226,18 @@ bool copy_fpstate_to_sigframe(void __use
+ 	if ((ia32_fxstate || !use_fxsr()) && !save_fsave_header(tsk, buf))
+ 		return false;
+ 
+-	if (use_fxsr() && !save_xstate_epilog(buf_fx, ia32_fxstate))
++	if (use_fxsr() &&
++	    !save_xstate_epilog(buf_fx, ia32_fxstate, fpstate->user_size))
+ 		return false;
+ 
+ 	return true;
+ }
+ 
+-static int __restore_fpregs_from_user(void __user *buf, u64 xrestore,
+-				      bool fx_only)
++static int __restore_fpregs_from_user(void __user *buf, u64 ufeatures,
++				      u64 xrestore, bool fx_only)
+ {
+ 	if (use_xsave()) {
+-		u64 init_bv = xfeatures_mask_uabi() & ~xrestore;
++		u64 init_bv = ufeatures & ~xrestore;
+ 		int ret;
+ 
+ 		if (likely(!fx_only))
+@@ -265,7 +268,8 @@ static bool restore_fpregs_from_user(voi
+ retry:
+ 	fpregs_lock();
+ 	pagefault_disable();
+-	ret = __restore_fpregs_from_user(buf, xrestore, fx_only);
++	ret = __restore_fpregs_from_user(buf, fpu->fpstate->user_xfeatures,
++					 xrestore, fx_only);
+ 	pagefault_enable();
+ 
+ 	if (unlikely(ret)) {
+@@ -332,7 +336,7 @@ static bool __fpu_restore_sig(void __use
+ 		user_xfeatures = fx_sw_user.xfeatures;
+ 	} else {
+ 		user_xfeatures = XFEATURE_MASK_FPSSE;
+-		state_size = fpu->fpstate->size;
++		state_size = fpu->fpstate->user_size;
+ 	}
+ 
+ 	if (likely(!ia32_fxstate)) {
+@@ -425,10 +429,11 @@ static bool __fpu_restore_sig(void __use
+ 	return success;
+ }
+ 
+-static inline int xstate_sigframe_size(void)
++static inline unsigned int xstate_sigframe_size(struct fpstate *fpstate)
+ {
+-	return use_xsave() ? fpu_user_xstate_size + FP_XSTATE_MAGIC2_SIZE :
+-			fpu_user_xstate_size;
++	unsigned int size = fpstate->user_size;
++
++	return use_xsave() ? size + FP_XSTATE_MAGIC2_SIZE : size;
+ }
+ 
+ /*
+@@ -436,17 +441,19 @@ static inline int xstate_sigframe_size(v
+  */
+ bool fpu__restore_sig(void __user *buf, int ia32_frame)
+ {
+-	unsigned int size = xstate_sigframe_size();
+ 	struct fpu *fpu = &current->thread.fpu;
+ 	void __user *buf_fx = buf;
+ 	bool ia32_fxstate = false;
+ 	bool success = false;
++	unsigned int size;
+ 
+ 	if (unlikely(!buf)) {
+ 		fpu__clear_user_states(fpu);
+ 		return true;
+ 	}
+ 
++	size = xstate_sigframe_size(fpu->fpstate);
++
+ 	ia32_frame &= (IS_ENABLED(CONFIG_X86_32) ||
+ 		       IS_ENABLED(CONFIG_IA32_EMULATION));
+ 
+@@ -481,7 +488,7 @@ unsigned long
+ fpu__alloc_mathframe(unsigned long sp, int ia32_frame,
+ 		     unsigned long *buf_fx, unsigned long *size)
+ {
+-	unsigned long frame_size = xstate_sigframe_size();
++	unsigned long frame_size = xstate_sigframe_size(current->thread.fpu.fpstate);
+ 
+ 	*buf_fx = sp = round_down(sp - frame_size, 64);
+ 	if (ia32_frame && use_fxsr()) {
+@@ -494,9 +501,12 @@ fpu__alloc_mathframe(unsigned long sp, i
+ 	return sp;
+ }
+ 
+-unsigned long fpu__get_fpstate_size(void)
++unsigned long __init fpu__get_fpstate_size(void)
+ {
+-	unsigned long ret = xstate_sigframe_size();
++	unsigned long ret = fpu_user_xstate_size;
++
++	if (use_xsave())
++		ret += FP_XSTATE_MAGIC2_SIZE;
+ 
+ 	/*
+ 	 * This space is needed on (most) 32-bit kernels, or when a 32-bit
