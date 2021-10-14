@@ -2,278 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D5D42DA34
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866B642DA38
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhJNNX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:23:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230054AbhJNNX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:23:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 498AD60EE5;
-        Thu, 14 Oct 2021 13:21:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634217713;
-        bh=t3FaZ8xgpf16PMd+JevIiZLcGO4h4XG3aZfR3cIB58g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FcvociMXe0RUCKnL7vxxtTEZIYs+upjQIsAMJd8V2JLLgSGwu6scjcJUj+wWtzKpg
-         MUjjpuopvhsDSZTfWijmTVcTnD0yGgLU6cSqnls1ynBLi6qnMFgBLZM8bah8DB26rS
-         EWKzv2mS+f9PS6wifx5uX19gQ5D6pPlZcnZ27TDU=
-Date:   Thu, 14 Oct 2021 15:21:51 +0200
-From:   gregkh <gregkh@linuxfoundation.org>
-To:     "changlianzhi@uniontech.com" <changlianzhi@uniontech.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "dmitry.torokhov" <dmitry.torokhov@gmail.com>,
-        jirislaby <jirislaby@kernel.org>,
-        "andriy.shevchenko" <andriy.shevchenko@linux.intel.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        282827961 <282827961@qq.com>
-Subject: Re: [PATCH] input&tty: Fix the keyboard led light display problem
-Message-ID: <YWgu71RP4ERZYjCy@kroah.com>
-References: <20211014085308.9803-1-changlianzhi@uniontech.com>
- <616827d8.1c69fb81.75aa0.eea0SMTPIN_ADDED_BROKEN@mx.google.com>
+        id S231281AbhJNNZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:25:34 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:24314 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230054AbhJNNZc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 09:25:32 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HVVNH3zCYzQpZ6;
+        Thu, 14 Oct 2021 21:18:55 +0800 (CST)
+Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 14 Oct 2021 21:23:24 +0800
+Received: from huawei.com (10.175.104.82) by kwepemm600001.china.huawei.com
+ (7.193.23.3) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 14 Oct
+ 2021 21:23:23 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <steve.glendinning@shawell.net>, <FlorianSchandinat@gmx.de>,
+        <gregkh@suse.de>
+CC:     <linux-fbdev@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] video: smscufx: Fix null-ptr-deref in ufx_usb_probe()
+Date:   Thu, 14 Oct 2021 21:22:31 +0800
+Message-ID: <20211014132231.555138-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <616827d8.1c69fb81.75aa0.eea0SMTPIN_ADDED_BROKEN@mx.google.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 12:50:31PM +0800, changlianzhi@uniontech.com wrote:
-> Subject: [PATCH] input&tty: Fix the keyboard led light display problem
-> 
-> 
-> Switching from the desktop environment to the tty environment,
-> 
-> 
-> 
-> the state of the keyboard led lights and the state of the keyboard
-> 
-> 
-> 
-> lock are inconsistent. This is because the attribute kb->kbdmode
-> 
-> 
-> 
-> of the tty bound in the desktop environment (xorg) is set to
-> 
-> 
-> 
-> VC_OFF, which causes the ledstate and kb->ledflagstate
-> 
-> 
-> 
-> values of the bound tty to always be 0, which causes the switch
-> 
-> 
-> 
-> from the desktop When to the tty environment, the LED light
-> 
-> 
-> 
-> status is inconsistent with the keyboard lock status.
-> 
-> 
-> 
->  
-> 
-> 
-> 
-> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
-> 
-> 
-> 
-> ---
-> 
-> 
-> 
-> drivers/input/input.c     |  7 ++++++-
-> 
-> 
-> 
-> drivers/tty/vt/keyboard.c | 30 +++++++++++++++++++++++++++++-
-> 
-> 
-> 
-> include/linux/kbd_kern.h  |  2 ++
-> 
-> 
-> 
-> 3 files changed, 37 insertions(+), 2 deletions(-)
-> 
-> 
-> 
->  
-> 
-> 
-> 
-> diff --git a/drivers/input/input.c b/drivers/input/input.c
-> 
-> 
-> 
-> index ccaeb2426385..43c09700bf68 100644
-> 
-> 
-> 
-> --- a/drivers/input/input.c
-> 
-> 
-> 
-> +++ b/drivers/input/input.c
-> 
-> 
-> 
-> @@ -25,6 +25,7 @@
-> 
-> 
-> 
-> #include <linux/rcupdate.h>
-> 
-> 
-> 
-> #include "input-compat.h"
-> 
-> 
-> 
-> #include "input-poller.h"
-> 
-> 
-> 
-> +#include <linux/kbd_kern.h>
-> 
-> 
-> 
-> MODULE_AUTHOR("Vojtech Pavlik <vojtech@suse.cz>");
-> 
-> 
-> 
-> MODULE_DESCRIPTION("Input core");
-> 
-> 
-> 
-> @@ -472,8 +473,12 @@ void input_inject_event(struct input_handle *handle,
-> 
-> 
-> 
-> rcu_read_lock();
-> 
-> 
-> 
-> grab = rcu_dereference(dev->grab);
-> 
-> 
-> 
-> - if (!grab || grab == handle)
-> 
-> 
-> 
-> + if (!grab || grab == handle) {
-> 
-> 
-> 
-> input_handle_event(dev, type, code, value);
-> 
-> 
-> 
-> +
-> 
-> 
-> 
-> + if (type == EV_LED && code < LED_SCROLLL)
-> 
-> 
-> 
-> + update_value_ledstate(code, value);
-> 
-> 
-> 
-> + }
-> 
-> 
-> 
-> rcu_read_unlock();
-> 
-> 
-> 
-> spin_unlock_irqrestore(&dev->event_lock, flags);
-> 
-> 
-> 
-> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-> 
-> 
-> 
-> index c7fbbcdcc346..0240915cdfef 100644
-> 
-> 
-> 
-> --- a/drivers/tty/vt/keyboard.c
-> 
-> 
-> 
-> +++ b/drivers/tty/vt/keyboard.c
-> 
-> 
-> 
-> @@ -1140,6 +1140,31 @@ static unsigned char getledstate(void)
-> 
-> 
-> 
-> return ledstate & 0xff;
-> 
-> 
-> 
-> }
-> 
-> 
-> 
-> +void update_value_ledstate(unsigned int flag, unsigned int value)
-> 
-> 
-> 
-> +{
-> 
-> 
-> 
-> + unsigned int bit;
-> 
-> 
-> 
-> +
-> 
-> 
-> 
-> + switch (flag) {
-> 
-> 
-> 
-> + case LED_NUML:
-> 
-> 
-> 
-> + bit = VC_NUMLOCK;
-> 
-> 
-> 
-> + break;
-> 
-> 
-> 
-> + case LED_CAPSL:
-> 
-> 
-> 
+I got a null-ptr-deref report:
 
-<snip>
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+...
+RIP: 0010:fb_destroy_modelist+0x38/0x100
+...
+Call Trace:
+ ufx_usb_probe.cold+0x2b5/0xac1 [smscufx]
+ usb_probe_interface+0x1aa/0x3c0 [usbcore]
+ really_probe+0x167/0x460
+...
+ ret_from_fork+0x1f/0x30
 
-Something went very wrong with this patch submission :(
+If fb_alloc_cmap() fails in ufx_usb_probe(), fb_destroy_modelist() will
+be called to destroy modelist in the error handling path. But modelist
+has not been initialized yet, so it will result in null-ptr-deref.
 
-Please fix up your email client and try again, or just use 'git
-send-email' directly, as that should be all that you need here.
+Initialize modelist before calling fb_alloc_cmap() to fix this bug.
 
-thanks,
+Fixes: 3c8a63e22a08 ("Add support for SMSC UFX6000/7000 USB display adapters")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ drivers/video/fbdev/smscufx.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-greg k-h
+diff --git a/drivers/video/fbdev/smscufx.c b/drivers/video/fbdev/smscufx.c
+index bfac3ee4a642..28768c272b73 100644
+--- a/drivers/video/fbdev/smscufx.c
++++ b/drivers/video/fbdev/smscufx.c
+@@ -1656,6 +1656,7 @@ static int ufx_usb_probe(struct usb_interface *interface,
+ 	info->par = dev;
+ 	info->pseudo_palette = dev->pseudo_palette;
+ 	info->fbops = &ufx_ops;
++	INIT_LIST_HEAD(&info->modelist);
+ 
+ 	retval = fb_alloc_cmap(&info->cmap, 256, 0);
+ 	if (retval < 0) {
+@@ -1666,8 +1667,6 @@ static int ufx_usb_probe(struct usb_interface *interface,
+ 	INIT_DELAYED_WORK(&dev->free_framebuffer_work,
+ 			  ufx_free_framebuffer_work);
+ 
+-	INIT_LIST_HEAD(&info->modelist);
+-
+ 	retval = ufx_reg_read(dev, 0x3000, &id_rev);
+ 	check_warn_goto_error(retval, "error %d reading 0x3000 register from device", retval);
+ 	dev_dbg(dev->gdev, "ID_REV register value 0x%08x", id_rev);
+-- 
+2.25.1
+
