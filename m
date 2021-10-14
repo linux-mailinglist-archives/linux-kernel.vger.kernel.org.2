@@ -2,237 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D92942D55D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2450142D55F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhJNIsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbhJNIst (ORCPT
+        id S229984AbhJNIuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:50:03 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14351 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhJNIuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:48:49 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBAAC061746
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:46:44 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id g8so21275410edt.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:46:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7w2iMxFe61jN1rv6dN3yP4oCTOaGLGThPgxPVtx1pTk=;
-        b=7or4NdH+O7yAtsklrYS3zkReLbGJR+Q0kbSxNVYs+Xkr81NnnEcpo/x+q7lk2OHlWs
-         jIg9COjRUdT0Og0dYS4CTAMsf7/a7qGw7D8I4LNA/SdUdgufpG3aObBjUT5E6lN+wL8Q
-         1SChuxMc8FnpuexyslnBYQm+x77NDY9v+oW0XxjU8ycPQayiYcobELPqZkB+weFDuFGc
-         yqv7qoIXrCWPoLeDpzqYHeJbUAOgGpNYnG2XWEuRKJ+o8d3Us9dsXpuVUqRLhKrxZFOx
-         mSIoMKva4ngeTj5KR3a/m/yPWH17cD4FGpnUv1N+nyLLmr6t2l8YezD1v1AiHVTemzbT
-         2Xeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7w2iMxFe61jN1rv6dN3yP4oCTOaGLGThPgxPVtx1pTk=;
-        b=6Bva744Gyp6lV9mkZAIyqUgTY3Oa3kRs04x+zyy45GWTXdeoculG73bKu1zvE/cVDL
-         YQPrsmWRIqE5Hgd1Et6gbbcFjD1sVCGY12LNiuBWcIcpsxByDtWJbuX3w3vvW0uIPTnZ
-         //Nc06wVWNNnbyx3UfQM4fv3QUz69ssbeiY2m8pMrrUKSMoo++I/FHguAeCJ+IbUlhxf
-         oWj7XeOGRx8wZsGUXPeZtkk6sIYetfLXKGTKv+UrljMGhB+u+IHXIpcBRIHMOxVWRz3n
-         G9REDQCeSSkHk7HCZV/x8gfkdRmiSQujw9RcTlZajavQ2jL6bZCKhGHtRxuU2WJNPfo+
-         f2Sw==
-X-Gm-Message-State: AOAM5307JCGIzTvbu8rlEzHOv8+ov1nNZ7eMpuxUmsicWnMnfzanok6k
-        yfeeNToOcmamvplA/E1YcVDaalWbrWwwwUHWZNnDbw==
-X-Google-Smtp-Source: ABdhPJxXEYRMejmM3Dv1g6yLHgMuEd/iyRmUiGS8LsqJ6QJsLSp1H9IQu0mLeB65DlX/OHTUCCdEsvZErD5AX220svU=
-X-Received: by 2002:a17:906:b782:: with SMTP id dt2mr2345631ejb.310.1634201202554;
- Thu, 14 Oct 2021 01:46:42 -0700 (PDT)
+        Thu, 14 Oct 2021 04:50:01 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HVNG029Sfz8yqy;
+        Thu, 14 Oct 2021 16:43:04 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Thu, 14 Oct 2021 16:47:54 +0800
+From:   Ziyang Xuan <william.xuanziyang@huawei.com>
+To:     <rafael@kernel.org>, <daniel.lezcano@linaro.org>
+CC:     <rui.zhang@intel.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] thermal/core: fix a UAF bug in __thermal_cooling_device_register()
+Date:   Thu, 14 Oct 2021 16:47:00 +0800
+Message-ID: <20211014084700.202420-1-william.xuanziyang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211008100423.739462-1-wenst@chromium.org> <f108f23dadc846222c63c88af826dae9c5082d83.camel@ndufresne.ca>
- <CAGXv+5FnFq1mN79sqUp-o6pHirYvp55gurnsUCgqYvEAX2=4oQ@mail.gmail.com>
- <ff0769efee51e15451d48e23860f8b1710593cd7.camel@ndufresne.ca> <CAGXv+5GJCaxnPPkXRp5xrTBuq-5=ggfjPbRhyS4vdm3meM_4eg@mail.gmail.com>
-In-Reply-To: <CAGXv+5GJCaxnPPkXRp5xrTBuq-5=ggfjPbRhyS4vdm3meM_4eg@mail.gmail.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Thu, 14 Oct 2021 05:46:30 -0300
-Message-ID: <CAAEAJfAratFPK0iU8QWMr36ZFCL5cgBneKkzymy+gCgJV=goOg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] media: rkvdec: Align decoder behavior with Hantro and Cedrus
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 at 04:31, Chen-Yu Tsai <wenst@chromium.org> wrote:
->
-> On Wed, Oct 13, 2021 at 9:40 PM Nicolas Dufresne <nicolas@ndufresne.ca> w=
-rote:
-> >
-> > Le mercredi 13 octobre 2021 =C3=A0 15:05 +0800, Chen-Yu Tsai a =C3=A9cr=
-it :
-> > > Hi,
-> > >
-> > > On Fri, Oct 8, 2021 at 11:42 PM Nicolas Dufresne <nicolas@ndufresne.c=
-a> wrote:
-> > > >
-> > > > Hi Chen-Yu,
-> > > >
-> > > > thanks for looking into this.
-> > > >
-> > > > Le vendredi 08 octobre 2021 =C3=A0 18:04 +0800, Chen-Yu Tsai a =C3=
-=A9crit :
-> > > > > Hi everyone,
-> > > > >
-> > > > > While working on the rkvdec H.264 decoder for ChromeOS, I noticed=
- some
-> > > > > behavioral differences compared to Hantro and Cedrus:
-> > > > >
-> > > > > 1. The driver always overrides the sizeimage setting given by use=
-rspace
-> > > > >    for the output format. This results in insufficient buffer spa=
-ce when
-> > > > >    running the ChromeOS video_decode_accelerator_tests test progr=
-am,
-> > > > >    likely due to a small initial resolution followed by dynamic
-> > > > >    resolution change.
-> > > > >
-> > > > > 2. Doesn't support dynamic resolution change.
-> > > > >
-> > > > > This small series fixes both and aligns the behavior with the oth=
-er two
-> > > > > stateless decoder drivers. This was tested on the downstream Chro=
-meOS
-> > > > > 5.10 kernel with ChromeOS. Also compiled tested on mainline but I=
- don't
-> > > > > have any other RK3399 devices set up to test video stuff, so test=
-ing
-> > > > > would be very much appreciated.
-> > > > >
-> > > > > Also, I'm not sure if user applications are required to check the=
- value
-> > > > > of sizeimage upon S_FMT return. If the value is different or too =
-small,
-> > > > > what can the application do besides fail? AFAICT it can't split t=
-he
-> > > > > data of one frame (or slice) between different buffers.
-> > > >
-> > > > While most software out there just assumes that driver will do it r=
-ight and
-> > > > crash when it's not the case, application that do map the buffer to=
- CPU must
-> > > > read back the fmt structure as the drivers are all fail-safe and wi=
-ll modify
-> > > > that structure to a set of valid value s for the context.
-> > >
-> > > I believe what is happening in Chromium is that the decoder is opened=
- with
-> > > some default settings, including the smallest viable resolution for t=
-he
-> > > output side, and the buffers allocated accordingly. When dynamic reso=
-lution
-> > > change happens, the decoder does not check if the current buffers are
-> > > sufficiently sized; it just assumes that they are. And when it starts
-> > > pushing data into the buffers, it realizes they are too small and fai=
-ls.
-> > >
-> > > The spec also says:
-> > >
-> > >     Clients are allowed to set the sizeimage field for variable lengt=
-h
-> > >     compressed data flagged with V4L2_FMT_FLAG_COMPRESSED at ioctl
-> > >     VIDIOC_ENUM_FMT, but the driver may ignore it and set the value i=
-tself,
-> > >     or it may modify the provided value based on alignment requiremen=
-ts or
-> > >     minimum/maximum size requirements.
-> > >
-> > > The spec only guarantees that the buffers are of sufficient size for =
-the
-> > > resolution configured at the time they were allocated/requested.
-> > >
-> > > So I think my first patch is a workaround for a somewhat broken users=
-pace.
-> > > But it seems the other stateless drivers are providing similar behavi=
-or,
-> > > as I previously mentioned.
-> >
-> > That's what I mean, this is not a driver bug strictly speaking (assumin=
-g it does
-> > guaranty the buffer size is sufficient) but it is without your change
-> > inconvenient, as userspace may be aware of the largest resolution it wi=
-ll
-> > decode, and may want to allocate larger buffer upfront.
->
-> Thinking about this more, I think a few follow up fixes for each driver
-> are in order. The spec implies that the driver should override the value
-> should userspace give some unrealistic value, such as asking for a 256 by=
-te
-> buffer for a 4K frame size.
->
+When device_register() return failed, program will goto out_kfree_type
+to release 'cdev->device' by put_device(). That will call thermal_release()
+to free 'cdev'. But the follow-up processes access 'cdev' continually.
+That trggers the UAF bug.
 
-Where is the spec implying that?
+====================================================================
+BUG: KASAN: use-after-free in __thermal_cooling_device_register+0x75b/0xa90
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+Call Trace:
+ dump_stack_lvl+0xe2/0x152
+ print_address_description.constprop.0+0x21/0x140
+ ? __thermal_cooling_device_register+0x75b/0xa90
+ kasan_report.cold+0x7f/0x11b
+ ? __thermal_cooling_device_register+0x75b/0xa90
+ __thermal_cooling_device_register+0x75b/0xa90
+ ? memset+0x20/0x40
+ ? __sanitizer_cov_trace_pc+0x1d/0x50
+ ? __devres_alloc_node+0x130/0x180
+ devm_thermal_of_cooling_device_register+0x67/0xf0
+ max6650_probe.cold+0x557/0x6aa
+......
 
-This is encoded content, so I'm really inclined to avoid this path.
-Having the driver decide what is "unrealistic" would mean some
-heuristics in the drivers for something that should really come from usersp=
-ace.
+Freed by task 258:
+ kasan_save_stack+0x1b/0x40
+ kasan_set_track+0x1c/0x30
+ kasan_set_free_info+0x20/0x30
+ __kasan_slab_free+0x109/0x140
+ kfree+0x117/0x4c0
+ thermal_release+0xa0/0x110
+ device_release+0xa7/0x240
+ kobject_put+0x1ce/0x540
+ put_device+0x20/0x30
+ __thermal_cooling_device_register+0x731/0xa90
+ devm_thermal_of_cooling_device_register+0x67/0xf0
+ max6650_probe.cold+0x557/0x6aa [max6650]
 
-Thanks,
-Ezequiel
+Do not use 'cdev' again after put_device() to fix the problem like doing
+in thermal_zone_device_register().
 
-> Cedrus (CCing Jernej) comes close, but a 1K buffer might not be enough fo=
-r
-> really large frames, even though it's slice based?
->
-> ChenYu
->
->
-> > As per Chromium bug, this is being addressed already. Thanks for this d=
-river
-> > improvement.
-> >
-> > >
-> > > > As for opposite direction (output vs capture) format being changed,=
- this should
-> > > > be documented in the spec, if you find it too unclear or missing fo=
-r sateless
-> > > > codec (I know it's there for stateful but can't remember, would hav=
-e to re-read,
-> > > > for stateless) let us know.
-> > >
-> > > AFAICT the capture side is working OK and to spec.
-> > >
-> > >
-> > > Regards
-> > > ChenYu
-> > >
-> > > > regards,
-> > > > Nicolas
-> > > >
-> > > > >
-> > > > > Andrzej, I believe the second patch would conflict with your VP9 =
-series.
-> > > > >
-> > > > >
-> > > > > Regards
-> > > > > ChenYu
-> > > > >
-> > > > > Chen-Yu Tsai (2):
-> > > > >   media: rkvdec: Do not override sizeimage for output format
-> > > > >   media: rkvdec: Support dynamic resolution changes
-> > > > >
-> > > > >  drivers/staging/media/rkvdec/rkvdec-h264.c |  5 +--
-> > > > >  drivers/staging/media/rkvdec/rkvdec.c      | 40 +++++++++++-----=
-------
-> > > > >  2 files changed, 23 insertions(+), 22 deletions(-)
-> > > > >
-> > > >
-> > > >
-> >
-> >
+Fixes: 584837618100 ("thermal/drivers/core: Use a char pointer for the cooling device name")
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+---
+ drivers/thermal/thermal_core.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 97ef9b040b84..ee7453944ccb 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -888,7 +888,7 @@ __thermal_cooling_device_register(struct device_node *np,
+ {
+ 	struct thermal_cooling_device *cdev;
+ 	struct thermal_zone_device *pos = NULL;
+-	int ret;
++	int id, ret;
+ 
+ 	if (!ops || !ops->get_max_state || !ops->get_cur_state ||
+ 	    !ops->set_cur_state)
+@@ -898,10 +898,10 @@ __thermal_cooling_device_register(struct device_node *np,
+ 	if (!cdev)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	ret = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
+-	if (ret < 0)
++	id = ida_simple_get(&thermal_cdev_ida, 0, 0, GFP_KERNEL);
++	if (id < 0)
+ 		goto out_kfree_cdev;
+-	cdev->id = ret;
++	cdev->id = id;
+ 
+ 	cdev->type = kstrdup(type ? type : "", GFP_KERNEL);
+ 	if (!cdev->type) {
+@@ -942,8 +942,9 @@ __thermal_cooling_device_register(struct device_node *np,
+ out_kfree_type:
+ 	kfree(cdev->type);
+ 	put_device(&cdev->device);
++	cdev = NULL;
+ out_ida_remove:
+-	ida_simple_remove(&thermal_cdev_ida, cdev->id);
++	ida_simple_remove(&thermal_cdev_ida, id);
+ out_kfree_cdev:
+ 	kfree(cdev);
+ 	return ERR_PTR(ret);
+-- 
+2.25.1
+
