@@ -2,106 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E178E42DEC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B924242DECE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbhJNQAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 12:00:36 -0400
-Received: from albireo.enyo.de ([37.24.231.21]:41898 "EHLO albireo.enyo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230359AbhJNQAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 12:00:34 -0400
-Received: from [172.17.203.2] (port=58961 helo=deneb.enyo.de)
-        by albireo.enyo.de ([172.17.140.2]) with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1mb37Z-0004cJ-BT; Thu, 14 Oct 2021 15:58:17 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.94.2)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1mb37Y-000VRL-V9; Thu, 14 Oct 2021 17:58:16 +0200
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        j alglave <j.alglave@ucl.ac.uk>,
-        luc maranget <luc.maranget@inria.fr>,
-        akiyks <akiyks@gmail.com>,
-        linux-toolchains <linux-toolchains@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
-References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com>
-        <87lf3f7eh6.fsf@oldenburg.str.redhat.com>
-        <20210929174146.GF22689@gate.crashing.org>
-        <2088260319.47978.1633104808220.JavaMail.zimbra@efficios.com>
-        <871r54ww2k.fsf@oldenburg.str.redhat.com>
-        <CAHk-=wgexLqNnngLPts=wXrRcoP_XHO03iPJbsAg8HYuJbbAvw@mail.gmail.com>
-        <87y271yo4l.fsf@mid.deneb.enyo.de>
-        <20211014000104.GX880162@paulmck-ThinkPad-P17-Gen-1>
-Date:   Thu, 14 Oct 2021 17:58:16 +0200
-In-Reply-To: <20211014000104.GX880162@paulmck-ThinkPad-P17-Gen-1> (Paul
-        E. McKenney's message of "Wed, 13 Oct 2021 17:01:04 -0700")
-Message-ID: <87lf2v61k7.fsf@mid.deneb.enyo.de>
+        id S231896AbhJNQFU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Oct 2021 12:05:20 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:57235 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230359AbhJNQFT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 12:05:19 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-599-NsPe3kEsMZu8l-KmWgXMtQ-1; Thu, 14 Oct 2021 12:03:12 -0400
+X-MC-Unique: NsPe3kEsMZu8l-KmWgXMtQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9547C801AA7;
+        Thu, 14 Oct 2021 16:03:10 +0000 (UTC)
+Received: from comp-core-i7-2640m-0182e6.redhat.com (unknown [10.36.110.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D7805D6B1;
+        Thu, 14 Oct 2021 16:03:08 +0000 (UTC)
+From:   Alexey Gladkov <legion@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-nfs@vger.kernel.org
+Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Sargun Dhillon <sargun@sargun.me>
+Subject: [PATCH] Fix user namespace leak
+Date:   Thu, 14 Oct 2021 18:02:30 +0200
+Message-Id: <20211014160230.106976-1-legion@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Paul E. McKenney:
+Fixes: 61ca2c4afd9d ("NFS: Only reference user namespace from nfs4idmap struct instead of cred")
+Signed-off-by: Alexey Gladkov <legion@kernel.org>
+---
+ fs/nfs/nfs4idmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> On Sun, Oct 10, 2021 at 04:02:02PM +0200, Florian Weimer wrote:
->> * Linus Torvalds:
->> 
->> > On Fri, Oct 1, 2021 at 9:26 AM Florian Weimer <fweimer@redhat.com> wrote:
->> >>
->> >> Will any conditional branch do, or is it necessary that it depends in
->> >> some way on the data read?
->> >
->> > The condition needs to be dependent on the read.
->> >
->> > (Easy way to see it: if the read isn't related to the conditional or
->> > write data/address, the read could just be delayed to after the
->> > condition and the store had been done).
->> 
->> That entirely depends on how the hardware is specified to work.  And
->> the hardware could recognize certain patterns as always producing the
->> same condition codes, e.g., AND with zero.  Do such tests still count?
->> It depends on what the specification says.
->> 
->> What I really dislike about this: Operators like & and < now have side
->> effects, and is no longer possible to reason about arithmetic
->> expressions in isolation.
->
-> Is there a reasonable syntax that might help with these issues?
+diff --git a/fs/nfs/nfs4idmap.c b/fs/nfs/nfs4idmap.c
+index 8d8aba305ecc..f331866dd418 100644
+--- a/fs/nfs/nfs4idmap.c
++++ b/fs/nfs/nfs4idmap.c
+@@ -487,7 +487,7 @@ nfs_idmap_new(struct nfs_client *clp)
+ err_destroy_pipe:
+ 	rpc_destroy_pipe_data(idmap->idmap_pipe);
+ err:
+-	get_user_ns(idmap->user_ns);
++	put_user_ns(idmap->user_ns);
+ 	kfree(idmap);
+ 	return error;
+ }
+-- 
+2.33.0
 
-Is this really a problem of syntax?
-
-> Yes, I know, we for sure have conflicting constraints on "reasonable"
-> on copy on this email.  What else is new?  ;-)
->
-> I could imagine a tag of some sort on the load and store, linking the
-> operations that needed to be ordered.  You would also want that same
-> tag on any conditional operators along the way?  Or would the presence
-> of the tags on the load and store suffice?
-
-If the load is assigned to a local variable whose address is not taken
-and which is only assigned this once, it could be used to label the
-store.  Then the compiler checks if all paths from the load to the
-store feature a condition that depends on the local variable (where
-qualifying conditions probably depend on the architecture).  If it
-can't prove that is the case, it emits a fake no-op condition that
-triggers the hardware barrier.  This formulation has the advantage
-that it does not add side effects to operators like <.  It even
-generalizes to different barrier-implying instructions besides
-conditional branches.
-
-But I'm not sure if all this complexity will be a tangible improvement
-over just using that no-op condition all the time (whether implied by
-READ_ONCE, or in a separate ctrl_dep macro).
