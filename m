@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27BC42E0C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E7F42E0C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233877AbhJNSJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:09:07 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:55327 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233832AbhJNSJD (ORCPT
+        id S233829AbhJNSI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230386AbhJNSIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:09:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1634234818; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=oxG38HVZuMV0lltRN3a6CTUoe9NYl8V8VOMSaQ1XQuQ=; b=nTPN2iCGM77UlbSma38VNJ56qAr4XsicBTpZSNBlPdYZOpCFGgaYl1A+ABY67VKI44AcXCsW
- 5ePoRuqQuxHiogd5QQuPKNUsAvvQMeBNfJC5kQI78U/oAkB093cpwuaVPqKjVbjd3Jxy4dxa
- cpUVBK8NUPLI+t+1qvUBJ2omv0g=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 616871b4f3e5b80f1f5b9059 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Oct 2021 18:06:44
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2D24AC4360D; Thu, 14 Oct 2021 18:06:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7BCA1C4338F;
-        Thu, 14 Oct 2021 18:06:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7BCA1C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     sanm@codeaurora.org, agross@kernel.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vbadigan@codeaurora.org, manivannan.sadhasivam@linaro.org
-Cc:     Prasad Malisetty <pmaliset@codeaurora.org>
-Subject: [PATCH v2] arm64: dts: qcom: sc7280: Add pcie clock support
-Date:   Thu, 14 Oct 2021 23:36:24 +0530
-Message-Id: <1634234784-5359-1-git-send-email-pmaliset@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Thu, 14 Oct 2021 14:08:55 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680E3C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:06:50 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id u18so29757380lfd.12
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nsRlgBJbQTA7BY0Fnmwq5m4pEEvG0cBSI6R143Kt50g=;
+        b=WHV2vCMXGD6ZEvIfni8By8V/L+NEVj2+siSM5i6u+m+m4A17VkxISTcczENL7HggIW
+         TsQGqR/AEE81Vj7fIIUQEtBL8pqP9Ix0GDfdKtzZ8o1/bQe0eD1VLhGODIpw2Jq4hNax
+         Q8Bvf1oqUvYqc5igH+QmEvrzuqFfdGsS0B0qJRgXZA9YD81Ci1am6yNTzRop5IcA8498
+         ohgRnARPE0aZDMYbAyiD0Dg84i3YCw1jEVx3eGvaOjRQHbQtP1uvn12BQ6ngMqBruA0p
+         wr++gQ/NF+pYW4KMY+M0Vx3qXUgmvERGya7NWl1VwPlYukhdz62g5fmNj20IpFQtlWoR
+         BQCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nsRlgBJbQTA7BY0Fnmwq5m4pEEvG0cBSI6R143Kt50g=;
+        b=6ccvNpt1sx22Wq5T6c0yQQThjNoJU6qne3fF383Ot8YhrApf/I0XQAPfb8HT9KWhhc
+         aUzxa5Tlgd7zLw1Qq5SyY80VHOMEOVd60zK4nP9+EkGPuMm0mtF91k2KLI+EeeIS/pRV
+         dLznnTc5KbNMA8HneDtYTShF3w4T8CfJT4eg3wI2KAf2PImrWG4SsVifz8EdWd8mPop8
+         uB7w8uGvNuiwCJP1M/FhiUrea8GnpxbeZQ8WrOOwa7eq+1ZF9+UafbNB4u01O+vVhe47
+         k37lNlN/3POlAQ73v2R+xkOEBECbYzUF4ybtLgP5MldeVkn7yivLFoFl9aeQVzI67+II
+         Zubg==
+X-Gm-Message-State: AOAM530RxxhRDNpO4AapwDFCX6OuIc23w6S809O+wCGrS2afqYLJnMAu
+        PbE7ah1+pX9wcj4CwZuTKWb/sopByWXzNubT8fGFfA==
+X-Google-Smtp-Source: ABdhPJwETpROOF2rrrefiOfmhu3BX0ABuQ/67vQm8aEmvHnaIzANh2CeoTXlhoqCmEo5ip5J+Zo0EKES+Y5LLFtNL+I=
+X-Received: by 2002:a05:6512:b0c:: with SMTP id w12mr6667968lfu.240.1634234807558;
+ Thu, 14 Oct 2021 11:06:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211014150610.GA22151@kernel.org>
+In-Reply-To: <20211014150610.GA22151@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 14 Oct 2021 11:06:36 -0700
+Message-ID: <CAKwvOdmHPR-9wB-aD-8P=w74W7RKfvOL-VcDVy=8TWHGb_brfw@mail.gmail.com>
+Subject: Re: [PATCH] Compiler Attributes: remove GCC 5.1 mention
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pcie clock phandle for sc7280 SoC and correct
-The pcie_1_pipe-clk clock name as same as binding.
+On Thu, Oct 14, 2021 at 8:06 AM Miguel Ojeda <ojeda@kernel.org> wrote:
+>
+> GCC 5.1 is now the minimum version.
+>
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-fix: ab7772de8 ("arm64: dts: qcom: SC7280: Add rpmhcc clock controller node")
-Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
----
-This change is depends on the below patch series.
-https://lkml.org/lkml/2021/10/7/841
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> ---
+>  include/linux/compiler_attributes.h | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+> index e6ec63403965..87d1e773400c 100644
+> --- a/include/linux/compiler_attributes.h
+> +++ b/include/linux/compiler_attributes.h
+> @@ -104,7 +104,6 @@
+>  #define __deprecated
+>
+>  /*
+> - * Optional: only supported since gcc >= 5.1
+>   * Optional: not supported by clang
+>   * Optional: not supported by icc
+>   *
+> --
+> 2.33.1
+>
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 39635da..78694c1 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -569,9 +569,10 @@
- 			reg = <0 0x00100000 0 0x1f0000>;
- 			clocks = <&rpmhcc RPMH_CXO_CLK>,
- 				 <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
--				 <0>, <0>, <0>, <0>, <0>, <0>;
-+				 <0>, <&pcie1_lane 0>,
-+				 <0>, <0>, <0>, <0>;
- 			clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
--				      "pcie_0_pipe_clk", "pcie_1_pipe-clk",
-+				      "pcie_0_pipe_clk", "pcie_1_pipe_clk",
- 				      "ufs_phy_rx_symbol_0_clk", "ufs_phy_rx_symbol_1_clk",
- 				      "ufs_phy_tx_symbol_0_clk",
- 				      "usb3_phy_wrapper_gcc_usb30_pipe_clk";
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Thanks,
+~Nick Desaulniers
