@@ -2,108 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE2642E22B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C2F42E235
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbhJNTsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbhJNTsu (ORCPT
+        id S233773AbhJNTxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:53:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56620 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233713AbhJNTxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:48:50 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55467C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:46:45 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id a25so28688348edx.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LIsEKXGFSNqQILX0QaJSH8NtoAJ3+z1bPLQqixvplHo=;
-        b=hNxW5hC2idI1Jg8+e26evIeA5PeqpxeKwsKwB+H30h8vvhunj1NqfCIkEBTEPWiIW6
-         t24A1obCettCyty86kX4WHyoEnfLRxjsSfL2F/OKRbHMF511op01Xx1H62emuzBVoBn9
-         9wCjlWfo0NQPwekkaNaUqxT/dzQt9N00eV/U3OIUTbnWXUuDKZoMBxoauySOY1qOD/V5
-         CKgrqfEh10PJdZm6Yc9vcPAN61vfPJb6vk1OBq4g2snHqF6ys3BGN8Owy2PaZxTHacN2
-         H0Uzs8OD6vn1CoCPtyBuQFYohU+eLMjqW3SIgrqS6khDvWmHV2UzXC/1nNQKRV3e4qOH
-         CVzw==
+        Thu, 14 Oct 2021 15:53:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634241086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ogcFj+sByVK4/R93V4MHhdhBzoSVkZq8qT5UCE78dsc=;
+        b=Vl3d0LZseJwGHtry9Mjip6lgmyejPC9VMJToJ2vteJk0E1YXOTxWqAJkC+N5eGK0doEs1X
+        /kv2iZo+9feoRvOBmUdjAVw/5afzbr5tNEBJJl7AdhWL1uEKi8KjsiaoHtswE4VW37yIDW
+        b6ylcZ1Ve0Oa6kPXB7UcrLi0go62qIM=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-155-76CQ1FSUPAq-eeHLwEi9cQ-1; Thu, 14 Oct 2021 15:51:25 -0400
+X-MC-Unique: 76CQ1FSUPAq-eeHLwEi9cQ-1
+Received: by mail-qt1-f197.google.com with SMTP id c19-20020ac81e93000000b002a71180fd3dso5297658qtm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:51:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LIsEKXGFSNqQILX0QaJSH8NtoAJ3+z1bPLQqixvplHo=;
-        b=uDnSBQiUmUHhVU5ltUKqEXa2kv0KwxlORcFSHvefAwt6LQkCXEwiSKMsN740SZUkSR
-         DsReKAUtoJktVqgbbQz3XzVFdA9QzPUlnDHuwULH6R1AjFgz63Tq7co7kydynjx+a/3v
-         BKJiji/nwbW4AXSdurFB3FnfrL7eom1XN8RZlbSqcy2W0oyHqXdYG3n4VvahiachhWAA
-         Kty2MYS/9nf5rD1hUg0M831SH7szy1d4JIBoDh+4pwrIgzvOI9GCWMQiiP44YOE3AlJ2
-         l9vJ4RZBPrPoXnn9YE7KBXKhmvitg2zdW+24i4o9QXvUnr3/UqSJ8hx7HbKIaAokRNUG
-         DudQ==
-X-Gm-Message-State: AOAM530GoFu6ECNaLrSElwfzRnbQzARzIDspzM+Q/Gr3rs778t+6OF6A
-        2W0aFNcTFCxMitW8krmD2vsWd9HQV2WdyweBC11DJA==
-X-Google-Smtp-Source: ABdhPJwt4SGLP1Ol1ETFJg5qPFl0XVP2v4pyiP5CQ1uByeWMBYVAMQNWbYhCWtLDwTvOQ3exBnQhRcPeb/5S6cFcZIU=
-X-Received: by 2002:a17:907:9908:: with SMTP id ka8mr1283587ejc.164.1634240803070;
- Thu, 14 Oct 2021 12:46:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ogcFj+sByVK4/R93V4MHhdhBzoSVkZq8qT5UCE78dsc=;
+        b=JxCQUgdS/TZpVisTGk3++q2+57RmSuwesd5ZtRFaZz113CZ5mrJMKyPUO/DsqD1uJP
+         VkLCqgYXXd0DIBZgaJ+iyp2Ga9g4OJoFLOo08qPm6BzxJYRTnuvO8hsgtk2xeWXSjwYc
+         zto7TYj5ornh3t7SBSSMvRH4Eh3dwg0PzKh80Xm/lT7xIJ300bicQuu4gVTpuG+l6mgd
+         QbkvEUOlL34n+lmY8P//Rc4n7yE/vTO9NYBkhPVYOuAW2XGpG7BEhnKj01f4cc4scLf1
+         XWmI6uu/3AohTyF6hL57Mi3gJWDd5gWCPtcF9Bz1Ax9+KAfVbEAoL1Y7iHgTruF53v9U
+         117A==
+X-Gm-Message-State: AOAM5327XDhZvGad9Nlima3t8LyOLBd4ok7dE0BU5BSRNJp5i/rKoF+1
+        GZk1/iTOOaTp/RJNqonM8A1N7KTx4JO8NZ3bsyiC2jBjVQHCDxnNds6bYTCCTshoy3y/ymnN9Ja
+        NMHlmZr7NWYgURboM4+sZyCbL
+X-Received: by 2002:ac8:5fc5:: with SMTP id k5mr8754674qta.273.1634241084552;
+        Thu, 14 Oct 2021 12:51:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxEP6AM1EqcbwuULvFfiw8xfRaY0OsFKLxKOB3CaLItmwqnQm/m2rUl5ZM9/0F9nY5C1hze8w==
+X-Received: by 2002:ac8:5fc5:: with SMTP id k5mr8754620qta.273.1634241084286;
+        Thu, 14 Oct 2021 12:51:24 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id i11sm1697564qki.28.2021.10.14.12.51.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 12:51:23 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 12:51:18 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Peter Zijlstra <peterz@infradead.org>, keescook@chromium.org,
+        jannh@google.com, linux-kernel@vger.kernel.org,
+        vcaputo@pengaru.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, amistry@google.com,
+        Kenta.Tada@sony.com, legion@kernel.org,
+        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
+        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com,
+        mark.rutland@arm.com, axboe@kernel.dk, metze@samba.org,
+        laijs@linux.alibaba.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, ebiederm@xmission.com,
+        ohoono.kwon@samsung.com, kaleshsingh@google.com,
+        yifeifz2@illinois.edu, linux-hardening@vger.kernel.org,
+        linux-arch@vger.kernel.org, vgupta@kernel.org, will@kernel.org,
+        guoren@kernel.org, bcain@codeaurora.org, monstr@monstr.eu,
+        tsbogend@alpha.franken.de, nickhu@andestech.com,
+        jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
+        hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
+        chris@zankel.net
+Subject: Re: [PATCH 0/7] wchan: Fix wchan support
+Message-ID: <20211014195118.lcuik3jb6zcbm6vu@treble>
+References: <20211008111527.438276127@infradead.org>
+ <YWgcWnbsvI1rbvEj@shell.armlinux.org.uk>
+ <YWgyy+KvNLQ7eMIV@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <CGME20211013221032eucas1p1d8e2fcc36d3f021aa86cb846df0ed6da@eucas1p1.samsung.com>
- <20211013221021.3433704-1-willmcvicker@google.com> <b968773d-9ee4-4e7a-7e33-f3ded7362a9c@samsung.com>
-In-Reply-To: <b968773d-9ee4-4e7a-7e33-f3ded7362a9c@samsung.com>
-From:   Will McVicker <willmcvicker@google.com>
-Date:   Thu, 14 Oct 2021 12:46:27 -0700
-Message-ID: <CABYd82bcyweWba52wM6hXEgL_z6Ud+yE=Wtkb=5N8RyiQnxxiA@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 0/2] clk: samsung: add common support for CPU clocks
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YWgyy+KvNLQ7eMIV@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 1:33 AM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> On 14.10.2021 00:10, Will McVicker wrote:
-> > These two patches were originally a part of the series [1]. They add
-> > support to the common samsung clock driver to parse and register the
-> > CPU clocks when provided. This allows for the samsung clock drivers to
-> > simply provide a `struct samsung_cpu_clock` to `struct samsung_cmu_info`
-> > and then call samsung_cmu_register_one(). With this new support, we can
-> > now get rid of the custom apollo and atlas CLK_OF_DECLARE init functions.
-> >
-> > Since I don't have the hardware to test these, I'm including the RFT tag
-> > to try and get help testing and verifying these.
-> >
-> > [1] https://protect2.fireeye.com/v1/url?k=91329df7-cea9a478-913316b8-0cc47a31307c-8e0b8e6442100c5a&q=1&e=50af1e33-8bdf-429f-9e54-434d425998d6&u=https%3A%2F%2Flore.kernel.org%2Fall%2F20210928235635.1348330-4-willmcvicker%40google.com%2F
->
-> Works fine on my Exynos5433 TM2e test board.
->
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+On Thu, Oct 14, 2021 at 02:38:19PM +0100, Russell King (Oracle) wrote:
+> What is going on here is that the ARM stacktrace code refuses to trace
+> non-current tasks in a SMP environment due to the racy nature of doing
+> so if the non-current tasks are running.
+> 
+> When walking the stack with frame pointers, we:
+> 
+> - validate that the frame pointer is between the stack pointer and the
+>   top of stack defined by that stack pointer.
+> - we then load the next stack pointer and next frame pointer from the
+>   stack.
+> 
+> The reason this is unsafe when the task is not blocked is the stack can
+> change at any moment, which can cause the value read as a stack pointer
+> to be wildly different. If the read frame pointer value is roughly in
+> agreement, we can end up reading any part of memory, which would be an
+> information leak.
 
-Thanks for testing!
+It would be a good idea to add some guardrails to prevent that
+regardless.  If there's stack corruption for any reason, the unwinder
+shouldn't make things worse.
 
->
-> > Will McVicker (2):
-> >    [RFT] clk: samsung: add support for CPU clocks
-> >    [RFT] clk: samsung: exynos5433: update apollo and atlas clock probing
-> >
-> >   drivers/clk/samsung/clk-cpu.c        |  26 ++++++
-> >   drivers/clk/samsung/clk-exynos5433.c | 120 +++++++++++----------------
-> >   drivers/clk/samsung/clk.c            |   2 +
-> >   drivers/clk/samsung/clk.h            |  26 ++++++
-> >   4 files changed, 102 insertions(+), 72 deletions(-)
-> >
-> Best regards
-> --
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
->
+On x86 the unwinder relies on the caller to ensure the task is blocked
+(or current).  If the caller doesn't do that, they might get garbage,
+and they get to keep the pieces.
+
+But an important part of that is that the unwinder has guardrails to
+ensure it handles stack corruption gracefully by never accessing out of
+bounds of the stack.
+
+When multiple stacks are involved in a kernel execution path (task, irq,
+exception, etc), the stacks link to each other (e.g., last word on the
+irq stack might point to the task stack).  Also the irq/exception stack
+addresses are stored in percpu variables, and the task stack is in the
+task struct.  So the unwinder can easily make sure it's in-bounds.  See
+get_stack_info() in arch/x86/kernel/dumpstack_64.c.
+
+-- 
+Josh
+
