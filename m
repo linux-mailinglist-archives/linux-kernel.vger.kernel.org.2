@@ -2,130 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A947E42DE0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82BB42DE13
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbhJNP0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:26:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54307 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230018AbhJNP0u (ORCPT
+        id S233081AbhJNP2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232073AbhJNP2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:26:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634225085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HBGMhkW5l3xF58RlsWd4EAEKmLqaalQ7yZY4iWVTFTE=;
-        b=Jjbea336RT/aL/DaqDW/p8ChAjnfygWDOqaiFcCIwJeEbB5OgttId5YRglkjINAy3ZogQr
-        RwcQ15JenuKxzY6ta2UJeudA5C6O54166J+HLJBLGBI34J0WVc/OcUPFYkJKxzkgn6/V7d
-        F9RgVs5gWVNRsUi30OEAgERisHnkbOk=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-vTpZKFwTO5aZTNtMU5pLOQ-1; Thu, 14 Oct 2021 11:24:44 -0400
-X-MC-Unique: vTpZKFwTO5aZTNtMU5pLOQ-1
-Received: by mail-wr1-f71.google.com with SMTP id a15-20020a056000188f00b00161068d8461so4854023wri.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:24:44 -0700 (PDT)
+        Thu, 14 Oct 2021 11:28:18 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF42CC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:26:13 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id o20so20753324wro.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:26:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vtNHoIxmbj/7YDvxGdvf8UnRLBtAOJ59R6fKnUV3dK4=;
+        b=cZBtYzDwo24ybcZenK01f8LACa8nU2oln55UYRWGSq9wlUcuoTIWMvyZl23g70lWpA
+         KlhT9ebBQNQtD5LSvFa4Rl7D8AE2R0NTicOI6EEs7DxApezBOWljjZnk+XS+csiY90Ng
+         oPAi2Rr0eujFY9rmIykOgxXOFD+zlt94KCz4cq258jfzKXwGlmlXgKzD6wMPjlYnSk9k
+         5a8MmDQ2mfQB1an9Kw9wCu2u6BtJv8uQdAFSRty9fvltXMkQ55Y4DFeD9xBGvaIx2pg+
+         m/PwnuRpYWpjJ/7QH0zSVxsvD856qvTGeGE+qT6gP/+Rl46FG9SJXkYetCIAR65jQJL9
+         dWpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=HBGMhkW5l3xF58RlsWd4EAEKmLqaalQ7yZY4iWVTFTE=;
-        b=cHBJZQ9cbAiE7UYeyoIr29fjF0nPCnbFq6B/C0TYUlwaF4wuJ65lZGVeokZcRSbOiT
-         v6kI9NS0QBVFHzuUK2kJMNj3HCBXKhXAQLa3gKXti6EjH+HRNYsoSaxYy0hdlq7YsOas
-         nhRU2EAdovsKB3rzv2PBwyiHtTkAmTAqyxfGw29n/yRp5RP7jQ4//j1Je5FIs4OYXp4w
-         QUxqnQMIeta61nZL9mxQwq9BQCUTM7INX6FYJECmbyMu6r8oCsH4J1tDTg3jUnE83MLR
-         Jc4n/cC3HNxXwgP6AddaId8deNke0Cj6EYTsNN1KH8jbImx6cLsjmyUZSjEiscHiUX7M
-         GQQg==
-X-Gm-Message-State: AOAM53311dDy2AfpQABNGuKCvRmyMKkYBeOdMVZEaw5Kzfrl8Kr2Xrra
-        wkrsSSUw+NxfoRJRoD5uzcML7VafxEOfo+YSBjuErMjnCEsjlAzwxNdzqbVSj3PJhHyNYQpBwc1
-        ATUhc5i+1gBKPFCPTMRsUx+0f
-X-Received: by 2002:a05:600c:4f8b:: with SMTP id n11mr6387175wmq.54.1634225083147;
-        Thu, 14 Oct 2021 08:24:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzYP7fwAuhg8aaoUbBVxOQCwoZYB4gcFaYUWfrZsNY6fPstrdXmDGBHNtD9+emUpkCG1n2fEg==
-X-Received: by 2002:a05:600c:4f8b:: with SMTP id n11mr6387148wmq.54.1634225082934;
-        Thu, 14 Oct 2021 08:24:42 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c694e.dip0.t-ipconnect.de. [91.12.105.78])
-        by smtp.gmail.com with ESMTPSA id v185sm8368508wme.35.2021.10.14.08.24.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 08:24:42 -0700 (PDT)
-Message-ID: <84b44b45-217e-885a-c513-de266315888f@redhat.com>
-Date:   Thu, 14 Oct 2021 17:24:41 +0200
+        bh=vtNHoIxmbj/7YDvxGdvf8UnRLBtAOJ59R6fKnUV3dK4=;
+        b=m8aD5+kayR26UKy/e5m6z/Bw76fdRBtIsM0/UDXvylfrB2+speM4+xe3nNsY7aaJ5m
+         gDRKTv5zIb2y3dS4YRXMPczTLOK67StrJ/zcB4wmAJSkVz38vg8AlT5qVHHnsMfPqV9g
+         SS9Byw6HDsc2/v+6XAsW9o7cP1JZV/6s4bkgUreQa8LPR0/hBd65gbFq5ieG+FbDCHft
+         2N2ffnqcqlehmxC+0Gp2U7pbMVef+eRUcQEsh4VFCi9u+kX3Ha2P9S8ClxPxa47uTcrQ
+         qbVgwaK0aRhZLeX49E0aDxWfUQB9n4jqi8jAlc0nD6esDhz38b7V1N2JCc9lDKPDEXCy
+         iJHg==
+X-Gm-Message-State: AOAM532gT8sMdQVQoSy/bzVbZz4pd6VvPiS15rie6sZigTDxaO7Zm9Yu
+        nWE620NXYcpA7ikYGpnDy5+Wng==
+X-Google-Smtp-Source: ABdhPJzASIqrQfvo9ajIKTAsQPp5MeFQvU/qWqa+T2hNix34pWnoqdCT/ncVqQAQdsslTsBRf5+9bA==
+X-Received: by 2002:adf:cf04:: with SMTP id o4mr7498455wrj.129.1634225172185;
+        Thu, 14 Oct 2021 08:26:12 -0700 (PDT)
+Received: from localhost.localdomain ([2001:861:44c0:66c0:209b:8400:2b80:b4ae])
+        by smtp.gmail.com with ESMTPSA id k22sm2626790wrd.59.2021.10.14.08.26.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 08:26:11 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     daniel@ffwll.ch, Laurent.pinchart@ideasonboard.com
+Cc:     martin.blumenstingl@googlemail.com,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH 0/7] drm/meson: rework encoders to pass ATTACH_NO_CONNECTOR
+Date:   Thu, 14 Oct 2021 17:25:59 +0200
+Message-Id: <20211014152606.2289528-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2] memcg: page_alloc: skip bulk allocator for
- __GFP_ACCOUNT
-Content-Language: en-US
-To:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Roman Gushchin <guro@fb.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20211014151607.2171970-1-shakeelb@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211014151607.2171970-1-shakeelb@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2039; h=from:subject; bh=tqvgfg0RoYJxjcu7H6VRSRZ/iXD37Rql9lvX/6yu3P8=; b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBhaEt9Cw6cshz+RwHFIN4X1WnWFtkszZAXlrQ6ZyBc t/zKeJCJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYWhLfQAKCRB33NvayMhJ0V2dD/ oDU2tsprYEbhRvVhpew7mxpO3qSBGSoHOjBRNRiDV0OnJEaEp0k8VpO5a2t3xgJsBUAm7f3Rsut35C KEROqGXo6M4IjHUIj0QkWjPPMwn9kBQsNSrK8+M6wxYn3r/CI8UX86MGJKXFpcoJurLM25Mu/knaH2 y4sNuvDHvFIt39BoQQEe9OYJIZLmFCCrb3dTtmWCgG9r8BQqPGZ6Dcu61Cw8jjq200lW2Ws3E1rVfC fJyVpzfwP18G7W3TI1SXsX6b8/RA22S7LHemc7JG8j32M4AgQVU9vKeK8CcLlhR1YutSAnCbtXAdIv 0HWkPRTcqlISimSZrmwMe48UPR+I0XYXL1pbFQYvMqSdFdU8cW3qQaVtkqqpppQAeQdYvAUPF2aOZN UyyjkZiYBQebgUHmgbHAeTA5bm23NDw4W5mJg3PPIeQFEF6mggT0FQoKrd9U1MqSgm/uwH9f47JSVD KF+Sb77Tw0rbiN6bB1ezWGifD26Lrcv63Aafv4+7dw2yX/i7DQqciuLG+OcVabb5h4sDitdL6J4886 um+3245e9KJ8W+zWlrHPCV5mYGzpjeiZAlY2koI7LJeq8Xp6EVWsrtrMFmgnS8meglyULA+A2oZxPT VmpqGrlqi7TQVXDrvDm8O7zFtHndr06E6h79MPllyXf6Y9I2vgnjO+Garlaw==
+X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.10.21 17:16, Shakeel Butt wrote:
-> The commit 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in
-> __vmalloc_area_node()") switched to bulk page allocator for order 0
-> allocation backing vmalloc. However bulk page allocator does not support
-> __GFP_ACCOUNT allocations and there are several users of
-> kvmalloc(__GFP_ACCOUNT).
-> 
-> For now make __GFP_ACCOUNT allocations bypass bulk page allocator. In
-> future if there is workload that can be significantly improved with the
-> bulk page allocator with __GFP_ACCCOUNT support, we can revisit the
-> decision.
-> 
-> Fixes: 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in __vmalloc_area_node()")
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> ---
-> Changes since v1:
-> - do fallback allocation instead of failure, suggested by Michal Hocko.
-> - Added memcg_kmem_enabled() check, corrected by Vasily Averin
-> 
->  mm/page_alloc.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 668edb16446a..9ca871dc8602 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5230,6 +5230,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  	if (unlikely(page_array && nr_pages - nr_populated == 0))
->  		goto out;
->  
-> +	/* Bulk allocator does not support memcg accounting. */
-> +	if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT))
-> +		goto failed;
-> +
->  	/* Use the single page allocator for one page. */
->  	if (nr_pages - nr_populated == 1)
->  		goto failed;
-> 
+This serie finnally reworks the drm/meson driver by extracting the encoders
+in their own file and moves to bridge-only callbacks.
 
-LGTM
+This permits passing the ATTACH_NO_CONNECTOR bridge attach flag and finally
+use the CVBS & HDMI display-connector driver.
 
-Acked-by: David Hildenbrand <david@redhat.com>
+This will ease Martin Blumenstingl writting the HDMI transceiver driver for
+the older Meson8/8b SoCs, and sets the proper architecture for the work in
+progress MIPI-DSI support.
 
+Finally, this serie will path the way to a removal of the device component
+and use the drmm memory management.
+
+Neil Armstrong (7):
+  drm/bridge: display-connector: implement bus fmts callbacks
+  drm/meson: remove useless recursive components matching
+  drm/meson: split out encoder from meson_dw_hdmi
+  drm/bridge: synopsys: dw-hdmi: also allow interlace on bridge
+  drm/meson: encoder_hdmi: switch to bridge
+    DRM_BRIDGE_ATTACH_NO_CONNECTOR
+  drm/meson: rename venc_cvbs to encoder_cvbs
+  drm/meson: encoder_cvbs: switch to bridge with ATTACH_NO_CONNECTOR
+
+ drivers/gpu/drm/bridge/display-connector.c    |  88 ++++
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c     |   1 +
+ drivers/gpu/drm/meson/Kconfig                 |   2 +
+ drivers/gpu/drm/meson/Makefile                |   3 +-
+ drivers/gpu/drm/meson/meson_drv.c             |  71 ++-
+ drivers/gpu/drm/meson/meson_dw_hdmi.c         | 342 +-------------
+ ...meson_venc_cvbs.c => meson_encoder_cvbs.c} | 198 ++++----
+ ...meson_venc_cvbs.h => meson_encoder_cvbs.h} |   2 +-
+ drivers/gpu/drm/meson/meson_encoder_hdmi.c    | 436 ++++++++++++++++++
+ drivers/gpu/drm/meson/meson_encoder_hdmi.h    |  12 +
+ 10 files changed, 679 insertions(+), 476 deletions(-)
+ rename drivers/gpu/drm/meson/{meson_venc_cvbs.c => meson_encoder_cvbs.c} (51%)
+ rename drivers/gpu/drm/meson/{meson_venc_cvbs.h => meson_encoder_cvbs.h} (92%)
+ create mode 100644 drivers/gpu/drm/meson/meson_encoder_hdmi.c
+ create mode 100644 drivers/gpu/drm/meson/meson_encoder_hdmi.h
+
+
+base-commit: e4e737bb5c170df6135a127739a9e6148ee3da82
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
