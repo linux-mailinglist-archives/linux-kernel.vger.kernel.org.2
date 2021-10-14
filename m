@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AB142DDF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9863142DDFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbhJNPUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:20:50 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:50433 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbhJNPUs (ORCPT
+        id S232199AbhJNPXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:23:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51695 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229994AbhJNPW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:20:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634224724; x=1665760724;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=z7CD2Tv4qDXC2h6Botmdx0mIsBjOQ6u1ErVrgraCLuE=;
-  b=u15fJyoZd1vhdltU9DrJdq3gF5LDjiUPE1YQVmRXJ5rAZzMOtx9yHQFP
-   AWpGulhw1RQs+AWmon46OXCKOmtChWaRLj8rK4gGAN9r20MoZwVjCwrry
-   AzMdZozMbmunEEWYRIBj51JHcWEmm8iCxOTZXmw2cYoqCI3xiK74Wq6Q5
-   Ug6JLP1kQwxQqiQaqKT1dwXsc0IX+pVjExJBm+NvzA+kwcTX6+KmO6TCt
-   TmyElXBOFvroOTF5njEDs1tJ+oX5XVc0hlyN+rLEDIsZyN1kc2lL+UEhv
-   z0ak5AoE/7Spto4Mt6GPHONalvNeXOtuqi8sBR6YOro1iVAklr2hYwh1G
-   Q==;
-IronPort-SDR: r3p/gD8jDs0V9OQjJbiEaAgfVUonEWenthRCyR5Ha5mmECaVwqWrfUhSdRRvlPYfDzTIuH8MgP
- CzuoDAV82yG4t4OM1jj8YFD6KRbbFvppx2kCwsDK/hq+ur1dOVm8xvZYSluyBuZfmkz/KutKtL
- lnPtTXHF6SMcf2sA/fAT56ScaW9uZvK/d3xi0FoWRIztFdm2TOTFpYEF38Z7ck9Q5zVx/gEPlS
- kT+BBdmwOK/YY2PJB1DKb4jMmkZe8C0QVW3zKfbq8XBkXLgLMTDlRwscuDQ+BamMDiJfqXVSs6
- 0gz/Y22xDo749DcDdP2uhLAk
-X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="135530014"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Oct 2021 08:18:43 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 14 Oct 2021 08:18:42 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 14 Oct 2021 08:18:42 -0700
-Date:   Thu, 14 Oct 2021 17:20:16 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-CC:     <robh+dt@kernel.org>, <andrew@lunn.ch>,
-        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: reset: Add lan966x support
-Message-ID: <20211014152016.wuwaesswc5iiil42@soft-dev3-1.localhost>
-References: <20211013073807.2282230-1-horatiu.vultur@microchip.com>
- <20211013073807.2282230-2-horatiu.vultur@microchip.com>
- <838af7b574968fc55d517a3becede5fa106ed896.camel@pengutronix.de>
+        Thu, 14 Oct 2021 11:22:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634224854;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tOTKFFGtjip5ZWj15JuU+YQ9cEjBP5TceDwsinyFy6Q=;
+        b=PwmewbDiHzGGVVi/DZAcD4xox/FypmyWHPLOVV77hRD5E27kR4Vbmr2MXOgG1NxKGS4HsV
+        96qcSjvCFs7PALMSvl7Dka++CtzeCX+jRHCj4Z34ooG4W1kri7PsUfVIcADzJX9z8NwM9F
+        9yJpRLfK5a3tbDDGaUlbRXm4dxFpmuc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-561-uVLmyzpnMvOJJ5Lw9uSMMA-1; Thu, 14 Oct 2021 11:20:53 -0400
+X-MC-Unique: uVLmyzpnMvOJJ5Lw9uSMMA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 101AA1922961;
+        Thu, 14 Oct 2021 15:20:52 +0000 (UTC)
+Received: from steredhat.redhat.com (unknown [10.39.194.226])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DF7945D6B1;
+        Thu, 14 Oct 2021 15:20:46 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net] vsock_diag_test: remove free_sock_stat() call in test_no_sockets
+Date:   Thu, 14 Oct 2021 17:20:45 +0200
+Message-Id: <20211014152045.173872-1-sgarzare@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <838af7b574968fc55d517a3becede5fa106ed896.camel@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+In `test_no_sockets` we don't expect any sockets, indeed
+check_no_sockets() prints an error and exits if `sockets` list is
+not empty, so free_sock_stat() call is unnecessary since it would
+only be called when the `sockets` list is empty.
 
-The 10/14/2021 13:55, Philipp Zabel wrote:
-> 
-> On Wed, 2021-10-13 at 09:38 +0200, Horatiu Vultur wrote:
-> > This adds support for lan966x.
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  .../devicetree/bindings/reset/microchip,rst.yaml   | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/reset/microchip,rst.yaml b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> > index 370579aeeca1..fb170ed2c57a 100644
-> > --- a/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> > +++ b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> > @@ -20,7 +20,11 @@ properties:
-> >      pattern: "^reset-controller@[0-9a-f]+$"
-> >
-> >    compatible:
-> > -    const: microchip,sparx5-switch-reset
-> > +    oneOf:
-> > +      - items:
-> > +          - const: microchip,sparx5-switch-reset
-> > +      - items:
-> > +          - const: microchip,lan966x-switch-reset
-> >
-> >    reg:
-> >      items:
-> > @@ -37,6 +41,14 @@ properties:
-> >      $ref: "/schemas/types.yaml#/definitions/phandle"
-> >      description: syscon used to access CPU reset
-> >
-> > +  cuphy-syscon:
-> > +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> > +    description: syscon used to access CuPHY
-> 
-> Can this be used on sparx5?
+This was discovered by a strange warning printed by gcc v11.2.1:
+  In file included from ../../include/linux/list.h:7,
+                   from vsock_diag_test.c:18:
+  vsock_diag_test.c: In function ‘test_no_sockets’:
+  ../../include/linux/kernel.h:35:45: error: array subscript ‘struct vsock_stat[0]’ is partly outside array bound
+  s of ‘struct list_head[1]’ [-Werror=array-bounds]
+     35 |         const typeof(((type *)0)->member) * __mptr = (ptr);     \
+        |                                             ^~~~~~
+  ../../include/linux/list.h:352:9: note: in expansion of macro ‘container_of’
+    352 |         container_of(ptr, type, member)
+        |         ^~~~~~~~~~~~
+  ../../include/linux/list.h:393:9: note: in expansion of macro ‘list_entry’
+    393 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+        |         ^~~~~~~~~~
+  ../../include/linux/list.h:522:21: note: in expansion of macro ‘list_next_entry’
+    522 |                 n = list_next_entry(pos, member);                       \
+        |                     ^~~~~~~~~~~~~~~
+  vsock_diag_test.c:325:9: note: in expansion of macro ‘list_for_each_entry_safe’
+    325 |         list_for_each_entry_safe(st, next, sockets, list) {
+        |         ^~~~~~~~~~~~~~~~~~~~~~~~
+  In file included from vsock_diag_test.c:18:
+  vsock_diag_test.c:333:19: note: while referencing ‘sockets’
+    333 |         LIST_HEAD(sockets);
+        |                   ^~~~~~~
+  ../../include/linux/list.h:23:26: note: in definition of macro ‘LIST_HEAD’
+     23 |         struct list_head name = LIST_HEAD_INIT(name)
 
-No, because the sparx5 doesn't have any internal PHYs that need to
-be released of the reset.
+It seems related to some compiler optimization and assumption
+about the empty `sockets` list, since this warning is printed
+only with -02 or -O3. Also removing `exit(1)` from
+check_no_sockets() makes the warning disappear since in that
+case free_sock_stat() can be reached also when the list is
+not empty.
 
-> Is it optional on lan966x?
+Reported-by: Marc-André Lureau <marcandre.lureau@redhat.com>
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ tools/testing/vsock/vsock_diag_test.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-No, it is required on lan966x. I will update the binding to show this.
-
-> 
-> > +  phy-reset-gpios:
-> > +    description: used for release of reset of the external PHY
-> > +    maxItems: 1
-> > +
-> >  required:
-> >    - compatible
-> >    - reg
-> 
-> I'd like somebody to reassure me that putting the CuPHY reset and
-> external PHY GPIO reset in the reset controller is the right thing to
-> do.
-> 
-> It looks fine to me, but I'm not sure if these should rather be in
-> separate phy nodes that are referenced from the switch.
-> 
-> regards
-> Philipp
-
+diff --git a/tools/testing/vsock/vsock_diag_test.c b/tools/testing/vsock/vsock_diag_test.c
+index cec6f5a738e1..fa927ad16f8a 100644
+--- a/tools/testing/vsock/vsock_diag_test.c
++++ b/tools/testing/vsock/vsock_diag_test.c
+@@ -332,8 +332,6 @@ static void test_no_sockets(const struct test_opts *opts)
+ 	read_vsock_stat(&sockets);
+ 
+ 	check_no_sockets(&sockets);
+-
+-	free_sock_stat(&sockets);
+ }
+ 
+ static void test_listen_socket_server(const struct test_opts *opts)
 -- 
-/Horatiu
+2.31.1
+
