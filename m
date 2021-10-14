@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092A442D933
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927F742D963
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhJNMXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:23:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39564 "EHLO mail.kernel.org"
+        id S231508AbhJNMh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:37:27 -0400
+Received: from mga04.intel.com ([192.55.52.120]:27952 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229912AbhJNMXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:23:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3165D610D2;
-        Thu, 14 Oct 2021 12:21:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634214064;
-        bh=6MYhIBKkvZclfN4psLIYQ4kVgjVd2GVmYFz+UPiZ/Pg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WbayizYk7WzsrBZN3HfEWfYgVrARkIds9C9nf24q7826IeXPtMwbZN4UA9hD/5tc7
-         b/raJcYzkouJUdf4POelIDT9Hgwj/oLkLEm6R6wxp56Egb1HQKv4hkalAvtrsRw5E6
-         BpU+8EwrgZQO3GJRbU/KAWRVCdKEfzSMRDZsGlFxQHnAH02A2iw26EAstuC4F1Tm+X
-         Nadwl2uxo+UVH2QwkP3Pq73vy/NosE6GUXaCVzuvLyHlqsmGZYmERx3u/vQxTwDZmN
-         2EFgyPcm0FLurfC7bHj+EJ8CaxE2gW6hNogcRnNZXj5pettC0MwmMuYBybLO9L9AAE
-         A2SDRirGfN1sQ==
-Date:   Thu, 14 Oct 2021 21:21:01 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
-        linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] user_events: Enable user processes to create and write
- to trace events
-Message-Id: <20211014212101.d6bddbac7206cba0401c8675@kernel.org>
-In-Reply-To: <20211013114034.13daac32@gandalf.local.home>
-References: <20211005224428.2551-1-beaub@linux.microsoft.com>
-        <20211007012827.99cd5795140cbb0c932e1b5a@kernel.org>
-        <20211006175611.GA2995@kbox>
-        <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
-        <20211007162204.GA30947@kbox>
-        <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
-        <20211008000540.GA31220@kbox>
-        <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
-        <20211011162523.GA1542@kbox>
-        <20211014002132.ee7668a4790ea75b0f7a9ceb@kernel.org>
-        <20211013114034.13daac32@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230126AbhJNMh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 08:37:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="226435933"
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="226435933"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 05:35:21 -0700
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="481245044"
+Received: from yangzhon-virtual.bj.intel.com (HELO yangzhon-Virtual) ([10.238.144.101])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA256; 14 Oct 2021 05:35:19 -0700
+Date:   Thu, 14 Oct 2021 20:21:02 +0800
+From:   Yang Zhong <yang.zhong@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        dave.hansen@linux.intel.com, seanjc@google.com, x86@kernel.org,
+        yang.zhong@intel.com, jarkko@kernel.org
+Subject: Re: [PATCH v2 0/2] x86: sgx_vepc: implement ioctl to EREMOVE all
+ pages
+Message-ID: <20211014122102.GA22574@yangzhon-Virtual>
+References: <20211012105708.2070480-1-pbonzini@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211012105708.2070480-1-pbonzini@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 11:40:34 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Thu, 14 Oct 2021 00:21:32 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Tue, Oct 12, 2021 at 06:57:06AM -0400, Paolo Bonzini wrote:
+> Add to /dev/sgx_vepc a ioctl that brings vEPC pages back to uninitialized
+> state with EREMOVE.  This is useful in order to match the expectations
+> of guests after reboot, and to match the behavior of real hardware.
 > 
-> > > This approach requires an FD returned and either an int for the status
-> > > page or the returend FD could expose the ID via another IOCTL being
-> > > issued.  
-> > 
-> > OK, I would like to suggest you to add events/user-events/*/marker file
-> > (which returns that shared file struct backed FD) so that some simple
-> > user scripts can also send the events (these may not use ioctl, just
-> > write the events.) But this can be done afterwards anyway.
-> > 
+> The ioctl is a cleaner alternative to closing and reopening the
+> /dev/sgx_vepc device; reopening /dev/sgx_vepc could be problematic in
+> case userspace has sandboxed itself since the time it first opened the
+> device, and has thus lost permissions to do so.
 > 
-> I'd prefer we avoid this. It will break some of the semantics of the events
-> directory. One, only "user-events" will have this "marker" file.
-
-Yes, it is only for the user-events.
-
-> Although
-> it will be very similar to the "inject" file, but that's only for debugging
-> anyway.
-
-Oh, do we already the "inject" file?
-
-> All the files in the events directory is starting to add a bunch of
-> overhead, as they are typically copied into the instances. Although, when
-> we get the eventfs directory created, maybe that will not be as big of a
-> deal. But that still doesn't fix the semantics issue.
-
-Indeed. OK, making "marker" file for each instances may confuse user because
-the written event itself must be delivered to any instance but the file
-seems to belong to one of them. Please ignore it.
-
-Thank you,
-
+> If possible, I would like these patches to be included in 5.15 through
+> either the x86 or the KVM tree.
 > 
-> -- Steve
+  
+  Paolo, i did the below tests to verify those two patches on ICX server 
+  (1). Windows2019 and Linux guest reboot 
+  (2). One 10G vepc, and started 500 enclaves(each 2G) in guest, and then reset
+       the guest with 'system_reset' command in monitor.
+  (3). One 100K vepc, and start one 2M enclave in guest, then reset the guest
+       with 'system_reset' command in the monitor.
+
+   All those tests are successful, and the kernel changes work well. Thanks for
+   the great support!
+
+   Yang
+
+
+> Thanks,
 > 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> Paolo
+> 
+> Changes from RFC:
+> - improved commit messages, added documentation
+> - renamed ioctl from SGX_IOC_VEPC_REMOVE to SGX_IOC_VEPC_REMOVE_ALL
+> 
+> Change from v1:
+> - fixed documentation and code to cover SGX_ENCLAVE_ACT errors
+> - removed Tested-by since the code is quite different now
+> 
+> Paolo Bonzini (2):
+>   x86: sgx_vepc: extract sgx_vepc_remove_page
+>   x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE_ALL ioctl
+> 
+>  Documentation/x86/sgx.rst       | 26 +++++++++++++
+>  arch/x86/include/asm/sgx.h      |  3 ++
+>  arch/x86/include/uapi/asm/sgx.h |  2 +
+>  arch/x86/kernel/cpu/sgx/virt.c  | 69 ++++++++++++++++++++++++++++++---
+>  4 files changed, 95 insertions(+), 5 deletions(-)
+> 
+> -- 
+> 2.27.0
