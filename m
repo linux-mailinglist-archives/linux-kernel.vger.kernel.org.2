@@ -2,183 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA5342CFFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AADEF42CFFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhJNBjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 21:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34038 "EHLO
+        id S229814AbhJNBl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 21:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhJNBjQ (ORCPT
+        with ESMTP id S229496AbhJNBl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 21:39:16 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A916C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:37:12 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id z2-20020a254c02000000b005b68ef4fe24so5271089yba.11
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:37:12 -0700 (PDT)
+        Wed, 13 Oct 2021 21:41:58 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FFE3C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:39:54 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id t11so3034520plq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:39:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=IPQvsABWBlV/Yj3zwRFYTVspiMO6ztBhBPWI5Nu6GEU=;
-        b=KNx7rQqSV743LN1E5HrfN/qhRsmQiwXPugSCVTPbZhv/4U4rmRogixTfkgZ2ya0g95
-         cch+DSIYg8nxwMLsZhqkFzwZojhTjhZ1W3dljvnoefqdqOaBPK8mN+07WqbkOTIJCP61
-         gLsU1pd+ghgpYY4hlE0CTVnr9VybucE2U9AMytuZlN8Ez5Nk8NtiHptQuNSnfnpEgTj9
-         YC/blsNZRoaBj6w7wczJ5r1KRz4aKOcadeFSjO5YvtbKktfVtCkWoESbU+Mi1go9b5s5
-         H8lL9QsuPpOWtjhDTYudlRi1zea5y5334AumQBF2gycf5wA0bNiejOG8PiXFl89cW7f1
-         8T2A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ygn1/So2L6NrJcd5boRzqswYyFbg2B+I40MS8TYVpNs=;
+        b=IIdRmLJFQRavjMw2MWCGuzvN3Cehb4IG454gJu1GIkzZvm4m0z4ZnV77W4Jx2fZa+K
+         u0w6H43zkHZeg7ZNaGgenLgMEtLP2B9wQNG1QCk2dLOurbCG090ncA5dJ1GlF/4AeXKJ
+         1rHBPDF38+xVZKXlx9VTdKDnedmdrg1QIyVu0xMX2TwRb7V4UpiohhbH2BxMUVg2dXd7
+         gasIxI1rOV6PPIe/BQJKzb6GaFi3HiozPliZP3gYFCCK4VXxJUrztaCxF4MCkU3IQ2t1
+         8Y6FyJOYqBQLZHMXMOggW7fRqvAb2z6l9nQbvJANvcDD06v1I9yrFoV3BYCvWn9FrUQQ
+         C/CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=IPQvsABWBlV/Yj3zwRFYTVspiMO6ztBhBPWI5Nu6GEU=;
-        b=WZin0PbnKrHSlARoVs6Iqdvfj118eVHUXSe/46izJQ+mao4KJmzYdXhcxICSsEQfh6
-         nqR02R4b75edV7Gl8yjPJ0ENRU9U/pW1A4InoJqrqwNTtoZSg4qc24vcPU63azEP7SrM
-         5V95zyjf/F8UVuDk1C+Yh7ZdhL22Aao76BUPo4Sogd79O0/LkrUBv1MOwYhv3JHzrGMk
-         d+9kgtX0GNNhX/6L6bJL2PVcZPvTRZ3YDEql4MZbMzs+zAF642fP6TsUT1cv4Qz9VzGK
-         n1Kpb6ktNzQUm/Z0QckD0Om4n+UABmI9OIhmDgBSdFLoVrqVPF8EPYBKn+j61o0HvOkj
-         yuWw==
-X-Gm-Message-State: AOAM531rX97puDaHsKSeoSpxz2byQ49V7xJomrPZ+xYSnqKb3j6xPA8Z
-        oJWC5/3I1p7Of8l5u8EuxyR+VEiJna1u9YaNzw==
-X-Google-Smtp-Source: ABdhPJwO6vGwqPw42VEhFhh6+zm3I78iAki63GabOfRCoUpI8dP0okgq7itUMTPtOFI8jTz0bgetyuAXcAKFqNo8sQ==
-X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:dc9e:eab7:5722:3ffe])
- (user=kaleshsingh job=sendgmr) by 2002:a05:6902:701:: with SMTP id
- k1mr3519923ybt.298.1634175431590; Wed, 13 Oct 2021 18:37:11 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 18:37:03 -0700
-Message-Id: <20211014013704.2854890-1-kaleshsingh@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v2] tracing/cfi: Fix cmp_entries_* functions signature mismatch
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ygn1/So2L6NrJcd5boRzqswYyFbg2B+I40MS8TYVpNs=;
+        b=jp32K5f+2gtBCE39Wk09lI+CqkmfRWwZEvwXZRaTTW947vaF8y41Kxoa2zZeZoq/Xk
+         6EdsjP5v58PRG1BTU1CGeCZ/H7jCGABfUQYue5J/GMaQuW2Q03McPHHSSr6MHth3vLfh
+         VUlQq9BZ9xcMTXzv9q0ExIbz6SaYFtYP7Bn0PC6bPYjW9rGfhfU/ZBFH5+kUAXbAp+h3
+         /2h8jotEEzOgaNFY1Yo/OlHzoqMnJDe7H+PpWKwaeKVcrrligA2tNWYn5NTHFl4yTqsQ
+         gFkHgpsKlPEni3Zo4/+HtnUw4YNWP/eItL9RGNcRH9yWZwrevDAO8DPvSkKj7sMwbf4o
+         tY2Q==
+X-Gm-Message-State: AOAM533EuWylmOoqyIl5fCpc9DIHR6iMxT0T/l5PvCIyXKoRY8dy/kRd
+        +NFdRctwR3z2fyVUmOO4Ezw5SIX4EdRzMwnWYJ+uPQ==
+X-Google-Smtp-Source: ABdhPJx0XyqHhqBedtXtJCc7cOWvTPEJY72lmuJ34Y4BZz3NHKVX9OvnOWrxG4rLhIOGtKD+Gn6ogONfGz9q8Cg7O58=
+X-Received: by 2002:a17:90b:4a81:: with SMTP id lp1mr3140101pjb.124.1634175593356;
+ Wed, 13 Oct 2021 18:39:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210923170908.2184404-1-kaleshsingh@google.com> <20211013180834.73e2653e@gandalf.local.home>
+In-Reply-To: <20211013180834.73e2653e@gandalf.local.home>
 From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        samitolvanen@google.com, ndesaulniers@google.com,
-        kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Date:   Wed, 13 Oct 2021 18:39:42 -0700
+Message-ID: <CAC_TJverUnJVTGRw1pg1ughJ5YDA8Yo-fkpAm=_fWq9fdAgqTw@mail.gmail.com>
+Subject: Re: [PATCH] tracing/cfi: Fix cmp_entries_* functions signature mismatch
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_CFI_CLANG=y, attempting to read an event histogram will cause
-the kernel to panic due to failed CFI check.
+On Wed, Oct 13, 2021 at 3:08 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Thu, 23 Sep 2021 17:09:07 +0000
+> Kalesh Singh <kaleshsingh@google.com> wrote:
+>
+>
+> This finally popped up into my queue (from all my traveling and running of
+> conferences :-p )
+>
+>
+> > If CONFIG_CFI_CLANG=y, attempting to read an event histogram will cause
+> > the kernel to panic due to failed CFI check.
+> >
+> >     1. echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
+> >     2. cat >> events/sched/sched_switch/hist
+>
+> Do you mean:
+>
+>           2. cat events/sched/sched_switch/hist
+>
+> ?
+>
+> Small nits below.
 
-    1. echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
-    2. cat events/sched/sched_switch/hist
-    3. kernel panics on attempting to read hist
+Thanks Steve, v2 posted at
+https://lore.kernel.org/r/20211014013704.2854890-1-kaleshsingh@google.com/
 
-This happens because the sort() function expects a generic
-int (*)(const void *, const void *) pointer for the compare function.
-To prevent this CFI failure, change tracing map cmp_entries_* function
-signatures to match this.
-
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
-Changes in v2:
-  - Code style clean up, per Steve
-  - Commit message typo fix, per Steve
-
- kernel/trace/tracing_map.c | 40 ++++++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 17 deletions(-)
-
-diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
-index d6bddb157ef2..4f91a81dd838 100644
---- a/kernel/trace/tracing_map.c
-+++ b/kernel/trace/tracing_map.c
-@@ -834,20 +834,26 @@ int tracing_map_init(struct tracing_map *map)
- 	return err;
- }
- 
--static int cmp_entries_dup(const struct tracing_map_sort_entry **a,
--			   const struct tracing_map_sort_entry **b)
-+static int cmp_entries_dup(const void *A, const void *B)
- {
-+	const struct tracing_map_sort_entry **pa = A;
-+	const struct tracing_map_sort_entry **pb = B;
-+	const struct tracing_map_sort_entry *a = *pa;
-+	const struct tracing_map_sort_entry *b = *pb;
- 	int ret = 0;
- 
--	if (memcmp((*a)->key, (*b)->key, (*a)->elt->map->key_size))
-+	if (memcmp(a->key, b->key, a->elt->map->key_size))
- 		ret = 1;
- 
- 	return ret;
- }
- 
--static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
--			   const struct tracing_map_sort_entry **b)
-+static int cmp_entries_sum(const void *A, const void *B)
- {
-+	const struct tracing_map_sort_entry **pa = A;
-+	const struct tracing_map_sort_entry **pb = B;
-+	const struct tracing_map_sort_entry *a = *pa;
-+	const struct tracing_map_sort_entry *b = *pb;
- 	const struct tracing_map_elt *elt_a, *elt_b;
- 	struct tracing_map_sort_key *sort_key;
- 	struct tracing_map_field *field;
-@@ -855,8 +861,8 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
- 	void *val_a, *val_b;
- 	int ret = 0;
- 
--	elt_a = (*a)->elt;
--	elt_b = (*b)->elt;
-+	elt_a = a->elt;
-+	elt_b = b->elt;
- 
- 	sort_key = &elt_a->map->sort_key;
- 
-@@ -873,9 +879,12 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
- 	return ret;
- }
- 
--static int cmp_entries_key(const struct tracing_map_sort_entry **a,
--			   const struct tracing_map_sort_entry **b)
-+static int cmp_entries_key(const void *A, const void *B)
- {
-+	const struct tracing_map_sort_entry **pa = A;
-+	const struct tracing_map_sort_entry **pb = B;
-+	const struct tracing_map_sort_entry *a = *pa;
-+	const struct tracing_map_sort_entry *b = *pb;
- 	const struct tracing_map_elt *elt_a, *elt_b;
- 	struct tracing_map_sort_key *sort_key;
- 	struct tracing_map_field *field;
-@@ -883,8 +892,8 @@ static int cmp_entries_key(const struct tracing_map_sort_entry **a,
- 	void *val_a, *val_b;
- 	int ret = 0;
- 
--	elt_a = (*a)->elt;
--	elt_b = (*b)->elt;
-+	elt_a = a->elt;
-+	elt_b = b->elt;
- 
- 	sort_key = &elt_a->map->sort_key;
- 
-@@ -989,10 +998,8 @@ static void sort_secondary(struct tracing_map *map,
- 			   struct tracing_map_sort_key *primary_key,
- 			   struct tracing_map_sort_key *secondary_key)
- {
--	int (*primary_fn)(const struct tracing_map_sort_entry **,
--			  const struct tracing_map_sort_entry **);
--	int (*secondary_fn)(const struct tracing_map_sort_entry **,
--			    const struct tracing_map_sort_entry **);
-+	int (*primary_fn)(const void *, const void *);
-+	int (*secondary_fn)(const void *, const void *);
- 	unsigned i, start = 0, n_sub = 1;
- 
- 	if (is_key(map, primary_key->field_idx))
-@@ -1061,8 +1068,7 @@ int tracing_map_sort_entries(struct tracing_map *map,
- 			     unsigned int n_sort_keys,
- 			     struct tracing_map_sort_entry ***sort_entries)
- {
--	int (*cmp_entries_fn)(const struct tracing_map_sort_entry **,
--			      const struct tracing_map_sort_entry **);
-+	int (*cmp_entries_fn)(const void *, const void *);
- 	struct tracing_map_sort_entry *sort_entry, **entries;
- 	int i, n_entries, ret;
- 
-
-base-commit: 348949d9a4440abdab3b1dc99a9bb660e8c7da7c
--- 
-2.33.0.1079.g6e70778dc9-goog
-
+- Kalesh
+>
+> >     3. kernel panices on attempting to read hist
+> >
+> > This happens because the sort() function expects a generic
+> > int (*)(const void *, const void *) pointer for the compare function.
+> > To prevent this CFI failure, change tracing map cmp_entries_* function
+> > signatures to match this.
+> >
+> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> > ---
+> >  kernel/trace/tracing_map.c | 40 ++++++++++++++++++++++----------------
+> >  1 file changed, 23 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
+> > index d6bddb157ef2..a8c80ebbf9da 100644
+> > --- a/kernel/trace/tracing_map.c
+> > +++ b/kernel/trace/tracing_map.c
+> > @@ -834,19 +834,21 @@ int tracing_map_init(struct tracing_map *map)
+> >       return err;
+> >  }
+> >
+> > -static int cmp_entries_dup(const struct tracing_map_sort_entry **a,
+> > -                        const struct tracing_map_sort_entry **b)
+> > +static int cmp_entries_dup(const void *__a, const void *__b)
+>
+> Instead of __a and __b, have it as:
+>
+>         const void *A, const void *B
+>
+>
+> >  {
+> >       int ret = 0;
+> > +     const struct tracing_map_sort_entry *a
+> > +             = *(const struct tracing_map_sort_entry **)__a;
+> > +     const struct tracing_map_sort_entry *b
+> > +             = *(const struct tracing_map_sort_entry **)__b;
+>
+> Please put these before the ret, we like to have a "upside down xmas tree"
+> type of declaration, where longer lines come before shorter ones. Also,
+> this can be "prettified" as:
+>
+>         const struct tracing_map_sort_entry **pa = A;
+>         const struct tracing_map_sort_entry **pb = B;
+>         const struct tracing_map_sort_entry *a = *pa;
+>         const struct tracing_map_sort_entry *b = *pb;
+>         int ret = 0;
+>
+> >
+> > -     if (memcmp((*a)->key, (*b)->key, (*a)->elt->map->key_size))
+> > +     if (memcmp(a->key, b->key, a->elt->map->key_size))
+> >               ret = 1;
+> >
+> >       return ret;
+> >  }
+> >
+> > -static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
+> > -                        const struct tracing_map_sort_entry **b)
+> > +static int cmp_entries_sum(const void *__a, const void *__b)
+> >  {
+> >       const struct tracing_map_elt *elt_a, *elt_b;
+> >       struct tracing_map_sort_key *sort_key;
+> > @@ -854,9 +856,13 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
+> >       tracing_map_cmp_fn_t cmp_fn;
+> >       void *val_a, *val_b;
+> >       int ret = 0;
+> > +     const struct tracing_map_sort_entry *a
+> > +             = *(const struct tracing_map_sort_entry **)__a;
+> > +     const struct tracing_map_sort_entry *b
+> > +             = *(const struct tracing_map_sort_entry **)__b;
+>
+> Same here.
+>
+> >
+> > -     elt_a = (*a)->elt;
+> > -     elt_b = (*b)->elt;
+> > +     elt_a = a->elt;
+> > +     elt_b = b->elt;
+> >
+> >       sort_key = &elt_a->map->sort_key;
+> >
+> > @@ -873,8 +879,7 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
+> >       return ret;
+> >  }
+> >
+> > -static int cmp_entries_key(const struct tracing_map_sort_entry **a,
+> > -                        const struct tracing_map_sort_entry **b)
+> > +static int cmp_entries_key(const void *__a, const void *__b)
+> >  {
+> >       const struct tracing_map_elt *elt_a, *elt_b;
+> >       struct tracing_map_sort_key *sort_key;
+> > @@ -882,9 +887,13 @@ static int cmp_entries_key(const struct tracing_map_sort_entry **a,
+> >       tracing_map_cmp_fn_t cmp_fn;
+> >       void *val_a, *val_b;
+> >       int ret = 0;
+> > +     const struct tracing_map_sort_entry *a
+> > +             = *(const struct tracing_map_sort_entry **)__a;
+> > +     const struct tracing_map_sort_entry *b
+> > +             = *(const struct tracing_map_sort_entry **)__b;
+>
+> And here.
+>
+> Thanks, and sorry for the long delay.
+>
+> -- Steve
+>
+> >
+> > -     elt_a = (*a)->elt;
+> > -     elt_b = (*b)->elt;
+> > +     elt_a = a->elt;
+> > +     elt_b = b->elt;
+> >
+> >       sort_key = &elt_a->map->sort_key;
+> >
+> > @@ -989,10 +998,8 @@ static void sort_secondary(struct tracing_map *map,
+> >                          struct tracing_map_sort_key *primary_key,
+> >                          struct tracing_map_sort_key *secondary_key)
+> >  {
+> > -     int (*primary_fn)(const struct tracing_map_sort_entry **,
+> > -                       const struct tracing_map_sort_entry **);
+> > -     int (*secondary_fn)(const struct tracing_map_sort_entry **,
+> > -                         const struct tracing_map_sort_entry **);
+> > +     int (*primary_fn)(const void *, const void *);
+> > +     int (*secondary_fn)(const void *, const void *);
+> >       unsigned i, start = 0, n_sub = 1;
+> >
+> >       if (is_key(map, primary_key->field_idx))
+> > @@ -1061,8 +1068,7 @@ int tracing_map_sort_entries(struct tracing_map *map,
+> >                            unsigned int n_sort_keys,
+> >                            struct tracing_map_sort_entry ***sort_entries)
+> >  {
+> > -     int (*cmp_entries_fn)(const struct tracing_map_sort_entry **,
+> > -                           const struct tracing_map_sort_entry **);
+> > +     int (*cmp_entries_fn)(const void *, const void *);
+> >       struct tracing_map_sort_entry *sort_entry, **entries;
+> >       int i, n_entries, ret;
+> >
+> >
+> > base-commit: 58e2cf5d794616b84f591d4d1276c8953278ce24
+>
