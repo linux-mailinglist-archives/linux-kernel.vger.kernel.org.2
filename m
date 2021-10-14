@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E83842DA51
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC21A42DA4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbhJNN21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:28:27 -0400
-Received: from mga02.intel.com ([134.134.136.20]:28810 "EHLO mga02.intel.com"
+        id S231355AbhJNN2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:28:21 -0400
+Received: from mga06.intel.com ([134.134.136.31]:20897 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231267AbhJNN2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:28:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="214838151"
+        id S230467AbhJNN2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 09:28:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="288543198"
 X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="214838151"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 06:26:14 -0700
+   d="scan'208";a="288543198"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 06:26:14 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="626798350"
+   d="scan'208";a="548740861"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 14 Oct 2021 06:26:12 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 14 Oct 2021 06:26:12 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D82AF361; Thu, 14 Oct 2021 16:26:19 +0300 (EEST)
+        id E0B5C2E4; Thu, 14 Oct 2021 16:26:19 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Eric Biggers <ebiggers@google.com>,
@@ -30,56 +30,130 @@ To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Raul E Rangel <rrangel@chromium.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-Subject: [PATCH v3 0/5]  mmc: sdhci-pci: Remove dead code and deduplicate
-Date:   Thu, 14 Oct 2021 16:26:08 +0300
-Message-Id: <20211014132613.27861-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 1/5] mmc: sdhci: Deduplicate sdhci_get_cd_nogpio()
+Date:   Thu, 14 Oct 2021 16:26:09 +0300
+Message-Id: <20211014132613.27861-2-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211014132613.27861-1-andriy.shevchenko@linux.intel.com>
+References: <20211014132613.27861-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It appears that one of the supported platform magically worked with
-the custom IRQ handler (any hints how?) while having two PCB designs
-with an opposite CD sense level. Quirking it out reveals the code
-duplication and dead code.
+The analogue of the sdhci_get_cd_nogpio() is used in the sdhci-pci-core
+and sdhci-acpi modules. Deduplicate it by moving to sdhci and exporting.
 
-Patch 1 is code deduplication to save few LOCs.
-Patch 2-5 are dead code removals.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ drivers/mmc/host/sdhci-acpi.c     | 14 +-------------
+ drivers/mmc/host/sdhci-pci-core.c | 18 ------------------
+ drivers/mmc/host/sdhci.c          | 19 +++++++++++++++++++
+ drivers/mmc/host/sdhci.h          |  1 +
+ 4 files changed, 21 insertions(+), 31 deletions(-)
 
-In v3:
-- dropped the fix as it has been applied (Ulf)
-- added tag (Adrian)
-- elaborated commit IDs with their short descriptions in patch 3 (Adrian)
-- corrected dependency in patch 5 (Adrian)
-
-In v2:
-- redone fix to use ->get_cd() instead of quirks (Adrian)
-- due to above transformed previous clean up to the current patch 2
-- added a new patch, i.e. patch 3
-- added commit IDs to patch 4 (Adrian)
-- mentioned dependencies on previous patches in patch 5 and 6 (Adrian)
-
-Andy Shevchenko (5):
-  mmc: sdhci: Deduplicate sdhci_get_cd_nogpio()
-  mmc: sdhci: Remove unused prototype declaration in the header
-  mmc: sdhci-pci: Remove dead code (struct sdhci_pci_data et al)
-  mmc: sdhci-pci: Remove dead code (cd_gpio, cd_irq et al)
-  mmc: sdhci-pci: Remove dead code (rst_n_gpio et al)
-
- drivers/mmc/host/Makefile          |   1 -
- drivers/mmc/host/sdhci-acpi.c      |  14 +--
- drivers/mmc/host/sdhci-pci-core.c  | 152 +----------------------------
- drivers/mmc/host/sdhci-pci-data.c  |   6 --
- drivers/mmc/host/sdhci-pci.h       |   5 -
- drivers/mmc/host/sdhci.c           |  19 ++++
- drivers/mmc/host/sdhci.h           |   2 +-
- include/linux/mmc/sdhci-pci-data.h |  18 ----
- 8 files changed, 26 insertions(+), 191 deletions(-)
- delete mode 100644 drivers/mmc/host/sdhci-pci-data.c
- delete mode 100644 include/linux/mmc/sdhci-pci-data.h
-
+diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
+index 8fe65f172a61..f1ef0d28b0dd 100644
+--- a/drivers/mmc/host/sdhci-acpi.c
++++ b/drivers/mmc/host/sdhci-acpi.c
+@@ -362,23 +362,11 @@ static inline bool sdhci_acpi_no_fixup_child_power(struct acpi_device *adev)
+ static int bxt_get_cd(struct mmc_host *mmc)
+ {
+ 	int gpio_cd = mmc_gpio_get_cd(mmc);
+-	struct sdhci_host *host = mmc_priv(mmc);
+-	unsigned long flags;
+-	int ret = 0;
+ 
+ 	if (!gpio_cd)
+ 		return 0;
+ 
+-	spin_lock_irqsave(&host->lock, flags);
+-
+-	if (host->flags & SDHCI_DEVICE_DEAD)
+-		goto out;
+-
+-	ret = !!(sdhci_readl(host, SDHCI_PRESENT_STATE) & SDHCI_CARD_PRESENT);
+-out:
+-	spin_unlock_irqrestore(&host->lock, flags);
+-
+-	return ret;
++	return sdhci_get_cd_nogpio(mmc);
+ }
+ 
+ static int intel_probe_slot(struct platform_device *pdev, struct acpi_device *adev)
+diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
+index d0f2edfe296c..19e13dfae593 100644
+--- a/drivers/mmc/host/sdhci-pci-core.c
++++ b/drivers/mmc/host/sdhci-pci-core.c
+@@ -616,24 +616,6 @@ static int intel_select_drive_strength(struct mmc_card *card,
+ 	return intel_host->drv_strength;
+ }
+ 
+-static int sdhci_get_cd_nogpio(struct mmc_host *mmc)
+-{
+-	struct sdhci_host *host = mmc_priv(mmc);
+-	unsigned long flags;
+-	int ret = 0;
+-
+-	spin_lock_irqsave(&host->lock, flags);
+-
+-	if (host->flags & SDHCI_DEVICE_DEAD)
+-		goto out;
+-
+-	ret = !!(sdhci_readl(host, SDHCI_PRESENT_STATE) & SDHCI_CARD_PRESENT);
+-out:
+-	spin_unlock_irqrestore(&host->lock, flags);
+-
+-	return ret;
+-}
+-
+ static int bxt_get_cd(struct mmc_host *mmc)
+ {
+ 	int gpio_cd = mmc_gpio_get_cd(mmc);
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index dbe87995596c..269c86569402 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -2425,6 +2425,25 @@ static int sdhci_get_cd(struct mmc_host *mmc)
+ 	return !!(sdhci_readl(host, SDHCI_PRESENT_STATE) & SDHCI_CARD_PRESENT);
+ }
+ 
++int sdhci_get_cd_nogpio(struct mmc_host *mmc)
++{
++	struct sdhci_host *host = mmc_priv(mmc);
++	unsigned long flags;
++	int ret = 0;
++
++	spin_lock_irqsave(&host->lock, flags);
++
++	if (host->flags & SDHCI_DEVICE_DEAD)
++		goto out;
++
++	ret = !!(sdhci_readl(host, SDHCI_PRESENT_STATE) & SDHCI_CARD_PRESENT);
++out:
++	spin_unlock_irqrestore(&host->lock, flags);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(sdhci_get_cd_nogpio);
++
+ static int sdhci_check_ro(struct sdhci_host *host)
+ {
+ 	unsigned long flags;
+diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+index e8d04e42a5af..c593af479832 100644
+--- a/drivers/mmc/host/sdhci.h
++++ b/drivers/mmc/host/sdhci.h
+@@ -775,6 +775,7 @@ void sdhci_set_power_and_bus_voltage(struct sdhci_host *host,
+ 				     unsigned short vdd);
+ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
+ 			   unsigned short vdd);
++int sdhci_get_cd_nogpio(struct mmc_host *mmc);
+ void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq);
+ int sdhci_request_atomic(struct mmc_host *mmc, struct mmc_request *mrq);
+ void sdhci_set_bus_width(struct sdhci_host *host, int width);
 -- 
 2.33.0
 
