@@ -2,81 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D8642DAB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541E942DABE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhJNNtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:49:22 -0400
-Received: from mga14.intel.com ([192.55.52.115]:50082 "EHLO mga14.intel.com"
+        id S231709AbhJNNuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:50:15 -0400
+Received: from mga12.intel.com ([192.55.52.136]:10895 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhJNNtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:49:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="227961864"
+        id S231417AbhJNNuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 09:50:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="207792675"
 X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="227961864"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 06:47:16 -0700
+   d="scan'208";a="207792675"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 06:47:59 -0700
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="492000922"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.55.2]) ([10.209.55.2])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 06:47:15 -0700
-Message-ID: <641e8b18-230d-699c-6ec5-1aa107d7d5bb@linux.intel.com>
-Date:   Thu, 14 Oct 2021 06:47:14 -0700
+   d="scan'208";a="481265454"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 14 Oct 2021 06:47:56 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 5C3AA361; Thu, 14 Oct 2021 16:48:04 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH v4 1/3] driver core: Provide device_match_acpi_handle() helper
+Date:   Thu, 14 Oct 2021 16:47:54 +0300
+Message-Id: <20211014134756.39092-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v10 10/11] x86/tdx: Don't write CSTAR MSR on Intel
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-11-sathyanarayanan.kuppuswamy@linux.intel.com>
- <87czo77uia.ffs@tglx>
-From:   Andi Kleen <ak@linux.intel.com>
-In-Reply-To: <87czo77uia.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We have a couple of users of this helper, make it available for them.
 
->> -	wrmsrl(MSR_CSTAR, (unsigned long)entry_SYSCALL_compat);
->> +	/*
->> +	 * CSTAR is not needed on Intel because it doesn't support
->> +	 * 32bit SYSCALL, but only SYSENTER. On a TDX guest
->> +	 * it leads to a #GP.
-> Sigh. Above you write it raises #VE, but now it's #GP !?!
+The prototype for the helper is specifically crafted in order to be
+easily used with bus_find_device() call. That's why its location is
+in the driver core rather than ACPI.
 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v4: amended changelog to clarify implementation details (Rafael)
+ drivers/base/core.c        | 6 ++++++
+ include/linux/device/bus.h | 1 +
+ 2 files changed, 7 insertions(+)
 
-The unhandled #VE trap is handled like a #GP, which is then caught by 
-the kernel wrmsr code.
-
-So both are correct.
-
->
->          Intel CPUs do not support 32-bit SYSCALL. Writing to MSR_CSTAR
->          is normaly ignored by the CPU, but raises a #VE trap in a TDX
->          guest.
->
-> Hmm?
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index b67ebe6a323c..fd034d742447 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -4838,6 +4838,12 @@ int device_match_acpi_dev(struct device *dev, const void *adev)
+ }
+ EXPORT_SYMBOL(device_match_acpi_dev);
+ 
++int device_match_acpi_handle(struct device *dev, const void *handle)
++{
++	return ACPI_HANDLE(dev) == handle;
++}
++EXPORT_SYMBOL(device_match_acpi_handle);
++
+ int device_match_any(struct device *dev, const void *unused)
+ {
+ 	return 1;
+diff --git a/include/linux/device/bus.h b/include/linux/device/bus.h
+index 062777a45a74..a039ab809753 100644
+--- a/include/linux/device/bus.h
++++ b/include/linux/device/bus.h
+@@ -143,6 +143,7 @@ int device_match_of_node(struct device *dev, const void *np);
+ int device_match_fwnode(struct device *dev, const void *fwnode);
+ int device_match_devt(struct device *dev, const void *pdevt);
+ int device_match_acpi_dev(struct device *dev, const void *adev);
++int device_match_acpi_handle(struct device *dev, const void *handle);
+ int device_match_any(struct device *dev, const void *unused);
+ 
+ /* iterator helpers for buses */
+-- 
+2.33.0
 
