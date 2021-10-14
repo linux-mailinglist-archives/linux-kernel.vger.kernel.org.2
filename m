@@ -2,279 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFA642D09B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8F242D0AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhJNCpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 22:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48826 "EHLO
+        id S229948AbhJNCrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 22:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbhJNCpJ (ORCPT
+        with ESMTP id S229496AbhJNCrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 22:45:09 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CAAC061570;
-        Wed, 13 Oct 2021 19:43:05 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id s136so900086pgs.4;
-        Wed, 13 Oct 2021 19:43:05 -0700 (PDT)
+        Wed, 13 Oct 2021 22:47:39 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF5DC061570;
+        Wed, 13 Oct 2021 19:45:35 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso3737439pjb.1;
+        Wed, 13 Oct 2021 19:45:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=sHKifJk5izw/MqdmGV1qq+I/6lXT+WPrFdIs1Dw0M20=;
-        b=EZgRyBvW0cM71TasvToj0/SUlAttH9nJ7Fp8SdLgthjhAesxH/cpvlJUohVVM3o/jT
-         fY81dv0wu7A9R9YeR7HHyNEHElhWAqsHY/taqWIwLQReW3S4wIHxe9tmLjxBLRr67gE5
-         CsT2u+/DNdt7VSKLxzqkyoxyt1MmGExz4z+yZpHV7eV8BnTc62ovi+1pHrBxvg3z8mAQ
-         VbMreIvQPO40mtGWDCSAKvURN0WB9sJooS3CE1cut6zXqDlM1NRf9kk6hEfbEqsEF2le
-         uT7WR0zwzwFSwk+8gADy+3eZGJiPrwiA1GB2zNYMm3pq4bU3tElqrMND5//H3le2bHo4
-         VGZA==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=MCfoJNemGuhS326dx7D8bSFqRZvZkN9oEZyIS88IRyk=;
+        b=gadn6qip11c28osjSMnV3BtPL4erDPdfNWxwutx/7ROAp2XDbXvSuJp76mQk+oy+tb
+         7GmKt7UlUl7G5HUl4nJTI+W8aheYp2/iF/gp0Ruu4LpqnW5u2Cp40A6/dBb2vnPR0Joy
+         B5LL5Gu62VXosyb55F3KG7/I92JNC+dvydRXKgFmnoKMDt+y60zcT6Ks9tEYEJ5/ErbJ
+         Qxq7CfbZGdpU1MHQszmmvgHyhyNb4VbV/f9Rok+HrPrEzjVOrW0z0S9n0mRlcQQtyL0Y
+         5IPaXW8rpMjV+fX+jzPDrWquzmUZDVxiGxHcCiSmF6Lo2c1d+kHErBDe9QY6W0YOlkgT
+         y0Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=sHKifJk5izw/MqdmGV1qq+I/6lXT+WPrFdIs1Dw0M20=;
-        b=sSi5Mg4sBp8j1wBdoaHiOv0slAReEH9vGYK2urw7CCLL/8f2qmBZtr+mOn8V7Gjhde
-         V8F0eIXICB70NV0rK2qiMbGzYi6RKAZ9V/9HZ32++Vl+hxWne0QoCPchrZIZ5gsLeva1
-         F2d7y/6tl4ATA7VUEZyUMNSaWTMSsqCXF9Ewguuc1tejU8RlApmTiiEvxP31u7o5ns0L
-         bYmIKlxUa/F9NX/SUI6SUlnzai7WQIYyg2e+BXqTH0UAnarpGC+Wshf0bxGDbfsyvxWd
-         VnPlGzH6sFln60HjeHKqJhXM/22JSPL4RHmEfdpjombrKkllQmWlu9Q6F3rZIJZ6EYPC
-         Mu9g==
-X-Gm-Message-State: AOAM530j6bQot/h79FRkFtSnYTXG6yP2/8ThaeueIFxsXbKX4oGJ69+y
-        VvsAy3LdbmunWyV0Y84XN/49lR7nLIGAlftIcBlp7Wu7aGGE
-X-Google-Smtp-Source: ABdhPJzcHvo016O2aViLuHvM2yRZYYaITUYpLCPgO/d1R5ehTajzMnUiExuxc3v8O0lt4Smak0b/i6c6V2QBSiOmUaw=
-X-Received: by 2002:a63:85c6:: with SMTP id u189mr2239610pgd.381.1634179384850;
- Wed, 13 Oct 2021 19:43:04 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=MCfoJNemGuhS326dx7D8bSFqRZvZkN9oEZyIS88IRyk=;
+        b=8OWeB4RyUrJqi22EWK4s5sT70rgojmwV0WKxDBR/pghU7UjDmI8uwuw8zf+r7cIS/f
+         hse66kt6bOrmVdMrtf+pgK9OLo1r0PnV7lpKw7VFFpXEHiE0PJSPMqy/CkEjRhiaousW
+         p/EQf1EuzzBTq2I+qsDQ1ursPbO+z9A7uI4M+Ly/wzzO42jTREd0YL2Wt2lpef3rMveU
+         LKWI5f9VMy9PdqTnrx6C2RO3QvcpHgNdM7Nj3+2TfCjB3hLPFz6mAZM0+XxV2aRelHmf
+         tpzJ9obyDxMhEpfEGLYKGT+scHD3kRvh1zRUj+GOEXRuaTtTB3F1H7AEv+yEQEaRTUsH
+         BhdQ==
+X-Gm-Message-State: AOAM531DRiza1pEO+0u02bW0wxp+1j9z32El93vbFFIM8ehTibb9P8De
+        BjoKWGVBeDSbsOgHiQjTNAZZOYSGlsPtQYlWwQ==
+X-Google-Smtp-Source: ABdhPJxsb9HiW7RCoKmADM80gbih4KzUb2aq//tY4yZjU5WCX2PpvNfDJH9TrpcUQh1JGdoSB5bzxFDS33G12vK6UHM=
+X-Received: by 2002:a17:902:e5cb:b0:13f:25b7:4d50 with SMTP id
+ u11-20020a170902e5cb00b0013f25b74d50mr2656301plf.38.1634179534869; Wed, 13
+ Oct 2021 19:45:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACkBjsaYSfxKQUUhv2BdU8JTcHL1WP_c039iJ9CvmG5vMMHR4A@mail.gmail.com>
-In-Reply-To: <CACkBjsaYSfxKQUUhv2BdU8JTcHL1WP_c039iJ9CvmG5vMMHR4A@mail.gmail.com>
 From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Thu, 14 Oct 2021 10:42:53 +0800
-Message-ID: <CACkBjsau_-kjBKUJG2kOZcFzVuxr+VZOL3dgu6k8Brm+EbXVFA@mail.gmail.com>
-Subject: Re: general protection fault in __block_write_begin_int
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
+Date:   Thu, 14 Oct 2021 10:45:24 +0800
+Message-ID: <CACkBjsa74dyF4TiwxH1yKuyaGcPQSEP9mvPedBCaskGU7g5vdw@mail.gmail.com>
+Subject: possible deadlock in io_poll_double_wake
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hao Sun <sunhao.th@gmail.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8820=E6=97=A5=
-=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=888:58=E5=86=99=E9=81=93=EF=BC=9A
->
-> Hello,
->
-> When using Healer to fuzz the latest Linux kernel, the following crash
-> was triggered.
->
-> HEAD commit: 4357f03d6611 Merge tag 'pm-5.15-rc2
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/1r4iaWNbcFSZEw3dpTM2tbE3sPZbaXQ_Y/view?us=
-p=3Dsharing
-> kernel config: https://drive.google.com/file/d/1HKZtF_s3l6PL3OoQbNq_ei9Cd=
-Bus-Tz0/view?usp=3Dsharing
-> C reproducer: https://drive.google.com/file/d/13JjyIW6yKhM9QIYvC3IfDXAtjw=
-_2Rrmt/view?usp=3Dsharing
-> Syzlang reproducer:
-> https://drive.google.com/file/d/1sxTq_kx4Yw8nD06mQQ7Ah_cCEg75yalF/view?us=
-p=3Dsharing
->
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
->
-> general protection fault, probably for non-canonical address
-> 0xdead000000000200: 0000 [#1] PREEMPT SMP
-> CPU: 2 PID: 11649 Comm: syz-executor Not tainted 5.15.0-rc1+ #19
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:__block_write_begin_int+0xde/0xae0 fs/buffer.c:1973
-> Code: 00 00 0f 87 65 06 00 00 e8 df bd d6 ff 45 85 e4 0f 85 5e 06 00
-> 00 e8 d1 bd d6 ff 48 8b 45 18 31 d2 48 89 ef 41 bc 0c 00 00 00 <48> 8b
-> 00 48 89 c6 48 89 44 24 20 e8 02 a4 ff ff 4c 8b 7d 20 48 8b
-> RSP: 0018:ffffc9000ab13980 EFLAGS: 00010246
-> RAX: dead000000000200 RBX: ffffea0004568000 RCX: ffffc900025b9000
-> RDX: 0000000000000000 RSI: ffffffff8160d34f RDI: ffffea0004568040
-> RBP: ffffea0004568040 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 000000000000000c
-> R13: ffffc9000ab13aa0 R14: ffffffff821f8f70 R15: 0000000000000000
-> FS:  00007f39bbe26700(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000100000001 CR3: 000000010b767000 CR4: 0000000000750ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  __block_write_begin fs/buffer.c:2056 [inline]
->  block_write_begin+0x58/0x150 fs/buffer.c:2116
->  generic_perform_write+0xce/0x220 mm/filemap.c:3770
->  __generic_file_write_iter+0x20d/0x240 mm/filemap.c:3897
->  blkdev_write_iter+0xed/0x1d0 block/fops.c:518
->  call_write_iter include/linux/fs.h:2163 [inline]
->  do_iter_readv_writev+0x1e8/0x2b0 fs/read_write.c:729
->  do_iter_write+0xaf/0x250 fs/read_write.c:855
->  vfs_iter_write+0x38/0x60 fs/read_write.c:896
->  iter_file_splice_write+0x2d8/0x450 fs/splice.c:689
->  do_splice_from fs/splice.c:767 [inline]
->  direct_splice_actor+0x4a/0x80 fs/splice.c:936
->  splice_direct_to_actor+0x123/0x2d0 fs/splice.c:891
->  do_splice_direct+0xc3/0x110 fs/splice.c:979
->  do_sendfile+0x338/0x740 fs/read_write.c:1249
->  __do_sys_sendfile64 fs/read_write.c:1314 [inline]
->  __se_sys_sendfile64 fs/read_write.c:1300 [inline]
->  __x64_sys_sendfile64+0xc7/0xe0 fs/read_write.c:1300
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x46ae99
-> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f39bbe25c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-> RAX: ffffffffffffffda RBX: 000000000078c158 RCX: 000000000046ae99
-> RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000006
-> RBP: 00000000004e4809 R08: 0000000000000000 R09: 0000000000000000
-> R10: 00000000464e681a R11: 0000000000000246 R12: 000000000078c158
-> R13: 0000000000000000 R14: 000000000078c158 R15: 00007ffeddcbc7a0
-> Modules linked in:
-> Dumping ftrace buffer:
->    (ftrace buffer empty)
-> ---[ end trace 39bb45a4a4cd76d5 ]---
-> RIP: 0010:__block_write_begin_int+0xde/0xae0 fs/buffer.c:1973
-> Code: 00 00 0f 87 65 06 00 00 e8 df bd d6 ff 45 85 e4 0f 85 5e 06 00
-> 00 e8 d1 bd d6 ff 48 8b 45 18 31 d2 48 89 ef 41 bc 0c 00 00 00 <48> 8b
-> 00 48 89 c6 48 89 44 24 20 e8 02 a4 ff ff 4c 8b 7d 20 48 8b
-> RSP: 0018:ffffc9000ab13980 EFLAGS: 00010246
-> RAX: dead000000000200 RBX: ffffea0004568000 RCX: ffffc900025b9000
-> RDX: 0000000000000000 RSI: ffffffff8160d34f RDI: ffffea0004568040
-> RBP: ffffea0004568040 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 000000000000000c
-> R13: ffffc9000ab13aa0 R14: ffffffff821f8f70 R15: 0000000000000000
-> FS:  00007f39bbe26700(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f81b40af020 CR3: 000000010b767000 CR4: 0000000000750ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> ----------------
-> Code disassembly (best guess):
->    0:   00 00                   add    %al,(%rax)
->    2:   0f 87 65 06 00 00       ja     0x66d
->    8:   e8 df bd d6 ff          callq  0xffd6bdec
->    d:   45 85 e4                test   %r12d,%r12d
->   10:   0f 85 5e 06 00 00       jne    0x674
->   16:   e8 d1 bd d6 ff          callq  0xffd6bdec
->   1b:   48 8b 45 18             mov    0x18(%rbp),%rax
->   1f:   31 d2                   xor    %edx,%edx
->   21:   48 89 ef                mov    %rbp,%rdi
->   24:   41 bc 0c 00 00 00       mov    $0xc,%r12d
-> * 2a:   48 8b 00                mov    (%rax),%rax <-- trapping instructi=
-on
->   2d:   48 89 c6                mov    %rax,%rsi
->   30:   48 89 44 24 20          mov    %rax,0x20(%rsp)
->   35:   e8 02 a4 ff ff          callq  0xffffa43c
->   3a:   4c 8b 7d 20             mov    0x20(%rbp),%r15
->   3e:   48                      rex.W
->   3f:   8b                      .byte 0x8b
+Hello,
 
-Hi,
-
-This issue can still be triggered repeatedly on the latest kernel.
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
 HEAD commit: 64570fbc14f8 Linux 5.15-rc5
 git tree: upstream
-kernel config: https://drive.google.com/file/d/1em3xgUIMNN_-LUUdySzwN-UDPc3=
-qiiKD/view?usp=3Dsharing
+console output:
+https://drive.google.com/file/d/1vA465O1bvHG4dfD07CNI-lcjbFYaD-nK/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1em3xgUIMNN_-LUUdySzwN-UDPc3qiiKD/view?usp=sharing
+C reproducer: https://drive.google.com/file/d/13EMtDAujxvvBRb3m1gV1zXsp4gkRFJSS/view?usp=sharing
+Syzlang reproducer:
+https://drive.google.com/file/d/1dFk5ujvk-lnr_KzNGboFm9fvwYdETowv/view?usp=sharing
 
-general protection fault, probably for non-canonical address
-0xfbd59c0000000040: 0000 [#1] PREEMPT SMP KASAN
-KASAN: maybe wild-memory-access in range [0xdead000000000200-0xdead00000000=
-0207]
-CPU: 2 PID: 14120 Comm: syz-executor Not tainted 5.15.0-rc5 #3
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+
+============================================
+WARNING: possible recursive locking detected
+5.15.0-rc5 #3 Not tainted
+--------------------------------------------
+swapper/0/0 is trying to acquire lock:
+ffff88810f5cd130 (&runtime->sleep){..-.}-{2:2}, at:
+io_poll_double_wake+0x2be/0x800 fs/io_uring.c:5418
+
+but task is already holding lock:
+ffff88810f5cf130 (&runtime->sleep){..-.}-{2:2}, at:
+__wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&runtime->sleep);
+  lock(&runtime->sleep);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+3 locks held by swapper/0/0:
+ #0: ffffc90000007d68 ((&dpcm->timer)){+.-.}-{0:0}, at:
+lockdep_copy_map include/linux/lockdep.h:35 [inline]
+ #0: ffffc90000007d68 ((&dpcm->timer)){+.-.}-{0:0}, at:
+call_timer_fn+0xd5/0x6b0 kernel/time/timer.c:1411
+ #1: ffff888100fc6108 (&group->lock){..-.}-{2:2}, at:
+_snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
+ #2: ffff88810f5cf130 (&runtime->sleep){..-.}-{2:2}, at:
+__wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+
+stack backtrace:
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.15.0-rc5 #3
 Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
 1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:__block_write_begin_int+0xd2/0x1f00 fs/buffer.c:1977
-Code: 24 20 48 c1 e8 03 40 0f b6 ed 42 80 3c 20 00 0f 85 46 1b 00 00
-48 b8 00 00 00 00 00 fc ff df 49 8b 5e 18 48 89 da 48 c1 ea 03 <80> 3c
-02 00 0f 85 42 1d 00 00 48 8b 03 48 89 44 24 30 49 8d 46 08
-RSP: 0018:ffffc900039073e0 EFLAGS: 00010212
-RAX: dffffc0000000000 RBX: dead000000000200 RCX: 0000000000040000
-RDX: 1bd5a00000000040 RSI: ffff888018df8000 RDI: ffffea0000d80058
-RBP: 0000000000000000 R08: ffffffff81daac78 R09: 0000000000000000
-R10: 0000000000000007 R11: fffff940001b0000 R12: dffffc0000000000
-R13: 0000000000000000 R14: ffffea0000d80040 R15: 0000000000000000
-FS:  00007f9c5537f700(0000) GS:ffff888063f00000(0000) knlGS:000000000000000=
-0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055792ede6d38 CR3: 00000000204a1000 CR4: 0000000000350ee0
 Call Trace:
- __block_write_begin fs/buffer.c:2060 [inline]
- block_write_begin+0x58/0x2e0 fs/buffer.c:2120
- generic_perform_write+0x1fe/0x510 mm/filemap.c:3770
- __generic_file_write_iter+0x24e/0x640 mm/filemap.c:3897
- blkdev_write_iter+0x2a7/0x560 block/fops.c:519
- call_write_iter include/linux/fs.h:2163 [inline]
- do_iter_readv_writev+0x47b/0x750 fs/read_write.c:729
- do_iter_write fs/read_write.c:855 [inline]
- do_iter_write+0x18b/0x700 fs/read_write.c:836
- vfs_iter_write+0x70/0xa0 fs/read_write.c:896
- iter_file_splice_write+0x723/0xbf0 fs/splice.c:689
- do_splice_from fs/splice.c:767 [inline]
- direct_splice_actor+0x110/0x180 fs/splice.c:936
- splice_direct_to_actor+0x34b/0x8c0 fs/splice.c:891
- do_splice_direct+0x1b3/0x280 fs/splice.c:979
- do_sendfile+0xab6/0x1240 fs/read_write.c:1249
- __do_sys_sendfile64 fs/read_write.c:1314 [inline]
- __se_sys_sendfile64 fs/read_write.c:1300 [inline]
- __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1300
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f9c57e16c4d
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f9c5537ec58 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 00007f9c57f3d0a0 RCX: 00007f9c57e16c4d
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 00007f9c57e8fd80 R08: 0000000000000000 R09: 0000000000000000
-R10: 00008400fffffffb R11: 0000000000000246 R12: 00007f9c57f3d0a0
-R13: 00007ffdb9a5a15f R14: 00007ffdb9a5a300 R15: 00007f9c5537edc0
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
----[ end trace 5c2419f5104d23a1 ]---
-RIP: 0010:__block_write_begin_int+0xd2/0x1f00 fs/buffer.c:1977
-Code: 24 20 48 c1 e8 03 40 0f b6 ed 42 80 3c 20 00 0f 85 46 1b 00 00
-48 b8 00 00 00 00 00 fc ff df 49 8b 5e 18 48 89 da 48 c1 ea 03 <80> 3c
-02 00 0f 85 42 1d 00 00 48 8b 03 48 89 44 24 30 49 8d 46 08
-RSP: 0018:ffffc900039073e0 EFLAGS: 00010212
-RAX: dffffc0000000000 RBX: dead000000000200 RCX: 0000000000040000
-RDX: 1bd5a00000000040 RSI: ffff888018df8000 RDI: ffffea0000d80058
-RBP: 0000000000000000 R08: ffffffff81daac78 R09: 0000000000000000
-R10: 0000000000000007 R11: fffff940001b0000 R12: dffffc0000000000
-R13: 0000000000000000 R14: ffffea0000d80040 R15: 0000000000000000
-FS:  00007f9c5537f700(0000) GS:ffff888063f00000(0000) knlGS:000000000000000=
-0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055792ede6d38 CR3: 00000000204a1000 CR4: 0000000000350ee0
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_deadlock_bug kernel/locking/lockdep.c:2944 [inline]
+ check_deadlock kernel/locking/lockdep.c:2987 [inline]
+ validate_chain kernel/locking/lockdep.c:3776 [inline]
+ __lock_acquire.cold+0x168/0x3c3 kernel/locking/lockdep.c:5015
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x520 kernel/locking/lockdep.c:5590
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
+ io_poll_double_wake+0x2be/0x800 fs/io_uring.c:5418
+ __wake_up_common+0x147/0x650 kernel/sched/wait.c:108
+ __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:138
+ snd_pcm_update_state+0x3d4/0x540 sound/core/pcm_lib.c:203
+ snd_pcm_update_hw_ptr0+0xe79/0x2090 sound/core/pcm_lib.c:464
+ snd_pcm_period_elapsed_under_stream_lock+0x15a/0x230 sound/core/pcm_lib.c:1816
+ snd_pcm_period_elapsed+0x28/0x50 sound/core/pcm_lib.c:1848
+ loopback_jiffies_timer_function+0x1eb/0x270 sound/drivers/aloop.c:668
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1421
+ expire_timers kernel/time/timer.c:1466 [inline]
+ __run_timers.part.0+0x6b0/0xa90 kernel/time/timer.c:1734
+ __run_timers kernel/time/timer.c:1715 [inline]
+ run_timer_softirq+0xb6/0x1d0 kernel/time/timer.c:1747
+ __do_softirq+0x1d7/0x93b kernel/softirq.c:558
+ invoke_softirq kernel/softirq.c:432 [inline]
+ __irq_exit_rcu kernel/softirq.c:636 [inline]
+ irq_exit_rcu+0xf2/0x130 kernel/softirq.c:648
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:default_idle+0xb/0x10 arch/x86/kernel/process.c:717
+Code: 1b 51 88 f8 e9 6f fe ff ff e8 11 51 88 f8 e9 3d fe ff ff e8 17
+31 fd ff cc cc cc cc cc cc cc eb 07 0f 00 2d 47 99 50 00 fb f4 <c3> 0f
+1f 40 00 41 54 be 08 00 00 00 53 65 48 8b 1c 25 40 f0 01 00
+RSP: 0018:ffffffff8b607e28 EFLAGS: 00000206
+RAX: 00000000001543c3 RBX: 0000000000000000 RCX: ffffffff8932d572
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffffed100c7c6542
+R10: ffff888063e32a0b R11: ffffed100c7c6541 R12: 0000000000000000
+R13: 0000000000000000 R14: ffffffff8d6d8590 R15: 0000000000000000
+ default_idle_call+0xc4/0x420 kernel/sched/idle.c:112
+ cpuidle_idle_call kernel/sched/idle.c:194 [inline]
+ do_idle+0x3f9/0x570 kernel/sched/idle.c:306
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:403
+ start_kernel+0x47a/0x49b init/main.c:1141
+ secondary_startup_64_no_verify+0xb0/0xbb
 ----------------
 Code disassembly (best guess):
-   0: 24 20                and    $0x20,%al
-   2: 48 c1 e8 03          shr    $0x3,%rax
-   6: 40 0f b6 ed          movzbl %bpl,%ebp
-   a: 42 80 3c 20 00        cmpb   $0x0,(%rax,%r12,1)
-   f: 0f 85 46 1b 00 00    jne    0x1b5b
-  15: 48 b8 00 00 00 00 00 movabs $0xdffffc0000000000,%rax
-  1c: fc ff df
-  1f: 49 8b 5e 18          mov    0x18(%r14),%rbx
-  23: 48 89 da              mov    %rbx,%rdx
-  26: 48 c1 ea 03          shr    $0x3,%rdx
-* 2a: 80 3c 02 00          cmpb   $0x0,(%rdx,%rax,1) <-- trapping instructi=
-on
-  2e: 0f 85 42 1d 00 00    jne    0x1d76
-  34: 48 8b 03              mov    (%rbx),%rax
-  37: 48 89 44 24 30        mov    %rax,0x30(%rsp)
-  3c: 49 8d 46 08          lea    0x8(%r14),%rax
+   0: 1b 51 88              sbb    -0x78(%rcx),%edx
+   3: f8                    clc
+   4: e9 6f fe ff ff        jmpq   0xfffffe78
+   9: e8 11 51 88 f8        callq  0xf888511f
+   e: e9 3d fe ff ff        jmpq   0xfffffe50
+  13: e8 17 31 fd ff        callq  0xfffd312f
+  18: cc                    int3
+  19: cc                    int3
+  1a: cc                    int3
+  1b: cc                    int3
+  1c: cc                    int3
+  1d: cc                    int3
+  1e: cc                    int3
+  1f: eb 07                jmp    0x28
+  21: 0f 00 2d 47 99 50 00 verw   0x509947(%rip)        # 0x50996f
+  28: fb                    sti
+  29: f4                    hlt
+* 2a: c3                    retq <-- trapping instruction
+  2b: 0f 1f 40 00          nopl   0x0(%rax)
+  2f: 41 54                push   %r12
+  31: be 08 00 00 00        mov    $0x8,%esi
+  36: 53                    push   %rbx
+  37: 65 48 8b 1c 25 40 f0 mov    %gs:0x1f040,%rbx
+  3e: 01 00
