@@ -2,257 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E2342DFF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764F642E008
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233387AbhJNRR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 13:17:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46922 "EHLO mail.kernel.org"
+        id S233440AbhJNR2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 13:28:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232136AbhJNRR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 13:17:28 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A19C561152;
-        Thu, 14 Oct 2021 17:15:20 +0000 (UTC)
-Date:   Thu, 14 Oct 2021 18:19:32 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Roan van Dijk <roan@protonic.nl>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, david@protonic.nl,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v5 0/4] iio: chemical: Add support for Sensirion SCD4x
- CO2 sensor
-Message-ID: <20211014181932.5f70d2e4@jic23-huawei>
-In-Reply-To: <3ecfe246-b942-0c1e-08e6-17eff4c5cc16@protonic.nl>
-References: <20211008101706.755942-1-roan@protonic.nl>
-        <20211010165919.51f06938@jic23-huawei>
-        <20211013183828.521f043f@jic23-huawei>
-        <3ecfe246-b942-0c1e-08e6-17eff4c5cc16@protonic.nl>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231199AbhJNR2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 13:28:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BD2261152;
+        Thu, 14 Oct 2021 17:26:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634232391;
+        bh=o0QsazVMagTZA1XmrDz3OQqKaBb0s1Tde3hbsP0uePk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jDJf4ujoCOZS0iYOctJNZQGY9RghDBt1PpXR1GZDqqR5AEThHfi3KSmGrD7fYEaC0
+         oEK42B78SI3dGjnYnaaUWHSlsGNauW6LVwz/TIYxZFKYkKEfnelTBCcFfRQIWMkCuD
+         KHD2m81AjgnXq9nqEf1I0kTQX4D3q1HdRixdreYt5gh4nXxJAol4B7jWiJoStgOmsE
+         dEub2tOq9KlrnwGbblTYlnLPlwi9kmxvBtq4ev3SXfSwQBUV6p5xbuikiXmmAjRSxP
+         monAKViPysgUYuREjDMb+qMcZWFmRGFNfmp1JAaPuno2QZ7/D4k4gDVsCZk8x51jEG
+         yayl6XuJS98rw==
+Date:   Thu, 14 Oct 2021 10:26:27 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] compiler_types: mark __compiletime_assert failure as
+ __noreturn
+Message-ID: <YWhoQ2lKeOx2U2e2@archlinux-ax161>
+References: <20211014132331.GA4811@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014132331.GA4811@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 10:24:54 +0200
-Roan van Dijk <roan@protonic.nl> wrote:
-
-> On 13-10-2021 19:38, Jonathan Cameron wrote:
-> > On Sun, 10 Oct 2021 16:59:19 +0100
-> > Jonathan Cameron <jic23@kernel.org> wrote:
-> >   
-> >> On Fri,  8 Oct 2021 12:17:02 +0200
-> >> Roan van Dijk <roan@protonic.nl> wrote:
-> >>  
-> >>> This series adds support for the Sensirion SCD4x sensor.
-> >>>
-> >>> The driver supports continuous reads of temperature, relative humdity and CO2
-> >>> concentration. There is an interval of 5 seconds between readings. During
-> >>> this interval the drivers checks if the sensor has new data available.
-> >>>
-> >>> The driver is based on the scd30 driver. However, The scd4x has become too
-> >>> different to just expand the scd30 driver. I made a new driver instead of
-> >>> expanding the scd30 driver. I hope I made the right choice by doing so?  
-> >>
-> >> Applied to the togreg branch of iio.git with the issues Randy mentioned tidied
-> >> up. Pushed out as testing for 0-day to see if it can find anything we missed  
-> > 
-> > And indeed - I missed a bunch of places where explicit __be16 types should have
-> > been used.
-> > 
-> > I've applied the following fixup, shout if it's wrong.
-> >  
-> Thank you Jonathan for applying this fixup. No need to shout :) Your 
-> changes should fix the issue.
+On Thu, Oct 14, 2021 at 03:23:31PM +0200, Miguel Ojeda wrote:
+> `__compiletime_assert` declares a fake `extern` function
+> which appears (to the compiler) to be called when the test fails.
 > 
-> However, I have a question about something else. The co2 concentration 
-> is an IIO_CHAN_INFO_RAW, but doesn't have a scale or offset at this 
-> moment. Is an _scale always required for an _raw in the ABI? I could not 
-> find anything in the documentation if there is a rule for this. Someone 
-> mentioned this to me, so I want to check if I did this right.
+> Therefore, compilers may emit possibly-uninitialized warnings
+> in some cases, even if it will be an error anyway (for compilers
+> supporting the `error` attribute, e.g. GCC and Clang >= 14)
+> or a link failure (for those that do not, e.g. Clang < 14).
 > 
-> The sensor returns the actual co2 value upon reading, like 450 ppm. We 
-> can set an offset of this co2 value with the calibration_forced_value 
-> through the ABI, but this offset is handled internally by the sensor. So 
-> there isn't anything with scaling or an offset needed at the driver side.
-
-Ah. We could have mapped this to calibbias, though here it's made more
-complex by other calibrations existing that don't use the value so let's
-leave it as it is.
-
+> Annotating the fake function as `__noreturn` gives them
+> the information they need to avoid the warning,
+> e.g. see https://godbolt.org/z/x1v69jjYY.
 > 
-> Was I right by making it of type RAW? If needed we could make it more 
-> like the scd30 driver, keeping it of type RAW but with scale = 1. What 
-> should I do or is it fine as it is?
+> Link: https://lore.kernel.org/llvm/202110100514.3h9CI4s0-lkp@intel.com/
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-Hmm. Interesting corner case in the ABI.  A _raw value without a scale
-normally means we don't know it for some reason.  The most common case
-of this is light sensors where several _raw intensity values are combined
-in some (typically non linear) transform to form a single measure of illuminance.
-Those intensity_raw channels don't have an meaningful units, but devices
-often have threshold events on them so we have to expose them.
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-I would say make it a processed value, but there is a quirk.
-concentrations in IIO are expressed in percent not per million, so you need
-a scale anyway, I guess 10000?  See Documentation/ABI/testing/sysfs-bus-iio
-
-
-No need to do a new driver version, just send a patch tidying up this corner.
-
-Thanks,
-
-Jonathan
-
-
-> Sorry for not asking this earlier.
+> ---
+>  include/linux/compiler_types.h | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 > 
-> Thanks,
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index b6ff83a714ca..ca1a66b8cd2f 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -298,7 +298,13 @@ struct ftrace_likely_data {
+>  #ifdef __OPTIMIZE__
+>  # define __compiletime_assert(condition, msg, prefix, suffix)		\
+>  	do {								\
+> -		extern void prefix ## suffix(void) __compiletime_error(msg); \
+> +		/*							\
+> +		 * __noreturn is needed to give the compiler enough	\
+> +		 * information to avoid certain possibly-uninitialized	\
+> +		 * warnings (regardless of the build failing).		\
+> +		 */							\
+> +		__noreturn extern void prefix ## suffix(void)		\
+> +			__compiletime_error(msg);			\
+>  		if (!(condition))					\
+>  			prefix ## suffix();				\
+>  	} while (0)
+> -- 
+> 2.33.1
 > 
-> Roan
-> 
-> > diff --git a/drivers/iio/chemical/scd4x.c b/drivers/iio/chemical/scd4x.c
-> > index 09b34201c42b..ebebcb117ba2 100644
-> > --- a/drivers/iio/chemical/scd4x.c
-> > +++ b/drivers/iio/chemical/scd4x.c
-> > @@ -263,7 +263,7 @@ static int scd4x_write_and_fetch(struct scd4x_state *state, enum scd4x_cmd cmd,
-> >   static int scd4x_read_meas(struct scd4x_state *state, uint16_t *meas)
-> >   {
-> >   	int i, ret;
-> > -	uint16_t buf[3];
-> > +	__be16 buf[3];
-> >   
-> >   	ret = scd4x_read(state, CMD_READ_MEAS, buf, sizeof(buf));
-> >   	if (ret)
-> > @@ -282,12 +282,13 @@ static int scd4x_wait_meas_poll(struct scd4x_state *state)
-> >   	int ret;
-> >   
-> >   	do {
-> > +		__be16 bval;
-> >   		uint16_t val;
-> >   
-> > -		ret = scd4x_read(state, CMD_GET_DATA_READY, &val, sizeof(val));
-> > +		ret = scd4x_read(state, CMD_GET_DATA_READY, &bval, sizeof(bval));
-> >   		if (ret)
-> >   			return -EIO;
-> > -		val = be16_to_cpu(val);
-> > +		val = be16_to_cpu(bval);
-> >   
-> >   		/* new measurement available */
-> >   		if (val & 0x7FF)
-> > @@ -333,7 +334,7 @@ static int scd4x_read_raw(struct iio_dev *indio_dev,
-> >   {
-> >   	struct scd4x_state *state = iio_priv(indio_dev);
-> >   	int ret;
-> > -	uint16_t tmp;
-> > +	__be16 tmp;
-> >   
-> >   	switch (mask) {
-> >   	case IIO_CHAN_INFO_RAW:
-> > @@ -405,17 +406,18 @@ static ssize_t calibration_auto_enable_show(struct device *dev,
-> >   	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> >   	struct scd4x_state *state = iio_priv(indio_dev);
-> >   	int ret;
-> > -	uint16_t val;
-> > +	__be16 bval;
-> > +	u16 val;
-> >   
-> >   	mutex_lock(&state->lock);
-> > -	ret = scd4x_read(state, CMD_GET_ASC, &val, sizeof(val));
-> > +	ret = scd4x_read(state, CMD_GET_ASC, &bval, sizeof(bval));
-> >   	mutex_unlock(&state->lock);
-> >   	if (ret) {
-> >   		dev_err(dev, "failed to read automatic calibration");
-> >   		return ret;
-> >   	}
-> >   
-> > -	val = (be16_to_cpu(val) & SCD4X_READY_MASK) ? 1 : 0;
-> > +	val = (be16_to_cpu(bval) & SCD4X_READY_MASK) ? 1 : 0;
-> >   
-> >   	return sprintf(buf, "%d\n", val);
-> >   }
-> > 
-> >   
-> >>
-> >> Thanks,
-> >>
-> >> Jonathan
-> >>  
-> >>>
-> >>> Changes since v5:
-> >>> scd4x.c:
-> >>>    - Fix bug in trigger_handler
-> >>>
-> >>> Changes since v4:
-> >>> scd4x.c:
-> >>>    - Minor fixes in documentation
-> >>>    - Reorder trigger_handler so memcpy is not needed anymore
-> >>> Documentation:
-> >>>    - Change information about the KernelVersion for the
-> >>>      calibration_forced_value_available
-> >>>
-> >>> Changes since v3:
-> >>> scd4x.c
-> >>>    - Change read and write_and_fetch function parameter. CRC byte is now
-> >>>      hidden inside the function.
-> >>>    - Fix minor style issues
-> >>>    - Add calibration_forced_value_available attribute to the driver
-> >>>    - Remove including BUFFER_TRIGGERED
-> >>>    - Change calibbias to raw ADC readings rather than converting it to
-> >>>      milli degrees C.
-> >>> Documentation:
-> >>>    - Change description of driver attributes
-> >>>    - Add calibration_forced_value_available documentation
-> >>>
-> >>> Changes since v2:
-> >>> scd4x.c:
-> >>>    - Change boolean operations
-> >>>    - Document scope of lock
-> >>>    - Remove device *dev from struct
-> >>>    - Add goto block for errror handling
-> >>>    - Add function to read value per channel in read_raw
-> >>>    - Fix bug with lock in error paths
-> >>>    - Remove conversion of humidity and temperature values
-> >>>    - Add scale and offset to temperature channel
-> >>>    - Add scale to humidity channel
-> >>>    - Move memset out of locked section
-> >>>    - Remove unused irq functions
-> >>>    - Move device register at end of probe function
-> >>> Documentation:
-> >>>    - Copy content of sysfs-bus-iio-scd30 to sysfs-bus-iio
-> >>>    - Remove Documentation/ABI/testing/sysfs-bus-iio-scd30
-> >>>
-> >>> Changes since v1:
-> >>> dt-bindings:
-> >>>    - Separated compatible string for each sensor type
-> >>> scd4x.c:
-> >>>    - Changed probe, resume and suspend functions to static
-> >>>    - Added SIMPLE_DEV_PM_OPS function call for power management
-> >>>      operations.
-> >>>
-> >>> Roan van Dijk (4):
-> >>>    dt-bindings: iio: chemical: sensirion,scd4x: Add yaml description
-> >>>    MAINTAINERS: Add myself as maintainer of the scd4x driver
-> >>>    drivers: iio: chemical: Add support for Sensirion SCD4x CO2 sensor
-> >>>    iio: documentation: Document scd4x calibration use
-> >>>
-> >>>   Documentation/ABI/testing/sysfs-bus-iio       |  41 ++
-> >>>   Documentation/ABI/testing/sysfs-bus-iio-scd30 |  34 -
-> >>>   .../iio/chemical/sensirion,scd4x.yaml         |  46 ++
-> >>>   MAINTAINERS                                   |   6 +
-> >>>   drivers/iio/chemical/Kconfig                  |  13 +
-> >>>   drivers/iio/chemical/Makefile                 |   1 +
-> >>>   drivers/iio/chemical/scd4x.c                  | 689 ++++++++++++++++++
-> >>>   7 files changed, 796 insertions(+), 34 deletions(-)
-> >>>   delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
-> >>>   create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
-> >>>   create mode 100644 drivers/iio/chemical/scd4x.c
-> >>>      
-> >>  
-> >   
-
