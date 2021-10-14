@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF17842D101
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C5B42D102
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhJNDhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60276 "EHLO
+        id S230088AbhJNDhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhJNDhN (ORCPT
+        with ESMTP id S230126AbhJNDhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:37:13 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505E9C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:35:09 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id oa4so3771491pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:35:09 -0700 (PDT)
+        Wed, 13 Oct 2021 23:37:20 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B319C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:35:16 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id 21so3183978plo.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:35:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4/S68dED0oqdXmV2OAUfrDjaQRBNIHwjHMwtcgk7Ews=;
-        b=hIAdrn9PVmbaB4oTLLtfydA+Qde7n8R1LmGkawekmus5tQ8NaNoZhS8Kgnf4xsr7Db
-         KyFWI0kutfS2f7BDukmbpaZE2Dw6qhbNw2m3g/aOeHl2PHmxGo18PdaODvTyhzV/e74+
-         /l64J4gsz8QQOgkZo80Xz54bycGIW0hU0i3vkkCHcXaIRYghlC2/vvwE/p1qlzZBiYez
-         j9VaJDdGk5VfIiL3yx8lHymQToSBfHJy1hez9Tgh9Yh/VwR5aX/WSr6KYOfkgm34qdh1
-         EkBPcZ3BKduW5og3syeaDYBsfsQ8fh0G9oUwB48SvSPkUrBIKemvaU2RxE7MAxEeyOv8
-         hiCA==
+        bh=0go08qE6YjF720dW2xAnGLMtyjjxpO8kE2iuFpdx1kM=;
+        b=OWXYdNcON1tButwYuFkY6vYZueS6eXtU0jSooqr9DEKr/KHzDVal/Ggc/A1Vhkk9WI
+         fYuYsSV2HMGfVaaN6IzMi2bQSUYSbDSung6gg2dLlwhTpqGUPrbaEMUwTPZPqahCCz7B
+         hFsRZmTxd4lP/RSWHrop/6jIdS5y+hTxLqEhwviRhPo5ElxUDty3yJWHEKN0hY0F5Y6M
+         XJKESiNBAK65UI4ymasNRORZuWqrrHzIeP1/6h9wBLuzWTjzkAPuG58sXnTkh2wJAVLA
+         Z7lybj5s7mZvqSY6P+1Qot7AipaIdD4KuyEISkx+uFT5gxBxeTUMa4OyAenD+oFZrmbq
+         1vTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4/S68dED0oqdXmV2OAUfrDjaQRBNIHwjHMwtcgk7Ews=;
-        b=TVo4g3JiG0yeUzNM9rKffRzVUDDewE7gfODYajnPs/i9B/XwJmgahHXcGUEGupmRDO
-         j59jZqk1uaoz8wQx4mVr9KA9XWQd1ELg9aJPA9Moh9CRkIac7baBRENePG+L0PHfh74Q
-         21Klff1P1Bx3MmmxwEbE+KjVlCPSpTGX//cAvcAXEe3d2ak+zxVx19cW4AIf9CSiZkaD
-         sajHb4UmSqg7t91TZ5aRbHhFVNBn9J1suaSBtjks7AQb1cbtdzhQ1BacEJaLjkwpftpV
-         cZnx8Fm7CO3lSsx/5HNV5pcgiw5OPkpEvZkke03lCxv5ndsEessPmksR7/BpStBrKz2J
-         o7hg==
-X-Gm-Message-State: AOAM532g3gV0Lov20EMCSSI9Af+OERKYV6E/LVla7mi0WFeIbA0PUhJa
-        WgqhMuRIxh2+GxialDBAUm8sC5eQzto=
-X-Google-Smtp-Source: ABdhPJwvELwl5vnSqXnrzD+1GlU9tLDpePI806ow3BwmpS39LeWCa0erz7mhLx0vXk4D2b7l5QGIyQ==
-X-Received: by 2002:a17:90b:4c11:: with SMTP id na17mr3663000pjb.105.1634182508712;
-        Wed, 13 Oct 2021 20:35:08 -0700 (PDT)
+        bh=0go08qE6YjF720dW2xAnGLMtyjjxpO8kE2iuFpdx1kM=;
+        b=1oloV086/KBFDXNR1mmmatANHcH0Rk96RuSuXEOEPEhJicZ1j4GxuMT4e6tV3yZTdM
+         8czXh7KtKpbqQJfe1EioKKSml9JHoh78jEbqXtipOrJpiarmfwDneIre7LzcdScJ3AKX
+         XqpsSHZWsc6+rRiwe7R6obfyazoW9a7R95DilW0HuHchWilyysZcETU4EH+klda9Z8ZY
+         EdaWot9ETnHl4PET33bDNVG4E6eygLiKh+5+renhzk4v/DORenJuxa885+YWReyO1ZoQ
+         nn2DGIx/V3aECbEzCeQNOlzmKOGn1cPU5qMiUEms1kszbDQs+7vwoW6B/bPWwEbu7cIu
+         jIKg==
+X-Gm-Message-State: AOAM5303Gfl2FJ3n289KGCdHWrkZVXHGuryn/jAPZGosLMcQMHjfra9a
+        r3/PPpt1eqpBVSbd3BtlWCd36UNdqNE=
+X-Google-Smtp-Source: ABdhPJx+cGqdufKN8LbxktrovklneVcFTKb4palFeV5zhTpD3PyCEGIt6Majn9V9RIMNNJW3eM35jg==
+X-Received: by 2002:a17:902:f54c:b0:13f:1e7:e467 with SMTP id h12-20020a170902f54c00b0013f01e7e467mr2903858plf.40.1634182515550;
+        Wed, 13 Oct 2021 20:35:15 -0700 (PDT)
 Received: from localhost ([198.11.178.15])
-        by smtp.gmail.com with ESMTPSA id y17sm824287pfi.206.2021.10.13.20.35.07
+        by smtp.gmail.com with ESMTPSA id d6sm832198pfa.39.2021.10.13.20.35.14
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Oct 2021 20:35:07 -0700 (PDT)
+        Wed, 13 Oct 2021 20:35:15 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>
-Subject: [PATCH V3 12/49] x86/traps: Move the declaration of native_irq_return_iret into proto.h
-Date:   Thu, 14 Oct 2021 11:33:35 +0800
-Message-Id: <20211014033414.16321-7-jiangshanlai@gmail.com>
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH V3 13/49] x86/entry: Add arch/x86/entry/entry64.c for C entry code
+Date:   Thu, 14 Oct 2021 11:33:36 +0800
+Message-Id: <20211014033414.16321-8-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211014031413.14471-1-jiangshanlai@gmail.com>
 References: <20211014031413.14471-1-jiangshanlai@gmail.com>
@@ -72,41 +69,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-The declaration of native_irq_return_iret is used in exc_double_fault()
-only by now.  But it will be used in other place later, so the declaration
-is moved to a header file for preparation.
+Add a C file "entry64.c" to deposit C entry code for traps and faults
+which will be as the same logic as the existing ASM code in entry_64.S.
 
+The file is as low level as entry_64.S and its code can be running in
+the environments that the GS base is user controlled value, or the CR3
+is PTI user CR3 or both.
+
+All the code in this file should not be instrumentable.  Many instrument
+facilities can be disabled by per-function attributes which are included
+in __noinstr_section.  But stack-protector can not be disabled function-
+granularly by many versions of GCC that can be supported for compiling
+the kernel.  So stack-protector is disabled for the whole file in Makefile.
+
+It is prepared for later patches that implement C version of the entry
+code in entry64.c.
+
+Suggested-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/include/asm/proto.h | 1 +
- arch/x86/kernel/traps.c      | 2 --
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ arch/x86/entry/Makefile  |  3 ++-
+ arch/x86/entry/entry64.c | 14 ++++++++++++++
+ 2 files changed, 16 insertions(+), 1 deletion(-)
+ create mode 100644 arch/x86/entry/entry64.c
 
-diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
-index 8c5d1910a848..ee07b3cae213 100644
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -13,6 +13,7 @@ void syscall_init(void);
- #ifdef CONFIG_X86_64
- void entry_SYSCALL_64(void);
- void entry_SYSCALL_64_safe_stack(void);
-+extern unsigned char native_irq_return_iret[];
- long do_arch_prctl_64(struct task_struct *task, int option, unsigned long arg2);
- #endif
+diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
+index 7fec5dcf6438..792f7009ff32 100644
+--- a/arch/x86/entry/Makefile
++++ b/arch/x86/entry/Makefile
+@@ -10,13 +10,14 @@ KCOV_INSTRUMENT := n
+ CFLAGS_REMOVE_common.o		= $(CC_FLAGS_FTRACE)
  
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index cc6de3a01293..cf852b5e347f 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -359,8 +359,6 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
- #endif
+ CFLAGS_common.o			+= -fno-stack-protector
++CFLAGS_entry64.o		+= -fno-stack-protector
  
- #ifdef CONFIG_X86_ESPFIX64
--	extern unsigned char native_irq_return_iret[];
+ obj-y				:= entry_$(BITS).o thunk_$(BITS).o syscall_$(BITS).o
+ obj-y				+= common.o
++obj-$(CONFIG_X86_64)		+= entry64.o
+ 
+ obj-y				+= vdso/
+ obj-y				+= vsyscall/
+ 
+ obj-$(CONFIG_IA32_EMULATION)	+= entry_64_compat.o syscall_32.o
+ obj-$(CONFIG_X86_X32_ABI)	+= syscall_x32.o
 -
- 	/*
- 	 * If IRET takes a non-IST fault on the espfix64 stack, then we
- 	 * end up promoting it to a doublefault.  In that case, take
+diff --git a/arch/x86/entry/entry64.c b/arch/x86/entry/entry64.c
+new file mode 100644
+index 000000000000..762595603ce7
+--- /dev/null
++++ b/arch/x86/entry/entry64.c
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ *  Copyright (C) 1991, 1992  Linus Torvalds
++ *  Copyright (C) 2000, 2001, 2002  Andi Kleen SuSE Labs
++ *  Copyright (C) 2000  Pavel Machek <pavel@suse.cz>
++ *  Copyright (C) 2021 Lai Jiangshan, Alibaba
++ *
++ * Handle entries and exits for hardware traps and faults.
++ *
++ * It is as low level as entry_64.S and its code can be running in the
++ * environments that the GS base is user controlled value, or the CR3
++ * is PTI user CR3 or both.
++ */
++#include <asm/traps.h>
 -- 
 2.19.1.6.gb485710b
 
