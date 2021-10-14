@@ -2,228 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95F542D023
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD9F42D049
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhJNB6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 21:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229838AbhJNB6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 21:58:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B876D611C7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:56:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634176602;
-        bh=ZM1WtEcrPzwwxvHBTUjeSUaYDLGchqrWv7/MuM1+iKs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YyjHojCkCAxkJR/SZtzr1Aipoj61eaNEalKmcj/LdOc4ye5Ah0aT0XAqL9a+FYbUb
-         Qrpoc0Xaxhw2bfOiLjSV60I5q2rfKxQ+srPDZ5N4e2DoyTIMnT6qfZsMd6Unj7wpXj
-         O7MW5bAlE+EVC6F+p4xFZmg48hYPRni+SHggyUd5HVkEgx2fhjdXYyqMd2ke7kjL+N
-         LXhti1QdovC5CMlbkpe79fwXqkdnmZnSQ1i5X6DWirqSVTjZpksGcwjtVhJsQeo6GP
-         VG455Jz62tozaj4v6GB3G+SgHjpc1nmL09SR6B8/RPturncr3+2968getaD2WnMUEA
-         Hzc4m5V2H3Xpg==
-Received: by mail-ua1-f47.google.com with SMTP id f3so8363823uap.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:56:42 -0700 (PDT)
-X-Gm-Message-State: AOAM531+3G3Y3M4fL8N4vQ5nFVzVEd4dxwudi5qQnyf5+TmPaeA+P3BN
-        pKavzgRDCSilpU9TSRv703fuoQQtz+0sFc27XZI=
-X-Google-Smtp-Source: ABdhPJwcg3E1UNy8BxUoWk9DY2FjjSeWhM5YSg4jFs3PzAfzX0W3w/6AA7Jxy3ZvdjJonirUlFXWd42hmFT55xwPMic=
-X-Received: by 2002:ab0:5b59:: with SMTP id v25mr3102685uae.57.1634176601756;
- Wed, 13 Oct 2021 18:56:41 -0700 (PDT)
+        id S229931AbhJNCU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 22:20:27 -0400
+Received: from m1353.mail.163.com ([220.181.13.53]:21671 "EHLO
+        m1353.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229798AbhJNCUY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 22:20:24 -0400
+X-Greylist: delayed 929 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Oct 2021 22:20:23 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=QyyUB
+        CC7Whmk5CbCao8V+6eJHZUJ32YamdrVAxhM3Y4=; b=QLkSs69mW8Y60rrPIu9Ry
+        oheJcoMJJq+34SrYBWxUBra1ue7pMW/EHR4oKOnYxpbqhjHn37fXD6cpqZOVkeYQ
+        9CS/MKjx8wkzSxgKt+g/PdyDdmIhPxSW4NQfP/6oaXRliVfwnnDaGQl5TOGwQkjy
+        IRq8U4pMnu3JfL8H7jGV90=
+Received: from zhanglyra$163.com ( [120.244.194.245] ) by
+ ajax-webmail-wmsvr53 (Coremail) ; Thu, 14 Oct 2021 10:02:44 +0800 (CST)
+X-Originating-IP: [120.244.194.245]
+Date:   Thu, 14 Oct 2021 10:02:44 +0800 (CST)
+From:   ChunyanZhang <zhanglyra@163.com>
+To:     "Stephen Boyd" <sboyd@kernel.org>
+Cc:     "Chunyan Zhang" <zhang.lyra@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, "Baolin Wang" <baolin.wang7@gmail.com>,
+        "Orson Zhai" <orsonzhai@gmail.com>,
+        "Chunyan Zhang" <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re:Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for
+ ums512 global registers
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
+ Copyright (c) 2002-2021 www.mailtech.cn 163com
+In-Reply-To: <163417628586.936110.17321921086246870791@swboyd.mtv.corp.google.com>
+References: <20210923064137.60722-1-zhang.lyra@gmail.com>
+ <20210923064137.60722-3-zhang.lyra@gmail.com>
+ <163416267274.936110.2784588823311275089@swboyd.mtv.corp.google.com>
+ <5b8198f8.cc.17c7c0fc3e2.Coremail.zhanglyra@163.com>
+ <163417628586.936110.17321921086246870791@swboyd.mtv.corp.google.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-References: <20211013012149.2834212-1-guoren@kernel.org> <4027415.QZv1u5a1DM@diego>
- <CAJF2gTTDZ0QjY9JL=U61=ubWrGWVOe2VBbW6hgzsHqsePgN0Ww@mail.gmail.com> <21791128.ik6S1v3eFK@phil>
-In-Reply-To: <21791128.ik6S1v3eFK@phil>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 14 Oct 2021 09:56:30 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQiCMctaUkJPoJsAOGAHOtprquOJHRHyN-j_HWHyEdzuA@mail.gmail.com>
-Message-ID: <CAJF2gTQiCMctaUkJPoJsAOGAHOtprquOJHRHyN-j_HWHyEdzuA@mail.gmail.com>
-Subject: Re: [PATCH V3 1/2] dt-bindings: update riscv plic compatible string
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Rob Herring <robh@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <4e2e8b98.cc9.17c7c899967.Coremail.zhanglyra@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: NcGowAAHE+XFj2dhqi7TAA--.40322W
+X-CM-SenderInfo: x2kd0wpo1utqqrwthudrp/1tbiNQQs41rPdrutvQAAs2
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 8:26 AM Heiko Stuebner <heiko@sntech.de> wrote:
->
-> Hi,
->
-> Am Mittwoch, 13. Oktober 2021, 14:49:57 CEST schrieb Guo Ren:
-> > On Wed, Oct 13, 2021 at 5:43 PM Heiko St=C3=BCbner <heiko@sntech.de> wr=
-ote:
-> > >
-> > > Am Mittwoch, 13. Oktober 2021, 11:19:53 CEST schrieb Anup Patel:
-> > > > On Wed, Oct 13, 2021 at 2:44 PM Heiko St=C3=BCbner <heiko@sntech.de=
-> wrote:
-> > > > >
-> > > > > Am Mittwoch, 13. Oktober 2021, 11:11:26 CEST schrieb Anup Patel:
-> > > > > > On Wed, Oct 13, 2021 at 2:27 PM Heiko St=C3=BCbner <heiko@sntec=
-h.de> wrote:
-> > > > > > >
-> > > > > > > Hi Anup,
-> > > > > > >
-> > > > > > > Am Mittwoch, 13. Oktober 2021, 07:11:46 CEST schrieb Anup Pat=
-el:
-> > > > > > > > On Wed, Oct 13, 2021 at 6:52 AM <guoren@kernel.org> wrote:
-> > > > > > > > >
-> > > > > > > > > From: Guo Ren <guoren@linux.alibaba.com>
-> > > > > > > > >
-> > > > > > > > > Add the compatible string "thead,c900-plic" to the riscv =
-plic
-> > > > > > > > > bindings to support SOCs with thead,c9xx processor cores.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > > > > > > > Cc: Rob Herring <robh@kernel.org>
-> > > > > > > > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > > > > > > > > Cc: Anup Patel <anup@brainfault.org>
-> > > > > > > > > Cc: Atish Patra <atish.patra@wdc.com>
-> > > > > > > > >
-> > > > > > > > > ---
-> > > > > > > > >
-> > > > > > > > > Changes since V3:
-> > > > > > > > >  - Rename "c9xx" to "c900"
-> > > > > > > > >  - Add thead,c900-plic in the description section
-> > > > > > > > > ---
-> > > > > > > > >  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml=
-    | 6 ++++++
-> > > > > > > > >  1 file changed, 6 insertions(+)
-> > > > > > > > >
-> > > > > > > > > diff --git a/Documentation/devicetree/bindings/interrupt-=
-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/inter=
-rupt-controller/sifive,plic-1.0.0.yaml
-> > > > > > > > > index 08d5a57ce00f..82629832e5a5 100644
-> > > > > > > > > --- a/Documentation/devicetree/bindings/interrupt-control=
-ler/sifive,plic-1.0.0.yaml
-> > > > > > > > > +++ b/Documentation/devicetree/bindings/interrupt-control=
-ler/sifive,plic-1.0.0.yaml
-> > > > > > > > > @@ -35,6 +35,11 @@ description:
-> > > > > > > > >    contains a specific memory layout, which is documented=
- in chapter 8 of the
-> > > > > > > > >    SiFive U5 Coreplex Series Manual <https://static.dev.s=
-ifive.com/U54-MC-RVCoreIP.pdf>.
-> > > > > > > > >
-> > > > > > > > > +  While the "thead,c900-plic" would mask IRQ with readl(=
-claim), so it needn't
-> > > > > > > > > +  mask/unmask which needed in RISC-V PLIC. When in IRQS_=
-ONESHOT & IRQCHIP_EOI_THREADED
-> > > > > > > > > +  path, unnecessary mask operation would cause a blockin=
-g irq bug in thead,c900-plic.
-> > > > > > > > > +  Because when IRQ is disabled in c900, writel(hwirq, cl=
-aim) would be invalid.
-> > > > > > > >
-> > > > > > > > This is a totally incorrect description of the errata requi=
-red for C9xx PLIC.
-> > > > > > > >
-> > > > > > > > Please don't project non-compliance as a feature of C9xx PL=
-IC.
-> > > > > > > >
-> > > > > > > > > +
-> > > > > > > > >  maintainers:
-> > > > > > > > >    - Sagar Kadam <sagar.kadam@sifive.com>
-> > > > > > > > >    - Paul Walmsley  <paul.walmsley@sifive.com>
-> > > > > > > > > @@ -46,6 +51,7 @@ properties:
-> > > > > > > > >        - enum:
-> > > > > > > > >            - sifive,fu540-c000-plic
-> > > > > > > > >            - canaan,k210-plic
-> > > > > > > > > +          - thead,c900-plic
-> > > > > > >
-> > > > > > > we still want specific SoC names in the compatible, the "c900=
-"
-> > > > > > > is still a sort-of placeholder.
-> > > > > >
-> > > > > > Yes, we need "c900" compatible string as well. The "c9xx"
-> > > > > > compatible string is for the custom PLIC spec followed by T-HEA=
-D.
-> > > > >
-> > > > > What I meant was that the soc-specific string should name the
-> > > > > actual SoC (c906, c910) and not some imaginary chip ;-)
-> > > >
-> > > > Ahh, yes. It should be an actual soc name in the compatible
-> > > > string.
-> > > >
-> > > > For example, SiFive uses "fu540" string to identify some of the
-> > > > devices on both SiFive unleashed and SiFive unmatched boards.
-> > > >
-> > > > I was under the impression that "c900" is an actual SoC name.
-> > > >
-> > > > Regards,
-> > > > Anup
-> > > >
-> > > > >
-> > > > > See for example mali gpu bindings for a similar reference
-> > > > > in devicetree/bindings/gpu/arm,mali-bifrost.yaml .
-> > > > >
-> > > > >
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > >
-> > > > > > >
-> > > > > > > > >        - const: sifive,plic-1.0.0
-> > > > > > > >
-> > > > > > > > The PLIC DT node requires two compatible string:
-> > > > > > > > <implementation_compat>, <spec_compat>
-> > > > > > > >
-> > > > > > > > The C9xx PLIC is not RISC-V PLIC so, the DT node should
-> > > > > > > > be: "thead,c900-plic", "thead,c9xx-plic"
-> > > > > > > >
-> > > > > > > > You need to change "- const: sifive,plic-1.0.0" to
-> > > > > > > > - enum:
-> > > > > > > >     - sifive,plic-1.0.0
-> > > > > > > >     - thead,c9xx-plic
-> > >
-> > > isn't XuanTie the series containing the c906 and c910?
-> > XuanTie contain two CPU series:
-> > riscv: c906, c910
-> > csky: c807, c810, c860
-> >
-> > > So maybe
-> > >         thead,xuantie-plic
-> > > for the spec compatible.
-> > >
-> > > So doing in full
-> > >         compatible =3D "thead,c906-plic", "thead,xuantie-plic"
-> > How about:
-> > compatible =3D "allwinner,d1-plic", "thead,c900-plic"
->
-> This looks sensible.
->
-> - I guess the question in general is, is the PLIC part of the core spec
-> or part of the soc. In other words will all SoCs that use C9xx cores,
-> use this specific PLIC characteristic?
-Yes, unless soc wants to customize.
-
->
-> - If all C9xx-based SoCs will use this PLIC, I guess that thead,c900-plic
->   in your compatible above sounds pretty good.
->
-> - Should it be thead,* or t-head,* for the vendor-prefix?
-T-Head Semiconductor Co., Ltd.
-ref: https://github.com/T-head-Semi
-
-So it's "thead" for vendor-prefix
-
->   (domain seems to be t-head.cn)
->
->
-> Heiko
->
->
-
---=20
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+QXQgMjAyMS0xMC0xNCAwOTo1MToyNSwgIlN0ZXBoZW4gQm95ZCIgPHNib3lkQGtlcm5lbC5vcmc+
+IHdyb3RlOgo+UXVvdGluZyBDaHVueWFuWmhhbmcgKDIwMjEtMTAtMTMgMTY6NDk6NDApCj4+IEF0
+IDIwMjEtMTAtMTQgMDY6MDQ6MzIsICJTdGVwaGVuIEJveWQiIDxzYm95ZEBrZXJuZWwub3JnPiB3
+cm90ZToKPj4gPlF1b3RpbmcgQ2h1bnlhbiBaaGFuZyAoMjAyMS0wOS0yMiAyMzo0MTozNSkKPj4g
+Pj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZmQvc3By
+ZCx1bXM1MTItZ2xicmVnLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bWZkL3NwcmQsdW1zNTEyLWdsYnJlZy55YW1sCj4+ID4+ICsKPj4gPj4gK2V4YW1wbGVzOgo+PiA+
+PiArICAtIHwKPj4gPj4gKyAgICBhcF9hcGJfcmVnczogc3lzY29uQDcxMDAwMDAwIHsKPj4gPj4g
+KyAgICAgIGNvbXBhdGlibGUgPSAic3ByZCx1bXM1MTItZ2xicmVncyIsICJzeXNjb24iLCAic2lt
+cGxlLW1mZCI7Cj4+ID4+ICsgICAgICByZWcgPSA8MHg3MTAwMDAwMCAweDMwMDA+Owo+PiA+PiAr
+ICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47Cj4+ID4+ICsgICAgICAjc2l6ZS1jZWxscyA9IDwx
+PjsKPj4gPj4gKyAgICAgIHJhbmdlcyA9IDwwIDB4NzEwMDAwMDAgMHgzMDAwPjsKPj4gPj4gKwo+
+PiA+PiArICAgICAgY2xvY2stY29udHJvbGxlckAwIHsKPj4gPj4gKyAgICAgICAgY29tcGF0aWJs
+ZSA9ICJzcHJkLHVtczUxMi1hcGFoYi1nYXRlIjsKPj4gPgo+PiA+V2h5IGlzIHRoaXMgYSBzdWJu
+b2RlIG9mIGEgc3lzY29uIGFuZCBzaW1wbGUtbWZkPyBXaHkgbm90IHB1dCB0aGU+Y2xvY2stY29u
+dHJvbGxlckA3MTAwMDAwMCBkaXJlY3RseSBvbnRvIHRoZSBidXM/IERvZXMgbWFraW5nIGl0IGEg
+Y2hpbGQKPj4gPm5vZGUgaGVscCBzb21laG93Pwo+PiAKPj4gVGhlc2UgY2xvY2tzIGFyZSBhdCB0
+aGUgc2FtZSByZWdpc3RlciByYW5nZSB3aXRoIGdsb2JhbCByZWdpc3RlcnMuIEkgb3JpZ2luYWxs
+eSBwdXQgdGhlbSBkaXJlY3RseSBvbnRvIHRoZSBidXMgaW5kZWVkIHdoZW4gc3VibWl0dGluZyB0
+aGUgcGF0Y2hlcyBmb3IgU0M5ODYzQSBjbG9ja3MgbGFzdCB5ZWFyLCBhbmQgaXQgaGFkIGEgcHJp
+dmF0ZSBwcm9wZXJ0eSBuYW1lZCAnc3ByZCxzeXNjb24nIHdoaWNoIGNvdWxkIHByb3ZpZGUgcmVn
+bWFwIGZvciB0aGVzZSBjbG9ja3MuCj4+IAo+PiBSb2Igc3VnZ2VzdGVkIFsxXSB1cyB0byBtYWtl
+IHRoZW0gYSBjaGlsZCBvZiB0aGUgc3lzY29uLCBhbmQgd291bGQgbm90IG5lZWQgdGhlIHByaXZh
+dGUgcHJvcGVydHkgJ3NwcmQsIHN5c2NvbicgdGhlbi4KPgo+V2h5IGRvIHlvdSBuZWVkIHRvIHVz
+ZSBhIHN5c2Nvbj8gQXJlIHRoZSByZWdpc3RlcnMgc2hhcmVkIHdpdGggc29tZQo+b3RoZXIgZHJp
+dmVyPwoKWWVzLCBzaGFyZWQgd2l0aCBtb3JlIHRoYW4gb25lIGRldmljZXMgd2hpY2ggYmFzaWNh
+bGx5IGFyZSBtdWx0aW1lZGlhIGRldmljZXMuIFlvdSBtYXkgbm90aWNlZCB0aGF0IHRoZXNlIGFy
+ZSBhbGwgZ2F0ZSBjbG9ja3Mgd2hpY2ggYXJlIGluIHRoZSBnbG9iYWwgcmVnaXN0ZXJzIHJhbmdl
+cyBhbmQgYXJlIHVzZWQgdG8gY29udHJvbGwgdGhlIGVuYWJsZSBzdGF0dXMgb2Ygc29tZSBkZXZp
+Y2VzIG9yIHNvbWUgcGFydCBvZiBkZXZpY2VzLgoKPgo+MjAxOSB3YXMgdHdvIHllYXJzIGFnby4u
+LgoKSHVtbS4uLiB5ZXMsIHN1Ym1pdHRlZCB0aGF0IHBhdGNoIHNldCBmcm9tIDIwMTkgdG8gMjAy
+MCA6KQ==
