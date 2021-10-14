@@ -2,252 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6874C42D167
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 06:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F34F42D176
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 06:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhJNEQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 00:16:40 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:55360 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhJNEQj (ORCPT
+        id S229541AbhJNEU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 00:20:26 -0400
+Received: from mail-pl1-f177.google.com ([209.85.214.177]:42926 "EHLO
+        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhJNEU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 00:16:39 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 13 Oct 2021 21:14:35 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 13 Oct 2021 21:14:34 -0700
-X-QCInternal: smtphost
-Received: from c-mansur-linux.qualcomm.com ([10.204.83.180])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 14 Oct 2021 09:44:23 +0530
-Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
-        id B6F6A224F7; Thu, 14 Oct 2021 09:44:22 +0530 (IST)
-From:   Mansur Alisha Shaik <mansur@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, dikshita@codeaurora.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: [V4] venus: vdec: decoded picture buffer handling during reconfig sequence
-Date:   Thu, 14 Oct 2021 09:44:20 +0530
-Message-Id: <20211014041420.26451-1-mansur@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        Thu, 14 Oct 2021 00:20:26 -0400
+Received: by mail-pl1-f177.google.com with SMTP id l6so3247728plh.9;
+        Wed, 13 Oct 2021 21:18:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=5DmMTOuF52iJ6aDRUaCigoiPrKtXFQa3e6EV0KU79O8=;
+        b=cO5MmhgxjFAPOlPT7SI7ZFCbNqR4NtSxnXHo43TAqZWQBQU5A6DZf8/oK52nvHzYSM
+         t3g5wY9Cvuy70u/bsfB/6xchkpBhp/aSAGY5Cev7Mnpcm2ZaGPLBENwZzaZYILPOp9Sg
+         0K6iniDx1eXtm6kuKd3+RrjwlNDtDJahXM71L178KHwMClmXWCTzdsQk5bSyvvv3siE3
+         W/bkT+NKH6fueXvjlRQrya+hWI0MccX+whunAdk2ipMCwzinEX2+ZKp2ImGgGbkpzuK4
+         A1ItnYhZXAcjbIMpIg6DP3SPae9VDs4kWlzuxAG5hILtjmp9xj2cDCeQ2VH0MCbiOVSS
+         TtXQ==
+X-Gm-Message-State: AOAM5330Xje5Ebx9d62jXt/MektSQjiEyV6v/w+vzKCcnMM+hVq6OMzd
+        +cBLYe66AS404gBnf4ZLU9Y=
+X-Google-Smtp-Source: ABdhPJx1MlSLzM5Go1yaThp3FbHgWcT3bGdbg8Bw49KdPKBgezRfY32LWmPpGPTwcEZTl4PBe3nM9A==
+X-Received: by 2002:a17:903:183:b0:13f:1bc:e6bf with SMTP id z3-20020a170903018300b0013f01bce6bfmr2911591plg.47.1634185101491;
+        Wed, 13 Oct 2021 21:18:21 -0700 (PDT)
+Received: from ?IPV6:2601:647:4000:d7:cb9c:9f45:498e:cfd1? ([2601:647:4000:d7:cb9c:9f45:498e:cfd1])
+        by smtp.gmail.com with ESMTPSA id x7sm936422pfj.28.2021.10.13.21.18.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 21:18:20 -0700 (PDT)
+Message-ID: <1fdaef0a-3370-3cf5-5564-99a1c59d2b6a@acm.org>
+Date:   Wed, 13 Oct 2021 21:18:19 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH] scsi: sd: print write through due to no caching mode page
+ as warning
+Content-Language: en-US
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     dgilbert@interlog.com, jejb@linux.ibm.com,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com
+References: <20211013075050.3870354-1-martin.kepplinger@puri.sm>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20211013075050.3870354-1-martin.kepplinger@puri.sm>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In existing implementation, driver is freeing and un-mapping all the
-decoded picture buffers(DPB) as part of dynamic resolution change(DRC)
-handling. As a result, when firmware try to access the DPB buffer, from
-previous sequence, SMMU context fault is seen due to the buffer being
-already unmapped.
+On 10/13/21 00:50, Martin Kepplinger wrote:
+> I only resending the same patch I sent in January before:
+> https://lore.kernel.org/linux-scsi/20210122083000.32598-1-martin.kepplinger@puri.sm/
 
-With this change, driver defines ownership of each DPB buffer. If a buffer
-is owned by firmware, driver would skip from un-mapping the same.
+A common way to indicate this is to start the email subject with [PATCH 
+RESEND].
 
-changes in V4:
-- As per comments moved static global variable to venus_inst structure
-- Addressed other review comments
-Changes in V3:
-- Migrated id allocation using kernel API ida_alloc_min()
+> diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+> index a646d27df681..33ea36b41136 100644
+> --- a/drivers/scsi/sd.c
+> +++ b/drivers/scsi/sd.c
+> @@ -2793,7 +2793,8 @@ sd_read_cache_type(struct scsi_disk *sdkp, unsigned char *buffer)
+>   			}
+>   		}
+>   
+> -		sd_first_printk(KERN_ERR, sdkp, "No Caching mode page found\n");
+> +		sd_first_printk(KERN_WARNING, sdkp,
+> +				"No Caching mode page found\n");
+>   		goto defaults;
+>   
+>   	Page_found:
+> @@ -2848,7 +2849,7 @@ sd_read_cache_type(struct scsi_disk *sdkp, unsigned char *buffer)
+>   				"Assuming drive cache: write back\n");
+>   		sdkp->WCE = 1;
+>   	} else {
+> -		sd_first_printk(KERN_ERR, sdkp,
+> +		sd_first_printk(KERN_WARNING, sdkp,
+>   				"Assuming drive cache: write through\n");
+>   		sdkp->WCE = 0;
+>   	}
 
-Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
----
- drivers/media/platform/qcom/venus/core.h    |  1 +
- drivers/media/platform/qcom/venus/helpers.c | 51 ++++++++++++++++++++-
- drivers/media/platform/qcom/venus/helpers.h |  3 ++
- drivers/media/platform/qcom/venus/vdec.c    |  8 +++-
- 4 files changed, 61 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index a3f077f64be0..34cbd3ef0cd9 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -454,6 +454,7 @@ struct venus_inst {
- 	bool next_buf_last;
- 	bool drain_active;
- 	enum venus_inst_modes flags;
-+	struct ida dpb_ids;
- };
- 
- #define IS_V1(core)	((core)->res->hfi_version == HFI_VERSION_1XX)
-diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-index 7f2f5b91caaa..464bc7693987 100644
---- a/drivers/media/platform/qcom/venus/helpers.c
-+++ b/drivers/media/platform/qcom/venus/helpers.c
-@@ -3,6 +3,7 @@
-  * Copyright (c) 2012-2016, The Linux Foundation. All rights reserved.
-  * Copyright (C) 2017 Linaro Ltd.
-  */
-+#include <linux/idr.h>
- #include <linux/list.h>
- #include <linux/mutex.h>
- #include <linux/slab.h>
-@@ -21,6 +22,11 @@
- #define NUM_MBS_720P	(((ALIGN(1280, 16)) >> 4) * ((ALIGN(736, 16)) >> 4))
- #define NUM_MBS_4K	(((ALIGN(4096, 16)) >> 4) * ((ALIGN(2304, 16)) >> 4))
- 
-+enum dpb_buf_owner {
-+	DRIVER,
-+	FIRMWARE,
-+};
-+
- struct intbuf {
- 	struct list_head list;
- 	u32 type;
-@@ -28,6 +34,8 @@ struct intbuf {
- 	void *va;
- 	dma_addr_t da;
- 	unsigned long attrs;
-+	enum dpb_buf_owner owned_by;
-+	u32 dpb_out_tag;
- };
- 
- bool venus_helper_check_codec(struct venus_inst *inst, u32 v4l2_pixfmt)
-@@ -95,9 +103,16 @@ int venus_helper_queue_dpb_bufs(struct venus_inst *inst)
- 		fdata.device_addr = buf->da;
- 		fdata.buffer_type = buf->type;
- 
-+		if (buf->owned_by == FIRMWARE)
-+			continue;
-+
-+		fdata.clnt_data = buf->dpb_out_tag;
-+
- 		ret = hfi_session_process_buf(inst, &fdata);
- 		if (ret)
- 			goto fail;
-+
-+		buf->owned_by = FIRMWARE;
- 	}
- 
- fail:
-@@ -110,13 +125,19 @@ int venus_helper_free_dpb_bufs(struct venus_inst *inst)
- 	struct intbuf *buf, *n;
- 
- 	list_for_each_entry_safe(buf, n, &inst->dpbbufs, list) {
-+		if (buf->owned_by == FIRMWARE)
-+			continue;
-+
-+		ida_free(&inst->dpb_ids, buf->dpb_out_tag);
-+
- 		list_del_init(&buf->list);
- 		dma_free_attrs(inst->core->dev, buf->size, buf->va, buf->da,
- 			       buf->attrs);
- 		kfree(buf);
- 	}
- 
--	INIT_LIST_HEAD(&inst->dpbbufs);
-+	if (list_empty(&inst->dpbbufs))
-+		INIT_LIST_HEAD(&inst->dpbbufs);
- 
- 	return 0;
- }
-@@ -134,6 +155,7 @@ int venus_helper_alloc_dpb_bufs(struct venus_inst *inst)
- 	unsigned int i;
- 	u32 count;
- 	int ret;
-+	int id;
- 
- 	/* no need to allocate dpb buffers */
- 	if (!inst->dpb_fmt)
-@@ -171,6 +193,15 @@ int venus_helper_alloc_dpb_bufs(struct venus_inst *inst)
- 			ret = -ENOMEM;
- 			goto fail;
- 		}
-+		buf->owned_by = DRIVER;
-+
-+		id = ida_alloc_min(&inst->dpb_ids, VB2_MAX_FRAME, GFP_KERNEL);
-+		if (id < 0) {
-+			ret = id;
-+			goto fail;
-+		}
-+
-+		buf->dpb_out_tag = id;
- 
- 		list_add_tail(&buf->list, &inst->dpbbufs);
- 	}
-@@ -1371,6 +1402,24 @@ venus_helper_find_buf(struct venus_inst *inst, unsigned int type, u32 idx)
- }
- EXPORT_SYMBOL_GPL(venus_helper_find_buf);
- 
-+void venus_helper_change_dpb_owner(struct venus_inst *inst,
-+				   struct vb2_v4l2_buffer *vbuf, unsigned int type,
-+				   unsigned int buf_type, u32 tag)
-+{
-+	struct intbuf *dpb_buf;
-+
-+	if (!V4L2_TYPE_IS_CAPTURE(type) ||
-+	    buf_type != inst->dpb_buftype)
-+		return;
-+
-+	list_for_each_entry(dpb_buf, &inst->dpbbufs, list)
-+		if (dpb_buf->dpb_out_tag == tag) {
-+			dpb_buf->owned_by = DRIVER;
-+			break;
-+		}
-+}
-+EXPORT_SYMBOL_GPL(venus_helper_change_dpb_owner);
-+
- int venus_helper_vb2_buf_init(struct vb2_buffer *vb)
- {
- 	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
-diff --git a/drivers/media/platform/qcom/venus/helpers.h b/drivers/media/platform/qcom/venus/helpers.h
-index e6269b4be3af..ff8889795b43 100644
---- a/drivers/media/platform/qcom/venus/helpers.h
-+++ b/drivers/media/platform/qcom/venus/helpers.h
-@@ -14,6 +14,9 @@ struct venus_core;
- bool venus_helper_check_codec(struct venus_inst *inst, u32 v4l2_pixfmt);
- struct vb2_v4l2_buffer *venus_helper_find_buf(struct venus_inst *inst,
- 					      unsigned int type, u32 idx);
-+void venus_helper_change_dpb_owner(struct venus_inst *inst,
-+				   struct vb2_v4l2_buffer *vbuf, unsigned int type,
-+				   unsigned int buf_type, u32 idx);
- void venus_helper_buffers_done(struct venus_inst *inst, unsigned int type,
- 			       enum vb2_buffer_state state);
- int venus_helper_vb2_buf_init(struct vb2_buffer *vb);
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index 41c5a353fcae..c2f24e454b28 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -1317,6 +1317,7 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
- 	struct vb2_v4l2_buffer *vbuf;
- 	struct vb2_buffer *vb;
- 	unsigned int type;
-+	struct intbuf *dpb_buf;
- 
- 	vdec_pm_touch(inst);
- 
-@@ -1326,8 +1327,10 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
- 		type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
- 
- 	vbuf = venus_helper_find_buf(inst, type, tag);
--	if (!vbuf)
-+	if (!vbuf) {
-+		venus_helper_change_dpb_buf_owner(inst, vbuf, type, buf_type, tag);
- 		return;
-+	}
- 
- 	vbuf->flags = flags;
- 	vbuf->field = V4L2_FIELD_NONE;
-@@ -1606,6 +1609,8 @@ static int vdec_open(struct file *file)
- 
- 	vdec_inst_init(inst);
- 
-+	ida_init(&inst->dpb_ids);
-+
- 	/*
- 	 * create m2m device for every instance, the m2m context scheduling
- 	 * is made by firmware side so we do not need to care about.
-@@ -1651,6 +1656,7 @@ static int vdec_close(struct file *file)
- 	v4l2_m2m_ctx_release(inst->m2m_ctx);
- 	v4l2_m2m_release(inst->m2m_dev);
- 	vdec_ctrl_deinit(inst);
-+	ida_destroy(&inst->dpb_ids);
- 	hfi_session_destroy(inst);
- 	mutex_destroy(&inst->lock);
- 	v4l2_fh_del(&inst->fh);
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
