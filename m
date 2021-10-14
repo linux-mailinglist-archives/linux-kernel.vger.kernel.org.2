@@ -2,163 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AD442D719
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8FD42D71B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhJNK20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:28:26 -0400
-Received: from mail-mw2nam10on2060.outbound.protection.outlook.com ([40.107.94.60]:45504
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230314AbhJNK2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:28:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X4zuZuEuw6MJ/rtVboUCjHhCrW28hxtq/VuK/uYITMPg/roc9b0o1k49Vjfa/giR8y5fQ9YnRKtdTPkzMGshUxLM/axmqEs/n/2x5qvs2tOticI6zOuOKyZhrxne75w06ciQo41/CBp4JTE0g1GNtPo60ujsiTD/H4Jpp9bjqG1kRbZzlbd1tek3Jcrn9MrdYMZ3tLIOrMTeVZdX7QVQwKu2BCnhsnmUzQNiWzBwr+HOqJXHA/bDkJ97HCUMP5NRfKV2+4fFDYavrL+fRIHVy8mlRYEyPZnvXCnW6wCwU3qCcU87boofBoT6NBSeAYs+1KjuoT38lCYsWaTAPldP7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oCVIGgmBqYXOdTOmwymJfL1nLOuMkTcuZXf60CQGZVM=;
- b=LCp2CHiyDVcB9SubI1rSfd1Byt/JOo8kJeOqr/dilHqzIUXZFsdstCKSoklYV3VXtxDGxNPXiOEDzzSw+Us67Uf3wGr7lxtFD+bwuvAyWUuwdgEX/BfzQWAX9Pqh8XQljbTXRh+j8ZCYncCKrL+8NyIkfcCvvUwuPEq2xSzqPJWSL5cBamol9lSZBC0D5sItNHN+HnivBhT314Hvu8xmZQy+VyxE3f2hci9TrRwg+CR8uSDNREI0WFMz/k1UitbxT3/b6gkOLU1sAjQtdMMXstp7bMh3mIN6G0I5oWQedJ6AAiBxZ6qdm0ZKeKsMcwT6Tli1Iuar8u/CCe//kripbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oCVIGgmBqYXOdTOmwymJfL1nLOuMkTcuZXf60CQGZVM=;
- b=n5o75Hqsq3L6lQeNtRvLc+3tXALnvjwDKaGIGUxof4317/QbGt8E+ITn9Xn1DAmoZIreGfk8QJVve0tSbBoCLmKJpCvBYLnMkR/aVmlY1V3Oha+lF56QZs6s8byPqQofkTXtinRUuN8sZMPk8p/mWq7tU664PUtCoFFEytAUxKA=
-Received: from CY4PR1201MB0246.namprd12.prod.outlook.com
- (2603:10b6:910:23::16) by CY4PR1201MB2517.namprd12.prod.outlook.com
- (2603:10b6:903:da::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Thu, 14 Oct
- 2021 10:26:07 +0000
-Received: from CY4PR1201MB0246.namprd12.prod.outlook.com
- ([fe80::91ce:4fae:eca6:9456]) by CY4PR1201MB0246.namprd12.prod.outlook.com
- ([fe80::91ce:4fae:eca6:9456%9]) with mapi id 15.20.4587.030; Thu, 14 Oct 2021
- 10:26:07 +0000
-From:   "Huang, Ray" <Ray.Huang@amd.com>
-To:     "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
-CC:     "Sharma, Deepak" <Deepak.Sharma@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
-        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
-        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: RE: [PATCH v2 10/21] cpufreq: amd: add amd-pstate checking support
- check attribute
-Thread-Topic: [PATCH v2 10/21] cpufreq: amd: add amd-pstate checking support
- check attribute
-Thread-Index: AQHXsrXfa4DoG2GhWkWmM5/MK6tk5qu5+O+AgBhqf7A=
-Date:   Thu, 14 Oct 2021 10:26:07 +0000
-Message-ID: <CY4PR1201MB0246BE2C3BDBFD575E3BE390ECB89@CY4PR1201MB0246.namprd12.prod.outlook.com>
-References: <20210926090605.3556134-1-ray.huang@amd.com>
- <20210926090605.3556134-11-ray.huang@amd.com>
- <93e1079f-7450-5c5d-f1f8-7d607899343c@amd.com>
-In-Reply-To: <93e1079f-7450-5c5d-f1f8-7d607899343c@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Enabled=true;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SetDate=2021-10-14T10:26:05Z;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Method=Standard;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Name=AMD Official Use
- Only-AIP 2.0;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ActionId=4a344251-5e96-42ee-bc8b-e2adf659392f;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ContentBits=1
-authentication-results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f50752ce-9718-49a4-c356-08d98efd0907
-x-ms-traffictypediagnostic: CY4PR1201MB2517:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR1201MB25174B20E9107CC95FFCCAD9ECB89@CY4PR1201MB2517.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 881rsIMyGAQdhirMXpuBGvdOQUhEVIbrGhLeA28Zegik1KLKaeO/4hP7/SNUSjpgMxHK34kABBcqg1TBMld2EvrLlM1U92lLru+1nVte3fJwFYXJAod4MaYF/wJkWiYB3k2yJAv3FqmjFkdWqRVJD80yNY0ia6dGQlP/UMUtfCebGsivnccN4eCaT9G68sP2/3x4iGZ8mklbPP0ZFobimE35hZGCz7QJrJiw5ee6MvWRhcAjiLgzfEKy/ic1Ft+noBhKquvadZhi7AGGVfV5Sl8juIPwmVtn32WHuayi3AGk8QuxOlw6d0aUpccx8d3e065pc4W9sQtD6rUIptnybv69f/Ys4TwXqA58NBG/23sOgXCbRAvFnsFL/WruNj/jAk36opiSKDLTnljkIRFyB5/6Lo2F+CSyaxE4y+x3awxmAKrO9kliIt+/b3a6MkQeCdGc2HFsTXQ0Lwe6I0urqkS5+3RcR8X7VbhQb1/uuQOxxCOaOTpu5huw7S+XnEpUIM3Lnk/JjEe7CBIYm0IMH7LvWBqGCpnwDAN3vF8AqRnbz3aF9BKACKN7f7SKCGq/AwDRheZYN+DU0CL1IXONNnsA74xoq5RqbFW+x3X7NY5z31qWq+ODQfgcO4jKgv2S890hClmwxSVQUYhi0vYlpaAhvo0oSfs5kgG7wm8vCl5CtdzV0/egQ7now0TdP/Z/bBXT2x/yHdfBvM8NvXjHGw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1201MB0246.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38070700005)(316002)(54906003)(66946007)(76116006)(508600001)(4326008)(66446008)(2906002)(55016002)(9686003)(110136005)(122000001)(52536014)(53546011)(64756008)(8676002)(5660300002)(33656002)(7696005)(86362001)(6506007)(83380400001)(186003)(8936002)(66476007)(26005)(71200400001)(38100700002)(66556008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SzVkdXVadHRaSVg1VUFmSUpMN2FqbnA2eWlRZUo5TU94SmlEa0oveTVWeU1x?=
- =?utf-8?B?RDlQbjVYVFM0TGlTMUZybXR5Q3MvaUFCVVdoMWRYODhvd25ybXJHQVdkNFJa?=
- =?utf-8?B?TjM0NzBHcDBTZ1dqYlRORzhHZk5BcFlJbWc3VkdmRTNsMG9QOUxCaDg5U0ta?=
- =?utf-8?B?aGpTZ2ZkS2NsaEFMWlVGZ3BmOHdLRUFheW40TnpKNjBWTGdBZi9hSzhiekZo?=
- =?utf-8?B?MjBSRmExT1VUU1pkZDUrY0JYdjZyTTRHcGxqYkxkM2dIWFFSdXNiQkdmUWNu?=
- =?utf-8?B?Qnc5ek10Q1A1SE15NDI3eFhmc0UzU0FTZnFTb1VlZVB3Vm9xMHYxRHJEemNX?=
- =?utf-8?B?MllkSzlJMjBYa0Q3MzdndWtjcytZaVI0K20wT3ViWmFkcWt1eDlWWVp4YjF4?=
- =?utf-8?B?WE43K2xIc0d5d2c1R2F6YURtRk5paFQ1d3BNUGQ5dUJVdVdDTklyakt1RXFE?=
- =?utf-8?B?N0NtTy9sRE5IUXZOaHhZK2ljWTRiUnVoOUxvTEJWdDVTOGlCT0dpWUh6NWdz?=
- =?utf-8?B?bTl6ZnMwdm9HQ3FMM0NpZTRxb05QZEZiZUVYblR0bzA0enJtSFI3d3pjM3lN?=
- =?utf-8?B?TWpDbDIvc0cvUTdrWEF3bUcrQitVVmdOdVppOXpPazkzYzJIOGdsZEpiaVZp?=
- =?utf-8?B?VG8zemlQdEZBZGxZWEE1MDZVTHpsbUoxWWFsazRINGRzNE9ud0pBT0N3Qlo1?=
- =?utf-8?B?ZnpGY3RKRXNqSGpZY0RLN3dzTVNsZng4OHB4N0o5STh4SmpJWW50eC80UnY4?=
- =?utf-8?B?NEtjSzdWbzBOWngrWHdwa3YwVEZDcllFNmIxSnB3UUkycFNueHNtekU4aXor?=
- =?utf-8?B?WmJuMGhiZ0xSakFXSjNVdFNkOFd1ZXl2bW1GbjNmUlB6aHRLZjFTSmQ2S3RT?=
- =?utf-8?B?MXl4TFhHUXR1QkxkNWZDUnM4L3poOWUrcmkwNUk0ejRKQnNWcHkvUEdmWFh3?=
- =?utf-8?B?SXZEanN1RmdsQzN3dnJCUFhaWWx1WDBJMFFtaS8wakZQNTF1RWlDTVZ5Z0k5?=
- =?utf-8?B?TG42azdTaGJ2K0J5eVY0UDhjb0I3ZENKRzY4czRVbnQ3c0xkTjB6M1RGaHdY?=
- =?utf-8?B?VWJPcUxUVisrazVKUUpKU1ZYT1E1OUdOQWdzT0ZrUFRkY29XS1crRkJoTWdQ?=
- =?utf-8?B?dktpV2IwdjVhblhycFViUjRvMzhmeTl1Q09XOE1wRUtFbi9tZGdKOTNuUVZs?=
- =?utf-8?B?WDRFODNhY2I4amhpbjIwRjJnU09xZHVKQlM0eURDZDZIRXpTNVllK001QkNK?=
- =?utf-8?B?QVVpY2FTdFBNUExZMHBDdWhkNzFsK2VKUzdWWUhCRmFZemF3RDFYdXg1dThK?=
- =?utf-8?B?SXVIazJwMFVQSzQ3eU5tS1NWV1ZENTRZWTVHeUk1dFZtWTNHUjh3UUVic1Er?=
- =?utf-8?B?dVp6ckU2TEl4OGluSkladmh4T2c1dVVXemlsZGtaQzNKK1g2VWRLV2pPMng4?=
- =?utf-8?B?alVPQ2p4ekpZcVJSZEFTMVVVa0UrNDM4cXFBaHY0NHhScG9KM0xMSUUybk5v?=
- =?utf-8?B?cW9TK2hHUnhGS0JJdXl2cDd2SVh4N2N5eUpEczNHWDAvU3VETEluUG02anlm?=
- =?utf-8?B?clRvclozSGJHQ3RpUE82aGsvRng0TEV0RHcrNFo5d3VBTGVQSmlkSEZaTHAv?=
- =?utf-8?B?UHhQQlo0c2QyWGs4ZUhyVnVTcWhyeVJPV1pBT1Zsa3lTUGlia1NnRlhnSlZ3?=
- =?utf-8?B?WXgxT3RndGF4d2ZQTmJPWndBdjdGWTBIc2ZiZXdpbVd3TFQxQ3pjeHpMSGFz?=
- =?utf-8?Q?sKMtvUDUhedxj0dIPxHYrOmR/URA6cO8g+D+wtL?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S230161AbhJNK3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:29:07 -0400
+Received: from polaris.svanheule.net ([84.16.241.116]:33684 "EHLO
+        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230078AbhJNK3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 06:29:06 -0400
+Received: from vanadium.ugent.be (vanadium.ugent.be [157.193.99.61])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 06145261555;
+        Thu, 14 Oct 2021 12:27:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1634207221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ao0WbdVDQzYzJ4o9hLyCn1fS3/0n2AFDf4qo8RxLxKo=;
+        b=Pc3jdW7augIPU62u0ImKiTEHnC3CwLxcr78hlQs+Lc90AOGRlLMW+R73ezB4oQjL3XPVqZ
+        n18Kyvo3Zz+39C67Hd0CsB/S9exCUNPoZAO0KlhnMb6qN1YvoacExTjESy0qn2QIG4AjBs
+        ZmyEI0GOGiRcXzbfOzu94iIjZj+vaAuQA0l2XDu8xFIKURhr9sURrwONNbajmH6rJxgrqJ
+        5cIZWH7bhi5ltZgi7r6IBjWKn9dChaov58MVywux+KWFvIJ14WQ6dO6oAH0FqbPvVk/T+A
+        IXwskNoxeMVH1/+DRwQIzCT1IsJagKC/5QJzTn++ViRh1qMsJChG5BI02y5pSA==
+Message-ID: <b1c8713cd10358355d4086e6d80ce6f10d295fe8.camel@svanheule.net>
+Subject: Re: [PATCH 2/2] watchdog: Add Realtek Otto watchdog timer
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Date:   Thu, 14 Oct 2021 12:26:59 +0200
+In-Reply-To: <6b1a9479-c456-ceeb-5aa2-6121f5c5d67f@roeck-us.net>
+References: <cover.1634131707.git.sander@svanheule.net>
+         <7eb1e3d8a5bd3b221be0408bd6f0272e6d435ade.1634131707.git.sander@svanheule.net>
+         <20211013184852.GA955578@roeck-us.net>
+         <4cf85218627371e1d07238257d0a89f824606415.camel@svanheule.net>
+         <6b1a9479-c456-ceeb-5aa2-6121f5c5d67f@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1201MB0246.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f50752ce-9718-49a4-c356-08d98efd0907
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2021 10:26:07.7340
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aY0wyHW9MVyoScJAJ39faFcu8QrwRajeLtaRYkZ1kE0xQfvEMNv1xoJIGfeVClEn2I274xUxIMOZ9oUkC58xSA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB2517
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W0FNRCBPZmZpY2lhbCBVc2UgT25seV0NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
-PiBGcm9tOiBGb250ZW5vdCwgTmF0aGFuIDxOYXRoYW4uRm9udGVub3RAYW1kLmNvbT4NCj4gU2Vu
-dDogV2VkbmVzZGF5LCBTZXB0ZW1iZXIgMjksIDIwMjEgNToyNCBBTQ0KPiBUbzogSHVhbmcsIFJh
-eSA8UmF5Lkh1YW5nQGFtZC5jb20+OyBSYWZhZWwgSiAuIFd5c29ja2kNCj4gPHJhZmFlbC5qLnd5
-c29ja2lAaW50ZWwuY29tPjsgVmlyZXNoIEt1bWFyIDx2aXJlc2gua3VtYXJAbGluYXJvLm9yZz47
-DQo+IFNodWFoIEtoYW4gPHNraGFuQGxpbnV4Zm91bmRhdGlvbi5vcmc+OyBCb3Jpc2xhdiBQZXRr
-b3YgPGJwQHN1c2UuZGU+Ow0KPiBQZXRlciBaaWpsc3RyYSA8cGV0ZXJ6QGluZnJhZGVhZC5vcmc+
-OyBJbmdvIE1vbG5hciA8bWluZ29Aa2VybmVsLm9yZz47DQo+IGxpbnV4LXBtQHZnZXIua2VybmVs
-Lm9yZw0KPiBDYzogU2hhcm1hLCBEZWVwYWsgPERlZXBhay5TaGFybWFAYW1kLmNvbT47IERldWNo
-ZXIsIEFsZXhhbmRlcg0KPiA8QWxleGFuZGVyLkRldWNoZXJAYW1kLmNvbT47IExpbW9uY2llbGxv
-LCBNYXJpbw0KPiA8TWFyaW8uTGltb25jaWVsbG9AYW1kLmNvbT47IFN1LCBKaW56aG91IChKb2Up
-IDxKaW56aG91LlN1QGFtZC5jb20+Ow0KPiBEdSwgWGlhb2ppYW4gPFhpYW9qaWFuLkR1QGFtZC5j
-b20+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiB4ODZAa2VybmVsLm9yZw0KPiBT
-dWJqZWN0OiBSZTogW1BBVENIIHYyIDEwLzIxXSBjcHVmcmVxOiBhbWQ6IGFkZCBhbWQtcHN0YXRl
-IGNoZWNraW5nDQo+IHN1cHBvcnQgY2hlY2sgYXR0cmlidXRlDQo+IA0KPiBPbiA5LzI2LzIwMjEg
-NDowNSBBTSwgSHVhbmcgUnVpIHdyb3RlOg0KPiA+IFRoZSBhbWQtcHN0YXRlIGhhcmR3YXJlIHN1
-cHBvcnQgY2hlY2sgd2lsbCBiZSBuZWVkZWQgYnkgY3B1cG93ZXIgdG8NCj4ga25vdw0KPiA+IHdo
-ZXRoZXIgYW1kLXBzdGF0ZSBpcyBlbmFibGVkIGFuZCBzdXBwb3J0ZWQuDQo+ID4NCj4gDQo+IElz
-IHRoaXMgbmVlZGVkPw0KPiANCj4gSWYgYWNwaV9jcGNfdmFsaWQoKSBpcyBmYWxzZSwgdGhlbiB0
-aGUgYW1kX3BzdGF0ZSBkcml2ZXIgd291bGQgbm90IGhhdmUgYmVlbg0KPiBsb2FkZWQgKHNlZSBw
-YXRjaCA1LzIxLCBtb2R1bGUgaW5pdCByb3V0aW5lIHdpbGwgcmV0dXJuIC1FTk9ERVYpLiBJZiB0
-aGlzDQo+IGRyaXZlciBpc24ndCBsb2FkZWQgdGhlbiB0aGlzIHN5c2ZzIGZpbGUgd29uJ3QgZ2V0
-IGNyZWF0ZWQuDQo+IA0KPiBTaG91bGRuJ3QgdGhlIGNwdXBvd2VyIGNvbW1hbmQganVzdCBjaGVj
-ayB0aGUgc2NhbGluZ19kcml2ZXIgaW4gc3lzZnMgdG8NCj4gc2VlDQo+IGlmIGl0J3MgYW1kX3Bz
-dGF0ZT8NCj4gDQoNCk1ha2Ugc2Vuc2UsIHRoYW5rcyEgV2lsbCB1cGRhdGUgaXQgaW4gVjMuDQoN
-ClRoYW5rcywNClJheQ0K
+On Wed, 2021-10-13 at 14:03 -0700, Guenter Roeck wrote:
+> On 10/13/21 12:46 PM, Sander Vanheule wrote:
+> > On Wed, 2021-10-13 at 11:48 -0700, Guenter Roeck wrote:
+> > > On Wed, Oct 13, 2021 at 03:29:00PM +0200, Sander Vanheule wrote:
+> > [...]
+> > 
+> > > > 
+> > > > diff --git a/drivers/watchdog/realtek_otto_wdt.c
+> > > > b/drivers/watchdog/realtek_otto_wdt.c
+> > > > new file mode 100644
+> > > > index 000000000000..64c9cba6b0b1
+> > > > --- /dev/null
+> > > > +++ b/drivers/watchdog/realtek_otto_wdt.c
+> > > > @@ -0,0 +1,411 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > > +
+> > > > +/*
+> > > > + * Realtek Otto MIPS platform watchdog
+> > > > + *
+> > > > + * Watchdog timer that will reset the system after timeout, using the
+> > > > selected
+> > > > + * reset mode.
+> > > > + *
+> > > > + * Counter scaling and timeouts:
+> > > > + * - Base prescale of (2 << 25), providing tick duration T_0: 168ms @
+> > > > 200MHz
+> > > > + * - PRESCALE: logarithmic prescaler adding a factor of {1, 2, 4, 8}
+> > > > + * - Phase 1: Times out after (PHASE1 + 1) × PRESCALE × T_0
+> > > > + *   Generates an interrupt, WDT cannot be stopped after phase 1
+> > > > + * - Phase 2: starts after phase 1, times out after (PHASE2 + 1) ×
+> > > > PRESCALE × T_0
+> > > > + *   Resets the system according to RST_MODE
+> > > 
+> > > Why is there a phase2 interrupt if phase2 resets the chip ?
+> > > 
+> > 
+> > The SoC's reset controller has an interrupt line for phase2, even though
+> > then it then the
+> > WDT also resets the system. I don't have any documentation about this
+> > peripheral; just
+> > some vendor code and there the phase2 interrupt isn't enabled. I mainly
+> > added it here for
+> > completeness.
+> > 
+> 
+> It seems pointless to mandate an interrupt just for completeness.
+
+Okay, then I will just drop it here. As I understand, the bindings should be as
+complete as possible, so I think the phase2 interrupt definition should remain
+there?
+
+> 
+> > One thing to note is that after CPU or software reset (not SoC reset) the
+> > phase2 flag in
+> > OTTO_WDT_REG_INTR will be set. That's why I always clear it in
+> > otto_wdt_probe(), because
+> > otherwise enabling the interrupt line would trigger otto_wdt_phase2_isr().
+> > On warm
+> > restarts this bit could be used to determine if there was a WDT timeout, but
+> > not if the
+> > WDT is configured for cold restarts (i.e. full SoC reset).
+> > 
+> > > 
+> > [...]
+> > > > +
+> > > > +       raw_spin_lock_irqsave(&ctrl->lock, flags);
+> > > > +       v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
+> > > > +       v |= OTTO_WDT_CTRL_ENABLE;
+> > > > +       iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
+> > > > +       raw_spin_unlock_irqrestore(&ctrl->lock, flags);
+> > > 
+> > > Is it really necessary to disable interrupts for those operations ?
+> > 
+> > The ISR routines only use REG_INTR, which isn't modified anywhere else
+> > (outside of probing
+> > the device). I will replace these with raw_spin_{lock,unlock} throughout.
+> > 
+> 
+> In that case you should not need any locks at all since the watchdog core
+> ensures
+> that the device is opened only once (and thus only one entity can enable or
+> disable
+> the watchdog).
+
+If there is an external guarantee that at most one of {set_timeout,
+set_pretimeout, enable, disable} will be called at a time, I can indeed drop the
+lock. I had added the lock initially because of the read-modify-write operations
+on the control register these ops perform.
+
+
+> 
+> > [...]
+> > > > +/*
+> > > > + * The timer asserts the PHASE1/PHASE2 IRQs when the number of ticks
+> > > > exceeds
+> > > > + * the value stored in those fields. This means the timer will run for
+> > > > at least
+> > > > + * one tick, so small values need to be clamped to correctly reflect
+> > > > the timeout.
+> > > > + */
+> > > > +static inline unsigned int div_round_ticks(unsigned int val, unsigned
+> > > > int
+> > > > tick_duration,
+> > > > +               unsigned int min_ticks)
+> > > > +{
+> > > > +       return max(min_ticks, DIV_ROUND_CLOSEST(val, tick_duration));
+> > > 
+> > > Are you sure that DIV_ROUND_CLOSEST is appropriate in those calculations
+> > > (instead of DIV_ROUND_UP or DIV_ROUND_DOWN) ?
+> > > 
+> > [...]
+> > 
+> > > > +
+> > > > +       timeout_ms = total_ticks * tick_ms;
+> > > > +       ctrl->wdev.timeout = DIV_ROUND_CLOSEST(timeout_ms, 1000);
+> > > > +
+> > > 
+> > > That means the actual timeout (and pretimeout) can be slightly larger
+> > > than the real timeout. Is this really what you want ?
+> > 
+> > Is it a problem if the WDT times out later than specified by
+> > watchdog_device.(pre)timeout?
+> > I can see that premature timeouts would be an issue, but I don't suppose
+> > it's problematic
+> > if the WDT is pinged (slightly) sooner than actually required?
+> > 
+> 
+> I am not concerned with early pings. However, if the timeout limit is set to a
+> value
+> lardger than the real timeout (eg the real timeout is 25.6 seconds and the
+> timeout
+> value is set to 26 seconds), the reset may occur a bit early. Granted, it
+> doesn't
+> matter much, but most driver authors would ensure that the timeout is set to
+> 25 seconds
+> (ie rounded down) in that situation.
+
+I'll replace tick rounding with DIV_ROUND_UP, and timeout rounding with regular
+flooring division. This results in a few timeout values being rounded up for the
+coarsest tick duration, but those are then stable values.
+
+Best,
+Sander
+
+> 
+> > The coarsest ticks are 1342 ms, so it is not always possible to provide the
+> > requested
+> > (pre)timeout value, independent of the rounding scheme. Although I think it
+> > should be
+> > possible to replace timeout rounding by DIV_ROUND_UP (of total_ticks_ms),
+> > and pretimeout
+> > rounding by DIV_ROUND_DOWN (of phase2_ticks_ms), and keep stable timeouts
+> > when alternating
+> > between set_timeout/set_pretimeout.
+> > 
+> > > 
+> > > > +       pretimeout_ms = phase2_ticks * tick_ms;
+> > > > +       ctrl->wdev.pretimeout = DIV_ROUND_CLOSEST(pretimeout_ms, 1000);
+> > > > +
+> > > > +       return 0;
+> > > > +}
+> > > > +
+> > > > +static int otto_wdt_set_timeout(struct watchdog_device *wdev, unsigned
+> > > > int val)
+> > > > +{
+> > > > +       struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
+> > > > +       unsigned long flags;
+> > > > +       unsigned int ret;
+> > > > +
+> > > > +       if (watchdog_timeout_invalid(wdev, val))
+> > > > +               return -EINVAL;
+> > > 
+> > > This is not supposed to happen because the calling code already performs
+> > > range checks.
+> > 
+> > Right, I will drop the redundant check here and in set_pretimeout.
+> > 
+> > > 
+> > [...]
+> > > > +static int otto_wdt_restart(struct watchdog_device *wdev, unsigned long
+> > > > reboot_mode,
+> > > > +               void *data)
+> > > > +{
+> > > > +       struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
+> > > > +       u32 reset_mode;
+> > > > +       u32 v;
+> > > > +
+> > > > +       devm_free_irq(ctrl->dev, ctrl->irq_phase1, ctrl);
+> > > > +
+> > > 
+> > > Why is this needed (instead of, say, disabling the interrupt) ?
+> > 
+> > Disabling the interrupt should actually be enough. I'll replace the
+> > devm_free_irq() with
+> > disable_irq(). Somehow I didn't find disable_irq(), even though that was
+> > what I was
+> > looking for...
+> > 
+> > [...]
+> > > > +
+> > > > +       /*
+> > > > +        * Since pretimeout cannot be disabled, min_timeout is twice the
+> > > > +        * subsystem resolution. max_timeout is 44s at a bus clock of
+> > > > 200MHz.
+> > > > +        */
+> > > > +       ctrl->wdev.min_timeout = 2;
+> > > > +       max_tick_ms = otto_wdt_tick_ms(ctrl, OTTO_WDT_PRESCALE_MAX);
+> > > > +       ctrl->wdev.max_timeout =
+> > > > +               DIV_ROUND_CLOSEST(max_tick_ms *
+> > > > OTTO_WDT_TIMEOUT_TICKS_MAX, 1000);
+> > > 
+> > > Any reason for using max_timeout instead of max_hw_heartbeat_ms ?
+> > 
+> > I must have missed this when I was looking at watchdog_device. Makes sense
+> > to use
+> > max_hw_heartbeat_ms since that reflects the actual value more accurately.
+> > 
+> > > 
+> > 
+> > Thanks for the feedback!
+> > 
+> > Best,
+> > Sander
+> > 
+> 
+
