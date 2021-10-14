@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACC242E252
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231B342E253
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233843AbhJNT6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:58:42 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:44888 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhJNT6l (ORCPT
+        id S233889AbhJNT7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230495AbhJNT7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:58:41 -0400
-Received: by mail-ot1-f52.google.com with SMTP id d21-20020a9d4f15000000b0054e677e0ac5so9720835otl.11;
-        Thu, 14 Oct 2021 12:56:36 -0700 (PDT)
+        Thu, 14 Oct 2021 15:59:52 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03667C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:57:47 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id w10so4711232ilc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:57:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CnPd5ffHv7kCOiuCHD8Ddj4C+YG0wHSoqBcGkQff+i0=;
+        b=OVP3kK23uzSKl2wGu3zrecb/FRSn4SMhYQpLuCUWlgh9o4iA/3QW7NjG2NWqfQxtsu
+         DdsPQd3aOeleKbdfSn2HO4sBq9EDCTj8S6r4wqdJhNniukJjhGj2pOoSKTQvRcMJchEW
+         WZfAXWDw7KrWODMbEX8xsZfj2nkSPmce5L1eo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+UpI6wqSTxFiL18kFicbrj6BWfT7mLqkGyUBGSP3spA=;
-        b=A7H8pCK/zsYtoUaAhjvwFdyJs4w2wxJJpMCVXR+ByoBz4ltVbNqEyJPPCU1tt01HhU
-         vbmRKOtu76tYGd9981WYtXuat6Rq4viQ79oXFdGwy6l+gljKIITR1v9qDxD54at8WbrW
-         et2cCnJOOyvw/LsZzYoQKeR2DFCSDtKJ2UZBNNCNukm2d8M8kaLKu+53o0cj6UHwga/q
-         y51UmrBCQby0FjWxWke/CehgB8/kCHesDzRLTubgOUl1qZRKQEiQr7RUzoU09egwpxrb
-         MZ7S8+U6KR61xkOFUOi2QRfR0i74x3czHNZuYEQS/sJbtSDfXOkgMsoP7Aqzrceirraq
-         R+SA==
-X-Gm-Message-State: AOAM531knGNIECLPyYvQ5leZrLfGNxyNPGgBTZFuXuaS7rj4/RnTZqqj
-        fLfmlZmYPrUUnUsY/ihQfw==
-X-Google-Smtp-Source: ABdhPJy8vVocS9sGDBQom+V8RWB+pZltqFtXthdNOfr3yFurPtZ1mD4kkLXqeCKmpWqIT5iBVuOluA==
-X-Received: by 2002:a9d:3c3:: with SMTP id f61mr4134756otf.196.1634241396076;
-        Thu, 14 Oct 2021 12:56:36 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id g29sm759491oic.27.2021.10.14.12.56.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 12:56:35 -0700 (PDT)
-Received: (nullmailer pid 3817378 invoked by uid 1000);
-        Thu, 14 Oct 2021 19:56:34 -0000
-Date:   Thu, 14 Oct 2021 14:56:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-serial@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        linux-i2c@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>
-Subject: Re: [PATCH v3 08/11] dt-bindings: fsl: scu: Add i.MX8DXL ocotp
- binding
-Message-ID: <YWiLcvqlBgj9ceUy@robh.at.kernel.org>
-References: <1633526764-30151-1-git-send-email-abel.vesa@nxp.com>
- <1633526764-30151-9-git-send-email-abel.vesa@nxp.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CnPd5ffHv7kCOiuCHD8Ddj4C+YG0wHSoqBcGkQff+i0=;
+        b=yuJSusxGWyrFfkLOkKmYLjhcqXFVtcSHhaS0ALJ9tTmD9G3KxH2iQ3ZIvA52+macL7
+         d48XtrG0s/BmgLxjg7FjUMmRjHOvexz58uoc9Ppmc7UAtp1/3oTs2gaViX4lPb1N4j80
+         jIjlhFSkdfriLPftEamEToQUMl5m8pqSEuxpKXjOaG4rXvOMChtddGNoHF2EyQtuF0OB
+         C+a66ZAjJpCR2C2vzZIz58gBGZhiUdy64U6iayYKPL5rCtZBwUWpgsyHvgZJkMGBawJp
+         6WRMEbWA+TjtTsBOiVPhAwGVb+g2KE8JdVZdK7D0HBXywGF9jrzsFYEzrIki25oYucO2
+         Iu9A==
+X-Gm-Message-State: AOAM532qEyBQAylkNIZ0n5EYRSHq7Cr/ezWyBqqeeQgKVCPVU4xDHAqX
+        fmytoqd4xzSja5KSp7qiMh0beQ==
+X-Google-Smtp-Source: ABdhPJxHLXcmleX+r+neV56x4NirS8tN9LUygSfBTnGzHjhm+qcJs3c28jEMiV+SHfxHb5shlJJVlw==
+X-Received: by 2002:a05:6e02:d86:: with SMTP id i6mr744832ilj.272.1634241466333;
+        Thu, 14 Oct 2021 12:57:46 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id w8sm1663169ilo.69.2021.10.14.12.57.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 12:57:45 -0700 (PDT)
+Subject: Re: [PATCH] module: fix elf_validity_check() warns seen on 32-bit
+ platforms
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     jeyu@kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211014181044.24365-1-skhan@linuxfoundation.org>
+ <YWiKPMKh6025c6dW@bombadil.infradead.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <5456bb23-a170-b0fd-d03f-8efcf7e4f02c@linuxfoundation.org>
+Date:   Thu, 14 Oct 2021 13:57:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1633526764-30151-9-git-send-email-abel.vesa@nxp.com>
+In-Reply-To: <YWiKPMKh6025c6dW@bombadil.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Oct 2021 16:26:01 +0300, Abel Vesa wrote:
-> Add i.MX8DXL ocotp compatible to the SCU bindings documentation.
+On 10/14/21 1:51 PM, Luis Chamberlain wrote:
+> On Thu, Oct 14, 2021 at 12:10:44PM -0600, Shuah Khan wrote:
+>> Fix the following warnings introduced by
+>>
+>> commit: 8b1185a4427b ("module: change to print useful messages from elf_validity_check()")
+>>
+>> warning: format '%llu' expects argument of type 'long long unsigned int',
+>> but argument 3 has type 'Elf32_Off' {aka 'unsigned int'}
+>>
+>> Fix it by tweaking messages to not print ELF64* fields.
+>>
+>> Fixes: 8b1185a4427b ("module: change to print useful messages from elf_validity_check()")
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 > 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
->  Documentation/devicetree/bindings/arm/freescale/fsl,scu.txt | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Actually can I trouble you just fold this in with your older patch, I can just
+> drop your old patch and merge this one. No point in merging two patches
+> if we can just have one.
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Yes. I can do that.
+
+thanks,
+-- Shuah
