@@ -2,160 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCE442D12C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5762F42D13D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhJNDus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:50:48 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:43347 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhJNDuo (ORCPT
+        id S229912AbhJNDwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229496AbhJNDwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:50:44 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 19E3Qc6R006364;
-        Thu, 14 Oct 2021 11:26:38 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 14 Oct
- 2021 11:48:17 +0800
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 6/6] media: aspeed: richer debugfs
-Date:   Thu, 14 Oct 2021 11:48:19 +0800
-Message-ID: <20211014034819.2283-7-jammy_huang@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211014034819.2283-1-jammy_huang@aspeedtech.com>
-References: <20211014034819.2283-1-jammy_huang@aspeedtech.com>
+        Wed, 13 Oct 2021 23:52:39 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EFDC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:50:35 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so5990371pjw.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:50:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KNsLAO3bsrVKtbvZO43zkDsVCtIXcB6A2H/H+A1u2RU=;
+        b=a/Y1eBqxxriG6F5NcyjjolBnRH/LDWJqwk+62fPzoqX8EJu2i4BsJnANXb04z42cUh
+         w9tR4q4FvqchGSV3q3uQbreoYtdS5YD5alxrxWmmYQ5sSdFGXmMkmmy4cITubXDilDgI
+         QDXxHg2t0HEus/Z+5kEaRq5uXoV+QZGXrgfrhLROxXPfQzQdRklsPuDH7ksnHN2MeuQp
+         foimhGiSDGbH3CkxufiZFhUK1aCCkqtBOKZ1jR/ryaMt+/7tNcp9fpEYj969XRMU9WDt
+         t21DY/JRn43fe4xv7xeYRKZPDi/8K2+xXMVGO3+LOV1/J3T6CxCic6ghpfufr5+hca/O
+         jRcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KNsLAO3bsrVKtbvZO43zkDsVCtIXcB6A2H/H+A1u2RU=;
+        b=TROW8lxKlwVI+XtoKJYxiSHaEjKeJwJh85v17ogZo8K9E0w9r1QoDA/nOas1ivqPww
+         luAAnFIPtiwXISxVbfRW4x0Dfo8ucTXRxBhYxQzmrldKAEw7hF+1iJJM3P0MLoQ93CCi
+         3IngnF5GtJn6gtVdl29k7mENLlH8qn7v9f2P0ij4baYPuXa4nqE48QjuNqh33sa3jDNv
+         Y4mP8CfI+D4qJmfc2GRmnwInhXXi+qFg8Fc8Eg9idibkun+83hIBnVkCHD9Sy8ji1kTA
+         CLSIop3DzdxKyf3/7pNfs0FOQvIQdM/r41VUQDYtDnAKPyXr5Up3SlEsqdENAgHBHu5g
+         CG0Q==
+X-Gm-Message-State: AOAM530c7WqUthKNBQGPgOassrpu9JCovYPSX7ELYsnKJTGgI3afkX1y
+        KgUicpuemLfLGKyBHlzC5aP0rVPUrgs=
+X-Google-Smtp-Source: ABdhPJykubmBoD9YbnMDTDM0Sf9VLXBrilUtImoHtPKuFiVwwl4xDdO1c0EEw+JUPnng8AMBVGGEkQ==
+X-Received: by 2002:a17:902:cec9:b0:13f:17c2:8f14 with SMTP id d9-20020a170902cec900b0013f17c28f14mr2970578plg.66.1634183434494;
+        Wed, 13 Oct 2021 20:50:34 -0700 (PDT)
+Received: from localhost ([47.88.5.130])
+        by smtp.gmail.com with ESMTPSA id r14sm853945pgn.91.2021.10.13.20.50.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 Oct 2021 20:50:34 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH V3 36/49] x86/entry: Implement the C version ist_paranoid_exit()
+Date:   Thu, 14 Oct 2021 11:50:13 +0800
+Message-Id: <20211014035027.17681-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20211014031413.14471-1-jiangshanlai@gmail.com>
+References: <20211014031413.14471-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 19E3Qc6R006364
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-updated as below:
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Caputre:
-  Mode                : Direct fetch
-  VGA bpp mode        : 32
-  Signal              : Unlock
-  Width               : 1920
-  Height              : 1080
-  FRC                 : 30
+It implements the whole ASM version paranoid_exit().
 
-Compression:
-  Format              : JPEG
-  Subsampling         : 444
-  Quality             : 0
-  HQ Mode             : N/A
-  HQ Quality          : 0
-  Mode                : N/A
+No functional difference intended.
 
-Performance:
-  Frame#              : 0
-  Frame Duration(ms)  :
-    Now               : 0
-    Min               : 0
-    Max               : 0
-  FPS                 : 0
-
-Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- drivers/media/platform/aspeed-video.c | 41 +++++++++++++++++++++++++--
- 1 file changed, 38 insertions(+), 3 deletions(-)
+ arch/x86/entry/entry64.c        | 40 +++++++++++++++++++++++++++++++++
+ arch/x86/include/asm/idtentry.h |  2 ++
+ 2 files changed, 42 insertions(+)
 
-diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-index e1031fd09ac6..f2e5c49ee906 100644
---- a/drivers/media/platform/aspeed-video.c
-+++ b/drivers/media/platform/aspeed-video.c
-@@ -464,6 +464,9 @@ static const struct v4l2_dv_timings_cap aspeed_video_timings_cap = {
- 	},
- };
- 
-+static const char * const compress_mode_str[] = {"DCT Only",
-+	"DCT VQ mix 2-color", "DCT VQ mix 4-color"};
+diff --git a/arch/x86/entry/entry64.c b/arch/x86/entry/entry64.c
+index 8e1474ece7f9..51293ecbfe3f 100644
+--- a/arch/x86/entry/entry64.c
++++ b/arch/x86/entry/entry64.c
+@@ -325,3 +325,43 @@ void ist_paranoid_entry(unsigned long *cr3, unsigned long *gsbase)
+ 	/* Handle GSBASE, store the return value in *@gsbase for exit. */
+ 	*gsbase = ist_switch_to_kernel_gsbase();
+ }
 +
- static unsigned int debug;
- 
- static void aspeed_video_init_jpeg_table(u32 *table, bool yuv420)
-@@ -1077,8 +1080,6 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
- 
- static void aspeed_video_update_regs(struct aspeed_video *video)
- {
--	static const char * const compress_mode_str[] = {"DCT Only",
--		"DCT VQ mix 2-color", "DCT VQ mix 4-color"};
- 	u32 comp_ctrl =	FIELD_PREP(VE_COMP_CTRL_DCT_LUM, video->jpeg_quality) |
- 		FIELD_PREP(VE_COMP_CTRL_DCT_CHR, video->jpeg_quality | 0x10) |
- 		FIELD_PREP(VE_COMP_CTRL_EN_HQ, video->hq_mode) |
-@@ -1795,9 +1796,29 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
- static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
- {
- 	struct aspeed_video *v = s->private;
-+	u32 val08;
- 
- 	seq_puts(s, "\n");
- 
-+	val08 = aspeed_video_read(v, VE_CTRL);
-+	seq_puts(s, "Caputre:\n");
-+	if (FIELD_GET(VE_CTRL_DIRECT_FETCH, val08)) {
-+		seq_printf(s, "  %-20s:\tDirect fetch\n", "Mode");
-+		seq_printf(s, "  %-20s:\t%s\n", "VGA bpp mode",
-+			   FIELD_GET(VE_CTRL_INT_DE, val08) ? "16" : "32");
-+	} else {
-+		seq_printf(s, "  %-20s:\tSync\n", "Mode");
-+		seq_printf(s, "  %-20s:\t%s\n", "Video source",
-+			   FIELD_GET(VE_CTRL_SOURCE, val08) ?
-+			   "external" : "internal");
-+		seq_printf(s, "  %-20s:\t%s\n", "DE source",
-+			   FIELD_GET(VE_CTRL_INT_DE, val08) ?
-+			   "internal" : "external");
-+		seq_printf(s, "  %-20s:\t%s\n", "Cursor overlay",
-+			   FIELD_GET(VE_CTRL_AUTO_OR_CURSOR, val08) ?
-+			   "Without" : "With");
++/*
++ * "Paranoid" exit path from exception stack.  This is invoked
++ * only on return from IST interrupts that came from kernel space.
++ *
++ * We may be returning to very strange contexts (e.g. very early
++ * in syscall entry), so checking for preemption here would
++ * be complicated.  Fortunately, there's no good reason to try
++ * to handle preemption here.
++ */
++__visible __entry_text
++void ist_paranoid_exit(unsigned long cr3, unsigned long gsbase)
++{
++	/*
++	 * Restore CR3 at first, it can use kernel GSBASE.
++	 */
++	ist_restore_cr3(cr3);
++
++	barrier();
++
++	/*
++	 * Handle the three GSBASE cases.
++	 *
++	 * @gsbase contains the GSBASE related information depending
++	 * on the availability of the FSGSBASE instructions:
++	 *
++	 * FSGSBASE	@gsbase
++	 *     N        0 -> SWAPGS on exit
++	 *              1 -> no SWAPGS on exit
++	 *
++	 *     Y        User space GSBASE, must be restored unconditionally
++	 */
++	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
++		wrgsbase(gsbase);
++		return;
 +	}
 +
- 	seq_printf(s, "  %-20s:\t%s\n", "Signal",
- 		   v->v4l2_input_status ? "Unlock" : "Lock");
- 	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
-@@ -1806,6 +1827,21 @@ static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
++	if (gsbase)
++		native_swapgs();
++}
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index f6efa21ec242..cf41901227ed 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -309,6 +309,8 @@ static __always_inline void __##func(struct pt_regs *regs)
+ #ifdef CONFIG_X86_64
+ __visible __entry_text
+ void ist_paranoid_entry(unsigned long *cr3, unsigned long *gsbase);
++__visible __entry_text
++void ist_paranoid_exit(unsigned long cr3, unsigned long gsbase);
  
- 	seq_puts(s, "\n");
- 
-+	seq_puts(s, "Compression:\n");
-+	seq_printf(s, "  %-20s:\t%s\n", "Format",
-+		   v->partial_jpeg ? "Aspeed" : "JPEG");
-+	seq_printf(s, "  %-20s:\t%s\n", "Subsampling",
-+		   v->yuv420 ? "420" : "444");
-+	seq_printf(s, "  %-20s:\t%d\n", "Quality", v->jpeg_quality);
-+	seq_printf(s, "  %-20s:\t%s\n", "HQ Mode",
-+		   v->partial_jpeg ? (v->hq_mode ? "on" : "off") : "N/A");
-+	seq_printf(s, "  %-20s:\t%d\n", "HQ Quality", v->jpeg_hq_quality);
-+	seq_printf(s, "  %-20s:\t%s\n", "Mode",
-+		   v->partial_jpeg ? compress_mode_str[v->compression_mode]
-+				   : "N/A");
-+
-+	seq_puts(s, "\n");
-+
- 	seq_puts(s, "Performance:\n");
- 	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
- 	seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
-@@ -1814,7 +1850,6 @@ static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
- 	seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
- 	seq_printf(s, "  %-20s:\t%d\n", "FPS", 1000/(v->perf.totaltime/v->sequence));
- 
--
- 	return 0;
- }
- 
+ /**
+  * DECLARE_IDTENTRY_IST - Declare functions for IST handling IDT entry points
 -- 
-2.25.1
+2.19.1.6.gb485710b
 
