@@ -2,171 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FE242E4E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E2B42E4EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234486AbhJNXuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 19:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhJNXuu (ORCPT
+        id S234511AbhJNXyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 19:54:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51754 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230371AbhJNXye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 19:50:50 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947CDC061570;
-        Thu, 14 Oct 2021 16:48:44 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 14 Oct 2021 19:54:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634255548;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ftIFtIdnmo1Bykj9ZJ74rwYlMJJCroWGNVKzPc4Kezw=;
+        b=V4DFlwYG94AoTM1EvBbLXYaN1jjcFPTXSrcUuEKHz1wfFyAqiil93eSt5RIL98zxJZJbiA
+        3SUJTK6sJuQGZ3LwNEsQaS/lg16Fh3XhcC9OccpjuRVQKs4UBVUZ2XiXtCani/S/1jy6Zc
+        BcSsyosp2A85fkdc/kNpSQLr65XfIzw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464--C02zh9rMHSvfamzbi58pA-1; Thu, 14 Oct 2021 19:52:25 -0400
+X-MC-Unique: -C02zh9rMHSvfamzbi58pA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HVmLy4fLwz4xbG;
-        Fri, 15 Oct 2021 10:48:42 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634255322;
-        bh=hOOJzLdSb5SPACXow+S4SsAWlvs2V7xCXloVIMc1PJc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=c/BHebmXQhrYh6CEsEHMTzZZyRrDM0l7fPN21t9PhHqm6/12pBMkNNaYEvtmOZqot
-         Ucw6JzRpKGuANb4MeEG1sqNi2WvQQ1LLMMnOh4Xq69IGjuaJmWAtY0lwIk9ubV7eMm
-         sZsTb6xBYOm7MU2tY5kfZZ2IvTJ5KIX3kOYuKtN63V125S1utqgn7zc3CqGPxoXcJW
-         81QxXL5cK/UHgcmF1ibwzo4xzdGvPaSGVZEBscVwyYLut9ywl0Pe9TfaLIgsL6r/wc
-         iPqxAm4/QwVrCafOoYX/fQVatnSplFuGmzAKQG+m4FFIVuH3zntrNKrMA4hLmI0BvI
-         2kla5Sx5aM5rg==
-Date:   Fri, 15 Oct 2021 10:48:40 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the kspp-gustavo tree
-Message-ID: <20211015104840.4e1ceb89@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8343018D6A2A;
+        Thu, 14 Oct 2021 23:52:22 +0000 (UTC)
+Received: from T590 (ovpn-8-16.pek2.redhat.com [10.72.8.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CCFCD6060F;
+        Thu, 14 Oct 2021 23:52:09 +0000 (UTC)
+Date:   Fri, 15 Oct 2021 07:52:04 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YWjCpLUNPF3s4P2U@T590>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-12-mcgrof@kernel.org>
+ <YWeOJP2UJWYF94fu@T590>
+ <YWeR4moCRh+ZHOmH@T590>
+ <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+T+zq66izOpOt0XU=GJr7I1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+T+zq66izOpOt0XU=GJr7I1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 14, 2021 at 01:24:32PM -0700, Luis Chamberlain wrote:
+> On Thu, Oct 14, 2021 at 10:11:46AM +0800, Ming Lei wrote:
+> > On Thu, Oct 14, 2021 at 09:55:48AM +0800, Ming Lei wrote:
+> > > On Mon, Sep 27, 2021 at 09:38:04AM -0700, Luis Chamberlain wrote:
+> > 
+> > ...
+> > 
+> > > 
+> > > Hello Luis,
+> > > 
+> > > Can you test the following patch and see if the issue can be addressed?
+> > > 
+> > > Please see the idea from the inline comment.
+> > > 
+> > > Also zram_index_mutex isn't needed in zram disk's store() compared with
+> > > your patch, then the deadlock issue you are addressing in this series can
+> > > be avoided.
+> > > 
+> > > 
+> > > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> > > index fcaf2750f68f..3c17927d23a7 100644
+> > > --- a/drivers/block/zram/zram_drv.c
+> > > +++ b/drivers/block/zram/zram_drv.c
+> > > @@ -1985,11 +1985,17 @@ static int zram_remove(struct zram *zram)
+> > >  
+> > >  	/* Make sure all the pending I/O are finished */
+> > >  	fsync_bdev(bdev);
+> > > -	zram_reset_device(zram);
+> > >  
+> > >  	pr_info("Removed device: %s\n", zram->disk->disk_name);
+> > >  
+> > >  	del_gendisk(zram->disk);
+> > > +
+> > > +	/*
+> > > +	 * reset device after gendisk is removed, so any change from sysfs
+> > > +	 * store won't come in, then we can really reset device here
+> > > +	 */
+> > > +	zram_reset_device(zram);
+> > > +
+> > >  	blk_cleanup_disk(zram->disk);
+> > >  	kfree(zram);
+> > >  	return 0;
+> > > @@ -2073,7 +2079,12 @@ static int zram_remove_cb(int id, void *ptr, void *data)
+> > >  static void destroy_devices(void)
+> > >  {
+> > >  	class_unregister(&zram_control_class);
+> > > +
+> > > +	/* hold the global lock so new device can't be added */
+> > > +	mutex_lock(&zram_index_mutex);
+> > >  	idr_for_each(&zram_index_idr, &zram_remove_cb, NULL);
+> > > +	mutex_unlock(&zram_index_mutex);
+> > > +
+> > 
+> > Actually zram_index_mutex isn't needed when calling zram_remove_cb()
+> > since the zram-control sysfs interface has been removed, so userspace
+> > can't add new device any more, then the issue is supposed to be fixed
+> > by the following one line change, please test it:
+> > 
+> > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> > index fcaf2750f68f..96dd641de233 100644
+> > --- a/drivers/block/zram/zram_drv.c
+> > +++ b/drivers/block/zram/zram_drv.c
+> > @@ -1985,11 +1985,17 @@ static int zram_remove(struct zram *zram)
+> >  
+> >  	/* Make sure all the pending I/O are finished */
+> >  	fsync_bdev(bdev);
+> > -	zram_reset_device(zram);
+> >  
+> >  	pr_info("Removed device: %s\n", zram->disk->disk_name);
+> >  
+> >  	del_gendisk(zram->disk);
+> > +
+> > +	/*
+> > +	 * reset device after gendisk is removed, so any change from sysfs
+> > +	 * store won't come in, then we can really reset device here
+> > +	 */
+> > +	zram_reset_device(zram);
+> > +
+> >  	blk_cleanup_disk(zram->disk);
+> >  	kfree(zram);
+> >  	return 0;
+> 
+> Sorry but nope, the cpu multistate issue is still present and we end up
+> eventually with page faults. I tried with both patches.
 
-Hi all,
+In theory disksize_store() can't come in after del_gendisk() returns,
+then zram_reset_device() should cleanup everything, that is the issue
+you described in commit log.
 
-After merging the kspp-gustavo tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+We need to understand the exact reason why there is still cpuhp node
+left, can you share us the exact steps for reproducing the issue?
+Otherwise we may have to trace and narrow down the reason.
 
-In file included from include/linux/bpf_verifier.h:9,
-                 from kernel/bpf/verifier.c:12:
-kernel/bpf/verifier.c: In function 'jit_subprogs':
-include/linux/filter.h:366:4: error: cast between incompatible function typ=
-es from 'unsigned int (*)(const void *, const struct bpf_insn *)' to 'u64 (=
-*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long=
- unsigned int,  long long unsigned int,  long long unsigned int,  long long=
- unsigned int,  long long unsigned int)'} [-Werror=3Dcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12472:16: note: in expansion of macro 'BPF_CAST_CALL'
-12472 |    insn->imm =3D BPF_CAST_CALL(func[subprog]->bpf_func) -
-      |                ^~~~~~~~~~~~~
-kernel/bpf/verifier.c: In function 'do_misc_fixups':
-include/linux/filter.h:366:4: error: cast between incompatible function typ=
-es from 'void * (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,=
-  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int=
-,  long long unsigned int,  long long unsigned int,  long long unsigned int=
-,  long long unsigned int)'} [-Werror=3Dcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12953:17: note: in expansion of macro 'BPF_CAST_CALL'
-12953 |     insn->imm =3D BPF_CAST_CALL(ops->map_lookup_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: error: cast between incompatible function typ=
-es from 'int (* const)(struct bpf_map *, void *, void *, u64)' {aka 'int (*=
- const)(struct bpf_map *, void *, void *, long long unsigned int)'} to 'u64=
- (*)(u64,  u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long lo=
-ng unsigned int,  long long unsigned int,  long long unsigned int,  long lo=
-ng unsigned int,  long long unsigned int)'} [-Werror=3Dcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12957:17: note: in expansion of macro 'BPF_CAST_CALL'
-12957 |     insn->imm =3D BPF_CAST_CALL(ops->map_update_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: error: cast between incompatible function typ=
-es from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u=
-64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  =
-long long unsigned int,  long long unsigned int,  long long unsigned int,  =
-long long unsigned int)'} [-Werror=3Dcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12961:17: note: in expansion of macro 'BPF_CAST_CALL'
-12961 |     insn->imm =3D BPF_CAST_CALL(ops->map_delete_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: error: cast between incompatible function typ=
-es from 'int (* const)(struct bpf_map *, void *, u64)' {aka 'int (* const)(=
-struct bpf_map *, void *, long long unsigned int)'} to 'u64 (*)(u64,  u64, =
- u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,=
-  long long unsigned int,  long long unsigned int,  long long unsigned int,=
-  long long unsigned int)'} [-Werror=3Dcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12965:17: note: in expansion of macro 'BPF_CAST_CALL'
-12965 |     insn->imm =3D BPF_CAST_CALL(ops->map_push_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: error: cast between incompatible function typ=
-es from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u=
-64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  =
-long long unsigned int,  long long unsigned int,  long long unsigned int,  =
-long long unsigned int)'} [-Werror=3Dcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12969:17: note: in expansion of macro 'BPF_CAST_CALL'
-12969 |     insn->imm =3D BPF_CAST_CALL(ops->map_pop_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: error: cast between incompatible function typ=
-es from 'int (* const)(struct bpf_map *, void *)' to 'u64 (*)(u64,  u64,  u=
-64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned int,  =
-long long unsigned int,  long long unsigned int,  long long unsigned int,  =
-long long unsigned int)'} [-Werror=3Dcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12973:17: note: in expansion of macro 'BPF_CAST_CALL'
-12973 |     insn->imm =3D BPF_CAST_CALL(ops->map_peek_elem) -
-      |                 ^~~~~~~~~~~~~
-include/linux/filter.h:366:4: error: cast between incompatible function typ=
-es from 'int (* const)(struct bpf_map *, u32,  u64)' {aka 'int (* const)(st=
-ruct bpf_map *, unsigned int,  long long unsigned int)'} to 'u64 (*)(u64,  =
-u64,  u64,  u64,  u64)' {aka 'long long unsigned int (*)(long long unsigned=
- int,  long long unsigned int,  long long unsigned int,  long long unsigned=
- int,  long long unsigned int)'} [-Werror=3Dcast-function-type]
-  366 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
-      |    ^
-kernel/bpf/verifier.c:12977:17: note: in expansion of macro 'BPF_CAST_CALL'
-12977 |     insn->imm =3D BPF_CAST_CALL(ops->map_redirect) -
-      |                 ^~~~~~~~~~~~~
-cc1: all warnings being treated as errors
 
-Caused by commit
 
-  21078041965e ("Makefile: Enable -Wcast-function-type")
+thanks,
+Ming
 
-I have used the kspp-gustavo tree from next-20211013 for today.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+T+zq66izOpOt0XU=GJr7I1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFowdgACgkQAVBC80lX
-0Gygqgf/bb5iQwKjUy0O9o5t8QWk3881mUL9O4KiiLzHntDHBYx3bHNCOfNqmjTW
-gWXg8ReeNXqvnUNF59BK5fcIVGY6Yi0iYbYMWK69H6yLOu15e2ZgYPv9x6PA+QTX
-prftqdepVusA0qTFKFVUJN9O3ppLeN5aQG0PBiM4uaja23EjJLPkhj1jsBdKGoJh
-0YCNpmI1VfHmKXKWftgTRBorb6Bn8z9TQ4Gqivb/KsovTBq2xVA1dLJZ2ni7uFub
-CoVqeZ4rF6jrSP8XXAgl1/1fXJaxzSLiuzMdx67sdmYghHkxjT8zpylY4HYvkGun
-FuctoBd2QTESj8ARUNVyjendZmsFJg==
-=NmKO
------END PGP SIGNATURE-----
-
---Sig_/+T+zq66izOpOt0XU=GJr7I1--
