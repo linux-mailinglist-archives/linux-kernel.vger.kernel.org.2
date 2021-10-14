@@ -2,225 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F5E42D20F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 07:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5E342D24C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbhJNGAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 02:00:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46188 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229457AbhJNGAT (ORCPT
+        id S230007AbhJNGYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 02:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229646AbhJNGYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 02:00:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634191095;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z9GNqF7oZ5ZxqDGvug1wa9zV0RT5V0MlCCCE4TEdHgM=;
-        b=MXwgfTNwoEonm+BZhvqYojelcT73dxD4MpRaQdMCAsPu8CIgkbH5qqo9eX6EGs8A2w2wbH
-        WwMi9iUu2qWpDmZlVsyKDqwArSAodljlMnd6OlNVkgzY95PzBNB/BBinUSC9giVygY/nuc
-        +cEAui5f6Dj+ftG4ghscStCwrtUrgMo=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-456-d9ZGnRf9NFixyAz-GIJiAA-1; Thu, 14 Oct 2021 01:58:13 -0400
-X-MC-Unique: d9ZGnRf9NFixyAz-GIJiAA-1
-Received: by mail-wr1-f72.google.com with SMTP id a15-20020a056000188f00b00161068d8461so3703272wri.11
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 22:58:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z9GNqF7oZ5ZxqDGvug1wa9zV0RT5V0MlCCCE4TEdHgM=;
-        b=RkSkoUynPrEJyIPg9LixN0Cs8Yr0P07Dl5titXl6dOQtQfbD4ZOK6cl3YqHi5/CgOL
-         vdrqRN8DkTZduArcU/NICczEKLJSMJewQdHkUWS+wor3aXYHFlR+6EDUAGssbcWBsBgA
-         nWWAP9XvpkN+t2ah+PJgqEg84+RTnjBjaEcBtQ05KMj/8Kdg2VDdRA2pYJR5Xq2R3Rwp
-         zRd5VGPp7Cm9/+6AWiZVvR7NomJgdKitoqd8MEQitCEW7VrO+zJ4Ra6BTqr0vRRFGuqw
-         QEaDY9YCb60dBWSdWOa9hTS/NAkT7nRXLf8vLhva2Tz1SO3x4A4NVprCvghzUKrlgQ3W
-         91XA==
-X-Gm-Message-State: AOAM530qypm6l+1nDnQNQeKd/GZkjNVF9fU7mU1IToTBHCLsd8A4GD1J
-        zX9sZRZ/KsdPRXE77/vs0NSMv6oATlQ0Of6GRspKOBhww+5PDsSVDI7UgA1mRTcRczz3H1vio8+
-        3O8j1s6db6h03gg9ufBKGuF3F
-X-Received: by 2002:a5d:63ca:: with SMTP id c10mr4220624wrw.407.1634191092125;
-        Wed, 13 Oct 2021 22:58:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxRsviF6B6TIbp4oMqx9j5CJVnbpO7qhFbnNiOh8GpPukKSxvqiwcjSFJhahubkVKwwS8mdhQ==
-X-Received: by 2002:a5d:63ca:: with SMTP id c10mr4220609wrw.407.1634191091908;
-        Wed, 13 Oct 2021 22:58:11 -0700 (PDT)
-Received: from redhat.com ([2.55.16.227])
-        by smtp.gmail.com with ESMTPSA id d9sm1488789wrm.96.2021.10.13.22.58.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 22:58:11 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 01:58:08 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Amit Shah <amit@kernel.org>
-Subject: Re: [PATCH V2 03/12] virtio-console: switch to use .validate()
-Message-ID: <20211014015616-mutt-send-email-mst@kernel.org>
-References: <20211012065227.9953-1-jasowang@redhat.com>
- <20211012065227.9953-4-jasowang@redhat.com>
- <20211013054334-mutt-send-email-mst@kernel.org>
- <CACGkMEvYu4rMnhLtQfPo-BKME+cT9Sk1b39++f3BXZm1fTQHMQ@mail.gmail.com>
+        Thu, 14 Oct 2021 02:24:39 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FD5C061570;
+        Wed, 13 Oct 2021 23:22:35 -0700 (PDT)
+Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
+        id 4HVK7r1x5mz4xbY; Thu, 14 Oct 2021 17:22:32 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gibson.dropbear.id.au; s=201602; t=1634192552;
+        bh=0uuzJ2RbbBNLtnJGxkiiKbw1slhnlGlCFfoDr9/tkG8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ajOeafBBMsDsL8D38GZaOWZA1yfZvnBkUfC8QlOIfR/6BjvGh+7Mp2Zx+FhLuI3Xs
+         1Gq0RGkpfsfxNa3dhwc7gkM2sIjZJnKQ0KVupY2z6tdoBcXbpyzPah4RJ0ehuIKoJn
+         +EWXGJP23F7UEogrsymqzG4hF8yQs38UooYaMgSw=
+Date:   Thu, 14 Oct 2021 15:33:21 +1100
+From:   "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
+Message-ID: <YWezEY+CJBRY7uLj@yekko>
+References: <20210919063848.1476776-12-yi.l.liu@intel.com>
+ <20210921174438.GW327412@nvidia.com>
+ <BN9PR11MB543362CEBDAD02DA9F06D8ED8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210922140911.GT327412@nvidia.com>
+ <YVaoamAaqayk1Hja@yekko>
+ <20211001122505.GL964074@nvidia.com>
+ <YVfeUkW7PWQeYFJQ@yekko>
+ <20211002122542.GW964074@nvidia.com>
+ <YWPNoknkNW55KQM4@yekko>
+ <20211011171748.GA92207@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fwwIMpD4bMVv6jlq"
 Content-Disposition: inline
-In-Reply-To: <CACGkMEvYu4rMnhLtQfPo-BKME+cT9Sk1b39++f3BXZm1fTQHMQ@mail.gmail.com>
+In-Reply-To: <20211011171748.GA92207@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 10:28:06AM +0800, Jason Wang wrote:
-> On Wed, Oct 13, 2021 at 5:51 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Tue, Oct 12, 2021 at 02:52:18PM +0800, Jason Wang wrote:
-> > > This patch switches to use validate() to filter out the features that
-> > > is not supported by the rproc.
-> >
-> > are not supported
-> >
-> > >
-> > > Cc: Amit Shah <amit@kernel.org>
-> > > Signed-off-by: Jason Wang <jasowang@redhat.com>
-> >
-> >
-> > Does this have anything to do with hardening?
-> >
-> > It seems cleaner to not negotiate features we do not use,
-> > but given we did this for many years ... should we bother
-> > at this point?
-> 
-> It looks cleaner to do all the validation in one places:
-> 
-> 1) check unsupported feature for rproc
-> 2) validate the max_nr_ports (as has been done in patch 4)
-> 
-> >
-> >
-> > > ---
-> > >  drivers/char/virtio_console.c | 41 ++++++++++++++++++++++-------------
-> > >  1 file changed, 26 insertions(+), 15 deletions(-)
-> > >
-> > > diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-> > > index 7eaf303a7a86..daeed31df622 100644
-> > > --- a/drivers/char/virtio_console.c
-> > > +++ b/drivers/char/virtio_console.c
-> > > @@ -1172,9 +1172,7 @@ static void resize_console(struct port *port)
-> > >
-> > >       vdev = port->portdev->vdev;
-> > >
-> > > -     /* Don't test F_SIZE at all if we're rproc: not a valid feature! */
-> > > -     if (!is_rproc_serial(vdev) &&
-> > > -         virtio_has_feature(vdev, VIRTIO_CONSOLE_F_SIZE))
-> > > +     if (virtio_has_feature(vdev, VIRTIO_CONSOLE_F_SIZE))
-> > >               hvc_resize(port->cons.hvc, port->cons.ws);
-> > >  }
-> > >
-> > > @@ -1981,6 +1979,29 @@ static void virtcons_remove(struct virtio_device *vdev)
-> > >       kfree(portdev);
-> > >  }
-> > >
-> > > +static int virtcons_validate(struct virtio_device *vdev)
-> > > +{
-> > > +     if (is_rproc_serial(vdev)) {
-> > > +             /* Don't test F_SIZE at all if we're rproc: not a
-> > > +              * valid feature! */
-> >
-> >
-> > This comment needs to be fixed now. And the format's wrong
-> > since you made it a multi-line comment.
-> > Should be
-> >         /*
-> >          * like
-> >          * this
-> >          */
-> 
-> Ok.
-> 
-> >
-> > > +             __virtio_clear_bit(vdev, VIRTIO_CONSOLE_F_SIZE);
-> > > +             /* Don't test MULTIPORT at all if we're rproc: not a
-> > > +              * valid feature! */
-> > > +             __virtio_clear_bit(vdev, VIRTIO_CONSOLE_F_MULTIPORT);
-> > > +     }
-> > > +
-> > > +     /* We only need a config space if features are offered */
-> > > +     if (!vdev->config->get &&
-> > > +         (virtio_has_feature(vdev, VIRTIO_CONSOLE_F_SIZE)
-> > > +          || virtio_has_feature(vdev, VIRTIO_CONSOLE_F_MULTIPORT))) {
-> > > +             dev_err(&vdev->dev, "%s failure: config access disabled\n",
-> > > +                     __func__);
-> > > +             return -EINVAL;
-> > > +     }
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > >  /*
-> > >   * Once we're further in boot, we get probed like any other virtio
-> > >   * device.
-> >
-> > This switches the order of tests around, so if an rproc device
-> > offers VIRTIO_CONSOLE_F_SIZE or VIRTIO_CONSOLE_F_MULTIPORT
-> > without get it will now try to work instead of failing.
-> 
-> Ok, so we can fail the validation in this case.
 
-We can. But if we are going to, then it's easier to just fail probe.
-Or if you want to try and work around this case,
-that's also reasonable but pls document in the commit log.
+--fwwIMpD4bMVv6jlq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Oct 11, 2021 at 02:17:48PM -0300, Jason Gunthorpe wrote:
+> On Mon, Oct 11, 2021 at 04:37:38PM +1100, david@gibson.dropbear.id.au wro=
+te:
+> > > PASID support will already require that a device can be multi-bound to
+> > > many IOAS's, couldn't PPC do the same with the windows?
+> >=20
+> > I don't see how that would make sense.  The device has no awareness of
+> > multiple windows the way it does of PASIDs.  It just sends
+> > transactions over the bus with the IOVAs it's told.  If those IOVAs
+> > lie within one of the windows, the IOMMU picks them up and translates
+> > them.  If they don't, it doesn't.
+>=20
+> To my mind that address centric routing is awareness.
+
+I don't really understand that position.  A PASID capable device has
+to be built to be PASID capable, and will generally have registers
+into which you store PASIDs to use.
+
+Any 64-bit DMA capable device can use the POWER IOMMU just fine - it's
+up to the driver to program it with addresses that will be translated
+(and in Linux the driver will get those from the DMA subsystem).
+
+> If the HW can attach multiple non-overlapping IOAS's to the same
+> device then the HW is routing to the correct IOAS by using the address
+> bits. This is not much different from the prior discussion we had
+> where we were thinking of the PASID as an 80 bit address
+
+Ah... that might be a workable approach.  And it even helps me get my
+head around multiple attachment which I was struggling with before.
+
+So, the rule would be that you can attach multiple IOASes to a device,
+as long as none of them overlap.  The non-overlapping could be because
+each IOAS covers a disjoint address range, or it could be because
+there's some attached information - such as a PASID - to disambiguate.
+
+What remains a question is where the disambiguating information comes
+=66rom in each case: does it come from properties of the IOAS,
+propertues of the device, or from extra parameters supplied at attach
+time.  IIUC, the current draft suggests it always comes at attach time
+for the PASID information.  Obviously the more consistency we can have
+here the better.
 
 
-> Thanks
-> 
-> >
-> > Which is maybe a worthy goal, but given rproc does not support
-> > virtio 1.0 it also risks trying to drive something completely
-> > unreasonable.
-> >
-> > Overall does not feel like hardening which is supposed to make
-> > things more strict, not less.
-> >
-> >
-> > > @@ -1996,15 +2017,6 @@ static int virtcons_probe(struct virtio_device *vdev)
-> > >       bool multiport;
-> > >       bool early = early_put_chars != NULL;
-> > >
-> > > -     /* We only need a config space if features are offered */
-> > > -     if (!vdev->config->get &&
-> > > -         (virtio_has_feature(vdev, VIRTIO_CONSOLE_F_SIZE)
-> > > -          || virtio_has_feature(vdev, VIRTIO_CONSOLE_F_MULTIPORT))) {
-> > > -             dev_err(&vdev->dev, "%s failure: config access disabled\n",
-> > > -                     __func__);
-> > > -             return -EINVAL;
-> > > -     }
-> > > -
-> > >       /* Ensure to read early_put_chars now */
-> > >       barrier();
-> > >
-> > > @@ -2031,9 +2043,7 @@ static int virtcons_probe(struct virtio_device *vdev)
-> > >       multiport = false;
-> > >       portdev->max_nr_ports = 1;
-> > >
-> > > -     /* Don't test MULTIPORT at all if we're rproc: not a valid feature! */
-> > > -     if (!is_rproc_serial(vdev) &&
-> > > -         virtio_cread_feature(vdev, VIRTIO_CONSOLE_F_MULTIPORT,
-> > > +     if (virtio_cread_feature(vdev, VIRTIO_CONSOLE_F_MULTIPORT,
-> > >                                struct virtio_console_config, max_nr_ports,
-> > >                                &portdev->max_nr_ports) == 0) {
-> > >               multiport = true;
-> > > @@ -2210,6 +2220,7 @@ static struct virtio_driver virtio_console = {
-> > >       .driver.name =  KBUILD_MODNAME,
-> > >       .driver.owner = THIS_MODULE,
-> > >       .id_table =     id_table,
-> > > +     .validate =     virtcons_validate,
-> > >       .probe =        virtcons_probe,
-> > >       .remove =       virtcons_remove,
-> > >       .config_changed = config_intr,
-> > > --
-> > > 2.25.1
-> >
+I can also see an additional problem in implementation, once we start
+looking at hot-adding devices to existing address spaces.  Suppose our
+software (maybe qemu) wants to set up a single DMA view for a bunch of
+devices, that has such a split window.  It can set up IOASes easily
+enough for the two windows, then it needs to attach them.  Presumbly,
+it attaches them one at a time, which means that each device (or
+group) goes through an interim state where it's attached to one, but
+not the other.  That can probably be achieved by using an extra IOMMU
+domain (or the local equivalent) in the hardware for that interim
+state.  However it means we have to repeatedly create and destroy that
+extra domain for each device after the first we add, rather than
+simply adding each device to the domain which has both windows.
 
+[I think this doesn't arise on POWER when running under PowerVM.  That
+ has no concept like IOMMU domains, and instead the mapping is always
+ done per "partitionable endpoint" (PE), essentially a group.  That
+ means it's just a question of whether we mirror mappings on both
+ windows into a given PE or just those from one IOAS.  It's not an
+ unreasonable extension/combination of existing hardware quirks to
+ consider, though]
+
+> The fact the PPC HW actually has multiple page table roots and those
+> roots even have different page tables layouts while still connected to
+> the same device suggests this is not even an unnatural modelling
+> approach...
+>=20
+> Jason =20
+>=20
+>=20
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--fwwIMpD4bMVv6jlq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFnsw8ACgkQbDjKyiDZ
+s5LGWA//UT6CCRBCEjcWZoC6JNlcnPfdnmk/n0SO78Xp3HNDFlS8Tw+wFLyNACbS
+qZKqLiD0g5PjKhwN3QYknqaYzo9dX4yy6VYWyMpcBwz3djrbRoBE7DSX3/u5mt0x
+GVMkXmKpQijPoVWJIX4ggS5ID6UHfeYFThZxHpYFCu0AykTMAVH/cJPRsxBHIkAx
+1cPDVvS+fmd7H5DJ7D0nYlihlsf2xTg+rWhP9U5EXwlEpr1bncYBa1kvKk6FEQH6
+QkTRLPZj5+OdTd8leASuOmBRopk6a11jRiM3CCe5ctOWd2ojYUqt4n707KEoTYA9
+bPck1CQPb+tpnQaSLz6nR+EG4E4si0r+VPdvsVpGEb0kXeDdSYIfoLQRtasa5LIn
+vLcJTjW+dUXXcJOAZ8Wz1sHvXh8YCPYT6NEpbJunjVTqSyUb1MzBd4uHbF4w2r9E
+6ED8DzbuLR/cewlLwfNggIoQxQNtvRCrOSvzvAm8l/CED3T8UfsXhCGzgOVO+Y2y
+PxcT4YqDi5OMHbMyAtEx6hN5qpUtXAz1ld3UcBXKQY5lcoq14SqyWGyKthRwYzuP
+5A5Ip7at8lsj6jw+u7bNTLBfUBdaT4EvkDxWEaXX+aMvTMJ/57gsqgnTG5YGAbCJ
+e4J+N/hNXUourFkWsOfjZlGcNobH0Jo8SpXCE5/EMhkpAvJrQu0=
+=vnWt
+-----END PGP SIGNATURE-----
+
+--fwwIMpD4bMVv6jlq--
