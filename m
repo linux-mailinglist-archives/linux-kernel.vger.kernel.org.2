@@ -2,185 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E1742D9AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB75F42DAAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbhJNNDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:03:50 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58269 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231300AbhJNNDs (ORCPT
+        id S231659AbhJNNoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:44:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47214 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231538AbhJNNoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:03:48 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19ECpWBc008814;
-        Thu, 14 Oct 2021 09:01:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=UA1kmBYZNSZFLMxUcvWpCjz4k7dlKYSlZ3+y5G1nDJQ=;
- b=aGaHln61iYM7f+ztu6FeoAitk9UnQ3BkGTqKzw+NHUIIwAHv27tii2RgSXRR8334k2gi
- 8JNafo0dw5J1BKYHcDPQEIQyc3Ae8BUNgWtbkFmo5rdfJ9UmiXWc3pSeJU1ttlg7XSMY
- 5plQW90y9RsxtrJ2ewnxmLVw5ujnhDvDTblx9jO7y/nZXNyhi3AUlLILYDEcEZEMJoN/
- aOHPxg5KQsRpwM+dz+If6f61b6Qjy2+ZST+X8FPbHrTa6sfCh+gwtCSpG72xVHbKd3mH
- 3JlcEHrg1QfasIvG9l8a1gGP1IjL/gCXnWmXYrUVwXP0fn0h6HUDQ0MPy2+FKkAVCjnT 8w== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bnpf49fp8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Oct 2021 09:01:39 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19ECpf7N027922;
-        Thu, 14 Oct 2021 13:01:36 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 3bk2qancyq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Oct 2021 13:01:36 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19ED1YMx62783848
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Oct 2021 13:01:34 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BC36A4040;
-        Thu, 14 Oct 2021 13:01:34 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA63EA4055;
-        Thu, 14 Oct 2021 13:01:32 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.160.55.249])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Oct 2021 13:01:32 +0000 (GMT)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: [PATCH v1 3/3] security: define a trusted_for hook
-Date:   Thu, 14 Oct 2021 09:01:25 -0400
-Message-Id: <20211014130125.6991-3-zohar@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211014130125.6991-1-zohar@linux.ibm.com>
-References: <20211014130125.6991-1-zohar@linux.ibm.com>
+        Thu, 14 Oct 2021 09:44:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634218937;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lZlV5oZ4TtPFhgNbhdsHywrhrxZw6kvmmBHWdSCbMDc=;
+        b=dVc5nMaeGcR/pPHKQh07dLZjlE6MAkWZti7QHZfxHso3KrnhhvId/priAv7HogNWS0qbcJ
+        Dw9oKDRXKV5vvgOy6FIDiFV6laNeHYxp+TofAK20UamQLjH4ahSnMOVwGFRALPEI0wiJNM
+        2OWs8jMJsi32Fkrv34pawH7wNLFpWys=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-496-QYLIUZTfOy-_b1iMbVdsUg-1; Thu, 14 Oct 2021 09:42:13 -0400
+X-MC-Unique: QYLIUZTfOy-_b1iMbVdsUg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B9611006AA9;
+        Thu, 14 Oct 2021 13:42:00 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C74991001B2C;
+        Thu, 14 Oct 2021 13:41:59 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id D6554416D862; Thu, 14 Oct 2021 10:02:20 -0300 (-03)
+Date:   Thu, 14 Oct 2021 10:02:20 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: [patch v4 1/8] add basic task isolation prctl interface
+Message-ID: <20211014130220.GA5812@fuller.cnet>
+References: <20211007192346.731667417@fedora.localdomain>
+ <20211007193525.755160804@fedora.localdomain>
+ <YWWIHkoAdTkzU0TP@hirez.programming.kicks-ass.net>
+ <20211013105637.GA88322@fuller.cnet>
+ <YWb0ycw/sNV8isBH@hirez.programming.kicks-ass.net>
+ <20211013160630.GA106511@fuller.cnet>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0GJHVo6txvxQZZ0d_-W2ilKy9rJC_3JI
-X-Proofpoint-ORIG-GUID: 0GJHVo6txvxQZZ0d_-W2ilKy9rJC_3JI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-14_07,2021-10-14_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 clxscore=1015 lowpriorityscore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2110140084
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013160630.GA106511@fuller.cnet>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the trusted_for syscall to call the security_trusted_for hook,
-which calls registered LSMs and IMA, instead of calling IMA directly.
+<snip>
 
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
----
-Mickaël, Casey, assuming there is a need...
+> What are the requirements of the signal exactly (and why it is popular) ?
+> Because the interruption event can be due to:
+> 
+> * An IPI.
+> * A system call.
 
- fs/open.c                     |  2 +-
- include/linux/lsm_hook_defs.h |  3 +++
- include/linux/lsm_hooks.h     |  6 ++++++
- include/linux/security.h      | 12 ++++++++++++
- security/security.c           | 10 ++++++++++
- 5 files changed, 32 insertions(+), 1 deletion(-)
+IRQs (easy to trace), exceptions.
 
-diff --git a/fs/open.c b/fs/open.c
-index 4d54e2a727e1..75336ca7020d 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -586,7 +586,7 @@ SYSCALL_DEFINE3(trusted_for, const int, fd, const enum trusted_for_usage, usage,
- 			mask | MAY_ACCESS);
- 
- 	if (!err)
--		err = ima_trusted_for(f.file, usage);
-+		err = security_trusted_for(f.file, usage);
- 
- out_fd:
- 	fdput(f);
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 2adeea44c0d5..f847fc0fd030 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -402,3 +402,6 @@ LSM_HOOK(void, LSM_RET_VOID, perf_event_free, struct perf_event *event)
- LSM_HOOK(int, 0, perf_event_read, struct perf_event *event)
- LSM_HOOK(int, 0, perf_event_write, struct perf_event *event)
- #endif /* CONFIG_PERF_EVENTS */
-+
-+LSM_HOOK(int, 0, trusted_for, struct file *file,
-+	 const enum trusted_for_usage usage)
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 5c4c5c0602cb..88e4f08f01ca 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -1557,6 +1557,12 @@
-  * 	Read perf_event security info if allowed.
-  * @perf_event_write:
-  * 	Write perf_event security info if allowed.
-+ *
-+ * Security hooks for trusted applications (e.g. interpreters)
-+ *
-+ * @trusted_for:
-+ *	Return kernel file integrity status to trusted application
-+ *
-  */
- union security_list_options {
- 	#define LSM_HOOK(RET, DEFAULT, NAME, ...) RET (*NAME)(__VA_ARGS__);
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 5b7288521300..b067e22c8903 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -31,6 +31,7 @@
- #include <linux/err.h>
- #include <linux/string.h>
- #include <linux/mm.h>
-+#include <uapi/linux/trusted-for.h>
- 
- struct linux_binprm;
- struct cred;
-@@ -2038,4 +2039,15 @@ static inline int security_perf_event_write(struct perf_event *event)
- #endif /* CONFIG_SECURITY */
- #endif /* CONFIG_PERF_EVENTS */
- 
-+#ifdef CONFIG_SECURITY
-+extern int security_trusted_for(struct file *file,
-+				const enum trusted_for_usage usage);
-+#else
-+static int security_trusted_for(struct file *file,
-+				const enum trusted_for_usage usage)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_SECURITY */
-+
- #endif /* ! __LINUX_SECURITY_H */
-diff --git a/security/security.c b/security/security.c
-index 9ffa9e9c5c55..f8e2a131d5cd 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -2625,3 +2625,13 @@ int security_perf_event_write(struct perf_event *event)
- 	return call_int_hook(perf_event_write, 0, event);
- }
- #endif /* CONFIG_PERF_EVENTS */
-+
-+int security_trusted_for(struct file *file, const enum trusted_for_usage usage)
-+{
-+	int ret;
-+
-+	ret = call_int_hook(trusted_for, 0, file, usage);
-+	if (ret)
-+		return ret;
-+	return ima_trusted_for(file, usage);
-+}
--- 
-2.27.0
+> In the "full task isolation mode" patchset (the one from Alex), a system call
+> will automatically generate a SIGKILL once a system call is performed
+> (after the prctl to enable task isolated mode, but
+> before the prctl to disable task isolated mode).
+> This can be implemented, if desired, by SECCOMP syscall blocking
+> (which already exists).
+> 
+> For other interruptions, which happen through IPIs, one can print
+> the stack trace of the program (or interrupt) that generated
+> the IPI to find out the cause (which is what rt-trace-bpf.py is doing).
+> 
+> An alternative would be to add tracepoints so that one can
+> find out which function in the kernel caused the CPU and
+> task to become "a target for interruptions".
+
+For example, adding a tracepoint to mark_vmstat_dirty() function
+(allowing to see how that function was invoked on a given CPU, and
+by whom) appears to be sufficient information to debug problems.
+
+(mark_vmstat_dirty() from
+[patch v4 5/8] task isolation: sync vmstats conditional on changes)
+
+Instead of a coredump image with a SIGKILL sent at that point.
+
+Looking at
+
+https://github.com/abelits/libtmc
+
+One can see the notification via SIGUSR1 being used.
+
+To support something similar to it, one would add a new bit to 
+flags field of:
+
++struct task_isol_activate_control {
++       __u64 flags;
++       __u64 quiesce_oneshot_mask;
++       __u64 pad[6];
++};
+
+Remove 
+
++ 	       ret = -EINVAL;
++               if (act_ctrl.flags)
++                       goto out;
+
+From the handler, shrink the padded space and use it.
+
+> 
+> > > > Also, see:
+> > > > 
+> > > >   https://lkml.kernel.org/r/20210929152429.186930629@infradead.org
+> > > 
+> > > As you can see from the below pseudocode, we were thinking of queueing
+> > > the (invalidate icache or TLB flush) in case app is in userspace,
+> > > to perform on return to kernel space, but the approach in your patch might be
+> > > superior (will take sometime to parse that thread...).
+> > 
+> > Let me assume you're talking about kernel TLB invalidates, otherwise it
+> > would be terribly broken.
+> > 
+> > > > Suppose:
+> > > > 
+> > > > 	CPU0					CPU1
+> > > > 
+> > > > 	sys_prctl()
+> > > > 	<kernel entry>
+> > > > 	  // marks task 'important'
+> > > > 						text_poke_sync()
+> > > > 						  // checks CPU0, not userspace, queues IPI
+> > > > 	<kernel exit>
+> > > > 
+> > > > 	$important userspace			  arch_send_call_function_ipi_mask()
+> > > > 	<IPI>
+> > > > 	  // finds task is 'important' and
+> > > > 	  // can't take interrupts
+> > > > 	  sigkill()
+> > > > 
+> > > > *Whoopsie*
+> > > > 
+> > > > 
+> > > > Fundamentally CPU1 can't elide the IPI until CPU0 is in userspace,
+> > > > therefore CPU0 can't wait for quescence in kernelspace, but if it goes
+> > > > to userspace, it'll get killed on interruption. Catch-22.
+
+To reiterate on this point:
+
+> > > >         CPU0                                    CPU1
+> > > > 
+> > > >         sys_prctl()
+> > > >         <kernel entry>
+> > > >           // marks task 'important'
+> > > >                                                 text_poke_sync()
+> > > >                                                   // checks CPU0, not userspace, queues IPI
+> > > >         <kernel exit>
+
+1) Such races can be fixed by proper uses of atomic variables.
+
+2) If a signal to an application is desired, fail to see why this
+interface (ignoring bugs related to the particular mechanism) does not
+allow it.
+
+So hopefully this addresses your comments.
 
