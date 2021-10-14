@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875E942CF9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 02:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8360F42CFA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 02:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhJNAqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 20:46:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27847 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229872AbhJNAqn (ORCPT
+        id S229879AbhJNAuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 20:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhJNAuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 20:46:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634172279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jFv5OLM8EkJT7hF4OqXauqHE4zCaE1+d14pWIYx+RA0=;
-        b=NhGvnlj7cHQWsKCkT66xm4vi1U9h7XRZRpebPc06DBwVlj8a5NROSPytkLFibV/juD3qHx
-        4rUUQhn64xLRBwl28yfX5e757+GoaSkmhp9YOwtmsoAh59Cwh87p7RKqi98druDi1oChmt
-        ZJQx2J08vBkUmuUJ9HZTEvpAMiphz2U=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-vLqXvdDHOsiNSTcmEfLYZQ-1; Wed, 13 Oct 2021 20:44:38 -0400
-X-MC-Unique: vLqXvdDHOsiNSTcmEfLYZQ-1
-Received: by mail-qk1-f198.google.com with SMTP id b189-20020a3799c6000000b0045eb0c29072so3246564qke.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 17:44:38 -0700 (PDT)
+        Wed, 13 Oct 2021 20:50:50 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D66C061749
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 17:48:46 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id q10-20020a17090a1b0a00b001a076a59640so4556861pjq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 17:48:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kMEPUd0bnmyPK+GWusr2x7qSdOZyoA5r8EgpsaItTRU=;
+        b=18FxLEnLXEcupJumxY4RNarxB91OSKVlArPhspKAMnmMtalRdNQ0yxM+2Yrpdb/3Ti
+         DrGSMjoFinXFulkMcqA00lWlF96vItEisUMmbOltiNgqb9ZqjbE75vI8PXIIB8PVm9Xa
+         u4q3mulmE3TyEWop1eb3ZM/3UTMk/oKud/uSvytENKpqYVPqES/MWPulpLzPgMXw7Wjp
+         wHaYru1CLgcHJJtypnpIMxuWJDa+Oy3rP5JRPbA2saRfjt/5znsyhGYPT+aZ331BGYZz
+         kakESKJ+6QCOFYN0h3mlVCUUm+XNlI440yfaukmTZFY2MN5TwCbHkInpB9i3OXssysjp
+         dXmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jFv5OLM8EkJT7hF4OqXauqHE4zCaE1+d14pWIYx+RA0=;
-        b=qXNXb1eW7ycsn4w4rAImDcS7xsZLbpDkM016bk7JcMzTkMYVMxJblxGgLacRsByHO0
-         TcuWpqCje7rFg8CJM00UwCjJ8+qrmockkeuBWvergQgCpiCCIHmqTIdnz6b3JlgiS+tx
-         +Kz4w21VBY6wpeF2++9gzoFJk3YkEADsEa9i9P4QAgMjeVnLyaCZX0YF9ippQiU495jK
-         /f3d5QycBbn48kGk+9HIJ+7caMft6LBBqOqiiiF1SygYoKDGxGRSBcRSVw+czJM3v1Cd
-         GbB208SryhkGniwGb72hADms0JTBoGbV9fq1+rXPsZGT4IfOghwGTFy+IduL45+YxSgX
-         LwKQ==
-X-Gm-Message-State: AOAM533S300zyRLRdQkHS7GpDOuqPREPkF8sLF1siVfjlb0uJdFnTTpZ
-        t88miejt/jT1avGJkzMO72I2xhnM6eHfqhqv7rbQthlhf8EDH+ZOSh0cEaT67gNgOiT7ZR7ICi2
-        MG3PXmQrYt2yg4/2YhtSzpUZ0
-X-Received: by 2002:a37:b742:: with SMTP id h63mr2191203qkf.204.1634172278088;
-        Wed, 13 Oct 2021 17:44:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxN7hRCKU/SKDN5he5DTJoX8aHISMFYBLbyiwc6It64vOfVpkP2EJr4BFnCIqPmfMZ5NSu/ig==
-X-Received: by 2002:a37:b742:: with SMTP id h63mr2191187qkf.204.1634172277891;
-        Wed, 13 Oct 2021 17:44:37 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id z19sm701005qts.96.2021.10.13.17.44.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 17:44:37 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 17:44:34 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v5 01/15] objtool: Add CONFIG_CFI_CLANG support
-Message-ID: <20211014004434.vjbpkd4ykn7upvsw@treble>
-References: <20211013181658.1020262-1-samitolvanen@google.com>
- <20211013181658.1020262-2-samitolvanen@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kMEPUd0bnmyPK+GWusr2x7qSdOZyoA5r8EgpsaItTRU=;
+        b=NN8+BR4F7y5Ceza9jbjUAelpaljRri8g4kATteOOK/EDxWH7wXYIXvO2ml7mRcMUnZ
+         ECLOFXU0kdPo7nhgd8xEdLbXYvgNF0s27KWi8uZtWRp3N/1dQclXA+KWjWJFqB1bdF70
+         D9wniFY16Kk8s0A071DbhLGAJ1G/jlTYCDxFjg/GHUT3cW2Za5YmoY/Gqf6/FDVusp0e
+         t1mZZg/pz+wdtOo9HaU55BhH8Q3XhaRclO+qJTSPW+n55ajIizwB/vI2hyxLt1J+B+ON
+         huLwNJynrXBZQNZ34kugf+xrIMb2wEoFWAmX1zcNSo3tKxxHFpyOgC0uUxsBEGoA6vsb
+         8CjA==
+X-Gm-Message-State: AOAM530zGFl7sWx0CUUSIBG3wMRa/DUzX8ZfekBtv88LO8U4V3iblPVf
+        XC8GRVlsBzRIjPDN9tu1tS82yrpWe8M16aVD6y210AkIcnyYdg==
+X-Google-Smtp-Source: ABdhPJx+b2tandDrjEJMpw3BEXffZ+Diw2BvRT0TGS6Et0y5Psg9VDo9oV2fFWF7ObFwj/MDco4HHHmS+aeySwoidQU=
+X-Received: by 2002:a17:90b:350f:: with SMTP id ls15mr2897150pjb.220.1634172526202;
+ Wed, 13 Oct 2021 17:48:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211013181658.1020262-2-samitolvanen@google.com>
+References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <163379787433.692348.2451270397309803556.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20211013224523.rxyt2mg75ebxismi@intel.com> <CAPcyv4jHxWJQSgGFg4e5tSg8dgDcYVKrzXEN8gtg7TjNRj3h0g@mail.gmail.com>
+ <20211014001236.aohtmzrrvmcq6dpo@intel.com>
+In-Reply-To: <20211014001236.aohtmzrrvmcq6dpo@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 13 Oct 2021 17:48:35 -0700
+Message-ID: <CAPcyv4iyo54VWoamuJbwZBYrAX2eSy7wKmRKjNDk19fCB2gjHQ@mail.gmail.com>
+Subject: Re: [PATCH v3 07/10] cxl/pci: Split cxl_pci_setup_regs()
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:16:44AM -0700, Sami Tolvanen wrote:
-> The upcoming CONFIG_CFI_CLANG support uses -fsanitize=cfi, the
-> non-canonical version of which hijacks function entry by changing
-> function relocation references to point to an intermediary jump table.
-> 
-> For example:
-> 
->   Relocation section '.rela.discard.func_stack_frame_non_standard' at offset 0x37e018 contains 6 entries:
->       Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
->   0000000000000000  0002944700000002 R_X86_64_PC32          00000000000023f0 do_suspend_lowlevel + 0
->   0000000000000008  0003c11900000001 R_X86_64_64            0000000000000008 xen_cpuid$e69bc59f4fade3b6f2b579b3934137df.cfi_jt + 0
->   0000000000000010  0003980900000001 R_X86_64_64            0000000000000060 machine_real_restart.cfi_jt + 0
->   0000000000000018  0003962b00000001 R_X86_64_64            0000000000000e18 kretprobe_trampoline.cfi_jt + 0
->   0000000000000020  000028f300000001 R_X86_64_64            0000000000000000 .rodata + 12
->   0000000000000028  000349f400000001 R_X86_64_64            0000000000000018 __crash_kexec.cfi_jt + 0
-> 
->   0000000000000060 <machine_real_restart.cfi_jt>:
->     60: e9 00 00 00 00          jmpq   65 <machine_real_restart.cfi_jt+0x5>
->                         61: R_X86_64_PLT32      machine_real_restart-0x4
->     65: cc                      int3
->     66: cc                      int3
->     67: cc                      int3
-> 
-> This breaks objtool vmlinux validation in many ways, including static
-> call site detection and the STACK_FRAME_NON_STANDARD() macro.
-> 
-> Fix it by converting those relocations' symbol references back to their
-> original non-jump-table versions.  Note this doesn't change the actual
-> relocations in the object itself, it just changes objtool's view of
-> them. This change is based on Josh's initial patch:
-> 
-> https://lore.kernel.org/r/d743f4b36e120c06506567a9f87a062ae03da47f.1611263462.git.jpoimboe@redhat.com/
-> 
-> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+On Wed, Oct 13, 2021 at 5:12 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> On 21-10-13 15:49:30, Dan Williams wrote:
+> > On Wed, Oct 13, 2021 at 3:45 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+> > >
+> > > On 21-10-09 09:44:34, Dan Williams wrote:
+> > > > From: Ben Widawsky <ben.widawsky@intel.com>
+> > > >
+> > > > In preparation for moving parts of register mapping to cxl_core, split
+> > > > cxl_pci_setup_regs() into a helper that finds register blocks,
+> > > > (cxl_find_regblock()), and a generic wrapper that probes the precise
+> > > > register sets within a block (cxl_setup_regs()).
+> > > >
+> > > > Move the actual mapping (cxl_map_regs()) of the only register-set that
+> > > > cxl_pci cares about (memory device registers) up a level from the former
+> > > > cxl_pci_setup_regs() into cxl_pci_probe().
+> > > >
+> > > > With this change the unused component registers are no longer mapped,
+> > > > but the helpers are primed to move into the core.
+> > > >
+> > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > > [djbw: rebase on the cxl_register_map refactor]
+> > > > [djbw: drop cxl_map_regs() for component registers]
+> > > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > >
+> > > [snip]
+> > >
+> > > Did you mean to also drop the component register handling in cxl_probe_regs()
+> > > and cxl_map_regs()?
+> >
+> > No, because that has a soon to be added user, right?
+>
+> In the current codebase, the port driver gets the offset from cxl_core, not
+> through the pci driver. I know you wanted this to be passed from cxl_pci (and
+> indeed it was before). Currently however, the functionality is subsumed by
+> cxl_find_regblock and is used by cxl_pci (for device registers), cxl_acpi (to
+> get the CHBCR) and cxl_core (to get the component register block for switches).
+>
+> I have no user in cxl_pci for the component registers, and as we discussed, we
+> have no good way to share them across modules.
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Are you saying that cxl_probe_regs() will not move to the core in your
+upcoming series? I was expecting that cxl_find_regblock() and
+cxl_probe_regs() go hand in hand.
 
--- 
-Josh
+>
+> We can ignore this for now though and discuss it on the list when I post. If
+> there is a better way to handle this, I'm open to it.
 
+It's hard to have discussions about API uses without the patches, but
+I'm ok to leave further cxl_probe_regs() refactoring to your series.
