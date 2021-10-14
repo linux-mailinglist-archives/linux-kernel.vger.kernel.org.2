@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A32042DA9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91BD42DAA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbhJNNkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56502 "EHLO
+        id S231502AbhJNNk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhJNNkA (ORCPT
+        with ESMTP id S230010AbhJNNky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:40:00 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F66C061570;
-        Thu, 14 Oct 2021 06:37:55 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id g6so14784402ybb.3;
-        Thu, 14 Oct 2021 06:37:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mbgbRDUeTUyS3975uv27h+b+4eQcagHBtAm3RK4mRio=;
-        b=qmgCJ42kSkaSCiL62fmwk8FsRJIapU+OyGgWdYII3UdkitX2WzArrncotTqg2AMWP0
-         tJn0um3amoXF4I8vJD1Gm0tC7yXR4EngdB5ocSqgTPTbXIaB+fnG58LSf7RLMnQBzf1o
-         z5yvWN45Q6V9P/BvsOFitjrxatZlY+KCTvobsEjqcSxLccUMujwMzKD7GZ3/jAyjD0rA
-         IcNDxlgHXfWjYBOvCk8+FzhR7oYgbLyYir1Z7NnkAZgcOL+TZNEkXO591wErvff824dT
-         6nYXeuCj1OoZt5KJnveH/c20k6SoYi9KwO427Jk5jAa7RO6MEk9ZzrGA88gMzFkMBuSt
-         UZFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mbgbRDUeTUyS3975uv27h+b+4eQcagHBtAm3RK4mRio=;
-        b=h0NfnWwRwNJKRO56vm4NmoblAyhy65vzCL7jHUYgWmmmjcPJT+d+v0VOqdfPTlZx1W
-         KLNm2K+3oOUAJenh8dErWka805TJKNfkT4nY+9Rb0vM7lWEEKJqb3oG+j/Px9WbzfxK6
-         5tAWnxth/mYAqD7a2eDxtE1X6PJr8nQwVMbtQagmTTwMgy9xbrlPhEs9gR20Iohzsm9O
-         52Y7+qX806svSWPWXQe2W6tNaMCmeXPc59XFaMUI17ykgHjKGDTOusnmPdasEX0r0ftB
-         8heapT/6rmaeAaUKFbezK8C6TfnriCyjmAj3oDkaqlVeCwRBjKBHSKw3l9jBO0dTokNR
-         axng==
-X-Gm-Message-State: AOAM532eJaHkjvEEe8h1j+XMIIs4y+yZO2pNW24PFArq+X9aDXZgiBBB
-        V/aOTKAJb1DvQCbZi2I7k0diJ0Sz9fI5/1Tm8rKZavNvIs4=
-X-Google-Smtp-Source: ABdhPJy6Sv53mPNnZ5/+mRm4KMI0WKd6yX7MOv3xDgif+E5itNFVclj9SpKfoLun8XE+5eCELmXumiZ5Rw/DTmXETFY=
-X-Received: by 2002:a25:ace0:: with SMTP id x32mr6550218ybd.142.1634218675130;
- Thu, 14 Oct 2021 06:37:55 -0700 (PDT)
+        Thu, 14 Oct 2021 09:40:54 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0EDC061570;
+        Thu, 14 Oct 2021 06:38:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HWqNRH4pgw0HjVJuPYKRAMq24ZY1u+MmeLlY73dlskY=; b=GdhF8aAHI2tg4ayb0fZ00QGb+4
+        qkvEWQ/MF3GGTDDkZKtnCQ+1inWmvXLiLhP93/1CWSoiSfpoWxdrvJwcyLVuebjtnigAP3uzZzEJ8
+        cszr+VlIlq6dojhDWb8cViF8LrRRGPhb3JmgTcuUbLVeDAtR2oqnovGjOEV2nvyA79tZZA40CxYfk
+        cfNQwwDmN1PX/wkG5HvfnPQE0QgSztfI0aS4EP6owv5wEZW85DEemsHkA2k6oK+G8srqzWQzxABX9
+        eNtFJuV21+rhtyNSiZvbBTCJoLZxuBJJX4oPIaQFug6pbJvufsa9Yi2+UpXf4uxWfNxMGvP83/pBa
+        1Ws0aQHQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55096)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mb0wL-0001O4-N8; Thu, 14 Oct 2021 14:38:33 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mb0w7-0002BL-Qz; Thu, 14 Oct 2021 14:38:19 +0100
+Date:   Thu, 14 Oct 2021 14:38:19 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     keescook@chromium.org, jannh@google.com,
+        linux-kernel@vger.kernel.org, vcaputo@pengaru.com,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, amistry@google.com,
+        Kenta.Tada@sony.com, legion@kernel.org,
+        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
+        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com,
+        mark.rutland@arm.com, axboe@kernel.dk, metze@samba.org,
+        laijs@linux.alibaba.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, ebiederm@xmission.com,
+        ohoono.kwon@samsung.com, kaleshsingh@google.com,
+        yifeifz2@illinois.edu, jpoimboe@redhat.com,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        vgupta@kernel.org, will@kernel.org, guoren@kernel.org,
+        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        nickhu@andestech.com, jonas@southpole.se, mpe@ellerman.id.au,
+        paul.walmsley@sifive.com, hca@linux.ibm.com,
+        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net
+Subject: Re: [PATCH 0/7] wchan: Fix wchan support
+Message-ID: <YWgyy+KvNLQ7eMIV@shell.armlinux.org.uk>
+References: <20211008111527.438276127@infradead.org>
+ <YWgcWnbsvI1rbvEj@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <20211014095748.84604-1-yaozhenguo1@gmail.com> <20211014064824.66c90ee5.alex.williamson@redhat.com>
-In-Reply-To: <20211014064824.66c90ee5.alex.williamson@redhat.com>
-From:   Zhenguo Yao <yaozhenguo1@gmail.com>
-Date:   Thu, 14 Oct 2021 21:37:44 +0800
-Message-ID: <CA+WzARn6r3qduRpyjaPGkrt7EeUwDPSCJiCQ62t4MtPg=DMRqw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] Add ablility of VFIO driver to ignore reset when
- device don't need it
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, cohuck@redhat.com,
-        jgg@ziepe.ca, mgurtovoy@nvidia.com, yishaih@nvidia.com,
-        kvm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?5aea5oyv5Zu9?= <yaozhenguo@jd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWgcWnbsvI1rbvEj@shell.armlinux.org.uk>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OK.  Thank you.  Let's waitting for NVIDIA's solution.
+On Thu, Oct 14, 2021 at 01:02:34PM +0100, Russell King (Oracle) wrote:
+> On Fri, Oct 08, 2021 at 01:15:27PM +0200, Peter Zijlstra wrote:
+> > Hi,
+> > 
+> > This fixes up wchan which is various degrees of broken across the
+> > architectures.
+> > 
+> > Patch 4 fixes wchan for x86, which has been returning 0 for the past many
+> > releases.
+> > 
+> > Patch 5 fixes the fundamental race against scheduling.
+> > 
+> > Patch 6 deletes a lot and makes STACKTRACE unconditional
+> > 
+> > patch 7 fixes up a few STACKTRACE arch oddities
+> > 
+> > 0day says all builds are good, so it must be perfect :-) I'm planning on
+> > queueing up at least the first 5 patches, but I'm hoping the last two patches
+> > can be too.
+> > 
+> > Also available here:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/wchan
+> 
+> These patches introduce a regression on ARM. Whereas before, I have
+> /proc/*/wchan populated with non-zero values, with these patches they
+> _all_ contain "0":
+> 
+> root@clearfog21:~# cat /proc/*/wchan
+> 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000root@clearfog21:~#
+> 
+> I'll try to investigate what is going on later today.
 
-Alex Williamson <alex.williamson@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=
-=8814=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=888:48=E5=86=99=E9=81=93=
-=EF=BC=9A
->
-> On Thu, 14 Oct 2021 17:57:46 +0800
-> Zhenguo Yao <yaozhenguo1@gmail.com> wrote:
->
-> > In some scenarios, vfio device can't do any reset in initialization
-> > process. For example: Nvswitch and GPU A100 working in Shared NVSwitch
-> > Virtualization Model. In such mode, there are two type VMs: service
-> > VM and Guest VM. The GPU devices are initialized in the following steps=
-:
-> >
-> > 1. Service VM boot up. GPUs and Nvswitchs are passthrough to service VM=
-.
-> > Nvidia driver and manager software will do some settings in service VM.
-> >
-> > 2. The selected GPUs are unpluged from service VM.
-> >
-> > 3. Guest VM boots up with the selected GPUs passthrough.
-> >
-> > The selected GPUs can't do any reset in step3, or they will be initiali=
-zed
-> > failed in Guest VM.
-> >
-> > This patchset add a PCI sysfs interface:ignore_reset which drivers can
-> > use it to control whether to do PCI reset or not. For example: In Share=
-d
-> > NVSwitch Virtualization Model. Hypervisor can disable PCI reset by sett=
-ing
-> > ignore_reset to 1 before Gust VM booting up.
-> >
-> > Zhenguo Yao (2):
-> >   PCI: Add ignore_reset sysfs interface to control whether do device
-> >     reset in PCI drivers
-> >   vfio-pci: Don't do device reset when ignore_reset is setting
-> >
-> >  drivers/pci/pci-sysfs.c          | 25 +++++++++++++++++
-> >  drivers/vfio/pci/vfio_pci_core.c | 48 ++++++++++++++++++++------------
-> >  include/linux/pci.h              |  1 +
-> >  3 files changed, 56 insertions(+), 18 deletions(-)
-> >
->
-> This all seems like code to mask that these NVSwitch configurations are
-> probably insecure because we can't factor and manage NVSwitch isolation
-> into IOMMU grouping.  I'm guessing this "service VM" pokes proprietary
-> registers to manage that isolation and perhaps later resetting devices
-> negates that programming.  A more proper solution is probably to do our
-> best to guess the span of an NVSwitch configuration and make the IOMMU
-> group include all the devices, until NVIDIA provides proper code for
-> the kernel to understand this interconnect and how it affects DMA
-> isolation.  Nak on disabling resets for the purpose of preventing a
-> user from undoing proprietary device programming.  Thanks,
->
-> Alex
->
+What is going on here is that the ARM stacktrace code refuses to trace
+non-current tasks in a SMP environment due to the racy nature of doing
+so if the non-current tasks are running.
+
+When walking the stack with frame pointers, we:
+
+- validate that the frame pointer is between the stack pointer and the
+  top of stack defined by that stack pointer.
+- we then load the next stack pointer and next frame pointer from the
+  stack.
+
+The reason this is unsafe when the task is not blocked is the stack can
+change at any moment, which can cause the value read as a stack pointer
+to be wildly different. If the read frame pointer value is roughly in
+agreement, we can end up reading any part of memory, which would be an
+information leak.
+
+The table based unwinding is much more complex being essentially a set
+of instructions to the unwinder code about which values to read from
+the stack into a set of pseudo-registers, corrections to the stack
+pointer, or transfers from the pseudo-registers. I haven't analysed
+this code enough to really know the implications of what could be
+possible if the values on the stack change while this code is running
+on another CPU (it's not my code!) There is an attempt to bounds-limit
+the virtual stack pointer after each unwind instruction is processed
+to catch the unwinder doing anything silly, so it may be safe in so far
+as it will fail should it encounter anything "stupid".
+
+However, get_wchan() is a different case; we know for certain that the
+task is blocked, so it won't be running on another CPU, and with your
+patch 4, we have this guarantee. However, that is not true of all
+callers to the stacktracing code, so I don't see how we can sanely
+switch to using the stacktracing code for this.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
