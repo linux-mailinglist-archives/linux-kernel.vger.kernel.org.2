@@ -2,538 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B04242D003
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7418742D004
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhJNBrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 21:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhJNBrW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 21:47:22 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C258AC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:45:18 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso5777022pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:45:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uKYZmfvtpDbDHQdJ2DIk4GcbSejS7WywchUrVBhSKH4=;
-        b=YFu3g16v7YljAtjsjXtyZUUTX0Pv3okx6Xgip8620WthANw8tBE8oqDZpYMJesN29i
-         EkaapSjoaJc2SQu6Ewtv+LGUYWTIlgoyhc1kTWk6XA5CiEiuN2tYCCJ14E9lwrBuQyjZ
-         qr2kE7Xd03xsV85nr/ONFtzLZjmbPCYJCelkzKLOtN76zSNfKQk1psa2j5Vf37P+/jC+
-         QPmiQ5FaQnYiPq+tSdqWRfEgk/iZY8z3niBCPgv1VfmFfn4wXyxBnCeFyne+sUHIk0aB
-         EZ3klq532MyKpNHd0Muz8Gati33q18AzUmDH7wV+8puhjxJsepgVcILE6S6Jm7T4nOj5
-         9Qow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uKYZmfvtpDbDHQdJ2DIk4GcbSejS7WywchUrVBhSKH4=;
-        b=j08Y2AVv09+xy38VG08rUV38T4Swqtgo9tvAwbQMEfH5h5D2I2YF51JXj0KEhQs94S
-         MRIdHuEGQVMWkm/9KUqVT8mSCcjg0WzcwwmLb3irlBDiHfy8LZN7M5ZICeEqDhzVWJlO
-         t5b7SDy4qTaf4AEJQH7vd9Y4e4XRWF+Vwr8532aQZ0rUpQw9U/pmam+JKFxsibft8vqT
-         U+DWLSak1sFydz8oA5JAaQ3HWWfPnwL/KI5NZos8dfINr+6G24rkBrfrbWb9LQ28pJr6
-         3Ur4TCQF1GbOyZARCSjdhkWJqOc4QG2g2fXhBI3aBDT+VbRBKcCY1Tff87wLx3D5aYB3
-         AyGQ==
-X-Gm-Message-State: AOAM533LT6fBqMyo2MwZ3fdpNpNguAco7K7qwEnKlfdI7daDPxHWqxLk
-        1AUtvF1PjIhrx5UqtyHzoeg=
-X-Google-Smtp-Source: ABdhPJxhYzV6eShFHMej91E/stct/oPFV5KSElQIlry0HhypuO/NAzKKreQGUB1C1b+KBXh3ydiYXQ==
-X-Received: by 2002:a17:90a:1a12:: with SMTP id 18mr18107292pjk.113.1634175917959;
-        Wed, 13 Oct 2021 18:45:17 -0700 (PDT)
-Received: from localhost.localdomain ([47.243.4.192])
-        by smtp.gmail.com with ESMTPSA id y1sm667947pfo.104.2021.10.13.18.45.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 18:45:17 -0700 (PDT)
-From:   Jeff Xie <xiehuan09@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     chenhuacai@kernel.org, linux-kernel@vger.kernel.org,
-        Jeff Xie <xiehuan09@gmail.com>
-Subject: [PATCH] trace: Add trace any kernel object
-Date:   Thu, 14 Oct 2021 09:44:45 +0800
-Message-Id: <20211014014445.5734-1-xiehuan09@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S229878AbhJNBsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 21:48:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229660AbhJNBsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 21:48:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5469960E78;
+        Thu, 14 Oct 2021 01:46:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634175966;
+        bh=tua+i/uJvDkd/ZtFDkoqVbra2yWlOooBf2r2SG+eGKw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J+9z2m9wTvKTY6lWS16h6yybTBuwTAZdeEvVgdwQwr+8rOhFKhvXt/C3L71ziMzi4
+         pe9PAadvDGR0W7Ct7B17451hZIJ5J1bojQ0/Sh2BW5SJrll2mojz6rKLhWiFrhlvCI
+         plmAxHJi1maoiie0XASFiZxFGkz9QCH3LcVKsIEz0od1adpPHbtvsFmOpYhym4KOJX
+         rUV8mcTIXSDAewVsUbvPDau0snmnUXzNU6WqPvk+iXDcAxLYVljCigXXIqlI4oJBLS
+         ddBqVpUhg7RGgcgdUbYcu38VYFe3UUgaasj8+yEjX0wAQc135qz5ja0GOF+lGskNs/
+         vsZt5/PGPIGew==
+Date:   Thu, 14 Oct 2021 09:45:49 +0800
+From:   Gao Xiang <xiang@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Lasse Collin <lasse.collin@tukaani.org>,
+        Chao Yu <chao@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 0/7] erofs: add LZMA compression support
+Message-ID: <20211014014548.GA14439@hsiangkao-HP-ZHAN-66-Pro-G1>
+Mail-Followup-To: Andrew Morton <akpm@linux-foundation.org>,
+        linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Lasse Collin <lasse.collin@tukaani.org>, Chao Yu <chao@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20211010213145.17462-1-xiang@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211010213145.17462-1-xiang@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a method based on function tracer and kprobe event 
-to trace any object in the linux kernel.
+On Mon, Oct 11, 2021 at 05:31:38AM +0800, Gao Xiang wrote:
 
-Usage:
-When using the kprobe event, only need to enable trace_object,
-we can trace any function argument or the return value. When 
-the object passes through a function, it can be traced.
+...
 
-For example:
+> 
+> 
+> Hi Andrew,
+> 
+> Some XZ embedded (lib/xz) patches by Lasse are sent out together in this series
+> although they're irrelevant to MicroLZMA but quite coupled. Can I send a pull
+> request together with EROFS LZMA support for 5.16 then? Many thanks in advance!
 
-For the function bio_add_page, we can trace the first argument:
+ping.. I've tested EROFS LZMA support with my own ro_fsstress. I'd like to
+apply them into -next for wider integration tests even though MicroLZMA
+itself is relatively independent decoder (it mainly calls raw LZMA decoding
+functions) thus it should not impact all the current users.
 
-int bio_add_page(struct bio *bio, struct page *page,
-				unsigned int len, unsigned int offset)
+Thanks,
+Gao Xiang
 
-	#cd /sys/kernel/debug/tracing
-	#echo 1 > ./trace_object
-	#echo 'p bio_add_page arg1=$arg1' > kprobe_events 
-	#echo 1 > ./events/kprobes/p_bio_add_page_0/enable
-	#sync
-	#cat ./trace
 
-	# tracer: nop
-	#
-	# entries-in-buffer/entries-written: 367/367   #P:4
-	#
-	#                                _-----=> irqs-off
-	#                               / _----=> need-resched
-	#                              | / _---=> hardirq/softirq
-	#                              || / _--=> preempt-depth
-	#                              ||| / _-=> migrate-disable
-	#                              |||| /     delay
-	#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-	#              | |         |   |||||     |         |
-    kworker/u8:5-89      [000] .....    60.310385: p_bio_add_page_0: (bio_add_page+0x0/0x90) arg1=0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310386: bio_add_page <-ext4_bio_write_page object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310387: __bio_try_merge_page <-bio_add_page object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310387: __bio_add_page <-bio_add_page object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310389: submit_bio <-ext4_io_submit object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310389: submit_bio <-ext4_io_submit object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310389: submit_bio_noacct <-ext4_io_submit object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310389: submit_bio_checks <-submit_bio_noacct object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310390: __cond_resched <-submit_bio_checks object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310390: rcu_all_qs <-__cond_resched object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310390: should_fail_bio <-submit_bio_checks object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310391: blk_mq_submit_bio <-submit_bio_noacct object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310392: blk_attempt_plug_merge <-blk_mq_submit_bio object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310392: __blk_mq_sched_bio_merge <-blk_mq_submit_bio object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310392: __blk_mq_alloc_request <-blk_mq_submit_bio object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310393: blk_mq_get_tag <-__blk_mq_alloc_request object:0xffff888102bde780
-    kworker/u8:5-89      [000] .....    60.310394: blk_account_io_start <-blk_mq_submit_bio object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311264: bio_advance <-blk_update_request object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311265: bio_endio <-blk_update_request object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311265: ext4_end_bio <-blk_update_request object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311266: ext4_finish_bio <-ext4_end_bio object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311274: bio_put <-ext4_end_bio object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311274: bio_free <-ext4_end_bio object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311274: bio_free <-ext4_end_bio object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311274: bvec_free <-bio_free object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311275: mempool_free <-bio_free object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311275: mempool_free_slab <-bio_free object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311275: mempool_free <-ext4_end_bio object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311275: mempool_free_slab <-ext4_end_bio object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311275: kmem_cache_free <-ext4_end_bio object:0xffff888102bde780
-          <idle>-0       [000] d....    60.311276: kmem_cache_free <-ext4_end_bio object:0xffff888102bde780
-    ...
-
-Signed-off-by: Jeff Xie <xiehuan09@gmail.com>
----
- include/linux/ftrace.h       |   6 ++
- kernel/trace/Kconfig         |   7 ++
- kernel/trace/Makefile        |   1 +
- kernel/trace/trace.c         |  69 +++++++++++++++++++
- kernel/trace/trace.h         |   2 +
- kernel/trace/trace_entries.h |  17 +++++
- kernel/trace/trace_kprobe.c  |   6 ++
- kernel/trace/trace_object.c  | 128 +++++++++++++++++++++++++++++++++++
- kernel/trace/trace_output.c  |  40 +++++++++++
- 9 files changed, 276 insertions(+)
- create mode 100644 kernel/trace/trace_object.c
-
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 832e65f06754..2e097a5fa462 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -1078,4 +1078,10 @@ unsigned long arch_syscall_addr(int nr);
- 
- #endif /* CONFIG_FTRACE_SYSCALLS */
- 
-+#ifdef CONFIG_TRACE_OBJECT
-+int init_trace_object(void);
-+int exit_trace_object(void);
-+void set_trace_object(void *obj);
-+#endif
-+
- #endif /* _LINUX_FTRACE_H */
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 420ff4bc67fd..d302a0f085f9 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -237,6 +237,13 @@ config FUNCTION_PROFILER
- 
- 	  If in doubt, say N.
- 
-+config TRACE_OBJECT
-+	bool "Trace kernel object"
-+	depends on FUNCTION_TRACER
-+	default y
-+	help
-+	 This help kernel developer to trace any kernel object.
-+
- config STACK_TRACER
- 	bool "Trace max stack"
- 	depends on HAVE_FUNCTION_TRACER
-diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-index 6de5d4d63165..6d9e78a488aa 100644
---- a/kernel/trace/Makefile
-+++ b/kernel/trace/Makefile
-@@ -66,6 +66,7 @@ obj-$(CONFIG_FUNCTION_GRAPH_TRACER) += trace_functions_graph.o
- obj-$(CONFIG_TRACE_BRANCH_PROFILING) += trace_branch.o
- obj-$(CONFIG_BLK_DEV_IO_TRACE) += blktrace.o
- obj-$(CONFIG_FUNCTION_GRAPH_TRACER) += fgraph.o
-+obj-$(CONFIG_TRACE_OBJECT) += trace_object.o
- ifeq ($(CONFIG_BLOCK),y)
- obj-$(CONFIG_EVENT_TRACING) += blktrace.o
- endif
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 7896d30d90f7..8069562bfde1 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9412,6 +9412,70 @@ static __init void create_trace_instances(struct dentry *d_tracer)
- 	mutex_unlock(&event_mutex);
- }
- 
-+#if defined(CONFIG_TRACE_OBJECT)
-+
-+static DEFINE_MUTEX(trace_object_lock);
-+static int trace_object_enabled __read_mostly;
-+
-+static ssize_t
-+trace_object_read(struct file *filp, char __user *ubuf,
-+		size_t cnt, loff_t *ppos)
-+{
-+	char buf[64];
-+	int r;
-+
-+	r = sprintf(buf, "%u\n", trace_object_enabled);
-+	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
-+}
-+
-+static ssize_t
-+trace_object_write(struct file *filp, const char __user *ubuf,
-+		size_t cnt, loff_t *ppos)
-+{
-+	unsigned long val;
-+	int ret;
-+
-+	ret = kstrtoul_from_user(ubuf, cnt, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	val = !!val;
-+
-+	mutex_lock(&trace_object_lock);
-+	if (trace_object_enabled ^ val) {
-+		if (val) {
-+			ret = init_trace_object();
-+			if (ret < 0) {
-+				cnt = ret;
-+				goto out;
-+			}
-+
-+			trace_object_enabled = 1;
-+		} else {
-+			ret = exit_trace_object();
-+			if (ret < 0) {
-+				cnt = ret;
-+				goto out;
-+			}
-+
-+			trace_object_enabled = 0;
-+		}
-+	}
-+out:
-+	mutex_unlock(&trace_object_lock);
-+	*ppos += cnt;
-+	return cnt;
-+}
-+
-+static const struct file_operations trace_object_fops = {
-+	.open           = tracing_open_generic,
-+	.read           = trace_object_read,
-+	.write          = trace_object_write,
-+	.llseek         = default_llseek,
-+};
-+
-+#endif
-+
- static void
- init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- {
-@@ -9477,6 +9541,11 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 	trace_create_maxlat_file(tr, d_tracer);
- #endif
- 
-+#if defined(CONFIG_TRACE_OBJECT)
-+	trace_create_file("trace_object", 0644, d_tracer, tr,
-+			&trace_object_fops);
-+#endif
-+
- 	if (ftrace_create_function_files(tr, d_tracer))
- 		MEM_FAIL(1, "Could not allocate function filter files");
- 
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index b7c0f8e160fb..bf6bcaa24e1a 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -49,6 +49,7 @@ enum trace_type {
- 	TRACE_TIMERLAT,
- 	TRACE_RAW_DATA,
- 	TRACE_FUNC_REPEATS,
-+	TRACE_OBJECT,
- 
- 	__TRACE_LAST_TYPE,
- };
-@@ -460,6 +461,7 @@ extern void __ftrace_bad_type(void);
- 			  TRACE_GRAPH_RET);		\
- 		IF_ASSIGN(var, ent, struct func_repeats_entry,		\
- 			  TRACE_FUNC_REPEATS);				\
-+		IF_ASSIGN(var, ent, struct trace_object_entry, TRACE_OBJECT);\
- 		__ftrace_bad_type();					\
- 	} while (0)
- 
-diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
-index cd41e863b51c..27bababc0ed4 100644
---- a/kernel/trace/trace_entries.h
-+++ b/kernel/trace/trace_entries.h
-@@ -401,3 +401,20 @@ FTRACE_ENTRY(timerlat, timerlat_entry,
- 		 __entry->context,
- 		 __entry->timer_latency)
- );
-+
-+/*
-+ * trace object entry:
-+ */
-+FTRACE_ENTRY(object, trace_object_entry,
-+
-+	TRACE_OBJECT,
-+
-+	F_STRUCT(
-+		__field(	unsigned long,		ip		)
-+		__field(	unsigned long,		parent_ip	)
-+		__field(	unsigned long,		object		)
-+	),
-+
-+	F_printk(" %ps <-- %ps object:%lx\n",
-+		 (void *)__entry->ip, (void *)__entry->parent_ip, __entry->object)
-+);
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 3a64ba4bbad6..0d46670702d9 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1341,6 +1341,9 @@ process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
- 		break;
- 	case FETCH_OP_RETVAL:
- 		val = regs_return_value(regs);
-+#ifdef CONFIG_TRACE_OBJECT
-+		set_trace_object((void *)val);
-+#endif
- 		break;
- 	case FETCH_OP_IMM:
- 		val = code->immediate;
-@@ -1354,6 +1357,9 @@ process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
- #ifdef CONFIG_HAVE_FUNCTION_ARG_ACCESS_API
- 	case FETCH_OP_ARG:
- 		val = regs_get_kernel_argument(regs, code->param);
-+#ifdef CONFIG_TRACE_OBJECT
-+		set_trace_object((void *)val);
-+#endif
- 		break;
- #endif
- 	case FETCH_NOP_SYMBOL:	/* Ignore a place holder */
-diff --git a/kernel/trace/trace_object.c b/kernel/trace/trace_object.c
-new file mode 100644
-index 000000000000..eb8edfebecee
---- /dev/null
-+++ b/kernel/trace/trace_object.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * trace any object
-+ * Copyright (C) 2021 Jeff Xie <xiehuan09@gmail.com>
-+ */
-+
-+#define pr_fmt(fmt) "trace_object: " fmt
-+
-+#include "trace_output.h"
-+
-+static DEFINE_PER_CPU(atomic_t, trace_object_event_disable);
-+static DEFINE_MUTEX(object_mutex_lock);
-+static struct trace_event_file event_trace_file;
-+
-+#define MAX_TRACE_OBJ_NUM 1024
-+static unsigned long *global_trace_obj;
-+static int global_trace_count;
-+static const int max_args_num = 6;
-+
-+void set_trace_object(void *obj)
-+{
-+	int i;
-+
-+	if (!obj || global_trace_count == MAX_TRACE_OBJ_NUM)
-+		goto out;
-+
-+	for (i = 0; i < global_trace_count; i++) {
-+		if (global_trace_obj[i] == (unsigned long)obj)
-+			goto out;
-+	}
-+	mutex_lock(&object_mutex_lock);
-+
-+	global_trace_obj[global_trace_count++] = (unsigned long)obj;
-+
-+	mutex_unlock(&object_mutex_lock);
-+out:
-+	return;
-+}
-+
-+static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
-+				 unsigned long object)
-+{
-+
-+	struct trace_buffer *buffer;
-+	struct ring_buffer_event *event;
-+	struct trace_object_entry *entry;
-+	int pc;
-+
-+	pc = preempt_count();
-+	event = trace_event_buffer_lock_reserve(&buffer, &event_trace_file,
-+			TRACE_OBJECT, sizeof(*entry), pc);
-+	if (!event)
-+		return;
-+	entry   = ring_buffer_event_data(event);
-+	entry->ip                       = ip;
-+	entry->parent_ip                = parent_ip;
-+	entry->object			= object;
-+
-+	event_trigger_unlock_commit(&event_trace_file, buffer, event,
-+		entry, pc);
-+}
-+
-+static void
-+trace_object_events_call(unsigned long ip, unsigned long parent_ip,
-+		struct ftrace_ops *op, struct ftrace_regs *fregs)
-+{
-+	struct pt_regs *pt_regs = ftrace_get_regs(fregs);
-+	unsigned long object;
-+	long disabled;
-+	int cpu, n, i;
-+
-+	preempt_disable_notrace();
-+
-+	cpu = raw_smp_processor_id();
-+	disabled = atomic_inc_return(&per_cpu(trace_object_event_disable, cpu));
-+
-+	if (disabled != 1)
-+		goto out;
-+
-+	if (!global_trace_obj[0])
-+		goto out;
-+
-+	for (n = 0; n < max_args_num; n++) {
-+		object = regs_get_kernel_argument(pt_regs, n);
-+		for (i = 0; i < global_trace_count; i++) {
-+			if (object == global_trace_obj[i])
-+				submit_trace_object(ip, parent_ip, object);
-+		}
-+	}
-+out:
-+	atomic_dec(&per_cpu(trace_object_event_disable, cpu));
-+	preempt_enable_notrace();
-+}
-+
-+static struct ftrace_ops trace_ops = {
-+	.func  = trace_object_events_call,
-+	.flags = FTRACE_OPS_FL_SAVE_REGS,
-+};
-+
-+int init_trace_object(void)
-+{
-+	int ret;
-+
-+	event_trace_file.tr = top_trace_array();
-+	if (WARN_ON(!event_trace_file.tr))
-+		return -1;
-+
-+	global_trace_obj = kzalloc(sizeof(unsigned long) * MAX_TRACE_OBJ_NUM,
-+				GFP_KERNEL);
-+	if (!global_trace_obj)
-+		return -ENOMEM;
-+
-+	ret = register_ftrace_function(&trace_ops);
-+
-+	return ret;
-+}
-+
-+int exit_trace_object(void)
-+{
-+	int ret;
-+
-+	ret = unregister_ftrace_function(&trace_ops);
-+
-+	kfree(global_trace_obj);
-+	return ret;
-+}
-diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index c2ca40e8595b..21a9c8737929 100644
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -1552,6 +1552,45 @@ static struct trace_event trace_func_repeats_event = {
- 	.funcs		= &trace_func_repeats_funcs,
- };
- 
-+/* TRACE_OBJECT */
-+static enum print_line_t trace_object_print(struct trace_iterator *iter, int flags,
-+					struct trace_event *event)
-+{
-+	struct trace_object_entry *field;
-+	struct trace_seq *s = &iter->seq;
-+
-+	trace_assign_type(field, iter->ent);
-+	print_fn_trace(s, field->ip, field->parent_ip, flags);
-+	trace_seq_printf(s, " object:0x%lx", field->object);
-+	trace_seq_putc(s, '\n');
-+
-+	return trace_handle_return(s);
-+}
-+
-+static enum print_line_t trace_object_raw(struct trace_iterator *iter, int flags,
-+				      struct trace_event *event)
-+{
-+	struct trace_object_entry *field;
-+
-+	trace_assign_type(field, iter->ent);
-+
-+	trace_seq_printf(&iter->seq, "%lx %lx\n",
-+			 field->ip,
-+			 field->parent_ip);
-+
-+	return trace_handle_return(&iter->seq);
-+}
-+
-+static struct trace_event_functions trace_object_funcs = {
-+	.trace		= trace_object_print,
-+	.raw		= trace_object_raw,
-+};
-+
-+static struct trace_event trace_object_event = {
-+	.type		= TRACE_OBJECT,
-+	.funcs		= &trace_object_funcs,
-+};
-+
- static struct trace_event *events[] __initdata = {
- 	&trace_fn_event,
- 	&trace_ctx_event,
-@@ -1566,6 +1605,7 @@ static struct trace_event *events[] __initdata = {
- 	&trace_timerlat_event,
- 	&trace_raw_data_event,
- 	&trace_func_repeats_event,
-+	&trace_object_event,
- 	NULL
- };
- 
--- 
-2.25.1
-
+> 
+> Thanks,
+> Gao Xiang
+> 
+> 
+> Gao Xiang (2):
+>   erofs: rename some generic methods in decompressor
+>   erofs: lzma compression support
+> 
+> Lasse Collin (5):
+>   lib/xz: Avoid overlapping memcpy() with invalid input with in-place
+>     decompression
+>   lib/xz: Validate the value before assigning it to an enum variable
+>   lib/xz: Move s->lzma.len = 0 initialization to lzma_reset()
+>   lib/xz: Add MicroLZMA decoder
+>   lib/xz, lib/decompress_unxz.c: Fix spelling in comments
+> 
+>  fs/erofs/Kconfig             |  16 ++
+>  fs/erofs/Makefile            |   1 +
+>  fs/erofs/compress.h          |  16 ++
+>  fs/erofs/decompressor.c      |  73 +++++----
+>  fs/erofs/decompressor_lzma.c | 290 +++++++++++++++++++++++++++++++++++
+>  fs/erofs/erofs_fs.h          |  14 +-
+>  fs/erofs/internal.h          |  22 +++
+>  fs/erofs/super.c             |  17 +-
+>  fs/erofs/zdata.c             |   4 +-
+>  fs/erofs/zdata.h             |   7 -
+>  fs/erofs/zmap.c              |   5 +-
+>  include/linux/xz.h           | 106 +++++++++++++
+>  lib/decompress_unxz.c        |  10 +-
+>  lib/xz/Kconfig               |  13 ++
+>  lib/xz/xz_dec_lzma2.c        | 182 +++++++++++++++++++++-
+>  lib/xz/xz_dec_stream.c       |   6 +-
+>  lib/xz/xz_dec_syms.c         |   9 +-
+>  lib/xz/xz_private.h          |   3 +
+>  18 files changed, 725 insertions(+), 69 deletions(-)
+>  create mode 100644 fs/erofs/decompressor_lzma.c
+> 
+> -- 
+> 2.20.1
+> 
