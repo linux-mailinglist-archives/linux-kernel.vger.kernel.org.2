@@ -2,126 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BD542E0A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB9342E0AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhJNSB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:01:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37712 "EHLO mail.kernel.org"
+        id S233786AbhJNSCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:02:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229718AbhJNSB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:01:58 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 758ED61037;
-        Thu, 14 Oct 2021 17:59:52 +0000 (UTC)
-Date:   Thu, 14 Oct 2021 13:59:50 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kbuild-all@lists.01.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [gustavoars:for-next/cast-function 1/3] ftrace.c:undefined
- reference to `ftrace_ops_list_func'
-Message-ID: <20211014135950.2f9b37a1@gandalf.local.home>
-In-Reply-To: <202110141048.EPutaubE-lkp@intel.com>
-References: <202110141048.EPutaubE-lkp@intel.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233764AbhJNSCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:02:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 218CB61056;
+        Thu, 14 Oct 2021 18:00:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634234426;
+        bh=kNjkeDBzuQfKoxHXcqV0S2llnADIp119vN6i/9sLhI0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G+2O+xStpmBdi2GvmMWeubjNCIO1twn71R2X9fWluUEAyGo3Si35GkyuwT73m2Cj2
+         djRXu/apHaUwV+JT5JfphXPS0aquut7uuFllJdLigvBAOVyJdZohTpOK7tIT44xFgi
+         HnWZYT1YZHjyH1cVLcEs0yQw31IexSnUHC+tvGy9GusWytkK9TiJMaSGYnH2em7IsD
+         7mybQ9s2WZ+TOb/8eX6OubU8D1O+0hnsmjrg3E4fP8UpIInWtMMnoh1iZIxAnSUs8/
+         2xLgsR/+OBsMaJCsyvCOkYeihH9cghkssYwvRv0n67UwWs/GSck8bIDV5m2A1ukzXl
+         kReRVmUiaL9VQ==
+Date:   Thu, 14 Oct 2021 11:00:25 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
+        david@fromorbit.com, hch@infradead.org, jane.chu@oracle.com
+Subject: Re: [PATCH v7 2/8] dax: Introduce holder for dax_device
+Message-ID: <20211014180025.GC24333@magnolia>
+References: <20210924130959.2695749-1-ruansy.fnst@fujitsu.com>
+ <20210924130959.2695749-3-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924130959.2695749-3-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 10:58:55 +0800
-kernel test robot <lkp@intel.com> wrote:
-
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/cast-function
-> head:   eed09ebd6f47aeb92b3fe3b8d338b2a55e534928
-> commit: f9d45e65ef7f67bdb39c15d09bc6021f197d893e [1/3] ftrace: Fix -Wcast-function-type warnings on powerpc64
-> config: sh-randconfig-r026-20211013 (attached as .config)
-> compiler: sh4-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?id=f9d45e65ef7f67bdb39c15d09bc6021f197d893e
->         git remote add gustavoars https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git
->         git fetch --no-tags gustavoars for-next/cast-function
->         git checkout f9d45e65ef7f67bdb39c15d09bc6021f197d893e
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=sh SHELL=/bin/bash
+On Fri, Sep 24, 2021 at 09:09:53PM +0800, Shiyang Ruan wrote:
+> To easily track filesystem from a pmem device, we introduce a holder for
+> dax_device structure, and also its operation.  This holder is used to
+> remember who is using this dax_device:
+>  - When it is the backend of a filesystem, the holder will be the
+>    superblock of this filesystem.
+>  - When this pmem device is one of the targets in a mapped device, the
+>    holder will be this mapped device.  In this case, the mapped device
+>    has its own dax_device and it will follow the first rule.  So that we
+>    can finally track to the filesystem we needed.
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> The holder and holder_ops will be set when filesystem is being mounted,
+> or an target device is being activated.
 > 
-> All errors (new ones prefixed by >>):
-> 
->    sh4-linux-ld: kernel/trace/ftrace.o: in function `update_ftrace_function':
-> >> ftrace.c:(.text+0x158): undefined reference to `ftrace_ops_list_func'  
-> 
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  drivers/dax/super.c | 59 +++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/dax.h | 29 ++++++++++++++++++++++
+>  2 files changed, 88 insertions(+)
+> 
+> diff --git a/drivers/dax/super.c b/drivers/dax/super.c
+> index 48ce86501d93..7d4a11dcba90 100644
+> --- a/drivers/dax/super.c
+> +++ b/drivers/dax/super.c
+> @@ -23,7 +23,10 @@
+>   * @cdev: optional character interface for "device dax"
+>   * @host: optional name for lookups where the device path is not available
+>   * @private: dax driver private data
+> + * @holder_data: holder of a dax_device: could be filesystem or mapped device
+>   * @flags: state and boolean properties
+> + * @ops: operations for dax_device
+> + * @holder_ops: operations for the inner holder
+>   */
+>  struct dax_device {
+>  	struct hlist_node list;
+> @@ -31,8 +34,10 @@ struct dax_device {
+>  	struct cdev cdev;
+>  	const char *host;
+>  	void *private;
+> +	void *holder_data;
+>  	unsigned long flags;
+>  	const struct dax_operations *ops;
+> +	const struct dax_holder_operations *holder_ops;
+>  };
+>  
+>  static dev_t dax_devt;
+> @@ -374,6 +379,29 @@ int dax_zero_page_range(struct dax_device *dax_dev, pgoff_t pgoff,
+>  }
+>  EXPORT_SYMBOL_GPL(dax_zero_page_range);
+>  
+> +int dax_holder_notify_failure(struct dax_device *dax_dev, loff_t offset,
+> +			      size_t size, int flags)
+> +{
+> +	int rc;
+> +
+> +	dax_read_lock();
+> +	if (!dax_alive(dax_dev)) {
+> +		rc = -ENXIO;
+> +		goto out;
+> +	}
+> +
+> +	if (!dax_dev->holder_data) {
+> +		rc = -EOPNOTSUPP;
+> +		goto out;
+> +	}
+> +
+> +	rc = dax_dev->holder_ops->notify_failure(dax_dev, offset, size, flags);
 
-This update should fix this patch (sent for the other issues as well).
+Shouldn't this check if dax_dev->holder_ops != NULL before dereferencing
+it for the function call?  Imagine an implementation that wants to
+attach a ->notify_failure function to a dax_device, maintains its own
+lookup table, and decides that it doesn't need to set holder_data.
 
--- Steve
+(Or, imagine someone who writes a garbage into holder_data and *boom*)
 
+How does the locking work here?  If there's a media failure, we'll take
+dax_rwsem and call ->notify_failure.  If the ->notify_failure function
+wants to access the pmem to handle the error by calling back into the
+dax code, will that cause nested locking on dax_rwsem?
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index b86f52683b6f..8771c435f34b 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -178,7 +178,8 @@
- 			ftrace_ops_list_func = arch_ftrace_ops_list_func;
- #else
- # ifdef CONFIG_FUNCTION_TRACER
--#  define MCOUNT_REC()	ftrace_stub_graph = ftrace_stub;
-+#  define MCOUNT_REC()	ftrace_stub_graph = ftrace_stub;	\
-+			ftrace_ops_list_func = arch_ftrace_ops_list_func;
- # else
- #  define MCOUNT_REC()
- # endif
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 832e65f06754..871b51bec170 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -30,16 +30,25 @@
- #define ARCH_SUPPORTS_FTRACE_OPS 0
- #endif
- 
-+#ifdef CONFIG_FUNCTION_TRACER
-+struct ftrace_ops;
- /*
-  * If the arch's mcount caller does not support all of ftrace's
-  * features, then it must call an indirect function that
-  * does. Or at least does enough to prevent any unwelcome side effects.
-+ *
-+ * Also define the function prototype that these architectures use
-+ * to call the ftrace_ops_list_func().
-  */
- #if !ARCH_SUPPORTS_FTRACE_OPS
- # define FTRACE_FORCE_LIST_FUNC 1
-+void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip);
- #else
- # define FTRACE_FORCE_LIST_FUNC 0
-+void arch_ftrace_ops_list_func(unsigned long ip, unsigned long parent_ip,
-+			       struct ftrace_ops *op, struct ftrace_regs *fregs);
- #endif
-+#endif /* CONFIG_FUNCTION_TRACER */
- 
- /* Main tracing buffer and events set up */
- #ifdef CONFIG_TRACING
-@@ -88,8 +97,6 @@ extern int
- ftrace_enable_sysctl(struct ctl_table *table, int write,
- 		     void *buffer, size_t *lenp, loff_t *ppos);
- 
--struct ftrace_ops;
--
- #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 
- struct ftrace_regs {
+Jumping ahead a bit, I think the rmap btree accesses that the xfs
+implementation performs can cause xfs_buf(fer) cache IO, which would
+trigger that if the buffers aren't already in memory, if I'm reading
+this correctly?
+
+> +out:
+> +	dax_read_unlock();
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(dax_holder_notify_failure);
+> +
+>  #ifdef CONFIG_ARCH_HAS_PMEM_API
+>  void arch_wb_cache_pmem(void *addr, size_t size);
+>  void dax_flush(struct dax_device *dax_dev, void *addr, size_t size)
+> @@ -618,6 +646,37 @@ void put_dax(struct dax_device *dax_dev)
+>  }
+>  EXPORT_SYMBOL_GPL(put_dax);
+>  
+> +void dax_set_holder(struct dax_device *dax_dev, void *holder,
+> +		const struct dax_holder_operations *ops)
+> +{
+> +	dax_write_lock();
+> +	if (!dax_alive(dax_dev)) {
+> +		dax_write_unlock();
+> +		return;
+> +	}
+> +
+> +	dax_dev->holder_data = holder;
+> +	dax_dev->holder_ops = ops;
+> +	dax_write_unlock();
+
+I guess this means that the holder has to detach itself before anyone
+calls kill_dax, or else a dead dax device ends up with a dangling
+reference to the holder?
+
+> +}
+> +EXPORT_SYMBOL_GPL(dax_set_holder);
+> +
+> +void *dax_get_holder(struct dax_device *dax_dev)
+> +{
+> +	void *holder;
+> +
+> +	dax_read_lock();
+> +	if (!dax_alive(dax_dev)) {
+> +		dax_read_unlock();
+> +		return NULL;
+> +	}
+> +
+> +	holder = dax_dev->holder_data;
+> +	dax_read_unlock();
+> +	return holder;
+> +}
+> +EXPORT_SYMBOL_GPL(dax_get_holder);
+> +
+>  /**
+>   * inode_dax: convert a public inode into its dax_dev
+>   * @inode: An inode with i_cdev pointing to a dax_dev
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index 097b3304f9b9..d273d59723cd 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -38,9 +38,24 @@ struct dax_operations {
+>  	int (*zero_page_range)(struct dax_device *, pgoff_t, size_t);
+>  };
+>  
+> +struct dax_holder_operations {
+> +	/*
+> +	 * notify_failure - notify memory failure into inner holder device
+> +	 * @dax_dev: the dax device which contains the holder
+> +	 * @offset: offset on this dax device where memory failure occurs
+> +	 * @size: length of this memory failure event
+> +	 * @flags: action flags for memory failure handler
+> +	 */
+> +	int (*notify_failure)(struct dax_device *dax_dev, loff_t offset,
+> +			size_t size, int flags);
+
+Shouldn't size be u64 or something?  Let's say that 8GB of your pmem go
+bad, wouldn't you want a single call?  Though I guess the current
+implementation only goes a single page at a time, doesn't it?
+
+> +};
+> +
+>  extern struct attribute_group dax_attribute_group;
+>  
+>  #if IS_ENABLED(CONFIG_DAX)
+> +void dax_set_holder(struct dax_device *dax_dev, void *holder,
+> +		const struct dax_holder_operations *ops);
+> +void *dax_get_holder(struct dax_device *dax_dev);
+>  struct dax_device *alloc_dax(void *private, const char *host,
+>  		const struct dax_operations *ops, unsigned long flags);
+>  void put_dax(struct dax_device *dax_dev);
+> @@ -70,6 +85,18 @@ static inline bool daxdev_mapping_supported(struct vm_area_struct *vma,
+>  	return dax_synchronous(dax_dev);
+>  }
+>  #else
+> +static inline struct dax_device *dax_get_by_host(const char *host)
+
+Not sure why this is being added here?  AFAICT none of the patches call
+this function...?
+
+--D
+
+> +{
+> +	return NULL;
+> +}
+> +static inline void dax_set_holder(struct dax_device *dax_dev, void *holder,
+> +		const struct dax_holder_operations *ops)
+> +{
+> +}
+> +static inline void *dax_get_holder(struct dax_device *dax_dev)
+> +{
+> +	return NULL;
+> +}
+>  static inline struct dax_device *alloc_dax(void *private, const char *host,
+>  		const struct dax_operations *ops, unsigned long flags)
+>  {
+> @@ -198,6 +225,8 @@ size_t dax_copy_to_iter(struct dax_device *dax_dev, pgoff_t pgoff, void *addr,
+>  		size_t bytes, struct iov_iter *i);
+>  int dax_zero_page_range(struct dax_device *dax_dev, pgoff_t pgoff,
+>  			size_t nr_pages);
+> +int dax_holder_notify_failure(struct dax_device *dax_dev, loff_t offset,
+> +		size_t size, int flags);
+>  void dax_flush(struct dax_device *dax_dev, void *addr, size_t size);
+>  
+>  ssize_t dax_iomap_rw(struct kiocb *iocb, struct iov_iter *iter,
+> -- 
+> 2.33.0
+> 
+> 
+> 
