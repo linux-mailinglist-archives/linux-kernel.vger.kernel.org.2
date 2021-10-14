@@ -2,128 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FCC42D84F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2CB42D851
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhJNLj5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Oct 2021 07:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbhJNLjz (ORCPT
+        id S231169AbhJNLkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:40:39 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55676 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230229AbhJNLkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:39:55 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E65C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:37:50 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1maz3Q-0005y5-2b; Thu, 14 Oct 2021 13:37:44 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1maz3M-000463-0H; Thu, 14 Oct 2021 13:37:40 +0200
-Message-ID: <fdea4ea765654a6c8dc820d75a6c2faad2284723.camel@pengutronix.de>
-Subject: Re: [PATCH v2 2/3] phy/rockchip: add naneng combo phy for RK3568
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Yifeng Zhao <yifeng.zhao@rock-chips.com>, heiko@sntech.de,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, vkoul@kernel.org,
-        michael.riesch@wolfvision.net, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, kishon@ti.com
-Date:   Thu, 14 Oct 2021 13:37:39 +0200
-In-Reply-To: <20211013101938.28061-3-yifeng.zhao@rock-chips.com>
-References: <20211013101938.28061-1-yifeng.zhao@rock-chips.com>
-         <20211013101938.28061-3-yifeng.zhao@rock-chips.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
-MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Thu, 14 Oct 2021 07:40:37 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 69E6921A74;
+        Thu, 14 Oct 2021 11:38:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634211512; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tL+SOKDX3hkNa5BvmV5TRBLsoF/YWzQI6GrS/Q70rrw=;
+        b=MDpVaXdSQFeihigd0+QU19BVWmxHJKcEhciHmxRs/NSwHNxj3kQJUaVY9vVZXCtw+O0FHL
+        qbDHv2FxjnogajxPeaZj3bKRbuIIkGkgCrSX2hGhQvRzLB6L13aodNujGSV5Vj0IIlp0bs
+        +0i6lr3xSYeq9ndRlpd6tsZ9wH7I5vg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634211512;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tL+SOKDX3hkNa5BvmV5TRBLsoF/YWzQI6GrS/Q70rrw=;
+        b=N7z33a5RoXkZAV7wfPa5HmybVVpm+w07v42Laf3Po300BCX5TUn1+BF6CNe8I+9lca8H2l
+        gF4AewzZ5qavoGAQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 3BEFDA3B84;
+        Thu, 14 Oct 2021 11:38:32 +0000 (UTC)
+Date:   Thu, 14 Oct 2021 13:38:32 +0200
+Message-ID: <s5hr1cnx2dj.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
+In-Reply-To: <YWgM2jI94fZLfP09@kroah.com>
+References: <YWLbEdHUE3k/i0fe@kroah.com>
+        <s5hily46316.wl-tiwai@suse.de>
+        <YWRYD7fphcaWKEOG@kroah.com>
+        <s5h7dej4kbe.wl-tiwai@suse.de>
+        <YWRy+UoG1YHcQ7UM@kroah.com>
+        <s5ho87u3dcb.wl-tiwai@suse.de>
+        <YWWCiLE6id43uJjp@kroah.com>
+        <s5hsfx61imj.wl-tiwai@suse.de>
+        <YWgM2jI94fZLfP09@kroah.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yifeng,
-
-On Wed, 2021-10-13 at 18:19 +0800, Yifeng Zhao wrote:
-> This patch implements a combo phy driver for Rockchip SoCs
-> with NaNeng IP block. This phy can be used as pcie-phy, usb3-phy,
-> sata-phy or sgmii-phy.
+On Thu, 14 Oct 2021 12:56:26 +0200,
+Greg Kroah-Hartman wrote:
 > 
-> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
-> ---
+> On Tue, Oct 12, 2021 at 03:24:04PM +0200, Takashi Iwai wrote:
+> > On Tue, 12 Oct 2021 14:41:44 +0200,
+> > Greg Kroah-Hartman wrote:
+> > > 
+> > > On Tue, Oct 12, 2021 at 09:35:16AM +0200, Takashi Iwai wrote:
+> > > > On Mon, 11 Oct 2021 19:23:05 +0200,
+> > > > Greg Kroah-Hartman wrote:
+> > > > > 
+> > > > > On Mon, Oct 11, 2021 at 06:07:01PM +0200, Takashi Iwai wrote:
+> > > > > > Could you also post the contents of /proc/asound/card*/usbmixer (only
+> > > > > > for the corresponding device), too?
+> > > > > 
+> > > > > Sure, here it is:
+> > > > > 
+> > > > > USB Mixer: usb_id=0x30be0101, ctrlif=0, ctlerr=0
+> > > > > Card: Schiit Audio Schiit Hel at usb-0000:47:00.1-2.2, high speed
+> > > > >   Unit: 5
+> > > > >     Control: name="Mic - Input Jack", index=0
+> > > > >     Info: id=5, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > >   Unit: 7
+> > > > >     Control: name="Speaker - Output Jack", index=0
+> > > > >     Info: id=7, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > >   Unit: 13
+> > > > >     Control: name="PCM Playback Switch", index=0
+> > > > >     Info: id=13, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
+> > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > >   Unit: 17
+> > > > >     Control: name="Mic Capture Switch", index=0
+> > > > >     Info: id=17, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
+> > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > >   Unit: 18
+> > > > >     Control: name="Clock Source 18 Validity", index=0
+> > > > >     Info: id=18, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > >   Unit: 22
+> > > > >     Control: name="Clock Source 22 Validity", index=0
+> > > > >     Info: id=22, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > 
+> > > > Hm, I expected more exotic control that failed, but it was Mic Capture
+> > > > Switch, which should be treated normally.
+> > > > 
+> > > > Could you try the patch below?  This will still show other warning
+> > > > messages, but it'll forcibly initialize the mixer elements at probe
+> > > > time, and the rest should work.
+> > > > 
+> > > > Once after it's confirmed to work, we may shut up the device warnings
+> > > > with a quirk.
+> > > 
+> > > Only one warning message shows up, here's the dmesg with this patch
+> > > applied:
+> > > 
+> > > 
+> > > [Oct12 14:39] usb 7-2.2: new high-speed USB device number 10 using xhci_hcd
+> > > [  +0.123157] usb 7-2.2: New USB device found, idVendor=30be, idProduct=0101, bcdDevice= 1.02
+> > > [  +0.000009] usb 7-2.2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+> > > [  +0.000003] usb 7-2.2: Product: Schiit Hel
+> > > [  +0.000002] usb 7-2.2: Manufacturer: Schiit Audio
+> > > [  +0.339785] usb 7-2.2: 17:0: failed to get current value for ch 0 (-32)
+> > > [  +0.020373] input: Schiit Audio Schiit Hel as /devices/pci0000:40/0000:40:01.1/0000:41:00.0/0000:42:08.0/0000:47:00.1/usb7/7-2/7-2.2/7-2.2:1.3/0003:30BE:0101.000B/input/input24
+> > > [  +0.056868] hid-generic 0003:30BE:0101.000B: input,hidraw6: USB HID v1.00 Device [Schiit Audio Schiit Hel] on usb-0000:47:00.1-2.2/input3
+> > 
+> > OK, then the problem is only about this unit and about the master
+> > channel.
+> > 
+> > > I don't see a "mic capture switch" on this device, but maybe it triggers
+> > > when I plug a mic into the microphone port, which is currently empty?
+> > 
+> > This should be persistent and visible; try to run "amixer -c1" (or the
+> > different card index for the device).
+> > 
+> > So far, so good.  The only remaining piece is how this -EPIPE error
+> > comes up.  Is this a protocol stall error or such?  Would it be
+> > avoided by adding the delay like done for some devices?
+> > 
+> > With the 5.15-rc kernel, you can pass quirk_flags option to
+> > snd-usb-audio module for applying known quirks.
+> > e.g. quirk_flags=0x100 will set the 1msec delay at each control
+> > message.  Please check whether it makes any difference.
+> > The option is an integer array for multiple devices, so if you have
+> > multiple USB-audio devices, put at the appropriate position in the
+> > array (e.g. quirk_flags=,,0x100 for the 3rd slot).
 > 
-> Changes in v2:
-> - Using api devm_platform_get_and_ioremap_resource.
-> - Modify rockchip_combphy_set_Mode.
-> - Add some PHY registers definition.
+> This quirk did not work.  Well, it caused the error to show up after a
+> delay, but the error is still there.
 > 
->  drivers/phy/rockchip/Kconfig                  |   8 +
->  drivers/phy/rockchip/Makefile                 |   1 +
->  .../rockchip/phy-rockchip-naneng-combphy.c    | 650 ++++++++++++++++++
->  3 files changed, 659 insertions(+)
->  create mode 100644 drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
+> > The quirk bit 0x4000 will shut up the control errors.  If the above
+> > doesn't fix the warning and the device is working more or less, set
+> > this quirk to shut up the warning.  It can be set statically in the
+> > table at the end in sound/usb/quirks.c.
 > 
-[...]
-> diff --git a/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c b/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
-> new file mode 100644
-> index 000000000000..fbfc5fbbd5b8
-> --- /dev/null
-> +++ b/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
-> @@ -0,0 +1,650 @@
-[...]
-> +static int rockchip_combphy_parse_dt(struct device *dev,
-> +				     struct rockchip_combphy_priv *priv)
-> +{
-> +	const struct rockchip_combphy_cfg *phy_cfg = priv->cfg;
-> +	int ret, mac_id;
-> +
-[...]
-> +	priv->apb_rst = devm_reset_control_get_optional(dev, "combphy-apb");
+> This quirk did work in that the error messages are still in the kernel
+> log, but the device seems to work properly now.
+> 
+> Let me send a patch that adds this device to the quirk table.
 
-Please use devm_reset_control_get_optional_exclusive().
+OK, thanks!  The remaining error message should be suppressed with the
+patch in my previous mail.  Or maybe we can add a patch to downgrade
+the error message to dev_dbg() at first for 5.15, then another one
+(initializing all controls at first) to 5.16.
 
-Also, apb_rst is never used?
 
-> +	if (IS_ERR(priv->apb_rst)) {
-> +		ret = PTR_ERR(priv->apb_rst);
-> +
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_warn(dev, "failed to get apb reset\n");
-> +
-> +		return ret;
-
-Any reason not to use dev_err_probe()?
-
-> +	}
-> +
-> +	priv->phy_rst = devm_reset_control_get_optional(dev, "combphy");
-
-Please use devm_reset_control_get_optional_exclusive().
-
-> +	if (IS_ERR(priv->phy_rst)) {
-> +		ret = PTR_ERR(priv->phy_rst);
-> +
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_warn(dev, "failed to get phy reset\n");
-> +
-> +		return ret;
-
-Same as above.
-
-> +	}
-> +
-> +	return reset_control_assert(priv->phy_rst);
-
-It is unexpected that a function called rockchip_combphy_parse_dt()
-already changes device state.
-
-I'd move the reset_control_assert() out into rockchip_combphy_probe().
-
-regards
-Philipp
+Takashi
