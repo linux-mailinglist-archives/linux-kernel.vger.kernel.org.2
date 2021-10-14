@@ -2,107 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF6542DB23
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10CE42DB25
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbhJNOKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:10:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhJNOKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:10:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 209BF610A0;
-        Thu, 14 Oct 2021 14:08:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634220490;
-        bh=D0kIMpPplXpp37Gh0tOmiNC+vZqJTD00gQ8fpi5NP1k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VxiRiJNs1di0hnfqTQfezhICJ6DFPuhn+4LCHaybprPQL1ccfr5k+pjOanaqq/Ro1
-         Z+L1SqtxyTSSSvgO1BShU959kscT0F9Dup5iJYHk6bNFakJdKxVLmX3RIxg8o0lGd7
-         xPJW4bv+PEpVutGchFm0DMOlBEIF4EzsCbQHl3MGtBHq3RITUHzlG6meTMIfqKq0PH
-         0xHCl/OUiCGA19/hda/V41fLe4ErDMmZwCWvUp0w9VVy7WJ9hvSaxu4unFFyOMfrB5
-         Fjq7pju3gK71nooJ1XF+kySjX9PoHdx43dclswMhBgupzmoWLqmKrJS2yszulsdINs
-         i3etWyYjqehPg==
-Date:   Thu, 14 Oct 2021 07:08:09 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alvin =?UTF-8?B?xaBpcHJhZ2E=?= <ALSI@bang-olufsen.dk>
-Cc:     Alvin =?UTF-8?B?xaBpcHJhZ2E=?= <alvin@pqrs.dk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Rasmussen <MIR@bang-olufsen.dk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 5/6] net: dsa: realtek-smi: add rtl8365mb
- subdriver for RTL8365MB-VC
-Message-ID: <20211014070809.6ca397ce@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <80c80992-85c2-d971-ce1c-a37f8199da7a@bang-olufsen.dk>
-References: <20211012123557.3547280-1-alvin@pqrs.dk>
-        <20211012123557.3547280-6-alvin@pqrs.dk>
-        <20211012082703.7b31e73b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <bde59012-8394-d31b-24c4-018cbfe0ed57@bang-olufsen.dk>
-        <20211013081340.0ca97db1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <80c80992-85c2-d971-ce1c-a37f8199da7a@bang-olufsen.dk>
+        id S231753AbhJNOLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:11:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42840 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230177AbhJNOLN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:11:13 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1634220546;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K+Z9xcyAhlGhiE9Ys3ZMpsS6I+8zaTKKFDoB018524Q=;
+        b=k+j8vzoYgb9TasLzlp1gxnwy27KKqytkbbQk3yS3iea+SH8k4GVs4e7JadVcy7bpdzp56O
+        yR+YWd3wuismwBBDIeqA/IdvT9ddoXweCn8TBwvutTh3chQHsvgng4pkTnkXcrIj09l1Dk
+        YQ+yeUGReSjo39ocKrT6hQMKIgVBvUnrBiy/WSiB+fZrpLZaxjqkGiU9xwEYbgiGeADmJ8
+        JS0qoLlYd4m24wSnsM9Oixhu2vP0Stzc1SVNIPz6wWgxCcIkBG14YhU2KLD2MZg0vH4SSD
+        qpxiG15zDJ8AphXsuGt+Zf+joZoOfXzq9svbLHa9VlG+mXMLceYy/GRFDne66Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1634220546;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K+Z9xcyAhlGhiE9Ys3ZMpsS6I+8zaTKKFDoB018524Q=;
+        b=KN60iuzhEc02Xp90DjyYuXWP5nfYxfwmaELt+nfeHAbY0dksjM/SdXcytd4cTcbtSVz5SZ
+        YTxYUd+Pnv1ITdDA==
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Jing Liu <jing2.liu@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "Cooper, Andrew" <andrew.cooper3@citrix.com>
+Subject: Re: [patch 13/31] x86/fpu: Move KVMs FPU swapping to FPU core
+In-Reply-To: <6bbc5184-a675-1937-eb98-639906a9cf15@redhat.com>
+References: <871r4p9fyh.ffs@tglx>
+ <ec9c761d-4b5c-71e2-c1fc-d256b6b78c04@redhat.com>
+ <BL0PR11MB3252511FC48E43484DE79A3CA9B89@BL0PR11MB3252.namprd11.prod.outlook.com>
+ <6bbc5184-a675-1937-eb98-639906a9cf15@redhat.com>
+Date:   Thu, 14 Oct 2021 16:09:06 +0200
+Message-ID: <87wnmf66m5.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 12:44:37 +0000 Alvin =C5=A0ipraga wrote:
-> On 10/13/21 5:13 PM, Jakub Kicinski wrote:
-> > On Wed, 13 Oct 2021 08:33:36 +0000 Alvin =C5=A0ipraga wrote: =20
-> >> I implement the dsa_switch_ops callback .get_ethtool_stats, using an
-> >> existing function rtl8366_get_ethtool_stats in the switch helper libra=
-ry
-> >> rtl8366.c. It was my understanding that this is the correct way to
-> >> expose counters within the DSA framework - please correct me if that is
-> >> wrong. =20
-> >=20
-> > It's the legacy way, today we have a unified API for reporting those
-> > stats so user space SW doesn't have to maintain a myriad string matches
-> > to get to basic IEEE stats across vendors. Driver authors have a truly
-> > incredible ability to invent their own names for standard stats. It
-> > appears that your pick of names is also unique :)
-> >=20
-> > It should be trivial to plumb the relevant ethtool_ops thru to
-> > dsa_switch_ops if relevant dsa ops don't exist.
-> >=20
-> > You should also populate correct stats in dsa_switch_ops::get_stats64
-> > (see the large comment above the definition of struct
-> > rtnl_link_stats64 for mapping). A word of warning there, tho, that
-> > callback runs in an atomic context so if your driver needs to block it
-> > has to read the stats periodically from a async work. =20
->=20
-> OK, so just to clarify:
->=20
-> - get_ethtool_stats is deprecated - do not use
+On Thu, Oct 14 2021 at 11:01, Paolo Bonzini wrote:
+> On 14/10/21 10:02, Liu, Jing2 wrote:
+> Based on the input from Andy and Thomas, the new way would be like this:
+>
+> 1) host_fpu must always be checked for reallocation in 
+> kvm_load_guest_fpu (or in the FPU functions that it calls, that depends 
+> on the rest of Thomas's patches).  That's because arch_prctl can enable 
+> AMX for QEMU at any point after KVM_CREATE_VCPU.
 
-It can still be used, but standardized interfaces should be preferred
-whenever possible, especially when appropriate uAPI already exists.
+No.
 
-> - get_eth_{phy,mac,ctrl,rmon}_stats is the new API - add DSA plumbing=20
-> and use this
+   1) QEMU starts
+   2) QEMU requests permissions via prctl()
+   3) QEMU creates vCPU threads
 
-Yup.
+Doing it the other way around makes no sense at all and wont work.
 
-> - get_stats64 orthogonal to ethtool stats but still important - use also=
-=20
-> this
+> 2) every use of vcpu->arch.guest_supported_xcr0 is changed to only 
+> include those dynamic-feature bits that were enabled via arch_prctl.
+> That is, something like:
+>
+> static u64 kvm_guest_supported_cr0(struct kvm_vcpu *vcpu)
+> {
+> 	return vcpu->arch.guest_supported_xcr0 &
+> 		(~xfeatures_mask_user_dynamic | \
+> 		 current->thread.fpu.dynamic_state_perm);
 
-Yes, users should be able to depend on basic interface stats (packets,
-bytes, crc errors) to be correct.
+Bah. You can't get enough from poking in internals, right?
 
-> For stats64 I will need to poll asynchronously - do you have any=20
-> suggestion for how frequently I should do that? I see one DSA driver=20
-> doing it every 3 seconds, for example.
+vcpu_create()
 
-3 sec seems fine.
+  fpu_init_fpstate_user(guest_fpu, supported_xcr0)
+
+That will (it does not today) do:
+
+     guest_fpu::__state_perm = supported_xcr0 & xstate_get_group_perm();
+
+for you. Once.
+
+The you have the information you need right in the guest FPU.
+
+See?
+
+> So something like this pseudocode is called by both XCR0 and XFD writes:
+>
+> int kvm_alloc_fpu_dynamic_features(struct kvm_vcpu *vcpu)
+> {
+> 	u64 allowed_dynamic = current->thread.fpu.dynamic_state_perm;
+
+That's not a valid assumption.
+
+> 	u64 enabled_dynamic =
+> 		vcpu->arch.xcr0 & xfeatures_mask_user_dynamic;
+>
+> 	/* All dynamic features have to be arch_prctl'd first.  */
+> 	WARN_ON_ONCE(enabled_dynamic & ~allowed_dynamic);
+>
+> 	if (!vcpu->arch.xfd_passthrough) {
+> 		/* All dynamic states will #NM?  Wait and see.  */
+> 		if ((enabled_dynamic & ~vcpu->arch.xfd) == 0)
+> 			return 0;
+>
+> 		kvm_x86_ops.enable_xfd_passthrough(vcpu);
+> 	}
+>
+> 	/* current->thread.fpu was already handled by arch_prctl.  */
+
+No. current->thread.fpu has the default buffer unless QEMU used AMX or
+something forced it to allocate a larger buffer.
+
+> 	return fpu_alloc_features(vcpu->guest_fpu,
+> 		vcpu->guest_fpu.dynamic_state_perm | enabled_dynamic);
+
+This unconditionally calls into that allocation for every XCR0/XFD
+trap ?
+
+> }
+
+Also you really should not wait until _all_ dynamic states are cleared
+in guest XFD. Because a guest which has bit 18 and 19 available but only
+uses one of them is going to trap on every other context switch due to
+XFD writes.
+
+So you check for
+
+   (guest_xfd & guest_perm) != guest_perm)
+
+and
+
+   (guest_xr0 & guest_perm) != 0
+
+If both are true, then you reallocate the buffers for _all_ permitted
+states _and_ set XFD to pass through.
+
+Thanks,
+
+        tglx
+
