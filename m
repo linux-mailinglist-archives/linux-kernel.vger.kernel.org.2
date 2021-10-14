@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625E742DCAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E989942DC44
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233026AbhJNPAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:00:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44250 "EHLO mail.kernel.org"
+        id S232278AbhJNO5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:57:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231941AbhJNO7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:59:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1C4F611C1;
-        Thu, 14 Oct 2021 14:57:33 +0000 (UTC)
+        id S232133AbhJNO5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:57:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19C04610F8;
+        Thu, 14 Oct 2021 14:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223454;
-        bh=2btvVJ7Fh9qXEtSL8gAuJh0tvf23V4eoboZkDUgkvRI=;
+        s=korg; t=1634223327;
+        bh=wec54wH+ScmKp6yrjELbXwPR0knqsO4e4s0kdbvtWjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h3L7PEVoZ2CLy+up5fe7i/MMIZ8qjbk87rjWUIfT5DFpuT4/KGGKj1LiZG/3wAztq
-         qlmPkqkdgRNxzMX7AO1tD0TWF4xiweP79HhAo+9bJMK/5jp5cDjQRCGcF4iHXrMv4m
-         BobdqKwdCx3Hb9TggOVEZTkk9cAGOkKgTzoK6dU8=
+        b=0s4E19BnNl3HQeJHFcpMdcV4NkXHUTo/NOZkO1JlZS6EtXceEFWEqavjaMOVJAwKk
+         jn/qzZyWb4ZLjRO2se7aemDILJkBB1wk/4y00sAGrmpZeNXZ1fQeMXLDfRLEOIBeYG
+         JH63ZdV8hUYsTEsKi4Vxz8LlBJyBYz43nbDa5rZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 4.14 08/33] ARM: dts: qcom: apq8064: use compatible which contains chipid
-Date:   Thu, 14 Oct 2021 16:53:40 +0200
-Message-Id: <20211014145209.056205998@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 09/18] netlink: annotate data races around nlk->bound
+Date:   Thu, 14 Oct 2021 16:53:41 +0200
+Message-Id: <20211014145206.614238739@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
-References: <20211014145208.775270267@linuxfoundation.org>
+In-Reply-To: <20211014145206.330102860@linuxfoundation.org>
+References: <20211014145206.330102860@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +41,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Eric Dumazet <edumazet@google.com>
 
-commit f5c03f131dae3f06d08464e6157dd461200f78d9 upstream.
+[ Upstream commit 7707a4d01a648e4c655101a469c956cb11273655 ]
 
-Also resolves these kernel warnings for APQ8064:
-adreno 4300000.adreno-3xx: Using legacy qcom,chipid binding!
-adreno 4300000.adreno-3xx: Use compatible qcom,adreno-320.2 instead.
+While existing code is correct, KCSAN is reporting
+a data-race in netlink_insert / netlink_sendmsg [1]
 
-Tested on Nexus 7 2013, no functional changes.
+It is correct to read nlk->bound without a lock, as netlink_autobind()
+will acquire all needed locks.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: David Heidelberg <david@ixit.cz>
-Link: https://lore.kernel.org/r/20210818065317.19822-1-david@ixit.cz
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[1]
+BUG: KCSAN: data-race in netlink_insert / netlink_sendmsg
+
+write to 0xffff8881031c8b30 of 1 bytes by task 18752 on cpu 0:
+ netlink_insert+0x5cc/0x7f0 net/netlink/af_netlink.c:597
+ netlink_autobind+0xa9/0x150 net/netlink/af_netlink.c:842
+ netlink_sendmsg+0x479/0x7c0 net/netlink/af_netlink.c:1892
+ sock_sendmsg_nosec net/socket.c:703 [inline]
+ sock_sendmsg net/socket.c:723 [inline]
+ ____sys_sendmsg+0x360/0x4d0 net/socket.c:2392
+ ___sys_sendmsg net/socket.c:2446 [inline]
+ __sys_sendmsg+0x1ed/0x270 net/socket.c:2475
+ __do_sys_sendmsg net/socket.c:2484 [inline]
+ __se_sys_sendmsg net/socket.c:2482 [inline]
+ __x64_sys_sendmsg+0x42/0x50 net/socket.c:2482
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+read to 0xffff8881031c8b30 of 1 bytes by task 18751 on cpu 1:
+ netlink_sendmsg+0x270/0x7c0 net/netlink/af_netlink.c:1891
+ sock_sendmsg_nosec net/socket.c:703 [inline]
+ sock_sendmsg net/socket.c:723 [inline]
+ __sys_sendto+0x2a8/0x370 net/socket.c:2019
+ __do_sys_sendto net/socket.c:2031 [inline]
+ __se_sys_sendto net/socket.c:2027 [inline]
+ __x64_sys_sendto+0x74/0x90 net/socket.c:2027
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+value changed: 0x00 -> 0x01
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 18751 Comm: syz-executor.0 Not tainted 5.14.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+
+Fixes: da314c9923fe ("netlink: Replace rhash_portid with bound")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/qcom-apq8064.dtsi |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/netlink/af_netlink.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
---- a/arch/arm/boot/dts/qcom-apq8064.dtsi
-+++ b/arch/arm/boot/dts/qcom-apq8064.dtsi
-@@ -1114,7 +1114,7 @@
- 		};
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index 260cba93a2cf..65cf129eaad3 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -574,7 +574,10 @@ static int netlink_insert(struct sock *sk, u32 portid)
  
- 		gpu: adreno-3xx@4300000 {
--			compatible = "qcom,adreno-3xx";
-+			compatible = "qcom,adreno-320.2", "qcom,adreno";
- 			reg = <0x04300000 0x20000>;
- 			reg-names = "kgsl_3d0_reg_memory";
- 			interrupts = <GIC_SPI 80 0>;
-@@ -1129,7 +1129,6 @@
- 			    <&mmcc GFX3D_AHB_CLK>,
- 			    <&mmcc GFX3D_AXI_CLK>,
- 			    <&mmcc MMSS_IMEM_AHB_CLK>;
--			qcom,chipid = <0x03020002>;
+ 	/* We need to ensure that the socket is hashed and visible. */
+ 	smp_wmb();
+-	nlk_sk(sk)->bound = portid;
++	/* Paired with lockless reads from netlink_bind(),
++	 * netlink_connect() and netlink_sendmsg().
++	 */
++	WRITE_ONCE(nlk_sk(sk)->bound, portid);
  
- 			iommus = <&gfx3d 0
- 				  &gfx3d 1
+ err:
+ 	release_sock(sk);
+@@ -993,7 +996,8 @@ static int netlink_bind(struct socket *sock, struct sockaddr *addr,
+ 	else if (nlk->ngroups < 8*sizeof(groups))
+ 		groups &= (1UL << nlk->ngroups) - 1;
+ 
+-	bound = nlk->bound;
++	/* Paired with WRITE_ONCE() in netlink_insert() */
++	bound = READ_ONCE(nlk->bound);
+ 	if (bound) {
+ 		/* Ensure nlk->portid is up-to-date. */
+ 		smp_rmb();
+@@ -1073,8 +1077,9 @@ static int netlink_connect(struct socket *sock, struct sockaddr *addr,
+ 
+ 	/* No need for barriers here as we return to user-space without
+ 	 * using any of the bound attributes.
++	 * Paired with WRITE_ONCE() in netlink_insert().
+ 	 */
+-	if (!nlk->bound)
++	if (!READ_ONCE(nlk->bound))
+ 		err = netlink_autobind(sock);
+ 
+ 	if (err == 0) {
+@@ -1821,7 +1826,8 @@ static int netlink_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
+ 		dst_group = nlk->dst_group;
+ 	}
+ 
+-	if (!nlk->bound) {
++	/* Paired with WRITE_ONCE() in netlink_insert() */
++	if (!READ_ONCE(nlk->bound)) {
+ 		err = netlink_autobind(sock);
+ 		if (err)
+ 			goto out;
+-- 
+2.33.0
+
 
 
