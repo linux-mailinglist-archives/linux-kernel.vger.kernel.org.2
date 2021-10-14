@@ -2,159 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2245B42D6AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A062342D6AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhJNKEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhJNKEG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:04:06 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0CDC06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 03:02:01 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id j21so24876730lfe.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 03:02:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MM0VrYTG69cMYcPYskdHoBtCiOAiSxK8ukGZTBfygvI=;
-        b=BwZ1wcvfX6bOADLWwfydgtxRRqrwKBHYjxthrB/MoSGtROgtNdE4L+X06mmLz4aOHK
-         EOiGyEV8eSIA2iYno6G7HH6YrPMNZcel8INH7/UOo8aw1Zkcz612711IkisuJnQZBm/m
-         DN/aNctyuAy8KmnXS9xO/SCqe2XyI87YzodGkaQ9gYafPFFQ+NKbDpmBJpcYsd/fdnpI
-         NDqQXr08mU/fpwk+27IzFayjRAPjGUerKjAy8yo2ZedAt0g4UjHnOcfHF4PJZWKSyQ44
-         HRT3mkDBweIXQjUSAXilWu/bge7uF6qhTxbC8hqMCSKd4grK8KGqiDmBdgHmfCl9925Q
-         hSow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MM0VrYTG69cMYcPYskdHoBtCiOAiSxK8ukGZTBfygvI=;
-        b=aEmpbyG5jg3ONsP5QO4gri5Xyy9q4Y97sZenqV5A/d4wKKezV7eTFmZ8sJdqw+qV5d
-         KAiVK0UgyDeQU7w3k+GQBu/ZzXIkGw/TsconLOSz8yDfTsCnzLY/+usYjQxgIML0nHov
-         owboQR2n6tuK5H1WPPiRFXl7ujDupOPKCd2hclya3S8pyUys8Mf78EbBjyNRMrufPfs0
-         5U/nJpwDfxNqPDK3zNEh4UEUyFbCPYZXxHqf8sJiwwZIvoD/yGVMcyYFOxGsM3HUusGa
-         Z+5XUQ2AmJoBZUlVg6YkM2dEmkcNAtWQ1bXXfU9u6BhqspduxlFELBzsWN2VakeFOAeO
-         dvuA==
-X-Gm-Message-State: AOAM532dKpbTSko70+oTWXp92tjkz/cGqkddemPFK3ImLn2JQGW679Br
-        d6dl7t75olwW6yqYil8MRlg=
-X-Google-Smtp-Source: ABdhPJyFIpvymbjP/cx3Hf/lzyAEnXFIEh9zgIKWQ7MQZ37BAEeBKLPkMD6xJCja74zZgpUa2OiXOg==
-X-Received: by 2002:a05:6512:2184:: with SMTP id b4mr4319109lft.288.1634205720218;
-        Thu, 14 Oct 2021 03:02:00 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id r10sm219331ljg.10.2021.10.14.03.01.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 03:01:59 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 14 Oct 2021 12:01:57 +0200
-To:     Chen Wandun <chenwandun@huawei.com>
-Cc:     akpm@linux-foundation.org, npiggin@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, edumazet@google.com,
-        wangkefeng.wang@huawei.com, guohanjun@huawei.com
-Subject: Re: [PATCH] mm/vmalloc: fix numa spreading for large hash tables
-Message-ID: <20211014100157.GA1844@pc638.lan>
-References: <20210928121040.2547407-1-chenwandun@huawei.com>
+        id S230145AbhJNKEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:04:24 -0400
+Received: from mga02.intel.com ([134.134.136.20]:14141 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229468AbhJNKEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 06:04:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="214808047"
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="214808047"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 03:02:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="571192713"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Oct 2021 03:02:11 -0700
+Subject: Re: [PATCH v2 5/6] mmc: sdhci-pci: Remove dead code (cd_gpio, cd_irq
+ et al)
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Raul E Rangel <rrangel@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+References: <20211013201723.52212-1-andriy.shevchenko@linux.intel.com>
+ <20211013201723.52212-6-andriy.shevchenko@linux.intel.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <0eed2bea-33bd-3f16-6823-95fcb68c65a5@intel.com>
+Date:   Thu, 14 Oct 2021 13:02:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928121040.2547407-1-chenwandun@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211013201723.52212-6-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 08:10:40PM +0800, Chen Wandun wrote:
-> Eric Dumazet reported a strange numa spreading info in [1], and found
-> commit 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings") introduced
-> this issue [2].
+On 13/10/2021 23:17, Andy Shevchenko wrote:
+> The last user of this struct gone couple of releases ago.
+> Remove the dead code for good and encourage people to use
+> MMC core functionality for that.
 > 
-> Dig into the difference before and after this patch, page allocation has
-> some difference:
+> The removal is dependent on the previous removal of the
+> struct sdhci_pci_data.
 > 
-> before:
-> alloc_large_system_hash
->     __vmalloc
->         __vmalloc_node(..., NUMA_NO_NODE, ...)
->             __vmalloc_node_range
->                 __vmalloc_area_node
->                     alloc_page /* because NUMA_NO_NODE, so choose alloc_page branch */
->                         alloc_pages_current
->                             alloc_page_interleave /* can be proved by print policy mode */
-> 
-> after:
-> alloc_large_system_hash
->     __vmalloc
->         __vmalloc_node(..., NUMA_NO_NODE, ...)
->             __vmalloc_node_range
->                 __vmalloc_area_node
->                     alloc_pages_node /* choose nid by nuam_mem_id() */
->                         __alloc_pages_node(nid, ....)
-> 
-> So after commit 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings"),
-> it will allocate memory in current node instead of interleaving allocate
-> memory.
-> 
-> [1]
-> https://lore.kernel.org/linux-mm/CANn89iL6AAyWhfxdHO+jaT075iOa3XcYn9k6JJc7JR2XYn6k_Q@mail.gmail.com/
-> 
-> [2]
-> https://lore.kernel.org/linux-mm/CANn89iLofTR=AK-QOZY87RdUZENCZUT4O6a0hvhu3_EwRMerOg@mail.gmail.com/
-> 
-> Fixes: 121e6f3258fe ("mm/vmalloc: hugepage vmalloc mappings")
-> Reported-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
 > ---
->  mm/vmalloc.c | 33 ++++++++++++++++++++++++++-------
->  1 file changed, 26 insertions(+), 7 deletions(-)
+>  drivers/mmc/host/sdhci-pci-core.c | 76 +------------------------------
+>  drivers/mmc/host/sdhci-pci.h      |  2 -
+>  2 files changed, 1 insertion(+), 77 deletions(-)
 > 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index f884706c5280..48e717626e94 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2823,6 +2823,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  		unsigned int order, unsigned int nr_pages, struct page **pages)
->  {
->  	unsigned int nr_allocated = 0;
-> +	struct page *page;
-> +	int i;
+> diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
+> index 8938c63b1e77..e2b6f60e9f01 100644
+> --- a/drivers/mmc/host/sdhci-pci-core.c
+> +++ b/drivers/mmc/host/sdhci-pci-core.c
+> @@ -345,73 +345,6 @@ static int pch_hc_probe_slot(struct sdhci_pci_slot *slot)
+>  	return 0;
+>  }
 >  
->  	/*
->  	 * For order-0 pages we make use of bulk allocator, if
-> @@ -2833,6 +2835,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  	if (!order) {
->  		while (nr_allocated < nr_pages) {
->  			unsigned int nr, nr_pages_request;
-> +			page = NULL;
->  
->  			/*
->  			 * A maximum allowed request is hard-coded and is 100
-> @@ -2842,9 +2845,23 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  			 */
->  			nr_pages_request = min(100U, nr_pages - nr_allocated);
->  
-> -			nr = alloc_pages_bulk_array_node(gfp, nid,
-> -				nr_pages_request, pages + nr_allocated);
+> -#ifdef CONFIG_PM
 > -
-> +			if (nid == NUMA_NO_NODE) {
->
-<snip>
-void *vmalloc(unsigned long size)
-{
-	return __vmalloc_node(size, 1, GFP_KERNEL, NUMA_NO_NODE,
-		__builtin_return_address(0));
-}
-EXPORT_SYMBOL(vmalloc);
-<snip>
+> -static irqreturn_t sdhci_pci_sd_cd(int irq, void *dev_id)
+> -{
+> -	struct sdhci_pci_slot *slot = dev_id;
+> -	struct sdhci_host *host = slot->host;
+> -
+> -	mmc_detect_change(host->mmc, msecs_to_jiffies(200));
+> -	return IRQ_HANDLED;
+> -}
+> -
+> -static void sdhci_pci_add_own_cd(struct sdhci_pci_slot *slot)
+> -{
+> -	int err, irq, gpio = slot->cd_gpio;
+> -
+> -	slot->cd_gpio = -EINVAL;
+> -	slot->cd_irq = -EINVAL;
+> -
+> -	if (!gpio_is_valid(gpio))
+> -		return;
+> -
+> -	err = devm_gpio_request(&slot->chip->pdev->dev, gpio, "sd_cd");
+> -	if (err < 0)
+> -		goto out;
+> -
+> -	err = gpio_direction_input(gpio);
+> -	if (err < 0)
+> -		goto out_free;
+> -
+> -	irq = gpio_to_irq(gpio);
+> -	if (irq < 0)
+> -		goto out_free;
+> -
+> -	err = request_irq(irq, sdhci_pci_sd_cd, IRQF_TRIGGER_RISING |
+> -			  IRQF_TRIGGER_FALLING, "sd_cd", slot);
+> -	if (err)
+> -		goto out_free;
+> -
+> -	slot->cd_gpio = gpio;
+> -	slot->cd_irq = irq;
+> -
+> -	return;
+> -
+> -out_free:
+> -	devm_gpio_free(&slot->chip->pdev->dev, gpio);
+> -out:
+> -	dev_warn(&slot->chip->pdev->dev, "failed to setup card detect wake up\n");
+> -}
+> -
+> -static void sdhci_pci_remove_own_cd(struct sdhci_pci_slot *slot)
+> -{
+> -	if (slot->cd_irq >= 0)
+> -		free_irq(slot->cd_irq, slot);
+> -}
+> -
+> -#else
+> -
+> -static inline void sdhci_pci_add_own_cd(struct sdhci_pci_slot *slot)
+> -{
+> -}
+> -
+> -static inline void sdhci_pci_remove_own_cd(struct sdhci_pci_slot *slot)
+> -{
+> -}
+> -
+> -#endif
+> -
+>  static int mfd_emmc_probe_slot(struct sdhci_pci_slot *slot)
+>  {
+>  	slot->host->mmc->caps |= MMC_CAP_8_BIT_DATA | MMC_CAP_NONREMOVABLE;
+> @@ -2128,7 +2061,6 @@ static struct sdhci_pci_slot *sdhci_pci_probe_slot(
+>  	slot->chip = chip;
+>  	slot->host = host;
+>  	slot->rst_n_gpio = -EINVAL;
+> -	slot->cd_gpio = -EINVAL;
+>  	slot->cd_idx = -1;
+>  
+>  	host->hw_name = "PCI";
+> @@ -2199,15 +2131,11 @@ static struct sdhci_pci_slot *sdhci_pci_probe_slot(
+>  	if (ret)
+>  		goto remove;
+>  
+> -	sdhci_pci_add_own_cd(slot);
+> -
+>  	/*
+>  	 * Check if the chip needs a separate GPIO for card detect to wake up
+>  	 * from runtime suspend.  If it is not there, don't allow runtime PM.
+> -	 * Note sdhci_pci_add_own_cd() sets slot->cd_gpio to -EINVAL on failure.
+>  	 */
+> -	if (chip->fixes && chip->fixes->own_cd_for_runtime_pm &&
+> -	    !gpio_is_valid(slot->cd_gpio) && slot->cd_idx < 0)
+> +	if (chip->fixes && chip->fixes->own_cd_for_runtime_pm && slot->cd_idx < 0)
+>  		chip->allow_runtime_pm = false;
+>  
+>  	return slot;
+> @@ -2227,8 +2155,6 @@ static void sdhci_pci_remove_slot(struct sdhci_pci_slot *slot)
+>  	int dead;
+>  	u32 scratch;
+>  
+> -	sdhci_pci_remove_own_cd(slot);
+> -
+>  	dead = 0;
+>  	scratch = readl(slot->host->ioaddr + SDHCI_INT_STATUS);
+>  	if (scratch == (u32)-1)
+> diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
+> index 15b36cd47860..8bb3b9c78589 100644
+> --- a/drivers/mmc/host/sdhci-pci.h
+> +++ b/drivers/mmc/host/sdhci-pci.h
+> @@ -158,8 +158,6 @@ struct sdhci_pci_slot {
+>  	struct sdhci_host	*host;
+>  
+>  	int			rst_n_gpio;
+> -	int			cd_gpio;
+> -	int			cd_irq;
+>  
+>  	int			cd_idx;
+>  	bool			cd_override_level;
+> 
 
-vmalloc() uses NUMA_NO_NODE, so all vmalloc calls will be reverted to a single
-page allocator for NUMA and non-NUMA systems. Is it intentional to bypass the
-optimized bulk allocator for non-NUMA systems? 
-
-Thanks!
-
---
-Vlad Rezki
