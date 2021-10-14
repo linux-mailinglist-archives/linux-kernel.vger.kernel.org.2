@@ -2,94 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E4F42D85C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEF342D865
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhJNLox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:44:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:53700 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229984AbhJNLow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:44:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 808412F;
-        Thu, 14 Oct 2021 04:42:47 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECFDD3F66F;
-        Thu, 14 Oct 2021 04:42:45 -0700 (PDT)
-From:   Valentin Schneider <Valentin.Schneider@arm.com>
-To:     Boqun Feng <boqun.feng@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 03/11] rcu/nocb: Invoke rcu_core() at the start of deoffloading
-In-Reply-To: <YWcEXj2+nqO8kIFS@boqun-archlinux>
-References: <20211011145140.359412-1-frederic@kernel.org> <20211011145140.359412-4-frederic@kernel.org> <YWcEXj2+nqO8kIFS@boqun-archlinux>
-Date:   Thu, 14 Oct 2021 12:42:40 +0100
-Message-ID: <87o87rkf2n.mognet@arm.com>
+        id S231216AbhJNLqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231194AbhJNLqF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 07:46:05 -0400
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AD0C061570;
+        Thu, 14 Oct 2021 04:44:00 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 1D7CD3FA67;
+        Thu, 14 Oct 2021 11:43:52 +0000 (UTC)
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-5-marcan@marcan.st>
+ <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
+ <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
+ <20211012055143.xmkbvhbnolspgjin@vireshk-i7>
+ <caf16a6c-f127-7f27-ed17-0522d9f1fb9e@marcan.st>
+ <CAPDyKFoVjVYkc4+v-=eD+JbC10GazGt8A1LtD1so3PKMmVcyMg@mail.gmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device does
+ not exist
+Message-ID: <bd07f4b3-6ebf-e074-c1cd-0ef501e8324f@marcan.st>
+Date:   Thu, 14 Oct 2021 20:43:50 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAPDyKFoVjVYkc4+v-=eD+JbC10GazGt8A1LtD1so3PKMmVcyMg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/21 00:07, Boqun Feng wrote:
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index e38028d48648..b236271b9022 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -2717,6 +2717,23 @@ static __latent_entropy void rcu_core(void)
->>      unsigned long flags;
->>      struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
->>      struct rcu_node *rnp = rdp->mynode;
->> +	/*
->> +	 * On RT rcu_core() can be preempted when IRQs aren't disabled.
->> +	 * Therefore this function can race with concurrent NOCB (de-)offloading
->> +	 * on this CPU and the below condition must be considered volatile.
->> +	 * However if we race with:
->> +	 *
->> +	 * _ Offloading:   In the worst case we accelerate or process callbacks
->> +	 *                 concurrently with NOCB kthreads. We are guaranteed to
->> +	 *                 call rcu_nocb_lock() if that happens.
->
-> If offloading races with rcu_core(), can the following happen?
->
->       <offload work>
->       rcu_nocb_rdp_offload():
->                                               rcu_core():
->                                                 ...
->                                                 rcu_nocb_lock_irqsave(); // no a lock
->         raw_spin_lock_irqsave(->nocb_lock);
->           rdp_offload_toggle():
->             <LOCKING | OFFLOADED set>
->                                                 if (!rcu_segcblist_restempty(...))
->                                                   rcu_accelerate_cbs_unlocked(...);
->                                                 rcu_nocb_unlock_irqrestore();
->                                                 // ^ a real unlock,
->                                                 // and will preempt_enable()
->           // offload continue with ->nocb_lock not held
->
-> If this can happen, it means an unpaired preempt_enable() and an
-> incorrect unlock. Thoughts? Maybe I'm missing something here?
->
+On 14/10/2021 18.55, Ulf Hansson wrote:
+> Yes, this sounds like you should move away from modeling the memory
+> part as a parent genpd for the CPUs' genpd.
+> 
+> As Viresh pointed out, a devfreq driver seems like a better way to do
+> this. As a matter of fact, there are already devfreq drivers that do
+> this, unless I am mistaken.
+> 
+> It looks like devfreq providers are listening to opp/cpufreq
+> notifiers, as to get an indication of when it could make sense to
+> change a performance state.
+> 
+> In some cases the devfreq provider is also modeled as an interconnect
+> provider, allowing consumers to specify memory bandwidth constraints,
+> which may trigger a new performance state to be set for the memory
+> controller.
+> 
+> In the tegra case, the memory controller is modelled as an
+> interconnect provider and the devfreq node is modelled as an
+> interconnect-consumer of the memory controller. Perhaps this can work
+> for apple SoCs too?
 
-As Frederic pointed out in an earlier thread [1], this can't happen because
-we still have IRQs disabled, and the offloading process has to be processed
-on the CPU being offloaded. IOW, in the above scenario, rcu_core() can't be
-preempted by the rcu_nocb_rdp_offload() work until it re-enables IRQs at
-rcu_nocb_unlock_irqrestore().
+I was poking around and noticed the OPP core can already integrate with 
+interconnect requirements, so perhaps the memory controller can be an 
+interconnect provider, and the CPU nodes can directly reference it as a 
+consumer? This seems like a more accurate model of what the hardware 
+does, and I think I saw some devices doing this already.
 
-(hopefully Paul or Frederic will correct me if I've just spewed garbage)
+(only problem is I have no idea of the actual bandwidth numbers involved 
+here... I'll have to run some benchmarks to make sure this isn't just 
+completely dummy data)
 
-[1]: https://lore.kernel.org/lkml/20210930105340.GA232241@lothringen/
+> 
+> That said, perhaps as an option to move forward, we can try to get the
+> cpufreq pieces solved first. Then as a step on top, add the
+> performance scaling for the memory controller?
 
-> Regards,
-> Boqun
->
+Sure; that's a pretty much independent part of this patchset, though I'm 
+thinking I might as well try some things out for v2 anyway; if it looks 
+like it'll take longer we can split it out and do just the cpufreq side.
+
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
