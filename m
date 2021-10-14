@@ -2,120 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2301D42D925
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8508042D926
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhJNMRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
+        id S231261AbhJNMS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhJNMRD (ORCPT
+        with ESMTP id S230094AbhJNMS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:17:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6170CC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:14:58 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mazdB-0002Q8-4c; Thu, 14 Oct 2021 14:14:41 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mazd5-0000Ck-Bp; Thu, 14 Oct 2021 14:14:35 +0200
-Date:   Thu, 14 Oct 2021 14:14:35 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
-        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] can: j1939: j1939_xtp_rx_rts_session_new(): abort TP
- less than 9 bytes
-Message-ID: <20211014121435.GA7427@pengutronix.de>
-References: <1634203601-3460-1-git-send-email-zhangchangzhong@huawei.com>
+        Thu, 14 Oct 2021 08:18:27 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496FFC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:16:22 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id w14so23336304edv.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:16:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=cOOUdos5ZGp4thSgoTasIX7mROTI+0cVq8wG90LljmY=;
+        b=GnSt6P40Ag6WXwvVQwb4231n8PFn3Z96N+4zY4N4c83VUYW36BojUtE2k6jiFD8fG4
+         YVB2O+bKkMh3yzucRh2rctc0XWxM1/D8Lok3WOBqagEBTTUwv5xl5UrGdiwF9sW7FbFw
+         cls7gh7TKCEmZNvKDI1KB8QmhizXronKvFYN5RU02vdDohvCoyT0405k6+dh8QQ+n01v
+         IGtDP9f2AF/cpXxz74I1kS6KFtN9bVZPmbknyy8tgsaOr4zycVcpPfTR11uy6MvvgWkv
+         OtjJLnx9cMg2WV5AXOoRO5OU89m0UY94+30+rW90dWorhQWwzMkXcR4A4BSxq1tZskS6
+         OLJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=cOOUdos5ZGp4thSgoTasIX7mROTI+0cVq8wG90LljmY=;
+        b=DbiCv+Xxl/8eGa6pn+4KhwzMiYJaOoFEanbuedDxsSB9c/JfN8Hr02BWJM7TWlB6EG
+         1ZRtrJ5JpqNJ2h78LE/+UOQ50jeCrjLr9UsTkrSrx+Csqb1Huq5EU4r7r0LYQmlAN7bZ
+         UC+OlFS0VFR+Yf6DJloNCvkKW9tPugB1LwddXOLswLGLhcrVEO4AbeuhtTqxuZcjimiF
+         bQ/3K5oxwitJuM/S4RaMvWlhC/0ys8F1AAyu5BWTKPaTMUWGppaT92rCFUAT3cLTRM4R
+         ORYtr1rwrSxdoqArG3fGXaRiCIc0YRWd/8oOV4Qx9p262jYguza9ckPfBeQDCxSBkJ/e
+         nI4g==
+X-Gm-Message-State: AOAM531hurh/DjHUaEbJTLutW625pumXq63FbdzyI5BRvpe5KeaG/51I
+        9pDagXoznBl3RjyemLY1uqjLO4eD7931/8ytMIc=
+X-Google-Smtp-Source: ABdhPJwVblX03d3iAtu+/5TKu+l16yjoTE8PNcgautVvHzyaYncj9w2UJhdEpERcsW0FF9tclEJr6/1KsvOZ9LztscU=
+X-Received: by 2002:a50:cfc1:: with SMTP id i1mr8192817edk.251.1634213780579;
+ Thu, 14 Oct 2021 05:16:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1634203601-3460-1-git-send-email-zhangchangzhong@huawei.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 14:13:58 up 238 days, 15:37, 145 users,  load average: 0.23, 0.38,
- 0.40
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Reply-To: ritaelizabethh01@gmail.com
+Sender: tumogamba01@gmail.com
+Received: by 2002:a17:907:3e8e:0:0:0:0 with HTTP; Thu, 14 Oct 2021 05:16:20
+ -0700 (PDT)
+From:   Rita Elizabeth <ritaelizabethh01@gmail.com>
+Date:   Thu, 14 Oct 2021 13:16:20 +0100
+X-Google-Sender-Auth: VCri1Uy1Fh4Rbc44I7rkh7C72tg
+Message-ID: <CAGmxT2fxLv4wgFz3ZYxuSeiH0_zGo3ZOFpv+s4mjcnkFY+Lcqw@mail.gmail.com>
+Subject: My Dear, Can I Trust You For This Project
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 05:26:40PM +0800, Zhang Changzhong wrote:
-> The receiver should abort TP if 'total message size' in TP.CM_RTS and
-> TP.CM_BAM is less than 9 or greater than 1785 [1], but currently the
-> j1939 stack only checks the upper bound and the receiver will accept the
-> following broadcast message:
->   vcan1  18ECFF00   [8]  20 08 00 02 FF 00 23 01
->   vcan1  18EBFF00   [8]  01 00 00 00 00 00 00 00
->   vcan1  18EBFF00   [8]  02 00 FF FF FF FF FF FF
-> 
-> This patch adds check for the lower bound and abort illegal TP.
-> 
-> [1] SAE-J1939-82 A.3.4 Row 2 and A.3.6 Row 6.
-> 
-> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+My dear, I am Mrs. Rita Elizabeth, I got your email address from the
+online e-mail Database Directory through the Internet search and it's
+true we do not know each other but My spirit led me to write you this
+email. I am a dying sick woman, i have decided to donate what i have
+to Motherless babies/ Less privileged/ Widows' because i am dying with
+diagnosed cancer about 2 years ago. I have been touched by God
+Almighty to donate from what i have inherited from my late husband to
+you for the good work of God Almighty. I'm write to you with heavy
+tears in my eyes and great sorrow in my heart because my Doctor
+informed me that It will only take the will of God for me to survive
+due to my complicated health issues (CANCER).
 
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Thank you!
+I am writing from my sickbed to you, i decided to donate the sum of
+($3.6 million Dollars) to you for the good work of God, and also to
+help the motherless and less privileged and also for the assistance of
+the widows. Based on this, i want to transfer my inheritance fund of
+$3.6 million Dollars that was deposited by my late husband to you,i
+need a faithful and God-fearing person who will use it according to my
+desire and that of my late husband as we have no child after so many
+years of our marriage.
 
-> ---
->  net/can/j1939/j1939-priv.h | 1 +
->  net/can/j1939/transport.c  | 2 ++
->  2 files changed, 3 insertions(+)
-> 
-> diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-> index f6df208..16af1a7 100644
-> --- a/net/can/j1939/j1939-priv.h
-> +++ b/net/can/j1939/j1939-priv.h
-> @@ -330,6 +330,7 @@ int j1939_session_activate(struct j1939_session *session);
->  void j1939_tp_schedule_txtimer(struct j1939_session *session, int msec);
->  void j1939_session_timers_cancel(struct j1939_session *session);
->  
-> +#define J1939_MIN_TP_PACKET_SIZE 9
->  #define J1939_MAX_TP_PACKET_SIZE (7 * 0xff)
->  #define J1939_MAX_ETP_PACKET_SIZE (7 * 0x00ffffff)
->  
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index bb5c4b8..b685d31 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1609,6 +1609,8 @@ j1939_session *j1939_xtp_rx_rts_session_new(struct j1939_priv *priv,
->  			abort = J1939_XTP_ABORT_FAULT;
->  		else if (len > priv->tp_max_packet_size)
->  			abort = J1939_XTP_ABORT_RESOURCE;
-> +		else if (len < J1939_MIN_TP_PACKET_SIZE)
-> +			abort = J1939_XTP_ABORT_FAULT;
->  	}
->  
->  	if (abort != J1939_XTP_NO_ABORT) {
-> -- 
-> 2.9.5
-> 
-> 
+I want you to use the funds for charity causes, while 30% will be kept
+by you as compensation for taking this responsibility to help
+mankind.The disbursements should be made to charities such as
+orphanages, motherless babies homes, poor widows, disabled,
+humanitarian causes.If you are interested in carrying out this task,
+get back to me for more details on this noble project of mine.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Yours Faithfully,
