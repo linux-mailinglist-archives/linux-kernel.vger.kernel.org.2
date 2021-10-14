@@ -2,136 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE3B42D2DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 417A642D2E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhJNGqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 02:46:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34614 "EHLO mail.kernel.org"
+        id S229672AbhJNGrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 02:47:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhJNGqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 02:46:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 866CF60F21;
-        Thu, 14 Oct 2021 06:44:40 +0000 (UTC)
+        id S229502AbhJNGrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 02:47:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9454F60F21;
+        Thu, 14 Oct 2021 06:45:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634193882;
-        bh=nyxODPb2p/zfIUMBOeqoEw5JaXddVkpJ92sGj/BOz9s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tu/q1YOH0iwtZN4UygL2yK/ZCtGlNkHkv+4CkT7UH0l4xVuQ0RoX7L+UUhHiwLmoQ
-         NfBOjSwtJnumc/gpDZ/bf0b3RgDZBb7VsqBIgxU8pouXfKtfJKya8iHUa+jBpBWh9v
-         gvL39KaaH4Ga85+OSJqdDyOmQGWhd0yPpGT99/BgZpXsu88D4azzsS0sviquunf5O3
-         Q8icSczn0gLmisO5MtwvtGPkMxFAf1Bn5F+DHCNoevsGM0y/Uwe8LpeCie14HrGtVP
-         Cei1u8e+NGD/P2zIk0PbRM2mlFyXBVxIpzMHR+IObIf28oq6Ll6zmxSo9EBj3vgcy+
-         xJfWKPuHW03+Q==
-Date:   Thu, 14 Oct 2021 08:44:37 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] clk: fix the need of booking clk_ignore_unused=true
- on embedded devs
-Message-ID: <20211014084437.47a04183@sal.lan>
-In-Reply-To: <20211011061718.GB1834@thinkpad>
-References: <cover.1633607765.git.mchehab+huawei@kernel.org>
-        <20211011061718.GB1834@thinkpad>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1634193931;
+        bh=A7vtA7EguJnBwyoJBmEP4sqGH1ppqg97OGt4QN41RuQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=B3lcSxm3zkNKWPlNcVPF+tV3K6UtDow2eo3vkVkk7uLpz/z5juymLfnEaXhdYBg1g
+         ZXRduK5ocDLdJ0xcq98oxFwagKXZ0Pn/vNEAKOustTNbWwjZYwfVKPlLeb/s039Bcp
+         J2On4C0wWCCD4DK6m+Kd4u12A0aiGgArr6VUQFseSlYnC87lBOHVfjx0JxvN5Or71v
+         zXg5OrIo5cviPC37n9zqbx1f0cdn8/tZB04b8zeMdYfzJF9x9Wz+9momA7Hey6u60m
+         wWBA41xqdM/jQJtULQv0enZFINixBN4JAtKUvQAyDlj+rK+6vtsu4BkIHzkI/dShbR
+         Tct5megKDFs9A==
+From:   SeongJae Park <sj@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
+        amit@kernel.org, benh@kernel.crashing.org, corbet@lwn.net,
+        david@redhat.com, dwmw@amazon.com, elver@google.com,
+        foersleo@amazon.de, gthelen@google.com, markubo@amazon.de,
+        rientjes@google.com, shakeelb@google.com, shuah@kernel.org,
+        linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] mm/damon/dbgfs: Allow users to set initial monitoring target regions
+Date:   Thu, 14 Oct 2021 06:45:22 +0000
+Message-Id: <20211014064522.24455-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211013154535.4aaeaaf9d0182922e405dd1e@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 11 Oct 2021 11:47:18 +0530
-Manivannan Sadhasivam <mani@kernel.org> escreveu:
+On Wed, 13 Oct 2021 15:45:35 -0700 Andrew Morton <akpm@linux-foundation.org> wrote:
 
-> Hi Mauro,
+> On Tue, 12 Oct 2021 20:57:05 +0000 SeongJae Park <sj@kernel.org> wrote:
 > 
-> On Thu, Oct 07, 2021 at 02:06:53PM +0200, Mauro Carvalho Chehab wrote:
-> > Currently, the only way to boot a Kernel with drivers built as modules on embedded 
-> > devices like HiKey 970 is to pass clk_ignore_unused=true as a modprobe parameter.
+> > Some 'damon-dbgfs' users would want to monitor only a part of the entire
+> > virtual memory address space.  The program interface users in the kernel
+> > space could use '->before_start()' callback or set the regions inside
+> > the context struct as they want, but 'damon-dbgfs' users cannot.
 > > 
-> > There are two separate issues:
+> > For the reason, this commit introduces a new debugfs file called
+> > 'init_region'.  'damon-dbgfs' users can specify which initial monitoring
+> > target address regions they want by writing special input to the file.
+> > The input should describe each region in each line in the below form:
 > > 
-> > 1. the clk's core calls clk_disable_unused() too early. By the time this
-> >    function is called, only the builtin drivers were already probed/initialized.
-> >    Drivers built as modules will only be probed afterwards.
+> >     <pid> <start address> <end address>
 > > 
-> >    This cause a race condition and boot instability, as the clk core will try
-> >    to disable clocks while the drivers built as modules are still being
-> >    probed and initialized.  
+> > Note that the regions will be updated to cover entire memory mapped
+> > regions after a 'regions update interval' is passed.  If you want the
+> > regions to not be updated after the initial setting, you could set the
+> > interval as a very long time, say, a few decades.
+> > 
+> > ...
+> >
+> > +static int add_init_region(struct damon_ctx *c,
+> > +			 unsigned long target_id, struct damon_addr_range *ar)
+> > +{
+> > +	struct damon_target *t;
+> > +	struct damon_region *r, *prev;
+> > +	unsigned long id;
+> > +	int rc = -EINVAL;
+> > +
+> > +	if (ar->start >= ar->end)
+> > +		return -EINVAL;
+> > +
+> > +	damon_for_each_target(t, c) {
+> > +		id = t->id;
+> > +		if (targetid_is_pid(c))
+> > +			id = (unsigned long)pid_vnr((struct pid *)id);
 > 
-> So you are mentioning a "race" condition here but it is not mentioned in the
-> actual patch. 
+> This is a bit ugly.  Did you consider making damon_target.id a union of
+> all the possible types it can contain?  This will avoid typecasts, has
+> documentation value and reflacts what is actually going on.
 
-Patch 1 explains it...
+Agreed, thank you for this great comment!  I will make it at least before
+adding another type of monitoring target.
 
-> If the issue you are seeing is because the clocks used by the
-> modules are disabled before they are probed, why can't they just enable the
-> clocks during the probe time?
+
+Thanks,
+SJ
+
 > 
-> Am I missing something?
-
-What happens is that such clocks are enabled when the system boots,
-and, when those are disabled, very bad things happen, as those
-interrupt clocks used by several parts of the system.
-
-Most of the problems happen because the ARM SoC produce SError NMI 
-interrupts when some such clocks are disabled, which calls panic().
-
-Other clocks disable some key components of the system that aren't
-directly related with a driver, but, instead, controls some core
-part of the device, making the SoC to wait forever for an I/O event
-that will never happen.
-
-A small set of clocks make the system unreliable, causing drivers
-to fail probing. Those can either lead to panic() or break support
-for a peripheral, like WiFi, USB and/or PCI.
-
-The core issue is that clk_disable_unused() happens too early.
-This is called at late_initcall_sync() time, which is triggered
-before the probe/init code of the drivers compiled as modules
-to be called. So, what happens is:
-
-
- BIOS enables clocks that are needed for the device to boot             
- |                                
- +-> Linux start booting
- |
- +-> builtin drivers are probed 
- |
- +--------------------------------\
- |                                |
- +-> late_initcall_sync() calls   +-> Modules start probing
- |   clk_disable_unused)          |
- |                                +-> Some drivers are probed
- |                                |   before their needed clks
- |                                |   got disabled
- |                                |
- +-> Clocks are disabled          |
- |                                |
- +-> SError -> panic()            |
-                                  \ (several drivers weren't
-				     probed/initialized)
-
-The only fix for that is to postpone clk_disable_unused() to happen
-after all driver probe/init are called, or to completely disable
-it.
-
-The current distributions recommended at:
-	https://www.96boards.org/product/hikey970/
-
-pass clk_ignore_unused as a boot parameter, which disables the call
-to clk_disable_unused().
-
-The only sane way to get rid of that is to fix the core to let the
-drivers to finish probe/init before disabling clocks.
-
-See, the regulators logic that disables unused power lines also
-do the same: it waits for 30 seconds after late_initcall_sync()
-before calling Runtime PM suspend logic.
-
-Regards,
-Mauro
+> > +		if (id == target_id) {
+> > +			r = damon_new_region(ar->start, ar->end);
+> > +			if (!r)
+> > +				return -ENOMEM;
+> > +			damon_add_region(r, t);
+> > +			if (damon_nr_regions(t) > 1) {
+> > +				prev = damon_prev_region(r);
+> > +				if (prev->ar.end > r->ar.start) {
+> > +					damon_destroy_region(r, t);
+> > +					return -EINVAL;
+> > +				}
+> > +			}
+> > +			rc = 0;
+> > +		}
+> > +	}
+> > +	return rc;
+> > +}
+> > +
+> 
+> 
