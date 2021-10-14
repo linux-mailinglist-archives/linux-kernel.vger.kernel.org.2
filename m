@@ -2,140 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F01B42DA3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A901842DA47
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbhJNN0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbhJNNZ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:25:56 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83275C06174E;
-        Thu, 14 Oct 2021 06:23:51 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id i12so19447544wrb.7;
-        Thu, 14 Oct 2021 06:23:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Dn8qntTXephimx3LoXkKaClxMq8rV7tTytuW+aAxGys=;
-        b=TG4gKWLEl1HWM00/cvFeOgDj8WQYP1KCzXTGjFb7rZem/+WkoOb/xrGrkjvQRt7diq
-         zd8viGl3L5J9hmO2rGfQHR1gaQlNNR6UTGuKzPZLn8Xs5/JuRGRrK0ZWgPiDSpWLdPHv
-         DFfuIRHxQyvIHvztCAbcge5bZnpVDD1Lftk2hgMHufVFAFu3yOYsLA8ylcyzbkxTjEPV
-         XObLkUZnCoisWw1iprA8xD93a1QCc/ClQ0rqa/f/+wAVOssgskUwMkvT3YdnPlViC02L
-         gDuC6t1ugWwTWQNrILpaLsLBd9Eu0phGP8FW0E0kdaySSPMPPrCdltzLOlh+sqzFadVf
-         /iyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Dn8qntTXephimx3LoXkKaClxMq8rV7tTytuW+aAxGys=;
-        b=KQ1JJeejln5y16AuGmJqk1l9QmQEk1Xs2LNBtuZ01WvpPFq8xrPRMD1u5Fjw+NXI2B
-         i35dS81CYeKTT7xo/wPsuPk30YnSaO9z3K6Kt4t1JID3mV8syYuDdkvCbMv8IXWQyUe6
-         8xTvjajNTMtt+r6I0yCaVFS3bpapvlRkduZf8v0eVpPwABN3SOjD9qAnioaAhXwqKnch
-         UWDNBMoPdPIRH/W87/PyH/XW8kOrASAID4+AKOrhrhwc6MCBQ00hnL528Rd2WQw1C7kI
-         wpESH5e/QjqiK4Bv6zVrk2WcLYt5gU4jsusfjoNPJK936fIW0LZjAAQRuihvoSiWnPzu
-         7piQ==
-X-Gm-Message-State: AOAM530pxnQNORO4BbDUE8chc+8oxJ6EO5BpTpM9DD/1zOGk2NwxdnKp
-        D6VzygugXimulbf3ruyXUuIba6//3IU=
-X-Google-Smtp-Source: ABdhPJwSNoISoB6WHeruIs45RWZovGTfzvBYWEZ6vwQ1mL+wE7qCVNKa0oLduAeRRzzdMAyifMikeA==
-X-Received: by 2002:a05:600c:1c88:: with SMTP id k8mr5782455wms.169.1634217830036;
-        Thu, 14 Oct 2021 06:23:50 -0700 (PDT)
-Received: from debian64.daheim (p200300d5ff0f7400d63d7efffebde96e.dip0.t-ipconnect.de. [2003:d5:ff0f:7400:d63d:7eff:febd:e96e])
-        by smtp.gmail.com with ESMTPSA id f186sm7823662wma.46.2021.10.14.06.23.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 06:23:49 -0700 (PDT)
-Received: from localhost.daheim ([127.0.0.1])
-        by debian64.daheim with esmtp (Exim 4.95)
-        (envelope-from <chunkeey@gmail.com>)
-        id 1mb0i5-0009Kt-2o;
-        Thu, 14 Oct 2021 15:23:49 +0200
-Subject: Re: [PATCH] ath10k: support bus and device specific API 1 BDF
- selection
-To:     Robert Marko <robimarko@gmail.com>
-Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
-References: <20211009221711.2315352-1-robimarko@gmail.com>
- <ba520cf0-480e-245b-395f-7d3a5f771521@gmail.com>
- <CAOX2RU7VaxdU3VykTZER-pdpu6pnk3tbVrBmkGU=jPQo6rL3Xg@mail.gmail.com>
-From:   Christian Lamparter <chunkeey@gmail.com>
-Message-ID: <0180909b-1c62-208d-3dce-7ac34dbd584c@gmail.com>
-Date:   Thu, 14 Oct 2021 15:23:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S231328AbhJNN2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:28:09 -0400
+Received: from mga06.intel.com ([134.134.136.31]:20887 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230049AbhJNN2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 09:28:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="288543181"
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="288543181"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 06:26:02 -0700
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="571331074"
+Received: from chendan-mobl.amr.corp.intel.com (HELO [10.251.17.229]) ([10.251.17.229])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 06:26:00 -0700
+Subject: Re: [PATCH v10 11/11] x86/tdx: Handle CPUID via #VE
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053747.1694419-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <87a6jb7r3x.ffs@tglx>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <426be0db-f27a-3abf-3d73-bf5b1f3f12f2@intel.com>
+Date:   Thu, 14 Oct 2021 06:25:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAOX2RU7VaxdU3VykTZER-pdpu6pnk3tbVrBmkGU=jPQo6rL3Xg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <87a6jb7r3x.ffs@tglx>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2021 14:01, Robert Marko wrote:
-> On Thu, 14 Oct 2021 at 13:54, Christian Lamparter <chunkeey@gmail.com> wrote:
->>
->> On 10/10/2021 00:17, Robert Marko wrote:
->>> Some ath10k IPQ40xx devices like the MikroTik hAP ac2 and ac3 require the
->>> BDF-s to be extracted from the device storage instead of shipping packaged
->>> API 2 BDF-s.
->>>
->>> This is required as MikroTik has started shipping boards that require BDF-s
->>> to be updated, as otherwise their WLAN performance really suffers.
->>> This is however impossible as the devices that require this are release
->>> under the same revision and its not possible to differentiate them from
->>> devices using the older BDF-s.
->>>
->>> In OpenWrt we are extracting the calibration data during runtime and we are
->>> able to extract the BDF-s in the same manner, however we cannot package the
->>> BDF-s to API 2 format on the fly and can only use API 1 to provide BDF-s on
->>> the fly.
->>> This is an issue as the ath10k driver explicitly looks only for the
->>> board.bin file and not for something like board-bus-device.bin like it does
->>> for pre-cal data.
->>> Due to this we have no way of providing correct BDF-s on the fly, so lets
->>> extend the ath10k driver to first look for BDF-s in the
->>> board-bus-device.bin format, for example: board-ahb-a800000.wifi.bin
->>> If that fails, look for the default board file name as defined previously.
->>>
->>> Signed-off-by: Robert Marko <robimarko@gmail.com>
->>> ---
->>
->> As mentioned in Robert's OpenWrt Pull request:
->> https://github.com/openwrt/openwrt/pull/4679
->>
->> It looks like the data comes from an mtd-partition parser.
->> So the board data takes an extra detour through userspace
->> for this.
->>
->> Maybe it would be great, if that BDF (and likewise pre-cal)
->> files could be fetched via an nvmem-consumer there?
->> (Kalle: like the ath9k-nvmem patches)
+On 10/14/21 5:01 AM, Thomas Gleixner wrote:
+>> The TDX module specification [1], section titled "CPUID Virtualization"
+>> talks about a few more classes of CPUID handling. But, for the purposes
+>> of this patch, the "handled transparently" CPUID leaves are all lumped
+>> together because the guest handling is the same.
+> What means 'for the purposes of this patch'? And I have no idea what's
+> lumped together means either.
+
+The TDX spec talks about a several classes of CPUID bit fields.  These
+matter in terms of trust because some of the bits can be supplied by the
+VMM.  The original changelog here tried to draw a distinction between
+bits which can be supplied by the VMM ("as configured" in the spec) and
+those that come directly from the hardware ("native" in the spec).
+
+"Lumped together" means that although these cases are differentiated in
+the spec, their differences are immaterial for the purposes of this patch.
+
+I think I wrote this.  I think I was trying to write it at someone who
+might be puzzling over the TDX spec and its table of CPUID leaves
+wondering why the #VE handler doesn't have cases for lots of the classes
+called out in the spec.
+
+> #VE is either raised on CPUID leaf/sub-leaf combinations which are not
+> part of the CPUID virtualization table or on request of the guest for
+> all CPUID invocations (either Ring0 or Ring3 or both).
+
+Yes.  This changelog should also include a note about the unconditional
+#VE for all CPUID executions feature, noting that it is expected to be
+disabled for ring0.
+
+> So this patch implements the #VE handling for EXIT_REASON_CPUID by
+> handing it through to the hypercall, which in turn lets the TDX module
+> handle it by invoking the host VMM.
 > 
-> Christian, in this case, NVMEM wont work as this is not just read from
-> an MTD device, it first needs to be parsed from the MikroTik TLV, and
-> then decompressed as they use LZO with RLE to compress the caldata
-> and BDF-s.
+> So unless the guest requested #VE on all CPUID invocations it won't see
+> a #VE for the transparent leaf/sub-leaf combinations. #VE is raised
+> for the VMM handled ones which goes through the hypercall, right?
 
-For more context here (it's unrelated to the patch):
-There is more custom code than just the mtd splitter.
-I do fear that this could be turning into a dreaded "separation between
-mechanism vs policy"-proxy discussion with that in-kernel LZOR
-decompressor/extractor and the way that the board-data then has be
-rerouted through user-space back to ath10k.
-
----
-
-As for the proposed feature: Yeah, back in 2017/2018-ish, I would have
-really loved to have this "load separate board-1 based on device-location".
-Instead the QCA4019's board-2.bin is now bigger than the device's
-firmware itself. From what I can see, there are also more outstanding
-board-2.bin merge requests too, though some those are updates.
-
-Cheers,
-Christian
+Yep, that's a pretty succinct way to put it.
