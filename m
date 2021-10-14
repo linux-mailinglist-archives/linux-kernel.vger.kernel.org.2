@@ -2,180 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E464D42E490
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7207142E496
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234301AbhJNXI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 19:08:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
+        id S234321AbhJNXLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 19:11:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234051AbhJNXIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 19:08:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4A8061053;
-        Thu, 14 Oct 2021 23:06:18 +0000 (UTC)
+        id S233935AbhJNXLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 19:11:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B8F360F11;
+        Thu, 14 Oct 2021 23:09:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634252778;
-        bh=pTt9hE/zP7h6eknt1Q7xk/zT7K9OERkXxzhqLIb9hoM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=T8yj7cSo7Bzs2cc+LX7PbO1F+tngLHx8qp8iZaqsnsrgqfoKjb6EVhOSW80gk0fXO
-         EcLyKiZyuaN+jSf78pbQPWVjoTaIWpAqXsj1DTomrNFyUqWMEueli/uqp3+ODyAUjp
-         gvuZujWSrX68ztwqyn+r6esvl7eMrqGPyQ4g0hfM42OpPy32tlqDUdF+tRE66Dq2nL
-         AE7fl3x9uTZAHdLzX0Q/cSGgKngnrV/eWR4OVPjjvyE7w7GRvAG51PQdGiLIUrPK6/
-         5UXGDwz7qIQTKdb0Pqv2+3vC6iIN8PH/ph4f75y+azpnYrycSiVUkh4csi6zdkL4yj
-         WnSM3OsopHchw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A33E25C0A06; Thu, 14 Oct 2021 16:06:18 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 16:06:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: data dependency naming inconsistency
-Message-ID: <20211014230618.GL880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211011064233-mutt-send-email-mst@kernel.org>
- <6c362de5-1d79-512c-37d0-81aaf5d335d1@qa2.so-net.ne.jp>
- <20211014013156-mutt-send-email-mst@kernel.org>
- <d253958f-b3d7-67c1-4cf6-38f184adabd6@gmail.com>
- <8a9ea500-8f8c-129a-2974-4bdda65dbf64@gmail.com>
+        s=k20201202; t=1634252953;
+        bh=EZ/WB5HXZm7aAvIuXY679+z1Z+5GCBnK9dsEdZuxJr0=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=KEBp5D2AOpfE2zOoulrtgt9fECZ6NdWxFDL0s3VpbCLqiPigEFBMhOyFEGe3Lsy88
+         Gtv76yeq3aksqCBBxIB7Hk+HNzzDFV21w1dMCB4OVrO28VYK6z1nUOM3Qb6lqNboyd
+         709Z+IRdx4Mp/yMjvOAQlieOm42oE8/IxcHNsLz5Y9iGIg3fOzZYJvzSEYCX+zLLqA
+         nGE6qqblmTni/uWWYwgvNLcWG4Syyi1TxLGUdriVzG+TrHPkm6f+4eVtJNbR/pFo3A
+         5VOS9lkHHdCMCMciKMjCXAQKzsEt3EDw0l7cHW2zZ3VxgXiFe9k834QmKxYX/apLV1
+         BCH/hdAo+4ipw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a9ea500-8f8c-129a-2974-4bdda65dbf64@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <71369ca3.307a.17c7de16354.Coremail.zhanglyra@163.com>
+References: <20210923064137.60722-1-zhang.lyra@gmail.com> <20210923064137.60722-3-zhang.lyra@gmail.com> <163416267274.936110.2784588823311275089@swboyd.mtv.corp.google.com> <5b8198f8.cc.17c7c0fc3e2.Coremail.zhanglyra@163.com> <163417628586.936110.17321921086246870791@swboyd.mtv.corp.google.com> <4e2e8b98.cc9.17c7c899967.Coremail.zhanglyra@163.com> <163419352215.936110.17102590465311356046@swboyd.mtv.corp.google.com> <71369ca3.307a.17c7de16354.Coremail.zhanglyra@163.com>
+Subject: Re:Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512 global registers
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Chunyan Zhang <zhang.lyra@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+To:     ChunyanZhang <zhanglyra@163.com>
+Date:   Thu, 14 Oct 2021 16:09:12 -0700
+Message-ID: <163425295208.1688384.11023187625793114662@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 07:48:09AM +0900, Akira Yokosawa wrote:
-> On Thu, 14 Oct 2021 23:29:43 +0900, Akira Yokosawa wrote:
-> > [-CC akys: my 2nd address]
-> > On Thu, 14 Oct 2021 01:37:17 -0400, Michael S. Tsirkin wrote:
-> >> On Thu, Oct 14, 2021 at 01:43:24PM +0900, Akira Yokosawa wrote:
-> >>> On Mon, 11 Oct 2021 07:07:08 -0400, Michael S. Tsirkin wrote:
-> >>>> Hello Paul, all!
-> >>>
-> >>> Hello Michael,
-> >>>
-> >>> I thought Paul would respond soon, but looks like he has not
-> >>> done so.
-> 
-> This is because Michael used Paul's old email address.
+Quoting ChunyanZhang (2021-10-14 01:18:15)
+>=20
+> Resend this since I forgot to switch to plain text mode :(
+>=20
+> At 2021-10-14 14:38:42, "Stephen Boyd" <sboyd@kernel.org> wrote:
+> >Quoting ChunyanZhang (2021-10-13 19:02:44)
+> >> At 2021-10-14 09:51:25, "Stephen Boyd" <sboyd@kernel.org> wrote:
+> >> >Quoting ChunyanZhang (2021-10-13 16:49:40)
+> >> >> At 2021-10-14 06:04:32, "Stephen Boyd" <sboyd@kernel.org> wrote:
+> >> >> >Quoting Chunyan Zhang (2021-09-22 23:41:35)
+> >> >> >> diff --git a/Documentation/devicetree/bindings/mfd/sprd,ums512-g=
+lbreg.yaml b/Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.yaml
+> >> >> >> +
+> >> >> >> +examples:
+> >> >> >> +  - |
+> >> >> >> +    ap_apb_regs: syscon@71000000 {
+> >> >> >> +      compatible =3D "sprd,ums512-glbregs", "syscon", "simple-m=
+fd";
+> >> >> >> +      reg =3D <0x71000000 0x3000>;
+> >> >> >> +      #address-cells =3D <1>;
+> >> >> >> +      #size-cells =3D <1>;
+> >> >> >> +      ranges =3D <0 0x71000000 0x3000>;
+> >> >> >> +
+> >> >> >> +      clock-controller@0 {
+> >> >> >> +        compatible =3D "sprd,ums512-apahb-gate";
+> >> >> >
+> >> >> >Why is this a subnode of a syscon and simple-mfd? Why not put the>=
+clock-controller@71000000 directly onto the bus? Does making it a child
+> >> >> >node help somehow?
+> >> >>=20
+> >> >> These clocks are at the same register range with global registers. =
+I originally put them directly onto the bus indeed when submitting the patc=
+hes for SC9863A clocks last year, and it had a private property named 'sprd=
+,syscon' which could provide regmap for these clocks.
+> >> >>=20
+> >> >> Rob suggested [1] us to make them a child of the syscon, and would =
+not need the private property 'sprd, syscon' then.
+> >> >
+> >> >Why do you need to use a syscon? Are the registers shared with some
+> >> >other driver?
+> >>=20
+> >> Yes, shared with more than one devices which basically are multimedia =
+devices. You may noticed that these are all gate clocks which are in the gl=
+obal registers ranges and are used to controll the enable status of some de=
+vices or some part of devices.
+> >>=20
+> >
+>=20
+> >Where does the multimedia device address space start? I see 0x71000000
+>=20
+> It doesn't mean that multimedia device address is in this space, multided=
+ia devices have their own address space actually.
 
-Indeed, my ibm.com email addresses died about two years ago.
+Ok got it.
 
-> Forwarding to his current address.
-> 
-> Paul, you can see the thread at the lore archive:
-> https://lore.kernel.org/lkml/20211011064233-mutt-send-email-mst@kernel.org/T/
+> All the registers in this space (started from 0x71000000) are more like c=
+ontroll registers for device power, and they were designed as "global regis=
+ters".
+> Some gate clocks are also in global register space, so we make this kind =
+of clocks a subnode of syscon, and clock driver can use regmap which mapped=
+ by syscon to avoid remapping the same address space to more than one virtu=
+al addresses.
 
-And thank you for forwarding this.
+So it looks like we're making the "power controller" device into a
+syscon and then adding nodes in DT to describe the various pieces that
+some registers inside that correspond to, like clks, power domains, etc.
+I wonder why the ap_apb_regs device can't be a single node covering the
+entire register space and then use the auxiliary bus in the kernel to
+carve that device up into various kernel subsytems so that the
+appropriate maintainers can review it.
 
->         Thanks, Akira
-> 
-> >>> So, I'm trying to give some hint to your findings.
-> >>>
-> >>>> I've been reading with interest Paul's posts about Rust interactions with LKMM
-> >>>> https://paulmck.livejournal.com/63316.html
-> >>>> and in particular it states:
-> >>>> 		A data dependency involves a load whose return value directly or
-> >>>> 	indirectly determine the value stored by a later store, which results in
-> >>>> 	the load being ordered before the store.
-> >>>>
-> >>>> This matches the perf book:
-> >>>> 	A data dependency occurs when the value returned by
-> >>>> 	a load instruction is used to compute the data stored by
-> >>>> 	a later store instruction.
-> >>>
-> >>> You might likely be aware, but these concern "data dependency",
-> >>> not a _barrier_.
-> >>>
-> >>>>
-> >>>> however, memory-barriers.txt states:
-> >>>>
-> >>>>      A data dependency barrier is a partial ordering on interdependent loads
-> >>>>      only; it is not required to have any effect on stores, independent loads
-> >>>>      or overlapping loads.
+>=20
+> Hope I've made that clear, I'd like to give you an example, but I'm on a =
+long leave and cannot look up the specification right now :(
+> This is not a new issue, we discussed this when the first time I submitte=
+d the patches for sprd clocks IIRC.
 
-As noted by others, the difference is that the first two are about a
-data dependency, that is a prior load affecting the value stored by
-a later store.  In contrast, the last one is about a data-dependency
-barrier, which need only affect trailing loads.  Trailing stores are
-already covered by control dependencies.  But clearer wording might
-be good.  Suggestions?
-
-> >>>> It also says:
-> >>>> 	A data-dependency barrier is not required to order dependent writes
-> >>>> 	because the CPUs that the Linux kernel supports don't do writes
-> >>>> 	until they are certain (1) that the write will actually happen, (2)
-> >>>> 	of the location of the write, and (3) of the value to be written.
-> >>>
-> >>> These concern the historic "data-dependency barrier", or
-> >>> [smp_]read_barrier_depends(), which existed until Linux kernel v4.14.
-> > 
-> > Ah... I should have said ", which existed prior to Linux kernel v4.15".
-> > This invited off-by-one error below...
-> > 
-> >>>
-> >>>>
-> >>>> so the result it the same: writes are ordered without a barrier,
-> >>>> reads are ordered by a barrier.
-> >>>>
-> >>>> However, it would seem that a bit more consistency in naming won't
-> >>>> hurt.
-> >>>
-> >>> So, I don't think the historic term of "data-dependency barrier"
-> >>> can be changed.
-> >>>
-> >>> I guess the right approach would be to further de-emphasize
-> >>> "data-dependency barrier"/"data dependency barrier" in
-> >>> memory-barriers.txt.
-> >>>
-> >>> Rewrite by commit 8ca924aeb4f2 ("Documentation/barriers: Remove
-> >>> references to [smp_]read_barrier_depends()") did some of such
-> >>> changes, but it failed to update the introductory section of
-> >>> "VARIETIES OF MEMORY BARRIER".
-> >>> The part Michael quoted above belongs to it.
-> >>> I don't think it has any merit keeping it around.
-> >>>
-> >>> Also, there remain a couple of ascii-art diagrams concerning
-> >>> <data dependency barrier> in the first part of "EXAMPLES OF MEMORY
-> >>> BARRIER SEQUENCES" section, which, I think, can be removed as well.
-> >>>
-> >>> Hope this helps clarify the circumstances.
-> >>
-> >> It does, thanks! It might be worth adding a sentence along the lines of
-> >>
-> >> "NB: a data dependency barrier is distinct from a data dependency: it's
-> >> a barrier that used to be required in the presence of a data dependency.
-> >> Since v4.14 Linux no longer offers an API for a data dependency barrier.
-> > 
-> >   Since v4.15
-> > 
-> >> Instead, using READ_ONCE is sufficient for ordering in the presence of a
-> >> data dependency".
-> > 
-> > 
-> > Maybe.
-> > 
-> > But I'm more inclined to get rid of remaining contents related to the
-> > "data dependency barrier".
-
-Given that we don't seem to have any more data-dependency barriers,
-so getting rid of remaining mentions makes a lot of sense to me.
-
-							Thanx, Paul
-
-> >         Thanks, Akira
-> > 
-> >>
-> >>
-> >>> Paul, what is your take on the naming of "data dependency"/
-> >>> "data dependency barrier"?
-> >>>
-> >>>         Thanks, Akira
-> >>>
-> >>>>
-> >>>> Thanks,
-> >>>>
-> >>>> -- 
-> >>>> MST
-> >>
+Yes, I know it's not a new issue. Take care! We can pick this discussion
+back up when you get back from leave.
