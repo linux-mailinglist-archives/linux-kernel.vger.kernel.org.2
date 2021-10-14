@@ -2,146 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA99E42D481
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7744E42D485
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhJNIIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:08:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229970AbhJNIIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:08:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C49296109F;
-        Thu, 14 Oct 2021 08:05:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634198755;
-        bh=c4DPsOBWeX76u4ENO2ueRzg9rUgiQezuGLMSVcxGPjs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cfNWlrbUDak7Dq22RabDrI3MAL6NjwABc0iVTwGOZWvSS9ka+EalgLze5R4NOUuTX
-         CNHCfrI4b99IpX2yiC/JurFRHMwd4nag9++4zdJFuuV/8Kp01eemuegcdiEGif4G8l
-         dezAGzfzXL+NXUGdkHwri7CyaU4kNFFyYTIM2xSf5l5jfpH1AXvwZ9cTKzQKhcwO4s
-         Xg8c4NoXw6bJtdODROaaC0oLaIwwLnfOWAqhJVMLwNTp+N/djcyKmi4G9JzBll26d7
-         W2Uz7shBrdFnfwbcQGqiZqP/DxC7zGOLxuhDmLV0zsonuvxY2O2Z8J18wJvvHKI+e4
-         oITbPMyKrfkLA==
-Date:   Thu, 14 Oct 2021 17:05:52 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 5/8] arm64: Recover kretprobe modified return address in
- stacktrace
-Message-Id: <20211014170552.a588e29947e1cd63cdf0c5b5@kernel.org>
-In-Reply-To: <20211013081416.GC6701@willie-the-truck>
-References: <163369609308.636038.15295764725220907794.stgit@devnote2>
-        <163369613866.636038.15240679956943005288.stgit@devnote2>
-        <20211013081416.GC6701@willie-the-truck>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S230179AbhJNIIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:08:39 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49420 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230167AbhJNIIf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 04:08:35 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0EB9C21A76;
+        Thu, 14 Oct 2021 08:06:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634198786; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pu1BNJzoEuzb7mo16H8AVGb75lgjeaqs/coShQXeKw0=;
+        b=JS+6WW+McvGEZ9tbfCRPDlCuSUM1QKQ/77I9SX9BKZ5cxF9HbuVikvnLe4gy9zhDX0BQMQ
+        RQb1nCCM+5xTTykXaTx/eQasXt7j97fl7lslsq4taqe7QYnbG+cpoVo8a4aKDjqTWc4L4o
+        IzwHJo+8t6jgQDxNI8BqrAtRYLaH1rE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634198786;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pu1BNJzoEuzb7mo16H8AVGb75lgjeaqs/coShQXeKw0=;
+        b=dKik4kpyXpSwkzS8FoFeF70i9oSVkq64fEmS59andQKj4Lq+EcffuNNPZX3WhE1xM7rv71
+        xGTy/stKlaC03DBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D00F213A1F;
+        Thu, 14 Oct 2021 08:06:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yRUOMgHlZ2E0LwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 14 Oct 2021 08:06:25 +0000
+Message-ID: <5e2c8c39-29d9-61be-049f-a408f62f5acf@suse.cz>
+Date:   Thu, 14 Oct 2021 10:06:25 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Linux-MM <linux-mm@kvack.org>
+Cc:     NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20211008135332.19567-1-mgorman@techsingularity.net>
+ <20211008135332.19567-3-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 2/8] mm/vmscan: Throttle reclaim and compaction when too
+ may pages are isolated
+In-Reply-To: <20211008135332.19567-3-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 09:14:16 +0100
-Will Deacon <will@kernel.org> wrote:
-
-> On Fri, Oct 08, 2021 at 09:28:58PM +0900, Masami Hiramatsu wrote:
-> > Since the kretprobe replaces the function return address with
-> > the kretprobe_trampoline on the stack, stack unwinder shows it
-> > instead of the correct return address.
-> > 
-> > This checks whether the next return address is the
-> > __kretprobe_trampoline(), and if so, try to find the correct
-> > return address from the kretprobe instance list.
-> > 
-> > With this fix, now arm64 can enable
-> > CONFIG_ARCH_CORRECT_STACKTRACE_ON_KRETPROBE, and pass the
-> > kprobe self tests.
-> > 
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >  arch/arm64/Kconfig                  |    1 +
-> >  arch/arm64/include/asm/stacktrace.h |    2 ++
-> >  arch/arm64/kernel/stacktrace.c      |    3 +++
-> >  3 files changed, 6 insertions(+)
-> > 
-> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > index 5c7ae4c3954b..edde5171ffb2 100644
-> > --- a/arch/arm64/Kconfig
-> > +++ b/arch/arm64/Kconfig
-> > @@ -11,6 +11,7 @@ config ARM64
-> >  	select ACPI_PPTT if ACPI
-> >  	select ARCH_HAS_DEBUG_WX
-> >  	select ARCH_BINFMT_ELF_STATE
-> > +	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-> >  	select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
-> >  	select ARCH_ENABLE_MEMORY_HOTPLUG
-> >  	select ARCH_ENABLE_MEMORY_HOTREMOVE
-> > diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
-> > index 8aebc00c1718..8f997a602651 100644
-> > --- a/arch/arm64/include/asm/stacktrace.h
-> > +++ b/arch/arm64/include/asm/stacktrace.h
-> > @@ -9,6 +9,7 @@
-> >  #include <linux/sched.h>
-> >  #include <linux/sched/task_stack.h>
-> >  #include <linux/types.h>
-> > +#include <linux/llist.h>
-> >  
-> >  #include <asm/memory.h>
-> >  #include <asm/ptrace.h>
-> > @@ -59,6 +60,7 @@ struct stackframe {
-> >  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> >  	int graph;
-> >  #endif
-> > +	struct llist_node *kr_cur;
-> >  };
+On 10/8/21 15:53, Mel Gorman wrote:
+> Page reclaim throttles on congestion if too many parallel reclaim instances
+> have isolated too many pages. This makes no sense, excessive parallelisation
+> has nothing to do with writeback or congestion.
 > 
-> Please update the comment above this structure to describe the new member
-> you're adding.
-
-OK, let me update that. 
-
-> If it's only relevant for kprobes, then let's define it
-> conditionally too (based on CONFIG_KRETPROBES ?)
-
-Ah, good point! Yes, it must be only valid when CONFIG_KRETPROBES=y.
-
-Thank you,
-
+> This patch creates an additional workqueue to sleep on when too many
+> pages are isolated. The throttled tasks are woken when the number
+> of isolated pages is reduced or a timeout occurs. There may be
+> some false positive wakeups for GFP_NOIO/GFP_NOFS callers but
+> the tasks will throttle again if necessary.
 > 
-> >  extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
-> > diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-> > index 8982a2b78acf..f1eef5745542 100644
-> > --- a/arch/arm64/kernel/stacktrace.c
-> > +++ b/arch/arm64/kernel/stacktrace.c
-> > @@ -129,6 +129,8 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
-> >  		frame->pc = ret_stack->ret;
-> >  	}
-> >  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
-> > +	if (is_kretprobe_trampoline(frame->pc))
-> > +		frame->pc = kretprobe_find_ret_addr(tsk, (void *)frame->fp, &frame->kr_cur);
-> >  
-> >  	frame->pc = ptrauth_strip_insn_pac(frame->pc);
-> >  
-> > @@ -224,6 +226,7 @@ noinline notrace void arch_stack_walk(stack_trace_consume_fn consume_entry,
-> >  {
-> >  	struct stackframe frame;
-> >  
-> > +	memset(&frame, 0, sizeof(frame));
-> 
-> Why do we need this?
-> 
-> Will
+> [shy828301@gmail.com: Wake up from compaction context]
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
+...
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 90764d646e02..06d0c376efcd 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -45,6 +45,15 @@ static inline void acct_reclaim_writeback(struct page *page)
+>  		__acct_reclaim_writeback(pgdat, page, nr_throttled);
+>  }
+>  
+> +static inline void wake_throttle_isolated(pg_data_t *pgdat)
+> +{
+> +	wait_queue_head_t *wqh;
+> +
+> +	wqh = &pgdat->reclaim_wait[VMSCAN_THROTTLE_ISOLATED];
+> +	if (waitqueue_active(wqh))
+> +		wake_up_all(wqh);
+
+Again, would it be better to wake up just one task to prevent possible
+thundering herd? We can assume that that task will call too_many_isolated()
+eventually to wake up the next one? Although it seems strange that
+too_many_isolated() is the place where we detect the situation for wake up.
+Simpler than to hook into NR_ISOLATED decrementing I guess.
+
+> +}
+> +
+>  vm_fault_t do_swap_page(struct vm_fault *vmf);
+>  
+>  void free_pgtables(struct mmu_gather *tlb, struct vm_area_struct *start_vma,
+...
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1006,11 +1006,10 @@ static void handle_write_error(struct address_space *mapping,
+>  	unlock_page(page);
+>  }
+>  
+> -static void
+> -reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason,
+> +void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason,
+>  							long timeout)
+>  {
+> -	wait_queue_head_t *wqh = &pgdat->reclaim_wait;
+> +	wait_queue_head_t *wqh = &pgdat->reclaim_wait[reason];
+
+It seems weird that later in this function we increase nr_reclaim_throttled
+without distinguishing the reason, so effectively throttling for isolated
+pages will trigger acct_reclaim_writeback() doing the NR_THROTTLED_WRITTEN
+counting, although it's not related at all? Maybe either have separate
+nr_reclaim_throttled counters per vmscan_throttle_state (if counter of
+isolated is useful, I haven't seen the rest of series yet), or count only
+VMSCAN_THROTTLE_WRITEBACK tasks?
+
+>  	long ret;
+>  	DEFINE_WAIT(wait);
+>  
+> @@ -1053,7 +1052,7 @@ void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page,
+>  		READ_ONCE(pgdat->nr_reclaim_start);
+>  
+>  	if (nr_written > SWAP_CLUSTER_MAX * nr_throttled)
+> -		wake_up_all(&pgdat->reclaim_wait);
+> +		wake_up_all(&pgdat->reclaim_wait[VMSCAN_THROTTLE_WRITEBACK]);
+>  }
+>  
+>  /* possible outcome of pageout() */
+
