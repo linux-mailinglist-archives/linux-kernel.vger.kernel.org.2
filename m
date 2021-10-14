@@ -2,134 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93C042D0C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9838342D0C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhJNDEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:04:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229838AbhJNDEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:04:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFB4C61039;
-        Thu, 14 Oct 2021 03:02:02 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 23:02:01 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     <mingo@redhat.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tracing: save cmdline only when task does not exist in
- savecmd for optimization
-Message-ID: <20211013230201.0f777564@oasis.local.home>
-In-Reply-To: <20211011115018.88948-1-yangjihong1@huawei.com>
-References: <20211011115018.88948-1-yangjihong1@huawei.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229990AbhJNDHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229834AbhJNDHr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 23:07:47 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCBAC061570;
+        Wed, 13 Oct 2021 20:05:43 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id n15-20020a4ad12f000000b002b6e3e5fd5dso1446992oor.1;
+        Wed, 13 Oct 2021 20:05:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=d1385PWcZJRF7AKd4UEG4AV7ybG/wi0GEJ0BosT22g8=;
+        b=pXKAMmR/xzMljbw/eNfBG8AuOseS2mPEMgiIEKceLbWLKcjP81ozhY9W5V5Cdy7Qgp
+         BGOIHvLPcVYP11vhOOAdhoytozAQ/hA627OtLzuPft++hivhcvdQ160zBPsZO8GkY5DE
+         vZ6xoA+6+Jg4ARXxjkmqlmxhFYxxncjLhMt0kx+KcgAB6NhJNH+4RU7Sbj2FqtyXtV+l
+         q4jh1/oAR5hhECoSlaOH90TABOVAEqeCfNwe1lAqaTsphXcdBmJ8hBRRfgA0jXuY+CQG
+         HrLokNTr5KOvnYDilgXI5mbBmgbzYVeZhIRGw7fW80dkCAm4G80c133AjrxCdNH7kamu
+         LnUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d1385PWcZJRF7AKd4UEG4AV7ybG/wi0GEJ0BosT22g8=;
+        b=v2jezdAXhpwC/RYp4Cxa1d1wPzp63LjI1Hm4xriy0yAgSexQ4h7t1TigrHjB7qGBdw
+         +OJGuvuYCl9xHN0ndB2jZm2vTU0TfCw6WO4IJHUGscZ48o0enOPuJt/BTRi9dtpBCHCC
+         BGxWj+Qb5UKipttB3MoT7kxiFGq4LOYkXqo5aCAph5iUxZeaVW2Z4CP13eE1o7twVe4F
+         gyT8ZPQqpOW7bRN7gEuL3Xb9Eu/GSGhmcGWeX3cRzQWt5YIbpTfoEObMXEFhqCGbD+XL
+         s6thwpfE956SiXwCkYAh2YBozqXB/HX6AhfOezbmpRjk6/uyXVDbZajfFot9X5ZmkQWv
+         AMyQ==
+X-Gm-Message-State: AOAM530CIS7D8N3DoZWpfupTGGs+4CDnRtYt43iqi3+fAfxX55Al82Dj
+        F2RZCJXplgWlwcYY5iFzwul2LGsStAJrwg==
+X-Google-Smtp-Source: ABdhPJyMU3EjySfOQ6JyMsRrLZcxyafz4scF+7NQeAec7TbUuE5tLE7xrLtL0hD7XG2a2bu/LssKvA==
+X-Received: by 2002:a4a:d5c8:: with SMTP id a8mr1784724oot.18.1634180741652;
+        Wed, 13 Oct 2021 20:05:41 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.40])
+        by smtp.googlemail.com with ESMTPSA id c3sm314906otr.42.2021.10.13.20.05.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 20:05:40 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] tcp: md5: Fix overlap between vrf and non-vrf keys
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Yonghong Song <yhs@fb.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1634107317.git.cdleonard@gmail.com>
+ <6d99312c4863c37ad394c815f8529ee635bdb0d0.1634107317.git.cdleonard@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <65cb2c9f-28f8-8570-3275-b1080232a7f8@gmail.com>
+Date:   Wed, 13 Oct 2021 21:05:39 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <6d99312c4863c37ad394c815f8529ee635bdb0d0.1634107317.git.cdleonard@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 19:50:18 +0800
-Yang Jihong <yangjihong1@huawei.com> wrote:
-
-> commit 85f726a35e504418 use strncpy instead of memcpy when copying comm,
-> on ARM64 machine, this commit causes performance degradation.
+On 10/13/21 12:50 AM, Leonard Crestez wrote:
+> With net.ipv4.tcp_l3mdev_accept=1 it is possible for a listen socket to
+> accept connection from the same client address in different VRFs. It is
+> also possible to set different MD5 keys for these clients which differ
+> only in the tcpm_l3index field.
 > 
-> For the task that already exists in savecmd, it is unnecessary to call
-> set_cmdline to execute strncpy once, run set_cmdline only if the task does
-> not exist in savecmd.
+> This appears to work when distinguishing between different VRFs but not
+> between non-VRF and VRF connections. In particular:
 > 
-> I have written an example (which is an extreme case) in which trace sched switch
-> is invoked for 1000 times, as shown in the following:
+>  * tcp_md5_do_lookup_exact will match a non-vrf key against a vrf key.
+> This means that adding a key with l3index != 0 after a key with l3index
+> == 0 will cause the earlier key to be deleted. Both keys can be present
+> if the non-vrf key is added later.
+>  * _tcp_md5_do_lookup can match a non-vrf key before a vrf key. This
+> casues failures if the passwords differ.
 > 
->   for (int i = 0; i < 1000; i++) {
->           trace_sched_switch(true, current, current);
->  }
-
-Well that's a pretty non realistic benchmark.
-
+> Fix this by making tcp_md5_do_lookup_exact perform an actual exact
+> comparison on l3index and by making  __tcp_md5_do_lookup perfer
+> vrf-bound keys above other considerations like prefixlen.
 > 
-> On ARM64 machine, compare the data before and after the optimization:
-> +---------------------+------------------------------+------------------------+
-> |                     | Total number of instructions | Total number of cycles |
-> +---------------------+------------------------------+------------------------+
-> | Before optimization |           1107367            |          658491        |
-> +---------------------+------------------------------+------------------------+
-> | After optimization  |            869367            |          520171        |
-> +---------------------+------------------------------+------------------------+
-> As shown above, there is nearly 26% performance
-
-I'd prefer to see a more realistic benchmark.
-
-> 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> Fixes: dea53bb80e07 ("tcp: Add l3index to tcp_md5sig_key and md5 functions")
+> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
 > ---
->  kernel/trace/trace.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+>  net/ipv4/tcp_ipv4.c | 19 ++++++++++++++++---
+>  1 file changed, 16 insertions(+), 3 deletions(-)
 > 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 7896d30d90f7..a795610a3b37 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -2427,8 +2427,11 @@ static int trace_save_cmdline(struct task_struct *tsk)
->  		savedcmd->cmdline_idx = idx;
->  	}
->  
-> -	savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
-> -	set_cmdline(idx, tsk->comm);
-> +	/* save cmdline only when task does not exist in savecmd */
-> +	if (savedcmd->map_cmdline_to_pid[idx] != tsk->pid) {
-> +		savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
-> +		set_cmdline(idx, tsk->comm);
-> +	}
 
-I'm not against adding this. Just for kicks I ran the following before
-and after this patch:
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
-  # trace-cmd start -e sched
-  # perf stat -r 100 hackbench 50
-
-Before:
-
- Performance counter stats for '/work/c/hackbench 50' (100 runs):
-
-          6,261.26 msec task-clock                #    6.126 CPUs utilized            ( +-  0.12% )
-            93,519      context-switches          #   14.936 K/sec                    ( +-  1.12% )
-            13,725      cpu-migrations            #    2.192 K/sec                    ( +-  1.16% )
-            47,266      page-faults               #    7.549 K/sec                    ( +-  0.54% )
-    22,911,885,026      cycles                    #    3.659 GHz                      ( +-  0.11% )
-    15,171,250,777      stalled-cycles-frontend   #   66.22% frontend cycles idle     ( +-  0.13% )
-    18,330,841,604      instructions              #    0.80  insn per cycle
-                                                  #    0.83  stalled cycles per insn  ( +-  0.11% )
-     4,027,904,559      branches                  #  643.306 M/sec                    ( +-  0.11% )
-        31,327,782      branch-misses             #    0.78% of all branches          ( +-  0.20% )
-
-           1.02201 +- 0.00158 seconds time elapsed  ( +-  0.15% )
-After:
-
- Performance counter stats for '/work/c/hackbench 50' (100 runs):
-
-          6,216.47 msec task-clock                #    6.124 CPUs utilized            ( +-  0.10% )
-            93,311      context-switches          #   15.010 K/sec                    ( +-  0.91% )
-            13,719      cpu-migrations            #    2.207 K/sec                    ( +-  1.09% )
-            47,085      page-faults               #    7.574 K/sec                    ( +-  0.49% )
-    22,746,703,318      cycles                    #    3.659 GHz                      ( +-  0.09% )
-    15,012,911,121      stalled-cycles-frontend   #   66.00% frontend cycles idle     ( +-  0.11% )
-    18,275,147,949      instructions              #    0.80  insn per cycle
-                                                  #    0.82  stalled cycles per insn  ( +-  0.08% )
-     4,017,673,788      branches                  #  646.295 M/sec                    ( +-  0.08% )
-        31,313,459      branch-misses             #    0.78% of all branches          ( +-  0.17% )
-
-           1.01506 +- 0.00150 seconds time elapsed  ( +-  0.15% )
-
-Really it's all in the noise, so adding this doesn't seem to hurt.
-
--- Steve
-
-
-
->  
->  	arch_spin_unlock(&trace_cmdline_lock);
->  
 
