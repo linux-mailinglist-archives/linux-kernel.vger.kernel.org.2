@@ -2,193 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F03742D1B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 06:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B7442D1BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 06:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbhJNEy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 00:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
+        id S229672AbhJNEyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 00:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhJNEy2 (ORCPT
+        with ESMTP id S229472AbhJNEyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 00:54:28 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75C5C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 21:52:24 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id i83-20020a256d56000000b005b706d1417bso5731545ybc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 21:52:24 -0700 (PDT)
+        Thu, 14 Oct 2021 00:54:41 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96A1C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 21:52:37 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so6070074pjw.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 21:52:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=Mmh3d0ofqlev8/A8K/1ajEqde3yvJSmZNHvBZZp9dxQ=;
-        b=s1Fw3cp8w+CCXBfuG55o3e7d4d6vSHZEuLdaIe4SNzmnThdTIQOdkzfaTbehwQ3ojs
-         BS2NvF3O7DiVBVUr84hJ39R9AKvDMytBF8cirbYS0gu6iPoqd8YKLZG3xC/JyD+5aznV
-         gYv5jSKFznD2R55huhYGA3gOZVbA49tIkSBRLoKmj5DTAIlVkrRFxScWWXLcCOoguzg0
-         OkJD/V7p3vn7/atyayi26lbnBonwXu2tV0X0xmxGzfoBZajkbwm/KtEoftLKfma7tgPy
-         IGvy9VkGDWpZcHgVHCpkzRqnH3MO8q/OcYF+YndP1c4cu/kmplJ1+v+prfgdDs8xgj4l
-         P7AQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gJDlq0YOd3FIp9yltFh10NZ+GTEdKsRbgNrMT/fMhy8=;
+        b=l7CblFVsCZ9q2NJP3e6RC8afxRYWYpADQJqPj/4vdlDauWotjdin6xfqggpL2Ard9Z
+         Gw9G1Gf0s6Coi79Pqbh6QyIJX6A+DTtF0+VszjbTrDFLSzQrep9oJjDiXz4XiEsjEk/D
+         IwMKa1N11jJ36T6XQl7xIrSisVsiFt9cK91mc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=Mmh3d0ofqlev8/A8K/1ajEqde3yvJSmZNHvBZZp9dxQ=;
-        b=0ErjKQST4RSrzURv1KtqJQYbFoYw9MyYMmVLFfH2EdCkAIOoet2Vc8KwznjV5Dzhg1
-         up/QjtteyYz+iBsQafjwbT58S+gYTB6E7eJhL79nCj9/+PDDMPrmleLk8L2NLFPWvLPy
-         o1qsIEkMA1frHK+kiICJCNK/jyYcQDQZPZgRd9Xb8LjXWje5mJbaQAkHDY08dy3pSWMO
-         RDI9w5WP2jsQKHeYW/klGBL3nmyltWRClrYMtDfWq2thXZaRenqG+wKWGCAIt2tHHZji
-         jt2MplCPxSL5gQgKeAcX4n0e0lrw7Sn6ubV75Lkm0mzzvyFa//3gRrdYze+0b9QValmO
-         N7LQ==
-X-Gm-Message-State: AOAM5313rcL9GWqwazUXVc8lOSMgGg716pcgmzwSzf72EXS23cDqzUm4
-        OpuYy0MnKtDEld76mOpiHw39f1/sGyRh08Ox2w==
-X-Google-Smtp-Source: ABdhPJycGWPujsiqT6VpAUK/MHj2trj6BPXdk7SifteymPqBqT+Es7+ih6zJcKvo9hD6kt4B2KYuckXDmljvYKyR/g==
-X-Received: from kaleshsingh.mtv.corp.google.com ([2620:15c:211:200:ee63:d633:8396:3928])
- (user=kaleshsingh job=sendgmr) by 2002:a05:6902:150e:: with SMTP id
- q14mr4487116ybu.98.1634187143830; Wed, 13 Oct 2021 21:52:23 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 21:52:17 -0700
-Message-Id: <20211014045217.3265162-1-kaleshsingh@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v3] tracing/cfi: Fix cmp_entries_* functions signature mismatch
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
-        samitolvanen@google.com, ndesaulniers@google.com,
-        kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
-        kernel test robot <lkp@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gJDlq0YOd3FIp9yltFh10NZ+GTEdKsRbgNrMT/fMhy8=;
+        b=x1pNl4wd+76vrn1MBxL7On+g4mUJr42Op8Wu0KYZNAN0Qf2jEGb8EdiO1JRT3DCFai
+         0I0B+UScdUVlwiXeLTWdqaXIQ26b8VpQEx492NooqVY0hpVhARDpLkrProV2FP5YaRgD
+         u8LrQRlkC4mIzpVJQsuCRfE2KkGv+vIHYo3udkyPvOtdNv+rsWZXv1Ojo1kxNFUlsCJ8
+         wv8ylbPkE+7MvGZ4xL9hEPW0DLuDm65H+KFjFimy8mEi5t2xewt3myZs+5GnyBmji5oj
+         90JiV7PSJUkZQbnsQMqgrUPez7Dy4I42COxYPK1sr01zA4iOqZQUZBifkNnAPCq8HK6U
+         7b/A==
+X-Gm-Message-State: AOAM533QqbnVAqP09OfaBCUq/o3rvYlkztDsBuS+OEInH2a5tQfrk+9z
+        dXJSsujTN0vSgMT9CoQ1l5Cqqg==
+X-Google-Smtp-Source: ABdhPJwwQZfVLF1jPk/lor0aB50rGf7fWVKbiUn2BwtlZa1P/VwX+4e2ZVASHShBHv5BWJhIvXW9lg==
+X-Received: by 2002:a17:90a:c594:: with SMTP id l20mr17666973pjt.223.1634187157408;
+        Wed, 13 Oct 2021 21:52:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e12sm1066229pgv.82.2021.10.13.21.52.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 21:52:37 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 21:52:36 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Marios Pomonis <pomonis@google.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Kristen C Accardi <kristen.c.accardi@intel.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ivan Babrou <ivan@cloudflare.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-hardening@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH] x86/unwind/orc: Handle kretprobes_trampoline
+Message-ID: <202110132151.F78F49AD8@keescook>
+References: <20210903021326.206548-1-keescook@chromium.org>
+ <202110111403.3C59BF77@keescook>
+ <20211014014101.6du6jj2o7g4ficu5@treble>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014014101.6du6jj2o7g4ficu5@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_CFI_CLANG=y, attempting to read an event histogram will cause
-the kernel to panic due to failed CFI check.
+On Wed, Oct 13, 2021 at 06:41:01PM -0700, Josh Poimboeuf wrote:
+> On Mon, Oct 11, 2021 at 02:03:26PM -0700, Kees Cook wrote:
+> > On Thu, Sep 02, 2021 at 07:13:26PM -0700, Kees Cook wrote:
+> > > From: Marios Pomonis <pomonis@google.com>
+> > > 
+> > > Fix a bug in the ORC unwinder when kretprobes has replaced a return
+> > > address with the address of `kretprobes_trampoline'. ORC mistakenly
+> > > assumes that the address in the stack is a return address and decrements
+> > > it by 1 in order to find the proper depth of the next frame.
+> > > 
+> > > This issue was discovered while testing the FG-KASLR series[0][1] and
+> > > running the live patching test[2] that was originally failing[3].
+> > > 
+> > > [0] https://lore.kernel.org/kernel-hardening/20200923173905.11219-1-kristen@linux.intel.com/
+> > > [1] https://github.com/KSPP/linux/issues/132
+> > > [2] https://github.com/lpechacek/qa_test_klp
+> > > [3] https://lore.kernel.org/lkml/alpine.LSU.2.21.2009251450260.13615@pobox.suse.cz/
+> > > 
+> > > Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
+> > > Signed-off-by: Marios Pomonis <pomonis@google.com>
+> > > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> > > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> > > Cc: Kristen C Accardi <kristen.c.accardi@intel.com>
+> > > Cc: Sami Tolvanen <samitolvanen@google.com>
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > 
+> > Ping again; Josh can you take this please?
+> 
+> I'm confused how this still fixes anything after Masami's patch set,
+> which is now in linux-next.
+> 
+> After those patches, for a CALL-type ORC entry, the unwinder sets
+> state->ip to the address returned by unwind_recover_ret_addr().  In the
+> case of a kretprobe, that means that state->ip will no longer point to
+> kretprobes_trampoline() -- making the above patch description incorrect.
+> 
+> Instead, state->ip will then contain the original call return address
+> which was replaced by kretpobes.  So it looks to the unwinder like a
+> normal call return address, and 'state->signal' should remain false.
+> 
+> Am I missing something?
 
-    1. echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
-    2. cat events/sched/sched_switch/hist
-    3. kernel panics on attempting to read hist
+I'll let Marios answer in more detail, but my understanding is that
+Masami's patch set didn't solve the FGKASLR-vs-kretprobes issue[1].
+I don't understand _why_ yet, though.
 
-This happens because the sort() function expects a generic
-int (*)(const void *, const void *) pointer for the compare function.
-To prevent this CFI failure, change tracing map cmp_entries_* function
-signatures to match this.
+-Kees
 
-Also, fix the build error reported by the kernel test robot [1].
+[1] https://lore.kernel.org/all/CAKXAmdgS3SL_qyjzjY32_DXe3WVTN+O=wYwJ9vkUXKhjmt87fA@mail.gmail.com/
 
-[1] https://lore.kernel.org/r/202110141140.zzi4dRh4-lkp@intel.com/
-
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
-Changes in v3:
-  - Fix build error, reported by kernel test robot
-
-Changes in v2:
-  - Code style clean up, per Steve
-  - Commit message typo fix, per Steve
-
-
- kernel/trace/tracing_map.c | 40 ++++++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 17 deletions(-)
-
-diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
-index d6bddb157ef2..39bb56d2dcbe 100644
---- a/kernel/trace/tracing_map.c
-+++ b/kernel/trace/tracing_map.c
-@@ -834,29 +834,35 @@ int tracing_map_init(struct tracing_map *map)
- 	return err;
- }
- 
--static int cmp_entries_dup(const struct tracing_map_sort_entry **a,
--			   const struct tracing_map_sort_entry **b)
-+static int cmp_entries_dup(const void *A, const void *B)
- {
-+	const struct tracing_map_sort_entry *a, *b;
- 	int ret = 0;
- 
--	if (memcmp((*a)->key, (*b)->key, (*a)->elt->map->key_size))
-+	a = *(const struct tracing_map_sort_entry **)A;
-+	b = *(const struct tracing_map_sort_entry **)B;
-+
-+	if (memcmp(a->key, b->key, a->elt->map->key_size))
- 		ret = 1;
- 
- 	return ret;
- }
- 
--static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
--			   const struct tracing_map_sort_entry **b)
-+static int cmp_entries_sum(const void *A, const void *B)
- {
- 	const struct tracing_map_elt *elt_a, *elt_b;
-+	const struct tracing_map_sort_entry *a, *b;
- 	struct tracing_map_sort_key *sort_key;
- 	struct tracing_map_field *field;
- 	tracing_map_cmp_fn_t cmp_fn;
- 	void *val_a, *val_b;
- 	int ret = 0;
- 
--	elt_a = (*a)->elt;
--	elt_b = (*b)->elt;
-+	a = *(const struct tracing_map_sort_entry **)A;
-+	b = *(const struct tracing_map_sort_entry **)B;
-+
-+	elt_a = a->elt;
-+	elt_b = b->elt;
- 
- 	sort_key = &elt_a->map->sort_key;
- 
-@@ -873,18 +879,21 @@ static int cmp_entries_sum(const struct tracing_map_sort_entry **a,
- 	return ret;
- }
- 
--static int cmp_entries_key(const struct tracing_map_sort_entry **a,
--			   const struct tracing_map_sort_entry **b)
-+static int cmp_entries_key(const void *A, const void *B)
- {
- 	const struct tracing_map_elt *elt_a, *elt_b;
-+	const struct tracing_map_sort_entry *a, *b;
- 	struct tracing_map_sort_key *sort_key;
- 	struct tracing_map_field *field;
- 	tracing_map_cmp_fn_t cmp_fn;
- 	void *val_a, *val_b;
- 	int ret = 0;
- 
--	elt_a = (*a)->elt;
--	elt_b = (*b)->elt;
-+	a = *(const struct tracing_map_sort_entry **)A;
-+	b = *(const struct tracing_map_sort_entry **)B;
-+
-+	elt_a = a->elt;
-+	elt_b = b->elt;
- 
- 	sort_key = &elt_a->map->sort_key;
- 
-@@ -989,10 +998,8 @@ static void sort_secondary(struct tracing_map *map,
- 			   struct tracing_map_sort_key *primary_key,
- 			   struct tracing_map_sort_key *secondary_key)
- {
--	int (*primary_fn)(const struct tracing_map_sort_entry **,
--			  const struct tracing_map_sort_entry **);
--	int (*secondary_fn)(const struct tracing_map_sort_entry **,
--			    const struct tracing_map_sort_entry **);
-+	int (*primary_fn)(const void *, const void *);
-+	int (*secondary_fn)(const void *, const void *);
- 	unsigned i, start = 0, n_sub = 1;
- 
- 	if (is_key(map, primary_key->field_idx))
-@@ -1061,8 +1068,7 @@ int tracing_map_sort_entries(struct tracing_map *map,
- 			     unsigned int n_sort_keys,
- 			     struct tracing_map_sort_entry ***sort_entries)
- {
--	int (*cmp_entries_fn)(const struct tracing_map_sort_entry **,
--			      const struct tracing_map_sort_entry **);
-+	int (*cmp_entries_fn)(const void *, const void *);
- 	struct tracing_map_sort_entry *sort_entry, **entries;
- 	int i, n_entries, ret;
- 
-
-base-commit: 348949d9a4440abdab3b1dc99a9bb660e8c7da7c
 -- 
-2.33.0.1079.g6e70778dc9-goog
-
+Kees Cook
