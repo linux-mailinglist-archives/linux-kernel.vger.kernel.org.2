@@ -2,107 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B9F42D592
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0B642D59A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhJNJBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:01:15 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:17088 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbhJNJAm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:00:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1634201917; x=1665737917;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2SfxK57vRWHEZrPMMA/I/4JeY6YI1pn+Pq8lPJzvFYk=;
-  b=a0EIrpuZ3kZN/RYhr9hxd3vFoDUyDvZ82LUiHy9bT346tLZUTxUQJr+1
-   oR8Jn1pk0oZ5KsgD7dCgN6Kw1zRCYCdS55+SIIQ0CyPnsNp7nfGWGyNxV
-   Pn89q9sKTfhW5/QL2g7LnDJmJzzqtOdS+bP/pqB+RxZbVHVcyn7CypYZQ
-   WbbylQXOXx/fCY/xGwq3FtzUy5aNzZQqadTOND6ligqDPRG0xc1HaYEXg
-   ykqPID+IO+nvgxEfGbigwFC2k2GnXBcQoi4q3aG7BTs/WTdlSixKYQfUQ
-   TG4AsAj7/a8kbXyHNjs1HW0GZp5+mXgxsg0nxIkEvnfMdZwoguPD1Fh3r
-   g==;
-IronPort-SDR: Qf/lBrOUwB/cqSFaTWYx9GBfFVfLWdJcXkZ5ReUrI1ZMY4Vk2fP2L47p7HGcTgo5UV9QtYw6dA
- LFOvSEPkDBKgDRbhbF2+aQvr0W8sreSQdUORJzeW825I1RxZA2cYsLkn/o/w/UE1DGD06Ib0P1
- RgDFSJT6KaTJqMx4+32RNN0UK8x4Nbox1j+7NtXnkP2VhRp/cjpWTzyQVEh3/pYLz5CPuPk4eZ
- tHEFlo+pXLfaQJdS6NY0O5stxQKVOgsXCMlJlRMhJxlwnEvNb+B0LcyqhaLPuCqn1yC3MW4TGa
- lw8q2Gmxr1cMFLqzOs+gZwll
-X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="132960570"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Oct 2021 01:58:37 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 14 Oct 2021 01:58:37 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 14 Oct 2021 01:58:35 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
-        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <p.zabel@pengutronix.de>,
-        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH v3 2/2] pinctrl: microchip sgpio: use reset driver
-Date:   Thu, 14 Oct 2021 10:59:29 +0200
-Message-ID: <20211014085929.2579695-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014085929.2579695-1-horatiu.vultur@microchip.com>
-References: <20211014085929.2579695-1-horatiu.vultur@microchip.com>
+        id S230032AbhJNJDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:03:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230112AbhJNJDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 05:03:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A013F610EA;
+        Thu, 14 Oct 2021 09:01:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634202063;
+        bh=DA9RmgfUICfD23hPl0Hw7V7yblFOHR1znsQdqn0zh3U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=I03N3b6ralmPKnPcU6oARmAtt3AuGjQXXC3p6azCUN51KFlcPs4w6gyGIDIAPpORf
+         pfpvidEy7i28IKdEaa8G23pD5QTvdbnlOKzIfjSDm/XzFOOiI1nx3VqSqQmUjE3rpy
+         RbodeFDuruErNJj8m1GgiENIV6p1e3k/g9pLWl/wQMJQmp564tQvBxnxK4ZbFCUng6
+         UL2FgJn7CiMCP/4CkhHmyR5vc+jLeCmT6x6SApbbnysPI1Ff4FlFh0yCA1JgOOlVoH
+         P1m9AxWxHEVuMYe1Eg2sc6bLgImmvas68TfFSqhcZhnehg57jVcR6YE8jFgjONJJK9
+         TKhZB6hX6RV6A==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Michael Walle <michael@walle.cc>,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: of: fix stub of_net helpers for CONFIG_NET=n
+Date:   Thu, 14 Oct 2021 11:00:37 +0200
+Message-Id: <20211014090055.2058949-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On lan966x platform when the switch gets reseted then also the sgpio
-gets reseted. The fix for this is to extend also the sgpio driver to
-call the reset driver which will be reseted only once by the first
-driver that is probed.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+Moving the of_net code from drivers/of/ to net/core means we
+no longer stub out the helpers when networking is disabled,
+which leads to a randconfig build failure with at least one
+ARM platform that calls this from non-networking code:
+
+arm-linux-gnueabi-ld: arch/arm/mach-mvebu/kirkwood.o: in function `kirkwood_dt_eth_fixup':
+kirkwood.c:(.init.text+0x54): undefined reference to `of_get_mac_address'
+
+Restore the way this worked before by changing that #ifdef
+check back to testing for both CONFIG_OF and CONFIG_NET.
+
+Fixes: e330fb14590c ("of: net: move of_net under net/")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/pinctrl/pinctrl-microchip-sgpio.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/of_net.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/pinctrl-microchip-sgpio.c b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-index 072bccdea2a5..e8a91d0824cb 100644
---- a/drivers/pinctrl/pinctrl-microchip-sgpio.c
-+++ b/drivers/pinctrl/pinctrl-microchip-sgpio.c
-@@ -17,6 +17,7 @@
- #include <linux/pinctrl/pinmux.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
-+#include <linux/reset.h>
+diff --git a/include/linux/of_net.h b/include/linux/of_net.h
+index 0797e2edb8c2..0484b613ca64 100644
+--- a/include/linux/of_net.h
++++ b/include/linux/of_net.h
+@@ -8,7 +8,7 @@
  
- #include "core.h"
- #include "pinconf.h"
-@@ -803,6 +804,7 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
- 	int div_clock = 0, ret, port, i, nbanks;
- 	struct device *dev = &pdev->dev;
- 	struct fwnode_handle *fwnode;
-+	struct reset_control *reset;
- 	struct sgpio_priv *priv;
- 	struct clk *clk;
- 	u32 val;
-@@ -813,6 +815,10 @@ static int microchip_sgpio_probe(struct platform_device *pdev)
+ #include <linux/phy.h>
  
- 	priv->dev = dev;
+-#ifdef CONFIG_OF
++#if defined(CONFIG_OF) && defined(CONFIG_NET)
+ #include <linux/of.h>
  
-+	reset = devm_reset_control_get_shared(&pdev->dev, "switch");
-+	if (!IS_ERR(reset))
-+		reset_control_reset(reset);
-+
- 	clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(clk))
- 		return dev_err_probe(dev, PTR_ERR(clk), "Failed to get clock\n");
+ struct net_device;
 -- 
-2.33.0
+2.29.2
 
