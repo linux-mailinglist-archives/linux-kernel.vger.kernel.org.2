@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF53242DD37
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405CD42DD71
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhJNPFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:05:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44464 "EHLO mail.kernel.org"
+        id S232818AbhJNPHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:07:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232525AbhJNPDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:03:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C61E60FDC;
-        Thu, 14 Oct 2021 15:00:16 +0000 (UTC)
+        id S231373AbhJNPFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:05:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 684D06124A;
+        Thu, 14 Oct 2021 15:01:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223616;
-        bh=4ZCA9TKg4yO885UqyCNNZkjwk0X5lC0J8AnQW7sHI9k=;
+        s=korg; t=1634223682;
+        bh=/M1ye1wTka+9xP3XL7Zt1MKIPDn2n66Dlgv269VpWZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZCghLVDceenOZxHNxftt3VL2sY3gRhU/ydD0OruSI2luYVbC8WEXx6K91oTqb6Brl
-         HK5TXWJINLijMqJ7C8ouWJw2phvSwfGVgwM1wlEnwtewW2JymbafdJkmc52eym3Sp1
-         Muz1eCwxK9ZbqP7p7cyysj8/SMpLVw1/1JNYf8Yk=
+        b=JV54/OSzAzUmj8xxnuACXwwI1/pl5afX2JIocxRgn92JkzWVzdWzufhoLrYxQKq49
+         PBTf0m1BSusHstLTFtA/QsIiPmc8KDWpGm7WUT+MBUSrQu38GaT6iTw2B19xwCvNU/
+         58rTAenwuSfpvW3p/QvX1zm3WyP6mcstqjwg0cf8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mizuho Mori <morimolymoly@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 04/22] HID: apple: Fix logical maximum and usage maximum of Magic Keyboard JIS
-Date:   Thu, 14 Oct 2021 16:54:10 +0200
-Message-Id: <20211014145208.125458221@linuxfoundation.org>
+        stable@vger.kernel.org, En-Shuo Hsu <enshuo@chromium.org>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 06/30] ALSA: usb-audio: Unify mixer resume and reset_resume procedure
+Date:   Thu, 14 Oct 2021 16:54:11 +0200
+Message-Id: <20211014145209.731464673@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
-References: <20211014145207.979449962@linuxfoundation.org>
+In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
+References: <20211014145209.520017940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,100 +40,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mizuho Mori <morimolymoly@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 67fd71ba16a37c663d139f5ba5296f344d80d072 ]
+[ Upstream commit 7b9cf9036609428e845dc300aec13822ba2c4ab3 ]
 
-Apple Magic Keyboard(JIS)'s Logical Maximum and Usage Maximum are wrong.
+USB-audio driver assumes that the normal resume would preserve the
+device configuration while reset_resume wouldn't, and tries to restore
+the mixer elements only at reset_resume callback.  However, this seems
+too naive, and some devices do behave differently, resetting the
+volume at the normal resume; this resulted in the inconsistent volume
+that surprised users.
 
-Below is a report descriptor.
+This patch changes the mixer resume code to handle both the normal and
+reset resume in the same way, always restoring the original mixer
+element values.  This allows us to unify the both callbacks as well as
+dropping the no longer used reset_resume field, which ends up with a
+good code reduction.
 
-0x05, 0x01,         /*  Usage Page (Desktop),                           */
-0x09, 0x06,         /*  Usage (Keyboard),                               */
-0xA1, 0x01,         /*  Collection (Application),                       */
-0x85, 0x01,         /*      Report ID (1),                              */
-0x05, 0x07,         /*      Usage Page (Keyboard),                      */
-0x15, 0x00,         /*      Logical Minimum (0),                        */
-0x25, 0x01,         /*      Logical Maximum (1),                        */
-0x19, 0xE0,         /*      Usage Minimum (KB Leftcontrol),             */
-0x29, 0xE7,         /*      Usage Maximum (KB Right GUI),               */
-0x75, 0x01,         /*      Report Size (1),                            */
-0x95, 0x08,         /*      Report Count (8),                           */
-0x81, 0x02,         /*      Input (Variable),                           */
-0x95, 0x05,         /*      Report Count (5),                           */
-0x75, 0x01,         /*      Report Size (1),                            */
-0x05, 0x08,         /*      Usage Page (LED),                           */
-0x19, 0x01,         /*      Usage Minimum (01h),                        */
-0x29, 0x05,         /*      Usage Maximum (05h),                        */
-0x91, 0x02,         /*      Output (Variable),                          */
-0x95, 0x01,         /*      Report Count (1),                           */
-0x75, 0x03,         /*      Report Size (3),                            */
-0x91, 0x03,         /*      Output (Constant, Variable),                */
-0x95, 0x08,         /*      Report Count (8),                           */
-0x75, 0x01,         /*      Report Size (1),                            */
-0x15, 0x00,         /*      Logical Minimum (0),                        */
-0x25, 0x01,         /*      Logical Maximum (1),                        */
+A slight behavior change by this patch is that now we assign
+restore_mixer_value() as the default resume callback, and the function
+is no longer called at reset-resume when the resume callback is
+overridden by the quirk function.  That is, if needed, the quirk
+resume function would have to handle similarly as
+restore_mixer_value() by itself.
 
-here is a report descriptor which is parsed one in kernel.
-see sys/kernel/debug/hid/<dev>/rdesc
-
-05 01 09 06 a1 01 85 01 05 07
-15 00 25 01 19 e0 29 e7 75 01
-95 08 81 02 95 05 75 01 05 08
-19 01 29 05 91 02 95 01 75 03
-91 03 95 08 75 01 15 00 25 01
-06 00 ff 09 03 81 03 95 06 75
-08 15 00 25 [65] 05 07 19 00 29
-[65] 81 00 95 01 75 01 15 00 25
-01 05 0c 09 b8 81 02 95 01 75
-01 06 01 ff 09 03 81 02 95 01
-75 06 81 03 06 02 ff 09 55 85
-55 15 00 26 ff 00 75 08 95 40
-b1 a2 c0 06 00 ff 09 14 a1 01
-85 90 05 84 75 01 95 03 15 00
-25 01 09 61 05 85 09 44 09 46
-81 02 95 05 81 01 75 08 95 01
-15 00 26 ff 00 09 65 81 02 c0
-00
-
-Position 64(Logical Maximum) and 70(Usage Maximum) are 101.
-Both should be 0xE7 to support JIS specific keys(ろ, Eisu, Kana, |) support.
-position 117 is also 101 but not related(it is Usage 65h).
-
-There are no difference of product id between JIS and ANSI.
-They are same 0x0267.
-
-Signed-off-by: Mizuho Mori <morimolymoly@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Reported-by: En-Shuo Hsu <enshuo@chromium.org>
+Cc: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Link: https://lore.kernel.org/r/CADDZ45UPsbpAAqP6=ZkTT8BE-yLii4Y7xSDnjK550G2DhQsMew@mail.gmail.com
+Link: https://lore.kernel.org/r/20210910105155.12862-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-apple.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/usb/card.c         | 18 ++++--------------
+ sound/usb/mixer.c        | 26 ++++----------------------
+ sound/usb/mixer.h        |  3 +--
+ sound/usb/mixer_quirks.c |  2 +-
+ 4 files changed, 10 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
-index 6b8f0d004d34..5c1d33cda863 100644
---- a/drivers/hid/hid-apple.c
-+++ b/drivers/hid/hid-apple.c
-@@ -322,12 +322,19 @@ static int apple_event(struct hid_device *hdev, struct hid_field *field,
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 6abfc9d079e7..fa75b7e72ad1 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -1020,7 +1020,7 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+ 	return 0;
+ }
  
- /*
-  * MacBook JIS keyboard has wrong logical maximum
-+ * Magic Keyboard JIS has wrong logical maximum
-  */
- static __u8 *apple_report_fixup(struct hid_device *hdev, __u8 *rdesc,
- 		unsigned int *rsize)
+-static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
++static int usb_audio_resume(struct usb_interface *intf)
  {
- 	struct apple_sc *asc = hid_get_drvdata(hdev);
+ 	struct snd_usb_audio *chip = usb_get_intfdata(intf);
+ 	struct snd_usb_stream *as;
+@@ -1046,7 +1046,7 @@ static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
+ 	 * we just notify and restart the mixers
+ 	 */
+ 	list_for_each_entry(mixer, &chip->mixer_list, list) {
+-		err = snd_usb_mixer_resume(mixer, reset_resume);
++		err = snd_usb_mixer_resume(mixer);
+ 		if (err < 0)
+ 			goto err_out;
+ 	}
+@@ -1066,20 +1066,10 @@ err_out:
+ 	atomic_dec(&chip->active); /* allow autopm after this point */
+ 	return err;
+ }
+-
+-static int usb_audio_resume(struct usb_interface *intf)
+-{
+-	return __usb_audio_resume(intf, false);
+-}
+-
+-static int usb_audio_reset_resume(struct usb_interface *intf)
+-{
+-	return __usb_audio_resume(intf, true);
+-}
+ #else
+ #define usb_audio_suspend	NULL
+ #define usb_audio_resume	NULL
+-#define usb_audio_reset_resume	NULL
++#define usb_audio_resume	NULL
+ #endif		/* CONFIG_PM */
  
-+	if(*rsize >=71 && rdesc[70] == 0x65 && rdesc[64] == 0x65) {
-+		hid_info(hdev,
-+			 "fixing up Magic Keyboard JIS report descriptor\n");
-+		rdesc[64] = rdesc[70] = 0xe7;
-+	}
-+
- 	if ((asc->quirks & APPLE_RDESC_JIS) && *rsize >= 60 &&
- 			rdesc[53] == 0x65 && rdesc[59] == 0x65) {
- 		hid_info(hdev,
+ static const struct usb_device_id usb_audio_ids [] = {
+@@ -1101,7 +1091,7 @@ static struct usb_driver usb_audio_driver = {
+ 	.disconnect =	usb_audio_disconnect,
+ 	.suspend =	usb_audio_suspend,
+ 	.resume =	usb_audio_resume,
+-	.reset_resume =	usb_audio_reset_resume,
++	.reset_resume =	usb_audio_resume,
+ 	.id_table =	usb_audio_ids,
+ 	.supports_autosuspend = 1,
+ };
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 9b713b4a5ec4..fa7cf982d39e 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -3655,33 +3655,16 @@ static int restore_mixer_value(struct usb_mixer_elem_list *list)
+ 	return 0;
+ }
+ 
+-static int default_mixer_reset_resume(struct usb_mixer_elem_list *list)
+-{
+-	int err;
+-
+-	if (list->resume) {
+-		err = list->resume(list);
+-		if (err < 0)
+-			return err;
+-	}
+-	return restore_mixer_value(list);
+-}
+-
+-int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
++int snd_usb_mixer_resume(struct usb_mixer_interface *mixer)
+ {
+ 	struct usb_mixer_elem_list *list;
+-	usb_mixer_elem_resume_func_t f;
+ 	int id, err;
+ 
+ 	/* restore cached mixer values */
+ 	for (id = 0; id < MAX_ID_ELEMS; id++) {
+ 		for_each_mixer_elem(list, mixer, id) {
+-			if (reset_resume)
+-				f = list->reset_resume;
+-			else
+-				f = list->resume;
+-			if (f) {
+-				err = f(list);
++			if (list->resume) {
++				err = list->resume(list);
+ 				if (err < 0)
+ 					return err;
+ 			}
+@@ -3702,7 +3685,6 @@ void snd_usb_mixer_elem_init_std(struct usb_mixer_elem_list *list,
+ 	list->id = unitid;
+ 	list->dump = snd_usb_mixer_dump_cval;
+ #ifdef CONFIG_PM
+-	list->resume = NULL;
+-	list->reset_resume = default_mixer_reset_resume;
++	list->resume = restore_mixer_value;
+ #endif
+ }
+diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+index ea41e7a1f7bf..16567912b998 100644
+--- a/sound/usb/mixer.h
++++ b/sound/usb/mixer.h
+@@ -70,7 +70,6 @@ struct usb_mixer_elem_list {
+ 	bool is_std_info;
+ 	usb_mixer_elem_dump_func_t dump;
+ 	usb_mixer_elem_resume_func_t resume;
+-	usb_mixer_elem_resume_func_t reset_resume;
+ };
+ 
+ /* iterate over mixer element list of the given unit id */
+@@ -122,7 +121,7 @@ int snd_usb_mixer_vol_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ 
+ #ifdef CONFIG_PM
+ int snd_usb_mixer_suspend(struct usb_mixer_interface *mixer);
+-int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume);
++int snd_usb_mixer_resume(struct usb_mixer_interface *mixer);
+ #endif
+ 
+ int snd_usb_set_cur_mix_value(struct usb_mixer_elem_info *cval, int channel,
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 0a3cb8fd7d00..4a4d3361ac04 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -151,7 +151,7 @@ static int add_single_ctl_with_resume(struct usb_mixer_interface *mixer,
+ 		*listp = list;
+ 	list->mixer = mixer;
+ 	list->id = id;
+-	list->reset_resume = resume;
++	list->resume = resume;
+ 	kctl = snd_ctl_new1(knew, list);
+ 	if (!kctl) {
+ 		kfree(list);
 -- 
 2.33.0
 
