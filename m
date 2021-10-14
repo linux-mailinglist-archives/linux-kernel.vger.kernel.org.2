@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EFF42DD5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175FA42DD60
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhJNPGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:06:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52210 "EHLO mail.kernel.org"
+        id S231910AbhJNPGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:06:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233572AbhJNPEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:04:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2C46611C5;
-        Thu, 14 Oct 2021 15:01:00 +0000 (UTC)
+        id S233745AbhJNPFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:05:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21A5161222;
+        Thu, 14 Oct 2021 15:01:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223661;
-        bh=NQKC8Vr4op7XQbJQ+LpubJ+MUbA4cdFLEPqGo2sEVRs=;
+        s=korg; t=1634223666;
+        bh=fEl8BJgrezmtg7ruCQ4UqWxbxPp54n7YB32+vPu8PqU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bzqDJG++zB5of6AHjiRwgKc7WUhS80guluZGpJig5KfwHRZ0l5zk/CmTJu8WIxjl6
-         pH11iocsnbj9e1cmDwoQdJQET3YZuowkUVX1KXm6MQYVq+zIqxbhHbJCtIvBpcPoc3
-         mCYYSGffR8I2KLPh2HgyEHuyUccH3t7EUr5kqSC8=
+        b=MbwFp3+uVn5I1QI4IHZgL6AoqADRGRuBQgRm+IvL7RfvDHJBlMPlxQSYJR9z4bJb7
+         QjnuAemccZZBGBmnPP5VUQwG55M2CgBMeqvW6s7IU0jEJyERTCVAXwA/eSis5EKyB0
+         EiUWWsRMTe4yI5+Hqr3HtoB5d82dkqq0cpgvq6bw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, MichelleJin <shjy180909@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Matthew Hagan <mnhagan88@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 19/30] mac80211: check return value of rhashtable_init
-Date:   Thu, 14 Oct 2021 16:54:24 +0200
-Message-Id: <20211014145210.157657252@linuxfoundation.org>
+Subject: [PATCH 5.14 20/30] net: bgmac-platform: handle mac-address deferral
+Date:   Thu, 14 Oct 2021 16:54:25 +0200
+Message-Id: <20211014145210.187922037@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
 References: <20211014145209.520017940@linuxfoundation.org>
@@ -40,39 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: MichelleJin <shjy180909@gmail.com>
+From: Matthew Hagan <mnhagan88@gmail.com>
 
-[ Upstream commit 111461d573741c17eafad029ac93474fa9adcce0 ]
+[ Upstream commit 763716a55cb1f480ffe1a9702e6b5d9ea1a80a24 ]
 
-When rhashtable_init() fails, it returns -EINVAL.
-However, since error return value of rhashtable_init is not checked,
-it can cause use of uninitialized pointers.
-So, fix unhandled errors of rhashtable_init.
+This patch is a replication of Christian Lamparter's "net: bgmac-bcma:
+handle deferred probe error due to mac-address" patch for the
+bgmac-platform driver [1].
 
-Signed-off-by: MichelleJin <shjy180909@gmail.com>
-Link: https://lore.kernel.org/r/20210927033457.1020967-4-shjy180909@gmail.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+As is the case with the bgmac-bcma driver, this change is to cover the
+scenario where the MAC address cannot yet be discovered due to reliance
+on an nvmem provider which is yet to be instantiated, resulting in a
+random address being assigned that has to be manually overridden.
+
+[1] https://lore.kernel.org/netdev/20210919115725.29064-1-chunkeey@gmail.com
+
+Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mesh_pathtbl.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bgmac-platform.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/mac80211/mesh_pathtbl.c b/net/mac80211/mesh_pathtbl.c
-index efbefcbac3ac..7cab1cf09bf1 100644
---- a/net/mac80211/mesh_pathtbl.c
-+++ b/net/mac80211/mesh_pathtbl.c
-@@ -60,7 +60,10 @@ static struct mesh_table *mesh_table_alloc(void)
- 	atomic_set(&newtbl->entries,  0);
- 	spin_lock_init(&newtbl->gates_lock);
- 	spin_lock_init(&newtbl->walk_lock);
--	rhashtable_init(&newtbl->rhead, &mesh_rht_params);
-+	if (rhashtable_init(&newtbl->rhead, &mesh_rht_params)) {
-+		kfree(newtbl);
-+		return NULL;
-+	}
+diff --git a/drivers/net/ethernet/broadcom/bgmac-platform.c b/drivers/net/ethernet/broadcom/bgmac-platform.c
+index 4ab5bf64d353..df8ff839cc62 100644
+--- a/drivers/net/ethernet/broadcom/bgmac-platform.c
++++ b/drivers/net/ethernet/broadcom/bgmac-platform.c
+@@ -192,6 +192,9 @@ static int bgmac_probe(struct platform_device *pdev)
+ 	bgmac->dma_dev = &pdev->dev;
  
- 	return newtbl;
- }
+ 	ret = of_get_mac_address(np, bgmac->net_dev->dev_addr);
++	if (ret == -EPROBE_DEFER)
++		return ret;
++
+ 	if (ret)
+ 		dev_warn(&pdev->dev,
+ 			 "MAC address not present in device tree\n");
 -- 
 2.33.0
 
