@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B924242DECE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5923742DED3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231896AbhJNQFU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Oct 2021 12:05:20 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:57235 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230359AbhJNQFT (ORCPT
+        id S232080AbhJNQGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 12:06:03 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:52428 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230359AbhJNQGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 12:05:19 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-599-NsPe3kEsMZu8l-KmWgXMtQ-1; Thu, 14 Oct 2021 12:03:12 -0400
-X-MC-Unique: NsPe3kEsMZu8l-KmWgXMtQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9547C801AA7;
-        Thu, 14 Oct 2021 16:03:10 +0000 (UTC)
-Received: from comp-core-i7-2640m-0182e6.redhat.com (unknown [10.36.110.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D7805D6B1;
-        Thu, 14 Oct 2021 16:03:08 +0000 (UTC)
-From:   Alexey Gladkov <legion@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-nfs@vger.kernel.org
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Sargun Dhillon <sargun@sargun.me>
-Subject: [PATCH] Fix user namespace leak
-Date:   Thu, 14 Oct 2021 18:02:30 +0200
-Message-Id: <20211014160230.106976-1-legion@kernel.org>
+        Thu, 14 Oct 2021 12:06:02 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Urv6D08_1634227435;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Urv6D08_1634227435)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 15 Oct 2021 00:03:56 +0800
+Subject: Re: [PATCH 0/2] KVM: X86: Don't reset mmu context when changing PGE
+ or PCID
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+References: <20210919024246.89230-1-jiangshanlai@gmail.com>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <506c12c4-4a56-bcbf-a566-a3e75c0814aa@linux.alibaba.com>
+Date:   Fri, 15 Oct 2021 00:03:55 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+In-Reply-To: <20210919024246.89230-1-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes: 61ca2c4afd9d ("NFS: Only reference user namespace from nfs4idmap struct instead of cred")
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
----
- fs/nfs/nfs4idmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ping
 
-diff --git a/fs/nfs/nfs4idmap.c b/fs/nfs/nfs4idmap.c
-index 8d8aba305ecc..f331866dd418 100644
---- a/fs/nfs/nfs4idmap.c
-+++ b/fs/nfs/nfs4idmap.c
-@@ -487,7 +487,7 @@ nfs_idmap_new(struct nfs_client *clp)
- err_destroy_pipe:
- 	rpc_destroy_pipe_data(idmap->idmap_pipe);
- err:
--	get_user_ns(idmap->user_ns);
-+	put_user_ns(idmap->user_ns);
- 	kfree(idmap);
- 	return error;
- }
--- 
-2.33.0
-
+On 2021/9/19 10:42, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> This patchset uses kvm_vcpu_flush_tlb_guest() instead of kvm_mmu_reset_context()
+> when X86_CR4_PGE is changed or X86_CR4_PCIDE is changed 1->0.
+> 
+> Neither X86_CR4_PGE nor X86_CR4_PCIDE participates in kvm_mmu_role, so
+> kvm_mmu_reset_context() is not required to be invoked.  Only flushing tlb
+> is required as SDM says.
+> 
+> The patchset has nothing to do with performance, because the overheads of
+> kvm_mmu_reset_context() and kvm_vcpu_flush_tlb_guest() are the same.  And
+> even in the [near] future, kvm_vcpu_flush_tlb_guest() will be optimized,
+> the code is not in the hot path.
+> 
+> This patchset makes the code more clear when to reset the mmu context.
+> And it makes KVM_MMU_CR4_ROLE_BITS consistent with kvm_mmu_role.
+> 
+> Lai Jiangshan (2):
+>    KVM: X86: Don't reset mmu context when X86_CR4_PCIDE 1->0
+>    KVM: X86: Don't reset mmu context when toggling X86_CR4_PGE
+> 
+>   arch/x86/kvm/mmu.h | 5 ++---
+>   arch/x86/kvm/x86.c | 7 +++++--
+>   2 files changed, 7 insertions(+), 5 deletions(-)
+> 
