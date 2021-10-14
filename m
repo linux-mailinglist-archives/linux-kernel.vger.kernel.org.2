@@ -2,169 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12E942D5FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C78F42D5CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbhJNJ2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:28:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26262 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230051AbhJNJ2f (ORCPT
+        id S229691AbhJNJSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:18:14 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28939 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhJNJSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:28:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634203590;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MFy26Kc6cpLu18LAs5Mx0Nrg8iL3DuTgZC2Ev14vjlo=;
-        b=X2mCdv8b1K88eBKlnWLq69ctpJUgvxcadvamxM/mn99+T+jMO3aioYuoqC+npqMg6NSXb9
-        DjbnOYauRoO0F+uJ1Fd4TTsFKj80Qh9YoDcsBGmIU0Z53054RrYn3NRQVR6ZKRRpPpdlZw
-        t/YBQ7/WS+kpUFDtv2YGdeKj9M2YW4E=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-Vy0qd3RzNci4qAjHzM20uA-1; Thu, 14 Oct 2021 05:26:29 -0400
-X-MC-Unique: Vy0qd3RzNci4qAjHzM20uA-1
-Received: by mail-ed1-f72.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so4639582edy.14
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:26:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MFy26Kc6cpLu18LAs5Mx0Nrg8iL3DuTgZC2Ev14vjlo=;
-        b=L/k03Nr7NF6wcmDINklVjjgZApe/I23M4bfGmH2L7i43w/gCFqR9lnhOS+IrpEXMIx
-         E4F95SFDY8tWilfdFK+f13TJa1iS1s02iR6pi8N4tN+JvFQf8jd1NvHJZhwSG3NeA4oy
-         wW1tF4wOilvGqhsGcfjpqNTOY5X5KyqKpbC9X5E/KAJ1HKTejrDj8+VK3jEF3UD1FOtq
-         XKbTEFoFC9WUSn62f4p4rVZkURFjVMlTxqQp5OZVhKhh7paLOoFHT6sFyRmeCHIXv/2e
-         mS9SUj+NLiL0xZN48FwKcZuMO1LWT4423Rx78LIi2Pxwrm8UDv7fWI5TF+SUMYLzKEUC
-         CwSA==
-X-Gm-Message-State: AOAM532YlHoDsfIVa8tMQD3AJR9+ANpfZmwUCCLSXP5MybagASQnBV6u
-        9KYzWHlfVsnMUUutMK+q+10y07GVxGbP9ULDrQqhtlc47NfA/lMzIl62Uajq+UKS0KBUjilBdoa
-        PZagNgG5IbsWxmH0b/EFTmJAZ
-X-Received: by 2002:a05:6402:3488:: with SMTP id v8mr6898721edc.106.1634203588044;
-        Thu, 14 Oct 2021 02:26:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzUMhY55dY1Ed2tUolHVxn0GGtah89ijl+mJABjkbp/N7HKf5Fl2EAkvFydJiTJ/Wm+2qndQ==
-X-Received: by 2002:a05:6402:3488:: with SMTP id v8mr6898699edc.106.1634203587836;
-        Thu, 14 Oct 2021 02:26:27 -0700 (PDT)
-Received: from redhat.com ([2.55.16.227])
-        by smtp.gmail.com with ESMTPSA id f19sm1749252edj.77.2021.10.14.02.26.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 02:26:27 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 05:26:20 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-Message-ID: <20211014052605-mutt-send-email-mst@kernel.org>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053103-mutt-send-email-mst@kernel.org>
- <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
- <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
- <DM8PR11MB57501C8F8F5C8B315726882EE7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
- <20211012171016-mutt-send-email-mst@kernel.org>
- <DM8PR11MB5750A40FAA6AFF6A29CF70DAE7B89@DM8PR11MB5750.namprd11.prod.outlook.com>
- <20211014025514-mutt-send-email-mst@kernel.org>
- <DM8PR11MB57500B2D821E8AAF93EB66CEE7B89@DM8PR11MB5750.namprd11.prod.outlook.com>
+        Thu, 14 Oct 2021 05:18:12 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HVNtx19Kdzbn9S;
+        Thu, 14 Oct 2021 17:11:37 +0800 (CST)
+Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 14 Oct 2021 17:16:05 +0800
+Received: from compute.localdomain (10.175.112.70) by
+ dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 14 Oct 2021 17:16:04 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        <kernel@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Kurt Van Dijck" <dev.kurt@vandijck-laurijssen.be>,
+        Maxime Jayat <maxime.jayat@mobile-devices.fr>
+CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net] can: j1939: j1939_xtp_rx_rts_session_new(): abort TP less than 9 bytes
+Date:   Thu, 14 Oct 2021 17:26:40 +0800
+Message-ID: <1634203601-3460-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM8PR11MB57500B2D821E8AAF93EB66CEE7B89@DM8PR11MB5750.namprd11.prod.outlook.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500006.china.huawei.com (7.185.36.76)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 07:27:42AM +0000, Reshetova, Elena wrote:
-> > On Thu, Oct 14, 2021 at 06:32:32AM +0000, Reshetova, Elena wrote:
-> > > > On Tue, Oct 12, 2021 at 06:36:16PM +0000, Reshetova, Elena wrote:
-> > > > > > The 5.15 tree has something like ~2.4k IO accesses (including MMIO and
-> > > > > > others) in init functions that also register drivers (thanks Elena for
-> > > > > > the number)
-> > > > >
-> > > > > To provide more numbers on this. What I can see so far from a smatch-based
-> > > > > analysis, we have 409 __init style functions (.probe & builtin/module_
-> > > > > _platform_driver_probe excluded) for 5.15 with allyesconfig.
-> > > >
-> > > > I don't think we care about allyesconfig at all though.
-> > > > Just don't do that.
-> > > > How about allmodconfig? This is closer to what distros actually do.
-> > >
-> > > It does not make any difference really for the content of the /drivers/*:
-> > > gives 408 __init style functions doing IO (.probe & builtin/module_
-> > > > > _platform_driver_probe excluded) for 5.15 with allmodconfig:
-> > >
-> > > ['doc200x_ident_chip',
-> > > 'doc_probe', 'doc2001_init', 'mtd_speedtest_init',
-> > > 'mtd_nandbiterrs_init', 'mtd_oobtest_init', 'mtd_pagetest_init',
-> > > 'tort_init', 'mtd_subpagetest_init', 'fixup_pmc551',
-> > > 'doc_set_driver_info', 'init_amd76xrom', 'init_l440gx',
-> > > 'init_sc520cdp', 'init_ichxrom', 'init_ck804xrom', 'init_esb2rom',
-> > > 'probe_acpi_namespace_devices', 'amd_iommu_init_pci', 'state_next',
-> > > 'arm_v7s_do_selftests', 'arm_lpae_run_tests', 'init_iommu_one',
-> > 
-> > Um. ARM? Which architecture is this build for?
-> 
-> The list of smatch IO findings is built for x86, but the smatch cross function
-> database covers all archs, so when queried for all potential function callers,
-> it would show non x86 arch call chains also. 
-> 
-> Here is the original x86 finding and call chain for the 'arm_v7s_do_selftests':
-> 
->   Detected low-level IO from arm_v7s_do_selftests in fun
-> __iommu_queue_command_sync
-> 
-> drivers/iommu/amd/iommu.c:1025 __iommu_queue_command_sync() error:
-> {15002074744551330002}
->     'check_host_input' read from the host using function 'readl' to a
-> member of the structure 'iommu->cmd_buf_head';
-> 
-> __iommu_queue_command_sync()
->   iommu_completion_wait()
->     amd_iommu_domain_flush_complete()
->       iommu_v1_map_page()
->         arm_v7s_do_selftests()
-> 
-> So, the results can be further filtered if you want a specified arch. 
+The receiver should abort TP if 'total message size' in TP.CM_RTS and
+TP.CM_BAM is less than 9 or greater than 1785 [1], but currently the
+j1939 stack only checks the upper bound and the receiver will accept the
+following broadcast message:
+  vcan1  18ECFF00   [8]  20 08 00 02 FF 00 23 01
+  vcan1  18EBFF00   [8]  01 00 00 00 00 00 00 00
+  vcan1  18EBFF00   [8]  02 00 FF FF FF FF FF FF
 
-So what is it just for x86? Could you tell?
+This patch adds check for the lower bound and abort illegal TP.
 
+[1] SAE-J1939-82 A.3.4 Row 2 and A.3.6 Row 6.
+
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+ net/can/j1939/j1939-priv.h | 1 +
+ net/can/j1939/transport.c  | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
+index f6df208..16af1a7 100644
+--- a/net/can/j1939/j1939-priv.h
++++ b/net/can/j1939/j1939-priv.h
+@@ -330,6 +330,7 @@ int j1939_session_activate(struct j1939_session *session);
+ void j1939_tp_schedule_txtimer(struct j1939_session *session, int msec);
+ void j1939_session_timers_cancel(struct j1939_session *session);
+ 
++#define J1939_MIN_TP_PACKET_SIZE 9
+ #define J1939_MAX_TP_PACKET_SIZE (7 * 0xff)
+ #define J1939_MAX_ETP_PACKET_SIZE (7 * 0x00ffffff)
+ 
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index bb5c4b8..b685d31 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1609,6 +1609,8 @@ j1939_session *j1939_xtp_rx_rts_session_new(struct j1939_priv *priv,
+ 			abort = J1939_XTP_ABORT_FAULT;
+ 		else if (len > priv->tp_max_packet_size)
+ 			abort = J1939_XTP_ABORT_RESOURCE;
++		else if (len < J1939_MIN_TP_PACKET_SIZE)
++			abort = J1939_XTP_ABORT_FAULT;
+ 	}
+ 
+ 	if (abort != J1939_XTP_NO_ABORT) {
 -- 
-MST
+2.9.5
 
