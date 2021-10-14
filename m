@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A865042DCDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5424142DCFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233054AbhJNPCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:02:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44464 "EHLO mail.kernel.org"
+        id S231274AbhJNPDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:03:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233006AbhJNPBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:01:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D21A9610F8;
-        Thu, 14 Oct 2021 14:58:34 +0000 (UTC)
+        id S233213AbhJNPCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:02:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE29761205;
+        Thu, 14 Oct 2021 14:59:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223515;
-        bh=bDXQNlbAoGWxAmbvsQuCfXICV80f2GxWExa41GXwmzU=;
+        s=korg; t=1634223550;
+        bh=I6jsj1r0YdkQo+96oGMMJg+j2UVxvW9Wkvbm3Tq8Cbg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BBxlcRSCtpfqzuHZuHBYgoqHIy9BdVKdBkyYAN+VAsHGNE0rRJBo7U1IY16r4p1Zf
-         98yWD6gOkJvq+vv+ovU9WQF0A+r+GeANNmtx06In/rr6OFQvdh4B1FFPx0aL09i1qI
-         50cn3wzDreV7P/bk/C3I90rX/7z8OvdpuDhyC4+A=
+        b=K17rL/IER0cK5n7MLi2a/8IhLUgj+0SvVkVTJwO7tBdEpCAvcxcKcrim5Ei/POEEI
+         /hZ/0Zn8sdrH51jQs2c/8whn3tQNcF9KcfjIB8q6LNSVb2oQLFeKB41G5mZmtRIyYM
+         BbZKW/RLov5vhpv9rNlsLTOaxr7KySObOC8vV3Nw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
-        Michael Wang <yun.wang@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 06/12] net: prevent user from passing illegal stab size
+        stable@vger.kernel.org, Mizuho Mori <morimolymoly@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 03/16] HID: apple: Fix logical maximum and usage maximum of Magic Keyboard JIS
 Date:   Thu, 14 Oct 2021 16:54:06 +0200
-Message-Id: <20211014145206.764884910@linuxfoundation.org>
+Message-Id: <20211014145207.421131864@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145206.566123760@linuxfoundation.org>
-References: <20211014145206.566123760@linuxfoundation.org>
+In-Reply-To: <20211014145207.314256898@linuxfoundation.org>
+References: <20211014145207.314256898@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +39,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 王贇 <yun.wang@linux.alibaba.com>
+From: Mizuho Mori <morimolymoly@gmail.com>
 
-[ Upstream commit b193e15ac69d56f35e1d8e2b5d16cbd47764d053 ]
+[ Upstream commit 67fd71ba16a37c663d139f5ba5296f344d80d072 ]
 
-We observed below report when playing with netlink sock:
+Apple Magic Keyboard(JIS)'s Logical Maximum and Usage Maximum are wrong.
 
-  UBSAN: shift-out-of-bounds in net/sched/sch_api.c:580:10
-  shift exponent 249 is too large for 32-bit type
-  CPU: 0 PID: 685 Comm: a.out Not tainted
-  Call Trace:
-   dump_stack_lvl+0x8d/0xcf
-   ubsan_epilogue+0xa/0x4e
-   __ubsan_handle_shift_out_of_bounds+0x161/0x182
-   __qdisc_calculate_pkt_len+0xf0/0x190
-   __dev_queue_xmit+0x2ed/0x15b0
+Below is a report descriptor.
 
-it seems like kernel won't check the stab log value passing from
-user, and will use the insane value later to calculate pkt_len.
+0x05, 0x01,         /*  Usage Page (Desktop),                           */
+0x09, 0x06,         /*  Usage (Keyboard),                               */
+0xA1, 0x01,         /*  Collection (Application),                       */
+0x85, 0x01,         /*      Report ID (1),                              */
+0x05, 0x07,         /*      Usage Page (Keyboard),                      */
+0x15, 0x00,         /*      Logical Minimum (0),                        */
+0x25, 0x01,         /*      Logical Maximum (1),                        */
+0x19, 0xE0,         /*      Usage Minimum (KB Leftcontrol),             */
+0x29, 0xE7,         /*      Usage Maximum (KB Right GUI),               */
+0x75, 0x01,         /*      Report Size (1),                            */
+0x95, 0x08,         /*      Report Count (8),                           */
+0x81, 0x02,         /*      Input (Variable),                           */
+0x95, 0x05,         /*      Report Count (5),                           */
+0x75, 0x01,         /*      Report Size (1),                            */
+0x05, 0x08,         /*      Usage Page (LED),                           */
+0x19, 0x01,         /*      Usage Minimum (01h),                        */
+0x29, 0x05,         /*      Usage Maximum (05h),                        */
+0x91, 0x02,         /*      Output (Variable),                          */
+0x95, 0x01,         /*      Report Count (1),                           */
+0x75, 0x03,         /*      Report Size (3),                            */
+0x91, 0x03,         /*      Output (Constant, Variable),                */
+0x95, 0x08,         /*      Report Count (8),                           */
+0x75, 0x01,         /*      Report Size (1),                            */
+0x15, 0x00,         /*      Logical Minimum (0),                        */
+0x25, 0x01,         /*      Logical Maximum (1),                        */
 
-This patch just add a check on the size/cell_log to avoid insane
-calculation.
+here is a report descriptor which is parsed one in kernel.
+see sys/kernel/debug/hid/<dev>/rdesc
 
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+05 01 09 06 a1 01 85 01 05 07
+15 00 25 01 19 e0 29 e7 75 01
+95 08 81 02 95 05 75 01 05 08
+19 01 29 05 91 02 95 01 75 03
+91 03 95 08 75 01 15 00 25 01
+06 00 ff 09 03 81 03 95 06 75
+08 15 00 25 [65] 05 07 19 00 29
+[65] 81 00 95 01 75 01 15 00 25
+01 05 0c 09 b8 81 02 95 01 75
+01 06 01 ff 09 03 81 02 95 01
+75 06 81 03 06 02 ff 09 55 85
+55 15 00 26 ff 00 75 08 95 40
+b1 a2 c0 06 00 ff 09 14 a1 01
+85 90 05 84 75 01 95 03 15 00
+25 01 09 61 05 85 09 44 09 46
+81 02 95 05 81 01 75 08 95 01
+15 00 26 ff 00 09 65 81 02 c0
+00
+
+Position 64(Logical Maximum) and 70(Usage Maximum) are 101.
+Both should be 0xE7 to support JIS specific keys(ろ, Eisu, Kana, |) support.
+position 117 is also 101 but not related(it is Usage 65h).
+
+There are no difference of product id between JIS and ANSI.
+They are same 0x0267.
+
+Signed-off-by: Mizuho Mori <morimolymoly@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/pkt_sched.h | 1 +
- net/sched/sch_api.c     | 6 ++++++
- 2 files changed, 7 insertions(+)
+ drivers/hid/hid-apple.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
-index 5e99771a5dcc..edca90ef3bdc 100644
---- a/include/net/pkt_sched.h
-+++ b/include/net/pkt_sched.h
-@@ -11,6 +11,7 @@
- #include <uapi/linux/pkt_sched.h>
+diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
+index 6909c045fece..07df64daf7da 100644
+--- a/drivers/hid/hid-apple.c
++++ b/drivers/hid/hid-apple.c
+@@ -301,12 +301,19 @@ static int apple_event(struct hid_device *hdev, struct hid_field *field,
  
- #define DEFAULT_TX_QUEUE_LEN	1000
-+#define STAB_SIZE_LOG_MAX	30
+ /*
+  * MacBook JIS keyboard has wrong logical maximum
++ * Magic Keyboard JIS has wrong logical maximum
+  */
+ static __u8 *apple_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+ 		unsigned int *rsize)
+ {
+ 	struct apple_sc *asc = hid_get_drvdata(hdev);
  
- struct qdisc_walker {
- 	int	stop;
-diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
-index 1f12be9f0207..0bb4f7a94a3c 100644
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -498,6 +498,12 @@ static struct qdisc_size_table *qdisc_get_stab(struct nlattr *opt,
- 		return stab;
- 	}
- 
-+	if (s->size_log > STAB_SIZE_LOG_MAX ||
-+	    s->cell_log > STAB_SIZE_LOG_MAX) {
-+		NL_SET_ERR_MSG(extack, "Invalid logarithmic size of size table");
-+		return ERR_PTR(-EINVAL);
++	if(*rsize >=71 && rdesc[70] == 0x65 && rdesc[64] == 0x65) {
++		hid_info(hdev,
++			 "fixing up Magic Keyboard JIS report descriptor\n");
++		rdesc[64] = rdesc[70] = 0xe7;
 +	}
 +
- 	stab = kmalloc(sizeof(*stab) + tsize * sizeof(u16), GFP_KERNEL);
- 	if (!stab)
- 		return ERR_PTR(-ENOMEM);
+ 	if ((asc->quirks & APPLE_RDESC_JIS) && *rsize >= 60 &&
+ 			rdesc[53] == 0x65 && rdesc[59] == 0x65) {
+ 		hid_info(hdev,
 -- 
 2.33.0
 
