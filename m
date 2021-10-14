@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A341342DD0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C6542DD75
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbhJNPD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:03:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44512 "EHLO mail.kernel.org"
+        id S233434AbhJNPHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:07:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232539AbhJNPC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:02:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E208360F4A;
-        Thu, 14 Oct 2021 14:59:27 +0000 (UTC)
+        id S233439AbhJNPGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:06:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AC9C6120A;
+        Thu, 14 Oct 2021 15:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223568;
-        bh=sjz3EsXiyS/q/S8wqsoHyIMZJX0QKH5k/SFBL6iZwjU=;
+        s=korg; t=1634223687;
+        bh=RsL4ZYa4qQbh0UbeB0TEVBdhhViW5xlD3Tz4/lStPr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FMKv7xMA9atIeYqIwy6dGsy7wT+TJH07ROO3LohwZ+4xkkX+uv84V0UAqH4v6kAcb
-         BK+ILxJgLmSzIHrRNPHSsh9ieYE8QM/vP7107hHNTPDqOsquMJhwSFO+NlMvNNFlGF
-         VhW5ocAUtEuG+Z+h+NqGZHsK2RIQxOsXohYg+dLA=
+        b=Ii0YJ/uK3YelheOqeJRNp1+GJtjhfGhyaD+eYXMxMVvSBURcidKT/10KeywsoEL+y
+         Smz9gDAWFOz4PlCdkceivmixwJn1Q6GoxyzZmUp5enV+CJD70/FJXSmTY4Pi+PiMpi
+         h4LKoslqLwOMDpyO7/Akt1MUMzugd11X/5VC7QOA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
-        Michael Wang <yun.wang@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jeremy Sowden <jeremy@azazel.net>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 10/16] net: prevent user from passing illegal stab size
+Subject: [PATCH 5.14 08/30] netfilter: ip6_tables: zero-initialize fragment offset
 Date:   Thu, 14 Oct 2021 16:54:13 +0200
-Message-Id: <20211014145207.654613608@linuxfoundation.org>
+Message-Id: <20211014145209.794451813@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145207.314256898@linuxfoundation.org>
-References: <20211014145207.314256898@linuxfoundation.org>
+In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
+References: <20211014145209.520017940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 王贇 <yun.wang@linux.alibaba.com>
+From: Jeremy Sowden <jeremy@azazel.net>
 
-[ Upstream commit b193e15ac69d56f35e1d8e2b5d16cbd47764d053 ]
+[ Upstream commit 310e2d43c3ad429c1fba4b175806cf1f55ed73a6 ]
 
-We observed below report when playing with netlink sock:
+ip6tables only sets the `IP6T_F_PROTO` flag on a rule if a protocol is
+specified (`-p tcp`, for example).  However, if the flag is not set,
+`ip6_packet_match` doesn't call `ipv6_find_hdr` for the skb, in which
+case the fragment offset is left uninitialized and a garbage value is
+passed to each matcher.
 
-  UBSAN: shift-out-of-bounds in net/sched/sch_api.c:580:10
-  shift exponent 249 is too large for 32-bit type
-  CPU: 0 PID: 685 Comm: a.out Not tainted
-  Call Trace:
-   dump_stack_lvl+0x8d/0xcf
-   ubsan_epilogue+0xa/0x4e
-   __ubsan_handle_shift_out_of_bounds+0x161/0x182
-   __qdisc_calculate_pkt_len+0xf0/0x190
-   __dev_queue_xmit+0x2ed/0x15b0
-
-it seems like kernel won't check the stab log value passing from
-user, and will use the insane value later to calculate pkt_len.
-
-This patch just add a check on the size/cell_log to avoid insane
-calculation.
-
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/pkt_sched.h | 1 +
- net/sched/sch_api.c     | 6 ++++++
- 2 files changed, 7 insertions(+)
+ net/ipv6/netfilter/ip6_tables.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
-index b16f9236de14..d1585b54fb0b 100644
---- a/include/net/pkt_sched.h
-+++ b/include/net/pkt_sched.h
-@@ -11,6 +11,7 @@
- #include <uapi/linux/pkt_sched.h>
+diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
+index de2cf3943b91..a579ea14a69b 100644
+--- a/net/ipv6/netfilter/ip6_tables.c
++++ b/net/ipv6/netfilter/ip6_tables.c
+@@ -273,6 +273,7 @@ ip6t_do_table(struct sk_buff *skb,
+ 	 * things we don't know, ie. tcp syn flag or ports).  If the
+ 	 * rule is also a fragment-specific rule, non-fragments won't
+ 	 * match it. */
++	acpar.fragoff = 0;
+ 	acpar.hotdrop = false;
+ 	acpar.state   = state;
  
- #define DEFAULT_TX_QUEUE_LEN	1000
-+#define STAB_SIZE_LOG_MAX	30
- 
- struct qdisc_walker {
- 	int	stop;
-diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
-index 3b1b5ee52137..e70f99033408 100644
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -510,6 +510,12 @@ static struct qdisc_size_table *qdisc_get_stab(struct nlattr *opt,
- 		return stab;
- 	}
- 
-+	if (s->size_log > STAB_SIZE_LOG_MAX ||
-+	    s->cell_log > STAB_SIZE_LOG_MAX) {
-+		NL_SET_ERR_MSG(extack, "Invalid logarithmic size of size table");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
- 	stab = kmalloc(sizeof(*stab) + tsize * sizeof(u16), GFP_KERNEL);
- 	if (!stab)
- 		return ERR_PTR(-ENOMEM);
 -- 
 2.33.0
 
