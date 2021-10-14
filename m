@@ -2,120 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0997442D7C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CA042D7CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhJNLKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:10:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230205AbhJNLJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:09:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E63D860F9E;
-        Thu, 14 Oct 2021 11:07:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634209671;
-        bh=mSOT5SaXvV5vgntRVKQZFS4W4Npe93HR4Dh/GaBD5zo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UHTyHKG+7hfmFs6Cs6smumVmFr3nWIHT7mWvJvNgy5WuN/KSI7+oMiEcnUDIVhptf
-         m5NH/aaM1/mw5PHUoZmzCcjzHu4kD/9pK9VCCVH7c4XnI2rqLWjlkJ5z6RW8nRkFyw
-         dwQbPFpdbLSCVkASgl6cgm1jlnDq5B+KzrQjA9HqdejEIl04JawH3av/i4ULAMrrve
-         lSsM1SLi2znKe6GIX3zr9Hb4L+m2UG+VysVsgBL6NqrE6zZ+jJbVXXJWkAYgtSJmfp
-         uzdZ6AvBACfxYOrjYDpSTEsyryjNKQ0PpuyElW8Nh0rPV24xksDyaZDkZ4upi6hT+I
-         YIxuDyzCO6Yug==
-Date:   Thu, 14 Oct 2021 13:07:48 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 03/11] rcu/nocb: Invoke rcu_core() at the start of
- deoffloading
-Message-ID: <20211014110748.GB406368@lothringen>
-References: <20211011145140.359412-1-frederic@kernel.org>
- <20211011145140.359412-4-frederic@kernel.org>
- <YWcEXj2+nqO8kIFS@boqun-archlinux>
+        id S230391AbhJNLKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:10:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhJNLKn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 07:10:43 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7084C061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:08:38 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id t9so25084815lfd.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:08:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k2530KBw5sIa2liX0bHYNkuPyPL4C8JnDHSe5IbAiNA=;
+        b=JwlNlmC84haSnTpwQ4RIB0on3sSS4sEJxPcGpt+W9YaCwF5Qy390fnT4vlujDXHgdY
+         rEBclA/tnvug/HMoy0mPnRyeYqfbpOkldGE33gpJg029ojuTOC2WO/NcZI9AyGVJoMVq
+         wjHjsr3q0DhWH+DlQXIcdIfYrD9FmCtj3zMBPyoyNuXDYbC00xFxN3Usye0Iv48VP4uq
+         EqP5iza3B1WDzn4ws9WlTpAJZdnmEExbwedoEXgVfz3iNVxJSjU1fwBxfm7Wjt08uZcY
+         gt3BEPpsFAtWSJL5GE0/wmyix2338kCvCaEqUMxtIW6zi+zq9xAO7rN5JsLS6KyDfTkB
+         yUfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k2530KBw5sIa2liX0bHYNkuPyPL4C8JnDHSe5IbAiNA=;
+        b=7G4zSzMYKXD5dntscRnTNHcHoN9eRPQPDLSgvBxvg5sHNCYc6za/RJIdrIf8UCSomR
+         HkBNwTTPygP9wnD58kS8HIdma4VivEziDXjWBatND6GOOWM/fjisHAqfoWwTpSU1wKp5
+         RL6MRqYh2/EK3QpCb/GRuBouW/zKQ7NbQ7qSXBwP2mpGt8vKSaOSkhQ8CFM7joQkF1vG
+         tCogYLmBkb8XcPx42sq7dXPFhnceORuwnstyzlgqNCUuFJItsMdHhde1sQKowxaSdHL9
+         gM7D8m0vbnfv/FS9wEJtvcJP9hcsXvAqRy8dfg9CSo+ZPRNm/rjN+pbu9+93ZIxVmky0
+         wUzQ==
+X-Gm-Message-State: AOAM530SGoMQwSZ0smRcqIqaNSkQvVCopnBcg7LcdVIIh88OALzGE+t8
+        vzKsUUynp5t0c/W0JDirdLod8CckR9nlTW/JdYnVbA==
+X-Google-Smtp-Source: ABdhPJzRfdpqfgO3v5yyrdCguPoaanOykFM7wBbzG4cJ6tEEecAxIjy13q5+O7TypTn6AMNZ6c07GDGuNN6Idyb4e9E=
+X-Received: by 2002:a19:5f4b:: with SMTP id a11mr4541619lfj.373.1634209717119;
+ Thu, 14 Oct 2021 04:08:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWcEXj2+nqO8kIFS@boqun-archlinux>
+References: <20211011165707.138157-1-marcan@marcan.st> <20211011165707.138157-5-marcan@marcan.st>
+ <20211012032144.2ltlpat7orrsyr6k@vireshk-i7> <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
+ <20211012055143.xmkbvhbnolspgjin@vireshk-i7> <caf16a6c-f127-7f27-ed17-0522d9f1fb9e@marcan.st>
+ <20211012092603.lkmhhjoo5v67wh44@vireshk-i7> <049FC437-EC38-4FE5-891E-5E25960892CF@marcan.st>
+ <20211012093252.hb6rlcpxv5bmk7n3@vireshk-i7> <0db8e994-ac2c-8fad-55d0-1b5a9e2e21f2@marcan.st>
+ <20211014065636.lkv77aqbugp3qhif@vireshk-i7> <039b77f3-d10e-bd7a-a594-b951a98bdd45@marcan.st>
+ <653603bc-56bb-7eaf-e6e8-3cc7f5c5a666@marcan.st>
+In-Reply-To: <653603bc-56bb-7eaf-e6e8-3cc7f5c5a666@marcan.st>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 14 Oct 2021 13:08:00 +0200
+Message-ID: <CAPDyKFrxea9MT4nFRjaHu-QRg2MyaRVOZO-G0i8kv+KQOrYRbA@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device does
+ not exist
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boqun,
+On Thu, 14 Oct 2021 at 09:23, Hector Martin <marcan@marcan.st> wrote:
+>
+> On 14/10/2021 16.03, Hector Martin wrote:
+> > On 14/10/2021 15.56, Viresh Kumar wrote:
+> >>> +   /*
+> >>> +    * Attach the CPU device to its genpd domain (if any), to allow OPP
+> >>> +    * dependencies to be satisfied.
+> >>> +    */
+> >>> +   ret = genpd_dev_pm_attach(cpu_dev);
+> >>> +   if (ret <= 0) {
+> >>> +           dev_err(cpu_dev, "Failed to attach CPU device to genpd\n");
+> >>> +           goto out;
+> >>> +   }
+> >>> +
+> >>
+> >> Other platform do this from some other place I think.
+> >>
+> >> Ulf, where should this code be moved ? cpu-clk driver ?
+> >>
+> >
+> > I see one driver that does this is drivers/clk/qcom/apcs-sdx55.c (via
+> > dev_pm_domain_attach). Though it only does it for CPU#0; we need to do
+> > it for all CPUs.
+>
+> Looking into this further, I'm not sure I like the idea of doing this in
+> the clocks driver. There might be locking issues since it gets
+> instantiated twice and yet doesn't really itself know what subset of
+> CPUs it applies to.
 
-On Thu, Oct 14, 2021 at 12:07:58AM +0800, Boqun Feng wrote:
-> If offloading races with rcu_core(), can the following happen?
-> 
-> 	<offload work>				
-> 	rcu_nocb_rdp_offload():
-> 	    					rcu_core():
-> 						  ...
-> 						  rcu_nocb_lock_irqsave(); // no a lock
-> 	  raw_spin_lock_irqsave(->nocb_lock);
-> 	    rdp_offload_toggle():
-> 	      <LOCKING | OFFLOADED set>
-> 	      					  if (!rcu_segcblist_restempty(...))
-> 						    rcu_accelerate_cbs_unlocked(...);
-> 						  rcu_nocb_unlock_irqrestore();
-> 						  // ^ a real unlock,
-> 						  // and will preempt_enable()
-> 	    // offload continue with ->nocb_lock not held
-> 
-> If this can happen, it means an unpaired preempt_enable() and an
-> incorrect unlock. Thoughts? Maybe I'm missing something here?
+I agree. I suggest you look into using a genpd provider and hook up
+all CPU's devices to it. I think that is what Viresh also suggested
+earlier - and this makes most sense to me.
 
-Since we are unconditionally disabling IRQs on rcu_nocb_lock_irqsave(), we can't
-be preempted by rcu_nocb_rdp_offload() until rcu_nocb_unlock_irqrestore() has
-completed. And both have to run on the rdp target CPU. So this shouldn't happen.
+As a reference you may have a look at some Qcom platforms that already use this:
 
-Thanks.
+arch/arm64/boot/dts/qcom/qcs404.dtsi
 
+drivers/cpufreq/qcom-cpufreq-nvmem.c:
+To hook up CPU devices to their PM domains (genpds) - it calls
+dev_pm_opp_attach_genpd(), which is a kind of wrapper for
+dev_pm_domain_attach_by_name().
 
+drivers/soc/qcom/cpr.c
+Registers the genpd provider that is capable of dealing with
+performance states/OPPs for CPUs.
 
-> 
-> Regards,
-> Boqun
-> 
-> > +	 *
-> > +	 * _ Deoffloading: In the worst case we miss callbacks acceleration or
-> > +	 *                 processing. This is fine because the early stage
-> > +	 *                 of deoffloading invokes rcu_core() after setting
-> > +	 *                 SEGCBLIST_RCU_CORE. So we guarantee that we'll process
-> > +	 *                 what could have been dismissed without the need to wait
-> > +	 *                 for the next rcu_pending() check in the next jiffy.
-> > +	 */
-> >  	const bool do_batch = !rcu_segcblist_completely_offloaded(&rdp->cblist);
-> >  
-> >  	if (cpu_is_offline(smp_processor_id()))
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index 71a28f50b40f..3b470113ae38 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -990,6 +990,15 @@ static long rcu_nocb_rdp_deoffload(void *arg)
-> >  	 * will refuse to put anything into the bypass.
-> >  	 */
-> >  	WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies));
-> > +	/*
-> > +	 * Start with invoking rcu_core() early. This way if the current thread
-> > +	 * happens to preempt an ongoing call to rcu_core() in the middle,
-> > +	 * leaving some work dismissed because rcu_core() still thinks the rdp is
-> > +	 * completely offloaded, we are guaranteed a nearby future instance of
-> > +	 * rcu_core() to catch up.
-> > +	 */
-> > +	rcu_segcblist_set_flags(cblist, SEGCBLIST_RCU_CORE);
-> > +	invoke_rcu_core();
-> >  	ret = rdp_offload_toggle(rdp, false, flags);
-> >  	swait_event_exclusive(rdp->nocb_state_wq,
-> >  			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
-> > -- 
-> > 2.25.1
-> > 
+>
+> There's another driver that does this:
+> drivers/cpuidle/cpuidle-psci-domain.c. That one specifically looks for a
+> power domain called "psci". Perhaps it would make sense to make this
+> generic in cpufreq-dt as per my prior patch, but explicitly request a
+> "cpufreq" domain? That way only devicetrees that opt in to having this
+> handled by cpufreq by naming it that way would get this behavior.
+
+That sounds like an idea that is worth exploring. In this way, the
+only thing that needs to be implemented for new cases would be the
+genpd provider driver.
+
+BTW, as you will figure out by looking at the above references, for
+the qcom case we are using "cpr" as the domain name for cpufreq. Of
+course, that doesn't mean we can use "cpufreq" (or whatever name that
+makes sense) going forward for new cases.
+
+>
+> --
+> Hector Martin (marcan@marcan.st)
+> Public Key: https://mrcn.st/pub
+
+Kind regards
+Uffe
