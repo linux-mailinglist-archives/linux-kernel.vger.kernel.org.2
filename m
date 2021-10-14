@@ -2,298 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF73642DDFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AB142DDF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbhJNPXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:23:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229994AbhJNPXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:23:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCE5F610D2;
-        Thu, 14 Oct 2021 15:21:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634224898;
-        bh=rEK/VWOhZgM2XoVbXWeSO+RMa5SjAakp1b9O+nSmqqk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=n8Ab9CzeF1s4VwTfHgncgoWjFiXijHTye2Br8hLUDB96WWALxLTUJU81R5cZJSqlq
-         4dDues1kuECr0oJe5OLFy3dkKmEVyrO6Utb0QYVnhjIDlyXXpwJtJ0f4stf+fr1Amn
-         rtykrFxx4AwbLQ0JvfgIqBKP3Znj0jcLhWxFwvIN18Blpa4wvylNQS/FD0Ssj+7X7V
-         goyG+ra0118S1jLp+K2a7haQKZ2lY10eMlsVuiuOkuRmtZ3mRh51VxOmhWXC1IClc6
-         o1vCDrRI9SkZsXbES1bB1mSzg74mJPLmti6br57WzpGqJbS+U/6VgUWkaEMDnLvc0h
-         feqJd5FteifDA==
-Received: by mail-ed1-f53.google.com with SMTP id i20so24995718edj.10;
-        Thu, 14 Oct 2021 08:21:38 -0700 (PDT)
-X-Gm-Message-State: AOAM532sk4gxUcgBHyIY1dDobfSh43OnQNyaiPxf+kp/Hpnf8keaH3Xu
-        zxZ90ocVArsmnfNja7JY+aWS1OaahbtIZeH2Ig==
-X-Google-Smtp-Source: ABdhPJw6fDI4d1yDtbKWcAnwG0AbdWetWSUWwf3nralo48w/QQFF/1QyX48DD+f2O4rq4fbVBBqblPumvNht+wCsk0Q=
-X-Received: by 2002:a50:da06:: with SMTP id z6mr9644913edj.355.1634224801843;
- Thu, 14 Oct 2021 08:20:01 -0700 (PDT)
+        id S233020AbhJNPUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:20:50 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:50433 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230422AbhJNPUs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:20:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1634224724; x=1665760724;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=z7CD2Tv4qDXC2h6Botmdx0mIsBjOQ6u1ErVrgraCLuE=;
+  b=u15fJyoZd1vhdltU9DrJdq3gF5LDjiUPE1YQVmRXJ5rAZzMOtx9yHQFP
+   AWpGulhw1RQs+AWmon46OXCKOmtChWaRLj8rK4gGAN9r20MoZwVjCwrry
+   AzMdZozMbmunEEWYRIBj51JHcWEmm8iCxOTZXmw2cYoqCI3xiK74Wq6Q5
+   Ug6JLP1kQwxQqiQaqKT1dwXsc0IX+pVjExJBm+NvzA+kwcTX6+KmO6TCt
+   TmyElXBOFvroOTF5njEDs1tJ+oX5XVc0hlyN+rLEDIsZyN1kc2lL+UEhv
+   z0ak5AoE/7Spto4Mt6GPHONalvNeXOtuqi8sBR6YOro1iVAklr2hYwh1G
+   Q==;
+IronPort-SDR: r3p/gD8jDs0V9OQjJbiEaAgfVUonEWenthRCyR5Ha5mmECaVwqWrfUhSdRRvlPYfDzTIuH8MgP
+ CzuoDAV82yG4t4OM1jj8YFD6KRbbFvppx2kCwsDK/hq+ur1dOVm8xvZYSluyBuZfmkz/KutKtL
+ lnPtTXHF6SMcf2sA/fAT56ScaW9uZvK/d3xi0FoWRIztFdm2TOTFpYEF38Z7ck9Q5zVx/gEPlS
+ kT+BBdmwOK/YY2PJB1DKb4jMmkZe8C0QVW3zKfbq8XBkXLgLMTDlRwscuDQ+BamMDiJfqXVSs6
+ 0gz/Y22xDo749DcDdP2uhLAk
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="135530014"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Oct 2021 08:18:43 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 14 Oct 2021 08:18:42 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Thu, 14 Oct 2021 08:18:42 -0700
+Date:   Thu, 14 Oct 2021 17:20:16 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+CC:     <robh+dt@kernel.org>, <andrew@lunn.ch>,
+        <lars.povlsen@microchip.com>, <Steen.Hegelund@microchip.com>,
+        <UNGLinuxDriver@microchip.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: reset: Add lan966x support
+Message-ID: <20211014152016.wuwaesswc5iiil42@soft-dev3-1.localhost>
+References: <20211013073807.2282230-1-horatiu.vultur@microchip.com>
+ <20211013073807.2282230-2-horatiu.vultur@microchip.com>
+ <838af7b574968fc55d517a3becede5fa106ed896.camel@pengutronix.de>
 MIME-Version: 1.0
-References: <20211012181500.5309-1-david@ixit.cz> <20211012181500.5309-4-david@ixit.cz>
-In-Reply-To: <20211012181500.5309-4-david@ixit.cz>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 14 Oct 2021 10:19:50 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLFsyUPd+yMB2gCbT2zc2BjeHwrdSF0r7uXV5g2EtJeZQ@mail.gmail.com>
-Message-ID: <CAL_JsqLFsyUPd+yMB2gCbT2zc2BjeHwrdSF0r7uXV5g2EtJeZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] dt-bindings: reserved-memory: ramoops: Convert txt
- bindings to yaml
-To:     David Heidelberg <david@ixit.cz>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ~okias/devicetree@lists.sr.ht
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <838af7b574968fc55d517a3becede5fa106ed896.camel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 3:39 PM David Heidelberg <david@ixit.cz> wrote:
->
-> Convert ramoops driver to the YAML syntax.
+Hi Philipp,
 
-I don't have the rest of the series except patch 1 and neither does
-lore it seems. The dependency for this is in my tree.
+The 10/14/2021 13:55, Philipp Zabel wrote:
+> 
+> On Wed, 2021-10-13 at 09:38 +0200, Horatiu Vultur wrote:
+> > This adds support for lan966x.
+> >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  .../devicetree/bindings/reset/microchip,rst.yaml   | 14 +++++++++++++-
+> >  1 file changed, 13 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/reset/microchip,rst.yaml b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
+> > index 370579aeeca1..fb170ed2c57a 100644
+> > --- a/Documentation/devicetree/bindings/reset/microchip,rst.yaml
+> > +++ b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
+> > @@ -20,7 +20,11 @@ properties:
+> >      pattern: "^reset-controller@[0-9a-f]+$"
+> >
+> >    compatible:
+> > -    const: microchip,sparx5-switch-reset
+> > +    oneOf:
+> > +      - items:
+> > +          - const: microchip,sparx5-switch-reset
+> > +      - items:
+> > +          - const: microchip,lan966x-switch-reset
+> >
+> >    reg:
+> >      items:
+> > @@ -37,6 +41,14 @@ properties:
+> >      $ref: "/schemas/types.yaml#/definitions/phandle"
+> >      description: syscon used to access CPU reset
+> >
+> > +  cuphy-syscon:
+> > +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> > +    description: syscon used to access CuPHY
+> 
+> Can this be used on sparx5?
 
-> v2:
->  - inherit reserved-memory properties
->  - switch to unevaluatedProperties
->
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  .../bindings/reserved-memory/ramoops.txt      |  66 ---------
->  .../bindings/reserved-memory/ramoops.yaml     | 129 ++++++++++++++++++
->  2 files changed, 129 insertions(+), 66 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/reserved-memory/ramoops.txt
->  create mode 100644 Documentation/devicetree/bindings/reserved-memory/ramoops.yaml
->
-> diff --git a/Documentation/devicetree/bindings/reserved-memory/ramoops.txt b/Documentation/devicetree/bindings/reserved-memory/ramoops.txt
-> deleted file mode 100644
-> index b571ef6dab0f..000000000000
-> --- a/Documentation/devicetree/bindings/reserved-memory/ramoops.txt
-> +++ /dev/null
-> @@ -1,66 +0,0 @@
-> -Ramoops oops/panic logger
-> -=========================
-> -
-> -ramoops provides persistent RAM storage for oops and panics, so they can be
-> -recovered after a reboot. This is a child-node of "/reserved-memory", and
-> -is named "ramoops" after the backend, rather than "pstore" which is the
-> -subsystem.
-> -
-> -Parts of this storage may be set aside for other persistent log buffers, such
-> -as kernel log messages, or for optional ECC error-correction data.  The total
-> -size of these optional buffers must fit in the reserved region.
-> -
-> -Any remaining space will be used for a circular buffer of oops and panic
-> -records.  These records have a configurable size, with a size of 0 indicating
-> -that they should be disabled.
-> -
-> -At least one of "record-size", "console-size", "ftrace-size", or "pmsg-size"
-> -must be set non-zero, but are otherwise optional as listed below.
-> -
-> -
-> -Required properties:
-> -
-> -- compatible: must be "ramoops"
-> -
-> -- reg: region of memory that is preserved between reboots
-> -
-> -
-> -Optional properties:
-> -
-> -- ecc-size: enables ECC support and specifies ECC buffer size in bytes
-> -  (defaults to 0: no ECC)
-> -
-> -- record-size: maximum size in bytes of each kmsg dump.
-> -  (defaults to 0: disabled)
-> -
-> -- console-size: size in bytes of log buffer reserved for kernel messages
-> -  (defaults to 0: disabled)
-> -
-> -- ftrace-size: size in bytes of log buffer reserved for function tracing and
-> -  profiling (defaults to 0: disabled)
-> -
-> -- pmsg-size: size in bytes of log buffer reserved for userspace messages
-> -  (defaults to 0: disabled)
-> -
-> -- mem-type: if present, sets the type of mapping is to be used to map the
-> -  reserved region. mem-type: 0 = write-combined (default), 1 = unbuffered,
-> -  2 = cached.
-> -
-> -- unbuffered: deprecated, use mem_type instead. If present, and mem_type is
-> -  not specified, it is equivalent to mem_type = 1 and uses unbuffered mappings
-> -  to map the reserved region (defaults to buffered mappings mem_type = 0). If
-> -  both are specified -- "mem_type" overrides "unbuffered".
-> -
-> -- max-reason: if present, sets maximum type of kmsg dump reasons to store
-> -  (defaults to 2: log Oopses and Panics). This can be set to INT_MAX to
-> -  store all kmsg dumps. See include/linux/kmsg_dump.h KMSG_DUMP_* for other
-> -  kmsg dump reason values. Setting this to 0 (KMSG_DUMP_UNDEF), means the
-> -  reason filtering will be controlled by the printk.always_kmsg_dump boot
-> -  param: if unset, it will be KMSG_DUMP_OOPS, otherwise KMSG_DUMP_MAX.
-> -
-> -- no-dump-oops: deprecated, use max_reason instead. If present, and
-> -  max_reason is not specified, it is equivalent to max_reason = 1
-> -  (KMSG_DUMP_PANIC).
-> -
-> -- flags: if present, pass ramoops behavioral flags (defaults to 0,
-> -  see include/linux/pstore_ram.h RAMOOPS_FLAG_* for flag values).
-> diff --git a/Documentation/devicetree/bindings/reserved-memory/ramoops.yaml b/Documentation/devicetree/bindings/reserved-memory/ramoops.yaml
-> new file mode 100644
-> index 000000000000..a21a27e84a6d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/reserved-memory/ramoops.yaml
-> @@ -0,0 +1,129 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/reserved-memory/ramoops.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Ramoops oops/panic logger
-> +
-> +description: |
-> +  ramoops provides persistent RAM storage for oops and panics, so they can be
-> +  recovered after a reboot. This is a child-node of "/reserved-memory", and
-> +  is named "ramoops" after the backend, rather than "pstore" which is the
-> +  subsystem.
-> +
-> +  Parts of this storage may be set aside for other persistent log buffers, such
-> +  as kernel log messages, or for optional ECC error-correction data.  The total
-> +  size of these optional buffers must fit in the reserved region.
-> +
-> +  Any remaining space will be used for a circular buffer of oops and panic
-> +  records.  These records have a configurable size, with a size of 0 indicating
-> +  that they should be disabled.
-> +
-> +  At least one of "record-size", "console-size", "ftrace-size", or "pmsg-size"
-> +  must be set non-zero, but are otherwise optional as listed below.
-> +
-> +maintainers:
-> +  - Kees Cook <keescook@chromium.org>
-> +
-> +allOf:
-> +  - $ref: "reserved-memory.yaml"
-> +
-> +properties:
-> +  compatible:
-> +    const: ramoops
-> +
-> +  reg:
-> +    description: region of memory that is preserved between reboots
-> +
-> +  ecc-size:
+No, because the sparx5 doesn't have any internal PHYs that need to
+be released of the reset.
 
-These all need a type reference.
+> Is it optional on lan966x?
 
-> +    description: enables ECC support and specifies ECC buffer size in bytes
-> +    default: 0 # no ECC
-> +
-> +  record-size:
-> +    description: maximum size in bytes of each kmsg dump
-> +    default: 0
-> +
-> +  console-size:
-> +    description: size in bytes of log buffer reserved for kernel messages
-> +    default: 0
-> +
-> +  ftrace-size:
-> +    description: size in bytes of log buffer reserved for function tracing and profiling
-> +    default: 0
-> +
-> +  pmsg-size:
-> +    description: size in bytes of log buffer reserved for userspace messages
-> +    default: 0
-> +
-> +  mem-type:
-> +    description: if present, sets the type of mapping is to be used to map the reserved region.
-> +    default: 0
-> +    enum:
+No, it is required on lan966x. I will update the binding to show this.
 
-s/enum/oneOf/
+> 
+> > +  phy-reset-gpios:
+> > +    description: used for release of reset of the external PHY
+> > +    maxItems: 1
+> > +
+> >  required:
+> >    - compatible
+> >    - reg
+> 
+> I'd like somebody to reassure me that putting the CuPHY reset and
+> external PHY GPIO reset in the reset controller is the right thing to
+> do.
+> 
+> It looks fine to me, but I'm not sure if these should rather be in
+> separate phy nodes that are referenced from the switch.
+> 
+> regards
+> Philipp
 
-Or drop 'const' below and make the descriptions comments.
-
-> +      - const: 0
-> +        description: write-combined
-> +      - const: 1
-> +        description: unbuffered
-> +      - const: 2
-> +        description: cached
-> +
-> +  unbuffered:
-> +    deprecated: true
-> +    description: |
-> +      use mem_type instead. If present, and mem_type is not specified,
-> +      it is equivalent to mem_type = 1 and uses unbuffered mappings to map
-> +      the reserved region (defaults to buffered mappings mem_type = 0).
-> +      If both are specified -- "mem_type" overrides "unbuffered".
-> +
-> +  max-reason:
-> +    default: 2 # log oopses and panics
-> +    description: |
-> +      If present, sets maximum type of kmsg dump reasons to store.
-> +      This can be set to INT_MAX to store all kmsg dumps.
-
-maximum: 0x7fffffff
-
-> +      See include/linux/kmsg_dump.h KMSG_DUMP_* for other
-> +      kmsg dump reason values. Setting this to 0 (KMSG_DUMP_UNDEF), means the
-> +      reason filtering will be controlled by the printk.always_kmsg_dump boot
-> +
-> +  param:
-> +    description: if unset, it will be KMSG_DUMP_OOPS, otherwise KMSG_DUMP_MAX.
-
-Define names are nice, but not helpful for defining constraints.
-
-> +
-> +  no-dump-oops:
-> +    deprecated: true
-> +    description: |
-> +      Use max_reason instead. If present, and max_reason is not specified,
-> +      it is equivalent to max_reason = 1 (KMSG_DUMP_PANIC).
-> +
-> +  flags:
-> +    default: 0
-> +    description: |
-> +      If present, pass ramoops behavioral flags
-> +      (see include/linux/pstore_ram.h RAMOOPS_FLAG_* for flag values).
-> +
-> +unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +anyOf:
-> +  - required: [record-size]
-> +  - required: [console-size]
-> +  - required: [ftrace-size]
-> +  - required: [pmsg-size]
-> +
-> +examples:
-> +  - |
-
-Add '/ { ' so the example is created at the root node.
-
-> +    reserved-memory {
-> +      #address-cells = <1>;
-> +      #size-cells = <1>;
-> +      ranges;
-> +
-> +      ramoops@bfdf0000 {
-> +        compatible = "ramoops";
-> +        reg = <0xbfdf0000 0x10000>; /* 64kB */
-> +        console-size = <0x8000>;    /* 32kB */
-> +        record-size = <0x400>;      /*  1kB */
-> +        ecc-size = <16>;
-> +      };
-> +    };
-> +
-> --
-> 2.33.0
->
+-- 
+/Horatiu
