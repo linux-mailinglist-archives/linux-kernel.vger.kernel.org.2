@@ -2,102 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B65A42E477
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C3842E481
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232356AbhJNWzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 18:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbhJNWzk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 18:55:40 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96933C061570;
-        Thu, 14 Oct 2021 15:53:30 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HVl7F0WNLz4xb9;
-        Fri, 15 Oct 2021 09:53:28 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1634252009;
-        bh=W9k4rlXYFcvRmBCEV+RIrGWKO5o3ELTRNuvQrIhpF0g=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CV+giH1APtHjdfp3D6+ewP8I1SRKdNybX3mo1KN/yZ0/J3vGjYAtHQhLhlYe/ozt3
-         2SJ6S8V2MweXYA1E6KQaX/gHeQr7RqCkkzvg4ovg0msP/JgYn29UHYp2eFW2OCP66v
-         zi6TVipIH4FSKNst2qWE0Sa7H1pJtxeUqpxX2apxyjhcoB1xoK1riAeE6+0UEeG/97
-         tPVDAdYuLCZQ5N5tfgbgfrIvQS7w1sQkw18KaiCv6654x5O9FQRMM2ganq1T6Xxyg2
-         kPvZaG3va2OCKaz9b1WVyFR7gpVEvjhNV/3zUcbI/ZmXFTjnNomEksT6OXMgZ5lNaO
-         hk8kaNLX8if1g==
-Date:   Fri, 15 Oct 2021 09:53:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Todd Kjos <tkjos@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tags needs some work in the selinux tree
-Message-ID: <20211015095327.42344a21@canb.auug.org.au>
+        id S234051AbhJNXCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 19:02:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230512AbhJNXCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 19:02:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C844861090;
+        Thu, 14 Oct 2021 23:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634252408;
+        bh=AA0WZn+DU/kRFEWzKKA9jV8f4+zGPBeXV2ztIbRNPMg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=gazF9vBuoi77an2Rv23QRPzB1DZddRP4rXm9pHs3pNdG2aWdOlT84Hc/ZyKtD7lV3
+         4zN5lF9CkJLsrxBoYBBeulaEWgh4gBrBjU0ACkeORf0oGRifdBf6q7TTm59Tyjom4C
+         5vu+fJMGvIbJN8ke5uqb7Q8j69CyKqWSFgPmtRyVjTtpfOmlT+A8BB5V7w3KsDdy2Z
+         fgLQBXWLnGNlI02eKAAaXi77qKnPCxKT27FYiMNdOkb9g+4S98teMzbpsyrYa/3RYO
+         kj1SqUsnXtnU3ucvt5P7rih9Wnp7S+U42I73FUm6arg0VSOAU2fgORPz5bqOCYVunJ
+         0smF+Tr8dMnmA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BC939609ED;
+        Thu, 14 Oct 2021 23:00:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/w0rmlU4D5Kvd6qci1qP3yaB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: of: fix stub of_net helpers for CONFIG_NET=n
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163425240876.7869.13697654167587568953.git-patchwork-notify@kernel.org>
+Date:   Thu, 14 Oct 2021 23:00:08 +0000
+References: <20211014090055.2058949-1-arnd@kernel.org>
+In-Reply-To: <20211014090055.2058949-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     kuba@kernel.org, davem@davemloft.net, arnd@arndb.de,
+        robh+dt@kernel.org, frowand.list@gmail.com, andrew@lunn.ch,
+        michael@walle.cc, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/w0rmlU4D5Kvd6qci1qP3yaB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-In commit
+On Thu, 14 Oct 2021 11:00:37 +0200 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Moving the of_net code from drivers/of/ to net/core means we
+> no longer stub out the helpers when networking is disabled,
+> which leads to a randconfig build failure with at least one
+> ARM platform that calls this from non-networking code:
+> 
+> [...]
 
-  fef994d85ac9 ("binder: use cred instead of task for getsecid")
+Here is the summary with links:
+  - [net-next] net: of: fix stub of_net helpers for CONFIG_NET=n
+    https://git.kernel.org/netdev/net-next/c/8b017fbe0bbb
 
-Fixes tag
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  Fixes: ec74136ded79 ("binder: create node flag to request sender's
 
-has these problem(s):
-
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
-
-In commit
-
-  d1c927fb8b52 ("binder: use cred instead of task for selinux checks")
-
-Fixes tag
-
-  Fixes: 79af73079d75 ("Add security hooks to binder and implement the
-
-has these problem(s):
-
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
-
-Please do not split Fixes tags over more than one line.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/w0rmlU4D5Kvd6qci1qP3yaB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFotOcACgkQAVBC80lX
-0GyCsggAl9x6zITN++MNBb2CJ1IFMO0tehCYyXg3dlpnYzZL1KQ0ahbdOzt0MLa0
-2pA5pUGkvW2JJ6YQnIMbzFNVJX1bGp4ehrijtL39AuYWZXERcPfbzFcskw20BZKl
-wQd6KVdU1HJGfyr/UUfxDeWGS3OYeV/1xOw+ci2RS6d/ZT4Du4hz5mDnU3ElfTd5
-Ntyz7uklWzP43bns2Ma9DRIBiGqOKXCEj9Td/FCoeGKBbIxL4pkWoeOpLBzsd/Jr
-ObsMZF8WRERsKmU34GlWKQu9RrILJNTc9DmarAWTGckWjHC0TtEEaL5KGitjx1n6
-81BSaRn7LVfU2739st15Rzkb2hrPtw==
-=AAj0
------END PGP SIGNATURE-----
-
---Sig_/w0rmlU4D5Kvd6qci1qP3yaB--
