@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFD042CF5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 02:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204C342CF5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 02:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhJNACR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 20:02:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33760 "EHLO mail.kernel.org"
+        id S229967AbhJNADK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 20:03:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229677AbhJNACQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 20:02:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B56961130;
-        Thu, 14 Oct 2021 00:00:11 +0000 (UTC)
+        id S229677AbhJNADI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 20:03:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 102CF61130;
+        Thu, 14 Oct 2021 00:01:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634169612;
-        bh=DgsauICWZrB6vmbcVKHsM1e7USI1w/ySQXqfO1/VPU0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=hEb5cg2grel2fe/lRllJBbYGwl1N5p9UTx3PGvUw1cy0fYrjgeXsUHOWeVX/KK+hO
-         /msPDYz+l7PGlUXjKwRCM2bsFdMwGEbQB9VxkAbRMQW2fJyxeSz3ilyXMWuU0/AW95
-         ihsPKyJWW8fsQN1rIYh4kKtdnRdE9i4GGs+iatq3MYWN5+W4Iv2gWERH2zIadrx0qo
-         58E0yugE2aVL89OGElIxy4kkxv0gMvZpfwOBKo/XKDbiyUpyWtBnwuFKMe1c2cVgmH
-         /fY3ohU+BEol6zn4oaB9/FqwMZK8ULpaz8F/+lq10WBUxCrgbB0nnfvL8p9AqfZU9u
-         Q+0znygEEk5vg==
-Message-ID: <035231e191d757cb8edd1c060067b6e19ddf43ea.camel@kernel.org>
-Subject: Re: [PATCH v2 1/1] tpm: add request_locality before write
- TPM_INT_ENABLE
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Chen Jun <chenjun102@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, rui.xiang@huawei.com
-Date:   Thu, 14 Oct 2021 03:00:09 +0300
-In-Reply-To: <20211013062556.116504-1-chenjun102@huawei.com>
-References: <20211013062556.116504-1-chenjun102@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.40.0-1 
+        s=k20201202; t=1634169665;
+        bh=xQ9stP59+c3RrHPEyY/yaAiPg7w9ZkGXGwxSUoF2MVw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=O/DF7k+1QM3CpeeavAORpDv+Hqz1sK1IiUF++fkBYOevSWBTLRxeKpTNlSSbOnFqJ
+         v9SxsTLSfRqZqH+UfaZWpupsXZuZozXZwDIu20OOuFy8QG9nTPGNi7aZ2Wb8XNTmPI
+         ImiIXG8CajWHoF0hTIsbxa+A2ev1O0b3XvtKatBNQQHgphF7Dkl/dcspIf6apn1s02
+         0mjD43ySwEW2SysU+w3U+X602Oj2dCe+nuGJcPI6rTtiHzKaZp83oobOwJIH+Z9eIo
+         GujymaYUU3N4qyUXk0hww+iVJZ8tZ5Ah07z5PFCtLRmsC9/7UYsXK76gwG4h8fT6Wo
+         W+0mGANd7TRCw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CAC0C5C14F7; Wed, 13 Oct 2021 17:01:04 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 17:01:04 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Florian Weimer <fw@deneb.enyo.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        j alglave <j.alglave@ucl.ac.uk>,
+        luc maranget <luc.maranget@inria.fr>,
+        akiyks <akiyks@gmail.com>,
+        linux-toolchains <linux-toolchains@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
+Message-ID: <20211014000104.GX880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com>
+ <87lf3f7eh6.fsf@oldenburg.str.redhat.com>
+ <20210929174146.GF22689@gate.crashing.org>
+ <2088260319.47978.1633104808220.JavaMail.zimbra@efficios.com>
+ <871r54ww2k.fsf@oldenburg.str.redhat.com>
+ <CAHk-=wgexLqNnngLPts=wXrRcoP_XHO03iPJbsAg8HYuJbbAvw@mail.gmail.com>
+ <87y271yo4l.fsf@mid.deneb.enyo.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y271yo4l.fsf@mid.deneb.enyo.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-10-13 at 06:25 +0000, Chen Jun wrote:
-> Locality is not appropriately requested before writing the int mask.
-> Add the missing boilerplate.
->=20
-> Fixes: e6aef069b6e9 ("tpm_tis: convert to using locality callbacks")
-> Signed-off-by: Chen Jun <chenjun102@huawei.com>
-> ---
->=20
-> =C2=A0v2: rewrite the commit message.
->=20
-> =C2=A0drivers/char/tpm/tpm_tis_core.c | 8 ++++++++
-> =C2=A01 file changed, 8 insertions(+)
->=20
-> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_c=
-ore.c
-> index 69579efb247b..bea587301917 100644
-> --- a/drivers/char/tpm/tpm_tis_core.c
-> +++ b/drivers/char/tpm/tpm_tis_core.c
-> @@ -978,7 +978,15 @@ int tpm_tis_core_init(struct device *dev, struct tpm=
-_tis_data *priv, int irq,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0intmask |=3D TPM_INTF_CMD=
-_READY_INT | TPM_INTF_LOCALITY_CHANGE_INT |
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 TPM_INTF_DATA_AVAIL_INT | TPM_INTF_STS=
-_VALID_INT;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0intmask &=3D ~TPM_GLOBAL_=
-INT_ENABLE;
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0rc =3D request_locality(chip, =
-0);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (rc < 0) {
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0rc =3D -ENODEV;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0goto out_err;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> +
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_tis_write32(priv, TPM=
-_INT_ENABLE(priv->locality), intmask);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0release_locality(chip, 0);
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0rc =3D tpm_chip_start(chi=
-p);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (rc)
+On Sun, Oct 10, 2021 at 04:02:02PM +0200, Florian Weimer wrote:
+> * Linus Torvalds:
+> 
+> > On Fri, Oct 1, 2021 at 9:26 AM Florian Weimer <fweimer@redhat.com> wrote:
+> >>
+> >> Will any conditional branch do, or is it necessary that it depends in
+> >> some way on the data read?
+> >
+> > The condition needs to be dependent on the read.
+> >
+> > (Easy way to see it: if the read isn't related to the conditional or
+> > write data/address, the read could just be delayed to after the
+> > condition and the store had been done).
+> 
+> That entirely depends on how the hardware is specified to work.  And
+> the hardware could recognize certain patterns as always producing the
+> same condition codes, e.g., AND with zero.  Do such tests still count?
+> It depends on what the specification says.
+> 
+> What I really dislike about this: Operators like & and < now have side
+> effects, and is no longer possible to reason about arithmetic
+> expressions in isolation.
 
-Thank you.
+Is there a reasonable syntax that might help with these issues?
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Yes, I know, we for sure have conflicting constraints on "reasonable"
+on copy on this email.  What else is new?  ;-)
 
-/Jarkko
+I could imagine a tag of some sort on the load and store, linking the
+operations that needed to be ordered.  You would also want that same
+tag on any conditional operators along the way?  Or would the presence
+of the tags on the load and store suffice?
 
+							Thanx, Paul
