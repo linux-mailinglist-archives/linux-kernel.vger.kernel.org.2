@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD6E42DB04
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1909042DB0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhJNODb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:03:31 -0400
-Received: from mga11.intel.com ([192.55.52.93]:33309 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhJNOD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:03:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="225139063"
-X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="225139063"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 07:01:22 -0700
-X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
-   d="scan'208";a="563769819"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.159])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 07:01:20 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mb46M-000E6j-Hi;
-        Thu, 14 Oct 2021 20:01:06 +0300
-Date:   Thu, 14 Oct 2021 20:01:06 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        lars@metafoo.de, jic23@kernel.org, hdegoede@redhat.com,
-        ddvlad@gmail.com
-Subject: Re: [PATCH] iio: accel: kxcjk-1013: Fix possible memory leak in
- probe and remove
-Message-ID: <YWhiUngyIdU0RiY/@smile.fi.intel.com>
-References: <20211014035338.3750416-1-yangyingliang@huawei.com>
- <YWhEwqdHbPTAfvto@smile.fi.intel.com>
- <d4b9addc-1896-7e78-8a57-9ef0a8ab8f38@huawei.com>
+        id S231739AbhJNOGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230177AbhJNOGW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:06:22 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC669C061570;
+        Thu, 14 Oct 2021 07:04:17 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id t2so19875824wrb.8;
+        Thu, 14 Oct 2021 07:04:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TAvj72ssH3qXxf9L5Wa/RK1md3eRNO3vwTLM1pn35pE=;
+        b=SSoaq5s8cjVoFC5qeOAUw8UEqSp6iU2fHaQqbkg6pgVeo85DDHtBZ86WIPo6b+JCQv
+         jI/QkHjLJZdnY7xL5wMLHzFRLcSWaDE7zmcpZSBjV+vArCKPZdz4sLdFBr2vRQroSvKN
+         IwpjFCeUDOijQ9klB7KrV1YywhMrCVh97p5Wh+bAy01m8WF6F/Dd52vnl8CZSgNKMxOm
+         QF7IUVpZIAc+dJJbKc8lmGwdw8La0HvhQc3Af/QLcm2a/0lbPdO9QT5CGHk5pMopdm8U
+         WVBIPPCxaAWnbyibsSQUKoDHEqorn0NtIvuFjb3Gn59qhN0969c3/9fHgE53/uW+Jgd5
+         CY6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TAvj72ssH3qXxf9L5Wa/RK1md3eRNO3vwTLM1pn35pE=;
+        b=2nOPcLIuyHuKn4svBsWQ531L/lrIW8EMKcsJeLvsBYQcn9SU4gxolAHxgyDp51ydEg
+         2A/t0O8tKirrw+plsAoKlADRmAG+uDO16ya5c6liOsmyAp0eYwD+Pj2rCy73tmQpvbjn
+         gqymruGg4yzx+OGnXN1CRgI/wkru/v9dk1F7f7+4R1FfpCP/yJx2a0bnz/c6dOf1rb6o
+         JLcGvo7bNvjVX71pHU0mxqUBqOWLVThBnoooy6mJiyn6r6tKrS5l1ZXyTSX3queNtjyI
+         iuRbCkUZRoHq/+oH2hgOLQ7OPZwbxus7lRv6AdD9505KjOBQNL8jqhlCrDdlUQxOUeub
+         KzsA==
+X-Gm-Message-State: AOAM531ykpT7RPNkprgSLlN2pqesEccRg705xGFJfuo5A4qE7ZZSRf2H
+        +dYnSEVBHCb00bgMIDhp60Q=
+X-Google-Smtp-Source: ABdhPJx68bIUdjpdx7E+uRfIhB/CK9n1gbNxslort4U69IiL30mAmnI+hodkBleh7Tx6k0QrsoGa5Q==
+X-Received: by 2002:adf:ab43:: with SMTP id r3mr7041228wrc.225.1634220256431;
+        Thu, 14 Oct 2021 07:04:16 -0700 (PDT)
+Received: from localhost.localdomain ([185.69.145.214])
+        by smtp.gmail.com with ESMTPSA id p8sm2273461wmg.15.2021.10.14.07.04.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 07:04:16 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@infradead.org>, asml.silence@gmail.com
+Subject: [PATCH 0/5] cache request_queue pointer
+Date:   Thu, 14 Oct 2021 15:03:25 +0100
+Message-Id: <cover.1634219547.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d4b9addc-1896-7e78-8a57-9ef0a8ab8f38@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 09:38:52PM +0800, Yang Yingliang wrote:
-> On 2021/10/14 22:54, Andy Shevchenko wrote:
-> > On Thu, Oct 14, 2021 at 11:53:38AM +0800, Yang Yingliang wrote:
-> > > When ACPI type is ACPI_SMO8500, the data->dready_trig will not be set, the
-> > > memory allocated by iio_triggered_buffer_setup() will not be freed, and cause
-> > > memory leak as follows:
-> > It seems it's not first time I'm telling you to shrink the noise in the commit
-> > message.  Can you please LEARN this once and forever?
-> Thanks for you advice, I searched the whole kernel source tree commit
-> message to
-> learn how to make the memory leak report, I found most of them using the
-> whole
-> backtrace, so I make the report like they did in this patch.
+Cache request_queue in bdev and replace two derefs in
+bdev->bd_disk->queue with bdev->bd_queue. Benchmarking
+with nullblk gave me around +1% to peak perf.
 
-Some maintainers do not care about bloated sizes of the commit messages,
-however there are several advantages to have them shorter:
+All patches are self contained and don't rely on others from
+the set including 1/5 and can be taken separately. And some
+changes go in separate patches to minimise conflicts. When
+we agree on the approach, I'll send the rest converting some
+other spots out of block.
 
-1/ saving resources (followed by disk storages and energy around the world,
-   means being environment friendly for real);
+note: based on for-5.16/block-io_uring
 
-2/ when reading log, noise make it much harder to understand, besides the
-   fact that reading itself will be time consuming;
+Pavel Begunkov (5):
+  block: cache request queue in bdev
+  block: use bdev_get_queue() in bdev.c
+  block: use bdev_get_queue() in bio.c
+  block: use bdev_get_queue() in blk-core.c
+  block: convert the rest of block to bdev_get_queue
 
-3/ nowadays some people are tending to read or even discuss the changes on
-   the mobile devices, where screen size is not so big;
-
-4/ the copied'n'pasted backtrace means that the contributor probably
-   haven't thought through it and the quality of the change is in doubt.
-
-> I will shrink
-> the noise in v2.
-> How about shrink it like this:
-
-Much better!
+ block/bdev.c              |  9 +++++----
+ block/bio-integrity.c     |  2 +-
+ block/bio.c               | 10 +++++-----
+ block/blk-cgroup.c        | 16 ++++++++--------
+ block/blk-core.c          | 10 +++++-----
+ block/blk-crypto.c        |  2 +-
+ block/blk-iocost.c        | 12 ++++++------
+ block/blk-merge.c         |  2 +-
+ block/blk-mq.c            |  2 +-
+ block/blk-throttle.c      |  2 +-
+ block/genhd.c             |  8 +++++---
+ block/partitions/core.c   |  4 ++--
+ include/linux/blk_types.h |  1 +
+ include/linux/blkdev.h    |  2 +-
+ 14 files changed, 43 insertions(+), 39 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.33.0
 
