@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE37142E238
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3140A42E23B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbhJNTzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:55:21 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:60660 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233018AbhJNTzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:55:19 -0400
-Received: from zn.tnic (p200300ec2f0c7200d22ebf2cfed8089c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:7200:d22e:bf2c:fed8:89c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E21991EC01A8;
-        Thu, 14 Oct 2021 21:53:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1634241193;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3D7xO6MeV8Kv77kHjCegi8KGiS9MVKZfaLwempGWLCo=;
-        b=QjClVR3l1r53dQz78jbklIs8DNJyuJUM+kRWKahBX4P5wTLUOTZ89TBQrEuQ2INwf0Qweb
-        fMvv3vLTYTN89zYKqRGaEihtO6obyNcgNAnehM1pRTlXN3pI0og01uljGPY91i/PwZ1H6l
-        6EhZ/+LUbWb+OLY7TI6yExjPWtCr4/w=
-Date:   Thu, 14 Oct 2021 21:53:11 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
-Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
-        yazen.ghannam@amd.com
-Subject: Re: [PATCH v4 0/4] x86/edac/amd64: Add support for noncpu nodes
-Message-ID: <YWiKpw5MwtAiwNyB@zn.tnic>
-References: <20210823185437.94417-1-nchatrad@amd.com>
- <20211014185400.10451-1-nchatrad@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211014185400.10451-1-nchatrad@amd.com>
+        id S233754AbhJNTz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:55:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233018AbhJNTz5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 15:55:57 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9D4C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:53:52 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id q10-20020a056a00084a00b0044c729ea8f2so4028717pfk.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:53:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=R/A1A0PEacctbWxfoyinE4EXZjh0hs5rayBemyeKvhs=;
+        b=Ccj60KB5+clN/g8yw8V0AvFPqpYtRevRPNAl88ECaouDXwhePm0EVHn3TvUZXBuikb
+         NAKgCmTzauq5p0dQbKjSIBENAVJbSfMBQSV+lMb5tUj2fFi3+Aq2GeRXo9by7rMu/6f5
+         D7PpHFhD7x1sF4gdy/3JxjrmCmAM4yTrv29zz80JGrCedp6YfuqRmzzfqaSv/esEj9sr
+         SLCJqftzhLudSp/QUTsOVfNuQ2FNHexSrmZ0TCNe8tG8xU7TaoiEKHZm0Jtr8DkueIT6
+         5shOlqnZ4vWy2erzNJHml8C/2dGDK29j9cxITM0usC7jpgFRtQGx0tChJVwri9MFfOxd
+         /Ltg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=R/A1A0PEacctbWxfoyinE4EXZjh0hs5rayBemyeKvhs=;
+        b=efetkTP9gebBMoq/REfNpFTDYUBA58e5a0O4mAcWRHRSdkGNz56URiex5S9xngGVd5
+         MbJDo9XO7bbfeFhC+KkiU8CUVT3hyetYhoboloR5NNT2aZ4PXYLfPKxdCingfnGouoGM
+         ymJa/iICtCDd0EL8BCa23N8zSwQrfrOA+ch0iH1+prRSgpprSiEdUvsv/aXYms5QSzyt
+         gh5+5ewKrMguB4kEmgalsQjhnqNVQy5c5fjVwQVZ6V/GATmDvg8+0ZVy/ctWmt3F2xfS
+         PqQVyiV/GxCMR5EoOxPnAgTk6JWRt6ku92Od2AlW46sIcv6S3eUeI5MP4gVhqQdDDsIj
+         h0BQ==
+X-Gm-Message-State: AOAM533VY/Ww2bFzyNCOmxlfclH8y7i2UE3kY6IZcdcYNfusr6wJyLzX
+        OOZhdWE2nAvwT+wmMqRTPlUFTr43bfSFZL/QViE=
+X-Google-Smtp-Source: ABdhPJzJB0746aYvHaw0UyQpC8oiqKxrUMbT0zTR2WHYcybIVao09r4yq54iQiEOGomsy45bhkxA4UHH5Xjs/8E1XLU=
+X-Received: from willmcvicker.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:2dd0])
+ (user=willmcvicker job=sendgmr) by 2002:a17:902:b70d:b0:13d:f6c9:2066 with
+ SMTP id d13-20020a170902b70d00b0013df6c92066mr6942092pls.2.1634241232300;
+ Thu, 14 Oct 2021 12:53:52 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 19:53:44 +0000
+Message-Id: <20211014195347.3635601-1-willmcvicker@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [RFT PATCH v4 0/2] clk: samsung: add common support for CPU clocks
+From:   Will McVicker <willmcvicker@google.com>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     kernel-team@android.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Will McVicker <willmcvicker@google.com>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 12:23:56AM +0530, Naveen Krishna Chatradhi wrote:
-> On newer heterogeneous systems with AMD CPUs the data fabrics of GPUs
-> can be connected directly via custom links.
-> 
-> This patchset does the following
-> 1. amd_nb.c:
->    a. Add support for northbridges on Aldebaran GPU nodes
->    b. export AMD node map details to be used by edac and mce modules
-> 	
-> 2. mce_amd module:
->    a. Identify the node ID where the error occurred and map the node id
->       to linux enumerated node id.
-> 
-> 2. Modifies the amd64_edac module
->    a. Add new family op routines
->    b. Enumerate UMCs and HBMs on the GPU nodes
-> 
-> This patchset is rebased on top of
-> "
-> commit 07416cadfdfa38283b840e700427ae3782c76f6b
-> Author: Yazen Ghannam <yazen.ghannam@amd.com>
-> Date:   Tue Oct 5 15:44:19 2021 +0000
-> 
->     EDAC/amd64: Handle three rank interleaving mode
-> "
-> 
-> Muralidhara M K (2):
->   x86/amd_nb: Add support for northbridges on Aldebaran
->   EDAC/amd64: Extend family ops functions
-> 
-> Naveen Krishna Chatradhi (2):
->   EDAC/mce_amd: Extract node id from MCA_IPID
->   EDAC/amd64: Enumerate memory on Aldebaran GPU nodes
-> 
->  arch/x86/include/asm/amd_nb.h |   9 +
->  arch/x86/kernel/amd_nb.c      | 131 +++++++--
->  drivers/edac/amd64_edac.c     | 517 +++++++++++++++++++++++++---------
->  drivers/edac/amd64_edac.h     |  33 +++
->  drivers/edac/mce_amd.c        |  24 +-
->  include/linux/pci_ids.h       |   1 +
->  6 files changed, 564 insertions(+), 151 deletions(-)
+These two patches were originally a part of the series [1]. They add
+support to the common samsung clock driver to parse and register the
+CPU clocks when provided. This allows for the samsung clock drivers to
+simply provide a `struct samsung_cpu_clock` to `struct samsung_cmu_info`
+and then call samsung_cmu_register_one(). With this new support, we can
+now get rid of the custom apollo and atlas CLK_OF_DECLARE init functions.
 
-So which v4 should I be looking at - this one or
+Since I don't have the hardware to test these, I'm including the RFT tag
+to try and get help testing and verifying these.
 
-https://lore.kernel.org/r/20211014185058.9587-1-nchatrad@amd.com
+[1] https://lore.kernel.org/all/20210928235635.1348330-4-willmcvicker@google.com/
 
-?
+Will McVicker (2):
+  [RFT] clk: samsung: add support for CPU clocks
+  [RFT] clk: samsung: exynos5433: update apollo and atlas clock probing
+--
+Changes in v4:
+ - Updated 'struct samsung_cpu_clock' to reference the parent and alt_parent
+   hw clocks via ID instead of name
+ - Dropped __clk_lookup() in favor of ctx->clk_data.hw instead
 
-Btw, you don't have to do --in-reply-to and keep all patchsets in a
-single thread - just send the new revision as a separate thread.
+Changes in v3:
+ - Same as v1-v2
+ - Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-Thx.
+ drivers/clk/samsung/clk-cpu.c        |  18 ++++
+ drivers/clk/samsung/clk-exynos5433.c | 120 +++++++++++----------------
+ drivers/clk/samsung/clk.c            |   2 +
+ drivers/clk/samsung/clk.h            |  26 ++++++
+ 4 files changed, 94 insertions(+), 72 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.33.0.1079.g6e70778dc9-goog
 
-https://people.kernel.org/tglx/notes-about-netiquette
