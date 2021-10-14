@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F3042DB78
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFE642DB7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhJNO2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
+        id S231822AbhJNO2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231823AbhJNO2L (ORCPT
+        with ESMTP id S231605AbhJNO2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:28:11 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38639C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:26:06 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id e12so20103720wra.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:26:06 -0700 (PDT)
+        Thu, 14 Oct 2021 10:28:12 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E8EC061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:26:07 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id o20so20150215wro.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:26:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8+uJr5hp/PrwImyhLww643udSk+FgvtkOnzEH/iiMXA=;
-        b=x2fzdmMSRhyCU3dbpcXq3f4TOFHCtRAG3Q2rGhe2H5ELOT1CpqVXnBWY1E3z6p5u6C
-         W2kl7W/6+YTDBSd7Xj3o7MEX3e1NCRMRa4TPCQ3Ns9C12d4kU5pd2phJhneXg8LJ0J4r
-         8Q8mXJ3vykXbQQ4lxkMZBGAQL7gL65H60WsU0=
+        bh=RRur22NBusGD90t4t5587ekzz3x5I1RHcVLT1FRWOPw=;
+        b=RmhVf07oF6025wnab8G9e3JeuNPyTuS8nYqhI375yVQIL0U9eUmLhzjtuwOVtNWage
+         l9C1jkYM8uhpYDHf9otaq/XTvm2rgfq0akCikV7qkC4iTfaB4nKogtvA+vhRnruVnbD+
+         cOkkxtYNiiEdWIWE4OgPf56KWAs6Yw/rBVpRQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8+uJr5hp/PrwImyhLww643udSk+FgvtkOnzEH/iiMXA=;
-        b=S7A6EPfrlkuZSnllqcuKHhLHve24klQkn1R4O6eAr9ggk7FBv0JcJUEEkvidMb8zmf
-         HjFsyhV6vv3owBgpG5InA4MSqIS1RMZi4qfJkysy31dKtQEzNs1LSTloqWIsECpHFUNf
-         yITlozCB2QVSNmPuJbZbyDq0h5NP7h9/eU6+wjVppwWhn9wRzPACg1ARM4CvAMMwJpQk
-         Ac5gKU4qo+6MHEiCXRldrp+cqMlx9kkSmUr58ZKkFl3rK9s3sEwgRio6Zj2ocRSh5Q93
-         3+P/Rf19lDkIOAlUuoz7Gbq352PX7po0JbGdy43Nds2anNOmIsUVfH0Na3QpM4joXGmf
-         be/w==
-X-Gm-Message-State: AOAM53363R6WeSm7+SbkUhYVdh/CaVhD1fMmkg2OuvJttXT2dk4whsrx
-        cq0n3LnyQGuOALp1eOeczdiprA==
-X-Google-Smtp-Source: ABdhPJxSreZiUluGclCO7ih/fTRXwuaw9OMXuN55jnTqByIvdDxPXk6++hqqara4PlR/5NHW91bnrg==
-X-Received: by 2002:adf:aadc:: with SMTP id i28mr7004852wrc.320.1634221564751;
-        Thu, 14 Oct 2021 07:26:04 -0700 (PDT)
+        bh=RRur22NBusGD90t4t5587ekzz3x5I1RHcVLT1FRWOPw=;
+        b=1wkjgJtjViTyI4JzuRYPrBuZ+y2OoCncfHWKjAEW6hjUxN+7hI7TCrbpOXBVylzv3V
+         Gdm+uNWNWepISQ8SGHhZX892Oepb3tzUovw28ms/omJJhREZvdgVwgpAjnPZzuFU9zHy
+         SgCG/GqFYPukNkktQQ+5lmi6we8/NymAImdMp2cCaIj827zR7aJKXhyymnqqPnXYIPUx
+         kzmEuHd6Tinuh4yC6DI5Ugcr6AkTic4nfiBSG54pSDaVY+jNpXkvMPNUEA6OQ4AGhYfp
+         hCFVUmVxk6dfZsKbBBHQhf/hUv84DKD17b4DvDfzJRHIhi0m2nsB/H225twY3rz2vsUd
+         oxqA==
+X-Gm-Message-State: AOAM5304VMtCAb3PngOC0Tt0a92JBXl/71prmXeIwstvYDkXSZObO+59
+        hYLkJeDXMWBvv4FqXoOssR8J8w==
+X-Google-Smtp-Source: ABdhPJwA6roeFKn/hKn+FsDIjFD09EJZXyjCtR2peO46ZQ2mwsy86VrESVOK+e2yhDFIHOma2liu8w==
+X-Received: by 2002:a05:6000:1aca:: with SMTP id i10mr7234743wry.207.1634221565929;
+        Thu, 14 Oct 2021 07:26:05 -0700 (PDT)
 Received: from antares.. (4.4.a.7.5.8.b.d.d.b.6.7.4.d.a.6.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:6ad4:76bd:db85:7a44])
-        by smtp.gmail.com with ESMTPSA id e8sm3731111wrg.48.2021.10.14.07.26.04
+        by smtp.gmail.com with ESMTPSA id e8sm3731111wrg.48.2021.10.14.07.26.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 07:26:04 -0700 (PDT)
+        Thu, 14 Oct 2021 07:26:05 -0700 (PDT)
 From:   Lorenz Bauer <lmb@cloudflare.com>
 To:     nicolas.dichtel@6wind.com, luke.r.nels@gmail.com,
-        Xi Wang <xi.wang@gmail.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
 Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/3] bpf: define bpf_jit_alloc_exec_limit for riscv JIT
-Date:   Thu, 14 Oct 2021 15:25:51 +0100
-Message-Id: <20211014142554.53120-2-lmb@cloudflare.com>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/3] bpf: define bpf_jit_alloc_exec_limit for arm64 JIT
+Date:   Thu, 14 Oct 2021 15:25:52 +0100
+Message-Id: <20211014142554.53120-3-lmb@cloudflare.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211014142554.53120-1-lmb@cloudflare.com>
 References: <20211014142554.53120-1-lmb@cloudflare.com>
@@ -70,19 +68,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expose the maximum amount of useable memory from the riscv JIT.
+Expose the maximum amount of useable memory from the arm64 JIT.
 
 Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-Acked-by: Luke Nelson <luke.r.nels@gmail.com>
 ---
- arch/riscv/net/bpf_jit_core.c | 5 +++++
+ arch/arm64/net/bpf_jit_comp.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
-index fed86f42dfbe..0fee2cbaaf53 100644
---- a/arch/riscv/net/bpf_jit_core.c
-+++ b/arch/riscv/net/bpf_jit_core.c
-@@ -166,6 +166,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 41c23f474ea6..803e7773fa86 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -1136,6 +1136,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
  	return prog;
  }
  
