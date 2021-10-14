@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1652942E2DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 22:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED50542E2E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 22:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbhJNUmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 16:42:11 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:43705 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231566AbhJNUmK (ORCPT
+        id S232041AbhJNUw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 16:52:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31469 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231527AbhJNUw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 16:42:10 -0400
-Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 2C74656;
-        Thu, 14 Oct 2021 13:40:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1634244004;
-        bh=4iQHDwm01Ka+yRVl8YzQ6q3/Kv6R+IAV1avi97RanDU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WI5LvAuDp5iyE+NOq0cm48NL+KnfRIP4Sv+l6LOhjevq5e9w0xzYx5/Uq1ilsXQlk
-         Nka2LYG+Lcj6hO8vKpuWdLJizvAma5LAUP+tyL8KIau7oGYIJT1Qum9PzIAXhshHUn
-         LbkHHoTmfBeYL/rxQXrn023fKz7DlXG0Hu/cVBCg=
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     linux-mtd@lists.infradead.org
-Cc:     Zev Weiss <zev@bewilderbeest.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Michael Walle <michael@walle.cc>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Jon Hunter <jonathanh@nvidia.com>, Petr Malat <oss@malat.biz>,
-        Brian Norris <computersforpeace@gmail.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Mario Rugiero <mrugiero@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: core: don't remove debugfs directory if device is in use
-Date:   Thu, 14 Oct 2021 13:39:52 -0700
-Message-Id: <20211014203953.5424-1-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.33.0
+        Thu, 14 Oct 2021 16:52:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634244650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sypR1zkCMni3m2sdFQ3BSQIDoKFbj8FkIME4KbCvGjw=;
+        b=Lbb7o2HzS0ccFdG0tIWW6o6pHki3clrSzkzi3kNpyucVJE3FssQhwce2PDsyMz3zg0GL0v
+        HncDS0fE56tDKZE3cJU1hQjv+uPwij+3RMRsOSR0eOncooeCnnaYhfRYAfk9W1g5AHcpYp
+        zzE1qNKYXtcokZfRohYt3sOF2xjC2+E=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-557-rVoIOx29OKiLfO7zS1vN0A-1; Thu, 14 Oct 2021 16:50:49 -0400
+X-MC-Unique: rVoIOx29OKiLfO7zS1vN0A-1
+Received: by mail-ed1-f70.google.com with SMTP id e14-20020a056402088e00b003db6ebb9526so6228880edy.22
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 13:50:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=sypR1zkCMni3m2sdFQ3BSQIDoKFbj8FkIME4KbCvGjw=;
+        b=NOsWrTC9KIiaAuUMIkkGhMX4dU2dsOM+41tPLEHHWUTexSCiguoXZFIGPToGofz19B
+         Pkblt5vOLs12SzVqOE0atnwnNorssQXJHgwjbgegk09LFzOJw+/e31241/foA67g4SzW
+         G/YfLnGX2nJ8KpMazDEhzYJgsC1lupO+aLhE1mEmvQz0XLx+reU9zD8FDr1o4kXQvgU8
+         LxOvxol7oUjwpBxewp8WbVFJf2NgNkpqWM9n7ddpoObXY5lCB+3F/b6P0pqJQLw4UwLU
+         rhA22aqqVzNUl9sXk5y6cify8MK/e4rOedXe+c5sV+CGPEWtu8pEtidANeWmuxhu1D2I
+         AiyA==
+X-Gm-Message-State: AOAM533JIdWZ6u1SUvNkWziut6CavGzCWq7KBXuRO8PlyibkGXEhgOrx
+        E9rEfUuU95NvAq977dchz8KbgTtn+EyjJJcJwsjcYOFMSW7zbd+xTHMCSvLY5Lpvf6fYozeyrW2
+        wvyXvTn0rFwFZeSd0qnPIToAI
+X-Received: by 2002:a17:906:16d0:: with SMTP id t16mr1604029ejd.199.1634244648003;
+        Thu, 14 Oct 2021 13:50:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJsui/zLztmaCtq7PZZAnYLvjtuLTIY7DyTbjU6/j2AfstfTpweChWvh8P8EnNk983+ht2hw==
+X-Received: by 2002:a17:906:16d0:: with SMTP id t16mr1603992ejd.199.1634244647742;
+        Thu, 14 Oct 2021 13:50:47 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id s24sm3044871edy.38.2021.10.14.13.50.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 13:50:47 -0700 (PDT)
+Message-ID: <fb1da4d3-9e3e-4604-2f30-30292f9d13aa@redhat.com>
+Date:   Thu, 14 Oct 2021 22:50:45 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [BUG] [5.15] Compilation error in arch/x86/kvm/mmu/spte.h with
+ clang-14
+Content-Language: en-US
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Jim Mattson <jmattson@google.com>, torvic9@mailbox.org,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "bp@alien8.de" <bp@alien8.de>
+References: <1446878298.170497.1633338512925@office.mailbox.org>
+ <b6abc5a3-39ea-b463-9df5-f50bdcb16d08@redhat.com>
+ <936688112.157288.1633339838738@office.mailbox.org>
+ <c4773ecc-053f-9bc6-03af-5039397a4531@redhat.com>
+ <CAKwvOd=rrM4fGdGMkD5+kdA49a6K+JcUiR4K2-go=MMt++ukPA@mail.gmail.com>
+ <CALMp9eRzadC50n=d=NFm7osVgKr+=UG7r2cWV2nOCfoPN41vvQ@mail.gmail.com>
+ <YWht7v/1RuAiHIvC@archlinux-ax161> <YWh3iBoitI9UNmqV@google.com>
+ <CAKwvOdkC7ydAWs+nB3cxEOrbb7uEjiyBWg1nOOBtKqaCh3zhBg@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <CAKwvOdkC7ydAWs+nB3cxEOrbb7uEjiyBWg1nOOBtKqaCh3zhBg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, if del_mtd_device() failed with -EBUSY due to a non-zero
-usecount, a subsequent call to attempt the deletion again would try to
-remove a debugfs directory that had already been removed and panic.
-With this change the second call can instead proceed safely.
+On 14/10/21 21:06, Nick Desaulniers wrote:
+>> If we want to fix this, my vote is for casting to an int and updating the comment
+> 
+> At the least, I think bitwise operations should only be performed on
+> unsigned types.
 
-Fixes: e8e3edb95ce6 ("mtd: create per-device and module-scope debugfs entries")
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
----
- drivers/mtd/mtdcore.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This is not a bitwise operation, it's a non-short-circuiting boolean 
+operation.  I'll apply Jim's suggestion.
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index e22266f63ae9..0a0fca737d43 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -724,8 +724,6 @@ int del_mtd_device(struct mtd_info *mtd)
- 
- 	mutex_lock(&mtd_table_mutex);
- 
--	debugfs_remove_recursive(mtd->dbg.dfs_dir);
--
- 	if (idr_find(&mtd_idr, mtd->index) != mtd) {
- 		ret = -ENODEV;
- 		goto out_error;
-@@ -741,6 +739,8 @@ int del_mtd_device(struct mtd_info *mtd)
- 		       mtd->index, mtd->name, mtd->usecount);
- 		ret = -EBUSY;
- 	} else {
-+		debugfs_remove_recursive(mtd->dbg.dfs_dir);
-+
- 		/* Try to remove the NVMEM provider */
- 		if (mtd->nvmem)
- 			nvmem_unregister(mtd->nvmem);
--- 
-2.33.0
+Paolo
 
