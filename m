@@ -2,176 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB75F42DAAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5877642D9AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbhJNNoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:44:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47214 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231538AbhJNNoW (ORCPT
+        id S231452AbhJNNFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:05:22 -0400
+Received: from outbound-smtp08.blacknight.com ([46.22.139.13]:41017 "EHLO
+        outbound-smtp08.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231300AbhJNNFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:44:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634218937;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lZlV5oZ4TtPFhgNbhdsHywrhrxZw6kvmmBHWdSCbMDc=;
-        b=dVc5nMaeGcR/pPHKQh07dLZjlE6MAkWZti7QHZfxHso3KrnhhvId/priAv7HogNWS0qbcJ
-        Dw9oKDRXKV5vvgOy6FIDiFV6laNeHYxp+TofAK20UamQLjH4ahSnMOVwGFRALPEI0wiJNM
-        2OWs8jMJsi32Fkrv34pawH7wNLFpWys=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-496-QYLIUZTfOy-_b1iMbVdsUg-1; Thu, 14 Oct 2021 09:42:13 -0400
-X-MC-Unique: QYLIUZTfOy-_b1iMbVdsUg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B9611006AA9;
-        Thu, 14 Oct 2021 13:42:00 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C74991001B2C;
-        Thu, 14 Oct 2021 13:41:59 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id D6554416D862; Thu, 14 Oct 2021 10:02:20 -0300 (-03)
-Date:   Thu, 14 Oct 2021 10:02:20 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: [patch v4 1/8] add basic task isolation prctl interface
-Message-ID: <20211014130220.GA5812@fuller.cnet>
-References: <20211007192346.731667417@fedora.localdomain>
- <20211007193525.755160804@fedora.localdomain>
- <YWWIHkoAdTkzU0TP@hirez.programming.kicks-ass.net>
- <20211013105637.GA88322@fuller.cnet>
- <YWb0ycw/sNV8isBH@hirez.programming.kicks-ass.net>
- <20211013160630.GA106511@fuller.cnet>
+        Thu, 14 Oct 2021 09:05:21 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp08.blacknight.com (Postfix) with ESMTPS id 0C6291C3DBB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:03:15 +0100 (IST)
+Received: (qmail 518 invoked from network); 14 Oct 2021 13:03:14 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Oct 2021 13:03:14 -0000
+Date:   Thu, 14 Oct 2021 14:03:12 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Linux-MM <linux-mm@kvack.org>, NeilBrown <neilb@suse.de>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/8] mm/vmscan: Throttle reclaim when no progress is
+ being made
+Message-ID: <20211014130312.GA3959@techsingularity.net>
+References: <20211008135332.19567-1-mgorman@techsingularity.net>
+ <20211008135332.19567-4-mgorman@techsingularity.net>
+ <63336163-e709-65de-6d53-8764facd3924@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20211013160630.GA106511@fuller.cnet>
+In-Reply-To: <63336163-e709-65de-6d53-8764facd3924@suse.cz>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<snip>
-
-> What are the requirements of the signal exactly (and why it is popular) ?
-> Because the interruption event can be due to:
-> 
-> * An IPI.
-> * A system call.
-
-IRQs (easy to trace), exceptions.
-
-> In the "full task isolation mode" patchset (the one from Alex), a system call
-> will automatically generate a SIGKILL once a system call is performed
-> (after the prctl to enable task isolated mode, but
-> before the prctl to disable task isolated mode).
-> This can be implemented, if desired, by SECCOMP syscall blocking
-> (which already exists).
-> 
-> For other interruptions, which happen through IPIs, one can print
-> the stack trace of the program (or interrupt) that generated
-> the IPI to find out the cause (which is what rt-trace-bpf.py is doing).
-> 
-> An alternative would be to add tracepoints so that one can
-> find out which function in the kernel caused the CPU and
-> task to become "a target for interruptions".
-
-For example, adding a tracepoint to mark_vmstat_dirty() function
-(allowing to see how that function was invoked on a given CPU, and
-by whom) appears to be sufficient information to debug problems.
-
-(mark_vmstat_dirty() from
-[patch v4 5/8] task isolation: sync vmstats conditional on changes)
-
-Instead of a coredump image with a SIGKILL sent at that point.
-
-Looking at
-
-https://github.com/abelits/libtmc
-
-One can see the notification via SIGUSR1 being used.
-
-To support something similar to it, one would add a new bit to 
-flags field of:
-
-+struct task_isol_activate_control {
-+       __u64 flags;
-+       __u64 quiesce_oneshot_mask;
-+       __u64 pad[6];
-+};
-
-Remove 
-
-+ 	       ret = -EINVAL;
-+               if (act_ctrl.flags)
-+                       goto out;
-
-From the handler, shrink the padded space and use it.
-
-> 
-> > > > Also, see:
-> > > > 
-> > > >   https://lkml.kernel.org/r/20210929152429.186930629@infradead.org
-> > > 
-> > > As you can see from the below pseudocode, we were thinking of queueing
-> > > the (invalidate icache or TLB flush) in case app is in userspace,
-> > > to perform on return to kernel space, but the approach in your patch might be
-> > > superior (will take sometime to parse that thread...).
+On Thu, Oct 14, 2021 at 02:31:17PM +0200, Vlastimil Babka wrote:
+> On 10/8/21 15:53, Mel Gorman wrote:
+> > Memcg reclaim throttles on congestion if no reclaim progress is made.
+> > This makes little sense, it might be due to writeback or a host of
+> > other factors.
 > > 
-> > Let me assume you're talking about kernel TLB invalidates, otherwise it
-> > would be terribly broken.
+> > For !memcg reclaim, it's messy. Direct reclaim primarily is throttled
+> > in the page allocator if it is failing to make progress. Kswapd
+> > throttles if too many pages are under writeback and marked for
+> > immediate reclaim.
 > > 
-> > > > Suppose:
-> > > > 
-> > > > 	CPU0					CPU1
-> > > > 
-> > > > 	sys_prctl()
-> > > > 	<kernel entry>
-> > > > 	  // marks task 'important'
-> > > > 						text_poke_sync()
-> > > > 						  // checks CPU0, not userspace, queues IPI
-> > > > 	<kernel exit>
-> > > > 
-> > > > 	$important userspace			  arch_send_call_function_ipi_mask()
-> > > > 	<IPI>
-> > > > 	  // finds task is 'important' and
-> > > > 	  // can't take interrupts
-> > > > 	  sigkill()
-> > > > 
-> > > > *Whoopsie*
-> > > > 
-> > > > 
-> > > > Fundamentally CPU1 can't elide the IPI until CPU0 is in userspace,
-> > > > therefore CPU0 can't wait for quescence in kernelspace, but if it goes
-> > > > to userspace, it'll get killed on interruption. Catch-22.
+> > This patch explicitly throttles if reclaim is failing to make progress.
+> > 
+> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ...
+> > @@ -3769,6 +3797,16 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+> >  	trace_mm_vmscan_memcg_reclaim_end(nr_reclaimed);
+> >  	set_task_reclaim_state(current, NULL);
+> >  
+> > +	if (!nr_reclaimed) {
+> > +		struct zoneref *z;
+> > +		pg_data_t *pgdat;
+> > +
+> > +		z = first_zones_zonelist(zonelist, sc.reclaim_idx, sc.nodemask);
+> > +		pgdat = zonelist_zone(z)->zone_pgdat;
+> > +
+> > +		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS, HZ/10);
+> > +	}
+> 
+> Is this necessary? AFAICS here we just returned from:
+> 
+> do_try_to_free_pages()
+>   shrink_zones()
+>    for_each_zone()...
+>      consider_reclaim_throttle()
+> 
+> Which already throttles when needed and using the appropriate pgdat, while
+> here we have to somewhat awkwardly assume the preferred one.
+> 
 
-To reiterate on this point:
+Yes, you're right, consider_reclaim_throttle not only throttles on the
+appropriate pgdat but takes priority into account.
 
-> > > >         CPU0                                    CPU1
-> > > > 
-> > > >         sys_prctl()
-> > > >         <kernel entry>
-> > > >           // marks task 'important'
-> > > >                                                 text_poke_sync()
-> > > >                                                   // checks CPU0, not userspace, queues IPI
-> > > >         <kernel exit>
+Well spotted!
 
-1) Such races can be fixed by proper uses of atomic variables.
-
-2) If a signal to an application is desired, fail to see why this
-interface (ignoring bugs related to the particular mechanism) does not
-allow it.
-
-So hopefully this addresses your comments.
-
+-- 
+Mel Gorman
+SUSE Labs
