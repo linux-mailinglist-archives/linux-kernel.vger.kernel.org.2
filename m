@@ -2,133 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F3A42D33D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF58742D32C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhJNHIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:08:54 -0400
-Received: from mail-eopbgr1320139.outbound.protection.outlook.com ([40.107.132.139]:43520
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229551AbhJNHIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:08:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E71tXMSPUCATpk2AvXsD9d+w4nrBVJOJbsFavED19krVoa8qNSA2cjeSbe44x67Sv4DH7hlvQJkTMj5zZaq/dwk1kYfOpD8u7iViwLEdYvdNShickXi5qqpp3TdgodsS2FyiwCQj19UYfJDg5cfek+CIu+xSG1Sh+u3Q+9UFL+Mb3TJbxNzbglZMBa8z56yizYEATPA0F+RuboTSLxmSrHRM6gNzwetPioLaQOea4tHxS7NxHJzrc+qdRiweB06/eJGctKtLmWqNfn+TyzmYQzCdnlKCwWoFoR6+o3IQK9Xrvrx9CRBM/mlcdkpb5WttOJnEt6oTI6MQ9Si4geUAlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U9JHsvqTmOU445Gn6TPAU6BXgBaEnhU4Jl5RC9wrwM8=;
- b=MmLyWItjvpkJ6bZvEXeswIQxafwCmm0vExnEZ9Od64/5ALGB/tg2C3GTXbeOp+Yo5hBbnOFXFj1GwxYm2GjNahcDbbDccdZjk3oo/c3Fz4/QXxj1V0IjYjTRtq2Ejd05IqliMu5S8UN/YgmmNvg1tLdHbTsh89TNK91qN7n2tnn0qE55RaRisS0gIA1VDhgDgHXAEW4r8cmntYgF5uev7JKboaDwsgCohRLoR8WfUQ6tTmssdVwDt8QAR+FRgbhthh2rArGM51P7mY7WITd2N8LSGnztPNT3XBVog5+5J/pGSu9Pf0QKehZ2hhn92ZBalcMdEsmqoiNzCf3NJXG8mA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U9JHsvqTmOU445Gn6TPAU6BXgBaEnhU4Jl5RC9wrwM8=;
- b=omk5xd7QEmV8dS8KzfEZkXE3ReMyHeyFnGzkuwM4HwRbyAWwBqpBdFiYGsz9rYK40v8bR3TPE4MpYIPQAgR4ATFaV5Si3RrBEpKHlT/NFxOjlg9DaKzdGpkcKGPdvcjLH1O1H7jvDV8IERsCh40SANSM1TiwB01zYA8HhvbB9Oc=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
- SG2PR06MB3191.apcprd06.prod.outlook.com (2603:1096:4:6b::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4587.25; Thu, 14 Oct 2021 07:06:42 +0000
-Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
- ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4608.016; Thu, 14 Oct 2021
- 07:06:42 +0000
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] drm/mcde: dsi: Add of_node_put() before return
-Date:   Thu, 14 Oct 2021 03:00:36 -0400
-Message-Id: <20211014070036.13491-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR02CA0192.apcprd02.prod.outlook.com
- (2603:1096:201:21::28) To SG2PR06MB3367.apcprd06.prod.outlook.com
- (2603:1096:4:78::19)
+        id S230010AbhJNHFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229985AbhJNHFg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 03:05:36 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BB4C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:03:31 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id z126so7196884oiz.12
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:03:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1l0+SaZHpyG7rrhn4tPV2e7F4MAU+GQ6aooBFBCxnl4=;
+        b=cEUkgYyL0FXKDT85YJ+oxstqdONyVg9jw8g378Z46fnAaYeeB+BBY3TjJISacUN4LE
+         diZ80WE5xxPsIu5R3Vu8U0t3AkumVNF81ddQK09pXcUyvj+LxXH9m0GH4hb0sgP0WsEM
+         LdFMWGdWcwNjUMYn0KwwSZCHYGOCWSQL3v+dBfT+jnhrT6dNj86QZsdYuYXzPQjFD6D1
+         opNAtHBC5ihyj9CnMbcNYgi2Q5NmR3niXCK22KXTC2l/gijkp9ggoGBI2uesTyfaCSFv
+         DrRGytu1mqlaHK65DUdcI4W/DqbSmgUgScd9JtsAwsQB5CqeNlgeqVVpacc1ZK3KcqDD
+         8gPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1l0+SaZHpyG7rrhn4tPV2e7F4MAU+GQ6aooBFBCxnl4=;
+        b=6zKWHJ8ercleUATmK2YrqDDS+imCM1XKUnpr3pvJ7ypAf9PpVHNSr7fpH3uREQEzc7
+         A0ftX6J+BB+V492iZMVKh2RMsFIL2HEkwszBGRcGpCJ0UUrZmirjjl4peYR6z0sWvp1z
+         5Y1B6MeFga+PdqX2hQMg7MTqFr/q7bmuoB6vMnwxxLSSVPMYSghDqrxgJH40EArPw4H6
+         9IqcWleEXQ2ydvzGAPp44qXdRfYeIbEzdzUWrSGji1G4xaD80Upey4o3QG8W7w7qNdzJ
+         9mfTyNQpcs+94lcp+1pXE0Y1UCV44hGtopTU1dQ6IykP9N/HvKc974esI688yuG20WZn
+         3w+A==
+X-Gm-Message-State: AOAM533HD+87Odg3h1zHvZ+jqk7N/10EncUp/Jfx+3ze9UBps8mHDydd
+        UNHXe5OtIUcQX46GNmKPsCk1GOUzlGg615oBARdgeg==
+X-Google-Smtp-Source: ABdhPJz5LcYedJgU2u36Px+sIb9WB9tzzl7Jwf165XrKxoLC6Q222kTM/7wvLgYXQ4hjrBDicAU4o0ISmEHO2X9caSA=
+X-Received: by 2002:a05:6808:1525:: with SMTP id u37mr11690666oiw.12.1634195010727;
+ Thu, 14 Oct 2021 00:03:30 -0700 (PDT)
 MIME-Version: 1.0
-Received: from localhost.localdomain (218.213.202.190) by HK2PR02CA0192.apcprd02.prod.outlook.com (2603:1096:201:21::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Thu, 14 Oct 2021 07:06:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 40b44b52-a102-4a09-57ba-08d98ee12cf7
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3191:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR06MB3191E4BD9D2C552418E1D452ABB89@SG2PR06MB3191.apcprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1775;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8zllkOosT7ouI/um2GypItU6SYjpPDHIC/LDl6V+bvy9Am5W7WOM5S5ROq20K3vJgk7CXm7sNq3sqQhnYVxDL6MJNF2ca6Eom9blvTNhayboyTIkMYPiDK6ccHW4BkC2fECNRbzAsRrZlFDhAl214j06LG5hY8H3SxtauFkKg3YEW0yaleYh/0HpQL/y0PttioPMBQ2A8CSjLHEn7fE9OlMKabCTk0eA6vdo6IiKA+7wysWuWZdau52+fI4I+M0B3MvnTk8fGu0ezMItRmhEsMwjRjyZ5ADqle9Wjdunp9upvxouN4Q+15JCNctBJ8uNL0nrjgLlGGClcDL+bobnCn9OyrqeAMVpNZ3wFKeyDzQC7ExUoiwK1s/HNr6XHfAMpN8jsRAe9sNdkYnN9jeQWkwg3gczuLNu17y+R1UX6TOzojjd/q7jEGaGcdHHW+XuR7Mw1p4CyncXNM5n9kmw4Dv5JTeXaLrux5P8OlgfkEJB7GfSbD1ybWM9t/DN3DWNIQBNs2M1gz04c+DdhStOswvPX7bStHFU2lFxyMfq1G7WttJg48Z0hv3QOG8qEq3HU1JFa8SsF1c9mwf8tPe0dtL6pszxzy72nMBq2Go+AhGYo5aHa8Pkz1mQByC5mZOaX2W7UcBMoMdkzNYVmRspfO4wY4mNRD7pKFWv+qaSi1HH3V3ae0Yl8HQIt6+tQpRxHRnNlzEmPJIow79hl/fE7A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(52116002)(66476007)(66556008)(6666004)(956004)(38100700002)(38350700002)(26005)(2616005)(36756003)(508600001)(5660300002)(83380400001)(8676002)(2906002)(1076003)(86362001)(110136005)(4326008)(316002)(186003)(8936002)(6512007)(6486002)(4744005)(66946007)(107886003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?08hiKHfGwLKVLpG65+oYAilI/zknIn4Z9NMFK8UdAPHbwU5S3LSVCDC/Sq+R?=
- =?us-ascii?Q?eWZGtJXzCvEiYrXLPCNvGw4t0tBbNuQO4wkMYzBTxYTA76S03Uh9vwndnkqX?=
- =?us-ascii?Q?+h77BWSvue2mgg9wg+iptplSESu6Kzx5/G2gsMVob05qUqIUDPdV9Di6LR3c?=
- =?us-ascii?Q?3jNOLS3jXcyi0bnONgt7OR6TesWtdHXaP46QRCRb078O4NdTnDk0CGEpgfjL?=
- =?us-ascii?Q?XEVXm4PqtNT/KEdURsaxBXcZU0Huh4KPyUMLop2mZ7R+SJPQcHiQJe8t0YTN?=
- =?us-ascii?Q?BRnhAYQElfmqT4Y8xDb2Hat4yMpu8gy27/3u0giGNk6g6ZXJwS8K491XhGJ3?=
- =?us-ascii?Q?vf471x8vz3+h+uuS17/vYVYlBu0Ggyf9It69W3Z50PpmejxATdCzoJDWZ2qQ?=
- =?us-ascii?Q?dq8IUw7umvaIUN9R6ltSNJAkp3a1y3+MYnJZKkmOLu5Jz1hjMj8THW8Jc8uv?=
- =?us-ascii?Q?wWNJrkvczSsWQ/0eunyipPXWOBLxG6m+vZ0mHDH7LK+sLbFH8Yz0h34GlYDD?=
- =?us-ascii?Q?/l2HlujkcTRWlGKT7Y8Zw7ErUfPmOj8PPMET1WhzaoLWDAXbofpXQWJVt4DT?=
- =?us-ascii?Q?Sfw1b5lOYHq1rPrd+kmH7UqzbkcJjppWl8BL0+dQbiLYHCBmQNwMW1qggV4J?=
- =?us-ascii?Q?/sScdWaGsKV+u9U0jEnB2bN3M+Ptuo3ZbKwJDzy2qguCBsGgitO9kTgJkcni?=
- =?us-ascii?Q?w46Kkvr33JXtmGGuA0RRmAiY2qKuw6FkCAVuJ2QQPkpJpTBxsNnV7aLhfZFy?=
- =?us-ascii?Q?AxCW0ZjWlUljVTHMrtU3sRRd4g+5vg8cS+5jKJmtNThvfb21xagVrtz6SS0G?=
- =?us-ascii?Q?btXPbQKjKJYcFE8OdvhCzWw41OnpLoQvu81p2qFxJWN9dO2KF6xEyjTXzQ/E?=
- =?us-ascii?Q?t3Og9Fj8euAhz5aE/43G3W65wdNFRjGZIMM7SoqSWgMqhty/VP5hq3GfX5+C?=
- =?us-ascii?Q?zy8RO5Spg2qFz06Pz5h+NXzUW8cTSuH3rlAFSTf9hRB/u09pAhwsQ4he2/ok?=
- =?us-ascii?Q?ZtTTMEN84+ijjEBAhiZPvyIUW/P7UjXR+NNUdxxcAunOsNDYkar40Umqh8Dg?=
- =?us-ascii?Q?G5CRHgw13q73f0LqwEtkZbMnzEBb7fbGavSplrjQvZDdDdka+/9quDi5seqg?=
- =?us-ascii?Q?aO0VVzcdol+5Qg8ay/QtA4atnsm0SGQXMQrhDVHGkFTDZnI4oA9XDHm0YEJf?=
- =?us-ascii?Q?DnL+sIUcD8iKl8citv+xJ+WbWLaXRk/QroZVf0+mg0AILqRKyq/XLo66xE9o?=
- =?us-ascii?Q?JAJ7/OKK4r7WfWQxOfv03plWEoqRjlUiVFyMhjuYjQoy1lA200TitKkwOclb?=
- =?us-ascii?Q?Je3EW4slapWXhrqtsWZuYaEf?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 40b44b52-a102-4a09-57ba-08d98ee12cf7
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 07:06:42.5287
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: z1z3oJ44O9F/5bfw28nd13dxGqg0KkbPkx/sTP2a1yLJ5jIsqQXkDFKJgAztBoN/6n4Y58mpADBz/sjtW8ZY3Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB3191
+References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
+ <20211013105541.68045-6-bhupesh.sharma@linaro.org> <1634150392.555106.1324767.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1634150392.555106.1324767.nullmailer@robh.at.kernel.org>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Thu, 14 Oct 2021 12:33:19 +0530
+Message-ID: <CAH=2NtyJZoPMSDr4aYgX29BeSq3qXyJta3o7ZHPNrNOF+Ym-gA@mail.gmail.com>
+Subject: Re: [PATCH v4 05/20] dt-bindings: qcom-bam: Add 'interconnects' &
+ 'interconnect-names' to optional properties
+To:     Rob Herring <robh@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        bhupesh.linux@gmail.com, Andy Gross <agross@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        linux-crypto@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following coccicheck warning:
+Hello Rob,
 
-./drivers/gpu/drm/mcde/mcde_dsi.c:1104:1-33: WARNING: Function
-for_each_available_child_of_node should have of_node_put() before return
+Thanks for your review.
+These issues are already fixed via patches within this series itself
+(as some dts also need correction to pass the 'make dtbs_check'
+check). I am not sure, but it seems the check was run without applying
+other patches from this series.
 
-Early exits from for_each_available_child_of_node should decrement the
-node reference counter.
- 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/gpu/drm/mcde/mcde_dsi.c | 1 +
- 1 file changed, 1 insertion(+)
+See details below:
 
-diff --git a/drivers/gpu/drm/mcde/mcde_dsi.c b/drivers/gpu/drm/mcde/mcde_dsi.c
-index 5651734ce977..9f9ac8699310 100644
---- a/drivers/gpu/drm/mcde/mcde_dsi.c
-+++ b/drivers/gpu/drm/mcde/mcde_dsi.c
-@@ -1111,6 +1111,7 @@ static int mcde_dsi_bind(struct device *dev, struct device *master,
- 			bridge = of_drm_find_bridge(child);
- 			if (!bridge) {
- 				dev_err(dev, "failed to find bridge\n");
-+				of_node_put(child);
- 				return -EINVAL;
- 			}
- 		}
--- 
-2.20.1
+On Thu, 14 Oct 2021 at 00:09, Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, 13 Oct 2021 16:25:26 +0530, Bhupesh Sharma wrote:
+> > Add new optional properties - 'interconnects' and
+> > 'interconnect-names' to the device-tree binding documentation for
+> > qcom-bam DMA IP.
+> >
+> > These properties describe the interconnect path between bam and main
+> > memory and the interconnect type respectively.
+> >
+> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >  Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+>
+> Running 'make dtbs_check' with the schema in this patch gives the
+> following warnings. Consider if they are expected or the schema is
+> incorrect. These may not be new warnings.
+>
+> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+> This will change in the future.
+>
+> Full log is available here: https://patchwork.ozlabs.org/patch/1540390
+>
+>
+> dma@12142000: $nodename:0: 'dma@12142000' does not match '^dma-controller(@.*)?$'
+>         arch/arm/boot/dts/qcom-mdm9615-wp8548-mangoh-green.dt.yaml
+>
+> dma@12182000: $nodename:0: 'dma@12182000' does not match '^dma-controller(@.*)?$'
+>         arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
+>         arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
+>         arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
+>         arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq8064-ap148.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq8064-rb3011.dt.yaml
+>         arch/arm/boot/dts/qcom-mdm9615-wp8548-mangoh-green.dt.yaml
+>
+> dma@121c2000: $nodename:0: 'dma@121c2000' does not match '^dma-controller(@.*)?$'
+>         arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
+>         arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
+>         arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
+>         arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
+>
+> dma@12402000: $nodename:0: 'dma@12402000' does not match '^dma-controller(@.*)?$'
+>         arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
+>         arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
+>         arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
+>         arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq8064-ap148.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq8064-rb3011.dt.yaml
+>
+> dma@1dc4000: $nodename:0: 'dma@1dc4000' does not match '^dma-controller(@.*)?$'
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
 
+All the above will be fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
+ 'qcom,controlled-remotely' nodes in dts' in this series. See the git
+log of the this patch for details:
+
+'A few qcom device-tree files define dma-controller nodes
+with non-standard 'node names' and also set
+the bool property 'qcom,controlled-remotely' incorrectly, which
+leads to following errors with 'make dtbs_check':
+
+ $ arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml:
+     dma@1dc4000: $nodename:0: 'dma@1dc4000' does not match
+     '^dma-controller(@.*)?$'
+
+ $ arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml:
+     dma@1dc4000: qcom,controlled-remotely: 'oneOf' conditional
+     failed, one must be fixed:
+    [[1]] is not of type 'boolean'
+    True was expected
+    [[1]] is not of type 'null'
+
+Fix the same.
+'
+
+> dma@1dc4000: 'iommus' does not match any of the regexes: 'pinctrl-[0-9]+'
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+
+Fixed by ' [PATCH 06/20] dt-bindings: qcom-bam: Add 'iommus' to optional
+ properties ' in this series.
+
+> dma@1dc4000: qcom,controlled-remotely: 'oneOf' conditional failed, one must be fixed:
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+
+Again this would be fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
+ 'qcom,controlled-remotely' nodes in dts' in this series.
+
+> dma@704000: $nodename:0: 'dma@704000' does not match '^dma-controller(@.*)?$'
+>         arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+>         arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+>         arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+Fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
+'qcom,controlled-remotely' nodes in dts' in this series
+
+> dma@704000: qcom,controlled-remotely: 'oneOf' conditional failed, one must be fixed:
+>         arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
+>         arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
+>         arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
+
+Fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
+'qcom,controlled-remotely' nodes in dts' in this series
+
+> dma@7544000: $nodename:0: 'dma@7544000' does not match '^dma-controller(@.*)?$'
+>         arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
+>         arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
+>
+> dma@7584000: $nodename:0: 'dma@7584000' does not match '^dma-controller(@.*)?$'
+>         arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
+>         arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
+>
+> dma@7884000: $nodename:0: 'dma@7884000' does not match '^dma-controller(@.*)?$'
+>         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk01.1-c1.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c1.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c3.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c1.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c2.dt.yaml
+>
+> dma@7984000: $nodename:0: 'dma@7984000' does not match '^dma-controller(@.*)?$'
+>         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk01.1-c1.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c1.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c3.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c1.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c2.dt.yaml
+>
+> dma@8e04000: $nodename:0: 'dma@8e04000' does not match '^dma-controller(@.*)?$'
+>         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk01.1-c1.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c1.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c3.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c1.dt.yaml
+>         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c2.dt.yaml
+>
+> dma@c184000: $nodename:0: 'dma@c184000' does not match '^dma-controller(@.*)?$'
+>         arch/arm64/boot/dts/qcom/msm8998-asus-novago-tp370ql.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8998-hp-envy-x2.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8998-lenovo-miix-630.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8998-mtp.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dt.yaml
+>         arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dt.yaml
+
+All the above 6 issues are fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
+ 'qcom,controlled-remotely' nodes in dts' in this series.
+
+> dma-controller@17184000: 'iommus' does not match any of the regexes: 'pinctrl-[0-9]+'
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
+>         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
+
+Fixed by ' [PATCH 06/20] dt-bindings: qcom-bam: Add 'iommus' to optional
+ properties ' in this series.
+
+> dma-controller@704000: 'qcom,config-pipe-trust-reg' does not match any of the regexes: 'pinctrl-[0-9]+'
+>         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
+
+Fixed by '[PATCH 02/20] arm64/dts: qcom: ipq6018: Remove unused
+ 'qcom,config-pipe-trust-reg' property' in this series.
+
+> dma-controller@704000: qcom,controlled-remotely: 'oneOf' conditional failed, one must be fixed:
+>         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
+
+Fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
+''qcom,controlled-remotely' nodes in dts' in this series.
+
+> dma-controller@7984000: clock-names:0: 'bam_clk' was expected
+>         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
+>
+> dma-controller@7984000: clock-names: Additional items are not allowed ('bam_clk' was unexpected)
+>         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
+>
+> dma-controller@7984000: clock-names: ['iface_clk', 'bam_clk'] is too long
+>         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
+>
+> dma-controller@7984000: clocks: [[9, 138], [9, 137]] is too long
+>         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
+
+Fixed by '[PATCH 03/20] arm64/dts: qcom: ipq6018: Remove unused 'iface_clk'
+property from dma-controller node' in this series.
+
+In summary, I ran 'make dtbs_check' after applying this series on
+linus's tip and linux-next's tip as well and saw no errors being
+reported for 'Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml'.
+
+Regards,
+Bhupesh
