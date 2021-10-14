@@ -2,128 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B7442D1BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 06:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C61C42D1C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 07:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhJNEyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 00:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhJNEyl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 00:54:41 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96A1C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 21:52:37 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so6070074pjw.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 21:52:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gJDlq0YOd3FIp9yltFh10NZ+GTEdKsRbgNrMT/fMhy8=;
-        b=l7CblFVsCZ9q2NJP3e6RC8afxRYWYpADQJqPj/4vdlDauWotjdin6xfqggpL2Ard9Z
-         Gw9G1Gf0s6Coi79Pqbh6QyIJX6A+DTtF0+VszjbTrDFLSzQrep9oJjDiXz4XiEsjEk/D
-         IwMKa1N11jJ36T6XQl7xIrSisVsiFt9cK91mc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gJDlq0YOd3FIp9yltFh10NZ+GTEdKsRbgNrMT/fMhy8=;
-        b=x1pNl4wd+76vrn1MBxL7On+g4mUJr42Op8Wu0KYZNAN0Qf2jEGb8EdiO1JRT3DCFai
-         0I0B+UScdUVlwiXeLTWdqaXIQ26b8VpQEx492NooqVY0hpVhARDpLkrProV2FP5YaRgD
-         u8LrQRlkC4mIzpVJQsuCRfE2KkGv+vIHYo3udkyPvOtdNv+rsWZXv1Ojo1kxNFUlsCJ8
-         wv8ylbPkE+7MvGZ4xL9hEPW0DLuDm65H+KFjFimy8mEi5t2xewt3myZs+5GnyBmji5oj
-         90JiV7PSJUkZQbnsQMqgrUPez7Dy4I42COxYPK1sr01zA4iOqZQUZBifkNnAPCq8HK6U
-         7b/A==
-X-Gm-Message-State: AOAM533QqbnVAqP09OfaBCUq/o3rvYlkztDsBuS+OEInH2a5tQfrk+9z
-        dXJSsujTN0vSgMT9CoQ1l5Cqqg==
-X-Google-Smtp-Source: ABdhPJwwQZfVLF1jPk/lor0aB50rGf7fWVKbiUn2BwtlZa1P/VwX+4e2ZVASHShBHv5BWJhIvXW9lg==
-X-Received: by 2002:a17:90a:c594:: with SMTP id l20mr17666973pjt.223.1634187157408;
-        Wed, 13 Oct 2021 21:52:37 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e12sm1066229pgv.82.2021.10.13.21.52.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 21:52:37 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 21:52:36 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Marios Pomonis <pomonis@google.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Kristen C Accardi <kristen.c.accardi@intel.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ivan Babrou <ivan@cloudflare.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-hardening@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH] x86/unwind/orc: Handle kretprobes_trampoline
-Message-ID: <202110132151.F78F49AD8@keescook>
-References: <20210903021326.206548-1-keescook@chromium.org>
- <202110111403.3C59BF77@keescook>
- <20211014014101.6du6jj2o7g4ficu5@treble>
+        id S229521AbhJNFDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 01:03:02 -0400
+Received: from mga03.intel.com ([134.134.136.65]:4126 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229457AbhJNFDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 01:03:01 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="227556778"
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="227556778"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 22:00:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="659815054"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 13 Oct 2021 22:00:55 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1masrO-0005aa-I7; Thu, 14 Oct 2021 05:00:54 +0000
+Date:   Thu, 14 Oct 2021 13:00:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/sgx] BUILD SUCCESS
+ 71eba1c0939e3b1ad1b71fe0171de30e265437e3
+Message-ID: <6167b97f.EQEhafQPuf86+pmq%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014014101.6du6jj2o7g4ficu5@treble>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 06:41:01PM -0700, Josh Poimboeuf wrote:
-> On Mon, Oct 11, 2021 at 02:03:26PM -0700, Kees Cook wrote:
-> > On Thu, Sep 02, 2021 at 07:13:26PM -0700, Kees Cook wrote:
-> > > From: Marios Pomonis <pomonis@google.com>
-> > > 
-> > > Fix a bug in the ORC unwinder when kretprobes has replaced a return
-> > > address with the address of `kretprobes_trampoline'. ORC mistakenly
-> > > assumes that the address in the stack is a return address and decrements
-> > > it by 1 in order to find the proper depth of the next frame.
-> > > 
-> > > This issue was discovered while testing the FG-KASLR series[0][1] and
-> > > running the live patching test[2] that was originally failing[3].
-> > > 
-> > > [0] https://lore.kernel.org/kernel-hardening/20200923173905.11219-1-kristen@linux.intel.com/
-> > > [1] https://github.com/KSPP/linux/issues/132
-> > > [2] https://github.com/lpechacek/qa_test_klp
-> > > [3] https://lore.kernel.org/lkml/alpine.LSU.2.21.2009251450260.13615@pobox.suse.cz/
-> > > 
-> > > Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
-> > > Signed-off-by: Marios Pomonis <pomonis@google.com>
-> > > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> > > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > > Cc: Kristen C Accardi <kristen.c.accardi@intel.com>
-> > > Cc: Sami Tolvanen <samitolvanen@google.com>
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > 
-> > Ping again; Josh can you take this please?
-> 
-> I'm confused how this still fixes anything after Masami's patch set,
-> which is now in linux-next.
-> 
-> After those patches, for a CALL-type ORC entry, the unwinder sets
-> state->ip to the address returned by unwind_recover_ret_addr().  In the
-> case of a kretprobe, that means that state->ip will no longer point to
-> kretprobes_trampoline() -- making the above patch description incorrect.
-> 
-> Instead, state->ip will then contain the original call return address
-> which was replaced by kretpobes.  So it looks to the unwinder like a
-> normal call return address, and 'state->signal' should remain false.
-> 
-> Am I missing something?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sgx
+branch HEAD: 71eba1c0939e3b1ad1b71fe0171de30e265437e3  x86/sgx/virt: Implement SGX_IOC_VEPC_REMOVE ioctl
 
-I'll let Marios answer in more detail, but my understanding is that
-Masami's patch set didn't solve the FGKASLR-vs-kretprobes issue[1].
-I don't understand _why_ yet, though.
+elapsed time: 929m
 
--Kees
+configs tested: 158
+configs skipped: 4
 
-[1] https://lore.kernel.org/all/CAKXAmdgS3SL_qyjzjY32_DXe3WVTN+O=wYwJ9vkUXKhjmt87fA@mail.gmail.com/
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- 
-Kees Cook
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211013
+arm                  colibri_pxa300_defconfig
+powerpc                       maple_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sh                              ul2_defconfig
+arm                            mmp2_defconfig
+powerpc                  storcenter_defconfig
+arm                         lpc32xx_defconfig
+um                               alldefconfig
+um                                  defconfig
+arm                        multi_v7_defconfig
+powerpc                    sam440ep_defconfig
+h8300                     edosk2674_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                             ezx_defconfig
+arm                       omap2plus_defconfig
+mips                        bcm47xx_defconfig
+arm                        multi_v5_defconfig
+sh                             shx3_defconfig
+arm                      jornada720_defconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                      mgcoge_defconfig
+sh                           se7724_defconfig
+powerpc                 mpc832x_mds_defconfig
+mips                  decstation_64_defconfig
+arc                        nsim_700_defconfig
+arm                        magician_defconfig
+powerpc                       eiger_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                          lboxre2_defconfig
+arm                     eseries_pxa_defconfig
+arc                      axs103_smp_defconfig
+arm                        mvebu_v7_defconfig
+sh                     magicpanelr2_defconfig
+arm                         nhk8815_defconfig
+powerpc               mpc834x_itxgp_defconfig
+m68k                          amiga_defconfig
+mips                           xway_defconfig
+m68k                         amcore_defconfig
+arm                        mini2440_defconfig
+m68k                       m5208evb_defconfig
+arm                        vexpress_defconfig
+xtensa                       common_defconfig
+sh                            migor_defconfig
+powerpc64                        alldefconfig
+ia64                          tiger_defconfig
+mips                        jmr3927_defconfig
+powerpc                 mpc837x_mds_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc                     tqm5200_defconfig
+powerpc                        icon_defconfig
+arm                         s3c6400_defconfig
+powerpc                    klondike_defconfig
+mips                           ip32_defconfig
+powerpc                      tqm8xx_defconfig
+mips                     cu1830-neo_defconfig
+mips                     loongson1b_defconfig
+openrisc                    or1ksim_defconfig
+m68k                       m5475evb_defconfig
+mips                        omega2p_defconfig
+m68k                        mvme147_defconfig
+m68k                           sun3_defconfig
+arm                          gemini_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                          malta_defconfig
+arm                         assabet_defconfig
+mips                            gpr_defconfig
+nios2                            alldefconfig
+riscv                    nommu_virt_defconfig
+mips                       bmips_be_defconfig
+mips                        bcm63xx_defconfig
+arm                  randconfig-c002-20211013
+x86_64               randconfig-c001-20211013
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+s390                                defconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a015-20211013
+x86_64               randconfig-a012-20211013
+x86_64               randconfig-a016-20211013
+x86_64               randconfig-a014-20211013
+x86_64               randconfig-a013-20211013
+x86_64               randconfig-a011-20211013
+i386                 randconfig-a016-20211013
+i386                 randconfig-a014-20211013
+i386                 randconfig-a011-20211013
+i386                 randconfig-a015-20211013
+i386                 randconfig-a012-20211013
+i386                 randconfig-a013-20211013
+arc                  randconfig-r043-20211013
+s390                 randconfig-r044-20211013
+riscv                randconfig-r042-20211013
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+arm                  randconfig-c002-20211013
+mips                 randconfig-c004-20211013
+i386                 randconfig-c001-20211013
+s390                 randconfig-c005-20211013
+x86_64               randconfig-c007-20211013
+powerpc              randconfig-c003-20211013
+riscv                randconfig-c006-20211013
+x86_64               randconfig-a004-20211013
+x86_64               randconfig-a006-20211013
+x86_64               randconfig-a001-20211013
+x86_64               randconfig-a005-20211013
+x86_64               randconfig-a002-20211013
+x86_64               randconfig-a003-20211013
+i386                 randconfig-a001-20211013
+i386                 randconfig-a003-20211013
+i386                 randconfig-a004-20211013
+i386                 randconfig-a005-20211013
+i386                 randconfig-a002-20211013
+i386                 randconfig-a006-20211013
+hexagon              randconfig-r041-20211013
+hexagon              randconfig-r045-20211013
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
