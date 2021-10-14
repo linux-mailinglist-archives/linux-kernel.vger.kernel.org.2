@@ -2,67 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4115142E039
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD1942E02A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbhJNRp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 13:45:28 -0400
-Received: from relay.sw.ru ([185.231.240.75]:37442 "EHLO relay.sw.ru"
+        id S233555AbhJNRmx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Oct 2021 13:42:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231853AbhJNRp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 13:45:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=eD7O+RRWLIkfKyTJ6TKMyILhSbZVJ9w0wV/dWtK5Dv0=; b=chOijwLa4Moa5XyKb
-        NTr/9oJ/r8pthIDIG2J4jg3zwc7oEUg3K1Dt4kuMmIvnnpl51iX5bHSlyA5r+UStbj4vPx3i5rW5c
-        VjuKA6U1viK2KmSz8Wf01Tb+ZwUo2NgiL0niYCBDTJ0/h5mPerexOJJ9uBOLSGG2iF6zgUWCtXCsc
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mb4lB-0062ie-69; Thu, 14 Oct 2021 20:43:17 +0300
-Subject: Re: [PATCH] memcg: page_alloc: skip bulk allocator for __GFP_ACCOUNT
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20211013194338.1804247-1-shakeelb@google.com>
- <YWfZNF7T7Fm69sik@dhcp22.suse.cz>
- <CALvZod4Br9iwq-qfdwj6dzgW2g1vEr2YL4=w_mQjOeWWDQzFjw@mail.gmail.com>
- <YWhLeAL5RPfLjrlO@cmpxchg.org>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <f4fd9e5f-b054-41af-e8a8-7a3074f937d8@virtuozzo.com>
-Date:   Thu, 14 Oct 2021 20:43:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232779AbhJNRmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 13:42:52 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF3A361037;
+        Thu, 14 Oct 2021 17:40:43 +0000 (UTC)
+Date:   Thu, 14 Oct 2021 18:44:55 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Cai Huoqing <caihuoqing@baidu.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: imx8qxp-adc: mark PM functions as __maybe_unused
+Message-ID: <20211014184448.474849a9@jic23-huawei>
+In-Reply-To: <50f71530-bab0-58f4-cf90-a7c1b60b9716@infradead.org>
+References: <20211013144338.2261316-1-arnd@kernel.org>
+        <20211014012936.GA2999@LAPTOP-UKSR4ENP.internal.baidu.com>
+        <50f71530-bab0-58f4-cf90-a7c1b60b9716@infradead.org>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YWhLeAL5RPfLjrlO@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.10.2021 18:23, Johannes Weiner wrote:
-> On Thu, Oct 14, 2021 at 08:01:16AM -0700, Shakeel Butt wrote:
->> Regarding xfs_buf_alloc_pages(), it is not using __GFP_ACCOUNT
+On Wed, 13 Oct 2021 18:40:41 -0700
+Randy Dunlap <rdunlap@infradead.org> wrote:
+
+> On 10/13/21 6:29 PM, Cai Huoqing wrote:
+> > On 13 10月 21 16:43:26, Arnd Bergmann wrote:  
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >>
+> >> Without CONFIG_PM_SLEEP, the runtime suspend/resume functions
+> >> are unused, producing a warning:
+> >>
+> >> drivers/iio/adc/imx8qxp-adc.c:433:12: error: 'imx8qxp_adc_runtime_resume' defined but not used [-Werror=unused-function]
+> >>    433 | static int imx8qxp_adc_runtime_resume(struct device *dev)
+> >>        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> >> drivers/iio/adc/imx8qxp-adc.c:419:12: error: 'imx8qxp_adc_runtime_suspend' defined but not used [-Werror=unused-function]
+> >>    419 | static int imx8qxp_adc_runtime_suspend(struct device *dev)
+> >>        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >>
+> >> Mark them as __maybe_unused to shut up the compiler.
+> >>
+> >> Fixes: 7bce634d02e6 ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC")
+> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
+> > 
+> > Reviewed-by: Cai Huoqing <caihuoqing@baidu.com>  
 > 
-> It probably should, actually. Sorry, somewhat off-topic, but we've
-> seen this consume quite large amounts of memory. __GFP_ACCOUNT and
-> vmstat tracking seems overdue for this one.
+> Looks the same as
+> https://lore.kernel.org/all/20211013014658.2798-1-caihuoqing@baidu.com/
+> 
+> but that one is mixing the Fixes: tag.
 
-If this will be required, you can use
-[PATCH mm v5] memcg: enable memory accounting in __alloc_pages_bulk
-https://lkml.org/lkml/2021/10/14/197
+Given Cai replied to this one and the presence of the fixes tag + my inherent
+laziness, applied this one to the togreg branch of iio.git. I'll push that
+out as testing to let 0-day poke it before pushing it out for next to pick up
+in a day or 2.
 
-As far as I understand it will not be used right now,
-however I decided to submit it anyway, perhaps it may be needed later.
+Thanks,
 
-Thank you,
-	Vasily Averin
+Jonathan
+
+> 
+> >> ---
+> >>   drivers/iio/adc/imx8qxp-adc.c | 4 ++--
+> >>   1 file changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/iio/adc/imx8qxp-adc.c b/drivers/iio/adc/imx8qxp-adc.c
+> >> index 5030e0d8318d..901dd8e1b32f 100644
+> >> --- a/drivers/iio/adc/imx8qxp-adc.c
+> >> +++ b/drivers/iio/adc/imx8qxp-adc.c
+> >> @@ -416,7 +416,7 @@ static int imx8qxp_adc_remove(struct platform_device *pdev)
+> >>   	return 0;
+> >>   }
+> >>   
+> >> -static int imx8qxp_adc_runtime_suspend(struct device *dev)
+> >> +static __maybe_unused int imx8qxp_adc_runtime_suspend(struct device *dev)
+> >>   {
+> >>   	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+> >>   	struct imx8qxp_adc *adc = iio_priv(indio_dev);
+> >> @@ -430,7 +430,7 @@ static int imx8qxp_adc_runtime_suspend(struct device *dev)
+> >>   	return 0;
+> >>   }
+> >>   
+> >> -static int imx8qxp_adc_runtime_resume(struct device *dev)
+> >> +static __maybe_unused int imx8qxp_adc_runtime_resume(struct device *dev)
+> >>   {
+> >>   	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+> >>   	struct imx8qxp_adc *adc = iio_priv(indio_dev);
+> >> --   
+> 
+> 
+> 
+> 
+
