@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398A642D7F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9753642D7FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhJNLS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:18:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41842 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbhJNLSZ (ORCPT
+        id S230467AbhJNLSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230326AbhJNLS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:18:25 -0400
-Date:   Thu, 14 Oct 2021 11:16:18 -0000
+        Thu, 14 Oct 2021 07:18:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB9CC061570;
+        Thu, 14 Oct 2021 04:16:22 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 11:16:19 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634210179;
+        s=2020; t=1634210180;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lSfDRYjVAhYKBi2CxYttpEMHrSSVjZ08QilZrB6ZAs4=;
-        b=ZxajTEY6bJTxFU7RZx/agj6AXQS90crKdolE6TYlPscQ6Z5AjR0NhpLnog70LlOOf9zS0z
-        4piMncWn2tCj+09U/eia9thvPlyDesg7uJ+iCGvdTI2oWSlDkTeMAQdWt4ArwOR/qucemN
-        f2BL/RWj/A1Fv3Kesyu3q9qcG7bWbZ/hvsmil+dAm7wf6oCCSUsoXkA0DEAJ6l28QiTYyz
-        qw7gW2IGY0Aqgb6cXl3i/YsKdG4JQqOjopCUS/Hb8Hs/CX0EH7olN9XiBGZPMEAn+ylLmr
-        UNCXOMBRrwnOCQLqhjuEwGfHS2Ut4W178ApCDQyvOqo4DbkbvVMOZ+RZaW+ubQ==
+        bh=zHkwUXE2BgMSejVifWgxMmIQj1wsrDnV15HFg6zFW80=;
+        b=RNC688j8uTLDOE4GY9I+a9tkTzudP07d8Xxo1tkipkYUU6X91nR1IaNbzccRBOML5CccHL
+        6HltOFhgyS5fW6u4rUAOt6U+jeHDjuf5yB4OJC9jomnttr3eJLN6iqpLdDygtHfXcQ7UPP
+        7ow5l9x09dxtJhBZy63K7S197jgQTnOr+10UJSywML5pgnrLxvE/DKe/CUpkwqWWn4Thvw
+        H7vyQZt2S7cjhCwtwr8cXf1swtBg0/b7FSs3+mEdDulcfOUcaxYNm9YR2b4sRgS0YXwOSv
+        5q7/Q7U1O6sZaGQU5YXPyXzuNnLA0G6iLNp4aOwwx8KLeitDZx36kbTZHbV2oQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634210179;
+        s=2020e; t=1634210180;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lSfDRYjVAhYKBi2CxYttpEMHrSSVjZ08QilZrB6ZAs4=;
-        b=e97ueWGi4TLOf3wzvKm8oyWhdlUkkQfyF5fBE9Arzhmz85UStr0EqcgrRb7rqH7G+0ztiH
-        nKdiq5HcQrmoFMCw==
-From:   "tip-bot2 for Yicong Yang" <tip-bot2@linutronix.de>
+        bh=zHkwUXE2BgMSejVifWgxMmIQj1wsrDnV15HFg6zFW80=;
+        b=wj5YfgMZ9eG74ipY/yxa40DzGnsoGWUvUz2+Y9EdccYB/QU+CXyeVzqIbjb8TEgw0pY3UA
+        U4oTwPmwUXkpC2Dw==
+From:   "tip-bot2 for Bharata B Rao" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/topology: Remove unused numa_distance in
- cpu_attach_domain()
-Cc:     Yicong Yang <yangyicong@hisilicon.com>,
+Subject: [tip: sched/core] sched/numa: Fix a few comments
+Cc:     Bharata B Rao <bharata@amd.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Barry Song <baohua@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210915063158.80639-1-yangyicong@hisilicon.com>
-References: <20210915063158.80639-1-yangyicong@hisilicon.com>
+        Mel Gorman <mgorman@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211004105706.3669-4-bharata@amd.com>
+References: <20211004105706.3669-4-bharata@amd.com>
 MIME-Version: 1.0
-Message-ID: <163421017898.25758.6737691887512703032.tip-bot2@tip-bot2>
+Message-ID: <163421017992.25758.2626208384412078593.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,51 +62,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     f9ec6fea201429b5a3f76319e943989f1a1e25ef
-Gitweb:        https://git.kernel.org/tip/f9ec6fea201429b5a3f76319e943989f1a1e25ef
-Author:        Yicong Yang <yangyicong@hisilicon.com>
-AuthorDate:    Wed, 15 Sep 2021 14:31:58 +08:00
+Commit-ID:     7d380f24fe662033fd21a65f678057abd293f76e
+Gitweb:        https://git.kernel.org/tip/7d380f24fe662033fd21a65f678057abd293f76e
+Author:        Bharata B Rao <bharata@amd.com>
+AuthorDate:    Mon, 04 Oct 2021 16:27:05 +05:30
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Thu, 14 Oct 2021 13:09:58 +02:00
 
-sched/topology: Remove unused numa_distance in cpu_attach_domain()
+sched/numa: Fix a few comments
 
-numa_distance in cpu_attach_domain() is introduced in
-commit b5b217346de8 ("sched/topology: Warn when NUMA diameter > 2")
-to warn user when NUMA diameter > 2 as we'll misrepresent
-the scheduler topology structures at that time. This is
-fixed by Barry in commit 585b6d2723dc ("sched/topology: fix the issue
-groups don't span domain->span for NUMA diameter > 2") and
-numa_distance is unused now. So remove it.
+Fix a few comments to help understand them better.
 
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Signed-off-by: Bharata B Rao <bharata@amd.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Barry Song <baohua@kernel.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lore.kernel.org/r/20210915063158.80639-1-yangyicong@hisilicon.com
+Acked-by: Mel Gorman <mgorman@suse.de>
+Link: https://lkml.kernel.org/r/20211004105706.3669-4-bharata@amd.com
 ---
- kernel/sched/topology.c | 4 ----
- 1 file changed, 4 deletions(-)
+ kernel/sched/fair.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index c56faae..5af3edd 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -688,7 +688,6 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- {
- 	struct rq *rq = cpu_rq(cpu);
- 	struct sched_domain *tmp;
--	int numa_distance = 0;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index cfbd5ef..87db481 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -2074,7 +2074,7 @@ static void numa_migrate_preferred(struct task_struct *p)
+ }
  
- 	/* Remove the sched domains which do not contribute to scheduling. */
- 	for (tmp = sd; tmp; ) {
-@@ -732,9 +731,6 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- 		}
- 	}
+ /*
+- * Find out how many nodes on the workload is actively running on. Do this by
++ * Find out how many nodes the workload is actively running on. Do this by
+  * tracking the nodes from which NUMA hinting faults are triggered. This can
+  * be different from the set of nodes where the workload's memory is currently
+  * located.
+@@ -2128,7 +2128,7 @@ static void update_task_scan_period(struct task_struct *p,
  
--	for (tmp = sd; tmp; tmp = tmp->parent)
--		numa_distance += !!(tmp->flags & SD_NUMA);
--
- 	sched_domain_debug(sd, cpu);
- 
- 	rq_attach_root(rq, rd);
+ 	/*
+ 	 * If there were no record hinting faults then either the task is
+-	 * completely idle or all activity is areas that are not of interest
++	 * completely idle or all activity is in areas that are not of interest
+ 	 * to automatic numa balancing. Related to that, if there were failed
+ 	 * migration then it implies we are migrating too quickly or the local
+ 	 * node is overloaded. In either case, scan slower
