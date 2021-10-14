@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAFF42D742
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55D942D75C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhJNKoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:44:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhJNKok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:44:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9106961029;
-        Thu, 14 Oct 2021 10:42:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634208153;
-        bh=YviziDSx60ArktrgOAhlwV2SAqrRsCl2B1mc5NJO4P8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=di94DloSyNwlRRiMUA7CC7C+s12KEw9SlDJzhtWQhLME7kzhD2f724oo4fBKDW2Hy
-         42Yxf0piJPRO/LSk/2xZwqCs4LO8RTOuKbi01un5XcmksA9mW6MwXl89kNR9TsARRS
-         BmR5MbXqKAgYUtzn+Dc030rlqQiuu6gg+pN4QpUJJMM4ypcxFvLbM2bxGDjXSXXhD8
-         lMTqd4+Y76q1n5fpscoJbPawJTtEvcbCl9nAV45OrXLQ6d2qQCdYtVrBj9Dj89y8Wa
-         CsTpP8yJlbCzpLiumVi4NPlvckh+rJ7i10MAVknbchpqSL9XgFmLsoy5kZZn35BgTp
-         k4UGgBY4u3KQA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mayBu-0008Hd-W7; Thu, 14 Oct 2021 12:42:27 +0200
-Date:   Thu, 14 Oct 2021 12:42:26 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Drew Fustini <dfustini@baylibre.com>
-Cc:     Benoit Cousson <bcousson@baylibre.com>,
-        Dave Gerlach <d-gerlach@ti.com>, Keerthy <j-keerthy@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: am335x: Add rtc node as system-power-controller
-Message-ID: <YWgJkkJ4LuAJhLmk@hovoldconsulting.com>
-References: <20211012191311.879838-1-dfustini@baylibre.com>
- <YWaJfofs8QAtBnVu@hovoldconsulting.com>
- <20211013214103.GA10628@x1>
+        id S230119AbhJNKrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhJNKrv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 06:47:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548F0C061570;
+        Thu, 14 Oct 2021 03:45:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fB1kvwE0qM4yzrXOfI44LBD6xG3DWIa3nthsA9IpR10=; b=jXapiBFTysoJhTJtvGjKgh4Asf
+        xw2iBqCtedUllZzkSuBjUppeAfRHLdYsq1ZYXNggFDvf4hQs7j8Acd7m6SC3q4GNX220mIX2w20YN
+        1OzAHcF1r2Uzanr6bWy+BgOKpUime+px3jQ8sDM8V7HUkk54G94LHA/n5jsAGzHUAmabhdEKvVgzy
+        7Ax8gsN9AMwzxW0hOlVOrpeKa6Di89UHFGibqQ2W8mqHPenK6SHaDudZ405NGXmUENR9cewSHLqnF
+        6hZsESHKTJVIi8cd8sXLq2HEMBiKqCH3ScHYJAgzRKnaKVimZktnUZgsApm0ddNys0pVz1S77y4re
+        /cujEGNg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mayC4-008GQC-6F; Thu, 14 Oct 2021 10:42:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EB3B830030B;
+        Thu, 14 Oct 2021 12:42:35 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C142120A958AA; Thu, 14 Oct 2021 12:42:35 +0200 (CEST)
+Date:   Thu, 14 Oct 2021 12:42:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        joe.lawrence@redhat.com,
+        =?iso-8859-1?Q?Fr=E9d=E9ric?= Weisbecker <fweisbec@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Heiko Carstens <hca@linux.ibm.com>, svens@linux.ibm.com,
+        sumanthk@linux.ibm.com, live-patching@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [PATCH v2 05/11] sched,livepatch: Use wake_up_if_idle()
+Message-ID: <YWgJmz7QPOY3AW7M@hirez.programming.kicks-ass.net>
+References: <20210929151723.162004989@infradead.org>
+ <20210929152428.828064133@infradead.org>
+ <CAK8P3a0N-ZuSEZyw5ub1vr3VP2Bdoa2Wq=No1gad+SyqquQXfw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211013214103.GA10628@x1>
+In-Reply-To: <CAK8P3a0N-ZuSEZyw5ub1vr3VP2Bdoa2Wq=No1gad+SyqquQXfw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 02:41:03PM -0700, Drew Fustini wrote:
-> On Wed, Oct 13, 2021 at 09:23:42AM +0200, Johan Hovold wrote:
-> > On Tue, Oct 12, 2021 at 12:13:12PM -0700, Drew Fustini wrote:
-> > > From: Keerthy <j-keerthy@ti.com>
-> > > 
-> > > PMIC_PWR_EN pin of RTC on am335x-evm, bone, and boneblack is connected to
-> > > PMIC on board, so flag rtc node as system-power-controller to allow
-> > > software to poweroff boards.
-> > 
-> > The "system-power-controller" property is already set in
-> > bone-common.dtsi since
-> > 
-> > 	2876cc4a773c ("ARM: dts: Move most of am335x-boneblack.dts to am335x-boneblack-common.dtsi")
-> > 
-> > so this probably only affects am335x-evm and that should be reflected in
-> > the commit message.
-> > 
-> > Also, should you now remove the property from boneblack-common? Or just
-> > add it to am335x-evm instead?
+On Wed, Oct 13, 2021 at 09:37:01PM +0200, Arnd Bergmann wrote:
+> On Wed, Sep 29, 2021 at 6:10 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > Make sure to prod idle CPUs so they call klp_update_patch_state().
+> >
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> >  kernel/livepatch/transition.c |    5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > --- a/kernel/livepatch/transition.c
+> > +++ b/kernel/livepatch/transition.c
+> > @@ -413,8 +413,11 @@ void klp_try_complete_transition(void)
+> >         for_each_possible_cpu(cpu) {
+> >                 task = idle_task(cpu);
+> >                 if (cpu_online(cpu)) {
+> > -                       if (!klp_try_switch_task(task))
+> > +                       if (!klp_try_switch_task(task)) {
+> >                                 complete = false;
+> > +                               /* Make idle task go through the main loop. */
+> > +                               wake_up_if_idle(cpu);
+> > +                       }
 > 
-> Thank you for reviewing. Yes, I should improve the commit message as the
-> BeagleBone Black is already covered for the rtc system-power-controller
-> in am335x-boneblack-common.dtsi.  
+> This caused a build regression on non-SMP kernels:
 
-So is sancloud-bbe apparently.
+:-(
 
-I only noticed because I added support to BeagleBone Black long ago so
-unless there'd been a regression it should already be supported.
-
-> I believe it would be ok to remove system-power-controller from 
-> am335x-boneblack-common.dtsi and have it in am335x-bone-common.dtsi.
+> x86_64-linux-ld: kernel/livepatch/transition.o: in function
+> `klp_try_complete_transition':
+> transition.c:(.text+0x106e): undefined reference to `wake_up_if_idle'
 > 
-> These are the files that include am335x-boneblack-common.dtsi:
-> arch/arm/boot/dts/am335x-boneblack-wireless.dts
-> arch/arm/boot/dts/am335x-boneblack.dts
-> arch/arm/boot/dts/am335x-sancloud-bbe-lite.dts
-> arch/arm/boot/dts/am335x-sancloud-bbe.dts
-> 
-> But they all also include am335x-bone-common.dtsi.
-> 
-> However, I just noticed that am335x-evm.dts does not include either
-> am335x-boneblack-common.dtsi or am335x-boneblack-common.dtsi. Thus
-> rtc system-power-controller should be directly inserted into
-> am335x-evm.dts.
+> Maybe add a IS_ENABLED(CONFIG_SMP) check to one of the if() conditions?
 
-Right.
-
-> I considered just moving system-power-controller to the rtc node in
-> am33xx-l4.dtsi but I don't think that would be correct as this would not
-> be valid for all am33xx devices.
-> 
-> Does that seem correct to you?
-
-No, that wouldn't be right.
-
-You're more familiar with the different variants here, but unless all
-flavours of Bone Black have the signal wired, it should probably be
-pushed down into the dts files again.
-
-Johan
+I'll just add a stub for that function I think. Let me rebase the thing
+before I push more crap ontop..
