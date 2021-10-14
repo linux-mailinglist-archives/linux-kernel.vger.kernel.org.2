@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708E142DCA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF5A42DC3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232983AbhJNPAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:00:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45236 "EHLO mail.kernel.org"
+        id S232128AbhJNO5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:57:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229743AbhJNO7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:59:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 774AD61184;
-        Thu, 14 Oct 2021 14:57:25 +0000 (UTC)
+        id S232123AbhJNO5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:57:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6504360F4A;
+        Thu, 14 Oct 2021 14:55:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223446;
-        bh=B9lYIyXKlaMzMrhHVEVyaQkl2AXM0CEJIRfOu5A7bVw=;
+        s=korg; t=1634223318;
+        bh=cDrA1jZFkxemkgTkATXwogA2EjutUnYO21kUTWeFPFs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GM0cApO+c72xYWOfwNyBa3hzLazrkLYVmJw866kT2CL25FIw95gj8DFEajBK/R0eO
-         wubHkn7p5JTB+QbzdSzP5Vu+bek/6RtWYAXCAVYwrQdvVzgm3qqBHg+oVQnyVVyPuz
-         6ekyEjb3kunLDHvxSkiImHSjmBcjwe6o2CZiM7l0=
+        b=dBgOEnkiXS8+Wtascy0W5Ty+3MKmb1ZRIUub+1CVXy3WRZebdDkzj+gLtf2Ivl7bB
+         a/ukCaZ4VxKEVT9tC6rpZcGkJA/iqKAd8+Y8z6uBkwBpc3QC6TAYgtucxBli4QuBnW
+         lyOIuUA1vzWz6sHIzTo01sz4eBNDxDUDC29qin9Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 4.14 05/33] nfsd4: Handle the NFSv4 READDIR dircount hint being zero
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+Subject: [PATCH 4.4 05/18] phy: mdio: fix memory leak
 Date:   Thu, 14 Oct 2021 16:53:37 +0200
-Message-Id: <20211014145208.956289908@linuxfoundation.org>
+Message-Id: <20211014145206.495207097@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
-References: <20211014145208.775270267@linuxfoundation.org>
+In-Reply-To: <20211014145206.330102860@linuxfoundation.org>
+References: <20211014145206.330102860@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit f2e717d655040d632c9015f19aa4275f8b16e7f2 upstream.
+[ Upstream commit ca6e11c337daf7925ff8a2aac8e84490a8691905 ]
 
-RFC3530 notes that the 'dircount' field may be zero, in which case the
-recommendation is to ignore it, and only enforce the 'maxcount' field.
-In RFC5661, this recommendation to ignore a zero valued field becomes a
-requirement.
+Syzbot reported memory leak in MDIO bus interface, the problem was in
+wrong state logic.
 
-Fixes: aee377644146 ("nfsd4: fix rd_dircount enforcement")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+MDIOBUS_ALLOCATED indicates 2 states:
+	1. Bus is only allocated
+	2. Bus allocated and __mdiobus_register() fails, but
+	   device_register() was called
+
+In case of device_register() has been called we should call put_device()
+to correctly free the memory allocated for this device, but mdiobus_free()
+calls just kfree(dev) in case of MDIOBUS_ALLOCATED state
+
+To avoid this behaviour we need to set bus->state to MDIOBUS_UNREGISTERED
+_before_ calling device_register(), because put_device() should be
+called even in case of device_register() failure.
+
+Link: https://lore.kernel.org/netdev/YVMRWNDZDUOvQjHL@shell.armlinux.org.uk/
+Fixes: 46abc02175b3 ("phylib: give mdio buses a device tree presence")
+Reported-and-tested-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Link: https://lore.kernel.org/r/eceae1429fbf8fa5c73dd2a0d39d525aa905074d.1633024062.git.paskripkin@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/nfs4xdr.c |   19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/net/phy/mdio_bus.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/fs/nfsd/nfs4xdr.c
-+++ b/fs/nfsd/nfs4xdr.c
-@@ -3082,15 +3082,18 @@ nfsd4_encode_dirent(void *ccdv, const ch
- 		goto fail;
- 	cd->rd_maxcount -= entry_bytes;
- 	/*
--	 * RFC 3530 14.2.24 describes rd_dircount as only a "hint", so
--	 * let's always let through the first entry, at least:
-+	 * RFC 3530 14.2.24 describes rd_dircount as only a "hint", and
-+	 * notes that it could be zero. If it is zero, then the server
-+	 * should enforce only the rd_maxcount value.
- 	 */
--	if (!cd->rd_dircount)
--		goto fail;
--	name_and_cookie = 4 + 4 * XDR_QUADLEN(namlen) + 8;
--	if (name_and_cookie > cd->rd_dircount && cd->cookie_offset)
--		goto fail;
--	cd->rd_dircount -= min(cd->rd_dircount, name_and_cookie);
-+	if (cd->rd_dircount) {
-+		name_and_cookie = 4 + 4 * XDR_QUADLEN(namlen) + 8;
-+		if (name_and_cookie > cd->rd_dircount && cd->cookie_offset)
-+			goto fail;
-+		cd->rd_dircount -= min(cd->rd_dircount, name_and_cookie);
-+		if (!cd->rd_dircount)
-+			cd->rd_maxcount = 0;
-+	}
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 5ea86fd57ae6..4066fb5a935a 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -264,6 +264,13 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
+ 	bus->dev.groups = NULL;
+ 	dev_set_name(&bus->dev, "%s", bus->id);
  
- 	cd->cookie_offset = cookie_offset;
- skip_entry:
++	/* We need to set state to MDIOBUS_UNREGISTERED to correctly release
++	 * the device in mdiobus_free()
++	 *
++	 * State will be updated later in this function in case of success
++	 */
++	bus->state = MDIOBUS_UNREGISTERED;
++
+ 	err = device_register(&bus->dev);
+ 	if (err) {
+ 		pr_err("mii_bus %s failed to register\n", bus->id);
+-- 
+2.33.0
+
 
 
