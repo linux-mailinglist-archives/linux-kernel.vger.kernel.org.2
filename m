@@ -2,93 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7A842D946
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B70E42D94B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhJNM2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:28:46 -0400
-Received: from phobos.denx.de ([85.214.62.61]:35870 "EHLO phobos.denx.de"
+        id S231629AbhJNMa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:30:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231558AbhJNM2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:28:44 -0400
-Received: from crub (pd95f1d7c.dip0.t-ipconnect.de [217.95.29.124])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: agust@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 486F283572;
-        Thu, 14 Oct 2021 14:26:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1634214398;
-        bh=h3d+7/o10dgcD7pQSvUh5MYsQC2GB4YO4Pb5D5tQVj4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QJ3AvB+swCyUTTe+4Apkhltx3Vjvpwrg7wbW1tD+npZGf2SJNzHhS+UURxct9CVdi
-         0HbSnlqIyuZe9aY1/Qa1X0PVNCJMwLAAZxbunFas5i7jjNvXdyM5Ed9lg6oLw+I3MR
-         UU+4AUlaDZSf1UIW+BUdGhOI0tcwahiBEQ9EkMY3Ta7IiZS+aEdz3I2up5TFULRPEZ
-         z7WwT7pPwV7ZtotWSHLrctaQqiznVRcSHqXTClaJNNAnjNA3ZaWDWOgZCHjvWRvvCd
-         H0eyP5k641kEpNp/ig2v7agHaSwR4rKktl4K5bglZIBCFF80Wssi6/QDllKhXeSpcC
-         0VdsamN+lQzcw==
-Date:   Thu, 14 Oct 2021 14:26:37 +0200
-From:   Anatolij Gustschin <agust@denx.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Rob Herring <robh@kernel.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [RFC PATCH] powerpc: dts: Remove MPC5xxx platforms
-Message-ID: <20211014142637.3fda421b@crub>
-In-Reply-To: <20211013173808.7ab92035@canb.auug.org.au>
-References: <20211012153456.2844193-1-robh@kernel.org>
-        <20211013173808.7ab92035@canb.auug.org.au>
+        id S230299AbhJNMaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 08:30:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C22C3610CB;
+        Thu, 14 Oct 2021 12:28:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634214501;
+        bh=dMTtDspikLri2cSDeLKE6FS5BgPrS3787GmcSTZUZTs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vhIC3B2XK6EP+qvzVcLYD84j8L90k0m3su6twVYURfo3xNKxQ+FCk3o4eNV/mDAd0
+         xemiZGVOXR0t1qEkPxpkcFe189vL9KwOOsHNRtAtdQ/M9rU2f7o3IHTTX4qRvbg9vo
+         DMDAAnUZtxejGqKUOUeWR/SE0BBETpnrTvDeghqI=
+Date:   Thu, 14 Oct 2021 14:28:18 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
+Message-ID: <YWgiYvF8fiqJw1b6@kroah.com>
+References: <YWLbEdHUE3k/i0fe@kroah.com>
+ <s5hily46316.wl-tiwai@suse.de>
+ <YWRYD7fphcaWKEOG@kroah.com>
+ <s5h7dej4kbe.wl-tiwai@suse.de>
+ <YWRy+UoG1YHcQ7UM@kroah.com>
+ <s5ho87u3dcb.wl-tiwai@suse.de>
+ <YWWCiLE6id43uJjp@kroah.com>
+ <s5hsfx61imj.wl-tiwai@suse.de>
+ <YWgM2jI94fZLfP09@kroah.com>
+ <s5hr1cnx2dj.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hr1cnx2dj.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021 17:38:08 +1100
-Stephen Rothwell sfr@canb.auug.org.au wrote:
+On Thu, Oct 14, 2021 at 01:38:32PM +0200, Takashi Iwai wrote:
+> On Thu, 14 Oct 2021 12:56:26 +0200,
+> Greg Kroah-Hartman wrote:
+> > 
+> > On Tue, Oct 12, 2021 at 03:24:04PM +0200, Takashi Iwai wrote:
+> > > On Tue, 12 Oct 2021 14:41:44 +0200,
+> > > Greg Kroah-Hartman wrote:
+> > > > 
+> > > > On Tue, Oct 12, 2021 at 09:35:16AM +0200, Takashi Iwai wrote:
+> > > > > On Mon, 11 Oct 2021 19:23:05 +0200,
+> > > > > Greg Kroah-Hartman wrote:
+> > > > > > 
+> > > > > > On Mon, Oct 11, 2021 at 06:07:01PM +0200, Takashi Iwai wrote:
+> > > > > > > Could you also post the contents of /proc/asound/card*/usbmixer (only
+> > > > > > > for the corresponding device), too?
+> > > > > > 
+> > > > > > Sure, here it is:
+> > > > > > 
+> > > > > > USB Mixer: usb_id=0x30be0101, ctrlif=0, ctlerr=0
+> > > > > > Card: Schiit Audio Schiit Hel at usb-0000:47:00.1-2.2, high speed
+> > > > > >   Unit: 5
+> > > > > >     Control: name="Mic - Input Jack", index=0
+> > > > > >     Info: id=5, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > > >   Unit: 7
+> > > > > >     Control: name="Speaker - Output Jack", index=0
+> > > > > >     Info: id=7, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > > >   Unit: 13
+> > > > > >     Control: name="PCM Playback Switch", index=0
+> > > > > >     Info: id=13, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
+> > > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > > >   Unit: 17
+> > > > > >     Control: name="Mic Capture Switch", index=0
+> > > > > >     Info: id=17, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
+> > > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > > >   Unit: 18
+> > > > > >     Control: name="Clock Source 18 Validity", index=0
+> > > > > >     Info: id=18, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > > >   Unit: 22
+> > > > > >     Control: name="Clock Source 22 Validity", index=0
+> > > > > >     Info: id=22, control=2, cmask=0x0, channels=1, type="BOOLEAN"
+> > > > > >     Volume: min=0, max=1, dBmin=0, dBmax=0
+> > > > > 
+> > > > > Hm, I expected more exotic control that failed, but it was Mic Capture
+> > > > > Switch, which should be treated normally.
+> > > > > 
+> > > > > Could you try the patch below?  This will still show other warning
+> > > > > messages, but it'll forcibly initialize the mixer elements at probe
+> > > > > time, and the rest should work.
+> > > > > 
+> > > > > Once after it's confirmed to work, we may shut up the device warnings
+> > > > > with a quirk.
+> > > > 
+> > > > Only one warning message shows up, here's the dmesg with this patch
+> > > > applied:
+> > > > 
+> > > > 
+> > > > [Oct12 14:39] usb 7-2.2: new high-speed USB device number 10 using xhci_hcd
+> > > > [  +0.123157] usb 7-2.2: New USB device found, idVendor=30be, idProduct=0101, bcdDevice= 1.02
+> > > > [  +0.000009] usb 7-2.2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+> > > > [  +0.000003] usb 7-2.2: Product: Schiit Hel
+> > > > [  +0.000002] usb 7-2.2: Manufacturer: Schiit Audio
+> > > > [  +0.339785] usb 7-2.2: 17:0: failed to get current value for ch 0 (-32)
+> > > > [  +0.020373] input: Schiit Audio Schiit Hel as /devices/pci0000:40/0000:40:01.1/0000:41:00.0/0000:42:08.0/0000:47:00.1/usb7/7-2/7-2.2/7-2.2:1.3/0003:30BE:0101.000B/input/input24
+> > > > [  +0.056868] hid-generic 0003:30BE:0101.000B: input,hidraw6: USB HID v1.00 Device [Schiit Audio Schiit Hel] on usb-0000:47:00.1-2.2/input3
+> > > 
+> > > OK, then the problem is only about this unit and about the master
+> > > channel.
+> > > 
+> > > > I don't see a "mic capture switch" on this device, but maybe it triggers
+> > > > when I plug a mic into the microphone port, which is currently empty?
+> > > 
+> > > This should be persistent and visible; try to run "amixer -c1" (or the
+> > > different card index for the device).
+> > > 
+> > > So far, so good.  The only remaining piece is how this -EPIPE error
+> > > comes up.  Is this a protocol stall error or such?  Would it be
+> > > avoided by adding the delay like done for some devices?
+> > > 
+> > > With the 5.15-rc kernel, you can pass quirk_flags option to
+> > > snd-usb-audio module for applying known quirks.
+> > > e.g. quirk_flags=0x100 will set the 1msec delay at each control
+> > > message.  Please check whether it makes any difference.
+> > > The option is an integer array for multiple devices, so if you have
+> > > multiple USB-audio devices, put at the appropriate position in the
+> > > array (e.g. quirk_flags=,,0x100 for the 3rd slot).
+> > 
+> > This quirk did not work.  Well, it caused the error to show up after a
+> > delay, but the error is still there.
+> > 
+> > > The quirk bit 0x4000 will shut up the control errors.  If the above
+> > > doesn't fix the warning and the device is working more or less, set
+> > > this quirk to shut up the warning.  It can be set statically in the
+> > > table at the end in sound/usb/quirks.c.
+> > 
+> > This quirk did work in that the error messages are still in the kernel
+> > log, but the device seems to work properly now.
+> > 
+> > Let me send a patch that adds this device to the quirk table.
+> 
+> OK, thanks!  The remaining error message should be suppressed with the
+> patch in my previous mail.  Or maybe we can add a patch to downgrade
+> the error message to dev_dbg() at first for 5.15, then another one
+> (initializing all controls at first) to 5.16.
 
->Hi Rob,
->
->On Tue, 12 Oct 2021 10:34:56 -0500 Rob Herring <robh@kernel.org> wrote:
->>
->> The mpc5xxx platforms have had dts warnings for some time which no one
->> seems to care to fix, so let's just remove the dts files.
->> 
->> According to Arnd:
->> "Specifically, MPC5200B has a 15 year lifetime, which ends in
->> 11 months from now. The original bplan/Genesi Efika 5K2 was
->> quite popular at the time it came out, and there are probably
->> still some of those hanging around, but they came with Open
->> Firmware rather than relying on the dts files that ship with the
->> kernel.
->> 
->> Grant Likely was the original maintainer for MPC52xx until 2011,
->> Anatolij Gustschin is still listed as maintainer since then but hasn't
->> been active in it for a while either. Anatolij can probably best judge
->> which of these boards are still in going to be used with future kernels,
->> but I suspect once you start removing bits from 52xx, the newer
->> but less common 512x platform can go away as well."
->> 
->> Cc: Anatolij Gustschin <agust@denx.de>
->> Cc: Arnd Bergmann <arnd@arndb.de>
->> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->> Cc: Paul Mackerras <paulus@samba.org>
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Signed-off-by: Rob Herring <robh@kernel.org>
->> ---
->> Sending this out as a feeler to see if anyone cares. If anyone does, 
->> please fix the warnings.
+Either works for me.  If you want me to test anything out with this
+device, just let me know!
 
-I've sent patches to fix the warnings.
-  
-Thanks,
+thanks,
 
-Anatolij
+greg k-h
