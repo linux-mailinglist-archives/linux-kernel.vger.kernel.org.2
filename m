@@ -2,53 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3140A42E23B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8660842E23E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233754AbhJNTz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
+        id S233794AbhJNT4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233018AbhJNTz5 (ORCPT
+        with ESMTP id S233716AbhJNT4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:55:57 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9D4C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:53:52 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id q10-20020a056a00084a00b0044c729ea8f2so4028717pfk.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:53:52 -0700 (PDT)
+        Thu, 14 Oct 2021 15:56:00 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A37C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:53:55 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id j18-20020a633c12000000b0029956680edaso3352437pga.15
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:53:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=R/A1A0PEacctbWxfoyinE4EXZjh0hs5rayBemyeKvhs=;
-        b=Ccj60KB5+clN/g8yw8V0AvFPqpYtRevRPNAl88ECaouDXwhePm0EVHn3TvUZXBuikb
-         NAKgCmTzauq5p0dQbKjSIBENAVJbSfMBQSV+lMb5tUj2fFi3+Aq2GeRXo9by7rMu/6f5
-         D7PpHFhD7x1sF4gdy/3JxjrmCmAM4yTrv29zz80JGrCedp6YfuqRmzzfqaSv/esEj9sr
-         SLCJqftzhLudSp/QUTsOVfNuQ2FNHexSrmZ0TCNe8tG8xU7TaoiEKHZm0Jtr8DkueIT6
-         5shOlqnZ4vWy2erzNJHml8C/2dGDK29j9cxITM0usC7jpgFRtQGx0tChJVwri9MFfOxd
-         /Ltg==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=0GKVOGkPMBjbaiErSowZ5WVlrNu9T3lMTGZvDZcgDiQ=;
+        b=O2y756NxwhwBs3hCW4hzTGJSUy8ycUL5Kon8QUqqwOzeQTsmkbudN71Z8nfyOh1ajI
+         5uzBMRTKntgvLwftR+g17/k6r/G2Cw1LPAGWICo/u28QZABdyNojDa7VGTnSfxCLybYx
+         3HiHSKCLyV4mwqU+PdHrKOZembQ2GXb0IyHQcxsOEk0LRO1/S/e4/E8uPZwiY/g1jTm1
+         CjfmJVvtqS8COv4tY4bqiJW5z1jUx2P6nHjEJPp/a79pTD2T8fgw1jCZ8ap+j/SX2skt
+         WyKFUkaT5La9nbizAqKE+rW9oKqJjzoWmCmIvoP/XjRvMOJHFCyWzZ4yEjoDUQ1F9liT
+         Rhgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=R/A1A0PEacctbWxfoyinE4EXZjh0hs5rayBemyeKvhs=;
-        b=efetkTP9gebBMoq/REfNpFTDYUBA58e5a0O4mAcWRHRSdkGNz56URiex5S9xngGVd5
-         MbJDo9XO7bbfeFhC+KkiU8CUVT3hyetYhoboloR5NNT2aZ4PXYLfPKxdCingfnGouoGM
-         ymJa/iICtCDd0EL8BCa23N8zSwQrfrOA+ch0iH1+prRSgpprSiEdUvsv/aXYms5QSzyt
-         gh5+5ewKrMguB4kEmgalsQjhnqNVQy5c5fjVwQVZ6V/GATmDvg8+0ZVy/ctWmt3F2xfS
-         PqQVyiV/GxCMR5EoOxPnAgTk6JWRt6ku92Od2AlW46sIcv6S3eUeI5MP4gVhqQdDDsIj
-         h0BQ==
-X-Gm-Message-State: AOAM533VY/Ww2bFzyNCOmxlfclH8y7i2UE3kY6IZcdcYNfusr6wJyLzX
-        OOZhdWE2nAvwT+wmMqRTPlUFTr43bfSFZL/QViE=
-X-Google-Smtp-Source: ABdhPJzJB0746aYvHaw0UyQpC8oiqKxrUMbT0zTR2WHYcybIVao09r4yq54iQiEOGomsy45bhkxA4UHH5Xjs/8E1XLU=
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=0GKVOGkPMBjbaiErSowZ5WVlrNu9T3lMTGZvDZcgDiQ=;
+        b=ChcbY0PGG1PJqUuXTXCO5THoP7PPDEhm1hVAuE60+aUk/UqCstEOlAasuAKrbjrbKm
+         PbTHKoqxODDdOI48NAToEFUduVOcye1lPzgSTJFh4YdBv0l7FdaYcDNaewTxLi2/L4mk
+         9OEQm8Vf0uvgzGvU3clHQuwTmmvT92oxodHS367WDSLRnD2DGtOsj8GZwpsNuEWCTQZz
+         MyGibRcA4wJHje7DgWValB9qUYCRtQPfeJ8yigCHulOvDRNH/jZYZ+hohV9RLGG0Belu
+         Q1ASkafQfklhHLaRb93i+QO5W99ui0BW78FwXzK6maxKyPaQAm2P2bPDV65xfgdVXc4j
+         o2/A==
+X-Gm-Message-State: AOAM531EXBJogfpOVabsjX89Zu0XzXPWEteTKWShFqwu1Ur/ZZ1e86ZJ
+        mjl+ywhldEneIzl5LS4+aG/WwGX6+GV/mjwJqNg=
+X-Google-Smtp-Source: ABdhPJz4vELIwsudd5JRcFZ1QD4iWztE+ipKg383YgxXZq5OfuRfj2Qb43PQEb0T9XFYzew4p7mFVl9csvZEHEdEU4c=
 X-Received: from willmcvicker.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:2dd0])
- (user=willmcvicker job=sendgmr) by 2002:a17:902:b70d:b0:13d:f6c9:2066 with
- SMTP id d13-20020a170902b70d00b0013df6c92066mr6942092pls.2.1634241232300;
- Thu, 14 Oct 2021 12:53:52 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 19:53:44 +0000
-Message-Id: <20211014195347.3635601-1-willmcvicker@google.com>
+ (user=willmcvicker job=sendgmr) by 2002:a17:903:31cd:b0:134:5b6f:2ff8 with
+ SMTP id v13-20020a17090331cd00b001345b6f2ff8mr6925892ple.46.1634241234621;
+ Thu, 14 Oct 2021 12:53:54 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 19:53:45 +0000
+In-Reply-To: <20211014195347.3635601-1-willmcvicker@google.com>
+Message-Id: <20211014195347.3635601-2-willmcvicker@google.com>
 Mime-Version: 1.0
+References: <20211014195347.3635601-1-willmcvicker@google.com>
 X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [RFT PATCH v4 0/2] clk: samsung: add common support for CPU clocks
+Subject: [PATCH v4 1/2] [RFT] clk: samsung: add support for CPU clocks
 From:   Will McVicker <willmcvicker@google.com>
 To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
         Tomasz Figa <tomasz.figa@gmail.com>,
@@ -66,37 +70,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These two patches were originally a part of the series [1]. They add
-support to the common samsung clock driver to parse and register the
-CPU clocks when provided. This allows for the samsung clock drivers to
-simply provide a `struct samsung_cpu_clock` to `struct samsung_cmu_info`
-and then call samsung_cmu_register_one(). With this new support, we can
-now get rid of the custom apollo and atlas CLK_OF_DECLARE init functions.
+Adds 'struct samsung_cpu_clock' and corresponding CPU clock registration
+function to the samsung common clk driver. This allows samsung clock
+drivers to register their CPU clocks with the samsung_cmu_register_one()
+API.
 
-Since I don't have the hardware to test these, I'm including the RFT tag
-to try and get help testing and verifying these.
+Currently the exynos5433 apollo and atlas clks have their own custom
+init functions to handle registering their CPU clocks. With this patch
+we can drop their custom CLK_OF_DECLARE functions and directly call
+samsung_cmu_register_one().
 
-[1] https://lore.kernel.org/all/20210928235635.1348330-4-willmcvicker@google.com/
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+---
+ drivers/clk/samsung/clk-cpu.c | 18 ++++++++++++++++++
+ drivers/clk/samsung/clk.c     |  2 ++
+ drivers/clk/samsung/clk.h     | 26 ++++++++++++++++++++++++++
+ 3 files changed, 46 insertions(+)
 
-Will McVicker (2):
-  [RFT] clk: samsung: add support for CPU clocks
-  [RFT] clk: samsung: exynos5433: update apollo and atlas clock probing
---
-Changes in v4:
- - Updated 'struct samsung_cpu_clock' to reference the parent and alt_parent
-   hw clocks via ID instead of name
- - Dropped __clk_lookup() in favor of ctx->clk_data.hw instead
-
-Changes in v3:
- - Same as v1-v2
- - Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
- drivers/clk/samsung/clk-cpu.c        |  18 ++++
- drivers/clk/samsung/clk-exynos5433.c | 120 +++++++++++----------------
- drivers/clk/samsung/clk.c            |   2 +
- drivers/clk/samsung/clk.h            |  26 ++++++
- 4 files changed, 94 insertions(+), 72 deletions(-)
-
+diff --git a/drivers/clk/samsung/clk-cpu.c b/drivers/clk/samsung/clk-cpu.c
+index 00ef4d1b0888..7f20d9aedaa9 100644
+--- a/drivers/clk/samsung/clk-cpu.c
++++ b/drivers/clk/samsung/clk-cpu.c
+@@ -469,3 +469,21 @@ int __init exynos_register_cpu_clock(struct samsung_clk_provider *ctx,
+ 	kfree(cpuclk);
+ 	return ret;
+ }
++
++void __init samsung_clk_register_cpu(struct samsung_clk_provider *ctx,
++		const struct samsung_cpu_clock *list, unsigned int nr_clk)
++{
++	unsigned int idx;
++	unsigned int num_cfgs;
++	struct clk_hw **hws = ctx->clk_data.hws;
++
++	for (idx = 0; idx < nr_clk; idx++, list++) {
++		/* find count of configuration rates in cfg */
++		for (num_cfgs = 0; list->cfg[num_cfgs].prate != 0; )
++			num_cfgs++;
++
++		exynos_register_cpu_clock(ctx, list->id, list->name, hws[list->parent_id],
++				hws[list->alt_parent_id], list->offset, list->cfg, num_cfgs,
++				list->flags);
++	}
++}
+diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
+index 1949ae7851b2..336243c6f120 100644
+--- a/drivers/clk/samsung/clk.c
++++ b/drivers/clk/samsung/clk.c
+@@ -378,6 +378,8 @@ struct samsung_clk_provider * __init samsung_cmu_register_one(
+ 		samsung_clk_extended_sleep_init(reg_base,
+ 			cmu->clk_regs, cmu->nr_clk_regs,
+ 			cmu->suspend_regs, cmu->nr_suspend_regs);
++	if (cmu->cpu_clks)
++		samsung_clk_register_cpu(ctx, cmu->cpu_clks, cmu->nr_cpu_clks);
+ 
+ 	samsung_clk_of_add_provider(np, ctx);
+ 
+diff --git a/drivers/clk/samsung/clk.h b/drivers/clk/samsung/clk.h
+index c1e1a6b2f499..26499e97275b 100644
+--- a/drivers/clk/samsung/clk.h
++++ b/drivers/clk/samsung/clk.h
+@@ -271,6 +271,27 @@ struct samsung_pll_clock {
+ 	__PLL(_typ, _id, _name, _pname, CLK_GET_RATE_NOCACHE, _lock,	\
+ 	      _con, _rtable)
+ 
++struct samsung_cpu_clock {
++	unsigned int	id;
++	const char	*name;
++	unsigned int	parent_id;
++	unsigned int	alt_parent_id;
++	unsigned long	flags;
++	int		offset;
++	const struct exynos_cpuclk_cfg_data *cfg;
++};
++
++#define CPU_CLK(_id, _name, _pid, _apid, _flags, _offset, _cfg) \
++	{							\
++		.id		  = _id,			\
++		.name		  = _name,			\
++		.parent_id	  = _pid,			\
++		.alt_parent_id	  = _apid,			\
++		.flags		  = _flags,			\
++		.offset		  = _offset,			\
++		.cfg		  = _cfg,			\
++	}
++
+ struct samsung_clock_reg_cache {
+ 	struct list_head node;
+ 	void __iomem *reg_base;
+@@ -301,6 +322,9 @@ struct samsung_cmu_info {
+ 	unsigned int nr_fixed_factor_clks;
+ 	/* total number of clocks with IDs assigned*/
+ 	unsigned int nr_clk_ids;
++	/* list of cpu clocks and respective count */
++	const struct samsung_cpu_clock *cpu_clks;
++	unsigned int nr_cpu_clks;
+ 
+ 	/* list and number of clocks registers */
+ 	const unsigned long *clk_regs;
+@@ -350,6 +374,8 @@ extern void __init samsung_clk_register_gate(struct samsung_clk_provider *ctx,
+ extern void __init samsung_clk_register_pll(struct samsung_clk_provider *ctx,
+ 			const struct samsung_pll_clock *pll_list,
+ 			unsigned int nr_clk, void __iomem *base);
++extern void samsung_clk_register_cpu(struct samsung_clk_provider *ctx,
++		const struct samsung_cpu_clock *list, unsigned int nr_clk);
+ 
+ extern struct samsung_clk_provider __init *samsung_cmu_register_one(
+ 			struct device_node *,
 -- 
 2.33.0.1079.g6e70778dc9-goog
 
