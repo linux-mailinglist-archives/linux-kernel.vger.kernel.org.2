@@ -2,123 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3E842D6E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA8342D6E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhJNKXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
+        id S230054AbhJNK0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhJNKX3 (ORCPT
+        with ESMTP id S229912AbhJNK0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:23:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC24C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 03:21:24 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634206882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1vPk+5UQWcz+Ur20Qebsfj4oslp4ZyN/IcZoWC4lt2Q=;
-        b=4xLreLgKs9v3TiKPLjl9x9Lj9wQEZ33BP+7J+BeGO1WjbwCY6FRnLNpaT+4sgq4nWkN+n3
-        vuPD66bu0sQrr7VMWgy3kRznbictPuR1TMKOd/mrVAm/tx1kFZYEB60JHeOeF616Ul9RTc
-        I877oROxa8yRGq8Dfejusi9WuQthX8IOO9YCxlOa+D/zzO4F7z3qxYLg4j8bcw8qLpnRCr
-        k2JGKZy+VmbFW7U658037+PJFYawtQaVKrrZjiefvmh0IbJ3HUMNqbKh6ljHYUOS1PYpxq
-        fT++mYDNc6wx4Fg4ogVUv82Sh78yEnwH+ZJwtDIcd69Hg9ffSQJBRjsO2Yvhyg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634206882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1vPk+5UQWcz+Ur20Qebsfj4oslp4ZyN/IcZoWC4lt2Q=;
-        b=UtZzHVaohfIVm/F7sal/oMI44AbGPgrVWb4hHFNdv6s6vRbUntedcL81fDTtolALvBpgSo
-        hyzbsX0yeH7Hl7DQ==
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
+        Thu, 14 Oct 2021 06:26:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50016C061570;
+        Thu, 14 Oct 2021 03:24:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Fx9cLhN7mOpr+grnv3F8YGfL7yLYIEU/n5hQtUEVSyY=; b=HBIQ7Jv1D7PPTEog37ZzHEDdD4
+        fXw09We7EjdRG/JsM2auCONGNaJeVYxByvJTR0BBLKpQ50E0jtBIQ7oQQffEBpR9ZVVLPtqljJ8mV
+        UeQqOkDFaU5AKBy/93IfRosKVg5rftVMdtvUtKocfd4a/yCtssToumA9HK42YLAG2zchyc6OzD29W
+        TZD+lj0UpmmwgtcRMFDUk79nkNmdTdewozr/yxZmM+S2kwLrMfhug+3aK2WS962VeMVFclKDzGE4i
+        mYIfeZ70gxEXEZ3S6iJZ5hy6+VvSJWqPRql0cEAiAN5VwrIhTaLUtfVC7Z8WdlVFsV1XiYhU8mWFt
+        YnObZJxA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1maxsY-008FhE-QL; Thu, 14 Oct 2021 10:22:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 59FB93001C0;
+        Thu, 14 Oct 2021 12:22:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 45B2C2008CB91; Thu, 14 Oct 2021 12:22:26 +0200 (CEST)
+Date:   Thu, 14 Oct 2021 12:22:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 08/11] x86/tdx: Wire up KVM hypercalls
-In-Reply-To: <20211009053747.1694419-9-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-9-sathyanarayanan.kuppuswamy@linux.intel.com>
-Date:   Thu, 14 Oct 2021 12:21:21 +0200
-Message-ID: <87ilxz7vq6.ffs@tglx>
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v5 01/15] objtool: Add CONFIG_CFI_CLANG support
+Message-ID: <YWgE4iTPGr/ruu8e@hirez.programming.kicks-ass.net>
+References: <20211013181658.1020262-1-samitolvanen@google.com>
+ <20211013181658.1020262-2-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013181658.1020262-2-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08 2021 at 22:37, Kuppuswamy Sathyanarayanan wrote:
-> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+On Wed, Oct 13, 2021 at 11:16:44AM -0700, Sami Tolvanen wrote:
+> diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+> index 1f2ae708b223..5fe31523e51f 100644
+> --- a/tools/objtool/arch/x86/decode.c
+> +++ b/tools/objtool/arch/x86/decode.c
+> @@ -63,6 +63,23 @@ bool arch_callee_saved_reg(unsigned char reg)
+>  	}
+>  }
 >  
->  #ifdef CONFIG_KVM_GUEST
-> @@ -32,6 +34,10 @@ static inline bool kvm_check_and_clear_guest_paused(void)
->  static inline long kvm_hypercall0(unsigned int nr)
->  {
->  	long ret;
-> +
-> +	if (cc_platform_has(CC_ATTR_GUEST_TDX))
-> +		return tdx_kvm_hypercall(nr, 0, 0, 0, 0);
-
-So if TDX is not enabled in Kconfig this cannot be optimized out unless
-CC_PLATFORM is disabled as well. But what's worse is that every
-hypercall needs to call into cc_platform_has().
-
-None of the hypercalls is used before the early TDX detection. So we can
-simply use
-
-       if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-
-here, right? Then you add X86_FEATURE_TDX_GUEST to the disabled feature
-bits correctly and all of the above is solved.
-
-Hmm?
- 
-> +#if defined(CONFIG_KVM_GUEST) && defined(CONFIG_INTEL_TDX_GUEST)
-> +static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
-> +				     unsigned long p2, unsigned long p3,
-> +				     unsigned long p4)
+> +unsigned long arch_cfi_section_reloc_offset(struct reloc *reloc)
 > +{
-> +	struct tdx_hypercall_output out;
-> +	u64 err;
+> +	if (!reloc->addend)
+> +		return 0;
 > +
-> +	err = __tdx_hypercall(TDX_HYPERCALL_VENDOR_KVM, nr, p1, p2,
-> +			      p3, p4, &out);
+> +	if (reloc->type == R_X86_64_PC32 || reloc->type == R_X86_64_PLT32)
+> +		return reloc->addend + 4;
 > +
-> +	/*
-> +	 * Non zero return value means buggy TDX module (which is fatal).
-> +	 * So use BUG_ON() to panic.
-> +	 */
-> +	BUG_ON(err);
+> +	return reloc->addend;
+> +}
 > +
-> +	return out.r10;
+> +unsigned long arch_cfi_jump_reloc_offset(unsigned long offset)
+> +{
+> +	/* offset to the relocation in a jmp instruction */
+> +	return offset + 1;
+> +}
+> +
+>  unsigned long arch_dest_reloc_offset(int addend)
+>  {
+>  	return addend + 4;
+> diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+> index b18f0055b50b..cd09c93c34fb 100644
+> --- a/tools/objtool/elf.c
+> +++ b/tools/objtool/elf.c
+
+> @@ -575,6 +580,49 @@ static int read_rela_reloc(struct section *sec, int i, struct reloc *reloc, unsi
+>  	return 0;
+>  }
+>  
+> +/*
+> + * CONFIG_CFI_CLANG replaces function relocations to refer to an intermediate
+> + * jump table. Undo the conversion so objtool can make sense of things.
+> + */
+> +static int fix_cfi_relocs(const struct elf *elf)
+> +{
+> +	struct section *sec;
+> +	struct reloc *reloc;
+> +
+> +	list_for_each_entry(sec, &elf->sections, list) {
+> +		list_for_each_entry(reloc, &sec->reloc_list, list) {
+> +			struct reloc *cfi_reloc;
+> +			unsigned long offset;
+> +
+> +			if (!reloc->sym->sec->cfi_jt)
+> +				continue;
+> +
+> +			if (reloc->sym->type == STT_SECTION)
+> +				offset = arch_cfi_section_reloc_offset(reloc);
+> +			else
+> +				offset = reloc->sym->offset;
+> +
+> +			/*
+> +			 * The jump table immediately jumps to the actual function,
+> +			 * so look up the relocation there.
+> +			 */
+> +			offset = arch_cfi_jump_reloc_offset(offset);
+> +			cfi_reloc = find_reloc_by_dest(elf, reloc->sym->sec, offset);
+> +
+> +			if (!cfi_reloc || !cfi_reloc->sym) {
+> +				WARN("can't find a CFI jump table relocation at %s+0x%lx",
+> +					reloc->sym->sec->name, offset);
+> +				return -1;
+> +			}
+> +
+> +			reloc->sym = cfi_reloc->sym;
+> +			reloc->addend = 0;
+> +		}
+> +	}
+> +
+> +	return 0;
 > +}
 
-Can we make that a proper exported function (instead of
-tdx_kvm_hypercall) so we don't end up with the very same code inlined
-all over the place?
+If that section ever gets modified and we end up running
+elf_rebuild_reloc_section() on it, we're in trouble, right?
 
-Thanks,
-
-        tglx
-
+Do we want a fatal error in elf_rebuild_reloc_section() when ->cfi_jt is
+set?
