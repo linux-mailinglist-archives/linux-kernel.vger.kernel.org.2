@@ -2,123 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472C742D5EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9914D42D5EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhJNJY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:24:57 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:39240 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229967AbhJNJYz (ORCPT
+        id S229970AbhJNJ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhJNJ1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:24:55 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0UrnMW2X_1634203363;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UrnMW2X_1634203363)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 14 Oct 2021 17:22:45 +0800
-Subject: Re: [PATCH v3 1/2] ftrace: disable preemption between
- ftrace_test_recursion_trylock/unlock()
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-References: <609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com>
- <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
- <alpine.LSU.2.21.2110141108150.23710@pobox.suse.cz>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <d293a0d2-9864-3f92-a333-e29d919d5a02@linux.alibaba.com>
-Date:   Thu, 14 Oct 2021 17:22:43 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Thu, 14 Oct 2021 05:27:04 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E34C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:25:00 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id r134so2896096iod.11
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tvYqhKlN3mlW9ztslBa/+DpoQ7H6AUrjlR5LoGl1xvc=;
+        b=bTUe9pCkrYMUnSpFwP+weJh1W6Q9nigoaqe+GziaEZU7OQKw7lO/iNLorQdtnUYyc7
+         rFsIHBPMWoFWMWCJEgFFwx6y/tvI3xVI974II8Yim4RMAQ1VRZ3r6nUmKY9aY113JuqM
+         dfnmH5Y3cXRhp7DE5C1CvckztsGFTp0YvLkR2Jt44bMydPTB4MaAU2Ki3AU6seB0ATvd
+         +kNj1IID3vkuBfeknKLxzjFpSLGWBlXLKlNNR+BZtPuxc7il4yAereJ1IEXPp/0v2BM5
+         2nWMg3+vbH3PTi/70pKff1hUF6cxx2Km7jd85PoZbuyR+i9XVBWuNPksLdNtKCEKvmgO
+         6KdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tvYqhKlN3mlW9ztslBa/+DpoQ7H6AUrjlR5LoGl1xvc=;
+        b=OGEJZIZ7S5cwobGZdSRt6DCPYqYKTghcsS9ETmGYCnjsWKqq1cDZ66003so48KEzh9
+         frgeG6o5tXX+Z9AhWTeph4oYp2v3oE7jjvyS+kPvH8lnd45Qw+GgE1Tq5KK5C5IH1ypN
+         MddC8QeoY9ISdDTMtSeujeZ5IyaX628QnQYPsdWOo3vRDPjzwfQSBXVSYR48Ekp1Xakj
+         Sr3mzj+NQd2bQPNnViJducqPK1GRldErSGEPnXqRTBqGjsOZ0+xlahTl1VnIbddotaGK
+         zplWsbP5rUqiNWs7qh0tNjHRxWp1P+G5z6/uyrZe3GE5nq6yhW1xff3RNHGpOdZMlYDn
+         H2bQ==
+X-Gm-Message-State: AOAM531i7dfvy8/IWZstS73+TWr3pxzAnAHJ3nJTBqUezygEeWpRST2n
+        bswB06UeBW+MzeTj/A8KjLJJqwGTphI1xWUjAPM=
+X-Google-Smtp-Source: ABdhPJxF3FVc/1d1Qv/qOW3DuBeBeQCniIEH3ZELgm+/aJSbOEYfL2d4pzcbrf3QTfrVcJAWfFCd0y8Ef/HiC8pHe4Y=
+X-Received: by 2002:a5d:9493:: with SMTP id v19mr1572227ioj.34.1634203499859;
+ Thu, 14 Oct 2021 02:24:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.21.2110141108150.23710@pobox.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211010102429.99577-4-laoar.shao@gmail.com> <20211014072707.GA18719@xsang-OptiPlex-9020>
+In-Reply-To: <20211014072707.GA18719@xsang-OptiPlex-9020>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 14 Oct 2021 17:24:23 +0800
+Message-ID: <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
+Subject: Re: [sched.h] 317419b91e: perf-sanity-tests.Parse_sched_tracepoints_fields.fail
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        aubrey.li@linux.intel.com, yu.c.chen@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 14, 2021 at 3:08 PM kernel test robot <oliver.sang@intel.com> wrote:
+>
+>
+>
+> Greeting,
+>
+> FYI, we noticed the following commit (built with gcc-9):
+>
+> commit: 317419b91ef4eff4e2f046088201e4dc4065caa0 ("[PATCH v3 3/4] sched.h: extend task comm from 16 to 24 for CONFIG_BASE_FULL")
+> url: https://github.com/0day-ci/linux/commits/Yafang-Shao/task_struct-extend-task-comm-from-16-to-24-for-CONFIG_BASE_FULL/20211010-182548
+> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 7fd2bf83d59a2d32e0d596c5d3e623b9a0e7e2d5
+>
+> in testcase: perf-sanity-tests
+> version: perf-x86_64-7fd2bf83d59a-1_20211010
+> with following parameters:
+>
+>         perf_compiler: clang
+>         ucode: 0xde
+>
+>
+>
+> on test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz with 32G memory
+>
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+>
+>
+>
+>
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+>
+> 2021-10-13 18:00:46 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-317419b91ef4eff4e2f046088201e4dc4065caa0/tools/perf/perf test 13
+> 13: DSO data reopen                                                 : Ok
+> 2021-10-13 18:00:46 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-317419b91ef4eff4e2f046088201e4dc4065caa0/tools/perf/perf test 14
+> 14: Roundtrip evsel->name                                           : Ok
+> 2021-10-13 18:00:46 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-317419b91ef4eff4e2f046088201e4dc4065caa0/tools/perf/perf test 15
+> 15: Parse sched tracepoints fields                                  : FAILED!
 
 
-On 2021/10/14 下午5:13, Miroslav Benes wrote:
->> diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
->> index e8029ae..b8d75fb 100644
->> --- a/kernel/livepatch/patch.c
->> +++ b/kernel/livepatch/patch.c
->> @@ -49,14 +49,16 @@ static void notrace klp_ftrace_handler(unsigned long ip,
->>
->>  	ops = container_of(fops, struct klp_ops, fops);
->>
->> +	/*
->> +	 *
-> 
-> This empty line is not useful.
-> 
->> +	 * The ftrace_test_recursion_trylock() will disable preemption,
->> +	 * which is required for the variant of synchronize_rcu() that is
->> +	 * used to allow patching functions where RCU is not watching.
->> +	 * See klp_synchronize_transition() for more details.
->> +	 */
->>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
->>  	if (WARN_ON_ONCE(bit < 0))
->>  		return;
->> -	/*
->> -	 * A variant of synchronize_rcu() is used to allow patching functions
->> -	 * where RCU is not watching, see klp_synchronize_transition().
->> -	 */
->> -	preempt_disable_notrace();
->>
->>  	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
->>  				      stack_node);
->> @@ -120,7 +122,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
->>  	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
->>
->>  unlock:
->> -	preempt_enable_notrace();
->>  	ftrace_test_recursion_unlock(bit);
->>  }
-> 
-> Acked-by: Miroslav Benes <mbenes@suse.cz>
-> 
-> for the livepatch part of the patch.
-> 
-> I would also ask you not to submit new versions so often, so that the 
-> other reviewers have time to actually review the patch set.
-> 
-> Quoting from Documentation/process/submitting-patches.rst:
-> 
-> "Wait for a minimum of one week before resubmitting or pinging reviewers - 
-> possibly longer during busy times like merge windows."
+That issue is caused by another hardcode 16 ...
 
-Thanks for the Ack and suggestion, will take care from now on :-)
+Seems we should make some change as below,
 
-Regards,
-Michael Wang
+diff --git a/tools/perf/tests/evsel-tp-sched.c
+b/tools/perf/tests/evsel-tp-sched.c
+index f9e34bd26cf3..401a737b1d85 100644
+--- a/tools/perf/tests/evsel-tp-sched.c
++++ b/tools/perf/tests/evsel-tp-sched.c
+@@ -42,7 +42,7 @@ int test__perf_evsel__tp_sched_test(struct test
+*test __maybe_unused, int subtes
+                return -1;
+        }
 
-> 
-> Thanks
-> 
-> Miroslav
-> 
+-       if (evsel__test_field(evsel, "prev_comm", 16, false))
++       if (evsel__test_field(evsel, "prev_comm", TASK_COMM_LEN, false))
+                ret = -1;
+
+        if (evsel__test_field(evsel, "prev_pid", 4, true))
+@@ -54,7 +54,7 @@ int test__perf_evsel__tp_sched_test(struct test
+*test __maybe_unused, int subtes
+        if (evsel__test_field(evsel, "prev_state", sizeof(long), true))
+                ret = -1;
+
+-       if (evsel__test_field(evsel, "next_comm", 16, false))
++       if (evsel__test_field(evsel, "next_comm", TASK_COMM_LEN, false))
+                ret = -1;
+
+        if (evsel__test_field(evsel, "next_pid", 4, true))
+@@ -72,7 +72,7 @@ int test__perf_evsel__tp_sched_test(struct test
+*test __maybe_unused, int subtes
+                return -1;
+        }
+
+-       if (evsel__test_field(evsel, "comm", 16, false))
++       if (evsel__test_field(evsel, "comm", TASK_COMM_LEN, false))
+                ret = -1;
+
+        if (evsel__test_field(evsel, "pid", 4, true))
+
+
+> 2021-10-13 18:00:46 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-317419b91ef4eff4e2f046088201e4dc4065caa0/tools/perf/perf test 16
+> 16: syscalls:sys_enter_openat event fields                          : Ok
+>
+>
+>
+> To reproduce:
+>
+>         git clone https://github.com/intel/lkp-tests.git
+>         cd lkp-tests
+>         sudo bin/lkp install job.yaml           # job file is attached in this email
+>         bin/lkp split-job --compatible job.yaml # generate the yaml file for lkp run
+>         sudo bin/lkp run generated-yaml-file
+>
+>         # if come across any failure that blocks the test,
+>         # please remove ~/.lkp and /lkp dir to run from a clean state.
+>
+>
+>
+> ---
+> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
+> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
+>
+> Thanks,
+> Oliver Sang
+>
+
+
+-- 
+Thanks
+Yafang
