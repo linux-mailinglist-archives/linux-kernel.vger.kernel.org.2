@@ -2,228 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5186942D06E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C9142D074
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhJNCc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 22:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbhJNCc2 (ORCPT
+        id S229984AbhJNCd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 22:33:56 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:62162 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229834AbhJNCdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 22:32:28 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8C0C061570;
-        Wed, 13 Oct 2021 19:30:24 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id kk10so3680309pjb.1;
-        Wed, 13 Oct 2021 19:30:24 -0700 (PDT)
+        Wed, 13 Oct 2021 22:33:54 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19E0a8kP028900;
+        Thu, 14 Oct 2021 02:30:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=i78HiKmTZdhZFsnbNX36HsRC1BzZURvzsKRMWVCj64o=;
+ b=a4IQIoskmL2GKa767Ge7sUdNQk77nqaJE/2heFZZV6UGc5RpPz5hKuOQ/MZ6CRJ0AcwG
+ YASfWLakuNad0gDIKsDmg/eMFUjl4Edn0Dj1jAVrLuY/DN1FNCKyl3IBfuhjc1cD6J0B
+ DdlkwagZxp8GcK3DM3TuCbruohiD4iFOUM5OZzaypEwFcjVYuf10+OGrAN9tKMz+jvEl
+ L6/n7+GkgIbvrrRNEAHkzDj6Mo7RIUibNWtgA21rpvP39PP7dOCvNA9gp1bOFY+SS/jH
+ M+42AvVGSF47zRg0BJv36mGABY6vNdYiAJF0PM+FzXumUnKWNsAcq5cl2i3pc0kxt7kc Ww== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bnkbkfy7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Oct 2021 02:30:40 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19E2FCAs175787;
+        Thu, 14 Oct 2021 02:30:37 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47])
+        by userp3020.oracle.com with ESMTP id 3bkyvd6a66-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Oct 2021 02:30:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f2ETnoAc75oAqY/lHP6R1edyoeBc1J4u6qJe1fJ01UUulTaUdOaDJ9mHNHm1W4jp0ZqpI+ggvPbzn9Ty+BsyZn8kI9bIu/QFdK5CL0X3vik51o0B2iwN7WtNQlLvzn1Nvkc6dYQalCm+2uRGblzgXukkjnDbu1Ai7xYvIHPN2z0YtCFen5yIYHmcynvuXlko4KTiEgIsrzz40eOvd832fuSf1MZNBW6YUDzUHdUUJxHORJK4RjgU6TQEmtASTEYUhawBnIoNTt80ZdttJ0xi3Q+L+ck8JQlNIIr/ktD0OoGMSogxypgexHWMikQRZ8IaUIVb3YGHJjj4BxmDLqg/UA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=i78HiKmTZdhZFsnbNX36HsRC1BzZURvzsKRMWVCj64o=;
+ b=MgIykd0p90J0C176uUrUVIYsRyOwC6h1uaEKF1aktrjD6deJbThGY2bAPPat5PLODBoWEaQlRFi7M9VDOykLk2fiOGueqA9y0uASfQyDe30MwP9zFb/8eSIRtk8IKewruJkKBNNmwiqdtFCzEQ5Rohavj7DF2uE4xBYSe0602cz9MeDShYl7VBsnjxtw0E8OPE0EUupIH6YyartE+7AL7sK4zJ/lETNbJuHeoRv+Vq/s+c1CQvZ0VnwU+RyPuH8VMu8SQDE72NA4Ql0yOY3TZz3eJckZEGjuOHBiYO+nIFy+XUCbd/bVg6BXNCzWvDzgnwqZrKqX6gMcUacpAGPpfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=5TfSYwPVCreRqvYRDnReTo0UAgBThbgMSWbbZKWTk3E=;
-        b=Ivid6cDDH8YkHeViErsuuGUbJMc8cr+ewB6vehMrtEttFaP1ESEqAVzLFymLBCJGqw
-         kmAU59iV8izS9rtoCC5fOO44W5HgnhAMSOPqu2UhSDKO9WE7NZFHq8ySML27SbM4f/1T
-         RjBHGkePT3SCdSVK6ybzacqjc+2SdKymhZXCPmCCKyjI9gXpug41Gjvju463Phr41A3Q
-         12uSaj6OAGRBYwssBfQ6fb4AqF2EJ7UxicbEAB1Qr2/tHakbYRYMJLmATQqumooGaAt8
-         TCrIHA7BWQ9I9Zo8PEy034E49OeP+JENWCJ3n2KvXpX+N/tEBJ96NaLp6Nt1N2jGvpMr
-         kNHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=5TfSYwPVCreRqvYRDnReTo0UAgBThbgMSWbbZKWTk3E=;
-        b=N0+wFN55mijDyZb/Q7xzd/TLZ8NSr+bMy/fp1gvpS9Rf5CLKK0eHKDc/BsAVOloJOs
-         46DXJAlIN8NkoxCpSrixdhEQp3QqU0KLMX2rd76da44qf2nGXIdlaUZFaoqzK0IuXdgS
-         8tztOGuuXUOJ0+ji/MYTgqg88yEahFo3wprNXE41NTnr4eOajj/nVT0UxrQIibDtkEQq
-         bVF7Ymdm8YMcPCQ7hEjQqToJ328G4KXRyepZg5on8Rbgs1h+LKYTN13EaK9PsTCe5bEN
-         C5c+zSnoG4q9Vf/hkUgfjWRkHi6OQaT7dWjrokIQ1kNZlLrPwVWvTILWzRnWAkJJBr+g
-         m6zg==
-X-Gm-Message-State: AOAM533HulcQjRnD/+AHvRibboXCoExGZ8uQNsPtR1TEHuD/zNZFNOr9
-        0XABaIypPmE+8XFT6Ms8kXIjtnPEqWgOoPIVd7ovSdOGD4Ul+QM=
-X-Google-Smtp-Source: ABdhPJwEkp01ZY+81HXvtoTEZBS7OLKcIpjjXUtC0l3MIKm5lYWR6x1MhqIc4OTpWJBUF1W81t1fTA2p6j92V+rKwf4=
-X-Received: by 2002:a17:902:e5cb:b0:13f:25b7:4d50 with SMTP id
- u11-20020a170902e5cb00b0013f25b74d50mr2605248plf.38.1634178624150; Wed, 13
- Oct 2021 19:30:24 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i78HiKmTZdhZFsnbNX36HsRC1BzZURvzsKRMWVCj64o=;
+ b=ea3EX896RFgJHuS3Xtk5HEiPg6Iey9p9iB9Xiw+qEvt/CzQBYC0STx+i27BnLpt1IEQEbMRQRj4V4uS8H8J+K6t4ANXR0FtnpdDxo/3i5yQZI15Ux3w9LKqzW23n20IZS/spl7W6EKZ5MrFPGzXwB2YKe8yq2SYA4E9Fp8YPKyo=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by SJ0PR10MB5405.namprd10.prod.outlook.com (2603:10b6:a03:3bc::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15; Thu, 14 Oct
+ 2021 02:30:35 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::bc59:71de:1590:cbf5]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::bc59:71de:1590:cbf5%7]) with mapi id 15.20.4587.026; Thu, 14 Oct 2021
+ 02:30:35 +0000
+Subject: Re: [PATCH] hugetlb: Support node specified when using cma for
+ gigantic hugepages
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>,
+        akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, guro@fb.com, corbet@lwn.net,
+        yaozhenguo1@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <1633843448-966-1-git-send-email-baolin.wang@linux.alibaba.com>
+ <6bd3789f-4dee-a184-d415-4ad77f0f98b7@oracle.com>
+ <326ece39-a6f5-26ce-827b-68272525e947@linux.alibaba.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <3858dbb6-3353-749e-6867-a5d6046e2f1a@oracle.com>
+Date:   Wed, 13 Oct 2021 19:30:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <326ece39-a6f5-26ce-827b-68272525e947@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR1701CA0004.namprd17.prod.outlook.com
+ (2603:10b6:301:14::14) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Thu, 14 Oct 2021 10:30:13 +0800
-Message-ID: <CACkBjsYuWu4JdnBF8H_jo0s0AD-UQD-r8kr-JRjgepsVgD18=w@mail.gmail.com>
-Subject: INFO: task hung in io_wqe_worker
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from [192.168.2.123] (50.38.35.18) by MWHPR1701CA0004.namprd17.prod.outlook.com (2603:10b6:301:14::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Thu, 14 Oct 2021 02:30:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 823197af-81f7-4db3-e1b4-08d98eba99f5
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB5405:
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB54058A482481BD3D547380E2E2B89@SJ0PR10MB5405.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:451;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aFnhuT1wBZEQLllFkXF8F78LqCi7T1Qb1wpOjVuktEUeZQpIr8dlFrC3F4cJkm1r3nBzeSYMfuHSztFZonzXC7JV2WbB/8bbjo9ETCWF0TkcgWC5wO7Y/MtB0nnAHCgrpatu6nnP8NqZKtIgr0GlLAptoI3Vm4wk7wcBRCcjO86Hd0gW3HmNFiBioi088X82o9/zFiAc+lCZWYpFK+zx+7d3p0MYYHObO9Xmc5TDhoAP0rglg8FQwk7+YAww/wXtbkKbaS9NNSzZQ2IvKhwpSTGm7EV3ZdF9TMPNrxXakuOwgPOVsoequlrluxaSrNXEuVX+fNb6FXpGLKYHVoxx1XCnAKFxTcPPZtZKTg1tpSaC9tnMzh8u/v89MeY3sSDorSk5BqX99MXfSbRl8DJS+z/hoW7NaCPZhnTS91U65UIXNj9UOG9nTY5z278eh5JSOQJ8wBEWsjMcVPlXp9AiDXGF8VSGhyoDHOKZP8AS9vckOewAjthLYQRXz1id2KpcW4RTltRr2tUYl7Ryt1KHMJIOmkyd2kQ3r7ewNiOKnyZpSwu6bQrzKzweDrmFGFkpIIcsa+XkO3NCThRoZNHpHKB60hvZVbhrMvvov2zksgGnRgpHqaIGT7WyOkTB/dtTD65YtZ5jYx4Fsb1+/40N5IrbTbCM1BYZsU0imSEkzU7OhhTLDXfeHUmuxJTWYKZnP59rVWRs7wyuk8KruRfrW/PPrlvG1fiJJ0ndL+E496V1AqljiAJ8CAfgVNvIzZ2Vm1e9ZYGCUtuINWI5sF6YFLaqIzuTv1GbjawfeN0VU8OO5YoP6DS0UPY8+MQpZ0ppsJTiNHFd1uFS3bvdIKkmfmjCNxJVhyXzp352I3tpQYQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8936002)(316002)(31686004)(26005)(16576012)(2616005)(44832011)(966005)(31696002)(186003)(86362001)(508600001)(956004)(5660300002)(66946007)(8676002)(4326008)(66556008)(66476007)(38350700002)(53546011)(38100700002)(6486002)(83380400001)(2906002)(36756003)(52116002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NWN2M0JjejhlUWhHYXBLWEVDTnlzWjQwNFJWd3M5RGdFVzdFaksxcVB4OWpZ?=
+ =?utf-8?B?M2xUN3NFNVI4UGtSelV4VUtwTm5BM09STVNETUFTWVExbDE5QnJ5ZXNYRzlQ?=
+ =?utf-8?B?NzlMNmhVZzVUZlY1aTFJTzRZWHNvanlZeGJZUHVrS1hma3dPVTFVYktsU1Nn?=
+ =?utf-8?B?d1Y5YmR3VEdNQWs5b01RdjhGRXFERXFYWG9qWEZ6UFRlN0YzeWc5akVEdzMv?=
+ =?utf-8?B?V3JGK1dJUFBIb0hiY1IvWkFZM1E1VmhFTzA5Vk5MdWYrTWNLMnp0ZmtZY1Fm?=
+ =?utf-8?B?V0hFd2drNmtkTUl3bEFJK3V3eDNidHBxRitCck55K2libzUvWWtGVUFYSmdK?=
+ =?utf-8?B?aHhub2JFR3NhQnphdE0rOTVhSUVpcVVzOG1YR05ZaW8xZHRaRmRhOGF4bE1T?=
+ =?utf-8?B?UG9kUSs2U08wc1U3WFJqSkp3bXJnREJZTjB6WUVBekZYTmhlTWN0K0lVUVJn?=
+ =?utf-8?B?cko4QkpuN2U0WThPMkY0cmRvUVBUbkk3RUlyVUhQdDJQam5sOGk3ekxyS2JP?=
+ =?utf-8?B?VWhQSDg4bDBuWDhpT1JNVGducGtKOXE4NGlJUXV0aHJBMVdvRW95YWZUZE8z?=
+ =?utf-8?B?YXRjOVRxcG96SXdXazBTc2VUbVk4K0l6eURKZzkyL0o4UmhuemFSWHNBemFU?=
+ =?utf-8?B?WmcycUVXdXc3K2o1cUVtdFArQWIrNm9RUXB5V2xMVGlaTHA4OEhueXAvSzlT?=
+ =?utf-8?B?TW5GaVdqOFQ4TGFwZ1duTW5Yc1J6Qis0V2UxNTArdW1qS2tiazdLRDl0eFpy?=
+ =?utf-8?B?NkNFcHZxU3BLaDIwQkFmSnZBYjhKekQ2UE5CaGFZMWMyMFdYRVpsenBoZVFr?=
+ =?utf-8?B?dHAyNHBlcGhrNE9haGg3akpOd3BWd0NEN3d1dzJMaFZVaWFUeml2dUs1MUlJ?=
+ =?utf-8?B?Sk41KzljOVdLWEtRTGZIaFVoR1VVbjZVaXM5ZWFiWU8ra1RHUHFjWnAxUnJN?=
+ =?utf-8?B?NjZCcmpQYUEwd2tCOWgyUnh2cEpqNVNRRms2WUJ5VVZlRyswS0RGQnp0cUN6?=
+ =?utf-8?B?TXJ0UE00NHVxQ3Nxb0tyMG9jNHNEcWdHeTJHTEtHZSs4REY0c2VuV05OUXRG?=
+ =?utf-8?B?Vk12QkM5TldGL214QXFlZlJJYmNleUR2WWh4OVU1aU15ekpaenQwamlBY1pC?=
+ =?utf-8?B?V09QUVI0V0FpczA5UWcxWTV4M1d0ZHNtdkR5OXI3dVBmU0lRb0g4UjlBNVRN?=
+ =?utf-8?B?K1NvYis2YnBtTmliV3ptb2NFWSs0cGpVTTNtekNtWmJMMUdjeDl5cFQ0NnV5?=
+ =?utf-8?B?Y1BhTHB2TFdrUi9TQkwxVUVWU2ZOdGIyY2E1SUc3Q3BhNElrZ3l6cTc0MS9v?=
+ =?utf-8?B?MXVRSGJqRkhudVZtNXMraGtkREFpK1ZIZXdwcGc5N0xXck82d1BCZzFuMFJm?=
+ =?utf-8?B?bjBoMThQeU9lbS9NYW9FU2JTVmJtcHIrMDBKdW5Fd3FMQzRmR3V1d005Um1j?=
+ =?utf-8?B?VVpFWFNITDZseHN3dXBIN0FBNzNIWGJvSGIwcGJybWVWYytvZ1hRZUdOZTQ0?=
+ =?utf-8?B?NFQxdEdzZVp3OHdLQ2NHMU1rY1JZc1dtbm94YjVxUG5wbWNwUVBOTUxqYklt?=
+ =?utf-8?B?ek9VS3lXQzMwbTNUQW5XcnhvRVBwRTNCNDQvWE1XeE9NYWI3NzZwVXRCM2ZI?=
+ =?utf-8?B?WlI4RU9tQkNpNk52aHZHRWJBU1RiREtjdVhJR1hUL0tjdi81aDZ5SThYSTA0?=
+ =?utf-8?B?VWYrT2E0MmVVTDlJUzdiQ2s1a0hiWVYvZ1FBYmtMNmlyWmdQd0FDRWFaVW1K?=
+ =?utf-8?Q?6h5MEInvtmphI626770Zwtw9zxjkrwpH6AATG/Z?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 823197af-81f7-4db3-e1b4-08d98eba99f5
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 02:30:35.1618
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NiHNbrh706gjNfiEM2n4IuPIgpzSHRDUu05JwKBN+8vAKeN7SgTxuwO9a3hABPWxj6YbBDTmowVFqvKFiGa6AA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5405
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10136 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ adultscore=0 bulkscore=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110140014
+X-Proofpoint-GUID: -VNIRMSWhexqjgEM2tG9ipgP6zYtPvkz
+X-Proofpoint-ORIG-GUID: -VNIRMSWhexqjgEM2tG9ipgP6zYtPvkz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 10/13/21 7:23 PM, Baolin Wang wrote:
+> 
+> 
+> On 2021/10/14 6:06, Mike Kravetz wrote:
+>> On 10/9/21 10:24 PM, Baolin Wang wrote:
+>>> Now the size of CMA area for gigantic hugepages runtime allocation is
+>>> balanced for all online nodes, but we also want to specify the size of
+>>> CMA per-node, or only one node in some cases, which are similar with
+>>> commit 86acc55c3d32 ("hugetlbfs: extend the definition of hugepages
+>>> parameter to support node allocation")[1].
+>>>
+>>> Thus this patch adds node format for 'hugetlb_cma' parameter to support
+>>> specifying the size of CMA per-node. An example is as follows:
+>>>
+>>> hugetlb_cma=0:5G,2:5G
+>>>
+>>> which means allocating 5G size of CMA area on node 0 and node 2
+>>> respectively.
+>>>
+>>> [1]
+>>> https://lkml.kernel.org/r/20211005054729.86457-1-yaozhenguo1@gmail.com
+>>>
+>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>>> ---
+>>>   Documentation/admin-guide/kernel-parameters.txt |  6 +-
+>>>   mm/hugetlb.c                                    | 79 +++++++++++++++++++++----
+>>>   2 files changed, 73 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>>> index 3ad8e9d0..a147faa5 100644
+>>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>>> @@ -1587,8 +1587,10 @@
+>>>               registers.  Default set by CONFIG_HPET_MMAP_DEFAULT.
+>>>         hugetlb_cma=    [HW,CMA] The size of a CMA area used for allocation
+>>> -            of gigantic hugepages.
+>>> -            Format: nn[KMGTPE]
+>>> +            of gigantic hugepages. Or using node format, the size
+>>> +            of a CMA area per node can be specified.
+>>> +            Format: nn[KMGTPE] or (node format)
+>>> +                <node>:nn[KMGTPE][,<node>:nn[KMGTPE]]
+>>>                 Reserve a CMA area of given size and allocate gigantic
+>>>               hugepages using the CMA allocator. If enabled, the
+>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>>> index 6d2f4c2..8b4e409 100644
+>>> --- a/mm/hugetlb.c
+>>> +++ b/mm/hugetlb.c
+>>> @@ -50,6 +50,7 @@
+>>>     #ifdef CONFIG_CMA
+>>>   static struct cma *hugetlb_cma[MAX_NUMNODES];
+>>> +static unsigned long hugetlb_cma_size_in_node[MAX_NUMNODES] __initdata;
+>>>   static bool hugetlb_cma_page(struct page *page, unsigned int order)
+>>>   {
+>>>       return cma_pages_valid(hugetlb_cma[page_to_nid(page)], page,
+>>> @@ -62,6 +63,7 @@ static bool hugetlb_cma_page(struct page *page, unsigned int order)
+>>>   }
+>>>   #endif
+>>>   static unsigned long hugetlb_cma_size __initdata;
+>>> +static nodemask_t hugetlb_cma_nodes_allowed = NODE_MASK_NONE;
+>>>     /*
+>>>    * Minimum page order among possible hugepage sizes, set to a proper value
+>>> @@ -3497,9 +3499,15 @@ static ssize_t __nr_hugepages_store_common(bool obey_mempolicy,
+>>>         if (nid == NUMA_NO_NODE) {
+>>>           /*
+>>> +         * If we've specified the size of CMA area per node,
+>>> +         * should use it firstly.
+>>> +         */
+>>> +        if (hstate_is_gigantic(h) && !nodes_empty(hugetlb_cma_nodes_allowed))
+>>> +            n_mask = &hugetlb_cma_nodes_allowed;
+>>> +        /*
+>>
+>> IIUC, this changes the behavior for 'balanced' gigantic huge page pool
+>> allocations if per-node hugetlb_cma is specified.  It will now only
+>> attempt to allocate gigantic pages on nodes where CMA was reserved.
+>> Even if we run out of space on the node, it will not go to other nodes
+>> as before.  Is that correct?
+> 
+> Right.
+> 
+>>
+>> I do not believe we want this change in behavior.  IMO, if the user is
+>> doing node specific CMA reservations, then the user should use the node
+>> specific sysfs file for pool allocations on that node.
+> 
+> Sounds more reasonable, will move 'hugetlb_cma_nodes_allowed' to the node specific allocation.
+> 
+>>>            * global hstate attribute
+>>>            */
+>>> -        if (!(obey_mempolicy &&
+>>> +        else if (!(obey_mempolicy &&
+>>>                   init_nodemask_of_mempolicy(&nodes_allowed)))
+>>>               n_mask = &node_states[N_MEMORY];
+>>>           else
+>>> @@ -6745,7 +6753,38 @@ void hugetlb_unshare_all_pmds(struct vm_area_struct *vma)
+>>>     static int __init cmdline_parse_hugetlb_cma(char *p)
+>>>   {
+>>> -    hugetlb_cma_size = memparse(p, &p);
+>>> +    int nid, count = 0;
+>>> +    unsigned long tmp;
+>>> +    char *s = p;
+>>> +
+>>> +    while (*s) {
+>>> +        if (sscanf(s, "%lu%n", &tmp, &count) != 1)
+>>> +            break;
+>>> +
+>>> +        if (s[count] == ':') {
+>>> +            nid = tmp;
+>>> +            if (nid < 0 || nid >= MAX_NUMNODES)
+>>> +                break;
+>>
+>> nid can only be compared to MAX_NUMNODES because this an early param
+>> before numa is setup and we do not know exactly how many nodes there
+>> are.  Is this correct?
+> 
+> Yes.
+> 
+>>
+>> Suppose one specifies an invaid node.  For example, on my 2 node system
+>> I use the option 'hugetlb_cma=2:2G'.  This is not flagged as an error
+>> during processing and 1G CMA is reserved on node 0 and 1G is reserved
+>> on node 1.  Is that by design, or just chance?
+> 
+> Actually we won't allocate any CMA area in this case, since in hugetlb_cma_reserve(), we will only iterate the online nodes to try to allocate CMA area, and node 2 is not in the range of online nodes in this case.
+> 
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+But, since it can not do node specifric allocations it falls through to
+the all nodes case?  Here is what I see:
 
-HEAD commit: 64570fbc14f8 Linux 5.15-rc5
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1hdBEBUsJntgG25NqJZm8rSQTgcqf5S36/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1em3xgUIMNN_-LUUdySzwN-UDPc3qiiKD/view?usp=sharing
+# numactl -H
+available: 2 nodes (0-1)
+node 0 cpus: 0 1
+node 0 size: 8053 MB
+node 0 free: 6543 MB
+node 1 cpus: 2 3
+node 1 size: 8150 MB
+node 1 free: 4851 MB
+node distances:
+node   0   1
+  0:  10  20
+  1:  20  10
 
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+# reboot
 
-INFO: task iou-wrk-13358:13360 blocked for more than 143 seconds.
-      Not tainted 5.15.0-rc5 #3
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:iou-wrk-13358   state:D stack:29952 pid:13360 ppid: 12622 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- schedule_timeout+0x5e5/0x890 kernel/time/timer.c:1857
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x17d/0x280 kernel/sched/completion.c:138
- io_worker_exit fs/io-wq.c:183 [inline]
- io_wqe_worker+0x72e/0xc90 fs/io-wq.c:597
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-INFO: lockdep is turned off.
-NMI backtrace for cpu 0
-CPU: 0 PID: 40 Comm: khungtaskd Not tainted 5.15.0-rc5 #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1e1/0x220 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
- watchdog+0xcc8/0x1010 kernel/hung_task.c:295
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 0 to CPUs 1-3:
-NMI backtrace for cpu 3
-CPU: 3 PID: 3017 Comm: systemd-journal Not tainted 5.15.0-rc5 #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:check_preemption_disabled+0x31/0x170 lib/smp_processor_id.c:16
-Code: 41 54 55 48 89 fd 53 0f 1f 44 00 00 65 44 8b 25 9d b6 ce 76 65
-8b 1d 2e 11 cf 76 81 e3 ff ff ff 7f 31 ff 89 de 0f 1f 44 00 00 <85> db
-74 11 0f 1f 44 00 00 44 89 e0 5b 5d 41 5c 41 5d 41 5e c3 0f
-RSP: 0018:ffffc9000124fee8 EFLAGS: 00000046
-RAX: 0000000000000001 RBX: 0000000000000000 RCX: 1ffffffff1adb731
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffffff89e43240 R08: ffffffff8932da7e R09: 0000000000000000
-R10: 0000000000000001 R11: fffffbfff1adb0b2 R12: 0000000000000003
-R13: ffffffff899509e0 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007fa5748518c0(0000) GS:ffff888135d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa571e89018 CR3: 0000000014595000 CR4: 0000000000350ee0
-Call Trace:
- __context_tracking_enter+0x51/0x100 kernel/context_tracking.c:70
- user_enter_irqoff include/linux/context_tracking.h:41 [inline]
- __exit_to_user_mode kernel/entry/common.c:130 [inline]
- syscall_exit_to_user_mode+0x48/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fa573de1210
-Code: 73 01 c3 48 8b 0d 98 7d 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66
-0f 1f 44 00 00 83 3d b9 c1 20 00 00 75 10 b8 00 00 00 00 0f 05 <48> 3d
-01 f0 ff ff 73 31 c3 48 83 ec 08 e8 4e fc ff ff 48 89 04 24
-RSP: 002b:00007ffc0019fba8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-RAX: 0000000000000037 RBX: 00007ffc001a2620 RCX: 00007fa573de1210
-RDX: 0000000000002000 RSI: 00007ffc001a0420 RDI: 0000000000000009
-RBP: 0000000000000000 R08: 0000000000000008 R09: 00007ffc001f00f0
-R10: 000000000001297e R11: 0000000000000246 R12: 00007ffc001a0420
-R13: 00007ffc001a2578 R14: 00005610cf4ba958 R15: 0005ce2963112ee5
-NMI backtrace for cpu 1
-CPU: 1 PID: 6291 Comm: rs:main Q:Reg Not tainted 5.15.0-rc5 #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:orc_ip arch/x86/kernel/unwind_orc.c:30 [inline]
-RIP: 0010:__orc_find+0x6f/0xf0 arch/x86/kernel/unwind_orc.c:52
-Code: 72 4d 4c 89 e2 48 29 ea 48 89 d0 48 c1 ea 3f 48 c1 f8 02 48 01
-c2 48 d1 fa 48 8d 5c 95 00 48 89 d8 48 c1 e8 03 42 0f b6 14 38 <48> 89
-d8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 48 48 63 13 48 01
-RSP: 0018:ffffc9000fe5f268 EFLAGS: 00000213
-RAX: 1ffffffff1b08658 RBX: ffffffff8d8432c4 RCX: ffffffff81d980ef
-RDX: 0000000000000000 RSI: ffffffff8df65e26 RDI: ffffffff8d8432b0
-RBP: ffffffff8d8432b0 R08: 0000000000000000 R09: ffffffff8df65e26
-R10: ffffc9000fe5f407 R11: 0000000000086088 R12: ffffffff8d8432dc
-R13: ffffffff8d8432b0 R14: ffffffff8d8432b0 R15: dffffc0000000000
-FS:  00007fbe3fbba700(0000) GS:ffff888135c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055dd85e43be0 CR3: 0000000019a84000 CR4: 0000000000350ee0
-Call Trace:
- orc_find arch/x86/kernel/unwind_orc.c:173 [inline]
- unwind_next_frame+0x33a/0x1770 arch/x86/kernel/unwind_orc.c:443
- arch_stack_walk+0x7d/0xe0 arch/x86/kernel/stacktrace.c:25
- stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- __kasan_slab_alloc+0x83/0xb0 mm/kasan/common.c:467
- kasan_slab_alloc include/linux/kasan.h:254 [inline]
- slab_post_alloc_hook+0x4d/0x4b0 mm/slab.h:519
- slab_alloc_node mm/slub.c:3206 [inline]
- slab_alloc mm/slub.c:3214 [inline]
- kmem_cache_alloc+0x150/0x340 mm/slub.c:3219
- kmem_cache_zalloc include/linux/slab.h:711 [inline]
- alloc_buffer_head+0x20/0x110 fs/buffer.c:3309
- alloc_page_buffers+0x2a5/0x820 fs/buffer.c:832
- create_empty_buffers+0x2c/0x8e0 fs/buffer.c:1560
- ext4_block_write_begin+0x10d2/0x1760 fs/ext4/inode.c:1060
- ext4_da_write_begin+0x3eb/0xad0 fs/ext4/inode.c:2969
- generic_perform_write+0x1fe/0x510 mm/filemap.c:3770
- ext4_buffered_write_iter+0x206/0x4c0 fs/ext4/file.c:269
- ext4_file_write_iter+0x42e/0x14a0 fs/ext4/file.c:680
- call_write_iter include/linux/fs.h:2163 [inline]
- new_sync_write+0x432/0x660 fs/read_write.c:507
- vfs_write+0x67a/0xae0 fs/read_write.c:594
- ksys_write+0x12d/0x250 fs/read_write.c:647
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fbe425fe1cd
-Code: c2 20 00 00 75 10 b8 01 00 00 00 0f 05 48 3d 01 f0 ff ff 73 31
-c3 48 83 ec 08 e8 ae fc ff ff 48 89 04 24 b8 01 00 00 00 0f 05 <48> 8b
-3c 24 48 89 c2 e8 f7 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007fbe3fbb9590 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007fbe30006840 RCX: 00007fbe425fe1cd
-RDX: 00000000000007e0 RSI: 00007fbe30006840 RDI: 0000000000000006
-RBP: 0000000000000000 R08: 0000000000000000 R09: 00007fbe41758487
-R10: 0000000000000000 R11: 0000000000000293 R12: 00007fbe300065c0
-R13: 00007fbe3fbb95b0 R14: 000055758f55f360 R15: 00000000000007e0
-NMI backtrace for cpu 2 skipped: idling at native_safe_halt
-arch/x86/include/asm/irqflags.h:51 [inline]
-NMI backtrace for cpu 2 skipped: idling at arch_safe_halt
-arch/x86/include/asm/irqflags.h:89 [inline]
-NMI backtrace for cpu 2 skipped: idling at default_idle+0xb/0x10
-arch/x86/kernel/process.c:716
-----------------
-Code disassembly (best guess):
-   0: 41 54                push   %r12
-   2: 55                    push   %rbp
-   3: 48 89 fd              mov    %rdi,%rbp
-   6: 53                    push   %rbx
-   7: 0f 1f 44 00 00        nopl   0x0(%rax,%rax,1)
-   c: 65 44 8b 25 9d b6 ce mov    %gs:0x76ceb69d(%rip),%r12d        # 0x76ceb6b1
-  13: 76
-  14: 65 8b 1d 2e 11 cf 76 mov    %gs:0x76cf112e(%rip),%ebx        # 0x76cf1149
-  1b: 81 e3 ff ff ff 7f    and    $0x7fffffff,%ebx
-  21: 31 ff                xor    %edi,%edi
-  23: 89 de                mov    %ebx,%esi
-  25: 0f 1f 44 00 00        nopl   0x0(%rax,%rax,1)
-* 2a: 85 db                test   %ebx,%ebx <-- trapping instruction
-  2c: 74 11                je     0x3f
-  2e: 0f 1f 44 00 00        nopl   0x0(%rax,%rax,1)
-  33: 44 89 e0              mov    %r12d,%eax
-  36: 5b                    pop    %rbx
-  37: 5d                    pop    %rbp
-  38: 41 5c                pop    %r12
-  3a: 41 5d                pop    %r13
-  3c: 41 5e                pop    %r14
-  3e: c3                    retq
-  3f: 0f                    .byte 0xf
+# dmesg | grep -i huge
+[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-5.15.0-rc4-mm1+ root=/dev/mapper/fedora_new--host-root ro rd.lvm.lv=fedora_new-host/root rd.lvm.lv=fedora_new-host/swap console=tty0 console=ttyS0,115200 audit=0 transparent_hugepage=always hugetlb_free_vmemmap=on hugetlb_cma=2:2G
+[    0.008345] hugetlb_cma: reserve 2048 MiB, up to 1024 MiB per node
+[    0.008349] hugetlb_cma: reserved 1024 MiB on node 0
+[    0.008352] hugetlb_cma: reserved 1024 MiB on node 1
+[    0.053682] Kernel command line: BOOT_IMAGE=/vmlinuz-5.15.0-rc4-mm1+ root=/dev/mapper/fedora_new--host-root ro rd.lvm.lv=fedora_new-host/root rd.lvm.lv=fedora_new-host/swap console=tty0 console=ttyS0,115200 audit=0 transparent_hugepage=always hugetlb_free_vmemmap=on hugetlb_cma=2:2G
+[    0.401648] HugeTLB: can free 4094 vmemmap pages for hugepages-1048576kB
+[    0.413681] HugeTLB: can free 6 vmemmap pages for hugepages-2048kB
+[    0.414590] HugeTLB registered 1.00 GiB page size, pre-allocated 0 pages
+[    0.415653] HugeTLB registered 2.00 MiB page size, pre-allocated 0 pages
+
+-- 
+Mike Kravetz
