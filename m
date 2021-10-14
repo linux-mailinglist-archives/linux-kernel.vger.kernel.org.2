@@ -2,172 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDFA42D96B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17F242D96E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhJNMl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:41:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:54254 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229994AbhJNMlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:41:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 04BB9D6E;
-        Thu, 14 Oct 2021 05:39:20 -0700 (PDT)
-Received: from [10.57.25.70] (unknown [10.57.25.70])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B59D73F70D;
-        Thu, 14 Oct 2021 05:39:18 -0700 (PDT)
-Subject: Re: [PATCH] coresight: trbe: Defer the probe on offline CPUs
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        mathieu.poirier@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org,
-        Bransilav Rankov <branislav.rankov@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>
-References: <20211013163323.2111579-1-suzuki.poulose@arm.com>
- <0eda15f2-e879-a7f0-dac0-c4813682608e@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <182b7f5f-f67e-9875-c4a5-26f6153a7f97@arm.com>
-Date:   Thu, 14 Oct 2021 13:39:17 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S231191AbhJNMoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:44:14 -0400
+Received: from mail.efficios.com ([167.114.26.124]:57672 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230229AbhJNMoN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 08:44:13 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 2FAE638D311;
+        Thu, 14 Oct 2021 08:42:08 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id czwbs09v8Xm8; Thu, 14 Oct 2021 08:42:06 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 413C038D310;
+        Thu, 14 Oct 2021 08:42:06 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 413C038D310
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1634215326;
+        bh=xWc4PgsuZlxMNP7hL8hq9WSvXeeebc+2sa9ZScd55oM=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=DPbD0/84bGOOLO/R2vaHmF4SPFEeCogT6PRqPSwNsP4a2c2Sqt7gHBJgpFiaERDCP
+         AkRrcwvb6fqBS/TpQTEzziLy+K+wTJsOalfBW9fHShvOoP4bYQEKnOQk225fD477a7
+         iVYyx2IRj9xPpnSo4XKvm2J+hwMh3EyEDOLwhy1GesghTYxORhMyULOiDOcpYwLu3N
+         w5/gnAFv3TRzEB3B+LVcJ3rSwVTbxbiUa82SfOhBnUsqp5tATqviJwpQ5m0p/M5Hxp
+         xTTorHdk79WtuRLP0UY4lyo702YNhi08fIXuFl0/ENMetpIiH5qbvrbHEYcRfBrwqX
+         4FqN4YdkAB25g==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ObCw-4U-kfjB; Thu, 14 Oct 2021 08:42:06 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 2054638CE49;
+        Thu, 14 Oct 2021 08:42:06 -0400 (EDT)
+Date:   Thu, 14 Oct 2021 08:42:05 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Yafang Shao <laoar.shao@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        rostedt <rostedt@goodmis.org>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        rostedt <rostedt@goodmis.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        lkp <lkp@lists.01.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark@chromium.org, christian@brauner.io,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        bristot <bristot@redhat.com>,
+        aubrey li <aubrey.li@linux.intel.com>,
+        yu c chen <yu.c.chen@intel.com>
+Message-ID: <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
+References: <20211010102429.99577-4-laoar.shao@gmail.com> <20211014072707.GA18719@xsang-OptiPlex-9020> <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com>
+Subject: Re: [sched.h] 317419b91e:
+ perf-sanity-tests.Parse_sched_tracepoints_fields.fail
 MIME-Version: 1.0
-In-Reply-To: <0eda15f2-e879-a7f0-dac0-c4813682608e@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4156 (ZimbraWebClient - FF93 (Linux)/8.8.15_GA_4156)
+Thread-Topic: 317419b91e: perf-sanity-tests.Parse_sched_tracepoints_fields.fail
+Thread-Index: H5wHRdWu73zKyeX5+STnn82RFznE0A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2021 04:28, Anshuman Khandual wrote:
-> Hi Suzuki,
-> 
-> On 10/13/21 10:03 PM, Suzuki K Poulose wrote:
->> If a CPU is offline during the driver init, we could end up causing
->> a kernel crash trying to register the coresight device for the TRBE
->> instance.
-> 
-> Which pointer deference fails here exactly ?
-> 
-> static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cpu)
-> {
->          struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
->          struct coresight_device *trbe_csdev = coresight_get_percpu_sink(cpu);
->          struct coresight_desc desc = { 0 };
->          struct device *dev;
-> 
->          if (WARN_ON(trbe_csdev))
->                  return;
-> 
->          dev = &cpudata->drvdata->pdev->dev;   <---- Fails here
-> 
-> cpudata->drvdata link gets established in arm_trbe_probe_cpu() which
-> would not have run on an offline cpu.
+----- On Oct 14, 2021, at 5:24 AM, Yafang Shao laoar.shao@gmail.com wrote:
 
-Yes, that is correct.
+> On Thu, Oct 14, 2021 at 3:08 PM kernel test robot <oliver.sang@intel.com> wrote:
+>>
+>>
+>>
+>> Greeting,
+>>
+>> FYI, we noticed the following commit (built with gcc-9):
+>>
+>> commit: 317419b91ef4eff4e2f046088201e4dc4065caa0 ("[PATCH v3 3/4] sched.h:
+>> extend task comm from 16 to 24 for CONFIG_BASE_FULL")
+>> url:
+>> https://github.com/0day-ci/linux/commits/Yafang-Shao/task_struct-extend-task-comm-from-16-to-24-for-CONFIG_BASE_FULL/20211010-182548
+>> base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git
+>> 7fd2bf83d59a2d32e0d596c5d3e623b9a0e7e2d5
+>>
+>> in testcase: perf-sanity-tests
+>> version: perf-x86_64-7fd2bf83d59a-1_20211010
+>> with following parameters:
+>>
+>>         perf_compiler: clang
+>>         ucode: 0xde
+>>
+>>
+>>
+>> on test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz
+>> with 32G memory
+>>
+>> caused below changes (please refer to attached dmesg/kmsg for entire
+>> log/backtrace):
+>>
+>>
+>>
+>>
+>> If you fix the issue, kindly add following tag
+>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>>
+>> 2021-10-13 18:00:46 sudo
+>> /usr/src/perf_selftests-x86_64-rhel-8.3-317419b91ef4eff4e2f046088201e4dc4065caa0/tools/perf/perf
+>> test 13
+>> 13: DSO data reopen                                                 : Ok
+>> 2021-10-13 18:00:46 sudo
+>> /usr/src/perf_selftests-x86_64-rhel-8.3-317419b91ef4eff4e2f046088201e4dc4065caa0/tools/perf/perf
+>> test 14
+>> 14: Roundtrip evsel->name                                           : Ok
+>> 2021-10-13 18:00:46 sudo
+>> /usr/src/perf_selftests-x86_64-rhel-8.3-317419b91ef4eff4e2f046088201e4dc4065caa0/tools/perf/perf
+>> test 15
+>> 15: Parse sched tracepoints fields                                  : FAILED!
+> 
+> 
+> That issue is caused by another hardcode 16 ...
+> 
+> Seems we should make some change as below,
+> 
+> diff --git a/tools/perf/tests/evsel-tp-sched.c
+> b/tools/perf/tests/evsel-tp-sched.c
+> index f9e34bd26cf3..401a737b1d85 100644
+> --- a/tools/perf/tests/evsel-tp-sched.c
+> +++ b/tools/perf/tests/evsel-tp-sched.c
+> @@ -42,7 +42,7 @@ int test__perf_evsel__tp_sched_test(struct test
+> *test __maybe_unused, int subtes
+>                return -1;
+>        }
+> 
+> -       if (evsel__test_field(evsel, "prev_comm", 16, false))
+> +       if (evsel__test_field(evsel, "prev_comm", TASK_COMM_LEN, false))
 
+tools/perf/tests/* contains userspace test programs. This means it gets the
+TASK_COMM_LEN from the uapi. The fix you propose won't do any good here.
+
+ftrace and perf access a description of the sched_switch tracepoint prev_comm field
+from tracefs and store it into their respective traces. The size of this field is
+derived from the kernel's TASK_COMM_LEN, which is changed by the patch triggering this
+failure. Therefore, if we strictly consider the field layout as ABI, this is an ABI break.
+However, if we consider that trace viewers should adapt to the changes in described event
+field layout, then we should tweak this test program to accept larger values of prev_comm
+field size.
+
+A simple solution would be to tweak this test program so it can adapt to the size
+change, and then figure out if any other relevant program out there notice the break.
+If it happens that this ABI break is noticed by more than an in-tree test program, then
+the kernel's ABI rules will require that this trace field size stays unchanged. This brings
+up once more the whole topic of "Tracepoints ABI" which has been discussed repeatedly in
+the past.
+
+In short, because TRACE_EVENT exposes the tracepoint layout as ABI, if any trace viewer out
+there expects a fixed-size prev_comm field for the sched_switch event, its size cannot be
+changed.
+
+Thanks,
+
+Mathieu
+
+>                ret = -1;
 > 
->>
->> e.g:
+>        if (evsel__test_field(evsel, "prev_pid", 4, true))
+> @@ -54,7 +54,7 @@ int test__perf_evsel__tp_sched_test(struct test
+> *test __maybe_unused, int subtes
+>        if (evsel__test_field(evsel, "prev_state", sizeof(long), true))
+>                ret = -1;
 > 
-> Should probably also mention the exact point of dereference failure
-> before this error message here.
+> -       if (evsel__test_field(evsel, "next_comm", 16, false))
+> +       if (evsel__test_field(evsel, "next_comm", TASK_COMM_LEN, false))
+>                ret = -1;
 > 
+>        if (evsel__test_field(evsel, "next_pid", 4, true))
+> @@ -72,7 +72,7 @@ int test__perf_evsel__tp_sched_test(struct test
+> *test __maybe_unused, int subtes
+>                return -1;
+>        }
+> 
+> -       if (evsel__test_field(evsel, "comm", 16, false))
+> +       if (evsel__test_field(evsel, "comm", TASK_COMM_LEN, false))
+>                ret = -1;
+> 
+>        if (evsel__test_field(evsel, "pid", 4, true))
+> 
+> 
+>> 2021-10-13 18:00:46 sudo
+>> /usr/src/perf_selftests-x86_64-rhel-8.3-317419b91ef4eff4e2f046088201e4dc4065caa0/tools/perf/perf
+>> test 16
+>> 16: syscalls:sys_enter_openat event fields                          : Ok
 >>
->> [    0.149999] coresight ete0: CPU0: ete v1.1 initialized
->> [    0.149999] coresight-etm4x ete_1: ETM arch init failed
->> [    0.149999] coresight-etm4x: probe of ete_1 failed with error -22
->> [    0.150085] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000050
->> [    0.150085] Mem abort info:
->> [    0.150085]   ESR = 0x96000005
->> [    0.150085]   EC = 0x25: DABT (current EL), IL = 32 bits
->> [    0.150085]   SET = 0, FnV = 0
->> [    0.150085]   EA = 0, S1PTW = 0
->> [    0.150085] Data abort info:
->> [    0.150085]   ISV = 0, ISS = 0x00000005
->> [    0.150085]   CM = 0, WnR = 0
->> [    0.150085] [0000000000000050] user address but active_mm is swapper
->> [    0.150085] Internal error: Oops: 96000005 [#1] PREEMPT SMP
->> [    0.150085] Modules linked in:
->> [    0.150085] Hardware name: FVP Base RevC (DT)
->> [    0.150085] pstate: 00800009 (nzcv daif -PAN +UAO -TCO BTYPE=--)
->> [    0.150155] pc : arm_trbe_register_coresight_cpu+0x74/0x144
->> [    0.150155] lr : arm_trbe_register_coresight_cpu+0x48/0x144
->>    ...
 >>
->> [    0.150237] Call trace:
->> [    0.150237]  arm_trbe_register_coresight_cpu+0x74/0x144
->> [    0.150237]  arm_trbe_device_probe+0x1c0/0x2d8
->> [    0.150259]  platform_drv_probe+0x94/0xbc
->> [    0.150259]  really_probe+0x1bc/0x4a8
->> [    0.150266]  driver_probe_device+0x7c/0xb8
->> [    0.150266]  device_driver_attach+0x6c/0xac
->> [    0.150266]  __driver_attach+0xc4/0x148
->> [    0.150266]  bus_for_each_dev+0x7c/0xc8
->> [    0.150266]  driver_attach+0x24/0x30
->> [    0.150266]  bus_add_driver+0x100/0x1e0
->> [    0.150266]  driver_register+0x78/0x110
->> [    0.150266]  __platform_driver_register+0x44/0x50
->> [    0.150266]  arm_trbe_init+0x28/0x84
->> [    0.150266]  do_one_initcall+0x94/0x2bc
->> [    0.150266]  do_initcall_level+0xa4/0x158
->> [    0.150266]  do_initcalls+0x54/0x94
->> [    0.150319]  do_basic_setup+0x24/0x30
->> [    0.150319]  kernel_init_freeable+0xe8/0x14c
->> [    0.150319]  kernel_init+0x14/0x18c
->> [    0.150319]  ret_from_fork+0x10/0x30
->> [    0.150319] Code: f94012c8 b0004ce2 9134a442 52819801 (f9402917)
->> [    0.150319] ---[ end trace d23e0cfe5098535e ]---
->> [    0.150346] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
 >>
->> Fix this by skipping the step, if we are unable to probe the CPU.
+>> To reproduce:
 >>
->> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
->> Reported-by: Bransilav Rankov <branislav.rankov@arm.com>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Leo Yan <leo.yan@linaro.org>
->> Tested-by: Branislav Rankov <branislav.rankov@arm.com>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>         git clone https://github.com/intel/lkp-tests.git
+>>         cd lkp-tests
+>>         sudo bin/lkp install job.yaml           # job file is attached in this email
+>>         bin/lkp split-job --compatible job.yaml # generate the yaml file for lkp run
+>>         sudo bin/lkp run generated-yaml-file
+>>
+>>         # if come across any failure that blocks the test,
+>>         # please remove ~/.lkp and /lkp dir to run from a clean state.
+>>
+>>
+>>
 >> ---
->>   drivers/hwtracing/coresight/coresight-trbe.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
+>> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
+>> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
 >>
->> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
->> index 5d350acef798..85ceda68af82 100644
->> --- a/drivers/hwtracing/coresight/coresight-trbe.c
->> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
->> @@ -1286,7 +1286,9 @@ static int arm_trbe_probe_coresight(struct trbe_drvdata *drvdata)
->>   		return -ENOMEM;
->>   
->>   	for_each_cpu(cpu, &drvdata->supported_cpus) {
->> -		smp_call_function_single(cpu, arm_trbe_probe_cpu, drvdata, 1);
->> +		/* If we fail to probe the CPU, let us defer it to hotplug callbacks */
->> +		if (smp_call_function_single(cpu, arm_trbe_probe_cpu, drvdata, 1))
->> +			continue;
->>   		if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
->>   			arm_trbe_register_coresight_cpu(drvdata, cpu);
->>   		if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+>> Thanks,
+>> Oliver Sang
 >>
 > 
-> Right, LGTM. Although I guess the following addition might be worthwhile
-> just to highlight the fact that cpudata->drvdata is not valid unless the
-> cpu has gone through arm_trbe_probe_cpu() first.
 > 
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -869,6 +869,7 @@ static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cp
->          if (WARN_ON(trbe_csdev))
->                  return;
->   
-> +       WARN_ON(!cpudata->drvdata);
+> --
+> Thanks
+> Yafang
 
-Ok, I would rather return here with the warning. I will send
-a revision.
-
-Thanks !
-
-Suzuki
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
