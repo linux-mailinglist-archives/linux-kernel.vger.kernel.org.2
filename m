@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF89942E19C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F24942E19A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhJNSuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:50:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30545 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231202AbhJNSui (ORCPT
+        id S233203AbhJNSuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232902AbhJNSuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:50:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634237313;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=390oXOAx8xu4/KUEBxfvh8/zjlryT8/NcisAwMW9dms=;
-        b=WuBYlt/662IpK7uaqwDY7VQv206ZcXFQxMV3GNt0XtEBqZ6OPalY+ATf6UxAQzAC/BiD/q
-        zwfisfviQdRqM0GUGfJxUV4v+rRpiZg2jMP6lxCC2C4MvVhU16+zb3NW1qmNdDOCNCjV9p
-        AgL1Zf7aIWquWCSdmSEpImpz6ZiY1gY=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-XSB9vOf8MGKsA5-mv0P-vA-1; Thu, 14 Oct 2021 14:48:32 -0400
-X-MC-Unique: XSB9vOf8MGKsA5-mv0P-vA-1
-Received: by mail-qt1-f199.google.com with SMTP id 12-20020aed208c000000b002a78b33ad97so5096450qtb.23
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:48:32 -0700 (PDT)
+        Thu, 14 Oct 2021 14:50:50 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D67C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:48:45 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so5436142pjb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:48:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZjimbiTSlE1l8ItQSDOS0TpKsqXd9vrfIa7epPZdvVk=;
+        b=PBwp4PoA1EnlQv0jUTHwWnlic0D6ATh3iQtz91bHBcHPDgSModSG7bGRhyFyA0EsXv
+         9nTSHsJC4+B/AxTSVK6HeC5Jzsywe7PQ6pON8oaNTCJCEXkJ0mCQez5O3Rspw+E6IICK
+         AqYWJIDJyxSw8SFvRiEG4yHlWlZGXbwuDVOvXkLrXGB3HlET5hq62aa3iHOhn4uoXNiE
+         +H6Y5WiXRfIs1iANYgEW14fpdqhwzNab+ZWeKWh8t9Xi1kwD/BuWs7nvTkLGBP/39vO+
+         0t0YHkM+YT/wmIZWt6VKnEMk4v90Kj6C4MguqirpsFwoy3GzKCjg18beIrA/u1wc3lYr
+         QpSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=390oXOAx8xu4/KUEBxfvh8/zjlryT8/NcisAwMW9dms=;
-        b=1F5NGQUEtIBdn7dyHDKu40AZKhn0RSKyJxmXWTvZ9qobv8HVnCiuQ/UTBakWb3g+kM
-         pnMgS9EFVdi2rtaY0muwtjs0LZgL6c57DPp7Mzy/3CPSqVSu19jU+ejICDst/bd4stKz
-         mmrq0JFZv+vRuoqd7rRiLdOkXONrXSJAFqxX4A4LjQgc/ytToFE/OK60aWuHobnR07We
-         7Oa6WRlroOtYQd3Y+K5unwcP0P8vDQsHFuRhkDpFrygZmruOmzbZ76orjPw2LKV/HgQ2
-         pUGaPnX6uJbD7X+mjh9lXG/IxALV7k2SwM6xdxfgRphEy5P1m1EgIRAvIN2s9qSni6pJ
-         H3+g==
-X-Gm-Message-State: AOAM531bUnZtQEHdNvBeQzzvF4YIcPAtudwkinkOU7COp6n2dO9ToVEA
-        NkqTqzEfNIgfs+8YBguXPZEPH3f2TFMdJQHAR97s1PNyKG58bqIkHEMh9wx5TUTKGcEAOhQwISm
-        zZp+9L4qEcKyZ+rGmh+hTMZeV
-X-Received: by 2002:a37:c90:: with SMTP id 138mr6072543qkm.255.1634237311718;
-        Thu, 14 Oct 2021 11:48:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJytP+DvZn3EfxUM7dsxKpelaHBNmMC9oJwTycXxdHYSXFOFWt9jMdlMXSlEI0NyE7E7s7Jegg==
-X-Received: by 2002:a37:c90:: with SMTP id 138mr6072528qkm.255.1634237311500;
-        Thu, 14 Oct 2021 11:48:31 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id g5sm1601735qkm.112.2021.10.14.11.48.26
+        bh=ZjimbiTSlE1l8ItQSDOS0TpKsqXd9vrfIa7epPZdvVk=;
+        b=P4AJEI7o6ndzLWU5O4FdCrU/jPH2fWsy3MfahnWZXb+dNLDRfka/h2w6EIAaDXOS4T
+         lzNuRFIsIOSasvCgAvxTX0OntrqmZAizXH4aYceAJay8dZXKTIR7hBjTeXgfXqkHYTqB
+         /npnVIeSJHtoW5DI/HM5vVzIsECfGfc2o6pfdD5xsYVWIVEAqZxDM543mfIIWru8jamO
+         bDoQ0bFjLhK+dC1Exx+vc7RVdwhsi7ByGIhm/GasEowFfcJ0KQH8S3RTN9mgLR00iFXk
+         TwzOl5fBT5HexRdHROcF0q5lK/DljlY3eRvsWqXhuf/d8zsOztb2J48Y5OJ2ph+J7vuf
+         d0WA==
+X-Gm-Message-State: AOAM531nlxD4yqFgr+g9nRGjg6qX4NZXo6BStJOfdXqq1uD5vMVsJ6gV
+        0pHb9J5ldRx3gfZ1RrPEfFDZUQ==
+X-Google-Smtp-Source: ABdhPJwhA7ksW9z92Xq5XqnztwoOX3c3QuESYlEjpk1PyrX60Py2UUTGfOr6pQZpvHQh/42wMpQlBA==
+X-Received: by 2002:a17:902:bb81:b0:12d:a7ec:3d85 with SMTP id m1-20020a170902bb8100b0012da7ec3d85mr6655532pls.17.1634237324850;
+        Thu, 14 Oct 2021 11:48:44 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id y142sm3133125pfc.169.2021.10.14.11.48.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 11:48:31 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 11:48:25 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, keescook@chromium.org,
-        jannh@google.com, linux-kernel@vger.kernel.org,
-        vcaputo@pengaru.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, akpm@linux-foundation.org,
-        christian.brauner@ubuntu.com, amistry@google.com,
-        Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
-        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, axboe@kernel.dk,
-        metze@samba.org, laijs@linux.alibaba.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, ebiederm@xmission.com,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, linux-hardening@vger.kernel.org,
-        linux-arch@vger.kernel.org, vgupta@kernel.org,
-        linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org,
-        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
-        nickhu@andestech.com, jonas@southpole.se, mpe@ellerman.id.au,
-        paul.walmsley@sifive.com, hca@linux.ibm.com,
-        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net
-Subject: Re: [PATCH 6/7] arch: __get_wchan || STACKTRACE_SUPPORT
-Message-ID: <20211014184825.2vre4bt3fojcfdka@treble>
-References: <20211008111527.438276127@infradead.org>
- <20211008111626.392918519@infradead.org>
- <20211008124052.GA976@C02TD0UTHF1T.local>
- <YWBLl0mMTGPE/7hM@hirez.programming.kicks-ass.net>
- <20211014180307.GB39276@lakrids.cambridge.arm.com>
+        Thu, 14 Oct 2021 11:48:44 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 18:48:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 1/2] KVM: X86: Don't reset mmu context when X86_CR4_PCIDE
+ 1->0
+Message-ID: <YWh7iMxaGp4366Gt@google.com>
+References: <20210919024246.89230-1-jiangshanlai@gmail.com>
+ <20210919024246.89230-2-jiangshanlai@gmail.com>
+ <YWh7RH7HXQE34sFb@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211014180307.GB39276@lakrids.cambridge.arm.com>
+In-Reply-To: <YWh7RH7HXQE34sFb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 07:03:07PM +0100, Mark Rutland wrote:
-> On Fri, Oct 08, 2021 at 03:45:59PM +0200, Peter Zijlstra wrote:
-> > On Fri, Oct 08, 2021 at 01:40:52PM +0100, Mark Rutland wrote:
-> > > [Adding Josh, since there might be a concern here from a livepatch pov]
-> > > 
+On Thu, Oct 14, 2021, Sean Christopherson wrote:
+> On Sun, Sep 19, 2021, Lai Jiangshan wrote:
+> > From: Lai Jiangshan <laijs@linux.alibaba.com>
 > > 
-> > > > +static unsigned long __get_wchan(struct task_struct *p)
-> > > > +{
-> > > > +	unsigned long entry = 0;
-> > > > +
-> > > > +	stack_trace_save_tsk(p, &entry, 1, 0);
-> > > 
-> > > This assumes stack_trace_save_tsk() will skip sched functions, but I
-> > > don't think that's ever been a requirement? It's certinaly not
-> > > documented anywhere that I could find, and arm64 doesn't do so today,
-> > > and this patch causes wchan to just log `__switch_to` for everything.
+> > X86_CR4_PCIDE doesn't participate in kvm_mmu_role, so the mmu context
+> > doesn't need to be reset.  It is only required to flush all the guest
+> > tlb.
 > > 
-> > Confused, arm64 has arch_stack_walk() and should thus use
-> > kernel/stacktrace.c's stack_trace_consume_entry_nosched.
+> > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> > ---
+> >  arch/x86/kvm/x86.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 86539c1686fa..7494ea0e7922 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -116,6 +116,7 @@ static void enter_smm(struct kvm_vcpu *vcpu);
+> >  static void __kvm_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags);
+> >  static void store_regs(struct kvm_vcpu *vcpu);
+> >  static int sync_regs(struct kvm_vcpu *vcpu);
+> > +static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu);
+> >  
+> >  static int __set_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2);
+> >  static void __get_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2);
+> > @@ -1042,9 +1043,10 @@ EXPORT_SYMBOL_GPL(kvm_is_valid_cr4);
+> >  
+> >  void kvm_post_set_cr4(struct kvm_vcpu *vcpu, unsigned long old_cr4, unsigned long cr4)
+> >  {
+> > -	if (((cr4 ^ old_cr4) & KVM_MMU_CR4_ROLE_BITS) ||
+> > -	    (!(cr4 & X86_CR4_PCIDE) && (old_cr4 & X86_CR4_PCIDE)))
+> > +	if ((cr4 ^ old_cr4) & KVM_MMU_CR4_ROLE_BITS)
+> >  		kvm_mmu_reset_context(vcpu);
+> > +	else if (!(cr4 & X86_CR4_PCIDE) && (old_cr4 & X86_CR4_PCIDE))
+> > +		kvm_vcpu_flush_tlb_guest(vcpu);
 > 
-> Looking at this arm64's *current* get_wchan() unwinds once before
-> checking in_sched_functions(), so it skips __switch_to(). As of this
-> patch, we check in_sched_functions() first, which stops the unwind
-> immediately as __switch_to() isn't marked as __sched.
-> 
-> I think x86 gets away with this because switch_to() is asm, and that
-> tail-calls __switch_to() when returning.
-> 
-> Does switch_to() and below need to be marked __sched?
+> Unless there's a corner case I'm missing, I would prefer this to use
+> kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu) instead of calling
+> kvm_vcpu_flush_tlb_guest() directly.  The odds of flushes actually being batched
+> is low, it's more to document that kvm_post_set_cr4() _isn't_ special.
 
-Yes, I would think so, for arches where they otherwise show up on the
-stacktrace.
+Forgot to say, with the change to KVM_REQ_TLB_FLUSH_GUEST:
 
--- 
-Josh
-
+Reviewed-by: Sean Christopherson <seanjc@google.com>
