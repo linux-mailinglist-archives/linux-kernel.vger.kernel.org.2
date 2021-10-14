@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCA742D0C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC2342D0CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbhJNDJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
+        id S229992AbhJNDLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbhJNDJD (ORCPT
+        with ESMTP id S229496AbhJNDLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:09:03 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE59C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:06:59 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so5933090pjw.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:06:59 -0700 (PDT)
+        Wed, 13 Oct 2021 23:11:48 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DECC061570;
+        Wed, 13 Oct 2021 20:09:44 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id c29-20020a4ad21d000000b002b6cf3f9aceso1426932oos.13;
+        Wed, 13 Oct 2021 20:09:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5+ykdt9ot6T7oBHTIi7wAsxJD1bUMNJgiKwFhmhCpNI=;
-        b=aEqSgQ8N635hp1T62kE0RW1EXD87DIU2jo9u7uhSKKX6tAPGXJtZcMmPieEQJMyROG
-         2r/wo2DUQn7GjYRVjG5i3YBVyT6BZWw2pho+f0bYVpNjXbj9W6s+VdjdEajMw9bo/pJL
-         1e3SZdfKzt3iZb+I19AtejOUoqbsSj4Xp+yk0HJbL+B5KAM2MMy96ha/dAJt2q6mw69/
-         noPfn/KbFt5RF1anh31AJhF9OYxier2ChhVCUgRbe7glWOlbQCigIRszVVyADhws/NBt
-         L9HZeOdeEn8S3VP3nvqsHnmdnr/hUef2kV4AkHm6FXc3+nQlxuiHysPHplZ+pK03SZRR
-         2pRg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HE9z5tlF77mRAkHNqcUY/20RBkunTk9T3krwd45VGuk=;
+        b=lCO/JQCREM+81cayvh0CHs3V7SF8AZi8+4VOYZPZfk9QH6Uk2pnPqm2euY+mChd1hV
+         bjO7WeMzWiZEa7gV+6Bm4yZ21dNlaE1x9RujA4JVmvcxgiv9eMNk0orCLl+aX6SclQs0
+         AyY5SXbI/PVot3uWMz25KOfwUJTG6MKsEHC86UEZY+51GrS9dSaZPO5uv94+bhi3oqps
+         6Bb05EaGTQ7lllzx7mQ870sX1r/YohiSqheTiYnZLpbohwELF0vOSdl56owztHZTkRvD
+         FWeXjaw6+vnfoN06lMOAymwWPe5qish0dtDWbqh3A7UOB8ImUs9GTa8UsEhR/IZx5WGR
+         IrxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=5+ykdt9ot6T7oBHTIi7wAsxJD1bUMNJgiKwFhmhCpNI=;
-        b=ma2H74C6h3OrfAScym8L/O9kSRMquyFt3oy6xAe2XWDDXwOTWv0hSR0GV/teDR34Ka
-         VwBxOKsy/ysgVRFYYbyXgeiypQEN4yROFXiA/h7QaSDq/eX2obLBrwJnDf/cUYEZGBkh
-         lBrl0g4ulDut1QmaTWPfLs4UzM9werYI7TuFa+YoCHeh5I0MWTzvJ6mEb4tiU1rtci3M
-         AmtflRecBBFnUMvlhLACSaxJGvixri718pDDEWUNpDMCCTYOjD+DSiSnXJIil/88phjh
-         EzfPtqMkJhP95b9TY4siSTfG/rjnSrJS2UM3CD762BZbSinIfnTUiQbYEW0w+l6qIGh+
-         KDjA==
-X-Gm-Message-State: AOAM533pMoEmU38Fw0Fqq+4XZacmQUW8TLQWEw7DVVSKZWSV/iQ191Sq
-        aj8yU8nSOBxKlFaO4t6XPpKpcYulI2uqxQ==
-X-Google-Smtp-Source: ABdhPJwmSx3dZTl9X0lpEsrsE+Lo228CwRZQofBQcOJSwKwqmT7Fn6wxcgjws9llpmUCE94nDaV0ng==
-X-Received: by 2002:a17:90a:414c:: with SMTP id m12mr17809974pjg.187.1634180819060;
-        Wed, 13 Oct 2021 20:06:59 -0700 (PDT)
-Received: from desktop.cluster.local ([162.14.19.95])
-        by smtp.gmail.com with ESMTPSA id p17sm7253652pju.34.2021.10.13.20.06.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 20:06:58 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: mengensun@tencent.com
-To:     tj@kernel.org
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        Mengen Sun <mengensun@tencent.com>
-Subject: [PATCH] hotfix: make sysfs of unbound kworker cpumask more clever
-Date:   Thu, 14 Oct 2021 11:06:41 +0800
-Message-Id: <20211014030641.2182803-1-mengensun@tencent.com>
-X-Mailer: git-send-email 2.27.0
+        bh=HE9z5tlF77mRAkHNqcUY/20RBkunTk9T3krwd45VGuk=;
+        b=lBG6r9UA63OHMGI2Px+U1gc2sU1X+JLgtzbcD6H9vYcltwTBX1TBJ18w3pC+tqqsY8
+         TNWVdnZE9bJ3wig9FEjZs+kxw474hivivX4/hMcWYnEfVXMUkDF//5WGT+BgnxcRTgfg
+         4P3Ir6BEWzDB0iixApvDXaA/oDMJA3LDOHBAAyfPNbVwVMW5GNO0UIkCmFFpbixSxFgP
+         CsjipABUwxa/8qbiJqS5rF0nq6WmZT/G6ziX6Swo4WWNEJ8ZjqRdOspQXhruB1IesIL+
+         BeCSUkAvTtKfTelU7nJ2HTNqhmFw4/5iHDrmsletPppi8dxUeXXVPw3ZAFlthEM1y3Gb
+         WiTA==
+X-Gm-Message-State: AOAM532+Ymrhui9ROYHGpj7shSm/U55I43snJ7cZfkaYCB4Zwvlijids
+        J7mZdTpvjCDVeNXTrVI+wyqc5bX0lqzMEg==
+X-Google-Smtp-Source: ABdhPJwNRtMu0D2MeivvDWc4qCFUdD03zkvdEBjopiN6PPThrvexnA1SdkWeszmICCg6kI68AJMl2Q==
+X-Received: by 2002:a4a:430c:: with SMTP id k12mr2198711ooj.43.1634180983781;
+        Wed, 13 Oct 2021 20:09:43 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.40])
+        by smtp.googlemail.com with ESMTPSA id u6sm278423ooh.15.2021.10.13.20.09.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 20:09:43 -0700 (PDT)
+Subject: Re: [PATCH v2 2/4] tcp: md5: Allow MD5SIG_FLAG_IFINDEX with ifindex=0
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Yonghong Song <yhs@fb.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1634107317.git.cdleonard@gmail.com>
+ <9eb867a3751ee4213d8019139cf1af42570e9e91.1634107317.git.cdleonard@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <7d8f3de1-d093-c013-88c4-3cff8c7bc012@gmail.com>
+Date:   Wed, 13 Oct 2021 21:09:42 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <9eb867a3751ee4213d8019139cf1af42570e9e91.1634107317.git.cdleonard@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mengen Sun <mengensun@tencent.com>
+On 10/13/21 12:50 AM, Leonard Crestez wrote:
+> Multiple VRFs are generally meant to be "separate" but right now md5
+> keys for the default VRF also affect connections inside VRFs if the IP
+> addresses happen to overlap.
+> 
+> So far the combination of TCP_MD5SIG_IFINDEX with tcpm_ifindex == 0
 
-some unfriendly component eg, dpdk, write the same mask to unbound
-kworker cpumask again and agin. every time it write to this interface
-some work is queue to cpu, by rr evenly the mask is same with the
-original mask.
-
-so, fix it, if the writing cpumask is equal with the old cpumask
-just return success and do nothing.
-
-Signed-off-by: Mengen Sun <mengensun@tencent.com>
----
- kernel/workqueue.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 1b3eb1e9531f..8216fc45c77b 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -5394,6 +5394,11 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
- 	cpumask_and(cpumask, cpumask, cpu_possible_mask);
- 	if (!cpumask_empty(cpumask)) {
- 		apply_wqattrs_lock();
-+		if (cpumask_equal(cpumask, wq_unbound_cpumask)) {
-+			apply_wqattrs_unlock();
-+			free_cpumask_var(saved_cpumask);
-+			return 0;
-+		}
- 
- 		/* save the old wq_unbound_cpumask. */
- 		cpumask_copy(saved_cpumask, wq_unbound_cpumask);
--- 
-2.27.0
-
+TCP_MD5SIG_IFINDEX does not exist in net-next and it was not added by
+patch 1 or this patch.
