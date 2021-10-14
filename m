@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E360142DCD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8740542DD0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbhJNPCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:02:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45236 "EHLO mail.kernel.org"
+        id S230324AbhJNPDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:03:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231284AbhJNPAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:00:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46DA460E97;
-        Thu, 14 Oct 2021 14:58:19 +0000 (UTC)
+        id S233013AbhJNPC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:02:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD38561163;
+        Thu, 14 Oct 2021 14:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223499;
-        bh=+FS+DSaHvBRFdlV+bPs/nEteGcnyp+XRRGXvxcq8A4Y=;
+        s=korg; t=1634223563;
+        bh=wET7jlo9v2hHgYFlJoGvD4IA2Xglyllmc4vVpIhXhvw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fs80OoJK7zKj7vBIloP1Yrm0ms/SUIbK6WwN3rO4PT3tKRhwX+EaN3JolH5/5OIDf
-         Jtb+GoUX3fgcw2XN3x/i+1Z3HeKaPB6vgEFpCUKYh+yszH4ra1xLlnNuxJgyDy4Q7N
-         m8EBXy+8DSLWJg8z5tKrto1GIYQ/1ZjuSUDUPFPs=
+        b=U6SsJk7z/KQdjrLdicce+5dQ64Y7VlGGvGg+QnMc0WQrNfqc4sUCqiD7t6xstq9Q2
+         LdeQBfi/RrJwwzfxHrtOEln5zq2A4CuPa6UI2BGY1XKmFxCpTaysEaAfZvYjtXupqh
+         5barpSEYu2qmn7ULwYa86WqlwXeXpH+3J88OYQ4s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anand K Mistry <amistry@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 11/12] perf/x86: Reset destroy callback on event init failure
+Subject: [PATCH 5.4 08/16] mac80211: Drop frames from invalid MAC address in ad-hoc mode
 Date:   Thu, 14 Oct 2021 16:54:11 +0200
-Message-Id: <20211014145206.919696580@linuxfoundation.org>
+Message-Id: <20211014145207.588240184@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145206.566123760@linuxfoundation.org>
-References: <20211014145206.566123760@linuxfoundation.org>
+In-Reply-To: <20211014145207.314256898@linuxfoundation.org>
+References: <20211014145207.314256898@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand K Mistry <amistry@google.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 02d029a41dc986e2d5a77ecca45803857b346829 ]
+[ Upstream commit a6555f844549cd190eb060daef595f94d3de1582 ]
 
-perf_init_event tries multiple init callbacks and does not reset the
-event state between tries. When x86_pmu_event_init runs, it
-unconditionally sets the destroy callback to hw_perf_event_destroy. On
-the next init attempt after x86_pmu_event_init, in perf_try_init_event,
-if the pmu's capabilities includes PERF_PMU_CAP_NO_EXCLUDE, the destroy
-callback will be run. However, if the next init didn't set the destroy
-callback, hw_perf_event_destroy will be run (since the callback wasn't
-reset).
+WARNING: CPU: 1 PID: 9 at net/mac80211/sta_info.c:554
+sta_info_insert_rcu+0x121/0x12a0
+Modules linked in:
+CPU: 1 PID: 9 Comm: kworker/u8:1 Not tainted 5.14.0-rc7+ #253
+Workqueue: phy3 ieee80211_iface_work
+RIP: 0010:sta_info_insert_rcu+0x121/0x12a0
+...
+Call Trace:
+ ieee80211_ibss_finish_sta+0xbc/0x170
+ ieee80211_ibss_work+0x13f/0x7d0
+ ieee80211_iface_work+0x37a/0x500
+ process_one_work+0x357/0x850
+ worker_thread+0x41/0x4d0
 
-Looking at other pmu init functions, the common pattern is to only set
-the destroy callback on a successful init. Resetting the callback on
-failure tries to replicate that pattern.
+If an Ad-Hoc node receives packets with invalid source MAC address,
+it hits a WARN_ON in sta_info_insert_check(), this can spam the log.
 
-This was discovered after commit f11dd0d80555 ("perf/x86/amd/ibs: Extend
-PERF_PMU_CAP_NO_EXCLUDE to IBS Op") when the second (and only second)
-run of the perf tool after a reboot results in 0 samples being
-generated. The extra run of hw_perf_event_destroy results in
-active_events having an extra decrement on each perf run. The second run
-has active_events == 0 and every subsequent run has active_events < 0.
-When active_events == 0, the NMI handler will early-out and not record
-any samples.
-
-Signed-off-by: Anand K Mistry <amistry@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210929170405.1.I078b98ee7727f9ae9d6df8262bad7e325e40faf0@changeid
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20210827144230.39944-1-yuehaibing@huawei.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/mac80211/rx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 429389489eed..f612eb1cc818 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -2096,6 +2096,7 @@ static int x86_pmu_event_init(struct perf_event *event)
- 	if (err) {
- 		if (event->destroy)
- 			event->destroy(event);
-+		event->destroy = NULL;
- 	}
- 
- 	if (READ_ONCE(x86_pmu.attr_rdpmc) &&
+diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
+index 670d84e54db7..c7e6bf7c22c7 100644
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -3952,7 +3952,8 @@ static bool ieee80211_accept_frame(struct ieee80211_rx_data *rx)
+ 		if (!bssid)
+ 			return false;
+ 		if (ether_addr_equal(sdata->vif.addr, hdr->addr2) ||
+-		    ether_addr_equal(sdata->u.ibss.bssid, hdr->addr2))
++		    ether_addr_equal(sdata->u.ibss.bssid, hdr->addr2) ||
++		    !is_valid_ether_addr(hdr->addr2))
+ 			return false;
+ 		if (ieee80211_is_beacon(hdr->frame_control))
+ 			return true;
 -- 
 2.33.0
 
