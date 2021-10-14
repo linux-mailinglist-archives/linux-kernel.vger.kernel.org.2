@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627F242D111
+	by mail.lfdr.de (Postfix) with ESMTP id AC0B242D112
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhJNDie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60620 "EHLO
+        id S230361AbhJNDii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhJNDi1 (ORCPT
+        with ESMTP id S230371AbhJNDig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:38:27 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3231C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:36:23 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so3782292pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:36:23 -0700 (PDT)
+        Wed, 13 Oct 2021 23:38:36 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17346C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:36:32 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so5972746pjw.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:36:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3dIJYpLgUscbVOuuN31HzOtkwTNeYXv+/7s43RJxbb4=;
-        b=MEHIXCltdBN/sqAnNWxmIURxKo4D784+6PAqfVD9mOdPz/RtLaV81l2qUrPgxTXqdp
-         eoID89Sotx3RkZkjHre7hl/hQn72pvPQkEwMFwuY080h8WOy/a3oufF1v6r8LeYGqq68
-         m9pqfqVDIp+kDTbNy1B0uEQABIrYgx0Ih0VD1wDpu7QG0W1rfbiUPaeTC4IoHB1CXTPh
-         TrvDU7UZ8sTgCg79ztZIpYcHEgocJUNTVmNJLJEmTNw43h8n2ut+3SCxcKOaJ9XEcHY+
-         uotWljNxFGMmgEs9IqwGJvgTr6H/m1ix3KddPuexA8fDxJkA/GJfT+VAiQT6xeKm2IdV
-         8ZLQ==
+        bh=05YlvHibiMOMvwzoDA39PNq3lRzEdaNMkSmYjEK8nNg=;
+        b=Ov7/argr/kcoviZvNjW2mLd+xjfiRSNA4R331tKY9mF/zU4Wqca0QdpQCz/LRsc9Nd
+         L/QnN2R+kOJtm6yqEwQN+N+Ab/hBxCAjogf7lc6DWKxV47wFFwawWpfrEy9DkQMgdlZW
+         tbtUUaXyQ+FoJASaCez8SeXYu0XtAvEfnmxHXJZxLrgsVeZg4fvmqzkzJHFO5Ih/3HXb
+         5JdGMvB91cF+G5i9cSCvWP6LUlvI2VUVVQ70MEBaT0Tv//ySWwe04wd8qYuwuxNlQft6
+         OyV9ZSpB/Ukp9HjQX4OZfcjPWegNTzkTHda64qMmxYmVjXXVZUBaoeMscTnpfHWmT0xx
+         C7Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3dIJYpLgUscbVOuuN31HzOtkwTNeYXv+/7s43RJxbb4=;
-        b=PP3bqY3vgocyT3LVS8o1TNo3KmSBKXo9ytkSWTVtnX+4Q9sHHJf224MxFRFMW9KBLG
-         khtaJComqLJHNb8ugsKHCOY9FMCheyZIXUwZkRAa91C4KCbRJhnOV6H6VfWKFG+VZPro
-         D2+6nCCI6jIKdMEpKc6qEGU5za8/G3E6NuUS1fZQ3EhVoJvzk31FVSjE1cTZohle9n+c
-         rCbNQm4lmbusjdgWqrL3GNU+5rzyKl+JdibRTwkY3CKNlbaNLlklIgGII2o3m66x4vcL
-         JW1qtmVfLDtm2zT6827iykSPfh/Q3hpRFqvbs1AWFIw6aqaGzQVT4NnzF6oYCtW8pgxi
-         CzeA==
-X-Gm-Message-State: AOAM530RO70MBYQ8Z5SKelJiPFnBweeyfyFvYOJiZMkAdR/7R9ZkRlcg
-        NzGBEFw5g7VYGKBt6MX0v2Ig7yY32nU=
-X-Google-Smtp-Source: ABdhPJw0A93bey+MjXNL0qdRCeAueR9YU4yF55l44dRWggaEvLxyNbRUK+7oRiUWBGCNzO9nug+Gfg==
-X-Received: by 2002:a17:90b:1b0b:: with SMTP id nu11mr3565668pjb.210.1634182583150;
-        Wed, 13 Oct 2021 20:36:23 -0700 (PDT)
+        bh=05YlvHibiMOMvwzoDA39PNq3lRzEdaNMkSmYjEK8nNg=;
+        b=rJHK72y6vUoBcrA10zRJFCdWxPXcILtZaPIrMKBriy1gdGudyzz5QpWmwyvuKEXK14
+         quFyBmzkNBoENvBeOFbBMs2TJDygvV381F7apSmXysWqkE2TtvNO5ppEF9ij5I1sjLEd
+         aJFdCD1I0OVpplxSNsOsyAqc9+9KHhj1Q8wSsLb9JafOWSAlL9s9wPVmIM9+pO75mghI
+         CR4cln3g7xfPWasKOeuFmce20uduy161rwm3wmfG6xaa1jBV1cGUZFGwIOQDqI23ftvj
+         kVGNivS4IZAhzhhaMM+MuMU1AuDwpTa3BdA0K/YgfFpnDFABArlUBa9gcHlpP9q8l2+x
+         IW6w==
+X-Gm-Message-State: AOAM530uMT7DvpUswBEp6a+HjJuJVMLnhxkgA7DWEY4vnLi4EvepvKgd
+        OYyTg/FTABi35VnNzO4lzav7DjxjLpM=
+X-Google-Smtp-Source: ABdhPJy2CZDg/ARXYtKlAeTFth78H2k64p/+K/F7RvlkjK0S652XxQuO0n3Ee3hlk0dA+dMXo3RxNQ==
+X-Received: by 2002:a17:902:f683:b0:13f:2fbe:498f with SMTP id l3-20020a170902f68300b0013f2fbe498fmr2795521plg.17.1634182591402;
+        Wed, 13 Oct 2021 20:36:31 -0700 (PDT)
 Received: from localhost ([198.11.178.15])
-        by smtp.gmail.com with ESMTPSA id p2sm867269pgd.84.2021.10.13.20.36.21
+        by smtp.gmail.com with ESMTPSA id t9sm7280463pjm.36.2021.10.13.20.36.30
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Oct 2021 20:36:22 -0700 (PDT)
+        Wed, 13 Oct 2021 20:36:31 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
         Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH V3 24/49] x86/entry: Implement the whole error_entry() as C code
-Date:   Thu, 14 Oct 2021 11:33:47 +0800
-Message-Id: <20211014033414.16321-19-jiangshanlai@gmail.com>
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Jan Kiszka <jan.kiszka@siemens.com>
+Subject: [PATCH V3 25/49] x86/entry: Use idtentry macro for entry_INT80_compat
+Date:   Thu, 14 Oct 2021 11:33:48 +0800
+Message-Id: <20211014033414.16321-20-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211014031413.14471-1-jiangshanlai@gmail.com>
 References: <20211014031413.14471-1-jiangshanlai@gmail.com>
@@ -70,202 +72,246 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-All the needed facilities are set in entry64.c, the whole error_entry()
-can be implemented in C in entry64.c.  The C version generally has better
-readability and easier to be updated/improved.
+entry_INT80_compat is identical to idtentry macro except a special
+handling for %rax in the prolog.
 
-No function change intended.
+Add the prolog to idtentry and use idtentry for entry_INT80_compat.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry64.c     | 63 +++++++++++++++++++++++++++
- arch/x86/entry/entry_64.S    | 82 +-----------------------------------
- arch/x86/include/asm/traps.h |  1 +
- 3 files changed, 65 insertions(+), 81 deletions(-)
+ arch/x86/entry/entry_64.S        |  18 ++++++
+ arch/x86/entry/entry_64_compat.S | 103 -------------------------------
+ arch/x86/include/asm/idtentry.h  |  47 ++++++++++++++
+ arch/x86/include/asm/proto.h     |   4 --
+ 4 files changed, 65 insertions(+), 107 deletions(-)
 
-diff --git a/arch/x86/entry/entry64.c b/arch/x86/entry/entry64.c
-index 173cf621317c..c8ede8b088a6 100644
---- a/arch/x86/entry/entry64.c
-+++ b/arch/x86/entry/entry64.c
-@@ -77,3 +77,66 @@ static __always_inline void kernel_entry_swapgs_and_fence(void)
- 	native_swapgs();
- 	fence_swapgs_kernel_entry();
- }
-+
-+/*
-+ * Put pt_regs onto the task stack and switch GS and CR3 if needed.
-+ * The actual stack switch is done in entry_64.S.
-+ *
-+ * Becareful, it might be in the user CR3 and user GS base at the start
-+ * of the function.
-+ */
-+asmlinkage __visible __entry_text
-+struct pt_regs *error_entry(struct pt_regs *eregs)
-+{
-+	unsigned long iret_ip = (unsigned long)native_irq_return_iret;
-+
-+	if (user_mode(eregs)) {
-+		/*
-+		 * We entered from user mode.
-+		 * Switch to kernel gsbase and CR3.
-+		 */
-+		user_entry_swapgs_and_fence();
-+		switch_to_kernel_cr3();
-+
-+		/* Put pt_regs onto the task stack. */
-+		return sync_regs(eregs);
-+	}
-+
-+	/*
-+	 * There are two places in the kernel that can potentially fault with
-+	 * usergs. Handle them here.  B stepping K8s sometimes report a
-+	 * truncated RIP for IRET exceptions returning to compat mode. Check
-+	 * for these here too.
-+	 */
-+	if ((eregs->ip == iret_ip) || (eregs->ip == (unsigned int)iret_ip)) {
-+		eregs->ip = iret_ip; /* Fix truncated RIP */
-+
-+		/*
-+		 * We came from an IRET to user mode, so we have user
-+		 * gsbase and CR3.  Switch to kernel gsbase and CR3:
-+		 */
-+		user_entry_swapgs_and_fence();
-+		switch_to_kernel_cr3();
-+
-+		/*
-+		 * Pretend that the exception came from user mode: set up
-+		 * pt_regs as if we faulted immediately after IRET and put
-+		 * pt_regs onto the real task stack.
-+		 */
-+		return sync_regs(fixup_bad_iret(eregs));
-+	}
-+
-+	/*
-+	 * Hack: asm_load_gs_index_gs_change can fail with user gsbase.
-+	 * If this happens, fix up gsbase and proceed.  We'll fix up the
-+	 * exception and land in asm_load_gs_index_gs_change's error
-+	 * handler with kernel gsbase.
-+	 */
-+	if (eregs->ip == (unsigned long)asm_load_gs_index_gs_change)
-+		kernel_entry_swapgs_and_fence();
-+	else
-+		fence_swapgs_kernel_entry();
-+
-+	/* Enter from kernel, don't move pt_regs */
-+	return eregs;
-+}
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index b97ce4204f6d..23de2a789e3d 100644
+index 23de2a789e3d..79934c5ee9a1 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
-@@ -334,7 +334,7 @@ SYM_CODE_END(ret_from_fork)
- 	 * XENPV uses its own pvops for iret and load_gs_index().  And it
- 	 * doesn't need to switch CR3.  So it can skip invoking error_entry().
- 	 */
--	ALTERNATIVE "call error_entry; movq %rax, %rsp", \
-+	ALTERNATIVE "movq %rsp, %rdi; call error_entry; movq %rax, %rsp", \
- 		"", X86_FEATURE_XENPV
+@@ -372,6 +372,24 @@ SYM_CODE_START(\asmsym)
+ 		pushq	$-1			/* ORIG_RAX: no syscall to restart */
+ 	.endif
  
- 	ENCODE_FRAME_POINTER
-@@ -984,86 +984,6 @@ SYM_CODE_START_LOCAL(paranoid_exit)
- 	jmp		restore_regs_and_return_to_kernel
- SYM_CODE_END(paranoid_exit)
- 
++	.if \vector == IA32_SYSCALL_VECTOR
++		/*
++		 * User tracing code (ptrace or signal handlers) might assume
++		 * that the saved RAX contains a 32-bit number when we're
++		 * invoking a 32-bit syscall.  Just in case the high bits are
++		 * nonzero, zero-extend the syscall number.  (This could almost
++		 * certainly be deleted with no ill effects.)
++		 */
++		movl	%eax, %eax
++
++		/*
++		 * do_int80_syscall_32() expects regs->orig_ax to be user ax,
++		 * and regs->ax to be $-ENOSYS.
++		 */
++		movq	%rax, (%rsp)
++		movq	$-ENOSYS, %rax
++	.endif
++
+ 	.if \vector == X86_TRAP_BP
+ 		/*
+ 		 * If coming from kernel space, create a 6-word gap to allow the
+diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
+index 2a4d9532dfd5..ad20302246e4 100644
+--- a/arch/x86/entry/entry_64_compat.S
++++ b/arch/x86/entry/entry_64_compat.S
+@@ -311,106 +311,3 @@ sysret32_from_system_call:
+ 	swapgs
+ 	sysretl
+ SYM_CODE_END(entry_SYSCALL_compat)
+-
 -/*
-- * Save all registers in pt_regs, and switch GS if needed.
+- * 32-bit legacy system call entry.
+- *
+- * 32-bit x86 Linux system calls traditionally used the INT $0x80
+- * instruction.  INT $0x80 lands here.
+- *
+- * This entry point can be used by 32-bit and 64-bit programs to perform
+- * 32-bit system calls.  Instances of INT $0x80 can be found inline in
+- * various programs and libraries.  It is also used by the vDSO's
+- * __kernel_vsyscall fallback for hardware that doesn't support a faster
+- * entry method.  Restarted 32-bit system calls also fall back to INT
+- * $0x80 regardless of what instruction was originally used to do the
+- * system call.
+- *
+- * This is considered a slow path.  It is not used by most libc
+- * implementations on modern hardware except during process startup.
+- *
+- * Arguments:
+- * eax  system call number
+- * ebx  arg1
+- * ecx  arg2
+- * edx  arg3
+- * esi  arg4
+- * edi  arg5
+- * ebp  arg6
 - */
--SYM_CODE_START_LOCAL(error_entry)
--	UNWIND_HINT_FUNC
--	testb	$3, CS+8(%rsp)
--	jz	.Lerror_kernelspace
+-SYM_CODE_START(entry_INT80_compat)
+-	UNWIND_HINT_EMPTY
+-	/*
+-	 * Interrupts are off on entry.
+-	 */
+-	ASM_CLAC			/* Do this early to minimize exposure */
+-	SWAPGS
 -
 -	/*
--	 * We entered from user mode or we're pretending to have entered
--	 * from user mode due to an IRET fault.
+-	 * User tracing code (ptrace or signal handlers) might assume that
+-	 * the saved RAX contains a 32-bit number when we're invoking a 32-bit
+-	 * syscall.  Just in case the high bits are nonzero, zero-extend
+-	 * the syscall number.  (This could almost certainly be deleted
+-	 * with no ill effects.)
 -	 */
--	swapgs
--	FENCE_SWAPGS_USER_ENTRY
--	/* We have user CR3.  Change to kernel CR3. */
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
+-	movl	%eax, %eax
 -
--	leaq	8(%rsp), %rdi			/* arg0 = pt_regs pointer */
--.Lerror_entry_from_usermode_after_swapgs:
--	/* Put us onto the real thread stack. */
--	call	sync_regs
--	ret
+-	/* switch to thread stack expects orig_ax and rdi to be pushed */
+-	pushq	%rax			/* pt_regs->orig_ax */
+-	pushq	%rdi			/* pt_regs->di */
 -
--	/*
--	 * There are two places in the kernel that can potentially fault with
--	 * usergs. Handle them here.  B stepping K8s sometimes report a
--	 * truncated RIP for IRET exceptions returning to compat mode. Check
--	 * for these here too.
--	 */
--.Lerror_kernelspace:
--	leaq	native_irq_return_iret(%rip), %rcx
--	cmpq	%rcx, RIP+8(%rsp)
--	je	.Lerror_bad_iret
--	movl	%ecx, %eax			/* zero extend */
--	cmpq	%rax, RIP+8(%rsp)
--	je	.Lbstep_iret
--	cmpq	$asm_load_gs_index_gs_change, RIP+8(%rsp)
--	jne	.Lerror_entry_done_lfence
+-	/* Need to switch before accessing the thread stack. */
+-	SWITCH_TO_KERNEL_CR3 scratch_reg=%rdi
 -
--	/*
--	 * hack: .Lgs_change can fail with user gsbase.  If this happens, fix up
--	 * gsbase and proceed.  We'll fix up the exception and land in
--	 * .Lgs_change's error handler with kernel gsbase.
--	 */
--	swapgs
+-	/* In the Xen PV case we already run on the thread stack. */
+-	ALTERNATIVE "", "jmp .Lint80_keep_stack", X86_FEATURE_XENPV
 -
--	/*
--	 * The above code has no serializing instruction.  So do an lfence
--	 * to prevent GS speculation, regardless of whether it is kernel
--	 * gsbase or user gsbase.
--	 */
--.Lerror_entry_done_lfence:
--	FENCE_SWAPGS_KERNEL_ENTRY
--	leaq	8(%rsp), %rax			/* return pt_regs pointer */
--	ret
+-	movq	%rsp, %rdi
+-	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
 -
--.Lbstep_iret:
--	/* Fix truncated RIP */
--	movq	%rcx, RIP+8(%rsp)
--	/* fall through */
+-	pushq	6*8(%rdi)		/* regs->ss */
+-	pushq	5*8(%rdi)		/* regs->rsp */
+-	pushq	4*8(%rdi)		/* regs->eflags */
+-	pushq	3*8(%rdi)		/* regs->cs */
+-	pushq	2*8(%rdi)		/* regs->ip */
+-	pushq	1*8(%rdi)		/* regs->orig_ax */
+-	pushq	(%rdi)			/* pt_regs->di */
+-.Lint80_keep_stack:
 -
--.Lerror_bad_iret:
--	/*
--	 * We came from an IRET to user mode, so we have user
--	 * gsbase and CR3.  Switch to kernel gsbase and CR3:
--	 */
--	swapgs
--	FENCE_SWAPGS_USER_ENTRY
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
+-	pushq	%rsi			/* pt_regs->si */
+-	xorl	%esi, %esi		/* nospec   si */
+-	pushq	%rdx			/* pt_regs->dx */
+-	xorl	%edx, %edx		/* nospec   dx */
+-	pushq	%rcx			/* pt_regs->cx */
+-	xorl	%ecx, %ecx		/* nospec   cx */
+-	pushq	$-ENOSYS		/* pt_regs->ax */
+-	pushq   %r8			/* pt_regs->r8 */
+-	xorl	%r8d, %r8d		/* nospec   r8 */
+-	pushq   %r9			/* pt_regs->r9 */
+-	xorl	%r9d, %r9d		/* nospec   r9 */
+-	pushq   %r10			/* pt_regs->r10*/
+-	xorl	%r10d, %r10d		/* nospec   r10 */
+-	pushq   %r11			/* pt_regs->r11 */
+-	xorl	%r11d, %r11d		/* nospec   r11 */
+-	pushq   %rbx                    /* pt_regs->rbx */
+-	xorl	%ebx, %ebx		/* nospec   rbx */
+-	pushq   %rbp                    /* pt_regs->rbp */
+-	xorl	%ebp, %ebp		/* nospec   rbp */
+-	pushq   %r12                    /* pt_regs->r12 */
+-	xorl	%r12d, %r12d		/* nospec   r12 */
+-	pushq   %r13                    /* pt_regs->r13 */
+-	xorl	%r13d, %r13d		/* nospec   r13 */
+-	pushq   %r14                    /* pt_regs->r14 */
+-	xorl	%r14d, %r14d		/* nospec   r14 */
+-	pushq   %r15                    /* pt_regs->r15 */
+-	xorl	%r15d, %r15d		/* nospec   r15 */
 -
--	/*
--	 * Pretend that the exception came from user mode: set up pt_regs
--	 * as if we faulted immediately after IRET.
--	 */
--	leaq	8(%rsp), %rdi			/* arg0 = pt_regs pointer */
--	call	fixup_bad_iret
--	mov	%rax, %rdi
--	jmp	.Lerror_entry_from_usermode_after_swapgs
--SYM_CODE_END(error_entry)
+-	UNWIND_HINT_REGS
 -
- SYM_CODE_START_LOCAL(error_return)
- 	UNWIND_HINT_REGS
- 	DEBUG_ENTRY_ASSERT_IRQS_OFF
-diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
-index 1cdd7e8bcba7..686461ac9803 100644
---- a/arch/x86/include/asm/traps.h
-+++ b/arch/x86/include/asm/traps.h
-@@ -14,6 +14,7 @@
- asmlinkage __visible notrace struct pt_regs *sync_regs(struct pt_regs *eregs);
- asmlinkage __visible notrace
- struct pt_regs *fixup_bad_iret(struct pt_regs *bad_regs);
-+asmlinkage __visible notrace struct pt_regs *error_entry(struct pt_regs *eregs);
- void __init trap_init(void);
- asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *eregs);
+-	cld
+-
+-	movq	%rsp, %rdi
+-	call	do_int80_syscall_32
+-	ALTERNATIVE "jmp swapgs_restore_regs_and_return_to_usermode",	\
+-		"jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
+-SYM_CODE_END(entry_INT80_compat)
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index 6779def97591..49fabc3e3f0d 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -207,6 +207,20 @@ __visible noinstr void func(struct pt_regs *regs,			\
+ 									\
+ static noinline void __##func(struct pt_regs *regs, u32 vector)
+ 
++/**
++ * DECLARE_IDTENTRY_IA32_EMULATION - Declare functions for int80
++ * @vector:	Vector number (ignored for C)
++ * @asm_func:	Function name of the entry point
++ * @cfunc:	The C handler called from the ASM entry point (ignored for C)
++ *
++ * Declares two functions:
++ * - The ASM entry point: asm_func
++ * - The XEN PV trap entry point: xen_##asm_func (maybe unused)
++ */
++#define DECLARE_IDTENTRY_IA32_EMULATION(vector, asm_func, cfunc)	\
++	asmlinkage void asm_func(void);					\
++	asmlinkage void xen_##asm_func(void)
++
+ /**
+  * DECLARE_IDTENTRY_SYSVEC - Declare functions for system vector entry points
+  * @vector:	Vector number (ignored for C)
+@@ -433,6 +447,35 @@ __visible noinstr void func(struct pt_regs *regs,			\
+ #define DECLARE_IDTENTRY_ERRORCODE(vector, func)			\
+ 	idtentry vector asm_##func func has_error_code=1
+ 
++/*
++ * 32-bit legacy system call entry.
++ *
++ * 32-bit x86 Linux system calls traditionally used the INT $0x80
++ * instruction.  INT $0x80 lands here.
++ *
++ * This entry point can be used by 32-bit and 64-bit programs to perform
++ * 32-bit system calls.  Instances of INT $0x80 can be found inline in
++ * various programs and libraries.  It is also used by the vDSO's
++ * __kernel_vsyscall fallback for hardware that doesn't support a faster
++ * entry method.  Restarted 32-bit system calls also fall back to INT
++ * $0x80 regardless of what instruction was originally used to do the
++ * system call.
++ *
++ * This is considered a slow path.  It is not used by most libc
++ * implementations on modern hardware except during process startup.
++ *
++ * Arguments:
++ * eax  system call number
++ * ebx  arg1
++ * ecx  arg2
++ * edx  arg3
++ * esi  arg4
++ * edi  arg5
++ * ebp  arg6
++ */
++#define DECLARE_IDTENTRY_IA32_EMULATION(vector, asm_func, cfunc)	\
++	idtentry vector asm_func cfunc has_error_code=0
++
+ /* Special case for 32bit IRET 'trap'. Do not emit ASM code */
+ #define DECLARE_IDTENTRY_SW(vector, func)
+ 
+@@ -634,6 +677,10 @@ DECLARE_IDTENTRY_IRQ(X86_TRAP_OTHER,	common_interrupt);
+ DECLARE_IDTENTRY_IRQ(X86_TRAP_OTHER,	spurious_interrupt);
  #endif
+ 
++#ifdef CONFIG_IA32_EMULATION
++DECLARE_IDTENTRY_IA32_EMULATION(IA32_SYSCALL_VECTOR,	entry_INT80_compat, do_int80_syscall_32);
++#endif
++
+ /* System vector entry points */
+ #ifdef CONFIG_X86_LOCAL_APIC
+ DECLARE_IDTENTRY_SYSVEC(ERROR_APIC_VECTOR,		sysvec_error_interrupt);
+diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
+index ee07b3cae213..7ca5619352e2 100644
+--- a/arch/x86/include/asm/proto.h
++++ b/arch/x86/include/asm/proto.h
+@@ -29,10 +29,6 @@ void entry_SYSENTER_compat(void);
+ void __end_entry_SYSENTER_compat(void);
+ void entry_SYSCALL_compat(void);
+ void entry_SYSCALL_compat_safe_stack(void);
+-void entry_INT80_compat(void);
+-#ifdef CONFIG_XEN_PV
+-void xen_entry_INT80_compat(void);
+-#endif
+ #endif
+ 
+ void x86_configure_nx(void);
 -- 
 2.19.1.6.gb485710b
 
