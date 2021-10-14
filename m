@@ -2,190 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C2742D84D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FCC42D84F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbhJNLiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
+        id S231167AbhJNLj5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Oct 2021 07:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhJNLiS (ORCPT
+        with ESMTP id S230499AbhJNLjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:38:18 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF500C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:36:13 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id t2so18455356wrb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:36:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=U4ipNp1A1LkMViR5fSWkLGWj7ewgxV9un8v72sPWhJc=;
-        b=DItIv86tnWADRqJzyKzy+oAcUa2ya/iQpu1rwxuulp2coeAPnD/mho9YrUfGb+ty+A
-         Ti/+YvHte5NH9CdBkLxOEFhercMmkFrOCgr0QW4ZJcl4zvk3hf1I9ka6oz9iY87yhXtc
-         YJJg7eB4SQUamwGVH3dBPpY0thQ5mwlx+azcKG0KfsleorNRgGHpbRc2wrvyqWkbuTNK
-         ZTMKokfuOjmtIjQ5kqtk0TpRqhU7Pwpf8SCjW7eUH+GHtfHQFxCC2FU6Qr/MJIAW3oOx
-         0NE22OSmm2e+y/VD4EKxZjN909xkrWNIW6G9EercCpQjxFGWosV/PZKI08rGKWEk2jJC
-         hjXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=U4ipNp1A1LkMViR5fSWkLGWj7ewgxV9un8v72sPWhJc=;
-        b=nmLiUIrDw1vywCwvkiAPH9WZeagLNYeymZ0pM/WNXjd1JjIIh7yaVvxTHA3a/8/bTD
-         uQePH5dvPA94DQnNay7uLkwVl+9vk3oHwtNl98kCi50E6B6+cmmrAlQM4ikZtGwQcwr3
-         vUjFaQUCGq01mNodYJXbXn+u+1h6QZOLFnIucgF5aeB8idP2/0BfIPn64DD0sKe4QIhy
-         QVs6FkcaoAT3JVMBKEfDNeCLnpZZk8aJ1drnJG6ALHeayyXzokRA6+rrTykXN06pWrTc
-         u/2K/rGHAmjrJELPt0uUW0PuqpiquPHmX/OS1M8rAJ4+WNB7N33Ec2RWgp/J/ZBZ6Is6
-         SFDQ==
-X-Gm-Message-State: AOAM531RKjTepvejuIrZ52nThkBtLw6pcXs4biaLZxlc8Unge/0L/oCq
-        CaLnb5mZWyWfQryx63ryiIFJeA==
-X-Google-Smtp-Source: ABdhPJzT+LXujsr3qpAYh2Qv2HXhFIwBYT8OJSpU1B7hW6sUiYucP3cOYtMJmYa4GK+BbZxExtRdpw==
-X-Received: by 2002:a1c:22d7:: with SMTP id i206mr5337436wmi.122.1634211372424;
-        Thu, 14 Oct 2021 04:36:12 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id g2sm2199373wrb.20.2021.10.14.04.36.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 04:36:12 -0700 (PDT)
-Subject: Re: [PATCH RFC linux] dt-bindings: nvmem: Add binding for U-Boot
- environment NVMEM provider
-To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Luka Kovacic <luka.kovacic@sartura.hr>
-References: <20211013232048.16559-1-kabel@kernel.org>
- <629c8ba1-c924-565f-0b3c-8b625f4e5fb0@linaro.org>
- <20211014120601.133e9a84@dellmb>
- <857c27a6-5c4b-e0ed-a830-35762799613f@linaro.org>
- <20211014125526.10d4861b@dellmb>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <d2c0d673-440d-9e58-82b4-a73740a9c180@linaro.org>
-Date:   Thu, 14 Oct 2021 12:36:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 14 Oct 2021 07:39:55 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E65C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 04:37:50 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1maz3Q-0005y5-2b; Thu, 14 Oct 2021 13:37:44 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1maz3M-000463-0H; Thu, 14 Oct 2021 13:37:40 +0200
+Message-ID: <fdea4ea765654a6c8dc820d75a6c2faad2284723.camel@pengutronix.de>
+Subject: Re: [PATCH v2 2/3] phy/rockchip: add naneng combo phy for RK3568
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Yifeng Zhao <yifeng.zhao@rock-chips.com>, heiko@sntech.de,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, vkoul@kernel.org,
+        michael.riesch@wolfvision.net, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, kishon@ti.com
+Date:   Thu, 14 Oct 2021 13:37:39 +0200
+In-Reply-To: <20211013101938.28061-3-yifeng.zhao@rock-chips.com>
+References: <20211013101938.28061-1-yifeng.zhao@rock-chips.com>
+         <20211013101938.28061-3-yifeng.zhao@rock-chips.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-In-Reply-To: <20211014125526.10d4861b@dellmb>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Yifeng,
 
+On Wed, 2021-10-13 at 18:19 +0800, Yifeng Zhao wrote:
+> This patch implements a combo phy driver for Rockchip SoCs
+> with NaNeng IP block. This phy can be used as pcie-phy, usb3-phy,
+> sata-phy or sgmii-phy.
+> 
+> Signed-off-by: Yifeng Zhao <yifeng.zhao@rock-chips.com>
+> ---
+> 
+> Changes in v2:
+> - Using api devm_platform_get_and_ioremap_resource.
+> - Modify rockchip_combphy_set_Mode.
+> - Add some PHY registers definition.
+> 
+>  drivers/phy/rockchip/Kconfig                  |   8 +
+>  drivers/phy/rockchip/Makefile                 |   1 +
+>  .../rockchip/phy-rockchip-naneng-combphy.c    | 650 ++++++++++++++++++
+>  3 files changed, 659 insertions(+)
+>  create mode 100644 drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
+> 
+[...]
+> diff --git a/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c b/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
+> new file mode 100644
+> index 000000000000..fbfc5fbbd5b8
+> --- /dev/null
+> +++ b/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
+> @@ -0,0 +1,650 @@
+[...]
+> +static int rockchip_combphy_parse_dt(struct device *dev,
+> +				     struct rockchip_combphy_priv *priv)
+> +{
+> +	const struct rockchip_combphy_cfg *phy_cfg = priv->cfg;
+> +	int ret, mac_id;
+> +
+[...]
+> +	priv->apb_rst = devm_reset_control_get_optional(dev, "combphy-apb");
 
-On 14/10/2021 11:55, Marek Behún wrote:
-> On Thu, 14 Oct 2021 11:30:13 +0100
-> Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
-> 
->> On 14/10/2021 11:06, Marek Behún wrote:
->>> On Thu, 14 Oct 2021 09:26:27 +0100
->>> Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
->>>    
->>>> On 14/10/2021 00:20, Marek Behún wrote:
->>>>> Add device tree bindings for U-Boot environment NVMEM provider.
->>>>>
->>>>> U-Boot environment can be stored at a specific offset of a MTD
->>>>> device, EEPROM, MMC, NAND or SATA device, on an UBI volume, or in
->>>>> a file on a filesystem.
->>>>>
->>>>> The environment can contain information such as device's MAC
->>>>> address, which should be used by the ethernet controller node.
->>>>>       
->>>>
->>>> Have you looked at
->>>> ./Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
->>>> ?
->>>
->>> Hello srini,
->>>
->>> yes, I have. What about it? :)
->>>
->>> That binding won't work for u-boot-env, because the data are stored
->>> in a different way. A cell does not have a constant predetermined
->>> offset on the MTD.
->>
->> Can't you dynamically update the nodes before nvmem-provider is
->> registered?
-> 
-> Are you talking about dynamically updating nvmem-cell OF nodes, adding
-> reg properties with actual offsets and lengths found after parsing?
+Please use devm_reset_control_get_optional_exclusive().
 
-Yes, atleast for the nodes that are defined in the dt.
+Also, apb_rst is never used?
 
-> 
->>> The variables are stored as a sequence of values of format
->>> "name=value", separated by '\0's, for example:
->>>     board=turris_mox\0ethaddr=00:11:22:33:44:55\0bootcmd=run
->>> distro_bootcmd\0.... Chaning lengths of values of variables, or
->>> deleting variables, moves the data around. Integers and MAC
->>> addresses are stored as strings, and so on.
->>
->> Do you already have a provider driver for handing this.
-> 
-> Not yet, I will send the proposal together with a driver in next
-> round.
-> 
->> How is pre parsing cell info and post processing data planned to be
->> handled?
-> 
-> My plan was to read the variables from the u-boot-env partition, create
-> a nvmem-cell for each variable, and then pair the ones mentioned in
-> device tree with their DT nodes, and post-process according to type
-Adding cells using nvmem_cell_info should work. I think pairing the one 
-with DT entries is something that is missing. Currently nvmem_cell_info 
-does not have device_node pointer may be that is something that could be 
-added to help here.
+> +	if (IS_ERR(priv->apb_rst)) {
+> +		ret = PTR_ERR(priv->apb_rst);
+> +
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_warn(dev, "failed to get apb reset\n");
+> +
+> +		return ret;
 
+Any reason not to use dev_err_probe()?
 
-> (post-processing would be done only for those mentioned in device tree,
-> others would be left as strings).
-> 
->> Currently in nvmem core we do check for "reg" property for each cell,
->> unless the provider driver is adding/updating dt entries dynamically
->> before registering nvmem provider
-> 
-> I don't think updaring DT entries dynamically is a correct solution at
-> all. Is this done in Linux? Updating device properties is something
-> different, but changing DT properties seems wrong to me.
-> 
->> It will not work as it is. Alteast this is what I suggested in similar
->> case where cell information is in tlv format.
-> 
-> Hmm. OK, I shall try to implement a driver for this and then will
-> return to you.
+> +	}
+> +
+> +	priv->phy_rst = devm_reset_control_get_optional(dev, "combphy");
 
-Sounds good.
+Please use devm_reset_control_get_optional_exclusive().
 
-> 
->> Secondly mac-address seems to be delimited, we recently introduced
->> post processing callback for provider driver [1], which should help
->> in this case.
-> 
-> Cool, I shall use that.
-yes, please it should show up in 5.16 anyway.
+> +	if (IS_ERR(priv->phy_rst)) {
+> +		ret = PTR_ERR(priv->phy_rst);
+> +
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_warn(dev, "failed to get phy reset\n");
+> +
+> +		return ret;
 
-> 
->> If the nvmem-cell names are standard like "mac-address" then you do
->> not need to add a new "type" binding to cell too, you can do
->> post-processing based on name.
-> 
-> I plan to add functions
->    of_nvmem_get_mac_address()
->    nvmem_get_mac_address()
-we already have nvmem_get_mac_address() in  ./net/ethernet/eth.c that 
-looks for mac-address.
+Same as above.
 
---srini
-> which would look at (in this order):
->    mac-address, address, mac-address-backup
-> We have to keep the name "address" for backwards compatibility with one
-> driver that uses this (drivers/net/ethernet/ni/nixge.c)
-> 
-> Thanks.
-> 
-> Marek
-> 
+> +	}
+> +
+> +	return reset_control_assert(priv->phy_rst);
+
+It is unexpected that a function called rockchip_combphy_parse_dt()
+already changes device state.
+
+I'd move the reset_control_assert() out into rockchip_combphy_probe().
+
+regards
+Philipp
