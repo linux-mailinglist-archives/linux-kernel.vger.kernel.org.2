@@ -2,104 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DA042DE7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA8442DE93
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbhJNPpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
+        id S232708AbhJNPsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbhJNPpR (ORCPT
+        with ESMTP id S229637AbhJNPsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:45:17 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC46C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:43:13 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mb2su-0002sB-Qj; Thu, 14 Oct 2021 17:43:08 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mb2su-00074v-0K; Thu, 14 Oct 2021 17:43:08 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mb2st-000453-Vb; Thu, 14 Oct 2021 17:43:07 +0200
-Date:   Thu, 14 Oct 2021 17:43:07 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-clk@vger.kernel.org, kernel@pengutronix.de,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] clk: expand clk_ignore_unused mechanism to keep only
- a few clks on
-Message-ID: <20211014154307.eb3y3sh5lca4426t@pengutronix.de>
-References: <20210819121403.337833-1-u.kleine-koenig@pengutronix.de>
- <20210922081549.kit3lsek7lh6w6ji@pengutronix.de>
+        Thu, 14 Oct 2021 11:48:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E00D8C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jo+n8sD+BOX68cR7g18qRONEu6OTlCBp2imi7qfHsYY=; b=BYRM06ARsKAIt7edH8cYxRqGKU
+        BPxNxhczxgZBF/WTmr+B6lRIQ6joje2pKEMq3jbBwRumP55nBGBAof2//jciMsysYm/TaF3AIoj0P
+        tOHB8mWCIGxTDYCPsGRPrHBRXe81HRoQJOey+y4W4/Wk2k6cuO3JyHqTexwVoMcFrLfvdFdjIaZji
+        dvkp/KG2Rs1zT0qCIHp2TzI0eKynyBegFu4PcjT/x3GeO/cj1tMcpGCssIwXf3BxK9iceVS2ibjiQ
+        KdISppAoBD6HmyBrenjuo4vLd84pZ6iElx1jVvofcv1hPhDwiBZeSqUYPHenidEidD1ETRYL0apo6
+        uGsomw/A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mb2tC-008RNZ-3O; Thu, 14 Oct 2021 15:43:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 13617300252;
+        Thu, 14 Oct 2021 17:43:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E04422CA7F58C; Thu, 14 Oct 2021 17:43:25 +0200 (CEST)
+Date:   Thu, 14 Oct 2021 17:43:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, alexei.starovoitov@gmail.com,
+        ndesaulniers@google.com
+Subject: Re: [PATCH 1/9] objtool,x86: Replace alternatives with
+ .retpoline_sites
+Message-ID: <YWhQHbtOysHh2WWu@hirez.programming.kicks-ass.net>
+References: <20211013122217.304265366@infradead.org>
+ <20211013123644.614129149@infradead.org>
+ <20211013201135.ftaztysa4bdjedqd@treble>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dh5ic32cncbw4ucf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210922081549.kit3lsek7lh6w6ji@pengutronix.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20211013201135.ftaztysa4bdjedqd@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 13, 2021 at 01:11:35PM -0700, Josh Poimboeuf wrote:
 
---dh5ic32cncbw4ucf
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Guess it shouldn't be called arch_rewrite_retpolines() anymore.  And it
+> can be moved to check.c next to create_static_call_sections().
+> 
+> Also is it possible to remove the arch_is_retpoline() check in
+> get_alt_entry()?  I'm having trouble remembering why that was needed in
+> the first place.
 
-Hello,
+Makes sense...
 
-On Wed, Sep 22, 2021 at 10:15:49AM +0200, Uwe Kleine-K=F6nig wrote:
-> On Thu, Aug 19, 2021 at 02:14:03PM +0200, Uwe Kleine-K=F6nig wrote:
-> > Allow to pass an integer n that results in only keeping n unused clocks
-> > enabled.
-> >=20
-> > This helps to debug the problem if you only know that clk_ignore_unused
-> > helps but you have no clue yet which clock is the culprit.
-> >=20
-> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
->=20
-> I consider this patch really helpful, it helped me to debug a clk issue
-> without having to recompile the kernel for each bisection step.
->=20
-> On #kernelnewbies I got some positive feedback for it (1629304050 < j_ey>
-> ukleinek: nice clk_ignore_unused patch, I added a pr_err there recently
-> to print the clocks that were being disabled).
-
-Any thoughts on this patch? Would be great if it makes it into the next
-merge window.
-
-Thanks for considering,
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---dh5ic32cncbw4ucf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFoUAgACgkQwfwUeK3K
-7Aktygf/cdio49GPc9UkYKY+3xrQTW8959xvhu4EU90eE3NquxbG6EbX82LLacD/
-gzmrCE/3ZNaGEWkwjp2NQJZxlimjRA+RXqS3UsX2vXdBz0xwcOPVpx3HbJfzBdeN
-uLh+ZHxTX7zeq7TRiaO1jbKzGdKa2f0VusXDTet9OChGBuZmXdvazdF0OQPbOk/K
-tWvrLwDqEyEWR+6DkjxB8eI14eVHj0GwS+0gQuA+ZitdZE/J6cDEudWJhVCQq2oH
-hRQcdIg4RLtNcCVoOuIpbW/xJpYrascLZzU+1BrlqvebDCRZtedqVdf5TqqO+AXt
-Cx28VH+3r6ZLSBPq617FL+6IvYvPQw==
-=QxHw
------END PGP SIGNATURE-----
-
---dh5ic32cncbw4ucf--
+---
++++ b/tools/objtool/arch/x86/decode.c
+@@ -711,52 +711,6 @@ const char *arch_ret_insn(int len)
+ 	return ret[len-1];
+ }
+ 
+-int arch_rewrite_retpolines(struct objtool_file *file)
+-{
+-	struct instruction *insn;
+-	struct section *sec;
+-	int idx;
+-
+-	sec = find_section_by_name(file->elf, ".retpoline_sites");
+-	if (sec) {
+-		WARN("file already has .retpoline_sites, skipping");
+-		return 0;
+-	}
+-
+-	idx = 0;
+-	list_for_each_entry(insn, &file->retpoline_call_list, call_node)
+-		idx++;
+-
+-	if (!idx)
+-		return 0;
+-
+-	sec = elf_create_section(file->elf, ".retpoline_sites", 0,
+-				 sizeof(int), idx);
+-	if (!sec) {
+-		WARN("elf_create_section: .retpoline_sites");
+-		return -1;
+-	}
+-
+-	idx = 0;
+-	list_for_each_entry(insn, &file->retpoline_call_list, call_node) {
+-
+-		int *site = (int *)sec->data->d_buf + idx;
+-		*site = 0;
+-
+-		if (elf_add_reloc_to_insn(file->elf, sec,
+-					  idx * sizeof(int),
+-					  R_X86_64_PC32,
+-					  insn->sec, insn->offset)) {
+-			WARN("elf_add_reloc_to_insn: .retpoline_sites");
+-			return -1;
+-		}
+-
+-		idx++;
+-	}
+-
+-	return 0;
+-}
+-
+ int arch_decode_hint_reg(u8 sp_reg, int *base)
+ {
+ 	switch (sp_reg) {
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -683,6 +683,52 @@ static int create_static_call_sections(s
+ 	return 0;
+ }
+ 
++static int create_retpoline_sites_sections(struct objtool_file *file)
++{
++	struct instruction *insn;
++	struct section *sec;
++	int idx;
++
++	sec = find_section_by_name(file->elf, ".retpoline_sites");
++	if (sec) {
++		WARN("file already has .retpoline_sites, skipping");
++		return 0;
++	}
++
++	idx = 0;
++	list_for_each_entry(insn, &file->retpoline_call_list, call_node)
++		idx++;
++
++	if (!idx)
++		return 0;
++
++	sec = elf_create_section(file->elf, ".retpoline_sites", 0,
++				 sizeof(int), idx);
++	if (!sec) {
++		WARN("elf_create_section: .retpoline_sites");
++		return -1;
++	}
++
++	idx = 0;
++	list_for_each_entry(insn, &file->retpoline_call_list, call_node) {
++
++		int *site = (int *)sec->data->d_buf + idx;
++		*site = 0;
++
++		if (elf_add_reloc_to_insn(file->elf, sec,
++					  idx * sizeof(int),
++					  R_X86_64_PC32,
++					  insn->sec, insn->offset)) {
++			WARN("elf_add_reloc_to_insn: .retpoline_sites");
++			return -1;
++		}
++
++		idx++;
++	}
++
++	return 0;
++}
++
+ static int create_mcount_loc_sections(struct objtool_file *file)
+ {
+ 	struct section *sec;
+@@ -1950,11 +1996,6 @@ static void mark_rodata(struct objtool_f
+ 	file->rodata = found;
+ }
+ 
+-__weak int arch_rewrite_retpolines(struct objtool_file *file)
+-{
+-	return 0;
+-}
+-
+ static int decode_sections(struct objtool_file *file)
+ {
+ 	int ret;
+@@ -2027,15 +2068,6 @@ static int decode_sections(struct objtoo
+ 	if (ret)
+ 		return ret;
+ 
+-	/*
+-	 * Must be after add_special_section_alts(), since this will emit
+-	 * alternatives. Must be after add_{jump,call}_destination(), since
+-	 * those create the call insn lists.
+-	 */
+-	ret = arch_rewrite_retpolines(file);
+-	if (ret)
+-		return ret;
+-
+ 	return 0;
+ }
+ 
+@@ -3438,6 +3470,13 @@ int check(struct objtool_file *file)
+ 		goto out;
+ 	warnings += ret;
+ 
++	if (retpoline) {
++		ret = create_retpoline_sites_sections(file);
++		if (ret < 0)
++			goto out;
++		warnings += ret;
++	}
++
+ 	if (mcount) {
+ 		ret = create_mcount_loc_sections(file);
+ 		if (ret < 0)
+--- a/tools/objtool/special.c
++++ b/tools/objtool/special.c
+@@ -109,14 +109,6 @@ static int get_alt_entry(struct elf *elf
+ 			return -1;
+ 		}
+ 
+-		/*
+-		 * Skip retpoline .altinstr_replacement... we already rewrite the
+-		 * instructions for retpolines anyway, see arch_is_retpoline()
+-		 * usage in add_{call,jump}_destinations().
+-		 */
+-		if (arch_is_retpoline(new_reloc->sym))
+-			return 1;
+-
+ 		reloc_to_sec_off(new_reloc, &alt->new_sec, &alt->new_off);
+ 
+ 		/* _ASM_EXTABLE_EX hack */
