@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB4D42E4C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B2442E4CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 01:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbhJNXfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 19:35:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42295 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231143AbhJNXfC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 19:35:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634254377;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZP8SCmWhinsseT0tp+2aieN8jcGMf8lc14k0qLDaWm8=;
-        b=VLEy+883w62zVI8COG6UMcNnA4KlYQ1Enyri+oWM/iJdK2wOE2FP12O/8HRHu/+M8c08db
-        iiJMw5D7luZNLp1gw3iwhPPxYvii9KSWJGeOdlM3e8k87UeCBSiyMMxOltni7qsPWQMTm0
-        8RanvvIfHQ4R+FXfh9szo14XMtod31I=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-B5PHZ0ihMIyL7Vj6r2t-1Q-1; Thu, 14 Oct 2021 19:32:54 -0400
-X-MC-Unique: B5PHZ0ihMIyL7Vj6r2t-1Q-1
-Received: by mail-pj1-f71.google.com with SMTP id c10-20020a17090ab28a00b0019ce70ee349so3995508pjr.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 16:32:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZP8SCmWhinsseT0tp+2aieN8jcGMf8lc14k0qLDaWm8=;
-        b=QHOI6nyvqTLGVD35bVMlR3DnYDn7AWkwrT7K+3zchrmxNOJILuZE40THNEKnwLmfHA
-         7P6yjK68FOKxONnL4XTVG3zeBL/l0QdWfhm1GZss9gSnhwerIMfOik+QTaJd0gj+ysLE
-         domdKKdcJS/Ns01BowSj2PqrW+on38mtsagmfp/MyQ5drPwPhGvERMQrKik9iZGHelk7
-         FSlDvTm1s5VgXtGJ6mIXKrvugBAEJjNEWmatR9ESjv8l5dS2RD1yIaRsITZMwwm9oh0X
-         IMt8ww6JhCSMbz3LDnLyRCqFpf4KiCNlGJyNQjCYiaMb0voj83s7rxVirsjtDkDefusq
-         qCrQ==
-X-Gm-Message-State: AOAM532lOu5F0Acwuql6IOlfplKFnzOVbhjJKP2r7AqoP0F3Wc6/7o6i
-        2gBk8+gLpOp5gVBlpxC0HyNBaSMuRukJLkq6J7jp+JSpeuOrSiIciYh6udSh/ptgdUY3XVyHFkR
-        T0qZ4HLBBklAggHiJnVggtFn8
-X-Received: by 2002:a17:903:2304:b0:13f:2457:11dd with SMTP id d4-20020a170903230400b0013f245711ddmr7769793plh.57.1634254372923;
-        Thu, 14 Oct 2021 16:32:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyY0hpZ6BiVdnXclPKsGbq+0iJv6Y0KHCT1YVugxwer2zWJ6N9SUgmF8imhcDscSZzJwvWK4Q==
-X-Received: by 2002:a17:903:2304:b0:13f:2457:11dd with SMTP id d4-20020a170903230400b0013f245711ddmr7769756plh.57.1634254372606;
-        Thu, 14 Oct 2021 16:32:52 -0700 (PDT)
-Received: from t490s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id d67sm3273534pfd.151.2021.10.14.16.32.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 16:32:51 -0700 (PDT)
-Date:   Fri, 15 Oct 2021 07:32:45 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Bin Wang <wangbin224@huawei.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mm, pagemap: expose hwpoison entry
-Message-ID: <YWi+HRiXju7NEkbX@t490s>
-References: <20211004115001.1544259-1-naoya.horiguchi@linux.dev>
- <YWZJIKsn6Sry5P6k@t490s>
- <20211014133644.GA2023135@u2004>
+        id S234414AbhJNXin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 19:38:43 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:63775 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234410AbhJNXim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 19:38:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634254597; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=umgqbG66d4B7LnBNercE4H55CcjxmxT058i83nBEs+8=; b=Kh5pVjtbgCVsyo0pTl9UWzAQYN5lZhK6XLTg6ktYGJDIg4TDjcr6egGYk8L8e3znQM8aG/K3
+ O81b2dFCJrUhEovO8RdUCVc8EXPJwcQr71SD+Npm/nOpwhKBuSiIqO6okYcapG+Q7UFMESZ3
+ bgvp3tR2NG9IXnMxo4k4LmZciQY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6168bed1e77f9e0ee31ec5b6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Oct 2021 23:35:45
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2DA8BC43460; Thu, 14 Oct 2021 23:35:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 24614C4338F;
+        Thu, 14 Oct 2021 23:35:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 24614C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH] usb: dwc3: gadget: Remove dev_err() when queuing to inactive gadget/ep
+Date:   Thu, 14 Oct 2021 16:35:34 -0700
+Message-Id: <20211014233534.2382-1-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211014133644.GA2023135@u2004>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 10:36:44PM +0900, Naoya Horiguchi wrote:
-> Thanks for the good question, this could trigger WARN for unpoisoned pages.
-> The impact is limited because the caller of unpoison should know that that
-> happens in testing workload, but maybe there's no good reason to prevent
-> from it. So I'll drop this WARN_ON().
+Since function drivers will still be active until dwc3_disconnect_gadget()
+is called, some applications will continue to queue packets to DWC3
+gadget.  This can lead to a flood of messages regarding failed ep queue,
+as the endpoint is in the process of being disabled.  Remove the print as
+function drivers will likely log queuing errors as well.
 
-Sounds good, thanks.
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+---
+ drivers/usb/dwc3/gadget.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> > I had a feeling that when handling the page fault in do_swap_page before we
-> > SIGBUS the program, we should double-check the PageHWPoison on the pfn page,
-> > but I could be missing something..
-> 
-> The double-checking seems to allow processes to detect that the hwpoison page
-> is unpoisoned, some test programs could benefit from it. But maybe it could
-> be done independent of this patch.
-> 
-> Personally, I only use unpoison in cleanup phase of each test case,
-> and each test case newly starts test processes, so reusing error pages
-> with unpoison can be avoided.
-
-I see.  We don't have anything like soft-online a page, do we?
-
-I also don't know whether hwpoison can be used in any other form besides
-testing the hwpoison code path.  E.g. logically it can be used to forbid
-accessing a physical page for any reason then recover using unhwpoison?
-
-Uffd has the SIGBUS mode that can do similar thing to the virtual address
-space, so any access to some page will generate a SIGBUS. While hwpoison is
-phsical address space based from that pov, and just like uffd it doesn't need
-to change vma layout which should be a good property unlike mprotect().  But I
-totally have no clue on all these... so it's just wild idea.
-
-Anyway, agreed on above, even if it's applicable it should be a separate patch.
-
-Thanks,
-
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 4845682a0408..674a9a527125 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1812,11 +1812,8 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
+ {
+ 	struct dwc3		*dwc = dep->dwc;
+ 
+-	if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected) {
+-		dev_err(dwc->dev, "%s: can't queue to disabled endpoint\n",
+-				dep->name);
++	if (!dep->endpoint.desc || !dwc->pullups_connected || !dwc->connected)
+ 		return -ESHUTDOWN;
+-	}
+ 
+ 	if (WARN(req->dep != dep, "request %pK belongs to '%s'\n",
+ 				&req->request, req->dep->name))
 -- 
-Peter Xu
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
