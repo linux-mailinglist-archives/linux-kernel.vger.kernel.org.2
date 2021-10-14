@@ -2,123 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C9442D2F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC15742D2F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhJNGxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 02:53:50 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:58563 "EHLO
+        id S229622AbhJNGzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 02:55:01 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:39149 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhJNGxt (ORCPT
+        with ESMTP id S229457AbhJNGy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 02:53:49 -0400
+        Thu, 14 Oct 2021 02:54:59 -0400
 Received: from mail-wr1-f41.google.com ([209.85.221.41]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MoeU5-1n7WR43Cht-00p0qS; Thu, 14 Oct 2021 08:51:43 +0200
-Received: by mail-wr1-f41.google.com with SMTP id o20so16155263wro.3;
-        Wed, 13 Oct 2021 23:51:43 -0700 (PDT)
-X-Gm-Message-State: AOAM530xIU2MsIQEIKDOBHGB4hwNCEqNhNMvGoi4lN85TYopVEW40c5q
-        alNuktdfd2aVUw5q/A4otH7A1QOuxxPHwr4jQvU=
-X-Google-Smtp-Source: ABdhPJyjkQmPWKvwtoJuywMTwdaB2QbiQeIa9CvSMEZ8lo+ku78lzm6zV4NgWZcj6r9FJxHxXDzR/T1V0OVEWXe/2uU=
-X-Received: by 2002:a1c:2358:: with SMTP id j85mr17404148wmj.1.1634194303392;
- Wed, 13 Oct 2021 23:51:43 -0700 (PDT)
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N7zJj-1mn5qo1Amp-0151RQ; Thu, 14 Oct 2021 08:52:53 +0200
+Received: by mail-wr1-f41.google.com with SMTP id e12so16114157wra.4;
+        Wed, 13 Oct 2021 23:52:53 -0700 (PDT)
+X-Gm-Message-State: AOAM532SSmm+Qy6hmryfXy4iRaQxrz89Aof84vWpQM2oiqBX4YHzylxw
+        olecC/1hWvTeHg4RYAHGLZMpjnc8xD/eR+Ds68E=
+X-Google-Smtp-Source: ABdhPJzeBTr+3DEnjaiwNy7gvQWkqUGAIbkSnDvR5fWNapib2lyvZarNpPFQYOoReWXwS6roLyGXQKeyYYuevT3SsXg=
+X-Received: by 2002:a05:600c:208:: with SMTP id 8mr17137447wmi.173.1634194372923;
+ Wed, 13 Oct 2021 23:52:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211014055527.1238645-1-alistair.francis@opensource.wdc.com> <20211014055527.1238645-2-alistair.francis@opensource.wdc.com>
-In-Reply-To: <20211014055527.1238645-2-alistair.francis@opensource.wdc.com>
+References: <cover.1634190022.git.christophe.leroy@csgroup.eu> <dbc9a149826eaa18f524635e64c207c85560c2aa.1634190022.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <dbc9a149826eaa18f524635e64c207c85560c2aa.1634190022.git.christophe.leroy@csgroup.eu>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 14 Oct 2021 08:51:27 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3jyJvghm0yZA=fjaZfdKamb=-wPcF2LTFaPEn-KGzhiw@mail.gmail.com>
-Message-ID: <CAK8P3a3jyJvghm0yZA=fjaZfdKamb=-wPcF2LTFaPEn-KGzhiw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftests: futex: Use a 64-bit time_t
-To:     Alistair Francis <alistair.francis@opensource.wdc.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-perf-users@vger.kernel.org,
+Date:   Thu, 14 Oct 2021 08:52:37 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3yAcU0JAri0f9q6HVrZwX_4i6Y9X4P8MebN_Krt-SLQA@mail.gmail.com>
+Message-ID: <CAK8P3a3yAcU0JAri0f9q6HVrZwX_4i6Y9X4P8MebN_Krt-SLQA@mail.gmail.com>
+Subject: Re: [PATCH v2 07/13] asm-generic: Define 'func_desc_t' to commonly
+ describe function descriptors
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair23@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Atish Patra <atish.patra@wdc.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alistair Francis <alistair.francis@wdc.com>
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-ia64@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:uaIx0SONLfYOEYGGXqs6wd7mJ4VYpvjZSTe/4OrVu+w78Iu+rLv
- 3xR1og+W5spFVDC/jx0Hs696hW3pG7CAJE+QwD+t2Z1XE+4med7uDJIacbv8hEbC4uxFO7f
- fyKDFjBwiT2xLNA4WufKdpEuLuxI3+bZrDBr3plBNsy381ODD/VxH6f6wZlcjB/baGgMj4h
- goaWOQ2CpqTQTR+KLBQIw==
+X-Provags-ID: V03:K1:GVSGgJiBksGwahR6via+uTOHllsOF/uR48aaioKXUVo5muUi86y
+ yCN5ivqvdV4uUz5JxfV/NcRBn398jwcZhXW11DDdNs/Gy4d55lDPG++yH0CRfR8q00+wf0B
+ XXgnejkjArd2AaETviuSMDfbwngEpEuYXAkWYG8D/h4Cn66FD+W5T8oQRBa4AU/ehEw6no6
+ yakjErJEf9GAMbQSNm1tQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ruxhhwKyz5w=:PS+2KOXKV4ntXskPdAlJp/
- q/+g3PgHyk9Vz2AN/W3qggiVyJ1HquvPBevqFioWwt1WX7vIqBJcUy/luuV8l/k/PdP8p5jtv
- GsQB0uymTDxYrFyC/iVaz5Bd1Ta62DfOSTy7+cNWKaMtU/JPRMI9QgA7Y44VZCL7dW46pNCyp
- 0LwLtg74EDalw10iwC3WU/WioKYaWFmnw6fzqm8yGIN5g0coryzf+C3JGWi44Ta/TZ6hobGkd
- EdZK13aNM2+4sSY4D7z21faCaffleVh5u/dkJJNorOF8DCjFLzCzHVGHJOrfQ4hYZFQYeO1kU
- MxpSGNRhm0Ago+dExTumEjwFetsCMs8piyj130S+zkMzeNVfvKP2Ufk56yFH0e6PRxLU/HoGf
- Den6MWWLd4lyjpp8M6/sQ/q0sFEUcZJlevle5ZCyPa9WYQEGEq945XEQtom3ymKjwRdaUmGNt
- hqpP/JQNtImyzxdyDF//d6iYXuF0PYkx9XRrwTnoU9kHlyXyl4LjUltXCDDTlIF8Q2Kz0zonh
- 2BtuiISuQyjKxpzU6aV4gfXig7+Xw5b/+ZBBF9LTdeI3GDNYReCIg1IhLnEME2/iMZDNgOWRw
- PbWiglUfZ3DMZv+Z28jp+wa79DXuKmtER7NdD2skexR7D/+/8Bhn9GwjSxnZMy7KLm6m2t8kU
- 4fJ59xPlRzMspW9BZ3I+neKHHAz9/9FM+HqtgWofstuhWwais6fUC0ITlbSgiolh1CNyWRLqT
- z2e+jRdKv5SYfJCWGP2oTuMRJIn074else52vP5pZgURPhSODbZX9HRczBLRr962vjrQoU4j0
- +eal1jYONDyCIZHPoSjC9OhCoLjcXCQt5Vrooj/Aa41mv8Q01gvc3U3F3VCojRDH740MQpYvC
- A9ybPaDamyuT7IvwcRFg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:f/1wSMe7Fcw=:iTBAfeF4uNz4SjiqMlV46I
+ fbBOujh8EeXlE9EDcdGcf0abOfLsb6KRQvt+tk2pgGXtrO7LjtHZ73FQqGU7pryE2kjedJ9aJ
+ mWk0wSUZxgOILKB0/FCWJRKBv4Q3ywkt43NFK5LiDAw7zXFMQHobtAtym4gt8Q8BJIWryGgGC
+ SVSjsihi5aewrvNO/87FcO73Q1eJDMWWfWeIc6WKPR+zmo2biTveWXh+P40e1gGdXpbGF6uOV
+ lxkdytf+qQDU1smOXuq3oxUXL7lGsFfcyw/r7v1uJIn3TxWwEga6Z7NRcO4neFOqAVQspQbGe
+ L2ERtZ5c6Y8MpXEA5TjauCU7PP8C+0gWcoMnLe3DH6eEeNWu/HoXLdlicfak9xViSgZT+ZA6O
+ XTKWmwz+z7jaNo4ay1Xaprtr6DfW8QxHjacTgIVwZz3ejCCGwxygLSEBWEnuYMvaXN0q05qiI
+ 9ea8GAS3fkdunHdSIDk7tWY0W8ve1qpWwSxfvgYrwuvTxURPBEpwjtY5vFfndjvpkjJ8dgyQT
+ fPaDWSW8e1NBdaYtPJEBF8744hpVh1XjOhollQBExdU84LLPQDQfBEUy9X71wRRcMbFcNZMFf
+ JvvYVGwO2v9LquCoZlZ5Yp0c89z8BIp/tFocQybtEE++39f2KRaavuNAdq7UO64NjqrJ1czL8
+ 3gVt7mddX8YPPU1D1yCuWPtU6QAgRTVrlcrNsJyEfofJV9sNG9/V8bXv0BySQLEoIAGZhEcXi
+ KIu/H2m1r3wx5VbY+QY8QF/GWx3UMgyuGtniruNGgOdzsF891H30CmEmn0m41Oc246butwLow
+ Wh95Sq82W2J3GsIokeG70X4XXErjB7vYjKUgXYNGevbEgCzdN6SuPsQC9f3pSi77vYRihPSZL
+ 3uJmFsIaW++YMsyIusNA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 7:55 AM Alistair Francis
-<alistair.francis@opensource.wdc.com> wrote:
+On Thu, Oct 14, 2021 at 7:49 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
 >
-> From: Alistair Francis <alistair.francis@wdc.com>
+> We have three architectures using function descriptors, each with its
+> own name.
 >
-> Convert the futex selftests to only use a 64-bit time_t. On 64-bit
-> architectures this isn't a functional change. On 32-bit architectures
-> we now only perform 64-bit time_t syscalls (__NR_futex_time64) and
-> use a struct timespec64.
+> Add a common typedef that can be used in generic code.
 >
-> This won't work on kernels before 5.1, but as perf is tied to the kernel
-> that's ok.
+> Also add a stub typedef for architecture without function descriptors,
+> to avoid a forest of #ifdefs.
 >
-> This allows the tests to run and pass on RISC-V 32-bit.
+> It replaces the similar func_desc_t previously defined in
+> arch/powerpc/kernel/module_64.c
 >
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-This looks correct to me, two minor comments:
-
-> +struct timespec64 {
-> +       long long tv_sec;       /* seconds */
-> +       long long tv_nsec;      /* nanoseconds */
-> +};
-
-This is a bit different from the normal timespec definition, which has to
-use a '__kernel_long_t' tv_nsec for POSIX compliance. The difference
-is harmless, because the bit layout has the lower 32 bits in the same
-position, and the kernel zeroes the upper 32 bits on the syscall boundary.
-
-I would just use
-
-#define timespec64 __kernel_timespec
-
-for the same effect, since that is what __kernel_timespec is meant for.
-
-> +#if __BITS_PER_LONG == 64 || (defined(__x86_64__) && defined(__ILP32__))
-> +# define futex(uaddr, op, val, timeout, uaddr2, val3, opflags) \
-> +       syscall(__NR_futex, uaddr, op | opflags, val, timeout, uaddr2, val3)
-> +#else
-> +# define futex(uaddr, op, val, timeout, uaddr2, val3, opflags) \
-> +       syscall(__NR_futex_time64, uaddr, op | opflags, val, timeout, uaddr2, val3)
-> +#endif
-
-The check for x32 user space looks correct here, but as I commented in
-the other patch, I would keep it simple and use futex_time64() on all 32-bit
-ABIs. There are approximately zero users of x32, and they don't benefit from
-being able to run new perf binaries on pre-5.1 kernels when everyone else
-can't.
-
-        Arnd
+Acked-by: Arnd Bergmann <arnd@arndb.de>
