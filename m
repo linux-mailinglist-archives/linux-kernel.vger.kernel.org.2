@@ -2,118 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7AA42D565
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF8A42D554
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhJNIvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhJNIu5 (ORCPT
+        id S229988AbhJNIrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:47:09 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:55665 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhJNIrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:50:57 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76461C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:48:52 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so6390005pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 01:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amikom.ac.id; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=P89F2whoCgyWJPvW66dsXGR/mvbEh8Ef1fvEf+e15VI=;
-        b=P8cfbUFlqNUDYJTqKsFInuNumBL1dE2gKrtCdrwFbipDT0YANJt0l+lFyFj+uCwdSy
-         ZZF47Y3R49jZeYisDSLoBIVPfSLr6uk4T+suF3waM2pEr3wKTr5r4mTOfB4fBoXKGLrh
-         uxWhj8eIQZiuQTk5d4aS28AjBvE15ZYTlcJSeeoVWtpVW8KI3CgfCPV+8CH4sBe7A4U1
-         mjCZ43cvn+5fxv8gx8G7ztoCpkIGfxPJOVoFglFs98Km/bb8OpWpsofvo+Y5TQmRFHj5
-         MF04UergV7r8W9YbEINxVMaOD6wsBzol7BOjyaFoimMpIuHwmVBMoWxGxaHipZJh5PmI
-         8y+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=P89F2whoCgyWJPvW66dsXGR/mvbEh8Ef1fvEf+e15VI=;
-        b=w8s58sp+MX0u8GltGWNIKhhChgHrzzIsCwnw68vNAYwOJxI+uOsezdXxG+e9J0IE7i
-         xK8HIPe4dvqbVhVxe7lN0zkBC7Mrds4WBlfZT+KPta5Oe/TdYqrd8gqpKXXV+PHPe5/x
-         +RDi/CiqlclVkiLrDIj389uCMDqmAGOhAWCSVjp+4l6i+miAofODvM+4MI/7Xa0mfShg
-         QRI2bV4UR8e/NEijxLwpAg5eYNoz6fZDLRgYQjlU7AqiDtiZqMEvBd+A01+M8aJ5x+SS
-         9aV55T89o2JLaKwuQponihevDrKJSu1hAx6b8nqFJ4eebw2LR4WfVrDKgpC/Fhij06yf
-         yvXg==
-X-Gm-Message-State: AOAM533BThZWboxXpeLlxGFLNXLCIrydxd8GoD0Mpr+jaco5FdU30h1Z
-        RyfHGIvVstVHSVLzj4U8aKBg+w==
-X-Google-Smtp-Source: ABdhPJx7WkDroP3+cbyg+DQTFy0h+xKVDdLVPQW5Vtih/X4LG1fjg8GbshFZJ4MioQ7SP0ENG+GAyw==
-X-Received: by 2002:a17:902:c713:b0:13f:295d:8064 with SMTP id p19-20020a170902c71300b0013f295d8064mr3960651plp.74.1634201331914;
-        Thu, 14 Oct 2021 01:48:51 -0700 (PDT)
-Received: from localhost.localdomain ([182.2.74.1])
-        by smtp.gmail.com with ESMTPSA id h1sm1883975pfh.183.2021.10.14.01.48.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 01:48:51 -0700 (PDT)
-From:   Ammar Faizi <ammar.faizi@students.amikom.ac.id>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Ammar Faizi <ammar.faizi@students.amikom.ac.id>,
-        Michael Matz <matz@suse.de>, Willy Tarreau <w@1wt.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] tools/nolibc: x86: Remove `r8`, `r9` and `r10` from the clobber list
-Date:   Thu, 14 Oct 2021 15:44:43 +0700
-Message-Id: <HvtY0TQ1cVfJf5WD1XTAig@gnuweeb.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <YWcOvmXkSiecGkER@zn.tnic>
-References: <YWcOvmXkSiecGkER@zn.tnic>
+        Thu, 14 Oct 2021 04:47:08 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1N2VCb-1mjlFB2aA3-013t07; Thu, 14 Oct 2021 10:45:02 +0200
+Received: by mail-wr1-f54.google.com with SMTP id m22so17170935wrb.0;
+        Thu, 14 Oct 2021 01:45:02 -0700 (PDT)
+X-Gm-Message-State: AOAM532LVWDbnxESNLroeG3ifExw6VhYQT7QdZkPTOO1Mz2ffkIwDTRY
+        Te1HlwviBHY6NoNPtFmGBwWMumXSZqvech5WEUM=
+X-Google-Smtp-Source: ABdhPJy2Q55sSkLZB6jxCTWqm25cFC7UAeGhHD3tsyQeSyokhHvq8V2pJoW6joP1ItyVfyCebQbp8k3zAHKoURn20CM=
+X-Received: by 2002:a1c:4b08:: with SMTP id y8mr4618289wma.98.1634201102285;
+ Thu, 14 Oct 2021 01:45:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20211008164728.30e3d3a3@canb.auug.org.au> <20211011082704.3cff4568@canb.auug.org.au>
+ <CAL_JsqJE_GHnehBz-71BOGXfjm6q2p0u6FQA5KwO8zK_i1LpMQ@mail.gmail.com>
+ <CAK8P3a1EcNuxT-w-8w-HDr2+idsP=vFZ3Cn27fX7o56GOuu_Cg@mail.gmail.com> <20211014001232.3becbe99@crub>
+In-Reply-To: <20211014001232.3becbe99@crub>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 14 Oct 2021 10:44:46 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0yKvZW2-XFJtPORpa=FhG+UJgk=m0O1GiC_yLw+1Pfvw@mail.gmail.com>
+Message-ID: <CAK8P3a0yKvZW2-XFJtPORpa=FhG+UJgk=m0O1GiC_yLw+1Pfvw@mail.gmail.com>
+Subject: Re: linux-next: build warnings in Linus' tree
+To:     Anatolij Gustschin <agust@denx.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh+dt@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:6Yv4eaUGMtbIlsCrktG1sQMSXp+EgvJPyfDzjPo4e5eIfxrGVyO
+ RCWBUrsYG8kCqcG0uFDo9OWGuTpuQYOqOULr0O2HLWB5ZUwCOTmLeNJ06Q0Z+ylJgLtwZSO
+ JXiSgPFiCIKzXKEvXcQfhTPo0zNfHrMsPnN9y7Jgl4GZkFIvsLBPto/4VIX43+x9omn7spB
+ TQc577mYa0VzRyA1fstrw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:CDX8eeXsrJ4=:3sPMwRMFoqdR01p2h7k8ZB
+ x0K21C88T1+nmImCwCUNxv+H5QsdKIsLVit9dqmCm4EAxptvoBFNXgvxkZ/9WYLGlBLVvgfRZ
+ 428PYf4a87240lxJHIH8FEsNN//TA/Xqmclj+5sbvFQErhndHXmZAI5zIUEoAdUa5a24fx6r0
+ vbudP8Q5AwczwH1EscdRTenLNEALX5rH2I/NIlbv49HMaNx4Z1/mjBw0gY+qOS5uFmlumjKBU
+ SkAmZOkxfROWropGlScHwPLLNuHUf8jfXJ/IMoBd42ktZWxXgSJp+UnL7BmB7+y2dGSy7tl+y
+ 39n+lcILjmIxNYr/fQtex7pKa/IHKoJy8Rh4fXSbRiTQfExCA3KO7iqnbU1vvlk/SXmQvcnh+
+ etu0oAU3VY5cuAsvjp7gX1IhXx7S5N+7oKGv6/zNUKcagpXIzF/UFF2lgcip/74IuUXxWCjyz
+ 3l9uRpWd+2ce5OEa2UWpaEzUvrDl3f3fk0PDfrOEAEnpXU656AqwvhWbVYyy1qZJRJ9G1s3YQ
+ CwaJE/PQj6Q8DQUXjtvOhO5jTK92aATXv4LF0syUhBl+OSdUgpYOq3huzX9QopDRlru8gqf/O
+ RpABwl+C71rWSCMqvGD3EsBo+5CXTSbu5s8/o/dx/DhOa0EcxomuafDAq1551WSFpnB2sXGAR
+ LqyPAJV5iWxhC9yTSPBoR7/QNFur/GwWAXNWjjtIyBvoQjbb6Zi4pG/43pw+AFq+vWhnFwYB9
+ Q2FZN2JEzyw+D86kjVKuh3Haw7Y3dZoFw+lGuA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:52 PM Borislav Petkov <bp@alien8.de> wrote:
+On Thu, Oct 14, 2021 at 12:12 AM Anatolij Gustschin <agust@denx.de> wrote:
+> On Tue, 12 Oct 2021 16:39:56 +0200
+> Arnd Bergmann arnd@arndb.de wrote:
+> ...
+> >Grant Likely was the original maintainer for MPC52xx until 2011,
+> >Anatolij Gustschin is still listed as maintainer since then but hasn't
+> >been active in it for a while either. Anatolij can probably best judge
+> >which of these boards are still in going to be used with future kernels,
+> >but I suspect once you start removing bits from 52xx, the newer
+> >but less common 512x platform can go away as well.
 >
-> On Wed, Oct 13, 2021 at 06:30:23PM +0200, Willy Tarreau wrote:
-> > Hello Michael,
-> >
-> > On Wed, Oct 13, 2021 at 04:24:28PM +0000, Michael Matz wrote:
-> > (...)
-> > > In short:  Ammars initial claim:
-> > >
-> > > > Linux x86-64 syscall only clobbers rax, rcx and r11 (and "memory").
-> > > >
-> > > >   - rax for the return value.
-> > > >   - rcx to save the return address.
-> > > >   - r11 to save the rflags.
-> > > >
-> > > > Other registers are preserved.
-> > >
-> > > is accurate and I will clarify the psABI to make that explicit.
-> >
-> > Many thanks for this very detailed explanation! Ammar, I'll take your
-> > patch.
+> many of these boards are still used, i.e. o2d*, digsy_mtc, tqm5200.
 
-Thanks all.
+Just for clarification, I assume when you say "still used" that implies
+getting updated to new kernels rather than just running the old BSPs,
+right?
 
->
-> Great, why are we dealing with some funky document when the law is in
-> glibc sources?!
->
-> :-)))
->
-> Ammar, if you wanna fixup the comment in entry_64.S too - make sure you
-> explain that glibc expects argument registers to be restored - I'll take
-> that patch too.
->
-> :-)
+What are the typical distro release cycles for those machines
+you list: do you move from one LTS kernel to the next each year,
+or are they getting more sporadic over time?
 
-Yay! I will send a patch for it, on this or next week.
+Do you expect the machines with the lowest memory such as the
+32MB digsy to stop getting kernel updates before the others?
 
->
-> Thx, that was fun.
->
+> I've sent first series to fix some warnings. Other dts fixes
+> require driver changes, so it will take some time to fix them.
 
--- 
-Ammar Faizi
+Thanks!
+
+      Arnd
