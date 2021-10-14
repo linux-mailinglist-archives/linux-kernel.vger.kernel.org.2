@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99F142DDB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0CD42DD3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbhJNPOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:14:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234016AbhJNPNg (ORCPT
+        id S233160AbhJNPF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:05:28 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:50138 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232683AbhJNPDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:13:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DB9C02B775
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:04:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ueZtdAThR7VQ7jebI58tUryh7pa65ZnfSjE48EgKiy4=; b=nMLxSLd50z4fGg+iJk7Ev+BYQn
-        QslXFEFGwQbH06TtmGf/2+isY8resYnyeoEje0+Ln6UK8y/THzkX5r6Hz8tLvWGNy/YE0sivzm2mr
-        iQu+Vn2OD8CvqXv3PdsO6dokQh2NtekcO3bGpNAWg7usqhNIKsOMv7hSgAc9TpRzALz2ppBuOw06h
-        zvIctif9lt9ac9ipEiaeKttBHsgCs2VmWY6nf22NIXgh21r6qV/htGGUOrIFNTQGs7hWPEuONcHsQ
-        +NiztRhAv7+Jt6rPuf9XDsyn4Y1V5TGPzPa+c/q3Jvmpl0u6mu4AmYyYRAnxiq2weUA3Rcn6NJJS/
-        iuT8jRFA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mb2ES-008Pa2-NP; Thu, 14 Oct 2021 15:01:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AA6CA30030B;
-        Thu, 14 Oct 2021 17:01:20 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9633A2CF42A2E; Thu, 14 Oct 2021 17:01:20 +0200 (CEST)
-Date:   Thu, 14 Oct 2021 17:01:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] compiler_types: mark __compiletime_assert failure as
- __noreturn
-Message-ID: <YWhGQLHnA9BIVBpr@hirez.programming.kicks-ass.net>
-References: <20211014132331.GA4811@kernel.org>
+        Thu, 14 Oct 2021 11:03:47 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id CBFDB1F44D70
+Subject: Re: [PATCH v6 10/16] soc: mediatek: add mtk-mutex support for mt8195
+ vdosys1
+To:     "Nancy.Lin" <nancy.lin@mediatek.com>, CK Hu <ck.hu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        singo.chang@mediatek.com, srv_heupstream@mediatek.com
+References: <20211004062140.29803-1-nancy.lin@mediatek.com>
+ <20211004062140.29803-11-nancy.lin@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <ccbaff29-808a-4c7b-51d4-764cf283fbbc@collabora.com>
+Date:   Thu, 14 Oct 2021 17:01:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014132331.GA4811@kernel.org>
+In-Reply-To: <20211004062140.29803-11-nancy.lin@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 03:23:31PM +0200, Miguel Ojeda wrote:
-> `__compiletime_assert` declares a fake `extern` function
-> which appears (to the compiler) to be called when the test fails.
+> Add mtk-mutex support for mt8195 vdosys1.
+> The vdosys1 path component contains ovl_adaptor, merge5,
+> and dp_intf1. Ovl_adaptor is composed of several sub-elements,
+> so change it to support multi-bit control.
 > 
-> Therefore, compilers may emit possibly-uninitialized warnings
-> in some cases, even if it will be an error anyway (for compilers
-> supporting the `error` attribute, e.g. GCC and Clang >= 14)
-> or a link failure (for those that do not, e.g. Clang < 14).
-> 
-> Annotating the fake function as `__noreturn` gives them
-> the information they need to avoid the warning,
-> e.g. see https://godbolt.org/z/x1v69jjYY.
-> 
-> Link: https://lore.kernel.org/llvm/202110100514.3h9CI4s0-lkp@intel.com/
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
 > ---
->  include/linux/compiler_types.h | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+>   drivers/soc/mediatek/mtk-mutex.c | 296 ++++++++++++++++++-------------
+>   1 file changed, 175 insertions(+), 121 deletions(-)
 > 
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index b6ff83a714ca..ca1a66b8cd2f 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -298,7 +298,13 @@ struct ftrace_likely_data {
->  #ifdef __OPTIMIZE__
->  # define __compiletime_assert(condition, msg, prefix, suffix)		\
->  	do {								\
-> -		extern void prefix ## suffix(void) __compiletime_error(msg); \
-> +		/*							\
-> +		 * __noreturn is needed to give the compiler enough	\
-> +		 * information to avoid certain possibly-uninitialized	\
-> +		 * warnings (regardless of the build failing).		\
-> +		 */							\
-> +		__noreturn extern void prefix ## suffix(void)		\
-> +			__compiletime_error(msg);			\
->  		if (!(condition))					\
->  			prefix ## suffix();				\
->  	} while (0)
+> diff --git a/drivers/soc/mediatek/mtk-mutex.c b/drivers/soc/mediatek/mtk-mutex.c
+> index 36502b27fe20..7767fedbd14f 100644
+> --- a/drivers/soc/mediatek/mtk-mutex.c
+> +++ b/drivers/soc/mediatek/mtk-mutex.c
+> @@ -29,113 +29,142 @@
+>   
+>   #define INT_MUTEX				BIT(1)
+>   
+> -#define MT8167_MUTEX_MOD_DISP_PWM		1
 
-Should we not convert this to _Static_assert, now that all supported
-compilers are of recent enough vintage to support that?
+This patch doesn't only add support for MT8195 vdosys1, but also changes
+all definitions to a different "format", and also changes the type for
+"mutex_mod" from int to long.
+In reality, the actual functional change is minimal, compared to the size of
+this entire patch.
+
+Please, split this patch in two parts: one patch changing the defines and
+the mutex_mod type (specifying that it's a preparation for adding support for
+mt8195 vdosys1 mutex) and one patch adding such support.
+
+Thanks!
+
+Regards,
+- Angelo
+
+
