@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC36442D0D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F8642D0D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhJNDQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55770 "EHLO
+        id S230007AbhJNDRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhJNDQy (ORCPT
+        with ESMTP id S230078AbhJNDRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:16:54 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E5FC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:14:50 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so3753507pjb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:14:50 -0700 (PDT)
+        Wed, 13 Oct 2021 23:17:01 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65439C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:14:56 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id x8so3175120plv.8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:14:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=r0qjm7jPQqP31FdhJus4GoBFS4vikb3c2lNdWiLTWxY=;
-        b=fHqGMMqqS+dxpGPANvS5UYl9EBZPCuGt/cJGTd4lCMGAZSChCx8MUGyl3tgGa4UUcq
-         1FmghmDG+lKgEqIgCxAHnQMggXhDemSpCZiyyZGzx7uYoEfL6Ml+u8AWCws7Q90Zrf4F
-         hXSCg94t9NRjKyVuE4L+/nYa+kCVqRa6jOhYHHbS/8udikPY8Ys6uCF8d2x4q8nY38pZ
-         Ub7KJ1StmAF0YRvXJnL2k8kBk17hJ/7XA71zjWu8uI7bsP0c+nGBobYxpyaSnSG9T0GE
-         5G2Ds0QcT33astNV2TY+nEoToRRkRaJZNZG5mMMyP+h4i531sjnO6b1RBDdPWQV74YHx
-         kOUg==
+        bh=ziZjbhk8BT0M+YtJUf8+KJKDTqKEqXLQXXRoPitasKI=;
+        b=iWuXzaQWCMhU5v19VMpnlWp/Jum8n4MoQtULYxxJagOYZObl+bVS3CEPLl2rzQ6vVN
+         eDVOVVEjcuu9jqTAUCmrq6SYz1tytz37yyjDnRXIhlY/r4QGegWVd7f6unmtKmxOYf9D
+         aO5a+oJU8AlBuBcE3jibd6ItG4Hk4M1Q8gzFXdrGvgI1G+xArTZSVhrxkkG0NXDXhz8P
+         xNwqNW0c9vM7JXMGH1L3OefuH8/opsYc9SYyvnVu+GFGz4Iwbj88Cq3x51w9pDKxQzG5
+         goZ0hDwJgNPfmrw0Q9lQGZD1ChQ4myvSogoV5jze0Yrp4aJ9jg1fiBhcgXvAsnaNclTN
+         m0Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=r0qjm7jPQqP31FdhJus4GoBFS4vikb3c2lNdWiLTWxY=;
-        b=czdkQgXUiPV+maOKe8XXkUd/0tbjyA5KXFDZd9HYfKPFHOzJatRiV6ezwQB3SBfdgy
-         bfdEibNpOquOu3hQAjwq5zGd3w13VDgOiUNvS3BK9jZ2YL9Z4+roNJgj4Br5kp1FgWiq
-         id9xQe++4SLQREL19mwyTkOC5mBShI9617weCPwW/GpGpPOngxxoAlxI0y2/LiiFUZiF
-         UYbkcghi4m/bQTOKZu73Ni5EKyBT1ouhz6DLKfAVQDnzXpq/UEciscL2GOiqckcpEK8y
-         chvudUJd9+TS1JW4Uw6oWFtG0c6S6C+m9M+84XVJzpunEgXnyj1GNpewBuU1x6RyChhu
-         uZvQ==
-X-Gm-Message-State: AOAM53272wMRNBHy3qDr2zuNluk51voI1W8q++u/A7QPYQJuXEq8s4el
-        9bj4jnWUW3awBTZwZHAoDS7Y+VmaQkg=
-X-Google-Smtp-Source: ABdhPJwbRfJSf6IAdM1hrDU8LtpUM6cnr3a3lsCNBno/VDuxg9HlOqcWuUw/JWUp6X/ZAR0NalQ5lg==
-X-Received: by 2002:a17:902:e5cb:b0:13f:25b7:4d50 with SMTP id u11-20020a170902e5cb00b0013f25b74d50mr2756213plf.38.1634181289535;
-        Wed, 13 Oct 2021 20:14:49 -0700 (PDT)
+        bh=ziZjbhk8BT0M+YtJUf8+KJKDTqKEqXLQXXRoPitasKI=;
+        b=WIwit72o742khE++ZbOOJDiuviH46lW0Im3xVb42VDcxhc6DNE0lBb/SHxAXF6M+Cl
+         UVyKbmjWhNtDW0EqUmtAtTcDPcowzDNC9rh77Fbnai0xh6u7sZBUEt/i9EVYb0hMpsgc
+         bmDCt8u1FKOZv+Hgp8/ACG4XV/Rw8/jQZbkzLIUWNpren9dUbjkHg9CM5QqlHZw/nT+W
+         nEeXXxUlMWerc+L7ZUjPbVt0GTBfK/Equ/o7xS85eZ1oQwTgDbpx9xwvCtYZZOy+8Ind
+         HPusDzIrIwwChJOec9SGk6I4gk4eNfzEMC9omUjzjaEqnff8WYJUm+Lz3azS3OG2ZGXb
+         c3eg==
+X-Gm-Message-State: AOAM532YfSp5SldLUo9jHzk9ArsNBmpAAJ9GxKHmrxjYJRZgOF7Ahty8
+        aXUyHcK6+E3RNtbnRwtm5Y/FxpRXjCw=
+X-Google-Smtp-Source: ABdhPJzpkAN6dWN7KdDgWgpczxPhJkz1xZ6tOUDKx0cpvgpNGxI52fkzkbxcU59sU3BkgbKJoHIyPg==
+X-Received: by 2002:a17:902:8494:b0:13b:9365:6f12 with SMTP id c20-20020a170902849400b0013b93656f12mr2783213plo.19.1634181295802;
+        Wed, 13 Oct 2021 20:14:55 -0700 (PDT)
 Received: from localhost ([198.11.178.15])
-        by smtp.gmail.com with ESMTPSA id me18sm812400pjb.33.2021.10.13.20.14.48
+        by smtp.gmail.com with ESMTPSA id k22sm7642008pji.2.2021.10.13.20.14.54
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Oct 2021 20:14:49 -0700 (PDT)
+        Wed, 13 Oct 2021 20:14:55 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Jan Beulich <jbeulich@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
+        Juergen Gross <jgross@suse.com>, Peter Anvin <hpa@zytor.com>,
+        xen-devel@lists.xenproject.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Chester Lin <clin@suse.com>, Juergen Gross <jgross@suse.com>
-Subject: [PATCH V3 03/49] x86/traps: Remove stack-protector from traps.c
-Date:   Thu, 14 Oct 2021 11:13:26 +0800
-Message-Id: <20211014031413.14471-4-jiangshanlai@gmail.com>
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: [PATCH V3 04/49] x86/xen: Add xenpv_restore_regs_and_return_to_usermode()
+Date:   Thu, 14 Oct 2021 11:13:27 +0800
+Message-Id: <20211014031413.14471-5-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211014031413.14471-1-jiangshanlai@gmail.com>
 References: <20211014031413.14471-1-jiangshanlai@gmail.com>
@@ -75,38 +73,150 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-When stack-protector is enabled, the compiler adds some instrument code
-at the beginning and the end of some functions. Many functions in traps.c
-are non-instrumentable.  Moreover, stack-protector code in the beginning
-of the affected function accesses the canary that might be watched by
-hardware breakpoints which also violate the non-instrumentable
-nature of some functions and might cause infinite recursive #DB because
-the canary is accessed before resetting the dr7.
+While in the native case, PER_CPU_VAR(cpu_tss_rw + TSS_sp0) is the
+trampoline stack.  But XEN pv doesn't use trampoline stack, so
+PER_CPU_VAR(cpu_tss_rw + TSS_sp0) is also the kernel stack.  Hence source
+and destination stacks are identical in that case, which means reusing
+swapgs_restore_regs_and_return_to_usermode() in XEN pv would cause %rsp
+to move up to the top of the kernel stack and leave the IRET frame below
+%rsp, which is dangerous to be corrupted if #NMI / #MC hit as either of
+these events occurring in the middle of the stack pushing would clobber
+data on the (original) stack.
 
-So it is better to remove stack-protector from traps.c.
+And swapgs_restore_regs_and_return_to_usermode() pushing the IRET frame
+on to the original address is useless and error-prone when there is any
+future attempt to modify the code.
 
-It is also prepared for later patches that move some entry code into
-traps.c, some of which can NOT use percpu register until gsbase is
-properly switched.  And stack-protector depends on the percpu register
-to work.
-
+Fixes: 7f2590a110b8 ("x86/entry/64: Use a per-CPU trampoline stack for IDT entries")
+Cc: Jan Beulich <jbeulich@suse.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Peter Anvin <hpa@zytor.com>
+Cc: xen-devel@lists.xenproject.org>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/kernel/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/entry/entry_64.S        |  9 ++++++---
+ arch/x86/entry/entry_64_compat.S |  7 ++++---
+ arch/x86/xen/xen-asm.S           | 27 +++++++++++++++++++++++++++
+ 3 files changed, 37 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 2ff3e600f426..8ac45801ba8b 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -50,6 +50,7 @@ KCOV_INSTRUMENT		:= n
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index 9d468c8877e2..0dde5a253dda 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -119,7 +119,7 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
+ 	 * In the Xen PV case we must use iret anyway.
+ 	 */
  
- CFLAGS_head$(BITS).o	+= -fno-stack-protector
- CFLAGS_cc_platform.o	+= -fno-stack-protector
-+CFLAGS_traps.o		+= -fno-stack-protector
+-	ALTERNATIVE "", "jmp	swapgs_restore_regs_and_return_to_usermode", \
++	ALTERNATIVE "", "jmp xenpv_restore_regs_and_return_to_usermode", \
+ 		X86_FEATURE_XENPV
  
- CFLAGS_irq.o := -I $(srctree)/$(src)/../include/asm/trace
+ 	movq	RCX(%rsp), %rcx
+@@ -286,7 +286,8 @@ SYM_CODE_START(ret_from_fork)
+ 	UNWIND_HINT_REGS
+ 	movq	%rsp, %rdi
+ 	call	syscall_exit_to_user_mode	/* returns with IRQs disabled */
+-	jmp	swapgs_restore_regs_and_return_to_usermode
++	ALTERNATIVE "jmp swapgs_restore_regs_and_return_to_usermode",	\
++		"jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
  
+ 1:
+ 	/* kernel thread */
+@@ -566,6 +567,7 @@ __irqentry_text_start:
+ __irqentry_text_end:
+ 
+ SYM_CODE_START_LOCAL(common_interrupt_return)
++SYM_INNER_LABEL(xenpv_restore_regs_and_return_to_usermode, SYM_L_WEAK) /* placeholder */
+ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
+ #ifdef CONFIG_DEBUG_ENTRY
+ 	/* Assert that pt_regs indicates user mode. */
+@@ -1055,7 +1057,8 @@ SYM_CODE_START_LOCAL(error_return)
+ 	DEBUG_ENTRY_ASSERT_IRQS_OFF
+ 	testb	$3, CS(%rsp)
+ 	jz	restore_regs_and_return_to_kernel
+-	jmp	swapgs_restore_regs_and_return_to_usermode
++	ALTERNATIVE "jmp swapgs_restore_regs_and_return_to_usermode",	\
++		"jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
+ SYM_CODE_END(error_return)
+ 
+ /*
+diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
+index 0051cf5c792d..2a4d9532dfd5 100644
+--- a/arch/x86/entry/entry_64_compat.S
++++ b/arch/x86/entry/entry_64_compat.S
+@@ -139,7 +139,7 @@ SYM_INNER_LABEL(entry_SYSENTER_compat_after_hwframe, SYM_L_GLOBAL)
+ 	call	do_SYSENTER_32
+ 	/* XEN PV guests always use IRET path */
+ 	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
+-		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
++		    "jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
+ 	jmp	sysret32_from_system_call
+ 
+ .Lsysenter_fix_flags:
+@@ -256,7 +256,7 @@ SYM_INNER_LABEL(entry_SYSCALL_compat_after_hwframe, SYM_L_GLOBAL)
+ 	call	do_fast_syscall_32
+ 	/* XEN PV guests always use IRET path */
+ 	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
+-		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
++		    "jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
+ 
+ 	/* Opportunistic SYSRET */
+ sysret32_from_system_call:
+@@ -411,5 +411,6 @@ SYM_CODE_START(entry_INT80_compat)
+ 
+ 	movq	%rsp, %rdi
+ 	call	do_int80_syscall_32
+-	jmp	swapgs_restore_regs_and_return_to_usermode
++	ALTERNATIVE "jmp swapgs_restore_regs_and_return_to_usermode",	\
++		"jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
+ SYM_CODE_END(entry_INT80_compat)
+diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
+index 220dd9678494..032be1bab113 100644
+--- a/arch/x86/xen/xen-asm.S
++++ b/arch/x86/xen/xen-asm.S
+@@ -20,6 +20,7 @@
+ 
+ #include <linux/init.h>
+ #include <linux/linkage.h>
++#include <../entry/calling.h>
+ 
+ .pushsection .noinstr.text, "ax"
+ /*
+@@ -192,6 +193,32 @@ SYM_CODE_START(xen_iret)
+ 	jmp hypercall_iret
+ SYM_CODE_END(xen_iret)
+ 
++/*
++ * XEN pv doesn't use trampoline stack, PER_CPU_VAR(cpu_tss_rw + TSS_sp0) is
++ * also the kernel stack.  Reusing swapgs_restore_regs_and_return_to_usermode()
++ * in XEN pv would cause %rsp to move up to the top of the kernel stack and
++ * leave the IRET frame below %rsp, which is dangerous to be corrupted if #NMI
++ * interrupts. And swapgs_restore_regs_and_return_to_usermode() pushing the IRET
++ * frame at the same address is useless.
++ */
++SYM_CODE_START(xenpv_restore_regs_and_return_to_usermode)
++	UNWIND_HINT_REGS
++#ifdef CONFIG_DEBUG_ENTRY
++	/* Assert that pt_regs indicates user mode. */
++	testb	$3, CS(%rsp)
++	jnz	1f
++	ud2
++1:
++#endif
++	POP_REGS
++
++	/* stackleak_erase() can work safely on the kernel stack. */
++	STACKLEAK_ERASE_NOCLOBBER
++
++	addq	$8, %rsp	/* skip regs->orig_ax */
++	jmp xen_iret
++SYM_CODE_END(xenpv_restore_regs_and_return_to_usermode)
++
+ /*
+  * Xen handles syscall callbacks much like ordinary exceptions, which
+  * means we have:
 -- 
 2.19.1.6.gb485710b
 
