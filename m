@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324DE42DD4B
+	by mail.lfdr.de (Postfix) with ESMTP id C543242DD4D
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231792AbhJNPGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:06:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51624 "EHLO mail.kernel.org"
+        id S233537AbhJNPGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:06:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233504AbhJNPEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:04:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2547F611AD;
-        Thu, 14 Oct 2021 15:00:37 +0000 (UTC)
+        id S233126AbhJNPEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:04:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8507611CC;
+        Thu, 14 Oct 2021 15:00:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223637;
-        bh=0lnmFkKEGL8qe77uI9RJxhhWy2zee8GFecR+3m+fJi0=;
+        s=korg; t=1634223640;
+        bh=+Zz8nIxHkcfBTCM4F23ZXRh80YwkMvyTTEPJ/v4wdQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jO+VbSLKsmh5D9StgTZywn7fCIRFAVWTZVQ2CyTfDo05VsYcxXz41p2Mht7dMPx8o
-         87nQ42g3zHkIFVOhhPYKgM7OVPyPF9VZNpyxIkFS9Mgv4xSACD8noAPeihz7n5V8Dt
-         XM2PCu5+ZuW1hsbKs12imWgmCmY4ikrb71a4lT0I=
+        b=GP3QaLxmCMqjtcnLT6YTbMVz4bxZufUVvC0cdb1oDLRitjtPIHLh5lXLV9JrIeuzV
+         25o2gV/lTSZgDm96bFT5AdnUIsnyH4FOfYg+1YcfuLOGDK7DoRAu3MxCJtFYn1mPVd
+         UxYWU0ijLVuU3Kpi75y7BP7lvIjXShh65R7DF86o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Herbert <marc.herbert@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 10/30] ASoC: SOF: loader: release_firmware() on load failure to avoid batching
-Date:   Thu, 14 Oct 2021 16:54:15 +0200
-Message-Id: <20211014145209.862805546@linuxfoundation.org>
+        stable@vger.kernel.org, David Brazdil <dbrazdil@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 11/30] KVM: arm64: nvhe: Fix missing FORCE for hyp-reloc.S build rule
+Date:   Thu, 14 Oct 2021 16:54:16 +0200
+Message-Id: <20211014145209.891655707@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
 References: <20211014145209.520017940@linuxfoundation.org>
@@ -44,71 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Herbert <marc.herbert@intel.com>
+From: Zenghui Yu <yuzenghui@huawei.com>
 
-[ Upstream commit 8a8e1813ffc35111fc0b6db49968ceb0e1615ced ]
+[ Upstream commit a49b50a3c1c3226d26e1dd11e8b763f27e477623 ]
 
-Invoke release_firmware() when the firmware fails to boot in
-sof_probe_continue().
+Add FORCE so that if_changed can detect the command line change.
 
-The request_firmware() framework must be informed of failures in
-sof_probe_continue() otherwise its internal "batching"
-feature (different from caching) cached the firmware image
-forever. Attempts to correct the file in /lib/firmware/ were then
-silently and confusingly ignored until the next reboot. Unloading the
-drivers did not help because from their disconnected perspective the
-firmware had failed so there was nothing to release.
+We'll otherwise see a compilation warning since commit e1f86d7b4b2a
+("kbuild: warn if FORCE is missing for if_changed(_dep,_rule) and
+filechk").
 
-Also leverage the new snd_sof_fw_unload() function to simplify the
-snd_sof_device_remove() function.
+arch/arm64/kvm/hyp/nvhe/Makefile:58: FORCE prerequisite is missing
 
-Signed-off-by: Marc Herbert <marc.herbert@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Link: https://lore.kernel.org/r/20210916085008.28929-1-peter.ujfalusi@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: David Brazdil <dbrazdil@google.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210907052137.1059-1-yuzenghui@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/core.c   | 4 +---
- sound/soc/sof/loader.c | 2 ++
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/kvm/hyp/nvhe/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 3e4dd4a86363..59d0d7b2b55c 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -371,7 +371,6 @@ int snd_sof_device_remove(struct device *dev)
- 			dev_warn(dev, "error: %d failed to prepare DSP for device removal",
- 				 ret);
+diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+index 5df6193fc430..8d741f71377f 100644
+--- a/arch/arm64/kvm/hyp/nvhe/Makefile
++++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+@@ -54,7 +54,7 @@ $(obj)/kvm_nvhe.tmp.o: $(obj)/hyp.lds $(addprefix $(obj)/,$(hyp-obj)) FORCE
+ #    runtime. Because the hypervisor is part of the kernel binary, relocations
+ #    produce a kernel VA. We enumerate relocations targeting hyp at build time
+ #    and convert the kernel VAs at those positions to hyp VAs.
+-$(obj)/hyp-reloc.S: $(obj)/kvm_nvhe.tmp.o $(obj)/gen-hyprel
++$(obj)/hyp-reloc.S: $(obj)/kvm_nvhe.tmp.o $(obj)/gen-hyprel FORCE
+ 	$(call if_changed,hyprel)
  
--		snd_sof_fw_unload(sdev);
- 		snd_sof_ipc_free(sdev);
- 		snd_sof_free_debug(sdev);
- 		snd_sof_free_trace(sdev);
-@@ -394,8 +393,7 @@ int snd_sof_device_remove(struct device *dev)
- 		snd_sof_remove(sdev);
- 
- 	/* release firmware */
--	release_firmware(pdata->fw);
--	pdata->fw = NULL;
-+	snd_sof_fw_unload(sdev);
- 
- 	return 0;
- }
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 2b38a77cd594..9c3f251a0dd0 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -880,5 +880,7 @@ EXPORT_SYMBOL(snd_sof_run_firmware);
- void snd_sof_fw_unload(struct snd_sof_dev *sdev)
- {
- 	/* TODO: support module unloading at runtime */
-+	release_firmware(sdev->pdata->fw);
-+	sdev->pdata->fw = NULL;
- }
- EXPORT_SYMBOL(snd_sof_fw_unload);
+ # 5) Compile hyp-reloc.S and link it into the existing partially linked object.
 -- 
 2.33.0
 
