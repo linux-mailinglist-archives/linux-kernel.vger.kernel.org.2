@@ -2,364 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F3E42E291
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 22:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC49E42E2B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 22:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhJNUTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 16:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
+        id S231477AbhJNU0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 16:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230353AbhJNUTP (ORCPT
+        with ESMTP id S229637AbhJNU0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 16:19:15 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E47C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 13:17:09 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id w14so28793051edv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 13:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hz3FTkKSu5Q5zo1apLh9LR0ZicgX3zkIsQYog4sUJBk=;
-        b=rRR0EdVvF2N9jzcEBIVahBJI7Lj97eJ6c/pb54Gd1naTZM7drzPitAYacZirJE4Z9/
-         +sRyEEkj7XDR5Ok63Z8qZnviAqJf2VcYe79/qQ/DU3b7EU0K+JQ9m4cPWYiIjnQUcPvR
-         G+SPOPJQ/8QRHMgS+4VNaUMn4bfBboeJQSgCI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hz3FTkKSu5Q5zo1apLh9LR0ZicgX3zkIsQYog4sUJBk=;
-        b=Nk1XXRx6X5OCgoP2ywlxdmJI7selyE9vgnQoqRMY/Ccr4W/inSwqXS/Seipy35veT9
-         HM9WxsvRRMSamI5Xpay9uwL0ecUq4Xj5vVHT3VwJgPh4v7i3preI4EK3SUZu6TQ3ELnS
-         bgQCFrAiH16W+695oWtsLRVoxSHaJbklAqO+xIN3iZliTAETOT5YhWX6lQCEbJiu4SNH
-         izXKS1NBEO7SL09pk7FsKrwS/ouAA+ZUa7j3rTHxj+LEeTSrPe9DuTC+O0vWPLDAkEM2
-         PIR8KqekG0ELy3Rrw4IlJnESeXdXyWrUJOS76teGgEoJKkOoOfdnnhu4h/0ImjBYrChE
-         QpDg==
-X-Gm-Message-State: AOAM530+pDWnu8dY9YJq5/BdotQgi8j2saEMZjemw88VJO01PjMhWXhF
-        8N3m0MV84K3sk4fgMzBMrcehoajnpyl4GLAi
-X-Google-Smtp-Source: ABdhPJy+Cmj++7BbyCQQ+JGtj3bhtnDV3NuS+eXp099Z0XKaFQtFG3bFtbRsRX8jyEOrN1HU8818Fw==
-X-Received: by 2002:a17:906:46db:: with SMTP id k27mr1472840ejs.436.1634242628321;
-        Thu, 14 Oct 2021 13:17:08 -0700 (PDT)
-Received: from localhost.localdomain (mob-109-119-250-124.net.vodafone.it. [109.119.250.124])
-        by smtp.gmail.com with ESMTPSA id w18sm4258097edc.4.2021.10.14.13.17.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 13:17:07 -0700 (PDT)
-From:   Michael Trimarchi <michael@amarulasolutions.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+        Thu, 14 Oct 2021 16:26:46 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8B4C061570;
+        Thu, 14 Oct 2021 13:24:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=H/+saBVHG6Q0/3w93ZreMAu3RniGzEFHzOX/deXs7WM=; b=moxm7Ky/KkaxZMIX+sDuPRs9SX
+        a6kbxyFuHrfxo8f2Y2/l7Hh4u6J1z1pdV7r9x1a4ZR2OAHn2zc5tQIfEWV6yhP8lxOrFLmJ7uslKr
+        SDbIVJ2jJ0JDVFRciyb5WOC4w0yIM+HqfRcPh2kL1orbm9OTkjzA3igI0RuhXnj2xMLxthcXA713f
+        BCLrie7TmS8R9NLD439hSLPp8jtoSJGNnO5wkAz6j7uxxEUMhzyf5VH1DFvx3ISYBzOQqMkxbQAxr
+        AVRXPp6fHhdE8Hj/QB3Y4DhMQlJYHo9zviV9vJ3a1/Qhy/tF+bRqTbsH0wBVrv4saIf5H6GE/Sec9
+        yxeQSZDw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mb7HE-004Lo0-4q; Thu, 14 Oct 2021 20:24:32 +0000
+Date:   Thu, 14 Oct 2021 13:24:32 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] drm/panel: ilitek-ili9881d: add support for Wanchanglong W552946ABA panel
-Date:   Thu, 14 Oct 2021 22:17:05 +0200
-Message-Id: <20211014201705.218608-1-michael@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YWiSAN6xfYcUDJCb@bombadil.infradead.org>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-12-mcgrof@kernel.org>
+ <YWeOJP2UJWYF94fu@T590>
+ <YWeR4moCRh+ZHOmH@T590>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWeR4moCRh+ZHOmH@T590>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W552946ABA is a panel by Wanchanglong. This panel utilizes the Ilitek ILI9881D
-controller.
+On Thu, Oct 14, 2021 at 10:11:46AM +0800, Ming Lei wrote:
+> On Thu, Oct 14, 2021 at 09:55:48AM +0800, Ming Lei wrote:
+> > On Mon, Sep 27, 2021 at 09:38:04AM -0700, Luis Chamberlain wrote:
+> 
+> ...
+> 
+> > 
+> > Hello Luis,
+> > 
+> > Can you test the following patch and see if the issue can be addressed?
+> > 
+> > Please see the idea from the inline comment.
+> > 
+> > Also zram_index_mutex isn't needed in zram disk's store() compared with
+> > your patch, then the deadlock issue you are addressing in this series can
+> > be avoided.
+> > 
+> > 
+> > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> > index fcaf2750f68f..3c17927d23a7 100644
+> > --- a/drivers/block/zram/zram_drv.c
+> > +++ b/drivers/block/zram/zram_drv.c
+> > @@ -1985,11 +1985,17 @@ static int zram_remove(struct zram *zram)
+> >  
+> >  	/* Make sure all the pending I/O are finished */
+> >  	fsync_bdev(bdev);
+> > -	zram_reset_device(zram);
+> >  
+> >  	pr_info("Removed device: %s\n", zram->disk->disk_name);
+> >  
+> >  	del_gendisk(zram->disk);
+> > +
+> > +	/*
+> > +	 * reset device after gendisk is removed, so any change from sysfs
+> > +	 * store won't come in, then we can really reset device here
+> > +	 */
+> > +	zram_reset_device(zram);
+> > +
+> >  	blk_cleanup_disk(zram->disk);
+> >  	kfree(zram);
+> >  	return 0;
+> > @@ -2073,7 +2079,12 @@ static int zram_remove_cb(int id, void *ptr, void *data)
+> >  static void destroy_devices(void)
+> >  {
+> >  	class_unregister(&zram_control_class);
+> > +
+> > +	/* hold the global lock so new device can't be added */
+> > +	mutex_lock(&zram_index_mutex);
+> >  	idr_for_each(&zram_index_idr, &zram_remove_cb, NULL);
+> > +	mutex_unlock(&zram_index_mutex);
+> > +
+> 
+> Actually zram_index_mutex isn't needed when calling zram_remove_cb()
+> since the zram-control sysfs interface has been removed, so userspace
+> can't add new device any more, then the issue is supposed to be fixed
+> by the following one line change, please test it:
+> 
+> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> index fcaf2750f68f..96dd641de233 100644
+> --- a/drivers/block/zram/zram_drv.c
+> +++ b/drivers/block/zram/zram_drv.c
+> @@ -1985,11 +1985,17 @@ static int zram_remove(struct zram *zram)
+>  
+>  	/* Make sure all the pending I/O are finished */
+>  	fsync_bdev(bdev);
+> -	zram_reset_device(zram);
+>  
+>  	pr_info("Removed device: %s\n", zram->disk->disk_name);
+>  
+>  	del_gendisk(zram->disk);
+> +
+> +	/*
+> +	 * reset device after gendisk is removed, so any change from sysfs
+> +	 * store won't come in, then we can really reset device here
+> +	 */
+> +	zram_reset_device(zram);
+> +
+>  	blk_cleanup_disk(zram->disk);
+>  	kfree(zram);
+>  	return 0;
 
-Add this panel's initialzation sequence and timing to ILI9881D driver.
-Tested on px30-evb v11
+Sorry but nope, the cpu multistate issue is still present and we end up
+eventually with page faults. I tried with both patches.
 
-Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
----
- drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 238 +++++++++++++++++-
- 1 file changed, 237 insertions(+), 1 deletion(-)
+Oct 14 20:21:34 kdevops kernel: ------------[ cut here ]------------
+Oct 14 20:21:34 kdevops kernel: Error: Removing state 65 which has
+instances left.
+Oct 14 20:21:34 kdevops kernel: WARNING: CPU: 4 PID: 3358 at
+kernel/cpu.c:2151 __cpuhp_remove_state_cpuslocked+0xf9/0x100
+Oct 14 20:21:34 kdevops kernel: Modules linked in: zram(E-) zstd(E)
+zsmalloc(E) kvm_intel(E) kvm(E) irqbypass(E) crct10dif_pclmul(E)
+crc32_pclmul(E) ghash_clmulni_intel(E) >
+Oct 14 20:21:34 kdevops kernel: CPU: 4 PID: 3358 Comm: rmmod Tainted: G
+E     5.15.0-rc3-next-20210927+ #89
+Oct 14 20:21:34 kdevops kernel: Hardware name: QEMU Standard PC (i440FX
++ PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+Oct 14 20:21:34 kdevops kernel: RIP:
+0010:__cpuhp_remove_state_cpuslocked+0xf9/0x100
+Oct 14 20:21:34 kdevops kernel: Code: 21 00 48 c7 43 18 00 00 00 00 5b
+5d 41 5c 41 5d 41 5e 41 5f e9 d8 17 84 00 0f 0b 44 89 e6 48 c7 c7 78 0c
+8b ad e8 56 92 7f 00 <0f> 0b >
+Oct 14 20:21:34 kdevops kernel: RSP: 0018:ffffaac980a1fe90 EFLAGS:
+00010286
+Oct 14 20:21:34 kdevops kernel: RAX: 0000000000000000 RBX:
+ffffffffada3e208 RCX: 0000000000000000
+Oct 14 20:21:34 kdevops kernel: RDX: 0000000000000001 RSI:
+ffffffffad8efdb6 RDI: 00000000ffffffff
+Oct 14 20:21:34 kdevops kernel: RBP: 0000000000000000 R08:
+0000000000000000 R09: ffffaac980a1fcc0
+Oct 14 20:21:34 kdevops kernel: R10: ffffaac980a1fcb8 R11:
+ffffffffadac3c68 R12: 0000000000000041
+Oct 14 20:21:34 kdevops kernel: R13: 0000000000000a28 R14:
+0000000000000000 R15: 0000000000000000
+Oct 14 20:21:34 kdevops kernel: FS:  00007fc0c2882580(0000)
+GS:ffff9ed6f7d00000(0000) knlGS:0000000000000000
+Oct 14 20:21:34 kdevops kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
+0000000080050033
+Oct 14 20:21:34 kdevops kernel: CR2: 00005621b0490b78 CR3:
+000000011a538005 CR4: 0000000000370ee0
+Oct 14 20:21:34 kdevops kernel: DR0: 0000000000000000 DR1:
+0000000000000000 DR2: 0000000000000000
+Oct 14 20:21:34 kdevops kernel: DR3: 0000000000000000 DR6:
+00000000fffe0ff0 DR7: 0000000000000400
+Oct 14 20:21:34 kdevops kernel: Call Trace:
+Oct 14 20:21:34 kdevops kernel:  <TASK>
+Oct 14 20:21:34 kdevops kernel:  __cpuhp_remove_state+0x4d/0xc0
+Oct 14 20:21:34 kdevops kernel:  __do_sys_delete_module+0x18d/0x2a0
+Oct 14 20:21:34 kdevops kernel:  ?
+fpregs_assert_state_consistent+0x1e/0x40
+Oct 14 20:21:34 kdevops kernel:  ? exit_to_user_mode_prepare+0x3a/0x180
+Oct 14 20:21:34 kdevops kernel:  do_syscall_64+0x38/0xc0
+Oct 14 20:21:34 kdevops kernel:
+entry_SYSCALL_64_after_hwframe+0x44/0xae
+Oct 14 20:21:34 kdevops kernel: RIP: 0033:0x7fc0c29a84a7
+<etc>
+Oct 14 20:21:35 kdevops kernel: sysfs: cannot create duplicate filename
+'/devices/virtual/block/zram0'
+Oct 14 20:21:35 kdevops kernel: CPU: 5 PID: 3388 Comm: modprobe Tainted:
+G        W   E     5.15.0-rc3-next-20210927+ #89
+Oct 14 20:21:35 kdevops kernel: Hardware name: QEMU Standard PC (i440FX
++ PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+Oct 14 20:21:35 kdevops kernel: Call Trace:
+Oct 14 20:21:35 kdevops kernel:  <TASK>
+Oct 14 20:21:35 kdevops kernel:  dump_stack_lvl+0x48/0x5e
+Oct 14 20:21:35 kdevops kernel:  sysfs_warn_dup.cold+0x17/0x24
+Oct 14 20:21:35 kdevops kernel:  sysfs_create_dir_ns+0xbc/0xd0
+Oct 14 20:21:35 kdevops kernel:  kobject_add_internal+0xbd/0x2b0
+Oct 14 20:21:35 kdevops kernel:  kobject_add+0x7e/0xb0
+Oct 14 20:21:35 kdevops kernel:  ? _raw_spin_unlock_irqrestore+0x25/0x40
+Oct 14 20:21:35 kdevops kernel:  ? preempt_count_add+0x68/0xa0
+Oct 14 20:21:35 kdevops kernel:  device_add+0x11a/0x980
+Oct 14 20:21:35 kdevops kernel:  ? dev_set_name+0x53/0x70
+Oct 14 20:21:35 kdevops kernel:  device_add_disk+0x9d/0x3a0
+Oct 14 20:21:35 kdevops kernel:  zram_add+0x1ad/0x200 [zram]
+Oct 14 20:21:35 kdevops kernel:  ? 0xffffffffc0c10000
+Oct 14 20:21:35 kdevops kernel:  zram_init+0xd7/0x1000 [zram]
+Oct 14 20:21:35 kdevops kernel:  do_one_initcall+0x41/0x200
+Oct 14 20:21:35 kdevops kernel:  ? _raw_spin_unlock_irqrestore+0x25/0x40
+Oct 14 20:21:35 kdevops kernel:  ? kmem_cache_alloc_trace+0x2ab/0x420
+Oct 14 20:21:35 kdevops kernel:  do_init_module+0x5c/0x270
+Oct 14 20:21:35 kdevops kernel:  __do_sys_finit_module+0xae/0x110
+Oct 14 20:21:35 kdevops kernel:  do_syscall_64+0x38/0xc0
+Oct 14 20:21:35 kdevops kernel:
+entry_SYSCALL_64_after_hwframe+0x44/0xae
+Oct 14 20:21:35 kdevops kernel: RIP: 0033:0x7fca3aa555e9
+Oct 14 20:21:35 kdevops kernel: Code: 00 c3 66 2e 0f 1f 84 00 00 00 00
+00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8
+4c 8b 4c 24 08 0f 05 <48> 3d >
+Oct 14 20:21:35 kdevops kernel: RSP: 002b:00007fff142417b8 EFLAGS:
+00000246 ORIG_RAX: 0000000000000139
+Oct 14 20:21:35 kdevops kernel: RAX: ffffffffffffffda RBX:
+0000558ba9491bd0 RCX: 00007fca3aa555e9
+Oct 14 20:21:35 kdevops kernel: RDX: 0000000000000000 RSI:
+0000558ba9491f60 RDI: 0000000000000003
+Oct 14 20:21:35 kdevops kernel: RBP: 0000000000040000 R08:
+0000000000000000 R09: 0000558ba9491db0
+Oct 14 20:21:35 kdevops kernel: R10: 0000000000000003 R11:
+0000000000000246 R12: 0000558ba9491f60
+Oct 14 20:21:35 kdevops kernel: R13: 0000000000000000 R14:
+0000558ba9491d00 R15: 0000558ba9491bd0
+Oct 14 20:21:35 kdevops kernel:  </TASK>
+<etc>
+Oct 14 20:21:35 kdevops kernel: kobject_add_internal failed for zram0
+with -EEXIST, don't try to register things with the same name in the
+same directory.
+Oct 14 20:21:35 kdevops kernel: ------------[ cut here ]------------
+Oct 14 20:21:35 kdevops kernel: WARNING: CPU: 5 PID: 3388 at
+block/genhd.c:537 device_add_disk+0x1b9/0x3a0
+Oct 14 20:21:35 kdevops kernel: Modules linked in: zram(E+) zstd(E)
+zsmalloc(E) kvm_intel(E) kvm(E) irqbypass(E) crct10dif_pclmul(E)
+crc32_pclmul(E) ghash_clmulni_intel(E) >
+Oct 14 20:21:35 kdevops kernel: CPU: 5 PID: 3388 Comm: modprobe Tainted:
+G        W   E     5.15.0-rc3-next-20210927+ #89
+Oct 14 20:21:35 kdevops kernel: Hardware name: QEMU Standard PC (i440FX
++ PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+Oct 14 20:21:35 kdevops kernel: RIP: 0010:device_add_disk+0x1b9/0x3a0
+Oct 14 20:21:35 kdevops kernel: Code: 00 03 01 00 00 0f 85 32 ff ff ff
+e9 1e ff ff ff 0f 0b 41 bc ea ff ff ff e9 29 ff ff ff 4c 89 ff e8 5c 45
+1c 00 e9 ef fe ff ff <0f> 0b >
+Oct 14 20:21:35 kdevops kernel: RSP: 0018:ffffaac980607d90 EFLAGS:
+00010287
+Oct 14 20:21:35 kdevops kernel: RAX: 0000000000000000 RBX:
+0000000000000000 RCX: 0000000000023005
+Oct 14 20:21:35 kdevops kernel: RDX: 0000000000022e05 RSI:
+ffffffffacc4b710 RDI: 0000000000000000
+Oct 14 20:21:35 kdevops kernel: RBP: ffff9ed5d788a600 R08:
+0000000000000000 R09: ffffaac980607a98
+Oct 14 20:21:35 kdevops kernel: R10: ffff9ed5c795ef00 R11:
+ffffffffadac3c68 R12: 00000000ffffffef
+Oct 14 20:21:35 kdevops kernel: R13: ffff9ed5d5600000 R14:
+ffffffffc0a52100 R15: ffff9ed5d5600040
+Oct 14 20:21:35 kdevops kernel: FS:  00007fca3a935580(0000)
+GS:ffff9ed6f7d40000(0000) knlGS:0000000000000000
+Oct 14 20:21:35 kdevops kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
+0000000080050033
+Oct 14 20:21:35 kdevops kernel: CR2: 00007fff1423e6d8 CR3:
+0000000136752002 CR4: 0000000000370ee0
+Oct 14 20:21:35 kdevops kernel: DR0: 0000000000000000 DR1:
+0000000000000000 DR2: 0000000000000000
+Oct 14 20:21:35 kdevops kernel: DR3: 0000000000000000 DR6:
+00000000fffe0ff0 DR7: 0000000000000400
+Oct 14 20:21:35 kdevops kernel: Call Trace:
+Oct 14 20:21:35 kdevops kernel:  <TASK>
+Oct 14 20:21:35 kdevops kernel:  zram_add+0x1ad/0x200 [zram]
+Oct 14 20:21:35 kdevops kernel:  ? 0xffffffffc0c10000
+Oct 14 20:21:35 kdevops kernel:  zram_init+0xd7/0x1000 [zram]
+Oct 14 20:21:35 kdevops kernel:  do_one_initcall+0x41/0x200
+Oct 14 20:21:35 kdevops kernel:  ? _raw_spin_unlock_irqrestore+0x25/0x40
+Oct 14 20:21:35 kdevops kernel:  ? kmem_cache_alloc_trace+0x2ab/0x420
+Oct 14 20:21:35 kdevops kernel:  do_init_module+0x5c/0x270
+Oct 14 20:21:35 kdevops kernel:  __do_sys_finit_module+0xae/0x110
+Oct 14 20:21:35 kdevops kernel:  do_syscall_64+0x38/0xc0
+Oct 14 20:21:35 kdevops kernel:
+entry_SYSCALL_64_after_hwframe+0x44/0xae
+Oct 14 20:21:35 kdevops kernel: RIP: 0033:0x7fca3aa555e9
+<etc>
+Oct 14 20:21:35 kdevops kernel: ------------[ cut here ]------------
+Oct 14 20:21:35 kdevops kernel: WARNING: CPU: 2 PID: 3457 at
+block/genhd.c:564 del_gendisk+0x1a2/0x1d0
+Oct 14 20:21:35 kdevops kernel: Modules linked in: 842(E)
+842_decompress(E) 842_compress(E) zram(E-) zstd(E) zsmalloc(E)
+kvm_intel(E) kvm(E) irqbypass(E) crct10dif_pclmul(E>
+Oct 14 20:21:35 kdevops kernel: CPU: 2 PID: 3457 Comm: rmmod Tainted: G
+W   E     5.15.0-rc3-next-20210927+ #89
+Oct 14 20:21:35 kdevops kernel: Hardware name: QEMU Standard PC (i440FX
++ PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+Oct 14 20:21:35 kdevops kernel: RIP: 0010:del_gendisk+0x1a2/0x1d0
+Oct 14 20:21:35 kdevops kernel: Code: 48 8d 78 40 e8 8f 87 1d 00 48 8b
+7b 40 5b 5d 41 5c 48 83 c7 40 e9 4e 47 1c 00 48 8b 70 40 eb ce f6 43 61
+04 0f 85 85 fe ff ff <0f> 0b >
+Oct 14 20:21:35 kdevops kernel: RSP: 0018:ffffaac9807cfe30 EFLAGS:
+00010246
+Oct 14 20:21:35 kdevops kernel: RAX: ffff9ed5d5600380 RBX:
+ffff9ed5d788a600 RCX: 0000000000000000
+Oct 14 20:21:35 kdevops kernel: RDX: 0000000000000000 RSI:
+ffffffffad8efdb6 RDI: ffff9ed5d788a600
+Oct 14 20:21:35 kdevops kernel: RBP: ffff9ed5d788b600 R08:
+0000000000000000 R09: ffffaac9807cfc88
+Oct 14 20:21:35 kdevops kernel: R10: ffffaac9807cfc80 R11:
+ffffffffadac3c68 R12: ffff9ed5d5600000
+Oct 14 20:21:35 kdevops kernel: R13: 0000000000000000 R14:
+ffffffffc0a52360 R15: ffff9ed5c4a87b78
+Oct 14 20:21:35 kdevops kernel: FS:  00007f292a2bb580(0000)
+GS:ffff9ed6f7c80000(0000) knlGS:0000000000000000
+Oct 14 20:21:35 kdevops kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
+0000000080050033
+Oct 14 20:21:35 kdevops kernel: CR2: 000056161b453b78 CR3:
+000000013213e002 CR4: 0000000000370ee0
+Oct 14 20:21:35 kdevops kernel: DR0: 0000000000000000 DR1:
+0000000000000000 DR2: 0000000000000000
+Oct 14 20:21:35 kdevops kernel: DR3: 0000000000000000 DR6:
+00000000fffe0ff0 DR7: 0000000000000400
+Oct 14 20:21:35 kdevops kernel: Call Trace:
+Oct 14 20:21:35 kdevops kernel:  <TASK>
+Oct 14 20:21:35 kdevops kernel:  zram_remove+0x96/0xc0 [zram]
+Oct 14 20:21:35 kdevops kernel:  ? hot_remove_store+0xe0/0xe0 [zram]
+Oct 14 20:21:35 kdevops kernel:  zram_remove_cb+0xd/0x10 [zram]
+Oct 14 20:21:35 kdevops kernel:  idr_for_each+0x5b/0xd0
+Oct 14 20:21:35 kdevops kernel:  destroy_devices+0x32/0x68 [zram]
+Oct 14 20:21:35 kdevops kernel:  __do_sys_delete_module+0x18d/0x2a0
+Oct 14 20:21:35 kdevops kernel:  ?
+fpregs_assert_state_consistent+0x1e/0x40
+Oct 14 20:21:35 kdevops kernel:  ? exit_to_user_mode_prepare+0x3a/0x180
+Oct 14 20:21:35 kdevops kernel:  do_syscall_64+0x38/0xc0
+Oct 14 20:21:35 kdevops kernel:
+entry_SYSCALL_64_after_hwframe+0x44/0xae
+Oct 14 20:21:35 kdevops kernel: RIP: 0033:0x7f292a3e14a7
+<etc>
+Oct 14 20:21:35 kdevops kernel: BUG: unable to handle page fault for
+address: ffffffffc0a4e0ae
+Oct 14 20:21:35 kdevops kernel: #PF: supervisor instruction fetch in
+kernel mode
+Oct 14 20:21:35 kdevops kernel: #PF: error_code(0x0010) - not-present
+page
+Oct 14 20:21:35 kdevops kernel: PGD 3ba0e067 P4D 3ba0e067 PUD 3ba10067
+PMD 10526c067 PTE 0
+Oct 14 20:21:35 kdevops kernel: Oops: 0010 [#1] PREEMPT SMP NOPTI
+Oct 14 20:21:35 kdevops kernel: CPU: 6 PID: 3655 Comm: zram02.sh
+Tainted: G        W   E     5.15.0-rc3-next-20210927+ #89
+Oct 14 20:21:35 kdevops kernel: Hardware name: QEMU Standard PC (i440FX
++ PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+Oct 14 20:21:35 kdevops kernel: RIP: 0010:0xffffffffc0a4e0ae
+Oct 14 20:21:35 kdevops kernel: Code: Unable to access opcode bytes at
+RIP 0xffffffffc0a4e084.
+Oct 14 20:21:35 kdevops kernel: RSP: 0018:ffffaac980687da8 EFLAGS:
+00010286
+Oct 14 20:21:35 kdevops kernel: RAX: 0000000000000000 RBX:
+ffff9ed5c40be400 RCX: 0000000080400035
+Oct 14 20:21:35 kdevops kernel: RDX: 0000000080400036 RSI:
+fffffa3544561080 RDI: 0000000040000000
+Oct 14 20:21:35 kdevops kernel: RBP: 0000000001900000 R08:
+ffff9ed5d5842cc0 R09: 0000000080400035
+Oct 14 20:21:35 kdevops kernel: R10: ffff9ed5d5842c00 R11:
+ffff9ed5f1341350 R12: 0000000001900000
+Oct 14 20:21:35 kdevops kernel: R13: ffff9ed5d5666c00 R14:
+ffff9ed5c40be420 R15: ffff9ed5dfa8c8c0
+Oct 14 20:21:35 kdevops kernel: FS:  00007f978fe2d5c0(0000)
+GS:ffff9ed6f7d80000(0000) knlGS:0000000000000000
+Oct 14 20:21:35 kdevops kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
+0000000080050033
+Oct 14 20:21:35 kdevops kernel: CR2: ffffffffc0a4e084 CR3:
+0000000133fd4006 CR4: 0000000000370ee0
+Oct 14 20:21:35 kdevops kernel: DR0: 0000000000000000 DR1:
+0000000000000000 DR2: 0000000000000000
+Oct 14 20:21:35 kdevops kernel: DR3: 0000000000000000 DR6:
+00000000fffe0ff0 DR7: 0000000000000400
+Oct 14 20:21:35 kdevops kernel: Call Trace:
+Oct 14 20:21:35 kdevops kernel:  <TASK>
+Oct 14 20:21:35 kdevops kernel:  ? kernfs_fop_write_iter+0x177/0x220
+Oct 14 20:21:35 kdevops kernel:  ? new_sync_write+0x11c/0x1b0
+Oct 14 20:21:35 kdevops kernel:  ? vfs_write+0x20d/0x2a0
+Oct 14 20:21:35 kdevops kernel:  ? ksys_write+0x5f/0xe0
+Oct 14 20:21:35 kdevops kernel:  ? do_syscall_64+0x38/0xc0
+Oct 14 20:21:35 kdevops kernel:  ?
+entry_SYSCALL_64_after_hwframe+0x44/0xae
+Oct 14 20:21:35 kdevops kernel:  </TASK>
+<etc, etc, etc, this goes on and on>
 
-diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-index 0145129d7c66..cf53b43e0907 100644
---- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-+++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-@@ -42,6 +42,7 @@ struct ili9881c_desc {
- 	const struct ili9881c_instr *init;
- 	const size_t init_length;
- 	const struct drm_display_mode *mode;
-+	const unsigned long mode_flags;
- };
- 
- struct ili9881c {
-@@ -453,6 +454,213 @@ static const struct ili9881c_instr k101_im2byl02_init[] = {
- 	ILI9881C_COMMAND_INSTR(0xD3, 0x3F), /* VN0 */
- };
- 
-+static const struct ili9881c_instr w552946ab_init[] = {
-+	ILI9881C_SWITCH_PAGE_INSTR(3),
-+	ILI9881C_COMMAND_INSTR(0x01, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x02, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x03, 0x53),
-+	ILI9881C_COMMAND_INSTR(0x04, 0x53),
-+	ILI9881C_COMMAND_INSTR(0x05, 0x13),
-+	ILI9881C_COMMAND_INSTR(0x06, 0x04),
-+	ILI9881C_COMMAND_INSTR(0x07, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x08, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x09, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x0A, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x0B, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x0C, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x0D, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x0E, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x0F, 0x00),
-+
-+	ILI9881C_COMMAND_INSTR(0x10, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x11, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x12, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x13, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x14, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x15, 0x08),
-+	ILI9881C_COMMAND_INSTR(0x16, 0x10),
-+	ILI9881C_COMMAND_INSTR(0x17, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x18, 0x08),
-+	ILI9881C_COMMAND_INSTR(0x19, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1A, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1B, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1C, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1D, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x1E, 0xC0),
-+	ILI9881C_COMMAND_INSTR(0x1F, 0x80),
-+
-+	ILI9881C_COMMAND_INSTR(0x20, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x21, 0x09),
-+	ILI9881C_COMMAND_INSTR(0x22, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x23, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x24, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x25, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x26, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x27, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x28, 0x55),
-+	ILI9881C_COMMAND_INSTR(0x29, 0x03),
-+	ILI9881C_COMMAND_INSTR(0x2A, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2B, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2C, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2D, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2E, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x2F, 0x00),
-+
-+	ILI9881C_COMMAND_INSTR(0x30, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x31, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x32, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x33, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x34, 0x04),
-+	ILI9881C_COMMAND_INSTR(0x35, 0x05),
-+	ILI9881C_COMMAND_INSTR(0x36, 0x05),
-+	ILI9881C_COMMAND_INSTR(0x37, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x38, 0x3C),
-+	ILI9881C_COMMAND_INSTR(0x39, 0x35),
-+	ILI9881C_COMMAND_INSTR(0x3A, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3B, 0x40),
-+	ILI9881C_COMMAND_INSTR(0x3C, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3D, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3E, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x3F, 0x00),
-+
-+	ILI9881C_COMMAND_INSTR(0x40, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x41, 0x88),
-+	ILI9881C_COMMAND_INSTR(0x42, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x43, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x44, 0x1F),
-+
-+	ILI9881C_COMMAND_INSTR(0x50, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x51, 0x23),
-+	ILI9881C_COMMAND_INSTR(0x52, 0x45),
-+	ILI9881C_COMMAND_INSTR(0x53, 0x67),
-+	ILI9881C_COMMAND_INSTR(0x54, 0x89),
-+	ILI9881C_COMMAND_INSTR(0x55, 0xaB),
-+	ILI9881C_COMMAND_INSTR(0x56, 0x01),
-+	ILI9881C_COMMAND_INSTR(0x57, 0x23),
-+	ILI9881C_COMMAND_INSTR(0x58, 0x45),
-+	ILI9881C_COMMAND_INSTR(0x59, 0x67),
-+	ILI9881C_COMMAND_INSTR(0x5A, 0x89),
-+	ILI9881C_COMMAND_INSTR(0x5B, 0xAB),
-+	ILI9881C_COMMAND_INSTR(0x5C, 0xCD),
-+	ILI9881C_COMMAND_INSTR(0x5D, 0xEF),
-+	ILI9881C_COMMAND_INSTR(0x5E, 0x03),
-+	ILI9881C_COMMAND_INSTR(0x5F, 0x14),
-+
-+	ILI9881C_COMMAND_INSTR(0x60, 0x15),
-+	ILI9881C_COMMAND_INSTR(0x61, 0x0C),
-+	ILI9881C_COMMAND_INSTR(0x62, 0x0D),
-+	ILI9881C_COMMAND_INSTR(0x63, 0x0E),
-+	ILI9881C_COMMAND_INSTR(0x64, 0x0F),
-+	ILI9881C_COMMAND_INSTR(0x65, 0x10),
-+	ILI9881C_COMMAND_INSTR(0x66, 0x11),
-+	ILI9881C_COMMAND_INSTR(0x67, 0x08),
-+	ILI9881C_COMMAND_INSTR(0x68, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x69, 0x0A),
-+	ILI9881C_COMMAND_INSTR(0x6A, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6B, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6C, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6D, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6E, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x6F, 0x02),
-+
-+	ILI9881C_COMMAND_INSTR(0x70, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x71, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x72, 0x06),
-+	ILI9881C_COMMAND_INSTR(0x73, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x74, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x75, 0x14),
-+	ILI9881C_COMMAND_INSTR(0x76, 0x15),
-+	ILI9881C_COMMAND_INSTR(0x77, 0x0F),
-+	ILI9881C_COMMAND_INSTR(0x78, 0x0E),
-+	ILI9881C_COMMAND_INSTR(0x79, 0x0D),
-+	ILI9881C_COMMAND_INSTR(0x7A, 0x0C),
-+	ILI9881C_COMMAND_INSTR(0x7B, 0x11),
-+	ILI9881C_COMMAND_INSTR(0x7C, 0x10),
-+	ILI9881C_COMMAND_INSTR(0x7D, 0x06),
-+	ILI9881C_COMMAND_INSTR(0x7E, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x7F, 0x0A),
-+
-+	ILI9881C_COMMAND_INSTR(0x80, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x81, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x82, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x83, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x84, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x85, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x86, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x87, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x88, 0x08),
-+	ILI9881C_COMMAND_INSTR(0x89, 0x02),
-+	ILI9881C_COMMAND_INSTR(0x8A, 0x02),
-+
-+	ILI9881C_SWITCH_PAGE_INSTR(4),
-+	ILI9881C_COMMAND_INSTR(0x00, 0x80),
-+	ILI9881C_COMMAND_INSTR(0x70, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x71, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x66, 0xFE),
-+	ILI9881C_COMMAND_INSTR(0x82, 0x15),
-+	ILI9881C_COMMAND_INSTR(0x84, 0x15),
-+	ILI9881C_COMMAND_INSTR(0x85, 0x15),
-+	ILI9881C_COMMAND_INSTR(0x3a, 0x24),
-+	ILI9881C_COMMAND_INSTR(0x32, 0xAC),
-+	ILI9881C_COMMAND_INSTR(0x8C, 0x80),
-+	ILI9881C_COMMAND_INSTR(0x3C, 0xF5),
-+	ILI9881C_COMMAND_INSTR(0x88, 0x33),
-+
-+	ILI9881C_SWITCH_PAGE_INSTR(1),
-+	ILI9881C_COMMAND_INSTR(0x22, 0x0A),
-+	ILI9881C_COMMAND_INSTR(0x31, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x53, 0x78),
-+	ILI9881C_COMMAND_INSTR(0x50, 0x5B),
-+	ILI9881C_COMMAND_INSTR(0x51, 0x5B),
-+	ILI9881C_COMMAND_INSTR(0x60, 0x20),
-+	ILI9881C_COMMAND_INSTR(0x61, 0x00),
-+	ILI9881C_COMMAND_INSTR(0x62, 0x0D),
-+	ILI9881C_COMMAND_INSTR(0x63, 0x00),
-+
-+	ILI9881C_COMMAND_INSTR(0xA0, 0x00),
-+	ILI9881C_COMMAND_INSTR(0xA1, 0x10),
-+	ILI9881C_COMMAND_INSTR(0xA2, 0x1C),
-+	ILI9881C_COMMAND_INSTR(0xA3, 0x13),
-+	ILI9881C_COMMAND_INSTR(0xA4, 0x15),
-+	ILI9881C_COMMAND_INSTR(0xA5, 0x26),
-+	ILI9881C_COMMAND_INSTR(0xA6, 0x1A),
-+	ILI9881C_COMMAND_INSTR(0xA7, 0x1D),
-+	ILI9881C_COMMAND_INSTR(0xA8, 0x67),
-+	ILI9881C_COMMAND_INSTR(0xA9, 0x1C),
-+	ILI9881C_COMMAND_INSTR(0xAA, 0x29),
-+	ILI9881C_COMMAND_INSTR(0xAB, 0x5B),
-+	ILI9881C_COMMAND_INSTR(0xAC, 0x26),
-+	ILI9881C_COMMAND_INSTR(0xAD, 0x28),
-+	ILI9881C_COMMAND_INSTR(0xAE, 0x5C),
-+	ILI9881C_COMMAND_INSTR(0xAF, 0x30),
-+	ILI9881C_COMMAND_INSTR(0xB0, 0x31),
-+	ILI9881C_COMMAND_INSTR(0xB1, 0x2E),
-+	ILI9881C_COMMAND_INSTR(0xB2, 0x32),
-+	ILI9881C_COMMAND_INSTR(0xB3, 0x00),
-+
-+	ILI9881C_COMMAND_INSTR(0xC0, 0x00),
-+	ILI9881C_COMMAND_INSTR(0xC1, 0x10),
-+	ILI9881C_COMMAND_INSTR(0xC2, 0x1C),
-+	ILI9881C_COMMAND_INSTR(0xC3, 0x13),
-+	ILI9881C_COMMAND_INSTR(0xC4, 0x15),
-+	ILI9881C_COMMAND_INSTR(0xC5, 0x26),
-+	ILI9881C_COMMAND_INSTR(0xC6, 0x1A),
-+	ILI9881C_COMMAND_INSTR(0xC7, 0x1D),
-+	ILI9881C_COMMAND_INSTR(0xC8, 0x67),
-+	ILI9881C_COMMAND_INSTR(0xC9, 0x1C),
-+	ILI9881C_COMMAND_INSTR(0xCA, 0x29),
-+	ILI9881C_COMMAND_INSTR(0xCB, 0x5B),
-+	ILI9881C_COMMAND_INSTR(0xCC, 0x26),
-+	ILI9881C_COMMAND_INSTR(0xCD, 0x28),
-+	ILI9881C_COMMAND_INSTR(0xCE, 0x5C),
-+	ILI9881C_COMMAND_INSTR(0xCF, 0x30),
-+	ILI9881C_COMMAND_INSTR(0xD0, 0x31),
-+	ILI9881C_COMMAND_INSTR(0xD1, 0x2E),
-+	ILI9881C_COMMAND_INSTR(0xD2, 0x32),
-+	ILI9881C_COMMAND_INSTR(0xD3, 0x00),
-+	ILI9881C_SWITCH_PAGE_INSTR(0),
-+};
-+
- static inline struct ili9881c *panel_to_ili9881c(struct drm_panel *panel)
- {
- 	return container_of(panel, struct ili9881c, panel);
-@@ -603,6 +811,23 @@ static const struct drm_display_mode k101_im2byl02_default_mode = {
- 	.height_mm	= 217,
- };
- 
-+static const struct drm_display_mode w552946aba_default_mode = {
-+	.clock		= 64000,
-+
-+	.hdisplay	= 720,
-+	.hsync_start	= 720 + 40,
-+	.hsync_end	= 720 + 40 + 10,
-+	.htotal		= 720 + 40 + 10 + 40,
-+
-+	.vdisplay	= 1280,
-+	.vsync_start	= 1280 + 22,
-+	.vsync_end	= 1280 + 22 + 4,
-+	.vtotal		= 1280 + 22 + 4 + 11,
-+
-+	.width_mm	= 68,
-+	.height_mm	= 121,
-+};
-+
- static int ili9881c_get_modes(struct drm_panel *panel,
- 			      struct drm_connector *connector)
- {
-@@ -670,7 +895,7 @@ static int ili9881c_dsi_probe(struct mipi_dsi_device *dsi)
- 
- 	drm_panel_add(&ctx->panel);
- 
--	dsi->mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE;
-+	dsi->mode_flags = ctx->desc->mode_flags;
- 	dsi->format = MIPI_DSI_FMT_RGB888;
- 	dsi->lanes = 4;
- 
-@@ -691,17 +916,28 @@ static const struct ili9881c_desc lhr050h41_desc = {
- 	.init = lhr050h41_init,
- 	.init_length = ARRAY_SIZE(lhr050h41_init),
- 	.mode = &lhr050h41_default_mode,
-+	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
- };
- 
- static const struct ili9881c_desc k101_im2byl02_desc = {
- 	.init = k101_im2byl02_init,
- 	.init_length = ARRAY_SIZE(k101_im2byl02_init),
- 	.mode = &k101_im2byl02_default_mode,
-+	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
-+};
-+
-+static const struct ili9881c_desc w552946aba_desc = {
-+	.init = w552946ab_init,
-+	.init_length = ARRAY_SIZE(w552946ab_init),
-+	.mode = &w552946aba_default_mode,
-+	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
-+		      MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET,
- };
- 
- static const struct of_device_id ili9881c_of_match[] = {
- 	{ .compatible = "bananapi,lhr050h41", .data = &lhr050h41_desc },
- 	{ .compatible = "feixin,k101-im2byl02", .data = &k101_im2byl02_desc },
-+	{ .compatible = "wanchanglong,w552946aba", .data = &w552946aba_desc },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, ili9881c_of_match);
--- 
-2.25.1
-
+  Luis
