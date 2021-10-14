@@ -2,83 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818D942D35B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A330D42D361
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhJNHSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:18:14 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44022 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhJNHSM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:18:12 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E700B20285;
-        Thu, 14 Oct 2021 07:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634195766; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=psDL5nan6SZCy/ZgVLbapa/8v4HIAOlEqUtXE6YYjOI=;
-        b=ZtNJuUPQ0p6nym5BoNWMIVPfO/mXnStoFPNKokOO/JFTZ9io30gEh7DhAICNABbrvjr8hx
-        RtFXUn0KBjSiUJHxZra5XdLtPbcvgswlq4KIpSpjK6BprtvbIGbNBUJrOzbOfQ2dUyiaoq
-        pO+FgmBolTc78KoobQwspZnzuD5cx5w=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 6B021A3B89;
-        Thu, 14 Oct 2021 07:16:06 +0000 (UTC)
-Date:   Thu, 14 Oct 2021 09:16:04 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: page_alloc: skip bulk allocator for __GFP_ACCOUNT
-Message-ID: <YWfZNF7T7Fm69sik@dhcp22.suse.cz>
-References: <20211013194338.1804247-1-shakeelb@google.com>
+        id S230018AbhJNHUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:20:00 -0400
+Received: from mail-co1nam11on2086.outbound.protection.outlook.com ([40.107.220.86]:28768
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229551AbhJNHT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 03:19:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jGkmpISn83/mu0+pw3UkrO4xPx0A32KjwfGjxSzPG0SXVuNy+vjo7AgXID8+IIxTNgIeUQifYxvOpLV3cgdtzkU6NOtprPegEG8VUe2KpuCpllumCjG+sydL7f63y77jDY2FMNFUpsS1QCXiACx5rsCSi2kNapqvMLPiwYc/nS5B0I9ZJ98XOdOuzm72zewYFpOUlNZVECP8tdIFIkRKg3Tl88PyoshE6lGN7aKQHhgNhrcpP2zZRl3t53/c+MjY5Fz4NkdHDBBj9QVOvL3+bpGQjBXj1gM8mjdBvS5IbgaiP+UIa2hcm0AX4Y8cV4yRPOJsajmoJKf81RTc7DNm1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Xsxc3ZmGFyI6adXcbcAw39bXBuF/LB9n7dxuiEdKFyw=;
+ b=N+fxzsQBrdEFj5JoG8OweLSE+3cHWjlhUtXHYMdNl1DesJkiLP4f2K2V31WwtMSJHlhOirnY6T659ggckybiTRPCEzqrb2PRPpGPF4KgWI5fpSsRS3vo0dz5nObVej+pP8bn90LSVDuqdsIyLGvFF5bBq/Aj4QZehLtt8NrT5leAOl/G1IYsahFQ0HKhIF4/U1xZFAKMNkNpgzH2TO3AyarWfFd8kqJq0BOAO/gHyEEvCjF2W4NgmD/5WxDGrUC5PB3+tBQZ13IFawfwRYee7nQv2eYfmRYh1bMDK3OitMYxkRWvkkxz3/6clvGOAXiOTT4ErR8Hf29K2N9G5lw1+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xsxc3ZmGFyI6adXcbcAw39bXBuF/LB9n7dxuiEdKFyw=;
+ b=XhU5XTdyNtwhl2P84jA+3eYTr0rMdhplA8noj8I0qVE2AcCXUCiGDn6fPHAjteYLWvOexSBbWL9B0hGZtcjtH8lxT6hRFUU1KuGnpKZtDP8zFUhoEsyo7aEYHc48ErDFkSgHWbZg7zW8KYqPvAKzXC3htgUC9iqfjcm4J2zI9m0=
+Received: from MW4P222CA0024.NAMP222.PROD.OUTLOOK.COM (2603:10b6:303:114::29)
+ by DM6PR12MB4601.namprd12.prod.outlook.com (2603:10b6:5:163::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Thu, 14 Oct
+ 2021 07:17:51 +0000
+Received: from CO1NAM11FT052.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:114:cafe::75) by MW4P222CA0024.outlook.office365.com
+ (2603:10b6:303:114::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend
+ Transport; Thu, 14 Oct 2021 07:17:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT052.mail.protection.outlook.com (10.13.174.225) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4608.15 via Frontend Transport; Thu, 14 Oct 2021 07:17:51 +0000
+Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 14 Oct
+ 2021 02:17:50 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB07.amd.com
+ (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 14 Oct
+ 2021 00:17:49 -0700
+Received: from vijendar-System-Product-Name.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2308.8
+ via Frontend Transport; Thu, 14 Oct 2021 02:17:46 -0500
+From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+CC:     <Alexander.Deucher@amd.com>, <Sunil-kumar.Dommati@amd.com>,
+        <wtli@nuvoton.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH V2 1/3] ASoc: amd: create platform device for VG machine driver
+Date:   Thu, 14 Oct 2021 12:47:08 +0530
+Message-ID: <20211014071714.836410-1-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211013194338.1804247-1-shakeelb@google.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 666bd596-b78a-4e35-07fb-08d98ee2bbb3
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4601:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB46018D344D24DBDCE88E138097B89@DM6PR12MB4601.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1002;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wGhbkPlyiNkpFg4SPPD9Ux3ppJIO/mfe9amrZV7XSU41HKzTle4AwdXNrsLASM8YCUFxHpPRDb2DqE5QFX9Pv494szjq0fB1NtQLMCHqVem2rb1a8WsdyYVpUKJ3wL3WXSUqQ1F3b9l2kj5//8PWINGxJIOw3SxUyeBdLD4QeLDI+lTT8HWj2HgOXv4MJ7uEpHzOBI2/OmoAR0iKbdWIx61CCOYyNKG9Jq8nR6xVxJ/LojQ+cceAyc2fkLluM1j5hHdvR8JJyBp/gJgIaj8MmneY7IJrr8xFDOPHOF1dp+iPLAyTKlFetpzJ/twQIH/I2a4ai6Fdzqp7g6jtKdi95CWyGuMMUar7Rwej5LnHCdYVMO51thvdkxIl29j0p6R5u90xnbfkEChh8JXAujW4uD3Ctum+6lOdGTF0gF7f5eZSBQ3fIh6xefH1peXSA4044FfIE7wFT70I88zHhh2U4BOMH662DxyZa3F3b5c68A88rRks/b5+R8x0IO9clJIYcwr3tR5RyxDGpIuhAN0/agQXOuzF+hPdMVL9znExv/aCLJJ30t2ZtGbneQuCWmpY0fIZT8LEg7Mk6jSGrhuhfYx3zF4aWTvRYShV/PDByME6anbvhTNb+xr0cnpxLi81WO+RgZZW+n24TzDBuCiJuIjz74PJN4+CsBprFSvvgsW6eKGphmERSccWBgFsMkH5/en8x6PwRcyG7z/i84BqEcSg4O8rsV3ONyrEO2EoNtk=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(70206006)(2616005)(86362001)(110136005)(82310400003)(426003)(4326008)(54906003)(7696005)(81166007)(336012)(316002)(1076003)(2906002)(26005)(70586007)(47076005)(5660300002)(186003)(36756003)(8936002)(508600001)(356005)(8676002)(83380400001)(6666004)(36860700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 07:17:51.0912
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 666bd596-b78a-4e35-07fb-08d98ee2bbb3
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT052.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4601
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 13-10-21 12:43:38, Shakeel Butt wrote:
-[...]
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 668edb16446a..b3acad4615d3 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5215,6 +5215,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  	unsigned int alloc_flags = ALLOC_WMARK_LOW;
->  	int nr_populated = 0, nr_account = 0;
->  
-> +	/* Bulk allocator does not support memcg accounting. */
-> +	if (unlikely(gfp & __GFP_ACCOUNT))
-> +		goto out;
+Create platform device for Vangogh machine driver.
 
-Did you mean goto failed here? This would break some which do not
-have any fallback. E.g. xfs_buf_alloc_pages but likely more.
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+---
+Changes since v1:
+     - changed machine driver platform device name as "acp5x_mach"
 
-Sorry I could have been more specific when talking about bypassing the
-bulk allocator. It is quite confusing because the bulk allocator
-interface consists of the bulk allocator and the fallback to the normal
-page allocator.
+ sound/soc/amd/vangogh/acp5x.h     | 2 +-
+ sound/soc/amd/vangogh/pci-acp5x.c | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-> +
->  	/*
->  	 * Skip populated array elements to determine if any pages need
->  	 * to be allocated before disabling IRQs.
-> -- 
-> 2.33.0.882.g93a45727a2-goog
-
+diff --git a/sound/soc/amd/vangogh/acp5x.h b/sound/soc/amd/vangogh/acp5x.h
+index a808635f9740..fe5e1fa98974 100644
+--- a/sound/soc/amd/vangogh/acp5x.h
++++ b/sound/soc/amd/vangogh/acp5x.h
+@@ -23,7 +23,7 @@
+ #define ACP_ERR_INTR_MASK	0x20000000
+ #define ACP_EXT_INTR_STAT_CLEAR_MASK 0xFFFFFFFF
+ 
+-#define ACP5x_DEVS 3
++#define ACP5x_DEVS 4
+ #define	ACP5x_REG_START	0x1240000
+ #define	ACP5x_REG_END	0x1250200
+ #define ACP5x_I2STDM_REG_START	0x1242400
+diff --git a/sound/soc/amd/vangogh/pci-acp5x.c b/sound/soc/amd/vangogh/pci-acp5x.c
+index a57b762d9f2e..2b6b9edc36e2 100644
+--- a/sound/soc/amd/vangogh/pci-acp5x.c
++++ b/sound/soc/amd/vangogh/pci-acp5x.c
+@@ -213,6 +213,9 @@ static int snd_acp5x_probe(struct pci_dev *pci,
+ 		pdevinfo[2].num_res = 1;
+ 		pdevinfo[2].res = &adata->res[2];
+ 
++		pdevinfo[3].name = "acp5x_mach";
++		pdevinfo[3].id = 0;
++		pdevinfo[3].parent = &pci->dev;
+ 		for (i = 0; i < ACP5x_DEVS; i++) {
+ 			adata->pdev[i] =
+ 				platform_device_register_full(&pdevinfo[i]);
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
