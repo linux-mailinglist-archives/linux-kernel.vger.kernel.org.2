@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C4A42DD34
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF14742DD6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233760AbhJNPFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:05:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50522 "EHLO mail.kernel.org"
+        id S233155AbhJNPHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:07:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233618AbhJNPDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:03:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B234F61245;
-        Thu, 14 Oct 2021 15:00:13 +0000 (UTC)
+        id S232616AbhJNPFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:05:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B92AB61205;
+        Thu, 14 Oct 2021 15:01:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223614;
-        bh=AahxwJYG4j4R4CS2jEkZRtOfxGhMYw++Mi15qTpH2NM=;
+        s=korg; t=1634223678;
+        bh=AXytzKMUE1DPWebMn1FnjSeiu0njVB7PhvTjMrtxGB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JUi/IrrbTJqod2/wXSvrTC+BfqrP1y99wL4UByvfWHNQ8DbDmT5daAeV/zIdwdoLI
-         RVgo4HdzOxdmzI0E3RRVQNC04xXptVNwuqOWE97cFHzuDXjzcdeWPDEURVRW5HmvT1
-         4G7OyorOSYH9i2+RMj1Oapbl/s37Y/vudNAUc14M=
+        b=YuXiIUPFIzCC2f6Ulx32DD0wwYOOshc4F7hq/btc8krv1qlqBOcpiOc4sSa1Oz1Hg
+         Tk2DrZyGD2jvVsG6FWbbVi+n7IorZxPe2kvQmTYNnYoxveyPbuPmZH9myr52rcm/iD
+         JMi+eYYx2hLL0bEUSk8ol+OXw+KX0oQUJfqbnau8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 03/22] ASoC: Intel: sof_sdw: tag SoundWire BEs as non-atomic
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 04/30] ALSA: oxfw: fix transmission method for Loud models based on OXFW971
 Date:   Thu, 14 Oct 2021 16:54:09 +0200
-Message-Id: <20211014145208.095354427@linuxfoundation.org>
+Message-Id: <20211014145209.665921684@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
-References: <20211014145207.979449962@linuxfoundation.org>
+In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
+References: <20211014145209.520017940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit 58eafe1ff52ee1ce255759fc15729519af180cbb ]
+[ Upstream commit 64794d6db49730d22f440aef0cf4da98a56a4ea3 ]
 
-The SoundWire BEs make use of 'stream' functions for .prepare and
-.trigger. These functions will in turn force a Bank Switch, which
-implies a wait operation.
+Loud Technologies Mackie Onyx 1640i (former model) is identified as
+the model which uses OXFW971. The analysis of packet dump shows that
+it transfers events in blocking method of IEC 61883-6, however the
+default behaviour of ALSA oxfw driver is for non-blocking method.
 
-Mark SoundWire BEs as nonatomic for consistency, but keep all other
-types of BEs as is. The initialization of .nonatomic is done outside
-of the create_sdw_dailink helper to avoid adding more parameters to
-deal with a single exception to the rule that BEs are atomic.
+This commit adds code to detect it assuming that all of loud models
+based on OXFW971 have such quirk. It brings no functional change
+except for alignment rule of PCM buffer.
 
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Link: https://lore.kernel.org/r/20210907184436.33152-1-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210913021042.10085-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/firewire/oxfw/oxfw.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 2770e8179983..25548555d8d7 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -847,6 +847,11 @@ static int create_sdw_dailink(struct device *dev, int *be_index,
- 			      cpus + *cpu_id, cpu_dai_num,
- 			      codecs, codec_num,
- 			      NULL, &sdw_ops);
-+		/*
-+		 * SoundWire DAILINKs use 'stream' functions and Bank Switch operations
-+		 * based on wait_for_completion(), tag them as 'nonatomic'.
-+		 */
-+		dai_links[*be_index].nonatomic = true;
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index cb5b5e3a481b..daf731364695 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -184,13 +184,16 @@ static int detect_quirks(struct snd_oxfw *oxfw, const struct ieee1394_device_id
+ 			model = val;
+ 	}
  
- 		ret = set_codec_init_func(link, dai_links + (*be_index)++,
- 					  playback, group_id);
+-	/*
+-	 * Mackie Onyx Satellite with base station has a quirk to report a wrong
+-	 * value in 'dbs' field of CIP header against its format information.
+-	 */
+-	if (vendor == VENDOR_LOUD && model == MODEL_SATELLITE)
++	if (vendor == VENDOR_LOUD) {
++		// Mackie Onyx Satellite with base station has a quirk to report a wrong
++		// value in 'dbs' field of CIP header against its format information.
+ 		oxfw->quirks |= SND_OXFW_QUIRK_WRONG_DBS;
+ 
++		// OXFW971-based models may transfer events by blocking method.
++		if (!(oxfw->quirks & SND_OXFW_QUIRK_JUMBO_PAYLOAD))
++			oxfw->quirks |= SND_OXFW_QUIRK_BLOCKING_TRANSMISSION;
++	}
++
+ 	return 0;
+ }
+ 
 -- 
 2.33.0
 
