@@ -2,116 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B59A42CFFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A26242CFFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhJNBmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 21:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhJNBmu (ORCPT
+        id S229888AbhJNBnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 21:43:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31140 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229877AbhJNBnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 21:42:50 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75E7C061570;
-        Wed, 13 Oct 2021 18:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=q+0dnEobalAAFZMHVHV+dBuOgl058N3oGikzx2RCv0c=; b=c95eMPYgrEVq6KLagJXXBAKg+J
-        fM9xtdx0+ISxPdKEuN5T5SKmXoULzm8ujKVE+3OAaNInFGlJKMnoT/qMPjdvsk8t6ckbDOo2Ppmqf
-        jiB8mDAC2rpagql68moyw6FBl+SFQbwFujTv2QArHjcfzULVkWx+yuJVPUbd+wdat58BcXLluG13i
-        E5KVbRFpxD9QmEDAijhd5LQrQo0EFqrZ9NgbSUevaJ1/L1P6tgNd/iJdNGIm3QkdbQJvjDU9Ov2mu
-        JMzKMzVJ3ABNplUUX9UkBLGeAatoGzx/3qHRo/VE4heuRKwcwZpMBNgUT+gwcdh71aL3VduMFmVbo
-        gEOBbcXw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mapjf-001Cwc-If; Thu, 14 Oct 2021 01:40:43 +0000
-Subject: Re: [PATCH] iio: imx8qxp-adc: mark PM functions as __maybe_unused
-To:     Cai Huoqing <caihuoqing@baidu.com>, Arnd Bergmann <arnd@kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20211013144338.2261316-1-arnd@kernel.org>
- <20211014012936.GA2999@LAPTOP-UKSR4ENP.internal.baidu.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <50f71530-bab0-58f4-cf90-a7c1b60b9716@infradead.org>
-Date:   Wed, 13 Oct 2021 18:40:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 13 Oct 2021 21:43:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634175667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bIkaijae5P+JkUkpof6h1wsF8G71ZnOerZjw8vEk7g0=;
+        b=R00SJQTbPZXdqHi+1GZpoVIyfRrbgSgECoQ/n409kRhLdpb3/O9dPKRAMGI3D52+eznJdT
+        nEWG75sD2x6G1nFZuN3kTrDEi+lw7Dnp99MTdapnu5jThO8f6Ftmf5rSii+KW5b2ELB8em
+        Bjrr5fQdieLSmo1YWug7wgYLshnhIX0=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-IRm5rTWuMJOB8G58mgP3UA-1; Wed, 13 Oct 2021 21:41:06 -0400
+X-MC-Unique: IRm5rTWuMJOB8G58mgP3UA-1
+Received: by mail-qt1-f199.google.com with SMTP id h10-20020ac8584a000000b002a712bc435fso3435665qth.20
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:41:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bIkaijae5P+JkUkpof6h1wsF8G71ZnOerZjw8vEk7g0=;
+        b=LUcQ6w/imL/LRKOv32nPUs3/E5q4U3SN+qY3iGkr/nmgCtY1678cO5AdkS7SoTYbfC
+         iL/r0SLEj4xeVyh/KCeIp3tFd0hhW3WOg/TS716GK3DGiyKO4m24BkIBwBE1FGWz7TC9
+         aZfkte8CKHN8MRVHYP6QkaWyWafYax0eBijSAZcd4+aW/Z00c1dv7AEDBQkpq8jG+shA
+         Exc3BGQV9nF3T0Y+96BizaBImeUcD97nQ0QgVXOhD6wrTX4K00OsSDnj2CzCAMspqOAh
+         b+wkZ1GHWpFbu3sQsVX2CAU7g3LSiShvtb8sp8DC6g7B1aSeNVgnsDZNjknvmhRnE0Lo
+         aL9w==
+X-Gm-Message-State: AOAM531O4bzk1peo2Gm9TEas61EngkxlVYJpfHTI29wlF3qI5OS1aPJh
+        V/AxYFr005CdGjyYgcBPzgfeec+7DL/w2XZbLaCgjP5iuVw369CEUNq5RqMYdaSsfPZqZnSSpbH
+        2qx2LPKcZixeIY//MPHxf/mCl
+X-Received: by 2002:a37:43c2:: with SMTP id q185mr2321555qka.512.1634175665562;
+        Wed, 13 Oct 2021 18:41:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyXcY5HYwk05IO41TYoOci3q1aRvUhi28MMJm1T3T4rnl+CWgD8I1JKfzSN2+wmwif2o6R0Og==
+X-Received: by 2002:a37:43c2:: with SMTP id q185mr2321538qka.512.1634175665333;
+        Wed, 13 Oct 2021 18:41:05 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id c26sm819731qtm.21.2021.10.13.18.41.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 18:41:04 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 18:41:01 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Marios Pomonis <pomonis@google.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Kristen C Accardi <kristen.c.accardi@intel.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ivan Babrou <ivan@cloudflare.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-hardening@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH] x86/unwind/orc: Handle kretprobes_trampoline
+Message-ID: <20211014014101.6du6jj2o7g4ficu5@treble>
+References: <20210903021326.206548-1-keescook@chromium.org>
+ <202110111403.3C59BF77@keescook>
 MIME-Version: 1.0
-In-Reply-To: <20211014012936.GA2999@LAPTOP-UKSR4ENP.internal.baidu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202110111403.3C59BF77@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 6:29 PM, Cai Huoqing wrote:
-> On 13 10月 21 16:43:26, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> Without CONFIG_PM_SLEEP, the runtime suspend/resume functions
->> are unused, producing a warning:
->>
->> drivers/iio/adc/imx8qxp-adc.c:433:12: error: 'imx8qxp_adc_runtime_resume' defined but not used [-Werror=unused-function]
->>    433 | static int imx8qxp_adc_runtime_resume(struct device *dev)
->>        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/iio/adc/imx8qxp-adc.c:419:12: error: 'imx8qxp_adc_runtime_suspend' defined but not used [-Werror=unused-function]
->>    419 | static int imx8qxp_adc_runtime_suspend(struct device *dev)
->>        |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> Mark them as __maybe_unused to shut up the compiler.
->>
->> Fixes: 7bce634d02e6 ("iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC")
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Mon, Oct 11, 2021 at 02:03:26PM -0700, Kees Cook wrote:
+> On Thu, Sep 02, 2021 at 07:13:26PM -0700, Kees Cook wrote:
+> > From: Marios Pomonis <pomonis@google.com>
+> > 
+> > Fix a bug in the ORC unwinder when kretprobes has replaced a return
+> > address with the address of `kretprobes_trampoline'. ORC mistakenly
+> > assumes that the address in the stack is a return address and decrements
+> > it by 1 in order to find the proper depth of the next frame.
+> > 
+> > This issue was discovered while testing the FG-KASLR series[0][1] and
+> > running the live patching test[2] that was originally failing[3].
+> > 
+> > [0] https://lore.kernel.org/kernel-hardening/20200923173905.11219-1-kristen@linux.intel.com/
+> > [1] https://github.com/KSPP/linux/issues/132
+> > [2] https://github.com/lpechacek/qa_test_klp
+> > [3] https://lore.kernel.org/lkml/alpine.LSU.2.21.2009251450260.13615@pobox.suse.cz/
+> > 
+> > Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
+> > Signed-off-by: Marios Pomonis <pomonis@google.com>
+> > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> > Cc: Kristen C Accardi <kristen.c.accardi@intel.com>
+> > Cc: Sami Tolvanen <samitolvanen@google.com>
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
 > 
-> Reviewed-by: Cai Huoqing <caihuoqing@baidu.com>
+> Ping again; Josh can you take this please?
 
-Looks the same as
-https://lore.kernel.org/all/20211013014658.2798-1-caihuoqing@baidu.com/
+I'm confused how this still fixes anything after Masami's patch set,
+which is now in linux-next.
 
-but that one is mixing the Fixes: tag.
+After those patches, for a CALL-type ORC entry, the unwinder sets
+state->ip to the address returned by unwind_recover_ret_addr().  In the
+case of a kretprobe, that means that state->ip will no longer point to
+kretprobes_trampoline() -- making the above patch description incorrect.
 
->> ---
->>   drivers/iio/adc/imx8qxp-adc.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/iio/adc/imx8qxp-adc.c b/drivers/iio/adc/imx8qxp-adc.c
->> index 5030e0d8318d..901dd8e1b32f 100644
->> --- a/drivers/iio/adc/imx8qxp-adc.c
->> +++ b/drivers/iio/adc/imx8qxp-adc.c
->> @@ -416,7 +416,7 @@ static int imx8qxp_adc_remove(struct platform_device *pdev)
->>   	return 0;
->>   }
->>   
->> -static int imx8qxp_adc_runtime_suspend(struct device *dev)
->> +static __maybe_unused int imx8qxp_adc_runtime_suspend(struct device *dev)
->>   {
->>   	struct iio_dev *indio_dev = dev_get_drvdata(dev);
->>   	struct imx8qxp_adc *adc = iio_priv(indio_dev);
->> @@ -430,7 +430,7 @@ static int imx8qxp_adc_runtime_suspend(struct device *dev)
->>   	return 0;
->>   }
->>   
->> -static int imx8qxp_adc_runtime_resume(struct device *dev)
->> +static __maybe_unused int imx8qxp_adc_runtime_resume(struct device *dev)
->>   {
->>   	struct iio_dev *indio_dev = dev_get_drvdata(dev);
->>   	struct imx8qxp_adc *adc = iio_priv(indio_dev);
->> -- 
+Instead, state->ip will then contain the original call return address
+which was replaced by kretpobes.  So it looks to the unwinder like a
+normal call return address, and 'state->signal' should remain false.
 
-
-
+Am I missing something?
 
 -- 
-~Randy
+Josh
+
