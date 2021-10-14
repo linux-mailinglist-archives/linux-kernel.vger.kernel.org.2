@@ -2,233 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07BA42D3A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFAB42D3AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhJNHcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:32:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229910AbhJNHcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:32:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D7D660FDA;
-        Thu, 14 Oct 2021 07:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634196617;
-        bh=7fbS2G9SSp+dZHJvHhEqa/tHkvS+Oa6iHxmA/f692NA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TLHXJu6sO6g4qwF5lshM/XoquExgXy8p95PG0eYZSVlxtxbL4CaCT03Ttoy95Ns6f
-         +jvHzF7ouE8D70qdfwDz9TQ6RjnIbpwPHCqbRTYsOIXWiR7zCjadpRI9lLRtwpR9s2
-         Z7vs9pyvUGs0Gfi4vIeTmJPJBLnDsgTPkNDfpKGV7cN+oJbn0mM62mKiWU6VEM5JoJ
-         cxMZPVlS0iTLPcnxdrXKMXKnmh+S4sDheFuoTAWmmfxHmMNF5pZ7m91AX09xvzXrR2
-         gYpCgJ8nQcV466Dm8TFystxIAQ6GHpZkBqrpPtjtoQ8JLCVjBsnMU/YkYQI1wGz6H4
-         ZGIHX6OCkRJgg==
-From:   SeongJae Park <sj@kernel.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Rongwei Wang <rongwei.wang@linux.alibaba.com>,
-        SeongJae Park <sj@kernel.org>
-Subject: [PATCH v3] mm/damon/dbgfs: remove unnecessary variables
-Date:   Thu, 14 Oct 2021 07:30:14 +0000
-Message-Id: <20211014073014.35754-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211014072158.35478-1-sj@kernel.org>
-References: <20211014072158.35478-1-sj@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+        id S230118AbhJNHd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:33:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229910AbhJNHd0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 03:33:26 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855B5C061746
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:31:21 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id i24so22366597lfj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5v6Yv2PTALZV81MwXFtZ1rqpH6wW8mXRMgyhMKUACeE=;
+        b=jKzQfSO+x3YNza53ylLadTQhAg3leSQwNu5To0Md4XLrrAY2BcB2EpzcSSZ/dcQRAx
+         GCS2hPQShkC7t3kOWeD+36J2jsuENANsFd60MRmuYDWwgFpnYTA2sPXsP3JaNGG34EJw
+         ODPXTfDUaHEglmjbIKT1S1Fpu2CYCeoyKvhF0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5v6Yv2PTALZV81MwXFtZ1rqpH6wW8mXRMgyhMKUACeE=;
+        b=qJ6E1ULqYgZmSczmBKK3BHhLoZKgQV/RbBi6yhPPlo0J/oiFxBkA3lMbLs+S0E4Xl4
+         vDIUo/hBXWVRBvyK/j+yOCFebGnK4oJRPegEAt7CTJy4Ss3Pe++48ffrDreiQnPQjD5m
+         G9peyUa2/oGXM9C0D0hxGOkHGDHvgLlwEA0GVCohNHK7aZkZzypLNmvXSLK8eE+fQdCO
+         1CjsbXsYcqnnd5hQo82QNqJKgDp7rh5Qlqy42kCUovQgXEl4NmKoZnjKkNL3mfJk2mZG
+         T0pXjtTUg91SAtmGoop7Nr1lppfwSpM47El4QtEyqpLK+AJ+xqBpfBYx43pQWnxmwBAY
+         mfoQ==
+X-Gm-Message-State: AOAM5311gWqUZ9uRk9r4LMjYEgwMTOsrt/HdG3pMfC7PpWfXnRoXwYL7
+        xlBQ/zo+rQrX9yKdRDFdn6WYhJyfUz1ce3OawuECbA==
+X-Google-Smtp-Source: ABdhPJwUzlceOWh+FeOpcEW7hALYyLGrRfBub2/LsdDbiuQ7zctHURNLqdHAbEtPrWJMw8kuOqGzvHLNlygUTXK0wRI=
+X-Received: by 2002:a05:651c:907:: with SMTP id e7mr4394571ljq.457.1634196679846;
+ Thu, 14 Oct 2021 00:31:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211008100423.739462-1-wenst@chromium.org> <f108f23dadc846222c63c88af826dae9c5082d83.camel@ndufresne.ca>
+ <CAGXv+5FnFq1mN79sqUp-o6pHirYvp55gurnsUCgqYvEAX2=4oQ@mail.gmail.com> <ff0769efee51e15451d48e23860f8b1710593cd7.camel@ndufresne.ca>
+In-Reply-To: <ff0769efee51e15451d48e23860f8b1710593cd7.camel@ndufresne.ca>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Thu, 14 Oct 2021 15:31:08 +0800
+Message-ID: <CAGXv+5GJCaxnPPkXRp5xrTBuq-5=ggfjPbRhyS4vdm3meM_4eg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] media: rkvdec: Align decoder behavior with Hantro and Cedrus
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+On Wed, Oct 13, 2021 at 9:40 PM Nicolas Dufresne <nicolas@ndufresne.ca> wro=
+te:
+>
+> Le mercredi 13 octobre 2021 =C3=A0 15:05 +0800, Chen-Yu Tsai a =C3=A9crit=
+ :
+> > Hi,
+> >
+> > On Fri, Oct 8, 2021 at 11:42 PM Nicolas Dufresne <nicolas@ndufresne.ca>=
+ wrote:
+> > >
+> > > Hi Chen-Yu,
+> > >
+> > > thanks for looking into this.
+> > >
+> > > Le vendredi 08 octobre 2021 =C3=A0 18:04 +0800, Chen-Yu Tsai a =C3=A9=
+crit :
+> > > > Hi everyone,
+> > > >
+> > > > While working on the rkvdec H.264 decoder for ChromeOS, I noticed s=
+ome
+> > > > behavioral differences compared to Hantro and Cedrus:
+> > > >
+> > > > 1. The driver always overrides the sizeimage setting given by users=
+pace
+> > > >    for the output format. This results in insufficient buffer space=
+ when
+> > > >    running the ChromeOS video_decode_accelerator_tests test program=
+,
+> > > >    likely due to a small initial resolution followed by dynamic
+> > > >    resolution change.
+> > > >
+> > > > 2. Doesn't support dynamic resolution change.
+> > > >
+> > > > This small series fixes both and aligns the behavior with the other=
+ two
+> > > > stateless decoder drivers. This was tested on the downstream Chrome=
+OS
+> > > > 5.10 kernel with ChromeOS. Also compiled tested on mainline but I d=
+on't
+> > > > have any other RK3399 devices set up to test video stuff, so testin=
+g
+> > > > would be very much appreciated.
+> > > >
+> > > > Also, I'm not sure if user applications are required to check the v=
+alue
+> > > > of sizeimage upon S_FMT return. If the value is different or too sm=
+all,
+> > > > what can the application do besides fail? AFAICT it can't split the
+> > > > data of one frame (or slice) between different buffers.
+> > >
+> > > While most software out there just assumes that driver will do it rig=
+ht and
+> > > crash when it's not the case, application that do map the buffer to C=
+PU must
+> > > read back the fmt structure as the drivers are all fail-safe and will=
+ modify
+> > > that structure to a set of valid value s for the context.
+> >
+> > I believe what is happening in Chromium is that the decoder is opened w=
+ith
+> > some default settings, including the smallest viable resolution for the
+> > output side, and the buffers allocated accordingly. When dynamic resolu=
+tion
+> > change happens, the decoder does not check if the current buffers are
+> > sufficiently sized; it just assumes that they are. And when it starts
+> > pushing data into the buffers, it realizes they are too small and fails=
+.
+> >
+> > The spec also says:
+> >
+> >     Clients are allowed to set the sizeimage field for variable length
+> >     compressed data flagged with V4L2_FMT_FLAG_COMPRESSED at ioctl
+> >     VIDIOC_ENUM_FMT, but the driver may ignore it and set the value its=
+elf,
+> >     or it may modify the provided value based on alignment requirements=
+ or
+> >     minimum/maximum size requirements.
+> >
+> > The spec only guarantees that the buffers are of sufficient size for th=
+e
+> > resolution configured at the time they were allocated/requested.
+> >
+> > So I think my first patch is a workaround for a somewhat broken userspa=
+ce.
+> > But it seems the other stateless drivers are providing similar behavior=
+,
+> > as I previously mentioned.
+>
+> That's what I mean, this is not a driver bug strictly speaking (assuming =
+it does
+> guaranty the buffer size is sufficient) but it is without your change
+> inconvenient, as userspace may be aware of the largest resolution it will
+> decode, and may want to allocate larger buffer upfront.
 
-In some functions, it's unnecessary to declare 'err'
-and 'ret' variables at the same time. This patch mainly
-to simplify the issue of such declarations by reusing
-one variable.
+Thinking about this more, I think a few follow up fixes for each driver
+are in order. The spec implies that the driver should override the value
+should userspace give some unrealistic value, such as asking for a 256 byte
+buffer for a 4K frame size.
 
-Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
-Changes from v2
-(https://lore.kernel.org/linux-mm/20211014020333.10330-1-rongwei.wang@linux.alibaba.com/)
-- Rebased on latest -mm tree (v5.15-rc5-mmots-2021-10-13-19-55)
+Cedrus (CCing Jernej) comes close, but a 1K buffer might not be enough for
+really large frames, even though it's slice based?
 
- mm/damon/dbgfs.c | 66 +++++++++++++++++++++++-------------------------
- 1 file changed, 31 insertions(+), 35 deletions(-)
+ChenYu
 
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index 38188347d8ab..c90988a20fa4 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -69,8 +69,7 @@ static ssize_t dbgfs_attrs_write(struct file *file,
- 	struct damon_ctx *ctx = file->private_data;
- 	unsigned long s, a, r, minr, maxr;
- 	char *kbuf;
--	ssize_t ret = count;
--	int err;
-+	ssize_t ret;
- 
- 	kbuf = user_input_str(buf, count, ppos);
- 	if (IS_ERR(kbuf))
-@@ -88,9 +87,9 @@ static ssize_t dbgfs_attrs_write(struct file *file,
- 		goto unlock_out;
- 	}
- 
--	err = damon_set_attrs(ctx, s, a, r, minr, maxr);
--	if (err)
--		ret = err;
-+	ret = damon_set_attrs(ctx, s, a, r, minr, maxr);
-+	if (!ret)
-+		ret = count;
- unlock_out:
- 	mutex_unlock(&ctx->kdamond_lock);
- out:
-@@ -220,14 +219,13 @@ static ssize_t dbgfs_schemes_write(struct file *file, const char __user *buf,
- 	struct damon_ctx *ctx = file->private_data;
- 	char *kbuf;
- 	struct damos **schemes;
--	ssize_t nr_schemes = 0, ret = count;
--	int err;
-+	ssize_t nr_schemes = 0, ret;
- 
- 	kbuf = user_input_str(buf, count, ppos);
- 	if (IS_ERR(kbuf))
- 		return PTR_ERR(kbuf);
- 
--	schemes = str_to_schemes(kbuf, ret, &nr_schemes);
-+	schemes = str_to_schemes(kbuf, count, &nr_schemes);
- 	if (!schemes) {
- 		ret = -EINVAL;
- 		goto out;
-@@ -239,11 +237,12 @@ static ssize_t dbgfs_schemes_write(struct file *file, const char __user *buf,
- 		goto unlock_out;
- 	}
- 
--	err = damon_set_schemes(ctx, schemes, nr_schemes);
--	if (err)
--		ret = err;
--	else
-+	ret = damon_set_schemes(ctx, schemes, nr_schemes);
-+	if (!ret) {
-+		ret = count;
- 		nr_schemes = 0;
-+	}
-+
- unlock_out:
- 	mutex_unlock(&ctx->kdamond_lock);
- 	free_schemes_arr(schemes, nr_schemes);
-@@ -343,9 +342,8 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
- 	char *kbuf, *nrs;
- 	unsigned long *targets;
- 	ssize_t nr_targets;
--	ssize_t ret = count;
-+	ssize_t ret;
- 	int i;
--	int err;
- 
- 	kbuf = user_input_str(buf, count, ppos);
- 	if (IS_ERR(kbuf))
-@@ -358,7 +356,7 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
- 		scnprintf(kbuf, count, "42    ");
- 	}
- 
--	targets = str_to_target_ids(nrs, ret, &nr_targets);
-+	targets = str_to_target_ids(nrs, count, &nr_targets);
- 	if (!targets) {
- 		ret = -ENOMEM;
- 		goto out;
-@@ -393,11 +391,12 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
- 	else
- 		damon_pa_set_primitives(ctx);
- 
--	err = damon_set_targets(ctx, targets, nr_targets);
--	if (err) {
-+	ret = damon_set_targets(ctx, targets, nr_targets);
-+	if (ret) {
- 		if (id_is_pid)
- 			dbgfs_put_pids(targets, nr_targets);
--		ret = err;
-+	} else {
-+		ret = count;
- 	}
- 
- unlock_out:
-@@ -715,8 +714,7 @@ static ssize_t dbgfs_mk_context_write(struct file *file,
- {
- 	char *kbuf;
- 	char *ctx_name;
--	ssize_t ret = count;
--	int err;
-+	ssize_t ret;
- 
- 	kbuf = user_input_str(buf, count, ppos);
- 	if (IS_ERR(kbuf))
-@@ -734,9 +732,9 @@ static ssize_t dbgfs_mk_context_write(struct file *file,
- 	}
- 
- 	mutex_lock(&damon_dbgfs_lock);
--	err = dbgfs_mk_context(ctx_name);
--	if (err)
--		ret = err;
-+	ret = dbgfs_mk_context(ctx_name);
-+	if (!ret)
-+		ret = count;
- 	mutex_unlock(&damon_dbgfs_lock);
- 
- out:
-@@ -805,8 +803,7 @@ static ssize_t dbgfs_rm_context_write(struct file *file,
- 		const char __user *buf, size_t count, loff_t *ppos)
- {
- 	char *kbuf;
--	ssize_t ret = count;
--	int err;
-+	ssize_t ret;
- 	char *ctx_name;
- 
- 	kbuf = user_input_str(buf, count, ppos);
-@@ -825,9 +822,9 @@ static ssize_t dbgfs_rm_context_write(struct file *file,
- 	}
- 
- 	mutex_lock(&damon_dbgfs_lock);
--	err = dbgfs_rm_context(ctx_name);
--	if (err)
--		ret = err;
-+	ret = dbgfs_rm_context(ctx_name);
-+	if (!ret)
-+		ret = count;
- 	mutex_unlock(&damon_dbgfs_lock);
- 
- out:
-@@ -851,9 +848,8 @@ static ssize_t dbgfs_monitor_on_read(struct file *file,
- static ssize_t dbgfs_monitor_on_write(struct file *file,
- 		const char __user *buf, size_t count, loff_t *ppos)
- {
--	ssize_t ret = count;
-+	ssize_t ret;
- 	char *kbuf;
--	int err;
- 
- 	kbuf = user_input_str(buf, count, ppos);
- 	if (IS_ERR(kbuf))
-@@ -866,14 +862,14 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
- 	}
- 
- 	if (!strncmp(kbuf, "on", count))
--		err = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
-+		ret = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
- 	else if (!strncmp(kbuf, "off", count))
--		err = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
-+		ret = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
- 	else
--		err = -EINVAL;
-+		ret = -EINVAL;
- 
--	if (err)
--		ret = err;
-+	if (!ret)
-+		ret = count;
- 	kfree(kbuf);
- 	return ret;
- }
--- 
-2.17.1
 
+> As per Chromium bug, this is being addressed already. Thanks for this dri=
+ver
+> improvement.
+>
+> >
+> > > As for opposite direction (output vs capture) format being changed, t=
+his should
+> > > be documented in the spec, if you find it too unclear or missing for =
+sateless
+> > > codec (I know it's there for stateful but can't remember, would have =
+to re-read,
+> > > for stateless) let us know.
+> >
+> > AFAICT the capture side is working OK and to spec.
+> >
+> >
+> > Regards
+> > ChenYu
+> >
+> > > regards,
+> > > Nicolas
+> > >
+> > > >
+> > > > Andrzej, I believe the second patch would conflict with your VP9 se=
+ries.
+> > > >
+> > > >
+> > > > Regards
+> > > > ChenYu
+> > > >
+> > > > Chen-Yu Tsai (2):
+> > > >   media: rkvdec: Do not override sizeimage for output format
+> > > >   media: rkvdec: Support dynamic resolution changes
+> > > >
+> > > >  drivers/staging/media/rkvdec/rkvdec-h264.c |  5 +--
+> > > >  drivers/staging/media/rkvdec/rkvdec.c      | 40 +++++++++++-------=
+----
+> > > >  2 files changed, 23 insertions(+), 22 deletions(-)
+> > > >
+> > >
+> > >
+>
+>
