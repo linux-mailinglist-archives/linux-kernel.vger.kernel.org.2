@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284A542D147
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1059B42D127
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhJNDxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:53:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhJNDxV (ORCPT
+        id S229902AbhJNDsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:48:04 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28937 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229496AbhJNDsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:53:21 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BEBC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:51:17 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id f5so4250613pgc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:51:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=s4xTx9uXh+TQYumyL6QT72i8i7PX2Kdt0mjHDXtVPEA=;
-        b=bKjBM5zvSD9U12vC8f7pvAaqwweMeduCm88+NMeXgi+uWDoRfiQWtNRRUOvAaRshig
-         Fes6dvBSj53auToDD6GCQ9BYkViXj/wF90eb4drzr+zCcdZuO0vXowkIHety5J3W1qjy
-         ERY5iUqv3DGWrEO+8WgRNPImvR2FUjchV75ri4jRoJrOPUigUA3Jw9UnlmxL9ZexwkSQ
-         RrzybpcPzdE6KaWKXe7IDiBa23sI4STAyzGrvG6KWysRiOTAiSgdlZY0A8cOMFuuhhJW
-         UwaHF4gqxHwH8j6f2zkGnxgYpkIKnHEI0dJStJIMXlfZMukYXjtkFjcsjaWs7RSQ6i1m
-         RJmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=s4xTx9uXh+TQYumyL6QT72i8i7PX2Kdt0mjHDXtVPEA=;
-        b=q0RGtbjhd+oO6y28R41d95tJIhyyMTmLvzW2VJhaW19bVF1SDDvXHT7LyI1L+X5cL1
-         4ICdtamMmQKVp/u2n0URsgcwfqYFdZF/dYzV3qH3551RqiYGoXx0WvVGHDMkpxsT5WQR
-         ncC/atYG3OuT/rcSq+f8viZHNDV4Vi3ATLQf1e+4G4vLjlThhqXqH2YtXM8jThznRf2F
-         5YNp4q8/+EPWlj4tcKSGXRuDzFd2QbjtuXp8peobZeB83A8JyC6M8xPDnHPofeyOwHnU
-         ZAVjOziDn1guZzkTu5F0KgV8Q6re39Xr3BsfbZjOsA9jdsXah4y3jfSEJVq7ruT6KSI0
-         mNNg==
-X-Gm-Message-State: AOAM5320lyLZmTR25GtPyaRWGjxYDE6Y0GCxVX6rleozddn3ltzZz7wJ
-        ruc11w0y5+X3pnRp94he6tacipmbLBQ=
-X-Google-Smtp-Source: ABdhPJzG+voc5/56R4311RnRmWrMnKe5z0u5Prya65yUQ38GW2v9KCJkg39J/LYtdHNAscF5a9rbeQ==
-X-Received: by 2002:a05:6a00:22d4:b0:44d:1c39:a8d3 with SMTP id f20-20020a056a0022d400b0044d1c39a8d3mr3314474pfj.56.1634183476484;
-        Wed, 13 Oct 2021 20:51:16 -0700 (PDT)
-Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id k9sm864641pfa.88.2021.10.13.20.51.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Oct 2021 20:51:16 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH V3 42/49] x86/entry: Add a C macro to define the function body for IST in .entry.text with an error code
-Date:   Thu, 14 Oct 2021 11:50:19 +0800
-Message-Id: <20211014035027.17681-7-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20211014031413.14471-1-jiangshanlai@gmail.com>
-References: <20211014031413.14471-1-jiangshanlai@gmail.com>
+        Wed, 13 Oct 2021 23:48:03 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HVFZ04HlNzbn5B;
+        Thu, 14 Oct 2021 11:41:28 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 14 Oct 2021 11:45:57 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 14 Oct
+ 2021 11:45:56 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <jic23@kernel.org>, <hdegoede@redhat.com>,
+        <andriy.shevchenko@linux.intel.com>, <ddvlad@gmail.com>
+Subject: [PATCH] iio: accel: kxcjk-1013: Fix possible memory leak in probe and remove
+Date:   Thu, 14 Oct 2021 11:53:38 +0800
+Message-ID: <20211014035338.3750416-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+When ACPI type is ACPI_SMO8500, the data->dready_trig will not be set, the
+memory allocated by iio_triggered_buffer_setup() will not be freed, and cause
+memory leak as follows:
 
-Add DEFINE_IDTENTRY_IST_ETNRY_ERRORCODE() macro to define C code to
-implement the ASM code which calls paranoid_entry(), modify orig_ax,
-cfunc(), paranoid_exit() in series for IST exceptions with an error code.
+unreferenced object 0xffff888009551400 (size 512):
+  comm "i2c-SMO8500-125", pid 911, jiffies 4294911787 (age 83.852s)
+  hex dump (first 32 bytes):
+    02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 20 e2 e5 c0 ff ff ff ff  ........ .......
+  backtrace:
+    [<0000000041ce75ee>] kmem_cache_alloc_trace+0x16d/0x360
+    [<000000000aeb17b0>] iio_kfifo_allocate+0x41/0x130 [kfifo_buf]
+    [<000000004b40c1f5>] iio_triggered_buffer_setup_ext+0x2c/0x210 [industrialio_triggered_buffer]
+    [<000000004375b15f>] kxcjk1013_probe+0x10c3/0x1d81 [kxcjk_1013]
+    [<0000000020115b9a>] i2c_device_probe+0xa31/0xbe0
+    [<00000000d9f581a6>] really_probe+0x299/0xc30
+    [<00000000c6c16cde>] __driver_probe_device+0x357/0x500
+    [<00000000909852a1>] driver_probe_device+0x4e/0x140
+    [<000000008419ba53>] __device_attach_driver+0x257/0x340
+    [<00000000533bb466>] bus_for_each_drv+0x166/0x1e0
+    [<000000005bf45d75>] __device_attach+0x272/0x420
+    [<0000000075220311>] bus_probe_device+0x1eb/0x2a0
+    [<0000000015587e85>] device_add+0xbf0/0x1f90
+    [<0000000086901b9e>] i2c_new_client_device+0x622/0xb20
+    [<000000000865ca18>] new_device_store+0x1fa/0x420
+    [<0000000059a3d183>] dev_attr_store+0x58/0x80
 
-Not functional difference intended.
+Fix it by remove data->dready_trig condition in probe and remove.
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: a25691c1f967 ("iio: accel: kxcjk1013: allow using an external trigger")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- arch/x86/include/asm/idtentry.h | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/iio/accel/kxcjk-1013.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 57636844b0fd..c57606948433 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -351,6 +351,22 @@ __visible __entry_text void ist_##func(struct pt_regs *regs)		\
- 	ist_paranoid_exit(cr3, gsbase);					\
- }
+diff --git a/drivers/iio/accel/kxcjk-1013.c b/drivers/iio/accel/kxcjk-1013.c
+index a51fdd3c9b5b..24c9387c2968 100644
+--- a/drivers/iio/accel/kxcjk-1013.c
++++ b/drivers/iio/accel/kxcjk-1013.c
+@@ -1595,8 +1595,7 @@ static int kxcjk1013_probe(struct i2c_client *client,
+ 	return 0;
  
-+/**
-+ * DEFINE_IDTENTRY_IST_ENTRY_ERRORCODE - Emit __entry_text code for IST
-+ *					 entry points with an error code
-+ * @func:	Function name of the entry point
-+ */
-+#define DEFINE_IDTENTRY_IST_ETNRY_ERRORCODE(func)			\
-+__visible __entry_text void ist_##func(struct pt_regs *regs)		\
-+{									\
-+	unsigned long cr3, gsbase, error_code = regs->orig_ax;		\
-+									\
-+	ist_paranoid_entry(&cr3, &gsbase);				\
-+	regs->orig_ax = -1;	/* no syscall to restart */		\
-+	func(regs, error_code);						\
-+	ist_paranoid_exit(cr3, gsbase);					\
-+}
-+
- /**
-  * DEFINE_IDTENTRY_IST - Emit code for IST entry points
-  * @func:	Function name of the entry point
+ err_buffer_cleanup:
+-	if (data->dready_trig)
+-		iio_triggered_buffer_cleanup(indio_dev);
++	iio_triggered_buffer_cleanup(indio_dev);
+ err_trigger_unregister:
+ 	if (data->dready_trig)
+ 		iio_trigger_unregister(data->dready_trig);
+@@ -1618,8 +1617,8 @@ static int kxcjk1013_remove(struct i2c_client *client)
+ 	pm_runtime_disable(&client->dev);
+ 	pm_runtime_set_suspended(&client->dev);
+ 
++	iio_triggered_buffer_cleanup(indio_dev);
+ 	if (data->dready_trig) {
+-		iio_triggered_buffer_cleanup(indio_dev);
+ 		iio_trigger_unregister(data->dready_trig);
+ 		iio_trigger_unregister(data->motion_trig);
+ 	}
 -- 
-2.19.1.6.gb485710b
+2.25.1
 
