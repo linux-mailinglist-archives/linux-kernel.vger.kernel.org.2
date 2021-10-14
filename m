@@ -2,139 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3A442D2E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD8242D2E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhJNGst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 02:48:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38952 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229502AbhJNGsp (ORCPT
+        id S229802AbhJNGsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 02:48:55 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:51659 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhJNGsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 02:48:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634194000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3aRaTURW0NzaG+vFgsUzyHhcr9bbkPDdtsqC5vNQk7M=;
-        b=ORxITZhZJfhmM/ASVicSkbChPlAxXz+DsnW2uEdJw/ugxJQwwX2gYq32WYJv3hKA7cqfOK
-        o8mAkJwlrgrwvRUAjWMsGQshMkxat3wjECLrtAFX+Pv78IURgspld2q4jh1jOcjAx3UR5r
-        jHlt4ZpJAyyFhTp5nUIYpMO1H1MN8Ms=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-456-TyUem9HGPDqo8L9KSfI1aw-1; Thu, 14 Oct 2021 02:46:39 -0400
-X-MC-Unique: TyUem9HGPDqo8L9KSfI1aw-1
-Received: by mail-wr1-f72.google.com with SMTP id y12-20020a056000168c00b00160da4de2c7so3784548wrd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:46:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3aRaTURW0NzaG+vFgsUzyHhcr9bbkPDdtsqC5vNQk7M=;
-        b=pFXxreWJ1v0aps9NxfA7PafhKkPg63Gk0VlJA/jWJf+qk0TVLmg+3r8i9SznyLIu+W
-         kOgp59E6lXx7UEvmJ2bHohL94nIF4OPW7sFbhISC1gaw2YGltcnObwRYiNeGxJ6wM017
-         Uz1EszlY8Aum1YvJgF82TNEbMttYj0ol2fmSX6Lac690vsNNPJjk6pVHUUkINOskEuMV
-         mm92k/VYj+APlbKom5OIrerwwoc8RS3awj8i+UDmuSi7OvyuOTtE5BE8th4Y7ge+xaIP
-         LWOzmz1QRb0Gm8iqnDGydmoD8jj8l3St1Lz91QEgNDkzk3SOkKT17X/mUSvjMvakEzot
-         1Uvg==
-X-Gm-Message-State: AOAM5323XpwCrfTtC6S9R7Z2xhkc2EM8vapIqAtd/XLDYX/5oKYEqIDn
-        40QSoGv/gdQkkDFM+Mua99zmd3QJe2U+U0MSXHPOl2OqJQa1tgidQO7zUv01Ojka/UhhHj5+217
-        Hr15sbnf07BTMwQqr6XzNJ156
-X-Received: by 2002:adf:a550:: with SMTP id j16mr4599769wrb.180.1634193998359;
-        Wed, 13 Oct 2021 23:46:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxv+Pnw+UVOv19MRjLpSh8C0rkR7LTixke3E/27nwPF/uYtKLZ9Z7wZ39CdZDFJTPqNUjXc6g==
-X-Received: by 2002:adf:a550:: with SMTP id j16mr4599752wrb.180.1634193998182;
-        Wed, 13 Oct 2021 23:46:38 -0700 (PDT)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id n7sm1513659wra.37.2021.10.13.23.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 23:46:17 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 08:45:53 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Thu, 14 Oct 2021 02:48:50 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M1ZQT-1mcIDw2zXf-0037bo; Thu, 14 Oct 2021 08:46:43 +0200
+Received: by mail-wr1-f43.google.com with SMTP id r10so15952991wra.12;
+        Wed, 13 Oct 2021 23:46:43 -0700 (PDT)
+X-Gm-Message-State: AOAM533+14jmyh7HBi/1RPkRKqMNYM11sEK+ZUtbCNBDZc0Zh+iVOaG5
+        Zp3d9HtBnuxgpivw+/N46UGm5HaEysZHAlemEQQ=
+X-Google-Smtp-Source: ABdhPJwTCqhgxuA96DHGSSbNGZIt9ZH4cn9+BGQQWxFLDpCZuMZM/OdQF3b7gnabA4uMj57NtL173grRBisB/S/Xr9s=
+X-Received: by 2002:adf:a3da:: with SMTP id m26mr4432597wrb.336.1634194003365;
+ Wed, 13 Oct 2021 23:46:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211014055527.1238645-1-alistair.francis@opensource.wdc.com>
+In-Reply-To: <20211014055527.1238645-1-alistair.francis@opensource.wdc.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 14 Oct 2021 08:46:27 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3YKrbFnKpy34dJE+ZjycqUgUhvp5gEvSBC1tRXz4LR7g@mail.gmail.com>
+Message-ID: <CAK8P3a3YKrbFnKpy34dJE+ZjycqUgUhvp5gEvSBC1tRXz4LR7g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] perf bench futex: Use a 64-bit time_t
+To:     Alistair Francis <alistair.francis@opensource.wdc.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alistair Francis <alistair23@gmail.com>,
         Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Subject: Re: [PATCH v3 0/8] perf session: Extend reader object to allow
- multiple readers
-Message-ID: <YWfSIRxh5Fu4m75f@krava>
-References: <cover.1634113027.git.alexey.v.bayduraev@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1634113027.git.alexey.v.bayduraev@linux.intel.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Atish Patra <atish.patra@wdc.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alistair Francis <alistair.francis@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:jY/vf4de9a+HDsnX+v1mH/H1FvPuiaj5+UPiAa14/6b9BRyoyyY
+ mOLMPGG24OAh/CbWlgKyYy47lAchVF1Y5Qyl2fyg09NZ9Uxm4ohg8hCd70hXoHiq4VLFyiX
+ wTPleLHe7g5lCFDZ1/lEMBipdb3n2PSrZp5IuxLYWN+klrPq1NR0S8oFbQ3pxv0K9yErlGJ
+ QCS5o3i9yC+xTygMWe1HQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nf/KJ9hfdCI=:tpMI/dZxWDox9zwReKyNyb
+ cSOwr+DS22pyoFhCh7Ys8g+sdsTNgiRLw7FjDMggU6N0P3a68gNLbZd3Y39X7SFx0jOH3XKTa
+ 4MyNEb6rF24thsAXE5G6Fbhu+R1ubASXHlo+GVq9Eyx9yIJThlRcZazEXStNOIt3QFZ58SbVI
+ w3XKBMPqLBc2Ec9KUOPogtu9iBKfjyosFaGPUPntE2SmoAyv4QdmdvypJ7RQYytvFc3KMDs0A
+ zNieYsozHRNTXZ4XM2m3tgGsaYNdlZJ69XhWB6qdhct4JjI0ADJFEs1MhshB5eKEeMOPyWisc
+ uKdNZ6ByJfWXGv9HCcKpeTQ01fqTWoHsy4I9rbfma44grdHrhRTXRQ5HMgJsHRI2eaF84lU8t
+ PQu63FUmvvJwPTEt2c1GOaTECwarI+PKVHntbNtEw+w1CntePiJwxCOx7jzrcDt4qsM2BJ5oc
+ opgVDXaukDYy+QRZBqBX85UE2wu5plXUrRrzrjfPcsWMv58AsSSAmlnI2Fgqz2Ecu/DnsLQEo
+ nhsgZShTPdtDdRt+MIvKMde4vN5xvmqNeJwRl5+jtwpBexuEb1zF7aD8ZPJOEnjInyb8GC27m
+ nrgAekkvD1FW9+tkx0ieT9KIETqyauwgFfBwaMFgcfnEY3Q/GNGQAad/I2dRbQbeWePzs4lGs
+ sfOoINwiz0BMZTwTThYEwVP9KmoBL0K7dbB6RT0P6Qld45jJ8Yl63XF/QwyORVLau82ODfNFy
+ 3COpSH3hheqCrEp0KEg+2aw2vWN0R8aT+bAAfpc+QeIHi6cplwM23HcWeko/quvAE9nPhcyQb
+ sVMxvtBmJQX5BLM/ebNUT2YfIB3nrXZg2j21ylLNAkZQdlclQn0lHhckv2xr8uAk8xPhMg/ey
+ /Spt5MUfe5bw00uWf9ZA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 12:06:34PM +0300, Alexey Bayduraev wrote:
-> Changes in v4:
-> - set/unset active_decomp within reader__process_events
+On Thu, Oct 14, 2021 at 7:55 AM Alistair Francis
+<alistair.francis@opensource.wdc.com> wrote:
 
-Reviewed-by: Jiri Olsa <jolsa@redhat.com>
+> +/**
+> + * We only support 64-bit time_t for the timeout.
+> + * On 64-bit architectures we can use __NR_futex
+> + * On 32-bit architectures we use __NR_futex_time64. This only works on kernel
+> + * versions 5.1+.
+> + */
+> +#if __BITS_PER_LONG == 64 || defined(__i386__)
+> +# define futex(uaddr, op, val, timeout, uaddr2, val3, opflags) \
+> +       syscall(__NR_futex, uaddr, op | opflags, val, timeout, uaddr2, val3)
+> +#else
+> +# define futex(uaddr, op, val, timeout, uaddr2, val3, opflags) \
+> +       syscall(__NR_futex_time64, uaddr, op | opflags, val, timeout, uaddr2, val3)
+> +#endif
 
-thanks,
-jirka
+That __i386__ check looks wrong, was this meant to check for x32 instead?
 
-> 
-> Changes in v3:
-> - removed struct reader_state in [PATCH v3 1/8]
-> - fixed repeating code in [PATCH v3 2/8]
-> - split [PATCH v2 4/5] to [PATCH v3 4/8], [PATCH v3 5/8]
-> - split [PATCH v2 5/5] to [PATCH v3 6/8] - [PATCH v3 8/8]
-> 
-> Changes in v2:
-> - introduced struct decomp_data suggested by Jiri Olsa
-> - removed unnecessary [PATCH v1 1/6]
-> - removed unnecessary extra line in [PATCH v2 4/5]
-> - removed unnecessary reader_state.eof flag in [PATCH v2 5/5]
-> 
-> Patchset moves state info and decompressor object into reader object
-> that made possible to split reader__process_events function into three
-> logical parts: init, map/unmap and single event reader which are used
-> in events reader loop. This approach allows reading multiple trace
-> files at the same time. 
-> 
-> The design and implementation are based on the prototype [1], [2].
-> The patchset was separated from [3].
-> 
-> Tested:
-> 
-> tools/perf/perf record -o prof.data -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data -z -- matrix.gcc.g.O3
-> tools/perf/perf report -i prof.data
-> tools/perf/perf report -i prof.data --call-graph=callee
-> tools/perf/perf report -i prof.data --stdio --header
-> tools/perf/perf report -i prof.data -D --header
-> 
-> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
-> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
-> [3] https://lore.kernel.org/lkml/cover.1629186429.git.alexey.v.bayduraev@linux.intel.com/
-> 
-> Alexey Bayduraev (8):
->   perf session: Move all state items to reader object
->   perf session: Introduce decompressor in reader object
->   perf session: Move init/release code to separate functions
->   perf session: Move map code to separate function
->   perf session: Move unmap code to reader__mmap
->   perf session: Move event read code to separate function
->   perf session: Introduce reader return codes
->   perf session: Introduce reader EOF function
-> 
->  tools/perf/util/session.c | 193 ++++++++++++++++++++++++++------------
->  tools/perf/util/session.h |  10 +-
->  2 files changed, 141 insertions(+), 62 deletions(-)
-> 
-> -- 
-> 2.19.0
-> 
+In that case, I wouldn't bother, as x32 can also just use the futex_time64 call
+like the normal 32-bit architectures.
 
+       Arnd
