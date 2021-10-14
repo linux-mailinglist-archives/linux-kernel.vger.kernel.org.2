@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F6742DAD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CC742DAD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbhJNNwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:52:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231639AbhJNNws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:52:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 223F1610CF;
-        Thu, 14 Oct 2021 13:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634219443;
-        bh=K0W0hKGyjfFO1U06aIOcgJEPpZbe/PT4zdtCvDdyUus=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K1zBSuA/a++xMuHbWTwwfKRItfCw5mlPlpivgA+yyhaMEivRDMPdUOOCBM1tmuSvQ
-         8ObbrKt9UC+5ttt8danTDZc6zX5mJ8eHDw8JiXphhAO1el7ByOVcLCGHHdgmYXJcNO
-         tIlqaIe8XExr2P/MBvSDQeIi+kS0ohu/2JwNV/hbFY00jT22ipa4BLuEDyk99gQo8D
-         vVZarOloqz6fdmhGqODznMNeU/7bO/V2NQJ24wPbdQwRH2BOBLn+9fbt0kR7grH/o3
-         1qCqdK7ujRU124pxP2AV2BGtzzQZb+E42ezW826OPmkIZto+BuBcnurLC3FdET6jkf
-         LoNLOQGCm+pEw==
-Date:   Thu, 14 Oct 2021 22:50:39 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/8] arm64: kprobes: Record frame pointer with kretprobe
- instance
-Message-Id: <20211014225039.b96ff7b7fa86f340ceb50192@kernel.org>
-In-Reply-To: <20211014102702.GB13770@C02TD0UTHF1T.local>
-References: <163369609308.636038.15295764725220907794.stgit@devnote2>
-        <163369611948.636038.11552166777773804729.stgit@devnote2>
-        <20211013100126.GA3187@C02TD0UTHF1T.local>
-        <20211014170405.f59d287b30086efe7dd7f4d9@kernel.org>
-        <20211014091332.GA13770@C02TD0UTHF1T.local>
-        <20211014190155.3fdc7cf7c42e44ee75c43a9d@kernel.org>
-        <20211014102702.GB13770@C02TD0UTHF1T.local>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S231730AbhJNNwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 09:52:55 -0400
+Received: from mail.efficios.com ([167.114.26.124]:53082 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231639AbhJNNwx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 09:52:53 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 23E0438D9B7;
+        Thu, 14 Oct 2021 09:50:48 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id rL65uo4OawBC; Thu, 14 Oct 2021 09:50:47 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 7236438D5B9;
+        Thu, 14 Oct 2021 09:50:47 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7236438D5B9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1634219447;
+        bh=1oQ91ES9+OrNcvxVdRqxEZUeYE/0Ga7yL1CNMP75TGU=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Gv70AcN0MVN251go5qKMZ7Ll+9BNGYD1t+t8bBnHhRgjeHtKfSDEzIMOkdVcy4Zcq
+         GzWdCTl+9vtZVvTiGJ8OjumO1OyH7IgPvFD5xMnEaGX94fizNUtPOa3ZhnFLpDc0n2
+         rvx1VhUrX+CBJ5qJ0/1/trFiGLIV+nvDSMtGqjMxpTzogMtTC1irsQM6tcRzp8Hg/v
+         TxwUTFl9XX5HbsQ6vfG+qjbr0bslrI/qQQv8rSIZ8de001wr8c5cSh3KZRfE25dXBe
+         +UnNIxhjiYMIhAgaR5S+0EDj45JTdaxyPMzSUXLjQDjLKLgj7nYB6I5J4PrBcdYOhb
+         3fr6sAgkIg3bQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id teD4_N-aPibQ; Thu, 14 Oct 2021 09:50:47 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 5710638D850;
+        Thu, 14 Oct 2021 09:50:47 -0400 (EDT)
+Date:   Thu, 14 Oct 2021 09:50:47 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     acme <acme@kernel.org>, rostedt <rostedt@goodmis.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        lkp <lkp@lists.01.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        bristot <bristot@redhat.com>,
+        aubrey li <aubrey.li@linux.intel.com>,
+        yu c chen <yu.c.chen@intel.com>
+Message-ID: <1171592945.14099.1634219447199.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CALOAHbBTxLvuiuT4tT2_7C+jaXBoh0uTjzLRm+njO4tKxCtPwg@mail.gmail.com>
+References: <20211010102429.99577-4-laoar.shao@gmail.com> <20211014072707.GA18719@xsang-OptiPlex-9020> <CALOAHbD540exB5DDfB8DDh8WXvsag9JsdMmC0yxriWMaoAVfOg@mail.gmail.com> <1529739526.13983.1634215325995.JavaMail.zimbra@efficios.com> <CALOAHbDGH1vp7a9BYLDKCCrh-W2205O707LXNM+Yvt5tQ7Swag@mail.gmail.com> <173454728.14036.1634216949862.JavaMail.zimbra@efficios.com> <CALOAHbBTxLvuiuT4tT2_7C+jaXBoh0uTjzLRm+njO4tKxCtPwg@mail.gmail.com>
+Subject: Re: [sched.h] 317419b91e:
+ perf-sanity-tests.Parse_sched_tracepoints_fields.fail
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4156 (ZimbraWebClient - FF93 (Linux)/8.8.15_GA_4156)
+Thread-Topic: 317419b91e: perf-sanity-tests.Parse_sched_tracepoints_fields.fail
+Thread-Index: dnylLOo0GJfvLY2KUZXz7UA2DS74dw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 11:27:02 +0100
-Mark Rutland <mark.rutland@arm.com> wrote:
+----- On Oct 14, 2021, at 9:11 AM, Yafang Shao laoar.shao@gmail.com wrote:
 
-> On Thu, Oct 14, 2021 at 07:01:55PM +0900, Masami Hiramatsu wrote:
-> > On Thu, 14 Oct 2021 10:13:32 +0100
-> > Mark Rutland <mark.rutland@arm.com> wrote:
-> > 
-> > > On Thu, Oct 14, 2021 at 05:04:05PM +0900, Masami Hiramatsu wrote:
-> > > > On Wed, 13 Oct 2021 11:01:39 +0100
-> > > > Mark Rutland <mark.rutland@arm.com> wrote:
-> > > > 
-> > > > > On Fri, Oct 08, 2021 at 09:28:39PM +0900, Masami Hiramatsu wrote:
-> > > > > > Record the frame pointer instead of stack address with kretprobe
-> > > > > > instance as the identifier on the instance list.
-> > > > > > Since arm64 always enable CONFIG_FRAME_POINTER, we can use the
-> > > > > > actual frame pointer (x29).
-> > > > > 
-> > > > > Just to check, why do we need to use the FP rather than SP? It wasn't
-> > > > > clear to me if that's necessary later in the series, or if I'm missing
-> > > > > something here.
-> > > > 
-> > > > Actually, this is for finding correct return address from the per-task
-> > > > kretprobe instruction list (suppose it as a shadow stack) when it will
-> > > > be searched in stack-backtracing. At that point, the framepointer will
-> > > > be a reliable key.
-> > > 
-> > > Sure, my question was more "why isn't the SP a reliable key?", because both
-> > > the SP and FP should be balanced at function-entry and function-return
-> > > time. I'm asking because I think I'm missing a subtlety.
-> > 
-> > Ah, because SP is not used while unwinding frame. For the kretprobe,
-> > either FP or SP is OK. But for the stacktrace.c, I can not use SP
-> > and is easy to change to use FP. :)
+> On Thu, Oct 14, 2021 at 9:09 PM Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+>>
+>> ----- On Oct 14, 2021, at 9:05 AM, Yafang Shao laoar.shao@gmail.com wrote:
+>> [...]
+>> >> If it happens that this ABI break is noticed by more than an in-tree test
+>> >> program, then
+>> >> the kernel's ABI rules will require that this trace field size stays unchanged.
+>> >> This brings
+>> >> up once more the whole topic of "Tracepoints ABI" which has been discussed
+>> >> repeatedly in
+>> >> the past.
+>> >>
+>> >
+>> > I will check if any other in-tree tools depends on TASK_COMM_LEN.
+>>
+>> That's a start, but given this is a userspace ABI, out-of-tree userland
+>> tools which depend of this to be fixed-size are also relevant.
+>>
 > 
-> Ah, so this is just so that stacktrace can match the address. For
-> clarity, would you be happy to add a sentence to the commit message like:
+> TASK_COMM_LEN isn't defined in include/uapi/ directory, so it seems
+> that it isn't the uerspace ABI?
+
+One case where this 16 bytes size is expected by userspace is prctl(2) PR_GET_NAME
+and PR_SET_NAME.
+
+The other case I am referring to is with ftrace and perf:
+
+mount -t tracefs nodev /sys/kernel/tracing
+cat /sys/kernel/tracing/events/sched/sched_switch/format
+
+name: sched_switch
+ID: 314
+format:
+[...]
+	field:char prev_comm[16];	offset:8;	size:16;	signed:1;
+[...]
+	field:char next_comm[16];	offset:40;	size:16;	signed:1;
+
+Both of those fields expose a fixed-size of 16 bytes.
+
+AFAIK Steven's intent was that by parsing this file, trace viewers could adapt to
+changes in the event field layout. Unfortunately, there have been cases where
+trace viewers had a hard expectation on the field layout. Hopefully those have
+all been fixed a while ago.
+
+Thanks,
+
+Mathieu
+
+
 > 
-> | This will allow the stacktrace code to find the original return
-> | address from the FP alone.
-
-Yes, I'm happy to update the changelog :)
-
-Thanks!
-
 > 
-> Thanks,
-> Mark.
-
+> --
+> Thanks
+> Yafang
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
