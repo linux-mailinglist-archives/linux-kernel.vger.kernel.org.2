@@ -2,73 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346CE42E145
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17A542E168
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbhJNScX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:32:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51908 "EHLO mail.kernel.org"
+        id S233952AbhJNShQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:37:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230096AbhJNScV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:32:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 106F96105A;
-        Thu, 14 Oct 2021 18:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634236216;
-        bh=6gIn29naRubCw68Wmg4GZTgHDg0wmSy/Pag5o9tr39g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D3sJjcPESpvNw3pzI5995YjE4YyGKdRvKkW1f2goKA/21IFe5ETF1JKv5GI0UB0GB
-         Q2sggq3e088MWTB+eRC/avRgdUwpbAcO4XCrL6semcv1y6EDnY/LQWQrAHpYhxciBU
-         HhDxg357l/AEQTOXNgSKdYlDux6ghMBOWfBfVGmteaenGLdLXm1pqJ6HpnKK2YAppr
-         qi7B2FNLytiXNahEcy8g49dcIaIXzCJiyVQUdNaIrh0NgoJ+8SSSUiK/+YBajPHlUH
-         t5pW6Qp13y4jZthDdqHMlEqnVUpn3jGmhSL4Wb0YKBBwEXgENgy7FrYjS0E8n27O0m
-         TB3a7WzkJerNA==
-Date:   Thu, 14 Oct 2021 13:34:41 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Cc: linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, ;
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     ;
-                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
-Subject: Re: [PATCH] video: omapfb: Fix fall-through warning for Clang
-Message-ID: <20211014183441.GA1146820@embeddedor>
-References: <20211014165320.GA1145571@embeddedor>
- <YWh2bKnY0Z75g0S3@ravnborg.org>
+        id S233937AbhJNShP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:37:15 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68D4061156;
+        Thu, 14 Oct 2021 18:35:09 +0000 (UTC)
+Date:   Thu, 14 Oct 2021 14:35:07 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Zong Li <zong@andestech.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] nds32/ftrace: Fix Error: invalid operands (*UND* and *UND*
+ sections) for `^'
+Message-ID: <20211014143507.4ad2c0f7@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWh2bKnY0Z75g0S3@ravnborg.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 08:26:52PM +0200, Sam Ravnborg wrote:
-> Hi Gustavo,
-> On Thu, Oct 14, 2021 at 11:53:20AM -0500, Gustavo A. R. Silva wrote:
-> > Fix the following fallthrough warnings:
-> > 
-> > drivers/video/fbdev/omap/omapfb_main.c:1558:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >            case 0:
-> >            ^
-> >    drivers/video/fbdev/omap/omapfb_main.c:1558:2: note: insert 'break;' to avoid fall-through
-> >            case 0:
-> >            ^
-> >            break;
-> >    1 warning generated.
-> > 
-> > This helps with the ongoing efforts to globally enable
-> > -Wimplicit-fallthrough for Clang.
-> > 
-> > Link: https://github.com/KSPP/linux/issues/115
-> > Link: https://lore.kernel.org/lkml/202110141005.hUjaYMEi-lkp@intel.com/
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> applied to drm-misc-next. It will show up in -next in 1-2 weeks time.
+[ Resending with "PATCH" in subject ]
 
-Great. :)
+I received a build failure for a new patch I'm working on the nds32
+architecture, and when I went to test it, I couldn't get to my build error,
+because it failed to build with a bunch of:
 
-Thanks, Sam.
---
-Gustavo
+  Error: invalid operands (*UND* and *UND* sections) for `^'
+
+issues with various files. Those files were temporary asm files that looked
+like:  kernel/.tmp_mc_fork.s
+
+I decided to look deeper, and found that the "mc" portion of that name
+stood for "mcount", and was created by the recordmcount.pl script. One that
+I wrote over a decade ago. Once I knew the source of the problem, I was
+able to investigate it further.
+
+The way the recordmcount.pl script works (BTW, there's a C version that
+simply modifies the ELF object) is by doing an "objdump" on the object
+file. Looks for all the calls to "mcount", and creates an offset of those
+locations from some global variable it can use (usually a global function
+name, found with <.*>:). Creates a asm file that is a table of references
+to these locations, using the found variable/function. Compiles it and
+links it back into the original object file. This asm file is called
+".tmp_mc_<object_base_name>.s".
+
+The problem here is that the objdump produced by the nds32 object file,
+contains things that look like:
+
+ 0000159a <.L3^B1>:
+    159a:       c6 00           beqz38 $r6, 159a <.L3^B1>
+                        159a: R_NDS32_9_PCREL_RELA      .text+0x159e
+    159c:       84 d2           movi55 $r6, #-14
+    159e:       80 06           mov55 $r0, $r6
+    15a0:       ec 3c           addi10.sp #0x3c
+ 
+
+Where ".L3^B1 is somehow selected as the "global" variable to index off of.
+
+Then the assembly file that holds the mcount locations looks like this:
+
+        .section __mcount_loc,"a",@progbits
+        .align 2
+        .long .L3^B1 + -5522
+        .long .L3^B1 + -5384
+        .long .L3^B1 + -5270
+        .long .L3^B1 + -5098
+        .long .L3^B1 + -4970
+        .long .L3^B1 + -4758
+        .long .L3^B1 + -4122
+        [...]
+
+And when it is compiled back to an object to link to the original object,
+the compile fails on the "^" symbol.
+
+Simple solution for now, is to have the perl script ignore using function
+symbols that have an "^" in the name.
+
+Fixes: fbf58a52ac088 ("nds32/ftrace: Add RECORD_MCOUNT support")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
+index 8f6b13ae46bf..7d631aaa0ae1 100755
+--- a/scripts/recordmcount.pl
++++ b/scripts/recordmcount.pl
+@@ -189,7 +189,7 @@ if ($arch =~ /(x86(_64)?)|(i386)/) {
+ $local_regex = "^[0-9a-fA-F]+\\s+t\\s+(\\S+)";
+ $weak_regex = "^[0-9a-fA-F]+\\s+([wW])\\s+(\\S+)";
+ $section_regex = "Disassembly of section\\s+(\\S+):";
+-$function_regex = "^([0-9a-fA-F]+)\\s+<(.*?)>:";
++$function_regex = "^([0-9a-fA-F]+)\\s+<([^^]*?)>:";
+ $mcount_regex = "^\\s*([0-9a-fA-F]+):.*\\s(mcount|__fentry__)\$";
+ $section_type = '@progbits';
+ $mcount_adjust = 0;
