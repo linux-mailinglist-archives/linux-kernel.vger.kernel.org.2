@@ -2,256 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65A542D8BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C066542D8C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbhJNMFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
+        id S231378AbhJNMG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbhJNMF3 (ORCPT
+        with ESMTP id S230032AbhJNMGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:05:29 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF2BC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:03:24 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id e2so10718425uax.7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:03:24 -0700 (PDT)
+        Thu, 14 Oct 2021 08:06:25 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166ADC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:04:21 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id e65so2935222pgc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:04:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xj8F02qjcFD/OxSetCAdaTkDEAtmLez+FikCwyhAwDU=;
-        b=wDuxotBJb/+zjFdczEvupCmne7rv44CGr+5h2R+lYo61eRnWC1EAFn4i83sh7rX3yZ
-         V7movBmXIEybpOfvKxfcSoZM8s14aImiaK7T3CM4LFAYoTOvpo9Fq+Dbxg0LaVidfIEc
-         syPvFsSscgM8cio8XTjfXekbVyjDl48TLNGTfIjxsAz31lohV6wmra9eHwb2EWPXW6Od
-         Geemk7JVSfF/jcS/y1qenTMLStW4vUfQieVQRye+fj955TP8JnxYCYaWTWyRe0IKqKao
-         L/1z7qJIutgRw049kdC3st4vuqfMF6eKVR8K7iQHy+xIu1rW5Nn/ulpWSThbRjyd8s5+
-         21yg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=92n0moAabT6AS5dGSdK43zewU3rUGs37H16qpFt37P0=;
+        b=M5TGLvDdV5GB7BnmG+6NPyEGICwR4d406PUheHDG9uvyo+imp5sL9SvfgGl6t61z8Q
+         ejBWvaTzzlkPDzyk5D0bKK3sYzDSIB3dW7mtOiOkFFZ+ZRDgGBqCdcJgKUFvhSrBCAIu
+         dQeQeGXZNjJ8hstscY++totv3/mjlOpIC07b0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xj8F02qjcFD/OxSetCAdaTkDEAtmLez+FikCwyhAwDU=;
-        b=JVKzFG7RCQ7w2JSjIvrTO5nUd3eRyar6Wwb6sqakRJepZSiciG+Ltc36QtqcYVuStk
-         WnxtOvebttkFVYAP6E+SVQrsFt81Et7cOdP19U0mK6UWZvrTyssjVZjxOwdblu16QpIh
-         A9y7ne7tRz5flsep1pBAjBkmPeznDpHWTYpQrcovdA5sjJx6by7xbJi608dLoJj9fqJQ
-         +LHrspW9qlYxiu97DBSkIzHZs6AXcKPr7DMy9+BXgEs5eIWQUQtzGO0APMaxnNv6tagh
-         WPl4ADxi0OWfI5vZu9x4vL7QsBW8W4RoRDz6shWS2RMvNz+4SUBhlgou0Ca/wesDf928
-         +zIA==
-X-Gm-Message-State: AOAM530CCBpzu7rZBVWBHJlp2cw/8RnMFqJn6dcwRLGFRv9ehLd7QLxg
-        JJ2UiZwN15NcuPG0SXUMMAOlqMtQRYNb/7OcBeP68w==
-X-Google-Smtp-Source: ABdhPJzHijD+itIOq2W8t2VGEzSHHYo+kmu+BRme0KVWMgeqDnez3zG+NfeqpChgpcbIfgjaiTFhUF0zLPjzU25556s=
-X-Received: by 2002:a67:ab48:: with SMTP id k8mr6179623vsh.30.1634213003678;
- Thu, 14 Oct 2021 05:03:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=92n0moAabT6AS5dGSdK43zewU3rUGs37H16qpFt37P0=;
+        b=irZbVcvUc3LMi9nTD+LIMr/ymHF+ZvemKjyM6v1+XdwDv5dlw9YIWRCXvzxGjYKeM5
+         TPz1Pqkf08CpMqDP+BJvAyw2lTQoEDgR/r/C4HvA1yY79uwqCTGprYygmKl94DlsJ078
+         5i3hWsydJAxQv8uaR3pxru1D1fuc5uPayHPP681Ps0GGYxWFVA7Fx5Omh+PLptNWIG8w
+         F+nBGIP3JfT9Gb5XlU0RYX/ExgvTKscYyt80fDPJ8mu0t6Ok5KnMLRcyjPXKQPCo00l9
+         /cjtSPHgkCxKmanI5emvJ7p3LKRf0omh2UGeDwzTskZctFTNNT6RISUfRW/4K0eKZsfz
+         SmTQ==
+X-Gm-Message-State: AOAM531kmnlt0I68MMRQXKsSe9FIs97SgbWrUMDMnW1NBiQnZtlcOsKG
+        eozJw1YndONdaeD077+z+gon5A==
+X-Google-Smtp-Source: ABdhPJwIWotZPHk184vFFep0mQkX2raEyAkHyKCaAGKFVNw83k5U9hsxrtADiEetCitAyE2LbTbplg==
+X-Received: by 2002:a63:7542:: with SMTP id f2mr3918157pgn.64.1634213060611;
+        Thu, 14 Oct 2021 05:04:20 -0700 (PDT)
+Received: from fshao-glinux.tpe.corp.google.com ([2401:fa00:1:10:64c0:3f2d:5152:a6f1])
+        by smtp.gmail.com with ESMTPSA id b11sm2300275pge.57.2021.10.14.05.04.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 05:04:20 -0700 (PDT)
+From:   Fei Shao <fshao@chromium.org>
+To:     Jassi Brar <jaswinder.singh@linaro.org>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Fei Shao <fshao@chromium.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "jason-jh.lin" <jason-jh.lin@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 0/2] Fixups for mtk-cmdq multi-gce support
+Date:   Thu, 14 Oct 2021 20:03:50 +0800
+Message-Id: <20211014120352.1506321-1-fshao@chromium.org>
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
 MIME-Version: 1.0
-References: <20211013202110.31701-1-semen.protsenko@linaro.org>
- <1cd31098-ba9d-f2e3-e34c-5bada00a2696@canonical.com> <CAPLW+4mtSnt8dCCtSeu-yNTR0F5ZO-hdjFjyGChi=tTWQQt85Q@mail.gmail.com>
- <dd61666c-fd1a-c152-9423-9dc6718b1626@canonical.com>
-In-Reply-To: <dd61666c-fd1a-c152-9423-9dc6718b1626@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Thu, 14 Oct 2021 15:03:12 +0300
-Message-ID: <CAPLW+4mA64Q8t07tJ_Yi9=AHmGe2NixEmCaMP-Lj65D2TNBt+w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] soc: samsung: exynos-chipid: Pass revision reg offsets
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 at 14:48, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 14/10/2021 13:34, Sam Protsenko wrote:
-> > On Thu, 14 Oct 2021 at 10:11, Krzysztof Kozlowski
-> > <krzysztof.kozlowski@canonical.com> wrote:
-> >>
-> >> On 13/10/2021 22:21, Sam Protsenko wrote:
-> >>> Old Exynos SoCs have both Product ID and Revision ID in one single
-> >>> register, while new SoCs tend to have two separate registers for those
-> >>> IDs. Implement handling of both cases by passing Revision ID register
-> >>> offsets in driver data.
-> >>>
-> >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> >>> ---
-> >>>  drivers/soc/samsung/exynos-chipid.c       | 67 +++++++++++++++++++----
-> >>>  include/linux/soc/samsung/exynos-chipid.h |  6 +-
-> >>>  2 files changed, 58 insertions(+), 15 deletions(-)
-> >>>
-> >>> diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
-> >>> index 5c1d0f97f766..7837331fb753 100644
-> >>> --- a/drivers/soc/samsung/exynos-chipid.c
-> >>> +++ b/drivers/soc/samsung/exynos-chipid.c
-> >>> @@ -16,6 +16,7 @@
-> >>>  #include <linux/errno.h>
-> >>>  #include <linux/mfd/syscon.h>
-> >>>  #include <linux/of.h>
-> >>> +#include <linux/of_device.h>
-> >>>  #include <linux/platform_device.h>
-> >>>  #include <linux/regmap.h>
-> >>>  #include <linux/slab.h>
-> >>> @@ -24,6 +25,17 @@
-> >>>
-> >>>  #include "exynos-asv.h"
-> >>>
-> >>> +struct exynos_chipid_variant {
-> >>> +     unsigned int rev_reg;           /* revision register offset */
-> >>> +     unsigned int main_rev_shift;    /* main revision offset in rev_reg */
-> >>> +     unsigned int sub_rev_shift;     /* sub revision offset in rev_reg */
-> >>> +};
-> >>> +
-> >>> +struct exynos_chipid_info {
-> >>> +     u32 product_id;
-> >>> +     u32 revision;
-> >>> +};
-> >>> +
-> >>>  static const struct exynos_soc_id {
-> >>>       const char *name;
-> >>>       unsigned int id;
-> >>> @@ -49,31 +61,55 @@ static const char *product_id_to_soc_id(unsigned int product_id)
-> >>>       int i;
-> >>>
-> >>>       for (i = 0; i < ARRAY_SIZE(soc_ids); i++)
-> >>> -             if ((product_id & EXYNOS_MASK) == soc_ids[i].id)
-> >>> +             if (product_id == soc_ids[i].id)
-> >>>                       return soc_ids[i].name;
-> >>>       return NULL;
-> >>>  }
-> >>>
-> >>> +static int exynos_chipid_get_chipid_info(struct regmap *regmap,
-> >>> +             const struct exynos_chipid_variant *data,
-> >>> +             struct exynos_chipid_info *soc_info)
-> >>> +{
-> >>> +     int ret;
-> >>> +     unsigned int val, main_rev, sub_rev;
-> >>> +
-> >>> +     ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &val);
-> >>> +     if (ret < 0)
-> >>> +             return ret;
-> >>> +     soc_info->product_id = val & EXYNOS_MASK;
-> >>> +
-> >>> +     ret = regmap_read(regmap, data->rev_reg, &val);
-> >>
-> >> Isn't this the same register as EXYNOS_CHIPID_REG_PRO_ID?
-> >>
-> >
-> > It is for Exynos4210, but it's not for Exynos850 (see PATCH 3/3), as
-> > it's described in the commit message. I tried to keep this code
-> > unified for all SoCs.
->
-> Yeah, but for Exynos4210 you read the same register twice. It's
-> confusing. Read only once. You could compare the offsets and skip second
-> read.
->
+This series includes some fixup patches for 85dfdbfc13ea ("mailbox:
+cmdq: add multi-gce clocks support for mt8195").
 
-Thanks, will do in v3.
+Changes in v2:
+- Add Reviewed-by tag
+- Make clock names static
 
-> >
-> >>> +     if (ret < 0)
-> >>> +             return ret;
-> >>> +     main_rev = (val >> data->main_rev_shift) & EXYNOS_REV_PART_MASK;
-> >>> +     sub_rev = (val >> data->sub_rev_shift) & EXYNOS_REV_PART_MASK;
-> >>> +     soc_info->revision = (main_rev << EXYNOS_REV_PART_SHIFT) | sub_rev;
-> >>> +
-> >>> +     return 0;
-> >>> +}
-> >>> +
-> >>>  static int exynos_chipid_probe(struct platform_device *pdev)
-> >>>  {
-> >>> +     const struct exynos_chipid_variant *drv_data;
-> >>> +     struct exynos_chipid_info soc_info;
-> >>>       struct soc_device_attribute *soc_dev_attr;
-> >>>       struct soc_device *soc_dev;
-> >>>       struct device_node *root;
-> >>>       struct regmap *regmap;
-> >>> -     u32 product_id;
-> >>> -     u32 revision;
-> >>>       int ret;
-> >>>
-> >>> +     drv_data = of_device_get_match_data(&pdev->dev);
-> >>> +     if (!drv_data)
-> >>> +             return -EINVAL;
-> >>> +
-> >>>       regmap = device_node_to_regmap(pdev->dev.of_node);
-> >>>       if (IS_ERR(regmap))
-> >>>               return PTR_ERR(regmap);
-> >>>
-> >>> -     ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &product_id);
-> >>> +     ret = exynos_chipid_get_chipid_info(regmap, drv_data, &soc_info);
-> >>>       if (ret < 0)
-> >>>               return ret;
-> >>>
-> >>> -     revision = product_id & EXYNOS_REV_MASK;
-> >>> -
-> >>>       soc_dev_attr = devm_kzalloc(&pdev->dev, sizeof(*soc_dev_attr),
-> >>>                                   GFP_KERNEL);
-> >>>       if (!soc_dev_attr)
-> >>> @@ -86,8 +122,8 @@ static int exynos_chipid_probe(struct platform_device *pdev)
-> >>>       of_node_put(root);
-> >>>
-> >>>       soc_dev_attr->revision = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> >>> -                                             "%x", revision);
-> >>> -     soc_dev_attr->soc_id = product_id_to_soc_id(product_id);
-> >>> +                                             "%x", soc_info.revision);
-> >>> +     soc_dev_attr->soc_id = product_id_to_soc_id(soc_info.product_id);
-> >>>       if (!soc_dev_attr->soc_id) {
-> >>>               pr_err("Unknown SoC\n");
-> >>>               return -ENODEV;
-> >>> @@ -106,7 +142,7 @@ static int exynos_chipid_probe(struct platform_device *pdev)
-> >>>
-> >>>       dev_info(soc_device_to_device(soc_dev),
-> >>>                "Exynos: CPU[%s] PRO_ID[0x%x] REV[0x%x] Detected\n",
-> >>> -              soc_dev_attr->soc_id, product_id, revision);
-> >>> +              soc_dev_attr->soc_id, soc_info.product_id, soc_info.revision);
-> >>>
-> >>>       return 0;
-> >>>
-> >>> @@ -125,9 +161,18 @@ static int exynos_chipid_remove(struct platform_device *pdev)
-> >>>       return 0;
-> >>>  }
-> >>>
-> >>> +static const struct exynos_chipid_variant exynos4210_chipid_drv_data = {
-> >>> +     .rev_reg        = 0x0,
-> >>> +     .main_rev_shift = 0,
-> >>> +     .sub_rev_shift  = 4,
-> >>
-> >> The code does not look correct here. Subrev is at 0:3 bits, mainrev is
-> >> at 4:7.
-> >>
-> >
-> > Right. I was confused by those existing macros:
-> >
-> >     #define EXYNOS_SUBREV_MASK        (0xf << 4)
-> >     #define EXYNOS_MAINREV_MASK        (0xf << 0)
-> >
-> > Those were probably wrong the whole time? Anyway, now I've found
-> > Exynos4412 User Manual and checked it there -- you are right about
-> > offsets. Will fix in v3.
->
-> They were not used, I think.
->
-> >
-> >> Did you test it that it produces same result? Looks not - I gave it a
-> >> try and got wrong revision.
-> >>
-> >
-> > I only have Exynos850 based board, and that has 0x0 in Revision ID
-> > register. But for v3 I'll try to emulate register value in the code
-> > and make sure that the read value does not change with patch applied.
->
-> You should get one of Odroid boards to test it. The MC1 is fairly cheap.
->
+Fei Shao (2):
+  mailbox: mtk-cmdq: Validate alias_id on probe
+  mailbox: mtk-cmdq: Fix local clock ID usage
 
-Will do, I see how it can be useful for further work. For this series,
-I'm pretty sure I can test all cases by emulating the read register
-values. Would it be enough? Also, if you have some time, I'd ask you
-to check v3 on your board.
+ drivers/mailbox/mtk-cmdq-mailbox.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-> Best regards,
-> Krzysztof
+-- 
+2.33.0.882.g93a45727a2-goog
+
