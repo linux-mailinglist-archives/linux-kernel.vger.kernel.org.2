@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC5442D763
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB91942D76A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhJNKsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:48:45 -0400
-Received: from mail-pf1-f177.google.com ([209.85.210.177]:34374 "EHLO
-        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhJNKso (ORCPT
+        id S230241AbhJNKtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230176AbhJNKtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:48:44 -0400
-Received: by mail-pf1-f177.google.com with SMTP id g14so5136117pfm.1;
-        Thu, 14 Oct 2021 03:46:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DJvXSZseMVfQbBmTt0BMqFozFQd+wMN0VfIKZGrZECk=;
-        b=N36jNuup8DbNKcQt0loYqEFNYdNshFTcCbPLB1O63rYXHyMRpTCwtdGyA5ddfILOja
-         glNutC5d9xuyHF6kdKWcUCSMppkYkwu8IwiVUSXF5+ftQFr3hnwZzVN88l9jPz9Actn3
-         uC3fZ30P2HwyldFGy48wkIcuaPjddiNtiruKcF1VZi/ICmzu0uIyoJCCBygRIJw+O3wH
-         OGldTzRB0reiVmkCDbztBcClCJr2XuELgsAVWFjb2eGVM98TkysqS2nAcQkydtZbS2Mf
-         jXmnvzSHmmvSfrMA3Nv8ciyti27jV1oUpuodtjW/N4eoGQDp0DschB3b82pQgWm3lQ36
-         5a0A==
-X-Gm-Message-State: AOAM533lWBk3GKnw3dbq+zngUcCXD2QfntZFIKhoqWL9rGTuahQu2l6i
-        zi4Fr4NdpuZmnbaL0pgusza1AkdhNXbkK1UyemA=
-X-Google-Smtp-Source: ABdhPJwtbEns4mDs0xX2KLgZa1X/jK39DitRxJ5GZBX6KxfQkmgA4slF3Il6bBNO+Vq6ZZEe58g8utxI0258TBE2Aiw=
-X-Received: by 2002:a62:31c5:0:b0:447:cd37:61f8 with SMTP id
- x188-20020a6231c5000000b00447cd3761f8mr4695364pfx.29.1634208399368; Thu, 14
- Oct 2021 03:46:39 -0700 (PDT)
+        Thu, 14 Oct 2021 06:49:19 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEC1C061570;
+        Thu, 14 Oct 2021 03:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=x2jwRKorCNgoPpdzs8qq0S06D6G51+ysL6On8xrWlx4=; b=CfPcr/fStuSF0qZNy/VAv+H3s7
+        L9YGbVbhEWRfVBhVxZVY/eeeWIktt/E96qgOPsWQf2q8SWy8Yuqhx+EOSKtN7ZB7LM0c/Vqf98C8T
+        Mll/EkUeNf4GOKHpgFo0Mcd28if7n9ivKKtPDD8B34uKiuA/Yc9INrI3SPLwTmaAcL6Ny66G6KQA2
+        ueU+cbMrsxFe4DsyT/pMVKQYn47syi2Ju8tbSkMs+9+RzoHuv8Ez43s+wn9Jm3tiL/ajgeGpGQELC
+        EOM+xu+3yOpt0u9VR5DnlW9SJHMc8VeMf2m1eByX6BvLA5HfKmH6PYJJuv3B3vA14vwlfXmvDJ5hN
+        1FeoWXfg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55088)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mayG7-0001Bc-CD; Thu, 14 Oct 2021 11:46:47 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mayFr-00025O-R6; Thu, 14 Oct 2021 11:46:31 +0100
+Date:   Thu, 14 Oct 2021 11:46:31 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     keescook@chromium.org, jannh@google.com,
+        linux-kernel@vger.kernel.org, vcaputo@pengaru.com,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, amistry@google.com,
+        Kenta.Tada@sony.com, legion@kernel.org,
+        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
+        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com,
+        mark.rutland@arm.com, axboe@kernel.dk, metze@samba.org,
+        laijs@linux.alibaba.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, ebiederm@xmission.com,
+        ohoono.kwon@samsung.com, kaleshsingh@google.com,
+        yifeifz2@illinois.edu, jpoimboe@redhat.com,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        vgupta@kernel.org, will@kernel.org, guoren@kernel.org,
+        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        nickhu@andestech.com, jonas@southpole.se, mpe@ellerman.id.au,
+        paul.walmsley@sifive.com, hca@linux.ibm.com,
+        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net
+Subject: Re: [PATCH 5/7] sched: Add wrapper for get_wchan() to keep task
+ blocked
+Message-ID: <YWgKh8JRYjDpU9zW@shell.armlinux.org.uk>
+References: <20211008111527.438276127@infradead.org>
+ <20211008111626.332092234@infradead.org>
 MIME-Version: 1.0
-References: <20211012134027.684712-1-kernel@esmil.dk> <CACRpkdaB27Ar0a+Kxh9bmH78bUL_vFush==Suua2TDjt7wpYug@mail.gmail.com>
-In-Reply-To: <CACRpkdaB27Ar0a+Kxh9bmH78bUL_vFush==Suua2TDjt7wpYug@mail.gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Thu, 14 Oct 2021 12:46:28 +0200
-Message-ID: <CANBLGcyno5YGsjAyScDMXqdOPpyXQDH8u7=qMD07rsNVLrOC_Q@mail.gmail.com>
-Subject: Re: [PATCH v1 00/16] Basic StarFive JH7100 RISC-V SoC support
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008111626.332092234@infradead.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 at 01:32, Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Tue, Oct 12, 2021 at 3:41 PM Emil Renner Berthing <kernel@esmil.dk> wrote:
->
-> >   dt-bindings: pinctrl: Add StarFive pinctrl definitions
-> >   dt-bindings: pinctrl: Add StarFive JH7100 bindings
-> >   pinctrl: starfive: Add pinctrl driver for StarFive SoCs
->
-> I'd be happy to apply these to the pinctrl tree if everybody is
-> happy.
-> If you prefer some other merge path:
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+On Fri, Oct 08, 2021 at 01:15:32PM +0200, Peter Zijlstra wrote:
+> From: Kees Cook <keescook@chromium.org>
+> 
+> Having a stable wchan means the process must be blocked and for it to
+> stay that way while performing stack unwinding.
+> 
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Thank you, that sounds great to me. Let me post v2 to address Andy and
-Geerts comments though.
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk> [arm]
 
-/Emil
+I will eventually get around to test this once I've caught up.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
