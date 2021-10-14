@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB84B42D11D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7543242D120
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbhJNDoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33636 "EHLO
+        id S229882AbhJNDon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbhJNDnz (ORCPT
+        with ESMTP id S230032AbhJNDnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Oct 2021 23:43:55 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF09C061749
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:41:34 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 75so4272982pga.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:41:34 -0700 (PDT)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBA5C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:41:41 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id i76so2139175pfe.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:41:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8v1lJEcNZ/4QXqfpYTpG6GQy3KUL6Ro/b9jCQmcPx6s=;
-        b=eou3KQkrDQDDzAw1z7tIsAqilO7FQ+yS3DuDegUYgubU+JmvtxTeMhoJwUxQ1K19aR
-         wz/5MvPViVX+s9pMG4uB0rOcyCmGLjgpqKD8FhX3R/5EmFnTTFwop/Qd++cx8wpaAUHm
-         +fmIFBJ3zyY6F/nVuaheDOrSJRZH8RuL8JRJwHvgfxeHrGQ951/pgrT7P54G5djNAovN
-         XhwqvVXUuRZdZMea2f25XqP0MiKgMnwWEJXlgemTd8YhzdB0u4A8jYax0l0mOgesGjEG
-         Ex6kS7MqCwMAOdLF60vHdSVmkHyDbcn7T7bh38f1dGU40DM2JobYOCcV0F3juyA8HZlH
-         z0KA==
+        bh=uKNvVQ6CjLjkusQqsZ94xWd5Ds6mJwvJCMcrOnvil24=;
+        b=J4zPbRGCtQ1rSy1irQqwZ2TMpvhFvCAvhV3hlfE7k5zUVQOScoyyFsgft7sljwpqFx
+         J971B7tHjycDDmfNMqATnl7WzSXAVv7DPVNKVAfTcWRiSJyzjCiq0Jhac2IsvWKRvAc9
+         lS4NHqI7ncUZPtUTDdTekYdCKhcnKvzZAT2fNEpMOdZWobUP7vsU8R9Ra+jvErP1E1qk
+         YigtrvuKwLCNetL+hM22C7pA72K0W/dGwJcQROIx3jKp4oFUcwqG6d9TtT8m7Xj+/QGs
+         EwzuUSIfxCQsONa+B4+4d537dY8jLCaxo80TobLNIB5Djh9tL3E5V32rHEurfrM/aBf/
+         zHkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8v1lJEcNZ/4QXqfpYTpG6GQy3KUL6Ro/b9jCQmcPx6s=;
-        b=DtqooIEdazDv9zf0gccur9posJGm6gPFdSLz+ucTivYZzL0XfmV3KFfuGNX81OtUqH
-         Z7y9YCYzcj026tPNRas7ZPvtWbhjMWhsUC4+8W1WCFH7/ENHV/4Q2mkNG0Ycs/vtwCpY
-         07zC4KF1AAoQAL5oYYo7kSyPFA9LC5tYJiywgPltoh+Oy3RR613ZNk7cnBqfgNM2wZ5D
-         cHJKITOcgKm8FVlnwlm8iSluC54wdjIpSvK05onHnbxNhIH/b+Fepp2y4muNG7bF1nHC
-         urgr0Jr5qw8sLXJw/MpGybrOXmtVXmsJieh1nqwM1YsJx5UW1/XMz8ZNcjqKAJUk/fnM
-         vaLQ==
-X-Gm-Message-State: AOAM532DClQ8CJ9ocrUPIb14Rbw2dsEbeyINzo84pjr8sAxBo7kjz36A
-        lMkv3Vb6t3FqA+PNTA9NnyE8dM3YwrU=
-X-Google-Smtp-Source: ABdhPJya//SLdbO0yGTpqNgs+2bUrChtdWsZa3d+NF8HhXQOrGNKS7/5NiK/rAtgd4k9dcfjQufvxg==
-X-Received: by 2002:a05:6a00:888:b0:44c:c00e:189c with SMTP id q8-20020a056a00088800b0044cc00e189cmr3202210pfj.79.1634182893585;
-        Wed, 13 Oct 2021 20:41:33 -0700 (PDT)
+        bh=uKNvVQ6CjLjkusQqsZ94xWd5Ds6mJwvJCMcrOnvil24=;
+        b=25TjpaEyXnwpEvk3u0H/BSwxOyXUn34FxB6xmWL4hRFv/GXpyJx8Td3WYYmetnOLst
+         M826lZ6rMIx8KwXXWJt4x+v8WKHLpOMX6sjFDu4F4OSRlOIk51Tx3NowgI4KVf5/A7GX
+         j14/eyu+Kt1xmH1psA4+fclegNBmzNewCjLBmiEk7AY6xW8DqOtRNOQyf2JF9wrJ0aHg
+         yaTqb8EMHJwTmdhpMff8apbuZq4+JGM/EWF4avZfVVbWwxnDbTZubG/kkGgcY1sZsgK0
+         Aa/qoQQwrnDo/1MEwvfaF+P9E9tmK3JNP6GMcXMTF9pvEL7y536wnTOARCN5NgUCWgqK
+         I9OQ==
+X-Gm-Message-State: AOAM531Z4FVSREKlMYi4+QMWjJPvCxzHd6Uuo2aptpAPjmeas1FrQOfJ
+        UKoRJldG+StCIo4jHf+tAPhDSSkZdbM=
+X-Google-Smtp-Source: ABdhPJykp7BfeXmB5/+lvwOD0HkP6OpK3eynCNcn8UThO/DuM/vp5vozjRKF1Kwv/9H6t5XHMWj49A==
+X-Received: by 2002:a62:2c82:0:b0:44d:71c3:8a3 with SMTP id s124-20020a622c82000000b0044d71c308a3mr3245710pfs.84.1634182900537;
+        Wed, 13 Oct 2021 20:41:40 -0700 (PDT)
 Received: from localhost ([198.11.178.15])
-        by smtp.gmail.com with ESMTPSA id lb5sm890008pjb.11.2021.10.13.20.41.32
+        by smtp.gmail.com with ESMTPSA id 63sm833631pfv.192.2021.10.13.20.41.39
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Oct 2021 20:41:33 -0700 (PDT)
+        Wed, 13 Oct 2021 20:41:40 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
         Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH V3 34/49] x86/entry: Add the C version ist_switch_to_kernel_gsbase()
-Date:   Thu, 14 Oct 2021 11:41:06 +0800
-Message-Id: <20211014034121.17025-3-jiangshanlai@gmail.com>
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH V3 35/49] x86/entry: Implement the C version ist_paranoid_entry()
+Date:   Thu, 14 Oct 2021 11:41:07 +0800
+Message-Id: <20211014034121.17025-4-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211014031413.14471-1-jiangshanlai@gmail.com>
 References: <20211014031413.14471-1-jiangshanlai@gmail.com>
@@ -69,75 +71,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-It implements the second half of paranoid_entry() whose functionality
-is to switch to kernel gsbase.
+It implements the whole ASM version paranoid_entry().
 
-Not functional difference intended.
+No functional difference intended.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry64.c | 51 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+ arch/x86/entry/entry64.c        | 37 +++++++++++++++++++++++++++++++++
+ arch/x86/include/asm/idtentry.h |  3 +++
+ 2 files changed, 40 insertions(+)
 
 diff --git a/arch/x86/entry/entry64.c b/arch/x86/entry/entry64.c
-index 48fd3199f00b..06f7476d78b4 100644
+index 06f7476d78b4..8e1474ece7f9 100644
 --- a/arch/x86/entry/entry64.c
 +++ b/arch/x86/entry/entry64.c
-@@ -237,3 +237,54 @@ static __always_inline unsigned long get_percpu_base(void)
- 	return pcpu_unit_offsets;
+@@ -288,3 +288,40 @@ static __always_inline unsigned long ist_switch_to_kernel_gsbase(void)
+ 	/* SWAPGS required on exit */
+ 	return 0;
  }
- #endif
 +
 +/*
-+ * Handle GSBASE depends on the availability of FSGSBASE.
++ * Switch and save CR3 in *@cr3 if PTI enabled. Return GSBASE related
++ * information in *@gsbase depending on the availability of the FSGSBASE
++ * instructions:
 + *
-+ * Without FSGSBASE the kernel enforces that negative GSBASE
-+ * values indicate kernel GSBASE. With FSGSBASE no assumptions
-+ * can be made about the GSBASE value when entering from user
-+ * space.
++ * FSGSBASE	*@gsbase
++ *     N        0 -> SWAPGS on exit
++ *              1 -> no SWAPGS on exit
++ *
++ *     Y        GSBASE value at entry, must be restored in ist_paranoid_exit
 + */
-+static __always_inline unsigned long ist_switch_to_kernel_gsbase(void)
++__visible __entry_text
++void ist_paranoid_entry(unsigned long *cr3, unsigned long *gsbase)
 +{
-+	unsigned long gsbase;
-+
-+	if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
-+		/*
-+		 * Read the current GSBASE for return.
-+		 * Retrieve and set the current CPUs kernel GSBASE.
-+		 *
-+		 * The unconditional write to GS base below ensures that
-+		 * no subsequent loads based on a mispredicted GS base can
-+		 * happen, therefore no LFENCE is needed here.
-+		 */
-+		gsbase = rdgsbase();
-+		wrgsbase(get_percpu_base());
-+		return gsbase;
-+	}
-+
-+	gsbase = __rdmsr(MSR_GS_BASE);
-+
 +	/*
-+	 * The kernel-enforced convention is a negative GSBASE indicates
-+	 * a kernel value. No SWAPGS needed on entry and exit.
-+	 */
-+	if ((long)gsbase < 0) {
-+		fence_swapgs_kernel_entry();
-+		/* no SWAPGS required on exit */
-+		return 1;
-+	}
-+
-+	/*
-+	 * SWAPGS is needed.
++	 * Always stash CR3 in *@cr3.  This value will be restored,
++	 * verbatim, at exit.  Needed if ist_paranoid_entry interrupted
++	 * another entry that already switched to the user CR3 value
++	 * but has not yet returned to userspace.
 +	 *
-+	 * The above ist_switch_to_kernel_cr3() doesn't do an unconditional
-+	 * CR3 write, even in the PTI case.  So do an lfence to prevent GS
-+	 * speculation, regardless of whether PTI is enabled.
++	 * This is also why CS (stashed in the "iret frame" by the
++	 * hardware at entry) can not be used: this may be a return
++	 * to kernel code, but with a user CR3 value.
++	 *
++	 * Switching CR3 does not depend on kernel GSBASE so it can
++	 * be done before switching to the kernel GSBASE. This is
++	 * required for FSGSBASE because the kernel GSBASE has to
++	 * be retrieved from a kernel internal table.
 +	 */
-+	kernel_entry_swapgs_and_fence();
++	*cr3 = ist_switch_to_kernel_cr3();
 +
-+	/* SWAPGS required on exit */
-+	return 0;
++	barrier();
++
++	/* Handle GSBASE, store the return value in *@gsbase for exit. */
++	*gsbase = ist_switch_to_kernel_gsbase();
 +}
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index 49fabc3e3f0d..f6efa21ec242 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -307,6 +307,9 @@ static __always_inline void __##func(struct pt_regs *regs)
+ 	DECLARE_IDTENTRY(vector, func)
+ 
+ #ifdef CONFIG_X86_64
++__visible __entry_text
++void ist_paranoid_entry(unsigned long *cr3, unsigned long *gsbase);
++
+ /**
+  * DECLARE_IDTENTRY_IST - Declare functions for IST handling IDT entry points
+  * @vector:	Vector number (ignored for C)
 -- 
 2.19.1.6.gb485710b
 
