@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C1642D00A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3721B42D009
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 03:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbhJNBuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 21:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
+        id S229834AbhJNBue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 21:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbhJNBuv (ORCPT
+        with ESMTP id S229496AbhJNBud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 21:50:51 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F009C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:48:47 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id t2so14365674wrb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:48:47 -0700 (PDT)
+        Wed, 13 Oct 2021 21:50:33 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B87C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:48:29 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id x130so4086914pfd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 18:48:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kVH0kaeOj57wkHN4yL00qa3HiDy3zcOXZu80Mp+X5lE=;
-        b=cdkMepIprdbSBOTb+X+Y/58dYEd6l6HL1vRJSBQ8lPCFcELewmNjvsTADlYAmQsZUI
-         9/3bb39OvnZpy/AtK6/BQDhoO1b+G0ogFzcpGf5ZfySk4eduB9ox25trwxKRkh7v2pXG
-         NR6gNcVKkv1BRKp7P3DdJL5KaBqO3DMVjrqg/qnGKITbUs++XEQknErhhuH1rnKz5/4d
-         7oAzkVvi7tpO7DdASj71jeYyCs/L3N3vDcW8tFOVJJhVXBBMxFdwq59XluioyZd/uiBl
-         xutsWAufc3uLWxn+S8c9bRVrD4K0Phekr3r+l84a60bVXVaHCLC68Y79ysOazBpuUCrs
-         Nlsw==
+        d=chromium.org; s=google;
+        h=date:from:to:subject:user-agent:in-reply-to:references:message-id
+         :mime-version:content-transfer-encoding;
+        bh=G1Xpwb6SXyk5zbi6Fvi2E0LkOB6JBHLvcrsIpB5EC3g=;
+        b=PcrvY23euf8D5/i4CMCOuiPO8FAKwfmfwcpHZS1+juqDxXXuqna4otkgpmHvXR8Y+2
+         R/KQ189IJNjEPWnDtRJ6vdS1hTwi5jzN8F4751Z5IyeJWMgInm4EHhoxDVSvZUKsV8hZ
+         46bitD+AWsF3WigZlnAX0S+95uogXU83gnSxk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kVH0kaeOj57wkHN4yL00qa3HiDy3zcOXZu80Mp+X5lE=;
-        b=6JH1ZZ47t1v5cyFrHsiq2sTLmaEG/iWsvCX5quUMTA/cv+rND0X4Ti1Fus8nZ/kyhG
-         VzoW6U5zLsMhSG3RsRnVpx7ziABwOkN/LNamaRf0Pu098P3IMSYvGEOhXjVQ4J8IaNl4
-         fJSdeHkKCtGErJSdyQpjnPw6oNHJS/3eAtjQH7wgdYz4XzFDJ71LXDdYEDU13HnWA2Nb
-         Wq92hVwTIjR0eEC7rLk2SeZyOlc5Au7/+man0peV/7pi8IJ6nuvJbxTW9sEjWzxaTDpZ
-         aSRdJpPz2x2zH3XqObuPvk7vjqMitzFtkp4USNgFY8iVzFYsTPEA/0uGP5O/F4Hg10eR
-         JoFQ==
-X-Gm-Message-State: AOAM530NWp0wcFNDuMW75hW8qkNILwSsDA41lTiCiu2kLIvk3npr3bq9
-        s2D1R1N9ljvbOfWSimns+Fuog6ZXVcPo+ELNbIU=
-X-Google-Smtp-Source: ABdhPJz39cwF0NRKjLyHpiazuYvSy5bPmCZdqP1lwiDuwJ+IRXRXpeHRqGtvN6OEoVxqLtwOMb8enstJD0Ptv95l3z0=
-X-Received: by 2002:a05:6000:15c6:: with SMTP id y6mr3174423wry.210.1634176125813;
- Wed, 13 Oct 2021 18:48:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:user-agent:in-reply-to
+         :references:message-id:mime-version:content-transfer-encoding;
+        bh=G1Xpwb6SXyk5zbi6Fvi2E0LkOB6JBHLvcrsIpB5EC3g=;
+        b=yTixFvv/l97zPWwm2eSdcx9fe2RbqrTaG2zr3ORtttj1W0PTAPP754b2W641vZu+9h
+         V62kzu/qka3UmFuPcXCEmjUS4xjOK++8Z8X9G9SUMXdnZuWlwoxdMckJnLqISSg7Bqij
+         grRFeECjYs5EOetBH0aFuPZRrDeZsaV2nL6gM+PVjyZMTvFss6/smyWDFK7qlDAl5Yyf
+         5r6XpLd9lQ3+ajhWJa6lWpW8vIhPFvGHtStoNw7M7Ssni1VQ8r2qWXtSSwxYYueH+YAd
+         IPUbUevOK3PUuoAnCVHEByJ3vuyJK4/Be8Yf0qn3CFK/omIgweSl8yx5Tlnxx703HpPW
+         lB2w==
+X-Gm-Message-State: AOAM531FUZ/JaieeQJybM/6zimYBuDLTx/sCZQOd81VnV3W3HjFBg+Rf
+        nIKs+HhEhuXxe1LLmkN+gd1bE4Mdz3JRQg==
+X-Google-Smtp-Source: ABdhPJwMHQ3LniH7fm2Z/mg46eDU77wH2wgb9y+Wuze/dN/pJIVTQ8UH956qdAEsARS5UII7aAWIOw==
+X-Received: by 2002:a05:6a00:a0a:b0:44c:52c9:bf25 with SMTP id p10-20020a056a000a0a00b0044c52c9bf25mr2513803pfh.24.1634176108743;
+        Wed, 13 Oct 2021 18:48:28 -0700 (PDT)
+Received: from [127.0.0.1] (173-164-112-133-Oregon.hfc.comcastbusiness.net. [173.164.112.133])
+        by smtp.gmail.com with ESMTPSA id u24sm669808pfm.85.2021.10.13.18.48.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Oct 2021 18:48:28 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 18:48:26 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Rob Landley <rob@landley.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Subject: Re: The one and only "permission denied" in find /sys
+User-Agent: K-9 Mail for Android
+In-Reply-To: <cd81a57e-e2c1-03c5-d0da-f898babf92e7@landley.net>
+References: <cd81a57e-e2c1-03c5-d0da-f898babf92e7@landley.net>
+Message-ID: <7042EFC5-DA90-4B9A-951A-036889FD89CA@chromium.org>
 MIME-Version: 1.0
-References: <20211013102346.179642-1-laoar.shao@gmail.com> <20211013102346.179642-3-laoar.shao@gmail.com>
- <20211013101921.0843aaf0@gandalf.local.home>
-In-Reply-To: <20211013101921.0843aaf0@gandalf.local.home>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 14 Oct 2021 09:48:09 +0800
-Message-ID: <CALOAHbCt+rLiPE4_zZO_f5sKybKwYntqupx_L9V_J+yByoFvOw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] connector: use __get_task_comm in proc_comm_connector
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        christian@brauner.io, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vladimir Zapolskiy <vzapolskiy@gmail.com>,
-        David Howells <dhowells@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 10:19 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 13 Oct 2021 10:23:43 +0000
-> Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> > --- a/drivers/connector/cn_proc.c
-> > +++ b/drivers/connector/cn_proc.c
-> > @@ -230,7 +230,10 @@ void proc_comm_connector(struct task_struct *task)
-> >       ev->what = PROC_EVENT_COMM;
-> >       ev->event_data.comm.process_pid  = task->pid;
-> >       ev->event_data.comm.process_tgid = task->tgid;
-> > -     get_task_comm(ev->event_data.comm.comm, task);
-> > +
-> > +     /* This may get truncated. */
-> > +     __get_task_comm(ev->event_data.comm.comm,
-> > +                     sizeof(ev->event_data.comm.comm), task);
-> >
-> >       memcpy(&msg->id, &cn_proc_event_id, sizeof(msg->id));
-> >       msg->ack = 0; /* not used */
->
-> __get_task_comm() uses strncpy() which my understanding is, does not add
-> the nul terminating byte when truncating. Which changes the functionality
-> here. As all task comms have a terminating byte, the old method would copy
-> that and include it. This won't add the terminating byte if the buffer is
-> smaller than the comm, and that might cause issues.
->
 
-Right, that is a problem.
-It seems that we should add a new helper get_task_comm_may_truncated().
 
--- 
-Thanks
-Yafang
+On October 13, 2021 1:12:16 PM PDT, Rob Landley <rob@landley=2Enet> wrote:
+>There is exactly one directory in the whole of sysfs that a normal user c=
+an't
+>read (at least on my stock devuan laptop):
+>
+>  $ find /sys -name potato
+>  find: =E2=80=98/sys/fs/pstore=E2=80=99: Permission denied
+>
+>It's the "pstore" filesystem, it was explicitly broken by commit d7caa336=
+87ce,
+>and the commit seems to say this was to fix an issue that didn't exist ye=
+t but
+>might someday=2E
+
+Right, so, the problem did certainly exist: there was a capability check f=
+or opening the files, which made it difficult for pstore collector tools to=
+ run with sane least privileges=2E Adjusting the root directory was the sim=
+plest way to keep the files secure by default, and allow a system owner the=
+ ability to delegate collector permissions to a user or group via just a ch=
+mod on the root directory=2E
+
+>Did whatever issue it was concerned about ever actually start happening? =
+Why did
+>you not change the permissions on the files _in_ the directory so they we=
+ren't
+>world readable instead? Should /dev/shm stop being world ls-able as well?
+
+Making the per-file permissions configurable at runtime was more complex f=
+or little additional gain=2E
+
+/dev/shm has the benefit of having an existing permission model for each c=
+reated file=2E
+
+I wouldn't be opposed to a mount option to specify the default file owner/=
+group, but it makes user space plumbing more difficult (i=2Ee=2E last I che=
+cked, stuff like systemd tends to just mount kernel filesystems without opt=
+ions)=2E
+
+-Kees
+
+--=20
+Kees Cook
