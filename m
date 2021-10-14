@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D898042E432
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB4E42E433
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Oct 2021 00:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbhJNWd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 18:33:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:32774 "EHLO foss.arm.com"
+        id S234272AbhJNWeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 18:34:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:60994 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234235AbhJNWdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 18:33:51 -0400
+        id S234251AbhJNWdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 18:33:53 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4844AD6E;
-        Thu, 14 Oct 2021 15:31:46 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5AE214BF;
+        Thu, 14 Oct 2021 15:31:47 -0700 (PDT)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D2ABD3F694;
-        Thu, 14 Oct 2021 15:31:44 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7A9C53F694;
+        Thu, 14 Oct 2021 15:31:46 -0700 (PDT)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     will@kernel.org, mathieu.poirier@linaro.org
 Cc:     catalin.marinas@arm.com, anshuman.khandual@arm.com,
@@ -24,9 +24,9 @@ Cc:     catalin.marinas@arm.com, anshuman.khandual@arm.com,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH v5 06/15] coresight: trbe: Add a helper to pad a given buffer area
-Date:   Thu, 14 Oct 2021 23:31:16 +0100
-Message-Id: <20211014223125.2605031-7-suzuki.poulose@arm.com>
+Subject: [PATCH v5 07/15] coresight: trbe: Decouple buffer base from the hardware base
+Date:   Thu, 14 Oct 2021 23:31:17 +0100
+Message-Id: <20211014223125.2605031-8-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20211014223125.2605031-1-suzuki.poulose@arm.com>
 References: <20211014223125.2605031-1-suzuki.poulose@arm.com>
@@ -36,45 +36,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor the helper to pad a given AUX buffer area to allow
-"filling" ignore packets, without moving any handle pointers.
-This will be useful in working around errata, where we may
-have to fill the buffer after a session.
+We always set the TRBBASER_EL1 to the base of the virtual ring
+buffer. We are about to change this for working around an erratum.
+So, in preparation to that, allow the driver to choose a different
+base for the TRBBASER_EL1 (which is within the buffer range).
 
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
 Cc: Leo Yan <leo.yan@linaro.org>
 Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- drivers/hwtracing/coresight/coresight-trbe.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/hwtracing/coresight/coresight-trbe.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-index 5902ef41bfb8..3de03136285f 100644
+index 3de03136285f..58796ff425a4 100644
 --- a/drivers/hwtracing/coresight/coresight-trbe.c
 +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -199,12 +199,18 @@ static void trbe_stop_and_truncate_event(struct perf_output_handle *handle)
-  * consumed from the user space. The enabled TRBE buffer area is a moving subset of
-  * the allocated perf auxiliary buffer.
-  */
-+
-+static void __trbe_pad_buf(struct trbe_buf *buf, u64 offset, int len)
-+{
-+	memset((void *)buf->trbe_base + offset, ETE_IGNORE_PACKET, len);
-+}
-+
- static void trbe_pad_buf(struct perf_output_handle *handle, int len)
- {
- 	struct trbe_buf *buf = etm_perf_sink_config(handle);
- 	u64 head = PERF_IDX2OFF(handle->head, buf);
+@@ -57,6 +57,8 @@ struct trbe_buf {
+ 	 * trbe_limit sibling pointers.
+ 	 */
+ 	unsigned long trbe_base;
++	/* The base programmed into the TRBE */
++	unsigned long trbe_hw_base;
+ 	unsigned long trbe_limit;
+ 	unsigned long trbe_write;
+ 	int nr_pages;
+@@ -470,12 +472,13 @@ static void set_trbe_limit_pointer_enabled(unsigned long addr)
  
--	memset((void *)buf->trbe_base + head, ETE_IGNORE_PACKET, len);
-+	__trbe_pad_buf(buf, head, len);
- 	if (!buf->snapshot)
- 		perf_aux_output_skip(handle, len);
- }
+ static void trbe_enable_hw(struct trbe_buf *buf)
+ {
+-	WARN_ON(buf->trbe_write < buf->trbe_base);
++	WARN_ON(buf->trbe_hw_base < buf->trbe_base);
++	WARN_ON(buf->trbe_write < buf->trbe_hw_base);
+ 	WARN_ON(buf->trbe_write >= buf->trbe_limit);
+ 	set_trbe_disabled();
+ 	isb();
+ 	clr_trbe_status();
+-	set_trbe_base_pointer(buf->trbe_base);
++	set_trbe_base_pointer(buf->trbe_hw_base);
+ 	set_trbe_write_pointer(buf->trbe_write);
+ 
+ 	/*
+@@ -520,7 +523,12 @@ static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
+ 	else
+ 		write = get_trbe_write_pointer();
+ 
+-	end_off = write - get_trbe_base_pointer();
++	/*
++	 * TRBE may use a different base address than the base
++	 * of the ring buffer. Thus use the beginning of the ring
++	 * buffer to compute the offsets.
++	 */
++	end_off = write - buf->trbe_base;
+ 	start_off = PERF_IDX2OFF(handle->head, buf);
+ 
+ 	if (WARN_ON_ONCE(end_off < start_off))
+@@ -678,6 +686,8 @@ static int __arm_trbe_enable(struct trbe_buf *buf,
+ 		trbe_stop_and_truncate_event(handle);
+ 		return -ENOSPC;
+ 	}
++	/* Set the base of the TRBE to the buffer base */
++	buf->trbe_hw_base = buf->trbe_base;
+ 	*this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
+ 	trbe_enable_hw(buf);
+ 	return 0;
+@@ -771,7 +781,7 @@ static bool is_perf_trbe(struct perf_output_handle *handle)
+ 	struct trbe_drvdata *drvdata = cpudata->drvdata;
+ 	int cpu = smp_processor_id();
+ 
+-	WARN_ON(buf->trbe_base != get_trbe_base_pointer());
++	WARN_ON(buf->trbe_hw_base != get_trbe_base_pointer());
+ 	WARN_ON(buf->trbe_limit != get_trbe_limit_pointer());
+ 
+ 	if (cpudata->mode != CS_MODE_PERF)
 -- 
 2.25.4
 
