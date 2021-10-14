@@ -2,113 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E18942D304
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5599042D307
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhJNG4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S229970AbhJNG4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 02:56:52 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:45655 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229619AbhJNG4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Oct 2021 02:56:45 -0400
-Received: from out2.migadu.com ([188.165.223.204]:52962 "EHLO out2.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229530AbhJNG4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 02:56:44 -0400
-Date:   Thu, 14 Oct 2021 15:54:32 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1634194478;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N/aD5fWtoSotnmi+BFKZ86QWaol2dougMlY39ccGabg=;
-        b=HRDs9CMbOaq5Jz299llyEDwwLkvDBBltsjUdXbjpqAfB13u56yrVQq2rx15S0W8fZ2bsFM
-        BFuf8ueb0kdZNa1VIVOWCYefpxNDVyAGUbhMmPXwK+XzeTt5DqhCXFbbTHurRt4Z8Zu33v
-        T8Z4oeCCl4NOzOUEzsrS8lvN2bYtztU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Yang Shi <shy828301@gmail.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-Message-ID: <20211014065432.GB2017714@u2004>
-References: <20210930215311.240774-3-shy828301@gmail.com>
- <YV4Dz3y4NXhtqd6V@t490s>
- <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
- <CAHbLzkqm_Os8TLXgbkL-oxQVsQqRbtmjdMdx0KxNke8mUF1mWA@mail.gmail.com>
- <YWTc/n4r6CJdvPpt@t490s>
- <YWTobPkBc3TDtMGd@t490s>
- <CAHbLzkrOsNygu5x8vbMHedv+P3dEqOxOC6=O6ACSm1qKzmoCng@mail.gmail.com>
- <YWYHukJIo8Ol2sHN@t490s>
- <CAHbLzkp3UXKs_NP9XD_ws=CSSFzUPk7jRxj0K=gvOqoi+GotmA@mail.gmail.com>
- <YWZMDTwCCZWX5/sQ@t490s>
+Received: from [192.168.0.2] (ip5f5ae921.dynamic.kabel-deutschland.de [95.90.233.33])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id EF74161E64760;
+        Thu, 14 Oct 2021 08:54:39 +0200 (CEST)
+Subject: Re: [PATCH 6/6] media: aspeed: richer debugfs
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+References: <20211014034819.2283-1-jammy_huang@aspeedtech.com>
+ <20211014034819.2283-7-jammy_huang@aspeedtech.com>
+Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, linux-media@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <f7d3900f-9e1c-1c2b-f14a-a3828852eadc@molgen.mpg.de>
+Date:   Thu, 14 Oct 2021 08:54:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YWZMDTwCCZWX5/sQ@t490s>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
+In-Reply-To: <20211014034819.2283-7-jammy_huang@aspeedtech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:01:33AM +0800, Peter Xu wrote:
-> On Tue, Oct 12, 2021 at 07:48:39PM -0700, Yang Shi wrote:
-> > On Tue, Oct 12, 2021 at 3:10 PM Peter Xu <peterx@redhat.com> wrote:
-> > >
-> > > On Tue, Oct 12, 2021 at 11:02:09AM -0700, Yang Shi wrote:
-> > > > On Mon, Oct 11, 2021 at 6:44 PM Peter Xu <peterx@redhat.com> wrote:
-> > > > >
-> > > > > On Mon, Oct 11, 2021 at 08:55:26PM -0400, Peter Xu wrote:
-> > > > > > Another thing is I noticed soft_offline_in_use_page() will still ignore file
-> > > > > > backed split.  I'm not sure whether it means we'd better also handle that case
-> > > > > > as well, so shmem thp can be split there too?
-> > > > >
-> > > > > Please ignore this paragraph - I somehow read "!PageHuge(page)" as
-> > > > > "PageAnon(page)"...  So I think patch 5 handles soft offline too.
-> > > >
-> > > > Yes, exactly. And even though the split is failed (or file THP didn't
-> > > > get split before patch 5/5), soft offline would just return -EBUSY
-> > > > instead of calling __soft_offline_page->page_handle_poison(). So
-> > > > page_handle_poison() should not see THP at all.
-> > >
-> > > I see, so I'm trying to summarize myself on what I see now with the new logic..
-> > >
-> > > I think the offline code handles hwpoison differently as it sets PageHWPoison
-> > > at the end of the process, IOW if anything failed during the offline process
-> > > the hwpoison bit is not set.
-> > >
-> > > That's different from how the memory failure path is handling this, as in that
-> > > case the hwpoison bit on the subpage is set firstly, e.g. before split thp.  I
-> > > believe that's also why memory failure requires the extra sub-page-hwpoison bit
-> > > while offline code shouldn't need to: because for soft offline split happens
-> > > before setting hwpoison so we just won't ever see a "poisoned file thp", while
-> > > for memory failure it could happen, and the sub-page-hwpoison will be a temp
-> > > bit anyway only exist for a very short period right after we set hwpoison on
-> > > the small page but before we split the thp.
-> > >
-> > > Am I right above?
-> > 
-> > Yeah, you are right. I noticed this too, only successfully migrated
-> > page is marked as hwpoison. But TBH I'm not sure why it does this way.
-> 
-> My wild guess is that unlike memory failures, soft offline is best-effort. Say,
-> the data on the page is still consistent, so even if offline failed for some
-> reason we shouldn't stop the program from execution.  That's not true for
-> memory failures via MCEs, afaict, as the execution could read/write wrong data
-> and that'll be a serious mistake, so we set hwpoison 1st there first before
-> doing anything else, making sure "this page is broken" message delivered and
-> user app won't run with risk.
-> 
-> But yeah it'll be great if Naoya could help confirm that.
+Dear Jammy,
 
-Yes, these descriptions are totally correct, how PG_hwpoison flag is set
-is different between hwpoison/soft-offline mechanisms from the beginning.
 
-Thanks,
-Naoya Horiguchi
+Am 14.10.21 um 05:48 schrieb Jammy Huang:
+> updated as below:
+> 
+> Caputre:
+
+Capture
+
+>    Mode                : Direct fetch
+>    VGA bpp mode        : 32
+>    Signal              : Unlock
+>    Width               : 1920
+>    Height              : 1080
+>    FRC                 : 30
+> 
+> Compression:
+>    Format              : JPEG
+>    Subsampling         : 444
+>    Quality             : 0
+>    HQ Mode             : N/A
+>    HQ Quality          : 0
+>    Mode                : N/A
+> 
+> Performance:
+>    Frame#              : 0
+>    Frame Duration(ms)  :
+>      Now               : 0
+>      Min               : 0
+>      Max               : 0
+>    FPS                 : 0
+
+Do you have output with non-zero values? ;-)
+
+On what device did you test this?
+
+> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+> ---
+>   drivers/media/platform/aspeed-video.c | 41 +++++++++++++++++++++++++--
+>   1 file changed, 38 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+> index e1031fd09ac6..f2e5c49ee906 100644
+> --- a/drivers/media/platform/aspeed-video.c
+> +++ b/drivers/media/platform/aspeed-video.c
+> @@ -464,6 +464,9 @@ static const struct v4l2_dv_timings_cap aspeed_video_timings_cap = {
+>   	},
+>   };
+>   
+> +static const char * const compress_mode_str[] = {"DCT Only",
+> +	"DCT VQ mix 2-color", "DCT VQ mix 4-color"};
+> +
+>   static unsigned int debug;
+>   
+>   static void aspeed_video_init_jpeg_table(u32 *table, bool yuv420)
+> @@ -1077,8 +1080,6 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
+>   
+>   static void aspeed_video_update_regs(struct aspeed_video *video)
+>   {
+> -	static const char * const compress_mode_str[] = {"DCT Only",
+> -		"DCT VQ mix 2-color", "DCT VQ mix 4-color"};
+>   	u32 comp_ctrl =	FIELD_PREP(VE_COMP_CTRL_DCT_LUM, video->jpeg_quality) |
+>   		FIELD_PREP(VE_COMP_CTRL_DCT_CHR, video->jpeg_quality | 0x10) |
+>   		FIELD_PREP(VE_COMP_CTRL_EN_HQ, video->hq_mode) |
+> @@ -1795,9 +1796,29 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
+>   static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
+>   {
+>   	struct aspeed_video *v = s->private;
+> +	u32 val08;
+
+Why does `08` refer to?
+
+>   
+>   	seq_puts(s, "\n");
+>   
+> +	val08 = aspeed_video_read(v, VE_CTRL);
+> +	seq_puts(s, "Caputre:\n");
+> +	if (FIELD_GET(VE_CTRL_DIRECT_FETCH, val08)) {
+> +		seq_printf(s, "  %-20s:\tDirect fetch\n", "Mode");
+> +		seq_printf(s, "  %-20s:\t%s\n", "VGA bpp mode",
+> +			   FIELD_GET(VE_CTRL_INT_DE, val08) ? "16" : "32");
+> +	} else {
+> +		seq_printf(s, "  %-20s:\tSync\n", "Mode");
+> +		seq_printf(s, "  %-20s:\t%s\n", "Video source",
+> +			   FIELD_GET(VE_CTRL_SOURCE, val08) ?
+> +			   "external" : "internal");
+> +		seq_printf(s, "  %-20s:\t%s\n", "DE source",
+> +			   FIELD_GET(VE_CTRL_INT_DE, val08) ?
+> +			   "internal" : "external");
+> +		seq_printf(s, "  %-20s:\t%s\n", "Cursor overlay",
+> +			   FIELD_GET(VE_CTRL_AUTO_OR_CURSOR, val08) ?
+> +			   "Without" : "With");
+> +	}
+> +
+>   	seq_printf(s, "  %-20s:\t%s\n", "Signal",
+>   		   v->v4l2_input_status ? "Unlock" : "Lock");
+>   	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
+> @@ -1806,6 +1827,21 @@ static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
+>   
+>   	seq_puts(s, "\n");
+>   
+> +	seq_puts(s, "Compression:\n");
+> +	seq_printf(s, "  %-20s:\t%s\n", "Format",
+> +		   v->partial_jpeg ? "Aspeed" : "JPEG");
+> +	seq_printf(s, "  %-20s:\t%s\n", "Subsampling",
+> +		   v->yuv420 ? "420" : "444");
+> +	seq_printf(s, "  %-20s:\t%d\n", "Quality", v->jpeg_quality);
+> +	seq_printf(s, "  %-20s:\t%s\n", "HQ Mode",
+> +		   v->partial_jpeg ? (v->hq_mode ? "on" : "off") : "N/A");
+> +	seq_printf(s, "  %-20s:\t%d\n", "HQ Quality", v->jpeg_hq_quality);
+> +	seq_printf(s, "  %-20s:\t%s\n", "Mode",
+> +		   v->partial_jpeg ? compress_mode_str[v->compression_mode]
+> +				   : "N/A");
+> +
+> +	seq_puts(s, "\n");
+> +
+>   	seq_puts(s, "Performance:\n");
+>   	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
+>   	seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
+
+Remove the colon, and add a space before (?
+
+> @@ -1814,7 +1850,6 @@ static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
+>   	seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
+>   	seq_printf(s, "  %-20s:\t%d\n", "FPS", 1000/(v->perf.totaltime/v->sequence));
+>   
+> -
+>   	return 0;
+>   }
+
+
+Kind regards,
+
+Paul
