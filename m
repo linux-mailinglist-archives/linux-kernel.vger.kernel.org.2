@@ -2,912 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0E442DE97
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB6742DEA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhJNPuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhJNPuC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:50:02 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E13AC061570;
-        Thu, 14 Oct 2021 08:47:57 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id y3so21016990wrl.1;
-        Thu, 14 Oct 2021 08:47:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=i97+9ZT0YaSaUId1ne3kefdKDWl/a5QiVfMkhLPeXPs=;
-        b=fq1fz/+I1TsHeSBIhGRwQ+NAYPISd1HvNJsAJ1t3md+lesJTJdhEPuCdonzpXJl96O
-         mVMU6PmtcStO8E+2cVYeagrunJgb136sBzyWHicHvPN2wjsyu9yKPWZBx/GAHYClo76T
-         QusADRSS0O70pktBVCff46VUArjeVSOkpC3Sfos/S1QKAXoFqSak4Uf+G7eaFicmyhUA
-         kUaAPdLNdzhQJZ8AW8pj8ZklrEovCdqf7qF9bZp8GRSnTv3nM2D2/nRMiGMFuFt6qZYb
-         lgBv2yBrVEORaA+ZF5WZzXXhs5Ks25HBxhvA2cqYgZX1ZWJc/Ja0uQpV4zfF6HOcbrVy
-         FSMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=i97+9ZT0YaSaUId1ne3kefdKDWl/a5QiVfMkhLPeXPs=;
-        b=04//fOga8/AqKzC2i6IBWK+5aU/X5y5RZUHf+tneb9gizKHmSPi+ZfAkPIBDlcBco6
-         ODtjfSFvT2n+2xmxMa2n/+9OmQkqej3RQSNpy6Bwj1nrs9zvivAgGZGroCjpLoWcNFqJ
-         QiQ/06aLj6VijB1vF9acxwD2D+xhNSJYSa1+OD6J3Vh9OeDr0x+n3RNm6Y7+P0cYZwu/
-         l7lIILaPGPc441kiRFBCRTusqnZWO/Y6pRupZ6ZalxTwv7eaY0dv6c6kMxiEUoCru2IO
-         tI8miTSzORrsnw5NNOnrf3ee6IVFV+fGV2FhZtMOFWFELioLsldVDGusTbKlwVMor6fW
-         +Z9A==
-X-Gm-Message-State: AOAM530FlXsxPvzRDYbbWWZhwBeZWxHPJbmZLw5NDforZPlBMaaLPMoY
-        W8yFdEdsK/0kjhpGsIlO/bc=
-X-Google-Smtp-Source: ABdhPJxWDuX3PBecSaTOgxKItXwR9knv+vlAeakvp/2tAli8Vepwtv3AtHKqMLze0AwOEYyOpoIJIQ==
-X-Received: by 2002:adf:bb93:: with SMTP id q19mr7782154wrg.423.1634226475427;
-        Thu, 14 Oct 2021 08:47:55 -0700 (PDT)
-Received: from ?IPV6:2620:113:80c0:8000:c::779? (nat0.nue.suse.com. [2001:67c:2178:4000::1111])
-        by smtp.gmail.com with ESMTPSA id n12sm2695838wms.27.2021.10.14.08.47.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 08:47:55 -0700 (PDT)
-Message-ID: <b7272dff-4928-e01c-4acd-040c941f263f@gmail.com>
-Date:   Thu, 14 Oct 2021 17:47:54 +0200
+        id S232390AbhJNPvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:51:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhJNPvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:51:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20C1061056;
+        Thu, 14 Oct 2021 15:49:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634226548;
+        bh=a3JcxM71CVB05VvViVHQVBOD6Bz6eNuIKXi1gKlyjjg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MwTdX/IgGRWJ//0GUeNWVRl+i9DLeNaIKn2uFD+EzaiCJiEpiyPMR3JORWiF+fpiR
+         ZDCOt+71+7J03w+bmjJNO8y9Iw6c+jT5+YxiiXTH9X06KqlTiNRclL7vRq5v9ppYaH
+         JJUx7jwD3FqAy0+MOdVlYsW6ZXbiBCXkNnELlgZXkMl+N5xPert5E5oJDJK+TOT5r3
+         iAKX9DpMamZapJMJ5ys/28rtSPSQyXEZCOeBN8iH+NosFMGw1399BL84IBxIFUExAz
+         HzVForcPMsxrSz9IK0+PSp/u3Cln/+HyhRyhxe1wAHJ3AIDXD0C1bUS32lA4FZNPae
+         gNFBRTbffxKrw==
+Date:   Thu, 14 Oct 2021 10:49:06 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Benoit =?iso-8859-1?Q?Gr=E9goire?= <benoitg@coeus.ca>,
+        Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH v3] x86/PCI: Ignore E820 reservations for bridge windows
+ on newer systems
+Message-ID: <20211014154906.GA2029160@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH v4 3/5] clk: mediatek: add mt7986 clock support
-Content-Language: en-US
-To:     Sam Shih <sam.shih@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        Ikjoon Jang <ikjn@chromium.org>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org
-Cc:     John Crispin <john@phrozen.org>, Ryder Lee <Ryder.Lee@mediatek.com>
-References: <20211014075620.17563-1-sam.shih@mediatek.com>
- <20211014075620.17563-4-sam.shih@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-In-Reply-To: <20211014075620.17563-4-sam.shih@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211014110357.17957-1-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 14/10/2021 09:56, Sam Shih wrote:
-> Add MT7986 clock support, include topckgen, apmixedsys,
-> infracfg, and ethernet subsystem clocks.
+On Thu, Oct 14, 2021 at 01:03:57PM +0200, Hans de Goede wrote:
+> Some BIOS-es contain a bug where they add addresses which map to system RAM
+> in the PCI bridge memory window returned by the ACPI _CRS method, see
+> commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
+> space").
 > 
-> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+> To avoid this Linux by default excludes E820 reservations when allocating
+> addresses since 2010. Windows however ignores E820 reserved regions for PCI
+> mem allocations, so in hindsight Linux honoring them is a problem.
+
+This is a problem not because Windows ignores E820, but because the
+spec does not support excluding based on E820.  We should cite the
+spec and include the relevant text here.
+
+> Recently (2020) some systems have shown-up with E820 reservations which
+> cover the entire _CRS returned PCI bridge memory window, causing all
+> attempts to assign memory to PCI BARs which have not been setup by the
+> BIOS to fail. For example here are the relevant dmesg bits from a
+> Lenovo IdeaPad 3 15IIL 81WE:
+> 
+>  [mem 0x000000004bc50000-0x00000000cfffffff] reserved
+>  pci_bus 0000:00: root bus resource [mem 0x65400000-0xbfffffff window]
+> 
+> Ideally Linux would fully stop honoring E820 reservations for PCI mem
+> allocations, but then the old systems this was added for will regress.
+> Instead keep the old behavior for old systems, while ignoring the E820
+> reservations like Windows does for any systems from now on.
+> 
+> Old systems are defined here as BIOS year < 2018, this was chosen to
+> make sure that pci_use_e820 will not be set on the currently affected
+> systems, while at the same time also taking into account that the
+> systems for which the E820 checking was originally added may have
+> received BIOS updates for quite a while (esp. CVE related ones),
+> giving them a more recent BIOS year then 2010.
+> 
+> Also add pci=no_e820 and pci=use_e820 options to allow overriding
+> the BIOS year heuristic.
+> 
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206459
+> BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1868899
+> BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1871793
+> BugLink: https://bugs.launchpad.net/bugs/1878279
+> BugLink: https://bugs.launchpad.net/bugs/1931715
+> BugLink: https://bugs.launchpad.net/bugs/1932069
+> BugLink: https://bugs.launchpad.net/bugs/1921649
+> Cc: Benoit Grégoire <benoitg@coeus.ca>
+> Cc: Hui Wang <hui.wang@canonical.com>
+> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 > ---
-> v4: separate clock part into a single patch series
+> Changes in v3:
+> - Commit msg tweaks (drop dmesg timestamps, typo fix)
+> - Use "defined(CONFIG_...)" instead of "defined CONFIG_..."
+> - Add Mika's Reviewed-by
 > 
-> Original thread:
-> https://lore.kernel.org/lkml/20210914085137.31761-4-sam.shih@mediatek.com/
-> 
-> v2: applied the comment suggested by reviewers:
->      - splited basic clock driver to apmixed, topckgen, and infracfg
->      - removed 1:1 factor clock
->      - renamed factor clock for easier to understand
+> Changes in v2:
+> - Replace the per model DMI quirk approach with disabling E820 reservations
+>   checking for all systems with a BIOS year >= 2018
+> - Add documentation for the new kernel-parameters to
+>   Documentation/admin-guide/kernel-parameters.txt
 > ---
->   drivers/clk/mediatek/Kconfig               |  17 ++
->   drivers/clk/mediatek/Makefile              |   4 +
->   drivers/clk/mediatek/clk-mt7986-apmixed.c  |  78 +++++
->   drivers/clk/mediatek/clk-mt7986-eth.c      | 132 +++++++++
->   drivers/clk/mediatek/clk-mt7986-infracfg.c | 198 +++++++++++++
->   drivers/clk/mediatek/clk-mt7986-topckgen.c | 319 +++++++++++++++++++++
->   6 files changed, 748 insertions(+)
->   create mode 100644 drivers/clk/mediatek/clk-mt7986-apmixed.c
->   create mode 100644 drivers/clk/mediatek/clk-mt7986-eth.c
->   create mode 100644 drivers/clk/mediatek/clk-mt7986-infracfg.c
->   create mode 100644 drivers/clk/mediatek/clk-mt7986-topckgen.c
+> Other patches trying to address the same issue:
+> https://lore.kernel.org/r/20210624095324.34906-1-hui.wang@canonical.com
+> https://lore.kernel.org/r/20200617164734.84845-1-mika.westerberg@linux.intel.com
+> V1 patch:
+> https://lore.kernel.org/r/20211005150956.303707-1-hdegoede@redhat.com
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  6 ++++
+>  arch/x86/include/asm/pci_x86.h                | 10 +++++++
+>  arch/x86/kernel/resource.c                    |  4 +++
+>  arch/x86/pci/acpi.c                           | 29 +++++++++++++++++++
+>  arch/x86/pci/common.c                         |  6 ++++
+>  5 files changed, 55 insertions(+)
 > 
-> diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-> index 439b7c8d0d07..f5f0c0c1012a 100644
-> --- a/drivers/clk/mediatek/Kconfig
-> +++ b/drivers/clk/mediatek/Kconfig
-> @@ -344,6 +344,23 @@ config COMMON_CLK_MT7629_HIFSYS
->   	  This driver supports MediaTek MT7629 HIFSYS clocks providing
->   	  to PCI-E and USB.
->   
-> +config COMMON_CLK_MT7986
-> +	bool "Clock driver for MediaTek MT7986"
-> +	depends on ARCH_MEDIATEK || COMPILE_TEST
-> +	select COMMON_CLK_MEDIATEK
-> +	default ARCH_MEDIATEK
-> +	help
-> +	  This driver supports MediaTek MT7986 basic clocks and clocks
-> +	  required for various periperals found on MediaTek.
-> +
-> +config COMMON_CLK_MT7986_ETHSYS
-> +	bool "Clock driver for MediaTek MT7986 ETHSYS"
-> +	depends on COMMON_CLK_MT7986
-> +	default COMMON_CLK_MT7986
-> +	help
-> +	  This driver add support for clocks for Ethernet and SGMII
-> +	  required on MediaTek MT7986 SoC.
-> +
->   config COMMON_CLK_MT8135
->   	bool "Clock driver for MediaTek MT8135"
->   	depends on (ARCH_MEDIATEK && ARM) || COMPILE_TEST
-> diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-> index 15bc045f0b71..fec514413c98 100644
-> --- a/drivers/clk/mediatek/Makefile
-> +++ b/drivers/clk/mediatek/Makefile
-> @@ -46,6 +46,10 @@ obj-$(CONFIG_COMMON_CLK_MT7622_AUDSYS) += clk-mt7622-aud.o
->   obj-$(CONFIG_COMMON_CLK_MT7629) += clk-mt7629.o
->   obj-$(CONFIG_COMMON_CLK_MT7629_ETHSYS) += clk-mt7629-eth.o
->   obj-$(CONFIG_COMMON_CLK_MT7629_HIFSYS) += clk-mt7629-hif.o
-> +obj-$(CONFIG_COMMON_CLK_MT7986) += clk-mt7986-apmixed.o
-> +obj-$(CONFIG_COMMON_CLK_MT7986) += clk-mt7986-topckgen.o
-> +obj-$(CONFIG_COMMON_CLK_MT7986) += clk-mt7986-infracfg.o
-> +obj-$(CONFIG_COMMON_CLK_MT7986_ETHSYS) += clk-mt7986-eth.o
->   obj-$(CONFIG_COMMON_CLK_MT8135) += clk-mt8135.o
->   obj-$(CONFIG_COMMON_CLK_MT8167) += clk-mt8167.o
->   obj-$(CONFIG_COMMON_CLK_MT8167_AUDSYS) += clk-mt8167-aud.o
-> diff --git a/drivers/clk/mediatek/clk-mt7986-apmixed.c b/drivers/clk/mediatek/clk-mt7986-apmixed.c
-> new file mode 100644
-> index 000000000000..0925d61b55f2
-> --- /dev/null
-> +++ b/drivers/clk/mediatek/clk-mt7986-apmixed.c
-> @@ -0,0 +1,78 @@
-> +// SPDX-License-Identifier: GPL-1.0
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + * Author: Sam Shih <sam.shih@mediatek.com>
-> + * Author: Wenzhen Yu <wenzhen.yu@mediatek.com>
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include "clk-mtk.h"
-> +#include "clk-gate.h"
-> +#include "clk-mux.h"
-> +
-> +#include <dt-bindings/clock/mt7986-clk.h>
-> +#include <linux/clk.h>
-> +
-> +#define MT7986_PLL_FMAX (2500UL * MHZ)
-> +#define CON0_MT7986_RST_BAR BIT(27)
-> +
-> +#define PLL_xtal(_id, _name, _reg, _pwr_reg, _en_mask, _flags, _pcwbits,       \
-> +		 _pd_reg, _pd_shift, _tuner_reg, _pcw_reg, _pcw_shift,         \
-> +		 _div_table, _parent_name)                                     \
-> +	{                                                                      \
-> +		.id = _id, .name = _name, .reg = _reg, .pwr_reg = _pwr_reg,    \
-> +		.en_mask = _en_mask, .flags = _flags,                          \
-> +		.rst_bar_mask = CON0_MT7986_RST_BAR, .fmax = MT7986_PLL_FMAX,  \
-> +		.pcwbits = _pcwbits, .pd_reg = _pd_reg, .pd_shift = _pd_shift, \
-> +		.tuner_reg = _tuner_reg, .pcw_reg = _pcw_reg,                  \
-> +		.pcw_shift = _pcw_shift, .div_table = _div_table,              \
-> +		.parent_name = _parent_name,                                   \
-> +	}
-> +
-> +#define PLL(_id, _name, _reg, _pwr_reg, _en_mask, _flags, _pcwbits, _pd_reg,   \
-> +	    _pd_shift, _tuner_reg, _pcw_reg, _pcw_shift)                       \
-> +	PLL_xtal(_id, _name, _reg, _pwr_reg, _en_mask, _flags, _pcwbits,       \
-> +		 _pd_reg, _pd_shift, _tuner_reg, _pcw_reg, _pcw_shift, NULL,   \
-> +		 "clkxtal")
-> +
-> +static const struct mtk_pll_data plls[] = {
-> +	PLL(CLK_APMIXED_ARMPLL, "armpll", 0x0200, 0x020C, 0x00000001, 0, 32,
-> +	    0x0200, 4, 0, 0x0204, 0),
-> +	PLL(CLK_APMIXED_NET2PLL, "net2pll", 0x0210, 0x021C, 0x00000001, 0, 32,
-> +	    0x0210, 4, 0, 0x0214, 0),
-> +	PLL(CLK_APMIXED_MMPLL, "mmpll", 0x0220, 0x022C, 0x00000001, 0, 32,
-> +	    0x0220, 4, 0, 0x0224, 0),
-> +	PLL(CLK_APMIXED_SGMPLL, "sgmpll", 0x0230, 0x023c, 0x00000001, 0, 32,
-> +	    0x0230, 4, 0, 0x0234, 0),
-> +	PLL(CLK_APMIXED_WEDMCUPLL, "wedmcupll", 0x0240, 0x024c, 0x00000001, 0,
-> +	    32, 0x0240, 4, 0, 0x0244, 0),
-> +	PLL(CLK_APMIXED_NET1PLL, "net1pll", 0x0250, 0x025c, 0x00000001, 0, 32,
-> +	    0x0250, 4, 0, 0x0254, 0),
-> +	PLL(CLK_APMIXED_MPLL, "mpll", 0x0260, 0x0270, 0x00000001, 0, 32, 0x0260,
-> +	    4, 0, 0x0264, 0),
-> +	PLL(CLK_APMIXED_APLL2, "apll2", 0x0278, 0x0288, 0x00000001, 0, 32,
-> +	    0x0278, 4, 0, 0x027c, 0),
-> +};
-> +
-> +static void __init mtk_apmixedsys_init(struct device_node *node)
-> +{
-> +	struct clk_onecell_data *clk_data;
-> +	int r;
-> +
-> +	clk_data = mtk_alloc_clk_data(ARRAY_SIZE(plls));
-> +
-> +	mtk_clk_register_plls(node, plls, ARRAY_SIZE(plls), clk_data);
-> +
-> +	clk_prepare_enable(clk_data->clks[CLK_APMIXED_ARMPLL]);
-> +
-> +	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-> +	if (r)
-> +		pr_err("%s(): could not register clock provider: %d\n",
-> +		       __func__, r);
-> +}
-> +CLK_OF_DECLARE(mtk_apmixedsys, "mediatek,mt7986-apmixedsys",
-> +	       mtk_apmixedsys_init);
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 43dc35fe5bc0..969cde5d74c8 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -3949,6 +3949,12 @@
+>  				please report a bug.
+>  		nocrs		[X86] Ignore PCI host bridge windows from ACPI.
+>  				If you need to use this, please report a bug.
+> +		use_e820	[X86] Honor E820 reservations when allocating
+> +				PCI host bridge memory. If you need to use this,
+> +				please report a bug.
+> +		no_e820		[X86] ignore E820 reservations when allocating
+> +				PCI host bridge memory. If you need to use this,
+> +				please report a bug.
 
-CLK_OF_DECLARE is only needed for clocks we need really early in the boot 
-process. Please have a look for example at mt8183 or mt6797.
+Inconsistent capitalization.
 
-Regards,
-Matthias
+Should use same terminology as nocrs, i.e., "PCI host bridge windows",
+not "PCI host bridge memory".
 
-> diff --git a/drivers/clk/mediatek/clk-mt7986-eth.c b/drivers/clk/mediatek/clk-mt7986-eth.c
-> new file mode 100644
-> index 000000000000..495d023ccad7
-> --- /dev/null
-> +++ b/drivers/clk/mediatek/clk-mt7986-eth.c
-> @@ -0,0 +1,132 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + * Author: Sam Shih <sam.shih@mediatek.com>
-> + * Author: Wenzhen Yu <wenzhen.yu@mediatek.com>
-> + */
+I don't think "Honor E820 reservations" is the right way to describe
+this.  It's not a question of upholding something we *should* be
+doing.  That would be a matter of working around a BIOS defect.
+Maybe something like this:
+
+  Use E820 reservations to exclude parts of PCI host bridge windows.
+  This is a workaround for BIOS defects in host bridge _CRS methods.
+  If you need to use this, please report a bug to
+  linux-pci@vger.kernel.org so we can apply it automatically.
+
+Not 100% sure we need "no_e820" since that should be the default.  But
+I guess it's conceivable some system might need it.  I just hate
+adding additional things for people to try and then spread the
+resulting misinformation as a "fix" on random forums.
+
+>  		routeirq	Do IRQ routing for all PCI devices.
+>  				This is normally done in pci_enable_device(),
+>  				so this option is a temporary workaround
+> diff --git a/arch/x86/include/asm/pci_x86.h b/arch/x86/include/asm/pci_x86.h
+> index 490411dba438..0bb4e7dd0ffc 100644
+> --- a/arch/x86/include/asm/pci_x86.h
+> +++ b/arch/x86/include/asm/pci_x86.h
+> @@ -39,6 +39,8 @@ do {						\
+>  #define PCI_ROOT_NO_CRS		0x100000
+>  #define PCI_NOASSIGN_BARS	0x200000
+>  #define PCI_BIG_ROOT_WINDOW	0x400000
+> +#define PCI_USE_E820		0x800000
+> +#define PCI_NO_E820		0x1000000
+>  
+>  extern unsigned int pci_probe;
+>  extern unsigned long pirq_table_addr;
+> @@ -64,6 +66,8 @@ void pcibios_scan_specific_bus(int busn);
+>  
+>  /* pci-irq.c */
+>  
+> +struct pci_dev;
 > +
-> +#include <linux/clk-provider.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
+>  struct irq_info {
+>  	u8 bus, devfn;			/* Bus, device and function */
+>  	struct {
+> @@ -232,3 +236,9 @@ static inline void mmio_config_writel(void __iomem *pos, u32 val)
+>  # define x86_default_pci_init_irq	NULL
+>  # define x86_default_pci_fixup_irqs	NULL
+>  #endif
 > +
-> +#include "clk-mtk.h"
-> +#include "clk-gate.h"
-> +
-> +#include <dt-bindings/clock/mt7986-clk.h>
-> +
-> +static const struct mtk_gate_regs sgmii0_cg_regs = {
-> +	.set_ofs = 0xe4,
-> +	.clr_ofs = 0xe4,
-> +	.sta_ofs = 0xe4,
-> +};
-> +
-> +#define GATE_SGMII0(_id, _name, _parent, _shift)                               \
-> +	{                                                                      \
-> +		.id = _id, .name = _name, .parent_name = _parent,              \
-> +		.regs = &sgmii0_cg_regs, .shift = _shift,                      \
-> +		.ops = &mtk_clk_gate_ops_no_setclr_inv,                        \
-> +	}
-> +
-> +static const struct mtk_gate sgmii0_clks[] __initconst = {
-> +	GATE_SGMII0(CLK_SGMII0_TX250M_EN, "sgmii0_tx250m_en", "top_xtal", 2),
-> +	GATE_SGMII0(CLK_SGMII0_RX250M_EN, "sgmii0_rx250m_en", "top_xtal", 3),
-> +	GATE_SGMII0(CLK_SGMII0_CDR_REF, "sgmii0_cdr_ref", "top_xtal", 4),
-> +	GATE_SGMII0(CLK_SGMII0_CDR_FB, "sgmii0_cdr_fb", "top_xtal", 5),
-> +};
-> +
-> +static const struct mtk_gate_regs sgmii1_cg_regs = {
-> +	.set_ofs = 0xe4,
-> +	.clr_ofs = 0xe4,
-> +	.sta_ofs = 0xe4,
-> +};
-> +
-> +#define GATE_SGMII1(_id, _name, _parent, _shift)                               \
-> +	{                                                                      \
-> +		.id = _id, .name = _name, .parent_name = _parent,              \
-> +		.regs = &sgmii1_cg_regs, .shift = _shift,                      \
-> +		.ops = &mtk_clk_gate_ops_no_setclr_inv,                        \
-> +	}
-> +
-> +static const struct mtk_gate sgmii1_clks[] __initconst = {
-> +	GATE_SGMII1(CLK_SGMII1_TX250M_EN, "sgmii1_tx250m_en", "top_xtal", 2),
-> +	GATE_SGMII1(CLK_SGMII1_RX250M_EN, "sgmii1_rx250m_en", "top_xtal", 3),
-> +	GATE_SGMII1(CLK_SGMII1_CDR_REF, "sgmii1_cdr_ref", "top_xtal", 4),
-> +	GATE_SGMII1(CLK_SGMII1_CDR_FB, "sgmii1_cdr_fb", "top_xtal", 5),
-> +};
-> +
-> +static const struct mtk_gate_regs eth_cg_regs = {
-> +	.set_ofs = 0x30,
-> +	.clr_ofs = 0x30,
-> +	.sta_ofs = 0x30,
-> +};
-> +
-> +#define GATE_ETH(_id, _name, _parent, _shift)                                  \
-> +	{                                                                      \
-> +		.id = _id, .name = _name, .parent_name = _parent,              \
-> +		.regs = &eth_cg_regs, .shift = _shift,                         \
-> +		.ops = &mtk_clk_gate_ops_no_setclr_inv,                        \
-> +	}
-> +
-> +static const struct mtk_gate eth_clks[] __initconst = {
-> +	GATE_ETH(CLK_ETH_FE_EN, "eth_fe_en", "netsys_2x_sel", 6),
-> +	GATE_ETH(CLK_ETH_GP2_EN, "eth_gp2_en", "sgm_325m_sel", 7),
-> +	GATE_ETH(CLK_ETH_GP1_EN, "eth_gp1_en", "sgm_325m_sel", 8),
-> +	GATE_ETH(CLK_ETH_WOCPU1_EN, "eth_wocpu1_en", "netsys_mcu_sel", 14),
-> +	GATE_ETH(CLK_ETH_WOCPU0_EN, "eth_wocpu0_en", "netsys_mcu_sel", 15),
-> +};
-> +
-> +static void __init mtk_sgmiisys_0_init(struct device_node *node)
-> +{
-> +	struct clk_onecell_data *clk_data;
-> +	int r;
-> +
-> +	clk_data = mtk_alloc_clk_data(ARRAY_SIZE(sgmii0_clks));
-> +
-> +	mtk_clk_register_gates(node, sgmii0_clks, ARRAY_SIZE(sgmii0_clks),
-> +			       clk_data);
-> +
-> +	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-> +	if (r)
-> +		pr_err("%s(): could not register clock provider: %d\n",
-> +		       __func__, r);
-> +}
-> +CLK_OF_DECLARE(mtk_sgmiisys_0, "mediatek,mt7986-sgmiisys_0",
-> +	       mtk_sgmiisys_0_init);
-> +
-> +static void __init mtk_sgmiisys_1_init(struct device_node *node)
-> +{
-> +	struct clk_onecell_data *clk_data;
-> +	int r;
-> +
-> +	clk_data = mtk_alloc_clk_data(ARRAY_SIZE(sgmii1_clks));
-> +
-> +	mtk_clk_register_gates(node, sgmii1_clks, ARRAY_SIZE(sgmii1_clks),
-> +			       clk_data);
-> +
-> +	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-> +
-> +	if (r)
-> +		pr_err("%s(): could not register clock provider: %d\n",
-> +		       __func__, r);
-> +}
-> +CLK_OF_DECLARE(mtk_sgmiisys_1, "mediatek,mt7986-sgmiisys_1",
-> +	       mtk_sgmiisys_1_init);
-> +
-> +static void __init mtk_ethsys_init(struct device_node *node)
-> +{
-> +	struct clk_onecell_data *clk_data;
-> +	int r;
-> +
-> +	clk_data = mtk_alloc_clk_data(ARRAY_SIZE(eth_clks));
-> +
-> +	mtk_clk_register_gates(node, eth_clks, ARRAY_SIZE(eth_clks), clk_data);
-> +
-> +	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-> +
-> +	if (r)
-> +		pr_err("%s(): could not register clock provider: %d\n",
-> +		       __func__, r);
-> +}
-> +CLK_OF_DECLARE(mtk_ethsys, "mediatek,mt7986-ethsys_ck", mtk_ethsys_init);
-> diff --git a/drivers/clk/mediatek/clk-mt7986-infracfg.c b/drivers/clk/mediatek/clk-mt7986-infracfg.c
-> new file mode 100644
-> index 000000000000..35e16c28966a
-> --- /dev/null
-> +++ b/drivers/clk/mediatek/clk-mt7986-infracfg.c
-> @@ -0,0 +1,198 @@
-> +// SPDX-License-Identifier: GPL-1.0
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + * Author: Sam Shih <sam.shih@mediatek.com>
-> + * Author: Wenzhen Yu <wenzhen.yu@mediatek.com>
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include "clk-mtk.h"
-> +#include "clk-gate.h"
-> +#include "clk-mux.h"
-> +
-> +#include <dt-bindings/clock/mt7986-clk.h>
-> +#include <linux/clk.h>
-> +
-> +static DEFINE_SPINLOCK(mt7986_clk_lock);
-> +
-> +static const struct mtk_fixed_factor infra_divs[] __initconst = {
-> +	FACTOR(CLK_INFRA_SYSAXI_D2, "infra_sysaxi_d2", "sysaxi_sel", 1, 2),
-> +};
-> +
-> +static const char *const infra_uart_parent[] __initconst = { "csw_f26m_sel",
-> +							     "uart_sel" };
-> +
-> +static const char *const infra_spi_parents[] __initconst = { "i2c_sel",
-> +							     "spi_sel" };
-> +
-> +static const char *const infra_pwm_bsel_parents[] __initconst = {
-> +	"top_rtc_32p7k", "csw_f26m_sel", "infra_sysaxi_d2", "pwm_sel"
-> +};
-> +
-> +static const char *const infra_pcie_parents[] __initconst = {
-> +	"top_rtc_32p7k", "csw_f26m_sel", "top_xtal", "pextp_tl_ck_sel"
-> +};
-> +
-> +static const struct mtk_mux infra_muxes[] = {
-> +	/* MODULE_CLK_SEL_0 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_INFRA_UART0_SEL, "infra_uart0_sel",
-> +			     infra_uart_parent, 0x0018, 0x0010, 0x0014, 0, 1,
-> +			     -1, -1, -1),
-> +	MUX_GATE_CLR_SET_UPD(CLK_INFRA_UART1_SEL, "infra_uart1_sel",
-> +			     infra_uart_parent, 0x0018, 0x0010, 0x0014, 1, 1,
-> +			     -1, -1, -1),
-> +	MUX_GATE_CLR_SET_UPD(CLK_INFRA_UART2_SEL, "infra_uart2_sel",
-> +			     infra_uart_parent, 0x0018, 0x0010, 0x0014, 2, 1,
-> +			     -1, -1, -1),
-> +	MUX_GATE_CLR_SET_UPD(CLK_INFRA_SPI0_SEL, "infra_spi0_sel",
-> +			     infra_spi_parents, 0x0018, 0x0010, 0x0014, 4, 1,
-> +			     -1, -1, -1),
-> +	MUX_GATE_CLR_SET_UPD(CLK_INFRA_SPI1_SEL, "infra_spi1_sel",
-> +			     infra_spi_parents, 0x0018, 0x0010, 0x0014, 5, 1,
-> +			     -1, -1, -1),
-> +	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM1_SEL, "infra_pwm1_sel",
-> +			     infra_pwm_bsel_parents, 0x0018, 0x0010, 0x0014, 9,
-> +			     2, -1, -1, -1),
-> +	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM2_SEL, "infra_pwm2_sel",
-> +			     infra_pwm_bsel_parents, 0x0018, 0x0010, 0x0014, 11,
-> +			     2, -1, -1, -1),
-> +	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PWM_BSEL, "infra_pwm_bsel",
-> +			     infra_pwm_bsel_parents, 0x0018, 0x0010, 0x0014, 13,
-> +			     2, -1, -1, -1),
-> +	/* MODULE_CLK_SEL_1 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_INFRA_PCIE_SEL, "infra_pcie_sel",
-> +			     infra_pcie_parents, 0x0028, 0x0020, 0x0024, 0, 2,
-> +			     -1, -1, -1),
-> +};
-> +
-> +static const struct mtk_gate_regs infra0_cg_regs = {
-> +	.set_ofs = 0x40,
-> +	.clr_ofs = 0x44,
-> +	.sta_ofs = 0x48,
-> +};
-> +
-> +static const struct mtk_gate_regs infra1_cg_regs = {
-> +	.set_ofs = 0x50,
-> +	.clr_ofs = 0x54,
-> +	.sta_ofs = 0x58,
-> +};
-> +
-> +static const struct mtk_gate_regs infra2_cg_regs = {
-> +	.set_ofs = 0x60,
-> +	.clr_ofs = 0x64,
-> +	.sta_ofs = 0x68,
-> +};
-> +
-> +#define GATE_INFRA0(_id, _name, _parent, _shift)                               \
-> +	{                                                                      \
-> +		.id = _id, .name = _name, .parent_name = _parent,              \
-> +		.regs = &infra0_cg_regs, .shift = _shift,                      \
-> +		.ops = &mtk_clk_gate_ops_setclr,                               \
-> +	}
-> +
-> +#define GATE_INFRA1(_id, _name, _parent, _shift)                               \
-> +	{                                                                      \
-> +		.id = _id, .name = _name, .parent_name = _parent,              \
-> +		.regs = &infra1_cg_regs, .shift = _shift,                      \
-> +		.ops = &mtk_clk_gate_ops_setclr,                               \
-> +	}
-> +
-> +#define GATE_INFRA2(_id, _name, _parent, _shift)                               \
-> +	{                                                                      \
-> +		.id = _id, .name = _name, .parent_name = _parent,              \
-> +		.regs = &infra2_cg_regs, .shift = _shift,                      \
-> +		.ops = &mtk_clk_gate_ops_setclr,                               \
-> +	}
-> +
-> +static const struct mtk_gate infra_clks[] __initconst = {
-> +	/* INFRA0 */
-> +	GATE_INFRA0(CLK_INFRA_GPT_STA, "infra_gpt_sta", "infra_sysaxi_d2", 0),
-> +	GATE_INFRA0(CLK_INFRA_PWM_HCK, "infra_pwm_hck", "infra_sysaxi_d2", 1),
-> +	GATE_INFRA0(CLK_INFRA_PWM_STA, "infra_pwm_sta", "infra_pwm_bsel", 2),
-> +	GATE_INFRA0(CLK_INFRA_PWM1_CK, "infra_pwm1", "infra_pwm1_sel", 3),
-> +	GATE_INFRA0(CLK_INFRA_PWM2_CK, "infra_pwm2", "infra_pwm2_sel", 4),
-> +	GATE_INFRA0(CLK_INFRA_CQ_DMA_CK, "infra_cq_dma", "sysaxi_sel", 6),
-> +	GATE_INFRA0(CLK_INFRA_EIP97_CK, "infra_eip97", "eip_b_sel", 7),
-> +	GATE_INFRA0(CLK_INFRA_AUD_BUS_CK, "infra_aud_bus", "sysaxi_sel", 8),
-> +	GATE_INFRA0(CLK_INFRA_AUD_26M_CK, "infra_aud_26m", "csw_f26m_sel", 9),
-> +	GATE_INFRA0(CLK_INFRA_AUD_L_CK, "infra_aud_l", "aud_l_sel", 10),
-> +	GATE_INFRA0(CLK_INFRA_AUD_AUD_CK, "infra_aud_aud", "a1sys_sel", 11),
-> +	GATE_INFRA0(CLK_INFRA_AUD_EG2_CK, "infra_aud_eg2", "a_tuner_sel", 13),
-> +	GATE_INFRA0(CLK_INFRA_DRAMC_26M_CK, "infra_dramc_26m", "csw_f26m_sel",
-> +		    14),
-> +	GATE_INFRA0(CLK_INFRA_DBG_CK, "infra_dbg", "infra_sysaxi_d2", 15),
-> +	GATE_INFRA0(CLK_INFRA_AP_DMA_CK, "infra_ap_dma", "infra_sysaxi_d2", 16),
-> +	GATE_INFRA0(CLK_INFRA_SEJ_CK, "infra_sej", "infra_sysaxi_d2", 24),
-> +	GATE_INFRA0(CLK_INFRA_SEJ_13M_CK, "infra_sej_13m", "csw_f26m_sel", 25),
-> +	GATE_INFRA0(CLK_INFRA_TRNG_CK, "infra_trng", "sysaxi_sel", 26),
-> +	/* INFRA1 */
-> +	GATE_INFRA1(CLK_INFRA_THERM_CK, "infra_therm", "csw_f26m_sel", 0),
-> +	GATE_INFRA1(CLK_INFRA_I2C0_CK, "infra_i2c0", "i2c_sel", 1),
-> +	GATE_INFRA1(CLK_INFRA_UART0_CK, "infra_uart0", "infra_uart0_sel", 2),
-> +	GATE_INFRA1(CLK_INFRA_UART1_CK, "infra_uart1", "infra_uart1_sel", 3),
-> +	GATE_INFRA1(CLK_INFRA_UART2_CK, "infra_uart2", "infra_uart2_sel", 4),
-> +	GATE_INFRA1(CLK_INFRA_NFI1_CK, "infra_nfi1", "nfi1x_sel", 8),
-> +	GATE_INFRA1(CLK_INFRA_SPINFI1_CK, "infra_spinfi1", "spinfi_sel", 9),
-> +	GATE_INFRA1(CLK_INFRA_NFI_HCK_CK, "infra_nfi_hck", "infra_sysaxi_d2",
-> +		    10),
-> +	GATE_INFRA1(CLK_INFRA_SPI0_CK, "infra_spi0", "infra_spi0_sel", 11),
-> +	GATE_INFRA1(CLK_INFRA_SPI1_CK, "infra_spi1", "infra_spi1_sel", 12),
-> +	GATE_INFRA1(CLK_INFRA_SPI0_HCK_CK, "infra_spi0_hck", "infra_sysaxi_d2",
-> +		    13),
-> +	GATE_INFRA1(CLK_INFRA_SPI1_HCK_CK, "infra_spi1_hck", "infra_sysaxi_d2",
-> +		    14),
-> +	GATE_INFRA1(CLK_INFRA_FRTC_CK, "infra_frtc", "top_rtc_32k", 15),
-> +	GATE_INFRA1(CLK_INFRA_MSDC_CK, "infra_msdc", "emmc_416m_sel", 16),
-> +	GATE_INFRA1(CLK_INFRA_MSDC_HCK_CK, "infra_msdc_hck", "emmc_250m_sel",
-> +		    17),
-> +	GATE_INFRA1(CLK_INFRA_MSDC_133M_CK, "infra_msdc_133m", "sysaxi_sel",
-> +		    18),
-> +	GATE_INFRA1(CLK_INFRA_MSDC_66M_CK, "infra_msdc_66m", "infra_sysaxi_d2",
-> +		    19),
-> +	GATE_INFRA1(CLK_INFRA_ADC_26M_CK, "infra_adc_26m", "csw_f26m_sel", 20),
-> +	GATE_INFRA1(CLK_INFRA_ADC_FRC_CK, "infra_adc_frc", "csw_f26m_sel", 21),
-> +	GATE_INFRA1(CLK_INFRA_FBIST2FPC_CK, "infra_fbist2fpc", "nfi1x_sel", 23),
-> +	/* INFRA2 */
-> +	GATE_INFRA2(CLK_INFRA_IUSB_133_CK, "infra_iusb_133", "sysaxi_sel", 0),
-> +	GATE_INFRA2(CLK_INFRA_IUSB_66M_CK, "infra_iusb_66m", "infra_sysaxi_d2",
-> +		    1),
-> +	GATE_INFRA2(CLK_INFRA_IUSB_SYS_CK, "infra_iusb_sys", "u2u3_sys_sel", 2),
-> +	GATE_INFRA2(CLK_INFRA_IUSB_CK, "infra_iusb", "u2u3_sel", 3),
-> +	GATE_INFRA2(CLK_INFRA_IPCIE_CK, "infra_ipcie", "pextp_tl_ck_sel", 12),
-> +	GATE_INFRA2(CLK_INFRA_IPCIE_PIPE_CK, "infra_ipcie_pipe", "top_xtal",
-> +		    13),
-> +	GATE_INFRA2(CLK_INFRA_IPCIER_CK, "infra_ipcier", "csw_f26m_sel", 14),
-> +	GATE_INFRA2(CLK_INFRA_IPCIEB_CK, "infra_ipcieb", "sysaxi_sel", 15),
-> +};
-> +
-> +static void __init mtk_infracfg_init(struct device_node *node)
-> +{
-> +	struct clk_onecell_data *clk_data;
-> +	int r;
-> +	void __iomem *base;
-> +	int nr = ARRAY_SIZE(infra_divs) + ARRAY_SIZE(infra_muxes) +
-> +		 ARRAY_SIZE(infra_clks);
-> +
-> +	base = of_iomap(node, 0);
-> +	if (!base) {
-> +		pr_err("%s(): ioremap failed\n", __func__);
+> +#if defined(CONFIG_PCI) && defined(CONFIG_ACPI)
+> +extern bool pci_use_e820;
+> +#else
+> +#define pci_use_e820 false
+> +#endif
+> diff --git a/arch/x86/kernel/resource.c b/arch/x86/kernel/resource.c
+> index 9b9fb7882c20..e8dc9bc327bd 100644
+> --- a/arch/x86/kernel/resource.c
+> +++ b/arch/x86/kernel/resource.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  #include <linux/ioport.h>
+>  #include <asm/e820/api.h>
+> +#include <asm/pci_x86.h>
+>  
+>  static void resource_clip(struct resource *res, resource_size_t start,
+>  			  resource_size_t end)
+> @@ -28,6 +29,9 @@ static void remove_e820_regions(struct resource *avail)
+>  	int i;
+>  	struct e820_entry *entry;
+>  
+> +	if (!pci_use_e820)
 > +		return;
-> +	}
 > +
-> +	clk_data = mtk_alloc_clk_data(nr);
-> +	mtk_clk_register_factors(infra_divs, ARRAY_SIZE(infra_divs), clk_data);
-> +	mtk_clk_register_muxes(infra_muxes, ARRAY_SIZE(infra_muxes), node,
-> +			       &mt7986_clk_lock, clk_data);
-> +	mtk_clk_register_gates(node, infra_clks, ARRAY_SIZE(infra_clks),
-> +			       clk_data);
+>  	for (i = 0; i < e820_table->nr_entries; i++) {
+>  		entry = &e820_table->entries[i];
+>  
+> diff --git a/arch/x86/pci/acpi.c b/arch/x86/pci/acpi.c
+> index 948656069cdd..6c2febe84b6f 100644
+> --- a/arch/x86/pci/acpi.c
+> +++ b/arch/x86/pci/acpi.c
+> @@ -21,6 +21,8 @@ struct pci_root_info {
+>  
+>  static bool pci_use_crs = true;
+>  static bool pci_ignore_seg = false;
+> +/* Consumed in arch/x86/kernel/resource.c */
+> +bool pci_use_e820 = false;
+>  
+>  static int __init set_use_crs(const struct dmi_system_id *id)
+>  {
+> @@ -160,6 +162,33 @@ void __init pci_acpi_crs_quirks(void)
+>  	       "if necessary, use \"pci=%s\" and report a bug\n",
+>  	       pci_use_crs ? "Using" : "Ignoring",
+>  	       pci_use_crs ? "nocrs" : "use_crs");
 > +
-> +	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-> +	if (r)
-> +		pr_err("%s(): could not register clock provider: %d\n",
-> +		       __func__, r);
-> +}
-> +CLK_OF_DECLARE(mtk_infracfg, "mediatek,mt7986-infracfg", mtk_infracfg_init);
-> diff --git a/drivers/clk/mediatek/clk-mt7986-topckgen.c b/drivers/clk/mediatek/clk-mt7986-topckgen.c
-> new file mode 100644
-> index 000000000000..0a376044d290
-> --- /dev/null
-> +++ b/drivers/clk/mediatek/clk-mt7986-topckgen.c
-> @@ -0,0 +1,319 @@
-> +// SPDX-License-Identifier: GPL-1.0
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + * Author: Sam Shih <sam.shih@mediatek.com>
-> + * Author: Wenzhen Yu <wenzhen.yu@mediatek.com>
-> + */
+> +	/*
+> +	 * Some BIOS-es contain a bug where they add addresses which map to system
+> +	 * RAM in the PCI bridge memory window returned by the ACPI _CRS method, see
+> +	 * commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address space").
+> +	 * To avoid this Linux by default excludes E820 reservations when allocating
+> +	 * addresses since 2010. Windows however ignores E820 reserved regions for
+> +	 * PCI mem allocations, so in hindsight Linux honoring them is a problem.
+> +	 * In 2020 some systems have shown-up with E820 reservations which cover the
+> +	 * entire _CRS returned PCI bridge memory window, causing all attempts to
+> +	 * assign memory to PCI BARs to fail if Linux honors the E820 reservations.
+> +	 *
+> +	 * Ideally Linux would fully stop honoring E820 reservations for PCI mem
+> +	 * allocations, but then the old systems this was added for will regress.
+> +	 * Instead keep the old behavior for old systems, while ignoring the E820
+> +	 * reservations like Windows does for any systems from now on.
+
+Wrap this to fit in 80 columns like the rest of the file.  More
+important for the file to be internally consistent than any new
+guidelines.
+
+> +	 */
+> +	if (year >= 0 && year < 2018)
+> +		pci_use_e820 = true;
 > +
-> +#include <linux/clk-provider.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include "clk-mtk.h"
-> +#include "clk-gate.h"
-> +#include "clk-mux.h"
+> +	if (pci_probe & PCI_NO_E820)
+> +		pci_use_e820 = false;
+> +	else if (pci_probe & PCI_USE_E820)
+> +		pci_use_e820 = true;
 > +
-> +#include <dt-bindings/clock/mt7986-clk.h>
-> +#include <linux/clk.h>
-> +
-> +static DEFINE_SPINLOCK(mt7986_clk_lock);
-> +
-> +static const struct mtk_fixed_clk top_fixed_clks[] = {
-> +	FIXED_CLK(CLK_TOP_XTAL, "top_xtal", "clkxtal", 40000000),
-> +	FIXED_CLK(CLK_TOP_JTAG, "top_jtag", "clkxtal", 50000000),
-> +};
-> +
-> +static const struct mtk_fixed_factor top_divs[] __initconst = {
-> +	/* XTAL */
-> +	FACTOR(CLK_TOP_XTAL_D2, "top_xtal_d2", "top_xtal", 1, 2),
-> +	FACTOR(CLK_TOP_RTC_32K, "top_rtc_32k", "top_xtal", 1, 1250),
-> +	FACTOR(CLK_TOP_RTC_32P7K, "top_rtc_32p7k", "top_xtal", 1, 1220),
-> +	/* MPLL */
-> +	FACTOR(CLK_TOP_MPLL_D2, "top_mpll_d2", "mpll", 1, 2),
-> +	FACTOR(CLK_TOP_MPLL_D4, "top_mpll_d4", "mpll", 1, 4),
-> +	FACTOR(CLK_TOP_MPLL_D8, "top_mpll_d8", "mpll", 1, 8),
-> +	FACTOR(CLK_TOP_MPLL_D8_D2, "top_mpll_d8_d2", "mpll", 1, 16),
-> +	FACTOR(CLK_TOP_MPLL_D3_D2, "top_mpll_d3_d2", "mpll", 1, 6),
-> +	/* MMPLL */
-> +	FACTOR(CLK_TOP_MMPLL_D2, "top_mmpll_d2", "mmpll", 1, 2),
-> +	FACTOR(CLK_TOP_MMPLL_D4, "top_mmpll_d4", "mmpll", 1, 4),
-> +	FACTOR(CLK_TOP_MMPLL_D8, "top_mmpll_d8", "mmpll", 1, 8),
-> +	FACTOR(CLK_TOP_MMPLL_D8_D2, "top_mmpll_d8_d2", "mmpll", 1, 16),
-> +	FACTOR(CLK_TOP_MMPLL_D3_D8, "top_mmpll_d3_d8", "mmpll", 1, 24),
-> +	FACTOR(CLK_TOP_MMPLL_U2PHY, "top_mmpll_u2phy", "mmpll", 1, 30),
-> +	/* APLL2 */
-> +	FACTOR(CLK_TOP_APLL2_D4, "top_apll2_d4", "apll2", 1, 4),
-> +	/* NET1PLL */
-> +	FACTOR(CLK_TOP_NET1PLL_D4, "top_net1pll_d4", "net1pll", 1, 4),
-> +	FACTOR(CLK_TOP_NET1PLL_D5, "top_net1pll_d5", "net1pll", 1, 5),
-> +	FACTOR(CLK_TOP_NET1PLL_D5_D2, "top_net1pll_d5_d2", "net1pll", 1, 10),
-> +	FACTOR(CLK_TOP_NET1PLL_D5_D4, "top_net1pll_d5_d4", "net1pll", 1, 20),
-> +	FACTOR(CLK_TOP_NET1PLL_D8_D2, "top_net1pll_d8_d2", "net1pll", 1, 16),
-> +	FACTOR(CLK_TOP_NET1PLL_D8_D4, "top_net1pll_d8_d4", "net1pll", 1, 32),
-> +	/* NET2PLL */
-> +	FACTOR(CLK_TOP_NET2PLL_D4, "top_net2pll_d4", "net2pll", 1, 4),
-> +	FACTOR(CLK_TOP_NET2PLL_D4_D2, "top_net2pll_d4_d2", "net2pll", 1, 8),
-> +	FACTOR(CLK_TOP_NET2PLL_D3_D2, "top_net2pll_d3_d2", "net2pll", 1, 2),
-> +	/* WEDMCUPLL */
-> +	FACTOR(CLK_TOP_WEDMCUPLL_D5_D2, "top_wedmcupll_d5_d2", "wedmcupll", 1,
-> +	       10),
-> +};
-> +
-> +static const char *const nfi1x_parents[] __initconst = { "top_xtal",
-> +							 "top_mmpll_d8",
-> +							 "top_net1pll_d8_d2",
-> +							 "top_net2pll_d3_d2",
-> +							 "top_mpll_d4",
-> +							 "top_mmpll_d8_d2",
-> +							 "top_wedmcupll_d5_d2",
-> +							 "top_mpll_d8" };
-> +
-> +static const char *const spinfi_parents[] __initconst = {
-> +	"top_xtal_d2",     "top_xtal",	"top_net1pll_d5_d4",
-> +	"top_mpll_d4",     "top_mmpll_d8_d2", "top_wedmcupll_d5_d2",
-> +	"top_mmpll_d3_d8", "top_mpll_d8"
-> +};
-> +
-> +static const char *const spi_parents[] __initconst = {
-> +	"top_xtal",	  "top_mpll_d2",	"top_mmpll_d8",
-> +	"top_net1pll_d8_d2", "top_net2pll_d3_d2",  "top_net1pll_d5_d4",
-> +	"top_mpll_d4",       "top_wedmcupll_d5_d2"
-> +};
-> +
-> +static const char *const uart_parents[] __initconst = { "top_xtal",
-> +							"top_mpll_d8",
-> +							"top_mpll_d8_d2" };
-> +
-> +static const char *const pwm_parents[] __initconst = {
-> +	"top_xtal", "top_net1pll_d8_d2", "top_net1pll_d5_d4", "top_mpll_d4"
-> +};
-> +
-> +static const char *const i2c_parents[] __initconst = {
-> +	"top_xtal", "top_net1pll_d5_d4", "top_mpll_d4", "top_net1pll_d8_d4"
-> +};
-> +
-> +static const char *const pextp_tl_ck_parents[] __initconst = {
-> +	"top_xtal", "top_net1pll_d5_d4", "top_net2pll_d4_d2", "top_rtc_32k"
-> +};
-> +
-> +static const char *const emmc_250m_parents[] __initconst = {
-> +	"top_xtal", "top_net1pll_d5_d2"
-> +};
-> +
-> +static const char *const emmc_416m_parents[] __initconst = { "top_xtal",
-> +							     "mpll" };
-> +
-> +static const char *const f_26m_adc_parents[] __initconst = { "top_xtal",
-> +							     "top_mpll_d8_d2" };
-> +
-> +static const char *const dramc_md32_parents[] __initconst = { "top_xtal",
-> +							      "top_mpll_d2" };
-> +
-> +static const char *const sysaxi_parents[] __initconst = { "top_xtal",
-> +							  "top_net1pll_d8_d2",
-> +							  "top_net2pll_d4" };
-> +
-> +static const char *const sysapb_parents[] __initconst = { "top_xtal",
-> +							  "top_mpll_d3_d2",
-> +							  "top_net2pll_d4_d2" };
-> +
-> +static const char *const arm_db_main_parents[] __initconst = {
-> +	"top_xtal", "top_net2pll_d3_d2"
-> +};
-> +
-> +static const char *const arm_db_jtsel_parents[] __initconst = { "top_jtag",
-> +								"top_xtal" };
-> +
-> +static const char *const netsys_parents[] __initconst = { "top_xtal",
-> +							  "top_mmpll_d4" };
-> +
-> +static const char *const netsys_500m_parents[] __initconst = {
-> +	"top_xtal", "top_net1pll_d5"
-> +};
-> +
-> +static const char *const netsys_mcu_parents[] __initconst = {
-> +	"top_xtal", "wedmcupll", "top_mmpll_d2", "top_net1pll_d4",
-> +	"top_net1pll_d5"
-> +};
-> +
-> +static const char *const netsys_2x_parents[] __initconst = {
-> +	"top_xtal", "net2pll", "wedmcupll", "top_mmpll_d2"
-> +};
-> +
-> +static const char *const sgm_325m_parents[] __initconst = { "top_xtal",
-> +							    "sgmpll" };
-> +
-> +static const char *const sgm_reg_parents[] __initconst = {
-> +	"top_xtal", "top_net1pll_d8_d4"
-> +};
-> +
-> +static const char *const a1sys_parents[] __initconst = { "top_xtal",
-> +							 "top_apll2_d4" };
-> +
-> +static const char *const conn_mcusys_parents[] __initconst = { "top_xtal",
-> +							       "top_mmpll_d2" };
-> +
-> +static const char *const eip_b_parents[] __initconst = { "top_xtal",
-> +							 "net2pll" };
-> +
-> +static const char *const aud_l_parents[] __initconst = { "top_xtal", "apll2",
-> +							 "top_mpll_d8_d2" };
-> +
-> +static const char *const a_tuner_parents[] __initconst = { "top_xtal",
-> +							   "top_apll2_d4",
-> +							   "top_mpll_d8_d2" };
-> +
-> +static const char *const u2u3_sys_parents[] __initconst = {
-> +	"top_xtal", "top_net1pll_d5_d4"
-> +};
-> +
-> +static const char *const da_u2_refsel_parents[] __initconst = {
-> +	"top_xtal", "top_mmpll_u2phy"
-> +};
-> +
-> +static const struct mtk_mux top_muxes[] = {
-> +	/* CLK_CFG_0 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_NFI1X_SEL, "nfi1x_sel", nfi1x_parents,
-> +			     0x000, 0x004, 0x008, 0, 3, 7, 0x1C0, 0),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_SPINFI_SEL, "spinfi_sel", spinfi_parents,
-> +			     0x000, 0x004, 0x008, 8, 3, 15, 0x1C0, 1),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_SPI_SEL, "spi_sel", spi_parents, 0x000,
-> +			     0x004, 0x008, 16, 3, 23, 0x1C0, 2),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_SPIM_MST_SEL, "spim_mst_sel", spi_parents,
-> +			     0x000, 0x004, 0x008, 24, 3, 31, 0x1C0, 3),
-> +	/* CLK_CFG_1 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_UART_SEL, "uart_sel", uart_parents, 0x010,
-> +			     0x014, 0x018, 0, 2, 7, 0x1C0, 4),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_PWM_SEL, "pwm_sel", pwm_parents, 0x010,
-> +			     0x014, 0x018, 8, 2, 15, 0x1C0, 5),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_I2C_SEL, "i2c_sel", i2c_parents, 0x010,
-> +			     0x014, 0x018, 16, 2, 23, 0x1C0, 6),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_PEXTP_TL_SEL, "pextp_tl_ck_sel",
-> +			     pextp_tl_ck_parents, 0x010, 0x014, 0x018, 24, 2,
-> +			     31, 0x1C0, 7),
-> +	/* CLK_CFG_2 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_EMMC_250M_SEL, "emmc_250m_sel",
-> +			     emmc_250m_parents, 0x020, 0x024, 0x028, 0, 1, 7,
-> +			     0x1C0, 8),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_EMMC_416M_SEL, "emmc_416m_sel",
-> +			     emmc_416m_parents, 0x020, 0x024, 0x028, 8, 1, 15,
-> +			     0x1C0, 9),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_F_26M_ADC_SEL, "f_26m_adc_sel",
-> +			     f_26m_adc_parents, 0x020, 0x024, 0x028, 16, 1, 23,
-> +			     0x1C0, 10),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_DRAMC_SEL, "dramc_sel", f_26m_adc_parents,
-> +			     0x020, 0x024, 0x028, 24, 1, 31, 0x1C0, 11),
-> +	/* CLK_CFG_3 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_DRAMC_MD32_SEL, "dramc_md32_sel",
-> +			     dramc_md32_parents, 0x030, 0x034, 0x038, 0, 1, 7,
-> +			     0x1C0, 12),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_SYSAXI_SEL, "sysaxi_sel", sysaxi_parents,
-> +			     0x030, 0x034, 0x038, 8, 2, 15, 0x1C0, 13),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_SYSAPB_SEL, "sysapb_sel", sysapb_parents,
-> +			     0x030, 0x034, 0x038, 16, 2, 23, 0x1C0, 14),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_ARM_DB_MAIN_SEL, "arm_db_main_sel",
-> +			     arm_db_main_parents, 0x030, 0x034, 0x038, 24, 1,
-> +			     31, 0x1C0, 15),
-> +	/* CLK_CFG_4 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_ARM_DB_JTSEL, "arm_db_jtsel",
-> +			     arm_db_jtsel_parents, 0x040, 0x044, 0x048, 0, 1, 7,
-> +			     0x1C0, 16),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_SEL, "netsys_sel", netsys_parents,
-> +			     0x040, 0x044, 0x048, 8, 1, 15, 0x1C0, 17),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_500M_SEL, "netsys_500m_sel",
-> +			     netsys_500m_parents, 0x040, 0x044, 0x048, 16, 1,
-> +			     23, 0x1C0, 18),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_MCU_SEL, "netsys_mcu_sel",
-> +			     netsys_mcu_parents, 0x040, 0x044, 0x048, 24, 3, 31,
-> +			     0x1C0, 19),
-> +	/* CLK_CFG_5 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_NETSYS_2X_SEL, "netsys_2x_sel",
-> +			     netsys_2x_parents, 0x050, 0x054, 0x058, 0, 2, 7,
-> +			     0x1C0, 20),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_SGM_325M_SEL, "sgm_325m_sel",
-> +			     sgm_325m_parents, 0x050, 0x054, 0x058, 8, 1, 15,
-> +			     0x1C0, 21),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_SGM_REG_SEL, "sgm_reg_sel",
-> +			     sgm_reg_parents, 0x050, 0x054, 0x058, 16, 1, 23,
-> +			     0x1C0, 22),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_A1SYS_SEL, "a1sys_sel", a1sys_parents,
-> +			     0x050, 0x054, 0x058, 24, 1, 31, 0x1C0, 23),
-> +	/* CLK_CFG_6 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_CONN_MCUSYS_SEL, "conn_mcusys_sel",
-> +			     conn_mcusys_parents, 0x060, 0x064, 0x068, 0, 1, 7,
-> +			     0x1C0, 24),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_EIP_B_SEL, "eip_b_sel", eip_b_parents,
-> +			     0x060, 0x064, 0x068, 8, 1, 15, 0x1C0, 25),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_PCIE_PHY_SEL, "pcie_phy_sel",
-> +			     f_26m_adc_parents, 0x060, 0x064, 0x068, 16, 1, 23,
-> +			     0x1C0, 26),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_USB3_PHY_SEL, "usb3_phy_sel",
-> +			     f_26m_adc_parents, 0x060, 0x064, 0x068, 24, 1, 31,
-> +			     0x1C0, 27),
-> +	/* CLK_CFG_7 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_F26M_SEL, "csw_f26m_sel",
-> +			     f_26m_adc_parents, 0x070, 0x074, 0x078, 0, 1, 7,
-> +			     0x1C0, 28),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_AUD_L_SEL, "aud_l_sel", aud_l_parents,
-> +			     0x070, 0x074, 0x078, 8, 2, 15, 0x1C0, 29),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_A_TUNER_SEL, "a_tuner_sel",
-> +			     a_tuner_parents, 0x070, 0x074, 0x078, 16, 2, 23,
-> +			     0x1C0, 30),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_U2U3_SEL, "u2u3_sel", f_26m_adc_parents,
-> +			     0x070, 0x074, 0x078, 24, 1, 31, 0x1C4, 0),
-> +	/* CLK_CFG_8 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_U2U3_SYS_SEL, "u2u3_sys_sel",
-> +			     u2u3_sys_parents, 0x080, 0x084, 0x088, 0, 1, 7,
-> +			     0x1C4, 1),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_U2U3_XHCI_SEL, "u2u3_xhci_sel",
-> +			     u2u3_sys_parents, 0x080, 0x084, 0x088, 8, 1, 15,
-> +			     0x1C4, 2),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_DA_U2_REFSEL, "da_u2_refsel",
-> +			     da_u2_refsel_parents, 0x080, 0x084, 0x088, 16, 1,
-> +			     23, 0x1C4, 3),
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_DA_U2_CK_1P_SEL, "da_u2_ck_1p_sel",
-> +			     da_u2_refsel_parents, 0x080, 0x084, 0x088, 24, 1,
-> +			     31, 0x1C4, 4),
-> +	/* CLK_CFG_9 */
-> +	MUX_GATE_CLR_SET_UPD(CLK_TOP_AP2CNN_HOST_SEL, "ap2cnn_host_sel",
-> +			     sgm_reg_parents, 0x090, 0x094, 0x098, 0, 1, 7,
-> +			     0x1C4, 5),
-> +};
-> +
-> +static void __init mtk_topckgen_init(struct device_node *node)
-> +{
-> +	struct clk_onecell_data *clk_data;
-> +	int r;
-> +	void __iomem *base;
-> +	int nr = ARRAY_SIZE(top_fixed_clks) + ARRAY_SIZE(top_divs) +
-> +		 ARRAY_SIZE(top_muxes);
-> +
-> +	base = of_iomap(node, 0);
-> +	if (!base) {
-> +		pr_err("%s(): ioremap failed\n", __func__);
-> +		return;
-> +	}
-> +
-> +	clk_data = mtk_alloc_clk_data(nr);
-> +
-> +	mtk_clk_register_fixed_clks(top_fixed_clks, ARRAY_SIZE(top_fixed_clks),
-> +				    clk_data);
-> +	mtk_clk_register_factors(top_divs, ARRAY_SIZE(top_divs), clk_data);
-> +	mtk_clk_register_muxes(top_muxes, ARRAY_SIZE(top_muxes), node,
-> +			       &mt7986_clk_lock, clk_data);
-> +
-> +	clk_prepare_enable(clk_data->clks[CLK_TOP_SYSAXI_SEL]);
-> +	clk_prepare_enable(clk_data->clks[CLK_TOP_SYSAPB_SEL]);
-> +	clk_prepare_enable(clk_data->clks[CLK_TOP_DRAMC_SEL]);
-> +	clk_prepare_enable(clk_data->clks[CLK_TOP_DRAMC_MD32_SEL]);
-> +	clk_prepare_enable(clk_data->clks[CLK_TOP_F26M_SEL]);
-> +	clk_prepare_enable(clk_data->clks[CLK_TOP_SGM_REG_SEL]);
-> +
-> +	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-> +
-> +	if (r)
-> +		pr_err("%s(): could not register clock provider: %d\n",
-> +		       __func__, r);
-> +}
-> +CLK_OF_DECLARE(mtk_topckgen, "mediatek,mt7986-topckgen", mtk_topckgen_init);
+> +	printk(KERN_INFO "PCI: %s E820 reservations for host bridge windows\n",
+> +	       pci_use_e820 ? "Honoring" : "Ignoring");
+>  }
+>  
+>  #ifdef	CONFIG_PCI_MMCONFIG
+> diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
+> index 3507f456fcd0..091ec7e94fcb 100644
+> --- a/arch/x86/pci/common.c
+> +++ b/arch/x86/pci/common.c
+> @@ -595,6 +595,12 @@ char *__init pcibios_setup(char *str)
+>  	} else if (!strcmp(str, "nocrs")) {
+>  		pci_probe |= PCI_ROOT_NO_CRS;
+>  		return NULL;
+> +	} else if (!strcmp(str, "use_e820")) {
+> +		pci_probe |= PCI_USE_E820;
+> +		return NULL;
+> +	} else if (!strcmp(str, "no_e820")) {
+> +		pci_probe |= PCI_NO_E820;
+> +		return NULL;
+
+Why does pci_probe have to be involved here?  Couldn't we just set
+pci_use_e820 directly?
+
+Same argument applies to PCI_USE__CRS and PCI_ROOT_NO_CRS of course,
+and I probably added those, so maybe there was a reason, or maybe I
+just screwed up that too.
+
+>  #ifdef CONFIG_PHYS_ADDR_T_64BIT
+>  	} else if (!strcmp(str, "big_root_window")) {
+>  		pci_probe |= PCI_BIG_ROOT_WINDOW;
+> -- 
+> 2.31.1
 > 
