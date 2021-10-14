@@ -2,224 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6916642D32D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D986A42D333
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhJNHFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhJNHFr (ORCPT
+        id S230017AbhJNHG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:06:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24237 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229910AbhJNHG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:05:47 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1915C061746
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:03:42 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 75so4665991pga.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:03:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=aGBuDZy6IfIatlovGQCv3d/oKM7xnE2ozxGaY7lpc/E=;
-        b=Xi0wq2C2RXejPQLDjVEtKaqRZpjIJraVI7y6wIpx4ZR1yFfJadCOGZ5pFjUWzvkYLO
-         xcjo6lGy8yvnAAYrlhqyyshLy1+eTpn73T1YuTyhmg8aXEQsZvzbQOLzQwZBqPrcsEsm
-         iY5DYLL44EJoCXp3WjrtaYU0+5d+00oMwZ6XbVeFGRhKINy+E/rUmjUmw00bBZiJWp1+
-         BjpKGeCZwJb8NFs9vqHwGvTFMEsoJIo30oUsUEY1udSwPhAlITRmPDIbxkq9PUEgleZV
-         T/iaGKeBIOzy2MXjJjV354TgaXEp1GhqEFahpPVgj1SCWrV6Nk85b9ROc4pvKw6md3ON
-         JnmQ==
+        Thu, 14 Oct 2021 03:06:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634195092;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a7bz6Gz7aVimD4FyPuTMkxvGqg/oYQXtXsJKtO+9XI0=;
+        b=KYBiV51LEFL+5ZuM3EV8GfbsxXEa8caDCGHBzL74af3pp8qWp/TEBy4rwQjmnu5YGcKN+h
+        1JK1Q8b18oVVSlVhnnICBNxuoOvLowISDychbkQYgYDnZZ3GlY/yK8/z/BAF7OUTGGbI6v
+        Yy9ijmrzgxefI3q0XeRj+catgKNdeTs=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-36-gmEl8UWROX-eTftVEFPfcQ-1; Thu, 14 Oct 2021 03:04:51 -0400
+X-MC-Unique: gmEl8UWROX-eTftVEFPfcQ-1
+Received: by mail-ed1-f71.google.com with SMTP id g28-20020a50d0dc000000b003dae69dfe3aso4367158edf.7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:04:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=aGBuDZy6IfIatlovGQCv3d/oKM7xnE2ozxGaY7lpc/E=;
-        b=Gr9BlYBCvXQQDg0N8UR16GH4ASl52MyjeGPoRAx/8w7NUmjQB75OFMxzgBH+Er0ZtO
-         bSlts9fYqXbYyGwG9MZ7qPm3AxDH6OAopRKqA4t/DwZuuEyKJBXB8VmGBZhxh285PZUk
-         bOrsQQCfou/rYi2fC6pff6OeB8O5ARh6X4GADqBSAxRMBzT1RGUwlyhGJ7jllh8MZ5Kr
-         xDzgsqpMoAsf+NOekOrktOA5zFRD9pzkuL50KKv+5YBvsyCGqfFzei94xtA4hc2dPFYF
-         yKrKZpriakEVSTFrQrKvpW8UDtInYUHd8+ck4q+nLcGaLTt9kYSzgLa9mrrb9p7mu6dc
-         cAww==
-X-Gm-Message-State: AOAM533FMLj3nu9zoVi35PFaQBrfQ9Ync9u1Hft1LgxLyvxPwgHIWlaw
-        h0xRqKi+iI7EhRrXZ7HLZ23G5g==
-X-Google-Smtp-Source: ABdhPJxmcMg53ea2H9NxX7a48kCHeLiR1ot9r1lOY8hCeWLtjEGFJMWpaRwIjd4F5tdjcgp0IYiKMg==
-X-Received: by 2002:a63:3714:: with SMTP id e20mr3016516pga.50.1634195022259;
-        Thu, 14 Oct 2021 00:03:42 -0700 (PDT)
-Received: from [10.76.34.190] ([61.120.150.74])
-        by smtp.gmail.com with ESMTPSA id p9sm1441089pfn.7.2021.10.14.00.03.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 00:03:41 -0700 (PDT)
-Message-ID: <d528515c-4c74-a948-1db5-cba77d692ef3@bytedance.com>
-Date:   Thu, 14 Oct 2021 15:03:36 +0800
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a7bz6Gz7aVimD4FyPuTMkxvGqg/oYQXtXsJKtO+9XI0=;
+        b=H8pcmTy5na5q3/VEgDeZxvGlAe1Qfq/nhK275+bDUXMWL6jVplcZv6dVpz/JVndNO4
+         EvrBO7wQnWysLz/suavkCmNtb5NgIp3vm5WPXiaPyVdx/E5pHsswimMZRRZ4FaGI/B8Q
+         rCaPjHwtVvhWawflpMAfJL3EEqjylrrEkcAH9lNL+0wZzxbGlSNIl8MGYzFuTAnW3bsj
+         dUif0R5jHvkqeOHsFIqVOrZucrE2rckePvDyX2v5+WnLXQ1jsJ8FhM33Sw6h4k2ZQSNm
+         kTQ1BLwbHh7jFYF3rIUjgfAa+GpeYM3uO3szhwnUNrC/hiooUT+hfvKzM+XvgugnLIoJ
+         jE9A==
+X-Gm-Message-State: AOAM530lv+yOmby5KNWsAVXu1T4RLsy7aWMlu9uxDX64koGykr4W3yw0
+        HaT1BVUTQvMP76SoPvsMVto7t3xPvpzM+EHk5vjCmZiisQnvgwtf0dNArJgn43d2ZrXHdlo8PGf
+        r94pNuCGLl/HFbb5Ylc/7JXfN
+X-Received: by 2002:a05:6402:411:: with SMTP id q17mr6284512edv.35.1634195090339;
+        Thu, 14 Oct 2021 00:04:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyugxCELhdn4PpU0RYHVJE9ovN0GJTgH/CN0F5hx6YOmtjJJNhJY+8lQ9P71wM3RL9cmOdolw==
+X-Received: by 2002:a05:6402:411:: with SMTP id q17mr6284484edv.35.1634195090189;
+        Thu, 14 Oct 2021 00:04:50 -0700 (PDT)
+Received: from redhat.com ([2.55.16.227])
+        by smtp.gmail.com with ESMTPSA id k9sm976238edl.41.2021.10.14.00.04.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 00:04:49 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 03:04:46 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH V2 07/12] virtio-pci: harden INTX interrupts
+Message-ID: <20211014025815-mutt-send-email-mst@kernel.org>
+References: <20211012065227.9953-1-jasowang@redhat.com>
+ <20211012065227.9953-8-jasowang@redhat.com>
+ <20211013053627-mutt-send-email-mst@kernel.org>
+ <CACGkMEuRHKJv73oKFNetcBkPSFj034te7N_AJZdRbHe0ObU4Gw@mail.gmail.com>
+ <20211014014551-mutt-send-email-mst@kernel.org>
+ <CACGkMEvB4sMPmMmPQmHFasGLwktyXuCenQKGuoajmoFQYJJeBQ@mail.gmail.com>
+ <20211014022438-mutt-send-email-mst@kernel.org>
+ <CACGkMEsPiHee5A=JymA+RpaN+xqbpw=hU=or29hrHCDk=TK+Hw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH] Clocksource: Avoid misjudgment of clocksource
-To:     brookxu <brookxu.cn@gmail.com>,
-        John Stultz <john.stultz@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-References: <20211008080305.13401-1-yanghui.def@bytedance.com>
- <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com>
- <c70a418d-4748-6876-ac8a-c9d1b7e94e78@gmail.com>
- <CALAqxLVgQ6QEThWaN65nOW9F_XCh7885n9RigAQDU+OgDntS5g@mail.gmail.com>
- <6b715fb7-9850-04f3-4ab8-1a2a8a2cdfbf@gmail.com>
- <CALAqxLWgw8tA1Lrg27JUUFrGWCQqPQXmhjHyjsTRA5a4qingkg@mail.gmail.com>
- <95c1a031-6751-f90f-d003-b74fbec0e9d8@gmail.com>
-From:   yanghui <yanghui.def@bytedance.com>
-In-Reply-To: <95c1a031-6751-f90f-d003-b74fbec0e9d8@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACGkMEsPiHee5A=JymA+RpaN+xqbpw=hU=or29hrHCDk=TK+Hw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 14, 2021 at 02:32:19PM +0800, Jason Wang wrote:
+> On Thu, Oct 14, 2021 at 2:26 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Thu, Oct 14, 2021 at 02:20:17PM +0800, Jason Wang wrote:
+> > > On Thu, Oct 14, 2021 at 1:50 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > >
+> > > > On Thu, Oct 14, 2021 at 10:35:48AM +0800, Jason Wang wrote:
+> > > > > On Wed, Oct 13, 2021 at 5:42 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > > >
+> > > > > > On Tue, Oct 12, 2021 at 02:52:22PM +0800, Jason Wang wrote:
+> > > > > > > This patch tries to make sure the virtio interrupt handler for INTX
+> > > > > > > won't be called after a reset and before virtio_device_ready(). We
+> > > > > > > can't use IRQF_NO_AUTOEN since we're using shared interrupt
+> > > > > > > (IRQF_SHARED). So this patch tracks the INTX enabling status in a new
+> > > > > > > intx_soft_enabled variable and toggle it during in
+> > > > > > > vp_disable/enable_vectors(). The INTX interrupt handler will check
+> > > > > > > intx_soft_enabled before processing the actual interrupt.
+> > > > > > >
+> > > > > > > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > > > > > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > > > > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > > > > > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > > > > > > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > > > > > > ---
+> > > > > > >  drivers/virtio/virtio_pci_common.c | 24 ++++++++++++++++++++++--
+> > > > > > >  drivers/virtio/virtio_pci_common.h |  1 +
+> > > > > > >  2 files changed, 23 insertions(+), 2 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> > > > > > > index 0b9523e6dd39..5ae6a2a4eb77 100644
+> > > > > > > --- a/drivers/virtio/virtio_pci_common.c
+> > > > > > > +++ b/drivers/virtio/virtio_pci_common.c
+> > > > > > > @@ -30,8 +30,16 @@ void vp_disable_vectors(struct virtio_device *vdev)
+> > > > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > > > > > >       int i;
+> > > > > > >
+> > > > > > > -     if (vp_dev->intx_enabled)
+> > > > > > > +     if (vp_dev->intx_enabled) {
+> > > > > > > +             /*
+> > > > > > > +              * The below synchronize() guarantees that any
+> > > > > > > +              * interrupt for this line arriving after
+> > > > > > > +              * synchronize_irq() has completed is guaranteed to see
+> > > > > > > +              * intx_soft_enabled == false.
+> > > > > > > +              */
+> > > > > > > +             WRITE_ONCE(vp_dev->intx_soft_enabled, false);
+> > > > > > >               synchronize_irq(vp_dev->pci_dev->irq);
+> > > > > > > +     }
+> > > > > > >
+> > > > > > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
+> > > > > > >               disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > > > > > @@ -43,8 +51,16 @@ void vp_enable_vectors(struct virtio_device *vdev)
+> > > > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > > > > > >       int i;
+> > > > > > >
+> > > > > > > -     if (vp_dev->intx_enabled)
+> > > > > > > +     if (vp_dev->intx_enabled) {
+> > > > > > > +             disable_irq(vp_dev->pci_dev->irq);
+> > > > > > > +             /*
+> > > > > > > +              * The above disable_irq() provides TSO ordering and
+> > > > > > > +              * as such promotes the below store to store-release.
+> > > > > > > +              */
+> > > > > > > +             WRITE_ONCE(vp_dev->intx_soft_enabled, true);
+> > > > > > > +             enable_irq(vp_dev->pci_dev->irq);
+> > > > > > >               return;
+> > > > > > > +     }
+> > > > > > >
+> > > > > > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
+> > > > > > >               enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > > > > > @@ -97,6 +113,10 @@ static irqreturn_t vp_interrupt(int irq, void *opaque)
+> > > > > > >       struct virtio_pci_device *vp_dev = opaque;
+> > > > > > >       u8 isr;
+> > > > > > >
+> > > > > > > +     /* read intx_soft_enabled before read others */
+> > > > > > > +     if (!smp_load_acquire(&vp_dev->intx_soft_enabled))
+> > > > > > > +             return IRQ_NONE;
+> > > > > > > +
+> > > > > > >       /* reading the ISR has the effect of also clearing it so it's very
+> > > > > > >        * important to save off the value. */
+> > > > > > >       isr = ioread8(vp_dev->isr);
+> > > > > >
+> > > > > > I don't see why we need this ordering guarantee here.
+> > > > > >
+> > > > > > synchronize_irq above makes sure no interrupt handler
+> > > > > > is in progress.
+> > > > >
+> > > > > Yes.
+> > > > >
+> > > > > > the handler itself thus does not need
+> > > > > > any specific order, it is ok if intx_soft_enabled is read
+> > > > > > after, not before the rest of it.
+> > > > >
+> > > > > But the interrupt could be raised after synchronize_irq() which may
+> > > > > see a false of the intx_soft_enabled.
+> > > >
+> > > > You mean a "true" value right? false is what we are writing there.
+> > >
+> > > I meant that we want to not go for stuff like vq->callback after the
+> > > synchronize_irq() after setting intx_soft_enabled to false. Otherwise
+> > > we may get unexpected results like use after free. Host can craft ISR
+> > > in this case.
+> > > >
+> > > > Are you sure it can happen? I think that synchronize_irq makes the value
+> > > > visible on all CPUs running the irq.
+> > >
+> > > Yes, so the false is visible by vp_interrupt(), we can't do the other
+> > > task before we check intx_soft_enabled.
+> >
+> > But the order does not matter. synchronize_irq will make sure
+> > everything is visible.
+> 
+> Not the thing that happens after synchronize_irq().
+> 
+> E.g for remove_vq_common():
+> 
+> static void remove_vq_common(struct virtnet_info *vi)
+> {
+>         vi->vdev->config->reset(vi->vdev);
+> 
+>         /* Free unused buffers in both send and recv, if any. */
+>         free_unused_bufs(vi);
+> 
+>         free_receive_bufs(vi);
+> 
+>         free_receive_page_frags(vi);
+> 
+>         virtnet_del_vqs(vi);
+> }
+> 
+> The interrupt could be raised by the device after .reset().
+> 
+> Thanks
+
+That's why your patches set intx_soft_enabled to false within reset.
+Then you sync so all other CPUs see the false value.
+Then it's ok to proceed with reset.
+What does the interrupt handler *do* with the value
+does not matter as long as it sees that it is false.
+
+OTOH if you are really worried about spectre type speculative attacks,
+that is a different matter, and would force us to stick expensive
+barriers around hardware accessible buffers just like we have in
+copy_XXX_user. I am not sure this is in scope for TDX, and
+certainly out of scope for regular driver ardening.
+If yes worth hiding that behind a kernel option.
 
 
-在 2021/10/12 下午4:06, brookxu 写道:
-> 
-> 
-> John Stultz wrote on 2021/10/12 13:29:
->> On Mon, Oct 11, 2021 at 10:23 PM brookxu <brookxu.cn@gmail.com> wrote:
->>> John Stultz wrote on 2021/10/12 12:52 下午:
->>>> On Sat, Oct 9, 2021 at 7:04 AM brookxu <brookxu.cn@gmail.com> wrote:
->>>>>
->>>>> hello
->>>>>
->>>>> John Stultz wrote on 2021/10/9 7:45:
->>>>>> On Fri, Oct 8, 2021 at 1:03 AM yanghui <yanghui.def@bytedance.com> wrote:
->>>>>>>
->>>>>>> clocksource_watchdog is executed every WATCHDOG_INTERVAL(0.5s) by
->>>>>>> Timer. But sometimes system is very busy and the Timer cannot be
->>>>>>> executed in 0.5sec. For example,if clocksource_watchdog be executed
->>>>>>> after 10sec, the calculated value of abs(cs_nsec - wd_nsec) will
->>>>>>> be enlarged. Then the current clocksource will be misjudged as
->>>>>>> unstable. So we add conditions to prevent the clocksource from
->>>>>>> being misjudged.
->>>>>>>
->>>>>>> Signed-off-by: yanghui <yanghui.def@bytedance.com>
->>>>>>> ---
->>>>>>>   kernel/time/clocksource.c | 6 +++++-
->>>>>>>   1 file changed, 5 insertions(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
->>>>>>> index b8a14d2fb5ba..d535beadcbc8 100644
->>>>>>> --- a/kernel/time/clocksource.c
->>>>>>> +++ b/kernel/time/clocksource.c
->>>>>>> @@ -136,8 +136,10 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
->>>>>>>
->>>>>>>   /*
->>>>>>>    * Interval: 0.5sec.
->>>>>>> + * MaxInterval: 1s.
->>>>>>>    */
->>>>>>>   #define WATCHDOG_INTERVAL (HZ >> 1)
->>>>>>> +#define WATCHDOG_MAX_INTERVAL_NS (NSEC_PER_SEC)
->>>>>>>
->>>>>>>   static void clocksource_watchdog_work(struct work_struct *work)
->>>>>>>   {
->>>>>>> @@ -404,7 +406,9 @@ static void clocksource_watchdog(struct timer_list *unused)
->>>>>>>
->>>>>>>                  /* Check the deviation from the watchdog clocksource. */
->>>>>>>                  md = cs->uncertainty_margin + watchdog->uncertainty_margin;
->>>>>>> -               if (abs(cs_nsec - wd_nsec) > md) {
->>>>>>> +               if ((abs(cs_nsec - wd_nsec) > md) &&
->>>>>>> +                       cs_nsec < WATCHDOG_MAX_INTERVAL_NS &&
->>>>>>
->>>>>> Sorry, it's been awhile since I looked at this code, but why are you
->>>>>> bounding the clocksource delta here?
->>>>>> It seems like if the clocksource being watched was very wrong (with a
->>>>>> delta larger than the MAX_INTERVAL_NS), we'd want to throw it out.
->>>>>>
->>>>>>> +                       wd_nsec < WATCHDOG_MAX_INTERVAL_NS) {
->>>>>>
->>>>>> Bounding the watchdog interval on the check does seem reasonable.
->>>>>> Though one may want to keep track that if we are seeing too many of
->>>>>> these delayed watchdog checks we provide some feedback via dmesg.
->>>>>
->>>>> For some fast timeout timers, such as acpi-timer, checking wd_nsec should not
->>>>> make much sense, because when wacthdog is called, the timer may overflow many
->>>>> times.
->>>>
->>>> Indeed. But in that case we can't tell which way is up. This is what I
->>>> was fretting about when I said:
->>>>> So I do worry these watchdog robustness fixes are papering over a
->>>>> problem, pushing expectations closer to the edge of how far the system
->>>>> should tolerate bad behavior. Because at some point we'll fall off. :)
->>>>
->>>> If the timer is delayed long enough for the watchdog to wrap, we're
->>>> way out of tolerable behavior. There's not much we can do because we
->>>> can't even tell what happened.
->>>>
->>>> But in the case where the watchdog has not wrapped, I don't see a
->>>> major issue with trying to be a bit more robust in the face of just
->>>> slightly delayed timers.
->>>> (And yes, we can't really distinguish between slightly delayed and
->>>> watchdog-wrap-interval + slight delay, but in either case we can
->>>> probably skip disqualifying the clocksource as we know something seems
->>>> off)
->>>
->>> If we record the watchdog's start_time in clocksource_start_watchdog(), and then
->>> when we verify cycles in clocksource_watchdog(), check whether the clocksource
->>> watchdog is blocked. Due to MSB verification, if the blocked time is greater than
->>> half of the watchdog timer max_cycles, then we can safely ignore the current
->>> verification? Do you think this idea is okay?
->>
->> I can't say I totally understand the idea. Maybe could you clarify with a patch?
->>
-> 
-> Sorry, it looks almost as follows:
-> 
-> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> index b8a14d2..87f3b67 100644
-> --- a/kernel/time/clocksource.c
-> +++ b/kernel/time/clocksource.c
-> @@ -119,6 +119,7 @@
->   static DECLARE_WORK(watchdog_work, clocksource_watchdog_work);
->   static DEFINE_SPINLOCK(watchdog_lock);
->   static int watchdog_running;
-> +static unsigned long watchdog_start_time;
->   static atomic_t watchdog_reset_pending;
->   
->   static inline void clocksource_watchdog_lock(unsigned long *flags)
-> @@ -356,6 +357,7 @@ static void clocksource_watchdog(struct timer_list *unused)
->   	int next_cpu, reset_pending;
->   	int64_t wd_nsec, cs_nsec;
->   	struct clocksource *cs;
-> +	unsigned long max_jiffies;
->   	u32 md;
->   
->   	spin_lock(&watchdog_lock);
-> @@ -402,6 +404,10 @@ static void clocksource_watchdog(struct timer_list *unused)
->   		if (atomic_read(&watchdog_reset_pending))
->   			continue;
->   
-> +		max_jiffies = nsecs_to_jiffies(cs->max_idle_ns);
-> +		if (time_is_before_jiffies(watchdog_start_time + max_jiffies))
-> +			continue;
-> +
->   		/* Check the deviation from the watchdog clocksource. */
->   		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
->   		if (abs(cs_nsec - wd_nsec) > md) {
-> @@ -474,6 +480,7 @@ static void clocksource_watchdog(struct timer_list *unused)
->   	 * pair clocksource_stop_watchdog() clocksource_start_watchdog().
->   	 */
->   	if (!timer_pending(&watchdog_timer)) {
-> +		watchdog_start_time = jiffies;
->   		watchdog_timer.expires += WATCHDOG_INTERVAL;
->   		add_timer_on(&watchdog_timer, next_cpu);
->   	}
-> @@ -488,6 +495,7 @@ static inline void clocksource_start_watchdog(void)
->   	timer_setup(&watchdog_timer, clocksource_watchdog, 0);
->   	watchdog_timer.expires = jiffies + WATCHDOG_INTERVAL;
->   	add_timer_on(&watchdog_timer, cpumask_first(cpu_online_mask));
-> +	watchdog_start_time = jiffies;
->   	watchdog_running = 1;
->   }
-> 
-> 
->> thanks
->> -john
->>
+> >
+> > > >
+> > > > > In this case we still need the
+> > > > > make sure intx_soft_enbled to be read first instead of allowing other
+> > > > > operations to be done first, otherwise the intx_soft_enabled is
+> > > > > meaningless.
+> > > > >
+> > > > > Thanks
+> > > >
+> > > > If intx_soft_enbled were not visible after synchronize_irq then
+> > > > it does not matter in which order we read it wrt other values,
+> > > > it still wouldn't work right.
+> > >
+> > > Yes.
+> > >
+> > > Thanks
+> >
+> >
+> > We are agreed then? No need for a barrier here, READ_ONCE is enough?
+> >
+> > > >
+> > > > > >
+> > > > > > Just READ_ONCE should be enough, and we can drop the comment.
+> > > > > >
+> > > > > >
+> > > > > > > diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+> > > > > > > index a235ce9ff6a5..3c06e0f92ee4 100644
+> > > > > > > --- a/drivers/virtio/virtio_pci_common.h
+> > > > > > > +++ b/drivers/virtio/virtio_pci_common.h
+> > > > > > > @@ -64,6 +64,7 @@ struct virtio_pci_device {
+> > > > > > >       /* MSI-X support */
+> > > > > > >       int msix_enabled;
+> > > > > > >       int intx_enabled;
+> > > > > > > +     bool intx_soft_enabled;
+> > > > > > >       cpumask_var_t *msix_affinity_masks;
+> > > > > > >       /* Name strings for interrupts. This size should be enough,
+> > > > > > >        * and I'm too lazy to allocate each name separately. */
+> > > > > > > --
+> > > > > > > 2.25.1
+> > > > > >
+> > > >
+> >
 
-It looks good to me.
-thanks.
