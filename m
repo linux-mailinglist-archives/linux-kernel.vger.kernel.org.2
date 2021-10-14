@@ -2,224 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B733D42D4DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E12E42D4DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 10:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhJNIcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 04:32:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40858 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhJNIcK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 04:32:10 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634200205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aqkCYwxzKBVxepYfKFx3Jk6eNlCWWIIqLzGc/h7dJrM=;
-        b=Z39i3g9rN/h7NTCR2LWF/r+gxOgvT5dnQFAmQpt08ylqAsSvtWdKDQ0JIevDmB87T+9PKR
-        PlPktGT60GpK2VyYrYjXsNLdwwFYch1oqDqm0TzF6PVr1umkAELUD7ylvQpe3UIKIiySzQ
-        lHAS0pC87cRvtFd0HAvxTsCiQ/CxgcMSE/3B4WmMkDJMfLoTnOIBJ+M6+1ky6BxcSMnaso
-        6HSB3TngUdRlbBazlL6nrwbcAzt9O9GTeHgY5YzRJnY8Uvbti8+ts6D2JJE8ltyriXHbkc
-        69Dr+xy7wM/2drm3GsjU/JnZ+xiJ27l5L1wxzyGG2FQCiJgPZfTVHQASRHnQMQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634200205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aqkCYwxzKBVxepYfKFx3Jk6eNlCWWIIqLzGc/h7dJrM=;
-        b=fCKI7fASXs2/QQ6VV/pKMuSI8z85WKREt/lkoxTKUN0u7El57VN+67pkFBoCVsR7nDsENN
-        8gCo4HrvHeRhqPDQ==
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 06/11] x86/traps: Add #VE support for TDX guest
-In-Reply-To: <20211009053747.1694419-7-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-7-sathyanarayanan.kuppuswamy@linux.intel.com>
-Date:   Thu, 14 Oct 2021 10:30:04 +0200
-Message-ID: <87o87s6mb7.ffs@tglx>
-MIME-Version: 1.0
+        id S230129AbhJNIct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 04:32:49 -0400
+Received: from mail-eopbgr1320132.outbound.protection.outlook.com ([40.107.132.132]:54846
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229970AbhJNIcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 04:32:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UDOiAPFNctKrHUBHVqU+wVhCnqlrTpHSOzT3NaicHHW+p4MR4KQ7RO2my+sgj08DxcUbeavri4JNpOQPnKvhJd7QZcaKqj9SLG4i89oIyOy0k7oBJ/IZ4HXhnYW/ViNOmTJq/OjMDqhwDzMsVQfAR4lgX5SYNWeGxTVu4w6jogBERj0YTSgvunHkx62SuW/5tabxq+gVbaAdIGVg220jKfLvhVPFLmP2AuNu5p2I6xxCJfVzxNew7aB1BdVRAo6yBw3q654CbXELDYSxFhHWHSbFDlMJjDd8OPWe0ZmW9AcvKPoEfLeaBqHrVUJFRDfRT4nwuEXaGRoCgSeYxngM9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NfwDgpBme1A0+rPaa7TsMmpv9SzGbJq/IQ85PwA4s4g=;
+ b=KwDymUS5P1FdaS9JYOPz66NWFeaYdA7kSJofryaPYbAvaSq1aQEAqEkkt04gf63a9xLZt1BDqlZbMDOndHRfPaA1YkhZWKKZ3CsMYYRKwtmOwIeRT5bw9pbJxQXBGa7CDGXA+8Ll6eqQvq4M4VoaFmI/KjFsnMIi2s3ifOUURgBJ7Zy3jBCncJhz6Zw8CGfmFyUHvsCyl0YV14+hoeuwHqd+ZzbLHYBvFqcOYiz5OHNht9eXfd89CnKCtkBSwfqgg3zQKLqXuzIPGzBGjo8bnANjscU4kJMLKBtL8chjqpQcosVe60GfRZTKZpwS47G85Ad0RLEdN8J9Ta6azSyt3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NfwDgpBme1A0+rPaa7TsMmpv9SzGbJq/IQ85PwA4s4g=;
+ b=BZG0bvZJ21U6E36n4uCJYOmL4AFvs69Rd4UwHfjROeBTbxcJfjbHBAmEDZHfgRBVxcVKvFaYt2lKla2H6Sxy4nfveqswwetgIHq2Il7Ycjwjmr3EErGoTxOM/khEmhNhRoNx8mRyr8xwc1OzkYZuRVf+qjPchbNLpyaMaWcw1tU=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ SG2PR06MB2858.apcprd06.prod.outlook.com (2603:1096:4:1b::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4587.20; Thu, 14 Oct 2021 08:30:37 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4608.016; Thu, 14 Oct 2021
+ 08:30:37 +0000
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] soc: qcom: apr: Add of_node_put() before return
+Date:   Thu, 14 Oct 2021 04:30:17 -0400
+Message-Id: <20211014083017.19714-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-ClientProxiedBy: HK2PR04CA0049.apcprd04.prod.outlook.com
+ (2603:1096:202:14::17) To SG2PR06MB3367.apcprd06.prod.outlook.com
+ (2603:1096:4:78::19)
+MIME-Version: 1.0
+Received: from localhost.localdomain (203.90.234.87) by HK2PR04CA0049.apcprd04.prod.outlook.com (2603:1096:202:14::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Thu, 14 Oct 2021 08:30:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2af17867-eb0a-4571-1a64-08d98eece5e7
+X-MS-TrafficTypeDiagnostic: SG2PR06MB2858:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR06MB2858C7DCC9B90F1C57436683ABB89@SG2PR06MB2858.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:312;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CHtQVaEj5TcLIaehsE7By77NOK8Zc6F40RTlpo/rkpgLAZ70VSCPgevKinOcT4wjE/nY3aFZKK1e+TzfaU+ESF4OWluloopz+K7c8AiDaTVMfWM9xM/KLfsPjK2P29fDY3EaFxZrdngfx8XTG1PS1R+R3gHeFtyY4NDm4ToeARgi3bYB0h6uYV31rN5DTUjDdiIOM4pIXrOESB2/xUkdkEB5hdKfRcy1e5ypr8jQvRNSJ5JdRbzRA9QlwxEXhtxS9RNybd8zQF/In562UiKmOzGq1lAGhcgpmPNPjcIKQT7BGVSEJfnqOwU1RHsJEDGjviT9YzxKGScTFGDceJP4GgU41FORWrMK3zwFvMIQ1zvwaDuv87kaoYL4G2PT3e7J7ncSyRXZycuNU/vudFDEBPW7f/tMxOS0XlgFFzzNMhZcw/Gg1vglDYnN8mChQVu35SFJ5+L37rbai4WP78KRKnv8C3OT/xvXwg4HdWfEcvlDbFypQxRTwsThrclm7UZ+rn7jcB8rdub/RGiocZcqw1hSgE0nh/zpvZDN9oCaq/GgqG57v0YK0nA7hXVZErgvyirlaqf9bujwYReUSjzOvFPddqC5Lf0tjK7bkL5n5QTC2wfPC1fBuzsnwUgz1vOGQ9q285G/g/mZC1DennxrQykhL4u44o0cCmjHQoulLra8YsyDaBYc1/lgjw8NVs0Yeud95oJpu1Ixe3OE/wdu7g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38350700002)(26005)(956004)(38100700002)(5660300002)(4744005)(6506007)(2616005)(52116002)(2906002)(186003)(6486002)(8936002)(4326008)(110136005)(66556008)(83380400001)(86362001)(36756003)(66476007)(1076003)(8676002)(508600001)(66946007)(316002)(6512007)(6666004)(107886003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Z8pZBS87I9rhX5zWumIPm8FAAt4S6mqmDEXwosowc562PcNzirzlN4a80zfs?=
+ =?us-ascii?Q?IybZ5gJtGPSPL347AjlxeVi/Y5AJeF4l0py64CQzrxuZzfepN8IHCDt07EQn?=
+ =?us-ascii?Q?ZBG6nYP4e70BLjUS2G5lFs2aCjkMV0LHGccW274ZZc1t95tyyOfXtx69q4RO?=
+ =?us-ascii?Q?im29JIccB626Y3ZP+WZmnLM3mtzbQ3PJwcjOfzfUPgB0bdwRNttWYXbBKcrS?=
+ =?us-ascii?Q?uOUGmPO0YUz1gNUsLXD2pLbxCL+hLwkTfGN4KCQLJN/JcmB+5vvllv+anerC?=
+ =?us-ascii?Q?mK99g+27yE1gA0OFxK7sGrqVed4t2B6dGiY+Ji2C/ssuopyeybVS3i5LauIx?=
+ =?us-ascii?Q?B8vtspogsC8rnjv1D1MYbrOtMPzkIziCjqtPV2qAJTwqpFq0fmlLrNtmz7FD?=
+ =?us-ascii?Q?5OpM2JkfeJzL3xvcyziQ95y9pEh5LJbUJCa13Oo8l0zSRqCFClDVBCgBfPUx?=
+ =?us-ascii?Q?/S3sKiTR37cVCS8ijiltdoxyAohidr0C3WL8049zH463K390w5d1nr7zTjx5?=
+ =?us-ascii?Q?vxml798ZFi40pCnVTRQINJViM4BW9PFaNi8xyY0yj/R2OhPj7e63doix/oIm?=
+ =?us-ascii?Q?pjppJ70gC3QbLhh8CtG/Xp/mgFVaHhBE6dmrjGF4iFmOb7aqpVYl7AdFKP2G?=
+ =?us-ascii?Q?fChvauHnLFJ7lMfLSlri0cTPZ4IjqE1hhyO4lBQ2ClZ5ooz49exMbibkqdnm?=
+ =?us-ascii?Q?3faJwngvqOgzUhDuL1Tv4cQV6t9sgV30E3DeqA99/02AC/3q+jeN/xE7Euqt?=
+ =?us-ascii?Q?9zYaGkvggtL47bRBDC1fV8gcwR9TKwN1k1sZen6aR2+tiZJr28ZOFl9mzV3+?=
+ =?us-ascii?Q?wTKZck+lM6t20g/8m/iWEzbjBo4AQ7EHLqChEpyP/+2weQxJwtgtMpYZnBNG?=
+ =?us-ascii?Q?ghloJxeKNIbpRQev0PeAj8P9KmswJybjxzDf+Iyv2keHmKAL38RKVhLytymH?=
+ =?us-ascii?Q?1uwdxqqMwsXtCratyqpsO1U1Ys/3oJlpBYyZMuR2STql8AyQThQxh+/jaurt?=
+ =?us-ascii?Q?Rt8QQQBhDv0LFHct8KOcilfYJQxkztnGw1uqlqjm6+rpK3FseVI13nAALFaM?=
+ =?us-ascii?Q?BLDr2VbHjw0PWSY29VETSwINX11myLhQwHBuOT4ocMdgco1YwSWmFptsJ1rF?=
+ =?us-ascii?Q?KFi6B8VkQdFbVyXRTH8wTUhf7x1lO4FI1ZmU9nVqfodU62iUKXO8bxc2sNfe?=
+ =?us-ascii?Q?pMiwY/aoe5sPDueM+hQqVAOTT8hzUb90N1oyGM0IrIx30oS+nZ9Chzbhl8On?=
+ =?us-ascii?Q?jQrVLrwt+Q6pNIvyP4EQ9sNpRGEWy5OXoUHa0QNqkEHsVB5TYN8+/6hTmF/R?=
+ =?us-ascii?Q?+88OtS2xX4X1R7tk2CTPYbAW?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2af17867-eb0a-4571-1a64-08d98eece5e7
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 08:30:37.2458
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MV0/tHRuco3TKFjRoB7166ZikyHHoIpHMWx3Azy985c53rqogOV/q6XlokCX6m4p2obkv6UmcIooIvOMLh4/sw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB2858
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08 2021 at 22:37, Kuppuswamy Sathyanarayanan wrote:
->  
-> +/*
-> + * Used by #VE exception handler to gather the #VE exception
-> + * info from the TDX module. This is software only structure
-> + * and not related to TDX module/VMM.
-> + */
-> +struct ve_info {
-> +	u64 exit_reason;
-> +	u64 exit_qual;
-> +	u64 gla;	/* Guest Linear (virtual) Address */
-> +	u64 gpa;	/* Guest Physical (virtual) Address */
+Fix following coccicheck warning:
 
-Please do not use tail comments and with a tab between type and name
-this becomes more readable:
+./drivers/soc/qcom/apr.c:485:1-23: WARNING: Function
+for_each_child_of_node should have of_node_put() before return
 
-	/* Guest Linear (virtual) Address */
-	u64	gla;
+Early exits from for_each_child_of_node should decrement the
+node reference counter.
 
-        /* Guest Physical (virtual) Address */
-	u64	gpa;
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/soc/qcom/apr.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Hmm?
+diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
+index 8a9bfbcd4bb9..82ca12c9328a 100644
+--- a/drivers/soc/qcom/apr.c
++++ b/drivers/soc/qcom/apr.c
+@@ -492,12 +492,14 @@ static int of_apr_add_pd_lookups(struct device *dev)
+ 						    1, &service_path);
+ 		if (ret < 0) {
+ 			dev_err(dev, "pdr service path missing: %d\n", ret);
++			of_node_put(node);
+ 			return ret;
+ 		}
+ 
+ 		pds = pdr_add_lookup(apr->pdr, service_name, service_path);
+ 		if (IS_ERR(pds) && PTR_ERR(pds) != -EALREADY) {
+ 			dev_err(dev, "pdr add lookup failed: %ld\n", PTR_ERR(pds));
++			of_node_put(node);
+ 			return PTR_ERR(pds);
+ 		}
+ 	}
+-- 
+2.20.1
 
-  
-> +bool tdx_get_ve_info(struct ve_info *ve)
-> +{
-> +	struct tdx_module_output out;
-> +	u64 ret;
-> +
-> +	if (!ve)
-> +		return false;
-
-This should be WARN_ON_ONCE() if at all.
-
-> +	/*
-> +	 * NMIs and machine checks are suppressed. Before this point any
-> +	 * #VE is fatal. After this point (TDGETVEINFO call), NMIs and
-> +	 * additional #VEs are permitted (but it is expected not to
-> +	 * happen unless kernel panics).
-> +	 */
-> +	ret = __tdx_module_call(TDX_GET_VEINFO, 0, 0, 0, 0, &out);
-> +	if (ret)
-> +		return false;
-
-         if (__tdx...())
-         	return false;
-
-> +	ve->exit_reason = out.rcx;
-> +	ve->exit_qual   = out.rdx;
-> +	ve->gla         = out.r8;
-> +	ve->gpa         = out.r9;
-> +	ve->instr_len   = out.r10 & UINT_MAX;
-> +	ve->instr_info  = out.r10 >> 32;
-> +
-> +	return true;
-> +}
-> +
-> +bool tdx_handle_virtualization_exception(struct pt_regs *regs,
-> +					 struct ve_info *ve)
-> +{
-> +	pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
-> +	return false;
-> +}
-> +
->  void __init tdx_early_init(void)
->  {
->  	if (!is_tdx_guest())
-> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> index a58800973aed..70d76c3a548f 100644
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
-> @@ -61,6 +61,7 @@
->  #include <asm/insn.h>
->  #include <asm/insn-eval.h>
->  #include <asm/vdso.h>
-> +#include <asm/tdx.h>
->  
->  #ifdef CONFIG_X86_64
->  #include <asm/x86_init.h>
-> @@ -1140,6 +1141,82 @@ DEFINE_IDTENTRY(exc_device_not_available)
->  	}
->  }
->  
-> +#ifdef CONFIG_INTEL_TDX_GUEST
-> +#define VE_FAULT_STR "VE fault"
-> +static void ve_raise_fault(struct pt_regs *regs, long error_code)
-
-Please do not glue the #define and the function definition
-together. Newlines exist for a reaon.
-
-> +{
-> +	struct task_struct *tsk = current;
-> +
-> +	if (user_mode(regs)) {
-> +		tsk->thread.error_code = error_code;
-> +		tsk->thread.trap_nr = X86_TRAP_VE;
-> +
-> +		/*
-> +		 * Not fixing up VDSO exceptions similar to #GP handler
-> +		 * because it is expected that VDSO doesn't trigger #VE.
-
-Expected?
-
-> +		 */
-> +		show_signal(tsk, SIGSEGV, "", VE_FAULT_STR, regs, error_code);
-> +		force_sig(SIGSEGV);
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * Attempt to recover from #VE exception failure without
-> +	 * triggering OOPS (useful for MSR read/write failures)
-> +	 */
-> +	if (fixup_exception(regs, X86_TRAP_VE, error_code, 0))
-> +		return;
-> +
-> +	tsk->thread.error_code = error_code;
-> +	tsk->thread.trap_nr = X86_TRAP_VE;
-> +
-> +	/*
-> +	 * To be potentially processing a kprobe fault and to trust the result
-> +	 * from kprobe_running(), it should be non-preemptible.
-> +	 */
-> +	if (!preemptible() &&
-> +	    kprobe_running() &&
-
-	if (!preemptible() && kprobe_running() &&
-> +	    kprobe_fault_handler(regs, X86_TRAP_VE))
-
-perhaps? 
-
-> +
-> +DEFINE_IDTENTRY(exc_virtualization_exception)
-> +{
-> +	struct ve_info ve;
-> +	bool ret;
-> +
-> +	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
-
-Please remove that. The idtentry code is already taking care of that.
-
-> +	/*
-> +	 * NMIs/Machine-checks/Interrupts will be in a disabled state
-> +	 * till TDGETVEINFO TDCALL is executed. This prevents #VE
-> +	 * nesting issue.
-
-s/This prevents.../This ensures that VE info cannot be overwritten by a
-nested #VE/
-
-Or something like that perhaps?
-
-Also a some comment about #VE in general above the DEFINE_IDTENTRY()
-would be appreciated.
-
-Thanks,
-
-        tglx
