@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3959942DCE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E5842DD05
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbhJNPCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:02:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42680 "EHLO mail.kernel.org"
+        id S232942AbhJNPDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:03:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232545AbhJNPBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:01:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F2C4611CC;
-        Thu, 14 Oct 2021 14:58:40 +0000 (UTC)
+        id S232969AbhJNPCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:02:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55D44611F2;
+        Thu, 14 Oct 2021 14:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223521;
-        bh=a0+9OBEb2eRujNlUpifMFGOEc++gWGM4NiuJUQPAznM=;
+        s=korg; t=1634223555;
+        bh=+QRJHM5QE3mSWvX3TiTNJdhjeKXqCOFpAJ2Z/yOlcyY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LywhBSALLpYYckjl8j4ucM+hti2Fnb3h7DEMkHNQwEWVBw9zvxX2LSkKCywOPtpcT
-         LKMO9H8QnTNnpZK1r6oAOhLTaN8Ef0ALDzQRCXTqaX/fkTWDvNFXaolex9Yzs4DKGj
-         +fmALu5/c848pdUebN8zq3tkvHNdufBPsAFeF24o=
+        b=RCxNUNn1vmFioSLnDpOnvcMuaR18Rv8u4CslU06EToYn2E8sZOgKIo2wM9IErDYBk
+         0vDqz8ldn0IwOSSDdt4339XI5fMT5fIiZMe6yK+of4e9RaFSZb8zLI/UQoBRY1gqqp
+         dLOK0u9tFO6AKXtrP9Sxb3WljvFMtyaLNmLnTqE4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Aaron Young <aaron.young@oracle.com>,
-        Rashmi Narasimhan <rashmi.narasimhan@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 08/12] net: sun: SUNVNET_COMMON should depend on INET
+        stable@vger.kernel.org, Joshua Dickens <joshua.dickens@wacom.com>,
+        Ping Cheng <ping.cheng@wacom.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 05/16] HID: wacom: Add new Intuos BT (CTL-4100WL/CTL-6100WL) device IDs
 Date:   Thu, 14 Oct 2021 16:54:08 +0200
-Message-Id: <20211014145206.826314867@linuxfoundation.org>
+Message-Id: <20211014145207.495424334@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145206.566123760@linuxfoundation.org>
-References: <20211014145206.566123760@linuxfoundation.org>
+In-Reply-To: <20211014145207.314256898@linuxfoundation.org>
+References: <20211014145207.314256898@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Joshua-Dickens <Joshua@Joshua-Dickens.com>
 
-[ Upstream commit 103bde372f084206c6972be543ecc247ebbff9f3 ]
+[ Upstream commit 0c8fbaa553077630e8eae45bd9676cfc01836aeb ]
 
-When CONFIG_INET is not set, there are failing references to IPv4
-functions, so make this driver depend on INET.
+Add the new PIDs to wacom_wac.c to support the new models in the Intuos series.
 
-Fixes these build errors:
-
-sparc64-linux-ld: drivers/net/ethernet/sun/sunvnet_common.o: in function `sunvnet_start_xmit_common':
-sunvnet_common.c:(.text+0x1a68): undefined reference to `__icmp_send'
-sparc64-linux-ld: drivers/net/ethernet/sun/sunvnet_common.o: in function `sunvnet_poll_common':
-sunvnet_common.c:(.text+0x358c): undefined reference to `ip_send_check'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Aaron Young <aaron.young@oracle.com>
-Cc: Rashmi Narasimhan <rashmi.narasimhan@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+[jkosina@suse.cz: fix changelog]
+Signed-off-by: Joshua Dickens <joshua.dickens@wacom.com>
+Reviewed-by: Ping Cheng <ping.cheng@wacom.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sun/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/hid/wacom_wac.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/net/ethernet/sun/Kconfig b/drivers/net/ethernet/sun/Kconfig
-index 7b982e02ea3a..1080a2a3e13a 100644
---- a/drivers/net/ethernet/sun/Kconfig
-+++ b/drivers/net/ethernet/sun/Kconfig
-@@ -73,6 +73,7 @@ config CASSINI
- config SUNVNET_COMMON
- 	tristate "Common routines to support Sun Virtual Networking"
- 	depends on SUN_LDOMS
-+	depends on INET
- 	default m
+diff --git a/drivers/hid/wacom_wac.c b/drivers/hid/wacom_wac.c
+index d5425bc1ad61..f6be2e70a496 100644
+--- a/drivers/hid/wacom_wac.c
++++ b/drivers/hid/wacom_wac.c
+@@ -4715,6 +4715,12 @@ static const struct wacom_features wacom_features_0x393 =
+ 	{ "Wacom Intuos Pro S", 31920, 19950, 8191, 63,
+ 	  INTUOSP2S_BT, WACOM_INTUOS3_RES, WACOM_INTUOS3_RES, 7,
+ 	  .touch_max = 10 };
++static const struct wacom_features wacom_features_0x3c6 =
++	{ "Wacom Intuos BT S", 15200, 9500, 4095, 63,
++	  INTUOSHT3_BT, WACOM_INTUOS_RES, WACOM_INTUOS_RES, 4 };
++static const struct wacom_features wacom_features_0x3c8 =
++	{ "Wacom Intuos BT M", 21600, 13500, 4095, 63,
++	  INTUOSHT3_BT, WACOM_INTUOS_RES, WACOM_INTUOS_RES, 4 };
  
- config SUNVNET
+ static const struct wacom_features wacom_features_HID_ANY_ID =
+ 	{ "Wacom HID", .type = HID_GENERIC, .oVid = HID_ANY_ID, .oPid = HID_ANY_ID };
+@@ -4888,6 +4894,8 @@ const struct hid_device_id wacom_ids[] = {
+ 	{ USB_DEVICE_WACOM(0x37A) },
+ 	{ USB_DEVICE_WACOM(0x37B) },
+ 	{ BT_DEVICE_WACOM(0x393) },
++	{ BT_DEVICE_WACOM(0x3c6) },
++	{ BT_DEVICE_WACOM(0x3c8) },
+ 	{ USB_DEVICE_WACOM(0x4001) },
+ 	{ USB_DEVICE_WACOM(0x4004) },
+ 	{ USB_DEVICE_WACOM(0x5000) },
 -- 
 2.33.0
 
