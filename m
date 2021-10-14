@@ -2,119 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F24942E19A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D548842E1A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233203AbhJNSuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232902AbhJNSuu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:50:50 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D67C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:48:45 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so5436142pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:48:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZjimbiTSlE1l8ItQSDOS0TpKsqXd9vrfIa7epPZdvVk=;
-        b=PBwp4PoA1EnlQv0jUTHwWnlic0D6ATh3iQtz91bHBcHPDgSModSG7bGRhyFyA0EsXv
-         9nTSHsJC4+B/AxTSVK6HeC5Jzsywe7PQ6pON8oaNTCJCEXkJ0mCQez5O3Rspw+E6IICK
-         AqYWJIDJyxSw8SFvRiEG4yHlWlZGXbwuDVOvXkLrXGB3HlET5hq62aa3iHOhn4uoXNiE
-         +H6Y5WiXRfIs1iANYgEW14fpdqhwzNab+ZWeKWh8t9Xi1kwD/BuWs7nvTkLGBP/39vO+
-         0t0YHkM+YT/wmIZWt6VKnEMk4v90Kj6C4MguqirpsFwoy3GzKCjg18beIrA/u1wc3lYr
-         QpSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZjimbiTSlE1l8ItQSDOS0TpKsqXd9vrfIa7epPZdvVk=;
-        b=P4AJEI7o6ndzLWU5O4FdCrU/jPH2fWsy3MfahnWZXb+dNLDRfka/h2w6EIAaDXOS4T
-         lzNuRFIsIOSasvCgAvxTX0OntrqmZAizXH4aYceAJay8dZXKTIR7hBjTeXgfXqkHYTqB
-         /npnVIeSJHtoW5DI/HM5vVzIsECfGfc2o6pfdD5xsYVWIVEAqZxDM543mfIIWru8jamO
-         bDoQ0bFjLhK+dC1Exx+vc7RVdwhsi7ByGIhm/GasEowFfcJ0KQH8S3RTN9mgLR00iFXk
-         TwzOl5fBT5HexRdHROcF0q5lK/DljlY3eRvsWqXhuf/d8zsOztb2J48Y5OJ2ph+J7vuf
-         d0WA==
-X-Gm-Message-State: AOAM531nlxD4yqFgr+g9nRGjg6qX4NZXo6BStJOfdXqq1uD5vMVsJ6gV
-        0pHb9J5ldRx3gfZ1RrPEfFDZUQ==
-X-Google-Smtp-Source: ABdhPJwhA7ksW9z92Xq5XqnztwoOX3c3QuESYlEjpk1PyrX60Py2UUTGfOr6pQZpvHQh/42wMpQlBA==
-X-Received: by 2002:a17:902:bb81:b0:12d:a7ec:3d85 with SMTP id m1-20020a170902bb8100b0012da7ec3d85mr6655532pls.17.1634237324850;
-        Thu, 14 Oct 2021 11:48:44 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id y142sm3133125pfc.169.2021.10.14.11.48.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 11:48:44 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 18:48:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 1/2] KVM: X86: Don't reset mmu context when X86_CR4_PCIDE
- 1->0
-Message-ID: <YWh7iMxaGp4366Gt@google.com>
-References: <20210919024246.89230-1-jiangshanlai@gmail.com>
- <20210919024246.89230-2-jiangshanlai@gmail.com>
- <YWh7RH7HXQE34sFb@google.com>
+        id S233975AbhJNSxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:53:25 -0400
+Received: from mail-bn8nam11on2084.outbound.protection.outlook.com ([40.107.236.84]:33377
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231549AbhJNSxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:53:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I4pY4IsxoIO0OPX7XmwChc6uupzZTxg+2uJnowaRRqguL7G0+5Bxax/y6ac/3qrVqyv8vHz0LqIoLmJaBmfpvi14vfByxiZcPJjC6mUISblu3FPUlcLRMivxBLWUFkEKvxIMrZaw0pVBUWprFkRbvtqdKdJRQ8NZHChbjXdmarfbi7TKipxsYSBZU6Dpk7CNewrErNupkjJgu1aqDjRpgyPm9H8Pb78r18Q2wVjsT4qcqwvBBJHgxidJbxOhYRm4YGAem8FpYRwYJMMH8hWGUXnYaUic+lpM8LvKuGece1boMc7h+3yBZMaWOHbCYTYydSwYTbQ3Id1HBoUUKC7wVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uIl8I6cDhGH3luNq8QONik08Wbf54hWfSuoUQ8Fy5LY=;
+ b=BQhIYNjURBKIES6fbTX71Z3/MzB/ERqFygGgFT28HNVa5cmgmqQfcg1fZ/9Y3ta140kKuwFPO93zmdSqBdR1+aiVwYN709ECbl+qbYrD+fWkKLBUnJ/t5wB1hkGi4AzMRRy7ADrAj2IXG/WAyvjGzhI43FRD8DzxQW4tpDgiEykMtyKDsybcDFy7f50m47Pr55DXcCfFh8VgQcraF7/+y6HMw1etauR1G+SwSaDQJvoLTHOLT7ilL2bS+Z+jDRJ9LT+XnajzasZ1YKQDSbqmIBnnUHWPB0ste1pqge1gjgEpnJhu68WJl7v4GYiURq5Mw7xkzwwxNg3Mr3NzH4YRYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uIl8I6cDhGH3luNq8QONik08Wbf54hWfSuoUQ8Fy5LY=;
+ b=WJCXYCSkF/AfwQoTPQ4Fnhre1Ej5v7pL4D5FbY7PKK1G/6uwenbuCp2RoRda2UX1eiyni+uTZ2+/X0mQcQqAvY7grOtavtHW73EHzxp9HV7XNQO1QWlCZjqVljh/0VfQbU6ahghjLWYnAGoZkIIN6tJ4G3W3Hl0FhCLfk+rXQlg=
+Received: from MW4PR04CA0076.namprd04.prod.outlook.com (2603:10b6:303:6b::21)
+ by DM4PR12MB5326.namprd12.prod.outlook.com (2603:10b6:5:39f::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Thu, 14 Oct
+ 2021 18:51:17 +0000
+Received: from CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:6b:cafe::e5) by MW4PR04CA0076.outlook.office365.com
+ (2603:10b6:303:6b::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend
+ Transport; Thu, 14 Oct 2021 18:51:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT005.mail.protection.outlook.com (10.13.174.147) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4608.15 via Frontend Transport; Thu, 14 Oct 2021 18:51:16 +0000
+Received: from milan-ETHANOL-X.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 14 Oct
+ 2021 13:51:12 -0500
+From:   Naveen Krishna Chatradhi <nchatrad@amd.com>
+To:     <linux-edac@vger.kernel.org>, <x86@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <bp@alien8.de>, <mingo@redhat.com>,
+        <mchehab@kernel.org>, <yazen.ghannam@amd.com>,
+        Naveen Krishna Chatradhi <nchatrad@amd.com>
+Subject: [PATCH v4 0/4] x86/edac/amd64: Add support for noncpu nodes
+Date:   Fri, 15 Oct 2021 00:20:54 +0530
+Message-ID: <20211014185058.9587-1-nchatrad@amd.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210823185437.94417-1-nchatrad@amd.com>
+References: <20210823185437.94417-1-nchatrad@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWh7RH7HXQE34sFb@google.com>
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 71e05570-9061-4753-cc8f-08d98f439a61
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5326:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB53265682B098EB5656011A22E8B89@DM4PR12MB5326.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1122;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KlJ6UHFhDcrOC11f22+oVmAGUAFbpvUBAJkzXvaE4Vs8hKX3PuMKiTzPehyW53peXs4Z81YqH+n9wTXxLMvrWaImxC1EPYneN7vkEL16VU/a3lUWhKQWlTIcOz09QaBDrfYHk2CWhL1YaWiuzOVQkhxQ8RTr1iezN9Gpm4viETY5KvcV7g5Ce9mL7uv4p438yLz/iw3RQX8+2v44UkuQWdQgRsplXhf9El8+1KlKXcsx2m74R1I5tWS9Un+PkHX7uuFJdKXmyy78DtsTrAuPbMkS8HMzNjZ4v5yqk/WPImqZXBUeIRpcPddihgxw6TDG7jZcPyT1ldvOmikiBHuoIpgzuQeclHqUyl0MAhqo0m1PCEqa0aV9ajq2RJ66xEbkWDVE4WwXkHsDdr0wU7uJJ4oX2bzenNsiv4d1ptYdoN6p1MDBmu6xFCUTi8+DViNCfC0d0EICMdYUG3UkykRA0v+H52edf8cM5smofXWXjC/pJIIj5uKnkGhBcCIWm4t53sTPSr3worLehix5c5kDKn4wkJVxmiiZL1tTA9ix5jfunUa7qI84q7btuFjDjN5nXIkLM5Hxbe6mJcMxlRVLcFD0hyRqgweg1B1D90xQWuCm0walZJKOK3qNRn2aIO+KSBNoJpY4pOaSSmaztylGDxOn6PKn5JaUynj/e6pagnPeVzbYJnx6jJMhhRHPRIYGo7GphfJxHTqqMoVp+mizAtgfGJaxWMBvzxm0D4WrD4k=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(70206006)(70586007)(1076003)(5660300002)(110136005)(83380400001)(8936002)(186003)(336012)(2616005)(54906003)(426003)(4326008)(47076005)(16526019)(316002)(8676002)(2906002)(36860700001)(508600001)(7696005)(6666004)(36756003)(82310400003)(356005)(26005)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 18:51:16.3858
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71e05570-9061-4753-cc8f-08d98f439a61
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5326
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021, Sean Christopherson wrote:
-> On Sun, Sep 19, 2021, Lai Jiangshan wrote:
-> > From: Lai Jiangshan <laijs@linux.alibaba.com>
-> > 
-> > X86_CR4_PCIDE doesn't participate in kvm_mmu_role, so the mmu context
-> > doesn't need to be reset.  It is only required to flush all the guest
-> > tlb.
-> > 
-> > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> > ---
-> >  arch/x86/kvm/x86.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 86539c1686fa..7494ea0e7922 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -116,6 +116,7 @@ static void enter_smm(struct kvm_vcpu *vcpu);
-> >  static void __kvm_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags);
-> >  static void store_regs(struct kvm_vcpu *vcpu);
-> >  static int sync_regs(struct kvm_vcpu *vcpu);
-> > +static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu);
-> >  
-> >  static int __set_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2);
-> >  static void __get_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2);
-> > @@ -1042,9 +1043,10 @@ EXPORT_SYMBOL_GPL(kvm_is_valid_cr4);
-> >  
-> >  void kvm_post_set_cr4(struct kvm_vcpu *vcpu, unsigned long old_cr4, unsigned long cr4)
-> >  {
-> > -	if (((cr4 ^ old_cr4) & KVM_MMU_CR4_ROLE_BITS) ||
-> > -	    (!(cr4 & X86_CR4_PCIDE) && (old_cr4 & X86_CR4_PCIDE)))
-> > +	if ((cr4 ^ old_cr4) & KVM_MMU_CR4_ROLE_BITS)
-> >  		kvm_mmu_reset_context(vcpu);
-> > +	else if (!(cr4 & X86_CR4_PCIDE) && (old_cr4 & X86_CR4_PCIDE))
-> > +		kvm_vcpu_flush_tlb_guest(vcpu);
-> 
-> Unless there's a corner case I'm missing, I would prefer this to use
-> kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu) instead of calling
-> kvm_vcpu_flush_tlb_guest() directly.  The odds of flushes actually being batched
-> is low, it's more to document that kvm_post_set_cr4() _isn't_ special.
+On newer heterogeneous systems with AMD CPUs the data fabrics of GPUs
+can be connected directly via custom links.
 
-Forgot to say, with the change to KVM_REQ_TLB_FLUSH_GUEST:
+This patchset does the following
+1. amd_nb.c:
+   a. Add support for northbridges on Aldebaran GPU nodes
+   b. export AMD node map details to be used by edac and mce modules
+	
+2. mce_amd module:
+   a. Identify the node ID where the error occurred and map the node id
+      to linux enumerated node id.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+2. Modifies the amd64_edac module
+   a. Add new family op routines
+   b. Enumerate UMCs and HBMs on the GPU nodes
+
+This patchset is rebased on top of
+"
+commit 07416cadfdfa38283b840e700427ae3782c76f6b
+Author: Yazen Ghannam <yazen.ghannam@amd.com>
+Date:   Tue Oct 5 15:44:19 2021 +0000
+
+    EDAC/amd64: Handle three rank interleaving mode
+"
+
+Muralidhara M K (2):
+  x86/amd_nb: Add support for northbridges on Aldebaran
+  EDAC/amd64: Extend family ops functions
+
+Naveen Krishna Chatradhi (2):
+  EDAC/mce_amd: Extract node id from MCA_IPID
+  EDAC/amd64: Enumerate memory on Aldebaran GPU nodes
+
+ arch/x86/include/asm/amd_nb.h |   9 +
+ arch/x86/kernel/amd_nb.c      | 131 +++++++--
+ drivers/edac/amd64_edac.c     | 517 +++++++++++++++++++++++++---------
+ drivers/edac/amd64_edac.h     |  33 +++
+ drivers/edac/mce_amd.c        |  24 +-
+ include/linux/pci_ids.h       |   1 +
+ 6 files changed, 564 insertions(+), 151 deletions(-)
+
+-- 
+2.25.1
+
