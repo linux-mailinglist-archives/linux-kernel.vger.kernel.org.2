@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1868C42DDDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A9842DDE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbhJNPRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:17:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:36386 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231915AbhJNPRL (ORCPT
+        id S232922AbhJNPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231171AbhJNPST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:17:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634224505;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FiT5rDJKYBUUykrwFXpiEs/xoKF/YdQLNIch3J6+wz8=;
-        b=MwvKTRTbTmgh5HxIkNk+YkI7GtEqVFb8lzlKVAJw+njvf03fHpjEB83E4hMiiz9SwZoAU8
-        djXiY/roxITFUuqak30GzHg0gBuTFpbLqaMO3Hjq280GLgtQBpt02CSpM62cfAKezosu8n
-        F752Z+3L47Njko7Z9EfDkxSN3SQP9ck=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-75-p8Ns_88JOGaBhQRyipmqqw-1; Thu, 14 Oct 2021 11:15:04 -0400
-X-MC-Unique: p8Ns_88JOGaBhQRyipmqqw-1
-Received: by mail-ed1-f71.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso5405406edj.20
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:15:04 -0700 (PDT)
+        Thu, 14 Oct 2021 11:18:19 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD225C061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:16:14 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id w4-20020a1709029a8400b00138e222b06aso2573117plp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:16:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=8lwRp3uP8+IKYysxWAf8gbvxjj8gBa/nFz3RxTvcuPo=;
+        b=oJGw/QMmi9y17ZRzapZ6AW2NqjA67q2aRYewaRrOpIgd5leninbEz/X70fFAv2Tkyr
+         tK4schSZy5xEATUYHCSx4ertgr+8G6lysBxuYmHYCKm01igmwtPNBZL10n9vtUHVoceC
+         O7oUkdYT3NMshazQZbMIaGQsREoQuo5eao+1Z3zZ0z6M7E7FFD2JSQobCOQqG6y+Un5y
+         XTzKDHVN9DkIcxjf9l3ztuNBu5zq+mMErnq7BEW+9GDjPOdw2fBMz1p4RTBFrTeVi6u8
+         Q0sR/ABZD6FSDzNrx4/Hw2+/7E/qpUZ+2z90EwCVBL3U9JP9G7tL22uJ7LCj3EiyYaFS
+         VNPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FiT5rDJKYBUUykrwFXpiEs/xoKF/YdQLNIch3J6+wz8=;
-        b=AI0LYgudSnHgLy59fESCI3EVwoIAtlffl0JRAgX+/V6bLsTWaCDZh+oclgUvYsavMK
-         /ZLbk/fPyU4FX3ZlfKYCJ2viRW70MEO2Z3lv0Vz6ayn+PKxWtuXKxWlXmwHf4f4TU94J
-         xwzhStWvAe6wZamxUmHtdi18P8BZyjHsv+avjr2OIEr6EBU8pIuSIZ7Yukm+u4DdzcjK
-         W5iEIgLmNAeLk1wT4GfXblSlDPc6dlVGF6m9K3hWM4fn3gBjCpWCr2UQF+ixfZ0zzzDp
-         MlaHnfl6WFy/z68Gm28sJtlJ6AnQLxJTr1NM8Sh3cbSIJ5Nu9Xn82XSs5uav+dRBjsom
-         Qh7A==
-X-Gm-Message-State: AOAM530WvVXu3EfOw1EjCr37xCono/ZIFqonAc1TnnqFArL/WRPuWq/e
-        2jZ1gyrFeJl5SEZxXl9WoNakrh2UNRaEnCdoyfHKGMk7z35q2S40qCLMNRM4SLSwqe+5c//ebQG
-        cUwxwD+D5qoHg62Ce19YaR+5y
-X-Received: by 2002:a05:6402:2748:: with SMTP id z8mr9603727edd.25.1634224503462;
-        Thu, 14 Oct 2021 08:15:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypsBtx0K0OiLkQTrKhkIbAXO5KzgFiscNLWrrEbZFb3hhq8Gefzfok7Xd44WnydMsyfqxfJg==
-X-Received: by 2002:a05:6402:2748:: with SMTP id z8mr9603697edd.25.1634224503314;
-        Thu, 14 Oct 2021 08:15:03 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id ga6sm1924886ejc.87.2021.10.14.08.15.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 08:15:02 -0700 (PDT)
-Subject: Re: [PATCH v3] x86/PCI: Ignore E820 reservations for bridge windows
- on newer systems
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Benoit_Gr=c3=a9goire?= <benoitg@coeus.ca>,
-        Hui Wang <hui.wang@canonical.com>
-References: <20211014110357.17957-1-hdegoede@redhat.com>
- <YWgzaa9Z4elzoRwL@infradead.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <40549939-e4c2-7b20-6bb6-0b5a46731b1c@redhat.com>
-Date:   Thu, 14 Oct 2021 17:15:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YWgzaa9Z4elzoRwL@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=8lwRp3uP8+IKYysxWAf8gbvxjj8gBa/nFz3RxTvcuPo=;
+        b=rzXucl1h/l9ZJgOGgb7VGjiP9il1trpThqsO1Zvs5igoNx65LK/HvIAgmA6wZ07Lm/
+         Mww4HLM2i2TBhkrKqyU6UcYpkcssMf4kOcl074NLjKAw5++QvqtD0SI0v5BokwdN+FD1
+         xCDqz3rfGVW+D2SWtWyqa2JNeYYm/lCbZHjNqkHranXbxV32QEm4LkzZnE/KB+5cm673
+         fO5nBWKiT6afc01qjIo44pZ39PHgu4zbgmTPbwG0HulTYKXZ2sv9gSOE2uRZwOTLSHnh
+         qHkYeZidVvaNhBeYM6/jTuhOMHRhybAfqT7tcHhmfRQve6yTMSzAZN6D+EDJYm4KfjvL
+         KhDQ==
+X-Gm-Message-State: AOAM532SDZ/2JrJEVWejJXqB+87kvAXGxboujIZnTeoMJX8orsMDkdgq
+        qYDAp51YsJ6ooLIkDmxi71q6+4OzN42Xjw==
+X-Google-Smtp-Source: ABdhPJw+Wctx4vD1oG672/mLpw+81PzUDFwQ6/X9iV9MtZR4g0zPLuHZt2SN2+IVZ+mEQ6AmxssCTwZmjPSGYg==
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:1581:9ea1:b658:109a])
+ (user=shakeelb job=sendgmr) by 2002:a17:90b:1d0d:: with SMTP id
+ on13mr6901295pjb.118.1634224574128; Thu, 14 Oct 2021 08:16:14 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 08:16:07 -0700
+Message-Id: <20211014151607.2171970-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH v2] memcg: page_alloc: skip bulk allocator for __GFP_ACCOUNT
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Roman Gushchin <guro@fb.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The commit 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in
+__vmalloc_area_node()") switched to bulk page allocator for order 0
+allocation backing vmalloc. However bulk page allocator does not support
+__GFP_ACCOUNT allocations and there are several users of
+kvmalloc(__GFP_ACCOUNT).
 
-On 10/14/21 3:40 PM, Christoph Hellwig wrote:
-> On Thu, Oct 14, 2021 at 01:03:57PM +0200, Hans de Goede wrote:
->> +	 * Some BIOS-es contain a bug where they add addresses which map to system
->> +	 * RAM in the PCI bridge memory window returned by the ACPI _CRS method,
-> 
-> Please avoid the overly long lines in your comments.
+For now make __GFP_ACCOUNT allocations bypass bulk page allocator. In
+future if there is workload that can be significantly improved with the
+bulk page allocator with __GFP_ACCCOUNT support, we can revisit the
+decision.
 
-?
+Fixes: 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in __vmalloc_area_node()")
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+Changes since v1:
+- do fallback allocation instead of failure, suggested by Michal Hocko.
+- Added memcg_kmem_enabled() check, corrected by Vasily Averin
 
-These lines are easily within the new 100 char line-length-limit ?
+ mm/page_alloc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-And checkpatch also does not complain about this.
-
-Regards,
-
-Hans
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 668edb16446a..9ca871dc8602 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5230,6 +5230,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	if (unlikely(page_array && nr_pages - nr_populated == 0))
+ 		goto out;
+ 
++	/* Bulk allocator does not support memcg accounting. */
++	if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT))
++		goto failed;
++
+ 	/* Use the single page allocator for one page. */
+ 	if (nr_pages - nr_populated == 1)
+ 		goto failed;
+-- 
+2.33.0.882.g93a45727a2-goog
 
