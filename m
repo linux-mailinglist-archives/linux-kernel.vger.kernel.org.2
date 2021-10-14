@@ -2,118 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F8442E206
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C72C42E20A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233521AbhJNT2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:28:01 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48906 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232265AbhJNT2A (ORCPT
+        id S233524AbhJNT3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230119AbhJNT3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:28:00 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19EHlw7K022386;
-        Thu, 14 Oct 2021 15:25:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : content-type :
- mime-version; s=pp1; bh=T+FTQs9iC3vHNPf7SovINCy/F5ijYl2mOFuFPVuo+m8=;
- b=fmK5trA1WcDRh89vftUEbaYc4LjT13bWDgpCHbpTAHJmiaOVq2wL7kKpy4bOc74ajVMZ
- awr6WQ1yL0BX14Js9Vi2pifEIcPtniFv8eaZVCiSWr42bg2wnxeqzCaurNHOmuUFXiCN
- YtC48atOTq2dq9ASO+lnaHmcgy9fCgVudSiKSR1dg9RRGwK0K0FUZ3KzwW8XQ5RNbzZ1
- cf0u4aAY+gfCptZYzu4andUr5M7LrMkbEOa49vVeYDAnYer99yKQfOPFO34zf1OrHNej
- ka/v9g0DXHYALdA9MSbPcDl8faF0MX5e39gCVPAbXWxb9ZFggHX6Ijk+wdhCvKoiG3oy hQ== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bps921xy3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Oct 2021 15:25:36 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19EJHofj016595;
-        Thu, 14 Oct 2021 19:25:35 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma04dal.us.ibm.com with ESMTP id 3bkeq8smdh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Oct 2021 19:25:35 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19EJPXeA47644970
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Oct 2021 19:25:33 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 677916A054;
-        Thu, 14 Oct 2021 19:25:33 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 447F06A051;
-        Thu, 14 Oct 2021 19:25:33 +0000 (GMT)
-Received: from localhost (unknown [9.211.53.229])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Oct 2021 19:25:33 +0000 (GMT)
-From:   Nathan Lynch <nathanl@linux.ibm.com>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>, linux-scsi@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2] scsi: ibmvscsi: Use dma_alloc_noncoherent() instead
- of get_zeroed_page/dma_map_single()
-In-Reply-To: <20211012032317.2360-1-caihuoqing@baidu.com>
-References: <20211012032317.2360-1-caihuoqing@baidu.com>
-Date:   Thu, 14 Oct 2021 14:25:32 -0500
-Message-ID: <878ryvz9w3.fsf@linux.ibm.com>
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Fwemt4NK7GdPjxbk-RoXEt7GPzNnhFpZ
-X-Proofpoint-GUID: Fwemt4NK7GdPjxbk-RoXEt7GPzNnhFpZ
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 14 Oct 2021 15:29:06 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3E8C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:27:01 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id p16so31668566lfa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=plSxLdohiawK9v5g/YQxS/w9Rn9HzCKJRyvLQE2YWx8=;
+        b=kZOFJUN4j714xJTUzU1dxNFBnaNDBBA58bdY92Z5ZrqC7F2kYWqI/pcg9LdQUsf+o8
+         DXxtT6jINJTJeAXoRtZP/doSelLOXCL1H1fegOIItUQbYk7juW1GazDumsmw3ORSBvTE
+         72oTtcriLDfxUaK+MDHrPesf/JXqtLdgLBaaWN1YSD+rgl2I2leR5Zc5+w8d11DY2jYo
+         J1iiRyLBpmpvoFgz/nJkJ3Ut3EQqEm/VovzJI5pkOTZdmaqneVclQZPUpse0yUqMiti+
+         ZBMe+O3oA7w2+cGmsugwBxW65zEkBRZ5xY8JriFgKVBq29Seo1bYO7pC6MOwNXbsVVar
+         hsLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=plSxLdohiawK9v5g/YQxS/w9Rn9HzCKJRyvLQE2YWx8=;
+        b=isdqeWMQ7McxZ/UqUYoxu0Xz+0eb2utFT3Xm4cLSKgVGT8GQ4emuVrYcdwIqEKLRJC
+         /oFimaFTmL+9IFdTtYsmEnTAz2i+17pkMwPyrQx8nHDnbJtUK092tkjegpx3qYIjHVr9
+         4MNX2tY+nY6OfAfdxdLNWC1d0m7dIIBADL8OhiWGYkA/nOOrp2TsrpXvMWbluhCXcZoo
+         hQwdlfHXpcrtXB+JaOsCZmwUaUs/Cft06Fo3Yfit6Hkb40YJdIGPuwzbjc9VX94YYqZl
+         JAXqQ5pCx6gcsFzMexYMotOslWA4r9AuoG5ahdjMgRfN5xquMDuEtoH3jMOf6UyZh0mv
+         xnMQ==
+X-Gm-Message-State: AOAM533efscLiArsd+GMW7X+tSzMsgJ0PvbCY5oCP69/nmtUzNBOp+n1
+        7cQBky8l91kk6I/4qXIZiX58uA==
+X-Google-Smtp-Source: ABdhPJyZZTUDQSFoiBxUa58tb09wa37AJZpduqIQeub/B8AmxTEv6Zh5nbYLQ4ysdr8DeAMY/rKNiw==
+X-Received: by 2002:a2e:9b4e:: with SMTP id o14mr7856596ljj.278.1634239619670;
+        Thu, 14 Oct 2021 12:26:59 -0700 (PDT)
+Received: from [192.168.112.17] (nikaet.starlink.ru. [94.141.168.29])
+        by smtp.gmail.com with ESMTPSA id b25sm297865lfi.151.2021.10.14.12.26.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 12:26:59 -0700 (PDT)
+Subject: Re: [PATCH v2] pinctrl: renesas: r8a779[56]x: add MediaLB pins
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrey Gusakov <andrey.gusakov@cogentembedded.com>,
+        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
+        LUU HOAI <hoai.luu.ub@renesas.com>
+References: <CAMuHMdUvNM8Tu-+Ed0vjB2-_JUQe7ojUPbzJM=Vy1m_j31sNSg@mail.gmail.com>
+ <20211007200250.20661-1-nikita.yoush@cogentembedded.com>
+ <CAMuHMdU2Nr1V035Ntz-XNrc10t7femUFt_WV+Q3EHiWZD5HmkQ@mail.gmail.com>
+From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Message-ID: <c8234074-a22e-72f9-fbe7-e65d6af74eec@cogentembedded.com>
+Date:   Thu, 14 Oct 2021 22:26:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-14_10,2021-10-14_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=849
- lowpriorityscore=0 spamscore=0 clxscore=1011 priorityscore=1501
- suspectscore=0 malwarescore=0 phishscore=0 mlxscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110140107
+In-Reply-To: <CAMuHMdU2Nr1V035Ntz-XNrc10t7femUFt_WV+Q3EHiWZD5HmkQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cai Huoqing <caihuoqing@baidu.com> writes:
-> @@ -331,18 +329,12 @@ static int ibmvscsi_init_crq_queue(struct crq_queue *queue,
->  	int retrc;
->  	struct vio_dev *vdev = to_vio_dev(hostdata->dev);
->  
-> -	queue->msgs = (struct viosrp_crq *)get_zeroed_page(GFP_KERNEL);
-> -
-> -	if (!queue->msgs)
-> -		goto malloc_failed;
->  	queue->size = PAGE_SIZE / sizeof(*queue->msgs);
-> -
-> -	queue->msg_token = dma_map_single(hostdata->dev, queue->msgs,
-> -					  queue->size * sizeof(*queue->msgs),
-> -					  DMA_BIDIRECTIONAL);
-> -
-> -	if (dma_mapping_error(hostdata->dev, queue->msg_token))
-> -		goto map_failed;
-> +	queue->msgs = dma_alloc_noncoherent(hostdata->dev,
-> +					    PAGE_SIZE, &queue->msg_token,
-> +					    DMA_BIDIRECTIONAL, GFP_KERNEL);
-> +	if (!queue->msg)
-> +		goto malloc_failed;
+Hi,
+
+> 
+> Obviously not only the mlb_3pin groups, but also the functions have to
+> be moved to the automotive[] arrays ;-)
+> 
+> I'll fix these up while applying, so no need to resend.
+
+Looking at error mail from build robot (cited below).
+
+Looks like also must put definitions of mlb_3pin_groups[] / mlb_3pin_mux[] / mlb_3pin_pins[] under GEN3 
+ifdefs.
+
+What are the proper steps now - send a v3 of the original patch, or send a fix to what is in linux-next ?
+
+Nikita
 
 
-This version appears to retain the build breakage from v1 which was
-reported here:
-
-https://lore.kernel.org/linuxppc-dev/202110121452.nWPHZeZg-lkp@intel.com/
-
-   drivers/scsi/ibmvscsi/ibmvscsi.c: In function 'ibmvscsi_init_crq_queue':
->> drivers/scsi/ibmvscsi/ibmvscsi.c:334:21: error: 'struct crq_queue' has no member named 'msg'; did you mean 'msgs'?
-     334 |         if (!queue->msg)
-         |                     ^~~
-         |                     msgs
-   drivers/scsi/ibmvscsi/ibmvscsi.c:388:60: error: 'struct crq_queue' has no member named 'msg'; did you mean 'msgs'?
-     388 |         dma_free_coherent(hostdata->dev, PAGE_SIZE, queue->msg, queue->msg_token);
-         |                                                            ^~~
-         |                                                            msgs
+ > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+ > head:   8006b911c90a4ec09958447d24c8a4c3538f5723
+ > commit: 23f87fe82c0341ff79807fb5f92a05a33ce1b055 [7355/7806] pinctrl: renesas: r8a779[56]x: Add 
+MediaLB pins
+ > config: sh-buildonly-randconfig-r002-20211014 (attached as .config)
+ > compiler: sh4-linux-gcc (GCC) 11.2.0
+ > reproduce (this is a W=1 build):
+ >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O 
+~/bin/make.cross
+ >          chmod +x ~/bin/make.cross
+ >          # 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=23f87fe82c0341ff79807fb5f92a05a33ce1b055
+ >          git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+ >          git fetch --no-tags linux-next master
+ >          git checkout 23f87fe82c0341ff79807fb5f92a05a33ce1b055
+ >          # save the attached .config to linux build tree
+ >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=sh
+ >
+ > If you fix the issue, kindly add following tag as appropriate
+ > Reported-by: kernel test robot <lkp@intel.com>
+ >
+ > All errors (new ones prefixed by >>):
+ >
+ >>> drivers/pinctrl/renesas/pfc-r8a77965.c:5030:27: error: 'mlb_3pin_groups' defined but not used 
+[-Werror=unused-const-variable=]
+ >      5030 | static const char * const mlb_3pin_groups[] = {
+ >           |                           ^~~~~~~~~~~~~~~
+ >>> drivers/pinctrl/renesas/pfc-r8a77965.c:2616:27: error: 'mlb_3pin_mux' defined but not used 
+[-Werror=unused-const-variable=]
+ >      2616 | static const unsigned int mlb_3pin_mux[] = {
+ >           |                           ^~~~~~~~~~~~
+ >>> drivers/pinctrl/renesas/pfc-r8a77965.c:2613:27: error: 'mlb_3pin_pins' defined but not used 
+[-Werror=unused-const-variable=]
+ >      2613 | static const unsigned int mlb_3pin_pins[] = {
+ >           |                           ^~~~~~~~~~~~~
+ >     cc1: all warnings being treated as errors
+ > --
+ >>> drivers/pinctrl/renesas/pfc-r8a77951.c:4807:27: error: 'mlb_3pin_groups' defined but not used 
+[-Werror=unused-const-variable=]
+ >      4807 | static const char * const mlb_3pin_groups[] = {
+ >           |                           ^~~~~~~~~~~~~~~
+ >>> drivers/pinctrl/renesas/pfc-r8a77951.c:2460:27: error: 'mlb_3pin_mux' defined but not used 
+[-Werror=unused-const-variable=]
+ >      2460 | static const unsigned int mlb_3pin_mux[] = {
+ >           |                           ^~~~~~~~~~~~
+ >>> drivers/pinctrl/renesas/pfc-r8a77951.c:2457:27: error: 'mlb_3pin_pins' defined but not used 
+[-Werror=unused-const-variable=]
+ >      2457 | static const unsigned int mlb_3pin_pins[] = {
+ >           |                           ^~~~~~~~~~~~~
+ >     cc1: all warnings being treated as errors
+ >
+ >
+ > vim +/mlb_3pin_groups +5030 drivers/pinctrl/renesas/pfc-r8a77965.c
+ >
+ >    5029	
+ >> 5030	static const char * const mlb_3pin_groups[] = {
+ >    5031		"mlb_3pin",
+ >    5032	};
+ >    5033	
+ >
 
