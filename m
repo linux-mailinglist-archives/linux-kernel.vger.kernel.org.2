@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E9B42DB6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BBC42DB71
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhJNO0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
+        id S231817AbhJNO1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbhJNO0i (ORCPT
+        with ESMTP id S230030AbhJNO1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:26:38 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C91C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XeOyDQkq1uPXVeW24zX/26vNnS1ATHn1F0LAI5O9ioA=; b=kmBbNpOiO5do7yv3mmUvroGyby
-        IgF2SKwEPtcfhKy7XK74HN3tbEvzNvDvttdEDRqNiaDCUsu7rfIIa88KMkq2Oc/5cG5mRipJT+aBT
-        w2isuO2YltnZb3m6Fa4vkUFEbi3PUZ+7icaMa5t9t+CwrQnEmWhZGf/o5egMw72m5uVpamWIX6+wT
-        djrdrqimAHBB/5QECgOc2lbWHmaTZ419vINmcfaNEViN2fPG8BD0u5JWFNQjCBsfA+W8ndJi6Xu94
-        1cQnQwfjUs1+kJkDVlca6gqeIo65idlH6zC1Yf8ufjG1LzbcB7U1+tJOO9TG7/Vlq5SUZ2UaMVOV1
-        EKAs/xvA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mb1eZ-009qfL-65; Thu, 14 Oct 2021 14:24:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B48423001E1;
-        Thu, 14 Oct 2021 16:24:13 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 863602CE91EE8; Thu, 14 Oct 2021 16:24:13 +0200 (CEST)
-Date:   Thu, 14 Oct 2021 16:24:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Don <joshdon@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineethrp@gmail.com>,
-        Hao Luo <haoluo@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sched/core: forced idle accounting
-Message-ID: <YWg9je0wEJsNAd3M@hirez.programming.kicks-ass.net>
-References: <20211008000825.1364224-1-joshdon@google.com>
- <20211009155435.GW174703@worktop.programming.kicks-ass.net>
- <CABk29Nu6F4__ryF5p0En--Ze6CCev1Jy81W=LkTYaacf-YLkFg@mail.gmail.com>
- <YWV/HNDJaIAOLdrt@hirez.programming.kicks-ass.net>
- <CABk29NucE__6r3P64Ts3Nbf4sUy5Zkw1sbNNnab9KZ=68ydy=w@mail.gmail.com>
+        Thu, 14 Oct 2021 10:27:36 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E42C061570;
+        Thu, 14 Oct 2021 07:25:31 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so8438239ote.8;
+        Thu, 14 Oct 2021 07:25:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DgggYFRN9gnata5M3CUjSHFufPP55fUbunNLNw/C/eY=;
+        b=b7seyn2A9tEw8HJUvgJVcUP4WwRhr5TXX60R//wRT36q7M8FOcm0TZEJjIcOwmo0P8
+         FXwA4AQC7xTw7emN/c9ES3qiGI8aqqrLQZeQCxX/nDkwvHPFjRG02ZJvhiNUygbCdF0S
+         uLomW0egGJN4ZjC/iak/ae0kDUIYskWcATOWV48xSWijQ+/MJq+Bd96vGjY3y92XGqyd
+         bkVr7CJo070kAgbxs4tQEcaKLoqQmpWUg5OK39EfUR32phhRD7eF0sBJyP55uiwg9ZMG
+         6RVt0gyctabfZvr+zpN1iBm412AEMBxtQGf/uprAcR5CBGosajV6DYvmrgr2neHm2aTT
+         oMVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DgggYFRN9gnata5M3CUjSHFufPP55fUbunNLNw/C/eY=;
+        b=Hy7oDMxcxVT77D8vwHfJXU66POZgRqMTs79OJyZx9u77A58eM/XIF8L/n68T8nGQk6
+         bhs0w1H5Hb5M7sHQ4/HT3JpqfwSVQOdSlK+5F99hdcz5xxYzlaZ9uK/CLfs1Ch2IUrMH
+         TYneL+qyUWUxST6mOhtyzERgNriJWehwH0IhET02Pun3UJoOGPg3zrB/B9gfk+HqKEfq
+         qGGKyj8L4ZXv512cPetxcIOSzMHPpKnzcvm8MziKtBkjbkd+8pMsebeq0KBGVF7rYhlK
+         JRBUEKG8AorTwb6CToToa1H8yT8SvRnRN2Mt2stF2LPOLc7NQ5G78h/3y2YFqyuIDnGj
+         uvcA==
+X-Gm-Message-State: AOAM5338yFb7e0mR2H4MnkzqDnqtW1q53DNOd62Ku6Gvl55B82wHhBBn
+        J3KpBUKHMmoHaccWRylX1Pzw51suaXk=
+X-Google-Smtp-Source: ABdhPJyhNVhhmxeGNDO19iv3OtTgAOWDcQTjpC0JLm0n0PMtbLPeGqjMIBFvWE10qt2AFsbovzDonQ==
+X-Received: by 2002:a9d:4b95:: with SMTP id k21mr2708925otf.345.1634221530195;
+        Thu, 14 Oct 2021 07:25:30 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l10sm563680otj.9.2021.10.14.07.25.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 07:25:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v6 1/2] hwmon: (asus_wmi_ec_sensors) Support B550 Asus
+ WMI.
+To:     Eugene Shalygin <eugene.shalygin@gmail.com>,
+        Denis Pauk <pauk.denis@gmail.com>
+Cc:     andy.shevchenko@gmail.com, platform-driver-x86@vger.kernel.org,
+        Tor Vic <torvic9@mailbox.org>,
+        kernel test robot <lkp@intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211014072537.190816-1-pauk.denis@gmail.com>
+ <20211014072537.190816-2-pauk.denis@gmail.com>
+ <CAB95QAQQC6KJcbd-WhexBm=jusyoFkkB_a69RizMHpjSEbrqgA@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <e1a141d4-20e7-62c4-fae3-11166b8d0a66@roeck-us.net>
+Date:   Thu, 14 Oct 2021 07:25:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABk29NucE__6r3P64Ts3Nbf4sUy5Zkw1sbNNnab9KZ=68ydy=w@mail.gmail.com>
+In-Reply-To: <CAB95QAQQC6KJcbd-WhexBm=jusyoFkkB_a69RizMHpjSEbrqgA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 12:45:28PM -0700, Josh Don wrote:
-> On Tue, Oct 12, 2021 at 5:27 AM Peter Zijlstra <peterz@infradead.org> wrote:
-
-> > > We scale by the number of cpus actually forced idle, since we don't
-> > > want to falsely over or under charge forced idle time (defined
-> > > strictly as time where we have a runnable task but idle the cpu). The
-> > > more important scaling here though is the division over the number of
-> > > running entities. This is done so that the aggregate amount of forced
-> > > idle over some group of threads makes sense. Ie if we have a cpu with
-> > > SMT8, and a group of 7 threads sharing a cookie, we don't want to
-> > > accrue 7 units of forced idle time per unit time while the 8th SMT is
-> > > forced idle.
-> >
-> > So why not simply compute the strict per-cpu force-idle time and let
-> > userspace sort out the rest?
+On 10/14/21 5:08 AM, Eugene Shalygin wrote:
+>> +struct asus_wmi_ec_sensor_address {
+>> +       u8 index;
+>> +       u8 bank;
+>> +       u8 size;
+>> +};
+> The fourth field which you removed was supposed to hold the data
+> encoding type, and together those four were packing nicely in u32...
 > 
-> Do you mean to compute force idle solely as a per-cpu value? I think
-> that would be fine in addition to the per-thread field, but a
-> desirable property here is proper attribution to the cause of the
-> force idle. That lets system management understand which jobs are the
-> most antagonistic from a coresched perspective, and is a signal
-> (albeit noisy, due to system state and load balancing decisions) for
-> scaling their capacity requirements.
 
-Urgh, reading is hard. I hadn't noticed you did per-task accounting (and
-the original changelog doesn't clarify this either).
+The compiler aligns the data nicely anyway (it will just leave
+a 1-byte hole where needed), so the packing is really irrelevant.
+Apart of that, does the above suggest that some information/
+code is now missing from the driver ?
 
-Also, should all this be undef SCHED_DEBUG ? Or be part of SCHEDSTATS ?
+Guenter
