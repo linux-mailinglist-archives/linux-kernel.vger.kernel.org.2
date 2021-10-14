@@ -2,130 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C276442D76E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F5442D783
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhJNKtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:49:55 -0400
-Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:48137 "EHLO
-        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230265AbhJNKtx (ORCPT
+        id S230063AbhJNKzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230142AbhJNKzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:49:53 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id DBFCDF83DB
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:47:45 +0100 (IST)
-Received: (qmail 19320 invoked from network); 14 Oct 2021 10:47:45 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Oct 2021 10:47:45 -0000
-Date:   Thu, 14 Oct 2021 11:47:44 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Linux-MM <linux-mm@kvack.org>, NeilBrown <neilb@suse.de>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/8] mm/vmscan: Throttle reclaim until some writeback
- completes if congested
-Message-ID: <20211014104744.GY3959@techsingularity.net>
-References: <20211008135332.19567-1-mgorman@techsingularity.net>
- <20211008135332.19567-2-mgorman@techsingularity.net>
- <63898e7a-0846-3105-96b5-76c89635e499@suse.cz>
+        Thu, 14 Oct 2021 06:55:44 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCECC06174E;
+        Thu, 14 Oct 2021 03:53:39 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id r9so2980618ile.5;
+        Thu, 14 Oct 2021 03:53:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DaTb+4k+F0V+OcIZQk92noaDq0ER0qSofHMcijTckv0=;
+        b=TPJsMFvULPki9Oib0kikIYimr4BHFLGvb81lAZjzg9PojxC7poB+99om045GHW3M+g
+         1Tt3sX+6b55TB4Dl+8VUFGFpGqFM+ZsVjxZjWj93Oj+ecwLwkMaSf2e/xqFgt3nW5I4/
+         kW51c5JlESqxYeni3Uj1zQE12ig1C+AHTObOqGHHuxEGwmm2ub2AcJlqiyrx5sFZrnkm
+         Bg2NyYGZ9wU/wH/MUb4fVNf9JxB6M8xpsQrU6ZSP7ExD+wT1agXB759kD5goBnkY9vT4
+         N1suJEAslCNMirQVm2yWq0edXZIpmPBID3g8JeH39NZDpBJywExFVBXcwImmSTMLDiKt
+         X3kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DaTb+4k+F0V+OcIZQk92noaDq0ER0qSofHMcijTckv0=;
+        b=VTYfaFLV2rsPsP2Uy2bvfCFaAp8CWy/uMttyXgboFy7Nqv0QRJkGj8Jjf99Mm4He1f
+         x7NKn8exLnBirU7EFnhwmqfLiDmNfb7usmOcN+1lT6GAkxB/D7xGxqmeTD7I5GVnTzi0
+         TEXHovrPPq1VQKKFC81lba/TWP3dHJWuDlT9j63UlL1UHR2u/BW2PFjv8WGc2yf4q3k5
+         MLz/ouiq7OtNYpJ5gRzcaIlJcf3KMZROPbbwjn0bLwlH6JpQC55+j7eLaqWCRv1Kg+Ks
+         Y5g0QpsWxnp3WpTacUTNZmnp4MmsMYm1HJPEj5GJ2kFU7pRYlu5h1M+0hA5HoEcpFp4e
+         AvXg==
+X-Gm-Message-State: AOAM5306n2CPEGwE46uLyAOAz1q26nlReGoauMKRk6IP4x6FirybNrwX
+        eHFxFfGeg4rwhZjugFO+DGNeg8WUAvSeXObZC84=
+X-Google-Smtp-Source: ABdhPJy3KKlDt7N5ANo6q+NVxGeDTThueZ6yjtppRpWOMOoXdTqmDKkwFqmftkhqmNs8rVQ1pAx8untdJgkpOjspvLU=
+X-Received: by 2002:a05:6e02:13cb:: with SMTP id v11mr1927428ilj.44.1634208818924;
+ Thu, 14 Oct 2021 03:53:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <63898e7a-0846-3105-96b5-76c89635e499@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1634207106-7632-1-git-send-email-dillon.minfei@gmail.com>
+ <1634207106-7632-7-git-send-email-dillon.minfei@gmail.com> <2b0739f1-85e4-6b19-ff30-2587f0c622c2@xs4all.nl>
+In-Reply-To: <2b0739f1-85e4-6b19-ff30-2587f0c622c2@xs4all.nl>
+From:   Dillon Min <dillon.minfei@gmail.com>
+Date:   Thu, 14 Oct 2021 18:53:02 +0800
+Message-ID: <CAL9mu0LqkCpjYft4z6V4T97Mq46dCTXZ=BvfQa+DijjRd4pDkA@mail.gmail.com>
+Subject: Re: [PATCH v4 6/8] media: v4l2-ctrls: Add RGB color effects control
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        mchehab+huawei@kernel.org, ezequiel@collabora.com,
+        gnurou@gmail.com, Pi-Hsun Shih <pihsun@chromium.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, gabriel.fernandez@st.com,
+        gabriel.fernandez@foss.st.com,
+        Patrice CHOTARD <patrice.chotard@foss.st.com>,
+        hugues.fruchet@foss.st.com,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Vlastimil
+Hi Hans
 
-On Wed, Oct 13, 2021 at 05:39:36PM +0200, Vlastimil Babka wrote:
-> > +/*
-> > + * Account for pages written if tasks are throttled waiting on dirty
-> > + * pages to clean. If enough pages have been cleaned since throttling
-> > + * started then wakeup the throttled tasks.
-> > + */
-> > +void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page,
-> > +							int nr_throttled)
-> > +{
-> > +	unsigned long nr_written;
-> > +
-> > +	__inc_node_page_state(page, NR_THROTTLED_WRITTEN);
-> 
-> Is this intentionally using the __ version that normally expects irqs to be
-> disabled (AFAIK they are not in this path)? I think this is rarely used cold
-> path so it doesn't seem worth to trade off speed for accuracy.
-> 
+Thanks for quick reply
 
-It was intentional because IRQs can be disabled and if it's race-prone,
-it's not overly problematic but you're right, better to be safe.  I changed
-it to the safe type as it's mostly free on x86, arm64 and s390 and for
-other architectures, this is a slow path.
+On Thu, 14 Oct 2021 at 18:44, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+>
+> On 14/10/2021 12:25, dillon.minfei@gmail.com wrote:
+> > From: Dillon Min <dillon.minfei@gmail.com>
+> >
+> > Add V4L2_COLORFX_SET_RGB color effects control, V4L2_CID_COLORFX_RGB
+> > for RGB color setting.
+> >
+> > Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> > ---
+> > v4:
+> > - replace V4L2_COLORFX_SET_ARGB, V4L2_CID_COLORFX_ARGB to
+> >   V4L2_COLORFX_SET_RGB, V4L2_CID_COLORFX_RGB since Alpha paramter not used
+> >   in current. thanks Hans.
+> >
+> >  Documentation/userspace-api/media/v4l/control.rst | 9 +++++++++
+> >  drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 2 ++
+> >  include/uapi/linux/v4l2-controls.h                | 4 +++-
+> >  3 files changed, 14 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Documentation/userspace-api/media/v4l/control.rst
+> > index f8d0b923da20..3eec65174260 100644
+> > --- a/Documentation/userspace-api/media/v4l/control.rst
+> > +++ b/Documentation/userspace-api/media/v4l/control.rst
+> > @@ -242,8 +242,17 @@ Control IDs
+> >      * - ``V4L2_COLORFX_SET_CBCR``
+> >        - The Cb and Cr chroma components are replaced by fixed coefficients
+> >       determined by ``V4L2_CID_COLORFX_CBCR`` control.
+> > +    * - ``V4L2_COLORFX_SET_RGB``
+> > +      - The RGB components are replaced by the fixed RGB components determined
+> > +        by ``V4L2_CID_COLORFX_RGB`` control.
+> >
+> >
+> > +``V4L2_CID_COLORFX_RGB`` ``(integer)``
+> > +    Determines the Red, Green, and Blue coefficients for
+> > +    ``V4L2_COLORFX_SET_RGB`` color effect.
+> > +    Bits [7:0] of the supplied 32 bit value are interpreted as Blue component,
+> > +    bits [15:8] as Green component, bits [23:16] as Red component, and
+> > +    bits [31:24] must be zero.
+> >
+> >  ``V4L2_CID_COLORFX_CBCR`` ``(integer)``
+> >      Determines the Cb and Cr coefficients for ``V4L2_COLORFX_SET_CBCR``
+> > diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> > index 421300e13a41..f4bd90170105 100644
+> > --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> > +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> > @@ -785,6 +785,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+> >       case V4L2_CID_MIN_BUFFERS_FOR_OUTPUT:   return "Min Number of Output Buffers";
+> >       case V4L2_CID_ALPHA_COMPONENT:          return "Alpha Component";
+> >       case V4L2_CID_COLORFX_CBCR:             return "Color Effects, CbCr";
+> > +     case V4L2_CID_COLORFX_RGB:              return "Color Effects, RGB";
+> >
+> >       /*
+> >        * Codec controls
+> > @@ -1392,6 +1393,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+> >               *min = *max = *step = *def = 0;
+> >               break;
+> >       case V4L2_CID_BG_COLOR:
+> > +     case V4L2_CID_COLORFX_RGB:
+> >               *type = V4L2_CTRL_TYPE_INTEGER;
+> >               *step = 1;
+> >               *min = 0;
+>
+> Can you make another small change here? Please change:
+>
+>         *max = 0xFFFFFF;
+>
+> to:
+>
+>         *max = 0xffffff;
+>
+> to keep in line with the coding standard for hex values.
 
-> > +	nr_written = node_page_state(pgdat, NR_THROTTLED_WRITTEN) -
-> > +		READ_ONCE(pgdat->nr_reclaim_start);
-> 
-> Even if the inc above was safe, node_page_state() will return only the
-> global counter, so the value we read here will only actually increment when
-> some cpu's counter overflows, so it will be "bursty". Maybe it's ok, just
-> worth documenting?
-> 
+Sure, do it right now.
 
-I didn't think the penalty of doing an accurate read while writeback
-throttled is worth it. I'll add a comment.
+>
+> Also, can you add a separate patch that adds an entry here for V4L2_CID_COLORFX_CBCR
+> that sets *max to 0xffff? I noticed that that was missing. While adding V4L2_CID_COLORFX_RGB
+> it's good to fix V4L2_CID_COLORFX_CBCR as well.
 
-> > +
-> > +	if (nr_written > SWAP_CLUSTER_MAX * nr_throttled)
-> > +		wake_up_all(&pgdat->reclaim_wait);
-> 
-> Hm it seems a bit weird that the more tasks are throttled, the more we wait,
-> and then wake up all. Theoretically this will lead to even more
-> bursty/staggering herd behavior. Could be better to wake up single task each
-> SWAP_CLUSTER_MAX, and bump nr_reclaim_start? But maybe it's not a problem in
-> practice due to HZ/10 timeouts being short enough?
-> 
+Sure, you mean the final code like this? first patch to fix cbcr 0xFFFFFF,
+another one to add V4L2_CID_COLORFX_RGB entry.
 
-Yes, the more tasks are throttled the longer tasks wait because tasks are
-allocating faster than writeback can complete so I wanted to reduce the
-allocation pressure. I considered waking one task at a time but there is
-no prioritisation of tasks on the waitqueue and it's not clear that the
-additional complexity is justified. With inaccurate counters, a light
-allocator could get throttled for the full timeout unnecessarily.
+1395         case V4L2_CID_BG_COLOR:
+1396         case V4L2_CID_COLORFX_RGB:
+1397                 *type = V4L2_CTRL_TYPE_INTEGER;
+1398                 *step = 1;
+1399                 *min = 0;
+1400                 /* Max is calculated as RGB888 that is 2^24 */
+1401                 *max = 0xffffff;
+1402                 break;
 
-Even if we were to wake one task at a time, I would prefer it was done
-as a potential optimisation on top.
+Best Regards
+Dillon
 
-Diff on top based on review feedback;
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index bcd22e53795f..735b1f2b5d9e 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1048,7 +1048,15 @@ void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page,
- {
- 	unsigned long nr_written;
- 
--	__inc_node_page_state(page, NR_THROTTLED_WRITTEN);
-+	inc_node_page_state(page, NR_THROTTLED_WRITTEN);
-+
-+	/*
-+	 * This is an inaccurate read as the per-cpu deltas may not
-+	 * be synchronised. However, given that the system is
-+	 * writeback throttled, it is not worth taking the penalty
-+	 * of getting an accurate count. At worst, the throttle
-+	 * timeout guarantees forward progress.
-+	 */
- 	nr_written = node_page_state(pgdat, NR_THROTTLED_WRITTEN) -
- 		READ_ONCE(pgdat->nr_reclaim_start);
-
+>
+> Regards,
+>
+>         Hans
+>
+> > diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> > index 5532b5f68493..9aa3fd368383 100644
+> > --- a/include/uapi/linux/v4l2-controls.h
+> > +++ b/include/uapi/linux/v4l2-controls.h
+> > @@ -128,6 +128,7 @@ enum v4l2_colorfx {
+> >       V4L2_COLORFX_SOLARIZATION               = 13,
+> >       V4L2_COLORFX_ANTIQUE                    = 14,
+> >       V4L2_COLORFX_SET_CBCR                   = 15,
+> > +     V4L2_COLORFX_SET_RGB                    = 16,
+> >  };
+> >  #define V4L2_CID_AUTOBRIGHTNESS                      (V4L2_CID_BASE+32)
+> >  #define V4L2_CID_BAND_STOP_FILTER            (V4L2_CID_BASE+33)
+> > @@ -145,9 +146,10 @@ enum v4l2_colorfx {
+> >
+> >  #define V4L2_CID_ALPHA_COMPONENT             (V4L2_CID_BASE+41)
+> >  #define V4L2_CID_COLORFX_CBCR                        (V4L2_CID_BASE+42)
+> > +#define V4L2_CID_COLORFX_RGB                 (V4L2_CID_BASE+43)
+> >
+> >  /* last CID + 1 */
+> > -#define V4L2_CID_LASTP1                         (V4L2_CID_BASE+43)
+> > +#define V4L2_CID_LASTP1                         (V4L2_CID_BASE+44)
+> >
+> >  /* USER-class private control IDs */
+> >
+> >
+>
