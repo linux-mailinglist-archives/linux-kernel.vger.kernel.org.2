@@ -2,217 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D565342D02C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6005F42D034
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 04:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbhJNCFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 22:05:41 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:40267 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229660AbhJNCFk (ORCPT
+        id S229892AbhJNCO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 22:14:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52908 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229872AbhJNCOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 22:05:40 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UrjbVWe_1634177013;
-Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UrjbVWe_1634177013)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 14 Oct 2021 10:03:34 +0800
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-To:     sj@kernel.org, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2] mm/damon/dbgfs: remove unnecessary variables
-Date:   Thu, 14 Oct 2021 10:03:33 +0800
-Message-Id: <20211014020333.10330-1-rongwei.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 13 Oct 2021 22:14:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634177541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rKi/nC1vwY+bmICKgPE8kpfZB/d+Vx8FvEWoSRsnXMI=;
+        b=AVD7qGDyCHvlgJZZKKDNX+zoUwszQylZbB/m6huaO8yNl5z/tcbGPXK4QeljMHKxhgSfVB
+        D/ysHaRteemiI4c5cVVVFidtWWOBaJsqQK2ZAekhIa+uHDb0v+JEZy9a0V9/NyHzqTepfJ
+        w9Y/UNsetRZ+a8Mx7Jg+OzNiDzZZkzc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-aJwzUtPhPXmykCOmR_Jyfw-1; Wed, 13 Oct 2021 22:12:16 -0400
+X-MC-Unique: aJwzUtPhPXmykCOmR_Jyfw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5163279EDD;
+        Thu, 14 Oct 2021 02:12:13 +0000 (UTC)
+Received: from T590 (ovpn-8-18.pek2.redhat.com [10.72.8.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 47E042B0B2;
+        Thu, 14 Oct 2021 02:11:50 +0000 (UTC)
+Date:   Thu, 14 Oct 2021 10:11:46 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] zram: fix crashes with cpu hotplug multistate
+Message-ID: <YWeR4moCRh+ZHOmH@T590>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-12-mcgrof@kernel.org>
+ <YWeOJP2UJWYF94fu@T590>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWeOJP2UJWYF94fu@T590>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some functions, it's unnecessary to declare 'err'
-and 'ret' variables at the same time. This patch mainly
-to simplify the issue of such declarations by reusing
-one variable.
+On Thu, Oct 14, 2021 at 09:55:48AM +0800, Ming Lei wrote:
+> On Mon, Sep 27, 2021 at 09:38:04AM -0700, Luis Chamberlain wrote:
 
-Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
----
- mm/damon/dbgfs.c | 66 +++++++++++++++++++++++-------------------------
- 1 file changed, 31 insertions(+), 35 deletions(-)
+...
 
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index 28d6abf27763..5cd4932800df 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -69,8 +69,7 @@ static ssize_t dbgfs_attrs_write(struct file *file,
- 	struct damon_ctx *ctx = file->private_data;
- 	unsigned long s, a, r, minr, maxr;
- 	char *kbuf;
--	ssize_t ret = count;
--	int err;
-+	ssize_t ret;
+> 
+> Hello Luis,
+> 
+> Can you test the following patch and see if the issue can be addressed?
+> 
+> Please see the idea from the inline comment.
+> 
+> Also zram_index_mutex isn't needed in zram disk's store() compared with
+> your patch, then the deadlock issue you are addressing in this series can
+> be avoided.
+> 
+> 
+> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> index fcaf2750f68f..3c17927d23a7 100644
+> --- a/drivers/block/zram/zram_drv.c
+> +++ b/drivers/block/zram/zram_drv.c
+> @@ -1985,11 +1985,17 @@ static int zram_remove(struct zram *zram)
+>  
+>  	/* Make sure all the pending I/O are finished */
+>  	fsync_bdev(bdev);
+> -	zram_reset_device(zram);
+>  
+>  	pr_info("Removed device: %s\n", zram->disk->disk_name);
+>  
+>  	del_gendisk(zram->disk);
+> +
+> +	/*
+> +	 * reset device after gendisk is removed, so any change from sysfs
+> +	 * store won't come in, then we can really reset device here
+> +	 */
+> +	zram_reset_device(zram);
+> +
+>  	blk_cleanup_disk(zram->disk);
+>  	kfree(zram);
+>  	return 0;
+> @@ -2073,7 +2079,12 @@ static int zram_remove_cb(int id, void *ptr, void *data)
+>  static void destroy_devices(void)
+>  {
+>  	class_unregister(&zram_control_class);
+> +
+> +	/* hold the global lock so new device can't be added */
+> +	mutex_lock(&zram_index_mutex);
+>  	idr_for_each(&zram_index_idr, &zram_remove_cb, NULL);
+> +	mutex_unlock(&zram_index_mutex);
+> +
+
+Actually zram_index_mutex isn't needed when calling zram_remove_cb()
+since the zram-control sysfs interface has been removed, so userspace
+can't add new device any more, then the issue is supposed to be fixed
+by the following one line change, please test it:
+
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index fcaf2750f68f..96dd641de233 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1985,11 +1985,17 @@ static int zram_remove(struct zram *zram)
  
- 	kbuf = user_input_str(buf, count, ppos);
- 	if (IS_ERR(kbuf))
-@@ -88,9 +87,9 @@ static ssize_t dbgfs_attrs_write(struct file *file,
- 		goto unlock_out;
- 	}
+ 	/* Make sure all the pending I/O are finished */
+ 	fsync_bdev(bdev);
+-	zram_reset_device(zram);
  
--	err = damon_set_attrs(ctx, s, a, r, minr, maxr);
--	if (err)
--		ret = err;
-+	ret = damon_set_attrs(ctx, s, a, r, minr, maxr);
-+	if (!ret)
-+		ret = count;
- unlock_out:
- 	mutex_unlock(&ctx->kdamond_lock);
- out:
-@@ -220,14 +219,13 @@ static ssize_t dbgfs_schemes_write(struct file *file, const char __user *buf,
- 	struct damon_ctx *ctx = file->private_data;
- 	char *kbuf;
- 	struct damos **schemes;
--	ssize_t nr_schemes = 0, ret = count;
--	int err;
-+	ssize_t nr_schemes = 0, ret;
+ 	pr_info("Removed device: %s\n", zram->disk->disk_name);
  
- 	kbuf = user_input_str(buf, count, ppos);
- 	if (IS_ERR(kbuf))
- 		return PTR_ERR(kbuf);
- 
--	schemes = str_to_schemes(kbuf, ret, &nr_schemes);
-+	schemes = str_to_schemes(kbuf, count, &nr_schemes);
- 	if (!schemes) {
- 		ret = -EINVAL;
- 		goto out;
-@@ -239,11 +237,12 @@ static ssize_t dbgfs_schemes_write(struct file *file, const char __user *buf,
- 		goto unlock_out;
- 	}
- 
--	err = damon_set_schemes(ctx, schemes, nr_schemes);
--	if (err)
--		ret = err;
--	else
-+	ret = damon_set_schemes(ctx, schemes, nr_schemes);
-+	if (!ret) {
-+		ret = count;
- 		nr_schemes = 0;
-+	}
+ 	del_gendisk(zram->disk);
 +
- unlock_out:
- 	mutex_unlock(&ctx->kdamond_lock);
- 	free_schemes_arr(schemes, nr_schemes);
-@@ -342,9 +341,8 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
- 	char *kbuf, *nrs;
- 	unsigned long *targets;
- 	ssize_t nr_targets;
--	ssize_t ret = count;
-+	ssize_t ret;
- 	int i;
--	int err;
- 
- 	kbuf = user_input_str(buf, count, ppos);
- 	if (IS_ERR(kbuf))
-@@ -352,7 +350,7 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
- 
- 	nrs = kbuf;
- 
--	targets = str_to_target_ids(nrs, ret, &nr_targets);
-+	targets = str_to_target_ids(nrs, count, &nr_targets);
- 	if (!targets) {
- 		ret = -ENOMEM;
- 		goto out;
-@@ -378,11 +376,12 @@ static ssize_t dbgfs_target_ids_write(struct file *file,
- 		goto unlock_out;
- 	}
- 
--	err = damon_set_targets(ctx, targets, nr_targets);
--	if (err) {
-+	ret = damon_set_targets(ctx, targets, nr_targets);
-+	if (ret) {
- 		if (targetid_is_pid(ctx))
- 			dbgfs_put_pids(targets, nr_targets);
--		ret = err;
-+	} else {
-+		ret = count;
- 	}
- 
- unlock_out:
-@@ -548,8 +547,7 @@ static ssize_t dbgfs_mk_context_write(struct file *file,
- {
- 	char *kbuf;
- 	char *ctx_name;
--	ssize_t ret = count;
--	int err;
-+	ssize_t ret;
- 
- 	kbuf = user_input_str(buf, count, ppos);
- 	if (IS_ERR(kbuf))
-@@ -567,9 +565,9 @@ static ssize_t dbgfs_mk_context_write(struct file *file,
- 	}
- 
- 	mutex_lock(&damon_dbgfs_lock);
--	err = dbgfs_mk_context(ctx_name);
--	if (err)
--		ret = err;
-+	ret = dbgfs_mk_context(ctx_name);
-+	if (!ret)
-+		ret = count;
- 	mutex_unlock(&damon_dbgfs_lock);
- 
- out:
-@@ -638,8 +636,7 @@ static ssize_t dbgfs_rm_context_write(struct file *file,
- 		const char __user *buf, size_t count, loff_t *ppos)
- {
- 	char *kbuf;
--	ssize_t ret = count;
--	int err;
-+	ssize_t ret;
- 	char *ctx_name;
- 
- 	kbuf = user_input_str(buf, count, ppos);
-@@ -658,9 +655,9 @@ static ssize_t dbgfs_rm_context_write(struct file *file,
- 	}
- 
- 	mutex_lock(&damon_dbgfs_lock);
--	err = dbgfs_rm_context(ctx_name);
--	if (err)
--		ret = err;
-+	ret = dbgfs_rm_context(ctx_name);
-+	if (!ret)
-+		ret = count;
- 	mutex_unlock(&damon_dbgfs_lock);
- 
- out:
-@@ -684,9 +681,8 @@ static ssize_t dbgfs_monitor_on_read(struct file *file,
- static ssize_t dbgfs_monitor_on_write(struct file *file,
- 		const char __user *buf, size_t count, loff_t *ppos)
- {
--	ssize_t ret = count;
-+	ssize_t ret;
- 	char *kbuf;
--	int err;
- 
- 	kbuf = user_input_str(buf, count, ppos);
- 	if (IS_ERR(kbuf))
-@@ -699,14 +695,14 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
- 	}
- 
- 	if (!strncmp(kbuf, "on", count))
--		err = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
-+		ret = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
- 	else if (!strncmp(kbuf, "off", count))
--		err = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
-+		ret = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
- 	else
--		err = -EINVAL;
-+		ret = -EINVAL;
- 
--	if (err)
--		ret = err;
-+	if (!ret)
-+		ret = count;
- 	kfree(kbuf);
- 	return ret;
- }
--- 
-2.27.0
++	/*
++	 * reset device after gendisk is removed, so any change from sysfs
++	 * store won't come in, then we can really reset device here
++	 */
++	zram_reset_device(zram);
++
+ 	blk_cleanup_disk(zram->disk);
+ 	kfree(zram);
+ 	return 0;
+
+
+
+Thanks, 
+Ming
 
