@@ -2,146 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0221642DFBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E92042DFBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 18:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232742AbhJNQ4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 12:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232641AbhJNQ4k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 12:56:40 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C340C061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 09:54:35 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x130so5977856pfd.6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 09:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DxjJWbKincMlvSXC/FY3Ala2ok6WlFlcTqLiBRO6M/w=;
-        b=TmOfNDnpZ594weM/2UNFzn+MY2mLVQtNlWPXx1nvRjNLRuk3e4qJSZ+hf870+QB2jR
-         agy34dupqT+XlQu0aOc5FFWJkU7NrAo35nTYXfcP1hVKEEJPOCK6m9qlcrztza4Rdx9V
-         gTLuI0kzy0ZIf+ljd82tD/Qq0iMg4ZFRRqQzVCdh5zG/QjM/PkK/tP64E2fGXdFNVRk+
-         QPtSuqkBVFKKaUwSqa9cVDsu6SzCzg7Rg6SaCHVzSB+CPCVTtpPilbwGB4rBpGwdc3Ib
-         qKHpgWBPd6ro+VOtbcgwcyhyeTWuKZV0bpMxJ0Q/ixHV2LGaM2/3erKqDn/DF70aoeoB
-         EWmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DxjJWbKincMlvSXC/FY3Ala2ok6WlFlcTqLiBRO6M/w=;
-        b=f2q1gIm/Q+qQHtHRgjJNwrwv9gw6fyrrR3YvjLh6Riu92Htnxd4ttwmsl7wauS/6+l
-         TERPY2C9K/ULrxmx8xvmF28OeQmSyIOyUGjmLTGMfHeTRlgVSS5s1VsOYgLRBxB4VIgu
-         zEph8FR+eDq/2m5zMr0/Glo15wiJU7P7lZi2UQLvhqd3qSRsJlp6o1Mi3ptCxoG42oma
-         +O2KvypgrUzaoHuCOh0iz2ZHo/pURwLW1S+3JjdAt0HnEUW0XULwEQUImkgLdKORRVRu
-         dMEvq45qN2c1s8rfsgFtPRQFQIFaC5S+MycOR3t4iZG12qVVMPD2rfNygK52sL2gdQsA
-         2bkg==
-X-Gm-Message-State: AOAM532N1iUFwYZTS6gTp9XjX6C48zdqLb9SXA6PraWrAhLUDLAtan3G
-        UlFP2M6+Sbyjt1aGvnX7OYV2fA==
-X-Google-Smtp-Source: ABdhPJxMtGllP8NiZbEk0on6Wf4jCwBWbZKO6nNiOAtImB19UfktQycjNgLkgeaQaEGg3IeQfOfgiA==
-X-Received: by 2002:a63:d205:: with SMTP id a5mr5010873pgg.30.1634230474404;
-        Thu, 14 Oct 2021 09:54:34 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id m186sm3131409pfb.165.2021.10.14.09.54.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 09:54:33 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 16:54:30 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Vipin Sharma <vipinsh@google.com>, pbonzini@redhat.com,
-        dmatlack@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: VMX: Add a wrapper for reading
- INVPCID/INVEPT/INVVPID type
-Message-ID: <YWhgxjAwHhy0POut@google.com>
-References: <20211011194615.2955791-1-vipinsh@google.com>
- <YWSdTpkzNt3nppBc@google.com>
- <CALMp9eRzPXg2WS6-Yy6U90+B8wXm=zhVSkmAym4Y924m7FM-7g@mail.gmail.com>
+        id S232833AbhJNQ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 12:57:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231166AbhJNQ50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 12:57:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DB9D6101D;
+        Thu, 14 Oct 2021 16:55:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634230522;
+        bh=SK9fa8kBvKfk0pw+RnBE/3/wOfdzkDkUl60TS++n7Ms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=URMDQCzgsfwoK5y/yNeoJ9JNO/8oJ2NMHAFhAdOy1sGEmtF9XAAISro92Op+4CLCV
+         yz8pYDFNRFzXaJjjZZNkQmS6xjCt/ghBTpBe7izXZK2HZZK1u2FLlZOLXSvNd4nD06
+         5CanmAIdF34pzRmAIif5Q64GJtcQ5TngqgFvJeW3E9bfmHJTfsyZGGGL7cjuetxvNQ
+         DjWaqDEAhLYF/YM9Is2bNH9fPhtpTop86L1W5TtLmWjFVRN3MvUgUa0tbyI4Tl/rs+
+         ROpY6NxCNDMdit7BPa0iEvomWIMDs3JszoYmWYSAtxoUAU4nwX7pJmq+LQ7+RU+IFc
+         BqEp9rvWIEb2A==
+Date:   Thu, 14 Oct 2021 09:55:15 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     elver@google.com, akpm@linux-foundation.org,
+        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, ndesaulniers@google.com,
+        Arnd Bergmann <arnd@arndb.de>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-mm@kvack.org
+Subject: Re: [PATCH] kasan: Always respect CONFIG_KASAN_STACK
+Message-ID: <YWhg8/UzjJsB51Gd@archlinux-ax161>
+References: <YUyWYpDl2Dmegz0a@archlinux-ax161>
+ <mhng-b5f8a6a0-c3e8-4d25-9daa-346fdc8a2e5e@palmerdabbelt-glaptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CALMp9eRzPXg2WS6-Yy6U90+B8wXm=zhVSkmAym4Y924m7FM-7g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <mhng-b5f8a6a0-c3e8-4d25-9daa-346fdc8a2e5e@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021, Jim Mattson wrote:
-> On Mon, Oct 11, 2021 at 1:23 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Mon, Oct 11, 2021, Vipin Sharma wrote:
-> > > -     if (type > 3) {
-> > > +     if (type > INVPCID_TYPE_MAX) {
-> >
-> > Hrm, I don't love this because it's not auto-updating in the unlikely chance that
-> > a new type is added.  I definitely don't like open coding '3' either.  What about
-> > going with a verbose option of
-> >
-> >         if (type != INVPCID_TYPE_INDIV_ADDR &&
-> >             type != INVPCID_TYPE_SINGLE_CTXT &&
-> >             type != INVPCID_TYPE_ALL_INCL_GLOBAL &&
-> >             type != INVPCID_TYPE_ALL_NON_GLOBAL) {
-> >                 kvm_inject_gp(vcpu, 0);
-> >                 return 1;
-> >         }
+On Fri, Oct 08, 2021 at 11:46:55AM -0700, Palmer Dabbelt wrote:
+> On Thu, 23 Sep 2021 07:59:46 PDT (-0700), nathan@kernel.org wrote:
+> > On Thu, Sep 23, 2021 at 12:07:17PM +0200, Marco Elver wrote:
+> > > On Wed, 22 Sept 2021 at 22:55, Nathan Chancellor <nathan@kernel.org> wrote:
+> > > > Currently, the asan-stack parameter is only passed along if
+> > > > CFLAGS_KASAN_SHADOW is not empty, which requires KASAN_SHADOW_OFFSET to
+> > > > be defined in Kconfig so that the value can be checked. In RISC-V's
+> > > > case, KASAN_SHADOW_OFFSET is not defined in Kconfig, which means that
+> > > > asan-stack does not get disabled with clang even when CONFIG_KASAN_STACK
+> > > > is disabled, resulting in large stack warnings with allmodconfig:
+> > > >
+> > > > drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c:117:12:
+> > > > error: stack frame size (14400) exceeds limit (2048) in function
+> > > > 'lb035q02_connect' [-Werror,-Wframe-larger-than]
+> > > > static int lb035q02_connect(struct omap_dss_device *dssdev)
+> > > >            ^
+> > > > 1 error generated.
+> > > >
+> > > > Ensure that the value of CONFIG_KASAN_STACK is always passed along to
+> > > > the compiler so that these warnings do not happen when
+> > > > CONFIG_KASAN_STACK is disabled.
+> > > >
+> > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1453
+> > > > References: 6baec880d7a5 ("kasan: turn off asan-stack for clang-8 and earlier")
+> > > > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> > > 
+> > > Reviewed-by: Marco Elver <elver@google.com>
+> > 
+> > Thanks!
+> > 
+> > > [ Which tree are you planning to take it through? ]
+> > 
+> > Gah, I was intending for it to go through -mm, then I cc'd neither
+> > Andrew nor linux-mm... :/ Andrew, do you want me to resend or can you
+> > grab it from LKML?
 > 
-> Better, perhaps, to introduce a new function, valid_invpcid_type(),
-> and squirrel away the ugliness there?
+> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> 
+> (assuming you still want it through somewhere else)
 
-Oh, yeah, definitely.  I missed that SVM's invpcid_interception() has the same
-open-coded check.
+Thanks, it is now in mainline as commit 19532869feb9 ("kasan: always
+respect CONFIG_KASAN_STACK").
 
-Alternatively, could we handle the invalid type in the main switch statement?  I
-don't see anything in the SDM or APM that architecturally _requires_ the type be
-checked before reading the INVPCID descriptor.  Hardware may operate that way,
-but that's uArch specific behavior unless there's explicit documentation.
+> > > Note, arch/riscv/include/asm/kasan.h mentions KASAN_SHADOW_OFFSET in
+> > > comment (copied from arm64). Did RISC-V just forget to copy over the
+> > > Kconfig option?
+> > 
+> > I do see it defined in that file as well but you are right that they did
+> > not copy the Kconfig logic, even though it was present in the tree when
+> > RISC-V KASAN was implemented. Perhaps they should so that they get
+> > access to the other flags in the "else" branch?
+> 
+> Ya, looks like we just screwed this up.  I'm seeing some warnings like
+> 
+>    cc1: warning: ‘-fsanitize=kernel-address’ with stack protection is not supported without ‘-fasan-shadow-offset=’ for this target
 
+Hmmm, I thought I did a GCC build with this change but I must not have
+:/ 
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 89077160d463..c8aade2e2a20 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3119,11 +3119,6 @@ static int invpcid_interception(struct kvm_vcpu *vcpu)
-        type = svm->vmcb->control.exit_info_2;
-        gva = svm->vmcb->control.exit_info_1;
+> which is how I ended up here, I'm assuming that's what you're talking about
+> here?  LMK if you were planning on sending along a fix or if you want me to
+> go figure it out.
 
--       if (type > 3) {
--               kvm_inject_gp(vcpu, 0);
--               return 1;
--       }
--
-        return kvm_handle_invpcid(vcpu, type, gva);
- }
+I took a look at moving the logic into Kconfig like arm64 before sending
+this change and I did not really understand it well enough to do so. I
+think it would be best if you were able to do that so that nothing gets
+messed up.
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 1c8b2b6e7ed9..ad2e794d4cb2 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5504,11 +5504,6 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
-        vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
-        type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
-
--       if (type > 3) {
--               kvm_inject_gp(vcpu, 0);
--               return 1;
--       }
--
-        /* According to the Intel instruction reference, the memory operand
-         * is read even if it isn't needed (e.g., for type==all)
-         */
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index d9273f536f9d..a3657db6daf9 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -12382,7 +12382,8 @@ int kvm_handle_invpcid(struct kvm_vcpu *vcpu, unsigned long type, gva_t gva)
-                return kvm_skip_emulated_instruction(vcpu);
-
-        default:
--               BUG(); /* We have already checked above that type <= 3 */
-+               kvm_inject_gp(vcpu, 0);
-+               return 1;
-        }
- }
- EXPORT_SYMBOL_GPL(kvm_handle_invpcid);
+Cheers,
+Nathan
