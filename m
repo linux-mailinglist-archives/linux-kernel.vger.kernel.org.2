@@ -2,166 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0F842D10A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA0142D121
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhJNDh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:37:59 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:44902 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbhJNDh4 (ORCPT
+        id S230042AbhJNDoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229997AbhJNDnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:37:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1634182552; x=1665718552;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=BTQ/FBytJkYeAe/W11YgyjFoLQZK3TyIHOuIxod+jto=;
-  b=g2mvr/PX6/8f8Gc1J7PyX4+WdCkA/6IYw5Y/dn1EIQSOWIhcz9u5OaGT
-   PkRiBOUN2zCBKy+H39xM61biaKZVR4atDYqIm/n8ra5+4tAaSiFvPcQ+k
-   KzQNBScx2/PvmDHUlNjR81+yY6B8kfyWHz9TSVrp2HdjmlsRSz2NeosCc
-   Hs6KzTzQfK+lpbNrPd/t9laS5pi8dzAgRha0fprZRXkV5tu5hs9Phd4iR
-   6XcURIb/Ts/UcXKgxhR+gqNmIyEme00qM535r8+Xs4ketmHbu037PximE
-   wkaix2e6QocIjtueeWHre4PJBuLzfFCRFIUHd+GN5EoJs79/2p/7z/b/b
-   g==;
-X-IronPort-AV: E=Sophos;i="5.85,371,1624291200"; 
-   d="scan'208";a="294521777"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 14 Oct 2021 11:35:50 +0800
-IronPort-SDR: Obmjmct6wScHDh6d8TTjw67y1N3usSNW/eOodhUgbwIQOSO/4wphYh8+xnDTwMuHQSERIStArK
- 7EvGcW/kGtvndImDHjhQcHeIEKg9lhmYL8LxuVXGlgbI/rsRc+VnfqudEsTa1u7gQXYFSlJKnp
- dvI4X8Yd+4zdD4S3kI2Phe1Ta2EtQrDKxmZpWsB+gw0wVpnANgX6Dg9RVzm8NmK3U2Uk6wOg/X
- CV50BcojGF0Ton23jfcrB4vuFhbfC7eTxuM/DRmS0dx1oJ+wjGBdrDFO7x8pUXuPsmhx7zU/AO
- 2O8PCGksZFcgGZD4X3SklFwr
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 20:11:36 -0700
-IronPort-SDR: S7f0Hwezw6fgjri5ljwIhypYY8F0+2cC6UkDNUBaVvEJJHUXB1LFUwJwgK8cSn7EOviRMLdYsq
- JfpXL1/0sBVmjofqUX4xf0HLN5JGOps28udEL/ckQb996P32v3pQaRP2F4KgNqzRpw1LkXx+s1
- aIfTpwGKSuETIgLu4LakgKdvlCtMdee/9oV5xHE1BFedrN5cagERxypLR8h7g/jX71e6EJqf0y
- ENv7GL9A3JDeGAwgQfYnBvjzzptvIX9/UsefTkqaS/pco19Rb0Kw3pBGlaUuvEGj1KbveEsE7X
- psw=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 20:35:51 -0700
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4HVFRV5Ny1z1Rvlw
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:35:50 -0700 (PDT)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1634182550; x=1636774551; bh=BTQ/FBytJkYeAe/W11YgyjFoLQZK3TyIHOu
-        Ixod+jto=; b=a/BJuufDY74w5DB576fPRVgDJIPEN8OQRlJOWziAll5ZuQRM79/
-        eEzSfEvP/tAsISf30RA8GTrZXxawQXWKpKvwHchHd7OCFPjGjbn3vX10DGjh1SPF
-        wi3Hyym+ridca8EBir6v5jqxzpAQ/tp71fzky/etEDM8S/WTM7ssUZTtOiLg+aQy
-        SWxOn5kRSycbFN6OhYDrX/7Ce78qDfr0G1zLlMmC+tDPaJH6KlDehBAE5EtY1M9P
-        lzitx9sZkQLJWhdLt+68S9bIUOgHBO60fUFOn5oDk3hZBCgcc/KxXtJaQj76ORyg
-        NaOvS5mbIUX0gsSZw+lVV2Lel1mdqC+ZV2A==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id kNs7oTAZAy-P for <linux-kernel@vger.kernel.org>;
-        Wed, 13 Oct 2021 20:35:50 -0700 (PDT)
-Received: from [10.225.163.59] (unknown [10.225.163.59])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4HVFRT0Z7tz1RvTg;
-        Wed, 13 Oct 2021 20:35:48 -0700 (PDT)
-Message-ID: <0a7afa9a-db24-910c-314d-2a6f7c43c5ea@opensource.wdc.com>
-Date:   Thu, 14 Oct 2021 12:35:47 +0900
+        Wed, 13 Oct 2021 23:43:55 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A3DC061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:41:23 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id x130so4287305pfd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 20:41:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5BlKZBSYzGKeJ7dR8x6r3jtlj/6PUsFcD4Ka+y7mVPo=;
+        b=LSqXcfpd3k5YJwKc/d8KBoRPBKYU/uZRGnUN9s+iWgSKYxOdCrjzGVbh6zt/F9qZIF
+         xw1HrPSf8fGKx342vjVoo/wuUsBxm3THaF/7zA5iscPjVKgF8lEOyh4Hdq5N+lE8c5+o
+         yvfDlaMUEcuB88oInxOlsBdbdQ0/bmGecxE/9Xo5E7N4DJnsjVSQkMcMtPq15TYF/BdE
+         jWZ4bahKUPEDc5x5TdQM5HpeSUawBVFstc+/XQy8nyf8LULHHFHqZk9MVfeCLdbnuEFU
+         js96IN9wsjSAdMxde7wRzw+HZgQjg5Iu8AeZOuQJi8ma11ZdfkB9BAPgR/4oUY+iWJ5t
+         LJSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5BlKZBSYzGKeJ7dR8x6r3jtlj/6PUsFcD4Ka+y7mVPo=;
+        b=aoD17IA5OC3DE2sll7VmLg3YK92XX+VRy4CL9+qNLUSX+86/mdM6FNSciddNy9ePBp
+         7L1H4+A6toV41edFme7q+K4X5lfw+N8xnUBDJshA/xa//vQx85TW+6OOgWqw2xF3sI4V
+         SVSMi15l9UC1v4Dg5iF19GZf1xK96kSjhtmFgAsF5O2iiMbj50US6hjC9N3KFZphmGdV
+         0Fx9ZqlO4H9mBMWytBY7fcKUIwLmr4DX3gFhqdgBJuXsOyD6xthlKgwil8kq9VOosmii
+         iyy54ioyQZRbDBhWwv6BzzaVIN6IRQqtgXyPfhT4vwMn+KfbIcKcZzbbDcek1Ma2X9gR
+         DwlQ==
+X-Gm-Message-State: AOAM533b0uL6DLkysRYKjvUhG+WbFp2l328XwznIOyU/EeDAhO46Vliu
+        twEre352acTHiRh98jsmRofdXPtPVaE=
+X-Google-Smtp-Source: ABdhPJwbSrFgmoB3vpmcFuYz+uK3Jyu3tkboCW3G7kjJPu545Ue0fYwgrqY5ES+nc26ubFCjNuzI0Q==
+X-Received: by 2002:a63:1444:: with SMTP id 4mr2401946pgu.251.1634182882565;
+        Wed, 13 Oct 2021 20:41:22 -0700 (PDT)
+Received: from localhost ([198.11.178.15])
+        by smtp.gmail.com with ESMTPSA id u9sm844799pfk.82.2021.10.13.20.41.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 Oct 2021 20:41:22 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH V3 32/49] x86/entry: Add the C version ist_restore_cr3()
+Date:   Thu, 14 Oct 2021 11:41:04 +0800
+Message-Id: <20211014034121.17025-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20211014031413.14471-1-jiangshanlai@gmail.com>
+References: <20211014031413.14471-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] ata: ahci_platform: fix null-ptr-deref in
- ahci_platform_enable_regulators()
-Content-Language: en-US
-To:     Wang Hai <wanghai38@huawei.com>, hdegoede@redhat.com,
-        axboe@kernel.dk, lgirdwood@gmail.com, broonie@kernel.org
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211013061631.2958938-1-wanghai38@huawei.com>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <20211013061631.2958938-1-wanghai38@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 15:16, Wang Hai wrote:
-> I got a null-ptr-deref report:
-> 
-> KASAN: null-ptr-deref in range [0x0000000000000090-0x0000000000000097]
-> ...
-> RIP: 0010:regulator_enable+0x84/0x260
-> ...
-> Call Trace:
->  ahci_platform_enable_regulators+0xae/0x320
->  ahci_platform_enable_resources+0x1a/0x120
->  ahci_probe+0x4f/0x1b9
->  platform_probe+0x10b/0x280
-> ...
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> If devm_regulator_get() in ahci_platform_get_resources() fails,
-> hpriv->phy_regulator will point to NULL, when enabling or disabling it,
-> null-ptr-deref will occur.
-> 
-> ahci_probe()
-> 	ahci_platform_get_resources()
-> 		devm_regulator_get(, "phy") // failed, let phy_regulator = NULL
-> 	ahci_platform_enable_resources()
-> 		ahci_platform_enable_regulators()
-> 			regulator_enable(hpriv->phy_regulator) // null-ptr-deref
-> 
-> commit 962399bb7fbf ("ata: libahci_platform: Fix regulator_get_optional()
-> misuse") replaces devm_regulator_get_optional() with devm_regulator_get(),
-> but PHY regulator omits to delete "hpriv->phy_regulator = NULL;" like AHCI.
-> Delete it like AHCI regulator to fix this bug.
-> 
-> Fixes: commit 962399bb7fbf ("ata: libahci_platform: Fix regulator_get_optional() misuse")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> ---
->  drivers/ata/libahci_platform.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/ata/libahci_platform.c b/drivers/ata/libahci_platform.c
-> index b2f552088291..0910441321f7 100644
-> --- a/drivers/ata/libahci_platform.c
-> +++ b/drivers/ata/libahci_platform.c
-> @@ -440,10 +440,7 @@ struct ahci_host_priv *ahci_platform_get_resources(struct platform_device *pdev,
->  	hpriv->phy_regulator = devm_regulator_get(dev, "phy");
->  	if (IS_ERR(hpriv->phy_regulator)) {
->  		rc = PTR_ERR(hpriv->phy_regulator);
-> -		if (rc == -EPROBE_DEFER)
-> -			goto err_out;
-> -		rc = 0;
-> -		hpriv->phy_regulator = NULL;
-> +		goto err_out;
->  	}
->  
->  	if (flags & AHCI_PLATFORM_GET_RESETS) {
-> 
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-I applied this to for-5.15-fixes.
+It implements the C version of RESTORE_CR3().
 
-Note that the code right before the hunk you fixed looks like this:
+Not functional difference intended except the ASM code uses bit test
+and clear operations while the C version uses mask check and 'AND'
+operations.  The resulted asm code of both versions are very similar.
 
-        hpriv->ahci_regulator = devm_regulator_get(dev, "ahci");
-        if (IS_ERR(hpriv->ahci_regulator)) {
-                rc = PTR_ERR(hpriv->ahci_regulator);
-                if (rc != 0)
-                        goto err_out;
-        }
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+ arch/x86/entry/entry64.c | 46 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-This looks very strange to me. The "if (rc != 0)" seems bogus since if
-IS_ERR() is true, then hpriv->ahci_regulator is not NULL, it is an error
-pointer. Some cleanup seems necessary to me.
-
-
+diff --git a/arch/x86/entry/entry64.c b/arch/x86/entry/entry64.c
+index 7e6c1b8a93d1..5edbb4bb4786 100644
+--- a/arch/x86/entry/entry64.c
++++ b/arch/x86/entry/entry64.c
+@@ -11,6 +11,7 @@
+  * environments that the GS base is user controlled value, or the CR3
+  * is PTI user CR3 or both.
+  */
++#include <asm/tlbflush.h>
+ #include <asm/traps.h>
+ 
+ extern unsigned char asm_load_gs_index_gs_change[];
+@@ -30,6 +31,26 @@ static __always_inline void pti_switch_to_kernel_cr3(unsigned long user_cr3)
+ 	native_write_cr3(cr3);
+ }
+ 
++static __always_inline void pti_switch_to_user_cr3(unsigned long user_cr3)
++{
++#define KERN_PCID_MASK (CR3_PCID_MASK & ~PTI_USER_PCID_MASK)
++
++	if (static_cpu_has(X86_FEATURE_PCID)) {
++		int pcid = user_cr3 & KERN_PCID_MASK;
++		unsigned short pcid_mask = 1ull << pcid;
++
++		/*
++		 * Check if there's a pending flush for the user ASID we're
++		 * about to set.
++		 */
++		if (!(this_cpu_read(cpu_tlbstate.user_pcid_flush_mask) & pcid_mask))
++			user_cr3 |= X86_CR3_PCID_NOFLUSH;
++		else
++			this_cpu_and(cpu_tlbstate.user_pcid_flush_mask, ~pcid_mask);
++	}
++	native_write_cr3(user_cr3);
++}
++
+ static __always_inline void switch_to_kernel_cr3(void)
+ {
+ 	if (static_cpu_has(X86_FEATURE_PTI))
+@@ -49,9 +70,34 @@ static __always_inline unsigned long ist_switch_to_kernel_cr3(void)
+ 
+ 	return cr3;
+ }
++
++static __always_inline void ist_restore_cr3(unsigned long cr3)
++{
++	if (!static_cpu_has(X86_FEATURE_PTI))
++		return;
++
++	if (unlikely(cr3 & PTI_USER_PGTABLE_MASK)) {
++		pti_switch_to_user_cr3(cr3);
++		return;
++	}
++
++	/*
++	 * KERNEL pages can always resume with NOFLUSH as we do
++	 * explicit flushes.
++	 */
++	if (static_cpu_has(X86_FEATURE_PCID))
++		cr3 |= X86_CR3_PCID_NOFLUSH;
++
++	/*
++	 * The CR3 write could be avoided when not changing its value,
++	 * but would require a CR3 read.
++	 */
++	native_write_cr3(cr3);
++}
+ #else
+ static __always_inline void switch_to_kernel_cr3(void) {}
+ static __always_inline unsigned long ist_switch_to_kernel_cr3(void) { return 0; }
++static __always_inline void ist_restore_cr3(unsigned long cr3) {}
+ #endif
+ 
+ /*
 -- 
-Damien Le Moal
-Western Digital Research
+2.19.1.6.gb485710b
+
