@@ -2,140 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F218542D664
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E98542D662
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhJNJsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:48:46 -0400
-Received: from comms.puri.sm ([159.203.221.185]:42902 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229988AbhJNJso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:48:44 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id EACDDE11E8;
-        Thu, 14 Oct 2021 02:46:09 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 6EcBzhtxUJVG; Thu, 14 Oct 2021 02:46:09 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     sre@kernel.org, linux-pm@vger.kernel.org
-Cc:     kernel@puri.sm, linux-kernel@vger.kernel.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH] power: bq25890: add return values to error messages
-Date:   Thu, 14 Oct 2021 11:45:33 +0200
-Message-Id: <20211014094533.4169157-1-martin.kepplinger@puri.sm>
+        id S230081AbhJNJsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:48:33 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:60790 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229468AbhJNJsb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 05:48:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UroTJsU_1634204772;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UroTJsU_1634204772)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 14 Oct 2021 17:46:13 +0800
+Subject: Re: [PATCH 2/2] tpm: use SM3 instead of SM3_256
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
+References: <20211009130828.101396-1-tianjia.zhang@linux.alibaba.com>
+ <20211009130828.101396-3-tianjia.zhang@linux.alibaba.com>
+ <c6c2337ed83c237f70716cb4c62794d1d3da31f2.camel@kernel.org>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <5db32f21-1df7-c92e-42a1-a2a85b29dfbf@linux.alibaba.com>
+Date:   Thu, 14 Oct 2021 17:46:11 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <c6c2337ed83c237f70716cb4c62794d1d3da31f2.camel@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add more details to the error messages that indicate what went wrong
-and use dev_err_probe() at a few places in the probe() path in order
-to avoid error messages for deferred probe after which the driver probes
-correctly.
+Hi Jarkko,
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- drivers/power/supply/bq25890_charger.c | 34 ++++++++++++--------------
- 1 file changed, 16 insertions(+), 18 deletions(-)
+On 10/12/21 11:21 PM, Jarkko Sakkinen wrote:
+> On Sat, 2021-10-09 at 21:08 +0800, Tianjia Zhang wrote:
+>> According to https://tools.ietf.org/id/draft-oscca-cfrg-sm3-01.html,
+>> SM3 always produces a 256-bit hash value and there are no plans for
+>> other length development, so there is no ambiguity in the name of sm3.
+>>
+>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> 
+> This is not enough to make any changes because the commit message
+> does not describe what goes wrong if we keep it as it was.
+> 
+> /Jarkko
+> 
 
-diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
-index 0e23d2db0fc4..ec81653e58c0 100644
---- a/drivers/power/supply/bq25890_charger.c
-+++ b/drivers/power/supply/bq25890_charger.c
-@@ -979,13 +979,13 @@ static int bq25890_get_chip_version(struct bq25890_device *bq)
- 
- 	id = bq25890_field_read(bq, F_PN);
- 	if (id < 0) {
--		dev_err(bq->dev, "Cannot read chip ID.\n");
-+		dev_err(bq->dev, "Cannot read chip ID: %d\n", id);
- 		return id;
- 	}
- 
- 	rev = bq25890_field_read(bq, F_DEV_REV);
- 	if (rev < 0) {
--		dev_err(bq->dev, "Cannot read chip revision.\n");
-+		dev_err(bq->dev, "Cannot read chip revision: %d\n", rev);
- 		return rev;
- 	}
- 
-@@ -1028,10 +1028,9 @@ static int bq25890_irq_probe(struct bq25890_device *bq)
- 	struct gpio_desc *irq;
- 
- 	irq = devm_gpiod_get(bq->dev, BQ25890_IRQ_PIN, GPIOD_IN);
--	if (IS_ERR(irq)) {
--		dev_err(bq->dev, "Could not probe irq pin.\n");
--		return PTR_ERR(irq);
--	}
-+	if (IS_ERR(irq))
-+		return dev_err_probe(bq->dev, PTR_ERR(irq),
-+				     "Could not probe irq pin.\n");
- 
- 	return gpiod_to_irq(irq);
- }
-@@ -1153,34 +1152,33 @@ static int bq25890_probe(struct i2c_client *client,
- 	mutex_init(&bq->lock);
- 
- 	bq->rmap = devm_regmap_init_i2c(client, &bq25890_regmap_config);
--	if (IS_ERR(bq->rmap)) {
--		dev_err(dev, "failed to allocate register map\n");
--		return PTR_ERR(bq->rmap);
--	}
-+	if (IS_ERR(bq->rmap))
-+		return dev_err_probe(dev, PTR_ERR(bq->rmap),
-+				     "failed to allocate register map\n");
- 
- 	for (i = 0; i < ARRAY_SIZE(bq25890_reg_fields); i++) {
- 		const struct reg_field *reg_fields = bq25890_reg_fields;
- 
- 		bq->rmap_fields[i] = devm_regmap_field_alloc(dev, bq->rmap,
- 							     reg_fields[i]);
--		if (IS_ERR(bq->rmap_fields[i])) {
--			dev_err(dev, "cannot allocate regmap field\n");
--			return PTR_ERR(bq->rmap_fields[i]);
--		}
-+		if (IS_ERR(bq->rmap_fields[i]))
-+			return dev_err_probe(dev, PTR_ERR(bq->rmap_fields[i]),
-+					     "cannot allocate regmap field\n");
- 	}
- 
- 	i2c_set_clientdata(client, bq);
- 
- 	ret = bq25890_get_chip_version(bq);
- 	if (ret) {
--		dev_err(dev, "Cannot read chip ID or unknown chip.\n");
-+		dev_err(dev, "Cannot read chip ID or unknown chip: %d\n", ret);
- 		return ret;
- 	}
- 
- 	if (!dev->platform_data) {
- 		ret = bq25890_fw_probe(bq);
- 		if (ret < 0) {
--			dev_err(dev, "Cannot read device properties.\n");
-+			dev_err(dev, "Cannot read device properties: %d\n",
-+				ret);
- 			return ret;
- 		}
- 	} else {
-@@ -1189,7 +1187,7 @@ static int bq25890_probe(struct i2c_client *client,
- 
- 	ret = bq25890_hw_init(bq);
- 	if (ret < 0) {
--		dev_err(dev, "Cannot initialize the chip.\n");
-+		dev_err(dev, "Cannot initialize the chip: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -1225,7 +1223,7 @@ static int bq25890_probe(struct i2c_client *client,
- 
- 	ret = bq25890_power_supply_init(bq);
- 	if (ret < 0) {
--		dev_err(dev, "Failed to register power supply\n");
-+		dev_err_probe(dev, ret, "Failed to register power supply.\n");
- 		goto irq_fail;
- 	}
- 
--- 
-2.30.2
+This did not cause an error, just to use a more standard algorithm name. 
+If it is possible to use the SM3 name instead of SM3_256 if it can be 
+specified from the source, it is of course better. I have contacted the 
+trustedcomputinggroup and have not yet received a reply.
 
+Best regards,
+Tianjia
