@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D41242D5D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5770B42D5D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhJNJSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:18:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:51760 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230032AbhJNJSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:18:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3316911D4;
-        Thu, 14 Oct 2021 02:16:13 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.73.197])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 629303F66F;
-        Thu, 14 Oct 2021 02:16:09 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 10:13:32 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/8] arm64: kprobes: Record frame pointer with kretprobe
- instance
-Message-ID: <20211014091332.GA13770@C02TD0UTHF1T.local>
-References: <163369609308.636038.15295764725220907794.stgit@devnote2>
- <163369611948.636038.11552166777773804729.stgit@devnote2>
- <20211013100126.GA3187@C02TD0UTHF1T.local>
- <20211014170405.f59d287b30086efe7dd7f4d9@kernel.org>
+        id S230032AbhJNJTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229513AbhJNJTK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 05:19:10 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799C1C061746
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:17:05 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id o20so17335377wro.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:17:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FrgyuWuLBh+n7WKszWkjTNYtblIyVmh6I5CBKj1hWB8=;
+        b=TsyMUaXWrwrpOlM9MWYA18WinOqWNt4plrRIGzrMB0OM7Do6UEo+nrDybRA61Q3fkx
+         uMilZDmdCFpgn2qwq7SvKR7R/+yQRL9zG3DT0A6CNLPFNunAZ1iBnl7u7AkFh7hwRaVl
+         bswPMUvbcmRxrjF1LcwqdxOGNl+o/yb67ode4ZMQUso6ruWO70TNh6Z5OO5D7NIpBLs+
+         VKlcobhOy61G/syI0EvJUO3EmPST/CXD/UjTefKE04jRTiGpeZvCHRhYgaeWiVoy9NTG
+         IDkJ2avypEJgRksjI+UL1wBztVRQj8JqFRAUY+9/oZBCyPWqeJEJyfYOkvb3i5YemDPk
+         F2UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FrgyuWuLBh+n7WKszWkjTNYtblIyVmh6I5CBKj1hWB8=;
+        b=ZyriB8d+EO2fmKVAEBzpTL/GzFqhmbycfXNI0Rg8vz3+U9+Ydojg8MHXtV1njhU7rX
+         kb2/fM1ytTL9TyYWuVXJzql9SWJHsijsr2fNbtQI8FX6a41wxHK2pV3HkhHUg8WCxkOJ
+         gkSDHZ8KbgvHKPzfNqg1fL+CSBRZbzGHcMxt4qi+aB2OTOBTI6kNSaL3VBVOk+7zddQa
+         M+STRylIlMQSJhLTsnN1srPklNV0kxrM67Sd5GqbLcLmzf7uJC0SCe+yao3dJoExi4S6
+         RwFJpaxgtubdaF1CndIZl1KOKOQGBcF5bQcip6tdHvHX8o6eCfA0jqzc0vxs12JoZWFA
+         Vi5A==
+X-Gm-Message-State: AOAM53108OKe1m2I+rKlzZjY4SKk/RLSrNlrpyqGo091fxHEyf2t29Rb
+        dXyywVXpE3w88VJm4DU/kb6GicVPi9I0Kg==
+X-Google-Smtp-Source: ABdhPJxGzZVVDndK1R0NgQS1IezodYR5L12iZ+mavVph1JDLzdW1K114hQLpj+m41awWtqlqZ07zrA==
+X-Received: by 2002:a5d:58ec:: with SMTP id f12mr5266196wrd.24.1634203023719;
+        Thu, 14 Oct 2021 02:17:03 -0700 (PDT)
+Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
+        by smtp.gmail.com with ESMTPSA id m36sm1815815wms.6.2021.10.14.02.17.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 02:17:02 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 10:16:41 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "hch@lst.de" <hch@lst.de>, "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+Subject: Re: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
+Message-ID: <YWf1eXjYOR5Su5Zn@myrica>
+References: <BN9PR11MB543333AD3C81312115686AAA8CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <YUxTvCt1mYDntO8z@myrica>
+ <20210923112716.GE964074@nvidia.com>
+ <BN9PR11MB5433BCFCF3B0CB657E9BFE898CA39@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210923122220.GL964074@nvidia.com>
+ <BN9PR11MB5433D75C09C6FDA01C2B7CF48CA99@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210929123630.GS964074@nvidia.com>
+ <BN9PR11MB5433C9B5A0CD0B58163859EC8CAA9@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <YVWSaU4CHFHnwEA5@myrica>
+ <BN9PR11MB543330751AD68F70E89BC0FA8CB89@BN9PR11MB5433.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211014170405.f59d287b30086efe7dd7f4d9@kernel.org>
+In-Reply-To: <BN9PR11MB543330751AD68F70E89BC0FA8CB89@BN9PR11MB5433.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 05:04:05PM +0900, Masami Hiramatsu wrote:
-> On Wed, 13 Oct 2021 11:01:39 +0100
-> Mark Rutland <mark.rutland@arm.com> wrote:
-> 
-> > On Fri, Oct 08, 2021 at 09:28:39PM +0900, Masami Hiramatsu wrote:
-> > > Record the frame pointer instead of stack address with kretprobe
-> > > instance as the identifier on the instance list.
-> > > Since arm64 always enable CONFIG_FRAME_POINTER, we can use the
-> > > actual frame pointer (x29).
+On Thu, Oct 14, 2021 at 08:01:49AM +0000, Tian, Kevin wrote:
+> > From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > Sent: Thursday, September 30, 2021 6:33 PM
 > > 
-> > Just to check, why do we need to use the FP rather than SP? It wasn't
-> > clear to me if that's necessary later in the series, or if I'm missing
-> > something here.
+> > The PTE flags define whether the memory access is cache-coherent or not.
+> > * WB is cacheable (short for write-back cacheable. Doesn't matter here
+> >   what OI or RWA mean.)
+> > * NC is non-cacheable.
+> > 
+> >          | Normal PCI access | No_snoop PCI access
+> >   -------+-------------------+-------------------
+> >   PTE WB | Cacheable         | Non-cacheable
+> >   PTE NC | Non-cacheable     | Non-cacheable
 > 
-> Actually, this is for finding correct return address from the per-task
-> kretprobe instruction list (suppose it as a shadow stack) when it will
-> be searched in stack-backtracing. At that point, the framepointer will
-> be a reliable key.
+> This implies that PCI no-snoop supersedes PTE flags when it's supported
+> by the system?
+> 
 
-Sure, my question was more "why isn't the SP a reliable key?", because both
-the SP and FP should be balanced at function-entry and function-return
-time. I'm asking because I think I'm missing a subtlety.
-
-I'm perfectly happy to use the FP even if they're equivalent; I just
-want to make sure there's not some issue I'm unaware of that could
-affect unwinding.
+Yes, no way for the SMMU to ignore no-snoop, as far as I can see
 
 Thanks,
-Mark.
-
-> > FWIW, I plan to rework arm64's ftrace bits to use FP for
-> > HAVE_FUNCTION_GRAPH_RET_ADDR_PTR, so I'm happy to do likewise here.
-> 
-> Yes, I think you can use FP for that too.
-> 
-> > 
-> > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > 
-> > Regardless of the above:
-> > 
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> 
-> Thank you!
-> 
-> > 
-> > Mark.
-> > 
-> > > ---
-> > >  arch/arm64/kernel/probes/kprobes.c |    4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-> > > index e7ad6da980e8..d9dfa82c1f18 100644
-> > > --- a/arch/arm64/kernel/probes/kprobes.c
-> > > +++ b/arch/arm64/kernel/probes/kprobes.c
-> > > @@ -401,14 +401,14 @@ int __init arch_populate_kprobe_blacklist(void)
-> > >  
-> > >  void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
-> > >  {
-> > > -	return (void *)kretprobe_trampoline_handler(regs, (void *)kernel_stack_pointer(regs));
-> > > +	return (void *)kretprobe_trampoline_handler(regs, (void *)regs->regs[29]);
-> > >  }
-> > >  
-> > >  void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
-> > >  				      struct pt_regs *regs)
-> > >  {
-> > >  	ri->ret_addr = (kprobe_opcode_t *)regs->regs[30];
-> > > -	ri->fp = (void *)kernel_stack_pointer(regs);
-> > > +	ri->fp = (void *)regs->regs[29];
-> > >  
-> > >  	/* replace return addr (x30) with trampoline */
-> > >  	regs->regs[30] = (long)&__kretprobe_trampoline;
-> > > 
-> 
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
+Jean
