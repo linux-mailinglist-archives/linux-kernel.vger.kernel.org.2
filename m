@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3261D42D7BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41AD42D7C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbhJNLI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:08:29 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:40316 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230080AbhJNLI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:08:28 -0400
-Received: from BC-Mail-HQEX01.internal.baidu.com (unknown [172.31.51.57])
-        by Forcepoint Email with ESMTPS id 4D3DF440CDEFBF783E64;
-        Thu, 14 Oct 2021 19:06:21 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-HQEX01.internal.baidu.com (172.31.51.57) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Thu, 14 Oct 2021 19:06:20 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 14 Oct 2021 19:06:20 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <vigneshr@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <robh+dt@kernel.org>
-CC:     <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Cai Huoqing <caihuoqing@baidu.com>
-Subject: [PATCH] MAINTAINERS: Update the devicetree documentation path of hyperbus
-Date:   Thu, 14 Oct 2021 19:06:14 +0800
-Message-ID: <20211014110614.3320-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S230323AbhJNLJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230080AbhJNLJr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 07:09:47 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2041FC061570;
+        Thu, 14 Oct 2021 04:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=77VgjRIde6vwrbjli0psB7WD0kOrKVS+AX+DTq527kY=; b=OFc23zjqWRPL0UVhuJbDqj8Mqh
+        mfDbpqRGvNvE6FafTd32fExbhNT3WG1AuznDKUPdN8l9mpNjAHslTNQf2mkbjv/3jDBmWB+IZkJHd
+        yE/hy3j1ce3n51aNMARZjXFpuX+ZYQ8/rtR70DtjSmvHX79Gko91eC/eBT0ULMeqHQcPNqjmADUHm
+        QU5l1jK6RmiGobV13xqTG+bDr0Lv/gCxOf5Jue6y++ne5mRm3hAGcoNDS7I+fDTbK2NdHDy4R2qD4
+        gEuS5xlsp2bIqWt3+b6eQzCSqUHKZiub1L/tmCjKUbtzBDaXsB1A9emf3LtR9++wuK2g0a0XrO1Mp
+        2ci62zJQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55090)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mayaB-0001EW-KU; Thu, 14 Oct 2021 12:07:31 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1maya3-00025Z-J0; Thu, 14 Oct 2021 12:07:23 +0100
+Date:   Thu, 14 Oct 2021 12:07:23 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     keescook@chromium.org, jannh@google.com,
+        linux-kernel@vger.kernel.org, vcaputo@pengaru.com,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, amistry@google.com,
+        Kenta.Tada@sony.com, legion@kernel.org,
+        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
+        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com,
+        mark.rutland@arm.com, axboe@kernel.dk, metze@samba.org,
+        laijs@linux.alibaba.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, ebiederm@xmission.com,
+        ohoono.kwon@samsung.com, kaleshsingh@google.com,
+        yifeifz2@illinois.edu, jpoimboe@redhat.com,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        vgupta@kernel.org, will@kernel.org, guoren@kernel.org,
+        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        nickhu@andestech.com, jonas@southpole.se, mpe@ellerman.id.au,
+        paul.walmsley@sifive.com, hca@linux.ibm.com,
+        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net
+Subject: Re: [PATCH 6/7] arch: __get_wchan || STACKTRACE_SUPPORT
+Message-ID: <YWgPa3C8dKkNoJBu@shell.armlinux.org.uk>
+References: <20211008111527.438276127@infradead.org>
+ <20211008111626.392918519@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex16.internal.baidu.com (172.31.51.56) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008111626.392918519@infradead.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the devicetree documentation path
-to "Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml"
-since 'cypress,hyperflash.txt' and 'ti,am654-hbmc.txt' have
-been converted to 'ti,am654-hbmc.yaml'.
+On Fri, Oct 08, 2021 at 01:15:33PM +0200, Peter Zijlstra wrote:
+> It's trivial to implement __get_wchan() with CONFIG_STACKTRACE
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
-*resend +Cc others.
+This definitely needs testing, but looking at the code, I think this
+will be compatible since we're essentially doing the same tests to
+omit scheduling functions in both the old and replacement code.
 
- MAINTAINERS | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9b255cf4fca8..48949cd7f898 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8783,8 +8783,7 @@ S:	Supported
- Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
- C:	irc://irc.oftc.net/mtd
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git cfi/next
--F:	Documentation/devicetree/bindings/mtd/cypress,hyperflash.txt
--F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.txt
-+F:	Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml
- F:	drivers/mtd/hyperbus/
- F:	include/linux/mtd/hyperbus.h
- 
 -- 
-2.25.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
