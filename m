@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF5A42DC3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AA242DC78
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbhJNO5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:57:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42290 "EHLO mail.kernel.org"
+        id S230494AbhJNO7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:59:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232123AbhJNO5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:57:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6504360F4A;
-        Thu, 14 Oct 2021 14:55:17 +0000 (UTC)
+        id S232478AbhJNO6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:58:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 482AF61184;
+        Thu, 14 Oct 2021 14:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223318;
-        bh=cDrA1jZFkxemkgTkATXwogA2EjutUnYO21kUTWeFPFs=;
+        s=korg; t=1634223385;
+        bh=EcL8nWbhvmN2JezNVRCLOz4lqc/yvWJ13F+n8CE0QVA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dBgOEnkiXS8+Wtascy0W5Ty+3MKmb1ZRIUub+1CVXy3WRZebdDkzj+gLtf2Ivl7bB
-         a/ukCaZ4VxKEVT9tC6rpZcGkJA/iqKAd8+Y8z6uBkwBpc3QC6TAYgtucxBli4QuBnW
-         lyOIuUA1vzWz6sHIzTo01sz4eBNDxDUDC29qin9Y=
+        b=BsBIp8vPd0RleFL5qxRroA0eGTR7d4AAZ9F/ZUkndLcJk3pFFnq3MShYtwCkmguRa
+         q31hchBxfj+TCBF8Gb0doMg4AAa0oQKIHe/fuCuQw8vuDzSPGzm3gK/2CJTTGqAnqk
+         qecq2F5JvPI1gQCPU5bIjG53/0HrANsJapX1E82M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 05/18] phy: mdio: fix memory leak
-Date:   Thu, 14 Oct 2021 16:53:37 +0200
-Message-Id: <20211014145206.495207097@linuxfoundation.org>
+        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 07/25] xtensa: call irqchip_init only when CONFIG_USE_OF is selected
+Date:   Thu, 14 Oct 2021 16:53:38 +0200
+Message-Id: <20211014145207.811181114@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145206.330102860@linuxfoundation.org>
-References: <20211014145206.330102860@linuxfoundation.org>
+In-Reply-To: <20211014145207.575041491@linuxfoundation.org>
+References: <20211014145207.575041491@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +39,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-[ Upstream commit ca6e11c337daf7925ff8a2aac8e84490a8691905 ]
+[ Upstream commit 6489f8d0e1d93a3603d8dad8125797559e4cf2a2 ]
 
-Syzbot reported memory leak in MDIO bus interface, the problem was in
-wrong state logic.
+During boot time kernel configured with OF=y but USE_OF=n displays the
+following warnings and hangs shortly after starting userspace:
 
-MDIOBUS_ALLOCATED indicates 2 states:
-	1. Bus is only allocated
-	2. Bus allocated and __mdiobus_register() fails, but
-	   device_register() was called
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 0 at kernel/irq/irqdomain.c:695 irq_create_mapping_affinity+0x29/0xc0
+irq_create_mapping_affinity(, 6) called with NULL domain
+CPU: 0 PID: 0 Comm: swapper Not tainted 5.15.0-rc3-00001-gd67ed2510d28 #30
+Call Trace:
+  __warn+0x69/0xc4
+  warn_slowpath_fmt+0x6c/0x94
+  irq_create_mapping_affinity+0x29/0xc0
+  local_timer_setup+0x40/0x88
+  time_init+0xb1/0xe8
+  start_kernel+0x31d/0x3f4
+  _startup+0x13b/0x13b
+---[ end trace 1e6630e1c5eda35b ]---
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 0 at arch/xtensa/kernel/time.c:141 local_timer_setup+0x58/0x88
+error: can't map timer irq
+CPU: 0 PID: 0 Comm: swapper Tainted: G        W         5.15.0-rc3-00001-gd67ed2510d28 #30
+Call Trace:
+  __warn+0x69/0xc4
+  warn_slowpath_fmt+0x6c/0x94
+  local_timer_setup+0x58/0x88
+  time_init+0xb1/0xe8
+  start_kernel+0x31d/0x3f4
+  _startup+0x13b/0x13b
+---[ end trace 1e6630e1c5eda35c ]---
+Failed to request irq 0 (timer)
 
-In case of device_register() has been called we should call put_device()
-to correctly free the memory allocated for this device, but mdiobus_free()
-calls just kfree(dev) in case of MDIOBUS_ALLOCATED state
+Fix that by calling irqchip_init only when CONFIG_USE_OF is selected and
+calling legacy interrupt controller init otherwise.
 
-To avoid this behaviour we need to set bus->state to MDIOBUS_UNREGISTERED
-_before_ calling device_register(), because put_device() should be
-called even in case of device_register() failure.
-
-Link: https://lore.kernel.org/netdev/YVMRWNDZDUOvQjHL@shell.armlinux.org.uk/
-Fixes: 46abc02175b3 ("phylib: give mdio buses a device tree presence")
-Reported-and-tested-by: syzbot+398e7dc692ddbbb4cfec@syzkaller.appspotmail.com
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/eceae1429fbf8fa5c73dd2a0d39d525aa905074d.1633024062.git.paskripkin@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: da844a81779e ("xtensa: add device trees support")
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/mdio_bus.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/xtensa/kernel/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 5ea86fd57ae6..4066fb5a935a 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -264,6 +264,13 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
- 	bus->dev.groups = NULL;
- 	dev_set_name(&bus->dev, "%s", bus->id);
+diff --git a/arch/xtensa/kernel/irq.c b/arch/xtensa/kernel/irq.c
+index 441694464b1e..fbbc24b914e3 100644
+--- a/arch/xtensa/kernel/irq.c
++++ b/arch/xtensa/kernel/irq.c
+@@ -144,7 +144,7 @@ unsigned xtensa_get_ext_irq_no(unsigned irq)
  
-+	/* We need to set state to MDIOBUS_UNREGISTERED to correctly release
-+	 * the device in mdiobus_free()
-+	 *
-+	 * State will be updated later in this function in case of success
-+	 */
-+	bus->state = MDIOBUS_UNREGISTERED;
-+
- 	err = device_register(&bus->dev);
- 	if (err) {
- 		pr_err("mii_bus %s failed to register\n", bus->id);
+ void __init init_IRQ(void)
+ {
+-#ifdef CONFIG_OF
++#ifdef CONFIG_USE_OF
+ 	irqchip_init();
+ #else
+ #ifdef CONFIG_HAVE_SMP
 -- 
 2.33.0
 
