@@ -2,280 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8FD42D71B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2482042D71D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhJNK3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:29:07 -0400
-Received: from polaris.svanheule.net ([84.16.241.116]:33684 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbhJNK3G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:29:06 -0400
-Received: from vanadium.ugent.be (vanadium.ugent.be [157.193.99.61])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 06145261555;
-        Thu, 14 Oct 2021 12:27:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1634207221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ao0WbdVDQzYzJ4o9hLyCn1fS3/0n2AFDf4qo8RxLxKo=;
-        b=Pc3jdW7augIPU62u0ImKiTEHnC3CwLxcr78hlQs+Lc90AOGRlLMW+R73ezB4oQjL3XPVqZ
-        n18Kyvo3Zz+39C67Hd0CsB/S9exCUNPoZAO0KlhnMb6qN1YvoacExTjESy0qn2QIG4AjBs
-        ZmyEI0GOGiRcXzbfOzu94iIjZj+vaAuQA0l2XDu8xFIKURhr9sURrwONNbajmH6rJxgrqJ
-        5cIZWH7bhi5ltZgi7r6IBjWKn9dChaov58MVywux+KWFvIJ14WQ6dO6oAH0FqbPvVk/T+A
-        IXwskNoxeMVH1/+DRwQIzCT1IsJagKC/5QJzTn++ViRh1qMsJChG5BI02y5pSA==
-Message-ID: <b1c8713cd10358355d4086e6d80ce6f10d295fe8.camel@svanheule.net>
-Subject: Re: [PATCH 2/2] watchdog: Add Realtek Otto watchdog timer
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Date:   Thu, 14 Oct 2021 12:26:59 +0200
-In-Reply-To: <6b1a9479-c456-ceeb-5aa2-6121f5c5d67f@roeck-us.net>
-References: <cover.1634131707.git.sander@svanheule.net>
-         <7eb1e3d8a5bd3b221be0408bd6f0272e6d435ade.1634131707.git.sander@svanheule.net>
-         <20211013184852.GA955578@roeck-us.net>
-         <4cf85218627371e1d07238257d0a89f824606415.camel@svanheule.net>
-         <6b1a9479-c456-ceeb-5aa2-6121f5c5d67f@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        id S230282AbhJNK3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:29:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:52742 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230179AbhJNK3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 06:29:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E7D6611D4;
+        Thu, 14 Oct 2021 03:27:07 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.73.197])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C1D93F66F;
+        Thu, 14 Oct 2021 03:27:05 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 11:27:02 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 3/8] arm64: kprobes: Record frame pointer with kretprobe
+ instance
+Message-ID: <20211014102702.GB13770@C02TD0UTHF1T.local>
+References: <163369609308.636038.15295764725220907794.stgit@devnote2>
+ <163369611948.636038.11552166777773804729.stgit@devnote2>
+ <20211013100126.GA3187@C02TD0UTHF1T.local>
+ <20211014170405.f59d287b30086efe7dd7f4d9@kernel.org>
+ <20211014091332.GA13770@C02TD0UTHF1T.local>
+ <20211014190155.3fdc7cf7c42e44ee75c43a9d@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014190155.3fdc7cf7c42e44ee75c43a9d@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-10-13 at 14:03 -0700, Guenter Roeck wrote:
-> On 10/13/21 12:46 PM, Sander Vanheule wrote:
-> > On Wed, 2021-10-13 at 11:48 -0700, Guenter Roeck wrote:
-> > > On Wed, Oct 13, 2021 at 03:29:00PM +0200, Sander Vanheule wrote:
-> > [...]
-> > 
+On Thu, Oct 14, 2021 at 07:01:55PM +0900, Masami Hiramatsu wrote:
+> On Thu, 14 Oct 2021 10:13:32 +0100
+> Mark Rutland <mark.rutland@arm.com> wrote:
+> 
+> > On Thu, Oct 14, 2021 at 05:04:05PM +0900, Masami Hiramatsu wrote:
+> > > On Wed, 13 Oct 2021 11:01:39 +0100
+> > > Mark Rutland <mark.rutland@arm.com> wrote:
+> > > 
+> > > > On Fri, Oct 08, 2021 at 09:28:39PM +0900, Masami Hiramatsu wrote:
+> > > > > Record the frame pointer instead of stack address with kretprobe
+> > > > > instance as the identifier on the instance list.
+> > > > > Since arm64 always enable CONFIG_FRAME_POINTER, we can use the
+> > > > > actual frame pointer (x29).
 > > > > 
-> > > > diff --git a/drivers/watchdog/realtek_otto_wdt.c
-> > > > b/drivers/watchdog/realtek_otto_wdt.c
-> > > > new file mode 100644
-> > > > index 000000000000..64c9cba6b0b1
-> > > > --- /dev/null
-> > > > +++ b/drivers/watchdog/realtek_otto_wdt.c
-> > > > @@ -0,0 +1,411 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > +
-> > > > +/*
-> > > > + * Realtek Otto MIPS platform watchdog
-> > > > + *
-> > > > + * Watchdog timer that will reset the system after timeout, using the
-> > > > selected
-> > > > + * reset mode.
-> > > > + *
-> > > > + * Counter scaling and timeouts:
-> > > > + * - Base prescale of (2 << 25), providing tick duration T_0: 168ms @
-> > > > 200MHz
-> > > > + * - PRESCALE: logarithmic prescaler adding a factor of {1, 2, 4, 8}
-> > > > + * - Phase 1: Times out after (PHASE1 + 1) × PRESCALE × T_0
-> > > > + *   Generates an interrupt, WDT cannot be stopped after phase 1
-> > > > + * - Phase 2: starts after phase 1, times out after (PHASE2 + 1) ×
-> > > > PRESCALE × T_0
-> > > > + *   Resets the system according to RST_MODE
+> > > > Just to check, why do we need to use the FP rather than SP? It wasn't
+> > > > clear to me if that's necessary later in the series, or if I'm missing
+> > > > something here.
 > > > 
-> > > Why is there a phase2 interrupt if phase2 resets the chip ?
-> > > 
+> > > Actually, this is for finding correct return address from the per-task
+> > > kretprobe instruction list (suppose it as a shadow stack) when it will
+> > > be searched in stack-backtracing. At that point, the framepointer will
+> > > be a reliable key.
 > > 
-> > The SoC's reset controller has an interrupt line for phase2, even though
-> > then it then the
-> > WDT also resets the system. I don't have any documentation about this
-> > peripheral; just
-> > some vendor code and there the phase2 interrupt isn't enabled. I mainly
-> > added it here for
-> > completeness.
-> > 
+> > Sure, my question was more "why isn't the SP a reliable key?", because both
+> > the SP and FP should be balanced at function-entry and function-return
+> > time. I'm asking because I think I'm missing a subtlety.
 > 
-> It seems pointless to mandate an interrupt just for completeness.
+> Ah, because SP is not used while unwinding frame. For the kretprobe,
+> either FP or SP is OK. But for the stacktrace.c, I can not use SP
+> and is easy to change to use FP. :)
 
-Okay, then I will just drop it here. As I understand, the bindings should be as
-complete as possible, so I think the phase2 interrupt definition should remain
-there?
+Ah, so this is just so that stacktrace can match the address. For
+clarity, would you be happy to add a sentence to the commit message like:
 
-> 
-> > One thing to note is that after CPU or software reset (not SoC reset) the
-> > phase2 flag in
-> > OTTO_WDT_REG_INTR will be set. That's why I always clear it in
-> > otto_wdt_probe(), because
-> > otherwise enabling the interrupt line would trigger otto_wdt_phase2_isr().
-> > On warm
-> > restarts this bit could be used to determine if there was a WDT timeout, but
-> > not if the
-> > WDT is configured for cold restarts (i.e. full SoC reset).
-> > 
-> > > 
-> > [...]
-> > > > +
-> > > > +       raw_spin_lock_irqsave(&ctrl->lock, flags);
-> > > > +       v = ioread32(ctrl->base + OTTO_WDT_REG_CTRL);
-> > > > +       v |= OTTO_WDT_CTRL_ENABLE;
-> > > > +       iowrite32(v, ctrl->base + OTTO_WDT_REG_CTRL);
-> > > > +       raw_spin_unlock_irqrestore(&ctrl->lock, flags);
-> > > 
-> > > Is it really necessary to disable interrupts for those operations ?
-> > 
-> > The ISR routines only use REG_INTR, which isn't modified anywhere else
-> > (outside of probing
-> > the device). I will replace these with raw_spin_{lock,unlock} throughout.
-> > 
-> 
-> In that case you should not need any locks at all since the watchdog core
-> ensures
-> that the device is opened only once (and thus only one entity can enable or
-> disable
-> the watchdog).
+| This will allow the stacktrace code to find the original return
+| address from the FP alone.
 
-If there is an external guarantee that at most one of {set_timeout,
-set_pretimeout, enable, disable} will be called at a time, I can indeed drop the
-lock. I had added the lock initially because of the read-modify-write operations
-on the control register these ops perform.
-
-
-> 
-> > [...]
-> > > > +/*
-> > > > + * The timer asserts the PHASE1/PHASE2 IRQs when the number of ticks
-> > > > exceeds
-> > > > + * the value stored in those fields. This means the timer will run for
-> > > > at least
-> > > > + * one tick, so small values need to be clamped to correctly reflect
-> > > > the timeout.
-> > > > + */
-> > > > +static inline unsigned int div_round_ticks(unsigned int val, unsigned
-> > > > int
-> > > > tick_duration,
-> > > > +               unsigned int min_ticks)
-> > > > +{
-> > > > +       return max(min_ticks, DIV_ROUND_CLOSEST(val, tick_duration));
-> > > 
-> > > Are you sure that DIV_ROUND_CLOSEST is appropriate in those calculations
-> > > (instead of DIV_ROUND_UP or DIV_ROUND_DOWN) ?
-> > > 
-> > [...]
-> > 
-> > > > +
-> > > > +       timeout_ms = total_ticks * tick_ms;
-> > > > +       ctrl->wdev.timeout = DIV_ROUND_CLOSEST(timeout_ms, 1000);
-> > > > +
-> > > 
-> > > That means the actual timeout (and pretimeout) can be slightly larger
-> > > than the real timeout. Is this really what you want ?
-> > 
-> > Is it a problem if the WDT times out later than specified by
-> > watchdog_device.(pre)timeout?
-> > I can see that premature timeouts would be an issue, but I don't suppose
-> > it's problematic
-> > if the WDT is pinged (slightly) sooner than actually required?
-> > 
-> 
-> I am not concerned with early pings. However, if the timeout limit is set to a
-> value
-> lardger than the real timeout (eg the real timeout is 25.6 seconds and the
-> timeout
-> value is set to 26 seconds), the reset may occur a bit early. Granted, it
-> doesn't
-> matter much, but most driver authors would ensure that the timeout is set to
-> 25 seconds
-> (ie rounded down) in that situation.
-
-I'll replace tick rounding with DIV_ROUND_UP, and timeout rounding with regular
-flooring division. This results in a few timeout values being rounded up for the
-coarsest tick duration, but those are then stable values.
-
-Best,
-Sander
-
-> 
-> > The coarsest ticks are 1342 ms, so it is not always possible to provide the
-> > requested
-> > (pre)timeout value, independent of the rounding scheme. Although I think it
-> > should be
-> > possible to replace timeout rounding by DIV_ROUND_UP (of total_ticks_ms),
-> > and pretimeout
-> > rounding by DIV_ROUND_DOWN (of phase2_ticks_ms), and keep stable timeouts
-> > when alternating
-> > between set_timeout/set_pretimeout.
-> > 
-> > > 
-> > > > +       pretimeout_ms = phase2_ticks * tick_ms;
-> > > > +       ctrl->wdev.pretimeout = DIV_ROUND_CLOSEST(pretimeout_ms, 1000);
-> > > > +
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > > > +static int otto_wdt_set_timeout(struct watchdog_device *wdev, unsigned
-> > > > int val)
-> > > > +{
-> > > > +       struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-> > > > +       unsigned long flags;
-> > > > +       unsigned int ret;
-> > > > +
-> > > > +       if (watchdog_timeout_invalid(wdev, val))
-> > > > +               return -EINVAL;
-> > > 
-> > > This is not supposed to happen because the calling code already performs
-> > > range checks.
-> > 
-> > Right, I will drop the redundant check here and in set_pretimeout.
-> > 
-> > > 
-> > [...]
-> > > > +static int otto_wdt_restart(struct watchdog_device *wdev, unsigned long
-> > > > reboot_mode,
-> > > > +               void *data)
-> > > > +{
-> > > > +       struct otto_wdt_ctrl *ctrl = watchdog_get_drvdata(wdev);
-> > > > +       u32 reset_mode;
-> > > > +       u32 v;
-> > > > +
-> > > > +       devm_free_irq(ctrl->dev, ctrl->irq_phase1, ctrl);
-> > > > +
-> > > 
-> > > Why is this needed (instead of, say, disabling the interrupt) ?
-> > 
-> > Disabling the interrupt should actually be enough. I'll replace the
-> > devm_free_irq() with
-> > disable_irq(). Somehow I didn't find disable_irq(), even though that was
-> > what I was
-> > looking for...
-> > 
-> > [...]
-> > > > +
-> > > > +       /*
-> > > > +        * Since pretimeout cannot be disabled, min_timeout is twice the
-> > > > +        * subsystem resolution. max_timeout is 44s at a bus clock of
-> > > > 200MHz.
-> > > > +        */
-> > > > +       ctrl->wdev.min_timeout = 2;
-> > > > +       max_tick_ms = otto_wdt_tick_ms(ctrl, OTTO_WDT_PRESCALE_MAX);
-> > > > +       ctrl->wdev.max_timeout =
-> > > > +               DIV_ROUND_CLOSEST(max_tick_ms *
-> > > > OTTO_WDT_TIMEOUT_TICKS_MAX, 1000);
-> > > 
-> > > Any reason for using max_timeout instead of max_hw_heartbeat_ms ?
-> > 
-> > I must have missed this when I was looking at watchdog_device. Makes sense
-> > to use
-> > max_hw_heartbeat_ms since that reflects the actual value more accurately.
-> > 
-> > > 
-> > 
-> > Thanks for the feedback!
-> > 
-> > Best,
-> > Sander
-> > 
-> 
-
+Thanks,
+Mark.
