@@ -2,152 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E207A42DAFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33E042DAFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbhJNOAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:00:44 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48376 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhJNOAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:00:43 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DA14D1FD29;
-        Thu, 14 Oct 2021 13:58:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634219917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9A+GQeaFgonmZoQA1BJNWLgEss6Z/Jtafc/0hYNUu4Y=;
-        b=Jw2sjnBCXAWISc+DK4rVtikmY9lEX1FPmZRRQdo4II2PfKP7mWQ/wRVMSxtC+j5yCYLmSM
-        y7L4kXi05iGRK3cV4He62a9sTcF8iEsX/C6kzLguIHZnIeMwafKO3FOwzkFfTJYM1Uo+ol
-        cguefB3ALh1fV8kwX77EjQYbq0P7ayc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634219917;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9A+GQeaFgonmZoQA1BJNWLgEss6Z/Jtafc/0hYNUu4Y=;
-        b=3JWZomZAlwpzJqHYa9IvRFuBKdAe6Y2jQkUnyTaBdWM2L/Yfwq5zCVpIKQIfJngTgEyJeG
-        ctzsH6yvHYSFWJAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B4E4C13D97;
-        Thu, 14 Oct 2021 13:58:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cTFEK403aGE+awAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 14 Oct 2021 13:58:37 +0000
-Message-ID: <8742cda5-1fc7-ae44-076c-e4a522ca43f5@suse.de>
-Date:   Thu, 14 Oct 2021 15:58:37 +0200
+        id S231680AbhJNOCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:02:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:45307 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230177AbhJNOCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:02:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="208483525"
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="208483525"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 07:00:14 -0700
+X-IronPort-AV: E=Sophos;i="5.85,372,1624345200"; 
+   d="scan'208";a="461197202"
+Received: from ktrimble-mobl.amr.corp.intel.com (HELO [10.209.188.150]) ([10.209.188.150])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 07:00:12 -0700
+Subject: Re: [PATCH 2/2] ASoC: max98520: Add max98520 audio amplifier driver
+To:     George Song <george.song@maximintegrated.com>, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, arnd@arndb.de,
+        alexandre.belloni@bootlin.com, jack.yu@realtek.com,
+        jiri.prchal@aksignal.cz, shumingf@realtek.com,
+        pbrobinson@gmail.com, lars@metafoo.de, geert@linux-m68k.org,
+        hdegoede@redhat.com, paul@crapouillou.net,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc:     George Song <george.song@analog.com>
+References: <20211013075223.19299-1-george.song@maximintegrated.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <a30d8839-0684-cbf8-8ece-639b69550959@linux.intel.com>
+Date:   Thu, 14 Oct 2021 09:00:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH] video: smscufx: Fix null-ptr-deref in ufx_usb_probe()
+In-Reply-To: <20211013075223.19299-1-george.song@maximintegrated.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Wang Hai <wanghai38@huawei.com>, steve.glendinning@shawell.net,
-        FlorianSchandinat@gmx.de, gregkh@suse.de
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20211014132231.555138-1-wanghai38@huawei.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20211014132231.555138-1-wanghai38@huawei.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------ffM8l0TxRYwhGR0oMWNe03pk"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------ffM8l0TxRYwhGR0oMWNe03pk
-Content-Type: multipart/mixed; boundary="------------dzQNDPAH6MVNLQ7iZa2Lns6c";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Wang Hai <wanghai38@huawei.com>, steve.glendinning@shawell.net,
- FlorianSchandinat@gmx.de, gregkh@suse.de
-Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-Message-ID: <8742cda5-1fc7-ae44-076c-e4a522ca43f5@suse.de>
-Subject: Re: [PATCH] video: smscufx: Fix null-ptr-deref in ufx_usb_probe()
-References: <20211014132231.555138-1-wanghai38@huawei.com>
-In-Reply-To: <20211014132231.555138-1-wanghai38@huawei.com>
+quite a few alignment/style issues and more importantly your
+Signed-off-by: tag mixes your two emails addresses.
 
---------------dzQNDPAH6MVNLQ7iZa2Lns6c
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+scripts/checkpatch.pl --strict --codespell
+0001-ASoC-max98520-Add-max98520-audio-amplifier-driver.patch
+WARNING: Missing commit description - Add an appropriate one
 
-SGkNCg0KQW0gMTQuMTAuMjEgdW0gMTU6MjIgc2NocmllYiBXYW5nIEhhaToNCj4gSSBnb3Qg
-YSBudWxsLXB0ci1kZXJlZiByZXBvcnQ6DQo+IA0KPiBCVUc6IGtlcm5lbCBOVUxMIHBvaW50
-ZXIgZGVyZWZlcmVuY2UsIGFkZHJlc3M6IDAwMDAwMDAwMDAwMDAwMDANCj4gLi4uDQo+IFJJ
-UDogMDAxMDpmYl9kZXN0cm95X21vZGVsaXN0KzB4MzgvMHgxMDANCj4gLi4uDQo+IENhbGwg
-VHJhY2U6DQo+ICAgdWZ4X3VzYl9wcm9iZS5jb2xkKzB4MmI1LzB4YWMxIFtzbXNjdWZ4XQ0K
-PiAgIHVzYl9wcm9iZV9pbnRlcmZhY2UrMHgxYWEvMHgzYzAgW3VzYmNvcmVdDQo+ICAgcmVh
-bGx5X3Byb2JlKzB4MTY3LzB4NDYwDQo+IC4uLg0KPiAgIHJldF9mcm9tX2ZvcmsrMHgxZi8w
-eDMwDQo+IA0KPiBJZiBmYl9hbGxvY19jbWFwKCkgZmFpbHMgaW4gdWZ4X3VzYl9wcm9iZSgp
-LCBmYl9kZXN0cm95X21vZGVsaXN0KCkgd2lsbA0KPiBiZSBjYWxsZWQgdG8gZGVzdHJveSBt
-b2RlbGlzdCBpbiB0aGUgZXJyb3IgaGFuZGxpbmcgcGF0aC4gQnV0IG1vZGVsaXN0DQo+IGhh
-cyBub3QgYmVlbiBpbml0aWFsaXplZCB5ZXQsIHNvIGl0IHdpbGwgcmVzdWx0IGluIG51bGwt
-cHRyLWRlcmVmLg0KPiANCj4gSW5pdGlhbGl6ZSBtb2RlbGlzdCBiZWZvcmUgY2FsbGluZyBm
-Yl9hbGxvY19jbWFwKCkgdG8gZml4IHRoaXMgYnVnLg0KPiANCj4gRml4ZXM6IDNjOGE2M2Uy
-MmEwOCAoIkFkZCBzdXBwb3J0IGZvciBTTVNDIFVGWDYwMDAvNzAwMCBVU0IgZGlzcGxheSBh
-ZGFwdGVycyIpDQo+IFJlcG9ydGVkLWJ5OiBIdWxrIFJvYm90IDxodWxrY2lAaHVhd2VpLmNv
-bT4NCj4gU2lnbmVkLW9mZi1ieTogV2FuZyBIYWkgPHdhbmdoYWkzOEBodWF3ZWkuY29tPg0K
-DQpBY2tlZC1ieTogVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+DQoN
-CkkgZ290IG9uZSBvZiB0aGVzZSBkZXZpY2VzIGJ1dCB0aGUgZHJpdmVyIGRpZG4ndCBwcm9k
-dWNlIGFueSBvdXRwdXQgZm9yIA0KbWUuIEFyZSBhY3R1YWxseSBhYmxlIHRvIHVzZSB0aGUg
-ZHJpdmVyPw0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQo+IC0tLQ0KPiAgIGRyaXZlcnMv
-dmlkZW8vZmJkZXYvc21zY3VmeC5jIHwgMyArLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBp
-bnNlcnRpb24oKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy92aWRlby9mYmRldi9zbXNjdWZ4LmMgYi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L3Ntc2N1Zngu
-Yw0KPiBpbmRleCBiZmFjM2VlNGE2NDIuLjI4NzY4YzI3MmI3MyAxMDA2NDQNCj4gLS0tIGEv
-ZHJpdmVycy92aWRlby9mYmRldi9zbXNjdWZ4LmMNCj4gKysrIGIvZHJpdmVycy92aWRlby9m
-YmRldi9zbXNjdWZ4LmMNCj4gQEAgLTE2NTYsNiArMTY1Niw3IEBAIHN0YXRpYyBpbnQgdWZ4
-X3VzYl9wcm9iZShzdHJ1Y3QgdXNiX2ludGVyZmFjZSAqaW50ZXJmYWNlLA0KPiAgIAlpbmZv
-LT5wYXIgPSBkZXY7DQo+ICAgCWluZm8tPnBzZXVkb19wYWxldHRlID0gZGV2LT5wc2V1ZG9f
-cGFsZXR0ZTsNCj4gICAJaW5mby0+ZmJvcHMgPSAmdWZ4X29wczsNCj4gKwlJTklUX0xJU1Rf
-SEVBRCgmaW5mby0+bW9kZWxpc3QpOw0KPiAgIA0KPiAgIAlyZXR2YWwgPSBmYl9hbGxvY19j
-bWFwKCZpbmZvLT5jbWFwLCAyNTYsIDApOw0KPiAgIAlpZiAocmV0dmFsIDwgMCkgew0KPiBA
-QCAtMTY2Niw4ICsxNjY3LDYgQEAgc3RhdGljIGludCB1ZnhfdXNiX3Byb2JlKHN0cnVjdCB1
-c2JfaW50ZXJmYWNlICppbnRlcmZhY2UsDQo+ICAgCUlOSVRfREVMQVlFRF9XT1JLKCZkZXYt
-PmZyZWVfZnJhbWVidWZmZXJfd29yaywNCj4gICAJCQkgIHVmeF9mcmVlX2ZyYW1lYnVmZmVy
-X3dvcmspOw0KPiAgIA0KPiAtCUlOSVRfTElTVF9IRUFEKCZpbmZvLT5tb2RlbGlzdCk7DQo+
-IC0NCj4gICAJcmV0dmFsID0gdWZ4X3JlZ19yZWFkKGRldiwgMHgzMDAwLCAmaWRfcmV2KTsN
-Cj4gICAJY2hlY2tfd2Fybl9nb3RvX2Vycm9yKHJldHZhbCwgImVycm9yICVkIHJlYWRpbmcg
-MHgzMDAwIHJlZ2lzdGVyIGZyb20gZGV2aWNlIiwgcmV0dmFsKTsNCj4gICAJZGV2X2RiZyhk
-ZXYtPmdkZXYsICJJRF9SRVYgcmVnaXN0ZXIgdmFsdWUgMHglMDh4IiwgaWRfcmV2KTsNCj4g
-DQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXIN
-ClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KTWF4ZmVsZHN0ci4gNSwg
-OTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQooSFJCIDM2ODA5LCBBRyBOw7xybmJlcmcpDQpH
-ZXNjaMOkZnRzZsO8aHJlcjogRmVsaXggSW1lbmTDtnJmZmVyDQo=
+WARNING: please write a paragraph that describes the config symbol fully
+#32: FILE: sound/soc/codecs/Kconfig:941:
++config SND_SOC_MAX98520
 
---------------dzQNDPAH6MVNLQ7iZa2Lns6c--
+WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
+#60:
+new file mode 100644
 
---------------ffM8l0TxRYwhGR0oMWNe03pk
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+CHECK: Alignment should match open parenthesis
+#157: FILE: sound/soc/codecs/max98520.c:93:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2041_PCM_CLK_SETUP,
 
------BEGIN PGP SIGNATURE-----
+CHECK: Alignment should match open parenthesis
+#180: FILE: sound/soc/codecs/max98520.c:116:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2040_PCM_MODE_CFG,
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFoN40FAwAAAAAACgkQlh/E3EQov+Be
-XQ/8CUvzhqSHEvJvOGEFy749mT9d2yCS3FIAdnNGwOLlnqt8tHlweLEknX/sEpxQ7t5GEKQV7azT
-QQqs/O5MKKi1HKuRv4q81OZZW69EqLP+LDJ4kKYiViCin7KoUxIiu+71vtequhqeF3e3fqa700iS
-bWgOHD3qVU1xdQTJMQ1mBH1v2h+WWjAeTzb/xh4EqYxq1yV4SDX4JdpD35uPYF7g2PMfd5M6s9ga
-fc3breWN6vNjWckWRoebn7wXK33t1YStpweWlJ42aytyrLy2eD4M8F2t2Rl8F5d1qmiuhkz6sv/F
-rfS9NWl2dfT6fYbb+kWRSyLnhPSEVjiM0OeyCLAA4FeGY9B5VnMFo/oEphbS1UINXsLwWTlaYYs7
-gcIc3lzQOsJZS0iqF1SkzOZNItQzEbaLUpJjKLl7Ph/HMpIuy0CZBt8iW2KgOlOrYh9L8WFttj/b
-hEjGbsJqXu09MxzX800ai3cStk4g6thnZTKLtxcQAEWXId4cz/8sV5sB4W606CfbiNukPiy0M8R7
-xKZvfBRU49t2nDdaBMAGqfQeibLoz35/d37M6nHuARmxQmJEfIpHVu+7ihVpSkmM8rDMsSuBy1b8
-7eXF9Syv78m1VGVGZQg6teDlPQkAMtbwfieM2qELKh95Mb3SvVsgYsZlqxpSMfG/YL1fuam9o2Wp
-5w0=
-=EdCo
------END PGP SIGNATURE-----
+CHECK: Alignment should match open parenthesis
+#204: FILE: sound/soc/codecs/max98520.c:140:
++static int max98520_set_clock(struct snd_soc_component *component,
++	struct snd_pcm_hw_params *params)
 
---------------ffM8l0TxRYwhGR0oMWNe03pk--
+CHECK: Alignment should match open parenthesis
+#222: FILE: sound/soc/codecs/max98520.c:158:
++		regmap_update_bits(max98520->regmap,
++							MAX98520_R2041_PCM_CLK_SETUP,
+
+CHECK: Alignment should match open parenthesis
+#231: FILE: sound/soc/codecs/max98520.c:167:
++static int max98520_dai_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params,
+
+CHECK: Alignment should match open parenthesis
+#260: FILE: sound/soc/codecs/max98520.c:196:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2040_PCM_MODE_CFG,
+
+CHECK: Alignment should match open parenthesis
+#317: FILE: sound/soc/codecs/max98520.c:253:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2042_PCM_SR_SETUP,
+
+CHECK: Alignment should match open parenthesis
+#328: FILE: sound/soc/codecs/max98520.c:264:
++static int max98520_dai_tdm_slot(struct snd_soc_dai *dai,
++	unsigned int tx_mask, unsigned int rx_mask,
+
+CHECK: Alignment should match open parenthesis
+#351: FILE: sound/soc/codecs/max98520.c:287:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2041_PCM_CLK_SETUP,
+
+CHECK: Alignment should match open parenthesis
+#373: FILE: sound/soc/codecs/max98520.c:309:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2040_PCM_MODE_CFG,
+
+CHECK: Alignment should match open parenthesis
+#378: FILE: sound/soc/codecs/max98520.c:314:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2044_PCM_RX_SRC2,
+
+CHECK: Alignment should match open parenthesis
+#382: FILE: sound/soc/codecs/max98520.c:318:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2044_PCM_RX_SRC2,
+
+CHECK: Alignment should match open parenthesis
+#401: FILE: sound/soc/codecs/max98520.c:337:
++static int max98520_dac_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
+
+CHECK: Please don't use multiple blank lines
+#408: FILE: sound/soc/codecs/max98520.c:344:
++
++
+
+CHECK: Alignment should match open parenthesis
+#434: FILE: sound/soc/codecs/max98520.c:370:
++	SOC_ENUM_SINGLE(MAX98520_R2043_PCM_RX_SRC1,
++		0, 3, max98520_switch_text);
+
+CHECK: Alignment should match open parenthesis
+#441: FILE: sound/soc/codecs/max98520.c:377:
++	SND_SOC_DAPM_DAC_E("Amp Enable", "HiFi Playback",
++	MAX98520_R209F_AMP_EN, 0, 0, max98520_dac_event,
+
+CHECK: Alignment should match open parenthesis
+#539: FILE: sound/soc/codecs/max98520.c:475:
++SOC_SINGLE_TLV("Digital Volume", MAX98520_R2090_AMP_VOL_CTRL,
++	0, 0x7F, 1, max98520_digital_tlv),
+
+CHECK: Alignment should match open parenthesis
+#541: FILE: sound/soc/codecs/max98520.c:477:
++SOC_SINGLE_TLV("Speaker Volume", MAX98520_R2091_AMP_PATH_GAIN,
++	0, 0x5, 0, max98520_spk_tlv),
+
+CHECK: Alignment should match open parenthesis
+#544: FILE: sound/soc/codecs/max98520.c:480:
++SOC_SINGLE("Ramp Up Switch", MAX98520_R2092_AMP_DSP_CFG,
++	MAX98520_DSP_SPK_VOL_RMPUP_SHIFT, 1, 0),
+
+CHECK: Alignment should match open parenthesis
+#546: FILE: sound/soc/codecs/max98520.c:482:
++SOC_SINGLE("Ramp Down Switch", MAX98520_R2092_AMP_DSP_CFG,
++	MAX98520_DSP_SPK_VOL_RMPDN_SHIFT, 1, 0),
+
+CHECK: Alignment should match open parenthesis
+#574: FILE: sound/soc/codecs/max98520.c:510:
++SOC_SINGLE("DHT Limiter Mode", MAX98520_R20D2_LIMITER_CFG2,
++	MAX98520_DHT_LIMITER_MODE_SHIFT, 1, 0),
+
+CHECK: Alignment should match open parenthesis
+#576: FILE: sound/soc/codecs/max98520.c:512:
++SOC_SINGLE("DHT Hysteresis Switch", MAX98520_R20D6_DHT_HYSTERESIS_CFG,
++	MAX98520_DHT_HYSTERESIS_SWITCH_SHIFT, 1, 0),
+
+CHECK: Alignment should match open parenthesis
+#578: FILE: sound/soc/codecs/max98520.c:514:
++SOC_SINGLE_TLV("DHT Rot Pnt", MAX98520_R20D0_DHT_CFG1,
++	MAX98520_DHT_VROT_PNT_SHIFT, 10, 1, max98520_dht_rotation_point_tlv),
+
+CHECK: Alignment should match open parenthesis
+#580: FILE: sound/soc/codecs/max98520.c:516:
++SOC_SINGLE_TLV("DHT Supply Headroom", MAX98520_R20D1_LIMITER_CFG1,
++	MAX98520_DHT_SUPPLY_HR_SHIFT, 16, 0, max98520_dht_supply_hr_tlv),
+
+CHECK: Alignment should match open parenthesis
+#582: FILE: sound/soc/codecs/max98520.c:518:
++SOC_SINGLE_TLV("DHT Limiter Threshold", MAX98520_R20D2_LIMITER_CFG2,
++	MAX98520_DHT_LIMITER_THRESHOLD_SHIFT, 0xF, 1,
+max98520_dht_lim_thresh_tlv),
+
+CHECK: Alignment should match open parenthesis
+#584: FILE: sound/soc/codecs/max98520.c:520:
++SOC_SINGLE_TLV("DHT Max Attenuation", MAX98520_R20D3_DHT_CFG2,
++	MAX98520_DHT_MAX_ATTEN_SHIFT, 20, 1, max98520_dht_max_atten_tlv),
+
+CHECK: Alignment should match open parenthesis
+#586: FILE: sound/soc/codecs/max98520.c:522:
++SOC_SINGLE_TLV("DHT Hysteresis", MAX98520_R20D6_DHT_HYSTERESIS_CFG,
++	MAX98520_DHT_HYSTERESIS_SHIFT, 0x7, 0, max98520_dht_hysteresis_tlv),
+
+CHECK: Alignment should match open parenthesis
+#592: FILE: sound/soc/codecs/max98520.c:528:
++SOC_SINGLE("ADC PVDD FLT Switch", MAX98520_R20B2_ADC_PVDD0_CFG,
++	MAX98520_FLT_EN_SHIFT, 1, 0),
+
+CHECK: Alignment should match open parenthesis
+#594: FILE: sound/soc/codecs/max98520.c:530:
++SOC_SINGLE("ADC TEMP FLT Switch", MAX98520_R20B3_ADC_THERMAL_CFG,
++	MAX98520_FLT_EN_SHIFT, 1, 0),
+
+WARNING: line length of 106 exceeds 100 columns
+#664: FILE: sound/soc/codecs/max98520.c:600:
++						MAX98520_R2092_AMP_DSP_CFG, MAX98520_SPK_SAFE_EN_MASK, 0);
+
+CHECK: Alignment should match open parenthesis
+#664: FILE: sound/soc/codecs/max98520.c:600:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R2092_AMP_DSP_CFG, MAX98520_SPK_SAFE_EN_MASK, 0);
+
+CHECK: Alignment should match open parenthesis
+#676: FILE: sound/soc/codecs/max98520.c:612:
++	regmap_update_bits(max98520->regmap,
++						MAX98520_R204F_PCM_RX_EN,
+
+CHECK: Please use a blank line after function/struct/union/enum declarations
+#691: FILE: sound/soc/codecs/max98520.c:627:
++}
++static int max98520_resume(struct device *dev)
+
+CHECK: Alignment should match open parenthesis
+#732: FILE: sound/soc/codecs/max98520.c:668:
++static int max98520_i2c_probe(struct i2c_client *i2c,
++	const struct i2c_device_id *id)
+
+CHECK: Blank lines aren't necessary after an open brace '{'
+#734: FILE: sound/soc/codecs/max98520.c:670:
++{
++
+
+CHECK: Alignment should match open parenthesis
+#741: FILE: sound/soc/codecs/max98520.c:677:
++	ret = i2c_check_functionality(adapter,
++		I2C_FUNC_SMBUS_BYTE
+
+CHECK: Assignment operator '=' should be on the previous line
+#758: FILE: sound/soc/codecs/max98520.c:694:
++	max98520->regmap
++		= devm_regmap_init_i2c(i2c, &max98520_regmap);
+
+CHECK: Alignment should match open parenthesis
+#783: FILE: sound/soc/codecs/max98520.c:719:
++	ret = regmap_read(max98520->regmap,
++		MAX98520_R21FF_REVISION_ID, &reg);
+
+WARNING: DT compatible string "maxim,max98520" appears un-documented --
+check ./Documentation/devicetree/bindings/
+#810: FILE: sound/soc/codecs/max98520.c:746:
++	{ .compatible = "maxim,max98520", },
+
+WARNING: From:/Signed-off-by: email address mismatch: 'From: George Song
+<george.song@maximintegrated.com>' != 'Signed-off-by: George Song
+<george.song@analog.com>'
+
+total: 0 errors, 6 warnings, 37 checks, 967 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or
+--fix-inplace.
+
+0001-ASoC-max98520-Add-max98520-audio-amplifier-driver.patch has style
+problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+On 10/13/21 2:52 AM, George Song wrote:
