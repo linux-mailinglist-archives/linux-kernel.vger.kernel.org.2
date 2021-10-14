@@ -2,128 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E4642D5FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12E942D5FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhJNJ3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbhJNJ25 (ORCPT
+        id S230054AbhJNJ2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:28:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230051AbhJNJ2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:28:57 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A229FC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:26:52 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id y67so2894054iof.10
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:26:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hhEuFlQbGkl6PsKJjR4IdDPF64+w98wgMrFTERI0+RY=;
-        b=EqjqsplVul4oMMBibDLyg+SMqluN4S3s7LRGfLSSQ9U53hwEWiKA4TIR1QgKurQZ/7
-         DaV3vSMiCP9lh46GxF5xjDSGXZOVFI/9tm2/5hid+Minj+HMYRb21RglweOWqc+k0w6A
-         6bjbTOoYZzz8VWf/wqU5PPWQ9w/3x0BtzgFIBjfEOL8GIecqTqLXN/T8z5qPidoI0gk5
-         oeRnbnJS0ReTpl0aOsxfvJOjc/P4uPT3GLiqPIano4MTsA1dqW5yrpNkR5lquy0AZe9f
-         hpWJXTCNUy9yEJhIcJK6uW3Ljhu/n7eMguuXz+mplku3MaOgxTluHp5LXoJzeiLHv+Vn
-         X5wg==
+        Thu, 14 Oct 2021 05:28:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634203590;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MFy26Kc6cpLu18LAs5Mx0Nrg8iL3DuTgZC2Ev14vjlo=;
+        b=X2mCdv8b1K88eBKlnWLq69ctpJUgvxcadvamxM/mn99+T+jMO3aioYuoqC+npqMg6NSXb9
+        DjbnOYauRoO0F+uJ1Fd4TTsFKj80Qh9YoDcsBGmIU0Z53054RrYn3NRQVR6ZKRRpPpdlZw
+        t/YBQ7/WS+kpUFDtv2YGdeKj9M2YW4E=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-490-Vy0qd3RzNci4qAjHzM20uA-1; Thu, 14 Oct 2021 05:26:29 -0400
+X-MC-Unique: Vy0qd3RzNci4qAjHzM20uA-1
+Received: by mail-ed1-f72.google.com with SMTP id r11-20020aa7cfcb000000b003d4fbd652b9so4639582edy.14
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:26:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hhEuFlQbGkl6PsKJjR4IdDPF64+w98wgMrFTERI0+RY=;
-        b=AGCG+5/SjdAajN52bSNugBMorEiH/w+Ev7XucYbWN7l2rOkCbLvQ6qhk1+aSF6vKZN
-         OT6l9ydxcPlJez4K//PWeFN1IH4TU7n+R898jsZI9MPod2/oThpSTz1qypE05PKxSHXF
-         qgYNGGQMTgtLgVkVjODjfIRXKIzdsGmooM+7epSPM1+K0TJfmgOi4dq9TcrfXVYdze7M
-         GMrXXIamvmoB2pkU3yR9PLZLM3ZcZy1E9eAWw7SxK7cTyjXCPPrlYUC4Hhpu49W1qyMP
-         Bo+oJ5dH1OcmTMoFLOOqhpJM1NolsyhoejWxM0JkZM6Rrx6yntDz6OvhBrkkZL9OgVrz
-         w4mg==
-X-Gm-Message-State: AOAM531QoO21QyfxK5lMknSulxCGeA1wAvLwC/5ucRgjh9JRO3v+tTHG
-        /+n6Nw+2vBHlTMeQOtSR4mpYdJEor4X/OpiHPs4=
-X-Google-Smtp-Source: ABdhPJzfEfFmY3dUGDBBdZZHiOl1s28h5opeZyjl8LsCwN2m/St8YnPgdXlNyI1BY9IXEMxCUNm+bFnta3749bbBgkg=
-X-Received: by 2002:a05:6602:27d4:: with SMTP id l20mr1572323ios.94.1634203612102;
- Thu, 14 Oct 2021 02:26:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211013102346.179642-1-laoar.shao@gmail.com> <20211013102346.179642-3-laoar.shao@gmail.com>
- <20211013101921.0843aaf0@gandalf.local.home> <CALOAHbCt+rLiPE4_zZO_f5sKybKwYntqupx_L9V_J+yByoFvOw@mail.gmail.com>
- <20211013222418.7ea9727d@oasis.local.home> <202110132148.523C3EA@keescook>
-In-Reply-To: <202110132148.523C3EA@keescook>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 14 Oct 2021 17:26:16 +0800
-Message-ID: <CALOAHbA8OkrPfWJbYv7Kr988QGHsV0KaHxZwWWimRh6oJDy-8A@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] connector: use __get_task_comm in proc_comm_connector
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MFy26Kc6cpLu18LAs5Mx0Nrg8iL3DuTgZC2Ev14vjlo=;
+        b=L/k03Nr7NF6wcmDINklVjjgZApe/I23M4bfGmH2L7i43w/gCFqR9lnhOS+IrpEXMIx
+         E4F95SFDY8tWilfdFK+f13TJa1iS1s02iR6pi8N4tN+JvFQf8jd1NvHJZhwSG3NeA4oy
+         wW1tF4wOilvGqhsGcfjpqNTOY5X5KyqKpbC9X5E/KAJ1HKTejrDj8+VK3jEF3UD1FOtq
+         XKbTEFoFC9WUSn62f4p4rVZkURFjVMlTxqQp5OZVhKhh7paLOoFHT6sFyRmeCHIXv/2e
+         mS9SUj+NLiL0xZN48FwKcZuMO1LWT4423Rx78LIi2Pxwrm8UDv7fWI5TF+SUMYLzKEUC
+         CwSA==
+X-Gm-Message-State: AOAM532YlHoDsfIVa8tMQD3AJR9+ANpfZmwUCCLSXP5MybagASQnBV6u
+        9KYzWHlfVsnMUUutMK+q+10y07GVxGbP9ULDrQqhtlc47NfA/lMzIl62Uajq+UKS0KBUjilBdoa
+        PZagNgG5IbsWxmH0b/EFTmJAZ
+X-Received: by 2002:a05:6402:3488:: with SMTP id v8mr6898721edc.106.1634203588044;
+        Thu, 14 Oct 2021 02:26:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwzUMhY55dY1Ed2tUolHVxn0GGtah89ijl+mJABjkbp/N7HKf5Fl2EAkvFydJiTJ/Wm+2qndQ==
+X-Received: by 2002:a05:6402:3488:: with SMTP id v8mr6898699edc.106.1634203587836;
+        Thu, 14 Oct 2021 02:26:27 -0700 (PDT)
+Received: from redhat.com ([2.55.16.227])
+        by smtp.gmail.com with ESMTPSA id f19sm1749252edj.77.2021.10.14.02.26.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 02:26:27 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 05:26:20 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        christian@brauner.io, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vladimir Zapolskiy <vzapolskiy@gmail.com>,
-        David Howells <dhowells@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        "Lutomirski, Andy" <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
+ pci_iomap_host_shared_range()
+Message-ID: <20211014052605-mutt-send-email-mst@kernel.org>
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053103-mutt-send-email-mst@kernel.org>
+ <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
+ <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
+ <DM8PR11MB57501C8F8F5C8B315726882EE7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20211012171016-mutt-send-email-mst@kernel.org>
+ <DM8PR11MB5750A40FAA6AFF6A29CF70DAE7B89@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20211014025514-mutt-send-email-mst@kernel.org>
+ <DM8PR11MB57500B2D821E8AAF93EB66CEE7B89@DM8PR11MB5750.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM8PR11MB57500B2D821E8AAF93EB66CEE7B89@DM8PR11MB5750.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 12:50 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Wed, Oct 13, 2021 at 10:24:18PM -0400, Steven Rostedt wrote:
-> > On Thu, 14 Oct 2021 09:48:09 +0800
-> > Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > > > __get_task_comm() uses strncpy() which my understanding is, does not add
-> > > > the nul terminating byte when truncating. Which changes the functionality
-> > > > here. As all task comms have a terminating byte, the old method would copy
-> > > > that and include it. This won't add the terminating byte if the buffer is
-> > > > smaller than the comm, and that might cause issues.
+On Thu, Oct 14, 2021 at 07:27:42AM +0000, Reshetova, Elena wrote:
+> > On Thu, Oct 14, 2021 at 06:32:32AM +0000, Reshetova, Elena wrote:
+> > > > On Tue, Oct 12, 2021 at 06:36:16PM +0000, Reshetova, Elena wrote:
+> > > > > > The 5.15 tree has something like ~2.4k IO accesses (including MMIO and
+> > > > > > others) in init functions that also register drivers (thanks Elena for
+> > > > > > the number)
+> > > > >
+> > > > > To provide more numbers on this. What I can see so far from a smatch-based
+> > > > > analysis, we have 409 __init style functions (.probe & builtin/module_
+> > > > > _platform_driver_probe excluded) for 5.15 with allyesconfig.
 > > > >
+> > > > I don't think we care about allyesconfig at all though.
+> > > > Just don't do that.
+> > > > How about allmodconfig? This is closer to what distros actually do.
 > > >
-> > > Right, that is a problem.
-> > > It seems that we should add a new helper get_task_comm_may_truncated().
-> >
-> > Or simply change __get_task_comm() to:
-> >
-> > char *__get_task_comm(char *buf, size_t buf_size, struct task_struct *tsk)
-> > {
-> >       task_lock(tsk);
-> >       strncpy(buf, tsk->comm, buf_size);
-> >       /* The copied value is always nul terminated */
-> >       buf[buf_size - 1] = '\0';
-> >       task_unlock(tsk);
-> >       return buf;
-> > }
-> >
-> > But that should probably be a separate patch.
->
-> strscpy_pad() is the right thing here -- it'll retain the NUL-fill
-> properties of strncpy and terminate correctly.
->
+> > > It does not make any difference really for the content of the /drivers/*:
+> > > gives 408 __init style functions doing IO (.probe & builtin/module_
+> > > > > _platform_driver_probe excluded) for 5.15 with allmodconfig:
+> > >
+> > > ['doc200x_ident_chip',
+> > > 'doc_probe', 'doc2001_init', 'mtd_speedtest_init',
+> > > 'mtd_nandbiterrs_init', 'mtd_oobtest_init', 'mtd_pagetest_init',
+> > > 'tort_init', 'mtd_subpagetest_init', 'fixup_pmc551',
+> > > 'doc_set_driver_info', 'init_amd76xrom', 'init_l440gx',
+> > > 'init_sc520cdp', 'init_ichxrom', 'init_ck804xrom', 'init_esb2rom',
+> > > 'probe_acpi_namespace_devices', 'amd_iommu_init_pci', 'state_next',
+> > > 'arm_v7s_do_selftests', 'arm_lpae_run_tests', 'init_iommu_one',
+> > 
+> > Um. ARM? Which architecture is this build for?
+> 
+> The list of smatch IO findings is built for x86, but the smatch cross function
+> database covers all archs, so when queried for all potential function callers,
+> it would show non x86 arch call chains also. 
+> 
+> Here is the original x86 finding and call chain for the 'arm_v7s_do_selftests':
+> 
+>   Detected low-level IO from arm_v7s_do_selftests in fun
+> __iommu_queue_command_sync
+> 
+> drivers/iommu/amd/iommu.c:1025 __iommu_queue_command_sync() error:
+> {15002074744551330002}
+>     'check_host_input' read from the host using function 'readl' to a
+> member of the structure 'iommu->cmd_buf_head';
+> 
+> __iommu_queue_command_sync()
+>   iommu_completion_wait()
+>     amd_iommu_domain_flush_complete()
+>       iommu_v1_map_page()
+>         arm_v7s_do_selftests()
+> 
+> So, the results can be further filtered if you want a specified arch. 
 
-strscpy_pad() can also work, and seems more simple.
-
-> The use of non-terminating issue with strncpy() wasn't a problem here
-> because get_task_comm() would always make sure task->comm was
-> terminated. (It uses strlcpy(), which I think needs to be changed to
-> strscpy_pad() too...)
->
-> --
-> Kees Cook
-
-
+So what is it just for x86? Could you tell?
 
 -- 
-Thanks
-Yafang
+MST
+
