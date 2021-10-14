@@ -2,159 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B72542D0C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93C042D0C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhJNDD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbhJNDDY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:03:24 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8FFC061570;
-        Wed, 13 Oct 2021 20:01:20 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id e2so8571960uax.7;
-        Wed, 13 Oct 2021 20:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f/CZ3h41DYsFMAqGi5C28jlvcQjjjxXwdgVx1UeMUqU=;
-        b=dOC+24nlC1p6+PhEkce9QFi/JokIB7H4RtKCST+pjZJ155B3+Nbupy+nGfA4Z2Z8b+
-         35NsrVFLusp8hep969Gol4XDCuRjKxiaH+//CfVeTlENH+JOFdEpBb8afIaEOScwKmo2
-         yjuk3kQKmmyYJsk5dljIDsrJrUr3EHKOdHODAgGv3Qdaembzc/qqjvBsR3XjGtk26zU+
-         piuPEt2Gy0A+/WBvEj2vs2142LkPPrbeSK9pcfmKxOnH0/l9A0tmmelBrGbRrjDuoSJm
-         xcdFAK2vFPJjtx9fXRWTn+Liyq0mlsQEseIYMqhpMZH4/L09vGcLvyKU95j5vvSF4IyU
-         4/8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f/CZ3h41DYsFMAqGi5C28jlvcQjjjxXwdgVx1UeMUqU=;
-        b=1jvdyNLbNfacAV2I0ztmL8NeDvOtRsSqUckZbh9p/W/smeGFsHBRJj/aVrAtkglqLn
-         G5MSWMomYg4ZgwDxf6A+7pSLDFgmsAH6J+tEPRby6KP0hAyK+zTCzoINdyVJ02t/RR7P
-         8D10WEW+ItDB2M3Ka4rFRZroczkgHAuYVB+ps2IUKKRR6KnBwU6ZyjaN6MDoa9Nje2n8
-         jmNgx6RRbH5fSwOSREb8SufN7lcsITG5jhSUTDcGez/gx2usSetbqd0eij7ApllKrP78
-         tfxJ/rVBiLNPVnlwt2M+gYRYh2wWLu0mvhCR2b+V58BD7DPPptmkz/d91QMumMkiiaEt
-         s8zg==
-X-Gm-Message-State: AOAM531NQVfGfmVd7jTCzh8QyK9GNpf/nKxjTDsI9CEXnpAx0/Gz+jIX
-        Ptt9+GkfFxa6L9/I4K0zQ6rVeagYdTX3Z1C/TWY=
-X-Google-Smtp-Source: ABdhPJxYY6ovGCJYATjdLZaiIF1rw1Hx7UZB4cKPjBLokqyTS0rHd8ySPxin0PpRI3ThKuqePR3LSJeXRYzjkCYi4So=
-X-Received: by 2002:a67:c19d:: with SMTP id h29mr3419511vsj.18.1634180479914;
- Wed, 13 Oct 2021 20:01:19 -0700 (PDT)
+        id S229970AbhJNDEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:04:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229838AbhJNDEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Oct 2021 23:04:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFB4C61039;
+        Thu, 14 Oct 2021 03:02:02 +0000 (UTC)
+Date:   Wed, 13 Oct 2021 23:02:01 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     <mingo@redhat.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tracing: save cmdline only when task does not exist in
+ savecmd for optimization
+Message-ID: <20211013230201.0f777564@oasis.local.home>
+In-Reply-To: <20211011115018.88948-1-yangjihong1@huawei.com>
+References: <20211011115018.88948-1-yangjihong1@huawei.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211013063656.3084555-1-chenhuacai@loongson.cn>
- <20211013071117.3097969-1-chenhuacai@loongson.cn> <20211013071117.3097969-2-chenhuacai@loongson.cn>
- <YWbXdEyonDpXJFK2@bombadil.infradead.org>
-In-Reply-To: <YWbXdEyonDpXJFK2@bombadil.infradead.org>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Thu, 14 Oct 2021 11:01:08 +0800
-Message-ID: <CAAhV-H5-8yPjZhOkV2+v+XB85+2qs5342hDdTYAV1ctPAdb7+A@mail.gmail.com>
-Subject: Re: [PATCH V5 15/22] LoongArch: Add elf and module support
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Jessica Yu <jeyu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Luis,
+On Mon, 11 Oct 2021 19:50:18 +0800
+Yang Jihong <yangjihong1@huawei.com> wrote:
 
-On Wed, Oct 13, 2021 at 8:56 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> On Wed, Oct 13, 2021 at 03:11:10PM +0800, Huacai Chen wrote:
-> > diff --git a/arch/loongarch/include/asm/vermagic.h b/arch/loongarch/include/asm/vermagic.h
-> > new file mode 100644
-> > index 000000000000..9882dfd4702a
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/asm/vermagic.h
-> > @@ -0,0 +1,19 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +#ifndef _ASM_VERMAGIC_H
-> > +#define _ASM_VERMAGIC_H
-> > +
-> > +#define MODULE_PROC_FAMILY "LOONGARCH "
->
-> I take it this not a mips arch? There are other longarchs under
-> arch/mips/include/asm/vermagic.h which is why I ask.
-Yes, LoongArch is not compatible with MIPS, old Loongson is MIPS and
-new Loongson isn't.
+> commit 85f726a35e504418 use strncpy instead of memcpy when copying comm,
+> on ARM64 machine, this commit causes performance degradation.
+> 
+> For the task that already exists in savecmd, it is unnecessary to call
+> set_cmdline to execute strncpy once, run set_cmdline only if the task does
+> not exist in savecmd.
+> 
+> I have written an example (which is an extreme case) in which trace sched switch
+> is invoked for 1000 times, as shown in the following:
+> 
+>   for (int i = 0; i < 1000; i++) {
+>           trace_sched_switch(true, current, current);
+>  }
 
->
-> > diff --git a/arch/loongarch/kernel/module.c b/arch/loongarch/kernel/module.c
-> > new file mode 100644
-> > index 000000000000..af7c403b032b
-> > --- /dev/null
-> > +++ b/arch/loongarch/kernel/module.c
-> > @@ -0,0 +1,652 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/*
-> > + * Author: Hanlu Li <lihanlu@loongson.cn>
-> > + *         Huacai Chen <chenhuacai@loongson.cn>
-> > + *
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +
-> > +#undef DEBUG
->
-> Please remove this undef DEBUG line.
-OK, thanks.
+Well that's a pretty non realistic benchmark.
 
->
-> > +
-> > +#include <linux/moduleloader.h>
-> > +#include <linux/elf.h>
-> > +#include <linux/mm.h>
-> > +#include <linux/vmalloc.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/fs.h>
-> > +#include <linux/string.h>
-> > +#include <linux/kernel.h>
-> > +
-> > +static int rela_stack_push(s64 stack_value, s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +     if (*rela_stack_top >= RELA_STACK_DEPTH)
-> > +             return -ENOEXEC;
-> > +
-> > +     rela_stack[(*rela_stack_top)++] = stack_value;
-> > +     pr_debug("%s stack_value = 0x%llx\n", __func__, stack_value);
->
-> If you are going to use pr_debug() so much you may want to add
-> a define for #define pr_fmt(fmt) at the very top.
-OK, thanks.
+> 
+> On ARM64 machine, compare the data before and after the optimization:
+> +---------------------+------------------------------+------------------------+
+> |                     | Total number of instructions | Total number of cycles |
+> +---------------------+------------------------------+------------------------+
+> | Before optimization |           1107367            |          658491        |
+> +---------------------+------------------------------+------------------------+
+> | After optimization  |            869367            |          520171        |
+> +---------------------+------------------------------+------------------------+
+> As shown above, there is nearly 26% performance
 
->
-> > +int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
-> > +                    unsigned int symindex, unsigned int relsec,
-> > +                    struct module *me)
-> > +{
->
-> Nit: Please use struct module *mod, it is much more common in other places.
->
-OK, thanks.
+I'd prefer to see a more realistic benchmark.
 
-> Other than that, this looks fine to me.
->
-> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
->
->   Luis
+> 
+> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> ---
+>  kernel/trace/trace.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 7896d30d90f7..a795610a3b37 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -2427,8 +2427,11 @@ static int trace_save_cmdline(struct task_struct *tsk)
+>  		savedcmd->cmdline_idx = idx;
+>  	}
+>  
+> -	savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
+> -	set_cmdline(idx, tsk->comm);
+> +	/* save cmdline only when task does not exist in savecmd */
+> +	if (savedcmd->map_cmdline_to_pid[idx] != tsk->pid) {
+> +		savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
+> +		set_cmdline(idx, tsk->comm);
+> +	}
+
+I'm not against adding this. Just for kicks I ran the following before
+and after this patch:
+
+  # trace-cmd start -e sched
+  # perf stat -r 100 hackbench 50
+
+Before:
+
+ Performance counter stats for '/work/c/hackbench 50' (100 runs):
+
+          6,261.26 msec task-clock                #    6.126 CPUs utilized            ( +-  0.12% )
+            93,519      context-switches          #   14.936 K/sec                    ( +-  1.12% )
+            13,725      cpu-migrations            #    2.192 K/sec                    ( +-  1.16% )
+            47,266      page-faults               #    7.549 K/sec                    ( +-  0.54% )
+    22,911,885,026      cycles                    #    3.659 GHz                      ( +-  0.11% )
+    15,171,250,777      stalled-cycles-frontend   #   66.22% frontend cycles idle     ( +-  0.13% )
+    18,330,841,604      instructions              #    0.80  insn per cycle
+                                                  #    0.83  stalled cycles per insn  ( +-  0.11% )
+     4,027,904,559      branches                  #  643.306 M/sec                    ( +-  0.11% )
+        31,327,782      branch-misses             #    0.78% of all branches          ( +-  0.20% )
+
+           1.02201 +- 0.00158 seconds time elapsed  ( +-  0.15% )
+After:
+
+ Performance counter stats for '/work/c/hackbench 50' (100 runs):
+
+          6,216.47 msec task-clock                #    6.124 CPUs utilized            ( +-  0.10% )
+            93,311      context-switches          #   15.010 K/sec                    ( +-  0.91% )
+            13,719      cpu-migrations            #    2.207 K/sec                    ( +-  1.09% )
+            47,085      page-faults               #    7.574 K/sec                    ( +-  0.49% )
+    22,746,703,318      cycles                    #    3.659 GHz                      ( +-  0.09% )
+    15,012,911,121      stalled-cycles-frontend   #   66.00% frontend cycles idle     ( +-  0.11% )
+    18,275,147,949      instructions              #    0.80  insn per cycle
+                                                  #    0.82  stalled cycles per insn  ( +-  0.08% )
+     4,017,673,788      branches                  #  646.295 M/sec                    ( +-  0.08% )
+        31,313,459      branch-misses             #    0.78% of all branches          ( +-  0.17% )
+
+           1.01506 +- 0.00150 seconds time elapsed  ( +-  0.15% )
+
+Really it's all in the noise, so adding this doesn't seem to hurt.
+
+-- Steve
+
+
+
+>  
+>  	arch_spin_unlock(&trace_cmdline_lock);
+>  
+
