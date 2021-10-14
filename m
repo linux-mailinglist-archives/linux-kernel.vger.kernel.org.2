@@ -2,146 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7525B42E06C
+	by mail.lfdr.de (Postfix) with ESMTP id 2B17D42E06B
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233660AbhJNRvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 13:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57736 "EHLO
+        id S233637AbhJNRvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 13:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhJNRvH (ORCPT
+        with ESMTP id S232661AbhJNRvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 13:51:07 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40275C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 10:49:02 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id g36so13628986lfv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 10:49:02 -0700 (PDT)
+        Thu, 14 Oct 2021 13:51:03 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0007BC061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 10:48:58 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 75so6239493pga.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 10:48:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SaW0/T+S3qtTPwWA2uNkFcxxhKazoJ7rNJxWqIE27NI=;
-        b=V6ZjrnV+Fq7DNZ0MCcyJ/VsIfotirCJtUXn4CiavP5HB+HnKnk7fdRVDXKOSb1N40y
-         j6M4ylzc2RO0XwRjNoAaQRGDUpEHjNX0hQAKKrcMAVUCdybAqMc84UyFXvge0HnpDE4X
-         mUlcEoqYjfEq0s2OFwr3Wt7hut6aVbPtrj2QguEU59goAN6Soy60/QSLwbdeULFMU7gq
-         yljbnk6C7Pz8EcZCnmd/X2VKKLzCu2BdJqOsiRMKOv6VePti3Zmmnn7ccJ7VJ9xGbQ6l
-         nFaeRqQQki8f4NTlfqbbMW6zDsTCJABYDkaX5eLshUxlvEnypd4b3sjSTwXohsZe2ewI
-         RKRw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OT60huJcLUzU4uMTP0Y4zXm9R8zcbb51JLuxqfMRZ94=;
+        b=wLDDuoJmX85HQzNdokG+Ttetn04Um6PGIAdCcgnT1SUrnTJbr9y7xmCqiEt5pzQD21
+         /oGZrw2O11WaGmL9Su9ZammcH9guMQB2/Ha6UTySsxZ5b+/7TW6kft8hZ2EYLz3mBuEn
+         7YZLHItUk7NEl5XvoRG9vEoln7N+JH+GNBOk8+JUBB067D+JWPELkbIRfV+8Id8L6Lkr
+         aJpk9Q3gd4IQ/nVxW3zQb0j0M546bBU+/4Fkk+CXe1UkcavcfOABwBzY5yqbOcXTyPbh
+         HJyT8o4QcoGPYzcm/9dSZZWJsFzOT9VaQiWqB5KdPMW5xmrVIEIKc5OSsx9ZTQlN99Uf
+         SxLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SaW0/T+S3qtTPwWA2uNkFcxxhKazoJ7rNJxWqIE27NI=;
-        b=C8MduHj9k3NdJFyEcd7s10L68Uh6im4cn1VUOmloIxG4dW1wS+BRX0+RHstdHSar6p
-         ZxKCqLrtN6tbKBurfs+46+JiXBFmBYB/aH/eGQAKnRovPYuOTbOLVwakIeTh9Wk3Eg7k
-         V2EtWifv4kuh0kHy+j9u4ntoreoFTdyD1jjaQ+JCvNqtDTXCNM2HGkAWdVnPtwTFzAFk
-         EH0p3wCCcKbK8RycEdpDetnFwVdPzglB184kpgVGHewmQJgHbGBIF3q0Xx7dodyqdge4
-         I7T4aqvx6KOTzeD0dKfq4eA9hniu5w/wJHT+79ddWPWVuDuLg9nOxwZ4MdGGq1lnGpQD
-         GRIg==
-X-Gm-Message-State: AOAM530z/HKZExaeTThbCciDn6dxokH+0z5RgG8ygKEMfbANjFE8AueE
-        Xudn6ZMzl9qzuhsfVdkP707zf3NNSQ0Clt6XyKXN0w==
-X-Google-Smtp-Source: ABdhPJyYoXpIIRq1W+BTce78krhv5x5xNw/oJLL3kD3o8wffsIZJ1tNTXIDOo27Ws3Ea0GVVAS+gRbMMlD7NUMn3k6k=
-X-Received: by 2002:a05:6512:b0c:: with SMTP id w12mr6584550lfu.240.1634233740333;
- Thu, 14 Oct 2021 10:49:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OT60huJcLUzU4uMTP0Y4zXm9R8zcbb51JLuxqfMRZ94=;
+        b=l7tQwPc0nQGZJJAEvVy2SNPjLaG+KqUNGv3h85TOqvL9i5+AGYg628nrNA1oDSxIRX
+         r2sLIbKpav+Ip+8NDT7CU2kCLhWos64Z5EhyPaOmYuP3g7cP5f95FDoEQQlMtwen2zen
+         r8+oBkcLkJuwhAkrrJWDZL4nbdWfVXMuuzyAiIe1iexq3JZShv9w920wKTUbCoMgrxCA
+         sQNXSfQPYy93NGEHrqEsi30lU8c6EYHWhyuF/DQzcbqI4ntgTBpXnfnh13rMTora13KO
+         Oo91h0iQ77tUq4mT2hbtyKoBzwz796QrOUixp1Z+y/RNx6bSEi8MrutLE/ky63qsgTRx
+         r5sw==
+X-Gm-Message-State: AOAM532gaNIxTsxHnoxwObFoo46BXACRRGNwJHwb7q26fx/qvYsNjiv4
+        BwwDJchNr8ygNZW+Ma3k/dEuxw==
+X-Google-Smtp-Source: ABdhPJxmvaatFc+QnqNBQePvZ4CbvHeNQ65c0Ulj65LLhxEKTQGYa8hLZAe0hs+8d7h5nHtD9QEZfw==
+X-Received: by 2002:aa7:9f8f:0:b0:44c:cf63:ec7c with SMTP id z15-20020aa79f8f000000b0044ccf63ec7cmr6741449pfr.77.1634233738398;
+        Thu, 14 Oct 2021 10:48:58 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id lp9sm3424575pjb.35.2021.10.14.10.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 10:48:57 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 11:48:54 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Rob Herring <robh@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Stefano Stabellini <stefanos@xilinx.com>,
+        Bruce Ashfield <bruce.ashfield@xilinx.com>
+Subject: Re: [RFC PATCH 1/7] remoteproc: core: Introduce virtio device
+ add/remove functions
+Message-ID: <20211014174854.GC2847733@p14s>
+References: <20211001101234.4247-1-arnaud.pouliquen@foss.st.com>
+ <20211001101234.4247-2-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-References: <20211014132331.GA4811@kernel.org> <YWhGQLHnA9BIVBpr@hirez.programming.kicks-ass.net>
-In-Reply-To: <YWhGQLHnA9BIVBpr@hirez.programming.kicks-ass.net>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 14 Oct 2021 10:48:48 -0700
-Message-ID: <CAKwvOdnkDUfRKzmLThQGW02Ew6x=KM0MQyHge7=kc673NYxo2g@mail.gmail.com>
-Subject: Re: [PATCH] compiler_types: mark __compiletime_assert failure as __noreturn
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001101234.4247-2-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 8:02 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Oct 14, 2021 at 03:23:31PM +0200, Miguel Ojeda wrote:
-> > `__compiletime_assert` declares a fake `extern` function
-> > which appears (to the compiler) to be called when the test fails.
-> >
-> > Therefore, compilers may emit possibly-uninitialized warnings
-> > in some cases, even if it will be an error anyway (for compilers
-> > supporting the `error` attribute, e.g. GCC and Clang >= 14)
-> > or a link failure (for those that do not, e.g. Clang < 14).
-> >
-> > Annotating the fake function as `__noreturn` gives them
-> > the information they need to avoid the warning,
-> > e.g. see https://godbolt.org/z/x1v69jjYY.
-> >
-> > Link: https://lore.kernel.org/llvm/202110100514.3h9CI4s0-lkp@intel.com/
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> > ---
-> >  include/linux/compiler_types.h | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> > index b6ff83a714ca..ca1a66b8cd2f 100644
-> > --- a/include/linux/compiler_types.h
-> > +++ b/include/linux/compiler_types.h
-> > @@ -298,7 +298,13 @@ struct ftrace_likely_data {
-> >  #ifdef __OPTIMIZE__
-> >  # define __compiletime_assert(condition, msg, prefix, suffix)                \
-> >       do {                                                            \
-> > -             extern void prefix ## suffix(void) __compiletime_error(msg); \
-> > +             /*                                                      \
-> > +              * __noreturn is needed to give the compiler enough     \
-> > +              * information to avoid certain possibly-uninitialized  \
-> > +              * warnings (regardless of the build failing).          \
-> > +              */                                                     \
-> > +             __noreturn extern void prefix ## suffix(void)           \
-> > +                     __compiletime_error(msg);                       \
-> >               if (!(condition))                                       \
-> >                       prefix ## suffix();                             \
-> >       } while (0)
->
-> Should we not convert this to _Static_assert, now that all supported
-> compilers are of recent enough vintage to support that?
+Hi,
 
-It's a good question; I'm pretty sure we had a thread with Rasmus on
-the idea a while ago, and IIRC the answer is no.
+I have started reviewing this set.  Comments herein are related to code logic
+only.  I will comment on the overall approach at a later time.
 
-Basically, we can't convert BUILD_BUG_ON to _Static_assert because
-_Static_assert requires integer constant expressions (ICE) while many
-expressions passed to BUILD_BUG_ON in the kernel require that
-optimizations such as inlining run (they are not ICEs); BUILD_BUG_ON
-is more flexible.  So you can't replace the guts of BUILD_BUG_ON
-wholesale with _Static_assert (without doing anything else); it would
-be preferable for kernel developers to use _Static_assert (I think we
-have a macro, static_assert, too) in cases where they have ICEs rather
-than BUILD_BUG_ON (though it flips the condition of the expression;
-_Static_assert errors if the expression evaluates to false;
-BUILD_BUG_ON when true), but I think there's too much muscle memory
-around just using BUILD_BUG_ON that if you introduced something new,
-folks wouldn't know to use that instead.
+On Fri, Oct 01, 2021 at 12:12:28PM +0200, Arnaud Pouliquen wrote:
+> In preparation of the migration of the management of rvdev in
+> rproc_virtio, this patch spins off new functions to manage the
 
-Probably a better demonstration would be to try it and observe some of
-the spooky failures at build time that result.  We may be able to
-separate the macro into two; BUILD_BUG_ON and BUILD_BUG_ON_OPT (or
-whatever color bikeshed), where the former uses _Static_assert under
-the hood, and the latter uses __attribute__((error)). Then we could go
-about converting cases that could not use _Static_assert to use the
-new macro, while the old macro is what folks still reach for first.
+Are you referring to file remoteproc_virtio.c?  If so please clearly state that
+it is the case by using the real name.  Otherwise it is very confusing.
 
-I'm not sure how worthwhile that yakshave would be, but at least the
-front end of the compiler would error sooner in the case of
-_Static_assert, FWIW (not much).  But I don't think we can ever
-eliminate __attribute__((error)) from the kernel unless we're ok
-outright removing asserts that aren't ICEs.  I would not recommend
-that.  I would like to see more usage of static_assert, but I'm not
-sure how best to promote that, and if it's worth discussing the subtle
-distinction between BUILD_BUG_ON vs _Static_assert again and again and
-again every time.
--- 
+> remoteproc virtio device.
+> 
+> The rproc_rvdev_add_device and rproc_rvdev_remove_device will be
+> moved to remoteproc_virtio.
+
+Here too I have to guess that you mean remoteproc_virtio.c.  Moreover two
+different nomenclatures are used in 3 lines.
+
+> 
+> In addition the rproc_register_rvdev and rproc_unregister_rvdev is created
+> as it will be exported (used in rproc_rvdev_add_device
+> and rproc_rvdev_remove_device functions).
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 102 ++++++++++++++++++---------
+>  1 file changed, 67 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 502b6604b757..7c783ca291a7 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -484,6 +484,69 @@ static int copy_dma_range_map(struct device *to, struct device *from)
+>  	return 0;
+>  }
+>  
+> +static void rproc_register_rvdev(struct rproc_vdev *rvdev)
+> +{
+> +	if (rvdev && rvdev->rproc)
+> +		list_add_tail(&rvdev->node, &rvdev->rproc->rvdevs);
+> +}
+> +
+> +static void rproc_unregister_rvdev(struct rproc_vdev *rvdev)
+> +{
+> +	if (rvdev)
+> +		list_del(&rvdev->node);
+> +}
+
+This file is a simple refactoring of the current code.  Additions such as this
+one should be done in a separate patch.
+
+> +
+> +static int rproc_rvdev_add_device(struct rproc_vdev *rvdev)
+> +{
+> +	struct rproc *rproc = rvdev->rproc;
+> +	char name[16];
+> +	int ret;
+> +
+> +	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
+> +	rvdev->dev.parent = &rproc->dev;
+> +	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
+> +	if (ret)
+> +		return ret;
+
+Memory is allocated for @rvdev in rproc_handle_vdev() using kzalloc().  If
+we return prematurely that memory will be leaked.  Note that this problem is
+present in the current code base.  I suggest sending a separate patch to fix it
+while this work is ongoing.
+
+> +
+> +	rvdev->dev.release = rproc_rvdev_release;
+> +	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
+> +	dev_set_drvdata(&rvdev->dev, rvdev);
+> +
+> +	ret = device_register(&rvdev->dev);
+> +	if (ret) {
+> +		put_device(&rvdev->dev);
+> +		return ret;
+> +	}
+> +	/* Make device dma capable by inheriting from parent's capabilities */
+> +	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
+> +
+> +	ret = dma_coerce_mask_and_coherent(&rvdev->dev,
+> +					   dma_get_mask(rproc->dev.parent));
+> +	if (ret) {
+> +		dev_warn(&rvdev->dev,
+> +			 "Failed to set DMA mask %llx. Trying to continue... %x\n",
+> +			 dma_get_mask(rproc->dev.parent), ret);
+> +	}
+> +
+> +	rproc_register_rvdev(rvdev);
+> +
+> +	rvdev->subdev.start = rproc_vdev_do_start;
+> +	rvdev->subdev.stop = rproc_vdev_do_stop;
+> +
+> +	rproc_add_subdev(rproc, &rvdev->subdev);
+
+Please see comment above.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static void rproc_rvdev_remove_device(struct rproc_vdev *rvdev)
+> +{
+> +	struct rproc *rproc = rvdev->rproc;
+> +
+> +	rproc_remove_subdev(rproc, &rvdev->subdev);
+> +	rproc_unregister_rvdev(rvdev);
+> +	device_unregister(&rvdev->dev);
+> +}
+> +
+>  /**
+>   * rproc_handle_vdev() - handle a vdev fw resource
+>   * @rproc: the remote processor
+> @@ -519,7 +582,6 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+>  	struct device *dev = &rproc->dev;
+>  	struct rproc_vdev *rvdev;
+>  	int i, ret;
+> -	char name[16];
+>  
+>  	/* make sure resource isn't truncated */
+>  	if (struct_size(rsc, vring, rsc->num_of_vrings) + rsc->config_len >
+> @@ -551,33 +613,13 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+>  
+>  	rvdev->id = rsc->id;
+>  	rvdev->rproc = rproc;
+> -	rvdev->index = rproc->nb_vdev++;
+> +	rvdev->index = rproc->nb_vdev;
+
+This one may make sense in a later patch but for now it doesn't.
+
+Depending on the time I have more comments to come later, tomorrow or on Monday.
+
 Thanks,
-~Nick Desaulniers
+Mathieu
+
+>  
+> -	/* Initialise vdev subdevice */
+> -	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
+> -	rvdev->dev.parent = &rproc->dev;
+> -	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
+> +	ret = rproc_rvdev_add_device(rvdev);
+>  	if (ret)
+>  		return ret;
+> -	rvdev->dev.release = rproc_rvdev_release;
+> -	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
+> -	dev_set_drvdata(&rvdev->dev, rvdev);
+>  
+> -	ret = device_register(&rvdev->dev);
+> -	if (ret) {
+> -		put_device(&rvdev->dev);
+> -		return ret;
+> -	}
+> -	/* Make device dma capable by inheriting from parent's capabilities */
+> -	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
+> -
+> -	ret = dma_coerce_mask_and_coherent(&rvdev->dev,
+> -					   dma_get_mask(rproc->dev.parent));
+> -	if (ret) {
+> -		dev_warn(dev,
+> -			 "Failed to set DMA mask %llx. Trying to continue... %x\n",
+> -			 dma_get_mask(rproc->dev.parent), ret);
+> -	}
+> +	rproc->nb_vdev++;
+>  
+>  	/* parse the vrings */
+>  	for (i = 0; i < rsc->num_of_vrings; i++) {
+> @@ -596,13 +638,6 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+>  			goto unwind_vring_allocations;
+>  	}
+>  
+> -	list_add_tail(&rvdev->node, &rproc->rvdevs);
+> -
+> -	rvdev->subdev.start = rproc_vdev_do_start;
+> -	rvdev->subdev.stop = rproc_vdev_do_stop;
+> -
+> -	rproc_add_subdev(rproc, &rvdev->subdev);
+> -
+>  	return 0;
+>  
+>  unwind_vring_allocations:
+> @@ -617,7 +652,6 @@ void rproc_vdev_release(struct kref *ref)
+>  {
+>  	struct rproc_vdev *rvdev = container_of(ref, struct rproc_vdev, refcount);
+>  	struct rproc_vring *rvring;
+> -	struct rproc *rproc = rvdev->rproc;
+>  	int id;
+>  
+>  	for (id = 0; id < ARRAY_SIZE(rvdev->vring); id++) {
+> @@ -625,9 +659,7 @@ void rproc_vdev_release(struct kref *ref)
+>  		rproc_free_vring(rvring);
+>  	}
+>  
+> -	rproc_remove_subdev(rproc, &rvdev->subdev);
+> -	list_del(&rvdev->node);
+> -	device_unregister(&rvdev->dev);
+> +	rproc_rvdev_remove_device(rvdev);
+>  }
+>  
+>  /**
+> -- 
+> 2.17.1
+> 
