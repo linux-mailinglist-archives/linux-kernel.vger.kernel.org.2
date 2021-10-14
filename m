@@ -2,152 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3592642E056
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE0642E012
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 19:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233584AbhJNRtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 13:49:41 -0400
-Received: from mga02.intel.com ([134.134.136.20]:55119 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229743AbhJNRtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 13:49:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="214910964"
-X-IronPort-AV: E=Sophos;i="5.85,373,1624345200"; 
-   d="scan'208";a="214910964"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 10:28:13 -0700
-X-IronPort-AV: E=Sophos;i="5.85,373,1624345200"; 
-   d="scan'208";a="660070847"
-Received: from gmbaker-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.17.117])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 10:28:11 -0700
-Subject: Re: [PATCH v10 03/11] x86/cpufeatures: Add TDX Guest CPU feature
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        id S233470AbhJNRcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 13:32:35 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44328 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232236AbhJNRcd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 13:32:33 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19EGXcNv019427;
+        Thu, 14 Oct 2021 13:30:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=TQBkWUbYrtzJsOVdkCbGRsfXjsL5n6HsAcn9dCwyb+4=;
+ b=XFx2xfLX+yTjTRWMCpya5xRTp795SekWEWZVEziGuxIBTyFU4ZGQrb7i89frkhQNW3oZ
+ LJUztW73Of0F9bbf7tAmi5cejUizXNCL/C32BuzGucI1QeKHXUJ7ol528fx7qgjFJ59L
+ us5OyioKXhxrXlDUScd89q/n8hFK4ueMTON3gbhTjv6GYsw7GWRbRK7n6fVAGT1J1GC6
+ UJamrVcyKigsb1rBE8r0JnlYl070kd1+RUgAYzV5uypmsqukCcGwiNYjQyH4dnWB0GAH
+ E4XiJ++/0nhiNgBKdNQnS7XAvCc+runziKWSV6DPzHQw5QXSuSUTVcEpjm4Sv2hVNUeM uw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bnnvh1j0y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 13:30:26 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19EHNbO6020109;
+        Thu, 14 Oct 2021 13:30:26 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bnnvh1j0g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 13:30:26 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19EHBgeo025984;
+        Thu, 14 Oct 2021 17:30:25 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma01wdc.us.ibm.com with ESMTP id 3bk2qbw8qv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 17:30:25 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19EHUOjD15467060
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Oct 2021 17:30:24 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 66710BE053;
+        Thu, 14 Oct 2021 17:30:24 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3610EBE05B;
+        Thu, 14 Oct 2021 17:30:24 +0000 (GMT)
+Received: from localhost (unknown [9.211.53.229])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Oct 2021 17:30:24 +0000 (GMT)
+From:   Nathan Lynch <nathanl@linux.ibm.com>
+To:     devicetree@vger.kernel.org
+Cc:     robh+dt@kernel.org, frowand.list@gmail.com,
         linux-kernel@vger.kernel.org
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-4-sathyanarayanan.kuppuswamy@linux.intel.com>
- <87ee8o8xje.ffs@tglx> <YWdKlG0AzmjpjJKW@zn.tnic> <877deg8vn4.ffs@tglx>
- <YWdRqAqedkhVA2lD@zn.tnic>
- <e4c0a191-ee26-9768-cbf5-c1d9782b1586@linux.intel.com> <87zgrc7clg.ffs@tglx>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuwamy@linux.intel.com>
-Message-ID: <3f32856b-22b6-f6a4-b125-4921f6106e6f@linux.intel.com>
-Date:   Thu, 14 Oct 2021 10:28:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+Subject: [PATCH] of: kobj: make of_node_is_(initialized|attached) parameters const
+Date:   Thu, 14 Oct 2021 12:30:23 -0500
+Message-Id: <20211014173023.2117799-1-nathanl@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <87zgrc7clg.ffs@tglx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: TISEUv1-Z6imd1MWiDONhgh6GCr_5RgW
+X-Proofpoint-ORIG-GUID: dPtRkMyEQt0wuHffTKOFgZ5RkRe8C5TR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-14_09,2021-10-14_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxlogscore=819
+ bulkscore=0 malwarescore=0 suspectscore=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110140097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+of_node_is_initialized() and of_node_is_attached() don't modify the node
+objects passed to them, so those parameters should be const.
 
-On 10/13/21 4:02 PM, Thomas Gleixner wrote:
-> On Wed, Oct 13 2021 at 15:28, Sathyanarayanan Kuppuswamy wrote:
->> On 10/13/21 2:37 PM, Borislav Petkov wrote:
->>> On Wed, Oct 13, 2021 at 11:25:35PM +0200, Thomas Gleixner wrote:
->>>> So this ends up in doing:
->>>>
->>>>      use();
->>>>      init();
->>>>
->>>> Can you spot what's wrong with that?
->>>>
->>>> That's a clear violation of common sense and is simply not going to
->>>> happen. Why? If you think about deep defensive programming then use()
->>>> will look like this:
->>>>
->>>> use()
->>>> {
->>>>           assert(initialized);
->>>> }
->>>>
->>>> which is not something made up. It's a fundamental principle of
->>>> programming and some languages enforce that for very good reasons.
->>>>
->>>> Just because it can be done in C is no justification.
->>> Oh, I heartily agree.
->>>    
->>>> What's wrong with:
->>>>
->>>> x86_64_start_kernel()
->>>>
->>>>       tdx_early_init();
->>>>
->>>>       copy_bootdata();
->>>>       
->>>>       tdx_late_init();
->>>>
->>>> Absolutely nothing. It's clear, simple and well defined.
->>> I like simple more than anyone, so sure, I'd prefer that a lot more.
->>>
->>> And so the options parsing would need to happen early using, say,
->>> cmdline_find_option() or so, like sme_enable() does.
->> Since in tdx_early_init() all we are going to do is to initialize
->> "tdx_guest_detected" using cpuid call, shall we name it
->> tdx_guest_cpuid_init()? (similar to sme_enable call in AMD)
-> How is that similar?
->
-> Just chose a name which makes sense in the overall scheme. I surely care
-> about naming convetions, but what I care more about is correctness.
->
-> Whether it ends up being named
->
->          tdx_enable() - to match the SME muck
->
-> or
->
->          tdx_detect()
->
-> or whatever makes sense does not really matter. As long as it makes
-> sense. That's bikeshed painting realm.
->
-> Coming back to your suggestion 'tdx_guest_cpuid_init()'. Just sit back
-> and think about what that name says:
->
->      tdx_guest_cpuid_init()
->
-> For the uniformed reader this says:
->
->      If tdx guest then initialize CPUID
->
-> which is obviously not what you want to express, right?
->
-> So, naming matters but you are free to chose something which makes
-> sense.
+Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+---
+ drivers/of/kobj.c       | 4 ++--
+ drivers/of/of_private.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Makes sense. I agree tdx_guest_cpuid_init() name is bit confusing.
-I will use tdx_detect as you have mentioned.
-
->
-> Thanks,
->
->          tglx
-
+diff --git a/drivers/of/kobj.c b/drivers/of/kobj.c
+index 6675b5e56960..7d3853a5a09a 100644
+--- a/drivers/of/kobj.c
++++ b/drivers/of/kobj.c
+@@ -5,13 +5,13 @@
+ #include "of_private.h"
+ 
+ /* true when node is initialized */
+-static int of_node_is_initialized(struct device_node *node)
++static int of_node_is_initialized(const struct device_node *node)
+ {
+ 	return node && node->kobj.state_initialized;
+ }
+ 
+ /* true when node is attached (i.e. present on sysfs) */
+-int of_node_is_attached(struct device_node *node)
++int of_node_is_attached(const struct device_node *node)
+ {
+ 	return node && node->kobj.state_in_sysfs;
+ }
+diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
+index 75e67b8bb826..9324483397f6 100644
+--- a/drivers/of/of_private.h
++++ b/drivers/of/of_private.h
+@@ -60,7 +60,7 @@ static inline int of_property_notify(int action, struct device_node *np,
+ #endif /* CONFIG_OF_DYNAMIC */
+ 
+ #if defined(CONFIG_OF_KOBJ)
+-int of_node_is_attached(struct device_node *node);
++int of_node_is_attached(const struct device_node *node);
+ int __of_add_property_sysfs(struct device_node *np, struct property *pp);
+ void __of_remove_property_sysfs(struct device_node *np, struct property *prop);
+ void __of_update_property_sysfs(struct device_node *np, struct property *newprop,
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.31.1
 
