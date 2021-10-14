@@ -2,176 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5599042D307
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E84942D30D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhJNG4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 02:56:52 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:45655 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229619AbhJNG4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 02:56:45 -0400
-Received: from [192.168.0.2] (ip5f5ae921.dynamic.kabel-deutschland.de [95.90.233.33])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id EF74161E64760;
-        Thu, 14 Oct 2021 08:54:39 +0200 (CEST)
-Subject: Re: [PATCH 6/6] media: aspeed: richer debugfs
-To:     Jammy Huang <jammy_huang@aspeedtech.com>
-References: <20211014034819.2283-1-jammy_huang@aspeedtech.com>
- <20211014034819.2283-7-jammy_huang@aspeedtech.com>
-Cc:     eajames@linux.ibm.com, mchehab@kernel.org, joel@jms.id.au,
-        andrew@aj.id.au, linux-media@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <f7d3900f-9e1c-1c2b-f14a-a3828852eadc@molgen.mpg.de>
-Date:   Thu, 14 Oct 2021 08:54:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S229619AbhJNG6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 02:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229538AbhJNG6n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 02:58:43 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3E8C06174E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:56:39 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id q5so4621880pgr.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:56:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ElQNmzsxcV0CPmY8lvOg8SstMmCe+niXLKtqIMPRzlc=;
+        b=Xp5UvWAIJv0+50PGfjRILQj/4/m2mfb9EUgCxvcD+M7fvKZBW3ScvNqMtwYsIBUolx
+         amwkMgIcTtK444A6G5yuXtwsK0LfRQaiW8On3gx2OrterEklOFlmopltMMiLERqADDeP
+         YodOx0s0JroK/EqhGJxBmfIhAc/Dsrs2dDmo6+RGW1HWNO+NtZd5dhw056LK+ZDA4BUo
+         aexhlv7+hP84yByZj4zkeDEzgJPYOkjmJA5VDaYpIztTS/5AkoWO8af4x80fBBYTMbSA
+         q1kvSHyhxw+2NQizDfbXkDoWawxzEr0v42mukXgU8EEAunkIDOjMXYOp4fAqAo0ZaaVP
+         gkvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ElQNmzsxcV0CPmY8lvOg8SstMmCe+niXLKtqIMPRzlc=;
+        b=dmzovz04AQ3Q5aklnxPro3K+Tcs2cyniKFNSLM3pluS9Z4OE/609Vd/Z2ZKWvc3VL0
+         byirc8CZGo6nhiXPfvsNayqbP0ZziUBxjaS5uDDEuzpDCOPRkFcB6tZfB9/U10Naa37s
+         9XkdOnM2vRFsCx/2xyhVG4TF+yZmiJiwBJoCM3PY4H/YA2z3Ge86oeIQZUs0K6TeOqv0
+         i/iI8gbK2SH9sp4KG3fN2bmBJcFulc8lKXAjeIv41uFY+CFtY6bnxleeEU48KGe2cRmK
+         +qhPB9bvDkgdZXIWf+gm3KSs5uJPgHb4c2GmXLk7B3rG6yIsSbBJ5PZ72BilduCV3QDB
+         1I8Q==
+X-Gm-Message-State: AOAM532lvtAzBDg8frwlf6pkqECMI92wvVs+VRlTkNZHtWxGP/OX7oHK
+        BAZS/LiJVDJkxkrmoPpMN1DznQ==
+X-Google-Smtp-Source: ABdhPJwVIm0nmI+e9hjedM+iJOgP7Bo19ctF0+0OahszYFIkHTFSCY/vLqLX9TFlcadPSMGBhvfjlQ==
+X-Received: by 2002:a65:6187:: with SMTP id c7mr2918324pgv.317.1634194598786;
+        Wed, 13 Oct 2021 23:56:38 -0700 (PDT)
+Received: from localhost ([106.201.113.61])
+        by smtp.gmail.com with ESMTPSA id j12sm1427294pff.127.2021.10.13.23.56.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 23:56:38 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 12:26:36 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Hector Martin <marcan@marcan.st>
+Cc:     Sibi Sankar <sibis@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device
+ does not exist
+Message-ID: <20211014065636.lkv77aqbugp3qhif@vireshk-i7>
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-5-marcan@marcan.st>
+ <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
+ <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
+ <20211012055143.xmkbvhbnolspgjin@vireshk-i7>
+ <caf16a6c-f127-7f27-ed17-0522d9f1fb9e@marcan.st>
+ <20211012092603.lkmhhjoo5v67wh44@vireshk-i7>
+ <049FC437-EC38-4FE5-891E-5E25960892CF@marcan.st>
+ <20211012093252.hb6rlcpxv5bmk7n3@vireshk-i7>
+ <0db8e994-ac2c-8fad-55d0-1b5a9e2e21f2@marcan.st>
 MIME-Version: 1.0
-In-Reply-To: <20211014034819.2283-7-jammy_huang@aspeedtech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0db8e994-ac2c-8fad-55d0-1b5a9e2e21f2@marcan.st>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Jammy,
-
-
-Am 14.10.21 um 05:48 schrieb Jammy Huang:
-> updated as below:
+On 14-10-21, 15:52, Hector Martin wrote:
+> The CPU devices aren't attached to their genpd, so the required OPP
+> transition fails with the same error.
 > 
-> Caputre:
-
-Capture
-
->    Mode                : Direct fetch
->    VGA bpp mode        : 32
->    Signal              : Unlock
->    Width               : 1920
->    Height              : 1080
->    FRC                 : 30
+> However, this was easier to fix than I expected. With this patch to
+> cpufreq-dt, it all works properly, and I can drop the parent genpd
+> from the clock node and related handling. Thoughts?
 > 
-> Compression:
->    Format              : JPEG
->    Subsampling         : 444
->    Quality             : 0
->    HQ Mode             : N/A
->    HQ Quality          : 0
->    Mode                : N/A
+> commit c4f88743374c1f4678ee7f17fb6cae30ded9ed59
+> Author: Hector Martin <marcan@marcan.st>
+> Date:   Thu Oct 14 15:47:45 2021 +0900
 > 
-> Performance:
->    Frame#              : 0
->    Frame Duration(ms)  :
->      Now               : 0
->      Min               : 0
->      Max               : 0
->    FPS                 : 0
-
-Do you have output with non-zero values? ;-)
-
-On what device did you test this?
-
-> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
-> ---
->   drivers/media/platform/aspeed-video.c | 41 +++++++++++++++++++++++++--
->   1 file changed, 38 insertions(+), 3 deletions(-)
+>     cpufreq: dt: Attach CPU devices to power domains
+>     This allows the required-opps mechanism to work for CPU OPP tables,
+>     triggering specific OPP levels in a parent power domain.
+>     Signed-off-by: Hector Martin <marcan@marcan.st>
 > 
-> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-> index e1031fd09ac6..f2e5c49ee906 100644
-> --- a/drivers/media/platform/aspeed-video.c
-> +++ b/drivers/media/platform/aspeed-video.c
-> @@ -464,6 +464,9 @@ static const struct v4l2_dv_timings_cap aspeed_video_timings_cap = {
->   	},
->   };
->   
-> +static const char * const compress_mode_str[] = {"DCT Only",
-> +	"DCT VQ mix 2-color", "DCT VQ mix 4-color"};
-> +
->   static unsigned int debug;
->   
->   static void aspeed_video_init_jpeg_table(u32 *table, bool yuv420)
-> @@ -1077,8 +1080,6 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->   
->   static void aspeed_video_update_regs(struct aspeed_video *video)
->   {
-> -	static const char * const compress_mode_str[] = {"DCT Only",
-> -		"DCT VQ mix 2-color", "DCT VQ mix 4-color"};
->   	u32 comp_ctrl =	FIELD_PREP(VE_COMP_CTRL_DCT_LUM, video->jpeg_quality) |
->   		FIELD_PREP(VE_COMP_CTRL_DCT_CHR, video->jpeg_quality | 0x10) |
->   		FIELD_PREP(VE_COMP_CTRL_EN_HQ, video->hq_mode) |
-> @@ -1795,9 +1796,29 @@ static const struct vb2_ops aspeed_video_vb2_ops = {
->   static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
->   {
->   	struct aspeed_video *v = s->private;
-> +	u32 val08;
-
-Why does `08` refer to?
-
->   
->   	seq_puts(s, "\n");
->   
-> +	val08 = aspeed_video_read(v, VE_CTRL);
-> +	seq_puts(s, "Caputre:\n");
-> +	if (FIELD_GET(VE_CTRL_DIRECT_FETCH, val08)) {
-> +		seq_printf(s, "  %-20s:\tDirect fetch\n", "Mode");
-> +		seq_printf(s, "  %-20s:\t%s\n", "VGA bpp mode",
-> +			   FIELD_GET(VE_CTRL_INT_DE, val08) ? "16" : "32");
-> +	} else {
-> +		seq_printf(s, "  %-20s:\tSync\n", "Mode");
-> +		seq_printf(s, "  %-20s:\t%s\n", "Video source",
-> +			   FIELD_GET(VE_CTRL_SOURCE, val08) ?
-> +			   "external" : "internal");
-> +		seq_printf(s, "  %-20s:\t%s\n", "DE source",
-> +			   FIELD_GET(VE_CTRL_INT_DE, val08) ?
-> +			   "internal" : "external");
-> +		seq_printf(s, "  %-20s:\t%s\n", "Cursor overlay",
-> +			   FIELD_GET(VE_CTRL_AUTO_OR_CURSOR, val08) ?
-> +			   "Without" : "With");
+> diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
+> index 8fcaba541539..5b22846b557d 100644
+> --- a/drivers/cpufreq/cpufreq-dt.c
+> +++ b/drivers/cpufreq/cpufreq-dt.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/list.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+> +#include <linux/pm_domain.h>
+>  #include <linux/pm_opp.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regulator/consumer.h>
+> @@ -264,6 +265,16 @@ static int dt_cpufreq_early_init(struct device *dev, int cpu)
+>  		goto out;
+>  	}
+> +	/*
+> +	 * Attach the CPU device to its genpd domain (if any), to allow OPP
+> +	 * dependencies to be satisfied.
+> +	 */
+> +	ret = genpd_dev_pm_attach(cpu_dev);
+> +	if (ret <= 0) {
+> +		dev_err(cpu_dev, "Failed to attach CPU device to genpd\n");
+> +		goto out;
 > +	}
 > +
->   	seq_printf(s, "  %-20s:\t%s\n", "Signal",
->   		   v->v4l2_input_status ? "Unlock" : "Lock");
->   	seq_printf(s, "  %-20s:\t%d\n", "Width", v->pix_fmt.width);
-> @@ -1806,6 +1827,21 @@ static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
->   
->   	seq_puts(s, "\n");
->   
-> +	seq_puts(s, "Compression:\n");
-> +	seq_printf(s, "  %-20s:\t%s\n", "Format",
-> +		   v->partial_jpeg ? "Aspeed" : "JPEG");
-> +	seq_printf(s, "  %-20s:\t%s\n", "Subsampling",
-> +		   v->yuv420 ? "420" : "444");
-> +	seq_printf(s, "  %-20s:\t%d\n", "Quality", v->jpeg_quality);
-> +	seq_printf(s, "  %-20s:\t%s\n", "HQ Mode",
-> +		   v->partial_jpeg ? (v->hq_mode ? "on" : "off") : "N/A");
-> +	seq_printf(s, "  %-20s:\t%d\n", "HQ Quality", v->jpeg_hq_quality);
-> +	seq_printf(s, "  %-20s:\t%s\n", "Mode",
-> +		   v->partial_jpeg ? compress_mode_str[v->compression_mode]
-> +				   : "N/A");
-> +
-> +	seq_puts(s, "\n");
-> +
->   	seq_puts(s, "Performance:\n");
->   	seq_printf(s, "  %-20s:\t%d\n", "Frame#", v->sequence);
->   	seq_printf(s, "  %-20s:\n", "Frame Duration(ms)");
 
-Remove the colon, and add a space before (?
+Other platform do this from some other place I think.
 
-> @@ -1814,7 +1850,6 @@ static int aspeed_video_debugfs_show(struct seq_file *s, void *data)
->   	seq_printf(s, "    %-18s:\t%d\n", "Max", v->perf.duration_max);
->   	seq_printf(s, "  %-20s:\t%d\n", "FPS", 1000/(v->perf.totaltime/v->sequence));
->   
-> -
->   	return 0;
->   }
+Ulf, where should this code be moved ? cpu-clk driver ?
 
-
-Kind regards,
-
-Paul
+-- 
+viresh
