@@ -2,167 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4498342E34F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D8342E354
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhJNVhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 17:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
+        id S233212AbhJNViI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 17:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbhJNVhM (ORCPT
+        with ESMTP id S232331AbhJNViG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 17:37:12 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A971C061570;
-        Thu, 14 Oct 2021 14:35:07 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id w14so29528193edv.11;
-        Thu, 14 Oct 2021 14:35:06 -0700 (PDT)
+        Thu, 14 Oct 2021 17:38:06 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45B9C061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:36:00 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so7885538pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:36:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0G1ek7ZBrsfvEMx8aW2NfxaGqkDzfGWBoT86b86MplI=;
-        b=FToFnMkKD4MKFnKjPCwfsoy2mnqVDS3sRZgXtzPItTWybAxQwe2cMJhIghTLzkEmj9
-         9idEwv9rNR3SMPkWxaOc3HLd0xKUqO98kvf+SzXgUfdZbXgLMMSkyRHGmNH2GCRyuxmS
-         LgRQvte/s4lmjMMlRtuLYHAsmPIfdnbDIl6rm17rJ+bH57P+tI879CPN+3tI4bWA1yLH
-         XMqpaFQA6yzjwLMcUANR2rHQOZF0WjDp0WHc39wvkRC/JC/oijVYp/NBJH6VNRvXe9WJ
-         oTnJleLPpHS4xZVGS01WNvVAIlVh+VPh1oIIghiStnGEqUrPAB5OyzSQTUiwnZwwbtM6
-         d3bg==
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=ucthCVLQbHs9EV1Uw1Bv+F6lYLHxvFpuoWX8HwMgpt8=;
+        b=VQQ5XftKFdJxIqUHw8qRFJat71Dbqr2AD8qwnlFgMvFJilatzmha8I6vmL6yvrzpkP
+         hvXQ2mD6ttiO3AiCefR9vWjBp4Q7T/wGfxf4JQjnzp3eY+AnFAfleMbYmsvVYJNrXhMf
+         F+Jl/P5vsIdt4melRbvlQ+FV9+ngeKkjBbp7w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0G1ek7ZBrsfvEMx8aW2NfxaGqkDzfGWBoT86b86MplI=;
-        b=CGLapjVzhcIn+/3kiK9oF6NCpYi7Bnch4YTDAyEM3Rd896sDT6+GW+RjGAVvXUTzh3
-         lSJYniFiwJU8eY0UMI7AlBbNwVB5VVU9mhCPsEeljtZCmxP9lvmOMJL92fTX2gglgers
-         wDRRAwE2ZBKjWw40ae1rtCmwuqE2wMShZFNo5aXkW1UQ1U+CvInY/PK30M/A/3zScd/l
-         0HcjK69lK+/7F7UnCseAfnyXRWTsJj0DxV1QnXnJIW7/S9VUeOornDTm/gc7zvhECEBl
-         pQ0tlAZ83Slr+g9y0MBgREU6PyJnALM7So9ORlTmC620gY3TmEk+b19qniKT4NX9L7Ly
-         YwGQ==
-X-Gm-Message-State: AOAM533KB7hSP/wyBoRoeWYA1HIWoCly2lRm8Qk4vituICfc6lzqExQ2
-        3cWBCFhsTQL19IpZ27+V8Kh9hC8x0+t9J8yvRmk=
-X-Google-Smtp-Source: ABdhPJzORGdgNpjOsgsBrBuZdbuHJElu7UP9TCOUZhE7TsVvIol5NVSNsCn0gWoGeRkjNYNGJzzImLTf5YHoihr0h6E=
-X-Received: by 2002:a17:906:a986:: with SMTP id jr6mr1858072ejb.520.1634247305465;
- Thu, 14 Oct 2021 14:35:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=ucthCVLQbHs9EV1Uw1Bv+F6lYLHxvFpuoWX8HwMgpt8=;
+        b=qvDRNwA7gK+KNpNSxZIjEUDXks1Jh8oJ5QkQdGqFbF8VR/hExmrkvzPh+hjCxJpDdu
+         knMBgyvB0mrqfe+IBow8PMaAr4TR4SxLy8Gy6CQejf/Y33/qQSx8/gtX/k96JXeej4cC
+         0uUWDmJyJUm9FAgwSY3NmMm8/UZEe7EtilPtUUosyhjBLiyJhTx3Z0fxMQRKnq18aaU1
+         MlgW34nzmZS5tpUXi5UlKDK4KMEhLS2f2AMAa7FKKc6XvGdtx4c9m5M14aRozznvN/PO
+         F/1hIFpxisJONKhA77rXvuj7RgFzEK6z8/ValnVyb7vk2pieD1J7D336SuLskDxdjomg
+         c0dQ==
+X-Gm-Message-State: AOAM533OJM9/KNGnnQhJ0MfTWtcv5mJ1Lknd3hGH+fPe0eMJZQxKaWD0
+        pu+hwKSJ/SnrlvM+ip8L5JhXUg==
+X-Google-Smtp-Source: ABdhPJw1rTBhUzGBU+OCQNwxLaPgrU3yVEgNpct3REqnkn5dEyRgg6pBD5Hi+HUutoGMqi2zC8/tfg==
+X-Received: by 2002:a17:90b:4ac1:: with SMTP id mh1mr8767562pjb.144.1634247360274;
+        Thu, 14 Oct 2021 14:36:00 -0700 (PDT)
+Received: from localhost ([2001:4479:e300:600:4901:2fb9:ed97:3a3e])
+        by smtp.gmail.com with ESMTPSA id k7sm3292676pfk.59.2021.10.14.14.35.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 14:35:59 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 00/13] Fix LKDTM for PPC64/IA64/PARISC
+In-Reply-To: <cover.1634190022.git.christophe.leroy@csgroup.eu>
+References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
+Date:   Fri, 15 Oct 2021 08:35:56 +1100
+Message-ID: <87a6jb47cz.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-References: <20210702225145.2643303-1-martin.blumenstingl@googlemail.com>
- <20210702225145.2643303-2-martin.blumenstingl@googlemail.com>
- <4eb964ac-4fff-b59d-2660-2f84d8af5901@gmail.com> <CAFBinCAVtd8gmcuvGU79-85CqhSU8a3mBCa_jweeZBd59u+amQ@mail.gmail.com>
-In-Reply-To: <CAFBinCAVtd8gmcuvGU79-85CqhSU8a3mBCa_jweeZBd59u+amQ@mail.gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Thu, 14 Oct 2021 23:34:54 +0200
-Message-ID: <CAFBinCAT-FxcHpt=NCt4g-OfzEUhvxh8TNRcY2hb5kdxna0Uyw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/6] clk: divider: Implement and wire up
- .determine_rate by default
-To:     Alex Bee <knaerzche@gmail.com>
-Cc:     linux-clk@vger.kernel.org, sboyd@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org
-Content-Type: multipart/mixed; boundary="0000000000001e2ebd05ce56dabf"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000001e2ebd05ce56dabf
-Content-Type: text/plain; charset="UTF-8"
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
 
-On Thu, Oct 14, 2021 at 2:11 PM Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
-[...]
-> > Reverting this commit makes it work again: Unless there is a quick and
-> > obvious fix for that, I guess this should be done for 5.15 - even if the
-> > real issue is somewhere else.
-> Reverting this patch is fine from the Amlogic SoC point of view.
-> The main goal was to clean up / improve the CCF code.
-> Nothing (that I am aware of) is going to break in Amlogic land if we
-> revert this.
-Unfortunately only now I realized that reverting this patch would also
-require reverting the other five patches in this series (since they
-depend on this one).
-For this reason I propose changing the order of the checks in
-clk-composite.c - see the attached patch (which I can send as a proper
-one once agreed that this is the way to go forward)
+> PPC64/IA64/PARISC have function descriptors. LKDTM doesn't work
+> on those three architectures because LKDTM messes up function
+> descriptors with functions.
 
-Off-list Alex also suggested that I should use rate_ops.determine_rate
-if available.
-While I agree that this makes sense in general my plan is to do this
-in a follow-up patch.
-Changing the order of the conditions is needed anyways and it *should*
-fix the issue reported here (but I have no way of testing that
-unfortunately).
+Just to nitpick, it's powerpc 64-bit using the ELFv1 ABI. [1]
 
-Alex, it would be great if you (or someone with Rockchip boards) could
-test the attached patch and let me know if it fixes the reported
-problem.
+The ELFv2 ABI [2] doesn't use function descriptors. (ELFv2 is used
+primarily for ppc64le, but some people like musl support it for BE as
+well.)
+
+This doesn't affect the correctness or desirability of your changes, it
+was just bugging me when I was reading the commit messages :-)
+
+Kind regards,
+Daniel
+
+[1] See e.g. https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.html
+[2] https://openpowerfoundation.org/wp-content/uploads/2016/03/ABI64BitOpenPOWERv1.1_16July2015_pub4.pdf
 
 
-Best regards,
-Martin
-
---0000000000001e2ebd05ce56dabf
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-clk-composite-Also-consider-.determine_rate-for-rate.patch"
-Content-Disposition: attachment; 
-	filename="0001-clk-composite-Also-consider-.determine_rate-for-rate.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kurgk0ha0>
-X-Attachment-Id: f_kurgk0ha0
-
-RnJvbSBiMzRjZGUyZDllMWQ4ZWNiMmM3NzVjYmNhZDUxOTkzM2Y2M2I4NGY5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBNYXJ0aW4gQmx1bWVuc3RpbmdsIDxtYXJ0aW4uYmx1bWVuc3Rp
-bmdsQGdvb2dsZW1haWwuY29tPgpEYXRlOiBUaHUsIDE0IE9jdCAyMDIxIDE0OjE2OjIyICswMjAw
-ClN1YmplY3Q6IFtQQVRDSF0gY2xrOiBjb21wb3NpdGU6IEFsc28gY29uc2lkZXIgLmRldGVybWlu
-ZV9yYXRlIGZvciByYXRlICsgbXV4CiBjb21wb3NpdGVzCgpDb21taXQgNjlhMDBmYjNkNjk3MDYg
-KCJjbGs6IGRpdmlkZXI6IEltcGxlbWVudCBhbmQgd2lyZSB1cAouZGV0ZXJtaW5lX3JhdGUgYnkg
-ZGVmYXVsdCIpIHN3aXRjaGVzIGNsa19kaXZpZGVyX29wcyB0byBpbXBsZW1lbnQKLmRldGVybWlu
-ZV9yYXRlIGJ5IGRlZmF1bHQuIFRoaXMgYnJlYWtzIGNvbXBvc2l0ZSBjbG9ja3Mgd2l0aCBtdWx0
-aXBsZQpwYXJlbnRzIGJlY2F1c2UgY2xrLWNvbXBvc2l0ZS5jIGRvZXMgbm90IHVzZSB0aGUgc3Bl
-Y2lhbCBoYW5kbGluZyBmb3IKbXV4ICsgZGl2aWRlciBjb21iaW5hdGlvbnMgYW55bW9yZSAodGhh
-dCB3YXMgcmVzdHJpY3RlZCB0byByYXRlIGNsb2Nrcwp3aGljaCBvbmx5IGltcGxlbWVudCAucm91
-bmRfcmF0ZSwgYnV0IG5vdCAuZGV0ZXJtaW5lX3JhdGUpLgoKQWxleCByZXBvcnRzOgogIFRoaXMg
-YnJlYWtzIGxvdCBvZiBjbG9ja3MgZm9yIFJvY2tjaGlwIHdoaWNoIGludGVuc2l2ZWx5IHVzZXMK
-ICBjb21wb3NpdGVzLCAgaS5lLiB0aG9zZSBjbG9ja3Mgd2lsbCBhbHdheXMgc3RheSBhdCB0aGUg
-aW5pdGlhbCBwYXJlbnQsCiAgd2hpY2ggaW4gc29tZSBjYXNlcyAgaXMgdGhlIFhUQUwgY2xvY2sg
-YW5kIEkgc3Ryb25nbHkgZ3Vlc3MgaXQgaXMgdGhlCiAgc2FtZSBmb3Igb3RoZXIgcGxhdGZvcm1z
-LCAgd2hpY2ggdXNlIGNvbXBvc2l0ZSBjbG9ja3MgaGF2aW5nIG1vcmUgdGhhbgogIG9uZSBwYXJl
-bnQgKGUuZy4gbWVkaWF0ZWssIHRpIC4uLikKCiAgRXhhbXBsZSAoUkszMzk5KQogIGNsa19zZGlv
-IGlzIHNldCAoaW5pdGlhbGl6ZWQpIHdpdGggWFRBTCAoMjQgTUh6KSBhcyBwYXJlbnQgaW4gdS1i
-b290LgogIEl0IHdpbGwgYWx3YXlzIHN0YXkgYXQgdGhpcyBwYXJlbnQsIGV2ZW4gaWYgdGhlIG1t
-YyBkcml2ZXIgc2V0cyBhIHJhdGUKICBvZiAgMjAwIE1IeiAoZmFpbHMsIGFzIHRoZSBuYXR1cmUg
-b2YgdGhpbmdzKSwgd2hpY2ggc2hvdWxkIHN3aXRjaCBpdAogIHRvICAgYW55IG9mIGl0cyBwb3Nz
-aWJsZSBwYXJlbnQgUExMcyBkZWZpbmVkIGluCiAgbXV4X3BsbF9zcmNfY3BsbF9ncGxsX25wbGxf
-cHBsbF91cGxsXzI0bV9wIChzZWUgY2xrLXJrMzM5OS5jKSAgLSB3aGljaAogIG5ldmVyIGhhcHBl
-bnMuCgpSZXN0b3JlIHRoZSBvcmlnaW5hbCBiZWhhdmlvciBieSBjaGFuZ2luZyB0aGUgcHJpb3Jp
-dHkgb2YgdGhlIGNvbmRpdGlvbnMKaW5zaWRlIGNsay1jb21wb3NpdGUuYy4gTm93IHRoZSBzcGVj
-aWFsIHJhdGUgKyBtdXggY2FzZSAod2l0aCByYXRlX29wcwpoYXZpbmcgYSAucm91bmRfcmF0ZSAt
-IHdoaWNoIGlzIHN0aWxsIHRoZSBjYXNlIGZvciB0aGUgZGVmYXVsdApjbGtfZGl2aWRlcl9vcHMp
-IGlzIHByZWZlcnJlZCBvdmVyIHJhdGVfb3BzIHdoaWNoIGhhdmUgLmRldGVybWluZV9yYXRlCmRl
-ZmluZWQgKGFuZCBub3QgZnVydGhlciBjb25zaWRlcmluZyB0aGUgbXV4KS4KCkZpeGVzOiA2OWEw
-MGZiM2Q2OTcwNiAoImNsazogZGl2aWRlcjogSW1wbGVtZW50IGFuZCB3aXJlIHVwIC5kZXRlcm1p
-bmVfcmF0ZSBieSBkZWZhdWx0IikKUmVwb3J0ZWQtYnk6IEFsZXggQmVlIDxrbmFlcnpjaGVAZ21h
-aWwuY29tPgpTaWduZWQtb2ZmLWJ5OiBNYXJ0aW4gQmx1bWVuc3RpbmdsIDxtYXJ0aW4uYmx1bWVu
-c3RpbmdsQGdvb2dsZW1haWwuY29tPgotLS0KIGRyaXZlcnMvY2xrL2Nsay1jb21wb3NpdGUuYyB8
-IDEwICsrKysrLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDUgZGVsZXRp
-b25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvY2xrLWNvbXBvc2l0ZS5jIGIvZHJpdmVy
-cy9jbGsvY2xrLWNvbXBvc2l0ZS5jCmluZGV4IDA1MDYwNDZhNWY0Yi4uNTEwYTk5NjU2MzNiIDEw
-MDY0NAotLS0gYS9kcml2ZXJzL2Nsay9jbGstY29tcG9zaXRlLmMKKysrIGIvZHJpdmVycy9jbGsv
-Y2xrLWNvbXBvc2l0ZS5jCkBAIC01OCwxMSArNTgsOCBAQCBzdGF0aWMgaW50IGNsa19jb21wb3Np
-dGVfZGV0ZXJtaW5lX3JhdGUoc3RydWN0IGNsa19odyAqaHcsCiAJbG9uZyByYXRlOwogCWludCBp
-OwogCi0JaWYgKHJhdGVfaHcgJiYgcmF0ZV9vcHMgJiYgcmF0ZV9vcHMtPmRldGVybWluZV9yYXRl
-KSB7Ci0JCV9fY2xrX2h3X3NldF9jbGsocmF0ZV9odywgaHcpOwotCQlyZXR1cm4gcmF0ZV9vcHMt
-PmRldGVybWluZV9yYXRlKHJhdGVfaHcsIHJlcSk7Ci0JfSBlbHNlIGlmIChyYXRlX2h3ICYmIHJh
-dGVfb3BzICYmIHJhdGVfb3BzLT5yb3VuZF9yYXRlICYmCi0JCSAgIG11eF9odyAmJiBtdXhfb3Bz
-ICYmIG11eF9vcHMtPnNldF9wYXJlbnQpIHsKKwlpZiAocmF0ZV9odyAmJiByYXRlX29wcyAmJiBy
-YXRlX29wcy0+cm91bmRfcmF0ZSAmJgorCSAgICBtdXhfaHcgJiYgbXV4X29wcyAmJiBtdXhfb3Bz
-LT5zZXRfcGFyZW50KSB7CiAJCXJlcS0+YmVzdF9wYXJlbnRfaHcgPSBOVUxMOwogCiAJCWlmIChj
-bGtfaHdfZ2V0X2ZsYWdzKGh3KSAmIENMS19TRVRfUkFURV9OT19SRVBBUkVOVCkgewpAQCAtMTA3
-LDYgKzEwNCw5IEBAIHN0YXRpYyBpbnQgY2xrX2NvbXBvc2l0ZV9kZXRlcm1pbmVfcmF0ZShzdHJ1
-Y3QgY2xrX2h3ICpodywKIAogCQlyZXEtPnJhdGUgPSBiZXN0X3JhdGU7CiAJCXJldHVybiAwOwor
-CX0gZWxzZSBpZiAocmF0ZV9odyAmJiByYXRlX29wcyAmJiByYXRlX29wcy0+ZGV0ZXJtaW5lX3Jh
-dGUpIHsKKwkJX19jbGtfaHdfc2V0X2NsayhyYXRlX2h3LCBodyk7CisJCXJldHVybiByYXRlX29w
-cy0+ZGV0ZXJtaW5lX3JhdGUocmF0ZV9odywgcmVxKTsKIAl9IGVsc2UgaWYgKG11eF9odyAmJiBt
-dXhfb3BzICYmIG11eF9vcHMtPmRldGVybWluZV9yYXRlKSB7CiAJCV9fY2xrX2h3X3NldF9jbGso
-bXV4X2h3LCBodyk7CiAJCXJldHVybiBtdXhfb3BzLT5kZXRlcm1pbmVfcmF0ZShtdXhfaHcsIHJl
-cSk7Ci0tIAoyLjMzLjAKCg==
---0000000000001e2ebd05ce56dabf--
+> This series does some cleanup in the three architectures and
+> refactors function descriptors so that it can then easily use it
+> in a generic way in LKDTM.
+>
+> Patch 8 is not absolutely necessary but it is a good trivial cleanup.
+>
+> Changes in v2:
+> - Addressed received comments
+> - Moved dereference_[kernel]_function_descriptor() out of line
+> - Added patches to remove func_descr_t and func_desc_t in powerpc
+> - Using func_desc_t instead of funct_descr_t
+> - Renamed HAVE_DEREFERENCE_FUNCTION_DESCRIPTOR to HAVE_FUNCTION_DESCRIPTORS
+> - Added a new lkdtm test to check protection of function descriptors
+>
+> Christophe Leroy (13):
+>   powerpc: Move 'struct ppc64_opd_entry' back into asm/elf.h
+>   powerpc: Rename 'funcaddr' to 'addr' in 'struct ppc64_opd_entry'
+>   powerpc: Remove func_descr_t
+>   powerpc: Prepare func_desc_t for refactorisation
+>   ia64: Rename 'ip' to 'addr' in 'struct fdesc'
+>   asm-generic: Use HAVE_FUNCTION_DESCRIPTORS to define associated stubs
+>   asm-generic: Define 'func_desc_t' to commonly describe function
+>     descriptors
+>   asm-generic: Refactor dereference_[kernel]_function_descriptor()
+>   lkdtm: Force do_nothing() out of line
+>   lkdtm: Really write into kernel text in WRITE_KERN
+>   lkdtm: Fix lkdtm_EXEC_RODATA()
+>   lkdtm: Fix execute_[user]_location()
+>   lkdtm: Add a test for function descriptors protection
+>
+>  arch/ia64/include/asm/elf.h              |  2 +-
+>  arch/ia64/include/asm/sections.h         | 25 ++-------
+>  arch/ia64/kernel/module.c                |  6 +--
+>  arch/parisc/include/asm/sections.h       | 17 +++---
+>  arch/parisc/kernel/process.c             | 21 --------
+>  arch/powerpc/include/asm/code-patching.h |  2 +-
+>  arch/powerpc/include/asm/elf.h           |  6 +++
+>  arch/powerpc/include/asm/sections.h      | 30 ++---------
+>  arch/powerpc/include/asm/types.h         |  6 ---
+>  arch/powerpc/include/uapi/asm/elf.h      |  8 ---
+>  arch/powerpc/kernel/module_64.c          | 38 +++++--------
+>  arch/powerpc/kernel/signal_64.c          |  8 +--
+>  drivers/misc/lkdtm/core.c                |  1 +
+>  drivers/misc/lkdtm/lkdtm.h               |  1 +
+>  drivers/misc/lkdtm/perms.c               | 68 ++++++++++++++++++++----
+>  include/asm-generic/sections.h           | 13 ++++-
+>  include/linux/kallsyms.h                 |  2 +-
+>  kernel/extable.c                         | 23 +++++++-
+>  18 files changed, 138 insertions(+), 139 deletions(-)
+>
+> -- 
+> 2.31.1
