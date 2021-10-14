@@ -2,31 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC33242D1E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 07:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576A942D1E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 07:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhJNFlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 01:41:05 -0400
-Received: from mga12.intel.com ([192.55.52.136]:11317 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhJNFlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 01:41:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="207717377"
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="207717377"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 22:39:00 -0700
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="481103783"
-Received: from msavu-mobl1.ti.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.249.43.55])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 22:38:58 -0700
-From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To:     apw@canonical.com, joe@perches.com
-Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v6] checkpatch: get default codespell dictionary path from package location
-Date:   Thu, 14 Oct 2021 08:39:08 +0300
-Message-Id: <20211014053908.17293-1-peter.ujfalusi@linux.intel.com>
+        id S229734AbhJNFma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 01:42:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhJNFm3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 01:42:29 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19053C061570;
+        Wed, 13 Oct 2021 22:40:25 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id m21so4451149pgu.13;
+        Wed, 13 Oct 2021 22:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A98Ys7qW2gz8IVASiaeqvMCkSRB3YOOfj8JCEF28bo4=;
+        b=GaojE3W8GYvHMRj7tsp7qszmyRShPbrRwPI2iheCutTH4j+QE8GEaPadpls8K4uWiT
+         ORWgxJINipdvrmZUj9Bsd75G3u+eYkQXtDJwFPIoM+N7D7rjKqw9iRQa/lzNLbKMcO5a
+         P0pWuz58N29T58Vrv5r56FLN6AmForGLx3t2Dt2Z5z6Rfz3UIrR6fORvFUUE/PGYMuDS
+         T8PFelgUf9kF/bhqvZ+msYV3CzF8c5FiULpnRedlvOZJ9A+IU/TB/nDlUlnMVtquEwgQ
+         Lmp6J8Q0cVqnvVAuLqD8jRsELzRocdTKhR9EIxEjq6VV74Asa8hv11UxzvH5veqmHreC
+         rF+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A98Ys7qW2gz8IVASiaeqvMCkSRB3YOOfj8JCEF28bo4=;
+        b=uTq7zs6TNVOOki/Ea7169YIeKKU5zPRtYzYuNlhTYQaEtAYz+IN1tGMdtVsX2nb1CE
+         JbWVtKKLm9SVMAzGJu3GoYVDbhsohBcr8HTW89rraw2AuvnmQSXAZVkMdd40qesSZcTS
+         +/1OB4k26ThwEmvoXavbysgD7n84Z7NHJtLDOLodRUwTCgyW9PLuqTfyUVfay79Jo759
+         GeXtuSgFzRt14Jx/bULmuEPHRgk9q6QVN19WoEywMkGSFzm0iyso046tGvC1w8u9Udu+
+         ijB8NEF/An552NCAip7s2Pr5isHwJ85zITrjdCqDZC6rd9jxU6bmM+C29pIuwBL3yvtl
+         A9dw==
+X-Gm-Message-State: AOAM532jqZxT2Y43zxM85BeiBv2DPS3GX3//TiAIHTdYvjC7pBrzXGKj
+        K1lvmanDDYAPQixASq95sDVXQC0XkeM=
+X-Google-Smtp-Source: ABdhPJyVlpiUXDZiWEs9LEy0UMfshMdZANNiDFaV8KrHlHTg3DSxoIi6vbS5XufAeOSp26IPehj9QA==
+X-Received: by 2002:a63:6c02:: with SMTP id h2mr2738692pgc.173.1634190024490;
+        Wed, 13 Oct 2021 22:40:24 -0700 (PDT)
+Received: from z640-arch.lan ([2602:61:7360:b000::9d4])
+        by smtp.gmail.com with ESMTPSA id mu7sm1257318pjb.12.2021.10.13.22.40.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Oct 2021 22:40:24 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiri Kosina <trivial@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Hauke Mehrtens <hauke@hauke-m.de>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: [PATCH v3 0/3] MIPS: kernel: proc: fix style and add CPU option reporting
+Date:   Wed, 13 Oct 2021 22:40:15 -0700
+Message-Id: <20211014054018.6179-1-ilya.lipnitskiy@gmail.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -34,113 +66,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The standard location of dictionary.txt is under codespell's package, on
-my machine atm (codespell 2.1, Artix Linux):
-/usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
+Fix checkpatch errors and use seq_puts instead of seq_printf where
+possible.
 
-Since we enable the codespell by default for SOF I have constant:
-No codespell typos will be found - \
-file '/usr/share/codespell/dictionary.txt': No such file or directory
+Re-send an old patch that adds CPU option reporting.
 
-The patch proposes to try to fix up the path following the recommendation
-found here:
-https://github.com/codespell-project/codespell/issues/1540
+Tested against MT7621 on OpenWrt running v5.10 kernel.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+MT7621 output:
+  Options implemented   : tlb 4kex 4k_cache prefetch mcheck ejtag llsc
+  pindexed_dcache userlocal vint perf_cntr_intr_bit cdmm perf
+
 ---
-Hi,
+v2: Add missing options that were added since the original patch
+v3: Resend after 6 months and add Hauke's Acked-by
 
-Changes since v5:
-- move the $python_codespell_dict to local
-- drop extra semicolon
-- execute python, not python3
+Hauke Mehrtens (1):
+  MIPS: kernel: proc: add CPU option reporting
 
-Changes since v4:
-- Use the readable version suggested by Joe Perches (store the pyhton snippet in
-  python_codespell_dict)
+Ilya Lipnitskiy (2):
+  MIPS: kernel: proc: fix trivial style errors
+  MIPS: kernel: proc: use seq_puts instead of seq_printf
 
-Changes since v3:
-- Do not try to override the use provided codespell file location
+ arch/mips/kernel/proc.c | 227 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 184 insertions(+), 43 deletions(-)
 
-Changes since v2:
-- Only try to check for dictionary path it is enabled or when the help is
-  displayed
- - Move the check after the GetOptions()
- - Set $help to 2 in case invalid option is passed in order to be able to use
-   correct exitcode and still display the correct path for dictionary.txt
-
-Changes sicne v1:
-- add missing ';' to the line updating the $codespellfile with $codespell_dict
-
-Regards,
-Peter
- scripts/checkpatch.pl | 31 +++++++++++++++++++++++++++----
- 1 file changed, 27 insertions(+), 4 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 91798b07c6cb..7e6e3b070c3e 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -63,6 +63,7 @@ my $min_conf_desc_length = 4;
- my $spelling_file = "$D/spelling.txt";
- my $codespell = 0;
- my $codespellfile = "/usr/share/codespell/dictionary.txt";
-+my $user_codespellfile = "";
- my $conststructsfile = "$D/const_structs.checkpatch";
- my $docsfile = "$D/../Documentation/dev-tools/checkpatch.rst";
- my $typedefsfile;
-@@ -130,7 +131,7 @@ Options:
-   --ignore-perl-version      override checking of perl version.  expect
-                              runtime errors.
-   --codespell                Use the codespell dictionary for spelling/typos
--                             (default:/usr/share/codespell/dictionary.txt)
-+                             (default:$codespellfile)
-   --codespellfile            Use this codespell dictionary
-   --typedefsfile             Read additional types from this file
-   --color[=WHEN]             Use colors 'always', 'never', or only when output
-@@ -317,7 +318,7 @@ GetOptions(
- 	'debug=s'	=> \%debug,
- 	'test-only=s'	=> \$tst_only,
- 	'codespell!'	=> \$codespell,
--	'codespellfile=s'	=> \$codespellfile,
-+	'codespellfile=s'	=> \$user_codespellfile,
- 	'typedefsfile=s'	=> \$typedefsfile,
- 	'color=s'	=> \$color,
- 	'no-color'	=> \$color,	#keep old behaviors of -nocolor
-@@ -325,9 +326,31 @@ GetOptions(
- 	'kconfig-prefix=s'	=> \${CONFIG_},
- 	'h|help'	=> \$help,
- 	'version'	=> \$help
--) or help(1);
-+) or $help = 2;
- 
--help(0) if ($help);
-+if ($user_codespellfile) {
-+	# Use the user provided codespell file unconditionally
-+	$codespellfile = $user_codespellfile;
-+} else {
-+	# Try to find the codespell install location to use it as default path
-+	if (($codespell || $help) && which("codespell") ne "" && which("python") ne "") {
-+		my $python_codespell_dict = << "EOF";
-+
-+import os.path as op
-+import codespell_lib
-+codespell_dir = op.dirname(codespell_lib.__file__)
-+codespell_file = op.join(codespell_dir, 'data', 'dictionary.txt')
-+print(codespell_file, end='')
-+EOF
-+
-+		my $codespell_dict = `python -c "$python_codespell_dict" 2> /dev/null`;
-+		$codespellfile = $codespell_dict if (-e $codespell_dict);
-+	}
-+}
-+
-+# $help is 1 if either -h, --help or --version is passed as option - exitcode: 0
-+# $help is 2 if invalid option is passed - exitcode: 1
-+help($help - 1) if ($help);
- 
- die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
- die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
 -- 
 2.33.0
 
