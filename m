@@ -2,111 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C53E42D3B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75AF242D3BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhJNHdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:33:49 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:35608 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230155AbhJNHds (ORCPT
+        id S230179AbhJNHer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230020AbhJNHeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:33:48 -0400
-X-UUID: 576858e89f6c4d31a4b93ffb4cf17062-20211014
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=9lY6LHEh9lVFUboaWig5Y2+eb27e6WH0vW234KZQ/6c=;
-        b=EPZzf81URHg+bP0asUlZxBa24o/BLm7g5gEnTu01YRzdCVUFslpyKCO0ajsNvaKk0elZZjN2gRAa4yrjPZI5sIEwzWKmDZ9ZURbbCuPgRjZ9ZpYrhpv28UR1gMxS0APWKSFOQQsfPCCEXfs9yKKUbuR3NZKSEqsK8CPBio1yNB8=;
-X-UUID: 576858e89f6c4d31a4b93ffb4cf17062-20211014
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2089272284; Thu, 14 Oct 2021 15:31:38 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 14 Oct 2021 15:31:37 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 14 Oct 2021 15:31:36 +0800
-Message-ID: <cb8ba624881fa4f57ea6a1d4c30fcb472f709a4f.camel@mediatek.com>
-Subject: Re: [PATCH v2] PCI: mediatek-gen3: Disable DVFSRC voltage request
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <qizhong.cheng@mediatek.com>, <Ryan-JH.Yu@mediatek.com>,
-        Tzung-Bi Shih <tzungbi@google.com>
-Date:   Thu, 14 Oct 2021 15:31:36 +0800
-In-Reply-To: <20211013183515.GA1907868@bhelgaas>
-References: <20211013183515.GA1907868@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 14 Oct 2021 03:34:46 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E6AC061570;
+        Thu, 14 Oct 2021 00:32:41 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id d9so20388213edh.5;
+        Thu, 14 Oct 2021 00:32:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/xnuWJhrmVX8nyyGJLLTy8NHku+iwZR/WIywmchnebU=;
+        b=HjIUz+Rvwj98w+qvdmPVUc1QeSFXY0FdDjWouIgMtOf3MaLNC7GnUxXM06HUklwppi
+         xESR7dt7gOdjzurnqrWvLOEUsucbPPzentW8sHvoNa1AJfkAaJSyVkqwHH2KKobkzTNS
+         I0tAfo9QrU8ZGOWpIjHGgHxOVypBcRtVDLUGP/qASSNmRV++B/Cx8MbugHamDCgMPC90
+         aJHLzhbExKx2tXS7Mcc7xZwM+mi6IxzZDALVe7BojeCXDNRt56OTlCYzIx+TymPWO4b4
+         99YQCp7S3JPeDL40mbtMMHqL7UhXG2NkP6ChaDigbeOb9F5C3YyAlmb8yLZGPN7MHEAc
+         U93w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/xnuWJhrmVX8nyyGJLLTy8NHku+iwZR/WIywmchnebU=;
+        b=UxPBfkvMBCD0q23FvJvYZgXNjz1ET+EIiHyr3CvEfZmwB2SIn0RozB2uGsEGLnu0Ba
+         fIh2gpR6bqd2vpFkugUX6lyYjlFTeymzDGB/N1UG94FNxEd4oTNva6w9ydroPgQ1w/hh
+         xZ/gVQm6XLDjt+7sWv6++drSa4LZkrTPInWroMMaPdAHS9e+hJF0jTJ3WM0wAp+MctoO
+         ji94M5YeAK6k1K8d0nA0A4tSrwagoiYWkzO9URP1eHPvIesNPLZy8dOJU3xXJKIzECh1
+         sg931cbVQwxMDc2pgcFK7KM8mLOfIjyDxjxw+qs0VER7j6GZsJV49hJ4+SLUD5WFnkwK
+         J2Fw==
+X-Gm-Message-State: AOAM531ctiM5QVigzlfK1QABDTbhOPAGGwg4Yd3O6+oEYoaytejA4rNL
+        NlrmpU0cc5pMhPo9tKh1JiI=
+X-Google-Smtp-Source: ABdhPJyyjIMh1xd4Ym8Ox9fBtHbG79BkxSytyUuvq14SiywJv7AAC86o8jdnEtTepgGOcQ9MkRx1+A==
+X-Received: by 2002:a05:6402:40d3:: with SMTP id z19mr6448091edb.393.1634196760221;
+        Thu, 14 Oct 2021 00:32:40 -0700 (PDT)
+Received: from [192.168.0.108] ([176.228.71.216])
+        by smtp.gmail.com with ESMTPSA id w18sm1868067edc.4.2021.10.14.00.32.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 00:32:39 -0700 (PDT)
+Subject: Re: [PATCH] mlx5: allow larger xsk chunk_size
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Aya Levin <ayal@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+References: <20211013150232.2942146-1-arnd@kernel.org>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Message-ID: <328f581e-7f1d-efc3-036c-66e729297e9c@gmail.com>
+Date:   Thu, 14 Oct 2021 10:32:36 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20211013150232.2942146-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTEwLTEzIGF0IDEzOjM1IC0wNTAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
-PiBPbiBXZWQsIE9jdCAxMywgMjAyMSBhdCAwMzo1MzoyOFBNICswODAwLCBKaWFuanVuIFdhbmcg
-d3JvdGU6DQo+ID4gV2hlbiB0aGUgRFZGU1JDIGZlYXR1cmUgaXMgbm90IGltcGxlbWVudGVkLCB0
-aGUgTUFDIGxheWVyIHdpbGwNCj4gPiBhc3NlcnQgYSB2b2x0YWdlIHJlcXVlc3Qgc2lnbmFsIHdo
-ZW4gZXhpdCBmcm9tIHRoZSBMMXNzIHN0YXRlLA0KPiA+IGJ1dCBjYW5ub3QgcmVjZWl2ZSB0aGUg
-dm9sdGFnZSByZWFkeSBzaWduYWwsIHdoaWNoIHdpbGwgY2F1c2UNCj4gPiB0aGUgbGluayB0byBm
-YWlsIHRvIGV4aXQgdGhlIEwxc3Mgc3RhdGUgY29ycmVjdGx5Lg0KPiA+IA0KPiA+IERpc2FibGUg
-RFZGU1JDIHZvbHRhZ2UgcmVxdWVzdCBieSBkZWZhdWx0LCB3ZSBuZWVkIHRvIGZpbmQNCj4gPiBh
-IGNvbW1vbiB3YXkgdG8gZW5hYmxlIGl0IGluIHRoZSBmdXR1cmUuDQo+IA0KPiBSZXdyYXAgY29t
-bWl0IGxvZyB0byBmaWxsIDc1IGNvbHVtbnMuDQo+IA0KPiBEb2VzICJMMXNzIiBhYm92ZSByZWZl
-ciB0byBMMS4xIGFuZCBMMS4yPyAgSWYgc28sIHBsZWFzZSBzYXkgdGhhdA0KPiBleHBsaWNpdGx5
-IG9yIHNheSBzb21ldGhpbmcgbGlrZSAiTDEgUE0gU3Vic3RhdGVzIiAodGhlIHRlcm0gdXNlZCBp
-bg0KPiB0aGUgUENJZSBzcGVjKSBzbyBpdCdzIGNsZWFyLg0KPiANCj4gVGhpcyBzZWVtcyBvbiB0
-aGUgYm91bmRhcnkgb2YgUENJZS1zcGVjaWZpZWQgdGhpbmdzIGFuZCBNZWRpYXRlaw0KPiBpbXBs
-ZW1lbnRhdGlvbiBkZXRhaWxzLCBzbyBJJ20gbm90IHN1cmUgd2hhdCAiRFZGU1JDLCIgIk1BQywi
-IGFuZA0KPiAidm9sdGFnZSByZXF1ZXN0IHNpZ25hbCIgbWVhbi4gIFNpbmNlIEkgZG9uJ3QgcmVj
-b2duaXplIHRob3NlIHRlcm1zLA0KPiBJJ20gZ3Vlc3NpbmcgdGhleSBhcmUgTWVkaWF0ZWstc3Bl
-Y2lmaWMgdGhpbmdzLg0KPiANCj4gQnV0IGlmIHRoZXkgYXJlIHRoaW5ncyBzcGVjaWZpZWQgYnkg
-dGhlIFBDSWUgc3BlYywgcGxlYXNlIHVzZSB0aGUNCj4gZXhhY3QgbmFtZXMgdXNlZCBpbiB0aGUg
-c3BlYy4NCg0KSGkgQmpvcm4sDQoNClllcywgdGhlIERWRlNSQyAoZHluYW1pYyB2b2x0YWdlIGFu
-ZCBmcmVxdWVuY3kgc2NhbGluZyByZXNvdXJjZQ0KY29sbGVjdG9yKSBpcyBhIHByb3ByaWV0YXJ5
-IGhhcmR3YXJlIG9mIE1lZGlhdGVrLCB3aGljaCBpcyB1c2VkIHRvDQpjb2xsZWN0IHRoZSByZXF1
-ZXN0cyBmcm9tIHN5c3RlbSBhbmQgdHVybiBpbnRvIHRoZSBkZWNpc2lvbiBvZiBtaW5pbXVtDQpW
-Y29yZSB2b2x0YWdlIGFuZCBtaW5pbXVtIERSQU0gZnJlcXVlbmN5IHRvIGZ1bGZpbGwgdGhvc2Ug
-cmVxdWVzdHMsIGFuZA0KdGhlICJ2b2x0YWdlIHJlcXVlc3Qgc2lnbmFsIiBpcyB0aGUgaGFyZHdh
-cmUgc2lnbmFsIHdoaWNoIGZyb20gdGhlIFBDSWUNCmhhcmR3YXJlIHRvIHRoZSBEVkZTUkMgbW9k
-dWxlIHRvIHJlcXVlc3QgYSBzcGVjaWZpYyBWY29yZSB2b2x0YWdlLg0KDQpJIHdpbGwgYWRkIGl0
-cyBmdWxsIG5hbWUgaW4gdGhlIG5leHQgdmVyc2lvbiwgdGhhbmtzIGZvciB5b3VyIHJldmlldy4N
-Cg0KVGhhbmtzLg0KPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBKaWFuanVuIFdhbmcgPGppYW5qdW4u
-d2FuZ0BtZWRpYXRlay5jb20+DQo+ID4gUmV2aWV3ZWQtYnk6IFR6dW5nLUJpIFNoaWggPHR6dW5n
-YmlAZ29vZ2xlLmNvbT4NCj4gPiBUZXN0ZWQtYnk6IFFpemhvbmcgQ2hlbmcgPHFpemhvbmcuY2hl
-bmdAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3BjaS9jb250cm9sbGVyL3Bj
-aWUtbWVkaWF0ZWstZ2VuMy5jIHwgOCArKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgOCBp
-bnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL2NvbnRyb2xs
-ZXIvcGNpZS1tZWRpYXRlay1nZW4zLmMNCj4gPiBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNp
-ZS1tZWRpYXRlay1nZW4zLmMNCj4gPiBpbmRleCBmM2FlYjhkNGVhY2EuLjc5ZmIxMmZjYTZhOSAx
-MDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3BjaS9jb250cm9sbGVyL3BjaWUtbWVkaWF0ZWstZ2Vu
-My5jDQo+ID4gKysrIGIvZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlhdGVrLWdlbjMu
-Yw0KPiA+IEBAIC03OSw2ICs3OSw5IEBADQo+ID4gICNkZWZpbmUgUENJRV9JQ01EX1BNX1JFRwkJ
-MHgxOTgNCj4gPiAgI2RlZmluZSBQQ0lFX1RVUk5fT0ZGX0xJTksJCUJJVCg0KQ0KPiA+ICANCj4g
-PiArI2RlZmluZSBQQ0lFX01JU0NfQ1RSTF9SRUcJCTB4MzQ4DQo+ID4gKyNkZWZpbmUgUENJRV9E
-SVNBQkxFX0RWRlNSQ19WTFRfUkVRCUJJVCgxKQ0KPiA+ICsNCj4gPiAgI2RlZmluZSBQQ0lFX1RS
-QU5TX1RBQkxFX0JBU0VfUkVHCTB4ODAwDQo+ID4gICNkZWZpbmUgUENJRV9BVFJfU1JDX0FERFJf
-TVNCX09GRlNFVAkweDQNCj4gPiAgI2RlZmluZSBQQ0lFX0FUUl9UUlNMX0FERFJfTFNCX09GRlNF
-VAkweDgNCj4gPiBAQCAtMjk3LDYgKzMwMCwxMSBAQCBzdGF0aWMgaW50IG10a19wY2llX3N0YXJ0
-dXBfcG9ydChzdHJ1Y3QNCj4gPiBtdGtfcGNpZV9wb3J0ICpwb3J0KQ0KPiA+ICAJdmFsICY9IH5Q
-Q0lFX0lOVFhfRU5BQkxFOw0KPiA+ICAJd3JpdGVsX3JlbGF4ZWQodmFsLCBwb3J0LT5iYXNlICsg
-UENJRV9JTlRfRU5BQkxFX1JFRyk7DQo+ID4gIA0KPiA+ICsJLyogRGlzYWJsZSBEVkZTUkMgdm9s
-dGFnZSByZXF1ZXN0ICovDQo+ID4gKwl2YWwgPSByZWFkbF9yZWxheGVkKHBvcnQtPmJhc2UgKyBQ
-Q0lFX01JU0NfQ1RSTF9SRUcpOw0KPiA+ICsJdmFsIHw9IFBDSUVfRElTQUJMRV9EVkZTUkNfVkxU
-X1JFUTsNCj4gPiArCXdyaXRlbF9yZWxheGVkKHZhbCwgcG9ydC0+YmFzZSArIFBDSUVfTUlTQ19D
-VFJMX1JFRyk7DQo+ID4gKw0KPiA+ICAJLyogQXNzZXJ0IGFsbCByZXNldCBzaWduYWxzICovDQo+
-ID4gIAl2YWwgPSByZWFkbF9yZWxheGVkKHBvcnQtPmJhc2UgKyBQQ0lFX1JTVF9DVFJMX1JFRyk7
-DQo+ID4gIAl2YWwgfD0gUENJRV9NQUNfUlNUQiB8IFBDSUVfUEhZX1JTVEIgfCBQQ0lFX0JSR19S
-U1RCIHwNCj4gPiBQQ0lFX1BFX1JTVEI7DQo+ID4gLS0gDQo+ID4gMi4yNS4xDQo+ID4gDQo=
 
+
+On 10/13/2021 6:02 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When building with 64KB pages, clang points out that xsk->chunk_size
+> can never be PAGE_SIZE:
+> 
+> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c:19:22: error: result of comparison of constant 65536 with expression of type 'u16' (aka 'unsigned short') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+>          if (xsk->chunk_size > PAGE_SIZE ||
+>              ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
+> 
+> I'm not familiar with the details of this code, but from a quick look
+> I found that it gets assigned from a 32-bit variable that can be
+> PAGE_SIZE, and that the layout of 'xsk' is not part of an ABI or
+> a hardware structure, so extending the members to 32 bits as well
+> should address both the behavior on 64KB page kernels, and the
+> warning I saw.
+> 
+> In older versions of this code, using PAGE_SIZE was the only
+> possibility, so this would have never worked on 64KB page kernels,
+> but the patch apparently did not address this case completely.
+> 
+> Fixes: 282c0c798f8e ("net/mlx5e: Allow XSK frames smaller than a page")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en/params.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/params.h b/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
+> index 879ad46d754e..b4167350b6df 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
+> @@ -7,8 +7,8 @@
+>   #include "en.h"
+>   
+>   struct mlx5e_xsk_param {
+> -	u16 headroom;
+> -	u16 chunk_size;
+> +	u32 headroom;
+> +	u32 chunk_size;
+
+Hi Arnd,
+
+I agree with your arguments about chunk_size.
+Yet I have mixed feelings about extending the headroom. Predating 
+in-driver code uses u16 for headroom (i.e. [1]), while 
+xsk_pool_get_headroom returns u32.
+
+[1] drivers/net/ethernet/mellanox/mlx5/core/en/params.c :: 
+mlx5e_get_linear_rq_headroom
+
+As this patch is a fix, let's keep it minimal, only addressing the issue 
+described in title and description.
+We might want to move headroom to u32 all around the driver in a 
+separate patch to -next.
+
+>   };
+>   
+>   struct mlx5e_lro_param {
+> 
