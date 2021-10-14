@@ -2,96 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8DB42CF6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 02:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B23B42CF73
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 02:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229569AbhJNAMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 20:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43294 "EHLO
+        id S229773AbhJNAOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 20:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhJNAMv (ORCPT
+        with ESMTP id S229590AbhJNAOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 20:12:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7233C061570;
-        Wed, 13 Oct 2021 17:10:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hwqhlhPOT3W8YxWprAXqKn5R1vpF1HMQTFeRCeyMhDw=; b=FoKN+/qrHz5uAO/YI3Jw7+DfcS
-        wey8+yMn4jVTVdQoGQuytIvGWdeySGGmeXw6g9Cgzuo5y39x//Bf9qZFSnjr7kpg7ByYCy+gSATky
-        682oPpANaPCttnbqHXfhwTYUHCodIC0TpKPuasCtPIbPzsYUecJz6k54iC6qXbUTt3Q+eSxyRyXE4
-        LF/4GcKiTPXlxiOSIWf0UtbgyI+K84SVRgiAzeuPHJdW8/DMbLp/ul8hfUnODBK4CJIHXwIFAIgy+
-        P0NEXXPdWRqWAdTnveAGZjFyh5yjv3miio+kzwuf4DIOFrjSUiw/Ey8u5DS35slALKBx3vT3XtGtW
-        OshMlsug==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maoIW-007uS2-Qc; Thu, 14 Oct 2021 00:08:54 +0000
-Date:   Thu, 14 Oct 2021 01:08:36 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: page_alloc: skip bulk allocator for __GFP_ACCOUNT
-Message-ID: <YWd1BDuTinjTYXpH@casper.infradead.org>
-References: <20211013194338.1804247-1-shakeelb@google.com>
- <YWdXv+RBjXvdmsK+@carbon.DHCP.thefacebook.com>
- <CALvZod6ZppPNk2XfvKFfdPhrsSF6NbSBKrOOOc6UyJMfDEfKoQ@mail.gmail.com>
- <YWdoj9FZy2B4oLj8@carbon.DHCP.thefacebook.com>
- <CALvZod7oYyGvHAQVO5fg5eCJefeU1J70iUS6-9k0gQ2S8-y7NQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7oYyGvHAQVO5fg5eCJefeU1J70iUS6-9k0gQ2S8-y7NQ@mail.gmail.com>
+        Wed, 13 Oct 2021 20:14:30 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31402C061570
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 17:12:26 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id j193-20020a2523ca000000b005b789d71d9aso4981135ybj.21
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 17:12:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Rd6B9VWfRXKdtrYMluqvHZ26IrGIgC0pqkttPCxXbFc=;
+        b=fvdHiDmEE7M7IASKwp/3onuFuKTKEcbN1kEqxuC4btJRo9smhk79Wo/ftr1f0z8pwn
+         mQ8E4e6EW/ZF/y3jhIjpuCoP1ynMNJ4KGwdPheQ1sSY7XMYjwMSu7tHV+jZGcmWOgNDK
+         CeSk/TKU+l4HlHC7OwpOYkR7nNCccS+J94SGwMPgZhrqSCwAMmwN/m0W6RlkBlJxXGVf
+         RxD7/2+U2c+wuSbR6H+YmrWuvAvTNgiikSF3l0aueTYn1FQOt//BocA9hWURgmP60ia0
+         PQPnSX/i6o+jKe/jlIqxO5ZHf6oqA1qxTim2Zz7vco1qufHCWPyDBLDKDuS0RaRHNCkz
+         DcYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Rd6B9VWfRXKdtrYMluqvHZ26IrGIgC0pqkttPCxXbFc=;
+        b=M9EcG6mm5xN3Nx0NFgfw7WKuMCm/WF/GORbGWSEUiZYWHn4C9yY1RSJbtpVwrIILRg
+         ASjm+VRcvQl7d1bgVFc2BJ7gVdb/MTB4syjcty7wVa2qfZIjfS1yY5O5hFDBY2AYuCRI
+         mQiFmacuxTT4znZOrFY2Ti+YbFAlRIfiI2bc14gyV5faFBZVp8rpUbI+NMwziP3UOKEd
+         jSVnzZE5nUgOpx/5QnjkZanzTvOArJG0RbJebrlycr6TccNykjb2GEBUiaFs7LuK6CCH
+         Ic4b97Kg+1oyhiEPcSbiXEtdKSe2ttsE6y4NzBPD7a3AL7JDAs8Z6yIu4zPWu1185Mh9
+         wGHg==
+X-Gm-Message-State: AOAM530I/omJIuPR8YcCoVA08nk/8R1QSfMEBI9GFOenogZkU/hgx6wh
+        Dp6G0E0DOvKk63MEtb+7cybwbR0zwcI8rgAVfp3RqLyBnooLq/uiCQRFV7FsutlXdBWWlNBA0Ig
+        OsKC88K8i8Y4KsEqiZr0ELWW89f03AXfHXsiiF6tha5o8hKE1iXqq2stnGwMxlS9/MHBQfdTM
+X-Google-Smtp-Source: ABdhPJx3PMB6VO00byZa6EhKgjhggvbQr867ipuwcwlFWtmtBhOb/8qjR/lag8XHJ1bWv053x5eq7XQeVFUM
+X-Received: from uluru3.svl.corp.google.com ([2620:15c:2cd:202:a775:8bd3:8659:5fdf])
+ (user=eranian job=sendgmr) by 2002:a25:d906:: with SMTP id
+ q6mr2903134ybg.129.1634170345403; Wed, 13 Oct 2021 17:12:25 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 17:12:14 -0700
+Message-Id: <20211014001214.2680534-1-eranian@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
+Subject: [PATCH] perf/x86/intel: fix ICL/SPR INST_RETIRED.PREC_DIST encodings
+From:   Stephane Eranian <eranian@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, kan.liang@intel.com, ak@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 04:45:35PM -0700, Shakeel Butt wrote:
-> On Wed, Oct 13, 2021 at 4:15 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> [...]
-> > > >
-> > > > Isn't it a bit too aggressive?
-> > > >
-> > > > How about
-> > > >     if (WARN_ON_ONCE(gfp & __GFP_ACCOUNT))
-> > >
-> > > We actually know that kvmalloc(__GFP_ACCOUNT) users exist and can
-> > > trigger bulk page allocator through vmalloc, so I don't think the
-> > > warning would be any helpful.
-> > >
-> > > >        gfp &= ~__GFP_ACCOUNT;
-> > >
-> > > Bulk allocator is best effort, so callers have adequate fallbacks.
-> > > Transparently disabling accounting would be unexpected.
-> >
-> > I see...
-> >
-> > Shouldn't we then move this check to an upper level?
-> >
-> > E.g.:
-> >
-> > if (!(gfp & __GFP_ACCOUNT))
-> >    call_into_bulk_allocator();
-> > else
-> >    call_into_per_page_allocator();
-> >
-> 
-> If we add this check in the upper level (e.g. in vm_area_alloc_pages()
-> ) then I think we would need WARN_ON_ONCE(gfp & __GFP_ACCOUNT) in the
-> bulk allocator to detect future users.
-> 
-> At the moment I am more inclined towards this patch's approach. Let's
-> say in future we find there is a __GFP_ACCOUNT allocation which can
-> benefit from bulk allocator and we decide to add such support in bulk
-> allocator then we would not need to change the bulk allocator callers
-> at that time just the bulk allocator.
+This patch fixes the encoding for INST_RETIRED.PREC_DIST as published by Intel
+(download.01.org/perfmon/) for Icelake. The official encoding
+is event code 0x00 umask 0x1, a change from Skylake where it was code 0xc0
+umask 0x1.
 
-I agree with you.  Let's apply the patch as-is.
+With this patch applied it is possible to run:
+$ perf record -a -e cpu/event=0x00,umask=0x1/pp .....
+
+Whereas before this would fail.
+
+To avoid problems with tools which may use the old code, we maintain the old
+encoding for Icelake.
+
+Signed-off-by: Stephane Eranian <eranian@google.com>
+---
+ arch/x86/events/intel/core.c | 5 +++--
+ arch/x86/events/intel/ds.c   | 5 +++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 9a044438072b..bc3f97f83401 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -243,7 +243,8 @@ static struct extra_reg intel_skl_extra_regs[] __read_mostly = {
+ 
+ static struct event_constraint intel_icl_event_constraints[] = {
+ 	FIXED_EVENT_CONSTRAINT(0x00c0, 0),	/* INST_RETIRED.ANY */
+-	FIXED_EVENT_CONSTRAINT(0x01c0, 0),	/* INST_RETIRED.PREC_DIST */
++	FIXED_EVENT_CONSTRAINT(0x01c0, 0),	/* old INST_RETIRED.PREC_DIST */
++	FIXED_EVENT_CONSTRAINT(0x0100, 0),	/* INST_RETIRED.PREC_DIST */
+ 	FIXED_EVENT_CONSTRAINT(0x003c, 1),	/* CPU_CLK_UNHALTED.CORE */
+ 	FIXED_EVENT_CONSTRAINT(0x0300, 2),	/* CPU_CLK_UNHALTED.REF */
+ 	FIXED_EVENT_CONSTRAINT(0x0400, 3),	/* SLOTS */
+@@ -288,7 +289,7 @@ static struct extra_reg intel_spr_extra_regs[] __read_mostly = {
+ 
+ static struct event_constraint intel_spr_event_constraints[] = {
+ 	FIXED_EVENT_CONSTRAINT(0x00c0, 0),	/* INST_RETIRED.ANY */
+-	FIXED_EVENT_CONSTRAINT(0x01c0, 0),	/* INST_RETIRED.PREC_DIST */
++	FIXED_EVENT_CONSTRAINT(0x0100, 0),	/* INST_RETIRED.PREC_DIST */
+ 	FIXED_EVENT_CONSTRAINT(0x003c, 1),	/* CPU_CLK_UNHALTED.CORE */
+ 	FIXED_EVENT_CONSTRAINT(0x0300, 2),	/* CPU_CLK_UNHALTED.REF */
+ 	FIXED_EVENT_CONSTRAINT(0x0400, 3),	/* SLOTS */
+diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+index 8647713276a7..4dbb55a43dad 100644
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -923,7 +923,8 @@ struct event_constraint intel_skl_pebs_event_constraints[] = {
+ };
+ 
+ struct event_constraint intel_icl_pebs_event_constraints[] = {
+-	INTEL_FLAGS_UEVENT_CONSTRAINT(0x1c0, 0x100000000ULL),	/* INST_RETIRED.PREC_DIST */
++	INTEL_FLAGS_UEVENT_CONSTRAINT(0x01c0, 0x100000000ULL),	/* old INST_RETIRED.PREC_DIST */
++	INTEL_FLAGS_UEVENT_CONSTRAINT(0x0100, 0x100000000ULL),	/* INST_RETIRED.PREC_DIST */
+ 	INTEL_FLAGS_UEVENT_CONSTRAINT(0x0400, 0x800000000ULL),	/* SLOTS */
+ 
+ 	INTEL_PLD_CONSTRAINT(0x1cd, 0xff),			/* MEM_TRANS_RETIRED.LOAD_LATENCY */
+@@ -943,7 +944,7 @@ struct event_constraint intel_icl_pebs_event_constraints[] = {
+ };
+ 
+ struct event_constraint intel_spr_pebs_event_constraints[] = {
+-	INTEL_FLAGS_UEVENT_CONSTRAINT(0x1c0, 0x100000000ULL),
++	INTEL_FLAGS_UEVENT_CONSTRAINT(0x100, 0x100000000ULL),	/* INST_RETIRED.PREC_DIST */
+ 	INTEL_FLAGS_UEVENT_CONSTRAINT(0x0400, 0x800000000ULL),
+ 
+ 	INTEL_FLAGS_EVENT_CONSTRAINT(0xc0, 0xfe),
+-- 
+2.33.0.1079.g6e70778dc9-goog
+
