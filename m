@@ -2,59 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E178B42DB3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D38F942DB4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbhJNOQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:16:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48840 "EHLO mail.kernel.org"
+        id S231777AbhJNOUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:20:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:55452 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhJNOQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:16:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A5CA261056;
-        Thu, 14 Oct 2021 14:14:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634220840;
-        bh=MA9l4teI+iU2cuWpn/AJpc7cajCFpqSFMC009EEO1DA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZvNsattrGxx5SFAg5uzyGRkVUWOXPr2568hL6kZOgdfVR6j8NoIgo380S03UEMIsU
-         Mq4vdUbWfwP6Ge//4JmsbkeGRjcnfC37d1hfp3hm7OdqekAp8zzWkbAmvLHEzgfija
-         q/MkduK4WiQ+BRTsmzUI+dIiylhlWULsqlC40uBaLslD5vwF+ne5r8xQd/RPOTNyq+
-         0daBZjexyMrB2JWKbOlh7T6D8EdZ+Rnjr2BS2/1dRBKZI0RzxVKOtyD3Y/E1ZnoE0i
-         YS2biymlNowBPfmPT1XWv0L/kHuPtScvRlZzgXRrmkFbEWr5CgiarrbmUbdBBsl7aa
-         CIVqZb2kHyYjw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 96EB3609ED;
-        Thu, 14 Oct 2021 14:14:00 +0000 (UTC)
-Subject: Re: [GIT PULL] sound fixes for 5.15-rc6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <s5hlf2vwzlp.wl-tiwai@suse.de>
-References: <s5hlf2vwzlp.wl-tiwai@suse.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <s5hlf2vwzlp.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.15-rc6
-X-PR-Tracked-Commit-Id: 48827e1d6af58f219e89c7ec08dccbca28c7694e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1626d9a35eb7aa68fe6f8097628753c8ef733e9b
-Message-Id: <163422084056.25587.3651013383402213401.pr-tracker-bot@kernel.org>
-Date:   Thu, 14 Oct 2021 14:14:00 +0000
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S231464AbhJNOUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:20:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 76D27D6E;
+        Thu, 14 Oct 2021 07:17:59 -0700 (PDT)
+Received: from [10.57.25.70] (unknown [10.57.25.70])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB7193F694;
+        Thu, 14 Oct 2021 07:17:57 -0700 (PDT)
+Subject: Re: [PATCH v4 02/15] arm64: errata: Add detection for TRBE overwrite
+ in FILL mode
+To:     Randy Dunlap <rdunlap@infradead.org>, will@kernel.org,
+        mathieu.poirier@linaro.org
+Cc:     catalin.marinas@arm.com, anshuman.khandual@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org, maz@kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>
+References: <20211012131743.2040596-1-suzuki.poulose@arm.com>
+ <20211012131743.2040596-3-suzuki.poulose@arm.com>
+ <50b26f6c-d0d3-b8bc-085d-1e274bb42a96@infradead.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <55aca58d-8aec-a929-cdc9-15c5809a0781@arm.com>
+Date:   Thu, 14 Oct 2021 15:17:56 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <50b26f6c-d0d3-b8bc-085d-1e274bb42a96@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 14 Oct 2021 14:38:26 +0200:
+Hi
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.15-rc6
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1626d9a35eb7aa68fe6f8097628753c8ef733e9b
+Thanks for the report. I have fixed all of them.
 
-Thank you!
+Suzuki
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+On 12/10/2021 16:31, Randy Dunlap wrote:
+> Hi,
+> 
+> On 10/12/21 6:17 AM, Suzuki K Poulose wrote:
+>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>> index 077f2ec4eeb2..404f56e87e93 100644
+>> --- a/arch/arm64/Kconfig
+>> +++ b/arch/arm64/Kconfig
+>> @@ -666,6 +666,47 @@ config ARM64_ERRATUM_1508412
+>>         If unsure, say Y.
+>> +config ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+>> +    bool
+>> +
+>> +config ARM64_ERRATUM_2119858
+>> +    bool "Cortex-A710: 2119858: workaround TRBE overwriting trace 
+>> data in FILL mode"
+>> +    default y
+>> +    depends on COMPILE_TEST # Until the CoreSight TRBE driver changes 
+>> are in
+>> +    depends on CORESIGHT_TRBE
+>> +    select ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+>> +    help
+>> +      This option adds the workaround for ARM Cortex-A710 erratum 
+>> 2119858.
+>> +
+>> +      Affected Cortex-A710 cores could overwrite upto 3 cache lines 
+>> of trace
+> 
+>                                                   up to
+> 
+>> +      data at the base of the buffer (ponited by TRBASER_EL1) in FILL 
+>> mode in
+> 
+>                                        pointed to by
+> 
+>> +      the event of a WRAP event.
+>> +
+>> +      Work around the issue by always making sure we move the 
+>> TRBPTR_EL1 by
+>> +      256bytes before enabling the buffer and filling the first 
+>> 256bytes of
+> 
+>        256 bytes                                                 256 bytes
+> 
+>> +      the buffer with ETM ignore packets upon disabling.
+>> +
+>> +      If unsure, say Y.
+>> +
+>> +config ARM64_ERRATUM_2139208
+>> +    bool "Neoverse-N2: 2139208: workaround TRBE overwriting trace 
+>> data in FILL mode"
+>> +    default y
+>> +    depends on COMPILE_TEST # Until the CoreSight TRBE driver changes 
+>> are in
+>> +    depends on CORESIGHT_TRBE
+>> +    select ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
+>> +    help
+>> +      This option adds the workaround for ARM Neoverse-N2 erratum 
+>> 2139208.
+>> +
+>> +      Affected Neoverse-N2 cores could overwrite upto 3 cache lines 
+>> of trace
+> 
+>                                                   up to
+> 
+>> +      data at the base of the buffer (ponited by TRBASER_EL1) in FILL 
+>> mode in
+> 
+>                                        pointed to by
+> 
+>> +      the event of a WRAP event.
+>> +
+>> +      Work around the issue by always making sure we move the 
+>> TRBPTR_EL1 by
+>> +      256bytes before enabling the buffer and filling the first 
+>> 256bytes of
+> 
+>        256 bytes                                                 256 bytes
+> 
+>> +      the buffer with ETM ignore packets upon disabling.
+>> +
+>> +      If unsure, say Y.
+> 
+> 
+
