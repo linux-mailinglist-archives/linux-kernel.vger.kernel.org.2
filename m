@@ -2,94 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4149042D3CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A330342D3D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhJNHiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:38:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57081 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230155AbhJNHiA (ORCPT
+        id S230180AbhJNHie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:38:34 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:42452
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230042AbhJNHid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:38:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634196956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LBTwey9hwKfIjUV/CtWBhOrVA1mXd7MU5D+jzS6jbLc=;
-        b=hTetlGdENCmWqMILVsp/9e2dONH43zRswgBOO0l+DF9qlc8V2kJdpJGKye+tLAc7e0F/hp
-        V4AaqL5o3sOpmjMYKooLJ2K8MyFfUwRdjLM/wqE68x2jKLHjYrYCpdyCTlSSIJFId/C5dM
-        DY7bFjrSYU2CN66h9Xjhwv7K7wm11zM=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-qhpiA3s4PQqZXyuw20NUog-1; Thu, 14 Oct 2021 03:35:55 -0400
-X-MC-Unique: qhpiA3s4PQqZXyuw20NUog-1
-Received: by mail-wr1-f70.google.com with SMTP id h99-20020adf906c000000b001644add8925so684808wrh.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:35:54 -0700 (PDT)
+        Thu, 14 Oct 2021 03:38:33 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C509440027
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:36:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634196987;
+        bh=3dBHQ0CCwS4iqRIss5gN00T/QO/pYW+4oQWUdLki5wU=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=NfZ1IBpWJFjHA431BtAXCXUs9jwHZyJuC1RMb72biZiCbP5pfnVFE6z4tbedelVoo
+         pw0arGbpJrx1qAhzr9quu/QNuLEJ7wbvAgzZzLEVS91lT+iWkQO1EYiNBaCdVDhjW2
+         rqPtboiPGMCjinYdyfz3Muy4nyI9x3ZqkhuD5b9fe1ShfvFvWT0+0LLWnKjFuKJJ0B
+         Yl+CzRPMJRUgQDFBEBSgPKQzO45teVQ3oQW21xkDUZV5KLslE7ka+VzSyN50QVIjD7
+         PjUiwwrGH+w5/ZViPQ5ZcDjQ0Sbyua0clIi1YApQrEJVRYT7UDuz5VUda6Hv/eNm1F
+         aJdCyYsaD6vPw==
+Received: by mail-lf1-f69.google.com with SMTP id c6-20020a05651200c600b003fc6d39efa4so3753425lfp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:36:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=LBTwey9hwKfIjUV/CtWBhOrVA1mXd7MU5D+jzS6jbLc=;
-        b=CAwmukmeGO+F5jyYkCBFLcMzCh7IELj/1cChoUtryvofiuYjWp/VKg4ujgypJ6QXlk
-         bS5Iq39qA37VGSCBWreQ7oU6od1REttddd8NTbqgC9C2MYIIMjAL9U087aFxvsY7xUf9
-         WpGtva1qqbtmHqm9hy3yUA4DDsAFrrgImw61Qjlsyci4C3DBK+dQJLla5qiUTihX4GCp
-         AoHU0z0PORJPLXIEz3PSmeRenrcUlwplJqa2Egs2Ebh54hF9dvFeANsEIFVIeZ521X+t
-         XfARAiZVEdXdVcyZ5n1e0OLZQbzIU4ONVNB4qG4jL0UmG2gftDNRm1MYsA6kdFwvU0Gm
-         ddEw==
-X-Gm-Message-State: AOAM5326GnC+BvhpjJfUrSSWzjH8x9oWxELcautx8HoVQbuqElmCJv02
-        hVIN6kenmOIq795j1HAqo0oE7MAXVbLQTMJpesTGLgSIwmSEbd0olgG81DNr30Uel4sgH8tfzAV
-        UogGw/Zm3tQVJFaKJaix5xaUe
-X-Received: by 2002:a05:6000:1884:: with SMTP id a4mr4830194wri.356.1634196953911;
-        Thu, 14 Oct 2021 00:35:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxSt3YUMGlNcOUbeyioJYcYpj5GtzCUeicYuA6BqOXmIkdWdP8qjlptmdEhgv5wx1bk/22iGA==
-X-Received: by 2002:a05:6000:1884:: with SMTP id a4mr4830188wri.356.1634196953774;
-        Thu, 14 Oct 2021 00:35:53 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c694e.dip0.t-ipconnect.de. [91.12.105.78])
-        by smtp.gmail.com with ESMTPSA id g1sm8149250wmk.2.2021.10.14.00.35.52
+        bh=3dBHQ0CCwS4iqRIss5gN00T/QO/pYW+4oQWUdLki5wU=;
+        b=uilJUNQDs16mO3w+izhumFgJcWYajkQJOTPTWDHLbeG6UvRRB4l8AXvrsUKg2dNSTg
+         30OPF+JZh+o0k33NLFayBkSqM3E19SKHE2tzH2UC8Nkt15HvrZY9Plt5iAXgMNOfZTpK
+         2VoPTYyS+ABOsWdgthyY+zdDfhKNTjbXPuPX5EposM/A9IZVBhw2uSQ75NZ6wWk4ARXS
+         VeP7PBaDQR6+S7BHhsu2+zJlqaA4mw9VgEnsVuUjYMUnwnlVDtyd261w7zno4mzpbnlY
+         Ky7+G9LN6WLTo2PCwF55jGElvZPxh/mYPMiWsYyAVX+Cji+V0WrnW9wTY34mNEhiD33F
+         ZXRQ==
+X-Gm-Message-State: AOAM531yoYeGGeKGlyghMO//EMjWstrI6sofAD8liFPTgBeoWTBpWN9O
+        xKbL1KODkllWRgnFkrxJaC7mZ1EdOLk3r1VgbDN4/8JqSjwhrvoNYLnxZGNmNlzbKu9jlSCeGzM
+        fPtpQNxhE5W5mKdFlkC+p6OYWRNYSlXDLSiVifoGYbw==
+X-Received: by 2002:a2e:3005:: with SMTP id w5mr4290249ljw.228.1634196987029;
+        Thu, 14 Oct 2021 00:36:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxsQsq/0kwEUVa9aO6xG/cThkpvqL7ggL6yk+veaubzi/nCENc7uw5xGlJJejFOv/z5TAeGtw==
+X-Received: by 2002:a2e:3005:: with SMTP id w5mr4290229ljw.228.1634196986778;
+        Thu, 14 Oct 2021 00:36:26 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id f6sm200698ljo.36.2021.10.14.00.36.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 00:35:53 -0700 (PDT)
-Message-ID: <37a4b381-6204-6c38-f37c-eb078d768f42@redhat.com>
-Date:   Thu, 14 Oct 2021 09:35:52 +0200
+        Thu, 14 Oct 2021 00:36:26 -0700 (PDT)
+To:     Hector Martin <marcan@marcan.st>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-7-marcan@marcan.st>
+ <a9f6898d-bd76-b94e-52fc-98e9da1a04bd@canonical.com>
+ <2a6f14e5-fbc9-4b9a-9378-a4b5200bc3fb@marcan.st>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [RFC PATCH 6/9] memory: apple: Add apple-mcc driver to manage MCC
+ perf in Apple SoCs
+Message-ID: <f81467d4-74b2-176d-06bf-f04e073efce4@canonical.com>
+Date:   Thu, 14 Oct 2021 09:36:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 00/11] PageSlab: eliminate unnecessary compound_head()
- calls
+In-Reply-To: <2a6f14e5-fbc9-4b9a-9378-a4b5200bc3fb@marcan.st>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, Kent Overstreet <kent.overstreet@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-References: <20211012180148.1669685-1-hannes@cmpxchg.org>
- <YWXgrhRDIxcoBhA1@casper.infradead.org> <YWXwXINogE0Qb0Ip@cmpxchg.org>
- <YWZQNj+axlIQrD5C@casper.infradead.org> <YWbj6+myCposUKk1@cmpxchg.org>
- <YWcdoktn30ofnsPO@casper.infradead.org> <YWc0a7zlWAdUSCdT@cmpxchg.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <YWc0a7zlWAdUSCdT@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> It's good to have common north stars to set the direction of where to
-> place efforts ("small struct page, dynamically allocated descriptors
-> etc.") but I don't think it makes sense to take on yet more tech debt
-> in this area for a future that may not pan out the way we think now.
+On 14/10/2021 08:59, Hector Martin wrote:
+> On 12/10/2021 18.19, Krzysztof Kozlowski wrote:
+>>> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>>> +/*
+>>> + * Apple SoC MCC memory controller performance control driver
+>>> + *
+>>> + * Copyright The Asahi Linux Contributors
+>>
+>> Copyright date?
 > 
+> We've gone over this one a few times already; most copyright dates 
+> quickly become outdated and meaningless :)
+> 
+> See: 
+> https://www.linuxfoundation.org/blog/copyright-notices-in-open-source-software-projects/
+> 
+>>> +static int apple_mcc_probe(struct platform_device *pdev)
+>>> +{
+>>> +	struct device *dev = &pdev->dev;
+>>> +	struct device_node *node = dev->of_node;
+>>
+>> By convention mostly we call the variable "np".
+> 
+> Ack, I'll change it for v2.
+> 
+>>> +	mcc->reg_base = devm_platform_ioremap_resource(pdev, 0);
+>>> +	if (IS_ERR(mcc->reg_base))
+>>> +		return PTR_ERR(mcc->reg_base);
+>>> +
+>>> +	if (of_property_read_u32(node, "apple,num-channels", &mcc->num_channels)) {
+>>
+>> Don't you have a limit of supported channels? It cannot be any uint32...
+> 
+> Today, it's max 8. But if come Monday we find out Apple's new chips have 
+> 16 channels and otherwise the same register layout, I'd much rather not 
+> have to change the driver...
 
-That precisely sums up my thoughts, thanks Johannes.
+OK, however if the driver ever receives different DT with a different
+value, it will accept it unconditionally and go via address space. I am
+just saying that being conservative on received values is safer, but I
+am fine with skipping this problem. At the end we trust DT that it will
+always match the kernel, don't we? Oh wait, someone can use DT from
+other kernel in this one...
 
--- 
-Thanks,
+> 
+>>> +		dev_err(dev, "missing apple,num-channels property\n");
+>>
+>> Use almost everywhere dev_err_probe - less code and you get error msg
+>> printed.
+> 
+> Heh, I didn't know about that one. Thanks!
+> 
+>>> +
+>>> +	dev_info(dev, "Apple MCC performance driver initialized\n");
+>>
+>> Please skip it, or at least make it a dev_dbg, you don't print any
+>> valuable information here.
+> 
+> Ack, I'll remove this.
+> 
+>>> +static struct platform_driver apple_mcc_driver = {
+>>> +	.probe = apple_mcc_probe,
+>>> +	.driver = {
+>>> +		.name = "apple-mcc",
+>>> +		.of_match_table = apple_mcc_of_match,
+>>> +	},
+>>> +};
+>>
+>> module_platform_driver() goes here.
+> 
+> Ack, will fix for v2.
+> 
+>>
+>>> +
+>>> +MODULE_AUTHOR("Hector Martin <marcan@marcan.st>");
+>>> +MODULE_DESCRIPTION("MCC memory controller performance tuning driver for Apple SoCs");
+>>> +MODULE_LICENSE("GPL v2");
+>>
+>> I think this will be "Dual MIT/GPL", based on your SPDX.
+> 
+> Ah, I didn't realize that was a valid option for MODULE_LICENSE. I guess 
+> anything containing "GPL" works with EXPORT_SYMBOL_GPL?
 
-David / dhildenb
+I don't think exporting symbols is related to how you license your code.
 
+
+Best regards,
+Krzysztof
