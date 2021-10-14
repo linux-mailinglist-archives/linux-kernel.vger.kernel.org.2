@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE8342D76C
+	by mail.lfdr.de (Postfix) with ESMTP id C276442D76E
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhJNKtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhJNKts (ORCPT
+        id S230268AbhJNKtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:49:55 -0400
+Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:48137 "EHLO
+        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230265AbhJNKtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:49:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C27C061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 03:47:43 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634208461;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4mQ0/BPi7a3gE3UHuSg88Qq0Kh05Mxa+eW16IU4Tkmc=;
-        b=MQLUhc2hXSHFlXDHYZuXZaw2AZfWeVjpBB/EXa9H9eTalVwsZVCOiPQYUZaIBAS/EmpMlI
-        THx7s0oxvuOSCNSc9nfVn50x3tIYAmWzREJTlABnYWLSmf0fHwXo/zLsgfaSuYjOFtzbnV
-        UZvLz6ZAX9G1DU+HrrbetrtDL/7M0U7/3U+x1d11KVc7vY4ElkgitDDFs871iVdsyj8HKp
-        8x/2ZgyJsV5e3v0sQX+K6kASVvA6NFYzQsT7g30ohImEHdjzm33idWk+yStWmglZG+pEOS
-        XCOqdpHLqGN+6TG/iQhCojkWROWtlYVVLl/BBg8DGrkW9pIGlgd/4rDSfn6fTw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634208461;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4mQ0/BPi7a3gE3UHuSg88Qq0Kh05Mxa+eW16IU4Tkmc=;
-        b=NOfCnCKcN2Py3IC0XTvOFg2/+GcSix/x0LS21uOUYnKhG7/aMgMS63JKwZlRrUltgSwGu6
-        E4uKezQLS28A4SDQ==
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 10/11] x86/tdx: Don't write CSTAR MSR on Intel
-In-Reply-To: <20211009053747.1694419-11-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-11-sathyanarayanan.kuppuswamy@linux.intel.com>
-Date:   Thu, 14 Oct 2021 12:47:41 +0200
-Message-ID: <87czo77uia.ffs@tglx>
+        Thu, 14 Oct 2021 06:49:53 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id DBFCDF83DB
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 11:47:45 +0100 (IST)
+Received: (qmail 19320 invoked from network); 14 Oct 2021 10:47:45 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Oct 2021 10:47:45 -0000
+Date:   Thu, 14 Oct 2021 11:47:44 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Linux-MM <linux-mm@kvack.org>, NeilBrown <neilb@suse.de>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/8] mm/vmscan: Throttle reclaim until some writeback
+ completes if congested
+Message-ID: <20211014104744.GY3959@techsingularity.net>
+References: <20211008135332.19567-1-mgorman@techsingularity.net>
+ <20211008135332.19567-2-mgorman@techsingularity.net>
+ <63898e7a-0846-3105-96b5-76c89635e499@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <63898e7a-0846-3105-96b5-76c89635e499@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08 2021 at 22:37, Kuppuswamy Sathyanarayanan wrote:
-> From: Andi Kleen <ak@linux.intel.com>
->
-> On Intel CPUs writing the CSTAR MSR is not really needed. Syscalls
-> from 32bit work using SYSENTER and 32bit SYSCALL is an illegal opcode.
-> But the kernel did write it anyways even though it was ignored by
-> the CPU. Inside a TDX guest this actually leads to a #VE which in
-> turn will trigger ve_raise_fault() due to failed MSR write. Inside
-> ve_raise_fault() before it recovers from this error, it prints an
-> ugly message at boot. Since such warning message is pointless for
-> CSTAR MSR write failure, add exception to skip CSTAR msr write on
-> Intel CPUs.
+Thanks Vlastimil
 
-Ugly messages are a technical reason? The above is word salad.
+On Wed, Oct 13, 2021 at 05:39:36PM +0200, Vlastimil Babka wrote:
+> > +/*
+> > + * Account for pages written if tasks are throttled waiting on dirty
+> > + * pages to clean. If enough pages have been cleaned since throttling
+> > + * started then wakeup the throttled tasks.
+> > + */
+> > +void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page,
+> > +							int nr_throttled)
+> > +{
+> > +	unsigned long nr_written;
+> > +
+> > +	__inc_node_page_state(page, NR_THROTTLED_WRITTEN);
+> 
+> Is this intentionally using the __ version that normally expects irqs to be
+> disabled (AFAIK they are not in this path)? I think this is rarely used cold
+> path so it doesn't seem worth to trade off speed for accuracy.
+> 
 
-   Intel CPUs do not support SYSCALL in 32-bit mode, but the kernel
-   initializes MSR_CSTAR unconditionally. That MSR write is normaly
-   ignored by the CPU, but in a TDX guest it raises a #VE trap.
+It was intentional because IRQs can be disabled and if it's race-prone,
+it's not overly problematic but you're right, better to be safe.  I changed
+it to the safe type as it's mostly free on x86, arm64 and s390 and for
+other architectures, this is a slow path.
 
-   Exlude Intel CPUs from the MSR_CSTAR initialization.
+> > +	nr_written = node_page_state(pgdat, NR_THROTTLED_WRITTEN) -
+> > +		READ_ONCE(pgdat->nr_reclaim_start);
+> 
+> Even if the inc above was safe, node_page_state() will return only the
+> global counter, so the value we read here will only actually increment when
+> some cpu's counter overflows, so it will be "bursty". Maybe it's ok, just
+> worth documenting?
+> 
 
->  #ifdef CONFIG_IA32_EMULATION
-> -	wrmsrl(MSR_CSTAR, (unsigned long)entry_SYSCALL_compat);
-> +	/*
-> +	 * CSTAR is not needed on Intel because it doesn't support
-> +	 * 32bit SYSCALL, but only SYSENTER. On a TDX guest
-> +	 * it leads to a #GP.
+I didn't think the penalty of doing an accurate read while writeback
+throttled is worth it. I'll add a comment.
 
-Sigh. Above you write it raises #VE, but now it's #GP !?!
+> > +
+> > +	if (nr_written > SWAP_CLUSTER_MAX * nr_throttled)
+> > +		wake_up_all(&pgdat->reclaim_wait);
+> 
+> Hm it seems a bit weird that the more tasks are throttled, the more we wait,
+> and then wake up all. Theoretically this will lead to even more
+> bursty/staggering herd behavior. Could be better to wake up single task each
+> SWAP_CLUSTER_MAX, and bump nr_reclaim_start? But maybe it's not a problem in
+> practice due to HZ/10 timeouts being short enough?
+> 
 
-        Intel CPUs do not support 32-bit SYSCALL. Writing to MSR_CSTAR
-        is normaly ignored by the CPU, but raises a #VE trap in a TDX
-        guest.
+Yes, the more tasks are throttled the longer tasks wait because tasks are
+allocating faster than writeback can complete so I wanted to reduce the
+allocation pressure. I considered waking one task at a time but there is
+no prioritisation of tasks on the waitqueue and it's not clear that the
+additional complexity is justified. With inaccurate counters, a light
+allocator could get throttled for the full timeout unnecessarily.
 
-Hmm?
+Even if we were to wake one task at a time, I would prefer it was done
+as a potential optimisation on top.
 
-Thanks,
+Diff on top based on review feedback;
 
-        tglx
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index bcd22e53795f..735b1f2b5d9e 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1048,7 +1048,15 @@ void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page,
+ {
+ 	unsigned long nr_written;
+ 
+-	__inc_node_page_state(page, NR_THROTTLED_WRITTEN);
++	inc_node_page_state(page, NR_THROTTLED_WRITTEN);
++
++	/*
++	 * This is an inaccurate read as the per-cpu deltas may not
++	 * be synchronised. However, given that the system is
++	 * writeback throttled, it is not worth taking the penalty
++	 * of getting an accurate count. At worst, the throttle
++	 * timeout guarantees forward progress.
++	 */
+ 	nr_written = node_page_state(pgdat, NR_THROTTLED_WRITTEN) -
+ 		READ_ONCE(pgdat->nr_reclaim_start);
+
