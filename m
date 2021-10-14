@@ -2,168 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CEC42DDA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4179942DDC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232946AbhJNPMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:12:37 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:44901 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232713AbhJNPMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:12:23 -0400
-Date:   Thu, 14 Oct 2021 17:10:12 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=t-8ch.de; s=mail;
-        t=1634224214; bh=gb8TV/mqJ07WL6W25Kw3pyYMlfgycWeea7eiktr/Dxc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eaV5YBAK5nmrz9SgCAQaABTChr3MQHB2XayZ7iMRTupjDEj0D8V89XUblHgP5b7Cq
-         glTTtYN2oqPysc8DqI3Zo9sPWk51PZGc2Smz4vTqhMTeJK09Io1OCGGzfoVve4Uvgr
-         JMoML6ho1hIn7p6X5ET2UBjKP5zkfMuX6ChbUFtA=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     eugene.shalygin@gmail.com, andy.shevchenko@gmail.com,
-        platform-driver-x86@vger.kernel.org, Tor Vic <torvic9@mailbox.org>,
-        kernel test robot <lkp@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/2] hwmon: (asus_wmi_ec_sensors) Support B550 Asus
- WMI.
-Message-ID: <a0bca430-df9a-4164-a7f4-3c32e485fdb8@t-8ch.de>
-References: <20211014072537.190816-1-pauk.denis@gmail.com>
- <20211014072537.190816-2-pauk.denis@gmail.com>
+        id S232328AbhJNPPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232901AbhJNPPJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:15:09 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDFAC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:13:04 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id i20so24905389edj.10
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w45cBwWuxt9fV0sH92Mj0nap7150VQi8dWHb0aDrKOs=;
+        b=YRiavibCQ5dBpR8sEKXV0lV/aSByGm8aH6pXObxa96UKqW2Xp1TgT8UGf5o3j2jT/t
+         jXFZUixi63N0FP3Ws+XLyyvnKGZpUghoP0ahHvAw6VC7pjQcj1jJyHHYr5ise4ey/pRz
+         Z5M9nrJ+4T1D4CggdaoFf9LfYJzN+ShVVq6ug=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w45cBwWuxt9fV0sH92Mj0nap7150VQi8dWHb0aDrKOs=;
+        b=TNCTLqgIQakJxk2VE1b2acg0VUhyY74yTJM+c9L2vCxOFa01jfP8cHd/+NGLfv8fxg
+         8T4/VXHXAGaUXtN7zUzk841BjYaQ0NRkcI5LQmS2j1VhPwhMHrKeWA7Rp/ztkLWXQDzJ
+         63UbDsf8Aiv5zcgHrzNgWvHESjhSAly+hyjtMxHyrTLoS5CniXzlfr6Uyk9GuK5wtvYz
+         dCMrUNehpN1t8fPoKEAKlDxohFpNK6tAFl2KOBJgmsV0KPryNfc8K8Ld+k4DCicuAfeG
+         V6bOvnK16HgNI8CUZAEeavHzOb6HIrGCvR4AcMVtUEHseDALTUb3/2dW+QqyuzhVCtpF
+         Dm2g==
+X-Gm-Message-State: AOAM532S1zNICJW351ZfosoC+xxxTziKDitwF4OkgNAzuwvJeyAelS/O
+        tZGNwim9S8SjloUP5ET68hKwRgH0xpH6Pfwxj7Ircg==
+X-Google-Smtp-Source: ABdhPJztOK9YaOX30AT6nvALG6RtdQ68Gh/4hLbQNEaGCI4Bs6r5KjWBzetHRYs7WH5ROQK5mxa/IEUBo/AlCydTWlw=
+X-Received: by 2002:a05:6402:35d1:: with SMTP id z17mr9678857edc.174.1634224293743;
+ Thu, 14 Oct 2021 08:11:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211014072537.190816-2-pauk.denis@gmail.com>
+References: <163238121836.315941.18066358755443618960.stgit@mickey.themaw.net>
+In-Reply-To: <163238121836.315941.18066358755443618960.stgit@mickey.themaw.net>
+From:   Justin Forbes <jmforbes@linuxtx.org>
+Date:   Thu, 14 Oct 2021 10:11:22 -0500
+Message-ID: <CAFxkdAraAe37_5bGLJtTtxZCaKTqgVPh4hTbcVC=08vRt-Zizg@mail.gmail.com>
+Subject: Re: [PATCH] autofs: fix wait name hash calculation in autofs_wait()
+To:     Ian Kent <raven@themaw.net>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        autofs mailing list <autofs@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-14T10:25+0300, Denis Pauk wrote:
-> +static struct asus_wmi_data *board_sensors;
-> +
-> +static int __init asus_wmi_dmi_matched(const struct dmi_system_id *d)
-> +{
-> +	board_sensors = d->driver_data;
-> +	return 0;
-> +}
-> +
-> +#define DMI_EXACT_MATCH_ASUS_BOARD_NAME(name, sensors) \
-> +	{ \
-> +		.callback = asus_wmi_dmi_matched, \
-> +		.matches = { \
-> +			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, \
-> +					"ASUSTeK COMPUTER INC."), \
-> +			DMI_EXACT_MATCH(DMI_BOARD_NAME, name), \
-> +		}, \
-> +		.driver_data = sensors, \
-> +	}
-> +
-> +static const struct dmi_system_id asus_wmi_ec_dmi_table[] = {
-> +	DMI_EXACT_MATCH_ASUS_BOARD_NAME("PRIME X570-PRO", &sensors_board_PW_X570_P),
-> +	DMI_EXACT_MATCH_ASUS_BOARD_NAME("Pro WS X570-ACE", &sensors_board_PW_X570_A),
-> +	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR VIII DARK HERO", &sensors_board_R_C8DH),
-> +	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR VIII FORMULA", &sensors_board_R_C8F),
-> +	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR VIII HERO", &sensors_board_R_C8H),
-> +	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX B550-E GAMING", &sensors_board_RS_B550_E_G),
-> +	DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX X570-E GAMING", &sensors_board_RS_X570_E_G),
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(dmi, asus_wmi_ec_dmi_table);
-> +
-> +/*
-> + * The next four functions converts to/from BRxx string argument format
-> + * The format of the string is as follows:
-> + * The string consists of two-byte UTF-16 characters
-> + * The value of the very first byte int the string is equal to the total length
-> + * of the next string in bytes, thus excluding the first two-byte character
-> + * The rest of the string encodes pairs of (bank, index) pairs, where both
-> + * values are byte-long (0x00 to 0xFF)
-> + * Numbers are encoded as UTF-16 hex values
-> + */
-> +static void asus_wmi_ec_decode_reply_buffer(const u8 *inp, u8 *out)
-> +{
-> +	unsigned int len = ACPI_MIN(ASUS_WMI_MAX_BUF_LEN, inp[0] / 4);
+On Thu, Sep 23, 2021 at 2:20 AM Ian Kent <raven@themaw.net> wrote:
+>
+> There's a mistake in commit 2be7828c9fefc ("get rid of autofs_getpath()")
+> that affects kernels from v5.13.0, basically missed because of me not
+> fully testing the change for Al.
+>
+> The problem is that the hash calculation for the wait name qstr hasn't
+> been updated to account for the change to use dentry_path_raw(). This
+> prevents the correct matching an existing wait resulting in multiple
+> notifications being sent to the daemon for the same mount which must
+> not occur.
+>
+> The problem wasn't discovered earlier because it only occurs when
+> multiple processes trigger a request for the same mount concurrently
+> so it only shows up in more aggressive testing.
 
-The general `min()` would be better.
-(Or `min3()` when also validating the ACPI buffer, see below)
+I suppose it shows up in more than just testing, as we have a bug
+where this is impacting a user doing regular desktop things.
 
-> +	char buffer[ASUS_WMI_MAX_BUF_LEN * 2];
-> +	const char *pos = buffer;
-> +	const u8 *data = inp + 2;
-> +	unsigned int i;
-> +
-> +	utf16s_to_utf8s((wchar_t *)data, len * 2,  UTF16_LITTLE_ENDIAN, buffer, len * 2);
-> +
-> +	for (i = 0; i < len; i++, pos += 2)
-> +		out[i] = (hex_to_bin(pos[0]) << 4) + hex_to_bin(pos[1]);
-> +}
-> +
-> +static int asus_wmi_ec_block_read(u32 method_id, char *query, u8 *out)
-> +{
-> +#if IS_ENABLED(CONFIG_ACPI_WMI)
-> +	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER,
-> +				      NULL };
-> +	struct acpi_buffer input;
-> +	union acpi_object *obj;
-> +	acpi_status status;
-> +
-> +	/* the first byte of the BRxx() argument string has to be the string size */
-> +	input.length = (acpi_size)query[0] + 2;
-> +	input.pointer = query;
-> +	status = wmi_evaluate_method(ASUSWMI_MONITORING_GUID, 0, method_id, &input,
-> +				     &output);
-> +	if (ACPI_FAILURE(status))
-> +		return -EIO;
-> +
-> +	obj = output.pointer;
-> +	if (!obj || obj->type != ACPI_TYPE_BUFFER) {
-> +		acpi_os_free(obj);
-> +		return -EIO;
-> +	}
-> +	asus_wmi_ec_decode_reply_buffer(obj->buffer.pointer, out);
+Justin
 
-If this buffer is empty or the length in the first byte is incorrect then
-out-of-bound memory will be accessed.
-
-> +	acpi_os_free(obj);
-> +	return 0;
-> +#else
-> +	return -EOPNOTSUPP;
-> +#endif
-> +}
-> +
-> +static int asus_wmi_ec_configure_sensor_setup(struct device *dev,
-> +					      struct asus_wmi_sensors *sensor_data)
-> +{
-> [..]
-> +}
-> +
-> +static int asus_wmi_probe(struct wmi_device *wdev, const void *context)
-> +{
-> +	struct asus_wmi_sensors *sensor_data;
-> +	struct device *dev = &wdev->dev;
-> +
-> +	if (!dmi_check_system(asus_wmi_ec_dmi_table))
-> +		return -ENODEV;
-
-Instead of using the callback to assign the static variable `board_sensors` you
-could use `dmi_first_match()` here and pass around the result explicitly.
-This would remove the need for a static variable and should cut the code down a
-bit.
-
-> +	sensor_data = devm_kzalloc(dev, sizeof(struct asus_wmi_sensors),
-> +				   GFP_KERNEL);
-> +	if (!sensor_data)
-> +		return -ENOMEM;
-> +
-> +	mutex_init(&sensor_data->lock);
-> +
-> +	dev_set_drvdata(dev, sensor_data);
-> +
-> +	/* ec init */
-> +	return asus_wmi_ec_configure_sensor_setup(dev,
-> +						  sensor_data);
-> +}
-> +
+> Fixes: 2be7828c9fefc ("get rid of autofs_getpath()")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Ian Kent <raven@themaw.net>
+> ---
+>  fs/autofs/waitq.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
+> index 16b5fca0626e..54c1f8b8b075 100644
+> --- a/fs/autofs/waitq.c
+> +++ b/fs/autofs/waitq.c
+> @@ -358,7 +358,7 @@ int autofs_wait(struct autofs_sb_info *sbi,
+>                 qstr.len = strlen(p);
+>                 offset = p - name;
+>         }
+> -       qstr.hash = full_name_hash(dentry, name, qstr.len);
+> +       qstr.hash = full_name_hash(dentry, qstr.name, qstr.len);
+>
+>         if (mutex_lock_interruptible(&sbi->wq_mutex)) {
+>                 kfree(name);
+>
+>
