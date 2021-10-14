@@ -2,198 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D0C42D2A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2044842D2B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbhJNGbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 02:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhJNGbQ (ORCPT
+        id S229613AbhJNGej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 02:34:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48784 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229457AbhJNGei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 02:31:16 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81FCC061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:29:11 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id y1so3433380plk.10
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tTDonjCiHR5VdjT3SIT3xZlNWorT3RovXMbjVLu/Snw=;
-        b=QG8QHDxY/aWCDu/8j+CR8mtArplJ62No6++7x002oKGZWe+9738rpn5kZX9snAEyS3
-         Iw1FJkzmWXZRbiHU5CDWuOPK9JsasbQ0DLip8ckjLtSjGi7YnOK4lJ3YYIEe+NpqHdAC
-         8eYLmsBIaMwe41WldZlv78xd/JkdyvAXLUM7OK4Rg33kl0iHnM11fbaGDw9iLZiliRF/
-         AZnN0y8TtyhIUfWBNaNgnJEocxc/m0+doMTlO1Na3Jl4FDpaQHomOFqFEvisrN/5J2oY
-         XAdkCPXWLi4y91Dh4++Pwz/51IYu/5Q3VibTPb+uDvghDKe2GhSn3nSyxdMOcy0sXV8b
-         54hQ==
+        Thu, 14 Oct 2021 02:34:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634193153;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=31s6XV9TstpPEqT0u/Y356vc681kPmYFJLgOI3/TapM=;
+        b=cDEuLOCCAWPZ0BNbn3yxL6ZXjKDP/AKnRY/94Ewej+eDnWL9LpN6JQ5ElddTUTpTUQyRkT
+        x4ktXeiWNkLx41/ljjwULcJnnU3tsuCvrxrQ6m7RYfdTKt4J7H5QD3IMuSKTGydUF2xFDC
+        amDhroqaIYEqREbnstDLA4uUsedCN0I=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-203-5qkSNocUNHuu002oH1M2Hg-1; Thu, 14 Oct 2021 02:32:31 -0400
+X-MC-Unique: 5qkSNocUNHuu002oH1M2Hg-1
+Received: by mail-lf1-f72.google.com with SMTP id f17-20020a0565123b1100b003fda40b659aso3620641lfv.23
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:32:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tTDonjCiHR5VdjT3SIT3xZlNWorT3RovXMbjVLu/Snw=;
-        b=DBMcIwY6bAuwmrv4kIRRKxhvtJAq5B8OPrCAgMrx8vp0uJtmmy43bvcmEyW9y0qQ94
-         377kvVnVyk4lMemaa3FqqRIrjU9nQg7RV0hB1UmPngV4E0X2wREFNCu6rt6A9TrCWS6a
-         hkYaScK6wjWOkLYoJt5kBhbABXpF4EgeqKVddF8wvJozrgOz3pRSoCDK669Wc7+XFW+w
-         8rnVNYQ/ItQCtocALCgZ5vTfVCDHz6P137N14VgPoopiihffCn/ui4sMN4vDME1IdgZp
-         nlxD102rVv6E+0xpXbdhs9Qm1ba8Q3uo456fKzkmSFSkW9pBJS+52kYz2PYv3sxNUR+4
-         y+6g==
-X-Gm-Message-State: AOAM532pZWaaTt/FOSdgNPdwI/5mjuDlYarwT8EBPK+UxeeeR4SSQykN
-        bOgZWSb93deBRsv0fkeop0c=
-X-Google-Smtp-Source: ABdhPJyJHC9ZQn6PejMGlj1lpeEoIwbCGWozUpW6K8cQoYYPNvq44q33xwZrfxQfJXbrM4yYR/zryw==
-X-Received: by 2002:a17:90b:782:: with SMTP id l2mr4280372pjz.190.1634192951373;
-        Wed, 13 Oct 2021 23:29:11 -0700 (PDT)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id h4sm1372461pgn.6.2021.10.13.23.29.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 Oct 2021 23:29:11 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 14:29:05 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     xiang@kernel.org, chao@kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, huyue2@yulong.com, zbestahu@163.com,
-        zhangwen@yulong.com
-Subject: Re: [PATCH] erofs: remove the fast path of per-CPU buffer
- decompression
-Message-ID: <20211014142905.000019cd.zbestahu@gmail.com>
-In-Reply-To: <YWfLUEQWSY3xpFJF@B-P7TQMD6M-0146.local>
-References: <20211014055756.1549-1-zbestahu@gmail.com>
-        <YWfLUEQWSY3xpFJF@B-P7TQMD6M-0146.local>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=31s6XV9TstpPEqT0u/Y356vc681kPmYFJLgOI3/TapM=;
+        b=edbJ24BBLzjkCuXrHjIGo8nslP9NBxF4bRwW3G3Q51JweDMJZcBfm/IwgYUJQDuMM/
+         tToKOEmEhEghqDd70Jm337AUQYPqcRuPrKU9bfF51uC8xsO5Dp8v86hvQW09vBjuaFap
+         Ww9KWE1Hp23XedI9AAO6h/vUQV8usoyBJ+QpJeT9DsFNEnt0dALz2h/HNXa0oU7DF8JZ
+         omMl1WMJzH8ojk6MkONbIgnvoBaMbwjgNRqaacXZHZKGZYnTyFC6S2/GfRgwdWwvZgfJ
+         1aV2mhg51FOwoiXn/4bGXQd/JXo1L9ER5fZtRBeje/ArY/+R9DUBqCG/qCPB89yHgdga
+         Vi8w==
+X-Gm-Message-State: AOAM533LXCCgeF6nhXE6JDEygy0e2orSpnGTU9Bp2nZnLQ1VAYOwmxfU
+        D15uyIFEwMDsNRtomz4kadq83vhxO+GeDGL26ymcZ73EnKdb5mkacWAAY5khH6t5ZinF9onwohX
+        v5m1dccfwTuiUA/dxsU+jIU0Eos6jXS7oRv0O0Nh8
+X-Received: by 2002:a2e:5c8:: with SMTP id 191mr4214609ljf.107.1634193150265;
+        Wed, 13 Oct 2021 23:32:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzDlSr4S7th26Srw5czAHLsCG4221sVATfAaUO4erkGDGb7IXMne9Hg9yZCoWNe7TprziQBbKtofGQzlkGjydE=
+X-Received: by 2002:a2e:5c8:: with SMTP id 191mr4214590ljf.107.1634193150044;
+ Wed, 13 Oct 2021 23:32:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211012065227.9953-1-jasowang@redhat.com> <20211012065227.9953-8-jasowang@redhat.com>
+ <20211013053627-mutt-send-email-mst@kernel.org> <CACGkMEuRHKJv73oKFNetcBkPSFj034te7N_AJZdRbHe0ObU4Gw@mail.gmail.com>
+ <20211014014551-mutt-send-email-mst@kernel.org> <CACGkMEvB4sMPmMmPQmHFasGLwktyXuCenQKGuoajmoFQYJJeBQ@mail.gmail.com>
+ <20211014022438-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20211014022438-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 14 Oct 2021 14:32:19 +0800
+Message-ID: <CACGkMEsPiHee5A=JymA+RpaN+xqbpw=hU=or29hrHCDk=TK+Hw@mail.gmail.com>
+Subject: Re: [PATCH V2 07/12] virtio-pci: harden INTX interrupts
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Oct 2021 14:16:48 +0800
-Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+On Thu, Oct 14, 2021 at 2:26 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Thu, Oct 14, 2021 at 02:20:17PM +0800, Jason Wang wrote:
+> > On Thu, Oct 14, 2021 at 1:50 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Thu, Oct 14, 2021 at 10:35:48AM +0800, Jason Wang wrote:
+> > > > On Wed, Oct 13, 2021 at 5:42 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > >
+> > > > > On Tue, Oct 12, 2021 at 02:52:22PM +0800, Jason Wang wrote:
+> > > > > > This patch tries to make sure the virtio interrupt handler for INTX
+> > > > > > won't be called after a reset and before virtio_device_ready(). We
+> > > > > > can't use IRQF_NO_AUTOEN since we're using shared interrupt
+> > > > > > (IRQF_SHARED). So this patch tracks the INTX enabling status in a new
+> > > > > > intx_soft_enabled variable and toggle it during in
+> > > > > > vp_disable/enable_vectors(). The INTX interrupt handler will check
+> > > > > > intx_soft_enabled before processing the actual interrupt.
+> > > > > >
+> > > > > > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > > > > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > > > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > > > > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > > > > > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > > > > > ---
+> > > > > >  drivers/virtio/virtio_pci_common.c | 24 ++++++++++++++++++++++--
+> > > > > >  drivers/virtio/virtio_pci_common.h |  1 +
+> > > > > >  2 files changed, 23 insertions(+), 2 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> > > > > > index 0b9523e6dd39..5ae6a2a4eb77 100644
+> > > > > > --- a/drivers/virtio/virtio_pci_common.c
+> > > > > > +++ b/drivers/virtio/virtio_pci_common.c
+> > > > > > @@ -30,8 +30,16 @@ void vp_disable_vectors(struct virtio_device *vdev)
+> > > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > > > > >       int i;
+> > > > > >
+> > > > > > -     if (vp_dev->intx_enabled)
+> > > > > > +     if (vp_dev->intx_enabled) {
+> > > > > > +             /*
+> > > > > > +              * The below synchronize() guarantees that any
+> > > > > > +              * interrupt for this line arriving after
+> > > > > > +              * synchronize_irq() has completed is guaranteed to see
+> > > > > > +              * intx_soft_enabled == false.
+> > > > > > +              */
+> > > > > > +             WRITE_ONCE(vp_dev->intx_soft_enabled, false);
+> > > > > >               synchronize_irq(vp_dev->pci_dev->irq);
+> > > > > > +     }
+> > > > > >
+> > > > > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
+> > > > > >               disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > > > > @@ -43,8 +51,16 @@ void vp_enable_vectors(struct virtio_device *vdev)
+> > > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > > > > >       int i;
+> > > > > >
+> > > > > > -     if (vp_dev->intx_enabled)
+> > > > > > +     if (vp_dev->intx_enabled) {
+> > > > > > +             disable_irq(vp_dev->pci_dev->irq);
+> > > > > > +             /*
+> > > > > > +              * The above disable_irq() provides TSO ordering and
+> > > > > > +              * as such promotes the below store to store-release.
+> > > > > > +              */
+> > > > > > +             WRITE_ONCE(vp_dev->intx_soft_enabled, true);
+> > > > > > +             enable_irq(vp_dev->pci_dev->irq);
+> > > > > >               return;
+> > > > > > +     }
+> > > > > >
+> > > > > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
+> > > > > >               enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > > > > @@ -97,6 +113,10 @@ static irqreturn_t vp_interrupt(int irq, void *opaque)
+> > > > > >       struct virtio_pci_device *vp_dev = opaque;
+> > > > > >       u8 isr;
+> > > > > >
+> > > > > > +     /* read intx_soft_enabled before read others */
+> > > > > > +     if (!smp_load_acquire(&vp_dev->intx_soft_enabled))
+> > > > > > +             return IRQ_NONE;
+> > > > > > +
+> > > > > >       /* reading the ISR has the effect of also clearing it so it's very
+> > > > > >        * important to save off the value. */
+> > > > > >       isr = ioread8(vp_dev->isr);
+> > > > >
+> > > > > I don't see why we need this ordering guarantee here.
+> > > > >
+> > > > > synchronize_irq above makes sure no interrupt handler
+> > > > > is in progress.
+> > > >
+> > > > Yes.
+> > > >
+> > > > > the handler itself thus does not need
+> > > > > any specific order, it is ok if intx_soft_enabled is read
+> > > > > after, not before the rest of it.
+> > > >
+> > > > But the interrupt could be raised after synchronize_irq() which may
+> > > > see a false of the intx_soft_enabled.
+> > >
+> > > You mean a "true" value right? false is what we are writing there.
+> >
+> > I meant that we want to not go for stuff like vq->callback after the
+> > synchronize_irq() after setting intx_soft_enabled to false. Otherwise
+> > we may get unexpected results like use after free. Host can craft ISR
+> > in this case.
+> > >
+> > > Are you sure it can happen? I think that synchronize_irq makes the value
+> > > visible on all CPUs running the irq.
+> >
+> > Yes, so the false is visible by vp_interrupt(), we can't do the other
+> > task before we check intx_soft_enabled.
+>
+> But the order does not matter. synchronize_irq will make sure
+> everything is visible.
 
-> On Thu, Oct 14, 2021 at 01:57:56PM +0800, Yue Hu wrote:
-> > From: Yue Hu <huyue2@yulong.com>
-> > 
-> > As Xiang mentioned, such path has no real impact to our current
-> > decompression strategy, remove it directly. Also, update the return
-> > value of z_erofs_lz4_decompress() to 0 if success to keep consistent
-> > with LZMA which will return 0 as well for that case.
-> > 
-> > Signed-off-by: Yue Hu <huyue2@yulong.com>
-> > ---
-> >  fs/erofs/decompressor.c | 64 +++++++------------------------------------------
-> >  1 file changed, 8 insertions(+), 56 deletions(-)
-> > 
-> > diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-> > index a5bc4b1..9905551 100644
-> > --- a/fs/erofs/decompressor.c
-> > +++ b/fs/erofs/decompressor.c
-> > @@ -254,7 +254,7 @@ static int z_erofs_lz4_decompress(struct z_erofs_decompress_req *rq, u8 *out)
-> >  		DBG_BUGON(1);
-> >  		return -EFAULT;
-> >  	}
-> > -	return ret;
-> > +	return ret > 0 ? 0 : ret;  
-> 
-> How about just updating the else branch of "if (ret != rq->outputsize)"?
+Not the thing that happens after synchronize_irq().
 
-Agree.
+E.g for remove_vq_common():
 
-> 
-> >  }
-> >  
-> >  static struct z_erofs_decompressor decompressors[] = {
-> > @@ -268,33 +268,6 @@ static int z_erofs_lz4_decompress(struct z_erofs_decompress_req *rq, u8 *out)
-> >  	},
-> >  };
-> >  
-> > -static void copy_from_pcpubuf(struct page **out, const char *dst,
-> > -			      unsigned short pageofs_out,
-> > -			      unsigned int outputsize)
-> > -{
-> > -	const char *end = dst + outputsize;
-> > -	const unsigned int righthalf = PAGE_SIZE - pageofs_out;
-> > -	const char *cur = dst - pageofs_out;
-> > -
-> > -	while (cur < end) {
-> > -		struct page *const page = *out++;
-> > -
-> > -		if (page) {
-> > -			char *buf = kmap_atomic(page);
-> > -
-> > -			if (cur >= dst) {
-> > -				memcpy(buf, cur, min_t(uint, PAGE_SIZE,
-> > -						       end - cur));
-> > -			} else {
-> > -				memcpy(buf + pageofs_out, cur + pageofs_out,
-> > -				       min_t(uint, righthalf, end - cur));
-> > -			}
-> > -			kunmap_atomic(buf);
-> > -		}
-> > -		cur += PAGE_SIZE;
-> > -	}
-> > -}
-> > -
-> >  static int z_erofs_decompress_generic(struct z_erofs_decompress_req *rq,
-> >  				      struct list_head *pagepool)
-> >  {
-> > @@ -305,34 +278,13 @@ static int z_erofs_decompress_generic(struct z_erofs_decompress_req *rq,
-> >  	void *dst;
-> >  	int ret;
-> >  
-> > -	/* two optimized fast paths only for non bigpcluster cases yet */
-> > -	if (rq->inputsize <= PAGE_SIZE) {
-> > -		if (nrpages_out == 1 && !rq->inplace_io) {
-> > -			DBG_BUGON(!*rq->out);
-> > -			dst = kmap_atomic(*rq->out);
-> > -			dst_maptype = 0;
-> > -			goto dstmap_out;
-> > -		}
-> > -
-> > -		/*
-> > -		 * For the case of small output size (especially much less
-> > -		 * than PAGE_SIZE), memcpy the decompressed data rather than
-> > -		 * compressed data is preferred.
-> > -		 */
-> > -		if (rq->outputsize <= PAGE_SIZE * 7 / 8) {
-> > -			dst = erofs_get_pcpubuf(1);
-> > -			if (IS_ERR(dst))
-> > -				return PTR_ERR(dst);
-> > -
-> > -			rq->inplace_io = false;
-> > -			ret = alg->decompress(rq, dst);
-> > -			if (!ret)
-> > -				copy_from_pcpubuf(rq->out, dst, rq->pageofs_out,
-> > -						  rq->outputsize);
-> > -
-> > -			erofs_put_pcpubuf(dst);
-> > -			return ret;
-> > -		}
-> > +	/* one optimized fast path only for non bigpcluster cases yet */
-> > +	if (rq->inputsize <= PAGE_SIZE &&
-> > +	    nrpages_out == 1 && !rq->inplace_io) {  
-> 
-> How about rearrange these into one line? (it seems just 80 char).
+static void remove_vq_common(struct virtnet_info *vi)
+{
+        vi->vdev->config->reset(vi->vdev);
 
-aha, seems it's. 
+        /* Free unused buffers in both send and recv, if any. */
+        free_unused_bufs(vi);
 
-v2 will fix them.
+        free_receive_bufs(vi);
 
-Thanks.
+        free_receive_page_frags(vi);
 
-> 
-> Otherwise looks good to me.
-> 
-> Thanks,
-> Gao Xiang
-> 
-> > +		DBG_BUGON(!*rq->out);
-> > +		dst = kmap_atomic(*rq->out);
-> > +		dst_maptype = 0;
-> > +		goto dstmap_out;
-> >  	}
-> >  
-> >  	/* general decoding path which can be used for all cases */
-> > -- 
-> > 1.9.1  
+        virtnet_del_vqs(vi);
+}
+
+The interrupt could be raised by the device after .reset().
+
+Thanks
+
+>
+> > >
+> > > > In this case we still need the
+> > > > make sure intx_soft_enbled to be read first instead of allowing other
+> > > > operations to be done first, otherwise the intx_soft_enabled is
+> > > > meaningless.
+> > > >
+> > > > Thanks
+> > >
+> > > If intx_soft_enbled were not visible after synchronize_irq then
+> > > it does not matter in which order we read it wrt other values,
+> > > it still wouldn't work right.
+> >
+> > Yes.
+> >
+> > Thanks
+>
+>
+> We are agreed then? No need for a barrier here, READ_ONCE is enough?
+>
+> > >
+> > > > >
+> > > > > Just READ_ONCE should be enough, and we can drop the comment.
+> > > > >
+> > > > >
+> > > > > > diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+> > > > > > index a235ce9ff6a5..3c06e0f92ee4 100644
+> > > > > > --- a/drivers/virtio/virtio_pci_common.h
+> > > > > > +++ b/drivers/virtio/virtio_pci_common.h
+> > > > > > @@ -64,6 +64,7 @@ struct virtio_pci_device {
+> > > > > >       /* MSI-X support */
+> > > > > >       int msix_enabled;
+> > > > > >       int intx_enabled;
+> > > > > > +     bool intx_soft_enabled;
+> > > > > >       cpumask_var_t *msix_affinity_masks;
+> > > > > >       /* Name strings for interrupts. This size should be enough,
+> > > > > >        * and I'm too lazy to allocate each name separately. */
+> > > > > > --
+> > > > > > 2.25.1
+> > > > >
+> > >
+>
 
