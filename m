@@ -2,117 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296B742D8C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C5542D8CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 14:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhJNMGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 08:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbhJNMGh (ORCPT
+        id S231372AbhJNMHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 08:07:55 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:51374
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230338AbhJNMHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 08:06:37 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F515C061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:04:32 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id d23so5319118pgh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:04:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xjtTKqJNAW9TAfK1opWSOcT+9CXDZRVrcJjqizIFop8=;
-        b=VdsdzRAnoo6T3oe5ardLdZQTZfHNI7s0aObN2E47puJxRGKkUA0aqL/OuTMkAqV8v8
-         Kbs/GAGctRezd7TcrMxuBUIHbGiVWwTZs2n8LWJLdOGaOjQg69LHDXh5e/WMJkhd4rHc
-         /pB+N/2EBvXkvvsiB8ja2gf9a+ZtlCoe+vSS0=
+        Thu, 14 Oct 2021 08:07:54 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id CB1D74001E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634213148;
+        bh=7DUeJSAMIJhPw/8ePsUW00GrvDqVU0aPI87ZO6EH914=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=Oa0OKVgN0bxroOrVwuIWTN/Y65V0C2cOkyfu60/gL4VLNvPoEX5FaNeIQ5LFZU/ct
+         ZmfSHVawB4+DWkkZ+z1Ua/UT7JAGjmdjEPZnj4rylgzUTtrgGy5T3wkTXLYJzOO6OH
+         SJz1qgZCG+KA4berYIyQPyueWP59yB5+pPsmajwB68kVJ7a8NSRUCe1BazN+9gmDuI
+         z3AoY3o2S888wqB16T4EQyO+dw0q8hl2VXEcDrPQv4xsMMTEWYOgUzAMDUy7qUIOdZ
+         UFn10v4W5v841agsvVc8BchHuX+kea67AqaPYUC4F4c/I6y/CwCejTAUpC8bBZm7Ro
+         5zAFftXrq3XmA==
+Received: by mail-lf1-f72.google.com with SMTP id p42-20020a05651213aa00b003fd8935b8d6so4222585lfa.10
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 05:05:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xjtTKqJNAW9TAfK1opWSOcT+9CXDZRVrcJjqizIFop8=;
-        b=Z4pg+lG87lkJrsEvRjU+BaatuVc7+cl7awDzN8RSvVweGkjz/kMWTWdxp3bCSdvZCC
-         YfmWZNKEv4Q3TWYnFae+sLwnMkdMtqDbGohxMnTlNI5Bz4t2tSbxVrSD/4PX/lbGSf0C
-         ZiAfRo9PHgnu+upAuFkpFPQbZ30DPp+8Jt28D7q6wCYo+CgssZf4oOLMNkOXrwiOEIwk
-         MU3klJCbIJylJhIFipYes5DW3H9Z6b8zXENPud4vgSMPY65t/UHarSUpLMJ9dhHiGiCO
-         zPnbRsObc+aEiXmTaTrYsvI3HtWDawV/95wTOrC5nZmPWqgUFfr2TC2bosK7muaYMB3p
-         yALA==
-X-Gm-Message-State: AOAM533tBH6gB7MJIHdAd2x7dTmEv8u33ehmaGLyQ/LWvxVzhRkQJg1o
-        L+CO4pYDDLr1C3AyO+S+pqxsFA==
-X-Google-Smtp-Source: ABdhPJzfAyd5w8l4m9xU+WIpJBe1EuuS5AIYTA+h6Lpw2RNsav3/vZ5qxcdkGjy6ufyy83SyD0FFQA==
-X-Received: by 2002:a63:3481:: with SMTP id b123mr3910867pga.230.1634213072117;
-        Thu, 14 Oct 2021 05:04:32 -0700 (PDT)
-Received: from fshao-glinux.tpe.corp.google.com ([2401:fa00:1:10:64c0:3f2d:5152:a6f1])
-        by smtp.gmail.com with ESMTPSA id b11sm2300275pge.57.2021.10.14.05.04.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 05:04:31 -0700 (PDT)
-From:   Fei Shao <fshao@chromium.org>
-To:     Jassi Brar <jaswinder.singh@linaro.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Fei Shao <fshao@chromium.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "jason-jh.lin" <jason-jh.lin@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 2/2] mailbox: mtk-cmdq: Fix local clock ID usage
-Date:   Thu, 14 Oct 2021 20:03:52 +0800
-Message-Id: <20211014120352.1506321-3-fshao@chromium.org>
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-In-Reply-To: <20211014120352.1506321-1-fshao@chromium.org>
-References: <20211014120352.1506321-1-fshao@chromium.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7DUeJSAMIJhPw/8ePsUW00GrvDqVU0aPI87ZO6EH914=;
+        b=ZptXsMykQApC4nH9J+Wul5dCruuAnms8xwLPGigMGfJ8MPuwX6Ns1+NZcqVHXYP6of
+         Fe6geb1lC78NosQ5Ks4gxnD+ogv0FiKKszMUlcZRm0d3K6Bmn6eArC2tO6g6+9x4ajEs
+         AcM68K3y7ZVrkTVj9HWbNMtXyD5FgOcTY3+dk4YzTmMLBMgTwaAr18qxu0vmIPC8FBwf
+         zaVlYr8rHgGl5n8AHCLsNBPRlgr1xjOfxLVHAfIvXIxJK4lz+y+NtITLf8BtuLg9vuUp
+         w9kuatauJF/WrfVn4ZtmJ7R+TnWT1YB3Adtmwt3dedA8udHW0PFyNq+EwET5FCYeQTuu
+         E44w==
+X-Gm-Message-State: AOAM530q19QoWBZddmcApbAhNC7Nv4dHcGZMTj/jbmSztnbANzAJ6tek
+        Xm+0LOjL9/iEajbul7Ik93gynK3FuGgQ1Oqd2Nq6oLU6VU/yQ+MFJ0/OUxPbjlPceBNFDZLEj5X
+        xoTbcZj1m5mjYMkXfWhz4+w46LSuboP/sC8mILHvglg==
+X-Received: by 2002:ac2:53b0:: with SMTP id j16mr4569255lfh.656.1634213147903;
+        Thu, 14 Oct 2021 05:05:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyCt+hiQkBxCSZOa/Bi5shuLmxG3lPR3IwYp+KgtXpG96mbai/MNiQv4N/aYOMc/bn4ZM5kOw==
+X-Received: by 2002:ac2:53b0:: with SMTP id j16mr4569231lfh.656.1634213147622;
+        Thu, 14 Oct 2021 05:05:47 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id f10sm212322lfs.56.2021.10.14.05.05.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 05:05:47 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] soc: samsung: exynos-chipid: Pass revision reg
+ offsets
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211013202110.31701-1-semen.protsenko@linaro.org>
+ <1cd31098-ba9d-f2e3-e34c-5bada00a2696@canonical.com>
+ <CAPLW+4mtSnt8dCCtSeu-yNTR0F5ZO-hdjFjyGChi=tTWQQt85Q@mail.gmail.com>
+ <dd61666c-fd1a-c152-9423-9dc6718b1626@canonical.com>
+ <CAPLW+4mA64Q8t07tJ_Yi9=AHmGe2NixEmCaMP-Lj65D2TNBt+w@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <125ed340-cec7-5f65-c4c1-ab5162b420f6@canonical.com>
+Date:   Thu, 14 Oct 2021 14:05:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPLW+4mA64Q8t07tJ_Yi9=AHmGe2NixEmCaMP-Lj65D2TNBt+w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the probe function, the clock IDs were pointed to local variables
-which should only be used in the same code block, and any access to them
-after the probing stage becomes an use-after-free case.
+On 14/10/2021 14:03, Sam Protsenko wrote:
+> On Thu, 14 Oct 2021 at 14:48, Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+>>>
+>>>> Did you test it that it produces same result? Looks not - I gave it a
+>>>> try and got wrong revision.
+>>>>
+>>>
+>>> I only have Exynos850 based board, and that has 0x0 in Revision ID
+>>> register. But for v3 I'll try to emulate register value in the code
+>>> and make sure that the read value does not change with patch applied.
+>>
+>> You should get one of Odroid boards to test it. The MC1 is fairly cheap.
+>>
+> 
+> Will do, I see how it can be useful for further work. For this series,
+> I'm pretty sure I can test all cases by emulating the read register
+> values. Would it be enough? Also, if you have some time, I'd ask you
+> to check v3 on your board.
 
-Since there are only limited variants of the gce clock names so far, we
-can just declare them as static constants to fix the issue.
+Yes, it's OK. I can test it.
 
-Fixes: 85dfdbfc13ea ("mailbox: cmdq: add multi-gce clocks support for
-mt8195")
-Signed-off-by: Fei Shao <fshao@chromium.org>
----
-
-Changes in v2:
-- Make clock names static
-
- drivers/mailbox/mtk-cmdq-mailbox.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-index f3e52dddd422..95ce7275641c 100644
---- a/drivers/mailbox/mtk-cmdq-mailbox.c
-+++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-@@ -532,7 +532,8 @@ static int cmdq_probe(struct platform_device *pdev)
- 	struct device_node *phandle = dev->of_node;
- 	struct device_node *node;
- 	int alias_id = 0;
--	char clk_name[4] = "gce";
-+	static const char * const clk_name = "gce";
-+	static const char * const clk_names[] = { "gce0", "gce1" };
-
- 	cmdq = devm_kzalloc(dev, sizeof(*cmdq), GFP_KERNEL);
- 	if (!cmdq)
-@@ -570,12 +571,9 @@ static int cmdq_probe(struct platform_device *pdev)
-
- 	if (cmdq->gce_num > 1) {
- 		for_each_child_of_node(phandle->parent, node) {
--			char clk_id[8];
--
- 			alias_id = of_alias_get_id(node, clk_name);
- 			if (alias_id >= 0 && alias_id < cmdq->gce_num) {
--				snprintf(clk_id, sizeof(clk_id), "%s%d", clk_name, alias_id);
--				cmdq->clocks[alias_id].id = clk_id;
-+				cmdq->clocks[alias_id].id = clk_names[alias_id];
- 				cmdq->clocks[alias_id].clk = of_clk_get(node, 0);
- 				if (IS_ERR(cmdq->clocks[alias_id].clk)) {
- 					dev_err(dev, "failed to get gce clk: %d\n", alias_id);
---
-2.33.0.882.g93a45727a2-goog
-
+Best regards,
+Krzysztof
