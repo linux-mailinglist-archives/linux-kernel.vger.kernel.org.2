@@ -2,265 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B07F42E20D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8E742E20F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhJNTes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:34:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229534AbhJNTeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:34:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79D2860EFF;
-        Thu, 14 Oct 2021 19:32:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634239961;
-        bh=rxi08ohLQ8FMRrydTQRximJyIVu+hc0/kt8nU4Fzuk4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xu215UGyrAM2S57vEgW97n9nsfiNTBDoEl629EN6fyRULDDoc9kPGDHhrnYssM99h
-         ZpZHHh9d1Tu9LVQmXfjfrcxAcJmB1ogLPFVtH9FQNyytpZ4N5qhQHQSp9JiTX5kgN6
-         xM7ByubqqqGgLXoSNaLCfhrX9FTuAkGXQxHfOGoqjamr5kIaUcD5pruilVkyDhMgZN
-         Z1JQIh+JfnqSdHuE1XKVKnz4j7aE/GcN+oXCg/7z5TEuSgCPXmBm8AKCC/N0q064JY
-         xSqqV++YgMBWsyqECUTtmGvZMDgcpAgDPH3bz/QTbwZ7kTjjAp0ZXLBgG05eXLcgO0
-         +YACOfIkQbM5Q==
-Date:   Thu, 14 Oct 2021 12:32:41 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@infradead.org, jane.chu@oracle.com
-Subject: Re: [PATCH v7 6/8] mm: Introduce mf_dax_kill_procs() for fsdax case
-Message-ID: <20211014193241.GK24307@magnolia>
-References: <20210924130959.2695749-1-ruansy.fnst@fujitsu.com>
- <20210924130959.2695749-7-ruansy.fnst@fujitsu.com>
+        id S233533AbhJNTfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhJNTff (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 15:35:35 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFB4C061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:33:30 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id d125so5108246iof.5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:33:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+Y3CUDnBdTwrB31OmbGNsn7XVJp+6GgfdsLjPUZSzRw=;
+        b=jADDAblRGxyXiLiV7CxIpwecQCD9qtT4yoY2Xh45iAsai0Ba3cIwOwcCtpwuPaccXk
+         7n1/qude1VF3weiueYkQQtxs8v4r8g0tZfUbIOd/vosMMipYCotyffMJOlE+BAvjXhny
+         NQl4UbSsCCV0wK3Th+fGAr7Bq2YVx4EtvFoWjsPstB5Fh889MYCp047ncx3ZrEWF+qY5
+         6A1slEOTm//B+IS+w0c1kkg2kuzEpFerJtFxHTuyHzCgPkyUo9GaFDoqJcrZuZMgMryI
+         REGOKKO22dHzb454XsjmdAxItSzmmTa0RUmusEahaBvCZpxfVhBWqwSea0EREou36i7m
+         9D3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+Y3CUDnBdTwrB31OmbGNsn7XVJp+6GgfdsLjPUZSzRw=;
+        b=dhroqud50H3Rnpek0nuzIbS0XK8pLvTvVZfIN0q8nDwuuNQOh8GY1XmfKARA473fll
+         DG+i84lRXj+QJp6JygiZiBeqHC+rOXG9/34PyqRgDyYi6aizWO30gUoZCTG00NSNzbK5
+         FuHPunwhMBC0E/JKwmr8LZYj8yH1qIkG/DRG++gpzCKIRpIS8uOT/5Ns6i4bgGKRRZKw
+         RoPjYcd1zUMVbjXZw/KLmqmN7BYS0d2J8l2ivZYLkvhufsTMtWuq6Tv4+58LZMmBeIrz
+         7wZd1dG/DQanlsVcobEIFHXNUfJ0b3gwFi4Za8XjjeeZSWLJet7CNp+RnpQua0fCsPLd
+         yaNg==
+X-Gm-Message-State: AOAM532z05+3ViI/4hAQ5k4uh/zw20ZCGuyma597jFrNxxPJP77EVBY7
+        JgpdBizZn3zlIeLs+LhUIUyaYme4RA8QNzijKvU=
+X-Google-Smtp-Source: ABdhPJwFRtnszd9LYlqNvIgsElFFrpNYGnstm/pQiqEgtxIO9ow2deXivNbAElzfpFpNoNFcwvJ0fM24pn6fAwxIGtA=
+X-Received: by 2002:a5d:9d56:: with SMTP id k22mr654825iok.177.1634240010184;
+ Thu, 14 Oct 2021 12:33:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924130959.2695749-7-ruansy.fnst@fujitsu.com>
+References: <20211014132331.GA4811@kernel.org> <YWhGQLHnA9BIVBpr@hirez.programming.kicks-ass.net>
+ <CAKwvOdnkDUfRKzmLThQGW02Ew6x=KM0MQyHge7=kc673NYxo2g@mail.gmail.com>
+ <CANiq72nt+8bCGAm8yhvTZfS64ovOi9_U=Gym7biUhdEsc3Neaw@mail.gmail.com>
+ <CANiq72=UVCmjr1tpSwcoOkid5tWZirKCnV17_Peqy-LBmEQHEg@mail.gmail.com> <CAKwvOdkSFhzSwo2hfFjXXHypC8eU+VBCnRVjvNima7qx85z65Q@mail.gmail.com>
+In-Reply-To: <CAKwvOdkSFhzSwo2hfFjXXHypC8eU+VBCnRVjvNima7qx85z65Q@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 14 Oct 2021 21:33:19 +0200
+Message-ID: <CANiq72=vZ0gvJRuVcNaBi3CQfgB4edEUyLpL8DvZeLkDSvttOg@mail.gmail.com>
+Subject: Re: [PATCH] compiler_types: mark __compiletime_assert failure as __noreturn
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 09:09:57PM +0800, Shiyang Ruan wrote:
-> This function is called at the end of RMAP routine, i.e. filesystem
-> recovery function, to collect and kill processes using a shared page of
-> DAX file.  The difference between mf_generic_kill_procs() is,
-> it accepts file's mapping,offset instead of struct page.  Because
-> different file's mappings and offsets may share the same page in fsdax
-> mode.  So, it is called when filesystem RMAP results are found.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  fs/dax.c            | 10 ------
->  include/linux/dax.h |  9 +++++
->  include/linux/mm.h  |  2 ++
->  mm/memory-failure.c | 83 ++++++++++++++++++++++++++++++++++++++++-----
->  4 files changed, 86 insertions(+), 18 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index 509b65e60478..2536c105ec7f 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -852,16 +852,6 @@ static void *dax_insert_entry(struct xa_state *xas,
->  	return entry;
->  }
->  
-> -static inline
-> -unsigned long pgoff_address(pgoff_t pgoff, struct vm_area_struct *vma)
-> -{
-> -	unsigned long address;
-> -
-> -	address = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-> -	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
-> -	return address;
-> -}
-> -
->  /* Walk all mappings of a given index of a file and writeprotect them */
->  static void dax_entry_mkclean(struct address_space *mapping, pgoff_t index,
->  		unsigned long pfn)
-> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index 65411bee4312..3d90becbd160 100644
-> --- a/include/linux/dax.h
-> +++ b/include/linux/dax.h
-> @@ -258,6 +258,15 @@ static inline bool dax_mapping(struct address_space *mapping)
->  {
->  	return mapping->host && IS_DAX(mapping->host);
->  }
-> +static inline unsigned long pgoff_address(pgoff_t pgoff,
-> +		struct vm_area_struct *vma)
-> +{
-> +	unsigned long address;
-> +
-> +	address = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-> +	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
-> +	return address;
-> +}
->  
->  #ifdef CONFIG_DEV_DAX_HMEM_DEVICES
->  void hmem_register_device(int target_nid, struct resource *r);
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 73a52aba448f..d06af0051e53 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -3114,6 +3114,8 @@ enum mf_flags {
->  	MF_MUST_KILL = 1 << 2,
->  	MF_SOFT_OFFLINE = 1 << 3,
->  };
-> +extern int mf_dax_kill_procs(struct address_space *mapping, pgoff_t index,
-> +			     size_t size, int flags);
->  extern int memory_failure(unsigned long pfn, int flags);
->  extern void memory_failure_queue(unsigned long pfn, int flags);
->  extern void memory_failure_queue_kick(int cpu);
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 85eab206b68f..a9d0d487d205 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -302,10 +302,9 @@ void shake_page(struct page *p)
->  }
->  EXPORT_SYMBOL_GPL(shake_page);
->  
-> -static unsigned long dev_pagemap_mapping_shift(struct page *page,
-> +static unsigned long dev_pagemap_mapping_shift(unsigned long address,
->  		struct vm_area_struct *vma)
->  {
-> -	unsigned long address = vma_address(page, vma);
->  	pgd_t *pgd;
->  	p4d_t *p4d;
->  	pud_t *pud;
-> @@ -345,7 +344,7 @@ static unsigned long dev_pagemap_mapping_shift(struct page *page,
->   * Schedule a process for later kill.
->   * Uses GFP_ATOMIC allocations to avoid potential recursions in the VM.
->   */
-> -static void add_to_kill(struct task_struct *tsk, struct page *p,
-> +static void add_to_kill(struct task_struct *tsk, struct page *p, pgoff_t pgoff,
+On Thu, Oct 14, 2021 at 8:55 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> $ grep -r BUILD_BUG_ON | wc -l
+> 3405
 
-Hm, so I guess you're passing the page and the pgoff now because
-page->index is meaningless for shared dax pages?  Ok.
+Definitely -- I am assuming a significant part of the macro
+invocations cannot be static asserts so that we would ended up with
+churn anyway...
 
->  		       struct vm_area_struct *vma,
->  		       struct list_head *to_kill)
->  {
-> @@ -358,9 +357,15 @@ static void add_to_kill(struct task_struct *tsk, struct page *p,
->  	}
->  
->  	tk->addr = page_address_in_vma(p, vma);
-> -	if (is_zone_device_page(p))
-> -		tk->size_shift = dev_pagemap_mapping_shift(p, vma);
-> -	else
-> +	if (is_zone_device_page(p)) {
-> +		/*
-> +		 * Since page->mapping is no more used for fsdax, we should
-> +		 * calculate the address in a fsdax way.
-> +		 */
-> +		if (p->pgmap->type == MEMORY_DEVICE_FS_DAX)
-> +			tk->addr = pgoff_address(pgoff, vma);
-> +		tk->size_shift = dev_pagemap_mapping_shift(tk->addr, vma);
-> +	} else
->  		tk->size_shift = page_shift(compound_head(p));
->  
->  	/*
-> @@ -508,7 +513,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
->  			if (!page_mapped_in_vma(page, vma))
->  				continue;
->  			if (vma->vm_mm == t->mm)
-> -				add_to_kill(t, page, vma, to_kill);
-> +				add_to_kill(t, page, 0, vma, to_kill);
->  		}
->  	}
->  	read_unlock(&tasklist_lock);
-> @@ -544,7 +549,32 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
->  			 * to be informed of all such data corruptions.
->  			 */
->  			if (vma->vm_mm == t->mm)
-> -				add_to_kill(t, page, vma, to_kill);
-> +				add_to_kill(t, page, 0, vma, to_kill);
-> +		}
-> +	}
-> +	read_unlock(&tasklist_lock);
-> +	i_mmap_unlock_read(mapping);
-> +}
-> +
-> +/*
-> + * Collect processes when the error hit a fsdax page.
-> + */
-> +static void collect_procs_fsdax(struct page *page, struct address_space *mapping,
-> +		pgoff_t pgoff, struct list_head *to_kill)
-> +{
-> +	struct vm_area_struct *vma;
-> +	struct task_struct *tsk;
-> +
-> +	i_mmap_lock_read(mapping);
-> +	read_lock(&tasklist_lock);
-> +	for_each_process(tsk) {
-> +		struct task_struct *t = task_early_kill(tsk, true);
-> +
-> +		if (!t)
-> +			continue;
-> +		vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, pgoff) {
-> +			if (vma->vm_mm == t->mm)
-> +				add_to_kill(t, page, pgoff, vma, to_kill);
->  		}
->  	}
->  	read_unlock(&tasklist_lock);
-> @@ -1503,6 +1533,43 @@ static int mf_generic_kill_procs(unsigned long long pfn, int flags,
->  	return 0;
->  }
->  
-> +/**
-> + * mf_dax_kill_procs - Collect and kill processes who are using this file range
-> + * @mapping:	the file in use
-> + * @index:	start offset of the range
-> + * @size:	length of the range
+> Oh, that is a good idea.  There is one already for recommending the
+> use of static_assert instead of assert.  That's actually very nice.
 
-It feels odd that one argument is in units of pgoff_t but the other is
-in bytes.
+Happy to help!
 
-> + * @flags:	memory failure flags
-> + */
-> +int mf_dax_kill_procs(struct address_space *mapping, pgoff_t index,
-> +		size_t size, int flags)
-> +{
-> +	LIST_HEAD(to_kill);
-> +	dax_entry_t cookie;
-> +	struct page *page;
-> +	size_t end = (index << PAGE_SHIFT) + size;
-> +
-> +	flags |= MF_ACTION_REQUIRED | MF_MUST_KILL;
+> in the kernel, I wouldn't waste time with one off patches; rather I'd
+> work on automation (since clang-tidy can be taught "fixits" to fix the
+> code in place, not just warn) so that we can better enable treewide
+> changes AND keep new instances from sneaking back in easier.
 
-Hm.  What flags will we be passing to the xfs_dax_notify_failure_fn?
-Does XFS itself have to care about what's in the flags values, or is it
-really just a magic cookie to be passed from the mm layer into the fs
-and back to mf_dax_kill_procs?
+For automatic fixing we would need to be a bit smart due to the
+negation w.r.t. "style", i.e. in most cases it should be easy to apply
+it to the expression, e.g. from `!(x == 42)` to `x != 42`, but in
+others it may require some "human touch".
 
---D
+There is also the possible mismatch of the usual style rules even if
+we apply e.g. `clang-format` after it (one more reason to avoid human
+formatting...).
 
-> +
-> +	for (; (index << PAGE_SHIFT) < end; index++) {
-> +		page = NULL;
-> +		cookie = dax_lock_mapping_entry(mapping, index, &page);
-> +		if (!cookie)
-> +			return -EBUSY;
-> +		if (!page)
-> +			goto unlock;
-> +
-> +		SetPageHWPoison(page);
-> +
-> +		collect_procs_fsdax(page, mapping, index, &to_kill);
-> +		unmap_and_kill(&to_kill, page_to_pfn(page), mapping,
-> +				index, flags);
-> +unlock:
-> +		dax_unlock_mapping_entry(mapping, index, cookie);
-> +	}
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(mf_dax_kill_procs);
-> +
->  static int memory_failure_hugetlb(unsigned long pfn, int flags)
->  {
->  	struct page *p = pfn_to_page(pfn);
-> -- 
-> 2.33.0
-> 
-> 
-> 
+But yeah, I think we should be able to cover the vast majority of them
+easily. We can always send them as RFC patches and let folks adapt the
+patch, then enable the warning/error by default after one release or
+two.
+
+> Let's see if I get an intern in 2022, maybe I can have them focus on
+> clang-tidy+kernel.
+
+It would be great to have someone adding more `linuxkernel-` checks!
+
+Cheers,
+Miguel
