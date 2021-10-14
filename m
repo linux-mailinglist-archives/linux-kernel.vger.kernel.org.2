@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9970542DC30
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8620142DC93
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhJNO5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:57:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41990 "EHLO mail.kernel.org"
+        id S232829AbhJNPAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:00:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231978AbhJNO5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:57:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA57E60F4A;
-        Thu, 14 Oct 2021 14:55:04 +0000 (UTC)
+        id S232630AbhJNO7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:59:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CBAC61183;
+        Thu, 14 Oct 2021 14:56:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223305;
-        bh=7mrx/wYzFT+ribRy9pKrAtm2yxrql/pmVeqnU+obPMA=;
+        s=korg; t=1634223420;
+        bh=Hf2n9xfbqFkxvyar5vNGFeR2VXs0Bc4gXJF2VAyjc10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eHujiZJaSkEZRyOfP5Fua2TQg1UFdH4h3qANs2Ye2yBo2xQaI0f/NuOP8IzU9By32
-         gP+vq54Nl3IaxYwftvWWcwk68iHjUxdzUoCRXbNxWnnZTunyxv8Lv4f9umf4Sh2ZgN
-         B+LEJ34LGeW3oYygCazIBL5lEGCL1iQXsU6vOtLE=
+        b=YviLJ3bhMVD+x1uh0U3QV1mjvcLDRfqkQZslIq0z7FmcKwXR4uMac0A1GR8nb8AbH
+         pXLSQVZ7cv3TBX6EW/y+jnm7UrJ5mTK0XNO8CsnYUVxW38kHx8m+2qZ1i87UvGntwH
+         2dhoTkP+3wPOyJDz52pYyBhbo+LOZ5O/mFdbPfXE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Scott Wood <oss@buserror.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 15/18] mac80211: Drop frames from invalid MAC address in ad-hoc mode
+Subject: [PATCH 4.14 15/33] powerpc/fsl/dts: Fix phy-connection-type for fm1mac3
 Date:   Thu, 14 Oct 2021 16:53:47 +0200
-Message-Id: <20211014145206.813015317@linuxfoundation.org>
+Message-Id: <20211014145209.284583433@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145206.330102860@linuxfoundation.org>
-References: <20211014145206.330102860@linuxfoundation.org>
+In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
+References: <20211014145208.775270267@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit a6555f844549cd190eb060daef595f94d3de1582 ]
+[ Upstream commit eed183abc0d3b8adb64fd1363b7cea7986cd58d6 ]
 
-WARNING: CPU: 1 PID: 9 at net/mac80211/sta_info.c:554
-sta_info_insert_rcu+0x121/0x12a0
-Modules linked in:
-CPU: 1 PID: 9 Comm: kworker/u8:1 Not tainted 5.14.0-rc7+ #253
-Workqueue: phy3 ieee80211_iface_work
-RIP: 0010:sta_info_insert_rcu+0x121/0x12a0
-...
-Call Trace:
- ieee80211_ibss_finish_sta+0xbc/0x170
- ieee80211_ibss_work+0x13f/0x7d0
- ieee80211_iface_work+0x37a/0x500
- process_one_work+0x357/0x850
- worker_thread+0x41/0x4d0
+Property phy-connection-type contains invalid value "sgmii-2500" per scheme
+defined in file ethernet-controller.yaml.
 
-If an Ad-Hoc node receives packets with invalid source MAC address,
-it hits a WARN_ON in sta_info_insert_check(), this can spam the log.
+Correct phy-connection-type value should be "2500base-x".
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20210827144230.39944-1-yuehaibing@huawei.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 84e0f1c13806 ("powerpc/mpc85xx: Add MDIO bus muxing support to the board device tree(s)")
+Acked-by: Scott Wood <oss@buserror.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/rx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/boot/dts/fsl/t1023rdb.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index b5848bcc09eb..688d7b5b7139 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -3447,7 +3447,8 @@ static bool ieee80211_accept_frame(struct ieee80211_rx_data *rx)
- 		if (!bssid)
- 			return false;
- 		if (ether_addr_equal(sdata->vif.addr, hdr->addr2) ||
--		    ether_addr_equal(sdata->u.ibss.bssid, hdr->addr2))
-+		    ether_addr_equal(sdata->u.ibss.bssid, hdr->addr2) ||
-+		    !is_valid_ether_addr(hdr->addr2))
- 			return false;
- 		if (ieee80211_is_beacon(hdr->frame_control))
- 			return true;
+diff --git a/arch/powerpc/boot/dts/fsl/t1023rdb.dts b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
+index 5ba6fbfca274..f82f85c65964 100644
+--- a/arch/powerpc/boot/dts/fsl/t1023rdb.dts
++++ b/arch/powerpc/boot/dts/fsl/t1023rdb.dts
+@@ -154,7 +154,7 @@
+ 
+ 			fm1mac3: ethernet@e4000 {
+ 				phy-handle = <&sgmii_aqr_phy3>;
+-				phy-connection-type = "sgmii-2500";
++				phy-connection-type = "2500base-x";
+ 				sleep = <&rcpm 0x20000000>;
+ 			};
+ 
 -- 
 2.33.0
 
