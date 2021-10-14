@@ -2,144 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8C742DB5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FCDF42DB59
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231817AbhJNOWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:22:53 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:35621 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230213AbhJNOWv (ORCPT
+        id S231823AbhJNOWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231773AbhJNOWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:22:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Urs.kf._1634221243;
-Received: from 30.13.156.201(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0Urs.kf._1634221243)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 14 Oct 2021 22:20:44 +0800
-Subject: Re: [PATCH V2] ACPI / APEI: restore interrupt before panic in sdei
- flow
-To:     James Morse <james.morse@arm.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tony Luck <tony.luck@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Borislav Petkov <bp@alien8.de>, Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        huangming@linux.alibaba.com
-References: <20211012142910.9688-1-zhangliguang@linux.alibaba.com>
- <5951ad5b-d755-0150-0f2a-c567eb454dac@arm.com>
-From:   =?UTF-8?B?5Lmx55+z?= <zhangliguang@linux.alibaba.com>
-Message-ID: <f8e73ed7-f45f-0f5d-9055-486fb83dcd82@linux.alibaba.com>
-Date:   Thu, 14 Oct 2021 22:18:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 14 Oct 2021 10:22:12 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE122C061570;
+        Thu, 14 Oct 2021 07:20:07 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id g8so25100208edt.7;
+        Thu, 14 Oct 2021 07:20:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7Pye4dG5TzjPVrX9c8oeWbQoM2y1O4UpzQfA4r8OJaA=;
+        b=WwdTRvdKab+eMr3+y9HfZBaeaAsfYnX4mcEtXNjSKSOQ2SSl+BCKfBohsaYTL29FSG
+         GTuq0kFig2krOZmzXe+Vp9mLJMw6M9VV8NpKTss4BySFLwnmdvuEeIwZ+/fhZ4PYPboI
+         rZ2mv5TBM/0vv8YMt/F2fKSUm8bBu6eG9L9BPFp81YLbSqrIKJfrbFuRQ1fxNNO1/Sr0
+         c9KTkWeMMknBILsRcIpBCUX4DG0bydF9whpQSCq6eY3xLUWMMtsiNSg/Q7S9stiGtOt6
+         o6+PbwwEvtOxbFPos2uFWkmr19d4t6n4xDeeQSedphdPLSkiBq6WIkYse7IC41o1X+8p
+         8z6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Pye4dG5TzjPVrX9c8oeWbQoM2y1O4UpzQfA4r8OJaA=;
+        b=rqoGW7SvMsDx2lnLKhdIv7Sqpd26mz1oKk+Gx4ydOkS+St13oYy0ciPPrSbpfW/lsO
+         UMWD2yiEjxamjzLC+OeXFJKGrER6RyXAuV2AQjHltw9CjTwPn6d8vBckDJrjLjOJdWxr
+         VwRlwb0S/SZyBLHXQ5ZGkZzK+r6R/1sN5ZWcU3qVYC3RdcGN63psBJL7TDz7fXz7iP/e
+         Xntxhx5fuubykJMIk/uuNIV2IECzKZho4W1J+Ww3ZgbF5vDWc4yiXAmtiGy9wAb3AUTD
+         0V6fj/aLlXg9/aDJbZ3JmZ/gzX7g2xQGCcYlStlPn0eozzVNsZcAtaj0jKAo7u397hnE
+         y89g==
+X-Gm-Message-State: AOAM533oOQuAlxMpS1UAQa57FRuk0CUhJLBJxS7gB0+059HITPsCk3bj
+        211Z+EEVFo5jAY5FI9zC1ys=
+X-Google-Smtp-Source: ABdhPJy0+pozCqlTwocQGfr9R46cwy6kWFFfRiMq/UXnrJH8vQXJ8/wSBT8bV0wifyFZDclOSHVWsQ==
+X-Received: by 2002:a17:906:7c4f:: with SMTP id g15mr3948514ejp.373.1634221172254;
+        Thu, 14 Oct 2021 07:19:32 -0700 (PDT)
+Received: from skbuf ([188.25.225.253])
+        by smtp.gmail.com with ESMTPSA id s3sm2107994ejm.49.2021.10.14.07.19.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 07:19:31 -0700 (PDT)
+Date:   Thu, 14 Oct 2021 17:19:30 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     andrew@lunn.ch, netdev@vger.kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 net-next 10/10] net: dsa: microchip: add support for
+ vlan operations
+Message-ID: <20211014141930.3e5x2wgitsw57v4z@skbuf>
+References: <20211007151200.748944-1-prasanna.vengateshan@microchip.com>
+ <20211007151200.748944-11-prasanna.vengateshan@microchip.com>
+ <20211007201705.polwaqgbzff4u3vx@skbuf>
+ <6c97e0771204b492f31b3d003a5fd97d789920ef.camel@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <5951ad5b-d755-0150-0f2a-c567eb454dac@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6c97e0771204b492f31b3d003a5fd97d789920ef.camel@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Oct 11, 2021 at 11:13:36PM +0530, Prasanna Vengateshan wrote:
+> > Do you have an explanation for what SW_VLAN_ENABLE does exactly?
+> Enabling the VLAN mode and then act as per the VLAN table.
+> Do you want me to add this explanation as a comment? or?
 
-在 2021/10/14 1:44, James Morse 写道:
-> Hello!
->
-> On 12/10/2021 15:29, Liguang Zhang wrote:
->> When hest acpi table configure Hardware Error Notification type as
->> Software Delegated Exception(0x0B) for RAS event, OS RAS interacts with
->> ATF by SDEI mechanism. On the firmware first system, OS was notified by
->> ATF sdei call.
->>
->> The calling flow like as below when fatal RAS error happens:
->>
->> ATF notify OS flow:
->>    sdei_dispatch_event()
->>      ehf_activate_priority()
->>        call sdei callback  // callback registered by OS
->>      ehf_deactivate_priority()
->>
->> OS sdei callback:
->>    sdei_asm_handler()
->>      __sdei_handler()
->>        _sdei_handler()
->>          sdei_event_handler()
->>            ghes_sdei_critical_callback()
->>              ghes_in_nmi_queue_one_entry()
->>                /* if RAS error is fatal */
->>                __ghes_panic()
->>                  panic()
->>
->> If fatal RAS error occured, panic was called in sdei_asm_handle()
->> without ehf_deactivate_priority executed, which lead interrupt masked.
-> So far the story is:
-> Firmware generated and SDEI event (a kind of software NMI) because of a firmware
-> interrupt, but it hasn't completely handled the interrupt.
->
->
->> If interrupt masked, system would be halted in kdump flow like this:
->>
->> arm-smmu-v3 arm-smmu-v3.3.auto: allocated 65536 entries for cmdq
->> arm-smmu-v3 arm-smmu-v3.3.auto: allocated 32768 entries for evtq
->> arm-smmu-v3 arm-smmu-v3.3.auto: allocated 65536 entries for priq
->> arm-smmu-v3 arm-smmu-v3.3.auto: SMMU currently enabled! Resetting...
-> How and why do firmware interrupts affect the IOMMU?
->
-> It sounds like you are sharing something with firmware that you shouldn't.
->
->
->> After debug, we found accurate halted position is:
->> arm_smmu_device_probe()
->>    arm_smmu_device_reset()
->>      arm_smmu_device_disable()
->>        arm_smmu_write_reg_sync()
->>          readl_relaxed_poll_timeout()
->>            readx_poll_timeout()
->>              read_poll_timeout()
->>                usleep_range() // hrtimer is never waked.
->>
->> So interrupt should be restored before panic otherwise kdump will trigger
->> error.
-> Why can't firmware finish with the interrupt before injecting the SDEI event?
-> If you need it to not happen a second time while the handler runs, you can always disable it.
->
-> The text in the spec about the interaction of complete and physical interrupts is for
-> bound interrupts. Linux doesn't support these. It isn't possible for linux to know whether
-> firmware tied any other kind of event to a physical interrupt or not.
->
->
->> In the process of sdei, a SDEI_EVENT_COMPLETE_AND_RESUME call
->> should be called before panic for a completed run of ehf_deactivate_priority().
-> SDEI_EVENT_COMPLETE_AND_RESUME is a complete, it tells firmware to restore the execution
-> state from before the event. You get almost get away with x17-x30 being corrupted as
-> panic() won't return - but the stack trace produced will be corrupt. If the original
-> exception was from user-space, SP_EL0 will have been restored to be the user value. The
-> kernel uses this for 'current'.
->
->
-> The way this is supposed to work is the die-ing kernel calls SDEI_PE_MASK while it does
-> the kdump reboot. Once the kdump kernel has started, the SDEI_PRIVATE_RESET and
-> SDEI_SHARED_RESET calls should fix anything left over in firmware.
->
->
-> Could you debug why firmware interrupts being active prevent the SMMU from being reset. As
-> far as I can tell, those should be totally independent.
+Yes, not all switches have the same knobs, it would be good to have a
+comment about what you are changing.
 
-If ehf_deactivate_priority() was not executed, pmr_el1 register was not 
-resumed to >0x80, which leads
+> Step (0)
+> > ip link add br0 type bridge vlan_filtering 1
+> > ip link set lan0 master br0
+> > bridge vlan add dev lan0 vid 100 pvid untagged
+> Step (1)
+> > bridge vlan del dev lan0 vid 100
+> Step (2)
+> > ip link set br0 type bridge vlan_filtering 0
+> > 
+> > The expectation is that the switch, being VLAN-unaware as it is currently
+> > configured, receives and sends any packet regardless of VLAN ID.
+> > If you put an IP on br0 in this state, are you able to ping an outside host?
+> 
+> I have numbered the commands above.
+> Results are,
+> Before Step (0). Am able to ping outside.
+> After Step (0). Am not able to ping outside because the vlan table is set
+> After Step (1). Am not able to ping outside
+> After Step (2). Am able to ping outside because of vlan unaware mode.
 
-non-secure interrupts masked. arm_smmu_device_probe() finally called 
-usleep_range() which based on
-
-hrtimer. Because non-secure timer interrupts was masked, usleep_range 
-would not reponse.
-
-Thanks.
-
-Liguang
-
->
->
-> Thanks,
->
-> James
+This sounds okay.
