@@ -2,136 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D79B42D322
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F3A42D33D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhJNHBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhJNHBj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:01:39 -0400
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95C6C061570;
-        Wed, 13 Oct 2021 23:59:34 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id D151C41AC8;
-        Thu, 14 Oct 2021 06:59:26 +0000 (UTC)
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211011165707.138157-1-marcan@marcan.st>
- <20211011165707.138157-7-marcan@marcan.st>
- <a9f6898d-bd76-b94e-52fc-98e9da1a04bd@canonical.com>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [RFC PATCH 6/9] memory: apple: Add apple-mcc driver to manage MCC
- perf in Apple SoCs
-Message-ID: <2a6f14e5-fbc9-4b9a-9378-a4b5200bc3fb@marcan.st>
-Date:   Thu, 14 Oct 2021 15:59:24 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <a9f6898d-bd76-b94e-52fc-98e9da1a04bd@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
+        id S230078AbhJNHIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:08:54 -0400
+Received: from mail-eopbgr1320139.outbound.protection.outlook.com ([40.107.132.139]:43520
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229551AbhJNHIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 03:08:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E71tXMSPUCATpk2AvXsD9d+w4nrBVJOJbsFavED19krVoa8qNSA2cjeSbe44x67Sv4DH7hlvQJkTMj5zZaq/dwk1kYfOpD8u7iViwLEdYvdNShickXi5qqpp3TdgodsS2FyiwCQj19UYfJDg5cfek+CIu+xSG1Sh+u3Q+9UFL+Mb3TJbxNzbglZMBa8z56yizYEATPA0F+RuboTSLxmSrHRM6gNzwetPioLaQOea4tHxS7NxHJzrc+qdRiweB06/eJGctKtLmWqNfn+TyzmYQzCdnlKCwWoFoR6+o3IQK9Xrvrx9CRBM/mlcdkpb5WttOJnEt6oTI6MQ9Si4geUAlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=U9JHsvqTmOU445Gn6TPAU6BXgBaEnhU4Jl5RC9wrwM8=;
+ b=MmLyWItjvpkJ6bZvEXeswIQxafwCmm0vExnEZ9Od64/5ALGB/tg2C3GTXbeOp+Yo5hBbnOFXFj1GwxYm2GjNahcDbbDccdZjk3oo/c3Fz4/QXxj1V0IjYjTRtq2Ejd05IqliMu5S8UN/YgmmNvg1tLdHbTsh89TNK91qN7n2tnn0qE55RaRisS0gIA1VDhgDgHXAEW4r8cmntYgF5uev7JKboaDwsgCohRLoR8WfUQ6tTmssdVwDt8QAR+FRgbhthh2rArGM51P7mY7WITd2N8LSGnztPNT3XBVog5+5J/pGSu9Pf0QKehZ2hhn92ZBalcMdEsmqoiNzCf3NJXG8mA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U9JHsvqTmOU445Gn6TPAU6BXgBaEnhU4Jl5RC9wrwM8=;
+ b=omk5xd7QEmV8dS8KzfEZkXE3ReMyHeyFnGzkuwM4HwRbyAWwBqpBdFiYGsz9rYK40v8bR3TPE4MpYIPQAgR4ATFaV5Si3RrBEpKHlT/NFxOjlg9DaKzdGpkcKGPdvcjLH1O1H7jvDV8IERsCh40SANSM1TiwB01zYA8HhvbB9Oc=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com (2603:1096:4:78::19) by
+ SG2PR06MB3191.apcprd06.prod.outlook.com (2603:1096:4:6b::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4587.25; Thu, 14 Oct 2021 07:06:42 +0000
+Received: from SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0]) by SG2PR06MB3367.apcprd06.prod.outlook.com
+ ([fe80::fc12:4e1b:cc77:6c0%6]) with mapi id 15.20.4608.016; Thu, 14 Oct 2021
+ 07:06:42 +0000
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] drm/mcde: dsi: Add of_node_put() before return
+Date:   Thu, 14 Oct 2021 03:00:36 -0400
+Message-Id: <20211014070036.13491-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.20.1
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0192.apcprd02.prod.outlook.com
+ (2603:1096:201:21::28) To SG2PR06MB3367.apcprd06.prod.outlook.com
+ (2603:1096:4:78::19)
+MIME-Version: 1.0
+Received: from localhost.localdomain (218.213.202.190) by HK2PR02CA0192.apcprd02.prod.outlook.com (2603:1096:201:21::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Thu, 14 Oct 2021 07:06:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 40b44b52-a102-4a09-57ba-08d98ee12cf7
+X-MS-TrafficTypeDiagnostic: SG2PR06MB3191:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR06MB3191E4BD9D2C552418E1D452ABB89@SG2PR06MB3191.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1775;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8zllkOosT7ouI/um2GypItU6SYjpPDHIC/LDl6V+bvy9Am5W7WOM5S5ROq20K3vJgk7CXm7sNq3sqQhnYVxDL6MJNF2ca6Eom9blvTNhayboyTIkMYPiDK6ccHW4BkC2fECNRbzAsRrZlFDhAl214j06LG5hY8H3SxtauFkKg3YEW0yaleYh/0HpQL/y0PttioPMBQ2A8CSjLHEn7fE9OlMKabCTk0eA6vdo6IiKA+7wysWuWZdau52+fI4I+M0B3MvnTk8fGu0ezMItRmhEsMwjRjyZ5ADqle9Wjdunp9upvxouN4Q+15JCNctBJ8uNL0nrjgLlGGClcDL+bobnCn9OyrqeAMVpNZ3wFKeyDzQC7ExUoiwK1s/HNr6XHfAMpN8jsRAe9sNdkYnN9jeQWkwg3gczuLNu17y+R1UX6TOzojjd/q7jEGaGcdHHW+XuR7Mw1p4CyncXNM5n9kmw4Dv5JTeXaLrux5P8OlgfkEJB7GfSbD1ybWM9t/DN3DWNIQBNs2M1gz04c+DdhStOswvPX7bStHFU2lFxyMfq1G7WttJg48Z0hv3QOG8qEq3HU1JFa8SsF1c9mwf8tPe0dtL6pszxzy72nMBq2Go+AhGYo5aHa8Pkz1mQByC5mZOaX2W7UcBMoMdkzNYVmRspfO4wY4mNRD7pKFWv+qaSi1HH3V3ae0Yl8HQIt6+tQpRxHRnNlzEmPJIow79hl/fE7A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3367.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(52116002)(66476007)(66556008)(6666004)(956004)(38100700002)(38350700002)(26005)(2616005)(36756003)(508600001)(5660300002)(83380400001)(8676002)(2906002)(1076003)(86362001)(110136005)(4326008)(316002)(186003)(8936002)(6512007)(6486002)(4744005)(66946007)(107886003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?08hiKHfGwLKVLpG65+oYAilI/zknIn4Z9NMFK8UdAPHbwU5S3LSVCDC/Sq+R?=
+ =?us-ascii?Q?eWZGtJXzCvEiYrXLPCNvGw4t0tBbNuQO4wkMYzBTxYTA76S03Uh9vwndnkqX?=
+ =?us-ascii?Q?+h77BWSvue2mgg9wg+iptplSESu6Kzx5/G2gsMVob05qUqIUDPdV9Di6LR3c?=
+ =?us-ascii?Q?3jNOLS3jXcyi0bnONgt7OR6TesWtdHXaP46QRCRb078O4NdTnDk0CGEpgfjL?=
+ =?us-ascii?Q?XEVXm4PqtNT/KEdURsaxBXcZU0Huh4KPyUMLop2mZ7R+SJPQcHiQJe8t0YTN?=
+ =?us-ascii?Q?BRnhAYQElfmqT4Y8xDb2Hat4yMpu8gy27/3u0giGNk6g6ZXJwS8K491XhGJ3?=
+ =?us-ascii?Q?vf471x8vz3+h+uuS17/vYVYlBu0Ggyf9It69W3Z50PpmejxATdCzoJDWZ2qQ?=
+ =?us-ascii?Q?dq8IUw7umvaIUN9R6ltSNJAkp3a1y3+MYnJZKkmOLu5Jz1hjMj8THW8Jc8uv?=
+ =?us-ascii?Q?wWNJrkvczSsWQ/0eunyipPXWOBLxG6m+vZ0mHDH7LK+sLbFH8Yz0h34GlYDD?=
+ =?us-ascii?Q?/l2HlujkcTRWlGKT7Y8Zw7ErUfPmOj8PPMET1WhzaoLWDAXbofpXQWJVt4DT?=
+ =?us-ascii?Q?Sfw1b5lOYHq1rPrd+kmH7UqzbkcJjppWl8BL0+dQbiLYHCBmQNwMW1qggV4J?=
+ =?us-ascii?Q?/sScdWaGsKV+u9U0jEnB2bN3M+Ptuo3ZbKwJDzy2qguCBsGgitO9kTgJkcni?=
+ =?us-ascii?Q?w46Kkvr33JXtmGGuA0RRmAiY2qKuw6FkCAVuJ2QQPkpJpTBxsNnV7aLhfZFy?=
+ =?us-ascii?Q?AxCW0ZjWlUljVTHMrtU3sRRd4g+5vg8cS+5jKJmtNThvfb21xagVrtz6SS0G?=
+ =?us-ascii?Q?btXPbQKjKJYcFE8OdvhCzWw41OnpLoQvu81p2qFxJWN9dO2KF6xEyjTXzQ/E?=
+ =?us-ascii?Q?t3Og9Fj8euAhz5aE/43G3W65wdNFRjGZIMM7SoqSWgMqhty/VP5hq3GfX5+C?=
+ =?us-ascii?Q?zy8RO5Spg2qFz06Pz5h+NXzUW8cTSuH3rlAFSTf9hRB/u09pAhwsQ4he2/ok?=
+ =?us-ascii?Q?ZtTTMEN84+ijjEBAhiZPvyIUW/P7UjXR+NNUdxxcAunOsNDYkar40Umqh8Dg?=
+ =?us-ascii?Q?G5CRHgw13q73f0LqwEtkZbMnzEBb7fbGavSplrjQvZDdDdka+/9quDi5seqg?=
+ =?us-ascii?Q?aO0VVzcdol+5Qg8ay/QtA4atnsm0SGQXMQrhDVHGkFTDZnI4oA9XDHm0YEJf?=
+ =?us-ascii?Q?DnL+sIUcD8iKl8citv+xJ+WbWLaXRk/QroZVf0+mg0AILqRKyq/XLo66xE9o?=
+ =?us-ascii?Q?JAJ7/OKK4r7WfWQxOfv03plWEoqRjlUiVFyMhjuYjQoy1lA200TitKkwOclb?=
+ =?us-ascii?Q?Je3EW4slapWXhrqtsWZuYaEf?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40b44b52-a102-4a09-57ba-08d98ee12cf7
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3367.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 07:06:42.5287
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: z1z3oJ44O9F/5bfw28nd13dxGqg0KkbPkx/sTP2a1yLJ5jIsqQXkDFKJgAztBoN/6n4Y58mpADBz/sjtW8ZY3Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB3191
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2021 18.19, Krzysztof Kozlowski wrote:
->> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->> +/*
->> + * Apple SoC MCC memory controller performance control driver
->> + *
->> + * Copyright The Asahi Linux Contributors
-> 
-> Copyright date?
+Fix following coccicheck warning:
 
-We've gone over this one a few times already; most copyright dates 
-quickly become outdated and meaningless :)
+./drivers/gpu/drm/mcde/mcde_dsi.c:1104:1-33: WARNING: Function
+for_each_available_child_of_node should have of_node_put() before return
 
-See: 
-https://www.linuxfoundation.org/blog/copyright-notices-in-open-source-software-projects/
+Early exits from for_each_available_child_of_node should decrement the
+node reference counter.
+ 
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/gpu/drm/mcde/mcde_dsi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
->> +static int apple_mcc_probe(struct platform_device *pdev)
->> +{
->> +	struct device *dev = &pdev->dev;
->> +	struct device_node *node = dev->of_node;
-> 
-> By convention mostly we call the variable "np".
-
-Ack, I'll change it for v2.
-
->> +	mcc->reg_base = devm_platform_ioremap_resource(pdev, 0);
->> +	if (IS_ERR(mcc->reg_base))
->> +		return PTR_ERR(mcc->reg_base);
->> +
->> +	if (of_property_read_u32(node, "apple,num-channels", &mcc->num_channels)) {
-> 
-> Don't you have a limit of supported channels? It cannot be any uint32...
-
-Today, it's max 8. But if come Monday we find out Apple's new chips have 
-16 channels and otherwise the same register layout, I'd much rather not 
-have to change the driver...
-
->> +		dev_err(dev, "missing apple,num-channels property\n");
-> 
-> Use almost everywhere dev_err_probe - less code and you get error msg
-> printed.
-
-Heh, I didn't know about that one. Thanks!
-
->> +
->> +	dev_info(dev, "Apple MCC performance driver initialized\n");
-> 
-> Please skip it, or at least make it a dev_dbg, you don't print any
-> valuable information here.
-
-Ack, I'll remove this.
-
->> +static struct platform_driver apple_mcc_driver = {
->> +	.probe = apple_mcc_probe,
->> +	.driver = {
->> +		.name = "apple-mcc",
->> +		.of_match_table = apple_mcc_of_match,
->> +	},
->> +};
-> 
-> module_platform_driver() goes here.
-
-Ack, will fix for v2.
-
-> 
->> +
->> +MODULE_AUTHOR("Hector Martin <marcan@marcan.st>");
->> +MODULE_DESCRIPTION("MCC memory controller performance tuning driver for Apple SoCs");
->> +MODULE_LICENSE("GPL v2");
-> 
-> I think this will be "Dual MIT/GPL", based on your SPDX.
-
-Ah, I didn't realize that was a valid option for MODULE_LICENSE. I guess 
-anything containing "GPL" works with EXPORT_SYMBOL_GPL?
-
-Thanks for the review!
-
+diff --git a/drivers/gpu/drm/mcde/mcde_dsi.c b/drivers/gpu/drm/mcde/mcde_dsi.c
+index 5651734ce977..9f9ac8699310 100644
+--- a/drivers/gpu/drm/mcde/mcde_dsi.c
++++ b/drivers/gpu/drm/mcde/mcde_dsi.c
+@@ -1111,6 +1111,7 @@ static int mcde_dsi_bind(struct device *dev, struct device *master,
+ 			bridge = of_drm_find_bridge(child);
+ 			if (!bridge) {
+ 				dev_err(dev, "failed to find bridge\n");
++				of_node_put(child);
+ 				return -EINVAL;
+ 			}
+ 		}
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+2.20.1
+
