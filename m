@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C4942DD6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3959942DCE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232538AbhJNPHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:07:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52720 "EHLO mail.kernel.org"
+        id S233065AbhJNPCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:02:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233387AbhJNPF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:05:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B61561151;
-        Thu, 14 Oct 2021 15:01:15 +0000 (UTC)
+        id S232545AbhJNPBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:01:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F2C4611CC;
+        Thu, 14 Oct 2021 14:58:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223675;
-        bh=6okTawUyTOxI3B3Z4YalRMWEYkJW/0Z3oG7uqjvHnbw=;
+        s=korg; t=1634223521;
+        bh=a0+9OBEb2eRujNlUpifMFGOEc++gWGM4NiuJUQPAznM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1C6sBAEC3rgnawuq163SPbFi66q+0ogozlmKY08Cs5Ww21SBcgWKtTbfHYc7rq0SR
-         GbSed+VZIxRO1Udw50tn8ghSuo0ppodo8GBeHXGMcV0dVgxKxsSOddlZ/n3bcOPHgy
-         5hGUKoumNMph7eDgLsJ3z1ZGCXNIUxmNNWqCA8A4=
+        b=LywhBSALLpYYckjl8j4ucM+hti2Fnb3h7DEMkHNQwEWVBw9zvxX2LSkKCywOPtpcT
+         LKMO9H8QnTNnpZK1r6oAOhLTaN8Ef0ALDzQRCXTqaX/fkTWDvNFXaolex9Yzs4DKGj
+         +fmALu5/c848pdUebN8zq3tkvHNdufBPsAFeF24o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Aaron Young <aaron.young@oracle.com>,
+        Rashmi Narasimhan <rashmi.narasimhan@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 03/30] ASoC: Intel: sof_sdw: tag SoundWire BEs as non-atomic
+Subject: [PATCH 4.19 08/12] net: sun: SUNVNET_COMMON should depend on INET
 Date:   Thu, 14 Oct 2021 16:54:08 +0200
-Message-Id: <20211014145209.636596332@linuxfoundation.org>
+Message-Id: <20211014145206.826314867@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
-References: <20211014145209.520017940@linuxfoundation.org>
+In-Reply-To: <20211014145206.566123760@linuxfoundation.org>
+References: <20211014145206.566123760@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 58eafe1ff52ee1ce255759fc15729519af180cbb ]
+[ Upstream commit 103bde372f084206c6972be543ecc247ebbff9f3 ]
 
-The SoundWire BEs make use of 'stream' functions for .prepare and
-.trigger. These functions will in turn force a Bank Switch, which
-implies a wait operation.
+When CONFIG_INET is not set, there are failing references to IPv4
+functions, so make this driver depend on INET.
 
-Mark SoundWire BEs as nonatomic for consistency, but keep all other
-types of BEs as is. The initialization of .nonatomic is done outside
-of the create_sdw_dailink helper to avoid adding more parameters to
-deal with a single exception to the rule that BEs are atomic.
+Fixes these build errors:
 
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Link: https://lore.kernel.org/r/20210907184436.33152-1-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+sparc64-linux-ld: drivers/net/ethernet/sun/sunvnet_common.o: in function `sunvnet_start_xmit_common':
+sunvnet_common.c:(.text+0x1a68): undefined reference to `__icmp_send'
+sparc64-linux-ld: drivers/net/ethernet/sun/sunvnet_common.o: in function `sunvnet_poll_common':
+sunvnet_common.c:(.text+0x358c): undefined reference to `ip_send_check'
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Aaron Young <aaron.young@oracle.com>
+Cc: Rashmi Narasimhan <rashmi.narasimhan@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/sun/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 1a867c73a48e..cb3afc4519cf 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -860,6 +860,11 @@ static int create_sdw_dailink(struct device *dev, int *be_index,
- 			      cpus + *cpu_id, cpu_dai_num,
- 			      codecs, codec_num,
- 			      NULL, &sdw_ops);
-+		/*
-+		 * SoundWire DAILINKs use 'stream' functions and Bank Switch operations
-+		 * based on wait_for_completion(), tag them as 'nonatomic'.
-+		 */
-+		dai_links[*be_index].nonatomic = true;
+diff --git a/drivers/net/ethernet/sun/Kconfig b/drivers/net/ethernet/sun/Kconfig
+index 7b982e02ea3a..1080a2a3e13a 100644
+--- a/drivers/net/ethernet/sun/Kconfig
++++ b/drivers/net/ethernet/sun/Kconfig
+@@ -73,6 +73,7 @@ config CASSINI
+ config SUNVNET_COMMON
+ 	tristate "Common routines to support Sun Virtual Networking"
+ 	depends on SUN_LDOMS
++	depends on INET
+ 	default m
  
- 		ret = set_codec_init_func(link, dai_links + (*be_index)++,
- 					  playback, group_id);
+ config SUNVNET
 -- 
 2.33.0
 
