@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBBF42DB73
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F3042DB78
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhJNO1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39198 "EHLO
+        id S231867AbhJNO2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231822AbhJNO1o (ORCPT
+        with ESMTP id S231823AbhJNO2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:27:44 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0484BC061755;
-        Thu, 14 Oct 2021 07:25:40 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id d11so3677475ilc.8;
-        Thu, 14 Oct 2021 07:25:39 -0700 (PDT)
+        Thu, 14 Oct 2021 10:28:11 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38639C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:26:06 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id e12so20103720wra.4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:26:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QJz9iKEYjLkvnohegmb7OhE4Q0yJM75wDXbwCysCHKg=;
-        b=GPdq700XJHjt2qiWViNuqJqrk/DO/7SBzqRCqEPU6DJsnh3GWiTMGrlV6kiZ0fbgId
-         0ZZd/MMeZARaRLlLyGCFM51rOzsRGjPEv5AqH3Padwmaq4MvctIGfABm5apZ/KaeDJ/H
-         6DTlvH01d3QQOPP4RkT4B2GuM9qL6YtHMuTYTplGXSKOZ0Lu4Jvj5S+ZGSy13klnCstG
-         mbxE7sUjT5oQKhnqhXQKs3imYQbxoGxISfpx/x0zFsxqquZpwwHVqMDBvPe2TobaJ6oI
-         u0fDNbAt8DsqPHjsSeVkFNHEIwgFWi5Uk6XB5OIapm8E1/zyFFgLk4mtCiz5ii6Itj/C
-         qyWA==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8+uJr5hp/PrwImyhLww643udSk+FgvtkOnzEH/iiMXA=;
+        b=x2fzdmMSRhyCU3dbpcXq3f4TOFHCtRAG3Q2rGhe2H5ELOT1CpqVXnBWY1E3z6p5u6C
+         W2kl7W/6+YTDBSd7Xj3o7MEX3e1NCRMRa4TPCQ3Ns9C12d4kU5pd2phJhneXg8LJ0J4r
+         8Q8mXJ3vykXbQQ4lxkMZBGAQL7gL65H60WsU0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QJz9iKEYjLkvnohegmb7OhE4Q0yJM75wDXbwCysCHKg=;
-        b=56xSDDs7+1BGr1g2HrWbxuwyBmLxFy3eeNGhGiM+AOg2c5aBfj2Wsv4Jfp9Qnr5siw
-         xOsggIwtaj4gIuZ1lHVaCSRUUKpYmLJoCgoegxEGbz70x81xFNzO4cCmaJV6F6POjIIM
-         K+BR5LtJ2b6VE1qEL9K8D0ZxNZN3d3wmBCwcNkr+qJajM+h+dOn7j/STlQNWT1kzDw0H
-         guOKz0M21wj/G+ExCHzPU5j0dxCo25gjpyTYqsC69jMb8wswjVMf7WVCI41fqVIiobXc
-         /4SS1jXN3C0CtAdP5nAmRRISp9i1huKiCd2w0zBCxZ8YhcyRD0gVW8JNTFxU4QXsJTg3
-         MbGg==
-X-Gm-Message-State: AOAM5331Nah3w7lyClq3XLR6g7PQHCG3zsnh2QGBySyuN1qKAOMCYfcH
-        lD6ejf27EtRZzqta7caJ2h3QHynJNpI0fQ==
-X-Google-Smtp-Source: ABdhPJxgq6n8iCh1QzlDPAihbw0Bj2jCddYElmLNwMhp/CvYVDZEXPedmg2KWfaKgiY50ZA4z5QzPg==
-X-Received: by 2002:a05:6e02:14d3:: with SMTP id o19mr2701564ilk.257.1634221539309;
-        Thu, 14 Oct 2021 07:25:39 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.34])
-        by smtp.googlemail.com with ESMTPSA id l15sm1412926iln.78.2021.10.14.07.25.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 07:25:38 -0700 (PDT)
-Subject: Re: [PATCH v2 3/4] selftests: nettest: Add --{do,no}-bind-key-ifindex
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Yonghong Song <yhs@fb.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1634107317.git.cdleonard@gmail.com>
- <122a68cd7fd28e9a5580f16f650826437f7397a1.1634107317.git.cdleonard@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <133b490a-29a2-aa40-37bf-aef582f2028f@gmail.com>
-Date:   Thu, 14 Oct 2021 08:25:37 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8+uJr5hp/PrwImyhLww643udSk+FgvtkOnzEH/iiMXA=;
+        b=S7A6EPfrlkuZSnllqcuKHhLHve24klQkn1R4O6eAr9ggk7FBv0JcJUEEkvidMb8zmf
+         HjFsyhV6vv3owBgpG5InA4MSqIS1RMZi4qfJkysy31dKtQEzNs1LSTloqWIsECpHFUNf
+         yITlozCB2QVSNmPuJbZbyDq0h5NP7h9/eU6+wjVppwWhn9wRzPACg1ARM4CvAMMwJpQk
+         Ac5gKU4qo+6MHEiCXRldrp+cqMlx9kkSmUr58ZKkFl3rK9s3sEwgRio6Zj2ocRSh5Q93
+         3+P/Rf19lDkIOAlUuoz7Gbq352PX7po0JbGdy43Nds2anNOmIsUVfH0Na3QpM4joXGmf
+         be/w==
+X-Gm-Message-State: AOAM53363R6WeSm7+SbkUhYVdh/CaVhD1fMmkg2OuvJttXT2dk4whsrx
+        cq0n3LnyQGuOALp1eOeczdiprA==
+X-Google-Smtp-Source: ABdhPJxSreZiUluGclCO7ih/fTRXwuaw9OMXuN55jnTqByIvdDxPXk6++hqqara4PlR/5NHW91bnrg==
+X-Received: by 2002:adf:aadc:: with SMTP id i28mr7004852wrc.320.1634221564751;
+        Thu, 14 Oct 2021 07:26:04 -0700 (PDT)
+Received: from antares.. (4.4.a.7.5.8.b.d.d.b.6.7.4.d.a.6.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:6ad4:76bd:db85:7a44])
+        by smtp.gmail.com with ESMTPSA id e8sm3731111wrg.48.2021.10.14.07.26.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 07:26:04 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     nicolas.dichtel@6wind.com, luke.r.nels@gmail.com,
+        Xi Wang <xi.wang@gmail.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/3] bpf: define bpf_jit_alloc_exec_limit for riscv JIT
+Date:   Thu, 14 Oct 2021 15:25:51 +0100
+Message-Id: <20211014142554.53120-2-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211014142554.53120-1-lmb@cloudflare.com>
+References: <20211014142554.53120-1-lmb@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <122a68cd7fd28e9a5580f16f650826437f7397a1.1634107317.git.cdleonard@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 12:50 AM, Leonard Crestez wrote:
-> @@ -1856,10 +1870,14 @@ static void print_usage(char *prog)
->  	"    -n num        number of times to send message\n"
->  	"\n"
->  	"    -M password   use MD5 sum protection\n"
->  	"    -X password   MD5 password for client mode\n"
->  	"    -m prefix/len prefix and length to use for MD5 key\n"
-> +	"    --no-bind-key-ifindex: Force TCP_MD5SIG_FLAG_IFINDEX off\n"
-> +	"    --do-bind-key-ifindex: Force TCP_MD5SIG_FLAG_IFINDEX on\n"
-> +	"        (default: only if -I is passed)\n"
+Expose the maximum amount of useable memory from the riscv JIT.
 
-a nit:
-just --bind-key-ifindex and --no-bind-key-ifindex
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+Acked-by: Luke Nelson <luke.r.nels@gmail.com>
+---
+ arch/riscv/net/bpf_jit_core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
+index fed86f42dfbe..0fee2cbaaf53 100644
+--- a/arch/riscv/net/bpf_jit_core.c
++++ b/arch/riscv/net/bpf_jit_core.c
+@@ -166,6 +166,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 	return prog;
+ }
+ 
++u64 bpf_jit_alloc_exec_limit(void)
++{
++	return BPF_JIT_REGION_SIZE;
++}
++
+ void *bpf_jit_alloc_exec(unsigned long size)
+ {
+ 	return __vmalloc_node_range(size, PAGE_SIZE, BPF_JIT_REGION_START,
+-- 
+2.30.2
+
