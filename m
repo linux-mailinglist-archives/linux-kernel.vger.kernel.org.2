@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979DD42DCC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9932742DCD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhJNPBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:01:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45066 "EHLO mail.kernel.org"
+        id S230422AbhJNPC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:02:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232500AbhJNPAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:00:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED92861208;
-        Thu, 14 Oct 2021 14:58:05 +0000 (UTC)
+        id S231817AbhJNPAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:00:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8CDB610D1;
+        Thu, 14 Oct 2021 14:58:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223486;
-        bh=CQb1FTMp2ZLRv8GlUd8MqTrvFAt65QafkDAAwrxuHdU=;
+        s=korg; t=1634223507;
+        bh=Gx3xEh8JO3e1CawjKkN9jI/dAj0HL0xZ0aKWmSuBrJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gxAqvgpmg/gf9OPAGJLZXcEj+vc0eqRbut9Yvlzxs+GmgqvLM6VfCp9cZx55TITsA
-         U6nmvcujelk44qyQZm/bv9rUsG4BiD8ERRoTKPwAiUCfXdtcfxUG4vY9Cz7pccJKDC
-         mGnw/Pn0LPmb6JaRujGgG5Qnys0rlSthn3w8X8nk=
+        b=Kdc5WPQmfaaIp0QngHjTktuziMsM/p8TCDk3KNrmE8jijIcKn7/60MlK4E3rgGlRH
+         Z9zv8to3cVmXxm+6dwJkpMVagNE2CW5k3x3nRbyNkmcA16w8UKq8yvpQW1HwyEdA2M
+         YxnWCJ5lZSptRQQ+tstuNBsW8z9Ltu3tN0uT1SfQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Jeremy Sowden <jeremy@azazel.net>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 30/33] scsi: ses: Fix unsigned comparison with less than zero
-Date:   Thu, 14 Oct 2021 16:54:02 +0200
-Message-Id: <20211014145209.802148094@linuxfoundation.org>
+Subject: [PATCH 4.19 03/12] netfilter: ip6_tables: zero-initialize fragment offset
+Date:   Thu, 14 Oct 2021 16:54:03 +0200
+Message-Id: <20211014145206.673259193@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
-References: <20211014145208.775270267@linuxfoundation.org>
+In-Reply-To: <20211014145206.566123760@linuxfoundation.org>
+References: <20211014145206.566123760@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Jeremy Sowden <jeremy@azazel.net>
 
-[ Upstream commit dd689ed5aa905daf4ba4c99319a52aad6ea0a796 ]
+[ Upstream commit 310e2d43c3ad429c1fba4b175806cf1f55ed73a6 ]
 
-Fix the following coccicheck warning:
+ip6tables only sets the `IP6T_F_PROTO` flag on a rule if a protocol is
+specified (`-p tcp`, for example).  However, if the flag is not set,
+`ip6_packet_match` doesn't call `ipv6_find_hdr` for the skb, in which
+case the fragment offset is left uninitialized and a garbage value is
+passed to each matcher.
 
-./drivers/scsi/ses.c:137:10-16: WARNING: Unsigned expression compared
-with zero: result > 0.
-
-Link: https://lore.kernel.org/r/1632477113-90378-1-git-send-email-jiapeng.chong@linux.alibaba.com
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ses.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv6/netfilter/ip6_tables.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/ses.c b/drivers/scsi/ses.c
-index 4b993607887c..84b234bbd07d 100644
---- a/drivers/scsi/ses.c
-+++ b/drivers/scsi/ses.c
-@@ -134,7 +134,7 @@ static int ses_recv_diag(struct scsi_device *sdev, int page_code,
- static int ses_send_diag(struct scsi_device *sdev, int page_code,
- 			 void *buf, int bufflen)
- {
--	u32 result;
-+	int result;
+diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
+index dd0c1073dc8e..d93490ac8275 100644
+--- a/net/ipv6/netfilter/ip6_tables.c
++++ b/net/ipv6/netfilter/ip6_tables.c
+@@ -276,6 +276,7 @@ ip6t_do_table(struct sk_buff *skb,
+ 	 * things we don't know, ie. tcp syn flag or ports).  If the
+ 	 * rule is also a fragment-specific rule, non-fragments won't
+ 	 * match it. */
++	acpar.fragoff = 0;
+ 	acpar.hotdrop = false;
+ 	acpar.state   = state;
  
- 	unsigned char cmd[] = {
- 		SEND_DIAGNOSTIC,
 -- 
 2.33.0
 
