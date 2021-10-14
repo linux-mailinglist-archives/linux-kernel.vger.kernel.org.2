@@ -2,163 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D851942DAF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E207A42DAFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 15:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbhJNN7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 09:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbhJNN7h (ORCPT
+        id S231726AbhJNOAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:00:44 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48376 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230177AbhJNOAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:59:37 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695CFC061570;
-        Thu, 14 Oct 2021 06:57:32 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id p4so5501912qki.3;
-        Thu, 14 Oct 2021 06:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GIBH8o6WpT2H7iYi/BIo0/Wyph7orVRqgeyBe3NOH3M=;
-        b=LTHM8tt06egaQG0WMY7pxFR+XLCw55vUWv7sxk436edTxMZr0w/LkyRjWCBVnLlYqW
-         psQXSfKCRPB49wKQUNnbOw3IUQ94G5HfVPn8BmG8oOouofTzcKJrqRSCVcWv2xO45OmY
-         wgwfpNH8EWdPLy3RcozvpisCjfesmSbOek332pLvyZSorEvEnrtO33xippBc+vYk7Bny
-         qNBFqJoL0Vc7FEX97Cwi5McfaqdPq2P4V8BSgt18v9ou/u89YUbVApW6lA4e7zkFxf/b
-         +1LYnGWUUQhAffPqCfXZOkCOuO2y9BrDmPuvQw26/ZEyYvJLg8sZvY90+4jqdGl/hOHl
-         EGew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GIBH8o6WpT2H7iYi/BIo0/Wyph7orVRqgeyBe3NOH3M=;
-        b=OqPSYmMtJWSysXNw9GyaOnnffBdBvCgGlBQMLy10GIjXDfw1xp0Lo45Gak1/AaGNfU
-         oUAs/XXXd8UUPf6nrbkYfGOVn/Ivub+BF+QXkDUoy21f+iqZxMQ/AYLqbTZFIRbr9UWQ
-         WpB5MsD6ZbVty9QPXFk9uWRkdup96EPrV4KfDj3MWU43trGdW+gElLKFsR0C+FjjDj87
-         A4LG4lQZW8KzmOHDmiZ80nqIpvL81hW7mF9rOp0OORePf73TIF2nr57V0HgjEi87YZbp
-         8ZLUMLymnqYsqE8OgizfaWKC8lAoQb60Lhm9iVOkYjUlNgxHwA6RTk+erQI4jaS0MMu4
-         zBLQ==
-X-Gm-Message-State: AOAM532Mcgjk0gkR34XKbkZebBRK5YVAH7AE0DfpibnlDLwA+nhx7tTv
-        1QWMJbY4PFHXpuDO+f+/g6o=
-X-Google-Smtp-Source: ABdhPJzMSynW04AaJea12M1eFo9J7qDsdaPfjkDYOTzx6zEtLLaeloZCJQHH4YQpmX9+mzR7i/ed/g==
-X-Received: by 2002:a05:620a:198e:: with SMTP id bm14mr4732122qkb.429.1634219850117;
-        Thu, 14 Oct 2021 06:57:30 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id t19sm1386835qtn.26.2021.10.14.06.57.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 06:57:29 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 5830227C0054;
-        Thu, 14 Oct 2021 09:57:27 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 14 Oct 2021 09:57:28 -0400
-X-ME-Sender: <xms:RzdoYSixGWPoRWPamyyaRt85pLF_9dox-btTaRe9ngL4yAMjpivmIA>
-    <xme:RzdoYTB68I-AAuaRdnFuitFaB4q2CBjrumciWK8NJc8quYLLcPi9P20JqyBIut-ar
-    Krx9_yHeQbngpNwqA>
-X-ME-Received: <xmr:RzdoYaF-y5KQnt_jrmfoldBpSN3iTckcILYblbsfg5MawJ7R0IPV8_BzoFMbqQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvdduvddgieekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepveeijedthfeijeefudehhedvveegudegteehgffgtddvuedtveegtedvvdef
-    gedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
-    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
-    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:RzdoYbT8uPO_U446wS2sOb1DU3Jfxj6E4Fv71FqTZFrrTOAACTHRhA>
-    <xmx:RzdoYfwUAUPaSNkLxgBR1ukKJXRq9an1wlAY_lrduTbVeWs2d3UGzw>
-    <xmx:RzdoYZ7zhuHTBJrgND0lBD5EvwJwz4fgLIdvM7x8hkYaG-pJuplxNA>
-    <xmx:RzdoYd4pWTN3n0ewbLyLfAC1aR3ribkd02NEOq6ycK6r9kQXgj9i0m__Jm4>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Oct 2021 09:57:27 -0400 (EDT)
-Date:   Thu, 14 Oct 2021 21:57:22 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Valentin Schneider <Valentin.Schneider@arm.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 03/11] rcu/nocb: Invoke rcu_core() at the start of
- deoffloading
-Message-ID: <YWg3QthesE5XMeLj@boqun-archlinux>
-References: <20211011145140.359412-1-frederic@kernel.org>
- <20211011145140.359412-4-frederic@kernel.org>
- <YWcEXj2+nqO8kIFS@boqun-archlinux>
- <87o87rkf2n.mognet@arm.com>
+        Thu, 14 Oct 2021 10:00:43 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DA14D1FD29;
+        Thu, 14 Oct 2021 13:58:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634219917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9A+GQeaFgonmZoQA1BJNWLgEss6Z/Jtafc/0hYNUu4Y=;
+        b=Jw2sjnBCXAWISc+DK4rVtikmY9lEX1FPmZRRQdo4II2PfKP7mWQ/wRVMSxtC+j5yCYLmSM
+        y7L4kXi05iGRK3cV4He62a9sTcF8iEsX/C6kzLguIHZnIeMwafKO3FOwzkFfTJYM1Uo+ol
+        cguefB3ALh1fV8kwX77EjQYbq0P7ayc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634219917;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9A+GQeaFgonmZoQA1BJNWLgEss6Z/Jtafc/0hYNUu4Y=;
+        b=3JWZomZAlwpzJqHYa9IvRFuBKdAe6Y2jQkUnyTaBdWM2L/Yfwq5zCVpIKQIfJngTgEyJeG
+        ctzsH6yvHYSFWJAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B4E4C13D97;
+        Thu, 14 Oct 2021 13:58:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id cTFEK403aGE+awAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 14 Oct 2021 13:58:37 +0000
+Message-ID: <8742cda5-1fc7-ae44-076c-e4a522ca43f5@suse.de>
+Date:   Thu, 14 Oct 2021 15:58:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o87rkf2n.mognet@arm.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH] video: smscufx: Fix null-ptr-deref in ufx_usb_probe()
+Content-Language: en-US
+To:     Wang Hai <wanghai38@huawei.com>, steve.glendinning@shawell.net,
+        FlorianSchandinat@gmx.de, gregkh@suse.de
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20211014132231.555138-1-wanghai38@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20211014132231.555138-1-wanghai38@huawei.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------ffM8l0TxRYwhGR0oMWNe03pk"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 12:42:40PM +0100, Valentin Schneider wrote:
-> On 14/10/21 00:07, Boqun Feng wrote:
-> >> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> >> index e38028d48648..b236271b9022 100644
-> >> --- a/kernel/rcu/tree.c
-> >> +++ b/kernel/rcu/tree.c
-> >> @@ -2717,6 +2717,23 @@ static __latent_entropy void rcu_core(void)
-> >>      unsigned long flags;
-> >>      struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
-> >>      struct rcu_node *rnp = rdp->mynode;
-> >> +	/*
-> >> +	 * On RT rcu_core() can be preempted when IRQs aren't disabled.
-> >> +	 * Therefore this function can race with concurrent NOCB (de-)offloading
-> >> +	 * on this CPU and the below condition must be considered volatile.
-> >> +	 * However if we race with:
-> >> +	 *
-> >> +	 * _ Offloading:   In the worst case we accelerate or process callbacks
-> >> +	 *                 concurrently with NOCB kthreads. We are guaranteed to
-> >> +	 *                 call rcu_nocb_lock() if that happens.
-> >
-> > If offloading races with rcu_core(), can the following happen?
-> >
-> >       <offload work>
-> >       rcu_nocb_rdp_offload():
-> >                                               rcu_core():
-> >                                                 ...
-> >                                                 rcu_nocb_lock_irqsave(); // no a lock
-> >         raw_spin_lock_irqsave(->nocb_lock);
-> >           rdp_offload_toggle():
-> >             <LOCKING | OFFLOADED set>
-> >                                                 if (!rcu_segcblist_restempty(...))
-> >                                                   rcu_accelerate_cbs_unlocked(...);
-> >                                                 rcu_nocb_unlock_irqrestore();
-> >                                                 // ^ a real unlock,
-> >                                                 // and will preempt_enable()
-> >           // offload continue with ->nocb_lock not held
-> >
-> > If this can happen, it means an unpaired preempt_enable() and an
-> > incorrect unlock. Thoughts? Maybe I'm missing something here?
-> >
-> 
-> As Frederic pointed out in an earlier thread [1], this can't happen because
-> we still have IRQs disabled, and the offloading process has to be processed
-> on the CPU being offloaded. IOW, in the above scenario, rcu_core() can't be
-> preempted by the rcu_nocb_rdp_offload() work until it re-enables IRQs at
-> rcu_nocb_unlock_irqrestore().
-> 
-> (hopefully Paul or Frederic will correct me if I've just spewed garbage)
-> 
-> [1]: https://lore.kernel.org/lkml/20210930105340.GA232241@lothringen/
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------ffM8l0TxRYwhGR0oMWNe03pk
+Content-Type: multipart/mixed; boundary="------------dzQNDPAH6MVNLQ7iZa2Lns6c";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Wang Hai <wanghai38@huawei.com>, steve.glendinning@shawell.net,
+ FlorianSchandinat@gmx.de, gregkh@suse.de
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <8742cda5-1fc7-ae44-076c-e4a522ca43f5@suse.de>
+Subject: Re: [PATCH] video: smscufx: Fix null-ptr-deref in ufx_usb_probe()
+References: <20211014132231.555138-1-wanghai38@huawei.com>
+In-Reply-To: <20211014132231.555138-1-wanghai38@huawei.com>
 
-Thanks! I think Frederic and you are right: this cannot happen. Thank
-you both for looking into this ;-)
+--------------dzQNDPAH6MVNLQ7iZa2Lns6c
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Regards,
-Boqun
+SGkNCg0KQW0gMTQuMTAuMjEgdW0gMTU6MjIgc2NocmllYiBXYW5nIEhhaToNCj4gSSBnb3Qg
+YSBudWxsLXB0ci1kZXJlZiByZXBvcnQ6DQo+IA0KPiBCVUc6IGtlcm5lbCBOVUxMIHBvaW50
+ZXIgZGVyZWZlcmVuY2UsIGFkZHJlc3M6IDAwMDAwMDAwMDAwMDAwMDANCj4gLi4uDQo+IFJJ
+UDogMDAxMDpmYl9kZXN0cm95X21vZGVsaXN0KzB4MzgvMHgxMDANCj4gLi4uDQo+IENhbGwg
+VHJhY2U6DQo+ICAgdWZ4X3VzYl9wcm9iZS5jb2xkKzB4MmI1LzB4YWMxIFtzbXNjdWZ4XQ0K
+PiAgIHVzYl9wcm9iZV9pbnRlcmZhY2UrMHgxYWEvMHgzYzAgW3VzYmNvcmVdDQo+ICAgcmVh
+bGx5X3Byb2JlKzB4MTY3LzB4NDYwDQo+IC4uLg0KPiAgIHJldF9mcm9tX2ZvcmsrMHgxZi8w
+eDMwDQo+IA0KPiBJZiBmYl9hbGxvY19jbWFwKCkgZmFpbHMgaW4gdWZ4X3VzYl9wcm9iZSgp
+LCBmYl9kZXN0cm95X21vZGVsaXN0KCkgd2lsbA0KPiBiZSBjYWxsZWQgdG8gZGVzdHJveSBt
+b2RlbGlzdCBpbiB0aGUgZXJyb3IgaGFuZGxpbmcgcGF0aC4gQnV0IG1vZGVsaXN0DQo+IGhh
+cyBub3QgYmVlbiBpbml0aWFsaXplZCB5ZXQsIHNvIGl0IHdpbGwgcmVzdWx0IGluIG51bGwt
+cHRyLWRlcmVmLg0KPiANCj4gSW5pdGlhbGl6ZSBtb2RlbGlzdCBiZWZvcmUgY2FsbGluZyBm
+Yl9hbGxvY19jbWFwKCkgdG8gZml4IHRoaXMgYnVnLg0KPiANCj4gRml4ZXM6IDNjOGE2M2Uy
+MmEwOCAoIkFkZCBzdXBwb3J0IGZvciBTTVNDIFVGWDYwMDAvNzAwMCBVU0IgZGlzcGxheSBh
+ZGFwdGVycyIpDQo+IFJlcG9ydGVkLWJ5OiBIdWxrIFJvYm90IDxodWxrY2lAaHVhd2VpLmNv
+bT4NCj4gU2lnbmVkLW9mZi1ieTogV2FuZyBIYWkgPHdhbmdoYWkzOEBodWF3ZWkuY29tPg0K
+DQpBY2tlZC1ieTogVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+DQoN
+CkkgZ290IG9uZSBvZiB0aGVzZSBkZXZpY2VzIGJ1dCB0aGUgZHJpdmVyIGRpZG4ndCBwcm9k
+dWNlIGFueSBvdXRwdXQgZm9yIA0KbWUuIEFyZSBhY3R1YWxseSBhYmxlIHRvIHVzZSB0aGUg
+ZHJpdmVyPw0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQo+IC0tLQ0KPiAgIGRyaXZlcnMv
+dmlkZW8vZmJkZXYvc21zY3VmeC5jIHwgMyArLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBp
+bnNlcnRpb24oKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy92aWRlby9mYmRldi9zbXNjdWZ4LmMgYi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L3Ntc2N1Zngu
+Yw0KPiBpbmRleCBiZmFjM2VlNGE2NDIuLjI4NzY4YzI3MmI3MyAxMDA2NDQNCj4gLS0tIGEv
+ZHJpdmVycy92aWRlby9mYmRldi9zbXNjdWZ4LmMNCj4gKysrIGIvZHJpdmVycy92aWRlby9m
+YmRldi9zbXNjdWZ4LmMNCj4gQEAgLTE2NTYsNiArMTY1Niw3IEBAIHN0YXRpYyBpbnQgdWZ4
+X3VzYl9wcm9iZShzdHJ1Y3QgdXNiX2ludGVyZmFjZSAqaW50ZXJmYWNlLA0KPiAgIAlpbmZv
+LT5wYXIgPSBkZXY7DQo+ICAgCWluZm8tPnBzZXVkb19wYWxldHRlID0gZGV2LT5wc2V1ZG9f
+cGFsZXR0ZTsNCj4gICAJaW5mby0+ZmJvcHMgPSAmdWZ4X29wczsNCj4gKwlJTklUX0xJU1Rf
+SEVBRCgmaW5mby0+bW9kZWxpc3QpOw0KPiAgIA0KPiAgIAlyZXR2YWwgPSBmYl9hbGxvY19j
+bWFwKCZpbmZvLT5jbWFwLCAyNTYsIDApOw0KPiAgIAlpZiAocmV0dmFsIDwgMCkgew0KPiBA
+QCAtMTY2Niw4ICsxNjY3LDYgQEAgc3RhdGljIGludCB1ZnhfdXNiX3Byb2JlKHN0cnVjdCB1
+c2JfaW50ZXJmYWNlICppbnRlcmZhY2UsDQo+ICAgCUlOSVRfREVMQVlFRF9XT1JLKCZkZXYt
+PmZyZWVfZnJhbWVidWZmZXJfd29yaywNCj4gICAJCQkgIHVmeF9mcmVlX2ZyYW1lYnVmZmVy
+X3dvcmspOw0KPiAgIA0KPiAtCUlOSVRfTElTVF9IRUFEKCZpbmZvLT5tb2RlbGlzdCk7DQo+
+IC0NCj4gICAJcmV0dmFsID0gdWZ4X3JlZ19yZWFkKGRldiwgMHgzMDAwLCAmaWRfcmV2KTsN
+Cj4gICAJY2hlY2tfd2Fybl9nb3RvX2Vycm9yKHJldHZhbCwgImVycm9yICVkIHJlYWRpbmcg
+MHgzMDAwIHJlZ2lzdGVyIGZyb20gZGV2aWNlIiwgcmV0dmFsKTsNCj4gICAJZGV2X2RiZyhk
+ZXYtPmdkZXYsICJJRF9SRVYgcmVnaXN0ZXIgdmFsdWUgMHglMDh4IiwgaWRfcmV2KTsNCj4g
+DQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXIN
+ClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KTWF4ZmVsZHN0ci4gNSwg
+OTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQooSFJCIDM2ODA5LCBBRyBOw7xybmJlcmcpDQpH
+ZXNjaMOkZnRzZsO8aHJlcjogRmVsaXggSW1lbmTDtnJmZmVyDQo=
 
-> > Regards,
-> > Boqun
-> >
+--------------dzQNDPAH6MVNLQ7iZa2Lns6c--
+
+--------------ffM8l0TxRYwhGR0oMWNe03pk
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFoN40FAwAAAAAACgkQlh/E3EQov+Be
+XQ/8CUvzhqSHEvJvOGEFy749mT9d2yCS3FIAdnNGwOLlnqt8tHlweLEknX/sEpxQ7t5GEKQV7azT
+QQqs/O5MKKi1HKuRv4q81OZZW69EqLP+LDJ4kKYiViCin7KoUxIiu+71vtequhqeF3e3fqa700iS
+bWgOHD3qVU1xdQTJMQ1mBH1v2h+WWjAeTzb/xh4EqYxq1yV4SDX4JdpD35uPYF7g2PMfd5M6s9ga
+fc3breWN6vNjWckWRoebn7wXK33t1YStpweWlJ42aytyrLy2eD4M8F2t2Rl8F5d1qmiuhkz6sv/F
+rfS9NWl2dfT6fYbb+kWRSyLnhPSEVjiM0OeyCLAA4FeGY9B5VnMFo/oEphbS1UINXsLwWTlaYYs7
+gcIc3lzQOsJZS0iqF1SkzOZNItQzEbaLUpJjKLl7Ph/HMpIuy0CZBt8iW2KgOlOrYh9L8WFttj/b
+hEjGbsJqXu09MxzX800ai3cStk4g6thnZTKLtxcQAEWXId4cz/8sV5sB4W606CfbiNukPiy0M8R7
+xKZvfBRU49t2nDdaBMAGqfQeibLoz35/d37M6nHuARmxQmJEfIpHVu+7ihVpSkmM8rDMsSuBy1b8
+7eXF9Syv78m1VGVGZQg6teDlPQkAMtbwfieM2qELKh95Mb3SvVsgYsZlqxpSMfG/YL1fuam9o2Wp
+5w0=
+=EdCo
+-----END PGP SIGNATURE-----
+
+--------------ffM8l0TxRYwhGR0oMWNe03pk--
