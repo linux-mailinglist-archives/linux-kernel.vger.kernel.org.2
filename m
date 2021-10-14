@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04E742D601
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DFD42D64A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhJNJ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:29:02 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42212 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhJNJ3B (ORCPT
+        id S230112AbhJNJnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:43:31 -0400
+Received: from mo-csw-fb1515.securemx.jp ([210.130.202.171]:38218 "EHLO
+        mo-csw-fb.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230054AbhJNJn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:29:01 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B7F171FD32;
-        Thu, 14 Oct 2021 09:26:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634203615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tLQfy3ZoLS8x7LVZfGiK17ZJGdZMf8tJTi8CNsmBbGc=;
-        b=HC2eecZaTsxlqi59jaw4MBqyE8yDAIIyAvt+ycvez0HJBKnwN6ry/3xkQ3Ck7QUeQLefJn
-        LHhnJr6wWPtHtC+sqFzfSAjuAwOsd+oh+YkVOqh3AIVPwyTHVg5N5mWeB2PnF1Yj1Phbd5
-        ukvL03vskvIBOSnQG4ICLDf1+jfhVjo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634203615;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tLQfy3ZoLS8x7LVZfGiK17ZJGdZMf8tJTi8CNsmBbGc=;
-        b=U6iw6WWGTBX585/HJKi6+urU9ZKc7GZJ1qBO+EETg9xNw5bfa7YQtjTIn8P5saBBxIC0Cb
-        o5Bz/YWVkTETjrBw==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 74F67A3B87;
-        Thu, 14 Oct 2021 09:26:55 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5EF411E0C03; Thu, 14 Oct 2021 11:26:55 +0200 (CEST)
-Date:   Thu, 14 Oct 2021 11:26:55 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] ext4:namei: fix boolreturn.cocci warnings
-Message-ID: <20211014092655.GD15931@quack2.suse.cz>
-References: <20210824055543.58718-1-deng.changcheng@zte.com.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824055543.58718-1-deng.changcheng@zte.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Thu, 14 Oct 2021 05:43:29 -0400
+Received: by mo-csw-fb.securemx.jp (mx-mo-csw-fb1515) id 19E9WXlx029314; Thu, 14 Oct 2021 18:32:33 +0900
+Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 19E9WLoC025911; Thu, 14 Oct 2021 18:32:21 +0900
+X-Iguazu-Qid: 34tKJZBnPUks7DZbff
+X-Iguazu-QSIG: v=2; s=0; t=1634203941; q=34tKJZBnPUks7DZbff; m=a1oj5tUy3wwpIzpppPM4Z/BMNDNEME2RrpnL1vlFa0g=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1512) id 19E9WLWb001384
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 14 Oct 2021 18:32:21 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 0ED9D100095;
+        Thu, 14 Oct 2021 18:32:21 +0900 (JST)
+Received: from enc01.toshiba.co.jp (localhost.localdomain [127.0.0.1])
+        by enc01.toshiba.co.jp  with ESMTP id 19E9WKCf024562;
+        Thu, 14 Oct 2021 18:32:20 +0900
+Received: from enc01.toshiba.co.jp.mid_24808776 (localhost.localdomain [127.0.0.1])
+        by enc01.toshiba.co.jp  with ESMTP id 19E9RH4Y021220;
+        Thu, 14 Oct 2021 18:27:17 +0900
+X-SA-MID: 24808776
+From:   Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
+To:     Rob Herring <robh+dt@kernel.org>, nobuhiro1.iwamatsu@toshiba.co.jp
+Cc:     punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] arm64: dts: visconti: Add Toshiba Visconti TMPV7708 VisROBO VRB board support
+Date:   Thu, 14 Oct 2021 18:27:00 +0900
+X-TSB-HOP: ON
+Message-Id: <20211014092703.15251-1-yuji2.ishikawa@toshiba.co.jp>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 23-08-21 22:55:43, CGEL wrote:
-> From: Jing Yangyang <jing.yangyang@zte.com.cn>
-> 
-> Return statements in functions returning bool should use true/false
-> instead of 1/0.
-> 
-> ./fs/ext4/namei.c:1441:12-13:WARNING:return of 0/1 in function
-> 'ext4_match' with return type bool
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+Hi,
 
-This seems to have fallen through the cracks. The fix looks good to me.
-Feel free to add:
+This series is a device tree for a new board 
+with Toshiba's ARM SoC, Visconti[0].
+The board system, called VisROBO, consists of two parts: 
+VRC SoM and VRB base board.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Best regards,
+  Yuji
 
-								Honza
+[0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
 
-> ---
->  fs/ext4/namei.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index f3bbcd4..b5cb32d 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -1438,7 +1438,7 @@ static bool ext4_match(struct inode *parent,
->  					fname->hinfo.minor_hash !=
->  						EXT4_DIRENT_MINOR_HASH(de)) {
->  
-> -					return 0;
-> +					return false;
->  				}
->  			}
->  			return !ext4_ci_compare(parent, &cf, de->name,
-> -- 
-> 1.8.3.1
-> 
-> 
+Yuji Ishikawa (3):
+  arm64: dts: visconti: Add 150MHz fixed clock to TMPV7708 SoC
+  dt-bindings: arm: toshiba: Add the TMPV7708 VisROBO VRB board
+  arm64: dts: visconti: Add DTS for the VisROBO board
+
+ .../devicetree/bindings/arm/toshiba.yaml      |  1 +
+ arch/arm64/boot/dts/toshiba/Makefile          |  1 +
+ .../boot/dts/toshiba/tmpv7708-visrobo-vrb.dts | 61 +++++++++++++++++++
+ .../dts/toshiba/tmpv7708-visrobo-vrc.dtsi     | 44 +++++++++++++
+ arch/arm64/boot/dts/toshiba/tmpv7708.dtsi     |  7 +++
+ 5 files changed, 114 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/toshiba/tmpv7708-visrobo-vrb.dts
+ create mode 100644 arch/arm64/boot/dts/toshiba/tmpv7708-visrobo-vrc.dtsi
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.17.1
+
+
