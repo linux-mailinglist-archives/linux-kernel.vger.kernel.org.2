@@ -2,107 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB5E42D5C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6D042D5C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhJNJPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:15:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230094AbhJNJPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:15:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A42516101D;
-        Thu, 14 Oct 2021 09:13:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634202790;
-        bh=yYl0Da99LZ2wsEtdjpplnJ+PZvP2bmgujP9p713SfHw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DbsBvfj9mNhIXXTmWBp7BoNqP5jY9P95kcPENN+8zlaq4g9zvw5LyZhsxGzanOAON
-         py4CPBlxnpjv1PRxFjWNDWpThMx4YWgY9/F9vauetOdN8fLFYhi7/0Da6g4njmoyIy
-         Ja1uAt6uHA03UWHwKMIRBO+EKwuHORQcSYWvzTt4BrZrMake/HWE3y1nvfJMOqocPY
-         6a1Kfarur0CcD6XVzJZIchzRdvKPh7m/xOKNqocrhZlb9hNKwFugl4MQevSVPNfqMS
-         /xe3oI0j35adKbJ7Z6pWxuLOuprTvY1cPIKiQLtoC6GAJUZqIMg9s+MJeGJJFxSqP4
-         Ntgm/6iEWR4TA==
-Date:   Thu, 14 Oct 2021 10:13:05 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rjw@rjwysocki.net, oleg@redhat.com, mingo@kernel.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, mgorman@suse.de, linux-kernel@vger.kernel.org,
-        tj@kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 2/6] freezer,umh: Clean up freezer/initrd interaction
-Message-ID: <20211014091304.GB8135@willie-the-truck>
-References: <20211009100754.690769957@infradead.org>
- <20211009101444.912374035@infradead.org>
+        id S229691AbhJNJPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:15:30 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34094 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230118AbhJNJPW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 05:15:22 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1619621A78;
+        Thu, 14 Oct 2021 09:13:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634202796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6qlO0B+dKVbDjD2ahAupf74QzcuBtOf+3HozXO78zVI=;
+        b=TNcMw28JoUbqZZrjTwmFLWtEVPnNV5ytCnksIJIdcU85oBHx2uqflkwC21OnsmYSMeNEMC
+        kYFkvf6iLxxdWYUsCUjTTstLSlPXR1+HgAuC5TKPtflyHbB0YnOvbj/4sp7TYCc11H5GiQ
+        3hThb2kfKCZXvj271cl6oZ0iXmz+5fw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634202796;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6qlO0B+dKVbDjD2ahAupf74QzcuBtOf+3HozXO78zVI=;
+        b=F4BaV/k078gUywEn1Kt9pDnKXJaHdraB0NCigBl7LVC2HzjgwcBlCnC3EArFqzS4fQ7Sjb
+        P9TBANAUA3ey+kBw==
+Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id A7F0BA3B8B;
+        Thu, 14 Oct 2021 09:13:13 +0000 (UTC)
+Date:   Thu, 14 Oct 2021 11:13:13 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     =?ISO-2022-JP?Q?=1B$B2&lV=1B=28J?= <yun.wang@linux.alibaba.com>
+cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] ftrace: disable preemption between
+ ftrace_test_recursion_trylock/unlock()
+In-Reply-To: <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.21.2110141108150.23710@pobox.suse.cz>
+References: <609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com> <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211009101444.912374035@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 09, 2021 at 12:07:56PM +0200, Peter Zijlstra wrote:
-> handle_initrd() marks itself as PF_FREEZER_SKIP in order to ensure
-> that the UMH, which is going to freeze the system, doesn't
-> indefinitely wait for it's caller.
+> diff --git a/kernel/livepatch/patch.c b/kernel/livepatch/patch.c
+> index e8029ae..b8d75fb 100644
+> --- a/kernel/livepatch/patch.c
+> +++ b/kernel/livepatch/patch.c
+> @@ -49,14 +49,16 @@ static void notrace klp_ftrace_handler(unsigned long ip,
 > 
-> Rework things by adding UMH_FREEZABLE to indicate the completion is
-> freezable.
+>  	ops = container_of(fops, struct klp_ops, fops);
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  include/linux/umh.h     |    9 +++++----
->  init/do_mounts_initrd.c |   10 +---------
->  kernel/umh.c            |    8 ++++++++
->  3 files changed, 14 insertions(+), 13 deletions(-)
+> +	/*
+> +	 *
 
-This looks much better to me:
+This empty line is not useful.
 
-Acked-by: Will Deacon <will@kernel.org>
-
-Just a question on the old code:
-
-> --- a/include/linux/umh.h
-> +++ b/include/linux/umh.h
-> @@ -11,10 +11,11 @@
->  struct cred;
->  struct file;
->  
-> -#define UMH_NO_WAIT	0	/* don't wait at all */
-> -#define UMH_WAIT_EXEC	1	/* wait for the exec, but not the process */
-> -#define UMH_WAIT_PROC	2	/* wait for the process to complete */
-> -#define UMH_KILLABLE	4	/* wait for EXEC/PROC killable */
-> +#define UMH_NO_WAIT	0x00	/* don't wait at all */
-> +#define UMH_WAIT_EXEC	0x01	/* wait for the exec, but not the process */
-> +#define UMH_WAIT_PROC	0x02	/* wait for the process to complete */
-> +#define UMH_KILLABLE	0x04	/* wait for EXEC/PROC killable */
-> +#define UMH_FREEZABLE	0x08	/* wait for EXEC/PROC freezable */
->  
->  struct subprocess_info {
->  	struct work_struct work;
-> --- a/init/do_mounts_initrd.c
-> +++ b/init/do_mounts_initrd.c
-> @@ -79,19 +79,11 @@ static void __init handle_initrd(void)
->  	init_mkdir("/old", 0700);
->  	init_chdir("/old");
->  
-> -	/*
-> -	 * In case that a resume from disk is carried out by linuxrc or one of
-> -	 * its children, we need to tell the freezer not to wait for us.
-> -	 */
-> -	current->flags |= PF_FREEZER_SKIP;
-> -
->  	info = call_usermodehelper_setup("/linuxrc", argv, envp_init,
->  					 GFP_KERNEL, init_linuxrc, NULL, NULL);
->  	if (!info)
+> +	 * The ftrace_test_recursion_trylock() will disable preemption,
+> +	 * which is required for the variant of synchronize_rcu() that is
+> +	 * used to allow patching functions where RCU is not watching.
+> +	 * See klp_synchronize_transition() for more details.
+> +	 */
+>  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+>  	if (WARN_ON_ONCE(bit < 0))
 >  		return;
-> -	call_usermodehelper_exec(info, UMH_WAIT_PROC);
-> -
-> -	current->flags &= ~PF_FREEZER_SKIP;
+> -	/*
+> -	 * A variant of synchronize_rcu() is used to allow patching functions
+> -	 * where RCU is not watching, see klp_synchronize_transition().
+> -	 */
+> -	preempt_disable_notrace();
+> 
+>  	func = list_first_or_null_rcu(&ops->func_stack, struct klp_func,
+>  				      stack_node);
+> @@ -120,7 +122,6 @@ static void notrace klp_ftrace_handler(unsigned long ip,
+>  	klp_arch_set_pc(fregs, (unsigned long)func->new_func);
+> 
+>  unlock:
+> -	preempt_enable_notrace();
+>  	ftrace_test_recursion_unlock(bit);
+>  }
 
-How was this supposed to work if it raced with the freezer checking the
-flag?
+Acked-by: Miroslav Benes <mbenes@suse.cz>
 
-Will
+for the livepatch part of the patch.
+
+I would also ask you not to submit new versions so often, so that the 
+other reviewers have time to actually review the patch set.
+
+Quoting from Documentation/process/submitting-patches.rst:
+
+"Wait for a minimum of one week before resubmitting or pinging reviewers - 
+possibly longer during busy times like merge windows."
+
+Thanks
+
+Miroslav
