@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D8342D7FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB6842D802
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 13:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230456AbhJNLSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 07:18:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41842 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhJNLS2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:18:28 -0400
-Date:   Thu, 14 Oct 2021 11:16:22 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634210183;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zH3seKDaWZaonrwoUsgAgpKAGBRA0J9C0WdC66iknEo=;
-        b=LSNg8RADO54irUYU+J2WS2IT/0/nXFdxxA89J5iFHMJHYs1twoXjYeQvwhKAf5M0Z2Yuc/
-        CEw8rh2wVGYUuWvNutq2YhYS07MKPqsz676W7G7bU0PC/+Va0dnleAEjkaH7VMokBeNF/+
-        4n4WB3B0go46x18EHJnOuEoJiad9/YtlW/Q74Y53aEhJ0a9+SA7jgDDEhXA6EV26O2P83I
-        3VroN3lOGiIwWYNyRvp3mIF+Ol7qZw8N/hwmnOuj1fvSq8vQU1k/3ga0QluoPsY4muD8Mq
-        4/p4Y1p9ChT4siqvvImKiiHXtQVW/PnNdQXPhmnrUVuQYMR8mISZvOcEVP42lQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634210183;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zH3seKDaWZaonrwoUsgAgpKAGBRA0J9C0WdC66iknEo=;
-        b=tIMnMANlAxPQET5wrw3ONC9REr9L5l553FRlSRC3ArMDEf126cUkSco0CkY2NUFGypHq7O
-        EA/DdWA8CllgIKCA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched,livepatch: Use wake_up_if_idle()
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Vasily Gorbik <gor@linux.ibm.com>, x86@kernel.org,
+        id S230361AbhJNLT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 07:19:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230142AbhJNLT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 07:19:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C865D610E7;
+        Thu, 14 Oct 2021 11:17:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1634210273;
+        bh=NyMb3WErlw1pvar4/J8xwhOgvcvbCNpz3QtDgT+4tnw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ShNu7UuVKhKza2uqlxhPkmkf0jE5EB8xtFUwk0uSUFyt8mVp9lKR1kQhKBxgSiuxa
+         1OrQDhAFfs29N6Dm+IXnTqJY6pzlv/JF1h+qo/+5mS0GBWivTj3DnuTZlwcLvckdGm
+         CmJdHPmkvpisham1FOtvJW4yERs2CWrCeOd375r8=
+Date:   Thu, 14 Oct 2021 13:17:50 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210929151723.162004989@infradead.org>
-References: <20210929151723.162004989@infradead.org>
+Subject: [PATCH] ALSA: usb-audio: add Schiit Hel device to quirk table
+Message-ID: <YWgR3nOI1osvr5Yo@kroah.com>
 MIME-Version: 1.0
-Message-ID: <163421018265.25758.5701287622030890933.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1516; h=from:subject;
+ bh=NyMb3WErlw1pvar4/J8xwhOgvcvbCNpz3QtDgT+4tnw=;
+ b=owGbwMvMwCRo6H6F97bub03G02pJDIkZgtO2dW66/u2Rc8rXpYGpe2fePve/c1tEjxyjtAWvcMc+
+ 4ylrO2JZGASZGGTFFFm+bOM5ur/ikKKXoe1pmDmsTCBDGLg4BWAiVocY5oc8YZggM+Puk/zapSzWl7
+ Ydv+eSuZZhnsUKj5xbh0y3TXh1vI/3FttX7ZaiKAA=
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp;
+ fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+The Shciit Hel device responds to the ctl message for the mic capture
+switch with a timeout of -EPIPE:
 
-Commit-ID:     5de62ea84abd732ded7c5569426fd71c0420f83e
-Gitweb:        https://git.kernel.org/tip/5de62ea84abd732ded7c5569426fd71c0420f83e
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Tue, 21 Sep 2021 22:16:02 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 14 Oct 2021 13:09:25 +02:00
+	usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
+	usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
+	usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
+	usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
 
-sched,livepatch: Use wake_up_if_idle()
+This seems safe to ignore as the device works properly with the control
+message quirk, so add it to the quirk table so all is good.
 
-Make sure to prod idle CPUs so they call klp_update_patch_state().
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Acked-by: Miroslav Benes <mbenes@suse.cz>
-Acked-by: Vasily Gorbik <gor@linux.ibm.com>
-Tested-by: Petr Mladek <pmladek@suse.com>
-Tested-by: Vasily Gorbik <gor@linux.ibm.com> # on s390
-Link: https://lkml.kernel.org/r/20210929151723.162004989@infradead.org
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-usb@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/sched/idle.h    | 4 ++++
- kernel/livepatch/transition.c | 5 ++++-
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ sound/usb/quirks.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/sched/idle.h b/include/linux/sched/idle.h
-index 22873d2..d73d314 100644
---- a/include/linux/sched/idle.h
-+++ b/include/linux/sched/idle.h
-@@ -11,7 +11,11 @@ enum cpu_idle_type {
- 	CPU_MAX_IDLE_TYPES
- };
- 
-+#ifdef CONFIG_SMP
- extern void wake_up_if_idle(int cpu);
-+#else
-+static inline void wake_up_if_idle(int cpu) { }
-+#endif
- 
- /*
-  * Idle thread specific functions to determine the need_resched
-diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-index 75251e9..5683ac0 100644
---- a/kernel/livepatch/transition.c
-+++ b/kernel/livepatch/transition.c
-@@ -413,8 +413,11 @@ void klp_try_complete_transition(void)
- 	for_each_possible_cpu(cpu) {
- 		task = idle_task(cpu);
- 		if (cpu_online(cpu)) {
--			if (!klp_try_switch_task(task))
-+			if (!klp_try_switch_task(task)) {
- 				complete = false;
-+				/* Make idle task go through the main loop. */
-+				wake_up_if_idle(cpu);
-+			}
- 		} else if (task->patch_state != klp_target_state) {
- 			/* offline idle tasks can be switched immediately */
- 			clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 6ee6d24c847f..ec11be366dc0 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1884,6 +1884,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
+ 		   QUIRK_FLAG_GET_SAMPLE_RATE),
+ 	DEVICE_FLG(0x2912, 0x30c8, /* Audioengine D1 */
+ 		   QUIRK_FLAG_GET_SAMPLE_RATE),
++	DEVICE_FLG(0x30be, 0x0101, /* Schiit Hel */
++		   QUIRK_FLAG_IGNORE_CTL_ERROR),
+ 	DEVICE_FLG(0x413c, 0xa506, /* Dell AE515 sound bar */
+ 		   QUIRK_FLAG_GET_SAMPLE_RATE),
+ 	DEVICE_FLG(0x534d, 0x2109, /* MacroSilicon MS2109 */
+-- 
+2.33.0
+
