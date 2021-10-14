@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E5942DB84
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4A142DB86
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhJNOaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39820 "EHLO
+        id S231598AbhJNOaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbhJNOaQ (ORCPT
+        with ESMTP id S230030AbhJNOaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:30:16 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6AB0C061570;
-        Thu, 14 Oct 2021 07:28:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uWBQfk1iLdKpELGt/qdUWn4KNZxoLSLIiDkZWLgKqtY=; b=IRMmEGeV6uQYDPk4q4aRRoK8oA
-        Q6h8pwuJ0IEY7b2/TNKjpsko+eXuIZwHepatAtQALymBCVjwtrCcDAaBDYFyk7lViD60fxhZvvVNx
-        lNUHSvi/kx4ZPxZSBtjetptMiWcYTVWG/6ALAxHQcH4Kd5B+BKyfQWbzEnu3K42n8r7ZmM//jpwiv
-        39+gXDKtYYaelFbYwW6fGTcAqAbOr9x0WxgNoTsghECJRzsrjBaWN7WyLFIj230wQeqsIWyv7hciA
-        Nl0j/6gj7Oe44Tu3xyQCix1N+1ZEXcvORK0wLcUhyF9kLTjjruyq56wWolaFsOzGADOzS33/fHavV
-        Bcr71R8w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mb1i8-009qi2-DH; Thu, 14 Oct 2021 14:27:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F02043004E7;
-        Thu, 14 Oct 2021 16:27:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CE1E82CF42A20; Thu, 14 Oct 2021 16:27:55 +0200 (CEST)
-Date:   Thu, 14 Oct 2021 16:27:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     rjw@rjwysocki.net, oleg@redhat.com, mingo@kernel.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, mgorman@suse.de, linux-kernel@vger.kernel.org,
-        tj@kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] ptrace: Order and comment PT_flags
-Message-ID: <YWg+a6PPD5Mpr4c/@hirez.programming.kicks-ass.net>
-References: <20211009100754.690769957@infradead.org>
- <20211009101444.971532166@infradead.org>
- <20211014093121.GA8239@willie-the-truck>
+        Thu, 14 Oct 2021 10:30:24 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7C5C061570;
+        Thu, 14 Oct 2021 07:28:19 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id y17so3691253ilb.9;
+        Thu, 14 Oct 2021 07:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3yqJazoYM4kmLQJvSLYhgrv+ART/xn7b80Tf2DaKUZE=;
+        b=GcCvIJPEQ3pDL30+wH+yrRs7in7q5fCSnh+dBrL3Jxtbs/xFafNy7hUZ8STIcV95Zm
+         yOzi/nPr4K5aYSTbXoBt2pZVo6MsC5GbT1m04gCG++00A21kXLtg/C5SSbnh3O8szasY
+         y5LajvBdcwukNWjTGJ6tQ2vlKVJIZdFnmcywvQ7xn9cv3QZlVItg50c4Q+IwioevLVT5
+         vLEieTQsj/JsZQB61/aPYHGrVaCpPHRFM+iLH3P4bHMlmdLRELy1lRw52r9ERKqHFFC5
+         62JalqI7fYDCA+blNRl2B4n1ykcewl4HCddKSBBohx5m7QxR+WirxusEPQzTEz16emQq
+         A4iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3yqJazoYM4kmLQJvSLYhgrv+ART/xn7b80Tf2DaKUZE=;
+        b=cDnGRRzoFMl2dSJCjYqjmC4lV9nsKAnmH8lDiHl3X+tTYZ5N8rekKQPy1RMmlrhDyA
+         6ccNw1HYk2Pu+wS9uNFAHl6dfFwW51/wnPJuUP4uxpHOKVdN7bY/hklbdoz1nQOSpMqx
+         GvrW0aP4Lby/6AZokQCDABhAyYVAFzAi+hHaq2USGlz/6LAbX4Pk/xq16rv0blyefvet
+         DDE9V6caNNMewHg0ySmY1GEFwQ8iBoLHcXe+CSG1Kx31VoHvARyohdVz809AdfeaYsMB
+         vTrDLs4S4nTavMUR4Qv2uHxJkw1K8S5nrg9BW3g7PHNTB/lgHIqa4a/xzWBe0II3LUA2
+         v/iQ==
+X-Gm-Message-State: AOAM530UKzXW6qGH/2aF2sb6IXemzCxgiDX7n/EEVb18zFw/v+u0QmxV
+        4ZReyhTAM+L2NVWylgutrqNTULvAjtfTFw==
+X-Google-Smtp-Source: ABdhPJwcYhiIlEcVqT3SGlWMGwTAFiPisf+6b+JbL+OShzL5TxgrO/MfJIdjs19GStIIr5LaZ2qtqw==
+X-Received: by 2002:a05:6e02:2169:: with SMTP id s9mr2765788ilv.154.1634221698843;
+        Thu, 14 Oct 2021 07:28:18 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.34])
+        by smtp.googlemail.com with ESMTPSA id l18sm1322377ilj.12.2021.10.14.07.28.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 07:28:18 -0700 (PDT)
+Subject: Re: [PATCH v2 4/4] selftests: net/fcnal: Test
+ --{do,no}-bind-key-ifindex
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Yonghong Song <yhs@fb.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1634107317.git.cdleonard@gmail.com>
+ <e864a790986862bb09c69627067a0349253f0fc8.1634107317.git.cdleonard@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <2d00a2bf-acce-466a-8908-fbfc13c0840f@gmail.com>
+Date:   Thu, 14 Oct 2021 08:28:17 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014093121.GA8239@willie-the-truck>
+In-Reply-To: <e864a790986862bb09c69627067a0349253f0fc8.1634107317.git.cdleonard@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 10:31:22AM +0100, Will Deacon wrote:
-> On Sat, Oct 09, 2021 at 12:07:57PM +0200, Peter Zijlstra wrote:
-> > Add a comment to the PT_flags to indicate their actual value, this
-> > makes it easier to see what bits are used and where there might be a
-> > possible hole to use.
-> > 
-> > Notable PT_SEIZED was placed wrong, also PT_EVENT_FLAG() space seems
-> > ill defined, as written is seems to be meant to cover the entire
-> > PTRACE_O_ range offset by 3 bits, which would then be 3+[0..21],
-> > however PT_SEIZED is in the middle of that.
+On 10/13/21 12:50 AM, Leonard Crestez wrote:
+> Test that applications binding listening sockets to VRFs without
+> specifying TCP_MD5SIG_FLAG_IFINDEX will work as expected. This would
+> be broken if __tcp_md5_do_lookup always made a strict comparison on
+> l3index. See this email:
 > 
-> Why do you think PT_EVENT_FLAG() should cover all the PTRACE_O_* options?
-> Just going by the name and current callers, I'd only expect it to cover
-> the PTRACE_EVENT_* flags, no?
+> https://lore.kernel.org/netdev/209548b5-27d2-2059-f2e9-2148f5a0291b@gmail.com/
+> 
+> Applications using tcp_l3mdev_accept=1 and a single global socket (not
+> bound to any interface) also should have a way to specify keys that are
+> only for the default VRF, this is done by --do-bind-key-ifindex without
+> otherwise binding to a device.
+> 
+> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+> ---
+>  tools/testing/selftests/net/fcnal-test.sh | 60 +++++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+> 
 
-Because PT_EXITKILL and PT_SUSPEND_SECCOMP are also exposed in that same
-mapping.
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
-Ideally we'd change PT_OPT_FLAG_SHIFT to 8 or something and have the
-high 24 bits for OPT and then use the low 8 bits for SEIZED and the new
-flags.
