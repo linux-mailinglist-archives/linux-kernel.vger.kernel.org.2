@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D1E42E0BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27BC42E0C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233823AbhJNSHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:07:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230386AbhJNSHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:07:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7811E61156;
-        Thu, 14 Oct 2021 18:05:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634234707;
-        bh=Rqf9bmS83xeh3gCkrvLoUtzShhDQVtdQ2GWkdDACjQY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K2OxDOj4FznqZrubwOPyMGzMHqGX17L7kfeSgXLp/+KyODPMHxpsiFkoPrIKO2qDL
-         mZYZQEuF6syddsDF3heZBQ7jwZIz8dmD0WVRQ2Av5DhkmdY0+22qCGtv809c7Ze8Er
-         WTglLurLQf0WfhK3SZl0nyUuEl+ZaZnB7GVzPx1VXQHwbugLIbDNVp9oMwsNMpGcEt
-         PWY9ml3cpZ2bxt/JUKxCBSYvpYUtpcvyATECCVRF96dhMBlyjygp5xMOkK3kIAxt6C
-         YlXwsKsKMgYGLjV15y4itRVFcpz0qtI2oFKPucHsjl2nH6lbJyZqWP/eJRwfb8lJ7e
-         EA8BlYXkO5PFg==
-Date:   Thu, 14 Oct 2021 11:05:07 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@infradead.org, jane.chu@oracle.com
-Subject: Re: [PATCH v7 4/8] pagemap,pmem: Introduce ->memory_failure()
-Message-ID: <20211014180507.GG24307@magnolia>
-References: <20210924130959.2695749-1-ruansy.fnst@fujitsu.com>
- <20210924130959.2695749-5-ruansy.fnst@fujitsu.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924130959.2695749-5-ruansy.fnst@fujitsu.com>
+        id S233877AbhJNSJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:09:07 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:55327 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233832AbhJNSJD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 14:09:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1634234818; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=oxG38HVZuMV0lltRN3a6CTUoe9NYl8V8VOMSaQ1XQuQ=; b=nTPN2iCGM77UlbSma38VNJ56qAr4XsicBTpZSNBlPdYZOpCFGgaYl1A+ABY67VKI44AcXCsW
+ 5ePoRuqQuxHiogd5QQuPKNUsAvvQMeBNfJC5kQI78U/oAkB093cpwuaVPqKjVbjd3Jxy4dxa
+ cpUVBK8NUPLI+t+1qvUBJ2omv0g=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 616871b4f3e5b80f1f5b9059 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 14 Oct 2021 18:06:44
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2D24AC4360D; Thu, 14 Oct 2021 18:06:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7BCA1C4338F;
+        Thu, 14 Oct 2021 18:06:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7BCA1C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     sanm@codeaurora.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vbadigan@codeaurora.org, manivannan.sadhasivam@linaro.org
+Cc:     Prasad Malisetty <pmaliset@codeaurora.org>
+Subject: [PATCH v2] arm64: dts: qcom: sc7280: Add pcie clock support
+Date:   Thu, 14 Oct 2021 23:36:24 +0530
+Message-Id: <1634234784-5359-1-git-send-email-pmaliset@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 09:09:55PM +0800, Shiyang Ruan wrote:
-> When memory-failure occurs, we call this function which is implemented
-> by each kind of devices.  For the fsdax case, pmem device driver
-> implements it.  Pmem device driver will find out the filesystem in which
-> the corrupted page located in.
-> 
-> With dax_holder notify support, we are able to notify the memory failure
-> from pmem driver to upper layers.  If there is something not support in
-> the notify routine, memory_failure will fall back to the generic hanlder.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  drivers/nvdimm/pmem.c    | 11 +++++++++++
->  include/linux/memremap.h |  9 +++++++++
->  mm/memory-failure.c      | 14 ++++++++++++++
->  3 files changed, 34 insertions(+)
-> 
-> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-> index 72de88ff0d30..0dfafad8fcc5 100644
-> --- a/drivers/nvdimm/pmem.c
-> +++ b/drivers/nvdimm/pmem.c
-> @@ -362,9 +362,20 @@ static void pmem_release_disk(void *__pmem)
->  	del_gendisk(pmem->disk);
->  }
->  
-> +static int pmem_pagemap_memory_failure(struct dev_pagemap *pgmap,
-> +		unsigned long pfn, size_t size, int flags)
-> +{
-> +	struct pmem_device *pmem =
-> +			container_of(pgmap, struct pmem_device, pgmap);
-> +	loff_t offset = PFN_PHYS(pfn) - pmem->phys_addr - pmem->data_offset;
-> +
-> +	return dax_holder_notify_failure(pmem->dax_dev, offset, size, flags);
-> +}
-> +
->  static const struct dev_pagemap_ops fsdax_pagemap_ops = {
->  	.kill			= pmem_pagemap_kill,
->  	.cleanup		= pmem_pagemap_cleanup,
-> +	.memory_failure		= pmem_pagemap_memory_failure,
->  };
->  
->  static int pmem_attach_disk(struct device *dev,
-> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-> index c0e9d35889e8..36d47bacd46d 100644
-> --- a/include/linux/memremap.h
-> +++ b/include/linux/memremap.h
-> @@ -87,6 +87,15 @@ struct dev_pagemap_ops {
->  	 * the page back to a CPU accessible page.
->  	 */
->  	vm_fault_t (*migrate_to_ram)(struct vm_fault *vmf);
-> +
-> +	/*
-> +	 * Handle the memory failure happens on a range of pfns.  Notify the
-> +	 * processes who are using these pfns, and try to recover the data on
-> +	 * them if necessary.  The flag is finally passed to the recover
-> +	 * function through the whole notify routine.
-> +	 */
-> +	int (*memory_failure)(struct dev_pagemap *pgmap, unsigned long pfn,
-> +			      size_t size, int flags);
->  };
->  
->  #define PGMAP_ALTMAP_VALID	(1 << 0)
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 8ff9b52823c0..85eab206b68f 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1605,6 +1605,20 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
->  	if (!pgmap_pfn_valid(pgmap, pfn))
->  		goto out;
->  
-> +	/*
-> +	 * Call driver's implementation to handle the memory failure, otherwise
-> +	 * fall back to generic handler.
-> +	 */
-> +	if (pgmap->ops->memory_failure) {
-> +		rc = pgmap->ops->memory_failure(pgmap, pfn, PAGE_SIZE, flags);
-> +		/*
-> +		 * Fall back to generic handler too if operation is not
-> +		 * supported inside the driver/device/filesystem.
-> +		 */
-> +		if (rc != EOPNOTSUPP)
+Add pcie clock phandle for sc7280 SoC and correct
+The pcie_1_pipe-clk clock name as same as binding.
 
--EOPNOTSUPP?  (negative errno)
+fix: ab7772de8 ("arm64: dts: qcom: SC7280: Add rpmhcc clock controller node")
+Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+Reported-by: kernel test robot <lkp@intel.com>
 
---D
+---
+This change is depends on the below patch series.
+https://lkml.org/lkml/2021/10/7/841
+---
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> +			goto out;
-> +	}
-> +
->  	rc = mf_generic_kill_procs(pfn, flags, pgmap);
->  out:
->  	/* drop pgmap ref acquired in caller */
-> -- 
-> 2.33.0
-> 
-> 
-> 
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 39635da..78694c1 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -569,9 +569,10 @@
+ 			reg = <0 0x00100000 0 0x1f0000>;
+ 			clocks = <&rpmhcc RPMH_CXO_CLK>,
+ 				 <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
+-				 <0>, <0>, <0>, <0>, <0>, <0>;
++				 <0>, <&pcie1_lane 0>,
++				 <0>, <0>, <0>, <0>;
+ 			clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
+-				      "pcie_0_pipe_clk", "pcie_1_pipe-clk",
++				      "pcie_0_pipe_clk", "pcie_1_pipe_clk",
+ 				      "ufs_phy_rx_symbol_0_clk", "ufs_phy_rx_symbol_1_clk",
+ 				      "ufs_phy_tx_symbol_0_clk",
+ 				      "usb3_phy_wrapper_gcc_usb30_pipe_clk";
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
