@@ -2,329 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAF242DB93
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E544742DB99
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhJNOcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhJNOcd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:32:33 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40B8C061570;
-        Thu, 14 Oct 2021 07:30:28 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id g14so3865333qvb.0;
-        Thu, 14 Oct 2021 07:30:28 -0700 (PDT)
+        id S231487AbhJNOdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:33:05 -0400
+Received: from mail-bn7nam10on2065.outbound.protection.outlook.com ([40.107.92.65]:13281
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231640AbhJNOc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:32:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kwKT86D8XR35aBG5P1mWUOnb8ssJocjYlbmQ2vXs07CRg9JPZXRwu9kFpR96LV+AxHCnDPI9JnFIPpAk2D48eF2IcBegpr8sb0pKnpu+YPs8VB3EQ6fjDFs1CE4dw91hJbhhFj4yDoWv3cRQTTRczBLaT1bL0ZOfi2stKqVUy8pTFLJH2rIBe3zPyDEMKFLoqui61D/Z0IJ14AXr3FBYnHSQ60whPPio6vltZJ/puC31CNGaFT1VrvrZ1B32tJV6VGVnZWobwtyLYHZpN55TjY5BoWSdDR0s5w4D3GORPeEUtnJH/QWiHhic5YbTMeCZCdFRm0bNPJbbUuPO/FFuxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/fUKTfTAfwy+7eaWpDgFDrxaFUgPQXq/FXSbMTtXJ5g=;
+ b=CZR26VYut8Ywc6vh9ipmf0nLfucF983CwKOq2E/gtAIal944ayB7qhbNbyKCwEg5msZK/ZFQ/OQ//fuc/BEl62chYtwEeTeIhwtq7U7yZCA4TX2HhfJzWIrvAZiz94K8hTEfKy5YEEJVhPxRMLZ0lhXOU8qF8RZUqqFPmfR4ouk92ZIEnomBDz10fyyI4J101zJxMsr7h9iklVFAdJivBtV8bT+to80joLh/nFoz2xh8x3fne0AToMt7Hj5ABGRzBwP27VrgL/ycERKZhklXm0pMdy/GzRM89ToANDpdSu7EUjgsCctyD59kUeATZAUZVrX3BvQBd46RCldT4jtyKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
+ dkim=pass header.d=silabs.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5D2sj3VCZnzWYTEq7JOwoxSAP+dFgEKkYuHF951TfRk=;
-        b=oksyokA0+2RU1b8CDeTR1xxp0EeRYjS53Xsn4K4orfgMbe3FSYC9m6dIi+DVhkktgu
-         6SLC2P+TCPZyVA/MF6r24lpkmm2rV3RL3652D5hatr3pGm3mE3qxW9I+rFKblAnaKuJr
-         z1NqGuFx9KT1SiteTGPRK83ZwV9jx93PKWqIVCwkUs2oFUKTCBWjiJbYWoa2/d6XDn9S
-         O3Qw6OVlA4xTTIuey+mCUIx2VWausvl/gQrJxbUirKRpU5kW0cghKemkn44F7YuPhxb4
-         UO/MeOxjWt6mdONYi/1P0zUfBkBfVXE5qESNxtQffdAzzA4Lci72J7upmUf6V/Arh2kN
-         dcwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5D2sj3VCZnzWYTEq7JOwoxSAP+dFgEKkYuHF951TfRk=;
-        b=2P8QZxYUTZFBXkIXo6uJ0zpDSrhuxlGnFa5jj/pFBM5Iv3R03IajK6LS6t2GQJwpfH
-         oXwPkSVTphPA1ihkyHaYepQ/ytgjm4zpyncM2CIqZK9QBWupPwQzTcJoBvAs/fF9BA1d
-         rVAsQ28dLD0uOMh3W4K5wDgrcBN/quQ3hrRi4hSvpzZUNHPLkSqfZIqy0u3k8iVnblAD
-         5B1mD4NBEtTlJD/HgYCxruXdCj+tyWPmUGLPk9rUgorMSw5ICRwN1xia0enBm7DMbAT+
-         gzx5z3lvuRgqhzYYyY4Lcncpl9HNDia+I9ZTEa2vzgUNpAQpZvfc8tRh7jV/3IhbCODg
-         qE5g==
-X-Gm-Message-State: AOAM533pS2GjhmLnVstQnPpa2W5uP64YRnBao6ujIt8XUKoaIvjmWwWY
-        pjMdmtlaRlV5GutNr85f2vLPiubfZtHV
-X-Google-Smtp-Source: ABdhPJxbOW6V4XQT7fNf9TONTy7cOM6vz8scFxCGaMmHU8dcMId/GeRe5iOF6Uc7ULwz2ADtv1xh8w==
-X-Received: by 2002:a0c:b412:: with SMTP id u18mr5871074qve.14.1634221827756;
-        Thu, 14 Oct 2021 07:30:27 -0700 (PDT)
-Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
-        by smtp.gmail.com with ESMTPSA id g4sm1442019qtp.43.2021.10.14.07.30.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 07:30:26 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 10:30:24 -0400
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     "heming.zhao@suse.com" <heming.zhao@suse.com>
-Cc:     Guoqing Jiang <guoqing.jiang@linux.dev>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, linux-raid@vger.kernel.org,
-        linux-block@vger.kernel.org, axboe@kernel.dk,
-        alexander.h.duyck@linux.intel.com
-Subject: [PATCH v2] md: Kill usage of page->index
-Message-ID: <YWg/AGR50Vw7DDuU@moria.home.lan>
-References: <20211013160034.3472923-1-kent.overstreet@gmail.com>
- <20211013160034.3472923-5-kent.overstreet@gmail.com>
- <bcdd4b56-9b6b-c5cb-2eb7-540fa003d692@linux.dev>
- <04714b0e-297b-7383-ed4f-e39ae5e56433@suse.com>
+ d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/fUKTfTAfwy+7eaWpDgFDrxaFUgPQXq/FXSbMTtXJ5g=;
+ b=mjl/n8lFeeXR5yJuoBSczwD2IZnYmfXV3xyoTftKbQ7EHiZntVOuw1Vytf/P2syb7/rZQvKikAAeVuWils5k7n8StDkjYP9nH6RSIqL0qVfCbEpJ5KLCpkMT3DerurjJGETGni8vFEeQ7Y9wdUbaju65K+Aw26HsC81edby66U0=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=silabs.com;
+Received: from PH0PR11MB5657.namprd11.prod.outlook.com (2603:10b6:510:ee::19)
+ by PH0PR11MB5643.namprd11.prod.outlook.com (2603:10b6:510:d5::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.19; Thu, 14 Oct
+ 2021 14:30:52 +0000
+Received: from PH0PR11MB5657.namprd11.prod.outlook.com
+ ([fe80::31cb:3b13:b0e8:d8f4]) by PH0PR11MB5657.namprd11.prod.outlook.com
+ ([fe80::31cb:3b13:b0e8:d8f4%9]) with mapi id 15.20.4587.026; Thu, 14 Oct 2021
+ 14:30:52 +0000
+From:   Jerome Pouiller <Jerome.Pouiller@silabs.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>
+Subject: [RFC PATCH 0/2] mmc: allow to rely on the DT to apply quirks
+Date:   Thu, 14 Oct 2021 16:30:29 +0200
+Message-Id: <20211014143031.1313783-1-Jerome.Pouiller@silabs.com>
+X-Mailer: git-send-email 2.33.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-ClientProxiedBy: PAZP264CA0161.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:1f9::20) To PH0PR11MB5657.namprd11.prod.outlook.com
+ (2603:10b6:510:ee::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <04714b0e-297b-7383-ed4f-e39ae5e56433@suse.com>
+Received: from pc-42.silabs.com (37.71.187.125) by PAZP264CA0161.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1f9::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Thu, 14 Oct 2021 14:30:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f455f4b6-d4ce-48c8-f763-08d98f1f3985
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5643:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR11MB564300879A3FFEE8517F953F93B89@PH0PR11MB5643.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: muD8dzqGSMcaoAvGTjvBrVWiCyScCaqzefRNo0OhCICPWGicDuwv3JDqIHNSfQl2mP3u43ToSa1YW7wlMLaxmhwS9FswcDIi8Mgnimvo6noqK8z3I0WpKpD1EULOBE8LvWNpeYdV14yGHN+QAakIZu5UUC7/ENvp2iATlhozrdKnU3wMYGgCk8uuUeWCmNdcx26dDGpUOwup+MqZp8+vcBXMg8XUTB6hg2Is2G4nmliwHASwDzTKd0Z7u6+q5HlbQua+7gnVuOapximqf3TARwEFd3qlcU/E80zDGo9cyVj4mUnPeNu2sAohkEuC6s+YyG10zKWIxMVL+GTnM2/HrIREAyVn4JhD+mELENjR2gSc6OTSmm91klbeTLC8t3FgryC6C6TE+uUd+lUlX6Y3cYjrBn7b4pODz+ZvKe6eGgm+MCJLxtEuBlwdf2lko8RKceO5a8rBSKwU/+qCwzE6EqHhAnoq/Jlx9W6PxxJk8Vi2rpyDarR8A/8invkDKpj22dTND8L65lOU7EzCMDg+YEARq+Bp6ovtTNOJbNovSya/OwTGBe0BFVtJcmyYAxOKC9Q2lv1m9oG7vVyXycagVSpuJnbwVAhHXAuuG1zUwvjsNAj9FDMdt+1gfWI1PCJh+1L7TFPcxq1FOKXjtFjfcjds1z+gJYL+QtX6HAVBLFkIFAmH+84fZl7eQm08q+xDa0uH1LuN3QlEoUerxJ0H113AaHbi6qV+wmRqCpkmIJk/LzpNOYjVi4bJScfY5xl7GdOAzZ4N/j/LxwcIGVbc/A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5657.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6486002)(38350700002)(7696005)(508600001)(186003)(8676002)(316002)(966005)(956004)(38100700002)(6916009)(54906003)(66476007)(2906002)(6666004)(86362001)(36756003)(107886003)(8936002)(4326008)(26005)(66946007)(83380400001)(1076003)(2616005)(4744005)(66556008)(52116002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QkxQM0tuS3l0M3RkZ3I1bzY1cDlYem1LeElacnNsMzc0eWt0aXZoQWRFZ0hF?=
+ =?utf-8?B?ei93enFQM2lSaW04NGlrdmRPb2MwcHV4VGJwTVlNTkN0YzFIb0hkeVkrZnhv?=
+ =?utf-8?B?MnRaYk1JMzR1S0ZVbGVGUEJHY09WelU5SmxTT25Wb1ltZUxjbU45RVpybzNj?=
+ =?utf-8?B?Mi9XQ2p4WlRQaTZBK3BYYjBRc1ZQRGZ0SXhPMTVGZk5kSzcwSzlEcUhtWGdG?=
+ =?utf-8?B?Vzk5cEVjd01yZjE4bXVBc2VKeGtLSlhyODJFaHVidmlUT2s0bUpleGlxcnor?=
+ =?utf-8?B?bjFMb09hS21Yc2JmWkdlUVlDWjI1bVFSdTMwQTdoOWpHRnllS1A1VC9XM1FQ?=
+ =?utf-8?B?MFBKbzNrM21lbXBqZC91Y1p1dmdPUVFJR3VhbDF1Z1VwdEt2SnYwdkZ3U3Va?=
+ =?utf-8?B?Zm93bDJ1VmpyUHB0YTdkZFhlcnhLVk1WcnRNKzBobmpPbmRCTDNFbmlvd3JT?=
+ =?utf-8?B?TGdhUzkydGIyYWZiU1hEbnBjWGh5MDNLcVgvSi9qdGJmNGE4eTgxaFZ0T05S?=
+ =?utf-8?B?QnhpVm9GMG94ZnRXaXkrV0I5eEJlb083TzQ3U1VsaHhCVy83eU1yazA3Rmdr?=
+ =?utf-8?B?NUdIMGx0czg3VTdTa1NlMS84Y0dWNGhyQ3plaDR6ZFpXeE1tY042ZUdlZGxv?=
+ =?utf-8?B?S2dHOTJPWmtZZllWV1BiTnI2S2VlbXNMZEJSQ0hTblFLS1ZYR1ZqT1ZuVW1u?=
+ =?utf-8?B?Q1hCUmJoTGszOFNjOFdnY2d2djBKbW85SnV3QWkwdE5PRndnWjJCQ2RiRkZ0?=
+ =?utf-8?B?ekRKWmlDSDFYOElDZUJmY0p3VTRaTUNOYUFnODRhVHM5emYzR0R3NWJlWFlF?=
+ =?utf-8?B?U2FpamR6WnZFTDZHRVM4TGE1VW52OVVkS2xHczJkYm9Cc3NTMzZuUkpPa0Rr?=
+ =?utf-8?B?TG1sTWxXbGswU1pGSnY0TElHLzVGYTlvbzE4RmpsOEJBSElTRE1xbDM3QTJw?=
+ =?utf-8?B?M2d0NkNqM09hbVZBY2VMRXRBZjgzMFNsL2FSNWxzYVhuVlVBRnltbExiQ3Rk?=
+ =?utf-8?B?QVNZMy9KQkx3bS9tdDVHeUEzaU1ESFBVZFdvTlg2cW9LeENlbHVYWlNJZC9o?=
+ =?utf-8?B?ZU9nN05KYTJpLzlqRExDUVdWcnpVc2JwVjdncVBab0tIMFZXL3BsbFVvRHBv?=
+ =?utf-8?B?N1A3eFB3dXZUM2xWN0J6Tk9xY1d5N05aVW9nK2F2QmR0dm0wdjBVaW5OZ2xN?=
+ =?utf-8?B?RnB5Tmx6VE05aG83MWNiSGNHUTJMbnZxZHZtSFI1cGdxVGhQbVc3cStYc3I3?=
+ =?utf-8?B?RGw1eEdiKytUYW51RDV0Y2xhMytZYkNpODNFaHlxR3pVODFZbjFaRkowM1U2?=
+ =?utf-8?B?MlBsaUgyUWlTeHVsY2xueGNGSVY5dlk2eXM0L1BKbVUwTW50L1JhWGI2MzBG?=
+ =?utf-8?B?WE9hb25adEc2TktHS3BuRlVJSFZPSnJmVjV4Rk9Xa1lMaUFoVkE1cUw1V0c0?=
+ =?utf-8?B?Qkk2RFFQVkN3QUNqMkhvdmduU3I5SFVyYmREQVh3NXk4Zzk3L01EK2Y3SFMr?=
+ =?utf-8?B?MUVFSjMzemc5SEZOK2hDenFSU3l6cWM3eEJLWVBZZGptenF0d1VxZVJFcHBR?=
+ =?utf-8?B?VVRpL3NDK2N2RldQM1pBS3VEU0JpaUxVUmVuay8wSjhQV1RFcTlkZDRPSHhU?=
+ =?utf-8?B?Wk9Razl0Nmp6VkZSM0hQVExVOGdueXAzS0tjQytFQnIrdHM2bDdaNmkxK01H?=
+ =?utf-8?B?MlVBWS9ERDhGTnpqanRwTEh6ektjMGRqZUp5a2xCVG5wZ21UV2ZwUTZqMFBC?=
+ =?utf-8?Q?JKIjyPiSc+hw/O5oobLxf1i7DlQHp7LjZ/CvDSp?=
+X-OriginatorOrg: silabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f455f4b6-d4ce-48c8-f763-08d98f1f3985
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5657.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 14:30:52.4372
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oUVLcw8rTy8iFdu7zhAzLYu8RJg2w3il0wTWFEqnjktz7uWzoZH5Hnaey64aWhborRfe1EL2Sfs9GmFrbjEHGQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5643
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 04:58:46PM +0800, heming.zhao@suse.com wrote:
-> Hello all,
-> 
-> The page->index takes an important role for cluster-md module.
-> i.e, a two-node HA env, node A bitmap may be managed in first 4K area, then
-> node B bitmap is in 8K area (the second page). this patch removes the index
-> and fix/hardcode index with value 0, which will only operate first node bitmap.
-> 
-> If this serial patches are important and must be merged in mainline, we should
-> redesign code logic for the related code.
-> 
-> Thanks,
-> Heming
-
-Can you look at and test the updated patch below? The more I look at the md
-bitmap code the more it scares me.
-
--- >8 --
-Subject: [PATCH] md: Kill usage of page->index
-
-As part of the struct page cleanups underway, we want to remove as much
-usage of page->mapping and page->index as possible, as frequently they
-are known from context - as they are here in the md bitmap code.
-
-Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
----
- drivers/md/md-bitmap.c | 49 ++++++++++++++++++++----------------------
- drivers/md/md-bitmap.h |  1 +
- 2 files changed, 24 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
-index e29c6298ef..316e4cd5a7 100644
---- a/drivers/md/md-bitmap.c
-+++ b/drivers/md/md-bitmap.c
-@@ -165,10 +165,8 @@ static int read_sb_page(struct mddev *mddev, loff_t offset,
- 
- 		if (sync_page_io(rdev, target,
- 				 roundup(size, bdev_logical_block_size(rdev->bdev)),
--				 page, REQ_OP_READ, 0, true)) {
--			page->index = index;
-+				 page, REQ_OP_READ, 0, true))
- 			return 0;
--		}
- 	}
- 	return -EIO;
- }
-@@ -209,7 +207,8 @@ static struct md_rdev *next_active_rdev(struct md_rdev *rdev, struct mddev *mdde
- 	return NULL;
- }
- 
--static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
-+static int write_sb_page(struct bitmap *bitmap, struct page *page,
-+			 unsigned long index, int wait)
- {
- 	struct md_rdev *rdev;
- 	struct block_device *bdev;
-@@ -224,7 +223,7 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
- 
- 		bdev = (rdev->meta_bdev) ? rdev->meta_bdev : rdev->bdev;
- 
--		if (page->index == store->file_pages-1) {
-+		if (index == store->file_pages-1) {
- 			int last_page_size = store->bytes & (PAGE_SIZE-1);
- 			if (last_page_size == 0)
- 				last_page_size = PAGE_SIZE;
-@@ -236,8 +235,7 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
- 		 */
- 		if (mddev->external) {
- 			/* Bitmap could be anywhere. */
--			if (rdev->sb_start + offset + (page->index
--						       * (PAGE_SIZE/512))
-+			if (rdev->sb_start + offset + index * PAGE_SECTORS
- 			    > rdev->data_offset
- 			    &&
- 			    rdev->sb_start + offset
-@@ -247,7 +245,7 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
- 		} else if (offset < 0) {
- 			/* DATA  BITMAP METADATA  */
- 			if (offset
--			    + (long)(page->index * (PAGE_SIZE/512))
-+			    + (long)(index * PAGE_SECTORS)
- 			    + size/512 > 0)
- 				/* bitmap runs in to metadata */
- 				goto bad_alignment;
-@@ -259,7 +257,7 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
- 			/* METADATA BITMAP DATA */
- 			if (rdev->sb_start
- 			    + offset
--			    + page->index*(PAGE_SIZE/512) + size/512
-+			    + index * PAGE_SECTORS + size/512
- 			    > rdev->data_offset)
- 				/* bitmap runs in to data */
- 				goto bad_alignment;
-@@ -268,7 +266,7 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
- 		}
- 		md_super_write(mddev, rdev,
- 			       rdev->sb_start + offset
--			       + page->index * (PAGE_SIZE/512),
-+			       + index * PAGE_SECTORS,
- 			       size,
- 			       page);
- 	}
-@@ -285,12 +283,13 @@ static void md_bitmap_file_kick(struct bitmap *bitmap);
- /*
-  * write out a page to a file
-  */
--static void write_page(struct bitmap *bitmap, struct page *page, int wait)
-+static void write_page(struct bitmap *bitmap, struct page *page,
-+		       unsigned long index, int wait)
- {
- 	struct buffer_head *bh;
- 
- 	if (bitmap->storage.file == NULL) {
--		switch (write_sb_page(bitmap, page, wait)) {
-+		switch (write_sb_page(bitmap, page, index, wait)) {
- 		case -EINVAL:
- 			set_bit(BITMAP_WRITE_ERROR, &bitmap->flags);
- 		}
-@@ -399,7 +398,6 @@ static int read_page(struct file *file, unsigned long index,
- 		blk_cur++;
- 		bh = bh->b_this_page;
- 	}
--	page->index = index;
- 
- 	wait_event(bitmap->write_wait,
- 		   atomic_read(&bitmap->pending_writes)==0);
-@@ -472,7 +470,7 @@ void md_bitmap_update_sb(struct bitmap *bitmap)
- 	sb->sectors_reserved = cpu_to_le32(bitmap->mddev->
- 					   bitmap_info.space);
- 	kunmap_atomic(sb);
--	write_page(bitmap, bitmap->storage.sb_page, 1);
-+	write_page(bitmap, bitmap->storage.sb_page, bitmap->storage.sb_index, 1);
- }
- EXPORT_SYMBOL(md_bitmap_update_sb);
- 
-@@ -524,7 +522,6 @@ static int md_bitmap_new_disk_sb(struct bitmap *bitmap)
- 	bitmap->storage.sb_page = alloc_page(GFP_KERNEL | __GFP_ZERO);
- 	if (bitmap->storage.sb_page == NULL)
- 		return -ENOMEM;
--	bitmap->storage.sb_page->index = 0;
- 
- 	sb = kmap_atomic(bitmap->storage.sb_page);
- 
-@@ -776,7 +773,7 @@ static int md_bitmap_storage_alloc(struct bitmap_storage *store,
- 				   unsigned long chunks, int with_super,
- 				   int slot_number)
- {
--	int pnum, offset = 0;
-+	int pnum;
- 	unsigned long num_pages;
- 	unsigned long bytes;
- 
-@@ -785,7 +782,7 @@ static int md_bitmap_storage_alloc(struct bitmap_storage *store,
- 		bytes += sizeof(bitmap_super_t);
- 
- 	num_pages = DIV_ROUND_UP(bytes, PAGE_SIZE);
--	offset = slot_number * num_pages;
-+	store->sb_index = slot_number * num_pages;
- 
- 	store->filemap = kmalloc_array(num_pages, sizeof(struct page *),
- 				       GFP_KERNEL);
-@@ -802,7 +799,6 @@ static int md_bitmap_storage_alloc(struct bitmap_storage *store,
- 	if (store->sb_page) {
- 		store->filemap[0] = store->sb_page;
- 		pnum = 1;
--		store->sb_page->index = offset;
- 	}
- 
- 	for ( ; pnum < num_pages; pnum++) {
-@@ -811,7 +807,6 @@ static int md_bitmap_storage_alloc(struct bitmap_storage *store,
- 			store->file_pages = pnum;
- 			return -ENOMEM;
- 		}
--		store->filemap[pnum]->index = pnum + offset;
- 	}
- 	store->file_pages = pnum;
- 
-@@ -929,6 +924,7 @@ static void md_bitmap_file_set_bit(struct bitmap *bitmap, sector_t block)
- 	unsigned long chunk = block >> bitmap->counts.chunkshift;
- 	struct bitmap_storage *store = &bitmap->storage;
- 	unsigned long node_offset = 0;
-+	unsigned long index = file_page_index(store, chunk);
- 
- 	if (mddev_is_clustered(bitmap->mddev))
- 		node_offset = bitmap->cluster_slot * store->file_pages;
-@@ -945,9 +941,9 @@ static void md_bitmap_file_set_bit(struct bitmap *bitmap, sector_t block)
- 	else
- 		set_bit_le(bit, kaddr);
- 	kunmap_atomic(kaddr);
--	pr_debug("set file bit %lu page %lu\n", bit, page->index);
-+	pr_debug("set file bit %lu page %lu\n", bit, index);
- 	/* record page number so it gets flushed to disk when unplug occurs */
--	set_page_attr(bitmap, page->index - node_offset, BITMAP_PAGE_DIRTY);
-+	set_page_attr(bitmap, index - node_offset, BITMAP_PAGE_DIRTY);
- }
- 
- static void md_bitmap_file_clear_bit(struct bitmap *bitmap, sector_t block)
-@@ -958,6 +954,7 @@ static void md_bitmap_file_clear_bit(struct bitmap *bitmap, sector_t block)
- 	unsigned long chunk = block >> bitmap->counts.chunkshift;
- 	struct bitmap_storage *store = &bitmap->storage;
- 	unsigned long node_offset = 0;
-+	unsigned long index = file_page_index(store, chunk);
- 
- 	if (mddev_is_clustered(bitmap->mddev))
- 		node_offset = bitmap->cluster_slot * store->file_pages;
-@@ -972,8 +969,8 @@ static void md_bitmap_file_clear_bit(struct bitmap *bitmap, sector_t block)
- 	else
- 		clear_bit_le(bit, paddr);
- 	kunmap_atomic(paddr);
--	if (!test_page_attr(bitmap, page->index - node_offset, BITMAP_PAGE_NEEDWRITE)) {
--		set_page_attr(bitmap, page->index - node_offset, BITMAP_PAGE_PENDING);
-+	if (!test_page_attr(bitmap, index - node_offset, BITMAP_PAGE_NEEDWRITE)) {
-+		set_page_attr(bitmap, index - node_offset, BITMAP_PAGE_PENDING);
- 		bitmap->allclean = 0;
- 	}
- }
-@@ -1027,7 +1024,7 @@ void md_bitmap_unplug(struct bitmap *bitmap)
- 							  "md bitmap_unplug");
- 			}
- 			clear_page_attr(bitmap, i, BITMAP_PAGE_PENDING);
--			write_page(bitmap, bitmap->storage.filemap[i], 0);
-+			write_page(bitmap, bitmap->storage.filemap[i], i, 0);
- 			writing = 1;
- 		}
- 	}
-@@ -1137,7 +1134,7 @@ static int md_bitmap_init_from_disk(struct bitmap *bitmap, sector_t start)
- 				memset(paddr + offset, 0xff,
- 				       PAGE_SIZE - offset);
- 				kunmap_atomic(paddr);
--				write_page(bitmap, page, 1);
-+				write_page(bitmap, page, index, 1);
- 
- 				ret = -EIO;
- 				if (test_bit(BITMAP_WRITE_ERROR,
-@@ -1336,7 +1333,7 @@ void md_bitmap_daemon_work(struct mddev *mddev)
- 		if (bitmap->storage.filemap &&
- 		    test_and_clear_page_attr(bitmap, j,
- 					     BITMAP_PAGE_NEEDWRITE)) {
--			write_page(bitmap, bitmap->storage.filemap[j], 0);
-+			write_page(bitmap, bitmap->storage.filemap[j], j, 0);
- 		}
- 	}
- 
-diff --git a/drivers/md/md-bitmap.h b/drivers/md/md-bitmap.h
-index cfd7395de8..6e820eea32 100644
---- a/drivers/md/md-bitmap.h
-+++ b/drivers/md/md-bitmap.h
-@@ -207,6 +207,7 @@ struct bitmap {
- 						 * w/ filemap pages */
- 		unsigned long file_pages;	/* number of pages in the file*/
- 		unsigned long bytes;		/* total bytes in the bitmap */
-+		unsigned long sb_index;		/* sb page index */
- 	} storage;
- 
- 	unsigned long flags;
--- 
-2.33.0
-
+RnJvbTogSsOpcsO0bWUgUG91aWxsZXIgPGplcm9tZS5wb3VpbGxlckBzaWxhYnMuY29tPgoKSGkg
+VWxmLAoKSSB0cnkgdG8gd3JpdGUgYSBwYXRjaCB0byBwcm9ibGVtIGRpc2N1c3NlZCBoZXJlWzFd
+LgoKVGhpcyBwYXRjaCBpcyBub3QgY29tcGxldGUuIEVzcGVjaWFsbHksIGl0IGRvZXMgbm90IGNv
+bnRhaW5zIHRoZSBuZWNlc3NhcnkKRklYVVAgbWFjcm8gaW4gY2FyZC5oLiBJIHdvdWxkIGxpa2Ug
+dG8gaGF2ZSB5b3VyIGNvbW1lbnQgb24gdGhlIGNvbmNlcHQuCgpbMV0gaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvbmV0ZGV2L0NBUER5S0ZyNjJLeWtnMz05V2lYQVY4VVRvcWp3OGdqNHQ2YmJNN3BH
+UStpR0dRUkxtZ0BtYWlsLmdtYWlsLmNvbS8KCkrDqXLDtG1lIFBvdWlsbGVyICgyKToKICBtbWM6
+IHJld3JpdGUgbW1jX2ZpeHVwX2RldmljZSgpCiAgbW1jOiBhbGxvdyB0byBtYXRjaCB0aGUgZGV2
+aWNlIHRyZWUgdG8gYXBwbHkgcXVpcmtzCgogZHJpdmVycy9tbWMvY29yZS9jYXJkLmggICB8ICAz
+ICsrCiBkcml2ZXJzL21tYy9jb3JlL3F1aXJrcy5oIHwgNTkgKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKy0tLS0tLS0tLS0tCiAyIGZpbGVzIGNoYW5nZWQsIDQ1IGluc2VydGlvbnMoKyksIDE3
+IGRlbGV0aW9ucygtKQoKLS0gCjIuMzMuMAoK
