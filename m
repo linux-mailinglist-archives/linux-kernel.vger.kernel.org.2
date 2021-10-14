@@ -2,171 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1298642D68B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63AFE42D694
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 11:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhJNJ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 05:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33390 "EHLO
+        id S230094AbhJNJ70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 05:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhJNJ55 (ORCPT
+        with ESMTP id S229468AbhJNJ7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:57:57 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE09C061570;
-        Thu, 14 Oct 2021 02:55:52 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id ec8so21927502edb.6;
-        Thu, 14 Oct 2021 02:55:52 -0700 (PDT)
+        Thu, 14 Oct 2021 05:59:24 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A4FC061570
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:57:20 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id p68so3010733iof.6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 02:57:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=74OxFDQINVP0t2Tym9riIimusp8CKNtXPfS58HmDiLw=;
-        b=BS3g7dZGSS+szT6wf9qurt+RBfc0UoAM3kDnpqYZBSvbGq3ebU1UZHUSXwn5DYagOn
-         uvm22zri7XDVR2V/BNROSi7XPrguJodp/U0OLusEP8WUYZM+MWa9tRwKsHewBYskDx0b
-         ChgmNr7tWfYhfi1vP5HCChHcHD8thT9sQN5kEz8IMfjOq+buxwnn99DTB9VZp2xExb7o
-         GCOSEI9mnnzWM1YyNbMQHBF6X0VGQ692z1THXDHoDfi9mVWTs4pLhXV5TbrOdnCKOrXX
-         dPj3JQ0MxFCafqrhIxqWYQhRJRE60pjnDFRWYJa5Y+kqr/3ZmF5UD6dALujoXlx01dSk
-         u/ew==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OZvA6vOCLe0vq1IOFdw9MbIuy04wehYkABusPOOkvWs=;
+        b=nj99OwYtQYofo66YE9oGGAlKqR0StH4OFhjgnBjjRxq2BTK0hKdKl+0xq5V4qslSSS
+         vK4CecV8dQlgQoKNOlmmgXmQARHrO/R0W5JKOtvGpdJDTq0TL5LYftjAhG4tthO6nYzK
+         TgxcSUrmgtR/NkokI1+EOFLoIw5UxFoyT+rCG7bRJ+6dkUU9fEyF8Ss1mqOVueOHLyWe
+         HUV03WhwIRM9PKHtgn62irGapZhKVmJz006wMlRGbkn4c0eQX/gHG6IuStGinBVeYgUp
+         jFca117fHhpvzir6AvfrJPYX0ZjiIk5Gnhfuho+dA3GZJL7OJsvCBQ7nrhpF/7GJYsgV
+         PwmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=74OxFDQINVP0t2Tym9riIimusp8CKNtXPfS58HmDiLw=;
-        b=IU+//E9QpNe1jAJNB5UnDteA53co3O4SZlgu4qXJKY+CYcjvBJ/4eQfZpO05vyTCIE
-         1UKptOO+2vkOm1rjHQV3QB/1w/MYMoDuhx0EUjAYE3A/v5qk9BLeX8S7PdJjXV+rHf4w
-         BdZdXNbYNiZ8vqnRkLsZg5HC08rSIb3IpCe1R+xdBIyqMdh/XicmAPe+gb3qbE+0Cy2I
-         gfo4HWJrEZ0MQJl8RLBTO7ZF9d1CqA1Q3Wctp+MgnQx/+jCqe7OlSYACX+S7tTXDPGzL
-         JH5H5akyG0orKxW5yh+nfqGZXKKMZLa2UdkpHvTn5AaAWx07iou/GL+YL4rxd+ZCUkyd
-         hoYw==
-X-Gm-Message-State: AOAM531GUKPMRnztVvlWiAYeXtf3Y2UEFqZjVC0h7Z7k+hyODVChHK51
-        yh2B/s3QfBiz67EBQ0XQ9w==
-X-Google-Smtp-Source: ABdhPJwBHbs0l+qwtXWx6kiyM/z9QoRTuUFdwCI8NaqkcTZIJ9KfqxmcIMU5Y2fSgZC1yz6FzYc58g==
-X-Received: by 2002:a17:906:a382:: with SMTP id k2mr2543789ejz.454.1634205351095;
-        Thu, 14 Oct 2021 02:55:51 -0700 (PDT)
-Received: from ?IPv6:2a02:810b:f40:4200:e1d9:2e2e:532d:87df? ([2a02:810b:f40:4200:e1d9:2e2e:532d:87df])
-        by smtp.gmail.com with ESMTPSA id h18sm1513410ejt.29.2021.10.14.02.55.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 02:55:50 -0700 (PDT)
-Subject: Re: [PATCH v1 1/6] clk: divider: Implement and wire up
- .determine_rate by default
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-clk@vger.kernel.org, sboyd@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org
-References: <20210702225145.2643303-1-martin.blumenstingl@googlemail.com>
- <20210702225145.2643303-2-martin.blumenstingl@googlemail.com>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <4eb964ac-4fff-b59d-2660-2f84d8af5901@gmail.com>
-Date:   Thu, 14 Oct 2021 11:55:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OZvA6vOCLe0vq1IOFdw9MbIuy04wehYkABusPOOkvWs=;
+        b=WxDN5nO4j102jrIamnO9C9/z47daS4yeHsIeq22DLcLEvmJ+iUUeiYxf76qZ92h/Bq
+         Xb0rxBM6vn0aKv8tEWFjMilDhB+rGJIn7/FpFT6cLN+kaJYYoB57sXv3RA38B3PxK6Jk
+         ljQ7X4Vpn+pl0ivnxiZHANMPQlaYjfyz7rlH8+4zgaVumwQ6GBKXdgC5lqSyYrHdQYIj
+         w8ZEQ1mhBL2xSZx0X8pb3J6U8qbxpjYEO6SjgLXHderq3q2lgEtzAXEWc+1L2YNjXg+y
+         iMKp3rrXyF36jzIs9nb/ejN6mpzM1zSy9Pi7JyKbUWvDVYXJmKIF9jYGPgNvau+TxzKD
+         hlTg==
+X-Gm-Message-State: AOAM533uI95PrcOvO41fi+e7hmp/AM3NeljmGOtpQXRW8TKNEyl1yzOG
+        7OJ8xEu1bRtD0rS2a0KXlb8rSjorZm+IHKZXVZk=
+X-Google-Smtp-Source: ABdhPJznhuD2wn/mF3MaGPcGhssi4eCHMwzjrwVERh1LZVOOYW30Yd/TVEo1+T7pC10cFF122/4ltVCS9fJ4oOCEkvM=
+X-Received: by 2002:a02:2124:: with SMTP id e36mr3327316jaa.35.1634205439528;
+ Thu, 14 Oct 2021 02:57:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210702225145.2643303-2-martin.blumenstingl@googlemail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <CAKmqyKMLyx+CvBQbLz-xQvwLS692tx-4xOgU7b-V2J676D29yg@mail.gmail.com>
+ <d983217b-e117-361c-0306-b131695bb93f@denx.de> <CAKmqyKOsUcta1cXxamJZnf01G9beCZrDKia068HR+J0AadgNiA@mail.gmail.com>
+ <bff9ba97-bc26-f091-ba71-5e639af524d4@denx.de> <CAKmqyKPF3T_Sx+hL=4OSamLdjy=0fwmrTrVeb-GY0Ja9M=mi+Q@mail.gmail.com>
+ <ab2b7f4f-3e36-461c-6a6c-02ee7ed6cb99@denx.de> <CAKmqyKN8devNyDvVL5B_dDASU3se1dSui0bsnf6gQ+CkZ_TaKg@mail.gmail.com>
+ <YR1Th65KKRS4D/6+@ravnborg.org> <CAKmqyKOBYXiWwO4QJBJ9sEO5ay5QyYmO=yzvT31evB7BKeniYw@mail.gmail.com>
+ <YR58MvAYYEjBQ7l5@ravnborg.org> <CAKmqyKOYk=O4ewBcL7hOz+8=gTsNzFb07m_qrNhKq9Bk2ByYrQ@mail.gmail.com>
+In-Reply-To: <CAKmqyKOYk=O4ewBcL7hOz+8=gTsNzFb07m_qrNhKq9Bk2ByYrQ@mail.gmail.com>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Thu, 14 Oct 2021 19:56:00 +1000
+Message-ID: <CAKmqyKP0cxOpD6HnuS5mwKbpoP8npQiMvqZNx91e+UmKUv2gRQ@mail.gmail.com>
+Subject: Re: Revert "video: fbdev: mxsfb: Remove driver"
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Marek Vasut <marex@denx.de>, Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, b.zolnierkie@samsung.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alistair Francis <alistair@alistair23.me>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Am 03.07.21 um 00:51 schrieb Martin Blumenstingl:
-> .determine_rate is meant to replace .round_rate. The former comes with a
-> benefit which is especially relevant on 32-bit systems: since
-> .determine_rate uses an "unsigned long" (compared to a "signed long"
-> which is used by .round_rate) the maximum value on 32-bit systems
-> increases from 2^31 (or approx. 2.14GHz) to 2^32 (or approx. 4.29GHz).
+On Fri, Aug 20, 2021 at 8:36 AM Alistair Francis <alistair23@gmail.com> wrote:
 >
-> Implement .determine_rate in addition to .round_rate so drivers that are
-> using clk_divider_{ro_,}ops can benefit from this by default. Keep the
-> .round_rate callback for now since some drivers rely on
-> clk_divider_ops.round_rate being implemented.
+> On Fri, Aug 20, 2021 at 1:43 AM Sam Ravnborg <sam@ravnborg.org> wrote:
+> >
+> > Hi Alistair,
+> >
+> > On Thu, Aug 19, 2021 at 07:10:00PM +1000, Alistair Francis wrote:
+> > > On Thu, Aug 19, 2021 at 4:38 AM Sam Ravnborg <sam@ravnborg.org> wrote:
+> > > >
+> > > > Hi Alistair,
+> > > >
+> > > > >
+> > > > > These are the EINVAL strace tells me in the not working case:
+> > > > >
+> > > > > prctl(PR_CAPBSET_READ, 0x30 /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > > > > prctl(PR_CAPBSET_READ, 0x2c /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > > > > prctl(PR_CAPBSET_READ, 0x2a /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > > > > prctl(PR_CAPBSET_READ, 0x29 /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > > > > ioctl(5, FBIOPUT_VSCREENINFO, 0x4ce8e0) = -1 EINVAL (Invalid argument)
+> > > > >
+> > > > > I'm guessing it's related to FBIOPUT_VSCREENINFO then, is that
+> > > > > something that could be added to the DRM emulation?
+> > > >
+> > > > If it turns out FBIOPUT_VSCREENINFO is the culprint it would also be
+> > > > good to know why we see EINVAL.
+> > > > One way is to sprinkle a number of printk's in fb_set_var(),
+> > > > then you can see how far you get before it fails.
+> > >
+> > > Thanks for the help.
+> > >
+> > > I see this line:
+> > >
+> > > ret = info->fbops->fb_check_var(var, info);
+> > >
+> > > in fb_set_var()
+> > >
+> > > returning early.
+> >
+> > Super, then next step is to annotate drm_fb_helper_check_var()
+> > to see where it fails.
+> > Try this and let us know the result.
 >
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-This commit  breaks composite clocks with multiple parents, since it 
-adds a  determine_rate callback, which is preferred over 
-clock_round_rate in  clk_composite_determine_rate in clk-composite.c and 
-the "best-parent"-determination  is only done for clock_round_rate-op 
-there.
-There is no "best-parent"-determination  in determine_rate in 
-clk-divider which clk-compsite seems to expect - nor any multiple 
-parents handling at all.  That means that the composite will always stay 
-at the same/initial parent  clock (from the mux), without ever changing 
-it (even if necessary).
-
-This breaks lot of clocks for Rockchip which intensively uses 
-composites,  i.e. those clocks will always stay at the initial parent, 
-which in some cases  is the XTAL clock and I strongly guess it is the 
-same for other platforms,  which use composite clocks having more than 
-one parent (e.g. mediatek, ti ...)
-
-Example (RK3399)
-clk_sdio is set (initialized) with XTAL (24 MHz) as parent in u-boot.  
-It will always stay at this parent, even if the mmc driver sets a rate 
-of  200 MHz (fails, as the nature of things), which should switch it to 
-any of its possible parent PLLs defined in 
-mux_pll_src_cpll_gpll_npll_ppll_upll_24m_p (see clk-rk3399.c)  - which 
-never happens.
-
-Reverting this commit makes it work again: Unless there is a quick and 
-obvious fix for that, I guess this should be done for 5.15 - even if the 
-real issue is somewhere else.
-
-Alex
-
-> ---
->   drivers/clk/clk-divider.c | 23 +++++++++++++++++++++++
->   1 file changed, 23 insertions(+)
+> Thanks!
 >
-> diff --git a/drivers/clk/clk-divider.c b/drivers/clk/clk-divider.c
-> index 87ba4966b0e8..f6b2bf558486 100644
-> --- a/drivers/clk/clk-divider.c
-> +++ b/drivers/clk/clk-divider.c
-> @@ -446,6 +446,27 @@ static long clk_divider_round_rate(struct clk_hw *hw, unsigned long rate,
->   				  divider->width, divider->flags);
->   }
->   
-> +static int clk_divider_determine_rate(struct clk_hw *hw,
-> +				      struct clk_rate_request *req)
-> +{
-> +	struct clk_divider *divider = to_clk_divider(hw);
-> +
-> +	/* if read only, just return current value */
-> +	if (divider->flags & CLK_DIVIDER_READ_ONLY) {
-> +		u32 val;
-> +
-> +		val = clk_div_readl(divider) >> divider->shift;
-> +		val &= clk_div_mask(divider->width);
-> +
-> +		return divider_ro_determine_rate(hw, req, divider->table,
-> +						 divider->width,
-> +						 divider->flags, val);
-> +	}
-> +
-> +	return divider_determine_rate(hw, req, divider->table, divider->width,
-> +				      divider->flags);
-> +}
-> +
->   int divider_get_val(unsigned long rate, unsigned long parent_rate,
->   		    const struct clk_div_table *table, u8 width,
->   		    unsigned long flags)
-> @@ -501,6 +522,7 @@ static int clk_divider_set_rate(struct clk_hw *hw, unsigned long rate,
->   const struct clk_ops clk_divider_ops = {
->   	.recalc_rate = clk_divider_recalc_rate,
->   	.round_rate = clk_divider_round_rate,
-> +	.determine_rate = clk_divider_determine_rate,
->   	.set_rate = clk_divider_set_rate,
->   };
->   EXPORT_SYMBOL_GPL(clk_divider_ops);
-> @@ -508,6 +530,7 @@ EXPORT_SYMBOL_GPL(clk_divider_ops);
->   const struct clk_ops clk_divider_ro_ops = {
->   	.recalc_rate = clk_divider_recalc_rate,
->   	.round_rate = clk_divider_round_rate,
-> +	.determine_rate = clk_divider_determine_rate,
->   };
->   EXPORT_SYMBOL_GPL(clk_divider_ro_ops);
->   
+> After adding some prints, I realised there are already some in there
+> that are disabled by default. After enabling them I see this:
+>
+> "fbdev emulation doesn't support changing the pixel clock, value of
+> pixclock is ignored"
+>
+> and
+>
+> "fb requested width/height/bpp can't fit in current fb request
+> 260x1408-32 (virtual 260x23936) > 334x1405-32"
+>
+> which returns EINVAL.
+>
+> This is where I'm confused though. The values 334 and 1405 are taken
+> from the vendor and in the working fbdev driver they are using the
+> same values.
+>
+> I tried to add a similar print to mxsfb_check_var() for the working
+> version, to check what the values are, but there doesn't seem to be
+> any equivalent of fb->width and friends.
+
+I dug into this some more.
+
+In the working mxsfb and non-working fbdev emulation the userspace
+software sets:
+
+xres: 260
+yres: 1408
+xres_virtual: 260
+yres_virtual: 23936
+
+That passes the old mxsfb_check_var() and works.
+
+While that fails the new fbdev emulation check. Even increasing the
+width and height from 334x14085 to 260x23936 doesn't help as I get a
+range of other errors and no display. Just removing the check also
+doesn't work and results in kernel panics.
+
+It seems there is some difference in handling the resolutions between
+the mxsfb driver and the fbdev emulation on the new DRM driver. I'm
+just not sure what the difference is.
+
+Alistair
