@@ -2,151 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A9242D2DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE3B42D2DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbhJNGqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 02:46:02 -0400
-Received: from mga03.intel.com ([134.134.136.65]:55290 "EHLO mga03.intel.com"
+        id S229734AbhJNGqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 02:46:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229502AbhJNGqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 02:46:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="227569699"
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="227569699"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 23:43:57 -0700
-X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
-   d="scan'208";a="481120249"
-Received: from msavu-mobl1.ti.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.249.43.55])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 23:43:55 -0700
-From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To:     apw@canonical.com, joe@perches.com
-Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v7] checkpatch: get default codespell dictionary path from package location
-Date:   Thu, 14 Oct 2021 09:44:06 +0300
-Message-Id: <20211014064406.28052-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
+        id S229457AbhJNGqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 02:46:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 866CF60F21;
+        Thu, 14 Oct 2021 06:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634193882;
+        bh=nyxODPb2p/zfIUMBOeqoEw5JaXddVkpJ92sGj/BOz9s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tu/q1YOH0iwtZN4UygL2yK/ZCtGlNkHkv+4CkT7UH0l4xVuQ0RoX7L+UUhHiwLmoQ
+         NfBOjSwtJnumc/gpDZ/bf0b3RgDZBb7VsqBIgxU8pouXfKtfJKya8iHUa+jBpBWh9v
+         gvL39KaaH4Ga85+OSJqdDyOmQGWhd0yPpGT99/BgZpXsu88D4azzsS0sviquunf5O3
+         Q8icSczn0gLmisO5MtwvtGPkMxFAf1Bn5F+DHCNoevsGM0y/Uwe8LpeCie14HrGtVP
+         Cei1u8e+NGD/P2zIk0PbRM2mlFyXBVxIpzMHR+IObIf28oq6Ll6zmxSo9EBj3vgcy+
+         xJfWKPuHW03+Q==
+Date:   Thu, 14 Oct 2021 08:44:37 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] clk: fix the need of booking clk_ignore_unused=true
+ on embedded devs
+Message-ID: <20211014084437.47a04183@sal.lan>
+In-Reply-To: <20211011061718.GB1834@thinkpad>
+References: <cover.1633607765.git.mchehab+huawei@kernel.org>
+        <20211011061718.GB1834@thinkpad>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The standard location of dictionary.txt is under codespell's package, on
-my machine atm (codespell 2.1, Artix Linux):
-/usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
+Em Mon, 11 Oct 2021 11:47:18 +0530
+Manivannan Sadhasivam <mani@kernel.org> escreveu:
 
-Since we enable the codespell by default for SOF I have constant:
-No codespell typos will be found - \
-file '/usr/share/codespell/dictionary.txt': No such file or directory
+> Hi Mauro,
+> 
+> On Thu, Oct 07, 2021 at 02:06:53PM +0200, Mauro Carvalho Chehab wrote:
+> > Currently, the only way to boot a Kernel with drivers built as modules on embedded 
+> > devices like HiKey 970 is to pass clk_ignore_unused=true as a modprobe parameter.
+> > 
+> > There are two separate issues:
+> > 
+> > 1. the clk's core calls clk_disable_unused() too early. By the time this
+> >    function is called, only the builtin drivers were already probed/initialized.
+> >    Drivers built as modules will only be probed afterwards.
+> > 
+> >    This cause a race condition and boot instability, as the clk core will try
+> >    to disable clocks while the drivers built as modules are still being
+> >    probed and initialized.  
+> 
+> So you are mentioning a "race" condition here but it is not mentioned in the
+> actual patch. 
 
-The patch proposes to try to fix up the path following the recommendation
-found here:
-https://github.com/codespell-project/codespell/issues/1540
+Patch 1 explains it...
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
-Hi,
+> If the issue you are seeing is because the clocks used by the
+> modules are disabled before they are probed, why can't they just enable the
+> clocks during the probe time?
+> 
+> Am I missing something?
 
-Changes since v6:
-- do not try to look for codespell install dir if the default
-  /usr/share/codespell/dictionary.txt exists
+What happens is that such clocks are enabled when the system boots,
+and, when those are disabled, very bad things happen, as those
+interrupt clocks used by several parts of the system.
 
-Changes since v5:
-- move the $python_codespell_dict to local
-- drop extra semicolon
-- execute python, not python3
+Most of the problems happen because the ARM SoC produce SError NMI 
+interrupts when some such clocks are disabled, which calls panic().
 
-Changes since v4:
-- Use the readable version suggested by Joe Perches (store the pyhton snippet in
-  python_codespell_dict)
+Other clocks disable some key components of the system that aren't
+directly related with a driver, but, instead, controls some core
+part of the device, making the SoC to wait forever for an I/O event
+that will never happen.
 
-Changes since v3:
-- Do not try to override the use provided codespell file location
+A small set of clocks make the system unreliable, causing drivers
+to fail probing. Those can either lead to panic() or break support
+for a peripheral, like WiFi, USB and/or PCI.
 
-Changes since v2:
-- Only try to check for dictionary path it is enabled or when the help is
-  displayed
- - Move the check after the GetOptions()
- - Set $help to 2 in case invalid option is passed in order to be able to use
-   correct exitcode and still display the correct path for dictionary.txt
+The core issue is that clk_disable_unused() happens too early.
+This is called at late_initcall_sync() time, which is triggered
+before the probe/init code of the drivers compiled as modules
+to be called. So, what happens is:
 
-Changes sicne v1:
-- add missing ';' to the line updating the $codespellfile with $codespell_dict
+
+ BIOS enables clocks that are needed for the device to boot             
+ |                                
+ +-> Linux start booting
+ |
+ +-> builtin drivers are probed 
+ |
+ +--------------------------------\
+ |                                |
+ +-> late_initcall_sync() calls   +-> Modules start probing
+ |   clk_disable_unused)          |
+ |                                +-> Some drivers are probed
+ |                                |   before their needed clks
+ |                                |   got disabled
+ |                                |
+ +-> Clocks are disabled          |
+ |                                |
+ +-> SError -> panic()            |
+                                  \ (several drivers weren't
+				     probed/initialized)
+
+The only fix for that is to postpone clk_disable_unused() to happen
+after all driver probe/init are called, or to completely disable
+it.
+
+The current distributions recommended at:
+	https://www.96boards.org/product/hikey970/
+
+pass clk_ignore_unused as a boot parameter, which disables the call
+to clk_disable_unused().
+
+The only sane way to get rid of that is to fix the core to let the
+drivers to finish probe/init before disabling clocks.
+
+See, the regulators logic that disables unused power lines also
+do the same: it waits for 30 seconds after late_initcall_sync()
+before calling Runtime PM suspend logic.
 
 Regards,
-Peter
-
- scripts/checkpatch.pl | 32 ++++++++++++++++++++++++++++----
- 1 file changed, 28 insertions(+), 4 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 91798b07c6cb..1784921c645d 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -63,6 +63,7 @@ my $min_conf_desc_length = 4;
- my $spelling_file = "$D/spelling.txt";
- my $codespell = 0;
- my $codespellfile = "/usr/share/codespell/dictionary.txt";
-+my $user_codespellfile = "";
- my $conststructsfile = "$D/const_structs.checkpatch";
- my $docsfile = "$D/../Documentation/dev-tools/checkpatch.rst";
- my $typedefsfile;
-@@ -130,7 +131,7 @@ Options:
-   --ignore-perl-version      override checking of perl version.  expect
-                              runtime errors.
-   --codespell                Use the codespell dictionary for spelling/typos
--                             (default:/usr/share/codespell/dictionary.txt)
-+                             (default:$codespellfile)
-   --codespellfile            Use this codespell dictionary
-   --typedefsfile             Read additional types from this file
-   --color[=WHEN]             Use colors 'always', 'never', or only when output
-@@ -317,7 +318,7 @@ GetOptions(
- 	'debug=s'	=> \%debug,
- 	'test-only=s'	=> \$tst_only,
- 	'codespell!'	=> \$codespell,
--	'codespellfile=s'	=> \$codespellfile,
-+	'codespellfile=s'	=> \$user_codespellfile,
- 	'typedefsfile=s'	=> \$typedefsfile,
- 	'color=s'	=> \$color,
- 	'no-color'	=> \$color,	#keep old behaviors of -nocolor
-@@ -325,9 +326,32 @@ GetOptions(
- 	'kconfig-prefix=s'	=> \${CONFIG_},
- 	'h|help'	=> \$help,
- 	'version'	=> \$help
--) or help(1);
-+) or $help = 2;
-+
-+if ($user_codespellfile) {
-+	# Use the user provided codespell file unconditionally
-+	$codespellfile = $user_codespellfile;
-+} elsif (!(-f $codespellfile)) {
-+	# If /usr/share/codespell/dictionary.txt is not present, try to find it
-+	# under codespell's install directory: <codespell_root>/data/dictionary.txt
-+	if (($codespell || $help) && which("codespell") ne "" && which("python") ne "") {
-+		my $python_codespell_dict = << "EOF";
-+
-+import os.path as op
-+import codespell_lib
-+codespell_dir = op.dirname(codespell_lib.__file__)
-+codespell_file = op.join(codespell_dir, 'data', 'dictionary.txt')
-+print(codespell_file, end='')
-+EOF
-+
-+		my $codespell_dict = `python -c "$python_codespell_dict" 2> /dev/null`;
-+		$codespellfile = $codespell_dict if (-f $codespell_dict);
-+	}
-+}
- 
--help(0) if ($help);
-+# $help is 1 if either -h, --help or --version is passed as option - exitcode: 0
-+# $help is 2 if invalid option is passed - exitcode: 1
-+help($help - 1) if ($help);
- 
- die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
- die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
--- 
-2.33.0
-
+Mauro
