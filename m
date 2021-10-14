@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE9F42DCC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1B842DCD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbhJNPBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:01:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44032 "EHLO mail.kernel.org"
+        id S233260AbhJNPCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:02:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232478AbhJNPAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:00:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AAA9611AE;
-        Thu, 14 Oct 2021 14:58:02 +0000 (UTC)
+        id S232993AbhJNPAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:00:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B66260FDC;
+        Thu, 14 Oct 2021 14:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223483;
-        bh=ZcnO1JTGR6geCvjxhrIh5+0n3ntEmZeuApz0gzY/l70=;
+        s=korg; t=1634223504;
+        bh=Sj4Ix1oy1bA9BRKsMToHEqwwybS5CjT6rXeYXgxMD24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zcA8zWfoxd71PmH63b8zWFIScqDHMitSDYAEqqEWrvj38OISA75n72xwgfjjBF8WR
-         Y8pChsF6AF7L5byFYjyD+YOrGHHRgYXbcJ+a+x8qTjB96oWdJYGJtZc/nIXGZK1Q3t
-         8EbjUiJPfnnberAamECDDTDj/4/Wjxa5/sZJqtuQ=
+        b=OuqdgZoaxB6CLT5cYAkOWeixhr1w+zgL4DctH4H23y4xg5R9Ob2IAaQ1Ep56xLjK/
+         158Lg+P2+oBmT4idrbhZWcgCpD+FL9F/s1UttYepGqqlNJKIV6V2WloXD1TIExQhks
+         CNoAM2a3tXDW90o/Iv8MgjC9nZOygtrUa1kReiEk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Aaron Young <aaron.young@oracle.com>,
-        Rashmi Narasimhan <rashmi.narasimhan@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 29/33] net: sun: SUNVNET_COMMON should depend on INET
-Date:   Thu, 14 Oct 2021 16:54:01 +0200
-Message-Id: <20211014145209.772561747@linuxfoundation.org>
+        stable@vger.kernel.org, Mizuho Mori <morimolymoly@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 02/12] HID: apple: Fix logical maximum and usage maximum of Magic Keyboard JIS
+Date:   Thu, 14 Oct 2021 16:54:02 +0200
+Message-Id: <20211014145206.642385357@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
-References: <20211014145208.775270267@linuxfoundation.org>
+In-Reply-To: <20211014145206.566123760@linuxfoundation.org>
+References: <20211014145206.566123760@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +39,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Mizuho Mori <morimolymoly@gmail.com>
 
-[ Upstream commit 103bde372f084206c6972be543ecc247ebbff9f3 ]
+[ Upstream commit 67fd71ba16a37c663d139f5ba5296f344d80d072 ]
 
-When CONFIG_INET is not set, there are failing references to IPv4
-functions, so make this driver depend on INET.
+Apple Magic Keyboard(JIS)'s Logical Maximum and Usage Maximum are wrong.
 
-Fixes these build errors:
+Below is a report descriptor.
 
-sparc64-linux-ld: drivers/net/ethernet/sun/sunvnet_common.o: in function `sunvnet_start_xmit_common':
-sunvnet_common.c:(.text+0x1a68): undefined reference to `__icmp_send'
-sparc64-linux-ld: drivers/net/ethernet/sun/sunvnet_common.o: in function `sunvnet_poll_common':
-sunvnet_common.c:(.text+0x358c): undefined reference to `ip_send_check'
+0x05, 0x01,         /*  Usage Page (Desktop),                           */
+0x09, 0x06,         /*  Usage (Keyboard),                               */
+0xA1, 0x01,         /*  Collection (Application),                       */
+0x85, 0x01,         /*      Report ID (1),                              */
+0x05, 0x07,         /*      Usage Page (Keyboard),                      */
+0x15, 0x00,         /*      Logical Minimum (0),                        */
+0x25, 0x01,         /*      Logical Maximum (1),                        */
+0x19, 0xE0,         /*      Usage Minimum (KB Leftcontrol),             */
+0x29, 0xE7,         /*      Usage Maximum (KB Right GUI),               */
+0x75, 0x01,         /*      Report Size (1),                            */
+0x95, 0x08,         /*      Report Count (8),                           */
+0x81, 0x02,         /*      Input (Variable),                           */
+0x95, 0x05,         /*      Report Count (5),                           */
+0x75, 0x01,         /*      Report Size (1),                            */
+0x05, 0x08,         /*      Usage Page (LED),                           */
+0x19, 0x01,         /*      Usage Minimum (01h),                        */
+0x29, 0x05,         /*      Usage Maximum (05h),                        */
+0x91, 0x02,         /*      Output (Variable),                          */
+0x95, 0x01,         /*      Report Count (1),                           */
+0x75, 0x03,         /*      Report Size (3),                            */
+0x91, 0x03,         /*      Output (Constant, Variable),                */
+0x95, 0x08,         /*      Report Count (8),                           */
+0x75, 0x01,         /*      Report Size (1),                            */
+0x15, 0x00,         /*      Logical Minimum (0),                        */
+0x25, 0x01,         /*      Logical Maximum (1),                        */
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Aaron Young <aaron.young@oracle.com>
-Cc: Rashmi Narasimhan <rashmi.narasimhan@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+here is a report descriptor which is parsed one in kernel.
+see sys/kernel/debug/hid/<dev>/rdesc
+
+05 01 09 06 a1 01 85 01 05 07
+15 00 25 01 19 e0 29 e7 75 01
+95 08 81 02 95 05 75 01 05 08
+19 01 29 05 91 02 95 01 75 03
+91 03 95 08 75 01 15 00 25 01
+06 00 ff 09 03 81 03 95 06 75
+08 15 00 25 [65] 05 07 19 00 29
+[65] 81 00 95 01 75 01 15 00 25
+01 05 0c 09 b8 81 02 95 01 75
+01 06 01 ff 09 03 81 02 95 01
+75 06 81 03 06 02 ff 09 55 85
+55 15 00 26 ff 00 75 08 95 40
+b1 a2 c0 06 00 ff 09 14 a1 01
+85 90 05 84 75 01 95 03 15 00
+25 01 09 61 05 85 09 44 09 46
+81 02 95 05 81 01 75 08 95 01
+15 00 26 ff 00 09 65 81 02 c0
+00
+
+Position 64(Logical Maximum) and 70(Usage Maximum) are 101.
+Both should be 0xE7 to support JIS specific keys(ろ, Eisu, Kana, |) support.
+position 117 is also 101 but not related(it is Usage 65h).
+
+There are no difference of product id between JIS and ANSI.
+They are same 0x0267.
+
+Signed-off-by: Mizuho Mori <morimolymoly@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sun/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/hid/hid-apple.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/ethernet/sun/Kconfig b/drivers/net/ethernet/sun/Kconfig
-index b2caf5132bd2..eea4179e63eb 100644
---- a/drivers/net/ethernet/sun/Kconfig
-+++ b/drivers/net/ethernet/sun/Kconfig
-@@ -72,6 +72,7 @@ config CASSINI
- config SUNVNET_COMMON
- 	tristate "Common routines to support Sun Virtual Networking"
- 	depends on SUN_LDOMS
-+	depends on INET
- 	default m
+diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
+index b58ab769aa7b..4e3dd3f55a96 100644
+--- a/drivers/hid/hid-apple.c
++++ b/drivers/hid/hid-apple.c
+@@ -304,12 +304,19 @@ static int apple_event(struct hid_device *hdev, struct hid_field *field,
  
- config SUNVNET
+ /*
+  * MacBook JIS keyboard has wrong logical maximum
++ * Magic Keyboard JIS has wrong logical maximum
+  */
+ static __u8 *apple_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+ 		unsigned int *rsize)
+ {
+ 	struct apple_sc *asc = hid_get_drvdata(hdev);
+ 
++	if(*rsize >=71 && rdesc[70] == 0x65 && rdesc[64] == 0x65) {
++		hid_info(hdev,
++			 "fixing up Magic Keyboard JIS report descriptor\n");
++		rdesc[64] = rdesc[70] = 0xe7;
++	}
++
+ 	if ((asc->quirks & APPLE_RDESC_JIS) && *rsize >= 60 &&
+ 			rdesc[53] == 0x65 && rdesc[59] == 0x65) {
+ 		hid_info(hdev,
 -- 
 2.33.0
 
