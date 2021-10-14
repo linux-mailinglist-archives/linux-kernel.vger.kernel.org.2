@@ -2,188 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE72342E212
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2041D42E218
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 21:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbhJNTiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 15:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232702AbhJNTiU (ORCPT
+        id S233618AbhJNTlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 15:41:39 -0400
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:38443 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232556AbhJNTli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:38:20 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D638C061753
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:36:15 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id ec8so28626227edb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 12:36:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dIQWIEZ49azUUbEy/GpUFOPwbZoaapNSKaUu38nOXPw=;
-        b=NwMJc5gTcoqjrSv8zyRSRN0wkbTBYNbZFEfXsBXip9Jv1DKu5Ur7B/lsPTNLADuzIW
-         ejrtuUazFJsBzA2gg4rYmRMol0js0xNT116ceA6tfO8+c/jTgzkuqUcxFlLqR8mqQi2E
-         7h3EejTa5FNxtdBfA8jJa3008s2VEsI/FU/eUMB3Qu8H7iRUZxQadYowlEBepxKVLSfT
-         T339dlUWJ5FW0/4JkMR5yQKqQKRHJnfSR2w9fFxYjYkg2YNJPj6dlrr0ZQ0OxsvzRDW7
-         VBvZnw59/AWBTvTNoBGyiT2gT93ttikz3Flk6IKmRH7Ozd84dDA/8FWbIS+HyDEhDhFQ
-         uQrw==
+        Thu, 14 Oct 2021 15:41:38 -0400
+Received: by mail-ua1-f41.google.com with SMTP id h19so13541862uax.5;
+        Thu, 14 Oct 2021 12:39:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dIQWIEZ49azUUbEy/GpUFOPwbZoaapNSKaUu38nOXPw=;
-        b=rXIJOfQlSeaJAH6tqNdC02K4YC0r95TtH64hJs6dw7hv2PiSUNmqj8ljX2b5siLge3
-         fF5KZNvXMLDa3EmT9KCKcOQc6kq5UOQV4ANtGaeIV+Zrpqxx/wl1R62+ukH7FlC5Agn9
-         NMq/YxenBc5KH1e7MHOBYTmnchV2oCR9LbmDLLSHAO8Pgki555nZZJCUT5yFMi6RP4J0
-         Y3hc2JJQNwY+ASUIEEDUnIoYFKvT8ASqS9OO0VxyRVShJATWM2g5ncKexT/tE6oYSd69
-         dkVut1elpcceswBbxUeJk376GDuLDTPBJJ3rZHbIAKdc69END89pVwoor78dbyqWFcSh
-         MoSg==
-X-Gm-Message-State: AOAM530Lpj0OR5vW7uD6G2A25xsGpeu4+PJ2GqkZNXTHfwMaJcPGfeVE
-        lGx5kaYpjIT3hphkKYFkiZKKZBl7qJZIGU3l01Ic/A==
-X-Google-Smtp-Source: ABdhPJw42VaZ1z4gK1xzeif6WMVK4lY7WhKn6398EaTPxMrm9/94ufHU+6t20eQuTRecaH1cR692bJBAMjGYgbnqhKM=
-X-Received: by 2002:a05:6402:5190:: with SMTP id q16mr11329786edd.228.1634240173167;
- Thu, 14 Oct 2021 12:36:13 -0700 (PDT)
+        bh=mKswVKHsYaVmj+miEFc+WAd+jtG8tqDfzq5v7oYhDog=;
+        b=16PiWEFEbRFaVMrcDdPUz1zP4cjqKbgFLADx9g09QrXstQWEUtXKaHD7cmSAiMXqsr
+         pNrbdytIiZsW8l+UPSIGrk0+dfI3+GOXOIJ0vtWciFuTMy8v5dQ1C3bH9VDFeGlix8SK
+         d0AwiLZMX6+GIud//JZFohyaBUovnAfwzJHeytjT/FmAMevYBO0QXuLqDkYDVfSwWyUv
+         meMrIGeMOwNPXLN3+jN5KKZQKV+rtIWV3RWAa7WFST1lIOVz4dGKunZB7EAKTk3gA3+M
+         WppQ6EIfpNI8h0AsHAuQr+52M1wg1Dkgy9rYkDFFFQVXKT3FX+T6v9+rBI4Y2PS2IN/w
+         dmAg==
+X-Gm-Message-State: AOAM530f+KG+bhi2KElHwcHDZX4Ays2THfny7GzDirzya1ZoYyRxI43S
+        xr/kw0ROdJKeA2oZ1VTM0FhoGFtyMp/NvM5i
+X-Google-Smtp-Source: ABdhPJxLjwf6uJlAsnft6IqvwXKkqPfUiIJP+N7srcfQG3q4NjgeuuEy3jj4Ea7URiBx8sLxElVO1g==
+X-Received: by 2002:ab0:70d6:: with SMTP id r22mr8702107ual.139.1634240372314;
+        Thu, 14 Oct 2021 12:39:32 -0700 (PDT)
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
+        by smtp.gmail.com with ESMTPSA id q12sm2465114uae.15.2021.10.14.12.39.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 12:39:31 -0700 (PDT)
+Received: by mail-ua1-f49.google.com with SMTP id f4so13560326uad.4;
+        Thu, 14 Oct 2021 12:39:31 -0700 (PDT)
+X-Received: by 2002:a05:6102:290c:: with SMTP id cz12mr9646854vsb.35.1634240371444;
+ Thu, 14 Oct 2021 12:39:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211013221021.3433704-1-willmcvicker@google.com>
- <20211013221021.3433704-2-willmcvicker@google.com> <163417617897.936110.4798836682696423903@swboyd.mtv.corp.google.com>
-In-Reply-To: <163417617897.936110.4798836682696423903@swboyd.mtv.corp.google.com>
-From:   Will McVicker <willmcvicker@google.com>
-Date:   Thu, 14 Oct 2021 12:35:57 -0700
-Message-ID: <CABYd82a7G7jAOMr=yjpkG6sbH+g0-r36NKSBwVEDZeEthuTTLA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] [RFT] clk: samsung: add support for CPU clocks
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
+References: <CAMuHMdUvNM8Tu-+Ed0vjB2-_JUQe7ojUPbzJM=Vy1m_j31sNSg@mail.gmail.com>
+ <20211007200250.20661-1-nikita.yoush@cogentembedded.com> <CAMuHMdU2Nr1V035Ntz-XNrc10t7femUFt_WV+Q3EHiWZD5HmkQ@mail.gmail.com>
+ <c8234074-a22e-72f9-fbe7-e65d6af74eec@cogentembedded.com>
+In-Reply-To: <c8234074-a22e-72f9-fbe7-e65d6af74eec@cogentembedded.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 14 Oct 2021 21:39:20 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU1OhyqnREnwpEUubUsR1DUF_3a1z2MpWxe5U6rWCLUUA@mail.gmail.com>
+Message-ID: <CAMuHMdU1OhyqnREnwpEUubUsR1DUF_3a1z2MpWxe5U6rWCLUUA@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: renesas: r8a779[56]x: add MediaLB pins
+To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+        Andrey Gusakov <andrey.gusakov@cogentembedded.com>,
+        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
+        LUU HOAI <hoai.luu.ub@renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 6:49 PM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Will McVicker (2021-10-13 15:10:19)
-> > diff --git a/drivers/clk/samsung/clk-cpu.c b/drivers/clk/samsung/clk-cpu.c
-> > index 00ef4d1b0888..b5017934fc41 100644
-> > --- a/drivers/clk/samsung/clk-cpu.c
-> > +++ b/drivers/clk/samsung/clk-cpu.c
-> > @@ -469,3 +469,29 @@ int __init exynos_register_cpu_clock(struct samsung_clk_provider *ctx,
-> >         kfree(cpuclk);
-> >         return ret;
-> >  }
-> > +
-> > +void samsung_clk_register_cpu(struct samsung_clk_provider *ctx,
-> > +               const struct samsung_cpu_clock *list, unsigned int nr_clk)
-> > +{
-> > +       unsigned int idx;
-> > +       unsigned int num_cfgs;
-> > +       struct clk *parent_clk, *alt_parent_clk;
-> > +       const struct clk_hw *parent_clk_hw = NULL;
-> > +       const struct clk_hw *alt_parent_clk_hw = NULL;
-> > +
-> > +       for (idx = 0; idx < nr_clk; idx++, list++) {
-> > +               /* find count of configuration rates in cfg */
-> > +               for (num_cfgs = 0; list->cfg[num_cfgs].prate != 0; )
-> > +                       num_cfgs++;
-> > +
-> > +               parent_clk = __clk_lookup(list->parent_name);
->
-> Please stop using __clk_lookup()
+Hi Nikita,
 
-Thanks, I believe I have a way around this. I'll fix this up in the
-follow-up version.
-
->
-> > +               if (parent_clk)
-> > +                       parent_clk_hw = __clk_get_hw(parent_clk);
-> > +               alt_parent_clk = __clk_lookup(list->alt_parent_name);
->
-> Can the DT binding be updated?
-
-Are you referring to removing alt_parent and just adding it as another
-parent clock?
-
->
-> > +               if (alt_parent_clk)
-> > +                       alt_parent_clk_hw = __clk_get_hw(alt_parent_clk);
-> > +
-> > +               exynos_register_cpu_clock(ctx, list->id, list->name, parent_clk_hw,
-> > +                               alt_parent_clk_hw, list->offset, list->cfg, num_cfgs, list->flags);
-> > +       }
-> > +}
-> > diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
-> > index 1949ae7851b2..336243c6f120 100644
-> > --- a/drivers/clk/samsung/clk.c
-> > +++ b/drivers/clk/samsung/clk.c
-> > @@ -378,6 +378,8 @@ struct samsung_clk_provider * __init samsung_cmu_register_one(
-> >                 samsung_clk_extended_sleep_init(reg_base,
-> >                         cmu->clk_regs, cmu->nr_clk_regs,
-> >                         cmu->suspend_regs, cmu->nr_suspend_regs);
-> > +       if (cmu->cpu_clks)
-> > +               samsung_clk_register_cpu(ctx, cmu->cpu_clks, cmu->nr_cpu_clks);
+On Thu, Oct 14, 2021 at 9:27 PM Nikita Yushchenko
+<nikita.yoush@cogentembedded.com> wrote:
+> > Obviously not only the mlb_3pin groups, but also the functions have to
+> > be moved to the automotive[] arrays ;-)
 > >
-> >         samsung_clk_of_add_provider(np, ctx);
-> >
-> > diff --git a/drivers/clk/samsung/clk.h b/drivers/clk/samsung/clk.h
-> > index c1e1a6b2f499..a52a38cc1740 100644
-> > --- a/drivers/clk/samsung/clk.h
-> > +++ b/drivers/clk/samsung/clk.h
-> > @@ -271,6 +271,27 @@ struct samsung_pll_clock {
-> >         __PLL(_typ, _id, _name, _pname, CLK_GET_RATE_NOCACHE, _lock,    \
-> >               _con, _rtable)
-> >
-> > +struct samsung_cpu_clock {
-> > +       unsigned int            id;
-> > +       const char              *name;
-> > +       const char              *parent_name;
-> > +       const char              *alt_parent_name;
-> > +       unsigned long           flags;
-> > +       int                     offset;
-> > +       const struct exynos_cpuclk_cfg_data *cfg;
-> > +};
-> > +
-> > +#define CPU_CLK(_id, _name, _pname, _apname, _flags, _offset, _cfg) \
-> > +       {                                                           \
-> > +               .id               = _id,                            \
-> > +               .name             = _name,                          \
-> > +               .parent_name      = _pname,                         \
-> > +               .alt_parent_name  = _apname,                        \
-> > +               .flags            = _flags,                         \
-> > +               .offset           = _offset,                        \
-> > +               .cfg              = _cfg,                           \
-> > +       }
-> > +
-> >  struct samsung_clock_reg_cache {
-> >         struct list_head node;
-> >         void __iomem *reg_base;
-> > @@ -301,6 +322,9 @@ struct samsung_cmu_info {
-> >         unsigned int nr_fixed_factor_clks;
-> >         /* total number of clocks with IDs assigned*/
-> >         unsigned int nr_clk_ids;
-> > +       /* list of cpu clocks and respective count */
-> > +       const struct samsung_cpu_clock *cpu_clks;
-> > +       unsigned int nr_cpu_clks;
-> >
-> >         /* list and number of clocks registers */
-> >         const unsigned long *clk_regs;
-> > @@ -350,6 +374,8 @@ extern void __init samsung_clk_register_gate(struct samsung_clk_provider *ctx,
-> >  extern void __init samsung_clk_register_pll(struct samsung_clk_provider *ctx,
-> >                         const struct samsung_pll_clock *pll_list,
-> >                         unsigned int nr_clk, void __iomem *base);
-> > +extern void __init samsung_clk_register_cpu(struct samsung_clk_provider *ctx,
+> > I'll fix these up while applying, so no need to resend.
 >
-> __init in header files is useless.
-
-Thanks for pointing that out. Looks like this header needs some cleaning up.
-
+> Looking at error mail from build robot (cited below).
 >
-> > +               const struct samsung_cpu_clock *list, unsigned int nr_clk);
-> >
+> Looks like also must put definitions of mlb_3pin_groups[] / mlb_3pin_mux[] / mlb_3pin_pins[] under GEN3
+> ifdefs.
+>
+> What are the proper steps now - send a v3 of the original patch, or send a fix to what is in linux-next ?
+
+No worries, I'll fix it up tomorrow myself (unless you beat me to it,
+then I'll fold
+your fix into the original commit ;-)
+
+>  > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+>  > head:   8006b911c90a4ec09958447d24c8a4c3538f5723
+>  > commit: 23f87fe82c0341ff79807fb5f92a05a33ce1b055 [7355/7806] pinctrl: renesas: r8a779[56]x: Add
+> MediaLB pins
+>  > config: sh-buildonly-randconfig-r002-20211014 (attached as .config)
+>  > compiler: sh4-linux-gcc (GCC) 11.2.0
+>  > reproduce (this is a W=1 build):
+>  >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O
+> ~/bin/make.cross
+>  >          chmod +x ~/bin/make.cross
+>  >          #
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=23f87fe82c0341ff79807fb5f92a05a33ce1b055
+>  >          git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>  >          git fetch --no-tags linux-next master
+>  >          git checkout 23f87fe82c0341ff79807fb5f92a05a33ce1b055
+>  >          # save the attached .config to linux build tree
+>  >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=sh
+>  >
+>  > If you fix the issue, kindly add following tag as appropriate
+>  > Reported-by: kernel test robot <lkp@intel.com>
+>  >
+>  > All errors (new ones prefixed by >>):
+>  >
+>  >>> drivers/pinctrl/renesas/pfc-r8a77965.c:5030:27: error: 'mlb_3pin_groups' defined but not used
+> [-Werror=unused-const-variable=]
+>  >      5030 | static const char * const mlb_3pin_groups[] = {
+>  >           |                           ^~~~~~~~~~~~~~~
+>  >>> drivers/pinctrl/renesas/pfc-r8a77965.c:2616:27: error: 'mlb_3pin_mux' defined but not used
+> [-Werror=unused-const-variable=]
+>  >      2616 | static const unsigned int mlb_3pin_mux[] = {
+>  >           |                           ^~~~~~~~~~~~
+>  >>> drivers/pinctrl/renesas/pfc-r8a77965.c:2613:27: error: 'mlb_3pin_pins' defined but not used
+> [-Werror=unused-const-variable=]
+>  >      2613 | static const unsigned int mlb_3pin_pins[] = {
+>  >           |                           ^~~~~~~~~~~~~
+>  >     cc1: all warnings being treated as errors
+>  > --
+>  >>> drivers/pinctrl/renesas/pfc-r8a77951.c:4807:27: error: 'mlb_3pin_groups' defined but not used
+> [-Werror=unused-const-variable=]
+>  >      4807 | static const char * const mlb_3pin_groups[] = {
+>  >           |                           ^~~~~~~~~~~~~~~
+>  >>> drivers/pinctrl/renesas/pfc-r8a77951.c:2460:27: error: 'mlb_3pin_mux' defined but not used
+> [-Werror=unused-const-variable=]
+>  >      2460 | static const unsigned int mlb_3pin_mux[] = {
+>  >           |                           ^~~~~~~~~~~~
+>  >>> drivers/pinctrl/renesas/pfc-r8a77951.c:2457:27: error: 'mlb_3pin_pins' defined but not used
+> [-Werror=unused-const-variable=]
+>  >      2457 | static const unsigned int mlb_3pin_pins[] = {
+>  >           |                           ^~~~~~~~~~~~~
+>  >     cc1: all warnings being treated as errors
+>  >
+>  >
+>  > vim +/mlb_3pin_groups +5030 drivers/pinctrl/renesas/pfc-r8a77965.c
+>  >
+>  >    5029
+>  >> 5030        static const char * const mlb_3pin_groups[] = {
+>  >    5031              "mlb_3pin",
+>  >    5032      };
+>  >    5033
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
