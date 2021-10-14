@@ -2,195 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B040D42E28E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 22:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8543442E289
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 22:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234107AbhJNUTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 16:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233060AbhJNUTF (ORCPT
+        id S232854AbhJNUTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 16:19:03 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:46727 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232993AbhJNUSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 16:19:05 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF5EC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 13:16:59 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id i84so17391492ybc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 13:16:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c0cmuWRsBM8lyTJIMBQh8bNKy5hHUkW2gy7WXb11ikU=;
-        b=f0qLDOKzIPAztbLgdkQY2YKlIIwOO4CPZpbMpiSv8Ew9Oil/ath9n07/ohZFTfCchC
-         tUfFpgpxKWGSiuPuGQXa1lAJMzvJ2v2jEgfNJIChSA6p3F/PA65vL35nhyaFPtFPTu49
-         1247Evth3zZtmiV9KJGFY1VnR8L91bL9rPwjPym6PmsUCAowdylHSWXNeLXHESeggihA
-         Vt1lQtjprzK6LMxeZPiVT/NtzOrDnx2xOOG8OJMrpdLwEzixkPIbxPqs1oZmLmYb8uvN
-         owoPUF3VgkSF9BJUFMguFjxt/z84NGzPG34QC62MSK7yEjYhoPlVKw2QYEROpDMnIVFl
-         tCsA==
+        Thu, 14 Oct 2021 16:18:55 -0400
+Received: by mail-ot1-f45.google.com with SMTP id 62-20020a9d0a44000000b00552a6f8b804so9223038otg.13;
+        Thu, 14 Oct 2021 13:16:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c0cmuWRsBM8lyTJIMBQh8bNKy5hHUkW2gy7WXb11ikU=;
-        b=O90pmxkALjRKFxxaxPq44BtsTUvnaru9yq81XLrS9Lu/6wwdWt4K46ZUhOEcXBz0/T
-         btRN1BuUTVlpQX/iSU30w17tFesNg7nnm6i84UVrzWPlb+stAPlBPHkM5pPHaGSe3qsA
-         CbLQWrwf9Ton3GWR8GhvarHFxqPCWfY6s1pf5CPTLLZNgIYLHLL3ZkyWVmbJ3U1hBVTH
-         +a3E3+mva2bqnrkBi+TpSpQFdiGhoeDnXQ90JuYGm2rfv+enccZpc5Z+zl63sh+0df1E
-         4O0uSHTfeFKar39xtmwsnf/7rPCT2vAQGChpnfN8iaLDyRfGt/at/ISopW2mitfVZYpi
-         fTKw==
-X-Gm-Message-State: AOAM531a8wN5axBsl0bfssrvzLx0/gIufpkpWfV+arp3uDBOTezL31mf
-        jabN5WPtL4X1mrYSr5P1vJK2ONiYckizwvA4wWMR1A==
-X-Google-Smtp-Source: ABdhPJyxDeRMapi8KKC0nonneI/eCQ7+kw+lLAqFaMCn23DedEM+4BAtFbvseb+djFd5f1c00tNd4JPLKH7QEDYHlig=
-X-Received: by 2002:a25:5b04:: with SMTP id p4mr8493469ybb.34.1634242618619;
- Thu, 14 Oct 2021 13:16:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sLOZBbljlJk6fxRBXiALacjUjEX+53gXTaAVz3wg99U=;
+        b=LUJ4ODNkz46zZnNI+Yx6vpzWkKAgPuwlYyK1H2wZ+TP7BnnKeB7NCBkv5rv8JY6VWB
+         IyVEVuhu7ElGzgqImUMZirBXv0mIDqUnbZysoqjMzfLi0q5d6oj0j7m3eJQ8+umHmnBM
+         E11wXEk+xsib3xj+YmYJKKqdT4VwJVUQ/Llw9Ljbj5xJuHtV6gyM8vaqdSRkMKyUhqhP
+         5wEoizex/FLpajMfSn3tsUsValjOgf+u8ErrbdcsiaiV4a6eFT3mT2lCkYw572oSKf/1
+         QBO8UF5+n1hH8uUipKL7zPpmqADFMS93x1khXiNpv792ccOW43mN8iaraZnAmVoVfYJ6
+         xMVg==
+X-Gm-Message-State: AOAM530MGlzRzXMsEO5OmckMwxt47vHzP6yQyCwSYhpWD1KtVAOzgp18
+        fPOrCfvHB3AemHuqYMIp1g==
+X-Google-Smtp-Source: ABdhPJzsUlG+d1iaT/mSTy2OK/mA2mBw4ASqaCFdzTmfCHcV6evnztjSEGS/un35IXxmlV95JeN2QA==
+X-Received: by 2002:a9d:4684:: with SMTP id z4mr4445844ote.134.1634242610236;
+        Thu, 14 Oct 2021 13:16:50 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id j65sm780894oif.5.2021.10.14.13.16.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 13:16:49 -0700 (PDT)
+Received: (nullmailer pid 3850196 invoked by uid 1000);
+        Thu, 14 Oct 2021 20:16:48 -0000
+Date:   Thu, 14 Oct 2021 15:16:48 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     a.hajda@samsung.com, daniel@ffwll.ch, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: display/bridge: tc358767: Convert to YAML
+ binding
+Message-ID: <YWiQMM0ugXFYCaD0@robh.at.kernel.org>
+References: <20211006135204.505144-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
-References: <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
- <20211007101527.GA26288@duo.ucw.cz> <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
- <YV8jB+kwU95hLqTq@dhcp22.suse.cz> <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
- <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz> <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
- <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
- <202110081344.FE6A7A82@keescook> <YWP3c/bozz5npQ8O@dhcp22.suse.cz>
- <CAJuCfpHQVMM4+6Lm_EnFk06+KrOjSjGA19K2cv9GmP3k9LW5vg@mail.gmail.com>
- <26f9db1e-69e9-1a54-6d49-45c0c180067c@redhat.com> <CAJuCfpGTCM_Rf3GEyzpR5UOTfgGKTY0_rvAbGdtjbyabFhrRAw@mail.gmail.com>
-In-Reply-To: <CAJuCfpGTCM_Rf3GEyzpR5UOTfgGKTY0_rvAbGdtjbyabFhrRAw@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 14 Oct 2021 13:16:47 -0700
-Message-ID: <CAJuCfpE2j91_AOwwRs_pYBs50wfLTwassRqgtqhXsh6fT+4MCg@mail.gmail.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Kees Cook <keescook@chromium.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211006135204.505144-1-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 12, 2021 at 10:01 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Tue, Oct 12, 2021 at 12:44 AM David Hildenbrand <david@redhat.com> wrote:
-> >
-> > > I'm still evaluating the proposal to use memfds but I'm not sure if
-> > > the issue that David Hildenbrand mentioned about additional memory
-> > > consumed in pagecache (which has to be addressed) is the only one we
-> > > will encounter with this approach. If anyone knows of any potential
-> > > issues with using memfds as named anonymous memory, I would really
-> > > appreciate your feedback before I go too far in that direction.
-> >
-> > [MAP_PRIVATE memfd only behave that way with 4k, not with huge pages, so
-> > I think it just has to be fixed. It doesn't make any sense to allocate a
-> > page for the pagecache ("populate the file") when accessing via a
-> > private mapping that's supposed to leave the file untouched]
-> >
-> > My gut feeling is if you really need a string as identifier, then try
-> > going with memfds. Yes, we might hit some road blocks to be sorted out,
-> > but it just logically makes sense to me: Files have names. These names
-> > exist before mapping and after mapping. They "name" the content.
->
-> I'm investigating this direction. I don't have much background with
-> memfds, so I'll need to digest the code first.
+On Wed, Oct 06, 2021 at 03:52:04PM +0200, AngeloGioacchino Del Regno wrote:
+> Convert the Toshiba TC358767 txt documentation to YAML.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  .../display/bridge/toshiba,tc358767.txt       |  54 --------
+>  .../display/bridge/toshiba,tc358767.yaml      | 118 ++++++++++++++++++
+>  2 files changed, 118 insertions(+), 54 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.txt
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.txt b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.txt
+> deleted file mode 100644
+> index 583c5e9dbe6b..000000000000
+> --- a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.txt
+> +++ /dev/null
+> @@ -1,54 +0,0 @@
+> -Toshiba TC358767 eDP bridge bindings
+> -
+> -Required properties:
+> - - compatible: "toshiba,tc358767"
+> - - reg: i2c address of the bridge, 0x68 or 0x0f, depending on bootstrap pins
+> - - clock-names: should be "ref"
+> - - clocks: OF device-tree clock specification for refclk input. The reference
+> -   clock rate must be 13 MHz, 19.2 MHz, 26 MHz, or 38.4 MHz.
+> -
+> -Optional properties:
+> - - shutdown-gpios: OF device-tree gpio specification for SD pin
+> -                   (active high shutdown input)
+> - - reset-gpios: OF device-tree gpio specification for RSTX pin
+> -                (active low system reset)
+> - - toshiba,hpd-pin: TC358767 GPIO pin number to which HPD is connected to (0 or 1)
+> - - ports: the ports node can contain video interface port nodes to connect
+> -   to a DPI/DSI source and to an eDP/DP sink according to [1][2]:
+> -    - port@0: DSI input port
+> -    - port@1: DPI input port
+> -    - port@2: eDP/DP output port
+> -
+> -[1]: Documentation/devicetree/bindings/graph.txt
+> -[2]: Documentation/devicetree/bindings/media/video-interfaces.txt
+> -
+> -Example:
+> -	edp-bridge@68 {
+> -		compatible = "toshiba,tc358767";
+> -		reg = <0x68>;
+> -		shutdown-gpios = <&gpio3 23 GPIO_ACTIVE_HIGH>;
+> -		reset-gpios = <&gpio3 24 GPIO_ACTIVE_LOW>;
+> -		clock-names = "ref";
+> -		clocks = <&edp_refclk>;
+> -
+> -		ports {
+> -			#address-cells = <1>;
+> -			#size-cells = <0>;
+> -
+> -			port@1 {
+> -				reg = <1>;
+> -
+> -				bridge_in: endpoint {
+> -					remote-endpoint = <&dpi_out>;
+> -				};
+> -			};
+> -
+> -			port@2 {
+> -				reg = <2>;
+> -
+> -				bridge_out: endpoint {
+> -					remote-endpoint = <&panel_in>;
+> -				};
+> -			};
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.yaml b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.yaml
+> new file mode 100644
+> index 000000000000..8e27e6f0fc7d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358767.yaml
+> @@ -0,0 +1,118 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/bridge/toshiba,tc358767.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Toshiba TC358767 MIPI-DSI or MIPI-DPI to DP/eDP bridge
+> +
+> +maintainers:
+> +  - Tomi Valkeinen <tomi.valkeinen@ti.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - toshiba,tc358767
+> +
+> +  reg:
+> +    description: I2C address of the bridge
+> +    enum: [0x68, 0x0f]
+> +
+> +  clocks:
+> +    description:
+> +      Reference clock input. The reference clock rate must be 13MHz, 19.2MHz,
+> +      26MHz, or 38.4MHz.
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: ref
+> +
+> +  reset-gpios:
+> +    description: GPIO connected to the RSTX signal.
+> +    maxItems: 1
+> +
+> +  shutdown-gpios:
+> +    description: GPIO connected to the SD signal.
+> +    maxItems: 1
+> +
+> +  toshiba,hpd-pin:
+> +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> +    description: TC356767 GPIO pin number to which HPD is connected
+> +    enum:
+> +      - 0
+> +      - 1
+> +
+> +  ports:
+> +    $ref: /schemas/graph.yaml#/properties/ports
+> +
+> +    properties:
+> +      port@0:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description:
+> +          Video port for MIPI DSI input
+> +
+> +      port@1:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description:
+> +          Video port for MIPI DPI input
+> +
+> +      port@2:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description:
+> +          Video port for DP/eDP output (panel or connector).
+> +
+> +    oneOf:
+> +      - required:
+> +          - port@0
+> +          - port@2
+> +      - required:
+> +          - port@1
+> +          - port@2
 
-I've done some investigation into the possibility of using memfds to
-name anonymous VMAs. Here are my findings:
+You could move port@2 out to:
 
-1. Forking a process with anonymous vmas named using memfd is 5-15%
-slower than with prctl (depends on the number of VMAs in the process
-being forked). Profiling shows that i_mmap_lock_write() dominates
-dup_mmap(). Exit path is also slower by roughly 9% with
-free_pgtables() and fput() dominating exit_mmap(). Fork performance is
-important for Android because almost all processes are forked from
-zygote, therefore this limitation already makes this approach
-prohibitive.
+       required:
+         - port@2
 
-2. mremap() usage to grow the mapping has an issue when used with memfds:
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clock-names
+> +  - clocks
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    i2c1 {
 
-fd = memfd_create(name, MFD_ALLOW_SEALING);
-ftruncate(fd, size_bytes);
-ptr = mmap(NULL, size_bytes, prot, MAP_PRIVATE, fd, 0);
-close(fd);
-ptr = mremap(ptr, size_bytes, size_bytes * 2, MREMAP_MAYMOVE);
-touch_mem(ptr, size_bytes * 2);
+i2c {
 
-This would generate a SIGBUS in touch_mem(). I believe it's because
-ftruncate() specified the size to be size_bytes and we are accessing
-more than that after remapping. prctl() does not have this limitation
-and we do have a usecase for growing a named VMA.
+With that,
 
-3. Leaves an fd exposed, even briefly, which may lead to unexpected
-flaws (e.g. anything using mmap MAP_SHARED could allow exposures or
-overwrites). Even MAP_PRIVATE, if an attacker writes into the file
-after ftruncate() and before mmap(), can cause private memory to be
-initialized with unexpected data.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-4. There is a usecase in the Android userspace where vma naming
-happens after memory was allocated. Bionic linker does in-memory
-relocations and then names some relocated sections.
-
-In the light of these findings, could the current patchset be reconsidered?
-Thanks,
-Suren.
-
-
->
-> >
-> > Maybe it's just me, but the whole interface, setting the name via a
-> > prctl after the mapping was already instantiated doesn't really spark
-> > joy at my end. That's not a strong pushback, but if we can avoid it
-> > using something that's already there, that would be very much preferred.
->
-> Actually that's one of my worries about using memfds. There might be
-> cases when we need to name a vma after it was mapped. memfd_create()
-> would not allow us to do that AFAIKT. But I need to check all usages
-> to say if that's really an issue.
-> Thanks!
->
-> >
-> > --
-> > Thanks,
-> >
-> > David / dhildenb
-> >
-> > --
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
-> >
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      bridge@68 {
+> +        compatible = "toshiba,tc358767";
+> +        reg = <0x68>;
+> +        clock-names = "ref";
+> +        clocks = <&edp_refclk>;
+> +        reset-gpios = <&gpio3 24 GPIO_ACTIVE_LOW>;
+> +        shutdown-gpios = <&gpio3 23 GPIO_ACTIVE_HIGH>;
+> +
+> +        ports {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          port@1 {
+> +            reg = <1>;
+> +            bridge_in: endpoint {
+> +              remote-endpoint = <&dpi_out>;
+> +            };
+> +          };
+> +
+> +          port@2 {
+> +            reg = <2>;
+> +            bridge_out: endpoint {
+> +              remote-endpoint = <&panel_in>;
+> +            };
+> +          };
+> +        };
+> +      };
+> +    };
+> +
+> +...
+> -- 
+> 2.33.0
+> 
+> 
