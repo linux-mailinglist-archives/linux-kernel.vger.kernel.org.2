@@ -2,88 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC2342D0CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8688D42D0D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 05:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhJNDLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Oct 2021 23:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbhJNDLs (ORCPT
+        id S229927AbhJNDNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Oct 2021 23:13:51 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:26992 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229496AbhJNDNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Oct 2021 23:11:48 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DECC061570;
-        Wed, 13 Oct 2021 20:09:44 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id c29-20020a4ad21d000000b002b6cf3f9aceso1426932oos.13;
-        Wed, 13 Oct 2021 20:09:44 -0700 (PDT)
+        Wed, 13 Oct 2021 23:13:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HE9z5tlF77mRAkHNqcUY/20RBkunTk9T3krwd45VGuk=;
-        b=lCO/JQCREM+81cayvh0CHs3V7SF8AZi8+4VOYZPZfk9QH6Uk2pnPqm2euY+mChd1hV
-         bjO7WeMzWiZEa7gV+6Bm4yZ21dNlaE1x9RujA4JVmvcxgiv9eMNk0orCLl+aX6SclQs0
-         AyY5SXbI/PVot3uWMz25KOfwUJTG6MKsEHC86UEZY+51GrS9dSaZPO5uv94+bhi3oqps
-         6Bb05EaGTQ7lllzx7mQ870sX1r/YohiSqheTiYnZLpbohwELF0vOSdl56owztHZTkRvD
-         FWeXjaw6+vnfoN06lMOAymwWPe5qish0dtDWbqh3A7UOB8ImUs9GTa8UsEhR/IZx5WGR
-         IrxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HE9z5tlF77mRAkHNqcUY/20RBkunTk9T3krwd45VGuk=;
-        b=lBG6r9UA63OHMGI2Px+U1gc2sU1X+JLgtzbcD6H9vYcltwTBX1TBJ18w3pC+tqqsY8
-         TNWVdnZE9bJ3wig9FEjZs+kxw474hivivX4/hMcWYnEfVXMUkDF//5WGT+BgnxcRTgfg
-         4P3Ir6BEWzDB0iixApvDXaA/oDMJA3LDOHBAAyfPNbVwVMW5GNO0UIkCmFFpbixSxFgP
-         CsjipABUwxa/8qbiJqS5rF0nq6WmZT/G6ziX6Swo4WWNEJ8ZjqRdOspQXhruB1IesIL+
-         BeCSUkAvTtKfTelU7nJ2HTNqhmFw4/5iHDrmsletPppi8dxUeXXVPw3ZAFlthEM1y3Gb
-         WiTA==
-X-Gm-Message-State: AOAM532+Ymrhui9ROYHGpj7shSm/U55I43snJ7cZfkaYCB4Zwvlijids
-        J7mZdTpvjCDVeNXTrVI+wyqc5bX0lqzMEg==
-X-Google-Smtp-Source: ABdhPJwNRtMu0D2MeivvDWc4qCFUdD03zkvdEBjopiN6PPThrvexnA1SdkWeszmICCg6kI68AJMl2Q==
-X-Received: by 2002:a4a:430c:: with SMTP id k12mr2198711ooj.43.1634180983781;
-        Wed, 13 Oct 2021 20:09:43 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.40])
-        by smtp.googlemail.com with ESMTPSA id u6sm278423ooh.15.2021.10.13.20.09.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 20:09:43 -0700 (PDT)
-Subject: Re: [PATCH v2 2/4] tcp: md5: Allow MD5SIG_FLAG_IFINDEX with ifindex=0
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Yonghong Song <yhs@fb.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1634107317.git.cdleonard@gmail.com>
- <9eb867a3751ee4213d8019139cf1af42570e9e91.1634107317.git.cdleonard@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <7d8f3de1-d093-c013-88c4-3cff8c7bc012@gmail.com>
-Date:   Wed, 13 Oct 2021 21:09:42 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1634181106; x=1665717106;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=fdrOr8AdXQ2FQF3KucGTojgEFemLI+WoAds9RTqofTw=;
+  b=aw0YfIVFk4eEByIK7KJLKc9eqhoa9l+V3xGMd5zg3w2LskDrq74jflHF
+   E2KdXoTcjqRB861M9vjccOracgWalAMJk0pOO9uECESC8+3Y5gcYR/b94
+   XD6Nw/VtBj8tymYhpsQIgk4MlJba/DR+kkLoQP3nGw11+qHB3eVT7HCiG
+   k=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 13 Oct 2021 20:11:46 -0700
+X-QCInternal: smtphost
+Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 20:11:45 -0700
+Received: from [10.231.205.174] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Wed, 13 Oct 2021
+ 20:11:43 -0700
+Subject: Re: [RESEND PATCH v1 3/9] spmi: pmic-arb: check apid against limits
+ before calling irq handler
+To:     Stephen Boyd <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
+        <tglx@linutronix.de>, <maz@kernel.org>
+References: <1631860384-26608-1-git-send-email-quic_fenglinw@quicinc.com>
+ <1631860384-26608-4-git-send-email-quic_fenglinw@quicinc.com>
+ <163406173869.936959.6395787327312518099@swboyd.mtv.corp.google.com>
+ <7efffba4-5e8b-1b71-8bee-3dffe65cfdf5@quicinc.com>
+ <163415312707.936959.13741150880359468709@swboyd.mtv.corp.google.com>
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+Message-ID: <6ca3f254-90ad-e0e5-ced9-0f12deb408c6@quicinc.com>
+Date:   Thu, 14 Oct 2021 11:11:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <9eb867a3751ee4213d8019139cf1af42570e9e91.1634107317.git.cdleonard@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <163415312707.936959.13741150880359468709@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/21 12:50 AM, Leonard Crestez wrote:
-> Multiple VRFs are generally meant to be "separate" but right now md5
-> keys for the default VRF also affect connections inside VRFs if the IP
-> addresses happen to overlap.
-> 
-> So far the combination of TCP_MD5SIG_IFINDEX with tcpm_ifindex == 0
 
-TCP_MD5SIG_IFINDEX does not exist in net-next and it was not added by
-patch 1 or this patch.
+On 10/14/2021 3:25 AM, Stephen Boyd wrote:
+> Quoting Fenglin Wu (2021-10-12 22:31:22)
+>> On 10/13/2021 2:02 AM, Stephen Boyd wrote:
+>>> Quoting Fenglin Wu (2021-09-16 23:32:58)
+>>>> From: David Collins <collinsd@codeaurora.org>
+>>>>
+>>>> Check that the apid for an SPMI interrupt falls between the
+>>>> min_apid and max_apid that can be handled by the APPS processor
+>>>> before invoking the per-apid interrupt handler:
+>>>> periph_interrupt().
+>>>>
+>>>> This avoids an access violation in rare cases where the status
+>>>> bit is set for an interrupt that is not owned by the APPS
+>>>> processor.
+>>>>
+>>>> Signed-off-by: David Collins <collinsd@codeaurora.org>
+>>>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+>>>> ---
+>>> Fixes? BTW, a lot of these patches are irqchip specific. It would be
+>>> good to get review from irqchip maintainers. Maybe we should split the
+>>> irqchip driver off via the auxiliary bus so that irqchip maintainers can
+>>> review. Please Cc them on irqchip related patches.
+>>>
+>>> IRQCHIP DRIVERS
+>>> M:      Thomas Gleixner <tglx@linutronix.de>
+>>> M:      Marc Zyngier <maz@kernel.org>
+>> Sure, copied Thomas and Marc for code review.
+>> This is a fix to avoid the register access violation in a case that an
+>> interrupt is fired in a PMIC module which is not owned by APPS
+>> processor.
+> Got it.
+>
+>>>>    drivers/spmi/spmi-pmic-arb.c | 6 ++++++
+>>>>    1 file changed, 6 insertions(+)
+>>>>
+>>>> diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
+>>>> index 4d7ad004..c4adc06 100644
+>>>> --- a/drivers/spmi/spmi-pmic-arb.c
+>>>> +++ b/drivers/spmi/spmi-pmic-arb.c
+>>>> @@ -535,6 +535,12 @@ static void pmic_arb_chained_irq(struct irq_desc *desc)
+>>>>                           id = ffs(status) - 1;
+>>>>                           status &= ~BIT(id);
+>>>>                           apid = id + i * 32;
+>>>> +                       if (apid < pmic_arb->min_apid
+>>>> +                           || apid > pmic_arb->max_apid) {
+>>> The || goes on the line above. What about making a local variable for
+>>> first and last and then shifting by 5 in the loop?
+>>>
+>>> int first = pmic_arb->min_apid;
+>>> int last = pmic_arb->max_apid;
+>>>
+>>> for (i = first >> 5; i <= last >> 5; i++)
+>>>
+>>>        if (apid < first || apid > last)
+>> ACK, will update it following this.
+>>>> +                               WARN_ONCE(true, "spurious spmi irq received for apid=%d\n",
+>>>> +                                       apid);
+>>> Is there any way to recover from this? Or once the mapping is wrong
+>>> we're going to get interrupts that we don't know what to do with
+>>> forever?
+>> This is a rare case that the unexpected interrupt is fired in a module
+>> not owned by APPS process, so the interrupt itself is not expected hence
+>> no need to recover from this but just bail out to avoid following register
+>> access violation.
+> And then the irq stops coming? It feels like a misconfiguration in the
+> firmware that we're trying to hide, hence the WARN_ONCE(). Can we
+> somehow silence irqs that aren't owned by the APPS when this driver
+> probes so that they can't even happen after probe?
+Actually this is a rarely happened case that couldn't be reproduced easily
+and consistently for further debug. I agreed this should be caused by HW
+misconfiguration or even some unknown HW bug that it would send out SPMI
+interrupt messages with incorrect APID, but we have never had any chance
+to find out the root cause. The patch here simply checked the APID and
+bail out if it's not in the valid range, it won't cause anything bad but
+improves the SW robustness. After that, the IRQ won't be triggered again
+because the latched status in PMIC is not cleared. Also, because of the
+access restriction to the registers corresponding to this APID, there is
+nothing we can do from APPS processor side to keep it silent.
