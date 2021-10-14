@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D073D42DD3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B455342DCD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhJNPFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:05:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49670 "EHLO mail.kernel.org"
+        id S233250AbhJNPCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:02:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232720AbhJNPDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:03:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6422C610D1;
-        Thu, 14 Oct 2021 15:00:21 +0000 (UTC)
+        id S232976AbhJNPAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:00:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B69B7600CC;
+        Thu, 14 Oct 2021 14:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223621;
-        bh=Q8KolwejPoZWajeigDxPT8rcZZa6PeyM1uWZxa8cUMU=;
+        s=korg; t=1634223502;
+        bh=ItayDj/C0c55vlAJ2QcY9yEmJMIb4DyCxDwFeUMOUB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W/wnwyhiyO4obr9QTuKQ2P717W+Ai4uhNUMA9UdkMviCfMvUDcDHv4/sqelcBp0T8
-         kAM4zjTVr8BaqWFzGaalm8w7ufR2qfAPD4uX8iPfU6GOoAyr1WWnlVZN60YMb3OcyB
-         CEVVbgFIChkjMKjkf/e5wG/ytI+/97Bj71+uBw/0=
+        b=ywhWTqGgGLUlGFxkF5M0suswxjXyM+ZAoKUjrUBrDfYIY3wUUqM/mvbHp2YmS1g0U
+         ypIub+4Vm83vfN1HS5zGc5rBm0N3k6kKwTpTEVq3ETnwns6e3jcoCTOlyZyhZEBlyg
+         TQI1nasdNJAdmnaHkwR21nL/3GV06k0d9VK8CIwU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joshua Dickens <joshua.dickens@wacom.com>,
-        Ping Cheng <ping.cheng@wacom.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 06/22] HID: wacom: Add new Intuos BT (CTL-4100WL/CTL-6100WL) device IDs
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 12/12] sched: Always inline is_percpu_thread()
 Date:   Thu, 14 Oct 2021 16:54:12 +0200
-Message-Id: <20211014145208.191051266@linuxfoundation.org>
+Message-Id: <20211014145206.950124773@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
-References: <20211014145207.979449962@linuxfoundation.org>
+In-Reply-To: <20211014145206.566123760@linuxfoundation.org>
+References: <20211014145206.566123760@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joshua-Dickens <Joshua@Joshua-Dickens.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 0c8fbaa553077630e8eae45bd9676cfc01836aeb ]
+[ Upstream commit 83d40a61046f73103b4e5d8f1310261487ff63b0 ]
 
-Add the new PIDs to wacom_wac.c to support the new models in the Intuos series.
+  vmlinux.o: warning: objtool: check_preemption_disabled()+0x81: call to is_percpu_thread() leaves .noinstr.text section
 
-[jkosina@suse.cz: fix changelog]
-Signed-off-by: Joshua Dickens <joshua.dickens@wacom.com>
-Reviewed-by: Ping Cheng <ping.cheng@wacom.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210928084218.063371959@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/wacom_wac.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ include/linux/sched.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/wacom_wac.c b/drivers/hid/wacom_wac.c
-index 4228ddc3df0e..b2719cf37aa5 100644
---- a/drivers/hid/wacom_wac.c
-+++ b/drivers/hid/wacom_wac.c
-@@ -4715,6 +4715,12 @@ static const struct wacom_features wacom_features_0x393 =
- 	{ "Wacom Intuos Pro S", 31920, 19950, 8191, 63,
- 	  INTUOSP2S_BT, WACOM_INTUOS3_RES, WACOM_INTUOS3_RES, 7,
- 	  .touch_max = 10 };
-+static const struct wacom_features wacom_features_0x3c6 =
-+	{ "Wacom Intuos BT S", 15200, 9500, 4095, 63,
-+	  INTUOSHT3_BT, WACOM_INTUOS_RES, WACOM_INTUOS_RES, 4 };
-+static const struct wacom_features wacom_features_0x3c8 =
-+	{ "Wacom Intuos BT M", 21600, 13500, 4095, 63,
-+	  INTUOSHT3_BT, WACOM_INTUOS_RES, WACOM_INTUOS_RES, 4 };
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 5524cd5c6abe..761d0f85c4a5 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1433,7 +1433,7 @@ extern struct pid *cad_pid;
+ #define tsk_used_math(p)			((p)->flags & PF_USED_MATH)
+ #define used_math()				tsk_used_math(current)
  
- static const struct wacom_features wacom_features_HID_ANY_ID =
- 	{ "Wacom HID", .type = HID_GENERIC, .oVid = HID_ANY_ID, .oPid = HID_ANY_ID };
-@@ -4888,6 +4894,8 @@ const struct hid_device_id wacom_ids[] = {
- 	{ USB_DEVICE_WACOM(0x37A) },
- 	{ USB_DEVICE_WACOM(0x37B) },
- 	{ BT_DEVICE_WACOM(0x393) },
-+	{ BT_DEVICE_WACOM(0x3c6) },
-+	{ BT_DEVICE_WACOM(0x3c8) },
- 	{ USB_DEVICE_WACOM(0x4001) },
- 	{ USB_DEVICE_WACOM(0x4004) },
- 	{ USB_DEVICE_WACOM(0x5000) },
+-static inline bool is_percpu_thread(void)
++static __always_inline bool is_percpu_thread(void)
+ {
+ #ifdef CONFIG_SMP
+ 	return (current->flags & PF_NO_SETAFFINITY) &&
 -- 
 2.33.0
 
