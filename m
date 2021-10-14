@@ -2,323 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF58742D32C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEDD042D331
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhJNHFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbhJNHFg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:05:36 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BB4C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:03:31 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id z126so7196884oiz.12
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:03:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1l0+SaZHpyG7rrhn4tPV2e7F4MAU+GQ6aooBFBCxnl4=;
-        b=cEUkgYyL0FXKDT85YJ+oxstqdONyVg9jw8g378Z46fnAaYeeB+BBY3TjJISacUN4LE
-         diZ80WE5xxPsIu5R3Vu8U0t3AkumVNF81ddQK09pXcUyvj+LxXH9m0GH4hb0sgP0WsEM
-         LdFMWGdWcwNjUMYn0KwwSZCHYGOCWSQL3v+dBfT+jnhrT6dNj86QZsdYuYXzPQjFD6D1
-         opNAtHBC5ihyj9CnMbcNYgi2Q5NmR3niXCK22KXTC2l/gijkp9ggoGBI2uesTyfaCSFv
-         DrRGytu1mqlaHK65DUdcI4W/DqbSmgUgScd9JtsAwsQB5CqeNlgeqVVpacc1ZK3KcqDD
-         8gPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1l0+SaZHpyG7rrhn4tPV2e7F4MAU+GQ6aooBFBCxnl4=;
-        b=6zKWHJ8ercleUATmK2YrqDDS+imCM1XKUnpr3pvJ7ypAf9PpVHNSr7fpH3uREQEzc7
-         A0ftX6J+BB+V492iZMVKh2RMsFIL2HEkwszBGRcGpCJ0UUrZmirjjl4peYR6z0sWvp1z
-         5Y1B6MeFga+PdqX2hQMg7MTqFr/q7bmuoB6vMnwxxLSSVPMYSghDqrxgJH40EArPw4H6
-         9IqcWleEXQ2ydvzGAPp44qXdRfYeIbEzdzUWrSGji1G4xaD80Upey4o3QG8W7w7qNdzJ
-         9mfTyNQpcs+94lcp+1pXE0Y1UCV44hGtopTU1dQ6IykP9N/HvKc974esI688yuG20WZn
-         3w+A==
-X-Gm-Message-State: AOAM533HD+87Odg3h1zHvZ+jqk7N/10EncUp/Jfx+3ze9UBps8mHDydd
-        UNHXe5OtIUcQX46GNmKPsCk1GOUzlGg615oBARdgeg==
-X-Google-Smtp-Source: ABdhPJz5LcYedJgU2u36Px+sIb9WB9tzzl7Jwf165XrKxoLC6Q222kTM/7wvLgYXQ4hjrBDicAU4o0ISmEHO2X9caSA=
-X-Received: by 2002:a05:6808:1525:: with SMTP id u37mr11690666oiw.12.1634195010727;
- Thu, 14 Oct 2021 00:03:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211013105541.68045-1-bhupesh.sharma@linaro.org>
- <20211013105541.68045-6-bhupesh.sharma@linaro.org> <1634150392.555106.1324767.nullmailer@robh.at.kernel.org>
-In-Reply-To: <1634150392.555106.1324767.nullmailer@robh.at.kernel.org>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Thu, 14 Oct 2021 12:33:19 +0530
-Message-ID: <CAH=2NtyJZoPMSDr4aYgX29BeSq3qXyJta3o7ZHPNrNOF+Ym-gA@mail.gmail.com>
-Subject: Re: [PATCH v4 05/20] dt-bindings: qcom-bam: Add 'interconnects' &
- 'interconnect-names' to optional properties
-To:     Rob Herring <robh@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        devicetree <devicetree@vger.kernel.org>,
+        id S230088AbhJNHFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:05:51 -0400
+Received: from marcansoft.com ([212.63.210.85]:45702 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230035AbhJNHFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 03:05:49 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 3043B3FA5E;
+        Thu, 14 Oct 2021 07:03:37 +0000 (UTC)
+Subject: Re: [RFC PATCH 4/9] opp: core: Don't warn if required OPP device does
+ not exist
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Sibi Sankar <sibis@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        bhupesh.linux@gmail.com, Andy Gross <agross@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        linux-crypto@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-5-marcan@marcan.st>
+ <20211012032144.2ltlpat7orrsyr6k@vireshk-i7>
+ <b7cd51ec-38e5-11d8-5193-1170c9d60ac9@marcan.st>
+ <20211012055143.xmkbvhbnolspgjin@vireshk-i7>
+ <caf16a6c-f127-7f27-ed17-0522d9f1fb9e@marcan.st>
+ <20211012092603.lkmhhjoo5v67wh44@vireshk-i7>
+ <049FC437-EC38-4FE5-891E-5E25960892CF@marcan.st>
+ <20211012093252.hb6rlcpxv5bmk7n3@vireshk-i7>
+ <0db8e994-ac2c-8fad-55d0-1b5a9e2e21f2@marcan.st>
+ <20211014065636.lkv77aqbugp3qhif@vireshk-i7>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <039b77f3-d10e-bd7a-a594-b951a98bdd45@marcan.st>
+Date:   Thu, 14 Oct 2021 16:03:36 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211014065636.lkv77aqbugp3qhif@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob,
+On 14/10/2021 15.56, Viresh Kumar wrote:
+>> +	/*
+>> +	 * Attach the CPU device to its genpd domain (if any), to allow OPP
+>> +	 * dependencies to be satisfied.
+>> +	 */
+>> +	ret = genpd_dev_pm_attach(cpu_dev);
+>> +	if (ret <= 0) {
+>> +		dev_err(cpu_dev, "Failed to attach CPU device to genpd\n");
+>> +		goto out;
+>> +	}
+>> +
+> 
+> Other platform do this from some other place I think.
+> 
+> Ulf, where should this code be moved ? cpu-clk driver ?
+> 
 
-Thanks for your review.
-These issues are already fixed via patches within this series itself
-(as some dts also need correction to pass the 'make dtbs_check'
-check). I am not sure, but it seems the check was run without applying
-other patches from this series.
+I see one driver that does this is drivers/clk/qcom/apcs-sdx55.c (via 
+dev_pm_domain_attach). Though it only does it for CPU#0; we need to do 
+it for all CPUs.
 
-See details below:
-
-On Thu, 14 Oct 2021 at 00:09, Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, 13 Oct 2021 16:25:26 +0530, Bhupesh Sharma wrote:
-> > Add new optional properties - 'interconnects' and
-> > 'interconnect-names' to the device-tree binding documentation for
-> > qcom-bam DMA IP.
-> >
-> > These properties describe the interconnect path between bam and main
-> > memory and the interconnect type respectively.
-> >
-> > Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > ---
-> >  Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
->
-> Running 'make dtbs_check' with the schema in this patch gives the
-> following warnings. Consider if they are expected or the schema is
-> incorrect. These may not be new warnings.
->
-> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-> This will change in the future.
->
-> Full log is available here: https://patchwork.ozlabs.org/patch/1540390
->
->
-> dma@12142000: $nodename:0: 'dma@12142000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-mdm9615-wp8548-mangoh-green.dt.yaml
->
-> dma@12182000: $nodename:0: 'dma@12182000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
->         arch/arm/boot/dts/qcom-ipq8064-ap148.dt.yaml
->         arch/arm/boot/dts/qcom-ipq8064-rb3011.dt.yaml
->         arch/arm/boot/dts/qcom-mdm9615-wp8548-mangoh-green.dt.yaml
->
-> dma@121c2000: $nodename:0: 'dma@121c2000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
->
-> dma@12402000: $nodename:0: 'dma@12402000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml
->         arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml
->         arch/arm/boot/dts/qcom-ipq8064-ap148.dt.yaml
->         arch/arm/boot/dts/qcom-ipq8064-rb3011.dt.yaml
->
-> dma@1dc4000: $nodename:0: 'dma@1dc4000' does not match '^dma-controller(@.*)?$'
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
-
-All the above will be fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
- 'qcom,controlled-remotely' nodes in dts' in this series. See the git
-log of the this patch for details:
-
-'A few qcom device-tree files define dma-controller nodes
-with non-standard 'node names' and also set
-the bool property 'qcom,controlled-remotely' incorrectly, which
-leads to following errors with 'make dtbs_check':
-
- $ arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml:
-     dma@1dc4000: $nodename:0: 'dma@1dc4000' does not match
-     '^dma-controller(@.*)?$'
-
- $ arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml:
-     dma@1dc4000: qcom,controlled-remotely: 'oneOf' conditional
-     failed, one must be fixed:
-    [[1]] is not of type 'boolean'
-    True was expected
-    [[1]] is not of type 'null'
-
-Fix the same.
-'
-
-> dma@1dc4000: 'iommus' does not match any of the regexes: 'pinctrl-[0-9]+'
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
-
-Fixed by ' [PATCH 06/20] dt-bindings: qcom-bam: Add 'iommus' to optional
- properties ' in this series.
-
-> dma@1dc4000: qcom,controlled-remotely: 'oneOf' conditional failed, one must be fixed:
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
-
-Again this would be fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
- 'qcom,controlled-remotely' nodes in dts' in this series.
-
-> dma@704000: $nodename:0: 'dma@704000' does not match '^dma-controller(@.*)?$'
->         arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
->         arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
->         arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
-
-Fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
-'qcom,controlled-remotely' nodes in dts' in this series
-
-> dma@704000: qcom,controlled-remotely: 'oneOf' conditional failed, one must be fixed:
->         arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml
->         arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dt.yaml
->         arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dt.yaml
-
-Fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
-'qcom,controlled-remotely' nodes in dts' in this series
-
-> dma@7544000: $nodename:0: 'dma@7544000' does not match '^dma-controller(@.*)?$'
->         arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
->         arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
->
-> dma@7584000: $nodename:0: 'dma@7584000' does not match '^dma-controller(@.*)?$'
->         arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml
->         arch/arm64/boot/dts/qcom/apq8096-ifc6640.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-dora.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-kagura.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-pmi8996-sony-xperia-tone-keyaki.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-dora.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-kagura.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone-keyaki.dt.yaml
->
-> dma@7884000: $nodename:0: 'dma@7884000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk01.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c3.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c2.dt.yaml
->
-> dma@7984000: $nodename:0: 'dma@7984000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk01.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c3.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c2.dt.yaml
->
-> dma@8e04000: $nodename:0: 'dma@8e04000' does not match '^dma-controller(@.*)?$'
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4018-jalapeno.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk01.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk04.1-c3.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c1.dt.yaml
->         arch/arm/boot/dts/qcom-ipq4019-ap.dk07.1-c2.dt.yaml
->
-> dma@c184000: $nodename:0: 'dma@c184000' does not match '^dma-controller(@.*)?$'
->         arch/arm64/boot/dts/qcom/msm8998-asus-novago-tp370ql.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8998-hp-envy-x2.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8998-lenovo-miix-630.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8998-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8998-oneplus-cheeseburger.dt.yaml
->         arch/arm64/boot/dts/qcom/msm8998-oneplus-dumpling.dt.yaml
-
-All the above 6 issues are fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
- 'qcom,controlled-remotely' nodes in dts' in this series.
-
-> dma-controller@17184000: 'iommus' does not match any of the regexes: 'pinctrl-[0-9]+'
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r1.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r2.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-cheza-r3.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-db845c.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-mtp.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dt.yaml
->         arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml
-
-Fixed by ' [PATCH 06/20] dt-bindings: qcom-bam: Add 'iommus' to optional
- properties ' in this series.
-
-> dma-controller@704000: 'qcom,config-pipe-trust-reg' does not match any of the regexes: 'pinctrl-[0-9]+'
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
-
-Fixed by '[PATCH 02/20] arm64/dts: qcom: ipq6018: Remove unused
- 'qcom,config-pipe-trust-reg' property' in this series.
-
-> dma-controller@704000: qcom,controlled-remotely: 'oneOf' conditional failed, one must be fixed:
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
-
-Fixed by '[PATCH 01/20] arm64/dts: qcom: Fix 'dma' &
-''qcom,controlled-remotely' nodes in dts' in this series.
-
-> dma-controller@7984000: clock-names:0: 'bam_clk' was expected
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
->
-> dma-controller@7984000: clock-names: Additional items are not allowed ('bam_clk' was unexpected)
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
->
-> dma-controller@7984000: clock-names: ['iface_clk', 'bam_clk'] is too long
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
->
-> dma-controller@7984000: clocks: [[9, 138], [9, 137]] is too long
->         arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dt.yaml
-
-Fixed by '[PATCH 03/20] arm64/dts: qcom: ipq6018: Remove unused 'iface_clk'
-property from dma-controller node' in this series.
-
-In summary, I ran 'make dtbs_check' after applying this series on
-linus's tip and linux-next's tip as well and saw no errors being
-reported for 'Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml'.
-
-Regards,
-Bhupesh
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
