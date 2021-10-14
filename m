@@ -2,169 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF06542DDB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3515942DDA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233146AbhJNPOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbhJNPOH (ORCPT
+        id S232406AbhJNPMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:12:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51439 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232991AbhJNPMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:14:07 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77674C0612ED
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=W5pw2CE/uzyiW+aTpQ3ZuIwrhdvcki06u9/0gkIPEBc=; b=euISmwXBiaLKhCbaEMBPqxPsdq
-        daMFJJNgNxPMA2U/OltF7Z7QpwfpX/6jKE/UFAnCglhWVvLz/v+hPrrrp/xHXLhoubB++R1vqnJDs
-        42Epm8kGWy3IhFfZDF5nvMyr+aR1Vq7Fx/8vTRbPh5gPh42KWhuyzPeor/0eWUzbtkYFvGvOsg5w9
-        RId0pNOPM2bOMSuZTls9taTomwj0w44piVkXROyETnV5yrALMq6y0i35+yRtGoiUGgYmYGYifTdd6
-        TaJ6AA2A4x3Wp+bpbl7++RNu/VcGXLiXxn+14v6VoGNLynnC68DA0SSxjkawPFQOoLTDBkgdhk4+6
-        bzAaazgg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mb2Ls-009qwq-Ls; Thu, 14 Oct 2021 15:09:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7602F30030B;
-        Thu, 14 Oct 2021 17:08:59 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6258C20A958AF; Thu, 14 Oct 2021 17:08:59 +0200 (CEST)
-Date:   Thu, 14 Oct 2021 17:08:59 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Yafang Shao <laoar.shao@gmail.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [tip:sched/core 14/47] kernel/sched/fair.c:893:22: error:
- variable 'p' set but not used
-Message-ID: <YWhIC30vBoOgXxie@hirez.programming.kicks-ass.net>
-References: <202110121132.N2z9JrD0-lkp@intel.com>
- <YWVw/oVd5ztGZDAK@hirez.programming.kicks-ass.net>
- <YWWPLnaZGybHsTkv@hirez.programming.kicks-ass.net>
- <YWew3ItdPC5QrL/w@archlinux-ax161>
+        Thu, 14 Oct 2021 11:12:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634224196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jTxRkwer/L1jMFbVHe+gmT8Lx5IDhS6y3cTZBhYxWZc=;
+        b=GUA6a2DSv/2Thu7sJktpbXcgV8Bc6FM9e1iH1yNM3Pl6HyarmH2VhqM6nqzRfWxf9Hy154
+        QqK+yKOsGlsn57mZ5qGVLvkIk7/KkhNyBziPYQAngryjFDvcawZE8ZGd3ZEhULs0Cj2HMP
+        63/l0Q7sVv7n5jlsuiOtV09YW9NlEqo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-581-NDqmwTwsMT-cC5hlJUfdKw-1; Thu, 14 Oct 2021 11:09:53 -0400
+X-MC-Unique: NDqmwTwsMT-cC5hlJUfdKw-1
+Received: by mail-wr1-f70.google.com with SMTP id 41-20020adf812c000000b00160dfbfe1a2so4826743wrm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:09:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=jTxRkwer/L1jMFbVHe+gmT8Lx5IDhS6y3cTZBhYxWZc=;
+        b=qTpaEadwRq15cnA8WGHzu+N54PLsGFbx6rZ0kjtaV9NOLTDmRgbcd+BRoFzNpOOooj
+         g4mcYfLV7rDQz1LFz4xtL8pz049ORUU1beaFsJkqV5iODe2aVmENRQOewd08Yii0GAeD
+         EswapToaaX7ZjzwcHPe2JCNgbmna8W3DB3bUcREiigR6JitLo6f/puYc/AdaNezsilWw
+         k6NPqT4HWyxW7P1iezFT3yZMyyXoj9QXBso5mwxVXbbOwN+2vNlcciJYvaywWQGktvgw
+         FIjsPh/BK0lY8O2nZtFz15aAbtoCtYbCPb8GGPw3B1yII1EDRrsL+mI/SeGpg2I0K+2D
+         uvlA==
+X-Gm-Message-State: AOAM53296g7Co8KrVU6dbFY2dbDfPI6/efakRZhyLerlIebTdspxPt8E
+        pGOdlhUoOwpd8ikngQoSphTJ6gBftLqOSV9+hg6+euv/OJuz3IbAejt6DZjKySO4vnEWzZgq4s5
+        rBeW1YffSQQHdOjEysYZnU3s0
+X-Received: by 2002:a1c:29c7:: with SMTP id p190mr6271733wmp.65.1634224192157;
+        Thu, 14 Oct 2021 08:09:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwwspjmnn2UgF3wC80ffKADbfFGgTEqNvflKbpG+cgCWjua1idvpQ2j9r374S0fE1PxL0yFKA==
+X-Received: by 2002:a1c:29c7:: with SMTP id p190mr6271697wmp.65.1634224191871;
+        Thu, 14 Oct 2021 08:09:51 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c694e.dip0.t-ipconnect.de. [91.12.105.78])
+        by smtp.gmail.com with ESMTPSA id p25sm7981463wma.2.2021.10.14.08.09.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 08:09:51 -0700 (PDT)
+Message-ID: <eaa8ed55-f364-5518-0b30-3fec6bde99dc@redhat.com>
+Date:   Thu, 14 Oct 2021 17:09:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YWew3ItdPC5QrL/w@archlinux-ax161>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 5/5] brd: Kill usage of page->index
+Content-Language: en-US
+To:     Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, linux-raid@vger.kernel.org,
+        linux-block@vger.kernel.org, axboe@kernel.dk
+Cc:     alexander.h.duyck@linux.intel.com
+References: <20211013160034.3472923-1-kent.overstreet@gmail.com>
+ <20211013160034.3472923-6-kent.overstreet@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20211013160034.3472923-6-kent.overstreet@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 09:23:56PM -0700, Nathan Chancellor wrote:
-> On Tue, Oct 12, 2021 at 03:35:42PM +0200, Peter Zijlstra wrote:
-> > On Tue, Oct 12, 2021 at 01:26:54PM +0200, Peter Zijlstra wrote:
-> > 
-> > > Again, I have absolutely no intention of fixing this. IMO this is the
-> > > compiler being a total pain in the arse.
-> > > 
-> > > Please stop reporting this.
-> > 
-> > How's this then?
-> > 
-> > diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
-> > index 978fcfca5871..b0d9121c5dce 100644
-> > --- a/kernel/sched/Makefile
-> > +++ b/kernel/sched/Makefile
-> > @@ -3,6 +3,10 @@ ifdef CONFIG_FUNCTION_TRACER
-> >  CFLAGS_REMOVE_clock.o = $(CC_FLAGS_FTRACE)
-> >  endif
-> >  
-> > +# The compilers are complaining about unused variables inside an if(0) scope
-> > +# block. This is daft, shut them up.
-> > +ccflags-y += -Wno-unused-but-set-variable
+On 13.10.21 18:00, Kent Overstreet wrote:
+> As part of the struct page cleanups underway, we want to remove as much
+> usage of page->mapping and page->index as possible, as frequently they
+> are known from context.
 > 
-> Please consider making this
+> In the brd code, we're never actually reading from page->index except in
+> assertions, so references to it can be safely deleted.
 > 
-> ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
-
-Ooh, shiny, will do.
-
-> because -Wunused-but-set-variable was only added to clang in the 13
-> release but we support back to 10, meaning this will cause errors for
-> those older compilers.
+> Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+> ---
+>  drivers/block/brd.c | 4 ----
+>  1 file changed, 4 deletions(-)
 > 
-> With that:
+> diff --git a/drivers/block/brd.c b/drivers/block/brd.c
+> index 58ec167aa0..0a55aed832 100644
+> --- a/drivers/block/brd.c
+> +++ b/drivers/block/brd.c
+> @@ -72,8 +72,6 @@ static struct page *brd_lookup_page(struct brd_device *brd, sector_t sector)
+>  	page = radix_tree_lookup(&brd->brd_pages, idx);
+>  	rcu_read_unlock();
+>  
+> -	BUG_ON(page && page->index != idx);
+> -
+>  	return page;
+>  }
+>  
+> @@ -108,12 +106,10 @@ static struct page *brd_insert_page(struct brd_device *brd, sector_t sector)
+>  
+>  	spin_lock(&brd->brd_lock);
+>  	idx = sector >> PAGE_SECTORS_SHIFT;
+> -	page->index = idx;
+>  	if (radix_tree_insert(&brd->brd_pages, idx, page)) {
+>  		__free_page(page);
+>  		page = radix_tree_lookup(&brd->brd_pages, idx);
+>  		BUG_ON(!page);
+> -		BUG_ON(page->index != idx);
+>  	} else {
+>  		brd->brd_nr_pages++;
+>  	}
 > 
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> 
-> Additionally, perhaps this could be restricted to just fair.c?
 
-It triggers in a bunch of files, given the right config (defconfig -SCHEDSTATS +SCHED_DEBUG)
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-(and I have a pile of patches for most of the other warnings somewhere...)
+-- 
+Thanks,
 
----
-# make O=defconfig-build/ kernel/sched/ -j8 -s W=1
-../kernel/sched/deadline.c: In function ‘update_stats_wait_start_dl’:
-../kernel/sched/deadline.c:1486:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
-1486 |  struct sched_statistics *stats;
-|                           ^~~~~
-../kernel/sched/deadline.c: In function ‘update_stats_wait_end_dl’:
-../kernel/sched/deadline.c:1498:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
-1498 |  struct sched_statistics *stats;
-|                           ^~~~~
-../kernel/sched/deadline.c: In function ‘update_stats_enqueue_sleeper_dl’:
-../kernel/sched/deadline.c:1510:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
-1510 |  struct sched_statistics *stats;
-|                           ^~~~~
-../kernel/sched/fair.c: In function ‘update_curr’:
-../kernel/sched/fair.c:860:28: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
-860 |   struct sched_statistics *stats;
-|                            ^~~~~
-../kernel/sched/fair.c: In function ‘update_stats_wait_start_fair’:
-../kernel/sched/fair.c:893:22: warning: variable ‘p’ set but not used [-Wunused-but-set-variable]
-893 |  struct task_struct *p = NULL;
-|                      ^
-../kernel/sched/fair.c:892:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
-892 |  struct sched_statistics *stats;
-|                           ^~~~~
-../kernel/sched/fair.c: In function ‘update_stats_wait_end_fair’:
-../kernel/sched/fair.c:910:22: warning: variable ‘p’ set but not used [-Wunused-but-set-variable]
-910 |  struct task_struct *p = NULL;
-|                      ^
-../kernel/sched/fair.c:909:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
-909 |  struct sched_statistics *stats;
-|                           ^~~~~
-../kernel/sched/fair.c: In function ‘update_stats_enqueue_sleeper_fair’:
-../kernel/sched/fair.c:936:22: warning: variable ‘tsk’ set but not used [-Wunused-but-set-variable]
-936 |  struct task_struct *tsk = NULL;
-|                      ^~~
-../kernel/sched/fair.c:935:27: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
-935 |  struct sched_statistics *stats;
-|                           ^~~~~
-../kernel/sched/fair.c: In function ‘set_next_entity’:
-../kernel/sched/fair.c:4450:28: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
-4450 |   struct sched_statistics *stats;
-|                            ^~~~~
-../kernel/sched/rt.c:669:6: warning: no previous prototype for ‘sched_rt_bandwidth_account’ [-Wmissing-prototypes]
-669 | bool sched_rt_bandwidth_account(struct rt_rq *rt_rq)
-|      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-../kernel/sched/rt.c: In function ‘update_stats_wait_start_rt’:
-../kernel/sched/rt.c:1292:22: warning: variable ‘p’ set but not used [-Wunused-but-set-variable]
-1292 |  struct task_struct *p = NULL;
-|                      ^
-../kernel/sched/rt.c: In function ‘update_stats_enqueue_sleeper_rt’:
-../kernel/sched/rt.c:1311:22: warning: variable ‘p’ set but not used [-Wunused-but-set-variable]
-1311 |  struct task_struct *p = NULL;
-|                      ^
-../kernel/sched/rt.c: In function ‘update_stats_wait_end_rt’:
-../kernel/sched/rt.c:1341:22: warning: variable ‘p’ set but not used [-Wunused-but-set-variable]
-1341 |  struct task_struct *p = NULL;
-|                      ^
-../kernel/sched/core.c:3420:6: warning: no previous prototype for ‘sched_set_stop_task’ [-Wmissing-prototypes]
-3420 | void sched_set_stop_task(int cpu, struct task_struct *stop)
-|      ^~~~~~~~~~~~~~~~~~~
-../kernel/sched/debug.c: In function ‘print_cfs_group_stats’:
-../kernel/sched/debug.c:466:28: warning: variable ‘stats’ set but not used [-Wunused-but-set-variable]
-466 |   struct sched_statistics *stats;
-|                            ^~~~~
-../kernel/sched/fair.c:8673: warning: Function parameter or member 'sds' not described in 'update_sg_lb_stats'
+David / dhildenb
+
