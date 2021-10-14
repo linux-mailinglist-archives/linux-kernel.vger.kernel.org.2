@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FAC42DCAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F7C42DC7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbhJNPAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:00:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45292 "EHLO mail.kernel.org"
+        id S232052AbhJNO7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:59:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232702AbhJNO7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:59:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E635C611C0;
-        Thu, 14 Oct 2021 14:57:27 +0000 (UTC)
+        id S232484AbhJNO6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:58:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4D13611AD;
+        Thu, 14 Oct 2021 14:56:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223448;
-        bh=CAVn6nApZMlAPzuvnFchBCfEgjysVqugDsTuF4oUqC8=;
+        s=korg; t=1634223388;
+        bh=ulsHIHPE2aQQzKXpkaTj814+EKheKKejxJfwaYSTTGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IksatOIcoFwW8YfT4hNEhUNDh/M83LvocY2mj3+aEejhuCD0vFKG7iw8VIoxxVEl1
-         qGYAvrVXTgJZuqtRWF/qt+Ojb1PBuB3h9LWu/cnCOGAR9KjXKXHrjKiMyu8YErFSrc
-         jf1bPDmuv9dvBPgQ4Hs1efBy6LgNMx2JwMkZGxP4=
+        b=MbkTq4uh+C1glErSxcjhlspqvNIPXBQhW+4qp5kQRJBrMp8yLHDdh4JJU2mDUMRfk
+         kGeQg/vOfE6xxGg2t5LTuQnGiIIK1gUM1jy7Ntk4CL2e9Md0pKA67mb3aw0sZ2SBcg
+         +vhjnP4IxZPfGGIGWtXiDUmgBcXNJL+Wcp6quSkI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>, Juergen Gross <jgross@suse.com>,
-        Jason Andryuk <jandryuk@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [PATCH 4.14 06/33] xen/balloon: fix cancelled balloon action
-Date:   Thu, 14 Oct 2021 16:53:38 +0200
-Message-Id: <20211014145208.988495952@linuxfoundation.org>
+        Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 08/25] bpf: Fix integer overflow in prealloc_elems_and_freelist()
+Date:   Thu, 14 Oct 2021 16:53:39 +0200
+Message-Id: <20211014145207.839912984@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145208.775270267@linuxfoundation.org>
-References: <20211014145208.775270267@linuxfoundation.org>
+In-Reply-To: <20211014145207.575041491@linuxfoundation.org>
+References: <20211014145207.575041491@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,70 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
 
-commit 319933a80fd4f07122466a77f93e5019d71be74c upstream.
+[ Upstream commit 30e29a9a2bc6a4888335a6ede968b75cd329657a ]
 
-In case a ballooning action is cancelled the new kernel thread handling
-the ballooning might end up in a busy loop.
+In prealloc_elems_and_freelist(), the multiplication to calculate the
+size passed to bpf_map_area_alloc() could lead to an integer overflow.
+As a result, out-of-bounds write could occur in pcpu_freelist_populate()
+as reported by KASAN:
 
-Fix that by handling the cancelled action gracefully.
+[...]
+[   16.968613] BUG: KASAN: slab-out-of-bounds in pcpu_freelist_populate+0xd9/0x100
+[   16.969408] Write of size 8 at addr ffff888104fc6ea0 by task crash/78
+[   16.970038]
+[   16.970195] CPU: 0 PID: 78 Comm: crash Not tainted 5.15.0-rc2+ #1
+[   16.970878] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+[   16.972026] Call Trace:
+[   16.972306]  dump_stack_lvl+0x34/0x44
+[   16.972687]  print_address_description.constprop.0+0x21/0x140
+[   16.973297]  ? pcpu_freelist_populate+0xd9/0x100
+[   16.973777]  ? pcpu_freelist_populate+0xd9/0x100
+[   16.974257]  kasan_report.cold+0x7f/0x11b
+[   16.974681]  ? pcpu_freelist_populate+0xd9/0x100
+[   16.975190]  pcpu_freelist_populate+0xd9/0x100
+[   16.975669]  stack_map_alloc+0x209/0x2a0
+[   16.976106]  __sys_bpf+0xd83/0x2ce0
+[...]
 
-While at it introduce a short wait for the BP_WAIT case.
+The possibility of this overflow was originally discussed in [0], but
+was overlooked.
 
-Cc: stable@vger.kernel.org
-Fixes: 8480ed9c2bbd56 ("xen/balloon: use a kernel thread instead a workqueue")
-Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Tested-by: Jason Andryuk <jandryuk@gmail.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/20211005133433.32008-1-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix the integer overflow by changing elem_size to u64 from u32.
+
+  [0] https://lore.kernel.org/bpf/728b238e-a481-eb50-98e9-b0f430ab01e7@gmail.com/
+
+Fixes: 557c0c6e7df8 ("bpf: convert stackmap to pre-allocation")
+Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210930135545.173698-1-th.yasumatsu@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/balloon.c |   21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ kernel/bpf/stackmap.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/xen/balloon.c
-+++ b/drivers/xen/balloon.c
-@@ -571,12 +571,12 @@ static enum bp_state decrease_reservatio
- }
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 2fdf6f96f976..6f09728cd1dd 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -28,7 +28,8 @@ struct bpf_stack_map {
  
- /*
-- * Stop waiting if either state is not BP_EAGAIN and ballooning action is
-- * needed, or if the credit has changed while state is BP_EAGAIN.
-+ * Stop waiting if either state is BP_DONE and ballooning action is
-+ * needed, or if the credit has changed while state is not BP_DONE.
-  */
- static bool balloon_thread_cond(enum bp_state state, long credit)
+ static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
  {
--	if (state != BP_EAGAIN)
-+	if (state == BP_DONE)
- 		credit = 0;
+-	u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
++	u64 elem_size = sizeof(struct stack_map_bucket) +
++			(u64)smap->map.value_size;
+ 	int err;
  
- 	return current_credit() != credit || kthread_should_stop();
-@@ -596,10 +596,19 @@ static int balloon_thread(void *unused)
- 
- 	set_freezable();
- 	for (;;) {
--		if (state == BP_EAGAIN)
--			timeout = balloon_stats.schedule_delay * HZ;
--		else
-+		switch (state) {
-+		case BP_DONE:
-+		case BP_ECANCELED:
- 			timeout = 3600 * HZ;
-+			break;
-+		case BP_EAGAIN:
-+			timeout = balloon_stats.schedule_delay * HZ;
-+			break;
-+		case BP_WAIT:
-+			timeout = HZ;
-+			break;
-+		}
-+
- 		credit = current_credit();
- 
- 		wait_event_freezable_timeout(balloon_thread_wq,
+ 	smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries);
+-- 
+2.33.0
+
 
 
