@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C01542DC73
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE7942DC75
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbhJNO7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:59:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43208 "EHLO mail.kernel.org"
+        id S232360AbhJNO7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:59:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232087AbhJNO6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:58:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63DEC611B0;
-        Thu, 14 Oct 2021 14:56:20 +0000 (UTC)
+        id S232160AbhJNO62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 10:58:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D374A610D1;
+        Thu, 14 Oct 2021 14:56:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223380;
-        bh=d5zQFgUzc3+d4l3i9VHtpk4cas2EtO2xm8LrO4mMBkE=;
+        s=korg; t=1634223383;
+        bh=k50ZKT8agpX/HBWINfIl13FTeAPQEn1UItCaWf+ONEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Haj24f9alzdoKptvJ9o7SCevcvb0o1+efvhi0y3+rQSP3GSBhd3F0vLvcq9Q8DDCu
-         qzZ5ffIo+ToqstgxrpQPVftW8Vty1cJ5wwVVRbi7Lryoi09/WkN2/GPs9tcu96bFol
-         EjAZlj9LTc0+nuhpac2j7Z/XHXVIMZUaVuJ0KI20=
+        b=HPqZtwKug+9PsGCxeNkg38lQAdpCbgzNEMVtMyYeSO+ahk3H3Bwy9FB7J50fUC0OR
+         MaH6NHVcsX8hRaWTaiyGN/qLVFbjeGW/VQNlEL0G2+IOcQ6QNHY/Don/SNGmHEWjUl
+         C0ePTZlv1t/P8610ihuh7majP5A+WxIfy8w8IBJQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 4.9 05/25] nfsd4: Handle the NFSv4 READDIR dircount hint being zero
-Date:   Thu, 14 Oct 2021 16:53:36 +0200
-Message-Id: <20211014145207.751001229@linuxfoundation.org>
+        stable@vger.kernel.org, Roger Quadros <rogerq@kernel.org>,
+        Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 4.9 06/25] ARM: dts: omap3430-sdp: Fix NAND device node
+Date:   Thu, 14 Oct 2021 16:53:37 +0200
+Message-Id: <20211014145207.780130790@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211014145207.575041491@linuxfoundation.org>
 References: <20211014145207.575041491@linuxfoundation.org>
@@ -40,52 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Roger Quadros <rogerq@kernel.org>
 
-commit f2e717d655040d632c9015f19aa4275f8b16e7f2 upstream.
+commit 80d680fdccba214e8106dc1aa33de5207ad75394 upstream.
 
-RFC3530 notes that the 'dircount' field may be zero, in which case the
-recommendation is to ignore it, and only enforce the 'maxcount' field.
-In RFC5661, this recommendation to ignore a zero valued field becomes a
-requirement.
+Nand is on CS1 so reg properties first field should be 1 not 0.
 
-Fixes: aee377644146 ("nfsd4: fix rd_dircount enforcement")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Fixes: 44e4716499b8 ("ARM: dts: omap3: Fix NAND device nodes")
+Cc: stable@vger.kernel.org # v4.6+
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfsd/nfs4xdr.c |   19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ arch/arm/boot/dts/omap3430-sdp.dts |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfsd/nfs4xdr.c
-+++ b/fs/nfsd/nfs4xdr.c
-@@ -3028,15 +3028,18 @@ nfsd4_encode_dirent(void *ccdv, const ch
- 		goto fail;
- 	cd->rd_maxcount -= entry_bytes;
- 	/*
--	 * RFC 3530 14.2.24 describes rd_dircount as only a "hint", so
--	 * let's always let through the first entry, at least:
-+	 * RFC 3530 14.2.24 describes rd_dircount as only a "hint", and
-+	 * notes that it could be zero. If it is zero, then the server
-+	 * should enforce only the rd_maxcount value.
- 	 */
--	if (!cd->rd_dircount)
--		goto fail;
--	name_and_cookie = 4 + 4 * XDR_QUADLEN(namlen) + 8;
--	if (name_and_cookie > cd->rd_dircount && cd->cookie_offset)
--		goto fail;
--	cd->rd_dircount -= min(cd->rd_dircount, name_and_cookie);
-+	if (cd->rd_dircount) {
-+		name_and_cookie = 4 + 4 * XDR_QUADLEN(namlen) + 8;
-+		if (name_and_cookie > cd->rd_dircount && cd->cookie_offset)
-+			goto fail;
-+		cd->rd_dircount -= min(cd->rd_dircount, name_and_cookie);
-+		if (!cd->rd_dircount)
-+			cd->rd_maxcount = 0;
-+	}
+--- a/arch/arm/boot/dts/omap3430-sdp.dts
++++ b/arch/arm/boot/dts/omap3430-sdp.dts
+@@ -104,7 +104,7 @@
  
- 	cd->cookie_offset = cookie_offset;
- skip_entry:
+ 	nand@1,0 {
+ 		compatible = "ti,omap2-nand";
+-		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
++		reg = <1 0 4>; /* CS1, offset 0, IO size 4 */
+ 		interrupt-parent = <&gpmc>;
+ 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
+ 			     <1 IRQ_TYPE_NONE>;	/* termcount */
 
 
