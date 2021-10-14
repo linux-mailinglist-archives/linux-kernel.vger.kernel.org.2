@@ -2,138 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3188A42D2EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F3042D2ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbhJNGvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 02:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhJNGvE (ORCPT
+        id S229802AbhJNGvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 02:51:22 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:51118 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229502AbhJNGvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 02:51:04 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7A7C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:48:52 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id r18so16094233wrg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=tbshLX4iQMb9Vn7zjhDZQ6BLeAzJL58tLLtT5Oc9Dyw=;
-        b=I2fHaN3SeLVf9AvOIVBuIk8A4RiG2X+cOS+8PIYpKXwXpREvI0UYUa3AmutRXJY64P
-         4bfUqx39QdhxEMiaLoI4Yw6w0u9e1tf5xvKOcaSqYLeTxBLbUyBNxVSz8PVwMd6pCYod
-         JBs3CS7I3Z+CcHLLsmWM55Y9rB94vXZDUCwV91qtTf8zLe4WuYpVmR+38WZI+v5VE56+
-         u5+5yywIjxW8478iGD6VPrZxETHyeFSKHh5eXS+y8h/wNhdgsRb1F19Q8awkWe8gArWh
-         OrGPDREEMcWFcE/44ApebQDNTMr3icPhUh5/jWErfauFvdooYEzBaHYP5grV1Y9H6CNk
-         huYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=tbshLX4iQMb9Vn7zjhDZQ6BLeAzJL58tLLtT5Oc9Dyw=;
-        b=kzxsrNTs2BnauedrLu89f5370hrhUIeIRFyPTUopl927ZV99SdEitfk073zL1+dIlW
-         +VuVrYGWF1l3yltLBTT5Oy6qJ2ZY1w99oOM10Bv23N6EUvWzzc+8APiDuTn/PUC5B2Va
-         GogVET+M/VlN0TGAEVSIlFLBb8/Z5oCdD4X6XyAgyBK0V2wbMEUhaf0lq2JE84l5nW7m
-         7SFfGKhVSyRJadLh23vMuioQXPl1+IISu2W8lb0Y4R7MohhTFWW6YNfNU3CnlpdKONT4
-         AVxo3RYbXN/YXoGQja+BFEkYBMTG/ciVtumr5jqrAX6Vmuy4tRKhVRfSUKzrT1lHf3Sd
-         8png==
-X-Gm-Message-State: AOAM533u5j5V1xHJBJoETsq9ev+WW6t9qL7tVyj7o+Wuo9gT5q63OMgK
-        fwZoBGFw9EhXAX+BAKnM5hB18w==
-X-Google-Smtp-Source: ABdhPJwAtr+FLRUkC+UlVcvalCv0LKlHgZ+gVNPU1pBCubjLqcZDhzl9BvNotbQ8efjygcpi2Ovdeg==
-X-Received: by 2002:adf:b1c7:: with SMTP id r7mr4568194wra.392.1634194131265;
-        Wed, 13 Oct 2021 23:48:51 -0700 (PDT)
-Received: from google.com (176-35-142-29.xdsl.murphx.net. [176.35.142.29])
-        by smtp.gmail.com with ESMTPSA id w8sm1543502wrr.47.2021.10.13.23.48.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 23:48:50 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 07:48:47 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/4] dt-bindings: mfd: sprd: Add bindings for ums512
- global registers
-Message-ID: <YWfSz00Rj5AVhkgT@google.com>
-References: <20210923064137.60722-1-zhang.lyra@gmail.com>
- <20210923064137.60722-3-zhang.lyra@gmail.com>
- <YV1XpL7ibF1y4LbV@google.com>
- <CAL_Jsq+eqqv=qtKOiNdEpYGi2amek_m+Q-Z9A769pXXqJ4R88A@mail.gmail.com>
- <YWVD0RXHVLxuXEIN@google.com>
- <CAMuHMdWqYVp1JyzZoidAJhPy9ypRnSOWHJLz5knDUMcFHPOzAw@mail.gmail.com>
+        Thu, 14 Oct 2021 02:51:21 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UrlGJ8P_1634194154;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UrlGJ8P_1634194154)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 14 Oct 2021 14:49:15 +0800
+Date:   Thu, 14 Oct 2021 14:49:13 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     xiang@kernel.org, chao@kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, huyue2@yulong.com, zbestahu@163.com,
+        zhangwen@yulong.com
+Subject: Re: [PATCH v2] erofs: remove the fast path of per-CPU buffer
+ decompression
+Message-ID: <YWfS6Tm1AtIWgDj6@B-P7TQMD6M-0146.local>
+References: <20211014063901.1629-1-zbestahu@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdWqYVp1JyzZoidAJhPy9ypRnSOWHJLz5knDUMcFHPOzAw@mail.gmail.com>
+In-Reply-To: <20211014063901.1629-1-zbestahu@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Oct 2021, Geert Uytterhoeven wrote:
-
-> Hi Lee,
+On Thu, Oct 14, 2021 at 02:39:01PM +0800, Yue Hu wrote:
+> From: Yue Hu <huyue2@yulong.com>
 > 
-> On Tue, Oct 12, 2021 at 10:15 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > On Mon, 11 Oct 2021, Rob Herring wrote:
-> > > On Wed, Oct 6, 2021 at 3:00 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > On Thu, 23 Sep 2021, Chunyan Zhang wrote:
-> > > >
-> > > > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > > > >
-> > > > > Add bindings for Unisoc system global register which provide register map
-> > > > > for clocks.
-> > > > >
-> > > > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > > > ---
-> > > > >  .../bindings/mfd/sprd,ums512-glbreg.yaml      | 68 +++++++++++++++++++
-> > > > >  1 file changed, 68 insertions(+)
-> > > > >  create mode 100644 Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.yaml
-> > > >
-> > > > Unapplied v3 and applied this (v4) instead, thanks.
-> > >
-> > > What about the clock binding this depends on:
-> > >
-> > > Unknown file referenced: [Errno 2] No such file or directory:
-> > > '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
-> > > xargs: dt-doc-validate: exited with status 255; aborting
-> > > make[1]: *** Deleting file
-> > > 'Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml'
-> > > Unknown file referenced: [Errno 2] No such file or directory:
-> > > '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/clock/sprd,ums512-clk.yaml'
-> > > make[1]: *** [scripts/Makefile.lib:385:
-> > > Documentation/devicetree/bindings/mfd/sprd,ums512-glbreg.example.dt.yaml]
-> > > Error 255
-> > >
-> > >
-> > > Once again, all the components of MFD bindings need to be applied together.
+> As Xiang mentioned, such path has no real impact to our current
+> decompression strategy, remove it directly. Also, update the return
+> value of z_erofs_lz4_decompress() to 0 if success to keep consistent
+> with LZMA which will return 0 for that case.
 > 
-> Just ran into this, too...
+> Signed-off-by: Yue Hu <huyue2@yulong.com>
+
+Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+
+Thanks,
+Gao Xiang
+
+> ---
+> v2: just set ret = 0 in else branch and rearrange if statement into one line.
 > 
-> > I can't apply what is not sent to me.
-> >
-> > This patch came in on its own.
+>  fs/erofs/decompressor.c | 63 +++++++------------------------------------------
+>  1 file changed, 8 insertions(+), 55 deletions(-)
 > 
-> Then please reject/postpone patches that don't build (yet) ;-)
-
-I don't explicitly build DT documentation.
-
-Since I use the build bots to let me know if there are strange !(C,
-ASM, arm, aarch64, mips, ppc, x86) build issues or ones with odd
-configuration possibilities (randconfig) in the repos I maintain, you
-might have to convince them that this is important too.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+> index 88e33ad..f8a372e 100644
+> --- a/fs/erofs/decompressor.c
+> +++ b/fs/erofs/decompressor.c
+> @@ -243,6 +243,8 @@ static int z_erofs_lz4_decompress(struct z_erofs_decompress_req *rq, u8 *out)
+>  		if (ret >= 0)
+>  			memset(out + ret, 0, rq->outputsize - ret);
+>  		ret = -EIO;
+> +	} else {
+> +		ret = 0;
+>  	}
+>  
+>  	if (maptype == 0) {
+> @@ -269,33 +271,6 @@ static int z_erofs_lz4_decompress(struct z_erofs_decompress_req *rq, u8 *out)
+>  	},
+>  };
+>  
+> -static void copy_from_pcpubuf(struct page **out, const char *dst,
+> -			      unsigned short pageofs_out,
+> -			      unsigned int outputsize)
+> -{
+> -	const char *end = dst + outputsize;
+> -	const unsigned int righthalf = PAGE_SIZE - pageofs_out;
+> -	const char *cur = dst - pageofs_out;
+> -
+> -	while (cur < end) {
+> -		struct page *const page = *out++;
+> -
+> -		if (page) {
+> -			char *buf = kmap_atomic(page);
+> -
+> -			if (cur >= dst) {
+> -				memcpy(buf, cur, min_t(uint, PAGE_SIZE,
+> -						       end - cur));
+> -			} else {
+> -				memcpy(buf + pageofs_out, cur + pageofs_out,
+> -				       min_t(uint, righthalf, end - cur));
+> -			}
+> -			kunmap_atomic(buf);
+> -		}
+> -		cur += PAGE_SIZE;
+> -	}
+> -}
+> -
+>  static int z_erofs_decompress_generic(struct z_erofs_decompress_req *rq,
+>  				      struct list_head *pagepool)
+>  {
+> @@ -306,34 +281,12 @@ static int z_erofs_decompress_generic(struct z_erofs_decompress_req *rq,
+>  	void *dst;
+>  	int ret;
+>  
+> -	/* two optimized fast paths only for non bigpcluster cases yet */
+> -	if (rq->inputsize <= PAGE_SIZE) {
+> -		if (nrpages_out == 1 && !rq->inplace_io) {
+> -			DBG_BUGON(!*rq->out);
+> -			dst = kmap_atomic(*rq->out);
+> -			dst_maptype = 0;
+> -			goto dstmap_out;
+> -		}
+> -
+> -		/*
+> -		 * For the case of small output size (especially much less
+> -		 * than PAGE_SIZE), memcpy the decompressed data rather than
+> -		 * compressed data is preferred.
+> -		 */
+> -		if (rq->outputsize <= PAGE_SIZE * 7 / 8) {
+> -			dst = erofs_get_pcpubuf(1);
+> -			if (IS_ERR(dst))
+> -				return PTR_ERR(dst);
+> -
+> -			rq->inplace_io = false;
+> -			ret = alg->decompress(rq, dst);
+> -			if (!ret)
+> -				copy_from_pcpubuf(rq->out, dst, rq->pageofs_out,
+> -						  rq->outputsize);
+> -
+> -			erofs_put_pcpubuf(dst);
+> -			return ret;
+> -		}
+> +	/* one optimized fast paths only for non bigpcluster cases yet */
+> +	if (rq->inputsize <= PAGE_SIZE && nrpages_out == 1 && !rq->inplace_io) {
+> +		DBG_BUGON(!*rq->out);
+> +		dst = kmap_atomic(*rq->out);
+> +		dst_maptype = 0;
+> +		goto dstmap_out;
+>  	}
+>  
+>  	/* general decoding path which can be used for all cases */
+> -- 
+> 1.9.1
