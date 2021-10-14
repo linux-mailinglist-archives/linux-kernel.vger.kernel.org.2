@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028E042DD1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D7642DD57
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbhJNPEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:04:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43924 "EHLO mail.kernel.org"
+        id S233867AbhJNPGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:06:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232850AbhJNPC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:02:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7128A6120F;
-        Thu, 14 Oct 2021 14:59:46 +0000 (UTC)
+        id S233640AbhJNPEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 11:04:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5031611C3;
+        Thu, 14 Oct 2021 15:00:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634223587;
-        bh=aGOnUBHLb20hAk4lSyQ9SzgWzY4izXOZWquFtK10FCg=;
+        s=korg; t=1634223654;
+        bh=l1ouM9IFscS72gcF1D2B7zTkg2D6aFkF5mQc5EYvjC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q6hTilY6OFBvmHujCy6a+6qPTHc/U1/3qMhf0Y459+ggrUi6H56nwCkiuz+Ms7J+x
-         WKCifd4hN5vTXZ1Mggcb3mOQVnnROz/RRm8s/HVCNng3rRkgfmo8ak1PGNylXwi+ji
-         4Oe9F3TH5nfXFdMikUNCq9Is355c6T9uvlICMWbM=
+        b=PBOsS8JDc7/E+E1GwUKE68YnoejPGY2QY0AW7705pYR4+JQYmgJV3Iupx3v/YV6tM
+         HriaW3eZhkw6WQ148WmiK/2z++LSQCALCIf445fYOvlGCnlmPEG+FCppvDEv+6iNeq
+         HXxP1tze8jRy0D6CFEnXi8Ovqgm398sm80R3wOXM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, MichelleJin <shjy180909@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Finn Thain <fthain@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 14/22] mac80211: check return value of rhashtable_init
-Date:   Thu, 14 Oct 2021 16:54:20 +0200
-Message-Id: <20211014145208.449669879@linuxfoundation.org>
+Subject: [PATCH 5.14 16/30] m68k: Handle arrivals of multiple signals correctly
+Date:   Thu, 14 Oct 2021 16:54:21 +0200
+Message-Id: <20211014145210.065738167@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211014145207.979449962@linuxfoundation.org>
-References: <20211014145207.979449962@linuxfoundation.org>
+In-Reply-To: <20211014145209.520017940@linuxfoundation.org>
+References: <20211014145209.520017940@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +42,229 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: MichelleJin <shjy180909@gmail.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-[ Upstream commit 111461d573741c17eafad029ac93474fa9adcce0 ]
+[ Upstream commit 4bb0bd81ce5e97092dfda6a106d414b703ec0ee8 ]
 
-When rhashtable_init() fails, it returns -EINVAL.
-However, since error return value of rhashtable_init is not checked,
-it can cause use of uninitialized pointers.
-So, fix unhandled errors of rhashtable_init.
+When we have several pending signals, have entered with the kernel
+with large exception frame *and* have already built at least one
+sigframe, regs->stkadj is going to be non-zero and regs->format/sr/pc
+are going to be junk - the real values are in shifted exception stack
+frame we'd built when putting together the first sigframe.
 
-Signed-off-by: MichelleJin <shjy180909@gmail.com>
-Link: https://lore.kernel.org/r/20210927033457.1020967-4-shjy180909@gmail.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+If that happens, subsequent sigframes are going to be garbage.
+Not hard to fix - just need to find the "adjusted" frame first
+and look for format/vector/sr/pc in it.
+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Tested-by: Michael Schmitz <schmitzmic@gmail.com>
+Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+Tested-by: Finn Thain <fthain@linux-m68k.org>
+Link: https://lore.kernel.org/r/YP2dBIAPTaVvHiZ6@zeniv-ca.linux.org.uk
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mesh_pathtbl.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/m68k/kernel/signal.c | 88 +++++++++++++++++++--------------------
+ 1 file changed, 42 insertions(+), 46 deletions(-)
 
-diff --git a/net/mac80211/mesh_pathtbl.c b/net/mac80211/mesh_pathtbl.c
-index 620ecf922408..870c8eafef92 100644
---- a/net/mac80211/mesh_pathtbl.c
-+++ b/net/mac80211/mesh_pathtbl.c
-@@ -60,7 +60,10 @@ static struct mesh_table *mesh_table_alloc(void)
- 	atomic_set(&newtbl->entries,  0);
- 	spin_lock_init(&newtbl->gates_lock);
- 	spin_lock_init(&newtbl->walk_lock);
--	rhashtable_init(&newtbl->rhead, &mesh_rht_params);
-+	if (rhashtable_init(&newtbl->rhead, &mesh_rht_params)) {
-+		kfree(newtbl);
-+		return NULL;
-+	}
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index 8f215e79e70e..cd11eb101eac 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -447,7 +447,7 @@ static inline void save_fpu_state(struct sigcontext *sc, struct pt_regs *regs)
  
- 	return newtbl;
+ 	if (CPU_IS_060 ? sc->sc_fpstate[2] : sc->sc_fpstate[0]) {
+ 		fpu_version = sc->sc_fpstate[0];
+-		if (CPU_IS_020_OR_030 &&
++		if (CPU_IS_020_OR_030 && !regs->stkadj &&
+ 		    regs->vector >= (VEC_FPBRUC * 4) &&
+ 		    regs->vector <= (VEC_FPNAN * 4)) {
+ 			/* Clear pending exception in 68882 idle frame */
+@@ -510,7 +510,7 @@ static inline int rt_save_fpu_state(struct ucontext __user *uc, struct pt_regs *
+ 		if (!(CPU_IS_060 || CPU_IS_COLDFIRE))
+ 			context_size = fpstate[1];
+ 		fpu_version = fpstate[0];
+-		if (CPU_IS_020_OR_030 &&
++		if (CPU_IS_020_OR_030 && !regs->stkadj &&
+ 		    regs->vector >= (VEC_FPBRUC * 4) &&
+ 		    regs->vector <= (VEC_FPNAN * 4)) {
+ 			/* Clear pending exception in 68882 idle frame */
+@@ -832,18 +832,24 @@ badframe:
+ 	return 0;
  }
+ 
++static inline struct pt_regs *rte_regs(struct pt_regs *regs)
++{
++	return (void *)regs + regs->stkadj;
++}
++
+ static void setup_sigcontext(struct sigcontext *sc, struct pt_regs *regs,
+ 			     unsigned long mask)
+ {
++	struct pt_regs *tregs = rte_regs(regs);
+ 	sc->sc_mask = mask;
+ 	sc->sc_usp = rdusp();
+ 	sc->sc_d0 = regs->d0;
+ 	sc->sc_d1 = regs->d1;
+ 	sc->sc_a0 = regs->a0;
+ 	sc->sc_a1 = regs->a1;
+-	sc->sc_sr = regs->sr;
+-	sc->sc_pc = regs->pc;
+-	sc->sc_formatvec = regs->format << 12 | regs->vector;
++	sc->sc_sr = tregs->sr;
++	sc->sc_pc = tregs->pc;
++	sc->sc_formatvec = tregs->format << 12 | tregs->vector;
+ 	save_a5_state(sc, regs);
+ 	save_fpu_state(sc, regs);
+ }
+@@ -851,6 +857,7 @@ static void setup_sigcontext(struct sigcontext *sc, struct pt_regs *regs,
+ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *regs)
+ {
+ 	struct switch_stack *sw = (struct switch_stack *)regs - 1;
++	struct pt_regs *tregs = rte_regs(regs);
+ 	greg_t __user *gregs = uc->uc_mcontext.gregs;
+ 	int err = 0;
+ 
+@@ -871,9 +878,9 @@ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *
+ 	err |= __put_user(sw->a5, &gregs[13]);
+ 	err |= __put_user(sw->a6, &gregs[14]);
+ 	err |= __put_user(rdusp(), &gregs[15]);
+-	err |= __put_user(regs->pc, &gregs[16]);
+-	err |= __put_user(regs->sr, &gregs[17]);
+-	err |= __put_user((regs->format << 12) | regs->vector, &uc->uc_formatvec);
++	err |= __put_user(tregs->pc, &gregs[16]);
++	err |= __put_user(tregs->sr, &gregs[17]);
++	err |= __put_user((tregs->format << 12) | tregs->vector, &uc->uc_formatvec);
+ 	err |= rt_save_fpu_state(uc, regs);
+ 	return err;
+ }
+@@ -890,13 +897,14 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
+ 			struct pt_regs *regs)
+ {
+ 	struct sigframe __user *frame;
+-	int fsize = frame_extra_sizes(regs->format);
++	struct pt_regs *tregs = rte_regs(regs);
++	int fsize = frame_extra_sizes(tregs->format);
+ 	struct sigcontext context;
+ 	int err = 0, sig = ksig->sig;
+ 
+ 	if (fsize < 0) {
+ 		pr_debug("setup_frame: Unknown frame format %#x\n",
+-			 regs->format);
++			 tregs->format);
+ 		return -EFAULT;
+ 	}
+ 
+@@ -907,7 +915,7 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
+ 
+ 	err |= __put_user(sig, &frame->sig);
+ 
+-	err |= __put_user(regs->vector, &frame->code);
++	err |= __put_user(tregs->vector, &frame->code);
+ 	err |= __put_user(&frame->sc, &frame->psc);
+ 
+ 	if (_NSIG_WORDS > 1)
+@@ -933,34 +941,28 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
+ 
+ 	push_cache ((unsigned long) &frame->retcode);
+ 
+-	/*
+-	 * Set up registers for signal handler.  All the state we are about
+-	 * to destroy is successfully copied to sigframe.
+-	 */
+-	wrusp ((unsigned long) frame);
+-	regs->pc = (unsigned long) ksig->ka.sa.sa_handler;
+-	adjustformat(regs);
+-
+ 	/*
+ 	 * This is subtle; if we build more than one sigframe, all but the
+ 	 * first one will see frame format 0 and have fsize == 0, so we won't
+ 	 * screw stkadj.
+ 	 */
+-	if (fsize)
++	if (fsize) {
+ 		regs->stkadj = fsize;
+-
+-	/* Prepare to skip over the extra stuff in the exception frame.  */
+-	if (regs->stkadj) {
+-		struct pt_regs *tregs =
+-			(struct pt_regs *)((ulong)regs + regs->stkadj);
++		tregs = rte_regs(regs);
+ 		pr_debug("Performing stackadjust=%04lx\n", regs->stkadj);
+-		/* This must be copied with decreasing addresses to
+-                   handle overlaps.  */
+ 		tregs->vector = 0;
+ 		tregs->format = 0;
+-		tregs->pc = regs->pc;
+ 		tregs->sr = regs->sr;
+ 	}
++
++	/*
++	 * Set up registers for signal handler.  All the state we are about
++	 * to destroy is successfully copied to sigframe.
++	 */
++	wrusp ((unsigned long) frame);
++	tregs->pc = (unsigned long) ksig->ka.sa.sa_handler;
++	adjustformat(regs);
++
+ 	return 0;
+ }
+ 
+@@ -968,7 +970,8 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
+ 			   struct pt_regs *regs)
+ {
+ 	struct rt_sigframe __user *frame;
+-	int fsize = frame_extra_sizes(regs->format);
++	struct pt_regs *tregs = rte_regs(regs);
++	int fsize = frame_extra_sizes(tregs->format);
+ 	int err = 0, sig = ksig->sig;
+ 
+ 	if (fsize < 0) {
+@@ -1018,34 +1021,27 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
+ 
+ 	push_cache ((unsigned long) &frame->retcode);
+ 
+-	/*
+-	 * Set up registers for signal handler.  All the state we are about
+-	 * to destroy is successfully copied to sigframe.
+-	 */
+-	wrusp ((unsigned long) frame);
+-	regs->pc = (unsigned long) ksig->ka.sa.sa_handler;
+-	adjustformat(regs);
+-
+ 	/*
+ 	 * This is subtle; if we build more than one sigframe, all but the
+ 	 * first one will see frame format 0 and have fsize == 0, so we won't
+ 	 * screw stkadj.
+ 	 */
+-	if (fsize)
++	if (fsize) {
+ 		regs->stkadj = fsize;
+-
+-	/* Prepare to skip over the extra stuff in the exception frame.  */
+-	if (regs->stkadj) {
+-		struct pt_regs *tregs =
+-			(struct pt_regs *)((ulong)regs + regs->stkadj);
++		tregs = rte_regs(regs);
+ 		pr_debug("Performing stackadjust=%04lx\n", regs->stkadj);
+-		/* This must be copied with decreasing addresses to
+-                   handle overlaps.  */
+ 		tregs->vector = 0;
+ 		tregs->format = 0;
+-		tregs->pc = regs->pc;
+ 		tregs->sr = regs->sr;
+ 	}
++
++	/*
++	 * Set up registers for signal handler.  All the state we are about
++	 * to destroy is successfully copied to sigframe.
++	 */
++	wrusp ((unsigned long) frame);
++	tregs->pc = (unsigned long) ksig->ka.sa.sa_handler;
++	adjustformat(regs);
+ 	return 0;
+ }
+ 
 -- 
 2.33.0
 
