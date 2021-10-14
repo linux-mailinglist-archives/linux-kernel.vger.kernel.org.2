@@ -2,94 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6DE42DB81
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E5942DB84
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 16:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbhJNO36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 10:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
+        id S231376AbhJNOaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 10:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbhJNO35 (ORCPT
+        with ESMTP id S230030AbhJNOaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 10:29:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E33EC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:27:52 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634221670;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k8zryRQvwI325YNtxkoamfj1r/s73jL1asi97x/YPR4=;
-        b=iaFQKFbmt47QnM4ehrm4cSrbB+VCDwL+QLPwDVlZhdyIX7P9uGmfzRkZP4NqWy13DSTsmm
-        JM++1YgCeEFoqj7ih2tHITDKEX8O5p/1260P8DaVRMeOoi0D5bci2G07xo8FFn/yKKJi8k
-        qDQaiKvcV9nTwkhiHWKh3tCaAom4THBixcaqtnwuZCZRhrazFKoBigDh+D8ctxmxShengz
-        +/ii8qLghhP6t2bycY0Mb8sepBocgyQq+VPHPJ5ts97AJOgPLoi5MqhawzGhdeWS67IejR
-        dBTwo8aWrM01U/LtqiQTjSxoREWLZONOfSYw4qQNcT8Dba5dAmK1uQDie4h/JQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634221670;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k8zryRQvwI325YNtxkoamfj1r/s73jL1asi97x/YPR4=;
-        b=g/l777vqrPA6Hlimeyxq4VALCaYExxVt1IwMAoeXVXALN/tV1z43QigWg3EURuGAuSka4i
-        Ycx+oYdPy5+FI5Ag==
-To:     Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 10/11] x86/tdx: Don't write CSTAR MSR on Intel
-In-Reply-To: <641e8b18-230d-699c-6ec5-1aa107d7d5bb@linux.intel.com>
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-11-sathyanarayanan.kuppuswamy@linux.intel.com>
- <87czo77uia.ffs@tglx>
- <641e8b18-230d-699c-6ec5-1aa107d7d5bb@linux.intel.com>
-Date:   Thu, 14 Oct 2021 16:27:49 +0200
-Message-ID: <87r1cn65qy.ffs@tglx>
+        Thu, 14 Oct 2021 10:30:16 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6AB0C061570;
+        Thu, 14 Oct 2021 07:28:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uWBQfk1iLdKpELGt/qdUWn4KNZxoLSLIiDkZWLgKqtY=; b=IRMmEGeV6uQYDPk4q4aRRoK8oA
+        Q6h8pwuJ0IEY7b2/TNKjpsko+eXuIZwHepatAtQALymBCVjwtrCcDAaBDYFyk7lViD60fxhZvvVNx
+        lNUHSvi/kx4ZPxZSBtjetptMiWcYTVWG/6ALAxHQcH4Kd5B+BKyfQWbzEnu3K42n8r7ZmM//jpwiv
+        39+gXDKtYYaelFbYwW6fGTcAqAbOr9x0WxgNoTsghECJRzsrjBaWN7WyLFIj230wQeqsIWyv7hciA
+        Nl0j/6gj7Oe44Tu3xyQCix1N+1ZEXcvORK0wLcUhyF9kLTjjruyq56wWolaFsOzGADOzS33/fHavV
+        Bcr71R8w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mb1i8-009qi2-DH; Thu, 14 Oct 2021 14:27:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F02043004E7;
+        Thu, 14 Oct 2021 16:27:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CE1E82CF42A20; Thu, 14 Oct 2021 16:27:55 +0200 (CEST)
+Date:   Thu, 14 Oct 2021 16:27:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     rjw@rjwysocki.net, oleg@redhat.com, mingo@kernel.org,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, mgorman@suse.de, linux-kernel@vger.kernel.org,
+        tj@kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] ptrace: Order and comment PT_flags
+Message-ID: <YWg+a6PPD5Mpr4c/@hirez.programming.kicks-ass.net>
+References: <20211009100754.690769957@infradead.org>
+ <20211009101444.971532166@infradead.org>
+ <20211014093121.GA8239@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014093121.GA8239@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14 2021 at 06:47, Andi Kleen wrote:
+On Thu, Oct 14, 2021 at 10:31:22AM +0100, Will Deacon wrote:
+> On Sat, Oct 09, 2021 at 12:07:57PM +0200, Peter Zijlstra wrote:
+> > Add a comment to the PT_flags to indicate their actual value, this
+> > makes it easier to see what bits are used and where there might be a
+> > possible hole to use.
+> > 
+> > Notable PT_SEIZED was placed wrong, also PT_EVENT_FLAG() space seems
+> > ill defined, as written is seems to be meant to cover the entire
+> > PTRACE_O_ range offset by 3 bits, which would then be 3+[0..21],
+> > however PT_SEIZED is in the middle of that.
+> 
+> Why do you think PT_EVENT_FLAG() should cover all the PTRACE_O_* options?
+> Just going by the name and current callers, I'd only expect it to cover
+> the PTRACE_EVENT_* flags, no?
 
->>> -	wrmsrl(MSR_CSTAR, (unsigned long)entry_SYSCALL_compat);
->>> +	/*
->>> +	 * CSTAR is not needed on Intel because it doesn't support
->>> +	 * 32bit SYSCALL, but only SYSENTER. On a TDX guest
->>> +	 * it leads to a #GP.
->> Sigh. Above you write it raises #VE, but now it's #GP !?!
->
->
-> The unhandled #VE trap is handled like a #GP, which is then caught by 
-> the kernel wrmsr code.
+Because PT_EXITKILL and PT_SUSPEND_SECCOMP are also exposed in that same
+mapping.
 
-That's completely irrelevant because that's an implementation detail of
-the #VE handler. It raises #VE in the first place and that's unwanted no
-matter what the #VE handler does with it. It could just pretent that
-it's fine and move on.
-
-Thanks,
-
-        tglx
-
-
+Ideally we'd change PT_OPT_FLAG_SHIFT to 8 or something and have the
+high 24 bits for OPT and then use the low 8 bits for SEIZED and the new
+flags.
