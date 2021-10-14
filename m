@@ -2,217 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF97742DDCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1868C42DDDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 17:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhJNPQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 11:16:19 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49674 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbhJNPQS (ORCPT
+        id S232784AbhJNPRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 11:17:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:36386 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231915AbhJNPRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 11:16:18 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4603621A89;
-        Thu, 14 Oct 2021 15:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634224452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 14 Oct 2021 11:17:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634224505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ALOTVNu/egcVlHKjItYFDOMwJxp+I4TFEjpwx0g4g5E=;
-        b=ZLILYHxOIMb36+D1zMkaQ7f9QhJIGj0VMe3lw2B87bi8pmp+oPWT8j/AlZo7s/YaiBBYxo
-        DHO8JYR1TwD9iHLQmgJ9hvQf6dkOXdKyF8BeukJuevUxhdRMHZkVyqaM7jUcpNafEgM9Js
-        6KtMXgfm/vEGo6eBDp86QFxhn6m8tdk=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4CE08A3B88;
-        Thu, 14 Oct 2021 15:14:10 +0000 (UTC)
-Date:   Thu, 14 Oct 2021 17:14:07 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Guo Ren <guoren@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+        bh=FiT5rDJKYBUUykrwFXpiEs/xoKF/YdQLNIch3J6+wz8=;
+        b=MwvKTRTbTmgh5HxIkNk+YkI7GtEqVFb8lzlKVAJw+njvf03fHpjEB83E4hMiiz9SwZoAU8
+        djXiY/roxITFUuqak30GzHg0gBuTFpbLqaMO3Hjq280GLgtQBpt02CSpM62cfAKezosu8n
+        F752Z+3L47Njko7Z9EfDkxSN3SQP9ck=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-75-p8Ns_88JOGaBhQRyipmqqw-1; Thu, 14 Oct 2021 11:15:04 -0400
+X-MC-Unique: p8Ns_88JOGaBhQRyipmqqw-1
+Received: by mail-ed1-f71.google.com with SMTP id d11-20020a50cd4b000000b003da63711a8aso5405406edj.20
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 08:15:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FiT5rDJKYBUUykrwFXpiEs/xoKF/YdQLNIch3J6+wz8=;
+        b=AI0LYgudSnHgLy59fESCI3EVwoIAtlffl0JRAgX+/V6bLsTWaCDZh+oclgUvYsavMK
+         /ZLbk/fPyU4FX3ZlfKYCJ2viRW70MEO2Z3lv0Vz6ayn+PKxWtuXKxWlXmwHf4f4TU94J
+         xwzhStWvAe6wZamxUmHtdi18P8BZyjHsv+avjr2OIEr6EBU8pIuSIZ7Yukm+u4DdzcjK
+         W5iEIgLmNAeLk1wT4GfXblSlDPc6dlVGF6m9K3hWM4fn3gBjCpWCr2UQF+ixfZ0zzzDp
+         MlaHnfl6WFy/z68Gm28sJtlJ6AnQLxJTr1NM8Sh3cbSIJ5Nu9Xn82XSs5uav+dRBjsom
+         Qh7A==
+X-Gm-Message-State: AOAM530WvVXu3EfOw1EjCr37xCono/ZIFqonAc1TnnqFArL/WRPuWq/e
+        2jZ1gyrFeJl5SEZxXl9WoNakrh2UNRaEnCdoyfHKGMk7z35q2S40qCLMNRM4SLSwqe+5c//ebQG
+        cUwxwD+D5qoHg62Ce19YaR+5y
+X-Received: by 2002:a05:6402:2748:: with SMTP id z8mr9603727edd.25.1634224503462;
+        Thu, 14 Oct 2021 08:15:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJypsBtx0K0OiLkQTrKhkIbAXO5KzgFiscNLWrrEbZFb3hhq8Gefzfok7Xd44WnydMsyfqxfJg==
+X-Received: by 2002:a05:6402:2748:: with SMTP id z8mr9603697edd.25.1634224503314;
+        Thu, 14 Oct 2021 08:15:03 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ga6sm1924886ejc.87.2021.10.14.08.15.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 08:15:02 -0700 (PDT)
+Subject: Re: [PATCH v3] x86/PCI: Ignore E820 reservations for bridge windows
+ on newer systems
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Myron Stowe <myron.stowe@redhat.com>,
+        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] ftrace: disable preemption between
- ftrace_test_recursion_trylock/unlock()
-Message-ID: <YWhJP41cNwDphYsv@alley>
-References: <609b565a-ed6e-a1da-f025-166691b5d994@linux.alibaba.com>
- <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Benoit_Gr=c3=a9goire?= <benoitg@coeus.ca>,
+        Hui Wang <hui.wang@canonical.com>
+References: <20211014110357.17957-1-hdegoede@redhat.com>
+ <YWgzaa9Z4elzoRwL@infradead.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <40549939-e4c2-7b20-6bb6-0b5a46731b1c@redhat.com>
+Date:   Thu, 14 Oct 2021 17:15:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <YWgzaa9Z4elzoRwL@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7e4738b5-21d4-c4d0-3136-a096bbb5cd2c@linux.alibaba.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-10-13 16:51:46, 王贇 wrote:
-> As the documentation explained, ftrace_test_recursion_trylock()
-> and ftrace_test_recursion_unlock() were supposed to disable and
-> enable preemption properly, however currently this work is done
-> outside of the function, which could be missing by mistake.
+Hi,
+
+On 10/14/21 3:40 PM, Christoph Hellwig wrote:
+> On Thu, Oct 14, 2021 at 01:03:57PM +0200, Hans de Goede wrote:
+>> +	 * Some BIOS-es contain a bug where they add addresses which map to system
+>> +	 * RAM in the PCI bridge memory window returned by the ACPI _CRS method,
 > 
-> This path will make sure the preemption was disabled when trylock()
-> succeed, and the unlock() will enable the preemption if previously
-> enabled.
-> 
-> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-> index a9f9c57..58e474c 100644
-> --- a/include/linux/trace_recursion.h
-> +++ b/include/linux/trace_recursion.h
-> @@ -214,7 +214,18 @@ static __always_inline void trace_clear_recursion(int bit)
+> Please avoid the overly long lines in your comments.
 
-We should also update the description above the function, for example:
+?
 
-  /**
-   * ftrace_test_recursion_trylock - tests for recursion in same context
-   *
-   * Use this for ftrace callbacks. This will detect if the function
-   * tracing recursed in the same context (normal vs interrupt),
-   *
-   * Returns: -1 if a recursion happened.
--  *           >= 0 if no recursion
-+  *           >= 0 if no recursion (success)
-+  *
-+  * Disables the preemption on success. It is just for a convenience.
-+  * Current users needed to disable the preemtion for some reasons.
-   */
+These lines are easily within the new 100 char line-length-limit ?
 
+And checkpatch also does not complain about this.
 
->  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
->  							 unsigned long parent_ip)
->  {
-> -	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
-> +	int bit;
-> +
-> +	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
-> +	/*
-> +	 * The zero bit indicate we are nested
-> +	 * in another trylock(), which means the
-> +	 * preemption already disabled.
-> +	 */
-> +	if (bit > 0)
-> +		preempt_disable_notrace();
+Regards,
 
-Is this safe? The preemption is disabled only when
-trace_test_and_set_recursion() was called by ftrace_test_recursion_trylock().
-
-We must either always disable the preemtion when bit >= 0.
-Or we have to disable the preemtion already in
-trace_test_and_set_recursion().
-
-
-Finally, the comment confused me a lot. The difference between nesting and
-recursion is far from clear. And the code is tricky liky like hell :-)
-I propose to add some comments, see below for a proposal.
-
-> +
-> +	return bit;
->  }
->  /**
-> @@ -222,9 +233,13 @@ static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
->   * @bit: The return of a successful ftrace_test_recursion_trylock()
->   *
->   * This is used at the end of a ftrace callback.
-> + *
-> + * Preemption will be enabled (if it was previously enabled).
->   */
->  static __always_inline void ftrace_test_recursion_unlock(int bit)
->  {
-> +	if (bit)
-
-This is not symetric with trylock(). It should be:
-
-	if (bit > 0)
-
-Anyway, trace_clear_recursion() quiently ignores bit != 0
-
-
-> +		preempt_enable_notrace();
->  	trace_clear_recursion(bit);
->  }
-
-
-Below is my proposed patch that tries to better explain the recursion
-check:
-
-From 20d69f11e2683262fa0043b803999061cbac543f Mon Sep 17 00:00:00 2001
-From: Petr Mladek <pmladek@suse.com>
-Date: Thu, 14 Oct 2021 16:57:39 +0200
-Subject: [PATCH] trace: Better describe the recursion check return values
-
-The trace recursion check might be called recursively by different
-layers of the tracing code. It is safe recursion and the check
-is even optimized for this case.
-
-The problematic recursion is when the traced function is called
-by the tracing code. This is properly detected.
-
-Try to explain this difference a better way.
-
-Signed-off-by: Petr Mladek <pmladek@suse.com>
----
- include/linux/trace_recursion.h | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-index a9f9c5714e65..b5efb804efdf 100644
---- a/include/linux/trace_recursion.h
-+++ b/include/linux/trace_recursion.h
-@@ -159,13 +159,27 @@ extern void ftrace_record_recursion(unsigned long ip, unsigned long parent_ip);
- # define do_ftrace_record_recursion(ip, pip)	do { } while (0)
- #endif
- 
-+/*
-+ * trace_test_and_set_recursion() is called on several layers
-+ * of the ftrace code when handling the same ftrace entry.
-+ * These calls might be nested/recursive.
-+ *
-+ * It uses TRACE_LIST_*BITs to distinguish between this
-+ * internal recursion and recursion caused by calling
-+ * the traced function by the ftrace code.
-+ *
-+ * Returns: > 0 when no recursion
-+ *          0 when called recursively internally (safe)
-+ *	    -1 when the traced function was called recursively from
-+ *             the ftrace handler (unsafe)
-+ */
- static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
- 							int start, int max)
- {
- 	unsigned int val = READ_ONCE(current->trace_recursion);
- 	int bit;
- 
--	/* A previous recursion check was made */
-+	/* Called recursively internally by different ftrace code layers? */
- 	if ((val & TRACE_CONTEXT_MASK) > max)
- 		return 0;
- 
--- 
-2.26.2
+Hans
 
