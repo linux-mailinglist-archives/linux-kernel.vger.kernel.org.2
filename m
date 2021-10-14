@@ -2,155 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D42942E17D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173B842E192
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 20:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhJNSmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 14:42:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28640 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233982AbhJNSmM (ORCPT
+        id S232099AbhJNSsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 14:48:20 -0400
+Received: from h03mx16.reliablemail.org ([173.236.90.20]:28231 "EHLO
+        h03mx16.reliablemail.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhJNSsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 14:42:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634236806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZJWeI237I8vJJhqiJWMB6c2JMjtxXJ/9AbonOkMBp6s=;
-        b=ZUnPH2PVgIU9SVI/d5aHOYR461aliqV2Zt06vql+E+DgBkztGW/lx2i4CAZ3wfiHYsLZC8
-        vTIt4/OdYqL9/5OFpfKn52v0hzG877rmzmog96wdCrso2yzZrF+prUEszp6rxMhblG4LVt
-        upmGw3c902S+Wfo9Qiz8wT+BAO/UM0o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-3FPBGYrzPP2tjFPWdQCfmQ-1; Thu, 14 Oct 2021 14:40:02 -0400
-X-MC-Unique: 3FPBGYrzPP2tjFPWdQCfmQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 373491006AA2;
-        Thu, 14 Oct 2021 18:40:00 +0000 (UTC)
-Received: from x1.localdomain (unknown [10.39.192.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6C39A60583;
-        Thu, 14 Oct 2021 18:39:57 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH v5 2/2] x86/PCI/ACPI: Replace printk calls with pr_info/pr_warn calls
-Date:   Thu, 14 Oct 2021 20:39:43 +0200
-Message-Id: <20211014183943.27717-3-hdegoede@redhat.com>
-In-Reply-To: <20211014183943.27717-1-hdegoede@redhat.com>
-References: <20211014183943.27717-1-hdegoede@redhat.com>
+        Thu, 14 Oct 2021 14:48:19 -0400
+X-Greylist: delayed 362 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 Oct 2021 14:48:19 EDT
+X-Halon-Out: 284e3bd3-2d1e-11ec-a67c-00163c72d6d3
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=grimler.se;
+        s=default; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=xWuSLLDQK3bmsp6fReNTqiPlde9m5Pr1/bVcaTiCQ1w=; b=dntantpBFDGpkCtyt32ftHFMWm
+        4pFENwu8mcYDalt7qYNa7eS3Rz8OTt0FBvEzvptMSAOP/LpjSYbIRuvsmjPraIG+RrSHSmQv7DvPI
+        4DJp/XHniUPdbVMOhY7I0Y3aKrIhAe2dzJRkzQuNNiPO4IuCbqc8+2n7/KAVBcx1rj7SZTuRzQowE
+        SIwL069qyZU9BJ++s1d24/MQxFt/YRxVOhtDjThlTIfc5T3ou1IT88lVam1LFNTWO+AEzD6kClw3C
+        gxouVPvDlUmKhGzDNFFOQ8rTgDjaRvQ+rD4Mua3n8pkNnb25P5/ILhT26/sQ9YUUEt5txxGVJz7i8
+        h5UZnNEA==;
+Date:   Thu, 14 Oct 2021 20:40:05 +0200
+From:   Henrik Grimler <henrik@grimler.se>
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] soc: samsung: exynos-chipid: Pass revision reg
+ offsets
+Message-ID: <YWh5hSvUpdFA85Ct@grimlerstat.localdomain>
+References: <20211014133508.1210-1-semen.protsenko@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211014133508.1210-1-semen.protsenko@linaro.org>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cpsrv07.misshosting.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - grimler.se
+X-Get-Message-Sender-Via: cpsrv07.misshosting.com: authenticated_id: henrik@grimler.se
+X-Authenticated-Sender: cpsrv07.misshosting.com: henrik@grimler.se
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The direct use of printk is deprecated, replace the printk calls
-in arch/x86/pci/acpi.c with pr_info/pr_warn calls.
+Hi Sam,
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
-Changes in v5:
-- Rebase on v5 of:
-  "x86/PCI: Ignore E820 reservations for bridge windows on newer systems"
-  and send it out as part of a series instead of as a stand-alone patch
-- Add Rafael's Acked-by
----
- arch/x86/pci/acpi.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+On Thu, Oct 14, 2021 at 04:35:06PM +0300, Sam Protsenko wrote:
+> Old Exynos SoCs have both Product ID and Revision ID in one single
+> register, while new SoCs tend to have two separate registers for those
+> IDs. Implement handling of both cases by passing Revision ID register
+> offsets in driver data.
+> 
+> Previously existing macros for Exynos4210 (removed in this patch) were
+> incorrect:
+> 
+>     #define EXYNOS_SUBREV_MASK         (0xf << 4)
+>     #define EXYNOS_MAINREV_MASK        (0xf << 0)
+> 
+> Actual format of PRO_ID register in Exynos4210 (offset 0x0):
+> 
+>     [31:12] Product ID
+>       [9:8] Package information
+>       [7:4] Main Revision Number
+>       [3:0] Sub Revision Number
+> 
+> This patch doesn't change the behavior on existing platforms, so
+> '/sys/devices/soc0/revision' will show the same string as before.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+> Changes in v2:
+>   - Renamed *_rev_bit fields in 'struct exynos_chipid_variant' to
+>     *_rev_shift
+>   - Renamed EXYNOS_REV_PART_LEN to EXYNOS_REV_PART_MASK
+>   - Renamed EXYNOS_REV_PART_OFF to EXYNOS_REV_PART_SHIFT
+> 
+> Changes in v3:
+>   - Rebased on top of krzk/for-next tree
+>   - Fixed wrong *_rev_shift values in exynos4210_chipid_drv_data
+>   - Implemented reading the register only once in case when both
+>     Product ID and Revision ID are stored in the same register
+>   - Tested all possible cases by emulating read register values
+>   - Provided more detailed explanation in commit message
+> 
+>  drivers/soc/samsung/exynos-chipid.c       | 69 +++++++++++++++++++----
+>  include/linux/soc/samsung/exynos-chipid.h |  6 +-
+>  2 files changed, 60 insertions(+), 15 deletions(-)
+> 
 
-diff --git a/arch/x86/pci/acpi.c b/arch/x86/pci/acpi.c
-index 72d473054262..f357dac92610 100644
---- a/arch/x86/pci/acpi.c
-+++ b/arch/x86/pci/acpi.c
-@@ -1,4 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
-+
-+#define pr_fmt(fmt) "PCI: " fmt
-+
- #include <linux/pci.h>
- #include <linux/acpi.h>
- #include <linux/init.h>
-@@ -38,7 +41,7 @@ static int __init set_nouse_crs(const struct dmi_system_id *id)
- 
- static int __init set_ignore_seg(const struct dmi_system_id *id)
- {
--	printk(KERN_INFO "PCI: %s detected: ignoring ACPI _SEG\n", id->ident);
-+	pr_info("%s detected: ignoring ACPI _SEG\n", id->ident);
- 	pci_ignore_seg = true;
- 	return 0;
- }
-@@ -158,10 +161,9 @@ void __init pci_acpi_crs_quirks(void)
- 	else if (pci_probe & PCI_USE__CRS)
- 		pci_use_crs = true;
- 
--	printk(KERN_INFO "PCI: %s host bridge windows from ACPI; "
--	       "if necessary, use \"pci=%s\" and report a bug\n",
--	       pci_use_crs ? "Using" : "Ignoring",
--	       pci_use_crs ? "nocrs" : "use_crs");
-+	pr_info("%s host bridge windows from ACPI; if necessary, use \"pci=%s\" and report a bug\n",
-+		pci_use_crs ? "Using" : "Ignoring",
-+		pci_use_crs ? "nocrs" : "use_crs");
- 
- 	/*
- 	 * Some BIOS-es contain a bug where they add addresses which map to
-@@ -186,8 +188,8 @@ void __init pci_acpi_crs_quirks(void)
- 	else if (pci_probe & PCI_USE_E820)
- 		pci_use_e820 = true;
- 
--	printk(KERN_INFO "PCI: %s E820 reservations for host bridge windows\n",
--	       pci_use_e820 ? "Using" : "Ignoring");
-+	pr_info("%s E820 reservations for host bridge windows\n",
-+		pci_use_e820 ? "Using" : "Ignoring");
- }
- 
- #ifdef	CONFIG_PCI_MMCONFIG
-@@ -362,9 +364,8 @@ struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
- 		root->segment = domain = 0;
- 
- 	if (domain && !pci_domains_supported) {
--		printk(KERN_WARNING "pci_bus %04x:%02x: "
--		       "ignored (multiple domains not supported)\n",
--		       domain, busnum);
-+		pr_warn("pci_bus %04x:%02x: ignored (multiple domains not supported)\n",
-+			domain, busnum);
- 		return NULL;
- 	}
- 
-@@ -432,7 +433,7 @@ int __init pci_acpi_init(void)
- 	if (acpi_noirq)
- 		return -ENODEV;
- 
--	printk(KERN_INFO "PCI: Using ACPI for IRQ routing\n");
-+	pr_info("Using ACPI for IRQ routing\n");
- 	acpi_irq_penalty_init();
- 	pcibios_enable_irq = acpi_pci_irq_enable;
- 	pcibios_disable_irq = acpi_pci_irq_disable;
-@@ -444,7 +445,7 @@ int __init pci_acpi_init(void)
- 		 * also do it here in case there are still broken drivers that
- 		 * don't use pci_enable_device().
- 		 */
--		printk(KERN_INFO "PCI: Routing PCI interrupts for all devices because \"pci=routeirq\" specified\n");
-+		pr_info("Routing PCI interrupts for all devices because \"pci=routeirq\" specified\n");
- 		for_each_pci_dev(dev)
- 			acpi_pci_irq_enable(dev);
- 	}
--- 
-2.31.1
+I tested this on exynos4412-i9300 and an exynos5420 tablet that is not
+yet in mainline.  /sys/devices/soc0/* looks identical, I have:
 
+$ cat /sys/devices/soc0/{family,revision,soc_id}
+Samsung Exynos
+11
+EXYNOS4412
+
+and
+
+$ cat /sys/devices/soc0/{family,revision,soc_id}
+Samsung Exynos
+20
+EXYNOS5420
+
+before and after these patches.  The printed PRO_ID in dmesg changed
+though, before I had:
+
+[    0.894683] soc soc0: Exynos: CPU[EXYNOS4412] PRO_ID[0xe4412211] REV[0x11] Detected
+
+[    4.964215] soc soc0: Exynos: CPU[EXYNOS5420] PRO_ID[0xe5420020] REV[0x20] Detected
+
+But after it looks like package information and revision is missing
+from the reported PRO_ID:
+
+[    0.885515] soc soc0: Exynos: CPU[EXYNOS4412] PRO_ID[0xe4412000] REV[0x11] Detected
+
+[    4.965560] soc soc0: Exynos: CPU[EXYNOS5420] PRO_ID[0xe5420000] REV[0x20] Detected
+
+Best regards,
+Henrik Grimler
