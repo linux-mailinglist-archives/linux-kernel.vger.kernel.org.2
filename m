@@ -2,92 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6545142E33A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FDF42E341
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 23:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbhJNVZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 17:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
+        id S233060AbhJNV2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 17:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhJNVZy (ORCPT
+        with ESMTP id S232458AbhJNV2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 17:25:54 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0476FC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:23:49 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso7866254pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:23:49 -0700 (PDT)
+        Thu, 14 Oct 2021 17:28:32 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3746C061753
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:26:26 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id gn3so201370pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 14:26:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VSUU/L5fDuJ+ECPOKm0ljaiEhq13igOZMXExTv1jJyU=;
-        b=iPz8uGum5x2Rr5CkOXdxaIJIh8b2rszzTAl2wHw1nJB+qWEMTuwUrStmxiu55shJ1H
-         zg9/kvLswiHKzHJ23jv8Y4Gld6jgM+TF6jVYLbtxMB17EgKpI3OjW/USc9tS3/M+phpA
-         M5Uo1ofWoHl60Y0Po3ZyK9lehtVJazaZTBGOcsBhQGZhXlJ+iAif7Iiwn73uGfqpRFQ6
-         2gftKjdJtD9COMn0O+7aNRblDfNP8kFYRICwnyMYEF5mEB37PLVszRDXsj2tmnayxewx
-         tE/9TulE/ZCTbRAWYug+UzcqutSTgmI76H9NfHnCxC974Iw0l2WK2t440U9w9eSgv8S5
-         7RgQ==
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=CLaFJ0M9ufD0uCBwTkgOwQCLYTA2acJBA4tvaXF3j60=;
+        b=nySJqlSwO+ULk3udlcOszY6Ia0XQFeH789zFbu7K9HOE2rbb+01FRBlzqYTOfLe01Y
+         UjBibChKl+lLjdMq7H2G6UmdoL4DkJBBd2xPkhVd/NnmKnnR8gnnU7EkmSiSJ0GL6yHC
+         xyAObJJcyavoFkvMN+kslHElYwm+54tEYY9dA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=VSUU/L5fDuJ+ECPOKm0ljaiEhq13igOZMXExTv1jJyU=;
-        b=DdiS8yGKIjTun336Cx4apH0VOUF512O9VZdYjHkIOldA0ZGF6/gryH/Wtafe+D2Xei
-         HBBrIJjF0SwFIYWfx+vX4SOFZtUkHbjsPS0y8dgpdaPkoxVR1emFB9yWg+P5VCAT0tvq
-         7yM33CMFP/d0FLrtZU27OpQWYupmM0RQjNuOV1FBHjlqVYlf3Xcxu1299Bzfb1sXdRTD
-         VSDdyniNizJTMVDkaMr+XFvCpUcxMDaTrjSmbccMRVEBFvWRQSAOmsKpTzO05avLPrIF
-         itTzaN53Vujxi43elw1Ia2w23pSeIoHroCGHQmGFUlH6N23teYIXum+eqbfcziJvGE13
-         uGAQ==
-X-Gm-Message-State: AOAM530qjCvSE58uaLuv9ae+SJEUU8HL10dOEN83xdwM/wCZkDiuttos
-        wab4nug2AjaDJh1EAIWYZ38=
-X-Google-Smtp-Source: ABdhPJxaTx/txQIzkBzm6yXMFVyCMpUoBf09VBCz7o1nDLYIMK6IK7rfqdLsz81mQ1VZhxcZJ/xOtw==
-X-Received: by 2002:a17:90b:3a88:: with SMTP id om8mr8843140pjb.164.1634246628323;
-        Thu, 14 Oct 2021 14:23:48 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id me12sm5149636pjb.27.2021.10.14.14.23.47
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=CLaFJ0M9ufD0uCBwTkgOwQCLYTA2acJBA4tvaXF3j60=;
+        b=H+ZTAi0w/VAnP66PlnaSgKcj2RD2jyMsUSA6vg2lir1OICebdPHuWgEGXFGF0P96as
+         nLLvqP3VlBUX3C54yzAqwvabqv8/vfqndz8cJF4zFfbtp30mX1PEs++/VJI11St8kbJz
+         IC0WuWe/kgX8gxXP6mEWhf0Ua8Udf305xksXvgF2TtJcrPIDHy78HE1ygGXTronEws1Y
+         VJGtVUYnkXLIhcPq7ZUHziMlQlTc5VLOAN7oBCYm4DcWwKihFd9Vh7hPMgCNo1CavN4n
+         OORtEUswJIpZlf6dK+tQiOTguGiWxv4SKQmmKmTUFNFQclIvo7+ex5k2zt1urDziv5QS
+         Nblw==
+X-Gm-Message-State: AOAM533EJPEj5PdOz4FG6pskskITi8cdG9M6WwkssFePv0ywCUNmMP5l
+        dcMkQEuUst1nRu3VdJBdZ2sgFQ==
+X-Google-Smtp-Source: ABdhPJw845LVBzEpWwR4bMZtD/PFJA96pgIe4GSulaOTJBUImwok7XHbH5FT4bUDZgXBEMZc0+GWdQ==
+X-Received: by 2002:a17:90a:6a8f:: with SMTP id u15mr22641531pjj.212.1634246786410;
+        Thu, 14 Oct 2021 14:26:26 -0700 (PDT)
+Received: from localhost ([2001:4479:e300:600:4901:2fb9:ed97:3a3e])
+        by smtp.gmail.com with ESMTPSA id i128sm3261169pfc.47.2021.10.14.14.26.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 14:23:47 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 14 Oct 2021 11:23:46 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     menglong8.dong@gmail.com
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        Mengen Sun <mengensun@tencent.com>
-Subject: Re: [PATCH] hotfix: make sysfs of unbound kworker cpumask more clever
-Message-ID: <YWif4n0UhaJTf7cp@slm.duckdns.org>
-References: <20211014030641.2182803-1-mengensun@tencent.com>
+        Thu, 14 Oct 2021 14:26:25 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH v2 01/13] powerpc: Move 'struct ppc64_opd_entry' back
+ into asm/elf.h
+In-Reply-To: <42d2a571677e60082c0a5b3e52e855aa58c0b1fc.1634190022.git.christophe.leroy@csgroup.eu>
+References: <cover.1634190022.git.christophe.leroy@csgroup.eu>
+ <42d2a571677e60082c0a5b3e52e855aa58c0b1fc.1634190022.git.christophe.leroy@csgroup.eu>
+Date:   Fri, 15 Oct 2021 08:26:22 +1100
+Message-ID: <87czo747sx.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014030641.2182803-1-mengensun@tencent.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Christophe,
 
-On Thu, Oct 14, 2021 at 11:06:41AM +0800, menglong8.dong@gmail.com wrote:
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 1b3eb1e9531f..8216fc45c77b 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -5394,6 +5394,11 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
->  	cpumask_and(cpumask, cpumask, cpu_possible_mask);
->  	if (!cpumask_empty(cpumask)) {
->  		apply_wqattrs_lock();
-> +		if (cpumask_equal(cpumask, wq_unbound_cpumask)) {
-> +			apply_wqattrs_unlock();
-> +			free_cpumask_var(saved_cpumask);
+> 'struct ppc64_opd_entry' doesn't belong to uapi/asm/elf.h
+>
+> It was initially in module_64.c and commit 2d291e902791 ("Fix compile
+> failure with non modular builds") moved it into asm/elf.h
+>
+> But it was by mistake added outside of __KERNEL__ section,
+> therefore commit c3617f72036c ("UAPI: (Scripted) Disintegrate
+> arch/powerpc/include/asm") moved it to uapi/asm/elf.h
 
-A few nitpicks:
+As Michael said on v1, I'm a little nervous about moving it out of uAPI
+after so long, although I do take the points of Arnd and Kees that we're
+not breaking compiled binaries, nor should people be using this struct
+to begin with...
 
-* Please replace "hotfix:" with "workqueue:".
+I've cc:ed the linux-api@ list.
 
-* Can you reorganize the code so that it doesn't have to alloc and free the
-  saved_mask?
+Kind regards,
+Daniel
 
-Thanks.
-
--- 
-tejun
+> Move it back into asm/elf.h, this brings it back in line with
+> IA64 and PARISC architectures.
+>
+> Fixes: 2d291e902791 ("Fix compile failure with non modular builds")
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/include/asm/elf.h      | 6 ++++++
+>  arch/powerpc/include/uapi/asm/elf.h | 8 --------
+>  2 files changed, 6 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/powerpc/include/asm/elf.h b/arch/powerpc/include/asm/elf.h
+> index b8425e3cfd81..a4406714c060 100644
+> --- a/arch/powerpc/include/asm/elf.h
+> +++ b/arch/powerpc/include/asm/elf.h
+> @@ -176,4 +176,10 @@ do {									\
+>  /* Relocate the kernel image to @final_address */
+>  void relocate(unsigned long final_address);
+>  
+> +/* There's actually a third entry here, but it's unused */
+> +struct ppc64_opd_entry {
+> +	unsigned long funcaddr;
+> +	unsigned long r2;
+> +};
+> +
+>  #endif /* _ASM_POWERPC_ELF_H */
+> diff --git a/arch/powerpc/include/uapi/asm/elf.h b/arch/powerpc/include/uapi/asm/elf.h
+> index 860c59291bfc..308857123a08 100644
+> --- a/arch/powerpc/include/uapi/asm/elf.h
+> +++ b/arch/powerpc/include/uapi/asm/elf.h
+> @@ -289,12 +289,4 @@ typedef elf_fpreg_t elf_vsrreghalf_t32[ELF_NVSRHALFREG];
+>  /* Keep this the last entry.  */
+>  #define R_PPC64_NUM		253
+>  
+> -/* There's actually a third entry here, but it's unused */
+> -struct ppc64_opd_entry
+> -{
+> -	unsigned long funcaddr;
+> -	unsigned long r2;
+> -};
+> -
+> -
+>  #endif /* _UAPI_ASM_POWERPC_ELF_H */
+> -- 
+> 2.31.1
