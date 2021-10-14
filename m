@@ -2,102 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0748342D34F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5EA42D358
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 09:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhJNHPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhJNHPD (ORCPT
+        id S229992AbhJNHSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:18:06 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:41700
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229930AbhJNHSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:15:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478EFC061570
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:12:59 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1634195577;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e8/ZKL3qCkam3RdoGxPa61NCBe3o5Hu4qxhl481QQ/M=;
-        b=ipF4o0uExc9Rqq+SE/vKFPwl1naCTqnp+HGU0FRWVKaRVYh/WXJPslyRQLYwCo7JLuLg0v
-        hR70l+nYTZ4XyzLUeYDYo8odxDf54oqfY37BI4v7CSXV2Ufcdd9qGm1bNUdRM7Vzo/pl5X
-        zt8oQO86C5lKw+54itj+gdbBTM5ce3QL4v9syAsapKqBGxtHVoz0ysrgx+EfVVR8useIDm
-        UyLhz6sXsnLM6tIXD3dDVuWXrlO35GHdHCp08KD+GFriu1g9LW+BLMvabFY2wGuU5s4XHE
-        wJuLpDDXKXrO+4eNog/7REQko3wvACqEW8mVv8CFtdYKPveSwbPkvrZTcTtp3g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1634195577;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e8/ZKL3qCkam3RdoGxPa61NCBe3o5Hu4qxhl481QQ/M=;
-        b=xJGPePf+dseKSZ1keePo7cT9sautatbPqJyNPmvNykHPQ+2EJ8a9HX0yRFtNgGeoMVdHzL
-        5tPhtgiXPufJhuCA==
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 04/11] x86/tdx: Add TDX support to
- intel_cc_platform_has()
-In-Reply-To: <20211009053747.1694419-5-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053747.1694419-5-sathyanarayanan.kuppuswamy@linux.intel.com>
-Date:   Thu, 14 Oct 2021 09:12:56 +0200
-Message-ID: <87tuhk6pvr.ffs@tglx>
+        Thu, 14 Oct 2021 03:18:02 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 6006F40010
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 07:15:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1634195757;
+        bh=MFCZExNFJETkLFI94dPqm30bHOqjLeoq6Vpk7ELBaDQ=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=FHCsFsBQLEsvsPAW1ekZIrBi9xeANINnCu8OsoZW3UoP8vSSoCc+wHalm+t/Ka4oB
+         dPA+ejt8lDnByUz9XtY6R6sKj2we7a+6GgBSYG6ZncJpGiajqNZdphYDZFBLAuO3Nn
+         2wgcQUYDqrKX0FJlgt8S492KCsBe7oLEQNH7dtTWSVZmudwjHCoJyWedk7ACHhitYw
+         9/L14gT9xYbFRa6ka6WxFg40K75tDlaagMWNPd96RUSd3uWJmSFR8jGz3X4Q1dH3ah
+         ekAWlA6+LVVNiWna/kRjF6Zm4Z6pXnQ27mUTTRoLrljjQ8EnJW5BPsyxwzYnFw9dJt
+         BLCVvEUX1aDBQ==
+Received: by mail-lf1-f69.google.com with SMTP id bu34-20020a05651216a200b003fd7bb9caa1so3768562lfb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 00:15:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MFCZExNFJETkLFI94dPqm30bHOqjLeoq6Vpk7ELBaDQ=;
+        b=rYGgaxwn7+e9N6SrcAPx9QL4GxZs05grQbPKsAKTg1ygHI2O8trbd6iavnn/sU5dNH
+         bnZdDRG+w0OiBo/RWGI8vvKUmRFeL3JZu2q4DkSCAUZPEj40wn1muxrO2ofylMgoZxmm
+         pRIz/gSArwhl3spZvJ+h17ICU2ZlUahF/BPxLAnFnWmHn1p+H7e1XfSWI9zpEIB4hfjB
+         pc6rrCNuPZigPFVjZYlaG7zRIzsbN+g8cfiMbRq4QRbdn+Gc/Pm64f8a8GCHAfy2uxDf
+         +Js2toM2OOCfSNzl7OdgmugtNw7Tg3ORogasxdvEML3ykbI4r1tgr2YVW7evsF4pApRb
+         ByFg==
+X-Gm-Message-State: AOAM531KRoMdM7lOE0ZFI9PPAmKpWDf7CwSdqTOx2v+bxY2Q2AEB76SW
+        AOVlL9dVy8o7EQb+kPfdEVx3DTw9NAR6pMtb2yhSl64j9kmRtgp5mJsjBTGUWh12sFGAf4hRzLc
+        d+dcu7J5exZZ4QCgwDNTXIzZMKwBPwN28EjDiEwe2jg==
+X-Received: by 2002:a05:6512:32a9:: with SMTP id q9mr3368115lfe.58.1634195756200;
+        Thu, 14 Oct 2021 00:15:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw+eKLFsqJPOhCkqC8DpoRCUJhKIzFLYXiXPwRTeH2qO48mtsxYXeTgWDm98kvFYsbf0p2E8g==
+X-Received: by 2002:a05:6512:32a9:: with SMTP id q9mr3368092lfe.58.1634195755936;
+        Thu, 14 Oct 2021 00:15:55 -0700 (PDT)
+Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id i7sm151427lfl.38.2021.10.14.00.15.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 00:15:55 -0700 (PDT)
+Subject: Re: [PATCH 1/3] soc: samsung: exynos-chipid: Pass revision reg
+ offsets
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211012171624.14338-1-semen.protsenko@linaro.org>
+ <677711d4-61d6-1bb8-f638-c4911ef5e1cb@canonical.com>
+ <CAPLW+4mX-YN=2BgW1F5HEUS79Y97WKPTX-uwkBF0NVwKfThzjQ@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <818a73a0-5a66-7b77-ae3a-ce97df0303b6@canonical.com>
+Date:   Thu, 14 Oct 2021 09:15:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAPLW+4mX-YN=2BgW1F5HEUS79Y97WKPTX-uwkBF0NVwKfThzjQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08 2021 at 22:37, Kuppuswamy Sathyanarayanan wrote:
->  
-> -static bool __maybe_unused intel_cc_platform_has(enum cc_attr attr)
-> +static bool intel_cc_platform_has(enum cc_attr attr)
->  {
->  #ifdef CONFIG_INTEL_TDX_GUEST
-> -	return false;
-> +	switch (attr) {
-> +	case CC_ATTR_GUEST_TDX:
-> +		return is_tdx_guest();
+On 13/10/2021 20:47, Sam Protsenko wrote:
+> On Wed, 13 Oct 2021 at 19:04, Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+>> On 12/10/2021 19:16, Sam Protsenko wrote:
+>>> Old Exynos SoCs have both Product ID and Revision ID in one single
+>>> register, while new SoCs tend to have two separate registers for those
+>>> IDs. Implement handling of both cases by passing Revision ID register
+>>> offsets in driver data.
+>>>
+>>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+>>> ---
+>>>  drivers/soc/samsung/exynos-chipid.c       | 67 +++++++++++++++++++----
+>>>  include/linux/soc/samsung/exynos-chipid.h |  6 +-
+>>>  2 files changed, 58 insertions(+), 15 deletions(-)
+>>>
+>>> diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
+>>> index 5c1d0f97f766..1264a18aef97 100644
+>>> --- a/drivers/soc/samsung/exynos-chipid.c
+>>> +++ b/drivers/soc/samsung/exynos-chipid.c
+>>> @@ -16,6 +16,7 @@
+>>>  #include <linux/errno.h>
+>>>  #include <linux/mfd/syscon.h>
+>>>  #include <linux/of.h>
+>>> +#include <linux/of_device.h>
+>>>  #include <linux/platform_device.h>
+>>>  #include <linux/regmap.h>
+>>>  #include <linux/slab.h>
+>>> @@ -24,6 +25,17 @@
+>>>
+>>>  #include "exynos-asv.h"
+>>>
+>>> +struct exynos_chipid_variant {
+>>> +     unsigned int rev_reg;           /* revision register offset */
+>>> +     unsigned int main_rev_bit;      /* main revision offset */
+>>
+>> I understand it is offset of a bit within register, so how about:
+>>
+>> unsigned int main_rev_shift;    /* main revision offset within rev_reg
+>> unsigned int sub_rev_shift;     /* sub revision offset within rev_reg */
+>>
+>>> +     unsigned int sub_rev_bit;       /* sub revision offset */
+>>> +};
+>>> +
+>>> +struct exynos_chipid_info {
+>>> +     u32 product_id;
+>>> +     u32 revision;
+>>> +};
+>>> +
+>>>  static const struct exynos_soc_id {
+>>>       const char *name;
+>>>       unsigned int id;
+>>> @@ -49,31 +61,55 @@ static const char *product_id_to_soc_id(unsigned int product_id)
+>>>       int i;
+>>>
+>>>       for (i = 0; i < ARRAY_SIZE(soc_ids); i++)
+>>> -             if ((product_id & EXYNOS_MASK) == soc_ids[i].id)
+>>> +             if (product_id == soc_ids[i].id)
+>>>                       return soc_ids[i].name;
+>>>       return NULL;
+>>>  }
+>>>
+>>> +static int exynos_chipid_get_chipid_info(struct regmap *regmap,
+>>> +             const struct exynos_chipid_variant *data,
+>>> +             struct exynos_chipid_info *soc_info)
+>>> +{
+>>> +     int ret;
+>>> +     unsigned int val, main_rev, sub_rev;
+>>> +
+>>> +     ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &val);
+>>> +     if (ret < 0)
+>>> +             return ret;
+>>> +     soc_info->product_id = val & EXYNOS_MASK;
+>>> +
+>>> +     ret = regmap_read(regmap, data->rev_reg, &val);
+>>> +     if (ret < 0)
+>>> +             return ret;
+>>> +     main_rev = (val >> data->main_rev_bit) & EXYNOS_REV_PART_LEN;
+>>> +     sub_rev = (val >> data->sub_rev_bit) & EXYNOS_REV_PART_LEN;
+>>> +     soc_info->revision = (main_rev << EXYNOS_REV_PART_OFF) | sub_rev;
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>>  static int exynos_chipid_probe(struct platform_device *pdev)
+>>>  {
+>>> +     const struct exynos_chipid_variant *drv_data;
+>>> +     struct exynos_chipid_info soc_info;
+>>>       struct soc_device_attribute *soc_dev_attr;
+>>>       struct soc_device *soc_dev;
+>>>       struct device_node *root;
+>>>       struct regmap *regmap;
+>>> -     u32 product_id;
+>>> -     u32 revision;
+>>>       int ret;
+>>>
+>>> +     drv_data = of_device_get_match_data(&pdev->dev);
+>>> +     if (!drv_data)
+>>> +             return -EINVAL;
+>>> +
+>>>       regmap = device_node_to_regmap(pdev->dev.of_node);
+>>>       if (IS_ERR(regmap))
+>>>               return PTR_ERR(regmap);
+>>>
+>>> -     ret = regmap_read(regmap, EXYNOS_CHIPID_REG_PRO_ID, &product_id);
+>>> +     ret = exynos_chipid_get_chipid_info(regmap, drv_data, &soc_info);
+>>>       if (ret < 0)
+>>>               return ret;
+>>>
+>>> -     revision = product_id & EXYNOS_REV_MASK;
+>>> -
+>>>       soc_dev_attr = devm_kzalloc(&pdev->dev, sizeof(*soc_dev_attr),
+>>>                                   GFP_KERNEL);
+>>>       if (!soc_dev_attr)
+>>> @@ -86,8 +122,8 @@ static int exynos_chipid_probe(struct platform_device *pdev)
+>>>       of_node_put(root);
+>>>
+>>>       soc_dev_attr->revision = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+>>> -                                             "%x", revision);
+>>> -     soc_dev_attr->soc_id = product_id_to_soc_id(product_id);
+>>> +                                             "%x", soc_info.revision);
+>>> +     soc_dev_attr->soc_id = product_id_to_soc_id(soc_info.product_id);
+>>>       if (!soc_dev_attr->soc_id) {
+>>>               pr_err("Unknown SoC\n");
+>>>               return -ENODEV;
+>>> @@ -106,7 +142,7 @@ static int exynos_chipid_probe(struct platform_device *pdev)
+>>>
+>>>       dev_info(soc_device_to_device(soc_dev),
+>>>                "Exynos: CPU[%s] PRO_ID[0x%x] REV[0x%x] Detected\n",
+>>> -              soc_dev_attr->soc_id, product_id, revision);
+>>> +              soc_dev_attr->soc_id, soc_info.product_id, soc_info.revision);
+>>>
+>>>       return 0;
+>>>
+>>> @@ -125,9 +161,18 @@ static int exynos_chipid_remove(struct platform_device *pdev)
+>>>       return 0;
+>>>  }
+>>>
+>>> +static const struct exynos_chipid_variant exynos4210_chipid_drv_data = {
+>>> +     .rev_reg        = 0x0,
+>>> +     .main_rev_bit   = 0,
+>>> +     .sub_rev_bit    = 4,
+>>> +};
+>>> +
+>>>  static const struct of_device_id exynos_chipid_of_device_ids[] = {
+>>> -     { .compatible = "samsung,exynos4210-chipid" },
+>>> -     {}
+>>> +     {
+>>> +             .compatible     = "samsung,exynos4210-chipid",
+>>> +             .data           = &exynos4210_chipid_drv_data,
+>>> +     },
+>>> +     { }
+>>>  };
+>>>
+>>>  static struct platform_driver exynos_chipid_driver = {
+>>> diff --git a/include/linux/soc/samsung/exynos-chipid.h b/include/linux/soc/samsung/exynos-chipid.h
+>>> index 8bca6763f99c..5270725ba408 100644
+>>> --- a/include/linux/soc/samsung/exynos-chipid.h
+>>> +++ b/include/linux/soc/samsung/exynos-chipid.h
+>>> @@ -9,10 +9,8 @@
+>>>  #define __LINUX_SOC_EXYNOS_CHIPID_H
+>>>
+>>>  #define EXYNOS_CHIPID_REG_PRO_ID     0x00
+>>> -#define EXYNOS_SUBREV_MASK           (0xf << 4)
+>>> -#define EXYNOS_MAINREV_MASK          (0xf << 0)
+>>> -#define EXYNOS_REV_MASK                      (EXYNOS_SUBREV_MASK | \
+>>> -                                      EXYNOS_MAINREV_MASK)
+>>> +#define EXYNOS_REV_PART_LEN          0xf
+>>
+>> EXYNOS_REV_PART_MASK
+>>
+>>> +#define EXYNOS_REV_PART_OFF          4
+>>
+>> define EXYNOS_REV_PART_SHIFT
+>>
+> 
+> Thanks, I'll fix everything you mentioned in v2.
+> 
+> Btw, I forgot to provide an explanation on user interface changes I
+> made. Those are ok from my POV, but you might disagree:
+> 
+> 1. EXYNOS_MASK is now applied to product_id when assigning it. The
+> only side effect is that dev_info() in probe() will print a bit
+> different info. Hope it's fine. The code looks better this way, as we
+> clearly differentiate SoC ID and Revision ID from the very beginning.
 
-This function is only called when is_tdx_guest() is true. So
-is_tdx_guest() has to be called again to make sure?
+That's fine.
 
-Also the ifdeffery can just go away simply because the compiler will
-discard this function when CONFIG_INTEL_TDX_GUEST=n due to:
+> 
+> 2. "revision" sysfs node will now show the revision in this form:
+> "(main_rev << 4) | sub_rev". Before this patch it was "(sub_rev << 4)
+> | main_rev". It has to do with internal register representation: on
+> older Exynos SoCs it has the latter form, on newer SoCs -- the former.
+> For consistency I want to keep it in the same form for all platforms.
+> I decided to go with approach implemented in downstream Samsung
+> kernel, though it of course changes the output on older SoCs. Possible
+> design options are:
 
-> +#ifdef CONFIG_INTEL_TDX_GUEST
-> +
-> +bool is_tdx_guest(void);
-> +void __init tdx_early_init(void);
-> +
-> +#else
-> +
-> +static inline bool is_tdx_guest(void) { return false; }
-> +static inline void tdx_early_init(void) { };
-> +
-> +#endif /* CONFIG_INTEL_TDX_GUEST */
+I miss the point. Regardless of representation in register - whether
+main_rev is shifted or sub_rev - you should always print it the same
+way. Currently it was printed "(main_rev << 4) | sub_rev" and it should
+not be changed.
 
-Thanks,
+> 
+>     (a) Use "(sub_rev << 4) | main_rev" form instead for all SoCs. It
+> would preserve "revision" node output on older SoCs. On newer SoCs it
+> will be rotated form w.r.t. internal register representation, and it
+> won't be consistent with downstream implementation (not that we should
+> care about that much)
+>     (b) Use "(sub_rev << 4) | main_rev" form for old SoCs and
+> "(main_rev << 4) | sub_rev" for for new SoCs. That will clutter the
+> logic for sure, making it not very elegant.
+>     (c) Keep it as is (as I already implemented that in this patch).
+> Changes "revision" node output, but I'm not sure if we should care
+> about that, user space shouldn't probably rely on that data anyway
 
-        tglx
+Should be always printed as "(main_rev << 4) | sub_rev" regardless how
+it is written in register. That's how it works so far.
+
+Best regards,
+Krzysztof
