@@ -2,95 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DE442D748
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177D042D749
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 12:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229468AbhJNKph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 06:45:37 -0400
-Received: from ni.piap.pl ([195.187.100.5]:51270 "EHLO ni.piap.pl"
+        id S230155AbhJNKqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 06:46:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230168AbhJNKpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 06:45:31 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        by ni.piap.pl (Postfix) with ESMTPSA id E4F64C3F3EF6;
-        Thu, 14 Oct 2021 12:43:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl E4F64C3F3EF6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1634208205; bh=wy76QmHD0Gdua8DnltaLzMFS+mHTmw/fUZaGxzMCgvg=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=iGQFi0OHnl82CcXlETPZMtEB890a1wyFPdWyN1wR4aR8cNMP/ZcQENSMHYK/nRLrw
-         SgiK2UmGjS3J/zrkVNx08QfC4fbJhxDjLBG2UV2v9pXYekRmlebXQ4zy7zEX4fMuLS
-         Do/6gI7uAVDpoLWeoGC/KGW8Zdfw+R8EUQfzEqwI=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Matteo Lisi <matteo.lisi@engicam.com>
-Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
-References: <m3fstfoexa.fsf@t19.piap.pl>
-        <20211009102446.jrvrdr7whtd2rv4z@uno.localdomain>
-        <m3mtnflpna.fsf@t19.piap.pl>
-        <20211011143420.vm6ncl5gdv44nsn3@uno.localdomain>
-        <m3a6jel9ce.fsf@t19.piap.pl>
-        <20211013082634.53zh5j26gucddome@uno.localdomain>
-        <m3y26xjd7p.fsf@t19.piap.pl>
-        <20211013151400.i2s3gcshb3xvuy2e@uno.localdomain>
-        <m3tuhkjh5l.fsf@t19.piap.pl>
-        <20211014075955.xxbv2bzrx73v45bo@uno.localdomain>
-Sender: khalasa@piap.pl
-Date:   Thu, 14 Oct 2021 12:43:24 +0200
-In-Reply-To: <20211014075955.xxbv2bzrx73v45bo@uno.localdomain> (Jacopo Mondi's
-        message of "Thu, 14 Oct 2021 09:59:55 +0200")
-Message-ID: <m3lf2vkhtf.fsf@t19.piap.pl>
+        id S229691AbhJNKqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 06:46:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D50A61029;
+        Thu, 14 Oct 2021 10:44:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634208241;
+        bh=yj4//OpSN9djVmCrQwGqu4iEHrXVdTiwWzjrANIsfMs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nM7LXRXscJo3vD7xh32yyV/2knPv3WhzpXp1LOVIPvdTb9WPLegu56DcEkXk8d0Vf
+         Ah/jEl7Qb8uECyscTdxQ/lu0V1HqQ3u/6w4uImVM8cwLcqh18gWZs3VxBEZisOtsGG
+         iENkKCV1FSW1nbevPajyg4vmrHK4BXN1lNotvOt4Zi+00EUB+7pjdku3CFxAVZkBt7
+         +PeyUjytTQ4wlIg0l2AWH2zlk5hEWduXlEJ1EO2TjF3RHHHaXvT5m8CTCLx/NOT53g
+         d0UYVcG9px3YYoi2ZPhTwiFbaXEhInuEZKj6v/9oSIgLGgUrXXPRuY//gMFtBdGUyl
+         LGk0euFqXadWQ==
+Date:   Thu, 14 Oct 2021 12:43:58 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB
+ + a few other fixes v2
+Message-ID: <20211014104358.GA406368@lothringen>
+References: <20211011145140.359412-1-frederic@kernel.org>
+ <20211013003215.GP880162@paulmck-ThinkPad-P17-Gen-1>
+ <20211013032832.GQ880162@paulmck-ThinkPad-P17-Gen-1>
+ <20211013114335.GB377556@lothringen>
+ <20211013162733.GS880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 3
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013162733.GS880162@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jacopo Mondi <jacopo@jmondi.org> writes:
+On Wed, Oct 13, 2021 at 09:27:33AM -0700, Paul E. McKenney wrote:
+> On Wed, Oct 13, 2021 at 01:43:35PM +0200, Frederic Weisbecker wrote:
+> > On Tue, Oct 12, 2021 at 08:28:32PM -0700, Paul E. McKenney wrote:
+> > > On Tue, Oct 12, 2021 at 05:32:15PM -0700, Paul E. McKenney wrote:
+> > > > On Mon, Oct 11, 2021 at 04:51:29PM +0200, Frederic Weisbecker wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > No code change in this v2, only changelogs:
+> > > > > 
+> > > > > * Add tags from Valentin and Sebastian
+> > > > > 
+> > > > > * Remove last reference to SEGCBLIST_SOFTIRQ_ONLY (thanks Valentin)
+> > > > > 
+> > > > > * Rewrite changelog for "rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check"
+> > > > >   after off-list debates with Paul.
+> > > > > 
+> > > > > * Remove the scenario with softirq interrupting rcuc on
+> > > > >   "rcu/nocb: Limit number of softirq callbacks only on softirq" as it's
+> > > > >   probably not possible (thanks Valentin).
+> > > > > 
+> > > > > * Remove the scenario with task spent scheduling out accounted on tlimit
+> > > > >   as it's not possible (thanks Valentin)
+> > > > >   (see "rcu: Apply callbacks processing time limit only on softirq")
+> > > > > 
+> > > > > * Fixed changelog of
+> > > > >   "rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread"
+> > > > >   (thanks Sebastian).
+> > > > > 
+> > > > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > > > > 	rcu/rt-v2
+> > > > > 
+> > > > > HEAD: 2c9349986d5f70a555195139665841cd98e9aba4
+> > > > > 
+> > > > > Thanks,
+> > > > > 	Frederic
+> > > > 
+> > > > Nice!
+> > > > 
+> > > > I queued these for further review and testing.  I reworked the commit log
+> > > > of 6/11 to give my idea of the reason, though I freely admit that this
+> > > > reason is not as compelling as it no doubt seemed when I wrote that code.
+> > > 
+> > > But in initial tests TREE04.5, TREE04.6, and TREE04.9 all hit the
+> > > WARN_ON(1) in rcu_torture_barrier(), which indicates rcu_barrier()
+> > > breakage.  My best (but not so good) guess is a five-hour MTBF on a
+> > > dual-socket system.
+> > > 
+> > > I started an automated "git bisect" with each step running 100 hours
+> > > of TREE04, but I would be surprised if anything useful comes of it.
+> > > Pleased, mind you, but surprised.
+> > 
+> > Ok I can reproduce.
+> > 
+> > I'm launching a bisect from my side as well.
+> 
+> Mine converged on 2a4200944750 ("rcu/nocb: Prepare state machine for
+> a new step").  The surprise is that I was running "git bisect run"
+> on a script wrappering kvm-remote.sh, which means that it managed to
+> repeatedly request 10 systems, download to them, run the test, collect
+> the results, and finally return the systems.
+> 
+> Huh.  I should probably refactor my local script to avoid the pointless
+> repeated request/return work.
+> 
+> But which commit did your bisect find?  ;-)
 
->> This is BTW completely orthogonal to the -EBUSY on set_fmt(). The
->> effects will be exactly the same if the e.g. geometry changes come when
->> the sensor is not streaming.
->>
->
-> No, this isn't true. Your s_fmt() implementation stops then restart the
-> stream. It has an undocumented side effect and will cause undefined
-> behaviour.
+So my bisection got confused with two different issues: one with an
+oom and one with rcu_barrier() being unhappy.
 
-It will cause *at*most* a corrupted frame. On a MIPI link. That's right.
-Such a corrupted frame will *at*most* cause some transient IO error - it
-must not cause anything serious, because corrupted frames on MIPI can
-happen for multiple reasons, some of which simply cannot be avoided.
-BTW I will see if it's actually the case - chances are, there is no
-corruption, but I tested it years ago and haven't yet checked my notes.
+I'm re-running it but I'll investigate both.
 
-In fact those set_fmt() in other drivers may - or may not - cause
-corrupted frames just the same.
+> 
+> Anyway, I am keeping the first commit 4b246eab4750 ("rcu/nocb: Make
+> local rcu_nocb_lock_irqsave() safe against concurrent deoffloading"),
+> but dropping the others for the time being.
 
-> If your s_fmt() has to stop and restart streaming to take effect,
-> it means userspace should instead stop the stream, change
-> the format where opportune in the pipeline, and then restart the
-> stream.
+Fair enough!
 
-Maybe. This is a sensor driver - not userspace.
-If the userspace uses it as a part of "frame grabber", it will certainly
-do exactly that (nothing else would make sense in practice).
+Thanks.
 
-Unfortunately this all will have to wait a bit, so thanks for your help,
-expect a new patch in few weeks.
---=20
-Krzysztof "Chris" Ha=C5=82asa
 
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+
+> 							Thanx, Paul
