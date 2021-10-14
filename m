@@ -2,111 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE9042D2DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A9242D2DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhJNGoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 02:44:07 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:54322
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229502AbhJNGoG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 02:44:06 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 551173F2FF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Oct 2021 06:41:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1634193718;
-        bh=CMmfj/ip+IGKBw8tWjgLAh8I3/FgLXWH7nylZ4BTcqA=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=MB0bTCTv11kczFzbPY0FNzUUzYIrnwcdrIR2ll7xRifeWSekRXlKO7E3SYp3zdaFC
-         lP16RSZ0xEPUwmKdATpbgmUig603V/Ba243xvAWTMkZX0/TEuE9VYmC62Cq//O8DBX
-         pYmAJyT0xQRjC0siiKj+TgLyc7Bbg+icir5Z5SW1XFWQ7URtUfnsEt0wWK/AA1G0JB
-         fp1f3t9ZewpM8hsg09sV9wFCV/IROhGAN/ytuWaS4FFWFxn0gTEaoWE9UkB1sNy0XY
-         7CLqmYHQYhUuoaqG4WnuAPdbREwt8JNp9mqD4tt0WQLgA6xpFvKOiqlD2U9vC/QoNl
-         CkeKep4ZC8AlA==
-Received: by mail-lf1-f71.google.com with SMTP id bu34-20020a05651216a200b003fd7bb9caa1so3713673lfb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:41:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CMmfj/ip+IGKBw8tWjgLAh8I3/FgLXWH7nylZ4BTcqA=;
-        b=JjKCrKyIQQFbnMY3lGDN3t/JoByuzVHseqdJbZwaAxCYUiR+YQQLsm/sGQ63hDEmYY
-         X0fVdYNMV6Rjp0CV04yyb1LcWddw59XuA3LDJmitxSXKIATGSIuS57vcun2O+iEI4IH0
-         5yV/E/5qm9/TmSYK64AnAHMQd9XdZJggfj+wXnak5TWbxPvQV6kzzLnzIg2r2ZeiTswU
-         VutADcxJrIEBV5bA3psyK3oKGJ+5CkPFLX4DE1l+DZN3nOoGnCbQnJTlOczaXjk8FjKs
-         VHZ2LFSCeAPcbvjR33kw2zFwLRbgPokF4BlGZxkqoNIrm5Zc10dj4a5TOfXkcyH2VrOI
-         pOJw==
-X-Gm-Message-State: AOAM530jkl4WQFPuktSuMdhZYhDWvQa2rHH4pTxgYKvEIuluFX975ZKW
-        KWdmjPy6fo9swqIAzf5haRffWFFTTh5xugsOAtwdV5XVMI51yha8jsUA0UkIIzl95HZ0GN6j0sX
-        +D8fxsRhiyUInz9diWXaq6miHpCphaScJ0V0Vsg6qVw==
-X-Received: by 2002:ac2:52b0:: with SMTP id r16mr3405373lfm.500.1634193717261;
-        Wed, 13 Oct 2021 23:41:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzFQjJUQipqmMTro8hRz6eMfXduPpPL0Xek7QIUsQK2i5IMv8MJSarYOB4NbF6Q6rvUma+yZw==
-X-Received: by 2002:ac2:52b0:: with SMTP id r16mr3405360lfm.500.1634193717105;
-        Wed, 13 Oct 2021 23:41:57 -0700 (PDT)
-Received: from [192.168.3.161] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id l24sm176616lji.25.2021.10.13.23.41.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Oct 2021 23:41:56 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] soc: samsung: exynos-chipid: Pass revision reg
- offsets
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211013202110.31701-1-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <3460c787-0a72-3c37-1075-dfee9cc2c0b3@canonical.com>
-Date:   Thu, 14 Oct 2021 08:41:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229613AbhJNGqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 02:46:02 -0400
+Received: from mga03.intel.com ([134.134.136.65]:55290 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229502AbhJNGqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Oct 2021 02:46:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10136"; a="227569699"
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="227569699"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 23:43:57 -0700
+X-IronPort-AV: E=Sophos;i="5.85,371,1624345200"; 
+   d="scan'208";a="481120249"
+Received: from msavu-mobl1.ti.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.249.43.55])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2021 23:43:55 -0700
+From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To:     apw@canonical.com, joe@perches.com
+Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+        peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v7] checkpatch: get default codespell dictionary path from package location
+Date:   Thu, 14 Oct 2021 09:44:06 +0300
+Message-Id: <20211014064406.28052-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20211013202110.31701-1-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2021 22:21, Sam Protsenko wrote:
-> Old Exynos SoCs have both Product ID and Revision ID in one single
-> register, while new SoCs tend to have two separate registers for those
-> IDs. Implement handling of both cases by passing Revision ID register
-> offsets in driver data.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  drivers/soc/samsung/exynos-chipid.c       | 67 +++++++++++++++++++----
->  include/linux/soc/samsung/exynos-chipid.h |  6 +-
->  2 files changed, 58 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
-> index 5c1d0f97f766..7837331fb753 100644
-> --- a/drivers/soc/samsung/exynos-chipid.c
-> +++ b/drivers/soc/samsung/exynos-chipid.c
-> @@ -16,6 +16,7 @@
->  #include <linux/errno.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/of.h>
-> +#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
-> @@ -24,6 +25,17 @@
+The standard location of dictionary.txt is under codespell's package, on
+my machine atm (codespell 2.1, Artix Linux):
+/usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
 
-Include a changelog please. Your patch does not apply and there is no
-information on tree which it was based on.
+Since we enable the codespell by default for SOF I have constant:
+No codespell typos will be found - \
+file '/usr/share/codespell/dictionary.txt': No such file or directory
 
+The patch proposes to try to fix up the path following the recommendation
+found here:
+https://github.com/codespell-project/codespell/issues/1540
 
-Best regards,
-Krzysztof
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+Hi,
+
+Changes since v6:
+- do not try to look for codespell install dir if the default
+  /usr/share/codespell/dictionary.txt exists
+
+Changes since v5:
+- move the $python_codespell_dict to local
+- drop extra semicolon
+- execute python, not python3
+
+Changes since v4:
+- Use the readable version suggested by Joe Perches (store the pyhton snippet in
+  python_codespell_dict)
+
+Changes since v3:
+- Do not try to override the use provided codespell file location
+
+Changes since v2:
+- Only try to check for dictionary path it is enabled or when the help is
+  displayed
+ - Move the check after the GetOptions()
+ - Set $help to 2 in case invalid option is passed in order to be able to use
+   correct exitcode and still display the correct path for dictionary.txt
+
+Changes sicne v1:
+- add missing ';' to the line updating the $codespellfile with $codespell_dict
+
+Regards,
+Peter
+
+ scripts/checkpatch.pl | 32 ++++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 91798b07c6cb..1784921c645d 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -63,6 +63,7 @@ my $min_conf_desc_length = 4;
+ my $spelling_file = "$D/spelling.txt";
+ my $codespell = 0;
+ my $codespellfile = "/usr/share/codespell/dictionary.txt";
++my $user_codespellfile = "";
+ my $conststructsfile = "$D/const_structs.checkpatch";
+ my $docsfile = "$D/../Documentation/dev-tools/checkpatch.rst";
+ my $typedefsfile;
+@@ -130,7 +131,7 @@ Options:
+   --ignore-perl-version      override checking of perl version.  expect
+                              runtime errors.
+   --codespell                Use the codespell dictionary for spelling/typos
+-                             (default:/usr/share/codespell/dictionary.txt)
++                             (default:$codespellfile)
+   --codespellfile            Use this codespell dictionary
+   --typedefsfile             Read additional types from this file
+   --color[=WHEN]             Use colors 'always', 'never', or only when output
+@@ -317,7 +318,7 @@ GetOptions(
+ 	'debug=s'	=> \%debug,
+ 	'test-only=s'	=> \$tst_only,
+ 	'codespell!'	=> \$codespell,
+-	'codespellfile=s'	=> \$codespellfile,
++	'codespellfile=s'	=> \$user_codespellfile,
+ 	'typedefsfile=s'	=> \$typedefsfile,
+ 	'color=s'	=> \$color,
+ 	'no-color'	=> \$color,	#keep old behaviors of -nocolor
+@@ -325,9 +326,32 @@ GetOptions(
+ 	'kconfig-prefix=s'	=> \${CONFIG_},
+ 	'h|help'	=> \$help,
+ 	'version'	=> \$help
+-) or help(1);
++) or $help = 2;
++
++if ($user_codespellfile) {
++	# Use the user provided codespell file unconditionally
++	$codespellfile = $user_codespellfile;
++} elsif (!(-f $codespellfile)) {
++	# If /usr/share/codespell/dictionary.txt is not present, try to find it
++	# under codespell's install directory: <codespell_root>/data/dictionary.txt
++	if (($codespell || $help) && which("codespell") ne "" && which("python") ne "") {
++		my $python_codespell_dict = << "EOF";
++
++import os.path as op
++import codespell_lib
++codespell_dir = op.dirname(codespell_lib.__file__)
++codespell_file = op.join(codespell_dir, 'data', 'dictionary.txt')
++print(codespell_file, end='')
++EOF
++
++		my $codespell_dict = `python -c "$python_codespell_dict" 2> /dev/null`;
++		$codespellfile = $codespell_dict if (-f $codespell_dict);
++	}
++}
+ 
+-help(0) if ($help);
++# $help is 1 if either -h, --help or --version is passed as option - exitcode: 0
++# $help is 2 if invalid option is passed - exitcode: 1
++help($help - 1) if ($help);
+ 
+ die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
+ die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
+-- 
+2.33.0
+
