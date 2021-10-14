@@ -2,170 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB50842D31C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D79B42D322
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Oct 2021 08:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhJNHAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Oct 2021 03:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
+        id S229883AbhJNHBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Oct 2021 03:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhJNHAQ (ORCPT
+        with ESMTP id S229502AbhJNHBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Oct 2021 03:00:16 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E67D5C061570
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:58:11 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id d23so4629075pgh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Oct 2021 23:58:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=90F5GgkLIzukAhvTUV+3ZzegFo7c/yVw23FmmmyLKiI=;
-        b=VU9jibIQXVcmVaH2SOhkP9l3k7zUgV40ftobar8AZgoRHL4i3UJXHNLih5Y0wEX3La
-         lYS8avExv0xbWA5SrMeAETDEr1/hPMajlBL7GHqb9f1sx0f42q1OhnPKGjP080R4jPVW
-         GVoiZOrRy6joTosLhQiGMdmmWo5ZCE8xbcnerORU7GCtgWCwz9YXm5Z54txP03fOe27x
-         GZ+MXyhFOc2U5Cy2PoptgW/LTLeVjVOXBz64/o2Q6HnOH+1maFMn2kuMMcuNgymcSjA+
-         OVc4PQ8C5Vcr9OYSq/2gZwZgNO7RLsd9SPvvPD+rvkx/C1ChUkW1QBOuaJOTyoFFCk0O
-         91Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=90F5GgkLIzukAhvTUV+3ZzegFo7c/yVw23FmmmyLKiI=;
-        b=n1HkY5ec5U+twMvedF+b2tS/chbkeVJ346jIMzuWa2BN2zM9WEHuI8wAbfvX/1byF4
-         wsvrDGQMV1ysSEIalbsetOSFxG4ohiGv7fD5+6WlXJ0EX/C5+929oIYqa65XUtr6CBMi
-         akxVS4pp/a0EtaQGv4aKFtuDrY4J0b197DiRkco7x43g+qTNG0erPd8m6PhoAFdVCM9S
-         zTTuOXcRedjkFUcWHGfKujFebXH2+RSGC6NvhyxoMdUDFnXzRtqWRtdtJu+pWk/fuV/j
-         5WiBh2eehLukO7vH7MjMaK2cGNSeoh1p/FgTsgCSnLcUPO5oARyPmPg9VB0H6WcGA0w0
-         PIJQ==
-X-Gm-Message-State: AOAM530y9T1wbNspx+bnEYpENlUHidlQ4wYaFPF4xpUiaF3DEs2xzR0p
-        JnHSgvyDh27qAE2OV7484Mg=
-X-Google-Smtp-Source: ABdhPJz4a95eMFhV5Mp4XkSq67jFVy4DJT0e8XpQWvj/20b+JQrbT4+Tu7tKhWRnxNmdNhhpgcb8Aw==
-X-Received: by 2002:a65:6398:: with SMTP id h24mr2919614pgv.367.1634194691474;
-        Wed, 13 Oct 2021 23:58:11 -0700 (PDT)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id p9sm1670864pfh.162.2021.10.13.23.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 23:58:10 -0700 (PDT)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     xiang@kernel.org, chao@kernel.org, linux-erofs@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, huyue2@yulong.com, zbestahu@163.com,
-        zhangwen@yulong.com, Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCH v3] erofs: remove the fast path of per-CPU buffer decompression
-Date:   Thu, 14 Oct 2021 14:57:44 +0800
-Message-Id: <20211014065744.1787-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        Thu, 14 Oct 2021 03:01:39 -0400
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95C6C061570;
+        Wed, 13 Oct 2021 23:59:34 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id D151C41AC8;
+        Thu, 14 Oct 2021 06:59:26 +0000 (UTC)
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Sven Peter <sven@svenpeter.dev>, Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211011165707.138157-1-marcan@marcan.st>
+ <20211011165707.138157-7-marcan@marcan.st>
+ <a9f6898d-bd76-b94e-52fc-98e9da1a04bd@canonical.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [RFC PATCH 6/9] memory: apple: Add apple-mcc driver to manage MCC
+ perf in Apple SoCs
+Message-ID: <2a6f14e5-fbc9-4b9a-9378-a4b5200bc3fb@marcan.st>
+Date:   Thu, 14 Oct 2021 15:59:24 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <a9f6898d-bd76-b94e-52fc-98e9da1a04bd@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+On 12/10/2021 18.19, Krzysztof Kozlowski wrote:
+>> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+>> +/*
+>> + * Apple SoC MCC memory controller performance control driver
+>> + *
+>> + * Copyright The Asahi Linux Contributors
+> 
+> Copyright date?
 
-As Xiang mentioned, such path has no real impact to our current
-decompression strategy, remove it directly. Also, update the return
-value of z_erofs_lz4_decompress() to 0 if success to keep consistent
-with LZMA which will return 0 as well for that case.
+We've gone over this one a few times already; most copyright dates 
+quickly become outdated and meaningless :)
 
-Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
-v2: just set ret = 0 in else branch and rearrange if statement into one line.
-v3: "paths" -> "path", recover missing message words in v2.
+See: 
+https://www.linuxfoundation.org/blog/copyright-notices-in-open-source-software-projects/
 
- fs/erofs/decompressor.c | 63 +++++++------------------------------------------
- 1 file changed, 8 insertions(+), 55 deletions(-)
+>> +static int apple_mcc_probe(struct platform_device *pdev)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+>> +	struct device_node *node = dev->of_node;
+> 
+> By convention mostly we call the variable "np".
 
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index 88e33ad..a8a4e3d 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -243,6 +243,8 @@ static int z_erofs_lz4_decompress(struct z_erofs_decompress_req *rq, u8 *out)
- 		if (ret >= 0)
- 			memset(out + ret, 0, rq->outputsize - ret);
- 		ret = -EIO;
-+	} else {
-+		ret = 0;
- 	}
- 
- 	if (maptype == 0) {
-@@ -269,33 +271,6 @@ static int z_erofs_lz4_decompress(struct z_erofs_decompress_req *rq, u8 *out)
- 	},
- };
- 
--static void copy_from_pcpubuf(struct page **out, const char *dst,
--			      unsigned short pageofs_out,
--			      unsigned int outputsize)
--{
--	const char *end = dst + outputsize;
--	const unsigned int righthalf = PAGE_SIZE - pageofs_out;
--	const char *cur = dst - pageofs_out;
--
--	while (cur < end) {
--		struct page *const page = *out++;
--
--		if (page) {
--			char *buf = kmap_atomic(page);
--
--			if (cur >= dst) {
--				memcpy(buf, cur, min_t(uint, PAGE_SIZE,
--						       end - cur));
--			} else {
--				memcpy(buf + pageofs_out, cur + pageofs_out,
--				       min_t(uint, righthalf, end - cur));
--			}
--			kunmap_atomic(buf);
--		}
--		cur += PAGE_SIZE;
--	}
--}
--
- static int z_erofs_decompress_generic(struct z_erofs_decompress_req *rq,
- 				      struct list_head *pagepool)
- {
-@@ -306,34 +281,12 @@ static int z_erofs_decompress_generic(struct z_erofs_decompress_req *rq,
- 	void *dst;
- 	int ret;
- 
--	/* two optimized fast paths only for non bigpcluster cases yet */
--	if (rq->inputsize <= PAGE_SIZE) {
--		if (nrpages_out == 1 && !rq->inplace_io) {
--			DBG_BUGON(!*rq->out);
--			dst = kmap_atomic(*rq->out);
--			dst_maptype = 0;
--			goto dstmap_out;
--		}
--
--		/*
--		 * For the case of small output size (especially much less
--		 * than PAGE_SIZE), memcpy the decompressed data rather than
--		 * compressed data is preferred.
--		 */
--		if (rq->outputsize <= PAGE_SIZE * 7 / 8) {
--			dst = erofs_get_pcpubuf(1);
--			if (IS_ERR(dst))
--				return PTR_ERR(dst);
--
--			rq->inplace_io = false;
--			ret = alg->decompress(rq, dst);
--			if (!ret)
--				copy_from_pcpubuf(rq->out, dst, rq->pageofs_out,
--						  rq->outputsize);
--
--			erofs_put_pcpubuf(dst);
--			return ret;
--		}
-+	/* one optimized fast path only for non bigpcluster cases yet */
-+	if (rq->inputsize <= PAGE_SIZE && nrpages_out == 1 && !rq->inplace_io) {
-+		DBG_BUGON(!*rq->out);
-+		dst = kmap_atomic(*rq->out);
-+		dst_maptype = 0;
-+		goto dstmap_out;
- 	}
- 
- 	/* general decoding path which can be used for all cases */
+Ack, I'll change it for v2.
+
+>> +	mcc->reg_base = devm_platform_ioremap_resource(pdev, 0);
+>> +	if (IS_ERR(mcc->reg_base))
+>> +		return PTR_ERR(mcc->reg_base);
+>> +
+>> +	if (of_property_read_u32(node, "apple,num-channels", &mcc->num_channels)) {
+> 
+> Don't you have a limit of supported channels? It cannot be any uint32...
+
+Today, it's max 8. But if come Monday we find out Apple's new chips have 
+16 channels and otherwise the same register layout, I'd much rather not 
+have to change the driver...
+
+>> +		dev_err(dev, "missing apple,num-channels property\n");
+> 
+> Use almost everywhere dev_err_probe - less code and you get error msg
+> printed.
+
+Heh, I didn't know about that one. Thanks!
+
+>> +
+>> +	dev_info(dev, "Apple MCC performance driver initialized\n");
+> 
+> Please skip it, or at least make it a dev_dbg, you don't print any
+> valuable information here.
+
+Ack, I'll remove this.
+
+>> +static struct platform_driver apple_mcc_driver = {
+>> +	.probe = apple_mcc_probe,
+>> +	.driver = {
+>> +		.name = "apple-mcc",
+>> +		.of_match_table = apple_mcc_of_match,
+>> +	},
+>> +};
+> 
+> module_platform_driver() goes here.
+
+Ack, will fix for v2.
+
+> 
+>> +
+>> +MODULE_AUTHOR("Hector Martin <marcan@marcan.st>");
+>> +MODULE_DESCRIPTION("MCC memory controller performance tuning driver for Apple SoCs");
+>> +MODULE_LICENSE("GPL v2");
+> 
+> I think this will be "Dual MIT/GPL", based on your SPDX.
+
+Ah, I didn't realize that was a valid option for MODULE_LICENSE. I guess 
+anything containing "GPL" works with EXPORT_SYMBOL_GPL?
+
+Thanks for the review!
+
 -- 
-1.9.1
-
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
